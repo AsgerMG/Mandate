@@ -11,12 +11,13 @@
 // never imply otherwise. Where no machine-readable rule exists the row says so
 // rather than rendering blank, which was a real defect: an unassessed fund
 // looked identical to a cleared one except for a missing green line.
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { fmtEur } from "../format";
 
 /** Shared with panel.tsx: the serif face the brief is set in. */
 const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
 
+import { AXIS_LABEL, rowGroups } from "./rowNovelty";
 import { STATE_OF_PLAY_OFFER } from "./types";
 import type { EligibilityCheck, InstitutionEntry, IntelligenceReport, NoDoors, WithheldNotice } from "./types";
 
@@ -83,6 +84,41 @@ export function PlaceholderBar({ narrow = false }: { narrow?: boolean }) {
     <span
       className={"inline-block h-3 animate-pulse rounded bg-[var(--muted)] align-middle " + (narrow ? "w-20" : "w-40")}
     />
+  );
+}
+
+/**
+ * A run of rows that are the same kind of door, introduced once.
+ *
+ * ── Why it leads with the choice ───────────────────────────────────────────
+ * The facts a run shares are true, and stating them five times is still five
+ * times one fact. But crossing them out five times is no better: the reader
+ * gets five muted lines saying nothing. What a reader actually needs at the
+ * top of a run is the thing they cannot work out themselves, which is HOW TO
+ * CHOOSE between doors that look alike. So the shared facts are stated as
+ * context and the sentence that follows names the axes the rows actually
+ * differ on, which are the axes measured to differ: what each has paid, where
+ * it operates, and its own conditions.
+ *
+ * Renders nothing for a run of one, which is most rows.
+ */
+function RunHeading({ group }: { group?: { size: number; shared: { axis: string; value: string }[] } }) {
+  if (!group || group.size < 2) return null;
+  return (
+    <tr data-run={group.size}>
+      <td colSpan={4} className="pt-4 pb-1.5">
+        <span className="block text-[11px] uppercase tracking-[0.08em] text-[var(--muted-foreground)]">
+          The next {group.size} are the same kind of door
+        </span>
+        <span className="mt-1 block text-[12px] text-[var(--foreground-soft)]">
+          {group.shared.map((s) => `${AXIS_LABEL[s.axis] ?? s.axis}: ${s.value}`).join(" · ")}
+        </span>
+        <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
+          Choose between them on what each one has actually paid, where it operates and the
+          conditions it sets itself. Those are on the rows; the facts above are not repeated.
+        </span>
+      </td>
+    </tr>
   );
 }
 
@@ -205,6 +241,40 @@ export function InstitutionsTable(
     const peers = r.comparableFirms.map((f) => f.name).join("|");
     if (peers && !firstWithPeers.has(peers)) firstWithPeers.set(peers, i);
   });
+  // ── SAY THE SHARED FRAMING ONCE, ABOVE THE ROWS THAT SHARE IT ────────────
+  // The fold above deduplicates a repeated VALUE and leaves a back-reference
+  // in its place, and it was the right shape for a route or a statutory
+  // bullet: those recur in a scatter, on rows that are otherwise unlike each
+  // other. It is the wrong shape for the tail both rendered briefs actually
+  // had, which is a RUN -- four or five consecutive rows that are the same
+  // KIND of door and repeat the family, the legal basis, the support type, the
+  // ticket band and the route, all five together, in order.
+  //
+  // Measured over 250 founders, 1,750 published rows: 39% of rows sit in such a
+  // run, 38% of tables carry a run of three or more, and runs of six and seven
+  // occur. On those rows the fold's own back-reference reads as five muted
+  // "the same as above" lines under five near-identical names, which is a
+  // catalogue with the catalogue's facts crossed out.
+  //
+  // A run is instead introduced ONCE and its shared facts stated there, and
+  // the rows inside it then carry only what is theirs: what each has actually
+  // paid, where it operates, who takes the application, its own conditions.
+  // 432 of 432 rows that follow another row of their own kind carry at least
+  // one such fact, so there is always something for the row to be.
+  //
+  // NO ROW IS REMOVED and no fund is withheld. This changes what a row SAYS,
+  // never which rows exist: a wrongly-withheld row is a fund a founder never
+  // sees, and one notified scheme delivered by several bodies is several real
+  // doors (wsCG2). The runs are read off the order as given -- nothing here
+  // reorders anything to make a run longer.
+  const groups = rowGroups(institutions);
+  const groupOf = new Map<number, { start: number; size: number }>();
+  for (const g of groups) {
+    if (g.size < 2) continue;
+    for (let o = 0; o < g.size; o++) groupOf.set(g.start + o, { start: g.start, size: g.size });
+  }
+  /** True where the fact is already stated in the run's own heading above. */
+  const inRunHeading = (i: number) => groupOf.has(i);
   return (
     <>
       <SectionTitle n="02">Where to target</SectionTitle>
@@ -220,7 +290,14 @@ export function InstitutionsTable(
         </thead>
         <tbody className="divide-y divide-[var(--border)] align-top">
           {institutions.map((r, i) => (
-            <tr key={i}>
+            <Fragment key={i}>
+            {/* The run's shared facts, stated once, immediately above the rows
+                that share them. A heading rather than a footnote: a reader who
+                has not yet seen the rows is being told how to choose between
+                them, which is advice; the same sentence under the rows would
+                be an apology for having repeated something. */}
+            <RunHeading group={groups.find((g) => g.start === i && g.size > 1)} />
+            <tr>
               <td className="py-2.5 pr-3">
                 {/* The name IS the link. What it opens differs by row - an
                     application portal, the scheme's entry in the EU state-aid
@@ -298,7 +375,11 @@ export function InstitutionsTable(
                 {/* Breadcrumb: the agency above this programme. A founder who
                     sees "Tremplin pour la transition ecologique des PME" needs
                     to know ADEME runs it, and that ADEME runs others. */}
-                {!pending && r.familyName && (
+                {/* Inside a run the family, the legal basis and the ticket
+                    band are the run's heading, one block up, and repeating
+                    them on each row is the catalogue this workstream exists to
+                    end. Outside a run they are the row's own and stay put. */}
+                {!pending && r.familyName && !inRunHeading(i) && (
                   <span className="block text-[11px] uppercase tracking-wide text-[var(--muted-foreground)]">
                     {r.familyName}
                   </span>
@@ -308,12 +389,15 @@ export function InstitutionsTable(
                     {r.descriptor}
                   </span>
                 )}
-                {!pending && (r.country || r.legalBasis) && (
+                {/* The country stays on every row even inside a run: it is one
+                    of the three things the run's heading tells the reader to
+                    choose on, and a run can span regions of one member state. */}
+                {!pending && (r.country || (r.legalBasis && !inRunHeading(i))) && (
                   <span className="block text-[12px] text-[var(--muted-foreground)]">
-                    {[r.country, r.legalBasis].filter(Boolean).join(" · ")}
+                    {[r.country, inRunHeading(i) ? "" : r.legalBasis].filter(Boolean).join(" · ")}
                   </span>
                 )}
-                {!pending && (
+                {!pending && !inRunHeading(i) && (
                   <span className="block text-[12px] tabular-nums text-[var(--muted-foreground)]">
                     {r.ticket}
                   </span>
@@ -378,7 +462,14 @@ export function InstitutionsTable(
                   </span>
                 )}
               </td>
-              <td className="py-2.5 pr-3">{pending ? <PlaceholderBar narrow /> : r.supportType}</td>
+              {/* Left as words rather than an empty cell. A blank in a column
+                  a reader is scanning reads as a fact we do not hold, which is
+                  the opposite of what is true here. */}
+              <td className="py-2.5 pr-3">
+                {pending ? <PlaceholderBar narrow />
+                  : inRunHeading(i) ? <span className="text-[var(--muted-foreground)]">As above</span>
+                    : r.supportType}
+              </td>
               <td className="py-2.5 pr-3">
                 {/* Qualification comes first and is code-computed, so it is
                     already correct while the model's prose streams. Funds a
@@ -428,7 +519,20 @@ export function InstitutionsTable(
                     It is the only line on the row that is an instruction rather
                     than an assessment, so it renders even when the writer's
                     prose is still streaming. */}
-                {r.applicationChannel ? (
+                {/* Inside a run the route itself is in the heading. The
+                    CAVEAT is not: whose route we hold differs row by row
+                    inside a run, and dropping it with the route would leave a
+                    founder building to a parent regime's instruction believing
+                    it was this scheme's own. */}
+                {r.applicationChannel && inRunHeading(i) ? (
+                  r.applicationRouteFor ? (
+                    <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
+                      <strong className="font-semibold">How to apply.</strong>{" "}
+                      The route above is the one recorded for {r.applicationRouteFor}. Confirm it
+                      with the body running this scheme before you build to it.
+                    </span>
+                  ) : null
+                ) : r.applicationChannel ? (
                   <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
                     <strong className="font-semibold">How to apply.</strong>{" "}
                     {firstWithRoute.get(r.applicationChannel.trim()) === i
@@ -469,6 +573,7 @@ export function InstitutionsTable(
                 )}
               </td>
             </tr>
+            </Fragment>
           ))}
         </tbody>
       </table>

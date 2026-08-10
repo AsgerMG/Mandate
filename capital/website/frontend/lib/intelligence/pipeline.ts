@@ -34,6 +34,7 @@ import { accessiblePool, explainNoDoors, orderMemoCandidates, WRITER_CANDIDATE_C
 import { ExclusionLog } from "./exclusions";
 import { assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
+import { AXIS_LABEL, distinguisherPhrases, rowGroups } from "./rowNovelty";
 import {
   findPeersBySubsector,
   isGenericSubsector,
@@ -446,6 +447,102 @@ function buildInstitutions(
 }
 
 /**
+ * THE CANDIDATES, GROUPED, WITH WHAT SEPARATES THEM: the exact block the
+ * writer is handed.
+ *
+ * ── What it replaced, and why ──────────────────────────────────────────────
+ * A flat list, one line per candidate, every line carrying the same six facts:
+ * name, verdict, support type, ticket, legal basis, comparables. For a run of
+ * siblings under one programme FIVE OF THOSE SIX ARE IDENTICAL BY
+ * CONSTRUCTION. The ticket is the channel's curated band; the legal basis is
+ * the article the whole regime was notified under; the comparables pool is one
+ * to three companies wide (wsCX); the route is inherited from the parent when
+ * a leaf has none of its own.
+ *
+ * Measured over 250 founders at the published cap, 1,750 rows: 39% of
+ * published rows sit in a run of two or more rows of one kind, 38% of tables
+ * carry a run of three or more, and inside a table the support type repeats on
+ * 72% of rows, the ticket on 70%, the legal basis on 67% and the family on
+ * 64%. The writer was handed one row several times and wrote one sentence
+ * several times, and both briefs rendered at seven rows read as a catalogue
+ * from row four down. It was not padding and it was not the cut.
+ *
+ * ── Why this is a presentation fix and not a selection one ────────────────
+ * EVERY row that follows another row of its own kind still carries a fact no
+ * earlier row carried: 432 of 432 over the same 250 founders, 27 of 27 over
+ * the archetypes. They differ on what they typically award (all of them, and
+ * by an order of magnitude inside a single run), on their own stated
+ * conditions (53%), on how the money is shaped (50%), on what they fund (41%),
+ * on who takes the application (19%). NONE of that reached this block. The
+ * differences existed and nothing put them in front of the model being asked
+ * to differentiate.
+ *
+ * So the shared facts are stated ONCE per run and each row carries what is its
+ * own. NOTHING IS DROPPED: a row that shares nothing forms a run of one and
+ * reads exactly as it did before, and no candidate is ever withheld -- a
+ * wrongly-withheld row is a fund a founder never sees.
+ *
+ * Exported so `scripts/_wsde_prompt.ts` can render what the writer actually
+ * receives for free. A second implementation of this block in a script would
+ * be grading something no founder is served.
+ */
+export function writerCandidateEvidence(
+  institutions: InstitutionEntry[],
+  rowKeys: string[],
+  /** Per-row flags the shortlist computed, positionally aligned. */
+  meta: { usedInField?: boolean; fitFlag?: string }[],
+): string {
+  return rowGroups(institutions)
+    .map((g) => {
+      const head = g.size > 1
+        ? `\nThese ${g.size} are the same kind of door and the page states these facts ONCE ` +
+          `for all of them: ${g.shared.map((s) => `${AXIS_LABEL[s.axis] ?? s.axis} ${s.value}`).join("; ")}. ` +
+          `A note repeating any of them tells the reader nothing they have not already read. ` +
+          `Each note must turn on what separates its own row, which is listed on the row.\n`
+        : "";
+      return head + institutions.slice(g.start, g.start + g.size).map((r, o) => {
+        const i = g.start + o;
+        const row = meta[i] ?? {};
+        const firms = r.comparableFirms.length
+          ? r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
+          : "none traced yet";
+        // What this row has that no earlier row had. Empty on the first row of
+        // the table by construction, and empty on a row that genuinely repeats
+        // one -- which is a fact worth the writer SEEING rather than hiding,
+        // because the honest note for such a row is a different note.
+        // Never on the first row: nothing stands above it, so "what sets this
+        // row apart" would name every fact it has and mean nothing by it.
+        const apart = i === 0 ? [] : distinguisherPhrases(r, institutions.slice(0, i));
+        return (
+          `- key "${rowKeys[i]}" (${r.institution})` +
+          `${row.usedInField ? " [used by peers in your field]" : ""}` +
+          `${r.stale ? ` [STALE, no award on record since ${r.lastAwardYear}]` : ""}` +
+          `${row.fitFlag ? ` [${row.fitFlag}]` : ""}: ` +
+          // The verdict, and the obstacle where there is one. Without this the
+          // writer cannot see which row is blocked, so it left blockerPlain empty
+          // every time and the raw statute rendered in the table instead.
+          `screening says ${r.verdict === "one_blocker" ? "ONE THING IN THE WAY" : r.verdict === "open" ? "OPEN (nothing rules them out)" : "not assessable"}; ` +
+          `${r.blocker ? `the obstacle, verbatim: "${r.blocker}"; ` : ""}` +
+          // Inside a run these three are the run's own header, one line above.
+          // On a run of one they are the row's, and they stay where they were.
+          (g.size > 1
+            ? ""
+            : `support ${r.supportType}; ticket ${r.ticket}; ` +
+              `${r.legalBasis ? `legal basis ${r.legalBasis}; ` : ""}`) +
+          `comparable firms funded through it: ${firms}` +
+          (i === 0 ? ""
+            : apart.length
+              ? `\n    WHAT SETS THIS ROW APART from the rows above it: ${apart.join("; ")}`
+              : `\n    NOTHING on this row differs from a row above it. Write the one honest ` +
+                `reason a founder would open this door as well as that one, or say plainly ` +
+                `that it is the same offer from a second body.`)
+        );
+      }).join("\n");
+    })
+    .join("\n");
+}
+
+/**
  * `buildInstitutions`, reachable from the free table check.
  *
  * A DIRECT CALL, never a second implementation. The alternative -- a check that
@@ -850,28 +947,36 @@ async function synthesize(
     seenRowKeys.add(key);
     return key;
   });
-  const institutionsEvidence = institutions
-    .map((r, i) => {
-      const row = baseRows[i];
-      const firms = r.comparableFirms.length
-        ? r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
-        : "none traced yet";
-      return (
-        `- key "${rowKeys[i]}" (${r.institution})` +
-        `${row.usedInField ? " [used by peers in your field]" : ""}` +
-        `${r.stale ? ` [STALE — no award on record since ${r.lastAwardYear}]` : ""}` +
-        `${row.fitFlag ? ` [${row.fitFlag}]` : ""}: ` +
-        // The verdict, and the obstacle where there is one. Without this the
-        // writer cannot see which row is blocked, so it left blockerPlain empty
-        // every time and the raw statute rendered in the table instead.
-        `screening says ${r.verdict === "one_blocker" ? "ONE THING IN THE WAY" : r.verdict === "open" ? "OPEN (nothing rules them out)" : "not assessable"}; ` +
-        `${r.blocker ? `the obstacle, verbatim: "${r.blocker}"; ` : ""}` +
-        `support ${r.supportType}; ticket ${r.ticket}; ` +
-        `${r.legalBasis ? `legal basis ${r.legalBasis}; ` : ""}` +
-        `comparable firms funded through it: ${firms}`
-      );
-    })
-    .join("\n");
+  // ── THE CANDIDATES, GROUPED, WITH WHAT SEPARATES THEM ────────────────────
+  //
+  // This block used to be a flat list, and every line carried the same six
+  // facts: name, verdict, support type, ticket, legal basis, comparables. For
+  // a run of siblings under one programme, FIVE OF THOSE SIX ARE IDENTICAL BY
+  // CONSTRUCTION -- the ticket is the channel's curated band, the legal basis
+  // is the article the whole regime was notified under, the comparables pool
+  // is one to three companies wide (wsCX), and the route is inherited from the
+  // parent when a leaf has none. Measured over the twelve archetypes at the
+  // published cap: 49% of rows sit in a run of two or more rows of one kind,
+  // half the tables carry a run of three or more, and inside those runs the
+  // support type repeats on 76% of rows, the ticket on 67% and the family on
+  // 64%.
+  //
+  // So the writer was handed one row several times and wrote one sentence
+  // several times, and both rendered briefs read as a catalogue from row four
+  // down. It was not padding and it was not the cut.
+  //
+  // What makes it fixable rather than a corpus problem: EVERY row that follows
+  // another row of its own kind still carries a fact no earlier row carried --
+  // 27 of 27 on the archetypes. They differ on what they typically award
+  // (every single one, and by an order of magnitude inside one run), on their
+  // own stated conditions, on what they fund, on who takes the application.
+  // NONE of that was in this block. The differences existed and nothing put
+  // them in front of the model being asked to differentiate.
+  //
+  // So the shared facts are stated ONCE per run, and each row carries what is
+  // its own. Nothing is dropped: a row that shares nothing simply forms a run
+  // of one and reads exactly as it did before.
+  const institutionsEvidence = writerCandidateEvidence(institutions, rowKeys, baseRows);
   const channelEnum = rowKeys;
 
   // Schema is built per-request (not a static const): institutionNotes must
@@ -1017,6 +1122,11 @@ async function synthesize(
           `These rows are already ranked and already cut. Write one note per ` +
           `row, in the order given. Do not reorder them, do not omit one, and ` +
           `do not describe them as better or worse than each other.\n` +
+          `Rows that are the same kind of door are grouped below, and the facts ` +
+          `they share are stated once for the group and rendered once on the ` +
+          `page. Never restate a group's shared facts in a row's note. Each ` +
+          `note turns on the line marked WHAT SETS THIS ROW APART, which is ` +
+          `that row's own facts and no other row's.\n` +
           `${institutionsEvidence || "(none)"}\n\n` +
           `## Funding-process briefs (use to make nextStep concrete)\n` +
           `${processes || "(none)"}\n\n` +

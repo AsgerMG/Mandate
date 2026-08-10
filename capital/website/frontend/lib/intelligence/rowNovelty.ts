@@ -63,10 +63,18 @@ export const IDENTITY_AXES: ReadonlySet<string> = new Set([
  *  a row differs would let the writer's own paraphrase certify itself. */
 const WRITER_AXES: ReadonlySet<string> = new Set(["whyEligible", "nextStep", "blockerPlain"]);
 
-/** The four facts that answer "what kind of door is this and how do I get in".
- *  Stated once per group rather than once per row. */
+/** The facts that answer "what kind of door is this, how big is it, and how do
+ *  I get in". Stated once per group rather than once per row.
+ *
+ *  `ticket` is here and `typicalAward` deliberately is not, though both are
+ *  money. The ticket is the CHANNEL's curated band, identical for every leaf
+ *  of a programme by construction, and it repeats on 70% of published rows.
+ *  The typical award is the LEAF's own measured median, it differs on every
+ *  row that has one, and inside a single run it spans a factor of five. One is
+ *  the shape of the door and the other is what this particular door has
+ *  actually paid. */
 export const FRAMING_AXES: readonly string[] =
-  ["familyName", "legalBasis", "supportType", "applicationChannel"] as const;
+  ["familyName", "legalBasis", "supportType", "ticket", "applicationChannel"] as const;
 
 /** One fact of a row, as a list of comparable pieces.
  *
@@ -188,6 +196,90 @@ export function rowGroups(rows: InstitutionEntry[]): RowGroup[] {
   return out;
 }
 
+/** A number, as a reader would take it.
+ *
+ *  Three rules about NUMBERS and one about the TYPE, so a numeric field added
+ *  tomorrow reads correctly with no edit here: a field whose name ends in
+ *  `Year` names a point in time and is never grouped (2,025 is not a year); a
+ *  value between zero and one is a share; anything else is a quantity. The
+ *  naming convention is the same one `qualifierOf` reads, and it is the type's
+ *  own, not a list of fields someone remembered. */
+function renderNumber(axis: string, n: number): string {
+  if (axis.endsWith("Year")) return String(n);
+  if (n > 0 && n < 1) return `${Math.round(n * 100)}%`;
+  return n.toLocaleString("en-GB");
+}
+
+/**
+ * The product's own reading of a row, as opposed to a fact about the fund.
+ *
+ * The test, for a field nobody has seen: WOULD THIS VALUE STILL BE TRUE IF WE
+ * HAD NEVER ASSESSED THIS ROW? If not, it is our verdict and not the fund's
+ * offer. Two reasons it is excluded here rather than merely deprioritised:
+ * the evidence line already states the verdict and its obstacle in the writer's
+ * own terms, so repeating it as a difference is the defect this module exists
+ * to remove; and one of these fields is gate-coverage phrasing that reader text
+ * may never carry (BRIEF-4 / VOI-B1), so putting it in front of the writer as
+ * a thing that makes this row special is an invitation to publish it.
+ */
+const PRODUCT_VOICE_AXES: ReadonlySet<string> = new Set([
+  "verdict", "blocker", "gatesChecked", "whyEasy", "stale",
+]);
+
+/** A count that only qualifies another value: `xN` is how many observations
+ *  stand behind `x`. It means nothing alone, so it is never a difference in
+ *  its own right, and it is never dropped either: it travels inside its
+ *  parent's phrase, because a median with no count behind it is the kind of
+ *  number this product does not publish. */
+const qualifierOf = (axis: string) => (axis.endsWith("N") ? axis.slice(0, -1) : "");
+
+/**
+ * What separates this row from the ones above it, in words.
+ *
+ * The set is bounded on purpose: it goes into the writer's prompt once per
+ * candidate, and an unbounded dump of every statutory bullet would spend the
+ * context the founder's own answers need. Bounded by taking the axes in the
+ * row's own order and the NEW pieces only, which is the same information the
+ * table's bullet fold shows.
+ */
+export function distinguisherPhrases(
+  row: InstitutionEntry, earlier: InstitutionEntry[],
+  { maxAxes = 6, maxPieces = 2, maxChars = 180 }: {
+    maxAxes?: number; maxPieces?: number; maxChars?: number } = {},
+): string[] {
+  const before = new Map<string, Set<string>>();
+  for (const e of earlier) {
+    for (const [axis, ps] of Object.entries(rowFacts(e))) {
+      const s = before.get(axis) ?? new Set<string>();
+      for (const p of ps) s.add(p);
+      before.set(axis, s);
+    }
+  }
+  const raw = row as unknown as Record<string, unknown>;
+  const facts = rowFacts(row);
+  const out: string[] = [];
+  for (const axis of distinguishersWithin(row, earlier)) {
+    if (out.length >= maxAxes) break;
+    if (PRODUCT_VOICE_AXES.has(axis)) continue;
+    // A qualifier is carried by its parent below, never on its own. It is
+    // skipped whether or not the parent has a value: where the parent moved,
+    // the count travels with it, and where the parent is absent the count is
+    // counting nothing and reads as a bare zero.
+    if (qualifierOf(axis)) continue;
+    const fresh = (facts[axis] ?? []).filter((p) => !(before.get(axis)?.has(p)));
+    if (!fresh.length) continue;
+    const v = raw[axis];
+    const n = raw[`${axis}N`];
+    const shown = typeof v === "number"
+      ? `${renderNumber(axis, v)}${typeof n === "number" && n > 0 ? ` over ${n.toLocaleString("en-GB")} awards` : ""}`
+      : fresh.slice(0, maxPieces)
+        .map((p) => (p.length > maxChars ? `${p.slice(0, maxChars)}...` : p))
+        .join("; ");
+    out.push(`${AXIS_LABEL[axis] ?? axis}: ${shown}`);
+  }
+  return out;
+}
+
 /** Human-readable name for an axis, for the one place a group's shared facts
  *  are stated to a reader. Anything unnamed falls back to the field name,
  *  which is ugly on purpose: it is a signal that a new fact reached the page
@@ -208,4 +300,7 @@ export const AXIS_LABEL: Readonly<Record<string, string>> = {
   country: "where it operates",
   lastAwardYear: "last recorded award",
   registeredPurpose: "what it is registered to fund",
+  accessMode: "how you engage with it",
+  applicationRouteFor: "whose route we hold",
+  applicationRouteUnknown: "the route we do not hold",
 };

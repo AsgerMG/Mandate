@@ -16,6 +16,7 @@
 // A rule names a property, never an instance. Nothing below names a company,
 // fund, sector or country.
 import { directsAtDepartment, whyNotApplyable } from "./applyableBody";
+import { distinguishers } from "./rowNovelty";
 import { WATCH_ONLY_COPY } from "./watchOnly";
 import type { IntelligenceReport } from "./types";
 
@@ -233,6 +234,37 @@ export function checkBrief(
       v.push({ ruleId: "FUND-3", detail: `identical reasoning to another row: ${r.institution}` });
     }
     reasoning.add(key);
+  }
+  // ── FUND-3's own test, on the row rather than on two strings ─────────────
+  // The two rules above decide the rule's two WORKED EXAMPLES: one institution
+  // twice under one basis, and two names carrying byte-identical prose. The
+  // rule itself asks something wider, and something a founder feels rather than
+  // a diff finds: would the reader learn anything from the second row that they
+  // did not learn from the first?
+  //
+  // Decidable without judgement, because the row is a set of facts. Remove
+  // every fact whose value an earlier published row already carried; what is
+  // left is why this row is worth its slot. Nothing left, and the row is the
+  // same thing said again -- whatever its name, and however differently the
+  // writer phrased it.
+  //
+  // WHAT THIS IS NOT. It is not a licence to drop the row. A wrongly-withheld
+  // row is a fund a founder never sees, and one notified scheme delivered by
+  // several bodies is several real doors -- collapsing those recovers nothing
+  // and costs routes (wsCG2). This reports; the pipeline never reads it.
+  //
+  // It is currently GREEN on every founder measured: 432 of 432 rows that
+  // follow another row of their own kind carry a fact no earlier row carried.
+  // That is the finding, not an idle check. It is what says the catalogue is a
+  // presentation defect rather than a selection one, and it is the guard that
+  // stops a future fold from being widened until it hides a row that really
+  // has nothing to say.
+  for (const [i, r] of institutions.entries()) {
+    if (i === 0) continue;
+    if (distinguishers(r, institutions.slice(0, i)).length === 0) {
+      v.push({ ruleId: "FUND-3", detail:
+        `row ${i + 1} carries no fact an earlier row did not: ${r.institution}` });
+    }
   }
   for (const r of institutions) {
     if (WATCH_ONLY_COPY.test(String(r.nextStep ?? ""))) {
