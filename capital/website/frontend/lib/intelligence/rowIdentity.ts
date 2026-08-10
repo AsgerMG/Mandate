@@ -47,7 +47,7 @@
 // taken because it sits in the flat, and because it is strictly above the 0.60
 // that `displayInstitutionName` uses for the much stronger claim that a body IS
 // the whole instrument.
-import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
+import { namesAnApplyableBody, VIA, withDoor } from "./applyableBody";
 
 // ── THE LABEL SHIPS. DOOR-LEVEL *RANKING* DOES NOT ────────────────────────
 //
@@ -73,24 +73,22 @@ import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 // ways. A fix behind a switch nothing could flip is a fix that never runs.
 
 /** The connective, in one place so the label, the memo and the checks agree.
- *  `via` and not "apply to": see the evidence standard at the top of this file. */
-export const VIA = "via";
+ *  `via` and not "apply to": see the evidence standard at the top of this file.
+ *
+ *  DEFINED in applyableBody.ts and re-exported here. It moved there when FUND-7
+ *  learned to split a published name back into "<what> via <who>" in order to
+ *  judge each half for what it claims to be, and applyableBody is the only
+ *  module low enough in the import graph for the check, the label and the row
+ *  identity to all reach one copy. */
+export { VIA, withDoor } from "./applyableBody";
 
-/**
- * THE ONE SPELLING OF A DOOR, wherever a body is printed beside a name.
- *
- * Both places that name a fund by its granting body call this: the instrument
- * table (`distinguishRowNames`, and `nameRowsAsDoors` after it) and the
- * question rendered underneath it (`gateReach`). One function rather than a
- * comment asking three call sites to agree — this repo has now hit "two
- * functions, two keys" three times and the fix was one exported function every
- * time.
- *
- * `VIA` and not "apply to": see the evidence standard at the top of this file.
- */
-export function withDoor(name: string, body: string): string {
-  return `${name} · ${VIA} ${body}`;
-}
+// `withDoor` — THE ONE SPELLING OF A DOOR, wherever a body is printed beside a
+// name — is re-exported above. Both places that name a fund by its granting
+// body call it: the instrument table (`distinguishRowNames`, and
+// `nameRowsAsDoors` after it) and the question rendered underneath it
+// (`gateReach`). One function rather than a comment asking three call sites to
+// agree — this repo has now hit "two functions, two keys" three times and the
+// fix was one exported function every time.
 
 /** The margin the majority vote must clear before the winner is a door. */
 export const BODY_SHARE_FLOOR = 0.75;
@@ -114,7 +112,7 @@ export interface BodyBearing {
 export function nameableBody(x: BodyBearing): string | null {
   const body = x.administeringBody?.trim();
   if (!body) return null;
-  if (NOT_AN_APPLYABLE_BODY.test(body)) return null;
+  if (!namesAnApplyableBody(body)) return null;
   const share = x.administeringBodyShare;
   // A NULL share is not neutral here, and this is the one place this file
   // departs from the repo's "a gap in our data is never evidence against"

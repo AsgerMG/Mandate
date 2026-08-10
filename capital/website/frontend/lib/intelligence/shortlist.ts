@@ -26,7 +26,7 @@ import { instrumentServesCapital, instrumentServesCountry } from "./capitalPrefe
 // four places below, which is why a harness could measure the lexical ranker
 // and report about it in the embedding ranker's words. See semantic.ts.
 import { semanticSeparation, rankerUsed } from "./semantic";
-import { nameableBody, withDoor } from "./rowIdentity";
+import { nameableBody } from "./rowIdentity";
 import { doorLabel } from "./doorLabel";
 import { TICKET_BANDS, bandFloorEur } from "./types";
 import type { EligibilityAnswers } from "./types";
@@ -36,7 +36,7 @@ import { EXCLUSION_RULES } from "./rules";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit, sectorFitScorer } from "./fit";
 import { blendPoolScores, POOL_BLEND } from "./poolBlend";
-import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
+import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
 import { recordFacts, recordPeerBranch, recordScoreSeats, recordStage } from "./tableTrace";
@@ -2877,6 +2877,39 @@ export function applyProfileSignal(
  * literal "SATR ..." auto-prettified pattern gets swapped.
  */
 export function displayInstitutionName(row: InstrumentRow): string {
+  return nameDoorFor(row, displayInstitutionNameRaw(row));
+}
+
+/**
+ * ONE LAST QUESTION, ASKED OF WHATEVER NAME CAME OUT, and the reason it is here
+ * rather than inside the branch that seemed to need it.
+ *
+ * Twelve recorded briefs were replayed (wsCX). Two of them -- SMART Photonics
+ * and bunq, both Dutch -- published `Ministerie van Economische Zaken en
+ * Klimaat` as an institution. That is a case the ORIGINAL predicate could see
+ * perfectly well, and it shipped anyway, because the rename lived behind
+ * `row.administeringBody &&`: these rows carry the ministry as the INSTRUMENT'S
+ * OWN NAME with no administering body at all, so the guarded branch was never
+ * entered and the unguarded fallback returned the ministry untouched.
+ *
+ * A rule applied on one path out of three is a rule with two holes in it. So it
+ * is applied to the ANSWER instead of to one of the inputs: whatever name the
+ * rules below produce, if it is not a body a founder can approach and this
+ * scheme's register names one that is, the row is published via that body.
+ *
+ * When the register names nobody the name stands as it is. That is deliberate:
+ * the row is still real money and dropping it would be the wrongly-withheld
+ * fund this product treats as worse than a wrongly-shown one, so the honest
+ * outcome is a FUND-7 violation on the scoreboard for someone to fix in the
+ * data, not a row quietly deleted from a founder's brief.
+ */
+function nameDoorFor(row: InstrumentRow, name: string): string {
+  if (namesAnApplyableBody(name)) return name;
+  const operator = (row.schemeOperators ?? []).find((o) => namesAnApplyableBody(o));
+  return operator ? withDoor(name, operator) : name;
+}
+
+function displayInstitutionNameRaw(row: InstrumentRow): string {
   // A government department notifies a state-aid regime; it does not take
   // applications. Splitting the rollups surfaced these as instrument names,
   // which reads as "go and ask the Ministry of Finance for a grant" — a
@@ -2884,16 +2917,39 @@ export function displayInstitutionName(row: InstrumentRow): string {
   // worth publishing, so it renders by what it IS rather than by who
   // notified it. Same definition the brief check uses, so a row can never
   // pass one and fail the other.
-  if (row.administeringBody && NOT_AN_APPLYABLE_BODY.test(row.administeringBody)) {
-    // Name the SCHEME, not the category. "National state aid (R&D)" told a
-    // founder nothing they could act on and did not match the link beside it,
-    // which points at one specific notified scheme. The row now says which
-    // scheme that is; the operators who run it render underneath.
+  if (row.administeringBody && !namesAnApplyableBody(row.administeringBody)) {
+    // ── Name the scheme, and NAME THE DOOR BESIDE IT ──────────────────────
+    // This branch used to return the scheme code and nothing else, and one
+    // line of the render (`operatorsOtherThan`) was gated on the name
+    // CONTAINING that code, so the bodies who actually disburse only ever
+    // reached a founder whose row had been reduced to "DE R&D state aid
+    // scheme SA.104856". A German brief rendered in a browser (wsCX) never
+    // took this branch at all -- `Bundesministerium ...` is a compound and the
+    // old start-anchored predicate could not see it -- so those rows fell to
+    // the bare-title fallback below and published the regulation's own title
+    // with the ministry's file reference on the end: "... [BMWK, IVA3]". A
+    // founder cannot contact a Richtlinie, and FUND-7 is what says so.
+    //
+    // So: the scheme, in the words the register uses for it, VIA the operator
+    // that grants under it. The title carries which scheme this is, which is
+    // what keeps two schemes of one ministry two rows; the operator carries
+    // somewhere to go, which is what FUND-7 asks for. The scheme-code form
+    // survives only for whole-country SATR rollups, whose auto-generated
+    // "SATR De Rnd" title is not a title at all.
+    const title = stripIssuerAnnotation(row.instrument);
     const kind = /\bequity\b/i.test(row.instrument) ? "equity" : "R&D";
     const country = row.country && row.country !== "EU" ? `${row.country} ` : "";
-    return row.schemeCode
-      ? `${country}${kind} state aid scheme ${row.schemeCode}`
-      : `National state aid (${kind})`;
+    const what = title.startsWith("SATR ")
+      ? (row.schemeCode
+        ? `${country}${kind} state aid scheme ${row.schemeCode}`
+        : `National state aid (${kind})`)
+      : title;
+    // `schemeOperators` is ordered by volume, so the first one this rule can
+    // name is the busiest door the register actually recorded granting under
+    // this scheme. An operator that is itself a department is skipped by the
+    // same predicate, never renamed around.
+    const operator = (row.schemeOperators ?? []).find((o) => namesAnApplyableBody(o));
+    return operator ? withDoor(what, operator) : what;
   }
   if (row.administeringBody && row.instrument.startsWith("SATR ")) {
     // Only when that body really is the instrument. administeringBody is a
@@ -2912,7 +2968,10 @@ export function displayInstitutionName(row: InstrumentRow): string {
   // label a founder already sees when their country has no SATR leaf at all.
   const kind = /\bequity\b/i.test(row.instrument) ? "equity" : "R&D";
   if (row.instrument.startsWith("SATR ")) return `National state aid (${kind})`;
-  return row.instrument;
+  // The register annotates a scheme's title with the unit that issued it --
+  // "... [BMWK, IVA3]", "... [BY]", "... [ENIN]" -- and that annotation is
+  // about the document, never part of a name. 69 publishable rows carry one.
+  return stripIssuerAnnotation(row.instrument);
 }
 
 // Short, founder-facing labels for the GBER articles a state-aid instrument

@@ -24,6 +24,13 @@ import { WATCH_ONLY_COPY } from "../lib/intelligence/watchOnly";
 // what we measure are one artifact. Each violation carries the rule id
 // declared in contracts/, so a regression is named rather than described.
 import { checkBrief } from "../lib/intelligence/briefChecks";
+// SOP-2 asks whether the closing pitch has leaked into the analysis paragraph.
+// `plug` is optional and NEITHER caller passed it, so `plug && ...` short-
+// circuited on every run this repo has ever done: a hard rule whose check had
+// never once evaluated its own predicate. It is a parameter rather than an
+// import so the check cannot pass by comparing the string to itself; that is a
+// reason to PASS it, not a reason to omit it.
+import { STATE_OF_PLAY_OFFER } from "../lib/intelligence/types";
 
 interface Institution {
   institution?: string; country?: string; verdict?: string; supportType?: string;
@@ -112,7 +119,7 @@ function score(r: Row): Scored {
 
   // Contract violations first, by rule id: these are the ones a PM can look
   // up in contracts/ and change without touching TypeScript.
-  for (const cv of checkBrief(rep as never)) defects.push(cv.ruleId);
+  for (const cv of checkBrief(rep as never, STATE_OF_PLAY_OFFER)) defects.push(cv.ruleId);
 
   // Ordered by how badly each one hurts a founder reading the brief.
   if (r.error) defects.push("FAILED");
