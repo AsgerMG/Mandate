@@ -23,7 +23,7 @@ import {
   type ProgressEvent,
 } from "@/lib/intelligence/types";
 
-import { CapitalSelect, InfoDot, MultiChips } from "./panelControls";
+import { CapitalSelect, CompactMultiSelect, InfoDot } from "./panelControls";
 import { regionOptions } from "./regions.generated";
 import { ORGANISATION_TYPE_ARM, prefillOrganisationType } from "./organisationType";
 import { toIso2 } from "./countryCodes";
@@ -553,7 +553,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   const fieldLabel = "mb-1.5 flex items-center font-semibold";
 
   return (
-    <section className="print:p-0">
+    <section className="mx-auto max-w-3xl print:max-w-none print:p-0">
       <div className="print:hidden text-[var(--foreground)]">
         {/* The pitch belongs on the way in, not in the middle. Past screen 1
             the founder has already bought the premise; repeating the headline
@@ -585,7 +585,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                 placeholder="e.g. Vyoma" className={inputCls} />
             </label>
 
-            <div className="grid gap-5 sm:grid-cols-[1fr_13rem]">
+            <div className="space-y-5">
               {/* ── The one question worth more than the other eight ──────────
                   This was a single-line input labelled "What you do (one line)",
                   optional, and the ranker treated anything under
@@ -639,7 +639,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                   label leaves the caption ambiguous, so clicking "Incorporated
                   in" can focus the region control and a screen reader announces
                   the wrong question. */}
-              <div className="space-y-4">
+              <div className="grid gap-5 sm:grid-cols-2">
               <label className="block text-sm">
                 <span className={fieldLabel}>
                   Incorporated in
@@ -714,11 +714,19 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                 interrogation and is where founders leave. ── */}
 
             <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Sector
-              </span>
-              <Chips options={[...SECTOR_OPTIONS]} value={elig.sector}
-                onPick={(v) => setElig((p) => ({ ...p, sector: v }))} />
+              <label>
+                <span className="mb-1.5 block font-semibold">Sector</span>
+                <select
+                  value={elig.sector ?? ""}
+                  onChange={(e) => setElig((p) => ({ ...p, sector: e.target.value || undefined }))}
+                  className={inputCls + (elig.sector ? "" : " text-[var(--muted-foreground)]")}
+                >
+                  <option value="">Select the closest sector…</option>
+                  {SECTOR_OPTIONS.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
+                </select>
+              </label>
             </div>
 
             {/* The single most decisive question the intake used to omit: 585
@@ -731,13 +739,17 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
               <span className="mb-2 flex items-center font-semibold">
                 What would the money pay for?
               </span>
-              <MultiChips options={[...USE_OF_FUNDS_OPTIONS]} value={elig.useOfFunds ?? []}
+              <CompactMultiSelect
+                options={USE_OF_FUNDS_OPTIONS}
+                value={elig.useOfFunds ?? []}
+                placeholder="Select all relevant uses…"
                 onToggle={(v) => setElig((p) => ({
                   ...p,
                   useOfFunds: (p.useOfFunds ?? []).includes(v)
                     ? (p.useOfFunds ?? []).filter((x) => x !== v)
                     : [...(p.useOfFunds ?? []), v],
-                }))} />
+                }))}
+              />
             </div>
 
             {/* The single most decisive question the intake used to omit: 585
@@ -750,15 +762,28 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
 
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="text-sm">
-                <span className="mb-2 flex items-center font-semibold">
-                  How much are you looking for?
+                <label>
+                  <span className="mb-1.5 block font-semibold">
+                    How much are you looking for?
                   {/* contract: the two figures are band edges from TICKET_BANDS
                       (lib/intelligence/types.ts — b15m_50m and b100k_500k), the
                       vocabulary contract this control is built from, not claims
                       about the corpus. They move when a band moves. */}
-                </span>
-                <Chips options={[...TICKET_BANDS]} value={elig.ticketBand}
-                  onPick={(v) => setElig((p) => ({ ...p, ticketBand: v as EligibilityAnswers["ticketBand"] }))} />
+                  </span>
+                  <select
+                    value={elig.ticketBand ?? ""}
+                    onChange={(e) => setElig((p) => ({
+                      ...p,
+                      ticketBand: (e.target.value || undefined) as EligibilityAnswers["ticketBand"],
+                    }))}
+                    className={inputCls + (elig.ticketBand ? "" : " text-[var(--muted-foreground)]")}
+                  >
+                    <option value="">Select an amount…</option>
+                    {TICKET_BANDS.map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
+                  </select>
+                </label>
               </div>
               <div className="text-sm">
                 <span className="mb-2 flex items-center font-semibold">
@@ -769,7 +794,11 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
               </div>
             </div>
 
-            <div className="grid gap-5 sm:grid-cols-2">
+            <details className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]">
+              <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-[var(--foreground)]">
+                Organisation details <span className="font-normal text-[var(--muted-foreground)]">(optional)</span>
+              </summary>
+              <div className="grid gap-5 border-t border-[var(--border)] px-4 py-4 sm:grid-cols-2">
               <div className="text-sm">
                 <span className="mb-2 block font-semibold">Team size</span>
                 <Chips options={[
@@ -817,19 +846,27 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                   )}
                 </div>
               )}
-            </div>
+              </div>
+            </details>
 
             <div className="text-sm">
-              <span className="mb-2 flex items-center font-semibold">
-                Where is the product today?
-              </span>
-              <Chips options={[
-                { value: "research", label: "Research / concept" },
-                { value: "prototype", label: "Working prototype" },
-                { value: "pilot_customers", label: "Pilots with customers" },
-                { value: "scaling_revenue", label: "Scaling with revenue" },
-              ]} value={elig.developmentStage}
-                onPick={(v) => setElig((p) => ({ ...p, developmentStage: v }))} />
+              <label>
+                <span className="mb-1.5 block font-semibold">Where is the product today?</span>
+                <select
+                  value={elig.developmentStage ?? ""}
+                  onChange={(e) => setElig((p) => ({
+                    ...p,
+                    developmentStage: e.target.value || undefined,
+                  }))}
+                  className={inputCls + (elig.developmentStage ? "" : " text-[var(--muted-foreground)]")}
+                >
+                  <option value="">Select the current stage…</option>
+                  <option value="research">Research / concept</option>
+                  <option value="prototype">Working prototype</option>
+                  <option value="pilot_customers">Pilots with customers</option>
+                  <option value="scaling_revenue">Scaling with revenue</option>
+                </select>
+              </label>
             </div>
 
             

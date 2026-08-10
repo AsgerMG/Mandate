@@ -103,6 +103,77 @@ export function CapitalSelect({
   );
 }
 
+export function CompactMultiSelect({
+  options,
+  value,
+  onToggle,
+  placeholder,
+}: {
+  options: readonly { value: string; label: string }[];
+  value: string[];
+  onToggle: (v: string) => void;
+  placeholder: string;
+}) {
+  const [open, setOpen] = useState(false);
+  const labels = options.filter((o) => value.includes(o.value)).map((o) => o.label);
+  const summary = labels.length === 0
+    ? placeholder
+    : labels.length <= 2
+      ? labels.join(", ")
+      : `${labels.slice(0, 2).join(", ")} +${labels.length - 2}`;
+
+  return (
+    <div className="relative">
+      {open && (
+        <button
+          type="button"
+          aria-hidden
+          tabIndex={-1}
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-10 cursor-default"
+        />
+      )}
+      <button
+        type="button"
+        onClick={() => setOpen((current) => !current)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        className="flex min-h-11 w-full items-center justify-between rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] px-4 py-2.5 text-left text-[15px] text-[var(--foreground)] outline-none transition-colors focus:border-[var(--primary)]"
+      >
+        <span className={"truncate " + (labels.length ? "" : "text-[var(--muted-foreground)]")}>
+          {summary}
+        </span>
+        <span className="ml-2 shrink-0 text-[var(--muted-foreground)]">▾</span>
+      </button>
+      {open && (
+        <div role="listbox" className="absolute z-20 mt-1 w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] p-1 shadow-lg">
+          {options.map((option) => {
+            const selected = value.includes(option.value);
+            return (
+              <button
+                key={option.value}
+                type="button"
+                role="option"
+                aria-selected={selected}
+                onClick={() => onToggle(option.value)}
+                className="flex w-full items-center gap-2.5 rounded-[var(--radius)] px-3 py-2.5 text-left text-sm transition-colors hover:bg-[var(--muted)]"
+              >
+                <span className={
+                  "flex h-4 w-4 shrink-0 items-center justify-center rounded border text-[10px] " +
+                  (selected ? "border-[var(--primary)] bg-[var(--primary)] text-[var(--paper)]" : "border-[var(--border)]")
+                }>
+                  {selected ? "✓" : ""}
+                </span>
+                {option.label}
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** Multi-select chips. Used for the exclusion checklist, where seeing every
  *  option at once matters more than saving space: a founder should be able to
  *  confirm at a glance that none of them apply. */
