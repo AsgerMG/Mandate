@@ -212,6 +212,25 @@ export interface InstrumentRow {
   aidIntensityN?: number;
   /** One measured line describing what this fund is. */
   descriptor?: string;
+  /** WHAT THE SCHEME SAYS IT FUNDS, in its own words, budgeted.
+   *
+   *  `descriptor` is OURS: capital type, region, what recipients do, composed
+   *  from measured columns. This is the granting body's own sentence off its
+   *  own page, and the two answer different questions — nine Horizon clusters
+   *  produce nine near-identical descriptors and nine different descriptions.
+   *
+   *  Set from `fundsSentence(leaf.description)`, never raw: the median column
+   *  is 737 characters and pasting it onto a row would more than double any
+   *  prompt that renders one. See ./schemeText for the budget and the sweep
+   *  behind it.
+   *
+   *  Safe to read on the request path by the argument in corpus.ts: it is a
+   *  statement of SCOPE with no beneficiary, award or project title in it, and
+   *  that is tested across the whole recall set rather than asserted.
+   *
+   *  MODEL-FACING, not founder-facing. Nothing renders it to a page; it exists
+   *  so a model choosing between two siblings can read what each one is for. */
+  description?: string;
   /** The agency or regime above this programme, when there is one. */
   familyName?: string;
   /** Cited requirements no comparator can decide — what the assessor weighs.
