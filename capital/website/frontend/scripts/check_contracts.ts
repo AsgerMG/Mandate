@@ -22,6 +22,8 @@
 import { loadContracts, briefContracts } from "../lib/intelligence/contracts";
 import { BRIEF_LIMITS, CHECK_RULE_IDS } from "../lib/intelligence/briefChecks";
 import { QUESTION_RULE_IDS } from "../lib/intelligence/questionChecks";
+import { SELECTION_RULE_IDS } from "../lib/intelligence/selectionChecks";
+import { UNENFORCED_RULES } from "../lib/intelligence/unenforcedRules";
 import { REPORT_SCHEMA_FIELDS, EVIDENCE_BLOCKS } from "../lib/intelligence/types";
 
 interface Problem { axis: string; detail: string; }
@@ -76,21 +78,63 @@ function main() {
 
   // No orphan checks: a check enforcing a rule no contract declares is
   // enforcing something nobody agreed to.
-  for (const id of [...CHECK_RULE_IDS, ...QUESTION_RULE_IDS]) {
+  const enforced = new Set<string>([
+    ...CHECK_RULE_IDS, ...QUESTION_RULE_IDS, ...SELECTION_RULE_IDS,
+  ]);
+  for (const id of enforced) {
     if (!declaredRules.has(id)) {
-      problems.push({ axis: "orphan-check", detail: `briefChecks enforces ${id}, which no contract declares` });
+      problems.push({ axis: "orphan-check", detail: `a check enforces ${id}, which no contract declares` });
     }
   }
 
-  // No dead spec: a hard rule with no enforcing check is a rule that will
-  // rot, which is how the previous instructions file died.
-  const enforced = new Set<string>([...CHECK_RULE_IDS, ...QUESTION_RULE_IDS]);
+  // ── A rule id means one rule ────────────────────────────────────────────
+  // `declaredRules` is a Set, so a duplicate id was silently absorbed and the
+  // success line quietly under-counted. One id was in fact declared twice, in
+  // one file, on two different rules -- and if either were ever promoted to a
+  // checked rule, one check would satisfy both.
+  const seenIds = new Map<string, string[]>();
   for (const c of contracts) {
-    for (const line of c.body.split("\n")) {
-      const m = line.match(/^-\s+([A-Z]+-\d+)\s+\(hard\)/);
-      if (m && !enforced.has(m[1])) {
-        problems.push({ axis: "unenforced", detail: `${c.file}: ${m[1]} is (hard) but nothing checks it` });
+    for (const r of c.ruleIds) seenIds.set(r, [...(seenIds.get(r) ?? []), c.file]);
+  }
+  for (const [id, files] of seenIds) {
+    if (files.length > 1) {
+      problems.push({ axis: "rule-id", detail: `${id} is declared ${files.length} times (${[...new Set(files)].join(", ")})` });
+    }
+  }
+
+  // ── EVERY RULE IS ENFORCED OR DECLARED UNENFORCED. No third state. ──────
+  // This loop used to read `/^-\s+([A-Z]+-\d+)\s+\(hard\)/` and so was blind
+  // twice over to the strongest thing a contract can say: a Banned rule
+  // presents `B1` where the pattern demands a digit, and carries no `(hard)`
+  // marker at all. All fifteen Banned rules were therefore invisible to the
+  // check that exists to find unenforced rules -- while three other regexes in
+  // this same file already used the correct `([A-Z]+-B?\d+)`.
+  //
+  // It also exempted every `(judged)` and `(soft)` rule, on the stated grounds
+  // that a model reading the contract scores them. There is no such model. So
+  // the exemption is gone and the register in unenforcedRules.ts takes its
+  // place: a rule in neither the checks nor the register fails the build, which
+  // forces the decision at the moment a rule is written.
+  for (const c of contracts) {
+    for (const r of c.ruleIds) {
+      const isEnforced = enforced.has(r);
+      const isDeclared = Boolean(UNENFORCED_RULES[r]);
+      if (!isEnforced && !isDeclared) {
+        problems.push({ axis: "unenforced", detail:
+          `${c.file}: ${r} is enforced by nothing and is not declared in unenforcedRules.ts. ` +
+          `State the predicate that would decide it and why it does not run.` });
       }
+      if (isEnforced && isDeclared) {
+        problems.push({ axis: "unenforced", detail:
+          `${c.file}: ${r} is both enforced and declared unenforced. Remove it from the register.` });
+      }
+    }
+  }
+  for (const id of Object.keys(UNENFORCED_RULES)) {
+    if (!declaredRules.has(id)) {
+      problems.push({ axis: "unenforced", detail:
+        `unenforcedRules.ts declares ${id}, which no contract has. A register entry for a rule ` +
+        `that no longer exists hides the next one.` });
     }
   }
 
@@ -187,9 +231,14 @@ function main() {
     console.error("");
     process.exit(1);
   }
+  const declaredUnenforced = Object.keys(UNENFORCED_RULES).length;
+  const byReason = new Map<string, number>();
+  for (const r of Object.values(UNENFORCED_RULES)) byReason.set(r.why, (byReason.get(r.why) ?? 0) + 1);
   console.log(
-    `check_contracts: ok — ${contracts.length} contracts, ${declaredRules.size} rules, ` +
-    `${CHECK_RULE_IDS.length + QUESTION_RULE_IDS.length} enforced, ${REPORT_SCHEMA_FIELDS.length} report fields governed`);
+    `check_contracts: ok — ${contracts.length} contracts, ${seenIds.size} rules, ` +
+    `${enforced.size} enforced, ${declaredUnenforced} declared unenforced ` +
+    `(${[...byReason].sort().map(([k, n]) => `${k} ${n}`).join(", ")}), ` +
+    `${REPORT_SCHEMA_FIELDS.length} report fields governed`);
 }
 
 main();

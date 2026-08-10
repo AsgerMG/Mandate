@@ -13,9 +13,11 @@
 // broke when they diverged — because nothing checked.
 //
 // scripts/check_contracts.ts is what makes this arrangement hold: it fails the
-// build when a contract names a schema field that does not exist, when a hard
-// rule has no enforcing check, or when a check enforces a rule no contract
-// declares.
+// build when a contract names a schema field that does not exist, when a check
+// enforces a rule no contract declares, when a rule id is declared twice, or
+// when ANY rule -- hard, soft, judged or Banned -- is neither enforced by a
+// named check nor declared in `unenforcedRules.ts` with the predicate that
+// would decide it.
 import { readFileSync, readdirSync } from "fs";
 import path from "path";
 
@@ -84,7 +86,17 @@ export function loadContracts(): Contract[] {
       .filter((f) => f.endsWith(".md"))
       .sort()
       .map((f) => parseContract(path.join(dir, f), readFileSync(path.join(root, dir, f), "utf8")));
-  cache = [...read("_shared"), ...read("brief"), ...read("round2")];
+  // Every directory under contracts/, discovered rather than listed. The list
+  // was `_shared`, `brief`, `round2` -- and `selection/` existed the whole
+  // time, holding six rules, two of them (hard), which no loader read and
+  // therefore no check could see. A registry of directories is the same defect
+  // class as a register of banned phrases: it only ever covers what someone
+  // remembered to add.
+  cache = readdirSync(root, { withFileTypes: true })
+    .filter((d) => d.isDirectory())
+    .map((d) => d.name)
+    .sort()
+    .flatMap(read);
   return cache;
 }
 
@@ -100,9 +112,22 @@ export function roundContracts(): Contract[] {
 /**
  * The writer's system prompt: who it is, then every contract in full.
  *
- * Deliberately the whole contract text rather than a summary. The contracts
- * are also what the quality judge reads, and a prompt built from a paraphrase
- * would let the two drift — which is the exact failure this replaced.
+ * Deliberately the whole contract text rather than a summary, so the rules the
+ * writer is held to are the rules it was given.
+ *
+ * ── A claim that was here and was FALSE ───────────────────────────────────
+ * This docstring used to say "the contracts are also what the quality judge
+ * reads". There is no quality judge. Nothing in this repo reads a contract and
+ * scores a rule: the only consumers of `loadContracts()` are
+ * `scripts/check_contracts.ts`, the provenance labeller, and the line below.
+ * `openJudge.ts` judges a founder's prose against a fund's verbatim
+ * requirement and never sees a rule id.
+ *
+ * That sentence was load-bearing. `check_contracts.ts` exempted every
+ * `(judged)` and `(soft)` rule from its unenforced-rule loop on exactly this
+ * ground, so 46 rules were addressed to a reader that does not exist. The
+ * exemption is gone; see `unenforcedRules.ts`, which now declares each of them
+ * and what checking it would take.
  */
 export function assembleWriterInstructions(): string {
   // Shared rules plus the brief sections only. The round-2 contracts govern a

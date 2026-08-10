@@ -231,23 +231,102 @@ export function checkBrief(
   if (!String(report.caveats ?? "").trim()) {
     v.push({ ruleId: "BRIEF-2", detail: "no caveat" });
   }
-  const allText = [
-    ...bullets, report.positioning, sop, report.caveats,
-    ...institutions.flatMap((r) => [r.whyEligible, r.nextStep, r.blocker, r.institution, r.ticket]),
-  ].filter(Boolean).join(" \n ");
-  if (/—/.test(allText)) v.push({ ruleId: "BRIEF-3", detail: "em-dash in founder-facing text" });
+  // ── Everything a founder reads, not a list of nine fields ───────────────
+  // This was a hand-written union of nine fields. The report renders far more
+  // than nine: the support type, the legal basis, the scheme operators, the
+  // fund's own registered purpose, the judgement criteria, the structuring
+  // notes, the application route, the link label, the comparable firms and the
+  // withheld notice are all on the page and none of them was ever scanned. A
+  // union maintained by hand covers what someone remembered; `readerText`
+  // covers what the report CONTAINS, so a field added tomorrow is inside these
+  // rules with no edit here.
+  const allText = readerText(report).join(" \n ");
+  for (const s of readerText(report)) {
+    if (/—/.test(s)) {
+      v.push({ ruleId: "BRIEF-3", detail: `em-dash in founder-facing text: "${s.slice(0, 60)}"` });
+      break;
+    }
+  }
   for (const { pattern, what } of BACKEND_LEAKAGE) {
     if (pattern.test(allText)) v.push({ ruleId: "BRIEF-4", detail: `internal machinery in reader text (${what})` });
   }
+  // VOI-B1 is the shared contract's statement of the same property, and it is
+  // where the rule is written to apply EVERYWHERE rather than to the four
+  // brief sections. BRIEF-4 above is scoped to the document; this is the one
+  // that has to hold on a field nobody thought of, which is why it runs over
+  // the same walk rather than over a list.
+  for (const s of readerText(report)) {
+    if (MACHINERY_VOCABULARY.test(s)) {
+      v.push({ ruleId: "VOI-B1", detail: `the product describing its own machinery to the reader: "${s.slice(0, 70)}"` });
+      break;
+    }
+  }
+
+  // ── FUND-B1: the table's own facts, restated in prose ───────────────────
+  // The support type, the ticket and the comparable firms RENDER as columns.
+  // Repeating them in a sentence spends the reader's attention on something
+  // their eye has already crossed, and it is decidable: the exact string the
+  // column shows either appears in the prose or it does not.
+  const prose = [...bullets, report.positioning, sop].filter(Boolean).map(String);
+  for (const r of institutions) {
+    for (const [what, value] of [
+      ["ticket size", r.ticket],
+      ["support type", r.supportType],
+      ...(r.comparableFirms ?? []).map((f) => ["a comparable firm", f.name] as const),
+    ] as const) {
+      const needle = String(value ?? "").trim();
+      // Short strings are words, not facts: a two-character ticket or a
+      // one-word support type would match ordinary prose. The rule is about
+      // restating a rendered VALUE, so it needs a value distinctive enough to
+      // be one.
+      if (needle.length < 6) continue;
+      if (prose.some((p) => p.includes(needle))) {
+        v.push({ ruleId: "FUND-B1", detail: `${what} "${needle}" is restated in prose and already renders in the table` });
+      }
+    }
+  }
 
   return v;
+}
+
+/** Vocabulary that is only ever the product talking about itself. Distinct
+ *  from BACKEND_LEAKAGE, which catches specific emissions; this catches the
+ *  register. Both are phrase-shaped so ordinary prose cannot trip them. */
+const MACHINERY_VOCABULARY =
+  /\b(?:encoded (?:gate|rule|filter)s?|gate coverage|eligibility screen coverage|verification level|instrument id|our corpus|the corpus (?:holds|says)|rule count|coverage ratio)\b/i;
+
+/** Keys whose values are machine identifiers rather than prose a founder
+ *  reads. Everything else in the report is on the page in some form.
+ *
+ *  This is a closed set because the report's SHAPE is closed -- these are the
+ *  keys the renderer resolves into hrefs and lookups rather than printing. A
+ *  key added tomorrow is prose until someone says otherwise, which is the safe
+ *  default: the cost of scanning an identifier is a false positive someone
+ *  reads, and the cost of missing a field is a rule that silently stops
+ *  applying to it. */
+const NON_READER_KEYS = new Set([
+  "url", "link", "channel", "instrumentId", "generatedAt", "provenance",
+  "schemeCode", "id", "kind", "verdict", "accessMode",
+]);
+
+/** Every string in the report a founder can read, whatever nesting it is at. */
+export function readerText(value: unknown, key = ""): string[] {
+  if (typeof value === "string") return NON_READER_KEYS.has(key) ? [] : [value];
+  if (Array.isArray(value)) return value.flatMap((x) => readerText(x, key));
+  if (value && typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>)
+      .filter(([k]) => !NON_READER_KEYS.has(k))
+      .flatMap(([k, x]) => readerText(x, k));
+  }
+  return [];
 }
 
 /** Every rule id this module can emit — checked against the contracts so a
  *  rule can never exist in only one of the two places. */
 export const CHECK_RULE_IDS = [
   "BL-1", "BL-2",
-  "FUND-1", "FUND-2", "FUND-3", "FUND-4", "FUND-5", "FUND-6", "FUND-7",
+  "FUND-1", "FUND-2", "FUND-3", "FUND-4", "FUND-5", "FUND-6", "FUND-7", "FUND-B1",
   "POS-1", "SOP-1", "SOP-2",
   "BRIEF-1", "BRIEF-2", "BRIEF-3", "BRIEF-4",
+  "VOI-B1",
 ] as const;
