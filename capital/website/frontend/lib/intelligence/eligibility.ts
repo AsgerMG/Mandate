@@ -283,7 +283,11 @@ function evaluateGenericGates(records: TermRecord[], e?: EligibilityAnswers): El
       const status: EligibilityCheck["status"] =
         result === null ? "unknown" : hard ? (result ? "met" : "not_met") : (result ? "likely_met" : "likely_not_met");
       out.push({
-        check: `${inst.name} — ${gate.requirement}`,
+        // Joined with a colon, not an em-dash. The house rule says no em-dash
+        // anywhere a founder reads, and this string RENDERS: every rule in the
+        // eligibility screen carried one. BRIEF-3 could not see it because the
+        // check scanned nine named fields and this was not among them.
+        check: `${inst.name}: ${gate.requirement}`,
         instrumentId: inst.id,
         status,
         finding: gate.requirement,

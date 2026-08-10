@@ -51,7 +51,7 @@ requireCredentials("check_memo_table", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 /** Rules whose predicate reads a field only the writer fills. They are named
  *  rather than skipped silently. */
-const WRITER_RULES = new Set(["FUND-4", "FUND-5", "FUND-6", "BL-1", "BL-2", "BRIEF-1", "BRIEF-2", "SOP-1", "SOP-2", "POS-1"]);
+const WRITER_RULES = new Set(["FUND-4", "FUND-5", "FUND-6", "BL-1", "BL-2", "BL-B1", "BRIEF-1", "BRIEF-2", "SOP-1", "SOP-2", "POS-1"]);
 
 async function main() {
   const {
@@ -139,7 +139,9 @@ async function main() {
       .slice(0, BRIEF_LIMITS.institutionsMax);
     const noDoors = accessible.length === 0 ? explainNoDoors(hydrated, eligibility) : undefined;
 
-    const violations = checkBrief({ institutions, noDoors } as never)
+    const violations = checkBrief(
+      { institutions, noDoors } as never, undefined,
+      buildRowsForCheck(toWriter.map((x) => x.row), [], dbPeers).map((r) => r.institution))
       .filter((v) => {
         if (WRITER_RULES.has(v.ruleId)) { skipped.add(v.ruleId); return false; }
         return true;

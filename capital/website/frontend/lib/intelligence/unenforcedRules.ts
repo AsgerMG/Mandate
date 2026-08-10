@@ -93,7 +93,6 @@ export const UNENFORCED_RULES: Record<string, UnenforcedRule> = {
   "BL-5": { why: "judgement", predicate: "the middle bullets name which published fund is the right first move" },
   "BL-6": { why: "judgement", predicate: "the final bullet states the commercial payoff concretely" },
   "BL-7": { why: "judgement", predicate: "each bullet changes a decision rather than restating the table" },
-  "BL-B1": { why: "no-artifact", predicate: "no fund named in a bullet is absent from the published table; needs fund-name recognition over prose, which the corpus cannot currently supply without a model" },
   "BL-B2": { why: "judgement", predicate: "no comparative urgency about other companies" },
 
   // ── Funds.
