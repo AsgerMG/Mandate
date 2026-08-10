@@ -214,6 +214,44 @@ def test_classify_tool_is_strict_so_the_enum_is_actually_enforced():
     assert CLASSIFY_TOOL["input_schema"]["additionalProperties"] is False
 
 
+# --- the maxItems regression -----------------------------------------------
+# Shipped `strict: True` alongside `maxItems: 3` on both arrays on 2026-08-07.
+# That combination 400s on every real call ("tools.0.custom: For 'array' type,
+# property 'maxItems' is not supported") — invisible to every test above
+# because none of them make a real API call. Confirmed live against
+# production's classify model 2026-08-10: `strict` + `minItems` alone is
+# accepted; `maxItems` under `strict` is not. The three-day gap this caused
+# (every classify_pending call failing, zero documents tagged) is why this
+# gets its own tests rather than trusting the fix by inspection.
+
+
+def test_classify_tool_schema_has_no_maxitems_because_strict_rejects_it():
+    """The one keyword that must NOT be in this schema. Regression test for
+    the exact production incident above — this assertion is the guard against
+    someone re-adding `maxItems` for symmetry with `minItems` and 400ing the
+    whole pass again."""
+    from etl.enrichment.classification import CLASSIFY_TOOL
+
+    for field in ("policy_areas", "sectors"):
+        assert "maxItems" not in CLASSIFY_TOOL["input_schema"]["properties"][field]
+
+
+def test_parse_classify_response_caps_at_three_since_the_schema_no_longer_can():
+    """With `maxItems` gone, cardinality is prompt guidance only — the model
+    is free to return more than 3 valid, in-enum slugs. The parser must cap
+    it, or an over-generous model response flows straight into the DB."""
+    too_many_policy = ["ai", "data-protection", "platforms", "competition", "consumer"]
+    too_many_sectors = ["fintech", "healthtech", "adtech", "manufacturing"]
+    block = _tool_use_block(too_many_policy, too_many_sectors)
+
+    parsed = parse_classify_response([block])
+
+    assert len(parsed["policy_areas"]) == 3
+    assert len(parsed["sectors"]) == 3
+    assert parsed["policy_areas"] == too_many_policy[:3]
+    assert parsed["sectors"] == too_many_sectors[:3]
+
+
 def test_classify_pending_terminates_when_the_model_returns_a_bad_slug(db_session):
     """The reproduction, as a test: a document the model cannot classify is
     attempted ONCE and then left alone — not retried until the API cuts us

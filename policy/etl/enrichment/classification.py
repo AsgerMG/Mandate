@@ -51,6 +51,14 @@ CLASSIFY_TOOL = {
     # on that ONE document over 45 minutes on 2026-08-02, until Anthropic
     # returned 403). `strict` makes the enum an actual constraint, and requires
     # additionalProperties: false on every object in the schema.
+    #
+    # `maxItems` on an array is NOT supported under `strict` (confirmed live:
+    # "tools.0.custom: For 'array' type, property 'maxItems' is not supported"
+    # — a 400 on every call, found 2026-08-10 after this schema ran unexercised
+    # against the real API for three days). `minItems` is unaffected — this was
+    # verified with a live call before shipping this fix, not assumed from the
+    # one error message. The "1-3" / "0-3" cardinality is now prompt guidance
+    # only, backstopped by a slice in parse_classify_response.
     "strict": True,
     "input_schema": {
         "type": "object",
@@ -59,13 +67,11 @@ CLASSIFY_TOOL = {
             "policy_areas": {
                 "type": "array",
                 "minItems": 1,
-                "maxItems": 3,
                 "items": {"type": "string", "enum": _POLICY_AREA_SLUGS},
                 "description": "1-3 policy areas this document is most centrally about.",
             },
             "sectors": {
                 "type": "array",
-                "maxItems": 3,
                 "items": {"type": "string", "enum": _SECTOR_SLUGS},
                 "description": (
                     "0-3 industry sectors this document specifically targets or "
@@ -77,6 +83,8 @@ CLASSIFY_TOOL = {
         "required": ["policy_areas", "sectors"],
     },
 }
+
+_MAX_TAGS = 3
 
 CLASSIFY_SYSTEM = (
     "You classify EU/national tech-policy documents (legislation, press coverage, "
@@ -107,7 +115,11 @@ def parse_classify_response(content_blocks: list[Any]) -> dict[str, list[str]]:
     response. Filters against the known slugs defensively — with
     ``"strict": True`` on the tool the enum is enforced server-side, but this
     stays as the second line of defence, and callers must still cope with an
-    empty result (see classify_pending's made-progress guard)."""
+    empty result (see classify_pending's made-progress guard).
+
+    Also caps each list at ``_MAX_TAGS``: the schema cannot express "at most 3"
+    under ``strict`` (``maxItems`` on an array isn't supported there), so the
+    cardinality is prompt guidance only and this is the backstop."""
     for block in content_blocks:
         btype = block.get("type") if isinstance(block, dict) else getattr(block, "type", None)
         if btype != "tool_use":
@@ -115,8 +127,10 @@ def parse_classify_response(content_blocks: list[Any]) -> dict[str, list[str]]:
         payload = block.get("input") if isinstance(block, dict) else getattr(block, "input", {})
         payload = payload or {}
         return {
-            "policy_areas": [s for s in payload.get("policy_areas", []) if s in _POLICY_AREA_SLUGS],
-            "sectors": [s for s in payload.get("sectors", []) if s in _SECTOR_SLUGS],
+            "policy_areas": [
+                s for s in payload.get("policy_areas", []) if s in _POLICY_AREA_SLUGS
+            ][:_MAX_TAGS],
+            "sectors": [s for s in payload.get("sectors", []) if s in _SECTOR_SLUGS][:_MAX_TAGS],
         }
     return {"policy_areas": [], "sectors": []}
 
