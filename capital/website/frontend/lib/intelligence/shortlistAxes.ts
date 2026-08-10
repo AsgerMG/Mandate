@@ -66,6 +66,14 @@ export interface AxisFund {
   companyCount?: number;
   lastYear?: number | null;
   sectorMix?: Record<string, number> | null;
+  /** What the scheme says it FUNDS, in the granting body's own words, already
+   *  cut to the row budget by `fundsSentence()`. The one thing on a candidate
+   *  row that is about the fund's SUBJECT rather than its shape: nine Horizon
+   *  clusters differ on award median and on paraphrases of one participation
+   *  rule, and nothing on the row said which one is about food and which about
+   *  digital. Absent for the 15% of menu rows whose scheme page was never
+   *  fetched — an absent line, never a placeholder. */
+  funds?: string | null;
   /** intake field -> the distinct demands this fund's filter gates make on it. */
   gateSpecs?: Record<string, string>;
   gates?: string[];

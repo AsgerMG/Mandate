@@ -64,6 +64,13 @@ const CHECKS = [
   ["one env loader", ["npx", "tsx", "scripts/check_env_loader.ts"]],
   ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],
   ["payload budget", ["npx", "tsx", "scripts/check_payload_budget.ts"]],
+  // Next to the payload budget because they read the same two artifacts and
+  // ask opposite questions: that one asks whether the request carries too much,
+  // this one whether the FALLBACK carries too little. `check_hydration_parity`
+  // is the stronger version and runs far later, but it needs credentials and it
+  // compares published rows -- so a column that no ranker reads and every
+  // prompt does slips past it. Hermetic and static; costs milliseconds.
+  ["both stores select the same columns", ["npx", "tsx", "scripts/check_store_columns.ts"]],
   ["archetype regression", ["npx", "tsx", "scripts/check_archetypes.ts"]],
   // Immediately after it, and NOT instead of it: that one asks whether the
   // corpus holds funds for each profile, this one asks whether the MEMO -- a

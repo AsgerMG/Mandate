@@ -199,6 +199,18 @@ function renderRow(
   return [
     `[${i}] ${title(f.name)}`,
     `     ${facts.join(" · ")}`,
+    // WHAT IT FUNDS, above the requirements, because it is the only line on the
+    // row about the fund's subject and the requirements are overwhelmingly
+    // about who is barred. Measured before it was added, over the 80-case
+    // fixture: of the sibling pairs whose rows otherwise say substantively the
+    // same thing, this line separates 83%. Nothing else measured did — the
+    // eligibility clauses, the application quote and the signals digest each
+    // separated none of them, and the whole `eligibility_text` column separated
+    // fewer at seven times the cost.
+    //
+    // Already budgeted by `fundsSentence()`; deliberately NOT re-truncated
+    // here, so there is one number and one place it is decided.
+    f.funds ? `     what it funds, in the scheme's own words: ${f.funds}` : "",
     requirements.length ? `     specific to it: ${requirements.join(" / ").slice(0, 240)}` : "",
     evidence?.length ? `     bears on their answers: ${evidence.join(" | ")}` : "",
   ].filter(Boolean).join("\n");

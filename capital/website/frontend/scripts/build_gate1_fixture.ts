@@ -29,6 +29,7 @@ requireCredentials("build_gate1_fixture", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments, loadDbInstruments, hydrateGatesFor } from "../lib/intelligence/corpus";
 import { computeVerdict } from "../lib/intelligence/pipeline";
+import { fundsSentence } from "../lib/intelligence/schemeText";
 import { loadRecallSet } from "./recallSet";
 import { Client } from "pg";
 
@@ -106,6 +107,12 @@ async function main() {
           companyCount: inst?.companyCount ?? 0,
           lastYear: inst?.lastYear ?? null,
           sectorMix: inst?.sectorMix ?? null,
+          // What the scheme says it funds, in its own words, already cut to the
+          // row budget. Cut HERE rather than at render time so the fixture
+          // records the bytes the model was shown: a fixture that stores the
+          // whole column and truncates on the way out makes a prompt-budget
+          // change invisible in the file that is supposed to pin the prompt.
+          funds: fundsSentence(inst?.description),
           // What this fund's own FILTER gates DEMAND, per intake field. The
           // field name alone is not enough: `exclusionFlags` sits on 85% of
           // siblings and demands the identical thing on all of them, so a

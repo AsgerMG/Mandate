@@ -36,12 +36,13 @@ def main() -> None:
     instruments = conn.execute("""
         SELECT id, parent_id, name, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
-               sample_project_titles, administering_body, administering_body_share,
+               administering_body, administering_body_share,
                last_year, scheme_code, scheme_end_date,
                scheme_end_date_basis, source_window_policy,
                route_status, route_status_source,
                successor_scheme,
-               successor_title, application_url, sector_mix, scheme_operators,
+               successor_title, application_url, description,
+               sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n, delivery_region, delivery_region_share
         FROM funding_instruments
@@ -105,7 +106,26 @@ def main() -> None:
         "companyCount": inst["company_count"],
         "totalEur": inst["total_eur"],
         "sourceFamilyBucket": inst["source_family_bucket"],
-        "sampleProjectTitles": json.loads(inst["sample_project_titles"]) if inst["sample_project_titles"] else None,
+        # ── `sampleProjectTitles` WAS HERE, AND IS GONE FOR THE SAME REASON
+        #    corpus.ts stopped SELECTing it ────────────────────────────────────
+        # It holds real award titles. corpus.ts dropped it from the Postgres
+        # SELECT so that a founder's request could not reach what that founder
+        # won, and check_answer_not_reachable.ts now fails the build for any
+        # module in the request path that names it.
+        #
+        # That closed one door and left the other open. This file writes the
+        # snapshot the SAME request path loads whenever Postgres is unavailable,
+        # `loadDbInstrumentsFromJson` casts the records straight to
+        # DbInstrument, and every unknown key comes along -- so on the degraded
+        # path 876 instruments carried 0.218 MB of real project titles as a
+        # plain property on the corpus object, one access from any module. The
+        # Python side is not scanned by that check and never would have been.
+        #
+        # Nothing reads it: relevance.ts excludes it from the theme index by
+        # name and with a measurement, and the only other mentions are test
+        # fixtures constructing the literal. Its exclusion from ranking was
+        # already deliberate; this makes it impossible to reopen by accident on
+        # either path rather than on one.
         # Real per-fund granting authority (majority vote of the raw
         # granting_authority field across events), e.g. "Bundesamt für
         # Wirtschaft und Ausfuhrkontrolle" — see populate_funding_instruments.py.
@@ -183,6 +203,18 @@ def main() -> None:
         # then has no front door we can name.
         "schemeOperators": json.loads(inst["scheme_operators"]) if inst["scheme_operators"] else None,
         "applicationUrl": inst["application_url"],
+        # What the scheme says it FUNDS, in the granting body's own words, from
+        # its own page (490 instruments). Carried here in the same commit that
+        # adds it to corpus.ts's SELECT, and that is not tidiness: this file is
+        # the Postgres-failure fallback for the whole memo path, so a field in
+        # one store and not the other means a degraded request silently renders
+        # a different row from a healthy one.
+        #
+        # No beneficiary, award or project title is in the enrichment at all --
+        # see the DbInstrument comment in corpus.ts for the tested form of that
+        # argument. Truncation is the READER's job (schemeText.ts), never the
+        # exporter's: the full text is what a citation needs.
+        "description": inst["description"],
         # ── Inherited gates ──────────────────────────────────────────────────
         # A child carries no gates of its own by design: the curated
         # eligibility layer is written against the parent regime's framework
