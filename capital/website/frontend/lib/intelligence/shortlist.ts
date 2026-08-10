@@ -40,6 +40,7 @@ import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
+import { fundsSentence } from "./schemeText";
 import { recordFacts, recordPeerBranch, recordScoreSeats, recordStage } from "./tableTrace";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
@@ -2570,6 +2571,22 @@ export function materialiseInstrumentTable(
         aidIntensity: leaf.intensityP50 ?? undefined,
         aidIntensityN: leaf.intensityN ?? undefined,
         descriptor: fundDescriptor(leaf),
+        // ── AND WHAT THE SCHEME ITSELF SAYS IT FUNDS ─────────────────────
+        // `fundDescriptor` above composes OUR sentence out of measured
+        // columns, so every leaf of a family gets a near-identical one: nine
+        // Horizon clusters render nine rows and not one of them says what any
+        // cluster is about. This is the granting body's own opening sentence,
+        // and it is the only field on the row that separates siblings a
+        // measured composition cannot.
+        //
+        // `undefined` rather than "" when there is nothing on file, so a row
+        // with no description is absent from a prompt rather than present and
+        // empty — 490 of the corpus's instruments carry the column.
+        //
+        // Budgeted by `fundsSentence`, never sliced here. One cut, one place:
+        // a second truncation would be the "keep in sync" comment this repo
+        // treats as the bug itself.
+        description: fundsSentence(leaf.description) || undefined,
         // Where this sits in its agency's structure. A programme means more
         // read against its parent -- "Tremplin" alone is opaque, "ADEME >
         // Tremplin" says who runs it and that ADEME has others. Only shown
