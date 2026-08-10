@@ -25,8 +25,18 @@ describe them as ranked relative to each other.
   candidates and shipped a two-row brief. The flag needed roughly forty lines
   of prompt guardrail, which is what a wrong mechanism looks like.
 
-If a row is genuinely wrong for this company, that is a scoring failure worth
-reporting, not prose to publish. Say what the row is and let it stand.
+**There is no channel for telling us a row is wrong. Do not look for one.**
+Each row you return carries a channel, why the founder is eligible, a next
+step and a plain-English blocker, and not one of those can hold "this row
+should not be here". So a row you believe is wrong is still written straight:
+describe it in the terms the rules below require, and let it stand. The only
+route a complaint could take is the prose the founder reads, and that is
+exactly what FUND-6 forbids.
+
+The gap is ours, not yours. This stage is the only one that sees the founder's
+own description, the process briefs, the eligibility screen and every row at
+once, and it has no way to tell us that any of them is wrong. Until it has
+one, a wrong row is caught by a human reading the published page.
 
 ## Rules
 
@@ -48,9 +58,10 @@ reporting, not prose to publish. Say what the row is and let it stand.
   rows resolving to one institution under one legal basis fail it, and so do
   two differently-named rows carrying identical reasoning and the same move.
 
-  A row that fails this is a scoring or corpus finding to report. It is never
-  repaired by deleting the row: one scheme delivered by several bodies is
-  several real doors, and a withheld row is a fund a founder never sees.
+  A row that fails this is a scoring or corpus finding, and there is no field
+  in which to raise it. It is never repaired by deleting the row: one scheme
+  delivered by several bodies is several real doors, and a withheld row is a
+  fund a founder never sees.
 
   **evidence:** a brief published two Horizon clusters whose whyEligible and
   Move were identical sentences, spending two of the table's slots to say one
@@ -84,7 +95,9 @@ reporting, not prose to publish. Say what the row is and let it stand.
   default.
 - FUND-6 (hard) A row's own explanation may never argue against the row. If
   the honest `whyEligible` would say the fund targets something this company
-  is not, that is a scoring failure to report, not prose to publish.
+  is not, that is a scoring failure, and nothing you return can carry it.
+  Write what is true of the fund for this founder and stop; the objection has
+  no home in the brief and the brief is all the founder reads.
 - FUND-7 (hard) The institution named must be a body a founder can approach. A
   government department administers schemes; it is not itself a door, and
   neither is the document a department issued.

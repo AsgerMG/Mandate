@@ -358,11 +358,23 @@ export async function planAdaptiveScreen(
               `${openBlock}\n\n`
             : "") +
           `## How to choose\n` +
-          `- Aim to USE the full six when six sharp questions exist, and stop ` +
-          `early only when they genuinely do not. Cutting to two is not ` +
-          `selectivity, it is leaving the founder under-served and the ` +
-          `shortlist unresolved: every slot you decline to fill is a fund that ` +
-          `stays uncertain. Sharpen the questions, do not delete them.\n` +
+          // Four is the target and six is the ceiling. This bullet used to say
+          // "Aim to USE the full six... Cutting to two is not selectivity",
+          // which is the opposite of what contracts/round2/questions.md tells
+          // this same stage: "Four questions is the target. Six is the ceiling,
+          // not the budget." A planner cannot obey both, and the contract is
+          // the spec. What the old wording was right about is kept: the failure
+          // it was written against is DELETING a question that would have
+          // resolved a fund, not asking four instead of six.
+          `- FOUR sharp questions is the target and SIX is the ceiling, never ` +
+          `the budget. A question earns its slot by changing which funds come ` +
+          `out on top or by making positioning writable. Ask a fifth and a ` +
+          `sixth when they do that, and not to look thorough.\n` +
+          `- The failure to avoid is the opposite one: dropping a question that ` +
+          `would have resolved an open fund, and leaving that fund uncertain ` +
+          `for want of one sentence from the founder. Sharpen a weak question ` +
+          `rather than deleting it, and only then decide whether it still ` +
+          `earns a slot.\n` +
           `- Ask in the FOUNDER'S world, never the programme's. The ` +
           `requirement tells you WHY a question matters; it never gives you ` +
           `the words. Test every word you use: could this founder have used ` +
