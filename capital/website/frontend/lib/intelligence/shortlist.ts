@@ -1514,45 +1514,38 @@ export const LARGE_SCALE_RELEVANCE_FLOOR = 0.5;
  *  and so the flag can never become a per-founder behaviour. */
 export const SIBLING_SCOPE = process.env.SIBLING_SCOPE === "regime" ? "regime" : "channel";
 
-/** How the two near-orthogonal ranking signals split the visible seats when the
- *  founder's description does not discriminate — see the block inside
- *  `applyPeerPrecedence`.
+/** ── THE SEAT SPLIT IS NOT A FLAG ANY MORE. It is closed. ─────────────────
  *
- *  `head`      the score leads, the peer prior fills every seat behind it.
- *              Today's behaviour, and the default. Score 1 seat of 5.
- *  `alternate` the two take seats in turn, score first. Score 3 of 5.
- *  `all`       the peer prior takes every seat, the score none.
+ *  `PEER_FILL` used to live here with five arms — `head` (shipped), `all`,
+ *  `alternate`, `confident` and `confident-both`. All five are measured and
+ *  none of them wins, so the constant below is the constant and there is
+ *  nothing left to switch.
  *
- *  Three points and not two, because a single arm either side of the shipped
- *  split says which way to move and a pair says whether it is a local optimum
- *  at all. An unknown value THROWS rather than being read as the default: an
- *  arm that silently falls back to shipped reports "no effect" and is
- *  indistinguishable from a flag that never arrived.
+ *  wsCW measured the whole axis at once rather than one arm per run.
+ *  `applyPeerPrecedence` is a pure reorder of the array it is handed, so every
+ *  seat count is a function of ONE replay's tape; `scripts/_wscw_dump.ts` cuts
+ *  that tape and `scripts/_wscw_seats.ts` sweeps it, reproducing the published
+ *  five 600/600 before reporting any counterfactual. Tune, n=600, EXACT@5:
  *
- *  Read once at module scope, exactly as SIBLING_SCOPE, so the two arms cannot
- *  differ within one request and the flag can never become a per-founder
- *  behaviour. A flag that silently does not ARRIVE reports "no effect" for both
- *  arms, which is the shape of every false null in this project's history, so
- *  it is asserted to reach the module before either arm is believed. */
-/**  `confident` the score keeps the seats it SEPARATED, and no others. See
- *              `scoreSeats`. A variable number, 0 upward, on the flat branch.
- *  `confident-both` the same rule, also replacing the fixed 3 on the specific
- *              branch — where `descriptionIsSpecific` is a PROXY for score
- *              confidence and this reads the confidence directly.
+ *      seats to the score   0     1(SHIPPED)  2     3     4     5    score alone
+ *      tune                 23.8  25.7        24.7  23.8  22.8  21.2  20.2
+ *      holdout              23.5  23.2        22.7  23.2  21.5  19.2  19.3
  *
- *  The two confident arms exist because wsCM closed the FIXED splits and could
- *  not close this one. Its gradient — `all` 27.6, `head` 26.8, `alternate`
- *  24.8 on tune N=250 — says the score's one reserved seat is worth nothing ON
- *  AVERAGE. An average is not an answer to whether it is worth something where
- *  the score has an opinion and negative where it does not, and a fixed split
- *  cannot express that difference at all. */
-export const PEER_FILL = ((): "head" | "alternate" | "all" | "confident" | "confident-both" => {
-  const v = process.env.PEER_FILL;
-  if (v === undefined || v === "" || v === "head") return "head";
-  if (v === "alternate" || v === "all" || v === "confident" || v === "confident-both") return v;
-  throw new Error(
-    `unknown PEER_FILL=${v} (expected: head, alternate, all, confident, confident-both)`);
-})();
+ *  and REGIME@5 and CHANNEL@5 fall with it on both splits. Rank fusion, which
+ *  is off the seat axis entirely, tops out below shipped on tune; a cap on the
+ *  prior's DEPTH is a no-op at 8 and a loss below it. Full record in
+ *  project-mgmt/findings/seats_wsCW.md, the code in tag archive/wsCW-peer-fill.
+ *
+ *  THE ONE THING THAT IS STILL OPEN, so nobody re-runs the closed part looking
+ *  for it: routing. The two signals are near-orthogonal — on tune, 74 founders
+ *  the score alone gets right and the prior does not, 96 the other way — so a
+ *  PERFECT per-founder choice between them would score 36.2% against the
+ *  shipped 25.7%. That headroom is real and nothing observable reaches it:
+ *  fourteen request-time features, cross-validated two-fold, all land at or
+ *  below the fixed split on both splits. The reason is in the data — where only
+ *  the score is right, the won fund is absent from the founder's peer cell
+ *  entirely in 45% of cases, and nothing at request time says so. A router
+ *  needs a NEW signal, not a new arithmetic over these two. */
 
 /** Whether a free channel slot may be offered to a channel outside
  *  `DEFAULT_INSTRUMENTS`. See the BACKFILL block in `selectInstrumentRows`.
@@ -2050,55 +2043,6 @@ export function peerPrior(country?: string, sector?: string): string[] {
  *  every row the peer prior knows about follows in peer order, and anything
  *  left keeps its original relative position. Nothing is added or removed --
  *  a fund the founder's own screen excluded can never re-enter here. */
-/** HOW MANY LEADING SEATS THE SCORE HAS EARNED, from the score alone.
- *
- *  ── The property ────────────────────────────────────────────────────────
- *  A seat given to the score is a claim that the score can tell the row in it
- *  apart from the row behind it. Where two adjacent rows sit in the same pack,
- *  the score has expressed no preference between them and the order is being
- *  decided by whatever the comparator falls through to — `INSTRUMENT_PRIORITY`
- *  and then the alphabet. So: **the score keeps the leading rows it separated,
- *  and hands the rest to the peer prior.**
- *
- *  "Separated" needs a yardstick and the only honest one is the table's own.
- *  A drop counts when it is larger than the drop a FLAT table of the same
- *  height and length would show between every pair — `(top - bottom) / (n-1)`,
- *  the mean adjacent gap. There is no threshold to tune, nothing to fit and
- *  nothing about a fund, a country or a sector in it: rescale every score and
- *  the answer is unchanged, because both sides of the comparison scale
- *  together.
- *
- *  ── The test for a case this has not seen ───────────────────────────────
- *  Ask of any table: would the score order these two rows the same way if the
- *  alphabet were reversed? Where the answer is no, the score separated them
- *  and this returns a seat for the first. Where it is yes, it does not.
- *
- *  ── Two details that are not cosmetic ───────────────────────────────────
- *  Scores are ROUNDED to the comparator's own 1e-6 first. Production reads
- *  similarities live from pgvector and the offline path reads them from the
- *  committed cache at 6 dp, so raw floats differ in the last places; a gap
- *  statistic on unrounded scores would give the two stores different seat
- *  counts for one founder, and an order that depends on which store answered
- *  is not an order.
- *
- *  A table whose scores are all equal has a mean gap of 0 and every gap 0, so
- *  `k` is 0: the score separated nothing and keeps nothing. That is the right
- *  answer and it is the reason the comparison is strict.
- *
- *  Returns 0..rows.length. 0 is `all` for this founder and 1 is `head`; the
- *  arm is not a new mechanism, it is the seat count made a function of the
- *  evidence instead of a constant. */
-export function scoreSeats(values: number[]): number {
-  const n = values.length;
-  if (n < 2) return n;
-  const v = values.map((x) => Math.round(x * 1e6));
-  const mean = (v[0] - v[n - 1]) / (n - 1);
-  if (!(mean > 0)) return 0;
-  let k = 0;
-  while (k < n - 1 && v[k] - v[k + 1] > mean) k += 1;
-  return k;
-}
-
 export function applyPeerPrecedence(
   rows: InstrumentRow[], country?: string, sector?: string,
   /** How much the founder's own words already tell us. Peer precedence answers
@@ -2109,41 +2053,22 @@ export function applyPeerPrecedence(
    *  EU-project founder from 81% down to 47%, because peers skew national.
    *  So it steps aside where the description already discriminates. */
   descriptionIsSpecific = false,
-  /** The ROW SCORE the comparator sorted on, per row. Supplied by the caller
-   *  because it is computed there and this function must never derive a second
-   *  one: two definitions of "the score" in one stack is the defect
-   *  `rowDisplayLabel` and `displayInstitutionName` already cost this repo.
-   *
-   *  Optional, and only the `confident` arms read it. They THROW without it
-   *  rather than falling back, because an arm that silently reverts to shipped
-   *  reports "no effect" and cannot be told from a flag that never arrived. */
-  scoreOf?: (r: InstrumentRow) => number,
 ): InstrumentRow[] {
-  // Checked BEFORE the early return, on purpose. A caller that forgot the score
-  // must fail on every table, not only on the ones that happen to have a peer
-  // prior -- otherwise the arm is silently `head` for exactly the founders it
-  // was supposed to change, and reports "no effect".
-  const confident = PEER_FILL === "confident" || PEER_FILL === "confident-both";
-  if (confident && !scoreOf) {
-    throw new Error(
-      `PEER_FILL=${PEER_FILL} needs the row score and the caller supplied none. ` +
-      "Refusing to rank as `head` under another arm's name.");
-  }
   const ranked = peerPrior(country, sector);
   if (rows.length < 3 || !ranked.length) { recordPeerBranch("none"); return rows; }
   recordPeerBranch(descriptionIsSpecific ? "specific" : "flat");
   // A founder with a real project keeps the ranker's order for the top rows;
   // peer precedence only fills behind them.
   //
-  // `confident-both` reads the score's separation directly here too. The 3 is a
-  // fixed seat count switched on a PROXY for score confidence — the founder
-  // described something, so the score probably knows what it is about — and
-  // that arm is the proxy replaced by the measurement it stands in for.
+  // THREE, and three is the top of the curve for this branch. wsCW swept it:
+  // tune n=118 on this branch, EXACT@5 28.8 at one seat, 29.7 at two, 29.7 at
+  // three, 32.2 with the prior removed altogether -- and that last point costs
+  // REGIME@5 80.5 -> 70.3 and CHANNEL@5 91.5 -> 77.1, which is the trade this
+  // project does not take. Three is where EXACT is at its maximum and neither
+  // of the other two has been paid for.
   if (descriptionIsSpecific) {
     const rankOfP = new Map(ranked.map((id, i) => [id, i]));
-    const seats = PEER_FILL === "confident-both"
-      ? scoreSeats(rows.map((r) => scoreOf!(r)))
-      : 3;
+    const seats = 3;
     recordScoreSeats(seats);
     const head = rows.slice(0, seats);
     const tail = rows.slice(seats).sort((a, b) =>
@@ -2151,72 +2076,40 @@ export function applyPeerPrecedence(
     return [...head, ...tail];
   }
   const rankOf = new Map(ranked.map((id, i) => [id, i]));
-  // ── The seats the score keeps at the FRONT, as one number ────────────────
-  // `head` is 1 and `all` is 0; they were two branches saying that, and the
-  // third thing a seat count can be is a function of the table. Written once
-  // so a new arm is a new number rather than a new copy of the fill.
-  const seats = PEER_FILL === "all" ? 0
-    : confident ? scoreSeats(rows.map((r) => scoreOf!(r)))
-      : 1;
+  // ── ONE seat to the score, four to the peer prior ────────────────────────
+  // The number is the top of a curve that has been swept end to end, not a
+  // guess and no longer a flag: see the block above `peerPrior`. Everything
+  // either side of 1 is worse on tune and no better on holdout, and EXACT@5,
+  // REGIME@5 and CHANNEL@5 all move the same way, so there is no trade hiding
+  // inside the aggregate.
+  const seats = 1;
   recordScoreSeats(seats);
   const lead = rows.slice(0, seats);
   const rest = rows.slice(seats);
   const known = rest.filter((r) => r.instrumentId && rankOf.has(r.instrumentId))
     .sort((a, b) => (rankOf.get(a.instrumentId!) ?? 1e9) - (rankOf.get(b.instrumentId!) ?? 1e9));
   const unknown = rest.filter((r) => !r.instrumentId || !rankOf.has(r.instrumentId));
-  // ── How many of the five seats each signal gets, and why it is a flag ─────
+  // ── The strict tier, and why it survives being questioned ────────────────
   //
-  // This branch hands the SCORE one seat and the PEER PRIOR the other four,
-  // and then puts every peer-known row ahead of every peer-unknown one however
-  // well the unknown scored. That is a strict tier between two signals the
-  // block above measures as EQUAL in isolation (ranker 24%, peer 27%,
-  // union 45%) — and wsBU re-measured the same equality on the Doors key,
-  // leak-free, n=600: collaborative prior 21.2 +/- 3.3 against the shipped
-  // ranker's 21.2 +/- 3.3.
+  // Every peer-known row goes ahead of every peer-unknown one however well the
+  // unknown scored. That is an infinitely strong prior expressed as an order,
+  // between two signals the block above measures as EQUAL in isolation (ranker
+  // 24%, peer 27%, union 45%) — and wsBU re-measured the same equality on the
+  // Doors key, leak-free, n=600: collaborative prior 21.2 +/- 3.3 against the
+  // shipped ranker's 21.2 +/- 3.3. It reads like an obvious thing to soften.
   //
-  // wsCM measured the consequence on the shipped path, tune split, n=250: the
-  // won leaf sits below at least one row it OUTSCORED in 190 of 250 published
-  // orders, median seven such rows. And 81% of founders take THIS branch, so
-  // for four founders in five the score chooses one row of the five.
+  // It has been softened, three ways, and every one of them is worse. wsCW,
+  // tune n=600: interleaving the two lists (`alternate`) 23.5 against 25.7;
+  // reciprocal rank fusion, which is the same two orders with a FINITE weight
+  // between them, 19.0 to 25.0 across four dampings and three weights; and
+  // capping the prior's REACH so only its first N entries are promoted, which
+  // is a no-op at N=8 and a loss below it.
   //
-  // `alternate` is the union the comment above already names, spelled as an
-  // order: the two lists take seats in turn, score first, each row taken once.
-  // It is a PROPERTY rather than a tuned constant — two signals of equal
-  // measured strength split the seats evenly — and it names no fund, country,
-  // sector or channel, so there is nothing in it to overfit to a regime.
-  //
-  // Default `head`, which is today's behaviour bit for bit. Nothing a founder
-  // sees changes until this constant does.
-  // `all` needs no branch of its own any more: its seat count is 0, so `rest`
-  // above IS every row and the peer lists already hold the row the score led
-  // with. Nothing is dropped on any arm -- the pool is unchanged and only the
-  // ORDER differs, which is the invariant every arm on this path must keep.
-  const fill: InstrumentRow[] = [];
-  if (PEER_FILL === "alternate") {
-    const taken = new Set<InstrumentRow>();
-    const byScore = rest;                 // `rows` arrives in score order
-    const byPeer = [...known, ...unknown]; // peer order, then the rest
-    let i = 0, j = 0;
-    // Score first, because the ranker's own top row is the one signal we know
-    // is about THIS founder rather than about founders like them.
-    for (let turn = 0; fill.length < rest.length; turn++) {
-      const src = turn % 2 === 0 ? byScore : byPeer;
-      const cur = turn % 2 === 0 ? i : j;
-      let k = cur;
-      while (k < src.length && taken.has(src[k])) k++;
-      if (turn % 2 === 0) i = k; else j = k;
-      if (k >= src.length) {
-        // One list is exhausted; drain the other in its own order rather than
-        // stopping, so no row is silently dropped from the pool.
-        for (const r of turn % 2 === 0 ? byPeer : byScore) if (!taken.has(r)) { taken.add(r); fill.push(r); }
-        break;
-      }
-      taken.add(src[k]);
-      fill.push(src[k]);
-    }
-  } else {
-    fill.push(...known, ...unknown);
-  }
+  // The cost of the tier is real and it is priced in: the won leaf sits below
+  // at least one row it OUTSCORED in 180 of 250 published orders (wsCM), and
+  // 81% of founders take this branch. It is kept because the alternative
+  // orders are measured, not because the cost is small.
+  const fill: InstrumentRow[] = [...known, ...unknown];
   // One row per NOTIFIED SCHEME in the visible order.
   //
   // The dedupe above keys on display NAME, which is enough while ranking is
@@ -2817,11 +2710,11 @@ export function materialiseInstrumentTable(
   //     `candidateInstrumentIds` from this same array; a version that dropped
   //     the absorbed rows took in-pool 97% -> 16%.
   const out = [
-    // `rowRelevance` is passed rather than recomputed inside: the seat count
-    // has to be a function of THE sort key, not of a second score that happens
-    // to agree today. Same reasoning as the `fitDemoted` hoist above it.
-    ...applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative,
-      rowRelevance),
+    // No score is passed any more. It was here for the seat-count arms that
+    // read it, and those are closed and gone; the seat count is a constant, so
+    // handing this function a second view of the sort key would be a value
+    // nothing reads. See the block above `peerPrior` for the sweep.
+    ...applyPeerPrecedence(rowsOut, founderCountries?.[0], founderSector, themeInformative),
     ...collision.demoted,
   ];
   // LAST, and unconditional. A door label is a LABEL change: it renames, it

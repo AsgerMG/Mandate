@@ -1,0 +1,113 @@
+tape /tmp/wscw_tape.holdout.json  600 replays
+
+FIDELITY  the simulator reproduces the PUBLISHED five: 600/600
+
+SEAT SWEEP — the seat count is the ONLY thing that differs
+  (shipped = 1 seat on the flat branch, 3 on the specific one)
+  SHIPPED                        EXACT 139/600  23.2% +/- 3.4   REGIME  68.7%   CHANNEL  87.7%
+  0 seat(s), both branches       EXACT 141/600  23.5% +/- 3.4   REGIME  69.7%   CHANNEL  87.5%   vs shipped +24/-22 z=0.15
+  1 seat(s), both branches       EXACT 141/600  23.5% +/- 3.4   REGIME  70.3%   CHANNEL  88.0%   vs shipped +7/-5 z=0.29
+  2 seat(s), both branches       EXACT 136/600  22.7% +/- 3.4   REGIME  68.5%   CHANNEL  86.5%   vs shipped +15/-18 z=0.35
+  3 seat(s), both branches       EXACT 139/600  23.2% +/- 3.4   REGIME  67.8%   CHANNEL  87.5%   vs shipped +24/-24 z=-0.14
+  4 seat(s), both branches       EXACT 129/600  21.5% +/- 3.3   REGIME  66.2%   CHANNEL  86.3%   vs shipped +36/-46 z=0.99
+  5 seat(s), both branches       EXACT 115/600  19.2% +/- 3.1   REGIME  63.7%   CHANNEL  82.7%   vs shipped +45/-69 z=2.15
+  score alone (no peer order)    EXACT 116/600  19.3% +/- 3.2   REGIME  70.2%   CHANNEL  89.0%   vs shipped +49/-72 z=2.00
+  alternate (wsCM)               EXACT 136/600  22.7% +/- 3.4   REGIME  67.7%   CHANNEL  87.7%   vs shipped +24/-27
+
+RANK FUSION — both orderings at once, with a FINITE weight on the prior
+  RRF k0=1 wPeer=0.5             EXACT 135/600  22.5% +/- 3.3   REGIME  67.3%   CHANNEL  87.5%   vs shipped +28/-32 z=0.39
+  RRF k0=1 wPeer=1               EXACT 136/600  22.7% +/- 3.4   REGIME  68.8%   CHANNEL  87.2%   vs shipped +22/-25 z=0.29
+  RRF k0=1 wPeer=2               EXACT 138/600  23.0% +/- 3.4   REGIME  69.2%   CHANNEL  87.3%   vs shipped +14/-15 z=0.00
+  RRF k0=5 wPeer=0.5             EXACT 125/600  20.8% +/- 3.2   REGIME  74.0%   CHANNEL  93.5%   vs shipped +42/-56 z=1.31
+  RRF k0=5 wPeer=1               EXACT 143/600  23.8% +/- 3.4   REGIME  69.0%   CHANNEL  87.3%   vs shipped +26/-22 z=0.43
+  RRF k0=5 wPeer=2               EXACT 148/600  24.7% +/- 3.4   REGIME  70.0%   CHANNEL  87.7%   vs shipped +23/-14 z=1.32
+  RRF k0=10 wPeer=0.5            EXACT 129/600  21.5% +/- 3.3   REGIME  74.2%   CHANNEL  93.8%   vs shipped +49/-59 z=0.87
+  RRF k0=10 wPeer=1              EXACT 141/600  23.5% +/- 3.4   REGIME  73.2%   CHANNEL  93.3%   vs shipped +35/-33 z=0.12
+  RRF k0=10 wPeer=2              EXACT 149/600  24.8% +/- 3.5   REGIME  69.2%   CHANNEL  87.5%   vs shipped +29/-19 z=1.30
+  RRF k0=60 wPeer=0.5            EXACT 130/600  21.7% +/- 3.3   REGIME  72.7%   CHANNEL  93.2%   vs shipped +52/-61 z=0.75
+  RRF k0=60 wPeer=1              EXACT 132/600  22.0% +/- 3.3   REGIME  73.0%   CHANNEL  93.0%   vs shipped +49/-56 z=0.59
+  RRF k0=60 wPeer=2              EXACT 141/600  23.5% +/- 3.4   REGIME  73.2%   CHANNEL  93.2%   vs shipped +41/-39 z=0.11
+
+PRIOR DEPTH CAP — the prior promotes only its first N entries
+  depth <= 1                     EXACT 127/600  21.2% +/- 3.3   REGIME  72.7%   CHANNEL  92.5%   vs shipped +41/-53 z=1.13
+  depth <= 2                     EXACT 128/600  21.3% +/- 3.3   REGIME  69.3%   CHANNEL  89.7%   vs shipped +29/-40 z=1.20
+  depth <= 3                     EXACT 133/600  22.2% +/- 3.3   REGIME  68.2%   CHANNEL  87.2%   vs shipped +18/-24 z=0.77
+  depth <= 5                     EXACT 136/600  22.7% +/- 3.4   REGIME  68.2%   CHANNEL  86.8%   vs shipped +2/-5 z=0.76
+  depth <= 8                     EXACT 139/600  23.2% +/- 3.4   REGIME  68.7%   CHANNEL  87.7%   vs shipped +0/-0 z=0.00
+  depth <= 13                    EXACT 139/600  23.2% +/- 3.4   REGIME  68.7%   CHANNEL  87.7%   vs shipped +0/-0 z=0.00
+  depth <= 21                    EXACT 139/600  23.2% +/- 3.4   REGIME  68.7%   CHANNEL  87.7%   vs shipped +0/-0 z=0.00
+  no cap (= shipped)             EXACT 139/600  23.2% +/- 3.4   REGIME  68.7%   CHANNEL  87.7%   vs shipped +0/-0 z=0.00
+
+WHAT EACH SIGNAL KNOWS ALONE  (EXACT@5, same pool, same founder)
+  both right            48
+  ONLY the score        68   <- the peer prior loses these
+  ONLY the peer prior   93   <- the score loses these
+  neither              391
+  union (a perfect binary router) 209/600 34.8%
+
+ORACLE over the seat count  209/600 34.8%   (a per-founder rule that always picked the right k)
+  cheapest k that works, where any does: 0:141 1:17 2:13 3:15 4:11 5:8 score:4
+
+IS THERE A ROUTER?  161 DISCORDANT founders (68 score-right, 93 peer-right).
+  AUC for "the SCORE is the one that is right". 0.50 knows nothing.
+    top score value                    0.618
+    peer-known rows in the score's five 0.574
+    score gap statistic (scoreSeats)   0.559
+    branch is specific                 0.546
+    pool size                          0.541
+    median peer rank of the pool       0.461
+    prior knows the score's top row    0.527
+    prior cell size                    0.520
+    score-vs-peer top5 overlap         0.485
+    top-to-fifth score drop            0.489
+    share of pool the prior knows      0.507
+    peer rank of the score's top row   0.505
+    description length                 0.504
+    description skewness               0.498
+
+WHERE THE WON LEAF SITS IN EACH LIST, by which signal was right
+  only the peer prior right    n= 93   peer rank of the won leaf: median 2 p90 5  never in the cell 0/93   |   score rank: median 38 p90 70
+  only the score right         n= 68   peer rank of the won leaf: median 15 p90 30  never in the cell 21/68   |   score rank: median 3 p90 5
+  both right                   n= 48   peer rank of the won leaf: median 1 p90 4  never in the cell 0/48   |   score rank: median 2 p90 4
+  neither right                n=391   peer rank of the won leaf: median 18 p90 37  never in the cell 142/391   |   score rank: median 38 p90 89
+
+CONCENTRATION of each signal's exclusive wins
+  only the peer prior right    regime   93 across 36, largest 12% — vinnova_grant:11 satr_de_rnd:11 bdns_es_ayudas:10
+  only the peer prior right    country  93 across 13, largest 17% — FR:16 SE:13 DE:13
+  only the score right         regime   68 across 24, largest 15% — satr_de_rnd:10 vinnova_grant:9 horizon_eu_pillar_ii:7
+  only the score right         country  68 across 11, largest 18% — DE:12 SE:10 ES:9
+
+A ROUTER, CROSS-VALIDATED. Threshold fitted on one half, scored on the other.
+  Shipped scores 139/600 on the same rows.
+    top-to-fifth score drop            EXACT 140/600  23.3%   thresholds <0.034 / <0.023
+    prior knows the score's top row    EXACT 139/600  23.2%   thresholds <0.000 / <0.000
+    peer rank of the score's top row   EXACT 139/600  23.2%   thresholds <-10000.000 / <-10000.000
+    score-vs-peer top5 overlap         EXACT 137/600  22.8%   thresholds <0.000 / >2.000
+    score gap statistic (scoreSeats)   EXACT 137/600  22.8%   thresholds >3.000 / <0.000
+    description skewness               EXACT 136/600  22.7%   thresholds >0.261 / <-0.141
+    branch is specific                 EXACT 136/600  22.7%   thresholds >0.000 / <0.000
+    description length                 EXACT 136/600  22.7%   thresholds >255.000 / <0.000
+    pool size                          EXACT 135/600  22.5%   thresholds >126.000 / >112.000
+    peer-known rows in the score's five EXACT 135/600  22.5%   thresholds <1.000 / >4.000
+    share of pool the prior knows      EXACT 133/600  22.2%   thresholds <0.193 / <0.054
+    top score value                    EXACT 132/600  22.0%   thresholds >1.199 / >1.344
+    prior cell size                    EXACT 128/600  21.3%   thresholds >59.000 / >36.000
+    median peer rank of the pool       EXACT 126/600  21.0%   thresholds >-13.000 / <-24.000
+
+BY BRANCH — the 81% and the 19% separately, under each extreme
+  flat (477)
+      shipped                    EXACT 112/477  23.5% +/- 3.8   REGIME  68.3%   CHANNEL  86.6%
+      0 seat(s)                  EXACT 117/477  24.5% +/- 3.9   REGIME  67.9%   CHANNEL  86.2%
+      1 seat(s)                  EXACT 112/477  23.5% +/- 3.8   REGIME  68.3%   CHANNEL  86.6%
+      2 seat(s)                  EXACT 110/477  23.1% +/- 3.8   REGIME  66.7%   CHANNEL  85.3%
+      3 seat(s)                  EXACT 112/477  23.5% +/- 3.8   REGIME  67.3%   CHANNEL  86.4%
+      5 seat(s)                  EXACT  88/477  18.4% +/- 3.5   REGIME  64.4%   CHANNEL  84.1%
+      score alone                EXACT  89/477  18.7% +/- 3.5   REGIME  72.5%   CHANNEL  92.0%
+  specific (123)
+      shipped                    EXACT  27/123  22.0% +/- 7.3   REGIME  69.9%   CHANNEL  91.9%
+      0 seat(s)                  EXACT  24/123  19.5% +/- 7.0   REGIME  76.4%   CHANNEL  92.7%
+      1 seat(s)                  EXACT  29/123  23.6% +/- 7.5   REGIME  78.0%   CHANNEL  93.5%
+      2 seat(s)                  EXACT  26/123  21.1% +/- 7.2   REGIME  75.6%   CHANNEL  91.1%
+      3 seat(s)                  EXACT  27/123  22.0% +/- 7.3   REGIME  69.9%   CHANNEL  91.9%
+      5 seat(s)                  EXACT  27/123  22.0% +/- 7.3   REGIME  61.0%   CHANNEL  77.2%
+      score alone                EXACT  27/123  22.0% +/- 7.3   REGIME  61.0%   CHANNEL  77.2%
