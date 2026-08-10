@@ -130,7 +130,7 @@ export default async function Home() {
             <ChannelsGraph nationalAwardPct={prose.nationalAwardPct} />
 
             {/* Chapter 3 — We tried to track it: the KPIs */}
-            <Chapter className="py-20 sm:py-24">
+            <Chapter className="pb-10 pt-14 sm:pb-12 sm:pt-16">
               <Reveal>
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">The record</p>
                 <h3 className="mt-4 text-3xl font-semibold text-[var(--foreground)] sm:text-4xl" style={serif}>
@@ -151,7 +151,7 @@ export default async function Home() {
             </Chapter>
 
             {/* Chapter 5 — Where it lands: the map */}
-            <Chapter className="py-24 sm:py-32">
+            <Chapter className="py-10 sm:py-14">
               <Reveal>
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">Where it lands</p>
               </Reveal>
@@ -182,7 +182,7 @@ export default async function Home() {
             </Chapter>
 
             {/* Chapter 6 — The handoff / CTA */}
-            <Chapter className="py-20 text-center sm:py-24">
+            <Chapter className="pb-16 pt-8 text-center sm:pb-20 sm:pt-10">
               <Reveal delay={100}>
                 <h3 className="text-3xl font-semibold text-[var(--foreground)] sm:text-5xl" style={serif}>
                   Map your raise.

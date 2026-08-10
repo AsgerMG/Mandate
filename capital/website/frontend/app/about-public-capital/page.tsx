@@ -214,7 +214,7 @@ export default function AboutPublicCapitalPage() {
           />
 
           {/* ── 1. The menu (the ladder, measured precisely) ───────── */}
-          <Chapter className="py-16 sm:py-20">
+          <Chapter className="py-10 sm:py-14">
             <ChapterHead
               kicker="1 · The menu, measured"
               title="Median ticket by channel."
@@ -235,7 +235,7 @@ export default function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── 2. Which door ──────────────────────────────────────── */}
-          <Chapter className="py-16 sm:py-20">
+          <Chapter className="py-10 sm:py-14">
             <ChapterHead
               kicker="2 · Which door is yours"
               title="Your address decides your funnel."
@@ -260,7 +260,7 @@ export default function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── 3. The rules ───────────────────────────────────────── */}
-          <Chapter className="py-16 sm:py-20">
+          <Chapter className="py-10 sm:py-14">
             <ChapterHead
               kicker="3 · Two rules from the record"
               title="The first award is the hardest you will win."
@@ -281,7 +281,7 @@ export default function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── 4. The sequence ────────────────────────────────────── */}
-          <Chapter className="py-16 sm:py-20">
+          <Chapter className="py-10 sm:py-14">
             <ChapterHead
               kicker="4 · The raise, sequenced"
               title="How the public and private rails interleave."
@@ -334,7 +334,7 @@ export default function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── 5. What's coming ───────────────────────────────────── */}
-          <Chapter className="py-16 sm:py-20">
+          <Chapter className="py-10 sm:py-14">
             {/* external: the window is the EU's next multiannual financial
                 framework, 2028-2034, read from today. Source [3] below. It is a
                 fact about the EU budget cycle, not about this corpus. */}
@@ -391,7 +391,7 @@ export default function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── Honest reading + sources ───────────────────────────── */}
-          <Chapter className="py-10 sm:py-14">
+          <Chapter className="py-6 sm:py-8">
             <R>
               <details className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70">
                 <summary className="cursor-pointer px-5 py-4 font-medium text-[var(--foreground)]">
@@ -420,7 +420,7 @@ export default function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── Get your brief ─────────────────────────────────────── */}
-          <Chapter className="py-16 sm:py-20">
+          <Chapter className="pb-16 pt-8 sm:pb-20 sm:pt-10">
             <ChapterHead kicker="Put this to work" title="Fit your raise to today&apos;s priorities." />
             <R>
               <p className="max-w-2xl text-lg leading-relaxed text-[var(--foreground)]">
