@@ -41,7 +41,8 @@ def main() -> None:
                scheme_end_date_basis, source_window_policy,
                route_status, route_status_source,
                successor_scheme,
-               successor_title, application_url, sector_mix, scheme_operators,
+               successor_title, application_url, description,
+               sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n, delivery_region, delivery_region_share
         FROM funding_instruments
@@ -183,6 +184,18 @@ def main() -> None:
         # then has no front door we can name.
         "schemeOperators": json.loads(inst["scheme_operators"]) if inst["scheme_operators"] else None,
         "applicationUrl": inst["application_url"],
+        # What the scheme says it FUNDS, in the granting body's own words, from
+        # its own page (490 instruments). Carried here in the same commit that
+        # adds it to corpus.ts's SELECT, and that is not tidiness: this file is
+        # the Postgres-failure fallback for the whole memo path, so a field in
+        # one store and not the other means a degraded request silently renders
+        # a different row from a healthy one.
+        #
+        # No beneficiary, award or project title is in the enrichment at all --
+        # see the DbInstrument comment in corpus.ts for the tested form of that
+        # argument. Truncation is the READER's job (schemeText.ts), never the
+        # exporter's: the full text is what a citation needs.
+        "description": inst["description"],
         # ── Inherited gates ──────────────────────────────────────────────────
         # A child carries no gates of its own by design: the curated
         # eligibility layer is written against the parent regime's framework

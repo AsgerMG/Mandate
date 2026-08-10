@@ -262,6 +262,29 @@ export interface DbInstrument {
    *  route it is decides whether it may be asserted, so the corpus has to keep
    *  it. See applicationRoute.ts. */
   applicationOwn?: boolean;
+  /** WHAT THE SCHEME SAYS IT FUNDS, in the granting body's own words, from its
+   *  own page. 490 instruments carry it, fetched by the 2026-08-05 enrichment
+   *  run (`data/raw/scheme_enrichment/`).
+   *
+   *  ── Why it may be read, when `sampleProjectTitles` may not ───────────────
+   *  It is a statement of SCOPE, not of outcome: no beneficiary, no award, no
+   *  project title, and no column of the enrichment carries one. That is the
+   *  argument from the schema, and the schema is not what a founder reads, so
+   *  it is also TESTED (`scripts/_wsdi_leak.ts`): across the 7,095-pair recall
+   *  set no company name appears in any description, and no company's own
+   *  intake text appears in the description of the fund it won.
+   *
+   *  ── What it is NOT ───────────────────────────────────────────────────────
+   *  New to the RANKER. `build_instrument_profiles.py` has written it into
+   *  every `instrument_profiles.profile_text` at 600 characters since the
+   *  enrichment landed, so retrieval has always read it. What it was missing
+   *  from is the ROW — the line a model reads when it chooses between two
+   *  siblings, where nine Horizon clusters render nine different rows and not
+   *  one of them says what any cluster is about.
+   *
+   *  Never render it raw. `fundsSentence()` in ./schemeText is the one budget,
+   *  and the prompt budget is the reason it exists. */
+  description?: string | null;
   /** Funded-company sector counts, e.g. {health_life_sciences: 812, ...}.
    *  What this instrument has ACTUALLY funded, as opposed to what its prose
    *  sounds like. */
@@ -514,7 +537,7 @@ export async function hydrateDbInstruments(): Promise<void> {
                   source_window_policy,
                   route_status, route_status_source,
                   successor_scheme, successor_title,
-                  application_url, sector_mix, scheme_operators,
+                  application_url, description, sector_mix, scheme_operators,
                   award_p25, award_p50, award_p75, award_n,
                   intensity_p50, intensity_n, delivery_region, delivery_region_share
            FROM funding_instruments
@@ -620,6 +643,12 @@ export async function hydrateDbInstruments(): Promise<void> {
           try { return typeof raw === "string" ? JSON.parse(raw) : raw; } catch { return null; }
         })(),
         applicationUrl: inst.application_url ?? null,
+        // Added to the SELECT and to `website/build/eligibility_export.py` in
+        // the same commit, deliberately. The two stores are the same corpus and
+        // a field in one and not the other is the divergence class that has
+        // already cost this project a production ranker running on means while
+        // every test passed.
+        description: inst.description ?? null,
         // Stored as JSON text in both stores. Parsed here rather than at every
         // read site so the shape is identical on the Postgres and JSON paths;
         // the two diverging silently is how a scored component ends up neutral

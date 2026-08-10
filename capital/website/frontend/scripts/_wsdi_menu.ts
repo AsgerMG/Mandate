@@ -19,6 +19,7 @@ import { Client } from "pg";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 import { renderMenu } from "../lib/intelligence/fundSelection";
 import { awardBand, type AxisFund } from "../lib/intelligence/shortlistAxes";
+import { fundsSentence } from "../lib/intelligence/schemeText";
 
 loadEnvLocal();
 requireCredentials("wsdi_menu", ["DATABASE_URL"]);
@@ -90,6 +91,9 @@ export function sentences(text: string, cap: number): string {
 
 /** The rendered share, which IS a comparable quantity, without the ordinal. */
 const sharePct = (reasons: string) => /(\d+)% of this family/.exec(reasons)?.[1] ?? "";
+/** The funds line, present only once the row carries it. */
+const funded = (reasons: string) =>
+  /what it funds, in the scheme's own words: (.*?)(?: specific to it: |$)/.exec(reasons)?.[1] ?? "";
 /** The "specific to it" clause, which is where a real demand would appear. */
 const specific = (reasons: string) => /specific to it: (.*)$/.exec(reasons)?.[1] ?? "";
 
@@ -176,12 +180,22 @@ async function main() {
   // provably cannot be asked to do better than guess.
   let wantBlind = 0, wantHasSibling = 0;
 
+  // WITH=1 renders the same fixture menus with the `funds` line attached, so
+  // the before and the after are the SAME 80 cases and the SAME 58 candidates
+  // and the only difference is the line. The committed fixture is deliberately
+  // not rebuilt for this: it pins a gate-1 SHA other workstreams are measuring
+  // against, and rebuilding it to add one field would move that pin.
+  const WITH = process.env.WITH === "1";
+
   for (const c of cases) {
     poolSum += c.poolSize;
     subsetTotal += c.subset.length;
+    const subset = WITH
+      ? c.subset.map((f) => ({ ...f, funds: fundsSentence(col.get(f.id)?.description) }))
+      : c.subset;
     const menu = renderMenu({
       country: c.country, sector: c.sector, description: c.description,
-      subset: c.subset, baselineTop5: c.baselineTop5,
+      subset, baselineTop5: c.baselineTop5,
     });
     const rows = rowsOf(menu, c.subset.length);
     rowsTotal += rows.size;
@@ -206,7 +220,11 @@ async function main() {
           awardBand(fa.awardP50) === awardBand(fb.awardP50) &&
           h(fa.capitalType) === h(fb.capitalType) &&
           sharePct(ra) === sharePct(rb) &&
-          jaccard(specific(ra), specific(rb)) >= SAME_DEMAND;
+          jaccard(specific(ra), specific(rb)) >= SAME_DEMAND &&
+          // Under WITH the row carries the funds line, so blindness has to be
+          // judged on the row as it now reads. Without this the "after" run
+          // reports the "before" blind count and the change measures nothing.
+          (!WITH || jaccard(funded(ra), funded(rb)) >= SAME_DEMAND);
         if (blind) blindPairs++;
         const ida = c.subset[ia].id, idb = c.subset[ib].id;
         if (ida === c.want || idb === c.want) {

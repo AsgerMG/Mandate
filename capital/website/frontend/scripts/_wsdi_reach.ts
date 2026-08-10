@@ -63,14 +63,17 @@ async function main() {
     SELECT instrument_id, gate_key, requirement, value
       FROM eligibility_gates ORDER BY instrument_id, gate_key`);
 
+  interface Clause { instrument_id: string; clause_type: string; clause_key: string; text: string }
+  interface App { instrument_id: string; quote: string | null }
+  interface Gate { instrument_id: string; gate_key: string; requirement: string; value: string | null }
   const byInst = <T extends { instrument_id: string }>(rs: T[]) => {
     const m = new Map<string, T[]>();
     for (const r of rs) (m.get(r.instrument_id) ?? m.set(r.instrument_id, []).get(r.instrument_id)!).push(r);
     return m;
   };
-  const clauseBy = byInst(clauses.rows as never);
-  const appBy = byInst(app.rows as never);
-  const gateBy = byInst(gates.rows as never);
+  const clauseBy = byInst(clauses.rows as Clause[]);
+  const appBy = byInst(app.rows as App[]);
+  const gateBy = byInst(gates.rows as Gate[]);
 
   // signals_digest is a build artefact, not a table.
   let digest: Record<string, unknown[]> = {};
@@ -101,9 +104,7 @@ async function main() {
     h(r.scheme_code), h(r.last_year), h(r.scheme_end_date), h(r.route_status),
     h(r.successor_scheme), h(r.application_url), h(r.sector_mix),
     h(r.scheme_operators), h(r.intensity_p50), h(r.country),
-    (gateBy.get(r.id) ?? []).map((g: never) =>
-      `${(g as { gate_key: string }).gate_key}=${h((g as { requirement: string }).requirement)}` +
-      `|${h((g as { value: unknown }).value)}`).join("~"),
+    (gateBy.get(r.id) ?? []).map((g) => `${g.gate_key}=${h(g.requirement)}|${h(g.value)}`).join("~"),
   ].join("¦");
 
   // NAME is wired too, and it separates almost every pair by construction —
@@ -122,7 +123,7 @@ async function main() {
   }
   const REQ_CUTOFF = Math.ceil(rows.length * 0.35);
   const distinctiveReq = (r: Row) => (gateBy.get(r.id) ?? [])
-    .map((g: never) => h((g as { requirement: string }).requirement))
+    .map((g) => h(g.requirement))
     .filter((q) => q && (reqCount.get(q) ?? 0) < REQ_CUTOFF)
     .sort().slice(0, 2).join("~");
 
@@ -138,9 +139,9 @@ async function main() {
     ["eligibility_text", (r) => h(r.eligibility_text)],
     ["description+eligibility_text", (r) => h(r.description) + "¦" + h(r.eligibility_text)],
     ["eligibility_clauses", (r) => (clauseBy.get(r.id) ?? [])
-      .map((c: never) => `${(c as { clause_key: string }).clause_key}=${h((c as { text: string }).text)}`).join("~")],
+      .map((c) => `${c.clause_key}=${h(c.text)}`).join("~")],
     ["instrument_application.quote", (r) => (appBy.get(r.id) ?? [])
-      .map((a: never) => h((a as { quote: string }).quote)).join("~")],
+      .map((a) => h(a.quote)).join("~")],
     ["catchment_regions", (r) => h(r.catchment_regions)],
     ["signals_digest", (r) => JSON.stringify(digest[r.id] ?? "")],
   ];
