@@ -357,6 +357,46 @@ stops the two paths ever drifting again.
 
 ---
 
+## 4b. Proof the shipped path is unchanged — and a defect in the proof itself
+
+`check_recall_floor.ts`, `__recallSetDescribed.json`, 300 tune pairs, seed
+20260806, `ranker: all 294 request(s) on EMBEDDING` in every run below.
+
+| # | tree | pool | exact5 | regime5 | join | childless | exact_attr |
+|---|---|---:|---:|---:|---:|---:|---:|
+| 456 | base `13ed7123` | 97 | 26 | 72 | 86 | 34 | 89 |
+| 485 | wsDO branch | 97 | **27** | **73** | 86 | **36** | 89 |
+| 488 | base `13ed7123` | 97 | 26 | 72 | 86 | 34 | 89 |
+| 491 | wsDO branch | 97 | 26 | 72 | 86 | 34 | 89 |
+| 492 | base `13ed7123` | 97 | 26 | 72 | 86 | 34 | 89 |
+
+**Runs 491 and 492 were started concurrently, one per worktree, and their output
+is byte-identical apart from the code hash** (`f95ddb1dc58af908` against
+`a28bbc5f8fc0a5fe` — the hash covers `shortlist.ts`, which wsDO edits). Every
+metric, every sub-population, every count. The shipped path is unchanged.
+
+**Run 485 is the finding, and it is not about wsDO.** It read three cases high on
+a branch whose diff cannot reach the ranker — the removed fields are written
+during row materialisation, after every sort, and are read by nothing (TypeScript
+would not compile otherwise). It was bracketed by two base runs that both read
+26/72, which is what made it look like code. It is not: **29 other verdicts were
+published between run 456 and run 485**, i.e. other workstreams were live against
+the same Postgres, and `check_verdicts` was already red on `index_freshness` with
+the instruction to rebuild `instrument_profiles` and `eligibility_embeddings`. The
+semantic ranker reads those indexes at request time.
+
+So the harness pins `N` and `SEED` — "both pinned, and the sample is then a
+constant" — but the CORPUS and the two vector indexes are not pinned by anything,
+and a run is only comparable with another run taken against the same ones.
+Sequential before/after on a shared database is not a controlled comparison, and
+the reference figure in this sprint's own brief (97 / 27 / 73) is a reading from
+the drifted window. **The comparison that holds is a concurrent pair, one per
+worktree.** That is cheap, it is free, and it should be how any ranking claim is
+proved while more than one agent is live. This belongs to whoever owns the
+harness (wsDN); wsDO only paid for discovering it.
+
+---
+
 ## 5. Dead fields and dead rules removed
 
 **Rule ids declared and never recorded** (`lib/intelligence/rules.ts`). Verified
