@@ -16,6 +16,12 @@ import { readFileSync, appendFileSync, existsSync } from "fs";
 import Anthropic from "@anthropic-ai/sdk";
 
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { checkSelection } from "../lib/intelligence/selectionChecks";
+
+/** What SELECT-1 asks for. Read once here and passed in, so the check cannot
+ *  become a second copy of a number the contract also states -- which is how a
+ *  five ended up in a contract nothing read while the brief moved to six. */
+const SELECT_COUNT = 5;
 
 loadEnvLocal();
 requireCredentials("measure_gate2", ["ANTHROPIC_API_KEY"]);
@@ -62,6 +68,7 @@ Reply with ONLY the five index numbers, comma-separated, best first. Example: 3,
 
 async function main() {
   const fx = JSON.parse(readFileSync(`fixtures/gate1_${SPLIT}.json`, "utf8"));
+  const violations: string[] = [];
   const N = Math.min(Number(process.env.N ?? fx.cases.length), fx.cases.length);
   const cases = fx.cases.slice(0, N);
   const client = new Anthropic();
@@ -78,7 +85,19 @@ async function main() {
       });
       const text = (resp.content ?? []).filter((b: any) => b?.type === "text")
         .map((b: any) => b.text).join("\n");
-      const picks = (text.match(/\d+/g) ?? [] as string[]).slice(0, 5).map(Number)
+      // ── SELECT-1 and SELECT-2, checked BEFORE the repair ────────────────
+      // The two lines below used to be one expression, and it SILENTLY FIXED
+      // exactly what the two hard rules forbid: `.slice(0, 5)` discarded a
+      // sixth index and the range filter discarded an invented one, so a model
+      // that broke either rule was scored as though it had not. A check has to
+      // run on the artifact the rule is about, before anything makes the rule
+      // true. Same defect as a contract check whose predicate the producer
+      // guarantees false, one stage earlier.
+      const raw = (text.match(/\d+/g) ?? [] as string[]).map(Number);
+      for (const v of checkSelection(raw, c.subset.length, SELECT_COUNT)) {
+        violations.push(`${c.name}: [${v.ruleId}] ${v.detail}`);
+      }
+      const picks = raw.slice(0, SELECT_COUNT)
         .filter((i: number) => i >= 0 && i < c.subset.length)
         .map((i: number) => c.subset[i]);
       if (!picks.length) bad++;
@@ -98,6 +117,10 @@ async function main() {
   console.log(`  GATE 2 exact                      ${pc(exact)}   of reachable: ${reach ? (100 * exact / reach).toFixed(0) : 0}%`);
   console.log(`  GATE 2 regime                     ${pc(regime)}   of reachable: ${reach ? (100 * regime / reach).toFixed(0) : 0}%`);
   if (bad) console.log(`  unparseable/failed replies        ${bad}`);
+  // Contract violations by rule id, so a regression is named rather than
+  // described. These were invisible for as long as the parser repaired them.
+  console.log(`  SELECT contract violations        ${violations.length}`);
+  for (const v of violations.slice(0, 20)) console.log(`      ${v}`);
 
   // Append-only history, so improvement is traceable run over run.
   appendFileSync(LOG, JSON.stringify({

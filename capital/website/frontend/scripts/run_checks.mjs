@@ -59,6 +59,13 @@ const CHECKS = [
   ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],
   ["payload budget", ["npx", "tsx", "scripts/check_payload_budget.ts"]],
   ["archetype regression", ["npx", "tsx", "scripts/check_archetypes.ts"]],
+  // Immediately after it, and NOT instead of it: that one asks whether the
+  // corpus holds funds for each profile, this one asks whether the MEMO -- a
+  // different pool, a different order, a different cut -- actually hands the
+  // founder a table. An archetype was receiving ZERO ROWS while the line above
+  // reported it passing, because the two are not the same question and only one
+  // of them is what the founder reads.
+  ["every archetype gets a table", ["npx", "tsx", "scripts/check_memo_table.ts"]],
   ["liveness has one definition", ["npx", "tsx", "scripts/check_liveness.ts"]],
   ["openness is evidenced", ["npx", "tsx", "scripts/check_window_evidence.ts"]],
   ["offer routes are sourced", ["npx", "tsx", "scripts/check_offer_route.ts"]],

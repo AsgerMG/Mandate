@@ -119,6 +119,10 @@ function score(r: Row): Scored {
 
   // Contract violations first, by rule id: these are the ones a PM can look
   // up in contracts/ and change without touching TypeScript.
+  // Candidates are not recorded in a bench run, so BL-B1 reports
+  // "not evaluated" rather than passing. That line is the point: a scoreboard
+  // that shows a rule as clean when it never ran is how this repo keeps
+  // discovering rules nothing enforces.
   for (const cv of checkBrief(rep as never, STATE_OF_PLAY_OFFER)) defects.push(cv.ruleId);
 
   // Ordered by how badly each one hurts a founder reading the brief.

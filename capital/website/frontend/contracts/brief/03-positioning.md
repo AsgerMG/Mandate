@@ -46,7 +46,7 @@ founder can actually make when they walk through one.
 - POS-5 (judged) Say what specifically in the stated priorities this company's
   work maps onto. A paragraph that could be sent to any company in the sector
   has failed.
-- POS-6 (soft) Advisory register. Never sycophantic, never inventing a meeting,
+- POS-7 (soft) Advisory register. Never sycophantic, never inventing a meeting,
   relationship or introduction that does not exist.
 
 ## Banned

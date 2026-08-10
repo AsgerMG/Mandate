@@ -64,7 +64,7 @@ import {
 } from "../lib/intelligence/corpus";
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
-import { orderMemoCandidates, WRITER_CANDIDATE_CAP } from "../lib/intelligence/memoCandidates";
+import { accessiblePool, orderMemoCandidates, WRITER_CANDIDATE_CAP } from "../lib/intelligence/memoCandidates";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
 import {
@@ -174,7 +174,20 @@ async function main() {
       ...tableInputFromAnswers(f.eligibility),
       log,
     } as never);
-    const instrumentTable = applyProfileSignal(hydrated.slice(0, VERDICT_POOL), undefined, undefined);
+    // ── The pool cut, on the arm under test ────────────────────────────────
+    // `POOL=legacy` reproduces the cut as it stood before wsCY: slice first,
+    // drop the conclusively blocked afterwards, so a founder whose top rows all
+    // disqualify them spends the whole pool on rows that are then deleted.
+    // Default is what ships: drop first, then cut, so the pool holds
+    // VERDICT_POOL rows that could actually be published.
+    //
+    // Both arms are one replay over one pool, which is the only way the two
+    // numbers are comparable.
+    const instrumentTable = applyProfileSignal(
+      (process.env.POOL === "legacy"
+        ? hydrated
+        : accessiblePool(hydrated, f.eligibility as never)
+      ).slice(0, VERDICT_POOL), undefined, undefined);
     const poolIds = instrumentTable
       .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
     await hydrateGatesFor(poolIds);

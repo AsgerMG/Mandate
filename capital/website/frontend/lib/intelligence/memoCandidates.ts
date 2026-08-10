@@ -32,9 +32,11 @@ import { toIso2 } from "./corpus";
 import type { ExclusionLog } from "./exclusions";
 import type {
   CompetitorRecord,
+  EligibilityAnswers,
   EligibilityCheck,
   IntelligenceRequest,
   InstrumentRow,
+  NoDoors,
 } from "./types";
 
 /** How many candidates the WRITER is shown, ahead of the cut to
@@ -86,6 +88,92 @@ export const WRITER_CANDIDATE_CAP = 7;
  *  re-sort was demoting are spread over 14 regimes and 11 countries, largest
  *  regime 4. There is no programme carrying this. */
 export const ORDER_ARM: MemoOrderArm = "verdict";
+
+/**
+ * The rows a memo may be BUILT from: the ranked list with the conclusively
+ * blocked removed, in the same order.
+ *
+ * ── The property, and why a wider pool cannot express it ──────────────────
+ * A pool seat spent on a fund that will be deleted before publication is a
+ * seat that publishes nothing. `orderMemoCandidates` drops a conclusively
+ * blocked row -- correctly, a door that is shut is not advice -- so the cut
+ * that fills the pool has to happen AFTER that drop, not before it, or the
+ * drop shrinks the table instead of backfilling it.
+ *
+ * `VERDICT_POOL`'s own comment has said exactly this since it was widened from
+ * six to eighteen. Eighteen is a number standing in for the property, and the
+ * distance between the top of the ranking and the first accessible row is not
+ * a constant: it is a fact about the founder. Measured on the twelve bench
+ * companies with gates hydrated, it is 1 for most of them, 5 for one, and 81
+ * for a 250+ company whose national register is written for SMEs -- twenty-two
+ * accessible funds, the first of them sixty-three places below the cut, and an
+ * EMPTY brief as a result.
+ *
+ * The test for a case nobody has seen: could this row be published if it were
+ * ranked first? If not, it may not hold a pool seat.
+ *
+ * FREE. `buildInstrumentTableHydrated` fetches gates for every row it selects,
+ * not for the head of the list, so assessing the whole ranking costs no query
+ * that was not already made.
+ */
+export function accessiblePool(
+  rows: InstrumentRow[],
+  eligibility: EligibilityAnswers | undefined,
+  log?: ExclusionLog,
+): InstrumentRow[] {
+  const assessed = assessAll(
+    rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+    eligibility);
+  return rows.filter((r) => {
+    const a = r.instrumentId ? assessed.get(r.instrumentId) : undefined;
+    if (a?.status !== "blocked") return true;
+    log?.record("VER-BLOCKED", r.instrumentId ?? r.channel,
+      `${a.blockers.length} encoded eligibility filters conclusively fail`);
+    return false;
+  });
+}
+
+/**
+ * Why a founder has no doors, in the funds' own words.
+ *
+ * FUND-1 says an empty table is never the answer WHILE ANY DOOR IS OPEN. The
+ * converse is the case this exists for: where no door is open, the brief has to
+ * say so and say what would change it. Silence is the one answer that is never
+ * acceptable, and silence is what shipped -- a brief with an empty table, no
+ * explanation, and a console line about a branch that cannot be reached.
+ *
+ * The requirement text is VERBATIM from the fund's own encoded gate, never a
+ * paraphrase and never our own words for it. That is the same standing rule
+ * that governs the route: what a fund requires comes from the fund.
+ */
+export function explainNoDoors(
+  rows: InstrumentRow[],
+  eligibility: EligibilityAnswers | undefined,
+): NoDoors {
+  const assessed = assessAll(
+    rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+    eligibility);
+  const byRequirement = new Map<string, { requirement: string; field?: string; funds: number }>();
+  for (const r of rows) {
+    const a = r.instrumentId ? assessed.get(r.instrumentId) : undefined;
+    if (a?.status !== "blocked") continue;
+    // One row cannot be counted twice for the same requirement, or a fund with
+    // two phrasings of one rule reads as two reasons.
+    const seen = new Set<string>();
+    for (const b of a.blockers) {
+      const key = b.requirement.trim().toLowerCase();
+      if (seen.has(key)) continue;
+      seen.add(key);
+      const cur = byRequirement.get(key);
+      if (cur) cur.funds += 1;
+      else byRequirement.set(key, { requirement: b.requirement, field: b.field, funds: 1 });
+    }
+  }
+  return {
+    considered: rows.length,
+    ruledOutBy: [...byRequirement.values()].sort((a, b) => b.funds - a.funds).slice(0, 5),
+  };
+}
 
 /** One candidate, with every score the ordering consulted still attached --
  *  the caller needs the assessment and the ease line to build the row. */

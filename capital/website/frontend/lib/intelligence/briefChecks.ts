@@ -106,6 +106,12 @@ export const BRIEF_LIMITS: BriefLimits = {
 export function checkBrief(
   report: Partial<IntelligenceReport>,
   plug?: string,
+  /** The institution names the writer was SHOWN, which is a superset of what
+   *  published. Required to decide BL-B1; when it is absent the rule reports
+   *  that it could not be evaluated rather than passing silently, because an
+   *  optional argument that quietly disables a rule is how SOP-2 went five
+   *  months without once evaluating its own predicate. */
+  candidatesShown?: string[],
 ): CheckViolation[] {
   const v: CheckViolation[] = [];
   const bullets = report.bottomLine ?? [];
@@ -122,7 +128,28 @@ export function checkBrief(
   }
 
   // ── the funds ──────────────────────────────────────────────────────────
-  if (institutions.length === 0) v.push({ ruleId: "FUND-1", detail: "no institutions published" });
+  // ── FUND-1, both halves ─────────────────────────────────────────────────
+  // "At least one row publishes. An empty table is never the answer WHILE ANY
+  // DOOR IS OPEN." The check only ever saw the first sentence, and it could
+  // only see it in a bench script: `checkBrief` runs in no build gate and in no
+  // route, so an empty table shipped, was noticed by a human rendering the
+  // page, and cost nothing anywhere in the suite.
+  //
+  // The second sentence is the one that decides what an empty table MEANS. An
+  // empty table with no explanation is silence, which is never acceptable. An
+  // empty table that says how many funds were considered and which of their own
+  // requirements ruled every one of them out is a real answer to a founder who
+  // genuinely has no route today, and it tells them what would change it.
+  if (institutions.length === 0) {
+    const nd = report.noDoors;
+    if (!nd) {
+      v.push({ ruleId: "FUND-1", detail: "empty table with no explanation: the brief says nothing at all" });
+    } else if (!nd.ruledOutBy.length) {
+      v.push({ ruleId: "FUND-1", detail: `empty table over ${nd.considered} funds with no requirement named as the reason` });
+    } else if (nd.considered === 0) {
+      v.push({ ruleId: "FUND-1", detail: "empty table and nothing was even considered: the pool never built" });
+    }
+  }
   if (institutions.length > BRIEF_LIMITS.institutionsMax) {
     v.push({ ruleId: "FUND-2", detail: `${institutions.length} rows (max ${BRIEF_LIMITS.institutionsMax})` });
   }
@@ -208,6 +235,32 @@ export function checkBrief(
     }
   }
 
+  // ── BL-B1: a bullet naming a fund that is not in the table ─────────────
+  // A Banned rule, and one the enforcement regex could never see. Found LIVE
+  // on the first brief rendered after the pool fix: two of five bullets led
+  // with "Innovation Fund SSP" -- correctly, it was the best-sized route for
+  // that founder -- and it was candidate seven, cut by the six-row cap. The
+  // founder is told to go after a fund that is not on the page.
+  //
+  // Decidable without recognising funds in general. The set that matters is
+  // the set we HANDED the writer: it named that fund because we showed it. So
+  // the test is a comparison of two lists we already hold, and it names no
+  // fund, country or sector.
+  if (candidatesShown === undefined) {
+    v.push({ ruleId: "BL-B1", detail: "not evaluated: the caller did not pass the candidates the writer was shown" });
+  } else {
+    const published = new Set(institutions.map((r) => foldKey(r.institution)));
+    const cut = candidatesShown.filter((n) => !published.has(foldKey(n)));
+    for (const [i, b] of bullets.entries()) {
+      for (const name of cut) {
+        if (name.trim().length >= 6 && String(b).includes(name.trim())) {
+          v.push({ ruleId: "BL-B1", detail:
+            `bullet ${i + 1} names "${name.trim()}", which was cut and is not in the table` });
+        }
+      }
+    }
+  }
+
   // ── positioning and state of play ──────────────────────────────────────
   if (words(report.positioning) > BRIEF_LIMITS.positioningWords) {
     v.push({ ruleId: "POS-1", detail: `${words(report.positioning)} words (max ${BRIEF_LIMITS.positioningWords})` });
@@ -231,23 +284,123 @@ export function checkBrief(
   if (!String(report.caveats ?? "").trim()) {
     v.push({ ruleId: "BRIEF-2", detail: "no caveat" });
   }
-  const allText = [
-    ...bullets, report.positioning, sop, report.caveats,
-    ...institutions.flatMap((r) => [r.whyEligible, r.nextStep, r.blocker, r.institution, r.ticket]),
-  ].filter(Boolean).join(" \n ");
-  if (/—/.test(allText)) v.push({ ruleId: "BRIEF-3", detail: "em-dash in founder-facing text" });
+  // ── Everything a founder reads, not a list of nine fields ───────────────
+  // This was a hand-written union of nine fields. The report renders far more
+  // than nine: the support type, the legal basis, the scheme operators, the
+  // fund's own registered purpose, the judgement criteria, the structuring
+  // notes, the application route, the link label, the comparable firms and the
+  // withheld notice are all on the page and none of them was ever scanned. A
+  // union maintained by hand covers what someone remembered; `readerText`
+  // covers what the report CONTAINS, so a field added tomorrow is inside these
+  // rules with no edit here.
+  // BRIEF-4 and VOI-B1 are about the product's own voice, so they run over what
+  // the product WROTE -- the prose and the row copy -- and not over the
+  // eligibility screen, whose text is each fund's requirement verbatim beside
+  // its source. Quoting a rule and naming the document it came from is the
+  // opposite of leaking machinery.
+  const ourText = readerText({
+    bottomLine: report.bottomLine, positioning: report.positioning,
+    stateOfPlay: report.stateOfPlay, caveats: report.caveats,
+    institutions: report.institutions, withheld: report.withheld,
+  });
+  const allText = ourText.join(" \n ");
+  for (const s of readerText(report)) {
+    if (/—/.test(s)) {
+      v.push({ ruleId: "BRIEF-3", detail: `em-dash in founder-facing text: "${s.slice(0, 60)}"` });
+      break;
+    }
+  }
   for (const { pattern, what } of BACKEND_LEAKAGE) {
     if (pattern.test(allText)) v.push({ ruleId: "BRIEF-4", detail: `internal machinery in reader text (${what})` });
   }
+  // VOI-B1 is the shared contract's statement of the same property, and it is
+  // where the rule is written to apply EVERYWHERE rather than to the four
+  // brief sections. BRIEF-4 above is scoped to the document; this is the one
+  // that has to hold on a field nobody thought of, which is why it runs over
+  // the same walk rather than over a list.
+  for (const s of ourText) {
+    if (MACHINERY_VOCABULARY.test(s)) {
+      v.push({ ruleId: "VOI-B1", detail: `the product describing its own machinery to the reader: "${s.slice(0, 70)}"` });
+      break;
+    }
+  }
+
+  // ── FUND-B1: the table's own facts, restated in prose ───────────────────
+  // The support type, the ticket and the comparable firms RENDER as columns.
+  // Repeating them in a sentence spends the reader's attention on something
+  // their eye has already crossed, and it is decidable: the exact string the
+  // column shows either appears in the prose or it does not.
+  const prose = [...bullets, report.positioning, sop].filter(Boolean).map(String);
+  for (const r of institutions) {
+    for (const [what, value] of [
+      ["ticket size", r.ticket],
+      ["support type", r.supportType],
+      ...(r.comparableFirms ?? []).map((f) => ["a comparable firm", f.name] as const),
+    ] as const) {
+      const needle = String(value ?? "").trim();
+      // Short strings are words, not facts: a two-character ticket or a
+      // one-word support type would match ordinary prose. The rule is about
+      // restating a rendered VALUE, so it needs a value distinctive enough to
+      // be one.
+      if (needle.length < 6) continue;
+      if (prose.some((p) => p.includes(needle))) {
+        v.push({ ruleId: "FUND-B1", detail: `${what} "${needle}" is restated in prose and already renders in the table` });
+      }
+    }
+  }
 
   return v;
+}
+
+/** Vocabulary that is only ever the product talking about itself. Distinct
+ *  from BACKEND_LEAKAGE, which catches specific emissions; this catches the
+ *  register. Both are phrase-shaped so ordinary prose cannot trip them. */
+const MACHINERY_VOCABULARY =
+  /\b(?:encoded (?:gate|rule|filter)s?|gate coverage|eligibility screen coverage|verification level|instrument id|our corpus|the corpus (?:holds|says)|rule count|coverage ratio)\b/i;
+
+/** Keys whose values are machine identifiers rather than prose a founder
+ *  reads. Everything else in the report is on the page in some form.
+ *
+ *  This is a closed set because the report's SHAPE is closed -- these are the
+ *  keys the renderer resolves into hrefs and lookups rather than printing. A
+ *  key added tomorrow is prose until someone says otherwise, which is the safe
+ *  default: the cost of scanning an identifier is a false positive someone
+ *  reads, and the cost of missing a field is a rule that silently stops
+ *  applying to it. */
+const NON_READER_KEYS = new Set([
+  "url", "link", "channel", "instrumentId", "generatedAt", "provenance",
+  "schemeCode", "id", "kind", "verdict", "accessMode",
+  // A citation names a document. That is an identifier, and showing it is the
+  // product working -- a rule displayed without its source is not evidence. The
+  // first run of this walk over a real brief flagged 40 `.pdf` locators as
+  // "internal machinery in reader text", which is precisely the crying wolf
+  // this file's own header refuses.
+  "file", "locator",
+  // Computed, ranked on, and NOT PRINTED (see panelReport). Text nobody reads
+  // cannot violate a rule about what a founder reads. It carries the gate-count
+  // phrasing verbatim, so leaving it in would have made every brief fail
+  // BRIEF-4 forever on a string that never reaches the page.
+  "whyEasy",
+]);
+
+/** Every string in the report a founder can read, whatever nesting it is at. */
+export function readerText(value: unknown, key = ""): string[] {
+  if (typeof value === "string") return NON_READER_KEYS.has(key) ? [] : [value];
+  if (Array.isArray(value)) return value.flatMap((x) => readerText(x, key));
+  if (value && typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>)
+      .filter(([k]) => !NON_READER_KEYS.has(k))
+      .flatMap(([k, x]) => readerText(x, k));
+  }
+  return [];
 }
 
 /** Every rule id this module can emit — checked against the contracts so a
  *  rule can never exist in only one of the two places. */
 export const CHECK_RULE_IDS = [
   "BL-1", "BL-2",
-  "FUND-1", "FUND-2", "FUND-3", "FUND-4", "FUND-5", "FUND-6", "FUND-7",
+  "FUND-1", "FUND-2", "FUND-3", "FUND-4", "FUND-5", "FUND-6", "FUND-7", "FUND-B1",
   "POS-1", "SOP-1", "SOP-2",
   "BRIEF-1", "BRIEF-2", "BRIEF-3", "BRIEF-4",
+  "VOI-B1", "BL-B1",
 ] as const;

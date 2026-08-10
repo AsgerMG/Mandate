@@ -30,7 +30,7 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
 }
 import { semanticFundMatch } from "./semantic";
 import { BRIEF_LIMITS } from "./briefChecks";
-import { orderMemoCandidates, WRITER_CANDIDATE_CAP } from "./memoCandidates";
+import { accessiblePool, explainNoDoors, orderMemoCandidates, WRITER_CANDIDATE_CAP } from "./memoCandidates";
 import { ExclusionLog } from "./exclusions";
 import { assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
@@ -405,6 +405,8 @@ function buildInstitutions(
     accessMode: row.accessMode,
     applicationUrl: row.applicationUrl,
     applicationChannel: row.applicationChannel,
+    applicationRouteFor: row.applicationRouteFor,
+    applicationRouteUnknown: row.applicationRouteUnknown,
     // Resolved in code so the row carries a link the writer cannot invent.
     link: instrumentLink(row),
     // Carried through, and they were NOT. InstrumentRow has computed both since
@@ -441,6 +443,22 @@ function buildInstitutions(
     comparableFirms: comparableFirmsForChannel(row.channel, records, dbPeers),
     nextStep: "",
   }));
+}
+
+/**
+ * `buildInstitutions`, reachable from the free table check.
+ *
+ * A DIRECT CALL, never a second implementation. The alternative -- a check that
+ * rebuilds the rows it is grading -- is the defect this repo has paid for
+ * repeatedly, and it is worse here than anywhere: the whole point is to grade
+ * the rows the founder is handed.
+ */
+export function buildRowsForCheck(
+  rows: InstrumentRow[],
+  records: CompetitorRecord[],
+  dbPeers: CompetitorRecord[],
+): InstitutionEntry[] {
+  return buildInstitutions(rows, records, dbPeers);
 }
 
 /** The founder's own footprint in the corpus, formatted for the BLUF. */
@@ -1413,11 +1431,31 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     ...tableInputFromAnswers(req.eligibility),
     log,
   });
+  // ── The cut comes AFTER the drop, which is what VERDICT_POOL always meant ──
+  // A conclusively blocked fund is never published, so a blocked row holding a
+  // pool seat publishes nothing. Slicing first spent the whole pool on rows
+  // that were then deleted: a 250+ company against an SME-heavy national
+  // register had twenty-two accessible funds, the first at rank 81, and every
+  // one of the eighteen seats went to a scheme it could not use. The brief was
+  // EMPTY. See accessiblePool for the property and the measurement.
+  //
+  // Strictly additive: for a founder with nothing blocked in the top of the
+  // ranking this is the same eighteen rows in the same order, and no row that
+  // reaches the founder today can stop reaching them.
+  const accessible = accessiblePool(hydratedTable, req.eligibility, log);
   const instrumentTable = applyProfileSignal(
-    hydratedTable.slice(0, VERDICT_POOL),
+    accessible.slice(0, VERDICT_POOL),
     req.profileSignal,
     req.companyType,
   );
+  // FUND-1's other half. An empty table is never the answer while any door is
+  // open -- and where none is, the brief has to SAY SO and say what would
+  // change it. Silence is the only answer that is never acceptable, and
+  // silence is what shipped. Code-authored and model-free, so it cannot fail
+  // to appear because a writer call did.
+  const noDoors = accessible.length === 0
+    ? explainNoDoors(hydratedTable, req.eligibility)
+    : undefined;
 
   emit({ type: "status", step: "generating", detail: "Assembling evidence: institutions, comparables, current agenda" });
   // The founder's own answer now sits in this chain, because intake and the
@@ -1447,6 +1485,9 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
       // Code-authored and appended AFTER the writer's fields, so nothing the
       // model returns can overwrite, soften or omit it.
       withheld: withheldNotice(log.countsByRule()["SEL-UNCONFIRMED-OPEN"] ?? 0),
+      // Appended after the writer's fields for the same reason `withheld` is:
+      // nothing the model returns can overwrite, soften or omit it.
+      noDoors,
       // Where each part came from, plus what was removed on the way. Always
       // emitted, rendered only under ?trace=1 — the cost is a few hundred
       // bytes and it is the difference between "why is this fund missing"

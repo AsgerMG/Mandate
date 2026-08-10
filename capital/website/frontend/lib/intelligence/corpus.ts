@@ -248,6 +248,16 @@ export interface DbInstrument {
    *  inherited from the parent regime when a child has none of its own. The
    *  one thing on a published row that is an instruction rather than a fact. */
   application?: { channel: string | null; timeline: string | null; url: string | null } | null;
+  /** True when `application` was recorded for THIS instrument; false when it
+   *  was inherited from the parent regime.
+   *
+   *  The distinction was thrown away the moment the two were merged, one line
+   *  below where the inheritance happens, and the merged value was then
+   *  published to founders as this scheme's own instruction. Over the 736
+   *  published routes, 216 are the fund's own and 520 are a parent's. Whose
+   *  route it is decides whether it may be asserted, so the corpus has to keep
+   *  it. See applicationRoute.ts. */
+  applicationOwn?: boolean;
   /** Funded-company sector counts, e.g. {health_life_sciences: 812, ...}.
    *  What this instrument has ACTUALLY funded, as opposed to what its prose
    *  sounds like. */
@@ -398,6 +408,31 @@ function snapshotPath(): string {
   return path.join(process.cwd(), "public", "data", "instrument_terms.json");
 }
 
+/**
+ * Whose route is this? Recovered on the snapshot path, where the exporter has
+ * already applied the inheritance and only the resolved value survives.
+ *
+ * The Postgres path sets `applicationOwn` exactly, from membership of the
+ * `instrument_application` table, and this pass leaves any value already set
+ * alone. Here the only evidence left is that the child's route text is
+ * character-for-character the parent's — which is what inheritance produces,
+ * and which a separately curated child route is not. Both paths must agree,
+ * because a rule that holds against the live corpus and not against the
+ * committed snapshot is a rule that changes behaviour when Postgres is down.
+ */
+export function markApplicationProvenance(records: DbInstrument[]): DbInstrument[] {
+  const byId = new Map(records.map((r) => [r.id, r]));
+  for (const r of records) {
+    if (r.applicationOwn !== undefined) continue;
+    const parentRoute = r.parentId ? byId.get(r.parentId)?.application ?? null : null;
+    r.applicationOwn = !r.application
+      ? false
+      : !(parentRoute && parentRoute.channel === r.application.channel
+          && parentRoute.timeline === r.application.timeline);
+  }
+  return records;
+}
+
 function loadDbInstrumentsFromJson(): DbInstrument[] | null {
   try {
     const file = snapshotPath();
@@ -405,7 +440,7 @@ function loadDbInstrumentsFromJson(): DbInstrument[] | null {
       generatedAt?: string; records: DbInstrument[];
     };
     snapshotGeneratedAt = parsed.generatedAt ?? "";
-    return parsed.records;
+    return markApplicationProvenance(parsed.records);
   } catch (e) {
     // Loud, because the commonest cause is not "there is no snapshot" but "I
     // looked in the wrong place": snapshotPath() resolves from process.cwd(),
@@ -586,8 +621,11 @@ export async function hydrateDbInstruments(): Promise<void> {
         // read site so the shape is identical on the Postgres and JSON paths;
         // the two diverging silently is how a scored component ends up neutral
         // in production and correct on a laptop.
-        // Inherited from the parent regime, same rule as the JSON export.
+        // Inherited from the parent regime, same rule as the JSON export --
+        // and now RECORDED as inherited rather than silently merged, because
+        // whose route it is decides whether the row may assert it.
         application: appByInstrument.get(inst.id) ?? (inst.parent_id ? appByInstrument.get(inst.parent_id) : undefined) ?? null,
+        applicationOwn: appByInstrument.has(inst.id),
         sectorMix: (() => {
           const raw = inst.sector_mix;
           if (!raw) return null;

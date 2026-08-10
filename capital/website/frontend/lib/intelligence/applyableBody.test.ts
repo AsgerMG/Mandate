@@ -212,7 +212,15 @@ describe("checkBrief now fires FUND-7 on the brief that was rendered and read", 
   });
 
   it("stays quiet on a clean brief", () => {
-    expect(checkBrief(report({}))).toEqual([]);
+    // BL-B1 cannot be decided without the candidate list the writer was shown,
+    // and it says so rather than passing. That notice is the whole point: an
+    // optional argument that silently disables a rule is how SOP-2 went months
+    // without evaluating its own predicate. A caller that HAS the candidates
+    // gets a real verdict; this one does not, and the output says which.
+    const v = checkBrief(report({}));
+    expect(v.map((x) => x.ruleId)).toEqual(["BL-B1"]);
+    expect(v[0].detail).toContain("not evaluated");
+    expect(checkBrief(report({}), undefined, [])).toEqual([]);
   });
 });
 
