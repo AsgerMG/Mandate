@@ -102,6 +102,14 @@ export const UNENFORCED_RULES: Record<string, UnenforcedRule> = {
   "FUND-11": { why: "judgement", predicate: "a dormant row is described as dormant and never promised an upcoming call" },
   "FUND-12": { why: "judgement", predicate: "no row is described as first, best or strongest relative to another" },
   "FUND-13": { why: "judgement", predicate: "registeredPurpose is used in the scheme's own statutory terms where present" },
+  // The mechanical half of this -- does the row HAVE a fact no earlier row
+  // had -- is FUND-3's own test and is checked. What is left needs reading:
+  // whether a note that is not a byte-copy of its neighbour is nevertheless
+  // about the same thing. A substring test against the group heading would
+  // pass any competent paraphrase and fail an honest sentence that happens to
+  // name the programme, which is the shape of check that trains you to ignore
+  // the report.
+  "FUND-14": { why: "judgement", predicate: "a row's note, with every fact its group heading already states struck out, still says something about that row" },
   "FUND-B2": { why: "judgement", predicate: "the brief never tells the founder to check whether they qualify; a phrase register would be an enumeration and is refused" },
 
   // ── Positioning.

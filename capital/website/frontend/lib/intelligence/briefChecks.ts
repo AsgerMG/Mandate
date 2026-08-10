@@ -16,6 +16,7 @@
 // A rule names a property, never an instance. Nothing below names a company,
 // fund, sector or country.
 import { directsAtDepartment, whyNotApplyable } from "./applyableBody";
+import { distinguishers } from "./rowNovelty";
 import { WATCH_ONLY_COPY } from "./watchOnly";
 import type { IntelligenceReport } from "./types";
 
@@ -118,6 +119,46 @@ export interface BriefLimits {
  * rows 4-7 are four Dutch regional schemes whose `whyEligible` is the same
  * sentence four times with the region swapped, and whose `nextStep` is
  * "contact the office to open a dossier" four times.
+ *
+ * ── wsDE: THE CATALOGUE IS GONE AND THE CAP DID NOT MOVE ON ONE RUN ────────
+ *
+ * The paragraph below says the eighth row should not be bought "until FUND-3's
+ * test is enforced on that shape". It now is, and the shape it named is fixed:
+ * a run of rows that are the same kind of door states its shared facts once,
+ * and each row carries what is its own. Both things that blocked the eighth
+ * row have been measured clear, and it is STILL SEVEN. Here is everything, so
+ * whoever moves it next is moving it on the evidence rather than on the
+ * argument.
+ *
+ * WHAT IS CLEAR NOW.
+ *   The tail is not a catalogue. Re-rendered at seven rows, SMART Photonics'
+ *   four Dutch rows now turn on the lead-applicant rule, the South Netherlands
+ *   condition and the co-financing line's relation to its sibling, with four
+ *   different bodies to contact. The one sentence they share is said once.
+ *   The writer does not omit at nine. That is the measurement that put
+ *   `WRITER_CANDIDATE_CAP` at 8 rather than 9 in the first place, and it was
+ *   taken on the old flat evidence block. On the grouped block, the company
+ *   that omitted one candidate of eight under wsDC came back covering NINE OF
+ *   NINE, rejected 0, omitted 0, and published a full eight rows.
+ *   The rows past seven are not more repetitive than the rows before them.
+ *   Over 250 founders: a row at rank 8-12 carries a fact no earlier row
+ *   carried on the same axes and at the same rates as a row at rank 2-7
+ *   (its own measured award 98% against 100%, its own conditions 53% against
+ *   56%, how the money is shaped 50% against 56%).
+ *
+ * WHY IT IS STILL SEVEN. One bench run is one bench run, and the observation
+ * it would overturn -- a writer covering 5 of 9 -- is also a real one. Moving
+ * a shipped cap on a single counter-observation is how a short table ships.
+ * The experiment that settles it is small and named: run the archetypes at
+ * institutionsMax 8 and WRITER_CANDIDATE_CAP 9 and read `omitted` on each. If
+ * none omits, the eighth row is worth +2.0 tune / +1.6 holdout on EXACT and
+ * it is now carryable.
+ *
+ * The eighth row was also READ, in that run: it was a partnership from a
+ * family none of the seven above it belonged to, which is width. Its note
+ * hedged ("funds mobility and transport applications rather than industrial
+ * robotics directly"), which is the honest thing to say and is the shape
+ * FUND-6 is about. That is the thing to watch when the cap does move.
  *
  * THAT IS FUND-3, AND IT IS NOT A ROW-COUNT DEFECT. It is present at six —
  * the six-row Neura render spent four of six slots on one programme — so the
@@ -233,6 +274,37 @@ export function checkBrief(
       v.push({ ruleId: "FUND-3", detail: `identical reasoning to another row: ${r.institution}` });
     }
     reasoning.add(key);
+  }
+  // ── FUND-3's own test, on the row rather than on two strings ─────────────
+  // The two rules above decide the rule's two WORKED EXAMPLES: one institution
+  // twice under one basis, and two names carrying byte-identical prose. The
+  // rule itself asks something wider, and something a founder feels rather than
+  // a diff finds: would the reader learn anything from the second row that they
+  // did not learn from the first?
+  //
+  // Decidable without judgement, because the row is a set of facts. Remove
+  // every fact whose value an earlier published row already carried; what is
+  // left is why this row is worth its slot. Nothing left, and the row is the
+  // same thing said again -- whatever its name, and however differently the
+  // writer phrased it.
+  //
+  // WHAT THIS IS NOT. It is not a licence to drop the row. A wrongly-withheld
+  // row is a fund a founder never sees, and one notified scheme delivered by
+  // several bodies is several real doors -- collapsing those recovers nothing
+  // and costs routes (wsCG2). This reports; the pipeline never reads it.
+  //
+  // It is currently GREEN on every founder measured: 432 of 432 rows that
+  // follow another row of their own kind carry a fact no earlier row carried.
+  // That is the finding, not an idle check. It is what says the catalogue is a
+  // presentation defect rather than a selection one, and it is the guard that
+  // stops a future fold from being widened until it hides a row that really
+  // has nothing to say.
+  for (const [i, r] of institutions.entries()) {
+    if (i === 0) continue;
+    if (distinguishers(r, institutions.slice(0, i)).length === 0) {
+      v.push({ ruleId: "FUND-3", detail:
+        `row ${i + 1} carries no fact an earlier row did not: ${r.institution}` });
+    }
   }
   for (const r of institutions) {
     if (WATCH_ONLY_COPY.test(String(r.nextStep ?? ""))) {

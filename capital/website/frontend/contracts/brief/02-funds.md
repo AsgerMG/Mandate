@@ -39,14 +39,40 @@ reporting, not prose to publish. Say what the row is and let it stand.
   `scripts/check_contracts.ts` fails the build if this sentence and that
   constant disagree, so it can never quietly become the writer's own number.
 - FUND-3 (hard) No two rows say the same thing. The test: **would the reader
-  learn anything from the second one they did not learn from the first?** Two
+  learn anything from the second one they did not learn from the first?**
+
+  Applied to the row, not to two strings: take the facts the row publishes and
+  remove every one whose value an earlier row already carried. What is left is
+  why the row is worth its slot. Nothing left, and it is the same thing said
+  again, whatever its name and however differently the note is phrased. Two
   rows resolving to one institution under one legal basis fail it, and so do
-  two differently-named rows carrying word-for-word identical reasoning and
-  the same next step.
+  two differently-named rows carrying identical reasoning and the same move.
+
+  A row that fails this is a scoring or corpus finding to report. It is never
+  repaired by deleting the row: one scheme delivered by several bodies is
+  several real doors, and a withheld row is a fund a founder never sees.
 
   **evidence:** a brief published two Horizon clusters whose whyEligible and
   Move were identical sentences, spending two of the table's slots to say one
   thing.
+- FUND-14 (judged) Where consecutive rows are the same kind of door, the page
+  states what they share once, above them. Each note then turns on what
+  separates its own row, and never restates a shared fact.
+
+  The test: **strike from the note every fact the group heading already
+  states. Is there a sentence left, and is it about this row?** A note that
+  survives only as a restatement of the heading has spent a slot on something
+  the reader crossed a moment ago.
+
+  What separates rows inside a group is measured, not assumed: what the fund
+  has actually paid, where it operates, who takes the application, and the
+  conditions it sets itself. Every row that follows another of its own kind
+  carries at least one of them.
+
+  **evidence:** two briefs rendered at seven rows both read as a catalogue
+  from row four down, four rows under one legal basis carrying one sentence
+  and one action. The rows differed by a factor of five in what they typically
+  award, and none of that reached the writer.
 - FUND-4 (hard) `nextStep` is an action the founder can start.
 
   The test: **could they begin it this week, and would they know they had

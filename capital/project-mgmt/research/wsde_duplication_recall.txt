@@ -1,0 +1,68 @@
+(node:66530) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-10T19:54:07.950Z
+ranker: all 245 request(s) on EMBEDDING
+population=recall founders=250 published cap=7
+published rows in this population: 1750 (median table 7)
+
+[1] PER-AXIS REPETITION INSIDE ONE PUBLISHED TABLE (cap 7)
+  axis                     carried   repeats an earlier row      tables where 3+ rows share one value
+  accessMode                 1750    1500 ( 86%)             250/250
+  aidIntensityN              1750    1474 ( 84%)             249/250
+  country                    1750    1398 ( 80%)             250/250
+  comparableFirms             727     526 ( 72%)             108/250
+  supportType                1750    1263 ( 72%)             248/250
+  ticket                     1750    1228 ( 70%)             246/250
+  legalBasis                  687     459 ( 67%)             121/250
+  familyName                 1318     847 ( 64%)             191/250
+  applicationRouteFor         542     335 ( 62%)              88/250
+  descriptor                 1750     775 ( 44%)             189/250
+  applicationChannel         1108     465 ( 42%)             115/250
+  structuringNotes           1567     511 ( 33%)             150/250
+  applicationRouteUnknown     642     177 ( 28%)              43/250
+  judgementCriteria          1394     344 ( 25%)              95/250
+  schemeOperators             586      85 ( 15%)              21/250
+  aidIntensity                 26       3 ( 12%)               0/250
+  typicalAwardN              1750      42 (  2%)               2/250
+  typicalAward               1750       1 (  0%)               0/250
+
+[2] DOES ROW k CARRY A FACT NO EARLIER ROW CARRIED? (identity excluded: institution, channel, schemeCode, link, applicationUrl)
+  k    rows k    any new fact      new fact OUTSIDE the framing   SAME framing as an earlier row
+   2     250     250 (100%)         250 (100%)                    106 ( 42%)
+   3     250     250 (100%)         250 (100%)                    131 ( 52%)
+   4     250     250 (100%)         250 (100%)                    147 ( 59%)
+   5     250     250 (100%)         250 (100%)                    140 ( 56%)
+   6     250     250 (100%)         250 (100%)                    196 ( 78%)
+   7     250     250 (100%)         250 (100%)                    166 ( 66%)
+   8     250     250 (100%)         250 (100%)                    162 ( 65%)
+   9     250     250 (100%)         250 (100%)                    173 ( 69%)
+  10     250     250 (100%)         250 (100%)                    195 ( 78%)
+  11     250     250 (100%)         250 (100%)                    175 ( 70%)
+  12     250     250 (100%)         250 (100%)                    169 ( 68%)
+
+[3] WHEN ROW k SAYS SOMETHING NEW, WHICH AXIS CARRIES IT (share of such rows)
+  rows 2-7  (n=1500)  typicalAward 100%  typicalAwardN 97%  judgementCriteria 56%  structuringNotes 56%  descriptor 48%  applicationChannel 30%  schemeOperators 28%  applicationRouteUnknown 27%
+  rows 8-12  (n=1250)  typicalAward 98%  typicalAwardN 97%  judgementCriteria 53%  structuringNotes 50%  descriptor 41%  applicationChannel 24%  schemeOperators 19%  applicationRouteUnknown 18%
+
+[4] GROUPS: CONSECUTIVE ROWS THAT ARE THE SAME KIND OF DOOR (cap 7)
+  groups of  1: 1073
+  groups of  2:  142   (284 published rows)
+  groups of  3:   58   (174 published rows)
+  groups of  4:   21   (84 published rows)
+  groups of  5:   11   (55 published rows)
+  groups of  6:   11   (66 published rows)
+  groups of  7:    2   (14 published rows)
+  677/1750 published rows (39%) sit in a group of two or more; largest group anywhere 7
+  tables with a group of 3+: 94/250 (38%)
+  of the 432 rows that follow another row of their own kind, 432 (100%) still carry a fact no earlier row carried, and 0 carry none
+
+[5] WHERE THE REPETITION SITS (published rows sharing a family with an earlier row)
+  847/1318 rows repeat a family already on the page, spread over 20 famil(ies); largest 204 (24% of the repetition)
