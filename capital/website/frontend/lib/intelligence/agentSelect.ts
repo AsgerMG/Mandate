@@ -127,9 +127,14 @@ import { fence } from "./untrusted";
 import { assessAll, type InstrumentAssessment } from "./verdict";
 import { assembleInstructions } from "./contracts";
 
-/** The arms. `off` is the default and is bit-identical to the shipped path. */
-export type AgentSelectArm = "off" | "rows" | "assist" | "adviser" | "dry";
-const ARMS: AgentSelectArm[] = ["off", "rows", "assist", "adviser", "dry"];
+/**
+ * The arms. `off` is the default and is bit-identical to the shipped path.
+ *
+ * `reverse` is the ONE arm that is not a candidate for shipping and never will
+ * be. See `reverseNonsense` below for what it is for.
+ */
+export type AgentSelectArm = "off" | "rows" | "assist" | "adviser" | "dry" | "reverse";
+const ARMS: AgentSelectArm[] = ["off", "rows", "assist", "adviser", "dry", "reverse"];
 
 /**
  * Read ONCE, at module scope, and throw on anything unrecognised.
@@ -146,10 +151,65 @@ export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
       `AGENT_SELECT must be one of ${ARMS.join("|")}, got "${raw}". ` +
       `It is read once at module scope precisely so a typo cannot read as "off".`);
   }
+  if (raw === "reverse") {
+    // Two guards, because "default off" is not enough for an arm whose whole
+    // purpose is to publish the WRONG funds.
+    //
+    // 1. It cannot start in a production build at all. A Next.js build and a
+    //    `next start` both run with NODE_ENV=production, so a machine serving
+    //    founders refuses to boot with this set rather than serving nonsense.
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "AGENT_SELECT=reverse is a DIAGNOSTIC that deliberately publishes the " +
+        "worst-ranked funds first. It is not a product arm and it must never " +
+        "run in a production build.");
+    }
+    // 2. It says so, once, on stderr, in every process that loads it. A run
+    //    whose output looks like a ranking is a run whose log said this.
+    console.warn(
+      "[agentSelect] ARM=reverse — THE POOL IS BEING REVERSED. This is not a " +
+      "ranking and not a product arm: it exists only to prove that the order " +
+      "of the pool reaches the published memo. Any table produced under it is " +
+      "deliberately wrong.");
+  }
   return raw as AgentSelectArm;
 })();
 
 export const agentSelectEnabled = (): boolean => AGENT_SELECT_ARM !== "off";
+
+/**
+ * ── THE NONSENSE ARM: a permutation with no model in it ────────────────────
+ *
+ * wsDP. The checklist line that gated the first euro of real spend was "the
+ * model's order reaches the published memo — arm on vs off produces a
+ * different memo order on the same founder", and it was circular: the only
+ * arms that permute the pool are the ones that call Anthropic, and the owner
+ * had refused spending until the checklist was green.
+ *
+ * The circularity is only in the MODEL, not in the claim. What has to be shown
+ * is that a permutation applied at `agentSelectMemoPool` survives
+ * `orderMemoCandidates`, the display-name collapse and the writer cap, and
+ * reaches the rows that publish. Nothing about that is specific to the
+ * permutation being a good one — so this arm supplies a permutation that is
+ * free, deterministic, and unmistakably not a ranking.
+ *
+ * REVERSAL, and reversal specifically. A seeded shuffle would do the same job
+ * and would be harder to read: with a reversal the pool's LAST row is first,
+ * so the arm's own output is legible as garbage at a glance, and the overlap
+ * with the shipped candidates is at its minimum, which is what makes the
+ * difference at the writer's input large enough to see per founder rather than
+ * on average.
+ *
+ * IT IS STILL A PURE PERMUTATION, which is the safety property everything else
+ * rests on: same rows, same count, same set, different order. So the pool
+ * metric cannot move under it and `check_winner_not_gated` /
+ * `check_winner_not_blocked` are untouched — under this arm exactly as under
+ * the model's, and for the same reason.
+ */
+export function reverseNonsense(rows: InstrumentRow[]): InstrumentRow[] {
+  tally.reversed++;
+  return [...rows].reverse();
+}
 
 /** How deep into the ranked pool the selector reads. See the header: this is a
  *  ceiling/chance trade, not a taste.
@@ -252,6 +312,8 @@ const tally = {
   /** `dry` only: the size of the prompt the adviser WOULD have sent, and of
    *  the evidence round two would have carried. Priced by _wsdd_cost.ts. */
   dryChars: [] as number[], dryEvidenceChars: [] as number[], dryRetrieved: 0,
+  /** `reverse` only: pools permuted with no model in the loop. */
+  reversed: 0,
 };
 export function resetAgentSelectTally(): void {
   tally.calls = 0; tally.ok = 0; tally.failed = 0;
@@ -259,8 +321,18 @@ export function resetAgentSelectTally(): void {
   tally.emptyReply = 0; tally.badJson = 0; tally.eur = 0;
   tally.lookups = 0; tally.resolved = 0;
   tally.dryChars = []; tally.dryEvidenceChars = []; tally.dryRetrieved = 0;
+  tally.reversed = 0;
 }
 export function agentSelectTallyLine(): string {
+  // The nonsense arm reports itself as nonsense. A line that read like the
+  // others would be a line a reader could quote as a ranking result.
+  if (AGENT_SELECT_ARM === "reverse") {
+    return `agent-select: arm=reverse — ${tally.reversed} pool(s) REVERSED, ` +
+      `0 model calls, EUR 0.0000. THIS IS NOT A RANKING: the shipped ranker's ` +
+      `worst candidate is placed first. Any order or table produced under this ` +
+      `arm is deliberately wrong and exists only to show that the pool's order ` +
+      `reaches the memo.`;
+  }
   if (!tally.calls) return `agent-select: arm=${AGENT_SELECT_ARM}, no calls made`;
   return `agent-select: arm=${AGENT_SELECT_ARM} depth=${SELECT_DEPTH} count=${SELECT_COUNT}` +
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
@@ -708,6 +780,12 @@ export async function agentSelectRows(
   rows: InstrumentRow[], ctx: SelectContext,
 ): Promise<InstrumentRow[]> {
   if (AGENT_SELECT_ARM === "off") return rows;
+  // BEFORE the SELECT_COUNT guard, deliberately. That guard exists because a
+  // model cannot usefully choose six from six; a reversal is defined on any
+  // length, and a diagnostic that silently declined to permute a short pool
+  // would report "no difference" for a reason that has nothing to do with the
+  // seam it is testing.
+  if (AGENT_SELECT_ARM === "reverse") return reverseNonsense(rows);
   if (rows.length <= SELECT_COUNT) return rows;
   // NOTE: no by-name check for ANTHROPIC_API_KEY here, deliberately.
   //
