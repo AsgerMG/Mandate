@@ -76,3 +76,43 @@ export function fundsSentence(
   }
   return out;
 }
+
+/** Content words, case- and punctuation-blind. Four characters is the floor
+ *  because below it the token is a function word in every language the corpus
+ *  holds, and a shared "and" is not a shared fact. */
+const words = (s: string): string[] =>
+  s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").split(" ").filter((w) => w.length > 3);
+
+/**
+ * The sentence, unless it only says the row's own title back.
+ *
+ * ── The property ──────────────────────────────────────────────────────────
+ * A row already renders the scheme's title. A description that contributes NO
+ * content word the title does not already carry adds nothing to that row: it
+ * cannot separate the row from any other, because anything it says the title
+ * has already said.
+ *
+ * ── Why the test is "any novel word" and not a similarity threshold ────────
+ * Measured over 338 described rows across the 12 archetypes' pools:
+ *
+ *   novel content words   0     1    2    3    4+
+ *   rows                 95    11   19    9   204
+ *
+ * so the population is bimodal and almost any cutoff separates it. A RATIO
+ * would not be safe, though, and one measured case says why: two children of
+ * one national programme render the same title, and their descriptions are
+ * that title plus one word each. On an 80%-overlap rule both are dropped and
+ * the pair goes blind; on this rule both survive, because that one word is
+ * exactly what tells them apart. A test that can delete the only separating
+ * word is the wrong test however good its average looks.
+ *
+ * The 95 zero-novelty rows are 25.8% of all the description characters on a
+ * prompt, spent restating a title the model is reading on the line above.
+ */
+export function beyondTitle(
+  title: string | null | undefined, sentence: string,
+): string {
+  if (!sentence) return "";
+  const known = new Set(words(title ?? ""));
+  return words(sentence).some((w) => !known.has(w)) ? sentence : "";
+}

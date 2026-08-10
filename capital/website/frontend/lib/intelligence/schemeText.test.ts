@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { FUNDS_SENTENCE_CHARS, fundsSentence } from "./schemeText";
+import { FUNDS_SENTENCE_CHARS, beyondTitle, fundsSentence } from "./schemeText";
 
 describe("fundsSentence", () => {
   it("says nothing rather than saying nothing at length", () => {
@@ -53,5 +53,43 @@ describe("fundsSentence", () => {
   it("collapses the whitespace a fetched page carries", () => {
     expect(fundsSentence("Funds\n\n  clean   steel\tprojects."))
       .toBe("Funds clean steel projects.");
+  });
+});
+
+describe("beyondTitle", () => {
+  it("drops a sentence that only says the row's own title back", () => {
+    // Measured shape: 95 of 338 described rows. The page's opening line is the
+    // programme name with a colon after it, or a gazette citation of the same
+    // name, and the row already renders that name on the line above.
+    expect(beyondTitle(
+      "Technologietransfer-Programm Leichtbau (TTP LB)",
+      "Technologietransfer-Programm Leichtbau (TTP LB):")).toBe("");
+  });
+
+  it("KEEPS a sentence whose only new word is the one that separates siblings", () => {
+    // The case a similarity threshold gets wrong. Two children of one national
+    // programme render the SAME title; each description is that title plus one
+    // word, and that word is the entire distinction between them. An 80%
+    // overlap rule deletes both and the pair goes blind.
+    const title = "Bundesförderung für Energie- und Ressourceneffizienz in der Wirtschaft";
+    const a = "Bundesförderung für Energie- und Ressourceneffizienz in der Wirtschaft, Zuschussvariante.";
+    const b = "Bundesförderung für Energie- und Ressourceneffizienz in der Wirtschaft, Kreditvariante.";
+    expect(beyondTitle(title, a)).toBe(a);
+    expect(beyondTitle(title, b)).toBe(b);
+    expect(beyondTitle(title, a)).not.toBe(beyondTitle(title, b));
+  });
+
+  it("ignores case, punctuation and function words", () => {
+    expect(beyondTitle("Green Steel Fund", "The green steel fund.")).toBe("");
+  });
+
+  it("passes an ordinary description through untouched", () => {
+    const s = "Funds pilot lines for low-carbon cement, up to demonstration scale.";
+    expect(beyondTitle("Innovation Fund", s)).toBe(s);
+  });
+
+  it("is a no-op on an empty sentence and on a missing title", () => {
+    expect(beyondTitle("Anything", "")).toBe("");
+    expect(beyondTitle(null, "Funds hydrogen electrolysers.")).toBe("Funds hydrogen electrolysers.");
   });
 });

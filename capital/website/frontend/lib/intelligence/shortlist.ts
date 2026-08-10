@@ -40,7 +40,7 @@ import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
-import { fundsSentence } from "./schemeText";
+import { beyondTitle, fundsSentence } from "./schemeText";
 import { recordFacts, recordPeerBranch, recordScoreSeats, recordStage } from "./tableTrace";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
@@ -2586,7 +2586,13 @@ export function materialiseInstrumentTable(
         // Budgeted by `fundsSentence`, never sliced here. One cut, one place:
         // a second truncation would be the "keep in sync" comment this repo
         // treats as the bug itself.
-        description: fundsSentence(leaf.description) || undefined,
+        //
+        // `beyondTitle` drops the 28% of described rows whose sentence is the
+        // row's own title said back to it -- a gazette line, or the programme
+        // name with a colon after it. Those spend a quarter of all the
+        // description characters on a prompt and cannot separate anything,
+        // because the title is already on the line above.
+        description: beyondTitle(leaf.name, fundsSentence(leaf.description)) || undefined,
         // Where this sits in its agency's structure. A programme means more
         // read against its parent -- "Tremplin" alone is opaque, "ADEME >
         // Tremplin" says who runs it and that ADEME has others. Only shown
