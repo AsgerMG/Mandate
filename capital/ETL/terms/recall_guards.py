@@ -39,6 +39,7 @@ and sharing one tells us nothing.
 from __future__ import annotations
 
 import collections
+import hashlib
 import json
 import os
 import re
@@ -71,6 +72,36 @@ def squash(s: str) -> str:
     return re.sub(r"\s+", " ", norm(s))
 
 
+# Eight words is the unit: long enough that two independent texts do not share
+# one by chance, short enough to catch a text quoted into a profile with a word
+# changed. MUST match GRAM in website/frontend/lib/intelligence/recallLeaks.ts.
+GRAM = 8
+
+
+def _grams(squashed: str, k: int = GRAM) -> set[str]:
+    w = [t for t in squashed.split(" ") if t]
+    if not w:
+        return set()
+    return {" ".join(w[i:i + k]) for i in range(max(len(w) - k + 1, 1))}
+
+
+def digest(s: str) -> str:
+    """A short, stable fingerprint of an ALREADY-SQUASHED string.
+
+    Used where a guard has to ship a set of strings to a credential-free check
+    without shipping the strings themselves. `profileLeakIndex.generated.json`
+    is committed and `check_answer_not_reachable.ts` treats award prose as an
+    answer-bearing source, so the fund's own project titles travel as digests:
+    the check can still ask "is this description one of them" and the artifact
+    still carries no award title anyone could read.
+
+    sha1 because both languages have it natively and the artifact carries
+    probes that fail the build if the two implementations ever disagree. It is
+    a fingerprint, not a secret.
+    """
+    return hashlib.sha1(s.encode("utf-8")).hexdigest()[:12]
+
+
 def distinctive_tokens(names: list[str], corpus_freq: dict[str, int],
                        total: int) -> set[str]:
     out: set[str] = set()
@@ -92,10 +123,15 @@ class LeakIndex:
     that cannot run must be visibly off rather than quietly passing everything.
     """
 
-    def __init__(self, conn, verbose: bool = True) -> None:
+    def __init__(self, conn, verbose: bool = True,
+                 title_kinds: dict[str, str] | None = None) -> None:
         self.inst = {r["id"]: dict(r) for r in conn.execute(
             "SELECT id, name, parent_id, root_id, scheme_code, sample_project_titles "
             "FROM funding_instruments")}
+        # The corpus's own judgement about whether an instrument's award TITLES
+        # are project names or statute names. Empty means "assume project",
+        # which is what the callers did when this lived in one of them.
+        self.title_kinds: dict[str, str] = title_kinds or {}
 
         self.sample_titles: set[str] = set()
         for i in self.inst.values():
@@ -163,6 +199,27 @@ class LeakIndex:
         n = squash(text)
         return bool(p and n and n in p)
 
+    def shares_gram(self, text: str, won: str) -> bool:
+        """Eight consecutive words in common with the won fund's profile.
+
+        THE GAP THIS CLOSES. `in_profile` asks for whole-string containment, and
+        `check_recall_leaks.ts` has always asked the weaker, stricter question
+        too -- eight words shared is enough that the string is QUOTING the
+        profile rather than coinciding with it. So the build-time guard could
+        pass a text the check-time guard then failed, and it did: the first run
+        of the description rebuild produced two rows that were verbatim-clean
+        and shared an 8-gram, and the only thing that caught them was CI.
+
+        A build guard weaker than the check it feeds is a build guard that
+        hands somebody a red build with no way to have known. Same unit, same
+        window, same normaliser as recallLeaks.ts.
+        """
+        n = squash(text)
+        p = self.profile_text.get(won) or ""
+        if not n or not p:
+            return False
+        return bool(_grams(n) & _grams(p))
+
     def siblings_of(self, iid: str) -> list[str]:
         if self._kids is None:
             self._kids = collections.defaultdict(list)
@@ -170,6 +227,14 @@ class LeakIndex:
                 self._kids[i["parent_id"] or other].append(other)
         parent = self.inst.get(iid, {}).get("parent_id") or iid
         return [s for s in self._kids.get(parent, ()) if s != iid]
+
+    def shares_sibling_gram(self, text: str, won: str) -> bool:
+        n = squash(text)
+        if not n:
+            return False
+        g = _grams(n)
+        return any(g & _grams(self.profile_text.get(s, ""))
+                   for s in self.siblings_of(won) if self.profile_text.get(s))
 
     def in_sibling_profile(self, text: str, won: str) -> bool:
         """Inside the profile of a fund that shares the won fund's parent.
@@ -237,10 +302,44 @@ class LeakIndex:
             return "is a fund's own sample title"
         if self.in_profile(text, won):
             return "appears in the won fund's profile text"
+        if self.shares_gram(text, won):
+            return "shares an 8-gram with the won fund's profile text"
         if self.in_sibling_profile(text, won):
             return "appears in a SIBLING's profile text"
+        if self.shares_sibling_gram(text, won):
+            return "shares an 8-gram with a SIBLING's profile text"
         if self.instrument_share(text) > MAX_INSTRUMENT_SHARE:
             return "names a funding line, not a project"
         if self.names_the_fund(text, won):
             return "names the fund it should help us find"
         return None
+
+    # ── borrowing ANOTHER award's text ───────────────────────────────────────
+    def borrow_reject_reason(self, text: str, kind: str, iids: list[str],
+                             won: str) -> str | None:
+        """`reject_reason` plus the two guards that only a BORROWED text needs.
+
+        Three scripts now recover a description from an award other than the
+        one being predicted (`enrich_recall_set`, `extend_recall_set` for its
+        composed base, `rebuild_recall_descriptions`). Each needs the same two
+        extra predicates, and two copies of a leak guard is the duplication
+        this whole module exists to remove -- the copy that drifts is the one
+        that silently stops catching leaks.
+
+          cross-regime  the text's own instrument, and every instrument its
+                        source maps to, must have a different root from the won
+                        fund. Not merely a different id: siblings share a scheme
+                        name, which is exactly the string that leaked.
+          title kind    a `project_title` is used only from instruments whose
+                        titles the corpus classifier calls 'project'. That
+                        classifier already knows which registers publish statute
+                        names as titles. `project_summary` is exempt: no scheme
+                        publishes a per-award summary.
+        """
+        won_root = self.root_of(won)
+        if any(i == won or self.root_of(i) == won_root for i in iids):
+            return "same regime as the won fund"
+        if kind == "title" and not any(
+                self.title_kinds.get(i, "project") == "project" for i in iids):
+            return "source titles are scheme names"
+        return self.reject_reason(text, kind, won)

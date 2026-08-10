@@ -43,7 +43,7 @@ import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic"
 import { founderIntake, founderPolicyFromEnv, IntakeTally } from "./founderIntake";
 import { DEFAULT_SEED, sampleRecall } from "./recallSample";
 import {
-  assertAncestorConvention, assertGradablePopulation, loadRecallSet,
+  assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
   partitionByOfferable, reattributeMissingAnswers, REGIME_AT_5_NOT_COMPARABLE,
 } from "./recallSet";
 // ── The skip below is now survivable, and only because of this ─────────────
@@ -341,6 +341,47 @@ const tape = startTape();
  *  version of the same quantity, measured on the fictional founder. See
  *  `_wsci_autopsy.ts`, which prints it beside the intake disclosure so the cap
  *  and the founder it belongs to can never again be read apart. */
+/*  ── RE-MEASURED AGAINST THE DESCRIBED KEY, 2026-08-10 (workstream DH) ────
+ *
+ *  ██ NOTHING IS RAISED AND NOTHING IS LOWERED, BECAUSE NOTHING MOVED. ██
+ *
+ *  `ACTIVE_RECALL_SET` is now `__recallSetDescribed.json`: the same 7,095 pairs
+ *  as Doors, with 532 of the 5,729 blank ones given a real, leak-free
+ *  description recovered from the company's own award prose under a DIFFERENT
+ *  regime. Same corpus, same seed, same N, same commit, both runs attested
+ *  `ranker: all 294 request(s) on EMBEDDING`, 1,088 instruments on both:
+ *
+ *                  BEFORE (Doors)   AFTER (Described)
+ *      pool              97               97
+ *      EXACT@5           27               26
+ *      EXACT@6           31               30
+ *      REGIME@5          73               72
+ *
+ *      described   n= 75  exact5 32%   n= 93  exact5 30%
+ *      blank       n=225  exact5 26%   n=207  exact5 25%
+ *
+ *  ██ THE FINDING IS THAT IT DID NOT MOVE. ██ The worry this run existed to
+ *  test — that every figure this repo has quoted was measured on a founder who
+ *  said nothing, and would collapse or leap once they spoke — is not supported.
+ *  Eighteen of the 300 sampled founders acquired a genuine description and the
+ *  headline moved one point, in the direction of noise, on a pinned draw.
+ *
+ *  Read the two sub-populations rather than the headline, because they are the
+ *  actual answer. A described founder does score better than a blank one (32
+ *  against 26 before, 30 against 25 after) — but the newly described eighteen
+ *  scored like the blank ones, which is why the described figure fell as its n
+ *  rose. So the description gap is largely SELECTION: the pairs that already
+ *  had prose are the pairs whose funds are easiest to retrieve (EU programme
+ *  awards, which is where per-award summaries exist at all), not evidence that
+ *  prose is worth six points to an arbitrary founder.
+ *
+ *  What this does NOT license is the reverse claim. 5,197 pairs are still blank
+ *  and cannot be described from anything this corpus holds (see recallSet.ts
+ *  for the 10.1% ceiling and why relaxing the guard buys nothing), so "the
+ *  description is worth little" is measured on 93 described founders, not on a
+ *  described key. The honest statement is: the ranker's headline is stable
+ *  across this change, and a described-founder headline must be quoted over
+ *  `isDescribed()` with its n on screen. Both are now printed every run. */
 const FLOOR = { pool: 92, exact5: 15, regime5: 69 };
 
 /*  ── THE `exact5` ZERO-MARGIN FLAG, ANSWERED FROM THE VERDICT TABLE ───────
@@ -607,6 +648,22 @@ async function main() {
   const set = sampleRecall(tune, N, SEED);
 
   let pool = 0, exact5 = 0, regime5 = 0;
+  // ── EXACT@6, reported and NOT floored ────────────────────────────────────
+  // The brief publishes SIX rows and this gate reads the instant screen, whose
+  // DISPLAY_CAP is 6. `exact5` stays the floored metric on the population it
+  // was calibrated on -- re-deriving it onto a wider window could only raise it,
+  // which would be a loosening dressed as an update -- so the sixth row is
+  // reported alongside instead. The gap between them is how much the last slot
+  // is worth, which is a fact nobody here had.
+  let exact6 = 0;
+  // ── The split that is the whole point of workstream DH ───────────────────
+  // Four founders in five carry no description at all and query with one of
+  // eleven canned sector sentences. `semanticFundMatch` and `themeRelevance`
+  // both read the description, so a headline averaged over both populations is
+  // an average over two different questions. Reported separately, always: if
+  // the described founders score differently, then every figure this repo has
+  // published was measured on a founder who said nothing.
+  const byDesc = new Map<boolean, { n: number; pool: number; e5: number; e6: number; r5: number }>();
   const byPop = new Map<string, { n: number; r5: number }>();
   // Cold corpus per pair, same as measure_recall.ts. A gate whose verdict
   // depends on how far into the run a pair sat is not a gate.
@@ -660,13 +717,28 @@ async function main() {
       // this gate grade itself on a path that does not ship, reading EXACT@5
       // six points below the measurement it is supposed to floor.
     } as never);
-    const top5 = (v.instrumentTable ?? []).slice(0, 5)
+    const table = (v.instrumentTable ?? [])
       .map((r: InstrumentRow) => r.instrumentId).filter(Boolean) as string[];
+    const top5 = table.slice(0, 5);
     const wantRegime = byId.get(t.instrument)?.parentId ?? t.instrument;
     const r5 = top5.some((id) => (byId.get(id)?.parentId ?? id) === wantRegime);
-    if ((v.candidateInstrumentIds ?? []).includes(t.instrument)) pool++;
-    if (top5.includes(t.instrument)) exact5++;
+    const inPool = (v.candidateInstrumentIds ?? []).includes(t.instrument);
+    const e5 = top5.includes(t.instrument);
+    const e6 = table.slice(0, 6).includes(t.instrument);
+    if (inPool) pool++;
+    if (e5) exact5++;
+    if (e6) exact6++;
     if (r5) regime5++;
+    {
+      const d = isDescribed(t);
+      const m = byDesc.get(d) ?? { n: 0, pool: 0, e5: 0, e6: 0, r5: 0 };
+      m.n++;
+      if (inPool) m.pool++;
+      if (e5) m.e5++;
+      if (e6) m.e6++;
+      if (r5) m.r5++;
+      byDesc.set(d, m);
+    }
     const key = t.traced ? `traced:${t.traced}` : "original join";
     const p = byPop.get(key) ?? { n: 0, r5: 0 };
     p.n++; if (r5) p.r5++;
@@ -697,6 +769,23 @@ async function main() {
     // comparing rows has no other way to find that out.
     if (k === "regime5") console.log(`         ^ ${REGIME_AT_5_NOT_COMPARABLE}`);
   }
+  // EXACT@6 immediately under EXACT@5, unfloored and labelled as such, so the
+  // sixth slot's worth is on the same screen as the metric it is not.
+  console.log(`         exact6   ${((100 * exact6) / set.length).toFixed(0)}% ` +
+              "(no floor — reported; the screen publishes six rows and exact5 " +
+              "is floored on five)");
+  // WHAT THESE FOUNDERS SAID, and what it bought them.
+  for (const d of [true, false]) {
+    const m = byDesc.get(d);
+    if (!m) continue;
+    console.log(
+      `         ${d ? "DESCRIBED" : "BLANK    "} n=${String(m.n).padStart(3)}  ` +
+      `pool ${((100 * m.pool) / m.n).toFixed(0)}%  ` +
+      `exact5 ${((100 * m.e5) / m.n).toFixed(0)}%  ` +
+      `exact6 ${((100 * m.e6) / m.n).toFixed(0)}%  ` +
+      `regime5 ${((100 * m.r5) / m.n).toFixed(0)}%` +
+      (d ? "" : "  <- queries with one of eleven canned sector sentences"));
+  }
   // Per population, because a change that buys one with the other nets out to
   // a flat headline and this gate exists to catch exactly that.
   for (const [key, m] of [...byPop].sort()) {
@@ -721,9 +810,18 @@ async function main() {
   const metrics: Record<string, unknown> = {
     n: set.length, seed: SEED, set: file,
     pool: Number(got.pool.toFixed(1)), exact5: Number(got.exact5.toFixed(1)),
+    exact6: Number(((100 * exact6) / set.length).toFixed(1)),
     regime5: Number(got.regime5.toFixed(1)),
     floorPool: FLOOR.pool, floorExact5: FLOOR.exact5, floorRegime5: FLOOR.regime5,
   };
+  for (const d of [true, false]) {
+    const m = byDesc.get(d);
+    if (!m) continue;
+    const k = d ? "described" : "blank";
+    metrics[`n:${k}`] = m.n;
+    metrics[`exact5:${k}`] = Number(((100 * m.e5) / m.n).toFixed(1));
+    metrics[`exact6:${k}`] = Number(((100 * m.e6) / m.n).toFixed(1));
+  }
   for (const [key, m] of byPop) {
     metrics[`regime5:${key}`] = Number(((100 * m.r5) / m.n).toFixed(1));
   }
