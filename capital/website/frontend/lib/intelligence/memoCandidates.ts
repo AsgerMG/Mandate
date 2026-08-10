@@ -39,39 +39,12 @@ import type {
   NoDoors,
 } from "./types";
 
-/** How many candidates the WRITER is shown, ahead of the cut to
- *  `BRIEF_LIMITS.institutionsMax`.
- *
- *  Lowered from 9. The writer must return a note per candidate, and a
- *  candidate it never mentions is dropped silently -- it cannot be published
- *  without model-written copy, and filling that in from a template is what put
- *  three "Verify eligibility directly with the fund" rows in one brief. At 9 it
- *  started omitting: one company came back covering 5 of 9, losing two Horizon
- *  clusters and two Innovation Fund routes with no judgement attached.
- *
- *  ── The headroom this leaves, which the published cap consumes ────────────
- *  This is an UPSTREAM cap and the published row count is the DOWNSTREAM one,
- *  so their difference is the number of candidates the writer may reject
- *  before the table gets short. At 7 candidates and 5 published that was two;
- *  at 7 and 6 it was one; at 8 and 7 it is one again.
- *
- *  ── Why it moved with the row cap this time, having not moved last time ───
- *  Last time it deliberately did not, and that was right: 6 published against
- *  7 shown still left a candidate in hand. 7 published against 7 shown leaves
- *  NONE — every candidate would have to land, and the writer declines
- *  candidates routinely (`WRT-NO-NOTE`, `WRT-WATCH-ONLY`). That is not a
- *  headroom of one narrowing, it is the funnel ceasing to be a funnel, so
- *  `check_contracts.ts` now reds the build if this cap ever fails to exceed
- *  the published one.
- *
- *  8 is not 9. The omission measured at 9 was one company covering 5 of 9 —
- *  four candidates dropped, the writer effectively re-selecting rather than
- *  writing. 8 is one step from a cap that has never omitted, and it is the
- *  smallest value that keeps the headroom the product shipped with. It is not
- *  a free move and it is the risk this workstream took knowingly; the bench
- *  render at the new caps is the measurement, and a rise in `WRT-NO-NOTE` is
- *  what would send it back to 7 and the row cap back to 6. */
-export const WRITER_CANDIDATE_CAP = 8;
+// The writer cap and the whole funnel it belongs to live in `caps.ts`, which
+// imports nothing, so the check that asserts the funnel narrows can read them
+// without dragging the corpus layer -- and its credentials -- in behind them.
+// Re-exported here because this is where every caller looks for it.
+import { WRITER_CANDIDATE_CAP } from "./caps";
+export { WRITER_CANDIDATE_CAP };
 
 /** ── WHICH ORDER SHIPS, and the measurement that decided it ────────────────
  *

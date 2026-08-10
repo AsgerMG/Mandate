@@ -1495,12 +1495,13 @@ export const DISPLAY_CAP = 6;
  *  number is named in ONE place and read from there, here as everywhere. */
 export const MIN_CHANNELS_CONSIDERED = 7;
 
-// The pool synthesize() screens before cutting to the published cap. Deliberately
-// wider than DISPLAY_CAP: funds a founder cannot access are dropped AFTER
-// assessment, so a pool of six meant a founder blocked on three of them got a
-// three-row brief while perfectly good candidates at rank seven were never
-// looked at. Dropping must be able to backfill, not shrink the table.
-export const VERDICT_POOL = 18;
+// The pool synthesize() screens before cutting to the published cap. Defined
+// in `caps.ts` with the rest of the funnel and re-exported here so every
+// existing caller is unchanged: `check_contracts.ts` asserts that the funnel
+// narrows at every step and must be able to read the constants without
+// reaching a database. Re-export, never a second literal.
+import { VERDICT_POOL } from "./caps";
+export { VERDICT_POOL };
 
 /** How thematically plausible a large-scale channel must be before a big ticket
  *  alone earns it a place. Deliberately low: it only has to be somewhere in the

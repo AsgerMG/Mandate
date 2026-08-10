@@ -26,10 +26,10 @@ import { SELECTION_RULE_IDS } from "../lib/intelligence/selectionChecks";
 import { UNENFORCED_RULES } from "../lib/intelligence/unenforcedRules";
 import { REPORT_SCHEMA_FIELDS, EVIDENCE_BLOCKS } from "../lib/intelligence/types";
 // The funnel check below reads the caps themselves, never a copy of them.
-// `memoCandidates` and `shortlist` are model-free and reach no network at
-// import time, which is what keeps this check hermetic.
-import { WRITER_CANDIDATE_CAP } from "../lib/intelligence/memoCandidates";
-import { VERDICT_POOL } from "../lib/intelligence/shortlist";
+// `caps.ts` imports NOTHING: importing them from `memoCandidates`/`shortlist`
+// pulled the corpus layer in behind them and this check stopped being
+// hermetic, which `check_env_loader` caught.
+import { VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
 
 interface Problem { axis: string; detail: string; }
 
