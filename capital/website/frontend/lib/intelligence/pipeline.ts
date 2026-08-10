@@ -830,11 +830,26 @@ async function synthesize(
       `proof of none — coverage varies by country).`;
 
   // Inject only the process briefs for channels that actually appear.
+  //
+  // ── The founder's OWN rows come first, and used not to be here at all ────
+  // This list was built from `records` and `dbPeers` only: the channels the
+  // COMPARABLE COMPANIES drew on. FUND-9 tells the writer that `nextStep` is
+  // "one concrete action drawn from the process briefs", so a row whose
+  // channel no peer happened to use arrived with no brief to draw it from,
+  // while a peer's channel that is on nobody's table brought one along.
+  // Which briefs the writer receives was decided by who the web search found.
+  //
+  // `instrumentTable` is the founder's published rows and is in scope right
+  // here. It leads the union, so if this ever has to be truncated the briefs
+  // for the rows the founder will actually read survive first. The peers'
+  // channels are kept behind them: they ground what the brief says about how
+  // comparable companies were funded, which is a different job.
   const channels = [
     ...new Set([
+      ...instrumentTable.map((r) => r.channel),
       ...records.flatMap((r) => (r.matched ? r.channels : [])),
       ...dbPeers.flatMap((r) => r.channels),
-    ]),
+    ].filter(Boolean)),
   ];
   const processes = channels
     .map((c) => loadFundProcess(c))
