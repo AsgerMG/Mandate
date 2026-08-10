@@ -275,6 +275,18 @@ export function InstitutionsTable(
   }
   /** True where the fact is already stated in the run's own heading above. */
   const inRunHeading = (i: number) => groupOf.has(i);
+  /** The one row of each run that carries the "we hold no route" notice.
+   *  Keyed on the FIRST row of the run that actually has one, not on the run's
+   *  first row: a run whose opening row holds a route and whose later rows do
+   *  not would otherwise lose the notice entirely, which is the failure mode
+   *  worth more than the repetition it removes. */
+  const routeNoticeAt = new Set<number>();
+  for (const g of groups) {
+    const at = institutions
+      .slice(g.start, g.start + g.size)
+      .findIndex((r) => !r.applicationChannel && r.applicationRouteUnknown);
+    if (at >= 0) routeNoticeAt.add(g.start + at);
+  }
   return (
     <>
       <SectionTitle n="02">Where to target</SectionTitle>
@@ -553,12 +565,21 @@ export function InstitutionsTable(
                   /* An unknown next step stated as unknown. The alternative was
                      what shipped: a parent regime's addressee printed as this
                      scheme's instruction, which sends the founder to the wrong
-                     desk with confidence. */
-                  <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
-                    <strong className="font-semibold">How to apply.</strong>{" "}
-                    Start by confirming the route with the body that runs this scheme: we hold no
-                    application route recorded for it.
-                  </span>
+                     desk with confidence.
+                     Said ONCE per run. This sentence is fixed copy, so where a
+                     run of four schemes holds no route it printed four
+                     byte-identical lines: the same defect as the repeated
+                     route, arriving through the branch that handles its
+                     absence. Read on the first rendered brief after the run
+                     heading landed. */
+                  routeNoticeAt.has(i) ? (
+                    <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
+                      <strong className="font-semibold">How to apply.</strong>{" "}
+                      Start by confirming the route with the body that runs this scheme: we hold no
+                      application route recorded for it.
+                      {inRunHeading(i) && " The same is true of the others in this group."}
+                    </span>
+                  ) : null
                 ) : null}
               </td>
               <td className="py-2.5">
