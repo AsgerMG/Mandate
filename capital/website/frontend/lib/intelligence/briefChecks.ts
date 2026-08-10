@@ -15,6 +15,7 @@
 // ── House rule ─────────────────────────────────────────────────────────────
 // A rule names a property, never an instance. Nothing below names a company,
 // fund, sector or country.
+import { directsAtDepartment, whyNotApplyable } from "./applyableBody";
 import { WATCH_ONLY_COPY } from "./watchOnly";
 import type { IntelligenceReport } from "./types";
 
@@ -46,11 +47,10 @@ const BOILERPLATE = /verify eligibility directly with the fund|review the fund's
  *  with no declared blocker: a blocker row is SUPPOSED to name the obstacle. */
 const SELF_CONTRADICTION = /\b(targets|aimed at|reserved for|designed for|focus(?:es|ed)? on)\b[^.]{0,80}\bnot\b/i;
 
-/** An institution a founder cannot approach as a funder. A government
- *  department administers schemes; it is not itself a door to knock on, and
- *  naming one as the institution sends the reader nowhere. */
-export const NOT_AN_APPLYABLE_BODY =
-  /^(minist\w*|department|departement|dipartimento|direction g[eé]n[eé]rale)\b/i;
+// FUND-7's predicate lives in applyableBody.ts, which states the property and
+// the three tests that decide a case nobody has seen. It was a start-anchored
+// regex here, tested against one field, and it had never fired on the case the
+// contract was written about — see that file's header for the measurement.
 
 export interface BriefLimits {
   bulletMin: number; bulletMax: number; bulletWords: number;
@@ -152,14 +152,45 @@ export function checkBrief(
     if (WATCH_ONLY_COPY.test(String(r.nextStep ?? ""))) {
       v.push({ ruleId: "FUND-4", detail: `next step is a thing to watch, not do: ${r.institution}` });
     }
+    // FUND-5 has two halves and only one was ever checked. "Always written" is
+    // violated first and most cheaply by NOTHING BEING WRITTEN: the writer's
+    // structured-output schema marks these `required`, which guarantees the KEY
+    // is emitted and says nothing about the value, so `""` satisfies it and
+    // publishes a blank cell. The boilerplate half is the second-order case —
+    // the pipeline substituting its own text — and it was the only one here.
+    if (!String(r.whyEligible ?? "").trim() || !String(r.nextStep ?? "").trim()) {
+      v.push({ ruleId: "FUND-5", detail: `row published with no ${!String(r.whyEligible ?? "").trim() ? "whyEligible" : "nextStep"}: ${r.institution}` });
+    }
     if (BOILERPLATE.test(String(r.whyEligible ?? "")) || BOILERPLATE.test(String(r.nextStep ?? ""))) {
       v.push({ ruleId: "FUND-5", detail: `fallback boilerplate published: ${r.institution}` });
     }
     if (!r.blocker && SELF_CONTRADICTION.test(String(r.whyEligible ?? ""))) {
       v.push({ ruleId: "FUND-6", detail: `row argues against itself: ${r.institution}` });
     }
-    if (NOT_AN_APPLYABLE_BODY.test(String(r.institution ?? ""))) {
-      v.push({ ruleId: "FUND-7", detail: `not a body a founder can apply to: ${r.institution}` });
+    const why = whyNotApplyable(r.institution);
+    if (why) {
+      v.push({ ruleId: "FUND-7", detail: `not a body a founder can apply to: "${r.institution}" ${why}` });
+    }
+  }
+
+  // FUND-7 "holds wherever the name appears, prose included", and the contract
+  // gives a BULLET as its failing example. Nothing looked at prose until now:
+  // the predicate ran on `institution` and stopped, so the one case the rule is
+  // written around was outside the check's reach. Scoped to prose that DIRECTS
+  // the reader somewhere (see directsAtDepartment) rather than to any mention,
+  // because a brief may honestly say who notified a regime.
+  for (const [i, b] of bullets.entries()) {
+    if (directsAtDepartment(b)) {
+      v.push({ ruleId: "FUND-7", detail: `bullet ${i + 1} sends the founder at a government department` });
+    }
+  }
+  for (const [where, text] of [
+    ["positioning", report.positioning],
+    ["state of play", report.stateOfPlay],
+    ...institutions.map((r) => [`next step for ${r.institution}`, r.nextStep] as const),
+  ] as const) {
+    if (directsAtDepartment(text)) {
+      v.push({ ruleId: "FUND-7", detail: `${where} sends the founder at a government department` });
     }
   }
 

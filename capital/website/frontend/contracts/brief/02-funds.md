@@ -59,13 +59,31 @@ reporting, not prose to publish. Say what the row is and let it stand.
   the honest `whyEligible` would say the fund targets something this company
   is not, that is a scoring failure to report, not prose to publish.
 - FUND-7 (hard) The institution named must be a body a founder can approach. A
-  government department administers schemes; it is not itself a door.
+  government department administers schemes; it is not itself a door, and
+  neither is the document a department issued.
 
   The test: **could they contact this body about this money and get a reply?**
   It holds wherever the name appears, prose included. A bullet telling a solo
-  founder to "start with the federal ministry" fails it exactly as a table row
+  founder to start with the federal ministry fails it exactly as a table row
   would, and the ministry-run schemes carry the operators who actually
   disburse for precisely this reason.
+
+  Two further tests, because the first one alone let the real case through.
+  **Position is not part of the property:** a department named at the end of a
+  string, or inside a compound word, is the same dead end as one named first.
+  **A register annotation is not a name:** where a title carries a bracketed
+  note of the unit that issued it, ask whether removing the bracket still
+  identifies the same thing. If it does, the bracket was about the document and
+  the row has named a document rather than a body.
+
+  Where a row names its door explicitly, the door is what this rule judges: a
+  scheme whose own statutory title mentions the ministry, published via the
+  agency that grants under it, sends the founder somewhere real.
+
+  **evidence:** a six-row brief rendered in a browser published four German
+  scheme titles ending in the notifying ministry's file reference. The check
+  was a regex anchored to the start of one field; it returned clean on every
+  one of them, and on the ministries themselves, whose names are compounds.
 - FUND-8 (judged) `whyEligible`, at most 25 words, is specific to this company
   and grounded in the eligibility screen and its answers. Where a project
   answer bears on this fund, use it: name the requirement and how this company
