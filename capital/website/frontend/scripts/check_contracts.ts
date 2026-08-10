@@ -19,7 +19,10 @@
  *
  * Run: npx tsx scripts/check_contracts.ts
  */
-import { loadContracts, briefContracts } from "../lib/intelligence/contracts";
+import {
+  loadContracts, briefContracts, assembleInstructions,
+  PROMPTS, UNROUTED_STAGES, type PromptName,
+} from "../lib/intelligence/contracts";
 import { BRIEF_LIMITS, CHECK_RULE_IDS } from "../lib/intelligence/briefChecks";
 import { QUESTION_RULE_IDS } from "../lib/intelligence/questionChecks";
 import { SELECTION_RULE_IDS } from "../lib/intelligence/selectionChecks";
@@ -140,6 +143,57 @@ function main() {
       problems.push({ axis: "unenforced", detail:
         `unenforcedRules.ts declares ${id}, which no contract has. A register entry for a rule ` +
         `that no longer exists hides the next one.` });
+    }
+  }
+
+  // ── EVERY CONTRACT REACHES A PROMPT, OR SAYS WHY IT DOES NOT ────────────
+  //
+  // The writer's assembler used to select contracts by excluding one stage.
+  // `contracts/selection/` (stage `gate2.select`) was therefore appended to the
+  // memo writer's system prompt on every request, instructing it to return five
+  // indices "best first" alongside FUND-2's seven-row cap and FUND-12's ban on
+  // calling any row first or best. Nothing noticed, because nothing asserted
+  // that a contract only reaches the stage it was written for.
+  //
+  // Stated over the routing table itself, so a contract directory added
+  // tomorrow is judged with no edit here: its stage must be admitted by a
+  // prompt, or declared unrouted with the reason.
+  const stages = [...new Set(contracts.map((c) => c.stage))].filter(Boolean);
+  for (const stage of stages) {
+    const readers = (Object.keys(PROMPTS) as PromptName[]).filter((p) => PROMPTS[p].reads(stage));
+    const declared = Boolean(UNROUTED_STAGES[stage]);
+    if (!readers.length && !declared) {
+      problems.push({ axis: "routing", detail:
+        `stage "${stage}" is read by no prompt and is not declared in UNROUTED_STAGES. ` +
+        `Route it in PROMPTS, or say why no prompt may carry it.` });
+    }
+    if (readers.length && declared) {
+      problems.push({ axis: "routing", detail:
+        `stage "${stage}" is declared unrouted but ${readers.join(" and ")} reads it. ` +
+        `Remove it from the register.` });
+    }
+  }
+  for (const stage of Object.keys(UNROUTED_STAGES)) {
+    if (!stages.includes(stage)) {
+      problems.push({ axis: "routing", detail:
+        `UNROUTED_STAGES declares "${stage}", which no contract has. A register entry ` +
+        `for a stage that no longer exists hides the next one.` });
+    }
+  }
+  // And the assembled text itself, not just the predicate: a prompt must carry
+  // every contract routed to it and no other. The bug was visible in the STRING
+  // the model received, so that is what this reads.
+  for (const p of Object.keys(PROMPTS) as PromptName[]) {
+    const text = assembleInstructions(p);
+    for (const c of contracts) {
+      const marker = `# CONTRACT ${c.id} — ${c.stage}`;
+      const present = text.includes(marker);
+      const should = PROMPTS[p].reads(c.stage);
+      if (present !== should) {
+        problems.push({ axis: "routing", detail:
+          `${PROMPTS[p].what}'s system prompt ${present ? "carries" : "omits"} ${c.file} ` +
+          `(stage ${c.stage}), which its routing ${should ? "requires" : "excludes"}` });
+      }
     }
   }
 

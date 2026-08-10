@@ -110,10 +110,108 @@ export function roundContracts(): Contract[] {
 }
 
 /**
- * The writer's system prompt: who it is, then every contract in full.
+ * ── WHICH PROMPT READS WHICH CONTRACT ──────────────────────────────────────
+ *
+ * Routing is stated positively, per prompt, over the contract's own `stage`.
+ * It used to be one negative filter inside the writer's assembler
+ * (`!c.stage.startsWith("round2.")`), and a negative filter is an exclusion
+ * register: it names the one stage someone remembered was wrong and admits
+ * every stage nobody has thought about yet.
+ *
+ * `contracts/selection/` was that case. Stage `gate2.select`, six rules, and
+ * it was appended to the MEMO WRITER's system prompt on every request —
+ * telling the writer to "Return exactly five indices from the list, best
+ * first" while FUND-2 in the same prompt caps the table at seven rows and
+ * FUND-12 forbids describing rows as first, best or strongest. Three
+ * contradictory instructions, one prompt, nothing complaining.
+ *
+ * The test for a stage nobody has added yet: a contract reaches a prompt only
+ * when that prompt's own predicate admits its stage. A stage no prompt admits
+ * fails `check_contracts.ts` unless it is declared in `UNROUTED_STAGES` with
+ * the reason — the same forced-decision shape as `unenforcedRules.ts`.
+ */
+export const PROMPTS = {
+  writer: {
+    what: "the memo writer",
+    reads: (stage: string) => stage === "shared" || stage.startsWith("brief."),
+    header:
+      `You are an analyst inside Wincent, writing a short public-capital brief ` +
+      `for the founder of a European company. You are given the company, the ` +
+      `funds already selected for them, and the evidence behind both.\n\n` +
+      `The brief has exactly four sections: the bottom line, the funds to ` +
+      `target, positioning, and the state of play. Below is the contract for ` +
+      `each, plus the shared grounding and voice rules. Treat every contract as ` +
+      `binding: a brief that breaks a rule is wrong even when it reads well. ` +
+      `Rules marked (hard) are checked mechanically after you write.\n`,
+  },
+  planner: {
+    what: "the round-2 question planner",
+    reads: (stage: string) => stage === "shared" || stage.startsWith("round2."),
+    header:
+      `You are an analyst inside Wincent, planning the second screen of ` +
+      `questions a European founder will answer before their public-capital ` +
+      `brief is written. You are given what they have already told us and the ` +
+      `funds whose requirements are still open.\n\n` +
+      `Below is the contract for that screen, plus the shared grounding and ` +
+      `voice rules, which the questions and their options obey exactly as the ` +
+      `brief does. Treat every contract as binding.\n`,
+  },
+  /** The stages that read a founder's words and return a judgement rather than
+   *  founder-facing prose: the eligibility judge and the comparable-company
+   *  researcher. They need the claims discipline and nothing else — neither
+   *  ranks, selects, or writes a section of the brief. */
+  screen: {
+    what: "the eligibility judge and the comparable-company researcher",
+    reads: (stage: string) => stage === "shared",
+    header:
+      `You are an analyst inside Wincent, which tracks Europe's state-backed ` +
+      `capital and tells a founder what of it is open to them. Your output is ` +
+      `read by the rest of that machine, not published as written.\n\n` +
+      `Below are the claims rules every stage obeys. Treat them as binding: a ` +
+      `judgement that breaks one is wrong even when it reads well.\n`,
+  },
+} as const;
+
+export type PromptName = keyof typeof PROMPTS;
+
+/**
+ * Stages whose contract deliberately reaches NO prompt, and why.
+ *
+ * A third state has to be declared, not discovered — the same reason
+ * `unenforcedRules.ts` exists. Without this register, "no prompt reads it" and
+ * "someone forgot to route it" look identical from outside.
+ */
+export const UNROUTED_STAGES: Record<string, string> = {
+  "gate2.select":
+    "The module it specifies (lib/intelligence/fundSelection.ts) has no production " +
+    "caller: `selectFiveFunds` is imported only by scripts/measure_pipeline.ts. " +
+    "Fund order in the shipped memo is a deterministic score, not a model choice, " +
+    "so no request-time prompt may carry these rules — which is exactly the " +
+    "mistake the writer's assembler was making. Route it the moment a selection " +
+    "prompt ships.",
+};
+
+/** Every contract carried into `prompt`, shared ones first, then the sections
+ *  in file order (the numeric prefixes are what order the brief itself). */
+export function contractsFor(prompt: PromptName): Contract[] {
+  return loadContracts().filter((c) => PROMPTS[prompt].reads(c.stage));
+}
+
+/**
+ * A prompt's system instructions: who it is, then every contract routed to it
+ * in full.
  *
  * Deliberately the whole contract text rather than a summary, so the rules the
- * writer is held to are the rules it was given.
+ * stage is held to are the rules it was given.
+ */
+export function assembleInstructions(prompt: PromptName): string {
+  const { header } = PROMPTS[prompt];
+  return [header, ...contractsFor(prompt).map((c) => `\n# CONTRACT ${c.id} — ${c.stage}\n\n${c.body}`)].join("\n");
+}
+
+/**
+ * The writer's system prompt. A thin alias for `assembleInstructions("writer")`
+ * so the memo path reads as what it is.
  *
  * ── A claim that was here and was FALSE ───────────────────────────────────
  * This docstring used to say "the contracts are also what the quality judge
@@ -130,18 +228,5 @@ export function roundContracts(): Contract[] {
  * and what checking it would take.
  */
 export function assembleWriterInstructions(): string {
-  // Shared rules plus the brief sections only. The round-2 contracts govern a
-  // different stage; handing them to the writer would be noise it has to read
-  // past on every request.
-  const contracts = loadContracts().filter((c) => !c.stage.startsWith("round2."));
-  const header =
-    `You are an analyst inside Wincent, writing a short public-capital brief ` +
-    `for the founder of a European company. You are given the company, the ` +
-    `funds already selected for them, and the evidence behind both.\n\n` +
-    `The brief has exactly four sections: the bottom line, the funds to ` +
-    `target, positioning, and the state of play. Below is the contract for ` +
-    `each, plus the shared grounding and voice rules. Treat every contract as ` +
-    `binding: a brief that breaks a rule is wrong even when it reads well. ` +
-    `Rules marked (hard) are checked mechanically after you write.\n`;
-  return [header, ...contracts.map((c) => `\n# CONTRACT ${c.id} — ${c.stage}\n\n${c.body}`)].join("\n");
+  return assembleInstructions("writer");
 }
