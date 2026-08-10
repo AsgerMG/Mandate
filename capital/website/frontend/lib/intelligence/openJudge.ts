@@ -15,7 +15,7 @@
 // not also mark `confident` is downgraded to `unknown` here, in TypeScript,
 // where a prompt cannot argue with it.
 import Anthropic from "@anthropic-ai/sdk";
-import { loadAgentInstructions } from "./corpus";
+import { assembleInstructions } from "./contracts";
 import { recordUsage } from "./cost";
 import { declaw, fence } from "./untrusted";
 import { recordEvent } from "./telemetry";
@@ -150,7 +150,7 @@ export async function judgeOpenAnswers(
       model: JUDGE_MODEL,
       max_tokens: 1800,
       thinking: { type: "disabled" },
-      system: loadAgentInstructions(),
+      system: assembleInstructions("screen"),
       output_config: { format: { type: "json_schema", schema: SCHEMA } },
       messages: [{
         role: "user",

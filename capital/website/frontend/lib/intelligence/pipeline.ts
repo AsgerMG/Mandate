@@ -32,14 +32,13 @@ import { semanticFundMatch } from "./semantic";
 import { BRIEF_LIMITS } from "./briefChecks";
 import { accessiblePool, explainNoDoors, orderMemoCandidates, WRITER_CANDIDATE_CAP } from "./memoCandidates";
 import { ExclusionLog } from "./exclusions";
-import { assembleWriterInstructions } from "./contracts";
+import { assembleInstructions, assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
 import { AXIS_LABEL, distinguisherPhrases, rowGroups } from "./rowNovelty";
 import {
   findPeersBySubsector,
   isGenericSubsector,
   hydrateGatesFor,
-  loadAgentInstructions,
   loadFundProcess,
   loadSignalsDigest,
   matchCompany,
@@ -82,8 +81,19 @@ import {
   type WithheldNotice,
 } from "./types";
 
-// The whole pipeline runs on cheap, fast models, guided by the Opus-authored
-// briefs in fund-processes/ (especially _agent_instructions.md, a strict rubric).
+// The whole pipeline runs on cheap, fast models. Every model call takes its
+// system prompt from `contracts/`, assembled per stage: the writer reads the
+// shared rules plus the four brief sections, the round-2 planner reads the
+// shared rules plus its own contract, and the stages that only return a
+// judgement read the shared rules alone.
+//
+// It used to say "guided by the Opus-authored briefs in fund-processes/
+// (especially _agent_instructions.md, a strict rubric)". That file was never a
+// rubric for anything on this line: it went to the question planner, a
+// 400-token classifier, the eligibility judge and the web researcher, and the
+// memo writer -- the only stage it described -- never received it. It is gone;
+// the per-channel process briefs in fund-processes/ remain and are injected as
+// EVIDENCE into the writer's user message, which is what they always were.
 // The two web-search stages use Sonnet 5. The final report is filled into a
 // strict JSON schema of short fields, so Haiku 4.5 — given the rubric — writes it
 // well at a fraction of the cost and latency. No runtime Opus call, so the
@@ -1491,7 +1501,10 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   const req: IntelligenceRequest = req0.companyType
     ? req0
     : { ...req0, companyType: req0.profileSignal?.techDepthRead };
-  const instructions = loadAgentInstructions();
+  // The comparable-company researcher gets the claims discipline and nothing
+  // else. It does not rank, select or write a section, so the brief contracts
+  // and the round-2 contract would be prompt it reads past on every request.
+  const instructions = assembleInstructions("screen");
 
   emit({ type: "status", step: "discovering", detail: "Searching the record and the open web for comparable companies" });
   // Comparables corroborate the brief; they are not the brief. The memo's

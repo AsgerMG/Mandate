@@ -11,7 +11,7 @@
 // ground in a real rule on a real shortlisted instrument does not get asked,
 // because its only purpose is to resolve a gate that is genuinely open.
 import Anthropic from "@anthropic-ai/sdk";
-import { loadAgentInstructions } from "./corpus";
+import { assembleInstructions } from "./contracts";
 import { recordUsage } from "./cost";
 import { declaw, fence } from "./untrusted";
 import { recordEvent } from "./telemetry";
@@ -291,7 +291,7 @@ export async function planAdaptiveScreen(
       model: INTAKE_MODEL,
       max_tokens: 2400,
       thinking: { type: "disabled" },
-      system: loadAgentInstructions(),
+      system: assembleInstructions("planner"),
       output_config: { format: { type: "json_schema", schema } },
       messages: [{
         role: "user",
@@ -611,7 +611,7 @@ export async function inferProfileSignal(req: IntelligenceRequest): Promise<Prof
       model: WRITER_MODEL,
       max_tokens: 400,
       thinking: { type: "disabled" },
-      system: loadAgentInstructions(),
+      system: assembleInstructions("screen"),
       output_config: { format: { type: "json_schema", schema: PROFILE_SIGNAL_SCHEMA } },
       messages: [
         {

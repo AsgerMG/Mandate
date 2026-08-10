@@ -43,6 +43,14 @@ founder can actually make when they walk through one.
   its market. Use the founder's stated commercial model: who pays, who buys,
   through what channel. Where that is unknown, write about the technology and
   the policy priority, never about a customer.
+
+  It must also fit the door. The register a case is made in is set by what the
+  fund's own published criteria say it rewards, not by a house style: the same
+  company argues differently to a body that scores technical excellence, one
+  that scores public purpose against a published rubric, and one that scores
+  repayment. The test: **would this advice change if the founder walked
+  through a different door?** If it would not, it is general writing advice
+  and the founder did not need this brief for it.
 - POS-5 (judged) Say what specifically in the stated priorities this company's
   work maps onto. A paragraph that could be sent to any company in the sector
   has failed.

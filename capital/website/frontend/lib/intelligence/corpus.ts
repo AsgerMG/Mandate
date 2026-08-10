@@ -45,7 +45,6 @@ const STOP_TOKENS = new Set([
 
 let indexCache: IndexFile | null = null;
 const fundCache = new Map<string, string>();
-let instructionsCache: string | null = null;
 
 function normalize(name: string): string {
   return name
@@ -1252,18 +1251,6 @@ export function loadBodyUrls(channel: string): Map<string, string> {
   } catch { /* no brief for this channel — no per-body table */ }
   bodyUrlCache.set(channel, out);
   return out;
-}
-
-export function loadAgentInstructions(): string {
-  if (instructionsCache === null) {
-    try {
-      const file = path.join(process.cwd(), "fund-processes", "_agent_instructions.md");
-      instructionsCache = readFileSync(file, "utf8");
-    } catch {
-      instructionsCache = "";
-    }
-  }
-  return instructionsCache;
 }
 
 /**
