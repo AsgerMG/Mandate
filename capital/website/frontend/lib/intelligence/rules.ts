@@ -55,18 +55,24 @@ export interface ExclusionRule {
 
 export const EXCLUSION_RULES = {
   // ── channel stage ────────────────────────────────────────────────────────
-  // "SEL-BAND" stood here, with disposition "fit-score". The disposition was
-  // carried out -- ticket size is scored continuously by `awardScorer` against
-  // each instrument's own award median -- but the entry outlived the rule, so
-  // this register, whose whole job is to state what the funnel may remove a
-  // fund for, advertised a channel-level ticket filter the code had stopped
-  // applying. A rule nothing can emit is a false claim about the product.
-  "SEL-FIT-CONSORTIUM": {
-    stage: "channel", kind: "opinion", recoverable: false,
-    what: "Channel removed because it is declared consortium-requiring at channel level and the founder has not confirmed consortium capacity.",
-    disposition: "fit-score",
-    evidence: "Declared once per channel in a curated brief, so instruments with materially different partner requirements inherit one verdict.",
-  },
+  // ── THE TEST THIS REGISTER IS HELD TO ────────────────────────────────────
+  // A rule nothing can emit is a false claim about the product. The register's
+  // whole job is to state what the funnel may remove a fund for, so an entry
+  // that no `log.record` call site names is not documentation of a past rule,
+  // it is a live assertion that the funnel does something it does not do.
+  //
+  // "SEL-BAND" was the first to fail it, with disposition "fit-score". The
+  // disposition had been carried out -- ticket size is scored continuously by
+  // `awardScorer` against each instrument's own award median -- but the entry
+  // outlived the rule.
+  //
+  // "SEL-FIT-CONSORTIUM" (channel / opinion / fit-score) failed it next, and is
+  // deleted here for the same reason (wsDO, 2026-08-11). Its disposition too had
+  // been carried out: partner requirements are scored per instrument by
+  // `structureFit` in fit.ts, never declared per channel. The reason it was
+  // wrong is worth keeping and is why the disposition was "fit-score" --
+  // "declared once per channel in a curated brief, so instruments with
+  // materially different partner requirements inherit one verdict."
   "SEL-LARGE-SCALE": {
     stage: "channel", kind: "opinion", recoverable: false,
     what: "Large-ticket channel withheld because no instrument in it cleared a thematic-plausibility floor.",
@@ -137,12 +143,16 @@ export const EXCLUSION_RULES = {
   },
 
   // ── writer stage ─────────────────────────────────────────────────────────
-  "WRT-NOT-WORTH": {
-    stage: "writer", kind: "opinion", recoverable: false,
-    what: "Row deleted by the writer's disqualification flag.",
-    disposition: "remove",
-    evidence: "The flag required ~40 lines of prompt guardrails to stop it deleting well-matched funds, and it let ordering decide publication.",
-  },
+  // "WRT-NOT-WORTH" stood here -- "row deleted by the writer's disqualification
+  // flag", disposition "remove". The disposition was carried out: the flag is
+  // gone and the writer may no longer delete a row at all. Deleted by the same
+  // test as SEL-FIT-CONSORTIUM above (wsDO, 2026-08-11); nothing has recorded it
+  // since the flag went.
+  //
+  // Its evidence is the argument for "the score selects, the writer writes" and
+  // outlives the entry: THE FLAG REQUIRED ~40 LINES OF PROMPT GUARDRAILS TO STOP
+  // IT DELETING WELL-MATCHED FUNDS, AND IT LET ORDERING DECIDE PUBLICATION. Read
+  // it before handing any future model a delete.
   "WRT-WATCH-ONLY": {
     stage: "writer", kind: "opinion", recoverable: false,
     what: "Row deleted because the writer flagged it as not actionable, or its own prose matched the watch-only vocabulary.",

@@ -92,8 +92,11 @@ async function main() {
   // "does this store add anything nothing else has" against it can only ever
   // return zero. Two funds having different URLs is not a reason to prefer one.
   //
-  // BASELINE-ROW is what the chooser is actually SHOWN — fundSelection.ts's
-  // `renderRow`: the delivery body, the award magnitude, the capital type, the
+  // BASELINE-ROW is what the chooser is actually SHOWN — the selector's own
+  // rendered row (fundSelection.ts's `renderRow` when this was written; that
+  // module is deleted, see project-mgmt/findings/dead_ranker_wsDO.md, and the
+  // field list below is the surviving statement of what it printed):
+  // the delivery body, the award magnitude, the capital type, the
   // last award year, the within-family sector share, and the requirements that
   // are distinctive rather than boilerplate. That is the honest question a new
   // store has to answer: does it give the model a REASON it does not already
@@ -112,7 +115,8 @@ async function main() {
   // into the baseline. "The names differ" is not a reason to prefer one fund.
   const nameKey = (r: Row) => h(r.name);
 
-  // `distinctiveRequirements` (fundSelection.ts) drops any requirement shared
+  // `distinctiveRequirements` (deleted with fundSelection.ts; the rule is
+  // preserved in project-mgmt/findings/dead_ranker_wsDO.md) drops any requirement shared
   // by more than a third of the candidates, because the two largest gate keys
   // sit on 584 instruments each and printing them 58 times is a third of the
   // prompt spent saying nothing. Reproduced here at corpus scale so the row
@@ -127,7 +131,7 @@ async function main() {
     .filter((q) => q && (reqCount.get(q) ?? 0) < REQ_CUTOFF)
     .sort().slice(0, 2).join("~");
 
-  /** What fundSelection.ts's `renderRow` prints, and nothing else. */
+  /** What the deleted `renderRow` printed, and nothing else. */
   const rowKey = (r: Row): string => [
     h(r.administering_body), mag(r.award_p50), h(r.capital_type), h(r.last_year),
     h(r.sector_mix), distinctiveReq(r),

@@ -125,6 +125,7 @@ import { ANSWER_LABEL, ANSWER_USE, type EligibilityAnswers, type InstrumentRow }
 import { peerPrior } from "./shortlist";
 import { fence } from "./untrusted";
 import { assessAll, type InstrumentAssessment } from "./verdict";
+import { assembleInstructions } from "./contracts";
 
 /** The arms. `off` is the default and is bit-identical to the shipped path. */
 export type AgentSelectArm = "off" | "rows" | "assist" | "adviser" | "dry";
@@ -444,6 +445,19 @@ function renderRow(
     `[${i}] ${oneLine(r.instrument)}`,
     `     ${facts.join(" · ")}`,
     verdict ? `     ${verdict}` : "",
+    // What the scheme itself says it funds — the single line that separates
+    // two siblings sharing a descriptor. Two EDF rows both render as
+    // "Grants · mostly defence & security"; their own pages say "stops before
+    // anything is built" and "turns an existing design into hardware".
+    //
+    // Read-safe on the request path and tested across the whole recall set: a
+    // statement of scope with no beneficiary, award or project title in it.
+    // Distinct from `instrument_profiles.profile_text`, which carries real
+    // winning project titles and is not reachable from here.
+    //
+    // Already budgeted by `fundsSentence` on the row (180 chars, whole
+    // sentences). Not re-cut here: one budget, one place.
+    r.description ? `     funds: ${r.description}` : "",
     reqs.length ? `     demands: ${reqs.join(" / ")}` : "",
   ].filter(Boolean).join("\n");
 }
@@ -551,6 +565,14 @@ function parseJson<T>(raw: string): T | null {
   }
   return null;
 }
+
+/** The selector's system prompt, assembled from `contracts/` like every
+ *  other stage. Memoised because it is byte-identical on every request and
+ *  reading nine markdown files per brief is a cost with no benefit; the
+ *  cache key is the process, exactly as for the writer. */
+let systemMemo: string | null = null;
+export const selectorSystemPrompt = (): string =>
+  (systemMemo ??= assembleInstructions("selector"));
 
 /**
  * EXPORTED FOR DIAGNOSTICS, and for one reason: what a model is told is a thing
@@ -772,6 +794,12 @@ export async function agentSelectRows(
         : { thinking: { type: "disabled" as const } }),
       // Nothing may bill untracked. recordUsage feeds the same accumulator the
       // euro ceiling in quota.ts is enforced against.
+      // The stage that RANKS was the only model stage in the product with no
+      // system prompt: role, framing, judging rules and output contract were
+      // all one user string. It now assembles from `contracts/` through the
+      // same positive per-stage routing every other stage uses, so
+      // `UNROUTED_STAGES` is empty and `check_contracts` enforces it.
+      system: selectorSystemPrompt(),
       messages: [{
         role: "user",
         content: buildPrompt(menuRows, ctx, keep, want, peers, evidence),

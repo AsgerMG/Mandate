@@ -146,7 +146,7 @@ import path from "path";
  *
  *  `__recallSetDoors.json` carries 7,095 pairs and 1,366 usable descriptions.
  *  The other 5,729 render in the selector prompt as the literal string
- *  `(no description on file)` (fundSelection.ts) and reach the RANKER as one of
+ *  `(no description on file)` in any selector prompt, and reach the RANKER as one of
  *  ELEVEN canned sector sentences via `selfDescription`. "Model 15% against
  *  shipped 27%" is therefore not two rankers compared: it is a judge with no
  *  case file against a ranker that never needed one.

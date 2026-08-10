@@ -1,9 +1,20 @@
 # Fund selection: where it stands, and how to measure it
 
 The single reference for the two-gate pipeline. Written 2026-08-06. Every
-number here comes from `scripts/measure_pipeline.ts`, which measures BOTH gates
+number here came from `scripts/measure_pipeline.ts`, which measured BOTH gates
 on the SAME cases in the same run — see "How to measure" before quoting
 anything.
+
+> **SUPERSEDED IN PART, 2026-08-11 (wsDO).** The gate-2 module this measured
+> (`lib/intelligence/fundSelection.ts`) and its harness are DELETED. They never
+> had a production caller and every arm that let the model reorder measured at
+> or below gate 1. The numbers below stand as history and the whole measurement
+> log, with the caveats that bound it — chiefly that 33 of the 40 fixture
+> companies carried no description at all — is preserved in
+> `findings/dead_ranker_wsDO.md`. **The commands in "How to measure" no longer
+> run.** Gate 2 is now the LLM selector (`lib/intelligence/agentSelect.ts`), on
+> a subset of 18-185 funds with the won fund present 97% of the time, and it is
+> measured by `scripts/check_recall_floor.ts` and `scripts/measure_recall.ts`.
 
 ---
 

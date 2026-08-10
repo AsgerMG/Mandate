@@ -22,6 +22,23 @@
 //
 // `institutionsMax` deliberately stays in `briefChecks.ts` next to the rule
 // that enforces it; that module is already hermetic.
+//
+// ── THERE ARE TWO FUNNELS, AND THAT IS THE OPEN DEFECT (wsDO) ──────────────
+// The chain above is the MEMO's. The founder's instant screen runs a second,
+// shorter one out of `computeVerdict`: the same `buildInstrumentTableHydrated`
+// pool, cut straight to `DISPLAY_CAP = 6`, with no blocked-row drop, no
+// display-name collapse and no re-sort. So the two surfaces of one request
+// disagree about which funds are in the table, not merely about their order,
+// and every recall figure this repo publishes is measured on the short funnel
+// while the founder acts on the long one.
+//
+// The design that merges them into one path with one ranker -- and the prefix
+// property that makes the merge checkable ("screen one's six rows are the
+// first six of the memo's order") -- is written down in
+// project-mgmt/findings/dead_ranker_wsDO.md §4, together with the order of
+// operations. Read it before changing any constant in this file: after the
+// merge, VERDICT_POOL stops being a second cut and becomes how deep the
+// selector is allowed to read.
 
 /** The pool `synthesize()` screens before cutting to the published cap.
  *
