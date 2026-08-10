@@ -407,7 +407,10 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
       const nGeneric = Array.isArray(data.round?.questions) ? data.round.questions.length : 0;
       const nProject = Array.isArray(data.round?.projectQuestions) ? data.round.projectQuestions.length : 0;
       if (!data.round || nGeneric + nProject === 0) {
-        await runMemo([]);
+        // wsDL: the same store, the same hazard. `eligForRequest` is what this
+        // round was fetched for, and it is the caller's just-merged object
+        // rather than the render-time `elig` this closure would otherwise read.
+        await runMemo([], undefined, eligForRequest);
         return;
       }
       setRound(data.round);
@@ -416,7 +419,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
       setProjectFreeText({});
       setScreen("adaptive");
     } catch {
-      await runMemo([]);
+      await runMemo([], undefined, eligForRequest);
     } finally {
       setPreparing(false);
     }
@@ -467,7 +470,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     const nextCount = roundCount + 1;
     setRoundCount(nextCount);
     if (nextCount >= MAX_ROUNDS) {
-      await runMemo([], allProjectAnswers);
+      await runMemo([], allProjectAnswers, merged);
       return;
     }
     setPreparing(true);
@@ -483,9 +486,27 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // Stream the memo, folding in whatever clarifications we have.
   // `projectOverride` exists because advanceRound() calls this in the same
   // tick as setProjectAnswers(), so the state hasn't flushed yet.
+  // ── wsDL: `eligOverride` is the SAME defect as `projectOverride`, one store
+  // over, and it was live on every single brief.
+  //
+  // `advanceRound` merges the adaptive round's answers, calls `setElig(merged)`
+  // and then calls this in the same tick. React state is not what a closure
+  // reads: `basePayload()` re-read the render-time `elig`, i.e. the answers as
+  // they stood BEFORE the round. MAX_ROUNDS is 1, so `nextCount >= MAX_ROUNDS`
+  // is taken every time and the memo was written from the first screen alone —
+  // the entire adaptive round, the thing the funnel exists for, reached
+  // `/api/intelligence/intake` and never reached `/api/intelligence`.
+  //
+  // The comment above `projectOverride` states this hazard exactly and was
+  // acted on for project answers only. The eligibility half kept the bug.
+  //
+  // Fixed by threading, not by an effect: an effect would make the request's
+  // contents depend on render timing, which is the same class of defect with a
+  // longer fuse.
   async function runMemo(
     clarifications: { question: string; answer: string }[],
     projectOverride?: ProjectAnswer[],
+    eligOverride?: EligibilityAnswers,
   ) {
     if (running) return;
     setRunning(true);
@@ -502,7 +523,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          ...basePayload(),
+          ...basePayload(eligOverride),
           clarifications,
           projectAnswers: projectOverride ?? projectAnswers,
         }),

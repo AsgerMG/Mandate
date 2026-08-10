@@ -64,6 +64,9 @@ import {
 } from "../lib/intelligence/corpus";
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
+import {
+  agentSelectMemoPool, agentSelectTallyLine, resetAgentSelectTally,
+} from "../lib/intelligence/agentSelect";
 import { accessiblePool, orderMemoCandidates, WRITER_CANDIDATE_CAP } from "../lib/intelligence/memoCandidates";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
@@ -153,6 +156,7 @@ async function main() {
   const policy: FounderPolicy = { ...founderPolicyFromEnv(), answers: answerMode };
   const tally = new IntakeTally();
   resetRankerTally();
+  resetAgentSelectTally();
   resetGateHydration();
   const out: Out[] = [];
   for (const t of sample) {
@@ -201,11 +205,20 @@ async function main() {
     //
     // Both arms are one replay over one pool, which is the only way the two
     // numbers are comparable.
-    const instrumentTable = applyProfileSignal(
-      (process.env.POOL === "legacy"
-        ? hydrated
-        : accessiblePool(hydrated, f.eligibility as never)
-      ).slice(0, VERDICT_POOL), undefined, undefined);
+    // ── The selection seat, through PRODUCTION'S OWN function (wsDL) ───────
+    // `agentSelectMemoPool` is the same call `runIntelligence` makes, in the
+    // same place: after the cut, on a fixed set of rows. Not reimplemented —
+    // a diagnostic that rebuilds the seam it is grading is how wsDD came to
+    // measure an arm that could not reach the product. With AGENT_SELECT unset
+    // this returns its argument BY REFERENCE, so the default run of this file
+    // is byte-identical to the one before the seam existed.
+    const instrumentTable = await agentSelectMemoPool(
+      applyProfileSignal(
+        (process.env.POOL === "legacy"
+          ? hydrated
+          : accessiblePool(hydrated, f.eligibility as never)
+        ).slice(0, VERDICT_POOL), undefined, undefined),
+      { country: f.country, description: f.opts.description, eligibility: f.eligibility as never });
     const poolIds = instrumentTable
       .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
     await hydrateGatesFor(poolIds);
@@ -243,6 +256,11 @@ async function main() {
   const prov = corpusProvenance();
   console.log(`corpus=${prov.source} instruments=${prov.instruments} at ${prov.hydratedAt}`);
   console.log(rankerTallyLine());
+  // The arm attestation, on the same screen as the number, for the same reason
+  // `ranker:` is: a run whose every model call timed out and fell back prints
+  // the CONTROL's figure under the treatment's banner and no reader could tell.
+  // Reports "no calls made" under the default arm.
+  console.log(agentSelectTallyLine());
   console.log(`set=${setFile} split=${split} replayed ${out.length}`);
   // The intake on the same screen as the number, for the same reason the
   // ranker line is: this whole file exists because wsCR's figures could not
