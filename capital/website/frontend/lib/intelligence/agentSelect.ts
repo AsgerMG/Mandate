@@ -552,7 +552,16 @@ function parseJson<T>(raw: string): T | null {
   return null;
 }
 
-function buildPrompt(
+/**
+ * EXPORTED FOR DIAGNOSTICS, and for one reason: what a model is told is a thing
+ * this repo has to be able to LOOK AT for free, before spending on a run.
+ * wsDJ found nine defects in exactly this surface, and every one of them was
+ * found by reading the real prompt rather than a reconstruction of it. A
+ * diagnostic that rebuilds the prompt prices and grades a different arm.
+ *
+ * Pure, and makes no call. `scripts/_wsdl_menu.ts` is its only consumer.
+ */
+export function buildPrompt(
   head: InstrumentRow[], ctx: SelectContext, keep: number, want: number,
   peers?: Map<string, number>, evidence?: Map<string, string[]>,
 ): string {

@@ -1282,7 +1282,13 @@ export const ANSWER_LABEL: Record<keyof EligibilityAnswers, string> = {
   activityCountries: "where the funded work will physically sit",
   activities: "regulated activities they are in",
   exclusionFlags: "aid-law exclusions they declared",
+  // external: the undertaking-in-difficulty test, GBER Art. 2(18)(a). The
+  // fraction is the Regulation's, not ours, and it is the wording the encoded
+  // gates on this field were written from.
   lossesOverHalfCapital: "accumulated losses over half of subscribed capital",
+  // external: the linked-enterprise threshold in the Commission's SME
+  // definition, Recommendation 2003/361/EC Annex Art. 3(3). Ours to state, not
+  // ours to choose.
   ownerOver25: "a single owner holding more than 25%",
   institutionalOwner: "a public body among the owners",
   nonEuControl: "controlled from outside the EU",
