@@ -31,7 +31,7 @@ RANK FUSION — both orderings at once, with a FINITE weight on the prior
 PRIOR DEPTH CAP — the prior promotes only its first N entries
   depth <= 1                     EXACT 134/600  22.3% +/- 3.3   REGIME  71.3%   CHANNEL  92.7%   vs shipped +37/-57 z=1.96
   depth <= 2                     EXACT 139/600  23.2% +/- 3.4   REGIME  70.8%   CHANNEL  91.8%   vs shipped +31/-46 z=1.60
-  depth <= 3                     EXACT 142/600  23.7% +/- 3.4   REGIME  70.0%   CHANNEL  89.8%   vs shipped +16/-28 z=1.66
+  depth <= 3                     EXACT 141/600  23.5% +/- 3.4   REGIME  70.7%   CHANNEL  89.8%   vs shipped +15/-28 z=1.83
   depth <= 5                     EXACT 153/600  25.5% +/- 3.5   REGIME  73.3%   CHANNEL  90.7%   vs shipped +3/-4 z=0.00
   depth <= 8                     EXACT 154/600  25.7% +/- 3.5   REGIME  73.8%   CHANNEL  91.2%   vs shipped +0/-0 z=0.00
   depth <= 13                    EXACT 154/600  25.7% +/- 3.5   REGIME  73.8%   CHANNEL  91.2%   vs shipped +0/-0 z=0.00
@@ -70,6 +70,12 @@ WHERE THE WON LEAF SITS IN EACH LIST, by which signal was right
   only the score right         n= 74   peer rank of the won leaf: median 15 p90 27  never in the cell 33/74   |   score rank: median 2 p90 5
   both right                   n= 47   peer rank of the won leaf: median 1 p90 3  never in the cell 2/47   |   score rank: median 2 p90 4
   neither right                n=383   peer rank of the won leaf: median 20 p90 40  never in the cell 143/383   |   score rank: median 34 p90 96
+
+CONCENTRATION of each signal's exclusive wins
+  only the peer prior right    regime   96 across 37, largest 18% — satr_de_rnd:17 vinnova_grant:9 ademe_aid:8
+  only the peer prior right    country  96 across 14, largest 21% — FR:20 DE:18 SE:9
+  only the score right         regime   74 across 27, largest 19% — vinnova_grant:14 horizon_eu_pillar_ii:10 bdns_es_ayudas:5
+  only the score right         country  74 across 11, largest 20% — SE:15 NO:9 ES:9
 
 A ROUTER, CROSS-VALIDATED. Threshold fitted on one half, scored on the other.
   Shipped scores 154/600 on the same rows.

@@ -107,6 +107,16 @@ function alternate(rows: Row[], branch: Tape["branch"]): Row[] {
 function cappedFill(rows: Row[], branch: Tape["branch"], seats: number, depth: number): Row[] {
   if (branch === "none" || rows.length < 3) return rows;
   const k = Math.max(0, Math.min(seats, rows.length));
+  // The specific branch has its own fill and its own early return past the
+  // scheme demotion. Sharing this function's flat fill with it would make an
+  // uncapped run differ from shipped on the 19%, and the cap would be credited
+  // with a difference it did not cause.
+  if (branch === "specific") {
+    const head = rows.slice(0, k);
+    const tail = [...rows.slice(k)].sort((a, b) =>
+      (a.peer >= 0 && a.peer < depth ? a.peer : 1e9) - (b.peer >= 0 && b.peer < depth ? b.peer : 1e9));
+    return [...head, ...tail];
+  }
   const lead = rows.slice(0, k);
   const rest = rows.slice(k);
   const known = rest.filter((r) => r.peer >= 0 && r.peer < depth).sort((a, b) => a.peer - b.peer);
@@ -377,6 +387,25 @@ function main() {
     console.log(`  ${name.padEnd(28)} n=${String(g.length).padStart(3)}   ` +
       `peer rank of the won leaf: median ${q(pr, 0.5)} p90 ${q(pr, 0.9)}  ` +
       `never in the cell ${unseen}/${g.length}   |   score rank: median ${q(sr, 0.5)} p90 ${q(sr, 0.9)}`);
+  }
+
+  // ── 5b2. CONCENTRATION ──────────────────────────────────────────────────
+  // Neither signal's advantage is a finding if it is one programme or one
+  // market. Reported for both directions, always, and not only beside a gain.
+  console.log(`\nCONCENTRATION of each signal's exclusive wins`);
+  for (const [name, g] of [
+    ["only the peer prior right", disc.filter((t) => label(t) === 0)],
+    ["only the score right", disc.filter((t) => label(t) === 1)],
+  ] as [string, Tape[]][]) {
+    for (const [axis, key] of [["regime", (t: Tape) => t.wantRegime], ["country", (t: Tape) => t.country]] as
+      [string, (t: Tape) => string][]) {
+      const m = new Map<string, number>();
+      for (const t of g) m.set(key(t), (m.get(key(t)) ?? 0) + 1);
+      const s = [...m].sort((a, b) => b[1] - a[1]);
+      console.log(`  ${name.padEnd(28)} ${axis.padEnd(8)} ${g.length} across ${s.length}, largest ` +
+        `${(100 * (s[0]?.[1] ?? 0) / Math.max(1, g.length)).toFixed(0)}% — ` +
+        s.slice(0, 3).map(([k, n]) => `${k}:${n}`).join(" "));
+    }
   }
 
   // ── 5c. A ROUTER, EVALUATED HONESTLY ────────────────────────────────────
