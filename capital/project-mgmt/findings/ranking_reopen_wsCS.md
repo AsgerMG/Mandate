@@ -324,3 +324,13 @@ floor added, removed, raised or lowered.** Full unit suite green.
   rather than only on the ones with a peer prior.
 - `peerFill.test.ts` green under all five arms, and its non-vacuity test fails
   if the peer prior cell ever empties.
+
+---
+
+**CLOSED by wsCW (2026-08-10).** The `confident` arms this workstream proposed,
+and every other point on the seat axis, were swept on a 600-pair tape that
+reproduces the published five 600/600, on both splits and under both scores. The
+shipped split is the maximum. `PEER_FILL` is deleted; the code with its five
+arms is tagged `archive/wsCW-peer-fill`. See `seats_wsCW.md` — and in particular
+do not re-derive the seat gradient, which is now recorded in
+`applyPeerPrecedence` itself.

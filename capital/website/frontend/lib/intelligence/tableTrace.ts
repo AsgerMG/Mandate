@@ -61,12 +61,12 @@ let peerBranch: "specific" | "flat" | "none" = "none";
 
 /** How many leading seats the SCORE kept in this table.
  *
- *  Fixed on every shipped arm — 1 on the flat branch, 3 on the specific one —
- *  and a function of the table under `PEER_FILL=confident`. Recorded because a
- *  null result on that arm has two completely different readings: the seat
- *  count moved and the page did not care, or the seat count never moved at all.
- *  Without this the two are indistinguishable, and the second is the shape of
- *  every false null in this project's history.
+ *  1 on the flat branch and 3 on the specific one, and since wsCW closed the
+ *  seat axis those are the only two values a request can produce. Kept, and
+ *  still recorded, because it is what a tape needs to CHECK that a
+ *  counterfactual seat count is a counterfactual: `scripts/_wscw_dump.ts`
+ *  reads it, and a simulator that could not reproduce the shipped seat count
+ *  would be reporting on a table nobody was ever shown.
  *
  *  -1 means peer precedence did not run for this founder (no prior, or a table
  *  too short), which is not the same as it running and awarding zero seats. */

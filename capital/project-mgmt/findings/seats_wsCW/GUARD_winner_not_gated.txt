@@ -1,0 +1,53 @@
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [check_winner_not_gated]
+watching public/data/instrument_terms.json — 1088 instruments, 3259 gates carrying a machine-readable spec, cut at 2026-08-09T19:52:56+00:00
+answer key __recallSetDoors.json: 7,095 pairs
+  names an instrument the snapshot does not hold  192
+  no encoded filter evaluable, cannot be judged   748
+  testable: at least one filter evaluated         6155 (floor 6000)
+  VERIFIED WINNERS THE GATE SCREEN WOULD DELETE   207 3.4% (ceiling 207)
+      RICICLA S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      GENETIC S.P.A. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      OLEARIA JONICA S.R.L. (IT) -> satr_it_equity__sa_109544__banca_del_mezzogiorno_mediocredito_centrale_s_p_  [sector]
+      CASEIFICIO SILVIO BOI S.R.L. (IT) -> satr_it_equity__sa_109544__banca_del_mezzogiorno_mediocredito_centrale_s_p_  [sector]
+      C.I.D.A. S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      DAVIA S.P.A. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      CASEIFICIO LA NUOVA CASEARIA S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      ALFA INTES INDUSTRIA TERAPEUTICA SPLENDORE S.R.L. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      FRANZESE LA PALMA S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      ALMEDA S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      NAPPI 1911 S.R.L. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      GIFFONIELLO S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      CARTESAR - S.P.A. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      C.G.F. S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      TERMINIO FRUTTA E ALIMENTARI S.A.S. DI GAETANO DE FEO E C. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      SIRIO SOCIETA&#39; A RESPONSABILITA&#39; LIMITATA (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      BIO VERDE S.R.L. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      Aasa Health (SE) -> satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum  [entityCountries, entityCountries]
+      DI COSTA S.P.A. (IT) -> satr_it_equity__sa_116269__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      JOEPLAST S.P.A. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      DAUNIA PLAST S.P.A. (IT) -> satr_it_equity__sa_116269__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      BuilderBase Labs AB (SE) -> satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum  [entityCountries, entityCountries]
+      PANNITTERI &amp; C. S.R.L. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      ALIAREC ENVIRONNEMENT (FR) -> ademe_aid__appel_a_projets_vehicules_lourds_electriques_202_fbfe6f  [sector]
+      ALTERMAT (FR) -> ademe_aid__appel_a_projets_vehicules_lourds_electriques_202_fbfe6f  [sector]
+      ANDRE LAFONT TRAVAUX PUBLICS (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      ATIL (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BETON THERON (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BPCE LEASE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BPIFRANCE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BRASSERIE VIGNERON (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CM CIC LEASING SOLUTIONS (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CREDIT AGRICOLE LEASING & FACTORING (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CREDIT MUTUEL LEASING (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      DAIMLER TRUCK FINANCIAL SERVICES FRANCE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      04 RECYCLAGE (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      A.BARNASSON (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      AGRI BIO ENERGIE (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      AGRI BIOMETHA'VAC (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      AGRIBIOMETHA'VAC (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      ... and 167 more
+  by intake field: sector 262, entityCountries 6
+
+PASS — no verified winner is newly deleted by the gate screen; the standing
+  debt of 207 has not risen. It is debt, not a target: each one is an
+  encoding this product cannot yet express.
