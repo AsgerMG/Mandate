@@ -470,7 +470,23 @@ export function eligibilityFit(a?: InstrumentAssessment): number {
  * of argued about. What reads it as a sort key is `ORDER_ARM === "fit"`, and
  * that arm does not ship. See the note at the top of this file and the
  * measurement at ORDER_ARM.
- * (Other caller: `scripts/shadow_fit.ts`, a harness.)
+ *
+ * ── SCHEDULED FOR DELETION, and what is holding it ────────────────────────
+ * As of wsDO this has exactly ONE production caller and that caller reads
+ * nothing back: `orderMemoCandidates` computes nine components for every pool
+ * row on every memo request and attaches them to a candidate the sort never
+ * consults, because `ORDER_ARM` is `verdict`. It is not deleted in wsDO only
+ * because `memoCandidates.ts` belongs to the workstream routing the LLM
+ * selector's order into the memo, and two agents editing one file is the
+ * defect the split exists to prevent.
+ *
+ * What removes it: once the memo's order comes from the selector, `ORDER_ARM`'s
+ * `fit` branch has no reason to exist, and the scoring loop at
+ * memoCandidates.ts dies with it — taking FIT_WEIGHTS, `structureFit` and
+ * `MemoCandidate.fit`. `sectorFit`/`sectorFitScorer` STAY: they rank the
+ * founder's table. `scaleFit`, `livenessFit`, `eligibilityFit` STAY: they are
+ * columns `poolBlend.ts` was fitted on, and deleting a column makes a published
+ * weight refer to nothing. See project-mgmt/findings/dead_ranker_wsDO.md §2/§4.
  */
 export function scoreFit(input: FitInput): FitScore {
   const { instrument: inst, assessment, year } = input;
@@ -544,38 +560,27 @@ export function scoreFit(input: FitInput): FitScore {
   };
 }
 
-/**
- * Rank a scored pool, strongest first, hard exclusions removed. The caller
- * cuts; this does not know how many the brief publishes.
+/** ── `rankByFit` STOOD HERE AND IS DELETED, ON ITS OWN INSTRUCTION ────────
  *
- * NO PRODUCTION CALLER. The only caller in the tree is
- * `scripts/shadow_fit.ts`, which is what it is for: comparing what this
- * ranking WOULD publish against what the shipped path does. Kept for that,
- * and stated here so nobody reads its existence as evidence that the brief is
- * ranked this way. If shadow_fit.ts is ever deleted, delete this with it.
+ *  Its docstring read: "NO PRODUCTION CALLER. The only caller in the tree is
+ *  `scripts/shadow_fit.ts` … If shadow_fit.ts is ever deleted, delete this with
+ *  it." Both are gone (wsDO, 2026-08-11). shadow_fit.ts was the Phase-4 exit
+ *  harness for the fit score, and that question is closed against it: wsCR
+ *  measured the fit re-sort moving the won leaf OUT of the published six 49
+ *  times for 13 in, and `_wsct_order.ts` scored it 24.0% MEMO@6 against
+ *  `verdict`'s 27.6% on one replay of one pool. A harness whose exit condition
+ *  has been answered by a better instrument is not a diagnostic, it is a second
+ *  implementation of a dead ranking.
  *
- * `displayName` collapses instruments that render as the same institution,
- * keeping the highest-scoring one. Without it a brief publishes one door
- * several times: a shadow run put the same national agency in three of five
- * rows, which is a scarce row spent on nothing (contract rule FUND-3). The
- * ranking is the right place for it, because whether two rows LOOK like one
- * fund is a property of what gets published, not of what scores well.
- */
-export function rankByFit(
-  scores: FitScore[],
-  displayName?: (instrumentId: string) => string,
-): FitScore[] {
-  const ranked = scores.filter((s) => !s.excluded).sort((a, b) => b.score - a.score);
-  if (!displayName) return ranked;
-  const seen = new Set<string>();
-  return ranked.filter((s) => {
-    const name = displayName(s.instrumentId).trim().toLowerCase();
-    if (!name) return true;
-    if (seen.has(name)) return false;
-    seen.add(name);
-    return true;
-  });
-}
+ *  THE ONE THING IT DID THAT IS NOT DEAD, so it is not lost with it: the
+ *  display-name collapse. Without it a brief publishes one door several times —
+ *  a shadow run put the same national agency in three of five rows, a scarce
+ *  row spent on nothing (contract rule FUND-3). That collapse ships, in
+ *  `orderMemoCandidates` as `SEL-DUPE-NAME` and in `nameCollision.ts`, which is
+ *  where it belongs: whether two rows LOOK like one fund is a property of what
+ *  gets published, not of what scores well.
+ *
+ *  Full record: project-mgmt/findings/dead_ranker_wsDO.md §2. */
 
 /** Band index helper, re-exported so callers scoring a pool do not have to
  *  reach into shortlist.ts for it while that module is being dismantled. */
