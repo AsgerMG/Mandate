@@ -1,0 +1,691 @@
+
+> wincent-frontend@0.1.0 check
+> node scripts/run_checks.mjs
+
+
+[1m── typecheck[0m
+
+[1m── unit tests[0m
+
+ RUN  v4.1.10 /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsCZ-taxonomy/website/frontend
+
+
+ Test Files  31 passed (31)
+      Tests  457 passed (457)
+   Start at  22:07:49
+   Duration  1.40s (transform 1.41s, setup 0ms, import 2.52s, tests 1.30s, environment 2ms)
+
+
+[1m── segment config is a literal[0m
+check_revalidate_literal: ok — every segment config in app/ is a literal, and every revalidate equals CORPUS_REVALIDATE_SECONDS (3600).
+
+[1m── output contracts[0m
+check_contracts: ok — 9 contracts, 89 rules, 27 enforced, 62 declared unenforced (buildable 5, judgement 56, no-artifact 1), 5 report fields governed
+
+[1m── rendered numbers[0m
+check_rendered_numbers: FAILED
+
+  1 literal quantity(ies) reach a visitor without coming from the corpus
+  and without saying where they came from:
+
+    app/about-public-capital/page.tsx:232
+      2025   — an integer of four digits or more
+      “Multiverse Computing stacked ⟨…⟩ public channels before its 2025 mega-round.”
+
+  Two ways to fix each, and only two:
+    IT IS A CORPUS FIGURE   derive it. lib/corpusProse.ts holds the prose
+                            quantities; lib/data.corpusStats() holds the KPIs.
+                            A "use client" module takes it as a prop.
+    IT IS NOT              attribute it. Add a <Src n={…} /> footnote in the
+                            same element, a url: in the same object, or a
+                            provenance comment (external: / corpus: /
+                            contract: …) attached to the node.
+
+
+[1m── published figures[0m
+check_published_figures: project-mgmt/RESUME_HERE.md — 42 figure(s) in 38 unit(s); 26 verified against 192 committed artifact(s).
+  PASS — every published figure names where it came from, and every recall artifact says which ranker produced it.
+
+[1m── sector evidence[0m
+  100% of 174 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 77%  —  Fonds d'investissement en faveur du secteur de l’audiovisuel
+  100% of 77 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 71%  —  Bayerische Richtlinien für die Förderung von Film-, Fernseh-
+  100% of 71 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 67%  —  Soutien à la modernisation des industries techniques et à l'
+  96% of 45 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 69%  —  Bayerische Richtlinien für die Förderung von Film-, Fernseh-
+  91% of 43 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 56%  —  Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB
+  80% of 46 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 63%  —  Screen Flanders
+  60% of 40 awards went to "SECTION S – ARTS, SPORTS AND RECREATION"
+      but the mix reads software_data_ai 63%  —  Régime cadre exempté de notification relatif aux aides à la 
+
+ok — 7 of 360 instruments claim a technology sector their own recipients contradict (pinned 7)
+
+[1m── vocabulary contract[0m
+(node:80619) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+all intake vocabularies correspond to the data
+
+[1m── one env loader[0m
+check_env_loader: ok — 277 files, one loader, every declared credential accounted for.
+
+[1m── client/server boundary[0m
+check_client_boundary: ok — no client module reaches fs, pg or another server-only import
+
+[1m── payload budget[0m
+per-request payload 4.22 MB   (worst founder: DE)
+  phase one         3.19 MB   (every instrument + framework gates; independent of the pool cap)
+  phase two         1.03 MB   (gates for 143 leaves + their regimes, at cap 250)
+full snapshot       7.92 MB   (JSON fallback; 4.72 MB of it deferred to the shortlist)
+instruments         1,088
+gates               7,471
+per instrument      2.9 KB   (phase one)
+cost of the cap     0 KB would be added by removing POOL_LEAVES_PER_CHANNEL entirely (0 more leaves)
+headroom to budget  3.8 MB (~1,287 more instruments at today's phase-one rate)
+
+WARN: past 4 MB. Plan the next hydration split now rather than
+when it breaks; see the note at the top of this file.
+
+[1m── archetype regression[0m
+(node:80843) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+archetype                     rows  pool  verdicted  reachable  statuses
+------------------------------------------------------------------------------------------------
+Robotics                      6     106   101        96         {"unknown":5,"open":72,"blocked":10,"one_blocker":19}
+Hardware                      6     50    44         43         {"blocked":7,"unknown":6,"open":34,"one_blocker":3}
+FinTech (business lending)    6     81    76         76         {"unknown":5,"open":69,"one_blocker":2,"blocked":5}
+FinTech (consumer banking)    6     49    44         44         {"unknown":5,"open":36,"one_blocker":3,"blocked":5}
+AI B2C software               6     185   153        118        {"blocked":67,"open":84,"unknown":32,"one_blocker":2}
+AI B2B software               6     114   109        97         {"open":90,"blocked":17,"unknown":5,"one_blocker":2}
+GovTech                       6     92    86         22         {"blocked":70,"unknown":6,"open":15,"one_blocker":1}
+Platform                      6     185   153        130        {"blocked":55,"open":96,"unknown":32,"one_blocker":2}
+Cloud / NeoCloud              6     80    75         75         {"unknown":5,"open":69,"blocked":5,"one_blocker":1}
+MedTech                       6     106   101        95         {"unknown":5,"open":67,"blocked":11,"one_blocker":23}
+Life sciences                 6     113   108        95         {"open":89,"blocked":18,"unknown":5,"one_blocker":1}
+AgriTech                      6     90    85         21         {"unknown":5,"open":15,"blocked":69,"one_blocker":1}
+------------------------------------------------------------------------------------------------
+all 12 archetypes pass
+
+[1m── every archetype gets a table[0m
+(node:81045) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+company             ranked  accessible  rows  verdict
+------------------------------------------------------------------------------------------------
+Neura Robotics         115          22     6  ok
+SMART Photonics         50          38     6  ok
+Silvr                  106          47     6  ok
+bunq                    47          34     6  ok
+Photoroom              106          48     6  ok
+Aleph Alpha            115         105     6  ok
+Nortal                  80          67     6  ok
+sennder                107          18     6  ok
+Nebius                  57          44     6  ok
+Corti                   33          28     6  ok
+BioNTech               115          21     6  ok
+eAgronom                86          77     6  ok
+------------------------------------------------------------------------------------------------
+ranker: all 12 request(s) on EMBEDDING
+not evaluated at this stage (writer fields are empty): BL-1, BL-2, BL-B1, BRIEF-1, BRIEF-2, FUND-4, FUND-5, FUND-6, POS-1, SOP-1, SOP-2
+all 12 archetypes publish a table that holds up
+
+[1m── liveness has one definition[0m
+liveness: one definition, one projection, no hand-rolled copies
+
+[1m── openness is evidenced[0m
+(node:81322) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+rows asserting openness on OUR COPY holding no deadline: 89 of 837 publishable (baseline 89)
+  concentration: ES:58 FR:31
+
+proposed withholds in wsCO_window_register.json: 33 (33 still in the corpus), asked 2026-08-09
+  every one quotes the register's own date, and none empties its regime
+
+ok
+
+[1m── offer routes are sourced[0m
+check_offer_route: ok — 748 publishable, 11 withheld as not-an-offer (all sourced), 297 with no recorded route across 10 families, none above its ceiling.
+
+[1m── regions match NUTS[0m
+check_regions: 1 corpus country is outside the NUTS classification, so regional rules there stay unevaluable: GB (GB)
+check_regions: ok — 417 regions across 39 countries, and the 449 reference ids are exactly NUTS 2024 levels 1-2
+
+[1m── theme index is not stale[0m
+check_theme_index: ok — 1088 instruments indexed
+
+[1m── leaf cap headroom[0m
+check_leaf_cap: ok — cap 250, widest group 103 (state_aid_satr DE), headroom 147 across 42 channel/country groups.
+
+[1m── missing-data neutral[0m
+check_missing_data_neutral: 11 founder sector(s) over 748 publishable leaves.
+  software_data_ai         stand-in 0.500  at percentile  50  of  654 scored leaves  (94 have no history)
+  health_life_sciences     stand-in 0.159  at percentile  50  of  654 scored leaves  (94 have no history)
+  energy_cleantech         stand-in 0.261  at percentile  50  of  654 scored leaves  (94 have no history)
+  industrial_manufacturing stand-in 0.359  at percentile  50  of  654 scored leaves  (94 have no history)
+  semiconductors_electronics stand-in 0.090  at percentile  50  of  654 scored leaves  (94 have no history)
+  mobility_transport       stand-in 0.042  at percentile  50  of  654 scored leaves  (94 have no history)
+  agrifood                 stand-in 0.085  at percentile  50  of  654 scored leaves  (94 have no history)
+  materials_chemicals      stand-in 0.057  at percentile  50  of  654 scored leaves  (94 have no history)
+  other                    stand-in 0.370  at percentile  50  of  654 scored leaves  (94 have no history)
+  space                    stand-in 0.000  at percentile  46  of  654 scored leaves  (94 have no history)
+  defense_security         stand-in 0.000  at percentile  44  of  654 scored leaves  (94 have no history)
+  ok — furthest from the middle: defense_security at the 44th percentile, band 20-60. (The constant this replaced, 0.5, sat at the 79th.)
+
+[1m── capital reach[0m
+check_capital_reach: ok — every value carried by the 748 publishable instruments is reachable by some intake answer, or declared unofferable with a reason (axes: capital_type, country).
+
+[1m── a filter can admit someone[0m
+check_comparator_admits: 2975 encoded filters in public/data/instrument_terms.json
+  45 inert comparator(s) — no answer produces any verdict, so they never block anyone (ceiling 45):
+       11  cofinancingBand numeric_gte
+        5  ownerOver25 numeric_gte
+        4  balanceBand numeric_gte
+        4  ticketBand numeric_gte
+        4  turnoverBand numeric_gte
+        4  turnoverBand band_max
+        3  borrowerModel boolean_false
+        2  exclusionFlags boolean_false
+        2  cofinancingBand boolean_true
+        1  institutionalOwner numeric_lte
+        1  cofinancingBand numeric_lte
+        1  developmentStage band_max
+        1  conditionality boolean_true
+        1  lossesOverHalfCapital numeric_gte
+        1  ticketBand numeric_lte
+  PASS — every encoded filter that can reject an answer can also accept one.
+
+[1m── open questions still cover the corpus[0m
+watching openQuestionClass.generated.json
+snapshot: 1088 instruments, 4685 filter gates
+artifact: 1146/1146 classified by claude-sonnet-5 at 2026-08-09T11:52:28.883Z
+in scope for an open question: 1420 distinct texts
+  covered by the artifact     : 1072 (75.5%)  {"encodable":786,"judgeable":319,"unaskable":112}
+  UNCOVERED                   : 348 (ceiling 400)
+
+PASS — the classification still covers the corpus within the ratchet.
+
+[1m── a winner is never screened out[0m
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [check_winner_not_blocked]
+watching officialCatchments.generated.json — 427 of 1088 instruments carry an officially declared catchment, cut at 2026-08-09T17:54:19.503Z
+answer key __recallSetDoors.json: 7,095 pairs
+  no leak-free region, cannot be judged        6380
+  register silent on the fund, KEPT not blocked 133
+  testable: leak-free region + official catchment 582 (floor 550)
+  VERIFIED WINNERS THE SCREEN WOULD BLOCK      15 2.6% (ceiling 15)
+      BYLOGIX SOCIETA' A RESPONSABILITA' LIMITATA (IT, ITI) -> satr_it_rnd__sa_115378__finpiemonte_s_p_a
+      Siemens (DE, BE2) -> satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz
+      CULTIMATE FOODS (DE, DE3) -> satr_de_rnd__sa_103582__nbank
+      Siemens (DE, BE2) -> satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz
+      Siemens (DE, BE2) -> satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung
+      Global Climate Changer GmbH (DE, DE3) -> satr_de_rnd__sa_113239__sachsen_sab
+      V.M.C. S.P.A. (IT, ITH) -> satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori
+      The Makers Food GmbH (DE, DE3) -> satr_de_rnd__sa_114510__nrw_bank
+      ConstantinTelevision GmbH (DE, DE2) -> satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg
+      W&B Television GmbH (DE, DE3) -> satr_de_equity__sa_118637__lfa_forderbank_bayern
+      sus.raw GmbH (DE, DEA) -> satr_de_rnd__sa_110061__vdi_vde_innovation_und_technik
+      J & W S.R.L. (IT, ITH) -> satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori
+      Siemens Energy Global GmbH & Co. KG (DE, DE2) -> satr_de_rnd__sa_64558__investitionsbank_berlin
+      H2 MOBILITY Deutschland GmbH & Co. KG (DE, DE2) -> satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+      Mint Hydrogen Germany GmbH (DE, DE2) -> satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+
+PASS — no verified winner is newly blocked; the standing debt of 15
+  has not risen. It is debt, not a target: it is why the territorial screen
+  is not shipped.
+
+[1m── a winner is never gated out of the memo[0m
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [check_winner_not_gated]
+watching public/data/instrument_terms.json — 1088 instruments, 3259 gates carrying a machine-readable spec, cut at 2026-08-09T19:52:56+00:00
+answer key __recallSetDoors.json: 7,095 pairs
+  names an instrument the snapshot does not hold  192
+  no encoded filter evaluable, cannot be judged   748
+  testable: at least one filter evaluated         6155 (floor 6000)
+  VERIFIED WINNERS THE GATE SCREEN WOULD DELETE   207 3.4% (ceiling 207)
+      RICICLA S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      GENETIC S.P.A. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      OLEARIA JONICA S.R.L. (IT) -> satr_it_equity__sa_109544__banca_del_mezzogiorno_mediocredito_centrale_s_p_  [sector]
+      CASEIFICIO SILVIO BOI S.R.L. (IT) -> satr_it_equity__sa_109544__banca_del_mezzogiorno_mediocredito_centrale_s_p_  [sector]
+      C.I.D.A. S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      DAVIA S.P.A. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      CASEIFICIO LA NUOVA CASEARIA S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      ALFA INTES INDUSTRIA TERAPEUTICA SPLENDORE S.R.L. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      FRANZESE LA PALMA S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      ALMEDA S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      NAPPI 1911 S.R.L. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      GIFFONIELLO S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      CARTESAR - S.P.A. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      C.G.F. S.R.L. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      TERMINIO FRUTTA E ALIMENTARI S.A.S. DI GAETANO DE FEO E C. (IT) -> satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      SIRIO SOCIETA&#39; A RESPONSABILITA&#39; LIMITATA (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      BIO VERDE S.R.L. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      Aasa Health (SE) -> satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum  [entityCountries, entityCountries]
+      DI COSTA S.P.A. (IT) -> satr_it_equity__sa_116269__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      JOEPLAST S.P.A. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      DAUNIA PLAST S.P.A. (IT) -> satr_it_equity__sa_116269__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      BuilderBase Labs AB (SE) -> satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum  [entityCountries, entityCountries]
+      PANNITTERI &amp; C. S.R.L. (IT) -> satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg  [sector]
+      ALIAREC ENVIRONNEMENT (FR) -> ademe_aid__appel_a_projets_vehicules_lourds_electriques_202_fbfe6f  [sector]
+      ALTERMAT (FR) -> ademe_aid__appel_a_projets_vehicules_lourds_electriques_202_fbfe6f  [sector]
+      ANDRE LAFONT TRAVAUX PUBLICS (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      ATIL (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BETON THERON (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BPCE LEASE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BPIFRANCE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BRASSERIE VIGNERON (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CM CIC LEASING SOLUTIONS (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CREDIT AGRICOLE LEASING & FACTORING (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CREDIT MUTUEL LEASING (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      DAIMLER TRUCK FINANCIAL SERVICES FRANCE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      04 RECYCLAGE (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      A.BARNASSON (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      AGRI BIO ENERGIE (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      AGRI BIOMETHA'VAC (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      AGRIBIOMETHA'VAC (FR) -> ademe_aid__etudes_prealables_a_la_construction_d_une_instal_e19b03  [sector]
+      ... and 167 more
+  by intake field: sector 262, entityCountries 6
+
+PASS — no verified winner is newly deleted by the gate screen; the standing
+  debt of 207 has not risen. It is debt, not a target: each one is an
+  encoding this product cannot yet express.
+
+[1m── recall set does not leak[0m
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [leak check]
+  profile index: 1,088 instruments, built 2026-08-08T10:16:03+00:00
+check_recall_leaks: ok — 1,366 described rows, 0 leaks at exact / 8-gram / sibling, 222 squash probes agree.
+
+[1m── harness answers as the founder[0m
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [harness intake]
+  self-test: 10 detector cases and 7,095 resolver rows agree; 8 distinct fields actually supplied
+check_harness_intake: ok — 23 replay harness(es), 23 askable intake fields, 5 held to zero inlined keys, 14 ratcheted.
+
+[1m── peer prior canary[0m
+peer prior canary: peerPrior.generated.json — 260 cells, 4213 entries
+  graded against __recallSetDoors.json, 7095 pairs, no corpus and no credentials
+    ok   regime@5 25.7% (floor -)  holdout:childless_family, n=1180   [exact@5 25.7%, in cell 60.0% (floor -)]
+    ok   regime@5 85.9% (floor -)  holdout:exact_attribution, n=1809   [exact@5 14.9%, in cell 65.3% (floor -)]
+    ok   regime@5 79.5% (floor -)  holdout:original join, n=1170   [exact@5 21.4%, in cell 78.5% (floor -)]
+    ok   regime@5 27.6% (floor 24)  tune:childless_family, n=855   [exact@5 27.6%, in cell 64.8% (floor 61)]
+    ok   regime@5 88.0% (floor 85)  tune:exact_attribution, n=1263   [exact@5 14.6%, in cell 64.4% (floor 61)]
+    ok   regime@5 79.7% (floor 78)  tune:original join, n=818   [exact@5 17.8%, in cell 77.8% (floor 74)]
+check_peer_prior_canary: ok — every floored population is above its floor.
+
+[1m── quotations match documents[0m
+check_extracted_quotes: skipped — data/raw/instrument_docs is absent, so there is nothing to verify a quotation against. This is the normal state in CI; the check is real on any machine that holds the corpus.
+
+[1m── dependency audit[0m
+high/critical advisories: 3  (3 accepted, 0 needing action)
+  accepted until 2026-09-30  next
+  accepted until 2026-09-30  postcss
+  accepted until 2026-09-30  sharp
+
+no unreviewed high or critical advisories
+
+[1m── country gates[0m
+check_country_gates: 336 country-typed comparators, canon holds 40 countries
+
+  23 not_in rules name a place outside the corpus. True, inert, deliberately not failed:
+  gate 392799 (ihi, IHI) entityCountries not_in ["Canada"]
+      Legal entities established in Canada are not eligible to receive IHI JU funding for topics
+  gate 392800 (ihi, IHI) entityCountries not_in ["South Korea"]
+      Legal entities established in the Republic of Korea are not eligible to receive IHI JU fun
+  gate 392854 (erc_poc, ERC POC) entityCountries not_in ["Russia","Belarus","Ukraine non-government controlled"]
+      Legal entities established in Russia, Belarus, or non-government controlled territories of
+  gate 392860 (erc_poc, ERC POC) entityCountries not_in ["China"]
+      For IA and RIA actions covered, legal entities established in China are not eligible to pa
+  gate 392861 (erc_poc, ERC POC) entityCountries not_in ["China MIIT"]
+      Chinese universities administered by or under supervision of the Ministry of Industry and 
+  gate 392920 (horizon_eu_cbe, Horizon EU CBE) entityCountries not_in ["Russia","Belarus","Ukraine non-government controlled"]
+      Legal entities established in Russia, Belarus, or non-government controlled territories of
+  gate 392923 (horizon_eu_cbe, Horizon EU CBE) entityCountries not_in ["China"]
+      Legal entities established in China are not eligible to participate in any capacity in IA 
+  gate 392934 (horizon_eu_cl1, Horizon EU CL1) entityCountries not_in ["Russia","Belarus","Ukraine non-government controlled"]
+      Legal entities established in Russia, Belarus, or non-government controlled territories of
+  gate 392957 (horizon_eu_cl3, Horizon EU CL3) entityCountries not_in ["Russia","Belarus","Ukraine non-government controlled"]
+      Legal entities established in Russia, Belarus, or non-government controlled territories of
+  gate 392960 (horizon_eu_cl3, Horizon EU CL3) entityCountries not_in ["China"]
+      For IA and RIA actions identified as affected, legal entities established in China are not
+  PASS — every positive country rule names a country a founder can answer.
+
+[1m── gate field reach[0m
+check_gate_field_reach: 3259 encoded comparators over 24 fields; 26 intake fields declared
+
+  1 field(s) answered by a pinned constant. Reachable, evaluated, and always the same — reported, never failed:
+  borrowerModel: 99 comparators on 94 instruments, 21.1% of events
+      [equals:55, in:34, not_in:7, boolean_false:3]
+      e.g. gate 389854 (InvestEU financial-intermediary architec) — The EU guarantee may also cover funding or guarantees extended by an implementing partner 
+      panel.tsx pins 'operating'. The lender/intermediary routing the other values unlock is out of scope for this tool's lean-founder persona, and an operating company is what such a founder truthfully is — so these rules evaluate correctly, they simply always evaluate the same way.
+  PASS — every encoded rule is keyed to a field some answer can reach.
+
+[1m── answers reach the ranker[0m
+(node:82330) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [answer reach]
+
+  RANKER GRADED: EMBEDDING — 12 of 12 probe founders ranked by embeddings, observed via rankerUsed() on the score maps this run built its tables from.
+    EMBEDDING — pgvector over instrument_profiles, query embedded by Voyage (VOYAGE_KEY). This is the ranker the memo ships on.
+
+check_answer_reach: 1 field(s) STAGED and not asked — organisationType (arm NEXT_PUBLIC_ORGANISATION_TYPE_ARM=off)
+  Wired and encodable, exempt only until the arm goes on. Re-run with the arm set to "on" to grade them.
+
+check_answer_reach [ranker: embedding]: 23 of 26 intake fields are collected (the rest are declared unreachable and belong to check_gate_field_reach); 12 probe founders; 6 proved to rank, 17 declared memo-only
+
+  Proved to change the published rows:
+  ticketBand — BODENS KOMMUN (SE/other): "lt25k" changes the published rows
+  sector — BODENS KOMMUN (SE/other): "software_data_ai" changes the published rows
+  useOfFunds — ALTERED CARBON (GB/semiconductors_electronics): ["rd_facilities"] changes the published rows
+  region — AEGIS IT RESEARCH GMBH (DE/software_data_ai): "DEA5" changes the published rows
+  consortium — BODENS KOMMUN (SE/other): "no" changes the published rows
+  entityCountries — BODENS KOMMUN (SE/other): ["Norway"] changes the published rows
+
+  Collected, not ranking — by decision:
+  activities — 611 comparators on 598 instruments — the largest encoded axis in the corpus, and it is an EXCLUSION axis: it blocks funds rather than ordering them
+      read by: the rows (ALTERED CARBON (GB/semiconductors_electronics): ["gambling_betting"] changes the published rows)
+  exclusionFlags — 678 comparators on 626 instruments, the GBER and de minimis exclusions. Blocks rather than orders, and a blocked fund leaves the table
+      read by: the rows (ALTERED CARBON (GB/semiconductors_electronics): ["insolvency"] changes the published rows)
+  lossesOverHalfCapital — 153 comparators. The undertaking-in-difficulty test: a hard bar on the screen, with no cure that is ours to offer
+      read by: the rows (BODENS KOMMUN (SE/other): "yes" changes the published rows)
+  fteBand — 147 comparators, the headcount half of the SME definition
+      read by: the rows (C12 QUANTUM ELECTRONICS (FR/semiconductors_electronics): "50-249" changes the published rows)
+  borrowerModel — 99 comparators, and pinned to 'operating' for every founder (see FIELD_REACH) — so it evaluates correctly and always the same way
+      read by: the rows (NEOS NEW BORN SOLUTIONS SL (ES/semiconductors_electronics): "balance_sheet_lender" changes the published rows)
+  developmentStage — 63 comparators. TRL floors gate whole programmes rather than separating siblings of one regime
+      read by: the rows (ALTERED CARBON (GB/semiconductors_electronics): "pilot_customers" changes the published rows)
+  cofinancingBand — 39 comparators. A co-financing floor is a condition of the same scheme for everyone who reaches it
+      read by: the rows (AEGIS IT RESEARCH GMBH (DE/software_data_ai): "<25%" changes the published rows)
+  turnoverBand — 25 comparators, the turnover half of the SME definition
+      read by: the rows (2050 CONSULTING AB (SE/software_data_ai): "10-50M" changes the published rows)
+  nonEuControl — 17 comparators, mostly EDF and defence ownership conditions
+      read by: the rows (ALTERED CARBON (GB/semiconductors_electronics): "yes" changes the published rows)
+  ownerOver25 — 14 comparators, the linked-enterprise half of the SME test
+      read by: the rows (ALTERED CARBON (GB/semiconductors_electronics): "yes" changes the published rows)
+  institutionalBacking — 12 comparators; it also feeds the memo's framing of what kind of raise this is
+      read by: the eligibility screen (ANANTA INNOVATIONS (GB/software_data_ai): "yes" changes the eligibility screen)
+  bankRelationship — 8 comparators on guarantee instruments, where having a lender is a precondition to applying at all
+      read by: 8 encoded comparator(s), on no probe founder's table
+  conditionality — 7 comparators. It is the founder's stated willingness, which belongs in the memo's advice rather than in a score
+      read by: the eligibility screen (BODENS KOMMUN (SE/other): ["local_entity"] changes the eligibility screen)
+  balanceBand — 4 comparators, the balance-sheet half of the SME definition
+      read by: the rows (2050 CONSULTING AB (SE/software_data_ai): ">43M" changes the published rows)
+  wouldOpenEntity — 4 comparators, and its real job is the CURE on an establishment blocker — it is what turns 'you are not eligible' into 'you would be, if'
+      read by: the eligibility screen (BODENS KOMMUN (SE/other): "yes" changes the eligibility screen)
+  institutionalOwner — 2 comparators, the public-body half of the linked-enterprise test
+      read by: 2 encoded comparator(s), on no probe founder's table
+  needBy — 2 comparators. Timing is served by the deadline and liveness layer (offerRoute.ts), not by the row sort
+      read by: the eligibility screen (BODENS KOMMUN (SE/other): "asap_weeks" changes the eligibility screen)
+  PASS [ranker: embedding] — every question we ask changes something a founder sees, under the ranker the memo ships on.
+
+[1m── gate pertinence[0m
+check_gate_pertinence: ok — 2932 distinct requirement texts across 9370 deciding gate(s) from committed snapshot + Postgres (2786 condition, 146 demand_match), all judged at property v3 as something an applicant could act on; 13/13 calibration cases correct. 576 published eligibility_text value(s) judged too.
+
+[1m── applicant identity[0m
+check_applicant_identity: ok — 576 published texts state the applicant's own test (applicant=560  indeterminate=16); 7 calibration cases hold
+  [verdict] applicant_identity = ok published as #395, code 25f0e86b4216cb42
+
+[1m── corpus currency[0m
+  snapshot generated 2026-08-09T19:52:56+00:00, 1088 records
+  postgres 1088 instruments, 1088 embedded profiles, as of 2026-08-10
+  semantic cache 18 descriptions, leak index 1088 profiles (built 2026-08-08T10:16:03+00:00)
+check_corpus_currency: ok — the snapshot and Postgres agree on every liveness verdict, every instrument is retrievable, and both committed mirrors of the index (scores, profile text) cover exactly the live one.
+  [verdict] corpus_currency = ok published as #396, code e471159d20a5d124
+
+[1m── site serves the ETL's corpus[0m
+check_corpus_census: note — census #6 (unknown) predates the schema_state column; nothing to check for it.
+  corpus of record: railway-volume
+  * railway-volume  # 10   1.7d  151,915 companies · 299,428 events · 1,088 instruments · 6,401 gates
+    local           #  9   1.9d  151,426 companies · 299,384 events · 1,088 instruments · 7,471 gates
+    unknown         #  6   2.9d  151,426 companies · 297,933 events · 1,086 instruments · 6,368 gates
+    postgres        live       — · — · 1,088 instruments · 7,471 gates
+  site serves 151,426 companies · 299,384 events · 23 countries
+
+check_corpus_census: FAILED
+
+  - DEGRADED — census #10 is not fit to publish:
+        the coverage gate did not pass this corpus — the gate FAILED: LOSS  sectors: 8, down from a high of 11 (tolerance 1). This is a figure on the home page.. The gate exists to refuse a corpus that got worse; an absent verdict is not a passing one.
+        the pipeline that produced it did not finish cleanly: "partial: refresh_open_calls.py". Part of the corpus is not refreshed.
+      The site will NOT serve these figures. It is falling back to an
+      older reading, which is the gate working — but the corpus itself
+      still needs looking at, and only a person can do that.
+
+  - DRIFTED — census #10 was produced by code fingerprinted e25d3712f8cc48f2, this checkout is 2a19f6d0d55a3405.
+      The scheduled ETL is not running the code in this repository. It has no
+      repo trigger; only `railway up` redeploys it. Fix:
+        python3 ETL/lib/verify_cron.py --deploy
+
+  - DIVERGED — 2 measure(s) where a DERIVED store is AHEAD of the
+      corpus of record (railway-volume). Each is a row that exists in exactly one
+      place, and both sync paths (pull_db.py, push_local.py) move the whole
+      file with --overwrite, so the next sync in either direction destroys it.
+        local/instruments.gates: derived 7,471, record 6,401 (+1,070 held only by the derived store)
+        postgres/instruments.gates: derived 7,471, record 6,401 (+1,070 held only by the derived store)
+      Reconcile by union, never by overwrite:
+        python3 ETL/events/load/reconcile_stores.py --help
+
+  - STALE — the committed synthesis.json does not describe the corpus the ETL
+      holds. The live page reads the census, so founders are not seeing these
+      numbers today — but this file IS what they see when Postgres is
+      unreachable or the newest censuses fail the gate, and it is drifting:
+        events: site 299384, ETL corpus 299428
+        sectors: site 11, ETL corpus 8
+        champions: site 9371, ETL corpus 9372
+        companies: site 151426, ETL corpus 151915
+        totalCapitalEurRaw: site 408433535420.6861, ETL corpus 408436443019.87
+      census #10 taken 2026-08-09T03:13Z by etl-pipeline, 1.7 days ago.
+
+  The site's headline figures follow the census on their own (wsAK), but
+  only through a census the coverage gate has passed. Anything above means
+  either the corpus needs a person, or the committed fallback has drifted.
+
+  Fix (pulls the ETL's db, regenerates, gates, and tells you what to commit):
+    make republish
+
+[1m── degradation policy[0m
+check_degradation: 12 archetypes, fallback corpus vs the live register, as of 2026-08-10
+
+WHAT THE POLICY COSTS
+  Robotics               shown  6 (live  6)   pool 106 (live 106)   withheld   0
+  Hardware               shown  6 (live  6)   pool  50 (live  50)   withheld   0
+  FinTech (business lending) shown  6 (live  6)   pool  81 (live  81)   withheld   0
+  FinTech (consumer banking) shown  6 (live  6)   pool  49 (live  49)   withheld   0
+  AI B2C software        shown  6 (live  6)   pool 127 (live 185)   withheld  58
+  AI B2B software        shown  6 (live  6)   pool  83 (live 114)   withheld  31
+  GovTech                shown  6 (live  6)   pool  92 (live  92)   withheld   0
+  Platform               shown  6 (live  6)   pool 127 (live 185)   withheld  58
+  Cloud / NeoCloud       shown  6 (live  6)   pool  80 (live  80)   withheld   0
+  MedTech                shown  6 (live  6)   pool 106 (live 106)   withheld   0
+  Life sciences          shown  6 (live  6)   pool  82 (live 113)   withheld  31
+  AgriTech               shown  6 (live  6)   pool  90 (live  90)   withheld   0
+
+  178 row-withholdings across the set; 72 rows shown in total; 0 of 12 archetypes shown a closed fund.
+
+WHAT THIS CHECK DOES NOT COVER
+  It runs against the committed snapshot, which is republished on every
+  corpus change. That is the state where the assertion cannot fail. Run
+  `npx tsx scripts/probe_stale_snapshot.ts` for the states where it can:
+  on a copy predating the call-register loads it now withholds 163 rows,
+  94 of which the live register refuses, and offers no dead call at all.
+  That is source_window_policy doing the work the derived rule could not.
+
+check_degradation: ok — every fund offered off the fallback corpus is one the live register still calls open.
+  [verdict] degradation = ok published as #397, code a12885881e690dc6
+
+[1m── both stores agree[0m
+  degradation policy withheld 89 row(s) from the fallback corpus; 837 offerable on Postgres, 748 on the snapshot
+check_hydration_parity: 1 difference(s) between the Postgres and JSON paths.
+  Robotics: the published rows differ from the live corpus re-ranked without the withheld rows
+      fallback: satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz|satr_de_rnd__sa_118705__tuv_rheinland_forschungs_und_innovationsmanageme|satr_de_rnd__sa_109340__bundesministerium_fur_wirtschaft_und_energie|satr_de_rnd__sa_115170__sachsen_sab|satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan|satr_de_rnd__sa_112005__wibank
+      live:     satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz|satr_de_rnd__sa_115170__sachsen_sab|satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan|satr_de_rnd__sa_112005__wibank|satr_de_rnd__sa_53084__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle|satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle
+  [verdict] hydration_parity = failed published as #399, code 24063d667235f5ec
+
+[1m── recall floor[0m
+(node:84032) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [recall floor]
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+  corpus=postgres instruments=1088
+  ranker: all 294 request(s) on EMBEDDING
+  founder intake — 23 askable fields, identity=real own-history=withheld capital=withheld answers=strict consortium=yes
+    DERIVED   entityCountries      set  300/300 (100%)  own  300/300 (100%)  companies.country
+    DERIVED   organisationType     set  127/300 ( 42%)  own  127/300 ( 42%)  prefillOrganisationType(company name) — production's own classifier
+    DERIVED   region               set   37/300 ( 12%)  own   37/300 ( 12%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set  300/300 (100%)  own  300/300 (100%)  companies.sector_top
+    DERIVED   ticketBand           set  300/300 (100%)  own   40/300 ( 13%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set  300/300 (100%)  own    0/300 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set  300/300 (100%)  own    0/300 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set  300/300 (100%)  own    0/300 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
+  __recallSetDoors.json  300 tune pairs
+    ok   pool     97% (floor 92%)
+    ok   exact5   27% (floor 15%)
+    ok   regime5  73% (floor 69%)
+         ^ REGIME@5 under __recallSetDoors.json is not comparable with any figure measured under __recallSetComposed.json: a childless family is its own regime, so the metric no longer pays sibling-group-size credit. Quote EXACT@5 across the switch. See recallSet.ts.
+    ok   regime5  86% (floor 78%)  original join, n=103
+    ok   regime5  38% (floor 21%)  traced:childless_family, n=87
+    ok   regime5  89% (floor 88%)  traced:exact_attribution, n=110
+  [verdict] recall_floor = ok published as #402, code 78b0ee8558e96a86
+check_recall_floor: ok — 300 tune pairs of __recallSetDoors.json at seed 20260806, all floors met.
+
+[1m── published verdicts[0m
+  census                   failed  1.9d old  code e25d3712f8cc48f2  by local
+                            151426 companies, 299384 events, 23 countries; gate True; run partial: corpus restored by hand after workstream BM's chain proofs; no pipeline run has yet completed end to end
+  store_schema             ok      2.4d old  code 629c7d5d49aeb722  by local
+                            every column in every store is creatable from committed DDL, apart from 17 recorded in schema_debt.json.
+  aggregate_independence   ok      2.9d old  code 7aea8d95997ccac9  by local
+                            check_aggregate_independence: ok — closing all 780 offerable instruments leaves every corpus figure unchanged (151,426 companies, 297,933 events, 23 countries); offerable falls to 0.
+  offerable_decay          ok      2.9d old  code 15695faef8a08edb  by local
+                            warning: FR: -9 unexplained
+  corpus_marks             ok      1.4d old  code 46af78bc87486960  by local
+                            The next run of ETL/refresh.py or railway_cron.py records the first marks; from then on this is a real answer.
+  corpus_currency          ok      0.0d old  code e471159d20a5d124  by local
+                            snapshot and Postgres agree on every liveness verdict; 1088 instruments, 1088 embedded profiles
+  hydration_parity         ok      0.0d old  code e0597578a5214ac9  by local
+                            12 archetypes agree on both paths; the two corpora differ by exactly the 89 row(s) the degradation policy withheld
+  degradation              ok      0.0d old  code 0c0ea5af92575fe9  by local
+                            every fund offered off the fallback corpus is one the live register still calls open
+  recall_floor             ok      0.0d old  code 78b0ee8558e96a86  by local
+                            pool 97% (floor 92), EXACT@5 27% (floor 15), REGIME@5 73% (floor 69) over 300 tune pairs
+  applicant_identity       ok      0.0d old  code 25f0e86b4216cb42  by local
+                            all 576 published eligibility texts state the applicant's own test; 7 calibration cases hold
+  index_freshness          failed  1.9d old  code 66f6324a9986ec59  by local
+                            Fix: python3 ETL/terms/embed_eligibility.py run && python3 ETL/terms/build_instrument_profiles.py run
+
+  feed https://euro-inv-tracker.vercel.app/api/guards
+  11 guard(s) registered, mode on-change
+
+check_verdicts: FAILED
+
+  - DEGRADED — census last reported failed:
+        151426 companies, 299384 events, 23 countries; gate True; run partial: corpus restored by hand after workstream BM's chain proofs; no pipeline run has yet completed end to end
+      Taken 2026-08-08T22:26Z by local. The guard
+      is not the problem; what it guards is. Re-run to see the full output:
+        python3 ETL/events/load/publish_corpus_census.py
+
+  - DRIFTED — census was judged at code e25d3712f8cc48f2, this checkout is 2a19f6d0d55a3405.
+      Bound to: ETL, website/build
+      The scheduled ETL is not running the code in this repository. It has no
+      repo trigger; only `railway up` redeploys it:
+        python3 ETL/lib/verify_cron.py --deploy
+
+  - DRIFTED — store_schema was judged at code 629c7d5d49aeb722, this checkout is ca6212e222208c87.
+      Bound to: ETL/schema/check_store_schema.py, ETL/schema/schema_debt.json, ETL/events/load/schema.sql, ETL/events/load/migrations, ETL/schema/postgres_schema.sql
+      The scheduled ETL is not running the code in this repository. It has no
+      repo trigger; only `railway up` redeploys it:
+        python3 ETL/lib/verify_cron.py --deploy
+
+  - DRIFTED — offerable_decay was judged at code 15695faef8a08edb, this checkout is cd9895956bde3b06.
+      Bound to: ETL/terms/check_offerable_decay.py, ETL/lib/liveness.py, data/reference/offerable_baseline.json
+      The scheduled ETL is not running the code in this repository. It has no
+      repo trigger; only `railway up` redeploys it:
+        python3 ETL/lib/verify_cron.py --deploy
+
+  - DRIFTED — hydration_parity was judged at code e0597578a5214ac9, this checkout is 24063d667235f5ec.
+      Bound to: website/frontend/scripts/check_hydration_parity.ts, website/frontend/lib/intelligence, website/frontend/public/data/instrument_terms.json
+      The code this guard judges has changed since it last ran, so its verdict
+      does not cover what is about to ship. Re-run it where the credentials
+      are (it publishes its own verdict):
+        cd website/frontend && npx tsx scripts/check_hydration_parity.ts
+
+  - DRIFTED — degradation was judged at code 0c0ea5af92575fe9, this checkout is a12885881e690dc6.
+      Bound to: website/frontend/scripts/check_degradation.ts, website/frontend/lib/intelligence, website/frontend/public/data/instrument_terms.json
+      The code this guard judges has changed since it last ran, so its verdict
+      does not cover what is about to ship. Re-run it where the credentials
+      are (it publishes its own verdict):
+        cd website/frontend && npx tsx scripts/check_degradation.ts
+
+  - DEGRADED — index_freshness last reported failed:
+        Fix: python3 ETL/terms/embed_eligibility.py run && python3 ETL/terms/build_instrument_profiles.py run
+      Taken 2026-08-08T22:24Z by local. The guard
+      is not the problem; what it guards is. Re-run to see the full output:
+        python3 ETL/lib/guard_verdicts.py run index_freshness
+
+  These guards need a corpus that CI is not allowed to see, so they run
+  where the data is and publish what they found. A verdict that is
+  missing, old, red, or bound to different code is not a pass.
+
+[1m── summary[0m
+  [32m ok [0m  typecheck                          2.0s
+  [32m ok [0m  unit tests                         2.0s
+  [32m ok [0m  segment config is a literal        0.9s
+  [32m ok [0m  output contracts                   0.9s
+  [31mFAIL[0m  rendered numbers                   1.1s
+  [32m ok [0m  published figures                  0.9s
+  [32m ok [0m  sector evidence                    0.9s
+  [32m ok [0m  vocabulary contract                1.3s
+  [32m ok [0m  one env loader                     0.9s
+  [32m ok [0m  client/server boundary             0.9s
+  [32m ok [0m  payload budget                     1.0s
+  [32m ok [0m  archetype regression               10.3s
+  [32m ok [0m  every archetype gets a table       12.5s
+  [32m ok [0m  liveness has one definition        1.2s
+  [32m ok [0m  openness is evidenced              1.2s
+  [32m ok [0m  offer routes are sourced           0.9s
+  [32m ok [0m  regions match NUTS                 0.9s
+  [32m ok [0m  theme index is not stale           0.9s
+  [32m ok [0m  leaf cap headroom                  0.9s
+  [32m ok [0m  missing-data neutral               0.9s
+  [32m ok [0m  capital reach                      0.9s
+  [32m ok [0m  a filter can admit someone         1.0s
+  [32m ok [0m  open questions still cover the corpus 0.9s
+  [32m ok [0m  a winner is never screened out     0.9s
+  [32m ok [0m  a winner is never gated out of the memo 1.0s
+  [32m ok [0m  recall set does not leak           1.0s
+  [32m ok [0m  harness answers as the founder     1.3s
+  [32m ok [0m  peer prior canary                  0.9s
+  [32m ok [0m  quotations match documents         0.8s
+  [32m ok [0m  dependency audit                   1.8s
+  [32m ok [0m  country gates                      1.1s
+  [32m ok [0m  gate field reach                   2.2s
+  [32m ok [0m  answers reach the ranker           16.7s
+  [32m ok [0m  gate pertinence                    1.6s
+  [32m ok [0m  applicant identity                 1.6s
+  [32m ok [0m  corpus currency                    1.6s
+  [31mFAIL[0m  site serves the ETL's corpus       1.4s
+  [32m ok [0m  degradation policy                 14.5s
+  [31mFAIL[0m  both stores agree                  25.3s
+  [32m ok [0m  recall floor                       152.2s
+  [31mFAIL[0m  published verdicts                 2.8s
+
+[31m4 of 41 failed:[0m rendered numbers, site serves the ETL's corpus, both stores agree, published verdicts
+Every check ran. This is the whole list, not the first item on it.

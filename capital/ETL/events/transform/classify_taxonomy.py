@@ -320,7 +320,126 @@ NACE_TIER: list[tuple[str, str, str]] = [
     ("Manufacture of furniture", "other", "other"),
     ("Real estate", "other", "other"),
     ("Activities of head offices", "other", "other"),
+    # NACE section R names human health FIRST and social work second. Read as a
+    # social-work descriptor it would look like an activity with no science in
+    # it; it is the section that contains hospitals. It licenses health.
+    ("Human health and social work", "health_life_sciences", "health_general"),
 ]
+
+
+# ── What evidence licenses a TECHNOLOGY sector ───────────────────────────────
+#
+# `sector_top` is a claim about what a company's core business BUILDS, and only
+# evidence about the company's OWN activity can license it.
+#
+# A grant is not such evidence. A grant's purpose describes the PROGRAMME, not
+# the recipient: a film fund's recipients are film producers, an energy-retrofit
+# fund's are hotels and hauliers, an EV-charging fund's are wholesalers who
+# installed a charge point. Reading the programme back onto the recipient is how
+# `sector_mix` -- the column whose whole job is to say what a fund has ACTUALLY
+# funded -- came to report a Bavarian film and television scheme as 69%
+# software/data/AI, and how an AI company was published that scheme at row 4 of
+# its memo.
+#
+# Rule Zero applies to a company as it does to a fund: the OFFICIAL registered
+# activity descriptor outranks anything we derived. Hence the property:
+#
+#     A technology sector may not be claimed for a company when EVERY official
+#     activity descriptor on its record NAMES an activity that has no
+#     technology, science or engineering dimension.
+#
+# Three things this deliberately is NOT.
+#
+# 1. It is not a re-mapping of one technology sector onto another. A coarse
+#    official code ("MANUFACTURING") is WEAKER evidence than project text about
+#    what is being built, and never overrides it. The official code may only
+#    VETO a technology claim it contradicts outright. That asymmetry is the
+#    point: a wrongly-reclassified company is a fund a founder never sees, so
+#    the rule is allowed to say "no evidence for any technology sector" and is
+#    not allowed to say "a different technology sector".
+#
+# 2. It is not a list of wrong companies, funds or sectors. The subject is the
+#    OFFICIAL NACE codebook, which is a published classification of economic
+#    activity; the test below runs on any descriptor, including ones this corpus
+#    has never seen.
+#
+# 3. A code must NAME an activity in order to veto one. Residual, holding and
+#    unspecified-activity registrations name no activity at all -- they are what
+#    a company registers under when it has not picked a class. miDiagnostics is
+#    registered under management consultancy and is a diagnostics company; ARGON
+#    Measuring Solutions is registered under management consultancy and builds
+#    sensors. Those codes license nothing and veto nothing.
+#
+# The classifier's own instruction already says where a vetoed company belongs:
+# top sector 'other' is for "businesses with no technology, science, or
+# engineering dimension at all". A film production company has none. It was
+# reaching `software_data_ai` because `gaming_media` sits under that sector and
+# reads like a home for anyone who makes moving pictures -- a lure that turns a
+# content producer into a software company.
+
+# ── The codebook itself lives in ONE file both languages read ────────────────
+# data/reference/activity_codebook.json. `check_sector_evidence.ts` states the
+# same property over the published corpus, and a second copy of these fragments
+# is exactly the defect a "keep in sync" comment announces rather than prevents.
+_CODEBOOK = json.loads(
+    (ROOT / "data" / "reference" / "activity_codebook.json").read_text(encoding="utf-8"))
+
+# Official activity descriptors that NAME a specific activity with no
+# technology, science or engineering dimension: content and media production,
+# hospitality, trade, property, personal and administrative services, culture,
+# sport, education and public administration. Software publishing is NACE
+# section K, not section J, and is deliberately absent.
+NACE_NONTECH: list[str] = list(_CODEBOOK["nontech"])
+
+# Registrations that name NO activity: residual classes, holding structures and
+# generic business support. They neither license nor veto. Checked BEFORE
+# NACE_NONTECH so a descriptor appearing in both is treated as unspecific.
+NACE_UNSPECIFIC: list[str] = list(_CODEBOOK["unspecific"])
+
+
+def names_no_activity(tag: str) -> bool:
+    """True when a registered descriptor is a residual/holding/unspecified class
+    -- it names no activity, so it is evidence for and against nothing."""
+    tl = tag.lower()
+    return any(f in tl for f in NACE_UNSPECIFIC)
+
+
+def names_nontech_activity(tag: str) -> bool:
+    """True when a registered descriptor NAMES a specific activity that has no
+    technology, science or engineering dimension."""
+    if names_no_activity(tag):
+        return False
+    tl = tag.lower()
+    return any(f in tl for f in NACE_NONTECH)
+
+
+def technology_veto(tags: list[str]) -> bool:
+    """The property, as a test that runs on any company.
+
+    True when no technology sector may be claimed: at least one official
+    descriptor NAMES a non-technology activity, and NONE of them licenses a
+    technology sector -- neither through the NACE backbone nor by naming an
+    activity this codebook does not place outside technology.
+
+    A company carrying both kinds of code (a manufacturer that also runs a
+    shop) is NOT vetoed: the technology claim still has evidence."""
+    saw_nontech = False
+    for t in tags:
+        if not t or not t.strip():
+            continue
+        if names_no_activity(t):
+            continue            # names nothing; skip it entirely
+        top, _ = resolve_nace([t])
+        if top and top != "other":
+            return False        # this code licenses a technology sector
+        if names_nontech_activity(t):
+            saw_nontech = True
+        elif top is None:
+            # A descriptor this codebook does not recognise at all. It is not
+            # evidence that the company is outside technology, and it must not
+            # be read as such -- silence is not a veto.
+            continue
+    return saw_nontech
 
 
 def nace_badge(tags: list[str]) -> set[str]:
