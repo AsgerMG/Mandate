@@ -517,14 +517,38 @@ async function synthesize(
   // evaluateEligibility reads gate.source synchronously.
   await hydrateGatesFor(
     instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)));
+  // ── TWO CONSUMERS, TWO SCOPES, AND ONE OF THEM WAS BORROWING THE OTHER'S ──
+  //
+  // This screen has two readers and they want opposite things.
+  //
+  //   the FOUNDER reads it as a table under the memo. Unscoped it returns ~350
+  //   rows and rendered as a 35,000-pixel wall that buried the thing they came
+  //   for, so it is scoped to the head of the pool. That reason is a layout
+  //   reason and it has not changed.
+  //
+  //   `scoreEase` reads it as a SIGNAL over every row it scores. A verified
+  //   `not_met` row there multiplies that fund's ease by 0.25 (ease.ts), and
+  //   that demotion is a large part of what keeps a fund the founder cannot
+  //   use out of the published table.
+  //
+  // One call served both, scoped to `DISPLAY_CAP`. `orderMemoCandidates` then
+  // scored ease for the WHOLE pool against it, so a fund carrying a verified
+  // disqualifying gate could ESCAPE the penalty simply by sitting below the
+  // sixth pool row — and then be promoted above a row that was penalised. A
+  // cap that is smaller upstream than the list it is applied to does not just
+  // throw accuracy away here: it is the wrongly-shown row this product treats
+  // as worse than a missing one.
+  //
+  // So the scopes are now separate and each is derived from its own reason.
+  // FREE: `hydrateGatesFor` above already fetched gates for the whole pool, so
+  // the wider evaluation makes no query that was not already made.
+  const poolInstrumentIds = instrumentTable
+    .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
+  /** Every row the ordering will score. Never rendered. */
+  const eligibilitySignal = evaluateEligibility(req.eligibility, poolInstrumentIds);
+  /** What the founder is shown, and what the writer is told is authoritative. */
   const eligibilityScreen = evaluateEligibility(
-    req.eligibility,
-    // Head of the pool only. The pool is deliberately wide so blocked funds can
-    // be backfilled, but the screen is a founder-facing table — scoping it to
-    // the whole pool is what made it a 35,000-pixel wall in the first place.
-    instrumentTable.slice(0, DISPLAY_CAP)
-      .map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
-  );
+    req.eligibility, poolInstrumentIds.slice(0, DISPLAY_CAP));
   const screenBlock = eligibilityScreen.length
     ? "## Eligibility screen (AUTHORITATIVE, code-evaluated against primary law)\n" +
       eligibilityScreen.map((r) =>
@@ -784,7 +808,11 @@ async function synthesize(
   // then ticket proximity, then event count) survives as the tie-break: rows
   // with no ease signal at all keep their original position.
   const { toWriter, easeById, assessments, droppedBlocked, isStale } = orderMemoCandidates({
-    instrumentTable, req, records, dbPeers, eligibilityScreen, semanticScores, log,
+    // The SIGNAL scope, not the rendered one: every row this call scores for
+    // ease must be a row the screen could have disqualified. See where the two
+    // are computed for what sharing one scope was costing.
+    instrumentTable, req, records, dbPeers, eligibilityScreen: eligibilitySignal,
+    semanticScores, log,
   });
   const baseRows = toWriter.map((r) => r.row);
   const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
@@ -807,8 +835,10 @@ async function synthesize(
   // (whyEligible/nextStep still "" here — the client renders those as
   // placeholders until the final "report" event replaces this).
   // Preview only the rows that could actually ship. The writer is shown more
-  // candidates than are published, and streaming all of them would flash eight
-  // rows that then collapse to five.
+  // candidates than are published -- `check_contracts.ts` fails the build if it
+  // ever is not -- and streaming all of them would flash a table that then
+  // collapses to the published cap. Both numbers were written out here and both
+  // were wrong within a day of the caps moving.
   emit({ type: "partial", data: {
     self, eligibilityScreen, institutions: institutions.slice(0, BRIEF_INSTITUTION_CAP),
     withheld: withheldNotice(log.countsByRule()["SEL-UNCONFIRMED-OPEN"] ?? 0),
@@ -1189,7 +1219,12 @@ async function synthesize(
   return {
     self,
     eligibilityScreen,
-    bottomLine: narrative.bottomLine.slice(0, 5).map((b) => deDash(b)),
+    // Read, never retyped. This was a literal 5 -- a private copy of
+    // `bulletMax`, which BL-1 states to the writer and `checkBrief` enforces,
+    // sitting in the one place that actually TRUNCATES. Structurally the same
+    // defect as the three independent fives that made the memo discard a row
+    // the screen had already built.
+    bottomLine: narrative.bottomLine.slice(0, BRIEF_LIMITS.bulletMax).map((b) => deDash(b)),
     institutions: finalInstitutions,
     positioning: deDash(narrative.positioning),
     stateOfPlay: deDash(narrative.stateOfPlay),

@@ -39,25 +39,12 @@ import type {
   NoDoors,
 } from "./types";
 
-/** How many candidates the WRITER is shown, ahead of the cut to
- *  `BRIEF_LIMITS.institutionsMax`.
- *
- *  Lowered from 9. The writer must return a note per candidate, and a
- *  candidate it never mentions is dropped silently -- it cannot be published
- *  without model-written copy, and filling that in from a template is what put
- *  three "Verify eligibility directly with the fund" rows in one brief. At 9 it
- *  started omitting: one company came back covering 5 of 9, losing two Horizon
- *  clusters and two Innovation Fund routes with no judgement attached.
- *
- *  ── The headroom this leaves, which the published cap consumes ────────────
- *  This is an UPSTREAM cap and the published row count is the DOWNSTREAM one,
- *  so their difference is the number of candidates the writer may reject
- *  before the table gets short. At 7 candidates and 5 published that was two;
- *  at 7 and 6 it is one. It was deliberately NOT raised alongside the row cap:
- *  a thin table is a missing row, a candidate the writer never covered is a
- *  row published with template copy in place of judgement, and the second is
- *  worse. Raising it trades a measured omission risk for an unmeasured one. */
-export const WRITER_CANDIDATE_CAP = 7;
+// The writer cap and the whole funnel it belongs to live in `caps.ts`, which
+// imports nothing, so the check that asserts the funnel narrows can read them
+// without dragging the corpus layer -- and its credentials -- in behind them.
+// Re-exported here because this is where every caller looks for it.
+import { WRITER_CANDIDATE_CAP } from "./caps";
+export { WRITER_CANDIDATE_CAP };
 
 /** ── WHICH ORDER SHIPS, and the measurement that decided it ────────────────
  *

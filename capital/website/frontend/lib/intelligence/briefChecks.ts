@@ -73,13 +73,66 @@ export interface BriefLimits {
  * this cannot quietly become a wall.
  */
 /**
- * ── `institutionsMax`: why it is 6, and why it is the only copy ────────────
+ * ── `institutionsMax`: why it is 7, and why it is the only copy ────────────
  *
  * It was 5 while the instant screen's `DISPLAY_CAP` was, and still is, 6. The
  * screen therefore already BUILT, screened and rendered a sixth row, and the
- * memo threw it away: the fund a company actually won is inside six ranked
- * rows meaningfully more often than inside five. Raised to 6 by an explicit
- * product decision — the promise the brief makes is now six doors, not five.
+ * memo threw it away, so 6 was free: the row existed and was not carried.
+ *
+ * The seventh is NOT free, and it is a better row. Measured over one replay of
+ * the memo's own candidate order, three runs, N=250 each, ranker clean on
+ * EMBEDDING throughout (`scripts/_wsdc_rows.ts`):
+ *
+ *     marginal gain      EXACT              REGIME             CHANNEL
+ *     of row             tune  hold  seed7  tune  hold  seed7  tune  hold  seed7
+ *       6                +2.8  +3.2  +3.2   +0.4   0.0  +0.8    0.0   0.0   0.0
+ *       7                +2.8  +3.2  +2.0   +2.8  +6.4  +3.2   +1.6  +6.0  +2.0
+ *       8                +2.0  +1.6  +3.6   +1.2  +1.2  +1.6    0.0  +1.2   0.0
+ *       9-12          ~+1.8 per row      ~+0.5 per row       ~0 per row
+ *
+ * The sixth row moves REGIME and CHANNEL by nothing on any split: it is almost
+ * always another sibling of a programme the founder was already shown. The
+ * seventh is the largest single mover of both anywhere above rank five, on
+ * both splits — it is the row that puts a NEW programme, through a NEW
+ * channel, in front of the founder. From the eighth on, EXACT keeps climbing
+ * at roughly two points a row while REGIME crawls and CHANNEL is flat, which
+ * is length without width and is where the accuracy stops paying.
+ *
+ * Regime concentration on the seventh row's gain, as the standing rule
+ * requires: 7 pairs on tune across 5 regimes and 5 countries, largest regime 2
+ * (29%). No single programme is carrying it.
+ *
+ * ── WHAT SEVEN ROWS ACTUALLY READ LIKE, having rendered two and read them ──
+ *
+ * `npm run bench -- --sample 2` at these caps, Neura Robotics and SMART
+ * Photonics, both seven rows, both writers covering 7 and 8 of 8 candidates.
+ *
+ * The head is good and better than it was. Neura's first row is now Innovation
+ * Fund SSP — the fund its own bottom line calls the standout move — where the
+ * six-row render of the same company published four Horizon clusters, ERC POC
+ * and EIC Transition and never showed SSP at all.
+ *
+ * The tail is a catalogue in both. Neura's rows 4-7 are four Horizon clusters
+ * and ERC POC carrying one ticket string, one variation on "screening is open"
+ * and one variation on "search the portal and find partners". SMART Photonics'
+ * rows 4-7 are four Dutch regional schemes whose `whyEligible` is the same
+ * sentence four times with the region swapped, and whose `nextStep` is
+ * "contact the office to open a dossier" four times.
+ *
+ * THAT IS FUND-3, AND IT IS NOT A ROW-COUNT DEFECT. It is present at six —
+ * the six-row Neura render spent four of six slots on one programme — so the
+ * seventh row lengthens an existing catalogue rather than creating one, and it
+ * pays for itself in the metric that matters. But it is the reason the eighth
+ * row should NOT be bought next. The lever that is actually binding is not the
+ * cap: it is that rows sharing one legal basis and one action are still four
+ * rows, and until FUND-3's test is enforced on that shape, buying length buys
+ * repetition. The curve says the accuracy is there; the page says it cannot be
+ * carried yet.
+ *
+ * WHAT IT COSTS. `WRITER_CANDIDATE_CAP` had to rise with it, or the writer
+ * would have been shown exactly as many candidates as publish and any single
+ * declined note would have shortened the table. `check_contracts.ts` now fails
+ * the build if that headroom ever reaches zero.
  *
  * This is the ONLY place the number lives. `pipeline.ts` imports it for the
  * cut, `contracts/brief/02-funds.md` states it in words to the writer, and
@@ -90,7 +143,7 @@ export interface BriefLimits {
  */
 export const BRIEF_LIMITS: BriefLimits = {
   bulletMin: 4, bulletMax: 5, bulletWords: 40,
-  institutionsMax: 6,
+  institutionsMax: 7,
   positioningWords: 200,
   stateOfPlayWords: 200,
   bodyWords: 700,
