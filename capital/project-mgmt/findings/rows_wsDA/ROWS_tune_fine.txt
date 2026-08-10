@@ -1,0 +1,55 @@
+tape /tmp/wsda_tape.tune.json  600 replays
+countries with no marginal (empty back-off, not an error): none
+FIDELITY  simulator reproduces the PUBLISHED five: 600/600
+  SHIPPED                            EXACT 154/600  25.7% +/- 3.5   REGIME  73.8%   CHANNEL  91.2%
+
+THE 2x2  both 47  only-score 74  only-peer 96  neither 383   union 217 36.2%
+
+WHERE THE WON LEAF SITS IN EACH PER-ROW LIST
+  (cell = own peer cell; ctry = country marginal; sect = sector marginal; cells = how many of the 260 cells hold it)
+  only the peer prior right  n= 96  in cell 96 (median depth 2)  OUT of cell 0  | of those: in ctry marginal 0 (median NaN), in sect marginal 0 (median NaN), in NO cell anywhere 0
+  only the score right       n= 74  in cell 41 (median depth 15)  OUT of cell 33  | of those: in ctry marginal 16 (median 83), in sect marginal 10 (median 90), in NO cell anywhere 17
+  both right                 n= 47  in cell 45 (median depth 1)  OUT of cell 2  | of those: in ctry marginal 2 (median 9), in sect marginal 0 (median NaN), in NO cell anywhere 0
+  neither right              n=383  in cell 224 (median depth 20)  OUT of cell 143  | of those: in ctry marginal 118 (median 44), in sect marginal 11 (median 11), in NO cell anywhere 20
+
+ORACLE over the per-row back-off family (184 members, best member chosen PER FOUNDER):
+  174/600 29.0%   vs shipped 154 and vs the wsCW union 217
+
+BEST SINGLE MEMBER on this tape (a fitted upper bound, not a result):
+  ctry off=8 cap=5                   EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=8 cap=8                   EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=8 cap=13                  EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=8 cap=21                  EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=8 cap=40                  EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=8 cap=inf                 EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +0/-0 z=0.00
+  ctry off=16 cap=5                  EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=16 cap=8                  EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=16 cap=13                 EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=16 cap=21                 EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=16 cap=40                 EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +2/-1 z=0.00
+  ctry off=16 cap=inf                EXACT 155/600  25.8% +/- 3.5   REGIME  74.0%   CHANNEL  91.2%   vs shipped +0/-0 z=0.00
+
+WHAT BLOCKS THE SCORE'S 74 EXCLUSIVE WINS
+  won row is OUT of the cell in 33/74
+  the 339 rows occupying the five: 314 are in the cell (median depth 2, median score rank 15)
+  those blockers' breadth: median cells 6, median best-anywhere 1
+
+AND WHAT CARRIES THE PEER'S 96 EXCLUSIVE WINS
+  won row: median cell depth 2, median cells 4, median score rank 35
+
+GENERAL PER-ROW BOUND — a two-tier rule over 437 discretised row-feature vectors
+    seed (= shipped, by construction) EXACT 154/600  25.7% +/- 3.5   REGIME  73.8%   CHANNEL  91.2%
+    FITTED ON ITSELF (upper bound)   EXACT 178/600  29.7% +/- 3.7   REGIME  74.8%   CHANNEL  91.2%
+    TWO-FOLD (the honest estimate)   EXACT 149/600  24.8% +/- 3.5   REGIME  73.8%   CHANNEL  91.7%
+
+WHY: the rows a per-row rule must KEEP UP (96, the prior's exclusive winners) against the rows it must PUSH DOWN (314, the blockers in the score's exclusive wins).
+  AUC for "keep this row up". 0.50 = the feature cannot tell them apart.
+    raw relevance                    0.320
+    score rank (lower = better)      0.349
+    cells it appears in              0.378
+    score/prior disagreement         0.407
+    country-marginal rank            0.410
+    best rank anywhere               0.476
+    cell depth (lower = better)      0.506
+
+THE COLLISION  18/339 of the ordered feature-vector pairs the score's exclusive wins demand are demanded in the OPPOSITE direction by one of the prior's. 12/74 of those founders are unwinnable by any function of these row features while the prior's wins are kept.
