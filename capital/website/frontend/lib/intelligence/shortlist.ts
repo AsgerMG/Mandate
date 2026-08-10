@@ -35,6 +35,7 @@ import type { ExclusionLog } from "./exclusions";
 import { EXCLUSION_RULES } from "./rules";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit, sectorFitScorer } from "./fit";
+import { blendPoolScores, POOL_BLEND } from "./poolBlend";
 import { NOT_AN_APPLYABLE_BODY } from "./briefChecks";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
@@ -2361,7 +2362,46 @@ export function materialiseInstrumentTable(
   const sectorFor = sectorFitScorer(
     selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
     founderSector);
+  // ── THE BLENDED POOL SCORE, behind POOL_BLEND (default off) ───────────────
+  //
+  // `baseRelevance` below is the two-signal score the whole product ranks on:
+  // semantic percentile and sector share, at a fixed weight. wsCS, wsCU and
+  // this workstream measured a fourteen-signal conditional logit against it as
+  // a pure pool re-ordering and it won by +6.0 ±3.3 points of EXACT@5 on 600
+  // holdout founders (McNemar z = 3.5 over 106 discordant pairs, gains spread
+  // over 20 regimes, largest 17%).
+  //
+  // Its largest weight by a distance is PROXIMITY -- whether the fund is the
+  // founder's own country's, EU-wide, or neither -- and `baseRelevance` does
+  // not contain that term in any form. So this is not a re-weighting of what
+  // ships. It introduces a signal, and the whole question wsCV exists to
+  // answer is whether that signal survives the stages between this line and
+  // the founder's screen.
+  //
+  // Computed ONCE per request over the whole pool, because the weights were
+  // fitted on WITHIN-POOL PERCENTILE RANKS and a candidate's score is only
+  // defined against the pool it was scored with. That is also why it is
+  // computed here and not inside `rowRelevance`: a per-row call would have to
+  // rebuild the pool fourteen times per comparison, and a `rowRelevance`
+  // memoised per id would silently freeze the pool of whichever call came
+  // first.
+  const blend = POOL_BLEND === "off" ? undefined : blendPoolScores(
+    selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
+    {
+      founderSector,
+      founderCountries: founderCountries ?? [],
+      ticketBand,
+      theme: rel,
+      eligibility,
+      // The SAME peer prior `applyPeerPrecedence` reads, off the same cell, so
+      // the blend's peer column and the seat allocation forty lines below can
+      // never describe two different priors for one founder.
+      peerRank: new Map(peerPrior(founderCountries?.[0], founderSector)
+        .map((id, i) => [id, i])),
+      year: new Date().getFullYear(),
+    });
   const baseRelevance = (id: string) => {
+    if (blend) return blend.get(id) ?? 0;
     const inst = instById().get(id);
     const theme = rel.get(id) ?? 0;
     return wTheme * theme + (1 - wTheme) * sectorFor(inst);
@@ -2492,8 +2532,20 @@ export function materialiseInstrumentTable(
   const rowRelevance = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
     const theme = r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
-    const fit = wTheme * theme + (1 - wTheme) * sectorFor(inst);
-    const ticket = inst ? ticketFit(inst) : 1;
+    // ONE definition of the base score, shared with `baseRelevance` above --
+    // which is what makes the POOL_BLEND arm a single substitution rather than
+    // two that must agree. A channel-level row has no leaf and therefore no
+    // blend score, so it takes the pool's own median: the blend's values ARE
+    // within-pool percentiles, so 0.5 is exactly the "no opinion" neutral this
+    // file gives a gap in our data everywhere else.
+    const fit = blend
+      ? (r.instrumentId ? blend.get(r.instrumentId) ?? 0.5 : 0.5)
+      : wTheme * theme + (1 - wTheme) * sectorFor(inst);
+    // `pure` is the arm wsCU actually measured -- the blend ordering the pool
+    // and nothing else touching it. The sibling reassignment and the ticket
+    // multiplier are held off so the difference between `on` and `pure` is
+    // attributable to the shipped machinery instead of argued about.
+    const ticket = POOL_BLEND === "pure" ? 1 : inst ? ticketFit(inst) : 1;
     // The channel prior is deliberately NOT applied here yet. Measured, at
     // three weightings, on the recall set:
     //
@@ -2537,7 +2589,8 @@ export function materialiseInstrumentTable(
     // property the founder stated about themselves, so it is allowed to move a
     // row across channels. Recall, both sets, holdout n=200: EXACT@5 35% -> 36%
     // with REGIME@5 unchanged at 89%.
-    const base = r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
+    const base = POOL_BLEND === "pure" ? fit
+      : r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
     return base * ticket;
   };
   // Tier 2 of the row comparator, hoisted out of it so the diagnostic in
