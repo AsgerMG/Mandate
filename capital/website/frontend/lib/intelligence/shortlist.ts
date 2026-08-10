@@ -2877,6 +2877,39 @@ export function applyProfileSignal(
  * literal "SATR ..." auto-prettified pattern gets swapped.
  */
 export function displayInstitutionName(row: InstrumentRow): string {
+  return nameDoorFor(row, displayInstitutionNameRaw(row));
+}
+
+/**
+ * ONE LAST QUESTION, ASKED OF WHATEVER NAME CAME OUT, and the reason it is here
+ * rather than inside the branch that seemed to need it.
+ *
+ * Twelve recorded briefs were replayed (wsCX). Two of them -- SMART Photonics
+ * and bunq, both Dutch -- published `Ministerie van Economische Zaken en
+ * Klimaat` as an institution. That is a case the ORIGINAL predicate could see
+ * perfectly well, and it shipped anyway, because the rename lived behind
+ * `row.administeringBody &&`: these rows carry the ministry as the INSTRUMENT'S
+ * OWN NAME with no administering body at all, so the guarded branch was never
+ * entered and the unguarded fallback returned the ministry untouched.
+ *
+ * A rule applied on one path out of three is a rule with two holes in it. So it
+ * is applied to the ANSWER instead of to one of the inputs: whatever name the
+ * rules below produce, if it is not a body a founder can approach and this
+ * scheme's register names one that is, the row is published via that body.
+ *
+ * When the register names nobody the name stands as it is. That is deliberate:
+ * the row is still real money and dropping it would be the wrongly-withheld
+ * fund this product treats as worse than a wrongly-shown one, so the honest
+ * outcome is a FUND-7 violation on the scoreboard for someone to fix in the
+ * data, not a row quietly deleted from a founder's brief.
+ */
+function nameDoorFor(row: InstrumentRow, name: string): string {
+  if (namesAnApplyableBody(name)) return name;
+  const operator = (row.schemeOperators ?? []).find((o) => namesAnApplyableBody(o));
+  return operator ? withDoor(name, operator) : name;
+}
+
+function displayInstitutionNameRaw(row: InstrumentRow): string {
   // A government department notifies a state-aid regime; it does not take
   // applications. Splitting the rollups surfaced these as instrument names,
   // which reads as "go and ask the Ministry of Finance for a grant" — a

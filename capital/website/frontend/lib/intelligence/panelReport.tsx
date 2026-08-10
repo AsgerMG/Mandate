@@ -112,15 +112,27 @@ export function InstitutionsTable(
   //     repetition is TRUE. A true fact stated four times is still four
   //     hundred pixels of a founder's attention spent on one fact.
   //
-  //   COMPARABLES. `comparableFirmsForChannel` (pipeline.ts) filters peers on
-  //     `row.channel`, which is the SOURCE FAMILY -- a whole country's R&D aid
-  //     register is one channel. It is not conditioned on the row at all, so
-  //     every row drawn from one register necessarily shows the same firms. The
-  //     column is a property of the channel wearing a per-row claim, and six
-  //     identical cells read as six independent confirmations. Conditioning it
-  //     on the instrument needs per-instrument company attribution, which the
-  //     prebuilt company index does not carry (website/build/companies_index.py
-  //     keys on source_family): reported, not invented here.
+  //   COMPARABLES. Not the channel. THE POOL IS ONE TO THREE COMPANIES.
+  //     `comparableFirmsForChannel` (pipeline.ts) filters peers on `row.channel`
+  //     -- the source family -- which sounds like the answer and is not it.
+  //     Measured over the twelve recorded archetype briefs: 52 published rows,
+  //     22 of which carry any firm at all, and SIXTEEN distinct companies named
+  //     across all twelve briefs put together. SMART Photonics publishes five
+  //     rows on FIVE DIFFERENT channels and names one company on four of them.
+  //     Neura Robotics: four channels, one company. The channel filter is real
+  //     and it has almost nothing to filter, because a company that has drawn
+  //     public money in Europe has usually drawn it on several channels, so the
+  //     one or two matched peers satisfy nearly every row.
+  //
+  //     So the cell is a per-row claim carrying a fact about the founder's peer
+  //     SET, and repeating it row after row reads as independent confirmation
+  //     that each of these funds backed that company. Widening the pool is a
+  //     corpus question (the hard rule that a web-found name with no traced
+  //     public funding is not a row) and conditioning on the instrument needs
+  //     per-instrument company attribution the prebuilt index does not carry
+  //     (website/build/companies_index.py keys on source_family). Both are
+  //     REPORTED, not invented here: a differentiation we cannot evidence would
+  //     be a worse defect than the repetition it hid.
   //
   // So both are stated once and then referred back to. Nothing is dropped and
   // no row loses information it uniquely held.
@@ -363,8 +375,9 @@ export function InstitutionsTable(
                     r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
                   ) : (
                     <span className="text-[var(--muted-foreground)]">
-                      The same firms as above: they are traced to this route, which
-                      these rows share, rather than to one fund on it
+                      The same firms as above. They are the peers we traced to
+                      public funding, not evidence that this particular fund
+                      backed them
                     </span>
                   )
                 ) : (
