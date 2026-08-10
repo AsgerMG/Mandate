@@ -575,7 +575,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         {screen === "intake" && !running && (
           <form
             onSubmit={(e) => { e.preventDefault(); void handleContinue(); }}
-            className="mt-6 space-y-5"
+            className="mt-6 space-y-5 rounded-[var(--radius)] border border-[var(--border)] border-t-2 border-t-[var(--primary)] bg-[var(--paper)]/80 p-5 shadow-[0_12px_36px_rgba(16,32,63,0.06)] sm:p-7"
           >
             <label className="block text-sm">
               <span className={fieldLabel}>
