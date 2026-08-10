@@ -216,6 +216,25 @@ QUERY = """
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--write", action="store_true")
+    ap.add_argument("--out", default=None,
+                    help="write somewhere other than the shipped artifact; used "
+                         "to MEASURE a corpus correction before Railway is "
+                         "written, never to ship one")
+    # ── The evidence property, applied to the cell key ──────────────────────
+    # A peer-prior cell is `country|sector`, and the sector is the RECIPIENT's
+    # `sector_top`. So this artifact inherits the taxonomy wholesale: while a
+    # Bavarian film scheme's recipients read as software_data_ai, that scheme
+    # sits in the DE|software_data_ai cell, and `applyPeerPrecedence` puts it
+    # ahead of anything peer-unknown however well the unknown scored. Correcting
+    # `sector_mix` cannot touch that -- the artifact has no mix column.
+    #
+    # Off by default: once the correction lands in `companies.sector_top` this
+    # flag is unnecessary, because the query below already reads that column.
+    # It exists so the end-to-end effect can be measured first.
+    ap.add_argument("--evidence-veto", action="store_true",
+                    help="apply ETL/events/transform/classify_taxonomy.py's "
+                         "technology_veto to each recipient's sector before "
+                         "keying its cell")
     ap.add_argument("--notified-scheme-too", action="store_true",
                     help="credit an award to its exact leaf AND every sibling "
                          "delivering the same notified scheme")
@@ -233,6 +252,14 @@ def main() -> None:
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
+    veto: set[str] = set()
+    if args.evidence_veto:
+        _sys.path.insert(0, str(ROOT / "ETL" / "events" / "transform"))
+        from apply_sector_evidence import vetoed_companies  # noqa: E402
+        ids = set(vetoed_companies(conn))
+        veto = {n for (i, n) in conn.execute(
+            "SELECT id, canonical_name FROM companies") if i in ids}
+        print(f"evidence veto: {len(veto):,} recipients re-keyed to `other`")
     split = Split(conn)
     # (name, country, sector, instrument, exact) -- `exact` is the whole point:
     # it is what lets the two kinds of evidence be ranked in separate columns
@@ -250,6 +277,14 @@ def main() -> None:
         # programme children the old join could not see. Any difference it
         # measures is the addition, not the reshuffle.
         rows = list(conn.execute(QUERY))
+        if veto:
+            # A recipient whose every official activity descriptor names a
+            # non-technology activity keys the `other` cell, not the technology
+            # one it was labelled with. Nothing is dropped -- the award still
+            # counts, in the cell its recipient actually belongs to.
+            rows = [(n, c, ("other" if n in veto else sec)) + rest
+                    for (n, c, sec, *rest_l) in rows
+                    for rest in [tuple(rest_l)]]
         for name, country, sector, source, _p, _b, call in rows:
             for iid in split.code2inst.get((call or "").strip(), []):
                 pairs.append((name, country, sector, iid, False))
@@ -381,8 +416,9 @@ def main() -> None:
     if not args.write:
         print("\n[report only] --write to persist")
         return
-    OUT.write_text(json.dumps(out, indent=0, sort_keys=True) + "\n")
-    print(f"\nwrote {OUT.relative_to(ROOT)}")
+    dest = _Path(args.out) if args.out else OUT
+    dest.write_text(json.dumps(out, indent=0, sort_keys=True) + "\n")
+    print(f"\nwrote {dest}")
 
 
 if __name__ == "__main__":
