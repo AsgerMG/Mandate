@@ -94,6 +94,37 @@ function alternate(rows: Row[], branch: Tape["branch"]): Row[] {
   return [...firsts, ...repeats];
 }
 
+/** RECIPROCAL RANK FUSION of the two orderings.
+ *
+ *  The shipped fill is not a 1:4 seat split, it is a strict TIER: every row the
+ *  prior has heard of goes above every row it has not, whatever either scored.
+ *  That is an infinitely strong prior expressed as an ordering. RRF is the same
+ *  two orderings combined with a FINITE one — a row needs a good rank in both
+ *  lists, or an excellent rank in one, and a row the prior has never seen is
+ *  merely unhelped rather than buried.
+ *
+ *  `k0` is the standard damping: it decides how much a first place is worth
+ *  against a fifth. Nothing about a fund, a country or a sector enters, and the
+ *  weight is on the SIGNAL, not on any population. */
+function rrf(rows: Row[], branch: Tape["branch"], k0: number, wPeer: number): Row[] {
+  if (branch === "none" || rows.length < 3) return rows;
+  const scoreRank = new Map(rows.map((r, i) => [r.id, i]));
+  const known = rows.filter((r) => r.peer >= 0).sort((a, b) => a.peer - b.peer);
+  const peerRank = new Map(known.map((r, i) => [r.id, i]));
+  const key = (r: Row) => 1 / (k0 + (scoreRank.get(r.id) ?? 1e9))
+    + (peerRank.has(r.id) ? wPeer / (k0 + peerRank.get(r.id)!) : 0);
+  const fused = [...rows].sort((a, b) => key(b) - key(a));
+  const seen = new Set<string>();
+  const firsts: Row[] = [], repeats: Row[] = [];
+  for (const r of fused) {
+    const c = r.scheme.trim();
+    if (c && seen.has(c)) { repeats.push(r); continue; }
+    if (c) seen.add(c);
+    firsts.push(r);
+  }
+  return [...firsts, ...repeats];
+}
+
 interface Score { exact: boolean; regime: boolean; channel: boolean; }
 const grade = (t: Tape, order: Row[]): Score => {
   const top5 = order.slice(0, 5);
@@ -173,6 +204,20 @@ function main() {
     const f = (t: Tape) => alternate(rowsOf(t), t.branch);
     console.log(line("alternate (wsCM)", tally(tapes, f)) +
       `   vs shipped +${mcnemar(tapes, f, shipped).ab}/-${mcnemar(tapes, f, shipped).ba}`);
+  }
+
+  // ── 2b. FUSION instead of a split ───────────────────────────────────────
+  // If no per-founder router exists, the other way out of a fixed split is to
+  // stop making it a split at all: rank on both lists at once, with a finite
+  // weight rather than the shipped strict tier.
+  console.log(`\nRANK FUSION — both orderings at once, with a FINITE weight on the prior`);
+  for (const k0 of [1, 5, 10, 60]) {
+    for (const w of [0.5, 1, 2]) {
+      const f = (t: Tape) => rrf(rowsOf(t), t.branch, k0, w);
+      const m = mcnemar(tapes, f, shipped);
+      console.log(line(`RRF k0=${k0} wPeer=${w}`, tally(tapes, f)) +
+        `   vs shipped +${m.ab}/-${m.ba} z=${m.z.toFixed(2)}`);
+    }
   }
 
   // ── 3. WHAT EACH SIGNAL KNOWS, on its own ───────────────────────────────
