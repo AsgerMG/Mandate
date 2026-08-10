@@ -1,3 +1,4 @@
+import { readFileSync } from "fs";
 import { describe, expect, it } from "vitest";
 import { checkBrief, readerText } from "./briefChecks";
 import { checkSelection } from "./selectionChecks";
@@ -151,5 +152,35 @@ describe("every contract rule is enforced or declared unenforced", () => {
     for (const [id, r] of Object.entries(UNENFORCED_RULES)) {
       expect(r.predicate.length, `${id} has no predicate`).toBeGreaterThan(20);
     }
+  });
+});
+
+// ── The checks now run on a founder's own memo, and this is what says so ───
+// `checkBrief` had 27 predicates and, for months, no call site anywhere on the
+// request path: every rule it can decide was decided about fixtures. The wiring
+// in `synthesize()` is one call that is easy to delete during a refactor and
+// impossible to miss the absence of at runtime, because it is observational by
+// design. So the presence of the call is asserted here rather than trusted.
+describe("checkBrief runs on the brief the founder is handed", () => {
+  const pipeline = readFileSync(new URL("./pipeline.ts", import.meta.url), "utf8");
+
+  it("the request path calls it on the assembled report", () => {
+    expect(pipeline).toMatch(/checkBrief\(\s*\n?\s*publishedReport/);
+  });
+
+  it("passes what the writer was SHOWN, without which BL-B1 cannot be decided", () => {
+    // checkBrief's third argument is documented as required for BL-B1: absent,
+    // the rule reports itself unevaluated instead of passing silently. A call
+    // that omits it would look green here and decide one rule fewer.
+    expect(pipeline).toMatch(/checkBrief\([\s\S]{0,200}?scored\.map/);
+  });
+
+  it("cannot withhold a brief: the call is wrapped and only records", () => {
+    const call = pipeline.slice(pipeline.indexOf("checkBrief(\n"));
+    expect(call.slice(0, 600)).toContain("brief_rule_violated");
+    // No throw, no early return, no mutation of the report between the check
+    // and the return. A check that can cost a founder their memo is a check
+    // nobody dares tighten.
+    expect(call.slice(0, 600)).not.toMatch(/\bthrow\b|\breturn null\b/);
   });
 });

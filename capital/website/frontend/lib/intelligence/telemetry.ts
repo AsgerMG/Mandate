@@ -37,13 +37,25 @@ export type EventKind =
   /** Writer disqualified more candidates than the cap allows; rows reinstated.
    *  A degradation rather than an error: the brief is still correct, but the
    *  writer's judgement was overruled and that is worth watching. */
-  | "writer_over_rejected";
+  | "writer_over_rejected"
+  /** A published brief broke a contract rule `checkBrief` can decide.
+   *  Observational: the brief still ships. Until 2026-08-11 these predicates
+   *  ran only on fixtures, so a rule firing in production was invisible until
+   *  a human rendered the page. */
+  | "brief_rule_violated"
+  /** `checkBrief` itself threw while inspecting a published brief. The brief
+   *  still ships; this says the instrument is broken, not the output. */
+  | "brief_check_failed";
 
 /** Degradations are expected occasionally; errors are not. Kept apart so a
  *  digest can distinguish "the system absorbed a problem" from "it failed". */
 const DEGRADATIONS: ReadonlySet<EventKind> = new Set<EventKind>([
   "writer_timeout", "writer_truncated", "research_degraded",
   "hydration_degraded", "thin_brief", "writer_over_rejected",
+  // A violated rule is a degradation, not an error: the brief is published and
+  // usable, and the system absorbed the problem rather than failing. A check
+  // that THREW is an error -- the instrument is broken and nothing is watching.
+  "brief_rule_violated",
 ]);
 
 let ensured = false;

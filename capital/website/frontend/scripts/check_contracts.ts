@@ -19,7 +19,10 @@
  *
  * Run: npx tsx scripts/check_contracts.ts
  */
-import { loadContracts, briefContracts } from "../lib/intelligence/contracts";
+import {
+  loadContracts, briefContracts, assembleInstructions,
+  PROMPTS, UNROUTED_STAGES, type PromptName,
+} from "../lib/intelligence/contracts";
 import { BRIEF_LIMITS, CHECK_RULE_IDS } from "../lib/intelligence/briefChecks";
 import { QUESTION_RULE_IDS } from "../lib/intelligence/questionChecks";
 import { SELECTION_RULE_IDS } from "../lib/intelligence/selectionChecks";
@@ -30,6 +33,9 @@ import { REPORT_SCHEMA_FIELDS, EVIDENCE_BLOCKS } from "../lib/intelligence/types
 // pulled the corpus layer in behind them and this check stopped being
 // hermetic, which `check_env_loader` caught.
 import { VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
+// Same hermetic class as caps.ts: countryCodes.ts is a LEAF and imports
+// nothing, so asking it what counts as a country pulls no corpus layer in.
+import { countryNames } from "../lib/intelligence/countryCodes";
 
 interface Problem { axis: string; detail: string; }
 
@@ -140,6 +146,57 @@ function main() {
       problems.push({ axis: "unenforced", detail:
         `unenforcedRules.ts declares ${id}, which no contract has. A register entry for a rule ` +
         `that no longer exists hides the next one.` });
+    }
+  }
+
+  // ── EVERY CONTRACT REACHES A PROMPT, OR SAYS WHY IT DOES NOT ────────────
+  //
+  // The writer's assembler used to select contracts by excluding one stage.
+  // `contracts/selection/` (stage `gate2.select`) was therefore appended to the
+  // memo writer's system prompt on every request, instructing it to return five
+  // indices "best first" alongside FUND-2's seven-row cap and FUND-12's ban on
+  // calling any row first or best. Nothing noticed, because nothing asserted
+  // that a contract only reaches the stage it was written for.
+  //
+  // Stated over the routing table itself, so a contract directory added
+  // tomorrow is judged with no edit here: its stage must be admitted by a
+  // prompt, or declared unrouted with the reason.
+  const stages = [...new Set(contracts.map((c) => c.stage))].filter(Boolean);
+  for (const stage of stages) {
+    const readers = (Object.keys(PROMPTS) as PromptName[]).filter((p) => PROMPTS[p].reads(stage));
+    const declared = Boolean(UNROUTED_STAGES[stage]);
+    if (!readers.length && !declared) {
+      problems.push({ axis: "routing", detail:
+        `stage "${stage}" is read by no prompt and is not declared in UNROUTED_STAGES. ` +
+        `Route it in PROMPTS, or say why no prompt may carry it.` });
+    }
+    if (readers.length && declared) {
+      problems.push({ axis: "routing", detail:
+        `stage "${stage}" is declared unrouted but ${readers.join(" and ")} reads it. ` +
+        `Remove it from the register.` });
+    }
+  }
+  for (const stage of Object.keys(UNROUTED_STAGES)) {
+    if (!stages.includes(stage)) {
+      problems.push({ axis: "routing", detail:
+        `UNROUTED_STAGES declares "${stage}", which no contract has. A register entry ` +
+        `for a stage that no longer exists hides the next one.` });
+    }
+  }
+  // And the assembled text itself, not just the predicate: a prompt must carry
+  // every contract routed to it and no other. The bug was visible in the STRING
+  // the model received, so that is what this reads.
+  for (const p of Object.keys(PROMPTS) as PromptName[]) {
+    const text = assembleInstructions(p);
+    for (const c of contracts) {
+      const marker = `# CONTRACT ${c.id} — ${c.stage}`;
+      const present = text.includes(marker);
+      const should = PROMPTS[p].reads(c.stage);
+      if (present !== should) {
+        problems.push({ axis: "routing", detail:
+          `${PROMPTS[p].what}'s system prompt ${present ? "carries" : "omits"} ${c.file} ` +
+          `(stage ${c.stage}), which its routing ${should ? "requires" : "excludes"}` });
+      }
     }
   }
 
@@ -265,14 +322,80 @@ function main() {
   }
 
   // House rule: a rule names a property, never an instance. Company names are
-  // not detectable generically, but the shape that caused the problem is —
-  // rule text citing a specific run belongs in an evidence note beside the
-  // rule, never inside it.
+  // not detectable generically, but two shapes that carry an instance are.
+  //
+  // ── The marker was the hole ────────────────────────────────────────────
+  // This loop read `\((?:hard|soft)\)` and so judged 36 of the 90 rules. It
+  // skipped every `(judged)` rule — the largest class in the repo — and every
+  // `Banned` rule, which carries no marker at all and is the strongest thing a
+  // contract can say. That is the identical blind spot the enforcement loop
+  // above documents having had, in the same file, one screen apart. The marker
+  // is now optional and unconstrained: a marker invented tomorrow is judged
+  // with no edit here.
+  const INSTANCE_SHAPES: { axis: string; re: RegExp; why: string }[] = [
+    {
+      axis: "house-rule",
+      re: /\bevidence:\s/i,
+      why: "carries evidence inside the rule text. Citing the run that revealed a rule " +
+        "is what an evidence note beside the rule is for; inside the rule, the writer " +
+        "reads one past case verbatim on every request",
+    },
+    {
+      // FUND-13 named a statutory article, and a country, in text the memo
+      // writer reads verbatim on every request. It evaded the enumeration
+      // guard (two quoted literals against a threshold of three) and it evaded
+      // the loop above (a `(soft)` rule with no `evidence:` marker).
+      //
+      // The property: a rule says what makes a fact USABLE to a founder. WHICH
+      // legal instrument produced the fact is data about one scheme, and it
+      // reaches the writer through that scheme's own record. A rule that names
+      // the article is a rule that stops being true the moment the next
+      // founder's fund is registered under a different one.
+      //
+      // The test, for a citation form nobody here has seen: does the token
+      // identify a numbered provision of a specific legal act? That shape —
+      // an act-part word followed by a number — is what this matches.
+      axis: "house-rule",
+      re: /\b(?:art(?:icle)?s?\.?|§+|reg(?:ulation)?\.?|directive|annex|sec(?:tion)?\.?|para(?:graph)?\.?)\s*\(?\s*\d/i,
+      why: "cites a numbered provision of a specific legal act. A rule states the " +
+        "property that makes a fact usable; which instrument produced the fact is " +
+        "data about one scheme and reaches the writer through that scheme's record",
+    },
+    {
+      // The other instance FUND-13 carried. A rule that names a country is
+      // true for that country's founders and silently wrong for everyone
+      // else's, and the writer reads it on every request regardless of where
+      // the founder is.
+      //
+      // Asked against the corpus's OWN country vocabulary (countryCodes.ts),
+      // not a second list written here, so a country added to the corpus is
+      // covered with no edit in this file.
+      //
+      // What this reaches and what it does not, stated rather than assumed: it
+      // reaches a country's NAME. It does not reach a nationality adjective
+      // ("German", "Nordic"), which is not derivable from the name — the test
+      // a human applies to those is the same one: would this rule still be
+      // true for a founder somewhere else? If not, it is about one country and
+      // belongs in that scheme's data.
+      axis: "house-rule",
+      re: new RegExp(`\\b(?:${countryNames().map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")).join("|")})\\b`, "i"),
+      why: "names a country. A rule is read by every founder on every request, so one " +
+        "that is true only where the founder happens to be is not a rule but a fact " +
+        "about one scheme",
+    },
+  ];
   for (const c of contracts) {
-    for (const line of c.body.split("\n")) {
-      const m = line.match(/^-\s+([A-Z]+-B?\d+)\s+\((?:hard|soft)\)\s+(.*)$/);
-      if (m && /\bevidence:\s/i.test(m[2])) {
-        problems.push({ axis: "house-rule", detail: `${c.file}: ${m[1]} carries evidence inside the rule text; move it to a separate note` });
+    for (const block of c.body.split(/\n(?=- [A-Z]+-)/)) {
+      const m = block.match(/^-\s+([A-Z]+-B?\d+)\s+(?:\(\w+\)\s+)?/);
+      if (!m) continue;
+      // The evidence note beside a rule is exempt by design — it is the place
+      // a past case is supposed to live, and it is not sent to any model as a
+      // rule. Everything before it is rule text.
+      const ruleText = block.split(/\*\*evidence:/)[0].slice(m[0].length);
+      for (const shape of INSTANCE_SHAPES) {
+        if (shape.re.test(ruleText)) {
+          problems.push({ axis: shape.axis, detail: `${c.file}: ${m[1]} ${shape.why}` });
+        }
       }
     }
   }

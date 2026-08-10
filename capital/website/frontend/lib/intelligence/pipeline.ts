@@ -29,17 +29,16 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
   return res;
 }
 import { semanticFundMatch } from "./semantic";
-import { BRIEF_LIMITS } from "./briefChecks";
+import { BRIEF_LIMITS, checkBrief } from "./briefChecks";
 import { accessiblePool, explainNoDoors, orderMemoCandidates, WRITER_CANDIDATE_CAP } from "./memoCandidates";
 import { ExclusionLog } from "./exclusions";
-import { assembleWriterInstructions } from "./contracts";
+import { assembleInstructions, assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
 import { AXIS_LABEL, distinguisherPhrases, rowGroups } from "./rowNovelty";
 import {
   findPeersBySubsector,
   isGenericSubsector,
   hydrateGatesFor,
-  loadAgentInstructions,
   loadFundProcess,
   loadSignalsDigest,
   matchCompany,
@@ -66,6 +65,7 @@ import {
   BORROWER_MODELS,
   COMMERCIAL_ANSWER_PREFIX,
   CAPITAL_OPTIONS,
+  STATE_OF_PLAY_OFFER,
   TICKET_BANDS,
   type ChannelAmount,
   type EligibilityAnswers,
@@ -82,8 +82,19 @@ import {
   type WithheldNotice,
 } from "./types";
 
-// The whole pipeline runs on cheap, fast models, guided by the Opus-authored
-// briefs in fund-processes/ (especially _agent_instructions.md, a strict rubric).
+// The whole pipeline runs on cheap, fast models. Every model call takes its
+// system prompt from `contracts/`, assembled per stage: the writer reads the
+// shared rules plus the four brief sections, the round-2 planner reads the
+// shared rules plus its own contract, and the stages that only return a
+// judgement read the shared rules alone.
+//
+// It used to say "guided by the Opus-authored briefs in fund-processes/
+// (especially _agent_instructions.md, a strict rubric)". That file was never a
+// rubric for anything on this line: it went to the question planner, a
+// 400-token classifier, the eligibility judge and the web researcher, and the
+// memo writer -- the only stage it described -- never received it. It is gone;
+// the per-channel process briefs in fund-processes/ remain and are injected as
+// EVIDENCE into the writer's user message, which is what they always were.
 // The two web-search stages use Sonnet 5. The final report is filled into a
 // strict JSON schema of short fields, so Haiku 4.5 — given the rubric — writes it
 // well at a fraction of the cost and latency. No runtime Opus call, so the
@@ -820,11 +831,26 @@ async function synthesize(
       `proof of none — coverage varies by country).`;
 
   // Inject only the process briefs for channels that actually appear.
+  //
+  // ── The founder's OWN rows come first, and used not to be here at all ────
+  // This list was built from `records` and `dbPeers` only: the channels the
+  // COMPARABLE COMPANIES drew on. FUND-9 tells the writer that `nextStep` is
+  // "one concrete action drawn from the process briefs", so a row whose
+  // channel no peer happened to use arrived with no brief to draw it from,
+  // while a peer's channel that is on nobody's table brought one along.
+  // Which briefs the writer receives was decided by who the web search found.
+  //
+  // `instrumentTable` is the founder's published rows and is in scope right
+  // here. It leads the union, so if this ever has to be truncated the briefs
+  // for the rows the founder will actually read survive first. The peers'
+  // channels are kept behind them: they ground what the brief says about how
+  // comparable companies were funded, which is a different job.
   const channels = [
     ...new Set([
+      ...instrumentTable.map((r) => r.channel),
       ...records.flatMap((r) => (r.matched ? r.channels : [])),
       ...dbPeers.flatMap((r) => r.channels),
-    ]),
+    ].filter(Boolean)),
   ];
   const processes = channels
     .map((c) => loadFundProcess(c))
@@ -1326,7 +1352,25 @@ async function synthesize(
       { kept: worthwhile.length, droppedWatchOnly: watchOnly.length, candidates: scored.length });
   }
 
-  return {
+  // ── 90 RULES, 27 PREDICATES, AND NONE OF THEM RAN ON A FOUNDER'S MEMO ───
+  //
+  // `checkBrief` had call sites in the unit tests, two bench scripts and one
+  // build gate that runs on archetype fixtures. It had none anywhere on the
+  // request path. So every rule it can decide was decided about hypothetical
+  // briefs and never about a published one, and briefChecks.ts records what
+  // that cost in its own words: "an empty table shipped, was noticed by a
+  // human rendering the page, and cost nothing anywhere in the suite."
+  //
+  // This is OBSERVATIONAL and must stay that way. It does not gate, retry,
+  // repair or withhold: a founder waiting on a memo is not served by us
+  // refusing to hand it over, and a check that can block a brief is a check
+  // nobody dares tighten. It records, on the real thing, so a rule that fires
+  // in production is visible before a human happens to render the page.
+  //
+  // Wrapped, because a defect in a check must never be able to cost a founder
+  // their brief. The check runs last, after the report is fully assembled, and
+  // its own failure is an event rather than an exception.
+  const publishedReport = {
     self,
     eligibilityScreen,
     // Read, never retyped. This was a literal 5 -- a private copy of
@@ -1349,6 +1393,23 @@ async function synthesize(
     _dropped: { blocked: droppedBlocked, watchOnly: watchOnly.length,
                 candidates: scored.length },
   };
+
+  try {
+    // `candidatesShown` is what the writer was SHOWN, not what published --
+    // that is the superset BL-B1 needs, and passing it is what stops that rule
+    // reporting itself unevaluated on every real request.
+    const violations = checkBrief(
+      publishedReport, STATE_OF_PLAY_OFFER, scored.map((x) => x.entry.institution));
+    if (violations.length) {
+      recordEvent("brief_rule_violated",
+        violations.map((v) => `${v.ruleId}: ${v.detail}`).join("; "),
+        { rules: [...new Set(violations.map((v) => v.ruleId))], count: violations.length });
+    }
+  } catch (err) {
+    recordEvent("brief_check_failed", `checkBrief threw on a published brief: ${String(err)}`);
+  }
+
+  return publishedReport;
 }
 
 /**
@@ -1491,7 +1552,10 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   const req: IntelligenceRequest = req0.companyType
     ? req0
     : { ...req0, companyType: req0.profileSignal?.techDepthRead };
-  const instructions = loadAgentInstructions();
+  // The comparable-company researcher gets the claims discipline and nothing
+  // else. It does not rank, select or write a section, so the brief contracts
+  // and the round-2 contract would be prompt it reads past on every request.
+  const instructions = assembleInstructions("screen");
 
   emit({ type: "status", step: "discovering", detail: "Searching the record and the open web for comparable companies" });
   // Comparables corroborate the brief; they are not the brief. The memo's
