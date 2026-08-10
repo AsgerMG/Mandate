@@ -29,7 +29,9 @@ Most of the guards live in `recall_guards.py`, because `extend_recall_set.py`
 needs the identical predicates and two copies of a leak guard is the worst
 duplication there is: the copy that drifts is the one that silently stops
 catching leaks. Read that module for the property each enforces. TWO guards are
-specific to recovering text from ANOTHER award and stay here:
+specific to recovering text from ANOTHER award, and they live there too, in
+`LeakIndex.borrow_reject_reason`, since `rebuild_recall_descriptions.py` became
+the third caller that needs them:
 
   1. cross-regime      the text's own instrument, and every instrument its
                        source maps to, must have a different root_id from the
@@ -97,9 +99,8 @@ def main() -> None:
     conn = sqlite3.connect(DB)
     conn.row_factory = sqlite3.Row
     # Every shared guard and every index it consults, built once.
-    guards = LeakIndex(conn)
+    guards = LeakIndex(conn, title_kinds=kinds)
     inst = guards.inst
-    root_of = guards.root_of
     in_profile = guards.in_profile
 
     # ── Event -> instrument, both joins ──────────────────────────────────────
@@ -147,21 +148,15 @@ def main() -> None:
     rejected: collections.Counter = collections.Counter()
 
     def usable(text: str, kind: str, iids: list[str], won: str) -> bool:
-        """The two guards specific to borrowing text, then the shared ones."""
+        """Every guard a BORROWED text must pass, all of them in recall_guards.
+
+        The cross-regime and title-kind predicates used to be written out here;
+        they moved to `LeakIndex.borrow_reject_reason` when a third script
+        needed them. One implementation, three callers.
+        """
         if not text:
             return False
-        # 1 — cross-regime. Only this script needs it: the text comes from
-        # ANOTHER of the company's awards, and a sibling shares the scheme name
-        # that leaked last time.
-        won_root = root_of(won)
-        if any(i == won or root_of(i) == won_root for i in iids):
-            rejected["same regime as the won fund"] += 1
-            return False
-        # 2 — the corpus's own title-kind judgement about the SOURCE instrument
-        if kind == "title" and not any(kinds.get(i, "project") == "project" for i in iids):
-            rejected["source titles are scheme names"] += 1
-            return False
-        reason = guards.reject_reason(text, kind, won)
+        reason = guards.borrow_reject_reason(text, kind, iids, won)
         if reason:
             rejected[reason] += 1
             return False

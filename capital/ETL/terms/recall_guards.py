@@ -92,10 +92,15 @@ class LeakIndex:
     that cannot run must be visibly off rather than quietly passing everything.
     """
 
-    def __init__(self, conn, verbose: bool = True) -> None:
+    def __init__(self, conn, verbose: bool = True,
+                 title_kinds: dict[str, str] | None = None) -> None:
         self.inst = {r["id"]: dict(r) for r in conn.execute(
             "SELECT id, name, parent_id, root_id, scheme_code, sample_project_titles "
             "FROM funding_instruments")}
+        # The corpus's own judgement about whether an instrument's award TITLES
+        # are project names or statute names. Empty means "assume project",
+        # which is what the callers did when this lived in one of them.
+        self.title_kinds: dict[str, str] = title_kinds or {}
 
         self.sample_titles: set[str] = set()
         for i in self.inst.values():
@@ -244,3 +249,33 @@ class LeakIndex:
         if self.names_the_fund(text, won):
             return "names the fund it should help us find"
         return None
+
+    # ── borrowing ANOTHER award's text ───────────────────────────────────────
+    def borrow_reject_reason(self, text: str, kind: str, iids: list[str],
+                             won: str) -> str | None:
+        """`reject_reason` plus the two guards that only a BORROWED text needs.
+
+        Three scripts now recover a description from an award other than the
+        one being predicted (`enrich_recall_set`, `extend_recall_set` for its
+        composed base, `rebuild_recall_descriptions`). Each needs the same two
+        extra predicates, and two copies of a leak guard is the duplication
+        this whole module exists to remove -- the copy that drifts is the one
+        that silently stops catching leaks.
+
+          cross-regime  the text's own instrument, and every instrument its
+                        source maps to, must have a different root from the won
+                        fund. Not merely a different id: siblings share a scheme
+                        name, which is exactly the string that leaked.
+          title kind    a `project_title` is used only from instruments whose
+                        titles the corpus classifier calls 'project'. That
+                        classifier already knows which registers publish statute
+                        names as titles. `project_summary` is exempt: no scheme
+                        publishes a per-award summary.
+        """
+        won_root = self.root_of(won)
+        if any(i == won or self.root_of(i) == won_root for i in iids):
+            return "same regime as the won fund"
+        if kind == "title" and not any(
+                self.title_kinds.get(i, "project") == "project" for i in iids):
+            return "source titles are scheme names"
+        return self.reject_reason(text, kind, won)
