@@ -166,9 +166,19 @@ export function checkQuestions(input: QuestionCheckInput): QuestionViolation[] {
   }
 
   // Q-4: one question per gate, so a founder is never asked twice for one rule.
+  //
+  // THE GATE first, and `id` only where there is no gate. It read `q.id ||
+  // q.gateKey`, and `id` is `${instrumentId}::${gateKey}` which the generator
+  // has ALREADY deduped on, so the branch that was always taken could only
+  // re-confirm an upstream guarantee and the branch that could see the property
+  // was unreachable. The case it could not see is the whole of the rule: two
+  // DIFFERENT funds quoting the SAME rule -- "eic::sme_status" and
+  // "eurostars::sme_status" -- which is one rule and two questions to a
+  // founder, who has to answer their headcount twice.
   const byKey = new Map<string, number>();
   for (const q of questions) {
-    const key = q.id || q.gateKey;
+    const key = q.gateKey || q.id;
+    if (!key) continue;
     byKey.set(key, (byKey.get(key) ?? 0) + 1);
   }
   for (const [key, n] of byKey) {

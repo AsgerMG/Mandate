@@ -99,6 +99,39 @@ export function InstitutionsTable(
   { institutions: InstitutionEntry[]; pending?: boolean; withheld?: WithheldNotice },
 ) {
   if (!institutions || institutions.length === 0) return null;
+  // ── SAY A SHARED FACT ONCE ────────────────────────────────────────────────
+  // A six-row brief was rendered and read (wsCX). Four of the six carried a
+  // word-for-word identical "How to apply", and all six carried the identical
+  // three comparable firms. Neither is the writer padding, and this is the
+  // measurement that settles it:
+  //
+  //   ROUTE.  `application` is inherited from the parent regime when a leaf has
+  //     none of its own (corpus.ts), so siblings of one programme share one
+  //     route BY CONSTRUCTION. Over the 837 publishable rows there are 736
+  //     routes and only 122 distinct ones; the largest serves 89 rows. The
+  //     repetition is TRUE. A true fact stated four times is still four
+  //     hundred pixels of a founder's attention spent on one fact.
+  //
+  //   COMPARABLES. `comparableFirmsForChannel` (pipeline.ts) filters peers on
+  //     `row.channel`, which is the SOURCE FAMILY -- a whole country's R&D aid
+  //     register is one channel. It is not conditioned on the row at all, so
+  //     every row drawn from one register necessarily shows the same firms. The
+  //     column is a property of the channel wearing a per-row claim, and six
+  //     identical cells read as six independent confirmations. Conditioning it
+  //     on the instrument needs per-instrument company attribution, which the
+  //     prebuilt company index does not carry (website/build/companies_index.py
+  //     keys on source_family): reported, not invented here.
+  //
+  // So both are stated once and then referred back to. Nothing is dropped and
+  // no row loses information it uniquely held.
+  const firstWithRoute = new Map<string, number>();
+  const firstWithPeers = new Map<string, number>();
+  institutions.forEach((r, i) => {
+    const route = r.applicationChannel?.trim();
+    if (route && !firstWithRoute.has(route)) firstWithRoute.set(route, i);
+    const peers = r.comparableFirms.map((f) => f.name).join("|");
+    if (peers && !firstWithPeers.has(peers)) firstWithPeers.set(peers, i);
+  });
   return (
     <>
       <SectionTitle n="02">Where to target</SectionTitle>
@@ -318,13 +351,22 @@ export function InstitutionsTable(
                 {r.applicationChannel && (
                   <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
                     <strong className="font-semibold">How to apply.</strong>{" "}
-                    {r.applicationChannel}
+                    {firstWithRoute.get(r.applicationChannel.trim()) === i
+                      ? r.applicationChannel
+                      : "The same route as above."}
                   </span>
                 )}
               </td>
               <td className="py-2.5">
                 {r.comparableFirms.length > 0 ? (
-                  r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
+                  firstWithPeers.get(r.comparableFirms.map((f) => f.name).join("|")) === i ? (
+                    r.comparableFirms.map((f) => `${f.name} (${f.amount})`).join(", ")
+                  ) : (
+                    <span className="text-[var(--muted-foreground)]">
+                      The same firms as above: they are traced to this route, which
+                      these rows share, rather than to one fund on it
+                    </span>
+                  )
                 ) : (
                   <span className="text-[var(--muted-foreground)]">None traced yet</span>
                 )}

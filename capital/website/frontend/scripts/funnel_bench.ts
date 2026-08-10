@@ -32,7 +32,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
 import { checkQuestions, checkGroundedQuestions } from "../lib/intelligence/questionChecks";
-import { FIELD_ENUM_HINTS } from "../lib/intelligence/types";
+import { FIELD_ENUM_HINTS, STATE_OF_PLAY_OFFER } from "../lib/intelligence/types";
 import { checkBrief } from "../lib/intelligence/briefChecks";
 import type { ProjectAnswer, ProjectQuestion } from "../lib/intelligence/types";
 
@@ -214,7 +214,7 @@ async function main() {
         ...checkQuestions({ questions: asked, description: c.description, expectCommercial: true }),
         ...checkGroundedQuestions(groundedForCheck),
       ].map((v) => v.ruleId);
-      row.briefDefects = report ? checkBrief(report as never).map((v) => v.ruleId) : ["no report"];
+      row.briefDefects = report ? checkBrief(report as never, STATE_OF_PLAY_OFFER).map((v) => v.ruleId) : ["no report"];
       row.questions = asked.map((q) => ({
         question: q.question, options: q.options, answer: answers.get(q.id) ?? SKIP,
       }));

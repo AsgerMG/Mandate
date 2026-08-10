@@ -128,9 +128,15 @@ export function checkBrief(
   }
   // Two rows resolving to the same institution under the same legal basis are
   // one route shown twice, which spends a scarce row on nothing.
+  // Keyed on the folded name, not the literal one. The reasoning key below was
+  // already trimmed and this one was not, so "Innovation Fund" and "Innovation
+  // Fund " were two routes to one door as far as this check was concerned. Two
+  // keys for one question, differing by a `.trim()`, is the shape this repo
+  // keeps paying for.
+  const foldKey = (s: unknown) => String(s ?? "").trim().replace(/\s+/g, " ").toLowerCase();
   const seen = new Set<string>();
   for (const r of institutions) {
-    const key = `${(r.institution ?? "").toLowerCase()}|${(r.legalBasis ?? "").toLowerCase()}`;
+    const key = `${foldKey(r.institution)}|${foldKey(r.legalBasis)}`;
     if (seen.has(key)) {
       v.push({ ruleId: "FUND-3", detail: `duplicate route: ${r.institution}${r.legalBasis ? ` (${r.legalBasis})` : ""}` });
     }
