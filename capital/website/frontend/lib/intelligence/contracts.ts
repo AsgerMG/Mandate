@@ -183,12 +183,17 @@ export type PromptName = keyof typeof PROMPTS;
  */
 export const UNROUTED_STAGES: Record<string, string> = {
   "gate2.select":
-    "The module it specifies (lib/intelligence/fundSelection.ts) has no production " +
-    "caller: `selectFiveFunds` is imported only by scripts/measure_pipeline.ts. " +
-    "Fund order in the shipped memo is a deterministic score, not a model choice, " +
-    "so no request-time prompt may carry these rules — which is exactly the " +
-    "mistake the writer's assembler was making. Route it the moment a selection " +
-    "prompt ships.",
+    "The module these rules specified (lib/intelligence/fundSelection.ts) is " +
+    "DELETED — wsDO, 2026-08-11. It never had a production caller: " +
+    "`selectFiveFunds` was imported only by scripts/measure_pipeline.ts, and " +
+    "every configuration that let it reorder measured at or below the " +
+    "deterministic ranker on the same cases (the whole ladder is preserved in " +
+    "project-mgmt/findings/dead_ranker_wsDO.md). So this contract currently " +
+    "specifies nothing that runs, which is a stronger reason not to route it " +
+    "than the one it replaces. Route it the moment the LLM selector ships — " +
+    "and read the findings doc first, because two of these rules contradict " +
+    "the writer's own contract (FUND-2 caps the table at seven rows, FUND-12 " +
+    "forbids describing rows as first, best or strongest).",
 };
 
 /** Every contract carried into `prompt`, shared ones first, then the sections
