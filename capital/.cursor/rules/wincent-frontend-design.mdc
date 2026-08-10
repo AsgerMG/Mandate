@@ -1,0 +1,43 @@
+---
+description: Wincent frontend design, copy, spacing, imagery, and intake principles
+globs: website/frontend/**/*.{tsx,ts,css}
+alwaysApply: false
+---
+
+# Wincent Frontend Design Principles
+
+## Audience and message
+- Design for time-poor startup founders and VCs. Lead with the decision or payoff.
+- Frame Wincent as a way to fit a raise to European political, industrial, regional, and institutional priorities.
+- Prefer one sharp headline, one useful paragraph, and one clear action.
+- Cut repetition, methodology, limitations, and academic context from the main journey. Put necessary evidence in a compact disclosure.
+- Use concrete language: target doors, positioning, comparable raises, ticket size, sequencing, and next moves.
+
+## Composition
+- Maintain a restrained, high-end editorial character: warm paper, navy rules, serif headlines, compact mono labels.
+- Preserve generous whitespace, but never let adjacent section padding compound into an empty viewport.
+- Judge spacing between the visible content of neighboring sections, not each section in isolation.
+- Use roughly 48–112px between major desktop content blocks; use less between tightly related blocks.
+- Avoid decorative rails, scroll cues, boxes, borders, or gradients that do not clarify structure.
+- Keep text measures controlled and align paired text and imagery as one balanced composition.
+
+## Images and scrollytelling
+- Keep editorial images unless removal is explicitly requested.
+- Use transparent PNG architectural blueprint illustrations with clean outlines, simplified geometry, consistent line weight, and a 3:2 composition.
+- Render illustrations with `object-contain`; avoid cropping, soft scaling, fake checkerboards, or card chrome.
+- Scrollytelling must earn its height. Prefer 3–4 decisive beats, smooth transitions, legible diagrams, and no repeated explanation.
+
+## Intake forms
+- Keep intake centered and narrow (`max-w-3xl` or less); use a single reading path.
+- Use progressive disclosure: show ranking-critical questions first and collapse secondary organisation details.
+- Use visible labels, concise helper text, 44px minimum controls, inline validation, and preserved back-navigation state.
+- Use chips only for at most five short, easily scanned choices.
+- Use a native select for 6–12 single choices and a compact checklist dropdown for small multi-selects.
+- Never show the full region corpus. Ask country first, then expose only that country’s regions; add search when the filtered list is long.
+- Preserve canonical IDs and the existing ingestion payload when changing control presentation.
+
+## Quality bar
+- Check desktop and mobile for overlap, clipping, awkward wrapping, oversized gaps, and abrupt section boundaries.
+- Verify the whole journey visually, not only the edited component.
+- Do not solve density by shrinking type below comfortable reading sizes.
+- Treat every extra sentence, field, border, and animation as something that must justify its presence.
