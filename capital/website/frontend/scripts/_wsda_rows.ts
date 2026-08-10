@@ -338,12 +338,21 @@ function main() {
   // rule over these features can score, learned or hand-written, because the
   // fit has already seen every answer. The honest estimate of the same rule is
   // the two-fold below it.
+  //
+  // GRANULARITY IS SWEPT, not chosen. A fine partition can memorise the tape
+  // and a coarse one cannot, so "the fit overfits" and "no rule exists" are
+  // different claims and only the sweep separates them. `fine` is every feature
+  // the brief names; `mid` drops the country marginal; `coarse` is the single
+  // question the whole idea rests on — in the cell or not, and how deep.
+  const GRAIN = (process.env.GRAIN ?? "fine") as "fine" | "mid" | "coarse";
   const bucket = (r: Row): string => {
     const d = r.peer < 0 ? "x" : r.peer <= 1 ? "a" : r.peer <= 3 ? "b" : r.peer <= 7 ? "c"
       : r.peer <= 15 ? "d" : "e";
+    if (GRAIN === "coarse") return d;
     const s = r.srank === 0 ? "0" : r.srank <= 2 ? "1" : r.srank <= 4 ? "2" : r.srank <= 9 ? "3"
       : r.srank <= 19 ? "4" : "5";
     const n = r.cells === 0 ? "0" : r.cells <= 2 ? "1" : r.cells <= 5 ? "2" : r.cells <= 10 ? "3" : "4";
+    if (GRAIN === "mid") return d + s + n;
     const c = r.crank < 0 ? "x" : r.crank <= 9 ? "a" : r.crank <= 29 ? "b" : r.crank <= 79 ? "c" : "d";
     return d + s + n + c;
   };
