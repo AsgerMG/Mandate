@@ -38,11 +38,11 @@ function capitalParts(synth: Synthesis) {
 /** One cell of a side KPI matrix. */
 function MatrixCell({ value, label }: { value: ReactNode; label: string }) {
   return (
-    <div className="border-[var(--border)] p-5 sm:p-6 [&:nth-child(odd)]:border-r [&:nth-last-child(n+3)]:border-b">
+    <div className="border-t-2 border-[var(--primary)] py-5">
       <div className="text-2xl font-bold tabular-nums text-[var(--foreground)] sm:text-3xl" style={serif}>
         {value}
       </div>
-      <div className="mt-1.5 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">{label}</div>
+      <div className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">{label}</div>
     </div>
   );
 }
@@ -51,7 +51,7 @@ function MatrixCell({ value, label }: { value: ReactNode; label: string }) {
 function StatMatrix({ children }: { children: ReactNode }) {
   return (
     <Reveal delay={120}>
-      <div className="grid grid-cols-2 overflow-hidden rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70">
+      <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-2 lg:grid-cols-4">
         {children}
       </div>
     </Reveal>
@@ -86,99 +86,42 @@ export default async function Home() {
       {/* ── Cold open: headline left, Brussels right — the editorial split. ── */}
       {/* Page-head offset is shared with /about-public-capital and /brief
           (pt-16 sm:pt-20) so the eyebrow lands at the same y on every page. */}
-      <section className="relative overflow-hidden bg-[var(--background)] pt-16 pb-20 sm:pt-20 sm:pb-24">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(60% 50% at 22% 0%, rgba(16,32,63,0.05), transparent 62%)",
-          }}
-          aria-hidden
-        />
-        <div className="relative wrap grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
-          <div>
-            <p className="mb-5 font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">
-              For companies raising in Europe
-            </p>
-            <h1 className="text-4xl font-semibold leading-[1.08] tracking-tight sm:text-[3.4rem]" style={serif}>
-              Understand how companies like yours raise Europe&apos;s public capital
+      <section className="relative overflow-hidden bg-[var(--background)] py-12 sm:py-16 lg:flex lg:min-h-[calc(100svh-var(--nav-h))] lg:items-center">
+        <div className="relative wrap grid items-start gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
+          <div className="flex flex-col justify-center lg:aspect-[3/2]">
+            <h1 className="text-4xl font-semibold leading-[1.04] tracking-tight sm:text-5xl xl:text-[3.4rem]" style={serif}>
+              Raise where Europe is putting money next
             </h1>
-            <p className="mt-6 max-w-xl text-lg leading-relaxed text-[var(--foreground-soft)]">
-              We mapped the EU grants, state aid and public capital behind{" "}
-              {synth.companies.toLocaleString()} European companies. Enter yours and get a one-page
-              brief: which comparable companies have drawn public funding, through which
-              instruments, and a prioritised to-do list for your own raise.
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                href="/brief"
-                className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 text-[15px] font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-              >
-                See your comparables
-              </Link>
+            <div className="mt-8">
+              <p className="max-w-xl text-[17px] leading-relaxed text-[var(--foreground-soft)]">
+                Wincent maps your company to comparable raises, screened institutions and the EU,
+                national and regional priorities shaping public capital. Get the doors to target,
+                the case to make and what to do next.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link
+                  href="/brief"
+                  className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 text-[15px] font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
+                >
+                  Get your brief
+                </Link>
+              </div>
             </div>
           </div>
 
-          {/* Artwork slot, in the reference's flat editorial frame. */}
-          <ImageSlot label="Berlaymont, Brussels — the European Commission" />
+          <ImageSlot
+            imageClassName="lg:scale-[1.06]"
+            src="/images/editorial/founder-funding-constellation.png"
+            alt="A founder tracing connected regional, national and European public funding instruments"
+            priority
+          />
         </div>
 
-        {/* Scroll cue into the trip below */}
-        <a
-          href="#understand"
-          className="relative mx-auto mt-14 flex w-fit flex-col items-center gap-1.5 text-sm font-medium text-[var(--accent)]/80 transition-opacity hover:opacity-70"
-        >
-          <span className="font-mono text-[11px] uppercase tracking-[0.18em]">Follow the euro</span>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="animate-bounce" aria-hidden="true">
-            <path d="M12 5v14M19 12l-7 7-7-7" />
-          </svg>
-        </a>
       </section>
 
       {/* ── The trip: Follow the Euro ───────────────────────────── */}
       <div className="relative bg-[var(--background)] text-[var(--foreground)]">
-        {/* Ambient glow: EU-blue at the top, a warm coin-gold lower down. */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(66% 42% at 50% 0%, rgba(16,32,63,0.05), transparent 60%)",
-          }}
-          aria-hidden
-        />
-        <div className="relative">
-          <EuroJourney>
-            {/* Chapter 1 — Launch */}
-            <Chapter id="understand" className="flex min-h-[92vh] flex-col justify-center py-24">
-              <Reveal>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">
-                  A study of European public capital
-                </p>
-              </Reveal>
-              <Reveal delay={120}>
-                <h2
-                  className="mt-6 max-w-4xl text-4xl font-semibold leading-[1.05] sm:text-6xl"
-                  style={serif}
-                >
-                  How the state funds European companies.
-                </h2>
-              </Reveal>
-              <Reveal delay={260}>
-                <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[var(--foreground-soft)]">
-                  Grants, state aid and development-bank finance push hundreds of billions of euros
-                  into companies every year. We traced the channels, and where the money lands.
-                </p>
-              </Reveal>
-              <Reveal delay={420}>
-                <div className="mt-10 flex items-center gap-3 text-sm text-[var(--accent)]/80">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--accent)] font-serif text-base font-bold text-[var(--paper)] shadow-[0_1px_3px_rgba(10,10,10,0.2)]">
-                    €
-                  </span>
-                  <span className="uppercase tracking-[0.2em]">Scroll to begin</span>
-                </div>
-              </Reveal>
-            </Chapter>
-
+        <EuroJourney>
             {/* Chapter 2 — The channels graph: the pinned, camera-driven anchor */}
             {/* The graph states the national/EU split in words. It is a
                 "use client" module, so the figure is handed down rather than
@@ -187,38 +130,24 @@ export default async function Home() {
             <ChannelsGraph nationalAwardPct={prose.nationalAwardPct} />
 
             {/* Chapter 3 — We tried to track it: the KPIs */}
-            <Chapter className="py-24 sm:py-32">
-              <div className="grid gap-12 lg:grid-cols-[1fr_23rem] lg:items-center">
-                <div>
-                  <Reveal>
-                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">The record</p>
-                  </Reveal>
-                  <Reveal delay={100}>
-                    <h3 className="mt-4 text-3xl font-semibold text-[var(--foreground)] sm:text-4xl" style={serif}>
-                      We tried to track all of it.
-                    </h3>
-                  </Reveal>
-                  <Reveal delay={160}>
-                    <p className="mt-5 max-w-xl leading-relaxed text-[var(--foreground-soft)]">
-                      We assembled every company we could find across those channels,{" "}
-                      {prose.awardWindow}: the main EU instruments, the national development banks,
-                      and the EU State Aid Transparency Register covering{" "}
-                      {prose.nationalAuthorities} national authorities.
-                    </p>
-                  </Reveal>
-                </div>
-                <StatMatrix>
-                  <MatrixCell
-                    label="Total committed"
-                    value={
-                      <CountUp value={capValue} prefix="€" suffix={capSuffix} decimals={capDecimals} />
-                    }
-                  />
-                  <MatrixCell label="Companies reached" value={<CountUp value={Number(synth.companies)} />} />
-                  <MatrixCell label="Public awards" value={<CountUp value={Number(synth.events)} />} />
-                  <MatrixCell label="Countries" value={<CountUp value={Number(synth.countries)} />} />
-                </StatMatrix>
-              </div>
+            <Chapter className="py-20 sm:py-24">
+              <Reveal>
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">The record</p>
+                <h3 className="mt-4 text-3xl font-semibold text-[var(--foreground)] sm:text-4xl" style={serif}>
+                  Public capital, at a glance.
+                </h3>
+              </Reveal>
+              <StatMatrix>
+                <MatrixCell
+                  label="Total committed"
+                  value={
+                    <CountUp value={capValue} prefix="€" suffix={capSuffix} decimals={capDecimals} />
+                  }
+                />
+                <MatrixCell label="Companies reached" value={<CountUp value={Number(synth.companies)} />} />
+                <MatrixCell label="Public awards" value={<CountUp value={Number(synth.events)} />} />
+                <MatrixCell label="Countries" value={<CountUp value={Number(synth.countries)} />} />
+              </StatMatrix>
             </Chapter>
 
             {/* Chapter 5 — Where it lands: the map */}
@@ -226,59 +155,38 @@ export default async function Home() {
               <Reveal>
                 <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">Where it lands</p>
               </Reveal>
-              <Reveal delay={100}>
-                <h3 className="mt-4 max-w-3xl text-3xl font-semibold text-[var(--foreground)] sm:text-4xl" style={serif}>
-                  Across the continent, unevenly.
-                </h3>
-              </Reveal>
               <Reveal delay={150}>
-                <figure className="mt-10">
-                  <div className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-3 sm:p-5">
+                <figure className="mt-6">
+                  <div className="border-y border-[var(--border)] py-3 sm:py-5">
                     <EuropeMap countryData={countryData} />
                   </div>
-                  <figcaption className="mt-4 text-sm leading-relaxed text-[var(--muted-foreground)]">
-                    Countries are shaded by the number of companies reached, not the size of the
-                    awards, so a country that publishes many small state-aid line items shows up darker than one making a few large bets. Hover a country to break its total
-                    into the three public layers and see which instruments reach it.
-                  </figcaption>
                 </figure>
               </Reveal>
               <Reveal>
-                <div className="mt-10 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5">
-                  <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--accent)]">
-                    What the corpus is not
-                  </p>
-                  <p className="text-sm leading-relaxed text-[var(--foreground-soft)]">
-                    Coverage is uneven by design. Several instruments record only the named
-                    coordinator of a consortium, so participants are undercounted. Horizon Europe
-                    Pillar II is loaded at organisation level, which inflates its company count
-                    relative to the rest. Capital figures are amounts committed, not amounts
-                    disbursed, and some instruments report ceilings rather than awards. And the three
-                    channels are not watertight: an IPCEI project is an EU affair but is paid out as
-                    national state aid, and much development-bank money is itself state aid, so the
-                    split is partly one of who reports it, not of economics.
-                  </p>
-                </div>
+                <details className="mt-5 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 text-sm text-[var(--foreground-soft)]">
+                  <summary className="cursor-pointer px-5 py-4 font-medium text-[var(--foreground)]">
+                    How to read the map and coverage
+                  </summary>
+                  <div className="space-y-3 border-t border-[var(--border)] px-5 py-4 leading-relaxed">
+                    <p>
+                      Countries are shaded by companies reached, not award value. Hover to split each
+                      total across EU funds, development banks and state aid.
+                    </p>
+                    <p>
+                      Coverage varies. Consortium participants can be undercounted, some figures are
+                      commitments or ceilings rather than cash paid, and reporting channels overlap.
+                    </p>
+                  </div>
+                </details>
               </Reveal>
             </Chapter>
 
             {/* Chapter 6 — The handoff / CTA */}
-            <Chapter className="py-28 text-center sm:py-36">
-              <Reveal>
-                <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[var(--accent)] font-serif text-xl font-bold text-[var(--paper)] shadow-[0_1px_3px_rgba(10,10,10,0.2)]">
-                  €
-                </span>
-              </Reveal>
+            <Chapter className="py-20 text-center sm:py-24">
               <Reveal delay={100}>
-                <h3 className="mt-7 text-3xl font-semibold text-[var(--foreground)] sm:text-5xl" style={serif}>
-                  Check your company.
+                <h3 className="text-3xl font-semibold text-[var(--foreground)] sm:text-5xl" style={serif}>
+                  Map your raise.
                 </h3>
-              </Reveal>
-              <Reveal delay={160}>
-                <p className="mx-auto mt-5 max-w-xl leading-relaxed text-[var(--foreground-soft)]">
-                  See where, for what and how comparable companies have drawn Europe&apos;s public
-                  funding, and the instruments that fit your own raise.
-                </p>
               </Reveal>
               <Reveal delay={220}>
                 <div className="mt-9 flex flex-wrap justify-center gap-3">
@@ -286,13 +194,12 @@ export default async function Home() {
                     href="/brief"
                     className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
                   >
-                    Map your comparables
+                    Get your brief
                   </Link>
                 </div>
               </Reveal>
             </Chapter>
-          </EuroJourney>
-        </div>
+        </EuroJourney>
       </div>
     </div>
   );

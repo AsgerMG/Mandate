@@ -614,7 +614,7 @@ export function EuropeMap({ countryData }: EuropeMapProps) {
                           outline: "none",
                         },
                         hover: {
-                          fill: hasData ? "#dbeafe" : "#1b2740",
+                          fill: hasData ? "#f1e3c4" : "#1b2740",
                           stroke: "#10203f",
                           strokeWidth: 0.75,
                           outline: "none",

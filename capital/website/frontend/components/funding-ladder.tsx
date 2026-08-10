@@ -10,10 +10,6 @@
 
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { fmtEur } from "@/lib/format";
-// One definition of the two named awards, shared with /about-public-capital,
-// which stated the same two euro figures independently. See the module for why
-// these stay literals and what verified them.
-import { VERIFIED_AWARDS } from "@/lib/verifiedAwards";
 
 const ACCENT = "#7f5820";
 
@@ -92,21 +88,19 @@ const b = (t: string) => <span className="text-[var(--foreground)]">{t}</span>;
 
 const STEPS: Step[] = [
   {
-    key: "overview",
+    key: "stack",
     cam: "overview",
     tier: null,
     content: () => (
       <div>
         {kicker("The stack")}
-        {head("Two floors, and no staircase between them.")}
+        {head("Two floors. No staircase.")}
         <P>
-          Europe&apos;s public system is not a ladder you climb one rung at a time. It is two
-          separate floors. A {b("signal floor")} of small awards that certify you, and a{" "}
-          {b("conviction floor")} of large anchors that finance an industrial buildout.
+          A {b("signal floor")} of smaller awards proves you can execute. A{" "}
+          {b("conviction floor")} finances strategic industrial buildout.
         </P>
         <P>
-          Nothing connects them. You do not climb from one to the other; you are{" "}
-          {b("chosen")} onto the top floor. Start at the bottom and work up.
+          You are {b("chosen")} onto the top floor, not promoted there one grant at a time.
         </P>
       </div>
     ),
@@ -120,94 +114,51 @@ const STEPS: Step[] = [
         {kicker("The signal floor")}
         {head("Small cheques that certify you.")}
         <P>
-          Development-bank programmes and national {b("state aid")} (median around{" "}
-          {fmtEur(signal[signal.length - 1].median)}) are volume products: fast-ish, local,
-          repeatable. {b("EIC")} and {b("Horizon")} grants are selective, with low odds.
+          National programmes start around {fmtEur(signal[signal.length - 1].median)}.{" "}
+          {b("EIC")} and {b("Horizon")} are harder to win, but carry stronger signalling value.
         </P>
         <P>
-          The cash is modest. The {b("certification")} is the point: an early public grant
-          roughly doubles your odds of venture funding, and roughly triples your odds of private
-          equity. Take it to a term sheet.
+          The cash helps. The {b("certification")} is what you take to a term sheet.
         </P>
       </div>
     ),
   },
   {
-    key: "gap",
+    key: "top",
     cam: "gap",
-    tier: "gap",
-    content: ({ convictionClimbPct }) => (
+    tier: null,
+    content: ({ convictionClimbPct, conviction }) => (
       <div>
-        {kicker("The missing middle")}
-        {head("There is no escalator up.")}
+        {kicker("The top floor")}
+        {head("Chosen for strategic relevance.")}
         <P>
-          Only {b(`${convictionClimbPct}%`)} of the companies on the top floor climbed there from
-          smaller grants. The rest were selected outright, because they sit in a value chain the EU
-          has declared strategic: batteries, hydrogen, chips, cloud, defence.
+          Only {b(`${convictionClimbPct}%`)} of conviction-tier companies arrived through smaller
+          grants. The rest sit in value chains Europe has declared strategic: batteries, hydrogen,
+          chips, cloud or defence.
         </P>
-        <P>
-          So the gap is not crossed by stacking small wins. It is crossed by being{" "}
-          {b("strategically relevant")}, and saying so in every application.
-        </P>
-      </div>
-    ),
-  },
-  {
-    key: "conviction",
-    cam: "conviction",
-    tier: "conviction",
-    content: ({ conviction }) => (
-      <div>
-        {kicker("The conviction floor")}
-        {head("Anchors that finance a buildout.")}
         <P>
           The {b("Innovation Fund")} (median {fmtEur(conviction[0].median)}) and{" "}
-          {b("IPCEI")} ({fmtEur(conviction[1].median)}) are not applications you fire off. They
-          are multi-year positioning projects that involve your member state.
-        </P>
-        <P>
-          When one lands it behaves like a {b("state-underwritten growth round")}. Stegra
-          carried {VERIFIED_AWARDS.stegraInnovationFund}{" "}
-          from the Innovation Fund into its green-steel buildout; Porsche&apos;s Cellforce drew{" "}
-          {VERIFIED_AWARDS.cellforceBatteryAid} of granted battery aid.
+          {b("IPCEI")} ({fmtEur(conviction[1].median)}) are multi-year positioning campaigns, not
+          forms you fire off.
         </P>
       </div>
     ),
   },
   {
-    key: "crown",
+    key: "handoff",
     cam: "crown",
     tier: "crown",
-    content: () => (
-      <div>
-        {kicker("The hand-off")}
-        {head("Then private capital follows.")}
-        <P>
-          Whichever floor you reach, the public euro is built to go {b("first")}, when you are
-          still too risky for private investors to touch. That backing is the anchor: it lowers
-          the risk and signals confidence.
-        </P>
-        <P>
-          The rest of this manual is how to {b("earn each floor")}, in order, and convert it into
-          a private round. It starts with one question.
-        </P>
-      </div>
-    ),
-  },
-  {
-    key: "door",
-    cam: "overview",
-    tier: null,
     content: ({ nationalAwardPct }) => (
       <div>
-        {kicker("Your move")}
-        {head("Which door is even open to you.")}
+        {kicker("The hand-off")}
+        {head("Public first. Private follows.")}
         <P>
-          Which floor you can reach depends first on {b("where you are registered")}:{" "}
-          {nationalAwardPct}% of all awards are national, and every country routes them
-          differently.
+          Public backing absorbs early risk and gives private investors evidence to underwrite.
         </P>
-        <P>Follow the door that fits your address. That is the next chapter.</P>
+        <P>
+          Start with your address: {nationalAwardPct}% of awards are national. Then sequence the
+          right door around your private raise.
+        </P>
       </div>
     ),
   },
@@ -242,8 +193,8 @@ function RungBox({
         height={h}
         rx={2}
         fill="url(#rungFill)"
-        stroke={accent ? ACCENT : "rgba(10,10,10,0.22)"}
-        strokeWidth={accent ? 1.5 : 1}
+        stroke={accent ? ACCENT : "rgba(16,32,63,0.34)"}
+        strokeWidth={accent ? 1.75 : 1.25}
       />
       <text
         x={CX}
@@ -316,7 +267,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
       </defs>
 
       {/* The two side rails, broken across the missing middle. */}
-      <g stroke="rgba(10,10,10,0.14)" strokeWidth="2" fill="none">
+      <g stroke="rgba(16,32,63,0.22)" strokeWidth="2" fill="none">
         <line x1={CX - 250} y1={Y.crown + 30} x2={CX - 250} y2={Y.gapMid - 70} />
         <line x1={CX + 250} y1={Y.crown + 30} x2={CX + 250} y2={Y.gapMid - 70} />
         <line x1={CX - 250} y1={Y.gapMid + 70} x2={CX - 250} y2={Y.ground} />
@@ -364,7 +315,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
         <text x={CX} y={Y.gapMid - 16} textAnchor="middle" fill="#656d82" style={{ fontSize: 11, letterSpacing: 2.5 }}>
           NO STAIRCASE
         </text>
-        <text x={CX} y={Y.gapMid + 30} textAnchor="middle" fill="#64748b" style={{ fontSize: 12, fontStyle: "italic" }}>
+        <text x={CX} y={Y.gapMid + 30} textAnchor="middle" fill="var(--muted-foreground)" style={{ fontSize: 12, fontStyle: "italic" }}>
           you are chosen up, not climbed up
         </text>
       </g>
@@ -393,7 +344,7 @@ function Ladder({ tier, signal, conviction }: { tier: Tier; signal: Rung[]; conv
       ))}
 
       {/* The ground. */}
-      <text x={CX} y={Y.ground + 34} textAnchor="middle" fill="#64748b" style={{ fontSize: 12, fontStyle: "italic" }}>
+      <text x={CX} y={Y.ground + 34} textAnchor="middle" fill="var(--muted-foreground)" style={{ fontSize: 12, fontStyle: "italic" }}>
         the private market will not fund this yet
       </text>
     </>
@@ -449,8 +400,8 @@ export function FundingLadder(figures: LadderFigures) {
           invisible spacers below. */}
       <div className="hidden lg:block">
         <div className="sticky top-0 h-screen">
-          <div className="wrap flex h-full items-center gap-x-12">
-            <div className="relative h-full w-1/2">
+          <div className="wrap grid h-full grid-cols-[minmax(0,26rem)_minmax(0,1fr)] items-center gap-x-12 xl:gap-x-16">
+            <div className="relative h-full">
               {STEPS.map((s, i) => (
                 <div
                   key={s.key}
@@ -464,22 +415,22 @@ export function FundingLadder(figures: LadderFigures) {
                 </div>
               ))}
             </div>
-            <div className="flex h-full w-1/2 items-center">{svg}</div>
+            <div className="flex h-[86vh] items-center">{svg}</div>
           </div>
         </div>
         {STEPS.map((s, i) => (
-          <div key={s.key} data-i={i} className="h-[135vh]" />
+          <div key={s.key} data-i={i} className="h-[105vh]" />
         ))}
       </div>
 
       {/* Mobile: ladder pinned as a banner, narrative flows beneath it. */}
       <div className="lg:hidden">
-        <div className="sticky top-0 z-20 mb-2 border-b border-[var(--border)] bg-[var(--paper)]/95 py-2 backdrop-blur">
-          <div className="h-[42vh]">{svg}</div>
+        <div className="sticky top-0 z-20 mb-2 bg-[var(--background)]/95 py-2 shadow-[0_1px_0_var(--border)] backdrop-blur">
+          <div className="h-[30vh] min-h-[13rem] max-h-[18rem]">{svg}</div>
         </div>
         <div className="wrap">
           {STEPS.map((s, i) => (
-            <div key={s.key} data-i={i} className="py-16">
+            <div key={s.key} data-i={i} className="py-12">
               {s.content(figures)}
             </div>
           ))}

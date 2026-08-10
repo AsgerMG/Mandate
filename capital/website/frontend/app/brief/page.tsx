@@ -5,9 +5,9 @@ import { corpusStats } from "@/lib/data";
 import { corpusProse } from "@/lib/corpusProse";
 
 export const metadata: Metadata = {
-  title: "Get your state-backed capital brief | Wincent",
+  title: "Get your public capital brief | Wincent",
   description:
-    "Enter your company and get a one-page brief: which comparable companies have drawn European public capital, through which instruments, and a prioritised to-do list for your own raise.",
+    "Map your company to comparable raises, screened European institutions, current policy priorities and clear next steps.",
 };
 
 // The progress panel states the size of the funding record while it works, and
@@ -41,7 +41,7 @@ export default async function BriefPage() {
       <div className="relative flex justify-center pt-4 pb-2">
         <Link
           href="/about-public-capital"
-          aria-label="Why you should care about raising public European capital"
+          aria-label="How to raise European public capital"
           className="group inline-flex items-center gap-2 text-[var(--accent)]/80 transition-opacity hover:opacity-70"
         >
           <span className="font-mono text-[11px] uppercase tracking-[0.16em]">Why this matters</span>

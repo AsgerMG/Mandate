@@ -2,21 +2,20 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { TicketChart, CountryMixChart } from "@/components/charts";
-import { Finding, Stat, Signal } from "@/components/finding";
+import { Stat, Signal } from "@/components/finding";
 import { EuroJourney, Chapter } from "@/components/euro-journey";
 import { FundingLadder, type Rung } from "@/components/funding-ladder";
-import { Reveal, CountUp } from "@/components/immersive";
+import { Reveal } from "@/components/immersive";
 import { ImageSlot } from "@/components/image-slot";
 import { fmtEur } from "@/lib/format";
-import { corpusStats } from "@/lib/data";
 import { corpusProse } from "@/lib/corpusProse";
 import { VERIFIED_AWARDS } from "@/lib/verifiedAwards";
 import insightsRaw from "@/public/data/investor_insights.json";
 
 export const metadata: Metadata = {
-  title: "Why raise public European capital | Wincent",
+  title: "Raise public capital with Europe's priorities | Wincent",
   description:
-    "The founder's manual to Europe's public capital stack: what you can raise from grants, state aid and public equity, in what order, and how to convert it into private rounds.",
+    "A practical playbook for aligning grants, state aid and public equity with European industrial priorities, then sequencing them into a private raise.",
 };
 
 interface Insights {
@@ -128,8 +127,7 @@ function R({ children, delay = 0 }: { children: ReactNode; delay?: number }) {
 // CORPUS_REVALIDATE_SECONDS by check_revalidate_literal.ts.
 export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
 
-export default async function AboutPublicCapitalPage() {
-  const corpus = await corpusStats();
+export default function AboutPublicCapitalPage() {
   // The prose figures. Every one of these was a literal until now, and three of
   // them restated a quantity this same page already rendered live a few
   // sections away — see lib/corpusProse.ts.
@@ -176,50 +174,29 @@ export default async function AboutPublicCapitalPage() {
       <div className="relative">
         <EuroJourney>
           {/* ── Masthead: why this matters ─────────────────────────── */}
-          <Chapter className="pt-16 pb-20 sm:pt-20 sm:pb-28">
-            <div className="grid items-start gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:gap-14">
-              <div>
+          <Chapter className="py-12 sm:py-16 lg:flex lg:min-h-[calc(100svh-var(--nav-h))] lg:items-center">
+            <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
+              <div className="flex flex-col justify-center lg:aspect-[3/2]">
                 <Reveal>
-                  <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">
-                    The manual · for companies and startups
-                  </p>
-                </Reveal>
-                <Reveal delay={100}>
-                  <h1 className="mt-5 max-w-4xl text-4xl font-semibold leading-[1.08] tracking-tight text-[var(--foreground)] sm:text-5xl" style={serif}>
-                    Why you should care about raising public European capital
+                  <h1 className="max-w-4xl text-4xl font-semibold leading-[1.04] tracking-tight text-[var(--foreground)] sm:text-[2.75rem] xl:text-5xl" style={serif}>
+                    Public capital follows policy. Your raise should too.
                   </h1>
                 </Reveal>
-                <div className="prose-article mt-7 max-w-3xl space-y-4 text-lg leading-relaxed text-[var(--foreground)]">
-                  <Reveal delay={180}>
-                    <p>
-                      Before any investor prices your equity, Europe&apos;s public system will hand a
-                      credible technology company hundreds of thousands of euros without taking a share,
-                      and the evidence says the award itself is worth more than the cash: an early public
-                      R&amp;D grant roughly doubles your odds of subsequent venture funding in the US data
-                      <Src n={1} /> and roughly triples your odds of private equity investment in the
-                      European data<Src n={2} />. The grant is a certification you can take to a term
-                      sheet.
-                    </p>
-                  </Reveal>
-                  <Reveal delay={240}>
-                    <p>
-                      This manual is built on the funding record itself:{" "}
-                      <CountUp value={Number(corpus.events)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
-                      public awards to{" "}
-                      <CountUp value={Number(corpus.companies)} className="tabular-nums font-semibold text-[var(--foreground)]" />{" "}
-                      companies and organisations, {prose.awardWindow}. It answers four questions in order: what
-                      you can get, which door is yours, what the data proves about how winners behave, and
-                      in what sequence to raise.
-                    </p>
-                  </Reveal>
-                </div>
+                <Reveal className="mt-8" delay={180}>
+                  <p className="max-w-3xl text-[17px] leading-relaxed text-[var(--foreground)]">
+                    Country, sector and stage decide your first door. Political and industrial
+                    priorities shape the case you make once you get there. Use the award record to
+                    sequence grants, loans and public equity around the outcomes Europe is funding.
+                  </p>
+                </Reveal>
               </div>
 
-              {/* Artwork slot, in the reference's flat editorial frame. */}
               <Reveal delay={200}>
                 <ImageSlot
                   className="hidden lg:flex"
-                  label="European Parliament hemicycle, Strasbourg"
+                  imageClassName="lg:scale-[1.18]"
+                  src="/images/editorial/eib-luxembourg.png"
+                  alt="Architectural line drawing of the European Investment Bank headquarters in Luxembourg"
                 />
               </Reveal>
             </div>
@@ -237,72 +214,35 @@ export default async function AboutPublicCapitalPage() {
           />
 
           {/* ── 1. The menu (the ladder, measured precisely) ───────── */}
-          <Chapter className="py-20 sm:py-28">
+          <Chapter className="py-16 sm:py-20">
             <ChapterHead
-              kicker="1 · What is actually on the menu"
-              title="The same two floors, measured to the euro."
-              caption="Median award per channel, on each channel's own reporting basis."
+              kicker="1 · The menu, measured"
+              title="Median ticket by channel."
+              caption="Log scale. Hover for the top decile."
             />
-            <R>
-              <Finding n={1}>
-                Europe&apos;s public stack has two floors and no staircase in between: a signal floor of{" "}
-                {fmtEur(satr?.medianTicket)} to {fmtEur(eic?.medianTicket)} awards that certify you, and
-                a conviction floor of {fmtEur(inf?.medianTicket)} to {fmtEur(ipcei?.medianTicket)}{" "}
-                anchors that finance industrial scale-up. Plan to use the first as proof and the second
-                as a round.
-              </Finding>
-            </R>
-
             <R delay={120}>
-              <div className="mt-6 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5">
-                <p className="mb-1 text-sm font-semibold">Median award size by channel (log scale)</p>
-                <p className="mb-3 text-xs text-[var(--muted-foreground)]">
-                  Hover for the top decile: the realistic best case per channel.
-                </p>
+              <div className="border-t border-[var(--primary)] pt-5">
                 <TicketChart rows={concentration} />
               </div>
             </R>
 
             <R delay={120}>
-              <div className="prose-article mt-6 max-w-3xl space-y-4 leading-relaxed text-[var(--foreground)]">
-                <p>
-                  Read the chart as a fundraising product catalogue. Development bank programmes
-                  (median {fmtEur(ndb?.medianTicket)}) and national state aid ({fmtEur(satr?.medianTicket)}) are
-                  volume products: fast-ish, local, repeatable. EIC and Horizon grants
-                  ({fmtEur(eic?.medianTicket)} and {fmtEur(horizon?.medianTicket)}) are selective: low odds, but the
-                  certification effect in the academic evidence attaches to exactly these
-                  <Src n={2} />. The conviction tier (Innovation Fund {fmtEur(inf?.medianTicket)},
-                  IPCEI {fmtEur(ipcei?.medianTicket)}) is not an application you fire off; it is a
-                  multi-year positioning project that behaves like a state-underwritten growth round
-                  when it lands. Stegra carried {VERIFIED_AWARDS.stegraInnovationFund}{" "}
-                  from the Innovation Fund into its green-steel buildout; Porsche&apos;s Cellforce
-                  drew{" "}
-                  {VERIFIED_AWARDS.cellforceBatteryAid} of granted battery aid; Multiverse
-                  Computing stacked {VERIFIED_AWARDS.multiverseChannels} channels before its
-                  2025 mega-round.
-                </p>
-              </div>
+              <p className="mt-5 max-w-3xl leading-relaxed text-[var(--foreground)]">
+                Multiverse Computing stacked {VERIFIED_AWARDS.multiverseChannels} public channels
+                before its 2025 mega-round.
+              </p>
             </R>
           </Chapter>
 
           {/* ── 2. Which door ──────────────────────────────────────── */}
-          <Chapter className="py-20 sm:py-28">
+          <Chapter className="py-16 sm:py-20">
             <ChapterHead
               kicker="2 · Which door is yours"
               title="Your address decides your funnel."
-              caption={`${prose.nationalAwardPct}% of all awards are national, and every country routes them differently.`}
+              caption="France routes through Bpifrance and ADEME; Germany and Italy through state aid; the UK through Innovate UK."
             />
-            <R>
-              <Finding n={2}>
-                Your address decides your funnel. France funds through development banks (Bpifrance,
-                ADEME), Germany and Italy through state-aid schemes, the UK through one agency
-                (Innovate UK). Apply to the machine your country actually runs, not the one you read
-                about.
-              </Finding>
-            </R>
-
             <R delay={120}>
-              <div className="mt-6 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5">
+              <div className="border-t border-[var(--primary)] pt-5">
                 <p className="mb-1 text-sm font-semibold">How each country&apos;s awards split across the three public layers</p>
                 <p className="mb-3 text-xs text-[var(--muted-foreground)]">
                   Top {prose.countryMixRows} countries by award count, shares of awards.
@@ -312,80 +252,36 @@ export default async function AboutPublicCapitalPage() {
             </R>
 
             <R delay={120}>
-              <div className="prose-article mt-6 max-w-3xl space-y-4 leading-relaxed text-[var(--foreground)]">
-                <p>
-                  Two practical consequences. First, your national door is usually the fastest first
-                  award, and a first award is what starts the compounding clock (next section). Second,
-                  structure matters: public money lands on legal entities, not brands. Poland&apos;s
-                  IPCEI cloud grants went to operating subsidiaries rather than the listed parents; if
-                  you run group structures, put the receiving entity where the machine pays and keep
-                  its records clean, because investors will look the entity up.
-                </p>
-              </div>
+              <p className="mt-5 max-w-3xl leading-relaxed text-[var(--foreground)]">
+                Public money lands on legal entities, not brands. Put the receiving entity where the
+                institution pays and keep its records diligence-ready.
+              </p>
             </R>
           </Chapter>
 
           {/* ── 3. The rules ───────────────────────────────────────── */}
-          <Chapter className="py-20 sm:py-28">
+          <Chapter className="py-16 sm:py-20">
             <ChapterHead
-              kicker="3 · Four rules the data proves"
+              kicker="3 · Two rules from the record"
               title="The first award is the hardest you will win."
-              caption="From the award record, not from a brochure."
+              caption="Wins compound. Timelines do not compress."
             />
-            <R>
-              <Finding n={3}>
-                The first award is the hardest thing you will ever win from the public system. After it,
-                the odds compound: {stats.momentum.p2}% chance of a second, {stats.momentum.p3given2}%
-                of a third given two, {stats.momentum.p10given9}% of a tenth given nine. Start small,
-                start now, and treat every win as the application fee for the next one.
-              </Finding>
-            </R>
-
             <R delay={120}>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-2">
                 <Stat
                   value={`${stats.momentum.p2}%`}
-                  label="Chance of a second award once you have one. The system remembers winners."
+                  label="Chance of a second award after the first."
                 />
                 <Stat
                   value={`${stats.eicAvgDaysToStart} days`}
-                  label="Average gap from EIC call deadline to project start. Public money is slow money: never put a grant in your runway plan for the next two quarters."
+                  label="Average gap from EIC deadline to project start. Do not put it in next quarter's runway."
                 />
-                <Stat
-                  value={`${stats.conviction.pct}%`}
-                  label="Share of conviction-tier (IPCEI / Innovation Fund) companies that climbed up from smaller grants. The top floor selects for strategic relevance, not grant pedigree: position in a declared value chain."
-                />
-                {/* corpus: the cohort window is not editorial. It is fixed in
-                    website/build/investor_insights.py, which selects EIC awards
-                    with CAST(event_year AS INT) <= 2022 so the cohort has had
-                    time to win again. The percentage beside it is derived; the
-                    years describe the query that produced it. */}
-                <Stat
-                  value={`${stats.eicCohort.pct}%`}
-                  label="Share of 2021 to 2022 EIC winners that later won from another channel. Labels and wins compound across channels, not just within them."
-                />
-              </div>
-            </R>
-
-            <R delay={120}>
-              <div className="prose-article mt-6 max-w-3xl space-y-4 leading-relaxed text-[var(--foreground)]">
-                <p>
-                  Rule three deserves emphasis because it contradicts the folklore. Only{" "}
-                  {prose.convictionClimbPct}% of the companies in Europe&apos;s biggest instruments
-                  arrived via the grant escalator; the
-                  rest were selected because they sit in a value chain the EU has declared strategic:
-                  batteries, hydrogen, semiconductors, cloud, defence, medical supply. If that is you,
-                  say so in every application, collect the labels that prove it (STEP seal, Seal of
-                  Excellence, IPCEI participation), and aim
-                  directly at the conviction tier. If it is not you, do not pretend: the signal floor
-                  still doubles your private-round odds<Src n={1} />.
-                </p>
               </div>
             </R>
           </Chapter>
 
           {/* ── 4. The sequence ────────────────────────────────────── */}
-          <Chapter className="py-20 sm:py-28">
+          <Chapter className="py-16 sm:py-20">
             <ChapterHead
               kicker="4 · The raise, sequenced"
               title="How the public and private rails interleave."
@@ -405,51 +301,30 @@ export default async function AboutPublicCapitalPage() {
                       <td className="block sm:table-cell px-4 pt-4 pb-0 sm:py-3 font-semibold sm:w-44">Pre-seed</td>
                       <td className="block sm:table-cell px-4 pt-2 pb-4 sm:py-3 leading-relaxed">
                         Take the national door first: a development bank or regional programme award
-                        (typical {fmtEur(ndb?.medianTicket)} to {fmtEur(satr?.medianTicket)}) starts the compounding
-                        clock cheaply and proves you can execute public paperwork. Apply for an EIC or
-                        national R&amp;D grant in parallel; a high score without funding can still earn
-                        a Seal of Excellence, which several countries pay out directly.
+                        (typical {fmtEur(ndb?.medianTicket)} to {fmtEur(satr?.medianTicket)}). Run an
+                        EIC or national R&amp;D application in parallel.
                       </td>
                     </tr>
                     <tr className="block sm:table-row">
                       <td className="block sm:table-cell px-4 pt-4 pb-0 sm:py-3 font-semibold sm:w-44">Seed to Series A</td>
                       <td className="block sm:table-cell px-4 pt-2 pb-4 sm:py-3 leading-relaxed">
-                        Convert certification into price. Put the award front and centre in the deck and
-                        the data room: the evidence that it roughly triples private investment odds
-                        <Src n={2} /> is your negotiating context. Stack a second channel (the{" "}
-                        {stats.eicCohort.pct}% rule); two independent juries beat one.
+                        Put the award front and centre in the deck and data room. Add a second channel;
+                        two independent juries strengthen the signal<Src n={2} />.
                       </td>
                     </tr>
                     <tr className="block sm:table-row">
                       <td className="block sm:table-cell px-4 pt-4 pb-0 sm:py-3 font-semibold sm:w-44">Series A to B</td>
                       <td className="block sm:table-cell px-4 pt-2 pb-4 sm:py-3 leading-relaxed">
-                        Decide whether you are a strategic-value-chain company. If yes, begin the
-                        conviction-tier campaign now: IPCEI and Innovation Fund processes run in years,
-                        involve your member state, and reward early presence in the consortium
-                        conversations. If the EIC Fund or a national VC arm offers equity, negotiate
-                        disclosure and exit-consent terms before signing; the default regime is opacity,
-                        and some registers (Estonia, Finland) will publish your cap table.
+                        If you sit in a strategic value chain, start the IPCEI or Innovation Fund
+                        campaign early. Negotiate disclosure and exit-consent terms before taking
+                        public equity.
                       </td>
                     </tr>
                     <tr className="block sm:table-row">
                       <td className="block sm:table-cell px-4 pt-4 pb-0 sm:py-3 font-semibold sm:w-44">Growth</td>
                       <td className="block sm:table-cell px-4 pt-2 pb-4 sm:py-3 leading-relaxed">
-                        Blend the balance sheet: EIB venture debt and the TechEU envelope (EUR 70bn to
-                        2027<Src n={5} />) price against your public track record. A conviction award
-                        reads as state-anchored financing to every lender. Keep grant income below the
-                        line that makes it a dependency; investors discount cleantech plans that assume
-                        the next grant arrives (the aid framework is moving that money downstream to
-                        industrial capex<Src n={4} />).
-                      </td>
-                    </tr>
-                    <tr className="block sm:table-row">
-                      <td className="block sm:table-cell px-4 pt-4 pb-0 sm:py-3 font-semibold sm:w-44">Exit planning</td>
-                      <td className="block sm:table-cell px-4 pt-2 pb-4 sm:py-3 leading-relaxed">
-                        Audit your own strings early: IPCEI obligations, state-aid clawback clauses and
-                        public shareholders all surface in due diligence, and Europe&apos;s exit pipe is
-                        structurally narrow (IPOs are ~5% of EU divestment value versus ~30% in the US
-                        <Src n={6} />). Keep transatlantic optionality, and know that a strategic label
-                        that helped you raise may constrain who is allowed to buy you.
+                        Blend EIB venture debt and TechEU with your public track record<Src n={5} />.
+                        Keep grant income below the point where the plan depends on the next award.
                       </td>
                     </tr>
                   </tbody>
@@ -459,13 +334,13 @@ export default async function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── 5. What's coming ───────────────────────────────────── */}
-          <Chapter className="py-20 sm:py-28">
+          <Chapter className="py-16 sm:py-20">
             {/* external: the window is the EU's next multiannual financial
                 framework, 2028-2034, read from today. Source [3] below. It is a
                 fact about the EU budget cycle, not about this corpus. */}
             <ChapterHead
-              kicker="5 · What is coming for you, 2026 to 2034"
-              title="The same policy shifts investors track, read as openings and traps."
+              kicker="5 · Policy shifts, 2026 to 2034"
+              title="Four moves to position for now."
             />
             <div className="grid gap-6 md:grid-cols-2">
               <R>
@@ -474,11 +349,8 @@ export default async function AboutPublicCapitalPage() {
                   implication="If any part of your stack is dual-use, build the defence funding track record now, while the EDF is still small and uncrowded."
                 >
                   <p>
-                    EU defence funding multiplies fivefold from 2028<Src n={3} /> and the new
-                    instruments will need fundable companies on day one. Today&apos;s EDF writes only
-                    about EUR 1bn a year, which means today&apos;s applicants face the thinnest
-                    competition the sector will ever see. A defence-adjacent award now is the cheapest
-                    option on the supercycle.
+                    The proposed EU budget increases defence, security and space funding fivefold
+                    from 2028<Src n={3} />.
                   </p>
                 </Signal>
               </R>
@@ -488,11 +360,8 @@ export default async function AboutPublicCapitalPage() {
                   implication="If you are a venture-stage cleantech company, stop budgeting future R&D grants and start selling to the buildout instead."
                 >
                   <p>
-                    The Clean Industrial Deal redirects support from R&amp;D grants toward a EUR 100bn
-                    decarbonisation bank serving industrial capex<Src n={4} />. Our data already shows
-                    the euros consolidating in gigafactories and hydrogen infrastructure. The winning
-                    position for a small company is supplier to that buildout, not contender for its
-                    subsidies.
+                    The Clean Industrial Deal shifts support from R&amp;D toward industrial
+                    decarbonisation and capex<Src n={4} />.
                   </p>
                 </Signal>
               </R>
@@ -502,10 +371,8 @@ export default async function AboutPublicCapitalPage() {
                   implication="Collect strategic labels now; they are the entry tickets to the EUR 409bn consolidated fund."
                 >
                   <p>
-                    Fourteen instruments merge into the European Competitiveness Fund from 2028
-                    <Src n={3} />. Consolidation favours companies already inside the system, and
-                    selection anchors on strategic-autonomy labels. A STEP seal or IPCEI association
-                    earned in 2026 compounds for a decade.
+                    Fourteen instruments are proposed to merge into the European Competitiveness Fund
+                    from 2028<Src n={3} />.
                   </p>
                 </Signal>
               </R>
@@ -515,12 +382,8 @@ export default async function AboutPublicCapitalPage() {
                   implication="Treat public equity as a term sheet like any other: negotiate information rights, board terms and exit consent before the money lands."
                 >
                   <p>
-                    TechEU<Src n={5} />, the EIC Fund and national VC arms are scaling direct equity.
-                    Public money on the cap table can anchor a round, but the UK Future Fund&apos;s
-                    record ({prose.futureFundDeadPct}% of its unselective portfolio insolvent as of{" "}
-                    {prose.futureFundAsOf}) shows public
-                    co-investment is not validation unless the institution selects. Choose public
-                    co-investors the way you choose VCs: by what their portfolio says about them.
+                    TechEU<Src n={5} />, the EIC Fund and national VC arms are expanding direct
+                    equity.
                   </p>
                 </Signal>
               </R>
@@ -528,40 +391,41 @@ export default async function AboutPublicCapitalPage() {
           </Chapter>
 
           {/* ── Honest reading + sources ───────────────────────────── */}
-          <Chapter className="py-20 sm:py-28">
-            <ChapterHead kicker="How to read this honestly" title="Limits, then sources." />
+          <Chapter className="py-10 sm:py-14">
             <R>
-              <div className="prose-article max-w-3xl space-y-4 text-sm leading-relaxed text-[var(--foreground)]">
-                <p>
-                  The causal claims (doubling, tripling) come from the cited peer-reviewed studies of
-                  specific programmes, not from this corpus; our record shows selection and persistence,
-                  which is what you can use for positioning, not a guarantee of outcomes. Award odds,
-                  timelines and ticket sizes vary by call and country; medians here are corpus-wide.
-                  Coverage is graded per country on the <Link href="/" className="text-[var(--accent)] underline">home page</Link>.
-                </p>
-              </div>
-            </R>
-            <R delay={100}>
-              <ol className="mt-6 space-y-2 text-xs leading-relaxed text-[var(--muted-foreground)]">
-                {SOURCES.map((s) => (
-                  <li key={s.id} id={`src-${s.id}`} className="flex gap-2">
-                    <span className="font-semibold text-[var(--accent)]">[{s.id}]</span>
-                    <a href={s.url} className="underline hover:text-[var(--foreground)]" target="_blank" rel="noopener noreferrer">
-                      {s.label}
-                    </a>
-                  </li>
-                ))}
-              </ol>
+              <details className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70">
+                <summary className="cursor-pointer px-5 py-4 font-medium text-[var(--foreground)]">
+                  Sources and methodology
+                </summary>
+                <div className="border-t border-[var(--border)] px-5 py-5">
+                  <p className="max-w-3xl text-sm leading-relaxed text-[var(--foreground)]">
+                    Causal claims come from the cited studies, not this award record. Odds, timelines
+                    and tickets vary by call and country; figures shown here are corpus-wide.
+                    Coverage is graded on the{" "}
+                    <Link href="/" className="text-[var(--accent)] underline">home page</Link>.
+                  </p>
+                  <ol className="mt-5 space-y-2 text-xs leading-relaxed text-[var(--muted-foreground)]">
+                    {SOURCES.map((s) => (
+                      <li key={s.id} id={`src-${s.id}`} className="flex gap-2">
+                        <span className="font-semibold text-[var(--accent)]">[{s.id}]</span>
+                        <a href={s.url} className="underline hover:text-[var(--foreground)]" target="_blank" rel="noopener noreferrer">
+                          {s.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              </details>
             </R>
           </Chapter>
 
           {/* ── Get your brief ─────────────────────────────────────── */}
-          <Chapter className="py-20 sm:py-28">
-            <ChapterHead kicker="Put this to work" title="See where you stand." />
+          <Chapter className="py-16 sm:py-20">
+            <ChapterHead kicker="Put this to work" title="Fit your raise to today&apos;s priorities." />
             <R>
               <p className="max-w-2xl text-lg leading-relaxed text-[var(--foreground)]">
-                Enter your company and get a one-page brief: comparable companies that have drawn
-                public capital, the institutions to target, and what to do next.
+                Enter your company. Get comparable raises, screened institutions and next steps
+                shaped by your country, sector and the priorities public investors are funding now.
               </p>
             </R>
             <R delay={120}>
@@ -569,7 +433,7 @@ export default async function AboutPublicCapitalPage() {
                 href="/brief"
                 className="mt-6 inline-block rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
               >
-                Get your investment brief
+                Get your brief
               </Link>
             </R>
           </Chapter>

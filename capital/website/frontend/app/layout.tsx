@@ -33,7 +33,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const { companies } = await corpusStats();
   return {
     title: "Wincent",
-    description: `Wincent is an analyst of Europe's state-backed capital — grants, guarantees, loans, and equity — deployed by EU institutions, national development banks, and member states. A data study of ${companies.toLocaleString()} companies across the major public funding instruments and the EU State Aid Transparency Register.`,
+    description: `Wincent helps European companies map a public-capital raise to comparable awards, screened institutions and the priorities shaping grants, loans and public equity. Built on the funding record of ${companies.toLocaleString()} companies.`,
   };
 }
 
@@ -50,13 +50,13 @@ export default async function RootLayout({
       className={`h-full scroll-smooth ${poppins.variable} ${newsreader.variable} ${fragmentMono.variable}`}
     >
       <body className="min-h-full flex flex-col">
-        <NavBar countries={stats.countries} />
+        <NavBar />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-[var(--border)] bg-[var(--background)] py-10">
           <div className="wrap">
             <p className="font-serif text-lg font-semibold text-[var(--foreground)]">Wincent</p>
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-              {companyCount} companies · grants · guarantees · loans · equity · EU institutions · national development banks · state aid register
+            <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+              {companyCount} companies in the European public-capital record
             </p>
             {/* The dateline. Every figure on the site describes a corpus as it
                 stood on one day, and until now the site never said which day —
@@ -65,7 +65,7 @@ export default async function RootLayout({
                 the numbers came from the live census or from the committed
                 fallback, because the honest thing to publish is the date the
                 corpus was READ, not which pipe carried it. */}
-            <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]/70">
+            <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]/80">
               {corpusAsOf(stats.provenance)}
             </p>
           </div>

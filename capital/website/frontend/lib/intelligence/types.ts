@@ -423,9 +423,9 @@ export interface IntelligenceReport {
  * ended mid-thought in a sales line (contract rule SOP-2).
  */
 export const STATE_OF_PLAY_OFFER =
-  "Wincent reads these signals continuously, anticipates where the money and " +
-  "the priorities move next, and opens the right doors. Partner with us to " +
-  "play the political momentum to your advantage.";
+  "Wincent maps your raise to the EU, national and regional priorities shaping " +
+  "public capital, then turns that direction into a funding case sequenced around " +
+  "your next milestones.";
 
 /**
  * The report fields the WRITER produces, and therefore the fields a brief

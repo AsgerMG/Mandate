@@ -123,12 +123,12 @@ export function MultiChips({
           <button key={o.value} type="button" aria-pressed={on}
             onClick={() => onToggle(o.value)}
             className={
-              "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+              "min-h-10 rounded-[var(--radius)] border px-3 py-2 text-sm font-medium transition-colors " +
               (on
                 ? isExclusive
-                  ? "border-[#3d6136] bg-[#3d6136]/15 text-[var(--foreground)]"
-                  : "border-[var(--accent)] bg-[var(--accent)]/15 text-[var(--foreground)]"
-                : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[var(--primary)]")
+                  ? "border-[var(--accent)] bg-[var(--accent)] text-[var(--paper)]"
+                  : "border-[var(--primary)] bg-[var(--primary)] text-[var(--paper)]"
+                : "border-[var(--border)] bg-transparent text-[var(--foreground)] hover:border-[var(--primary)]")
             }>
             {o.label}
           </button>
@@ -145,7 +145,7 @@ export function InfoDot({ children }: { children: React.ReactNode }) {
       <button
         type="button"
         aria-label="More information"
-        className="flex h-4 w-4 items-center justify-center rounded-full border border-[var(--primary)] text-[10px] font-bold leading-none text-[var(--primary)] outline-none transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)] focus-visible:bg-[var(--primary)] focus-visible:text-[var(--paper)]"
+        className="flex h-5 w-5 items-center justify-center rounded-full border border-[var(--primary)] text-[11px] font-bold leading-none text-[var(--primary)] outline-none transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)] focus-visible:bg-[var(--primary)] focus-visible:text-[var(--paper)]"
       >
         i
       </button>

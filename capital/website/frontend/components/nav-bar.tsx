@@ -8,11 +8,11 @@ import { usePathname } from "next/navigation";
 // (/about-public-capital) as a plain text link, and the interactive tool
 // (/brief) as the CTA pill (Legora pattern). Mobile keeps both as a flat list.
 const PRIMARY_LINKS = [
-  { href: "/about-public-capital", label: "Why public capital" },
+  { href: "/about-public-capital", label: "How to raise" },
 ];
 
 const MOBILE_LINKS = [
-  { href: "/about-public-capital", label: "Why public capital" },
+  { href: "/about-public-capital", label: "How to raise" },
   { href: "/brief", label: "Get your brief" },
 ];
 
@@ -26,7 +26,7 @@ const MOBILE_LINKS = [
  *  hands the number down, which also keeps the masthead and the footer showing
  *  the same corpus — they are now two consumers of one value rather than two
  *  readers of one file. */
-export function NavBar({ countries }: { countries: number }) {
+export function NavBar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   // A link is active when the current path is, or sits beneath, its href.
@@ -38,7 +38,7 @@ export function NavBar({ countries }: { countries: number }) {
     // A sticky masthead is what buried the euro rail and the pinned scrolly
     // stages underneath it; letting it scroll removes that whole class of
     // overlap and gives the pinned graphics the full viewport back.
-    <nav className="border-b-[3px] border-double border-[var(--primary)] bg-[var(--paper)]">
+    <nav className="border-b border-[var(--primary)] bg-[var(--paper)]">
       <div className="wrap flex items-center justify-between h-[4.5rem]">
         <Link
           href="/"
@@ -75,7 +75,7 @@ export function NavBar({ countries }: { countries: number }) {
           {/* The product CTA: outlined, fills on hover — no rounded pill. */}
           <Link
             href="/brief"
-            className="rounded-[var(--radius)] border border-[var(--primary)] px-4 py-2 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
+            className="rounded-[var(--radius)] border border-[var(--primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
           >
             Get your brief
           </Link>
@@ -97,20 +97,6 @@ export function NavBar({ countries }: { countries: number }) {
             </svg>
           )}
         </button>
-      </div>
-
-      {/* Meta row: scope on the left, register on the right — divided from
-          the brand row by a quiet khaki hairline, matching the reference. */}
-      <div className="border-t border-[var(--border)]">
-        {/* Fixed 2rem height, not padding-derived, so --nav-h stays exact. */}
-        <div className="wrap flex h-8 items-center justify-between">
-          <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-            Europe · {countries}-country edition
-          </span>
-          <span className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)] sm:inline">
-            State-backed capital intelligence
-          </span>
-        </div>
       </div>
 
       {/* Mobile dropdown */}

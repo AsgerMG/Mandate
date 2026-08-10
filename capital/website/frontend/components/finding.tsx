@@ -18,11 +18,11 @@ export function Finding({ n, children }: { n: number; children: ReactNode }) {
 /** Big-number stat with a one-line label, used in rows of three. */
 export function Stat({ value, label }: { value: string; label: string }) {
   return (
-    <div className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-5">
+    <div className="border-t-2 border-[var(--primary)] py-5">
       <p className="text-3xl font-bold tabular-nums text-[var(--foreground)]" style={serif}>
         {value}
       </p>
-      <p className="mt-1 text-xs leading-relaxed text-[var(--foreground-soft)]">{label}</p>
+      <p className="mt-2 text-sm leading-relaxed text-[var(--foreground-soft)]">{label}</p>
     </div>
   );
 }
@@ -38,14 +38,14 @@ export function Signal({
   children: ReactNode;
 }) {
   return (
-    <div className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 p-6">
-      <h3 className="text-base font-semibold text-[var(--foreground)]" style={serif}>
+    <div className="border-t border-[var(--primary)] py-5">
+      <h3 className="text-lg font-semibold leading-snug text-[var(--foreground)]" style={serif}>
         {title}
       </h3>
-      <div className="prose-article mt-2 space-y-2 text-sm leading-relaxed text-[var(--foreground-soft)]">
+      <div className="mt-2 space-y-2 text-[15px] leading-relaxed text-[var(--foreground-soft)]">
         {children}
       </div>
-      <p className="mt-3 border-t border-dashed border-[var(--border)] pt-3 text-sm font-semibold text-[var(--accent)]">
+      <p className="mt-4 text-[15px] font-semibold leading-relaxed text-[var(--accent)]">
         {implication}
       </p>
     </div>

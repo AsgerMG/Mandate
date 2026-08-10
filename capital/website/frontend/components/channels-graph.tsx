@@ -3,8 +3,8 @@
 // The channels graph is the anchor of the home trip. It stays pinned while the
 // narrative scrolls; the camera (an animated SVG viewBox) zooms and pans onto
 // each public channel in turn, and the focused channel unfolds into its real
-// programmes. Overview -> State aid -> Development banks -> (out) -> European
-// funds -> (out) -> converge on the public anchor.
+// programmes. Four beats: overview -> national rails -> European funds ->
+// converge on the public anchor.
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 
@@ -89,55 +89,15 @@ function buildSteps({ nationalAwardPct }: ChannelsGraphProps): Step[] {
     channel: "aid",
     content: (
       <div>
-        {kicker("The national road · rail one")}
-        {head("State aid: a government writing a cheque.")}
+        {kicker("The national road")}
+        {head("State aid and development banks.")}
         <P>
-          &ldquo;State aid&rdquo; sounds technical, but it just means a national government giving
-          money straight to a company. EU rules cap how much a country may give and force it to{" "}
-          {b("publish every award")} in a public register, which is exactly how we can see it.
+          State aid is a government giving money directly to a company. Development banks lend,
+          grant or invest under a national plan. Together they are the largest route we traced.
         </P>
         <P>
-          It is the single largest channel of the lot. Most of it funds{" "}
-          {b("research and innovation")}, {b("clean energy and net-zero")}, and big{" "}
-          {b("strategic (IPCEI) projects")}. Germany, Italy and Spain move most of their money this
-          way.
-        </P>
-      </div>
-    ),
-  },
-  {
-    key: "bank",
-    cam: "bank",
-    channel: "bank",
-    content: (
-      <div>
-        {kicker("The national road · rail two")}
-        {head("Development banks: the state as a lender.")}
-        <P>
-          A development bank is a government-owned bank whose job is to back companies the private
-          market finds too risky. It lends, gives grants, and sometimes takes a stake, all under a
-          national plan.
-        </P>
-        <P>
-          Every large economy runs one: {b("KfW")} (with the startup investor HTGF) in Germany,{" "}
-          {b("Bpifrance")} in France, {b("ICO and CDTI")} in Spain, {b("CDP")} in Italy. Which door
-          you can knock on depends simply on where your company is registered.
-        </P>
-      </div>
-    ),
-  },
-  {
-    key: "out1",
-    cam: "overview",
-    channel: null,
-    content: (
-      <div>
-        {kicker("Step back")}
-        {head("That is only one of the two roads.")}
-        <P>
-          Roughly {nationalAwardPct}% of the awards we traced stay national, on those two rails. But
-          the other road, the money pooled at EU level, funds the largest and most strategic bets on
-          the whole continent. Follow it to Brussels.
+          Which institution matters depends on where you are registered. Germany has {b("KfW")},
+          France {b("Bpifrance")}, Spain {b("ICO and CDTI")}, and Italy {b("CDP")}.
         </P>
       </div>
     ),
@@ -151,14 +111,13 @@ function buildSteps({ nationalAwardPct }: ChannelsGraphProps): Step[] {
         {kicker("The European road")}
         {head("European funds: money pooled in Brussels.")}
         <P>
-          These are the pots the EU manages centrally, on behalf of every member state, spent
-          through big, centrally managed instruments:
+          Roughly {nationalAwardPct}% of traced awards stay national. The rest is pooled at EU level
+          for larger, more strategic bets.
         </P>
         <P>
-          {b("Horizon Europe")}, the research engine, in three pillars. The {b("EIC")}, which writes
-          grant-plus-equity cheques to single deep-tech startups. The {b("Innovation Fund")}, which
-          bankrolls first-of-a-kind green factories from carbon-market revenue. And {b("IPCEI")},
-          where countries jointly back strategic industries like batteries and chips.
+          {b("Horizon Europe")} funds research. The {b("EIC")} backs deep-tech startups. The{" "}
+          {b("Innovation Fund")} finances first-of-a-kind green industry. {b("IPCEI")} coordinates
+          national backing for strategic value chains.
         </P>
       </div>
     ),
@@ -172,14 +131,9 @@ function buildSteps({ nationalAwardPct }: ChannelsGraphProps): Step[] {
         {kicker("The hand-off")}
         {head("Why the state goes first.")}
         <P>
-          Whichever road it travels, the public euro is built to do one job: go in{" "}
-          {b("first")}, when a company is still too risky for private investors to touch. That early
-          public backing is the {b("anchor")}. It lowers the risk and signals confidence.
-        </P>
-        <P>
-          The idea is that {b("private capital")}, venture funds and banks, then follows in behind
-          with far bigger cheques. That is the design. The rest of this study asks whether the money
-          actually follows it.
+          Public capital goes in {b("first")}, lowering risk before private investors follow.
+          Wincent maps that path for your company: comparable raises, institutions to screen and
+          the priorities shaping each route.
         </P>
       </div>
     ),
@@ -215,8 +169,8 @@ function Node({
         height={h}
         rx={2}
         fill="url(#nodeFill)"
-        stroke={accent ? ACCENT : "rgba(10,10,10,0.22)"}
-        strokeWidth={accent ? 1.5 : 1}
+        stroke={accent ? ACCENT : "rgba(16,32,63,0.34)"}
+        strokeWidth={accent ? 1.75 : 1.25}
       />
       <text
         x={x + w / 2}
@@ -314,7 +268,7 @@ function Graph({ channel }: { channel: Channel }) {
         height={180}
         rx={2}
         fill="rgba(16,32,63,0.025)"
-        stroke="rgba(10,10,10,0.12)"
+        stroke="rgba(16,32,63,0.18)"
         style={{ opacity: off, transition: "opacity 0.5s ease" }}
       />
       <text x={590} y={176} textAnchor="middle" fill="#656d82" style={{ fontSize: 10.5, letterSpacing: 2.5, opacity: off }}>
@@ -428,8 +382,8 @@ export function ChannelsGraph(props: ChannelsGraphProps) {
           then the text crossfades in place — never drifting or blanking. ── */}
       <div className="hidden lg:block">
         <div className="sticky top-0 h-screen">
-          <div className="wrap flex h-full items-center gap-x-12">
-            <div className="relative h-full w-1/2">
+          <div className="wrap grid h-full grid-cols-[minmax(0,26rem)_minmax(0,1fr)] items-center gap-x-12 xl:gap-x-16">
+            <div className="relative h-full">
               {STEPS.map((s, i) => (
                 <div
                   key={s.key}
@@ -443,22 +397,22 @@ export function ChannelsGraph(props: ChannelsGraphProps) {
                 </div>
               ))}
             </div>
-            <div className="flex h-full w-1/2 items-center">{svg}</div>
+            <div className="flex h-[82vh] items-center">{svg}</div>
           </div>
         </div>
         {STEPS.map((s, i) => (
-          <div key={s.key} data-i={i} className="h-[135vh]" />
+          <div key={s.key} data-i={i} className="h-[105vh]" />
         ))}
       </div>
 
       {/* ── Mobile: graph pinned as a banner, narrative flows beneath it. ── */}
       <div className="lg:hidden">
-        <div className="sticky top-0 z-20 mb-2 border-b border-[var(--border)] bg-[var(--paper)]/95 py-2 backdrop-blur">
-          <div className="h-[40vh]">{svg}</div>
+        <div className="sticky top-0 z-20 mb-2 bg-[var(--background)]/95 py-2 shadow-[0_1px_0_var(--border)] backdrop-blur">
+          <div className="h-[30vh] min-h-[13rem] max-h-[18rem]">{svg}</div>
         </div>
         <div className="wrap">
           {STEPS.map((s, i) => (
-            <div key={s.key} data-i={i} className="py-16">
+            <div key={s.key} data-i={i} className="py-12">
               {s.content}
             </div>
           ))}

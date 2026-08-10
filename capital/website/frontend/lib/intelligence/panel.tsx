@@ -33,7 +33,6 @@ import { InstitutionsTable, Memo, StepHeader } from "./panelReport";
 /** Who the handover on screen 2 comes from. One string, because "who is
  *  speaking to the founder" is a product decision that should not be hunted
  *  through JSX to change. */
-const ANALYST_SIGNOFF = "Wincent";
 
 /** The only moving thing on screen while the shortlist and the tailored
  *  questions are built. A changed button label alone reads as a dead control
@@ -68,10 +67,10 @@ export function Chips({
             aria-pressed={on}
             onClick={() => onPick(on && allowUnset ? undefined : o.value)}
             className={
-              "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors " +
+              "min-h-10 rounded-[var(--radius)] border px-3 py-2 text-sm font-medium transition-colors " +
               (on
-                ? "border-[var(--primary)] bg-[var(--primary)]/20 text-[var(--foreground)]"
-                : "border-[var(--border)] bg-[var(--paper)]/70 text-[var(--foreground)] hover:border-[var(--primary)]")
+                ? "border-[var(--primary)] bg-[var(--primary)] text-[var(--paper)]"
+                : "border-[var(--border)] bg-transparent text-[var(--foreground)] hover:border-[var(--primary)]")
             }
           >
             {o.label}
@@ -545,11 +544,8 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
 
   const activeIndex = step ? STEPS.findIndex((s) => s.key === step) : -1;
 
-  const screenIdx = screen === "adaptive" ? 1 + roundCount : 0;
-  const totalScreens = 1 + MAX_ROUNDS;
-
   const inputCls =
-    "w-full rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 px-3 py-2 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]";
+    "w-full min-h-11 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] px-4 py-2.5 text-[15px] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-none transition-colors focus:border-[var(--primary)]";
   const nextBtn =
     "rounded-[var(--radius)] border border-[var(--primary)] px-6 py-2.5 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)] disabled:cursor-not-allowed disabled:opacity-50";
   const backBtn =
@@ -557,58 +553,33 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   const fieldLabel = "mb-1.5 flex items-center font-semibold";
 
   return (
-    <section className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)] p-5 shadow-[0_2px_24px_rgba(20,18,12,0.06)] print:border-0 print:p-0 print:shadow-none">
+    <section className="print:p-0">
       <div className="print:hidden text-[var(--foreground)]">
-        <p className="mb-1.5 font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-          Free tool · powered by the funding record
-        </p>
         {/* The pitch belongs on the way in, not in the middle. Past screen 1
             the founder has already bought the premise; repeating the headline
             and the "one short screen, then a memo" explainer above their
             questions is the product selling to someone already in the room. */}
         {screen === "intake" && !running && !report && (
           <>
-            <h2 className="text-xl sm:text-2xl font-semibold leading-tight" style={serif}>
-              Understand how comparable companies raise public capital
+            <h2 className="text-2xl font-semibold leading-tight sm:text-3xl" style={serif}>
+              Map your raise to the public capital that fits
             </h2>
-            <p className="mt-2 max-w-2xl text-[15px] leading-relaxed text-[var(--foreground)]">
-              One short screen, an instant eligibility read, then a few follow-ups
-              tailored to your specific case, then one executive memo: what you can
-              qualify for, what each option requires, and what to watch. Export it
-              as a PDF.
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-[var(--foreground)]">
+              Two minutes of questions. One memo with comparables, screened institutions,
+              positioning and next moves.
             </p>
           </>
-        )}
-
-        {/* Wizard progress dots */}
-        {!running && !report && (
-          <div className="mt-4 flex items-center gap-2 text-xs text-[var(--muted-foreground)]">
-            {Array.from({ length: totalScreens }).map((_, i) => (
-              <span
-                key={i}
-                className={
-                  "h-1.5 rounded-full transition-all " +
-                  (i === screenIdx ? "w-6 bg-[var(--primary)]" : i < screenIdx ? "w-3 bg-[var(--primary)]/50" : "w-3 bg-[var(--muted)]")
-                }
-              />
-            ))}
-            <span className="ml-1">Step {Math.min(screenIdx + 1, totalScreens)} of {totalScreens}</span>
-          </div>
         )}
 
         {/* ── Intake: the form and its live preview panel, side by side ── */}
         {screen === "intake" && !running && (
           <form
             onSubmit={(e) => { e.preventDefault(); void handleContinue(); }}
-            className="mt-4 space-y-4"
+            className="mt-6 space-y-5"
           >
             <label className="block text-sm">
               <span className={fieldLabel}>
                 Your company
-                <InfoDot>
-                  The legal or common name. We match it against the funding record
-                  to trace what you and your closest peers have drawn.
-                </InfoDot>
               </span>
               <input value={company} onChange={(e) => setCompany(e.target.value)} required
                 placeholder="e.g. Vyoma" className={inputCls} />
@@ -642,13 +613,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                   What are you building?
                   <span className="ml-1 font-normal text-[var(--muted-foreground)]">(a sentence or two)</span>
                   <InfoDot>
-                    In your own words: what you are building, who it is for, and
-                    the specific piece of work the money would go towards.
-                    Programmes are matched to it directly — we compare what you
-                    write against what each fund has actually paid for. On our
-                    own records, companies that describe their project get the
-                    fund they went on to win into their top five more than twice
-                    as often as companies described only by their sector.
+                    Describe the project the money would fund, not the company tagline.
                   </InfoDot>
                 </span>
                 <textarea value={description} onChange={(e) => setDescription(e.target.value)}
@@ -678,10 +643,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
               <label className="block text-sm">
                 <span className={fieldLabel}>
                   Incorporated in
-                  <InfoDot>
-                    Where the main entity is incorporated. National schemes gate
-                    hard on this; target markets come on the next screen.
-                  </InfoDot>
                 </span>
                 <select value={country} onChange={(e) => setCountry(e.target.value)}
                   className={inputCls + (country ? "" : " text-[var(--muted-foreground)]")}>
@@ -699,11 +660,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                     <span className={fieldLabel}>
                       Region
                       <InfoDot>
-                        Where the establishment that would run this project sits.
-                        Regional bodies run a large share of Europe&rsquo;s
-                        national schemes and most fund only their own region, so
-                        this is what separates funds that otherwise look
-                        identical.
+                        Many schemes fund only activity in their region.
                       </InfoDot>
                     </span>
                     <select
@@ -758,13 +715,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
 
             <div className="text-sm">
               <span className="mb-2 flex items-center font-semibold">
-                What do you build?
-                <InfoDot>
-                  Programmes are organised around fields of work, and this is
-                  also how every company in our record is classified — so
-                  answering it lets us compare you against companies that have
-                  actually been funded, not just against the rulebook.
-                </InfoDot>
+                Sector
               </span>
               <Chips options={[...SECTOR_OPTIONS]} value={elig.sector}
                 onPick={(v) => setElig((p) => ({ ...p, sector: v }))} />
@@ -779,13 +730,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
             <div className="text-sm">
               <span className="mb-2 flex items-center font-semibold">
                 What would the money pay for?
-                <InfoDot>
-                  Most public funding is tied to specific cost categories rather
-                  than to the company: aid law separates research from
-                  development from feasibility work, treats production capacity
-                  differently again, and rarely covers general running costs.
-                  Pick everything the project would genuinely include.
-                </InfoDot>
               </span>
               <MultiChips options={[...USE_OF_FUNDS_OPTIONS]} value={elig.useOfFunds ?? []}
                 onToggle={(v) => setElig((p) => ({
@@ -812,10 +756,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                       (lib/intelligence/types.ts — b15m_50m and b100k_500k), the
                       vocabulary contract this control is built from, not claims
                       about the corpus. They move when a band moves. */}
-                  <InfoDot>
-                    Scale routes everything: a EUR 20M+ build-out lives in a
-                    different instrument universe than a EUR 300K grant.
-                  </InfoDot>
                 </span>
                 <Chips options={[...TICKET_BANDS]} value={elig.ticketBand}
                   onPick={(v) => setElig((p) => ({ ...p, ticketBand: v as EligibilityAnswers["ticketBand"] }))} />
@@ -823,10 +763,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
               <div className="text-sm">
                 <span className="mb-2 flex items-center font-semibold">
                   Capital you want
-                  <InfoDot>
-                    Non-dilutive first? Loans? Equity? We tailor the shortlist and
-                    name what each kind costs you.
-                  </InfoDot>
                 </span>
                 <CapitalSelect value={capitalSought} onToggle={toggleCapital}
                   onToggleAll={toggleAllCapital} all={allCapital} />
@@ -865,10 +801,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                   <span className={fieldLabel}>
                     What kind of organisation
                     <InfoDot>
-                      Hundreds of schemes are open only to certain kinds of
-                      body — some fund companies, some only municipalities or
-                      universities, some also the self-employed. It is not a
-                      size question: we ask team size separately.
+                      Legal form, not team size.
                     </InfoDot>
                   </span>
                   <Chips options={[...ORGANISATION_TYPE_OPTIONS]}
@@ -889,11 +822,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
             <div className="text-sm">
               <span className="mb-2 flex items-center font-semibold">
                 Where is the product today?
-                <InfoDot>
-                  Grant lanes gate on development stage: research programmes fund
-                  early work, the EIC wants a working prototype or better, and
-                  industrial instruments want deployment-ready.
-                </InfoDot>
               </span>
               <Chips options={[
                 { value: "research", label: "Research / concept" },
@@ -918,9 +846,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                 {preparing && <Spinner />}
                 {preparing ? "Finding your tailored questions…" : "Continue"}
               </button>
-              <span className="text-xs text-[var(--muted-foreground)]">
-                A short, tailored follow-up screen comes next, then your memo.
-              </span>
             </div>
 
             {/* ── Skipping the description, made explicit ───────────────────
@@ -941,10 +866,8 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                  fund 44% as often. A product measurement, not a corpus figure
                  — it moves when the ranker moves, not when the ETL runs. */
               <p className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 px-4 py-3 text-xs leading-relaxed text-[var(--muted-foreground)]">
-                Without a description we can still screen you on country, sector
-                and size — but the shortlist is then built from what companies
-                like you have won, not from what you are actually doing, and it
-                lands on the right fund about half as often.{" "}
+                Without a description, matching is sector-only and lands on the right fund about
+                half as often.{" "}
                 <button type="button" onClick={() => setDescriptionSkipped(true)}
                   className="underline underline-offset-2 hover:text-[var(--foreground)]">
                   Continue without it
@@ -969,24 +892,14 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                 before we gave. */}
             <div className="mb-6 border-l-2 border-[var(--primary)] pl-4">
               <p className="text-[15px] leading-relaxed text-[var(--foreground)]">
-                Thanks, that is the scoping done. Those first answers are the
-                ones that decide which funds are even relevant, and we have
-                run them against the register
+                Scoping done. We ran your answers against the register
                 {routesInPlay > 0 ? (
                   <>
-                    {" "}— <strong>{routesInPlay} route{routesInPlay === 1 ? "" : "s"}</strong>{" "}
-                    are in play for a company like yours
+                    : <strong>{routesInPlay} route{routesInPlay === 1 ? "" : "s"}</strong>{" "}
+                    in play
                   </>
                 ) : null}
                 .
-              </p>
-              <p className="mt-2 text-[15px] leading-relaxed text-[var(--foreground)]">
-                What follows are the questions we cannot answer for you, and
-                each one moves you further down the funnel. Leave anything you
-                genuinely do not know unanswered, that is useful too.
-              </p>
-              <p className="mt-3 text-[13px] text-[var(--muted-foreground)]">
-                — {ANALYST_SIGNOFF}
               </p>
             </div>
             <div className="space-y-5">

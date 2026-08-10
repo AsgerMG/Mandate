@@ -66,7 +66,7 @@ export function RotationChart({ rotation }: { rotation: Rotation }) {
         />
         <Legend
           formatter={(id) => (
-            <span style={{ color: "#0f172a", fontSize: 12 }}>
+            <span style={{ color: "var(--foreground)", fontSize: 12 }}>
               {SECTOR_LABELS[id as string] ?? id}
             </span>
           )}
@@ -121,7 +121,7 @@ export function MoneyRotationChart({ rotation }: { rotation: MoneyRotation }) {
         />
         <Legend
           formatter={(id) => (
-            <span style={{ color: "#0f172a", fontSize: 12 }}>
+            <span style={{ color: "var(--foreground)", fontSize: 12 }}>
               {SECTOR_LABELS[id as string] ?? id}
             </span>
           )}
@@ -257,7 +257,7 @@ export function TicketChart({ rows }: { rows: ConcentrationRow[] }) {
             ];
           }}
         />
-        <Bar dataKey="medianTicket" fill="#4a6cb3" radius={[0, 3, 3, 0]} barSize={18}>
+        <Bar dataKey="medianTicket" fill="#10203f" radius={[0, 2, 2, 0]} barSize={18}>
           <LabelList dataKey="medianTicket" position="right" formatter={(v) => fmtEur(Number(v))} style={{ fontSize: 11, fill: "#2b3c5e" }} />
         </Bar>
       </BarChart>
@@ -328,7 +328,7 @@ interface CountryMixRow {
   total: number;
 }
 
-const LAYER_COLORS = { euDirect: "#4a6cb3", ndb: "#6f9081", stateAid: "#10203f" };
+const LAYER_COLORS = { euDirect: "#7f5820", ndb: "#656d82", stateAid: "#10203f" };
 const LAYER_LABELS: Record<string, string> = {
   euDirect: "EU instruments",
   ndb: "National development banks",
