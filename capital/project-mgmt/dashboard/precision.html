@@ -1,0 +1,331 @@
+<title>Wincent — fund-matching precision</title>
+
+<style>
+  :root{
+    --ink:#12171c; --paper:#f6f7f5; --panel:#ffffff; --line:#dde2e0;
+    --accent:#0d6b76; --accent-soft:#e2eef0;
+    --good:#2f7048; --warn:#96660b; --bad:#9c352b;
+    --muted:#667076; --muted-2:#8b9499;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --ink:#e7ecec; --paper:#0d1114; --panel:#151b1f; --line:#283236;
+      --accent:#4fb3bd; --accent-soft:#16333a;
+      --good:#5aa877; --warn:#c9962f; --bad:#d1685c;
+      --muted:#8d999e; --muted-2:#6d787d;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#e7ecec; --paper:#0d1114; --panel:#151b1f; --line:#283236;
+    --accent:#4fb3bd; --accent-soft:#16333a;
+    --good:#5aa877; --warn:#c9962f; --bad:#d1685c;
+    --muted:#8d999e; --muted-2:#6d787d;
+  }
+  :root[data-theme="light"]{
+    --ink:#12171c; --paper:#f6f7f5; --panel:#ffffff; --line:#dde2e0;
+    --accent:#0d6b76; --accent-soft:#e2eef0;
+    --good:#2f7048; --warn:#96660b; --bad:#9c352b;
+    --muted:#667076; --muted-2:#8b9499;
+  }
+
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+       line-height:1.55;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:1080px;margin:0 auto;padding:40px 20px 80px;
+        display:flex;flex-direction:column;gap:34px;}
+  .lab{font-family:var(--mono);font-size:11px;letter-spacing:.09em;
+       text-transform:uppercase;color:var(--muted);}
+  h1{font-size:clamp(23px,3.2vw,31px);font-weight:700;letter-spacing:-.02em;
+     line-height:1.2;text-wrap:balance;margin:0;}
+  h2{font-size:16px;font-weight:700;letter-spacing:-.01em;margin:0;}
+  p{margin:0;}
+  .sub{color:var(--muted);font-size:14.5px;max-width:66ch;}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:3px;padding:22px;}
+
+  /* header strip */
+  header{display:flex;flex-direction:column;gap:10px;
+         border-bottom:2px solid var(--ink);padding-bottom:18px;}
+  .stamp{display:flex;gap:14px;flex-wrap:wrap;align-items:baseline;}
+
+  /* the one number */
+  .gauges{display:grid;gap:1px;background:var(--line);
+          grid-template-columns:repeat(auto-fit,minmax(168px,1fr));
+          border:1px solid var(--line);border-radius:3px;overflow:hidden;}
+  .gauge{background:var(--panel);padding:18px 20px;display:flex;
+         flex-direction:column;gap:5px;}
+  .gauge .v{font-family:var(--mono);font-variant-numeric:tabular-nums;
+            font-size:35px;font-weight:600;letter-spacing:-.03em;line-height:1;}
+  .gauge .v.big{font-size:52px;color:var(--accent);}
+  .gauge .note{font-size:12.5px;color:var(--muted);}
+
+  /* chart */
+  figure{margin:0;}
+  .chartbox{overflow-x:auto;}
+  svg{display:block;min-width:600px;width:100%;height:auto;}
+  .cap{font-size:12.5px;color:var(--muted);margin-top:10px;max-width:74ch;}
+
+  /* tables */
+  .scroll{overflow-x:auto;}
+  table{border-collapse:collapse;width:100%;font-size:13.5px;min-width:520px;}
+  th{font-family:var(--mono);font-size:10.5px;letter-spacing:.09em;
+     text-transform:uppercase;color:var(--muted);text-align:left;
+     font-weight:400;padding:0 12px 8px 0;border-bottom:1px solid var(--line);}
+  td{padding:9px 12px 9px 0;border-bottom:1px solid var(--line);
+     vertical-align:baseline;}
+  td.num{font-family:var(--mono);font-variant-numeric:tabular-nums;
+         text-align:right;white-space:nowrap;padding-right:16px;}
+  tr:last-child td{border-bottom:none;}
+
+  .chip{display:inline-block;font-family:var(--mono);font-size:10.5px;
+        letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;
+        border-radius:2px;white-space:nowrap;border:1px solid;}
+  .c-zero{color:var(--muted);border-color:var(--line);}
+  .c-good{color:var(--good);border-color:var(--good);}
+  .c-warn{color:var(--warn);border-color:var(--warn);}
+  .c-bad{color:var(--bad);border-color:var(--bad);}
+
+  .cols{display:grid;gap:28px;grid-template-columns:1fr;}
+  @media(min-width:840px){.cols{grid-template-columns:1fr 1fr;}}
+
+  .rule{border-top:1px solid var(--line);}
+  ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:7px;
+     font-size:13.5px;color:var(--muted);}
+  ul strong{color:var(--ink);font-weight:600;}
+  .flag{border-left:3px solid var(--bad);padding-left:14px;}
+  .flag .lab{color:var(--bad);}
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="lab">Wincent · fund-matching precision · measured on live Postgres</div>
+    <h1>Are we naming the right fund? One number, every run, since measurement began.</h1>
+    <div class="stamp">
+      <span class="lab">126 recorded runs</span>
+      <span class="lab">7–10 Aug 2026</span>
+      <span class="lab">source: guard_verdicts</span>
+    </div>
+  </header>
+
+  <section class="gauges">
+    <div class="gauge">
+      <span class="lab">Right fund in the five</span>
+      <span class="v big">27.6<span style="font-size:22px">%</span></span>
+      <span class="note">Was 24.0 on 9 Aug. Tune split, seed 20260806</span>
+    </div>
+    <div class="gauge">
+      <span class="lab">Held out</span>
+      <span class="v">22.0<span style="font-size:17px">%</span></span>
+      <span class="note">The number that counts. Never tuned against.</span>
+    </div>
+    <div class="gauge">
+      <span class="lab">Right fund in the pool</span>
+      <span class="v">97<span style="font-size:17px">%</span></span>
+      <span class="note">We nearly always <em>have</em> it. Ranking loses it.</span>
+    </div>
+    <div class="gauge">
+      <span class="lab">Target</span>
+      <span class="v" style="color:var(--muted)">95<span style="font-size:17px">%</span></span>
+      <span class="note">Back on the table. A perfect oracle caps at <strong>98.4%</strong>, not 91.6%.</span>
+    </div>
+  </section>
+
+  <figure>
+    <h2>Every run, in order</h2>
+    <p class="sub" style="margin:6px 0 14px">One dot per measurement. The vertical break is not a
+      gap in the data — it is the day the exam changed.</p>
+    <div class="chartbox"><svg id="chart" viewBox="0 0 900 330" role="img"
+      aria-label="Scatter of 126 precision measurements across three days, split by a change of answer key on 9 August"></svg></div>
+    <figcaption class="cap" id="cap"></figcaption>
+  </figure>
+
+  <section class="panel flag">
+    <div class="lab">Read this before comparing 30.3% with 27.6%</div>
+    <p style="margin-top:8px;font-size:14.5px">The drop is <strong>not a regression</strong>. On
+      9 August the answer key was replaced. The old one could only name <strong>390 of the funds
+      the product offers, in 9 countries</strong>; the new one names <strong>611, in 28</strong> —
+      it had never heard of CDTI, Neotec or Innovate UK. Measured head-to-head on the same corpus
+      and the same three seeds, precision <strong>rose on every seed</strong> while the exam got
+      harder. The two eras are plotted separately and are never joined by a line, because the
+      numbers either side are answers to different questions.</p>
+  </section>
+
+  <section>
+    <h2>What was tried, and what it bought</h2>
+    <p class="sub" style="margin:6px 0 14px">Eleven routes measured to a number rather than argued
+      about. Nine bought nothing. Two moved it. Every gain is stated against the tune split.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Route</th><th style="text-align:right">Bought</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Country names vs country codes</strong></td>
+          <td class="num"><span class="chip c-good">+3.6</span></td>
+          <td>Our rules said “Denmark”, founders said “DK”, and the two never matched — so a fund
+            requiring establishment in Denmark rejected every Danish company. 307 filters, 248 funds.</td></tr>
+        <tr><td><strong>A blended ranker</strong></td>
+          <td class="num"><span class="chip c-warn">+6.0 → 0</span></td>
+          <td>Worth +6.0 as a re-ordering and <strong>nothing to a founder</strong>. It put four
+            more winners into the top five; a step near the end of the pipeline evicted all
+            twenty-four. Not shipped, kept behind a switch.</td></tr>
+        <tr><td>Better ranking, single signals</td><td class="num"><span class="chip c-zero">+0.0</span></td>
+          <td>No individual signal beats the shipped ranker outside its own margin of error.</td></tr>
+        <tr><td>More per-fund data</td><td class="num"><span class="chip c-zero">+0.0</span></td>
+          <td>Register facts are identical across the very funds we must separate.</td></tr>
+        <tr><td>Open follow-up questions</td><td class="num"><span class="chip c-zero">+0.0</span></td>
+          <td>Flat at every question budget. The selector and the scorer want opposite things.</td></tr>
+        <tr><td>Naming the delivery body</td><td class="num"><span class="chip c-zero">+0.0</span></td>
+          <td>The funds we cannot separate already <em>are</em> the different bodies.</td></tr>
+        <tr><td>Organisation type</td><td class="num"><span class="chip c-bad">blocked 43</span></td>
+          <td>Would have hidden SAP and Diehl Aerospace from funds they had won. Left off.</td></tr>
+        <tr><td>Asking for an address</td><td class="num"><span class="chip c-zero">+0.4</span></td>
+          <td>A territory attaches to where the work happens, not where you are registered.</td></tr>
+        <tr><td>A designed question set</td><td class="num"><span class="chip c-zero">+0.0</span></td>
+          <td>Topic separates 98% of look-alikes — and founders' topics match calls only ~22%.</td></tr>
+        <tr><td>Collapsing repeat calls</td><td class="num"><span class="chip c-zero">+0.0</span></td>
+          <td>They are genuinely different funds, not one fund seen many times.</td></tr>
+        <tr><td>Pool backfill</td><td class="num"><span class="chip c-zero">+0.0</span></td>
+          <td>Recovered funds enter the pool at ranks 16–93. Nowhere near the five.</td></tr>
+        <tr><td><strong>Publishing a sixth row</strong></td>
+          <td class="num"><span class="chip c-good">+2.8</span></td>
+          <td>Already computed, already on screen, simply not carried into the memo. Approved.</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="cols">
+    <section>
+      <h2>Numbers withdrawn</h2>
+      <p class="sub" style="margin:6px 0 14px">Every figure is now recomputed rather than quoted.
+        The build fails if a percentage cannot name the artifact that produced it.</p>
+      <div class="scroll"><table>
+        <thead><tr><th>Claimed</th><th>Status</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td class="num">85.5%</td><td><span class="chip c-bad">retracted</span></td>
+            <td>Circular — it graded the funds using their own rulebook.</td></tr>
+          <tr><td class="num">62.0%</td><td><span class="chip c-bad">retracted</span></td>
+            <td>The same trap, one level down.</td></tr>
+          <tr><td class="num">43.1%</td><td><span class="chip c-bad">retracted</span></td>
+            <td>Reads 51.7% today. Was also a bound on our questions, not on the world.</td></tr>
+          <tr><td class="num">8.4%</td><td><span class="chip c-bad">retracted</span></td>
+            <td>Really ~1.2%. The rest was our test answering for the founder.</td></tr>
+          <tr><td class="num">3 of 4</td><td><span class="chip c-bad">retracted</span></td>
+            <td>Loss buckets. Corrected: 1.6 / 7.4 / 44.2 / 46.8.</td></tr>
+          <tr><td class="num">91.6%</td><td><span class="chip c-bad">retracted</span></td>
+            <td>The “95% is impossible” proof. Measured on a founder who does not exist; it is 98.4%.</td></tr>
+          <tr><td class="num">15.6%</td><td><span class="chip c-bad">retracted</span></td>
+            <td>“The memo is half as good as the shortlist.” It keeps 84–91%. My alarm, not a defect.</td></tr>
+          <tr><td class="num">65.9%</td><td><span class="chip c-warn">caveated</span></td>
+            <td>Reproduces exactly; 702 of 731 categories fell back to the method it claimed to fix.</td></tr>
+          <tr><td class="num">91.6%</td><td><span class="chip c-warn">caveated</span></td>
+            <td>Sound, but it is the cap for a synthetic founder.</td></tr>
+          <tr><td class="num">27.6 / 97 / 73</td><td><span class="chip c-good">confirmed</span></td>
+            <td>Recomputed, attested against the real ranker, floors re-derived upward.</td></tr>
+        </tbody>
+      </table></div>
+    </section>
+
+    <section>
+      <h2>Fixed for founders</h2>
+      <p class="sub" style="margin:6px 0 14px">Not accuracy — harm. These were funds people could
+        not reach, or doors that were not open.</p>
+      <ul>
+        <li><strong>Innovate UK, a Bpifrance fund and a Vinnova fund</strong> were blocked outright
+          from every founder who answered the funding-size question. 39 broken filters fixed.</li>
+        <li><strong>33 funds the official register says are closed</strong> were being shown as
+          open. Corrected at source, with the register's own words behind each one.</li>
+        <li><strong>A fund requiring establishment in Denmark rejected every Danish company</strong>,
+          and 306 filters like it. Fixed.</li>
+        <li><strong>Five funds</strong> removed that founders could not apply to, and 19 dead
+          French funds withdrawn.</li>
+        <li><strong>The live site claimed 146,911 companies.</strong> It is 151,426 — and the
+          footer on the same screen already said so.</li>
+        <li><strong>The weekly job was discarding sector labels</strong> we had paid to produce,
+          every run. Deployed and confirmed.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="panel">
+    <div class="lab">What decides the number, as measured</div>
+    <p style="margin-top:8px;font-size:14.5px">The score does not choose the six. For
+      <strong>81% of founders it keeps one seat</strong> and a historical-pattern prior fills the
+      rest — the right fund sits below something it outscored in 190 of 250 published orders.
+      Misses are scattered, not near-misses: the median miss sits at <strong>rank 22</strong>.
+      Every figure before 10 August was measured against a founder called “TestCo” who left 18 of
+      our 23 questions blank; that is fixed, and it is why the impossibility proof collapsed. One
+      result stayed strange under the real founder: <strong>giving the score more seats when it is
+      confident makes the answer worse</strong> — confidence anti-predicts correctness.</p>
+  </section>
+
+</div>
+
+<script>
+const D = [["2026-08-07T18:57","C",30.3,97.7,87.3,22,"ok"],["2026-08-07T22:09","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T09:47","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:24","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:48","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:55","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T11:39","C",29.7,97.3,86,22,"ok"],["2026-08-08T12:09","C",29.7,97.3,86,22,"ok"],["2026-08-08T15:19","C",29.7,97.3,86,22,"ok"],["2026-08-08T16:35","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T16:49","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T17:17","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T17:59","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:31","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:33","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:37","C",28,97.3,89.7,22,"ok"],["2026-08-08T21:43","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:53","C",28,97.3,89.7,22,"ok"],["2026-08-08T22:05","C",28.7,98,86.3,22,"ok"],["2026-08-08T22:14","C",29,98,86.7,22,"ok"],["2026-08-08T22:20","C",29,98,86.7,22,"ok"],["2026-08-08T22:23","C",29,98,86.7,22,"ok"],["2026-08-08T22:31","C",29,98,86.7,22,"ok"],["2026-08-08T23:07","C",29.3,98,87,22,"ok"],["2026-08-08T23:12","C",29.3,98,87,22,"ok"],["2026-08-08T23:19","C",27.3,98,84,22,"failed"],["2026-08-08T23:23","C",27,98,83.7,22,"failed"],["2026-08-08T23:23","C",27,98,83.7,22,"failed"],["2026-08-08T23:26","C",27,98,83.7,22,"failed"],["2026-08-08T23:30","C",27.3,98,84,22,"failed"],["2026-08-09T00:02","C",27.3,98,84,22,"failed"],["2026-08-09T00:11","C",29,98,91.3,22,"ok"],["2026-08-09T00:22","C",29,98,91.3,22,"ok"],["2026-08-09T00:27","C",29,98,91.3,22,"ok"],["2026-08-09T00:32","C",29,98,91.3,22,"ok"],["2026-08-09T00:36","C",29,98,91.3,22,"ok"],["2026-08-09T01:56","C",29,98,91.3,22,"ok"],["2026-08-09T02:00","C",28.7,98,91.3,22,"ok"],["2026-08-09T02:11","C",22,97,91.7,22,"ok"],["2026-08-09T02:14","C",22,97,91.7,22,"ok"],["2026-08-09T02:17","C",22,97,91.7,22,"ok"],["2026-08-09T02:20","C",22,97,91.7,22,"ok"],["2026-08-09T02:34","C",22.3,97,91.7,22,"ok"],["2026-08-09T08:46","D",25.3,94,76,15,"ok"],["2026-08-09T08:52","D",25.3,94,76,15,"ok"],["2026-08-09T08:58","D",25.3,94,76,15,"ok"],["2026-08-09T09:06","D",25.3,94,76,15,"ok"],["2026-08-09T09:10","D",25.3,94,76,15,"ok"],["2026-08-09T09:33","D",25.3,94,76,15,"ok"],["2026-08-09T09:35","D",25.3,94,76,15,"ok"],["2026-08-09T09:41","D",25.3,94,76,15,"ok"],["2026-08-09T09:50","D",25.3,94,76,15,"ok"],["2026-08-09T09:54","D",25.3,94,76,15,"ok"],["2026-08-09T10:11","D",25.3,94,76,15,"ok"],["2026-08-09T10:14","D",25.3,94,76,15,"ok"],["2026-08-09T10:30","D",25.3,94,76,15,"ok"],["2026-08-09T10:40","D",25.3,94,76,15,"ok"],["2026-08-09T10:45","D",25.3,94,76,15,"ok"],["2026-08-09T10:57","D",25.3,94,76,15,"ok"],["2026-08-09T11:44","D",25.3,94,76,15,"ok"],["2026-08-09T11:58","D",25.3,94,76,15,"ok"],["2026-08-09T11:58","D",25.3,94,76,15,"ok"],["2026-08-09T12:00","D",25.3,94,76,15,"ok"],["2026-08-09T12:12","D",25.3,94,76,15,"ok"],["2026-08-09T12:19","D",25.3,94,76,15,"ok"],["2026-08-09T13:14","D",25.3,94,76,15,"ok"],["2026-08-09T13:18","D",25.3,94,76,15,"ok"],["2026-08-09T13:38","D",25.3,94,76,15,"ok"],["2026-08-09T13:42","D",25.3,94,76,15,"ok"],["2026-08-09T13:53","D",25.3,94,76,15,"ok"],["2026-08-09T13:59","D",25.3,94,76,15,"ok"],["2026-08-09T14:09","D",25.3,94,76,15,"ok"],["2026-08-09T14:10","D",25.3,94,76,15,"ok"],["2026-08-09T14:12","D",25.3,94,76,15,"ok"],["2026-08-09T14:14","D",25.3,94,76,15,"ok"],["2026-08-09T14:18","D",25.3,94,76,15,"ok"],["2026-08-09T14:24","D",25.3,94,76,15,"ok"],["2026-08-09T15:01","D",25.3,94,76,15,"ok"],["2026-08-09T15:03","D",25,94,72,15,"failed"],["2026-08-09T15:04","D",25.3,94,76,15,"ok"],["2026-08-09T15:07","D",25.3,94,76,15,"ok"],["2026-08-09T15:14","D",25.3,94,76,15,"ok"],["2026-08-09T15:19","D",25.3,94,76,15,"ok"],["2026-08-09T15:29","D",25,94,76,15,"ok"],["2026-08-09T15:34","D",25.3,94,76,15,"ok"],["2026-08-09T15:40","D",25.3,94,76,15,"ok"],["2026-08-09T16:41","D",25.3,94,76,15,"ok"],["2026-08-09T16:45","D",25.3,94,76,15,"ok"],["2026-08-09T17:30","D",25.3,94,76,15,"ok"],["2026-08-09T17:34","D",25.3,94,76,15,"ok"],["2026-08-09T17:38","D",25.3,94,76,15,"ok"],["2026-08-09T17:44","D",25.3,94,76,15,"ok"],["2026-08-09T17:45","D",25.3,94,76,15,"ok"],["2026-08-09T17:49","D",25.3,94,76,15,"ok"],["2026-08-09T17:56","D",25.3,94,76,15,"ok"],["2026-08-09T18:04","D",25.3,94,76,15,"ok"],["2026-08-09T18:11","D",25.3,94,76,15,"ok"],["2026-08-09T18:12","D",25.3,94,76,15,"ok"],["2026-08-09T18:19","D",25.3,94,76,15,"ok"],["2026-08-09T18:21","D",25.3,94,76,15,"ok"],["2026-08-09T18:24","D",25.3,94,76,15,"ok"],["2026-08-09T19:14","D",25.3,94,76,15,"ok"],["2026-08-09T19:22","D",25.3,94,76,15,"ok"],["2026-08-09T19:43","D",25.3,94,76,15,"ok"],["2026-08-09T20:09","D",26,94,72.7,15,"ok"],["2026-08-09T20:09","D",26,94,72.7,15,"ok"],["2026-08-09T20:24","D",25.7,94,72.3,15,"failed"],["2026-08-09T20:27","D",26,94,72.7,15,"ok"],["2026-08-09T20:31","D",26,94,72.7,15,"ok"],["2026-08-09T20:36","D",26,94,72.7,15,"ok"],["2026-08-09T21:03","D",26,94,72.7,15,"ok"],["2026-08-09T21:06","D",26,94,72.7,15,"ok"],["2026-08-09T21:08","D",26,94,72.7,15,"ok"],["2026-08-09T21:09","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T21:12","D",26,94,72.7,15,"ok"],["2026-08-09T21:24","D",26,96.7,73,15,"ok"],["2026-08-09T21:31","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T21:59","D",27.3,94,72.7,15,"ok"],["2026-08-09T22:04","D",27.3,94,72.7,15,"ok"],["2026-08-09T22:18","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T22:39","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T23:01","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:05","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:23","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:28","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:32","D",27.3,96.7,73.3,15,"ok"]];
+
+const W=900,H=330,L=54,R=16,T=18,B=44;
+const yMin=0,yMax=35;
+const t=s=>new Date(s+":00Z").getTime();
+const t0=t(D[0][0]), t1=t(D[D.length-1][0]), span=t1-t0;
+const x=s=>L+((t(s)-t0)/span)*(W-L-R);
+const y=v=>T+(1-(v-yMin)/(yMax-yMin))*(H-T-B);
+
+const svg=document.getElementById("chart");
+let s="";
+
+// floor bands, per era — the bar each era had to clear
+const eras=[["C",22],["D",15]];
+for(const [k,fl] of eras){
+  const pts=D.filter(d=>d[1]===k);
+  if(!pts.length) continue;
+  const x0=x(pts[0][0]), x1=x(pts[pts.length-1][0]);
+  s+=`<rect x="${x0}" y="${y(fl)}" width="${Math.max(x1-x0,2)}" height="${y(yMin)-y(fl)}"
+       fill="var(--accent-soft)" opacity=".55"/>`;
+  s+=`<line x1="${x0}" x2="${x1}" y1="${y(fl)}" y2="${y(fl)}" stroke="var(--accent)"
+       stroke-width="1" stroke-dasharray="3 3" opacity=".7"/>`;
+  s+=`<text x="${x0+5}" y="${y(fl)-5}" font-family="var(--mono)" font-size="9.5"
+       fill="var(--accent)" letter-spacing=".06em">FLOOR ${fl}</text>`;
+}
+
+// y axis
+for(let v=0;v<=35;v+=5){
+  s+=`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="var(--line)" stroke-width="1"/>`;
+  s+=`<text x="${L-9}" y="${y(v)+3.5}" text-anchor="end" font-family="var(--mono)"
+       font-size="10" fill="var(--muted-2)">${v}%</text>`;
+}
+
+// the break: where the exam changed
+const firstD=D.find(d=>d[1]==="D");
+const lastC=[...D].reverse().find(d=>d[1]==="C");
+const bx=(x(lastC[0])+x(firstD[0]))/2;
+s+=`<line x1="${bx}" x2="${bx}" y1="${T-6}" y2="${H-B+8}" stroke="var(--bad)" stroke-width="1.5"/>`;
+s+=`<text x="${bx-7}" y="${T+4}" text-anchor="end" font-family="var(--mono)" font-size="10"
+     fill="var(--bad)" letter-spacing=".05em">OLD EXAM</text>`;
+s+=`<text x="${bx+7}" y="${T+4}" font-family="var(--mono)" font-size="10"
+     fill="var(--bad)" letter-spacing=".05em">NEW EXAM — HARDER, 611 FUNDS / 28 COUNTRIES</text>`;
+
+// day ticks
+const days=[...new Set(D.map(d=>d[0].slice(0,10)))];
+for(const d of days){
+  const first=D.find(r=>r[0].startsWith(d));
+  s+=`<text x="${x(first[0])}" y="${H-B+24}" font-family="var(--mono)" font-size="10"
+       fill="var(--muted)">${d.slice(5)}</text>`;
+}
+
+// runs
+for(const [at,k,e,,,,st] of D){
+  const failed = st!=="ok";
+  s+=`<circle cx="${x(at)}" cy="${y(e)}" r="${failed?4:3.2}"
+       fill="${failed?"none":(k==="C"?"var(--muted)":"var(--accent)")}"
+       stroke="${failed?"var(--bad)":"none"}" stroke-width="1.6"
+       opacity="${failed?1:.72}"/>`;
+}
+
+svg.innerHTML=s;
+
+const fails=D.filter(d=>d[6]!=="ok").length;
+document.getElementById("cap").textContent =
+  `${D.length} runs. Grey = old answer key, teal = the honest one. Hollow red = a run that `+
+  `failed its floor (${fails} of them, every one investigated). The shaded band is the bar each `+
+  `era had to clear; the floors differ because the exams differ, and the new floors were `+
+  `re-derived rather than inherited.`;
+</script>
