@@ -54,6 +54,12 @@ const CHECKS = [
   // the figures it watches are precisely the ones quoted in rooms where the
   // floor has not been run.
   ["published figures", ["npx", "tsx", "scripts/check_published_figures.ts"]],
+  // Sits in the hermetic block because it is: three committed JSON artifacts,
+  // no credentials, no network. It watches the one thing the ranker cannot see
+  // for itself -- whether a fund's recipient mix agrees with what those
+  // recipients officially do. An AI company was published a film and television
+  // scheme for want of exactly this.
+  ["sector evidence", ["npx", "tsx", "scripts/check_sector_evidence.ts"]],
   ["vocabulary contract", ["npx", "tsx", "scripts/check_vocabularies.ts"]],
   ["one env loader", ["npx", "tsx", "scripts/check_env_loader.ts"]],
   ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],

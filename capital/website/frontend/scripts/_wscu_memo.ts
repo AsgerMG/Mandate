@@ -112,7 +112,25 @@ function pct(hits: number, n: number): string {
 }
 
 async function main() {
+  // ── CORPUS=json: rank a LOCALLY MODIFIED corpus with the production ranker ─
+  //
+  // Default is unchanged: hydrate from Postgres, which is the source of truth.
+  //
+  // wsCZ needed to measure a corpus CORRECTION before asking for permission to
+  // write it, and Railway may not be written to unilaterally. `SNAPSHOT_FILE`
+  // already lets a harness name a different snapshot, but the snapshot is only
+  // read when Postgres is absent -- and deleting DATABASE_URL for the whole run
+  // also strips the pgvector ranker, which then falls back to LEXICAL and makes
+  // the number incomparable with every other figure in this file.
+  //
+  // So the URL is removed for HYDRATION ONLY and restored immediately, exactly
+  // as diagnose_corpus_variance.ts does it. The two arms then differ in the
+  // corpus and in nothing else: same embeddings, same pgvector reads, same
+  // `ranker: all N request(s) on EMBEDDING`.
+  const liveUrl = process.env.DATABASE_URL;
+  if (process.env.CORPUS === "json") delete process.env.DATABASE_URL;
   await hydrateDbInstruments();
+  if (liveUrl) process.env.DATABASE_URL = liveUrl;
   requireLiveCorpus("wscu_memo");
   const corpus = loadDbInstruments();
   const byId = new Map(corpus.map((i) => [i.id, i]));

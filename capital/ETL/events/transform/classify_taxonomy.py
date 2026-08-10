@@ -377,59 +377,24 @@ NACE_TIER: list[tuple[str, str, str]] = [
 # reads like a home for anyone who makes moving pictures -- a lure that turns a
 # content producer into a software company.
 
-# Official activity descriptors that name a SPECIFIC activity with no
+# ── The codebook itself lives in ONE file both languages read ────────────────
+# data/reference/activity_codebook.json. `check_sector_evidence.ts` states the
+# same property over the published corpus, and a second copy of these fragments
+# is exactly the defect a "keep in sync" comment announces rather than prevents.
+_CODEBOOK = json.loads(
+    (ROOT / "data" / "reference" / "activity_codebook.json").read_text(encoding="utf-8"))
+
+# Official activity descriptors that NAME a specific activity with no
 # technology, science or engineering dimension: content and media production,
 # hospitality, trade, property, personal and administrative services, culture,
-# sport, education and public administration. Matched case-insensitively as
-# substrings of the registered descriptor, the same way NACE_TIER is.
-NACE_NONTECH: list[str] = [
-    # Content, media and publishing (NACE section J in Rev. 2.1 -- publishing,
-    # broadcasting and content production; software publishing is section K and
-    # is deliberately absent here).
-    "motion picture", "video and television", "television programme",
-    "sound recording", "music publishing", "programming and broadcasting",
-    "radio broadcasting", "television programming", "news agency",
-    "publishing of books", "publishing of journals", "publishing of newspapers",
-    "book publishing", "publishing of directories",
-    "publishing, broadcasting, and content production",
-    # Accommodation and food service.
-    "accommodation", "hotels and similar", "holiday and other short-stay",
-    "camping grounds", "food and beverage service", "restaurants",
-    "event catering", "beverage serving",
-    # Advertising and market research.
-    "advertising", "market research and public opinion",
-    # Arts, culture, sport, gambling and recreation.
-    "creative, arts and entertainment", "arts, sports and recreation",
-    "libraries, archives, museums", "gambling and betting", "sports activities",
-    "amusement and recreation", "activities of sports clubs",
-    "operation of sports facilities", "botanical and zoological",
-    # Legal and accounting (named professions, unlike generic consultancy).
-    "legal and accounting", "legal activities", "accounting, bookkeeping",
-    # Rental, travel, security, building and landscape services.
-    "rental and leasing", "travel agency", "tour operator",
-    "security and investigation", "services to buildings and landscape",
-    "employment activities", "landscape service", "cleaning activities",
-    # Public administration, education, care.
-    "public administration", "tertiary education", "primary education",
-    "secondary education", "other education", "residential care",
-    "social work activities", "child day-care", "compulsory social security",
-    # Membership organisations and personal services.
-    "membership organisations", "other personal service", "hairdressing",
-    "funeral", "repair of computers and personal", "washing and dry-cleaning",
-    # Trade and property.
-    "retail sale", "wholesale of", "wholesale trade", "sale of motor vehicles",
-    "real estate",
-]
+# sport, education and public administration. Software publishing is NACE
+# section K, not section J, and is deliberately absent.
+NACE_NONTECH: list[str] = list(_CODEBOOK["nontech"])
 
 # Registrations that name NO activity: residual classes, holding structures and
 # generic business support. They neither license nor veto. Checked BEFORE
-# NACE_NONTECH so that a descriptor appearing in both is treated as unspecific.
-NACE_UNSPECIFIC: list[str] = [
-    "management consultancy", "activities of head offices", "holding companies",
-    "office administrative", "business support", "financing conduits",
-    "other professional, scientific and technical activities",
-    "public relations and communication",
-]
+# NACE_NONTECH so a descriptor appearing in both is treated as unspecific.
+NACE_UNSPECIFIC: list[str] = list(_CODEBOOK["unspecific"])
 
 
 def names_no_activity(tag: str) -> bool:

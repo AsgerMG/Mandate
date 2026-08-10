@@ -299,6 +299,15 @@ jobs:
       - name: The split's key is not a name something else rewrites
         run: python3 ETL/terms/test_split_key_is_not_a_name.py
 
+      # An AI company was published a Bavarian film and television scheme at row
+      # 4 of its memo. Not the ranker -- the embedding scored it 843rd of 1,088.
+      # The scheme's sector_mix read 69% software_data_ai because its recipients,
+      # every one of them registered as a motion-picture producer, carried
+      # software_data_ai. A grant is evidence about the PROGRAMME, never about
+      # its recipient. Credential-free, instant, no corpus.
+      - name: A technology sector is claimed only where evidence licenses it
+        run: python3 ETL/events/transform/test_sector_evidence.py
+
       # The corpus census runs inside the ETL image, which has requirements.txt
       # and nothing else. It reached production importing pandas three modules
       # down and recorded a ModuleNotFoundError instead of the corpus figures --
