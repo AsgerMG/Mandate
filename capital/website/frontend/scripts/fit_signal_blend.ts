@@ -31,6 +31,8 @@
 //   TUNE=/tmp/tune.json HOLDOUT=/tmp/holdout.json npx tsx scripts/fit_signal_blend.ts
 import { readFileSync } from "fs";
 
+import { mcnemarFrom2x2, mcnemarLine } from "./mcnemar";
+
 type Dump = {
   set: string; split: string; seed: number; n: number;
   /** The `rankerTallyLine()` of the run that produced this dump. Optional in
@@ -317,13 +319,16 @@ function main() {
   // both get wrong say nothing about which is better. Printed rather than left
   // to be computed by hand off the 2x2, because wsCS's headline z was, and a
   // statistic nobody can see recomputed is a statistic nobody checks.
-  const disc = blendOnly + shippedOnly;
-  const z = disc ? (blendOnly - shippedOnly) / Math.sqrt(disc) : 0;
+  //
+  // The arithmetic used to live here and in two other files under the same
+  // name, computing two different statistics. It is now `scripts/mcnemar.ts`,
+  // whose signed uncorrected form is the one this file already used -- so this
+  // caller's z is unchanged, and the other two now agree with it.
+  const mc = mcnemarFrom2x2(blendOnly, shippedOnly, bothHit, neither);
   console.log(`\n  ON THE SAME FOUNDERS, blend x shipped:` +
     `  both ${bothHit}   blend only ${blendOnly}   shipped only ${shippedOnly}` +
     `   neither ${neither}`);
-  console.log(`  McNemar on the ${disc} discordant pairs: z = ${z.toFixed(1)}` +
-    `  (|z| > 1.96 is outside its own noise)`);
+  console.log(mcnemarLine("  blend vs shipped:", mc, "blend", "shipped"));
   console.log(`  of the ${shippedOnly + neither} the product MISSED, the blend puts ` +
     `${blendOnly} in the five (${(100 * blendOnly / (shippedOnly + neither)).toFixed(0)}%)`);
   console.log(`  won fund's rank under the blend, on the pairs the product missed: ` +
