@@ -275,3 +275,13 @@ floor added, removed, raised or lowered. 315 unit tests pass.
   every adjacent pair in the whole table and prints the booleans' distribution,
   because zero across 250 tables is the shape of a diagnostic that is not
   looking.
+
+---
+
+**CLOSED by wsCW (2026-08-10).** wsCM's three fixed splits (`head`, `alternate`,
+`all`) and wsCS's `confident` arms are all points on one axis, and wsCW swept
+the whole axis at once — seats 0..5, score alone, rank fusion and a cap on the
+prior's depth — on a tape that reproduces the published five 600/600, tune and
+holdout, blend off and on. The shipped split is the maximum. The eviction this
+workstream measured is real and is priced in; it is not fixable by
+re-allocating seats. See `seats_wsCW.md`.
