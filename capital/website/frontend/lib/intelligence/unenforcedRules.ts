@@ -149,11 +149,13 @@ export const UNENFORCED_RULES: Record<string, UnenforcedRule> = {
   "Q-B1": { why: "judgement", predicate: "no requirement invented beyond the fund's text; Q-1's verbatim-overlap test is the mechanical half" },
   "Q-B2": { why: "judgement", predicate: "the founder is never asked to interpret statute" },
 
-  // ── Selection. SELECT-1 and SELECT-2 are now enforced (selectionChecks.ts).
-  // The rest describe the shape of a good five, which is the judgement the
-  // stage exists to make.
-  "SELECT-3": { why: "judgement", predicate: "no candidate whose stated requirements the founder plainly cannot meet" },
-  "SELECT-4": { why: "judgement", predicate: "a fund whose own eligibility text matches beats one that is merely large" },
-  "SELECT-5": { why: "buildable", predicate: "the five span more than one funding level where candidates allow; decidable from each candidate's country and parent, not yet built" },
-  "SELECT-6": { why: "buildable", predicate: "two candidates share a parent regime only where both are separately relevant; the parent comparison is decidable, the relevance is not" },
+  // ── Selection. SELECT-1 and SELECT-2 are enforced (selectionChecks.ts).
+  // The rest describe the shape of a good ORDER, which is the judgement the
+  // stage exists to make. Two of them are decidable today and are the backlog.
+  "SELECT-3": { why: "judgement", predicate: "no chosen fund states a demand the founder's own answers fail" },
+  "SELECT-4": { why: "judgement", predicate: "no fund is passed over on a demand that the founder's answers leave undecided; needs the model's own reason per fund, which the reply deliberately does not carry" },
+  "SELECT-5": { why: "judgement", predicate: "a fund whose own text matches this company beats one that merely arrives earlier or is larger" },
+  "SELECT-6": { why: "judgement", predicate: "the peer-prior rank did not by itself decide a seat; the counterfactual needs a paired run with the prior withheld" },
+  "SELECT-7": { why: "buildable", predicate: "no chosen fund's award median is an order of magnitude from the stated ticket band, and none last paid out beyond a staleness horizon; both columns are on the row already" },
+  "SELECT-8": { why: "buildable", predicate: "the chosen indices span more than one funding level and more than one parent regime where the candidate list allows; decidable from each candidate's country and parent" },
 };

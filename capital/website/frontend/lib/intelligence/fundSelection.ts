@@ -3,10 +3,14 @@
 // ── NOT ON THE REQUEST PATH. Read the prompts here as lab apparatus ───────
 // `selectFiveFunds` is imported by scripts/measure_pipeline.ts and by nothing
 // in lib/ or app/. The fund order a founder actually receives is a
-// deterministic score; no model reorders it at request time. That is WHY
-// contracts/selection/fund-selection.md is declared unrouted in contracts.ts:
-// its rules describe this module, and a rule that reaches no request-time
-// prompt has to say so rather than be discovered inside one.
+// deterministic score; no model reorders it at request time.
+//
+// contracts/selection/fund-selection.md used to be declared UNROUTED on
+// exactly that ground. It no longer is: `agentSelect.ts` is the selection
+// prompt the excuse was waiting for, and the contract is now routed to it via
+// PROMPTS.selector. The rules there describe THAT stage. This module is still
+// lab apparatus, and its prompts are still lab apparatus, so do not read the
+// strings below as the shipped selection instructions.
 //
 // ── What this module is, and what the measurement forced it to become ──────
 // The old gate 2 scored 35% against gate 1's own deterministic 50% on the same

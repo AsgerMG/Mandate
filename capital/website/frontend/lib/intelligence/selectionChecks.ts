@@ -12,8 +12,11 @@
  *
  * The row-cap tie is the sharpest illustration. It insists exactly one contract
  * rule states the published row cap, so the number the writer is told and the
- * number the code cuts to cannot drift. SELECT-1 states a second five, in a
- * file the tie could not see, while the brief publishes six.
+ * number the code cuts to cannot drift. SELECT-1 stated a second five, in a
+ * file the tie could not see, while the brief publishes six. It no longer
+ * states a number at all: the count is passed per request, from the same
+ * constant the page is sized by, and `want` below is that number rather than a
+ * third copy of it.
  *
  * ── What these two rules are ──────────────────────────────────────────────
  * They are the only rules in this repo about a model's STRUCTURED OUTPUT

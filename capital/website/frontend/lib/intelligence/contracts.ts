@@ -160,6 +160,34 @@ export const PROMPTS = {
    *  founder-facing prose: the eligibility judge and the comparable-company
    *  researcher. They need the claims discipline and nothing else — neither
    *  ranks, selects, or writes a section of the brief. */
+  /**
+   * The fund selector. The ONE stage in this product that weighs two funds
+   * against each other and decides.
+   *
+   * It shipped with no system prompt at all: role, framing, judging rules and
+   * output contract were a single ~16 kB user string built per request, so the
+   * rules it was held to lived nowhere a check could read them and the
+   * contract that described them was declared unroutable. That declaration was
+   * true when it was written and it is what this entry replaces.
+   */
+  selector: {
+    what: "the fund selector",
+    reads: (stage: string) => stage === "shared" || stage === "gate2.select",
+    header:
+      `You are an analyst inside Wincent, which tracks Europe's state-backed ` +
+      `capital and tells a founder what of it is open to them. You are given a ` +
+      `company and a list of funding schemes our own ranker has already ` +
+      `shortlisted and ordered for it, and you decide which of them that ` +
+      `founder actually sees.\n\n` +
+      `Your reply is a list of index numbers and nothing else. No founder reads ` +
+      `a word you write, so spend the effort on the choice rather than on ` +
+      `explaining it.\n\n` +
+      `Below is the contract for that choice, plus the shared grounding and ` +
+      `voice rules every stage obeys. Treat every contract as binding: a ` +
+      `selection that breaks a rule is wrong even when each fund in it looks ` +
+      `reasonable. Rules marked (hard) are checked mechanically after you ` +
+      `reply.\n`,
+  },
   screen: {
     what: "the eligibility judge and the comparable-company researcher",
     reads: (stage: string) => stage === "shared",
@@ -182,13 +210,20 @@ export type PromptName = keyof typeof PROMPTS;
  * "someone forgot to route it" look identical from outside.
  */
 export const UNROUTED_STAGES: Record<string, string> = {
-  "gate2.select":
-    "The module it specifies (lib/intelligence/fundSelection.ts) has no production " +
-    "caller: `selectFiveFunds` is imported only by scripts/measure_pipeline.ts. " +
-    "Fund order in the shipped memo is a deterministic score, not a model choice, " +
-    "so no request-time prompt may carry these rules — which is exactly the " +
-    "mistake the writer's assembler was making. Route it the moment a selection " +
-    "prompt ships.",
+  // EMPTY, and that is a state this register has to be able to hold.
+  //
+  // It carried exactly one entry: `gate2.select`, excused because the module
+  // its rules described had no production caller and the shipped fund order
+  // was a deterministic score no model touched. The excuse ended "Route it the
+  // moment a selection prompt ships." A selection prompt now ships
+  // (`agentSelect.ts`), so the entry is gone and the `selector` prompt above
+  // carries the contract.
+  //
+  // Nothing here does NOT mean nothing to declare. `check_contracts.ts` reads
+  // this register from both sides: a stage no prompt admits fails the build
+  // unless it appears here, and a stage declared here that some prompt does
+  // read also fails. So the next unrouted contract forces the same sentence to
+  // be written again.
 };
 
 /** Every contract carried into `prompt`, shared ones first, then the sections
