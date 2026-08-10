@@ -114,9 +114,9 @@ function parseSnapshot(md: string): FundSnapshot | null {
         : "";
   return {
     ticket,
-    speed: field("Speed"),
-    giveUp: field("You give up"),
-    bestFor: field("Best for"),
+    // Speed / You give up / Best for were parsed here and read by nothing;
+    // deleted with the fields (wsDO, see types.ts FundSnapshot). `field` stays
+    // because Ticket, Fit and Apply still use it.
     // The channel's own official page, curated beside the other At-a-glance
     // facts. Used only when an instrument has nothing more specific: a
     // programme's front door beats no link, and is never presented as the

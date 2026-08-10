@@ -1960,9 +1960,6 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
       const base = {
         channel,
         ticket: snap.ticket,
-        speed: snap.speed,
-        giveUp: snap.giveUp,
-        bestFor: snap.bestFor,
         usedInField: fieldChannels.has(channel),
         fit: snap.fit,
         fitFlag,
@@ -2520,7 +2517,6 @@ export function materialiseInstrumentTable(
         administeringBody: leaf.administeringBody ?? undefined,
         administeringBodyShare: leaf.administeringBodyShare ?? undefined,
         deliveryRegion: leaf.deliveryRegion ?? undefined,
-        deliveryRegionShare: leaf.deliveryRegionShare ?? undefined,
         lastAwardYear: leaf.lastYear ?? undefined,
         legalBasis: legalBasisFor(leaf),
         schemeCode: leaf.schemeCode ?? undefined,
@@ -2553,7 +2549,6 @@ export function materialiseInstrumentTable(
           return {
             applicationUrl: r.url,
             applicationChannel: r.channel,
-            applicationTimeline: r.timeline,
             applicationRouteFor: r.recordedFor,
             applicationRouteUnknown: r.provenance === "withheld" || r.provenance === "none"
               ? r.withheldBecause ?? "no application route is recorded for this scheme"

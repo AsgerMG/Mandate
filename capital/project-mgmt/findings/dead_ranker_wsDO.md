@@ -341,10 +341,22 @@ is a false claim about the product.**
 | `giveUp` | `FundSnapshot` ← curated "You give up" line | never rendered, never scored |
 | `bestFor` | `FundSnapshot` ← curated "Best for" line | never rendered, never scored |
 | `applicationTimeline` | `shortlist.ts` ← `r.timeline` | superseded by `applicationChannel` / `applicationRouteUnknown` |
-| `profileNote` | `shortlist.ts`, for `DEPTH_SENSITIVE_CHANNELS` | never rendered; the divergence it recorded is not shown anywhere |
+| `profileNote` | `shortlist.ts`, for `DEPTH_SENSITIVE_CHANNELS` | never rendered; the divergence it recorded is not shown anywhere. **NOT REMOVED in wsDO** — see below |
 | `deliveryRegionShare` | `corpus.ts` ← `delivery_region_share` | `deliveryRegion` is the routing attribute; the share was never read |
 
-Three of these — `speed`, `giveUp`, `bestFor` — are the last live consumers of
+Three of these — `speed`, `giveUp`, `bestFor` — were the last live consumers of
 the curated fund-brief "At a glance" block, which is why the parse in `corpus.ts`
 goes with them. `deliveryRegion` itself stays: it is the routing attribute for
-same-name siblings and is read.
+same-name siblings and is read. `deliveryRegionShare` also stays on
+`DbInstrument`, where `_wscy_routes.ts` reads it as a corpus fact; only the row
+field is gone.
+
+**`profileNote` is the one exception, and it is deferred rather than kept.**
+`applyProfileSignal` is its only writer and has no other effect, so deleting the
+field makes that function an identity over its argument — the two go together or
+neither does. Its production call site is `pipeline.ts`'s memo-pool line, which
+is the exact hunk wsDL is routing the selector through this sprint, and two
+agents editing one hunk is the collision this split exists to prevent. The edit
+is mechanical and stated at the field: delete the field, delete
+`applyProfileSignal`, unwrap its fourteen callers (one in `pipeline.ts`, the rest
+diagnostics). One commit, once that file is free.

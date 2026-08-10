@@ -134,21 +134,31 @@ export interface FundSnapshot {
   ticket: string;
   /** The channel's official application page, "" when it has no single one. */
   applyUrl?: string;
-  speed: string;
-  giveUp: string;
-  bestFor: string;
   /** "" when a brief hasn't declared a Fit line yet (treated as startup_ready-neutral, never blocking). */
   fit: FounderFit | "";
 }
+
+/** ── `speed`, `giveUp` and `bestFor` STOOD HERE AND ARE DELETED ───────────
+ *
+ *  Three curated "At a glance" lines -- Speed, You give up, Best for -- parsed
+ *  out of each fund brief, copied onto every InstrumentRow, and read by
+ *  NOTHING. Not rendered by panelReport, not carried into InstrumentEntry, not
+ *  scored, not measured. They were the last channel-level trade-off prose in a
+ *  product that now says what a fund funds in the SCHEME'S OWN WORDS, per leaf
+ *  and cited, so a hand-written sentence about a whole channel could not be
+ *  shown beside them even if something wanted to.
+ *
+ *  Deleted wsDO, 2026-08-11, with the parse in corpus.ts that produced them.
+ *  A field set on every row and read by none is the same false claim as a rule
+ *  nothing can emit: it says the product holds a judgement it does not hold. */
 
 /** One row of the instrument-comparison table, built in code from FundSnapshot. */
 export interface InstrumentRow {
   channel: string;
   instrument: string; // display name, e.g. "EIC Accelerator"
   ticket: string;
-  speed: string;
-  giveUp: string;
-  bestFor: string;
+  /** `speed`, `giveUp` and `bestFor` were copied here off FundSnapshot and read
+   *  by nothing. Deleted wsDO -- see the note under FundSnapshot above. */
   /** True when a peer or the founder has actually drawn on this channel. */
   usedInField: boolean;
   fit: FounderFit | "";
@@ -192,8 +202,11 @@ export interface InstrumentRow {
    *  region is the only thing that can. Measured from the transparency
    *  register's per-award beneficiary region -- a statement about where money
    *  has gone, so it may narrow and must never disqualify. */
+  /** `deliveryRegionShare` stood beside this and is deleted (wsDO): the
+   *  region is what routes a same-name sibling, the share was never read on a
+   *  row. It survives on `DbInstrument`, where `_wscy_routes.ts` reads it as a
+   *  corpus fact. */
   deliveryRegion?: string;
-  deliveryRegionShare?: number;
   /** Bodies that actually disburse under this scheme. */
   schemeOperators?: string[];
   /** "invest" = a vehicle that negotiates and takes equity, not a fund you
@@ -232,7 +245,10 @@ export interface InstrumentRow {
   /** Curated application route: how you apply, and when. Present only where
    *  this fund may assert it — see applicationRoute.ts. */
   applicationChannel?: string;
-  applicationTimeline?: string;
+  /** `applicationTimeline` stood here and is deleted (wsDO): `resolveRoute`
+   *  still returns a timeline, and no surface has ever rendered it. What a
+   *  founder is told about timing comes from `applicationChannel`, or from
+   *  `applicationRouteUnknown` when nothing may be asserted. */
   /** Whose route `applicationChannel` is, when it is not this fund's own. The
    *  row says so rather than presenting a programme's route as a scheme's. */
   applicationRouteFor?: string;
@@ -251,7 +267,19 @@ export interface InstrumentRow {
    *  what they self-reported as companyType. Grounded in the founder's own
    *  words, never in a curated brief or primary legal text — render this
    *  visually distinct from fitFlag, never on the same footing. Only ever
-   *  set by runIntelligence()'s full-memo path, never by computeVerdict(). */
+   *  set by runIntelligence()'s full-memo path, never by computeVerdict().
+   *
+   *  ── DEAD, AND SCHEDULED WITH THE OTHER FIVE (wsDO, 2026-08-11) ──────────
+   *  Nothing reads it. `applyProfileSignal` in shortlist.ts is its only writer,
+   *  and that function has no other effect — deleting this field makes it an
+   *  identity over its argument, so the two go together or neither does.
+   *  It is the only one of the six dead fields NOT removed in wsDO, because
+   *  `applyProfileSignal`'s production call site is pipeline.ts's memo-pool
+   *  line, which is the exact hunk the selector is being routed through this
+   *  sprint. The edit that removes it is: delete this field, delete
+   *  `applyProfileSignal`, and unwrap its fourteen callers (one in pipeline.ts,
+   *  the rest diagnostics) — mechanical, and worth one commit on its own once
+   *  that file is free. See project-mgmt/findings/dead_ranker_wsDO.md §5. */
   profileNote?: string;
 }
 
