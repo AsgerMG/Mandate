@@ -101,6 +101,7 @@ class BriefRequest(BaseModel):
     ai_role: str | None = None
     monthly_eu_users: str | None = None
     data_categories: list[str] = Field(default_factory=list)
+    ai_use_cases: list[str] = Field(default_factory=list)
     customer_type: str | None = None
     answers: dict[str, str] = Field(default_factory=dict)
     k: int = 12
@@ -119,6 +120,7 @@ def _profile(req: BriefRequest) -> CompanyProfile:
         ai_role=req.ai_role,
         monthly_eu_users=req.monthly_eu_users,
         data_categories=req.data_categories,
+        ai_use_cases=req.ai_use_cases,
         customer_type=req.customer_type,
         answers=req.answers,
     )

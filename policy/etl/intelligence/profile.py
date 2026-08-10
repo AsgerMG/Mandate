@@ -48,6 +48,13 @@ class CompanyProfile(BaseModel):
         default_factory=list,
         description="Sensitive processing: special-category, biometric, children, location…",
     )
+    ai_use_cases: list[str] = Field(
+        default_factory=list,
+        description=(
+            "What the AI system decides about a person, if anything — the AI Act's "
+            "Annex III high-risk trigger turns on this, not on provider/deployer role."
+        ),
+    )
     customer_type: str | None = Field(
         default=None, description="b2b / b2c / both — consumer-facing rules differ."
     )
@@ -68,6 +75,12 @@ class CompanyProfile(BaseModel):
             lines.append(f"Approx. monthly active EU users: {self.monthly_eu_users}.")
         if self.data_categories:
             lines.append("Sensitive data processed: " + ", ".join(self.data_categories) + ".")
+        if self.ai_use_cases:
+            lines.append(
+                "What the AI system decides about a person: "
+                + ", ".join(self.ai_use_cases)
+                + "."
+            )
         if self.customer_type:
             lines.append(f"Customer base: {self.customer_type}.")
         for qid, answer in self.answers.items():
@@ -120,11 +133,25 @@ class CompanyProfile(BaseModel):
         if self.uses_ai:
             has_role = self.ai_role and self.ai_role != "none"
             role = self.ai_role if has_role else "provider or deployer"
+            # Annex III's high-risk trigger turns on WHAT the system decides about a
+            # person, not who built it — role alone retrieves the generic high-risk
+            # boilerplate, never the specific Annex III category (creditworthiness,
+            # hiring, biometric ID…) that actually resolves the verdict.
+            concrete_use_cases = [
+                u for u in self.ai_use_cases if u and u != "none of these"
+            ]
+            annex_iii = (
+                "Annex III high-risk classification for "
+                + ", ".join(concrete_use_cases)
+                + " use cases, "
+                if concrete_use_cases
+                else "high-risk classification and Annex III use cases, "
+            )
             facets.append(
                 (
                     "ai",
-                    f"Obligations of an AI system {role}: prohibited practices, high-risk "
-                    "classification and Annex III use cases, risk management system, data "
+                    f"Obligations of an AI system {role}: prohibited practices, " + annex_iii +
+                    "risk management system, data "
                     "governance and training data quality, technical documentation, "
                     "conformity assessment and CE marking, human oversight, accuracy and "
                     "robustness, transparency duties, general-purpose AI model obligations.",

@@ -98,6 +98,33 @@ EU_USERS_QUESTION = {
     "group": "users_data",
 }
 
+AI_USE_CASE_QUESTION = {
+    "id": "ai_use_cases",
+    "question": (
+        "Does your AI system make or materially influence a decision about a specific person?"
+    ),
+    "why_it_matters": (
+        "The AI Act's high-risk tier (Annex III) turns on WHAT the system decides, not "
+        "who built it: creditworthiness/lending, hiring or worker evaluation, biometric "
+        "identification, access to essential services, education/exam scoring, and "
+        "law-enforcement or migration use are all high-risk regardless of company size or "
+        "AI value-chain role. A system that only processes documents or data without "
+        "deciding something about a person usually is not — leaving this unanswered is "
+        "why an AI Act verdict often can't commit past 'it depends.'"
+    ),
+    "kind": "multi",
+    "options": [
+        "creditworthiness or lending decisions",
+        "hiring, worker evaluation, or promotion",
+        "biometric identification or categorisation",
+        "access to essential services (insurance, utilities, benefits)",
+        "education or exam scoring",
+        "law enforcement, migration, or border control",
+        "none of these",
+    ],
+    "group": "ai",
+}
+
 DATA_CATEGORIES_QUESTION = {
     "id": "data_categories",
     "question": "Do you process any of these categories of personal data?",
@@ -185,6 +212,8 @@ def core_questions(profile: CompanyProfile) -> list[dict]:
         questions.append(SIZE_QUESTION)
     if profile.uses_ai and not profile.ai_role:
         questions.append(AI_ROLE_QUESTION)
+    if profile.uses_ai and not profile.ai_use_cases:
+        questions.append(AI_USE_CASE_QUESTION)
     if not profile.customer_type:
         questions.append(CUSTOMER_TYPE_QUESTION)
     if not profile.monthly_eu_users:

@@ -18,6 +18,7 @@ from etl.enrichment import embed_pending
 from etl.intelligence import CompanyProfile, core_questions
 from etl.intelligence.questions import (
     AI_ROLE_QUESTION,
+    AI_USE_CASE_QUESTION,
     COMPETITIVE_CONTEXT_QUESTION,
     EXTRAS_SYSTEM,
     QUESTIONS_TOOL,
@@ -75,6 +76,7 @@ def test_core_questions_tailored_to_flags():
     expected = {
         "company_size",
         "ai_role",
+        "ai_use_cases",
         "monthly_eu_users",
         "data_categories",
         "customer_type",
@@ -92,10 +94,40 @@ def test_core_questions_skip_irrelevant_and_known():
     )
     ids = _ids(core_questions(p))
     assert "ai_role" not in ids  # doesn't use AI
+    assert "ai_use_cases" not in ids  # doesn't use AI
     assert "data_categories" not in ids  # no personal data
     assert "company_size" not in ids  # already answered
     assert "customer_type" in ids and "monthly_eu_users" in ids
     assert "competitive_context" in ids  # unconditional, not yet answered
+
+
+# --- the AI-use-case gap ----------------------------------------------------
+# Annex III's high-risk trigger turns on WHAT the AI system decides about a
+# person, not who built it (that's ai_role's question). Without this fact, a
+# real production brief hedged the AI Act row as "if document-analysis
+# functionality serves [creditworthiness/hiring]..." instead of committing —
+# and led its headline with an unrelated DMA story because it had nothing
+# resolved to lead with instead. Screen 2 (the LLM extras) is explicitly told
+# not to re-touch "AI role" territory once asked, so this can't be left to
+# chance there — it needs to be in the deterministic set.
+
+
+def test_ai_use_case_question_asked_when_ai_used_and_unanswered():
+    p = CompanyProfile(name="Acme", uses_ai=True)
+    assert "ai_use_cases" in _ids(core_questions(p))
+
+
+def test_ai_use_case_question_skipped_once_answered():
+    p = CompanyProfile(name="Acme", uses_ai=True, ai_use_cases=["none of these"])
+    assert "ai_use_cases" not in _ids(core_questions(p))
+
+
+def test_ai_use_case_question_has_annex_iii_options():
+    options = set(AI_USE_CASE_QUESTION["options"])
+    assert "creditworthiness or lending decisions" in options
+    assert "hiring, worker evaluation, or promotion" in options
+    assert "none of these" in options
+    assert AI_USE_CASE_QUESTION["kind"] == "multi"
 
 
 def test_core_questions_includes_competitive_context_by_default():
