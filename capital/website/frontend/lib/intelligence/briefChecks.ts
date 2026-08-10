@@ -225,9 +225,15 @@ export function checkBrief(
   // ── FUND-1, both halves ─────────────────────────────────────────────────
   // "At least one row publishes. An empty table is never the answer WHILE ANY
   // DOOR IS OPEN." The check only ever saw the first sentence, and it could
-  // only see it in a bench script: `checkBrief` runs in no build gate and in no
+  // only see it in a bench script: `checkBrief` ran in no build gate and in no
   // route, so an empty table shipped, was noticed by a human rendering the
   // page, and cost nothing anywhere in the suite.
+  //
+  // Both halves of that are now closed. `scripts/check_memo_table.ts` runs
+  // this on all 12 archetypes inside `npm run check`, and since 2026-08-11
+  // `synthesize()` runs it on every brief a founder is actually handed and
+  // records what fires as `brief_rule_violated`. Observational in the route by
+  // design: it must never be able to withhold a memo.
   //
   // The second sentence is the one that decides what an empty table MEANS. An
   // empty table with no explanation is silence, which is never acceptable. An

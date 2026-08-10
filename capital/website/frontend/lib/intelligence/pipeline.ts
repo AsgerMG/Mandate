@@ -29,7 +29,7 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
   return res;
 }
 import { semanticFundMatch } from "./semantic";
-import { BRIEF_LIMITS } from "./briefChecks";
+import { BRIEF_LIMITS, checkBrief } from "./briefChecks";
 import { accessiblePool, explainNoDoors, orderMemoCandidates, WRITER_CANDIDATE_CAP } from "./memoCandidates";
 import { ExclusionLog } from "./exclusions";
 import { assembleInstructions, assembleWriterInstructions } from "./contracts";
@@ -65,6 +65,7 @@ import {
   BORROWER_MODELS,
   COMMERCIAL_ANSWER_PREFIX,
   CAPITAL_OPTIONS,
+  STATE_OF_PLAY_OFFER,
   TICKET_BANDS,
   type ChannelAmount,
   type EligibilityAnswers,
@@ -1351,7 +1352,25 @@ async function synthesize(
       { kept: worthwhile.length, droppedWatchOnly: watchOnly.length, candidates: scored.length });
   }
 
-  return {
+  // ── 90 RULES, 27 PREDICATES, AND NONE OF THEM RAN ON A FOUNDER'S MEMO ───
+  //
+  // `checkBrief` had call sites in the unit tests, two bench scripts and one
+  // build gate that runs on archetype fixtures. It had none anywhere on the
+  // request path. So every rule it can decide was decided about hypothetical
+  // briefs and never about a published one, and briefChecks.ts records what
+  // that cost in its own words: "an empty table shipped, was noticed by a
+  // human rendering the page, and cost nothing anywhere in the suite."
+  //
+  // This is OBSERVATIONAL and must stay that way. It does not gate, retry,
+  // repair or withhold: a founder waiting on a memo is not served by us
+  // refusing to hand it over, and a check that can block a brief is a check
+  // nobody dares tighten. It records, on the real thing, so a rule that fires
+  // in production is visible before a human happens to render the page.
+  //
+  // Wrapped, because a defect in a check must never be able to cost a founder
+  // their brief. The check runs last, after the report is fully assembled, and
+  // its own failure is an event rather than an exception.
+  const publishedReport = {
     self,
     eligibilityScreen,
     // Read, never retyped. This was a literal 5 -- a private copy of
@@ -1374,6 +1393,23 @@ async function synthesize(
     _dropped: { blocked: droppedBlocked, watchOnly: watchOnly.length,
                 candidates: scored.length },
   };
+
+  try {
+    // `candidatesShown` is what the writer was SHOWN, not what published --
+    // that is the superset BL-B1 needs, and passing it is what stops that rule
+    // reporting itself unevaluated on every real request.
+    const violations = checkBrief(
+      publishedReport, STATE_OF_PLAY_OFFER, scored.map((x) => x.entry.institution));
+    if (violations.length) {
+      recordEvent("brief_rule_violated",
+        violations.map((v) => `${v.ruleId}: ${v.detail}`).join("; "),
+        { rules: [...new Set(violations.map((v) => v.ruleId))], count: violations.length });
+    }
+  } catch (err) {
+    recordEvent("brief_check_failed", `checkBrief threw on a published brief: ${String(err)}`);
+  }
+
+  return publishedReport;
 }
 
 /**
