@@ -1,0 +1,1698 @@
+[
+ {
+  "archetype": "Hardware",
+  "company": "SMART Photonics",
+  "country": "Netherlands",
+  "secs": 145,
+  "error": null,
+  "shape": [],
+  "report": {
+   "company": "SMART Photonics",
+   "generatedAt": "2026-08-10T20:20:18.430Z",
+   "self": {
+    "matched": true,
+    "euCapital": "\u20ac9.3M",
+    "channelBreakdown": "\u20ac5.2M state aid \u00b7 \u20ac2.8M Chips JU \u00b7 \u20ac1.2M Horizon",
+    "channels": [
+     "state_aid_satr",
+     "chips_ju",
+     "horizon_eu_pillar_ii",
+     "eic"
+    ],
+    "activeYears": "2022\u20132025"
+   },
+   "eligibilityScreen": [
+    {
+     "check": "EU SME status",
+     "status": "met",
+     "finding": "Within the EU SME definition on the stated bands (headcount under 250 and financial ceilings respected).",
+     "source": {
+      "file": "gber_651_2014_consolidated.pdf",
+      "locator": "p.174"
+     },
+     "verified": true
+    },
+    {
+     "check": "Undertaking-in-difficulty exclusion",
+     "status": "met",
+     "finding": "Not in difficulty on the share-capital limb; the GBER exclusion does not bite.",
+     "source": {
+      "file": "gber_651_2014_consolidated.pdf",
+      "locator": "p.10"
+     },
+     "verified": true
+    },
+    {
+     "check": "Grant co-financing capacity",
+     "status": "met",
+     "finding": "Stated co-financing capacity covers the own-share that R&D aid-intensity ceilings leave with the company.",
+     "source": {
+      "file": "gber_651_2014_consolidated.pdf",
+      "locator": "p.90"
+     },
+     "verified": true
+    },
+    {
+     "check": "IPCEI-class projects",
+     "status": "unknown",
+     "finding": "Scale and stage are IPCEI-compatible (first industrial deployment beyond research, large ticket); qualification then turns on member-state sponsorship and a demonstrable funding gap.",
+     "cure": "Sound out the national ministry running the next relevant IPCEI wave; sponsorship is the entry ticket.",
+     "source": {
+      "file": "ipcei_communication_2021.pdf",
+      "locator": "p.4"
+     },
+     "verified": true
+    },
+    {
+     "check": "De minimis headroom",
+     "status": "info",
+     "finding": "Small national schemes typically run under the de minimis ceiling of EUR 300,000 over three years, counted across the whole group; prior aid in our register counts toward it.",
+     "source": {
+      "file": "de_minimis_2023_2831.pdf",
+      "locator": "p.8"
+     },
+     "verified": true
+    },
+    {
+     "check": "EIC Accelerator: Eligible applicants are single start-ups or SMEs (including spin-outs).",
+     "instrumentId": "eic_accelerator",
+     "status": "met",
+     "finding": "Eligible applicants are single start-ups or SMEs (including spin-outs).",
+     "source": {
+      "file": "eic_accelerator_eligibility.html",
+      "locator": "chunk 1, Who can apply?"
+     },
+     "verified": true
+    },
+    {
+     "check": "EIC Accelerator: Funding targets innovation activities at TRL 6-8 with potential to create or disrupt markets, following the patient capital principle.",
+     "instrumentId": "eic_accelerator",
+     "status": "met",
+     "finding": "Funding targets innovation activities at TRL 6-8 with potential to create or disrupt markets, following the patient capital principle.",
+     "source": {
+      "file": "eic_accelerator_eligibility.html",
+      "locator": "chunk 1, What for"
+     },
+     "verified": true
+    },
+    {
+     "check": "EIC Transition: Consortia must include entities established in different Member States or Associated Countries per applicable configuration.",
+     "instrumentId": "eic_transition",
+     "status": "unknown",
+     "finding": "Consortia must include entities established in different Member States or Associated Countries per applicable configuration.",
+     "source": {
+      "file": "eic_transition_eligibility.html",
+      "locator": "chunk 1"
+     },
+     "verified": false
+    },
+    {
+     "check": "EIC Transition: Consortia must comprise a minimum of 2 and maximum of 5 independent legal entities.",
+     "instrumentId": "eic_transition",
+     "status": "unknown",
+     "finding": "Consortia must comprise a minimum of 2 and maximum of 5 independent legal entities.",
+     "source": {
+      "file": "eic_transition_eligibility.html",
+      "locator": "chunk 1"
+     },
+     "verified": false
+    },
+    {
+     "check": "EIC Transition: Single applicant must be a start-up, SME, or research performing organisation (or spin-off in formation); larger companies not eligible to apply as single legal entity.",
+     "instrumentId": "eic_transition",
+     "status": "met",
+     "finding": "Single applicant must be a start-up, SME, or research performing organisation (or spin-off in formation); larger companies not eligible to apply as single legal entity.",
+     "source": {
+      "file": "eic_transition_eligibility.html",
+      "locator": "chunk 1"
+     },
+     "verified": true
+    },
+    {
+     "check": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+     "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+     "status": "met",
+     "finding": "Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": true
+    },
+    {
+     "check": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+     "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+     "status": "met",
+     "finding": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": true
+    },
+    {
+     "check": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH: Applicant must be established/operating in the Netherlands and apply to a specific national/regional Dutch scheme",
+     "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+     "status": "likely_met",
+     "finding": "Applicant must be established/operating in the Netherlands and apply to a specific national/regional Dutch scheme",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH: Likely SME-scaled eligibility under GBER-based schemes (size caps vary by scheme)",
+     "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+     "status": "likely_met",
+     "finding": "Likely SME-scaled eligibility under GBER-based schemes (size caps vary by scheme)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH: Company must not be in financial difficulty (GBER exclusion for undertakings in difficulty)",
+     "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+     "status": "likely_met",
+     "finding": "Company must not be in financial difficulty (GBER exclusion for undertakings in difficulty)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+     "instrumentId": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+     "status": "met",
+     "finding": "Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": true
+    },
+    {
+     "check": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+     "instrumentId": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+     "status": "met",
+     "finding": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": true
+    },
+    {
+     "check": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding: Applicant must be established/operating in the Netherlands and apply to a specific national/regional Dutch scheme",
+     "instrumentId": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+     "status": "likely_met",
+     "finding": "Applicant must be established/operating in the Netherlands and apply to a specific national/regional Dutch scheme",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding: Likely SME-scaled eligibility under GBER-based schemes (size caps vary by scheme)",
+     "instrumentId": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+     "status": "likely_met",
+     "finding": "Likely SME-scaled eligibility under GBER-based schemes (size caps vary by scheme)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding: Company must not be in financial difficulty (GBER exclusion for undertakings in difficulty)",
+     "instrumentId": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+     "status": "likely_met",
+     "finding": "Company must not be in financial difficulty (GBER exclusion for undertakings in difficulty)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma\u2019s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+     "instrumentId": "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+     "status": "met",
+     "finding": "Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": true
+    },
+    {
+     "check": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma\u2019s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+     "instrumentId": "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+     "status": "met",
+     "finding": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": true
+    },
+    {
+     "check": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma\u2019s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid: Applicant must be established/operating in the Netherlands and apply to a specific national/regional Dutch scheme",
+     "instrumentId": "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+     "status": "likely_met",
+     "finding": "Applicant must be established/operating in the Netherlands and apply to a specific national/regional Dutch scheme",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma\u2019s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid: Likely SME-scaled eligibility under GBER-based schemes (size caps vary by scheme)",
+     "instrumentId": "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+     "status": "likely_met",
+     "finding": "Likely SME-scaled eligibility under GBER-based schemes (size caps vary by scheme)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma\u2019s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid: Company must not be in financial difficulty (GBER exclusion for undertakings in difficulty)",
+     "instrumentId": "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+     "status": "likely_met",
+     "finding": "Company must not be in financial difficulty (GBER exclusion for undertakings in difficulty)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+     "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+     "status": "met",
+     "finding": "Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": true
+    },
+    {
+     "check": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+     "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+     "status": "met",
+     "finding": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": true
+    },
+    {
+     "check": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland: Applicant must be established/operating in the Netherlands and apply to a specific national/regional Dutch scheme",
+     "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+     "status": "likely_met",
+     "finding": "Applicant must be established/operating in the Netherlands and apply to a specific national/regional Dutch scheme",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland: Likely SME-scaled eligibility under GBER-based schemes (size caps vary by scheme)",
+     "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+     "status": "likely_met",
+     "finding": "Likely SME-scaled eligibility under GBER-based schemes (size caps vary by scheme)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland: Company must not be in financial difficulty (GBER exclusion for undertakings in difficulty)",
+     "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+     "status": "likely_met",
+     "finding": "Company must not be in financial difficulty (GBER exclusion for undertakings in difficulty)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    }
+   ],
+   "bottomLine": [
+    "You already carry \u20ac9.3M in traced EU and Dutch public capital since 2022, close to LioniX International's \u20ac13.0M and ahead of New Origin's \u20ac997K, so evaluators in this cluster already know how to fund a Dutch photonics foundry.",
+    "The NL-EZK-B&I-I&K-RVO NXTGEN HIGHTECH scheme is your strongest first move. It is a national grant under GBER Art. 25 and peers VLC Photonics and LioniX drew \u20ac5.4M and \u20ac5.2M through it.",
+    "EIC Accelerator suits your scaling stage: it pays a grant up to \u20ac2.5M and can add \u20ac0.5M to \u20ac10M in equity from the EIC Fund, matching the ticket size you are seeking.",
+    "Chase the NXTGEN HIGHTECH grant alongside a co-financed regional line such as OPZuid in Noord-Brabant, since your own project funding covers over half the cost these schemes leave with you.",
+    "Together these routes offer a non-dilutive grant path into the tens of millions, with equity only entering if you choose the EIC's blended option."
+   ],
+   "institutions": [
+    {
+     "institution": "EIC Accelerator",
+     "channel": "eic",
+     "supportType": "Grant",
+     "ticket": "Grant up to \u20ac2.5M; equity \u20ac0.5M\u2013\u20ac10M via the EIC Fund",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "Funding and Tenders portal, via short proposal then full proposal then EIC Jury interview",
+     "link": {
+      "url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 2496599,
+     "typicalAwardN": 626,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly health & life sciences",
+     "familyName": "EIC (all tracks)",
+     "judgementCriteria": [
+      "Small mid-caps can apply for equity investment only, not the grant component."
+     ],
+     "structuringNotes": [
+      "Applications scoring at least 13/15 at remote evaluation but not selected for interview or funding receive a Seal of Excellence (and STEP seal if applying to Challenges) to help secure funding elsewhere."
+     ],
+     "whyEligible": "You meet the SME and TRL 6-8 patient-capital criteria as a single applicant scaling a photonics foundry, matching VLC Photonics and LioniX's own accepted profiles.",
+     "comparableFirms": [
+      {
+       "name": "VLC PHOTONICS S.L.",
+       "amount": "\u20ac601K"
+      },
+      {
+       "name": "LIONIX INTERNATIONAL BV",
+       "amount": "\u20ac238K"
+      }
+     ],
+     "nextStep": "Submit the short EIC Accelerator application on the EIC AI Platform ahead of the next cut-off.",
+     "whyEasy": "Your answers speak to 4 of its 7 documented eligibility rules; 2 comparable companies have drawn from EIC Accelerator.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 2
+    },
+    {
+     "institution": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH",
+     "channel": "state_aid_satr",
+     "supportType": "Grant (national government, state aid)",
+     "ticket": "Wide, scheme-dependent: from \u20ac100k to tens of \u20acM under GBER",
+     "country": "NL",
+     "legalBasis": "GBER Art. 25 (R&D aid)",
+     "schemeCode": "SA.107606",
+     "accessMode": "apply",
+     "applicationRouteUnknown": "the only route on record was written for NL R&D state aid regime and does not address Ministerie van Economische Zaken en Klimaat, which runs this scheme",
+     "link": {
+      "url": "https://competition-cases.ec.europa.eu/cases/SA.107606",
+      "kind": "scheme",
+      "label": "Scheme record"
+     },
+     "typicalAward": 605861,
+     "typicalAwardN": 264,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly industrial manufacturing",
+     "familyName": "NL R&D state aid regime",
+     "judgementCriteria": [],
+     "structuringNotes": [
+      "Registered with the European Commission under GBER Art. 25 for experimental development, feasibility studies, fundamental research, industrial research: statutory ceiling 25-100% of eligible costs, +20pp small enterprise / +10pp medium-sized enterprise / +15pp effective collaboration, capped at 80%. The rest of the project cost is yours to fund. It is also registered under GBER Art. 22, 27, 31.",
+      "Under the SME agricultural credit guarantee scheme, the guarantee covers 70% of the credit amount for financing that is not for supplementary investments, or 90% for financing supplementary investments, subject to a maximum credit amount of \u20ac1,200,000 (or \u20ac2,500,000 for specified qualifying investments).",
+      "A subsidy application to a financier will be refused if the financial capacity and stability of the financier is insufficiently guaranteed."
+     ],
+     "whyEligible": "Your Dutch establishment and SME-scaled size fit this GBER Art. 25 scheme, which has paid VLC Photonics \u20ac5.4M and LioniX \u20ac5.2M for comparable R&D work.",
+     "comparableFirms": [
+      {
+       "name": "VLC PHOTONICS S.L.",
+       "amount": "\u20ac5.4M"
+      },
+      {
+       "name": "LIONIX INTERNATIONAL BV",
+       "amount": "\u20ac5.2M"
+      },
+      {
+       "name": "Farmless B.V.",
+       "amount": "\u20ac3.5M"
+      }
+     ],
+     "nextStep": "Contact RVO to open an application under the NXTGEN HIGHTECH scheme.",
+     "whyEasy": "Your answers speak to 5 of its 5 documented eligibility rules; 6 comparable companies have drawn from NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH.",
+     "lastAwardYear": 2025,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 5
+    },
+    {
+     "institution": "EIC Transition",
+     "channel": "eic",
+     "supportType": "Grant",
+     "ticket": "Grant up to \u20ac2.5M; equity \u20ac0.5M\u2013\u20ac10M via the EIC Fund",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "Funding and Tender Opportunities Portal; 3-step process (proposal writing, evaluator evaluation, EIC jury interview)",
+     "link": {
+      "url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 660000,
+     "typicalAwardN": 458,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly health & life sciences",
+     "familyName": "EIC (all tracks)",
+     "judgementCriteria": [
+      "Applicant (single legal entity) must be established in a Member State or an Associated Country.",
+      "The proposal must build on results already achieved within an eligible EU-funded project (e.g. EIC Pathfinder, ERC Proof of Concept, certain Horizon 2020/Europe RIAs, EDF civil-application projects, Research Infrastructures actions).",
+      "The proposal must build on results at experimental proof of concept (TRL 3 completed) or technology validated in the lab (TRL 4); other TRLs are not eligible."
+     ],
+     "structuringNotes": [
+      "Grant funding is capped at EUR 2.5 million per project."
+     ],
+     "whyEligible": "You qualify as an SME entity, but this grant requires building on results from an earlier EU-funded project and joining a consortium of two to five entities across member states.",
+     "comparableFirms": [
+      {
+       "name": "VLC PHOTONICS S.L.",
+       "amount": "\u20ac601K"
+      },
+      {
+       "name": "LIONIX INTERNATIONAL BV",
+       "amount": "\u20ac238K"
+      }
+     ],
+     "nextStep": "Confirm which prior EU-funded project qualifies, then start assembling a cross-border consortium.",
+     "whyEasy": "Your answers speak to 6 of its 11 documented eligibility rules; 2 comparable companies have drawn from EIC Transition.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 1
+    },
+    {
+     "institution": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland",
+     "channel": "state_aid_satr",
+     "supportType": "Grant (national government, state aid)",
+     "ticket": "Wide, scheme-dependent: from \u20ac100k to tens of \u20acM under GBER",
+     "country": "NL",
+     "legalBasis": "GBER Art. 25 (R&D aid)",
+     "schemeCode": "SA.61208",
+     "schemeOperators": [
+      "provincie Zuid-Holland"
+     ],
+     "accessMode": "apply",
+     "applicationRouteUnknown": "the only route on record was written for NL R&D state aid regime and does not address provincie Zuid-Holland, which runs this scheme",
+     "link": {
+      "url": "https://competition-cases.ec.europa.eu/cases/SA.61208",
+      "kind": "scheme",
+      "label": "Scheme record"
+     },
+     "typicalAward": 200000,
+     "typicalAwardN": 43,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 Zuid-Holland \u00b7 mostly software & AI",
+     "familyName": "NL R&D state aid regime",
+     "judgementCriteria": [
+      "Subsidy is granted to a participant in an R&D cooperation partnership that carries out an R&D cooperation project; the subsidy is applied for by the lead applicant (penvoerder).",
+      "Subsidy is refused if the applicant is an undertaking in difficulty.",
+      "Subsidy is refused if the applicant wants to use the subsidy for an activity for which a government body or the European Commission has already provided subsidy."
+     ],
+     "structuringNotes": [
+      "Registered with the European Commission under GBER Art. 25 for experimental development, feasibility studies, industrial research: statutory ceiling 25-50% of eligible costs, +20pp small enterprise / +10pp medium-sized enterprise / +15pp effective collaboration, capped at 80%. The rest of the project cost is yours to fund.",
+      "Under the SME agricultural credit guarantee scheme, the guarantee covers 70% of the credit amount for financing that is not for supplementary investments, or 90% for financing supplementary investments, subject to a maximum credit amount of \u20ac1,200,000 (or \u20ac2,500,000 for specified qualifying investments).",
+      "A subsidy application to a financier will be refused if the financial capacity and stability of the financier is insufficiently guaranteed."
+     ],
+     "whyEligible": "This grant funds R&D cooperation partnerships in Zuid-Holland, and your Dutch establishment and SME status meet its baseline conditions, though it requires a lead applicant on a joint project.",
+     "comparableFirms": [
+      {
+       "name": "VLC PHOTONICS S.L.",
+       "amount": "\u20ac5.4M"
+      },
+      {
+       "name": "LIONIX INTERNATIONAL BV",
+       "amount": "\u20ac5.2M"
+      },
+      {
+       "name": "Farmless B.V.",
+       "amount": "\u20ac3.5M"
+      }
+     ],
+     "nextStep": "Contact provincie Zuid-Holland to scope a cooperation partnership under this scheme.",
+     "whyEasy": "Your answers speak to 6 of its 10 documented eligibility rules; 6 comparable companies have drawn from NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland.",
+     "lastAwardYear": 2024,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 5
+    },
+    {
+     "institution": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding",
+     "channel": "state_aid_satr",
+     "supportType": "Grant (national government, state aid)",
+     "ticket": "Wide, scheme-dependent: from \u20ac100k to tens of \u20acM under GBER",
+     "country": "NL",
+     "legalBasis": "GBER Art. 25 (R&D aid)",
+     "schemeCode": "SA.108830",
+     "schemeOperators": [
+      "provincie Noord-Brabant"
+     ],
+     "accessMode": "apply",
+     "applicationRouteUnknown": "the only route on record was written for NL R&D state aid regime and does not address provincie Noord-Brabant, which runs this scheme",
+     "link": {
+      "url": "https://competition-cases.ec.europa.eu/cases/SA.108830",
+      "kind": "scheme",
+      "label": "Scheme record"
+     },
+     "typicalAward": 226166,
+     "typicalAwardN": 328,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 3 regions",
+     "familyName": "NL R&D state aid regime",
+     "judgementCriteria": [
+      "Subsidy under this scheme can only be requested by a lead applicant (penvoerder) on behalf of a partnership (samenwerkingsverband).",
+      "The project must be carried out in South Netherlands or benefit South Netherlands.",
+      "The project must benefit SMEs."
+     ],
+     "structuringNotes": [
+      "Registered with the European Commission under GBER Art. 25 for experimental development, feasibility studies: statutory ceiling 25-50% of eligible costs, +20pp small enterprise / +10pp medium-sized enterprise / +15pp effective collaboration, capped at 80%. The rest of the project cost is yours to fund. It is also registered under GBER Art. 1521, 1531, 1541, 17181920, 18, 22, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 391, 40, 41, 42, 43, 45, 46, 47, 48, 49, 521, 53, 56.",
+      "Under the SME agricultural credit guarantee scheme, the guarantee covers 70% of the credit amount for financing that is not for supplementary investments, or 90% for financing supplementary investments, subject to a maximum credit amount of \u20ac1,200,000 (or \u20ac2,500,000 for specified qualifying investments).",
+      "A subsidy application to a financier will be refused if the financial capacity and stability of the financier is insufficiently guaranteed."
+     ],
+     "whyEligible": "This OPZuid grant funds projects based in or benefiting South Netherlands, and your Dutch establishment meets its baseline conditions, though it is only open to a lead applicant on behalf of a partnership.",
+     "comparableFirms": [
+      {
+       "name": "VLC PHOTONICS S.L.",
+       "amount": "\u20ac5.4M"
+      },
+      {
+       "name": "LIONIX INTERNATIONAL BV",
+       "amount": "\u20ac5.2M"
+      },
+      {
+       "name": "Farmless B.V.",
+       "amount": "\u20ac3.5M"
+      }
+     ],
+     "nextStep": "Contact provincie Noord-Brabant to confirm your project's fit with the South Netherlands requirement.",
+     "whyEasy": "Your answers speak to 5 of its 9 documented eligibility rules; 6 comparable companies have drawn from NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding.",
+     "lastAwardYear": 2025,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 5
+    },
+    {
+     "institution": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma\u2019s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid",
+     "channel": "state_aid_satr",
+     "supportType": "Grant (national government, state aid)",
+     "ticket": "Wide, scheme-dependent: from \u20ac100k to tens of \u20acM under GBER",
+     "country": "NL",
+     "legalBasis": "GBER Art. 25 (R&D aid)",
+     "schemeCode": "SA.111231",
+     "schemeOperators": [
+      "provincie Noord-Brabant"
+     ],
+     "accessMode": "apply",
+     "applicationRouteUnknown": "the only route on record was written for NL R&D state aid regime and does not address provincie Noord-Brabant, which runs this scheme",
+     "link": {
+      "url": "https://competition-cases.ec.europa.eu/cases/SA.111231",
+      "kind": "scheme",
+      "label": "Scheme record"
+     },
+     "typicalAward": 145725,
+     "typicalAwardN": 84,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 Noord-Brabant \u00b7 mostly software & AI",
+     "familyName": "NL R&D state aid regime",
+     "judgementCriteria": [
+      "Only the lead applicant (penvoerder), applying on behalf of a partnership under the OPZuid subsidy scheme, may request the subsidy."
+     ],
+     "structuringNotes": [
+      "Registered with the European Commission under GBER Art. 25 for experimental development, feasibility studies: statutory ceiling 25-50% of eligible costs, +20pp small enterprise / +10pp medium-sized enterprise / +15pp effective collaboration, capped at 80%. The rest of the project cost is yours to fund. It is also registered under GBER Art. 1521, 1531, 1541, 17181920, 18, 22, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 391, 40, 41, 42, 43, 45, 46, 47, 48, 49, 521, 53, 56.",
+      "Under the SME agricultural credit guarantee scheme, the guarantee covers 70% of the credit amount for financing that is not for supplementary investments, or 90% for financing supplementary investments, subject to a maximum credit amount of \u20ac1,200,000 (or \u20ac2,500,000 for specified qualifying investments).",
+      "A subsidy application to a financier will be refused if the financial capacity and stability of the financier is insufficiently guaranteed."
+     ],
+     "whyEligible": "This is a further OPZuid-linked cofinancing line for Noord-Brabant, open only to a lead applicant on behalf of a partnership, which your Dutch establishment can pursue alongside the sister OPZuid scheme above.",
+     "comparableFirms": [
+      {
+       "name": "VLC PHOTONICS S.L.",
+       "amount": "\u20ac5.4M"
+      },
+      {
+       "name": "LIONIX INTERNATIONAL BV",
+       "amount": "\u20ac5.2M"
+      },
+      {
+       "name": "Farmless B.V.",
+       "amount": "\u20ac3.5M"
+      }
+     ],
+     "nextStep": "Ask provincie Noord-Brabant whether your project qualifies for this cofinancing line as lead applicant.",
+     "whyEasy": "Your answers speak to 5 of its 9 documented eligibility rules; 6 comparable companies have drawn from NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma\u2019s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid.",
+     "lastAwardYear": 2025,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 5
+    },
+    {
+     "institution": "NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027",
+     "channel": "state_aid_satr",
+     "supportType": "Grant (national government, state aid)",
+     "ticket": "Wide, scheme-dependent: from \u20ac100k to tens of \u20acM under GBER",
+     "country": "NL",
+     "legalBasis": "GBER Art. 25 (R&D aid)",
+     "schemeCode": "SA.106413",
+     "schemeOperators": [
+      "Kansen voor West",
+      "provincie Noord-Brabant",
+      "Samenwerkingsverband Noord-Nederland"
+     ],
+     "accessMode": "apply",
+     "applicationRouteUnknown": "the only route on record was written for NL R&D state aid regime and does not address Kansen voor West, which runs this scheme",
+     "link": {
+      "url": "https://competition-cases.ec.europa.eu/cases/SA.106413",
+      "kind": "scheme",
+      "label": "Scheme record"
+     },
+     "typicalAward": 713442,
+     "typicalAwardN": 86,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 Zuid-Holland \u00b7 mostly energy & cleantech",
+     "familyName": "NL R&D state aid regime",
+     "judgementCriteria": [],
+     "structuringNotes": [
+      "Registered with the European Commission under GBER Art. 25 for experimental development, feasibility studies, fundamental research, industrial research: statutory ceiling 25-100% of eligible costs, +20pp small enterprise / +10pp medium-sized enterprise / +15pp effective collaboration, capped at 80%. The rest of the project cost is yours to fund. It is also registered under GBER Art. 1521, 1531, 1541, 17181920, 18, 22, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 391, 40, 41, 42, 43, 45, 46, 47, 48, 49, 521, 53, 56.",
+      "Under the SME agricultural credit guarantee scheme, the guarantee covers 70% of the credit amount for financing that is not for supplementary investments, or 90% for financing supplementary investments, subject to a maximum credit amount of \u20ac1,200,000 (or \u20ac2,500,000 for specified qualifying investments).",
+      "A subsidy application to a financier will be refused if the financial capacity and stability of the financier is insufficiently guaranteed."
+     ],
+     "whyEligible": "This grant is administered by Kansen voor West and has funded VLC Photonics and LioniX, and your Dutch establishment meets the underlying GBER Art. 25 conditions.",
+     "comparableFirms": [
+      {
+       "name": "VLC PHOTONICS S.L.",
+       "amount": "\u20ac5.4M"
+      },
+      {
+       "name": "LIONIX INTERNATIONAL BV",
+       "amount": "\u20ac5.2M"
+      },
+      {
+       "name": "Farmless B.V.",
+       "amount": "\u20ac3.5M"
+      }
+     ],
+     "nextStep": "Contact Kansen voor West to discuss eligibility for this scheme's next round.",
+     "whyEasy": "Your answers speak to 5 of its 7 documented eligibility rules; 6 comparable companies have drawn from NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 5
+    }
+   ],
+   "positioning": "The Chips Joint Undertaking and the European Commission are advancing a Chips Act 2.0, and a Semiconductor Alliance of industrial actors including ASML has been consulting on the next phase of Europe's chip strategy. As an indium phosphide photonic integrated circuits foundry, your work sits inside exactly the semiconductor value chain this policy push is meant to strengthen. Frame applications, particularly EIC Accelerator and the Chips JU-adjacent national schemes, around foundry capacity and manufacturing sovereignty in photonic integration rather than around research novelty alone: that is the argument the current chips agenda is built to reward. Your existing Chips JU award of \u20ac2.8M already places you inside this strategic-autonomy narrative, which strengthens the case for framing new applications as continuity of that same public-private chips effort rather than a fresh pitch.",
+   "stateOfPlay": "The EIC Accelerator has opened a new \u20ac100M defence-focused call and a humanitarian innovation prize, both signalling that the EIC is broadening its tracks rather than only expanding the standard Accelerator route you would apply through. Chips JU is introducing a formal impact monitoring framework for its funded projects, which could add reporting obligations to future calls in the semiconductor line you already draw funding from. Separately, Chips Act 2.0 is moving through consultation with the Semiconductor Alliance, and any resulting change to the Chips JU's scope or state-aid treatment would bear directly on your existing Chips JU relationship and on how national schemes like NXTGEN HIGHTECH are framed for chip manufacturers going forward.",
+   "caveats": "Figures shown are committed amounts from public registers on each instrument's own reporting basis, coverage varies by country, and absence from the database is not proof that no funding was received.",
+   "provenance": {
+    "fields": {
+     "caveats": {
+      "origin": "model",
+      "contract": "BRIEF",
+      "evidence": []
+     },
+     "bottomLine": {
+      "origin": "model",
+      "contract": "BL",
+      "evidence": [
+       "selfLine",
+       "comparables",
+       "institutions"
+      ]
+     },
+     "positioning": {
+      "origin": "model",
+      "contract": "POS",
+      "evidence": [
+       "agendaEvidence",
+       "peopleEvidence",
+       "projectAnswers",
+       "commercialAnswers"
+      ]
+     },
+     "stateOfPlay": {
+      "origin": "model",
+      "contract": "SOP",
+      "evidence": [
+       "recentEvidence",
+       "institutions"
+      ]
+     },
+     "institutions[].whyEligible": {
+      "origin": "model",
+      "contract": "FUND",
+      "evidence": [
+       "institutions",
+       "processes",
+       "eligibilityScreen",
+       "projectAnswers"
+      ]
+     },
+     "institutions[].nextStep": {
+      "origin": "model",
+      "contract": "FUND",
+      "evidence": [
+       "institutions",
+       "processes",
+       "eligibilityScreen",
+       "projectAnswers"
+      ]
+     },
+     "institutions[].blockerPlain": {
+      "origin": "model",
+      "contract": "FUND",
+      "evidence": [
+       "institutions",
+       "processes",
+       "eligibilityScreen",
+       "projectAnswers"
+      ]
+     },
+     "self": {
+      "origin": "code",
+      "evidence": [
+       "matchCompany against the funding record"
+      ]
+     },
+     "eligibilityScreen": {
+      "origin": "code",
+      "evidence": [
+       "evaluateEligibility against encoded gates"
+      ]
+     },
+     "institutions[].institution": {
+      "origin": "code",
+      "evidence": [
+       "displayInstitutionName"
+      ]
+     },
+     "institutions[].supportType": {
+      "origin": "code",
+      "evidence": [
+       "instrument capital type"
+      ]
+     },
+     "institutions[].ticket": {
+      "origin": "code",
+      "evidence": [
+       "curated fund snapshot"
+      ]
+     },
+     "institutions[].comparableFirms": {
+      "origin": "code",
+      "evidence": [
+       "corpus peers on this channel"
+      ]
+     },
+     "institutions[].verdict": {
+      "origin": "code",
+      "evidence": [
+       "verdict.ts, encoded gates only"
+      ]
+     },
+     "institutions[].stale": {
+      "origin": "code",
+      "evidence": [
+       "last recorded award year"
+      ]
+     },
+     "stateOfPlayOffer": {
+      "origin": "fixed",
+      "evidence": [
+       "STATE_OF_PLAY_OFFER"
+      ]
+     }
+    },
+    "exclusions": {
+     "SEL-LARGE-SCALE": 1,
+     "SEL-CHANNEL-CAP": 1,
+     "SEL-CAPITAL": 13,
+     "SEL-COUNTRY": 764,
+     "SEL-NATIONAL-EMPTY": 2,
+     "VER-BLOCKED": 12,
+     "SEL-LEAF-CAP": 10,
+     "CUT-CAP": 1
+    }
+   }
+  },
+  "code": "91b90bce",
+  "capitalSought": [
+   "grant",
+   "loan"
+  ]
+ },
+ {
+  "archetype": "Robotics",
+  "company": "Neura Robotics",
+  "country": "Germany",
+  "secs": 170,
+  "error": null,
+  "shape": [],
+  "report": {
+   "company": "Neura Robotics",
+   "generatedAt": "2026-08-10T20:28:11.149Z",
+   "self": {
+    "matched": true,
+    "euCapital": "\u20ac4.3M",
+    "channelBreakdown": "\u20ac4.3M state aid",
+    "channels": [
+     "state_aid_satr"
+    ],
+    "activeYears": "2022\u20132025"
+   },
+   "eligibilityScreen": [
+    {
+     "check": "EU SME status",
+     "status": "not_met",
+     "finding": "At 250+ staff the company exceeds the EU SME headcount ceiling; SME-only lanes (EIC, SME windows, SME aid bonuses) are closed.",
+     "cure": "Mid-cap and large-company lanes remain (EIB growth, Innovation Fund, IPCEI); no realistic cure to SME status itself.",
+     "source": {
+      "file": "gber_651_2014_consolidated.pdf",
+      "locator": "p.174"
+     },
+     "verified": true
+    },
+    {
+     "check": "Undertaking-in-difficulty exclusion",
+     "status": "met",
+     "finding": "Not in difficulty on the share-capital limb; the GBER exclusion does not bite.",
+     "source": {
+      "file": "gber_651_2014_consolidated.pdf",
+      "locator": "p.10"
+     },
+     "verified": true
+    },
+    {
+     "check": "Grant co-financing capacity",
+     "status": "met",
+     "finding": "Stated co-financing capacity covers the own-share that R&D aid-intensity ceilings leave with the company.",
+     "source": {
+      "file": "gber_651_2014_consolidated.pdf",
+      "locator": "p.90"
+     },
+     "verified": true
+    },
+    {
+     "check": "IPCEI-class projects",
+     "status": "unknown",
+     "finding": "Scale and stage are IPCEI-compatible (first industrial deployment beyond research, large ticket); qualification then turns on member-state sponsorship and a demonstrable funding gap.",
+     "cure": "Sound out the national ministry running the next relevant IPCEI wave; sponsorship is the entry ticket.",
+     "source": {
+      "file": "ipcei_communication_2021.pdf",
+      "locator": "p.4"
+     },
+     "verified": true
+    },
+    {
+     "check": "De minimis headroom",
+     "status": "info",
+     "finding": "Small national schemes typically run under the de minimis ceiling of EUR 300,000 over three years, counted across the whole group; prior aid in our register counts toward it.",
+     "source": {
+      "file": "de_minimis_2023_2831.pdf",
+      "locator": "p.8"
+     },
+     "verified": true
+    },
+    {
+     "check": "EIC Pathfinder: Applicants must form a consortium of at least three different independent legal entities established in different countries, with at least one in a Member State and at least two others each in different Member States or Associated Countries.",
+     "instrumentId": "eic_pathfinder",
+     "status": "not_met",
+     "finding": "Applicants must form a consortium of at least three different independent legal entities established in different countries, with at least one in a Member State and at least two others each in different Member States or Associated Countries.",
+     "source": {
+      "file": "eic_pathfinder_eligibility.html",
+      "locator": "#chunk 1 (Who can apply?)"
+     },
+     "verified": true
+    },
+    {
+     "check": "EIC Pathfinder: Funds restricted to research and technology development activities (grant-only, no equity component under Pathfinder)",
+     "instrumentId": "eic_pathfinder",
+     "status": "likely_met",
+     "finding": "Funds restricted to research and technology development activities (grant-only, no equity component under Pathfinder)",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "EIC Transition: Consortia must include entities established in different Member States or Associated Countries per applicable configuration.",
+     "instrumentId": "eic_transition",
+     "status": "unknown",
+     "finding": "Consortia must include entities established in different Member States or Associated Countries per applicable configuration.",
+     "source": {
+      "file": "eic_transition_eligibility.html",
+      "locator": "chunk 1"
+     },
+     "verified": false
+    },
+    {
+     "check": "EIC Transition: Consortia must comprise a minimum of 2 and maximum of 5 independent legal entities.",
+     "instrumentId": "eic_transition",
+     "status": "unknown",
+     "finding": "Consortia must comprise a minimum of 2 and maximum of 5 independent legal entities.",
+     "source": {
+      "file": "eic_transition_eligibility.html",
+      "locator": "chunk 1"
+     },
+     "verified": false
+    },
+    {
+     "check": "EIC Transition: Single applicant must be a start-up, SME, or research performing organisation (or spin-off in formation); larger companies not eligible to apply as single legal entity.",
+     "instrumentId": "eic_transition",
+     "status": "met",
+     "finding": "Single applicant must be a start-up, SME, or research performing organisation (or spin-off in formation); larger companies not eligible to apply as single legal entity.",
+     "source": {
+      "file": "eic_transition_eligibility.html",
+      "locator": "chunk 1"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL1: Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+     "instrumentId": "horizon_eu_cl1",
+     "status": "met",
+     "finding": "Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL1: A consortium must include at least three independent legal entities established in three different countries, with at least one in a Member State and at least two others in different Member States/Associated Countries.",
+     "instrumentId": "horizon_eu_cl1",
+     "status": "unknown",
+     "finding": "A consortium must include at least three independent legal entities established in three different countries, with at least one in a Member State and at least two others in different Member States/Associated Countries.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.13"
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU CL1: Applicants subject to EU administrative exclusion sanctions or in exclusion situations (e.g. bankruptcy) cannot participate.",
+     "instrumentId": "horizon_eu_cl1",
+     "status": "met",
+     "finding": "Applicants subject to EU administrative exclusion sanctions or in exclusion situations (e.g. bankruptcy) cannot participate.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.22"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL1: Must join or form a consortium of 3+ independent legal entities from 3+ member/associated states, answering a specific call topic",
+     "instrumentId": "horizon_eu_cl1",
+     "status": "unknown",
+     "finding": "Must join or form a consortium of 3+ independent legal entities from 3+ member/associated states, answering a specific call topic",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU CL3: For IA and RIA actions identified as affected, legal entities established in China are not eligible to participate in any capacity, subject to case-by-case exceptions.",
+     "instrumentId": "horizon_eu_cl3",
+     "status": "met",
+     "finding": "For IA and RIA actions identified as affected, legal entities established in China are not eligible to participate in any capacity, subject to case-by-case exceptions.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.8"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL3: Unless otherwise provided, the consortium must include at least three independent legal entities established in different countries, with at least one in a Member State and two others in different Member States or Associated Countries.",
+     "instrumentId": "horizon_eu_cl3",
+     "status": "unknown",
+     "finding": "Unless otherwise provided, the consortium must include at least three independent legal entities established in different countries, with at least one in a Member State and two others in different Member States or Associated Countries.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.13"
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU CL3: Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+     "instrumentId": "horizon_eu_cl3",
+     "status": "met",
+     "finding": "Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL3: Applicants subject to EU administrative sanctions or in exclusion situations such as bankruptcy, winding-up, or court-administered affairs cannot participate.",
+     "instrumentId": "horizon_eu_cl3",
+     "status": "met",
+     "finding": "Applicants subject to EU administrative sanctions or in exclusion situations such as bankruptcy, winding-up, or court-administered affairs cannot participate.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.22"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL3: Must apply as part of a consortium (typically 3+ independent legal entities from 3+ member/associated states), not as a solo applicant",
+     "instrumentId": "horizon_eu_cl3",
+     "status": "unknown",
+     "finding": "Must apply as part of a consortium (typically 3+ independent legal entities from 3+ member/associated states), not as a solo applicant",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU CL4: For the relevant Innovation Actions and Research and Innovation Actions, legal entities established in China are not eligible to participate in any capacity, subject to case-by-case exceptions.",
+     "instrumentId": "horizon_eu_cl4",
+     "status": "met",
+     "finding": "For the relevant Innovation Actions and Research and Innovation Actions, legal entities established in China are not eligible to participate in any capacity, subject to case-by-case exceptions.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.8"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL4: Unless the call/topic conditions provide otherwise, a consortium must include at least three independent legal entities each established in a different country, with at least one in a Member State and at least two others in different Member States or Associated Countries.",
+     "instrumentId": "horizon_eu_cl4",
+     "status": "unknown",
+     "finding": "Unless the call/topic conditions provide otherwise, a consortium must include at least three independent legal entities each established in a different country, with at least one in a Member State and at least two others in different Member States or Associated Countries.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.13"
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU CL4: Applications for Pre-commercial procurement and PPI actions must fulfil the three-independent-entity criterion, with a minimum of two beneficiaries being independent public procurers each established in a different Member State or Associated Country, and at least one in a Member State.",
+     "instrumentId": "horizon_eu_cl4",
+     "status": "unknown",
+     "finding": "Applications for Pre-commercial procurement and PPI actions must fulfil the three-independent-entity criterion, with a minimum of two beneficiaries being independent public procurers each established in a different Member State or Associated Country, and at least one in a Member State.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.14"
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU CL4: Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+     "instrumentId": "horizon_eu_cl4",
+     "status": "met",
+     "finding": "Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL4: Applicants subject to EU administrative sanctions (exclusion) or in situations such as bankruptcy, winding up, court-administered affairs, arrangement with creditors, or suspended business activities cannot participate.",
+     "instrumentId": "horizon_eu_cl4",
+     "status": "met",
+     "finding": "Applicants subject to EU administrative sanctions (exclusion) or in situations such as bankruptcy, winding up, court-administered affairs, arrangement with creditors, or suspended business activities cannot participate.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.22"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU CL4: Funding flows to a multi-partner consortium, not a single company; must join or form one with 3+ organisations from 3+ member/associated states",
+     "instrumentId": "horizon_eu_cl4",
+     "status": "unknown",
+     "finding": "Funding flows to a multi-partner consortium, not a single company; must join or form one with 3+ organisations from 3+ member/associated states",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU Miss: Legal entities established in China are excluded from participating in any capacity in IA and RIA actions covered by the restriction, subject to case-by-case exceptions.",
+     "instrumentId": "horizon_eu_miss",
+     "status": "met",
+     "finding": "Legal entities established in China are excluded from participating in any capacity in IA and RIA actions covered by the restriction, subject to case-by-case exceptions.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.8"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU Miss: Chinese public universities administered by or under supervision of the Ministry of Industry and Information Technology (MIIT) are not eligible to participate in any action under any part of the Work Programme.",
+     "instrumentId": "horizon_eu_miss",
+     "status": "likely_met",
+     "finding": "Chinese public universities administered by or under supervision of the Ministry of Industry and Information Technology (MIIT) are not eligible to participate in any action under any part of the Work Programme.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.8"
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU Miss: Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+     "instrumentId": "horizon_eu_miss",
+     "status": "met",
+     "finding": "Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11"
+     },
+     "verified": true
+    },
+    {
+     "check": "Horizon EU Miss: The PCP contract notice must specify the intended number of R&D providers, with a minimum of three providers to start the PCP.",
+     "instrumentId": "horizon_eu_miss",
+     "status": "unknown",
+     "finding": "The PCP contract notice must specify the intended number of R&D providers, with a minimum of three providers to start the PCP.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.43"
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU Miss: Projects must focus exclusively on civil applications and must not involve human cloning, heritable genetic modification, or creation of human embryos solely for research.",
+     "instrumentId": "horizon_eu_miss",
+     "status": "likely_met",
+     "finding": "Projects must focus exclusively on civil applications and must not involve human cloning, heritable genetic modification, or creation of human embryos solely for research.",
+     "source": {
+      "file": "horizon_eu_general_annexes_2026_2027.pdf",
+      "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.14"
+     },
+     "verified": false
+    },
+    {
+     "check": "Horizon EU Miss: Must apply as part of a multi-partner consortium (typically 3+ independent legal entities from 3+ different member/associated states), not as a solo company",
+     "instrumentId": "horizon_eu_miss",
+     "status": "unknown",
+     "finding": "Must apply as part of a multi-partner consortium (typically 3+ independent legal entities from 3+ different member/associated states), not as a solo company",
+     "source": {
+      "file": "",
+      "locator": ""
+     },
+     "verified": false
+    }
+   ],
+   "bottomLine": [
+    "Neura Robotics has \u20ac4.3M in traced public funding, a 2022-2025 state aid award, while sector peers Wandercraft and PAL Robotics drew \u20ac25.4M and \u20ac9.5M respectively through EIB debt and Horizon grants.",
+    "At 250+ staff you exceed the EU SME ceiling, so EIC Accelerator and SME-only lanes are closed to you as a solo applicant; EIC Transition stays open but only if you enter as part of a 2-5 entity consortium.",
+    "The Horizon Europe clusters (CL1, CL3, CL4, Mission) and Innovation Fund are your real doors given your scale: multi-partner grants and large capex support built for companies at your size and ticket range.",
+    "Innovation Fund Smart Systems and Products fits your capex profile directly: grants from \u20ac2.5M up to tens of millions for industrial-scale deployment, with no equity attached.",
+    "A Horizon Europe consortium slot commonly returns \u20ac0.5M-\u20ac5M per partner in non-dilutive grant funding, stacked across a multi-year project."
+   ],
+   "institutions": [
+    {
+     "institution": "EIC Transition",
+     "channel": "eic",
+     "supportType": "Grant",
+     "ticket": "Grant up to \u20ac2.5M; equity \u20ac0.5M\u2013\u20ac10M via the EIC Fund",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "Funding and Tender Opportunities Portal; 3-step process (proposal writing, evaluator evaluation, EIC jury interview)",
+     "link": {
+      "url": "https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 660000,
+     "typicalAwardN": 458,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly health & life sciences",
+     "familyName": "EIC (all tracks)",
+     "judgementCriteria": [
+      "Applicant (single legal entity) must be established in a Member State or an Associated Country.",
+      "The proposal must build on results already achieved within an eligible EU-funded project (e.g. EIC Pathfinder, ERC Proof of Concept, certain Horizon 2020/Europe RIAs, EDF civil-application projects, Research Infrastructures actions).",
+      "The proposal must build on results at experimental proof of concept (TRL 3 completed) or technology validated in the lab (TRL 4); other TRLs are not eligible."
+     ],
+     "structuringNotes": [
+      "Grant funding is capped at EUR 2.5 million per project."
+     ],
+     "whyEligible": "You cannot apply solo as a 250+ staff company; entry requires joining as one of 2-5 entities, with an SME or research partner as lead applicant.",
+     "comparableFirms": [
+      {
+       "name": "PAL ROBOTICS SLU",
+       "amount": "\u20ac451K"
+      }
+     ],
+     "nextStep": "Identify an SME or research partner to lead the application and confirm your role as consortium member.",
+     "whyEasy": "Your answers speak to 6 of its 11 documented eligibility rules; 1 comparable company has drawn from EIC Transition.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 1
+    },
+    {
+     "institution": "Horizon EU CL1",
+     "channel": "horizon_eu_pillar_ii",
+     "supportType": "Grant",
+     "ticket": "Typically \u20ac0.5M\u2013\u20ac5M per partner inside a multi-partner consortium",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "EU Funding & Tenders Portal electronic submission system",
+     "link": {
+      "url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 415470,
+     "typicalAwardN": 5012,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly health & life sciences",
+     "familyName": "Horizon Europe Pillar II (all clusters)",
+     "judgementCriteria": [
+      "Applicants must be established in a Member State, Associated Country, or other listed eligible country to be eligible for funding.",
+      "Hungarian public interest trusts established under Hungarian Act IX of 2021 (and entities they maintain) cannot receive EU funding in any funded role.",
+      "Coordination and support actions require beneficiaries/affiliated entities established in a Member State or Associated Country, unless call conditions provide otherwise."
+     ],
+     "structuringNotes": [
+      "Grants must not give a profit to the beneficiary, i.e. surplus of revenues plus EU grant over costs is not allowed.",
+      "Any given action may receive only one grant from the EU budget and the same costs cannot be declared to two different EU actions (no double funding).",
+      "Applications must include a plan for exploitation and dissemination of results including communication activities, unless otherwise provided in call conditions."
+     ],
+     "whyEligible": "Nothing in the screening rules you out, and PAL Robotics and FFT Produktionssysteme have both drawn funding through this cluster at your scale.",
+     "comparableFirms": [
+      {
+       "name": "PAL ROBOTICS SLU",
+       "amount": "\u20ac5.8M"
+      },
+      {
+       "name": "FFT PRODUKTIONSSYSTEME",
+       "amount": "\u20ac1.4M"
+      }
+     ],
+     "nextStep": "Search the EU Funding & Tenders Portal for an open CL1 call topic matching your cognitive systems work.",
+     "whyEasy": "Your answers speak to 9 of its 16 documented eligibility rules; 2 comparable companies have drawn from Horizon EU CL1.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 2
+    },
+    {
+     "institution": "Horizon EU CL4",
+     "channel": "horizon_eu_pillar_ii",
+     "supportType": "Grant",
+     "ticket": "Typically \u20ac0.5M\u2013\u20ac5M per partner inside a multi-partner consortium",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "EU Funding & Tenders Portal electronic submission system",
+     "link": {
+      "url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 381500,
+     "typicalAwardN": 10666,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly semiconductors & electronics",
+     "familyName": "Horizon Europe Pillar II (all clusters)",
+     "judgementCriteria": [
+      "To be eligible as beneficiaries in Coordination and Support Actions, legal entities must be established in a Member State or Associated Country, unless specific call/topic conditions provide otherwise.",
+      "Applicants must be established in an EU Member State, Associated Country, or another eligible country listed in the Annex, or eligibility must otherwise be provided for in the specific call/topic conditions.",
+      "Entities assessed as high-risk suppliers of mobile network communication equipment (and entities they own or control) are not eligible to participate as beneficiaries, affiliated entities, or associated partners in actions concerning European communication networks."
+     ],
+     "structuringNotes": [
+      "Applications for projects that have already been completed will be rejected; ongoing projects are assessed case-by-case with no reimbursement for costs incurred before submission."
+     ],
+     "whyEligible": "This cluster funds digital and industrial technology, including semiconductors and electronics, where your cognitive robotics work fits directly.",
+     "comparableFirms": [
+      {
+       "name": "PAL ROBOTICS SLU",
+       "amount": "\u20ac5.8M"
+      },
+      {
+       "name": "FFT PRODUKTIONSSYSTEME",
+       "amount": "\u20ac1.4M"
+      }
+     ],
+     "nextStep": "Search the EU Funding & Tenders Portal for an open CL4 topic in digital or industrial automation.",
+     "whyEasy": "Your answers speak to 8 of its 15 documented eligibility rules; 2 comparable companies have drawn from Horizon EU CL4.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 3
+    },
+    {
+     "institution": "Horizon EU Miss",
+     "channel": "horizon_eu_pillar_ii",
+     "supportType": "Grant",
+     "ticket": "Typically \u20ac0.5M\u2013\u20ac5M per partner inside a multi-partner consortium",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "EU Funding & Tenders Portal electronic submission system",
+     "link": {
+      "url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 294375,
+     "typicalAwardN": 5365,
+     "aidIntensityN": 0,
+     "descriptor": "Grants",
+     "familyName": "Horizon Europe Pillar II (all clusters)",
+     "judgementCriteria": [
+      "Entities assessed as high-risk suppliers of mobile network communication equipment (and entities they own or control) are not eligible to participate as beneficiaries, affiliated entities or associated partners in actions related to European communication networks.",
+      "Applicants must be established in an eligible country (EU Member States, Associated Countries, or listed low/middle-income countries) to be eligible for funding.",
+      "Hungarian public interest trusts established under Hungarian Act IX of 2021 (and entities they maintain) are not eligible to participate in any funded role."
+     ],
+     "structuringNotes": [
+      "Proposals are scored out of 5 per criterion with an individual threshold of 3 and an overall threshold of 10 across the three criteria to be considered for funding.",
+      "Full applications are subject to page limits (40 pages standard, 25 for Coordination and Support Actions, 65 for Programme co-fund actions) unless the call specifies otherwise.",
+      "In two-stage calls, the threshold for each of the two individual criteria (Excellence, Impact) is 4, with an overall threshold typically set at 8 or 8.5."
+     ],
+     "whyEligible": "Nothing in the screening rules you out, and PAL Robotics and FFT Produktionssysteme have both drawn funding through Horizon mission-track calls.",
+     "comparableFirms": [
+      {
+       "name": "PAL ROBOTICS SLU",
+       "amount": "\u20ac5.8M"
+      },
+      {
+       "name": "FFT PRODUKTIONSSYSTEME",
+       "amount": "\u20ac1.4M"
+      }
+     ],
+     "nextStep": "Search the EU Funding & Tenders Portal for a mission call topic matching your industrial automation work.",
+     "whyEasy": "Your answers speak to 11 of its 16 documented eligibility rules; 2 comparable companies have drawn from Horizon EU Miss.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 4
+    },
+    {
+     "institution": "Horizon EU CL3",
+     "channel": "horizon_eu_pillar_ii",
+     "supportType": "Grant",
+     "ticket": "Typically \u20ac0.5M\u2013\u20ac5M per partner inside a multi-partner consortium",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "EU Funding & Tenders Portal electronic submission system",
+     "link": {
+      "url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 272226,
+     "typicalAwardN": 2420,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly defence & security",
+     "familyName": "Horizon Europe Pillar II (all clusters)",
+     "judgementCriteria": [
+      "Applicants must be established in a Member State of the EU, an Associated Country, or another country listed as eligible for funding (or provided for in call conditions).",
+      "Entities assessed as high-risk suppliers of mobile network communication equipment (and entities they own/control) are not eligible to participate as beneficiaries, affiliated entities, or associated partners in actions subject to 5G-network restrictions.",
+      "Hungarian public interest trusts under Act IX of 2021 (and entities they maintain) cannot receive EU funding as beneficiaries, affiliated entities or other funded roles."
+     ],
+     "structuringNotes": [
+      "Public bodies, research organisations and higher education establishments from Member States/Associated Countries applying as beneficiaries or affiliated entities must have a gender equality plan at grant signature and throughout the grant duration."
+     ],
+     "whyEligible": "Nothing in the screening rules you out, and PAL Robotics and FFT Produktionssysteme have both drawn funding through Horizon Europe clusters at comparable award sizes.",
+     "comparableFirms": [
+      {
+       "name": "PAL ROBOTICS SLU",
+       "amount": "\u20ac5.8M"
+      },
+      {
+       "name": "FFT PRODUKTIONSSYSTEME",
+       "amount": "\u20ac1.4M"
+      }
+     ],
+     "nextStep": "Search the EU Funding & Tenders Portal for an open CL3 call topic, noting its defence and security weighting.",
+     "whyEasy": "Your answers speak to 9 of its 15 documented eligibility rules; 2 comparable companies have drawn from Horizon EU CL3.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 3
+    },
+    {
+     "institution": "ERC POC",
+     "channel": "horizon_eu_pillar_ii",
+     "supportType": "Grant",
+     "ticket": "Typically \u20ac0.5M\u2013\u20ac5M per partner inside a multi-partner consortium",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "EU Funding & Tenders Portal electronic submission system",
+     "link": {
+      "url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 150000,
+     "typicalAwardN": 1087,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly health & life sciences",
+     "familyName": "Horizon Europe Pillar II (all clusters)",
+     "judgementCriteria": [
+      "Entities assessed as high-risk suppliers of mobile network communication equipment (and entities they own/control) are not eligible to participate as beneficiaries, affiliated entities or associated partners in actions related to European communication networks.",
+      "Projects must focus exclusively on civil applications and are barred from certain human cloning/embryo research activities.",
+      "Applications will only be considered eligible if their content corresponds, wholly or in part, to the topic description for which it is submitted."
+     ],
+     "structuringNotes": [
+      "An action may receive only one grant from the EU budget and the same costs may not be declared to two different EU actions (no double funding), except for EU Synergy grants.",
+      "Grants may not generate a profit (surplus of revenues plus EU grant over costs), checked at project end."
+     ],
+     "whyEligible": "Nothing in the screening rules you out, though this line typically funds smaller proof-of-concept extensions of existing research grants rather than industrial-scale deployment.",
+     "comparableFirms": [
+      {
+       "name": "PAL ROBOTICS SLU",
+       "amount": "\u20ac5.8M"
+      },
+      {
+       "name": "FFT PRODUKTIONSSYSTEME",
+       "amount": "\u20ac1.4M"
+      }
+     ],
+     "nextStep": "Confirm whether any of your prior research collaborations hold an underlying ERC grant this could extend.",
+     "whyEasy": "Your answers speak to 9 of its 15 documented eligibility rules; 2 comparable companies have drawn from ERC POC.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 5
+    },
+    {
+     "institution": "Innovation Fund SSP",
+     "channel": "innovation_fund",
+     "supportType": "Grant",
+     "ticket": "Large capex grants: small-scale from \u20ac2.5M, large-scale tens to hundreds of \u20acM",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "Electronic submission via the EU Funding & Tenders Portal Electronic Submission System",
+     "link": {
+      "url": "https://cinea.ec.europa.eu/programmes/innovation-fund_en",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 4043400,
+     "typicalAwardN": 57,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly energy & cleantech",
+     "familyName": "EU Innovation Fund (all lots)",
+     "judgementCriteria": [
+      "Applicants (beneficiaries and affiliated entities) must be legal entities established in an eligible country, which for this call is any country in the world.",
+      "EU bodies, except the Joint Research Centre, cannot be part of the consortium.",
+      "The funded project itself must be physically located in an EU Member State or EEA country (Norway, Iceland, Liechtenstein), with limited allowance for Northern Ireland electricity projects."
+     ],
+     "structuringNotes": [
+      "For topics other than Pilots, proposals with a cost efficiency ratio above 200 EUR/t CO2-eq score zero on that sub-criterion and are rejected.",
+      "The maximum grant amount must not exceed 60% of the eligible relevant costs of the project.",
+      "For the Pilots topic, the maximum Innovation Fund grant for an individual project is capped at EUR 40 million."
+     ],
+     "whyEligible": "Your project scale and co-financing capacity above 50% of project cost match this fund's large capex grants for industrial deployment, with no traced comparable yet in your sub-sector.",
+     "comparableFirms": [],
+     "nextStep": "Prepare a cost-efficiency case ahead of the next call, since grants above \u20ac200/tCO2-eq abatement cost are rejected.",
+     "whyEasy": "Your answers speak to 8 of its 12 documented eligibility rules.",
+     "lastAwardYear": 2025,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 2
+    },
+    {
+     "institution": "Clean Aviation",
+     "channel": "horizon_eu_partnership",
+     "supportType": "Grant",
+     "ticket": "Typically \u20ac0.5M\u2013\u20ac5M per partner, partnership-routed",
+     "country": "EU",
+     "accessMode": "apply",
+     "applicationChannel": "EU Funding & Tenders opportunities portal via published Calls for Proposals",
+     "link": {
+      "url": "https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home",
+      "kind": "programme",
+      "label": "Programme page"
+     },
+     "typicalAward": 653125,
+     "typicalAwardN": 646,
+     "aidIntensityN": 0,
+     "descriptor": "Grants \u00b7 mostly mobility & transport",
+     "familyName": "Horizon Europe partnerships & Joint Undertakings",
+     "judgementCriteria": [
+      "Legal entities established in countries without a concluded or legally effective Horizon Europe Association Agreement may not be selected for CAJU membership.",
+      "Applicants must be established in one of the eligible countries: EU Member States (including outermost regions), Overseas Countries and Territories linked to Member States, countries associated to Horizon Europe, or low- and middle-income countries.",
+      "Grants may be awarded only to participants that can demonstrate sufficient financial capacity to perform their activity throughout the duration of the action, checked via Participant Register documents."
+     ],
+     "structuringNotes": [
+      "For Fast Track Activities, full applications are limited to 50 pages (30 pages for Coordination and Support Actions).",
+      "Unless otherwise provided, full applications are limited to 120 pages (30 pages for Coordination and Support Actions).",
+      "The content of Call 4 is contingent upon progress achieved in Phase 1, with a requirement to reach a minimum TRL 4 by the project end."
+     ],
+     "whyEligible": "Nothing in the screening rules you out, though this partnership funds mobility and transport applications rather than industrial robotics directly.",
+     "comparableFirms": [],
+     "nextStep": "Check the current Clean Aviation call topics for any relevance to your automation or cognitive systems work.",
+     "whyEasy": "Your answers speak to 7 of its 10 documented eligibility rules.",
+     "lastAwardYear": 2026,
+     "stale": false,
+     "verdict": "open",
+     "gatesChecked": 1
+    }
+   ],
+   "positioning": "Frame Neura Robotics against the Commission's push to consolidate research and industrial funding into fewer, larger instruments. DG GROW's proposed European Competitiveness Fund, worth \u20ac234 billion from 2028, folds Horizon Europe into four windows, with Digital leadership at \u20ac51.5 billion and Resilience, security, defence, industry and space at \u20ac125.2 billion. Your cognitive humanoid and cobot systems for industrial automation sit squarely inside the digital and industrial-resilience priorities these windows are built around. Because the window allocations and eligibility rules are still being negotiated with the Council and Parliament, position your Horizon Europe applications now around industrial automation and digital leadership framing, since that alignment is what the successor fund is expected to carry forward. Your scale, 250+ staff and a project ticket of \u20ac15M-\u20ac50M, also matches the profile the Innovation Fund's large-scale industrial window is built for, so frame your capex ask in terms of industrial deployment at scale rather than early-stage R&D, which is the register the GBER rules and the Innovation Fund's own scoring both reward for a company past the SME threshold.",
+   "stateOfPlay": "The Horizon Europe clusters in your table, CL1 and CL4, sit inside a live restructuring: the Commission proposed on 16 July 2025 to fold Horizon Europe's \u20ac175 billion into a new \u20ac234 billion European Competitiveness Fund from 2028, consolidating today's clusters into four policy windows. For CL4 specifically, your digital and industrial automation work would land inside the proposed \u20ac51.5 billion Digital leadership window or the \u20ac125.2 billion Resilience, security, defence, industry and space window, both far larger than CL4's current scope. This means a CL1 or CL4 proposal built today may need to be re-argued against new window criteria once the ECF design is finalised, since eligibility rules and allocations are still being negotiated with the Council and Parliament. The proposed ECF also carries a horizontal InvestEU instrument modelled on a scheme that mobilised nearly \u20ac300 billion over four years, which could reshape how blended grant-and-guarantee packages are structured for large-ticket applicants like you once it launches.",
+   "caveats": "Figures shown are committed amounts from public registers as reported on each instrument's own basis, coverage varies by country, and absence from the database is not proof that no funding was received.",
+   "provenance": {
+    "fields": {
+     "caveats": {
+      "origin": "model",
+      "contract": "BRIEF",
+      "evidence": []
+     },
+     "bottomLine": {
+      "origin": "model",
+      "contract": "BL",
+      "evidence": [
+       "selfLine",
+       "comparables",
+       "institutions"
+      ]
+     },
+     "positioning": {
+      "origin": "model",
+      "contract": "POS",
+      "evidence": [
+       "agendaEvidence",
+       "peopleEvidence",
+       "projectAnswers",
+       "commercialAnswers"
+      ]
+     },
+     "stateOfPlay": {
+      "origin": "model",
+      "contract": "SOP",
+      "evidence": [
+       "recentEvidence",
+       "institutions"
+      ]
+     },
+     "institutions[].whyEligible": {
+      "origin": "model",
+      "contract": "FUND",
+      "evidence": [
+       "institutions",
+       "processes",
+       "eligibilityScreen",
+       "projectAnswers"
+      ]
+     },
+     "institutions[].nextStep": {
+      "origin": "model",
+      "contract": "FUND",
+      "evidence": [
+       "institutions",
+       "processes",
+       "eligibilityScreen",
+       "projectAnswers"
+      ]
+     },
+     "institutions[].blockerPlain": {
+      "origin": "model",
+      "contract": "FUND",
+      "evidence": [
+       "institutions",
+       "processes",
+       "eligibilityScreen",
+       "projectAnswers"
+      ]
+     },
+     "self": {
+      "origin": "code",
+      "evidence": [
+       "matchCompany against the funding record"
+      ]
+     },
+     "eligibilityScreen": {
+      "origin": "code",
+      "evidence": [
+       "evaluateEligibility against encoded gates"
+      ]
+     },
+     "institutions[].institution": {
+      "origin": "code",
+      "evidence": [
+       "displayInstitutionName"
+      ]
+     },
+     "institutions[].supportType": {
+      "origin": "code",
+      "evidence": [
+       "instrument capital type"
+      ]
+     },
+     "institutions[].ticket": {
+      "origin": "code",
+      "evidence": [
+       "curated fund snapshot"
+      ]
+     },
+     "institutions[].comparableFirms": {
+      "origin": "code",
+      "evidence": [
+       "corpus peers on this channel"
+      ]
+     },
+     "institutions[].verdict": {
+      "origin": "code",
+      "evidence": [
+       "verdict.ts, encoded gates only"
+      ]
+     },
+     "institutions[].stale": {
+      "origin": "code",
+      "evidence": [
+       "last recorded award year"
+      ]
+     },
+     "stateOfPlayOffer": {
+      "origin": "fixed",
+      "evidence": [
+       "STATE_OF_PLAY_OFFER"
+      ]
+     }
+    },
+    "exclusions": {
+     "SEL-LARGE-SCALE": 1,
+     "SEL-CHANNEL-CAP": 2,
+     "SEL-CAPITAL": 33,
+     "SEL-COUNTRY": 686,
+     "SEL-NATIONAL-EMPTY": 2,
+     "VER-BLOCKED": 93,
+     "SEL-LEAF-CAP": 9,
+     "CUT-CAP": 1
+    }
+   }
+  },
+  "code": "91b90bce+dirty",
+  "capitalSought": [
+   "grant",
+   "loan"
+  ]
+ }
+]

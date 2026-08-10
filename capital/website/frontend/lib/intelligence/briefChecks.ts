@@ -120,6 +120,46 @@ export interface BriefLimits {
  * sentence four times with the region swapped, and whose `nextStep` is
  * "contact the office to open a dossier" four times.
  *
+ * ── wsDE: THE CATALOGUE IS GONE AND THE CAP DID NOT MOVE ON ONE RUN ────────
+ *
+ * The paragraph below says the eighth row should not be bought "until FUND-3's
+ * test is enforced on that shape". It now is, and the shape it named is fixed:
+ * a run of rows that are the same kind of door states its shared facts once,
+ * and each row carries what is its own. Both things that blocked the eighth
+ * row have been measured clear, and it is STILL SEVEN. Here is everything, so
+ * whoever moves it next is moving it on the evidence rather than on the
+ * argument.
+ *
+ * WHAT IS CLEAR NOW.
+ *   The tail is not a catalogue. Re-rendered at seven rows, SMART Photonics'
+ *   four Dutch rows now turn on the lead-applicant rule, the South Netherlands
+ *   condition and the co-financing line's relation to its sibling, with four
+ *   different bodies to contact. The one sentence they share is said once.
+ *   The writer does not omit at nine. That is the measurement that put
+ *   `WRITER_CANDIDATE_CAP` at 8 rather than 9 in the first place, and it was
+ *   taken on the old flat evidence block. On the grouped block, the company
+ *   that omitted one candidate of eight under wsDC came back covering NINE OF
+ *   NINE, rejected 0, omitted 0, and published a full eight rows.
+ *   The rows past seven are not more repetitive than the rows before them.
+ *   Over 250 founders: a row at rank 8-12 carries a fact no earlier row
+ *   carried on the same axes and at the same rates as a row at rank 2-7
+ *   (its own measured award 98% against 100%, its own conditions 53% against
+ *   56%, how the money is shaped 50% against 56%).
+ *
+ * WHY IT IS STILL SEVEN. One bench run is one bench run, and the observation
+ * it would overturn -- a writer covering 5 of 9 -- is also a real one. Moving
+ * a shipped cap on a single counter-observation is how a short table ships.
+ * The experiment that settles it is small and named: run the archetypes at
+ * institutionsMax 8 and WRITER_CANDIDATE_CAP 9 and read `omitted` on each. If
+ * none omits, the eighth row is worth +2.0 tune / +1.6 holdout on EXACT and
+ * it is now carryable.
+ *
+ * The eighth row was also READ, in that run: it was a partnership from a
+ * family none of the seven above it belonged to, which is width. Its note
+ * hedged ("funds mobility and transport applications rather than industrial
+ * robotics directly"), which is the honest thing to say and is the shape
+ * FUND-6 is about. That is the thing to watch when the cap does move.
+ *
  * THAT IS FUND-3, AND IT IS NOT A ROW-COUNT DEFECT. It is present at six —
  * the six-row Neura render spent four of six slots on one programme — so the
  * seventh row lengthens an existing catalogue rather than creating one, and it
