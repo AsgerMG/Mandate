@@ -36,6 +36,7 @@ import { EXCLUSION_RULES } from "./rules";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit, sectorFitScorer } from "./fit";
 import { blendPoolScores, POOL_BLEND } from "./poolBlend";
+import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
@@ -2518,9 +2519,37 @@ export function materialiseInstrumentTable(
         // "an investor who will take a seat" is a different commitment from
         // "a grant you apply for", and the row should not blur them.
         accessMode: accessMode(leaf),
-        applicationUrl: leaf.application?.url ?? undefined,
-        applicationChannel: leaf.application?.channel ?? undefined,
-        applicationTimeline: leaf.application?.timeline ?? undefined,
+        // ── The one line on a row that is an INSTRUCTION ─────────────────
+        // Resolved through applicationRoute.ts, which decides whose route this
+        // is and whether this fund may assert it. It used to read the merged
+        // value straight off the leaf, so 520 of 736 published routes were a
+        // parent regime's addressee printed as this scheme's own next step --
+        // provincial schemes telling founders to apply to a national minister,
+        // a Bavarian scheme sending them to a Saxon bank.
+        //
+        // `applicationUrl` also changes here, and purely by addition: the
+        // fund's OWN submission column wins over the route's. 88 publishable
+        // rows carry one and every one of them has no curated route, so that
+        // column had never reached a founder at all.
+        ...(() => {
+          const r = resolveRoute({
+            application: leaf.application,
+            applicationOwn: leaf.applicationOwn,
+            ownApplicationUrl: leaf.applicationUrl,
+            administeringBody: leaf.administeringBody,
+            schemeOperators: leaf.schemeOperators,
+            parentName: familyLabel(leaf),
+          });
+          return {
+            applicationUrl: r.url,
+            applicationChannel: r.channel,
+            applicationTimeline: r.timeline,
+            applicationRouteFor: r.recordedFor,
+            applicationRouteUnknown: r.provenance === "withheld" || r.provenance === "none"
+              ? r.withheldBecause ?? "no application route is recorded for this scheme"
+              : undefined,
+          };
+        })(),
         // The channel's curated ticket line describes a whole programme
         // family. This leaf's own median describes what it has really paid,
         // and the two can be an order of magnitude apart: ADEME's curated

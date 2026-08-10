@@ -229,9 +229,18 @@ export interface InstrumentRow {
   structuringNotes?: string[];
   /** Where to apply, when we hold a verified one. */
   applicationUrl?: string;
-  /** Curated application route: how you apply, and when. */
+  /** Curated application route: how you apply, and when. Present only where
+   *  this fund may assert it — see applicationRoute.ts. */
   applicationChannel?: string;
   applicationTimeline?: string;
+  /** Whose route `applicationChannel` is, when it is not this fund's own. The
+   *  row says so rather than presenting a programme's route as a scheme's. */
+  applicationRouteFor?: string;
+  /** Why no route is published, when none is. A route recorded for the parent
+   *  regime that addresses a body this fund is not administered by is withheld
+   *  and reported: an unknown next step stated as unknown beats a confident
+   *  wrong one, and this reads as the DATA defect it is. */
+  applicationRouteUnknown?: string;
   /** Short legal-basis label (e.g. "GBER Art. 25 (R&D aid)"), derived from
    *  this leaf's gber_article_inferred gate when present — see
    *  legalBasisFor() in pipeline.ts. */
@@ -309,6 +318,10 @@ export interface InstitutionEntry {
    *  route, because a row reads as instruction. */
   applicationChannel?: string;
   applicationUrl?: string;
+  /** Whose route it is, when not this fund's own. */
+  applicationRouteFor?: string;
+  /** Why no route is published, when none is. */
+  applicationRouteUnknown?: string;
   /** Where this row points, and what that link actually is. Resolved in code
    *  (instrumentLink.ts): an application portal, a state-aid scheme record, or
    *  the channel's programme page, in that order of usefulness. */

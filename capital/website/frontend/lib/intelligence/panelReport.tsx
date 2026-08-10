@@ -392,14 +392,34 @@ export function InstitutionsTable(
                     It is the only line on the row that is an instruction rather
                     than an assessment, so it renders even when the writer's
                     prose is still streaming. */}
-                {r.applicationChannel && (
+                {r.applicationChannel ? (
                   <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
                     <strong className="font-semibold">How to apply.</strong>{" "}
                     {firstWithRoute.get(r.applicationChannel.trim()) === i
                       ? r.applicationChannel
                       : "The same route as above."}
+                    {/* Whose route it is. A route recorded for the parent
+                        programme is publishable and is NOT this scheme's own
+                        instruction, and the row says which it is rather than
+                        letting the founder assume. */}
+                    {r.applicationRouteFor && (
+                      <em className="not-italic">
+                        {" "}This is the route recorded for {r.applicationRouteFor}. Confirm it
+                        with the body running this scheme before you build to it.
+                      </em>
+                    )}
                   </span>
-                )}
+                ) : r.applicationRouteUnknown ? (
+                  /* An unknown next step stated as unknown. The alternative was
+                     what shipped: a parent regime's addressee printed as this
+                     scheme's instruction, which sends the founder to the wrong
+                     desk with confidence. */
+                  <span className="mt-1 block text-[12px] text-[var(--muted-foreground)]">
+                    <strong className="font-semibold">How to apply.</strong>{" "}
+                    Start by confirming the route with the body that runs this scheme: we hold no
+                    application route recorded for it.
+                  </span>
+                ) : null}
               </td>
               <td className="py-2.5">
                 {r.comparableFirms.length > 0 ? (

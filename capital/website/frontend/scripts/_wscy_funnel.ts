@@ -52,7 +52,7 @@ async function main() {
   } = await import("../lib/intelligence/shortlist");
   const { evaluateEligibility } = await import("../lib/intelligence/eligibility");
   const { ExclusionLog } = await import("../lib/intelligence/exclusions");
-  const { orderMemoCandidates, WRITER_CANDIDATE_CAP } = await import("../lib/intelligence/memoCandidates");
+  const { accessiblePool, orderMemoCandidates, WRITER_CANDIDATE_CAP } = await import("../lib/intelligence/memoCandidates");
   const { BRIEF_LIMITS } = await import("../lib/intelligence/briefChecks");
   const { assessAll } = await import("../lib/intelligence/verdict");
   const { rankerTallyLine, resetRankerTally, semanticFundMatch } = await import("../lib/intelligence/semantic");
@@ -131,7 +131,12 @@ async function main() {
     }
 
     // ── FUNNEL: production's own pool cut and candidate order ───────────────
-    const instrumentTable = applyProfileSignal(hydrated.slice(0, VERDICT_POOL), undefined, undefined);
+    // The cut is taken through `accessiblePool` exactly as runIntelligence
+    // takes it. Running the OLD cut here instead is how the previous tracer
+    // came to report a healthy funnel for a founder receiving nothing: a
+    // diagnostic that builds its own pool grades a path that does not ship.
+    const instrumentTable = applyProfileSignal(
+      accessiblePool(hydrated, eligibility, log).slice(0, VERDICT_POOL), undefined, undefined);
     const poolIds = instrumentTable
       .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
     const eligibilityScreen = evaluateEligibility(eligibility, poolIds.slice(0, DISPLAY_CAP));
