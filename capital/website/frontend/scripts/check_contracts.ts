@@ -25,6 +25,11 @@ import { QUESTION_RULE_IDS } from "../lib/intelligence/questionChecks";
 import { SELECTION_RULE_IDS } from "../lib/intelligence/selectionChecks";
 import { UNENFORCED_RULES } from "../lib/intelligence/unenforcedRules";
 import { REPORT_SCHEMA_FIELDS, EVIDENCE_BLOCKS } from "../lib/intelligence/types";
+// The funnel check below reads the caps themselves, never a copy of them.
+// `memoCandidates` and `shortlist` are model-free and reach no network at
+// import time, which is what keeps this check hermetic.
+import { WRITER_CANDIDATE_CAP } from "../lib/intelligence/memoCandidates";
+import { VERDICT_POOL } from "../lib/intelligence/shortlist";
 
 interface Problem { axis: string; detail: string; }
 
@@ -180,6 +185,53 @@ function main() {
       axis: "row-cap",
       detail: `expected exactly one contract rule to state the published row cap, found ${capStated}. ` +
         `Zero means the writer is never told it; more than one means two copies again.`,
+    });
+  }
+
+  // ── THE FUNNEL MUST NARROW, AND NOTHING ASSERTED THAT IT DID ─────────────
+  //
+  // Five caps stand between the corpus and the published table, and each one
+  // is a separate constant in a separate file:
+  //
+  //     VERDICT_POOL -> WRITER_CANDIDATE_CAP -> institutionsMax -> the floor
+  //
+  // They only work as a funnel if each is STRICTLY wider than the next. A cap
+  // that is narrower upstream than downstream cannot be reached: the pipeline
+  // would cut to a number of rows it never assembled, and the brief would go
+  // short with nothing anywhere saying why. The audit that produced this check
+  // found the ordering correct today and found NOTHING asserting it -- so the
+  // day someone raises the published cap without raising the writer's, the
+  // only symptom is shorter briefs.
+  //
+  // The strictness matters and is not decoration. `WRITER_CANDIDATE_CAP` minus
+  // `institutionsMax` IS the number of candidates the writer may decline
+  // before the table is short, and the writer declines candidates routinely
+  // (`WRT-NO-NOTE`, `WRT-WATCH-ONLY`). At equality that headroom is zero and
+  // every candidate must land, which no measurement here supports.
+  //
+  // Stated over the constants themselves, so a cap moved tomorrow is judged
+  // with no edit here. Each pair names WHY it must hold, because a guard that
+  // only says "3 < 4" teaches the person who trips it nothing.
+  const funnel: { wider: string; wide: number; narrower: string; narrow: number; why: string }[] = [
+    {
+      wider: "VERDICT_POOL", wide: VERDICT_POOL,
+      narrower: "WRITER_CANDIDATE_CAP", narrow: WRITER_CANDIDATE_CAP,
+      why: "the pool is what the writer's candidates are drawn from, and it is " +
+        "spent further by the blocked drop and the display-name dedupe before the cut",
+    },
+    {
+      wider: "WRITER_CANDIDATE_CAP", wide: WRITER_CANDIDATE_CAP,
+      narrower: "BRIEF_LIMITS.institutionsMax", narrow: BRIEF_LIMITS.institutionsMax,
+      why: "a candidate the writer never wrote a note for cannot be published, so the " +
+        "difference is the number of candidates it may decline before the table goes short",
+    },
+  ];
+  for (const f of funnel) {
+    if (f.wide > f.narrow) continue;
+    problems.push({
+      axis: "row-cap",
+      detail: `${f.wider} is ${f.wide} and ${f.narrower} is ${f.narrow}. The funnel must narrow ` +
+        `strictly at every step: ${f.why}.`,
     });
   }
 

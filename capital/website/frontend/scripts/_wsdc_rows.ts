@@ -171,7 +171,13 @@ async function main() {
     const poolIds = instrumentTable
       .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
     await hydrateGatesFor(poolIds);
-    const eligibilityScreen = evaluateEligibility(f.eligibility as never, poolIds.slice(0, DISPLAY_CAP));
+    // Production scopes the ease SIGNAL to the whole pool and the FOUNDER-FACING
+    // table to `DISPLAY_CAP`; `SCREEN=head` replays the single shared scope as
+    // it stood before that split, so the two are one replay apart and
+    // comparable. Never reimplemented -- the same `evaluateEligibility`
+    // production calls, with the same argument production passes.
+    const eligibilityScreen = evaluateEligibility(f.eligibility as never,
+      process.env.SCREEN === "head" ? poolIds.slice(0, DISPLAY_CAP) : poolIds);
     const { ordered } = orderMemoCandidates({
       instrumentTable,
       req: {

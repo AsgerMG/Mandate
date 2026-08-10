@@ -1487,11 +1487,15 @@ export function selectLeafInstruments(input: LeafSelectionInput): DbInstrument[]
 export const DISPLAY_CAP = 6;
 
 /** How many distinct funding channels to put in play before leaf selection.
- *  Each contributes at most two leaves, and everything downstream only ever
- *  removes rows. */
+ *  Each contributes up to `POOL_LEAVES_PER_CHANNEL` leaves, and everything
+ *  downstream only ever removes rows.
+ *
+ *  This doc said "at most two leaves" for as long as the two-per-channel rule
+ *  had been deleted. A comment restating a cap is the cap's second copy: the
+ *  number is named in ONE place and read from there, here as everywhere. */
 export const MIN_CHANNELS_CONSIDERED = 7;
 
-// The pool synthesize() screens before cutting to the five shown. Deliberately
+// The pool synthesize() screens before cutting to the published cap. Deliberately
 // wider than DISPLAY_CAP: funds a founder cannot access are dropped AFTER
 // assessment, so a pool of six meant a founder blocked on three of them got a
 // three-row brief while perfectly good candidates at rank seven were never
@@ -1915,10 +1919,11 @@ export function selectInstrumentRows(input: InstrumentTableInput): RowSelection[
   // Channels are ordered by how well they fit THIS founder, not by a fixed list.
   //
   // DEFAULT_INSTRUMENTS is a priority order -- national_dev_banks, state_aid_satr,
-  // eic, horizon_eu_pillar_ii, eit -- and rows are taken channel by channel, two
-  // per channel, against a display cap of six. The first three channels
-  // therefore consumed every row and Horizon Pillar II could never reach the
-  // table for ANY founder.
+  // eic, horizon_eu_pillar_ii, eit -- and rows WERE taken channel by channel, two
+  // per channel, against the display cap. The first three channels therefore
+  // consumed every row and Horizon Pillar II could never reach the table for ANY
+  // founder. Past tense throughout: that selection no longer exists, and this
+  // paragraph is here for the defect, not as a description of the code.
   //
   // Measured by replaying real recipients: across 47 cases where the right fund
   // was in the pool but not shown, it was horizon_eu_pillar_ii in 39 of them,
@@ -2408,10 +2413,13 @@ export function materialiseInstrumentTable(
   // write EUR 219k cheques, having just asked them how much they needed.
   //
   // Ticket fit did exist, but only in `selectLeafInstruments`, which is close
-  // to inert: POOL_LEAVES_PER_CHANNEL admits 90 leaves per channel against a
-  // widest real group of 87, so nearly every candidate survives leaf ranking
-  // and this sort re-orders them on theme and sector alone. (The figure in this
-  // comment said 40 for as long as the constant did not.)
+  // to inert: POOL_LEAVES_PER_CHANNEL sits far above the widest real group
+  // (`check_leaf_cap.ts` prints both, and fails the build when the gap closes),
+  // so nearly every candidate survives leaf ranking and this sort re-orders
+  // them on theme and sector alone. (This comment named the figure, and said 40
+  // for as long as the constant did not, then 90 for as long as it did not
+  // again. The number now lives only where it is defined and where a check
+  // reads it.)
   //
   // Scored on ORDER OF MAGNITUDE, reusing the same rule as the leaf scorer: a
   // EUR 20k median is not a route to EUR 1M however well it matches
@@ -2618,11 +2626,11 @@ export function materialiseInstrumentTable(
       return (a.instrumentId ?? "").localeCompare(b.instrumentId ?? "");
     });
   // One row per institution NAME. 322 instruments share only 143 display
-  // names, and selectLeafInstruments returns up to two leaves per channel,
+  // names, and selectLeafInstruments returns many leaves from one channel,
   // so a founder could see "Enterprise Ireland" or "Norges Forskningsrad"
   // twice in the same table — which reads as a bug even when both rows are
   // real. Resolved here rather than at the call sites so the preliminary
-  // verdict table and the memo's five institutions can never disagree.
+  // verdict table and the memo's published institutions can never disagree.
   // Keep the leaf that can actually say something: the one with the most
   // ENCODED eligibility rules. First-wins looked right but is not — the sort
   // above orders by fit and channel priority, which knows nothing about

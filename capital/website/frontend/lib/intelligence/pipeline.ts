@@ -808,7 +808,11 @@ async function synthesize(
   // then ticket proximity, then event count) survives as the tie-break: rows
   // with no ease signal at all keep their original position.
   const { toWriter, easeById, assessments, droppedBlocked, isStale } = orderMemoCandidates({
-    instrumentTable, req, records, dbPeers, eligibilityScreen, semanticScores, log,
+    // The SIGNAL scope, not the rendered one: every row this call scores for
+    // ease must be a row the screen could have disqualified. See where the two
+    // are computed for what sharing one scope was costing.
+    instrumentTable, req, records, dbPeers, eligibilityScreen: eligibilitySignal,
+    semanticScores, log,
   });
   const baseRows = toWriter.map((r) => r.row);
   const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
@@ -831,8 +835,10 @@ async function synthesize(
   // (whyEligible/nextStep still "" here — the client renders those as
   // placeholders until the final "report" event replaces this).
   // Preview only the rows that could actually ship. The writer is shown more
-  // candidates than are published, and streaming all of them would flash eight
-  // rows that then collapse to five.
+  // candidates than are published -- `check_contracts.ts` fails the build if it
+  // ever is not -- and streaming all of them would flash a table that then
+  // collapses to the published cap. Both numbers were written out here and both
+  // were wrong within a day of the caps moving.
   emit({ type: "partial", data: {
     self, eligibilityScreen, institutions: institutions.slice(0, BRIEF_INSTITUTION_CAP),
     withheld: withheldNotice(log.countsByRule()["SEL-UNCONFIRMED-OPEN"] ?? 0),
@@ -1213,7 +1219,12 @@ async function synthesize(
   return {
     self,
     eligibilityScreen,
-    bottomLine: narrative.bottomLine.slice(0, 5).map((b) => deDash(b)),
+    // Read, never retyped. This was a literal 5 -- a private copy of
+    // `bulletMax`, which BL-1 states to the writer and `checkBrief` enforces,
+    // sitting in the one place that actually TRUNCATES. Structurally the same
+    // defect as the three independent fives that made the memo discard a row
+    // the screen had already built.
+    bottomLine: narrative.bottomLine.slice(0, BRIEF_LIMITS.bulletMax).map((b) => deDash(b)),
     institutions: finalInstitutions,
     positioning: deDash(narrative.positioning),
     stateOfPlay: deDash(narrative.stateOfPlay),

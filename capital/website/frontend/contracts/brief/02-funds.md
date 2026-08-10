@@ -32,7 +32,7 @@ reporting, not prose to publish. Say what the row is and let it stand.
 
 - FUND-1 (hard) At least one row publishes. An empty table is never the answer
   while any door is open.
-- FUND-2 (hard) At most six rows.
+- FUND-2 (hard) At most seven rows.
 
   This number is generated from `BRIEF_LIMITS.institutionsMax`, which is also
   what the cut in the pipeline slices to and what the check enforces.
@@ -45,7 +45,8 @@ reporting, not prose to publish. Say what the row is and let it stand.
   the same next step.
 
   **evidence:** a brief published two Horizon clusters whose whyEligible and
-  Move were identical sentences, spending two of five slots to say one thing.
+  Move were identical sentences, spending two of the table's slots to say one
+  thing.
 - FUND-4 (hard) `nextStep` is an action the founder can start.
 
   The test: **could they begin it this week, and would they know they had
@@ -80,7 +81,7 @@ reporting, not prose to publish. Say what the row is and let it stand.
   scheme whose own statutory title mentions the ministry, published via the
   agency that grants under it, sends the founder somewhere real.
 
-  **evidence:** a six-row brief rendered in a browser published four German
+  **evidence:** a full-length brief rendered in a browser published four German
   scheme titles ending in the notifying ministry's file reference. The check
   was a regex anchored to the start of one field; it returned clean on every
   one of them, and on the ministries themselves, whose names are compounds.

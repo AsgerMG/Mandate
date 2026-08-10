@@ -59,7 +59,7 @@ export interface LeafCapVerdict {
  *
  * EU-wide instruments are added to EVERY country's count, because
  * `instrumentServesCountry` admits them for every founder — they are not a
- * separate lane, they are part of each country's competition for the same 90
+ * separate lane, they are part of each country's competition for the same
  * slots. Missing that is how a per-country count can look safe while the set
  * the cap actually sees is larger.
  */
