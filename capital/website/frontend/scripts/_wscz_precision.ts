@@ -88,21 +88,31 @@ async function main() {
   const corpus = loadDbInstruments();
   const offerable = new Set(publishableInstruments().map((i) => i.id));
 
-  // Which instruments are contradicted, on THIS corpus.
-  const contradicted = new Set<string>();
-  for (const inst of corpus) {
-    const ev = evidence.records[inst.id];
-    if (!ev || !ev.described) continue;
-    const claims = dominantClass(inst.sectorMix);
-    if (!claims || claims === "other") continue;
+  // ── The set must be ARM-INVARIANT, or the metric measures itself ─────────
+  // The first version of this defined the set as "instruments whose PUBLISHED
+  // MIX contradicts their recipients". That set is empty by construction after
+  // the correction, so it reported 8.0% -> 0.0% while the rows in question had
+  // not moved at all. A precision metric whose subject is redefined by the
+  // change it is measuring is not evidence.
+  //
+  // So the set is defined from the RECIPIENTS ONLY -- funds whose awards went
+  // mostly to officially non-technology businesses. That is a fact about the
+  // register, identical in both arms, and it is what a founder is actually
+  // harmed by being shown.
+  const nonTechnologyFund = new Set<string>();
+  for (const [id, ev] of Object.entries(evidence.records)) {
+    if (!ev.described) continue;
     let nonTech = 0;
     for (const [d, n] of Object.entries(ev.activities)) {
       if (namesNonTechnologyActivity(d)) nonTech += n;
     }
-    if (nonTech / ev.described > 0.5) contradicted.add(inst.id);
+    if (nonTech / ev.described > 0.5) nonTechnologyFund.add(id);
   }
-  console.log(`contradicted instruments on this corpus: ${contradicted.size} `
-    + `(${[...contradicted].filter((id) => offerable.has(id)).length} of them offerable)`);
+  const contradicted = nonTechnologyFund;
+  void dominantClass;
+  console.log(`funds whose recipients are majority officially NON-TECHNOLOGY: `
+    + `${contradicted.size} (${[...contradicted].filter((id) => offerable.has(id)).length} offerable) `
+    + `-- identical in both arms by construction`);
 
   const { file: setFile, rows: all } = loadRecallSet();
   const split = process.env.SPLIT ?? "tune";
@@ -125,8 +135,13 @@ async function main() {
   let badRows = 0;
   let rowsShown = 0;
   const worst: string[] = [];
+  let techFounders = 0;
   for (const t of sample) {
     resetGateHydration();
+    // Only a TECHNOLOGY founder is harmed by being shown one of these. An
+    // `other` founder being offered a film fund is the system working.
+    if (!t.sector || t.sector === "other") continue;
+    techFounders++;
     const f = founderIntake(t, policy);
     const v = await computeVerdict(f.company, f.country, f.eligibility as never, {
       ...f.opts, log: new ExclusionLog(),
@@ -147,10 +162,10 @@ async function main() {
   }
   console.log(rankerTallyLine());
   console.log(`set=${setFile} split=${split} replayed ${sample.length}`);
-  const pctT = 100 * tablesWithBadRow / sample.length;
-  console.log(`\n██ founders shown at least one CONTRADICTED fund in their top 5: `
-    + `${tablesWithBadRow}/${sample.length} (${pctT.toFixed(1)}% `
-    + `+/-${halfWidth(tablesWithBadRow, sample.length).toFixed(1)})`);
+  const pctT = 100 * tablesWithBadRow / Math.max(1, techFounders);
+  console.log(`\n██ TECHNOLOGY founders shown at least one non-technology fund in `
+    + `their top 5: ${tablesWithBadRow}/${techFounders} (${pctT.toFixed(1)}% `
+    + `+/-${halfWidth(tablesWithBadRow, techFounders).toFixed(1)})`);
   console.log(`   contradicted rows published: ${badRows} of ${rowsShown} rows shown `
     + `(${(100 * badRows / Math.max(1, rowsShown)).toFixed(2)}%)`);
   for (const w of worst) console.log(`     ${w}`);

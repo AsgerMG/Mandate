@@ -1,0 +1,25 @@
+===== PRECISION (arm-invariant) — BEFORE =====
+ranker: all 235 request(s) on EMBEDDING
+██ TECHNOLOGY founders shown at least one non-technology fund in their top 5: 25/240 (10.4% +/-3.9)
+   contradicted rows published: 25 of 1200 rows shown (2.08%)
+     Efuzif (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     TopQM-Systems AG (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     ASINCO GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     comuneo UG (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     BRIGTHTFLOW (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     ANAXAGO (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     Autobahn Security GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     SYSGO GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+
+===== PRECISION (arm-invariant) — AFTER =====
+ranker: all 235 request(s) on EMBEDDING
+██ TECHNOLOGY founders shown at least one non-technology fund in their top 5: 25/240 (10.4% +/-3.9)
+   contradicted rows published: 25 of 1200 rows shown (2.08%)
+     Efuzif (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     TopQM-Systems AG (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     ASINCO GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     comuneo UG (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     BRIGTHTFLOW (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     ANAXAGO (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     Autobahn Security GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     SYSGO GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe

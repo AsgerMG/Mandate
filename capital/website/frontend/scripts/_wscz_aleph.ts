@@ -83,7 +83,22 @@ async function main() {
     records: [], dbPeers, eligibilityScreen, semanticScores: semantic, log,
   });
 
+  // Where the row sits in the FULL ranking, before any cut -- the number that
+  // says whether the corpus correction moved it at all.
+  const fullRank = new Map<string, number>();
+  hydrated.forEach((r, i) => { if (r.instrumentId) fullRank.set(r.instrumentId, i + 1); });
+  const filmish = loadDbInstruments().filter((i) =>
+    /Film|Fernseh|audiovis|medienboard|industries techniques|Screen Flanders/i.test(i.name));
   console.log(rankerTallyLine());
+  console.log(`\nranked candidates: ${hydrated.length}`);
+  console.log(`audiovisual instruments in this founder's FULL ranking:`);
+  for (const f of filmish.sort((x, y) => (fullRank.get(x.id) ?? 1e9) - (fullRank.get(y.id) ?? 1e9)).slice(0, 6)) {
+    const mix = f.sectorMix ?? {};
+    const tot = Object.values(mix).reduce((a, b) => a + b, 0);
+    const dom = tot ? Object.entries(mix).sort((a, b) => b[1] - a[1])[0] : null;
+    console.log(`   rank ${String(fullRank.get(f.id) ?? "absent").padStart(5)}  `
+      + `mix ${dom ? `${dom[0]} ${(100 * dom[1] / tot).toFixed(0)}%` : "none"}  ${f.name.slice(0, 52)}`);
+  }
   console.log(`\n${c.company} (${c.country}) — the rows the writer is handed\n`);
   ordered.forEach((cand, idx) => {
     const id = cand.row.instrumentId as string;
