@@ -1243,6 +1243,58 @@ export const ANSWER_USE: Record<keyof EligibilityAnswers, AnswerUse> = {
   foundedYear: { ranks: false, reason: "unreachable (FIELD_REACH), and its specs mixed ages with calendar years in one numeric field. Quarantined by workstream AX" },
 };
 
+/**
+ * How to SAY each intake field to a model, in the founder's third person.
+ *
+ * ── Why a Record and not a list inside the prompt builder ─────────────────
+ * The selector's first version carried a fixed list of fifteen `say(...)`
+ * calls. Three of those fields can never be non-empty (`FIELD_REACH` declares
+ * them unreachable or staged), eight more were empty at the moment it ran, and
+ * two fields that PROVABLY rank — `sector` and `entityCountries`, both
+ * `ranks: true` in ANSWER_USE — were not on the list at all. A hand-kept list
+ * of what to show a model is the same defect class as a hand-kept object
+ * literal: `check_answer_reach.ts` exists because two copies of one mapping
+ * drifted and the memo lost two of screen one's six questions.
+ *
+ * Keyed on `keyof EligibilityAnswers`, so the compiler refuses a new intake
+ * field until someone has said how to pronounce it. What is RENDERED is then a
+ * property, not a register: every field the founder actually answered, and
+ * nothing else. A field nobody has answered prints nothing, so there is no way
+ * to accumulate empty labels again.
+ *
+ * These are our own words for our own questions, not founder prose, so they
+ * are trusted and need no fencing. The VALUES are vocabulary-contract options,
+ * country names and numbers — also ours.
+ */
+export const ANSWER_LABEL: Record<keyof EligibilityAnswers, string> = {
+  ticketBand: "how much they are looking for",
+  sector: "what they build",
+  useOfFunds: "what the money is for",
+  region: "region",
+  consortium: "able to run in a 3+ partner consortium",
+  entityCountries: "countries where they already have an entity",
+  organisationType: "kind of organisation",
+  developmentStage: "stage",
+  fteBand: "headcount",
+  turnoverBand: "turnover",
+  balanceBand: "balance sheet",
+  foundedYear: "founded",
+  activityCountries: "where the funded work will physically sit",
+  activities: "regulated activities they are in",
+  exclusionFlags: "aid-law exclusions they declared",
+  lossesOverHalfCapital: "accumulated losses over half of subscribed capital",
+  ownerOver25: "a single owner holding more than 25%",
+  institutionalOwner: "a public body among the owners",
+  nonEuControl: "controlled from outside the EU",
+  cofinancingBand: "co-financing they can put up",
+  institutionalBacking: "institutional investors aboard",
+  bankRelationship: "a bank that would lend if guaranteed",
+  borrowerModel: "how they would borrow",
+  wouldOpenEntity: "would open a local entity",
+  conditionality: "conditions they would accept",
+  needBy: "when they need it",
+};
+
 /** Fields resolved on the opening form — never re-asked adaptively.
  *  DERIVED from FIELD_REACH so the two cannot disagree; this was a second
  *  hand-maintained list of the same fact. */

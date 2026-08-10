@@ -12,6 +12,7 @@ import { instrumentLink } from "./instrumentLink";
 import { assessAll } from "./verdict";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
+import { agentSelectMemoPool } from "./agentSelect";
 import { recordUsage } from "./cost";
 import { recordEvent } from "./telemetry";
 import { discoverAndResearch } from "./research";
@@ -1652,10 +1653,35 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   // ranking this is the same eighteen rows in the same order, and no row that
   // reaches the founder today can stop reaching them.
   const accessible = accessiblePool(hydratedTable, req.eligibility, log);
-  const instrumentTable = applyProfileSignal(
-    accessible.slice(0, VERDICT_POOL),
-    req.profileSignal,
-    req.companyType,
+  // ── wsDL: THE MODEL IN THE SELECTION SEAT, ON THE PATH THE MEMO TAKES ────
+  //
+  // wsDD placed this call in `computeVerdict`, which reorders the fast-path
+  // table. Nothing downstream of a founder's brief reads that table: this
+  // function rebuilds its own pool and hands it to `orderMemoCandidates`,
+  // which sorts on verdict rank and breaks every tie on the pool's incoming
+  // index. So the model's ranking was discarded before a word was written.
+  // Here it is not: the order of this array IS the order inside each
+  // qualification band, and that is what the writer is shown and what gets
+  // published.
+  //
+  // AFTER the cut, deliberately. This permutes `VERDICT_POOL` rows that were
+  // already selected and already cleared; it cannot add, drop or re-gate one,
+  // so the pool is the same SET it has always been and the pool metric cannot
+  // move. Reaching deeper would mean reordering `accessible` BEFORE the slice,
+  // which changes which rows hold a seat -- a membership change, and a gain
+  // measured against a moving pool is not evidence. See agentSelect.ts.
+  //
+  // Arm off (the default) returns `instrumentTable` by reference before any
+  // work is done, so the shipped path is identical to the one that existed
+  // before this call. `scripts/_wsdl_equiv.ts` asserts that rather than
+  // asserting it in prose.
+  const instrumentTable = await agentSelectMemoPool(
+    applyProfileSignal(
+      accessible.slice(0, VERDICT_POOL),
+      req.profileSignal,
+      req.companyType,
+    ),
+    req,
   );
   // FUND-1's other half. An empty table is never the answer while any door is
   // open -- and where none is, the brief has to SAY SO and say what would
