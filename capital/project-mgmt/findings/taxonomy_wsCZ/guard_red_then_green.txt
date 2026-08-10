@@ -1,0 +1,28 @@
+### RED: the property with no debt allowance, on the corpus as it ships today
+  100% of 174 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 77%  —  Fonds d'investissement en faveur du secteur de l’audiovisuel
+  100% of 77 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 71%  —  Bayerische Richtlinien für die Förderung von Film-, Fernseh-
+  100% of 71 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 67%  —  Soutien à la modernisation des industries techniques et à l'
+  96% of 45 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 69%  —  Bayerische Richtlinien für die Förderung von Film-, Fernseh-
+  91% of 43 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 56%  —  Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB
+  80% of 46 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 63%  —  Screen Flanders
+  60% of 40 awards went to "SECTION S – ARTS, SPORTS AND RECREATION"
+      but the mix reads software_data_ai 63%  —  Régime cadre exempté de notification relatif aux aides à la 
+
+FAIL: 7 of 360 instruments claim a technology sector their own recipients contradict (pinned 0).
+  A fund whose recipients are officially outside technology must not read as a
+  technology fund — that is how an AI company was published a film and television
+  scheme. Fix the classification, not this number.
+  See ETL/events/transform/classify_taxonomy.py :: technology_veto.
+exit=1
+
+### GREEN: same code, same pin of 0, on the CORRECTED corpus
+check_sector_evidence: reading /tmp/wscz_after.json (SNAPSHOT_FILE), NOT the committed snapshot.
+
+ok — 0 of 336 instruments claim a technology sector their own recipients contradict (pinned 0)
+exit=0

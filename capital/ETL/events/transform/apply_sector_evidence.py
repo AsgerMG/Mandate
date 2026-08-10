@@ -69,51 +69,86 @@ def instrument_key(source: str, authority: str | None, call_id: str | None) -> N
 
 
 def recount_mix(conn: sqlite3.Connection, vetoed: dict[int, str]) -> dict[str, dict]:
-    """Rebuild every instrument's recipient sector counts, before and after.
+    """The veto, applied to the PUBLISHED mix as a delta. Never a rebuild.
 
-    The mix is counted off the SAME join the loader counts it off -- one vote
-    per award, by the recipient's sector -- so the two columns are comparable.
-    Instruments are identified by replaying the loader's own id construction is
-    not possible here without its full state, so the mapping is taken from the
-    scheme code and granting authority that the built row already carries."""
+    ── Why this is a delta and not a recount, which cost a whole measurement ──
+    The first version of this rebuilt each instrument's mix from its own join
+    over `public_funding_events`. It looked equivalent and was not: the loader
+    withholds ONE vote per replayed company (`leaked_company` in
+    populate_funding_instruments.py), because the recall harness grades the
+    ranking by replaying companies out of the very table the mix is counted
+    from, and a test company voting for its own answer is an answer key.
+
+    A rebuild that does not reproduce that withholding puts the recall set back
+    into the signal. Measured: 187 of 291 instruments came out with a different
+    TOTAL award count, one of them 4,477 against the published 1,407. The A/B
+    then differed in the leak as well as in the veto, and two founders lost the
+    fund they had actually won -- which is precisely the outcome this whole
+    workstream exists to avoid.
+
+    So the mix is never recomputed. Each vetoed company's votes are MOVED from
+    the technology sector it claimed to `other`, within the published counts,
+    and every other count is left exactly as the loader wrote it. Whatever the
+    loader excluded stays excluded, because it is never consulted."""
     inst = conn.execute("""
-        SELECT id, parent_id, scheme_code, administering_body, sector_mix,
-               source_family_bucket, name, event_count
+        SELECT id, scheme_code, administering_body, sector_mix, name, event_count
         FROM funding_instruments
     """).fetchall()
-    # (scheme_code, administering_body) -> instrument id, for the scheme children
-    # the split produces. Only children carry a scheme_code.
+    # (scheme_code, administering_body) -> instrument id. Only the scheme
+    # children the split produces carry a scheme_code, and they are the rows
+    # whose mix is their own rather than inherited.
     by_scheme: dict[tuple[str, str], str] = {}
-    for iid, _pid, scheme, body, _mix, _fam, _name, _n in inst:
+    for iid, scheme, body, _mix, _name, _n in inst:
         if scheme and body:
             by_scheme[(scheme, body)] = iid
-    counts: dict[str, Counter] = defaultdict(Counter)
-    moved: dict[str, int] = Counter()
+    # Per instrument, how many of ITS awards went to a vetoed company, and
+    # which sector each of those awards had been voting for.
+    moved_from: dict[str, Counter] = defaultdict(Counter)
     q = conn.execute("""
-        SELECT e.call_id, e.granting_authority, e.company_id, co.sector_top
-        FROM public_funding_events e
-        LEFT JOIN companies co ON co.id = e.company_id
-        WHERE e.is_duplicate = 0 AND e.call_id IS NOT NULL
-          AND e.granting_authority IS NOT NULL
+        SELECT call_id, granting_authority, company_id
+        FROM public_funding_events
+        WHERE is_duplicate = 0 AND call_id IS NOT NULL
+          AND granting_authority IS NOT NULL
     """)
-    for call_id, authority, cid, top in q:
+    for call_id, authority, cid in q:
+        claimed = vetoed.get(cid)
+        if not claimed:
+            continue
         iid = by_scheme.get((call_id, (authority or "")[:200]))
-        if not iid or not top:
-            continue
-        if cid in vetoed:
-            counts[iid]["other"] += 1
-            moved[iid] += 1
-        else:
-            counts[iid][top] += 1
+        if iid:
+            moved_from[iid][claimed] += 1
     out: dict[str, dict] = {}
-    for iid, _pid, _scheme, _body, mix_s, _fam, name, n in inst:
-        if iid not in counts or not moved.get(iid):
+    for iid, _scheme, _body, mix_s, name, n in inst:
+        deltas = moved_from.get(iid)
+        if not deltas or not mix_s:
             continue
-        before = json.loads(mix_s) if mix_s else {}
-        after = dict(counts[iid].most_common(MIX_KEEP))
+        before = json.loads(mix_s)
+        after = dict(before)
+        moved = 0
+        for sector, k in deltas.items():
+            have = after.get(sector, 0)
+            # The published count is the authority. A vetoed company may have
+            # cast fewer votes here than the raw join suggests -- the loader
+            # withheld some -- so never move more than the column holds.
+            take = min(have, k)
+            if not take:
+                continue
+            after[sector] = have - take
+            moved += take
+        if not moved:
+            continue
+        after["other"] = after.get("other", 0) + moved
+        after = {s: c for s, c in after.items() if c > 0}
+        # Nothing is created or destroyed: a vote only moves sector -> other.
+        assert sum(after.values()) == sum(before.values()), iid
+        # The loader keeps only the commonest MIX_KEEP sectors, so a mix that
+        # gains `other` as a new class can push a tail class out. Truncate the
+        # same way it does, AFTER the conservation check -- the check is about
+        # the move, the truncation is about the column's published shape.
+        after = dict(Counter(after).most_common(MIX_KEEP))
         if before == after:
             continue
-        out[iid] = {"name": name, "events": n, "moved": moved[iid],
+        out[iid] = {"name": name, "events": n, "moved": moved,
                     "before": before, "after": after}
     return out
 
