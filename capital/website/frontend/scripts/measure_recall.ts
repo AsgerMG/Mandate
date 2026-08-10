@@ -30,6 +30,27 @@
 //   REGION=any npx tsx scripts/measure_recall.ts
 //   SET=__recallSet.json npx tsx scripts/measure_recall.ts  # retired, says so
 //
+// ── THE DEBUG LOOP (wsDN) ──────────────────────────────────────────────────
+// This file used to write NOTHING per case and had no way to re-run a CHOSEN
+// founder, so a miss cost a full re-run to investigate and still came back as a
+// percentage. Three knobs fix that, and all three are free:
+//
+//   OUT=/tmp/recall.json  write the per-case tape: the candidates as the model
+//                         saw them, the picks, the won fund's rank at every
+//                         stage, the founder context that built the prompt, and
+//                         a failure CLASS per miss. Also turns on the "WHY IT
+//                         MISSED" table. Without it, nothing is written.
+//   CASE=<caseId>         re-run ONE founder. `caseId` is `company::instrument`
+//                         and is printed on every miss line, so a miss you can
+//                         see is a miss you can re-run. `N=1` is NOT this: it
+//                         gives the first row of the shuffle.
+//   COMPANY=<prefix>      every case for one company.
+//
+// Every run now prints its ARM -- which of the four levers (retrieval, founder
+// answers, fund evidence, instructions) is off default and at what value -- and
+// its cache hit rate, so no figure can be quoted without the conditions that
+// produced it. See `scripts/rankerTape.ts` and `scripts/rankerCache.ts`.
+//
 //   POP=region_known REGION=off    npx tsx scripts/measure_recall.ts  # A
 //   POP=region_known REGION=strict npx tsx scripts/measure_recall.ts  # B
 //
@@ -116,12 +137,26 @@ import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic"
 import {
   founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
 } from "./founderIntake";
+import { cacheTallyLine } from "./rankerCache";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import {
   answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
   partitionByOfferable, reattributeMissingAnswers, REGIME_AT_5_NOT_COMPARABLE,
   type AnswerMode,
 } from "./recallSet";
+// ── THE THREE THINGS A SCALAR CANNOT CARRY ────────────────────────────────
+// This file wrote NOTHING per case: every counter was a scalar, there was no
+// `OUT=`, and no way to select one founder. So a miss could only be
+// investigated by re-running the whole sample and paying again -- and the
+// re-run still reported a percentage, which is not a diagnosis. `rankerTape.ts`
+// adds the three: a per-case tape, an arm that names which lever was moved, and
+// a failure taxonomy that says whether the won fund was never retrieved, lost
+// to a sibling, ranked low, or in the wrong family. See its header.
+import {
+  armId, armLine, classify, leversFromEnv, LEVER_FOR, taxonomyLine, taxonomyTable,
+  writeTape, type TapeCase,
+} from "./rankerTape";
+import { readTrace, traceOn, traceReset } from "../lib/intelligence/tableTrace";
 
 async function main() {
   await hydrateDbInstruments();
@@ -215,14 +250,52 @@ async function main() {
     throw new Error(
       `no rows match split=${split} mode=${mode ?? "any"} country=${country ?? "any"}`);
   }
+  // ── ONE FOUNDER, CHOSEN. The debug loop's smallest unit ───────────────────
+  // There was no way to re-run a CHOSEN case. The smallest unit was `N=1`,
+  // which gives the first row of the SHUFFLE -- a different founder under a
+  // different seed, and never the one whose miss you are trying to explain. So
+  // the loop was: see a miss in aggregate, have no way to reach it, re-run
+  // everything. `scripts/_wscz_aleph.ts:16` and `scripts/_wsde_prompt.ts:41`
+  // already had the pattern; this is it, on the harness that needs it.
+  //
+  //   CASE=<caseId>     the exact id the tape writes (`company::instrument`)
+  //   COMPANY=<prefix>  every case for one company, matched case-insensitively
+  //
+  // The selector runs BEFORE the sampler, so a chosen case can never be
+  // shuffled out from under you, and it applies on top of every other filter
+  // rather than replacing them -- a case outside the split you asked for is a
+  // case you did not mean to grade.
+  const caseId = (r: { name: string; instrument: string }) => `${r.name}::${r.instrument}`;
+  const onlyCase = process.env.CASE;
+  const onlyCompany = process.env.COMPANY;
+  const selected = set.filter((r) =>
+    (!onlyCase || caseId(r) === onlyCase)
+    && (!onlyCompany || r.name.toLowerCase().startsWith(onlyCompany.toLowerCase())));
+  if (!selected.length) {
+    // Never a silent empty run. A selector that matches nothing and reports a
+    // clean sweep of zero cases is worse than an error, so this names the
+    // nearest rows it could see -- which is usually enough to spot the typo.
+    const near = set.filter((r) => r.name.toLowerCase()
+      .includes((onlyCompany ?? onlyCase ?? "").toLowerCase().slice(0, 6)))
+      .slice(0, 8).map(caseId);
+    throw new Error(
+      `CASE/COMPANY selected 0 of ${set.length} rows in split=${split}` +
+      `${mode ? ` mode=${mode}` : ""}.` +
+      `${near.length ? `\n  nearest: ${near.join("\n           ")}` : ""}` +
+      `\n  A selector that matches nothing must not report a clean run of zero cases.`);
+  }
+  if (onlyCase || onlyCompany) {
+    console.log(`selector: ${onlyCase ? `CASE=${onlyCase}` : `COMPANY=${onlyCompany}`}` +
+      ` -> ${selected.length} of ${set.length} row(s)`);
+  }
   // The sampler lives in `recallSample.ts` and is shared with
   // check_recall_floor.ts. It used to be inline here, and the gate that fails
   // the build kept its own STRIDE version -- so the floor and the measurement
   // it floors were drawing different samples. SEED= varies the draw on
   // purpose: a result that does not survive a change of seed was never there.
-  const N = Math.min(Number(process.env.N ?? 250), set.length);
+  const N = Math.min(Number(process.env.N ?? 250), selected.length);
   const seed = Number(process.env.SEED ?? DEFAULT_SEED);
-  const sample = sampleRecall(set, N, seed);
+  const sample = sampleRecall(selected, N, seed);
   // "none" means the founder has not been asked yet, which is every founder on
   // the instant path. Anything else must be a real answer, so a typo cannot
   // quietly become "unanswered" and read as a result.
@@ -348,8 +421,21 @@ async function main() {
   };
   const tally = new IntakeTally();
   resetRankerTally();
+  // ── THE ARM: which lever, at which value ──────────────────────────────────
+  // Computed once and carried onto every case, so "which lever moved it" is
+  // answerable from the record rather than remembered.
+  const levers = leversFromEnv();
+  const arm = armId(levers);
+  const tape: TapeCase[] = [];
+  // Stage ranks come from `tableTrace`, which records and decides nothing (see
+  // its header). Enabled ONLY when a tape is being written, so the default path
+  // is byte-identical to what it was before this file learned to write one --
+  // a harness must not change the thing it measures in order to measure it.
+  const wantTape = Boolean(process.env.OUT);
+  if (wantTape) traceOn();
   for (const t of sample) {
     resetGateHydration();
+    if (wantTape) traceReset();
     const a = answersFor(t, answerMode);
     if (a.derived.ticket) derived.ticket++;
     if (a.derived.capital) derived.capital++;
@@ -424,6 +510,68 @@ async function main() {
     const g = byRegime.get(rk) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
     g.n++; if (inPool) g.pool++; if (e5) g.e5++; if (r5) g.r5++;
     byRegime.set(rk, g);
+
+    // ── THE TAPE ────────────────────────────────────────────────────────────
+    // Everything the debug loop needs so a miss is diagnosable WITHOUT paying
+    // to re-run it: the candidate ids as the model saw them, the picks, the
+    // stated uncertainty, what was retrieved, the won fund's rank at each
+    // stage, and the founder context that built the prompt.
+    if (wantTape) {
+      const { stages } = readTrace();
+      const rankIn = (name: string): number | null => {
+        const s = stages.find((x) => x.name === name);
+        if (!s) return null;
+        const i = s.ids.indexOf(t.instrument);
+        return i < 0 ? null : i + 1;
+      };
+      const at = (xs: readonly string[]) => {
+        const i = xs.indexOf(t.instrument);
+        return i < 0 ? null : i + 1;
+      };
+      const regimeOf = (id: string) => String(byId.get(id)?.parentId ?? id);
+      const channelOf = (id: string) =>
+        String((byId.get(id) as { sourceFamilyBucket?: string } | undefined)
+          ?.sourceFamilyBucket ?? "");
+      // Classified on the GRADED WINDOW, so the taxonomy and EXACT@5 always
+      // answer the same question. A taxonomy computed over a wider table than
+      // the headline grades would report misses the headline calls hits.
+      const outcome = classify({
+        want: t.instrument, wantRegime, wantChannel: channelOf(t.instrument),
+        candidates: pool, published: top5, regimeOf, channelOf,
+      });
+      tape.push({
+        caseId: caseId(t), company: t.name, arm, levers,
+        founder: {
+          country: t.country, sector: t.sector ?? null, mode: t.mode,
+          description: f.opts.description ?? null,
+          descriptionSource: t.descriptionSource ?? null,
+          supplied: f.eligibility as unknown as Record<string, unknown>,
+        },
+        candidates: pool,
+        published: ranked,
+        publishedRegime: ranked.map(regimeOf),
+        publishedChannel: ranked.map(channelOf),
+        // No ranker on this path states one yet -- wsDL owns the selector call
+        // site. Recorded as null rather than omitted, so a tape written before
+        // that day is distinguishable from one written after it by a model that
+        // said nothing.
+        uncertainty: null,
+        // Same: the retrieval payload is wsDL's to thread through. The field
+        // exists now so a tape written today joins with one written then.
+        retrieved: null,
+        want: t.instrument, wantRegime, wantChannel: channelOf(t.instrument),
+        ranks: {
+          pool: at(pool), sorted: rankIn("sorted"),
+          collapsed: rankIn("collapsed"), published: at(ranked),
+        },
+        outcome, lever: LEVER_FOR[outcome],
+        // No model call on this path today, so neither "cached" nor "fresh" is
+        // true and `null` is the honest value. A `false` here would read as
+        // "this case was billed", which is the exact confusion the cache line
+        // exists to prevent.
+        cached: null,
+      });
+    }
   }
   // The corpus travels with the number, for the same reason the set name does:
   // a figure pasted out of a terminal has to carry what it was measured on.
@@ -454,6 +602,17 @@ async function main() {
   // The whole intake, supplied AND withheld, on the same screen as the number.
   for (const line of tally.lines(policy)) console.log(line);
   console.log(`  ${rankerTallyLine()}`);
+  // ── THE ARM AND THE CACHE, on every run without exception ────────────────
+  // Attribution: which lever was moved and to what. A number without its arm
+  // cannot be compared against another number, and a run whose treatment does
+  // not appear in its own banner is how a treatment reports the control's
+  // figure -- which has happened here twice.
+  console.log(`  ${armLine(levers)}`);
+  // The hit rate goes beside it for the same reason: a cached reply must never
+  // be mistaken for a fresh one. This path makes no model calls today, so the
+  // line reads 0/0 and says so rather than being omitted -- an absent line is
+  // indistinguishable from a line nobody looked at.
+  console.log(`  ${cacheTallyLine(arm)}`);
   console.log(`  in pool                  ${pc(stat.pool)}`);
   console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
   console.log(`  EXACT scheme in top ${DISPLAY_CAP}    ${pc(stat.exactPublished)}   ` +
@@ -498,5 +657,27 @@ async function main() {
   // is not read as a trend.
   console.log(`  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)`);
   for (const [k, m] of [...byCountry].sort((a, b) => b[1].n - a[1].n)) line(k, m);
+
+  // ── WHY IT MISSED, not how often ─────────────────────────────────────────
+  // A percentage is not a diagnosis. These four classes take four different
+  // medicines, and `not-retrieved` heads the list because no amount of prompt
+  // work reaches those cases -- a run that spends its effort on instructions
+  // while a third of its misses were never retrieved was aimed at the wrong
+  // lever, and only this table can say so.
+  if (wantTape) {
+    console.log(`\nWHY IT MISSED (from the recorded ranks, not a heuristic)`);
+    for (const l of taxonomyTable(tape)) console.log(l);
+    const misses = tape.filter((c) => c.outcome !== "hit");
+    if (misses.length) {
+      const show = Number(process.env.SHOW_MISSES ?? 10);
+      console.log(`\n  first ${Math.min(show, misses.length)} of ${misses.length} miss(es)` +
+        ` -- re-run any one of them with CASE=<caseId>`);
+      for (const c of misses.slice(0, show)) console.log(taxonomyLine(c));
+    }
+    writeTape(tape);
+  } else {
+    console.log(`\nno OUT= given: no per-case tape, and no miss taxonomy. Every number ` +
+      `above is a scalar you would have to re-run to explain. Add OUT=/tmp/recall.json.`);
+  }
 }
 main();
