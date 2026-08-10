@@ -249,8 +249,11 @@ Per step, and none of it is "the tests pass":
 | 3 | generate a real brief and READ sections 3 and 4 -- do they cite a dated signal on a named fund, or still read like a web search |
 | 4 | only if reached |
 
-Plus the standing suite: `NO_PG=1 npm run check`, `npm run shadow`, red team,
+Plus the standing suite: `NO_PG=1 npm run check`, red team,
 `check_hydration_parity.ts`, `npm run build`, `check_index_freshness.py`.
+(`npm run shadow` was here and is deleted — wsDO. It shadowed the fit score,
+whose question is closed against it; `npm run trace` is the surviving free
+pool diagnostic.)
 
 ## Order, and what to do first
 
