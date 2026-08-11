@@ -1,29 +1,17 @@
 {
-  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
+  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done \u2014 the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsFG",
+      "id": "wsFJ",
       "step": 5,
       "what": "Put words on the blank cards",
-      "why": "More than a third of the funds we put in front of the chooser say nothing at all — no line about what they pay for, nothing about who they want. We already hold that text for 506 of them and have never shown it. This is the work with the only proven demonstration behind it."
+      "why": "More than a third of the funds we put in front of the chooser say nothing at all \u2014 no line about what they pay for, nothing about who they want. We already hold that text for 506 of them and have never shown it. A Norwegian founder's list is 88% blank; a German founder's is 0%, which is why this has been invisible."
     },
     {
-      "id": "wsFE",
+      "id": "wsFI",
       "step": 5,
       "what": "Stop printing the same fund twice",
-      "why": "Twenty of the seats we publish go to a fund the founder is already being shown. One founder got five of seven rows under one title. Those seats are not near-misses — they are spent showing the same thing twice, and recovering them is arithmetic rather than hope."
-    },
-    {
-      "id": "wsFF",
-      "step": 2,
-      "what": "Publish, so the product can see this week's work",
-      "why": "The improvements to what funds say about themselves are sitting in a local file. The product reads a different database. Until it is published, none of it exists as far as a founder is concerned — and it cannot be measured."
-    },
-    {
-      "id": "wsFH",
-      "step": 0,
-      "what": "Clear the repository noise",
-      "why": "217 documents, most of them superseded plans. The ones that record a measurement somebody paid for get kept and indexed; the rest go. A repository nobody can navigate is one where the same question gets bought twice."
+      "why": "Twenty of the seats we publish go to a fund the founder is already being shown \u2014 one founder got five of seven rows under a single title. Those seats are not near-misses; recovering them is arithmetic rather than hope."
     }
   ]
 }
