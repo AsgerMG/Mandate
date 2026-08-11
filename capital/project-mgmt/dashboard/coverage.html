@@ -1,0 +1,210 @@
+<title>Wincent — corpus readiness, production</title>
+<style>
+ :root{--ink:#14181b;--paper:#faf9f7;--panel:#fff;--line:#e3e1dc;--accent:#1c6b5e;
+  --good:#2f7048;--warn:#a8720c;--bad:#a33c2f;--muted:#6a7075;
+  --mono:ui-monospace,"SF Mono",Menlo,monospace;--sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;}
+ @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--ink:#eceae5;--paper:#101315;--panel:#181c1f;
+  --line:#2a2f33;--accent:#5cb8a6;--good:#5ea87a;--warn:#cf9a2c;--bad:#d2705f;--muted:#949a9f;}}
+ :root[data-theme="dark"]{--ink:#eceae5;--paper:#101315;--panel:#181c1f;--line:#2a2f33;--accent:#5cb8a6;
+  --good:#5ea87a;--warn:#cf9a2c;--bad:#d2705f;--muted:#949a9f;}
+ body{background:var(--paper);color:var(--ink);font-family:var(--sans);line-height:1.6;-webkit-font-smoothing:antialiased;}
+ .wrap{max-width:780px;margin:0 auto;padding:48px 22px 90px;display:flex;flex-direction:column;gap:40px;}
+ h1{font-size:clamp(26px,4vw,35px);font-weight:700;letter-spacing:-.025em;line-height:1.15;margin:0;text-wrap:balance;}
+ h2{font-size:19px;font-weight:700;letter-spacing:-.015em;margin:0 0 4px;}
+ p{margin:0;} .lede{font-size:17px;color:var(--muted);max-width:62ch;}
+ .date{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+ header{display:flex;flex-direction:column;gap:12px;}
+ .req{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:15px 17px;
+   display:flex;flex-direction:column;gap:9px;}
+ .reqs{display:flex;flex-direction:column;gap:10px;}
+ .rt{display:flex;align-items:baseline;gap:10px;}
+ .rn{font-size:15px;font-weight:650;flex:1 1 auto;}
+ .rv{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:20px;font-weight:600;letter-spacing:-.02em;}
+ .ra{font-family:var(--mono);font-size:13px;color:var(--muted);}
+ .v-good{color:var(--good);} .v-warn{color:var(--warn);} .v-bad{color:var(--bad);}
+ .track{position:relative;height:9px;background:var(--line);border-radius:2px;}
+ .track2{height:9px;background:var(--line);border-radius:2px;overflow:hidden;}
+ .fill{display:block;height:100%;border-radius:2px;}
+ .f-good{background:var(--good);} .f-warn{background:var(--warn);} .f-bad{background:var(--bad);}
+ .tick{position:absolute;top:-3px;width:2px;height:15px;background:var(--ink);opacity:.55;}
+ .rw{font-size:13.5px;color:var(--muted);max-width:70ch;}
+ .crow{display:grid;grid-template-columns:128px 42px 1fr 44px;align-items:center;gap:12px;
+   padding:7px 0;border-bottom:1px solid var(--line);}
+ .cc{font-size:14.5px;font-weight:600;}
+ .n{font-family:var(--mono);font-size:13px;color:var(--muted);text-align:right;}
+ .pct{font-family:var(--mono);font-size:13.5px;font-weight:600;text-align:right;}
+ .p-bad{color:var(--bad);} .p-warn{color:var(--warn);} .p-good{color:var(--good);}
+ .drop{border-left:3px solid var(--bad);padding:2px 0 2px 16px;display:flex;flex-direction:column;gap:8px;}
+ .drop .tag{font-family:var(--mono);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--bad);}
+ .drop p{font-size:15.5px;}
+ footer{border-top:1px solid var(--line);padding-top:18px;font-size:13.5px;color:var(--muted);max-width:68ch;}
+</style>
+
+<div class="wrap">
+ <header>
+  <span class="date">Wincent · corpus readiness · measured on Railway production</span>
+  <h1>Can our funds say enough about themselves to be chosen?</h1>
+  <p class="lede">Before anything can name the right fund, the fund has to be legible. This is
+    what production holds today against what it needs, and where the gaps actually are.</p>
+ </header>
+
+ <section>
+  <h2>Required state, and where production stands</h2>
+  <p class="lede" style="margin-bottom:16px">1,021 funds a founder can actually be offered.
+    The notch on each bar is what the target needs.</p>
+  <div class="reqs">
+      <div class="req">
+        <div class="rt"><span class="rn">Says nothing at all <em style="font-weight:400;color:var(--muted);font-size:13px">(lower is better)</em></span>
+          <span class="rv v-bad">13%</span>
+          <span class="ra">&rarr; 0%</span></div>
+        <div class="track"><span class="fill f-bad" style="width:12.7%"></span>
+          <span class="tick" style="left:0.0%"></span></div>
+        <p class="rw">Carries no description, no eligibility text and no requirement we have cited from its own documents. A founder choosing between these is choosing between blank cards. This must reach zero.</p>
+      </div>
+      <div class="req">
+        <div class="rt"><span class="rn">Describes what it funds</span>
+          <span class="rv v-bad">59%</span>
+          <span class="ra">&rarr; 90%</span></div>
+        <div class="track"><span class="fill f-bad" style="width:58.6%"></span>
+          <span class="tick" style="left:90.0%"></span></div>
+        <p class="rw">The granting body's own words. This is the single field proven to change a choice: a fund at position 77 of 89 was picked first once its card named what it funds and where.</p>
+      </div>
+      <div class="req">
+        <div class="rt"><span class="rn">Carries a requirement we can quote</span>
+          <span class="rv v-warn">84%</span>
+          <span class="ra">&rarr; 90%</span></div>
+        <div class="track"><span class="fill f-warn" style="width:84.0%"></span>
+          <span class="tick" style="left:90.0%"></span></div>
+        <p class="rw">A rule traced to the fund's own text. Only these may rule a founder out — the rest can narrow, with their provenance stated.</p>
+      </div>
+      <div class="req">
+        <div class="rt"><span class="rn">Says what it typically pays</span>
+          <span class="rv v-warn">83%</span>
+          <span class="ra">&rarr; 90%</span></div>
+        <div class="track"><span class="fill f-warn" style="width:83.3%"></span>
+          <span class="tick" style="left:90.0%"></span></div>
+        <p class="rw">Without it a founder cannot tell a voucher from a grant, and the AI cannot rule out a cheque an order of magnitude off.</p>
+      </div>
+      <div class="req">
+        <div class="rt"><span class="rn">Says how to apply</span>
+          <span class="rv v-bad">24%</span>
+          <span class="ra">&rarr; 80%</span></div>
+        <div class="track"><span class="fill f-bad" style="width:23.7%"></span>
+          <span class="tick" style="left:80.0%"></span></div>
+        <p class="rw">The largest single gap. A fund we name but cannot tell a founder how to approach is a row they cannot act on — the memo names a next step it has no source for.</p>
+      </div>
+  </div>
+ </section>
+
+ <section>
+  <h2>The gaps are not spread evenly</h2>
+  <p class="lede" style="margin-bottom:16px">Share of each country's funds that can say nothing at all.</p>
+  <div>
+      <div class="crow"><span class="cc">Estonia</span>
+        <span class="n">57</span>
+        <span class="track2"><span class="fill f-bad" style="width:73.7%"></span></span>
+        <span class="pct p-bad">74%</span></div>
+      <div class="crow"><span class="cc">Norway</span>
+        <span class="n">74</span>
+        <span class="track2"><span class="fill f-bad" style="width:63.5%"></span></span>
+        <span class="pct p-bad">64%</span></div>
+      <div class="crow"><span class="cc">Denmark</span>
+        <span class="n">8</span>
+        <span class="track2"><span class="fill f-bad" style="width:50.0%"></span></span>
+        <span class="pct p-bad">50%</span></div>
+      <div class="crow"><span class="cc">Latvia</span>
+        <span class="n">32</span>
+        <span class="track2"><span class="fill f-bad" style="width:43.8%"></span></span>
+        <span class="pct p-bad">44%</span></div>
+      <div class="crow"><span class="cc">Czechia</span>
+        <span class="n">51</span>
+        <span class="track2"><span class="fill f-warn" style="width:29.4%"></span></span>
+        <span class="pct p-warn">29%</span></div>
+      <div class="crow"><span class="cc">Ireland</span>
+        <span class="n">16</span>
+        <span class="track2"><span class="fill f-warn" style="width:12.5%"></span></span>
+        <span class="pct p-warn">12%</span></div>
+      <div class="crow"><span class="cc">Finland</span>
+        <span class="n">16</span>
+        <span class="track2"><span class="fill f-good" style="width:6.2%"></span></span>
+        <span class="pct p-good">6%</span></div>
+      <div class="crow"><span class="cc">EU-wide</span>
+        <span class="n">58</span>
+        <span class="track2"><span class="fill f-good" style="width:1.7%"></span></span>
+        <span class="pct p-good">2%</span></div>
+      <div class="crow"><span class="cc">Germany</span>
+        <span class="n">119</span>
+        <span class="track2"><span class="fill f-good" style="width:1.7%"></span></span>
+        <span class="pct p-good">2%</span></div>
+      <div class="crow"><span class="cc">Sweden</span>
+        <span class="n">61</span>
+        <span class="track2"><span class="fill f-good" style="width:1.6%"></span></span>
+        <span class="pct p-good">2%</span></div>
+      <div class="crow"><span class="cc">France</span>
+        <span class="n">130</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">1%</span></div>
+      <div class="crow"><span class="cc">Spain</span>
+        <span class="n">181</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Italy</span>
+        <span class="n">86</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Netherlands</span>
+        <span class="n">30</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Austria</span>
+        <span class="n">27</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Belgium</span>
+        <span class="n">20</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Greece</span>
+        <span class="n">13</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Slovakia</span>
+        <span class="n">11</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Portugal</span>
+        <span class="n">8</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Poland</span>
+        <span class="n">8</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Hungary</span>
+        <span class="n">6</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+      <div class="crow"><span class="cc">Luxembourg</span>
+        <span class="n">5</span>
+        <span class="track2"><span class="fill f-good" style="width:1.2%"></span></span>
+        <span class="pct p-good">0%</span></div>
+  </div>
+ </section>
+
+ <div class="drop">
+  <span class="tag">What this means for the target</span>
+  <p><strong>An Estonian founder's list is three-quarters blank. A Spanish founder's is not blank at all.</strong>
+    Same product, same model, same instructions — one is choosing between funds it can read, the other is guessing.
+    Our accuracy measurements have run on German and French founders, the two best-covered lists in the corpus.</p>
+  <p><strong>And it is worse in what we print than in what we hold.</strong> 13% of funds have nothing;
+    roughly a third of the rows we actually show say nothing, because display rules calibrated for a
+    different problem suppress text we already have. Closing that costs no data and no AI spend.</p>
+ </div>
+
+ <footer>
+  Measured directly against the production database on Railway — the same store the product reads when a
+  founder asks — not against a local copy. Framework rows and superseded parents are excluded, because a
+  founder is never offered them. 935 funds are searchable by meaning;
+  1,088 carry a full profile.
+ </footer>
+</div>
