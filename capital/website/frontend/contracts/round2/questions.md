@@ -83,6 +83,14 @@ must be able to weaken prose and never to move a legal conclusion.
   interface appends its own "none of these".
 - Q-4 (hard) At most one question per gate. A founder is never asked twice for
   one rule.
+- Q-16 (hard) At most one question per intake field on a screen. The field is
+  where the answer is stored, so two questions sharing one are two answers
+  overwriting each other, and which survives is decided by the order they
+  happen to be merged in. Two gates on one field is one question.
+
+  **evidence:** the screen is written by two stages that run at the same moment
+  and cannot see each other's output, so the merge is the only place this can
+  be decided.
 - Q-5 (hard) The commercial half runs whenever the founder has described their
   company, regardless of whether any eligibility gate is still open.
 - Q-10 (hard) A question and the options beneath it must answer the same

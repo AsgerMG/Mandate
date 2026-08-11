@@ -93,7 +93,7 @@ identifier renames only.
 
 | was | is | why |
 |---|---|---|
-| `ORDER_ARM` | `SHIPPED_MEMO_ORDER` | it is not an arm. It is a constant, and it is the order that ships |
+| ORDER_ARM (no longer a name in the tree) | `SHIPPED_MEMO_ORDER` | it is not an arm. It is a constant, and it is the order that ships |
 | `MemoOrderArm` | `MemoOrderControl` | the other two values are the controls it beat, not options to pick from |
 | `MemoCandidateInput.order` | `orderControl` | passing it runs a control arm. Nothing in production passes it |
 | `MemoCandidate.fit` | `fitControl` | read by the `fit` control arm and by nothing else |
@@ -135,7 +135,7 @@ been failing."*
 | **Seat allocation / per-row routing** | An oracle *holding the answer key* gains one case in six hundred |
 | **Rebuilding the founder descriptions** | Delivered 1,898 pairs not ~6,300; feasibility estimate was wrong 8×; moved the number 27% → 26% |
 | **A longer menu / more depth** | 33 rows instead of 18 changes membership by nothing. EXACT@5 went 22.2% → 17.8%. On 9 founders the won fund sat at rank 19–40 and the model picked it **0 of 9**. `scripts/archive/_wsdq_seam.ts` — and note wsDQ's "depth is binding" inference is itself retracted |
-| **Better screen-two questions** | Picks changed on 8 of 12 and the category errors survived the answer. `SCREEN_FOR_RANKER` defaults OFF and stays off |
+| **Better screen-two questions** | Picks changed on 8 of 12 and the category errors survived the answer. The arm that measured it was a bench harness, not a shipped lever: no flag by that or any other name exists, and the row previously named one that does not (wsEN). The live descendant is `RANKER_ASKS`, which defaults off — a different design, in which the stage that picks writes the questions |
 | **Re-sorting the memo on the fit score** | MEMO@6 24.0% against `verdict`'s 27.6%; wsCR measured it moving the won leaf OUT of the published six 49 times for 13 in. `scripts/_wsct_order.ts` |
 | **The old LLM gate 2** | Every configuration that let the model REORDER measured at or below gate 1 on the same cases. Module deleted; the ladder is preserved in `project-mgmt/findings/dead_ranker_wsDO.md` §1 |
 
@@ -148,7 +148,7 @@ rows the model chose instead.
 
 ## 5. Every flag in here is a reproducibility arm, not a lever
 
-`POOL_BLEND`, `SIBLING_SCOPE`, `CHANNEL_BACKFILL`, `SECTOR_NEUTRAL`,
+`POOL_BLEND`, `SIBLING_SCOPE`, `CHANNEL_BACKFILL`, `SECTOR_NEUTRAL_ARM`,
 `AGENT_SELECT*`, `OPEN_QUESTION_ARM`, `NEXT_PUBLIC_ORGANISATION_TYPE_ARM`. wsEH
 re-checked all of them: **not one is set to a non-default value anywhere in the
 repo's build, CI or deployment config.** Every one is the arm that reproduces a

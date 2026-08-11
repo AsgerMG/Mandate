@@ -41,66 +41,19 @@
 //
 // Prove it can fail:
 //   PROVE=1 npx tsx scripts/check_answer_not_reachable.ts
-import { readFileSync, readdirSync, statSync } from "fs";
+// The walk itself lives in `_import_graph.ts` and is shared with
+// `check_check_reachability.ts`, which asks the same question ("what can a
+// request reach") about a different set of modules. Two copies of that
+// derivation would agree today and drift the first time either guard's
+// resolver was fixed.
+import { readFileSync } from "fs";
 import path from "path";
 
-const LIB = path.join(process.cwd(), "lib");
+import { code, reachable, walk } from "./_import_graph";
+
+const ROOT = process.cwd();
+const LIB = path.join(ROOT, "lib");
 const ENTRY = path.join(LIB, "intelligence", "pipeline.ts");
-
-/** Every source under lib/, tests excluded — a test naming the answer is how
- *  the leak guard itself is written, and it runs no founder's request. */
-function walk(dir: string): string[] {
-  const out: string[] = [];
-  let names: string[];
-  try { names = readdirSync(dir); } catch { return out; }
-  for (const name of names) {
-    if (name === "node_modules" || name === ".next") continue;
-    const p = path.join(dir, name);
-    if (statSync(p).isDirectory()) out.push(...walk(p));
-    else if (/\.tsx?$/.test(name) && !/\.test\.tsx?$/.test(name)) out.push(p);
-  }
-  return out;
-}
-
-/** Comments stripped: this repo explains its defects in prose, and a check
- *  that cannot tell an explanation from an implementation would force everyone
- *  to stop explaining. What survives is code. */
-function code(src: string): string {
-  return src
-    .replace(/\/\*[\s\S]*?\*\//g, " ")
-    .split("\n")
-    .map((l) => {
-      const i = l.search(/(^|[^:'"`\\])\/\//);
-      return i === -1 ? l : l.slice(0, l.indexOf("//", i));
-    })
-    .join("\n");
-}
-
-function resolveImport(fromFile: string, spec: string, known: Set<string>): string | null {
-  const target = path.resolve(path.dirname(fromFile), spec);
-  for (const c of [`${target}.ts`, `${target}.tsx`, path.join(target, "index.ts")]) {
-    if (known.has(c)) return c;
-  }
-  return null;
-}
-
-/** Every module the request path can reach, transitively. */
-function reachable(entry: string, known: Set<string>): Set<string> {
-  const seen = new Set<string>();
-  const queue = [entry];
-  while (queue.length) {
-    const f = queue.pop()!;
-    if (seen.has(f)) continue;
-    seen.add(f);
-    let src: string;
-    try { src = code(readFileSync(f, "utf8")); } catch { continue; }
-    for (const m of src.matchAll(/(?:from|import)\s*\(?\s*["'](\.[^"']+)["']/g)) {
-      const dep = resolveImport(f, m[1], known);
-      if (dep && !seen.has(dep)) queue.push(dep);
-    }
-  }
-  return seen;
-}
 
 /** The answer-bearing sources, each with why it answers the question.
  *  A PROPERTY per source, not a list of files that happen to be bad today. */
@@ -127,7 +80,7 @@ function main() {
     process.exit(1);
   }
 
-  const inPath = reachable(ENTRY, known);
+  const inPath = reachable([ENTRY], known, ROOT);
   const findings: string[] = [];
   for (const f of [...inPath].sort()) {
     const src = code(readFileSync(f, "utf8"));

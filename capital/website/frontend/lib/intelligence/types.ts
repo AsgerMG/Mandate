@@ -1515,6 +1515,30 @@ export interface GroundedQuestion {
    *  Absent when the model gave nothing usable, in which case the interface
    *  falls back to FIELD_ENUM_HINTS. */
   options?: { value: string; label: string }[];
+  /**
+   * ── PROVENANCE, WHERE THE QUESTION HAS ANY ────────────────────────────────
+   *
+   * Absent on a planner-written question, which is grounded in a field's reach
+   * across the whole shortlist rather than in one fund's sentence. Present on a
+   * question written by the stage that picks: `ref` carries
+   * `RANKER_ASK_PREFIX`, and it is the ONLY carrier of it — strip `ref` and
+   * there is nothing left anywhere on the object saying which stage wrote the
+   * question. The intake route did strip it, under a comment saying it did not.
+   *
+   * The panel renders none of this and must not: a founder is answering a
+   * question, not auditing one. It rides on the object so an answer can be
+   * traced back to the requirement that motivated it, which is what makes a
+   * ranker-written question distinguishable from a planner-written one after
+   * the fact — the whole basis on which the two stages can be told apart in a
+   * measurement.
+   */
+  ref?: string;
+  instrumentId?: string;
+  instrumentName?: string;
+  gateKey?: string;
+  /** The fund's own requirement text, verbatim. The citation. */
+  quote?: string;
+  locator?: string;
 }
 
 /**

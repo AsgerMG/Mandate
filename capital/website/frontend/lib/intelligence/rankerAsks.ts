@@ -79,7 +79,7 @@
 // treatment's name.
 import Anthropic from "@anthropic-ai/sdk";
 
-import { depthLever } from "./caps";
+import { AGENT_SELECT_ARM, depthLever } from "./caps";
 import { assembleInstructions } from "./contracts";
 import { loadDbInstruments, type DbGate, type DbInstrument } from "./corpus";
 import { recordUsage } from "./cost";
@@ -106,6 +106,43 @@ export const RANKER_ASKS: RankerAsksArm = (() => {
   return raw as RankerAsksArm;
 })();
 export const rankerAsksEnabled = (): boolean => RANKER_ASKS !== "off";
+
+// ── THE TWO STAGES ARE ONE ARM, AND THE CELL WHERE THEY DISAGREE IS SHUT ───
+//
+// This module exists to ask questions ON BEHALF OF the stage that picks. With
+// `AGENT_SELECT=off` that stage does not exist: our own code ranks, the answers
+// reach the gates and the arithmetic scorers, and the model that was supposed
+// to read them was never in the seat. The run then reports a number for
+// "ranker-asks" that is a measurement of the deterministic ranker being given
+// six extra answers — a real effect, and not the one whose name is on it.
+//
+// It is not a new lever. It is the removal of a combination that could only
+// ever produce a mislabelled result, and it fires AT IMPORT rather than at the
+// end of a paid run: the asker calls Anthropic once per founder, so discovering
+// this after the fact costs the whole run.
+//
+// Shaped exactly like the funnel invariant at the bottom of `caps.ts`, and for
+// the same reason: the check that would otherwise catch it runs in its own
+// process with its own environment, so it grades the defaults while a swept
+// flag grades something else. `AGENT_SELECT_ARM` is read from `caps.ts`, which
+// imports nothing — asking "is the ranker on" must not drag the Anthropic
+// client and the corpus layer in behind one word of environment.
+//
+// `dry` and `reverse` are deliberately NOT refused. Neither puts a model in the
+// ranking seat, so neither is a coherent product configuration either — but
+// `dry` is how the combined arm's prompt is priced before a euro is spent, and
+// `reverse` is how the pool's order is shown to reach the memo. Both are
+// diagnostics whose output nobody can mistake for a ranking result, and
+// refusing them would close the one route by which this arm gets read for free.
+if (RANKER_ASKS !== "off" && AGENT_SELECT_ARM === "off") {
+  throw new Error(
+    `RANKER_ASKS is "${RANKER_ASKS}" and AGENT_SELECT is "off". This stage writes ` +
+    `questions for the stage that picks, and that stage is not running: the answers ` +
+    `would reach the eligibility gates and the arithmetic scorers, and no model would ` +
+    `ever read them. The result would be a measurement of the deterministic ranker ` +
+    `published under the ranker-asks name. Set AGENT_SELECT to an arm that ranks, or ` +
+    `leave RANKER_ASKS off.`);
+}
 
 /**
  * How far down the candidate list a change has to reach to count as decisive.

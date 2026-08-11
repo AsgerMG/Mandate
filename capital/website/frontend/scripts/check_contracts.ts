@@ -33,7 +33,7 @@ import { REPORT_SCHEMA_FIELDS, EVIDENCE_BLOCKS } from "../lib/intelligence/types
 // `caps.ts` imports NOTHING: importing them from `memoCandidates`/`shortlist`
 // pulled the corpus layer in behind them and this check stopped being
 // hermetic, which `check_env_loader` caught.
-import { VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
+import { SELECT_COUNT, VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
 // Same hermetic class as caps.ts: countryCodes.ts is a LEAF and imports
 // nothing, so asking it what counts as a country pulls no corpus layer in.
 import { countryNames } from "../lib/intelligence/countryCodes";
@@ -271,7 +271,11 @@ function main() {
   // Stated over the constants themselves, so a cap moved tomorrow is judged
   // with no edit here. Each pair names WHY it must hold, because a guard that
   // only says "3 < 4" teaches the person who trips it nothing.
-  const funnel: { wider: string; wide: number; narrower: string; narrow: number; why: string }[] = [
+  const funnel: {
+    wider: string; wide: number; narrower: string; narrow: number; why: string;
+    /** Default. `false` where the two may be EQUAL — see SELECT_COUNT. */
+    strict?: boolean;
+  }[] = [
     {
       wider: "VERDICT_POOL", wide: VERDICT_POOL,
       narrower: "WRITER_CANDIDATE_CAP", narrow: WRITER_CANDIDATE_CAP,
@@ -284,13 +288,42 @@ function main() {
       why: "a candidate the writer never wrote a note for cannot be published, so the " +
         "difference is the number of candidates it may decline before the table goes short",
     },
+    {
+      // ── THE SELECTOR MUST BE ABLE TO REACH EVERY PUBLISHED SEAT ──────────
+      //
+      // `SELECT_COUNT` is how many rows the model NAMES. Every place it does
+      // not name is filled from the empirical ranker's own order, so a count
+      // below the published cap means the last rows of the founder's table are
+      // decided by the order the arm exists to test — and a measurement of that
+      // table understates the arm by an amount nothing records.
+      //
+      // It was 6 against a published 7, and the reason recorded beside it named
+      // `DISPLAY_CAP`, which is the INSTANT SCREEN's cut: the right argument
+      // applied to the wrong funnel. Tied here rather than copied into
+      // `caps.ts`, because `caps.ts` imports nothing and `institutionsMax`
+      // lives beside the rule that enforces it.
+      //
+      // NOT STRICT. Equality is the intended state: the model names exactly the
+      // number of rows the page publishes. This is a floor, not a funnel step —
+      // the funnel above it (`WRITER_CANDIDATE_CAP`) is where the headroom for
+      // a declined candidate lives.
+      wider: "SELECT_COUNT", wide: SELECT_COUNT,
+      narrower: "BRIEF_LIMITS.institutionsMax", narrow: BRIEF_LIMITS.institutionsMax,
+      strict: false,
+      why: "every published seat the selector does not name is filled from the order " +
+        "the selector exists to be measured against, so a count below the published " +
+        "cap silently hands part of the founder's table back to the control",
+    },
   ];
   for (const f of funnel) {
-    if (f.wide > f.narrow) continue;
+    const strict = f.strict !== false;
+    if (strict ? f.wide > f.narrow : f.wide >= f.narrow) continue;
     problems.push({
       axis: "row-cap",
-      detail: `${f.wider} is ${f.wide} and ${f.narrower} is ${f.narrow}. The funnel must narrow ` +
-        `strictly at every step: ${f.why}.`,
+      detail: `${f.wider} is ${f.wide} and ${f.narrower} is ${f.narrow}. ` +
+        (strict
+          ? `The funnel must narrow strictly at every step: ${f.why}.`
+          : `${f.wider} must be at least ${f.narrower}: ${f.why}.`),
     });
   }
 
