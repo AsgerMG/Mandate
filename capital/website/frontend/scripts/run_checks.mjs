@@ -60,6 +60,13 @@ const CHECKS = [
   // recipients officially do. An AI company was published a film and television
   // scheme for want of exactly this.
   ["sector evidence", ["npx", "tsx", "scripts/check_sector_evidence.ts"]],
+  // Hermetic: the committed snapshot rendered through the shipped functions, no
+  // credentials, sub-second. It sits among the cheap checks because what it
+  // watches is the cheapest defect in the product to ship and the most
+  // expensive to notice -- a candidate row whose scope line says nothing. The
+  // ranker was handed the won fund nine times and took it zero times, and not
+  // one of those nine rows carried a usable one.
+  ["a funds: line states a scope", ["npx", "tsx", "scripts/check_funds_line.ts"]],
   ["vocabulary contract", ["npx", "tsx", "scripts/check_vocabularies.ts"]],
   ["one env loader", ["npx", "tsx", "scripts/check_env_loader.ts"]],
   ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],

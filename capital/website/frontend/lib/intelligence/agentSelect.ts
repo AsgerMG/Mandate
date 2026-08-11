@@ -122,7 +122,12 @@ import Anthropic from "@anthropic-ai/sdk";
 import { recordUsage } from "./cost";
 import { retrieveDemands } from "./demandRetrieval";
 import { asBaseRate, poolRecallAt, poolRecallN } from "./poolRecall";
-import { ANSWER_LABEL, ANSWER_USE, type EligibilityAnswers, type InstrumentRow } from "./types";
+import { regionNameFor } from "./regions.generated";
+import { oneLine, ROW_TITLE_CHARS } from "./schemeText";
+import {
+  ANSWER_LABEL, ANSWER_USE, FIELD_VALUE_DOMAIN,
+  type EligibilityAnswers, type InstrumentRow,
+} from "./types";
 import { peerPrior } from "./shortlist";
 import { fence } from "./untrusted";
 import { assessAll, type InstrumentAssessment } from "./verdict";
@@ -557,12 +562,10 @@ const eur = (n: number | undefined | null): string =>
     : n >= 1e6 ? `EUR ${(n / 1e6).toFixed(1)}M`
       : n >= 1e3 ? `EUR ${Math.round(n / 1e3)}k` : `EUR ${Math.round(n)}`;
 
-/** A title on one line and short enough to read. Some German and French legal
- *  titles run past 250 characters with embedded newlines. */
-const oneLine = (s: string, max = 120): string => {
-  const t = String(s ?? "").replace(/\s+/g, " ").trim();
-  return t.length > max ? `${t.slice(0, max - 3)}...` : t;
-};
+// `oneLine` and `ROW_TITLE_CHARS` are imported from `./schemeText`, where they
+// sit beside `beyondTitle`. That module decides whether a description repeats
+// the title, which is a question about the title AS RENDERED HERE — so the cut
+// and the number it cuts at have to be one definition, not two that agree.
 
 /**
  * Requirements that are NOT shared with most of the list.
@@ -671,7 +674,7 @@ function renderRow(
   if (pr) facts.push(`#${pr} most-won by comparable companies`);
   const verdict = r.instrumentId ? verdictLine(assessments?.get(r.instrumentId)) : "";
   return [
-    `[${i}] ${oneLine(r.instrument)}`,
+    `[${i}] ${oneLine(r.instrument, ROW_TITLE_CHARS)}`,
     `     ${facts.join(" · ")}`,
     verdict ? `     ${verdict}` : "",
     // What the scheme itself says it funds — the single line that separates
@@ -749,9 +752,34 @@ export function intakeAnswerLines(a: EligibilityAnswers | undefined): string[] {
     .sort((x, y) => rank(x.k) - rank(y.k) || x.i - y.i)
     .map(({ k }) => {
       const v = (a as Record<string, unknown>)[k];
-      return `${ANSWER_LABEL[k]}: ${Array.isArray(v) ? v.join(", ") : String(v)}`;
+      const say = FIELD_VALUE_DOMAIN[k] === "region" ? namedRegion : String;
+      return `${ANSWER_LABEL[k]}: ${(Array.isArray(v) ? v : [v]).map(say).join(", ")}`;
     });
 }
+
+/**
+ * A NUTS id AND the place it names — `DE7 (Hessen)`.
+ *
+ * We asked the founder for their region and stored the answer as the code the
+ * question offered; the candidate row describes the same place in words,
+ * because `fundDescriptor` names an instrument's reach from
+ * `regionNameFor`. So the founder's answer and the fund's row never used the
+ * same token, and the model had no way to see that they matched. Measured on
+ * wsDR's nine: Focused Energy answered `region: DE7`, their won fund's row said
+ * "Hessen", and wsDV classed the miss as "the connecting fact is absent from
+ * the intake" — it was present twice, in two vocabularies.
+ *
+ * Keyed on `FIELD_VALUE_DOMAIN` rather than on the field name, so a second
+ * region-valued field added to the intake tomorrow is rendered the same way
+ * with no edit here. The code is kept beside the name because it is the one an
+ * encoded gate is written against, and dropping it would trade this defect for
+ * its mirror image.
+ */
+const namedRegion = (v: unknown): string => {
+  const id = String(v);
+  const name = regionNameFor(id);
+  return name && name.toLowerCase() !== id.toLowerCase() ? `${id} (${name})` : id;
+};
 
 /**
  * What the founder has NOT told us, among the fields that provably rank.
