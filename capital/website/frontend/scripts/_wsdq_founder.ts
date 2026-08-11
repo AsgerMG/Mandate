@@ -42,8 +42,18 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 requireCredentials("wsdq_founder", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
-import { inferProfileSignal, planAdaptiveScreen } from "../lib/intelligence/adaptiveRound";
-import { costOf } from "../lib/intelligence/cost";
+// ── STATIC IMPORTS ARE HOISTED, AND THREE MODULES STILL BUILD THEIR CLIENT AT
+//    IMPORT TIME ────────────────────────────────────────────────────────────
+// `adaptiveRound.ts`, `research.ts` and `pipeline.ts` each run
+// `const client = new Anthropic()` at module scope, and `new Anthropic()`
+// resolves credentials at CONSTRUCTION. A static import of any of them
+// therefore runs BEFORE `loadEnvLocal()` in this file's body, captures an
+// empty environment, and every call fails authentication -- which is exactly
+// what the first attempt at this run did, on all three calls, at a cost of
+// nothing but with a founder.json that said "0 questions asked". `agentSelect`
+// and `openJudge` build theirs lazily and are safe; these three are not.
+// Imported inside `main()` for that reason, exactly as funnel_bench does.
+import { costOf, withCostTracking } from "../lib/intelligence/cost";
 import {
   corpusProvenance, hydrateDbInstruments, hydrateGatesFor, loadDbInstruments,
   publishableInstruments, requireLiveCorpus,
@@ -52,7 +62,6 @@ import {
   distinctFamilyCount, openFieldsForShortlist, openProjectGatesForShortlist,
   openQuestionsForShortlist, stakesByFund,
 } from "../lib/intelligence/gateReach";
-import { computeVerdict } from "../lib/intelligence/pipeline";
 import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
 import { instById } from "../lib/intelligence/shortlist";
 import { FIELD_ENUM_HINTS } from "../lib/intelligence/types";
@@ -153,6 +162,10 @@ async function main() {
   const want = process.env.COMPANY ?? "";
   if (!want) throw new Error("COMPANY= is required");
 
+  const { computeVerdict } = await import("../lib/intelligence/pipeline");
+  const { inferProfileSignal, planAdaptiveScreen } =
+    await import("../lib/intelligence/adaptiveRound");
+
   await hydrateDbInstruments();
   requireLiveCorpus("wsdq_founder");
   const corpus = loadDbInstruments();
@@ -195,7 +208,12 @@ async function main() {
   const projectGates = openProjectGatesForShortlist(candidateIds, f.eligibility as never, {
     deprioritiseFields: genericFields.map((x) => x.field), limit: PROJECT_QUESTION_CAP,
   });
-  const [screen, profileSignal] = await Promise.all([
+  // Wrapped, so the PLANNER's spend is counted too. `recordUsage` is a no-op
+  // outside a tracking context, and the planner and the profile signal both
+  // report through it -- unwrapped, this step would report only the persona
+  // call it happens to price locally, and the run's total would be short by
+  // however much the questions cost to write.
+  const planned = await withCostTracking(async () => Promise.all([
     planAdaptiveScreen(req0 as never, needsRound ? genericFields : [], projectGates,
       candidateIds.slice(0, 8).map((id) => {
         const inst = instById().get(id);
@@ -203,7 +221,9 @@ async function main() {
       }).filter((c): c is { name: string; country: string; supportType: string } => Boolean(c)),
       stakesByFund(candidateIds, f.eligibility as never), openQuestions),
     inferProfileSignal(req0 as never),
-  ]);
+  ]));
+  const [screen, profileSignal] = planned.result;
+  eur += planned.eur;
 
   // ── The founder answers ──────────────────────────────────────────────────
   const generic: Asked[] = (screen?.questions ?? []).map((q) => {

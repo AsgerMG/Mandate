@@ -1,0 +1,292 @@
+{
+ "request": {
+  "company": "FONONTECH HOLDING BV",
+  "country": "NL",
+  "description": "At Fonontech, our vision is to pioneer a transformative and sustainable era in semiconductor packaging industry through our proprietary cutting-edge technology, Impulse Printing. Originating from extensive research and development at the Dutch leading Applied Research Institute TNO, the Impulse Printing technology has the unprecedented scalability, accuracy, and throughput for both 2D and 3D interconnect printing for the billion-dollar semiconductor and micro-LED packaging industry. The technology can attain feature sizes ranging from <10 µm to >100 µm in 3D, with the highest throughput and lowest cost of ownership, providing major competitive edge particularly in the critical lower feature range essential for enabling product miniaturization. Impulse Printing, distinguished by minimal cost of ownership and facility footprint, is safeguarded by 14 patents. It is slated for direct sales to high-volume electronic device manufacturers or through system integrators securing the company a revenue of €533 M by 2030.",
+  "capitalSought": [],
+  "targetMarkets": [
+   "NL"
+  ],
+  "eligibility": {
+   "sector": "industrial_manufacturing",
+   "entityCountries": [
+    "NL"
+   ],
+   "ticketBand": "b500k_2m5",
+   "organisationType": "company",
+   "useOfFunds": [
+    "industrial_research",
+    "experimental_development"
+   ],
+   "activities": [
+    "none"
+   ],
+   "consortium": "yes",
+   "borrowerModel": "operating",
+   "exclusionFlags": [
+    "none"
+   ],
+   "cofinancingBand": ">50%"
+  },
+  "projectAnswers": [
+   {
+    "questionId": "horizon_eu_cl4::g6-completed-projects-exclusion",
+    "question": "Is your Impulse Printing development still in progress, or have you already completed the core research and prototyping work?",
+    "answer": "Core development done; we are now building for commercial production",
+    "instrumentId": "horizon_eu_cl4",
+    "instrumentName": "Horizon EU CL4",
+    "gateKey": "g6-completed-projects-exclusion",
+    "quote": "Applications for projects that have already been completed will be rejected; ongoing projects are assessed case-by-case with no reimbursement for costs incurred before submission.",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.37"
+   },
+   {
+    "questionId": "commercial::who_pays",
+    "question": "Who buys your Impulse Printing systems: the electronics manufacturers you describe, system integrators who resell them, or both?",
+    "answer": "Direct to the device manufacturers",
+    "instrumentId": "",
+    "instrumentName": "",
+    "gateKey": "commercial_who_pays",
+    "quote": "",
+    "locator": ""
+   },
+   {
+    "questionId": "commercial::award_unlocks",
+    "question": "What would a €500K to €2.5M award unlock that you cannot fund yourselves: moving from lab prototype to pilot production, building the sales team, tooling for scale, or something else?",
+    "answer": "Tooling and processes to scale from pilot to production volumes",
+    "instrumentId": "",
+    "instrumentName": "",
+    "gateKey": "commercial_award_unlocks",
+    "quote": "",
+    "locator": ""
+   }
+  ],
+  "profileSignal": {
+   "techDepthRead": "Deep-tech breakthrough",
+   "note": "The description cites origin in R&D at TNO, a proprietary technology (Impulse Printing) with specific feature-size ranges (<10 µm to >100 µm) and 14 patents, which reads as deep technical IP rather than an applied or software product."
+  }
+ },
+ "provenance": {
+  "recallSet": "__recallSetDescribed.json",
+  "corpus": {
+   "source": "postgres",
+   "degraded": false,
+   "instruments": 1088,
+   "hydratedAt": "2026-08-11T06:33:27.252Z",
+   "observedAt": "2026-08-11T06:33:27.253Z"
+  },
+  "policy": {
+   "identity": "real",
+   "ownHistory": "withheld",
+   "capital": "withheld",
+   "answers": "strict",
+   "consortium": "yes"
+  },
+  "wonInstrument": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+  "wonInstrumentName": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding",
+  "descriptionSource": "cross_regime_summary",
+  "descriptionChars": 1025,
+  "firstScreen": {
+   "sector": "industrial_manufacturing",
+   "entityCountries": [
+    "NL"
+   ],
+   "ticketBand": "b500k_2m5",
+   "organisationType": "company",
+   "useOfFunds": [
+    "industrial_research",
+    "experimental_development"
+   ],
+   "activities": [
+    "none"
+   ],
+   "consortium": "yes",
+   "borrowerModel": "operating"
+  },
+  "suppliedFields": [
+   "activities",
+   "consortium",
+   "entityCountries",
+   "organisationType",
+   "sector",
+   "ticketBand",
+   "useOfFunds"
+  ],
+  "ownAnswerFields": [
+   "sector",
+   "entityCountries",
+   "organisationType"
+  ],
+  "withheldByPolicy": [
+   {
+    "field": "fteBand",
+    "why": "we hold no headcount for any company. `companies.entity_type` names a KIND (company / research_org / other), never a size, and inventing a band from it would be a guess graded as a fact. 147 comparators stay dark."
+   },
+   {
+    "field": "turnoverBand",
+    "why": "no filed accounts anywhere in the corpus. 25 comparators stay dark."
+   },
+   {
+    "field": "balanceBand",
+    "why": "no filed accounts anywhere in the corpus. 4 comparators stay dark."
+   },
+   {
+    "field": "developmentStage",
+    "why": "no TRL or maturity fact about a company. The only proxy — which programmes it has won — is award data and would read the answer."
+   },
+   {
+    "field": "cofinancingBand",
+    "why": "aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance. Deriving it from the won award's intensity would let the intensity signal grade itself."
+   },
+   {
+    "field": "institutionalBacking",
+    "why": "derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index.json`, the one committed artifact this resolver may read. A build gate may not depend on gitignored data. 12 comparators; the honest fix is upstream in the index build."
+   },
+   {
+    "field": "bankRelationship",
+    "why": "nothing in the corpus states whether a company has a lender."
+   },
+   {
+    "field": "ownerOver25",
+    "why": "no ownership or shareholding data. The linked-enterprise half of the SME test cannot be answered for anyone."
+   },
+   {
+    "field": "institutionalOwner",
+    "why": "no ownership data. See ownerOver25."
+   },
+   {
+    "field": "nonEuControl",
+    "why": "no ultimate-control data. Note the corpus is Europe-scoped, so answering `no` for everyone would look right and would be an assumption, not a fact."
+   },
+   {
+    "field": "lossesOverHalfCapital",
+    "why": "derived by sanitizeEligibility from exclusionFlags, which is itself withheld. No accounts, so the undertaking-in-difficulty test cannot be answered."
+   },
+   {
+    "field": "exclusionFlags",
+    "why": "the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary. Pinning `none` would be an ANSWER — the permissive one — asserted on behalf of 7,095 companies we have not asked."
+   },
+   {
+    "field": "conditionality",
+    "why": "a stated willingness, not a fact. Nothing states it."
+   },
+   {
+    "field": "wouldOpenEntity",
+    "why": "a stance about the future. Its job is the CURE on an establishment blocker, and the harness grades retrieval, not advice."
+   },
+   {
+    "field": "needBy",
+    "why": "a founder's own timing. The award's grant date is when the money arrived, not when they needed it, and it is on the won award."
+   }
+  ],
+  "verdictCandidates": 52,
+  "openFieldsOffered": [
+   "ownerOver25 (reach 24%)",
+   "exclusionFlags (reach 74.8%)",
+   "nonEuControl (reach 54.1%)",
+   "cofinancingBand (reach 16.3%)",
+   "needBy (reach 3.4%)",
+   "turnoverBand (reach 3%)",
+   "conditionality (reach 3.6%)",
+   "region (reach 1%)",
+   "wouldOpenEntity (reach 0.9%)",
+   "institutionalBacking (reach 0.2%)"
+  ],
+  "adaptiveRoundRun": true,
+  "theme": "European public funding for Fonontech: eight Dutch schemes turning on financial health, scale and location",
+  "questionsAsked": [
+   {
+    "id": "field::exclusionFlags",
+    "kind": "generic",
+    "field": "exclusionFlags",
+    "question": "Do any of these apply to your company right now?",
+    "options": [
+     "None of these apply",
+     "In bankruptcy, insolvency or winding-up",
+     "Accumulated losses exceed half our share capital",
+     "Under an unpaid EU state-aid recovery order",
+     "Subject to EU sanctions or an exclusion decision",
+     "Overdue tax or social-security debt"
+    ],
+    "values": [
+     "none",
+     "insolvency",
+     "losses_over_half_capital",
+     "recovery_order",
+     "sanctions",
+     "tax_arrears"
+    ]
+   },
+   {
+    "id": "field::cofinancingBand",
+    "kind": "generic",
+    "field": "cofinancingBand",
+    "question": "How much of the project cost could you cover from your own resources?",
+    "options": [
+     "Yes, more than half",
+     "Yes, 25–50%",
+     "Below 25%",
+     "Not sure"
+    ],
+    "values": [
+     ">50%",
+     "25-50%",
+     "<25%",
+     "unsure"
+    ]
+   },
+   {
+    "id": "horizon_eu_cl4::g6-completed-projects-exclusion",
+    "kind": "project",
+    "question": "Is your Impulse Printing development still in progress, or have you already completed the core research and prototyping work?",
+    "options": [
+     "Still in progress",
+     "Core development done; we are now building for commercial production",
+     "Already deployed in production"
+    ]
+   },
+   {
+    "id": "commercial::who_pays",
+    "kind": "project",
+    "question": "Who buys your Impulse Printing systems: the electronics manufacturers you describe, system integrators who resell them, or both?",
+    "options": [
+     "Direct to the device manufacturers",
+     "Through system integrators who buy and resell to manufacturers"
+    ]
+   },
+   {
+    "id": "commercial::award_unlocks",
+    "kind": "project",
+    "question": "What would a €500K to €2.5M award unlock that you cannot fund yourselves: moving from lab prototype to pilot production, building the sales team, tooling for scale, or something else?",
+    "options": [
+     "Tooling and processes to scale from pilot to production volumes",
+     "Sales infrastructure and market entry to reach your first customers",
+     "Field testing and validation with target customers before full launch",
+     "Completing core technology work still in progress"
+    ]
+   }
+  ],
+  "personaRaw": "{\"answers\":[{\"id\":\"field::exclusionFlags\",\"choice\":\"None of these apply\"},{\"id\":\"field::cofinancingBand\",\"choice\":\"Yes, more than half\"},{\"id\":\"horizon_eu_cl4::g6-completed-projects-exclusion\",\"choice\":\"Core development done; we are now building for commercial production\"},{\"id\":\"commercial::who_pays\",\"choice\":\"Direct to the device manufacturers\"},{\"id\":\"commercial::award_unlocks\",\"choice\":\"Tooling and processes to scale from pilot to production volumes\"}]}",
+  "genericAnswersMerged": [
+   {
+    "field": "exclusionFlags",
+    "question": "Do any of these apply to your company right now?",
+    "label": "None of these apply",
+    "value": "none"
+   },
+   {
+    "field": "cofinancingBand",
+    "question": "How much of the project cost could you cover from your own resources?",
+    "label": "Yes, more than half",
+    "value": ">50%"
+   }
+  ],
+  "genericSkipped": [],
+  "projectAnswersKept": 3,
+  "projectSkipped": [],
+  "profileSignal": {
+   "techDepthRead": "Deep-tech breakthrough",
+   "note": "The description cites origin in R&D at TNO, a proprietary technology (Impulse Printing) with specific feature-size ranges (<10 µm to >100 µm) and 14 patents, which reads as deep technical IP rather than an applied or software product."
+  },
+  "eurSpentHere": 0.01873488
+ }
+}

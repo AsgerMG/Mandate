@@ -48,7 +48,6 @@ import {
 } from "../lib/intelligence/agentSelect";
 import { withCostTracking } from "../lib/intelligence/cost";
 import { corpusProvenance, hydrateDbInstruments, requireLiveCorpus } from "../lib/intelligence/corpus";
-import { runIntelligence } from "../lib/intelligence/pipeline";
 import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
 import { VERDICT_POOL } from "../lib/intelligence/shortlist";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
@@ -115,6 +114,11 @@ async function main() {
   const frozen = JSON.parse(readFileSync(file, "utf8")) as Frozen;
   const company = String(frozen.request.company);
   const arm = AGENT_SELECT_ARM;
+
+  // Dynamic, and not a style choice: `pipeline.ts` builds its Anthropic client
+  // at module scope and a static import would run it before `loadEnvLocal()`.
+  // See the note in _wsdq_founder.ts.
+  const { runIntelligence } = await import("../lib/intelligence/pipeline");
 
   await hydrateDbInstruments();
   requireLiveCorpus("wsdq_run");

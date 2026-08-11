@@ -1,0 +1,223 @@
+{
+ "request": {
+  "company": "Lailaps Films GmbH",
+  "country": "DE",
+  "description": "We develop and commercialise other. We are seeking public funding for research and development work.",
+  "capitalSought": [],
+  "targetMarkets": [
+   "DE"
+  ],
+  "eligibility": {
+   "sector": "other",
+   "entityCountries": [
+    "DE"
+   ],
+   "ticketBand": "b500k_2m5",
+   "organisationType": "company",
+   "useOfFunds": [
+    "industrial_research",
+    "experimental_development"
+   ],
+   "activities": [
+    "none"
+   ],
+   "consortium": "yes",
+   "borrowerModel": "operating"
+  },
+  "projectAnswers": [],
+  "profileSignal": {
+   "techDepthRead": "Application-layer software",
+   "note": "The description only says you \"develop and commercialise other\" and seek R&D funding, giving no technical detail to assess depth."
+  }
+ },
+ "provenance": {
+  "recallSet": "__recallSetDescribed.json",
+  "corpus": {
+   "source": "postgres",
+   "degraded": false,
+   "instruments": 1088,
+   "hydratedAt": "2026-08-11T06:33:40.636Z",
+   "observedAt": "2026-08-11T06:33:40.637Z"
+  },
+  "policy": {
+   "identity": "real",
+   "ownHistory": "withheld",
+   "capital": "withheld",
+   "answers": "strict",
+   "consortium": "yes"
+  },
+  "wonInstrument": "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+  "wonInstrumentName": "Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten (Förderrichtlinien) Verlängerung 2025 [BY]",
+  "descriptionSource": "none",
+  "descriptionChars": 100,
+  "firstScreen": {
+   "sector": "other",
+   "entityCountries": [
+    "DE"
+   ],
+   "ticketBand": "b500k_2m5",
+   "organisationType": "company",
+   "useOfFunds": [
+    "industrial_research",
+    "experimental_development"
+   ],
+   "activities": [
+    "none"
+   ],
+   "consortium": "yes",
+   "borrowerModel": "operating"
+  },
+  "suppliedFields": [
+   "activities",
+   "consortium",
+   "entityCountries",
+   "organisationType",
+   "sector",
+   "ticketBand",
+   "useOfFunds"
+  ],
+  "ownAnswerFields": [
+   "sector",
+   "entityCountries",
+   "organisationType"
+  ],
+  "withheldByPolicy": [
+   {
+    "field": "fteBand",
+    "why": "we hold no headcount for any company. `companies.entity_type` names a KIND (company / research_org / other), never a size, and inventing a band from it would be a guess graded as a fact. 147 comparators stay dark."
+   },
+   {
+    "field": "turnoverBand",
+    "why": "no filed accounts anywhere in the corpus. 25 comparators stay dark."
+   },
+   {
+    "field": "balanceBand",
+    "why": "no filed accounts anywhere in the corpus. 4 comparators stay dark."
+   },
+   {
+    "field": "developmentStage",
+    "why": "no TRL or maturity fact about a company. The only proxy — which programmes it has won — is award data and would read the answer."
+   },
+   {
+    "field": "cofinancingBand",
+    "why": "aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance. Deriving it from the won award's intensity would let the intensity signal grade itself."
+   },
+   {
+    "field": "institutionalBacking",
+    "why": "derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index.json`, the one committed artifact this resolver may read. A build gate may not depend on gitignored data. 12 comparators; the honest fix is upstream in the index build."
+   },
+   {
+    "field": "bankRelationship",
+    "why": "nothing in the corpus states whether a company has a lender."
+   },
+   {
+    "field": "ownerOver25",
+    "why": "no ownership or shareholding data. The linked-enterprise half of the SME test cannot be answered for anyone."
+   },
+   {
+    "field": "institutionalOwner",
+    "why": "no ownership data. See ownerOver25."
+   },
+   {
+    "field": "nonEuControl",
+    "why": "no ultimate-control data. Note the corpus is Europe-scoped, so answering `no` for everyone would look right and would be an assumption, not a fact."
+   },
+   {
+    "field": "lossesOverHalfCapital",
+    "why": "derived by sanitizeEligibility from exclusionFlags, which is itself withheld. No accounts, so the undertaking-in-difficulty test cannot be answered."
+   },
+   {
+    "field": "exclusionFlags",
+    "why": "the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary. Pinning `none` would be an ANSWER — the permissive one — asserted on behalf of 7,095 companies we have not asked."
+   },
+   {
+    "field": "conditionality",
+    "why": "a stated willingness, not a fact. Nothing states it."
+   },
+   {
+    "field": "wouldOpenEntity",
+    "why": "a stance about the future. Its job is the CURE on an establishment blocker, and the harness grades retrieval, not advice."
+   },
+   {
+    "field": "needBy",
+    "why": "a founder's own timing. The award's grant date is when the money arrived, not when they needed it, and it is on the won award."
+   }
+  ],
+  "verdictCandidates": 120,
+  "openFieldsOffered": [
+   "ownerOver25 (reach 22.4%)",
+   "region (reach 8.2%)",
+   "nonEuControl (reach 49.4%)",
+   "turnoverBand (reach 3.3%)",
+   "conditionality (reach 3.4%)",
+   "exclusionFlags (reach 87.3%)",
+   "needBy (reach 4.9%)",
+   "cofinancingBand (reach 27.8%)",
+   "institutionalOwner (reach 3.7%)",
+   "wouldOpenEntity (reach 1.1%)",
+   "institutionalBacking (reach 0.2%)",
+   "bankRelationship (reach 0.1%)"
+  ],
+  "adaptiveRoundRun": true,
+  "theme": "Public funding eligibility and commercial model",
+  "questionsAsked": [
+   {
+    "id": "field::exclusionFlags",
+    "kind": "generic",
+    "field": "exclusionFlags",
+    "question": "Do any of these apply to your company right now?",
+    "options": [
+     "None of these apply",
+     "In bankruptcy, insolvency or winding-up",
+     "Accumulated losses exceed half our share capital",
+     "Under an unpaid EU state-aid recovery order",
+     "Subject to EU sanctions or an exclusion decision",
+     "Overdue tax or social-security debt"
+    ],
+    "values": [
+     "none",
+     "insolvency",
+     "losses_over_half_capital",
+     "recovery_order",
+     "sanctions",
+     "tax_arrears"
+    ]
+   },
+   {
+    "id": "satr_de_rnd__sa_64551__bundesinstitut_fur_bau_stadt_und_raumforschung_i::g5_not_started_dns",
+    "kind": "project",
+    "question": "Has your R&D work on this project already begun, or would the funded phase start from scratch?",
+    "options": [
+     "Work has not started yet",
+     "We have commissioned initial planning or feasibility study, but no supplier contracts signed",
+     "We have signed binding contracts with suppliers or service providers"
+    ]
+   },
+   {
+    "id": "commercial::who_pays",
+    "kind": "project",
+    "question": "Who will buy or use the output of this R&D? Will it be deployed by a company, sold to end users, used inside your own business, or licensed to other developers?",
+    "options": [
+     "We will deploy it in our own operations or business model",
+     "We will sell the finished product or service directly to end users",
+     "It will be made available as an open resource or standard"
+    ]
+   }
+  ],
+  "personaRaw": "{\"answers\": [{\"id\": \"field::exclusionFlags\", \"choice\": \"Not sure\"}, {\"id\": \"satr_de_rnd__sa_64551__bundesinstitut_fur_bau_stadt_und_raumforschung_i::g5_not_started_dns\", \"choice\": \"Not sure\"}, {\"id\": \"commercial::who_pays\", \"choice\": \"Not sure\"}]}",
+  "genericAnswersMerged": [],
+  "genericSkipped": [
+   "exclusionFlags"
+  ],
+  "projectAnswersKept": 0,
+  "projectSkipped": [
+   "Has your R&D work on this project already begun, or would the funded phase start from scratch?",
+   "Who will buy or use the output of this R&D? Will it be deployed by a company, sold to end users, used inside your own business, or licensed to other developers?"
+  ],
+  "profileSignal": {
+   "techDepthRead": "Application-layer software",
+   "note": "The description only says you \"develop and commercialise other\" and seek R&D funding, giving no technical detail to assess depth."
+  },
+  "eurSpentHere": 0.02042216
+ }
+}
