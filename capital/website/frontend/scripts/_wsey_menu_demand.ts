@@ -159,10 +159,14 @@ async function main() {
     console.log(`  ${k.padEnd(4)} rows=${String(e.rows).padStart(4)} appearances=${e.appearances}`);
   }
 
-  writeFileSync("/tmp/wsey_menu_demand.json", JSON.stringify({
+  // OUT rather than a second copy of this file with one string changed. A
+  // capped run and a full run differ by two env vars and must not differ by a
+  // module, or the two drift and the one that drifts is the one still quoted.
+  const out = process.env.OUT ?? "/tmp/wsey_menu_demand.json";
+  writeFileSync(out, JSON.stringify({
     founders: n, openPool: open.length, meanPool: poolTotal / (n || 1), rows,
   }, null, 1));
-  console.log("\nwrote /tmp/wsey_menu_demand.json");
+  console.log(`\nwrote ${out}`);
   void inCorpus; void openById;
 }
 main();
