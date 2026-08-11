@@ -845,9 +845,25 @@ export async function agentSelectRows(
   rows: InstrumentRow[], ctx: SelectContext,
 ): Promise<InstrumentRow[]> {
   // Cleared FIRST, so a stale transcript from the previous founder can never be
-  // read as this one's. `agentSelectLastTrace() === null` means "this seam call
-  // sent nothing", which is itself a result worth being able to state.
-  if (tracing) traceMemo = null;
+  // read as this one's.
+  //
+  // THE OFF ARM IS TRACED TOO, and that is the point rather than a courtesy.
+  // The two arms necessarily run in two processes -- `AGENT_SELECT` is read
+  // once at module scope so a typo cannot read as "off" -- and the pipeline
+  // makes a live web-search call upstream of the pool. So the control is only
+  // a control if the pool that reached the seam was the SAME pool, and the
+  // only way to state that rather than assume it is to record the off arm's
+  // pool at the same seam. A comparison whose control cannot be checked is the
+  // failure this whole workstream exists to stop repeating.
+  if (tracing) {
+    traceMemo = {
+      arm: AGENT_SELECT_ARM,
+      poolIn: rows.map((r) => r.instrumentId ?? r.channel),
+      poolOut: rows.map((r) => r.instrumentId ?? r.channel),
+      menu: [], picks: [], pickedIds: [], unsure: [], retrieved: [],
+      turns: [], fellBack: null, eur: 0,
+    };
+  }
   if (AGENT_SELECT_ARM === "off") return rows;
   // BEFORE the SELECT_COUNT guard, deliberately. That guard exists because a
   // model cannot usefully choose six from six; a reversal is defined on any
@@ -885,13 +901,7 @@ export async function agentSelectRows(
   // The transcript starts here, so a call that falls back still leaves a record
   // of what it was asked. A fallback with no trace is the one outcome that
   // teaches nothing.
-  traceMemo = tracing ? {
-    arm: AGENT_SELECT_ARM,
-    poolIn: rows.map((r) => r.instrumentId ?? r.channel),
-    menu: menuRows.map((r) => r.instrumentId ?? r.channel),
-    poolOut: [], picks: [], pickedIds: [], unsure: [], retrieved: [],
-    turns: [], fellBack: null, eur: 0,
-  } : null;
+  if (traceMemo) traceMemo.menu = menuRows.map((r) => r.instrumentId ?? r.channel);
   const dry = AGENT_SELECT_ARM === "dry";
   const adviser = AGENT_SELECT_ARM === "adviser" || dry;
   const peers = adviser ? peerRank(ctx.country, ctx.sector) : undefined;
