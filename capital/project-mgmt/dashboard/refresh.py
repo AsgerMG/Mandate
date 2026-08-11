@@ -19,11 +19,13 @@ guard rather than a parallel record that can drift from it. There is
 nothing to keep in sync, which is the point -- a "keep in sync" comment IS
 the bug.
 
-The prose in `precision.html` is written by hand and is NOT touched here.
-Only the embedded `const D = [...]` array is replaced. If a headline number
-in the prose disagrees with the series, that is a real finding about the
-prose, and `check_published_figures.ts` exists to catch the same class of
-error in `RESUME_HERE.md`.
+EVERY FIGURE THE PAGE STATES IS WRITTEN HERE. The owner's rule is that the
+page reflects what is in production at all times, so nothing numeric is
+typed into the prose: the headline, the funnel percentages, the cut depth
+and the ceiling are all filled from `guard_verdicts`, the measured recall
+curve and `VERDICT_POOL` itself. The page ships with empty placeholders
+that render as em-dashes, so a page this script has never touched looks
+obviously unfilled rather than confidently wrong.
 """
 from __future__ import annotations
 
@@ -87,6 +89,57 @@ def series() -> list[list]:
     return out
 
 
+CURVE = ROOT / "website/frontend/lib/intelligence/poolRecallCurve.generated.json"
+CAPS = ROOT / "website/frontend/lib/intelligence/caps.ts"
+
+
+def cut_depth() -> int:
+    """How many rows the selector is actually handed, read from the constant itself.
+
+    Not restated here. The page's claim is about what production does, so the
+    figure has to come from the thing production reads -- a copy would be one
+    edit away from lying, which is the whole defect this file exists to stop.
+    """
+    m = re.search(r"export const VERDICT_POOL\s*=\s*(\d+)", CAPS.read_text())
+    if not m:
+        sys.exit(f"VERDICT_POOL not found in {CAPS} -- has it been renamed?")
+    return int(m.group(1))
+
+
+def figures(data: list[list]) -> dict[str, object]:
+    """Every number the prose states, derived -- never typed.
+
+    The owner's rule: the page must reflect what is in production at all
+    times. So the headline, the funnel and the ceiling are all computed here
+    from the guard's own verdicts and the measured recall curve, and the page
+    ships with empty placeholders that read as em-dashes if this never runs.
+    A page that renders a stale number confidently is worse than one that
+    renders nothing.
+    """
+    latest = data[-1]                      # [when, key, exact5, pool, regime5, floor, status]
+    curve = json.loads(CURVE.read_text())
+    at = {int(k): v for k, v in curve["recallAtK"]}
+    depth = cut_depth()
+    if depth not in at:
+        sys.exit(
+            f"the recall curve has no point at K={depth}, the depth production uses. "
+            f"Re-run scripts/_wsdr_curve.ts so the page can state the real figure."
+        )
+    return {
+        "stamp": latest[0][:10],
+        "stamp2": latest[0][:10],
+        "runs": len(data),
+        "published": round(latest[2]),
+        "published2": round(latest[2]),
+        "pool": round(latest[3]),
+        "depth": depth,
+        "shown": round(at[depth] * 100, 1),
+        "shown2": round(at[depth] * 100, 1),
+        "shown3": round(at[depth] * 100, 1),
+        "ceiling": round(curve["inPoolAtAll"] * 100, 1),
+    }
+
+
 def main() -> None:
     data = series()
     if not data:
@@ -95,6 +148,18 @@ def main() -> None:
     page = PAGE.read_text()
     if "const D = " not in page:
         sys.exit(f"{PAGE} has no `const D = ` array to replace")
+
+    figs = figures(data)
+    page, n = re.subn(
+        r"const FIG = \{.*?\};",
+        "const FIG = " + json.dumps(figs, separators=(",", ":")) + ";",
+        page,
+        count=1,
+        flags=re.S,
+    )
+    if n != 1:
+        sys.exit("the FIG object could not be replaced -- has the page been restructured?")
+    PAGE.write_text(page)
 
     updated, count = re.subn(
         r"const D = \[.*?\];",
@@ -115,7 +180,9 @@ def main() -> None:
     for day in sorted(by_day):
         vals = by_day[day]
         print(f"  {day}  {len(vals):>3} runs   EXACT@5 {min(vals)} - {max(vals)}")
-    print("\nprose is NOT regenerated. Republish the page to update the artifact.")
+    print(f"\nfigures: published {figs['published']}%  pool {figs['pool']}%  "
+          f"shown-to-model {figs['shown']}% at K={figs['depth']}  ceiling {figs['ceiling']}%")
+    print("Republish the page to update the artifact.")
 
 
 if __name__ == "__main__":
