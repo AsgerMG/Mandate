@@ -271,7 +271,13 @@ export const SELECT_KEEP = Number(process.env.AGENT_SELECT_KEEP ?? 3);
  * integers and 1,536 tokens is ample, while bounding the worst case at about
  * EUR 0.014 of output per call.
  */
-const EFFORTS = ["low", "medium", "high", "xhigh", "max"] as const;
+// `off` is an EFFORT LEVEL here, not the absence of one, and that is what makes
+// thinking measurable as a lever. The arm previously had exactly one thinking
+// setting -- adaptive at `low` -- so "what does thinking buy" had no control to
+// be measured against except a different ARM, which changes the prompt, the
+// prior and the retrieval path at the same time. Naming `off` on this axis
+// keeps every one of those fixed and moves the one thing under test.
+const EFFORTS = ["off", "low", "medium", "high", "xhigh", "max"] as const;
 export type ThinkEffort = (typeof EFFORTS)[number];
 /** Validated at module scope for the same reason the arm is: an unrecognised
  *  effort must fail loudly, not silently fall through to the model default and
@@ -286,7 +292,50 @@ export const THINK_EFFORT: ThinkEffort = (() => {
 export const LOOKUP_MAX = Number(process.env.AGENT_SELECT_LOOKUPS ?? 5);
 
 const MODEL = process.env.AGENT_SELECT_MODEL ?? "claude-sonnet-5";
-const TIMEOUT_MS = 40_000;
+
+/**
+ * ── THE CEILING HAS TO RISE WITH THE EFFORT, AND THIS IS NOT A TUNING KNOB ──
+ *
+ * `max_tokens` caps thinking and reply TOGETHER. The arm shipped 1,536 for the
+ * adviser, which is ample at effort `low` -- Nortal's own prompt spends 360-519
+ * thinking tokens there and answers in 37 characters. It is NOT ample above it.
+ * Measured on that same prompt (`scripts/_wsds_probe.ts`, both runs recorded in
+ * `findings/dark_levers_wsDS/probe_thinking.txt`):
+ *
+ *   effort low,  max_tokens 1536   360 thinking, answered
+ *   effort high, max_tokens 1536   1,535 thinking, stop_reason=max_tokens,
+ *                                  NO text block at all -> empty reply
+ *   effort high, max_tokens 8192   5,995 thinking, answered
+ *
+ * An empty reply is counted as a fallback and publishes the shipped order. So a
+ * thinking sweep run against a fixed 1,536 would have reported the CONTROL's
+ * table under the treatment's banner at every level above `low`, and reported
+ * it as the model declining to choose rather than as a truncation. That is the
+ * exact class of error this workstream exists to stop, and it would have been
+ * invisible: the tally line says "FELL BACK", not "was cut off".
+ *
+ * These numbers are ceilings, not budgets -- nothing bills for headroom, only
+ * for tokens actually spent -- so they are set well clear of the measured spend
+ * rather than trimmed to it. The cost of being generous is a worse worst case;
+ * the cost of being tight is a measurement that silently describes the control.
+ */
+const MAX_TOKENS_BY_EFFORT: Record<ThinkEffort, number> = {
+  off: 1024, low: 2048, medium: 6144, high: 12288, xhigh: 24576, max: 32768,
+};
+
+/**
+ * Same argument as the token ceiling, for the clock.
+ *
+ * 40 seconds was chosen when the arm could not think. At `high` the probe spent
+ * 5,995 thinking tokens on one call, and a timeout is indistinguishable
+ * downstream from a model that declined -- both return the shipped order
+ * through the same catch. A sweep whose deeper arms quietly time out measures
+ * latency, not judgement.
+ */
+const TIMEOUT_BY_EFFORT: Record<ThinkEffort, number> = {
+  off: 40_000, low: 40_000, medium: 90_000, high: 150_000,
+  xhigh: 240_000, max: 300_000,
+};
 
 /**
  * Constructed LAZILY, and that is not a style choice.
@@ -309,6 +358,12 @@ const anthropic = (): Anthropic => (clientMemo ??= new Anthropic());
 const tally = {
   calls: 0, ok: 0, failed: 0, shortReply: 0, invalidIds: 0,
   emptyReply: 0, badJson: 0, eur: 0, lookups: 0, resolved: 0,
+  /** Calls the API cut off at max_tokens, and the thinking they were billed
+   *  for. A truncated call falls back to the shipped order, so without this
+   *  counter a max_tokens ceiling set too low for the effort reads as the
+   *  model refusing to choose -- which is how a run measures its own control
+   *  and reports it as a treatment. */
+  truncated: 0, thinkingTokens: 0, thinkingChars: 0, thoughtOn: 0,
   /** `dry` only: the size of the prompt the adviser WOULD have sent, and of
    *  the evidence round two would have carried. Priced by _wsdd_cost.ts. */
   dryChars: [] as number[], dryEvidenceChars: [] as number[], dryRetrieved: 0,
@@ -322,6 +377,8 @@ export function resetAgentSelectTally(): void {
   tally.lookups = 0; tally.resolved = 0;
   tally.dryChars = []; tally.dryEvidenceChars = []; tally.dryRetrieved = 0;
   tally.reversed = 0;
+  tally.truncated = 0; tally.thinkingTokens = 0;
+  tally.thinkingChars = 0; tally.thoughtOn = 0;
 }
 export function agentSelectTallyLine(): string {
   // The nonsense arm reports itself as nonsense. A line that read like the
@@ -337,10 +394,21 @@ export function agentSelectTallyLine(): string {
   return `agent-select: arm=${AGENT_SELECT_ARM} depth=${SELECT_DEPTH} count=${SELECT_COUNT}` +
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
     (AGENT_SELECT_ARM === "adviser"
-      ? ` effort=${THINK_EFFORT} lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)` : "") +
+      ? ` effort=${THINK_EFFORT} maxtok=${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}`
+        + ` lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)` : "") +
     ` model=${MODEL} — ${tally.ok}/${tally.calls} chose, ${tally.failed} FELL BACK to the` +
     ` shipped order (${tally.emptyReply} empty reply, ${tally.badJson} unparseable),` +
     ` ${tally.shortReply} short reply, ${tally.invalidIds} unusable id(s)` +
+    // The thinking that HAPPENED, next to the thinking we asked for. wsDQ set
+    // effort=low and 10 of 12 calls spent zero thinking tokens, so the setting
+    // alone never established that the lever moved. `truncated` is here for the
+    // opposite reason: it is the only thing that distinguishes a ceiling set too
+    // low from a model that declined, and both of those publish the control.
+    (AGENT_SELECT_ARM === "adviser"
+      ? `, thought on ${tally.thoughtOn}/${tally.calls} call(s)`
+        + ` (${tally.thinkingTokens} thinking token(s) billed,`
+        + ` ${tally.thinkingChars} readable char(s)),`
+        + ` ${tally.truncated} CUT OFF at max_tokens` : "") +
     `, EUR ${tally.eur.toFixed(4)} total, EUR ${(tally.eur / tally.calls).toFixed(4)} per brief`;
 }
 /** `dry` only. The measured prompt sizes, for pricing an arm before running
@@ -970,8 +1038,9 @@ export async function agentSelectRows(
       model: MODEL,
       // Thinking bills as OUTPUT, so max_tokens must clear the budget with
       // room for the reply or the answer is truncated into the empty-content
-      // failure this arm already paid for once.
-      max_tokens: adviser ? 1536 : 1024,
+      // failure this arm already paid for once -- and DID pay for again at
+      // effort `high` on the shipped 1,536. See MAX_TOKENS_BY_EFFORT.
+      max_tokens: adviser ? MAX_TOKENS_BY_EFFORT[THINK_EFFORT] : 1024,
       // THINKING OFF, and this is a measured decision, not a saving.
       //
       // The first live run of this arm fell back on 3 of 8 cases with no
@@ -991,9 +1060,20 @@ export async function agentSelectRows(
       // Adaptive is the only on-mode on this model; `disabled` is still valid
       // and is what the cheaper arms use. Effort, not a token count, is the
       // depth control -- see THINK_EFFORT.
-      ...(adviser
+      //
+      // `display: "summarized"` IS THE FIX FOR THE BILLED-EMPTY THINKING, and
+      // it is one field. On claude-sonnet-5 `display` defaults to "omitted":
+      // the thinking block is returned, its signature is returned, and its TEXT
+      // is an empty string. wsDQ recorded Nortal at 310 billed thinking tokens
+      // and `THINKING (0 chars)` and read that as "no readable block arrived" —
+      // the block arrived, redacted by default. Replaying that exact prompt
+      // both ways is what settled it: unset -> 0 characters, "summarized" ->
+      // 321. It changes nothing about what is spent or what is decided; it
+      // decides only whether a run we PAID for can be read afterwards, which is
+      // the difference between a measurement and an anecdote.
+      ...(adviser && THINK_EFFORT !== "off"
         ? {
-            thinking: { type: "adaptive" as const },
+            thinking: { type: "adaptive" as const, display: "summarized" as const },
             output_config: { effort: THINK_EFFORT },
           }
         : { thinking: { type: "disabled" as const } }),
@@ -1006,7 +1086,15 @@ export async function agentSelectRows(
       // `UNROUTED_STAGES` is empty and `check_contracts` enforces it.
       system,
       messages: [{ role: "user", content: user }],
-      }, { timeout: TIMEOUT_MS, maxRetries: 1 });
+      }, {
+        timeout: adviser ? TIMEOUT_BY_EFFORT[THINK_EFFORT] : TIMEOUT_BY_EFFORT.off,
+        maxRetries: 1,
+      });
+      // Recorded BEFORE anything is parsed, because this is the one signal that
+      // separates "the model declined to answer" from "we cut it off mid
+      // thought". Both produce an empty reply and both return the shipped
+      // order; only one of them is about the model.
+      if (r.stop_reason === "max_tokens") tally.truncated++;
       recordUsage(r.model ?? MODEL, r.usage as never);
       // Local euro tally as well, because a bench run has no AsyncLocalStorage
       // context and recordUsage is a no-op there — which is exactly the run
@@ -1014,6 +1102,17 @@ export async function agentSelectRows(
       const { costOf } = await import("./cost");
       const spent = costOf(r.model ?? MODEL, r.usage as never);
       tally.eur += spent;
+      // What the thinking lever actually did, per call, from the API's own
+      // numbers rather than from the setting we asked for. `thoughtOn` counts
+      // calls that spent ANY thinking at all: at effort `low` wsDQ found 10 of
+      // 12 spent zero, so "thinking was on" and "the model thought" are
+      // different claims and the tally line has to be able to tell them apart.
+      const billed = (r.usage as unknown as {
+        output_tokens_details?: { thinking_tokens?: number };
+      }).output_tokens_details?.thinking_tokens ?? 0;
+      tally.thinkingTokens += billed;
+      tally.thinkingChars += thinkingOf(r).length;
+      if (billed > 0) tally.thoughtOn++;
       if (traceMemo) {
         traceMemo.turns.push({
           round: evidence ? 2 : 1, system, user,
