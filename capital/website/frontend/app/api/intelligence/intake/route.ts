@@ -14,6 +14,8 @@ import {
   planAdaptiveScreen,
   inferProfileSignal,
 } from "@/lib/intelligence/adaptiveRound";
+import { askForRanker, rankerAsksEnabled } from "@/lib/intelligence/rankerAsks";
+import { intakeAnswerLines } from "@/lib/intelligence/agentSelect";
 import {
   sanitizeCapitalSought,
   sanitizeEligibility,
@@ -116,7 +118,20 @@ export async function POST(request: NextRequest) {
     // by comparing finished questions — which is how a screen asked for
     // technology readiness twice and the brief published both answers. See
     // planAdaptiveScreen.
-    const [screen, profileSignal] = await Promise.all([
+    // wsEJ. THE STAGE THAT PICKS, ASKING — off by default.
+    //
+    // It runs alongside the planner rather than after it, because the two are
+    // asking the same founder at the same moment and a serial second call would
+    // be latency the founder waits through. With the arm ON its questions
+    // REPLACE the planner's fixed-answer half and nothing else: those are the
+    // questions whose answers land in `EligibilityAnswers` and therefore reach
+    // the stage that ranks, which is precisely the half this stage is entitled
+    // to own. The planner keeps the project and commercial questions, because
+    // positioning has no other source and this stage makes no claim on it.
+    //
+    // With the arm OFF this is one boolean and no call, and the screen is
+    // byte-identical to the one that ships today.
+    const [screen, profileSignal, asked] = await Promise.all([
       // The shortlist the screen exists to sharpen. Passing it is what lets
       // the planner ask questions that decide between real candidates rather
       // than questions about gates in the abstract.
@@ -132,13 +147,27 @@ export async function POST(request: NextRequest) {
         // high coverage.
         stakesByFund(candidateIds, eligibility), openQuestions),
       body.wantProfileSignal ? inferProfileSignal(req) : Promise.resolve(null),
+      rankerAsksEnabled()
+        ? askForRanker(candidateIds, eligibility, {
+            country: req.country,
+            sector: eligibility?.sector ?? undefined,
+            description: req.description,
+            answers: intakeAnswerLines(eligibility),
+          })
+        : Promise.resolve([]),
     ]);
 
-    const merged = screen
+    // The ranker's questions carry a `ref` and a citation the planner's do not,
+    // and the panel renders neither — they are kept on the object so an answer
+    // can be traced back to the requirement that motivated it.
+    const rankerQuestions = asked.map((q) => ({
+      field: q.field, question: q.question, options: q.options,
+    }));
+    const merged = screen || rankerQuestions.length
       ? {
-          theme: screen.theme,
-          questions: screen.questions,
-          projectQuestions: screen.projectQuestions,
+          theme: screen?.theme ?? "A few more things",
+          questions: rankerQuestions.length ? rankerQuestions : (screen?.questions ?? []),
+          projectQuestions: screen?.projectQuestions ?? [],
         }
       : null;
 

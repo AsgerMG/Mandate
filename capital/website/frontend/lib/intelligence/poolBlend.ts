@@ -95,7 +95,8 @@ export function proximityFit(inst: DbInstrument, founderCountries: string[]): nu
 }
 
 /** Kept here rather than imported from fit.ts so the signal table is readable
- *  as one thing; fit.ts exports a constant of the same value for `scoreFit`,
+ *  as one thing; fit.ts exports a constant of the same value for
+ *  `scoreFitControl`,
  *  and `check_contracts` has no opinion about either. The number is the one the
  *  weights were fitted against. */
 const EU_WIDE_PROXIMITY = 0.45;
