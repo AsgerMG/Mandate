@@ -158,6 +158,59 @@ def export(store) -> int:
     return 0
 
 
+def checksums() -> int:
+    """Is the committed ledger whole? Hermetic — no store, no credentials.
+
+    A ledger exists so that a destroyed row can be brought back. A truncated
+    or half-committed one is worse than none at all, because it reads as
+    protection and is not. So the manifest records a sha256 and a row count
+    per file, and this asserts them against what is actually on disk. It runs
+    in CI, where the corpus cannot: the whole point is that this artefact is
+    checkable without the 645 MB file it came from.
+    """
+    mp = LEDGER / "MANIFEST.json"
+    if not mp.exists():
+        print(f"FAIL: no manifest at {mp}")
+        return 1
+    manifest = json.loads(mp.read_text(encoding="utf-8"))
+    problems: list[str] = []
+    for t, want in sorted(manifest["tables"].items()):
+        p = path_for(t)
+        if not p.exists():
+            problems.append(f"{t}: the manifest lists it, the file is missing")
+            continue
+        got_sha = sha256_of(p)
+        if got_sha != want["sha256"]:
+            problems.append(f"{t}: sha256 {got_sha[:16]} on disk, manifest says "
+                            f"{want['sha256'][:16]} — the file and the manifest were "
+                            f"not committed together")
+        n = sum(1 for line in p.read_text(encoding="utf-8").splitlines() if line.strip())
+        if n != want["rows"]:
+            problems.append(f"{t}: {n:,} lines on disk, manifest says {want['rows']:,}")
+        if want["identity"] != IDENTITY.get(t):
+            problems.append(f"{t}: exported under identity {want['identity']}, the "
+                            f"code now uses {IDENTITY.get(t)} — re-export before "
+                            f"relying on a restore")
+    # A file nobody declared is a file nobody will restore.
+    listed = set(manifest["tables"])
+    on_disk = {p.stem for p in LEDGER.glob("*.jsonl")}
+    for extra in sorted(on_disk - listed):
+        problems.append(f"{extra}.jsonl is not in the manifest")
+    for missing in sorted(set(TABLES) - listed):
+        problems.append(f"{missing} is a table of the instrument family and the "
+                        f"ledger does not carry it")
+    if problems:
+        print("FAIL: the committed ledger is not whole, so a restore from it would "
+              "be partial\n")
+        for p_ in problems:
+            print(f"  - {p_}\n")
+        return 1
+    total = sum(v["rows"] for v in manifest["tables"].values())
+    print(f"ok: {total:,} rows across {len(listed)} files, every checksum and row "
+          f"count matches the manifest")
+    return 0
+
+
 def _ledger_rows(table: str) -> dict[tuple, dict]:
     p = path_for(table)
     if not p.exists():
@@ -248,7 +301,7 @@ def restore(target, dry: bool) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser(
         description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("verb", choices=["export", "verify", "restore"])
+    ap.add_argument("verb", choices=["export", "verify", "checksums", "restore"])
     ap.add_argument("--store", default=str(DB),
                     help="the store to export from / verify against (default: the local corpus)")
     ap.add_argument("--into", help="the store to restore INTO (required for restore)")
@@ -257,6 +310,8 @@ def main() -> int:
 
     if args.verb == "export":
         return export(args.store)
+    if args.verb == "checksums":
+        return checksums()
     if args.verb == "verify":
         return verify(args.store)
     if not args.into:

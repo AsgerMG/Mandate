@@ -301,6 +301,15 @@ jobs:
       - name: An uncomparable table never reports itself as safe to overwrite
         run: python3 ETL/events/load/test_overwrite_guard.py
 
+      # corpus-ledger/ is the only committed copy of the authored instrument
+      # corpus -- 7,471 encoded gates that no extractor can regenerate. A
+      # truncated or half-committed ledger is WORSE than none, because it reads
+      # as protection and is not. Hermetic by construction: it checks the
+      # artefact against its own manifest, with no database anywhere near it,
+      # which is the whole reason the artefact exists.
+      - name: The committed corpus ledger is whole
+        run: python3 ETL/events/load/instrument_ledger.py checksums
+
       # The same class again, one column over and far more expensive: the split
       # keyed a child on `name` while the ETL renamed 430 of 453 children to the
       # Commission's registered scheme title. Placement read 11.5% instead of
