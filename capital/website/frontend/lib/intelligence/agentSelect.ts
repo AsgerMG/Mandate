@@ -291,6 +291,75 @@ export const THINK_EFFORT: ThinkEffort = (() => {
 })();
 export const LOOKUP_MAX = Number(process.env.AGENT_SELECT_LOOKUPS ?? 5);
 
+/**
+ * ── HOW THE MODEL IS ALLOWED TO ASK FOR A FUND'S OWN RULES ────────────────
+ *
+ * `declare` is the shipped design and it does not fire. The model is asked, in
+ * the same JSON as its picks, to name up front the candidates it cannot
+ * separate — a PRE-declaration, made before it has looked anything up. Measured
+ * twice, on the same twelve companies:
+ *
+ *   effort low   (wsDQ)   0 of 12 declared anything
+ *   effort high  (wsDS)   0 of 12, after 79,252 thinking tokens
+ *
+ * The second run is what makes this a verdict rather than a suspicion. The
+ * obvious reading of wsDQ was that a model doing no reasoning gives the
+ * compliant empty answer — the instruction ends "if you already know, leave it
+ * empty". That reading is now excluded: at effort `high` the model reasoned at
+ * length and explicitly about eligibility, naming blockers in its own thinking,
+ * and still declared nothing. So `eligibility_embeddings` — 4,579+ chunks, an
+ * HNSW index, refreshed and guarded — has never once been read on a real
+ * request, and the reason is the shape of the hook, not the depth of the model.
+ *
+ * The likely mechanism, and the reason a tool is the honest alternative: asking
+ * a model to enumerate its own uncertainty BEFORE it investigates is asking for
+ * a self-report about a state it has not entered yet. A tool inverts that. The
+ * model does not have to predict which rows will puzzle it; it reaches for the
+ * rules at the moment one does, which is the only moment it actually knows.
+ *
+ * `off` exists so the channel can be removed rather than left as a hook that
+ * never fires, which is the outcome the owner named as acceptable and which is
+ * strictly better than shipping dead surface.
+ *
+ * DEFAULT IS UNCHANGED. `declare` stays the default so this file's behaviour is
+ * identical until something measured says otherwise.
+ */
+const UNSURE_MODES = ["declare", "tool", "off"] as const;
+export type UnsureMode = (typeof UNSURE_MODES)[number];
+export const UNSURE_MODE: UnsureMode = (() => {
+  const raw = process.env.AGENT_SELECT_UNSURE ?? "declare";
+  if (!UNSURE_MODES.includes(raw as UnsureMode)) {
+    throw new Error(`AGENT_SELECT_UNSURE must be one of ${UNSURE_MODES.join("|")}, got "${raw}"`);
+  }
+  return raw as UnsureMode;
+})();
+
+/** The one tool the selector may call. Its input is INDICES INTO THE MENU IT
+ *  WAS SHOWN, never a free-text query and never an instrument id — so the model
+ *  cannot use it to reach a fund it was not already offered, and the retrieval
+ *  stays a lookup about candidates in front of it rather than a search of the
+ *  corpus. That is the same boundary the `declare` path relies on for its leak
+ *  argument, enforced the same way. */
+const LOOKUP_TOOL = {
+  name: "lookup_requirements",
+  description:
+    "Return a fund's own eligibility requirements, in its own words, for "
+    + "candidates you are looking at. Use it where a rule you cannot see on the "
+    + "row would change your answer.",
+  input_schema: {
+    type: "object" as const,
+    properties: {
+      indices: {
+        type: "array" as const,
+        items: { type: "integer" as const },
+        description: "Index numbers from the CANDIDATES list, at most "
+          + `${LOOKUP_MAX}.`,
+      },
+    },
+    required: ["indices"],
+  },
+};
+
 const MODEL = process.env.AGENT_SELECT_MODEL ?? "claude-sonnet-5";
 
 /**
@@ -364,6 +433,10 @@ const tally = {
    *  model refusing to choose -- which is how a run measures its own control
    *  and reports it as a treatment. */
   truncated: 0, thinkingTokens: 0, thinkingChars: 0, thoughtOn: 0,
+  /** `tool` mode: calls on which the model ASKED for a fund's own rules. The
+   *  whole question about this channel is whether it ever fires, so the count
+   *  of times the model reached for it is the measurement, not a diagnostic. */
+  toolAsked: 0,
   /** `dry` only: the size of the prompt the adviser WOULD have sent, and of
    *  the evidence round two would have carried. Priced by _wsdd_cost.ts. */
   dryChars: [] as number[], dryEvidenceChars: [] as number[], dryRetrieved: 0,
@@ -378,7 +451,7 @@ export function resetAgentSelectTally(): void {
   tally.dryChars = []; tally.dryEvidenceChars = []; tally.dryRetrieved = 0;
   tally.reversed = 0;
   tally.truncated = 0; tally.thinkingTokens = 0;
-  tally.thinkingChars = 0; tally.thoughtOn = 0;
+  tally.thinkingChars = 0; tally.thoughtOn = 0; tally.toolAsked = 0;
 }
 export function agentSelectTallyLine(): string {
   // The nonsense arm reports itself as nonsense. A line that read like the
@@ -395,6 +468,8 @@ export function agentSelectTallyLine(): string {
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
     (AGENT_SELECT_ARM === "adviser"
       ? ` effort=${THINK_EFFORT} maxtok=${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}`
+        + ` unsure=${UNSURE_MODE}`
+        + (UNSURE_MODE === "tool" ? ` asked=${tally.toolAsked}/${tally.calls}` : "")
         + ` lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)` : "") +
     ` model=${MODEL} — ${tally.ok}/${tally.calls} chose, ${tally.failed} FELL BACK to the` +
     ` shipped order (${tally.emptyReply} empty reply, ${tally.badJson} unparseable),` +
@@ -930,14 +1005,23 @@ a verdict: it says what worked for companies like this one, not what fits THIS
 one. Weigh it, and overrule it where this company plainly fails what the fund
 demands or needs a cheque of a different order.
 
-IF TWO CANDIDATES LOOK THE SAME TO YOU, SAY SO INSTEAD OF GUESSING. List their
+${UNSURE_MODE === "tool" ? `You have a tool, \`lookup_requirements\`, that returns a fund's own eligibility
+rules in its own words. Use it whenever a rule you cannot see would change your
+answer — most usefully where two candidates look alike, or where a row's summary
+does not tell you whether this company qualifies. You may call it once, for up
+to ${LOOKUP_MAX} candidates at a time. Choosing not to call it is a fine answer when the
+rows already tell you what you need.
+
+When you are done, reply with ONLY this JSON, no preamble and no code fence.
+Exactly ${want} DISTINCT index numbers taken from the list above, best first:
+{"picks":[${Array.from({ length: want }, () => "0").join(",")}]}` : `IF TWO CANDIDATES LOOK THE SAME TO YOU, SAY SO INSTEAD OF GUESSING. List their
 index numbers in "unsure" and you will be shown those funds' own eligibility
 rules and asked again. Name at most ${LOOKUP_MAX}, and only where the extra rules could
 actually change your answer — if you already know, leave it empty.
 
 Reply with ONLY this JSON, no preamble and no code fence. Exactly ${want} DISTINCT
 index numbers taken from the list above, best first, plus any you are unsure of:
-{"picks":[${Array.from({ length: want }, () => "0").join(",")}],"unsure":[]}` : `Reply with ONLY this JSON, no preamble and no code fence. Exactly ${want} DISTINCT
+{"picks":[${Array.from({ length: want }, () => "0").join(",")}],"unsure":[]}`}` : `Reply with ONLY this JSON, no preamble and no code fence. Exactly ${want} DISTINCT
 index numbers taken from the list above, best first:
 {"picks":[${Array.from({ length: want }, () => "0").join(",")}]}`}`;
 }
@@ -1031,11 +1115,20 @@ export async function agentSelectRows(
   }
   tally.calls++;
   try {
-    const ask = async (evidence?: Map<string, string[]>) => {
+    const ask = async (
+      evidence?: Map<string, string[]>,
+      /** `tool` mode only: the turns so far, replayed. Thinking blocks are
+       *  echoed back UNCHANGED, which the API requires when a conversation with
+       *  thinking on is continued on the same model — reconstructing or
+       *  dropping them is rejected. */
+      history?: Anthropic.MessageParam[],
+    ) => {
       const system = selectorSystemPrompt();
       const user = buildPrompt(menuRows, ctx, keep, want, peers, evidence);
+      const useTool = adviser && UNSURE_MODE === "tool";
       const r = await anthropic().messages.create({
       model: MODEL,
+      ...(useTool ? { tools: [LOOKUP_TOOL] } : {}),
       // Thinking bills as OUTPUT, so max_tokens must clear the budget with
       // room for the reply or the answer is truncated into the empty-content
       // failure this arm already paid for once -- and DID pay for again at
@@ -1085,7 +1178,7 @@ export async function agentSelectRows(
       // same positive per-stage routing every other stage uses, so
       // `UNROUTED_STAGES` is empty and `check_contracts` enforces it.
       system,
-      messages: [{ role: "user", content: user }],
+      messages: [{ role: "user", content: user }, ...(history ?? [])],
       }, {
         timeout: adviser ? TIMEOUT_BY_EFFORT[THINK_EFFORT] : TIMEOUT_BY_EFFORT.off,
         maxRetries: 1,
@@ -1134,7 +1227,71 @@ export async function agentSelectRows(
     // all forty rows would cost more than the brief is allowed to and would
     // bury the separating fact in bulk text, which is precisely how the free
     // arm failed.
-    if (adviser) {
+    // ── `tool`: the model asks, at the moment it wants to ───────────────────
+    // Same retrieval, same leak boundary, same LOOKUP_MAX. The only thing that
+    // changes is WHEN the model is asked to know it is unsure: `declare` wants
+    // that judgement before it has looked at anything, and got it 0 times in 24
+    // measured calls. Here the request arrives as a tool call mid-turn.
+    //
+    // Bounded to ONE round of retrieval, deliberately. An unbounded loop on a
+    // stage whose whole output is six integers is a cost with no ceiling, and
+    // the second call already carries everything the first one learned.
+    if (adviser && UNSURE_MODE === "tool") {
+      const call = res.content.find(
+        (b): b is Anthropic.ToolUseBlock =>
+          b.type === "tool_use" && b.name === LOOKUP_TOOL.name);
+      if (call) {
+        tally.toolAsked++;
+        const idx = (Array.isArray((call.input as { indices?: unknown })?.indices)
+          ? (call.input as { indices: unknown[] }).indices : [])
+          .filter((i): i is number => Number.isInteger(i) && (i as number) >= 0
+            && (i as number) < menuRows.length)
+          .slice(0, LOOKUP_MAX);
+        const ids = [...new Set(idx
+          .map((i) => menuRows[i].instrumentId)
+          .filter((id): id is string => Boolean(id)))];
+        lastUnsureIds = ids;
+        if (traceMemo) traceMemo.unsure = idx;
+        const founderText = [ctx.description ?? "", ...(ctx.answers ?? [])]
+          .join("\n").trim();
+        const chunks = ids.length ? await retrieveDemands(ids, founderText) : [];
+        if (traceMemo) {
+          traceMemo.retrieved = chunks.map((c) => ({ instrumentId: c.instrumentId, text: c.text }));
+        }
+        if (chunks.length) { tally.lookups += ids.length; tally.resolved++; }
+        const byId = new Map<string, string[]>();
+        for (const c of chunks) byId.set(c.instrumentId, [...(byId.get(c.instrumentId) ?? []), c.text]);
+        // A lookup that found nothing still gets an answer, and an honest one.
+        // Returning silence would leave the model waiting on a result that
+        // never comes and invite it to invent what the rules probably say.
+        const body = idx.length
+          ? idx.map((i) => {
+            const id = menuRows[i].instrumentId ?? "";
+            const got = byId.get(id) ?? [];
+            return `[${i}] ${menuRows[i].instrument}\n`
+              + (got.length ? got.map((t) => `  - ${t}`).join("\n")
+                : "  (no eligibility rules recorded for this one)");
+          }).join("\n\n")
+          : "No valid candidate index was named, so nothing was looked up.";
+        const res2 = await ask(undefined, [
+          // `res.content` verbatim: thinking blocks must be echoed back
+          // unchanged or the API rejects the continuation.
+          { role: "assistant", content: res.content },
+          {
+            role: "user",
+            content: [{
+              type: "tool_result" as const,
+              tool_use_id: call.id,
+              content: body,
+            }],
+          },
+        ]);
+        const v2 = parseJson<{ picks: unknown }>(textOf(res2));
+        // Keep the second answer only if it is usable. A failed follow-up must
+        // degrade to the first answer, never past it.
+        if (Array.isArray(v2?.picks) && v2!.picks.length) { res = res2; v = v2; }
+      }
+    } else if (adviser && UNSURE_MODE === "declare") {
       const unsure = (Array.isArray(v?.unsure) ? v!.unsure : [])
         .filter((i): i is number => Number.isInteger(i) && (i as number) >= 0
           && (i as number) < menuRows.length)
