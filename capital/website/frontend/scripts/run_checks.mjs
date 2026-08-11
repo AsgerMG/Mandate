@@ -141,6 +141,15 @@ const CHECKS = [
   // answer key, no credentials.
   ["a winner is never gated out of the memo",
     ["npx", "tsx", "scripts/check_winner_not_gated.ts"]],
+  // The same drop from the founder's side rather than the fund's: not "is this
+  // winner deleted", but "did DELETION follow from answering a question we
+  // chose to ask". The owner's binding decision is that a second-screen answer
+  // informs the ranker and never removes a fund, and `accessiblePool` is the
+  // one seam that removes. Builds ~700 real pools, so it is the slow member of
+  // the hermetic block -- about two minutes -- and it is placed by cost rather
+  // than by what it reads.
+  ["asking a question never costs a fund",
+    ["npx", "tsx", "scripts/check_asking_cannot_shrink.ts"]],
   ["recall set does not leak", ["npx", "tsx", "scripts/check_recall_leaks.ts"]],
   // The other direction of the same property. The line above stops the ANSWER
   // KEY containing the question; this stops a founder's REQUEST being able to

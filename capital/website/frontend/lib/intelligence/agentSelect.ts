@@ -1499,6 +1499,27 @@ export async function agentSelectRows(
   // pool at the same seam. A comparison whose control cannot be checked is the
   // failure this whole workstream exists to stop repeating.
   if (tracing) traceMemo = seedTrace(rows);
+  // ── THE DECISION IS CLEARED ON ENTRY, FOR THE SAME REASON THE TRACE IS ───
+  // `lastDecision` is module state and a serverless container is warm across
+  // requests, exactly like `traceMemo` one line above -- but its reset sat
+  // BELOW four of the exits `leave` names: `armOff`, `reversed`,
+  // `poolNotLongerThanCount`, `menuNotLongerThanWant`. So with the arm ON, a
+  // founder whose pool is no longer than SELECT_COUNT -- which wsEN counts
+  // because it happens to a third of the founders in a run -- left the previous
+  // founder's picks standing in a global.
+  //
+  // That was inert while nothing consumed the decision. It stopped being inert
+  // the moment `orderMemoCandidates` gained `pinned`: the consequence is one
+  // founder's chosen funds promoted past the writer cap in another founder's
+  // brief, for the funds the two pools share, which for the EU programmes is
+  // most of them.
+  //
+  // Deliberately NOT inside `leave()`: `leave` is also the successful exit
+  // (`chose`), and clearing there would erase the decision the caller is about
+  // to read. Entry is the only point that covers every exit without erasing the
+  // one result worth keeping.
+  lastDecision = null;
+  lastUnsureIds = [];
   if (AGENT_SELECT_ARM === "off") return leave("armOff", rows);
   // BEFORE the SELECT_COUNT guard, deliberately. That guard exists because a
   // model cannot usefully choose six from six; a reversal is defined on any
@@ -1540,8 +1561,6 @@ export async function agentSelectRows(
   // identical code path and runs the identical retrieval, and simply never
   // calls Anthropic. Pricing a reconstruction of a prompt rather than the
   // prompt itself is how a cost estimate quietly describes a different arm.
-  lastDecision = null;
-  lastUnsureIds = [];
   // The transcript starts here, so a call that falls back still leaves a record
   // of what it was asked. A fallback with no trace is the one outcome that
   // teaches nothing.

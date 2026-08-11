@@ -12,7 +12,11 @@ import { instrumentLink } from "./instrumentLink";
 import { assessAll } from "./verdict";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
-import { agentSelectEnabled, agentSelectMemoPool, AGENT_SELECT_SEAM } from "./agentSelect";
+import {
+  agentSelectEnabled, agentSelectLastDecision, agentSelectMemoPool, AGENT_SELECT_SEAM,
+} from "./agentSelect";
+import { lateAnsweredFields, withCoveredFields } from "./answerProvenance";
+import { openFieldsForShortlist } from "./gateReach";
 import { recordUsage } from "./cost";
 import { recordEvent } from "./telemetry";
 import { discoverAndResearch } from "./research";
@@ -31,7 +35,10 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
 }
 import { semanticFundMatch } from "./semantic";
 import { BRIEF_LIMITS, checkBrief } from "./briefChecks";
-import { accessiblePool, explainNoDoors, orderMemoCandidates, WRITER_CANDIDATE_CAP } from "./memoCandidates";
+import {
+  accessiblePool, explainNoDoors, orderMemoCandidates, publishRankByKey,
+  WRITER_CANDIDATE_CAP,
+} from "./memoCandidates";
 import { ExclusionLog } from "./exclusions";
 import { assembleInstructions, assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
@@ -605,6 +612,11 @@ async function synthesize(
    *  than recomputed: it is a network round trip, and the shortlist already
    *  ranked on the same numbers. */
   semanticScores: Map<string, number>,
+  /** Fields the founder first answered on the follow-up screen, DERIVED by the
+   *  caller from two answer objects and the founder's own open-field evidence
+   *  — never a list off the request. Threaded rather than recomputed so the
+   *  pool cut and the band sort cannot disagree about which fund is blocked. */
+  lateFields: ReadonlySet<string>,
 ): Promise<Omit<IntelligenceReport, "company" | "generatedAt"> & {
   /** Pipeline diagnostics, NOT part of the founder-facing report — stripped
    *  in runIntelligence before the report event is emitted. Recorded on
@@ -931,12 +943,27 @@ async function synthesize(
   // rather than simply the best-fitting ones. Fit ordering (exact country,
   // then ticket proximity, then event count) survives as the tie-break: rows
   // with no ease signal at all keep their original position.
-  const { toWriter, easeById, assessments, droppedBlocked, isStale } = orderMemoCandidates({
+  const { toWriter, easeById, assessments, isStale } = orderMemoCandidates({
     // The SIGNAL scope, not the rendered one: every row this call scores for
     // ease must be a row the screen could have disqualified. See where the two
     // are computed for what sharing one scope was costing.
     instrumentTable, req, records, dbPeers, eligibilityScreen: eligibilitySignal,
     semanticScores, log,
+    // A row the model NAMED keeps its seat. `picked` is in the model's own
+    // order and a Set keeps it.
+    //
+    // This reads MODULE STATE, and the only thing that makes that safe is that
+    // `agentSelectMemoPool` clears it on ENTRY rather than at the point it is
+    // written — see the comment there. It used to clear it after four early
+    // returns, which in a warm container meant a founder whose pool was too
+    // small to reach the model inherited the previous founder's picks. With the
+    // arm off — every production request today — this is `undefined` and the
+    // sort is the one that has always run.
+    pinned: (() => {
+      const picked = agentSelectLastDecision()?.picked;
+      return picked?.length ? new Set(picked) : undefined;
+    })(),
+    lateFields,
   });
   const baseRows = toWriter.map((r) => r.row);
   const institutions = buildInstitutions(baseRows, records, dbPeers).map((entry, idx) => {
@@ -948,8 +975,13 @@ async function synthesize(
       lastAwardYear: baseRows[idx].lastAwardYear,
       stale: isStale(baseRows[idx]),
       verdict: a?.status ?? "unknown",
-      // Only ever one blocker reaches the founder — a row with two or more is
-      // `blocked` and was already dropped above.
+      // The sharpest obstacle in the fund's own words. Usually the only one:
+      // a row with two or more failing filters is `blocked` and was dropped by
+      // `accessiblePool`. The exception is the softened row — every one of its
+      // blockers cites a field the founder first answered on the follow-up
+      // screen, so it is published WITH the obstacle stated rather than
+      // deleted. The remaining blockers stay on the assessment; what the row
+      // renders is one line, and it is the fund's own sentence either way.
       blocker: a?.blockers[0]?.requirement,
       gatesChecked: a?.checked ?? 0,
     };
@@ -1255,10 +1287,25 @@ async function synthesize(
   // buildInstitutions), and strip em-dashes from every model-written field
   // (house rule).
   const notesByKey = new Map(narrative.institutionNotes.map((n) => [n.channel, n]));
-  // The writer ranks by the order it returns the notes in; anything it did not
-  // mention sorts last. The CUT to five happens in code, so the model can
-  // express "this is the weakest" without being able to delete a usable row.
-  const rankByKey = new Map(narrative.institutionNotes.map((n, i) => [n.channel, i]));
+  // ── THE CANDIDATE ORDER PUBLISHES, NOT THE WRITER'S NOTE ORDER ───────────
+  //
+  // This was `narrative.institutionNotes.map((n, i) => [n.channel, i])`: the
+  // rows were ranked by where each note fell in the model's reply. Three lines
+  // in this very file and in the contracts tell that model NOT to rank —
+  // FUND-12 ("Rows are not ranked in the brief"), the prompt above ("Do not
+  // reorder them, do not omit one"), and 02-funds.md ("There is no channel for
+  // telling us a row is wrong") — so the only reply that could carry a ranking
+  // was a reply that had disobeyed, and a model that obeyed was read as
+  // agreeing with an order it had merely copied.
+  //
+  // With BRIEF_INSTITUTION_CAP below WRITER_CANDIDATE_CAP, a permutation IS a
+  // deletion. See `SHIPPED_PUBLISH_ORDER` in memoCandidates.ts for the arms and
+  // for the `WRT-NOT-WORTH` precedent this repeats one field over.
+  //
+  // `worth` is untouched: the writer still decides WHETHER a row publishes by
+  // whether it wrote about it. It no longer decides where.
+  const rankByKey = publishRankByKey(
+    rowKeys, narrative.institutionNotes.map((n) => n.channel));
   const scored = institutions.map((row, i) => {
     const note = notesByKey.get(rowKeys[i]);
     return {
@@ -1391,7 +1438,12 @@ async function synthesize(
     // Diagnostics, stripped before the report is emitted (see runIntelligence).
     // They exist so brief_records can explain a short brief after the fact
     // rather than leaving it to be guessed at.
-    _dropped: { blocked: droppedBlocked, watchOnly: watchOnly.length,
+    // `blocked` now comes from the seam that really performs the drop.
+    // `orderMemoCandidates` used to return this count from a filter that
+    // `accessiblePool` had already made unreachable, so every recorded brief
+    // carried a hard zero presented as a measurement.
+    _dropped: { blocked: log.countsByRule()["VER-BLOCKED"] ?? 0,
+                watchOnly: watchOnly.length,
                 candidates: scored.length },
   };
 
@@ -1652,7 +1704,42 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   // Strictly additive: for a founder with nothing blocked in the top of the
   // ranking this is the same eighteen rows in the same order, and no row that
   // reaches the founder today can stop reaching them.
-  const accessible = accessiblePool(hydratedTable, req.eligibility, log);
+  // ── INFORM-NEVER-REMOVE: which answers arrived on the follow-up screen ───
+  //
+  // Derived HERE, on the server, from two ANSWER OBJECTS the request carries —
+  // `eligibility` (merged) and `eligibilityBeforeRound` — both already through
+  // `sanitizeEligibility`. The request may never name the late fields itself:
+  // a client that could would mark every field late and switch the verdict
+  // engine off for its own brief.
+  //
+  // The difference alone is not enough either, because a client controls both
+  // objects and could simply omit `sector` from the earlier one. So it is
+  // intersected with what this founder's OWN shortlist would have generated a
+  // question about, re-derived from the pool we just built. That derivation is
+  // `openFieldsForShortlist`, the same function the adaptive round picks from.
+  //
+  // It is NOT what stops a first-page answer being called late. That belongs to
+  // `lateAnsweredFields` and is asserted there: this call site was written
+  // believing `openFieldsForShortlist` excluded FIRST_PAGE_FIELDS, and it
+  // returns `region` — a first-page field carrying 181 encoded filters — for
+  // every founder country on the committed snapshot.
+  //
+  // Evaluated against the BEFORE answers, so a field the founder has since
+  // answered still reads as open and can be recognised as the thing they were
+  // asked. Empty for a founder who answered no follow-up question, and empty
+  // for every request that sends one answer object, which is what keeps this
+  // additive.
+  const lateFields = lateAnsweredFields(
+    req.eligibilityBeforeRound, req.eligibility,
+    withCoveredFields(openFieldsForShortlist(
+      hydratedTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
+      req.eligibilityBeforeRound,
+    ).map((f) => f.field)));
+  if (lateFields.size) {
+    console.log("[provenance] %d field(s) first answered on the follow-up screen: %s",
+      lateFields.size, [...lateFields].join(", "));
+  }
+  const accessible = accessiblePool(hydratedTable, req.eligibility, log, lateFields);
   // ── wsDL: THE MODEL IN THE SELECTION SEAT, ON THE PATH THE MEMO TAKES ────
   //
   // wsDD placed this call in `computeVerdict`, which reorders the fast-path
@@ -1741,7 +1828,7 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     "other";
   const body = await synthesize(
     req, records, intel, dbPeers, self, instrumentTable, instructions, sectorTop, emit, log,
-    semanticScores);
+    semanticScores, lateFields);
 
   const { _dropped, ...report } = body;
   emit({
