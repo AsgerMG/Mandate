@@ -18,12 +18,14 @@
 // appended distinguisher is entirely past the cut, so the disambiguation exists
 // only in a string nobody is shown.
 //
-// Measured, 36 recall founders, live corpus, arm off
-// (`scripts/_wsfe_seats.ts`):
+// Measured, 36 recall founders, live corpus, arm off, with the collapse keyed
+// each way (`scripts/_wsfe_seats.ts`):
 //
 //   raw label       0 collisions,  0 founders   (menu AND published table)
-//   rendered label  14 collisions, 8 founders   on the 40-row menu
-//                    4 collisions, 4 founders   in the published seven
+//   rendered label  18 collisions, 7 founders   on the 40-row menu
+//                    6 collisions, 3 founders   in the published seven
+//
+// Keyed on the rendered label, both fall to 0 across 0 founders.
 //
 // A key that scores zero on a defect that is visibly there is not a strict key,
 // it is a blind one. The two fixtures below are the shapes that produced those

@@ -549,9 +549,10 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
   // ── The label is THIS surface's label ───────────────────────────────────
   // `displayInstitutionName` is what `buildInstitutions` prints in the memo
   // table, so it is what "the founder sees the same name twice" means HERE.
-  // `materialiseInstrumentTable` keys on `rowDisplayLabel` because that is what
-  // ITS surface prints. One label per surface, each passed in, is exactly the
-  // arrangement nameCollision.ts asks for; what it forbids is one surface
+  // `materialiseInstrumentTable` keys on `rowRenderedLabel` — its own surface's
+  // title, cut to `ROW_TITLE_CHARS` and lowercased, because that is what the
+  // selector's menu shows. One label per surface, each passed in, is exactly
+  // the arrangement nameCollision.ts asks for; what it forbids is one surface
   // grouped by one function and collapsed by another.
   const collision = resolveNameCollisions(
     rankedByEase, (r) => displayInstitutionName(r.row),

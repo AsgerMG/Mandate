@@ -1242,12 +1242,14 @@ function rowDisplayLabel(r: InstrumentRow): string {
  * did its work and the renderer removed it, so the raw label certifies as
  * distinct exactly the pairs nobody can tell apart.
  *
- * Measured, 36 recall founders, live corpus, arm off: the RAW label collides
- * ZERO times, in zero founders, at the menu and in the published table alike.
- * The rendered label collides 14 times across 8 founders on the 40-row menu
- * and 4 times across 4 founders in the published seven — one founder spending
- * SIX of forty menu slots on one option. A key that scores zero on a defect
- * that is visibly there is not a strict key, it is a blind one.
+ * Measured, 36 recall founders, live corpus, arm off, `scripts/_wsfe_seats.ts`
+ * with this collapse keyed each way: the RAW label collides ZERO times, in zero
+ * founders, at the menu and in the published table alike. The rendered label
+ * collides 18 times across 7 founders on the 40-row menu and 6 times across 3
+ * founders in the published seven — ACTRONIKA spending NINE of forty menu slots
+ * on one option, the French `régime cadre exempté ... recherche, développement`
+ * leaves. A key that scores zero on a defect that is visibly there is not a
+ * strict key, it is a blind one. Keyed on the rendered label: 0 and 0.
  *
  * ── Case ─────────────────────────────────────────────────────────────────
  * Folded, because two titles differing only in capitalisation are not two
@@ -3044,18 +3046,27 @@ export function materialiseInstrumentTable(
     schemeCode: (r.schemeCode ?? "").trim(),
   })));
   distinguishRowNames(ranked);
-  // ONE label function, passed to both the disambiguator and the collapse.
-  // displayInstitutionName rebuilds the name from country + kind + scheme code
-  // and never reads `row.instrument`, so while these were two functions the
-  // disambiguator's work was invisible here and rows it had just told apart
-  // were still collapsed. Two functions, two keys, was the whole defect.
+  // ONE FACT ABOUT THE LABEL, and the collapse asks the WEAKER half of it.
   //
-  // The label is now the one that is READ rather than the one that is stored --
+  // The original defect was two INDEPENDENT names: the disambiguator grouped by
+  // `displayInstitutionName`, which rebuilds the name from country + kind +
+  // scheme code and never reads `row.instrument`, so it separated rows the
+  // collapse then merged on a key it had never examined. Neither key implied
+  // the other, and that is what "two functions, two keys" meant.
+  //
+  // What stands here now is not that. `rowRenderedLabel` is `rowDisplayLabel`
+  // lowercased and cut, so it is strictly COARSER: every pair the disambiguator
+  // groups, the collapse also groups, and the collapse additionally catches the
+  // pairs the disambiguator separated in characters no reader is shown. There
+  // is no pair the disambiguator sees that this one misses, which is the
+  // property that made the old pairing a defect and this one a refinement.
+  //
+  // The label is the one that is READ rather than the one that is stored --
   // see `rowRenderedLabel`. `distinguishRowNames`, one line above, appends the
   // distinguisher to the END of the title, and the renderer cuts the title to
   // `ROW_TITLE_CHARS`; on the long legal titles this corpus is full of, those
   // two facts cancel. The raw label collided zero times across 36 founders
-  // while the rendered one collided 14 times on the menu and 4 times in the
+  // while the rendered one collided 18 times on the menu and 6 times in the
   // published seven, so the raw key was not strict, it was blind.
   const collision = resolveNameCollisions(ranked, rowRenderedLabel, preferBetterEvidencedRow);
   for (const { row, kept, label: name } of collision.collisions) {
