@@ -502,50 +502,73 @@ def main() -> None:
     desc_dup = desc_closed = 0
     facet_seen: collections.Counter = collections.Counter()
 
+    # ── The unit of work is a (row, COLUMN) pair, not a record ───────────────
+    # Three branches of this loop used to drop a description, and they are the
+    # same mistake three times: each asked one question about the RECORD and
+    # then decided the fate of both columns from it. Measured on the files on
+    # disk when this was fixed: 20 records were refused for carrying no
+    # eligibility prose, and a further 18 carried a description for an open row
+    # that has none and were skipped as "already loaded" -- already loaded being
+    # a fact about `eligibility_text`, asked of a record whose description was
+    # the only new thing in it.
+    #
+    # So the two columns are decided independently, and `taken_desc` keeps a run
+    # idempotent across FILES as well as across runs: two batches of the same
+    # country legitimately describe the same row, and without it the second
+    # would be written again and counted again.
+    taken_desc: set[str] = set()
+
     for cc, recs in source_files():
         for rec in recs:
             iid = rec.get("instrument_id")
             if not iid:
                 skipped_no_id += 1
                 continue
-            if not has_text(rec):
-                # ── A page that says what a scheme FUNDS and not who may apply ──
-                # See has_text(). This used to `continue` here, so the record
-                # was counted as description-only and then dropped, against a
-                # docstring saying the description was still written. It is the
-                # only path by which `description` coverage can rise at all.
-                if has_description_only(rec):
-                    desc_only[cc] += 1
-                    if iid in have_description:
-                        desc_dup += 1
-                    elif iid not in publishable:
-                        desc_closed += 1
-                    else:
-                        desc_updates.append((
-                            (rec.get("description") or "").strip(),
-                            (rec.get("scheme_url") or rec.get("source_url") or "").strip() or None,
-                            iid))
-                        if rec.get(FACET_FIELD):
-                            facet_seen[cc] += 1
-                else:
-                    skipped_bad += 1
-                continue
-            if iid in have_desc:
-                skipped_dup += 1
-                continue
-            if iid not in publishable:
-                skipped_closed += 1
-                continue
             desc = (rec.get("description") or "").strip()
             elig = (rec.get("eligibility_text") or "").strip()
             url = (rec.get("scheme_url") or rec.get("source_url") or "").strip() or None
             conf = (rec.get("confidence") or "").strip() or None
-            if rec.get(FACET_FIELD):
-                facet_seen[cc] += 1
-            updates.append((desc or None, elig or None, url, conf, iid))
-            per_country[cc] += 1
-            if (rec.get("status") or "").lower() == "closed":
-                over_status[cc] += 1
+            usable_desc = rec.get("found") is not False and len(desc) >= MIN_TEXT_LEN
+
+            # ── The eligibility arm ─────────────────────────────────────────
+            # Writes `description` too, through COALESCE, so a row taken here
+            # needs no second statement.
+            took_elig = False
+            if has_text(rec):
+                if iid in have_desc:
+                    skipped_dup += 1
+                elif iid not in publishable:
+                    skipped_closed += 1
+                else:
+                    if rec.get(FACET_FIELD):
+                        facet_seen[cc] += 1
+                    updates.append((desc or None, elig or None, url, conf, iid))
+                    per_country[cc] += 1
+                    took_elig = True
+                    if iid not in have_description:
+                        taken_desc.add(iid)
+                    if (rec.get("status") or "").lower() == "closed":
+                        over_status[cc] += 1
+            elif has_description_only(rec):
+                # A page that says what a scheme FUNDS and not who may apply.
+                # Counted here for the report; the write happens below, which is
+                # where every path that can produce a description converges.
+                desc_only[cc] += 1
+            else:
+                skipped_bad += 1
+
+            # ── The description arm ─────────────────────────────────────────
+            if not usable_desc or took_elig or iid in taken_desc:
+                continue
+            if iid in have_description:
+                desc_dup += 1
+            elif iid not in publishable:
+                desc_closed += 1
+            else:
+                desc_updates.append((desc, url, iid))
+                taken_desc.add(iid)
+                if rec.get(FACET_FIELD):
+                    facet_seen[cc] += 1
 
     print(f"loadable: {len(updates)} instruments across {len(per_country)} countries")
     for cc, n in per_country.most_common():
@@ -563,15 +586,21 @@ def main() -> None:
     print(f"skipped: {skipped_bad} not-usable (abstained/too short), "
           f"{skipped_closed} closed or not publishable per the register, "
           f"{skipped_dup} already loaded, {skipped_no_id} missing instrument_id")
+    # The two counts below are over DIFFERENT populations and say so, because
+    # they used to be printed as one arithmetic and it did not add up: the
+    # description arm considers every record carrying a description, and the
+    # description-ONLY count is the subset that carries no eligibility prose.
     if desc_only:
         print(f"description-only: {sum(desc_only.values())} records carry prose in "
               f"`description` but no eligibility_text "
-              f"({', '.join(f'{c} {n}' for c, n in desc_only.most_common())}).")
-        print(f"   These add NO eligibility coverage, and they DO add description "
-              f"coverage: {len(desc_updates)} of them are new prose for a "
-              f"publishable row and will be written")
-        print(f"   ({desc_dup} already describe themselves, {desc_closed} are not "
-              f"publishable). See has_text().")
+              f"({', '.join(f'{c} {n}' for c, n in desc_only.most_common())}). "
+              f"They add NO eligibility coverage. See has_text().")
+    print(f"description arm (EVERY record carrying one, whether or not it also "
+          f"carries eligibility prose): {len(desc_updates)} new descriptions for "
+          f"publishable rows will be written")
+    print(f"   ({desc_dup} rows already describe themselves, {desc_closed} are not "
+          f"publishable; {len(taken_desc) - len(desc_updates)} more descriptions "
+          f"travel on the eligibility UPDATE above)")
 
     if not args.write:
         print("\n[report only] --write to apply")
