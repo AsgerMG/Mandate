@@ -94,6 +94,21 @@
   ul strong{color:var(--ink);font-weight:600;}
   .flag{border-left:3px solid var(--bad);padding-left:14px;}
   .flag .lab{color:var(--bad);}
+
+  /* the six-step flow — numbered because the content IS a sequence */
+  ol.flow{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:1px;
+          background:var(--line);border:1px solid var(--line);border-radius:3px;
+          overflow:hidden;}
+  ol.flow > li{background:var(--panel);padding:16px 20px;
+               display:flex;flex-direction:column;gap:7px;}
+  .fh{display:flex;align-items:baseline;gap:11px;flex-wrap:wrap;}
+  .fh h3{font-size:15px;font-weight:650;margin:0;letter-spacing:-.01em;flex:1 1 auto;}
+  .fn{font-family:var(--mono);font-size:12px;font-variant-numeric:tabular-nums;
+      color:var(--accent);background:var(--accent-soft);border-radius:2px;
+      padding:2px 7px;flex:none;}
+  ol.flow p{font-size:13.5px;color:var(--muted);max-width:74ch;}
+  ol.flow strong{color:var(--ink);font-weight:600;}
+  ol.flow em{color:var(--ink);font-style:italic;}
 </style>
 
 <div class="wrap">
@@ -128,6 +143,76 @@
       <span class="lab">Target</span>
       <span class="v" style="color:var(--muted)">95<span style="font-size:17px">%</span></span>
       <span class="note">Back on the table. A perfect oracle caps at <strong>98.4%</strong>, not 91.6%.</span>
+    </div>
+  </section>
+
+  <section>
+    <h2>The architecture, in six steps</h2>
+    <p class="sub" style="margin:6px 0 18px">A founder types, we build a candidate
+      subset, a model interrogates that subset and then ranks it. Two of the six steps
+      are where the accuracy is lost, and both are marked.</p>
+
+    <ol class="flow">
+      <li>
+        <div class="fh"><span class="fn">1</span><h3>The founder answers fixed questions</h3>
+          <span class="chip c-good">works</span></div>
+        <p>One screen, about a dozen fields. What they do, where they are, what stage,
+          what the money is for.</p>
+      </li>
+      <li>
+        <div class="fh"><span class="fn">2</span><h3>Our code builds the subset</h3>
+          <span class="chip c-good">works</span></div>
+        <p>Gates and channels narrow ~1,088 funds to a candidate pool &mdash; median 105,
+          range 25 to 185. <strong>The fund that actually paid out is in that pool 97% of
+          the time.</strong> This part is genuinely good and is not the problem.</p>
+      </li>
+      <li>
+        <div class="fh"><span class="fn">3</span><h3>The model asks what it still needs</h3>
+          <span class="chip c-bad">does not exist</span></div>
+        <p>Today a <em>separate planner</em> writes the second screen before anything has
+          looked at the candidates, so it is guessing which ambiguity matters. It should be
+          the ranker asking, because the ranker is holding the shortlist and can see which
+          two rows it cannot separate.</p>
+        <p style="margin-top:8px">A question is allowed only if <strong>all three</strong>
+          hold: it resolves a requirement <em>a candidate fund actually imposes</em>, in that
+          fund's own published terms; the value is genuinely unknown; and knowing it would
+          <strong>change which funds get named</strong>. The third leg is the one that cuts.
+          If nothing qualifies, the right output is <strong>no questions</strong> &mdash;
+          padding to a fixed number is the same defect as filling six fund seats.</p>
+      </li>
+      <li>
+        <div class="fh"><span class="fn">4</span><h3>The founder answers those</h3>
+          <span class="chip c-warn">wrong questions</span></div>
+        <p>The screen exists and works. What it asks is written by the wrong component.</p>
+      </li>
+      <li>
+        <div class="fh"><span class="fn">5</span><h3>The model ranks, holding everything</h3>
+          <span class="chip c-bad">starved</span></div>
+        <p><strong>It is handed 18 rows, not the subset.</strong> The pool is cut before the
+          model ever runs, and at 18 rows the right fund is present
+          <strong>44.2%</strong> of the time. And of those 18, a mean of
+          <strong>2.1</strong> survive the disqualifiers <em>our own prompt states</em>
+          &mdash; while we demand it name six. Retrieval, its route into the embedded
+          database, has fired <strong>0 times in 102 calls</strong>.</p>
+      </li>
+      <li>
+        <div class="fh"><span class="fn">6</span><h3>The five or six go into the memo</h3>
+          <span class="chip c-good">works</span></div>
+        <p>The writer is not the problem, and is deliberately untouched.</p>
+      </li>
+    </ol>
+
+    <div class="panel flag" style="margin-top:22px">
+      <div class="lab">Two numbers, and they are the whole story</div>
+      <p style="margin-top:8px;font-size:15px">The subset holds the answer
+        <strong>97%</strong> of the time. The list we hand the model holds it
+        <strong>44%</strong>. <strong>We throw away more than half our own accuracy in a
+        cut nobody measured</strong> &mdash; and then require the model to name six funds
+        from a list where two are defensible.</p>
+      <p style="margin-top:12px;font-size:14.5px">This is why paying more at step 5 cannot
+        work: a <em>perfect</em> ranker on an 18-row list scores 44.2%. Measured
+        accordingly &mdash; tripling the thinking budget, &euro;0.016 to &euro;0.053 a
+        brief, moved the score <em>down</em>.</p>
     </div>
   </section>
 
@@ -336,6 +421,49 @@
     <p style="margin-top:12px;font-size:14.5px"><strong>Nothing here has been re-measured yet.</strong>
       The account ran out of credit before the run that would test it, and the honest position is
       that we have fixed what the model reads without yet knowing what that buys.</p>
+  </section>
+
+  <section>
+    <h2>Accuracy, tracked per step</h2>
+    <p class="sub" style="margin:6px 0 14px">One number per step, so a gain can be
+      attributed to the step that produced it. A headline that only moves at the end
+      cannot tell you which change earned it.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Step</th><th>What is measured</th>
+        <th style="text-align:right">Now</th><th style="text-align:right">Target</th>
+        <th>Moves when</th></tr></thead>
+      <tbody>
+        <tr><td><strong>2 &middot; subset</strong></td><td>right fund anywhere in the pool</td>
+          <td class="num">97%</td><td class="num">97%</td>
+          <td>already at target &mdash; watched for regression, not improvement</td></tr>
+        <tr><td><strong>5 &middot; what it sees</strong></td>
+          <td>right fund in the rows handed to the model</td>
+          <td class="num"><strong>44.2%</strong></td><td class="num">77.5%</td>
+          <td>the cut before the model changes. <strong>The largest recoverable gap.</strong></td></tr>
+        <tr><td><strong>5 &middot; usable rows</strong></td>
+          <td>rows of 18 surviving the prompt's own disqualifiers</td>
+          <td class="num">2.1</td><td class="num">&ge;6</td>
+          <td>the subset is composed better, or we stop demanding six</td></tr>
+        <tr><td><strong>5 &middot; retrieval</strong></td>
+          <td>calls where the model queried the database</td>
+          <td class="num">0 / 102</td><td class="num">&mdash;</td>
+          <td>the channel is reshaped, or it is deleted as dead weight</td></tr>
+        <tr><td><strong>6 &middot; published</strong></td>
+          <td>right fund in the five named</td>
+          <td class="num">27.6%</td><td class="num">95%</td>
+          <td>any of the above moves. <em>This is the dot plot at the top.</em></td></tr>
+        <tr><td><strong>6 &middot; held out</strong></td>
+          <td>the same, never tuned against</td>
+          <td class="num">22.0%</td><td class="num">95%</td>
+          <td>the number that counts</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin-top:14px;font-size:14.5px"><strong>How this page stays true.</strong>
+      The dot plot regenerates from <span style="font-family:var(--mono);font-size:12.5px">guard_verdicts</span>
+      &mdash; the guard's own record, not a parallel log that can drift from it &mdash; so every
+      measured run lands here whether or not it flattered us. The per-step rows above are updated
+      by hand as each is re-measured, and a row that has not been re-measured says so rather than
+      carrying a stale number forward.</p>
   </section>
 
 </div>
