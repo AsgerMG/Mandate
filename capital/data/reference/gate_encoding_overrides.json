@@ -1,0 +1,251 @@
+{
+  "_comment": "Hand corrections to WHICH FIELD a gate is decided by, and to the comparator itself. Its sibling gate_role_overrides.json answers a different question -- whether a gate may decide at all -- and neither can express the other. A gate here is a genuine, sourced, DECIDING eligibility rule whose encoded field asks the founder something else: a different threshold, a different jurisdiction, or a different party. The founder answers truthfully, the comparator returns false, `assessInstrument` treats one failing filter as conclusive, `blocked` never reaches the brief, and the fund is deleted for someone it admits.",
+  "_why_a_file": "encode_gates.py writes intake_field_resolved from a paid triage pass and value_spec from a paid encode pass, and `encode` refills any gate whose spec is NULL. A correction made with an UPDATE is therefore reverted by the next `make eligibility`, silently and in the direction that hides funds. Before this file existed there was a durable home for a ROLE correction and none at all for an ENCODING correction -- which is why the same class of mistake could be found, fixed and found again. Applied by ETL/terms/apply_gate_role_overrides.py, at the same point in the pipeline and by the same script, because a second applier would be a second place to forget.",
+  "_fields": "field = the intake field whose answer may decide this rule; `none` means nothing we ask can. spec = the comparator, or null to QUARANTINE -- the requirement text stays and is still shown to the founder, only the machine verdict stops. That is the convention audit_encoding_vs_reality.py and verify_encodings.py already use, and it is the right fix whenever the fact a rule turns on is not a fact we ask for.",
+  "_how_they_were_found": "Nineteen by ETL-free machine test (website/frontend/scripts/check_field_matches_demand.ts), which fails the build on the two classes that are mechanically decidable: the demand states a proportion the question does not ask at, or names a country the answer cannot carry. Eight more by reading every deciding gate on the seven yes/no intake fields, where the mismatch is in the PARTY the rule is about -- a public body, a large enterprise, a consortium partner, the granting body's own portfolio -- which no test in this repo can decide from the text alone. Those eight are corrected here and are NOT guarded; see the check's header for the layer-2 shape that would guard them.",
+  "overrides": [
+    {
+      "instrument_id": "horizon_eu_cl1",
+      "gate_key": "G1-03",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are also not eligible to participate.",
+      "why": "One state, not the rest of the world. A US- or UK-owned company answers yes to `nonEuControl` truthfully and is deleted from the brief by a rule it does not fall under. We do not ask which state controls a company, so nothing here can decide it."
+    },
+    {
+      "instrument_id": "horizon_eu_cl3",
+      "gate_key": "g1-russia-ownership-exclusion",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Legal entities established outside Russia whose proprietary rights are more than 50% owned by a Russia-established entity are not eligible to participate.",
+      "why": "Same rule, same programme family, same defect as horizon_eu_cl1/G1-03."
+    },
+    {
+      "instrument_id": "horizon_eu_cl4",
+      "gate_key": "g1-russia-ownership-exclusion",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Legal entities established outside Russia whose proprietary rights are more than 50% owned directly or indirectly by a Russian-established person, entity, or body are not eligible to participate in any capacity.",
+      "why": "Same rule, same programme family, same defect as horizon_eu_cl1/G1-03."
+    },
+    {
+      "instrument_id": "horizon_eu_cl5",
+      "gate_key": "g1-russia-ownership-exclusion",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Legal entities established outside Russia that are more than 50% owned, directly or indirectly, by a Russia-established person/entity are not eligible to participate.",
+      "why": "Same rule, same programme family, same defect as horizon_eu_cl1/G1-03."
+    },
+    {
+      "instrument_id": "horizon_eu_cbe",
+      "gate_key": "g1-russia-ownership-exclusion",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Entities established outside Russia whose proprietary rights are directly or indirectly owned for more than 50% by a Russia-established person/entity/body are not eligible to participate in any capacity.",
+      "why": "Same rule, same programme family, same defect as horizon_eu_cl1/G1-03."
+    },
+    {
+      "instrument_id": "erc_poc",
+      "gate_key": "g1-russian-owned-entities",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Legal entities established outside Russia that are more than 50% owned by a Russia-established person/entity are not eligible to participate in any capacity.",
+      "why": "Same rule, same programme family, same defect as horizon_eu_cl1/G1-03."
+    },
+    {
+      "instrument_id": "horizon_eu_cl6",
+      "gate_key": "g1_russia_ownership_exclusion",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 not_in [yes]",
+      "requirement": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are not eligible to participate.",
+      "why": "Wrong on both axes at once. The question asks about ANY shareholder at 25%, the rule is about ONE STATE at 50% -- so the ordinary cap table of a venture-backed company, which answers yes, deletes the fund."
+    },
+    {
+      "instrument_id": "horizon_eu_eie",
+      "gate_key": "g1-russia-ownership-exclusion",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 not_in [yes]",
+      "requirement": "Legal entities established outside Russia but more than 50% owned by a Russia-established person/entity are not eligible to participate in any capacity.",
+      "why": "Same rule and same double mismatch as horizon_eu_cl6."
+    },
+    {
+      "instrument_id": "horizon_eu_miss",
+      "gate_key": "g1-russia-owned-entities",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 boolean_false",
+      "requirement": "Legal entities established outside Russia but more than 50% owned, directly or indirectly, by a Russian-established entity are not eligible to participate in any capacity.",
+      "why": "Same rule and same double mismatch as horizon_eu_cl6."
+    },
+    {
+      "instrument_id": "chips_ju_kdt",
+      "gate_key": "G1-09",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Entities established in a Member State, Associated Country or eligible third country that are directly or indirectly controlled by China or a Chinese-established legal entity are not eligible to participate in Innovation Actions (and RIAs where specified) in critical technology areas.",
+      "why": "One state again, and narrower still -- the exclusion is scoped to certain action types and technology areas. Encoded against `nonEuControl` it removes the fund from every non-EU-controlled applicant regardless of where control sits or what they build."
+    },
+    {
+      "instrument_id": "innovate_uk",
+      "gate_key": "G1-06",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl not_in [yes]",
+      "requirement": "No procurement, commercial, business development or supply chain activity with any Russian or Belarusian entity as lead, partner or subcontractor.",
+      "why": "Not an ownership rule at all. It constrains who may be in the project's SUPPLY CHAIN; `nonEuControl` describes who owns the applicant. A US-owned company with no Russian supplier fails it."
+    },
+    {
+      "instrument_id": "sudop_rnd_purpose",
+      "gate_key": "g1_sanctions_exclusion",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Aid cannot be granted to entities subject to EU restrictive measures related to Russia's actions against Ukraine, entities owned by or linked to sanctioned parties, or businesses in sanctioned industry sectors unless they demonstrate no conflict with sanctions.",
+      "why": "A sanctions rule wearing an ownership rule's encoding: it blocks every non-EU-controlled applicant and no sanctioned one. Re-pointed at `exclusionFlags not_in [sanctions]` first, which is the question that carries the fact -- and check_field_matches_demand refused THAT too, because the rule is scoped to one sanctions regime and the option is not. The check is right and the second encoding is retired with the first. A guard whose first exception is granted on the day it is written is not a guard."
+    },
+    {
+      "instrument_id": "edf_da",
+      "gate_key": "llm_classified_0",
+      "field": "none",
+      "spec": null,
+      "was": "nonEuControl boolean_false",
+      "requirement": "Legal entity established in EU or associated country (e.g. Norway), not controlled by non-associated third countries.",
+      "why": "EDF's test is non-ASSOCIATED control, and Norway is associated -- so a Norwegian-controlled company, which answers yes to `nonEuControl`, is excluded by a fund that admits it. The instrument keeps two sibling gates stating the same rule without naming an associated country, so the screen is not lost."
+    },
+    {
+      "instrument_id": "innovationsfonden_innobooster",
+      "gate_key": "g2-public-ownership-exclusion",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 boolean_false",
+      "requirement": "Companies where more than 50 per cent is owned by the state, regions or municipalities are excluded from investment.",
+      "why": "Public majority ownership, asked as any-shareholder-over-25%. Every venture-backed or founder-controlled company answers yes and loses the fund. `institutionalOwner` is not the field either: an institutional investor is not a public body."
+    },
+    {
+      "instrument_id": "nfr_maritimforsk",
+      "gate_key": "g6",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 equals no",
+      "requirement": "Project-responsible party and collaboration partners must be independent of each other, i.e. neither can have controlling influence (e.g. majority ownership) over the other.",
+      "why": "A rule about the relationship BETWEEN consortium members, encoded as a fact about the applicant's own cap table. It blocks every company with a majority founder."
+    },
+    {
+      "instrument_id": "nfr_energiforskning",
+      "gate_key": "g4",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 boolean_false",
+      "requirement": "Project-responsible party and collaborating partners must be independent of each other, meaning neither can exert controlling influence over the other.",
+      "why": "The same rule as nfr_maritimforsk/g6, and the same defect. Found by reading rather than by the machine test, because this wording states no percentage for the test to disagree with."
+    },
+    {
+      "instrument_id": "eu_sme_definition",
+      "gate_key": "g5",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 boolean_false",
+      "requirement": "An enterprise cannot be considered an SME if 25% or more of its capital or voting rights are directly or indirectly controlled, jointly or individually, by one or more public bodies.",
+      "why": "The threshold agrees and the PARTY does not: 25% held by a public body, asked as 25% held by anyone. A founder with a 30% lead investor answers yes and is excluded by the SME definition itself."
+    },
+    {
+      "instrument_id": "enterprise_ireland_ip",
+      "gate_key": "g2-ownership-control-25pct",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 boolean_false",
+      "requirement": "An enterprise cannot qualify as SME if 25% or more of its capital or voting rights are directly or indirectly controlled by one or more public bodies.",
+      "why": "Same public-body rule and same defect as eu_sme_definition/g5."
+    },
+    {
+      "instrument_id": "satr_at_rnd",
+      "gate_key": "g2_large_enterprise_ownership_cap",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 boolean_false",
+      "requirement": "For SME classification, ownership participation by a large enterprise must not exceed 25%.",
+      "why": "The party is a LARGE ENTERPRISE. A founder holding 60% of his own company is not one, and is blocked."
+    },
+    {
+      "instrument_id": "almi_invest_equity",
+      "gate_key": "g7",
+      "field": "none",
+      "spec": null,
+      "was": "bankRelationship boolean_true",
+      "requirement": "Company must be willing to work with active owners and collaborative development.",
+      "why": "Nothing to do with a bank. `bankRelationship` asks whether a lender would lend against a guarantee; this asks whether the founder will accept an engaged shareholder. Anyone answering no to the bank question loses the fund."
+    },
+    {
+      "instrument_id": "eit_urban_mobility",
+      "gate_key": "G2-1",
+      "field": "none",
+      "spec": null,
+      "was": "institutionalBacking boolean_false",
+      "requirement": "Applicant must not currently be part of EIT Urban Mobility's equity portfolio.",
+      "why": "The rule is about ONE investor's portfolio -- this fund's own. Encoded on `institutionalBacking` it excludes every company with any VC on the cap table, which is most of the applicants it is written for."
+    },
+    {
+      "instrument_id": "eit_urban_mobility_portfolio",
+      "gate_key": "g1-not-existing-portfolio",
+      "field": "none",
+      "spec": null,
+      "was": "institutionalBacking boolean_false",
+      "requirement": "The applicant must not currently be part of the EIT Urban Mobility investment portfolio.",
+      "why": "Same rule and same defect as eit_urban_mobility/G2-1."
+    },
+    {
+      "instrument_id": "business_finland",
+      "gate_key": "g2-related-party-ownership",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 numeric_gte 20",
+      "requirement": "An ownership-based affiliation (associated company) exists where at least 20% of share capital or equivalent equity is directly or indirectly owned or controlled by the other company.",
+      "why": "Inert rather than harmful today -- a numeric comparator on a yes/no field is NaN for every answer -- and wrong in two ways underneath that: a 20% threshold asked at 25%, and a definition of associated-company status rather than a test an applicant passes. Corrected now because inertness is not a property of the encoding, it is a property of the field's current answer space."
+    },
+    {
+      "instrument_id": "eit_urban_mobility",
+      "gate_key": "G2-3",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 numeric_gte 40",
+      "requirement": "Individual founders or executive team members must jointly hold more than 40% of the company's equity before the current fundraising round.",
+      "why": "A FLOOR on how much the founders hold, encoded against a question about whether any one holder is above 25%. Different threshold, different party, and the wrong direction: the rule wants concentrated founder ownership and the encoding penalises concentration. Inert today for the same NaN reason."
+    },
+    {
+      "instrument_id": "eit_urban_mobility_portfolio",
+      "gate_key": "g2-founder-ownership",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 numeric_gte 40",
+      "requirement": "Individual founders or executive team members must jointly hold more than 40% of the company's equity before the current fundraising round.",
+      "why": "Same rule and same defect as eit_urban_mobility/G2-3."
+    },
+    {
+      "instrument_id": "innovationsfonden_innofounder",
+      "gate_key": "g2-founder-ownership",
+      "field": "none",
+      "spec": null,
+      "was": "ownerOver25 numeric_gte 12.5",
+      "requirement": "Each admitted founder must own a minimum of 12.5% of the company.",
+      "why": "A per-founder floor at 12.5%, asked at 25% about any shareholder. Same shape as the two EIT Urban Mobility rules and inert for the same reason."
+    },
+    {
+      "instrument_id": "de_kfw_erp_foerderkredit_kmu",
+      "gate_key": "g2_refinancing_institution_cap",
+      "field": "none",
+      "spec": null,
+      "was": "institutionalOwner numeric_lte 25",
+      "requirement": "The directly refinancing credit institution may hold at most 25% direct or indirect participation in the applicant company over the entire credit term; for the other product, no credit institution/insurance/comparable financial institution may hold more than 25%.",
+      "why": "The party is the bank that refinances the loan, not any institutional investor, and the field is a yes/no so the numeric comparator is inert. Both wrong, neither visible while the comparator returns null for everyone."
+    }
+  ]
+}
