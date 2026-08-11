@@ -130,13 +130,34 @@ def has_text(rec: dict) -> bool:
     the column NULL. 86 records corpus-wide do this (FR 24, ES 17, IT 13, DE 12,
     BE 13); every one of them was a load that reported work it had not done.
 
-    They are not discarded: `description` is still written, and they are now
+    They are not discarded: `description` is still written, and they are
     counted and reported as description-only so a run's own output says how much
     of it bought coverage and how much did not. Promoting a description into
     `eligibility_text` would be worse than leaving it empty -- these are
     one-line statements of what a scheme IS ("Complément de rémunération pour
     l'éolien terrestre"), not statements of who may apply, and filling the
     coverage column with them would report coverage that a founder cannot use.
+
+    ── "STILL WRITTEN" WAS NOT TRUE, AND IT IS THE SENTENCE THIS FILE TURNS ON ─
+    The paragraph above described the intent; the loop `continue`d on these
+    records before reaching `updates.append`, so the description was counted,
+    reported, and dropped. Measured on the two batches already on disk: of 17
+    Norwegian records found, 8 carried eligibility prose and 9 carried a
+    description and no eligibility sentence; of 15 EU records found, 4 and 11.
+    Both runs reported "description-only: N" and wrote none of them.
+
+    That is load-bearing rather than cosmetic. `description` is the column the
+    semantic index is built from and the column a candidate row renders its
+    `funds:` line out of -- 52.4% of the open pool has one (439 of 837), and
+    raising that is the whole of this workstream. A loader that only admits
+    records carrying ELIGIBILITY prose cannot raise description coverage at
+    all, and every funder page that says what a scheme funds without saying who
+    may apply was silently refused.
+
+    The two now travel on separate UPDATEs (see `desc_updates` in main): a
+    description-only record writes `description` and the page it came from, and
+    never touches `eligibility_text`, `eligibility_confidence` or the coverage
+    the column stands for.
     """
     if rec.get("found") is False:
         return False
@@ -237,7 +258,8 @@ def live_ids(conn: sqlite3.Connection,
     return out
 
 
-def mirror_to_postgres(updates: list[tuple], life: list[tuple]) -> None:
+def mirror_to_postgres(updates: list[tuple], life: list[tuple],
+                       desc_updates: list[tuple] | None = None) -> None:
     """Push exactly the rows just written to Railway Postgres.
 
     `migrate_to_postgres.py` is the normal publish and is a full truncate +
@@ -283,8 +305,24 @@ def mirror_to_postgres(updates: list[tuple], life: list[tuple]) -> None:
                            THEN %s ELSE scheme_end_date_basis END
                  WHERE id = %s
             """, life)
+        # The description-only arm mirrors too, and it has to be its own
+        # statement here for the same reason it is one in SQLite: it must not
+        # touch the eligibility columns. Omitting it is not a smaller bug than
+        # the `--postgres` flag was -- it is the SAME bug, one column over.
+        # These rows would sit in SQLite, be "already loaded" to every later
+        # run, and never reach the store the product reads, and reconcile()
+        # below would not see it because reconcile() asks about
+        # `eligibility_text`.
+        if desc_updates:
+            cur.executemany("""
+                UPDATE funding_instruments
+                   SET description = COALESCE(NULLIF(TRIM(description), ''), %s),
+                       eligibility_source_url = COALESCE(eligibility_source_url, %s)
+                 WHERE id = %s
+            """, desc_updates)
     conn.close()
-    print(f"mirrored {len(updates)} text rows and {len(life)} lifetime rows to Postgres")
+    print(f"mirrored {len(updates)} text rows, {len(desc_updates or [])} "
+          f"description-only rows and {len(life)} lifetime rows to Postgres")
 
 
 def reconcile(conn: sqlite3.Connection, countries: set[str] | None) -> int:
@@ -447,11 +485,21 @@ def main() -> None:
     # ── Pass 2: the prose, gated on the liveness pass 1 just made answerable ─
     publishable = live_ids(conn, pending_end)
 
+    # Rows that already say what they fund. Keyed separately from `have_desc`
+    # (which is about eligibility_text, despite its name) because the two
+    # columns are filled by different records and a run must be idempotent on
+    # each independently.
+    have_description = {r[0] for r in conn.execute(
+        "SELECT id FROM funding_instruments "
+        "WHERE COALESCE(TRIM(description),'') <> ''")}
+
     per_country = collections.Counter()
     over_status = collections.Counter()
     desc_only = collections.Counter()
     updates: list[tuple] = []
+    desc_updates: list[tuple] = []
     skipped_no_id = skipped_bad = skipped_dup = skipped_closed = 0
+    desc_dup = desc_closed = 0
     facet_seen: collections.Counter = collections.Counter()
 
     for cc, recs in source_files():
@@ -461,8 +509,24 @@ def main() -> None:
                 skipped_no_id += 1
                 continue
             if not has_text(rec):
+                # ── A page that says what a scheme FUNDS and not who may apply ──
+                # See has_text(). This used to `continue` here, so the record
+                # was counted as description-only and then dropped, against a
+                # docstring saying the description was still written. It is the
+                # only path by which `description` coverage can rise at all.
                 if has_description_only(rec):
                     desc_only[cc] += 1
+                    if iid in have_description:
+                        desc_dup += 1
+                    elif iid not in publishable:
+                        desc_closed += 1
+                    else:
+                        desc_updates.append((
+                            (rec.get("description") or "").strip(),
+                            (rec.get("scheme_url") or rec.get("source_url") or "").strip() or None,
+                            iid))
+                        if rec.get(FACET_FIELD):
+                            facet_seen[cc] += 1
                 else:
                     skipped_bad += 1
                 continue
@@ -503,8 +567,11 @@ def main() -> None:
         print(f"description-only: {sum(desc_only.values())} records carry prose in "
               f"`description` but no eligibility_text "
               f"({', '.join(f'{c} {n}' for c, n in desc_only.most_common())}).")
-        print("   These add NO eligibility coverage. They used to be counted as "
-              "loaded. See has_text().")
+        print(f"   These add NO eligibility coverage, and they DO add description "
+              f"coverage: {len(desc_updates)} of them are new prose for a "
+              f"publishable row and will be written")
+        print(f"   ({desc_dup} already describe themselves, {desc_closed} are not "
+              f"publishable). See has_text().")
 
     if not args.write:
         print("\n[report only] --write to apply")
@@ -519,8 +586,26 @@ def main() -> None:
                eligibility_fetched_at = CURRENT_TIMESTAMP
          WHERE id = ?
     """, updates)
+    # ── The description-only arm, deliberately its own statement ─────────────
+    # Not folded into the one above with NULLs. That statement sets
+    # `eligibility_text`, `eligibility_confidence` and `eligibility_fetched_at`
+    # unconditionally, so a description-only record run through it would stamp
+    # an eligibility fetch that never happened onto the row -- and would write
+    # NULL over any eligibility prose already there. The coverage column means
+    # "we hold this scheme's own statement of who may apply"; nothing here is
+    # that, and nothing here may touch it.
+    #
+    # NULLIF(TRIM(...),'') rather than a bare COALESCE: an empty string is not
+    # a description, and several registers supply one.
+    conn.executemany("""
+        UPDATE funding_instruments
+           SET description = COALESCE(NULLIF(TRIM(description), ''), ?),
+               eligibility_source_url = COALESCE(eligibility_source_url, ?)
+         WHERE id = ?
+    """, desc_updates)
     conn.commit()
-    print(f"\nloaded {len(updates)} rows")
+    print(f"\nloaded {len(updates)} rows with eligibility text and "
+          f"{len(desc_updates)} with a description only")
 
     if args.sqlite_only:
         print("\n!! --sqlite-only: these rows are STAGED, NOT PUBLISHED.")
@@ -530,8 +615,8 @@ def main() -> None:
         print("   this load has changed nothing a founder can see.")
         return
 
-    if updates or life:
-        mirror_to_postgres(updates, life)
+    if updates or life or desc_updates:
+        mirror_to_postgres(updates, life, desc_updates)
 
     # Whether or not this run wrote anything. A no-op load over a country an
     # earlier SQLite-only run half-finished is precisely the case that has to
