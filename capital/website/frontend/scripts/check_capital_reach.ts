@@ -156,6 +156,48 @@ async function main() {
     }
   }
 
+  // ── A REACHABLE FUND MUST ALSO BE DESCRIBABLE (wsFE) ─────────────────────
+  // The axis above asks whether a founder can reach this row. This asks the
+  // next question, which had no owner: once they reach it, does the row say
+  // what kind of money it is?
+  //
+  //   EVERY CAPITAL TYPE A PUBLISHABLE ROW CAN CARRY RENDERS A WORD OF ITS OWN.
+  //
+  // Not a list of types. `CAPITAL_WORD` is asked of the values the corpus
+  // ACTUALLY holds, so a type introduced by a new source tomorrow fails here
+  // without anyone having thought of the word in advance — which is exactly how
+  // `tax_credit` got in: 23 publishable German Forschungszulage leaves, an R&D
+  // TAX CREDIT, all rendering as the generic word "Funding" on rows where the
+  // kind of money was the one fact separating them from the grants beside them.
+  // One of them was in front of a founder who had won it.
+  //
+  // `capitalWord.test.ts` asks the hermetic half — the map is total over
+  // `CAPITAL_TYPE_LABEL` — and needs no snapshot. This half is the one that can
+  // see a value neither map has heard of.
+  const { CAPITAL_WORD } = await import("../lib/intelligence/shortlist");
+  const unworded = new Map<string, { n: number; sample: string[] }>();
+  for (const i of pub) {
+    const v = i.capitalType || "(empty)";
+    if (CAPITAL_WORD[v]) continue;
+    const e = unworded.get(v) ?? { n: 0, sample: [] };
+    e.n++;
+    if (e.sample.length < 4) e.sample.push(i.id);
+    unworded.set(v, e);
+  }
+  if (unworded.size) {
+    failures.push(
+      `capital_type: ${[...unworded.values()].reduce((a, e) => a + e.n, 0)} publishable ` +
+      `instruments carry a capital type CAPITAL_WORD has no word for, so their ` +
+      `descriptor opens with a generic word instead of saying what the money is:\n` +
+      [...unworded].map(([v, e]) =>
+        `      ${String(e.n).padStart(4)}  capital_type="${v}"   e.g. ${e.sample.join(", ")}`)
+        .join("\n") +
+      `\n    Add the word to CAPITAL_WORD in lib/intelligence/shortlist.ts, beside ` +
+      `the label\n    CAPITAL_TYPE_LABEL already gives this type in pipeline.ts. Do NOT ` +
+      `widen the\n    fallback: a row that will not say what kind of money it is has ` +
+      `lost the one\n    fact that separates it from the rows around it.`);
+  }
+
   if (failures.length) {
     console.error("check_capital_reach:\n  " + failures.join("\n  "));
     process.exit(1);
