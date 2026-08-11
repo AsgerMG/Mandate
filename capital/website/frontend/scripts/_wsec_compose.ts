@@ -12,6 +12,21 @@
 //   npx tsx scripts/_wsec_compose.ts [tape.json]
 import { readFileSync } from "fs";
 
+// ── PINNED OFFLINE, WHICH IS THE STRONGER DECLARATION ─────────────────────
+// This file's whole claim is that the sweep is arithmetic over `_wsec_pool.ts`'s
+// tape -- no corpus, no embed, no model -- so two people replaying the same
+// tape get the same numbers. It imports SECTOR_WORD from `shortlist.ts` for the
+// sector vocabulary, and that module can reach `semanticFundMatch`, so
+// check_env_loader correctly sees a path to DATABASE_URL and VOYAGE_KEY.
+//
+// Declaring those keys would be the wrong fix twice over: it would demand
+// credentials this file never uses, and it would let a future edit quietly
+// start reading the corpus while the header still promised a replay. Destroying
+// the database instead makes the promise enforceable rather than hoped-for, and
+// it subsumes VOYAGE_KEY -- the embeddings live in the pgvector index, so a run
+// with no database cannot reach the semantic path however it is edited.
+delete process.env.DATABASE_URL;
+
 import { SECTOR_WORD } from "../lib/intelligence/shortlist";
 import { VERDICT_POOL } from "../lib/intelligence/caps";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";

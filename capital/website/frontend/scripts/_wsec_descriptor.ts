@@ -21,7 +21,14 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
 delete process.env.ANTHROPIC_API_KEY;
-requireCredentials("wsec_descriptor", ["DATABASE_URL"]);
+// VOYAGE_KEY is declared although the arithmetic below never ranks: it reads
+// `sectorMix` off hydrated instruments and uses FOCUS_SHARE and SECTOR_WORD as
+// constants. But it imports them from `shortlist.ts`, which CAN reach
+// `semanticFundMatch`, and check_env_loader is right not to take a script's
+// word for which half of a module it will use. Declaring the key it could
+// reach is cheaper than a second copy of the sector vocabulary, and a second
+// copy is the "keep in sync" comment this repo treats as the defect itself.
+requireCredentials("wsec_descriptor", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   corpusProvenance, hydrateDbInstruments, publishableInstruments, requireLiveCorpus,
