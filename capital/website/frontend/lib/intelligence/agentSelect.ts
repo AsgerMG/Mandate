@@ -300,6 +300,64 @@ export const SELECT_COUNT = Number(process.env.AGENT_SELECT_COUNT ?? 6);
 export const SELECT_KEEP = Number(process.env.AGENT_SELECT_KEEP ?? 3);
 
 /**
+ * ── MAY IT NAME FEWER THAN THE PAGE HAS SEATS? (wsDY) ─────────────────────
+ *
+ * `exactly` is the shipped regime and the default: the reply is exactly
+ * SELECT_COUNT indices, because the page is sized in code.
+ *
+ * ── What that regime does to the answer, measured for nothing ─────────────
+ * wsDS ran the twelve bench companies at effort `high` on menus byte-identical
+ * to wsDQ's, so the reasoning behind every pick is on disk and paid for. Read
+ * for this question it says the same thing on eight of the twelve:
+ *
+ *   bunq   "only #2 and #4 explicitly match the software and AI sector" ...
+ *          "I'm constrained to pick 6 from this list of 18, so I need to
+ *           identify which ones are least egregiously mismatched"
+ *   Neura  "that's just three options when I need six distinct picks. Since the
+ *           requirement is to return exactly six selections regardless of fit
+ *           quality, I'll have to rank them with the best matches first"
+ *   Nortal "only one program (option 0) actually lands within the requested
+ *           bracket. Every other option falls well below"
+ *
+ * And `scripts/_wsdy_slots.ts` counts it over all twelve without a model:
+ * scoring the eighteen rows against the two disqualifiers THIS PROMPT ITSELF
+ * states -- an award median an order of magnitude off the band, and a descriptor
+ * naming another sector -- a mean of 2.1 rows survive both, and ten of the
+ * twelve have fewer survivors than the six they must name. Both criteria are
+ * applied generously, so 2.1 is an upper bound.
+ *
+ * That is the whole shape of the category errors. Health-research grants went to
+ * a bank and farming grants to a robotics company in the SIXTH and THIRD seats
+ * of a six-seat reply, on menus where the model had already named the two rows
+ * it believed in. It was not confused about the company; it had run out of funds
+ * to name and could not say so.
+ *
+ * ── Why a short reply is safe here, and is not "showing the founder less" ──
+ * `agentSelectRows` already fills behind the picks: chosen rows move to the
+ * front in the model's order and EVERY OTHER ROW KEEPS ITS SHIPPED RELATIVE
+ * POSITION. So declining a seat does not empty it, it returns it to the
+ * empirical ranker -- the order that ships today, on its own. That makes the
+ * arm additive in exactly the sense `assist` is: the model can add a case it is
+ * sure of without being able to spend a seat on one it is not.
+ *
+ * OFF BY DEFAULT, and read once at module scope with a throw on anything
+ * unrecognised, for the reason every other lever in this file is: a flag that
+ * reads a typo as its default reports the control's number under the
+ * treatment's name.
+ */
+const COUNT_MODES = ["exactly", "atMost"] as const;
+export type SelectCountMode = (typeof COUNT_MODES)[number];
+export const SELECT_COUNT_MODE: SelectCountMode = (() => {
+  const raw = process.env.AGENT_SELECT_COUNT_MODE ?? "exactly";
+  if (!COUNT_MODES.includes(raw as SelectCountMode)) {
+    throw new Error(
+      `AGENT_SELECT_COUNT_MODE must be one of ${COUNT_MODES.join("|")}, got "${raw}". ` +
+      `It is read once at module scope precisely so a typo cannot read as "exactly".`);
+  }
+  return raw as SelectCountMode;
+})();
+
+/**
  * `adviser` only: the thinking budget, and how many candidates it may look up.
  *
  * BOTH ARE COST CONTROLS, and the budget is the binding constraint on this
@@ -482,6 +540,11 @@ const anthropic = (): Anthropic => (clientMemo ??= new Anthropic());
  *  otherwise print the control's number under the treatment's banner. */
 const tally = {
   calls: 0, ok: 0, failed: 0, shortReply: 0, invalidIds: 0,
+  /** Picks that were a second row of a programme already picked -- SELECT-8
+   *  stated in the prompt and measured here rather than assumed (wsDY). */
+  siblingPicks: 0, siblingBriefs: 0,
+  /** `atMost` only: seats the model chose not to fill, and on how many briefs. */
+  declinedSeats: 0, declinedBriefs: 0,
   emptyReply: 0, badJson: 0, eur: 0, lookups: 0, resolved: 0,
   /** Calls the API cut off at max_tokens, and the thinking they were billed
    *  for. A truncated call falls back to the shipped order, so without this
@@ -502,6 +565,8 @@ const tally = {
 export function resetAgentSelectTally(): void {
   tally.calls = 0; tally.ok = 0; tally.failed = 0;
   tally.shortReply = 0; tally.invalidIds = 0;
+  tally.siblingPicks = 0; tally.siblingBriefs = 0;
+  tally.declinedSeats = 0; tally.declinedBriefs = 0;
   tally.emptyReply = 0; tally.badJson = 0; tally.eur = 0;
   tally.lookups = 0; tally.resolved = 0;
   tally.dryChars = []; tally.dryEvidenceChars = []; tally.dryRetrieved = 0;
@@ -520,7 +585,7 @@ export function agentSelectTallyLine(): string {
       `reaches the memo.`;
   }
   if (!tally.calls) return `agent-select: arm=${AGENT_SELECT_ARM}, no calls made`;
-  return `agent-select: arm=${AGENT_SELECT_ARM} depth=${SELECT_DEPTH} count=${SELECT_COUNT}` +
+  return `agent-select: arm=${AGENT_SELECT_ARM} depth=${SELECT_DEPTH} count=${SELECT_COUNT_MODE === "atMost" ? "<=" : ""}${SELECT_COUNT}` +
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
     (AGENT_SELECT_ARM === "adviser"
       ? ` effort=${THINK_EFFORT} maxtok=${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}`
@@ -530,6 +595,14 @@ export function agentSelectTallyLine(): string {
     ` model=${MODEL} — ${tally.ok}/${tally.calls} chose, ${tally.failed} FELL BACK to the` +
     ` shipped order (${tally.emptyReply} empty reply, ${tally.badJson} unparseable),` +
     ` ${tally.shortReply} short reply, ${tally.invalidIds} unusable id(s)` +
+    // What the model did with the seats: the ones it declined (`atMost` only)
+    // and the ones it spent twice on one programme. Both belong next to "short
+    // reply" because all three are about the SHAPE of the answer, and only the
+    // mode tells you whether a short answer was the licence being used or a
+    // defect.
+    (SELECT_COUNT_MODE === "atMost"
+      ? `, DECLINED ${tally.declinedSeats} seat(s) on ${tally.declinedBriefs} brief(s) (kept the shipped order there)` : "") +
+    `, ${tally.siblingPicks} seat(s) on a row already picked under the SAME TITLE (a floor) across ${tally.siblingBriefs} brief(s)` +
     // The thinking that HAPPENED, next to the thinking we asked for. wsDQ set
     // effort=low and 10 of 12 calls spent zero thinking tokens, so the setting
     // alone never established that the lever moved. `truncated` is here for the
@@ -834,6 +907,65 @@ function renderRow(
   ].filter(Boolean).join("\n");
 }
 
+/**
+ * ── SIX DISTINCT INDICES IS NOT SIX DISTINCT OPTIONS (wsDY) ────────────────
+ *
+ * SELECT-8 says it in the contract the selector already reads: "Several
+ * variants of one regime is one option shown several times, and a founder who
+ * fails that regime is left with nothing." The USER prompt then asked for
+ * "exactly N DISTINCT index numbers" -- and two leaves of one programme satisfy
+ * that perfectly.
+ *
+ * Measured on the twelve bench companies, twice, one lever apart: at effort
+ * `low` four of twelve spent two of six seats on a sibling pair (ZIM and ZIM,
+ * Ettevotja rakendusuuringute toetus 2023 and 2024, DEI+ and DEI+); at effort
+ * `high` Neura Robotics spent THREE of its six on Innovation Fund SSP, MSP and
+ * Battery. Thinking did not fix it, which is what a missing instruction rather
+ * than a missing judgement looks like.
+ *
+ * ── WHY THIS IS SAID AND NOT COMPUTED ─────────────────────────────────────
+ * The obvious implementation is to group the menu by `channel` and print the
+ * groups. It was written, run against all twelve pools, and thrown away,
+ * because `channel` is where the DATA comes from and not what the founder
+ * applies to. It puts all eighteen of Aleph Alpha's rows in one bucket, and it
+ * puts Horizon EU CL1 and CL4 in one bucket -- a health cluster and a
+ * technology-sovereignty cluster, which are two real options with two real
+ * calls. A prompt line telling the model to pick at most one of those suppresses
+ * a fund the founder would otherwise see, which is the wsCG2 defect exactly:
+ * collapsing doors of one scheme recovers nothing and costs real routes.
+ *
+ * Nor is a title-prefix rule available. "Innovation Fund SSP / MSP / Battery"
+ * are three lots of one decision and "Horizon EU CL1 / CL3 / CL4" are three
+ * different ones, and no prefix separates them. A key that cannot tell those
+ * apart is a register of the collisions we happen to have seen.
+ *
+ * So the prompt states the TEST instead, and the model applies it to the pair
+ * in front of it -- which is the one thing on this page that can. The test is
+ * the founder's: would a company turned down by one of these be turned down by
+ * the other?
+ *
+ * ── WHAT IS MEASURED, AND WHY IT IS A FLOOR ───────────────────────────────
+ * Two picks rendering under the SAME TITLE are one option beyond argument, and
+ * that is decidable from the menu with no key at all. It is a strict LOWER
+ * BOUND on the defect: it catches ZIM/ZIM and DEI+/DEI+ and misses Innovation
+ * Fund SSP/MSP. Reported as a floor rather than as the number, because the
+ * alternative is a count that flatters itself.
+ *
+ * Nothing is deduplicated in code. Choosing WHICH sibling survives is a product
+ * decision and `nameCollision.ts` holds the precedent for it: a display rule may
+ * not delete from the universe, so a loser demotes rather than disappears.
+ */
+export function sameTitlePickCount(rows: InstrumentRow[], picks: number[]): number {
+  const seen = new Set<string>();
+  let dup = 0;
+  for (const i of picks) {
+    const t = oneLine(rows[i]?.instrument ?? "").toLowerCase();
+    if (!t) continue;
+    if (seen.has(t)) dup++; else seen.add(t);
+  }
+  return dup;
+}
+
 export interface SelectContext {
   country?: string;
   sector?: string;
@@ -1061,6 +1193,26 @@ export function buildPrompt(
     ? fence("description", ctx.description)
     : "(no description on file)";
   const adviser = AGENT_SELECT_ARM === "adviser";
+  // THE ONE LEVER wsDY LEFT READY. See SELECT_COUNT_MODE: under `atMost` the
+  // number is a ceiling, the seats declined keep the empirical ranker's own
+  // order, and the model is told so -- because a model that is not told what
+  // happens to a seat it declines will assume the founder simply sees less.
+  const atMost = SELECT_COUNT_MODE === "atMost";
+  const countAsk = atMost
+    ? `Between 1 and ${want} DISTINCT index numbers from the list above`
+    : `Exactly ${want} DISTINCT index numbers from the list above`;
+  // The template is the strongest instruction on the page: six zeros ARE a
+  // request for six however the sentence above them is worded. Under `atMost`
+  // it shows the shape and not the count, and the ceiling is carried by the
+  // sentence -- which is the only place it can be carried without anchoring.
+  const shape = atMost ? "0" : Array.from({ length: want }, () => "0").join(",");
+  const countLicence = atMost
+    ? `\n\nYou have ${want} places and you do not have to fill them. Name only the schemes
+you would actually tell this founder to apply to. A place you do not use is not
+wasted and is not left empty: it keeps the empirical ranker's own choice, which
+is what ships without you. So naming a scheme you have just judged wrong is
+strictly worse than naming fewer. If two of these deserve a place, name two.`
+    : "";
   const framing = keep > 0
     ? `An empirical ranker has already claimed the top ${keep} place${keep === 1 ? "" : "s"} on this
 company's shortlist, and those are settled -- they are not shown below and they
@@ -1115,6 +1267,14 @@ Judge fit on substance:
   * you may reach well down the list — a better-matching scheme at rank 30 beats
     a vaguely-matching one at rank 2 — but do not reach for a famous programme
     because it is famous
+  * give them ${want} REAL ALTERNATIVES. Two rows can be one option: the same
+    programme in a different year, a different lot of one scheme, the same
+    scheme under a second title. The test is the founder's — would a company
+    turned down by one of them be turned down by the other? If yes, they are one
+    option, spend one place on the better of the two, and use the place you saved
+    on something a different body decides. Two rows of different clusters,
+    different calls or different bodies are two options and both may be chosen
+${countLicence}
 
 CANDIDATES
 ${menu}
@@ -1134,17 +1294,20 @@ to ${LOOKUP_MAX} candidates at a time. Choosing not to call it is a fine answer 
 rows already tell you what you need.
 
 When you are done, reply with ONLY this JSON, no preamble and no code fence.
-Exactly ${want} DISTINCT index numbers taken from the list above, best first:
-{"picks":[${Array.from({ length: want }, () => "0").join(",")}]}` : `IF TWO CANDIDATES LOOK THE SAME TO YOU, SAY SO INSTEAD OF GUESSING. List their
+${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
+different numbers:
+{"picks":[${shape}]}` : `IF TWO CANDIDATES LOOK THE SAME TO YOU, SAY SO INSTEAD OF GUESSING. List their
 index numbers in "unsure" and you will be shown those funds' own eligibility
 rules and asked again. Name at most ${LOOKUP_MAX}, and only where the extra rules could
 actually change your answer — if you already know, leave it empty.
 
-Reply with ONLY this JSON, no preamble and no code fence. Exactly ${want} DISTINCT
-index numbers taken from the list above, best first, plus any you are unsure of:
-{"picks":[${Array.from({ length: want }, () => "0").join(",")}],"unsure":[]}`}` : `Reply with ONLY this JSON, no preamble and no code fence. Exactly ${want} DISTINCT
-index numbers taken from the list above, best first:
-{"picks":[${Array.from({ length: want }, () => "0").join(",")}]}`}`;
+Reply with ONLY this JSON, no preamble and no code fence.
+${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
+different numbers, plus any you are unsure of:
+{"picks":[${shape}],"unsure":[]}`}` : `Reply with ONLY this JSON, no preamble and no code fence.
+${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
+different numbers:
+{"picks":[${shape}]}`}`;
 }
 
 /**
@@ -1468,7 +1631,21 @@ export async function agentSelectRows(
       }
       return rows;
     }
-    if (picks.length < want) tally.shortReply++;
+    // Under `atMost` a short reply is the answer, not a defect: the seats it
+    // declines keep the empirical ranker's order. Counted separately so a run
+    // can report how often the model used the licence, which is the whole of
+    // what the lever is for.
+    if (picks.length < want) {
+      if (SELECT_COUNT_MODE === "atMost") {
+        tally.declinedSeats += want - picks.length;
+        tally.declinedBriefs++;
+      } else tally.shortReply++;
+    }
+    // SELECT-8, measured. Not repaired here: which sibling survives is a product
+    // decision, and nameCollision.ts holds the precedent that a display rule may
+    // not delete from the universe.
+    const dupes = sameTitlePickCount(menuRows, picks);
+    if (dupes) { tally.siblingPicks += dupes; tally.siblingBriefs++; }
     tally.ok++;
 
     // The permutation. Chosen first in the model's order; everything else keeps

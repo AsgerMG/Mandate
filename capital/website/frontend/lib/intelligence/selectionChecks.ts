@@ -44,16 +44,26 @@ export function checkSelection(
   indices: unknown,
   candidateCount: number,
   want: number,
+  /** `exactly` is the shipped regime and the default. `atMost` is the wsDY
+   *  lever: `want` becomes a ceiling and a short reply is an answer, because the
+   *  seats the model declines keep the empirical ranker's own order rather than
+   *  going empty. Passed rather than read from the environment so the check can
+   *  be run against either regime from a test. */
+  count: "exactly" | "atMost" = "exactly",
 ): SelectionViolation[] {
   const v: SelectionViolation[] = [];
   const list = Array.isArray(indices) ? indices : [];
   const whole = list.filter((i): i is number => Number.isInteger(i));
   const distinct = new Set(whole);
 
-  if (distinct.size !== want) {
+  const bad = count === "exactly"
+    ? distinct.size !== want
+    : distinct.size < 1 || distinct.size > want;
+  if (bad) {
     v.push({
       ruleId: "SELECT-1",
-      detail: `returned ${distinct.size} distinct indices, expected exactly ${want}` +
+      detail: `returned ${distinct.size} distinct indices, expected ` +
+        (count === "exactly" ? `exactly ${want}` : `between 1 and ${want}`) +
         (list.length !== whole.length ? ` (${list.length - whole.length} were not whole numbers)` : "") +
         (whole.length !== distinct.size ? ` (${whole.length - distinct.size} repeated)` : ""),
     });
