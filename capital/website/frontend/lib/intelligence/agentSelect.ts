@@ -471,6 +471,33 @@ export function setAgentSelectTracing(on: boolean): void { tracing = on; }
 /** The transcript of the most recent seam call, or null. */
 export function agentSelectLastTrace(): AgentSelectTrace | null { return traceMemo; }
 
+/** A transcript seeded with the pool as it arrived and nothing else, so an arm
+ *  that returns without calling still leaves a readable record of what it was
+ *  handed. `poolOut` starts equal to `poolIn` and is overwritten only by a
+ *  path that actually permutes. */
+function seedTrace(rows: InstrumentRow[]): AgentSelectTrace {
+  const ids = rows.map((r) => r.instrumentId ?? r.channel);
+  return {
+    arm: AGENT_SELECT_ARM,
+    poolIn: ids,
+    poolOut: ids,
+    poolDetail: rows.map((r) => ({
+      instrumentId: r.instrumentId ?? r.channel,
+      instrument: r.instrument,
+      administeringBody: r.administeringBody,
+      country: r.country,
+      capitalType: r.capitalType,
+      descriptor: r.descriptor,
+      typicalAward: r.typicalAward,
+      typicalAwardN: r.typicalAwardN,
+      lastAwardYear: r.lastAwardYear,
+      description: r.description,
+    })),
+    menu: [], picks: [], pickedIds: [], unsure: [], retrieved: [],
+    turns: [], fellBack: null, eur: 0,
+  };
+}
+
 const eur = (n: number | undefined | null): string =>
   n == null || !Number.isFinite(n) ? "n/a"
     : n >= 1e6 ? `EUR ${(n / 1e6).toFixed(1)}M`
@@ -872,27 +899,7 @@ export async function agentSelectRows(
   // only way to state that rather than assume it is to record the off arm's
   // pool at the same seam. A comparison whose control cannot be checked is the
   // failure this whole workstream exists to stop repeating.
-  if (tracing) {
-    traceMemo = {
-      arm: AGENT_SELECT_ARM,
-      poolIn: rows.map((r) => r.instrumentId ?? r.channel),
-      poolOut: rows.map((r) => r.instrumentId ?? r.channel),
-      poolDetail: rows.map((r) => ({
-        instrumentId: r.instrumentId ?? r.channel,
-        instrument: r.instrument,
-        administeringBody: r.administeringBody,
-        country: r.country,
-        capitalType: r.capitalType,
-        descriptor: r.descriptor,
-        typicalAward: r.typicalAward,
-        typicalAwardN: r.typicalAwardN,
-        lastAwardYear: r.lastAwardYear,
-        description: r.description,
-      })),
-      menu: [], picks: [], pickedIds: [], unsure: [], retrieved: [],
-      turns: [], fellBack: null, eur: 0,
-    };
-  }
+  if (tracing) traceMemo = seedTrace(rows);
   if (AGENT_SELECT_ARM === "off") return rows;
   // BEFORE the SELECT_COUNT guard, deliberately. That guard exists because a
   // model cannot usefully choose six from six; a reversal is defined on any
@@ -1165,7 +1172,18 @@ export async function agentSelectMemoPool(
     eligibility?: EligibilityAnswers;
   },
 ): Promise<InstrumentRow[]> {
-  if (AGENT_SELECT_ARM === "off") return rows;
+  if (AGENT_SELECT_ARM === "off") {
+    // The off arm returns HERE, one function ABOVE the traced one, and that
+    // early return is the byte-identity guarantee `_wsdl_equiv` asserts by
+    // reference. So the control's pool would be invisible to a transcript
+    // recorded any deeper -- and the control's pool is the one thing that has
+    // to be recorded for the treatment's pool to mean anything, because the
+    // two arms are two processes with a live web-search call upstream of both.
+    // Written only when a harness asked for a transcript; with tracing off
+    // this branch allocates nothing and the return is unchanged.
+    if (tracing) traceMemo = seedTrace(rows);
+    return rows;
+  }
   const ids = rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
   return agentSelectRows(rows, {
     country: req.country,
