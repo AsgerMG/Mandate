@@ -161,6 +161,12 @@ def figures(data: list[list]) -> dict[str, object]:
         "shown": round(at[depth] * 100, 1),
         "shown2": round(at[depth] * 100, 1),
         "shown3": round(at[depth] * 100, 1),
+        # Two different pools, and conflating them is how the page lost a stage.
+        # `pool` is the candidate pool the floor grades. `accessible` is what
+        # survives the channel caps and actually reaches the memo path -- the
+        # curve's own ceiling, since no depth can exceed it. The difference
+        # between them is a real loss with a real cause, not a discrepancy.
+        "accessible": round(curve["inPoolAtAll"] * 100, 1),
         "ceiling": round(curve["inPoolAtAll"] * 100, 1),
         "ranker": live_ranker(),
     }
