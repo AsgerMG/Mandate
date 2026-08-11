@@ -125,9 +125,19 @@ def cut_depth() -> int:
     figure has to come from the thing production reads -- a copy would be one
     edit away from lying, which is the whole defect this file exists to stop.
     """
-    m = re.search(r"export const VERDICT_POOL\s*=\s*(\d+)", CAPS.read_text())
+    # It was a bare constant; wsEI made it a lever, so it now reads
+    # `depthLever("BRIEF_VERDICT_POOL", 18)`. Match the shipped default in
+    # either spelling rather than pinning the syntax -- the page must keep
+    # telling the truth across a refactor, not fail on one.
+    src = CAPS.read_text()
+    m = (re.search(r'export const VERDICT_POOL\s*=\s*depthLever\([^,]+,\s*(\d+)\)', src)
+         or re.search(r"export const VERDICT_POOL\s*=\s*(\d+)", src))
     if not m:
-        sys.exit(f"VERDICT_POOL not found in {CAPS} -- has it been renamed?")
+        sys.exit(
+            f"VERDICT_POOL's shipped default could not be read from {CAPS}. "
+            f"The page states how many rows production passes on, so it must come "
+            f"from the code -- fix this rather than typing the number."
+        )
     return int(m.group(1))
 
 
