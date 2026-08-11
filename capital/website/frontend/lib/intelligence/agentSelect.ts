@@ -395,6 +395,65 @@ export function agentSelectCostPerBrief(): number {
   return tally.calls ? tally.eur / tally.calls : 0;
 }
 
+/**
+ * ── THE TRANSCRIPT: what was sent, what came back, verbatim ────────────────
+ *
+ * wsDQ. The owner's instruction for the first paid run was "set the test up so
+ * that we can see every step transparently"; a verdict with no trace behind it
+ * is what this project has spent a week retracting. Nothing in this module
+ * previously kept the bytes: the tally counts calls and the decision record
+ * keeps ids, and neither can answer "what did we ask it, and what did it say".
+ *
+ * OFF BY DEFAULT AND OFF IN PRODUCTION. It is enabled only by a harness
+ * calling `setAgentSelectTracing(true)`, there is no environment variable that
+ * turns it on, and every write is behind that flag. A request that has not
+ * asked for a transcript allocates nothing and behaves identically — this is
+ * observation, and an observer that changes the thing observed would void the
+ * run it exists to record.
+ *
+ * The full text is kept, uncut. A truncated prompt is a reconstruction, and
+ * grading a reconstruction is the defect class this repo has paid for twice.
+ */
+export interface AgentSelectTurn {
+  /** 1 = the first ask; 2 = the re-ask after retrieval resolved an ambiguity. */
+  round: number;
+  system: string;
+  user: string;
+  /** Every text block, joined — the model's reply exactly as it arrived. */
+  reply: string;
+  /** Every thinking block, joined. Empty unless the arm enabled thinking. */
+  thinking: string;
+  model: string;
+  usage: unknown;
+  eur: number;
+}
+export interface AgentSelectTrace {
+  arm: AgentSelectArm;
+  /** The pool as it arrived, in order, and as it left. */
+  poolIn: string[];
+  poolOut: string[];
+  /** The rows actually offered to the model, in menu-index order. */
+  menu: string[];
+  /** Menu indices the model named, in its own order. */
+  picks: number[];
+  /** Instrument ids for those picks, in the model's order. */
+  pickedIds: string[];
+  /** Menu indices the model said it could not separate. */
+  unsure: number[];
+  /** What retrieval returned for them: instrument id -> the gate text shown. */
+  retrieved: { instrumentId: string; text: string }[];
+  turns: AgentSelectTurn[];
+  /** Set when the arm gave up and returned the shipped order unchanged. */
+  fellBack: string | null;
+  eur: number;
+}
+let tracing = false;
+let traceMemo: AgentSelectTrace | null = null;
+/** Turn the transcript on for this process. Harnesses only. */
+export function setAgentSelectTracing(on: boolean): void { tracing = on; }
+/** The transcript of the most recent seam call, or null. */
+export function agentSelectLastTrace(): AgentSelectTrace | null { return traceMemo; }
+
 const eur = (n: number | undefined | null): string =>
   n == null || !Number.isFinite(n) ? "n/a"
     : n >= 1e6 ? `EUR ${(n / 1e6).toFixed(1)}M`
@@ -618,6 +677,12 @@ const textOf = (m: Anthropic.Message): string => m.content
   .filter((b): b is Anthropic.TextBlock => b.type === "text")
   .map((b) => b.text).join("\n");
 
+/** The reasoning blocks, for the transcript only. Nothing downstream reads
+ *  them: the arm's output is the `picks` array and always has been. */
+const thinkingOf = (m: Anthropic.Message): string => m.content
+  .filter((b): b is Anthropic.ThinkingBlock => b.type === "thinking")
+  .map((b) => b.thinking).join("\n");
+
 /** Pull the one JSON object out of a reply that may be fenced or prefaced.
  *  Returns null rather than throwing, so the caller falls back to the shipped
  *  order instead of degrading into a short table. */
@@ -779,6 +844,10 @@ index numbers taken from the list above, best first:
 export async function agentSelectRows(
   rows: InstrumentRow[], ctx: SelectContext,
 ): Promise<InstrumentRow[]> {
+  // Cleared FIRST, so a stale transcript from the previous founder can never be
+  // read as this one's. `agentSelectLastTrace() === null` means "this seam call
+  // sent nothing", which is itself a result worth being able to state.
+  if (tracing) traceMemo = null;
   if (AGENT_SELECT_ARM === "off") return rows;
   // BEFORE the SELECT_COUNT guard, deliberately. That guard exists because a
   // model cannot usefully choose six from six; a reversal is defined on any
@@ -813,6 +882,16 @@ export async function agentSelectRows(
   // prompt itself is how a cost estimate quietly describes a different arm.
   lastDecision = null;
   lastUnsureIds = [];
+  // The transcript starts here, so a call that falls back still leaves a record
+  // of what it was asked. A fallback with no trace is the one outcome that
+  // teaches nothing.
+  traceMemo = tracing ? {
+    arm: AGENT_SELECT_ARM,
+    poolIn: rows.map((r) => r.instrumentId ?? r.channel),
+    menu: menuRows.map((r) => r.instrumentId ?? r.channel),
+    poolOut: [], picks: [], pickedIds: [], unsure: [], retrieved: [],
+    turns: [], fellBack: null, eur: 0,
+  } : null;
   const dry = AGENT_SELECT_ARM === "dry";
   const adviser = AGENT_SELECT_ARM === "adviser" || dry;
   const peers = adviser ? peerRank(ctx.country, ctx.sector) : undefined;
@@ -839,6 +918,8 @@ export async function agentSelectRows(
   tally.calls++;
   try {
     const ask = async (evidence?: Map<string, string[]>) => {
+      const system = selectorSystemPrompt();
+      const user = buildPrompt(menuRows, ctx, keep, want, peers, evidence);
       const r = await anthropic().messages.create({
       model: MODEL,
       // Thinking bills as OUTPUT, so max_tokens must clear the budget with
@@ -877,18 +958,24 @@ export async function agentSelectRows(
       // all one user string. It now assembles from `contracts/` through the
       // same positive per-stage routing every other stage uses, so
       // `UNROUTED_STAGES` is empty and `check_contracts` enforces it.
-      system: selectorSystemPrompt(),
-      messages: [{
-        role: "user",
-        content: buildPrompt(menuRows, ctx, keep, want, peers, evidence),
-      }],
+      system,
+      messages: [{ role: "user", content: user }],
       }, { timeout: TIMEOUT_MS, maxRetries: 1 });
       recordUsage(r.model ?? MODEL, r.usage as never);
       // Local euro tally as well, because a bench run has no AsyncLocalStorage
       // context and recordUsage is a no-op there — which is exactly the run
       // that has to report euros per brief.
       const { costOf } = await import("./cost");
-      tally.eur += costOf(r.model ?? MODEL, r.usage as never);
+      const spent = costOf(r.model ?? MODEL, r.usage as never);
+      tally.eur += spent;
+      if (traceMemo) {
+        traceMemo.turns.push({
+          round: evidence ? 2 : 1, system, user,
+          reply: textOf(r), thinking: thinkingOf(r),
+          model: r.model ?? MODEL, usage: r.usage, eur: spent,
+        });
+        traceMemo.eur += spent;
+      }
       return r;
     };
 
@@ -911,6 +998,7 @@ export async function agentSelectRows(
         .map((i) => menuRows[i].instrumentId)
         .filter((id): id is string => Boolean(id)))];
       lastUnsureIds = ids;
+      if (traceMemo) traceMemo.unsure = unsure;
       if (ids.length) {
         // The founder's side of the question. `declaw` is applied inside
         // `fence` for the prompt; here the text only ever becomes a vector, so
@@ -918,6 +1006,9 @@ export async function agentSelectRows(
         const founderText = [ctx.description ?? "", ...(ctx.answers ?? [])]
           .join("\n").trim();
         const chunks = await retrieveDemands(ids, founderText);
+        if (traceMemo) {
+          traceMemo.retrieved = chunks.map((c) => ({ instrumentId: c.instrumentId, text: c.text }));
+        }
         if (chunks.length) {
           tally.lookups += ids.length;
           tally.resolved++;
@@ -946,6 +1037,12 @@ export async function agentSelectRows(
       // reply that yielded nothing is a prompt or parsing problem.
       if (!textOf(res).trim()) tally.emptyReply++; else tally.badJson++;
       tally.failed++;
+      if (traceMemo) {
+        traceMemo.fellBack = textOf(res).trim()
+          ? "the reply parsed to no usable index — the shipped order was published"
+          : "the reply was empty — the shipped order was published";
+        traceMemo.poolOut = traceMemo.poolIn;
+      }
       return rows;
     }
     if (picks.length < want) tally.shortReply++;
@@ -978,10 +1075,20 @@ export async function agentSelectRows(
     }
     const frozen = rows.slice(0, keep);
     const taken = new Set([...frozen, ...chosen]);
-    return [...frozen, ...chosen, ...rows.filter((r) => !taken.has(r))];
+    const out = [...frozen, ...chosen, ...rows.filter((r) => !taken.has(r))];
+    if (traceMemo) {
+      traceMemo.picks = picks;
+      traceMemo.pickedIds = chosen.map((r) => r.instrumentId ?? r.channel);
+      traceMemo.poolOut = out.map((r) => r.instrumentId ?? r.channel);
+    }
+    return out;
   } catch (err) {
     tally.failed++;
     console.error("[agentSelect] call failed, keeping the shipped order:", String(err));
+    if (traceMemo) {
+      traceMemo.fellBack = `the call threw — the shipped order was published: ${String(err)}`;
+      traceMemo.poolOut = traceMemo.poolIn;
+    }
     return rows;
   }
 }
