@@ -1054,8 +1054,8 @@ export function buildPrompt(
   // happens to a seat it declines will assume the founder simply sees less.
   const atMost = SELECT_COUNT_MODE === "atMost";
   const countAsk = atMost
-    ? `Between 1 and ${want} DISTINCT index numbers taken from the list above`
-    : `Exactly ${want} DISTINCT index numbers taken from the list above`;
+    ? `Between 1 and ${want} DISTINCT index numbers from the list above`
+    : `Exactly ${want} DISTINCT index numbers from the list above`;
   // The template is the strongest instruction on the page: six zeros ARE a
   // request for six however the sentence above them is worded. Under `atMost`
   // it shows the shape and not the count, and the ceiling is carried by the
@@ -1146,11 +1146,12 @@ index numbers in "unsure" and you will be shown those funds' own eligibility
 rules and asked again. Name at most ${LOOKUP_MAX}, and only where the extra rules could
 actually change your answer — if you already know, leave it empty.
 
-Reply with ONLY this JSON, no preamble and no code fence. ${countAsk}, best
-first — DIFFERENT PROGRAMMES, not just different numbers — plus any you are
-unsure of:
-{"picks":[${shape}],"unsure":[]}` : `Reply with ONLY this JSON, no preamble and no code fence. ${countAsk}, best
-first — DIFFERENT PROGRAMMES, not just different numbers:
+Reply with ONLY this JSON, no preamble and no code fence.
+${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
+different numbers, plus any you are unsure of:
+{"picks":[${shape}],"unsure":[]}` : `Reply with ONLY this JSON, no preamble and no code fence.
+${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
+different numbers:
 {"picks":[${shape}]}`}`;
 }
 

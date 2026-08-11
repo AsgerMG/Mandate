@@ -45,7 +45,7 @@ describe("the selector asks for distinct programmes", () => {
 
   it("says programmes, not index numbers, in the output contract", () => {
     const p = buildPrompt(rows, { country: "DE", sector: "software_data_ai" }, 0, 6);
-    expect(p).toContain("DIFFERENT PROGRAMMES, not");
+    expect(p).toContain("naming DIFFERENT PROGRAMMES rather than merely");
     expect(p).not.toContain("DISTINCT\nindex numbers");
   });
 
