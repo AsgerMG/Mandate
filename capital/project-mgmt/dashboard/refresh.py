@@ -37,6 +37,30 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PAGE = Path(__file__).resolve().parent / "precision.html"
+AGENTS = Path(__file__).resolve().parent / "agents.json"
+
+
+def agent_rows() -> str:
+    """The live view of what is being worked on, and why.
+
+    Hand-maintained, and it has to be: a machine cannot say WHY a workstream
+    exists. What is machine-enforced is the shape -- a finished agent is
+    DELETED from agents.json rather than marked done, so the page can only
+    ever show what is happening now. A status list of finished things is the
+    noise this section replaced.
+    """
+    data = json.loads(AGENTS.read_text())
+    if not data.get("agents"):
+        return ('<p class="lede">Nothing in flight right now.</p>')
+    out = ['<div class="rows">']
+    for a in data["agents"]:
+        step = (f'<span class="st s-now">step {a["step"]}</span>' if a["step"]
+                else '<span class="st s-wait">repo</span>')
+        out.append(
+            f'      <div class="row">{step}'
+            f'<span class="txt"><b>{a["what"]}</b><span>{a["why"]}</span></span></div>')
+    out.append("    </div>")
+    return "\n".join(out)
 
 
 def load_database_url() -> str:
@@ -203,6 +227,13 @@ def main() -> None:
     page = PAGE.read_text()
     if "const D = " not in page:
         sys.exit(f"{PAGE} has no `const D = ` array to replace")
+
+    page, n = re.subn(
+        r"<!--AGENTS-->.*?<!--/AGENTS-->",
+        "<!--AGENTS-->" + agent_rows() + "<!--/AGENTS-->",
+        page, count=1, flags=re.S)
+    if n != 1:
+        sys.exit("the AGENTS block could not be replaced -- has the page been restructured?")
 
     figs = figures(data)
     page, n = re.subn(
