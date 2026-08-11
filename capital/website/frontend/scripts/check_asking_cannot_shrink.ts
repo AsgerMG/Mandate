@@ -4,14 +4,43 @@
  * ── The property ─────────────────────────────────────────────────────────
  *
  *   For any founder, any field the follow-up screen can ask, and any
- *   admissible value of it, the funds surviving to `toWriter` WITH the answer
- *   are a SUPERSET of those surviving WITHOUT it.
+ *   admissible value of it, the funds surviving the ACCESSIBILITY SCREEN with
+ *   the answer are a SUPERSET of those surviving without it.
  *
  * Answering may reorder, may narrow the wording, may put an obstacle on a row.
- * It may not make a row disappear. That is the owner's binding decision --
- * second-screen answers INFORM the ranker and never REMOVE a fund -- and it is
- * already licensed by SELECT-4: "A doubt is not a rejection... a fund set aside
- * on a doubt is a fund the founder never sees and never learns exists."
+ * It may not take the row out of the universe. That is the owner's binding
+ * decision -- second-screen answers INFORM the ranker and never REMOVE a fund
+ * -- and it is already licensed by SELECT-4: "A doubt is not a rejection... a
+ * fund set aside on a doubt is a fund the founder never sees and never learns
+ * exists."
+ *
+ * ── Why the surface is the accessible pool and not `toWriter` ─────────────
+ * This was first written against `toWriter` and it was the wrong surface. The
+ * distinction is not a technicality; it is the difference between the defect
+ * and the design.
+ *
+ * Measured over 12 founders x 696 admissible answers on the committed snapshot,
+ * with the provenance mechanism working:
+ *
+ *   answers that changed which rows the SELECTOR picked           0
+ *   answers that REMOVED a fund at the accessibility screen       0
+ *   answers that cost a fund its seat in `toWriter`             121
+ *
+ * Nothing is removed and 121 rows still move. They move because
+ * `WRITER_CANDIDATE_CAP` is 8: a late answer that turns `unknown` into
+ * `one_blocker`, or `open` into `one_blocker`, changes the band a row sorts in,
+ * and past a cap a demotion at the tail is a row that does not publish.
+ *
+ * So `toWriter`-superset is not a statement about the verdict engine. It is a
+ * statement about the CAP, and the only code that satisfies it is code in which
+ * a follow-up answer changes nothing at all -- the same product as not asking.
+ * A guard asserting it would be demanding that the second screen be inert, and
+ * would go red on every correct implementation. Depth and the writer cap are
+ * P2's, and P2 owns that number honestly; this guard owns removal.
+ *
+ * The displacement count is printed below every run so it is never invisible,
+ * and it is NOT a failure. A number a guard reports without enforcing has to
+ * say so in as many words, or it is a measurement wearing a guard's name.
  *
  * ── Why the follow-up screen and not the first one ───────────────────────
  * A screen-one answer keeps full force, and that asymmetry is the whole rule
@@ -24,22 +53,33 @@
  * OUR ENCODING COVERAGE. Letting that decide publication means the funds we
  * have documented best are the funds we are most able to hide.
  *
- * So the population is `FIELD_ENUM_HINTS` minus `FIRST_PAGE_FIELDS` -- two
- * declarations, both derived, neither a list kept here. A field that moves onto
- * the first screen leaves this check on the same commit; a field that moves off
- * it joins. Values come from each field's own option set, so a new option is
- * tested the day it is added and nothing in this file names one.
+ * ── The population is DERIVED, and from the table that decides it ────────
+ * `FIELD_REACH[field].via === "adaptive"` -- the fields the grounded round can
+ * actually offer -- intersected with `FIELD_ENUM_HINTS`, which supplies the
+ * options. Nothing here names a field or a value, so a field that moves onto or
+ * off the follow-up screen joins or leaves this check on the same commit, and a
+ * new option is tested the day it is added.
+ *
+ * `via` rather than `!FIRST_PAGE_FIELDS`, and the difference is not cosmetic:
+ * the complement of the first page also contains `lossesOverHalfCapital`, which
+ * is `via: "derived"` -- never asked, computed by `sanitizeEligibility` from the
+ * exclusions checklist. Testing it directly builds a founder who ticked "none"
+ * on the checklist and separately declared accumulated losses over half of
+ * share capital, which the intake cannot produce. It was the whole of this
+ * check's residual red, and grading the product on an answer no founder can
+ * give is how a guard comes to demand a change that would make the product
+ * worse.
  *
  * ── PROVE=1 ──────────────────────────────────────────────────────────────
- * Simulates the defect: the pipeline as it stood, where `accessiblePool` never
- * heard when the answer arrived. If that produces NO red, THIS CHECK FAILS --
- * a guard that cannot demonstrate its own failure over today's corpus is
- * green-lighting a corpus where nothing happens to block, not a product that
- * cannot hide a fund.
+ * Simulates the defect: the pipeline as it stood, where the accessibility
+ * screen never heard when the answer arrived. If that produces NO red, THIS
+ * CHECK FAILS -- a guard that cannot demonstrate its own failure over today's
+ * corpus is green-lighting a corpus where nothing happens to block, not a
+ * product that cannot hide a fund.
  *
  * ── Hermetic ─────────────────────────────────────────────────────────────
  * Runs on the committed snapshot under `NO_PG=1` (which is how CI runs it) and
- * makes no model call of any kind. ~800 pool builds, tens of seconds.
+ * makes no model call of any kind. ~700 pool builds, a couple of minutes.
  *
  *   cd website/frontend && NO_PG=1 npx tsx scripts/check_asking_cannot_shrink.ts
  *   cd website/frontend && NO_PG=1 PROVE=1 npx tsx scripts/check_asking_cannot_shrink.ts
@@ -55,7 +95,7 @@ requireCredentials("check_asking_cannot_shrink", ["DATABASE_URL", "VOYAGE_KEY"])
 const PROVE = process.env.PROVE === "1";
 
 /** Below this, the run has not exercised the product and a green is a green
- *  over nothing. Set well under the ~700 the population generates today, so a
+ *  over nothing. Set well under the ~660 the population generates today, so a
  *  vocabulary that shrinks a little does not fail the build, and one that
  *  collapses does. */
 const MIN_CASES = 400;
@@ -63,34 +103,33 @@ const MIN_CASES = 400;
 async function main() {
   const { hydrateDbInstruments, resetGateHydration } = await import("../lib/intelligence/corpus");
   const {
-    buildInstrumentTableHydrated, founderCountryList, tableInputFromAnswers, VERDICT_POOL,
+    buildInstrumentTableHydrated, founderCountryList, tableInputFromAnswers,
   } = await import("../lib/intelligence/shortlist");
   const { ExclusionLog } = await import("../lib/intelligence/exclusions");
-  const { accessiblePool, orderMemoCandidates } = await import("../lib/intelligence/memoCandidates");
+  const { accessiblePool, orderMemoCandidates, WRITER_CANDIDATE_CAP } =
+    await import("../lib/intelligence/memoCandidates");
+  const { VERDICT_POOL } = await import("../lib/intelligence/shortlist");
   const { lateAnsweredFields, withCoveredFields } = await import("../lib/intelligence/answerProvenance");
   const { openFieldsForShortlist } = await import("../lib/intelligence/gateReach");
   const { semanticFundMatch } = await import("../lib/intelligence/semantic");
   const { sanitizeEligibility } = await import("../lib/intelligence/sanitize");
   const { COMPANIES } = await import("../lib/intelligence/__benchCompanies");
-  const { FIELD_ENUM_HINTS, FIRST_PAGE_FIELDS } = await import("../lib/intelligence/types");
+  const { FIELD_ENUM_HINTS, FIELD_REACH } = await import("../lib/intelligence/types");
   type EligibilityAnswers = import("../lib/intelligence/types").EligibilityAnswers;
 
   await hydrateDbInstruments();
 
   // ── The population, DERIVED ────────────────────────────────────────────
-  // Every field the grounded round can offer, with the values it can offer for
-  // it. `region` is excluded by FIRST_PAGE_FIELDS, which is also why its
-  // derived `optionsFor` never needs handling here.
   const cases: { field: string; value: unknown }[] = [];
   for (const [field, hint] of Object.entries(FIELD_ENUM_HINTS)) {
-    if (FIRST_PAGE_FIELDS.has(field)) continue;
+    if (FIELD_REACH[field as keyof typeof FIELD_REACH]?.via !== "adaptive") continue;
     for (const opt of hint.options) {
       cases.push({ field, value: hint.multi ? [opt.value] : opt.value });
     }
   }
   if (!cases.length) {
-    console.error("\nFAIL — FIELD_ENUM_HINTS offers no field the follow-up screen "
-      + "can ask.\n  There is nothing to answer, so this check proved nothing.");
+    console.error("\nFAIL — no field is declared `via: \"adaptive\"` with an option set, "
+      + "so the\n  follow-up screen can ask nothing and this check proved nothing.");
     process.exit(1);
   }
 
@@ -106,15 +145,24 @@ async function main() {
       ...over,
     }) as EligibilityAnswers;
 
-  /** The ids the writer would be shown, for one founder and one answer set.
-   *  The REAL path: the same pool builder, the same accessibility screen with
-   *  the same provenance, the same candidate order, the same cap. */
-  async function toWriterIds(
+  interface Run {
+    /** Every row the accessibility screen let through. NO CAP: this is the
+     *  universe, and it is the surface the property is stated over. */
+    accessible: string[];
+    /** The eight the writer is shown. Reported, never enforced — see the
+     *  header for why a cap is not a removal. */
+    toWriter: string[];
+  }
+
+  /** One founder, one answer set, down the REAL path: the same pool builder,
+   *  the same accessibility screen with the same provenance, the same candidate
+   *  order, the same cap. */
+  async function run(
     c: (typeof COMPANIES)[number],
     before: EligibilityAnswers,
     after: EligibilityAnswers,
     semantic: Map<string, number>,
-  ): Promise<string[]> {
+  ): Promise<Run> {
     resetGateHydration();
     const log = new ExclusionLog();
     const hydrated = await buildInstrumentTableHydrated({
@@ -141,10 +189,13 @@ async function main() {
       records: [], dbPeers: [], eligibilityScreen: [],
       semanticScores: semantic, log, lateFields,
     });
-    return toWriter.map((x) => x.row.instrumentId ?? x.row.channel);
+    return {
+      accessible: accessible.map((r) => r.instrumentId ?? r.channel),
+      toWriter: toWriter.map((x) => x.row.instrumentId ?? x.row.channel),
+    };
   }
 
-  let tested = 0, lost = 0;
+  let tested = 0, removed = 0, displaced = 0;
   const losses: string[] = [];
   console.log(`${COMPANIES.length} founders x ${cases.length} (field, value) case(s)`
     + `${PROVE ? "   [PROVE=1: provenance disabled]" : ""}`);
@@ -155,41 +206,61 @@ async function main() {
     // The "without" run depends only on the answers MINUS the field under
     // test, so it is computed once per distinct baseline rather than once per
     // value. Most fields the archetype never answered share one.
-    const baseline = new Map<string, string[]>();
-    let founderLost = 0;
+    const baseline = new Map<string, Run>();
+    let founderRemoved = 0, founderDisplaced = 0;
 
     for (const { field, value } of cases) {
       const before = answersFor(c, { [field]: undefined });
       const key = JSON.stringify(before);
-      if (!baseline.has(key)) {
-        baseline.set(key, await toWriterIds(c, before, before, semantic));
-      }
+      if (!baseline.has(key)) baseline.set(key, await run(c, before, before, semantic));
       const without = baseline.get(key)!;
       const after = answersFor(c, { [field]: value });
       // `sanitizeEligibility` is the one whitelist; a value it refuses is not
       // an admissible answer and testing it would grade the sanitiser.
       if (JSON.stringify((after as Record<string, unknown>)[field])
           === JSON.stringify((before as Record<string, unknown>)[field])) continue;
-      const withAnswer = new Set(await toWriterIds(c, before, after, semantic));
+      const withAnswer = await run(c, before, after, semantic);
       tested += 1;
-      const missing = without.filter((id) => !withAnswer.has(id));
-      if (!missing.length) continue;
-      lost += 1;
-      founderLost += 1;
-      if (losses.length < 25) {
-        losses.push(`${c.company} · ${field}=${JSON.stringify(value)} `
-          + `lost ${missing.length}: ${missing.slice(0, 4).join(", ")}`);
+
+      // ── The property ─────────────────────────────────────────────────
+      // No restriction to "rows both runs selected". If the SELECTOR ever
+      // starts dropping a row on a follow-up answer, that is still a founder
+      // who answered a question and lost a fund, and a guard scoped to the
+      // verdict engine would report a serene zero through it.
+      const stillThere = new Set(withAnswer.accessible);
+      const gone = without.accessible.filter((id) => !stillThere.has(id));
+      if (gone.length) {
+        removed += 1;
+        founderRemoved += 1;
+        if (losses.length < 25) {
+          losses.push(`${c.company} · ${field}=${JSON.stringify(value)} `
+            + `lost ${gone.length}: ${gone.slice(0, 4).join(", ")}`);
+        }
+      }
+
+      // Reported, not enforced.
+      const seated = new Set(withAnswer.toWriter);
+      if (without.toWriter.some((id) => !seated.has(id))) {
+        displaced += 1;
+        founderDisplaced += 1;
       }
     }
     console.log(`${c.company.slice(0, 24).padEnd(26)}`
-      + `${String(founderLost).padStart(4)} answer(s) cost this founder a fund`);
+      + `${String(founderRemoved).padStart(4)} removed`
+      + `${String(founderDisplaced).padStart(6)} displaced past the writer cap`);
   }
 
   console.log("-".repeat(96));
   console.log(`cases tested                                   ${tested} (floor ${MIN_CASES})`);
-  console.log(`ANSWERS THAT REMOVED A FUND FROM THE WRITER     ${lost}`);
+  console.log(`ANSWERS THAT REMOVED A FUND FROM THE POOL       ${removed}`);
   for (const l of losses) console.log(`    ${l}`);
-  if (lost > losses.length) console.log(`    ... and ${lost - losses.length} more`);
+  if (removed > losses.length) console.log(`    ... and ${removed - losses.length} more`);
+  console.log(`answers that displaced one past WRITER_CANDIDATE_CAP=${WRITER_CANDIDATE_CAP}`
+    + `   ${displaced}   NOT A FAILURE`);
+  console.log(`  Reported so it is never invisible. A late answer that turns \`unknown\` or`);
+  console.log(`  \`open\` into \`one_blocker\` moves the row's BAND, and past a cap a demotion`);
+  console.log(`  at the tail does not publish. That is the cap, and P2 owns it; the only`);
+  console.log(`  code with a zero here is code where answering changes nothing.`);
 
   // ── Non-vacuity, before any verdict ────────────────────────────────────
   if (tested < MIN_CASES) {
@@ -206,7 +277,7 @@ async function main() {
     // to hold no follow-up answer that closes a door for any of the twelve.
     // That is a fact about the corpus and this check would be reporting it as a
     // fact about the code.
-    if (lost === 0) {
+    if (removed === 0) {
       console.error(`\nFAIL — PROVE=1 disabled the whole mechanism and NOTHING went `
         + `red.\n  This check cannot demonstrate its own failure, so its green tells `
         + `you\n  nothing about whether a follow-up answer can hide a fund. Fix the\n`
@@ -214,16 +285,15 @@ async function main() {
         + `  filters on askable fields -- rather than trusting the pass.`);
       process.exit(1);
     }
-    console.log(`\nPASS (PROVE) — the disabled mechanism costs ${lost} of ${tested} `
+    console.log(`\nPASS (PROVE) — the disabled mechanism costs ${removed} of ${tested} `
       + `answers a fund.\n  That is the defect this guard watches, reproduced.`);
     return;
   }
 
-  if (lost > 0) {
-    console.error(`\nFAIL — ${lost} of ${tested} admissible answers REMOVED a fund from `
-      + `the writer's\n  candidates. Every one is a founder who answered a question we `
-      + `asked and\n  was shown fewer routes for it, with nothing on the page to say `
-      + `so.\n\n`
+  if (removed > 0) {
+    console.error(`\nFAIL — ${removed} of ${tested} admissible answers REMOVED a fund from `
+      + `the founder's\n  pool. Every one is a founder who answered a question we asked `
+      + `and was\n  shown fewer routes for it, with nothing on the page to say so.\n\n`
       + `  A follow-up answer may reorder, may narrow, may put an obstacle on a\n`
       + `  row. It may not delete one: "a fund set aside on a doubt is a fund the\n`
       + `  founder never sees and never learns exists" (SELECT-4). See\n`
@@ -232,7 +302,7 @@ async function main() {
   }
 
   console.log(`\nPASS — over ${tested} admissible answers on ${COMPANIES.length} founders, `
-    + `answering a\n  follow-up question never costs a fund its seat.`);
+    + `answering a\n  follow-up question never costs a fund its place in the pool.`);
 }
 
 main();

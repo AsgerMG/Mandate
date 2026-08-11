@@ -6,9 +6,9 @@
  * ── The gap this closes ───────────────────────────────────────────────────
  * `check_winner_not_blocked.ts` states this property over the TERRITORIAL
  * screen and pins its debt at 15. That screen is not shipped. One stage later,
- * on the path a founder's memo actually takes, `orderMemoCandidates` runs
- * `assessAll` and DROPS every candidate it calls `blocked` — and nothing
- * watched that at all, while it was running at four times the volume:
+ * on the path a founder's memo actually takes, `accessiblePool` runs `assessAll`
+ * and DROPS every candidate it calls `blocked` — and nothing watched that at
+ * all, while it was running at four times the volume:
  *
  *   wsCR, tune n=250: 58 of the 123 founders whose won fund reached the memo
  *   pool had that exact fund deleted by `VER-BLOCKED`. Every single leaf the
@@ -260,7 +260,7 @@ function main() {
   if (blocked > BLOCKED_CEILING) {
     console.error(`\nFAIL — ${blocked} companies the register says WON a fund are deleted `
       + `from it\n  by the encoded gate screen, above the ceiling of ${BLOCKED_CEILING}.\n\n`
-      + `  This is the drop orderMemoCandidates logs as VER-BLOCKED, and it is\n`
+      + `  This is the drop accessiblePool logs as VER-BLOCKED, and it is\n`
       + `  the last thing between a correct shortlist and the memo a founder\n`
       + `  reads. A fund deleted here is not demoted, not explained and not\n`
       + `  recoverable downstream: it is simply absent.\n\n`

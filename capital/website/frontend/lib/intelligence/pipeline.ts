@@ -949,10 +949,16 @@ async function synthesize(
     // are computed for what sharing one scope was costing.
     instrumentTable, req, records, dbPeers, eligibilityScreen: eligibilitySignal,
     semanticScores, log,
-    // A row the model NAMED keeps its seat. `agentSelectLastDecision()` is null
-    // with the arm off — which is every production request today — so this is
-    // `undefined` on the shipped path and the sort is the one that has always
-    // run. `picked` is in the model's own order and a Set keeps it.
+    // A row the model NAMED keeps its seat. `picked` is in the model's own
+    // order and a Set keeps it.
+    //
+    // This reads MODULE STATE, and the only thing that makes that safe is that
+    // `agentSelectMemoPool` clears it on ENTRY rather than at the point it is
+    // written — see the comment there. It used to clear it after four early
+    // returns, which in a warm container meant a founder whose pool was too
+    // small to reach the model inherited the previous founder's picks. With the
+    // arm off — every production request today — this is `undefined` and the
+    // sort is the one that has always run.
     pinned: (() => {
       const picked = agentSelectLastDecision()?.picked;
       return picked?.length ? new Set(picked) : undefined;
@@ -1710,10 +1716,13 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   // objects and could simply omit `sector` from the earlier one. So it is
   // intersected with what this founder's OWN shortlist would have generated a
   // question about, re-derived from the pool we just built. That derivation is
-  // `openFieldsForShortlist`, the same function the adaptive round picks from,
-  // and it skips FIRST_PAGE_FIELDS — so country and sector can never be late
-  // however the two objects are shaped. `check_late_fields_are_askable.ts`
-  // states that as a property rather than leaving it as a consequence.
+  // `openFieldsForShortlist`, the same function the adaptive round picks from.
+  //
+  // It is NOT what stops a first-page answer being called late. That belongs to
+  // `lateAnsweredFields` and is asserted there: this call site was written
+  // believing `openFieldsForShortlist` excluded FIRST_PAGE_FIELDS, and it
+  // returns `region` — a first-page field carrying 181 encoded filters — for
+  // every founder country on the committed snapshot.
   //
   // Evaluated against the BEFORE answers, so a field the founder has since
   // answered still reads as open and can be recognised as the thing they were

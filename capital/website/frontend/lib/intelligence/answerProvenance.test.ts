@@ -4,9 +4,13 @@
 // its own late fields can switch the verdict engine off for itself.
 import { describe, expect, it } from "vitest";
 
-import { lateAnsweredFields, softenLateBlockers } from "./answerProvenance";
+import {
+  answersWithoutLateFields, lateAnsweredFields, softenAll, softenLateBlockers, withCoveredFields,
+} from "./answerProvenance";
+import { loadDbInstruments } from "./corpus";
+import { openFieldsForShortlist } from "./gateReach";
 import type { InstrumentAssessment, Blocker } from "./verdict";
-import type { EligibilityAnswers } from "./types";
+import { FIRST_PAGE_FIELDS, type EligibilityAnswers } from "./types";
 
 const blocker = (field: string): Blocker => ({
   requirement: `a verbatim rule about ${field}`, field, verified: true, cited: true,
@@ -18,17 +22,34 @@ const assessment = (blockers: Blocker[], status: InstrumentAssessment["status"])
   });
 
 describe("softenLateBlockers", () => {
-  it("will not let an all-late assessment carry `blocked`", () => {
+  it("will not let a fund that was reachable before the question carry `blocked`", () => {
     const out = softenLateBlockers(
       assessment([blocker("nonEuControl"), blocker("ownerOver25")], "blocked"),
-      new Set(["nonEuControl", "ownerOver25"]));
+      assessment([], "unknown"));
+    expect(out.status).toBe("one_blocker");
+  });
+
+  it("softens the ADDED blocker, not just the standing-alone one", () => {
+    // ── The disaster, and it is the one that was live ──────────────────────
+    // The rule shipped as "every blocker cites a late field". Removal in the
+    // field does not look like that. It looks like this: a fund already had one
+    // curable blocker on a screen-one field and stayed `one_blocker`, the
+    // founder answered a follow-up question, the second blocker landed, and two
+    // curable blockers are `blocked`. The old rule saw a non-late blocker and
+    // declined to soften — 78 funds deleted at `accessiblePool` across the
+    // twelve archetypes with the late field correctly named.
+    //
+    // Asking the PRIOR verdict gets it right: without the late answer this fund
+    // was `one_blocker`, so the founder would have seen it, so they still do.
+    const out = softenLateBlockers(
+      assessment([blocker("cofinancingBand"), blocker("nonEuControl")], "blocked"),
+      assessment([blocker("cofinancingBand")], "one_blocker"));
     expect(out.status).toBe("one_blocker");
   });
 
   it("keeps the blockers, because the obstacle is the point", () => {
     const bs = [blocker("nonEuControl"), blocker("ownerOver25")];
-    const out = softenLateBlockers(assessment(bs, "blocked"), new Set(
-      ["nonEuControl", "ownerOver25"]));
+    const out = softenLateBlockers(assessment(bs, "blocked"), assessment([], "open"));
     expect(out.blockers).toEqual(bs);
     // A softened row publishes WITH the fund's own sentence on it. Losing the
     // requirement text would turn "informed" into "quietly shown anyway", which
@@ -36,26 +57,52 @@ describe("softenLateBlockers", () => {
     expect(out.blockers[0].requirement).toContain("nonEuControl");
   });
 
-  it("leaves a screen-one blocker at full force, and one is enough", () => {
-    // `sector` is a first-page field. A fund closed by sector was closed before
-    // the follow-up screen existed, so nothing that happened on it may reopen
-    // the fund — not even when a second, late blocker joins the first.
+  it("leaves a fund the founder could never have seen shut", () => {
+    // A fund closed by `sector` was closed before the follow-up screen existed.
+    // Nothing that happened on it may reopen the fund, and the test for that is
+    // the prior verdict rather than a search through the blockers: it was
+    // `blocked` without the late answer and it stays `blocked` with it.
     const out = softenLateBlockers(
       assessment([blocker("sector"), blocker("nonEuControl")], "blocked"),
-      new Set(["nonEuControl"]));
+      assessment([blocker("sector")], "blocked"));
     expect(out.status).toBe("blocked");
   });
 
   it("touches nothing that was not blocked", () => {
     for (const s of ["open", "one_blocker", "unknown"] as const) {
       const a = assessment([blocker("nonEuControl")], s);
-      expect(softenLateBlockers(a, new Set(["nonEuControl"]))).toBe(a);
+      expect(softenLateBlockers(a, assessment([], "open"))).toBe(a);
     }
   });
 
-  it("is identity when nothing is late", () => {
+  it("is identity when there is no prior assessment to appeal to", () => {
     const a = assessment([blocker("sector")], "blocked");
-    expect(softenLateBlockers(a, new Set())).toBe(a);
+    expect(softenLateBlockers(a, undefined)).toBe(a);
+  });
+});
+
+describe("softenAll", () => {
+  it("does not compute the prior assessment when nothing is late", () => {
+    // The shipped path today. A second `assessAll` over the pool is cheap but
+    // not free, and "byte-identical when no follow-up question was answered" is
+    // the property that makes this change additive.
+    const assessments = new Map([["x", assessment([blocker("sector")], "blocked")]]);
+    let calls = 0;
+    const out = softenAll(assessments, new Set(), () => { calls += 1; return new Map(); });
+    expect(out).toBe(assessments);
+    expect(calls).toBe(0);
+  });
+});
+
+describe("answersWithoutLateFields", () => {
+  it("drops exactly the late fields and returns the same object when none are", () => {
+    const after = { sector: "software_ai", nonEuControl: "yes" } as EligibilityAnswers;
+    expect(answersWithoutLateFields(after, new Set())).toBe(after);
+    const prior = answersWithoutLateFields(after, new Set(["nonEuControl"]))!;
+    expect(prior.nonEuControl).toBeUndefined();
+    expect(prior.sector).toBe("software_ai");
+    // Not mutated: the merged answers go on to be assessed as they stand.
+    expect(after.nonEuControl).toBe("yes");
   });
 });
 
@@ -79,10 +126,6 @@ describe("lateAnsweredFields", () => {
   });
 
   it("cannot make a screen-one answer late, however the objects are shaped", () => {
-    // `askable` comes from `openFieldsForShortlist`, which skips
-    // FIRST_PAGE_FIELDS — so `sector` and `entityCountries` are absent from it
-    // by construction, and a request that simply omits them from
-    // `eligibilityBeforeRound` buys nothing.
     const stripped = {} as EligibilityAnswers;
     const after = {
       sector: "software_ai", entityCountries: ["France"], nonEuControl: "yes",
@@ -90,6 +133,36 @@ describe("lateAnsweredFields", () => {
     const late = lateAnsweredFields(stripped, after, askable);
     expect(late.has("sector")).toBe(false);
     expect(late.has("entityCountries")).toBe(false);
+    expect(late.has("nonEuControl")).toBe(true);
+  });
+
+  it("cannot make a screen-one answer late from the REAL askable set either", () => {
+    // ── The disaster, and it had already happened ──────────────────────────
+    // This module was written believing the intersection with `askable` did the
+    // work on its own: "openFieldsForShortlist skips FIRST_PAGE_FIELDS, so
+    // country and sector can never be late". Its gate-driven loop does. The
+    // region block below that loop does not go through it, and `region` IS a
+    // first-page field — carrying 181 encoded official region filters on 155
+    // leaves, which types.ts calls the most decisive question the intake has.
+    //
+    // So the test builds the askable set the way the pipeline does, over the
+    // real corpus, and asserts on what comes out. A hand-written `askable`
+    // could not have caught this and did not: the case above passes either way.
+    const ids = loadDbInstruments().map((i) => i.id);
+    const before = { entityCountries: ["France"], sector: "software_data_ai" } as EligibilityAnswers;
+    const open = openFieldsForShortlist(ids, before).map((f) => f.field);
+
+    // The precondition, asserted rather than assumed. If `openFieldsForShortlist`
+    // is ever fixed at its own end this line fails loudly instead of leaving the
+    // test below passing vacuously.
+    expect(open.filter((f) => FIRST_PAGE_FIELDS.has(f)),
+      "openFieldsForShortlist no longer offers a first-page field; the hole this "
+      + "pins is closed upstream and this test is now vacuous").toContain("region");
+
+    const askableReal = withCoveredFields(open);
+    const after = { ...before, region: "FRD", nonEuControl: "yes" } as EligibilityAnswers;
+    const late = lateAnsweredFields(before, after, askableReal);
+    expect(late.has("region")).toBe(false);
     expect(late.has("nonEuControl")).toBe(true);
   });
 

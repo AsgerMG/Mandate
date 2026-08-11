@@ -221,6 +221,18 @@ jobs:
       - name: A company is never screened out of a fund it won
         if: always()
         run: npx tsx scripts/check_winner_not_blocked.ts
+      # The same defect class from the founder's own side: not a fund hidden
+      # from someone who qualifies, but a fund hidden BECAUSE they answered a
+      # question we asked them. The owner's binding decision is that a
+      # second-screen answer INFORMS the ranker and never REMOVES a fund, and
+      # the removal seam is `accessiblePool`. Hermetic -- committed snapshot,
+      # committed semantic cache, no model call -- but it builds ~700 pools, so
+      # it sits at the end of the hermetic block rather than among the
+      # sub-second ones. Two minutes.
+      - name: Answering a follow-up question never costs a founder a fund
+        if: always()
+        run: npx tsx scripts/check_asking_cannot_shrink.ts
+        env: { NO_PG: '1' }
       # Skips honestly: data/raw/instrument_docs is gitignored, so there is
       # nothing here to verify a quotation against. Kept in CI anyway — the skip
       # is one line of output that says so, and its absence from any automatic

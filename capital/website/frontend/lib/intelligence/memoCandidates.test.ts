@@ -24,17 +24,24 @@ import type { EligibilityAnswers, IntelligenceRequest, InstrumentRow } from "./t
  *  corpus, in a sector most schemes do not name. Chosen for its effect, not for
  *  any property of Iceland — the tests below assert on the BUCKETS it produces
  *  and fail loudly if it stops producing them. */
+// Every value here is drawn from the declared vocabulary (SECTOR_OPTIONS,
+// TICKET_BANDS, USE_OF_FUNDS_OPTIONS, ...). It arrived with four that were not
+// -- `ticketBand: "1-5M"`, `developmentStage: "scaling"` -- and only the first
+// was a type error, because most of EligibilityAnswers is typed `string`. An
+// out-of-vocabulary answer does not throw: it silently fails to satisfy every
+// comparator written against the field, so the buckets below would have been
+// buckets of a founder who cannot exist.
 const ANSWERS: EligibilityAnswers = {
   entityCountries: ["Iceland"],
   sector: "other",
   useOfFunds: ["experimental_development"],
   fteBand: "250+",
-  ticketBand: "1-5M",
-  developmentStage: "scaling",
+  ticketBand: "b2m5_15m",
+  developmentStage: "scaling_revenue",
   exclusionFlags: ["none"],
   activities: ["none"],
   borrowerModel: "operating",
-} as EligibilityAnswers;
+};
 
 /** Corpus instruments bucketed by the verdict THIS answer set gives them. */
 function byStatus(answers: EligibilityAnswers): Map<VerdictStatus, string[]> {

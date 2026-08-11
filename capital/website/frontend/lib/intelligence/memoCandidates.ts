@@ -21,7 +21,7 @@
 import { scoreEase, type EaseScore } from "./ease";
 import { scoreFitControl, sectorFitScorer } from "./fit";
 import { assessAll, VERDICT_RANK, type InstrumentAssessment } from "./verdict";
-import { softenAll } from "./answerProvenance";
+import { answersWithoutLateFields, softenAll } from "./answerProvenance";
 import { resolveNameCollisions } from "./nameCollision";
 import {
   CAPITAL_SOUGHT_TO_DB,
@@ -129,9 +129,13 @@ export function accessiblePool(
   log?: ExclusionLog,
   lateFields?: ReadonlySet<string>,
 ): InstrumentRow[] {
-  const assessed = softenAll(assessAll(
-    rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
-    eligibility), lateFields);
+  const ids = rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
+  const assessed = softenAll(
+    assessAll(ids, eligibility), lateFields,
+    // The second assessment is only computed when something IS late, which is
+    // never on the shipped path today. See softenLateBlockers for why the
+    // trigger is the prior VERDICT rather than the blockers' own fields.
+    () => assessAll(ids, answersWithoutLateFields(eligibility, lateFields!)));
   return rows.filter((r) => {
     const a = r.instrumentId ? assessed.get(r.instrumentId) : undefined;
     if (a?.status !== "blocked") return true;
@@ -390,10 +394,11 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
   // rejections is not advice.
   // Softened by the same `lateFields` `accessiblePool` used. ONE verdict per
   // fund, or the pool keeps a row the band sort then buries.
-  const assessments = softenAll(assessAll(
-    instrumentTable.map((r) => r.instrumentId).filter((id): id is string => Boolean(id)),
-    req.eligibility,
-  ), input.lateFields);
+  const tableIds = instrumentTable
+    .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
+  const assessments = softenAll(
+    assessAll(tableIds, req.eligibility), input.lateFields,
+    () => assessAll(tableIds, answersWithoutLateFields(req.eligibility, input.lateFields!)));
   // A scheme with no award on record for years may be closed, repealed or
   // simply between programme periods — we cannot tell which, and neither can
   // the founder. Three years is deliberately generous: EU programme periods
