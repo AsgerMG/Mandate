@@ -64,6 +64,20 @@ async function main() {
   let pop = all.filter(isDescribed)
     .sort((a, b) => a.name.localeCompare(b.name))
     .filter((r) => (seen.has(r.name) ? false : (seen.add(r.name), true)));
+  // ── STRIDE, not slice ────────────────────────────────────────────────────
+  // A capped run has to keep the population's COUNTRY MIX or the ranking it
+  // produces is a ranking of the sample. `LIMIT=250` takes the first 250
+  // companies in name order, and measured on this set that is 82 British
+  // founders out of 250 (33%) against 183 of 1,534 in the population (12%) --
+  // GB has no open row in this corpus, so its pools are EU-level funds, and a
+  // GB-heavy sample ranks EU-level demand up and Swedish and Czech demand down.
+  // The bias is not noise: company names cluster by market.
+  //
+  // STRIDE=6 takes every sixth founder instead. Same deterministic order, same
+  // country mix to within a founder or two, ~1/6 the wall clock. LIMIT is kept
+  // for a smoke run and says what it costs.
+  const stride = Number(process.env.STRIDE ?? 0);
+  if (stride > 1) pop = pop.filter((_, i) => i % stride === 0);
   const limit = Number(process.env.LIMIT ?? 0);
   if (limit > 0) pop = pop.slice(0, limit);
   const byCountry = new Map<string, number>();
