@@ -18,7 +18,7 @@
 // test below stays and is unchanged: they are about the function being a
 // permutation, which is a property of the fill and not of any arm.
 import { describe, expect, it } from "vitest";
-import { applyPeerPrecedence, peerPrior } from "./shortlist";
+import { applyPeerPrecedence, interleaveWithPeer, peerPrior } from "./shortlist";
 import type { InstrumentRow } from "./types";
 
 /** A cell the peer prior actually HOLDS.
@@ -150,5 +150,45 @@ describe("the seat split, on rows the peer prior actually knows", () => {
       const out = ids(applyPeerPrecedence(table, CELL[0], CELL[1], specific));
       for (const r of table) expect(out).toContain(r.instrumentId);
     }
+  });
+});
+
+// ── wsEC: the round robin ────────────────────────────────────────────────
+// `POOL_ORDER` is read once at module scope, so a test that reassigned the env
+// would be testing a second instance of this module rather than the shipped
+// one. The ordering is therefore exported pure and exercised directly, and the
+// invariant tests above are re-run against it: a second arm that is not a
+// permutation is the same regression as a first arm that is not.
+describe("interleaveWithPeer: the round robin", () => {
+  const known = PRIOR.slice(0, 4);
+  it("NEVER loses or duplicates a row, on any input shape", () => {
+    const shapes: InstrumentRow[][] = [
+      [row("a"), row("b"), row("c"), row("d"), row("e")],
+      [row("a", "SA.1"), row("b", "SA.1"), row("c", "SA.2"), row("d")],
+      [row("a", "SA.9"), row("b", "SA.9"), row("c", "SA.9")],
+      // Rows the prior knows, handed over in reverse peer order.
+      [...known.slice().reverse().map((id) => row(id)), row("z")],
+    ];
+    for (const input of shapes) {
+      const out = interleaveWithPeer(input, PRIOR);
+      expect(out.length).toBe(input.length);
+      expect(ids(out).slice().sort()).toEqual(ids(input).slice().sort());
+      expect(new Set(ids(out)).size).toBe(input.length);
+    }
+  });
+
+  it("gives the score the first seat and alternates after it", () => {
+    // `z` scores first and the prior has never seen it; the four after it are
+    // handed over in REVERSE peer order, so an alternation must visibly pull
+    // the prior's own first entry into seat two.
+    const input = [row("z"), ...known.slice().reverse().map((id) => row(id))];
+    const out = ids(interleaveWithPeer(input, PRIOR));
+    expect(out[0]).toBe("z");
+    expect(out[1]).toBe(known[0]);
+  });
+
+  it("is the identity when the prior knows nothing in the table", () => {
+    const input = [row("a"), row("b"), row("c")];
+    expect(ids(interleaveWithPeer(input, []))).toEqual(["a", "b", "c"]);
   });
 });

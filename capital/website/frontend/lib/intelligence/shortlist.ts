@@ -979,7 +979,11 @@ export function structuringNotes(inst: DbInstrument): string[] {
 // Short forms of the sector vocabulary, for a one-line descriptor. Keyed off
 // SECTOR_OPTIONS so a sector added to the intake cannot silently go unnamed
 // here; anything without a short form is simply omitted rather than guessed.
-const SECTOR_WORD: Record<string, string> = {
+// Exported so a diagnostic can ask "does this row's descriptor name the
+// founder's own sector" against the SAME short forms the row rendered with. A
+// second copy of this map in a script would be a "keep in sync" comment, which
+// this repo treats as the defect itself.
+export const SECTOR_WORD: Record<string, string> = {
   software_data_ai: "software & AI",
   health_life_sciences: "health & life sciences",
   energy_cleantech: "energy & cleantech",
@@ -998,7 +1002,7 @@ const CAPITAL_WORD: Record<string, string> = {
 };
 
 /** Below this share of an instrument's awards, a "focus" is noise. */
-const FOCUS_SHARE = 0.25;
+export const FOCUS_SHARE = 0.25;
 
 function regionOfInstrument(inst: DbInstrument): string | null {
   for (const g of inst.gates) {
@@ -1011,21 +1015,82 @@ function regionOfInstrument(inst: DbInstrument): string | null {
   return null;
 }
 
+/** How the sector clause of a row's descriptor states what it knows.
+ *
+ *  \u2500\u2500 The property \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+ *  A fact rendered on a candidate row is a fact the selector selects on. It
+ *  therefore has to DISCRIMINATE: it must be at least as true of the fund this
+ *  founder should be shown as of the funds they should not. And where the
+ *  measurement behind it is a plurality, the row has to say the share, because
+ *  a category is a different claim from a plurality and the reader cannot
+ *  recover one from the other.
+ *
+ *  \u2500\u2500 What `category` measures, on the corpus and on the answer key \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+ *  `scripts/_wsec_descriptor.ts`, live Postgres: `mostly X` fires on 709 of
+ *  the 743 publishable instruments that carry a sector mix (95.4%), and the
+ *  sector it names is an actual MAJORITY of that fund's awards on 341 of them
+ *  (45.9%). Median top share 0.47. So it is on nearly every row, and it
+ *  overstates on more than half of them.
+ *
+ *  `scripts/_wsec_compose.ts`, 846 held-out founders: the clause names a
+ *  sector OTHER than the founder's on 47.7% of the funds those founders
+ *  actually WON, against 66.7% of every other row in their pool (tune, n=599:
+ *  49.3% against 67.3%). It is informative and it is weak \u2014 weak enough that
+ *  ordering the pool by it costs recall \u2014 and it is written as a category, so
+ *  the model applies it as a filter and says so: "only #2 and #4 explicitly
+ *  match the software and AI sector". With the clause not rendered, the rows
+ *  of the eighteen that survive the model's own stated tests go from 6.9 to
+ *  15.3, and no founder is left with fewer survivors than the rows we publish.
+ *
+ *  \u2500\u2500 RANKING-NEUTRAL BY CONSTRUCTION \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
+ *  `row.descriptor` is read in exactly two places \u2014 the panel that renders it
+ *  and the selector prompt that shows it \u2014 and by no scorer. `sectorMix`
+ *  itself does rank, through `sectorFitScorer`, and that is untouched: this
+ *  changes the SENTENCE, not the signal. So no offline recall figure can move
+ *  and the shipped ranker cannot regress.
+ *
+ *  OFF BY DEFAULT. An unrecognised value throws rather than reading as the
+ *  default, for the reason `CHANNEL_BACKFILL` states. */
+export const ROW_DESCRIPTOR = (() => {
+  const v = process.env.ROW_DESCRIPTOR ?? "category";
+  if (v !== "category" && v !== "share") {
+    throw new Error(`unknown ROW_DESCRIPTOR=${v} (expected: category, share)`);
+  }
+  return v;
+})();
+
+/** The sector clause of a row's descriptor, or "" when there is nothing to say.
+ *
+ *  Exported and pure so both spellings are testable in one process:
+ *  `ROW_DESCRIPTOR` is read once at module scope, deliberately, so a test that
+ *  reassigned the environment would be testing a second module instance.
+ *
+ *  The FIRING RULE is shared by both arms and is `FOCUS_SHARE`. They differ in
+ *  what the row says and never in which rows carry it \u2014 an arm that also moved
+ *  the threshold would confound the sentence with the selection. */
+export function sectorClause(
+  mix: Record<string, number> | null | undefined,
+  mode: typeof ROW_DESCRIPTOR = ROW_DESCRIPTOR,
+): string {
+  if (!mix) return "";
+  const total = Object.values(mix).reduce((a, b) => a + b, 0);
+  const top = Object.entries(mix).sort((a, b) => b[1] - a[1])[0];
+  if (!total || !top || top[1] / total < FOCUS_SHARE) return "";
+  const label = SECTOR_WORD[top[0]];
+  if (!label) return "";
+  return mode === "share"
+    ? `${Math.round((100 * top[1]) / total)}% ${label}`
+    : `mostly ${label}`;
+}
+
 export function fundDescriptor(inst: DbInstrument): string {
   const bits: string[] = [CAPITAL_WORD[inst.capitalType] ?? "Funding"];
 
   const region = regionOfInstrument(inst);
   if (region) bits.push(region);
 
-  const mix = inst.sectorMix;
-  if (mix) {
-    const total = Object.values(mix).reduce((a, b) => a + b, 0);
-    const top = Object.entries(mix).sort((a, b) => b[1] - a[1])[0];
-    if (total && top && top[1] / total >= FOCUS_SHARE) {
-      const label = SECTOR_WORD[top[0]];
-      if (label) bits.push(`mostly ${label}`);
-    }
-  }
+  const clause = sectorClause(inst.sectorMix);
+  if (clause) bits.push(clause);
   return bits.join(" \u00b7 ");
 }
 
@@ -1604,6 +1669,50 @@ export const CHANNEL_BACKFILL = (() => {
     throw new Error(`unknown CHANNEL_BACKFILL=${v} (expected: on, off)`);
   }
   return v;
+})();
+
+/** How the two orthogonal predictors share the ranked pool.
+ *
+ *  ── The property, and why the shipped value is a statement about the wrong
+ *     list ─────────────────────────────────────────────────────────────────
+ *  `precedence` is what ships and what wsCW swept: the score keeps the first
+ *  one or three seats and EVERY row the peer prior has ever seen goes ahead of
+ *  every row it has not. That constant was chosen against the PUBLISHED five,
+ *  where five seats cannot hold two lists and one of them has to win.
+ *
+ *  The list the selector is shown is eighteen, and at eighteen both lists fit,
+ *  so the constant is being applied at a depth it was never read at. That is
+ *  the same defect wsDR fixed for the quoted base rate, in the other half of
+ *  this function. `interleave` is the round robin that removes the constant.
+ *
+ *  ── AND IT IS NOT BETTER. THIS ARM IS A RECORDED NEGATIVE. ───────────────
+ *  It ships OFF because it was measured, not because it was untried. wsEC,
+ *  three ways:
+ *
+ *    holdout n=846, at eighteen   44.2% -> 48.6% (arm run end to end)
+ *    TUNE    n=599, at eighteen   47.7% -> 48.7%
+ *    holdout n=846, at FORTY      63.8% -> 60.9%   <- worse
+ *    measure_recall SPLIT=tune N=250, EXACT@5   26% -> 23%
+ *
+ *  A gain that is +4.4 on holdout and +1.0 on tune, that reverses in the tail,
+ *  and that costs three points of the metric the product ships on, is not a
+ *  gain. It also reproduces wsCW's independent result for `alternate` (23.5
+ *  against 25.7, tune n=600) from a different direction, so two workstreams
+ *  have now measured the same thing.
+ *
+ *  KEPT rather than deleted because the negative is the finding: the next
+ *  workstream that reaches for "the two signals should share the list" can run
+ *  one variable instead of building it. See
+ *  project-mgmt/findings/gate1_composition_wsEC.md.
+ *
+ *  An unrecognised value throws rather than reading as the default, for the
+ *  reason `CHANNEL_BACKFILL` states above. */
+export const POOL_ORDER = (() => {
+  const v = process.env.POOL_ORDER ?? "precedence";
+  if (v !== "precedence" && v !== "interleave") {
+    throw new Error(`unknown POOL_ORDER=${v} (expected: precedence, interleave)`);
+  }
+  return v;
 
 })();
 
@@ -2076,6 +2185,66 @@ export function peerPrior(country?: string, sector?: string): string[] {
   return peerPriorCache[`${toIso2(country)}|${sector}`] ?? [];
 }
 
+/** One row per NOTIFIED SCHEME in the visible order, repeats to the back.
+ *
+ *  The name dedupe upstream keys on display NAME, which is enough while
+ *  ranking is fit-driven. Any order that reads the peer prior breaks that
+ *  assumption: the prior can pull the equity child and the R&D child of ONE
+ *  notified scheme (SA.111723) into the visible rows at once, because both are
+ *  genuinely funds that companies like this won. They are one door, and
+ *  showing a founder the same SA number twice spends two slots saying one
+ *  thing.
+ *
+ *  DEMOTED, NEVER DROPPED. The array this returns is the one the caller also
+ *  derives `candidateInstrumentIds` from, so filtering here would remove funds
+ *  from the WRITER's pool and not merely from the visible rows -- measured
+ *  immediately when it was a filter: pool recall fell 97% -> 83%.
+ *
+ *  Extracted so every ordering applies the identical rule. It was inline in
+ *  one branch, which is how a second ordering ends up quietly not doing it. */
+function demoteSchemeRepeats(rows: InstrumentRow[]): InstrumentRow[] {
+  const seen = new Set<string>();
+  const firsts: InstrumentRow[] = [];
+  const repeats: InstrumentRow[] = [];
+  for (const r of rows) {
+    const code = (r.schemeCode ?? "").trim();
+    if (code && seen.has(code)) { repeats.push(r); continue; }
+    if (code) seen.add(code);
+    firsts.push(r);
+  }
+  return [...firsts, ...repeats];
+}
+
+/** A round robin between the incoming (score) order and the peer prior's.
+ *
+ *  Exported and pure so both arms are testable in one process: `POOL_ORDER` is
+ *  read once at module scope, deliberately, so a test that flipped it would be
+ *  testing a second module instance rather than this function.
+ *
+ *  Nothing is added or removed, so it is a permutation of `rows` -- the
+ *  property every ordering in this file has to keep, because the caller
+ *  derives the writer's candidate pool from the array it returns. */
+export function interleaveWithPeer(
+  rows: InstrumentRow[], ranked: string[],
+): InstrumentRow[] {
+  const rankI = new Map(ranked.map((id, i) => [id, i]));
+  const byPeer = rows.filter((r) => r.instrumentId && rankI.has(r.instrumentId))
+    .sort((a, b) => (rankI.get(a.instrumentId!) ?? 1e9) - (rankI.get(b.instrumentId!) ?? 1e9));
+  const out: InstrumentRow[] = [];
+  const taken = new Set<InstrumentRow>();
+  let i = 0, j = 0;
+  const take = (r: InstrumentRow) => { taken.add(r); out.push(r); };
+  while (i < rows.length || j < byPeer.length) {
+    while (i < rows.length && taken.has(rows[i])) i++;
+    if (i < rows.length) take(rows[i++]);
+    while (j < byPeer.length && taken.has(byPeer[j])) j++;
+    if (j < byPeer.length) take(byPeer[j++]);
+  }
+  // The same one-row-per-notified-scheme demotion the `precedence` order
+  // applies, on the same reasoning and reading the same key.
+  return demoteSchemeRepeats(out);
+}
+
 /** Reorder a ranked table so peer precedent fills the visible slots.
  *
  *  Order-preserving where it can be: the ranker's single best row stays first,
@@ -2096,6 +2265,26 @@ export function applyPeerPrecedence(
   const ranked = peerPrior(country, sector);
   if (rows.length < 3 || !ranked.length) { recordPeerBranch("none"); return rows; }
   recordPeerBranch(descriptionIsSpecific ? "specific" : "flat");
+  // ── THE ROUND ROBIN, BEHIND `POOL_ORDER=interleave`, DEFAULT OFF ─────────
+  //
+  // Both branches below are the same shape with a different constant: s seats
+  // to the score, then the whole peer list, then the remainder. This replaces
+  // the constant with an alternation, so neither predictor has to win a
+  // contest that only exists because someone counted seats at the published
+  // depth. See `POOL_ORDER` for the measurement and for what it does NOT
+  // claim.
+  //
+  // Both branches collapse into one here on purpose: `descriptionIsSpecific`
+  // exists to decide how many seats the score keeps BEFORE the prior fills,
+  // and an alternation has no such number. The flag still routes the tape and
+  // is still recorded, so an arm comparison can be read per branch.
+  if (POOL_ORDER === "interleave") {
+    // The score keeps the first seat under this order too, so the row the
+    // ranker is most confident about is never displaced by a statistic about
+    // other companies. Everything after it alternates.
+    recordScoreSeats(1);
+    return interleaveWithPeer(rows, ranked);
+  }
   // A founder with a real project keeps the ranker's order for the top rows;
   // peer precedence only fills behind them.
   //
@@ -2163,16 +2352,7 @@ export function applyPeerPrecedence(
   // immediately: pool recall fell 97% -> 83% when this was a filter. Repeats go
   // to the back instead, so the table shows one row per scheme while the pool
   // keeps every fund the founder actually qualifies for.
-  const seenScheme = new Set<string>();
-  const firsts: InstrumentRow[] = [];
-  const repeats: InstrumentRow[] = [];
-  for (const r of [...lead, ...fill]) {
-    const code = (r.schemeCode ?? "").trim();
-    if (code && seenScheme.has(code)) { repeats.push(r); continue; }
-    if (code) seenScheme.add(code);
-    firsts.push(r);
-  }
-  return [...firsts, ...repeats];
+  return demoteSchemeRepeats([...lead, ...fill]);
 }
 
 export function materialiseInstrumentTable(
