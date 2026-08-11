@@ -2,10 +2,18 @@
 // reaching a database.
 //
 // ── Why this module exists, and why it imports nothing ─────────────────────
-// Four caps stand between the corpus and the published table and they only
-// work as a funnel if each is strictly wider than the next:
+// These constants narrow the memo path between the corpus and the published
+// table, and they only work as a funnel if each is strictly wider than the
+// next:
 //
 //     VERDICT_POOL -> WRITER_CANDIDATE_CAP -> BRIEF_LIMITS.institutionsMax
+//
+// The sentence NAMES them and does not count them (wsEW). It used to open
+// "Four caps", listing three, while `check_contracts.ts` opened "Five caps"
+// over the same funnel, listing four — two different wrong numbers for one
+// chain, and each of them wrong the moment a constant joins or leaves it. A
+// list a reader can count against the code cannot drift; a tally beside it can
+// only ever be a second copy of the same fact.
 //
 // Nothing asserted that ordering until `check_contracts.ts` did, and that
 // check is HERMETIC by design: no DATABASE_URL, no VOYAGE_KEY, so it runs on

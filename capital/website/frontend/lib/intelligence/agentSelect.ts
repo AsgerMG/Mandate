@@ -1612,22 +1612,15 @@ export async function agentSelectRows(
       // failure this arm already paid for once -- and DID pay for again at
       // effort `high` on the shipped 1,536. See MAX_TOKENS_BY_EFFORT.
       max_tokens: adviser ? MAX_TOKENS_BY_EFFORT[THINK_EFFORT] : 1024,
-      // THINKING OFF, and this is a measured decision, not a saving.
-      //
-      // The first live run of this arm fell back on 3 of 8 cases with no
-      // exception raised: at a small max_tokens the model spends the whole
-      // allowance thinking and returns an empty content block, which reads
-      // downstream as "no picks" and silently degrades the arm into its own
-      // control. fundSelection.ts documents the same failure from the other
-      // side. The reply here is six integers; there is nothing for a thinking
-      // budget to buy, and turning it off removes the failure mode AND most of
-      // the cost per brief.
       // Thinking ON for the adviser and OFF everywhere else. The free arm
-      // needs none — its reply is six integers — and at a small max_tokens it
-      // spent the whole allowance thinking and returned an empty content
-      // block on 3 of 8 cases. The adviser is weighing a prior against stated
-      // requirements and is allowed the room, bounded by THINK_BUDGET because
-      // thinking is billed at the output rate.
+      // needs none — its reply is SELECT_COUNT integers — and at a small
+      // max_tokens it spent the whole allowance thinking and returned an empty
+      // content block on 3 of 8 cases. The adviser is weighing a prior against
+      // stated requirements and is allowed the room, bounded by
+      // MAX_TOKENS_BY_EFFORT above because thinking is billed at the output
+      // rate. (This said "six integers", written when SELECT_COUNT was 6, and
+      // "bounded by THINK_BUDGET", an identifier that exists nowhere in the
+      // tree — a comment naming the constant cannot go stale when it moves.)
       // Adaptive is the only on-mode on this model; `disabled` is still valid
       // and is what the cheaper arms use. Effort, not a token count, is the
       // depth control -- see THINK_EFFORT.
@@ -1712,7 +1705,7 @@ export async function agentSelectRows(
     // measured calls. Here the request arrives as a tool call mid-turn.
     //
     // Bounded to ONE round of retrieval, deliberately. An unbounded loop on a
-    // stage whose whole output is six integers is a cost with no ceiling, and
+    // stage whose whole output is SELECT_COUNT integers is a cost with no ceiling, and
     // the second call already carries everything the first one learned.
     if (UNSURE_MODE === "tool") {
       const call = res.content.find(

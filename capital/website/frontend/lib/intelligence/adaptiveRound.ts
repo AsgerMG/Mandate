@@ -18,7 +18,6 @@ import { recordEvent } from "./telemetry";
 import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS, OPEN_ANSWER_PREFIX, type EligibilityAnswers } from "./types";
 import { knownFacts } from "./knownFacts";
 import type {
-  EligibilityCheck, InstrumentRow,
   IntelligenceRequest, ProfileSignal, ProjectQuestion,
 } from "./types";
 import type { FundStake, OpenFieldEvidence, OpenQuestionCandidate, ProjectGateEvidence } from "./gateReach";
@@ -46,21 +45,6 @@ function extractJson<T>(text: string): T {
   return JSON.parse(body.slice(start).trim()) as T;
 }
 
-/** House rule: no em-dashes in anything a founder reads. */
-/**
- * brief_funnel_v2 Stage 2b: turn a fund's verbatim requirement text into a
- * question about the founder's actual project.
- *
- * This is the half of the panel that makes a memo specific. The model writes
- * the answer options here, which generateGroundedRound() above deliberately
- * never does — safe only because these answers land in ProjectAnswer and
- * computeVerdict() never reads them.
- */
-/** Options that carry no information. The prompt bans these, this catches the
- *  ones that slip through — a "a mix of the above" answer tells the memo
- *  writer nothing, and costs the founder one of only ~5 questions. */
-const TOKENS = (s: string) => s.toLowerCase().match(/[a-z0-9]+/g) ?? [];
-
 // ── THE DEAD DEDUPER, DELETED (wsEN) ──────────────────────────────────────
 //
 // A private `topicSignature` sat here with a docstring saying, in its own
@@ -82,10 +66,29 @@ const TOKENS = (s: string) => s.toLowerCase().match(/[a-z0-9]+/g) ?? [];
 // measured surface. It stays a check rather than becoming a filter, for the
 // same reason `checkBrief` is observational: the planner sees every candidate
 // question at once and is the thing that should prevent the duplicate.
+//
+// ── AND ITS ORPHANS, DELETED TOO (wsEW) ───────────────────────────────────
+// The deduper's private tokeniser outlived it. `const TOKENS = (s: string) =>
+// s.toLowerCase().match(/[a-z0-9]+/g) ?? []` sat just below this block with no
+// caller anywhere in the file; the only thing that had ever called it was the
+// function above. It was also a THIRD copy of a line `questionChecks.ts` and
+// `rankerAskChecks.ts` each define for themselves, so deleting it lost nothing
+// and took one duplicated rule out of the tree.
+//
+// Three docstrings were stranded in the same spot, describing functions that
+// left this file in earlier passes and left their prose stacked above whatever
+// was declared next. One cited `generateGroundedRound() above`, which has not
+// existed in this file for some time and is what made the pile legible as
+// wreckage rather than as documentation. The two that still describe something
+// real are reattached below, to the constants they were always about.
 
+/** Options that carry no information. The prompt bans these, this catches the
+ *  ones that slip through — a "a mix of the above" answer tells the memo
+ *  writer nothing, and costs the founder one of only ~5 questions. */
 const VAGUE_OPTION =
   /^(other|none|not sure|unsure|n\/?a|a mix\b|mix of\b|some of\b|several\b|both\b|partly\b|all of\b|combination\b|it depends\b|other sector\b)/i;
 
+/** House rule: no em-dashes in anything a founder reads. */
 const deDash = (s: string) => (s ?? "").replace(/\s*—\s*/g, ", ");
 
 // The intake stage just selects the few questions whose answers most change the
@@ -93,46 +96,16 @@ const deDash = (s: string) => (s ?? "").replace(/\s*—\s*/g, ", ");
 // waits before the questions appear.
 const INTAKE_MODEL = "claude-haiku-4-5";
 
-/**
- * Phase 3C: ONE grounded panel of up to 8 questions (not several small
- * rounds — the user's explicit call: the standard screen asks the fast,
- * universal questions, then a single tailored panel narrows the rest before
- * matching, not a drip of mini-screens). Unlike the old generateIntakeGroups
- * (retired — it invented questions from a soft "entropy rule" prompt
- * instruction with zero access to real gate data), this reads the ACTUAL
- * unresolved eligibility_gates for the founder's current candidate-instrument
- * shortlist (openFieldsForShortlist, computed by the caller) and asks the
- * model only to translate real, cited requirement text into founder-friendly
- * question phrasing — never to invent the answer options, which always come
- * from FIELD_ENUM_HINTS. Returns null when there's nothing worth asking.
- */
-/**
- * Plan the whole round-2 screen in one call.
- *
- * ── Why one call ───────────────────────────────────────────────────────────
- * This replaces three generators that ran in parallel and could not see each
- * other: one for enum-answered gates, one for gate text with written options,
- * one for the commercial model. Overlap between them could only ever be caught
- * after the fact, by comparing finished questions, which is why this file
- * accumulated a topic signature, a per-key cap, a vague-option filter and a
- * measurement signature and STILL shipped a screen that asked for technology
- * readiness twice and got two different answers.
- *
- * None of the three saw the founder's screen-1 answers either. The founder had
- * said their product was at scaling-revenue stage, which largely settles
- * readiness, and was asked for it twice anyway.
- *
- * Seeing all the material at once makes "do not ask the same thing twice" and
- * "do not ask what they already told us" instructions a model can follow,
- * rather than properties we detect downstream. The old checks remain as a
- * backstop and a scoreboard signal; they are no longer the mechanism.
- *
- * Grounding is unchanged: every question keeps the instrument, gate key and
- * verbatim quote of the requirement it came from, so citations and
- * ProjectAnswer provenance still hold. Commercial questions carry no
- * instrument by design and stay behind COMMERCIAL_ANSWER_PREFIX, which is what
- * keeps them out of the eligibility verdict.
- */
+// ── A RETIRED FUNCTION'S DOCSTRING, DELETED (wsEW) ────────────────────────
+// A "Phase 3C" block sat here describing "ONE grounded panel of up to 8
+// questions" and contrasting it with "the old generateIntakeGroups (retired)".
+// Neither identifier exists in the tree, the cap on this file's only panel is
+// `SCREEN_QUESTION_CAP = 6` immediately below, and the grounding rule it closed
+// on is stated twice more — in this file's header and in the docstring that now
+// sits on `planAdaptiveScreen`. It documented nothing that is here and misstated
+// the one number it named, so it went rather than being corrected into a third
+// copy.
+
 /**
  * The answer set for a field, given what the founder has already told us.
  *
@@ -164,6 +137,34 @@ export interface PlannedScreen {
   projectQuestions: ProjectQuestion[];
 }
 
+/**
+ * Plan the whole round-2 screen in one call. Returns null when there is
+ * nothing worth asking.
+ *
+ * ── Why one call ───────────────────────────────────────────────────────────
+ * This replaces three generators that ran in parallel and could not see each
+ * other: one for enum-answered gates, one for gate text with written options,
+ * one for the commercial model. Overlap between them could only ever be caught
+ * after the fact, by comparing finished questions, which is why this file
+ * accumulated a topic signature, a per-key cap, a vague-option filter and a
+ * measurement signature and STILL shipped a screen that asked for technology
+ * readiness twice and got two different answers.
+ *
+ * None of the three saw the founder's screen-1 answers either. The founder had
+ * said their product was at scaling-revenue stage, which largely settles
+ * readiness, and was asked for it twice anyway.
+ *
+ * Seeing all the material at once makes "do not ask the same thing twice" and
+ * "do not ask what they already told us" instructions a model can follow,
+ * rather than properties we detect downstream. The old checks remain as a
+ * backstop and a scoreboard signal; they are no longer the mechanism.
+ *
+ * Grounding is unchanged: every question keeps the instrument, gate key and
+ * verbatim quote of the requirement it came from, so citations and
+ * ProjectAnswer provenance still hold. Commercial questions carry no
+ * instrument by design and stay behind COMMERCIAL_ANSWER_PREFIX, which is what
+ * keeps them out of the eligibility verdict.
+ */
 export async function planAdaptiveScreen(
   req: IntelligenceRequest,
   openFields: OpenFieldEvidence[],
@@ -631,11 +632,16 @@ export async function inferProfileSignal(req: IntelligenceRequest): Promise<Prof
   }
 }
 
-export interface VerdictResult {
-  eligibilityScreen: EligibilityCheck[];
-  instrumentTable: InstrumentRow[];
-  selfMatched: boolean;
-  /** Every real DB-native instrument id still plausibly in play (unsliced,
-   *  wider than the 6-row display table) — grounds the adaptive round. */
-  candidateInstrumentIds: string[];
-}
+// ── A SECOND `VerdictResult`, DELETED (wsEW) ──────────────────────────────
+// An `export interface VerdictResult` stood here, imported by nothing: the
+// only occurrences in the tree were its own declaration, `pipeline.ts`'s
+// declaration of the SAME name, and pipeline's use of its own. Two exported
+// interfaces sharing one name across two modules is a trap whatever their
+// contents, and these had already drifted — pipeline's carries `withheld?:
+// WithheldNotice`, the field that tells a founder their table is short, and
+// this copy never gained it. A dead type cannot be wrong at runtime, which is
+// exactly why it sat here diverging with nothing to notice.
+//
+// `pipeline.ts:1479` is the live one and stays the only one. Deleting this also
+// retired the `EligibilityCheck` and `InstrumentRow` type imports above, which
+// nothing else in this file used.

@@ -9,7 +9,11 @@ import type { IntelligenceRequest } from "@/lib/intelligence/types";
 // The fast path: a deterministic eligibility verdict, zero model calls (local
 // DB match + code-only evaluation), so it returns in well under a second —
 // unlike /api/intelligence, which streams a 2-3 minute AI-researched memo.
-// Node runtime for the SQLite-backed corpus lookups; never statically optimised.
+// Node runtime for the corpus lookups, which reach POSTGRES: hydrateDbInstruments()
+// dynamically imports `pg` and degrades to the committed JSON snapshot when that
+// fails. This said "the SQLite-backed corpus lookups" (wsEW) — the local
+// db.sqlite is the ETL's cache, no SQLite driver is a dependency of this app,
+// and nothing on a request path has read that file. Never statically optimised.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 export const maxDuration = 15;

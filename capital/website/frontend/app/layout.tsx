@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Poppins, Newsreader, Fragment_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
@@ -67,6 +68,21 @@ export default async function RootLayout({
                 corpus was READ, not which pipe carried it. */}
             <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]/80">
               {corpusAsOf(stats.provenance)}
+            </p>
+            {/* The privacy notice, which until now NOTHING linked to (wsEW).
+                The page existed and was production-reachable; the nav carries
+                two links and this footer carried none, so the only way to a
+                retention notice was to already know its URL. A notice nobody
+                can reach is not a notice. The footer is the right home for it:
+                it is on every page, including the two the form actually lives
+                behind, and it does not compete with the product CTA. */}
+            <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.12em]">
+              <Link
+                href="/privacy"
+                className="text-[var(--muted-foreground)] underline underline-offset-[3px] transition-colors hover:text-[var(--foreground)]"
+              >
+                Privacy
+              </Link>
             </p>
           </div>
         </footer>
