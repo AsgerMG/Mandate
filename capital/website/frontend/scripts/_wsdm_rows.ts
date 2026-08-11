@@ -13,14 +13,26 @@
 // on the whole pool rather than the published six, because the pool is what a
 // selector reads and coverage on six rows is a sample of size six.
 //
-// Free and deterministic: no model call, no embedding call, no Voyage query.
+// Free and deterministic: no model call. It passes no `semantic` map to
+// `selectInstrumentRows`, so no embedding is computed on this path.
+//
+// ── Why VOYAGE_KEY is declared anyway ─────────────────────────────────────
+// `shortlist.ts` reaches `semanticFundMatch`, and `check_env_loader`'s P4 is
+// per MODULE rather than per call: a script that CAN reach a credential
+// declares it. That over-approximation is the safe direction and it costs this
+// harness nothing, because the production path it exists to walk is the one
+// that DOES rank semantically -- the day this script is extended to hand
+// `selectInstrumentRows` a real `semantic` map, an undeclared key would have
+// it silently measuring the lexical order instead. Declaring is how that stays
+// impossible rather than merely unlikely. `_wsdc_rows.ts`, its sibling on the
+// same path, declares both.
 //
 //   npx tsx scripts/_wsdm_rows.ts
 //   COUNTRY=FR,DE npx tsx scripts/_wsdm_rows.ts
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-requireCredentials("_wsdm_rows", ["DATABASE_URL"]);
+requireCredentials("_wsdm_rows", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import { hydrateDbInstruments } from "../lib/intelligence/corpus";
 import { selectInstrumentRows, materialiseInstrumentTable } from "../lib/intelligence/shortlist";

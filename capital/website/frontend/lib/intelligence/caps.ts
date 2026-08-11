@@ -49,6 +49,29 @@
  *  table. */
 export const VERDICT_POOL = 18;
 
+/** How deep into the ranked pool the SELECTOR reads. See `agentSelect.ts`'s
+ *  header: this is a ceiling/chance trade, not a taste.
+ *
+ *  On the memo seam the pool is `VERDICT_POOL` rows, which is fewer than this,
+ *  so the bound is currently slack there and the selector reads the whole pool.
+ *  It is kept as a bound rather than deleted because it is the knob that would
+ *  move with the seam if the seam ever moves earlier -- and a depth that
+ *  silently equals "everything" is exactly the kind of constant that becomes
+ *  wrong without anyone editing it.
+ *
+ *  ── Why it lives HERE and not in agentSelect.ts, where it was ─────────────
+ *  It is the other seam depth, so it belongs beside `VERDICT_POOL`; and its
+ *  only non-ranker reader is `check_pool_recall_curve.ts`, which asserts that
+ *  the base-rate curve covers both seams. Importing it from `agentSelect.ts`
+ *  dragged the Anthropic client and the whole corpus layer in behind one
+ *  number, and `check_env_loader` failed the build for exactly that --
+ *  CORRECTLY: a guard that silently acquires a credential dependency is a
+ *  guard that silently stops running. This is the same move, for the same
+ *  reason, that put `VERDICT_POOL` and `WRITER_CANDIDATE_CAP` here for
+ *  `check_contracts.ts`. `agentSelect.ts` re-exports it, so every existing
+ *  caller is unchanged and there is still exactly one definition. */
+export const SELECT_DEPTH = Number(process.env.AGENT_SELECT_DEPTH ?? 40);
+
 /** How many candidates the WRITER is shown, ahead of the cut to
  *  `BRIEF_LIMITS.institutionsMax`.
  *

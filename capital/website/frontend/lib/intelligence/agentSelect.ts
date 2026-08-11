@@ -119,6 +119,7 @@
 //     are now derived from what is populated rather than from a fixed list.
 import Anthropic from "@anthropic-ai/sdk";
 
+import { SELECT_DEPTH } from "./caps";
 import { recordUsage } from "./cost";
 import { retrieveDemands } from "./demandRetrieval";
 import { asBaseRate, poolRecallAt, poolRecallN } from "./poolRecall";
@@ -270,16 +271,12 @@ export function reverseNonsense(rows: InstrumentRow[]): InstrumentRow[] {
   return [...rows].reverse();
 }
 
-/** How deep into the ranked pool the selector reads. See the header: this is a
- *  ceiling/chance trade, not a taste.
- *
- *  On the memo seam the pool is `VERDICT_POOL` rows, which is fewer than this,
- *  so this bound is currently slack there and the selector reads the whole
- *  pool. It is kept as a bound rather than deleted because it is the knob that
- *  would move with the seam if the seam ever moves earlier — and a depth that
- *  silently equals "everything" is exactly the kind of constant that becomes
- *  wrong without anyone editing it. */
-export const SELECT_DEPTH = Number(process.env.AGENT_SELECT_DEPTH ?? 40);
+/** How deep into the ranked pool the selector reads. Defined in `./caps`, the
+ *  leaf module that holds the other seam depth, and re-exported here so every
+ *  caller that has always imported it from the ranker still can. See that file
+ *  for the reasoning and for why a hermetic check must not reach through this
+ *  module to read a number. */
+export { SELECT_DEPTH } from "./caps";
 /** How many rows it names. DISPLAY_CAP is 6; asking for exactly the number the
  *  page shows means a short reply is a visible defect rather than a silent
  *  top-up from the order we are trying to test. */

@@ -26,22 +26,39 @@
 //      country load or a publishability change moves every accessible pool and
 //      therefore every point on this curve, with nothing to say so.
 //
-// Property 4 needs the live corpus. Without credentials the first three still
-// run and the fourth says it did not — a check that skips silently is the
-// failure `check_recall_floor` was rewritten to stop.
+// Property 4 needs the live corpus.
+//
+// ── "Skipped because nobody said so" is not a state this may be in ────────
+// It used to load the environment and then test `process.env.DATABASE_URL`
+// itself: with credentials, four properties; without, three properties and a
+// line saying the fourth did not run — exit 0 either way. That is the shape
+// `check_recall_floor` was rewritten to remove, in a quieter register. A
+// missing DATABASE_URL is ambiguous between "there is deliberately no
+// database" and "the keys did not load", and a checkout where `.env.local` is
+// gitignored produces the second while printing the first.
+//
+// So the two are now told apart by `requireCredentials`, which is where this
+// repo keeps that distinction: `NO_PG=1` is the declaration that there is no
+// database, and property 4 is skipped ON PURPOSE and says so. Anything else
+// ENDS non-zero rather than reporting green on three properties out of four.
 //
 //   npx tsx scripts/check_pool_recall_curve.ts
+//   NO_PG=1 npx tsx scripts/check_pool_recall_curve.ts   # properties 1-3 only
 //   PROVE=1 npx tsx scripts/check_pool_recall_curve.ts
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
+const CREDENTIALS = requireCredentials("check_pool_recall_curve", ["DATABASE_URL"]);
 
 import {
   POOL_RECALL_FILE, POOL_RECALL_KS, poolRecallAt, poolRecallN, resetPoolRecall,
 } from "../lib/intelligence/poolRecall";
 import { generatedArtifactFailures } from "../lib/intelligence/generatedArtifact";
-import { SELECT_DEPTH } from "../lib/intelligence/agentSelect";
-import { VERDICT_POOL } from "../lib/intelligence/caps";
+// SELECT_DEPTH from the LEAF module, not from `agentSelect` which re-exports
+// it. Reading it through the ranker pulled the Anthropic client and the corpus
+// layer in behind one number, which made this guard a reacher of VOYAGE_KEY it
+// never uses — `check_env_loader` was red on exactly that, correctly.
+import { SELECT_DEPTH, VERDICT_POOL } from "../lib/intelligence/caps";
 
 /** The curve is a base rate. Below this many founders it is anecdote, and a
  *  model quoted an anecdote as a measured frequency is being misled precisely
@@ -102,9 +119,9 @@ async function main() {
 
   // 4. IT WAS MEASURED ON THIS CORPUS.
   let corpusLine: string;
-  if (!process.env.DATABASE_URL) {
-    corpusLine = "corpus staleness NOT CHECKED — no DATABASE_URL in this environment. "
-      + "Properties 1-3 ran; property 4 did not.";
+  if (CREDENTIALS === "offline") {
+    corpusLine = "corpus staleness NOT CHECKED — NO_PG=1, this run has DECLARED that "
+      + "there is no database. Properties 1-3 ran; property 4 did not.";
   } else {
     const { hydrateDbInstruments, corpusProvenance } = await import("../lib/intelligence/corpus");
     const { loadGenerated } = await import("../lib/intelligence/generatedArtifact");

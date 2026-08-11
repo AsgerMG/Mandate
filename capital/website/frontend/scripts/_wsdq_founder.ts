@@ -184,11 +184,20 @@ async function main() {
   let eur = 0;
 
   // ── The first screen, exactly as the verdict route runs it ───────────────
+  // SPREAD, not four re-typed keys. The values were already the resolver's, so
+  // this is the same call — but `check_harness_intake` reads NAMES at a
+  // `computeVerdict` call site and cannot tell `capitalSought:
+  // f.opts.capitalSought` from `capitalSought: ["grant","loan"]`, which is the
+  // literal that removed every tax-credit and equity instrument from an entire
+  // published autopsy. That detector is deliberately blunt and it is right to
+  // be: the safe direction for a guard is to demand a shape that CANNOT
+  // express the defect, and the spread is that shape — it names nothing, so it
+  // can invent nothing. `description` is the caller's query rather than an
+  // intake answer, and stays explicit because `f.opts.description` is optional
+  // and the route sends "".
   const verdict = await computeVerdict(f.company, f.country, f.eligibility as never, {
-    capitalSought: f.opts.capitalSought,
+    ...f.opts,
     description,
-    targetMarkets: f.opts.targetMarkets,
-    ownHistory: f.opts.ownHistory,
   } as never);
   const candidateIds = verdict.candidateInstrumentIds ?? [];
   await hydrateGatesFor(candidateIds);

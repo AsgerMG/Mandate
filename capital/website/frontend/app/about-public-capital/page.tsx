@@ -227,6 +227,14 @@ export default function AboutPublicCapitalPage() {
             </R>
 
             <R delay={120}>
+              {/* external: the round is NOT in our corpus — it is private capital, and
+                  the channel count beside it is. Multiverse Computing announced a
+                  EUR 189m Series B led by Bullhound Capital on 12 June 2025:
+                  https://multiversecomputing.com/resources/multiverse-computing-raises-usd215m-to-scale-ground-breaking-technology-that-compresses-llms-by
+                  This sentence sat in a paragraph carrying <Src n={2} /> until an
+                  editorial refactor split the paragraph and left the year with nothing
+                  behind it. That is the whole class of defect check_rendered_numbers
+                  exists for: the claim did not change, its attribution did. */}
               <p className="mt-5 max-w-3xl leading-relaxed text-[var(--foreground)]">
                 Multiverse Computing stacked {VERIFIED_AWARDS.multiverseChannels} public channels
                 before its 2025 mega-round.
