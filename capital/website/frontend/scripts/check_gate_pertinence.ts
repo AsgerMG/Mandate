@@ -82,12 +82,26 @@
  * cohort of start-ups already selected, and one enumerating eight named Latvian
  * competence centres.
  *
- * Prose is checked against Postgres ONLY, and that is forced rather than
- * chosen: `instrument_terms.json` does not carry `eligibility_text` and must
- * not — it is a client-facing payload under a budget (check_payload_budget),
- * and 1,088 eligibility texts do not belong in the browser. The product reads
- * that column live. So there is no offline copy to hold to anything, and under
- * `NO_PG=1` this axis makes no claim rather than a green one.
+ * Prose is checked against Postgres ONLY, and under `NO_PG=1` this axis makes
+ * no claim rather than a green one.
+ *
+ * ── That used to be FORCED, and as of wsFG it is CHOSEN ───────────────────
+ * What stood here said `instrument_terms.json` "does not carry
+ * `eligibility_text` and must not — it is a client-facing payload under a
+ * budget (check_payload_budget), and 1,088 eligibility texts do not belong in
+ * the browser". The premise was right; the conclusion was drawn from a number
+ * nobody had taken. The 594 populated texts are 563 KB against a snapshot of
+ * 8.0 MB and a phase-one request payload of 3.3 MB under an 8 MB budget — 7%
+ * of a store with 3.7 MB of headroom. They are in the snapshot now, because
+ * the selector's row reads them and a field in one store and not the other is
+ * the divergence class `check_store_columns` exists to fail the build on.
+ *
+ * So there IS an offline copy now, and this axis still does not read it. That
+ * is a choice with a reason: Postgres is the store the product reads live and
+ * the only one that is current, the snapshot's texts are a subset of it, and a
+ * snapshot carrying a text Postgres no longer holds is a STALE text — which is
+ * check_corpus_currency's question, not this file's. Reading it here would
+ * fail this build for a defect belonging to another guard.
  *
  * ── What it deliberately does NOT cover ───────────────────────────────────
  * The truth, the currency, or the ownership of the sentence. A faithful
@@ -104,11 +118,12 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 /** DATABASE_URL is OPTIONAL here, and the distinction is the whole point of the
  *  prose axis below. The gate axis reads the committed snapshot and is a real
- *  test with no database at all; the prose axis has no offline corpus to read
- *  (`instrument_terms.json` deliberately does not carry `eligibility_text` —
- *  see the header) and therefore makes NO CLAIM rather than a green one when
- *  there is no connection. That is a narrower measurement, not a weaker
- *  version of the same one, which is what `optional` is for.
+ *  test with no database at all; the prose axis reads the live store only —
+ *  the snapshot now carries `eligibility_text`, and the header says why this
+ *  axis still does not judge that copy — and therefore makes NO CLAIM rather
+ *  than a green one when there is no connection. That is a narrower
+ *  measurement, not a weaker version of the same one, which is what `optional`
+ *  is for.
  *
  *  Declaring it also hands the "there is no database" decision to the one
  *  place that owns it: requireCredentials deletes DATABASE_URL when the run is

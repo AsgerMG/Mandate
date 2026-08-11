@@ -58,6 +58,41 @@
  *  the budget the selector was built at. */
 export const FUNDS_SENTENCE_CHARS = 180;
 
+/** How much of a scheme's own WHO-MAY-APPLY page one candidate row may spend.
+ *
+ *  ── Why this is a second number and not `FUNDS_SENTENCE_CHARS` again ──────
+ *  The two columns are shaped differently and the sweep above was run on only
+ *  one of them. `description` opens with what the scheme funds and then turns
+ *  to procedure, so its first clause is the discriminating one and 180 is where
+ *  that curve flattens. `eligibility_text` is longer (median 694 against 737 --
+ *  comparable -- but p90 2,496 against 2,317) and, on the families that matter
+ *  most here, it is a LABELLED BLOCK rather than a paragraph: ADEME's begins
+ *  "Eligibilité Sectorielle ... Secteurs principalement concernés ...
+ *  Eligibilité en fonction du nombre de salariés ..." and only then reaches
+ *  "Aires géographiques éligibles", which is the clause that separates one
+ *  ADEME row from the next. At 180 the line stops one clause short of it.
+ *
+ *  Measured over the 594 instruments that carry the column, through this
+ *  module's own cut:
+ *
+ *      cap 180   594 lines, mean 162 chars, 332 elided, 0 defects
+ *      cap 240   594 lines, mean 208 chars, 271 elided, 0 defects
+ *      cap 320   594 lines, mean 271 chars, 235 elided, 0 defects
+ *
+ *  240 buys 61 lines that end on a whole sentence instead of an ellipsis and
+ *  costs 46 characters a row; 320 buys 36 more for another 63. So the curve
+ *  flattens at 240 the same way the description's flattens at 180, and the
+ *  number is read off the same measurement rather than borrowed.
+ *
+ *  ── What it does to the row budget, stated because it is real ─────────────
+ *  `FUNDS_SENTENCE_CHARS`'s note says 180 "holds the row inside 600
+ *  characters, which is the budget the selector was built at". A row that also
+ *  carries a who-may-apply line is not inside 600 any more, and pretending
+ *  otherwise by squeezing this line to fit would be choosing the old budget
+ *  over the founder. The budget moved; `_wsfg_silence.ts` prints what it moved
+ *  to, and `check_payload_budget.ts` bounds the store it is read from. */
+export const DEMANDS_SENTENCE_CHARS = 240;
+
 /** How much of the title one candidate row shows.
  *
  *  Here rather than in the renderer because TWO things read it and they must

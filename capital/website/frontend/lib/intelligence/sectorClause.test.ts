@@ -105,7 +105,61 @@ describe("sectorClause: a plurality is not a category", () => {
     expect(sectorClause(tiny, "share")).toBe("");
   });
 
-  it("says nothing for a sector the descriptor vocabulary cannot name", () => {
-    expect(sectorClause({ no_such_sector: 90, space: 10 }, "share")).toBe("");
+  // ── wsFG: an unnameable bucket may not silence the row ────────────────────
+  //
+  // THE PROPERTY: the clause names the largest bucket the vocabulary CAN name,
+  // if that bucket clears ITS ARM'S FLOOR. A bucket with no name is skipped
+  // exactly like a bucket below the threshold — it cannot be the reason the row
+  // says nothing, because it was never something the row could have said.
+  //
+  // The two arms have DIFFERENT floors (wsFE: FOCUS_SHARE for `category`,
+  // SHARE_FLOOR for `share`), so the cases below are asserted per arm and the
+  // floors are read from the module rather than written as literals.
+  //
+  // Written against a key that exists nowhere in the corpus, so the rule is the
+  // property and not a patch for `other`: 171 of 1,088 instruments have `other`
+  // as their largest bucket above FOCUS_SHARE, and 65 of them hold a NAMED
+  // bucket that also clears it and was never rendered.
+  //
+  // Paired, both ways, because a rule that always speaks would pass the first
+  // half as happily as a correct one.
+  describe("a bucket the vocabulary cannot name is SKIPPED, not fatal", () => {
+    it("names the largest bucket it CAN name, when that clears its floor", () => {
+      const mix = { no_such_sector: 45, space: 35, agrifood: 20 };
+      expect(sectorClause(mix, "category")).toBe("mostly space");
+      // The share is still taken against the WHOLE mix, unnamed bucket
+      // included: the claim is about the fund's entire award history, and
+      // shrinking the denominator to the buckets we can spell would inflate
+      // every figure on every row. 35, not 44.
+      expect(sectorClause(mix, "share")).toBe("35% space");
+    });
+
+    it("still says nothing when no nameable bucket clears the floor", () => {
+      // Under BOTH floors, so the case is about the naming and not about which
+      // arm is looser. Read from the module: a literal here would pass by
+      // coincidence the day either floor moves.
+      const under = Math.max(0, Math.floor(SHARE_FLOOR * 100) - 1);
+      const mix: Record<string, number> = { no_such_sector: 100 - under, space: under };
+      expect(sectorClause(mix, "share")).toBe("");
+      expect(sectorClause(mix, "category")).toBe("");
+      // And a mix with NOTHING nameable in it at all, at any floor.
+      expect(sectorClause({ no_such_sector: 100 }, "category")).toBe("");
+      expect(sectorClause({ no_such_sector: 100 }, "share")).toBe("");
+    });
+
+    it("keeps the arms' ordering: what `category` will say, `share` will too", () => {
+      // The direction the file asserts everywhere else, re-asserted with an
+      // unnameable bucket in the mix. NOT equality — wsFE made `share` reach
+      // further down on purpose, and a test demanding they fire together would
+      // be re-litigating that decision from inside this one.
+      const mixes: Record<string, number>[] = [
+        { no_such_sector: 45, space: 35, agrifood: 20 },
+        { no_such_sector: 90, space: 10 },
+        { no_such_sector: 100 },
+      ];
+      for (const mix of mixes) {
+        if (sectorClause(mix, "category")) expect(sectorClause(mix, "share")).not.toBe("");
+      }
+    });
   });
 });

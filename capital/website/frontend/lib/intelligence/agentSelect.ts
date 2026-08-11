@@ -839,24 +839,78 @@ const eur = (n: number | undefined | null): string =>
 // and the number it cuts at have to be one definition, not two that agree.
 
 /**
- * Requirements that are NOT shared with most of the list.
+ * The requirements a row prints: its LEAST SHARED, always at least one.
  *
+ * ── What the cut is for, and it is still right ─────────────────────────────
  * 66% of candidate rows share their entire requirement block byte-for-byte
  * with a sibling — "Tobacco, gambling and betting, and weapons and munitions
  * are outside the scope" alone appeared on 2,316 of 4,626 rendered rows.
  * Printing it forty times spends a third of the prompt saying something
  * identical about every option, which is the definition of an uninformative
- * feature, and it crowds out the facts that separate. Same reasoning, and the
- * same 0.35 cutoff, as fundSelection.ts.
+ * feature, and it crowds out the facts that separate.
+ *
+ * ── What it was ALSO doing, which it was never for (wsFG) ──────────────────
+ * It was deleting the row's only sentence. 18,362 gate instances are visible
+ * to the 837 open rows and 781 printed — 4.3% — and the two stages that did
+ * most of that were this filter and the `.slice(0, 2)` behind it. 164 menu
+ * rows (21.1%) held requirements and printed none, and on 94 of them the
+ * least-shared requirement they held sat on under 60% of the menu: not
+ * boilerplate, just above a threshold calibrated for a different problem.
+ *
+ * A threshold cannot tell those apart because it is not asking about the row,
+ * it is asking about the corpus. So the rule is stated about the row instead.
+ *
+ * ── THE PROPERTY ──────────────────────────────────────────────────────────
+ *
+ *   A ROW THAT HOLDS ANY REQUIREMENT PRINTS ONE, and the one it prints is the
+ *   least widely shared it holds. Being common is a reason to print a
+ *   requirement LAST, never a reason to print nothing: a row that says nothing
+ *   can only be chosen by its position, and its position is the empirical
+ *   ranker's answer restated.
+ *
+ * Two consequences, and both are the property rather than a tuned number:
+ *
+ *   THE THRESHOLD NOW RANKS RATHER THAN GATES. Where a row holds requirements
+ *     the list does not share, those are what print — unchanged, that is the
+ *     0.35 cut doing the job it was written for. Where every requirement it
+ *     holds is common, the least common one prints anyway. Nothing is silenced
+ *     for being unsurprising.
+ *
+ *   THERE IS NO SECOND CAP. `.slice(0, 2)` is gone. How many requirements a
+ *     row holds is decided in ONE place — `JUDGEMENT_CAP` in shortlist.ts,
+ *     which is the stage that knows about own-versus-inherited rules and about
+ *     the framework label. A second, smaller cut here was silently discarding
+ *     190 requirements that stage had already selected as the row's best,
+ *     which is the same defect as two truncations of one description.
+ *
+ * The test for the unseen case is stated over an arbitrary menu rather than
+ * over the requirements we happen to hold: for ANY row with a non-empty
+ * requirement list, the result is non-empty, and its first element is a
+ * requirement no rarer one was passed over for. See `rowSaysSomething.test.ts`.
+ *
+ * fundSelection.ts carries the 0.35 cutoff too and DELIBERATELY still gates on
+ * it: that module has no production caller and reordering a dead path to match
+ * a live one is a change nothing can measure. The two numbers agreeing was
+ * never the contract; this one now means something different from that one.
  */
-function distinctive(rows: InstrumentRow[]): (r: InstrumentRow) => string[] {
+export function distinctive(rows: InstrumentRow[]): (r: InstrumentRow) => string[] {
   const seen = new Map<string, number>();
   for (const r of rows) for (const g of r.judgementCriteria ?? []) {
     seen.set(g, (seen.get(g) ?? 0) + 1);
   }
+  const share = (g: string) => seen.get(g) ?? 0;
   const cutoff = Math.max(2, Math.ceil(rows.length * 0.35));
-  return (r) => (r.judgementCriteria ?? [])
-    .filter((g) => (seen.get(g) ?? 0) < cutoff).slice(0, 2).map((g) => oneLine(g, 180));
+  return (r) => {
+    const held = r.judgementCriteria ?? [];
+    if (!held.length) return [];
+    const rare = held.filter((g) => share(g) < cutoff);
+    // `reduce` rather than a sort, so ties keep the incoming order — which is
+    // shortlist.ts's own-criteria-before-inherited-ones ordering, and a
+    // scheme's own rule outranking its regime's is a correctness property
+    // there, not a presentation one.
+    const chosen = rare.length ? rare : [held.reduce((a, b) => (share(b) < share(a) ? b : a))];
+    return chosen.map((g) => oneLine(g, 180));
+  };
 }
 
 /**
@@ -961,6 +1015,29 @@ function renderRow(
     // Already budgeted by `fundsSentence` on the row (180 chars, whole
     // sentences). Not re-cut here: one budget, one place.
     r.description ? `     funds: ${r.description}` : "",
+    // ── AND WHO THE SCHEME SAYS MAY APPLY ────────────────────────────────
+    // A SEPARATE LABELLED LINE, deliberately, and not folded into `funds:`.
+    // The two answer different questions -- what the money is for, and who it
+    // is open to -- and a row that runs them together makes the reader work
+    // out which half of a sentence is which. A prompt that cannot say which is
+    // which has spent the characters and kept none of the meaning.
+    //
+    // What it is worth, measured on the real menu (`_wsfg_silence.ts`): before
+    // this line, one founder moved across fourteen markets read 252 rows of
+    // which 56 carried no sentence from the fund at all -- Czechia 17 of 18,
+    // Estonia 15 of 18, Norway 9 of 18, against zero in Germany and France.
+    // A row with nothing on it can only be chosen by its position, which is
+    // the empirical ranker's answer restated.
+    //
+    // Read-safe by the argument in corpus.ts and tested by the same probes as
+    // `description`: a statement of what the fund DEMANDS, from the fund's own
+    // page, with no beneficiary, award or project title in it. It is also the
+    // column `check_gate_pertinence.ts` judges value by value, so a text that
+    // names an institution instead of a condition fails the build.
+    //
+    // Already budgeted by `fundsSentence` at DEMANDS_SENTENCE_CHARS on the
+    // row. Not re-cut here: one budget, one place.
+    r.eligibilityText ? `     who may apply: ${r.eligibilityText}` : "",
     reqs.length ? `     demands: ${reqs.join(" / ")}` : "",
   ].filter(Boolean).join("\n");
 }

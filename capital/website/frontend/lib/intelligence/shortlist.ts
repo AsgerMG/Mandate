@@ -40,7 +40,9 @@ import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
-import { beyondTitle, fundsSentence, oneLine, ROW_TITLE_CHARS } from "./schemeText";
+import {
+  beyondTitle, DEMANDS_SENTENCE_CHARS, fundsSentence, oneLine, ROW_TITLE_CHARS,
+} from "./schemeText";
 import { recordFacts, recordPeerBranch, recordScoreSeats, recordStage } from "./tableTrace";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
@@ -1155,14 +1157,64 @@ export const ROW_DESCRIPTOR = (() => {
  *  never a fact about the data, it was the point at which the word `mostly`
  *  stops being true, and a sentence that prints its own share does not have
  *  that point. Under `category` the number is unchanged, so the shipped rows
- *  are byte-identical and wsEC2's comparison still has its control. */
+ *  are byte-identical and wsEC2's comparison still has its control.
+ *
+ *  ── AN UNNAMEABLE BUCKET MAY NOT SILENCE THE ROW (wsFG) ───────────────────
+ *
+ * `SECTOR_WORD`'s own note says "anything without a short form is simply
+ * omitted rather than guessed". OMITTED was implemented as the whole CLAUSE
+ * being omitted: the top bucket was taken first and the short form looked up
+ * second, so a bucket with no name did not get skipped, it silenced the row.
+ *
+ * Measured on the committed snapshot: 171 of 1,088 instruments have `other` as
+ * their largest bucket above `FOCUS_SHARE`, and 65 of those hold a NAMED
+ * bucket that also clears `FOCUS_SHARE` and was never rendered. That is more
+ * than three times what `FOCUS_SHARE` itself costs, and it was invisible
+ * because it looked like the threshold doing its job.
+ *
+ * ── The property ──────────────────────────────────────────────────────────
+ *
+ *   The clause names the largest bucket the vocabulary can NAME, if that
+ *   bucket clears ITS ARM'S FLOOR. A bucket with no name is skipped exactly like a
+ *   bucket below the threshold — it cannot be the reason the row says nothing,
+ *   because it was never something the row could have said.
+ *
+ * Stated over any unnamed key rather than over `other`, so a bucket the
+ * taxonomy adds tomorrow is handled by the same code. `sectorClause.test.ts`
+ * tests it with a key that exists nowhere in the corpus.
+ *
+ * ── Should `other` say something? No, and this is why ──────────────────────
+ * It is the residual of the taxonomy, not a sector. Its intake label is
+ * "Something else", and "mostly something else" asserts nothing a founder or a
+ * selector can act on — it does not discriminate, which is the one thing this
+ * clause's own header demands of a fact rendered on a candidate row. Naming it
+ * would put a word on 171 rows and separate none of them, which is exactly the
+ * bargain `structuringNotes` is kept off the row for. Silent as a NAME,
+ * therefore, and no longer silencing.
+ *
+ * ── What is unchanged, deliberately ───────────────────────────────────────
+ * The share is still taken against the WHOLE mix, unnamed buckets included,
+ * because the claim is about the fund's entire award history and shrinking the
+ * denominator to the buckets we can spell would inflate every figure. So
+ * `mostly X` on a row whose largest bucket is `other` overstates by exactly as
+ * much as it already overstates elsewhere — the median top share is 0.47 and
+ * the header above says so — and `ROW_DESCRIPTOR=share` states the number
+ * instead. Neither firing threshold is touched by this: skipping an unnameable
+ * bucket changes WHICH bucket is offered to the floor, never what the floor is,
+ * and the floors are wsEC2's per-arm pair above. */
 export function sectorClause(
   mix: Record<string, number> | null | undefined,
   mode: typeof ROW_DESCRIPTOR = ROW_DESCRIPTOR,
 ): string {
   if (!mix) return "";
   const total = Object.values(mix).reduce((a, b) => a + b, 0);
-  const top = Object.entries(mix).sort((a, b) => b[1] - a[1])[0];
+  // Unnameable buckets are skipped BEFORE the largest is taken, not after: see
+  // the wsFG section of the header. The per-arm floor is wsEC2's and is
+  // untouched by it — the two changes are orthogonal, one decides WHICH bucket
+  // is the candidate and the other decides whether it clears.
+  const top = Object.entries(mix)
+    .filter(([k]) => SECTOR_WORD[k])
+    .sort((a, b) => b[1] - a[1])[0];
   const floor = mode === "share" ? SHARE_FLOOR : FOCUS_SHARE;
   if (!total || !top || top[1] / total < floor) return "";
   const label = SECTOR_WORD[top[0]];
@@ -2938,6 +2990,31 @@ export function materialiseInstrumentTable(
         // description characters on a prompt and cannot separate anything,
         // because the title is already on the line above.
         description: beyondTitle(leaf.name, fundsSentence(leaf.description)) || undefined,
+        // ── AND WHO IT SAYS MAY APPLY ────────────────────────────────────
+        // The other half of the same page, and the one that separates rows no
+        // other field can. SA.111723 is ONE notified French regime delivered
+        // by fourteen bodies: fourteen rows, one title, one near-identical
+        // description, and fourteen different answers to "who may apply" --
+        // "situées en Hauts-de-France", "localisées en Nouvelle-Aquitaine",
+        // "devant conduire leur activité en Île-de-France".
+        //
+        // ITS OWN LINE, not merged into `description`. They answer different
+        // questions -- what the money is for, and who it is open to -- and a
+        // row that runs them together makes the reader guess which half of the
+        // sentence is which. Measured: the two rendered lines are identical on
+        // ZERO of the 594 instruments that carry both.
+        //
+        // `beyondTitle` is deliberately NOT applied. That test asks whether a
+        // description merely says the title back, which is a real failure mode
+        // for a scheme NAME repeated as its own summary. An eligibility
+        // sentence that happens to reuse the title's words -- "aides à la
+        // recherche ... pour les entreprises" -- is still telling the reader
+        // who may apply, which the title never does.
+        //
+        // Budgeted by `fundsSentence` at DEMANDS_SENTENCE_CHARS, never sliced
+        // here: one cut, one place.
+        eligibilityText:
+          fundsSentence(leaf.eligibilityText, DEMANDS_SENTENCE_CHARS) || undefined,
         // Where this sits in its agency's structure. A programme means more
         // read against its parent -- "Tremplin" alone is opaque, "ADEME >
         // Tremplin" says who runs it and that ADEME has others. Only shown
