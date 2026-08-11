@@ -289,13 +289,54 @@
           <td>A lending fintech kept the <strong>French national cinema centre</strong>.</td></tr>
       </tbody>
     </table></div>
-    <p style="margin-top:14px;font-size:14.5px"><strong>Three of its four levers never
-      fired.</strong> Ten of twelve spent zero thinking tokens; two were <em>billed</em> for
-      thinking that produced no readable output; none asked to look anything up. And it is
-      choosing six from <strong>eighteen</strong> rows, while its prompt tells it the right fund
-      is &ldquo;usually here&rdquo; &mdash; a figure measured on a hundred and five. So one lever
-      has been measured, not four.</p>
-    </section>
+    <p style="margin-top:14px;font-size:14.5px">That run was made with <strong>three of its
+      four levers dark</strong>. All three have since been opened, and what they found is
+      below &mdash; none of it is shipped, and none of the dots above move because of it.</p>
+  </section>
+
+  <section>
+    <h2>What the four levers turned out to be</h2>
+    <p class="sub" style="margin:6px 0 14px">One day, four investigations, &euro;10.48. Three
+      of the four candidate explanations for the ranker's errors are now <em>dead</em>, which
+      is the useful half.</p>
+    <div class="scroll"><table>
+      <thead><tr><th>Lever</th><th>Verdict</th><th>What was measured</th></tr></thead>
+      <tbody>
+        <tr><td><strong>A longer list</strong></td>
+          <td><span class="chip c-zero">dead</span></td>
+          <td>33 rows instead of 18 changes membership by <strong>nothing</strong> and scores
+            slightly worse. On <strong>9 founders the right fund was inside the longer list and
+            it picked it 0 of 9.</strong></td></tr>
+        <tr><td><strong>Better questions</strong></td>
+          <td><span class="chip c-zero">dead</span></td>
+          <td>A freight-software company was asked plainly and answered
+            <em>&ldquo;software&rdquo;</em> &mdash; an aviation programme held rank 1 anyway.
+            A robotics company answered <em>&ldquo;the robots&rdquo;</em>; nothing moved.</td></tr>
+        <tr><td><strong>More thinking</strong></td>
+          <td><span class="chip c-warn">mixed</span></td>
+          <td>It <em>does</em> remove the category errors &mdash; health grants, farming grants,
+            the cinema fund all gone. But on the only end-to-end metric the
+            <strong>no-model control still scored highest at every effort level</strong>
+            (16.7% vs 13.9 / 11.1 / 13.9 / 8.3, N=36, nothing separating).</td></tr>
+        <tr><td><strong>The rows themselves</strong></td>
+          <td><span class="chip c-bad">this one</span></td>
+          <td><strong>51 of 133 funds on those menus carried no readable sentence saying what
+            they pay for.</strong> Zero of the nine it declined had one; 39 of the 54 it chose
+            instead did.</td></tr>
+      </tbody>
+    </table></div>
+    <p style="margin-top:14px;font-size:14.5px">The clearest single row: a scheme reserved for
+      seven southern Italian regions, offered to a university in one of them, rendered to the
+      model as <strong>36 characters of a 725-character description</strong> &mdash;
+      <span style="font-family:var(--mono);font-size:12.5px">funds: Manifestazione di interesse
+      (D.D. n.</span> &mdash; because our sentence-splitter read <em>D.D. n.</em> as a full stop.
+      The clause naming the founder's own region was cut off before the model saw it. That is
+      now fixed and guarded: <strong>51 unreadable rows became 1</strong>, and the build fails
+      if a scope line ever ends mid-phrase again.</p>
+    <p style="margin-top:12px;font-size:14.5px"><strong>Nothing here has been re-measured yet.</strong>
+      The account ran out of credit before the run that would test it, and the honest position is
+      that we have fixed what the model reads without yet knowing what that buys.</p>
+  </section>
 
 </div>
 
