@@ -1,6 +1,6 @@
 # End-to-end plan: every answer tailored against the proprietary DB
 
-Written 2026-08-02. Supersedes the open questions in `retrieval_plan.md`, which
+Written 2026-08-02. Supersedes the open questions in `retrieval_plan.md` (this directory), which
 established the findings this plan acts on. Numbers measured against the live
 code and the live indexes.
 
@@ -58,7 +58,7 @@ is a smaller, sharper claim than the one this document opened with.
 
 The usable corpus is **3,752 articles**, not 19,281; the rest were fetched and
 judged irrelevant. Build plan with the full measurement:
-`policy_grounding_implementation.md`.
+`policy_grounding_implementation.md` (this directory).
 
 Nothing in `website/frontend/` reads any of it. It was chunked for retrieval and
 never wired to anything. That is the same "built, correct, unreachable" shape as

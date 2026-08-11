@@ -79,8 +79,9 @@ has `## At a glance` (drives the comparison table). Add:
 
 ## What was actioned now
 
-- [_agent_instructions.md](../../website/frontend/fund-processes/_agent_instructions.md)
-  augmented so the on-site memo agent already reasons about archetype, capital-type
+- The on-site memo agent's instruction file, then at
+  `website/frontend/fund-processes/_agent_instructions` (since deleted from the tree),
+  was augmented so the on-site memo agent already reasons about archetype, capital-type
   fit / dilution, and per-instrument framing register **from the free-text
   description**, ahead of the form fields existing.
 

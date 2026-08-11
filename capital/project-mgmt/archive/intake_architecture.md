@@ -5,9 +5,9 @@ docstrings. Every claim below is either a file:function reference or a number
 from a harness in the repo.
 
 Companion documents:
-- `screen_one_discrimination_plan.md` — why exact-scheme recall sits at 23%,
+- `archive/screen_one_discrimination_plan.md` — why exact-scheme recall sits at 23%,
   and the four levers measured against it
-- `scheme_text_corpus_plan.md` — the corpus enrichment that fed the gates
+- `archive/scheme_text_corpus_plan.md` — the corpus enrichment that fed the gates
   these screens read
 
 ---

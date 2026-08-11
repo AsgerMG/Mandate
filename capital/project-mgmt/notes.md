@@ -210,7 +210,7 @@ Plan estimated ~3,700-6,380 new events. Delivered **3,462** (about 54-94% of pla
 - `ETL/extract/extract_bpifrance.py` — program-level (10 fund-vehicle placeholders; portfolio gated)
 - `ETL/extract/extract_enterprise_ireland.py` — program-level (6 funding-programme placeholders)
 - `docs/sprint13_ndb_status.md` — per-institution status table
-- `docs/cdti_discovery_notes.md` — historical Imperva-blocker record + BDNS path executed
+- `project-mgmt/archive/cdti_discovery_notes.md` — historical Imperva-blocker record + BDNS path executed
 - `data/raw/{invest_nl,tesi,almi_invest,cdp_vc,sprind,htgf,coparion}/` — cached source HTML/JSON
 - `data/raw/cdti/pages/page_{0..39}.json` — BDNS API page cache (~2MB)
 - `data/raw/htgf/page_{1..11}.json` — WP REST API page cache (~10MB)

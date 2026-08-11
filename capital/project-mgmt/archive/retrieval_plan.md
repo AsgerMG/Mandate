@@ -1,7 +1,7 @@
 # Retrieval: can the advisor actually reach what we built?
 
 Written 2026-08-02, opening the retrieval work as the data work closes (see
-`data_corpus_judgement.md`). Measured against the live code and the live
+`data_corpus_judgement.md` (this directory)). Measured against the live code and the live
 indexes, not estimated.
 
 ## The frame

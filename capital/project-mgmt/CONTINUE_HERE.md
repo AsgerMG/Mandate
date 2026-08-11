@@ -476,7 +476,7 @@ first.** M reached no treatment number — the baseline table in its report is t
 
 ## 5b. SPAIN IS CLOSED, AND IT WAS NEVER A TEXT PROBLEM (`workstream-l-es2`)
 
-Merged to main by workstream Q; see `project-mgmt/workstream_L_ES_findings.md`
+Merged to main by workstream Q; see `project-mgmt/archive/workstream_L_ES_findings.md`
 and `project-mgmt/findings/workstream_Q_merge.md`.
 
 - The previous Spanish result **never left SQLite**, and the scoped publisher
