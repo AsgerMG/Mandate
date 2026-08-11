@@ -24,3 +24,90 @@ recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,
 [agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvinJSQQGkw86GdmaEmo"}
 [agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvinM59pEG94YCNspmC3"}
 [agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvinSzbhxkzixkWUXdHZ"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvinWAM3u9NmbVsCZw9q"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvinZ3EVAJhwv89GTD7s"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvineHkXpw9N27kcnodr"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvinjSZTXt8mDhsm76by"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvinoBYEdoMaPGQeoM4X"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011Cdvint5UFGtD9JKzZieiV"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvinxKhs2Mbvf1ukHecP"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011Cdvio1P1USdeYpcWH3b7f"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011Cdvio764GTBKrnWoEMhds"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvioA2udqG7Se4zkJGQ7"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvioFMtJCFuBcTaCeeGN"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvioMDrtZVsxcZouhqbr"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvioRem6r4K1QpopwfzA"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvioX1y6rspE5Tj6nUNj"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011Cdvioc84CTdChC8UouVX8"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvioexTVQKrkWD1KQNY1"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011Cdvioi7TnzrR1WrxM8WBS"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdviomNBA1KnSa7hNceB9"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011Cdviot9TshAz5cM9ycT9c"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdviowBGzkxvSCLb5pkXJ"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011Cdvip28SBLkWFxHRhqoqv"}
+corpus=postgres instruments=1088 at 2026-08-11T09:25:38.710Z
+ranker: all 72 request(s) on EMBEDDING
+agent-select: arm=adviser depth=40 count=6 effort=medium maxtok=6144 unsure=tool asked=0/36 lookups=0 (0 brief(s) retrieved) model=claude-sonnet-5 — 0/36 chose, 36 FELL BACK to the shipped order (0 empty reply, 0 unparseable), 0 short reply, 0 unusable id(s), thought on 0/36 call(s) (0 thinking token(s) billed, 0 readable char(s)), 0 CUT OFF at max_tokens, EUR 0.0000 total, EUR 0.0000 per brief
+set=__recallSetDescribed.json split=tune replayed 36
+  founder intake — 23 askable fields, identity=real own-history=withheld capital=withheld answers=off consortium=yes
+    DERIVED   entityCountries      set   36/36 (100%)  own   36/36 (100%)  companies.country
+    DERIVED   organisationType     set   15/36 ( 42%)  own   15/36 ( 42%)  prefillOrganisationType(company name) — production's own classifier
+    DERIVED   region               set    0/36 (  0%)  own    0/36 (  0%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set   36/36 (100%)  own   36/36 (100%)  companies.sector_top
+    DERIVED   ticketBand           set   36/36 (100%)  own    0/36 (  0%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set   36/36 (100%)  own    0/36 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set   36/36 (100%)  own    0/36 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set   36/36 (100%)  own    0/36 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
+published cap under test: BRIEF_LIMITS.institutionsMax=7, writer cap 8
+  tier 1 (usedInField) live for the won leaf's own channel on 7/36 (19.4% +/-12.9) of pairs — peers only, never this founder
+
+── THE INSTANT SCREEN ──
+  SCREEN@5  7/36 (19.4% +/-12.9)
+  SCREEN@6  8/36 (22.2% +/-13.6)
+  gain of the sixth row on the screen: +2.8 pts (1 pairs)
+
+── THE MEMO'S CANDIDATE ORDER (what the cut actually cuts) ──
+  MEMO@1   2/36 (5.6% +/-7.5)
+  MEMO@2   3/36 (8.3% +/-9.0)
+  MEMO@3   4/36 (11.1% +/-10.3)
+  MEMO@4   4/36 (11.1% +/-10.3)
+  MEMO@5   6/36 (16.7% +/-12.2)
+  MEMO@6   7/36 (19.4% +/-12.9)
+  MEMO@7   9/36 (25.0% +/-14.1)
+  gain of the sixth row in the memo: +2.8 pts (1 pairs)
+  ██ MEMO@6 19.4% against SCREEN@6 22.2% — the memo keeps 88% of what the screen got right
+
+  memo order depth: min 18 p25 18 median 18 max 18
+  founders whose memo order even HAS a sixth row: 36/36 (100.0%)
+
+── WHERE THE GAIN LANDS (memo rank exactly 6) ──
+  1 pairs across 1 distinct regimes and 1 countries
+    ademe_aid                                          1
+  largest single regime holds 1 of 1 (100%)
+
+── WHERE THE MEMO LOSES A LEAF THE POOL HELD (wsCT owns the fix) ──
+  won leaf inside the memo pool (top 18):        16/36 (44.4% +/-16.2)
+  ...and inside its first six BEFORE the re-sort: 8/36 (22.2% +/-13.6)
+  ...and inside the memo order after re-sort/drop: 7/36 (19.4% +/-12.9)
+  in the pool but absent from the memo order: 0
+  the fit re-sort moves the won leaf OUT of the top six 1 times, INTO it 0 times
+
+  screen and memo agree on the won leaf's rank in 7/8 pairs where both contain it
+
+wrote ../../project-mgmt/findings/dark_levers_wsDS/curve/pairs_medium_tool.json
