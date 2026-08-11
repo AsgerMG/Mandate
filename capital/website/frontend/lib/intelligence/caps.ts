@@ -80,6 +80,69 @@ export function depthLever(
   return n;
 }
 
+/**
+ * ── THE ARM ITSELF, MOVED HERE FOR THE SAME REASON THE DEPTHS WERE (wsEN) ──
+ *
+ * `AGENT_SELECT` is a PURE ENVIRONMENT READ. It lived in `agentSelect.ts`, and
+ * every module that needed to know whether the ranker is on therefore imported
+ * the Anthropic client, the corpus layer and the retrieval path behind one
+ * string — the identical defect that moved `SELECT_DEPTH` and `VERDICT_POOL`
+ * into this file, and that `check_env_loader` failed the build for.
+ *
+ * The reader that forced it is `rankerAsks.ts`, which must refuse to run while
+ * the stage its questions are FOR is off. Asking that question through
+ * `agentSelect.ts` would make the question stage depend on the ranking stage's
+ * whole implementation in order to read one word out of the environment.
+ *
+ * `agentSelect.ts` re-exports it, so every existing caller is unchanged and
+ * there is still exactly one definition.
+ *
+ * The arms. `off` is the default and is bit-identical to the shipped path.
+ * `reverse` is the ONE arm that is not a candidate for shipping and never will
+ * be — see `reverseNonsense` in `agentSelect.ts` for what it is for.
+ */
+export type AgentSelectArm = "off" | "rows" | "assist" | "adviser" | "dry" | "reverse";
+const ARMS: AgentSelectArm[] = ["off", "rows", "assist", "adviser", "dry", "reverse"];
+
+/**
+ * Read ONCE, at module scope, and throw on anything unrecognised.
+ *
+ * A flag consulted per call is a flag that can change mid-run, and a flag that
+ * silently treats a typo as "off" is how an arm reports the control's number
+ * under the treatment's name. Both failure modes have cost this repo a
+ * retracted figure, so neither is available here.
+ */
+export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
+  const raw = process.env.AGENT_SELECT ?? "off";
+  if (!ARMS.includes(raw as AgentSelectArm)) {
+    throw new Error(
+      `AGENT_SELECT must be one of ${ARMS.join("|")}, got "${raw}". ` +
+      `It is read once at module scope precisely so a typo cannot read as "off".`);
+  }
+  if (raw === "reverse") {
+    // Two guards, because "default off" is not enough for an arm whose whole
+    // purpose is to publish the WRONG funds.
+    //
+    // 1. It cannot start in a production build at all. A Next.js build and a
+    //    `next start` both run with NODE_ENV=production, so a machine serving
+    //    founders refuses to boot with this set rather than serving nonsense.
+    if (process.env.NODE_ENV === "production") {
+      throw new Error(
+        "AGENT_SELECT=reverse is a DIAGNOSTIC that deliberately publishes the " +
+        "worst-ranked funds first. It is not a product arm and it must never " +
+        "run in a production build.");
+    }
+    // 2. It says so, once, on stderr, in every process that loads it. A run
+    //    whose output looks like a ranking is a run whose log said this.
+    console.warn(
+      "[agentSelect] ARM=reverse — THE POOL IS BEING REVERSED. This is not a " +
+      "ranking and not a product arm: it exists only to prove that the order " +
+      "of the pool reaches the published memo. Any table produced under it is " +
+      "deliberately wrong.");
+  }
+  return raw as AgentSelectArm;
+})();
+
 /** The pool `synthesize()` screens before cutting to the published cap.
  *
  *  Deliberately wider than `DISPLAY_CAP`: funds a founder cannot access are
@@ -133,6 +196,58 @@ export const VERDICT_POOL = depthLever("BRIEF_VERDICT_POOL", 18);
  *
  *  Accepts `all` for exactly that reason. See `depthLever`. */
 export const SELECT_DEPTH = depthLever("AGENT_SELECT_DEPTH", 40, { all: true });
+
+/**
+ * How many rows the selector NAMES.
+ *
+ * ── THE SIX WAS THE WRONG PAGE'S CAP (wsEN) ───────────────────────────────
+ * It was 6, and the reason recorded beside it was: "DISPLAY_CAP is 6; asking
+ * for exactly the number the page shows means a short reply is a visible
+ * defect." `DISPLAY_CAP` is the INSTANT SCREEN's cut — the second, shorter
+ * funnel this file's header calls the open defect. It is not the page this
+ * stage feeds. The memo publishes `BRIEF_LIMITS.institutionsMax`, which is 7,
+ * so the sentence's own argument produces 7 and the constant said 6.
+ *
+ * What the mismatch costs is the seventh published seat: the model names six,
+ * `agentSelectRows` fills every remaining place from the empirical ranker's own
+ * order, and the last row of the founder's table is therefore chosen by the
+ * order this arm exists to test rather than by the arm. A measurement of a
+ * seven-row table where the model was allowed to reach six of the seats
+ * understates the arm and cannot say by how much.
+ *
+ * ── THE TIE, AND WHERE IT IS ASSERTED ─────────────────────────────────────
+ * `institutionsMax` lives in `briefChecks.ts`, beside the rule that enforces
+ * it, and this module imports NOTHING by design. So the number is not copied
+ * from there — it is TIED to it in `scripts/check_contracts.ts`, which reads
+ * both constants and reds the build if this one ever falls below the published
+ * cap. That is the same arrangement, for the same reason, as the funnel
+ * ordering that check already asserts.
+ *
+ * ── AT THE EARLY SEAM THIS IS THE PROMOTION BUDGET (wsEI) ────────────────
+ * and it, not `SELECT_DEPTH`, is what bounds how much of the pool the seam can
+ * change. The permutation `agentSelect.ts` builds is `[...chosen, ...everything
+ * else in the shipped order]`, and `runIntelligence` then cuts to
+ * `VERDICT_POOL`. So the memo pool under `AGENT_SELECT_SEAM=early` is
+ * SELECT_COUNT rows the model named plus the first `VERDICT_POOL -
+ * SELECT_COUNT` of the score's own order. A row below the score's cut enters
+ * ONLY by being named; a row at score rank 13..18 leaves only by being
+ * displaced.
+ *
+ * That is why wsDR's early arm read "0 admitted, 0 dropped" on the WON fund
+ * while changing the pool substantially: it promoted 64 rows from below rank 18
+ * across 30 of its 45 founders, 1.4 per founder, and none of the 64 was an
+ * answer. Depth was moved and the budget was not, so the widening bought six
+ * seats, not a wider pool.
+ *
+ * Validated, not `Number(...)`: see `depthLever`. `AGENT_SELECT_COUNT=six` used
+ * to yield NaN, and `menuRows.length <= NaN` is false while `.slice(0, NaN)` is
+ * empty, so every reply parsed to no usable pick and the run reported the
+ * shipped order under the treatment's name.
+ *
+ * NOT A PRODUCTION CHANGE. It is read only when the arm is on, and the arm is
+ * off by default.
+ */
+export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 7);
 
 /** How many candidates the WRITER is shown, ahead of the cut to
  *  `BRIEF_LIMITS.institutionsMax`.

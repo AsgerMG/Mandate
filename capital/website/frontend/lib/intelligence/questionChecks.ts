@@ -247,4 +247,57 @@ export function checkGroundedQuestions(
   return v;
 }
 
-export const QUESTION_RULE_IDS = ["Q-1", "Q-2", "Q-3", "Q-4", "Q-5", "Q-10"] as const;
+/**
+ * ── ONE SCREEN, ONE QUESTION PER INTAKE FIELD (Q-16) ───────────────────────
+ *
+ * THE PROPERTY: no screen presents two questions keyed on one intake field.
+ *
+ * A `GroundedQuestion`'s `field` IS the storage key — the panel writes the
+ * answer to `elig[q.field]`, so two questions on one field are two questions
+ * whose answers overwrite each other. The founder answers twice, one answer is
+ * discarded silently, and which one survives is decided by the order of a
+ * loop. It costs a slot on a screen with six of them and it can cost the
+ * ANSWER: the two questions may be phrased from different funds' wordings and
+ * elicit different values.
+ *
+ * ── Why this is not Q-4 ───────────────────────────────────────────────────
+ * Q-4 is one question per GATE. Two different funds can encode two different
+ * gates against one field, so a screen can satisfy Q-4 perfectly and still ask
+ * a founder for their organisation type twice. And Q-4 reads `gateKey || id`,
+ * which planner-written generic questions do not carry at all.
+ *
+ * ── What made it necessary ────────────────────────────────────────────────
+ * Two stages now write into this half of the screen: the round-2 planner and,
+ * behind `RANKER_ASKS`, the stage that picks. Neither can see the other's
+ * output — they run in one `Promise.all` precisely so the founder does not wait
+ * through two serial calls — so the merge is the only place the property can be
+ * decided, and a merge is exactly the kind of code that is written once and
+ * then trusted.
+ *
+ * Stated over the field rather than over the stage, so it holds for a third
+ * generator nobody has written yet, and for a field added to the intake
+ * tomorrow.
+ */
+export function checkScreenFields(
+  questions: { field?: string; question?: string }[],
+): QuestionViolation[] {
+  const v: QuestionViolation[] = [];
+  const seen = new Map<string, string[]>();
+  for (const q of questions) {
+    const f = q.field?.trim();
+    if (!f) continue;
+    seen.set(f, [...(seen.get(f) ?? []), (q.question ?? "").slice(0, 45)]);
+  }
+  for (const [field, asked] of seen) {
+    if (asked.length > 1) {
+      v.push({
+        ruleId: "Q-16",
+        detail: `${asked.length} questions are keyed on the intake field "${field}", ` +
+          `so their answers overwrite each other: ${asked.map((a) => `"${a}…"`).join(" vs ")}`,
+      });
+    }
+  }
+  return v;
+}
+
+export const QUESTION_RULE_IDS = ["Q-1", "Q-2", "Q-3", "Q-4", "Q-5", "Q-10", "Q-16"] as const;

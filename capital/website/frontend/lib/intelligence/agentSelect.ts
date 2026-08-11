@@ -97,10 +97,24 @@
 // called from ONE place: `runIntelligence`, on the pool immediately before
 // `synthesize`. Three things follow, and each was a requirement:
 //
-//   THE ORDER REACHES THE MEMO. `orderMemoCandidates` sorts on verdict rank
-//     and breaks every tie on the pool's incoming index, which is the whole of
-//     the ordering inside a band. Reordering the pool therefore reorders the
-//     candidates the writer is shown and the rows that get published.
+//   THE ORDER REACHES THE WRITER'S INPUT. `orderMemoCandidates` sorts on
+//     verdict rank and breaks every tie on the pool's incoming index, which is
+//     the whole of the ordering inside a band. Reordering the pool therefore
+//     reorders the candidates the writer is SHOWN, and — because the list is
+//     cut to `WRITER_CANDIDATE_CAP` — decides which candidates it is shown at
+//     all. That is what this stage buys.
+//
+//     IT DOES NOT DECIDE THE PUBLISHED ORDER, and the sentence that used to
+//     stand here said it did (wsEN). `pipeline.ts` reads the ORDER OF THE
+//     WRITER'S NOTES as the ranking -- `rankByKey`, built from
+//     `institutionNotes` positionally -- so the rows a founder reads are in the
+//     order the writer chose to mention them, not the order this stage handed
+//     over. A model that is instructed not to rank (FUND-12) is nonetheless
+//     read as one. Two consequences, both real: a gain measured on the
+//     published table is this stage's judgement passed through the writer's,
+//     and a row this stage named can be pushed down the page by a writer that
+//     wrote about it last. Publishing the candidate order instead is P0's own
+//     item and belongs to `pipeline.ts`, not here.
 //
 //   THE POOL DOES NOT CHANGE. The call sits AFTER `accessiblePool(...)
 //     .slice(0, VERDICT_POOL)`, so it permutes a fixed set of rows and cannot
@@ -119,7 +133,10 @@
 //     are now derived from what is populated rather than from a fixed list.
 import Anthropic from "@anthropic-ai/sdk";
 
-import { depthLever, SELECT_DEPTH } from "./caps";
+import {
+  AGENT_SELECT_ARM, depthLever, SELECT_COUNT, SELECT_DEPTH,
+  type AgentSelectArm,
+} from "./caps";
 import { recordUsage } from "./cost";
 import { retrieveDemands } from "./demandRetrieval";
 import { asBaseRate, poolRecallAt, poolRecallN } from "./poolRecall";
@@ -127,60 +144,20 @@ import { regionNameFor } from "./regions.generated";
 import { oneLine, ROW_TITLE_CHARS } from "./schemeText";
 import {
   ANSWER_LABEL, ANSWER_USE, FIELD_VALUE_DOMAIN,
-  type EligibilityAnswers, type InstrumentRow,
+  type EligibilityAnswers, type InstrumentRow, type ProjectAnswer,
 } from "./types";
+import { checkSelection } from "./selectionChecks";
 import { peerPrior } from "./shortlist";
 import { fence } from "./untrusted";
 import { assessAll, type InstrumentAssessment } from "./verdict";
 import { assembleInstructions } from "./contracts";
 
-/**
- * The arms. `off` is the default and is bit-identical to the shipped path.
- *
- * `reverse` is the ONE arm that is not a candidate for shipping and never will
- * be. See `reverseNonsense` below for what it is for.
- */
-export type AgentSelectArm = "off" | "rows" | "assist" | "adviser" | "dry" | "reverse";
-const ARMS: AgentSelectArm[] = ["off", "rows", "assist", "adviser", "dry", "reverse"];
-
-/**
- * Read ONCE, at module scope, and throw on anything unrecognised.
- *
- * A flag consulted per call is a flag that can change mid-run, and a flag that
- * silently treats a typo as "off" is how an arm reports the control's number
- * under the treatment's name. Both failure modes have cost this repo a
- * retracted figure, so neither is available here.
- */
-export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
-  const raw = process.env.AGENT_SELECT ?? "off";
-  if (!ARMS.includes(raw as AgentSelectArm)) {
-    throw new Error(
-      `AGENT_SELECT must be one of ${ARMS.join("|")}, got "${raw}". ` +
-      `It is read once at module scope precisely so a typo cannot read as "off".`);
-  }
-  if (raw === "reverse") {
-    // Two guards, because "default off" is not enough for an arm whose whole
-    // purpose is to publish the WRONG funds.
-    //
-    // 1. It cannot start in a production build at all. A Next.js build and a
-    //    `next start` both run with NODE_ENV=production, so a machine serving
-    //    founders refuses to boot with this set rather than serving nonsense.
-    if (process.env.NODE_ENV === "production") {
-      throw new Error(
-        "AGENT_SELECT=reverse is a DIAGNOSTIC that deliberately publishes the " +
-        "worst-ranked funds first. It is not a product arm and it must never " +
-        "run in a production build.");
-    }
-    // 2. It says so, once, on stderr, in every process that loads it. A run
-    //    whose output looks like a ranking is a run whose log said this.
-    console.warn(
-      "[agentSelect] ARM=reverse — THE POOL IS BEING REVERSED. This is not a " +
-      "ranking and not a product arm: it exists only to prove that the order " +
-      "of the pool reaches the published memo. Any table produced under it is " +
-      "deliberately wrong.");
-  }
-  return raw as AgentSelectArm;
-})();
+/** The arm, and the type of an arm. Defined in `./caps`, the leaf module that
+ *  holds every other lever this stage reads, and re-exported here so every
+ *  caller that has always imported them from the ranker still can. See that
+ *  file for why a pure environment read must not sit behind the Anthropic
+ *  client. */
+export { AGENT_SELECT_ARM, type AgentSelectArm };
 
 export const agentSelectEnabled = (): boolean => AGENT_SELECT_ARM !== "off";
 
@@ -277,31 +254,12 @@ export function reverseNonsense(rows: InstrumentRow[]): InstrumentRow[] {
  *  for the reasoning and for why a hermetic check must not reach through this
  *  module to read a number. */
 export { SELECT_DEPTH } from "./caps";
-/** How many rows it names. DISPLAY_CAP is 6; asking for exactly the number the
- *  page shows means a short reply is a visible defect rather than a silent
- *  top-up from the order we are trying to test.
- *
- *  ── AT THE EARLY SEAM THIS IS THE PROMOTION BUDGET (wsEI) ────────────────
- *  and it, not `SELECT_DEPTH`, is what bounds how much of the pool the seam can
- *  change. The permutation this file builds is `[...chosen, ...everything else
- *  in the shipped order]`, and `runIntelligence` then cuts to `VERDICT_POOL`.
- *  So the memo pool under `AGENT_SELECT_SEAM=early` is SELECT_COUNT rows the
- *  model named plus the first `VERDICT_POOL - SELECT_COUNT` of the score's own
- *  order. A row below the score's cut enters ONLY by being named; a row at
- *  score rank 13..18 leaves only by being displaced.
- *
- *  That is why wsDR's early arm read "0 admitted, 0 dropped" on the WON fund
- *  while changing the pool substantially: it promoted 64 rows from below rank
- *  18 across 30 of its 45 founders, 1.4 per founder, and none of the 64 was an
- *  answer. Depth was moved and the budget was not, so the widening bought six
- *  seats, not a wider pool — and six seats spent by a model reading rows that
- *  did not say what they funded is not a test of depth.
- *
- *  Validated, not `Number(...)`: see `depthLever`. `AGENT_SELECT_COUNT=six`
- *  used to yield NaN, and `menuRows.length <= NaN` is false while `.slice(0,
- *  NaN)` is empty, so every reply parsed to no usable pick and the run reported
- *  the shipped order under the treatment's name. */
-export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 6);
+/** How many rows the selector NAMES. Defined in `./caps` beside the other
+ *  depths and TIED to `BRIEF_LIMITS.institutionsMax` by `check_contracts.ts`.
+ *  The sentence that used to sit here said "DISPLAY_CAP is 6" — that is the
+ *  INSTANT SCREEN's cut, a different funnel; the memo publishes seven. See
+ *  `caps.ts`. */
+export { SELECT_COUNT };
 /**
  * `assist` only: how many of the shipped top rows are FROZEN.
  *
@@ -584,7 +542,69 @@ const tally = {
   dryChars: [] as number[], dryEvidenceChars: [] as number[], dryRetrieved: 0,
   /** `reverse` only: pools permuted with no model in the loop. */
   reversed: 0,
+  /** SELECT-1/SELECT-2 as `checkSelection` decides them, on the real reply.
+   *  OBSERVATIONAL: counted, never repaired. See the call site. */
+  selectionViolations: 0, selectionViolationBriefs: 0,
+  /** ── EVERY WAY OUT OF `agentSelectRows`, AND EXACTLY ONE PER CALL ────────
+   *
+   *  Two of these returned silently: a pool no longer than `SELECT_COUNT`, and
+   *  a menu no longer than `want`. Both are ordinary on a founder with a short
+   *  accessible pool, both publish the shipped order, and neither left a trace
+   *  — so a run that hit them on a third of its founders reported "no
+   *  difference" and could not say whether the model had judged and agreed or
+   *  had never been asked. That is not a diagnostic gap, it is a result that
+   *  cannot be interpreted, and it is a precondition for any paid run.
+   *
+   *  THE PROPERTY: every exit from `agentSelectRows` increments exactly one of
+   *  these. It is stated over the total rather than over a list of returns, so
+   *  an exit added tomorrow is covered: `agentSelect.exits.test.ts` calls the
+   *  function once per reachable shape and asserts the total moved by one. */
+  exits: {
+    armOff: 0, reversed: 0, poolNotLongerThanCount: 0, menuNotLongerThanWant: 0,
+    dryPriced: 0, noUsablePick: 0, threw: 0, chose: 0,
+  } as Record<ExitReason, number>,
 };
+
+/** The ways `agentSelectRows` can end. Named rather than counted, because
+ *  "fell back" is four different facts and only one of them is about the
+ *  model. */
+export type ExitReason =
+  | "armOff" | "reversed" | "poolNotLongerThanCount" | "menuNotLongerThanWant"
+  | "dryPriced" | "noUsablePick" | "threw" | "chose";
+
+/** The ONLY way out of `agentSelectRows`. Every `return` in that function goes
+ *  through here, so the counter cannot be forgotten at a new exit — the way it
+ *  was forgotten at two. */
+function leave(reason: ExitReason, rows: InstrumentRow[]): InstrumentRow[] {
+  tally.exits[reason]++;
+  return rows;
+}
+
+/** What each exit means, for the tally line. A count with no sentence beside
+ *  it is a number somebody will have to come back and interpret. */
+const EXIT_WHAT: Record<ExitReason, string> = {
+  armOff: "arm off, untouched",
+  reversed: "REVERSED (diagnostic)",
+  poolNotLongerThanCount: `pool <= ${SELECT_COUNT} rows, nothing to choose between`,
+  menuNotLongerThanWant: "menu no longer than the seats on offer",
+  dryPriced: "priced, not called",
+  noUsablePick: "no usable pick, shipped order kept",
+  threw: "the call threw, shipped order kept",
+  chose: "the model chose",
+};
+export function agentSelectExitLine(): string {
+  const total = Object.values(tally.exits).reduce((a, b) => a + b, 0);
+  if (!total) return "agent-select exits: the seam was not reached";
+  return `agent-select exits (${total} call(s) to the seam): ` +
+    (Object.entries(tally.exits) as [ExitReason, number][])
+      .filter(([, n]) => n > 0)
+      .map(([k, n]) => `${n} ${EXIT_WHAT[k]}`).join(", ");
+}
+/** Read by the exit test, and by any harness that wants the raw counts rather
+ *  than the sentence. */
+export function agentSelectExits(): Record<ExitReason, number> {
+  return { ...tally.exits };
+}
 export function resetAgentSelectTally(): void {
   tally.calls = 0; tally.ok = 0; tally.failed = 0;
   tally.shortReply = 0; tally.invalidIds = 0;
@@ -596,6 +616,11 @@ export function resetAgentSelectTally(): void {
   tally.reversed = 0;
   tally.truncated = 0; tally.thinkingTokens = 0;
   tally.thinkingChars = 0; tally.thoughtOn = 0; tally.toolAsked = 0;
+  tally.selectionViolations = 0; tally.selectionViolationBriefs = 0;
+  // Cleared by iterating the object rather than by naming the keys, so an exit
+  // added tomorrow is reset without an edit here — a reason that survived a
+  // reset would report the previous run's founders as this one's.
+  for (const k of Object.keys(tally.exits) as ExitReason[]) tally.exits[k] = 0;
 }
 export function agentSelectTallyLine(): string {
   // The nonsense arm reports itself as nonsense. A line that read like the
@@ -612,9 +637,14 @@ export function agentSelectTallyLine(): string {
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
     (AGENT_SELECT_ARM === "adviser"
       ? ` effort=${THINK_EFFORT} maxtok=${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}`
-        + ` unsure=${UNSURE_MODE}`
-        + (UNSURE_MODE === "tool" ? ` asked=${tally.toolAsked}/${tally.calls}` : "")
+        + (UNSURE_MODE === "declare" ? ` unsure=declare` : "")
         + ` lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)` : "") +
+    // Reported on EVERY arm, because `tool` now fires on every arm. Printing it
+    // only for the adviser is how a channel comes to run unreported.
+    (UNSURE_MODE === "tool"
+      ? ` unsure=tool asked=${tally.toolAsked}/${tally.calls}` +
+        (AGENT_SELECT_ARM === "adviser" ? "" :
+          ` lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)`) : "") +
     ` model=${MODEL} — ${tally.ok}/${tally.calls} chose, ${tally.failed} FELL BACK to the` +
     ` shipped order (${tally.emptyReply} empty reply, ${tally.badJson} unparseable),` +
     ` ${tally.shortReply} short reply, ${tally.invalidIds} unusable id(s)` +
@@ -626,6 +656,11 @@ export function agentSelectTallyLine(): string {
     (SELECT_COUNT_MODE === "atMost"
       ? `, DECLINED ${tally.declinedSeats} seat(s) on ${tally.declinedBriefs} brief(s) (kept the shipped order there)` : "") +
     `, ${tally.siblingPicks} seat(s) on a row already picked under the SAME TITLE (a floor) across ${tally.siblingBriefs} brief(s)` +
+    // The two hard selection rules, decided on the reply as it arrived rather
+    // than on the repaired picks. A non-zero here is the model breaking a rule
+    // the system prompt told it would be checked; the repair still happens, so
+    // this changes nothing a founder sees.
+    `, ${tally.selectionViolations} SELECT-rule violation(s) on ${tally.selectionViolationBriefs} reply(ies)` +
     // The thinking that HAPPENED, next to the thinking we asked for. wsDQ set
     // effort=low and 10 of 12 calls spent zero thinking tokens, so the setting
     // alone never established that the lever moved. `truncated` is here for the
@@ -1004,6 +1039,30 @@ export interface SelectContext {
   /** Model-free, per fund per founder: `assessAll`'s read of this founder's
    *  answers against each candidate's own encoded rules. */
   assessments?: Map<string, InstrumentAssessment>;
+  /**
+   * ── THE OTHER HALF OF THE SCREEN, WHICH NEVER REACHED THIS STAGE (wsEN) ──
+   *
+   * Round two has two halves and only one of them was here. `answers` above
+   * carries the fixed-enum half: our own option values, one short line each.
+   * The PROSE half — the project questions, whose whole reason for existing is
+   * that a twelve-field vocabulary cannot express what a company builds — was
+   * assembled by the pipeline, handed to the writer, and dropped on the floor
+   * before the stage that CHOOSES saw any of it.
+   *
+   * What is lost by that is not a nuance. A `ProjectAnswer` carries the fund
+   * whose requirement prompted the question, that fund's gate, and the
+   * requirement VERBATIM. So the founder has already been asked, in their own
+   * words, about the exact condition a candidate imposes, and answered — and
+   * the model ranking that candidate was shown neither the question nor the
+   * answer.
+   *
+   * UNTRUSTED. `answer` is founder prose, exactly as `description` is, and it
+   * is fenced for the same reason. `question` and `quote` are ours and the
+   * fund's respectively, but they ride inside the same block: one fence around
+   * the whole exchange is one thing for a reader to trust, where a fence per
+   * field would invite the next author to leave one off.
+   */
+  projectAnswers?: ProjectAnswer[];
 }
 
 /** Is this value an answer, or the absence of one? An empty array is
@@ -1215,6 +1274,33 @@ export function buildPrompt(
   const desc = ctx.description
     ? fence("description", ctx.description)
     : "(no description on file)";
+  // The prose half of round two. Question, then answer, then the fund and the
+  // verbatim requirement that motivated the question — because an answer whose
+  // provenance is stripped is a sentence about the company, while an answer
+  // beside the rule it was asked against is evidence about a candidate.
+  //
+  // ONE fence around the whole exchange (see SelectContext.projectAnswers). The
+  // budget is deliberate and small: these are short answers, and this stage has
+  // already demonstrated that bulk text buries the fact that separates.
+  //
+  // NOT EVERY ANSWER HAS A REQUIREMENT BEHIND IT, and the header above this
+  // block says so. `projectAnswers` also carries the COMMERCIAL half —
+  // `adaptiveRound.ts` writes those with `instrumentId: ""` and `quote: ""`
+  // because they are about how the company sells, not about any fund's rule.
+  // They are passed rather than filtered out: how a company makes money is
+  // exactly what decides which instrument suits it. What is not available is
+  // telling the model they were all prompted by a quoted requirement, which is
+  // what a single unconditional sentence over this block would do.
+  const projectBlock = ctx.projectAnswers?.length
+    ? fence("round-two answers", ctx.projectAnswers.map((a) => [
+      `Q: ${oneLine(a.question, 200)}`,
+      `A: ${oneLine(a.answer, 300)}`,
+      a.quote
+        ? `   (asked because ${oneLine(a.instrumentName || a.instrumentId, 70)} requires: `
+          + `"${oneLine(a.quote, 200)}")`
+        : "",
+    ].filter(Boolean).join("\n")).join("\n\n"))
+    : "";
   const adviser = AGENT_SELECT_ARM === "adviser";
   // THE ONE LEVER wsDY LEFT READY. See SELECT_COUNT_MODE: under `atMost` the
   // number is a ceiling, the seats declined keep the empirical ranker's own
@@ -1247,6 +1333,81 @@ genuinely fit this company better than their position suggests.`
     : `The ${head.length} candidates below are already ordered by an empirical ranker built from
 real award pairs, best first. That order is informative and it is not
 authoritative.${baseRateSentence(head.length)}`;
+
+  // ── THE CLOSING BLOCK: the prior, the unsure channel, and the template ────
+  //
+  // Three independent facts, and they were nested as one ternary inside
+  // another, which is what made `UNSURE_MODE=tool` unreachable except under
+  // `adviser` (wsEN). A mode no default can reach is dead surface, and this
+  // repo's own rule is that dead surface is deleted or made reachable. Made
+  // reachable, because the measurement it exists for is still open: `declare`
+  // fired 0 times in 24 paid calls, and the stated hypothesis is that the shape
+  // of the hook is the reason rather than the depth of the model. Testing that
+  // hypothesis requires a hook that can be turned on by itself.
+  //
+  // WHY `tool` IS ORTHOGONAL AND `declare` IS NOT. `tool` is opt-in: no
+  // default reaches it, so detaching it from `adviser` changes no shipped
+  // behaviour and no measured arm. `declare` is the DEFAULT of `UNSURE_MODE`,
+  // so detaching it would put the unsure template into the `rows` and `assist`
+  // prompts, which are measured arms, without anybody setting anything. That is
+  // a silent change to a control and it is exactly what this file's levers
+  // exist to prevent.
+  const prior = adviser
+    ? `Some rows carry "#n most-won by comparable companies". That is what companies
+in this company's own country and sector have actually won, counted over real
+awards. It is the strongest single piece of evidence on the page and it is not
+a verdict: it says what worked for companies like this one, not what fits THIS
+one. Weigh it, and overrule it where this company plainly fails what the fund
+demands or needs a cheque of a different order.
+
+`
+    : "";
+  /** One sentence, three closings. `lead` differs only because the tool path
+   *  has a turn to finish first. */
+  const replyWith = (lead: string) => `${lead} ONLY this JSON, no preamble and no code fence.
+${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
+different numbers`;
+  let tail: string;
+  if (UNSURE_MODE === "tool") {
+    tail = `${prior}You have a tool, \`lookup_requirements\`, that returns a fund's own eligibility
+rules in its own words. Use it whenever a rule you cannot see would change your
+answer — most usefully where two candidates look alike, or where a row's summary
+does not tell you whether this company qualifies. You may call it once, for up
+to ${LOOKUP_MAX} candidates at a time. Choosing not to call it is a fine answer when the
+rows already tell you what you need.
+
+When you are done, ${replyWith("reply with")}:
+{"picks":[${shape}]}`;
+  } else if (adviser && UNSURE_MODE === "declare") {
+    // ── THE TEMPLATE IS THE INSTRUCTION, AND IT SAID "NOTHING" ─────────────
+    // This block used to close with `{"picks":[...],"unsure":[]}` and, four
+    // lines above it, "if you already know, leave it empty". The file argues a
+    // few lines up that the template is the strongest instruction on the page
+    // — six zeros ARE a request for six however the sentence above them is
+    // worded — and then handed the model a pre-filled empty answer for this
+    // field and a sentence licensing it. It came back empty 24 times out of 24,
+    // at two effort levels.
+    //
+    // So the template now shows the SHAPE and not the answer, exactly as the
+    // `atMost` picks template does, and the sentence that pre-answered it is
+    // gone. Declining is still available and still legitimate — it is stated as
+    // a choice rather than as the default.
+    //
+    // EXPECT NOTHING FROM THIS. At effort `high` the model reasoned explicitly
+    // about eligibility, named blockers in its own thinking, and still declared
+    // nothing; that is the measurement, and one prompt edit does not overturn
+    // it. It is changed because it is free and because it was wrong.
+    tail = `${prior}IF TWO CANDIDATES LOOK THE SAME TO YOU, SAY SO INSTEAD OF GUESSING. List their
+index numbers in "unsure" and you will be shown those funds' own eligibility
+rules and asked again. Name at most ${LOOKUP_MAX}, and only where the extra rules could
+actually change your answer.
+
+${replyWith("Reply with")}, plus the index numbers of any you cannot separate:
+{"picks":[${shape}],"unsure":[0]}`;
+  } else {
+    tail = `${prior}${replyWith("Reply with")}:
+{"picks":[${shape}]}`;
+  }
   return `Choose the ${want} public funding schemes this company should actually apply to.
 
 THE COMPANY
@@ -1258,7 +1419,14 @@ ${answeredBlock}
 
 WHAT THEY SAY THEY DO
 ${desc}
-
+${projectBlock ? `
+WHAT THEY ANSWERED ON THE FOLLOW-UP SCREEN, IN THEIR OWN WORDS
+Where a candidate's own requirement prompted the question, that requirement is
+quoted under the answer and the candidate is named, so you can see which
+candidate the answer bears on. The rest were asked about the company and how it
+sells, and carry no requirement because none prompted them.
+${projectBlock}
+` : ""}
 HOW TO READ THE LIST
 ${framing}
 
@@ -1302,35 +1470,7 @@ ${countLicence}
 CANDIDATES
 ${menu}
 
-${adviser ? `Some rows carry "#n most-won by comparable companies". That is what companies
-in this company's own country and sector have actually won, counted over real
-awards. It is the strongest single piece of evidence on the page and it is not
-a verdict: it says what worked for companies like this one, not what fits THIS
-one. Weigh it, and overrule it where this company plainly fails what the fund
-demands or needs a cheque of a different order.
-
-${UNSURE_MODE === "tool" ? `You have a tool, \`lookup_requirements\`, that returns a fund's own eligibility
-rules in its own words. Use it whenever a rule you cannot see would change your
-answer — most usefully where two candidates look alike, or where a row's summary
-does not tell you whether this company qualifies. You may call it once, for up
-to ${LOOKUP_MAX} candidates at a time. Choosing not to call it is a fine answer when the
-rows already tell you what you need.
-
-When you are done, reply with ONLY this JSON, no preamble and no code fence.
-${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
-different numbers:
-{"picks":[${shape}]}` : `IF TWO CANDIDATES LOOK THE SAME TO YOU, SAY SO INSTEAD OF GUESSING. List their
-index numbers in "unsure" and you will be shown those funds' own eligibility
-rules and asked again. Name at most ${LOOKUP_MAX}, and only where the extra rules could
-actually change your answer — if you already know, leave it empty.
-
-Reply with ONLY this JSON, no preamble and no code fence.
-${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
-different numbers, plus any you are unsure of:
-{"picks":[${shape}],"unsure":[]}`}` : `Reply with ONLY this JSON, no preamble and no code fence.
-${countAsk}, best first, naming DIFFERENT PROGRAMMES rather than merely
-different numbers:
-{"picks":[${shape}]}`}`;
+${tail}`;
 }
 
 /**
@@ -1359,14 +1499,19 @@ export async function agentSelectRows(
   // pool at the same seam. A comparison whose control cannot be checked is the
   // failure this whole workstream exists to stop repeating.
   if (tracing) traceMemo = seedTrace(rows);
-  if (AGENT_SELECT_ARM === "off") return rows;
+  if (AGENT_SELECT_ARM === "off") return leave("armOff", rows);
   // BEFORE the SELECT_COUNT guard, deliberately. That guard exists because a
   // model cannot usefully choose six from six; a reversal is defined on any
   // length, and a diagnostic that silently declined to permute a short pool
   // would report "no difference" for a reason that has nothing to do with the
   // seam it is testing.
-  if (AGENT_SELECT_ARM === "reverse") return reverseNonsense(rows);
-  if (rows.length <= SELECT_COUNT) return rows;
+  if (AGENT_SELECT_ARM === "reverse") return leave("reversed", reverseNonsense(rows));
+  // COUNTED, not silent (wsEN). A pool no longer than the number of seats is a
+  // real and ordinary founder — there is nothing for a model to choose between
+  // — and it publishes the shipped order. Reported, because a run that hits it
+  // on a third of its founders and says "no difference" is describing its own
+  // control.
+  if (rows.length <= SELECT_COUNT) return leave("poolNotLongerThanCount", rows);
   // NOTE: no by-name check for ANTHROPIC_API_KEY here, deliberately.
   //
   // It was redundant -- a missing key makes the lazy client throw and the catch
@@ -1386,7 +1531,11 @@ export async function agentSelectRows(
   const keep = AGENT_SELECT_ARM === "assist" ? Math.min(SELECT_KEEP, rows.length) : 0;
   const menuRows = AGENT_SELECT_ARM === "assist" ? head.slice(keep) : head;
   const want = Math.max(1, SELECT_COUNT - keep);
-  if (menuRows.length <= want) return rows;
+  // Same as above and a distinct fact: under `assist` the frozen seats are cut
+  // off the menu first, so a pool that WAS long enough can leave a menu that is
+  // not. Counted separately because the fix is different — one is the founder's
+  // pool, the other is `SELECT_KEEP`.
+  if (menuRows.length <= want) return leave("menuNotLongerThanWant", rows);
   // `dry` prices the ADVISER: it builds the identical prompt through the
   // identical code path and runs the identical retrieval, and simply never
   // calls Anthropic. Pricing a reconstruction of a prompt rather than the
@@ -1418,7 +1567,7 @@ export async function agentSelectRows(
           chunks.reduce((a, c) => a + Math.min(c.text.length, 200) + 40, 0));
       }
     }
-    return rows;
+    return leave("dryPriced", rows);
   }
   tally.calls++;
   try {
@@ -1432,7 +1581,10 @@ export async function agentSelectRows(
     ) => {
       const system = selectorSystemPrompt();
       const user = buildPrompt(menuRows, ctx, keep, want, peers, evidence);
-      const useTool = adviser && UNSURE_MODE === "tool";
+      // Not `adviser && ...`: the tool is the one unsure channel that is opt-in
+      // on every axis, so it is offered whenever it is asked for. See the
+      // closing block in `buildPrompt` for why `declare` is not.
+      const useTool = UNSURE_MODE === "tool";
       const r = await anthropic().messages.create({
       model: MODEL,
       ...(useTool ? { tools: [LOOKUP_TOOL] } : {}),
@@ -1543,7 +1695,7 @@ export async function agentSelectRows(
     // Bounded to ONE round of retrieval, deliberately. An unbounded loop on a
     // stage whose whole output is six integers is a cost with no ceiling, and
     // the second call already carries everything the first one learned.
-    if (adviser && UNSURE_MODE === "tool") {
+    if (UNSURE_MODE === "tool") {
       const call = res.content.find(
         (b): b is Anthropic.ToolUseBlock =>
           b.type === "tool_use" && b.name === LOOKUP_TOOL.name);
@@ -1639,6 +1791,39 @@ export async function agentSelectRows(
       (i): i is number => Number.isInteger(i) && (i as number) >= 0
         && (i as number) < menuRows.length))].slice(0, want);
     if (picks.length < raw.length) tally.invalidIds += raw.length - picks.length;
+    // ── SELECT-1 AND SELECT-2, ON THE REPLY THAT WAS ACTUALLY GIVEN ────────
+    //
+    // The selector's system prompt tells the model, verbatim, that "rules
+    // marked (hard) are checked mechanically after you reply". SELECT-1 and
+    // SELECT-2 are the two hard rules in `contracts/selection/`, and until now
+    // `checkSelection` had no caller on the request path at all — only a bench
+    // script and a unit test. So the sentence was false, and
+    // `scripts/check_contracts.ts` counted both rules enforced because an array
+    // literal named them. `scripts/check_check_reachability.ts` is the guard
+    // for the class; this is the call that makes the claim true.
+    //
+    // Read on `raw`, deliberately, not on `picks`: `picks` has already had the
+    // non-integers, the duplicates, the out-of-range indices and the excess
+    // dropped, so checking it would grade our own repair and report SELECT-2
+    // as never violated by construction. That is the exact "the old view"
+    // versus "the truth" distinction `contractReach.test.ts` pins down.
+    //
+    // OBSERVATIONAL, and the same discipline as `checkBrief` at the end of
+    // `synthesize`: it counts, it never repairs and it never gates. The repair
+    // above is the product behaviour and it stays; a founder is not served by a
+    // check refusing to hand over a table, and a check that can block a run is
+    // a check nobody dares tighten. Wrapped, because a defect in a check must
+    // never be able to cost a founder their brief.
+    try {
+      const violations = checkSelection(
+        raw, menuRows.length, want, SELECT_COUNT_MODE);
+      if (violations.length) {
+        tally.selectionViolations += violations.length;
+        tally.selectionViolationBriefs++;
+      }
+    } catch (err) {
+      console.error("[agentSelect] checkSelection threw on a real reply:", String(err));
+    }
     if (!picks.length) {
       // No usable pick. Distinguish the two causes, because they need
       // different fixes and an aggregate "failed" count hides which one is
@@ -1652,7 +1837,7 @@ export async function agentSelectRows(
           : "the reply was empty — the shipped order was published";
         traceMemo.poolOut = traceMemo.poolIn;
       }
-      return rows;
+      return leave("noUsablePick", rows);
     }
     // Under `atMost` a short reply is the answer, not a defect: the seats it
     // declines keep the empirical ranker's order. Counted separately so a run
@@ -1704,7 +1889,7 @@ export async function agentSelectRows(
       traceMemo.pickedIds = chosen.map((r) => r.instrumentId ?? r.channel);
       traceMemo.poolOut = out.map((r) => r.instrumentId ?? r.channel);
     }
-    return out;
+    return leave("chose", out);
   } catch (err) {
     tally.failed++;
     console.error("[agentSelect] call failed, keeping the shipped order:", String(err));
@@ -1712,7 +1897,7 @@ export async function agentSelectRows(
       traceMemo.fellBack = `the call threw — the shipped order was published: ${String(err)}`;
       traceMemo.poolOut = traceMemo.poolIn;
     }
-    return rows;
+    return leave("threw", rows);
   }
 }
 
@@ -1747,6 +1932,12 @@ export async function agentSelectMemoPool(
     country?: string;
     description?: string;
     eligibility?: EligibilityAnswers;
+    /** The prose half of round two. Already on `IntelligenceRequest`, and
+     *  `runIntelligence` already passes that whole object here — so widening
+     *  this type is the entirety of what was needed to make it reach the stage
+     *  that chooses. It was being assembled, sent to the writer, and never
+     *  shown to the ranker. */
+    projectAnswers?: ProjectAnswer[];
   },
 ): Promise<InstrumentRow[]> {
   if (AGENT_SELECT_ARM === "off") {
@@ -1769,5 +1960,6 @@ export async function agentSelectMemoPool(
     answers: intakeAnswerLines(req.eligibility),
     unanswered: unansweredRankingFields(req.eligibility),
     assessments: assessAll(ids, req.eligibility),
+    projectAnswers: req.projectAnswers,
   });
 }

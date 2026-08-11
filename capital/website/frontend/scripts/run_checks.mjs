@@ -46,6 +46,13 @@ const CHECKS = [
   ["unit tests", ["npx", "vitest", "run"]],
   ["segment config is a literal", ["npx", "tsx", "scripts/check_revalidate_literal.ts"]],
   ["output contracts", ["npx", "tsx", "scripts/check_contracts.ts"]],
+  // Beside `check_contracts` because it grades the other half of the same
+  // claim: that one counts a rule enforced when a literal names it, this one
+  // asks whether the check deciding it is reachable from a request at all.
+  ["a rule's check can actually run", ["npx", "tsx", "scripts/check_check_reachability.ts"]],
+  // Hermetic and sub-second: an ALL-CAPS name in code font in
+  // lib/intelligence/*.md must exist somewhere in the tree.
+  ["identifiers named in the docs exist", ["npx", "tsx", "scripts/check_doc_identifiers.ts"]],
   ["rendered numbers", ["npx", "tsx", "scripts/check_rendered_numbers.ts"]],
   // Its sibling one level up: `check_rendered_numbers` says no number a VISITOR
   // reads may be an unsourced literal, and this says no number the OWNER PLANS

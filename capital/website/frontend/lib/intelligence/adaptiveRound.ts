@@ -61,42 +61,27 @@ function extractJson<T>(text: string): T {
  *  writer nothing, and costs the founder one of only ~5 questions. */
 const TOKENS = (s: string) => s.toLowerCase().match(/[a-z0-9]+/g) ?? [];
 
-/**
- * A question's topic signature: every meaningful token in the question AND its
- * options, minus anything the founder already said.
- *
- * Stripping the founder's own words is what makes this work. Every project
- * question repeats the company's technology by design ("your insect protein
- * bioconversion..."), so raw text overlap is near-total between any two of
- * them. Remove that shared vocabulary and what remains is the actual topic —
- * "technology readiness level" versus "thematic area".
- *
- * Options alone were not enough: the same TRL question phrased once as bands
- * and once as a yes/no has two different answer spaces but is still the same
- * question, and a live round shipped both.
- *
- * ── NOT CALLED. This is a live defect, not dead code ──────────────────────
- * Nothing consults this function, so the deduplication it describes is NOT
- * running: two phrasings of one question can still both be published, which
- * costs the founder one of about five questions and is the exact failure the
- * docstring above says was observed. Same class as the four answers lost in
- * `project-mgmt/findings/2026-08-08_wsBL_discarded_answers.md` — a documented
- * mechanism that is present, correct and unreached.
- *
- * Left in place rather than restored HERE because restoring it changes which
- * questions a founder is asked, which is the adaptive round's own measured
- * surface (workstreams AY/BH) and needs a model-calling run to verify. It is
- * suppressed at the site, with the reason, rather than deleted: deleting it
- * would delete the only thing pointing at the defect.
- */
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- see above: the dedupe is unreached, and the finding lives with the code
-function topicSignature(q: { question: string; options: string[] }, ownWords: Set<string>): Set<string> {
-  const out = new Set<string>();
-  for (const t of [...TOKENS(q.question), ...q.options.flatMap(TOKENS)]) {
-    if (t.length >= 4 && !ownWords.has(t)) out.add(t);
-  }
-  return out;
-}
+// ── THE DEAD DEDUPER, DELETED (wsEN) ──────────────────────────────────────
+//
+// A private `topicSignature` sat here with a docstring saying, in its own
+// words, "NOT CALLED. This is a live defect, not dead code", kept "because
+// deleting it would delete the only thing pointing at the defect". The reason
+// was honest and it has expired, in two steps and not one. The identical
+// function is EXPORTED from `questionChecks.ts`, where `checkQuestions` decides
+// Q-2 with it — and on the day this copy was deleted `checkQuestions` itself
+// was called by two bench scripts and by nothing a founder's request could
+// reach, so the mechanism was present, reached from a bench, and enforced on
+// nothing. The intake route now calls it observationally on the screen it is
+// about to send, and `scripts/check_check_reachability.ts` reds the build if
+// that call is ever removed. What sat here was a second copy nobody called —
+// the pointer, not the defect.
+//
+// The one thing it did that its sibling does not is run inside the planner,
+// before the questions are returned. That is a REPAIR, and a repair here would
+// change which questions a founder is asked, which is the adaptive round's own
+// measured surface. It stays a check rather than becoming a filter, for the
+// same reason `checkBrief` is observational: the planner sees every candidate
+// question at once and is the thing that should prevent the duplicate.
 
 const VAGUE_OPTION =
   /^(other|none|not sure|unsure|n\/?a|a mix\b|mix of\b|some of\b|several\b|both\b|partly\b|all of\b|combination\b|it depends\b|other sector\b)/i;

@@ -67,6 +67,22 @@ jobs:
       - name: Output contracts
         run: npx tsx scripts/check_contracts.ts
 
+      # The other half of the sentence above. `check_contracts` counts a rule
+      # enforced because an array literal names it; this asks whether the check
+      # that decides it can run on a request at all. Both `checkSelection` and
+      # `checkQuestions` were reachable from no entry point while the selector's
+      # own system prompt told the model its rules were "checked mechanically
+      # after you reply". Hermetic: it reads the import graph, nothing else.
+      - name: A rule is enforced only if its check can run
+        run: npx tsx scripts/check_check_reachability.ts
+
+      # A name in code font is a promise the name exists. ARCHITECTURE.md named
+      # `SCREEN_FOR_RANKER`, which is in no file in the tree, and attached a
+      # measurement to it — so a reader had nothing to set and a route was
+      # recorded closed by an experiment they could not find. Hermetic.
+      - name: Identifiers named in the docs exist
+        run: npx tsx scripts/check_doc_identifiers.ts
+
       # No number a visitor reads is a literal the corpus does not produce.
       # Hermetic: TypeScript source plus two COMMITTED artifacts, no database
       # and no credentials, so it cannot pass by finding nothing to read — and
