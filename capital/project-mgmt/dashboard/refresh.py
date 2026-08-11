@@ -91,6 +91,31 @@ def series() -> list[list]:
 
 CURVE = ROOT / "website/frontend/lib/intelligence/poolRecallCurve.generated.json"
 CAPS = ROOT / "website/frontend/lib/intelligence/caps.ts"
+SELECT = ROOT / "website/frontend/lib/intelligence/agentSelect.ts"
+
+
+def live_ranker() -> str:
+    """Which ranker a founder's memo is actually ordered by, right now.
+
+    This is not decoration. `AGENT_SELECT` defaults to `off` and is set
+    nowhere in build, CI or deploy, so the LLM ranker is BUILT AND NOT
+    SWITCHED ON -- the order a founder reads today is the score's. A brief
+    that says "the AI picks five" while the AI is off is precisely the class
+    of confident-and-wrong this whole file exists to prevent, so the page
+    states whichever is live and the fact is read from the code, not typed.
+    """
+    src = SELECT.read_text()
+    m = re.search(r'process\.env\.AGENT_SELECT \?\? "(\w+)"', src)
+    if not m:
+        sys.exit(f"could not read the AGENT_SELECT default from {SELECT} -- has it moved?")
+    default_off = m.group(1) == "off"
+    for cfg in ROOT.rglob("*.y*ml"):
+        if "node_modules" in str(cfg) or ".next" in str(cfg):
+            continue
+        if "AGENT_SELECT=" in cfg.read_text(errors="ignore"):
+            default_off = False
+            break
+    return "our own scoring" if default_off else "the AI ranker"
 
 
 def cut_depth() -> int:
@@ -137,6 +162,7 @@ def figures(data: list[list]) -> dict[str, object]:
         "shown2": round(at[depth] * 100, 1),
         "shown3": round(at[depth] * 100, 1),
         "ceiling": round(curve["inPoolAtAll"] * 100, 1),
+        "ranker": live_ranker(),
     }
 
 
