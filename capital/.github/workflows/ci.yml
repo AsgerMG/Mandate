@@ -111,6 +111,18 @@ jobs:
         run: npx tsx scripts/check_vocabularies.ts
         env: { NO_PG: '1' }
 
+      # Directly under the vocabulary contract, because it reads the same two
+      # things. That one says the ANSWER SET a comparator refers to exists;
+      # this says the QUESTION the comparator decides on is the question the
+      # rule turns on. The class it stops: a 50%-Russian-ownership rule encoded
+      # as "does any shareholder own more than 25%", so an ordinary cap table
+      # deleted the fund. Hermetic — two committed JSON artifacts and source,
+      # no database — and it belongs here rather than only in `npm run check`,
+      # because a re-extraction that reintroduces the misencoding arrives by
+      # pull request.
+      - name: A comparator asks the rule's question
+        run: npx tsx scripts/check_field_matches_demand.ts
+
       - name: Archetype regression
         run: npx tsx scripts/check_archetypes.ts
         env: { NO_PG: '1' }
