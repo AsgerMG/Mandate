@@ -1,0 +1,618 @@
+[
+ {
+  "archetype": "Robotics",
+  "company": "Neura Robotics",
+  "country": "Germany",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   1,
+   7,
+   4,
+   3,
+   2,
+   11
+  ],
+  "deepest": 11,
+  "keptFromTop": 4,
+  "publishedOff": [
+   "horizon_eu_cl1",
+   "horizon_eu_cl4",
+   "horizon_eu_miss",
+   "horizon_eu_cl3",
+   "erc_poc",
+   "eic_transition",
+   "innovation_fund_ssp"
+  ],
+  "publishedOn": [
+   "horizon_eu_cl4",
+   "horizon_eu_cl3",
+   "horizon_eu_miss",
+   "clean_aviation",
+   "horizon_eu_cl1",
+   "erc_poc",
+   "eic_transition"
+  ],
+  "entered": [
+   "clean_aviation"
+  ],
+  "left": [
+   "innovation_fund_ssp"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 0,
+  "overrode": 0,
+  "reached": 6,
+  "fellBack": null,
+  "eur": 0.01699976
+ },
+ {
+  "archetype": "Hardware",
+  "company": "SMART Photonics",
+  "country": "Netherlands",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   0,
+   11,
+   1,
+   7,
+   10,
+   9
+  ],
+  "deepest": 11,
+  "keptFromTop": 2,
+  "publishedOff": [
+   "eic_accelerator",
+   "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+   "eic_transition",
+   "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+   "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+   "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+   "satr_nl_rnd__sa_106413__kansen_voor_west"
+  ],
+  "publishedOn": [
+   "eic_accelerator",
+   "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+   "eic_transition",
+   "satr_nl_rnd__sa_61208__provincie_zuid_holland"
+  ],
+  "entered": [
+   "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat"
+  ],
+  "left": [
+   "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+   "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+   "satr_nl_rnd__sa_106413__kansen_voor_west"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 6,
+  "overrode": 7,
+  "reached": 0,
+  "fellBack": null,
+  "eur": 0.01736776
+ },
+ {
+  "archetype": "FinTech (business lending)",
+  "company": "Silvr",
+  "country": "France",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   1,
+   5,
+   0,
+   2,
+   8,
+   16
+  ],
+  "deepest": 16,
+  "keptFromTop": 4,
+  "publishedOff": [
+   "satr_fr_rnd__sa_111728__ministere_de_l_economie_et_des_finances",
+   "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+   "satr_fr_rnd__sa_111938__cnc",
+   "satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation",
+   "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances",
+   "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai",
+   "satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances"
+  ],
+  "publishedOn": [
+   "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+   "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances",
+   "satr_fr_rnd__sa_111728__ministere_de_l_economie_et_des_finances",
+   "satr_fr_rnd__sa_111938__cnc",
+   "satr_fr_rnd__sa_111723__ministere_des_armees",
+   "eic_accelerator",
+   "satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation"
+  ],
+  "entered": [
+   "satr_fr_rnd__sa_111723__ministere_des_armees",
+   "eic_accelerator"
+  ],
+  "left": [
+   "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai",
+   "satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 6,
+  "overrode": 12,
+  "reached": 0,
+  "fellBack": null,
+  "eur": 0.01896304
+ },
+ {
+  "archetype": "FinTech (consumer banking)",
+  "company": "bunq",
+  "country": "Netherlands",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   2,
+   4,
+   13,
+   12,
+   3,
+   10
+  ],
+  "deepest": 13,
+  "keptFromTop": 3,
+  "publishedOff": [
+   "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+   "eic_transition",
+   "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+   "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland",
+   "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat"
+  ],
+  "publishedOn": [
+   "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+   "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+   "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+   "satr_nl_rnd__sa_116945__provincie_gelderland",
+   "eic_transition",
+   "horizon_eu_cl1",
+   "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat"
+  ],
+  "entered": [
+   "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+   "satr_nl_rnd__sa_116945__provincie_gelderland",
+   "horizon_eu_cl1"
+  ],
+  "left": [
+   "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland",
+   "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 6,
+  "overrode": 12,
+  "reached": 0,
+  "fellBack": null,
+  "eur": 0.01770632
+ },
+ {
+  "archetype": "AI B2C software",
+  "company": "Photoroom",
+  "country": "France",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   1,
+   0,
+   4,
+   5,
+   6,
+   15
+  ],
+  "deepest": 15,
+  "keptFromTop": 4,
+  "publishedOff": [
+   "satr_fr_rnd__sa_111938__cnc",
+   "bpifrance_inov",
+   "horizon_eu_cl1",
+   "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+   "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+   "eic_accelerator",
+   "eib_venture"
+  ],
+  "publishedOn": [
+   "bpifrance_inov",
+   "satr_fr_rnd__sa_111938__cnc",
+   "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+   "eic_accelerator",
+   "eib_venture",
+   "bpifrance_pmup_idf",
+   "horizon_eu_cl1"
+  ],
+  "entered": [
+   "bpifrance_pmup_idf"
+  ],
+  "left": [
+   "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 5,
+  "overrode": 2,
+  "reached": 1,
+  "fellBack": null,
+  "eur": 0.01565472
+ },
+ {
+  "archetype": "AI B2B software",
+  "company": "Aleph Alpha",
+  "country": "Germany",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   4,
+   14,
+   0,
+   12,
+   16,
+   8
+  ],
+  "deepest": 16,
+  "keptFromTop": 2,
+  "publishedOff": [
+   "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_114510__nrw_bank",
+   "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+   "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+   "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_64558__investitionsbank_berlin",
+   "satr_de_rnd__sa_113239__sachsen_sab"
+  ],
+  "publishedOn": [
+   "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_114510__nrw_bank"
+  ],
+  "entered": [
+   "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+   "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz"
+  ],
+  "left": [
+   "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+   "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+   "satr_de_rnd__sa_64558__investitionsbank_berlin",
+   "satr_de_rnd__sa_113239__sachsen_sab"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 6,
+  "overrode": 12,
+  "reached": 0,
+  "fellBack": null,
+  "eur": 0.01970456
+ },
+ {
+  "archetype": "GovTech",
+  "company": "Nortal",
+  "country": "Estonia",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   0,
+   3,
+   9,
+   4,
+   12,
+   13
+  ],
+  "deepest": 13,
+  "keptFromTop": 3,
+  "publishedOff": [
+   "eis_ida_viru_ettev_tluse_inv",
+   "eis_turismisektori_kesksete",
+   "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "eis_ettev_tete_tootearendust",
+   "eis_ettev_tja_teadus_ja_aren__ettevotja_teadus_ja_arendustootaja_toetus_2025_0369a8",
+   "eis_starditoetus",
+   "eis_ettev_tja_teadus_ja_aren__ettevotja_teadus_ja_arendustootaja_toetus_2024_84abb2"
+  ],
+  "publishedOn": [
+   "eis_ida_viru_ettev_tluse_inv",
+   "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "eis_ettev_tete_tootearendust",
+   "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "eis_turismisektori_kesksete"
+  ],
+  "entered": [
+   "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus"
+  ],
+  "left": [
+   "eis_ettev_tja_teadus_ja_aren__ettevotja_teadus_ja_arendustootaja_toetus_2025_0369a8",
+   "eis_starditoetus",
+   "eis_ettev_tja_teadus_ja_aren__ettevotja_teadus_ja_arendustootaja_toetus_2024_84abb2"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 6,
+  "overrode": 10,
+  "reached": 0,
+  "fellBack": null,
+  "eur": 0.01761432
+ },
+ {
+  "archetype": "Platform",
+  "company": "sennder",
+  "country": "Germany",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   0,
+   1,
+   2,
+   6,
+   7,
+   9
+  ],
+  "deepest": 9,
+  "keptFromTop": 3,
+  "publishedOff": [
+   "clean_aviation",
+   "sesar_ju",
+   "eic_transition",
+   "ihi",
+   "horizon_eu_cl1",
+   "horizon_eu_cl4",
+   "gh_edctp3"
+  ],
+  "publishedOn": [
+   "clean_aviation",
+   "sesar_ju",
+   "eic_transition",
+   "ihi",
+   "horizon_eu_cl1",
+   "horizon_eu_cl4",
+   "gh_edctp3"
+  ],
+  "entered": [],
+  "left": [],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 3,
+  "overrode": 0,
+  "reached": 3,
+  "fellBack": null,
+  "eur": 0.01622144
+ },
+ {
+  "archetype": "Cloud / NeoCloud",
+  "company": "Nebius",
+  "country": "Netherlands",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   9,
+   0,
+   17,
+   7,
+   5,
+   12
+  ],
+  "deepest": 17,
+  "keptFromTop": 2,
+  "publishedOff": [
+   "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+   "eic_transition",
+   "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+   "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland",
+   "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat"
+  ],
+  "publishedOn": [
+   "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_116945__provincie_gelderland",
+   "satr_nl_rnd__sa_61208__provincie_zuid_holland"
+  ],
+  "entered": [
+   "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+   "satr_nl_rnd__sa_116945__provincie_gelderland"
+  ],
+  "left": [
+   "eic_transition",
+   "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+   "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 6,
+  "overrode": 12,
+  "reached": 0,
+  "fellBack": null,
+  "eur": 0.01750944
+ },
+ {
+  "archetype": "MedTech",
+  "company": "Corti",
+  "country": "Denmark",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   0,
+   7,
+   10,
+   11,
+   6,
+   4
+  ],
+  "deepest": 11,
+  "keptFromTop": 2,
+  "publishedOff": [
+   "innovationsfonden_other",
+   "innovationsfonden_global_research",
+   "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+   "innovationsfonden_erhvervsforsker",
+   "erc_poc",
+   "eic_transition",
+   "horizon_eu_cl1"
+  ],
+  "publishedOn": [
+   "innovationsfonden_other",
+   "horizon_eu_cl1",
+   "ihi",
+   "gh_edctp3",
+   "eic_transition",
+   "innovationsfonden_erhvervsforsker",
+   "innovationsfonden_global_research"
+  ],
+  "entered": [
+   "ihi",
+   "gh_edctp3"
+  ],
+  "left": [
+   "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+   "erc_poc"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 6,
+  "overrode": 5,
+  "reached": 0,
+  "fellBack": null,
+  "eur": 0.0166888
+ },
+ {
+  "archetype": "Life sciences",
+  "company": "BioNTech",
+  "country": "Germany",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   1,
+   0,
+   2,
+   15,
+   11,
+   16
+  ],
+  "deepest": 16,
+  "keptFromTop": 3,
+  "publishedOff": [
+   "gh_edctp3",
+   "horizon_eu_cl1",
+   "ihi",
+   "clean_aviation",
+   "horizon_eu_cl4",
+   "horizon_eu_miss",
+   "horizon_eu_cl3"
+  ],
+  "publishedOn": [
+   "horizon_eu_cl1",
+   "gh_edctp3",
+   "ihi",
+   "eic_transition",
+   "erc_poc",
+   "clean_aviation",
+   "horizon_eu_cl4"
+  ],
+  "entered": [
+   "eic_transition",
+   "erc_poc"
+  ],
+  "left": [
+   "horizon_eu_miss",
+   "horizon_eu_cl3"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 3,
+  "overrode": 0,
+  "reached": 3,
+  "fellBack": null,
+  "eur": 0.01671456
+ },
+ {
+  "archetype": "AgriTech",
+  "company": "eAgronom",
+  "country": "Estonia",
+  "pool": 18,
+  "menu": 18,
+  "picks": [
+   6,
+   8,
+   2,
+   10,
+   1,
+   15
+  ],
+  "deepest": 15,
+  "keptFromTop": 2,
+  "publishedOff": [
+   "eis_ettev_tte_arenguprogramm",
+   "eis_toetus_ettev_tjate_toote",
+   "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "eis_rohetoetus_roheauditi_l",
+   "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f",
+   "eis_rohetoetus_arendustegevu"
+  ],
+  "publishedOn": [
+   "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "eis_toetus_ettev_tjate_toote",
+   "eis_ettev_tete_tootearendust",
+   "eis_ettev_tte_arenguprogramm",
+   "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus"
+  ],
+  "entered": [
+   "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+   "eis_ettev_tete_tootearendust"
+  ],
+  "left": [
+   "eis_rohetoetus_roheauditi_l",
+   "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f",
+   "eis_rohetoetus_arendustegevu"
+  ],
+  "unsure": [],
+  "retrieved": 0,
+  "retrievalChangedMind": null,
+  "followed": 5,
+  "overrode": 12,
+  "reached": 1,
+  "fellBack": null,
+  "eur": 0.014653759999999998
+ }
+]

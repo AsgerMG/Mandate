@@ -121,6 +121,7 @@ import Anthropic from "@anthropic-ai/sdk";
 
 import { recordUsage } from "./cost";
 import { retrieveDemands } from "./demandRetrieval";
+import { asBaseRate, poolRecallAt, poolRecallN } from "./poolRecall";
 import { ANSWER_LABEL, ANSWER_USE, type EligibilityAnswers, type InstrumentRow } from "./types";
 import { peerPrior } from "./shortlist";
 import { fence } from "./untrusted";
@@ -176,6 +177,59 @@ export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
 })();
 
 export const agentSelectEnabled = (): boolean => AGENT_SELECT_ARM !== "off";
+
+/**
+ * ── WHERE THE SEAM SITS: BEFORE THE CUT, OR AFTER IT (wsDR) ────────────────
+ *
+ * `late` is where wsDL put it and it is still the default. The call runs AFTER
+ * `accessiblePool(...).slice(0, VERDICT_POOL)`, so it permutes eighteen rows
+ * that were selected by a score it had no part in. That placement bought POOL
+ * INVARIANCE: same set in, same set out, so `check_winner_not_gated` and
+ * `check_winner_not_blocked` are untouched by construction and no gain can be
+ * an artefact of a moving pool. wsDL recorded the trade in those words and
+ * called moving it earlier "the next measurement, not a silent default".
+ *
+ * `early` is that measurement. The call runs BEFORE the cut, on the whole
+ * accessible pool, and the top `VERDICT_POOL` of ITS order hold the seats. The
+ * model then chooses which rows are in the pool, which is the architecture the
+ * owner specified: our code selects the subset, the model ranks it.
+ *
+ * ── WHAT THIS COSTS, STATED BECAUSE IT IS REAL ────────────────────────────
+ * Pool invariance is GONE under `early`, by design and not by accident. Six
+ * rows the score ranked 19th or deeper take seats from rows ranked 13th to
+ * 18th, so "the pool did not move" stops being available as a safety property
+ * and something as strong has to replace it. Two things do:
+ *
+ *   THE ELIGIBILITY SCREENS DO NOT MOVE. `accessiblePool` runs BEFORE this
+ *     call on both settings, so every row either seam can promote has already
+ *     cleared the same gating and blocking. `check_winner_not_gated` and
+ *     `check_winner_not_blocked` are about that screen and not about order, so
+ *     they are as untouched under `early` as under `late` — and they are run
+ *     and reported either way rather than argued from.
+ *
+ *   POOL RECALL IS REPORTED, BOTH WAYS. Membership changing is only acceptable
+ *     if the answer survives the change at least as often. A model that
+ *     promotes six rows from rank 19+ pushes six rows out of the pool, and if
+ *     the fund the company actually won is more often among the six pushed out
+ *     than among the six pulled in, that is a loss no ranking gain redeems.
+ *     `scripts/_wsdr_seam.ts` measures it on both settings off one pool object
+ *     and prints both, so it cannot be discovered later.
+ *
+ * Read once at module scope, and throws on anything unrecognised, for the same
+ * reason `AGENT_SELECT` is: a lever that reads a typo as its default reports
+ * the control's number under the treatment's name.
+ */
+export type AgentSelectSeam = "late" | "early";
+const SEAMS: AgentSelectSeam[] = ["late", "early"];
+export const AGENT_SELECT_SEAM: AgentSelectSeam = (() => {
+  const raw = process.env.AGENT_SELECT_SEAM ?? "late";
+  if (!SEAMS.includes(raw as AgentSelectSeam)) {
+    throw new Error(
+      `AGENT_SELECT_SEAM must be one of ${SEAMS.join("|")}, got "${raw}". ` +
+      `It is read once at module scope precisely so a typo cannot read as "late".`);
+  }
+  return raw as AgentSelectSeam;
+})();
 
 /**
  * ── THE NONSENSE ARM: a permutation with no model in it ────────────────────
@@ -393,6 +447,109 @@ export function agentSelectLastDecision(): PriorDecision | null { return lastDec
 
 export function agentSelectCostPerBrief(): number {
   return tally.calls ? tally.eur / tally.calls : 0;
+}
+
+/**
+ * ── THE TRANSCRIPT: what was sent, what came back, verbatim ────────────────
+ *
+ * wsDQ. The owner's instruction for the first paid run was "set the test up so
+ * that we can see every step transparently"; a verdict with no trace behind it
+ * is what this project has spent a week retracting. Nothing in this module
+ * previously kept the bytes: the tally counts calls and the decision record
+ * keeps ids, and neither can answer "what did we ask it, and what did it say".
+ *
+ * OFF BY DEFAULT AND OFF IN PRODUCTION. It is enabled only by a harness
+ * calling `setAgentSelectTracing(true)`, there is no environment variable that
+ * turns it on, and every write is behind that flag. A request that has not
+ * asked for a transcript allocates nothing and behaves identically — this is
+ * observation, and an observer that changes the thing observed would void the
+ * run it exists to record.
+ *
+ * The full text is kept, uncut. A truncated prompt is a reconstruction, and
+ * grading a reconstruction is the defect class this repo has paid for twice.
+ */
+export interface AgentSelectTurn {
+  /** 1 = the first ask; 2 = the re-ask after retrieval resolved an ambiguity. */
+  round: number;
+  system: string;
+  user: string;
+  /** Every text block, joined — the model's reply exactly as it arrived. */
+  reply: string;
+  /** Every thinking block, joined. Empty unless the arm enabled thinking. */
+  thinking: string;
+  model: string;
+  usage: unknown;
+  eur: number;
+}
+/** One pool row, as much of it as a reader needs to recognise the fund. The
+ *  ON arm's prompt already renders all of this; the OFF arm has no prompt, so
+ *  without this the control side of the record would be a list of ids. */
+export interface AgentSelectRow {
+  instrumentId: string;
+  instrument: string;
+  administeringBody?: string;
+  country?: string;
+  capitalType?: string;
+  descriptor?: string;
+  typicalAward?: number;
+  typicalAwardN?: number;
+  lastAwardYear?: number;
+  description?: string;
+}
+export interface AgentSelectTrace {
+  arm: AgentSelectArm;
+  /** The pool as it arrived, in order, and as it left. */
+  poolIn: string[];
+  poolOut: string[];
+  /** `poolIn`, with enough of each row to read it. */
+  poolDetail: AgentSelectRow[];
+  /** The rows actually offered to the model, in menu-index order. */
+  menu: string[];
+  /** Menu indices the model named, in its own order. */
+  picks: number[];
+  /** Instrument ids for those picks, in the model's order. */
+  pickedIds: string[];
+  /** Menu indices the model said it could not separate. */
+  unsure: number[];
+  /** What retrieval returned for them: instrument id -> the gate text shown. */
+  retrieved: { instrumentId: string; text: string }[];
+  turns: AgentSelectTurn[];
+  /** Set when the arm gave up and returned the shipped order unchanged. */
+  fellBack: string | null;
+  eur: number;
+}
+let tracing = false;
+let traceMemo: AgentSelectTrace | null = null;
+/** Turn the transcript on for this process. Harnesses only. */
+export function setAgentSelectTracing(on: boolean): void { tracing = on; }
+/** The transcript of the most recent seam call, or null. */
+export function agentSelectLastTrace(): AgentSelectTrace | null { return traceMemo; }
+
+/** A transcript seeded with the pool as it arrived and nothing else, so an arm
+ *  that returns without calling still leaves a readable record of what it was
+ *  handed. `poolOut` starts equal to `poolIn` and is overwritten only by a
+ *  path that actually permutes. */
+function seedTrace(rows: InstrumentRow[]): AgentSelectTrace {
+  const ids = rows.map((r) => r.instrumentId ?? r.channel);
+  return {
+    arm: AGENT_SELECT_ARM,
+    poolIn: ids,
+    poolOut: ids,
+    poolDetail: rows.map((r) => ({
+      instrumentId: r.instrumentId ?? r.channel,
+      instrument: r.instrument,
+      administeringBody: r.administeringBody,
+      country: r.country,
+      capitalType: r.capitalType,
+      descriptor: r.descriptor,
+      typicalAward: r.typicalAward,
+      typicalAwardN: r.typicalAwardN,
+      lastAwardYear: r.lastAwardYear,
+      description: r.description,
+    })),
+    menu: [], picks: [], pickedIds: [], unsure: [], retrieved: [],
+    turns: [], fellBack: null, eur: 0,
+  };
 }
 
 const eur = (n: number | undefined | null): string =>
@@ -618,6 +775,12 @@ const textOf = (m: Anthropic.Message): string => m.content
   .filter((b): b is Anthropic.TextBlock => b.type === "text")
   .map((b) => b.text).join("\n");
 
+/** The reasoning blocks, for the transcript only. Nothing downstream reads
+ *  them: the arm's output is the `picks` array and always has been. */
+const thinkingOf = (m: Anthropic.Message): string => m.content
+  .filter((b): b is Anthropic.ThinkingBlock => b.type === "thinking")
+  .map((b) => b.thinking).join("\n");
+
 /** Pull the one JSON object out of a reply that may be fenced or prefaced.
  *  Returns null rather than throwing, so the caller falls back to the shipped
  *  order instead of degrading into a short table. */
@@ -645,6 +808,54 @@ function parseJson<T>(raw: string): T | null {
 let systemMemo: string | null = null;
 export const selectorSystemPrompt = (): string =>
   (systemMemo ??= assembleInstructions("selector"));
+
+/**
+ * ── THE BASE RATE, FOR THE LIST ACTUALLY IN FRONT OF IT (wsDR) ─────────────
+ *
+ * What this replaces was one sentence, hard-coded, and false by more than a
+ * factor of two at the depth it was being read at: "somewhere in this list
+ * about three quarters of the time" was measured on `computeVerdict`'s
+ * candidate list, median 105 rows, and printed on a prompt showing 18. wsDQ
+ * measured the truth for 18 rows at 15/45. The model was told to reach down a
+ * list that usually does not contain the answer.
+ *
+ * The fix cannot be a second number, because the quantity is a FUNCTION OF THE
+ * LIST LENGTH and this workstream exists to change the list length. It is read
+ * from the measured curve at the menu's own depth, so it is true at the late
+ * seam, true at the early seam, and true at whatever depth either becomes.
+ *
+ * Three facts, and the third is the one the old sentence hid: how often the
+ * answer is not in the list at all. That share is unreachable by any choice the
+ * model makes, and a model told the list "usually" contains the answer will
+ * manufacture a pick for it.
+ *
+ * Returns "" when the curve is unavailable — see poolRecall.ts. No claim beats
+ * a false one, and this file has now shipped the false one for four
+ * workstreams.
+ */
+export function baseRateSentence(listLength: number): string {
+  const p6 = poolRecallAt(Math.min(6, listLength));
+  const pn = poolRecallAt(listLength);
+  const n = poolRecallN();
+  if (p6 == null || pn == null || !n) return "";
+  const a = asBaseRate(p6), b = asBaseRate(pn);
+  const lines = [
+    `Measured on ${n} held-out companies, the scheme that actually paid out is in`,
+    `the first six rows about ${a}% of the time, and somewhere in this list of ${listLength}`,
+    `about ${b}% of the time.`,
+  ];
+  if (listLength > 6) {
+    lines.push(
+      `So about ${Math.max(0, b - a)}% of the time it is in this list but BELOW the sixth row --`,
+      `that is the whole of what a choice of yours can win -- and about ${100 - b}% of the`,
+      `time it is not in this list at all, and nothing you pick can reach it.`);
+  } else {
+    lines.push(
+      `So about ${100 - b}% of the time it is not in this list at all, and nothing you`,
+      `pick can reach it.`);
+  }
+  return `\n\n${lines.join("\n")}`;
+}
 
 /**
  * EXPORTED FOR DIAGNOSTICS, and for one reason: what a model is told is a thing
@@ -688,17 +899,11 @@ company's shortlist, and those are settled -- they are not shown below and they
 are not yours to change. Your job is the ${want} remaining place${want === 1 ? "" : "s"}, chosen from the
 schemes the ranker placed BEHIND them.
 
-That is the part the ranker is worst at. The scheme a company actually wins is
-in its top six about a quarter of the time and somewhere in the list below about
-three quarters of the time, so the fund you are looking for is usually here --
-and the ranker has already decided it is not worth a place. Find the ${want} that
+That is the part the ranker is worst at.${baseRateSentence(head.length)} Find the ${want} that
 genuinely fit this company better than their position suggests.`
     : `The ${head.length} candidates below are already ordered by an empirical ranker built from
 real award pairs, best first. That order is informative and it is not
-authoritative: measured on held-out companies the scheme that actually paid out
-is in its first six rows about a quarter of the time, and somewhere in this list
-about three quarters of the time. So the fund you are looking for is usually
-here, and it is usually NOT at the top.`;
+authoritative.${baseRateSentence(head.length)}`;
   return `Choose the ${want} public funding schemes this company should actually apply to.
 
 THE COMPANY
@@ -779,6 +984,18 @@ index numbers taken from the list above, best first:
 export async function agentSelectRows(
   rows: InstrumentRow[], ctx: SelectContext,
 ): Promise<InstrumentRow[]> {
+  // Cleared FIRST, so a stale transcript from the previous founder can never be
+  // read as this one's.
+  //
+  // THE OFF ARM IS TRACED TOO, and that is the point rather than a courtesy.
+  // The two arms necessarily run in two processes -- `AGENT_SELECT` is read
+  // once at module scope so a typo cannot read as "off" -- and the pipeline
+  // makes a live web-search call upstream of the pool. So the control is only
+  // a control if the pool that reached the seam was the SAME pool, and the
+  // only way to state that rather than assume it is to record the off arm's
+  // pool at the same seam. A comparison whose control cannot be checked is the
+  // failure this whole workstream exists to stop repeating.
+  if (tracing) traceMemo = seedTrace(rows);
   if (AGENT_SELECT_ARM === "off") return rows;
   // BEFORE the SELECT_COUNT guard, deliberately. That guard exists because a
   // model cannot usefully choose six from six; a reversal is defined on any
@@ -813,6 +1030,10 @@ export async function agentSelectRows(
   // prompt itself is how a cost estimate quietly describes a different arm.
   lastDecision = null;
   lastUnsureIds = [];
+  // The transcript starts here, so a call that falls back still leaves a record
+  // of what it was asked. A fallback with no trace is the one outcome that
+  // teaches nothing.
+  if (traceMemo) traceMemo.menu = menuRows.map((r) => r.instrumentId ?? r.channel);
   const dry = AGENT_SELECT_ARM === "dry";
   const adviser = AGENT_SELECT_ARM === "adviser" || dry;
   const peers = adviser ? peerRank(ctx.country, ctx.sector) : undefined;
@@ -839,6 +1060,8 @@ export async function agentSelectRows(
   tally.calls++;
   try {
     const ask = async (evidence?: Map<string, string[]>) => {
+      const system = selectorSystemPrompt();
+      const user = buildPrompt(menuRows, ctx, keep, want, peers, evidence);
       const r = await anthropic().messages.create({
       model: MODEL,
       // Thinking bills as OUTPUT, so max_tokens must clear the budget with
@@ -877,18 +1100,24 @@ export async function agentSelectRows(
       // all one user string. It now assembles from `contracts/` through the
       // same positive per-stage routing every other stage uses, so
       // `UNROUTED_STAGES` is empty and `check_contracts` enforces it.
-      system: selectorSystemPrompt(),
-      messages: [{
-        role: "user",
-        content: buildPrompt(menuRows, ctx, keep, want, peers, evidence),
-      }],
+      system,
+      messages: [{ role: "user", content: user }],
       }, { timeout: TIMEOUT_MS, maxRetries: 1 });
       recordUsage(r.model ?? MODEL, r.usage as never);
       // Local euro tally as well, because a bench run has no AsyncLocalStorage
       // context and recordUsage is a no-op there — which is exactly the run
       // that has to report euros per brief.
       const { costOf } = await import("./cost");
-      tally.eur += costOf(r.model ?? MODEL, r.usage as never);
+      const spent = costOf(r.model ?? MODEL, r.usage as never);
+      tally.eur += spent;
+      if (traceMemo) {
+        traceMemo.turns.push({
+          round: evidence ? 2 : 1, system, user,
+          reply: textOf(r), thinking: thinkingOf(r),
+          model: r.model ?? MODEL, usage: r.usage, eur: spent,
+        });
+        traceMemo.eur += spent;
+      }
       return r;
     };
 
@@ -911,6 +1140,7 @@ export async function agentSelectRows(
         .map((i) => menuRows[i].instrumentId)
         .filter((id): id is string => Boolean(id)))];
       lastUnsureIds = ids;
+      if (traceMemo) traceMemo.unsure = unsure;
       if (ids.length) {
         // The founder's side of the question. `declaw` is applied inside
         // `fence` for the prompt; here the text only ever becomes a vector, so
@@ -918,6 +1148,9 @@ export async function agentSelectRows(
         const founderText = [ctx.description ?? "", ...(ctx.answers ?? [])]
           .join("\n").trim();
         const chunks = await retrieveDemands(ids, founderText);
+        if (traceMemo) {
+          traceMemo.retrieved = chunks.map((c) => ({ instrumentId: c.instrumentId, text: c.text }));
+        }
         if (chunks.length) {
           tally.lookups += ids.length;
           tally.resolved++;
@@ -946,6 +1179,12 @@ export async function agentSelectRows(
       // reply that yielded nothing is a prompt or parsing problem.
       if (!textOf(res).trim()) tally.emptyReply++; else tally.badJson++;
       tally.failed++;
+      if (traceMemo) {
+        traceMemo.fellBack = textOf(res).trim()
+          ? "the reply parsed to no usable index — the shipped order was published"
+          : "the reply was empty — the shipped order was published";
+        traceMemo.poolOut = traceMemo.poolIn;
+      }
       return rows;
     }
     if (picks.length < want) tally.shortReply++;
@@ -978,10 +1217,20 @@ export async function agentSelectRows(
     }
     const frozen = rows.slice(0, keep);
     const taken = new Set([...frozen, ...chosen]);
-    return [...frozen, ...chosen, ...rows.filter((r) => !taken.has(r))];
+    const out = [...frozen, ...chosen, ...rows.filter((r) => !taken.has(r))];
+    if (traceMemo) {
+      traceMemo.picks = picks;
+      traceMemo.pickedIds = chosen.map((r) => r.instrumentId ?? r.channel);
+      traceMemo.poolOut = out.map((r) => r.instrumentId ?? r.channel);
+    }
+    return out;
   } catch (err) {
     tally.failed++;
     console.error("[agentSelect] call failed, keeping the shipped order:", String(err));
+    if (traceMemo) {
+      traceMemo.fellBack = `the call threw — the shipped order was published: ${String(err)}`;
+      traceMemo.poolOut = traceMemo.poolIn;
+    }
     return rows;
   }
 }
@@ -1019,7 +1268,18 @@ export async function agentSelectMemoPool(
     eligibility?: EligibilityAnswers;
   },
 ): Promise<InstrumentRow[]> {
-  if (AGENT_SELECT_ARM === "off") return rows;
+  if (AGENT_SELECT_ARM === "off") {
+    // The off arm returns HERE, one function ABOVE the traced one, and that
+    // early return is the byte-identity guarantee `_wsdl_equiv` asserts by
+    // reference. So the control's pool would be invisible to a transcript
+    // recorded any deeper -- and the control's pool is the one thing that has
+    // to be recorded for the treatment's pool to mean anything, because the
+    // two arms are two processes with a live web-search call upstream of both.
+    // Written only when a harness asked for a transcript; with tracing off
+    // this branch allocates nothing and the return is unchanged.
+    if (tracing) traceMemo = seedTrace(rows);
+    return rows;
+  }
   const ids = rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
   return agentSelectRows(rows, {
     country: req.country,

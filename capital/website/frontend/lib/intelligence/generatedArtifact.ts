@@ -72,6 +72,12 @@ const COST: Record<string, string> = {
     + "open-question path asks nothing and stage 2 falls back to enum-answered "
     + "fields only — which is the shipped behaviour, so this one degrades to a "
     + "correct product rather than a wrong one",
+  "poolRecallCurve.generated.json":
+    "the selector's prompt drops its base-rate sentence entirely and says "
+    + "nothing about how often the answer is in the list it was handed. That is "
+    + "the DESIGNED degradation, not a loss: the sentence this replaces was "
+    + "measured on a 105-row list and quoted to a model looking at 18, and no "
+    + "claim beats a false one",
 };
 
 /**

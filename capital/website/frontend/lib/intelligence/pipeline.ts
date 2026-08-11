@@ -12,7 +12,7 @@ import { instrumentLink } from "./instrumentLink";
 import { assessAll } from "./verdict";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
-import { agentSelectMemoPool } from "./agentSelect";
+import { agentSelectEnabled, agentSelectMemoPool, AGENT_SELECT_SEAM } from "./agentSelect";
 import { recordUsage } from "./cost";
 import { recordEvent } from "./telemetry";
 import { discoverAndResearch } from "./research";
@@ -1664,25 +1664,37 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   // qualification band, and that is what the writer is shown and what gets
   // published.
   //
-  // AFTER the cut, deliberately. This permutes `VERDICT_POOL` rows that were
+  // AFTER the cut by default. This permutes `VERDICT_POOL` rows that were
   // already selected and already cleared; it cannot add, drop or re-gate one,
   // so the pool is the same SET it has always been and the pool metric cannot
-  // move. Reaching deeper would mean reordering `accessible` BEFORE the slice,
-  // which changes which rows hold a seat -- a membership change, and a gain
-  // measured against a moving pool is not evidence. See agentSelect.ts.
+  // move.
+  //
+  // ── wsDR: AND BEFORE THE CUT, BEHIND `AGENT_SELECT_SEAM=early` ──────────
+  // wsDL called moving the seam earlier "the next measurement, not a silent
+  // default", and wsDQ's first paid run is what made it due: the model reached
+  // a mean depth of 13.6 of 17, i.e. to the bottom of what it was shown, while
+  // the answer is in those eighteen rows only about a third of the time. Depth
+  // was binding, not judgement. `early` hands it the whole accessible pool and
+  // cuts to `VERDICT_POOL` AFTER, so the model chooses which rows hold a seat.
+  //
+  // The membership change is real and is the price. What replaces pool
+  // invariance is stated in agentSelect.ts and measured in _wsdr_seam.ts:
+  // `accessiblePool` runs before BOTH settings, so no row either can promote
+  // has skipped a gate, and pool recall is reported on both arms of every run.
   //
   // Arm off (the default) returns `instrumentTable` by reference before any
   // work is done, so the shipped path is identical to the one that existed
   // before this call. `scripts/_wsdl_equiv.ts` asserts that rather than
-  // asserting it in prose.
-  const instrumentTable = await agentSelectMemoPool(
-    applyProfileSignal(
-      accessible.slice(0, VERDICT_POOL),
-      req.profileSignal,
-      req.companyType,
-    ),
-    req,
-  );
+  // asserting it in prose. The `early` branch is guarded on the arm being ON as
+  // well as on the seam, so with the arm off there is exactly one expression
+  // here and it is the one that has always run — a flag cannot move a row for a
+  // founder whose request never calls a model.
+  const signalled = (rows: InstrumentRow[]) =>
+    applyProfileSignal(rows, req.profileSignal, req.companyType);
+  const instrumentTable =
+    agentSelectEnabled() && AGENT_SELECT_SEAM === "early"
+      ? (await agentSelectMemoPool(signalled(accessible), req)).slice(0, VERDICT_POOL)
+      : await agentSelectMemoPool(signalled(accessible.slice(0, VERDICT_POOL)), req);
   // FUND-1's other half. An empty table is never the answer while any door is
   // open -- and where none is, the brief has to SAY SO and say what would
   // change it. Silence is the only answer that is never acceptable, and
