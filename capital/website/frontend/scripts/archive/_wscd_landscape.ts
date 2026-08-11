@@ -12,7 +12,7 @@
 //   PUBLISHABLE=/tmp/pub.json npx tsx scripts/_wscd_landscape.ts
 import { readFileSync } from "fs";
 import { Client } from "pg";
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 requireCredentials("wscd_landscape", ["DATABASE_URL"]);

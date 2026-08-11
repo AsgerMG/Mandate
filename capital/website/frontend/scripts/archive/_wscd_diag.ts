@@ -2,7 +2,7 @@
 //
 // Counts the funnel one stage at a time over the publishable corpus, then over
 // one founder's actual pool. Free: Postgres and disk, no model calls.
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 loadEnvLocal();
 requireCredentials("wscd_diag", ["DATABASE_URL"]);
 process.env.OPEN_QUESTION_ARM = "on";
@@ -10,8 +10,8 @@ process.env.OPEN_QUESTION_ARM = "on";
 import {
   hydrateDbInstruments, hydrateGatesFor, loadDbInstruments, publishableInstruments,
   requireLiveCorpus,
-} from "../lib/intelligence/corpus";
-import { MIN_SUBSTANTIVE_LEN, normaliseRequirement, requirementClassOf } from "../lib/intelligence/openQuestions";
+} from "../../lib/intelligence/corpus";
+import { MIN_SUBSTANTIVE_LEN, normaliseRequirement, requirementClassOf } from "../../lib/intelligence/openQuestions";
 
 async function main() {
   await hydrateDbInstruments();

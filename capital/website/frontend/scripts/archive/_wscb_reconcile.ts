@@ -4,7 +4,7 @@
 // and say which is the real encoding target.
 import { readFileSync } from "fs";
 import { Client } from "pg";
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 loadEnvLocal();
 requireCredentials("wscb_reconcile", ["DATABASE_URL"]);
 const PUB = process.env.PUBLISHABLE;

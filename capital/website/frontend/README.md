@@ -42,8 +42,17 @@ app/
   api/intelligence/route.ts the server-side LLM report (Node runtime; keeps the API key off the client)
 components/                 shared UI (nav, charts, finding, company-search, ui/ primitives)
 lib/
-  intelligence/             the LLM report feature: pipeline · corpus · types · panel
+  intelligence/             the /brief feature: pipeline · corpus · types · panel.
+                            ── START WITH lib/intelligence/ARCHITECTURE.md ──
+                            Our code builds the subset, an LLM ranks it, the
+                            deterministic score is subset-builder + fallback +
+                            control. That file also lists every ranking route
+                            already measured dead, so nobody re-buys one.
   data.ts format.ts palette.ts utils.ts
+scripts/                    guards (check_*), measurement harnesses, emitters
+  archive/                  measurement scripts for CLOSED routes, each with a
+                            one-line note on what it bought. Nothing runs them;
+                            they exist so an answered question is not re-bought
 fund-processes/             per-instrument briefs the intelligence route reads at runtime (process.cwd)
 public/data/                the generated JSON the app reads (written by website/build/)
 ```

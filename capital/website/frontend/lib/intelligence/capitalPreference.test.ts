@@ -14,7 +14,7 @@ import { describe, expect, it } from "vitest";
 
 import { DILUTIVE_FOR_TEST, passesCapitalPreference } from "./accessMode";
 import type { DbInstrument } from "./corpus";
-import { scoreFit } from "./fit";
+import { scoreFitControl } from "./fit";
 import { CAPITAL_TYPE_LABEL } from "./pipeline";
 import {
   CAPITAL_SOUGHT_TO_DB, INDEFINITE_CAPITAL, KNOWN_CAPITAL_TYPES,
@@ -157,7 +157,7 @@ describe("the filter and the memo's score read one rule", () => {
       const wanted = new Set(CAPITAL_SOUGHT_TO_DB[option] ?? []);
       for (const type of ALL_TYPES) {
         if (!instrumentServesCapital(type, [option])) continue;
-        const { components } = scoreFit({
+        const { components } = scoreFitControl({
           instrument: inst(type), capitalWanted: wanted, year: 2026,
         });
         expect(components.capital,
@@ -203,7 +203,7 @@ describe("the filter and the memo's score read one rule", () => {
       "no definite capital type is outside the first option — test is vacuous")
       .toBeGreaterThan(0);
     for (const type of mismatched) {
-      const { components } = scoreFit({
+      const { components } = scoreFitControl({
         instrument: inst(type),
         capitalWanted: new Set(CAPITAL_SOUGHT_TO_DB[OPTIONS[0]] ?? []),
         year: 2026,

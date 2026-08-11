@@ -19,7 +19,7 @@
 // Model-free and deterministic given its inputs. The IO is upstream (the pool
 // and the semantic scores); nothing here reaches the network.
 import { scoreEase, type EaseScore } from "./ease";
-import { scoreFit, sectorFitScorer } from "./fit";
+import { scoreFitControl, sectorFitScorer } from "./fit";
 import { assessAll, VERDICT_RANK, type InstrumentAssessment } from "./verdict";
 import {
   CAPITAL_SOUGHT_TO_DB,
@@ -48,6 +48,15 @@ export { WRITER_CANDIDATE_CAP };
 
 /** ── WHICH ORDER SHIPS, and the measurement that decided it ────────────────
  *
+ *  ── ON THE NAME (wsEH, 2026-08-11) ───────────────────────────────────────
+ *  This was called `ORDER_ARM`, which read as a live experiment lever with
+ *  three open options. It is not one. It is a CONSTANT: the order the memo
+ *  ships, today and until the selector's order is routed past this sort. The
+ *  other two values are CONTROLS — the arms that lost the measurement below —
+ *  and they exist so the measurement can be re-run for free, not so anybody
+ *  can pick one. Nothing in production passes `orderControl`; only
+ *  `scripts/_wsct_order.ts` does. See lib/intelligence/ARCHITECTURE.md.
+ *
  *  `fit` shipped until 2026-08-09 and had never been compared with anything,
  *  because "do not re-sort" was not a thing the code could express. wsCR
  *  measured it moving the won leaf OUT of the published six 49 times for 13
@@ -66,7 +75,7 @@ export { WRITER_CANDIDATE_CAP };
  *  a missing one. `verdict` keeps the whole of that quality (100% `open`,
  *  byte-identical to `fit` on that measure) and takes 3.6 of the 4.8 points.
  *
- *  What it drops is the seven components of `scoreFit` that fit.ts itself
+ *  What it drops is the seven components of `scoreFitControl` that fit.ts itself
  *  records as never reaching the founder's table and that nothing has ever
  *  measured against the shortlist's own ranking. What it keeps is the single
  *  judgement this product has written a principle about: qualification first.
@@ -74,7 +83,7 @@ export { WRITER_CANDIDATE_CAP };
  *  Regime concentration, as the standing rule requires: the 21 pairs the
  *  re-sort was demoting are spread over 14 regimes and 11 countries, largest
  *  regime 4. There is no programme carrying this. */
-export const ORDER_ARM: MemoOrderArm = "verdict";
+export const SHIPPED_MEMO_ORDER: MemoOrderControl = "verdict";
 
 /**
  * The rows a memo may be BUILT from: the ranked list with the conclusively
@@ -169,7 +178,11 @@ export interface MemoCandidate {
   /** Its position in the incoming pool, which is the last tie-break. */
   i: number;
   ease?: EaseScore;
-  fit?: ReturnType<typeof scoreFit>;
+  /** The nine-component fit breakdown. Read by the `fit` CONTROL arm and by
+   *  nothing else — not by the shipped sort, not by the row builder, not by
+   *  the writer. Named `fitControl` so that is visible at the field rather
+   *  than only in fit.ts's header. */
+  fitControl?: ReturnType<typeof scoreFitControl>;
   assessment?: InstrumentAssessment;
 }
 
@@ -189,18 +202,26 @@ export interface MemoCandidateOrder {
   isStale: (row: InstrumentRow) => boolean;
 }
 
-/** Which order the memo's candidates are drawn in.
+/** The shipped memo order and its two CONTROLS.
  *
- *  `pool`    the order the pool arrived in — the shortlist's own ranking, the
- *            ONE ordering in this product that has ever been measured end to
- *            end.
- *  `fit`     re-sort the whole pool on `scoreFit`, nine weighted components.
- *  `verdict` qualification first, then the pool's order inside each band. The
- *            one judgement `scoreFit` made that this product has ever stated a
- *            principle about, without the seven components it never measured.
+ *  One of these ships (`SHIPPED_MEMO_ORDER`). The other two are the arms it was
+ *  measured against, kept so that measurement stays reproducible for free. A
+ *  control is not an option: choosing one here republishes a number somebody
+ *  already retired.
  *
- *  See ORDER_ARM below for what decides between them. */
-export type MemoOrderArm = "pool" | "fit" | "verdict";
+ *  `verdict` **SHIPS.** Qualification first, then the pool's order inside each
+ *            band. The one judgement the fit score made that this product has
+ *            ever written a principle about, without the seven components it
+ *            never measured.
+ *  `pool`    CONTROL. The order the pool arrived in — the subset builder's own
+ *            ranking, untouched. The ONE ordering in this product that has ever
+ *            been measured end to end, which is why it is the reference arm.
+ *  `fit`     CONTROL, and the arm that lost. Re-sort the whole pool on
+ *            `scoreFitControl`, nine weighted components. It is the only reason
+ *            `scoreFitControl` is still called at all.
+ *
+ *  See SHIPPED_MEMO_ORDER above for the measurement that decided between them. */
+export type MemoOrderControl = "pool" | "fit" | "verdict";
 
 export interface MemoCandidateInput {
   /** The pool, already ranked and cut to VERDICT_POOL. */
@@ -211,9 +232,11 @@ export interface MemoCandidateInput {
   eligibilityScreen: EligibilityCheck[];
   semanticScores: Map<string, number>;
   log: ExclusionLog;
-  /** Defaults to what ships. A harness passes both to compare them over ONE
-   *  pool; nothing in production passes it. */
-  order?: MemoOrderArm;
+  /** Defaults to `SHIPPED_MEMO_ORDER`. Set this ONLY to run a control arm
+   *  against the shipped one over a single pool — `scripts/_wsct_order.ts` is
+   *  the only caller in the tree that does. Nothing in production passes it,
+   *  and a production caller that did would be publishing a retired arm. */
+  orderControl?: MemoOrderControl;
 }
 
 /**
@@ -221,7 +244,7 @@ export interface MemoCandidateInput {
  */
 export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrder {
   const { instrumentTable, req, records, dbPeers, eligibilityScreen, semanticScores, log } = input;
-  const arm = input.order ?? ORDER_ARM;
+  const arm = input.orderControl ?? SHIPPED_MEMO_ORDER;
   const comparableCounts = new Map<string, number>();
   for (const row of instrumentTable) {
     if (!row.instrumentId) continue;
@@ -276,7 +299,7 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
   // A `capitalMismatch` predicate stood here, computed for every row and read
   // by nothing since "Phase 4: the score selects, the writer writes"
   // (8a078c98). Confirmed superseded rather than dropped: the judgement it
-  // made is the `capital` component of scoreFit (fit.ts, weight 0.08 —
+  // made is the `capital` component of scoreFitControl (fit.ts, weight 0.08 —
   // 1 when the founder's capital kinds include the row's, 0.3 when they do
   // not), which is the same rule as a continuous term instead of a boolean.
   // Deleted; the comment below already claimed it had moved.
@@ -296,7 +319,7 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
     founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries)
       .map((c) => toIso2(c).toUpperCase()).filter(Boolean));
   const maxComparable = Math.max(0, ...comparableCounts.values());
-  const fitById = new Map<string, ReturnType<typeof scoreFit>>();
+  const fitById = new Map<string, ReturnType<typeof scoreFitControl>>();
   // What sector fit is worth for a fund whose funding history we do not hold,
   // solved over THIS pool. A constant here would score a blank record above four
   // fifths of the funds we do hold history for -- see `sectorFitScorer`.
@@ -307,7 +330,7 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
   for (const row of instrumentTable) {
     const inst = row.instrumentId ? instById().get(row.instrumentId) : undefined;
     if (!inst) continue;
-    fitById.set(inst.id, scoreFit({
+    fitById.set(inst.id, scoreFitControl({
       instrument: inst,
       assessment: assessments.get(inst.id),
       theme: semanticScores.get(inst.id),
@@ -335,7 +358,7 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
     .map((row, i) => ({
       row, i,
       ease: row.instrumentId ? easeById.get(row.instrumentId) : undefined,
-      fit: row.instrumentId ? fitById.get(row.instrumentId) : undefined,
+      fitControl: row.instrumentId ? fitById.get(row.instrumentId) : undefined,
       assessment: row.instrumentId ? assessments.get(row.instrumentId) : undefined,
     }))
     .sort((a, b) => {
@@ -348,7 +371,7 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
       } else if (arm === "fit") {
         // Rows with no score at all (no DB-native instrument behind them) keep
         // their incoming order at the back rather than tying at zero.
-        const fa = a.fit?.score ?? -1, fb = b.fit?.score ?? -1;
+        const fa = a.fitControl?.score ?? -1, fb = b.fitControl?.score ?? -1;
         if (fa !== fb) return fb - fa;
       }
       return a.i - b.i;

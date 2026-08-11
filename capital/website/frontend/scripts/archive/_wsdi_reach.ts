@@ -19,7 +19,7 @@
 //
 //   npx tsx scripts/_wsdi_reach.ts
 import { Client } from "pg";
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 requireCredentials("wsdi_reach", ["DATABASE_URL"]);

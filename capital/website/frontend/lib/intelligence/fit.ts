@@ -31,13 +31,21 @@ import type { InstrumentAssessment } from "./verdict";
 // ── WHAT IN THIS FILE ACTUALLY REACHES THE FOUNDER'S TABLE ────────────────
 // Read this before quoting a weight below as if it ranked anything.
 //
-// ██ AS OF 2026-08-09 `scoreFit` ORDERS NOTHING A FOUNDER READS. ██
+// ██ AS OF 2026-08-09 `scoreFitControl` ORDERS NOTHING A FOUNDER READS. ██
+//
+// It was called `scoreFit` until 2026-08-11 (wsEH). The rename is the whole
+// point: a function called "score the fit" reads like the thing that ranks
+// funds for a founder, and this one is a CONTROL — the losing arm of
+// `SHIPPED_MEMO_ORDER`, plus a recorded per-component breakdown attached to
+// each candidate. Nothing that ships reads its number. `sectorFit` and
+// `sectorFitScorer`, which DO rank the founder's table, keep their names for
+// exactly the same reason.
 //
 // It is still CALLED in production -- `orderMemoCandidates` (memoCandidates.ts)
 // scores every candidate and attaches the breakdown to it -- but the memo's
-// order is `ORDER_ARM`, and that is `verdict`. Measured over one pool, the
+// order is `SHIPPED_MEMO_ORDER`, and that is `verdict`. Measured over one pool, the
 // re-sort this score used to perform moved the won leaf OUT of the published
-// six 21 times for 12 in; see the measurement written at ORDER_ARM.
+// six 21 times for 12 in; see the measurement written at SHIPPED_MEMO_ORDER.
 //
 // Before that it did not rank the five funds a founder first sees either. Its
 // one production caller ordered `hydratedTable.slice(0, VERDICT_POOL)` -- rows
@@ -47,7 +55,7 @@ import type { InstrumentAssessment } from "./verdict";
 // Two claims in this file were stale and are corrected here rather than left
 // to be quoted: the caller has been `orderMemoCandidates` and not
 // `synthesize()` since wsCR lifted the ordering out (pipeline.ts kept a dead
-// `import { scoreFit }` for the whole of that time), and `scoreFit` no longer
+// `import { scoreFitControl }` for the whole of that time), and `scoreFitControl` no longer
 // decides an order at all. Both are the same lesson the file already teaches
 // about the weights table: what a function is FOR is not what calls it.
 //
@@ -182,7 +190,7 @@ export interface FitInput {
  * Scores 0.5 when the instrument's own scale is unknown — neutral, because an
  * unknown ceiling is not a low one.
  */
-/** REACHES THE MEMO POOL ONLY, via `scoreFit`. Screen one does not use this:
+/** REACHES THE MEMO POOL ONLY, via `scoreFitControl`. Screen one does not use this:
  *  `selectLeafInstruments` and the sibling reassignment score ticket fit with
  *  `awardScorer` in shortlist.ts, which is a different function on the same
  *  idea. Two ticket scorers exist; this is the one the founder's table does NOT
@@ -204,7 +212,7 @@ export function scaleFit(inst: DbInstrument, ticketBand?: string): number {
 /** How recently this instrument actually awarded anything. A scheme silent
  *  for years may be closed, repealed, or between programme periods; we cannot
  *  tell, so it is demoted rather than hidden, and the row says so. */
-/** REACHES THE MEMO POOL ONLY, via `scoreFit`, plus
+/** REACHES THE MEMO POOL ONLY, via `scoreFitControl`, plus
  *  `scripts/measure_sibling_choice.ts`. Note the founder's table applies a
  *  harder version of the same idea upstream and independently:
  *  `publishableInstruments()` drops a scheme whose registered end date has
@@ -220,7 +228,7 @@ export function livenessFit(inst: DbInstrument, year: number): number {
 /** Whether the shape of the applicant this fund expects matches the founder.
  *  Replaces a per-channel declaration that gave nine differently-structured
  *  programmes in one bucket a single verdict. */
-/** REACHES THE MEMO POOL ONLY, via `scoreFit`. No other caller in the tree. */
+/** REACHES THE MEMO POOL ONLY, via `scoreFitControl`. No other caller in the tree. */
 export function structureFit(requiresConsortium?: boolean, consortiumOk?: boolean): number {
   if (!requiresConsortium) return 1;
   if (consortiumOk === true) return 1;
@@ -447,7 +455,7 @@ export function sectorFitScorer<T extends { sectorMix?: Record<string, number> |
   return (i) => (i ? sectorFit(i.sectorMix, founderSector) : null) ?? neutral;
 }
 
-/** REACHES THE MEMO POOL ONLY, via `scoreFit`. No other caller in the tree --
+/** REACHES THE MEMO POOL ONLY, via `scoreFitControl`. No other caller in the tree --
  *  and it carries the largest single weight below, 0.24, which is the clearest
  *  case of why the weights table must not be read as the ranking. */
 export function eligibilityFit(a?: InstrumentAssessment): number {
@@ -467,20 +475,20 @@ export function eligibilityFit(a?: InstrumentAssessment): number {
  * `orderMemoCandidates` (memoCandidates.ts) scores every memo candidate with
  * it and attaches the breakdown to the candidate, which is worth keeping —
  * a recorded per-component score is how a bad ranking gets attributed instead
- * of argued about. What reads it as a sort key is `ORDER_ARM === "fit"`, and
+ * of argued about. What reads it as a sort key is `SHIPPED_MEMO_ORDER === "fit"`, and
  * that arm does not ship. See the note at the top of this file and the
- * measurement at ORDER_ARM.
+ * measurement at SHIPPED_MEMO_ORDER.
  *
  * ── SCHEDULED FOR DELETION, and what is holding it ────────────────────────
  * As of wsDO this has exactly ONE production caller and that caller reads
  * nothing back: `orderMemoCandidates` computes nine components for every pool
  * row on every memo request and attaches them to a candidate the sort never
- * consults, because `ORDER_ARM` is `verdict`. It is not deleted in wsDO only
+ * consults, because `SHIPPED_MEMO_ORDER` is `verdict`. It is not deleted in wsDO only
  * because `memoCandidates.ts` belongs to the workstream routing the LLM
  * selector's order into the memo, and two agents editing one file is the
  * defect the split exists to prevent.
  *
- * What removes it: once the memo's order comes from the selector, `ORDER_ARM`'s
+ * What removes it: once the memo's order comes from the selector, `SHIPPED_MEMO_ORDER`'s
  * `fit` branch has no reason to exist, and the scoring loop at
  * memoCandidates.ts dies with it — taking FIT_WEIGHTS, `structureFit` and
  * `MemoCandidate.fit`. `sectorFit`/`sectorFitScorer` STAY: they rank the
@@ -488,7 +496,7 @@ export function eligibilityFit(a?: InstrumentAssessment): number {
  * columns `poolBlend.ts` was fitted on, and deleting a column makes a published
  * weight refer to nothing. See project-mgmt/findings/dead_ranker_wsDO.md §2/§4.
  */
-export function scoreFit(input: FitInput): FitScore {
+export function scoreFitControl(input: FitInput): FitScore {
   const { instrument: inst, assessment, year } = input;
 
   // ── the two hard exclusions ──────────────────────────────────────────────
