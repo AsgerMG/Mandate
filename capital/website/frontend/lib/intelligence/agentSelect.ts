@@ -427,11 +427,28 @@ export interface AgentSelectTurn {
   usage: unknown;
   eur: number;
 }
+/** One pool row, as much of it as a reader needs to recognise the fund. The
+ *  ON arm's prompt already renders all of this; the OFF arm has no prompt, so
+ *  without this the control side of the record would be a list of ids. */
+export interface AgentSelectRow {
+  instrumentId: string;
+  instrument: string;
+  administeringBody?: string;
+  country?: string;
+  capitalType?: string;
+  descriptor?: string;
+  typicalAward?: number;
+  typicalAwardN?: number;
+  lastAwardYear?: number;
+  description?: string;
+}
 export interface AgentSelectTrace {
   arm: AgentSelectArm;
   /** The pool as it arrived, in order, and as it left. */
   poolIn: string[];
   poolOut: string[];
+  /** `poolIn`, with enough of each row to read it. */
+  poolDetail: AgentSelectRow[];
   /** The rows actually offered to the model, in menu-index order. */
   menu: string[];
   /** Menu indices the model named, in its own order. */
@@ -860,6 +877,18 @@ export async function agentSelectRows(
       arm: AGENT_SELECT_ARM,
       poolIn: rows.map((r) => r.instrumentId ?? r.channel),
       poolOut: rows.map((r) => r.instrumentId ?? r.channel),
+      poolDetail: rows.map((r) => ({
+        instrumentId: r.instrumentId ?? r.channel,
+        instrument: r.instrument,
+        administeringBody: r.administeringBody,
+        country: r.country,
+        capitalType: r.capitalType,
+        descriptor: r.descriptor,
+        typicalAward: r.typicalAward,
+        typicalAwardN: r.typicalAwardN,
+        lastAwardYear: r.lastAwardYear,
+        description: r.description,
+      })),
       menu: [], picks: [], pickedIds: [], unsure: [], retrieved: [],
       turns: [], fellBack: null, eur: 0,
     };
