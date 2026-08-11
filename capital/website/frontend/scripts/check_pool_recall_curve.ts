@@ -110,6 +110,14 @@ async function main() {
   const deepest = Math.max(...POOL_RECALL_KS);
   for (const [what, k] of [["the late seam's list", VERDICT_POOL],
     ["the early seam's list", SELECT_DEPTH], ["the published table", 6]] as [string, number][]) {
+    // `AGENT_SELECT_DEPTH=all` is Infinity, and it is the ONE depth that needs
+    // no coverage: the curve is measured to K=250 and is flat from K=150,
+    // because 150 rows is already every row every founder has. So the terminal
+    // point IS the whole-pool figure, `poolRecallAt` returns it by its stated
+    // clamp rather than by extrapolating, and the sentence the model reads is
+    // exactly true. Failing here would red the build on the only arm that
+    // cannot quote a number nobody measured.
+    if (!Number.isFinite(k)) continue;
     if (k > deepest) {
       bad.push(`${what} is ${k} rows and the curve stops at K=${deepest}. `
         + `poolRecallAt refuses to extrapolate, so the prompt would quote the `
@@ -154,12 +162,13 @@ async function main() {
     for (const b of bad) console.error(`  - ${b}`);
     process.exit(1);
   }
+  const depthLabel = Number.isFinite(SELECT_DEPTH) ? String(SELECT_DEPTH) : "the whole pool";
   console.log(`check_pool_recall_curve: ok — n=${n} held-out founders, monotone over `
     + `K=${POOL_RECALL_KS[0]}..${deepest}, covers the late seam (${VERDICT_POOL}), the early `
-    + `seam (${SELECT_DEPTH}) and the published table (6).`);
+    + `seam (${depthLabel}) and the published table (6).`);
   console.log(`  P(won in first 6)=${((poolRecallAt(6) ?? 0) * 100).toFixed(1)}% · `
     + `first ${VERDICT_POOL}=${((poolRecallAt(VERDICT_POOL) ?? 0) * 100).toFixed(1)}% · `
-    + `first ${SELECT_DEPTH}=${((poolRecallAt(SELECT_DEPTH) ?? 0) * 100).toFixed(1)}%`);
+    + `first ${depthLabel}=${((poolRecallAt(Number.isFinite(SELECT_DEPTH) ? SELECT_DEPTH : deepest) ?? 0) * 100).toFixed(1)}%`);
   console.log(`  ${corpusLine}`);
 }
 

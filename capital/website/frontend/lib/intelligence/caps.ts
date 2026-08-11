@@ -40,14 +40,67 @@
 // merge, VERDICT_POOL stops being a second cut and becomes how deep the
 // selector is allowed to read.
 
+/**
+ * ── EVERY DEPTH IN THIS FUNNEL IS A LEVER, AND EVERY ONE OF THEM THROWS ────
+ *
+ * These numbers were constants, and three of them were `Number(process.env.X ??
+ * n)` — which is the same defect wearing a lever's clothes. `Number("fourty")`
+ * is `NaN`, `Math.min(NaN, rows.length)` is `NaN`, and `rows.slice(0, NaN)` is
+ * the EMPTY ARRAY: a typo in a depth silently hands the model no menu at all
+ * and the run reports the fallback's number under the treatment's name. That is
+ * the exact failure `AGENT_SELECT_SEAM` and `AGENT_SELECT_EFFORT` already throw
+ * to prevent, and it applies with more force here, because a depth arm is
+ * precisely the thing somebody will sweep from a shell loop.
+ *
+ * So: read ONCE at module scope, validated, and loud. A depth is a positive
+ * integer, or the literal `all` where reading everything is a meaningful arm.
+ *
+ * `all` is `Infinity` on purpose rather than a large number. `Math.min(depth,
+ * rows.length)` is then exactly "the whole list" for every founder, where a
+ * stand-in like 9999 is "the whole list" only until somebody's pool is bigger —
+ * and the prompt's own base-rate sentence reads the length of the menu it
+ * actually built, so an honest Infinity stays honest and a stand-in does not.
+ */
+export function depthLever(
+  name: string,
+  fallback: number,
+  opts: { all?: boolean; min?: number } = {},
+): number {
+  const raw = process.env[name];
+  if (raw === undefined || raw === "") return fallback;
+  if (opts.all && raw === "all") return Infinity;
+  const n = Number(raw);
+  const min = opts.min ?? 1;
+  if (!Number.isInteger(n) || n < min) {
+    throw new Error(
+      `${name} must be an integer >= ${min}${opts.all ? ` or "all"` : ""}, got "${raw}". ` +
+      `It is read once at module scope precisely so a typo cannot read as ${fallback} ` +
+      `— or, worse, as NaN, which slices every list to nothing without erroring.`);
+  }
+  return n;
+}
+
 /** The pool `synthesize()` screens before cutting to the published cap.
  *
  *  Deliberately wider than `DISPLAY_CAP`: funds a founder cannot access are
  *  dropped AFTER assessment, so a pool of six meant a founder blocked on three
  *  of them got a three-row brief while perfectly good candidates at rank seven
  *  were never looked at. Dropping must be able to backfill, not shrink the
- *  table. */
-export const VERDICT_POOL = 18;
+ *  table.
+ *
+ *  ── A LEVER SINCE wsEI, DEFAULT UNCHANGED AT 18 ──────────────────────────
+ *  This is the number the product owner's architecture disputes: step 2 says
+ *  the ranker is handed "the subset", and 18 is not the subset — the accessible
+ *  pool it is cut from has a median of 91 rows and a mean of 87 (wsDR, 45
+ *  founders) or 77 (the committed curve, 846). The won fund is inside 18 of
+ *  them 44.2% of the time and inside the whole pool 77.5%.
+ *
+ *  It stays 18 until a depth arm on LEGIBLE rows says otherwise. wsDR's arm
+ *  said deeper was worse by 2.2 points on n=45 — inside the binomial noise, and
+ *  measured while 51 of 133 menu rows carried no readable sentence saying what
+ *  the fund pays for. A default moved on that evidence would be a default moved
+ *  on nothing. */
+export const VERDICT_POOL = depthLever("BRIEF_VERDICT_POOL", 18);
 
 /** How deep into the ranked pool the SELECTOR reads. See `agentSelect.ts`'s
  *  header: this is a ceiling/chance trade, not a taste.
@@ -69,8 +122,17 @@ export const VERDICT_POOL = 18;
  *  guard that silently stops running. This is the same move, for the same
  *  reason, that put `VERDICT_POOL` and `WRITER_CANDIDATE_CAP` here for
  *  `check_contracts.ts`. `agentSelect.ts` re-exports it, so every existing
- *  caller is unchanged and there is still exactly one definition. */
-export const SELECT_DEPTH = Number(process.env.AGENT_SELECT_DEPTH ?? 40);
+ *  caller is unchanged and there is still exactly one definition.
+ *
+ *  ── IT IS THE CUT, AT THE EARLY SEAM, AND IT WAS NOT SLACK THERE (wsEI) ──
+ *  The comment above is true of the LATE seam only. Under
+ *  `AGENT_SELECT_SEAM=early` this bound is what the model's menu is cut to, and
+ *  it bit on 36 of wsDR's 45 founders, whose accessible pools ran to a median
+ *  of 91 rows. "The early seam hands it the whole accessible pool" was never
+ *  what happened: it handed it forty rows. `all` is the arm that would.
+ *
+ *  Accepts `all` for exactly that reason. See `depthLever`. */
+export const SELECT_DEPTH = depthLever("AGENT_SELECT_DEPTH", 40, { all: true });
 
 /** How many candidates the WRITER is shown, ahead of the cut to
  *  `BRIEF_LIMITS.institutionsMax`.
@@ -105,3 +167,23 @@ export const SELECT_DEPTH = Number(process.env.AGENT_SELECT_DEPTH ?? 40);
  *  render at the new caps is the measurement, and a rise in `WRT-NO-NOTE` is
  *  what would send it back to 7 and the row cap back to 6. */
 export const WRITER_CANDIDATE_CAP = 8;
+
+// ── THE FUNNEL INVARIANT, ASSERTED WHERE THE LEVER CAN BREAK IT ───────────
+// `check_contracts.ts` already asserts VERDICT_POOL > WRITER_CANDIDATE_CAP >
+// institutionsMax, and that check is the right place for the STATIC ordering.
+// It cannot cover this file any more, though: it runs in its own process with
+// its own environment, so it grades the DEFAULTS while a swept `BRIEF_VERDICT_
+// POOL` grades something else. A pool narrower than the writer's cap makes the
+// pipeline cut to a number of rows it never assembled and the brief goes short
+// with nothing anywhere saying why — the exact symptom that check exists to
+// stop, arriving by the one route it cannot see.
+//
+// So the half of the funnel this file owns is asserted at module scope, where
+// the lever is read. It fires on a bad sweep, at import, before a founder is
+// served or a euro is spent.
+if (VERDICT_POOL <= WRITER_CANDIDATE_CAP) {
+  throw new Error(
+    `BRIEF_VERDICT_POOL is ${VERDICT_POOL} and WRITER_CANDIDATE_CAP is ${WRITER_CANDIDATE_CAP}. ` +
+    `The pool is what the writer's candidates are drawn from, and it is spent further by the ` +
+    `blocked drop and the display-name dedupe before the cut, so it must be strictly wider.`);
+}

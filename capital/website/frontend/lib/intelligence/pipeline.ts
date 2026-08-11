@@ -1682,6 +1682,27 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   // `accessiblePool` runs before BOTH settings, so no row either can promote
   // has skipped a gate, and pool recall is reported on both arms of every run.
   //
+  // ── wsEI: WHAT `early` ACTUALLY WIDENS, WHICH IS NOT THE POOL ───────────
+  // Read the two expressions below as sets, not as depths. `agentSelectRows`
+  // returns `[...chosen, ...everything else in the shipped order]` and `chosen`
+  // is at most `SELECT_COUNT` rows, so the `early` pool is SELECT_COUNT rows
+  // the model named plus the first `VERDICT_POOL - SELECT_COUNT` of the score's
+  // own order. It is SIX SEATS SWAPPED, not a wider pool — and the menu those
+  // six are drawn from is cut to `SELECT_DEPTH`, which was 40 against a median
+  // accessible pool of 91.
+  //
+  // Both bounds bit in wsDR's run and neither was named as the lever under
+  // test, which is why "the early seam admitted zero funds" reads as a verdict
+  // on depth. It is not one. The early arm promoted 64 rows from below the
+  // score's cut across 30 of 45 founders; none of the 64 happened to be a won
+  // fund, and on the nine founders whose won fund was newly visible the rows
+  // were unreadable (wsDV: 0 of 9 carried a `funds:` line, since repaired).
+  //
+  // So the three depths are three separate levers and a run that moves one
+  // measures one: `AGENT_SELECT_DEPTH` is what the model SEES,
+  // `AGENT_SELECT_COUNT` is how many seats it may FILL, `BRIEF_VERDICT_POOL` is
+  // how many survive to the writer. Moving the seam alone moves none of them.
+  //
   // Arm off (the default) returns `instrumentTable` by reference before any
   // work is done, so the shipped path is identical to the one that existed
   // before this call. `scripts/_wsdl_equiv.ts` asserts that rather than

@@ -119,7 +119,7 @@
 //     are now derived from what is populated rather than from a fixed list.
 import Anthropic from "@anthropic-ai/sdk";
 
-import { SELECT_DEPTH } from "./caps";
+import { depthLever, SELECT_DEPTH } from "./caps";
 import { recordUsage } from "./cost";
 import { retrieveDemands } from "./demandRetrieval";
 import { asBaseRate, poolRecallAt, poolRecallN } from "./poolRecall";
@@ -279,8 +279,29 @@ export function reverseNonsense(rows: InstrumentRow[]): InstrumentRow[] {
 export { SELECT_DEPTH } from "./caps";
 /** How many rows it names. DISPLAY_CAP is 6; asking for exactly the number the
  *  page shows means a short reply is a visible defect rather than a silent
- *  top-up from the order we are trying to test. */
-export const SELECT_COUNT = Number(process.env.AGENT_SELECT_COUNT ?? 6);
+ *  top-up from the order we are trying to test.
+ *
+ *  ── AT THE EARLY SEAM THIS IS THE PROMOTION BUDGET (wsEI) ────────────────
+ *  and it, not `SELECT_DEPTH`, is what bounds how much of the pool the seam can
+ *  change. The permutation this file builds is `[...chosen, ...everything else
+ *  in the shipped order]`, and `runIntelligence` then cuts to `VERDICT_POOL`.
+ *  So the memo pool under `AGENT_SELECT_SEAM=early` is SELECT_COUNT rows the
+ *  model named plus the first `VERDICT_POOL - SELECT_COUNT` of the score's own
+ *  order. A row below the score's cut enters ONLY by being named; a row at
+ *  score rank 13..18 leaves only by being displaced.
+ *
+ *  That is why wsDR's early arm read "0 admitted, 0 dropped" on the WON fund
+ *  while changing the pool substantially: it promoted 64 rows from below rank
+ *  18 across 30 of its 45 founders, 1.4 per founder, and none of the 64 was an
+ *  answer. Depth was moved and the budget was not, so the widening bought six
+ *  seats, not a wider pool — and six seats spent by a model reading rows that
+ *  did not say what they funded is not a test of depth.
+ *
+ *  Validated, not `Number(...)`: see `depthLever`. `AGENT_SELECT_COUNT=six`
+ *  used to yield NaN, and `menuRows.length <= NaN` is false while `.slice(0,
+ *  NaN)` is empty, so every reply parsed to no usable pick and the run reported
+ *  the shipped order under the treatment's name. */
+export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 6);
 /**
  * `assist` only: how many of the shipped top rows are FROZEN.
  *
@@ -297,7 +318,7 @@ export const SELECT_COUNT = Number(process.env.AGENT_SELECT_COUNT ?? 6);
  * case without being able to destroy one: the frozen seats are exactly the
  * control's, so the arm's floor is the control's score on those seats.
  */
-export const SELECT_KEEP = Number(process.env.AGENT_SELECT_KEEP ?? 3);
+export const SELECT_KEEP = depthLever("AGENT_SELECT_KEEP", 3, { min: 0 });
 
 /**
  * ── MAY IT NAME FEWER THAN THE PAGE HAS SEATS? (wsDY) ─────────────────────
@@ -403,7 +424,9 @@ export const THINK_EFFORT: ThinkEffort = (() => {
   }
   return raw as ThinkEffort;
 })();
-export const LOOKUP_MAX = Number(process.env.AGENT_SELECT_LOOKUPS ?? 5);
+/** Zero is a legitimate setting — wsDR ran the whole seam comparison at
+ *  `lookups=0` — so this lever floors at 0 rather than 1. */
+export const LOOKUP_MAX = depthLever("AGENT_SELECT_LOOKUPS", 5, { min: 0 });
 
 /**
  * ── HOW THE MODEL IS ALLOWED TO ASK FOR A FUND'S OWN RULES ────────────────
@@ -585,7 +608,7 @@ export function agentSelectTallyLine(): string {
       `reaches the memo.`;
   }
   if (!tally.calls) return `agent-select: arm=${AGENT_SELECT_ARM}, no calls made`;
-  return `agent-select: arm=${AGENT_SELECT_ARM} depth=${SELECT_DEPTH} count=${SELECT_COUNT_MODE === "atMost" ? "<=" : ""}${SELECT_COUNT}` +
+  return `agent-select: arm=${AGENT_SELECT_ARM} depth=${Number.isFinite(SELECT_DEPTH) ? SELECT_DEPTH : "all"} count=${SELECT_COUNT_MODE === "atMost" ? "<=" : ""}${SELECT_COUNT}` +
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
     (AGENT_SELECT_ARM === "adviser"
       ? ` effort=${THINK_EFFORT} maxtok=${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}`
