@@ -62,16 +62,56 @@ from corpus_stores import FAMILIES  # noqa: E402
 # and eligibility_clauses carry a SQLite autoincrement id that is re-issued on
 # every reload, so matching on it would call every row new and duplicate the
 # entire table. Matching is on what makes the row that row.
+#
+# ── Every entry here is the table's OWN declared UNIQUE constraint ─────────
+# It has to be, and `test_identity_matches_schema.py` fails the moment one
+# is not. The first version of this map was written by hand and three of its
+# eight entries were wrong in ways nothing could see:
+#
+#   eligibility_clauses named `clause_text`, a column that does not exist.
+#   public_funding_events named four columns, none of which exist.
+#   eligibility_gates matched on `requirement`, which is not unique (7,471
+#     rows, 7,469 distinct) — so two real gates collapsed into one, and an
+#     insert keyed that way would then violate UNIQUE(instrument_id, gate_key).
+#
+# An identity that names a missing column does not raise. It makes the table
+# UNCOMPARABLE, and the code that decided whether an --overwrite was safe read
+# "uncomparable" as "nothing at risk" and let the overwrite through. The most
+# irrecoverable table in the corpus, public_funding_events, was in that state
+# for the entire life of the guard built to protect it.
 IDENTITY = {
-    "funding_instruments": ["id"],
-    "funding_instrument_sources": ["instrument_id", "source"],
-    "eligibility_gates": ["instrument_id", "requirement"],
-    "eligibility_clauses": ["instrument_id", "clause_text"],
-    "instrument_application": ["id"],
-    "companies": ["id"],
-    "public_funding_events": ["source_family", "source_record_id", "company_name",
-                              "award_date"],
-    "public_equity_stakes": ["id"],
+    "funding_instruments": ["id"],                                   # PK
+    "funding_instrument_sources": ["instrument_id", "source"],       # PK
+    "eligibility_gates": ["instrument_id", "gate_key"],              # UNIQUE
+    "eligibility_clauses": ["instrument_id", "clause_type",
+                            "clause_key"],                           # UNIQUE
+    "instrument_application": ["id"],                                # PK (== instrument_id)
+    "companies": ["id"],                                             # PK
+    "public_equity_stakes": ["id"],                                  # PK
+    "satr_staging": ["tm_id"],                                       # PK
+    "company_sector_labels": ["name_key"],                           # PK
+    "company_sector_llm": ["company_id"],                            # PK
+}
+
+# Tables in a family that CANNOT be keyed, named so that "we did not compare
+# this" is a stated fact rather than an empty result. Both carry only a SQLite
+# AUTOINCREMENT id, which is re-issued per store and therefore identifies a row
+# number rather than a fact.
+#
+# public_funding_events is the one that matters and it is not an oversight:
+# every candidate natural key was measured against the live corpus and none is
+# unique. (source, company_id, project_number, project_title, project_started,
+# grant/equity/debt amounts, call_id, raw_source_url, satr_tm_id) — the widest
+# of them — still collapses 1,553 of 311,399 rows, because a register can
+# genuinely publish the same award twice under one identifier. Until an
+# extractor writes a stable per-source record id, these tables are compared by
+# COUNT, which proves loss when the target is larger and proves nothing when it
+# is not. That distinction is reported; it is never rounded down to zero.
+UNKEYABLE = {
+    "public_funding_events": "no natural key exists in the data (measured); "
+                             "only an AUTOINCREMENT id, re-issued per store",
+    "private_funding_events": "only an AUTOINCREMENT id",
+    "classify_audit": "append-only audit log; only an AUTOINCREMENT id",
 }
 
 # Columns never carried across: surrogate ids the target re-issues, and

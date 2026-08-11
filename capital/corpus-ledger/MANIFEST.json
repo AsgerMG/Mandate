@@ -1,0 +1,50 @@
+{
+ "from_store": "data/db.sqlite",
+ "tables": {
+  "eligibility_clauses": {
+   "bytes": 692069,
+   "identity": [
+    "instrument_id",
+    "clause_type",
+    "clause_key"
+   ],
+   "rows": 893,
+   "sha256": "ab30571f9a0939dd0936397935d9f9c8f40ec3e25301cfe70b36bc35dc38c419"
+  },
+  "eligibility_gates": {
+   "bytes": 6900076,
+   "identity": [
+    "instrument_id",
+    "gate_key"
+   ],
+   "rows": 7471,
+   "sha256": "c4a43f5c38938565d90cc81a0a2bf341ed2b0b08ab4c539c8688e65839f69440"
+  },
+  "funding_instrument_sources": {
+   "bytes": 73592,
+   "identity": [
+    "instrument_id",
+    "source"
+   ],
+   "rows": 980,
+   "sha256": "feeaff8c0c650983a1021fb44ff2cccd010acd8c5cc0faa312d1573dfb43b1e8"
+  },
+  "funding_instruments": {
+   "bytes": 3194452,
+   "identity": [
+    "id"
+   ],
+   "rows": 1088,
+   "sha256": "cbcc9ea0ee3c7b1ac0148013d7c3ec2e24253e2c159af9d4b38e56fba48a2b42"
+  },
+  "instrument_application": {
+   "bytes": 179534,
+   "identity": [
+    "id"
+   ],
+   "rows": 283,
+   "sha256": "530edec7db7f1a229eed3f3625880727a10d801e9810a8fc49a0aebd895f1ecb"
+  }
+ },
+ "written_at": "2026-08-11T09:53:31+00:00"
+}

@@ -29,3 +29,8 @@ __pycache__/
 # putting a full copy of the corpus in a registry. Railway mounts the real data
 # on a volume; nothing in this image should ever read a backup.
 postgres-backup/
+
+# corpus-ledger/ is the committed text copy of the authored instrument corpus.
+# The ETL image never reads it (restore is a checkout operation), and it grows
+# with every export -- 11 MB today. Keep it out of the build context.
+corpus-ledger/
