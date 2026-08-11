@@ -142,6 +142,150 @@ def load(con: sqlite3.Connection, table: str, keys: list[str]) -> dict:
     return {key_of(r, keys): r for r in con.execute(f'SELECT * FROM "{table}"')}
 
 
+def n_rows(con: sqlite3.Connection, table: str) -> int:
+    return con.execute(f'SELECT COUNT(*) FROM "{table}"').fetchone()[0]
+
+
+def usable_identity(con: sqlite3.Connection, table: str) -> tuple[list[str] | None, str]:
+    """The keys `table` can be compared on IN THIS STORE, or None and why not.
+
+    Three ways an identity stops being usable, and each was live in this file:
+    it is not declared at all; it names a column the store does not have (a
+    typo, or a schema that moved); or it is declared and present but is NOT
+    UNIQUE in the data, which silently merges distinct rows and then, on
+    insert, violates the constraint the table actually has.
+
+    The point of returning a REASON rather than None alone is that the caller
+    must be able to say "this table was not compared, and here is why" instead
+    of returning an empty difference that reads exactly like "nothing at risk".
+    """
+    if table in UNKEYABLE:
+        return None, UNKEYABLE[table]
+    keys = IDENTITY.get(table)
+    if not keys:
+        return None, "no identity declared in reconcile_stores.IDENTITY"
+    present = set(cols(con, table))
+    missing = [k for k in keys if k not in present]
+    if missing:
+        return None, f"identity names columns this store does not have: {missing}"
+    q = ", ".join(f'COALESCE("{k}", \'\')' for k in keys)
+    distinct = con.execute(
+        f'SELECT COUNT(*) FROM (SELECT 1 FROM "{table}" GROUP BY {q})').fetchone()[0]
+    total = n_rows(con, table)
+    if distinct != total:
+        return None, (f"identity {keys} is NOT unique here — {total:,} rows, "
+                      f"{distinct:,} distinct. Comparing on it would merge "
+                      f"{total - distinct:,} distinct rows into one")
+    return keys, ""
+
+
+def would_be_lost(losing: str, winning: str,
+                  families: list[str] | None = None) -> dict:
+    """What overwriting `losing` with `winning` destroys, table by table.
+
+    ── The property ───────────────────────────────────────────────────────
+    A whole-file `--overwrite` between two stores is a DELETION of everything
+    the losing side holds alone. This is the one measurement of that, and it
+    is used by both directions — `pull_db.py` (the volume overwrites the
+    laptop) and `push_local.py` (the laptop overwrites the volume) — so the
+    two can never mean different things by "would be lost".
+
+    ── Why a verdict per table, and not just a number ──────────────────────
+    The version this replaces returned a dict of counts, and `continue`d past
+    every table it could not key. A table it could not key contributed
+    nothing to the dict, which is byte-for-byte the same result as a table
+    with nothing at risk. `public_funding_events` — 311,399 rows, the only
+    irrecoverable table in the corpus, from registers that keep no history —
+    was in that state for the entire life of the guard, because its declared
+    identity named four columns that do not exist.
+
+    So every table returns one of three verdicts and a `lost` count:
+
+      keyed    compared row by row on the table's own UNIQUE constraint.
+               `lost` is exact.
+      counted  not keyable, but the losing store has MORE rows than the
+               winning one. `lost` is a lower bound: at least this many go.
+      unknown  not keyable, and the counts do not prove loss. `lost` is 0 and
+               THAT IS NOT A SAFETY CLAIM. Reported as unknown, always
+               printed, never quietly folded into the total.
+    """
+    from corpus_stores import FAMILIES
+
+    a, b = ro(losing), ro(winning)
+    out: dict[str, dict] = {}
+    try:
+        for family, tables in FAMILIES.items():
+            if families and family not in families:
+                continue
+            for t in tables:
+                if not has(a, t):
+                    continue
+                rows_a = n_rows(a, t)
+                if not has(b, t):
+                    # An absent table loses every row it has, and that is exact
+                    # without needing an identity at all. An absent EMPTY table
+                    # loses nothing and is not worth a line.
+                    if rows_a:
+                        out.setdefault(family, {})[t] = {
+                            "verdict": "keyed", "lost": rows_a, "rows_losing": rows_a,
+                            "rows_winning": 0,
+                            "why": "the table is absent from the winning store entirely",
+                        }
+                    continue
+                rows_b = n_rows(b, t)
+                keys_a, why_a = usable_identity(a, t)
+                keys_b, why_b = usable_identity(b, t)
+                if keys_a and keys_b:
+                    lost = len(set(load(a, t, keys_a)) - set(load(b, t, keys_b)))
+                    verdict, why = "keyed", ""
+                else:
+                    why = why_a or why_b
+                    lost = max(0, rows_a - rows_b)
+                    verdict = "counted" if lost else "unknown"
+                if lost or verdict != "keyed":
+                    out.setdefault(family, {})[t] = {
+                        "verdict": verdict, "lost": lost, "rows_losing": rows_a,
+                        "rows_winning": rows_b, "why": why,
+                    }
+    finally:
+        a.close()
+        b.close()
+    return out
+
+
+def proven_loss(report: dict) -> int:
+    """Rows this comparison can PROVE an overwrite destroys. Never the whole
+    story — see `unknowns` — and deliberately not summed with them."""
+    return sum(t["lost"] for tables in report.values() for t in tables.values())
+
+
+def unknowns(report: dict) -> list[tuple[str, str, dict]]:
+    """(family, table, detail) for every table the comparison could not key
+    and whose counts prove nothing. These are the tables an overwrite cannot
+    be shown to be safe for."""
+    return [(f, t, d) for f, tables in report.items() for t, d in tables.items()
+            if d["verdict"] == "unknown"]
+
+
+def format_loss(report: dict, indent: str = "  ") -> str:
+    """The report a person reads at the moment of the refusal."""
+    lines: list[str] = []
+    for family, tables in sorted(report.items()):
+        lines.append(f"{indent}{family}:")
+        for t, d in sorted(tables.items(), key=lambda kv: -kv[1]["lost"]):
+            if d["verdict"] == "keyed":
+                lines.append(f"{indent}  {t:<30} {d['lost']:>9,} rows exist ONLY here")
+            elif d["verdict"] == "counted":
+                lines.append(f"{indent}  {t:<30} {d['lost']:>9,} rows AT LEAST "
+                             f"({d['rows_losing']:,} here vs {d['rows_winning']:,} there)")
+                lines.append(f"{indent}      cannot be compared row by row: {d['why']}")
+            else:
+                lines.append(f"{indent}  {t:<30} {'UNKNOWN':>9} "
+                             f"({d['rows_losing']:,} here vs {d['rows_winning']:,} there)")
+                lines.append(f"{indent}      cannot be compared row by row: {d['why']}")
+    return "\n".join(lines)
+
+
 def report(a_path: str, b_path: str) -> int:
     """What each store holds that the other does not. Reads only."""
     A, B = ro(a_path), ro(b_path)
@@ -153,11 +297,14 @@ def report(a_path: str, b_path: str) -> int:
             if not has(A, t) or not has(B, t):
                 print(f"  {t:<30} MISSING from {'A' if not has(A, t) else 'B'}")
                 continue
-            keys = IDENTITY.get(t)
-            if not keys or any(k not in cols(A, t) for k in keys):
-                na = A.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
-                nb = B.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
-                print(f"  {t:<30} {na:>9,} {nb:>9,}   (no identity declared, counts only)")
+            # One definition of "can this table be compared", shared with the
+            # overwrite guard, so the report a human reads and the check that
+            # refuses a sync can never disagree about which tables were looked at.
+            keys, why = usable_identity(A, t)
+            if keys is None or any(k not in cols(B, t) for k in keys):
+                na, nb = n_rows(A, t), n_rows(B, t)
+                print(f"  {t:<30} {na:>9,} {nb:>9,}   NOT COMPARED — "
+                      f"{why or 'the other store lacks the identity columns'}")
                 continue
             ka = set(load(A, t, keys))
             kb = set(load(B, t, keys))

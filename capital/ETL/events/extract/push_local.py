@@ -138,15 +138,30 @@ def run_manual_inbox(dry: bool) -> list[str]:
     return failures
 
 
-def push_db(dry: bool, skipped_pull: bool) -> None:
-    """Upload the local store over the corpus of record.
+def push_db(dry: bool, skipped_pull: bool, force: bool = False) -> None:
+    """Upload the local store over the corpus of record — after proving it costs
+    nothing, at the moment of the upload.
 
-    Safe only because the pull above is the same file plus this run's additions.
-    With --skip-pull it is not: the local copy may be days behind the weekly
-    cron, and this upload would delete every award the volume gathered since —
-    from registers that republish a current file and keep no history, so those
-    rows have no second copy anywhere in the world. The combination is refused
-    rather than documented.
+    ── Why the pull is not the proof ──────────────────────────────────────
+    This used to reason: the pull at the top of the cycle refused if the local
+    store was ahead, therefore this upload is the record plus this run's
+    additions, therefore it is safe. Three things break that argument, and all
+    three are ordinary:
+
+      · the cycle between the pull and this line runs 43 extractors and a
+        classification pass. It takes hours. The Sunday cron can fire inside it.
+      · `pull_db.py --carry-forward` is a documented, sanctioned exit that
+        proceeds while the record is missing rows — and its own advice is to
+        promote them by pushing, i.e. through here.
+      · the pull's comparison was, until 2026-08-11, blind to
+        `public_funding_events` entirely. An argument built on it inherited the
+        blindness.
+
+    So the check happens HERE, against the record as it is now, immediately
+    before the overwrite. It costs one download of a file we are about to
+    replace; the thing it protects is a table of awards from registers that
+    republish a current file and keep no history, where a deleted row has no
+    second copy anywhere in the world.
     """
     if skipped_pull and not dry:
         sys.exit("\nREFUSED: --skip-push is missing and --skip-pull was given.\n"
@@ -155,6 +170,10 @@ def push_db(dry: bool, skipped_pull: bool) -> None:
                  "  was taken. Either drop --skip-pull, or add --skip-push, or\n"
                  "  reconcile explicitly:\n"
                  "    python3 ETL/events/load/reconcile_stores.py --report <record> <local>")
+
+    if not dry and not force:
+        check_push_is_not_a_deletion()
+
     print("\n=== Pushing db.sqlite back to the Railway volume ===")
     cmd = ["npx", "--yes", "@railway/cli", "volume", "files",
            "--volume", "etl-pipeline-volume", "upload",
@@ -164,12 +183,78 @@ def push_db(dry: bool, skipped_pull: bool) -> None:
         sys.exit(f"push failed (rc={rc}) -- Railway volume still has the pre-push data")
 
 
+def check_push_is_not_a_deletion() -> None:
+    """Refuse the upload if the record holds rows this file does not.
+
+    The losing store is the RECORD and the winning store is the laptop — the
+    opposite assignment from the pull, and the same one measurement, so the two
+    directions cannot come to disagree about what "would be lost" means.
+    """
+    sys.path.insert(0, str(ROOT / "ETL" / "events" / "load"))
+    sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
+    from reconcile_stores import format_loss, proven_loss, unknowns  # noqa: E402
+
+    sys.path.insert(0, str(ROOT / "ETL" / "events" / "extract"))
+    from pull_db import verify  # noqa: E402
+
+    witness = DB.with_suffix(".sqlite.record-witness")
+    print("\n=== Checking what this push would delete from the corpus of record ===")
+    rc = subprocess.run(
+        ["npx", "--yes", "@railway/cli", "volume", "files",
+         "--volume", "etl-pipeline-volume", "download", "/db.sqlite",
+         str(witness), "--overwrite"]).returncode
+    if rc != 0:
+        witness.unlink(missing_ok=True)
+        sys.exit(f"\nREFUSED: could not read the corpus of record (rc={rc}), so this "
+                 f"push\n  cannot be shown to be safe. An overwrite whose cost is "
+                 f"unknown is not a\n  sync. Re-run, or --force-overwrite if you have "
+                 f"another reason to believe\n  the record holds nothing this file "
+                 f"lacks.")
+    problem = verify(witness)
+    if problem:
+        witness.unlink(missing_ok=True)
+        sys.exit(f"\nREFUSED: what came back from the volume is not a usable database "
+                 f"—\n  {problem}\n  The comparison cannot be made, so the push does "
+                 f"not happen.")
+
+    lost = would_be_lost_wrapper(witness)
+    n = proven_loss(lost)
+    unk = unknowns(lost)
+    if unk:
+        print(f"\nNOT PROVEN SAFE — {len(unk)} table(s) on the record could not be "
+              f"compared row by row:")
+        for _f, t, d in unk:
+            print(f"    {t:<32} {d['rows_losing']:,} on the record vs "
+                  f"{d['rows_winning']:,} here — {d['why']}")
+    if n:
+        witness_note = f"  A copy of the record is at {witness} — it has not been touched."
+        sys.exit(f"\nREFUSED — the corpus of record holds {n:,} row(s) this file does "
+                 f"not.\n  Uploading over it is a deletion, not a sync.\n\n"
+                 f"{format_loss(lost, indent='  ')}\n\n{witness_note}\n\n"
+                 f"  Merge them in rather than deleting them:\n"
+                 f"    python3 ETL/events/load/reconcile_stores.py \\\n"
+                 f"        --into {DB} --from {witness} --family events\n"
+                 f"    then re-run this push.\n\n"
+                 f"  Or --force-overwrite to destroy them knowingly.")
+    witness.unlink(missing_ok=True)
+    print(f"  ok — the record holds no row this file lacks. Safe to overwrite.")
+
+
+def would_be_lost_wrapper(witness) -> dict:
+    """The record is the LOSING store here: it is the one about to be replaced."""
+    from reconcile_stores import would_be_lost
+    return would_be_lost(str(witness), str(DB))
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                   formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true", help="print commands, run nothing")
     ap.add_argument("--skip-pull", action="store_true", help="use local db.sqlite as-is")
     ap.add_argument("--skip-push", action="store_true", help="don't upload the result")
+    ap.add_argument("--force-overwrite", action="store_true",
+                    help="upload even though the corpus of record holds rows this "
+                         "file does not. Named for what it does: it deletes them.")
     args = ap.parse_args()
 
     restore_problems: list[str] = []
@@ -197,7 +282,8 @@ def main() -> None:
                   f"progress is still progress; re-run to retry the failed ones).")
 
         if not args.skip_push:
-            push_db(args.dry_run, skipped_pull=args.skip_pull)
+            push_db(args.dry_run, skipped_pull=args.skip_pull,
+                    force=args.force_overwrite)
     finally:
         if needs_wake and not args.dry_run:
             restore_problems = restore()

@@ -291,6 +291,16 @@ jobs:
       - name: A rebuild deletes only the instrument rows it authored
         run: python3 ETL/events/load/test_external_instrument_ownership.py
 
+      # Both channels between the corpus of record and a working copy move the
+      # whole 645 MB file with --overwrite, so each is a deletion of whatever
+      # the losing side holds alone. The guard against that skipped every table
+      # whose identity it could not use -- and an omitted table is byte-for-byte
+      # the same result as a table with nothing at risk. public_funding_events,
+      # 311,399 rows from registers that keep no history, had an identity naming
+      # four columns that do not exist and was therefore never once compared.
+      - name: An uncomparable table never reports itself as safe to overwrite
+        run: python3 ETL/events/load/test_overwrite_guard.py
+
       # The same class again, one column over and far more expensive: the split
       # keyed a child on `name` while the ETL renamed 430 of 453 children to the
       # Commission's registered scheme title. Placement read 11.5% instead of
