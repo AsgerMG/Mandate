@@ -880,8 +880,12 @@ const eur = (n: number | undefined | null): string =>
  *     row holds is decided in ONE place — `JUDGEMENT_CAP` in shortlist.ts,
  *     which is the stage that knows about own-versus-inherited rules and about
  *     the framework label. A second, smaller cut here was silently discarding
- *     190 requirements that stage had already selected as the row's best,
+ *     the third requirement that stage had already selected as the row's best,
  *     which is the same defect as two truncations of one description.
+ *
+ * Together the two changes take the requirements PRINTED across one founder's
+ * fourteen menus from 271 to 407 — 252 rows, 1.08 a row to 1.62
+ * (`_wsfg_silence.ts`, before and after on the same founder).
  *
  * The test for the unseen case is stated over an arbitrary menu rather than
  * over the requirements we happen to hold: for ANY row with a non-empty

@@ -90,11 +90,14 @@
  * `eligibility_text` and must not — it is a client-facing payload under a
  * budget (check_payload_budget), and 1,088 eligibility texts do not belong in
  * the browser". The premise was right; the conclusion was drawn from a number
- * nobody had taken. The 594 populated texts are 563 KB against a snapshot of
- * 8.0 MB and a phase-one request payload of 3.3 MB under an 8 MB budget — 7%
- * of a store with 3.7 MB of headroom. They are in the snapshot now, because
- * the selector's row reads them and a field in one store and not the other is
- * the divergence class `check_store_columns` exists to fail the build on.
+ * nobody had taken. Taken, before and after, through check_payload_budget: the
+ * 594 populated texts are 569 KB, and they move the full snapshot 7.98 → 8.60
+ * MB and the per-request payload 4.29 → 4.90 MB against an 8 MB budget,
+ * leaving 3.1 MB of headroom where there were 3.7. (That check's "past 4 MB"
+ * WARN fires at 4.29 MB too — this column moves a standing warning, it does not
+ * create one.) They are in the snapshot now, because the selector's row reads
+ * them and a field in one store and not the other is the divergence class
+ * `check_store_columns` exists to fail the build on.
  *
  * So there IS an offline copy now, and this axis still does not read it. That
  * is a choice with a reason: Postgres is the store the product reads live and

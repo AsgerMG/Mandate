@@ -227,12 +227,23 @@ def main() -> None:
         # "it is a client-facing payload under a budget (check_payload_budget),
         # and 1,088 eligibility texts do not belong in the browser". The
         # premise was right and the conclusion followed from a number nobody
-        # had taken. Measured: 594 texts, 563 KB raw, against a snapshot of
-        # 7.98 MB and a per-request phase-one payload of 3.26 MB under an 8 MB
-        # budget. It is 7% of a store with 3.7 MB of headroom, and what it buys
-        # is the only sentence that separates fourteen French rows sharing one
-        # title. Truncation stays the READER's job (schemeText.ts) so that the
-        # budget lives in one place; that place is not this file.
+        # had taken. So the number was taken, BEFORE AND AFTER, through
+        # check_payload_budget itself:
+        #
+        #   full snapshot        7.98 MB -> 8.60 MB
+        #   per-request payload  4.29 MB -> 4.90 MB   (budget 8 MB)
+        #     phase one          3.26 MB -> 3.88 MB
+        #   headroom to budget   3.7 MB  -> 3.1 MB
+        #
+        # 594 texts, 569 KB raw. The check's "past 4 MB" WARN is not new: it
+        # fires at 4.29 MB too, so this column moves a standing warning further
+        # from its budget, it does not create one. Quote both numbers when
+        # citing this, because a comment holding only the before-figure is how a
+        # cost gets argued away twice.
+        #
+        # What it buys is the only sentence that separates fourteen French rows
+        # sharing one title. Truncation stays the READER's job (schemeText.ts)
+        # so that the budget lives in one place; that place is not this file.
         "eligibilityText": inst["eligibility_text"],
         # ── Inherited gates ──────────────────────────────────────────────────
         # A child carries no gates of its own by design: the curated

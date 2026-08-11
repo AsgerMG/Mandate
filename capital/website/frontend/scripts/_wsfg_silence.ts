@@ -38,13 +38,16 @@ import {
   hydrateDbInstruments, hydrateGatesFor, loadDbInstruments, requireLiveCorpus,
   type DbInstrument,
 } from "../lib/intelligence/corpus";
+import {
+  beyondTitle, DEMANDS_SENTENCE_CHARS, fundsSentence,
+} from "../lib/intelligence/schemeText";
 import { isCited } from "../lib/intelligence/verdict";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool } from "../lib/intelligence/memoCandidates";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
-  tableInputFromAnswers, VERDICT_POOL,
+  judgementCriteria, tableInputFromAnswers, VERDICT_POOL,
 } from "../lib/intelligence/shortlist";
 import { assessAll } from "../lib/intelligence/verdict";
 import type { EligibilityAnswers } from "../lib/intelligence/types";
@@ -115,26 +118,38 @@ const pct = (n: number, d: number) => (d ? `${((100 * n) / d).toFixed(1)}%` : "n
 
 /** WHY a row is silent, which is the only thing that says what to do about it.
  *
- *  A share on its own cannot distinguish the two causes, and they are not the
- *  same defect and do not belong to the same team:
+ *  A share on its own cannot separate the two causes, and they are not the same
+ *  defect and do not belong to the same team:
  *
- *    SUPPRESSED — the corpus holds a sentence for this fund and the renderer
- *      did not print it. That is a bug in this codebase and this script's own
- *      workstream is what such a number is for.
- *    NOTHING HELD — the corpus holds no prose and no CITED rule for the fund at
- *      all, so there is no sentence to suppress. Rendering something anyway
- *      would mean printing an `llm_classified` guess as the fund's own words,
- *      which the evidence tiers forbid and `judgementCriteria` refuses on
- *      purpose. The fix is an extraction run, not a renderer change.
+ *    SUPPRESSED — the row's OWN composers would have produced a line from what
+ *      the corpus holds, and the rendered row has none. That is a bug on this
+ *      side of the ETL, and this workstream is what such a number is for. It
+ *      should be zero.
+ *    NOTHING RENDERABLE — the composers produce nothing, so there was no
+ *      sentence to suppress. The fix is an extraction run, not a renderer
+ *      change.
  *
- *  Uncited rules are counted separately rather than folded into either, because
- *  a row with five uncited gates and nothing else looks recoverable in a column
- *  count and is not recoverable on this side of the ETL. */
-function whySilent(inst: DbInstrument | undefined): "suppressed" | "nothing held" {
-  if (!inst) return "nothing held";
-  const prose = (inst.description ?? "").trim() || (inst.eligibilityText ?? "").trim();
-  const cited = (inst.gates ?? []).some((g) => isCited(g) && (g.requirement ?? "").trim());
-  return prose || cited ? "suppressed" : "nothing held";
+ *  ── Asked by CALLING the composers, never by re-deriving them ─────────────
+ *  A tempting shortcut is "does the instrument hold a description, an
+ *  eligibility text, or a cited gate". That measurement is WRONG and this file
+ *  shipped it for one run: it called ten rows suppressed that are correctly
+ *  silent. Every cited gate on those ten is either decided by the engine
+ *  already (`valueSpec` — it is a screen, and the row states its verdict
+ *  elsewhere) or is a `programme_fact`/`obligation`/`vague` about ministerial
+ *  deadlines, flat-rate indirect-cost percentages and DNSH compliance. Printing
+ *  those is the `structuringNotes` bargain this row is deliberately kept out
+ *  of: "Aid is not available to an undertaking in difficulty" on twenty-eight
+ *  rows of one menu separates none of them.
+ *
+ *  So the question is put to `judgementCriteria` and `fundsSentence`
+ *  themselves. They are the one definition of what a row may say; a second copy
+ *  of their rules here would agree with them until the day one of them changed,
+ *  and this diagnostic would then report a defect class that does not exist. */
+function whySilent(inst: DbInstrument | undefined): "suppressed" | "nothing renderable" {
+  if (!inst) return "nothing renderable";
+  const funds = beyondTitle(inst.name, fundsSentence(inst.description));
+  const who = fundsSentence(inst.eligibilityText, DEMANDS_SENTENCE_CHARS);
+  return funds || who || judgementCriteria(inst).length ? "suppressed" : "nothing renderable";
 }
 
 async function main() {
@@ -144,7 +159,7 @@ async function main() {
 
   const semantic = await semanticFundMatch(DESCRIPTION);
 
-  const why = { suppressed: 0, "nothing held": 0, uncitedOnly: 0 };
+  const why = { suppressed: 0, "nothing renderable": 0, holdsRules: 0, holdsCited: 0 };
   const totals = { rows: 0, silent: 0, chars: 0, menus: 0, demands: 0 };
   const perLine = Object.fromEntries(FUND_LINES.map((l) => [l, 0])) as Record<string, number>;
   const table: string[] = [];
@@ -198,9 +213,14 @@ async function main() {
     // `readMenu` parses the prompt instead of rebuilding it.
     for (const r of silent) {
       const inst = byId.get(pool[r.index]?.instrumentId ?? "");
-      why[whySilent(inst)]++;
-      if ((inst?.gates ?? []).some((g) => (g.requirement ?? "").trim()) &&
-          whySilent(inst) === "nothing held") why.uncitedOnly++;
+      const verdict = whySilent(inst);
+      why[verdict]++;
+      // Rows that LOOK recoverable in a column count and are not: they hold
+      // rules, but every one is uncited, engine-decided, or a programme fact.
+      if (verdict === "nothing renderable"
+        && (inst?.gates ?? []).some((g) => (g.requirement ?? "").trim())) why.holdsRules++;
+      if (verdict === "nothing renderable"
+        && (inst?.gates ?? []).some((g) => isCited(g))) why.holdsCited++;
     }
 
     table.push(
@@ -210,7 +230,13 @@ async function main() {
         `${l} ${pct(menu.filter((r) => r.has[l]).length, menu.length).padStart(6)}`).join("  ") +
       `   prompt ${(prompt.length / 1000).toFixed(1)}k`);
     if (process.env.VERBOSE) {
-      for (const r of silent) table.push(`        silent: [${r.index}] ${r.title}`);
+      for (const r of silent) {
+        const inst = byId.get(pool[r.index]?.instrumentId ?? "");
+        table.push(`        silent [${whySilent(inst)}]: [${r.index}] ${r.title}` +
+          `  desc=${(inst?.description ?? "").length} elig=${(inst?.eligibilityText ?? "").length}` +
+          ` cited=${(inst?.gates ?? []).filter((g) => isCited(g)).length}` +
+          ` gates=${(inst?.gates ?? []).length}`);
+      }
     }
   }
 
@@ -222,6 +248,13 @@ async function main() {
     FUND_LINES.map((l) => `${l} ${pct(perLine[l], totals.rows)}`).join("  "));
   console.log(`  ${totals.demands} requirement(s) PRINTED across those rows ` +
     `(${(totals.demands / Math.max(1, totals.rows)).toFixed(2)} per row)`);
+  console.log(`  of the ${totals.silent} silent row(s): ${why.suppressed} SUPPRESSED ` +
+    `(this row's own composers produce a line and the row has none — a defect ` +
+    `HERE, and it should be 0) / ${why["nothing renderable"]} NOTHING RENDERABLE ` +
+    `(the composers produce nothing — an extraction gap, not a renderer one)`);
+  console.log(`    of those, ${why.holdsRules} hold rules and ${why.holdsCited} hold ` +
+    `CITED rules, none of them admissible on a row: every one is decided by the ` +
+    `engine already, or is a programme fact rather than a condition on the applicant`);
   console.log(`  mean prompt ${(totals.chars / Math.max(1, totals.menus) / 1000).toFixed(2)}k chars ` +
     `over ${totals.menus} menu(s); ${(totals.chars / 1000).toFixed(1)}k total`);
 }
