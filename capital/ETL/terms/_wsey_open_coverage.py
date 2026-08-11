@@ -42,10 +42,15 @@ from load_scheme_text import live_ids  # noqa: E402
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", metavar="PATH", help="also write the counts here")
+    ap.add_argument("--with-text", action="store_true",
+                    help="include name+description per open row, so "
+                         "scripts/_wsey_legible_staged.ts can run production's "
+                         "own renderer over the staged text")
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
     open_ids = live_ids(conn)
+    names = dict(conn.execute("SELECT id, name FROM funding_instruments"))
     rows = {i: (c, (d or "").strip()) for i, c, d in conn.execute(
         "SELECT id, country, description FROM funding_instruments")}
     conn.close()
@@ -74,6 +79,9 @@ def main() -> None:
             "openPool": n, "described": k, "undescribed": n - k,
             "byCountry": {cc: {"open": o, "described": dd} for cc, (o, dd) in per.items()},
             "describedIds": sorted(described),
+            **({"openRows": [
+                {"id": i, "name": names.get(i) or "", "description": rows[i][1]}
+                for i in sorted(open_ids)]} if args.with_text else {}),
         }, indent=1))
         print(f"\nwrote {args.json}")
 
