@@ -839,13 +839,22 @@ export function baseRateSentence(listLength: number): string {
   const n = poolRecallN();
   if (p6 == null || pn == null || !n) return "";
   const a = asBaseRate(p6), b = asBaseRate(pn);
-  const here = listLength <= 6 ? "" :
-    ` So about ${Math.max(0, b - a)}% of the time it is in this list but BELOW the
-sixth row -- that is the whole of what a choice of yours can win --`;
-  return ` Measured on ${n} held-out companies, the scheme that actually paid out is
-in the first six rows about ${a}% of the time, and somewhere in this list of
-${listLength} about ${b}% of the time.${here}${listLength <= 6 ? " So" : " and"} about ${100 - b}% of the time it is not
-in this list at all, and nothing you pick can reach it.`;
+  const lines = [
+    `Measured on ${n} held-out companies, the scheme that actually paid out is in`,
+    `the first six rows about ${a}% of the time, and somewhere in this list of ${listLength}`,
+    `about ${b}% of the time.`,
+  ];
+  if (listLength > 6) {
+    lines.push(
+      `So about ${Math.max(0, b - a)}% of the time it is in this list but BELOW the sixth row --`,
+      `that is the whole of what a choice of yours can win -- and about ${100 - b}% of the`,
+      `time it is not in this list at all, and nothing you pick can reach it.`);
+  } else {
+    lines.push(
+      `So about ${100 - b}% of the time it is not in this list at all, and nothing you`,
+      `pick can reach it.`);
+  }
+  return `\n\n${lines.join("\n")}`;
 }
 
 /**
