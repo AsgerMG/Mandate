@@ -24,7 +24,7 @@
 // fact about that regime, not a feature.
 import { readFileSync } from "fs";
 import { Client } from "pg";
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 loadEnvLocal();
 requireCredentials("wsce_ceiling", ["DATABASE_URL"]);
 

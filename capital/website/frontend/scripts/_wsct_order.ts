@@ -1,8 +1,8 @@
-// wsCT — should the memo re-sort the shortlist's order on `scoreFit` at all?
+// wsCT — should the memo re-sort the shortlist's order on `scoreFitControl` at all?
 //
 // ── The question ──────────────────────────────────────────────────────────
 // The memo takes the shortlist's ranked pool (VERDICT_POOL 18) and re-sorts
-// the whole thing on `scoreFit` before dropping blocked rows and cutting. wsCR
+// the whole thing on `scoreFitControl` before dropping blocked rows and cutting. wsCR
 // measured that re-sort moving the won leaf OUT of the top six 49 times for 13
 // in. A re-sort that loses four for every one it gains is not a re-sort.
 //
@@ -12,7 +12,7 @@
 // pair, and the difference is the ordering and nothing else.
 //
 // ── What the arms are ─────────────────────────────────────────────────────
-//   fit    what ships: `scoreFit`, nine weighted components, thin-evidence
+//   fit    what ships: `scoreFitControl`, nine weighted components, thin-evidence
 //          penalty, pool position as the tie-break.
 //   pool   the shortlist's own ranking, untouched. The one ordering in this
 //          product that has ever been measured end to end.
@@ -21,7 +21,7 @@
 // because those are not ordering and are not in question here.
 //
 // ── The safety check that has to travel with it ───────────────────────────
-// `scoreFit` scores an off-country national scheme at proximity 0, so removing
+// `scoreFitControl` scores an off-country national scheme at proximity 0, so removing
 // the re-sort could in principle float one up the table — and a fund the
 // founder cannot draw on is the wrongly-shown row this product treats as worse
 // than a missing one. So both arms report how many of their first six rows are
@@ -46,7 +46,7 @@ import {
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import {
-  orderMemoCandidates, ORDER_ARM, WRITER_CANDIDATE_CAP, type MemoOrderArm,
+  orderMemoCandidates, SHIPPED_MEMO_ORDER, WRITER_CANDIDATE_CAP, type MemoOrderControl,
 } from "../lib/intelligence/memoCandidates";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
 import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
@@ -61,21 +61,21 @@ import {
 } from "./recallSet";
 
 const num = (v: string | undefined, d: number) => (v && Number.isFinite(Number(v)) ? Number(v) : d);
-const ARMS: MemoOrderArm[] = ["fit", "pool", "verdict"];
+const ARMS: MemoOrderControl[] = ["fit", "pool", "verdict"];
 
 interface Row {
   want: string;
   wantRegime: string;
   country: string;
   poolRank: number | null;
-  rank: Record<MemoOrderArm, number | null>;
+  rank: Record<MemoOrderControl, number | null>;
   /** National schemes in the first six that the founder cannot draw on. */
-  offCountryInSix: Record<MemoOrderArm, number>;
+  offCountryInSix: Record<MemoOrderControl, number>;
   /** What the published six are made of, by encoded verdict. `fit` weights
    *  `eligibilityFit` at 0.24, so dropping the re-sort could publish more rows
    *  carrying an obstacle. That is not fatal — the row states the obstacle,
    *  and FUND-12 says rows are not ranked — but it must not go unreported. */
-  verdictMix: Record<MemoOrderArm, Record<string, number>>;
+  verdictMix: Record<MemoOrderControl, Record<string, number>>;
 }
 
 function pct(hits: number, n: number): string {
@@ -152,7 +152,7 @@ async function main() {
         instrumentTable,
         req: { company: "TestCo", country: t.country, eligibility, ...opts } as never,
         records: [], dbPeers: [], eligibilityScreen, semanticScores: semantic,
-        log: new ExclusionLog(), order: arm,
+        log: new ExclusionLog(), orderControl: arm,
       });
       const ids = ordered.map((c) => c.row.instrumentId).filter(Boolean) as string[];
       const idx = ids.indexOf(t.instrument);
@@ -179,9 +179,9 @@ async function main() {
   console.log(rankerTallyLine());
   console.log(`set=${setFile} split=${split} replayed ${out.length}`);
   console.log(`published cap ${BRIEF_LIMITS.institutionsMax}, writer cap ${WRITER_CANDIDATE_CAP}, `
-    + `shipping arm ORDER_ARM=${ORDER_ARM}`);
+    + `shipping arm SHIPPED_MEMO_ORDER=${SHIPPED_MEMO_ORDER}`);
 
-  const at = (arm: MemoOrderArm, k: number) =>
+  const at = (arm: MemoOrderControl, k: number) =>
     out.filter((r) => { const x = r.rank[arm]; return x !== null && x <= k; }).length;
 
   console.log(`\n── MEMO@k, BOTH ORDERS OVER THE SAME POOL ──`);

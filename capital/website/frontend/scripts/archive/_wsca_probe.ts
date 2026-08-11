@@ -1,5 +1,5 @@
 import { Client } from "pg";
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 loadEnvLocal();
 requireCredentials("wsca_probe", ["DATABASE_URL"]);
 (async () => {

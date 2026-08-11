@@ -6,7 +6,7 @@
 //   (c) encoding_method    — already tried and skipped, or never attempted
 import { readFileSync } from "fs";
 import { Client } from "pg";
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 loadEnvLocal();
 requireCredentials("wscb_characterise", ["DATABASE_URL"]);
 const PUB = process.env.PUBLISHABLE;

@@ -43,7 +43,7 @@
 import { mkdirSync, writeFileSync } from "fs";
 import path from "path";
 
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 requireCredentials("wsdq_seam", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
@@ -52,26 +52,26 @@ import {
   AGENT_SELECT_ARM, agentSelectCostPerBrief, agentSelectLastDecision, agentSelectLastTrace,
   agentSelectTallyLine, intakeAnswerLines, LOOKUP_MAX, resetAgentSelectTally, SELECT_COUNT,
   SELECT_DEPTH, setAgentSelectTracing, THINK_EFFORT, unansweredRankingFields,
-} from "../lib/intelligence/agentSelect";
-import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
-import { withCostTracking } from "../lib/intelligence/cost";
+} from "../../lib/intelligence/agentSelect";
+import { BRIEF_LIMITS } from "../../lib/intelligence/briefChecks";
+import { withCostTracking } from "../../lib/intelligence/cost";
 import {
   corpusProvenance, findPeersBySubsector, hydrateDbInstruments, hydrateGatesFor,
   isGenericSubsector, matchCompany, requireLiveCorpus, resetGateHydration,
-} from "../lib/intelligence/corpus";
-import { evaluateEligibility } from "../lib/intelligence/eligibility";
-import { ExclusionLog } from "../lib/intelligence/exclusions";
-import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
-import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
-import { sanitizeEligibility } from "../lib/intelligence/sanitize";
+} from "../../lib/intelligence/corpus";
+import { evaluateEligibility } from "../../lib/intelligence/eligibility";
+import { ExclusionLog } from "../../lib/intelligence/exclusions";
+import { accessiblePool, orderMemoCandidates } from "../../lib/intelligence/memoCandidates";
+import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../../lib/intelligence/semantic";
+import { sanitizeEligibility } from "../../lib/intelligence/sanitize";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, DISPLAY_CAP, founderCountryList,
   tableInputFromAnswers, VERDICT_POOL,
-} from "../lib/intelligence/shortlist";
-import { assessAll } from "../lib/intelligence/verdict";
-import { COMPANIES } from "../lib/intelligence/__benchCompanies";
-import type { InstrumentRow } from "../lib/intelligence/types";
-import { OUT_ROOT, slugOf } from "./_wsdq_paths";
+} from "../../lib/intelligence/shortlist";
+import { assessAll } from "../../lib/intelligence/verdict";
+import { COMPANIES } from "../../lib/intelligence/__benchCompanies";
+import type { InstrumentRow } from "../../lib/intelligence/types";
+import { OUT_ROOT, slugOf } from "../_wsdq_paths";
 
 const PUBLISH_CAP = BRIEF_LIMITS.institutionsMax;
 const eur = (n?: number | null) =>
@@ -164,7 +164,7 @@ async function main() {
 
     // THE TREATMENT. Production's own seam, on that same object.
     const { result: poolOn, eur: spent } = await withCostTracking(
-      () => import("../lib/intelligence/agentSelect")
+      () => import("../../lib/intelligence/agentSelect")
         .then((m) => m.agentSelectMemoPool(poolOff, req as never)));
     spend += spent;
     const trace = agentSelectLastTrace();
