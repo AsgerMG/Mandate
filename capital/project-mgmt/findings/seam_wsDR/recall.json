@@ -1,0 +1,218 @@
+[
+ {
+  "label": "semiconductors_electronics/DE",
+  "company": "KARLSRUHER INSTITUT FUER TECHNOLOGIE",
+  "country": "DE",
+  "accessible": 114,
+  "wonRankAccessible": null,
+  "late": {
+   "menu": 18,
+   "picks": [
+    2,
+    3,
+    1,
+    0,
+    5,
+    14
+   ],
+   "deepest": 14,
+   "poolIds": [
+    "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung",
+    "eic_pathfinder",
+    "chips_ju_kdt_unknown",
+    "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_113709__thuringer_aufbaubank",
+    "satr_de_rnd__sa_107108__thuringer_aufbaubank",
+    "satr_de_rnd__sa_56245__finanzamt_erlangen",
+    "satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_56245__finanzamt_freiburg_stadt",
+    "satr_de_rnd__sa_115170__sachsen_sab",
+    "satr_de_rnd__sa_56245__finanzamt_furstenfeldbruck",
+    "satr_de_rnd__sa_103582__nbank",
+    "satr_de_rnd__sa_56245__finanzamt_gie_en",
+    "satr_de_rnd__sa_56245__finanzamt_heidelberg",
+    "satr_de_rnd__sa_106032__sachsen_sab",
+    "satr_de_rnd__sa_56245__finanzamt_heilbronn"
+   ],
+   "publishedIds": [
+    "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung",
+    "eic_pathfinder",
+    "chips_ju_kdt_unknown",
+    "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_113709__thuringer_aufbaubank"
+   ],
+   "wonRank": null,
+   "wonInPool": false,
+   "fellBack": null,
+   "eur": 0.02118024
+  },
+  "early": {
+   "menu": 40,
+   "picks": [
+    2,
+    3,
+    0,
+    1,
+    5,
+    14
+   ],
+   "deepest": 14,
+   "poolIds": [
+    "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung",
+    "chips_ju_kdt_unknown",
+    "eic_pathfinder",
+    "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_113709__thuringer_aufbaubank",
+    "satr_de_rnd__sa_107108__thuringer_aufbaubank",
+    "satr_de_rnd__sa_56245__finanzamt_erlangen",
+    "satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_56245__finanzamt_freiburg_stadt",
+    "satr_de_rnd__sa_115170__sachsen_sab",
+    "satr_de_rnd__sa_56245__finanzamt_furstenfeldbruck",
+    "satr_de_rnd__sa_103582__nbank",
+    "satr_de_rnd__sa_56245__finanzamt_gie_en",
+    "satr_de_rnd__sa_56245__finanzamt_heidelberg",
+    "satr_de_rnd__sa_106032__sachsen_sab",
+    "satr_de_rnd__sa_56245__finanzamt_heilbronn"
+   ],
+   "publishedIds": [
+    "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung",
+    "chips_ju_kdt_unknown",
+    "eic_pathfinder",
+    "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+    "satr_de_rnd__sa_113709__thuringer_aufbaubank"
+   ],
+   "wonRank": null,
+   "wonInPool": false,
+   "fellBack": null,
+   "eur": 0.03384312
+  },
+  "offPublishedIds": [
+   "chips_ju_kdt_unknown",
+   "eic_pathfinder",
+   "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_113709__thuringer_aufbaubank",
+   "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+   "satr_de_rnd__sa_107108__thuringer_aufbaubank"
+  ],
+  "offWonRank": null,
+  "offWonInPool": false
+ },
+ {
+  "label": "other/DE",
+  "company": "UNIVERSITY OF STUTTGART",
+  "country": "DE",
+  "accessible": 114,
+  "wonRankAccessible": 5,
+  "late": {
+   "menu": 18,
+   "picks": [
+    15,
+    0,
+    4,
+    8,
+    12,
+    14
+   ],
+   "deepest": 15,
+   "poolIds": [
+    "horizon_eu_cl5",
+    "chp",
+    "clean_aviation",
+    "satr_de_rnd__sa_53084__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "satr_de_rnd__sa_102510__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "satr_de_rnd__sa_113753__bundesministerium_fur_wirtschaft_und_klimaschutz",
+    "satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank",
+    "satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan",
+    "satr_de_equity__sa_111218__l_bank_baden_wurttemberg",
+    "satr_de_rnd__sa_64551__bundesinstitut_fur_bau_stadt_und_raumforschung_i",
+    "satr_de_equity__sa_111005__kreditanstalt_fur_wiederaufbau",
+    "satr_de_rnd__sa_106076__sachsen_sab",
+    "satr_de_rnd__sa_119894__bayerisches_staatsministerium_fur_wirtschaft_lan",
+    "satr_de_rnd__sa_112200__nbank",
+    "satr_de_equity__sa_108143__landwirtschaftliche_rentenbank",
+    "satr_de_rnd__sa_110716__bezirksregierung_arnsberg",
+    "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan",
+    "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg"
+   ],
+   "publishedIds": [
+    "horizon_eu_cl5",
+    "chp",
+    "clean_aviation",
+    "satr_de_rnd__sa_53084__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "satr_de_rnd__sa_102510__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "satr_de_rnd__sa_113753__bundesministerium_fur_wirtschaft_und_klimaschutz",
+    "satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank"
+   ],
+   "wonRank": 3,
+   "wonInPool": true,
+   "fellBack": null,
+   "eur": 0.0202768
+  },
+  "early": {
+   "menu": 40,
+   "picks": [
+    8,
+    12,
+    23,
+    15,
+    32,
+    21
+   ],
+   "deepest": 32,
+   "poolIds": [
+    "satr_de_rnd__sa_53084__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "satr_de_rnd__sa_102510__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "satr_de_rnd__sa_107516__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "horizon_eu_cl5",
+    "eic_pathfinder",
+    "horizon_eu_cl1",
+    "chp",
+    "satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank",
+    "satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan",
+    "satr_de_equity__sa_111218__l_bank_baden_wurttemberg",
+    "clean_aviation",
+    "satr_de_rnd__sa_64551__bundesinstitut_fur_bau_stadt_und_raumforschung_i",
+    "satr_de_equity__sa_111005__kreditanstalt_fur_wiederaufbau",
+    "satr_de_rnd__sa_106076__sachsen_sab",
+    "satr_de_rnd__sa_119894__bayerisches_staatsministerium_fur_wirtschaft_lan",
+    "satr_de_rnd__sa_112200__nbank",
+    "satr_de_equity__sa_108143__landwirtschaftliche_rentenbank",
+    "satr_de_rnd__sa_110716__bezirksregierung_arnsberg"
+   ],
+   "publishedIds": [
+    "satr_de_rnd__sa_53084__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "satr_de_rnd__sa_102510__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "satr_de_rnd__sa_107516__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle",
+    "horizon_eu_cl5",
+    "eic_pathfinder",
+    "horizon_eu_cl1",
+    "chp"
+   ],
+   "wonRank": null,
+   "wonInPool": true,
+   "fellBack": null,
+   "eur": 0.031127280000000004
+  },
+  "offPublishedIds": [
+   "chp",
+   "satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank",
+   "satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan",
+   "satr_de_equity__sa_111218__l_bank_baden_wurttemberg",
+   "clean_aviation",
+   "satr_de_rnd__sa_64551__bundesinstitut_fur_bau_stadt_und_raumforschung_i",
+   "satr_de_equity__sa_111005__kreditanstalt_fur_wiederaufbau"
+  ],
+  "offWonRank": 5,
+  "offWonInPool": true
+ }
+]

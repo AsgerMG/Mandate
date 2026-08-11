@@ -152,7 +152,17 @@ function recallCases(limit: number): Case[] {
   // TUNE, deliberately: the floors are on tune and wsDQ's screen was on tune,
   // so this figure is comparable with both. The base rate the prompt quotes is
   // measured on HOLDOUT, which is what keeps the two apart.
-  const graded = pop.graded.filter((r) => r.split === "tune" && isDescribed(r));
+  // `cross_regime_summary` and nothing else, at 320+ characters. This is
+  // wsDQ's own screen population, and the provenance filter is not a
+  // convenience: it is prose about the company recovered from an award under a
+  // DIFFERENT regime, which is the only source `check_recall_leaks` clears at
+  // the SIBLING level. A founder described out of the won fund's own text hands
+  // the selector the answer in the query, and a win that comes from reading the
+  // answer is worth less than no win. Running the same population as wsDQ also
+  // means this run's numbers sit beside that one's rather than near it.
+  const graded = pop.graded.filter((r) =>
+    r.split === "tune" && isDescribed(r)
+    && r.descriptionSource === "cross_regime_summary" && (r.description ?? "").length >= 320);
   // One founder per country|sector, best-described first — the same spread
   // wsDQ's screen used, so the two runs cover the same corpus rather than one
   // dense neighbourhood twice.
