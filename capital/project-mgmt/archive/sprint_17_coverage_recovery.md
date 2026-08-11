@@ -1,6 +1,6 @@
 # Sprint 17 — Coverage Recovery Plan (7-day)
 
-*Companion to [gap_analysis_2026.md](../gap_analysis_2026.md). Goal: close the evident coverage gaps without breaking dataset coherence.*
+*Companion to [gap_analysis_2026.md](gap_analysis_2026.md). Goal: close the evident coverage gaps without breaking dataset coherence.*
 
 ---
 

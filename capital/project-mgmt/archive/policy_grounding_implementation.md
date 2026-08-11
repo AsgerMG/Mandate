@@ -1,7 +1,7 @@
 # Implementation plan: ground the memo's back half in our own corpus
 
 Written 2026-08-02. This is the build plan for Phase 2b of
-`advisor_retrieval_plan.md`, which established WHY. Everything below is measured
+`advisor_retrieval_plan.md` (same directory), which established WHY. Everything below is measured
 against `data/signals.sqlite` as it stands, not estimated.
 
 ## What we are fixing

@@ -224,5 +224,5 @@ It is scheduled, not blocking.
 2. **Two-phase hydration**, in a session of its own.
 3. Remaining splits, once named.
 4. Structuring Phase B (intensity as a rate) — see
-   structuring_backend_plan.md, which is where the analyst-facing value now is.
+   structuring_backend_plan.md (this directory), which is where the analyst-facing value now is.
 5. Refresh trigger and the coverage regression gate.

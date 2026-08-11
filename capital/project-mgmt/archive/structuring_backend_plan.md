@@ -137,7 +137,7 @@ Order:
 3. **Vinnova and CDTI splits.** Same mechanism as ADEME, now affordable.
 4. **Phase B.** Intensity as a rate, verified against actual awards.
 5. **The refresh trigger and the coverage regression gate**
-   (substreams_and_refresh_plan.md, Phase 4). The gate should land before
+   (substreams_and_refresh_plan.md, this directory, Phase 4). The gate should land before
    Phase C, because a cumulation graph is the first thing whose breakage would
    be invisible in the coverage numbers.
 6. **Phase C**, then **Phase D**.

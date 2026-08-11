@@ -9,7 +9,7 @@
 > - ⏳ **Open**: 3b Business Finland (Qlik), 5 LIFE (Qlik), 6 EIB-corporate decision + InvestEU, 7 EBRD devtools discovery.
 > - Hardening done: classify/groups/sanity green, site rebuilt, methodology + gap analysis updated.
 
-*Companion to [gap_analysis_2026.md](../gap_analysis_2026.md) Section 6 (channel-completeness audit). Every source below was **probed live on 2026-06-10/11**; record counts, endpoints, and formats are verified, not estimated. Goal: fix the channel verdict — "grant channel near-complete, equity channel effectively absent (25 events / €7M in 288k)" — and finish the Horizon partnership layer in one sprint.*
+*Companion to [gap_analysis_2026.md](../archive/gap_analysis_2026.md) Section 6 (channel-completeness audit). Every source below was **probed live on 2026-06-10/11**; record counts, endpoints, and formats are verified, not estimated. Goal: fix the channel verdict — "grant channel near-complete, equity channel effectively absent (25 events / €7M in 288k)" — and finish the Horizon partnership layer in one sprint.*
 
 ---
 

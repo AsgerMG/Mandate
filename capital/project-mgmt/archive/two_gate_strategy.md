@@ -2,7 +2,7 @@
 
 Written 2026-08-05. This is the direction that works, with the numbers that
 prove it. Supersedes the "no demonstrated route" conclusion in
-`screen_one_discrimination_plan.md`, which was wrong -- it had measured four
+`screen_one_discrimination_plan.md` (this directory), which was wrong -- it had measured four
 levers that all shared one assumption, and the assumption was the problem.
 
 ## The result

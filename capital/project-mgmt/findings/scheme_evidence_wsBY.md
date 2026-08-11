@@ -169,7 +169,7 @@ they cost the founder nothing today.
 All three have a recorded structural reason a per-scheme document does not
 exist:
 
-- **`bdns_es_ayudas`** — `scheme_text_corpus_plan.md`, 2026-08-05: BDNS logs
+- **`bdns_es_ayudas`** — `project-mgmt/archive/scheme_text_corpus_plan.md`, 2026-08-05: BDNS logs
   each year's call as its own scheme identity ("convocatoria del año 2024"),
   so these are single-year vintages with no standing page. 93 of 93 Spanish
   targets were already resolved; only 6 carried eligibility text, and the note

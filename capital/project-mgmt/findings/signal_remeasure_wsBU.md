@@ -228,7 +228,7 @@ sharpen and are pointing the wrong way, so sharpening them would cost points.
 the founder's own semantic text — are both already in the shipped path. The
 ceiling here is not a ranking ceiling; it is that 99 candidates share a country,
 a sector and a capital type, and the intake collects nothing else that separates
-them. That is the same finding `screen_one_discrimination_plan.md` reached, now
+them. That is the same finding `project-mgmt/archive/screen_one_discrimination_plan.md` reached, now
 re-established on a key that can see three times as many funds.
 
 ## Leak status — which numbers are leak-free
