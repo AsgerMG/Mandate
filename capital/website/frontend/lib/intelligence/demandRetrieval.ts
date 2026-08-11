@@ -13,9 +13,12 @@
 // Say which is used for what, every time, because conflating them is how the
 // leak comes back.
 //
-//   eligibility_embeddings — WHAT A FUND DEMANDS. THIS IS THE ONE WE READ.
-//     Written by ETL/terms/embed_eligibility.py, one row per gate or clause,
-//     and its text is constructed as:
+//   eligibility_embeddings — WHAT A FUND DEMANDS. THIS IS THE ONE WE READ,
+//     AND ONLY ITS `source_type = 'gate'` ROWS. That restriction is enforced in
+//     the query below and it is load-bearing, because the index holds two kinds
+//     of row and only ONE of them is covered by the argument that follows.
+//
+//     GATE ROWS. Written by ETL/terms/embed_eligibility.py, whose text is
 //
 //         def gate_chunk_text(requirement, value):
 //             return f"{requirement}\nValue: {value}" if value else requirement
@@ -24,9 +27,23 @@
 //     its value, its machine-evaluable spec, its source quote and its
 //     verification level. It has NO column for a beneficiary, an award, an
 //     amount, a company, a year or a project title — so there is no query
-//     against this index, however phrased, that can return who won a fund.
+//     against these rows, however phrased, that can return who won a fund.
 //     The reach is structural, not a filter that could be misconfigured: the
 //     answer is not in the table.
+//
+//     CLAUSE ROWS, WHICH WE DO NOT READ. Same index, but the text is
+//     `eligibility_clauses.text` — free prose lifted off a source page, not a
+//     value in a typed column. The paragraph above is an argument about a
+//     SCHEMA, and it does not transfer to free text: nothing in the shape of
+//     that column prevents a scraped clause from naming a beneficiary, and
+//     "we looked and did not see one" is not the same claim as "the column
+//     cannot hold one". This repo has already paid for inferring a corpus-wide
+//     property from what it happened to read.
+//
+//     Excluding them costs nothing, which is what makes this an easy call
+//     rather than a trade: clause rows were measured at 0 of 304 blind pairs.
+//     So the restriction buys a leak argument that holds by construction, at a
+//     retrieval quality price of zero.
 //
 //   instrument_profiles — WHAT A FUND FUNDS. NEVER READ HERE, AND THIS FILE
 //     DOES NOT CONTAIN A QUERY AGAINST IT.
@@ -131,12 +148,20 @@ export async function retrieveDemands(
     // ten chunks from the most verbose fund and none from the other four,
     // which answers a different question from the one the selector asked.
     const res = await client.query(
+      // `source_type = 'gate'` is the leak boundary, not a quality filter. See
+      // the header: the structural argument that this index cannot name a
+      // winner is an argument about the COLUMNS of `eligibility_gates`, and it
+      // does not cover the clause rows, whose text is free prose. Inside the
+      // subquery so it bounds the ranking too — filtering after ROW_NUMBER
+      // would let clause rows consume the per-instrument slots and silently
+      // return fewer gates than asked for.
       `SELECT instrument_id, chunk_text FROM (
          SELECT instrument_id, chunk_text,
                 ROW_NUMBER() OVER (
                   PARTITION BY instrument_id ORDER BY embedding <=> $1::vector) AS rn
            FROM eligibility_embeddings
           WHERE instrument_id = ANY($2)
+            AND source_type = 'gate'
        ) t WHERE rn <= $3`,
       [literal, instrumentIds, perInstrument]);
     return res.rows.map((r: { instrument_id: string; chunk_text: string }) => ({
