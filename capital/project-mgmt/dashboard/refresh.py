@@ -104,10 +104,23 @@ def live_ranker() -> str:
     of confident-and-wrong this whole file exists to prevent, so the page
     states whichever is live and the fact is read from the code, not typed.
     """
-    src = SELECT.read_text()
-    m = re.search(r'process\.env\.AGENT_SELECT \?\? "(\w+)"', src)
+    # The constant moved from agentSelect.ts to caps.ts when the arm became a
+    # hermetic lever. Search both rather than pinning one path: the page's claim
+    # is about what production does, and it must survive a refactor rather than
+    # fail on one -- but it must still FAIL if it cannot find the default at all,
+    # because a generator that falls back to a literal is the stale-number defect
+    # wearing a different hat.
+    m = None
+    for cand in (CAPS, SELECT):
+        m = re.search(r'process\.env\.AGENT_SELECT \?\? "(\w+)"', cand.read_text())
+        if m:
+            break
     if not m:
-        sys.exit(f"could not read the AGENT_SELECT default from {SELECT} -- has it moved?")
+        sys.exit(
+            "could not read the AGENT_SELECT default from caps.ts or agentSelect.ts. "
+            "The page states which ranker is live, so it must come from the code -- "
+            "fix this read rather than typing the answer."
+        )
     default_off = m.group(1) == "off"
     for cfg in ROOT.rglob("*.y*ml"):
         if "node_modules" in str(cfg) or ".next" in str(cfg):
