@@ -26,6 +26,7 @@ import {
 import { BRIEF_LIMITS, CHECK_RULE_IDS } from "../lib/intelligence/briefChecks";
 import { QUESTION_RULE_IDS } from "../lib/intelligence/questionChecks";
 import { SELECTION_RULE_IDS } from "../lib/intelligence/selectionChecks";
+import { RANKER_ASK_RULE_IDS } from "../lib/intelligence/rankerAskChecks";
 import { UNENFORCED_RULES } from "../lib/intelligence/unenforcedRules";
 import { REPORT_SCHEMA_FIELDS, EVIDENCE_BLOCKS } from "../lib/intelligence/types";
 // The funnel check below reads the caps themselves, never a copy of them.
@@ -91,6 +92,7 @@ function main() {
   // enforcing something nobody agreed to.
   const enforced = new Set<string>([
     ...CHECK_RULE_IDS, ...QUESTION_RULE_IDS, ...SELECTION_RULE_IDS,
+    ...RANKER_ASK_RULE_IDS,
   ]);
   for (const id of enforced) {
     if (!declaredRules.has(id)) {

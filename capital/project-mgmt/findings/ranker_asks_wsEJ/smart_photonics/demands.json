@@ -1,0 +1,777 @@
+[
+  {
+    "ref": "ranker::exclusionFlags",
+    "field": "exclusionFlags",
+    "requirement": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+    "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+    "instrumentName": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH",
+    "gateKey": "G3_financial",
+    "locator": "",
+    "carriers": 14,
+    "alsoWorded": [
+      {
+        "instrumentName": "ERC POC",
+        "requirement": "Applicants subject to EU administrative sanctions or in exclusion situations (e.g. bankruptcy, winding up) cannot participate."
+      },
+      {
+        "instrumentName": "Chips JU KDT",
+        "requirement": "Applicants subject to an EU exclusion decision or in specified exclusion situations (bankruptcy, tax/social security breach, grave professional misconduct, fraud/corruption, deficiencies in EU contract obligations, irregularities, circumvention of legal obligations) cannot receive EU funding."
+      }
+    ],
+    "splits": [
+      {
+        "value": "none",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      },
+      {
+        "value": "insolvency",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+          "erc_poc",
+          "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+          "chips_ju_kdt",
+          "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "losses_over_half_capital",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": [
+          "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "recovery_order",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": [
+          "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "sanctions",
+        "opens": [],
+        "closes": [
+          "erc_poc",
+          "chips_ju_kdt"
+        ]
+      },
+      {
+        "value": "tax_arrears",
+        "opens": [],
+        "closes": [
+          "chips_ju_kdt"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH",
+        "rank": 2
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+        "name": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+        "name": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding",
+        "rank": 5
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+        "name": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma’s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid",
+        "rank": 6
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_106413__kansen_voor_west",
+        "name": "NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027",
+        "rank": 7
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-B&I-I&K-RVO wijziging RNES 3.2 PPS-innovatie",
+        "rank": 8
+      },
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 9
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL_EZK_K&E_Regeling nationale EZK- en LNV-subsidies, artikel 4.2.17 TSE industrie Studies (wijziging en openstelling 2024)",
+        "rank": 10
+      },
+      {
+        "instrumentId": "chips_ju_kdt",
+        "name": "Chips JU KDT",
+        "rank": 11
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-KE: RTE wijziging en openstelling van de subsidiemodules inzake de Topsector energieprojecten wijziging juli 2019",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL_EZK_KE_Regeling nationale EZK- en LNV-subsidies, Titel 4.6 Versnelde klimaatinvesteringen in de industrie VEKI (wijziging 2022)",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-KE: DEI+ wijziging en openstelling van de subsidiemodules inzake de DEI+",
+        "rank": 15
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-KE: DEI+ budgetophoging subsidiemodules inzake de DEI+ juli 2019 (verlenging AGVV)",
+        "rank": 16
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_116945__provincie_gelderland",
+        "name": "NL_BZK_CSDO_GD_Vierde wijziging Beleidsregel Programma EFRO Oost-Nederland 2022 (wijziging november 2024)",
+        "rank": 18
+      }
+    ],
+    "kind": "separating",
+    "score": 9.333333333333334
+  },
+  {
+    "ref": "ranker::activities",
+    "field": "activities",
+    "requirement": "Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+    "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+    "instrumentName": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH",
+    "gateKey": "G1_nexus",
+    "locator": "",
+    "carriers": 12,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "gambling_betting",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "tobacco",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "weapons",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH",
+        "rank": 2
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+        "name": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+        "name": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding",
+        "rank": 5
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+        "name": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma’s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid",
+        "rank": 6
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_106413__kansen_voor_west",
+        "name": "NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027",
+        "rank": 7
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-B&I-I&K-RVO wijziging RNES 3.2 PPS-innovatie",
+        "rank": 8
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL_EZK_K&E_Regeling nationale EZK- en LNV-subsidies, artikel 4.2.17 TSE industrie Studies (wijziging en openstelling 2024)",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-KE: RTE wijziging en openstelling van de subsidiemodules inzake de Topsector energieprojecten wijziging juli 2019",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL_EZK_KE_Regeling nationale EZK- en LNV-subsidies, Titel 4.6 Versnelde klimaatinvesteringen in de industrie VEKI (wijziging 2022)",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-KE: DEI+ wijziging en openstelling van de subsidiemodules inzake de DEI+",
+        "rank": 15
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat",
+        "name": "NL-EZK-KE: DEI+ budgetophoging subsidiemodules inzake de DEI+ juli 2019 (verlenging AGVV)",
+        "rank": 16
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_116945__provincie_gelderland",
+        "name": "NL_BZK_CSDO_GD_Vierde wijziging Beleidsregel Programma EFRO Oost-Nederland 2022 (wijziging november 2024)",
+        "rank": 18
+      }
+    ],
+    "kind": "separating",
+    "score": 8
+  },
+  {
+    "ref": "ranker::region",
+    "field": "region",
+    "requirement": "Subsidy for a feasibility project is granted to an SME enterprise with an establishment in the province of Zuid-Holland.",
+    "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+    "instrumentName": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland",
+    "gateKey": "G2_size_ownership",
+    "locator": "eligibility_text",
+    "carriers": 5,
+    "alsoWorded": [
+      {
+        "instrumentName": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland",
+        "requirement": "Registered with the European Commission as applying in NL3. A company established outside those regions is not eligible under this scheme."
+      },
+      {
+        "instrumentName": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding",
+        "requirement": "Registered with the European Commission as applying in NL34, NL41, NL42. A company established outside those regions is not eligible under this scheme."
+      }
+    ],
+    "splits": [
+      {
+        "value": "NL13",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL23",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west"
+        ]
+      },
+      {
+        "value": "NL12",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL22",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west"
+        ]
+      },
+      {
+        "value": "NL11",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL42",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL41",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL32",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL1",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL2",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west"
+        ]
+      },
+      {
+        "value": "NL21",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west"
+        ]
+      },
+      {
+        "value": "NL35",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL3",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL34",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL36",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+          "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      },
+      {
+        "value": "NL4",
+        "opens": [],
+        "closes": [
+          "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+          "satr_nl_rnd__sa_106413__kansen_voor_west",
+          "satr_nl_rnd__sa_116945__provincie_gelderland"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_nl_rnd__sa_61208__provincie_zuid_holland",
+        "name": "NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_108830__provincie_noord_brabant",
+        "name": "NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 2027 uitbreiding",
+        "rank": 5
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_111231__provincie_noord_brabant",
+        "name": "NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese programma’s 2021-2027 Noord-Brabant, verlenging onderdeel OPZuid",
+        "rank": 6
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_106413__kansen_voor_west",
+        "name": "NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027",
+        "rank": 7
+      },
+      {
+        "instrumentId": "satr_nl_rnd__sa_116945__provincie_gelderland",
+        "name": "NL_BZK_CSDO_GD_Vierde wijziging Beleidsregel Programma EFRO Oost-Nederland 2022 (wijziging november 2024)",
+        "rank": 18
+      }
+    ],
+    "kind": "separating",
+    "score": 2
+  },
+  {
+    "ref": "ranker::consortium",
+    "field": "consortium",
+    "requirement": "Consortia must include entities established in different Member States or Associated Countries per applicable configuration.",
+    "instrumentId": "eic_transition",
+    "instrumentName": "EIC Transition",
+    "gateKey": "G1_nexus",
+    "locator": "chunk 1",
+    "carriers": 5,
+    "alsoWorded": [
+      {
+        "instrumentName": "EIC Transition",
+        "requirement": "Consortia must comprise a minimum of 2 and maximum of 5 independent legal entities."
+      },
+      {
+        "instrumentName": "ERC POC",
+        "requirement": "Unless call conditions provide otherwise, the consortium must include at least three independent legal entities established in three different countries: one in a Member State and two others each in different Member States or Associated Countries."
+      }
+    ],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [
+          "chips_ju_kdt",
+          "chips_ju_kdt_unknown"
+        ],
+        "closes": []
+      },
+      {
+        "value": "no",
+        "opens": [
+          "chips_ju_kdt",
+          "chips_ju_kdt_unknown"
+        ],
+        "closes": [
+          "eic_transition",
+          "erc_poc",
+          "eic_pathfinder"
+        ]
+      },
+      {
+        "value": "unsure",
+        "opens": [],
+        "closes": [
+          "eic_pathfinder"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "eic_transition",
+        "name": "EIC Transition",
+        "rank": 3
+      },
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 9
+      },
+      {
+        "instrumentId": "chips_ju_kdt",
+        "name": "Chips JU KDT",
+        "rank": 11
+      },
+      {
+        "instrumentId": "chips_ju_kdt_unknown",
+        "name": "Chips JU KDT Unknown",
+        "rank": 13
+      },
+      {
+        "instrumentId": "eic_pathfinder",
+        "name": "EIC Pathfinder",
+        "rank": 17
+      }
+    ],
+    "kind": "narrowing",
+    "score": 1.25
+  },
+  {
+    "ref": "ranker::wouldOpenEntity",
+    "field": "wouldOpenEntity",
+    "requirement": "Natural persons or legal entities intending to set up an SME or mid-cap are eligible applicants.",
+    "instrumentId": "eic_accelerator",
+    "instrumentName": "EIC Accelerator",
+    "gateKey": "G2_size_ownership",
+    "locator": "chunk 1, Who can apply?",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "no",
+        "opens": [],
+        "closes": [
+          "eic_accelerator"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "eic_accelerator",
+        "name": "EIC Accelerator",
+        "rank": 1
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.5
+  },
+  {
+    "ref": "ranker::nonEuControl",
+    "field": "nonEuControl",
+    "requirement": "Legal entities established outside Russia that are more than 50% owned by a Russia-established person/entity are not eligible to participate in any capacity.",
+    "instrumentId": "erc_poc",
+    "instrumentName": "ERC POC",
+    "gateKey": "G1_nexus",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11",
+    "carriers": 2,
+    "alsoWorded": [
+      {
+        "instrumentName": "Chips JU KDT",
+        "requirement": "Entities established in a Member State, Associated Country or eligible third country that are directly or indirectly controlled by China or a Chinese-established legal entity are not eligible to participate in Innovation Actions (and RIAs where specified) in critical technology areas (advanced semiconductors, AI, quantum, biotech)."
+      }
+    ],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [],
+        "closes": [
+          "erc_poc",
+          "chips_ju_kdt"
+        ]
+      },
+      {
+        "value": "no",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 9
+      },
+      {
+        "instrumentId": "chips_ju_kdt",
+        "name": "Chips JU KDT",
+        "rank": 11
+      }
+    ],
+    "kind": "separating",
+    "score": 0.4
+  },
+  {
+    "ref": "ranker::conditionality",
+    "field": "conditionality",
+    "requirement": "Entities subject to EU conditionality measures under Regulation 2020/2092 (e.g., certain Hungarian public interest trusts) are not eligible to participate in any funded role.",
+    "instrumentId": "chips_ju_kdt",
+    "instrumentName": "Chips JU KDT",
+    "gateKey": "G1_nexus",
+    "locator": "chips_ju_mawp_general_annexes.pdf#p.11",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "local_entity",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      },
+      {
+        "value": "geo_commitments",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      },
+      {
+        "value": "state_shareholder",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      },
+      {
+        "value": "job_commitments",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "chips_ju_kdt",
+        "name": "Chips JU KDT",
+        "rank": 11
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.08333333333333333
+  },
+  {
+    "ref": "ranker::needBy",
+    "field": "needBy",
+    "requirement": "Realistic timeline requires ability to wait for a call-based, multi-month-to-year process to grant",
+    "instrumentId": "chips_ju_kdt",
+    "instrumentName": "Chips JU KDT",
+    "gateKey": "G3_financial",
+    "locator": "",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "asap_weeks",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      },
+      {
+        "value": "months_6",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      },
+      {
+        "value": "months_18",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      },
+      {
+        "value": "flexible",
+        "opens": [
+          "chips_ju_kdt"
+        ],
+        "closes": []
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "chips_ju_kdt",
+        "name": "Chips JU KDT",
+        "rank": 11
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.08333333333333333
+  }
+]

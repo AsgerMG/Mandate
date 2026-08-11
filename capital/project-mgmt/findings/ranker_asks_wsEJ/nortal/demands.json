@@ -1,0 +1,326 @@
+[
+  {
+    "ref": "ranker::activities",
+    "field": "activities",
+    "requirement": "Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+    "instrumentId": "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+    "instrumentName": "Rakendusuuringu ja tootearenduse toetus",
+    "gateKey": "G1_nexus",
+    "locator": "",
+    "carriers": 6,
+    "alsoWorded": [
+      {
+        "instrumentName": "Digitaliseerimise teekaardi toetus",
+        "requirement": "Companies operating in certain excluded sectors cannot apply for the digitalisation roadmap support."
+      },
+      {
+        "instrumentName": "Digitaliseerimise teekaardi toetus",
+        "requirement": "Detailed NACE-coded exclusion list defines ineligible sectors for the digitalisation roadmap support."
+      }
+    ],
+    "splits": [
+      {
+        "value": "financial_services",
+        "opens": [],
+        "closes": [
+          "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f"
+        ]
+      },
+      {
+        "value": "primary_agriculture",
+        "opens": [],
+        "closes": [
+          "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f"
+        ]
+      },
+      {
+        "value": "fisheries_aquaculture",
+        "opens": [],
+        "closes": [
+          "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f"
+        ]
+      },
+      {
+        "value": "real_estate",
+        "opens": [],
+        "closes": [
+          "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f"
+        ]
+      },
+      {
+        "value": "gambling_betting",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f"
+        ]
+      },
+      {
+        "value": "tobacco",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f"
+        ]
+      },
+      {
+        "value": "weapons",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Rakendusuuringu ja tootearenduse toetus",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtja rakendusuuringute toetus (alates 02.06.2023)",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtte arenguprogrammi toetus 2024-2027",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtja rakendusuuringute toetus (2024 muutmine)",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtete digipöörde toetus (pikendamine kuni 31.12.2026)",
+        "rank": 15
+      },
+      {
+        "instrumentId": "eis_digitaliseerimise_teekaa__digitaliseerimise_teekaardi_toetus_fc949f",
+        "name": "Digitaliseerimise teekaardi toetus",
+        "rank": 17
+      }
+    ],
+    "kind": "separating",
+    "score": 2.4
+  },
+  {
+    "ref": "ranker::exclusionFlags",
+    "field": "exclusionFlags",
+    "requirement": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+    "instrumentId": "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+    "instrumentName": "Rakendusuuringu ja tootearenduse toetus",
+    "gateKey": "G3_financial",
+    "locator": "",
+    "carriers": 5,
+    "alsoWorded": [
+      {
+        "instrumentName": "Rakendusuuringu ja tootearenduse toetus",
+        "requirement": "No liquidation, compulsory dissolution or bankruptcy proceedings may be initiated against the applicant, partner, or the person exercising controlling influence over them."
+      },
+      {
+        "instrumentName": "Rakendusuuringu ja tootearenduse toetus",
+        "requirement": "Applicant and partner's tax and payment debt including interest must not exceed EUR 100, or its payment must be scheduled, and mandatory tax declarations and annual reports must have been filed."
+      }
+    ],
+    "splits": [
+      {
+        "value": "insolvency",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus"
+        ]
+      },
+      {
+        "value": "losses_over_half_capital",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus"
+        ]
+      },
+      {
+        "value": "recovery_order",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus"
+        ]
+      },
+      {
+        "value": "tax_arrears",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Rakendusuuringu ja tootearenduse toetus",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtja rakendusuuringute toetus (alates 02.06.2023)",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtte arenguprogrammi toetus 2024-2027",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtja rakendusuuringute toetus (2024 muutmine)",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtete digipöörde toetus (pikendamine kuni 31.12.2026)",
+        "rank": 15
+      }
+    ],
+    "kind": "separating",
+    "score": 2
+  },
+  {
+    "ref": "ranker::cofinancingBand",
+    "field": "cofinancingBand",
+    "requirement": "Applicant must provide co-financing that covers the portion of eligible costs not covered by the grant, and the project budget must include the required co-financing.",
+    "instrumentId": "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+    "instrumentName": "Rakendusuuringu ja tootearenduse toetus",
+    "gateKey": "G3_financial",
+    "locator": "chunk 5, §10(14)",
+    "carriers": 6,
+    "alsoWorded": [
+      {
+        "instrumentName": "Rakendusuuringute programm",
+        "requirement": "Applicant must provide self-financing (co-financing) of between 20% and 75% depending on activity and company size."
+      }
+    ],
+    "splits": [
+      {
+        "value": ">50%",
+        "opens": [],
+        "closes": [
+          "eis_rakendusuuringute_toetus"
+        ]
+      },
+      {
+        "value": "25-50%",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus"
+        ]
+      },
+      {
+        "value": "<25%",
+        "opens": [],
+        "closes": [
+          "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+          "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Rakendusuuringu ja tootearenduse toetus",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtja rakendusuuringute toetus (alates 02.06.2023)",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtte arenguprogrammi toetus 2024-2027",
+        "rank": 12
+      },
+      {
+        "instrumentId": "eis_rakendusuuringute_toetus",
+        "name": "Rakendusuuringute programm",
+        "rank": 13
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtja rakendusuuringute toetus (2024 muutmine)",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus",
+        "name": "Ettevõtete digipöörde toetus (pikendamine kuni 31.12.2026)",
+        "rank": 15
+      }
+    ],
+    "kind": "narrowing",
+    "score": 1.2
+  },
+  {
+    "ref": "ranker::turnoverBand",
+    "field": "turnoverBand",
+    "requirement": "Applicant must be an SME by turnover/balance sheet thresholds",
+    "instrumentId": "eis_ettev_tte_arenguprogramm",
+    "instrumentName": "Ettevotte arenguprogramm (enterprise development)",
+    "gateKey": "G2_size_ownership",
+    "locator": "",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": ">50M",
+        "opens": [],
+        "closes": [
+          "eis_ettev_tte_arenguprogramm"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "eis_ettev_tte_arenguprogramm",
+        "name": "Ettevotte arenguprogramm (enterprise development)",
+        "rank": 11
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.08333333333333333
+  }
+]

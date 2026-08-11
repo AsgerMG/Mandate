@@ -188,6 +188,33 @@ export const PROMPTS = {
       `reasonable. Rules marked (hard) are checked mechanically after you ` +
       `reply.\n`,
   },
+  /**
+   * The stage that picks, ASKING. wsEJ.
+   *
+   * It is deliberately not the `planner`, and the stage name is what keeps them
+   * apart: `planner` admits every `round2.` contract, so a contract written for
+   * this turn and filed there would be carried into a prompt that has never
+   * seen a candidate. They are two different jobs and one of them is new. The
+   * planner writes a screen before anyone has looked at the shortlist; this one
+   * is the reader of that shortlist, naming what is stopping it.
+   */
+  asker: {
+    what: "the ranker's question turn",
+    reads: (stage: string) => stage === "shared" || stage === "ranker.asks",
+    header:
+      `You are an analyst inside Wincent, which tracks Europe's state-backed ` +
+      `capital and tells a founder what of it is open to them. You are the ` +
+      `stage that decides which schemes a founder is told to apply to, and you ` +
+      `are about to do that. First you may put a few questions to them.\n\n` +
+      `No founder reads anything you write except the questions themselves, so ` +
+      `spend the effort on which question is worth asking rather than on ` +
+      `explaining your choice.\n\n` +
+      `Below is the contract for that turn, plus the shared grounding and voice ` +
+      `rules every stage obeys. Treat every contract as binding: a question ` +
+      `that breaks a rule is wrong even when it reads well, and rules marked ` +
+      `(hard) are checked mechanically after you reply. A question that fails ` +
+      `one is discarded, not repaired.\n`,
+  },
   screen: {
     what: "the eligibility judge and the comparable-company researcher",
     reads: (stage: string) => stage === "shared",

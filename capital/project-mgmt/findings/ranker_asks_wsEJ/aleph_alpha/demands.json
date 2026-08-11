@@ -1,0 +1,1116 @@
+[
+  {
+    "ref": "ranker::activities",
+    "field": "activities",
+    "requirement": "Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+    "instrumentId": "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+    "instrumentName": "Quantencomputer-Demonstrationsaufbauten",
+    "gateKey": "G1_nexus",
+    "locator": "",
+    "carriers": 18,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "gambling_betting",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_106076__sachsen_sab",
+          "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme"
+        ]
+      },
+      {
+        "value": "tobacco",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_106076__sachsen_sab",
+          "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme"
+        ]
+      },
+      {
+        "value": "weapons",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_106076__sachsen_sab",
+          "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+        "name": "Quantencomputer-Demonstrationsaufbauten",
+        "rank": 1
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_114510__nrw_bank",
+        "name": "NRW.SeedCon",
+        "rank": 2
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+        "name": "Richtlinie zur Förderung innovativer Netzarchitekturen im Mobilfunk [BMDV]",
+        "rank": 3
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+        "name": "Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten (Förderrichtlinien) / Verlängerung 2024 [BY]",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+        "name": "Richtlinie zur Fördermaßnahme: \"KMU-innovativ: Informations- und Kommunikationstechnologie (IKT)\" [BMBF]",
+        "rank": 5
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_64558__investitionsbank_berlin",
+        "name": "Programm zur Förderung von Forschung, Innovationen und Technologien (Pro FIT)",
+        "rank": 6
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113239__sachsen_sab",
+        "name": "Förderrichtlinie Business-Angel-Bonus JTF 2021–2027 [SN]",
+        "rank": 7
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+        "name": "Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten (Förderrichtlinien) Verlängerung 2025 [BY]",
+        "rank": 8
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Förderrichtlinie\n„Digitalisierung der Fahrzeughersteller und Zulieferindustrie und industrieller Lieferketten“ im Förderrahmen „Zukunftsinvestitionen Fahrzeughersteller und Zulieferindustrie“ [BMWK, IVA3]",
+        "rank": 9
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "EXIST Forschungstransfer (Förderphase II) [BMWK VIIC4]",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Änderung der Förderrichtlinie für die Bundesförderung im Bereich Cloud- und Edge-Infrastruktur und -Services im Rahmen des IPCEI-CIS [BMWK, IVA3]",
+        "rank": 11
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+        "name": "Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB]",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Zentrales Innovationsprogramm Mittelstand [BMWK VIB4]",
+        "rank": 13
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_106076__sachsen_sab",
+        "name": "FRL MINT-Fachkräfteprogramm ESF Plus 2021–2027 [SN]",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+        "name": "Richtlinie zur Förderung der „6G-Industrieprojekte zur Erforschung von ganzheitlichen Systemen und Teiltechnologien für den Mobilfunk der 6. Generation“ im Forschungsprogramm für Kommunikationssysteme „Souverän. Digital. Vernetzt.“ [BMBF]",
+        "rank": 15
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+        "name": "Digitalisierung der Materialforschung in Deutschland „MaterialDigital 3“ 1. Änd. [BMBF]",
+        "rank": 16
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Zentrales Innovationsprogramm Mittelstand (ZIM)",
+        "rank": 17
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme",
+        "name": "Richtlinie zur Förderung von Forschungs- und Entwicklungsprojekten im Rahmen des Förderprogramms „Neue Fahrzeug- und Systemtechnologien“   [BMWK IVA3]",
+        "rank": 18
+      }
+    ],
+    "kind": "narrowing",
+    "score": 9
+  },
+  {
+    "ref": "ranker::exclusionFlags",
+    "field": "exclusionFlags",
+    "requirement": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+    "instrumentId": "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+    "instrumentName": "Quantencomputer-Demonstrationsaufbauten",
+    "gateKey": "G3_financial",
+    "locator": "",
+    "carriers": 18,
+    "alsoWorded": [
+      {
+        "instrumentName": "Quantencomputer-Demonstrationsaufbauten",
+        "requirement": "Companies that have failed to comply with a prior Commission recovery order are excluded from applying, as are companies in insolvency proceedings."
+      },
+      {
+        "instrumentName": "NRW.SeedCon",
+        "requirement": "Companies that have failed to comply with a prior Commission recovery order are excluded from applying, as are companies in insolvency proceedings."
+      }
+    ],
+    "splits": [
+      {
+        "value": "insolvency",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_106076__sachsen_sab",
+          "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme"
+        ]
+      },
+      {
+        "value": "losses_over_half_capital",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_106076__sachsen_sab",
+          "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme"
+        ]
+      },
+      {
+        "value": "recovery_order",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_106076__sachsen_sab",
+          "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+        "name": "Quantencomputer-Demonstrationsaufbauten",
+        "rank": 1
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_114510__nrw_bank",
+        "name": "NRW.SeedCon",
+        "rank": 2
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+        "name": "Richtlinie zur Förderung innovativer Netzarchitekturen im Mobilfunk [BMDV]",
+        "rank": 3
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+        "name": "Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten (Förderrichtlinien) / Verlängerung 2024 [BY]",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+        "name": "Richtlinie zur Fördermaßnahme: \"KMU-innovativ: Informations- und Kommunikationstechnologie (IKT)\" [BMBF]",
+        "rank": 5
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_64558__investitionsbank_berlin",
+        "name": "Programm zur Förderung von Forschung, Innovationen und Technologien (Pro FIT)",
+        "rank": 6
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113239__sachsen_sab",
+        "name": "Förderrichtlinie Business-Angel-Bonus JTF 2021–2027 [SN]",
+        "rank": 7
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+        "name": "Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten (Förderrichtlinien) Verlängerung 2025 [BY]",
+        "rank": 8
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Förderrichtlinie\n„Digitalisierung der Fahrzeughersteller und Zulieferindustrie und industrieller Lieferketten“ im Förderrahmen „Zukunftsinvestitionen Fahrzeughersteller und Zulieferindustrie“ [BMWK, IVA3]",
+        "rank": 9
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "EXIST Forschungstransfer (Förderphase II) [BMWK VIIC4]",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Änderung der Förderrichtlinie für die Bundesförderung im Bereich Cloud- und Edge-Infrastruktur und -Services im Rahmen des IPCEI-CIS [BMWK, IVA3]",
+        "rank": 11
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+        "name": "Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB]",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Zentrales Innovationsprogramm Mittelstand [BMWK VIB4]",
+        "rank": 13
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_106076__sachsen_sab",
+        "name": "FRL MINT-Fachkräfteprogramm ESF Plus 2021–2027 [SN]",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+        "name": "Richtlinie zur Förderung der „6G-Industrieprojekte zur Erforschung von ganzheitlichen Systemen und Teiltechnologien für den Mobilfunk der 6. Generation“ im Forschungsprogramm für Kommunikationssysteme „Souverän. Digital. Vernetzt.“ [BMBF]",
+        "rank": 15
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+        "name": "Digitalisierung der Materialforschung in Deutschland „MaterialDigital 3“ 1. Änd. [BMBF]",
+        "rank": 16
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Zentrales Innovationsprogramm Mittelstand (ZIM)",
+        "rank": 17
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme",
+        "name": "Richtlinie zur Förderung von Forschungs- und Entwicklungsprojekten im Rahmen des Förderprogramms „Neue Fahrzeug- und Systemtechnologien“   [BMWK IVA3]",
+        "rank": 18
+      }
+    ],
+    "kind": "narrowing",
+    "score": 9
+  },
+  {
+    "ref": "ranker::cofinancingBand",
+    "field": "cofinancingBand",
+    "requirement": "An appropriate own contribution to eligible costs is required, generally at least 75% of eligible costs for commercial enterprises and economically-active research bodies.",
+    "instrumentId": "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+    "instrumentName": "Quantencomputer-Demonstrationsaufbauten",
+    "gateKey": "G3_financial",
+    "locator": "satr_de_rnd_bmftr_richtlinie_sicherheit_2025.pdf#p.4",
+    "carriers": 15,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "25-50%",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+          "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_106076__sachsen_sab",
+          "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme"
+        ]
+      },
+      {
+        "value": "<25%",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+          "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_106076__sachsen_sab",
+          "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+          "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+          "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung",
+        "name": "Quantencomputer-Demonstrationsaufbauten",
+        "rank": 1
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_114510__nrw_bank",
+        "name": "NRW.SeedCon",
+        "rank": 2
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme",
+        "name": "Richtlinie zur Förderung innovativer Netzarchitekturen im Mobilfunk [BMDV]",
+        "rank": 3
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung",
+        "name": "Richtlinie zur Fördermaßnahme: \"KMU-innovativ: Informations- und Kommunikationstechnologie (IKT)\" [BMBF]",
+        "rank": 5
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_64558__investitionsbank_berlin",
+        "name": "Programm zur Förderung von Forschung, Innovationen und Technologien (Pro FIT)",
+        "rank": 6
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113239__sachsen_sab",
+        "name": "Förderrichtlinie Business-Angel-Bonus JTF 2021–2027 [SN]",
+        "rank": 7
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Förderrichtlinie\n„Digitalisierung der Fahrzeughersteller und Zulieferindustrie und industrieller Lieferketten“ im Förderrahmen „Zukunftsinvestitionen Fahrzeughersteller und Zulieferindustrie“ [BMWK, IVA3]",
+        "rank": 9
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "EXIST Forschungstransfer (Förderphase II) [BMWK VIIC4]",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Änderung der Förderrichtlinie für die Bundesförderung im Bereich Cloud- und Edge-Infrastruktur und -Services im Rahmen des IPCEI-CIS [BMWK, IVA3]",
+        "rank": 11
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Zentrales Innovationsprogramm Mittelstand [BMWK VIB4]",
+        "rank": 13
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_106076__sachsen_sab",
+        "name": "FRL MINT-Fachkräfteprogramm ESF Plus 2021–2027 [SN]",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung",
+        "name": "Richtlinie zur Förderung der „6G-Industrieprojekte zur Erforschung von ganzheitlichen Systemen und Teiltechnologien für den Mobilfunk der 6. Generation“ im Forschungsprogramm für Kommunikationssysteme „Souverän. Digital. Vernetzt.“ [BMBF]",
+        "rank": 15
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung",
+        "name": "Digitalisierung der Materialforschung in Deutschland „MaterialDigital 3“ 1. Änd. [BMBF]",
+        "rank": 16
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz",
+        "name": "Zentrales Innovationsprogramm Mittelstand (ZIM)",
+        "rank": 17
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme",
+        "name": "Richtlinie zur Förderung von Forschungs- und Entwicklungsprojekten im Rahmen des Förderprogramms „Neue Fahrzeug- und Systemtechnologien“   [BMWK IVA3]",
+        "rank": 18
+      }
+    ],
+    "kind": "narrowing",
+    "score": 7.5
+  },
+  {
+    "ref": "ranker::region",
+    "field": "region",
+    "requirement": "Registered seat, branch or permanent establishment must be located in North Rhine-Westphalia.",
+    "instrumentId": "satr_de_rnd__sa_114510__nrw_bank",
+    "instrumentName": "NRW.SeedCon",
+    "gateKey": "G1_nexus",
+    "locator": "eligibility_text",
+    "carriers": 7,
+    "alsoWorded": [
+      {
+        "instrumentName": "NRW.SeedCon",
+        "requirement": "Registered with the European Commission as applying in DEA. A company established outside those regions is not eligible under this scheme."
+      },
+      {
+        "instrumentName": "Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten (Förderrichtlinien) / Verlängerung 2024 [BY]",
+        "requirement": "Registered with the European Commission as applying in DE2. A company established outside those regions is not eligible under this scheme."
+      }
+    ],
+    "splits": [
+      {
+        "value": "DEA5",
+        "opens": [],
+        "closes": [
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE1",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE2",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE3",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE4",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE91",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE5",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DED4",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg"
+        ]
+      },
+      {
+        "value": "DE71",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEA4",
+        "opens": [],
+        "closes": [
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DED2",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg"
+        ]
+      },
+      {
+        "value": "DEA1",
+        "opens": [],
+        "closes": [
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE13",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE72",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE6",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE92",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE7",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE12",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE73",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEB1",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEA2",
+        "opens": [],
+        "closes": [
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DED5",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg"
+        ]
+      },
+      {
+        "value": "DE93",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE8",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE25",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEA3",
+        "opens": [],
+        "closes": [
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE22",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE9",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEA",
+        "opens": [],
+        "closes": [
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE21",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE24",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE23",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEB3",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEB",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEC",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DED",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg"
+        ]
+      },
+      {
+        "value": "DEE",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEF",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE27",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE11",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEG",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DEB2",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE14",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE26",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      },
+      {
+        "value": "DE94",
+        "opens": [],
+        "closes": [
+          "satr_de_rnd__sa_114510__nrw_bank",
+          "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+          "satr_de_rnd__sa_64558__investitionsbank_berlin",
+          "satr_de_rnd__sa_113239__sachsen_sab",
+          "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+          "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+          "satr_de_rnd__sa_106076__sachsen_sab"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_de_rnd__sa_114510__nrw_bank",
+        "name": "NRW.SeedCon",
+        "rank": 2
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_101543__lfa_forderbank_bayern",
+        "name": "Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten (Förderrichtlinien) / Verlängerung 2024 [BY]",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_64558__investitionsbank_berlin",
+        "name": "Programm zur Förderung von Forschung, Innovationen und Technologien (Pro FIT)",
+        "rank": 6
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_113239__sachsen_sab",
+        "name": "Förderrichtlinie Business-Angel-Bonus JTF 2021–2027 [SN]",
+        "rank": 7
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_118637__lfa_forderbank_bayern",
+        "name": "Bayerische Richtlinien für die Förderung von Film-, Fernseh- und anderen audiovisuellen Projekten (Förderrichtlinien) Verlängerung 2025 [BY]",
+        "rank": 8
+      },
+      {
+        "instrumentId": "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg",
+        "name": "Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB]",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_de_rnd__sa_106076__sachsen_sab",
+        "name": "FRL MINT-Fachkräfteprogramm ESF Plus 2021–2027 [SN]",
+        "rank": 14
+      }
+    ],
+    "kind": "separating",
+    "score": 4.666666666666667
+  }
+]

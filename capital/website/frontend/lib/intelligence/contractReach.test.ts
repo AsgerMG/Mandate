@@ -145,7 +145,11 @@ describe("every contract rule is enforced or declared unenforced", () => {
     // rules the loader never read, are all in the population now.
     expect(ids).toContain("FUND-B1");
     expect(ids).toContain("SELECT-1");
-    expect(ids.filter((i) => /-B\d+$/.test(i)).length).toBe(15);
+    // 16 since wsEJ added RA-B1. The number is pinned rather than bounded on
+    // purpose: it was 15 when every Banned rule was invisible to the check that
+    // exists to find unenforced rules, so a Banned rule appearing or vanishing
+    // without anyone noticing is exactly the failure this line watches for.
+    expect(ids.filter((i) => /-B\d+$/.test(i)).length).toBe(16);
   });
 
   it("every declared entry says what would decide it", () => {

@@ -158,4 +158,22 @@ export const UNENFORCED_RULES: Record<string, UnenforcedRule> = {
   "SELECT-6": { why: "judgement", predicate: "the peer-prior rank did not by itself decide a seat; the counterfactual needs a paired run with the prior withheld" },
   "SELECT-7": { why: "buildable", predicate: "no chosen fund's award median is an order of magnitude from the stated ticket band, and none last paid out beyond a staleness horizon; both columns are on the row already" },
   "SELECT-8": { why: "buildable", predicate: "the chosen indices span more than one funding level and more than one parent regime where the candidate list allows; decidable from each candidate's country and parent" },
+
+  // ── The ranker's question turn (wsEJ). Three of its rules are enforced
+  // (RANKER_ASK_RULE_IDS) because the grounding is mechanical by construction:
+  // the subject of every question is computed before the model sees anything,
+  // so "is this question about something that would change the answer" is a set
+  // membership test rather than a judgement.
+  //
+  // What is left here is the one thing that made this stage necessary, and it
+  // is unenforceable for a reason worth stating: RA-4 asks whether a FOUNDER
+  // could answer, and the only instrument that can decide that is a founder.
+  // Two grounded, decisive questions have already been answered correctly and
+  // moved nothing. A check that could see that coming would make this stage
+  // redundant.
+  "RA-4": { why: "judgement", predicate: "a founder could answer it about their own company from memory, without a document open and without knowing how a scheme sorts applicants" },
+  "RA-5": { why: "judgement", predicate: "the demand's answers route to different candidates rather than opening and shutting one; decidable from the split vectors, and left as judgement because a one-candidate split is sometimes the only decisive thing on the list" },
+  "RA-6": { why: "judgement", predicate: "the question asks for a fact about the company rather than a verdict about a rule" },
+  "RA-7": { why: "buildable", predicate: "no question's only moved candidate sits below the published table on both answers; the ranks are on the demand already" },
+  "RA-8": { why: "judgement", predicate: "each published question would still have been asked had the ceiling been one lower" },
 };
