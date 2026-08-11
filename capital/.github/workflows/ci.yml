@@ -350,6 +350,21 @@ jobs:
       - name: The committed corpus ledger is whole
         run: python3 ETL/events/load/instrument_ledger.py checksums
 
+      # The ledger's counterpart, for the two tables it deliberately does not
+      # hold: company_sector_labels (a paid LLM classification, past retention)
+      # and public_funding_events (registers that keep no history). Their vault
+      # lives in iCloud, so CI cannot check its contents -- but it CAN check the
+      # property that keeps the vault worth having: a snapshot with fewer rows,
+      # or fewer columns, than the last good one must be REFUSED rather than
+      # take its place. `db.sqlite.20260722.gz` was trusted as a backup of both
+      # tables and contains neither 144,493 labels nor 8,313 of the events; the
+      # counts were never compared. This drill deletes rows and drops a table
+      # from a throwaway store and requires the refusal, then requires that an
+      # acknowledged shrink is allowed AND recorded. It builds its own fixture
+      # when no corpus is present, which is the case here.
+      - name: A smaller backup cannot replace a good one
+        run: python3 ETL/events/load/corpus_vault.py selftest
+
       # The same class again, one column over and far more expensive: the split
       # keyed a child on `name` while the ETL renamed 430 of 453 children to the
       # Commission's registered scheme title. Placement read 11.5% instead of
