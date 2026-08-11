@@ -1,0 +1,30 @@
+model=claude-sonnet-5  prompt=Nortal (wsDQ), system 11022 chars, user 11731 chars
+
+── shipped (1536 tok, low, display unset)
+   stop_reason      end_turn
+   thinking_tokens  360
+   output_tokens    389
+   blocks           thinking(0 chars), text(37 chars)
+   reply            "{\"picks\":[3,4,9,12,13,0],\"unsure\":[]}"
+
+── 1536 tok, low, display=summarized
+   stop_reason      end_turn
+   thinking_tokens  519
+   output_tokens    548
+   blocks           thinking(321 chars), text(37 chars)
+   reply            "{\"picks\":[0,3,4,9,12,13],\"unsure\":[]}"
+
+── 1536 tok, high, display=summarized
+   stop_reason      max_tokens
+   thinking_tokens  1535
+   output_tokens    1536
+   blocks           thinking(1835 chars)
+   reply            ""
+
+── 8192 tok, high, display=summarized
+   stop_reason      end_turn
+   thinking_tokens  5995
+   output_tokens    6024
+   blocks           thinking(8095 chars), text(37 chars)
+   reply            "{\"picks\":[0,3,4,12,13,9],\"unsure\":[]}"
+
