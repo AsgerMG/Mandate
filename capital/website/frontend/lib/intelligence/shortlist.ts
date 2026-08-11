@@ -40,7 +40,7 @@ import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
-import { beyondTitle, fundsSentence } from "./schemeText";
+import { beyondTitle, fundsSentence, oneLine, ROW_TITLE_CHARS } from "./schemeText";
 import { recordFacts, recordPeerBranch, recordScoreSeats, recordStage } from "./tableTrace";
 
 /** How many leaves a channel may put into the POOL, as opposed to the table.
@@ -996,13 +996,97 @@ export const SECTOR_WORD: Record<string, string> = {
   defense_security: "defence & security",
 };
 
-const CAPITAL_WORD: Record<string, string> = {
-  grant: "Grants", loan: "Loans", guarantee: "Guarantees",
+/**
+ * The first word of a row's descriptor: WHAT KIND OF MONEY THIS IS.
+ *
+ * ── The property, and the test for the type nobody has added yet ──────────
+ * EVERY CAPITAL TYPE THE COLUMN CAN HOLD RENDERS A WORD OF ITS OWN, and a type
+ * with no word FAILS THE BUILD rather than falling through to a generic one.
+ * The test needs no list of known types: `CAPITAL_TYPE_LABEL` in pipeline.ts is
+ * the map that already answers for every value the column can hold — it is the
+ * `supportType` column of the same row — so the property is "this map is total
+ * over that one", asserted hermetically in `capitalWord.test.ts` and again
+ * against the corpus in `scripts/check_capital_reach.ts`.
+ *
+ * ── What the fall-through cost ────────────────────────────────────────────
+ * `?? "Funding"` stood here and `tax_credit` had no key, so 23 of the 748
+ * publishable instruments — the German Forschungszulage leaves, an R&D TAX
+ * CREDIT, which is the one word that separates them from every grant in the
+ * table — rendered as the generic word "Funding". One of them was a fund the
+ * founder in front of it had actually won.
+ *
+ * A default that names a category the reader cannot act on is the same defect
+ * `CAPITAL_TYPE_LABEL` documents from the other side: a silent fallback that
+ * asserts something confident and wrong is worse than a value admitting what it
+ * does not know. So there is no fallback here that a publishable row can reach.
+ *
+ * ── Two maps of one fact, and why that is not the "keep in sync" defect ───
+ * They are two REGISTERS of one fact, not two copies of it: this is the plural
+ * noun heading a descriptor ("Grants · Noord-Brabant · mostly software & AI"),
+ * `CAPITAL_TYPE_LABEL` is the singular label of the support-type column
+ * ("Grant"). Neither can be derived from the other by a rule. What can be
+ * shared, and is, is the KEY SET — which is the half that actually rotted.
+ */
+export const CAPITAL_WORD: Record<string, string> = {
+  grant: "Grants", loan: "Loans",
+  guarantee: "Guarantees", counter_guarantee: "Guarantees",
+  recoverable_advance: "Recoverable advances",
   equity: "Equity", blended: "Blended finance",
+  // The 23 rows this whole block exists for. Named as what the register calls
+  // it — a credit against tax, claimed rather than applied for — because that
+  // is the fact a founder reading the row has to act on.
+  tax_credit: "Tax credits",
+  // Withheld at the corpus boundary (offerableAxes.ts) so no founder can reach
+  // them, and answered anyway, for exactly the reason CAPITAL_TYPE_LABEL gives:
+  // the map answers for every value the column can hold, not only the ones we
+  // expect to see. A word that has to be added under pressure is a word that
+  // gets guessed.
+  non_financial: "Support, not capital",
+  undetermined: "Kind of capital not stated",
 };
 
-/** Below this share of an instrument's awards, a "focus" is noise. */
+/** Below this share of an instrument's awards, a "focus" is noise.
+ *
+ *  ── THE FLOOR IS A PROPERTY OF THE SENTENCE, NOT OF THE DATA ─────────────
+ *  This is the minimum share at which the WORD `mostly` is defensible, and
+ *  nothing else. It is not a claim that a 20% plurality is uninformative; it is
+ *  a refusal to call 20% "mostly", which would be false about four fifths of
+ *  that fund's awards. See `SHARE_FLOOR` for the same measurement stated a way
+ *  that does not need the word. */
 export const FOCUS_SHARE = 0.25;
+
+/** The floor under a clause that STATES ITS SHARE, which is a different floor
+ *  because it is under a different sentence.
+ *
+ *  ── The property ────────────────────────────────────────────────────────
+ *  `20% health & life sciences` is exactly true at 20%. It cannot overstate,
+ *  because the number the reader would use to discount it is the number it
+ *  prints. So the only floor it needs is the one below which a plurality is
+ *  not a measurement at all — a handful of awards' worth of noise — rather than
+ *  the one below which a category word becomes a false claim.
+ *
+ *  ── What the shared floor cost, measured ────────────────────────────────
+ *  Committed snapshot, 748 publishable instruments: 31 carry a sector mix whose
+ *  top sector reaches no quarter, so the clause is suppressed entirely and the
+ *  row renders as a bare `Grants`. One of them, `satr_nl_rnd__sa_108830`
+ *  (OPZuid), is a fund an industrial-manufacturing founder actually won, and
+ *  its mix is 20/20/16/16/11 across five sectors — the most diversified rows in
+ *  the corpus are precisely the ones this silences, which is backwards: a fund
+ *  that spreads its money is a fund more founders can enter.
+ *
+ *  0.10 rather than 0: below a tenth the top sector is not the fund's shape,
+ *  it is the largest of many small numbers. Above it the clause is a true
+ *  statement with its own uncertainty printed on it.
+ *
+ *  ── Not the default's floor, deliberately ────────────────────────────────
+ *  wsEC2 left `share` off by default pending one paid selector run it priced at
+ *  EUR 0.25, and the arm was built so the two spellings fire on the same rows.
+ *  Moving the floor under BOTH would have shipped 31 rows saying `mostly X`
+ *  about 20% of a fund's awards, which is the exact overstatement wsEC2
+ *  measured as the defect. Moving it under the arm that states its share
+ *  changes nothing a founder sees today and makes the flip, when it is paid
+ *  for, carry these 31 rows with it instead of needing a second decision. */
+export const SHARE_FLOOR = 0.10;
 
 function regionOfInstrument(inst: DbInstrument): string | null {
   for (const g of inst.gates) {
@@ -1065,9 +1149,13 @@ export const ROW_DESCRIPTOR = (() => {
  *  `ROW_DESCRIPTOR` is read once at module scope, deliberately, so a test that
  *  reassigned the environment would be testing a second module instance.
  *
- *  The FIRING RULE is shared by both arms and is `FOCUS_SHARE`. They differ in
- *  what the row says and never in which rows carry it \u2014 an arm that also moved
- *  the threshold would confound the sentence with the selection. */
+ *  The FIRING RULE WAS shared by both arms and was `FOCUS_SHARE`, so that an
+ *  arm could not confound the sentence with the selection. It is now each arm's
+ *  own, and that is the correction rather than a loosening: the threshold was
+ *  never a fact about the data, it was the point at which the word `mostly`
+ *  stops being true, and a sentence that prints its own share does not have
+ *  that point. Under `category` the number is unchanged, so the shipped rows
+ *  are byte-identical and wsEC2's comparison still has its control. */
 export function sectorClause(
   mix: Record<string, number> | null | undefined,
   mode: typeof ROW_DESCRIPTOR = ROW_DESCRIPTOR,
@@ -1075,7 +1163,8 @@ export function sectorClause(
   if (!mix) return "";
   const total = Object.values(mix).reduce((a, b) => a + b, 0);
   const top = Object.entries(mix).sort((a, b) => b[1] - a[1])[0];
-  if (!total || !top || top[1] / total < FOCUS_SHARE) return "";
+  const floor = mode === "share" ? SHARE_FLOOR : FOCUS_SHARE;
+  if (!total || !top || top[1] / total < floor) return "";
   const label = SECTOR_WORD[top[0]];
   if (!label) return "";
   return mode === "share"
@@ -1084,6 +1173,11 @@ export function sectorClause(
 }
 
 export function fundDescriptor(inst: DbInstrument): string {
+  // The fallback is unreachable for any row a founder can be shown, and that is
+  // enforced rather than hoped for: `check_capital_reach` fails the build if a
+  // publishable instrument carries a type `CAPITAL_WORD` has no word for. It is
+  // kept so that a defect in the map costs a vague word rather than a founder's
+  // whole brief -- a throw here would fail the request.
   const bits: string[] = [CAPITAL_WORD[inst.capitalType] ?? "Funding"];
 
   const region = regionOfInstrument(inst);
@@ -1127,6 +1221,46 @@ export function fundDescriptor(inst: DbInstrument): string {
  */
 function rowDisplayLabel(r: InstrumentRow): string {
   return r.instrument || displayInstitutionName(r);
+}
+
+/**
+ * The label a row renders AS FAR AS ANYONE CAN READ IT — and why the collapse
+ * keys on this rather than on `rowDisplayLabel` itself.
+ *
+ * ── The property, with its test for the unseen case ───────────────────────
+ * NO TWO ROWS A FOUNDER IS SHOWN ARE INDISTINGUISHABLE TO A READER. The test
+ * needs no register of known collisions: render both rows through the function
+ * that renders them, and if the two strings are equal they are one option
+ * shown twice, whatever the database holds behind them.
+ *
+ * ── Why the raw label is not that test ────────────────────────────────────
+ * `distinguishRowNames` runs one line above the collapse and APPENDS the
+ * granting body, the delivery region or an id fragment to the end of a title
+ * that already collided. `oneLine` then cuts the title to `ROW_TITLE_CHARS`
+ * for the selector's menu — and on a 200-character French or German legal
+ * title the appended distinguisher is entirely past the cut. The disambiguator
+ * did its work and the renderer removed it, so the raw label certifies as
+ * distinct exactly the pairs nobody can tell apart.
+ *
+ * Measured, 36 recall founders, live corpus, arm off: the RAW label collides
+ * ZERO times, in zero founders, at the menu and in the published table alike.
+ * The rendered label collides 14 times across 8 founders on the 40-row menu
+ * and 4 times across 4 founders in the published seven — one founder spending
+ * SIX of forty menu slots on one option. A key that scores zero on a defect
+ * that is visibly there is not a strict key, it is a blind one.
+ *
+ * ── Case ─────────────────────────────────────────────────────────────────
+ * Folded, because two titles differing only in capitalisation are not two
+ * options to a reader, and because `sameTitlePickCount` — the shipped
+ * measurement of this same defect on the selector's own reply — already folds
+ * it. One definition of "the same title", two callers.
+ *
+ * `ROW_TITLE_CHARS` is imported rather than restated: the cut this asks about
+ * has to be the cut `renderRow` actually makes, or this is a question about a
+ * string no one is shown.
+ */
+export function rowRenderedLabel(r: InstrumentRow): string {
+  return oneLine(rowDisplayLabel(r), ROW_TITLE_CHARS).toLowerCase();
 }
 
 /**
@@ -2915,7 +3049,15 @@ export function materialiseInstrumentTable(
   // and never reads `row.instrument`, so while these were two functions the
   // disambiguator's work was invisible here and rows it had just told apart
   // were still collapsed. Two functions, two keys, was the whole defect.
-  const collision = resolveNameCollisions(ranked, rowDisplayLabel, preferBetterEvidencedRow);
+  //
+  // The label is now the one that is READ rather than the one that is stored --
+  // see `rowRenderedLabel`. `distinguishRowNames`, one line above, appends the
+  // distinguisher to the END of the title, and the renderer cuts the title to
+  // `ROW_TITLE_CHARS`; on the long legal titles this corpus is full of, those
+  // two facts cancel. The raw label collided zero times across 36 founders
+  // while the rendered one collided 14 times on the menu and 4 times in the
+  // published seven, so the raw key was not strict, it was blind.
+  const collision = resolveNameCollisions(ranked, rowRenderedLabel, preferBetterEvidencedRow);
   for (const { row, kept, label: name } of collision.collisions) {
     // The NAME they collided on, and WHICH row survived. Without both, the log
     // says a collision happened and nothing about whether the two rows were
