@@ -59,13 +59,17 @@ SIGNALS_DB = DATA / "signals.sqlite"
 
 # Backup destinations (mirrors the historical Makefile `backup` target).
 BACKUP_LOCAL = Path.home() / "Wincent-backups"
-BACKUP_ICLOUD = (
-    Path.home()
-    / "Library"
-    / "Mobile Documents"
-    / "com~apple~CloudDocs"
-    / "Wincent-backups"
-)
+_ICLOUD = Path.home() / "Library" / "Mobile Documents" / "com~apple~CloudDocs"
+BACKUP_ICLOUD = _ICLOUD / "Wincent-backups"
+
+# The vault for the two tables that cannot be rebuilt from any source we still
+# have — company_sector_labels (a paid LLM classification, past retention) and
+# public_funding_events (registers that keep no history). Separate from
+# BACKUP_ICLOUD because that one holds dated whole-database snapshots, which
+# are a copy, not a history: you can return to the 8th, but you cannot see what
+# changed between the 8th and the 9th, or restore one table without restoring
+# everything. See ETL/events/load/corpus_vault.py.
+BACKUP_ICLOUD_CORPUS = _ICLOUD / "Wincent-corpus-backup"
 
 # Put every stage directory of BOTH tracks on the import path so cross-stage
 # flat imports work. Track 1 `events/` = investment events (grants, tax
@@ -133,5 +137,6 @@ __all__ = [
     "SIGNALS_DB",
     "BACKUP_LOCAL",
     "BACKUP_ICLOUD",
+    "BACKUP_ICLOUD_CORPUS",
     "require_reference",
 ]

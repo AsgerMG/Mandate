@@ -12,7 +12,7 @@ DATE    := $(shell date +%Y%m%d)
 BACKUP  := $(HOME)/Wincent-backups
 ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/Wincent-backups
 
-.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility pull-db push news republish verify-cron refresh refresh-check
+.PHONY: help analyze visuals data site-dev site-build backup vault vault-status classify sanity transform sources renew signals signals-digest eligibility pull-db push news republish verify-cron refresh refresh-check
 
 help:
 	@echo "Wincent make targets:"
@@ -28,6 +28,8 @@ help:
 	@echo "  make sanity      Post-load corpus integrity checks (ETL/events/load/qa/sanity_check.py)"
 	@echo "  make transform   classify + sanity (re-derive everything from loaded rows)"
 	@echo "  make backup      Back up db.sqlite + data/ to local + iCloud (ETL/events/load/backup.py)"
+	@echo "  make vault       Snapshot the two IRRECOVERABLE tables with history + a shrink guard (ETL/events/load/corpus_vault.py)"
+	@echo "  make vault-status What the vault holds, how old it is, and whether iCloud has it"
 	@echo "  make analyze     Rebuild corpus KPIs (website/build/synthesis.py)"
 	@echo "  make visuals     Rebuild home-page visuals (taxonomy, map, coverage)"
 	@echo "  make data        Rebuild EVERY site JSON from db.sqlite (website/build/build_site_data.py)"
@@ -269,6 +271,18 @@ site-dev:
 
 backup:
 	python3 ETL/events/load/backup.py
+
+# `backup` writes dated whole-database copies. A dated copy is not a history:
+# you can return to the 8th, but you cannot see what changed between the 8th
+# and the 9th, or restore ONE table without restoring everything. `vault`
+# covers the two tables that cannot be rebuilt from any source we still have,
+# with a guard that refuses to replace a good snapshot with a smaller one. It
+# also runs daily under launchd -- these targets are for running it by hand.
+vault:
+	python3 ETL/events/load/corpus_vault.py snapshot
+
+vault-status:
+	python3 ETL/events/load/corpus_vault.py status --brctl
 
 # The broad ETL pipeline (43 funder/registry extractors, classify, sanity)
 # runs on a weekly Railway cron against a Railway-resident volume, not locally.
