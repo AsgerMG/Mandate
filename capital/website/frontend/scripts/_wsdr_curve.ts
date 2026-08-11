@@ -142,15 +142,30 @@ async function main() {
     generatedAt: new Date().toISOString(),
     recallAtK: curve,
   };
-  const out = path.join(process.cwd(), "lib", "intelligence", POOL_RECALL_FILE);
-  writeFileSync(out, `${JSON.stringify(artifact, null, 1)}\n`);
+  // The literal appears here as well as in `poolRecall.ts`, and that is not a
+  // second definition to keep in sync — `check_artifact_reachability.py` proves
+  // a producer by finding the artifact's own name bound to the variable that is
+  // written, so a path assembled purely out of an imported constant makes this
+  // script unprovable as the producer of the file it writes. The duplication is
+  // therefore ENFORCED rather than commented: if the two ever disagree this
+  // throws before writing anything, so the failure is a loud stop rather than a
+  // reader pointed at a file nobody produces.
+  const OUT = path.join(process.cwd(), "lib", "intelligence", "poolRecallCurve.generated.json");
+  if (!OUT.endsWith(POOL_RECALL_FILE)) {
+    throw new Error(
+      `this script writes ${path.basename(OUT)} and lib/intelligence/poolRecall.ts reads ` +
+      `${POOL_RECALL_FILE}. One of the two moved. The prompt would have kept quoting a ` +
+      `stale base rate with no error anywhere, which is the failure this artifact exists ` +
+      `to remove.`);
+  }
+  writeFileSync(OUT, `${JSON.stringify(artifact, null, 1)}\n`);
 
   console.log(`\ncorpus=${prov.source} instruments=${prov.instruments} at ${prov.hydratedAt}`);
   console.log(rankerTallyLine());
   console.log(`n=${n} held-out described founders, mean accessible pool ${artifact.meanPoolLength} rows`);
   for (const [k, v] of curve) console.log(`  won fund within first ${String(k).padStart(4)}: ${(v * 100).toFixed(1)}%`);
   console.log(`in the accessible pool at any depth: ${(artifact.inPoolAtAll * 100).toFixed(1)}%`);
-  console.log(`wrote ${out}`);
+  console.log(`wrote ${OUT}`);
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });

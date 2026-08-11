@@ -84,6 +84,11 @@ const CHECKS = [
   ["offer routes are sourced", ["npx", "tsx", "scripts/check_offer_route.ts"]],
   ["regions match NUTS", ["npx", "tsx", "scripts/check_regions.ts"]],
   ["theme index is not stale", ["npx", "tsx", "scripts/check_theme_index.ts"]],
+  // The base rate the SELECTOR IS TOLD. A stale curve here does not degrade a
+  // ranking, it makes the prompt state a confident falsehood about the list in
+  // front of the model — which is what shipped for four workstreams, unnoticed,
+  // because nothing checked it.
+  ["selector's base rate is current", ["npx", "tsx", "scripts/check_pool_recall_curve.ts"]],
   ["leaf cap headroom", ["npx", "tsx", "scripts/check_leaf_cap.ts"]],
   ["missing-data neutral", ["npx", "tsx", "scripts/check_missing_data_neutral.ts"]],
   ["capital reach", ["npx", "tsx", "scripts/check_capital_reach.ts"]],

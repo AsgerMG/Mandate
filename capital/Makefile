@@ -229,6 +229,15 @@ eligibility:
 	python3 ETL/terms/embed_eligibility.py run
 	python3 ETL/terms/build_instrument_profiles.py classify-titles
 	python3 ETL/terms/build_instrument_profiles.py run --rebuild
+	# The base rate the selector is TOLD, re-measured against the corpus that
+	# was just published. It is P(the fund a company actually won is within the
+	# first K rows of its accessible pool), and every accessible pool moves when
+	# the corpus does -- so a curve left behind here does not degrade a ranking,
+	# it makes the prompt state a confident falsehood about the list in front of
+	# the model. That is exactly what shipped for four workstreams. Last, and
+	# after Postgres, because it reads the published corpus.
+	# check_pool_recall_curve.ts fails the build when this has not been re-run.
+	cd website/frontend && npx tsx scripts/_wsdr_curve.ts
 
 # News/signals layer (data/signals.sqlite): schema install + stage counts + QA.
 # The per-stage transforms (classify_relevance, entity_link_articles,

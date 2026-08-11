@@ -1,0 +1,64 @@
+{
+ "what": "P(the fund a company actually won is within the first K rows of the ranked accessible memo pool). The base rate the selector prompt quotes for the list it is actually shown.",
+ "generatedBy": "scripts/_wsdr_curve.ts",
+ "measuredOn": "the holdout split of the described recall population, one founder per company",
+ "n": 846,
+ "meanPoolLength": 77.1,
+ "inPoolAtAll": 0.7754,
+ "corpus": "postgres instruments=1088",
+ "generatedAt": "2026-08-11T08:26:44.359Z",
+ "recallAtK": [
+  [
+   1,
+   0.0697
+  ],
+  [
+   3,
+   0.1643
+  ],
+  [
+   6,
+   0.266
+  ],
+  [
+   10,
+   0.3499
+  ],
+  [
+   18,
+   0.4421
+  ],
+  [
+   25,
+   0.4988
+  ],
+  [
+   30,
+   0.552
+  ],
+  [
+   40,
+   0.6383
+  ],
+  [
+   50,
+   0.6738
+  ],
+  [
+   75,
+   0.7293
+  ],
+  [
+   100,
+   0.7577
+  ],
+  [
+   150,
+   0.7754
+  ],
+  [
+   250,
+   0.7754
+  ]
+ ]
+}
