@@ -249,10 +249,18 @@ function main() {
 
   // ── THE FUNNEL MUST NARROW, AND NOTHING ASSERTED THAT IT DID ─────────────
   //
-  // Five caps stand between the corpus and the published table, and each one
-  // is a separate constant in a separate file:
+  // These constants stand between the corpus and the published table, each one
+  // in a separate file:
   //
-  //     VERDICT_POOL -> WRITER_CANDIDATE_CAP -> institutionsMax -> the floor
+  //     VERDICT_POOL -> WRITER_CANDIDATE_CAP -> institutionsMax
+  //
+  // plus SELECT_COUNT, which is a FLOOR against institutionsMax rather than a
+  // step in the chain — see the third entry below.
+  //
+  // Named, not counted (wsEW). This opened "Five caps" and listed four, while
+  // `caps.ts` opened "Four caps" over the same funnel and listed three. The
+  // pairs asserted below are the authority either way; a tally in the prose is
+  // a second copy of a fact the array already states, and it drifted.
   //
   // They only work as a funnel if each is STRICTLY wider than the next. A cap
   // that is narrower upstream than downstream cannot be reached: the pipeline

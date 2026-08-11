@@ -7,8 +7,6 @@ import {
   stakesByFund,
   openProjectGatesForShortlist,
 } from "@/lib/intelligence/gateReach";
-import {
-} from "@/lib/intelligence/pipeline";
 import { instById } from "@/lib/intelligence/shortlist";
 import {
   planAdaptiveScreen,

@@ -18,14 +18,32 @@ import type { IntelligenceRequest, ProgressEvent } from "@/lib/intelligence/type
 // statically optimised — every request runs the live pipeline.
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-// The pipeline makes three model calls plus web search; give it headroom.
+// ── HEADROOM FOR THE CALLS THE PIPELINE MAKES, WHICH IS NOT A FIXED NUMBER ──
+// This said "three model calls plus web search" and, seven lines below, "six
+// model calls per request". Both were literals for a count that is CONDITIONAL,
+// so both were wrong and they could not both be right (wsEW). Named instead of
+// counted, because the list is checkable against the code and a tally is not:
+//
+//   discoverAndResearch  one call with web_search, plus ONE resume if the
+//                        server-side search loop returns `pause_turn`
+//   judgeOpenAnswers     one call, only when the founder answered at least one
+//                        open question — skipped entirely when they did not
+//   synthesize           one streamed writer call, plus ONE retry with thinking
+//                        off if the first returns empty or times out
+//   agentSelectRows      ZERO on the shipped path: AGENT_SELECT defaults to
+//                        `off`. On an arm, one call, plus one more under
+//                        AGENT_SELECT_UNSURE=tool when the model uses the tool
+//
+// So the shipped floor is two calls and the ceiling is well above it, which is
+// what 300 seconds is sized for.
 export const maxDuration = 300;
 
 // Rate limiting and the global spend ceiling now live in lib/intelligence/quota.ts,
 // backed by Postgres. The in-memory counter that used to sit here reset on cold
 // start — which on a serverless platform means a new instance starts every
 // counter at zero, and instances are cheap to provoke. It was a suggestion, not
-// a limit, on the one endpoint that costs six model calls per request.
+// a limit, on the one endpoint that costs several model calls per request (see
+// the list above `maxDuration`).
 
 export async function POST(request: NextRequest) {
   const ip =

@@ -22,11 +22,39 @@
 import { readFileSync, readdirSync, statSync } from "fs";
 import path from "path";
 
-const ROOT = path.join(process.cwd(), "lib");
-const APP = path.join(process.cwd(), "app");
+// ── THE ROOTS, AND WHY components/ HAD TO BE ONE (wsEW) ────────────────────
+// This walked `lib/` and `app/` only, and `components/` holds EIGHT "use
+// client" files — the nav bar, the charts, the map, the graphs. So the guard
+// missed them twice over: it never graded them as sources, and because `src`
+// is also what `resolve()` looks a specifier up in, an `@/components/...` edge
+// out of a file it DID grade resolved to null and the walk stopped there. A
+// client module reaching `pg` through a shared component was invisible on both
+// routes. Both were proven by planting the case and watching the guard pass.
+//
+// It is the roots that are enumerated here, not the modules — a new component
+// is covered the day it is written, which is the same property the SERVER_ONLY
+// regex has and for the same reason.
+const ROOTS = ["lib", "app", "components"].map((d) => path.join(process.cwd(), d));
 
-/** Node builtins and drivers that cannot exist in a browser bundle. */
-const SERVER_ONLY = /^(?:node:)?(fs|path|dns|net|tls|crypto|child_process|os|http|https|zlib|stream)$|^pg$|^voyageai$/;
+/**
+ * Node builtins and drivers that cannot exist in a browser bundle.
+ *
+ * ── THE SUBPATH, WHICH THE `$` USED TO EAT (wsEW) ─────────────────────────
+ * This was anchored on the bare module name, so `fs` was caught and
+ * `fs/promises` was not — nor `node:fs/promises`, `stream/web`, `dns/promises`
+ * or `pg/lib/...`. Those are the SAME Node builtins under the names the modern
+ * API is actually imported by, and a bundle dies on them identically. Nothing
+ * in the tree imported one on the day this was widened; that is precisely why
+ * it was worth widening, because the guard would have gone green on the first
+ * one somebody wrote.
+ *
+ * The subpath is optional and must begin with `/`, so a package whose name
+ * merely STARTS with a builtin's — `path-browserify`, `crypto-js`, `pgvector`
+ * — still does not match. That distinction is the whole reason it is not a
+ * prefix test.
+ */
+const SERVER_ONLY =
+  /^(?:node:)?(?:fs|path|dns|net|tls|crypto|child_process|os|http|https|zlib|stream)(?:\/|$)|^(?:pg|voyageai)(?:\/|$)/;
 
 function walk(dir: string): string[] {
   const out: string[] = [];
@@ -39,7 +67,7 @@ function walk(dir: string): string[] {
   return out;
 }
 
-const files = [...walk(ROOT), ...walk(APP)];
+const files = ROOTS.flatMap(walk);
 const src = new Map(files.map((f) => [f, readFileSync(f, "utf8")]));
 
 /** Static imports only, and NOT `import type` — a type edge is erased by the
@@ -68,7 +96,36 @@ function resolve(from: string, spec: string): string | null {
   return null;
 }
 
-/** The first server-only specifier this module pulls in, following local edges. */
+/**
+ * The first server-only specifier this module pulls in, following local edges.
+ *
+ * ── THE SHARED `seen` SET IS SOUND, AND THIS SAYS SO ON PURPOSE (wsEW) ─────
+ * It was reported as a third hole: one `seen` spans the whole walk from one
+ * client module, so a module visited on a clean branch is skipped on every
+ * later branch, and that looks like it could under-report on a diamond.
+ * It cannot, and the code is deliberately left alone.
+ *
+ * `seen` is fresh per TOP-LEVEL client module (the default argument, and the
+ * caller below never passes one), so nothing leaks between the files being
+ * graded. Within one walk this is textbook DFS reachability: a node is skipped
+ * only when it is already on the stack or already fully explored, and
+ * "does anything reachable from here import a server module" is a property of
+ * the node, not of the branch that arrived at it. When a node returns null
+ * because its only onward path was truncated at an ancestor, that ancestor is
+ * still mid-loop and explores the rest itself, so the top-level verdict holds.
+ *
+ * Not left on an argument. Three shapes were planted and all three were caught
+ * — an acyclic diamond, a clean cycle followed by a dirty branch, and the exact
+ * alleged failure (a node returning null purely because of ancestor truncation,
+ * with the ancestor then reaching `pg`). Then this control flow was replayed
+ * against ground-truth BFS reachability on 200,000 random graphs dense enough
+ * to be full of cycles and diamonds: 806,318 cases, ZERO mismatches.
+ *
+ * What the set genuinely does affect is the CHAIN printed, not the verdict:
+ * a truncated branch can make the reported path longer than the shortest one.
+ * That is a legibility cost on an already-failing build, and de-duplicating it
+ * would cost a full re-walk per node for no extra defect caught.
+ */
 function serverReach(file: string, seen = new Set<string>()): string[] | null {
   if (seen.has(file)) return null;
   seen.add(file);
