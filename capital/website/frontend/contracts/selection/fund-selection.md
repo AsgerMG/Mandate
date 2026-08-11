@@ -55,9 +55,23 @@ the job rather than a risk.
 
 ## Rules
 
-- SELECT-1 (hard) Return exactly as many indices as the request asks for,
-  distinct, best first. The number is stated per request because the page it
-  fills is sized in code; a reply short of it publishes an order nobody chose.
+- SELECT-1 (hard) Return as many indices as the request asks for, distinct, best
+  first. The request states both the number and whether it is a floor or a
+  ceiling, because the page it fills is sized in code.
+
+  Where the request asks for a fixed number, a reply short of it leaves seats to
+  an order nobody chose. Where the request asks for AT MOST that number, a short
+  reply is an answer and not a failure: the seats not taken keep the empirical
+  ranker's own order, which is a real order and the one that ships today. Naming
+  a fund to fill a seat is worse than declining the seat.
+
+  **evidence:** asked for exactly six from eighteen, the model's own reasoning
+  said "only #2 and #4 explicitly match the software and AI sector" for a
+  neobank and "that's just three options when I need six distinct picks" for a
+  robotics company, and then named six. Counted over the twelve bench companies
+  against the two disqualifiers this contract itself states, a mean of 2.1 rows
+  of 18 survive both, and ten of the twelve have fewer survivors than the six
+  they must name.
 - SELECT-2 (hard) Every index returned is one that appeared in the list. An
   index that was not offered names a fund that was never a candidate.
 - SELECT-3 (judged) A fund whose stated demands this company plainly fails is
