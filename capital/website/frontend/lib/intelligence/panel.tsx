@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   CAPITAL_OPTIONS,
   ORGANISATION_TYPE_OPTIONS,
@@ -316,6 +316,24 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   const toggleAllCapital = () =>
     setCapitalSought(allCapital ? [] : CAPITAL_OPTIONS.map((o) => o.value));
 
+  // ── WHAT THE FOUNDER HAD ANSWERED BEFORE THE FOLLOW-UP SCREEN ───────────
+  //
+  // The memo request carries two answer objects and the SERVER takes the
+  // difference; nothing here decides which fields were late, and nothing here
+  // could be trusted to. See lib/intelligence/answerProvenance.ts.
+  //
+  // A REF, not state, and for the reason this file has already been burned by
+  // twice: `handleContinue` -> `fetchRound` -> `runMemo` all run in one tick,
+  // so a `setState` written at the top of that chain is not what the closure at
+  // the bottom reads. `projectOverride` and `eligOverride` below are the same
+  // hazard threaded by hand; a ref is the version that cannot be forgotten at a
+  // fourth call site.
+  //
+  // Written ONCE, when the first screen is submitted. A second round must not
+  // move it: the property is "first answered on a follow-up screen", not "since
+  // the last one".
+  const eligBeforeRound = useRef<EligibilityAnswers | null>(null);
+
   // `eligOverride` lets callers get a payload reflecting eligibility answers
   // that haven't made it into `elig` state yet (React state updates aren't
   // synchronous — see advanceRound, which needs the just-merged answers
@@ -368,6 +386,10 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     if (!company.trim() || preparing) return;
     setError(null);
     setPreparing(true);
+    // The screen-one answers, frozen before a single follow-up question is
+    // asked. Everything the founder adds from here is, by construction, an
+    // answer that arrived late.
+    eligBeforeRound.current = { ...elig };
     const v = await fetchVerdict();
     setRoutesInPlay(v?.instrumentTable?.length ?? 0);
     await fetchRound(elig, v?.candidateInstrumentIds ?? [], true);
@@ -526,6 +548,10 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
           ...basePayload(eligOverride),
           clarifications,
           projectAnswers: projectOverride ?? projectAnswers,
+          // The second answer object. Omitted entirely when the founder never
+          // reached a follow-up screen, because absent means "nothing is late"
+          // and an empty object would say the same thing less clearly.
+          eligibilityBeforeRound: eligBeforeRound.current ?? undefined,
         }),
       });
 

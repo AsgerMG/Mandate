@@ -592,6 +592,22 @@ export interface IntelligenceRequest {
   clarifications?: { question: string; answer: string }[];
   /** Structured scoping answers (the wizard's deterministic screens). */
   eligibility?: EligibilityAnswers;
+  /**
+   * The SAME answers as they stood before the follow-up screen was shown.
+   *
+   * Not a second source of truth and not a list of anything: it is one more
+   * `EligibilityAnswers` object, sanitised by the same whitelist, and the
+   * server takes the difference itself. That is the whole point — the product
+   * decision is that a follow-up answer INFORMS the ranker and never REMOVES a
+   * fund, and the naive way to implement it is to let the client say which
+   * fields were late. A client that could say so could say ALL of them, and
+   * switch the verdict engine off for its own request.
+   *
+   * Absent on any caller that does not run the two-screen funnel — every
+   * harness, every recorded replay — in which case nothing is late and the
+   * pipeline behaves exactly as it did before this existed.
+   */
+  eligibilityBeforeRound?: EligibilityAnswers;
   /** The founder's current candidate instrument shortlist (from a prior
    *  verdict computation) — grounds the adaptive round in gates that are
    *  actually still open for THESE instruments, not the whole 320-row corpus. */

@@ -1064,6 +1064,39 @@ function rowDisplayLabel(r: InstrumentRow): string {
   return r.instrument || displayInstitutionName(r);
 }
 
+/**
+ * WHICH of two rows that render under one label keeps the visible slot.
+ *
+ * A TOTAL order, and it must not depend on where either row sits in the array:
+ * `resolveNameCollisions` pins that property by running its input reversed.
+ * Rows that genuinely cannot be told apart still collapse, but the survivor is
+ * not decided by array position -- `encodedCount` ties in 70% of SATR cases,
+ * because siblings inherit their regime's gates and the counts are identical,
+ * and the reduce this replaced kept whichever came first. Prefer the leaf
+ * carrying evidence of its OWN, then the richer one, then a total order on id
+ * so the result cannot depend on hydration sequence.
+ *
+ * EXPORTED because the memo's candidate order collapses the same pairs one
+ * stage later, on the label ITS table renders. Two collapses is a fact about
+ * the product -- the shortlist and the memo are two surfaces -- but two
+ * SURVIVOR RULES would be the "keep in sync" comment this repo has paid for
+ * four times. One rule, both callers.
+ */
+export function preferBetterEvidencedRow(a: InstrumentRow, b: InstrumentRow): number {
+  const ownCount = (r: InstrumentRow) => {
+    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+    return inst ? inst.gates.filter((g) => !g.inherited).length : 0;
+  };
+  const encodedCount = (r: InstrumentRow) => {
+    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
+    return inst ? inst.gates.filter(
+      (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
+  };
+  return (ownCount(b) - ownCount(a))
+    || (encodedCount(b) - encodedCount(a))
+    || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? "");
+}
+
 function distinguishRowNames(rows: InstrumentRow[]): void {
   const byName = new Map<string, InstrumentRow[]>();
   for (const r of rows) {
@@ -2697,30 +2730,12 @@ export function materialiseInstrumentTable(
     schemeCode: (r.schemeCode ?? "").trim(),
   })));
   distinguishRowNames(ranked);
-  const encodedCount = (r: InstrumentRow) => {
-    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
-    return inst ? inst.gates.filter(
-      (g) => g.valueSpec && (!g.gateRole || g.gateRole === "filter")).length : 0;
-  };
-  // Rows that genuinely cannot be told apart still collapse in the TABLE, but
-  // the survivor is not decided by array position. encodedCount ties in 70% of
-  // SATR cases -- siblings inherit their regime's gates, so the counts are
-  // identical -- and the old reduce kept whichever came first. Prefer the leaf
-  // carrying evidence of its OWN, then the richer one, then a total order on id
-  // so the result cannot depend on hydration sequence.
-  const ownCount = (r: InstrumentRow) => {
-    const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
-    return inst ? inst.gates.filter((g) => !g.inherited).length : 0;
-  };
   // ONE label function, passed to both the disambiguator and the collapse.
   // displayInstitutionName rebuilds the name from country + kind + scheme code
   // and never reads `row.instrument`, so while these were two functions the
   // disambiguator's work was invisible here and rows it had just told apart
   // were still collapsed. Two functions, two keys, was the whole defect.
-  const collision = resolveNameCollisions(ranked, rowDisplayLabel,
-    (a, b) => (ownCount(b) - ownCount(a))
-      || (encodedCount(b) - encodedCount(a))
-      || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""));
+  const collision = resolveNameCollisions(ranked, rowDisplayLabel, preferBetterEvidencedRow);
   for (const { row, kept, label: name } of collision.collisions) {
     // The NAME they collided on, and WHICH row survived. Without both, the log
     // says a collision happened and nothing about whether the two rows were

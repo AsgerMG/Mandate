@@ -96,6 +96,25 @@ export async function POST(request: NextRequest) {
             targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
             eligibility: withIncorporationCountry(
               sanitizeEligibility(body.eligibility), body.country?.trim()),
+            // The same answers as they stood before the follow-up screen, run
+            // through the SAME whitelist. The pipeline takes the difference and
+            // intersects it with the questions this founder's own shortlist
+            // would have produced; nothing here, and nothing on the request,
+            // may name a "late field" directly. See answerProvenance.ts.
+            //
+            // `withIncorporationCountry` is applied to both, or the top-level
+            // `country` select would look like an answer that arrived late for
+            // every founder — which is precisely the field that must never be
+            // able to be late.
+            //
+            // Left UNDEFINED when the request does not carry it, rather than
+            // defaulted to an empty object: absent means "nothing is late", so
+            // a client that simply omits it cannot buy every fund an immunity
+            // by omission, and no harness's numbers move.
+            eligibilityBeforeRound: body.eligibilityBeforeRound
+              ? withIncorporationCountry(
+                  sanitizeEligibility(body.eligibilityBeforeRound), body.country?.trim())
+              : undefined,
             profileSignal: sanitizeProfileSignal(body.profileSignal),
             projectAnswers: sanitizeProjectAnswers(body.projectAnswers),
           },
