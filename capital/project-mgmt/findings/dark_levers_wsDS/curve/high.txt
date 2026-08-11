@@ -1,0 +1,80 @@
+(node:73989) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011Cdvihr5XaLXNog82Ki9Jx"}
+[agentSelect] call failed, keeping the shipped order: Error: 400 {"type":"error","error":{"type":"invalid_request_error","message":"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits."},"request_id":"req_011CdvihxTkYg15uX47eAzP6"}
+corpus=postgres instruments=1088 at 2026-08-11T08:56:22.361Z
+ranker: all 72 request(s) on EMBEDDING
+agent-select: arm=adviser depth=40 count=6 effort=high maxtok=12288 unsure=declare lookups=0 (0 brief(s) retrieved) model=claude-sonnet-5 — 34/36 chose, 2 FELL BACK to the shipped order (0 empty reply, 0 unparseable), 0 short reply, 0 unusable id(s), thought on 34/36 call(s) (147684 thinking token(s) billed, 187374 readable char(s)), 0 CUT OFF at max_tokens, EUR 1.9112 total, EUR 0.0531 per brief
+set=__recallSetDescribed.json split=tune replayed 36
+  founder intake — 23 askable fields, identity=real own-history=withheld capital=withheld answers=off consortium=yes
+    DERIVED   entityCountries      set   36/36 (100%)  own   36/36 (100%)  companies.country
+    DERIVED   organisationType     set   15/36 ( 42%)  own   15/36 ( 42%)  prefillOrganisationType(company name) — production's own classifier
+    DERIVED   region               set    0/36 (  0%)  own    0/36 (  0%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set   36/36 (100%)  own   36/36 (100%)  companies.sector_top
+    DERIVED   ticketBand           set   36/36 (100%)  own    0/36 (  0%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set   36/36 (100%)  own    0/36 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set   36/36 (100%)  own    0/36 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set   36/36 (100%)  own    0/36 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
+published cap under test: BRIEF_LIMITS.institutionsMax=7, writer cap 8
+  tier 1 (usedInField) live for the won leaf's own channel on 7/36 (19.4% +/-12.9) of pairs — peers only, never this founder
+
+── THE INSTANT SCREEN ──
+  SCREEN@5  7/36 (19.4% +/-12.9)
+  SCREEN@6  8/36 (22.2% +/-13.6)
+  gain of the sixth row on the screen: +2.8 pts (1 pairs)
+
+── THE MEMO'S CANDIDATE ORDER (what the cut actually cuts) ──
+  MEMO@1   1/36 (2.8% +/-5.4)
+  MEMO@2   2/36 (5.6% +/-7.5)
+  MEMO@3   2/36 (5.6% +/-7.5)
+  MEMO@4   2/36 (5.6% +/-7.5)
+  MEMO@5   3/36 (8.3% +/-9.0)
+  MEMO@6   5/36 (13.9% +/-11.3)
+  MEMO@7   6/36 (16.7% +/-12.2)
+  gain of the sixth row in the memo: +5.6 pts (2 pairs)
+  ██ MEMO@6 13.9% against SCREEN@6 22.2% — the memo keeps 63% of what the screen got right
+
+  memo order depth: min 18 p25 18 median 18 max 18
+  founders whose memo order even HAS a sixth row: 36/36 (100.0%)
+
+── WHERE THE GAIN LANDS (memo rank exactly 6) ──
+  2 pairs across 2 distinct regimes and 2 countries
+    vinnova_grant                                      1
+    sudop_rd_centers                                   1
+  largest single regime holds 1 of 2 (50%)
+
+── WHERE THE MEMO LOSES A LEAF THE POOL HELD (wsCT owns the fix) ──
+  won leaf inside the memo pool (top 18):        16/36 (44.4% +/-16.2)
+  ...and inside its first six BEFORE the re-sort: 4/36 (11.1% +/-10.3)
+  ...and inside the memo order after re-sort/drop: 5/36 (13.9% +/-11.3)
+  in the pool but absent from the memo order: 0
+  the fit re-sort moves the won leaf OUT of the top six 0 times, INTO it 1 times
+
+  screen and memo agree on the won leaf's rank in 1/8 pairs where both contain it
+
+wrote /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsDS-dark-levers/project-mgmt/findings/dark_levers_wsDS/curve/pairs_high.json

@@ -1,0 +1,31 @@
+model=claude-sonnet-5  EUR 0.0466  usage={"input_tokens":8366,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":3390,"output_tokens_details":{"thinking_tokens":3362},"service_tier":"standard","inference_geo":"global"}
+
+THINKING (3736 chars)
+==============================================================================
+Looking at this candidate from France working on a generative AI app for product photography and editing, they're seeking funding in the €2.5-15M range. The funding structure involves experimental development and industrial research components, though the consortium arrangement is still being worked out.
+
+Now I'm evaluating specific funding programs. CNC (Centre National du Cinéma) is designed for the audiovisual and cinema industry, not software and AI companies—the typical awards around €90k are orders of magnitude too small for their needs, so that's a clear mismatch. Bpifrance i-Nov looks more promising as a grant program with median awards around €449k and recent 2025 awards, though it requires a single applicant rather than a consortium structure, which aligns with their current uncertainty about collaboration anyway.
+
+Horizon EU CL1 is focused on health research, which doesn't fit a software and AI photography company despite being a highly-ranked comparable program. The Régime exempté relatif à la décarbonation is for mobility and transport, so that's another thematic mismatch. The Régime cadre exempté RDI from the Ministry of Economy looks more relevant as a generic French R&D&I support scheme with typical awards around €953k, which sits closer to their funding bracket.
+
+EIC Accelerator offers blended grant and equity financing up to €2.5M in grants plus equity, but there's a question about whether the company at exactly 250 employees falls within the SME cap for this program.
+
+[6] EIB Venture provides loans around €20M, which overshoots the €15M ask, though it's not a complete mismatch. The company mentioned borrowing through operations, and while EIB Venture is technically a loan instrument for scaling companies, it could work if they're open to debt financing. The program does require R&D investment focus.
+
+[7]-[14] All the energy and cleantech schemes are sector misaligned—solar, wind, energy infrastructure—so I'm ruling those out entirely.
+
+[15] Bpifrance PMUP IDF targets industrial manufacturing in specific regions, which doesn't fit our software/AI company, so that's a reject.
+
+[16] EIC Transition requires building on prior EIC...
+
+EIC Transition demands the proposal build on results from an earlier EU-funded project like Pathfinder or ERC PoC. We don't have evidence the company has received such funding, so this is unknown rather than a clear disqualifier. The typical award of 660k aligns with their needs, but the prior project requirement is a specific gate that likely isn't met—I'll keep it as a backup option given the uncertainty.
+
+[17] EIC Pathfinder has a hard requirement: the consortium must include at least 3 entities from different countries. The company description mentions... Bpifrance i-Nov looks strongest with good sector alignment and confidence, followed by Régime cadre RDI and EIC Accelerator which both fit the funding range well. EIB Venture is larger than needed and has a sector mismatch, while CNC is too small and irrelevant to the company's actual business.
+
+For EIC Transition, the median size of 660k is promising and there's no clear obstruction despite an unknown prior-funding requirement, so I'll keep it as a backup option. EIC Pathfinder is ruled out due to the consortium requirement.
+
+Now I'm narrowing down to exactly six candidates: EIC Accelerator leads with the best alignment on size and theme, followed by Régime cadre RDI with strong award frequency, then Bpifrance i-Nov, EIC Transition as a solid fourth choice, EIB Venture for the upper funding range, and EIC Pathfinder as the sixth option despite its obstruction. I'm reconsidering whether CNC should replace one of these given its high win rate among comparable companies.…
+
+REPLY (37 chars)
+==============================================================================
+{"picks":[5,4,1,16,6,17],"unsure":[]}

@@ -327,7 +327,13 @@ export const SELECT_KEEP = Number(process.env.AGENT_SELECT_KEEP ?? 3);
  * integers and 1,536 tokens is ample, while bounding the worst case at about
  * EUR 0.014 of output per call.
  */
-const EFFORTS = ["low", "medium", "high", "xhigh", "max"] as const;
+// `off` is an EFFORT LEVEL here, not the absence of one, and that is what makes
+// thinking measurable as a lever. The arm previously had exactly one thinking
+// setting -- adaptive at `low` -- so "what does thinking buy" had no control to
+// be measured against except a different ARM, which changes the prompt, the
+// prior and the retrieval path at the same time. Naming `off` on this axis
+// keeps every one of those fixed and moves the one thing under test.
+const EFFORTS = ["off", "low", "medium", "high", "xhigh", "max"] as const;
 export type ThinkEffort = (typeof EFFORTS)[number];
 /** Validated at module scope for the same reason the arm is: an unrecognised
  *  effort must fail loudly, not silently fall through to the model default and
@@ -341,8 +347,120 @@ export const THINK_EFFORT: ThinkEffort = (() => {
 })();
 export const LOOKUP_MAX = Number(process.env.AGENT_SELECT_LOOKUPS ?? 5);
 
+/**
+ * ── HOW THE MODEL IS ALLOWED TO ASK FOR A FUND'S OWN RULES ────────────────
+ *
+ * `declare` is the shipped design and it does not fire. The model is asked, in
+ * the same JSON as its picks, to name up front the candidates it cannot
+ * separate — a PRE-declaration, made before it has looked anything up. Measured
+ * twice, on the same twelve companies:
+ *
+ *   effort low   (wsDQ)   0 of 12 declared anything
+ *   effort high  (wsDS)   0 of 12, after 79,252 thinking tokens
+ *
+ * The second run is what makes this a verdict rather than a suspicion. The
+ * obvious reading of wsDQ was that a model doing no reasoning gives the
+ * compliant empty answer — the instruction ends "if you already know, leave it
+ * empty". That reading is now excluded: at effort `high` the model reasoned at
+ * length and explicitly about eligibility, naming blockers in its own thinking,
+ * and still declared nothing. So `eligibility_embeddings` — 4,579+ chunks, an
+ * HNSW index, refreshed and guarded — has never once been read on a real
+ * request, and the reason is the shape of the hook, not the depth of the model.
+ *
+ * The likely mechanism, and the reason a tool is the honest alternative: asking
+ * a model to enumerate its own uncertainty BEFORE it investigates is asking for
+ * a self-report about a state it has not entered yet. A tool inverts that. The
+ * model does not have to predict which rows will puzzle it; it reaches for the
+ * rules at the moment one does, which is the only moment it actually knows.
+ *
+ * `off` exists so the channel can be removed rather than left as a hook that
+ * never fires, which is the outcome the owner named as acceptable and which is
+ * strictly better than shipping dead surface.
+ *
+ * DEFAULT IS UNCHANGED. `declare` stays the default so this file's behaviour is
+ * identical until something measured says otherwise.
+ */
+const UNSURE_MODES = ["declare", "tool", "off"] as const;
+export type UnsureMode = (typeof UNSURE_MODES)[number];
+export const UNSURE_MODE: UnsureMode = (() => {
+  const raw = process.env.AGENT_SELECT_UNSURE ?? "declare";
+  if (!UNSURE_MODES.includes(raw as UnsureMode)) {
+    throw new Error(`AGENT_SELECT_UNSURE must be one of ${UNSURE_MODES.join("|")}, got "${raw}"`);
+  }
+  return raw as UnsureMode;
+})();
+
+/** The one tool the selector may call. Its input is INDICES INTO THE MENU IT
+ *  WAS SHOWN, never a free-text query and never an instrument id — so the model
+ *  cannot use it to reach a fund it was not already offered, and the retrieval
+ *  stays a lookup about candidates in front of it rather than a search of the
+ *  corpus. That is the same boundary the `declare` path relies on for its leak
+ *  argument, enforced the same way. */
+const LOOKUP_TOOL = {
+  name: "lookup_requirements",
+  description:
+    "Return a fund's own eligibility requirements, in its own words, for "
+    + "candidates you are looking at. Use it where a rule you cannot see on the "
+    + "row would change your answer.",
+  input_schema: {
+    type: "object" as const,
+    properties: {
+      indices: {
+        type: "array" as const,
+        items: { type: "integer" as const },
+        description: "Index numbers from the CANDIDATES list, at most "
+          + `${LOOKUP_MAX}.`,
+      },
+    },
+    required: ["indices"],
+  },
+};
+
 const MODEL = process.env.AGENT_SELECT_MODEL ?? "claude-sonnet-5";
-const TIMEOUT_MS = 40_000;
+
+/**
+ * ── THE CEILING HAS TO RISE WITH THE EFFORT, AND THIS IS NOT A TUNING KNOB ──
+ *
+ * `max_tokens` caps thinking and reply TOGETHER. The arm shipped 1,536 for the
+ * adviser, which is ample at effort `low` -- Nortal's own prompt spends 360-519
+ * thinking tokens there and answers in 37 characters. It is NOT ample above it.
+ * Measured on that same prompt (`scripts/_wsds_probe.ts`, both runs recorded in
+ * `findings/dark_levers_wsDS/probe_thinking.txt`):
+ *
+ *   effort low,  max_tokens 1536   360 thinking, answered
+ *   effort high, max_tokens 1536   1,535 thinking, stop_reason=max_tokens,
+ *                                  NO text block at all -> empty reply
+ *   effort high, max_tokens 8192   5,995 thinking, answered
+ *
+ * An empty reply is counted as a fallback and publishes the shipped order. So a
+ * thinking sweep run against a fixed 1,536 would have reported the CONTROL's
+ * table under the treatment's banner at every level above `low`, and reported
+ * it as the model declining to choose rather than as a truncation. That is the
+ * exact class of error this workstream exists to stop, and it would have been
+ * invisible: the tally line says "FELL BACK", not "was cut off".
+ *
+ * These numbers are ceilings, not budgets -- nothing bills for headroom, only
+ * for tokens actually spent -- so they are set well clear of the measured spend
+ * rather than trimmed to it. The cost of being generous is a worse worst case;
+ * the cost of being tight is a measurement that silently describes the control.
+ */
+const MAX_TOKENS_BY_EFFORT: Record<ThinkEffort, number> = {
+  off: 1024, low: 2048, medium: 6144, high: 12288, xhigh: 24576, max: 32768,
+};
+
+/**
+ * Same argument as the token ceiling, for the clock.
+ *
+ * 40 seconds was chosen when the arm could not think. At `high` the probe spent
+ * 5,995 thinking tokens on one call, and a timeout is indistinguishable
+ * downstream from a model that declined -- both return the shipped order
+ * through the same catch. A sweep whose deeper arms quietly time out measures
+ * latency, not judgement.
+ */
+const TIMEOUT_BY_EFFORT: Record<ThinkEffort, number> = {
+  off: 40_000, low: 40_000, medium: 90_000, high: 150_000,
+  xhigh: 240_000, max: 300_000,
+};
 
 /**
  * Constructed LAZILY, and that is not a style choice.
@@ -365,6 +483,16 @@ const anthropic = (): Anthropic => (clientMemo ??= new Anthropic());
 const tally = {
   calls: 0, ok: 0, failed: 0, shortReply: 0, invalidIds: 0,
   emptyReply: 0, badJson: 0, eur: 0, lookups: 0, resolved: 0,
+  /** Calls the API cut off at max_tokens, and the thinking they were billed
+   *  for. A truncated call falls back to the shipped order, so without this
+   *  counter a max_tokens ceiling set too low for the effort reads as the
+   *  model refusing to choose -- which is how a run measures its own control
+   *  and reports it as a treatment. */
+  truncated: 0, thinkingTokens: 0, thinkingChars: 0, thoughtOn: 0,
+  /** `tool` mode: calls on which the model ASKED for a fund's own rules. The
+   *  whole question about this channel is whether it ever fires, so the count
+   *  of times the model reached for it is the measurement, not a diagnostic. */
+  toolAsked: 0,
   /** `dry` only: the size of the prompt the adviser WOULD have sent, and of
    *  the evidence round two would have carried. Priced by _wsdd_cost.ts. */
   dryChars: [] as number[], dryEvidenceChars: [] as number[], dryRetrieved: 0,
@@ -378,6 +506,8 @@ export function resetAgentSelectTally(): void {
   tally.lookups = 0; tally.resolved = 0;
   tally.dryChars = []; tally.dryEvidenceChars = []; tally.dryRetrieved = 0;
   tally.reversed = 0;
+  tally.truncated = 0; tally.thinkingTokens = 0;
+  tally.thinkingChars = 0; tally.thoughtOn = 0; tally.toolAsked = 0;
 }
 export function agentSelectTallyLine(): string {
   // The nonsense arm reports itself as nonsense. A line that read like the
@@ -393,10 +523,23 @@ export function agentSelectTallyLine(): string {
   return `agent-select: arm=${AGENT_SELECT_ARM} depth=${SELECT_DEPTH} count=${SELECT_COUNT}` +
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
     (AGENT_SELECT_ARM === "adviser"
-      ? ` effort=${THINK_EFFORT} lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)` : "") +
+      ? ` effort=${THINK_EFFORT} maxtok=${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}`
+        + ` unsure=${UNSURE_MODE}`
+        + (UNSURE_MODE === "tool" ? ` asked=${tally.toolAsked}/${tally.calls}` : "")
+        + ` lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)` : "") +
     ` model=${MODEL} — ${tally.ok}/${tally.calls} chose, ${tally.failed} FELL BACK to the` +
     ` shipped order (${tally.emptyReply} empty reply, ${tally.badJson} unparseable),` +
     ` ${tally.shortReply} short reply, ${tally.invalidIds} unusable id(s)` +
+    // The thinking that HAPPENED, next to the thinking we asked for. wsDQ set
+    // effort=low and 10 of 12 calls spent zero thinking tokens, so the setting
+    // alone never established that the lever moved. `truncated` is here for the
+    // opposite reason: it is the only thing that distinguishes a ceiling set too
+    // low from a model that declined, and both of those publish the control.
+    (AGENT_SELECT_ARM === "adviser"
+      ? `, thought on ${tally.thoughtOn}/${tally.calls} call(s)`
+        + ` (${tally.thinkingTokens} thinking token(s) billed,`
+        + ` ${tally.thinkingChars} readable char(s)),`
+        + ` ${tally.truncated} CUT OFF at max_tokens` : "") +
     `, EUR ${tally.eur.toFixed(4)} total, EUR ${(tally.eur / tally.calls).toFixed(4)} per brief`;
 }
 /** `dry` only. The measured prompt sizes, for pricing an arm before running
@@ -983,14 +1126,23 @@ a verdict: it says what worked for companies like this one, not what fits THIS
 one. Weigh it, and overrule it where this company plainly fails what the fund
 demands or needs a cheque of a different order.
 
-IF TWO CANDIDATES LOOK THE SAME TO YOU, SAY SO INSTEAD OF GUESSING. List their
+${UNSURE_MODE === "tool" ? `You have a tool, \`lookup_requirements\`, that returns a fund's own eligibility
+rules in its own words. Use it whenever a rule you cannot see would change your
+answer — most usefully where two candidates look alike, or where a row's summary
+does not tell you whether this company qualifies. You may call it once, for up
+to ${LOOKUP_MAX} candidates at a time. Choosing not to call it is a fine answer when the
+rows already tell you what you need.
+
+When you are done, reply with ONLY this JSON, no preamble and no code fence.
+Exactly ${want} DISTINCT index numbers taken from the list above, best first:
+{"picks":[${Array.from({ length: want }, () => "0").join(",")}]}` : `IF TWO CANDIDATES LOOK THE SAME TO YOU, SAY SO INSTEAD OF GUESSING. List their
 index numbers in "unsure" and you will be shown those funds' own eligibility
 rules and asked again. Name at most ${LOOKUP_MAX}, and only where the extra rules could
 actually change your answer — if you already know, leave it empty.
 
 Reply with ONLY this JSON, no preamble and no code fence. Exactly ${want} DISTINCT
 index numbers taken from the list above, best first, plus any you are unsure of:
-{"picks":[${Array.from({ length: want }, () => "0").join(",")}],"unsure":[]}` : `Reply with ONLY this JSON, no preamble and no code fence. Exactly ${want} DISTINCT
+{"picks":[${Array.from({ length: want }, () => "0").join(",")}],"unsure":[]}`}` : `Reply with ONLY this JSON, no preamble and no code fence. Exactly ${want} DISTINCT
 index numbers taken from the list above, best first:
 {"picks":[${Array.from({ length: want }, () => "0").join(",")}]}`}`;
 }
@@ -1084,15 +1236,25 @@ export async function agentSelectRows(
   }
   tally.calls++;
   try {
-    const ask = async (evidence?: Map<string, string[]>) => {
+    const ask = async (
+      evidence?: Map<string, string[]>,
+      /** `tool` mode only: the turns so far, replayed. Thinking blocks are
+       *  echoed back UNCHANGED, which the API requires when a conversation with
+       *  thinking on is continued on the same model — reconstructing or
+       *  dropping them is rejected. */
+      history?: Anthropic.MessageParam[],
+    ) => {
       const system = selectorSystemPrompt();
       const user = buildPrompt(menuRows, ctx, keep, want, peers, evidence);
+      const useTool = adviser && UNSURE_MODE === "tool";
       const r = await anthropic().messages.create({
       model: MODEL,
+      ...(useTool ? { tools: [LOOKUP_TOOL] } : {}),
       // Thinking bills as OUTPUT, so max_tokens must clear the budget with
       // room for the reply or the answer is truncated into the empty-content
-      // failure this arm already paid for once.
-      max_tokens: adviser ? 1536 : 1024,
+      // failure this arm already paid for once -- and DID pay for again at
+      // effort `high` on the shipped 1,536. See MAX_TOKENS_BY_EFFORT.
+      max_tokens: adviser ? MAX_TOKENS_BY_EFFORT[THINK_EFFORT] : 1024,
       // THINKING OFF, and this is a measured decision, not a saving.
       //
       // The first live run of this arm fell back on 3 of 8 cases with no
@@ -1112,9 +1274,20 @@ export async function agentSelectRows(
       // Adaptive is the only on-mode on this model; `disabled` is still valid
       // and is what the cheaper arms use. Effort, not a token count, is the
       // depth control -- see THINK_EFFORT.
-      ...(adviser
+      //
+      // `display: "summarized"` IS THE FIX FOR THE BILLED-EMPTY THINKING, and
+      // it is one field. On claude-sonnet-5 `display` defaults to "omitted":
+      // the thinking block is returned, its signature is returned, and its TEXT
+      // is an empty string. wsDQ recorded Nortal at 310 billed thinking tokens
+      // and `THINKING (0 chars)` and read that as "no readable block arrived" —
+      // the block arrived, redacted by default. Replaying that exact prompt
+      // both ways is what settled it: unset -> 0 characters, "summarized" ->
+      // 321. It changes nothing about what is spent or what is decided; it
+      // decides only whether a run we PAID for can be read afterwards, which is
+      // the difference between a measurement and an anecdote.
+      ...(adviser && THINK_EFFORT !== "off"
         ? {
-            thinking: { type: "adaptive" as const },
+            thinking: { type: "adaptive" as const, display: "summarized" as const },
             output_config: { effort: THINK_EFFORT },
           }
         : { thinking: { type: "disabled" as const } }),
@@ -1126,8 +1299,16 @@ export async function agentSelectRows(
       // same positive per-stage routing every other stage uses, so
       // `UNROUTED_STAGES` is empty and `check_contracts` enforces it.
       system,
-      messages: [{ role: "user", content: user }],
-      }, { timeout: TIMEOUT_MS, maxRetries: 1 });
+      messages: [{ role: "user", content: user }, ...(history ?? [])],
+      }, {
+        timeout: adviser ? TIMEOUT_BY_EFFORT[THINK_EFFORT] : TIMEOUT_BY_EFFORT.off,
+        maxRetries: 1,
+      });
+      // Recorded BEFORE anything is parsed, because this is the one signal that
+      // separates "the model declined to answer" from "we cut it off mid
+      // thought". Both produce an empty reply and both return the shipped
+      // order; only one of them is about the model.
+      if (r.stop_reason === "max_tokens") tally.truncated++;
       recordUsage(r.model ?? MODEL, r.usage as never);
       // Local euro tally as well, because a bench run has no AsyncLocalStorage
       // context and recordUsage is a no-op there — which is exactly the run
@@ -1135,6 +1316,17 @@ export async function agentSelectRows(
       const { costOf } = await import("./cost");
       const spent = costOf(r.model ?? MODEL, r.usage as never);
       tally.eur += spent;
+      // What the thinking lever actually did, per call, from the API's own
+      // numbers rather than from the setting we asked for. `thoughtOn` counts
+      // calls that spent ANY thinking at all: at effort `low` wsDQ found 10 of
+      // 12 spent zero, so "thinking was on" and "the model thought" are
+      // different claims and the tally line has to be able to tell them apart.
+      const billed = (r.usage as unknown as {
+        output_tokens_details?: { thinking_tokens?: number };
+      }).output_tokens_details?.thinking_tokens ?? 0;
+      tally.thinkingTokens += billed;
+      tally.thinkingChars += thinkingOf(r).length;
+      if (billed > 0) tally.thoughtOn++;
       if (traceMemo) {
         traceMemo.turns.push({
           round: evidence ? 2 : 1, system, user,
@@ -1156,7 +1348,71 @@ export async function agentSelectRows(
     // all forty rows would cost more than the brief is allowed to and would
     // bury the separating fact in bulk text, which is precisely how the free
     // arm failed.
-    if (adviser) {
+    // ── `tool`: the model asks, at the moment it wants to ───────────────────
+    // Same retrieval, same leak boundary, same LOOKUP_MAX. The only thing that
+    // changes is WHEN the model is asked to know it is unsure: `declare` wants
+    // that judgement before it has looked at anything, and got it 0 times in 24
+    // measured calls. Here the request arrives as a tool call mid-turn.
+    //
+    // Bounded to ONE round of retrieval, deliberately. An unbounded loop on a
+    // stage whose whole output is six integers is a cost with no ceiling, and
+    // the second call already carries everything the first one learned.
+    if (adviser && UNSURE_MODE === "tool") {
+      const call = res.content.find(
+        (b): b is Anthropic.ToolUseBlock =>
+          b.type === "tool_use" && b.name === LOOKUP_TOOL.name);
+      if (call) {
+        tally.toolAsked++;
+        const idx = (Array.isArray((call.input as { indices?: unknown })?.indices)
+          ? (call.input as { indices: unknown[] }).indices : [])
+          .filter((i): i is number => Number.isInteger(i) && (i as number) >= 0
+            && (i as number) < menuRows.length)
+          .slice(0, LOOKUP_MAX);
+        const ids = [...new Set(idx
+          .map((i) => menuRows[i].instrumentId)
+          .filter((id): id is string => Boolean(id)))];
+        lastUnsureIds = ids;
+        if (traceMemo) traceMemo.unsure = idx;
+        const founderText = [ctx.description ?? "", ...(ctx.answers ?? [])]
+          .join("\n").trim();
+        const chunks = ids.length ? await retrieveDemands(ids, founderText) : [];
+        if (traceMemo) {
+          traceMemo.retrieved = chunks.map((c) => ({ instrumentId: c.instrumentId, text: c.text }));
+        }
+        if (chunks.length) { tally.lookups += ids.length; tally.resolved++; }
+        const byId = new Map<string, string[]>();
+        for (const c of chunks) byId.set(c.instrumentId, [...(byId.get(c.instrumentId) ?? []), c.text]);
+        // A lookup that found nothing still gets an answer, and an honest one.
+        // Returning silence would leave the model waiting on a result that
+        // never comes and invite it to invent what the rules probably say.
+        const body = idx.length
+          ? idx.map((i) => {
+            const id = menuRows[i].instrumentId ?? "";
+            const got = byId.get(id) ?? [];
+            return `[${i}] ${menuRows[i].instrument}\n`
+              + (got.length ? got.map((t) => `  - ${t}`).join("\n")
+                : "  (no eligibility rules recorded for this one)");
+          }).join("\n\n")
+          : "No valid candidate index was named, so nothing was looked up.";
+        const res2 = await ask(undefined, [
+          // `res.content` verbatim: thinking blocks must be echoed back
+          // unchanged or the API rejects the continuation.
+          { role: "assistant", content: res.content },
+          {
+            role: "user",
+            content: [{
+              type: "tool_result" as const,
+              tool_use_id: call.id,
+              content: body,
+            }],
+          },
+        ]);
+        const v2 = parseJson<{ picks: unknown }>(textOf(res2));
+        // Keep the second answer only if it is usable. A failed follow-up must
+        // degrade to the first answer, never past it.
+        if (Array.isArray(v2?.picks) && v2!.picks.length) { res = res2; v = v2; }
+      }
+    } else if (adviser && UNSURE_MODE === "declare") {
       const unsure = (Array.isArray(v?.unsure) ? v!.unsure : [])
         .filter((i): i is number => Number.isInteger(i) && (i as number) >= 0
           && (i as number) < menuRows.length)
