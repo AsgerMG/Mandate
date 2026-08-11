@@ -68,6 +68,16 @@ const CHECKS = [
   // one of those nine rows carried a usable one.
   ["a funds: line states a scope", ["npx", "tsx", "scripts/check_funds_line.ts"]],
   ["vocabulary contract", ["npx", "tsx", "scripts/check_vocabularies.ts"]],
+  // Directly under the vocabulary contract, because it reads the same two
+  // things: the stems in FIELD_ENUM_HINTS and the committed corpus snapshot.
+  // That check says the ANSWER SET a comparator refers to exists; this one says
+  // the QUESTION the comparator decides on is the question the rule turns on.
+  // Its sibling further down, `a filter can admit someone`, asks whether a
+  // comparator can ever return true — all three are ways for a filter to delete
+  // a fund from a founder who qualifies, and only this one catches the case
+  // where the founder answered correctly.
+  ["a comparator asks the rule's question",
+   ["npx", "tsx", "scripts/check_field_matches_demand.ts"]],
   ["one env loader", ["npx", "tsx", "scripts/check_env_loader.ts"]],
   ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],
   ["payload budget", ["npx", "tsx", "scripts/check_payload_budget.ts"]],

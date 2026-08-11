@@ -1,4 +1,15 @@
-"""Reapply every gate_role correction after the LLM triage that sets it.
+"""Reapply every curated gate correction after the LLM passes that set it.
+
+THREE columns, one applier, one point in the pipeline: gate_role (may this rule
+decide at all), and intake_field_resolved + value_spec (WHAT does it decide
+on). The third and fourth arrived on 2026-08-11, when nineteen deciding rules
+were found asking the founder a question their own text does not turn on -- a
+50% Russian-ownership exclusion asked as "is any single shareholder above
+25%?", a China control rule asked as "are you controlled from outside the EU?".
+There was a durable home for a role correction and none for an encoding
+correction, so those had to be made with an UPDATE and were reverted by the
+next `encode` pass, silently, in the direction that hides funds.
+
 
 encode_gates.py triages every gate with a paid model call and writes gate_role
 directly, so a correction made in the database is silently reverted the next
@@ -51,6 +62,7 @@ import re  # noqa: E402
 import sqlite3  # noqa: E402
 
 SRC = ROOT / "data" / "reference" / "gate_role_overrides.json"
+ENCODINGS = ROOT / "data" / "reference" / "gate_encoding_overrides.json"
 PERTINENCE = ROOT / "data" / "eligibility_pertinence.json"
 
 #: Where a gate goes when its text is a report rather than a condition. Not a
@@ -116,6 +128,76 @@ def pertinence_targets(conn: sqlite3.Connection, reports: dict[str, str]) -> lis
     return out
 
 
+def _encoding_rows() -> list[tuple]:
+    """(instrument_id, gate_key, field, spec_json_or_None, why) per correction.
+
+    `field: none` plus `spec: null` is a QUARANTINE: the requirement text stays
+    on the row and is still shown, only the machine verdict stops. That is
+    already the convention in audit_encoding_vs_reality.py and
+    encode_gates.py's country repair, and it is the right outcome whenever the
+    fact a rule turns on -- which state controls the company, whether the
+    holder is a public body -- is not a fact intake asks for.
+    """
+    if not ENCODINGS.exists():
+        print("no gate_encoding_overrides.json; no encoding corrections to apply")
+        return []
+    out = []
+    for o in json.loads(ENCODINGS.read_text())["overrides"]:
+        spec = o.get("spec")
+        if spec is not None and spec.get("field") != o.get("field"):
+            raise SystemExit(
+                f"{o['instrument_id']}/{o['gate_key']}: spec.field {spec.get('field')!r} "
+                f"disagrees with field {o.get('field')!r}. The comparator looks its answer "
+                f"up by spec.field and everything else reads intake_field_resolved, so two "
+                f"names here is a rule that evaluates one question and reports another.")
+        out.append((o["instrument_id"], o["gate_key"], o.get("field") or "none",
+                    json.dumps(spec, ensure_ascii=False) if spec is not None else None,
+                    o.get("why", "")))
+    return out
+
+
+def _apply_encodings(run, rows: list[tuple], p: str, ne: str) -> tuple[int, int, int]:
+    """Write the encoding corrections through whichever store `run` talks to.
+
+    One body for both stores, because the pair of loops this file already keeps
+    in step by hand is one pair too many. `run(sql, params) -> rowcount` is the
+    only difference between them; `p` is the placeholder that store uses and
+    `ne` its null-safe inequality.
+
+    A row that changed nothing is reported as ALREADY, and a row that matched
+    no gate as STALE. Silence between the two is how an override file rots into
+    a description of gates that no longer exist.
+    """
+    applied = already = stale = 0
+    for instrument_id, gate_key, field, spec, why in rows:
+        note = "encoding override: " + re.sub(r"\s+", " ", why)[:180]
+        n = run(f"""UPDATE eligibility_gates
+                       SET intake_field_resolved = {p},
+                           value_spec = {p},
+                           encoding_method = 'curated_override',
+                           verify_note = COALESCE(verify_note, '') || {p}
+                     WHERE instrument_id = {p} AND gate_key = {p}
+                       AND (intake_field_resolved {ne} {p} OR value_spec {ne} {p})""",
+                (field, spec, " | " + note, instrument_id, gate_key, field, spec))
+        if n:
+            applied += 1
+            continue
+        # Nothing changed. Either the correction is already in force, or the
+        # gate is gone. Keyed on the CURRENT VALUES rather than on
+        # encoding_method, so editing an entry in the file re-applies it: a
+        # guard that only fires the first time would let a revised correction
+        # sit in git looking applied.
+        exists = run(f"""UPDATE eligibility_gates SET encoding_method = 'curated_override'
+                          WHERE instrument_id = {p} AND gate_key = {p}""",
+                     (instrument_id, gate_key))
+        if exists:
+            already += 1
+        else:
+            stale += 1
+            print(f"  STALE ENCODING OVERRIDE: {instrument_id}/{gate_key} no longer exists")
+    return applied, already, stale
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true",
@@ -125,12 +207,14 @@ def main() -> None:
     overrides = json.loads(SRC.read_text())["overrides"] if SRC.exists() else []
     if not SRC.exists():
         print("no gate_role_overrides.json; only pertinence verdicts will be applied")
+    encodings = _encoding_rows()
     reports = _report_digests()
 
     conn = sqlite3.connect(DB)
     targets = pertinence_targets(conn, reports)
     evaluable = [t for t in targets if t[3]]
-    print(f"{len(overrides)} hand overrides; {len(reports)} texts judged REPORT, "
+    print(f"{len(overrides)} hand overrides; {len(encodings)} encoding corrections; "
+          f"{len(reports)} texts judged REPORT, "
           f"matching {len(targets)} deciding gate(s), {len(evaluable)} with a "
           f"value_spec (those can disqualify a founder silently)")
     for instrument_id, gate_key, reason, spec, requirement in targets[:15]:
@@ -186,10 +270,17 @@ def main() -> None:
             if not exists:
                 missing += 1
                 print(f"  STALE OVERRIDE: {o['instrument_id']}/{o['gate_key']} no longer exists")
+    # Encodings LAST of the three, and deliberately so: a gate whose role was
+    # just corrected may still be pointing at the wrong question, and a gate
+    # this file quarantines must not be re-pointed by anything after it.
+    def _sqlite(sql, params):
+        return conn.execute(sql, params).rowcount
+    enc_applied, enc_already, enc_stale = _apply_encodings(_sqlite, encodings, "?", "IS NOT")
     conn.commit()
     conn.close()
     print(f"sqlite: {applied} hand overrides applied, {missing} stale, "
-          f"{demoted} demoted on pertinence")
+          f"{demoted} demoted on pertinence; "
+          f"{enc_applied} encodings corrected, {enc_already} already, {enc_stale} stale")
 
     # ── Postgres ─────────────────────────────────────────────────────────────
     url = _database_url()
@@ -227,7 +318,29 @@ def main() -> None:
                      AND gate_role IS DISTINCT FROM %s""",
                 (o["role"], o["role"], o["instrument_id"], o["gate_key"], o["role"]))
             n += cur.rowcount
-        print(f"postgres: {n} hand overrides applied, {m} demoted on pertinence")
+        def _pg(sql, params):
+            cur.execute(sql, params)
+            return cur.rowcount
+        e_applied, e_already, e_stale = _apply_encodings(
+            _pg, encodings, "%s", "IS DISTINCT FROM")
+        print(f"postgres: {n} hand overrides applied, {m} demoted on pertinence; "
+              f"{e_applied} encodings corrected, {e_already} already, {e_stale} stale")
+
+        # Reconciled the same way the roles are, and for a sharper reason: a
+        # correction that did not take here is a founder still being screened
+        # out by the wrong question in production, while SQLite and the
+        # committed snapshot both say it was fixed.
+        off = []
+        for instrument_id, gate_key, field, spec, _why in encodings:
+            cur.execute(
+                """SELECT intake_field_resolved, value_spec FROM eligibility_gates
+                    WHERE instrument_id = %s AND gate_key = %s""",
+                (instrument_id, gate_key))
+            row = cur.fetchone()
+            if row and (row[0] != field or (row[1] or None) != spec):
+                off.append(f"{instrument_id}/{gate_key} is {row[0]}/{row[1]}, asked for {field}/{spec}")
+        print(f"postgres: {len(off)} of {len(encodings)} encoding corrections did not take"
+              + ("" if not off else "  <- " + "; ".join(off)))
 
         # Reconciled out of Postgres, so the run reports what the PRODUCT sees.
         # Both classes, in one query, because "I applied N updates" is a claim
