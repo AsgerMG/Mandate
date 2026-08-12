@@ -6,7 +6,8 @@
  "meanPoolLength": 74.1,
  "inPoolAtAll": 0.8756,
  "corpus": "postgres instruments=1088",
- "generatedAt": "2026-08-12T21:19:31.592Z",
+ "ranker": "ranker: all 820 request(s) on EMBEDDING",
+ "generatedAt": "2026-08-12T21:33:37.376Z",
  "recallAtK": [
   [
    1,
@@ -14,7 +15,7 @@
   ],
   [
    3,
-   0.2439
+   0.2451
   ],
   [
    6,
