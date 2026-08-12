@@ -274,9 +274,18 @@ function main() {
   // declines anything -- a candidate it wrote nothing about keeps its rank and
   // publishes from its own facts (wsGC) -- so the last pair's reason is not a
   // rejection budget any more. It is the CUT: the published table is the head
-  // of a ranked list, and at equality there is no head, every candidate
-  // publishes, and the watch-only DEMOTION stops working, because a row sorted
-  // to the back still lands on the page when nothing is cut from it.
+  // of a ranked list, and at equality there is no head and every candidate
+  // publishes.
+  //
+  // THAT CLEARANCE USED TO HAVE A SECOND JOB and no longer does. The sentence
+  // here went on "...and the watch-only DEMOTION stops working, because a row
+  // sorted to the back still lands on the page when nothing is cut from it."
+  // The demotion is gone (wsGK): the same one-seat clearance it needed to work
+  // is what let one match on the writer's prose evict the fund it matched on,
+  // at any rank the model had given it. Nothing below the writer sorts rows
+  // now. Left strict rather than relaxed to `strict: false`, because loosening
+  // a guard is a decision and inheriting a dead reason is how this pair came
+  // to be justified by a mechanism that had already stopped running.
   //
   // Stated over the constants themselves, so a cap moved tomorrow is judged
   // with no edit here. Each pair names WHY it must hold, because a guard that
@@ -296,7 +305,8 @@ function main() {
       wider: "WRITER_CANDIDATE_CAP", wide: WRITER_CANDIDATE_CAP,
       narrower: "BRIEF_LIMITS.institutionsMax", narrow: BRIEF_LIMITS.institutionsMax,
       why: "the published table is the head of the ranked candidate list, and at equality " +
-        "nothing is cut from it, so the watch-only demotion behind that cut stops working",
+        "there is no head: every candidate publishes and the ranking below the cap is never " +
+        "exercised. See the paragraph above before relaxing this one",
     },
     {
       // ── THE SELECTOR MUST BE ABLE TO REACH EVERY PUBLISHED SEAT ──────────

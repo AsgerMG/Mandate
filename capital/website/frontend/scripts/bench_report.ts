@@ -139,8 +139,14 @@ function score(r: Row): Scored {
     if (noCaveat) defects.push("no caveat");
     if (withBlocker.length > explained.length)
       defects.push(`${withBlocker.length - explained.length} blocker unexplained`);
-    // ANY watch-only row is a defect: briefs never show a fund that is
-    // deprioritised or not relevant, so one is as wrong as three.
+    // A WRITING defect, and since wsGK that is all it is. This said "briefs
+    // never show a fund that is deprioritised or not relevant" — they do, and
+    // they should: the fund earned its seat from the ranker reading the fund's
+    // own text, and a hedge in a note written afterwards is not a channel for
+    // taking that back. What the count says is that a row went out telling the
+    // founder to wait rather than to do something, which is FUND-4 and is
+    // fixed in the prompt. Counted per row rather than per brief because each
+    // one is a row somebody reads.
     if (watch.length) defects.push(`${watch.length} watch-only`);
     if (staleRows.length) defects.push(`${staleRows.length} stale fund`);
     // Only a defect when something better could have been shown. On a
