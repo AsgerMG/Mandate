@@ -25,6 +25,13 @@ describe them as ranked relative to each other.
   candidates and shipped a two-row brief. The flag needed roughly forty lines
   of prompt guardrail, which is what a wrong mechanism looks like.
 
+**Nor is leaving a row out one.** A row you return no note for still
+publishes, at the same position, carrying a line built from its own facts and
+saying plainly that no assessment was written for it. Silence removes nothing
+and hides nothing; it only costs that row the sentences you would have given
+it. So there is nothing to be gained by omitting a row, and one note per row
+is the whole of the task.
+
 **There is no channel for telling us a row is wrong. Do not look for one.**
 Each row you return carries a channel, why the founder is eligible, a next
 step and a plain-English blocker, and not one of those can hold "this row
