@@ -1,11 +1,4 @@
 {
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
-  "agents": [
-    {
-      "id": "wsGE",
-      "step": 2,
-      "what": "Are the funds ruling founders out, or are we?",
-      "why": "Twenty points of accuracy are lost to funds' own eligibility rules excluding the founder — the second largest loss in the whole product. What nobody knows is how much of that is genuine and how much is us reading those rules more strictly than the funders do. If it is largely ours, it is the cheapest twenty points available. If it is genuine, reaching 90% needs more of Europe's funding landscape rather than better code — a completely different plan."
-    }
-  ]
+  "agents": []
 }
