@@ -52,9 +52,19 @@
 // run's per-founder rows rather than copied out of its prose, and printed on a
 // line that says ESTIMATED with the tape's fingerprint beside it.
 //
-//   npx tsx scripts/measure_funnel.ts             # the whole held-out population
-//   N=40 npx tsx scripts/measure_funnel.ts        # a smoke run
-//   SPLIT=tune npx tsx scripts/measure_funnel.ts  # the split the floors use
+//   npm run stages                 # THE REFERENCE RUN — the whole held-out
+//                                  # population, exact, ~2h
+//   N=200 npm run stages           # the routine run, ~25 min, +/-7 points at
+//                                  # the widest row; the interval is printed
+//   SPLIT=tune npm run stages      # the split the floors are calibrated on
+//   N=30 npm run stages            # a smoke run
+//
+// The cost is one Voyage embedding and one gate hydration per founder, and
+// neither parallelises safely: `semanticFundMatch` has a 3s statement timeout
+// and returns an empty map on any failure, at which point every ranking call
+// site drops to the lexical index and the run averages two ranking systems
+// while printing one number. The tally line at the top of every report is what
+// catches that, and it is the reason this stays sequential.
 import { createHash } from "crypto";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
@@ -521,6 +531,19 @@ async function main() {
   for (const line of tally.lines(policy)) p(line.trim());
   p();
 
+  // The mean pool a founder is ranked over, printed with the table because a
+  // stage loss is unreadable without the size of the list it cut from.
+  const meanOf = (pick: (t: Trace) => number) => {
+    const vals = traces.filter((t) => t.offerable).map(pick);
+    return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : 0;
+  };
+  p(`Mean instrument table **${meanOf((t) => t.tableLen).toFixed(1)}** rows, mean accessible `
+    + `pool **${meanOf((t) => t.accessibleLen).toFixed(1)}** rows, over the `
+    + `${traces.filter((t) => t.offerable).length} founders whose answer reached the founder stages.`);
+  p();
+  p("`+/-` is the 95% binomial half-width on this run's own n. A move smaller than it");
+  p("is not a move.");
+  p();
   p("| stage | founders | of start | lost here | mechanism |");
   p("|---|---:|---:|---:|---|");
   for (const r of rows) {
@@ -529,7 +552,8 @@ async function main() {
       p(`| ${r.stage.question} | ? | ? | **UNMEASURED** | ${mech} |`);
       continue;
     }
-    p(`| ${r.stage.question} | ${r.remaining} | ${r.share!.toFixed(1)}% | `
+    p(`| ${r.stage.question} | ${r.remaining} | ${r.share!.toFixed(1)}% `
+      + `+/-${halfWidth(r.remaining, N).toFixed(1)} | `
       + `${r.loss ? `-${r.loss} (${r.lossShare!.toFixed(1)} pts)` : "0"} | ${mech} |`);
   }
   p();
@@ -577,6 +601,10 @@ async function main() {
   p("- **`discoverAndResearch`, `judgeOpenAnswers` and the `ProfileSignal`** are model "
     + "calls on the live request path. They are absent here, so `applyProfileSignal` "
     + "attaches nothing and the adaptive round's `lateFields` is empty.");
+  p("- **REGIME@5 is deliberately not a row.** It credits a SIBLING of the won fund, so "
+    + "a founder can be lost at one stage and credited at a later one — which breaks the "
+    + "nesting property this whole ladder rests on. It is a different question (did we "
+    + "send them to the right funder) and it needs its own ladder, not a row in this one.");
   p();
 
   // ── THE CORPUS LOSS, BY REASON ────────────────────────────────────────────
@@ -650,6 +678,8 @@ async function main() {
     startedAt, set: setFile, split, seed, n: N, drawFingerprint: fingerprint,
     corpus: `${prov.source} instruments=${prov.instruments}`,
     levers: { VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP },
+    meanTableRows: Number(meanOf((t) => t.tableLen).toFixed(1)),
+    meanAccessibleRows: Number(meanOf((t) => t.accessibleLen).toFixed(1)),
     stages: rows.map((r) => ({
       id: r.stage.id, question: r.stage.question,
       remaining: r.remaining, sharePct: r.share == null ? null : Number(r.share.toFixed(2)),
