@@ -60,3 +60,36 @@ that we are not naming correctly.
 - `funder_evidence_2026-08-12.jsonl` — the rows held open only by our own award
   history, plus Norway. See `wsfx_findings.md` for what it established.
 - `wsfx_fetch.sh` — how the pages were fetched. Public pages, no credentials.
+
+## wsGL, 2026-08-13 — the reachability audit
+
+Three files, all answering "what removes the right fund BEFORE any ranking
+happens", against the funnel population of 897 held-out described founders,
+every one of whom won a fund the corpus offers today.
+
+- `wsgl_manufactured_rows_2026-08-13.jsonl` — the 7 rows nothing outside their
+  own id names. 22 of the 26 founder losses are Polish, and **Poland has zero
+  publishable funds in the corpus**: all 8 Polish rows are query slugs our
+  extractor invented. Three of the five register names behind them turn out to
+  be legal citations or GBER aid CATEGORIES, so naming the rows from the
+  register is a strict improvement and is not sufficient.
+- `wsgl_data_floor_2026-08-13.jsonl` — the 7 rows below `meetsDataFloor`.
+  Five publish their own ticket range on their own front page, so "no amounts"
+  is our collection gap; one (`cdp_vc_fof`) is not a fund at all and also
+  carries the wrong country.
+- `wsgl_gate_contradictions_2026-08-13.jsonl` — one line per blocking gate for
+  the 70 founders whose won fund is deleted by a cited structural filter. Adds
+  `defect_class` and, where the funder's page was read, `quote`.
+
+Two extra verdict values appear in the gate file, because "is this fund open"
+is not the question there:
+
+| verdict | meaning |
+| --- | --- |
+| `gate_wrong` | the funder's own page states a rule that our encoding of it does not match |
+| `harness_only` | the block cannot happen on a real request, because production never populates the field |
+
+Re-derive any of it for nothing:
+
+    npx tsx scripts/wsgl_corpus_stage.ts      # the publishability loss, attributed
+    IN=<wsge rows.json> npx tsx scripts/_wsgl_arms.ts   # what each repair recovers
