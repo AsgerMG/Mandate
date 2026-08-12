@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-12T22:32:01.464Z",
+ "startedAt": "2026-08-12T22:56:10.374Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-12T22:32:02.111Z",
+ "corpusObservedAt": "2026-08-12T22:56:10.830Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 814,
@@ -25,6 +25,238 @@
    7,
    6,
    5
+  ]
+ },
+ "poolSweep": {
+  "ks": [
+   "18",
+   "25",
+   "40",
+   "60",
+   "all"
+  ],
+  "base": "18",
+  "meanShown": {
+   "18": 18,
+   "25": 24.6,
+   "40": 37,
+   "60": 52.5,
+   "all": 74
+  },
+  "stages": {
+   "18": {
+    "answer_key": 897,
+    "in_corpus": 897,
+    "publishable": 814,
+    "liveness_confirmed": 814,
+    "founder_screen": 792,
+    "gates_pass": 713,
+    "pool_cut": 447,
+    "writer_cap": 346,
+    "watch_only": null,
+    "published": 329,
+    "top_6": 303,
+    "top_5": 279,
+    "model": null
+   },
+   "25": {
+    "answer_key": 897,
+    "in_corpus": 897,
+    "publishable": 814,
+    "liveness_confirmed": 814,
+    "founder_screen": 792,
+    "gates_pass": 713,
+    "pool_cut": 500,
+    "writer_cap": 346,
+    "watch_only": null,
+    "published": 329,
+    "top_6": 303,
+    "top_5": 279,
+    "model": null
+   },
+   "40": {
+    "answer_key": 897,
+    "in_corpus": 897,
+    "publishable": 814,
+    "liveness_confirmed": 814,
+    "founder_screen": 792,
+    "gates_pass": 713,
+    "pool_cut": 598,
+    "writer_cap": 346,
+    "watch_only": null,
+    "published": 329,
+    "top_6": 303,
+    "top_5": 279,
+    "model": null
+   },
+   "60": {
+    "answer_key": 897,
+    "in_corpus": 897,
+    "publishable": 814,
+    "liveness_confirmed": 814,
+    "founder_screen": 792,
+    "gates_pass": 713,
+    "pool_cut": 640,
+    "writer_cap": 346,
+    "watch_only": null,
+    "published": 329,
+    "top_6": 303,
+    "top_5": 279,
+    "model": null
+   },
+   "all": {
+    "answer_key": 897,
+    "in_corpus": 897,
+    "publishable": 814,
+    "liveness_confirmed": 814,
+    "founder_screen": 792,
+    "gates_pass": 713,
+    "pool_cut": 713,
+    "writer_cap": 346,
+    "watch_only": null,
+    "published": 329,
+    "top_6": 303,
+    "top_5": 279,
+    "model": null
+   }
+  },
+  "toWriterChurn": {
+   "18": 0,
+   "25": 0,
+   "40": 0,
+   "60": 0,
+   "all": 0
+  },
+  "moves": {
+   "18": {
+    "writer_cap": {
+     "entered": 0,
+     "left": 0
+    },
+    "published": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_6": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_5": {
+     "entered": 0,
+     "left": 0
+    }
+   },
+   "25": {
+    "writer_cap": {
+     "entered": 0,
+     "left": 0
+    },
+    "published": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_6": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_5": {
+     "entered": 0,
+     "left": 0
+    }
+   },
+   "40": {
+    "writer_cap": {
+     "entered": 0,
+     "left": 0
+    },
+    "published": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_6": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_5": {
+     "entered": 0,
+     "left": 0
+    }
+   },
+   "60": {
+    "writer_cap": {
+     "entered": 0,
+     "left": 0
+    },
+    "published": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_6": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_5": {
+     "entered": 0,
+     "left": 0
+    }
+   },
+   "all": {
+    "writer_cap": {
+     "entered": 0,
+     "left": 0
+    },
+    "published": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_6": {
+     "entered": 0,
+     "left": 0
+    },
+    "top_5": {
+     "entered": 0,
+     "left": 0
+    }
+   }
+  },
+  "selectDepth": "40",
+  "bands": [
+   {
+    "label": "1-3",
+    "n": 31,
+    "control": 31,
+    "ranker": 26
+   },
+   {
+    "label": "4-6",
+    "n": 16,
+    "control": 14,
+    "ranker": 2
+   },
+   {
+    "label": "7-9",
+    "n": 20,
+    "control": 0,
+    "ranker": 13
+   },
+   {
+    "label": "10-12",
+    "n": 12,
+    "control": 0,
+    "ranker": 3
+   },
+   {
+    "label": "13-15",
+    "n": 9,
+    "control": 0,
+    "ranker": 3
+   },
+   {
+    "label": "16-18",
+    "n": 10,
+    "control": 0,
+    "ranker": 3
+   }
   ]
  },
  "watchOnlyInProduction": {

@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-12T22:32:01.464Z
-corpus             postgres instruments=1088 at 2026-08-12T22:32:02.111Z
+started            2026-08-12T22:56:10.374Z
+corpus             postgres instruments=1088 at 2026-08-12T22:56:10.830Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-12T22:32:02.111Z
+                   is REFUSED rather than labelled. observedAt 2026-08-12T22:56:10.830Z
 ranker: all 814 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -16,7 +16,8 @@ leak bar           isDescribed — `own_project_title_leaks` excluded, exact / 8
                    check_recall_leaks. NOT the head-to-head's stricter
                    cross-regime-only draw, which exists because a model reads
                    the query text and nothing here does.
-levers             pool=18 writer_cap=8 published_cap=7 top=5
+levers             pool=18 writer_cap=8 published_cap=7 top=5 select_depth=40
+pool swept at      18, 25, 40, 60, all — the whole ladder at each, paired off one pool object
 ```
 
 founder intake — 23 askable fields, identity=real own-history=withheld capital=withheld answers=strict consortium=yes
@@ -76,6 +77,114 @@ outside of, and a won fund whose own copy reads as watch-only is pushed behind e
 actionable row and can leave one it is shown inside. Measured on the 35 real briefs in
 `brief_records`: 6 of them (17%) demoted at least one row, 8 rows in total. It is a small
 perturbation of a table this size, and it is not zero.
+
+## The cut, swept — the whole funnel at every pool depth
+
+Paired. One pool object per founder, 5 projections of it, the same embeddings and
+the same gates behind every column. `pool_cut` is the row `BRIEF_VERDICT_POOL` moves;
+every row below it is what that costs.
+
+| stage | K=18 | K=25 | K=40 | K=60 | K=all |
+|---|---:|---:|---:|---:|---:|
+| answer_key | **897** 100.0% | **897** 100.0% | **897** 100.0% | **897** 100.0% | **897** 100.0% |
+| in_corpus | **897** 100.0% | **897** 100.0% | **897** 100.0% | **897** 100.0% | **897** 100.0% |
+| publishable | **814** 90.7% | **814** 90.7% | **814** 90.7% | **814** 90.7% | **814** 90.7% |
+| liveness_confirmed | **814** 90.7% | **814** 90.7% | **814** 90.7% | **814** 90.7% | **814** 90.7% |
+| founder_screen | **792** 88.3% | **792** 88.3% | **792** 88.3% | **792** 88.3% | **792** 88.3% |
+| gates_pass | **713** 79.5% | **713** 79.5% | **713** 79.5% | **713** 79.5% | **713** 79.5% |
+| pool_cut ← | **447** 49.8% | **500** 55.7% | **598** 66.7% | **640** 71.3% | **713** 79.5% |
+| writer_cap | **346** 38.6% | **346** 38.6% | **346** 38.6% | **346** 38.6% | **346** 38.6% |
+| watch_only | — | — | — | — | — |
+| published | **329** 36.7% | **329** 36.7% | **329** 36.7% | **329** 36.7% | **329** 36.7% |
+| top_6 | **303** 33.8% | **303** 33.8% | **303** 33.8% | **303** 33.8% | **303** 33.8% |
+| top_5 | **279** 31.1% | **279** 31.1% | **279** 31.1% | **279** 31.1% | **279** 31.1% |
+| model | — | — | — | — | — |
+
+`←` marks a row the lever moves. Every other row is identical at every depth, which is
+a measurement and not an assumption: the stages above the cut do not read this number,
+and the stages below it can only be reached through the one channel counted next.
+
+### What a wider pool costs on the deterministic path
+
+With no model in the loop a wider cut is a SUPERSET WITH AN IDENTICAL PREFIX, so the
+only way it can change the rows below `pool_cut` is `resolveNameCollisions`, whose
+survivor rule `preferBetterEvidencedRow` is a total order INDEPENDENT OF POSITION: a
+better-evidenced sibling admitted at rank 30 can demote the row that held that label at
+rank 3. Counted here on every founder, won fund or not, because "the won fund did not
+move" is a weaker statement than "nothing moved".
+
+| K | founders whose `toWriter` differs from K=18 | writer_cap entered / left | published entered / left | top_6 entered / left | top_5 entered / left |
+|---|---:|---:|---:|---:|---:|
+| 18 | 0 | +0 / -0 | +0 / -0 | +0 / -0 | +0 / -0 |
+| 25 | 0 | +0 / -0 | +0 / -0 | +0 / -0 | +0 / -0 |
+| 40 | 0 | +0 / -0 | +0 / -0 | +0 / -0 | +0 / -0 |
+| 60 | 0 | +0 / -0 | +0 / -0 | +0 / -0 | +0 / -0 |
+| all | 0 | +0 / -0 | +0 / -0 | +0 / -0 | +0 / -0 |
+
+A net of zero over a churn of forty is a different fact from a net of zero over a churn
+of zero, so both are printed. `entered` and `left` are founders, counted separately.
+
+### The model's ceiling at each depth
+
+`pool_cut` is the maximum ANY ranker can deliver at that depth, at any price: a founder
+whose won fund is outside the cut is unreachable by construction. The rows below it in
+the table above are our own deterministic order standing in for a ranker that is not in
+this run.
+
+| K | mean rows the ranker is shown | the answer is on the list | vs the shipped default |
+|---|---:|---:|---:|
+| 18 (ships) | 18.0 | **49.8%** +/-3.3 | — |
+| 25 | 24.6 | **55.7%** +/-3.3 | +5.9 pts |
+| 40 | 37.0 | **66.7%** +/-3.1 | +16.8 pts |
+| 60 | 52.5 | **71.3%** +/-3.0 | +21.5 pts |
+| all | 74.0 | **79.5%** +/-2.6 | +29.7 pts |
+
+### The one thing only a paid run settles, stated as a number
+
+Let `c_K` be the model's EXACT@5 rate among founders whose won fund is ON the menu it
+is shown. The tape measures `c_18` = **51.0%** (50/98). Population EXACT@5 is
+`P(won inside K) x c_K`, so break-even at K needs `c_K = c_base x P_base / P_K`.
+
+| K | `c_K` break-even needs | relative collapse from 51.0% | head degradation tolerable if the new band converts at 30% |
+|---|---:|---:|---:|
+| 18 (ships) | — | — | — |
+| 25 | 45.6% | 10.6% | 7% |
+| 40 | 38.1% | 25.3% | 20% |
+| 60 | 35.6% | 30.2% | 25% |
+| all | 32.0% | 37.3% | 35% |
+
+**Read the second column as the whole risk.** Hold the head's accuracy fixed and a
+wider menu cannot lose at any conversion rate `b >= 0` on the newly-visible band — it
+only ever adds founders who were unreachable. The entire case against widening is that
+a longer menu makes the model WORSE ON THE ROWS IT WAS ALREADY SHOWN, and no free run
+can measure that, because it is the model.
+
+The nearest free evidence about the newly-visible band, re-derived from the same tape's
+per-founder rows rather than from its prose — the model's conversion by where the won
+fund sat in the 18-row menu it was actually shown:
+
+| the won fund's rank in the menu | founders | control EXACT@5 | ranker EXACT@5 |
+|---|---:|---:|---:|
+| 1-3 | 31 | 31 (100%) | 26 (84%) |
+| 4-6 | 16 | 14 (88%) | 2 (13%) |
+| 7-9 | 20 | 0 (0%) | 13 (65%) |
+| 10-12 | 12 | 0 (0%) | 3 (25%) |
+| 13-15 | 9 | 0 (0%) | 3 (33%) |
+| 16-18 | 10 | 0 (0%) | 3 (30%) |
+
+██ There is no row here for ranks past the end of that menu, because that band was
+never shown to a model. Its conversion rate is the one quantity this whole question
+turns on and it does not exist yet at any depth.
+
+### The depth the selector can actually read
+
+`AGENT_SELECT_DEPTH` is 40. `agentSelectRows` cuts the menu to it and returns
+`[...chosen, ...everything else in the shipped order]`, so a pool row past that depth is
+never shown and can only land behind all `SELECT_COUNT` picks — past the published cap.
+A pool wider than the depth therefore measures the depth while printing its own number.
+Every column above is honest about the CUT; only the columns at or below the depth are
+honest about what a founder could receive.
+
 
 ## The model stage — ESTIMATED, not measured
 
