@@ -218,18 +218,57 @@ export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
  *  were never looked at. Dropping must be able to backfill, not shrink the
  *  table.
  *
- *  ── A LEVER SINCE wsEI, DEFAULT UNCHANGED AT 18 ──────────────────────────
- *  This is the number the product owner's architecture disputes: step 2 says
- *  the ranker is handed "the subset", and 18 is not the subset — the accessible
- *  pool it is cut from has a median of 91 rows and a mean of 87 (wsDR, 45
- *  founders) or 77 (the committed curve, 846). The won fund is inside 18 of
- *  them 44.2% of the time and inside the whole pool 77.5%.
+ *  ── 18 -> 40, ON THE SWEPT FUNNEL (wsGM) ─────────────────────────────────
+ *  `POOL_SWEEP=18,25,40,60,all npm run stages`, n=897 held-out described
+ *  founders, one per company, postgres, all 814 requests on the embedding
+ *  ranker, draw 13cb71cf3a1d1847. Every depth is a projection of ONE pool object
+ *  per founder, so the columns are paired to the founder:
  *
- *  It stays 18 until a depth arm on LEGIBLE rows says otherwise. wsDR's arm
- *  said deeper was worse by 2.2 points on n=45 — inside the binomial noise, and
- *  measured while 51 of 133 menu rows carried no readable sentence saying what
- *  the fund pays for. A default moved on that evidence would be a default moved
- *  on nothing.
+ *    the answer is inside the cut   18: 49.8%  25: 55.7%  40: 66.7%
+ *                                   60: 71.3%  all: 79.5%   (+/-3.1 at 40)
+ *    every stage below the cut      IDENTICAL at every depth, all 897
+ *
+ *  The second line is the one that decided it. With no model in the loop a wider
+ *  cut is a superset with an identical prefix and `orderMemoCandidates` does not
+ *  sort, so exactly one thing could have moved the rows below: a better-
+ *  evidenced sibling admitted deep, winning its label class under
+ *  `preferBetterEvidencedRow` — a total order INDEPENDENT OF POSITION — and
+ *  demoting the row that held that label near the top. Counted on the whole
+ *  `toWriter` id list rather than on the won fund, at every depth up to the
+ *  whole pool: it fires on 0 of 897. The deterministic cost of widening is not
+ *  small, it is zero.
+ *
+ *  40 AND NOT WIDER, and the rule was fixed before the numbers arrived: the
+ *  widest K that is <= `SELECT_DEPTH` (a row past the depth is never shown and
+ *  can only rank behind every pick — see the guard at the bottom of this file),
+ *  is a MEASURED point of `POOL_RECALL_KS` (`poolRecallAt` interpolates, and the
+ *  base rate the prompt quotes must be a point on the curve rather than a point
+ *  on a chord of it — `check_pool_recall_curve` now reds on that), and loses no
+ *  founder on the deterministic path. 60 fails the first two; `all` fails the
+ *  first. Both become available the moment `SELECT_DEPTH` and the curve move
+ *  with them, and 79.5% says what they would be worth.
+ *
+ *  ── WHAT THIS BUYS IS A CEILING, NOT A RESULT, AND THAT IS THE HONEST WORD ─
+ *  `pool_cut` is the most any ranker can deliver at a depth; it is not what a
+ *  founder receives. Realising it is the model's job, and the model's pick rate
+ *  on a longer menu is the ONE quantity no free run can measure. The arithmetic
+ *  is on the record so it can be checked rather than believed: population
+ *  EXACT@5 is `P(won inside K) x c_K`, so widening to 40 loses only if `c_K`
+ *  falls 51.0% -> 38.1%, a 25.3% relative collapse on the rows the model was
+ *  already being shown. `project-mgmt/findings/widen_wsGM.md` is where that is
+ *  stated as a falsification test, and the paid run that settles it is item 2 of
+ *  `project-mgmt/AWAITING_APPROVAL.md`.
+ *
+ *  Two things push the other way and neither is a guess. wsDQ's diagnosis of the
+ *  old prompt was "the model was told to reach down a list that usually does not
+ *  contain the answer, and it obeyed"; `baseRateSentence` reads the length of
+ *  the menu it actually built, so at 40 the model is told the answer is present
+ *  75% of the time rather than 55%, and that 40% of the time — double the 20% at
+ *  eighteen — it is present BELOW the sixth row, "which is the whole of what a
+ *  choice of yours can win". And on the last paid run the model converted 22 of
+ *  the 51 founders whose fund sat at menu ranks 7-18, where the deterministic
+ *  order converted 0 of 51: reaching down a long list is the thing this arm
+ *  demonstrably does.
  *
  *  ── WHERE THE 18 CAME FROM, WHICH IS NOT A RECALL OR COST NUMBER (wsGD) ───
  *  It has never been sized for the job it does today. `89ece816` (2026-07-26,
@@ -255,10 +294,14 @@ export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
  *      the pool cut was moved (see pipeline.ts's "The cut comes AFTER the drop"
  *      and `accessiblePool`'s own docstring), so it cannot thin it either.
  *
- *  What the buffer was for is therefore ~2 rows of name-collapse demotion, and
- *  the constant reserves ten. Since wsGB removed the band sort it is ALSO the
- *  menu the ranker reads, and nobody has ever chosen a number for that. Read
- *  the guard below for what it can and cannot buy in that second role.
+ *  So the buffer's original job is finished, and it is not what this number is
+ *  for any more. Since wsGB removed the band sort it is the MENU THE RANKER
+ *  READS, and 40 is chosen for that job on the sweep above rather than inherited
+ *  from the job it used to do. The buffering it still incidentally provides is
+ *  free: the name collapse demotes 0 rows past the writer's cap on 897 of 897
+ *  founders at every depth measured, so no amount of headroom is being spent on
+ *  it either way. Read the guard below for the one thing a wider pool cannot
+ *  buy.
  *
  *  ── ACCEPTS `all`, BECAUSE THE WHOLE POOL IS NOW A MEANINGFUL ARM (wsGD) ──
  *  `SELECT_DEPTH` has taken `all` since wsEI, on the stated ground that reading
@@ -276,7 +319,7 @@ export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
  *  The harness headers that DID print this constant now fall back to the
  *  deepest measured point, the same way `check_pool_recall_curve.ts` already
  *  handles an infinite `SELECT_DEPTH`. */
-export const VERDICT_POOL = depthLever("BRIEF_VERDICT_POOL", 18, { all: true });
+export const VERDICT_POOL = depthLever("BRIEF_VERDICT_POOL", 40, { all: true });
 
 /** How deep into the ranked pool the SELECTOR reads. See `agentSelect.ts`'s
  *  header: this is a ceiling/chance trade, not a taste.

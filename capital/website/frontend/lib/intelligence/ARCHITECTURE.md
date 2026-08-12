@@ -184,12 +184,14 @@ been failing."*
 | **Collapsing recurring calls** | They are genuinely different funds |
 | **Seat allocation / per-row routing** | An oracle *holding the answer key* gains one case in six hundred |
 | **Rebuilding the founder descriptions** | Delivered 1,898 pairs not ~6,300; feasibility estimate was wrong 8×; moved the number 27% → 26% |
-| **A longer menu / more depth** | 33 rows instead of 18 changes membership by nothing. EXACT@5 went 22.2% → 17.8%. On 9 founders the won fund sat at rank 19–40 and the model picked it **0 of 9**. `scripts/archive/_wsdq_seam.ts` — and note wsDQ's "depth is binding" inference is itself retracted |
+| ~~**A longer menu / more depth**~~ **RETRACTED (wsGM)** | It measured the SEAM, not the depth. `SELECT_COUNT` was 6, so at most six rows could be promoted from below the score's cut: wsDR promoted 64 rows across 30 of 45 founders and none was an answer — depth moved and the seat budget did not. Its 22.2% → 17.8% is ONE discordant founder on n=45, inside a ranker that disagrees with itself on 18% of founders. And 51 of its 133 menu rows carried no sentence saying what the fund pays for; after wsDW's repair that figure is flat at ~87% at every depth. The pool cut is now 40 on a swept funnel, n=897: the ceiling moves 49.8% → 66.7% and every stage below it is identical to the founder at every depth up to the whole pool. What remains unmeasured is the model's pick rate on a longer menu — `project-mgmt/findings/widen_wsGM.md` |
 | **Better screen-two questions** | Picks changed on 8 of 12 and the category errors survived the answer. The arm that measured it was a bench harness, not a shipped lever: no flag by that or any other name exists, and the row previously named one that does not (wsEN). The live descendant is `RANKER_ASKS`, which defaults off — a different design, in which the stage that picks writes the questions |
 | **Re-sorting the memo on the fit score** | MEMO@6 24.0% against `verdict`'s 27.6%; wsCR measured it moving the won leaf OUT of the published six 49 times for 13 in. `scripts/archive/_wsct_order.ts` — archived by wsGB, which deleted the arms it swept |
 | **The old LLM gate 2** | Every configuration that let the model REORDER measured at or below gate 1 on the same cases. Module deleted; the ladder is preserved in `project-mgmt/findings/dead_ranker_wsDO.md` §1 |
 
-What is **open**: judgement at depth 18–40, and row legibility. wsDV found the
+What is **open**: judgement at depth — now the model's pick rate on the 40-row
+menu it is shown after wsGM, which is the one quantity in this table that no
+free run can produce — and row legibility. wsDV found the
 nine missed rows were not refused but *unreadable* — zero of nine won rows
 carried a usable sentence saying what the fund pays for, against 39 of the 54
 rows the model chose instead.
