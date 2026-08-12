@@ -20,13 +20,23 @@ Per candidate, on one rendered row:
 
 - the scheme's own title, and the index the reply must use
 - the body that delivers it, the country it operates in, the kind of capital
-- what the scheme itself says it funds, in the granting body's own words,
-  budgeted to one or two sentences off its own page
+- `funds:` what the scheme itself says it PAYS FOR, in the granting body's own
+  words, budgeted to one or two sentences off its own page
+- `who may apply:` what the same page says about WHO IT IS OPEN TO, budgeted
+  the same way. This is a different question from the line above and the two
+  are never merged: one is the purpose of the money, the other is the door.
+  Where a group of rows share a title because they are one regime delivered by
+  many bodies, this is usually the only line that separates them, and it is
+  usually the line that names a region.
 - the median award it has really paid, and how many real awards stand behind
   that median, or a statement that we hold too few to say
 - the year it last paid out
-- any requirement in the fund's own words that is specific to it rather than
-  repeated across most of the list
+- `demands:` requirements in the fund's own words. The ones shown are the least
+  widely shared it has: where a fund holds a requirement no one else on the
+  list makes, that is what is printed, and where every requirement it holds is
+  common to the list, the least common of them is printed anyway. So a demand
+  appearing on many rows is not evidence about any of them, and a demand
+  appearing on one is.
 - on some runs, where the fund sits in what comparable companies have won
 
 And about the company: the country, the sector, the answers they gave on the

@@ -284,6 +284,37 @@ export interface DbInstrument {
    *  Never render it raw. `fundsSentence()` in ./schemeText is the one budget,
    *  and the prompt budget is the reason it exists. */
   description?: string | null;
+  /** WHO THE SCHEME SAYS MAY APPLY, in the granting body's own words, from its
+   *  own page. 594 instruments carry it, from the same enrichment run that
+   *  fetched `description`.
+   *
+   *  ── Why it is a different question from `description` ────────────────────
+   *  `description` answers "what does this pay for"; this answers "and who is
+   *  it open to". They are not the same sentence and they are not the same
+   *  cut: over the 594, the rendered who-may-apply line is byte-identical to
+   *  the rendered funds line on ZERO of them. Fourteen French rows are the
+   *  clearest case in the corpus -- SA.111723 is one notified regime delivered
+   *  by fourteen bodies, so all fourteen render one title and near-identical
+   *  descriptions, and their eligibility text is the only thing that separates
+   *  them: "situées en Hauts-de-France", "localisées en Nouvelle-Aquitaine",
+   *  "devant conduire leur activité en Île-de-France".
+   *
+   *  ── Why it may be read ───────────────────────────────────────────────────
+   *  Same argument as `description`, and the same class of column: a statement
+   *  of what the fund DEMANDS, fetched from the fund's own page. No
+   *  beneficiary, award or project title is in the enrichment. That is the
+   *  argument from the schema, and the schema is not what a founder reads, so
+   *  it is also TESTED against the recall set -- `scripts/_wsdi_leak.ts` runs
+   *  both prose columns through the same two probes.
+   *
+   *  It is also the column the 2026-08-06 retraction was ABOUT, which is why it
+   *  is the better-guarded of the two rather than the riskier: every value in
+   *  it is judged by `check_gate_pertinence.ts`, and a text that narrates a
+   *  cohort of already-selected companies fails the build.
+   *
+   *  Never render it raw. `fundsSentence()` in ./schemeText is the one budget,
+   *  at `DEMANDS_SENTENCE_CHARS`. */
+  eligibilityText?: string | null;
   /** Funded-company sector counts, e.g. {health_life_sciences: 812, ...}.
    *  What this instrument has ACTUALLY funded, as opposed to what its prose
    *  sounds like. */
@@ -536,7 +567,8 @@ export async function hydrateDbInstruments(): Promise<void> {
                   source_window_policy,
                   route_status, route_status_source,
                   successor_scheme, successor_title,
-                  application_url, description, sector_mix, scheme_operators,
+                  application_url, description, eligibility_text,
+                  sector_mix, scheme_operators,
                   award_p25, award_p50, award_p75, award_n,
                   intensity_p50, intensity_n, delivery_region, delivery_region_share
            FROM funding_instruments
@@ -648,6 +680,11 @@ export async function hydrateDbInstruments(): Promise<void> {
         // already cost this project a production ranker running on means while
         // every test passed.
         description: inst.description ?? null,
+        // The second prose column, added to this SELECT and to
+        // `website/build/eligibility_export.py` in the same commit for the
+        // reason stated two lines above -- check_store_columns fails the build
+        // on a column that reaches the request path from one store only.
+        eligibilityText: inst.eligibility_text ?? null,
         // Stored as JSON text in both stores. Parsed here rather than at every
         // read site so the shape is identical on the Postgres and JSON paths;
         // the two diverging silently is how a scored component ends up neutral

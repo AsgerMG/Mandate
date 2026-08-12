@@ -42,6 +42,7 @@ def main() -> None:
                route_status, route_status_source,
                successor_scheme,
                successor_title, application_url, description,
+               eligibility_text,
                sector_mix, scheme_operators,
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n, delivery_region, delivery_region_share
@@ -215,6 +216,35 @@ def main() -> None:
         # argument. Truncation is the READER's job (schemeText.ts), never the
         # exporter's: the full text is what a citation needs.
         "description": inst["description"],
+        # And WHO it says may apply (594 instruments), from the same fetch of
+        # the same page. Carried for the same reason and under the same rule:
+        # a field in one store and not the other means a degraded request
+        # renders a different row from a healthy one, and check_store_columns
+        # fails the build on exactly that.
+        #
+        # ── This file used to say this column must never be here ────────────
+        # check_gate_pertinence.ts's header said so, and gave the reason:
+        # "it is a client-facing payload under a budget (check_payload_budget),
+        # and 1,088 eligibility texts do not belong in the browser". The
+        # premise was right and the conclusion followed from a number nobody
+        # had taken. So the number was taken, BEFORE AND AFTER, through
+        # check_payload_budget itself:
+        #
+        #   full snapshot        7.98 MB -> 8.60 MB
+        #   per-request payload  4.29 MB -> 4.90 MB   (budget 8 MB)
+        #     phase one          3.26 MB -> 3.88 MB
+        #   headroom to budget   3.7 MB  -> 3.1 MB
+        #
+        # 594 texts, 569 KB raw. The check's "past 4 MB" WARN is not new: it
+        # fires at 4.29 MB too, so this column moves a standing warning further
+        # from its budget, it does not create one. Quote both numbers when
+        # citing this, because a comment holding only the before-figure is how a
+        # cost gets argued away twice.
+        #
+        # What it buys is the only sentence that separates fourteen French rows
+        # sharing one title. Truncation stays the READER's job (schemeText.ts)
+        # so that the budget lives in one place; that place is not this file.
+        "eligibilityText": inst["eligibility_text"],
         # ── Inherited gates ──────────────────────────────────────────────────
         # A child carries no gates of its own by design: the curated
         # eligibility layer is written against the parent regime's framework
