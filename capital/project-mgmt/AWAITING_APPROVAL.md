@@ -46,13 +46,35 @@ own paid run — on funds sitting at ranks 7-18 the model found them **22 times 
 The EUR 11-13 buys the confirmation that the model's accuracy does not collapse
 on the longer list. **The change itself is free and needs no new code.**
 
-### 3. Sampling the model more than once — 3x the per-brief cost
+### 3. Sampling the model more than once — **designed, priced, and I recommend NO**
 
-Not yet designed, so not yet priced. The paid run showed the model disagreeing
-with **itself** on 18% of founders given an identical prompt. Asking three times
-and taking the consensus is the standard way to turn that variance into
-accuracy. Worth designing free and measuring the gain per sample before
-anything ships.
+Now measured for free, so this needs your attention only if you disagree with
+the recommendation. `findings/consensus_wsGO.md`.
+
+The paid run fired the ranker **twice** per founder on an identical prompt for
+50 founders, and both replies are on the tape. That is enough to grade a
+2-sample consensus on real replies without a new call. It would have moved the
+won fund into the top five on **18 of 50 founders where sampling once managed
+21** — a 6-point loss, and the interval rules out the gain the bill needs.
+
+The mechanism, not the luck: a consensus rule can only find the won fund if the
+won fund is the more *stable* row across samples. It is the less stable one
+(mean rank swing 2.04 against its rivals' 1.49), so averaging demotes it. And
+the whole swing set is 9 founders in 50 — even an oracle always taking the
+better of the two samples gains 9 points, on a measurement whose noise is 14.
+
+**The price, had it worked:** three samples is 3x the *ranker call* and **+43% a
+brief** (EUR 0.290 → EUR 0.415), forever. Note that Sonnet 5's introductory
+pricing ends **2026-08-31**, after which the same brief is about EUR 0.62.
+Confirming it with a fresh paid run would cost **EUR 63** today, EUR 94 after
+that date. **I do not think it is worth spending.**
+
+**Try this instead, and it is free:** 4 of the 148 paid calls were **cut off at
+`max_tokens`**. A truncated reply is a degraded reply and a mechanical source of
+exactly the variance sampling was meant to average away. Output tokens bill only
+when used, so raising the limit costs nothing on the calls that do not need it.
+Reducing variance at the source is free; averaging it away costs 43% of every
+brief forever.
 
 ---
 
