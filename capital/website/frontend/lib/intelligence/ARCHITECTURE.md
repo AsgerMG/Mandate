@@ -67,6 +67,15 @@ The caps, all of them, live in `caps.ts` and `briefChecks.ts`:
 `institutionsMax = 7`. Screen one cuts the same
 pool at `DISPLAY_CAP = 6`.
 
+**The last step is not a selection.** `assembleBriefRows` publishes by CANDIDATE
+ORDER, so with nothing watch-only the founder reads ranks 1..7 whatever
+`WRITER_CANDIDATE_CAP` is. Its one spare seat is the BACKFILL BUDGET for the
+watch-only demotion and nothing else: rank `7+k` publishes only where `k` rows
+above it demoted. Read as a plain narrowing chain it looks like a cut that
+decides the table, and the funnel billed it double-digit points of lost recall
+on exactly that reading — measured at **0.12 points** end to end. The property,
+the swept test and the price are on `WRITER_CANDIDATE_CAP` in `caps.ts`.
+
 ---
 
 ## 2. The deterministic score is not legacy. It has three live jobs.
