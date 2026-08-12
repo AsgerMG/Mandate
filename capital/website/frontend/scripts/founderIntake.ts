@@ -72,10 +72,41 @@ import {
 } from "../lib/intelligence/fieldReach";
 import type { UnpopulatedReason } from "../lib/intelligence/fieldReach";
 import { prefillOrganisationType } from "../lib/intelligence/organisationType";
+import { panelContract } from "../lib/intelligence/__founderPath";
 import { answersFor, CONSTANT_ANSWERS } from "./recallSet";
 import type { AnswerMode, RecallRow } from "./recallSet";
 
 export type IntakeField = keyof EligibilityAnswers;
+
+/** ── THE SAME RULE FOR THE REQUEST, NOT THE ANSWERS ────────────────────────
+ *
+ *  `FIELD_REACH` is keyed on `keyof EligibilityAnswers`, so no predicate built
+ *  on it can say anything about a `computeVerdict` OPTION. `targetMarkets` was
+ *  exactly that blind spot: sent by this resolver on every replayed row and by
+ *  `basePayload()` on none, for as long as the resolver has existed.
+ *
+ *      A replayed founder's REQUEST may carry only what the panel's own
+ *      payload can carry.
+ *
+ *  `panelContract()` READS `basePayload` out of panel.tsx rather than
+ *  transcribing it, so a key the panel starts sending is allowed here on the
+ *  next run and a key it stops sending is refused on the next run, with no
+ *  edit. The only declaration below is of the knobs that are not request
+ *  fields at all — a harness POLICY is not an answer, and there is no founder
+ *  who could send one.
+ */
+const HARNESS_POLICY_OPTS: ReadonlySet<string> = new Set(["ownHistory"]);
+
+/** Empty is not an answer. `[]` on a preference is the neutral value the
+ *  product itself reads for a founder who has not ruled anything out, so it
+ *  carries no claim and needs no payload key. */
+const carriesAnAnswer = (v: unknown): boolean =>
+  Array.isArray(v) ? v.length > 0 : v !== undefined && v !== null && v !== "";
+
+/** What the form can send, read out of the form. */
+let payloadKeysCache: Set<string> | undefined;
+const panelPayloadKeys = (): Set<string> =>
+  (payloadKeysCache ??= new Set(panelContract().payloadKeys));
 
 /** WHERE a replayed founder's answer comes from, and why it cannot be the
  *  answer to the question being asked. One of five dispositions:
@@ -545,7 +576,7 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
   }
   const held = new Set(heldBack.map((h) => h.field));
 
-  return {
+  const founder: ReplayedFounder = {
     company: p.identity === "real" ? r.name : ANONYMOUS_FOUNDER,
     country: r.country,
     eligibility: draft,
@@ -609,6 +640,21 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
       .filter(([f, ok]) => ok && !held.has(f)).map(([f]) => f),
     heldBack,
   };
+
+  // The request-level half of the rule, over whatever `opts` happens to hold.
+  // Read from panel.tsx once per process — the form cannot change mid-run, and
+  // reading it per founder would be the same answer 7,095 times.
+  for (const [k, v] of Object.entries(founder.opts)) {
+    if (HARNESS_POLICY_OPTS.has(k) || !carriesAnAnswer(v)) continue;
+    if (panelPayloadKeys().has(k)) continue;
+    throw new Error(
+      `founderIntake: refusing to send \`${k}\` — panel.tsx's basePayload sends `
+      + `${[...panelPayloadKeys()].join(", ")} and not this. A replayed request that `
+      + "carries something no founder's request can carry is measured against a "
+      + "product nobody uses. Send the production value, or declare it a harness "
+      + "policy knob if it is not part of a request at all.");
+  }
+  return founder;
 }
 
 /** Counts what was actually handed to founders across a run. */
