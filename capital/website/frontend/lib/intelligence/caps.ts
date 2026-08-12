@@ -76,14 +76,38 @@ export function depthLever(
 ): number {
   const raw = process.env[name];
   if (raw === undefined || raw === "") return fallback;
+  return parseDepth(raw, name, { ...opts, fallback });
+}
+
+/**
+ * ── WHAT A DEPTH IS, ONCE ──────────────────────────────────────────────────
+ *
+ * `depthLever` reads ONE depth out of ONE environment variable. A harness that
+ * SWEEPS depths reads a list of them out of one variable, and every argument
+ * above applies to each element with more force: a sweep is exactly the place a
+ * typo arrives, and `rows.slice(0, NaN)` is the empty array at every K in the
+ * list, so a swept funnel would print a column of zeroes under a treatment's
+ * name rather than erroring.
+ *
+ * The rule is therefore stated once here and `depthLever` delegates to it,
+ * rather than a sweep re-implementing "integer, or the word all" beside it.
+ * `where` names whatever the value came from — a variable, or one element of a
+ * list — so the message points at the thing the reader has to fix.
+ */
+export function parseDepth(
+  raw: string,
+  where: string,
+  opts: { all?: boolean; min?: number; fallback?: number } = {},
+): number {
   if (opts.all && raw === "all") return Infinity;
   const n = Number(raw);
   const min = opts.min ?? 1;
   if (!Number.isInteger(n) || n < min) {
     throw new Error(
-      `${name} must be an integer >= ${min}${opts.all ? ` or "all"` : ""}, got "${raw}". ` +
-      `It is read once at module scope precisely so a typo cannot read as ${fallback} ` +
-      `— or, worse, as NaN, which slices every list to nothing without erroring.`);
+      `${where} must be an integer >= ${min}${opts.all ? ` or "all"` : ""}, got "${raw}". ` +
+      `It is read once, up front, precisely so a typo cannot read as ` +
+      `${opts.fallback ?? "a default"} — or, worse, as NaN, which slices every list to ` +
+      `nothing without erroring.`);
   }
   return n;
 }
