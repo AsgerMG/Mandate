@@ -1,4 +1,23 @@
 {
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
-  "agents": []
+  "agents": [
+    {
+      "id": "wsFX",
+      "step": 2,
+      "what": "Ask each funder's own page whether its fund is still open",
+      "why": "Ninety-odd funds are questionable: some look retired, some closed, and ninety-three are being held open by nothing more than the fact that we once saw money move. We will not decide any of that ourselves — the funder's own page decides, one row at a time, and the answer gets written down and kept. The last audit like this was never committed and had to be thrown away, which is the reason this one produces a file before it produces an opinion."
+    },
+    {
+      "id": "wsFY",
+      "step": 2,
+      "what": "Find funds a Norwegian founder can actually apply to",
+      "why": "Norway has nothing real in the corpus. Its research council re-booked its accounts onto new codes last year and we ingested the codes as if they were programmes, so a Norwegian founder is being shown bookkeeping. Finding a genuine source — the research council's own calls, Innovasjon Norge, Enova — is the difference between a market we serve and one we only appear to."
+    },
+    {
+      "id": "wsFZ",
+      "step": 5,
+      "what": "Check the rules we are buying can actually be used",
+      "why": "We are paying to turn several hundred funds' written rules into something the system can act on. The script that does it stops half way by design: it records what each rule says but not yet how to test it. Nobody has established whether the ranker can use the result or whether a second, uncosted step stands between it and any effect. Worth knowing before we measure anything."
+    }
+  ]
 }
