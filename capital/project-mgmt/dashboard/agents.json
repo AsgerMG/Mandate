@@ -4,26 +4,8 @@
     {
       "id": "wsGE",
       "step": 2,
-      "what": "Find the fifth of answers that vanish before anything is ranked",
-      "why": "Even if we showed the AI every fund it could possibly see, one founder in five would still not have theirs on the list. That is a hard ceiling of 77%, and it sits above everything else — no amount of improving the chooser can pass it. This decides whether reaching 90% is a plumbing job or means buying more of Europe's funding landscape, which are very different plans."
-    },
-    {
-      "id": "wsGD",
-      "step": 2,
-      "what": "Understand the cut from seventy-odd funds to eighteen",
-      "why": "The shortlist is trimmed to eighteen before the AI sees it, and that trim is where most of the loss happens. Nobody knows why it is eighteen; the likeliest answer is a cost limit from when asking the AI was expensive. The one thing already ruled out is simply raising it — that was tried and made the answer worse."
-    },
-    {
-      "id": "wsGF",
-      "step": 5,
-      "what": "Build one honest measuring stick",
-      "why": "We have four different accuracy figures, each measured on a different set of founders. Twice today I compared two of them and drew a conclusion that was wrong. Steering towards 90% on numbers that are not on the same scale produces confident nonsense, so every stage is being re-measured one way, for free, repeatably."
-    },
-    {
-      "id": "wsGG",
-      "step": null,
-      "what": "Free up the laptop, and move what belongs in the cloud",
-      "why": "The machine is at 99% full, which stops work outright. Sixteen finished branches have already been cleared, freeing over a gigabyte. The rest is working out which of the local data is genuinely a copy of something already safe on Railway — proven, not assumed, because we found work today that existed in exactly one place."
+      "what": "Are the funds ruling founders out, or are we?",
+      "why": "Twenty points of accuracy are lost to funds' own eligibility rules excluding the founder — the second largest loss in the whole product. What nobody knows is how much of that is genuine and how much is us reading those rules more strictly than the funders do. If it is largely ours, it is the cheapest twenty points available. If it is genuine, reaching 90% needs more of Europe's funding landscape rather than better code — a completely different plan."
     }
   ]
 }
