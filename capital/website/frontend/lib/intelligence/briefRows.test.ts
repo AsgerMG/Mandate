@@ -201,12 +201,13 @@ describe("the candidate cap bounds the watch-only backfill, and nothing else", (
   // Wider than production so the cap has somewhere to move to, and expressed
   // as a DISTANCE from the published cap rather than as a literal, so the sweep
   // stays the same size relative to the funnel if the funnel moves. Three above
-  // seven is 1024 watch-only patterns, each assembled at four cap values.
+  // the published cap is 2^(cap+3) watch-only patterns -- 1024 today -- each
+  // assembled at four cap values.
   const N10 = PUBLISHED + 3;
   const rows10 = Array.from({ length: N10 }, (_, i) => row(i));
   const keys10 = rows10.map((r) => r.channel);
 
-  it("publishes exactly the rank the formula names, on all 1024 patterns × 4 caps",
+  it("publishes exactly the rank the formula names, on every pattern × 4 caps",
     () => {
       const wrong: string[] = [];
       for (let mask = 0; mask < 1 << N10; mask++) {

@@ -376,7 +376,8 @@ export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 7);
  *  head of the ranked list and the only thing that disturbs that head is
  *  `assembleBriefRows` sorting watch-only rows to the back. Stated as the
  *  property, with the test for a case nobody has seen -- `briefRows.test.ts`
- *  sweeps all 1024 patterns rather than the ones we have met:
+ *  sweeps EVERY watch-only pattern over a list three longer than the published
+ *  cap, at four cap values, rather than the cases we have met:
  *
  *      a candidate at 1-based rank r publishes IFF
  *          r <= WRITER_CANDIDATE_CAP  AND  r - w(r) <= institutionsMax
