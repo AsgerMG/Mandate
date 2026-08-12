@@ -1287,6 +1287,7 @@ async function synthesize(
   // keyed by rowKeys (positional, disambiguates same-channel rows — see
   // buildInstitutions), and strip em-dashes from every model-written field
   // (house rule).
+  //
   // ── THE CANDIDATE ORDER PUBLISHES, NOT THE WRITER'S NOTE ORDER ───────────
   //
   // The rank was `narrative.institutionNotes.map((n, i) => [n.channel, i])`:
