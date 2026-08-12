@@ -82,8 +82,14 @@
 //   AGENT_SELECT=off     npx tsx scripts/_wsga_headtohead.ts
 //   AGENT_SELECT=reverse npx tsx scripts/_wsga_headtohead.ts
 //
-//   # the paid run (see project-mgmt/wsGA_prereg.md for the analysis, written first)
-//   AGENT_SELECT=adviser AGENT_SELECT_EFFORT=medium N=250 npx tsx scripts/_wsga_headtohead.ts
+//   # THE PAID RUN. One line. The analysis was written first --
+//   # project-mgmt/wsGA_prereg.md -- and MAX_EUR is the rail that keeps it inside
+//   # ten dollars while a founder it stops on stays UNGRADED.
+//   AGENT_SELECT=adviser AGENT_SELECT_EFFORT=medium \
+//     SPLIT=all N=773 MIN_DESCRIPTION_CHARS=0 \
+//     ONLY_IN_POOL=1 REPEAT=2 REPEAT_FIRST=50 \
+//     MAX_COUNTRY_CALLS=40 MAX_EUR=9.2 \
+//     npx tsx scripts/_wsga_headtohead.ts
 import { mkdirSync, writeFileSync } from "fs";
 import { createHash } from "crypto";
 import path from "path";
@@ -320,6 +326,19 @@ async function main() {
    *  "18% against 20%", and costs a fifth of repeating them all. */
   const repeatFirst = num(process.env.REPEAT_FIRST, Number.POSITIVE_INFINITY);
   let repeated = 0;
+  /** ── THE CAP THAT ACTUALLY CONTROLS COMPOSITION UNDER `ONLY_IN_POOL` ─────
+   *  `MAX_COUNTRY_SHARE` caps the DRAW. Under `ONLY_IN_POOL=1` the draw is not
+   *  what gets measured -- the CALLED set is -- and the two have different
+   *  compositions, because the in-pool rate varies enormously by market (74% in
+   *  ES, 7% in GB on today's tune draw). A draw capped at 15% can therefore
+   *  still produce a called set that one market dominates.
+   *
+   *  This caps the CALLS. The draw is already a seeded shuffle, so capping
+   *  in-loop is the same thing as a seeded stratified draw of the calls, and
+   *  founders it turns away are recorded as NOT CALLED rather than graded. */
+  const maxCountryCalls = num(process.env.MAX_COUNTRY_CALLS, Number.POSITIVE_INFINITY);
+  const callsByCountry = new Map<string, number>();
+  let skippedForCountryCap = 0;
 
   // ── THE POPULATION ───────────────────────────────────────────────────────
   // `cross_regime_*` and nothing else. That provenance is prose about the
@@ -434,9 +453,12 @@ async function main() {
 
     // ── THE CONDITIONING GATE, decided before either arm has run ──────────
     const budgetLeft = calls < maxCalls && spend < maxEur;
+    const countryRoom = (callsByCountry.get(t.country) ?? 0) < maxCountryCalls;
     const wanted = !onlyInPool || reachable;
-    const worthCalling = wanted && budgetLeft;
+    const worthCalling = wanted && budgetLeft && countryRoom;
     if (wanted && !budgetLeft) skippedForBudget++;
+    else if (wanted && !countryRoom) skippedForCountryCap++;
+    if (worthCalling) callsByCountry.set(t.country, (callsByCountry.get(t.country) ?? 0) + 1);
 
     let publishedRanker = publishedControl;
     let ceilingRanker = ceilingControl;
@@ -570,6 +592,9 @@ async function main() {
     `${((poolRecallAt(VERDICT_POOL) ?? 0) * 100).toFixed(1)}%`);
   p(`paid calls         ${calls}${Number.isFinite(maxCalls) ? ` of a MAX_CALLS ceiling of ${maxCalls}` : ""}` +
     `${skippedForBudget ? `, ${skippedForBudget} founder(s) skipped once the ceiling was hit` : ""}`);
+  p(`call cap           ${Number.isFinite(maxCountryCalls)
+    ? `${maxCountryCalls} per country; ${skippedForCountryCap} founder(s) turned away by it`
+    : "none per country (MAX_COUNTRY_CALLS unset)"}`);
   p(`null (REPEAT)      ${repeated} founder(s) had the treatment fired twice` +
     (Number.isFinite(repeatFirst) ? ` (REPEAT_FIRST=${repeatFirst})` : ""));
   p(`spend              EUR ${spend.toFixed(4)}` +
@@ -734,25 +759,34 @@ async function main() {
 
   p(`## Composition — because DE and FR were already legible`);
   p();
-  const byCountry = new Map<string, { n: number; ceiling: number; c5: number; r5: number }>();
+  const byCountry = new Map<string, { n: number; ceiling: number; called: number; c5: number; r5: number }>();
   for (const r of rows) {
-    const m = byCountry.get(r.country) ?? { n: 0, ceiling: 0, c5: 0, r5: 0 };
+    const m = byCountry.get(r.country) ?? { n: 0, ceiling: 0, called: 0, c5: 0, r5: 0 };
     m.n++;
+    if (r.called) m.called++;
     if (r.ceilingControl) m.ceiling++;
     if (r.rankControl != null && r.rankControl <= 5) m.c5++;
     if (r.rankRanker != null && r.rankRanker <= 5) m.r5++;
     byCountry.set(r.country, m);
   }
-  p(`| country | founders | share | won fund in pool | control EXACT@5 | ranker EXACT@5 |`);
-  p(`|---|---:|---:|---:|---:|---:|`);
-  for (const [c, m] of [...byCountry].sort((a, b) => b[1].n - a[1].n)) {
+  p(`| country | drawn | share of draw | won fund in pool | CALLED | share of CALLS | control EXACT@5 | ranker EXACT@5 |`);
+  p(`|---|---:|---:|---:|---:|---:|---:|---:|`);
+  const totalCalled = called.length || 1;
+  for (const [c, m] of [...byCountry].sort((a, b) => b[1].called - a[1].called || b[1].n - a[1].n)) {
     p(`| ${c} | ${m.n} | ${((100 * m.n) / rows.length).toFixed(1)}% | ` +
-      `${((100 * m.ceiling) / m.n).toFixed(0)}% | ${m.c5} | ${m.r5} |`);
+      `${((100 * m.ceiling) / m.n).toFixed(0)}% | ${m.called} | ` +
+      `${((100 * m.called) / totalCalled).toFixed(1)}% | ${m.c5} | ${m.r5} |`);
   }
   p();
   const deFr = (byCountry.get("DE")?.n ?? 0) + (byCountry.get("FR")?.n ?? 0);
-  p(`DE + FR hold ${deFr} of ${rows.length} = **${((100 * deFr) / rows.length).toFixed(1)}%** of the draw. ` +
-    `The unstratified population is 53% DE+FR.`);
+  const deFrCalled = (byCountry.get("DE")?.called ?? 0) + (byCountry.get("FR")?.called ?? 0);
+  p(`DE + FR hold ${deFr} of ${rows.length} = **${((100 * deFr) / rows.length).toFixed(1)}%** of the draw, ` +
+    `and ${deFrCalled} of ${called.length} = **${((100 * deFrCalled) / totalCalled).toFixed(1)}%** of the CALLS. ` +
+    `The unstratified described population is 53% DE+FR.`);
+  p();
+  p("The second share is the one that matters under `ONLY_IN_POOL=1`: the in-pool");
+  p("rate varies enormously by market, so a draw capped at 15% can still produce a");
+  p("called set one market dominates. `MAX_COUNTRY_CALLS` is the cap on that.");
   p();
 
   p(`## The void conditions, checked rather than promised`);
@@ -837,7 +871,8 @@ async function main() {
   writeFileSync(path.join(OUT_DIR, `${stamp}.json`), JSON.stringify({
     startedAt, arm: AGENT_SELECT_ARM, seam: AGENT_SELECT_SEAM, effort: THINK_EFFORT,
     set: setFile, split, seed, n: rows.length, eligible: eligible.length,
-    countryCap: cap, capBound, onlyInPool, repeat, repeatFirst, repeated,
+    countryCap: cap, capBound, maxCountryCalls, skippedForCountryCap,
+    onlyInPool, repeat, repeatFirst, repeated,
     drawFingerprint,
     corpus: prov, rankerLine, rankerClean,
     calls, spendEur: spend, rows,

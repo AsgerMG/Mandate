@@ -29,7 +29,7 @@ lever, one number.
 | **seam** | `late` — the default and the shipped position. The model permutes the eighteen rows the score chose; it cannot add, drop or re-gate one. |
 | **pairing** | Both arms are handed the SAME `InstrumentRow[]` inside one loop iteration of one process. There is no "between" for the corpus, the index or the answer key to move in. |
 | **population** | `__recallSetDescribed.json`, `split=tune`, graded (the won fund is still offerable), `descriptionSource` starting `cross_regime` — prose recovered from an award under a DIFFERENT regime than the fund being predicted, the only provenance `check_recall_leaks` clears at the sibling level. |
-| **draw** | Seeded Fisher-Yates at `SEED=20260806`, then a per-country cap of 15% of the sample. |
+| **draw** | Seeded Fisher-Yates at `SEED=20260806`, then a per-country cap of 15% of the sample — AND a per-country cap on the CALLS, which is the set that gets measured under `ONLY_IN_POOL=1`. The in-pool rate runs from 7% (GB) to 74% (ES) on today's draw, so capping the draw alone does not control the called set. |
 | **conditioning** | `ONLY_IN_POOL=1`. A paid call is made only where the won fund is in the pool the model is about to permute. |
 | **founder** | `founderIntake` with `own-history=withheld`. The company's own award channels are never handed to tier 1 of the sort. |
 | **company name** | OFF in the ranker prompt. Standing decision, not a variable. |
