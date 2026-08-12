@@ -34,7 +34,7 @@ import { describe, expect, it } from "vitest";
 import { assembleBriefRows, type WriterRowNote } from "./memoCandidates";
 import { UNWRITTEN_ROW_LEAD, unwrittenRowCopy } from "./unwrittenRow";
 import { WATCH_ONLY_COPY } from "./watchOnly";
-import { checkBrief } from "./briefChecks";
+import { BRIEF_LIMITS, checkBrief } from "./briefChecks";
 import type { InstitutionEntry } from "./types";
 
 const clean = (s: string) => s.replace(/\s*—\s*/g, ", ").trim();
@@ -181,7 +181,12 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
 // The test sweeps every watch-only PATTERN rather than a handful, because the
 // failure was never about which fund it was.
 describe("the candidate cap bounds the watch-only backfill, and nothing else", () => {
-  const PUBLISHED = 7;
+  // READ, not retyped. This whole block is an argument about the DISTANCE
+  // between two constants, so a private copy of either would let the argument
+  // go on reading correctly about a funnel that had moved. `check_contracts`
+  // already asserts the two narrow; this asserts what the gap between them
+  // does, and both have to be talking about the same pair.
+  const PUBLISHED = BRIEF_LIMITS.institutionsMax;
   const watchNote = (key: string) => note(key, { nextStep: "Monitor the next call." });
 
   /** The property, computed from the definition rather than from the code under
@@ -192,9 +197,11 @@ describe("the candidate cap bounds the watch-only backfill, and nothing else", (
       .slice(0, PUBLISHED);
   }
 
-  // Wider than production so the cap has somewhere to move to. Ten candidates
-  // is 1024 watch-only patterns, each assembled at four cap values.
-  const N10 = 10;
+  // Wider than production so the cap has somewhere to move to, and expressed
+  // as a DISTANCE from the published cap rather than as a literal, so the sweep
+  // stays the same size relative to the funnel if the funnel moves. Three above
+  // seven is 1024 watch-only patterns, each assembled at four cap values.
+  const N10 = PUBLISHED + 3;
   const rows10 = Array.from({ length: N10 }, (_, i) => row(i));
   const keys10 = rows10.map((r) => r.channel);
 
