@@ -1303,6 +1303,16 @@ async function synthesize(
   // not written about. It is gone: which rows publish is `assembleBriefRows`,
   // by rank, and the reply decides only what they say. The reasoning, the
   // measurement and the property that pins it are on that function.
+  //
+  // ── NOR ITS WORDING (wsGK) ───────────────────────────────────────────────
+  // The last channel was a sort inside that function putting rows whose copy
+  // matched a watch-only vocabulary behind rows whose copy did not. The
+  // sentence four paragraphs up — "with BRIEF_INSTITUTION_CAP below
+  // WRITER_CANDIDATE_CAP, a permutation IS a deletion" — was the argument
+  // against reading the writer's ORDER as a ranking, and it applied unchanged
+  // to that sort, which was a permutation the writer's WORDS produced. It
+  // evicted the fund it matched on at any rank, the model's first included, in
+  // roughly one brief in eighteen. Nothing below the writer permutes now.
   const table = assembleBriefRows({
     rows: institutions, rowKeys, notes: narrative.institutionNotes,
     cap: BRIEF_INSTITUTION_CAP, clean: deDash,
