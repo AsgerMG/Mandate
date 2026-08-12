@@ -187,11 +187,60 @@ export function assessInstrument(
   }
 
   // One structural failure is conclusive. Two curable ones are a conversation.
+  //
+  // ── "TWO" MEANS TWO THINGS IN THE WAY, NOT TWO GATE ROWS (wsGE) ──────────
+  //
+  // The arithmetic clause counted BLOCKERS, and a blocker is one gate row. An
+  // instrument that encodes one requirement twice therefore produced two
+  // blockers off one requirement and condemned itself, and the founder was
+  // told nothing because `accessiblePool` deletes a blocked row.
+  //
+  // The property: the ladder counts how many DISTINCT THINGS stand between
+  // this founder and this fund, and the unit of a "thing" is the intake field.
+  // It is the unit the founder answers in, the unit "what would change it" is
+  // written in, and the unit they could turn up differently on. A founder
+  // cannot fix their ticket band twice.
+  //
+  // The test for a case nobody has seen: an instrument carrying three
+  // `entityCountries` gates, all failing for a founder established elsewhere,
+  // is ONE thing in the way — where they are established — not three. It still
+  // blocks, on severity, because establishment is structural and cited; what
+  // changes is that it no longer blocks BY COUNTING.
+  //
+  // ── What it costs and what it buys, measured ─────────────────────────────
+  // 820 held-out described founders, one per company, replayed through the
+  // shipped build (scripts/_wsge_attribution.ts, arms in
+  // scripts/_wsge_counterfactual.ts). The won fund was in the accessible pool
+  // for 74.8% of them. 105 of the 184 losses were ONE field encoded twice with
+  // both encodings failing, and nothing else against the fund:
+  //
+  //     as-is (count gate rows)      74.8%
+  //     by-field (this change)       87.6%
+  //     severity only (delete the
+  //       arithmetic clause)         88.7%   — 9 more founders, and it would
+  //                                            let five unrelated failures pass
+  //
+  // ██ 96 OF THOSE 105 ARE ONE FUND. ██ `innovate_uk` carries `G3-01` and
+  // `G3-02`, byte-identical ticketBand specs, and it is the re-attribution
+  // target for the whole GtR population — 109 of 820 founders, none of whom
+  // could be recalled. Deleting that one duplicated row in Postgres would earn
+  // most of the same points. This is the code half deliberately: the corpus
+  // holds 668 surplus same-field filter rows across ~470 instruments, so the
+  // duplicate is a shape the corpus produces rather than one bad row, and a
+  // ladder that miscounts it will keep costing funds nobody has replayed yet.
+  //
+  // What would prove this wrong: an instrument where two gates on ONE field
+  // encode two INDEPENDENT requirements a founder could satisfy separately.
+  // Two `activities` exclusions — coal and tobacco — look like that case, and
+  // are not: the founder gives one `activities` answer and it either clears
+  // the fund's exclusions or it does not. If such a case is ever found, the
+  // repair is to split the field, not to go back to counting rows.
   const structural = base.blockers.filter((b) => isStructural(b.field) && b.cited);
+  const fieldsInTheWay = new Set(base.blockers.map((b) => b.field)).size;
   if (base.checked === 0) base.status = "unknown";
   else if (base.blockers.length === 0) base.status = "open";
   else if (structural.length > 0) base.status = "blocked";
-  else if (base.blockers.length === 1) base.status = "one_blocker";
+  else if (fieldsInTheWay === 1) base.status = "one_blocker";
   else base.status = "blocked";
   return base;
 }
