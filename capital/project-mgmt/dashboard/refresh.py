@@ -193,6 +193,53 @@ def cut_depth() -> int:
     return int(m.group(1))
 
 
+FUNNEL = ROOT / "project-mgmt/findings/one_funnel/latest.json"
+
+
+def headline() -> dict[str, object]:
+    """THE FIRST NUMBER ON THE PAGE, and it must be the one we are building.
+
+    It used to be `check_recall_floor`'s EXACT@5, captioned "measured in
+    production today". Two things were wrong with that and the owner caught
+    both:
+
+      · It is a GUARD's figure -- a floor that exists to catch regressions,
+        published on whatever population the floor happens to grade. A number
+        chosen to be hard to break is not the number a product is steering by.
+      · It grades `computeVerdict().instrumentTable`, the INSTANT SCREEN. The
+        founder acts on the memo, and the two disagree about membership. So the
+        headline described a screen rather than the thing being built.
+
+    It now reads the end-to-end funnel -- one population, one definition, the
+    answer followed the whole way to the founder's rows. The owner set the
+    target at SIX rows, because the memo publishes seven and six is the honest
+    bar for "shown to the founder".
+
+    Six may not exist in the run yet; the ladder reported five and seven first.
+    So the stage is chosen by preference and the page SAYS WHICH IT USED rather
+    than quietly substituting a neighbour -- a headline that silently changes
+    denominator is exactly the defect this file exists to prevent.
+    """
+    run = json.loads(FUNNEL.read_text())
+    by_id = {s["id"]: s for s in run["stages"]}
+    for stage_id, rows in (("top_six", 6), ("top_five", 5)):
+        st = by_id.get(stage_id)
+        if st and st.get("sharePct") is not None:
+            return {
+                "published": round(st["sharePct"], 1),
+                "published2": round(st["sharePct"], 1),
+                "rows": rows,
+                "n": run["n"],
+                "stamp": run["startedAt"][:10],
+                "stamp2": run["startedAt"][:10],
+            }
+    sys.exit(
+        f"no usable end-to-end stage in {FUNNEL}. The page's first number is what "
+        f"we are building, so it must come from the funnel run -- fix the run "
+        f"rather than falling back to a guard's figure."
+    )
+
+
 def figures(data: list[list]) -> dict[str, object]:
     """Every number the prose states, derived -- never typed.
 
@@ -213,11 +260,9 @@ def figures(data: list[list]) -> dict[str, object]:
             f"Re-run scripts/_wsdr_curve.ts so the page can state the real figure."
         )
     return {
-        "stamp": latest[0][:10],
-        "stamp2": latest[0][:10],
+        **headline(),                      # published / published2 / rows / n / stamp
         "runs": len(data),
-        "published": round(latest[2]),
-        "published2": round(latest[2]),
+        "floorExact5": round(latest[2]),   # the GUARD's figure, kept but demoted
         "pool": round(latest[3]),
         "depth": depth,
         "shown": round(at[depth] * 100, 1),

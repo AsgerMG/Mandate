@@ -1,4 +1,23 @@
 {
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
-  "agents": []
+  "agents": [
+    {
+      "id": "wsGJ",
+      "step": 5,
+      "what": "Fix the measuring stick before trusting anything it says",
+      "why": "The one end-to-end measurement we have was taken with the wrong ranking engine — a fallback, on every single founder — and against an offline copy of the corpus rather than the live one. So the headline figure describes a system we do not actually ship. Nothing else is worth measuring until this is right. It also adds the six-fund target you set."
+    },
+    {
+      "id": "wsGK",
+      "step": 6,
+      "what": "Stop a single word in the write-up deleting the AI's top choice",
+      "why": "The memo demotes any fund whose write-up contains words like monitor, watch or revisit — matched mechanically, after the AI has chosen. Because eight candidates become seven published rows, one such word about the AI's first choice pushes it off the end of the brief. The system we switched on last night can be silently overruled by another model's turn of phrase, on the row that matters most."
+    },
+    {
+      "id": "wsGI",
+      "step": 6,
+      "what": "The cap of eight, worth fourteen points and never examined",
+      "why": "Between the AI choosing and the founder reading, the list is cut to eight. That cut costs fourteen points of accuracy — the second largest loss in the product — and nobody has ever asked why it is eight. Unlike the cut above it, this one is genuinely expensive to widen, so the answer may be that it is a fair price. Worth knowing which."
+    }
+  ]
 }
