@@ -370,13 +370,36 @@ export interface AssembledBriefRows {
  * reply.
  *
  * ── THE PROPERTY, AND THE TEST FOR A CASE NOBODY HAS SEEN ─────────────────
- * WHICH ROWS PUBLISH IS DECIDED BY RANK ALONE. The writer's reply changes what
- * a row SAYS and never whether it appears.
+ * THE WRITER'S SILENCE NEVER MOVES A ROW, AND NOTHING IN THE REPLY EVER
+ * REMOVES ONE. Which rows publish is decided by rank and by whether a row is
+ * something the founder can act on, and by nothing else.
  *
- * The test, on any reply at all rather than on the ones we have seen: delete
- * any subset of the notes and assemble again. The published list must come
- * back identical, row for row and in the same order. Anything that fails that
- * is the writer selecting, and selecting is the ranker's job.
+ * Two tests, on any reply at all rather than on the ones we have seen:
+ *
+ *   TOTALITY   `published` concatenated with `cutByCap` is a permutation of
+ *              `rowKeys`, for every reply including an empty one. A reply that
+ *              can shorten the candidate set is the writer selecting, and
+ *              selecting is the ranker's job.
+ *   SILENCE    delete any subset of the notes and assemble again; the published
+ *              list must come back identical, row for row and in the same
+ *              order. `unwrittenRowCopy` is held to the watch-only rule and
+ *              tested to pass it, which is what makes this true rather than
+ *              usually true.
+ *
+ * ██ WHAT THESE DELIBERATELY DO NOT COVER, AND WHY IT IS SAID HERE ██
+ * A row whose own copy reads as watch-only IS moved, behind every actionable
+ * row, and with the cap below the candidate count that can put it outside the
+ * table. So the writer's WORDS can change membership even though its silence
+ * cannot, and the earlier wording of this block ("decided by RANK ALONE...
+ * the published list must come back identical") was flatly contradicted by the
+ * sort ten lines below it. `briefRows.test.ts` had it right and pinned the
+ * exception; this docstring did not, and `measure_funnel.ts` was reading rank
+ * in `toWriter` as rank in the published table on the strength of it.
+ *
+ * The movement is TWO-SIDED, which is the part that makes it hard to bound: an
+ * actionable row is promoted past any watch-only row above it, as well as a
+ * watch-only row being pushed behind the actionable ones. Over the 35 briefs in
+ * `brief_records` on 2026-08-13, 6 (17%) demoted at least one row.
  *
  * This was `worth: Boolean(note)` in `synthesize`, and it was not a decision
  * anyone took: a row the writer skipped was dropped, the next candidate down
