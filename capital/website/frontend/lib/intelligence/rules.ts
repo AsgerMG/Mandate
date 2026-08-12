@@ -159,10 +159,20 @@ export const EXCLUSION_RULES = {
     disposition: "demote-not-delete",
     evidence: "Enforced by a regex over natural language containing ordinary words that also occur in valid next steps.",
   },
+  // Recorded, and no longer a removal (wsGC, 2026-08-12). Its disposition was
+  // "remove" and the disposition has been carried out: a candidate the writer
+  // wrote nothing about keeps its rank and publishes from its own facts, so
+  // the entry now records a fact about OUR OUTPUT rather than an opinion the
+  // funnel acted on. It stays in the register because it is still a thing that
+  // happened to a founder's brief and every recorded brief counts it.
+  //
+  // What it cost while it removed: on the 23 briefs whose counts are recorded
+  // it fired on 6, and on all 6 the cap still had room — so each one swapped a
+  // fund the ranker had put in the table for one it had put below it.
   "WRT-NO-NOTE": {
-    stage: "writer", kind: "opinion", recoverable: false,
-    what: "Row dropped because the writer returned no note for it.",
-    disposition: "remove",
+    stage: "writer", kind: "fact", recoverable: false,
+    what: "Row published from its own facts because the writer returned no note for it.",
+    disposition: "keep",
   },
 
   // ── cut stage ────────────────────────────────────────────────────────────

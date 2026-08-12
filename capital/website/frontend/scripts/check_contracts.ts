@@ -270,11 +270,13 @@ function main() {
   // day someone raises the published cap without raising the writer's, the
   // only symptom is shorter briefs.
   //
-  // The strictness matters and is not decoration. `WRITER_CANDIDATE_CAP` minus
-  // `institutionsMax` IS the number of candidates the writer may decline
-  // before the table is short, and the writer declines candidates routinely
-  // (`WRT-NO-NOTE`, `WRT-WATCH-ONLY`). At equality that headroom is zero and
-  // every candidate must land, which no measurement here supports.
+  // The strictness matters and is not decoration. The writer no longer
+  // declines anything -- a candidate it wrote nothing about keeps its rank and
+  // publishes from its own facts (wsGC) -- so the last pair's reason is not a
+  // rejection budget any more. It is the CUT: the published table is the head
+  // of a ranked list, and at equality there is no head, every candidate
+  // publishes, and the watch-only DEMOTION stops working, because a row sorted
+  // to the back still lands on the page when nothing is cut from it.
   //
   // Stated over the constants themselves, so a cap moved tomorrow is judged
   // with no edit here. Each pair names WHY it must hold, because a guard that
@@ -293,8 +295,8 @@ function main() {
     {
       wider: "WRITER_CANDIDATE_CAP", wide: WRITER_CANDIDATE_CAP,
       narrower: "BRIEF_LIMITS.institutionsMax", narrow: BRIEF_LIMITS.institutionsMax,
-      why: "a candidate the writer never wrote a note for cannot be published, so the " +
-        "difference is the number of candidates it may decline before the table goes short",
+      why: "the published table is the head of the ranked candidate list, and at equality " +
+        "nothing is cut from it, so the watch-only demotion behind that cut stops working",
     },
     {
       // ── THE SELECTOR MUST BE ABLE TO REACH EVERY PUBLISHED SEAT ──────────

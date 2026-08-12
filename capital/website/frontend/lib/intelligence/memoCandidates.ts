@@ -32,11 +32,14 @@ import {
   tableInputFromAnswers,
 } from "./shortlist";
 import { toIso2 } from "./corpus";
+import { isWatchOnly } from "./watchOnly";
+import { unwrittenRowCopy } from "./unwrittenRow";
 import type { ExclusionLog } from "./exclusions";
 import type {
   CompetitorRecord,
   EligibilityAnswers,
   EligibilityCheck,
+  InstitutionEntry,
   IntelligenceRequest,
   InstrumentRow,
   NoDoors,
@@ -343,9 +346,9 @@ export const SHIPPED_PUBLISH_ORDER: PublishOrderControl = "candidates";
  * @param noteKeys  the keys of the notes the writer returned, in ITS order
  *
  * Pure and model-free, so the two arms can be compared over a recorded reply
- * with no call. A key the writer did not mention ranks last under either arm;
- * whether it publishes at all is `worth`, decided separately, which is the
- * separation this whole constant exists to keep.
+ * with no call. Under the "writer" control a key the writer did not mention
+ * ranks last, which is the arm's whole hazard; under the shipped one every key
+ * ranks where the candidate order put it, mentioned or not.
  */
 export function publishRankByKey(
   rowKeys: readonly string[],
@@ -356,6 +359,104 @@ export function publishRankByKey(
   const rank = new Map<string, number>();
   keys.forEach((k, i) => { if (!rank.has(k)) rank.set(k, i); });
   return rank;
+}
+
+/** One row of the writer's reply. `channel` carries the disambiguated rowKey,
+ *  not necessarily the channel code — see the schema in pipeline.ts. */
+export interface WriterRowNote {
+  channel: string;
+  whyEligible?: string;
+  nextStep?: string;
+  blockerPlain?: string;
+}
+
+export interface AssembledBriefRows {
+  /** The rows the founder is handed, in publish order, already cut. */
+  published: InstitutionEntry[];
+  /** Candidate keys the writer returned no note for. They publish anyway; the
+   *  list exists so the count is read rather than inferred from a short table. */
+  unwritten: string[];
+  /** Keys demoted behind every actionable row. Demoted, never deleted. */
+  watchOnly: string[];
+  /** Keys that fell below the cap. */
+  cutByCap: string[];
+}
+
+/**
+ * The published table, assembled from the ranked candidates and the writer's
+ * reply.
+ *
+ * ── THE PROPERTY, AND THE TEST FOR A CASE NOBODY HAS SEEN ─────────────────
+ * WHICH ROWS PUBLISH IS DECIDED BY RANK ALONE. The writer's reply changes what
+ * a row SAYS and never whether it appears.
+ *
+ * The test, on any reply at all rather than on the ones we have seen: delete
+ * any subset of the notes and assemble again. The published list must come
+ * back identical, row for row and in the same order. Anything that fails that
+ * is the writer selecting, and selecting is the ranker's job.
+ *
+ * This was `worth: Boolean(note)` in `synthesize`, and it was not a decision
+ * anyone took: a row the writer skipped was dropped, the next candidate down
+ * moved up into its seat, and the only trace was one line in the exclusion
+ * log. Measured over the recorded funnel counts, that fired on 6 of 23 briefs,
+ * and on every one of the six the cap still had room — so each was a candidate
+ * the ranker had put in the table, swapped for one it had put below it.
+ *
+ * Model-free and total: give it rows and a reply and it returns a table.
+ */
+export function assembleBriefRows(input: {
+  /** The candidate rows, in rank order — the array the writer was handed. */
+  rows: readonly InstitutionEntry[];
+  /** Their keys, positionally aligned with `rows`. */
+  rowKeys: readonly string[];
+  notes: readonly WriterRowNote[];
+  cap: number;
+  /** The house de-dash. Applied to MODEL prose only, and passed rather than
+   *  imported because it belongs beside the writer call while this module is
+   *  model-free. Code-built copy is written without em-dashes to begin with. */
+  clean: (s: string) => string;
+  publishOrder?: PublishOrderControl;
+}): AssembledBriefRows {
+  const { rows, rowKeys, notes, cap, clean } = input;
+  const byKey = new Map(notes.map((n) => [n.channel, n]));
+  const rank = publishRankByKey(rowKeys, notes.map((n) => n.channel), input.publishOrder);
+  const unwritten: string[] = [];
+
+  const scored = rows.map((row, i) => {
+    const key = rowKeys[i];
+    const note = byKey.get(key);
+    // ONLY a wholly absent note falls back. A note that came back with a blank
+    // field is a different failure, it has never been measured, and FUND-5
+    // reports it today; filling it in here would silence that check instead of
+    // fixing what it catches.
+    if (!note) unwritten.push(key);
+    const built = note ? null : unwrittenRowCopy(row);
+    const entry: InstitutionEntry = {
+      ...row,
+      whyEligible: built ? built.whyEligible : clean(note!.whyEligible ?? ""),
+      nextStep: built ? built.nextStep : clean(note!.nextStep ?? ""),
+      // Prefer the plain restatement; fall back to the verbatim rule so the
+      // obstacle is never silently dropped just because the writer omitted it.
+      blocker: row.blocker ? clean(note?.blockerPlain || row.blocker) : undefined,
+    };
+    // Read off what PUBLISHES, not off the reply: the built copy is held to
+    // the same rule, and its test asserts it can never trip this.
+    return { key, entry, actionable: !isWatchOnly(undefined, entry.nextStep, entry.whyEligible) };
+  });
+
+  const ranked = [...scored].sort(
+    (a, b) => (rank.get(a.key) ?? Infinity) - (rank.get(b.key) ?? Infinity));
+  // Demotion, not deletion: actionable rows first, the rest behind them in
+  // rank order. If enough actionable routes exist a watch-only row never
+  // reaches the cut anyway; if they do not, a real fund the founder can only
+  // keep an eye on beats a shorter table with nothing in its place.
+  const order = [...ranked.filter((x) => x.actionable), ...ranked.filter((x) => !x.actionable)];
+  return {
+    published: order.slice(0, cap).map((x) => x.entry),
+    unwritten,
+    watchOnly: ranked.filter((x) => !x.actionable).map((x) => x.key),
+    cutByCap: order.slice(cap).map((x) => x.key),
+  };
 }
 
 /**

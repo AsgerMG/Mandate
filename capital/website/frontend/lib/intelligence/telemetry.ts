@@ -34,10 +34,15 @@ export type EventKind =
   | "quota_exhausted"
   /** Prompt-control sequences were stripped from founder-supplied text. */
   | "prompt_injection_blocked"
-  /** Writer disqualified more candidates than the cap allows; rows reinstated.
-   *  A degradation rather than an error: the brief is still correct, but the
-   *  writer's judgement was overruled and that is worth watching. */
-  | "writer_over_rejected"
+  /** The writer returned no note for a candidate it was told to write about.
+   *  A degradation rather than an error: the row publishes from its own facts
+   *  and keeps its rank, so nothing is lost, but a call that skipped part of
+   *  its task is worth watching and cannot be seen in the output.
+   *
+   *  It replaces `writer_over_rejected` — "writer disqualified more candidates
+   *  than the cap allows; rows reinstated" — which described the
+   *  disqualification flag, outlived it, and had no emitter left in the repo. */
+  | "writer_notes_missing"
   /** A published brief broke a contract rule `checkBrief` can decide.
    *  Observational: the brief still ships. Until 2026-08-11 these predicates
    *  ran only on fixtures, so a rule firing in production was invisible until
@@ -51,7 +56,7 @@ export type EventKind =
  *  digest can distinguish "the system absorbed a problem" from "it failed". */
 const DEGRADATIONS: ReadonlySet<EventKind> = new Set<EventKind>([
   "writer_timeout", "writer_truncated", "research_degraded",
-  "hydration_degraded", "thin_brief", "writer_over_rejected",
+  "hydration_degraded", "thin_brief", "writer_notes_missing",
   // A violated rule is a degradation, not an error: the brief is published and
   // usable, and the system absorbed the problem rather than failing. A check
   // that THREW is an error -- the instrument is broken and nothing is watching.
