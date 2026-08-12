@@ -275,11 +275,19 @@ BRIEF_VERDICT_POOL=40 ONLY_IN_POOL=1 REPEAT=2 REPEAT_FIRST=50 \
 environment, so the pool width is already an arm. Three properties make the
 comparison sound and none of them needed building:
 
-- The **control is invariant**. `project(poolControl)` publishes the score's own
-  order cut to the writer's eight; the display-name collapse only ever demotes,
-  so the published seven are identical at pool 18 and pool 40. The control arm
-  is therefore directly comparable to wsGA's, and a material difference between
-  them means the draw or the corpus moved, not the lever.
+- The **control is very nearly invariant, and the exception is measured rather
+  than assumed**. `project(poolControl)` publishes the score's own order cut to
+  the writer's eight, and the score's order is a prefix of itself, so a later
+  cut cannot reorder its head. That argument has one hole and it is worth
+  naming: `resolveNameCollisions` picks a label class's survivor by
+  `preferBetterEvidencedRow`, **a total order independent of position**, so a
+  wider pool can admit a better-evidenced sibling at rank 30, make it the
+  survivor, and demote the row that held that label in the top seven. The
+  control is therefore invariant except through the name collapse.
+  `_wsgd_stages.ts` builds the control's projection at every K and counts the
+  difference; see `findings/stages_wsGD/stages.md`. If the divergence is
+  material the comparison must be run against the control measured **in the same
+  process at the same pool width**, not against wsGA's printed control.
 - The **conditioning is already correct**. `shownDepth` is `VERDICT_POOL` on the
   late seam, so `ONLY_IN_POOL=1` conditions on "the answer is in the first
   forty" — which is the population the arm exists to reach, and exactly the

@@ -96,6 +96,11 @@ interface PerFounder {
   /** Fields whose answer, removed ON ITS OWN, un-blocks the won fund. A field
    *  here is the whole of the reason that answer was deleted. */
   unblockedBy: string[];
+  /** The CONTROL's published projection — the score's own order through
+   *  `orderMemoCandidates`, cut to the writer cap — built at each K. The
+   *  control is supposed to be invariant to the pool width; this is where that
+   *  is checked rather than asserted. */
+  controlAt: Record<string, string[]>;
   /** Rows carrying a readable `funds:` line, cumulative at each K. */
   describedAt: Record<string, { rows: number; described: number }>;
   /** The prompt production would build at each K, in characters. */
@@ -162,14 +167,15 @@ async function main() {
     // whose institution NAME is already shown. It is a permutation, so it can
     // only move the won fund, never delete it -- which is exactly the property
     // worth measuring rather than trusting.
-    const ordered = orderMemoCandidates({
-      instrumentTable: accessible,
-      req: {
-        company: f.company, country: f.country, description: f.opts.description,
-        eligibility: f.eligibility, capitalSought: f.opts.capitalSought,
-      },
-      records: [], dbPeers: [], eligibilityScreen: [], log,
-    } as never).ordered.map((c) => c.row);
+    const req = {
+      company: f.company, country: f.country, description: f.opts.description,
+      eligibility: f.eligibility, capitalSought: f.opts.capitalSought,
+    };
+    const project = (pool: InstrumentRow[]) => orderMemoCandidates({
+      instrumentTable: pool, req, records: [], dbPeers: [], eligibilityScreen: [],
+      log: new ExclusionLog(),
+    } as never);
+    const ordered = project(accessible).ordered.map((c) => c.row);
 
     const rankIn = (rows: InstrumentRow[]) => {
       const i = rows.map((r) => r.instrumentId).indexOf(t.instrument);
@@ -217,9 +223,22 @@ async function main() {
 
     const describedAt: PerFounder["describedAt"] = {};
     const promptChars: PerFounder["promptChars"] = {};
+    const controlAt: PerFounder["controlAt"] = {};
     for (const d of KS) {
       const k = d === 0 ? ordered.length : Math.min(d, ordered.length);
       const head = ordered.slice(0, k);
+      // ── IS THE CONTROL REALLY INVARIANT TO THE POOL WIDTH? ───────────────
+      // A pool-width arm is only readable against a fixed control, and the
+      // obvious argument for one is that the score's order is a prefix of
+      // itself, so cutting later cannot change the first seven rows. That
+      // argument has a hole: `resolveNameCollisions` picks the survivor of a
+      // label class by `preferBetterEvidencedRow`, a TOTAL ORDER independent of
+      // position. A wider pool can therefore admit a better-evidenced sibling
+      // at rank 30, make IT the survivor, and demote the rank-3 row that used
+      // to hold the label. So the projection is built at every K and the
+      // difference is counted rather than reasoned about.
+      controlAt[String(d)] = project(accessible.slice(0, k)).toWriter
+        .map((c) => c.row.instrumentId ?? c.row.channel);
       describedAt[String(d)] = {
         rows: head.length,
         described: head.filter((r) => Boolean(r.description)).length,
@@ -235,7 +254,7 @@ async function main() {
       inCorpus: inCorpus.has(t.instrument), offerable: offerable.has(t.instrument),
       rankHydrated, rankAccessible, rankOrdered: rankIn(ordered),
       nHydrated: hydrated.length, nAccessible: accessible.length, nOrdered: ordered.length,
-      blockedBy, unblockedBy, describedAt, promptChars,
+      blockedBy, unblockedBy, controlAt, describedAt, promptChars,
     });
     if (out.length % 10 === 0) console.log(`  ${out.length}/${graded.length}`);
   }
@@ -333,6 +352,26 @@ async function main() {
   for (const [field, v] of [...byField.entries()].sort((a, b) => b[1].n - a[1].n)) {
     lines.push(`| \`${field}\` | ${v.n} | ${v.sole} | ${v.cited} | ${v.verified} | `
       + `${v.sample.replace(/\|/g, "/").slice(0, 110)} |`);
+  }
+  lines.push("");
+
+  lines.push(`## Is the CONTROL invariant to the pool width?\n`);
+  lines.push(`A pool-width arm is only readable against a fixed control. The score's order is a `
+    + `prefix of itself, so a later cut cannot reorder the head — but \`resolveNameCollisions\` `
+    + `picks a label class's survivor by \`preferBetterEvidencedRow\`, a total order INDEPENDENT `
+    + `of position, so a wider pool can promote a better-evidenced sibling from deep in the pool `
+    + `and demote the row that held the label in the top seven. Measured against K=18, on the `
+    + `writer's own \`toWriter\` projection.\n`);
+  lines.push(`| K | control projection identical to K=18 | the won fund enters | the won fund leaves |`);
+  lines.push(`|---|---:|---:|---:|`);
+  const wonIn = (ids: string[], r: PerFounder) => ids.includes(r.won);
+  for (const d of KS) {
+    if (d === 18) continue;
+    const key = String(d);
+    const same = out.filter((r) => r.controlAt[key].join("|") === r.controlAt["18"].join("|")).length;
+    const enters = out.filter((r) => wonIn(r.controlAt[key], r) && !wonIn(r.controlAt["18"], r)).length;
+    const leaves = out.filter((r) => !wonIn(r.controlAt[key], r) && wonIn(r.controlAt["18"], r)).length;
+    lines.push(`| ${d === 0 ? "the whole pool" : d} | ${same}/${n} — ${pct(same, n)} | ${enters} | ${leaves} |`);
   }
   lines.push("");
 
