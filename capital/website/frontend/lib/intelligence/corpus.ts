@@ -1172,8 +1172,21 @@ export function withheldNotice(count: number): { count: number; note: string } |
   };
 }
 
-export function publishableInstruments(): DbInstrument[] {
-  const all = loadDbInstruments();
+/**
+ * The corpus-wide facts every publishability predicate needs beyond the row.
+ *
+ * Built once per corpus so `publishabilityFailures` can be asked about a single
+ * row — by the filter below, and by any harness that needs to say WHY a row was
+ * dropped — without either of them recomputing, or restating, the derivation.
+ */
+export interface PublishabilityContext {
+  hasChildren: ReadonlySet<string>;
+  /** Scheme codes an OPEN leaf already offers. */
+  liveCodes: ReadonlySet<string>;
+  asOf: string;
+}
+
+export function publishabilityContext(all: DbInstrument[]): PublishabilityContext {
   const hasChildren = new Set(
     all.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
   // ONE liveness test, imported. This used to be an inline
@@ -1181,13 +1194,100 @@ export function publishableInstruments(): DbInstrument[] {
   // closure and hid 306 leaves — `Fondo di garanzia per le PMI` among them.
   // See lib/intelligence/liveness.ts for the property and its evidence.
   const asOf = today();
-  const closed = (i: DbInstrument) => isClosed(i, asOf);
   // Scheme codes an OPEN leaf already offers. A closed scheme whose successor is
   // one of these needs no redirect: the successor is already its own row, and
   // reviving the predecessor under the same code would just duplicate it.
   const liveCodes = new Set(all
-    .filter((i) => !i.isFramework && !hasChildren.has(i.id) && !closed(i) && i.schemeCode)
+    .filter((i) => !i.isFramework && !hasChildren.has(i.id) && !isClosed(i, asOf) && i.schemeCode)
     .map((i) => i.schemeCode as string));
+  return { hasChildren, liveCodes, asOf };
+}
+
+/**
+ * WHY this row may not be proposed — every failing predicate, in one list.
+ *
+ * ██ THE FILTER AND ITS EXPLANATION ARE THE SAME CODE. ██ They were two, and
+ * the copy drifted in the one place it mattered: the harness restated the
+ * closure test WITHOUT the successor-redirect exemption below it, so every row
+ * dropped for some other reason that also happened to be a closed scheme with a
+ * successor was reported as a closure. "The register says the window has shut"
+ * was an upper bound and nothing said so.
+ *
+ * Empty means publishable, so `publishableInstruments` filters on
+ * `length === 0` and cannot grow a clause this list has not been told about.
+ *
+ * Reasons OVERLAP by design. A row with no offer route and no data floor fails
+ * both, and forcing a partition would need an order of precedence the filter
+ * does not have. So these counts never sum to a stage loss.
+ */
+export function publishabilityFailures(
+  i: DbInstrument, ctx: PublishabilityContext,
+): string[] {
+  const why: string[] = [];
+  if (i.isFramework) why.push("a framework record, not a fund");
+  if (ctx.hasChildren.has(i.id)) why.push("a parent with leaves — the leaves are offered instead");
+  // A row that is not an OFFER cannot be proposed, whatever its dates say.
+  // This is a different question from closure and it is asked separately
+  // because collapsing the two is how eleven IPCEI approval decisions came
+  // to be reported as a closed fund rather than as not a fund. See
+  // lib/intelligence/offerRoute.ts.
+  if (!hasOfferRoute(i)) why.push("no application route on record");
+  // A row nothing outside its own id NAMES. Publishability asks whether a row
+  // has children, not whether it is a fund, and twelve loader-constructed
+  // bucket labels passed it: `SATR Pt Equity` reached a Portuguese founder
+  // unblocked, and Poland's entire offerable pool was eight `Sudop *` rows
+  // with no real Polish fund among them. Recorded at ETL time, never inferred
+  // here — see lib/intelligence/nameEvidence.ts.
+  //
+  // Asked separately from `hasOfferRoute` for the same reason that one is
+  // asked separately from closure: "the register says there is no way in" and
+  // "the register has never heard of this object" are different facts, and
+  // collapsing them would make the second citable only by the first's
+  // evidence, which does not exist for a row we invented.
+  if (!registerNamesTheRow(i)) why.push("nothing outside its own id names the row");
+  // A row carrying a value this product has DECIDED not to offer — an
+  // accelerator whose own page says it hands out coaching and no money, or a
+  // cohort whose source will not say whether it pays a grant or takes a
+  // convertible. See offerableAxes.ts for the declaration and the reason.
+  //
+  // Withheld HERE rather than left to the capital filter, and the difference
+  // is not cosmetic. `instrumentServesCapital` rejecting one of these looks
+  // identical to it rejecting a tax credit for a founder who asked for
+  // grants: a preference being honoured. It is not. It is our editorial
+  // judgement wearing the founder's answer, and it is the exact confusion
+  // that let nine funds sit invisible for months while every check stayed
+  // green. A decision we made should be recorded where we made it.
+  if (isWithheldByPolicy(i)) why.push("withheld by editorial policy");
+  // A scheme the Commission's register says has closed to new applications
+  // cannot be PROPOSED, however recently it paid. Measured: 220 of 453 state
+  // aid children sit under a closed scheme and 130 still looked current,
+  // because payments run for years past closure -- 'Italy - Support to
+  // electricity from renewable sources' ended 2021-12-30 and shows 2024
+  // awards. Sending a founder there costs them real time.
+  //
+  // They stay in the corpus deliberately: a closed scheme is still evidence
+  // of what a country funded and who received it, which is what the peer
+  // tracing reads. This filter governs what may be PROPOSED, nothing else.
+  //
+  // The `successorScheme` clause is the redirect described below: a closed row
+  // whose successor we do NOT already hold as an open leaf is republished under
+  // the successor's identity rather than dropped, so it is not a closure loss.
+  if (isClosed(i, ctx.asOf)
+      && !(Boolean(i.successorScheme) && !ctx.liveCodes.has(i.successorScheme as string))) {
+    why.push("the register says the window has shut");
+  }
+  // No amounts and no dates means every scale and liveness judgement about
+  // it is a guess, and a guess scored at its midpoint was outranking funds
+  // we had actually measured. See meetsDataFloor.
+  if (!meetsDataFloor(i)) why.push("no amounts and no dates — below the data floor");
+  return why;
+}
+
+export function publishableInstruments(): DbInstrument[] {
+  const all = loadDbInstruments();
+  const ctx = publishabilityContext(all);
+  const { hasChildren, liveCodes, asOf } = ctx;
+  const closed = (i: DbInstrument) => isClosed(i, asOf);
   // ── The successor redirect ────────────────────────────────────────────────
   // `successor_scheme` / `successor_title` are populated by the register itself
   // and, until now, read by nothing at all: a designed data field with no
@@ -1218,55 +1318,9 @@ export function publishableInstruments(): DbInstrument[] {
           schemeEndDate: null }
       : i);
   const withheld: SuppressedRow[] = [];
-  const rows = all.filter((i) =>
-    !i.isFramework && !hasChildren.has(i.id) &&
-    // A row that is not an OFFER cannot be proposed, whatever its dates say.
-    // This is a different question from closure and it is asked separately
-    // because collapsing the two is how eleven IPCEI approval decisions came
-    // to be reported as a closed fund rather than as not a fund. See
-    // lib/intelligence/offerRoute.ts.
-    hasOfferRoute(i) &&
-    // A row nothing outside its own id NAMES. Publishability asks whether a row
-    // has children, not whether it is a fund, and twelve loader-constructed
-    // bucket labels passed it: `SATR Pt Equity` reached a Portuguese founder
-    // unblocked, and Poland's entire offerable pool was eight `Sudop *` rows
-    // with no real Polish fund among them. Recorded at ETL time, never inferred
-    // here — see lib/intelligence/nameEvidence.ts.
-    //
-    // Asked separately from `hasOfferRoute` for the same reason that one is
-    // asked separately from closure: "the register says there is no way in" and
-    // "the register has never heard of this object" are different facts, and
-    // collapsing them would make the second citable only by the first's
-    // evidence, which does not exist for a row we invented.
-    registerNamesTheRow(i) &&
-    // A row carrying a value this product has DECIDED not to offer — an
-    // accelerator whose own page says it hands out coaching and no money, or a
-    // cohort whose source will not say whether it pays a grant or takes a
-    // convertible. See offerableAxes.ts for the declaration and the reason.
-    //
-    // Withheld HERE rather than left to the capital filter, and the difference
-    // is not cosmetic. `instrumentServesCapital` rejecting one of these looks
-    // identical to it rejecting a tax credit for a founder who asked for
-    // grants: a preference being honoured. It is not. It is our editorial
-    // judgement wearing the founder's answer, and it is the exact confusion
-    // that let nine funds sit invisible for months while every check stayed
-    // green. A decision we made should be recorded where we made it.
-    !isWithheldByPolicy(i) &&
-    // A scheme the Commission's register says has closed to new applications
-    // cannot be PROPOSED, however recently it paid. Measured: 220 of 453 state
-    // aid children sit under a closed scheme and 130 still looked current,
-    // because payments run for years past closure -- 'Italy - Support to
-    // electricity from renewable sources' ended 2021-12-30 and shows 2024
-    // awards. Sending a founder there costs them real time.
-    //
-    // They stay in the corpus deliberately: a closed scheme is still evidence
-    // of what a country funded and who received it, which is what the peer
-    // tracing reads. This filter governs what may be PROPOSED, nothing else.
-    (!closed(i) || (Boolean(i.successorScheme) && !liveCodes.has(i.successorScheme as string))) &&
-    // No amounts and no dates means every scale and liveness judgement about
-    // it is a guess, and a guess scored at its midpoint was outranking funds
-    // we had actually measured. See meetsDataFloor.
-    meetsDataFloor(i))
+  // ONE list of predicates, and it is the same one that EXPLAINS a drop. See
+  // `publishabilityFailures` above for each clause and why it is asked.
+  const rows = all.filter((i) => publishabilityFailures(i, ctx).length === 0)
     .map(redirect)
     // ── THE DEGRADATION POLICY ────────────────────────────────────────────
     // Everything above answers "what does this corpus say about this fund".
