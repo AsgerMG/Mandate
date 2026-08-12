@@ -189,6 +189,41 @@ export function rankerTallyLine(): string {
     ` with a clean one. ${RANKER_DESCRIPTION.lexical}`;
 }
 
+/** ── AND THE HALF THAT REFUSES ─────────────────────────────────────────────
+ *
+ *  `rankerTallyLine()` counts. It does not stop anything, and on 2026-08-12 that
+ *  was the whole defect: `project-mgmt/findings/one_funnel/latest.md` was
+ *  published carrying its own line reading `805 FELL BACK TO LEXICAL`, and the
+ *  25.8% under it was planned from for a day. The warning was printed, committed
+ *  and read past. A figure produced by the wrong ranker must not be ABLE to look
+ *  like a good one, so a harness that publishes calls this instead of trusting a
+ *  reader to notice the banner.
+ *
+ *  THE PROPERTY, with its test for a run nobody has made yet: a run may publish
+ *  only if every request that ASKED the ranker was served by the embedding one.
+ *  Stated over the tally rather than over an environment check, because the two
+ *  come apart — `requireCredentials` proves the keys are present and
+ *  `requireLiveCorpus` proves the corpus came from Postgres, and a run holding
+ *  both can still take the lexical fallback on a slow machine, which is exactly
+ *  what a 3s statement timeout does under load.
+ *
+ *  Zero-request runs pass. A harness that ranked nothing is not a harness that
+ *  ranked badly, and `check_published_figures` already keys the attestation on
+ *  whether a replay happened at all for the same reason. */
+export function requireCleanRanker(context: string): void {
+  const { lexical } = tally;
+  if (!lexical) return;
+  throw new Error(
+    `${context}: ${rankerTallyLine()}\n`
+    + `  This run may not publish. ${RANKER_DESCRIPTION.embedding}\n`
+    + `  A number averaged over two ranking systems is not a number about the\n`
+    + `  shipping system, and it is indistinguishable from a good one on the page.\n`
+    + `  Commonest causes, in the order they actually happen: NO_PG=1 (the\n`
+    + `  committed score cache misses on any description it was not cut for),\n`
+    + `  a missing VOYAGE_KEY, and a loaded machine tripping the 3s statement\n`
+    + `  timeout. Re-run on a quiet machine with live credentials.`);
+}
+
 /** What each ranker IS, for any harness that has to name what it measured.
  *  One sentence, and the two are not interchangeable in it. */
 export const RANKER_DESCRIPTION: Record<Ranker, string> = {

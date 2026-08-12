@@ -136,6 +136,32 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
     }
   });
 
+  // ── TOTALITY: NOTHING IN A REPLY MAY SHORTEN THE CANDIDATE SET ──────────
+  // The sweep above pins the SILENCE half and deliberately uses copy with no
+  // watch-only vocabulary, so it says nothing about a reply whose words move
+  // rows. This is the half that holds for EVERY reply: a demotion reorders and
+  // the cap decides where the line falls, but no key may go missing on either
+  // side of it. Stated as a permutation rather than as a count, because a row
+  // duplicated into both halves would satisfy a count and is just as wrong.
+  //
+  // It is the property `measure_funnel.ts` needs to be able to say the row
+  // cuts are a reordering of `toWriter` and not a different set of funds.
+  it("keeps every candidate somewhere, for every reply including all-watch-only", () => {
+    const sorted = [...rowKeys].sort();
+    const partitionsAll = (notes: readonly WriterRowNote[]) => {
+      const got = assemble(notes);
+      return [...got.published.map((r) => r.channel), ...got.cutByCap].sort();
+    };
+    for (const mask of subsets(N)) {
+      expect(partitionsAll(fullReply.filter((_, i) => (mask >> i) & 1))).toEqual(sorted);
+    }
+    // The extreme the sweep cannot reach: every row demoted at once. Nothing is
+    // left to promote past, so the order is unchanged and the table is full.
+    const allWatch = fullReply.map((n) => note(n.channel, { nextStep: "Monitor the next call." }));
+    expect(partitionsAll(allWatch)).toEqual(sorted);
+    expect(assemble(allWatch).published.map((r) => r.channel)).toEqual(rowKeys.slice(0, CAP));
+  });
+
   // Watch-only is the one thing in the reply that may still move a row, and it
   // moves it BEHIND the written rows rather than out of the table. Pinned so
   // that "the reply cannot change membership" is never read as covering it.

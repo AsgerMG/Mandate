@@ -10,7 +10,7 @@
 // measure it") has not been affordable to actually run.
 //
 // The precedent for the shape is `semanticCache.generated.json` +
-// `loadSemanticCache()` in `lib/intelligence/semantic.ts:216-254`, including its
+// `loadSemanticCache()` in `lib/intelligence/semantic.ts`, including its
 // loud-failure rule, which is repeated here because it is the whole discipline:
 //
 //   "an empty cache is not a smaller cache, it is every offline check ranking

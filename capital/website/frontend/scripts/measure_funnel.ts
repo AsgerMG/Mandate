@@ -37,15 +37,54 @@
 // the 0 publishable instruments is reachable` and a counter whose pattern
 // matched nothing and returned zero on every run ever made.
 //
-// ── FREE BY CONSTRUCTION ───────────────────────────────────────────────────
+// ── FREE, BUT NOT OFFLINE. THE TWO ARE NOT THE SAME THING ──────────────────
 // ANTHROPIC_API_KEY is deleted before anything that could reach it is imported,
 // the same guarantee `_wsdr_curve.ts` makes and for the same reason: a
 // measurement that must run on every change cannot be one somebody has to
 // decide to afford. What remains is the Voyage embedding behind
 // `semanticFundMatch`, which IS the shipped ranker -- measuring the lexical
-// fallback instead would be a number about a system no founder is served by --
-// and every run prints `semantic.ts`'s own tally so which ranker produced the
-// table is counted rather than assumed.
+// fallback instead would be a number about a system no founder is served by.
+//
+// ██ WHAT THAT DISTINCTION COST, ON THIS FILE'S OWN PUBLISHED RUN ██
+// The reference run committed on 2026-08-12 (9c022bcc) was taken with no
+// database: its header says `corpus snapshot instruments=1088` and
+// `805 FELL BACK TO LEXICAL`, and the 25.8% under it was planned from for a day.
+// Both halves of that came from ONE cause -- `NO_PG=1`, which deletes
+// DATABASE_URL, so hydration served the committed snapshot and
+// `semanticFundMatch` fell through to a score cache cut for the archetypes and
+// missing every real founder's description. Neither existing guard could see it:
+// `requireCredentials` accepts NO_PG as a legitimate declaration, and
+// `requireLiveCorpus` is blind by construction to a run that never asked
+// Postgres for anything (provenance records `snapshot, degraded: false`).
+//
+// So the two banners at the top of the report are now ENFORCED, not decorated:
+//
+//   NO_PG is refused here          -- an offline funnel measures neither the
+//                                     corpus a founder reads nor the ranker
+//                                     that orders it, so it is not a weaker
+//                                     version of this measurement, it is a
+//                                     different one
+//   the corpus must be postgres    -- `requireLiveCorpus` plus the source
+//                                     itself, below
+//   the ranker must be clean       -- `requireCleanRanker`, immediately before
+//                                     anything is written to disk
+//
+// ── WHICH STORE, AND WHY IT IS POSTGRES ────────────────────────────────────
+// A founder's request calls `hydrateDbInstruments()`, which is Postgres-first
+// and falls back to `public/data/instrument_terms.json` only when Postgres
+// fails. The snapshot is therefore the DEGRADATION path, not the product, and
+// the two stores do not agree about what is publishable: measured on this
+// worktree's corpus on 2026-08-13, Postgres offers 771 instruments with 0
+// suppressed, the committed snapshot 735 with 36 suppressed for unconfirmed
+// liveness. Measuring the snapshot would attribute 36 rows of a stale copy to
+// the corpus stage of the funnel.
+//
+// This does NOT overrule the population argument at `main()` below. That
+// argument is about WHICH FOUNDERS are drawn -- before the offerability cut
+// rather than after it -- and it is orthogonal to which store answers the
+// question for them. Both are printed in the run header, because the last time
+// a figure from this harness was wrong, the header said which store it came
+// from and nobody read it.
 //
 // The LAST stage involves a model and is therefore not measured here at all. It
 // is ESTIMATED from the last paid head-to-head's own tape, re-derived from that
@@ -63,8 +102,9 @@
 // neither parallelises safely: `semanticFundMatch` has a 3s statement timeout
 // and returns an empty map on any failure, at which point every ranking call
 // site drops to the lexical index and the run averages two ranking systems
-// while printing one number. The tally line at the top of every report is what
-// catches that, and it is the reason this stays sequential.
+// while printing one number. `requireCleanRanker` now REFUSES to write such a
+// run to disk, which is why this stays sequential — a parallel run would trip
+// the timeout, and the penalty is no longer a banner but a lost two hours.
 import { createHash } from "crypto";
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
@@ -74,7 +114,23 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 // Free by construction, not by intention.
 delete process.env.ANTHROPIC_API_KEY;
-requireCredentials("measure_funnel", ["DATABASE_URL", "VOYAGE_KEY"]);
+if (requireCredentials("measure_funnel", ["DATABASE_URL", "VOYAGE_KEY"]) === "offline") {
+  // `NO_PG=1` is this repo's honest declaration that there is no database, and
+  // for a CHECK it is a legitimate state that should skip and say so. Here it is
+  // not a weaker version of this measurement: it changes both stores the funnel
+  // is about at once -- the corpus becomes the committed snapshot and the ranker
+  // becomes the lexical fallback -- so the run would print every stage of a
+  // system nobody is served by, under this file's name. It is refused rather
+  // than skipped because a harness invoked deliberately must not exit 0 having
+  // measured nothing.
+  throw new Error(
+    "measure_funnel: NO_PG is set. This instrument measures the corpus a "
+    + "founder's request actually reads and the ranker that actually orders it, "
+    + "and NO_PG replaces both — the committed snapshot for Postgres (771 "
+    + "publishable against 735 on 2026-08-13) and the lexical index for the "
+    + "embedding ranker. That is what produced the snapshot/lexical reference "
+    + "run of 2026-08-12. Unset NO_PG and run against the live stores.");
+}
 
 import { meetsDataFloor } from "../lib/intelligence/accessMode";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
@@ -92,7 +148,9 @@ import { registerNamesTheRow } from "../lib/intelligence/nameEvidence";
 import { isWithheldByPolicy } from "../lib/intelligence/offerableAxes";
 import { hasOfferRoute } from "../lib/intelligence/offerRoute";
 import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
-import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
+import {
+  rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
+} from "../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
   tableInputFromAnswers,
@@ -106,7 +164,37 @@ import {
 } from "./recallSet";
 
 const PUBLISH_CAP = BRIEF_LIMITS.institutionsMax;
+/** The rank the head-to-head, the recall floor and every EXACT@K figure in this
+ *  repo are quoted at. Kept as its own constant because the model-stage estimate
+ *  and the disagreement table below both have to compare like with like. */
 const TOP = 5;
+
+/** ── THE ROW COUNTS THE BRIEF IS READ AT ───────────────────────────────────
+ *
+ *  The memo publishes `institutionsMax`. The owner reads the table at SIX, and
+ *  every EXACT@K figure this repo has ever quoted is at five. All three are the
+ *  same question asked of the same ordering, so they are one list rather than
+ *  three hand-written stages: add a fourth and it is a number here, not a stage
+ *  body, a mechanism string and a nesting argument.
+ *
+ *  Nesting is automatic and that is the point. Sorted strictly descending and
+ *  de-duplicated, the first N rows of an ordering are a subset of the first M
+ *  for every N < M, so `assertNested` cannot fail on a cut this list generates
+ *  however many are added. A hand-written stage has no such guarantee.
+ *
+ *  Six is NOT a smaller seven. `briefChecks.ts` carries the measured marginal
+ *  gain per row: the sixth moves EXACT by ~+3 points and REGIME and CHANNEL by
+ *  nothing on any split -- it is almost always another sibling of a programme
+ *  already shown -- while the seventh is the largest single mover of REGIME and
+ *  CHANNEL above rank five, the row that puts a NEW programme through a NEW
+ *  channel in front of the founder. Cutting to six is cheap on the metric this
+ *  ladder reports and expensive on the one it does not, which is exactly why
+ *  both rows are now on the page instead of one. */
+const ROW_CUTS: number[] = [...new Set([PUBLISH_CAP, 6, TOP])].sort((a, b) => b - a);
+
+/** Stable stage id for a row cut. The brief's own cap keeps the name every
+ *  earlier run of this harness wrote, so two reports can be diffed. */
+const rowCutId = (n: number) => (n === PUBLISH_CAP ? "published" : `top_${n}`);
 
 const num = (v: string | undefined, d: number) =>
   (v !== undefined && v !== "" && Number.isFinite(Number(v)) ? Number(v) : d);
@@ -219,30 +307,34 @@ const STAGES: Stage[] = [
   {
     id: "watch_only",
     question: "... and the writer's own prose does not demote it behind the actionable rows",
-    // `isWatchOnly(nextStep, whyEligible)` in assembleBriefRows reads text only
-    // the writer can produce. Measuring it means paying for a memo per founder,
-    // which is the one thing this instrument may not do.
+    // `isWatchOnly(actionableNow, nextStep, whyEligible)` in `assembleBriefRows`
+    // reads text only the writer can produce. Measuring it means paying for a
+    // memo per founder, which is the one thing this instrument may not do.
     alive: () => null,
     unmeasured:
       "WRT-WATCH-ONLY reads the writer's `nextStep` and `whyEligible` prose, so it "
-      + "cannot be evaluated without a paid memo per founder. Rows below are therefore "
-      + "an UPPER BOUND: the true survivor count at every later stage is <= the number shown.",
+      + "cannot be evaluated without a paid memo per founder. It is a DEMOTION, not a "
+      + "deletion (`assembleBriefRows`: actionable rows first, the rest behind them in "
+      + "rank order), so it moves every row's position in BOTH directions and the rows "
+      + "below are neither an upper nor a lower bound — see the note under the table.",
   },
-  {
-    id: "published",
-    question: `... and it is one of the ${PUBLISH_CAP} rows the brief publishes`,
-    alive: (t) => t.rankWriter != null && t.rankWriter <= PUBLISH_CAP,
-  },
-  {
-    id: "top_five",
-    question: `... and it is in the first ${TOP} of them`,
-    // The head-to-head's `rankControl <= 5`: our own scoring, no model.
-    alive: (t) => t.rankWriter != null && t.rankWriter <= TOP,
-  },
+  // ── THE ROW CUTS, GENERATED ────────────────────────────────────────────────
+  // `published` keeps its name because the brief's own cap is what it is; the
+  // rest are `top_<n>`. One `alive` body for all of them, so a cut cannot be
+  // added with a subtly different definition of "in the first n rows".
+  ...ROW_CUTS.map((n): Stage => ({
+    id: rowCutId(n),
+    question: n === PUBLISH_CAP
+      ? `... and it is one of the ${n} rows the brief publishes`
+      : `... and it is in the first ${n} of them`,
+    // Rank in `toWriter`. At n = TOP this is the head-to-head's
+    // `rankControl <= 5`: our own scoring, no model.
+    alive: (t) => t.rankWriter != null && t.rankWriter <= n,
+  })),
   {
     id: "model",
     // ── WHERE THE MODEL ACTUALLY SITS, AND WHY IT IS THE LAST ROW ANYWAY ────
-    // `agentSelectMemoPool` runs at `pipeline.ts:1756`, on the pool ALREADY cut
+    // `agentSelectMemoPool` runs in `pipeline.ts`'s ranking seam, on the pool ALREADY cut
     // to VERDICT_POOL and BEFORE `orderMemoCandidates` cuts to 8 and
     // `assembleBriefRows` cuts to 7. So it belongs three rows above this one.
     //
@@ -323,6 +415,22 @@ async function main() {
   // a corpus where nothing is closed, which is exactly how `pool` read 97% one
   // minute and 77% the next.
   requireLiveCorpus("measure_funnel");
+  // ...and the case `requireLiveCorpus` cannot see, which is the one that
+  // actually happened. It compares what was ASKED FOR with what arrived, so a
+  // run that never asked (no DATABASE_URL, by NO_PG or otherwise) records
+  // `snapshot, degraded: false` and passes. The store is a DECISION here — see
+  // the header of this file — so it is asserted as one rather than inferred
+  // from an absence.
+  const store = corpusProvenance().source;
+  if (store !== "postgres") {
+    throw new Error(
+      `measure_funnel: the corpus came from ${store}, not Postgres. This ladder `
+      + "measures what a founder's request reads, and a request reads Postgres — "
+      + "the snapshot is `hydrateDbInstruments`'s degradation path, and on "
+      + "2026-08-13 the two disagreed by 36 instruments on publishability alone. "
+      + "The snapshot is worth measuring, but as its own labelled run, not as "
+      + "this one wearing its name.");
+  }
   resetRankerTally();
 
   const corpus = loadDbInstruments();
@@ -539,7 +647,20 @@ async function main() {
   p();
   p("```");
   p(`started            ${startedAt}`);
+  // The STORE is a decision, not an accident of which credentials happened to
+  // load, so it is printed as one. `observedAt` is the instant the store's
+  // answer was taken; on Postgres it is the read itself, and it is the only
+  // thing that separates a copy made minutes ago from one cut before 86
+  // deadlines landed.
   p(`corpus             ${prov.source} instruments=${prov.instruments} at ${prov.hydratedAt}`);
+  p(`store              POSTGRES BY DECISION, not by which credentials loaded. `
+    + `It is the corpus a`);
+  p(`                   founder's request reads; the committed snapshot is `
+    + `\`hydrateDbInstruments\`'s`);
+  p(`                   degradation path, offers strictly fewer instruments, and `
+    + `a run that took it`);
+  p(`                   is REFUSED rather than labelled. observedAt `
+    + `${prov.observedAt || "(unstamped)"}`);
   p(rankerTallyLine());
   p(`set                ${setFile}  split=${split}  seed=${seed}`);
   p(`population         ${N} founder(s)` + (n > 0 ? ` sampled of ${population.length}` : "")
@@ -591,9 +712,33 @@ async function main() {
   }
   p();
 
+  // ── THE ASSUMPTION UNDER EVERY ROW-CUT NUMBER, STATED WHERE IT IS USED ────
+  // Printed here rather than left in a code comment, because the rows above are
+  // what gets quoted and a caveat one file away is a caveat nobody reads.
+  const wo = await watchOnlyRate();
+  p(`██ The ${ROW_CUTS.join(", ")}-row cuts are rank within \`toWriter\`, and they assume `
+    + "`assembleBriefRows`");
+  p("carries that order into the published table. IT DOES NOT: it puts every actionable row");
+  p("ahead of every watch-only one, after the ranker (`memoCandidates.ts`). The effect is");
+  p("TWO-SIDED, so these rows are not a bound in either direction — a won fund that is");
+  p("actionable is PROMOTED past any watch-only row above it and can enter a cut it is shown");
+  p("outside of, and a won fund whose own copy reads as watch-only is pushed behind every");
+  if (wo) {
+    p(`actionable row and can leave one it is shown inside. Measured on the ${wo.briefs} `
+      + `real briefs in`);
+    p(`\`brief_records\`: ${wo.withDemotion} of them (${(100 * wo.share).toFixed(0)}%) `
+      + `demoted at least one row, ${wo.rows} rows in total. It is a small`);
+    p("perturbation of a table this size, and it is not zero.");
+  } else {
+    p("actionable row and can leave one it is shown inside. ██ `brief_records` was");
+    p("UNREACHABLE, so how often this fires in production is not quoted here rather than");
+    p("quoted from memory. It is not zero: the counter exists because it fired.");
+  }
+  p();
+
   // ── THE ESTIMATED STAGE, RE-DERIVED FROM THE PAID RUN'S OWN TAPE ──────────
   const est = estimateModelStage();
-  const measuredTop = rows.find((r) => r.stage.id === "top_five")!;
+  const measuredTop = rows.find((r) => r.stage.id === rowCutId(TOP))!;
   p("## The model stage — ESTIMATED, not measured");
   p();
   if (!est) {
@@ -612,7 +757,7 @@ async function main() {
     p(`ratio              ${ratio.toFixed(3)}`);
     p("```");
     p();
-    p(`Applied to this run's own ${measuredTop.remaining} founders at \`top_five\`, the model `
+    p(`Applied to this run's own ${measuredTop.remaining} founders at \`${rowCutId(TOP)}\`, the model `
       + `stage projects to **~${projected.toFixed(0)} founders `
       + `(${((100 * projected) / N).toFixed(1)}% of the start)**.`);
     p();
@@ -681,8 +826,8 @@ async function main() {
       + `of ${floor.set}, answer already offerable, published ${floor.takenAt.slice(0, 10)} | `
       + `\`founder_screen\` given \`liveness_confirmed\` | ${cond("founder_screen", "liveness_confirmed")} |`);
     p(`| \`check_recall_floor\` EXACT@5 **${floor.exact5.toFixed(1)}%** | same, and on the INSTANT `
-      + `SCREEN's six rows, not the memo's | \`top_five\` given \`liveness_confirmed\` | `
-      + `${cond("top_five", "liveness_confirmed")} |`);
+      + `SCREEN's six rows, not the memo's | \`${rowCutId(TOP)}\` given \`liveness_confirmed\` | `
+      + `${cond(rowCutId(TOP), "liveness_confirmed")} |`);
   } else {
     p("| `check_recall_floor` pool | ██ THE GUARD FEED WAS UNREACHABLE ██ — no figure is "
       + "quoted rather than a remembered one | `founder_screen` given `liveness_confirmed` | "
@@ -702,32 +847,66 @@ async function main() {
     + `\`pool_cut\` given \`liveness_confirmed\` | ${cond("pool_cut", "liveness_confirmed")} |`);
   if (est) {
     p(`| head-to-head control EXACT@${TOP} ${(100 * est.controlRate).toFixed(1)}% | `
-      + `${est.n}, split=all, cross-regime only, in-pool | \`top_five\` given \`pool_cut\` | `
-      + `${cond("top_five", "pool_cut")} |`);
+      + `${est.n}, split=all, cross-regime only, in-pool | \`${rowCutId(TOP)}\` given \`pool_cut\` | `
+      + `${cond(rowCutId(TOP), "pool_cut")} |`);
     p(`| head-to-head ranker EXACT@${TOP} ${(100 * est.rankerRate).toFixed(1)}% | same | `
       + `\`model\` — UNMEASURED here | ? |`);
   }
   p(`| "we find the right fund 98% of the time" | no population — the sentence has none | `
-    + `\`top_five\` as a share of the START | ${pctOfStart("top_five")} |`);
+    + `\`${rowCutId(TOP)}\` as a share of the START | ${pctOfStart(rowCutId(TOP))} |`);
   p();
-  p("The last row is the one the four figures were being read as. It is the only one a");
-  p("founder experiences: of every company that won a fund we hold, this share would have");
-  p("seen that fund in the first five rows of their brief.");
+  p(`The last row is the one the four figures were being read as. It is the only one a`);
+  p(`founder experiences: of every company that won a fund we hold, this share would have`);
+  p(`seen that fund in the first ${TOP} rows of their brief.`);
   p();
 
   const out = L.join("\n") + "\n";
   console.log(`\n${out}`);
 
+  // ── NOTHING IS WRITTEN BY A RUN THAT RANKED ON THE FALLBACK ──────────────
+  // Last, and after the report has been printed to the terminal, because the
+  // person who just paid two hours for this run should still see what it found
+  // — but it does not reach `latest.md`, which is the file that gets quoted,
+  // planned from and committed. The banner was already on the page on
+  // 2026-08-12 and the number was planned from anyway; a warning that can be
+  // read past is not a guard.
+  requireCleanRanker("measure_funnel");
+
   const dir = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "one_funnel");
   mkdirSync(dir, { recursive: true });
   writeFileSync(path.join(dir, "latest.md"), out);
+  // ── ONE RECORD, WRITTEN TWICE ────────────────────────────────────────────
+  // `latest.json` is a SNAPSHOT of the newest run and is overwritten every
+  // time. `runs/<startedAt>.json` is HISTORY and is never overwritten. They are
+  // the same bytes on purpose: a series built from a second, thinner shape
+  // would be a second definition of what a run is, and the first thing to
+  // diverge would be which store and which ranker it used — the two fields the
+  // whole series depends on to mean anything.
+  //
   // AGGREGATE ONLY. No company name and no won-fund id leaves this process: the
   // answer key is 1.7 MB of real winning project titles and this instrument must
   // not become a second copy of it in a directory nothing guards.
-  writeFileSync(path.join(dir, "latest.json"), `${JSON.stringify({
+  const record = {
     startedAt, set: setFile, split, seed, n: N, drawFingerprint: fingerprint,
+    // ── WHAT THIS RUN ACTUALLY USED, NOT WHAT IT INTENDED ──────────────────
+    // Both guards above make a bad value unreachable today. They are recorded
+    // anyway, and as BOOLEANS rather than left to be parsed out of prose,
+    // because the series is only comparable if every point in it can be asked
+    // "were you measuring the shipped system" without a human reading a
+    // sentence. A run whose header said `snapshot` and `FELL BACK TO LEXICAL`
+    // was committed and planned from on 2026-08-12 precisely because the
+    // answer was only available as prose.
+    onProductStores: prov.source === "postgres" && !rankerTally().lexical,
+    store: prov.source, corpusObservedAt: prov.observedAt,
     corpus: `${prov.source} instruments=${prov.instruments}`,
-    levers: { VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP },
+    rankerTally: rankerTally(),
+    ranker: rankerTallyLine(),
+    // A sampled run has a wide interval on every row and is not the same
+    // measurement as the exact one. Flagged so a chart can drop it or draw it
+    // differently, rather than plotting an N=30 smoke run beside a reference.
+    sampled: n > 0, populationSize: population.length,
+    levers: { VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP, rowCuts: ROW_CUTS },
+    watchOnlyInProduction: wo ?? null,
     meanTableRows: Number(meanOf((t) => t.tableLen).toFixed(1)),
     meanAccessibleRows: Number(meanOf((t) => t.accessibleLen).toFixed(1)),
     stages: rows.map((r) => ({
@@ -740,8 +919,46 @@ async function main() {
     corpusLossReasons: Object.fromEntries(lostReasons),
     corpusLossUnattributed: unattributed,
     modelStage: est ? { estimated: true, ...est } : { estimated: false },
-  }, null, 1)}\n`);
+  };
+  const body = `${JSON.stringify(record, null, 1)}\n`;
+  writeFileSync(path.join(dir, "latest.json"), body);
+  writeRunHistory(dir, startedAt, body);
   console.log(`wrote ${path.join(dir, "latest.md")}`);
+}
+
+/** ── THE HISTORY, AND THE ONE RULE IT HAS ──────────────────────────────────
+ *
+ *  APPEND ONLY. A run file is a statement about a moment and there is no
+ *  correct reason to change one: a re-measurement is a NEW run with its own
+ *  timestamp, fingerprint and store, and overwriting the old one would erase
+ *  the evidence that the two disagreed. `wx` is the flag that makes that a
+ *  property of the filesystem call rather than a convention, so a colliding
+ *  write fails loudly instead of silently replacing history.
+ *
+ *  Named by `startedAt`, which is what makes a collision essentially
+ *  impossible and also sorts the directory chronologically with no index file
+ *  to keep in step. Colons are stripped because they are legal on this
+ *  filesystem and not on every one a checkout may land on.
+ *
+ *  A failure here does NOT fail the run. `latest.md` and `latest.json` are
+ *  already on disk and carry the whole measurement; losing the history entry
+ *  costs a point on a chart, and taking the report down with it would cost two
+ *  hours. It is loud, which is the same trade `publishVerdict` makes. */
+function writeRunHistory(dir: string, startedAt: string, body: string): void {
+  const runs = path.join(dir, "runs");
+  const file = path.join(runs, `${startedAt.replace(/[:]/g, "-")}.json`);
+  try {
+    mkdirSync(runs, { recursive: true });
+    writeFileSync(file, body, { flag: "wx" });
+    console.log(`wrote ${file}`);
+  } catch (err) {
+    console.error(
+      `measure_funnel: the run record was NOT written to ${file}: ${err}\n`
+      + "  The measurement itself is intact in latest.md and latest.json; what is\n"
+      + "  missing is this run's point on the series. Do not fix it by copying\n"
+      + "  another run's file — a history entry that did not come from its own run\n"
+      + "  is the thing this directory exists to prevent.");
+  }
 }
 
 /** One-line mechanism per stage, printed beside it. A stage whose mechanism
@@ -756,11 +973,59 @@ const MECHANISM: Record<string, string> = {
   pool_cut: "`.slice(0, VERDICT_POOL)`",
   writer_cap: "`orderMemoCandidates().toWriter`",
   watch_only: "`isWatchOnly` in `assembleBriefRows` — needs the writer",
-  published: "`order.slice(0, BRIEF_LIMITS.institutionsMax)`",
-  top_five: "the first five rows, our own scoring",
-  model: "`agentSelectMemoPool` → Anthropic, at `pipeline.ts:1756` — a PERMUTATION of the "
+  model: "`agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the "
     + `${VERDICT_POOL}, applied above the two cuts below it`,
+  // The row cuts are generated from ROW_CUTS, so their mechanisms are too: a
+  // cut added to that list arrives with its mechanism rather than with a blank
+  // cell, which is what a hand-maintained second list here would have produced.
+  ...Object.fromEntries(ROW_CUTS.map((n) => [
+    rowCutId(n),
+    n === PUBLISH_CAP
+      ? "`order.slice(0, BRIEF_LIMITS.institutionsMax)`"
+      : `the first ${n} rows of the same order, our own scoring`,
+  ])),
 };
+
+/** ── HOW OFTEN THE ONE UNMEASURED CUT ACTUALLY FIRES ──────────────────────
+ *
+ *  `assembleBriefRows` demotes watch-only rows behind actionable ones, and this
+ *  harness cannot see it: the predicate reads the writer's prose and a memo per
+ *  founder is the one thing this instrument may not buy. What it CAN do is count
+ *  how often the demotion fired on briefs that were really written — `pipeline.ts`
+ *  records `dropped_watch_only` on every one, so production has been keeping the
+ *  measurement all along.
+ *
+ *  This is a MAGNITUDE, not the stage. It says how often the assumption under
+ *  the row cuts is perturbed at all; it cannot say which founders moved, in
+ *  which direction, or past which rank. That still needs the writer.
+ *
+ *  Undefined on any failure, and the report then says the table was unreachable
+ *  rather than quoting a remembered rate. Read-only, one query. */
+async function watchOnlyRate(): Promise<{
+  briefs: number; withDemotion: number; rows: number; share: number;
+} | undefined> {
+  const url = process.env.DATABASE_URL;
+  if (!url) return undefined;
+  try {
+    const { Client } = await import("pg");
+    const client = new Client({ connectionString: url, connectionTimeoutMillis: 3000 });
+    await client.connect();
+    try {
+      await client.query("SET statement_timeout = 3000");
+      const res = await client.query(
+        `SELECT count(*)::int AS briefs,
+                count(*) FILTER (WHERE dropped_watch_only > 0)::int AS with_demotion,
+                coalesce(sum(dropped_watch_only), 0)::int AS rows
+           FROM brief_records`);
+      const r = res.rows[0] as { briefs: number; with_demotion: number; rows: number };
+      if (!r?.briefs) return undefined;
+      return {
+        briefs: r.briefs, withDemotion: r.with_demotion, rows: r.rows,
+        share: r.with_demotion / r.briefs,
+      };
+    } finally { await client.end(); }
+  } catch { return undefined; }
+}
 
 /** ── THE RECALL FLOOR'S OWN LAST PUBLISHED FIGURES ─────────────────────────
  *

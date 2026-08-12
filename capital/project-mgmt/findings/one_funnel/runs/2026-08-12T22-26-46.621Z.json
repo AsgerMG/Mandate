@@ -1,0 +1,169 @@
+{
+ "startedAt": "2026-08-12T22:26:46.621Z",
+ "set": "__recallSetDescribed.json",
+ "split": "holdout",
+ "seed": 20260806,
+ "n": 6,
+ "drawFingerprint": "a380f1bedd491465",
+ "onProductStores": true,
+ "store": "postgres",
+ "corpusObservedAt": "2026-08-12T22:26:47.149Z",
+ "corpus": "postgres instruments=1088",
+ "rankerTally": {
+  "embedding": 6,
+  "lexical": 0
+ },
+ "ranker": "ranker: all 6 request(s) on EMBEDDING",
+ "sampled": true,
+ "populationSize": 897,
+ "levers": {
+  "VERDICT_POOL": 18,
+  "WRITER_CANDIDATE_CAP": 8,
+  "PUBLISH_CAP": 7,
+  "TOP": 5,
+  "rowCuts": [
+   7,
+   6,
+   5
+  ]
+ },
+ "watchOnlyInProduction": {
+  "briefs": 35,
+  "withDemotion": 6,
+  "rows": 8,
+  "share": 0.17142857142857143
+ },
+ "meanTableRows": 104.8,
+ "meanAccessibleRows": 96.5,
+ "stages": [
+  {
+   "id": "answer_key",
+   "question": "the answer key names a fund this company actually won",
+   "remaining": 6,
+   "sharePct": 100,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 0
+  },
+  {
+   "id": "in_corpus",
+   "question": "... and the corpus still holds that fund",
+   "remaining": 6,
+   "sharePct": 100,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 0
+  },
+  {
+   "id": "publishable",
+   "question": "... and it is publishable on the corpus's own facts",
+   "remaining": 6,
+   "sharePct": 100,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 0
+  },
+  {
+   "id": "liveness_confirmed",
+   "question": "... and its openness could be CONFIRMED (the degradation policy)",
+   "remaining": 6,
+   "sharePct": 100,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 0
+  },
+  {
+   "id": "founder_screen",
+   "question": "... and this founder's screen keeps it (country, capital, channel + leaf caps)",
+   "remaining": 6,
+   "sharePct": 100,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 0
+  },
+  {
+   "id": "gates_pass",
+   "question": "... and its encoded eligibility gates do not conclusively fail (accessiblePool)",
+   "remaining": 5,
+   "sharePct": 83.33,
+   "lost": 1,
+   "unmeasured": false,
+   "halfWidthPts": 29.82
+  },
+  {
+   "id": "pool_cut",
+   "question": "... and it survives the cut to VERDICT_POOL (18 rows)",
+   "remaining": 3,
+   "sharePct": 50,
+   "lost": 2,
+   "unmeasured": false,
+   "halfWidthPts": 40.01
+  },
+  {
+   "id": "writer_cap",
+   "question": "... and it survives the cut to the writer's candidates (8)",
+   "remaining": 2,
+   "sharePct": 33.33,
+   "lost": 1,
+   "unmeasured": false,
+   "halfWidthPts": 37.72
+  },
+  {
+   "id": "watch_only",
+   "question": "... and the writer's own prose does not demote it behind the actionable rows",
+   "remaining": null,
+   "sharePct": null,
+   "lost": null,
+   "unmeasured": true,
+   "halfWidthPts": null
+  },
+  {
+   "id": "published",
+   "question": "... and it is one of the 7 rows the brief publishes",
+   "remaining": 2,
+   "sharePct": 33.33,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 37.72
+  },
+  {
+   "id": "top_6",
+   "question": "... and it is in the first 6 of them",
+   "remaining": 2,
+   "sharePct": 33.33,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 37.72
+  },
+  {
+   "id": "top_5",
+   "question": "... and it is in the first 5 of them",
+   "remaining": 1,
+   "sharePct": 16.67,
+   "lost": 1,
+   "unmeasured": false,
+   "halfWidthPts": 29.82
+  },
+  {
+   "id": "model",
+   "question": "... and the MODEL, which re-orders the 18 before the cuts below, still leaves it in the first 5",
+   "remaining": null,
+   "sharePct": null,
+   "lost": null,
+   "unmeasured": true,
+   "halfWidthPts": null
+  }
+ ],
+ "corpusLossReasons": {},
+ "corpusLossUnattributed": 0,
+ "modelStage": {
+  "estimated": true,
+  "file": "adviser_medium_n773_x2.json",
+  "fingerprint": "37e0879c895d4d6a",
+  "n": 98,
+  "controlHits": 45,
+  "rankerHits": 50,
+  "controlRate": 0.45918367346938777,
+  "rankerRate": 0.5102040816326531
+ }
+}

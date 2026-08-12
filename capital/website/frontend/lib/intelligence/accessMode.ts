@@ -116,8 +116,13 @@ export function passesCapitalPreference(
  * a fund we measured and found middling — so the less we knew, the better an
  * instrument did.
  *
- * Measured before adopting: 18 of 724 publishable instruments, and no country
- * loses its last national route.
+ * Blast radius, re-measured against Postgres on 2026-08-13: of 1,088 corpus
+ * rows, 18 pass every other publishable predicate and fail only this one, and
+ * no country loses its last national route. (The "18 of 724" this line used to
+ * quote was the same 18 against a corpus that has since grown to 1,088
+ * instruments and 771 publishable — and it was self-contradictory as written,
+ * since this test IS one of the predicates `publishableInstruments` applies, so
+ * a publishable instrument can never be below the floor.)
  *
  * ── The register clause, and why it is not a loosening ────────────────────
  * The two tests above are both AWARD facts, because award history was the only
@@ -145,12 +150,19 @@ export function passesCapitalPreference(
  *     this clause agreeing with it keeps the two from drifting.
  *   - It grants nothing on SCALE. These rows still have no award median, so
  *     `awardScorer` gives them 1.0 — the same neutral the corpus already gives
- *     the 98 instruments without one — and `scaleFit` 0.5 in the memo only.
+ *     the 141 publishable instruments with no usable one (no `awardP50`, or
+ *     fewer than `AWARD_N_FLOOR` awards behind it; 2026-08-13, was 98) — and
+ *     `scaleFit` 0.5 in the memo only.
  *
- * Blast radius, measured against Postgres before adoption: of the 41
- * instruments that fail the first two tests, ZERO have a future call deadline.
- * The clause admits nothing that exists today and cannot change any country's
- * pool except through rows a call register puts there deliberately.
+ * ── AND IT IS NO LONGER A NO-OP, WHICH IS THE POINT OF IT ─────────────────
+ * At adoption this paragraph read "of the 41 instruments that fail the first
+ * two tests, ZERO have a future call deadline", i.e. the clause admitted
+ * nothing that existed yet. Re-measured against Postgres on 2026-08-13: 131
+ * instruments have neither amounts nor a `lastYear`, and 87 of them are
+ * admitted by a future call deadline. That is the register sources landing, and
+ * it is what the clause was written for — but it means the third test now
+ * carries a seventh of the corpus, so it is load-bearing and a change to it is
+ * no longer free. Re-take both figures before quoting either.
  */
 export function meetsDataFloor(inst: DbInstrument): boolean {
   const hasAmounts = (inst.totalEur ?? 0) > 0;
@@ -166,8 +178,10 @@ export function meetsDataFloor(inst: DbInstrument): boolean {
 /**
  * Instruments we hold too little about to say much, without holding nothing.
  *
- * 56 publishable instruments have fewer than five tracked awards, 52 of them
- * national development banks. There is no median award to quote, the sector
+ * 133 of the 771 publishable instruments have fewer than five tracked awards
+ * (2026-08-13; it was 56 of 724 when this was written, and the growth is the
+ * register sources, which by construction arrive with no award history at all).
+ * There is no median award to quote, the sector
  * history is a handful of companies, and precedent is close to noise — so
  * every judgement about them is thinner than it looks beside a fund measured
  * across thousands of awards.
