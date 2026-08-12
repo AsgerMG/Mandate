@@ -114,6 +114,24 @@ with an ID, enforced by rewriting the row's `nextStep` or demoting it, not by
 silent deletion. The regex stays as a *detector* feeding the scoreboard, not as
 an executioner.
 
+**CARRIED OUT, in two steps, and the intermediate one was worse than it looked
+(wsGK, 2026-08-13).** Deletion became demotion in Phase 4 and stopped there.
+Demotion is deletion whenever the published cap is below the writer's: with 8
+candidates cut to 7, one match anywhere in the table made the seven
+non-matching rows exactly the published seven, so the matching fund was cut and
+the rank-8 fund took its seat — at rank 1 as readily as at rank 8. It fired on
+8 of 128 candidate rows across the 19 recorded briefs, so it changed the
+published set in roughly a third of them. Since the ranker took the selection
+seat, that is a regex over one model's prose overruling another model's
+ranking.
+
+The regex is now a detector and nothing else: `FUND-4` on the scoreboard,
+`WRT-WATCH-ONLY` in the exclusion log, and the row publishes at its rank
+carrying the writer's own sentence — which is how the founder is told to wait,
+in words rather than by the fund's absence. The sentence in `02-funds.md` that
+said such a row "does not belong in the brief at all" is a selection claim in a
+writing contract and is gone with it.
+
 ### 5. `Fit:` — consortium gating on one answer
 `fund-processes/*.md` line ~55 in each, read by `fitOf()`, enforced at
 `shortlist.ts:407` and `:419`, demoted at `:464-468`. Fires **pre-writer**.
