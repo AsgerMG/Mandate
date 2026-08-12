@@ -364,6 +364,25 @@ at EUR 0.076-0.085 each. n=98 is sufficient here despite being small, because
 break-even requires a 36% relative collapse and a 98-founder estimate has a
 +/-10 point interval — the two hypotheses are more than two intervals apart.
 
+**The one methodological catch, and it must not be waved past.** The two runs
+call DIFFERENT founders: `ONLY_IN_POOL=1` conditions on each run's own ceiling,
+and the in-pool rate varies enormously by market (wsGA's composition table: 50%
+in NO, 5% in GB). So the called subsets have different country mixes and
+`ceiling x conditional` compares two differently-composed samples.
+`MAX_COUNTRY_CALLS=40` bounds it and wsGA's per-country table is what to read
+it against, but the comparison is UNPAIRED and its confidence interval must be
+read as such. Report the per-country breakdown both runs already print, and if
+one market dominates the called set, say so before quoting a headline.
+
+**If the result comes back close, the next EUR 20 buys the pairing.** Add a
+second pool-width VIEW to `_wsga_headtohead.ts` — the file already runs both
+arms of a comparison off one pool object in one loop iteration, which is exactly
+the shape needed — draw from founders whose answer is inside forty, and fire the
+seam at both widths per founder. That is a McNemar on discordant pairs with the
+composition held exactly fixed, and it is the design wsDR used for the seam. It
+is the RIGHT experiment; it is not the FIRST one, because the expected effect is
+large and the cheap unpaired run resolves the large case.
+
 Raise `AGENT_SELECT_EFFORT`'s ceiling, or report the truncation count as a void
 check, before spending it.
 
