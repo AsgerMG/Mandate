@@ -155,8 +155,8 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
 // `WRITER_CANDIDATE_CAP` is 8 against a published 7, and the reason recorded
 // for the 8 (commit 05575942) is only "7 shown against 7 published is zero
 // headroom". Nobody has ever said what the one spare seat BUYS, and the funnel
-// bills 14.2 points of lost recall to this cut, which reads as though the cap
-// were the thing deciding it.
+// bills double-digit points of lost recall to this cut, which reads as though
+// the cap were the thing deciding it.
 //
 // It is not. `publishRankByKey` ranks by CANDIDATE ORDER, so the published
 // table is the head of the ranked list and the only thing that can disturb that
@@ -173,10 +173,11 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
 //   EVERY candidate cap. The cap is inert. It is not a recall lever.
 //
 //   The cap's whole reach is BACKFILL DEPTH: rank publishedCap+1 needs one
-//   watch-only row above it, +2 needs two, and so on. Measured on the 35 real
-//   briefs in `brief_records`, watch-only fires 0 times on 29 of them, once on
-//   4 and twice on 2 — never three times. So at today's caps nothing below
-//   rank 9 has ever been reachable at any cap value.
+//   watch-only row above it, +2 needs two, and so on. Measured on the 33 real
+//   briefs in `brief_records` that reached a writer, watch-only fires 0 times
+//   on 27 of them, once on 4 and twice on 2 — never three times. So nothing
+//   below rank 9 has ever been reachable at any cap value, and `npm run stages`
+//   prices the whole of it at 0.12 points against a +/-3.2 half-width.
 //
 // The test sweeps every watch-only PATTERN rather than a handful, because the
 // failure was never about which fund it was.

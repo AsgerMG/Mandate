@@ -387,26 +387,32 @@ export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 7);
  *
  *    WITH NO WATCH-ONLY ROW THIS CONSTANT IS INERT. The founder reads ranks
  *      1..institutionsMax at a cap of 8, of 12, of 18. It is not a recall
- *      lever, and the funnel row that bills 14.2 points of lost recall to
- *      "the writer's candidate cap" is billing them to the ORDER: a fund at
- *      rank 9 of the candidate list is lost at the PUBLISHED cap whatever this
- *      number is.
+ *      lever, and the loss the funnel prints against "the writer's candidate
+ *      cap" belongs to the ORDER: a fund at rank 9 of the candidate list is
+ *      lost at the PUBLISHED cap whatever this number is.
  *
  *    RANK institutionsMax+k NEEDS k WATCH-ONLY ROWS ABOVE IT. Measured on the
- *      35 real briefs in `brief_records` (production's own `dropped_watch_only`,
- *      read-only, no model call): 0 watch-only rows on 29 of them, 1 on 4, 2 on
- *      2, never 3. So P(>=2) = 5.7% and P(>=3) = 0, and rank 10 has never been
- *      reachable on a recorded brief AT ANY CAP VALUE.
+ *      33 real briefs in `brief_records` that reached a writer (production's own
+ *      `dropped_watch_only`, read-only, no model call): 0 watch-only rows on 27
+ *      of them, 1 on 4, 2 on 2, never 3. So P(>=2) = 6.1% and P(>=3) = 0, and
+ *      rank 10 has never been reachable on a recorded brief AT ANY CAP VALUE.
  *
  *  ── THE DECISION, AND THE NUMBER THAT WOULD OVERTURN IT ───────────────────
- *  Raising this cannot buy more than 5.7% of the 14.2 points sitting below it,
- *  i.e. 0.81 points, and the honest estimate is ~0.15 -- against a +/-3.1 point
- *  half-width on the funnel's own run. It is CHEAP, not expensive: priced from
- *  production's own `writerCandidateEvidence` (929 chars, ~258 input tokens per
- *  candidate, measured over 96 candidates for free) and from 40 recorded
- *  published rows (243 chars of model prose, ~88 output tokens), an extra
- *  candidate is EUR 0.0013 against a recorded EUR 0.24 brief. So the reason to
- *  leave it at 8 is that it buys nothing, NOT that it costs something.
+ *  MEASURED, on the whole 897-founder held-out population, clean EMBEDDING run,
+ *  `npm run stages` 2026-08-13: raising this to the whole pool is worth
+ *  **0.12 points**, against a +/-3.2 half-width on the row it would move. 18
+ *  founders have their fund at rank 9 and 6.1% of briefs demote twice; below
+ *  rank 9 the probability is zero and 28 more founders are unreachable at any
+ *  value. The report prints the table; this is its bottom line.
+ *
+ *  It is CHEAP, not expensive, and that is the point: priced from production's
+ *  own `writerCandidateEvidence` (929 chars, ~258 input tokens per candidate,
+ *  measured over 96 candidates for free) and from 40 recorded published rows
+ *  (243 chars of model prose, ~88 output tokens), an extra candidate is EUR
+ *  0.0013 against a recorded EUR 0.24 brief. So the reason to leave it at 8 is
+ *  that it buys nothing, NOT that it costs something. What it WOULD cost is the
+ *  one thing already on record above: at 9 the writer stopped writing all of
+ *  them.
  *
  *  Raise it when the measured P(w >= 2) times the rank-9 mass exceeds the
  *  measuring run's own half-width. `npm run stages` prints both, and the

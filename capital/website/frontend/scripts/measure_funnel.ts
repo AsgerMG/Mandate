@@ -762,7 +762,15 @@ async function main() {
     const pubRow = rows.find((r) => r.stage.id === "published");
     const pub = pubRow?.remaining ?? 0;
     const demotedMax = Math.round(pub * perRow);
-    const promoted = total * N;
+    // THE GAIN AT TODAY'S CAP, which is not `total`. `total` is what RAISING
+    // the cap would add -- ranks past it -- and using it here would credit the
+    // present funnel with founders the present funnel cannot reach. What the
+    // demotion buys today is the ranks between the published cap and the
+    // writer's, each needing its own number of demotions above it.
+    let promoted = 0;
+    for (let r = PUBLISH_CAP + 1; r <= WRITER_CANDIDATE_CAP; r++) {
+      promoted += atRank(r) * share(r - PUBLISH_CAP);
+    }
     p("The same distribution bounds the UNMEASURED `watch_only` row in BOTH directions,");
     p("which is what the row's own caveat cannot do — it names only the losing one.");
     p();
@@ -772,10 +780,12 @@ async function main() {
     p(`- **it LOSES at most ${demotedMax} of the ${pub} founders at \`published\`** — that is every one`);
     p("  whose own row reads watch-only, and it is an over-count, because a demoted row");
     p("  still publishes wherever fewer actionable rows exist to fill the cap.");
-    p(`- **it GAINS about ${promoted.toFixed(0)}** — the founders whose fund sits at rank ${PUBLISH_CAP + 1}..`
-      + `${WRITER_CANDIDATE_CAP} and is carried in`);
-    p("  by a demotion above it. This one is already inside the count above, because");
-    p("  those ranks are within the cap.");
+    p(`- **it GAINS about ${promoted.toFixed(1)}** — the founders whose fund sits at `
+      + (WRITER_CANDIDATE_CAP > PUBLISH_CAP + 1
+        ? `ranks ${PUBLISH_CAP + 1}-${WRITER_CANDIDATE_CAP}, inside the`
+        : `rank ${WRITER_CANDIDATE_CAP}, the one seat inside the`));
+    p("  writer's cap but past the published one, and is carried in by a demotion above");
+    p("  it. This is what today's headroom actually buys, and it is the whole of it.");
     p();
     p(`So \`published\`'s ${pub} is an upper bound by AT MOST ${demotedMax} founders `
       + `(${((100 * demotedMax) / N).toFixed(1)} points), not by an`);
