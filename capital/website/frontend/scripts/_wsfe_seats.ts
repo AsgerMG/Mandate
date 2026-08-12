@@ -166,7 +166,7 @@ async function poolFor(f: Founder) {
     } as never,
     records: [], dbPeers,
     eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
-    semanticScores: semantic, log,
+    log,
   });
   return {
     menu: instrumentTable.slice(0, SELECT_DEPTH) as InstrumentRow[],

@@ -448,7 +448,7 @@ async function main() {
         req: { ...req, targetMarkets: undefined } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
-        semanticScores: semantic, log: l,
+        log: l,
       }).toWriter.map((x) => idOf(x.row));
     };
 

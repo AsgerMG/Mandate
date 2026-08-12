@@ -1,124 +1,59 @@
-// How well a fund fits this founder, as one number with its parts on show.
+// The per-instrument scoring terms the pool builder and its measurements read.
 //
-// ── What this replaces ─────────────────────────────────────────────────────
-// Five hardcoded rules used to decide which funds a founder could see: a
-// per-channel ticket-band table, a per-channel consortium declaration, a
-// thematic floor on large-ticket channels, a writer-side disqualification
-// flag, and a regex over the writer's own prose. Each was binary, each fired
-// somewhere different, and none left a record.
+// ── WHAT THIS FILE IS, AFTER wsGB ─────────────────────────────────────────
+// It opened "How well a fund fits this founder, as ONE NUMBER with its parts on
+// show", and that number is gone. `scoreFitControl` combined nine of these
+// terms into a composite and the composite's only job was to be one arm of the
+// memo's deterministic sort. The model ranks the memo now, the sort is deleted,
+// and what is left here is the TERMS — each with its own callers, each read as
+// a column rather than as a verdict.
 //
-// The governing principle: a fund should never be excluded by a rule, it
-// should fail to make the cut. A filter removes a fund from the universe and
-// nothing downstream can recover it or explain its absence. A signal moves a
-// fund down a list, where a poor fit lands below the cut on its own and every
-// component of that decision is recorded.
+// The governing principle is unchanged and is the reason the terms survive the
+// composite: a fund should never be excluded by a rule, it should fail to make
+// the cut. A filter removes a fund from the universe and nothing downstream can
+// recover it or explain its absence. A signal moves a fund down a list.
 //
-// Two things remain hard exclusions, because both are facts about an
-// instrument rather than judgements about a founder: a conclusively failed
-// encoded gate (verdict.ts `blocked`), and a national scheme in a country the
-// founder cannot draw on. Everything else scores.
-//
-// ── On the weights ─────────────────────────────────────────────────────────
-// They are a starting point, not a finding, and they are stated here rather
-// than buried so that saying so is possible. What makes them safe is not that
-// they are right but that every component is recorded per instrument per run,
-// so a bad ranking can be attributed to a component rather than argued about.
+// Two things remain hard exclusions, because both are facts about an instrument
+// rather than judgements about a founder: a conclusively failed encoded gate
+// (verdict.ts `blocked`), and a national scheme in a country the founder cannot
+// draw on. Neither is decided here.
+
 import { BAND_INDEX, INDEFINITE_CAPITAL, TICKET_MIDPOINT, typicalAward } from "./shortlist";
 import { hasThinEvidence } from "./accessMode";
 import type { DbInstrument } from "./corpus";
 import type { InstrumentAssessment } from "./verdict";
 
-// ── WHAT IN THIS FILE ACTUALLY REACHES THE FOUNDER'S TABLE ────────────────
-// Read this before quoting a weight below as if it ranked anything.
-//
-// ██ AS OF 2026-08-09 `scoreFitControl` ORDERS NOTHING A FOUNDER READS. ██
-//
-// It was called `scoreFit` until 2026-08-11 (wsEH). The rename is the whole
-// point: a function called "score the fit" reads like the thing that ranks
-// funds for a founder, and this one is a CONTROL — the losing arm of
-// `SHIPPED_MEMO_ORDER`, plus a recorded per-component breakdown attached to
-// each candidate. Nothing that ships reads its number. `sectorFit` and
-// `sectorFitScorer`, which DO rank the founder's table, keep their names for
-// exactly the same reason.
-//
-// It is still CALLED in production -- `orderMemoCandidates` (memoCandidates.ts)
-// scores every candidate and attaches the breakdown to it -- but the memo's
-// order is `SHIPPED_MEMO_ORDER`, and that is `verdict`. Measured over one pool, the
-// re-sort this score used to perform moved the won leaf OUT of the published
-// six 21 times for 12 in; see the measurement written at SHIPPED_MEMO_ORDER.
-//
-// Before that it did not rank the five funds a founder first sees either. Its
-// one production caller ordered `hydratedTable.slice(0, VERDICT_POOL)` -- rows
-// screen one had ALREADY ordered and ALREADY cut. `computeVerdict`, which
-// produces the table, has never called it.
-//
-// Two claims in this file were stale and are corrected here rather than left
-// to be quoted: the caller has been `orderMemoCandidates` and not
-// `synthesize()` since wsCR lifted the ordering out (pipeline.ts kept a dead
-// `import { scoreFitControl }` for the whole of that time), and `scoreFitControl` no longer
-// decides an order at all. Both are the same lesson the file already teaches
-// about the weights table: what a function is FOR is not what calls it.
+// ── WHAT IN THIS FILE REACHES THE FOUNDER'S TABLE, AND WHAT READS THE REST ─
 //
 // Screen one orders on `rowRelevance` in shortlist.ts: a blend of the semantic
 // percentile and `sectorFit`, then permuted within each regime by the
-// rank-preserving sibling reassignment. `sectorFit` is the ONLY export of this
-// file on that path.
+// rank-preserving sibling reassignment. `sectorFit` / `sectorFitScorer` are the
+// ONLY exports of this file on that path, and they are why the header above
+// does not say "nothing here ranks".
 //
-//   component     weight   reaches the five a founder first sees?
-//   eligibility     0.24   no
-//   theme           0.16   yes, but as shortlist's own semantic term
-//   sector          0.12   yes, via sectorFit
-//   proximity       0.13   no -- only as a binary country tier inside a channel
-//   scale           0.12   no -- shortlist uses its own awardScorer instead
-//   structure       0.08   no
-//   capital         0.08   no -- only as a filter, in selectLeafInstruments
-//   precedent       0.04   no -- peer precedence is a separate mechanism
-//   liveness        0.03   no -- liveness is a publishability filter upstream
+// The memo's order is the MODEL's (agentSelect.ts). Nothing in this file
+// touches it. That is new as of wsGB and it is what removed the composite: this
+// header used to have to explain, at length, that seven of nine weighted
+// components carrying 0.72 of the documented weight never reached the table
+// while being computed for every row of every pool on every request.
 //
-// So SEVEN of the nine components, carrying 0.72 of the weight documented
-// below, never touch the table. They order the memo's pool, which is a real job
-// and a smaller one than "the fit score".
+// The remaining terms have readers, and each is named so that a future deletion
+// is a decision rather than a guess:
 //
-// This is documented rather than deleted on purpose: whether any of these
-// components can separate siblings inside one regime -- which is where the
-// entire remaining loss is -- is an open question under active measurement
-// (`scripts/measure_sibling_choice.ts` reads `scaleFit` and `livenessFit`
-// directly for exactly that). Deleting a component because nothing calls it
-// today would delete the candidate before the experiment.
+//   sectorFit, sectorFitScorer   shortlist.ts (`rowRelevance`) -- the founder's
+//                                own table. Also poolBlend.ts.
+//   scaleFit, livenessFit,       poolBlend.ts, which was FITTED on them as
+//   eligibilityFit               columns, and scripts/measure_sibling_choice.ts,
+//                                which is measuring whether they separate
+//                                siblings inside one regime. Deleting a column
+//                                makes a published weight refer to nothing.
+//   hasSectorHistory             the one predicate deciding which rows are blind
 //
-// What is NOT allowed is describing this as the ranker. That claim is what let
-// a founder-facing ordering be discussed for months in terms of nine weighted
-// components when it ran on two signals.
+// What is NOT allowed is describing any of this as the ranker. That claim is
+// what let a founder-facing ordering be discussed for months in terms of nine
+// weighted components when it ran on two signals -- and then, for two days, as
+// if the composite ranked anything at all.
 
-/** Each component scores 0-1. Weights sum to 1.
- *
- *  These weight the MEMO pool, not the founder's table. See the note above:
- *  seven of the nine never reach screen one. */
-export const FIT_WEIGHTS = {
-  eligibility: 0.24,
-  theme: 0.16,
-  sector: 0.12,
-  proximity: 0.13,
-  scale: 0.12,
-  structure: 0.08,
-  capital: 0.08,
-  precedent: 0.04,
-  liveness: 0.03,
-} as const;
-
-export type FitComponent = keyof typeof FIT_WEIGHTS;
-
-/** Score for an instrument the relevance index did not return at all. Low,
- *  not neutral: see the note at the assignment site. Not zero, because the
- *  lexical index is sparse and would otherwise punish every fund equally in
- *  the offline fallback where no semantic scores exist. */
-export const UNMATCHED_THEME = 0.15;
-
-/** How much an instrument's own country matters when it is not a hard
- *  exclusion. An EU-wide programme is open to everyone and so tells us
- *  nothing about fit; a scheme in the founder's own country is a door on
- *  their doorstep. Without this the two are indistinguishable, and the
- *  large pan-European programmes outrank every national route for everyone. */
 /**
  * Share of an instrument's funded companies that must sit in the founder's
  * sector before it counts as a full thematic match.
@@ -131,50 +66,6 @@ export const UNMATCHED_THEME = 0.15;
  * project titles share generic technology vocabulary.
  */
 export const SECTOR_FULL_MATCH_SHARE = 0.25;
-
-export const HOME_COUNTRY_BONUS = 1;
-export const EU_WIDE_PROXIMITY = 0.45;
-
-export interface FitScore {
-  instrumentId: string;
-  score: number;
-  components: Record<FitComponent, number>;
-  /** Set only for the two remaining hard exclusions. A scored row is never
-   *  excluded; this is how a fact is distinguished from a low score. */
-  excluded?: "blocked" | "off-country";
-}
-
-export interface FitInput {
-  instrument: DbInstrument;
-  assessment?: InstrumentAssessment;
-  /** Normalised semantic/lexical relevance for this instrument, 0-1. */
-  theme?: number;
-  /** What sector fit scores for an instrument whose funding history we do not
-   *  hold — solved by the CALLER over its own pool with `sectorFitScorer`,
-   *  because the neutral value of an added term is a property of the population
-   *  and not of the instrument. Omitted, it falls back to FALLBACK_UNKNOWN and
-   *  the note two fields up applies here too: 0.5 is not neutral, it is the
-   *  79th percentile. */
-  sectorNeutral?: number;
-  /** Founder's ticket band key. */
-  ticketBand?: string;
-  /** Capital types the founder asked for, already mapped to DB values. */
-  capitalWanted?: Set<string>;
-  /** Comparable companies in the corpus that drew from this instrument. */
-  comparableCount?: number;
-  /** Highest comparable count across the pool, for normalisation. */
-  maxComparable?: number;
-  /** ISO2 countries the founder can draw on. */
-  founderCountries?: Set<string>;
-  /** Does the instrument require a consortium, per its own encoded gates? */
-  requiresConsortium?: boolean;
-  /** Founder's answer: can they field one? Undefined means unknown. */
-  consortiumOk?: boolean;
-  /** The founder's own sector (SECTOR_OPTIONS value), when known. */
-  founderSector?: string;
-  /** Current year, for liveness. Injected so scoring stays deterministic. */
-  year: number;
-}
 
 /**
  * Ticket fit as a continuous distance rather than a band membership test.
@@ -190,13 +81,13 @@ export interface FitInput {
  * Scores 0.5 when the instrument's own scale is unknown — neutral, because an
  * unknown ceiling is not a low one.
  */
-/** REACHES THE MEMO POOL ONLY, via `scoreFitControl`. Screen one does not use this:
+/** A COLUMN OF `poolBlend.ts`, and a direct read of
+ *  `scripts/measure_sibling_choice.ts`. Screen one does not use it:
  *  `selectLeafInstruments` and the sibling reassignment score ticket fit with
  *  `awardScorer` in shortlist.ts, which is a different function on the same
  *  idea. Two ticket scorers exist; this is the one the founder's table does NOT
- *  see. Also read directly by `scripts/measure_sibling_choice.ts`, which is
- *  testing whether it separates siblings -- do not delete it for want of a
- *  production caller while that is open. */
+ *  see. Do not delete it for want of a production caller while the sibling
+ *  question is open. */
 export function scaleFit(inst: DbInstrument, ticketBand?: string): number {
   const target = ticketBand ? TICKET_MIDPOINT[ticketBand] : undefined;
   const typical = typicalAward(inst);
@@ -212,9 +103,8 @@ export function scaleFit(inst: DbInstrument, ticketBand?: string): number {
 /** How recently this instrument actually awarded anything. A scheme silent
  *  for years may be closed, repealed, or between programme periods; we cannot
  *  tell, so it is demoted rather than hidden, and the row says so. */
-/** REACHES THE MEMO POOL ONLY, via `scoreFitControl`, plus
- *  `scripts/measure_sibling_choice.ts`. Note the founder's table applies a
- *  harder version of the same idea upstream and independently:
+/** A COLUMN OF `poolBlend.ts`, plus `scripts/measure_sibling_choice.ts`. Note
+ *  the founder's table applies a harder version of the same idea upstream and independently:
  *  `publishableInstruments()` drops a scheme whose registered end date has
  *  passed, which is a filter, not a demotion. */
 export function livenessFit(inst: DbInstrument, year: number): number {
@@ -223,21 +113,6 @@ export function livenessFit(inst: DbInstrument, year: number): number {
   if (age <= 1) return 1;
   if (age >= 5) return 0;
   return 1 - (age - 1) / 4;
-}
-
-/** Whether the shape of the applicant this fund expects matches the founder.
- *  Replaces a per-channel declaration that gave nine differently-structured
- *  programmes in one bucket a single verdict. */
-/** REACHES THE MEMO POOL ONLY, via `scoreFitControl`. No other caller in the tree. */
-export function structureFit(requiresConsortium?: boolean, consortiumOk?: boolean): number {
-  if (!requiresConsortium) return 1;
-  if (consortiumOk === true) return 1;
-  // Unknown is not a no. Treating it as one silently removed every
-  // collaborative route from any founder who had not thought about it yet.
-  if (consortiumOk === undefined) return 0.6;
-  // A stated no is a real mismatch, but not a disqualification: partners can
-  // be recruited, and the row says what it would take.
-  return 0.25;
 }
 
 /** Do we hold any sector history for this instrument at all? One predicate, so
@@ -455,9 +330,9 @@ export function sectorFitScorer<T extends { sectorMix?: Record<string, number> |
   return (i) => (i ? sectorFit(i.sectorMix, founderSector) : null) ?? neutral;
 }
 
-/** REACHES THE MEMO POOL ONLY, via `scoreFitControl`. No other caller in the tree --
- *  and it carries the largest single weight below, 0.24, which is the clearest
- *  case of why the weights table must not be read as the ranking. */
+/** A COLUMN OF `poolBlend.ts`. It carried the largest single weight in the
+ *  deleted composite, 0.24, and reached no founder through it -- which was the
+ *  clearest case of why a weights table must not be read as a ranking. */
 export function eligibilityFit(a?: InstrumentAssessment): number {
   if (!a) return 0.4;
   switch (a.status) {
@@ -468,105 +343,49 @@ export function eligibilityFit(a?: InstrumentAssessment): number {
   }
 }
 
-/**
- * The nine-component fit score.
+/** ── `scoreFitControl` STOOD HERE AND IS DELETED (wsGB, 2026-08-12) ───────
  *
- * CALLED in production, but it no longer ORDERS anything a founder reads.
- * `orderMemoCandidates` (memoCandidates.ts) scores every memo candidate with
- * it and attaches the breakdown to the candidate, which is worth keeping —
- * a recorded per-component score is how a bad ranking gets attributed instead
- * of argued about. What reads it as a sort key is `SHIPPED_MEMO_ORDER === "fit"`, and
- * that arm does not ship. See the note at the top of this file and the
- * measurement at SHIPPED_MEMO_ORDER.
+ *  Nine weighted components over one instrument, and this file's own header has
+ *  tabulated since 2026-08-09 that seven of them — 0.72 of the documented
+ *  weight — never reached a founder's table. Its single production caller was
+ *  `orderMemoCandidates`, which computed it for every row of every pool and
+ *  attached it to a candidate field the sort did not consult, because the
+ *  shipped memo order was `verdict`. Its only OTHER reader was the `fit` control
+ *  arm of that same constant.
  *
- * ── SCHEDULED FOR DELETION, and what is holding it ────────────────────────
- * As of wsDO this has exactly ONE production caller and that caller reads
- * nothing back: `orderMemoCandidates` computes nine components for every pool
- * row on every memo request and attaches them to a candidate the sort never
- * consults, because `SHIPPED_MEMO_ORDER` is `verdict`. It is not deleted in wsDO only
- * because `memoCandidates.ts` belongs to the workstream routing the LLM
- * selector's order into the memo, and two agents editing one file is the
- * defect the split exists to prevent.
+ *  wsGB removed the deterministic memo sort when `AGENT_SELECT` became
+ *  `adviser`: the model ranks the subset now, so `SHIPPED_MEMO_ORDER`, its two
+ *  controls and the scoring loop that fed them all went together. That is the
+ *  exact removal the docstring here asked for — "once the memo's order comes
+ *  from the selector, `SHIPPED_MEMO_ORDER`'s `fit` branch has no reason to
+ *  exist, and the scoring loop at memoCandidates.ts dies with it — taking
+ *  FIT_WEIGHTS, `structureFit` and `MemoCandidate.fit`."
  *
- * What removes it: once the memo's order comes from the selector, `SHIPPED_MEMO_ORDER`'s
- * `fit` branch has no reason to exist, and the scoring loop at
- * memoCandidates.ts dies with it — taking FIT_WEIGHTS, `structureFit` and
- * `MemoCandidate.fit`. `sectorFit`/`sectorFitScorer` STAY: they rank the
- * founder's table. `scaleFit`, `livenessFit`, `eligibilityFit` STAY: they are
- * columns `poolBlend.ts` was fitted on, and deleting a column makes a published
- * weight refer to nothing. See project-mgmt/findings/dead_ranker_wsDO.md §2/§4.
- */
-export function scoreFitControl(input: FitInput): FitScore {
-  const { instrument: inst, assessment, year } = input;
-
-  // ── the two hard exclusions ──────────────────────────────────────────────
-  const country = (inst.country ?? "").toUpperCase();
-  const offCountry =
-    Boolean(input.founderCountries?.size) &&
-    country !== "" && country !== "EU" &&
-    !input.founderCountries!.has(country);
-
-  const components: Record<FitComponent, number> = {
-    eligibility: eligibilityFit(assessment),
-    // Absent from the relevance map means "no distinguishing overlap with what
-    // this company does", which must score BELOW a weak but real match.
-    //
-    // A neutral 0.5 default was tried first and was actively wrong: the
-    // relevance index only returns instruments clearing a signal floor, so
-    // every unmatched fund inherited a score higher than a genuinely
-    // weak-but-real one. Large thematic EU programmes then floated to the same
-    // score for every archetype — identical numbers for a fintech, a govtech
-    // and a consumer app — and outranked the founder's own national schemes.
-    theme: input.theme ?? UNMATCHED_THEME,
-    // Same treatment as `theme` directly above, for the same reason and after
-    // the same measurement: an absent record must not inherit a score higher
-    // than a real but weak one. `sectorFit` returns null when it cannot tell,
-    // so this is the ONE place the pool's neutral is applied.
-    sector: sectorFit(inst.sectorMix, input.founderSector)
-      ?? input.sectorNeutral ?? FALLBACK_UNKNOWN,
-    proximity: country === "" ? EU_WIDE_PROXIMITY
-      : country === "EU" ? EU_WIDE_PROXIMITY
-      : input.founderCountries?.has(country) ? HOME_COUNTRY_BONUS
-      : 0,
-    scale: scaleFit(inst, input.ticketBand),
-    structure: structureFit(input.requiresConsortium, input.consortiumOk),
-    // Neutral, not penalised, when the label names no kind of capital. The
-    // same property the filter applies (INDEFINITE_CAPITAL in shortlist.ts):
-    // `blended`/`unknown`/`framework` record that the majority vote produced no
-    // answer, so scoring them as a mismatch would demote a fund for what WE do
-    // not know about it. Kept in step with the filter deliberately — the two
-    // disagreeing is how a fund survives selection only to sink in the memo.
-    capital: !input.capitalWanted?.size || INDEFINITE_CAPITAL.has(inst.capitalType)
-      ? 1
-      : (input.capitalWanted.has(inst.capitalType) ? 1 : 0.3),
-    precedent: input.maxComparable && input.maxComparable > 0
-      ? Math.log1p(input.comparableCount ?? 0) / Math.log1p(input.maxComparable)
-      : 0,
-    liveness: livenessFit(inst, year),
-  };
-
-  // Thin evidence demotes rather than excludes: every component above is a
-  // weaker claim when it rests on a handful of awards, so the score should be
-  // too. Applied after the components so each stays readable on its own in the
-  // recorded breakdown -- the whole point of recording them.
-  const evidencePenalty = hasThinEvidence(inst) ? 0.75 : 1;
-
-  let score = 0;
-  for (const k of Object.keys(FIT_WEIGHTS) as FitComponent[]) {
-    score += FIT_WEIGHTS[k] * components[k];
-  }
-  score *= evidencePenalty;
-
-  const excluded: FitScore["excluded"] =
-    assessment?.status === "blocked" ? "blocked" : offCountry ? "off-country" : undefined;
-
-  return {
-    instrumentId: inst.id,
-    score: Math.round(1000 * score) / 1000,
-    components,
-    excluded,
-  };
-}
+ *  ── THE WEIGHTS, KEPT AS A RECORD BECAUSE FINDINGS CITE THEM ─────────────
+ *  `scripts/measure_sibling_choice.ts` cites "seven of nine documented weights
+ *  carry 0.72 of FIT_WEIGHTS", and a citation into a deleted constant resolves
+ *  to nothing. The table it refers to, in full:
+ *
+ *    eligibility 0.24   theme 0.16   proximity 0.13   sector 0.12
+ *    scale 0.12   structure 0.08   capital 0.08   precedent 0.04
+ *    liveness 0.03
+ *
+ *  The measurement that closed it: MEMO@6 24.0% for `fit` against `verdict`'s
+ *  27.6% and `pool`'s 28.8%, one replay, one pool, tune n=250 seed 20260806.
+ *  wsCR separately measured the re-sort moving the won leaf OUT of the published
+ *  six 49 times for 13 in. Receipt: `scripts/archive/_wsct_order.ts`.
+ *
+ *  ── WHAT SURVIVED IT, AND WHY EACH ───────────────────────────────────────
+ *  `sectorFit` / `sectorFitScorer` RANK the founder's table through
+ *  `rowRelevance`; `scaleFit`, `livenessFit`, `eligibilityFit` and
+ *  `hasSectorHistory` are columns `poolBlend.ts` was fitted on and
+ *  `scripts/measure_sibling_choice.ts` reads directly. Deleting one of those
+ *  would make a published weight refer to nothing, which is the opposite of
+ *  what this deletion is for.
+ *
+ *  Gone with it, each having had no other reader: `FIT_WEIGHTS`,
+ *  `FitComponent`, `FitScore`, `FitInput`, `structureFit`, `UNMATCHED_THEME`,
+ *  `HOME_COUNTRY_BONUS`, `EU_WIDE_PROXIMITY`. */
 
 /** ── `rankByFit` STOOD HERE AND IS DELETED, ON ITS OWN INSTRUCTION ────────
  *

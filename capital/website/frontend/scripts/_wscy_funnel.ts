@@ -144,7 +144,7 @@ async function main() {
       instrumentTable,
       req: { company: c.company, country: c.country, description: c.description,
              capitalSought: ["grant", "loan"], targetMarkets: [c.country], eligibility } as never,
-      records: [], dbPeers, eligibilityScreen, semanticScores: semantic, log,
+      records: [], dbPeers, eligibilityScreen, log,
     });
 
     console.log(

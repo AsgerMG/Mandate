@@ -13,7 +13,7 @@ import { assessAll } from "./verdict";
 import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
 import {
-  agentSelectEnabled, agentSelectLastDecision, agentSelectMemoPool, AGENT_SELECT_SEAM,
+  agentSelectEnabled, agentSelectMemoPool, AGENT_SELECT_SEAM,
 } from "./agentSelect";
 import { lateAnsweredFields, withCoveredFields } from "./answerProvenance";
 import { openFieldsForShortlist } from "./gateReach";
@@ -940,31 +940,26 @@ async function synthesize(
   // supportType, ticket, comparableFirms) — the model only supplies
   // whyEligible/nextStep per row, keyed positionally by rowKeys below (never
   // by `channel` alone: two rows can share a channel, see buildInstitutions).
-  // brief_funnel_v2 Stage 3: re-rank on EASE before cutting to five, so the
-  // brief leads with the doors this company can most plausibly walk through
-  // rather than simply the best-fitting ones. Fit ordering (exact country,
-  // then ticket proximity, then event count) survives as the tie-break: rows
-  // with no ease signal at all keep their original position.
+  //
+  // ── IT DOES NOT RE-RANK, AND THE COMMENT HERE SAID IT DID (wsGB) ────────
+  // Three sentences stood here about "re-rank on EASE before cutting to five"
+  // with "fit ordering ... as the tie-break". Neither has been true for some
+  // time and neither is true now: `instrumentTable` arrives in the RANKER's
+  // order, and `orderMemoCandidates` carries that order through, demoting only a
+  // row whose institution name is already shown. Ease is a rendered line, not a
+  // sort key.
+  //
+  // A `pinned` argument stood here too, built by reading `agentSelectLastDecision()`
+  // — MODULE STATE that survives between requests in a warm container. It
+  // existed to protect the model's picks from the verdict-band sort. There is no
+  // band sort, so there is nothing to protect them from, and the pipeline no
+  // longer reaches into the ranker's globals to build a brief.
   const { toWriter, easeById, assessments, isStale } = orderMemoCandidates({
     // The SIGNAL scope, not the rendered one: every row this call scores for
     // ease must be a row the screen could have disqualified. See where the two
     // are computed for what sharing one scope was costing.
     instrumentTable, req, records, dbPeers, eligibilityScreen: eligibilitySignal,
-    semanticScores, log,
-    // A row the model NAMED keeps its seat. `picked` is in the model's own
-    // order and a Set keeps it.
-    //
-    // This reads MODULE STATE, and the only thing that makes that safe is that
-    // `agentSelectMemoPool` clears it on ENTRY rather than at the point it is
-    // written — see the comment there. It used to clear it after four early
-    // returns, which in a warm container meant a founder whose pool was too
-    // small to reach the model inherited the previous founder's picks. With the
-    // arm off — every production request today — this is `undefined` and the
-    // sort is the one that has always run.
-    pinned: (() => {
-      const picked = agentSelectLastDecision()?.picked;
-      return picked?.length ? new Set(picked) : undefined;
-    })(),
+    log,
     lateFields,
   });
   const baseRows = toWriter.map((r) => r.row);

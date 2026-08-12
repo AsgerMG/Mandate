@@ -33,16 +33,19 @@ already paid for.
   accessiblePool()          conclusively blocked rows dropped (VER-BLOCKED)
         │
         ▼
-  ══ STAGE 2 — THE RANKER.  AN LLM.  THIS IS THE ONLY OPEN WORK. ══════════
+  ══ STAGE 2 — THE RANKER.  AN LLM.  IT IS THE DEFAULT (wsGB). ════════════
   agentSelect.ts   agentSelectMemoPool → agentSelectRows → the model
+        │          AGENT_SELECT=adviser, and `off` is the control arm
         │
         │   On ANY failure — arm off, timeout, empty reply, unparseable
-        │   reply, missing key — it returns `rows` UNCHANGED. The subset
-        │   builder's order is the fallback, on every one of those paths.
+        │   reply, missing key, a pool no longer than the seats — it returns
+        │   `rows` UNCHANGED. The subset builder's order is the fallback, on
+        │   every one of those paths.
         ▼
-  memoCandidates.ts   orderMemoCandidates: verdict band first, incoming
-        │             order inside each band; blocked dropped; one row per
-        │             institution name (SEL-DUPE-NAME); cut to the writer cap
+  memoCandidates.ts   orderMemoCandidates: NO SORT. The incoming order is
+        │             carried through; one row per institution name
+        │             (SEL-DUPE-NAME) demoted to the back; cut to the writer
+        │             cap. The blocked drop happened upstream.
         ▼
   ══ STAGE 3 — THE WRITER. ════════════════════════════════════════════════
   pipeline.ts   synthesize() → the model writes whyEligible / nextStep only
@@ -50,7 +53,8 @@ already paid for.
 
 The caps, all of them, live in `caps.ts` and `briefChecks.ts`:
 `VERDICT_POOL = 18` → `SELECT_DEPTH = 40` (how deep the selector reads) →
-`WRITER_CANDIDATE_CAP = 8` → `institutionsMax = 7`. Screen one cuts the same
+`SELECT_COUNT = 7` (how many seats it fills) → `WRITER_CANDIDATE_CAP = 8` →
+`institutionsMax = 7`. Screen one cuts the same
 pool at `DISPLAY_CAP = 6`.
 
 ---
@@ -60,7 +64,9 @@ pool at `DISPLAY_CAP = 6`.
 This is the part that keeps getting misread, so it is stated plainly.
 
 **Job 1 — it builds the subset.** Stage 1 above. Delete it and there is nothing
-for the LLM to rank. The 97% figure is its work.
+for the LLM to rank. The 97% figure is its work. **This is the half that was
+NOT touched by wsGB and must not be**: the screens, the gates, the channel caps,
+`accessiblePool` and the pool construction all stand exactly as they were.
 
 **Job 2 — it is the fallback.** Every failure path in `agentSelectRows` returns
 the incoming rows untouched. Delete the score's order and a model timeout means
@@ -85,25 +91,28 @@ control's number go away, and nothing here may be quoted as if it had.
 
 ### What it is NOT
 
-It is not the thing that picks the founder's five. `fit.ts`'s own header has
-tabulated since 2026-08-09 that seven of its nine components — 0.72 of the
-documented weight — never touch the founder's table. `scoreFitControl` is called
-on every memo request and its number is read by nothing that ships.
+It is not the thing that picks the founder's five, and as of wsGB it does not
+exist as a composite at all. `fit.ts`'s own header had tabulated since
+2026-08-09 that seven of `scoreFitControl`'s nine components — 0.72 of the
+documented weight — never touched the founder's table, while it was computed for
+every row of every pool on every memo request and read by nothing that shipped.
+It is deleted, together with the weights table, `structureFit`, the shipped-memo-
+order constant and its two control arms. `sectorFit` / `sectorFitScorer` stay:
+they rank the founder's table. `scaleFit` / `livenessFit` / `eligibilityFit`
+stay: they are columns `poolBlend.ts` was fitted on.
 
 ---
 
 ## 3. The names, and what they were changed from
 
-Renamed by wsEH so the code says what it does. Behaviour identical; these are
-identifier renames only.
-
-| was | is | why |
-|---|---|---|
-| ORDER_ARM (no longer a name in the tree) | `SHIPPED_MEMO_ORDER` | it is not an arm. It is a constant, and it is the order that ships |
-| `MemoOrderArm` | `MemoOrderControl` | the other two values are the controls it beat, not options to pick from |
-| `MemoCandidateInput.order` | `orderControl` | passing it runs a control arm. Nothing in production passes it |
-| `MemoCandidate.fit` | `fitControl` | read by the `fit` control arm and by nothing else |
-| `scoreFit` | `scoreFitControl` | "score the fit" reads like the founder-facing ranker. It is the losing control arm plus a recorded breakdown |
+wsEH renamed five identifiers so the code would say what it did — ORDER_ARM to a
+shipped-order constant, MemoOrderArm to MemoOrderControl, MemoCandidateInput.
+order to orderControl, MemoCandidate.fit to fitControl, scoreFit to
+scoreFitControl. Every one of the five named the deterministic memo sort or the
+composite behind it, and **wsGB deleted all five with the sort itself**. The row
+that mattered — "it is the losing control arm plus a recorded breakdown" — is
+now the reason none of them is in the tree, so the table is left out rather than
+kept as a list of names a reader cannot find.
 
 **Deliberately NOT renamed**, and each for a stated reason:
 
@@ -114,8 +123,11 @@ identifier renames only.
   being edited by another workstream at the time and a rename across ~40
   importers is not worth a merge conflict in the one file everything imports.
   **Open item.**
-- `FIT_WEIGHTS`, `FitScore`, `FitComponent` — named by `measure_sibling_choice.ts`
-  and by published findings; renaming them breaks citations for little gain.
+- the fit weights table and its two types — named by `measure_sibling_choice.ts`
+  and by published findings, so renaming them would have broken citations for
+  little gain. wsGB deleted them instead, and copied the nine weights verbatim
+  into the block that replaced `scoreFitControl` in `fit.ts`, so the citation
+  still resolves to the numbers it cites.
 - `VERDICT_POOL` — it stopped being a second cut and now means "how deep the
   selector may read". Renaming it touches `pipeline.ts`, which was live. **Open
   item.**
@@ -142,7 +154,7 @@ been failing."*
 | **Rebuilding the founder descriptions** | Delivered 1,898 pairs not ~6,300; feasibility estimate was wrong 8×; moved the number 27% → 26% |
 | **A longer menu / more depth** | 33 rows instead of 18 changes membership by nothing. EXACT@5 went 22.2% → 17.8%. On 9 founders the won fund sat at rank 19–40 and the model picked it **0 of 9**. `scripts/archive/_wsdq_seam.ts` — and note wsDQ's "depth is binding" inference is itself retracted |
 | **Better screen-two questions** | Picks changed on 8 of 12 and the category errors survived the answer. The arm that measured it was a bench harness, not a shipped lever: no flag by that or any other name exists, and the row previously named one that does not (wsEN). The live descendant is `RANKER_ASKS`, which defaults off — a different design, in which the stage that picks writes the questions |
-| **Re-sorting the memo on the fit score** | MEMO@6 24.0% against `verdict`'s 27.6%; wsCR measured it moving the won leaf OUT of the published six 49 times for 13 in. `scripts/_wsct_order.ts` |
+| **Re-sorting the memo on the fit score** | MEMO@6 24.0% against `verdict`'s 27.6%; wsCR measured it moving the won leaf OUT of the published six 49 times for 13 in. `scripts/archive/_wsct_order.ts` — archived by wsGB, which deleted the arms it swept |
 | **The old LLM gate 2** | Every configuration that let the model REORDER measured at or below gate 1 on the same cases. Module deleted; the ladder is preserved in `project-mgmt/findings/dead_ranker_wsDO.md` §1 |
 
 What is **open**: judgement at depth 18–40, and row legibility. wsDV found the
@@ -157,7 +169,9 @@ rows the model chose instead.
 `POOL_BLEND`, `SIBLING_SCOPE`, `CHANNEL_BACKFILL`, `SECTOR_NEUTRAL_ARM`,
 `AGENT_SELECT*`, `OPEN_QUESTION_ARM`, `NEXT_PUBLIC_ORGANISATION_TYPE_ARM`. wsEH
 re-checked all of them: **not one is set to a non-default value anywhere in the
-repo's build, CI or deployment config.** Every one is the arm that reproduces a
+repo's build, CI or deployment config.** That is still true and it now means
+something different for `AGENT_SELECT`, whose DEFAULT changed: the ranker runs
+in production because the default says so, not because a config file sets it. Every one is the arm that reproduces a
 number somebody published, and none may be quoted as shipped behaviour. There
 are no dead flags to delete — the sweep found exactly one set-but-unread
 variable in the whole repo, `NEXT_TELEMETRY_DISABLED`, which Next.js itself

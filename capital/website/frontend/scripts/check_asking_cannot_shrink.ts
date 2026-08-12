@@ -187,7 +187,7 @@ async function main() {
              capitalSought: ["grant", "loan"], targetMarkets: [c.country],
              eligibility: after } as never,
       records: [], dbPeers: [], eligibilityScreen: [],
-      semanticScores: semantic, log, lateFields,
+      log, lateFields,
     });
     return {
       accessible: accessible.map((r) => r.instrumentId ?? r.channel),

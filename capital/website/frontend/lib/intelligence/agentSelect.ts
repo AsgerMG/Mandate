@@ -97,24 +97,23 @@
 // called from ONE place: `runIntelligence`, on the pool immediately before
 // `synthesize`. Three things follow, and each was a requirement:
 //
-//   THE ORDER REACHES THE WRITER'S INPUT. `orderMemoCandidates` sorts on
-//     verdict rank and breaks every tie on the pool's incoming index, which is
-//     the whole of the ordering inside a band. Reordering the pool therefore
-//     reorders the candidates the writer is SHOWN, and — because the list is
-//     cut to `WRITER_CANDIDATE_CAP` — decides which candidates it is shown at
-//     all. That is what this stage buys.
+//   THE ORDER REACHES THE WRITER'S INPUT, AND SINCE wsGB IT IS THE WHOLE OF
+//     THE ORDER. `orderMemoCandidates` used to sort on verdict rank and break
+//     ties on the pool's incoming index; that sort is deleted, so it now
+//     carries the incoming order through, demoting only a row whose institution
+//     name is already shown. Reordering the pool therefore reorders the
+//     candidates the writer is SHOWN, and — because the list is cut to
+//     `WRITER_CANDIDATE_CAP` — decides which candidates it is shown at all.
 //
-//     IT DOES NOT DECIDE THE PUBLISHED ORDER, and the sentence that used to
-//     stand here said it did (wsEN). `pipeline.ts` reads the ORDER OF THE
-//     WRITER'S NOTES as the ranking -- `rankByKey`, built from
-//     `institutionNotes` positionally -- so the rows a founder reads are in the
-//     order the writer chose to mention them, not the order this stage handed
-//     over. A model that is instructed not to rank (FUND-12) is nonetheless
-//     read as one. Two consequences, both real: a gain measured on the
-//     published table is this stage's judgement passed through the writer's,
-//     and a row this stage named can be pushed down the page by a writer that
-//     wrote about it last. Publishing the candidate order instead is P0's own
-//     item and belongs to `pipeline.ts`, not here.
+//     AND IT DECIDES THE PUBLISHED ORDER. That is also new, and it arrived from
+//     the other end: `SHIPPED_PUBLISH_ORDER` is `candidates`, so `pipeline.ts`
+//     publishes rows in the order they were handed to the writer rather than in
+//     the order the writer chose to mention them. Between that and the removed
+//     sort there is now nothing between this function's output and the page but
+//     the name collapse and two caps.
+//
+//     What the writer still decides is WHETHER a row publishes — it is dropped
+//     if the writer wrote no note for it — never WHERE.
 //
 //   THE POOL DOES NOT CHANGE. The call sits AFTER `accessiblePool(...)
 //     .slice(0, VERDICT_POOL)`, so it permutes a fixed set of rows and cannot
@@ -1589,11 +1588,13 @@ export async function agentSelectRows(
   // because it happens to a third of the founders in a run -- left the previous
   // founder's picks standing in a global.
   //
-  // That was inert while nothing consumed the decision. It stopped being inert
-  // the moment `orderMemoCandidates` gained `pinned`: the consequence is one
+  // That was inert while nothing consumed the decision, then not inert at all
+  // while `orderMemoCandidates` had a `pinned` argument reading it — one
   // founder's chosen funds promoted past the writer cap in another founder's
-  // brief, for the funds the two pools share, which for the EU programmes is
-  // most of them.
+  // brief. `pinned` is gone (wsGB), so no brief reads this again; what reads it
+  // is `scripts/_wsdq_run.ts`, and a diagnostic reporting the PREVIOUS
+  // founder's picks under this one's name is the same defect with a smaller
+  // blast radius. The reset stays for that reason and not for the old one.
   //
   // Deliberately NOT inside `leave()`: `leave` is also the successful exit
   // (`chose`), and clearing there would erase the decision the caller is about

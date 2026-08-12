@@ -77,7 +77,7 @@ function order(rows: InstrumentRow[], over: Partial<MemoCandidateInput> = {}) {
       capitalSought: ["grant"], targetMarkets: ["Iceland"], eligibility: ANSWERS,
     } as IntelligenceRequest,
     records: [], dbPeers: [], eligibilityScreen: [],
-    semanticScores: new Map(), log: new ExclusionLog(),
+    log: new ExclusionLog(),
     ...over,
   });
 }
@@ -167,49 +167,76 @@ describe("orderMemoCandidates returns a PERMUTATION of instrumentTable", () => {
   });
 });
 
-describe("a row the model NAMED keeps its seat", () => {
+describe("the incoming order IS the memo's order", () => {
   // ── The property ────────────────────────────────────────────────────────
-  //   Every instrument id the model named reaches `toWriter`, provided it
-  //   entered `instrumentTable`.
+  //   Two rows that render under DIFFERENT institution names leave this
+  //   function in the same relative order they entered it, whatever their
+  //   verdict, ease, staleness, country or score.
   //
-  // The disaster: the band sort runs on `VERDICT_RANK`, where `unknown` sorts
-  // BELOW `open` — and `unknown` means we could evaluate no encoded filter,
-  // which is a fact about our encoding coverage and not about the fund. So a
-  // pool where every pick is `unknown` and eight unpicked rows are `open` puts
-  // the model's whole answer behind the cap.
+  // ── Why this is the case that matters most in this file (wsGB) ───────────
+  // It replaces "a row the model NAMED keeps its seat", which tested a `pinned`
+  // argument that promoted the selector's picks past a verdict-band sort. Both
+  // are gone. `AGENT_SELECT` defaults to `adviser`, `agentSelectRows` returns
+  // `[...chosen, ...the rest in the pool's order]`, and nothing here reorders
+  // it — so the model's ranking reaches the writer by ARRIVING in it, not by
+  // being defended from a second ranking downstream. This case is what says the
+  // second ranking has not come back.
+  //
+  // ── The disaster it simulates ───────────────────────────────────────────
+  // Reinstate ANY sort key here — the old `VERDICT_RANK` band, a fit score, an
+  // ease score — and this goes red, because the fixture is built to contradict
+  // the band the shipped code used to sort on: `unknown` rows first, where
+  // `VERDICT_RANK` puts them last.
 
-  it("promotes picked rows past a full cap of better-BANDED rows nobody picked", () => {
+  /** Ids whose rendered institution names are all distinct, so the one rule
+   *  that DOES move a row here — the display-name collapse — cannot fire and
+   *  be mistaken for a sort. */
+  function distinctlyNamed(candidateIds: string[], want: number): string[] {
+    const seen = new Set<string>();
+    const out: string[] = [];
+    for (const id of candidateIds) {
+      const name = displayInstitutionName(rowFor(id));
+      if (seen.has(name)) continue;
+      seen.add(name);
+      out.push(id);
+      if (out.length === want) break;
+    }
+    return out;
+  }
+
+  it("keeps an order that contradicts the band the shipped code used to sort on", () => {
     const buckets = byStatus(ANSWERS);
-    const open = (buckets.get("open") ?? []).slice(0, WRITER_CANDIDATE_CAP);
-    const unknown = (buckets.get("unknown") ?? []).slice(0, 3);
-    expect(open.length, "the snapshot no longer holds eight `open` funds for this "
-      + "founder; the crowding this pins cannot happen").toBe(WRITER_CANDIDATE_CAP);
+    const unknown = distinctlyNamed(buckets.get("unknown") ?? [], 3);
+    const open = distinctlyNamed(
+      (buckets.get("open") ?? []).filter((id) => !unknown.includes(id)),
+      WRITER_CANDIDATE_CAP);
+    expect(open.length, "the snapshot no longer holds eight distinctly-named `open` "
+      + "funds for this founder; the case this pins cannot be constructed")
+      .toBe(WRITER_CANDIDATE_CAP);
     expect(unknown.length).toBe(3);
 
-    // The picks arrive LAST in the pool, so nothing but the pin can save them.
-    const rows = [...open, ...unknown].map((id) => rowFor(id));
-    const pinned = new Set(unknown);
-
-    const without = order(rows);
-    expect(ids(without.toWriter).some((id) => pinned.has(id)),
-      "the control case must show the picks being crowded out, or this test "
-      + "proves nothing about the pin").toBe(false);
-
-    const withPin = order(rows, { pinned });
-    for (const id of pinned) expect(ids(withPin.toWriter)).toContain(id);
-    // And in the model's own order, which is the Set's insertion order.
-    expect(ids(withPin.toWriter).slice(0, 3)).toEqual([...pinned]);
+    // `unknown` FIRST. `VERDICT_RANK` ranks `open` above `unknown`, so the sort
+    // this file used to run would move all three of these to the back and past
+    // the writer cap.
+    const wanted = [...unknown, ...open];
+    const { ordered, toWriter } = order(wanted.map((id) => rowFor(id)));
+    expect(ids(ordered)).toEqual(wanted);
+    expect(ids(toWriter)).toEqual(wanted.slice(0, WRITER_CANDIDATE_CAP));
   });
 
-  it("cannot resurrect a row that never entered the table", () => {
-    // The pin is a REORDER. "Provided it entered `instrumentTable`" is the
-    // whole of its licence: a pin that could add a row would be the model
-    // reaching past `accessiblePool`, which is the one screen no arm may skip.
+  it("is red under a fixture that is already in band order, so the case is real", () => {
+    // The control. Without it the assertion above would pass on a pool the band
+    // sort would not have moved, and the disaster it claims to simulate never
+    // happened. Here the SAME rows are handed over in the order a band sort
+    // produces, and the two orders must genuinely differ.
     const buckets = byStatus(ANSWERS);
-    const rows = (buckets.get("open") ?? []).slice(0, 3).map((id) => rowFor(id));
-    const { ordered } = order(rows, { pinned: new Set(["not_in_the_pool"]) });
-    expect(ids(ordered)).not.toContain("not_in_the_pool");
-    expect(ordered.length).toBe(3);
+    const unknown = distinctlyNamed(buckets.get("unknown") ?? [], 3);
+    const open = distinctlyNamed(
+      (buckets.get("open") ?? []).filter((id) => !unknown.includes(id)),
+      WRITER_CANDIDATE_CAP);
+    const bandOrder = [...open, ...unknown];
+    expect(ids(order(bandOrder.map((id) => rowFor(id))).ordered)).toEqual(bandOrder);
+    expect(bandOrder).not.toEqual([...unknown, ...open]);
   });
 });
 

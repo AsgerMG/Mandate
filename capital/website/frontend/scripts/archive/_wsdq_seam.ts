@@ -178,7 +178,7 @@ async function main() {
         req: { ...req, targetMarkets: undefined } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(eligibility as never, ids.slice(0, DISPLAY_CAP)),
-        semanticScores: semantic, log: l,
+        log: l,
       }).toWriter.map((x) => x.row);
       return o.slice(0, PUBLISH_CAP);
     };

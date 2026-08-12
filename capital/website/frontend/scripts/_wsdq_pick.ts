@@ -146,7 +146,7 @@ async function main() {
       req: { company: f.company, country: f.country, eligibility: f.eligibility, ...f.opts } as never,
       records: [], dbPeers,
       eligibilityScreen: evaluateEligibility(f.eligibility as never, ids.slice(0, DISPLAY_CAP)),
-      semanticScores: semantic, log,
+      log,
     }).toWriter.map((c) => c.row);
     // `buildInstitutions` maps `toWriter` one-to-one (wsDP), so the published
     // projection is `ordered` cut to the cap. The names are built anyway,

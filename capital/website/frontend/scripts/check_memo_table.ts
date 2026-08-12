@@ -127,7 +127,7 @@ async function main() {
              capitalSought: ["grant", "loan"], targetMarkets: [c.country], eligibility } as never,
       records: [], dbPeers,
       eligibilityScreen: evaluateEligibility(eligibility, poolIds.slice(0, 6)),
-      semanticScores: semantic, log,
+      log,
     });
 
     // The rows exactly as the memo builds them, writer fields still empty, cut

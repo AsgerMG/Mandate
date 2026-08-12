@@ -14,7 +14,6 @@ import { describe, expect, it } from "vitest";
 
 import { DILUTIVE_FOR_TEST, passesCapitalPreference } from "./accessMode";
 import type { DbInstrument } from "./corpus";
-import { scoreFitControl } from "./fit";
 import { CAPITAL_TYPE_LABEL } from "./pipeline";
 import {
   CAPITAL_SOUGHT_TO_DB, INDEFINITE_CAPITAL, KNOWN_CAPITAL_TYPES,
@@ -139,33 +138,29 @@ describe("every classification is deliberate", () => {
   });
 });
 
-describe("the filter and the memo's score read one rule", () => {
-  // `fit.ts` scores a `capital` component and `shortlist.ts` filters on the same
-  // question. They were two readings of one property, and two readings drift:
-  // this branch exists because one of them had already drifted. A comment saying
-  // "kept in step" is the bug, so the agreement is asserted rather than
-  // described — over EVERY capital type in the corpus and every intake option,
-  // so a value added later is covered without being named.
+describe("what the capital rule may say to the founder", () => {
+  // ── TWO CASES HERE HAD THEIR SUBJECT DELETED (wsGB, 2026-08-12) ─────────
+  // This block was called "the filter and the memo's score read one rule", and
+  // two of its three cases scored an instrument with `scoreFitControl` to assert
+  // that the memo never PENALISED what the filter had ADMITTED — the
+  // admitted-and-penalised failure, where a fund survives selection and then
+  // sinks in the memo for the very label that let it through.
   //
-  // Admitted-and-penalised is the specific failure this rules out: a fund that
-  // survives selection and then sinks in the memo for the label that let it
-  // through is worse than one cleanly excluded, because nothing looks wrong.
-  const ALL_TYPES = [...KNOWN_CAPITAL_TYPES, ...INDEFINITE_CAPITAL, "a_type_nobody_classified"];
-
-  it("never penalises in the memo what it admitted to the pool", () => {
-    for (const option of OPTIONS) {
-      const wanted = new Set(CAPITAL_SOUGHT_TO_DB[option] ?? []);
-      for (const type of ALL_TYPES) {
-        if (!instrumentServesCapital(type, [option])) continue;
-        const { components } = scoreFitControl({
-          instrument: inst(type), capitalWanted: wanted, year: 2026,
-        });
-        expect(components.capital,
-          `${type} passes the filter for "${option}" but the memo scores it ` +
-          `${components.capital} — the filter and the score disagree`).toBe(1);
-      }
-    }
-  });
+  // There is no memo score. `AGENT_SELECT` defaults to `adviser`, the model
+  // ranks the subset, and the deterministic memo sort and the nine-component
+  // composite behind it were removed with it. The failure those cases guarded
+  // against cannot occur, because the second reading of the capital rule that
+  // made it possible no longer exists: the filter admits, and nothing
+  // downstream re-scores on capital type at all.
+  //
+  // Deleting them rather than re-aiming them is deliberate. A test that scores
+  // a function nobody calls, to prove agreement with a filter that now has
+  // nobody to disagree with, is a green light for a property that is true by
+  // absence — and this file's whole discipline is that agreement is asserted
+  // rather than described.
+  //
+  // The THIRD reading survives and is the one with a founder on the other end
+  // of it, so its case is untouched below.
 
   it("never DESCRIBES to the founder a kind the label did not resolve", () => {
     // The third reading of the same property, and the one with a founder on the
@@ -194,21 +189,22 @@ describe("the filter and the memo's score read one rule", () => {
     }
   });
 
-  it("still discriminates: a mismatched definite label scores below 1", () => {
-    // The guard above is satisfied by a score that is always 1. This is the
-    // half that fails if the capital component stops discriminating at all.
+  it("still discriminates: a definite label the founder did not ask for is excluded", () => {
+    // The guard above is satisfied by a rule that admits everything. This is
+    // the half that fails if the capital rule stops discriminating at all.
+    //
+    // It used to read the `capital` component of the deleted memo score and
+    // assert it fell below 1. The property is the same and the only surviving
+    // reading of it is the FILTER, so it is asserted there: a definite capital
+    // type outside what the founder asked for does not pass.
     const mismatched = [...KNOWN_CAPITAL_TYPES].filter(
       (t) => !(CAPITAL_SOUGHT_TO_DB[OPTIONS[0]] ?? []).includes(t));
     expect(mismatched.length,
       "no definite capital type is outside the first option — test is vacuous")
       .toBeGreaterThan(0);
     for (const type of mismatched) {
-      const { components } = scoreFitControl({
-        instrument: inst(type),
-        capitalWanted: new Set(CAPITAL_SOUGHT_TO_DB[OPTIONS[0]] ?? []),
-        year: 2026,
-      });
-      expect(components.capital, `${type} is not what was asked for`).toBeLessThan(1);
+      expect(instrumentServesCapital(type, [OPTIONS[0]]),
+        `${type} is not what was asked for and must not pass the filter`).toBe(false);
     }
   });
 });

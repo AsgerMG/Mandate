@@ -1,40 +1,49 @@
-// wsCT — should the memo re-sort the shortlist's order on `scoreFitControl` at all?
+// wsCT — should the memo re-sort the shortlist's order on the fit score at all?
 //
-// ── The question ──────────────────────────────────────────────────────────
-// The memo takes the shortlist's ranked pool (VERDICT_POOL 18) and re-sorts
-// the whole thing on `scoreFitControl` before dropping blocked rows and cutting. wsCR
-// measured that re-sort moving the won leaf OUT of the top six 49 times for 13
-// in. A re-sort that loses four for every one it gains is not a re-sort.
+// ██ ARCHIVED (wsGB, 2026-08-12). THE ARMS IT SWEPT NO LONGER EXIST. ██
 //
-// It had never been compared with the alternative, because "keep the pool's
-// order" was not an option the code could express. It is now
-// (`MemoCandidateInput.order`), so BOTH arms run over ONE pool, one embed per
-// pair, and the difference is the ordering and nothing else.
+// ── What it proved, which is why it is kept ───────────────────────────────
+// All three orderings, ONE replay, one pool, tune n=250 seed 20260806,
+// `ranker: all 245 request(s) on EMBEDDING`:
 //
-// ── What the arms are ─────────────────────────────────────────────────────
-//   fit    what ships: `scoreFitControl`, nine weighted components, thin-evidence
-//          penalty, pool position as the tie-break.
-//   pool   the shortlist's own ranking, untouched. The one ordering in this
-//          product that has ever been measured end to end.
+//   MEMO@6        fit 24.0%      pool 28.8%      verdict 27.6%
+//   off-country rows in the published six    0          0          0
+//   published rows that are `open`        100%      95.4%       100%
 //
-// Both arms then run the SAME blocked drop and the SAME display-name dedupe,
-// because those are not ordering and are not in question here.
+// It closed the `fit` re-sort: 24.0% against 27.6% for keeping qualification
+// first, agreeing with wsCR's separate finding that the re-sort moved the won
+// leaf OUT of the published six 49 times for 13 in. `verdict` shipped on the
+// strength of the third row — it published no row carrying an obstacle where
+// `pool` published 4.6% — and paid 1.2 points for it.
 //
-// ── The safety check that has to travel with it ───────────────────────────
-// `scoreFitControl` scores an off-country national scheme at proximity 0, so removing
-// the re-sort could in principle float one up the table — and a fund the
-// founder cannot draw on is the wrongly-shown row this product treats as worse
-// than a missing one. So both arms report how many of their first six rows are
-// national schemes outside the founder's countries. A gain bought by putting
-// an unusable row on the table is not a gain.
+// ── Why it is archived, and what changed under it ────────────────────────
+// `AGENT_SELECT` now defaults to `adviser`: the model ranks the subset, and the
+// deterministic memo sort those three arms were arms OF is deleted. So is the
+// nine-component composite the `fit` arm sorted on. There is no
+// `SHIPPED_MEMO_ORDER`, no `MemoOrderControl` and no `orderControl`.
+//
+// ── What it can and cannot still do ──────────────────────────────────────
+// `orderMemoCandidates` now carries its input order through, so an arm can be
+// applied to the pool BEFORE the call and the result is what this script used
+// to get from `orderControl` — same collapse, same cap, same projection. Two of
+// the three arms are reproduced that way below, from `VERDICT_RANK`, which
+// survives:
+//
+//   pool      identity. The subset builder's own ranking, untouched, and the
+//             order the memo publishes today wherever the model declines a seat.
+//   verdict   the band sort that shipped until wsGB.
+//
+// The `fit` arm is NOT reproduced and cannot be: `scoreFitControl`, FIT_WEIGHTS
+// and `structureFit` were deleted with the sort they fed. Its number is in the
+// table above and in fit.ts, and nobody should rebuild a scorer to re-measure a
+// route this file already closed.
 //
 // FREE: one Voyage embed and one Postgres read per pair. No model calls.
 //
-//   SPLIT=tune    N=250 npx tsx scripts/_wsct_order.ts
-//   SPLIT=holdout N=250 npx tsx scripts/_wsct_order.ts   # ONCE
+//   SPLIT=tune    N=250 npx tsx scripts/archive/_wsct_order.ts
 import { writeFileSync } from "fs";
 
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 requireCredentials("wsct_order", ["DATABASE_URL", "VOYAGE_KEY"]);
@@ -42,26 +51,56 @@ requireCredentials("wsct_order", ["DATABASE_URL", "VOYAGE_KEY"]);
 import {
   corpusProvenance, hydrateDbInstruments, hydrateGatesFor, loadDbInstruments,
   publishableInstruments, requireLiveCorpus, resetGateHydration, toIso2,
-} from "../lib/intelligence/corpus";
-import { evaluateEligibility } from "../lib/intelligence/eligibility";
-import { ExclusionLog } from "../lib/intelligence/exclusions";
+} from "../../lib/intelligence/corpus";
+import { evaluateEligibility } from "../../lib/intelligence/eligibility";
+import { ExclusionLog } from "../../lib/intelligence/exclusions";
 import {
-  orderMemoCandidates, SHIPPED_MEMO_ORDER, WRITER_CANDIDATE_CAP, type MemoOrderControl,
-} from "../lib/intelligence/memoCandidates";
-import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
-import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
+  orderMemoCandidates, WRITER_CANDIDATE_CAP,
+} from "../../lib/intelligence/memoCandidates";
+import { assessAll, VERDICT_RANK } from "../../lib/intelligence/verdict";
+import type { InstrumentRow } from "../../lib/intelligence/types";
+import { BRIEF_LIMITS } from "../../lib/intelligence/briefChecks";
+import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, DISPLAY_CAP, founderCountryList,
   instById, tableInputFromAnswers, VERDICT_POOL,
-} from "../lib/intelligence/shortlist";
-import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
+} from "../../lib/intelligence/shortlist";
+import { DEFAULT_SEED, halfWidth, sampleRecall } from "../recallSample";
 import {
   answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
   partitionByOfferable, reattributeMissingAnswers, type AnswerMode,
-} from "./recallSet";
+} from "../recallSet";
 
 const num = (v: string | undefined, d: number) => (v && Number.isFinite(Number(v)) ? Number(v) : d);
-const ARMS: MemoOrderControl[] = ["fit", "pool", "verdict"];
+/** The two arms that still have a subject. `fit` is gone with its scorer; see
+ *  the header. */
+type MemoOrderControl = "pool" | "verdict";
+const ARMS: MemoOrderControl[] = ["pool", "verdict"];
+
+/** The removed sort, reproduced here rather than in production.
+ *
+ *  It is applied to the POOL, ahead of `orderMemoCandidates`, which is exactly
+ *  equivalent to the `orderControl` argument this script used to pass: that
+ *  argument chose a sort that ran before the display-name collapse and the
+ *  writer cap, and those two still run, in that order, on whatever they are
+ *  handed. Stable, so `pool` order remains the tie-break inside a band. */
+function sortByArm(
+  rows: InstrumentRow[], arm: MemoOrderControl, eligibility: unknown,
+): InstrumentRow[] {
+  if (arm === "pool") return rows;
+  const ids = rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
+  const assessed = assessAll(ids, eligibility as never);
+  return rows
+    .map((row, i) => ({ row, i }))
+    .sort((a, b) => {
+      const va = VERDICT_RANK[
+        (a.row.instrumentId ? assessed.get(a.row.instrumentId)?.status : undefined) ?? "unknown"];
+      const vb = VERDICT_RANK[
+        (b.row.instrumentId ? assessed.get(b.row.instrumentId)?.status : undefined) ?? "unknown"];
+      return va !== vb ? va - vb : a.i - b.i;
+    })
+    .map((x) => x.row);
+}
 
 interface Row {
   want: string;
@@ -143,16 +182,16 @@ async function main() {
       return c !== "" && c !== "EU" && !mine.has(c);
     };
 
-    const rank: Row["rank"] = { fit: null, pool: null, verdict: null };
-    const off: Row["offCountryInSix"] = { fit: 0, pool: 0, verdict: 0 };
-    const mix: Row["verdictMix"] = { fit: {}, pool: {}, verdict: {} };
+    const rank: Row["rank"] = { pool: null, verdict: null };
+    const off: Row["offCountryInSix"] = { pool: 0, verdict: 0 };
+    const mix: Row["verdictMix"] = { pool: {}, verdict: {} };
     for (const arm of ARMS) {
       // A fresh log per arm: the exclusion log is a record of one run.
       const { ordered } = orderMemoCandidates({
-        instrumentTable,
+        instrumentTable: sortByArm(instrumentTable, arm, eligibility),
         req: { company: "TestCo", country: t.country, eligibility, ...opts } as never,
-        records: [], dbPeers: [], eligibilityScreen, semanticScores: semantic,
-        log: new ExclusionLog(), orderControl: arm,
+        records: [], dbPeers: [], eligibilityScreen,
+        log: new ExclusionLog(),
       });
       const ids = ordered.map((c) => c.row.instrumentId).filter(Boolean) as string[];
       const idx = ids.indexOf(t.instrument);
@@ -179,7 +218,7 @@ async function main() {
   console.log(rankerTallyLine());
   console.log(`set=${setFile} split=${split} replayed ${out.length}`);
   console.log(`published cap ${BRIEF_LIMITS.institutionsMax}, writer cap ${WRITER_CANDIDATE_CAP}, `
-    + `shipping arm SHIPPED_MEMO_ORDER=${SHIPPED_MEMO_ORDER}`);
+    + `NO shipping arm: production's memo order is the model's (AGENT_SELECT)`);
 
   const at = (arm: MemoOrderControl, k: number) =>
     out.filter((r) => { const x = r.rank[arm]; return x !== null && x <= k; }).length;
@@ -192,18 +231,20 @@ async function main() {
       + ARMS.map((a) => pct(at(a, k), out.length).padEnd(21)).join("") + mark);
   }
   const K = BRIEF_LIMITS.institutionsMax;
-  for (const a of ARMS) {
-    if (a === "fit") continue;
-    const d = at(a, K) - at("fit", K);
-    console.log(`\n  MEMO@${K}: ${a} - fit = ${d >= 0 ? "+" : ""}${(100 * d / out.length).toFixed(1)} pts (${d} pairs)`);
-    const movedOut = out.filter((r) => (r.rank[a] ?? 99) <= K && (r.rank.fit ?? 99) > K).length;
-    const movedIn = out.filter((r) => (r.rank.fit ?? 99) <= K && (r.rank[a] ?? 99) > K).length;
-    console.log(`    the fit re-sort moves the won leaf OUT of the first ${K} ${movedOut} times, `
-      + `INTO it ${movedIn} times, against ${a}`);
-  }
+  // Against `pool` rather than against `fit`, which no longer runs. `pool` is
+  // also the order production publishes wherever the model declines a seat, so
+  // this delta prices what the band sort was buying at the moment it was
+  // removed.
+  const d = at("verdict", K) - at("pool", K);
+  console.log(`\n  MEMO@${K}: verdict - pool = ${d >= 0 ? "+" : ""}`
+    + `${(100 * d / out.length).toFixed(1)} pts (${d} pairs)`);
+  const movedOut = out.filter((r) => (r.rank.pool ?? 99) <= K && (r.rank.verdict ?? 99) > K).length;
+  const movedIn = out.filter((r) => (r.rank.verdict ?? 99) <= K && (r.rank.pool ?? 99) > K).length;
+  console.log(`    the band sort moved the won leaf OUT of the first ${K} ${movedOut} times, `
+    + `INTO it ${movedIn} times`);
 
   // ── Regime concentration on the difference, as the standing rule requires ─
-  const gainers = out.filter((r) => (r.rank.verdict ?? 99) <= K && (r.rank.fit ?? 99) > K);
+  const gainers = out.filter((r) => (r.rank.verdict ?? 99) <= K && (r.rank.pool ?? 99) > K);
   const byRegime = new Map<string, number>();
   for (const r of gainers) byRegime.set(r.wantRegime, (byRegime.get(r.wantRegime) ?? 0) + 1);
   console.log(`\n── WHERE THE DIFFERENCE LANDS ──`);

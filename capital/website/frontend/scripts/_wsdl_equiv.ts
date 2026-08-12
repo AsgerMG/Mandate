@@ -158,7 +158,7 @@ async function main() {
         req: { company: f.company, country: f.country, eligibility: f.eligibility, ...f.opts } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(f.eligibility as never, ids.slice(0, DISPLAY_CAP)),
-        semanticScores: semantic, log,
+        log,
       }).toWriter.map((c) => c.row.instrumentId ?? c.row.channel);
     };
     const writerBefore = await order(poolBefore);

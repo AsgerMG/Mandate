@@ -30,6 +30,7 @@ The live architecture and the full register of routes measured dead is
 | `_wsch_prefill.ts` | whether organisation type can be pre-filled from the register's entity designator, so it costs the founder nothing to answer | **Route dead.** Organisation type buys nothing and would have blocked SAP and Diehl Aerospace from schemes they actually received |
 | `_wsdi_reach.ts` | what the five unwired evidence stores are worth *before* any of them is wired, measured as sibling pairs uniquely separated inside a multi-leaf regime | **Route dead.** Per-fund evidence — case register and SATR fields — is +0.0, structurally |
 | `_wsdq_seam.ts` | the ranker on the twelve archetypes, stopping at the selection seam: depth vs judgement | **Route dead, and its original inference retracted.** wsDQ concluded "depth, not judgement, is binding"; wsDR measured that wrong. Depth is not the constraint — see ARCHITECTURE.md |
+| `_wsct_order.ts` | should the memo re-sort the shortlist's order at all — fit vs pool vs verdict, three arms over ONE pool | **Route dead, and the arms it swept are now deleted.** MEMO@6: fit 24.0%, pool 28.8%, verdict 27.6%; `verdict` shipped because it published no row carrying an obstacle where `pool` published 4.6%. Archived by wsGB, which made `AGENT_SELECT=adviser` the default and removed the deterministic memo sort all three were arms of. Two of the three are still runnable from a local sort in the file; the `fit` arm cannot be, because `scoreFitControl` went with it |
 
 ## Two things deliberately NOT archived
 
