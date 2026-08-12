@@ -604,7 +604,17 @@ export class IntakeTally {
     for (const k of f.ownAnswer) this.own.set(k, (this.own.get(k) ?? 0) + 1);
     for (const { field, reason } of f.heldBack) {
       this.back.set(field, (this.back.get(field) ?? 0) + 1);
-      this.backWhy.set(field, reason);
+      // Values accumulate across founders. A line quoting the LAST founder's
+      // value would describe one row and read like a description of the run.
+      const prev = this.backWhy.get(field);
+      if (reason.why === "unofferable_value" && prev?.why === "unofferable_value") {
+        this.backWhy.set(field, {
+          why: "unofferable_value",
+          values: [...new Set([...prev.values, ...reason.values])].sort(),
+        });
+      } else {
+        this.backWhy.set(field, reason);
+      }
     }
   }
   /** The lines a run prints. Withheld fields are printed too — a gap nobody
