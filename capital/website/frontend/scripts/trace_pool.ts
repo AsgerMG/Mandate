@@ -112,6 +112,12 @@ async function main() {
     const pool = accessible.slice(0, VERDICT_POOL);
     const poolIds = pool.map((r) => r.instrumentId).filter(Boolean) as string[];
     await hydrateGatesFor(poolIds);
+    // ITS OWN LOG, and that is not tidiness. SEL-DUPE-NAME has TWO recorders --
+    // `materialiseInstrumentTable` collapses the SCREEN's labels and this
+    // collapses the MEMO's -- and one shared log would report their sum under
+    // one surface's heading. One label per surface is exactly the arrangement
+    // `nameCollision.ts` asks for; counting them together undoes it.
+    const orderLog = new ExclusionLog();
     const { ordered, toWriter, assessments } = orderMemoCandidates({
       instrumentTable: pool,
       req: { company: t.company, country: t.country, description: t.description,
@@ -119,13 +125,13 @@ async function main() {
              eligibility: el } as never,
       records: [], dbPeers: [],
       eligibilityScreen: evaluateEligibility(el, poolIds),
-      log,
+      log: orderLog,
     });
 
     // `ordered` is a PERMUTATION of the pool — the collapse demotes, it does
     // not delete — so a "deduped" count would be the pool's own length and say
     // nothing. What the collapse costs is a PLACE, so that is what is printed.
-    const demoted = log.countsByRule()["SEL-DUPE-NAME"] ?? 0;
+    const demoted = orderLog.countsByRule()["SEL-DUPE-NAME"] ?? 0;
     console.log(
       `${t.company.padEnd(16)} table=${String(table.length).padEnd(3)} `
       + `accessible=${String(accessible.length).padEnd(3)} pool=${String(pool.length).padEnd(3)} `
