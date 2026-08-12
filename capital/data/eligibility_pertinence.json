@@ -53,6 +53,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "00f881d51102d799": {
+   "reason": "Names eligible categories of beneficiaries (municipalities, NGOs, entrepreneurs, individuals) despite procedural referral to documents.",
+   "sample": "P\u0159\u00edjemci podpory jsou podle jednotliv\u00fdch aktivit m\u011bsta, obce, kraje, neziskov\u00fd sektor, podnikatel\u00e9 i fyzick\u00e9 osoby. P\u0159esn\u00e9 vymezen\u00ed opr\u00e1vn\u011bn\u00fdch subjekt\u016f pro konkr\u00e9tn\u00ed oblasti podpory je uvedeno v Programov\u00e9m dokumentu OP",
+   "v": 3,
+   "verdict": "condition"
+  },
   "010368283fc3f44a": {
    "reason": "Exclusion of recent HPSU clients with stated escape conditions.",
    "sample": "HPSU-funded start-up clients are generally not eligible for RD&I funding for three years after investment, unless they meet minimum FTE, revenue, and EBITDA-positive conditions and have not raised external equity finance",
@@ -221,6 +227,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "03c7d8fb10a72d16": {
+   "reason": "Consortium participation conditions: minimum EUR 125,000 per participant, additionality, cofinancing declarations.",
+   "sample": "Deelname loopt via consortia: bedrijven (van start-ups en mkb tot grote ondernemingen) en kennisinstellingen sluiten zich aan bij een NXTGEN Hightech-project, waarna de subsidie via stichting NXTGEN Hightech en RVO wordt",
+   "v": 3,
+   "verdict": "condition"
+  },
   "03e436604eec7713": {
    "reason": "Tax status and income-type requirements applicants can verify.",
    "sample": "Eligible claimants are taxpayers under German income-tax or corporation-tax law who generate income under section 2(1) sentence 1 numbers 1 to 3 of the Income Tax Act (EStG), are not exempt from taxation, and meet the ot",
@@ -296,6 +308,12 @@
   "04e692d3bf132d96": {
    "reason": "Defines eligible applicant categories, checkable by reader.",
    "sample": "Universities and research institutions per Article 2(83) GBER, associations with R&D capacity in Germany, and public authorities/administrative bodies are also eligible applicants.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "04f4e4746a487e9b": {
+   "reason": "Requires commercial enterprise with establishment in Germany, SME preference \u2014 checkable applicant attribute.",
+   "sample": "Antragsberechtigt sind insbesondere Unternehmen der gewerblichen Wirtschaft mit einer Betriebsst\u00e4tte in Deutschland, insbesondere ist die Beteiligung kleiner und mittlerer Unternehmen (KMU) erw\u00fcnscht.",
    "v": 3,
    "verdict": "condition"
   },
@@ -392,6 +410,12 @@
   "0643a18dc8d4551b": {
    "reason": "Applicant must offer test/demo infrastructure or run accelerator \u2014 checkable capability.",
    "sample": "Applicant must either offer test and demo infrastructure, or run an established accelerator and/or business development programme",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "0649e2ed36bc5d10": {
+   "reason": "Enumerates eligible legal-entity categories applicants can match themselves against.",
+   "sample": "Antragsberechtigt sind: Privatpersonen, Wohnungseigent\u00fcmergemeinschaften, freiberuflich T\u00e4tige, Kommunen, kommunale Gebietsk\u00f6rperschaften und kommunale Zweckverb\u00e4nde, Unternehmen, sonstige juristische Personen des Privat",
    "v": 3,
    "verdict": "condition"
   },
@@ -665,6 +689,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "09578b7bfd3fbe81": {
+   "reason": "States public/private legal and natural persons may apply; eligibility statement, though broad.",
+   "sample": "O podporu mohou \u017e\u00e1dat jak ve\u0159ejnopr\u00e1vn\u00ed a soukromopr\u00e1vn\u00ed pr\u00e1vnick\u00e9 osoby, tak fyzick\u00e9 osoby, a to na v\u0161echny podporovan\u00e9 \u010dinnosti. Konkr\u00e9tn\u00ed okruh opr\u00e1vn\u011bn\u00fdch \u017eadatel\u016f, forma a v\u00fd\u0161e podpory jsou v\u017edy vymezeny v textu jed",
+   "v": 3,
+   "verdict": "condition"
+  },
   "096e6c8f0a713582": {
    "reason": "Applicant must be a company/legal entity, not individual.",
    "sample": "Applicant must be a company (not an individual) able to receive a grant, single applicant or consortium partner",
@@ -820,6 +850,12 @@
    "sample": "Instrument is direct equity investment, so borrower model must accommodate cap-table dilution",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "0ad1f2b42c017d0d": {
+   "reason": "Startup with Estonian economic link and recent EIC seal within three months.",
+   "sample": "Taotleda saavad iduettev\u00f5tjad, kelle projektil on otsene seos ja m\u00f5ju Eesti majandusele ning kelle EIC Accelerator kvaliteedim\u00e4rgise saamisest ei ole m\u00f6\u00f6dunud rohkem kui kolm kuud.",
+   "v": 3,
+   "verdict": "condition"
   },
   "0afcbf5f282bfc34": {
    "reason": "70% cost-share cap per partner constrains project structure.",
@@ -977,6 +1013,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "0cf8235396d949a8": {
+   "reason": "Female ownership thresholds, any size, any Italian region \u2014 checkable applicant characteristics.",
+   "sample": "Cooperative o societa' di persone con almeno il 60% di donne socie; societa' di capitale con quote e componenti degli organi di amministrazione per almeno i due terzi di donne; imprese individuali con titolare donna; lav",
+   "v": 3,
+   "verdict": "condition"
+  },
   "0d18e92e3d9f5686": {
    "reason": "EU SME thresholds requirement on applicant.",
    "sample": "Applicant must be an SME (typically per EU SME definition: staff and turnover thresholds)",
@@ -992,6 +1034,12 @@
   "0d63b911dd56d882": {
    "reason": "Incorporation and location requirement with documentary evidence.",
    "sample": "Applicant must already be incorporated and operating in an EU/Horizon Europe or Horizon Europe associated country, evidenced by an incorporation certificate.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "0d753e15a93bf0f1": {
+   "reason": "Excluded sectors and not-in-difficulty test \u2014 applicant-checkable.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud \u00e4ri\u00fching, kelle p\u00f5hitegevusala ei kuulu v\u00e4listatud EMTAK jakku, ossa v\u00f5i gruppi (sealhulgas p\u00f5llumajandus, metsamajandus ja kalap\u00fc\u00fck ning tubakatoodete tootmine) ja kes ei ole ",
    "v": 3,
    "verdict": "condition"
   },
@@ -1331,11 +1379,23 @@
    "v": 3,
    "verdict": "condition"
   },
+  "11b1bd74fac1af86": {
+   "reason": "Education, ownership share, company age, residency documentation are applicant requirements.",
+   "sample": "Applicants must have completed a higher education before the programme starts, or be students graduating before that date, and may apply alone or in a team of up to three founders. Each founder must own at least 12.5 per",
+   "v": 3,
+   "verdict": "condition"
+  },
   "11b52ddb5dddb0ef": {
    "reason": "States what the money funds and project maturity horizon backed.",
    "sample": "Funds must go to first-of-a-kind net-zero/decarbonisation demonstration capex, mature enough to reach financial close in ~4 years",
    "v": 3,
    "verdict": "demand_match"
+  },
+  "11bbd1043e1f1b38": {
+   "reason": "Registration plus tax debt and reporting compliance thresholds on applicant.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik, kelle maksuv\u00f5lg riigile koos intressiga ei ole suurem kui 100 eurot v\u00f5i on ajatatu",
+   "v": 3,
+   "verdict": "condition"
   },
   "11bef9dc5b84606a": {
    "reason": "Project must be a specific accommodation establishment type.",
@@ -1556,6 +1616,12 @@
   "13aa62345983476b": {
    "reason": "SME status, Catalonia region and specific retail CNAE sectors are checkable restrictions.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES51 - CATALU\u00d1A. Finalidad: Comercio, Turismo y Pymes. Sectores elegibles: Comercio al por menor de veh\u00edculos de motor, motocic",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "13b3b3fa52add617": {
+   "reason": "Requires Czech I\u010c, not in liquidation, tax registration, location outside Prague.",
+   "sample": "\u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 je projekt realizov\u00e1n, kter\u00e1 nen\u00ed v likvidaci a je registrov\u00e1na jako poplat",
    "v": 3,
    "verdict": "condition"
   },
@@ -1820,6 +1886,12 @@
   "17511f8392b471d1": {
    "reason": "Participation limited to listed countries of establishment \u2014 checkable eligibility restriction.",
    "sample": "Participation is limited to legal entities established in EU Member States, Iceland, Norway, and specific additional associated countries (Canada, Israel, Republic of Korea, New Zealand, Switzerland, United Kingdom) for ",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "17604a9766084e73": {
+   "reason": "Eligible bodies plus event in Estonia and priority target-market marketing requirement.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti riigiasutus ja kohaliku omavalitsuse \u00fcksus ning Eestis registreeritud juriidiline isik. S\u00fcndmus peab toimuma Eestis ja selle turundustegevused peavad olema kavandatud v\u00e4hemalt \u00fchel turismiaren",
    "v": 3,
    "verdict": "condition"
   },
@@ -2345,6 +2417,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "1e173798f23c0f3f": {
+   "reason": "Describes what the instrument backs: innovative start-ups/SMEs with global ambition; maturity/counterparty shape of offer.",
+   "sample": "Il soutient des projets innovants port\u00e9s par des start-up et des PME et favorise l\u2019\u00e9mergence d\u2019entreprises leaders dans leur domaine, pouvant pr\u00e9tendre \u00e0 une envergure mondiale.",
+   "v": 3,
+   "verdict": "demand_match"
+  },
   "1e188730c613f6a8": {
    "reason": "Definitional test of research entity status applicants can check against themselves.",
    "sample": "Research/knowledge-dissemination entities are defined as those whose main task is independent basic research, industrial research or experimental development, or disseminating the results of such activities through teach",
@@ -2399,6 +2477,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "1ebdc6cde3722405": {
+   "reason": "Requires the public entity be applicant and project owner \u2014 checkable applicant role.",
+   "sample": "Det er den offentlige virksomheten som er s\u00f8ker og prosjektansvarlig i et offentlig ph.d-prosjekt.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "1ec8e0e9075b8012": {
    "reason": "SME qualification requirement.",
    "sample": "Applicant must qualify as an SME",
@@ -2438,6 +2522,12 @@
   "1f0a0dc43ed5bdfb": {
    "reason": "Mandates working-capital use tied to Covid-19 impact; use restriction.",
    "sample": "Loan funds must be used to finance working capital of Covid-19 negatively affected business operators, needed to mitigate the negative impact of Covid-19 spread on business or financial condition.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "1f238e0c10cb3be5": {
+   "reason": "Eligibility requirements: operational seat in Lazio, registry enrolment, large firms only with SME collaboration.",
+   "sample": "Imprese in forma singola o aggregata, comprese le liberi professionisti titolari di partita IVA, con almeno una sede operativa nel Lazio, iscritte al Registro delle Imprese alla data di presentazione della domanda; sono ",
    "v": 3,
    "verdict": "condition"
   },
@@ -3065,6 +3155,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "26c72e6aea0da932": {
+   "reason": "SME/research organisation target, Czech I\u010c, project outside Prague \u2014 applicant-checkable requirements.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou mal\u00e9 a st\u0159edn\u00ed podniky, mal\u00e9 spole\u010dnosti se st\u0159edn\u00ed tr\u017en\u00ed kapitalizac\u00ed (small mid-caps) a v\u00fdzkumn\u00e9 organizace. \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, op",
+   "v": 3,
+   "verdict": "condition"
+  },
   "26dfe16edd947281": {
    "reason": "Excludes territories previously funded \u2014 checkable exclusion.",
    "sample": "Territories that already benefited from the AVELO or AVELO 2 CEE programmes are not eligible.",
@@ -3200,6 +3296,12 @@
   "28d89e03807e421a": {
    "reason": "Exclusion of firms in difficulty or under recovery order; checkable.",
    "sample": "Companies in difficulty and companies that have not complied with an EU recovery order are excluded.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "28de457765f68708": {
+   "reason": "Track-record thresholds of past concerts and attendee numbers required of applicant.",
+   "sample": "Taotleja peab olema Eestis registreeritud \u00e4ri\u00fching, kes on viimase viie aasta jooksul korraldanud v\u00e4hemalt \u00fche v\u00e4lisartistiga suurkontserdi v\u00e4hemalt 5000 pealtvaatajaga v\u00f5i v\u00e4hemalt kaks kontserti, m\u00f5lemad v\u00e4hemalt 2000 ",
    "v": 3,
    "verdict": "condition"
   },
@@ -3365,6 +3467,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "2a7b092480d5bea7": {
+   "reason": "SME/small mid-cap target group, Czech I\u010c, project location outside Prague \u2014 checkable.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou podnikatelsk\u00e9 subjekty typu mal\u00fdch a st\u0159edn\u00edch podnik\u016f a small mid-caps (mal\u00e1 spole\u010dnost se st\u0159edn\u00ed tr\u017en\u00ed kapitalizac\u00ed). \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010des",
+   "v": 3,
+   "verdict": "condition"
+  },
   "2a9f319d9b2dca9f": {
    "reason": "Legal-entity requirement checkable by applicant.",
    "sample": "Applicant must be a company/legal entity (not an individual) able to receive a grant",
@@ -3404,6 +3512,12 @@
   "2b0f728d91e9c289": {
    "reason": "Legal establishment requirement checkable by applicant.",
    "sample": "Legal entity in EU member state or associated country",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2b1e6c4bdd1f3e4f": {
+   "reason": "SME status, revenue threshold, employee count and own-financing are applicant requirements.",
+   "sample": "Taotleja v\u00f5ib olla Eesti \u00e4riregistris registreeritud VKE, kelle v\u00f5i kellega valitseva m\u00f5ju kaudu seotud ettev\u00f5tja taotluse esitamisele eelnenud kahe majandusaasta keskmine m\u00fc\u00fcgitulu on iga majandusaasta kohta v\u00e4hemalt 20",
    "v": 3,
    "verdict": "condition"
   },
@@ -3626,6 +3740,12 @@
   "2e279ff704cef10b": {
    "reason": "Capacity and competence requirement on applicant organisation.",
    "sample": "Applicant organisation must have the competence and capacity to carry out projects contributing to the programme's goals",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "2e2ff4873fe0ae99": {
+   "reason": "Requires Czech business ID, registered owners, not in liquidation, project sited outside NUTS 2 Praha.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou podnikatelsk\u00e9 subjekty a v\u00fdzkumn\u00e9 organizace. \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 ",
    "v": 3,
    "verdict": "condition"
   },
@@ -3917,6 +4037,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "31da4683fa9ea15a": {
+   "reason": "Requires capability, infrastructure, partnerships and mandatory pre-counselling \u2014 checkable eligibility.",
+   "sample": "Taotlejaks v\u00f5ivad olla Eestis registreeritud era\u00f5iguslikud juriidilised isikud, kes soovivad pakkuda loomevaldkonna ettev\u00f5tjatele tugiteenuseid ning kellel on selleks vajalikud teadmised, oskused, kogemused, ligip\u00e4\u00e4s v\u00f5r",
+   "v": 3,
+   "verdict": "condition"
+  },
   "31f72038c5627c7b": {
    "reason": "Limits applicants to SMEs of specified sectors and self-employed engineers.",
    "sample": "InnoPr\u00e4mie is available to SMEs of the commercial economy, the cultural and creative economy, and self-employed engineers.",
@@ -3977,6 +4103,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "32ca14692cf78f07": {
+   "reason": "Defines main applicant as R&D-engaged legal/natural person; checkable eligibility despite reference to tender docs.",
+   "sample": "Hlavn\u00edm uchaze\u010dem je pr\u00e1vnick\u00e1 osoba nebo fyzick\u00e1 osoba, organiza\u010dn\u00ed slo\u017eka st\u00e1tu nebo organiza\u010dn\u00ed jednotka ministerstva, zab\u00fdvaj\u00edc\u00ed se v\u00fdzkumem a v\u00fdvojem, kter\u00e1 pod\u00e1v\u00e1 n\u00e1vrh projektu a odpov\u00edd\u00e1 za jeho spr\u00e1vnost. Projek",
+   "v": 3,
+   "verdict": "condition"
+  },
   "32d1453497c7f0fc": {
    "reason": "States size and grant form of the offer; matched against sought amount.",
    "sample": "Ticket size consistent with grant scale of this programme (tens to low hundreds of thousands EUR)",
@@ -4016,6 +4148,12 @@
   "3369a1e82b129c4c": {
    "reason": "BW seat or intent to establish, plus exclusions for difficulty, prior Invest BW aid, public ownership.",
    "sample": "Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft und der freien Berufe, die ihren Sitz, eine Niederlassung oder eine Betriebsst\u00e4tte in Baden-W\u00fcrttemberg haben oder einen Sitz, eine Niederlassung oder Betrie",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "337c3e4a8d5aa9a2": {
+   "reason": "Employee count, operating history, export revenue or growth thresholds.",
+   "sample": "Toetuse taotleja on Eesti \u00e4riregistrisse kantud kaheksa v\u00f5i enama t\u00f6\u00f6tajaga ettev\u00f5tja, kelle majandustegevus on enne arenguprogrammi algust kestnud v\u00e4hemalt kaks aastat ja kes on kas teeninud arenguplaani elluviimisele e",
    "v": 3,
    "verdict": "condition"
   },
@@ -4259,6 +4397,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "36fdb1e0fd602b0a": {
+   "reason": "Thresholds on years active, employees, turnover and export are checkable.",
+   "sample": "Toetus on m\u00f5eldud Eestis registreeritud ja loomemajanduse valdkonnas tegutsevatele v\u00e4ike- ja keskmise suurusega ettev\u00f5tjatele, kes on loomemajanduse valdkonnas tegutsenud v\u00e4hemalt kolm aastat enne taotlemist, kelle juure",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3708b7673b6583c5": {
    "reason": "Applicant must be a single company or research entity applying directly.",
    "sample": "Applicant is a single company or research entity applying directly (not necessarily a fund/SPV)",
@@ -4328,6 +4472,12 @@
   "37cd8ce8b7fb07f2": {
    "reason": "Alternative eligible activity: processing/marketing of agricultural products.",
    "sample": "Applicant may alternatively qualify if active in the processing and marketing of agricultural products",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "37d1566b2fb9fcc9": {
+   "reason": "Specifies eligible applicant legal form and partner requirements the reader can verify.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud juriidiline isik. Projekti partneriks v\u00f5ib olla taotluses nimetatud Eestis registreeritud juriidiline isik, kohaliku omavalitsuse \u00fcksus v\u00f5i riigiasutus, kes osaleb toetatava te",
    "v": 3,
    "verdict": "condition"
   },
@@ -4565,6 +4715,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "3a75c9bf860765f9": {
+   "reason": "Applicant registration, enterprise size rules with MSP cooperation, and location of implementation are checkable.",
+   "sample": "\u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 je projekt realizov\u00e1n. V\u00fdzva je ur\u010dena pro mal\u00e9, st\u0159edn\u00ed i velk\u00e9 podniky, p",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3a917ad142e9e52f": {
    "reason": "Project must be R&D/research under Polartema scope.",
    "sample": "Funds must be used for an R&D, research or innovation project (Polartema-linked research programme)",
@@ -4598,6 +4754,12 @@
   "3ad0a185d8a8a37f": {
    "reason": "Seat jurisdiction and purpose-legality requirements checkable by applicant.",
    "sample": "The enterprise must not have its registered seat in a Non-Cooperative Jurisdiction as defined by EU/OECD/FATF lists, and the contract must not finance illegal activity or artificial tax-avoidance arrangements.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3ae3797ae48c108b": {
+   "reason": "SME status, German establishment, under 500 employees \u2014 explicit checkable thresholds.",
+   "sample": "Antragsberechtigt f\u00fcr FuE-Projekte sind: a) Kleine und mittlere Unternehmen (KMU), die zum Zeitpunkt beziehungsweise im Zeitraum der Auszahlung der Beihilfe eine Betriebsst\u00e4tte oder Niederlassung in Deutschland haben. b)",
    "v": 3,
    "verdict": "condition"
   },
@@ -4841,6 +5003,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "3dc090e3cb791326": {
+   "reason": "Requires ATS membership in Liguria innovation poles, SME collaboration, 20% cost cap on research bodies.",
+   "sample": "Possono presentare domanda piccole, medie e grandi imprese in forma singola (solo PMI) o associata, costituite in ATS, aderenti ad uno dei 5 Poli di Ricerca e Innovazione della Regione Liguria. Le grandi imprese sono amm",
+   "v": 3,
+   "verdict": "condition"
+  },
   "3dc1fa2e4cf8bb80": {
    "reason": "Project cost must fall within stated floor and ceiling.",
    "sample": "Total cost of operations must be between \u20ac100k (\u20ac25k in Corsica and overseas territories) and \u20ac3M",
@@ -4946,6 +5114,12 @@
   "3ed1287f4800712e": {
    "reason": "Enumerates legal forms of eligible applicants; reader can check own form.",
    "sample": "Antragsberechtigt: Unternehmen iSd. \u00a7 14 BGB, Kommunen (soweit wirtschaftlich t\u00e4tig), kommunale Eigenbetriebe, kommunale Unternehmen, kommunale Zweckverb\u00e4nde, eingetragene Vereine, eingetragene Genossenschaften. Contract",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "3eeb8d8b457f6c39": {
+   "reason": "Defines eligible counterparty types (firms of all sizes, utilities, energy service providers) readers can check.",
+   "sample": "Die neue F\u00f6rderung richtet sich an Unternehmen aller Branchen und Gr\u00f6\u00dfen, Stadtwerke und Energiedienstleister.",
    "v": 3,
    "verdict": "condition"
   },
@@ -5783,6 +5957,12 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "4879a7ac16ea07a8": {
+   "reason": "Sector restriction, exclusions, de minimis ceiling \u2014 applicant eligibility criteria.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud \u00e4ri\u00fching, kelle p\u00f5hitegevusala vastab EMTAK jaole B (m\u00e4et\u00f6\u00f6stus) v\u00f5i C (t\u00f6\u00f6tlev t\u00f6\u00f6stus), v\u00e4lja arvatud kivi- ja pruuns\u00f6e kaevandamine, nafta ja maagaasi tootmine ning tubakato",
+   "v": 3,
+   "verdict": "condition"
+  },
   "48834cf859dd4472": {
    "reason": "Project must be innovation/R&D/green and aligned with priorities: project requirement.",
    "sample": "Funds must support an innovation, R&D, growth or green-transition project aligned with national priorities",
@@ -6326,6 +6506,12 @@
   "4f11b86b0ab5772d": {
    "reason": "Legal entity establishment requirement.",
    "sample": "Applicants (beneficiaries and affiliated entities) must be legal entities (public or private bodies) established in an eligible country; any country in the world is eligible for participation.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "4f14e379db050221": {
+   "reason": "Enumerates eligible categories of enterprises, research centres, professionals, startups \u2014 checkable by reader.",
+   "sample": "Possono beneficiare delle agevolazioni i seguenti soggetti: le imprese che esercitano le attivita' di cui all'articolo 2195 del codice civile; le imprese agro-industriali; i centri di ricerca con personalita' giuridica; ",
    "v": 3,
    "verdict": "condition"
   },
@@ -7049,6 +7235,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "56766577ab33a517": {
+   "reason": "Bare fragment listing entity types; no requirement or threshold stated.",
+   "sample": "bedrifter, forskningsinstitutter og andre samarbeidspartnere",
+   "v": 3,
+   "verdict": "report"
+  },
   "5676b95e2b7aed57": {
    "reason": "Describes instrument's target maturity and seed equity form, matched against applicant's need.",
    "sample": "Typically pre-revenue or early-revenue tech startups seeking seed equity",
@@ -7058,6 +7250,12 @@
   "567ec73ef2d8ad11": {
    "reason": "Use-of-funds requirement for R&D/innovation project.",
    "sample": "Funds must be used for R&D, innovation or technology development project",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5683186110aeca15": {
+   "reason": "Requires company whose project is notified as IPCEI state aid; partners allowed.",
+   "sample": "Toetuse taotlejaks v\u00f5ib olla Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle projekt on Euroopa Komisjonile IPCEI riigiabina teatatud. Taotleja v\u00f5ib projekti kaasata partnereid, kelleks v\u00f5ivad olla muud era\u00f5iguslikud juriidi",
    "v": 3,
    "verdict": "condition"
   },
@@ -7178,6 +7376,12 @@
   "58a3e64af91ecf41": {
    "reason": "Applicant-type requirement, testable against own status.",
    "sample": "Applicant must be a large enterprise, SME, or individual carrying out economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "58a8db5d7182336a": {
+   "reason": "Business applicant with Czech I\u010c and implementation location outside NUTS 2 Praha.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou podnikatelsk\u00e9 subjekty. \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 je projekt realizov\u00e1n.",
    "v": 3,
    "verdict": "condition"
   },
@@ -7475,6 +7679,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "5bde3d26a26935dd": {
+   "reason": "SME status, EMTAK sectors, owner's EU registration, self-financing share.",
+   "sample": "Toetust v\u00f5ivad taotleda Eesti \u00e4riregistrisse kantud v\u00e4ikese ja keskmise suurusega ettev\u00f5tjad, kelle tegevusala kuulub EMTAK jagudesse B, C, D, E, F, G, H, I, J, M, N v\u00f5i Q. Ettev\u00f5tja \u00fcle valitsevat m\u00f5ju omav isik peab ol",
+   "v": 3,
+   "verdict": "condition"
+  },
   "5bf4940636e3fe34": {
    "reason": "Large firms must cooperate with at least three MPMI in specified legal forms.",
    "sample": "Grandi Imprese (GI) in cooperazione con almeno 3 Micro, Piccole e Medie Imprese (MPMI) - con o senza Organismi di Ricerca (OR) - associate nelle forme di ATS, RTI o Reti di imprese prive di personalita' giuridica (Rete-C",
@@ -7583,6 +7793,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "5d2a871418a0f00d": {
+   "reason": "Applicant type choice, requirement of an enterprise partner, no-undertaking-in-difficulty, registry duties \u2014 all checkable.",
+   "sample": "Ka\u017ed\u00fd uchaze\u010d (hlavn\u00ed uchaze\u010d i dal\u0161\u00ed \u00fa\u010dastn\u00edci) si vol\u00ed jeden z typ\u016f uchaze\u010de: v\u00fdzkumn\u00e1 organizace, nebo podnik (mal\u00fd, st\u0159edn\u00ed, velk\u00fd). V podprogramu 2 mus\u00ed b\u00fdt minim\u00e1ln\u011b jeden z uchaze\u010d\u016f podnik, kter\u00fd v\u00fdstupy a v\u00fdsledk",
+   "v": 3,
+   "verdict": "condition"
+  },
   "5d334502dbf579a6": {
    "reason": "Creditworthiness and no financial difficulty required of applicant.",
    "sample": "Company must not be in financial difficulty / must be creditworthy for guarantee to apply",
@@ -7652,6 +7868,12 @@
   "5e1de7accd5d409a": {
    "reason": "SME definition (Finnish, <250 employees) gating cost eligibility.",
    "sample": "For the purposes of purchased-service IP application costs, an SME is defined as a Finnish company with fewer than 250 employees.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "5e3aeec687ad2af3": {
+   "reason": "Requires establishment in Mecklenburg-Vorpommern; universities only via collaborative research \u2014 checkable.",
+   "sample": "Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft mit einer Betriebsst\u00e4tte oder Niederlassung in Mecklenburg-Vorpommern. Hochschulen und gemeinn\u00fctzige Forschungseinrichtungen k\u00f6nnen im Rahmen der Verbundfors",
    "v": 3,
    "verdict": "condition"
   },
@@ -8165,6 +8387,12 @@
    "v": 3,
    "verdict": "demand_match"
   },
+  "6425ab12ce20a265": {
+   "reason": "Eligible applicant types stated; two-stage procedure secondary, still actionable eligibility.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti riigiasutus ja kohaliku omavalitsuse \u00fcksus ning Eestis registreeritud juriidiline isik. Toetuse taotlemine toimub kahes etapis: eeltaotluse esitamine ja seej\u00e4rel taotluse esitamine.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "649667d563e0769d": {
    "reason": "Swedish company requirement.",
    "sample": "Applicant must be a Swedish company",
@@ -8411,6 +8639,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "66e89f3ef456b8b6": {
+   "reason": "Sector EMTAK B/C with exclusions, not undertaking in difficulty.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud \u00e4ri\u00fching, kelle p\u00f5hitegevusala vastab EMTAK jaole B (m\u00e4et\u00f6\u00f6stus) v\u00f5i C (t\u00f6\u00f6tlev t\u00f6\u00f6stus), v\u00e4lja arvatud kivi- ja pruuns\u00f6e kaevandamine, nafta ja maagaasi tootmine ning tubakato",
+   "v": 3,
+   "verdict": "condition"
+  },
   "66edcaa1bf204c35": {
    "reason": "TRL 5-6 entry threshold and market path requirement, checkable by applicant.",
    "sample": "Technology must be at TRL 5-6 at entry with a credible path to market, not pure research",
@@ -8558,6 +8792,12 @@
   "6835af3ab440b60d": {
    "reason": "Undertaking-in-difficulty exclusion tested against applicant's finances.",
    "sample": "Applicant must not be an 'undertaking in difficulty' as defined by article 2, point 18, of the GBER exemption regulation.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6841e42fce8c9a5d": {
+   "reason": "Requires at least one declared R&D employee with qualifying contract term.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kus t\u00f6\u00f6tab v\u00e4hemalt \u00fcks TA-t\u00f6\u00f6taja (teadlane, insener v\u00f5i tehnik), kelle t\u00f6\u00f6tasult makstavad ja kinnipeetavad maksud on Maksu- ja Tolliametile deklareeritud. TA",
    "v": 3,
    "verdict": "condition"
   },
@@ -8843,6 +9083,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "6bc841501524ad16": {
+   "reason": "R&D employee and contract duration requirements; de minimis ceiling noted.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kus t\u00f6\u00f6tab v\u00e4hemalt \u00fcks TA-t\u00f6\u00f6taja (teadlane, insener v\u00f5i tehnik), kelle t\u00f6\u00f6tasult makstavad ja kinnipeetavad maksud on Maksu- ja Tolliametile deklareeritud. TA",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6bdf0dff8fe2ab4f": {
    "reason": "Commercial Register registration requirement for applicant.",
    "sample": "The applicant must be a commercial entity registered in the Commercial Register of the Republic of Latvia.",
@@ -8927,9 +9173,21 @@
    "v": 3,
    "verdict": "condition"
   },
+  "6d37422e3397e139": {
+   "reason": "Applicant and project requirements: theme fit, CO2 reduction, duration, market potential, no firms in difficulty.",
+   "sample": "De subsidie staat open voor ondernemers en eindgebruikers, individueel of in een samenwerkingsverband met een gemachtigde penvoerder. Het project moet binnen een opengestelde DEI+-thematiek passen, aantoonbaar tot CO2-re",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6d4c04ac9f70cee8": {
    "reason": "Sector requirement: manufacturing industry.",
    "sample": "Project must fall within the manufacturing industry sector",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6d5e13e7794caad1": {
+   "reason": "Applicant must be agricultural entrepreneur per legal definition \u2014 checkable status.",
+   "sample": "\u017dadatelem je zem\u011bd\u011blsk\u00fd podnikatel, v\u010detn\u011b \u0161kolsk\u00fdch statk\u016f a st\u00e1tn\u00edch podnik\u016f, pokud spl\u0148uje pr\u00e1vn\u00ed definici zem\u011bd\u011blsk\u00e9ho podnikatele podle \u010desk\u00e9ho pr\u00e1vn\u00edho \u0159\u00e1du. \u017d\u00e1dosti se pod\u00e1vaj\u00ed prost\u0159ednictv\u00edm Port\u00e1lu farm\u00e1\u0159e St\u00e1t",
    "v": 3,
    "verdict": "condition"
   },
@@ -9029,6 +9287,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "6e7025d5fa6af081": {
+   "reason": "Enterprise size eligibility, subprogrammes restricted to SMEs \u2014 reader can check own size.",
+   "sample": "O podporu mohou \u017e\u00e1dat mal\u00e9, st\u0159edn\u00ed i velk\u00e9 podniky z cel\u00e9 \u010cesk\u00e9 republiky, a to bu\u010f samostatn\u011b, nebo ve spolupr\u00e1ci s dal\u0161\u00edmi podniky, vysok\u00fdmi \u0161kolami \u010di v\u00fdzkumn\u00fdmi organizacemi. Podprogramy 2 a 3 jsou ur\u010deny v\u00fdhradn\u011b m",
+   "v": 3,
+   "verdict": "condition"
+  },
   "6e8a1e3ef2a7ad62": {
    "reason": "SME size thresholds restrict who may apply.",
    "sample": "Scheme is typically restricted to SMEs under the EU definition (headcount/turnover/balance sheet thresholds)",
@@ -9050,6 +9314,12 @@
   "6eaa9fed275eeb92": {
    "reason": "Quantified financial test for undertaking in difficulty.",
    "sample": "Applicant must not be an undertaking in difficulty: for a limited company >3 years old, accumulated losses must not exceed half of subscribed share capital.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "6ee4b56b22cf39a1": {
+   "reason": "Turnover threshold and no insolvency proceedings \u2014 applicant requirements.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle enda v\u00f5i temaga valitseva m\u00f5ju kaudu seotud ettev\u00f5tja viimase kahe majandusaasta keskmine m\u00fc\u00fcgitulu on iga majandusaasta kohta v\u00e4hemalt 200 000 eurot ning",
    "v": 3,
    "verdict": "condition"
   },
@@ -9136,6 +9406,12 @@
    "sample": "Guarantee must back an export credit or trade-related financing need",
    "v": 3,
    "verdict": "condition"
+  },
+  "702c13abcf2e8b50": {
+   "reason": "Deadlines, eligible-cost dates, provider and consultation services; eligibility deferred to regulation \u2014 administrative.",
+   "sample": "\u017d\u00e1dosti o dotaci lze pod\u00e1vat do srpna 2026; zp\u016fsobil\u00e9 v\u00fddaje jsou uzn\u00e1v\u00e1ny od 1. \u00fanora 2020. Podrobn\u00e9 vymezen\u00ed opr\u00e1vn\u011bn\u00fdch \u017eadatel\u016f stanov\u00ed na\u0159\u00edzen\u00ed vl\u00e1dy a v\u00fdzva St\u00e1tn\u00edho fondu podpory investic, kter\u00fd je poskytovatelem ",
+   "v": 3,
+   "verdict": "report"
   },
   "703e22dccd09274c": {
    "reason": "Legal entity, not individual \u2014 checkable applicant status.",
@@ -9533,6 +9809,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "7561b96df6c5e60f": {
+   "reason": "Applicant must be researcher at institution with institutional backing and innovative idea.",
+   "sample": "The applicant must be a researcher or employee at a public research institution, educational institution or hospital, must have been involved in generating the underlying knowledge or result, and must be ready to build a",
+   "v": 3,
+   "verdict": "condition"
+  },
   "756bcf0e254d70da": {
    "reason": "Not-in-difficulty requirement under GBER, checkable.",
    "sample": "Company must not be an 'undertaking in difficulty' under GBER rules (e.g. losses eroding capital)",
@@ -9593,6 +9875,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "76439365a22cf896": {
+   "reason": "Applicant form, turnover threshold of EUR 25 million and positive project assessment are checkable requirements.",
+   "sample": "Taotleja v\u00f5ib olla Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching v\u00f5i v\u00e4lismaa \u00e4ri\u00fchingu filiaal, kes vastab tugiteenus- v\u00f5i arenduskeskuse n\u00f5uetele, kelle kontserni konsolideeritud k\u00e4ive oli taotluse esitamisele vahetult eelneval",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "764e85da43998cb9": {
+   "reason": "Registration, tax debt under 100 euros, filing obligations \u2014 applicant-checkable thresholds.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik; kliendi tundmise andmevahetusteenuse tegevuse puhul ka rahapesu ja terrorismi raha",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7656263de9b97bc6": {
    "reason": "Establishment must hold specific tourism classification \u2014 checkable.",
    "sample": "Applicant establishment must be classified as a H\u00f4tel de tourisme, Camping, R\u00e9sidence de tourisme, Village de vacances or Auberge collective under Atout France's classification standards",
@@ -9626,6 +9920,12 @@
   "7694028597ee8347": {
    "reason": "SME/early-stage status requirement about applicant maturity, stated as eligibility.",
    "sample": "Applicant must be an SME or early-stage innovative company",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "76b5d015b7cbb7f7": {
+   "reason": "SME/professional registration requirement, sector exclusion; application channel is procedural but condition dominates.",
+   "sample": "Si rivolge alle micro, piccole e medie imprese iscritte al Registro delle imprese e ai professionisti titolari di partita IVA, su tutto il territorio nazionale e in tutti i settori economici con la sola esclusione delle ",
    "v": 3,
    "verdict": "condition"
   },
@@ -9707,6 +10007,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "7868149d3cea3dfa": {
+   "reason": "Requires Czech I\u010c, relevant business authorization, not in liquidation, implementation outside Prague.",
+   "sample": "\u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 je projekt realizov\u00e1n, kter\u00e1 nen\u00ed v likvidaci. C\u00edlov\u00fdm \u00fazem\u00edm je \u00fazem\u00ed \u010cesk",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7871a9ce65c2285b": {
    "reason": "Civilian-purpose requirement on the project.",
    "sample": "The project must serve exclusively civilian purposes.",
@@ -9740,6 +10046,12 @@
   "78b10988c916657a": {
    "reason": "Applicant type requirement.",
    "sample": "Applicant must be a SME or a natural person carrying out an economic activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "78d598199b91aead": {
+   "reason": "Requires energy licence or contractual arrangement with licence holder \u2014 testable applicant attribute.",
+   "sample": "Opr\u00e1vn\u011bn\u00fdmi \u017eadateli jsou st\u00e1vaj\u00edc\u00ed nebo budouc\u00ed dr\u017eitel\u00e9 licence pro podnik\u00e1n\u00ed v energetick\u00fdch odv\u011btv\u00edch (v\u00fdroba elekt\u0159iny) podle energetick\u00e9ho z\u00e1kona \u010d. 458/2000 Sb., a d\u00e1le \u017eadatel\u00e9, kte\u0159\u00ed dr\u017eiteli licence nebudou, za",
    "v": 3,
    "verdict": "condition"
   },
@@ -9824,6 +10136,12 @@
   "79ce705f0dcea596": {
    "reason": "SME/scale-up size criteria is a checkable applicant threshold.",
    "sample": "Must be an SME or scale-up meeting size criteria typical of national promotional institutions",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "79d91c97f50c512e": {
+   "reason": "Eligible applicants are owners of publicly accessible infrastructure \u2014 checkable, though mixed with procedure.",
+   "sample": "Opr\u00e1vn\u011bn\u00fdmi \u017eadateli jsou vlastn\u00edci dot\u010den\u00e9 infrastruktury s ve\u0159ejn\u00fdm p\u0159\u00edstupem. \u017d\u00e1dost o podporu se pod\u00e1v\u00e1 prost\u0159ednictv\u00edm IS KP21+ v term\u00ednech stanoven\u00fdch pro jednotliv\u00e9 kolov\u00e9 v\u00fdzvy; podrobn\u00e9 podm\u00ednky stanov\u00ed Pravidla",
    "v": 3,
    "verdict": "condition"
   },
@@ -10001,6 +10319,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "7b96228b9db60a22": {
+   "reason": "Lists eligible applicant types and required partnership with inner-area municipalities; checkable by reader.",
+   "sample": "Soggetti beneficiari ammissibili: PMI, grandi imprese, enti pubblici di ricerca e organismi di ricerca e diffusione della conoscenza, in partenariati stabili tra imprese e organismi di ricerca, con il coinvolgimento dei ",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7ba2e15b62d91d34": {
    "reason": "Small-enterprise headcount and financial thresholds, self-checkable.",
    "sample": "Small enterprise is defined as employing fewer than 50 persons and having annual turnover and/or balance sheet total not exceeding \u20ac10 million.",
@@ -10103,6 +10427,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "7d1582308be12938": {
+   "reason": "Defines eligible applicant categories with German establishment/R&D capacity requirement.",
+   "sample": "Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Angeh\u00f6rige der Freien Berufe (insbesondere Rechtsanw\u00e4lte, Ingenieure, Architekten) mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland. Insbeson",
+   "v": 3,
+   "verdict": "condition"
+  },
   "7d285791b064ca94": {
    "reason": "Ownership/legal-form eligibility test on public bodies and foundations.",
    "sample": "Public-law bodies and legal entities in which public-law bodies hold more than 50 percent direct or indirect ownership, as well as foundations, are not eligible - except entities majority-owned by public bodies that carr",
@@ -10112,6 +10442,12 @@
   "7d2f24c8735ae93e": {
    "reason": "Exclusion of high-risk suppliers from restricted actions, self-checkable.",
    "sample": "Entities assessed as high-risk suppliers of mobile network communication equipment (and entities they own or control) are not eligible to participate in restricted 5G/communication network actions in any funded role.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "7d307e16b8f0c9c6": {
+   "reason": "Lists eligible entity types and partner criteria (costs incurred, not contractor) \u2014 checkable.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud \u00e4ri\u00fching, mittetulundus\u00fching, sihtasutus, kohaliku omavalitsuse \u00fcksus ja riigiasutus. Projekti v\u00f5ib kaasata partneri, kes on samuti Eestis registreeritud juriidiline isik, koha",
    "v": 3,
    "verdict": "condition"
   },
@@ -10184,6 +10520,12 @@
   "7e31368112b08b64": {
    "reason": "Applicant must have insufficient collateral, transparent history and positive creditworthiness; guarantee size and coverage stated.",
    "sample": "The credit guarantee is issued to companies that have insufficient collateral to obtain a loan or to obtain a loan of the required amount, but have a transparent financial history and a positive creditworthiness. Up to E",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "7e41da6db6f09627": {
+   "reason": "Ownership limit and job-creation/wage requirement checkable by applicant.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, milles ega temaga \u00fchte kontserni kuuluvas \u00e4ri\u00fchingus ei tohi olla riigi ega kohaliku omavalitsuse \u00fcksuse osalust \u00fcle 49 protsendi. Toetuse andmise tulemusel pea",
    "v": 3,
    "verdict": "condition"
   },
@@ -10445,6 +10787,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "811e1b66913cffc1": {
+   "reason": "Applicant size, excluded sectors, turnover threshold \u2014 checkable requirements.",
+   "sample": "Taotleda saavad igas suuruses Eesti \u00e4ri\u00fchingud, kelle tegevusala ei ole toetuse sihtgrupist v\u00e4listatud (v\u00e4listatud on muu hulgas p\u00f5llumajandus, kalandus, tubakas, kinnisvara, hasartm\u00e4ngud ja \u00f5igusteenused) ning kelle p\u00f5h",
+   "v": 3,
+   "verdict": "condition"
+  },
   "8135dbe8f17dfd1c": {
    "reason": "Company size eligibility under national programme rules.",
    "sample": "Applicant must be an SME (or otherwise scaled company eligible under national innovation programme rules)",
@@ -10553,6 +10901,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "824b7159439a8c56": {
+   "reason": "SME definition, financial criteria and exclusions are applicant thresholds.",
+   "sample": "The applicant must be a Danish SME by the EU definition, with fewer than 250 employees and either annual turnover under EUR 50 million or a balance sheet under EUR 43 million. In addition the company must meet at least o",
+   "v": 3,
+   "verdict": "condition"
+  },
   "828355aa09d261e1": {
    "reason": "Defines eligible applicant types: registered start-up or founding natural person.",
    "sample": "Applicant must be an innovative start-up registered in the special section of the Business Register, or a natural person (including foreign visa-holders) who intends to establish one within the required deadline.",
@@ -10628,6 +10982,12 @@
   "838b75a8215ca0fb": {
    "reason": "Turnover/balance sheet SME thresholds.",
    "sample": "Applicant must be an SME by turnover/balance sheet thresholds",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "839d996c8dcac21a": {
+   "reason": "Applicant categories and German Betriebsst\u00e4tte requirement are checkable conditions.",
+   "sample": "Antragsberechtigt mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland sind: private Unternehmen, kommunale Unternehmen, Landesunternehmen, freiberuflich T\u00e4tige, wenn die Betriebsst\u00e4tte \u00fcberwiegend f\u00fcr die freiberu",
    "v": 3,
    "verdict": "condition"
   },
@@ -10919,6 +11279,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "86d0c6188fe551cf": {
+   "reason": "Deep-tech startup, under five years, SME criteria, two FTE staff.",
+   "sample": "Toetust v\u00f5ib taotleda \u00e4riregistrisse kantud s\u00fcvatehnoloogia iduettev\u00f5tjast \u00e4ri\u00fching, kes on taotlemise hetkel tegutsenud kuni viis aastat ja kes vastab \u00fcldise grupierandi m\u00e4\u00e4ruse lisa I VKE kriteeriumitele. Taotleja mees",
+   "v": 3,
+   "verdict": "condition"
+  },
   "86f2424db842166b": {
    "reason": "Basque Country applicants of stated types and sectors within dates: verifiable eligibility.",
    "sample": "Beneficiarios: GRAN EMPRESA; PERSONAS F\u00cdSICAS QUE NO DESARROLLAN ACTIVIDAD ECON\u00d3MICA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES21 - PAIS VASCO. Finalidad: Otras actuaciones de car\u00e1c",
@@ -11138,6 +11504,12 @@
   "8970e6275978d062": {
    "reason": "Requires at least one Swedish participating company.",
    "sample": "At least one of the participating companies must be Swedish",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "897b043840e75a5f": {
+   "reason": "Requires Estonian-registered company with project in listed EMTAK sections; partner option.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle projekt, millele toetust taotletakse, vastab m\u00e4\u00e4ruses loetletud EMTAKi jagudele. Taotleja v\u00f5ib projekti kaasata era\u00f5iguslikust juriidilisest isikust v\u00f5i t",
    "v": 3,
    "verdict": "condition"
   },
@@ -11480,6 +11852,12 @@
   "8cf70029e620e499": {
    "reason": "Location in Catalonia required; checkable condition.",
    "sample": "Project/activity must be located in Catalonia (ES51)",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "8d045d6d88ee9a56": {
+   "reason": "Eligible applicant types plus two-year accounting history and subprogramme R&D-capacity criteria.",
+   "sample": "Uchaze\u010di o podporu na projekt mohou b\u00fdt podniky \u2013 pr\u00e1vnick\u00e9 i fyzick\u00e9 osoby, kter\u00e9 podle P\u0159\u00edlohy 1 Na\u0159\u00edzen\u00ed Komise vykon\u00e1vaj\u00ed hospod\u00e1\u0159skou \u010dinnost. Dal\u0161\u00edmi \u00fa\u010dastn\u00edky projektu mohou b\u00fdt dal\u0161\u00ed podniky a v\u00fdzkumn\u00e9 organizace",
    "v": 3,
    "verdict": "condition"
   },
@@ -11933,6 +12311,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "93490049eaae6c54": {
+   "reason": "Eligible applicant types plus conference location, participant counts, foreign market marketing.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti riigiasutus ja kohaliku omavalitsuse \u00fcksus ning Eestis registreeritud juriidiline isik. Konverents peab toimuma Eestis ja t\u00e4itma osalejate arvu n\u00f5ude (v\u00e4hemalt 200 osalejat Tallinnas, mujal Ee",
+   "v": 3,
+   "verdict": "condition"
+  },
   "934ea789e2d819d3": {
    "reason": "Requires applicant to operate an industrial site.",
    "sample": "Applicant must operate an industrial site.",
@@ -11990,6 +12374,12 @@
   "9447857785a02626": {
    "reason": "SME status plus commercial register registration required.",
    "sample": "Applicants must be small and medium-sized companies registered in the Estonian Commercial Register.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "9448837361749382": {
+   "reason": "Requires registered tourism SME, 36 months operating and turnover conditions \u2014 checkable by reader.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud turismiettev\u00f5tja, kes on v\u00e4hemalt 36 kuud tegutsenud \u00e4ri\u00fchingust VKE-na ja kelle majandusaasta k\u00e4ive vastab m\u00e4\u00e4ruses s\u00e4testatud tingimustele.",
    "v": 3,
    "verdict": "condition"
   },
@@ -12539,6 +12929,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "9aa1bfb7f015a65b": {
+   "reason": "Defines eligible entity types and co-financing capability requirement.",
+   "sample": "Uchaze\u010dem, respektive p\u0159\u00edjemcem podpory mohou b\u00fdt podniky \u2013 pr\u00e1vnick\u00e9 i fyzick\u00e9 osoby, kter\u00e9 podle P\u0159\u00edlohy 1 Na\u0159\u00edzen\u00ed vykon\u00e1vaj\u00ed hospod\u00e1\u0159skou \u010dinnost a prok\u00e1\u017eou schopnost projekt spolufinancovat z neve\u0159ejn\u00fdch prost\u0159edk\u016f;",
+   "v": 3,
+   "verdict": "condition"
+  },
   "9aaf80fdf397b3fc": {
    "reason": "Consortium composition, eligible countries, UK exclusion and financial capacity requirements.",
    "sample": "legal entities established in countries with which an Association Agreement to the Horizon Europe has not yet been concluded, or - legal entities established in countries with which an Association Agreement has been conc",
@@ -12596,6 +12992,12 @@
   "9b3a8342327d4295": {
    "reason": "Electricity-production investments excluded \u2014 checkable project exclusion.",
    "sample": "Investments to produce electricity, such as solar panels and power plants, cannot receive Klimatklivet support.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "9b3f4c133526096c": {
+   "reason": "Eligible applicant categories, non-public co-financing proof, possible narrowing by tender documentation.",
+   "sample": "Uchaze\u010dem, respektive p\u0159\u00edjemcem podpory mohou b\u00fdt organizace pro v\u00fdzkum a \u0161\u00ed\u0159en\u00ed znalost\u00ed (pr\u00e1vnick\u00e9 osoby spl\u0148uj\u00edc\u00ed definici v\u00fdzkumn\u00e9 organizace podle \u010dl. 2 odst. 83 Na\u0159\u00edzen\u00ed), podniky \u2013 pr\u00e1vnick\u00e9 i fyzick\u00e9 osoby vykon\u00e1",
    "v": 3,
    "verdict": "condition"
   },
@@ -12674,6 +13076,12 @@
   "9c06f3e138fe07d5": {
    "reason": "Excludes majority public-owned companies; ownership test.",
    "sample": "Companies where more than 50 per cent is owned by the state, regions or municipalities are excluded from investment.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "9c085d94ae38bf1b": {
+   "reason": "Requires registered private legal person, specific project focus, tax and report filing compliance \u2014 checkable.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik, kelle projekt on suunatud maanteetranspordi v\u00f5i veoteenuse dokumendi koostamise v\u00f5",
    "v": 3,
    "verdict": "condition"
   },
@@ -13373,6 +13781,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a3cd9cfaeacc0dbf": {
+   "reason": "SME thresholds on headcount, turnover, group affiliation and \u00cele-de-France establishment are self-checkable.",
+   "sample": "Les petites et moyennes entreprises (PME) : Quelle que soit leur forme juridique, y compris les associations ayant une activit\u00e9 \u00e9conomique, Employant entre 5 et 250 salari\u00e9s, Dont le chiffre d'affaires n'exc\u00e8de pas 50 M\u20ac",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a3cf4404a48ae5d2": {
    "reason": "Restricts project purpose to R&D/green transition \u2014 checkable project requirement.",
    "sample": "Funds must be used for R&D, innovation, demonstration or green-transition project (e.g. CLIMIT focuses on carbon capture/climate technology projects)",
@@ -13487,6 +13901,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a4eeb7de6a4e7bdf": {
+   "reason": "Eligible applicant categories plus two-year accounting history requirement.",
+   "sample": "Uchaze\u010di o podporu na projekt mohou b\u00fdt podniky \u2013 pr\u00e1vnick\u00e9 i fyzick\u00e9 osoby, kter\u00e9 podle P\u0159\u00edlohy 1 Na\u0159\u00edzen\u00ed Komise vykon\u00e1vaj\u00ed hospod\u00e1\u0159skou \u010dinnost. Dal\u0161\u00edmi \u00fa\u010dastn\u00edky projektu mohou b\u00fdt dal\u0161\u00ed podniky a v\u00fdzkumn\u00e9 organizace",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a50e7e1763e05cc5": {
    "reason": "Catalogue of schemes with checkable target groups: reindeer owners, under-35 farm heirs, Svalbard projects.",
    "sample": "Klynger, \u00f8kosystem og andre innovasjonsselskaper kan, etter en utlysnings- og utvelgelsesprosess, motta tilskudd fra oss for \u00e5 tilby r\u00e5dgivningstjenester til bedrifter. Har du et prosjekt som kan bidra til n\u00e6ringsutvikli",
@@ -13496,6 +13916,12 @@
   "a5146b1344beb8ac": {
    "reason": "Client-status requirement with agencies; readers can attain it, discriminates.",
    "sample": "Applicant must be an existing or potential client of Enterprise Ireland, \u00dadar\u00e1s na Gaeltachta, or a Local Enterprise Office (subject to prevailing agency policies), unless exempt under the Housing for All Offer.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "a53fe9f7d7ecae76": {
+   "reason": "Requires registered legal person and specified partners in development \u2014 checkable applicant requirements.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik. Arendamisse peab olema partneritena kaasatud riigiasutus v\u00f5i kohaliku omavalitsuse",
    "v": 3,
    "verdict": "condition"
   },
@@ -13679,6 +14105,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a70a6ed1cab475be": {
+   "reason": "Defines eligible sectors (hotels, agritourism, tourism/fair businesses) \u2014 reader checks own sector.",
+   "sample": "I soggetti beneficiari sono le imprese alberghiere, le strutture che svolgono attivita' agrituristica, le strutture ricettive all'aria aperta, nonche' le imprese del comparto turistico, ricreativo, fieristico e congressu",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a734d4d88d974215": {
    "reason": "Financing threshold and no-difficulty requirement on applicant.",
    "sample": "At least 25% of the investment programme's financing must come from own resources or external financing not itself publicly supported, and the company must not be a company in financial difficulty.",
@@ -13709,6 +14141,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a78304bd60b2085c": {
+   "reason": "Requires SME registered in Estonia with positive Eurostars/KDT joint-call decision \u2014 applicant-checkable requirement.",
+   "sample": "Toetust v\u00f5ib taotleda Eurostars 2 v\u00f5i Eurostars 3 \u00fchiskonkursil positiivse otsuse saanud Eesti \u00e4riregistrisse kantud \u00e4ri\u00fchingust v\u00e4ikese v\u00f5i keskmise suurusega ettev\u00f5tja v\u00f5i KDT JU \u00fchiskonkursil positiivse otsuse saanud ",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a78c5484e80b9161": {
    "reason": "Project must be in eligible commune \u2014 location condition.",
    "sample": "Project must be located in a commune eligible for the Fonds Tourisme Durable",
@@ -13727,6 +14165,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "a83e2becbec1d4a4": {
+   "reason": "Eligible public research bodies plus mandatory private co-financing partnership requirement.",
+   "sample": "Criteri di eleggibilita': Soggetti ammissibili a presentare domanda di partecipazione ai sensi del presente Avviso sono i soggetti pubblici identificati in: a. Enti e istituzioni di ricerca vigilati dal MUR, di cui al de",
+   "v": 3,
+   "verdict": "condition"
+  },
   "a84362bf7f220dee": {
    "reason": "Exclusion based on applicant's difficulty status at 31 Dec 2019.",
    "sample": "Support is not granted to a medium-sized undertaking that was already in difficulty on 31 December 2019 and remains in difficulty at the time of granting support, per Regulation 651/2014 Art 2(18).",
@@ -13738,6 +14182,12 @@
    "sample": "The installation must conform to the state of the art and comply with all safety requirements.",
    "v": 3,
    "verdict": "condition"
+  },
+  "a852e579d680c8e1": {
+   "reason": "States scheme is open to firms of any size and all fields \u2014 shape of offer, non-discriminating.",
+   "sample": "N\u00e6rings-ph.d. er for sm\u00e5 og store bedrifter og \u00e5pen for alle fagomr\u00e5der.",
+   "v": 3,
+   "verdict": "demand_match"
   },
   "a8733af82de69736": {
    "reason": "Eligible sectors listed; applicant checks own sector.",
@@ -13928,6 +14378,12 @@
   "aa2974f363e36b94": {
    "reason": "Undertaking-in-difficulty exclusion checkable by applicant.",
    "sample": "Company must not be in financial distress (loss of over half registered capital) per state-aid rules",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "aa30184dbb9e74f1": {
+   "reason": "Eligibility list by applicant type plus German establishment requirement \u2014 checkable.",
+   "sample": "Antragsberechtigt mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland sind: private Unternehmen, kommunale Unternehmen, freiberuflich T\u00e4tige, wenn die Betriebsst\u00e4tte \u00fcberwiegend f\u00fcr die freiberufliche T\u00e4tigkeit ge",
    "v": 3,
    "verdict": "condition"
   },
@@ -14252,6 +14708,12 @@
   "ad515b018e2c94f7": {
    "reason": "Restricts use of funds to R&D/innovation purposes \u2014 project requirement.",
    "sample": "Funds must be used for R&D, breakthrough innovation, or a specific challenge-defined technical solution",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "ad60128fe0cf440f": {
+   "reason": "Eligibility limited to universities/research institutes with German R&D capacity and firms \u2014 checkable.",
+   "sample": "Antragsberechtigt sind Hochschulen und au\u00dferuniversit\u00e4re Forschungseinrichtungen mit Forschungs- und Entwicklungskapazit\u00e4ten in Deutschland sowie Unternehmen der gewerblichen Wirtschaft und andere juristische Personen de",
    "v": 3,
    "verdict": "condition"
   },
@@ -15275,6 +15737,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "ba070ff0e77bf9b9": {
+   "reason": "Applicant type and mandatory partner involvement requirement.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik. Partnerina peab arendusse olema kaasatud v\u00e4hemalt \u00fcks reaalajamajanduse lahenduse ",
+   "v": 3,
+   "verdict": "condition"
+  },
   "ba097c01d24167d8": {
    "reason": "Carbon-leakage sector exposure requirement, checkable by applicant.",
    "sample": "Applicant must belong to an industrial sector or subsector exposed to significant carbon leakage risk during 2021-2030",
@@ -15398,6 +15866,12 @@
   "bbddf886aee9364f": {
    "reason": "Legal form, insolvency, Austrian establishment and value-added requirements checkable by applicant.",
    "sample": "F\u00f6rderungswerbende k\u00f6nnen nur au\u00dferhalb der \u00f6sterreichischen Bundesverwaltung stehende nat\u00fcrliche oder juristische Personen bzw. Personengesellschaften sein. Nicht antragslegitimiert sind Gesellschaften b\u00fcrgerlichen Rech",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "bbe74e8e1e02b3d1": {
+   "reason": "Sector codes and Ida-Viru location requirements are applicant-checkable.",
+   "sample": "Taotlejaks v\u00f5ib olla Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle tegevusala v\u00f5i selle projekti tegevusala, millele toetust taotletakse, vastab EMTAKi jaole B (m\u00e4et\u00f6\u00f6stus, teatavate alajagude erandiga), C (t\u00f6\u00f6tlev t\u00f6\u00f6stus",
    "v": 3,
    "verdict": "condition"
   },
@@ -15896,6 +16370,12 @@
   "c2e0ec918d4c4017": {
    "reason": "Insolvency/ceased-activity exclusion applies to applicant.",
    "sample": "Business operators subject to insolvency, legal protection or out-of-court legal protection proceedings, or whose economic activity has ceased, are excluded from support.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "c2ec7acfc360fd94": {
+   "reason": "Applicant type classification plus checkable duties: published accounts, not in difficulty, beneficial-owner registry.",
+   "sample": "Ka\u017ed\u00fd uchaze\u010d (hlavn\u00ed uchaze\u010d i dal\u0161\u00ed \u00fa\u010dastn\u00edci) si vol\u00ed jeden z typ\u016f uchaze\u010de: v\u00fdzkumn\u00e1 organizace, podnik (mal\u00fd, st\u0159edn\u00ed, velk\u00fd), nebo ostatn\u00ed uchaze\u010di povolen\u00ed zad\u00e1vac\u00ed dokumentac\u00ed (organiza\u010dn\u00ed slo\u017eka st\u00e1tu, \u00fazemn\u00ed sa",
    "v": 3,
    "verdict": "condition"
   },
@@ -16853,6 +17333,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "ce1b49a61e643d13": {
+   "reason": "Applicant must be registered company developing research infrastructure \u2014 checkable activity requirement.",
+   "sample": "Toetust v\u00f5ivad taotleda Eesti \u00e4riregistris registreeritud \u00e4ri\u00fchingud, kes arendavad taristut ja sellega seotud teenuseid, mida ettev\u00f5tjad kasutavad vastava valdkonna teadust\u00f6\u00f6 tegemiseks.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "ce27cdbcfc9846f8": {
    "reason": "Financial-distress threshold applicant must satisfy.",
    "sample": "Company must not be in financial distress (loss of over half capital etc.)",
@@ -17309,6 +17795,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "d2d1813ae35d60af": {
+   "reason": "Requires registered company offering specified software services; plus co-financing rate.",
+   "sample": "Taotleja peab olema Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kes pakub e-arvete operaatorteenust, kassas\u00fcsteemi, makselahendust v\u00f5i muud majandustarkvarateenust. Toetuse maksimaalne suurus on 20 000 eurot ja omafinantseerin",
+   "v": 3,
+   "verdict": "condition"
+  },
   "d2df23ddb4da55ef": {
    "reason": "Describes instruments (SAFE, PFI, equity) and stage of maturity backed \u2014 shape of the offer.",
    "sample": "This guide outlines our standard approach to term sheets when CDP Venture Capital acts as the lead investor in an investment round. In the very early stages, we primarily use quasi-equity instruments such as SAFEs (Simpl",
@@ -17596,6 +18088,12 @@
    "sample": "The beneficiary shall submit an annual implementation report to the granting authority within three months of the end of each financial year and shall retain all supporting documents for ten years.",
    "v": 3,
    "verdict": "report"
+  },
+  "d6f8cc961cabaeca": {
+   "reason": "Cumulative eligibility criteria: SME/ETI size, Ile-de-France location, sound finances, thematic fit \u2014 checkable by reader.",
+   "sample": "Pour \u00eatre \u00e9ligibles au dispositif, les entreprises doivent respecter les crit\u00e8res cumulatifs suivants : \u00catre une PME ou une ETI cr\u00e9\u00e9e au moment du d\u00e9p\u00f4t du dossier de candidature (avoir un num\u00e9ro SIRET et \u00eatre en mesure ",
+   "v": 3,
+   "verdict": "condition"
   },
   "d6f997e81bb6928e": {
    "reason": "Project theme requirement applicant can check.",
@@ -18119,6 +18617,12 @@
    "v": 3,
    "verdict": "report"
   },
+  "dcf5940644b382f2": {
+   "reason": "Minimum average turnover of 50,000 euros \u2014 checkable financial threshold.",
+   "sample": "Toetuse taotlejaks v\u00f5ib olla Eesti \u00e4riregistris registreeritud \u00e4ri\u00fching, kelle taotluse esitamisele vahetult eelnenud kahe majandusaasta keskmine m\u00fc\u00fcgitulu \u00e4riregistrile esitatud majandusaasta aruande kohaselt on v\u00e4hemal",
+   "v": 3,
+   "verdict": "condition"
+  },
   "dcfe66187228c11f": {
    "reason": "Applicant type requirement.",
    "sample": "Applicant must be an SME or self-employed individual (aut\u00f3nomo) carrying out an economic activity.",
@@ -18340,6 +18844,12 @@
    "sample": "The project must qualify as an 'integrated project' i.e. a group of single projects by different undertakings inserted in a common structure, roadmap or programme aiming at the same objective.",
    "v": 3,
    "verdict": "condition"
+  },
+  "deffa0328615c792": {
+   "reason": "States only company size served (SMEs and large firms); maturity/scale of counterparty, no merit test.",
+   "sample": "I beneficiari sono le micro, piccole e medie imprese (PMI) e le grandi imprese.",
+   "v": 3,
+   "verdict": "demand_match"
   },
   "df3d8d340aa33373": {
    "reason": "Exclusion of firms in financial distress \u2014 applicant-verifiable.",
@@ -18584,6 +19094,12 @@
   "e2f6b2b93a8e14b1": {
    "reason": "Consortium composition requirement checkable against applicant's own setup.",
    "sample": "Applicant must typically be part of a consortium (multi-partner project) rather than a solo entity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "e3244d53ef53998a": {
+   "reason": "Geographic eligibility (EEA/Switzerland/UK) and start-up status discriminates between readers.",
+   "sample": "Start-ups based in the EEA, Switzerland or the UK are encouraged to apply.",
    "v": 3,
    "verdict": "condition"
   },
@@ -19043,6 +19559,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "e81da3125ba7525f": {
+   "reason": "Main applicant type, collaboration with focus-country partners, project duration \u2014 all checkable.",
+   "sample": "A Danish research institution must be the main applicant and is responsible for submitting the application and for the dialogue with Innovationsfonden. The project must be built on collaboration with research partners in",
+   "v": 3,
+   "verdict": "condition"
+  },
   "e83ab8b13d19942c": {
    "reason": "Exclusions for recovery orders, difficulty, insolvency.",
    "sample": "Excluded are applicants that have not complied with a prior EU Commission recovery order, that are undertakings in difficulty per Art. 1(4)(c)/Art. 2(18) AGVO, or that are subject to insolvency or comparable proceedings.",
@@ -19379,6 +19901,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "eb5728c8502e6163": {
+   "reason": "Requires Estonian registration; preference for joint projects and SME focus is checkable.",
+   "sample": "Toetust saavad taotleda Eestis registreeritud ettev\u00f5tjad; eelistatud on Eesti ja Norra ettev\u00f5tjate \u00fchisprojektid ning programmi p\u00f5hifookus on v\u00e4ikese ja keskmise suurusega ettev\u00f5tjatel, kellele on suunatud enamik taotlus",
+   "v": 3,
+   "verdict": "condition"
+  },
   "eb5eb2ec6e871cf1": {
    "reason": "Excludes companies unable to stem losses without aid; checkable exclusion.",
    "sample": "Funding is excluded for companies unable, with their own resources or resources their owners/shareholders and creditors are willing to provide, to stem losses that would lead to near-certain economic disappearance absent",
@@ -19604,6 +20132,12 @@
   "eeed47533af33665": {
    "reason": "Registration/operation in Norway is a checkable applicant requirement.",
    "sample": "Applicant must be registered/operating in Norway",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "eef22425b3723c11": {
+   "reason": "Project must be pilot/demo, CO2 reduction, max four years, not undertaking in difficulty.",
+   "sample": "Aanvragen kan een ondernemer alleen of een samenwerkingsverband, waarbij een van de deelnemers als penvoerder indient en door alle andere deelnemers gemachtigd is. Het project moet een pilot- of demonstratieproject zijn ",
    "v": 3,
    "verdict": "condition"
   },
@@ -19937,6 +20471,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "f280ca0ea74505a9": {
+   "reason": "Regional restriction to southern regions and eligible R&D activities per statute.",
+   "sample": "La misura si applica alle imprese operanti nelle regioni Abruzzo, Basilicata, Calabria, Campania, Molise, Puglia, Sardegna e Sicilia. Le attivita' di ricerca e sviluppo ammissibili sono quelle individuate dall'articolo 1",
+   "v": 3,
+   "verdict": "condition"
+  },
   "f281dd50ddf120d7": {
    "reason": "Location requirement.",
    "sample": "Project located in EU member state (or EEA-EFTA per call)",
@@ -20048,6 +20588,12 @@
   "f3d500871326f079": {
    "reason": "Requires a need-owner industry partner in the project \u2014 checkable by applicant.",
    "sample": "At least one project partner must be a 'need owner' from industry or business",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f3dc196fca305119": {
+   "reason": "Cybersecurity field, EMTAK K, and 40% R&D partner participation are requirements.",
+   "sample": "Taotleja peab olema Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle \u00e4ritegevus on seotud k\u00fcberturvalisuse toodete ja teenustega ning kelle tegevusala kuulub EMTAK 2025 jakku K. Toetuse saamiseks on n\u00f5utav sisuline koost\u00f6\u00f6 te",
    "v": 3,
    "verdict": "condition"
   },
@@ -20165,9 +20711,27 @@
    "v": 3,
    "verdict": "condition"
   },
+  "f60f80c0c14a74d9": {
+   "reason": "Creative sectors list plus EUR 50,000 turnover threshold \u2014 applicant-checkable.",
+   "sample": "Toetus on m\u00f5eldud Eestis registreeritud ja loomemajanduse valdkondades (arhitektuur, audiovisuaalvaldkond, disain, etenduskunstid, kirjastamine, kunst, kultuurip\u00e4rand, meelelahutustarkvara, muusika, reklaam) tegutsevatel",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f622f999b9a13ef0": {
+   "reason": "Max 3 proponents and eligible cost range 800k\u20133M constrain applicant's project.",
+   "sample": "I progetti sono presentati da imprese, singolarmente o in forma associata, anche in collaborazione con organismi di ricerca, con un massimo di 3 proponenti. I progetti devono prevedere un ammontare complessivo di spese a",
+   "v": 3,
+   "verdict": "condition"
+  },
   "f633ac616df31501": {
    "reason": "Specifies eligible applicant categories for citizen buses; reader checks own type.",
    "sample": "For citizen buses (B\u00fcrgerbusse), eligible applicants are citizen-bus associations, transport companies, municipalities, or districts.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f65ed1f1967b740e": {
+   "reason": "Eligible applicants are municipalities outside Tartu/Tallinn with housing mandate.",
+   "sample": "Taotlejaks v\u00f5ivad olla kohalikud omavalitsused v\u00f5i nende valitseva m\u00f5ju all olevad \u00fcksused v\u00e4ljaspool Tartut ja Tallinna ning nendega piirnevaid omavalitsusi, kelle p\u00f5hikirjaline tegevus h\u00f5lmab elamumajanduse korraldamis",
    "v": 3,
    "verdict": "condition"
   },
@@ -20195,6 +20759,12 @@
    "v": 3,
    "verdict": "condition"
   },
+  "f6b53f78e6189e8e": {
+   "reason": "Registration, turnover minimum and absence of insolvency proceedings.",
+   "sample": "Taotleja on Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle enda v\u00f5i temaga valitseva m\u00f5ju kaudu seotud ettev\u00f5tja viimase kahe majandusaasta keskmine m\u00fc\u00fcgitulu majandusaasta aruannete kohaselt on v\u00e4hemalt 200 000 eurot ning ",
+   "v": 3,
+   "verdict": "condition"
+  },
   "f6d3d15f081df6ce": {
    "reason": "Project sector must fall within supported framework\u2014checkable project requirement.",
    "sample": "Project must fall within the sectors supported under the applicable State aid framework.",
@@ -20216,6 +20786,12 @@
   "f71d7a6104decde0": {
    "reason": "Independence requirement between consortium entities.",
    "sample": "At least two of the eligible entities in different Member States/Associated Countries must not be controlled by the same legal entity and must not control each other.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "f72bc1a6df9e9d84": {
+   "reason": "Eurostars positive decision, SME status, partner and impact requirements.",
+   "sample": "Toetust v\u00f5ib taotleda Eurostars 2 v\u00f5i Eurostars 3 \u00fchiskonkursil positiivse otsuse saanud Eesti \u00e4riregistrisse kantud \u00e4ri\u00fchingust v\u00e4ikese v\u00f5i keskmise suurusega ettev\u00f5tja. Projektil peab olema v\u00e4hemalt \u00fcks partner Eurosta",
    "v": 3,
    "verdict": "condition"
   },
@@ -20531,6 +21107,18 @@
    "v": 3,
    "verdict": "condition"
   },
+  "fb9a278f4aaf0655": {
+   "reason": "Applicant must be company in Estonian business register; permitted partner types specified.",
+   "sample": "Toetuse taotlejaks v\u00f5ib olla Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching. Taotleja v\u00f5ib projekti kaasata partnereid, kelleks v\u00f5ivad lisaks \u00e4ri\u00fchingutele olla muud era\u00f5iguslikud juriidilised isikud v\u00f5i teadus- ja arendusasutus.",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "fbab5979ebc11cd7": {
+   "reason": "Names eligible applicant types and project subject (CO2 handling technology) \u2014 checkable requirement.",
+   "sample": "Bedrifter, forskningsinstitusjoner, universitet og h\u00f8yskoler kan s\u00f8ke CLIMIT-programmet om st\u00f8tte til prosjekter for utvikling av CO2-h\u00e5ndteringsteknologi.",
+   "v": 3,
+   "verdict": "condition"
+  },
   "fbba7417799bc934": {
    "reason": "Individual applicants must be SMEs under that intervention.",
    "sample": "Beneficiaries applying individually under 'Qualifica\u00e7\u00e3o e Internacionaliza\u00e7\u00e3o das PME' must be SMEs.",
@@ -20762,6 +21350,12 @@
   "feedc76092ef00c9": {
    "reason": "Use-of-funds activity requirement.",
    "sample": "Funds must be used for innovation/tech-related development activity",
+   "v": 3,
+   "verdict": "condition"
+  },
+  "feffcdc9a1f96191": {
+   "reason": "Applicant legal form, Czech ID, max 2 projects, location outside Prague \u2014 all checkable requirements.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou podnikatelsk\u00e9 subjekty a v\u00fdzkumn\u00e9 organizace. \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 ",
    "v": 3,
    "verdict": "condition"
   },

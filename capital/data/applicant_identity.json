@@ -10,6 +10,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "00f881d51102d799": {
+   "reason": "Lists eligible recipients (municipalities, NGOs, businesses, individuals) who submit applications to the Fund.",
+   "sample": "P\u0159\u00edjemci podpory jsou podle jednotliv\u00fdch aktivit m\u011bsta, obce, kraje, neziskov\u00fd sektor, podnikatel\u00e9 i fyzick\u00e9 osoby. P\u0159esn\u00e9 vymezen\u00ed opr\u00e1vn\u011bn\u00fdch subjekt\u016f pro konkr\u00e9tn\u00ed oblasti podpory je uvedeno v Programov\u00e9m dokumentu OP",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "01a47a76cc1c79b5": {
    "reason": "Tourism/hospitality/agritourism businesses meeting conditions; they seek the aid themselves.",
    "sample": "Eligibilit\u00e9 Sectorielle : Activit\u00e9 de restauration et/ou d\u2019h\u00e9bergement touristique, structures du tourisme social avec un code NAF association ou activit\u00e9s d\u2019agritourisme avec un code NAF agricole. Secteurs principalemen",
@@ -46,11 +52,29 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "03c7d8fb10a72d16": {
+   "reason": "Firms/knowledge institutions merely join a project; subsidy is granted via the NXTGEN foundation, not them.",
+   "sample": "Deelname loopt via consortia: bedrijven (van start-ups en mkb tot grote ondernemingen) en kennisinstellingen sluiten zich aan bij een NXTGEN Hightech-project, waarna de subsidie via stichting NXTGEN Hightech en RVO wordt",
+   "v": 1,
+   "verdict": "beneficiary_not_applicant"
+  },
+  "04f4e4746a487e9b": {
+   "reason": "Commercial enterprises with German establishment are antragsberechtigt; applicant test.",
+   "sample": "Antragsberechtigt sind insbesondere Unternehmen der gewerblichen Wirtschaft mit einer Betriebsst\u00e4tte in Deutschland, insbesondere ist die Beteiligung kleiner und mittlerer Unternehmen (KMU) erw\u00fcnscht.",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "050d40ded4408641": {
    "reason": "Call conditions, restrictions, budget and timeline; no coherent population test identified for applicants.",
    "sample": "Restrictions on participation in accordance with Article 22(5) of the Horizon Europe Regulation and restrictions for the protection of European communication networks: Detailed measures of the SNS 2026 Call are included ",
    "v": 1,
    "verdict": "indeterminate"
+  },
+  "0649e2ed36bc5d10": {
+   "reason": "Explicitly lists entitled applicants: individuals, owner communities, municipalities, companies, legal persons \u2014 these submit.",
+   "sample": "Antragsberechtigt sind: Privatpersonen, Wohnungseigent\u00fcmergemeinschaften, freiberuflich T\u00e4tige, Kommunen, kommunale Gebietsk\u00f6rperschaften und kommunale Zweckverb\u00e4nde, Unternehmen, sonstige juristische Personen des Privat",
+   "v": 1,
+   "verdict": "applicant"
   },
   "067d72b2bcc4e543": {
    "reason": "Zuwendungsempf\u00e4nger enterprises and research/public institutions; they apply.",
@@ -94,6 +118,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "09578b7bfd3fbe81": {
+   "reason": "States which legal and natural persons may apply; applicant test.",
+   "sample": "O podporu mohou \u017e\u00e1dat jak ve\u0159ejnopr\u00e1vn\u00ed a soukromopr\u00e1vn\u00ed pr\u00e1vnick\u00e9 osoby, tak fyzick\u00e9 osoby, a to na v\u0161echny podporovan\u00e9 \u010dinnosti. Konkr\u00e9tn\u00ed okruh opr\u00e1vn\u011bn\u00fdch \u017eadatel\u016f, forma a v\u00fd\u0161e podpory jsou v\u017edy vymezeny v textu jed",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "09879f2fb57f1083": {
    "reason": "Agency-client companies and RPOs forming consortium are the applicants seeking DTIF funding.",
    "sample": "Applicants must be a client of Enterprise Ireland, IDA Ireland or \u00dadar\u00e1s na Gaeltachta at the closing date for receipt of applications or an eligible Research Performing Organisation (RPO). Companies should be registered",
@@ -112,6 +142,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "0ad1f2b42c017d0d": {
+   "reason": "Startups with EIC seal of excellence apply directly.",
+   "sample": "Taotleda saavad iduettev\u00f5tjad, kelle projektil on otsene seos ja m\u00f5ju Eesti majandusele ning kelle EIC Accelerator kvaliteedim\u00e4rgise saamisest ei ole m\u00f6\u00f6dunud rohkem kui kolm kuud.",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "0b68b9372b6bdf86": {
    "reason": "Whoever makes the investment (SMEs) is entitled to apply; applicant test.",
    "sample": "Antragsberechtigt ist, wer die betrieblichen Investitionen vornimmt und eine gem. Nr. 4 f\u00f6rderf\u00e4hige T\u00e4tigkeit aus\u00fcbt. Im Rahmen dieser Richtlinie k\u00f6nnen auf der Grundlage der Art. 17, 36, 38 und 41 der Allgemeinen Grupp",
@@ -123,6 +159,18 @@
    "sample": "Le dispositif soutient l'optimisation des proc\u00e9d\u00e9s de transformation, la valorisation de ressources issues de peuplements sous-exploit\u00e9s ou vuln\u00e9rables au changement climatique, et le d\u00e9veloppement d'unit\u00e9s de transforma",
    "v": 1,
    "verdict": "indeterminate"
+  },
+  "0cf8235396d949a8": {
+   "reason": "Women-led enterprises and self-employed women; they apply for the aid directly.",
+   "sample": "Cooperative o societa' di persone con almeno il 60% di donne socie; societa' di capitale con quote e componenti degli organi di amministrazione per almeno i due terzi di donne; imprese individuali con titolare donna; lav",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "0d753e15a93bf0f1": {
+   "reason": "Estonian registered companies outside excluded sectors, not in difficulty; they apply.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud \u00e4ri\u00fching, kelle p\u00f5hitegevusala ei kuulu v\u00e4listatud EMTAK jakku, ossa v\u00f5i gruppi (sealhulgas p\u00f5llumajandus, metsamajandus ja kalap\u00fc\u00fck ning tubakatoodete tootmine) ja kes ei ole ",
+   "v": 1,
+   "verdict": "applicant"
   },
   "0df93fcafbb2fd2e": {
    "reason": "F\u00f6rderungswerbende SMEs outside federal administration; describes the applying entity directly.",
@@ -190,6 +238,18 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "11b1bd74fac1af86": {
+   "reason": "Graduate founders described as applicants, alone or in teams.",
+   "sample": "Applicants must have completed a higher education before the programme starts, or be students graduating before that date, and may apply alone or in a team of up to three founders. Each founder must own at least 12.5 per",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "11bbd1043e1f1b38": {
+   "reason": "Registered private legal persons meeting tax and reporting duties; applicant test.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik, kelle maksuv\u00f5lg riigile koos intressiga ei ole suurem kui 100 eurot v\u00f5i on ajatatu",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "11d49e41c05513fc": {
    "reason": "SMEs relocating/investing in Galicia; they are the applicants.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES11 - GALICIA. Finalidad: Comercio, Turismo y Pymes. Sectores elegibles: 21 sectores (sin restricci\u00f3n sectorial efectiva). Tip",
@@ -232,6 +292,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "13b3b3fa52add617": {
+   "reason": "Defines applicant business entity with registration conditions; applicant test.",
+   "sample": "\u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 je projekt realizov\u00e1n, kter\u00e1 nen\u00ed v likvidaci a je registrov\u00e1na jako poplat",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "142a93325b2063f6": {
    "reason": "Enumerates possible grant recipients: municipalities, public bodies, firms, nonprofits \u2014 applicants.",
    "sample": "Zuwendungsempf\u00e4ngerinnen und Zuwendungsempf\u00e4nger k\u00f6nnen sein: a) kommunale Gebietsk\u00f6rperschaften, Gemeinde- und Zweckverb\u00e4nde und rechtlich unselbst\u00e4ndige Eigenbetriebe; b) K\u00f6rperschaften und Anstalten des \u00f6ffentlichen R",
@@ -271,6 +337,12 @@
   "1720246bd85ce00e": {
    "reason": "Consortium of project parties including energy-intensive industry; these parties apply.",
    "sample": "Minst tv\u00e5 projektparter, varav minst ett elintensivt industrif\u00f6retag som samverkar, t ex i ett geografiskt avgr\u00e4nsat omr\u00e5de. Innovativa SMF-f\u00f6retag, universitet, h\u00f6gskolor, forskningsinstitut och andra relevanta organisa",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "17604a9766084e73": {
+   "reason": "State agencies, municipalities, Estonian legal persons hosting events; they submit applications.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti riigiasutus ja kohaliku omavalitsuse \u00fcksus ning Eestis registreeritud juriidiline isik. S\u00fcndmus peab toimuma Eestis ja selle turundustegevused peavad olema kavandatud v\u00e4hemalt \u00fchel turismiaren",
    "v": 1,
    "verdict": "applicant"
   },
@@ -376,9 +448,27 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "1e173798f23c0f3f": {
+   "reason": "Start-ups and SMEs carrying innovative projects; they are the applicants, though phrased as project support.",
+   "sample": "Il soutient des projets innovants port\u00e9s par des start-up et des PME et favorise l\u2019\u00e9mergence d\u2019entreprises leaders dans leur domaine, pouvant pr\u00e9tendre \u00e0 une envergure mondiale.",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "1e740bd141ec7b11": {
    "reason": "Names firms, universities, research and public institutions as grant recipients/applicants.",
    "sample": "3 Zuwendungsempf\u00e4nger Zuwendungsempf\u00e4nger k\u00f6nnen Unternehmen der gewerblichen Wirtschaft mit Bez\u00fcgen zum produzierenden Gewerbe, mit Sitz, einer Niederlassung oder Betriebsst\u00e4tte in Deutschland, sowie staatliche und nich",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "1ebdc6cde3722405": {
+   "reason": "Public entity is stated as applicant and project owner in public PhD projects.",
+   "sample": "Det er den offentlige virksomheten som er s\u00f8ker og prosjektansvarlig i et offentlig ph.d-prosjekt.",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "1f238e0c10cb3be5": {
+   "reason": "Firms, professionals and research bodies presenting applications; clearly the submitting population.",
+   "sample": "Imprese in forma singola o aggregata, comprese le liberi professionisti titolari di partita IVA, con almeno una sede operativa nel Lazio, iscritte al Registro delle Imprese alla data di presentazione della domanda; sono ",
    "v": 1,
    "verdict": "applicant"
   },
@@ -490,6 +580,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "26c72e6aea0da932": {
+   "reason": "Target group listed alongside explicit applicant definition; applicant test.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou mal\u00e9 a st\u0159edn\u00ed podniky, mal\u00e9 spole\u010dnosti se st\u0159edn\u00ed tr\u017en\u00ed kapitalizac\u00ed (small mid-caps) a v\u00fdzkumn\u00e9 organizace. \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, op",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "2724c3f630c1ec81": {
    "reason": "Industrial enterprises investing apply for and receive the subsidy themselves.",
    "sample": "Artikel 4.6.2. Subsidieverstrekking. 1. De minister verstrekt op aanvraag subsidie aan een onderneming voor investeringen in een project dat past binnen \u00e9\u00e9n of meer thema's in bijlage 4.6.2 en dat betrekking heeft op: a.",
@@ -520,6 +616,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "28de457765f68708": {
+   "reason": "Estonian companies with concert-organising track record; describes the applicant itself.",
+   "sample": "Taotleja peab olema Eestis registreeritud \u00e4ri\u00fching, kes on viimase viie aasta jooksul korraldanud v\u00e4hemalt \u00fche v\u00e4lisartistiga suurkontserdi v\u00e4hemalt 5000 pealtvaatajaga v\u00f5i v\u00e4hemalt kaks kontserti, m\u00f5lemad v\u00e4hemalt 2000 ",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "28e604009633fb3c": {
    "reason": "Founders, SMEs, freelancers in Baden-W\u00fcrttemberg explicitly named as antragsberechtigt; they apply.",
    "sample": "Antragsberechtigt sind Existenzgr\u00fcnderinnen und Existenzgr\u00fcnder sowie kleine und mittlere Unternehmen (KMU) im Sinne der EU-Definition (weniger als 250 Mitarbeiter, h\u00f6chstens 50 Mio. Euro Jahresumsatz oder h\u00f6chstens 43 M",
@@ -538,6 +640,18 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "2a7b092480d5bea7": {
+   "reason": "Names target group SMEs but states applicant is business entity submitting; applicant test with context.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou podnikatelsk\u00e9 subjekty typu mal\u00fdch a st\u0159edn\u00edch podnik\u016f a small mid-caps (mal\u00e1 spole\u010dnost se st\u0159edn\u00ed tr\u017en\u00ed kapitalizac\u00ed). \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010des",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "2b1e6c4bdd1f3e4f": {
+   "reason": "SME with turnover and staff thresholds; described population is the applicant.",
+   "sample": "Taotleja v\u00f5ib olla Eesti \u00e4riregistris registreeritud VKE, kelle v\u00f5i kellega valitseva m\u00f5ju kaudu seotud ettev\u00f5tja taotluse esitamisele eelnenud kahe majandusaasta keskmine m\u00fc\u00fcgitulu on iga majandusaasta kohta v\u00e4hemalt 20",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "2e03a842a9a2af14": {
    "reason": "Startups (SMEs) in Galicia; they apply and sign.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES11 - GALICIA. Finalidad: Investigaci\u00f3n, desarrollo e innovaci\u00f3n. Sectores elegibles: 22 sectores (sin restricci\u00f3n sectorial e",
@@ -547,6 +661,12 @@
   "2e2463831780bc36": {
    "reason": "Firms investing in designated regional aid areas apply for and receive support.",
    "sample": "F\u00f6r att du ska kunna s\u00f6ka regionalt investeringsst\u00f6d ska din investering finnas inom st\u00f6domr\u00e5de 1, 2 eller 3 enligt kartan. Vi kan bara bevilja st\u00f6d till stora f\u00f6retag om investeringen \u00e4r en nyetablering av en verksamhet",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "2e2ff4873fe0ae99": {
+   "reason": "Defines \u017eadatel as business entity meeting conditions; applicant's own test.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou podnikatelsk\u00e9 subjekty a v\u00fdzkumn\u00e9 organizace. \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 ",
    "v": 1,
    "verdict": "applicant"
   },
@@ -586,9 +706,21 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "31da4683fa9ea15a": {
+   "reason": "Private legal persons wishing to provide support services; they apply in their own right.",
+   "sample": "Taotlejaks v\u00f5ivad olla Eestis registreeritud era\u00f5iguslikud juriidilised isikud, kes soovivad pakkuda loomevaldkonna ettev\u00f5tjatele tugiteenuseid ning kellel on selleks vajalikud teadmised, oskused, kogemused, ligip\u00e4\u00e4s v\u00f5r",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "32409be7593c9ff1": {
    "reason": "Natural and legal persons entitled to apply, with exclusions \u2014 applicant test.",
    "sample": "3 Zuwendungsempf\u00e4ngerin oder Zuwendungsempf\u00e4nger Nat\u00fcrliche und juristische Personen sind grunds\u00e4tzlich berechtigt, eine Zuwendung zu beantragen. Davon ausgenommen sind Privatpersonen, der Bund und die Bundesl\u00e4nder mit A",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "32ca14692cf78f07": {
+   "reason": "Main tenderer, R&D entity, submits the proposal; applicant test.",
+   "sample": "Hlavn\u00edm uchaze\u010dem je pr\u00e1vnick\u00e1 osoba nebo fyzick\u00e1 osoba, organiza\u010dn\u00ed slo\u017eka st\u00e1tu nebo organiza\u010dn\u00ed jednotka ministerstva, zab\u00fdvaj\u00edc\u00ed se v\u00fdzkumem a v\u00fdvojem, kter\u00e1 pod\u00e1v\u00e1 n\u00e1vrh projektu a odpov\u00edd\u00e1 za jeho spr\u00e1vnost. Projek",
    "v": 1,
    "verdict": "applicant"
   },
@@ -601,6 +733,12 @@
   "3369a1e82b129c4c": {
    "reason": "Antragsberechtigt: Baden-W\u00fcrttemberg firms, freelancers, research institutions \u2014 the applicants.",
    "sample": "Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft und der freien Berufe, die ihren Sitz, eine Niederlassung oder eine Betriebsst\u00e4tte in Baden-W\u00fcrttemberg haben oder einen Sitz, eine Niederlassung oder Betrie",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "337c3e4a8d5aa9a2": {
+   "reason": "Enterprises with 8+ employees and export/growth record apply themselves.",
+   "sample": "Toetuse taotleja on Eesti \u00e4riregistrisse kantud kaheksa v\u00f5i enama t\u00f6\u00f6tajaga ettev\u00f5tja, kelle majandustegevus on enne arenguprogrammi algust kestnud v\u00e4hemalt kaks aastat ja kes on kas teeninud arenguplaani elluviimisele e",
    "v": 1,
    "verdict": "applicant"
   },
@@ -628,6 +766,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "36fdb1e0fd602b0a": {
+   "reason": "Creative-industry SMEs meeting turnover/staff thresholds; they are the ones applying.",
+   "sample": "Toetus on m\u00f5eldud Eestis registreeritud ja loomemajanduse valdkonnas tegutsevatele v\u00e4ike- ja keskmise suurusega ettev\u00f5tjatele, kes on loomemajanduse valdkonnas tegutsenud v\u00e4hemalt kolm aastat enne taotlemist, kelle juure",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "378b09d52cba1109": {
    "reason": "Firms and self-employed in Lleida/Tarragona apply directly.",
    "sample": "Beneficiarios: GRAN EMPRESA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES513 - Lleida; ES514 - Tarragona. Finalidad: Otras actuaciones de car\u00e1cter econ\u00f3mico. Sectores elegibles: 11 sec",
@@ -637,6 +781,12 @@
   "378d8dfaf6d79953": {
    "reason": "Companies with Swedish presence receiving the grant; applicant test.",
    "sample": "F\u00f6retag, enskilt eller i samarbete med andra akt\u00f6rer, som har potential att etablera eller st\u00e4rka existerande internationella samarbeten inom flygomr\u00e5det. Endast akt\u00f6rer med filial eller driftst\u00e4lle i Sverige kan ta emot",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "37d1566b2fb9fcc9": {
+   "reason": "Estonian legal persons as applicants, plus partners; applicant test with context.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud juriidiline isik. Projekti partneriks v\u00f5ib olla taotluses nimetatud Eestis registreeritud juriidiline isik, kohaliku omavalitsuse \u00fcksus v\u00f5i riigiasutus, kes osaleb toetatava te",
    "v": 1,
    "verdict": "applicant"
   },
@@ -688,6 +838,18 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "3a75c9bf860765f9": {
+   "reason": "Describes applicant businesses (SMEs, large firms, research partners) who submit; applicant test.",
+   "sample": "\u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 je projekt realizov\u00e1n. V\u00fdzva je ur\u010dena pro mal\u00e9, st\u0159edn\u00ed i velk\u00e9 podniky, p",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "3ae3797ae48c108b": {
+   "reason": "Explicitly names SMEs and mid-sized firms with German establishments as entitled applicants.",
+   "sample": "Antragsberechtigt f\u00fcr FuE-Projekte sind: a) Kleine und mittlere Unternehmen (KMU), die zum Zeitpunkt beziehungsweise im Zeitraum der Auszahlung der Beihilfe eine Betriebsst\u00e4tte oder Niederlassung in Deutschland haben. b)",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "3bc60e4452630452": {
    "reason": "Innovative startups, founder teams and foreign companies expressly may present applications.",
    "sample": "La misura agevolativa e' riservata alle startup innovative, localizzate su tutto il territorio nazionale, iscritte nell'apposita sezione speciale del registro imprese, costituite da non piu' di 60 mesi. Possono presentar",
@@ -709,6 +871,12 @@
   "3d97263294a45e03": {
    "reason": "Consortium of at least 10 project parties; these apply.",
    "sample": "En akt\u00f6rskonstellation best\u00e5ende av minst 10 projektparter med en bred representation fr\u00e5n hela metall- och mineralv\u00e4rdekedjan.",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "3dc090e3cb791326": {
+   "reason": "Explicitly 'possono presentare domanda': SMEs/large firms in ATS are the applicants.",
+   "sample": "Possono presentare domanda piccole, medie e grandi imprese in forma singola (solo PMI) o associata, costituite in ATS, aderenti ad uno dei 5 Poli di Ricerca e Innovazione della Regione Liguria. Le grandi imprese sono amm",
    "v": 1,
    "verdict": "applicant"
   },
@@ -739,6 +907,12 @@
   "3ed1287f4800712e": {
    "reason": "Enterprises, municipalities, associations, contractors listed as antragsberechtigt themselves.",
    "sample": "Antragsberechtigt: Unternehmen iSd. \u00a7 14 BGB, Kommunen (soweit wirtschaftlich t\u00e4tig), kommunale Eigenbetriebe, kommunale Unternehmen, kommunale Zweckverb\u00e4nde, eingetragene Vereine, eingetragene Genossenschaften. Contract",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "3eeb8d8b457f6c39": {
+   "reason": "Describes companies, municipal utilities and energy service providers as the funding's addressees, i.e. the applicants themselves.",
+   "sample": "Die neue F\u00f6rderung richtet sich an Unternehmen aller Branchen und Gr\u00f6\u00dfen, Stadtwerke und Energiedienstleister.",
    "v": 1,
    "verdict": "applicant"
   },
@@ -868,6 +1042,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "4879a7ac16ea07a8": {
+   "reason": "Estonian mining/manufacturing companies with de minimis limits; applicant test.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud \u00e4ri\u00fching, kelle p\u00f5hitegevusala vastab EMTAK jaole B (m\u00e4et\u00f6\u00f6stus) v\u00f5i C (t\u00f6\u00f6tlev t\u00f6\u00f6stus), v\u00e4lja arvatud kivi- ja pruuns\u00f6e kaevandamine, nafta ja maagaasi tootmine ning tubakato",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "48bbdcd12964e88d": {
    "reason": "Partnerships of firms and research organisations with Lombardy premises\u2014these are the applicants/beneficiaries themselves.",
    "sample": "Possono beneficiare partenariati di imprese (Piccole e Medie Imprese, Grandi imprese) e organismi di ricerca e diffusione della conoscenza (Organismi di Ricerca - OdR) pubblici e privati, tra cui Universita', istituti di",
@@ -976,6 +1156,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "4f14e379db050221": {
+   "reason": "Enterprises, research centres, professionals listed as aid recipients who apply themselves.",
+   "sample": "Possono beneficiare delle agevolazioni i seguenti soggetti: le imprese che esercitano le attivita' di cui all'articolo 2195 del codice civile; le imprese agro-industriali; i centri di ricerca con personalita' giuridica; ",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "4f9587ba26555300": {
    "reason": "Companies individually or in consortia submit projects; they are the applicant population.",
    "sample": "Beneficiarios: Empresas. Proyectos individuales presentados por una \u00fanica empresa; tambi\u00e9n admite proyectos en cooperaci\u00f3n nacional (consorcios de 2 a 6 empresas aut\u00f3nomas entre s\u00ed) y proyectos de cooperaci\u00f3n tecnol\u00f3gica",
@@ -1066,6 +1252,18 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "56766577ab33a517": {
+   "reason": "Companies, research institutes and other partners named as the applying population.",
+   "sample": "bedrifter, forskningsinstitutter og andre samarbeidspartnere",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "5683186110aeca15": {
+   "reason": "Estonian company with IPCEI-notified project; named as applicant, partners permitted.",
+   "sample": "Toetuse taotlejaks v\u00f5ib olla Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle projekt on Euroopa Komisjonile IPCEI riigiabina teatatud. Taotleja v\u00f5ib projekti kaasata partnereid, kelleks v\u00f5ivad olla muud era\u00f5iguslikud juriidi",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "5721f4de52e71a41": {
    "reason": "Legal entities established in eligible countries participating in proposals; a participation/applicant test.",
    "sample": "For this reason, participation is limited to legal entities established in Member States, Iceland and Norway and the following additional associated countries: Canada, Israel, Republic of Korea, New Zealand, Switzerland,",
@@ -1081,6 +1279,12 @@
   "57d6f061f063cefb": {
    "reason": "Swedish innovation actors apply, coordinating; intermediaries in their own right.",
    "sample": "Svenska innovationsakt\u00f6rer, som inkubatorer, science parks och klusterorganisationer, kan s\u00f6ka sj\u00e4lva eller i konsortium med till exempel f\u00f6retag, akademi eller institut. En innovationsakt\u00f6r ska vara koordinator f\u00f6r proj",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "58a8db5d7182336a": {
+   "reason": "Target group named plus explicit applicant definition; applicant test.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou podnikatelsk\u00e9 subjekty. \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 je projekt realizov\u00e1n.",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1144,6 +1348,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "5bde3d26a26935dd": {
+   "reason": "SMEs in listed sectors apply directly.",
+   "sample": "Toetust v\u00f5ivad taotleda Eesti \u00e4riregistrisse kantud v\u00e4ikese ja keskmise suurusega ettev\u00f5tjad, kelle tegevusala kuulub EMTAK jagudesse B, C, D, E, F, G, H, I, J, M, N v\u00f5i Q. Ettev\u00f5tja \u00fcle valitsevat m\u00f5ju omav isik peab ol",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "5bf4940636e3fe34": {
    "reason": "Large enterprises cooperating with MSMEs and research bodies are the applying parties.",
    "sample": "Grandi Imprese (GI) in cooperazione con almeno 3 Micro, Piccole e Medie Imprese (MPMI) - con o senza Organismi di Ricerca (OR) - associate nelle forme di ATS, RTI o Reti di imprese prive di personalita' giuridica (Rete-C",
@@ -1168,6 +1378,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "5d2a871418a0f00d": {
+   "reason": "Describes tenderers/participants choosing applicant type; they submit the proposal.",
+   "sample": "Ka\u017ed\u00fd uchaze\u010d (hlavn\u00ed uchaze\u010d i dal\u0161\u00ed \u00fa\u010dastn\u00edci) si vol\u00ed jeden z typ\u016f uchaze\u010de: v\u00fdzkumn\u00e1 organizace, nebo podnik (mal\u00fd, st\u0159edn\u00ed, velk\u00fd). V podprogramu 2 mus\u00ed b\u00fdt minim\u00e1ln\u011b jeden z uchaze\u010d\u016f podnik, kter\u00fd v\u00fdstupy a v\u00fdsledk",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "5dde1432b41c0a82": {
    "reason": "Explicitly names Antragsberechtigte: legal persons, firms, universities, municipalities \u2014 the applicants themselves.",
    "sample": "Zum Zeitpunkt der Auszahlung der Zuwendung muss der Zuwendungsempf\u00e4nger eine Betriebsst\u00e4tte oder Niederlassung in Deutschland haben. Antragsberechtigt f\u00fcr Ma\u00dfnahmen nach Nummer 2.1 (Elektromobilit\u00e4tskonzepte) und Nummer ",
@@ -1177,6 +1393,12 @@
   "5df151eb3e383a07": {
    "reason": "'Peuvent demander l'aide' \u2014 SMEs, ETIs, labs; explicitly the submitting population.",
    "sample": "Peuvent demander l'aide les petites et moyennes entreprises PME et les entreprises de taille interm\u00e9diaire (ETI) de moins de 2000 personnes. \u00c9galement \u00e9ligibles : start-ups, CRITT, CRT, laboratoires universitaires et str",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "5e3aeec687ad2af3": {
+   "reason": "Commercial enterprises in Mecklenburg-Vorpommern plus research bodies may file applications.",
+   "sample": "Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft mit einer Betriebsst\u00e4tte oder Niederlassung in Mecklenburg-Vorpommern. Hochschulen und gemeinn\u00fctzige Forschungseinrichtungen k\u00f6nnen im Rahmen der Verbundfors",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1234,6 +1456,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "6425ab12ce20a265": {
+   "reason": "State agencies, municipalities and Estonian legal persons; two-stage application by them.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti riigiasutus ja kohaliku omavalitsuse \u00fcksus ning Eestis registreeritud juriidiline isik. Toetuse taotlemine toimub kahes etapis: eeltaotluse esitamine ja seej\u00e4rel taotluse esitamine.",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "64a4c0dfd5faa06e": {
    "reason": "Consortium partners/proposal submitters tested on membership and budget; they are applicants.",
    "sample": "At least one partner in the consortium must be a member of either Hydrogen Europe or Hydrogen Europe Research. The page limit of the application is 70 pages. For all Innovation Actions the page limit of the applications ",
@@ -1270,11 +1498,23 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "66e89f3ef456b8b6": {
+   "reason": "Estonian mining/manufacturing companies not in difficulty; the applying population.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud \u00e4ri\u00fching, kelle p\u00f5hitegevusala vastab EMTAK jaole B (m\u00e4et\u00f6\u00f6stus) v\u00f5i C (t\u00f6\u00f6tlev t\u00f6\u00f6stus), v\u00e4lja arvatud kivi- ja pruuns\u00f6e kaevandamine, nafta ja maagaasi tootmine ning tubakato",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "67dadbcb48972a6d": {
    "reason": "Describes action types, activity maturity and funding rates; no population identified at all.",
    "sample": "WHAT MAKES A DEVELOPMENT ACTION DIFFERENT FROM ITS ONLY SIBLING, THE RESEARCH ACTION: 1. YOU DO NOT GET 100%. Development actions are the only EDF leaf where the EU pays a fraction of eligible costs, and the fraction dep",
    "v": 1,
    "verdict": "indeterminate"
+  },
+  "6841e42fce8c9a5d": {
+   "reason": "Company employing an R&D worker applies; employee is context, not applicant.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kus t\u00f6\u00f6tab v\u00e4hemalt \u00fcks TA-t\u00f6\u00f6taja (teadlane, insener v\u00f5i tehnik), kelle t\u00f6\u00f6tasult makstavad ja kinnipeetavad maksud on Maksu- ja Tolliametile deklareeritud. TA",
+   "v": 1,
+   "verdict": "applicant"
   },
   "68c8666438f2e0a8": {
    "reason": "Companies with German establishment are the aid recipients/applicants.",
@@ -1306,9 +1546,27 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "6bc841501524ad16": {
+   "reason": "Company employing R&D staff is applicant; worker condition is eligibility context.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kus t\u00f6\u00f6tab v\u00e4hemalt \u00fcks TA-t\u00f6\u00f6taja (teadlane, insener v\u00f5i tehnik), kelle t\u00f6\u00f6tasult makstavad ja kinnipeetavad maksud on Maksu- ja Tolliametile deklareeritud. TA",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "6be674531b7d0b6b": {
    "reason": "Canary SMEs described apply for competitiveness subsidies themselves.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES70 - CANARIAS. Finalidad: Comercio, Turismo y Pymes. Sectores elegibles: OTROS SERVICIOS. Tipo de convocatoria: Concurrencia ",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "6d37422e3397e139": {
+   "reason": "Entrepreneurs and end-users, individually or in consortium, open to apply themselves.",
+   "sample": "De subsidie staat open voor ondernemers en eindgebruikers, individueel of in een samenwerkingsverband met een gemachtigde penvoerder. Het project moet binnen een opengestelde DEI+-thematiek passen, aantoonbaar tot CO2-re",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "6d5e13e7794caad1": {
+   "reason": "Applicant is agricultural entrepreneur submitting via Farmer Portal.",
+   "sample": "\u017dadatelem je zem\u011bd\u011blsk\u00fd podnikatel, v\u010detn\u011b \u0161kolsk\u00fdch statk\u016f a st\u00e1tn\u00edch podnik\u016f, pokud spl\u0148uje pr\u00e1vn\u00ed definici zem\u011bd\u011blsk\u00e9ho podnikatele podle \u010desk\u00e9ho pr\u00e1vn\u00edho \u0159\u00e1du. \u017d\u00e1dosti se pod\u00e1vaj\u00ed prost\u0159ednictv\u00edm Port\u00e1lu farm\u00e1\u0159e St\u00e1t",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1318,9 +1576,21 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "6e7025d5fa6af081": {
+   "reason": "Small, medium and large Czech enterprises may apply themselves; explicit applicant test.",
+   "sample": "O podporu mohou \u017e\u00e1dat mal\u00e9, st\u0159edn\u00ed i velk\u00e9 podniky z cel\u00e9 \u010cesk\u00e9 republiky, a to bu\u010f samostatn\u011b, nebo ve spolupr\u00e1ci s dal\u0161\u00edmi podniky, vysok\u00fdmi \u0161kolami \u010di v\u00fdzkumn\u00fdmi organizacemi. Podprogramy 2 a 3 jsou ur\u010deny v\u00fdhradn\u011b m",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "6ea38a20b25fbf11": {
    "reason": "Natural/legal persons who may submit Ansuchen for measures; clearly the applying party.",
    "sample": "\u00a7 6. Ansuchen im Bereich der Umweltf\u00f6rderung im Inland k\u00f6nnen von nat\u00fcrlichen oder juristischen Personen sowie Personengesellschaften f\u00fcr das Setzen von Ma\u00dfnahmen gem\u00e4\u00df \u00a7 4 gestellt werden.",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "6ee4b56b22cf39a1": {
+   "reason": "Registered company with turnover threshold applies itself.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle enda v\u00f5i temaga valitseva m\u00f5ju kaudu seotud ettev\u00f5tja viimase kahe majandusaasta keskmine m\u00fc\u00fcgitulu on iga majandusaasta kohta v\u00e4hemalt 200 000 eurot ning",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1335,6 +1605,12 @@
    "sample": "Eligibilit\u00e9 Sectorielle : Stations-service ind\u00e9pendantes Secteurs principalement concern\u00e9s par le dispositif : G|Q Pr\u00e9cisions sur l'\u00e9ligibilit\u00e9 sectorielle : 47.30Z : Commerce de d\u00e9tail de carburants en magasin sp\u00e9cialis",
    "v": 1,
    "verdict": "applicant"
+  },
+  "702c13abcf2e8b50": {
+   "reason": "Only deadlines and deferral to regulation; no eligible population actually identified.",
+   "sample": "\u017d\u00e1dosti o dotaci lze pod\u00e1vat do srpna 2026; zp\u016fsobil\u00e9 v\u00fddaje jsou uzn\u00e1v\u00e1ny od 1. \u00fanora 2020. Podrobn\u00e9 vymezen\u00ed opr\u00e1vn\u011bn\u00fdch \u017eadatel\u016f stanov\u00ed na\u0159\u00edzen\u00ed vl\u00e1dy a v\u00fdzva St\u00e1tn\u00edho fondu podpory investic, kter\u00fd je poskytovatelem ",
+   "v": 1,
+   "verdict": "indeterminate"
   },
   "70912f044a15d2ff": {
    "reason": "Ceuta SMEs with investment projects are the applicants.",
@@ -1408,11 +1684,35 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "7561b96df6c5e60f": {
+   "reason": "Researcher at public institution applies; institution merely endorses the application.",
+   "sample": "The applicant must be a researcher or employee at a public research institution, educational institution or hospital, must have been involved in generating the underlying knowledge or result, and must be ready to build a",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "76439365a22cf896": {
+   "reason": "Companies/branches meeting service-centre and turnover criteria; explicitly the applicant's own test.",
+   "sample": "Taotleja v\u00f5ib olla Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching v\u00f5i v\u00e4lismaa \u00e4ri\u00fchingu filiaal, kes vastab tugiteenus- v\u00f5i arenduskeskuse n\u00f5uetele, kelle kontserni konsolideeritud k\u00e4ive oli taotluse esitamisele vahetult eelneval",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "764e85da43998cb9": {
+   "reason": "Registered private legal persons/obliged entities with tax compliance \u2014 clearly the applicant population.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik; kliendi tundmise andmevahetusteenuse tegevuse puhul ka rahapesu ja terrorismi raha",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "768ac91afda75ba2": {
    "reason": "Large firms, SMEs, self-employed persons are the loan applicants themselves.",
    "sample": "Beneficiarios: GRAN EMPRESA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES51 - CATALU\u00d1A. Finalidad: Otras actuaciones de car\u00e1cter econ\u00f3mico. Sectores elegibles: 17 sectores (sin restric",
    "v": 1,
    "verdict": "applicant"
+  },
+  "76b5d015b7cbb7f7": {
+   "reason": "SMEs/professionals described, but text states bank or intermediary submits guarantee request, not them.",
+   "sample": "Si rivolge alle micro, piccole e medie imprese iscritte al Registro delle imprese e ai professionisti titolari di partita IVA, su tutto il territorio nazionale e in tutti i settori economici con la sola esclusione delle ",
+   "v": 1,
+   "verdict": "beneficiary_not_applicant"
   },
   "7774e04e3562f9aa": {
    "reason": "Firms of any size nationwide investing; they apply for and receive the Fund's support.",
@@ -1438,6 +1738,18 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "7868149d3cea3dfa": {
+   "reason": "Czech-registered business person or legal entity is expressly the applicant.",
+   "sample": "\u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 je projekt realizov\u00e1n, kter\u00e1 nen\u00ed v likvidaci. C\u00edlov\u00fdm \u00fazem\u00edm je \u00fazem\u00ed \u010cesk",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "78d598199b91aead": {
+   "reason": "Defines eligible applicants as licence holders or those contracting operation; applicant test.",
+   "sample": "Opr\u00e1vn\u011bn\u00fdmi \u017eadateli jsou st\u00e1vaj\u00edc\u00ed nebo budouc\u00ed dr\u017eitel\u00e9 licence pro podnik\u00e1n\u00ed v energetick\u00fdch odv\u011btv\u00edch (v\u00fdroba elekt\u0159iny) podle energetick\u00e9ho z\u00e1kona \u010d. 458/2000 Sb., a d\u00e1le \u017eadatel\u00e9, kte\u0159\u00ed dr\u017eiteli licence nebudou, za",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "7908386de8be5b85": {
    "reason": "New innovative SMEs described are the direct applicants for the subsidy.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES213 - Bizkaia. Finalidad: Industria y Energ\u00eda. Sectores elegibles: 15 sectores (sin restricci\u00f3n sectorial efectiva). Tipo de ",
@@ -1453,6 +1765,12 @@
   "7985bbf13901d3fe": {
    "reason": "Zielgruppe of firms, municipalities, research bodies located in Lower Austria; these are themselves the fundees.",
    "sample": "8 Zielgruppe 27) Zielgruppen von F\u00f6rderungen im Rahmen dieser Richtlinie sind: a. Unternehmen der gewerblichen Wirtschaft b. Tourismus- und Freizeitunternehmen c. sonstige Einrichtungen oder Gesellschaften, Gemeinden ode",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "79d91c97f50c512e": {
+   "reason": "Eligible applicants are infrastructure owners who submit via IS KP21+.",
+   "sample": "Opr\u00e1vn\u011bn\u00fdmi \u017eadateli jsou vlastn\u00edci dot\u010den\u00e9 infrastruktury s ve\u0159ejn\u00fdm p\u0159\u00edstupem. \u017d\u00e1dost o podporu se pod\u00e1v\u00e1 prost\u0159ednictv\u00edm IS KP21+ v term\u00ednech stanoven\u00fdch pro jednotliv\u00e9 kolov\u00e9 v\u00fdzvy; podrobn\u00e9 podm\u00ednky stanov\u00ed Pravidla",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1480,6 +1798,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "7b96228b9db60a22": {
+   "reason": "Eligible SMEs, firms, research bodies in partnerships; they apply themselves despite 'beneficiari' wording.",
+   "sample": "Soggetti beneficiari ammissibili: PMI, grandi imprese, enti pubblici di ricerca e organismi di ricerca e diffusione della conoscenza, in partenariati stabili tra imprese e organismi di ricerca, con il coinvolgimento dei ",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "7c5a791388716a32": {
    "reason": "Entrepreneurs installing charging infrastructure, KVK-registered, are themselves the applicants.",
    "sample": "Deze regeling is voor ondernemers die: laadinfrastructuur plaatsen; ingeschreven zijn bij de Kamer van Koophandel (KVK) en; hun onderneming in Nederland gevestigd hebben. [...] U komt niet in aanmerking voor subsidie als",
@@ -1492,11 +1816,29 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "7d1582308be12938": {
+   "reason": "Commercial firms, professionals, universities, public bodies listed as entitled to apply.",
+   "sample": "Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Angeh\u00f6rige der Freien Berufe (insbesondere Rechtsanw\u00e4lte, Ingenieure, Architekten) mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland. Insbeson",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "7d307e16b8f0c9c6": {
+   "reason": "Companies, NGOs, foundations, municipalities named as applicants, partners noted additionally.",
+   "sample": "Toetust v\u00f5ib taotleda Eestis registreeritud \u00e4ri\u00fching, mittetulundus\u00fching, sihtasutus, kohaliku omavalitsuse \u00fcksus ja riigiasutus. Projekti v\u00f5ib kaasata partneri, kes on samuti Eestis registreeritud juriidiline isik, koha",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "7e31368112b08b64": {
    "reason": "Describes companies with insufficient collateral receiving the guarantee; the financier submits the guarantee application.",
    "sample": "The credit guarantee is issued to companies that have insufficient collateral to obtain a loan or to obtain a loan of the required amount, but have a transparent financial history and a positive creditworthiness. Up to E",
    "v": 1,
    "verdict": "beneficiary_not_applicant"
+  },
+  "7e41da6db6f09627": {
+   "reason": "Estonian companies with limited public ownership creating jobs; applicant test.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, milles ega temaga \u00fchte kontserni kuuluvas \u00e4ri\u00fchingus ei tohi olla riigi ega kohaliku omavalitsuse \u00fcksuse osalust \u00fcle 49 protsendi. Toetuse andmise tulemusel pea",
+   "v": 1,
+   "verdict": "applicant"
   },
   "7edf1769b4fc266a": {
    "reason": "Company/university consortium hosting the PhD student are the applicants and grant recipients.",
@@ -1552,9 +1894,21 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "811e1b66913cffc1": {
+   "reason": "Estonian companies of any size meeting turnover/sector tests \u2014 they submit the application themselves.",
+   "sample": "Taotleda saavad igas suuruses Eesti \u00e4ri\u00fchingud, kelle tegevusala ei ole toetuse sihtgrupist v\u00e4listatud (v\u00e4listatud on muu hulgas p\u00f5llumajandus, kalandus, tubakas, kinnisvara, hasartm\u00e4ngud ja \u00f5igusteenused) ning kelle p\u00f5h",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "81f416c4805e3f18": {
    "reason": "Project-responsible Norwegian company; partners and suppliers named as context, applicant clearly tested.",
    "sample": "Prosjektansvarlig m\u00e5 v\u00e6re registrert i det norske foretaksregisteret og ha \u00f8konomisk aktivitet i Norge. Dette inneb\u00e6rer at prosjektansvarlig enten m\u00e5 v\u00e6re en privat bedrift, eller et offentlig foretak som driver virksomh",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "824b7159439a8c56": {
+   "reason": "Danish SME meeting size and financial criteria is the applicant itself.",
+   "sample": "The applicant must be a Danish SME by the EU definition, with fewer than 250 employees and either annual turnover under EUR 50 million or a balance sheet under EUR 43 million. In addition the company must meet at least o",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1573,6 +1927,12 @@
   "835f73acd562b0db": {
    "reason": "Small innovative companies described as beneficiaries applying directly for the aid themselves.",
    "sample": "Beneficiarios: Peque\u00f1as empresas innovadoras. Tres a\u00f1os de antig\u00fcedad m\u00e1ximo. Capital social m\u00ednimo: 20.000 euros.",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "839d996c8dcac21a": {
+   "reason": "Enterprises, freelancers, contractors explicitly antragsberechtigt; applicant test.",
+   "sample": "Antragsberechtigt mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland sind: private Unternehmen, kommunale Unternehmen, Landesunternehmen, freiberuflich T\u00e4tige, wenn die Betriebsst\u00e4tte \u00fcberwiegend f\u00fcr die freiberu",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1618,6 +1978,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "86d0c6188fe551cf": {
+   "reason": "Deep-tech startup SMEs under five years old; the applying population.",
+   "sample": "Toetust v\u00f5ib taotleda \u00e4riregistrisse kantud s\u00fcvatehnoloogia iduettev\u00f5tjast \u00e4ri\u00fching, kes on taotlemise hetkel tegutsenud kuni viis aastat ja kes vastab \u00fcldise grupierandi m\u00e4\u00e4ruse lisa I VKE kriteeriumitele. Taotleja mees",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "86f2424db842166b": {
    "reason": "Basque firms and individuals listed as beneficiaries applying to SPRI programme.",
    "sample": "Beneficiarios: GRAN EMPRESA; PERSONAS F\u00cdSICAS QUE NO DESARROLLAN ACTIVIDAD ECON\u00d3MICA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES21 - PAIS VASCO. Finalidad: Otras actuaciones de car\u00e1c",
@@ -1639,6 +2005,12 @@
   "87ab1a3312a939b4": {
    "reason": "Eligible enterprises by sector, size and region; the described party solicits the aid itself.",
    "sample": "Eligibilit\u00e9 Sectorielle : Tous secteurs d\u2019activit\u00e9 Secteurs principalement concern\u00e9s par le dispositif : A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U Eligibilit\u00e9 en fonction du nombre de salari\u00e9s: Toutes tailles Aires g\u00e9ogr",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "897b043840e75a5f": {
+   "reason": "Estonian-registered company with qualifying EMTAK project; explicitly the applicant, partners optional.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle projekt, millele toetust taotletakse, vastab m\u00e4\u00e4ruses loetletud EMTAKi jagudele. Taotleja v\u00f5ib projekti kaasata era\u00f5iguslikust juriidilisest isikust v\u00f5i t",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1705,6 +2077,12 @@
   "8c8e1e8ec46f5b40": {
    "reason": "Industrial firms and legal persons apply directly for energy-efficiency incentives.",
    "sample": "Beneficiarios: GRAN EMPRESA; PERSONAS JUR\u00cdDICAS QUE NO DESARROLLAN ACTIVIDAD ECON\u00d3MICA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES - ESPA\u00d1A. Finalidad: Industria y Energ\u00eda. Sectores ",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "8d045d6d88ee9a56": {
+   "reason": "Enterprises as uchaze\u010di/recipients, with partners; clearly the applying population.",
+   "sample": "Uchaze\u010di o podporu na projekt mohou b\u00fdt podniky \u2013 pr\u00e1vnick\u00e9 i fyzick\u00e9 osoby, kter\u00e9 podle P\u0159\u00edlohy 1 Na\u0159\u00edzen\u00ed Komise vykon\u00e1vaj\u00ed hospod\u00e1\u0159skou \u010dinnost. Dal\u0161\u00edmi \u00fa\u010dastn\u00edky projektu mohou b\u00fdt dal\u0161\u00ed podniky a v\u00fdzkumn\u00e9 organizace",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1780,9 +2158,21 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "93490049eaae6c54": {
+   "reason": "State agencies, municipalities, Estonian legal persons organising conferences; described population applies.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti riigiasutus ja kohaliku omavalitsuse \u00fcksus ning Eestis registreeritud juriidiline isik. Konverents peab toimuma Eestis ja t\u00e4itma osalejate arvu n\u00f5ude (v\u00e4hemalt 200 osalejat Tallinnas, mujal Ee",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "941c2455d3500c2e": {
    "reason": "Large firms and SMEs in La Rioja manufacturing are the grant recipients and applicants.",
    "sample": "Beneficiarios: GRAN EMPRESA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES230 - La Rioja. Finalidad: Investigaci\u00f3n, desarrollo e innovaci\u00f3n. Sectores elegibles: INDUSTRIA MANUFACTURERA.",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "9448837361749382": {
+   "reason": "Registered tourism SME described as the one who may apply for support.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistrisse kantud turismiettev\u00f5tja, kes on v\u00e4hemalt 36 kuud tegutsenud \u00e4ri\u00fchingust VKE-na ja kelle majandusaasta k\u00e4ive vastab m\u00e4\u00e4ruses s\u00e4testatud tingimustele.",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1858,15 +2248,33 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "9aa1bfb7f015a65b": {
+   "reason": "Explicitly lists eligible applicants/recipients: firms, research organisations, state and local bodies.",
+   "sample": "Uchaze\u010dem, respektive p\u0159\u00edjemcem podpory mohou b\u00fdt podniky \u2013 pr\u00e1vnick\u00e9 i fyzick\u00e9 osoby, kter\u00e9 podle P\u0159\u00edlohy 1 Na\u0159\u00edzen\u00ed vykon\u00e1vaj\u00ed hospod\u00e1\u0159skou \u010dinnost a prok\u00e1\u017eou schopnost projekt spolufinancovat z neve\u0159ejn\u00fdch prost\u0159edk\u016f;",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "9aaf80fdf397b3fc": {
    "reason": "Legal entities and consortia seeking funding; test is on applicants themselves.",
    "sample": "legal entities established in countries with which an Association Agreement to the Horizon Europe has not yet been concluded, or - legal entities established in countries with which an Association Agreement has been conc",
    "v": 1,
    "verdict": "applicant"
   },
+  "9b3f4c133526096c": {
+   "reason": "Explicitly names applicants/recipients: research organisations, enterprises, state and municipal bodies.",
+   "sample": "Uchaze\u010dem, respektive p\u0159\u00edjemcem podpory mohou b\u00fdt organizace pro v\u00fdzkum a \u0161\u00ed\u0159en\u00ed znalost\u00ed (pr\u00e1vnick\u00e9 osoby spl\u0148uj\u00edc\u00ed definici v\u00fdzkumn\u00e9 organizace podle \u010dl. 2 odst. 83 Na\u0159\u00edzen\u00ed), podniky \u2013 pr\u00e1vnick\u00e9 i fyzick\u00e9 osoby vykon\u00e1",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "9bc08d9b8ac5a737": {
    "reason": "Companies with Berlin-Brandenburg presence receive funding; exclusions defined by antragsberechtigt; applicant test.",
    "sample": "F\u00f6rdermittel sollen Unternehmen gew\u00e4hrt werden, die zum Zeitpunkt der Auszahlung der F\u00f6rderung einen Gesch\u00e4ftssitz, eine Niederlassung oder zumindest eine Betriebsst\u00e4tte in Berlin-Brandenburg haben. Davon abweichend kann",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "9c085d94ae38bf1b": {
+   "reason": "Estonian-registered private legal persons with qualifying projects; described population submits the application.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik, kelle projekt on suunatud maanteetranspordi v\u00f5i veoteenuse dokumendi koostamise v\u00f5",
    "v": 1,
    "verdict": "applicant"
   },
@@ -1972,9 +2380,27 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "a3cd9cfaeacc0dbf": {
+   "reason": "SMEs with size/turnover criteria and \u00cele-de-France establishment; standard applicant test.",
+   "sample": "Les petites et moyennes entreprises (PME) : Quelle que soit leur forme juridique, y compris les associations ayant une activit\u00e9 \u00e9conomique, Employant entre 5 et 250 salari\u00e9s, Dont le chiffre d'affaires n'exc\u00e8de pas 50 M\u20ac",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "a4eeb7de6a4e7bdf": {
+   "reason": "Enterprises as applicants/recipients with further participants; applicant test.",
+   "sample": "Uchaze\u010di o podporu na projekt mohou b\u00fdt podniky \u2013 pr\u00e1vnick\u00e9 i fyzick\u00e9 osoby, kter\u00e9 podle P\u0159\u00edlohy 1 Na\u0159\u00edzen\u00ed Komise vykon\u00e1vaj\u00ed hospod\u00e1\u0159skou \u010dinnost. Dal\u0161\u00edmi \u00fa\u010dastn\u00edky projektu mohou b\u00fdt dal\u0161\u00ed podniky a v\u00fdzkumn\u00e9 organizace",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "a50e7e1763e05cc5": {
    "reason": "Clusters, innovation companies, reindeer owners, farms etc. named as grant recipients applying themselves.",
    "sample": "Klynger, \u00f8kosystem og andre innovasjonsselskaper kan, etter en utlysnings- og utvelgelsesprosess, motta tilskudd fra oss for \u00e5 tilby r\u00e5dgivningstjenester til bedrifter. Har du et prosjekt som kan bidra til n\u00e6ringsutvikli",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "a53fe9f7d7ecae76": {
+   "reason": "Estonian-registered private legal persons applying, with required partners; describes the applicant's own eligibility test.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik. Arendamisse peab olema partneritena kaasatud riigiasutus v\u00f5i kohaliku omavalitsuse",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2008,6 +2434,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "a70a6ed1cab475be": {
+   "reason": "Tourism/hotel enterprises are beneficiaries who themselves claim the aid; applicant test.",
+   "sample": "I soggetti beneficiari sono le imprese alberghiere, le strutture che svolgono attivita' agrituristica, le strutture ricettive all'aria aperta, nonche' le imprese del comparto turistico, ricreativo, fieristico e congressu",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "a7373306732570a1": {
    "reason": "Eligible enterprises with Austrian seat seeking credit; they are the applicants.",
    "sample": "F\u00f6rderungsf\u00e4hige Unternehmen k\u00f6nnen nat\u00fcrliche oder juristische Personen sowie Personengesellschaften sein, die ein Unternehmen im eigenen Namen und auf eigene Rechnung betreiben oder innerhalb einer Frist von 12 Monaten",
@@ -2017,6 +2449,24 @@
   "a74ab57c259ec4ca": {
    "reason": "Whoever makes the investment applies; investor/user relation clarified.",
    "sample": "Antragsberechtigt ist, wer die betrieblichen Investitionen vornimmt und eine gem. Nr. 4 f\u00f6rderf\u00e4hige T\u00e4tigkeit aus\u00fcbt. Im Rahmen dieser Richtlinie k\u00f6nnen auf der Grundlage der Art. 17, 36, 38 und 41 der Allgemeinen Grupp",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "a78304bd60b2085c": {
+   "reason": "Estonian companies/SMEs with positive Eurostars or KDT JU decisions; they apply themselves.",
+   "sample": "Toetust v\u00f5ib taotleda Eurostars 2 v\u00f5i Eurostars 3 \u00fchiskonkursil positiivse otsuse saanud Eesti \u00e4riregistrisse kantud \u00e4ri\u00fchingust v\u00e4ikese v\u00f5i keskmise suurusega ettev\u00f5tja v\u00f5i KDT JU \u00fchiskonkursil positiivse otsuse saanud ",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "a83e2becbec1d4a4": {
+   "reason": "Public research bodies and universities eligible to submit applications themselves.",
+   "sample": "Criteri di eleggibilita': Soggetti ammissibili a presentare domanda di partecipazione ai sensi del presente Avviso sono i soggetti pubblici identificati in: a. Enti e istituzioni di ricerca vigilati dal MUR, di cui al de",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "a852e579d680c8e1": {
+   "reason": "Firms of all sizes; industrial PhD scheme applicants are the companies.",
+   "sample": "N\u00e6rings-ph.d. er for sm\u00e5 og store bedrifter og \u00e5pen for alle fagomr\u00e5der.",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2050,6 +2500,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "aa30184dbb9e74f1": {
+   "reason": "Enterprises, freelancers and contractors listed as entitled to apply; applicant test.",
+   "sample": "Antragsberechtigt mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland sind: private Unternehmen, kommunale Unternehmen, freiberuflich T\u00e4tige, wenn die Betriebsst\u00e4tte \u00fcberwiegend f\u00fcr die freiberufliche T\u00e4tigkeit ge",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "abdf815a018a737a": {
    "reason": "Micro, small and medium enterprises in specified territories are the applicants.",
    "sample": "Micro, pequenas e medias empresas (PME). Dois avisos distintos consoante a localizacao: 'Territorios de Baixa Densidade na Regiao CENTRO - NUTS II' (CENTRO2030-2026-13, dotacao 4.000.000 EUR do Fundo Social Europeu Mais/",
@@ -2071,6 +2527,12 @@
   "ad50353988fe0cc2": {
    "reason": "Classified tourism accommodation establishments installing bike spaces; they apply.",
    "sample": "Eligibilit\u00e9 Sectorielle : Votre \u00e9tablissement est class\u00e9 H\u00f4tel de tourisme, Camping et Parc r\u00e9sidentiel de loisirs, R\u00e9sidence de tourisme, Village de vacances, Auberge collective, selon les normes nationales du r\u00e9f\u00e9renti",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "ad60128fe0cf440f": {
+   "reason": "Explicitly names universities, research institutions and firms as entitled to apply.",
+   "sample": "Antragsberechtigt sind Hochschulen und au\u00dferuniversit\u00e4re Forschungseinrichtungen mit Forschungs- und Entwicklungskapazit\u00e4ten in Deutschland sowie Unternehmen der gewerblichen Wirtschaft und andere juristische Personen de",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2212,6 +2674,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "ba070ff0e77bf9b9": {
+   "reason": "Registered private legal persons with a development partner; applicant's own eligibility.",
+   "sample": "Toetust v\u00f5ib taotleda Eesti \u00e4riregistris v\u00f5i mittetulundus\u00fchingute ja sihtasutuste registris registreeritud era\u00f5iguslik juriidiline isik. Partnerina peab arendusse olema kaasatud v\u00e4hemalt \u00fcks reaalajamajanduse lahenduse ",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "bb92213013b71eeb": {
    "reason": "Though PhD candidates mentioned, text states companies apply for the Baekeland mandate; applicant test.",
    "sample": "De regeling staat open voor alle kandidaten die door de betrokken universiteit toegelaten worden tot een doctoraatsstudie. VLAIO legt geen bijkomende beperkingen op. Alle bedrijven met rechtspersoonlijkheid en met een ex",
@@ -2221,6 +2689,12 @@
   "bbddf886aee9364f": {
    "reason": "F\u00f6rderungswerbende natural/legal persons with Austrian establishment; applicant test with exclusions.",
    "sample": "F\u00f6rderungswerbende k\u00f6nnen nur au\u00dferhalb der \u00f6sterreichischen Bundesverwaltung stehende nat\u00fcrliche oder juristische Personen bzw. Personengesellschaften sein. Nicht antragslegitimiert sind Gesellschaften b\u00fcrgerlichen Rech",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "bbe74e8e1e02b3d1": {
+   "reason": "Estonian company in listed sectors implementing project in Ida-Viru; stated as taotleja.",
+   "sample": "Taotlejaks v\u00f5ib olla Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle tegevusala v\u00f5i selle projekti tegevusala, millele toetust taotletakse, vastab EMTAKi jaole B (m\u00e4et\u00f6\u00f6stus, teatavate alajagude erandiga), C (t\u00f6\u00f6tlev t\u00f6\u00f6stus",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2329,6 +2803,12 @@
   "c2c817a9af8ce491": {
    "reason": "Firms and non-firms (not private individuals) applying in writing for energy R&D grants; applicant test.",
    "sample": "4 \u00a7 St\u00f6d enligt denna f\u00f6rordning f\u00e5r l\u00e4mnas i form av bidrag f\u00f6r att inom energiomr\u00e5det fr\u00e4mja forskning och utveckling, inklusive demonstrationsprojekt, och innovation. St\u00f6d f\u00e5r l\u00e4mnas om det finns medel. St\u00f6d f\u00e5r l\u00e4mna",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "c2ec7acfc360fd94": {
+   "reason": "Applicant types (research organisations, firms, state/municipal bodies) defined; these are the submitters.",
+   "sample": "Ka\u017ed\u00fd uchaze\u010d (hlavn\u00ed uchaze\u010d i dal\u0161\u00ed \u00fa\u010dastn\u00edci) si vol\u00ed jeden z typ\u016f uchaze\u010de: v\u00fdzkumn\u00e1 organizace, podnik (mal\u00fd, st\u0159edn\u00ed, velk\u00fd), nebo ostatn\u00ed uchaze\u010di povolen\u00ed zad\u00e1vac\u00ed dokumentac\u00ed (organiza\u010dn\u00ed slo\u017eka st\u00e1tu, \u00fazemn\u00ed sa",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2482,6 +2962,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "ce1b49a61e643d13": {
+   "reason": "Companies developing research infrastructure apply themselves; users mentioned only as context.",
+   "sample": "Toetust v\u00f5ivad taotleda Eesti \u00e4riregistris registreeritud \u00e4ri\u00fchingud, kes arendavad taristut ja sellega seotud teenuseid, mida ettev\u00f5tjad kasutavad vastava valdkonna teadust\u00f6\u00f6 tegemiseks.",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "ce5289ca8d29a04a": {
    "reason": "Private mining firms, large and SMEs, are the direct applicants.",
    "sample": "Beneficiarios: GRAN EMPRESA; PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES11 - GALICIA. Finalidad: Industria y Energ\u00eda. Sectores elegibles: INDUSTRIAS EXTRACTIVAS. Tipo de convocatoria:",
@@ -2509,6 +2995,12 @@
   "d296c597b411c6dc": {
    "reason": "Public/private legal persons, collectivities and engineering structures named as beneficiaries who carry the projects themselves.",
    "sample": "\u00cates-vous concern\u00e9 ? Les b\u00e9n\u00e9ficiaires sont des personnes morales publics ou priv\u00e9es d\u00e9finis comme suit : Ayant une activit\u00e9 caract\u00e9ris\u00e9e notamment par les codes NAF suivant : 3511Z : Production d\u2019\u00e9lectricit\u00e9 (lien avec ",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "d2d1813ae35d60af": {
+   "reason": "Software/e-invoice service providers described as taotleja; they apply in their own right.",
+   "sample": "Taotleja peab olema Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kes pakub e-arvete operaatorteenust, kassas\u00fcsteemi, makselahendust v\u00f5i muud majandustarkvarateenust. Toetuse maksimaalne suurus on 20 000 eurot ja omafinantseerin",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2551,6 +3043,12 @@
   "d6f25bde0b0aa937": {
    "reason": "UK-registered businesses and research organisations leading or partnering; they apply and claim grant.",
    "sample": "Innovate UK largely requires that projects are led by businesses; other types of organisations can apply in collaboration with a business partner. To be eligible as a UK-registered business you must have a Companies Hous",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "d6f8cc961cabaeca": {
+   "reason": "PMEs/ETIs in \u00cele-de-France filing the candidature dossier; they are the applicants.",
+   "sample": "Pour \u00eatre \u00e9ligibles au dispositif, les entreprises doivent respecter les crit\u00e8res cumulatifs suivants : \u00catre une PME ou une ETI cr\u00e9\u00e9e au moment du d\u00e9p\u00f4t du dossier de candidature (avoir un num\u00e9ro SIRET et \u00eatre en mesure ",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2632,6 +3130,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "dcf5940644b382f2": {
+   "reason": "Estonian companies meeting turnover threshold; explicitly the applicant.",
+   "sample": "Toetuse taotlejaks v\u00f5ib olla Eesti \u00e4riregistris registreeritud \u00e4ri\u00fching, kelle taotluse esitamisele vahetult eelnenud kahe majandusaasta keskmine m\u00fc\u00fcgitulu \u00e4riregistrile esitatud majandusaasta aruande kohaselt on v\u00e4hemal",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "dd59b8d7c2cb1f06": {
    "reason": "Antragsberechtigt firms, freelancers, contractors applying in their own right.",
    "sample": "6 F\u00f6rdernehmer Antragsberechtigt mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland sind: - private Unternehmen, - kommunale Unternehmen, - Landesunternehmen, - freiberuflich T\u00e4tige, wenn die Betriebsst\u00e4tte \u00fcberw",
@@ -2641,6 +3145,12 @@
   "de0001f7f8dc6c5a": {
    "reason": "Forestry/sawmill SMEs named as eligible beneficiaries who themselves apply for and sign the aid.",
    "sample": "\u00cates-vous concern\u00e9 ? Les b\u00e9n\u00e9ficiaires \u00e9ligibles sont les PME situ\u00e9es en France m\u00e9tropolitaine ou dans un DOM : Ayant une activit\u00e9 de sylviculture et/ou d\u2019exploitation foresti\u00e8re ou de sciage, caract\u00e9ris\u00e9es notamment par",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "deffa0328615c792": {
+   "reason": "Describes SMEs and large enterprises as beneficiaries; these firms are the ones applying and signing.",
+   "sample": "I beneficiari sono le micro, piccole e medie imprese (PMI) e le grandi imprese.",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2665,6 +3175,12 @@
   "e2dc1a08f03d6371": {
    "reason": "Agency-client manufacturing/traded-services companies applying for RD&I grants; described population signs.",
    "sample": "Eligible companies are limited to Enterprise Ireland 1, \u00dadar\u00e1s na Gaeltachta or any of the Local Enterprise Offices subject to the prevailing policies of those agencies. Companies must operate in the Manufacturing or int",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "e3244d53ef53998a": {
+   "reason": "Start-ups in EEA/Switzerland/UK explicitly encouraged to apply.",
+   "sample": "Start-ups based in the EEA, Switzerland or the UK are encouraged to apply.",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2752,6 +3268,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "e81da3125ba7525f": {
+   "reason": "Danish research institution is main applicant submitting; foreign partners mentioned as context.",
+   "sample": "A Danish research institution must be the main applicant and is responsible for submitting the application and for the dialogue with Innovationsfonden. The project must be built on collaboration with research partners in",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "e97a915fac857eb7": {
    "reason": "Taxi-sector SMEs and self-employed transport operators apply directly.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES618 - Sevilla. Finalidad: Subvenciones al transporte. Sectores elegibles: TRANSPORTE Y ALMACENAMIENTO. Tipo de convocatoria: ",
@@ -2785,6 +3307,12 @@
   "eb274f127266ca91": {
    "reason": "Companies and communities of all sizes seeking energy aid for own investments; applicants.",
    "sample": "Energiatukea voidaan my\u00f6nt\u00e4\u00e4 kaikenkokoisten yritysten ja yhteis\u00f6jen investointi- ja katselmushankkeisiin. Kohteet ja toimijat joille energiatukea ei my\u00f6nnet\u00e4: asunto-osakeyhti\u00f6t; asuinkiinteist\u00f6t (mukaan lukien hoivakii",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "eb5728c8502e6163": {
+   "reason": "Estonia-registered enterprises may apply; SME focus is context, applicant test.",
+   "sample": "Toetust saavad taotleda Eestis registreeritud ettev\u00f5tjad; eelistatud on Eesti ja Norra ettev\u00f5tjate \u00fchisprojektid ning programmi p\u00f5hifookus on v\u00e4ikese ja keskmise suurusega ettev\u00f5tjatel, kellele on suunatud enamik taotlus",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2833,6 +3361,12 @@
   "ee0c92716825a269": {
    "reason": "Organisations with Swedish coordinator; applicant consortium test.",
    "sample": "Forskningsorganisationer, f\u00f6retag, offentliga och ideella organisationer. Projektet ska omfatta minst en svensk och en amerikansk akt\u00f6r, varav projektkoordinatorn ska vara baserad i Sverige.",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "eef22425b3723c11": {
+   "reason": "Entrepreneurs or consortia with penvoerder submitting the application; applicant test.",
+   "sample": "Aanvragen kan een ondernemer alleen of een samenwerkingsverband, waarbij een van de deelnemers als penvoerder indient en door alle andere deelnemers gemachtigd is. Het project moet een pilot- of demonstratieproject zijn ",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2914,9 +3448,21 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "f280ca0ea74505a9": {
+   "reason": "Enterprises in southern regions claim the R&D tax credit themselves.",
+   "sample": "La misura si applica alle imprese operanti nelle regioni Abruzzo, Basilicata, Calabria, Campania, Molise, Puglia, Sardegna e Sicilia. Le attivita' di ricerca e sviluppo ammissibili sono quelle individuate dall'articolo 1",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "f2e467ff84adb0e6": {
    "reason": "Agricultural/agri-food entities in listed territories soliciting the aid \u2014 applicant test.",
    "sample": "Eligibilit\u00e9 Sectorielle : Activit\u00e9 agricole ou industries agro-alimentaires Secteurs principalement concern\u00e9s par le dispositif : A|B|C|D|E|F|G|H|I|L|M Eligibilit\u00e9 en fonction du nombre de salari\u00e9s: Toutes tailles Aires ",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "f3dc196fca305119": {
+   "reason": "Cybersecurity-sector Estonian company; text is explicitly the applicant's own test.",
+   "sample": "Taotleja peab olema Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle \u00e4ritegevus on seotud k\u00fcberturvalisuse toodete ja teenustega ning kelle tegevusala kuulub EMTAK 2025 jakku K. Toetuse saamiseks on n\u00f5utav sisuline koost\u00f6\u00f6 te",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2926,9 +3472,39 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "f60f80c0c14a74d9": {
+   "reason": "Growth-potential creative-industry SMEs with minimum turnover; describes applicants themselves.",
+   "sample": "Toetus on m\u00f5eldud Eestis registreeritud ja loomemajanduse valdkondades (arhitektuur, audiovisuaalvaldkond, disain, etenduskunstid, kirjastamine, kunst, kultuurip\u00e4rand, meelelahutustarkvara, muusika, reklaam) tegutsevatel",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "f622f999b9a13ef0": {
+   "reason": "Projects presented by enterprises, alone or with research bodies; submitting population.",
+   "sample": "I progetti sono presentati da imprese, singolarmente o in forma associata, anche in collaborazione con organismi di ricerca, con un massimo di 3 proponenti. I progetti devono prevedere un ammontare complessivo di spese a",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "f65ed1f1967b740e": {
+   "reason": "Local governments/their entities named as taotleja; they sign.",
+   "sample": "Taotlejaks v\u00f5ivad olla kohalikud omavalitsused v\u00f5i nende valitseva m\u00f5ju all olevad \u00fcksused v\u00e4ljaspool Tartut ja Tallinna ning nendega piirnevaid omavalitsusi, kelle p\u00f5hikirjaline tegevus h\u00f5lmab elamumajanduse korraldamis",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "f6a2966e80f59dce": {
    "reason": "Retail SMEs in Elda's historic centre apply directly.",
    "sample": "Beneficiarios: PYME Y PERSONAS F\u00cdSICAS QUE DESARROLLAN ACTIVIDAD ECON\u00d3MICA. \u00c1mbito regional: ES521 - Alicante / Alacant. Finalidad: Comercio, Turismo y Pymes. Sectores elegibles: Comercio al por menor. Tipo de convocator",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "f6b53f78e6189e8e": {
+   "reason": "Registered company meeting turnover and solvency criteria is the applicant.",
+   "sample": "Taotleja on Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching, kelle enda v\u00f5i temaga valitseva m\u00f5ju kaudu seotud ettev\u00f5tja viimase kahe majandusaasta keskmine m\u00fc\u00fcgitulu majandusaasta aruannete kohaselt on v\u00e4hemalt 200 000 eurot ning ",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "f72bc1a6df9e9d84": {
+   "reason": "Eurostars-approved Estonian SMEs; describes the applicant's own eligibility.",
+   "sample": "Toetust v\u00f5ib taotleda Eurostars 2 v\u00f5i Eurostars 3 \u00fchiskonkursil positiivse otsuse saanud Eesti \u00e4riregistrisse kantud \u00e4ri\u00fchingust v\u00e4ikese v\u00f5i keskmise suurusega ettev\u00f5tja. Projektil peab olema v\u00e4hemalt \u00fcks partner Eurosta",
    "v": 1,
    "verdict": "applicant"
   },
@@ -2968,6 +3544,18 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "fb9a278f4aaf0655": {
+   "reason": "Estonian-registered companies as taotleja (applicant), with optional partners.",
+   "sample": "Toetuse taotlejaks v\u00f5ib olla Eesti \u00e4riregistrisse kantud \u00e4ri\u00fching. Taotleja v\u00f5ib projekti kaasata partnereid, kelleks v\u00f5ivad lisaks \u00e4ri\u00fchingutele olla muud era\u00f5iguslikud juriidilised isikud v\u00f5i teadus- ja arendusasutus.",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "fbab5979ebc11cd7": {
+   "reason": "Companies, research institutions, universities may apply to CLIMIT; explicit applicant test.",
+   "sample": "Bedrifter, forskningsinstitusjoner, universitet og h\u00f8yskoler kan s\u00f8ke CLIMIT-programmet om st\u00f8tte til prosjekter for utvikling av CO2-h\u00e5ndteringsteknologi.",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "fc118e5e977623aa": {
    "reason": "Describes TPE-PME beneficiaries; funding paid to conventioned relay structures delivering services.",
    "sample": "Le Programme vise l'accompagnement des entreprises du secteur du tertiaire priv\u00e9 ou de l'industrie. Les entreprises vis\u00e9es sont prioritairement les TPE-PME, et le Programme ambitionne d'en toucher 40 000 sur l'ensemble d",
@@ -2995,6 +3583,12 @@
   "fdce9afa5816f5a6": {
    "reason": "Prosjektansvarlig (project owner firm) and partners tested; they submit the application.",
    "sample": "Prosjektansvarlig m\u00e5 v\u00e6re registrert i det norske foretaksregisteret og ha \u00f8konomisk aktivitet i Norge. Vi krever at prosjektansvarlig gjennomf\u00f8rer prosjektet sammen med minst \u00e9n samarbeidspartner (norsk bedrift) eller k",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "feffcdc9a1f96191": {
+   "reason": "Businesses/research organisations named as target but text defines the \u017eadatel (applicant) directly.",
+   "sample": "Hlavn\u00ed c\u00edlovou skupinou jsou podnikatelsk\u00e9 subjekty a v\u00fdzkumn\u00e9 organizace. \u017dadatelem je podnikaj\u00edc\u00ed fyzick\u00e1 nebo pr\u00e1vnick\u00e1 osoba s p\u0159id\u011blen\u00fdm \u010desk\u00fdm I\u010c, opr\u00e1vn\u011bn\u00e1 k podnik\u00e1n\u00ed odpov\u00eddaj\u00edc\u00edmu ekonomick\u00e9 \u010dinnosti, ve kter\u00e9 ",
    "v": 1,
    "verdict": "applicant"
   },

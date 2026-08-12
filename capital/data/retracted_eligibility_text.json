@@ -107,6 +107,16 @@
    "text": "The IF24 auction established a novel dedicated budget of EUR 200 million for projects with off-takers in the maritime sector. Successful bidders receive a fixed premium payment upon production of certified and verified hydrogen (EUR/kg RFNBO hydrogen), for a maximum period of 10 years of operation. [...] The successor third auction carries a topic for RFNBO and/or electrolytic low-carbon hydrogen production supplied to the Maritime or Aviation sectors, with EUR 300 million available."
   },
   {
+   "id": "nfr_gr_nnplattform",
+   "country": "NO",
+   "retracted_on": "2026-08-11",
+   "digest": "56766577ab33a517",
+   "verdict": "report",
+   "property_version": 3,
+   "reason": "Bare fragment listing entity types; no requirement or threshold stated.",
+   "text": "bedrifter, forskningsinstitutter og andre samarbeidspartnere"
+  },
+  {
    "id": "satr_de_equity__sa_115337__landwirtschaftliche_rentenbank",
    "country": "DE",
    "retracted_on": "2026-08-08",
