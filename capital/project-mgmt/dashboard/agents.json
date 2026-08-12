@@ -8,6 +8,18 @@
       "why": "One transposed letter in a lookup table has been recording every guarantee scheme as a grant. Italy's largest — €14.9 billion across 13,892 awards — is shown to founders as a grant, while a founder who asks for a guarantee is never shown it at all. Separately, eleven rows a founder can be offered are not funds but accounting labels: Poland's entire list is eight of them, so a Polish founder is currently shown nothing real."
     },
     {
+      "id": "wsFT",
+      "step": 5,
+      "what": "Check the founder's second answers actually reach the model that picks the five",
+      "why": "Step 3 asks the founder follow-up questions and step 5 is meant to use the answers. Nobody has confirmed the answers survive the trip. If they are dropped, every hour spent improving the questions is wasted; if they can rule a fund OUT, that breaks a decision already made — the second screen informs the choice, it never removes an option."
+    },
+    {
+      "id": "wsFU",
+      "step": 2,
+      "what": "Stop a routine sync from deleting a thousand eligibility rules",
+      "why": "The two ways we move the corpus between the master copy and a working copy both replace the whole file. One store currently holds about a thousand eligibility rules the other does not, so the next sync in either direction destroys them — these are the rules that decide whether a fund can rule a founder out. Making the sync refuse while that is true removes the hazard permanently."
+    },
+    {
       "id": "wsFS",
       "step": 5,
       "what": "Get the two blind spots in the eligibility read open again",
