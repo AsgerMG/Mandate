@@ -361,7 +361,58 @@ export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 7);
  *  That does not make this cap free. It is still what the writer is asked to
  *  write, and 9 is the value at which it measurably stopped writing all of
  *  them, so a rise in `WRT-NO-NOTE` is still what sends it back down -- the
- *  cost has simply moved from a lost fund to a thinner row. */
+ *  cost has simply moved from a lost fund to a thinner row.
+ *
+ *  ── WHY 8, AND WHAT THE ONE SPARE SEAT IS FOR (wsGI) ──────────────────────
+ *  8 is `BRIEF_LIMITS.institutionsMax + 1` and has never been anything else.
+ *  `05575942` set it, and gave the whole reason in its own message: "7 shown
+ *  against 7 published is zero headroom, and the writer declines candidates
+ *  routinely." The first clause is still true; the second was retired by wsGC
+ *  three paragraphs up. So the constant has tracked the published cap since it
+ *  was 7 = 6+1, and NOBODY HAS EVER SAID WHAT THE SPARE SEAT BUYS.
+ *
+ *  It buys BACKFILL DEPTH AGAINST THE WATCH-ONLY DEMOTION, and nothing else.
+ *  `publishRankByKey` ranks by candidate order, so the published table is the
+ *  head of the ranked list and the only thing that disturbs that head is
+ *  `assembleBriefRows` sorting watch-only rows to the back. Stated as the
+ *  property, with the test for a case nobody has seen -- `briefRows.test.ts`
+ *  sweeps all 1024 patterns rather than the ones we have met:
+ *
+ *      a candidate at 1-based rank r publishes IFF
+ *          r <= WRITER_CANDIDATE_CAP  AND  r - w(r) <= institutionsMax
+ *      where w(r) is the number of watch-only rows strictly above it.
+ *
+ *  Two things follow, and they are what any proposal to move this number has
+ *  to answer:
+ *
+ *    WITH NO WATCH-ONLY ROW THIS CONSTANT IS INERT. The founder reads ranks
+ *      1..institutionsMax at a cap of 8, of 12, of 18. It is not a recall
+ *      lever, and the funnel row that bills 14.2 points of lost recall to
+ *      "the writer's candidate cap" is billing them to the ORDER: a fund at
+ *      rank 9 of the candidate list is lost at the PUBLISHED cap whatever this
+ *      number is.
+ *
+ *    RANK institutionsMax+k NEEDS k WATCH-ONLY ROWS ABOVE IT. Measured on the
+ *      35 real briefs in `brief_records` (production's own `dropped_watch_only`,
+ *      read-only, no model call): 0 watch-only rows on 29 of them, 1 on 4, 2 on
+ *      2, never 3. So P(>=2) = 5.7% and P(>=3) = 0, and rank 10 has never been
+ *      reachable on a recorded brief AT ANY CAP VALUE.
+ *
+ *  ── THE DECISION, AND THE NUMBER THAT WOULD OVERTURN IT ───────────────────
+ *  Raising this cannot buy more than 5.7% of the 14.2 points sitting below it,
+ *  i.e. 0.81 points, and the honest estimate is ~0.15 -- against a +/-3.1 point
+ *  half-width on the funnel's own run. It is CHEAP, not expensive: priced from
+ *  production's own `writerCandidateEvidence` (929 chars, ~258 input tokens per
+ *  candidate, measured over 96 candidates for free) and from 40 recorded
+ *  published rows (243 chars of model prose, ~88 output tokens), an extra
+ *  candidate is EUR 0.0013 against a recorded EUR 0.24 brief. So the reason to
+ *  leave it at 8 is that it buys nothing, NOT that it costs something.
+ *
+ *  Raise it when the measured P(w >= 2) times the rank-9 mass exceeds the
+ *  measuring run's own half-width. `npm run stages` prints both, and the
+ *  watch-only budget it reads comes from `brief_records` rather than from this
+ *  comment, so the day the writer starts hedging this decision reverses itself
+ *  in a number instead of in a memory. */
 export const WRITER_CANDIDATE_CAP = 8;
 
 // ── THE FUNNEL INVARIANT, ASSERTED WHERE THE LEVER CAN BREAK IT ───────────

@@ -150,6 +150,153 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
   });
 });
 
+// ── wsGI — WHAT THE CANDIDATE CAP ACTUALLY GOVERNS ────────────────────────
+//
+// `WRITER_CANDIDATE_CAP` is 8 against a published 7, and the reason recorded
+// for the 8 (commit 05575942) is only "7 shown against 7 published is zero
+// headroom". Nobody has ever said what the one spare seat BUYS, and the funnel
+// bills 14.2 points of lost recall to this cut, which reads as though the cap
+// were the thing deciding it.
+//
+// It is not. `publishRankByKey` ranks by CANDIDATE ORDER, so the published
+// table is the head of the ranked list and the only thing that can disturb that
+// head is the watch-only demotion. Stated as the property, over an arbitrary
+// reply rather than the ones we have seen:
+//
+//   A candidate at 1-based rank r publishes IFF
+//        r <= candidateCap    AND    r - w(r) <= publishedCap
+//   where w(r) is the number of watch-only rows strictly above it.
+//
+// Two consequences a reader should be able to check against the code:
+//
+//   With NO watch-only row, the published table is ranks 1..publishedCap for
+//   EVERY candidate cap. The cap is inert. It is not a recall lever.
+//
+//   The cap's whole reach is BACKFILL DEPTH: rank publishedCap+1 needs one
+//   watch-only row above it, +2 needs two, and so on. Measured on the 35 real
+//   briefs in `brief_records`, watch-only fires 0 times on 29 of them, once on
+//   4 and twice on 2 — never three times. So at today's caps nothing below
+//   rank 9 has ever been reachable at any cap value.
+//
+// The test sweeps every watch-only PATTERN rather than a handful, because the
+// failure was never about which fund it was.
+describe("the candidate cap bounds the watch-only backfill, and nothing else", () => {
+  const PUBLISHED = 7;
+  const watchNote = (key: string) => note(key, { nextStep: "Monitor the next call." });
+
+  /** The property, computed from the definition rather than from the code under
+   *  test: which keys SHOULD publish, given which candidates are watch-only. */
+  function expected(keys: readonly string[], watch: ReadonlySet<string>, cap: number) {
+    const seen = keys.slice(0, cap);
+    return [...seen.filter((k) => !watch.has(k)), ...seen.filter((k) => watch.has(k))]
+      .slice(0, PUBLISHED);
+  }
+
+  // Wider than production so the cap has somewhere to move to. Ten candidates
+  // is 1024 watch-only patterns, each assembled at four cap values.
+  const N10 = 10;
+  const rows10 = Array.from({ length: N10 }, (_, i) => row(i));
+  const keys10 = rows10.map((r) => r.channel);
+
+  it("publishes exactly the rank the formula names, on all 1024 patterns × 4 caps",
+    () => {
+      const wrong: string[] = [];
+      for (let mask = 0; mask < 1 << N10; mask++) {
+        const watch = new Set(keys10.filter((_, i) => (mask >> i) & 1));
+        const notes = keys10.map((k) => (watch.has(k) ? watchNote(k) : note(k)));
+        for (const cap of [PUBLISHED, PUBLISHED + 1, PUBLISHED + 2, N10]) {
+          const got = assembleBriefRows({
+            rows: rows10.slice(0, cap), rowKeys: keys10.slice(0, cap),
+            notes, cap: PUBLISHED, clean,
+          }).published.map((r) => r.channel);
+          const want = expected(keys10, watch, cap);
+          if (JSON.stringify(got) !== JSON.stringify(want)) {
+            wrong.push(`mask ${mask} cap ${cap}: ${got.join(",")} != ${want.join(",")}`);
+          }
+        }
+      }
+      expect(wrong.slice(0, 5)).toEqual([]);
+    });
+
+  // The headline, isolated so it cannot be lost inside the sweep above: with
+  // nothing watch-only, raising the candidate cap changes NOTHING a founder
+  // reads. Anyone proposing to raise it to buy recall is proposing to buy
+  // nothing, and this is the line that says so.
+  it("is INERT when no candidate is watch-only, at every cap from 7 to 10", () => {
+    const notes = keys10.map((k) => note(k));
+    const tables = [PUBLISHED, PUBLISHED + 1, PUBLISHED + 2, N10].map((cap) =>
+      assembleBriefRows({
+        rows: rows10.slice(0, cap), rowKeys: keys10.slice(0, cap),
+        notes, cap: PUBLISHED, clean,
+      }).published.map((r) => r.channel));
+    for (const t of tables) expect(t).toEqual(keys10.slice(0, PUBLISHED));
+  });
+
+  // And the converse, so "inert" is never read as "unused": one watch-only row
+  // above the boundary and the spare seat is what publishes a real fund instead
+  // of a row telling the founder to wait. That is what the headroom is FOR.
+  it("reaches exactly one rank deeper per watch-only row above the boundary", () => {
+    for (let w = 0; w <= 3; w++) {
+      const watch = new Set(keys10.slice(0, w));
+      const notes = keys10.map((k) => (watch.has(k) ? watchNote(k) : note(k)));
+      const deepest = (cap: number) => {
+        const got = assembleBriefRows({
+          rows: rows10.slice(0, cap), rowKeys: keys10.slice(0, cap),
+          notes, cap: PUBLISHED, clean,
+        }).published.map((r) => keys10.indexOf(r.channel) + 1);
+        return Math.max(...got.filter((r) => !watch.has(keys10[r - 1])));
+      };
+      // Unbounded, the actionable head reaches rank 7+w. Bounded at 8 it can
+      // never reach past 8, whatever the demand.
+      expect(deepest(N10), `w=${w} uncapped`).toBe(PUBLISHED + w);
+      expect(deepest(PUBLISHED + 1), `w=${w} at cap 8`).toBe(Math.min(PUBLISHED + w, PUBLISHED + 1));
+    }
+  });
+
+  // ── THE RED, SIMULATED ─────────────────────────────────────────────────
+  // The sweep is worth nothing unless a plausible wrong implementation breaks
+  // it, so both are built here and shown to. Neither is a second copy of
+  // anything shipped: one is the rule wsGC deleted, the other is the rule
+  // somebody would write if they believed the cap ranks.
+  it("neither DELETING watch-only nor letting the cap reorder satisfies it", () => {
+    const watch = new Set([keys10[0], keys10[1]]);
+    const notes = keys10.map((k) => (watch.has(k) ? watchNote(k) : note(k)));
+    const want = expected(keys10, watch, N10);
+
+    // 1. "The cap ranks": publish the first `PUBLISHED` by rank with no
+    //    demotion at all. Wrong the moment anything above the boundary is
+    //    watch-only, which is the only case where the cap does anything.
+    const noDemotion = keys10.slice(0, PUBLISHED);
+    expect(noDemotion).not.toEqual(want);
+
+    // 2. The pre-wsGC rule: DELETE the watch-only row instead of demoting it.
+    //    It agrees with the shipped rule exactly while enough actionable rows
+    //    survive to fill the cap, and diverges the moment they do not -- which
+    //    is the short-table failure, and the reason the demotion exists. Stated
+    //    as the boundary rather than as one example, and swept, because "they
+    //    look the same on the case I tried" is how the deletion survived.
+    const deleteRule = (watchSet: ReadonlySet<string>) =>
+      keys10.filter((k) => !watchSet.has(k)).slice(0, PUBLISHED);
+    const agreeWhenEnough: number[] = [];
+    const differWhenNotEnough: number[] = [];
+    for (let mask = 0; mask < 1 << N10; mask++) {
+      const w = new Set(keys10.filter((_, i) => (mask >> i) & 1));
+      const same = JSON.stringify(deleteRule(w)) === JSON.stringify(expected(keys10, w, N10));
+      const enoughActionable = N10 - w.size >= PUBLISHED;
+      if (enoughActionable && !same) agreeWhenEnough.push(mask);
+      if (!enoughActionable && same) differWhenNotEnough.push(mask);
+    }
+    expect(agreeWhenEnough).toEqual([]);
+    expect(differWhenNotEnough).toEqual([]);
+
+    // And the shipped implementation agrees with the formula on the same input.
+    const got = assembleBriefRows({
+      rows: rows10, rowKeys: keys10, notes, cap: PUBLISHED, clean,
+    }).published.map((r) => r.channel);
+    expect(got).toEqual(want);
+  });
+});
+
 // ── WHAT AN UNWRITTEN ROW SAYS ────────────────────────────────────────────
 // Stated over a swept matrix of rows rather than over the ones the corpus
 // happens to hold, so a fund nobody has seen yet is covered by the same rules.

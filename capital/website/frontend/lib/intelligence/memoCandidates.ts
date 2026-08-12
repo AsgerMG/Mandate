@@ -209,7 +209,18 @@ export interface MemoCandidate {
    *  caller that wants to say how far the name-collapse moved a row needs the
    *  position it came in at. */
   i: number;
-  ease?: EaseScore;
+  /** ── `ease` IS GONE, FOR THE REASON THE FIT SCORE WENT (wsGI) ───────────
+   *
+   *  An `ease?: EaseScore` stood here, attached to every candidate of every
+   *  pool on every memo request, and NOTHING read it: `pipeline.ts` builds the
+   *  row's `whyEasy` line from `easeById`, which this function returns
+   *  separately, and no other caller in `lib/`, `scripts/` or `app/`
+   *  dereferenced the field. That is the same shape as the nine-component fit
+   *  score wsGB removed one comment-block below — a value computed on the
+   *  request path into a field with no reader — and the same argument retires
+   *  it. `easeById` is unchanged and still the one copy.
+   *
+   *  `assessment` stays: `scripts/archive/_wsct_order.ts` reads it. */
   assessment?: InstrumentAssessment;
 }
 
@@ -532,7 +543,6 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
   // there is no decision left to take.
   const candidates = instrumentTable.map((row, i) => ({
     row, i,
-    ease: row.instrumentId ? easeById.get(row.instrumentId) : undefined,
     assessment: row.instrumentId ? assessments.get(row.instrumentId) : undefined,
   }));
 
