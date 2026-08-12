@@ -1332,11 +1332,15 @@ async function synthesize(
         candidates: institutions.length });
   }
   if (table.watchOnly.length) {
-    console.log("[institutions] demoted %d watch-only: %s",
+    // Published, at its own rank. This line and FUND-4 are the whole of the
+    // consequence: the sentence that matched is the row's own next step and
+    // the founder reads it there. See `watchOnly.ts` for why a regex over the
+    // writer's prose may report and may not select.
+    console.log("[institutions] %d row(s) read as watch-only and published anyway: %s",
       table.watchOnly.length, table.watchOnly.join(", "));
     for (const key of table.watchOnly) {
       log.record("WRT-WATCH-ONLY", key,
-        "flagged not-actionable, or its own next step matched the watch-only vocabulary");
+        "published copy reads as a thing to wait for rather than an action to start");
     }
   }
   for (const key of table.cutByCap) {
@@ -1396,6 +1400,11 @@ async function synthesize(
     // `orderMemoCandidates` used to return this count from a filter that
     // `accessiblePool` had already made unreachable, so every recorded brief
     // carried a hard zero presented as a measurement.
+    // `watchOnly` is NO LONGER A DROP COUNT and the field it feeds
+    // (`brief_records.dropped_watch_only`) is not one either from this commit
+    // on: nothing between the candidates and the table removes or moves a row,
+    // so it counts published rows whose copy reads as a thing to wait for. A
+    // reading of that column across the boundary is comparing two quantities.
     _dropped: { blocked: log.countsByRule()["VER-BLOCKED"] ?? 0,
                 watchOnly: table.watchOnly.length,
                 candidates: institutions.length },
@@ -1698,12 +1707,15 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   //
   // wsDD placed this call in `computeVerdict`, which reorders the fast-path
   // table. Nothing downstream of a founder's brief reads that table: this
-  // function rebuilds its own pool and hands it to `orderMemoCandidates`,
-  // which sorts on verdict rank and breaks every tie on the pool's incoming
-  // index. So the model's ranking was discarded before a word was written.
-  // Here it is not: the order of this array IS the order inside each
-  // qualification band, and that is what the writer is shown and what gets
-  // published.
+  // function rebuilds its own pool and handed it to `orderMemoCandidates`,
+  // which THEN sorted on verdict rank and broke every tie on the pool's
+  // incoming index. So the model's ranking was discarded before a word was
+  // written.
+  //
+  // That sort is deleted (wsGB) and there are no qualification bands left to
+  // be inside of. The order of this array is the published order, full stop:
+  // it is what the writer is shown, and below the writer only the two caps and
+  // the display-name collapse touch it.
   //
   // AFTER the cut by default. This permutes `VERDICT_POOL` rows that were
   // already selected and already cleared; it cannot add, drop or re-gate one,
@@ -1744,13 +1756,19 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   // `AGENT_SELECT_COUNT` is how many seats it may FILL, `BRIEF_VERDICT_POOL` is
   // how many survive to the writer. Moving the seam alone moves none of them.
   //
-  // Arm off (the default) returns `instrumentTable` by reference before any
-  // work is done, so the shipped path is identical to the one that existed
-  // before this call. `scripts/_wsdl_equiv.ts` asserts that rather than
-  // asserting it in prose. The `early` branch is guarded on the arm being ON as
-  // well as on the seam, so with the arm off there is exactly one expression
-  // here and it is the one that has always run — a flag cannot move a row for a
-  // founder whose request never calls a model.
+  // Arm `off` — WHICH IS NO LONGER THE DEFAULT — returns `instrumentTable` by
+  // reference before any work is done, so that path is identical to the one
+  // that existed before this call. `scripts/_wsdl_equiv.ts` asserts that
+  // rather than asserting it in prose. Since wsGA the default is `adviser`
+  // (see `AGENT_SELECT_ARM` in caps.ts, which reads `AGENT_SELECT ?? "adviser"`
+  // once at module scope), so the shipped path CALLS A MODEL and this comment
+  // no longer describes what a request without env vars does. A harness that
+  // means to be free must spell `off`.
+  //
+  // The `early` branch is guarded on the arm being on as well as on the seam,
+  // so with the arm explicitly off there is exactly one expression here and it
+  // is the one that has always run — a flag cannot move a row for a founder
+  // whose request never calls a model.
   const signalled = (rows: InstrumentRow[]) =>
     applyProfileSignal(rows, req.profileSignal, req.companyType);
   const instrumentTable =

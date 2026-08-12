@@ -186,7 +186,14 @@ export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
   return raw as AgentSelectArm;
 })();
 
-/** The pool `synthesize()` screens before cutting to the published cap.
+/** The pool `runIntelligence()` cuts to before anything is screened or written.
+ *
+ *  NOT `synthesize()`, which is what this said and where the cut has not lived
+ *  for some time: the expression is `accessiblePool(...).slice(0, VERDICT_POOL)`
+ *  in `runIntelligence`, above the ranker call, and `synthesize` is handed the
+ *  result. Pointing at the wrong function matters here because this is the
+ *  number the seam experiments move, and the two are on opposite sides of the
+ *  model call that `AGENT_SELECT_SEAM` relocates.
  *
  *  Deliberately wider than `DISPLAY_CAP`: funds a founder cannot access are
  *  dropped AFTER assessment, so a pool of six meant a founder blocked on three

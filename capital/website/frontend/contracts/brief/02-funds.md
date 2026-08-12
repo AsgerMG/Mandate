@@ -95,8 +95,17 @@ one, a wrong row is caught by a human reading the published page.
 
   The test: **could they begin it this week, and would they know they had
   begun?** Anything resolving to waiting, watching or deciding later fails,
-  whatever it is called. A row whose honest next step is to wait does not
-  belong in the brief at all.
+  whatever it is called.
+
+  **This is a rule about the writing, and its remedy is in the writing.** The
+  sentence that stood here — "a row whose honest next step is to wait does not
+  belong in the brief at all" — was a selection claim inside a prose contract,
+  and the code enforced it by removing the fund. Which funds appear is the
+  ranker's decision, taken above the writer on the fund's own text; a hedge in
+  a note written afterwards is not a channel for retaking it. Measured, the
+  enforcement evicted the model's own top-ranked fund from about one brief in
+  eighteen (wsGK). A violation here now says the note needs rewriting, and the
+  row publishes at its rank while it is being rewritten.
 - FUND-5 (hard) `whyEligible` and `nextStep` are always written. The fallback
   text the pipeline substitutes when they are missing is a defect, not a
   default.

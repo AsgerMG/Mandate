@@ -216,18 +216,24 @@ const STAGES: Stage[] = [
     // DEMOTION, which can push a row over the cap without deleting it.
     alive: (t) => t.rankWriter != null,
   },
-  {
-    id: "watch_only",
-    question: "... and the writer's own prose does not demote it behind the actionable rows",
-    // `isWatchOnly(nextStep, whyEligible)` in assembleBriefRows reads text only
-    // the writer can produce. Measuring it means paying for a memo per founder,
-    // which is the one thing this instrument may not do.
-    alive: () => null,
-    unmeasured:
-      "WRT-WATCH-ONLY reads the writer's `nextStep` and `whyEligible` prose, so it "
-      + "cannot be evaluated without a paid memo per founder. Rows below are therefore "
-      + "an UPPER BOUND: the true survivor count at every later stage is <= the number shown.",
-  },
+  // ── A STAGE THAT NO LONGER EXISTS (wsGK, 2026-08-13) ────────────────────
+  // `watch_only` stood here, permanently UNMEASURED, and every row below it
+  // was therefore an upper bound. It was never unmeasurable in principle — it
+  // was unmeasurable for free, because it read prose only a paid memo call can
+  // produce, and it is the one stage between the writer cap and the published
+  // table that could lose a founder their fund.
+  //
+  // It is not a stage any more. `assembleBriefRows` publishes `rows.slice(0,
+  // cap)` and reads nothing from the reply to do it, so the writer's prose has
+  // no survivor set: `watchOnly` is now a count of published rows carrying a
+  // hedge, which is a copy-quality figure (FUND-4's) and not a funnel stage.
+  // A stage that removes nobody must not appear in a ladder, and an
+  // `alive: () => null` row that reports zero loss is worse than absent — it
+  // is a permanent asterisk on every figure beneath it for a mechanism that
+  // has stopped running.
+  //
+  // The consequence is the point: from here down the ladder is measured for
+  // free and end to end, with `model` the only estimated row left.
   {
     id: "published",
     question: `... and it is one of the ${PUBLISH_CAP} rows the brief publishes`,
@@ -755,8 +761,7 @@ const MECHANISM: Record<string, string> = {
   gates_pass: "`accessiblePool` → `VER-BLOCKED`",
   pool_cut: "`.slice(0, VERDICT_POOL)`",
   writer_cap: "`orderMemoCandidates().toWriter`",
-  watch_only: "`isWatchOnly` in `assembleBriefRows` — needs the writer",
-  published: "`order.slice(0, BRIEF_LIMITS.institutionsMax)`",
+  published: "`ranked.slice(0, BRIEF_LIMITS.institutionsMax)`",
   top_five: "the first five rows, our own scoring",
   model: "`agentSelectMemoPool` → Anthropic, at `pipeline.ts:1756` — a PERMUTATION of the "
     + `${VERDICT_POOL}, applied above the two cuts below it`,

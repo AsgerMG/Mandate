@@ -22,11 +22,31 @@
 // reply is swept below, not a handful of chosen ones, because the failure was
 // never about which fund it was.
 //
-// The one thing the reply may still move is a WATCH-ONLY row, and that is
-// deliberate and separate: watch-only is a signal the writer put in the copy
-// and the product acts on it. Silence is not a signal. So the sweep uses copy
-// with no watch-only vocabulary, and the watch-only interaction is pinned on
-// its own below.
+// ── wsGK — AND NEITHER DOES ITS WORDING ────────────────────────────────────
+//
+// The paragraph that stood here read: "the one thing the reply may still move
+// is a WATCH-ONLY row, and that is deliberate and separate". It was not
+// separate, and by the time it was written it was not deliberate either.
+//
+// `assembleBriefRows` sorted rows whose copy matched a vocabulary of eleven
+// phrasings behind rows whose copy did not. The writer is shown
+// WRITER_CANDIDATE_CAP (8) candidates and the brief publishes institutionsMax
+// (7), so ONE match anywhere in the eight makes the seven non-matching rows
+// exactly the published seven: the matching fund is cut and the rank-8 fund
+// takes its seat. At rank 8 that is a no-op. At rank 1 it is the model's first
+// choice, removed from the founder's brief by a regex over a different model's
+// prose. Both are the same expression; nothing in it read the rank.
+//
+// Rate, counted twice and independently: 8 matches in 128 candidate rows over
+// the 19 recorded briefs (6.3%), 8 in 168 rows over 30 memo-bench tapes
+// (4.8%). At 8 candidates that is a match in roughly a third of briefs.
+//
+// So the property is strengthened from "the reply's SILENCE cannot move a row"
+// to "nothing in the reply can", and it is swept over both: every subset of
+// the notes, times every position the watch-only vocabulary can appear at.
+// The signal is not thrown away — `watchOnly` still names every match for the
+// exclusion log, FUND-4 still raises it, and the sentence that matched is the
+// row's own next step, which the founder reads.
 import { readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
@@ -136,17 +156,72 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
     }
   });
 
-  // Watch-only is the one thing in the reply that may still move a row, and it
-  // moves it BEHIND the written rows rather than out of the table. Pinned so
-  // that "the reply cannot change membership" is never read as covering it.
-  it("demotes a watch-only row behind the others and never deletes it", () => {
-    const flagged = fullReply.map((n, i) =>
+  // ── THE FAILURE THIS CHANGE IS ABOUT, AT THE RANK THAT MATTERS ──────────
+  // Named on its own as well as swept below, because the sweep proves the
+  // property and this proves the property is about something.
+  it("publishes the model's rank-one fund even when the writer hedged about it", () => {
+    const hedged = fullReply.map((n, i) =>
       i === 0 ? note(n.channel, { nextStep: "Monitor the next call." }) : n);
-    const got = assemble(flagged);
-    expect(got.published.map((r) => r.channel)).not.toContain(rowKeys[0]);
+    const got = assemble(hedged);
+    expect(got.published.map((r) => r.channel)).toEqual(baseline);
+    expect(got.published[0].channel).toBe(rowKeys[0]);
+    // Still carried out of here, so the count reaches the exclusion log and the
+    // brief's record. Reported, never acted on.
     expect(got.watchOnly).toEqual([rowKeys[0]]);
-    // Not deleted: it is the row the cap cut, and it sits last in the order.
-    expect(got.cutByCap).toEqual([rowKeys[0]]);
+    // And the fund the demotion used to promote into its seat is still cut.
+    expect(got.cutByCap).toEqual([rowKeys[N - 1]]);
+    // The founder is told, in the writer's own sentence, on the row itself.
+    expect(got.published[0].nextStep).toMatch(WATCH_ONLY_COPY);
+  });
+
+  // The vocabulary at every position, crossed with every subset of the notes:
+  // 8 positions x 256 replies. Nothing in the reply — presence, absence or
+  // wording — may change the table.
+  it("holds when the watch-only vocabulary appears at any rank, on any reply", () => {
+    const differed: string[] = [];
+    for (let at = 0; at < N; at++) {
+      const hedged = fullReply.map((n, i) =>
+        i === at ? note(n.channel, { nextStep: "Monitor the next call." }) : n);
+      for (const mask of subsets(N)) {
+        const kept = hedged.filter((_, i) => (mask >> i) & 1);
+        const got = assemble(kept).published.map((r) => r.channel);
+        if (JSON.stringify(got) !== JSON.stringify(baseline)) {
+          differed.push(`hedge at ${at}, mask ${mask}: ${got.join(",")}`);
+        }
+      }
+    }
+    expect(differed).toEqual([]);
+  });
+
+  // ── THE RED, SIMULATED: THE DEMOTION, REINSTATED ───────────────────────
+  // The deleted expression, kept as a control exactly like the drop above it.
+  // If this passed the property, the property would be pinning nothing.
+  it("the demotion that was removed does NOT satisfy it, at every rank but the last", () => {
+    const demotedByProse = (notes: readonly WriterRowNote[]) => {
+      const byKey = new Map(notes.map((n) => [n.channel, n]));
+      const waits = (k: string) => WATCH_ONLY_COPY.test(String(byKey.get(k)?.nextStep ?? ""));
+      // `[...ranked.filter(actionable), ...ranked.filter(!actionable)]`, cut.
+      return [...rowKeys.filter((k) => !waits(k)), ...rowKeys.filter(waits)].slice(0, CAP);
+    };
+    const substituted: number[] = [];
+    for (let at = 0; at < N; at++) {
+      const hedged = fullReply.map((n, i) =>
+        i === at ? note(n.channel, { nextStep: "Monitor the next call." }) : n);
+      if (JSON.stringify(demotedByProse(hedged)) !== JSON.stringify(baseline)) {
+        substituted.push(at);
+      }
+      // And the property is unmoved at the same position.
+      expect(assemble(hedged).published.map((r) => r.channel)).toEqual(baseline);
+    }
+    // Every rank but the eighth, whose row the cap was cutting anyway — which
+    // is why "it only fires on the last row" would have been the wrong reading.
+    expect(substituted).toEqual([...Array(N - 1).keys()]);
+    // The rank-one case spelled out: the fund the model put first is gone, and
+    // the one it put eighth is in the table.
+    const hedgedFirst = fullReply.map((n, i) =>
+      i === 0 ? note(n.channel, { nextStep: "Monitor the next call." }) : n);
+    expect(demotedByProse(hedgedFirst)).not.toContain(rowKeys[0]);
+    expect(demotedByProse(hedgedFirst)).toContain(rowKeys[N - 1]);
   });
 });
 
