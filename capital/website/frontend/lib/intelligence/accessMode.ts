@@ -116,8 +116,20 @@ export function passesCapitalPreference(
  * a fund we measured and found middling — so the less we knew, the better an
  * instrument did.
  *
- * Measured before adopting: 18 of 724 publishable instruments, and no country
- * loses its last national route.
+ * What it costs, re-derived against Postgres 2026-08-13: 18 rows are otherwise
+ * publishable and fail only this, out of 771 publishable — the same 18 the
+ * adoption note recorded against a smaller corpus of 724, so the floor has not
+ * widened as the corpus grew. No country loses its last national route to it.
+ *
+ * Every one of those 18 is a national or European investment vehicle with an
+ * award history we hold but no amounts and no dates: Almi Invest, HTGF,
+ * Coparion, EIFO, Invest-NL, CDP Venture Capital, Bpifrance's fund arm, the EIC
+ * Fund, SPRIND and six Enterprise Ireland lines. None carries a single encoded
+ * gate, so `accessMode` calls all of them "apply" for want of anything to read
+ * — which is exactly the encoding-backlog hazard `passesCapitalPreference`
+ * refuses to depend on. Admitting them is therefore not one decision but two,
+ * and the second is whether a row with no gates and no amounts may be published
+ * at all. See project-mgmt/evidence/wsgl_data_floor_2026-08-13.jsonl.
  *
  * ── The register clause, and why it is not a loosening ────────────────────
  * The two tests above are both AWARD facts, because award history was the only
@@ -145,12 +157,17 @@ export function passesCapitalPreference(
  *     this clause agreeing with it keeps the two from drifting.
  *   - It grants nothing on SCALE. These rows still have no award median, so
  *     `awardScorer` gives them 1.0 — the same neutral the corpus already gives
- *     the 98 instruments without one — and `scaleFit` 0.5 in the memo only.
+ *     the 95 publishable instruments without one — and `scaleFit` 0.5 in the
+ *     memo only.
  *
- * Blast radius, measured against Postgres before adoption: of the 41
- * instruments that fail the first two tests, ZERO have a future call deadline.
- * The clause admits nothing that exists today and cannot change any country's
- * pool except through rows a call register puts there deliberately.
+ * ██ THE BLAST RADIUS BELOW WAS TRUE AND IS NOT ANY MORE. ██ It read: "of the
+ * 41 instruments that fail the first two tests, ZERO have a future call
+ * deadline. The clause admits nothing that exists today." Against Postgres on
+ * 2026-08-13, 131 instruments fail the two award tests and 87 of them carry a
+ * future register-stated call deadline. The clause is now the ONLY thing
+ * keeping 87 rows in the corpus, which is what a call register is supposed to
+ * do — but it is no longer a no-op, and a reader who trusted that sentence
+ * would misjudge any change to this function by two orders of magnitude.
  */
 export function meetsDataFloor(inst: DbInstrument): boolean {
   const hasAmounts = (inst.totalEur ?? 0) > 0;
@@ -166,8 +183,11 @@ export function meetsDataFloor(inst: DbInstrument): boolean {
 /**
  * Instruments we hold too little about to say much, without holding nothing.
  *
- * 56 publishable instruments have fewer than five tracked awards, 52 of them
- * national development banks. There is no median award to quote, the sector
+ * 133 publishable instruments have fewer than five tracked awards (Postgres
+ * 2026-08-13; the line here said 56, from a corpus of 724 rather than 771, and
+ * the population has more than doubled while the threshold has not moved — a
+ * demotion this broad deserves re-reading rather than re-quoting). There is
+ * no median award to quote, the sector
  * history is a handful of companies, and precedent is close to noise — so
  * every judgement about them is thinner than it looks beside a fund measured
  * across thousands of awards.

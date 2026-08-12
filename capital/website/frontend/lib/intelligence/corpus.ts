@@ -1145,11 +1145,20 @@ export function suppressedForUnconfirmedLiveness(): readonly SuppressedRow[] {
 /**
  * What the founder is told, when anything was withheld from THEIR table.
  *
- * The count is per request, not the corpus total: 73 of tonight's 80 withheld
- * rows are French, and telling a German founder that 80 funds are missing
- * would be both untrue and unreadable. `selectInstrumentRows` records the ones
- * that would have been in play for this founder and the count comes from that
- * log, so the sentence and the funnel can never disagree.
+ * The count is per request, not the corpus total: the withheld rows are not
+ * spread evenly across countries, so telling a German founder how many funds
+ * the whole corpus is missing would be both untrue and unreadable.
+ * `selectInstrumentRows` records the ones that would have been in play for THIS
+ * founder and the count comes from that log, so the sentence and the funnel can
+ * never disagree.
+ *
+ * The concentration, re-measured off the committed snapshot 2026-08-13: 36 rows
+ * withheld, 31 French and 5 Spanish, against 771 publishable on Postgres and
+ * 735 through the snapshot — 735 + 36 = 771, so the two corpora agree on what
+ * is publishable and differ only by what the snapshot cannot confirm. The line
+ * here previously read "73 of tonight's 80" in the present tense from a
+ * 2026-08-06 state; a figure that moves every time a deadline lands should
+ * never have been written as a standing fact, so it is dated now.
  *
  * Executive register: a fact and its consequence, no apology, no hedge. It is
  * NOT a "this list may be out of date" warning — the rows we cannot confirm

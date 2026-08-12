@@ -8,9 +8,12 @@
 // the corpus, and neither says anything about who qualifies.
 //
 // ── The asymmetry this is built around ────────────────────────────────────
-// 146 instruments carry at least one encoded filter (88.2% of corpus euros),
-// but the median instrument has only TWO. That makes the two directions of
-// evidence very different in strength:
+// 1,018 of 1,088 instruments carry at least one encoded filter (99.7% of
+// corpus euros, Postgres 2026-08-13), and the median one carries THREE. Those
+// figures have moved a long way — the line here read "146 instruments, 88.2%
+// of euros, median TWO" from an encoding pass seven times smaller — and the
+// asymmetry below is unaffected, because it is about what a HANDFUL of rules
+// can and cannot prove, and three is still a handful against a real rulebook:
 //
 //   * Failing a filter is CONCLUSIVE. "Must be a Swedish startup" fails a
 //     German company no matter how few other rules we happen to have encoded.
@@ -224,10 +227,18 @@ export function assessInstrument(
   // `G3-02`, byte-identical ticketBand specs, and it is the re-attribution
   // target for the whole GtR population — 109 of 820 founders, none of whom
   // could be recalled. Deleting that one duplicated row in Postgres would earn
-  // most of the same points. This is the code half deliberately: the corpus
-  // holds 668 surplus same-field filter rows across ~470 instruments, so the
-  // duplicate is a shape the corpus produces rather than one bad row, and a
-  // ladder that miscounts it will keep costing funds nobody has replayed yet.
+  // most of the same points. This is the code half deliberately: the duplicate
+  // is a shape the corpus PRODUCES rather than one bad row, and a ladder that
+  // miscounts it will keep costing funds nobody has replayed yet.
+  //
+  // Re-derived against Postgres 2026-08-13, and the residue is still there:
+  // 1,312 surplus same-field filter rows across 397 instruments, of which 606
+  // are BYTE-IDENTICAL value specs across 265 instruments and the remaining 706
+  // are two different specs on one field. Only the identical ones are
+  // unambiguously deletable; the rest need a human to say whether they are one
+  // requirement written twice or two the encoder should have merged. wsGE's
+  // "668 across ~470" counted differently and is not comparable — the query
+  // that produced these three numbers is in the wsGL evidence file.
   //
   // What would prove this wrong: an instrument where two gates on ONE field
   // encode two INDEPENDENT requirements a founder could satisfy separately.
