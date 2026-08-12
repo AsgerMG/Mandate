@@ -361,3 +361,58 @@ variable that is not under test.
 - If the `reverse` dry run's ranker line is not clean on the day, do not fire.
 - After the run, if `ranker vs ITSELF` discordance is within a factor of ~1.5 of
   `ranker vs CONTROL`, the result is VOID by section 4b, not inconclusive.
+
+---
+
+## AMENDMENT, recorded 2026-08-12 BEFORE the first paid call of this run
+
+The owner changed the decision this run was designed to serve. Recorded here,
+before any data exists, because an amendment written afterwards is a narrative
+with a timestamp — the same reason the rest of this file exists.
+
+> *"listen we ship either way... the other stuff is not scalable and needs to
+> be erased"*
+>
+> *"10 dollars should give a direction, does not need to be statistically
+> significant"*
+
+**`WORTH_SHIPPING` is therefore moot, and is not set.** It was the threshold
+at which the ranker would be adopted. The ranker is being adopted regardless,
+because the deterministic ranking it replaces does not scale — that is a
+product judgement about where this system has to get to, not a claim about
+which arm scores higher today.
+
+### What this run is now, and what it is not
+
+**It is a BASELINE.** Where does the product stand at the moment the ranker
+becomes the live path. Nothing it returns will reverse the ship decision, and
+no one should read it as having tried to.
+
+**It is NOT a gate**, and the four outcomes above collapse accordingly:
+
+- `wins` / `loses` / `not worth paying for` all become **the same action** —
+  ship — and differ only in what they tell us to work on next.
+- `inconclusive` is no longer a failure of the run. At $10 it is the **modal**
+  outcome, expected in advance: the largest effect ever measured on this arm is
+  +2.2 points and this run can see +3.2.
+
+**The VOID conditions in section 4 still stand, unchanged.** A run whose
+plumbing is broken tells us nothing in any framing, and a direction read is
+worth less than nothing if the instrument is not measuring what it claims.
+
+### The one number that still decides something
+
+`ranker vs ITSELF` discordance, from `REPEAT=2`. The model is fired twice per
+founder on the same prompt and the same pool.
+
+If self-discordance is within a factor of ~1.5 of ranker-vs-control, **the
+direction is noise and must not be reported as a direction.** That is the
+existing VOID rule in 4b and it is the rule that makes a deliberately
+underpowered run honest rather than merely cheap: it is the difference between
+"the model ranks differently from the score" and "the model ranks differently
+from itself".
+
+Stated plainly, since it is the risk the owner is accepting: an underpowered
+run pointing the right way is how several conclusions in this project were
+drawn and later failed to hold. The self-consistency arm is the check that was
+missing every one of those times.
