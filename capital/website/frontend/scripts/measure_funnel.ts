@@ -241,11 +241,26 @@ const STAGES: Stage[] = [
   },
   {
     id: "model",
-    question: `... and the MODEL's re-ordering keeps it in the first ${TOP}`,
+    // ── WHERE THE MODEL ACTUALLY SITS, AND WHY IT IS THE LAST ROW ANYWAY ────
+    // `agentSelectMemoPool` runs at `pipeline.ts:1756`, on the pool ALREADY cut
+    // to VERDICT_POOL and BEFORE `orderMemoCandidates` cuts to 8 and
+    // `assembleBriefRows` cuts to 7. So it belongs three rows above this one.
+    //
+    // It is placed last because it REMOVES NOTHING -- every failure path in
+    // `agentSelectRows` returns the incoming rows untouched, and the successful
+    // path returns a permutation. A permutation has no survivor set of its own,
+    // so it cannot be a row in a nested ladder; what it does is CHANGE WHICH
+    // FOUNDERS THE THREE CUTS BELOW IT LOSE. Its effect is therefore only
+    // observable at the end, which is where it is reported, and the rows
+    // between `pool_cut` and here are the code's own order with no model in it.
+    question: `... and the MODEL, which re-orders the ${VERDICT_POOL} before the cuts below, `
+      + `still leaves it in the first ${TOP}`,
     alive: () => null,
     unmeasured:
-      "one Anthropic call per founder. Estimated below from the last paid head-to-head's "
-      + "own tape, never measured here.",
+      "one Anthropic call per founder. It re-orders the pool ABOVE the writer cap rather "
+      + "than removing anything, so it has no survivor set of its own and cannot be a row "
+      + "in a nested ladder; its effect is estimated below from the last paid head-to-head's "
+      + "own tape, at the end where it becomes observable, and is never measured here.",
   },
 ];
 
@@ -743,7 +758,8 @@ const MECHANISM: Record<string, string> = {
   watch_only: "`isWatchOnly` in `assembleBriefRows` — needs the writer",
   published: "`order.slice(0, BRIEF_LIMITS.institutionsMax)`",
   top_five: "the first five rows, our own scoring",
-  model: "`agentSelectMemoPool` → Anthropic",
+  model: "`agentSelectMemoPool` → Anthropic, at `pipeline.ts:1756` — a PERMUTATION of the "
+    + `${VERDICT_POOL}, applied above the two cuts below it`,
 };
 
 /** ── THE RECALL FLOOR'S OWN LAST PUBLISHED FIGURES ─────────────────────────
