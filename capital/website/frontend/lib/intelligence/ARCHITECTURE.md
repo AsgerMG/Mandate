@@ -43,6 +43,20 @@ already paid for.
         │   away. It was 74.8% until the ladder stopped counting two
         │   encodings of one field as two obstacles (wsGE, verdict.ts).
         ▼
+  .slice(0, VERDICT_POOL)   the cut. On the LATE seam (the default) it runs
+        │                   BEFORE the ranker, so this IS the menu the model
+        │                   is shown — pipeline.ts:1759.
+        │
+        │   ██ THE LARGEST SINGLE LOSS IN THE PRODUCT, and it was not on
+        │   ██ this diagram at all. 79.5% of founders reach this line with
+        │   ██ their won fund still present and 49.8% leave it with the fund
+        │   ██ still present: -29.7 points, more than every stage above it
+        │   ██ combined (`npm run stages`, 897 held-out founders).
+        │   It is a plain prefix of an order that is already final, so it
+        │   deletes nothing a wider cut would not keep — see caps.ts for
+        │   where the number came from, which was never a recall or a cost
+        │   figure, and for the ceiling it buys at each depth.
+        ▼
   ══ STAGE 2 — THE RANKER.  AN LLM.  IT IS THE DEFAULT (wsGB). ════════════
   agentSelect.ts   agentSelectMemoPool → agentSelectRows → the model
         │          AGENT_SELECT=adviser, and `off` is the control arm
@@ -61,11 +75,19 @@ already paid for.
   pipeline.ts   synthesize() → the model writes whyEligible / nextStep only
 ```
 
-The caps, all of them, live in `caps.ts` and `briefChecks.ts`:
-`VERDICT_POOL = 18` → `SELECT_DEPTH = 40` (how deep the selector reads) →
-`SELECT_COUNT = 7` (how many seats it fills) → `WRITER_CANDIDATE_CAP = 8` →
-`institutionsMax = 7`. Screen one cuts the same
-pool at `DISPLAY_CAP = 6`.
+The caps, all of them, live in `caps.ts` and `briefChecks.ts`, in this order:
+`VERDICT_POOL` (the menu the model is shown) → `SELECT_DEPTH` (how deep the
+selector may read into it) → `SELECT_COUNT` (how many published seats it fills)
+→ `WRITER_CANDIDATE_CAP` → `institutionsMax`. Screen one cuts the same pool at
+`DISPLAY_CAP`.
+
+**The values are deliberately not written here.** They were, and moving one of
+them meant editing a number in two places or leaving this page stating a cap the
+code does not have — the second-copy defect this repo treats as the bug itself.
+`caps.ts` is the definition, `check_contracts.ts` asserts the ordering, and
+`caps.ts` asserts at module scope the half of it a swept lever can break. A
+reader who needs a number reads the module; a reader who needs the shape reads
+this line.
 
 ---
 
