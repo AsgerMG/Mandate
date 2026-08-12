@@ -76,6 +76,18 @@ jobs:
       - name: A rule is enforced only if its check can run
         run: npx tsx scripts/check_check_reachability.ts
 
+      # And the third question in that family. `check_guard_reachability` asks
+      # whether a guard RUNS; `check_check_reachability` asks whether the rule it
+      # counts can be reached; this asks whether the guard is reading the thing
+      # it protects. Six guards were found on 2026-08-13 grading a value the
+      # request path narrows before a founder sees anything -- the pool floor
+      # upstream of `accessiblePool`, the curve's staleness stamp upstream of
+      # `publishableInstruments`, a hand-rolled copy of the window predicate.
+      # Every one had a header describing the subject faithfully, which is why
+      # this reads code and strips comments. Hermetic: source files only.
+      - name: A guard reads the thing it protects
+        run: npx tsx scripts/check_guard_subject.ts
+
       # A name in code font is a promise the name exists. ARCHITECTURE.md named
       # `SCREEN_FOR_RANKER`, which is in no file in the tree, and attached a
       # measurement to it — so a reader had nothing to set and a route was

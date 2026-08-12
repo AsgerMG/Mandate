@@ -66,6 +66,67 @@ import { SELECT_DEPTH, VERDICT_POOL } from "../lib/intelligence/caps";
  *  as it was before. */
 const MIN_N = 200;
 
+/**
+ * PROVE THAT PROPERTY 4 CAN GO RED ON THE EVENT IT NAMES.
+ *
+ * ██ The old property could not, and nothing said so. ██ That is the whole
+ * lesson of this file: a guard is not known to enforce anything until the
+ * failure it exists to catch has been CONSTRUCTED and the guard has rejected
+ * it. Until 2026-08-13 the only `PROVE` line here was a sentence asserting that
+ * a different property was enforceable.
+ *
+ * The mutation is the real event, not a stand-in for it: 53 open leaves are
+ * given a past `scheme_end_date`, which is exactly what commit `250e8a74` did
+ * to `bdns_es_ayudas` on 2026-08-12. Applied IN MEMORY to the hydrated corpus —
+ * `loadDbInstruments()` returns the cache by reference — so this writes nothing
+ * to Postgres and restores every row it touched.
+ *
+ * It reports BOTH readings side by side, because the point is not that the new
+ * one goes red; it is that the old one CANNOT.
+ */
+async function proveClosureIsCaught(): Promise<void> {
+  const { corpusProvenance, loadDbInstruments } = await import("../lib/intelligence/corpus");
+  const { offerableSubject, subjectDrift } = await import("./corpusSubject");
+
+  const before = offerableSubject();
+  const countBefore = corpusProvenance().instruments;
+
+  // Rows that are open today and would close if their window had already shut.
+  const rows = loadDbInstruments() as unknown as
+    { id: string; schemeEndDate?: string | null; schemeEndBasis?: string | null }[];
+  const open = rows.filter((r) => !r.schemeEndDate);
+  const victims = open.slice(0, 53);
+  const restore = victims.map((r) => [r, r.schemeEndDate, r.schemeEndBasis] as const);
+  for (const r of victims) { r.schemeEndDate = "2020-12-30"; r.schemeEndBasis = "call_deadline"; }
+
+  const after = offerableSubject();
+  const countAfter = corpusProvenance().instruments;
+  const drift = subjectDrift(before, after);
+
+  for (const [r, d, b] of restore) { r.schemeEndDate = d ?? null; r.schemeEndBasis = b ?? null; }
+
+  console.log(`  PROVE property 4: closed ${victims.length} open leaves in memory `
+    + `(the 2026-08-12 event).`);
+  console.log(`    OLD reading  corpusProvenance().instruments ${countBefore} -> ${countAfter}`
+    + `  ${countBefore === countAfter
+      ? "██ UNMOVED — this is why the guard was green on a stale curve ██"
+      : "moved"}`);
+  console.log(`    NEW reading  offerable ${before.n} -> ${after.n}, digest `
+    + `${before.digest} -> ${after.digest}  ${drift ? "RED" : "██ UNMOVED — NOT ENFORCING ██"}`);
+  // A restore that did not restore would leave every figure below measured on a
+  // corpus this function invented, which is worse than the defect it proves.
+  const restored = offerableSubject();
+  if (restored.digest !== before.digest) {
+    throw new Error("PROVE: the in-memory closure was not fully reverted — "
+      + `digest ${restored.digest} != ${before.digest}. Every figure after this `
+      + "point would be measured on a corpus this proof invented.");
+  }
+  if (!drift) {
+    throw new Error("PROVE: closing 53 leaves did not move the offerable subject. "
+      + "Property 4 is not enforcing the thing it names.");
+  }
+}
+
 async function main() {
   const bad: string[] = [];
   resetPoolRecall();
@@ -127,6 +188,36 @@ async function main() {
   }
 
   // 4. IT WAS MEASURED ON THIS CORPUS.
+  //
+  // ── WHAT "THIS CORPUS" MEANS, restated 2026-08-13 (wsGN) ─────────────────
+  // ██ THIS PROPERTY COULD NOT GO RED ON THE ONE EVENT IT NAMES. ██
+  //
+  // It compared `corpusProvenance().instruments`, which is
+  // `dbInstrumentsCache.length` — every hydrated row, including the frameworks,
+  // the parents and the closed calls. The paragraph at the top of this file
+  // says the property is about "a country load or a PUBLISHABILITY CHANGE", and
+  // a publishability change moves that number by exactly zero.
+  //
+  // It happened. On 2026-08-12 commit `250e8a74` closed 53 Spanish calls whose
+  // windows had shut; `publishableInstruments()` went 837 -> 784; the hydrated
+  // row count stayed 1,088; this guard printed "ok"; and the selector prompt
+  // went on quoting the model a base rate measured over a pool that no longer
+  // existed. The curve degraded into exactly the confident false claim the top
+  // of this file says it exists to remove.
+  //
+  // The reading is now the SUBJECT rather than a number the subject is derived
+  // from: a digest of the offerable set itself, from `scripts/corpusSubject.ts`,
+  // which the emitter stamps through the same function. A digest is a function
+  // of everything the set is a function of — including `today()`, which the
+  // offerable set reads and a row count cannot represent at all — so a filter,
+  // a clock or a load that arrives later cannot be omitted from it.
+  //
+  // Strict identity, and NOT a tolerance band on the count. Three reasons, in
+  // order of weight: this artifact's whole job is to make a sentence to a model
+  // TRUE, and true is not a band; `_wsdr_curve.ts` is free by construction, so
+  // the red is cleared by one command rather than by a judgement; and a band
+  // would be a number nobody has derived, chosen here to keep a build green,
+  // which is the act this repo forbids everywhere else.
   let corpusLine: string;
   if (CREDENTIALS === "offline") {
     corpusLine = "corpus staleness NOT CHECKED — NO_PG=1, this run has DECLARED that "
@@ -134,27 +225,67 @@ async function main() {
   } else {
     const { hydrateDbInstruments, corpusProvenance } = await import("../lib/intelligence/corpus");
     const { loadGenerated } = await import("../lib/intelligence/generatedArtifact");
+    const { formatSubject, offerableSubject, parseSubject, subjectDrift } =
+      await import("./corpusSubject");
     await hydrateDbInstruments();
-    const live = corpusProvenance();
-    const recorded = String(
-      loadGenerated<{ corpus?: string }>(POOL_RECALL_FILE, {}).corpus ?? "");
-    const was = Number((recorded.match(/instruments=(\d+)/) ?? [])[1] ?? NaN);
-    corpusLine = `measured on ${recorded || "(unrecorded)"}, live ${live.source} `
-      + `instruments=${live.instruments}`;
-    if (!Number.isFinite(was)) {
-      bad.push(`the curve records no corpus size (${recorded || "empty"}), so nothing can `
-        + `tell whether it describes the funds this checkout ranks.`);
-    } else if (was !== live.instruments) {
-      bad.push(`the curve was measured on ${was} instruments and this corpus holds `
-        + `${live.instruments}. Every accessible pool has moved, so every point on the `
-        + `curve has, and the selector is being told a base rate about a different `
-        + `corpus. Re-run scripts/_wsdr_curve.ts.`);
+    if (process.env.PROVE) await proveClosureIsCaught();
+    const prov = corpusProvenance();
+    const doc = loadGenerated<{ corpus?: string; offerable?: string }>(POOL_RECALL_FILE, {});
+    const live = offerableSubject();
+    const recorded = parseSubject(String(doc.offerable ?? ""));
+    corpusLine = `measured on ${doc.corpus || "(unrecorded)"} / `
+      + `${doc.offerable || "(no offerable stamp)"}, live ${prov.source} `
+      + `instruments=${prov.instruments} / ${formatSubject(live)}`;
+    if (!recorded) {
+      // NOT a pass, and not a skip. A curve carrying only the old row-count
+      // stamp is a curve whose subject was never recorded, so this property
+      // cannot be evaluated on it — and "cannot be evaluated" is the state this
+      // file's own header refuses to report as green.
+      bad.push(`the curve records no offerable-set stamp (${doc.offerable ?? "absent"}), `
+        + `only the row count "${doc.corpus ?? ""}". That count cannot see a closure `
+        + `pass: 53 calls closed on 2026-08-12, the offerable set moved 837 -> 784 and `
+        + `the count did not move at all. Re-cut the curve so it records the set it was `
+        + `measured over: npx tsx scripts/_wsdr_curve.ts`);
+    } else {
+      const drift = subjectDrift(recorded, live);
+      if (drift) {
+        bad.push(`the curve was measured over a DIFFERENT set of offerable funds than `
+          + `this corpus holds: ${drift}.\n      Every accessible pool is drawn from that `
+          + `set, so every point on the curve is, and the selector is being told a base `
+          + `rate about funds it is not ranking. Re-run scripts/_wsdr_curve.ts (free by `
+          + `construction — it deletes ANTHROPIC_API_KEY before importing anything).`);
+      }
     }
   }
 
   if (process.env.PROVE) {
     console.log(`  PROVE: n=${n}, K=${POOL_RECALL_KS.join(",")}`);
-    console.log(`  PROVE: editing any recallAtK point downward makes property 2 red`);
+    // ── WHAT A `PROVE` MODE IS FOR, and what this one used to be ───────────
+    // The line here read:
+    //
+    //   console.log("PROVE: editing any recallAtK point downward makes property 2 red")
+    //
+    // which is a CLAIM ABOUT the guard printed by the guard. It proves nothing,
+    // it cost nothing to keep true, and it stayed true while property 4 — the
+    // one that mattered — was blind. That is the shape one level up: a reading
+    // (a printed sentence) that cannot distinguish a guard that works from a
+    // guard that does not.
+    //
+    // A property is only known to be enforceable when a mutation that ought to
+    // make it red HAS BEEN RUN and did. `proveClosureIsCaught` above does that
+    // for property 4 against the real event. Property 2 gets the same treatment
+    // here: the monotonicity test is applied to a curve that dips, in memory,
+    // and must reject it.
+    const dipping = [...POOL_RECALL_KS.map((k) => poolRecallAt(k) ?? 0)];
+    if (dipping.length >= 2) {
+      dipping[dipping.length - 1] = 0;
+      let caught = false;
+      let prev2 = 0;
+      for (const v of dipping) { if (v < prev2 - 1e-9) caught = true; prev2 = v; }
+      console.log(`  PROVE property 2: a curve whose last point is forced to 0 is `
+        + `${caught ? "REJECTED" : "██ ACCEPTED — the monotonicity test is not enforcing ██"}`);
+      if (!caught) bad.push("PROVE: the monotonicity test accepted a curve that dips.");
+    }
   }
 
   if (bad.length) {

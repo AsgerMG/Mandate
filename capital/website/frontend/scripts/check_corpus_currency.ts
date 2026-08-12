@@ -90,6 +90,94 @@ interface SnapshotRecord {
   successorScheme?: string | null;
 }
 
+// ── THE FIELD DISPOSITION, AND WHY IT IS A PROPERTY RATHER THAN A LIST ─────
+//
+// ██ THIS GUARD COMPARED 5 OF THE 37 FIELDS THE SNAPSHOT CARRIES. ██
+//
+// Its header says the property is "the fallback corpus must answer every
+// liveness question exactly as Postgres does", and for LIVENESS it does. But
+// the guard is named `corpus_currency`, the registry describes it as "the
+// committed fund snapshot against live Postgres", and a reader takes the
+// broader claim — as they should, because `hydrateDbInstruments()` serves a
+// real founder from every one of those 37 fields when Postgres is unreachable.
+// It was green on 2026-08-12 with the snapshot 2,292 eligibility rules behind
+// Postgres: a degraded request answered from a corpus missing every rule bought
+// that day, and nothing anywhere said so.
+//
+// The durable fix is not "also compare the gates". It is that A FIELD CANNOT
+// ARRIVE UNWATCHED. So the disposition of every field is DERIVED, not listed:
+//
+//   a snapshot field whose snake_case name is a column of `funding_instruments`
+//   IS COMPARED, automatically and without anybody adding it here.
+//
+// Anything else must appear in `FIELD_NOTES` with a reason and a review date,
+// and a field in neither FAILS THE BUILD. That is the test for the unseen case:
+// field 38 is compared the day it lands if it is a column, and reds the build
+// the day it lands if it is not. Nobody has to remember.
+//
+// The three that are not columns today are all real and all different, which is
+// why the escape hatch exists at all rather than being a hole:
+const FIELD_NOTES: Record<string, { why: string; review: string }> = {
+  gates: {
+    why: "not a column — `eligibility_gates`, one row per rule. Compared in "
+      + "section 4 on its own terms: 9,763 rules cannot be a cell in a SELECT.",
+    review: "2026-12-31",
+  },
+  application: {
+    why: "not a column — `instrument_application`, the curated route table, "
+      + "joined at hydration. Its own comparison is not built yet; it decides "
+      + "the channel and timeline a founder is told, so it is worth one.",
+    review: "2026-10-31",
+  },
+  schemeEndBasis: {
+    why: "the column is `scheme_end_date_basis`, so the derived name misses it. "
+      + "An ALIAS rather than an exemption — it is compared, through COLUMN_ALIAS.",
+    review: "2026-12-31",
+  },
+};
+
+/** Where the derived snake_case name is not the column name. Kept separate from
+ *  FIELD_NOTES' exemptions because an alias is still a COMPARISON, and folding
+ *  the two together would make "renamed" and "unchecked" look alike. */
+const COLUMN_ALIAS: Record<string, string> = { schemeEndBasis: "scheme_end_date_basis" };
+
+const snakeCase = (s: string) => s.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toLowerCase();
+const columnFor = (field: string) => COLUMN_ALIAS[field] ?? snakeCase(field);
+
+/**
+ * One value, in a form the two stores can be compared in.
+ *
+ * `pg` hands jsonb back as a STRING while the snapshot carries a parsed object,
+ * and a naive comparison reported 3,994 false divergences on the day this was
+ * written — every one of them the same object rendered two ways. So the shape
+ * is normalised, and NOT the content: a difference that survives this is a
+ * difference about the world.
+ *
+ * The one tolerance is on floating point, at 1e-5. `administeringBodyShare`
+ * differs on one row at the sixth decimal (0.993377 against 0.993378), which is
+ * a property of two languages' float printing rather than a disagreement about
+ * who administers the scheme. Stated as a number here so it can be argued with,
+ * rather than left as an unexplained pass.
+ */
+function normaliseValue(v: unknown): string {
+  if (v === null || v === undefined || v === "") return "";
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  if (typeof v === "number") return v.toFixed(5);
+  if (typeof v === "string") {
+    if (/^-?\d+(\.\d+)?$/.test(v)) return Number(v).toFixed(5);
+    if (/^[[{]/.test(v.trim())) {
+      try { return normaliseValue(JSON.parse(v)); } catch { /* it is just a string */ }
+    }
+    return v;
+  }
+  if (Array.isArray(v)) return JSON.stringify(v.map(normaliseValue));
+  if (typeof v === "object") {
+    return JSON.stringify(Object.fromEntries(
+      Object.keys(v as object).sort().map((k) => [k, normaliseValue((v as Record<string, unknown>)[k])])));
+  }
+  return String(v);
+}
+
 /** One row of the liveness SELECT below, in Postgres' snake_case. Named so the
  *  columns this check reads are declared in one place: a typo in a field name
  *  is otherwise `undefined`, and `undefined` reads to `isClosed` as "open". */
@@ -163,6 +251,162 @@ async function main() {
 
   const asOf = today();
   const problems: string[] = [];
+
+  // WHICH FUNDS THE PRODUCT MAY OFFER, through the product's own function and
+  // not a restatement of its filters here. A divergence on a fund nobody is
+  // shown is worth a different sentence from one on a fund everybody is, and a
+  // check that re-derived the pool would keep agreeing after the filter moved.
+  const { hydrateDbInstruments, publishableInstruments } =
+    await import("../lib/intelligence/corpus");
+  await hydrateDbInstruments();
+  const livePublishable = publishableInstruments().map((i) => i.id);
+
+  // ── 0. EVERY FIELD THE SNAPSHOT CARRIES IS COMPARED, OR SAYS WHY NOT ─────
+  // Runs before anything else, because it is the property that decides whether
+  // the rest of this file is a comparison or a sample of one.
+  const client2 = new Client({ connectionString: url, connectionTimeoutMillis: 10_000 });
+  await client2.connect();
+  let liveColumns: Set<string>;
+  let liveRows: Record<string, unknown>[];
+  let gateRows: { instrument_id: string; gate_key: string; gate_role: string | null;
+    value_spec: unknown; intake_field_resolved: string | null }[];
+  try {
+    liveColumns = new Set((await client2.query<{ column_name: string }>(
+      `SELECT column_name FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'funding_instruments'`))
+      .rows.map((r) => r.column_name));
+    gateRows = (await client2.query(
+      `SELECT instrument_id, gate_key, gate_role, value_spec, intake_field_resolved
+         FROM eligibility_gates`)).rows;
+    const snapshotFields = [...new Set(snapshot.records.flatMap((r) => Object.keys(r)))].sort();
+    const compared = snapshotFields.filter((f) => liveColumns.has(columnFor(f)));
+    const unclassified = snapshotFields.filter(
+      (f) => !liveColumns.has(columnFor(f)) && !FIELD_NOTES[f]);
+    if (unclassified.length) {
+      problems.push(
+        `${unclassified.length} snapshot field(s) are compared against NOTHING and carry no\n` +
+        `      note saying why: ${unclassified.join(", ")}.\n` +
+        `      Every field here is served to a real founder when Postgres is unreachable.\n` +
+        `      A field whose name is a column of funding_instruments is compared\n` +
+        `      automatically; anything else needs an entry in FIELD_NOTES with a reason\n` +
+        `      and a review date. This guard compared 5 of 37 fields until 2026-08-13\n` +
+        `      and read as though it compared the corpus.`);
+    }
+    // An exemption with an expired review date is an exemption nobody re-read.
+    for (const [f, note] of Object.entries(FIELD_NOTES)) {
+      if (!snapshotFields.includes(f)) {
+        problems.push(`FIELD_NOTES excuses "${f}", which the snapshot no longer carries. ` +
+          `An exemption for a field that is gone is an exemption nothing reads.`);
+      } else if (compared.includes(f) && !COLUMN_ALIAS[f]) {
+        // The same rule check_verdicts.ts applies to an acceptance whose guard
+        // has gone green. A note sitting on a field that IS compared covers
+        // nothing today, and pre-authorises the day the comparison is removed —
+        // at which point the field goes quiet and the note makes it look
+        // deliberate. An ALIAS is the one legitimate overlap, because it is a
+        // note ABOUT the comparison rather than instead of it.
+        problems.push(`FIELD_NOTES excuses "${f}" and it is compared anyway, so the note ` +
+          `covers nothing. Delete it: left standing it makes a future removal of that ` +
+          `comparison read as intentional.`);
+      } else if (note.review < asOf) {
+        problems.push(`the note excusing "${f}" from comparison came due on ${note.review}: ` +
+          `${note.why}`);
+      }
+    }
+    // And the alias must still BE an alias. If the column it names disappears,
+    // `schemeEndBasis` silently stops being compared while its note goes on
+    // saying it is — which is this guard's own defect, one field wide.
+    for (const [f, col] of Object.entries(COLUMN_ALIAS)) {
+      if (snapshotFields.includes(f) && !liveColumns.has(col)) {
+        problems.push(`"${f}" is aliased to the column "${col}", which funding_instruments ` +
+          `does not have. The field is therefore compared against nothing while ` +
+          `FIELD_NOTES says it is compared through the alias.`);
+      }
+    }
+    liveRows = compared.length
+      ? (await client2.query(
+        `SELECT ${compared.map((f) => `"${columnFor(f)}"`).join(", ")} FROM funding_instruments`)).rows
+      : [];
+    // ── The comparison itself, over every field that resolved to a column ──
+    const byId = new Map(liveRows.map((r) => [String(r.id), r]));
+    const divergent = new Map<string, { n: number; eg: string }>();
+    for (const s of snapshot.records as unknown as Record<string, unknown>[]) {
+      const l = byId.get(String(s.id));
+      if (!l) continue;
+      for (const f of compared) {
+        const a = normaliseValue(s[f]), b = normaliseValue(l[columnFor(f)]);
+        if (a === b) continue;
+        const seen = divergent.get(f) ?? { n: 0, eg: "" };
+        seen.n++;
+        if (!seen.eg) {
+          seen.eg = `${s.id}: snapshot ${JSON.stringify(a.slice(0, 60))} ` +
+            `vs postgres ${JSON.stringify(b.slice(0, 60))}`;
+        }
+        divergent.set(f, seen);
+      }
+    }
+    if (divergent.size) {
+      problems.push(
+        `${divergent.size} field(s) hold a DIFFERENT VALUE in the two corpora, over\n` +
+        `      ${compared.length} compared fields and ${snapshot.records.length} instruments.\n` +
+        `      A founder served off the snapshot is answered from these values.\n` +
+        [...divergent].sort((a, b) => b[1].n - a[1].n).slice(0, SHOW)
+          .map(([f, d]) => `      ${f}: ${d.n} row(s)  e.g. ${d.eg}`).join("\n"));
+    }
+    console.log(`  fields: ${compared.length} compared against funding_instruments, ` +
+      `${Object.keys(FIELD_NOTES).length} noted, ${unclassified.length} unclassified`);
+  } finally {
+    await client2.end();
+  }
+
+  // ── 4. THE TWO CORPORA MUST AGREE ABOUT WHAT EACH FUND DEMANDS ───────────
+  // Liveness decides whether a fund is offered AT ALL. The gates decide whether
+  // THIS founder may have it, and `accessiblePool` — the largest single filter
+  // in the funnel — is built from them. A snapshot that agrees about every
+  // closure and disagrees about the rules still answers a different brief.
+  //
+  // Compared on the three fields that DECIDE (`gate_role`, `value_spec`,
+  // `intake_field_resolved`), not on the id set. The id set is the weaker
+  // question section 3 was already corrected for on 2026-08-12: `value_spec` is
+  // written in place, so a rule can change what it demands without its key
+  // moving, and 36 gates on offerable funds do exactly that today.
+  {
+    const gateKey = (i: string, k: string) => `${i} ${k}`;
+    const liveGates = new Map<string, string>();
+    for (const g of gateRows) {
+      liveGates.set(gateKey(g.instrument_id, g.gate_key),
+        normaliseValue([g.gate_role, g.value_spec, g.intake_field_resolved]));
+    }
+    const snapGates = new Map<string, string>();
+    for (const r of snapshot.records as unknown as
+      { id: string; gates?: { id: string; gateRole?: unknown; valueSpec?: unknown;
+        intakeFieldResolved?: unknown }[] }[]) {
+      for (const g of r.gates ?? []) {
+        snapGates.set(gateKey(r.id, g.id),
+          normaliseValue([g.gateRole ?? null, g.valueSpec ?? null, g.intakeFieldResolved ?? null]));
+      }
+    }
+    const offerable = new Set(livePublishable);
+    const onOfferable = (k: string) => offerable.has(k.slice(0, k.indexOf(" ")));
+    const missing = [...liveGates.keys()].filter((k) => !snapGates.has(k));
+    const extra = [...snapGates.keys()].filter((k) => !liveGates.has(k));
+    const changed = [...liveGates.keys()]
+      .filter((k) => snapGates.has(k) && snapGates.get(k) !== liveGates.get(k));
+    console.log(`  gates: ${snapGates.size} in the snapshot, ${liveGates.size} in Postgres`);
+    if (missing.length || extra.length || changed.length) {
+      const show = (k: string) => k.replace(" ", " / ");
+      problems.push(
+        `the two corpora state DIFFERENT ELIGIBILITY RULES.\n` +
+        `      ${missing.length} live rule(s) the snapshot has never seen ` +
+        `(${missing.filter(onOfferable).length} on offerable funds)\n` +
+        `      ${extra.length} snapshot rule(s) no longer in Postgres ` +
+        `(${extra.filter(onOfferable).length} on offerable funds)\n` +
+        `      ${changed.length} rule(s) present in both that DEMAND SOMETHING DIFFERENT ` +
+        `(${changed.filter(onOfferable).length} on offerable funds)\n` +
+        `      accessiblePool is built from these, so a degraded request does not merely\n` +
+        `      rank differently — it admits and refuses different funds.\n` +
+        [...missing.slice(0, 3), ...changed.slice(0, 3)].map((k) => `      e.g. ${show(k)}`).join("\n"));
+    }
+  }
 
   // ── 1. The two corpora must agree about liveness ─────────────────────────
   const disagree: string[] = [];
