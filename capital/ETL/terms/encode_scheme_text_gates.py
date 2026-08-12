@@ -80,6 +80,35 @@ happened to show them.
      Enforced here: the model must label every gate's `basis`, and
      `enumeration_only` can never become a filter.
 
+  3. A FUND'S SCOPE IS A RULE, AND IT IS THE ONE RULE WE KEEP NOT WRITING.
+     The two properties above are both about not over-restricting, and the
+     prompt they produced learned the lesson too well: of the 1,070 gates this
+     script has cut, 441 are filters and NINE resolve to `useOfFunds`
+     (2026-08-11). Corpus-wide the encoded layer runs `not_in` 1,355 to `in`
+     776. So the corpus can say who a fund refuses and mostly cannot say what
+     it pays for -- and what it pays for is the first thing a founder asks and
+     the only positive field they answer in the same vocabulary.
+
+     Property: a statement of WHAT THE MONEY BUYS is a stated requirement on
+     the PROJECT, and is a filter. It is not a permission. A permission extends
+     eligibility to a group beyond the default and reading it as a rule
+     excludes everyone it did not name; a scope statement is the fund
+     describing its own purpose, so a founder who wants to spend the money on
+     something else genuinely cannot use it.
+
+     The test, for a sentence nobody has read: could the fund refuse this
+     application on the strength of this sentence alone, because the money
+     would go somewhere the sentence does not cover? A SUBJECT AREA fails that
+     test -- a sector or a policy objective says what the project is about and
+     nothing about what the money buys -- and stays a programme_fact.
+
+     Enforced here: the field name is resolved out of the generated vocabulary
+     (`use_of_funds_field`), never typed, so a rename fails the run instead of
+     silently demoting every scope rule to field='none'. It is also safe in the
+     direction that matters: `useOfFunds` is multi-value and `in` matches on
+     ANY of the founder's answers (comparator.ts `matchesAny`), so a scope rule
+     admits a founder whose project has one qualifying component.
+
 ── One rule set per call, not per alias ─────────────────────────────────────
 The 75 rows carry 57 distinct texts: three ORMAT vintages, three geothermie
 studies and three heavy-vehicle rows are the same call reached by different
@@ -116,6 +145,23 @@ import unicodedata  # noqa: E402
 
 MODEL = "claude-sonnet-5"
 MAX_GATES = 8
+
+# The gate rows this script owns, wherever they are selected from. Defined here
+# rather than beside the publish because BOTH the scope of the work and the
+# scope of the publish are this same question, and when they were answered in
+# two places they answered differently: `work_rows` asked whether the row had
+# ANY gate and silently emptied its own queue.
+#
+# Rows are identified by GATE_KEY, never by encoding_method. `encode_gates.py
+# encode` sets encoding_method='llm_encode' when it fills in a value_spec, so a
+# provenance-keyed scope loses exactly the rows that gained a comparator --
+# which is to say it publishes everything except the work that mattered. The
+# gate_key is this script's own and nothing else writes it.
+#
+# Kept explicit rather than SELECT * on the publish side: that publish is scoped
+# to rows this script owns, so it must never carry a column another pass is
+# mid-way through writing.
+OWNED = "g.gate_key LIKE 'scheme_text_%'"
 
 GATE_FAMILIES = ["G1_nexus", "G2_size_ownership", "G3_financial",
                  "G4_borrower_model", "G5_use_of_funds", "G6_conditionality"]
@@ -198,7 +244,8 @@ Every entry needs FIVE judgements plus a verbatim quote.
 
 3. basis — WHAT IN THE TEXT carries the restriction:
    - stated_requirement: the text states a condition applicants must meet
-     ("les bénéficiaires sont les entreprises situées en France").
+     ("les bénéficiaires sont les entreprises situées en France"), OR it states
+     WHAT THE MONEY PAYS FOR, which is a condition on the project (see 6).
    - stated_exclusion: the text names who or what is NOT eligible
      ("ne sont pas éligibles : ...", "les secteurs suivants sont exclus").
    - stated_exhaustive_list: a list the text itself presents as closed
@@ -235,6 +282,35 @@ Every entry needs FIVE judgements plus a verbatim quote.
 Available attributes:
 {fields}
 
+6. WHAT THE MONEY PAYS FOR. Read the text once more with only this question in mind,
+   because it is the one this corpus most often fails to answer and a founder asks it
+   first. If the text says what the fund pays for — the kind of work, the stage, or the
+   costs it covers — return that as its own entry, with subject=project,
+   basis=stated_requirement, role=filter and field={use_field}. Choose the
+   {use_field} values the text actually supports, from the list above; use several
+   where the text names several, and none of them where it names only a theme.
+
+   WHY THIS IS A REQUIREMENT AND NOT A PERMISSION. The two are being distinguished
+   everywhere else in this task, so state the difference. A permission EXTENDS
+   eligibility to a group beyond the default ("entities established in Ukraine may also
+   participate"); reading it as a rule wrongly excludes everyone it did not name. A
+   statement of scope is the fund describing ITS OWN PURPOSE: a scheme that pays for
+   experimental development is a scheme whose money may not be spent on something else,
+   and a founder who wants that something else genuinely cannot use it. The sentence is
+   the fund's, it is about the fund, and it names what the money buys.
+
+   THE TEST, for a sentence nobody has classified yet: could the fund refuse an
+   application on the strength of this sentence alone, because the applicant wants to
+   spend the money on something the sentence does not cover? If yes it is a scope rule.
+   If the sentence only names a SUBJECT AREA — a sector, a technology, a policy
+   objective, "the green transition", "digitalisation" — then no: a theme says what the
+   project must be ABOUT and says nothing about what the money buys, so it is a
+   programme_fact and field is 'none'. Do not stretch a theme into a cost category.
+
+   A scheme's scope is nearly always stated somewhere on its own page, so returning no
+   scope entry is a claim that this text does not state one. Make that claim only when
+   it is true.
+
 Also give `requirement`: one line of plain ENGLISH stating the rule from the applicant's
 point of view, and `value`: the threshold or list it turns on, or "" if none. Where the
 subject is final_beneficiary, the requirement line must SAY SO — begin it with
@@ -270,14 +346,34 @@ def connect() -> sqlite3.Connection:
 
 
 def work_rows(conn: sqlite3.Connection, country: str | None, redo: bool) -> list[sqlite3.Row]:
-    """Instruments with text and nothing cut from it yet.
+    """Instruments with text THIS SCRIPT has not read yet.
 
-    `redo` re-reads instruments this script has already processed (matched on
-    encoding_method, so a re-run never disturbs gates another pass owns).
+    `redo` re-reads the ones it has. Scope is keyed on `OWNED` -- the gate_key
+    this script writes -- for the reason `OWNED` states below, and never on
+    `encoding_method`, which `encode_gates.py encode` rewrites.
+
+    ── WHY THIS IS NOT "has no gate at all", WHICH IS WHAT IT USED TO SAY ────
+    The docstring said "nothing cut from it yet" and the SQL asked whether the
+    row carries ANY gate from ANY pass. Those were the same question when this
+    was written against 75 ADEME leaves that had none. They are not the same
+    question now: `classify_gates_bulk.py` and the country seeding give
+    essentially every row a gate, so the default scope had silently emptied.
+
+    Measured 2026-08-11: 576 instruments carry eligibility text over the length
+    floor, ALL 576 carry some gate, and 211 have been read by this script. The
+    default `plan` therefore reported "0 instruments carry unencoded
+    eligibility text" and, over a population of size zero, printed "NONE of
+    these rows has a sibling ... spend nothing" -- a scope failure wearing the
+    costume of a finished job. 365 instruments hold prose no extractor has ever
+    converted.
+
+    The property, which holds for whatever other passes exist tomorrow: this
+    script's unit of work is a TEXT IT HAS NOT READ, and the only evidence that
+    it has read one is a gate it wrote itself.
     """
     extra = "" if redo else (
         " AND NOT EXISTS (SELECT 1 FROM eligibility_gates g "
-        "WHERE g.instrument_id = fi.id)")
+        f"WHERE g.instrument_id = fi.id AND {OWNED})")
     return conn.execute(f"""
         SELECT fi.id, fi.name, fi.eligibility_text, fi.eligibility_source_url
           FROM funding_instruments fi
@@ -346,7 +442,17 @@ def cmd_plan(args) -> None:
     n_ok, n_all = scoreable(conn, rows)
     print(f"\nSCOREABLE BY THE RANKER: {n_ok} of {n_all} "
           f"({100 * n_ok / max(1, n_all):.0f}%)")
-    if n_ok == 0:
+    if n_all == 0:
+        # An empty scope is not a finished job, and it printed as one: over zero
+        # rows the sibling warning below reads "NONE of these rows has a
+        # sibling ... spend nothing", which is exactly what a completed corpus
+        # would say. Say which of the two it is.
+        print("  The SCOPE is empty, which is a different statement from "
+              "'there is no work'.")
+        print("  Every candidate row has already been read by this script, or "
+              "carries no text\n  over the length floor. `--redo` re-reads what "
+              "it has read.")
+    elif n_ok == 0:
         print("  NONE of these rows has a sibling. gateFitScorer skips groups of")
         print("  one, so every gate cut here would be written, checked, published")
         print("  -- and never evaluated. Spend nothing until they have a regime,")
@@ -363,6 +469,25 @@ def cmd_plan(args) -> None:
     conn.close()
 
 
+def use_of_funds_field(fields: list[str]) -> str:
+    """The name of the field on which a founder states what the money is for.
+
+    Resolved out of the generated vocabulary rather than typed into the prompt.
+    A hand-written second copy of a field name fails the way a hand-written
+    vocabulary fails and worse: the prompt would keep asking for a field the
+    corpus no longer has, `coerce()` would demote every scope rule it produced
+    to field='none' as unrecognised, and NOTHING WOULD FAIL -- the pass would
+    bill in full and quietly return to cutting only exclusions.
+    """
+    name = "useOfFunds"
+    if name not in fields:
+        raise SystemExit(
+            f"'{name}' is not an intake field any more (encode_gates.FIELDS has "
+            f"{sorted(fields)!r}).\nThe scope rule in this prompt is written "
+            f"about that field. Rename it here, or drop section 6.")
+    return name
+
+
 def build_prompt(fields: list[str]) -> str:
     import encode_gates
     lines = []
@@ -372,7 +497,8 @@ def build_prompt(fields: list[str]) -> str:
         vals = encode_gates.ENUM_VALUES.get(f) or encode_gates.BAND_ORDERS.get(f)
         lines.append(f"  {f}" + (f": {vals}" if vals else ""))
     lines.append("  none")
-    return PROMPT_HEAD.format(max_gates=MAX_GATES, fields="\n".join(lines))
+    return PROMPT_HEAD.format(max_gates=MAX_GATES, fields="\n".join(lines),
+                              use_field=use_of_funds_field(fields))
 
 
 def extract_json(text: str) -> dict:
@@ -541,16 +667,6 @@ def cmd_status(args) -> None:
     conn.close()
 
 
-# Columns published for a gate row. Kept explicit rather than SELECT *: the
-# publish is scoped to rows this script owns, so it must never carry a column
-# another pass is mid-way through writing.
-#
-# Rows are identified by GATE_KEY, never by encoding_method. `encode_gates.py
-# encode` sets encoding_method='llm_encode' when it fills in a value_spec, so a
-# provenance-keyed scope loses exactly the rows that gained a comparator --
-# which is to say it publishes everything except the work that mattered. The
-# gate_key is this script's own and nothing else writes it.
-OWNED = "g.gate_key LIKE 'scheme_text_%'"
 PUB_COLS = ["instrument_id", "gate_key", "gate_family", "requirement", "value",
             "value_spec", "intake_field", "quote", "source_file", "source_locator",
             "verification_level", "verify_note", "gate_role",
