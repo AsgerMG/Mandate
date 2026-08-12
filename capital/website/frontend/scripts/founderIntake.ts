@@ -68,7 +68,7 @@
 import { FIELD_REACH } from "../lib/intelligence/types";
 import type { EligibilityAnswers } from "../lib/intelligence/types";
 import {
-  productionCannotPopulate, unpopulatedNote,
+  productionCannotPopulate, unofferableValues, unpopulatedNote,
 } from "../lib/intelligence/fieldReach";
 import type { UnpopulatedReason } from "../lib/intelligence/fieldReach";
 import { prefillOrganisationType } from "../lib/intelligence/organisationType";
@@ -524,6 +524,24 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
     }
     delete eligibility[f];
     heldBack.push({ field: f, reason });
+  }
+  // ── THE SAME RULE ONE LEVEL DOWN ─────────────────────────────────────────
+  // A field production asks can still be handed an answer its control never
+  // offers, and a gate that fires on THAT is just as impossible. Run second,
+  // because the menu for a field can depend on an earlier answer and the
+  // earlier answers are only final once the pass above has finished.
+  for (const f of Object.keys(eligibility) as IntakeField[]) {
+    const v = eligibility[f];
+    if (v === undefined) continue;
+    const off = unofferableValues(f, v, draft);
+    if (!off.length) continue;
+    const keep = Array.isArray(v) ? v.filter((x) => !off.includes(x as string)) : [];
+    // A list keeps the answers that ARE on the menu — dropping the whole list
+    // would replace one impossible answer with a different one. A scalar has
+    // nothing to keep and joins the withheld.
+    if (Array.isArray(v) && keep.length) eligibility[f] = keep;
+    else delete eligibility[f];
+    heldBack.push({ field: f, reason: { why: "unofferable_value", values: off } });
   }
   const held = new Set(heldBack.map((h) => h.field));
 

@@ -10,9 +10,9 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  productionCannotPopulate, unpopulatedFields, unpopulatedNote,
+  productionCannotPopulate, unofferableValues, unpopulatedFields, unpopulatedNote,
 } from "./fieldReach";
-import { FIELD_REACH } from "./types";
+import { FIELD_ENUM_HINTS, FIELD_REACH } from "./types";
 import type { EligibilityAnswers } from "./types";
 import type { FieldReachability } from "./types";
 
@@ -109,6 +109,55 @@ describe("the real intake, read through the same predicate", () => {
     for (const { field, reason } of found) {
       expect(unpopulatedNote(String(field), reason)).toContain(String(field));
     }
+  });
+
+  // ── The same rule one level down: is the ANSWER on the menu? ─────────────
+  it("accepts a value the founder's own control offers, and refuses one it does not", () => {
+    // Read the menu from production rather than naming a value, so this case
+    // survives a vocabulary change that would make any literal here stale.
+    const [f, hint] = Object.entries(FIELD_ENUM_HINTS)
+      .find(([, h]) => !h.optionsFor && h.options.length && !h.multi) as
+        [string, { options: { value: string }[] }];
+    const field = f as Field;
+    expect(unofferableValues(field, hint.options[0].value, {})).toEqual([]);
+    expect(unofferableValues(field, "not-on-any-menu", {}))
+      .toEqual(["not-on-any-menu"]);
+  });
+
+  it("names ONLY the offending members of a multi-answer", () => {
+    const [f, hint] = Object.entries(FIELD_ENUM_HINTS)
+      .find(([, h]) => !h.optionsFor && h.options.length && h.multi) as
+        [string, { options: { value: string }[] }];
+    expect(unofferableValues(f as Field, [hint.options[0].value, "invented"], {}))
+      .toEqual(["invented"]);
+  });
+
+  it("judges an answer-dependent menu against THIS founder's answers", () => {
+    // `region`'s options are derived from the country, so the same value is
+    // offerable to one founder and not to another. A predicate that read a
+    // fixed list could not tell the two apart, which is the whole reason
+    // `optionsFor` takes the answers.
+    const withOptions = Object.entries(FIELD_ENUM_HINTS)
+      .find(([, h]) => Boolean(h.optionsFor));
+    expect(withOptions, "no answer-dependent field left to exercise").toBeTruthy();
+    const [f, hint] = withOptions as [string, {
+      optionsFor?: (a: Record<string, unknown>) => { value: string }[] }];
+    const answers = { entityCountries: ["France"] };
+    const menu = hint.optionsFor?.(answers) ?? [];
+    expect(menu.length, "the probe country offers no options").toBeGreaterThan(0);
+    expect(unofferableValues(f as Field, menu[0].value, answers as never)).toEqual([]);
+    // A value that IS on some other founder's menu, and not on this one's.
+    const elsewhere = hint.optionsFor?.({ entityCountries: ["Spain"] }) ?? [];
+    const alien = elsewhere.find((o) => !menu.some((m) => m.value === o.value));
+    expect(alien, "the two countries share every region code").toBeTruthy();
+    expect(unofferableValues(f as Field, alien!.value, answers as never))
+      .toEqual([alien!.value]);
+  });
+
+  it("claims nothing about a field with no enumerable menu", () => {
+    // Free text and country lists. "Cannot judge" must not read as "fine" by
+    // accident, so it is asserted rather than left implicit.
+    expect(unofferableValues("entityCountries" as Field, ["Atlantis"], {})).toEqual([]);
   });
 
   it("holds the arm state, not a field name — flipping every arm on unblocks the staged half", () => {

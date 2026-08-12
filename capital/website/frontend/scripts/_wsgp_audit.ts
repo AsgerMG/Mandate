@@ -8,6 +8,8 @@
 // FREE: reads two committed trees. No credentials, no network, no database.
 import { FIELD_REACH } from "../lib/intelligence/types";
 import { VOCABULARY } from "../lib/intelligence/vocabulary";
+import { regionOptions } from "../lib/intelligence/regions.generated";
+import { toIso2 } from "../lib/intelligence/countryCodes";
 import { founderIntake, founderPolicyFromEnv, ALL_INTAKE_FIELDS } from "./founderIntake";
 import type { IntakeField } from "./founderIntake";
 import { loadRecallSet } from "./recallSet";
@@ -61,3 +63,27 @@ for (const [k, m] of badValues) {
 }
 console.log(`\ncomputeVerdict opts: capitalSought non-empty on ${optsCapital}, `
   + `description on ${optsDesc}, targetMarkets on ${optsMarkets} of ${rows.length}`);
+
+// ── The same question one level down: is every VALUE one production offers? ─
+// A field production asks can still be handed a value its control cannot
+// produce, and the effect is identical — a gate fires on an answer no founder
+// could have given. `region` is the case with no fixed vocabulary: its options
+// are derived from the founder's country, so only `regionOptions` can judge it.
+{
+  const bad = new Map<string, number>();
+  let checked = 0;
+  for (const r of rows) {
+    const f = founderIntake(r as never, policy);
+    const region = (f.eligibility as Record<string, unknown>).region;
+    if (typeof region !== "string") continue;
+    checked++;
+    const offered = regionOptions(
+      (f.eligibility.entityCountries ?? []).map(toIso2).filter(Boolean));
+    if (!offered.some((o) => o.value === region)) {
+      bad.set(region, (bad.get(region) ?? 0) + 1);
+    }
+  }
+  console.log(`\nregion values checked against the control's own option list: `
+    + `${checked} supplied, ${[...bad.values()].reduce((a, b) => a + b, 0)} not offered`);
+  for (const [v, n] of bad) console.log(`  ${v} x${n}`);
+}

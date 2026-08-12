@@ -49,8 +49,9 @@
 //
 // Client-safe by construction: one pure function over one exported Record, no
 // fs, no pg, no network.
-import { FIELD_REACH } from "./types";
+import { FIELD_ENUM_HINTS, FIELD_REACH } from "./types";
 import type { EligibilityAnswers } from "./types";
+import { VOCABULARY } from "./vocabulary";
 
 /** Why production leaves a field empty. `null` from the predicate below means
  *  production can populate it and a replay may answer it. */
@@ -61,7 +62,11 @@ export type UnpopulatedReason =
   | { why: "staged_off"; armEnv: string }
   /** Declared `staged` with no arm named, so the exemption can never expire.
    *  Refused in the same direction as a missing path: fail closed. */
-  | { why: "staged_unnamed" };
+  | { why: "staged_unnamed" }
+  /** The FIELD is asked and this ANSWER is not on the menu. Same defect one
+   *  level down: a gate that fires on it fires on something no founder could
+   *  have said. */
+  | { why: "unofferable_value"; values: string[] };
 
 /** Just the shape a predicate about switches needs. Deliberately NOT
  *  `NodeJS.ProcessEnv`, whose required `NODE_ENV` makes a one-key literal
@@ -89,8 +94,48 @@ export function productionCannotPopulate(
   return env[reach.armEnv] === "on" ? null : { why: "staged_off", armEnv: reach.armEnv };
 }
 
+/**
+ * THE SAME RULE ONE LEVEL DOWN: is this ANSWER on the menu?
+ *
+ * A field production asks can still be handed a value its control cannot
+ * produce, and the effect is identical — an encoded gate fires on something no
+ * founder could have said, and the exclusion is charged to the founder. The
+ * case that motivated this: 10 of 715 replayed `region` answers were codes
+ * `regionOptions` never offers for that founder's country (a bare country code
+ * where the control lists regions, and NUTS-1 codes where it lists NUTS-2).
+ *
+ * The menu is production's own, in production's order of authority:
+ *   1. `optionsFor(answers)` where the options depend on earlier answers —
+ *      region is the one field where a fixed list is wrong;
+ *   2. the hint's fixed `options`, which is what the adaptive round offers;
+ *   3. the vocabulary contract, which is what `sanitizeEligibility` accepts.
+ *
+ * A field with NO enumerable menu — free text, country lists, numbers —
+ * returns `[]`, meaning "cannot judge". That is deliberately not the same as
+ * "fine": this predicate makes a claim only where production can be asked what
+ * it would have offered.
+ */
+export function unofferableValues(
+  field: keyof EligibilityAnswers,
+  value: unknown,
+  answers: EligibilityAnswers,
+): string[] {
+  const hint = FIELD_ENUM_HINTS[field as string];
+  const menu = hint?.optionsFor?.(answers).map((o) => o.value)
+    ?? (hint?.options.length ? hint.options.map((o) => o.value)
+      : VOCABULARY[field as string]?.values ?? []);
+  if (!menu.length) return [];
+  return (Array.isArray(value) ? value : [value])
+    .filter((v): v is string => typeof v === "string")
+    .filter((v) => !menu.includes(v));
+}
+
 /** One line a run can print about a field it had to hold back. */
 export function unpopulatedNote(field: string, r: UnpopulatedReason): string {
+  if (r.why === "unofferable_value") {
+    return `${field} was answered ${r.values.map((v) => `"${v}"`).join(", ")}, which the `
+      + "control never offers for this founder — production cannot produce that answer";
+  }
   if (r.why === "staged_off") {
     return `${field} is STAGED behind ${r.armEnv}, which is not "on" — the control is `
       + "not rendered and production never populates it";
