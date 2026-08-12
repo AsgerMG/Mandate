@@ -240,8 +240,11 @@ const STAGES: Stage[] = [
     // publishes only where k rows above it demoted as watch-only. So the
     // reachable part of this loss is bounded by the watch-only budget printed
     // below the table, and on the recorded distribution it is a fraction of a
-    // point. The 14.2 points this row carried belong to the ORDER -- the
-    // ranker, the pool and what reaches it -- not to a number in `caps.ts`.
+    // point. Whatever this row prints belongs to the ORDER -- the ranker, the
+    // pool and what reaches it -- not to a number in `caps.ts`. (Deliberately
+    // no figure here: it moves with the run, and the run prints it. A funnel
+    // loss quoted in a comment is the fifth incomparable number in the file
+    // written to stop the first four.)
     alive: (t) => t.rankWriter != null,
   },
   {
