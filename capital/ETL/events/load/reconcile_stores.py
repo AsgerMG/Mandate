@@ -267,6 +267,90 @@ def unknowns(report: dict) -> list[tuple[str, str, dict]]:
             if d["verdict"] == "unknown"]
 
 
+def overwrite_gate(losing: str, winning: str, override: str | None, remedy: str,
+                   families: list[str] | None = None,
+                   destroys: bool = True) -> tuple[bool, str, dict]:
+    """THE interlock on every whole-file overwrite in this repository.
+
+    ── The property ───────────────────────────────────────────────────────
+    No whole-file overwrite may run while the store being REPLACED is the sole
+    holder of any row. An operator may override that, and the override must
+    state, itemised and counted, exactly what it destroys BEFORE it destroys
+    it — because an override that reports afterwards is not a decision anybody
+    made.
+
+    ── How it holds for a table nobody has added yet ──────────────────────
+    Nothing here names a table, a family or a count. The gate asks
+    `would_be_lost`, which walks whatever `corpus_stores.FAMILIES` declares and
+    returns one of three verdicts per table — keyed, counted, uncomparable. A
+    table added next month is covered the moment it appears in that map, with
+    no edit here: if it can be keyed it is compared exactly, if it cannot it is
+    compared by count, and if the counts prove nothing it is named as
+    UNCOMPARABLE rather than folded into a zero. The test for the unseen case
+    is `test_overwrite_refusal.py`, which registers a table this file has never
+    heard of and requires the gate to refuse on it.
+
+    ── Why the measurement runs even under an override ────────────────────
+    `push_local.py --force-overwrite` used to skip the comparison entirely, so
+    the one flag whose whole purpose is to destroy rows knowingly was the only
+    path that could not say which rows. `pull_db.py --discard-local` measured
+    and then printed a bare total after the swap. Both are the same defect:
+    the operator learns the cost too late to decline it.
+
+    ── `destroys` ─────────────────────────────────────────────────────────
+    Not every sanctioned resolution is a deletion. `pull_db.py --carry-forward`
+    merges the rows the losing store holds alone into the winning file before
+    the swap, so nothing is lost — and reporting it as a destruction would
+    spend the word on a case where it is untrue, which is how operators learn
+    to read past it. The itemisation is printed either way; only the verb
+    changes.
+
+    Returns (may_proceed, what the operator must be shown first, the report).
+    The caller prints the text and acts on the boolean; it never re-derives
+    either, and it never has to measure a second time to find out which
+    families moved.
+    """
+    lost = would_be_lost(losing, winning, families)
+    n = proven_loss(lost)
+    unk = unknowns(lost)
+    out: list[str] = []
+
+    # An UNCOMPARABLE table is not a safe one, and this is printed on the runs
+    # that PROCEED as well, because the alternative is a swap that reports
+    # "nothing at risk" about a table it never looked at.
+    if unk:
+        out.append(f"\nNOT PROVEN SAFE — {len(unk)} table(s) could not be compared "
+                   f"row by row:")
+        for _f, t, d in unk:
+            out.append(f"    {t:<32} {d['rows_losing']:,} on the store being replaced "
+                       f"vs {d['rows_winning']:,} on the one replacing it — {d['why']}")
+        out.append("  Equal or smaller counts do not prove no rows are lost. This is "
+                   "what the\n  comparison could not see, stated rather than omitted.")
+
+    if not n:
+        return True, "\n".join(out), lost
+
+    if not override:
+        out.append(f"\nREFUSED — the store being replaced holds {n:,} row(s) the one "
+                   f"replacing it does not.\n  Overwriting them is a deletion, not a "
+                   f"sync.\n")
+        out.append(format_loss(lost, indent="  "))
+        out.append(f"\n{remedy}")
+        return False, "\n".join(out), lost
+
+    if destroys:
+        out.append(f"\nDESTROYING {n:,} row(s) — {override} was given, and this is what "
+                   f"it deletes.\n  Every one exists in exactly one place and has no "
+                   f"other copy.\n")
+    else:
+        out.append(f"\nCARRYING FORWARD {n:,} row(s) — {override} was given. Nothing "
+                   f"below is deleted;\n  each row is merged into the file that "
+                   f"replaces this store.\n")
+    out.append(format_loss(lost, indent="  "))
+    out.append("")
+    return True, "\n".join(out), lost
+
+
 def format_loss(report: dict, indent: str = "  ") -> str:
     """The report a person reads at the moment of the refusal."""
     lines: list[str] = []

@@ -88,24 +88,68 @@ def verify(path: _Path) -> str | None:
     return None if res == "ok" else f"quick_check: {res}"
 
 
-def local_only_rows(local: _Path, incoming: _Path) -> dict:
-    """What swapping `incoming` over `local` would destroy.
+def remedy(local, incoming) -> str:
+    """What the operator does instead of overwriting. Built from the two real
+    paths, so the commands offered at the moment of the refusal can be pasted
+    rather than adapted.
 
-    Delegated to `reconcile_stores.would_be_lost`, which is the ONE definition
-    of that question and is used by the push direction too — so "would be lost"
-    and "would be carried" can never mean two different sets of rows.
-
-    This function used to be its own copy of the comparison, and it `continue`d
-    past every table whose identity it could not use. A skipped table
-    contributed nothing to the result, which is indistinguishable from a table
-    with nothing at risk — so `public_funding_events`, whose declared identity
-    named four columns that do not exist, was NEVER COMPARED and always
-    reported as safe. See `would_be_lost` for the three verdicts that replace
-    that silence.
+    This text used to end "then push the result back:
+    ETL/events/extract/push_local.py", and that instruction has never worked.
+    push_local uploads `local`, not `incoming`; and whichever of the two it
+    uploaded, it cannot be reached at all while this store is ahead — without
+    --skip-pull it runs this script first and stops on the refusal you are
+    reading, and with --skip-pull it refuses the upload for having skipped the
+    pull. There is no path through it that carries a laptop-only row up. A
+    refusal that names a fix which does not exist is worse than one that names
+    none: it is followed, it fails somewhere else, and the guard gets blamed.
     """
-    from reconcile_stores import would_be_lost
+    return (
+        f"  The fresh copy is at {incoming} — nothing has been overwritten.\n"
+        "  These rows have no other copy. Overwriting them is not a sync, it is a\n"
+        "  deletion, and the first version of this script did it silently as the\n"
+        "  first step of `make republish`.\n\n"
+        "  Keep them, here and now:\n"
+        "    --carry-forward   merge them into the fresh copy before the swap.\n"
+        "                      Nothing is lost locally. The corpus of record is\n"
+        "                      still missing them, so this stays DIVERGED.\n"
+        "    --discard-local   delete them, knowingly\n\n"
+        "  Build the union, for promotion:\n"
+        "    python3 ETL/events/load/reconcile_stores.py \\\n"
+        f"        --into {incoming} --from {local} --family instruments\n\n"
+        "  PROMOTING it to the record is not automated. push_local.py cannot do\n"
+        "  it: without --skip-pull it runs this script and stops here, and with\n"
+        "  --skip-pull it refuses the upload. Until that is closed the upload is\n"
+        "  a deliberate manual step — and the rows are safe meanwhile, because\n"
+        "  corpus-ledger/ holds a committed third copy of the authored corpus:\n"
+        "    python3 ETL/events/load/instrument_ledger.py verify")
 
-    return would_be_lost(str(local), str(incoming))
+
+def swap_decision(local, incoming, carry_forward: bool, discard_local: bool):
+    """May the fresh copy replace the local one, and what is the operator shown
+    first? Reads only; the caller does the swapping.
+
+    Split out from `main` so the DECISION can be tested where the transfer
+    cannot run — `test_overwrite_refusal.py` drives this function against
+    fixture stores with no credentials and no network. A guard whose only entry
+    point needs a 645 MB download and a woken Railway service is a guard that
+    is never exercised until the night it matters.
+
+    Both flags are named resolutions and both make the gate itemise what is at
+    risk before the caller acts. They differ in the verb, and the difference is
+    real: `--carry-forward` merges the local-only rows into the fresh copy, so
+    nothing is deleted, while `--discard-local` deletes them. Reporting the
+    first as a destruction would spend the word on a case where it is untrue,
+    and a word spent that way stops being read on the day it is true.
+    """
+    from reconcile_stores import overwrite_gate
+
+    override, destroys = None, True
+    if discard_local:
+        override, destroys = "--discard-local", True
+    elif carry_forward:
+        override, destroys = "--carry-forward", False
+    return overwrite_gate(str(local), str(incoming), override=override,
+                          remedy=remedy(local, incoming), destroys=destroys)
 
 
 def main() -> int:
@@ -157,38 +201,18 @@ def main() -> int:
         print(f"Pulled the corpus of record -> {DB}")
         return 0
 
-    from reconcile_stores import format_loss, proven_loss, unknowns
+    from reconcile_stores import proven_loss
 
-    lost = local_only_rows(DB, incoming)
+    # The decision, and everything the operator is told, comes from one
+    # function — the same one the push direction calls and the same one the
+    # refusal test drives with no network. What is printed here is printed
+    # BEFORE the swap on every path, including the overrides.
+    proceed, told, lost = swap_decision(DB, incoming, args.carry_forward,
+                                        args.discard_local)
     n_lost = proven_loss(lost)
-    unknown = unknowns(lost)
-
-    # An UNCOMPARABLE table is not a safe one. It is printed on every pull,
-    # including the ones that proceed, because the alternative is a swap that
-    # reports "nothing at risk" about a table it never looked at.
-    if unknown:
-        print(f"\nNOT PROVEN SAFE — {len(unknown)} table(s) could not be compared "
-              f"row by row:")
-        for _f, t, d in unknown:
-            print(f"    {t:<32} {d['rows_losing']:,} here vs {d['rows_winning']:,} "
-                  f"there — {d['why']}")
-        print("  Equal or smaller counts do not prove no rows are lost. This is what "
-              "the\n  comparison could not see, stated rather than omitted.")
-
-    if n_lost and not (args.carry_forward or args.discard_local):
-        print(f"\nREFUSED — the local store holds rows the corpus of record does not.")
-        print(format_loss(lost, indent="  "))
-        print(f"\n  The fresh copy is at {incoming} — nothing has been overwritten.")
-        print("  These rows have no other copy. Overwriting them is not a sync, it")
-        print("  is a deletion, and the previous version of this script did it")
-        print("  silently as the first step of `make republish`.")
-        print("\n  Promote them to the corpus of record (the right answer):")
-        print(f"    python3 ETL/events/load/reconcile_stores.py \\")
-        print(f"        --into {incoming} --from {DB} --family instruments")
-        print("    then push the result back: ETL/events/extract/push_local.py")
-        print("\n  Or, to decide here:")
-        print("    --carry-forward   keep them locally; the record still lacks them")
-        print("    --discard-local   delete them, knowingly")
+    if told:
+        print(told)
+    if not proceed:
         return 2
 
     if n_lost and args.carry_forward:
