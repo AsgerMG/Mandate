@@ -86,3 +86,25 @@ urgency.
   slower once
 
 The 1.7 GB of stale app-updater files you approved is already gone.
+
+---
+
+## Added overnight
+
+### 7. A live prompt change that free work cannot verify
+
+`contracts/brief/02-funds.md` is the memo writer's own system prompt. wsGK
+removed one sentence from it:
+
+> *"A row whose honest next step is to wait does not belong in the brief at all."*
+
+That is a **selection** claim sitting in a **writing** contract, and it is false
+now — the ranker decides membership, and as of last night nothing in the
+writer's reply can change which funds publish. It is replaced by a stronger
+instruction closing the same escape: every row you are given has already been
+chosen and will publish. The prohibition on hedging itself is kept verbatim.
+
+**Why it is here:** a prompt change alters what the model writes, and the only
+way to see the effect is a paid bench run. `bench_report`'s watch-only counter
+is the number to read. Nothing is broken meanwhile — the change makes the
+contract agree with the code rather than contradict it.
