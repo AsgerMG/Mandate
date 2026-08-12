@@ -24,7 +24,7 @@ import { UNWRITTEN_ROW_COPY } from "../lib/intelligence/unwrittenRow";
 // The contract checks, shared with the live pipeline so what we enforce and
 // what we measure are one artifact. Each violation carries the rule id
 // declared in contracts/, so a regression is named rather than described.
-import { checkBrief } from "../lib/intelligence/briefChecks";
+import { BRIEF_LIMITS, checkBrief } from "../lib/intelligence/briefChecks";
 // SOP-2 asks whether the closing pitch has leaked into the analysis paragraph.
 // `plug` is optional and NEITHER caller passed it, so `plug && ...` short-
 // circuited on every run this repo has ever done: a hard rule whose check had
@@ -157,9 +157,20 @@ function score(r: Row): Scored {
     // that remains. The row count is still visible in the table so a 1-row
     // brief can be eyeballed; it just is not scored as broken.
     if (inst.length === 0) defects.push("EMPTY table");
-    if (inst.length > 5) defects.push("over 5 rows");
-    if (longest > 25) defects.push(`bullet ${longest}w`);
-    if (body > 700) defects.push(`body ${body}w`);
+    // ── THREE PRIVATE COPIES OF LIMITS THAT HAD ALL MOVED ────────────────
+    // These were literal 5, 25 and 700. `institutionsMax` is 7 and
+    // `bulletWords` is 40, so this scorer had been reporting "over 5 rows" on
+    // every brief that published the row count the product deliberately
+    // publishes, and flagging bullets at the length the contract asks the
+    // writer for. `briefChecks.ts` states in its own header that it is "the
+    // ONLY place the number lives" — it was not, and the copies here disagreed
+    // with it silently and in the direction that makes a correct brief look
+    // broken. Read now, never retyped: the same import `checkBrief` above
+    // already comes from.
+    if (inst.length > BRIEF_LIMITS.institutionsMax)
+      defects.push(`over ${BRIEF_LIMITS.institutionsMax} rows`);
+    if (longest > BRIEF_LIMITS.bulletWords) defects.push(`bullet ${longest}w`);
+    if (body > BRIEF_LIMITS.bodyWords) defects.push(`body ${body}w`);
   }
 
   return {
