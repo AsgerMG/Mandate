@@ -92,6 +92,75 @@ The page also emits schema.org `Grant` JSON-LD, but it holds only id, name, a
 truncated description and the url — strictly less than the React payload, and
 it states no deadline at all. It is not used.
 
+── The one thing a loader MUST do first, or it ships a false claim ────────
+`data/reference/source_window_policy.json` declares, for all of Norway:
+
+    {"match": {"source_family_bucket": "national_dev_banks", "country": "NO"},
+     "policy": "publishes_no_window"}
+
+That declaration is TRUE of the rows it was written for and FALSE of these.
+It says "the register's record for this kind of object has no closing date
+field in it at all" — a class judgement made because the file we ingest for
+Norway is an award file, and it is flagged as the weakest link in the whole
+policy in project-mgmt/findings/wsBE_source_window_policy.md:
+
+    200 singleton national-development-bank programmes ... are
+    publishes_no_window because the file we ingest is an award file, not
+    because anyone read 200 bank websites. ... If one of those banks starts
+    publishing calls into the same feed, the declaration goes stale.
+
+This harvest is that feed. So a loader must add a NARROWER declaration ahead
+of it — `assign_source_window_policy.py` resolves narrowest-first and
+`id_prefix` (MATCH_KEYS index 1) beats `country` (index 3), so an `id_prefix`
+declaration wins without touching the existing rule or any other Norwegian row:
+
+    {"match": {"id_prefix": "<the loader's prefix>"},
+     "policy": "declares_open_ended"}   for the "Løpende" rows
+    {"match": {"id": "<one id>"}, "policy": "publishes_window"}  for dated rows
+
+Getting this wrong is not cosmetic. `contradictsDeclaredPolicy()` in
+liveness.ts exists precisely to catch "declared publishes_no_window yet carries
+a call deadline" — and it is exported and unit-tested with NO harness calling
+it, so nothing would fail the build. The corpus would simply assert that
+Forskningsradet states no deadlines while showing a founder a deadline.
+
+── Why a loader must NOT just mint 27 parentless rows ─────────────────────
+The Spanish loader's shape does not transfer whole, and the reason is measured,
+not stylistic. `meetsDataFloor` in accessMode.ts admits an award-less row only
+through `hasOpenWindow`, which reads:
+
+    inst.schemeEndBasis === SCHEME_END_BASIS.callDeadline &&
+    end.length === 10 && end >= today()
+
+That requires a DATED window. It is satisfied by the 10 dated calls here and by
+none of the 15 "Løpende" ones, which have no `scheme_end_date` at all and, as
+fresh call rows, no `total_eur` and no `last_year` either. Minting them as new
+parentless rows would put the majority of Norway's open calls below the data
+floor — invisible, with nothing failing.
+
+They do not need to be new rows. Most of these calls run under programmes the
+corpus ALREADY holds, with the award history that clears the floor outright:
+
+    "Innovasjon i næringslivet"  6 open calls  -> nfr_inno (INNO-NAERING, 226 awards)
+    Nærings-ph.d.                1 open call   -> nfr_naeringsph (21 awards)
+
+which is exactly what `write_revivals()` in load_bdns_open_calls.py was built
+for: point the existing, fully-evidenced leaf at the call that is open under its
+own scheme, so it keeps its awards and starts presenting the window a founder
+can actually act on. That is the right default here.
+
+The exception is worth naming because it is the single biggest Norwegian fund
+for a founder and the corpus does not hold it at all: **SkatteFUNN** — a
+rights-based tax deduction, rolling intake, open to any Norwegian company with
+an organisasjonsnummer that is taxable in Norway — has no `nfr_*` row. It is
+genuinely a new row, and it is a `tax_credit`, not a grant.
+
+One thing a loader does inherit: Norway is absent from SATR entirely — measured
+2026-08-12, `satr_staging` holds 122,814 rows and 0 match 'NO' on any of
+`country`, `third_country`, `granting_country_iso2`, `beneficiary_country_iso2`
+— so the mandatory SATR-overlap gate is satisfied trivially and there is no
+scheme-code join to make.
+
 Usage:
   python3 ETL/terms/harvest_nfr_open_calls.py --probe    # endpoint + status vocabulary
   python3 ETL/terms/harvest_nfr_open_calls.py --report   # listing only, no detail fetches
