@@ -237,8 +237,8 @@ export interface MemoCandidateOrder {
   easeById: Map<string, EaseScore>;
   /** Softened by `lateFields` where the input asked for it, so every consumer
    *  reads ONE verdict per instrument. Two assessments of one fund -- a
-   *  softened one deciding the pool and a raw one deciding the band -- would
-   *  demote exactly the rows we just decided to keep. */
+   *  softened one deciding the pool and a raw one rendered on the row -- would
+   *  publish a line contradicting the screen that kept the fund. */
   assessments: Map<string, InstrumentAssessment>;
   /** A scheme with no award on record for years may be closed, repealed or
    *  simply between programme periods. Travels with the order because the row
@@ -277,9 +277,10 @@ export interface MemoCandidateInput {
    */
   /**
    * Fields the founder first answered on the follow-up screen, derived
-   * server-side (answerProvenance.ts). Softens the assessments so the band
-   * sort, the row's rendered verdict and `accessiblePool` all read the SAME
-   * verdict for a fund. Never a client-supplied list.
+   * server-side (answerProvenance.ts). Softens the assessments so the row's
+   * rendered verdict and `accessiblePool` read the SAME verdict for a fund.
+   * (It used to have a third reader, the band sort, which is gone.) Never a
+   * client-supplied list.
    */
   lateFields?: ReadonlySet<string>;
 }
@@ -491,7 +492,8 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
   const beforeWriterCap = [...collision.visible, ...collision.demoted];
   for (const r of beforeWriterCap.slice(WRITER_CANDIDATE_CAP)) {
     log.record("SEL-LEAF-CAP", r.row.instrumentId ?? r.row.channel,
-      `ranked below the ${WRITER_CANDIDATE_CAP}-candidate cap shown to the writer`);
+      `below the ${WRITER_CANDIDATE_CAP}-candidate cap shown to the writer, in the `
+      + `order the pool arrived in`);
   }
   return {
     ordered: beforeWriterCap,

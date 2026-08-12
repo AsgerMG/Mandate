@@ -2038,6 +2038,14 @@ export async function agentSelectRows(
  * existed before this file did. `scripts/_wsdl_equiv.ts` asserts that identity
  * over replayed founders rather than trusting the reading.
  *
+ * ── AND THAT PATH IS THE CONTROL NOW, NOT THE PRODUCT (wsGB) ──────────────
+ * `AGENT_SELECT` defaults to `adviser`, so `off` is reached by being NAMED. It
+ * is not dead surface and must not be removed: it is the control arm of
+ * `scripts/_wsga_headtohead.ts`, the subject of `_wsdl_equiv.ts`, and the free
+ * replay every offline harness in `scripts/` asks for. Every failure path in
+ * `agentSelectRows` still degrades to exactly the order it produces, so the
+ * branch is also the shape of the fallback and not only of a control.
+ *
  * WHAT IT ADDS WITH THE ARM ON, and none of it is new IO:
  *   * every answer the founder actually gave, in the words ANSWER_LABEL holds,
  *     plus one honest line naming the ranking fields they did not give;
