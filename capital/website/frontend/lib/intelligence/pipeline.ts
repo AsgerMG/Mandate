@@ -10,7 +10,6 @@ import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
 import { instrumentLink } from "./instrumentLink";
 import { assessAll } from "./verdict";
-import { isWatchOnly } from "./watchOnly";
 import { recordBrief } from "./record";
 import {
   agentSelectEnabled, agentSelectMemoPool, AGENT_SELECT_SEAM,
@@ -36,7 +35,7 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
 import { semanticFundMatch } from "./semantic";
 import { BRIEF_LIMITS, checkBrief } from "./briefChecks";
 import {
-  accessiblePool, explainNoDoors, orderMemoCandidates, publishRankByKey,
+  accessiblePool, assembleBriefRows, explainNoDoors, orderMemoCandidates,
   WRITER_CANDIDATE_CAP,
 } from "./memoCandidates";
 import { ExclusionLog } from "./exclusions";
@@ -1283,12 +1282,12 @@ async function synthesize(
   // keyed by rowKeys (positional, disambiguates same-channel rows — see
   // buildInstitutions), and strip em-dashes from every model-written field
   // (house rule).
-  const notesByKey = new Map(narrative.institutionNotes.map((n) => [n.channel, n]));
+  //
   // ── THE CANDIDATE ORDER PUBLISHES, NOT THE WRITER'S NOTE ORDER ───────────
   //
-  // This was `narrative.institutionNotes.map((n, i) => [n.channel, i])`: the
-  // rows were ranked by where each note fell in the model's reply. Three lines
-  // in this very file and in the contracts tell that model NOT to rank —
+  // The rank was `narrative.institutionNotes.map((n, i) => [n.channel, i])`:
+  // the rows were ranked by where each note fell in the model's reply. Three
+  // lines in this very file and in the contracts tell that model NOT to rank —
   // FUND-12 ("Rows are not ranked in the brief"), the prompt above ("Do not
   // reorder them, do not omit one"), and 02-funds.md ("There is no channel for
   // telling us a row is wrong") — so the only reply that could carry a ranking
@@ -1299,102 +1298,60 @@ async function synthesize(
   // deletion. See `SHIPPED_PUBLISH_ORDER` in memoCandidates.ts for the arms and
   // for the `WRT-NOT-WORTH` precedent this repeats one field over.
   //
-  // `worth` is untouched: the writer still decides WHETHER a row publishes by
-  // whether it wrote about it. It no longer decides where.
-  const rankByKey = publishRankByKey(
-    rowKeys, narrative.institutionNotes.map((n) => n.channel));
-  const scored = institutions.map((row, i) => {
-    const note = notesByKey.get(rowKeys[i]);
-    return {
-      // A row the writer never wrote about is still dropped: publishing the
-      // fallback boilerplate in its place says nothing and reads as an
-      // assessment. That is the writer failing to do its job, not the writer
-      // exercising judgement about which fund belongs.
-      worth: Boolean(note),
-      // Watch-only rows are DEMOTED, not deleted. The rule was right — a brief
-      // is a list of things to do — but a regex over natural language should
-      // not be able to delete a well-ranked fund because a valid next step
-      // happened to contain "revisit" or "act if". It sorts to the back and
-      // falls off the cut on its own if better rows exist.
-      actionable: !isWatchOnly(undefined, note?.nextStep, note?.whyEligible),
-      key: rowKeys[i],
-      entry: {
-        ...row,
-        whyEligible: deDash(note?.whyEligible ?? "Verify eligibility directly with the fund."),
-        nextStep: deDash(note?.nextStep ?? "Review the fund's current call and eligibility criteria."),
-        // Prefer the plain restatement; fall back to the verbatim rule so the
-        // obstacle is never silently dropped just because the writer omitted it.
-        blocker: row.blocker ? deDash(note?.blockerPlain || row.blocker) : undefined,
-      } as InstitutionEntry,
-    };
+  // ── AND NEITHER DOES THE WRITER'S SILENCE (wsGC) ─────────────────────────
+  // `worth: Boolean(note)` stood here and dropped any candidate the writer had
+  // not written about. It is gone: which rows publish is `assembleBriefRows`,
+  // by rank, and the reply decides only what they say. The reasoning, the
+  // measurement and the property that pins it are on that function.
+  const table = assembleBriefRows({
+    rows: institutions, rowKeys, notes: narrative.institutionNotes,
+    cap: BRIEF_INSTITUTION_CAP, clean: deDash,
   });
-  // Always log the funnel: a brief that ships three rows from seven
-  // candidates is not visible in the output itself, and this is the only
-  // place the writer's rejections can be counted.
-  const omitted = rowKeys.filter((k) => !notesByKey.has(k));
-  const rejected: string[] = [];
-  console.log("[institutions] candidates=%d kept=%d rejected=%d omitted=%d%s%s",
-    institutions.length, scored.filter((x) => x.worth).length, rejected.length, omitted.length,
-    rejected.length ? " | rejected: " + rejected.join(", ") : "",
-    omitted.length ? " | omitted: " + omitted.join(", ") : "");
+  const finalInstitutions: InstitutionEntry[] = table.published;
 
-  // Up to five, never fewer than two — except where two genuinely do not
-  // exist. A tobacco or gambling business is excluded from most state aid by
-  // law, and padding its brief back to five would mean inventing options it
-  // cannot use. So the floor applies to the WRITER's judgement (it may not
-  // reject its way down to one), not to the corpus: if screening only ever
-  // produced one accessible fund, one is the honest answer.
-  for (const x of scored) {
-    if (!x.worth) log.record("WRT-NO-NOTE", x.entry.channel, "writer returned no note for this candidate");
-  }
-  const ranked = scored
-    .filter((x) => x.worth)
-    .sort((a, b) => (rankByKey.get(a.key) ?? Infinity) - (rankByKey.get(b.key) ?? Infinity));
-  // A brief NEVER shows a fund that is deprioritised or not relevant. Not one
-  // as a tail-ender, not one for balance: a row the founder cannot move on is
-  // a thing to know, and the brief is a list of things to do. Three of
-  // sennder's five rows were "deprioritise" / "monitor calls" / "treat as
-  // informational" -- each honest on its own, together a padded table that
-  // costs the reader time and costs us credibility.
+  // Always log the funnel: a brief that ships three rows from seven candidates
+  // is not visible in the output itself, and this is the only place the
+  // writer's silences can be counted.
   //
-  // The count is allowed to fall below the usual floor as a result. Four real
-  // routes beat five with one that wastes a week.
-  // Demotion, not deletion: actionable rows first, the rest behind them in
-  // rank order. If five actionable routes exist a watch-only row never
-  // reaches the cut anyway; if they do not, a real fund the founder can only
-  // monitor beats a shorter table with nothing in its place.
-  const actionable = ranked.filter((x) => x.actionable);
-  const watchOnly = ranked.filter((x) => !x.actionable);
-  const worthwhile = [...actionable, ...watchOnly].map((x) => x.entry);
-  if (watchOnly.length) {
-    console.log("[institutions] dropped %d watch-only: %s", watchOnly.length,
-      watchOnly.map((x) => x.entry.institution).join(", "));
-    for (const x of watchOnly) {
-      log.record("WRT-WATCH-ONLY", x.entry.channel,
+  // `rejected` stood beside these, declared empty, never assigned and printed
+  // as a hard `rejected=0` on every brief — left behind by the disqualification
+  // flag it used to count.
+  console.log("[institutions] candidates=%d published=%d unwritten=%d cut=%d%s",
+    institutions.length, finalInstitutions.length, table.unwritten.length, table.cutByCap.length,
+    table.unwritten.length ? " | unwritten: " + table.unwritten.join(", ") : "");
+  for (const key of table.unwritten) {
+    log.record("WRT-NO-NOTE", key, "writer returned no note for this candidate; row published from its own facts");
+  }
+  if (table.unwritten.length) {
+    // Loud, not inferred. The row is no longer lost, but the writer skipping a
+    // row it was told to write is still a defect in the call, and the only way
+    // to see it moving is to emit it every time.
+    recordEvent("writer_notes_missing",
+      "writer returned no note for a candidate it was told to write about",
+      { unwritten: table.unwritten, count: table.unwritten.length,
+        candidates: institutions.length });
+  }
+  if (table.watchOnly.length) {
+    console.log("[institutions] demoted %d watch-only: %s",
+      table.watchOnly.length, table.watchOnly.join(", "));
+    for (const key of table.watchOnly) {
+      log.record("WRT-WATCH-ONLY", key,
         "flagged not-actionable, or its own next step matched the watch-only vocabulary");
     }
   }
-  // Deliberately NOT topped back up to the minimum from the watch-only pile:
-  // that would reintroduce exactly the rows we just refused to show. A short
-  // brief is the honest answer when a founder genuinely has few live routes.
-  //
-  // The one exception is the pathological case where NOTHING survives -- if
-  // the writer mislabels every row, an empty table serves no one, so the
-  // ranked list stands in and the event is logged loudly rather than hidden.
-  const survivors = worthwhile.length ? worthwhile : ranked.map((x) => x.entry);
-  for (const e of survivors.slice(BRIEF_INSTITUTION_CAP)) {
-    log.record("CUT-CAP", e.channel, `ranked below the published cap of ${BRIEF_INSTITUTION_CAP}`);
+  for (const key of table.cutByCap) {
+    log.record("CUT-CAP", key, `ranked below the published cap of ${BRIEF_INSTITUTION_CAP}`);
   }
-  const finalInstitutions: InstitutionEntry[] = survivors.slice(0, BRIEF_INSTITUTION_CAP);
-  if (!worthwhile.length) {
-    console.error("every institution read as watch-only; showing ranked order instead",
-      { candidates: scored.length });
-  } else if (worthwhile.length < BRIEF_INSTITUTION_MIN) {
-    // Not necessarily wrong — the user's call is to ship what is real rather
-    // than pad — but it is the signal worth watching, because a RISE in these
-    // means the pool or the rules changed, not that founders got unluckier.
-    recordEvent("thin_brief", "brief below the usual 2-row floor after dropping watch-only rows",
-      { kept: worthwhile.length, droppedWatchOnly: watchOnly.length, candidates: scored.length });
+  // Two rows, never fewer, except where two genuinely do not exist. A tobacco
+  // or gambling business is excluded from most state aid by law, and padding
+  // its brief back up would mean inventing options it cannot use. Nothing
+  // between the candidates and the table removes a row any more, so this fires
+  // on the CORPUS being thin for this founder and on nothing else — which is
+  // what makes a rise in it worth acting on.
+  if (finalInstitutions.length < BRIEF_INSTITUTION_MIN) {
+    recordEvent("thin_brief", "fewer candidate rows reached the writer than the brief's usual floor",
+      { kept: finalInstitutions.length, unwritten: table.unwritten.length,
+        candidates: institutions.length });
   }
 
   // ── 90 RULES, 27 PREDICATES, AND NONE OF THEM RAN ON A FOUNDER'S MEMO ───
@@ -1440,8 +1397,8 @@ async function synthesize(
     // `accessiblePool` had already made unreachable, so every recorded brief
     // carried a hard zero presented as a measurement.
     _dropped: { blocked: log.countsByRule()["VER-BLOCKED"] ?? 0,
-                watchOnly: watchOnly.length,
-                candidates: scored.length },
+                watchOnly: table.watchOnly.length,
+                candidates: institutions.length },
   };
 
   try {
@@ -1449,7 +1406,7 @@ async function synthesize(
     // that is the superset BL-B1 needs, and passing it is what stops that rule
     // reporting itself unevaluated on every real request.
     const violations = checkBrief(
-      publishedReport, STATE_OF_PLAY_OFFER, scored.map((x) => x.entry.institution));
+      publishedReport, STATE_OF_PLAY_OFFER, institutions.map((r) => r.institution));
     if (violations.length) {
       recordEvent("brief_rule_violated",
         violations.map((v) => `${v.ruleId}: ${v.detail}`).join("; "),

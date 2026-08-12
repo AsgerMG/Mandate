@@ -176,7 +176,12 @@ describe("checkBrief runs on the brief the founder is handed", () => {
     // checkBrief's third argument is documented as required for BL-B1: absent,
     // the rule reports itself unevaluated instead of passing silently. A call
     // that omits it would look green here and decide one rule fewer.
-    expect(pipeline).toMatch(/checkBrief\([\s\S]{0,200}?scored\.map/);
+    //
+    // Keyed on the ARGUMENT BEING THERE, not on what the local holding the
+    // candidate rows is called. It named `scored`, a local that no longer
+    // exists, so a rename would have read here as a deleted argument.
+    expect(pipeline).toMatch(
+      /checkBrief\([\s\S]{0,200}?STATE_OF_PLAY_OFFER,\s*[A-Za-z_$][\w$]*\.map/);
   });
 
   it("cannot withhold a brief: the call is wrapped and only records", () => {

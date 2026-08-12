@@ -59,11 +59,12 @@
 //          and compared as the founder would read it: institution names, in
 //          order.
 //
-//      What (b) is NOT is a proof. The writer can reorder (`rankByKey`), can
-//      omit (`WRT-NO-NOTE`) and can demote a row to watch-only on the strength
-//      of its own prose, and all three are model outputs. So (b) is the last
-//      free step and it is stated as a projection, never as the finished
-//      table. (a) is the part that holds regardless.
+//      What (b) is NOT is a proof. The writer can still demote a row to
+//      watch-only on the strength of its own prose, and that is a model
+//      output. It can no longer reorder or omit: the publish order is the
+//      candidate order and a row it wrote nothing about publishes anyway
+//      (wsGC). So (b) is the last free step and it is stated as a projection,
+//      never as the finished table. (a) is the part that holds regardless.
 //
 //   4. THE FLOORS ARE UNMOVED. `check_winner_not_gated` (207) and
 //      `check_winner_not_blocked` (15) under both arms, run separately.

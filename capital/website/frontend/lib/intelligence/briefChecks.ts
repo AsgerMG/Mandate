@@ -18,6 +18,7 @@
 import { directsAtDepartment, whyNotApplyable } from "./applyableBody";
 import { distinguishers } from "./rowNovelty";
 import { WATCH_ONLY_COPY } from "./watchOnly";
+import { UNWRITTEN_ROW_COPY } from "./unwrittenRow";
 import type { IntelligenceReport } from "./types";
 
 export interface CheckViolation {
@@ -40,9 +41,21 @@ const BACKEND_LEAKAGE: { pattern: RegExp; what: string }[] = [
   { pattern: /\bchunk \d+/i, what: "extractor artifact" },
 ];
 
-/** Fallback strings the pipeline substitutes when the writer says nothing.
- *  Their presence means a published row carries no actual judgement. */
-const BOILERPLATE = /verify eligibility directly with the fund|review the fund's current call/i;
+/** Copy the pipeline substitutes when the writer says nothing. Its presence
+ *  means a published row carries no written judgement.
+ *
+ *  ── A CHECK THAT COULD NOT FIRE ─────────────────────────────────────────
+ *  This was a regex naming the two sentences `synthesize` used to substitute:
+ *  "verify eligibility directly with the fund" and "review the fund's current
+ *  call". Neither could ever reach a published brief. The row that would have
+ *  carried them was DELETED before publication by the same expression that
+ *  chose them, so FUND-5's boilerplate half had no reachable input in the
+ *  product's whole history.
+ *
+ *  Now the row publishes and this fires on it. Derived from the one constant
+ *  the copy is built from, never a second spelling of it — the previous
+ *  version is what a check holding its own copy of the string decays into. */
+const BOILERPLATE = UNWRITTEN_ROW_COPY;
 
 /** A row whose own justification argues against it. Only meaningful on rows
  *  with no declared blocker: a blocker row is SUPPOSED to name the obstacle. */

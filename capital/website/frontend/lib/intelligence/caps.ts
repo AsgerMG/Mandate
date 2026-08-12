@@ -298,35 +298,24 @@ export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 7);
 /** How many candidates the WRITER is shown, ahead of the cut to
  *  `BRIEF_LIMITS.institutionsMax`.
  *
- *  Lowered from 9. The writer must return a note per candidate, and a
- *  candidate it never mentions is dropped silently -- it cannot be published
- *  without model-written copy, and filling that in from a template is what put
- *  three "Verify eligibility directly with the fund" rows in one brief. At 9 it
- *  started omitting: one company came back covering 5 of 9, losing two Horizon
- *  clusters and two Innovation Fund routes with no judgement attached.
+ *  Lowered from 9. The writer must return a note per candidate, and how often
+ *  it does depends on how many it is shown: at 9 one company came back
+ *  covering 5 of 9, losing two Horizon clusters and two Innovation Fund
+ *  routes.
  *
- *  ── The headroom this leaves, which the published cap consumes ────────────
- *  This is an UPSTREAM cap and the published row count is the DOWNSTREAM one,
- *  so their difference is the number of candidates the writer may reject
- *  before the table gets short. At 7 candidates and 5 published that was two;
- *  at 7 and 6 it was one; at 8 and 7 it is one again.
+ *  ── WHAT AN OMISSION COSTS, WHICH IS NOT WHAT IT USED TO COST (wsGC) ──────
+ *  Three paragraphs stood here reasoning about "the number of candidates the
+ *  writer may reject before the table gets short", because a candidate the
+ *  writer never mentioned WAS dropped. It is not any more: which rows publish
+ *  is decided by rank in `assembleBriefRows`, and a row with no note publishes
+ *  from its own facts. So an omission costs a row its written assessment, not
+ *  its seat, and the difference between this cap and the published one is no
+ *  longer a budget for the writer to spend.
  *
- *  ── Why it moved with the row cap this time, having not moved last time ───
- *  Last time it deliberately did not, and that was right: 6 published against
- *  7 shown still left a candidate in hand. 7 published against 7 shown leaves
- *  NONE -- every candidate would have to land, and the writer declines
- *  candidates routinely (`WRT-NO-NOTE`, `WRT-WATCH-ONLY`). That is not a
- *  headroom of one narrowing, it is the funnel ceasing to be a funnel, so
- *  `check_contracts.ts` now reds the build if this cap ever fails to exceed
- *  the published one.
- *
- *  8 is not 9. The omission measured at 9 was one company covering 5 of 9 --
- *  four candidates dropped, the writer effectively re-selecting rather than
- *  writing. 8 is one step from a cap that has never omitted, and it is the
- *  smallest value that keeps the headroom the product shipped with. It is not
- *  a free move and it is the risk this workstream took knowingly; the bench
- *  render at the new caps is the measurement, and a rise in `WRT-NO-NOTE` is
- *  what would send it back to 7 and the row cap back to 6. */
+ *  That does not make this cap free. It is still what the writer is asked to
+ *  write, and 9 is the value at which it measurably stopped writing all of
+ *  them, so a rise in `WRT-NO-NOTE` is still what sends it back down -- the
+ *  cost has simply moved from a lost fund to a thinner row. */
 export const WRITER_CANDIDATE_CAP = 8;
 
 // ── THE FUNNEL INVARIANT, ASSERTED WHERE THE LEVER CAN BREAK IT ───────────
