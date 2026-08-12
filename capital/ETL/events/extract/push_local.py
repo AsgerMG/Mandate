@@ -138,7 +138,7 @@ def run_manual_inbox(dry: bool) -> list[str]:
     return failures
 
 
-def push_db(dry: bool, skipped_pull: bool, force: bool = False) -> None:
+def push_db(dry: bool, force: bool = False) -> None:
     """Upload the local store over the corpus of record — after proving it costs
     nothing, at the moment of the upload.
 
@@ -162,15 +162,32 @@ def push_db(dry: bool, skipped_pull: bool, force: bool = False) -> None:
     replace; the thing it protects is a table of awards from registers that
     republish a current file and keep no history, where a deleted row has no
     second copy anywhere in the world.
-    """
-    if skipped_pull and not dry:
-        sys.exit("\nREFUSED: --skip-push is missing and --skip-pull was given.\n"
-                 "  This would upload a local copy of unknown age over the corpus of\n"
-                 "  record, deleting whatever the weekly cron has gathered since it\n"
-                 "  was taken. Either drop --skip-pull, or add --skip-push, or\n"
-                 "  reconcile explicitly:\n"
-                 "    python3 ETL/events/load/reconcile_stores.py --report <record> <local>")
 
+    ── AND THAT IS WHY THE `--skip-pull` REFUSAL IS GONE (2026-08-12) ─────
+    This function used to ALSO refuse outright when `--skip-pull` was given,
+    on the reasoning that a local copy of unknown age must not be uploaded.
+    The reasoning is right and the refusal was the wrong instrument for it:
+    `check_push_is_not_a_deletion` answers the same question by DOWNLOADING
+    the record and comparing it, here, now — which is strictly stronger than
+    asking whether a pull happened recently. A store pulled ten seconds ago
+    can still be behind; a store pulled never can still be ahead of nothing.
+    Two implementations of one rule, and the weaker one was load-bearing.
+
+    It was also, together with `pull_db.py`'s own refusal, a DEADLOCK. There
+    was no path through this repository that promoted a laptop-only row to
+    the corpus of record: without `--skip-pull` the cycle ran the pull and
+    stopped on its refusal; with `--skip-pull` it stopped on this one. That is
+    why 1,070 encoded eligibility gates sat in one store and not the other --
+    not a lapse of discipline, the only reachable state. `pull_db.py
+    --carry-forward` then `push_local.py --skip-pull` is now a real promotion
+    path, guarded at the moment it matters.
+
+    Removing a refusal is not the same as removing a protection, and the test
+    for whether this was the first or the second is
+    `test_overwrite_refusal.py`: it asserts that BOTH directions still refuse
+    while the store being replaced is the sole holder of any row, and that
+    every override names what it destroys first. That property is unchanged.
+    """
     if not dry:
         check_push_is_not_a_deletion(force=force)
 
@@ -289,8 +306,7 @@ def main() -> None:
                   f"progress is still progress; re-run to retry the failed ones).")
 
         if not args.skip_push:
-            push_db(args.dry_run, skipped_pull=args.skip_pull,
-                    force=args.force_overwrite)
+            push_db(args.dry_run, force=args.force_overwrite)
     finally:
         if needs_wake and not args.dry_run:
             restore_problems = restore()

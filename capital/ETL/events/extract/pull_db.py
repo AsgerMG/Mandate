@@ -94,14 +94,23 @@ def remedy(local, incoming) -> str:
     rather than adapted.
 
     This text used to end "then push the result back:
-    ETL/events/extract/push_local.py", and that instruction has never worked.
-    push_local uploads `local`, not `incoming`; and whichever of the two it
-    uploaded, it cannot be reached at all while this store is ahead — without
-    --skip-pull it runs this script first and stops on the refusal you are
-    reading, and with --skip-pull it refuses the upload for having skipped the
-    pull. There is no path through it that carries a laptop-only row up. A
-    refusal that names a fix which does not exist is worse than one that names
-    none: it is followed, it fails somewhere else, and the guard gets blamed.
+    ETL/events/extract/push_local.py", and for a long time that instruction did
+    not work. push_local uploads `local`, not `incoming`; and whichever of the
+    two it uploaded, it could not be reached at all while this store was ahead
+    — without --skip-pull it ran this script first and stopped on the refusal
+    you are reading, and with --skip-pull it refused the upload for having
+    skipped the pull. A refusal that names a fix which does not exist is worse
+    than one that names none: it is followed, it fails somewhere else, and the
+    guard gets blamed.
+
+    CLOSED 2026-08-12. push_local's --skip-pull refusal was a second, weaker
+    implementation of a rule `check_push_is_not_a_deletion` already enforces
+    exactly, by downloading the record and comparing it at the moment of the
+    upload — which a question about whether a pull happened recently cannot
+    match. So the promotion path is `--carry-forward` here, then the union,
+    then `push_local.py --skip-pull`, and this text says so. It still routes
+    through `local`, so the union has to be built INTO the store push_local
+    uploads; that is stated in the steps rather than left to be discovered.
     """
     return (
         f"  The fresh copy is at {incoming} — nothing has been overwritten.\n"
@@ -113,14 +122,20 @@ def remedy(local, incoming) -> str:
         "                      Nothing is lost locally. The corpus of record is\n"
         "                      still missing them, so this stays DIVERGED.\n"
         "    --discard-local   delete them, knowingly\n\n"
-        "  Build the union, for promotion:\n"
-        "    python3 ETL/events/load/reconcile_stores.py \\\n"
-        f"        --into {incoming} --from {local} --family instruments\n\n"
-        "  PROMOTING it to the record is not automated. push_local.py cannot do\n"
-        "  it: without --skip-pull it runs this script and stops here, and with\n"
-        "  --skip-pull it refuses the upload. Until that is closed the upload is\n"
-        "  a deliberate manual step — and the rows are safe meanwhile, because\n"
-        "  corpus-ledger/ holds a committed third copy of the authored corpus:\n"
+        "  PROMOTE them to the record, in this order:\n"
+        "    1. --carry-forward here, so the fresh copy keeps them\n"
+        "    2. build the union INTO the store push_local uploads:\n"
+        "       python3 ETL/events/load/reconcile_stores.py \\\n"
+        f"           --into {local} --from {incoming} --family instruments\n"
+        "    3. python3 ETL/events/extract/push_local.py --skip-pull\n\n"
+        "  Step 3 is guarded where it matters: check_push_is_not_a_deletion\n"
+        "  downloads the record and compares it AT the upload, so a store that\n"
+        "  is behind still cannot overwrite one that is ahead.\n\n"
+        "  The direction in step 2 is not interchangeable. The record can hold\n"
+        "  rows this laptop has never seen — on 2026-08-12 it held two nobody\n"
+        "  else did — and the union has to end up in the file that gets\n"
+        "  uploaded. Meanwhile the rows are safe either way: corpus-ledger/\n"
+        "  holds a committed third copy of the authored corpus:\n"
         "    python3 ETL/events/load/instrument_ledger.py verify")
 
 

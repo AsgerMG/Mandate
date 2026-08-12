@@ -157,8 +157,21 @@ export async function retrieveDemands(
       // return fewer gates than asked for.
       `SELECT instrument_id, chunk_text FROM (
          SELECT instrument_id, chunk_text,
+                -- Tied on chunk_text, for the same reason semantic.ts ties on
+                -- instrument_id: SQL promises no order for rows the ORDER BY
+                -- cannot separate, and this one FEEDS A CUTOFF. Two gate
+                -- clauses at the same distance decide between themselves which
+                -- lands inside the per-instrument limit and which falls out, so
+                -- an untied ranking hands the model a different requirement to
+                -- read on two runs of unchanged code. The embedding is the
+                -- wrong tiebreak (equal distance does not mean equal vector)
+                -- and this table has no id column, so the text itself is the
+                -- total one: two rows with identical text are interchangeable
+                -- by definition, which is exactly when an arbitrary choice
+                -- stops mattering.
                 ROW_NUMBER() OVER (
-                  PARTITION BY instrument_id ORDER BY embedding <=> $1::vector) AS rn
+                  PARTITION BY instrument_id
+                      ORDER BY embedding <=> $1::vector, chunk_text) AS rn
            FROM eligibility_embeddings
           WHERE instrument_id = ANY($2)
             AND source_type = 'gate'

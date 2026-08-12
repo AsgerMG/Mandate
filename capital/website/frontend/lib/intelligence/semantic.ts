@@ -344,10 +344,25 @@ export async function semanticFundMatch(
       // top 40, so Clean Aviation went to an AI lab and a freight platform,
       // and the Innovative Health Initiative to a govtech company. Ranking all
       // 322 is a single scan of a tiny table and costs nothing measurable.
+      // ── THE TIEBREAK IS NOT COSMETIC ─────────────────────────────────────
+      // This ordered by distance alone until 2026-08-12. SQL does not promise
+      // an order for rows a query cannot distinguish, so two funds at the same
+      // distance came back in whichever order the scan produced — and not
+      // necessarily the same one twice. That would be harmless if the distance
+      // were used as a number, and it is not: the block below deliberately
+      // normalises by RANK, so a tie broken differently is a different rank, a
+      // different fit score, and eventually a different fund in the founder's
+      // five. Two runs of unmodified code differed, which is why no figure
+      // from a single live run could be quoted.
+      //
+      // `instrument_id` is arbitrary as a rule and that is fine; the property
+      // is STABILITY, not meaning. What matters is that it is total — ids are
+      // unique in this table, so no pair of rows can remain unordered, and a
+      // fund added next week is covered without anyone revisiting this.
       const res = await client.query(
         `SELECT instrument_id, 1 - (embedding <=> $1::vector) AS similarity
            FROM instrument_profiles
-          ORDER BY embedding <=> $1::vector`,
+          ORDER BY embedding <=> $1::vector, instrument_id`,
         [literal],
       );
       const rows = res.rows as { instrument_id: string; similarity: string | number }[];
