@@ -252,7 +252,14 @@ const STAGES: Stage[] = [
 /** THE PROPERTY. A funnel is nested: a stage may not revive a founder an
  *  earlier stage lost. Stated over an arbitrary stage list rather than over the
  *  stages that happen to exist today, so a stage added, removed or re-ordered
- *  is checked with no edit here. */
+ *  is checked with no edit here.
+ *
+ *  Distinct from `check_contracts`'s funnel check, which proves the CAPS narrow
+ *  strictly (VERDICT_POOL > WRITER_CANDIDATE_CAP >= institutionsMax). That is a
+ *  statement about the levers; this is a statement about the founders who pass
+ *  through them, and a correct set of caps can still be traversed by a stage
+ *  list that measures them out of order. Neither subsumes the other and there
+ *  should not be a third. */
 function assertNested(t: Trace, verdicts: (boolean | null)[]): void {
   let dead = false;
   for (let i = 0; i < verdicts.length; i++) {
