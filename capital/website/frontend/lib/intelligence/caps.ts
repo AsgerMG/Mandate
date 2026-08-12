@@ -205,7 +205,36 @@ export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
  *  said deeper was worse by 2.2 points on n=45 — inside the binomial noise, and
  *  measured while 51 of 133 menu rows carried no readable sentence saying what
  *  the fund pays for. A default moved on that evidence would be a default moved
- *  on nothing. */
+ *  on nothing.
+ *
+ *  ── WHERE THE 18 CAME FROM, WHICH IS NOT A RECALL OR COST NUMBER (wsGD) ───
+ *  It has never been sized for the job it does today. `89ece816` (2026-07-26,
+ *  "Brief shape: up to 5 institutions, never fewer than 2") widened it 14 -> 18
+ *  and gave the whole reason in its own message:
+ *
+ *      "Three successive filters thin the pool before the writer sees it -
+ *       off-theme large-scale channels, duplicate institution names,
+ *       conclusively blocked funds - so the candidate pool now runs wider
+ *       (14 -> 18) and the writer is shown 9."
+ *
+ *  So 18 is a BACKFILL BUFFER: the writer's cap plus enough headroom that three
+ *  named filters could not shrink the table below it. All three are now gone
+ *  from the stretch it was buffering:
+ *
+ *    off-theme large-scale channels  SEL-LARGE-SCALE fires in
+ *      `selectInstrumentRows`, upstream of the table, so it cannot thin the
+ *      pool after the cut.
+ *    duplicate institution names     DEMOTES since wsGB (`nameCollision.ts`,
+ *      SEL-DUPE-NAME `demote-not-delete`) and measured at 4 rows across 22
+ *      markets — it costs the pool a place, not a row.
+ *    conclusively blocked funds      `accessiblePool` runs BEFORE the cut since
+ *      the pool cut was moved (see pipeline.ts's "The cut comes AFTER the drop"
+ *      and `accessiblePool`'s own docstring), so it cannot thin it either.
+ *
+ *  What the buffer was for is therefore ~2 rows of name-collapse demotion, and
+ *  the constant reserves ten. Since wsGB removed the band sort it is ALSO the
+ *  menu the ranker reads, and nobody has ever chosen a number for that. Read
+ *  the guard below for what it can and cannot buy in that second role. */
 export const VERDICT_POOL = depthLever("BRIEF_VERDICT_POOL", 18);
 
 /** How deep into the ranked pool the SELECTOR reads. See `agentSelect.ts`'s
@@ -336,4 +365,31 @@ if (VERDICT_POOL <= WRITER_CANDIDATE_CAP) {
     `BRIEF_VERDICT_POOL is ${VERDICT_POOL} and WRITER_CANDIDATE_CAP is ${WRITER_CANDIDATE_CAP}. ` +
     `The pool is what the writer's candidates are drawn from, and it is spent further by the ` +
     `blocked drop and the display-name dedupe before the cut, so it must be strictly wider.`);
+}
+
+// ── THE OTHER END OF THE POOL LEVER, WHICH IS SILENT (wsGD) ───────────────
+// A pool WIDER than `SELECT_DEPTH` buys nothing that a founder can read, and
+// nothing in the code says so. `agentSelectRows` cuts the menu to
+// `rows.slice(0, Math.min(SELECT_DEPTH, rows.length))`, so a row past that
+// depth is never shown to the model; and the permutation it returns is
+// `[...chosen, ...everything else in the shipped order]`, so an unshown row can
+// only sit behind all `SELECT_COUNT` picks — at publish rank SELECT_COUNT+1 or
+// worse, which is past `BRIEF_LIMITS.institutionsMax`. It cannot publish.
+//
+// That makes `BRIEF_VERDICT_POOL=60` against `AGENT_SELECT_DEPTH=40` a sweep
+// that reports 60 in its levers line and measures 40 — the precise failure
+// `depthLever` was written to prevent, arriving through a PAIR of levers rather
+// than through one bad string, so neither validator can see it.
+//
+// A WARNING AND NOT A THROW. The excess is inert, not wrong: it costs a little
+// assessment work and changes no output, and a hard failure would break every
+// harness that legitimately sweeps one lever without the other. What is not
+// acceptable is that it be silent.
+if (VERDICT_POOL > SELECT_DEPTH) {
+  console.warn(
+    `[caps] BRIEF_VERDICT_POOL is ${VERDICT_POOL} but AGENT_SELECT_DEPTH is ${SELECT_DEPTH}. ` +
+    `The selector's menu is cut to the depth, and a row it was never shown can only rank ` +
+    `behind every row it chose — past the published cap. The effective pool is ` +
+    `${SELECT_DEPTH}; the extra ${VERDICT_POOL - SELECT_DEPTH} row(s) cannot reach a founder. ` +
+    `Move AGENT_SELECT_DEPTH with it, or set it to "all".`);
 }

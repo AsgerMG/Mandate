@@ -1,0 +1,597 @@
+{
+ "corpus": {
+  "source": "postgres",
+  "degraded": false,
+  "instruments": 1088,
+  "hydratedAt": "2026-08-12T20:32:29.378Z",
+  "observedAt": "2026-08-12T20:32:29.379Z"
+ },
+ "n": 8,
+ "split": "holdout",
+ "limit": 8,
+ "rows": [
+  {
+   "company": "+ATLANTIC ASSOCIACAO PARA UM LABORATORIO COLABORATIVO DO ATLANTICO",
+   "country": "DK",
+   "won": "innovationsfonden_other",
+   "inCorpus": true,
+   "offerable": true,
+   "rankHydrated": 2,
+   "rankAccessible": 2,
+   "rankOrdered": 2,
+   "nHydrated": 38,
+   "nAccessible": 30,
+   "nOrdered": 30,
+   "blockedBy": [],
+   "describedAt": {
+    "0": {
+     "rows": 30,
+     "described": 27
+    },
+    "6": {
+     "rows": 6,
+     "described": 3
+    },
+    "12": {
+     "rows": 12,
+     "described": 9
+    },
+    "18": {
+     "rows": 18,
+     "described": 15
+    },
+    "25": {
+     "rows": 25,
+     "described": 22
+    },
+    "30": {
+     "rows": 30,
+     "described": 27
+    },
+    "40": {
+     "rows": 30,
+     "described": 27
+    },
+    "50": {
+     "rows": 30,
+     "described": 27
+    },
+    "60": {
+     "rows": 30,
+     "described": 27
+    },
+    "80": {
+     "rows": 30,
+     "described": 27
+    }
+   },
+   "promptChars": {
+    "0": 37644,
+    "6": 10729,
+    "12": 17635,
+    "18": 24711,
+    "25": 32354,
+    "30": 37644,
+    "40": 37644,
+    "50": 37644,
+    "60": 37644,
+    "80": 37644
+   }
+  },
+  {
+   "company": "120FT FACTORY AB",
+   "country": "SE",
+   "won": "vinnova_grant__avancerad_digitalisering_eb7eab",
+   "inCorpus": true,
+   "offerable": true,
+   "rankHydrated": 7,
+   "rankAccessible": 7,
+   "rankOrdered": 7,
+   "nHydrated": 88,
+   "nAccessible": 75,
+   "nOrdered": 75,
+   "blockedBy": [],
+   "describedAt": {
+    "0": {
+     "rows": 75,
+     "described": 73
+    },
+    "6": {
+     "rows": 6,
+     "described": 6
+    },
+    "12": {
+     "rows": 12,
+     "described": 12
+    },
+    "18": {
+     "rows": 18,
+     "described": 18
+    },
+    "25": {
+     "rows": 25,
+     "described": 25
+    },
+    "30": {
+     "rows": 30,
+     "described": 30
+    },
+    "40": {
+     "rows": 40,
+     "described": 39
+    },
+    "50": {
+     "rows": 50,
+     "described": 49
+    },
+    "60": {
+     "rows": 60,
+     "described": 58
+    },
+    "80": {
+     "rows": 75,
+     "described": 73
+    }
+   },
+   "promptChars": {
+    "0": 71640,
+    "6": 9164,
+    "12": 14057,
+    "18": 19669,
+    "25": 25402,
+    "30": 29283,
+    "40": 36360,
+    "50": 45103,
+    "60": 54357,
+    "80": 71640
+   }
+  },
+  {
+   "company": "1749 LTD",
+   "country": "GB",
+   "won": "innovate_uk",
+   "inCorpus": true,
+   "offerable": true,
+   "rankHydrated": 1,
+   "rankAccessible": null,
+   "rankOrdered": null,
+   "nHydrated": 19,
+   "nAccessible": 16,
+   "nOrdered": 16,
+   "blockedBy": [
+    {
+     "field": "ticketBand",
+     "requirement": "Projects of 6 to 18 months must have total eligible project costs between £100,000 and £500,000.",
+     "cited": true,
+     "verified": true
+    },
+    {
+     "field": "ticketBand",
+     "requirement": "Projects of 19 to 24 months must have total eligible project costs between £100,000 and £1 million.",
+     "cited": true,
+     "verified": true
+    }
+   ],
+   "describedAt": {
+    "0": {
+     "rows": 16,
+     "described": 15
+    },
+    "6": {
+     "rows": 6,
+     "described": 6
+    },
+    "12": {
+     "rows": 12,
+     "described": 12
+    },
+    "18": {
+     "rows": 16,
+     "described": 15
+    },
+    "25": {
+     "rows": 16,
+     "described": 15
+    },
+    "30": {
+     "rows": 16,
+     "described": 15
+    },
+    "40": {
+     "rows": 16,
+     "described": 15
+    },
+    "50": {
+     "rows": 16,
+     "described": 15
+    },
+    "60": {
+     "rows": 16,
+     "described": 15
+    },
+    "80": {
+     "rows": 16,
+     "described": 15
+    }
+   },
+   "promptChars": {
+    "0": 22555,
+    "6": 12677,
+    "12": 19024,
+    "18": 22555,
+    "25": 22555,
+    "30": 22555,
+    "40": 22555,
+    "50": 22555,
+    "60": 22555,
+    "80": 22555
+   }
+  },
+  {
+   "company": "17CICADA",
+   "country": "GB",
+   "won": "innovate_uk",
+   "inCorpus": true,
+   "offerable": true,
+   "rankHydrated": 4,
+   "rankAccessible": null,
+   "rankOrdered": null,
+   "nHydrated": 28,
+   "nAccessible": 23,
+   "nOrdered": 23,
+   "blockedBy": [
+    {
+     "field": "ticketBand",
+     "requirement": "Projects of 6 to 18 months must have total eligible project costs between £100,000 and £500,000.",
+     "cited": true,
+     "verified": true
+    },
+    {
+     "field": "ticketBand",
+     "requirement": "Projects of 19 to 24 months must have total eligible project costs between £100,000 and £1 million.",
+     "cited": true,
+     "verified": true
+    }
+   ],
+   "describedAt": {
+    "0": {
+     "rows": 23,
+     "described": 22
+    },
+    "6": {
+     "rows": 6,
+     "described": 6
+    },
+    "12": {
+     "rows": 12,
+     "described": 12
+    },
+    "18": {
+     "rows": 18,
+     "described": 18
+    },
+    "25": {
+     "rows": 23,
+     "described": 22
+    },
+    "30": {
+     "rows": 23,
+     "described": 22
+    },
+    "40": {
+     "rows": 23,
+     "described": 22
+    },
+    "50": {
+     "rows": 23,
+     "described": 22
+    },
+    "60": {
+     "rows": 23,
+     "described": 22
+    },
+    "80": {
+     "rows": 23,
+     "described": 22
+    }
+   },
+   "promptChars": {
+    "0": 30215,
+    "6": 12171,
+    "12": 19501,
+    "18": 26248,
+    "25": 30215,
+    "30": 30215,
+    "40": 30215,
+    "50": 30215,
+    "60": 30215,
+    "80": 30215
+   }
+  },
+  {
+   "company": "1A KONSULT AB",
+   "country": "SE",
+   "won": "vinnova_grant__sip_internet_of_things_sverige_7419c7",
+   "inCorpus": true,
+   "offerable": true,
+   "rankHydrated": 24,
+   "rankAccessible": 23,
+   "rankOrdered": 23,
+   "nHydrated": 81,
+   "nAccessible": 72,
+   "nOrdered": 72,
+   "blockedBy": [],
+   "describedAt": {
+    "0": {
+     "rows": 72,
+     "described": 69
+    },
+    "6": {
+     "rows": 6,
+     "described": 6
+    },
+    "12": {
+     "rows": 12,
+     "described": 12
+    },
+    "18": {
+     "rows": 18,
+     "described": 18
+    },
+    "25": {
+     "rows": 25,
+     "described": 25
+    },
+    "30": {
+     "rows": 30,
+     "described": 30
+    },
+    "40": {
+     "rows": 40,
+     "described": 40
+    },
+    "50": {
+     "rows": 50,
+     "described": 49
+    },
+    "60": {
+     "rows": 60,
+     "described": 58
+    },
+    "80": {
+     "rows": 72,
+     "described": 69
+    }
+   },
+   "promptChars": {
+    "0": 67353,
+    "6": 9706,
+    "12": 14504,
+    "18": 19320,
+    "25": 24570,
+    "30": 29132,
+    "40": 38771,
+    "50": 48024,
+    "60": 56188,
+    "80": 67353
+   }
+  },
+  {
+   "company": "1Health Gut Inn Balance APS",
+   "country": "DK",
+   "won": "innovationsfonden_innobooster__innobooster_dd6e0e",
+   "inCorpus": true,
+   "offerable": true,
+   "rankHydrated": 7,
+   "rankAccessible": 6,
+   "rankOrdered": 6,
+   "nHydrated": 40,
+   "nAccessible": 30,
+   "nOrdered": 30,
+   "blockedBy": [],
+   "describedAt": {
+    "0": {
+     "rows": 30,
+     "described": 26
+    },
+    "6": {
+     "rows": 6,
+     "described": 3
+    },
+    "12": {
+     "rows": 12,
+     "described": 9
+    },
+    "18": {
+     "rows": 18,
+     "described": 15
+    },
+    "25": {
+     "rows": 25,
+     "described": 22
+    },
+    "30": {
+     "rows": 30,
+     "described": 26
+    },
+    "40": {
+     "rows": 30,
+     "described": 26
+    },
+    "50": {
+     "rows": 30,
+     "described": 26
+    },
+    "60": {
+     "rows": 30,
+     "described": 26
+    },
+    "80": {
+     "rows": 30,
+     "described": 26
+    }
+   },
+   "promptChars": {
+    "0": 36331,
+    "6": 10281,
+    "12": 17204,
+    "18": 24185,
+    "25": 31914,
+    "30": 36331,
+    "40": 36331,
+    "50": 36331,
+    "60": 36331,
+    "80": 36331
+   }
+  },
+  {
+   "company": "1SPATIAL GROUP",
+   "country": "GB",
+   "won": "innovate_uk",
+   "inCorpus": true,
+   "offerable": true,
+   "rankHydrated": 1,
+   "rankAccessible": null,
+   "rankOrdered": null,
+   "nHydrated": 27,
+   "nAccessible": 22,
+   "nOrdered": 22,
+   "blockedBy": [
+    {
+     "field": "ticketBand",
+     "requirement": "Projects of 6 to 18 months must have total eligible project costs between £100,000 and £500,000.",
+     "cited": true,
+     "verified": true
+    },
+    {
+     "field": "ticketBand",
+     "requirement": "Projects of 19 to 24 months must have total eligible project costs between £100,000 and £1 million.",
+     "cited": true,
+     "verified": true
+    }
+   ],
+   "describedAt": {
+    "0": {
+     "rows": 22,
+     "described": 21
+    },
+    "6": {
+     "rows": 6,
+     "described": 6
+    },
+    "12": {
+     "rows": 12,
+     "described": 12
+    },
+    "18": {
+     "rows": 18,
+     "described": 18
+    },
+    "25": {
+     "rows": 22,
+     "described": 21
+    },
+    "30": {
+     "rows": 22,
+     "described": 21
+    },
+    "40": {
+     "rows": 22,
+     "described": 21
+    },
+    "50": {
+     "rows": 22,
+     "described": 21
+    },
+    "60": {
+     "rows": 22,
+     "described": 21
+    },
+    "80": {
+     "rows": 22,
+     "described": 21
+    }
+   },
+   "promptChars": {
+    "0": 28121,
+    "6": 11736,
+    "12": 17901,
+    "18": 24461,
+    "25": 28121,
+    "30": 28121,
+    "40": 28121,
+    "50": 28121,
+    "60": 28121,
+    "80": 28121
+   }
+  },
+  {
+   "company": "1TO1DESIGN S.R.O.",
+   "country": "CZ",
+   "won": "tacr_fw",
+   "inCorpus": true,
+   "offerable": true,
+   "rankHydrated": 2,
+   "rankAccessible": 2,
+   "rankOrdered": 2,
+   "nHydrated": 72,
+   "nAccessible": 68,
+   "nOrdered": 68,
+   "blockedBy": [],
+   "describedAt": {
+    "0": {
+     "rows": 68,
+     "described": 56
+    },
+    "6": {
+     "rows": 6,
+     "described": 5
+    },
+    "12": {
+     "rows": 12,
+     "described": 9
+    },
+    "18": {
+     "rows": 18,
+     "described": 15
+    },
+    "25": {
+     "rows": 25,
+     "described": 18
+    },
+    "30": {
+     "rows": 30,
+     "described": 23
+    },
+    "40": {
+     "rows": 40,
+     "described": 30
+    },
+    "50": {
+     "rows": 50,
+     "described": 39
+    },
+    "60": {
+     "rows": 60,
+     "described": 48
+    },
+    "80": {
+     "rows": 68,
+     "described": 56
+    }
+   },
+   "promptChars": {
+    "0": 72802,
+    "6": 9679,
+    "12": 15323,
+    "18": 22097,
+    "25": 26529,
+    "30": 32048,
+    "40": 41214,
+    "50": 52910,
+    "60": 64438,
+    "80": 72802
+   }
+  }
+ ]
+}

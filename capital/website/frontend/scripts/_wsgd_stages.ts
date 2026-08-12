@@ -93,6 +93,9 @@ interface PerFounder {
   nOrdered: number;
   /** Only when `accessiblePool` deleted the won fund: what said so. */
   blockedBy: { field: string; requirement: string; cited: boolean; verified: boolean }[];
+  /** Fields whose answer, removed ON ITS OWN, un-blocks the won fund. A field
+   *  here is the whole of the reason that answer was deleted. */
+  unblockedBy: string[];
   /** Rows carrying a readable `funds:` line, cumulative at each K. */
   describedAt: Record<string, { rows: number; described: number }>;
   /** The prompt production would build at each K, in characters. */
@@ -179,11 +182,27 @@ async function main() {
     // the verdict drop: that is the population whose answer OUR OWN ENCODING
     // deleted, and the blockers are the encoding that did it.
     let blockedBy: PerFounder["blockedBy"] = [];
+    const unblockedBy: string[] = [];
     if (rankHydrated != null && rankAccessible == null) {
       const a = assessAll([t.instrument], f.eligibility as never).get(t.instrument);
       blockedBy = (a?.blockers ?? []).map((b) => ({
         field: b.field, requirement: b.requirement, cited: b.cited, verified: b.verified,
       }));
+      // ── Which ANSWER is doing the deleting, not which requirement ─────────
+      // A blocker names a fund's rule; what we control is the intake field the
+      // rule reads. Removing one field's answer at a time and re-assessing says
+      // whether that single answer is the whole of the reason a fund the company
+      // WON was called conclusively ineligible. It matters here because several
+      // of these answers are DERIVED by the harness rather than stated by a
+      // founder (`ticketBand` from a median award under a different scheme,
+      // `region` from a different scheme's beneficiary region), so a field that
+      // alone deletes the answer may be measuring our guess and not our gates.
+      for (const field of new Set(blockedBy.map((b) => b.field))) {
+        const { [field]: _removed, ...rest } = f.eligibility as Record<string, unknown>;
+        if (assessAll([t.instrument], rest as never).get(t.instrument)?.status !== "blocked") {
+          unblockedBy.push(field);
+        }
+      }
     }
 
     const ids = ordered.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
@@ -216,7 +235,7 @@ async function main() {
       inCorpus: inCorpus.has(t.instrument), offerable: offerable.has(t.instrument),
       rankHydrated, rankAccessible, rankOrdered: rankIn(ordered),
       nHydrated: hydrated.length, nAccessible: accessible.length, nOrdered: ordered.length,
-      blockedBy, describedAt, promptChars,
+      blockedBy, unblockedBy, describedAt, promptChars,
     });
     if (out.length % 10 === 0) console.log(`  ${out.length}/${graded.length}`);
   }
@@ -286,23 +305,34 @@ async function main() {
     + `selected, which \`accessiblePool\` then removed because our own encoded filters say the `
     + `founder conclusively fails them. No depth reaches these: the row is gone before any K `
     + `is applied. Grouped by the field whose filter fired.\n`);
-  const byField = new Map<string, { n: number; cited: number; verified: number; sample: string }>();
+  const byField = new Map<string, {
+    n: number; cited: number; verified: number; sole: number; sample: string;
+  }>();
   for (const r of dropped) {
     const fields = new Set(r.blockedBy.map((b) => b.field));
     for (const b of r.blockedBy) {
       if (!fields.has(b.field)) continue;
       fields.delete(b.field);
-      const cur = byField.get(b.field) ?? { n: 0, cited: 0, verified: 0, sample: b.requirement };
+      const cur = byField.get(b.field)
+        ?? { n: 0, cited: 0, verified: 0, sole: 0, sample: b.requirement };
       cur.n += 1;
       cur.cited += b.cited ? 1 : 0;
       cur.verified += b.verified ? 1 : 0;
+      cur.sole += r.unblockedBy.includes(b.field) ? 1 : 0;
       byField.set(b.field, cur);
     }
   }
-  lines.push(`| intake field | founders whose answer it deleted | cited | verified | a requirement it fired on |`);
-  lines.push(`|---|---:|---:|---:|---|`);
+  lines.push(`\`sole\` counts the founders for whom removing THAT ONE ANSWER un-blocks the fund: `
+    + `the field is then the whole of the reason the answer was deleted. Several of these answers `
+    + `are DERIVED by the replay rather than stated by a founder — \`ticketBand\` from the median `
+    + `award under a different notified scheme, \`region\` from a different scheme's beneficiary `
+    + `region — so a high \`sole\` count on a derived field is a claim about our guess before it `
+    + `is a claim about our gates.\n`);
+  lines.push(`| intake field | founders whose answer it deleted | sole | cited | verified | a requirement it fired on |`);
+  lines.push(`|---|---:|---:|---:|---:|---|`);
   for (const [field, v] of [...byField.entries()].sort((a, b) => b[1].n - a[1].n)) {
-    lines.push(`| \`${field}\` | ${v.n} | ${v.cited} | ${v.verified} | ${v.sample.replace(/\|/g, "/").slice(0, 110)} |`);
+    lines.push(`| \`${field}\` | ${v.n} | ${v.sole} | ${v.cited} | ${v.verified} | `
+      + `${v.sample.replace(/\|/g, "/").slice(0, 110)} |`);
   }
   lines.push("");
 
