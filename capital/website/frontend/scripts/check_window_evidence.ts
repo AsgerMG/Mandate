@@ -51,7 +51,9 @@ requireCredentials("check_window_evidence", ["DATABASE_URL"]);
 import {
   hydrateDbInstruments, loadDbInstruments, publishableInstruments, requireLiveCorpus,
 } from "../lib/intelligence/corpus";
-import { SOURCE_WINDOW_POLICY } from "../lib/intelligence/liveness";
+import {
+  type LivenessFacts, opennessEvidence, windowAbsenceIsTheRegisters,
+} from "../lib/intelligence/liveness";
 
 /** The PUBLISHABLE population as measured against live Postgres.
  *
@@ -98,9 +100,30 @@ async function main() {
   const problems: string[] = [];
 
   // ── 1. the ratchet ───────────────────────────────────────────────────────
+  // ── THE RATCHET COUNTS WHAT THE POLICY WITHHOLDS, 2026-08-13 (wsGN) ──────
+  //
+  // ██ It counted `sourceWindowPolicy === publishesWindow && !schemeEndDate`,
+  // which is a HAND COPY of the production rule and a strictly narrower one. ██
+  //
+  // `unconfirmedOpen` withholds a row when `opennessEvidence` says
+  // `no_deadline_recorded` and the register does not account for the absence —
+  // and `windowAbsenceIsTheRegisters` accounts for it under exactly TWO
+  // policies. Its own docstring says the rest out loud: "a window-publishing
+  // register, OR NO RECORDED ANSWER AT ALL, leaves the absence unexplained".
+  //
+  // The copy tested only the first of those two. So every publishable row with
+  // NO source_window_policy recorded — withheld from every degraded request, and
+  // the exact population a new feed lands — was invisible to the ratchet. A
+  // source could start shipping them by the hundred and `unverified.length`
+  // would not move, which is the failure line 29 of this file promises to catch
+  // on the day it lands.
+  //
+  // Through the product's own two functions now, not a third statement of them.
+  // The file already had `liveness.ts` open for the constant.
   const unverified = pub.filter((i) => {
-    const r = i as unknown as { sourceWindowPolicy?: string | null; schemeEndDate?: string | null };
-    return r.sourceWindowPolicy === SOURCE_WINDOW_POLICY.publishesWindow && !r.schemeEndDate;
+    const r = i as unknown as LivenessFacts;
+    return opennessEvidence(r) === "no_deadline_recorded"
+      && !windowAbsenceIsTheRegisters(r.sourceWindowPolicy);
   });
   const byCountry = new Map<string, number>();
   for (const i of unverified) byCountry.set(i.country, (byCountry.get(i.country) ?? 0) + 1);

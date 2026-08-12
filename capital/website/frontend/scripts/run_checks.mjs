@@ -50,6 +50,7 @@ const CHECKS = [
   // claim: that one counts a rule enforced when a literal names it, this one
   // asks whether the check deciding it is reachable from a request at all.
   ["a rule's check can actually run", ["npx", "tsx", "scripts/check_check_reachability.ts"]],
+  ["a guard reads the thing it protects", ["npx", "tsx", "scripts/check_guard_subject.ts"]],
   // Hermetic and sub-second: an ALL-CAPS name in code font in
   // lib/intelligence/*.md must exist somewhere in the tree.
   ["identifiers named in the docs exist", ["npx", "tsx", "scripts/check_doc_identifiers.ts"]],

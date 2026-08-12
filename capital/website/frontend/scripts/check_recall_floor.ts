@@ -536,7 +536,64 @@ const tape = startTape();
  *  blocks are left as they were written — they are a record of what was
  *  believed at the time, and rewriting them would erase the mistake rather
  *  than name it. */
-const FLOOR = { pool: 93, exact5: 15, regime5: 58 };
+/*  ── `accessible` IS NOW FLOORED, 2026-08-13 (wsGN) ───────────────────────
+ *
+ *  ██ THE CORRECTNESS CLAIM MOVES OFF `pool` AND ONTO `accessible`. NOTHING IS
+ *  LOWERED, AND NO EXISTING NUMBER MOVES. ██
+ *
+ *  The block above named the defect and left the fix to "the next
+ *  re-derivation", with an instruction: floor it against `accessible` rather
+ *  than moving `pool`, because the two are different claims and both are worth
+ *  watching. That is what this is. It also says the floor waits for three seeds,
+ *  and the reason it waited is worth recording: THE THREE SEEDS COULD NOT BE
+ *  PRODUCED. `measure_recall.ts` is the harness that varies SEED and it does not
+ *  compute `accessible`; this file computes `accessible` and pinned its seed. The
+ *  convention's own precondition was unreachable, so `SEED=` was made an override
+ *  here (it forfeits the right to publish a verdict) and the three seeds were run.
+ *
+ *  Same corpus, same commit, tune split, N=300, live Postgres, 1,088 hydrated
+ *  rows / 771 offerable, `__recallSetDescribed.json`:
+ *
+ *                     PINNED (20260806)   seed 7   seed 99    LOWEST
+ *      pool                  98              98       97        97
+ *      accessible            90              91       90        90
+ *      EXACT@5               25              22       22        22
+ *      REGIME@5              68              62       63        62
+ *
+ *  ██ `accessible` is the most stable number this file has ever measured: 90 /
+ *  91 / 90, a one-point spread against pool's own two. ██ That is not luck. The
+ *  eight points between pool and accessible are the eligibility gates, and the
+ *  gates are a property of the CORPUS rather than of the draw, so they do not
+ *  move when the sample does.
+ *
+ *  ── THE MARGIN, BY THE CONVENTION THIS FILE HAS ALWAYS USED ──────────────
+ *  Both constraints are required and the BINDING one is the lower.
+ *
+ *  accessible 85   5 under pinned (90) = 85; 3 under the lowest seed (90) = 87.
+ *                  The convention requires BOTH, so the binding one is 85. Set
+ *                  by the same arithmetic that set `pool 93` in the block above,
+ *                  applied to a metric measured on the same three seeds.
+ *
+ *  ── WHAT THIS RESTATES, and it is a restatement rather than a regression ──
+ *  `pool` keeps its number (93) and LOSES ITS SENTENCE. Every derivation above
+ *  justifies it as "the one correctness floor — a fund the writer never sees
+ *  cannot be advised on", and that sentence was never true of it: it counts the
+ *  candidate table, which `accessiblePool` then filters, and the writer reads
+ *  the list after the filter. The sentence now sits on the metric that means it.
+ *
+ *  What `pool` floors, stated honestly, is RETRIEVAL: did the ranker reach the
+ *  won fund at all, before eligibility got a vote. That is a real thing to
+ *  guard and it is why the floor is kept rather than deleted — a retrieval
+ *  collapse and a gate collapse are different failures with different fixes,
+ *  and a single number cannot tell them apart. They are now two.
+ *
+ *  ── WHAT IS STILL NOT FLOORED, AND IS THE NEXT ONE ───────────────────────
+ *  This run's own intake tally prints, in its own block: `organisationType`
+ *  answered for 146/300 founders while NEXT_PUBLIC_ORGANISATION_TYPE_ARM is
+ *  OFF, worth a measured 4.0 points of accessible-pool recall. So 90 is a
+ *  figure for a founder production does not construct. The floor at 85 has room
+ *  for that correction; the NUMBER should not be quoted without the sentence. */
+const FLOOR = { pool: 93, accessible: 85, exact5: 15, regime5: 58 };
 
 /*  ── THE `exact5` ZERO-MARGIN FLAG, ANSWERED FROM THE VERDICT TABLE ───────
  *
@@ -1028,6 +1085,7 @@ async function main() {
 
   const got = {
     pool: (100 * pool) / set.length,
+    accessible: (100 * accessible) / set.length,
     exact5: (100 * exact5) / set.length,
     regime5: (100 * regime5) / set.length,
   };
@@ -1049,14 +1107,15 @@ async function main() {
     // table before today was measured on a different key, and a reader
     // comparing rows has no other way to find that out.
     if (k === "regime5") console.log(`         ^ ${REGIME_AT_5_NOT_COMPARABLE}`);
+    // The two are printed adjacently and the gap between them named, because
+    // that gap IS the eligibility layer and reading either number alone is how
+    // this file came to justify a retrieval floor with a delivery sentence.
+    if (k === "accessible") {
+      console.log(`         ^ what the writer is shown. The ` +
+        `${(got.pool - got.accessible).toFixed(0)} points between pool and this are ` +
+        `the eligibility gates.`);
+    }
   }
-  // ACCESSIBLE immediately under POOL, because the gap between them is the
-  // single largest loss in the funnel and it was invisible while only the top
-  // line was printed. Unfloored — see the block at `let accessible`.
-  console.log(`         accessible ${((100 * accessible) / set.length).toFixed(0)}% ` +
-              "(no floor — reported; `pool` counts the candidate table, this " +
-              "counts what survives accessiblePool, which is the list the " +
-              "ranker and the writer are actually shown)");
   // EXACT@6 immediately under EXACT@5, unfloored and labelled as such, so the
   // sixth slot's worth is on the same screen as the metric it is not.
   console.log(`         exact6   ${((100 * exact6) / set.length).toFixed(0)}% ` +
@@ -1101,7 +1160,8 @@ async function main() {
     accessible: Number(((100 * accessible) / set.length).toFixed(1)),
     exact6: Number(((100 * exact6) / set.length).toFixed(1)),
     regime5: Number(got.regime5.toFixed(1)),
-    floorPool: FLOOR.pool, floorExact5: FLOOR.exact5, floorRegime5: FLOOR.regime5,
+    floorPool: FLOOR.pool, floorAccessible: FLOOR.accessible,
+    floorExact5: FLOOR.exact5, floorRegime5: FLOOR.regime5,
   };
   for (const d of [true, false]) {
     const m = byDesc.get(d);
@@ -1117,7 +1177,7 @@ async function main() {
   await publishVerdict(GUARD, {
     status: anyFailed ? "failed" : "ok",
     summary: `pool ${got.pool.toFixed(0)}% (floor ${FLOOR.pool}), ` +
-             `accessible ${((100 * accessible) / set.length).toFixed(0)}% (no floor), ` +
+             `accessible ${got.accessible.toFixed(0)}% (floor ${FLOOR.accessible}), ` +
              `EXACT@5 ${got.exact5.toFixed(0)}% (floor ${FLOOR.exact5}), ` +
              `REGIME@5 ${got.regime5.toFixed(0)}% (floor ${FLOOR.regime5}) ` +
              `over ${set.length} tune pairs` +
