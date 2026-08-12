@@ -19,12 +19,12 @@ exactly `BRIEF_VERDICT_POOL`, because `agentSelectRows` cuts the menu to
 |---:|---:|---:|---:|---:|---:|---:|
 | 6 | 6.0 | 20.2% | 156 | — | — | — |
 | **18 (ships)** | 17.9 | **36.7%** | 284 | EUR 0.0626 | — | ~EUR 0.29 |
-| 25 | 24.5 | 45.9% | 355 (+71) | EUR 0.0673 | +0.0047 | ~EUR 0.295 |
-| 30 | 28.8 | 50.5% | 390 (+106) | EUR 0.0703 | +0.0077 | ~EUR 0.298 |
-| **40** | 37.4 | **57.6%** | 445 (+161) | EUR 0.0764 | **+0.0138** | ~EUR 0.304 |
-| 50 | 45.8 | 60.0% | 464 (+180) | EUR 0.0824 | +0.0198 | ~EUR 0.310 |
-| 60 | 54.0 | 62.6% | 484 (+200) | EUR 0.0882 | +0.0256 | ~EUR 0.316 |
-| whole pool (81.5) | 81.5 | **78.3%** | 605 (+321) | EUR 0.1076 | +0.0450 | ~EUR 0.335 |
+| 25 | 24.5 | 45.9% | 355 (+71) | EUR 0.0670 | +0.0044 | ~EUR 0.294 |
+| 30 | 28.8 | 50.5% | 390 (+106) | EUR 0.0699 | +0.0073 | ~EUR 0.297 |
+| **40** | 37.4 | **57.6%** | 445 (+161) | EUR 0.0757 | **+0.0131** | ~EUR 0.303 |
+| 50 | 45.8 | 60.0% | 464 (+180) | EUR 0.0813 | +0.0187 | ~EUR 0.309 |
+| 60 | 54.0 | 62.6% | 484 (+200) | EUR 0.0868 | +0.0242 | ~EUR 0.314 |
+| whole pool (81.5) | 81.5 | **78.3%** | 605 (+321) | EUR 0.1053 | +0.0427 | ~EUR 0.333 |
 
 **Twenty-one points of ceiling cost one and a third euro-cents.** Cost is not
 the constraint on this decision and it is not close.
@@ -32,12 +32,13 @@ the constraint on this decision and it is not close.
 How the euros are derived, so the arithmetic can be checked rather than
 believed:
 
-- A menu row is **271 input tokens**, measured across K = 6 → the whole pool on
-  production's own prompt builder: 974 chars per row at the 3.6 chars/token
-  ratio `_wsei_depth.ts` already uses. (It was ~170 when wsEI measured it; the
-  rows got longer because wsDW's legibility repair landed.)
+- A menu row is **257 input tokens**, measured across K = 6 → the whole pool on
+  production's own prompt builder over 820 founders: 10,748 chars at six rows
+  and 71,356 at the whole pool (mean 71.6), so 924 chars a row at the 3.6
+  chars/token ratio `_wsei_depth.ts` already uses. (It was ~170 when wsEI
+  measured it; the rows got longer because wsDW's legibility repair landed.)
 - Sonnet 5 input is $2/M and `USD_TO_EUR` is 0.92 (`cost.ts`), so a row is
-  EUR 0.0005.
+  EUR 0.00047.
 - 62 of wsGA's 148 calls fired the retrieval round, which re-sends the whole
   prompt, so the menu is billed **1.42x** on average.
 - The writer is unaffected. `WRITER_CANDIDATE_CAP` is 8 whatever the pool is, so
@@ -368,7 +369,7 @@ accessible pool is 19,821 input tokens (71.6 rows, measured) at $1/M, so
 **EUR 0.083**.
 
 Compare that with simply setting `BRIEF_VERDICT_POOL=all AGENT_SELECT_DEPTH=all`
-and letting Sonnet read the whole pool once: **EUR 0.108**, ceiling 74.8%, and
+and letting Sonnet read the whole pool once: **EUR 0.105**, ceiling 74.8%, and
 it REMOVES a stage rather than adding one. The two-stage design saves
 EUR 0.025, cannot exceed the same 74.8% ceiling, and buys that saving by
 inserting a second model that can throw the answer away — a new instance of the
@@ -377,7 +378,7 @@ completely unmeasured.
 
 So two-stage is not the cheaper route to the same place; it is a slightly
 cheaper route to a strictly worse structure. **If the depth arm says the model
-holds up at 40, the next question is `all` at EUR 0.108, not a second model at
+holds up at 40, the next question is `all` at EUR 0.105, not a second model at
 EUR 0.083.** And if the depth arm says the model degrades with length, that is
 the same finding that would sink the Haiku pass, so the depth arm is the
 cheaper experiment either way — and it should be run first.
