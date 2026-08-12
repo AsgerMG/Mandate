@@ -91,7 +91,7 @@ import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCan
 import { registerNamesTheRow } from "../lib/intelligence/nameEvidence";
 import { isWithheldByPolicy } from "../lib/intelligence/offerableAxes";
 import { hasOfferRoute } from "../lib/intelligence/offerRoute";
-import { poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
+import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
 import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
@@ -627,6 +627,7 @@ async function main() {
   }
 
   // ── THE DISAGREEMENTS ─────────────────────────────────────────────────────
+  const floor = await lastRecallFloor();
   p("## Where this disagrees with an existing published figure");
   p();
   p("| published figure | its population | this run's row | this run |");
@@ -642,9 +643,25 @@ async function main() {
     const a = at(id)?.remaining, b = at(givenId)?.remaining;
     return a == null || !b ? "?" : `${((100 * a) / b).toFixed(1)}%`;
   };
-  p(`| \`check_recall_floor\` pool 98% | 300 TUNE pairs, answer already offerable | `
-    + `\`founder_screen\` given \`liveness_confirmed\` | ${cond("founder_screen", "liveness_confirmed")} |`);
-  p(`| \`poolRecallCurve\` inPoolAtAll ${(100 * 0.7754).toFixed(1)}% | ${poolRecallN()} held-out, `
+  if (floor) {
+    p(`| \`check_recall_floor\` pool **${floor.pool.toFixed(1)}%** | ${floor.n} ${floor.split} pairs `
+      + `of ${floor.set}, answer already offerable, published ${floor.takenAt.slice(0, 10)} | `
+      + `\`founder_screen\` given \`liveness_confirmed\` | ${cond("founder_screen", "liveness_confirmed")} |`);
+    p(`| \`check_recall_floor\` EXACT@5 **${floor.exact5.toFixed(1)}%** | same, and on the INSTANT `
+      + `SCREEN's six rows, not the memo's | \`top_five\` given \`liveness_confirmed\` | `
+      + `${cond("top_five", "liveness_confirmed")} |`);
+  } else {
+    p("| `check_recall_floor` pool | ██ THE GUARD FEED WAS UNREACHABLE ██ — no figure is "
+      + "quoted rather than a remembered one | `founder_screen` given `liveness_confirmed` | "
+      + `${cond("founder_screen", "liveness_confirmed")} |`);
+  }
+  // The curve's whole-pool figure, read from the curve rather than copied out
+  // of it. `check_pool_recall_curve` establishes that the terminal K IS the
+  // whole-pool figure: the curve is flat from K=150 because 150 rows is already
+  // every row every founder has. A literal 77.5 here would be a fifth number
+  // with no producer, which is the disease.
+  const curveWholePool = poolRecallAt(Math.max(...POOL_RECALL_KS)) ?? 0;
+  p(`| \`poolRecallCurve\` inPoolAtAll ${(100 * curveWholePool).toFixed(1)}% | ${poolRecallN()} held-out, `
     + `answer already offerable | \`gates_pass\` given \`liveness_confirmed\` | `
     + `${cond("gates_pass", "liveness_confirmed")} |`);
   p(`| \`poolRecallCurve\` at K=${VERDICT_POOL} `
@@ -710,6 +727,48 @@ const MECHANISM: Record<string, string> = {
   top_five: "the first five rows, our own scoring",
   model: "`agentSelectMemoPool` → Anthropic",
 };
+
+/** ── THE RECALL FLOOR'S OWN LAST PUBLISHED FIGURES ─────────────────────────
+ *
+ *  Read from the guard verdict feed, which is the channel `check_verdicts.ts`
+ *  already uses and the only one a reader without credentials has. Quoting the
+ *  floor's numbers from memory here would create the fifth incomparable number
+ *  in the very report written to stop the first four.
+ *
+ *  Returns undefined on any failure, and the table then says the feed was
+ *  unreachable rather than printing a remembered figure. This is a comparison,
+ *  not a gate: a blip must not fail a measurement run, and `check_verdicts` is
+ *  where an unreachable feed is correctly fatal. */
+async function lastRecallFloor(): Promise<{
+  pool: number; exact5: number; n: number; set: string; split: string; takenAt: string;
+} | undefined> {
+  interface Row { takenAt?: string; metrics?: Record<string, unknown> }
+  try {
+    const reg = JSON.parse(readFileSync(
+      path.join(process.cwd(), "..", "..", "data", "guard_registry.json"), "utf8"),
+    ) as { feed?: { url?: string } };
+    const url = process.env.GUARD_FEED_URL || reg.feed?.url;
+    if (!url) return undefined;
+    const res = await fetch(url, { headers: { accept: "application/json" } });
+    if (!res.ok) return undefined;
+    const feed = (await res.json()) as { guards?: Record<string, Row[]> };
+    const rows = (feed.guards?.recall_floor ?? [])
+      .filter((r) => typeof r.metrics?.pool === "number")
+      .sort((a, b) => (b.takenAt ?? "").localeCompare(a.takenAt ?? ""));
+    const r = rows[0];
+    if (!r) return undefined;
+    const m = r.metrics as Record<string, number | string>;
+    return {
+      pool: Number(m.pool), exact5: Number(m.exact5), n: Number(m.n),
+      set: String(m.set ?? "an unrecorded set"),
+      // The floor is pinned to the tune split in its own source and does not
+      // publish it as a metric. Named here rather than left implicit, because
+      // WHICH SPLIT a figure came from is half of what this report is about.
+      split: "tune",
+      takenAt: r.takenAt ?? "an unrecorded time",
+    };
+  } catch { return undefined; }
+}
 
 /** ── THE LAST PAID RUN'S RATE, RE-DERIVED FROM ITS TAPE ────────────────────
  *
