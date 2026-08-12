@@ -88,6 +88,26 @@ export function accessMode(inst: DbInstrument): AccessMode {
  * offered it. It now means the non-dilutive routes; equity is opt-in, because
  * a founder who has not raised before does not know that leaving a field blank
  * is what put a cap-table investor in front of them.
+ *
+ * ── WHAT THIS COSTS, RE-MEASURED, BECAUSE IT WAS BEING BLAMED FOR THE LOT ──
+ * A prior measurement attributed almost the whole founder-screen loss to
+ * `SEL-CAPITAL`, "mostly tax credits". On the corpus of 2026-08-13, replayed
+ * over 820 held-out described founders (scripts/_wsge_attribution.ts), the
+ * founder screen loses 23 and the split is:
+ *
+ *     14  SEL-CHANNEL-CAP           the channel pool was already at its cap of
+ *                                   7 — chips_ju_kdt x4, edf x4, euspa x2,
+ *                                   europes_rail x2, eurohpc, clean_aviation
+ *      6  SEL-CHANNEL-NOT-SELECTED  a large-ticket channel the founder's ask
+ *                                   does not open — eib_venture x4,
+ *                                   innovation_fund x2
+ *      3  SEL-CAPITAL               this filter
+ *
+ * All three are `equity` — tesi_equity twice, eit_rawmaterials_portfolio once —
+ * and in every case the founder did not ask for equity. That is this guard
+ * doing exactly what it is written to do, and NOT ONE is a tax credit. The
+ * founder screen's real cost is the channel cap, which is a different file and
+ * a different question.
  */
 export function passesCapitalPreference(
   inst: DbInstrument,
