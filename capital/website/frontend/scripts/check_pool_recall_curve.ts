@@ -184,6 +184,33 @@ async function main() {
       bad.push(`${what} is ${k} rows and the curve stops at K=${deepest}. `
         + `poolRecallAt refuses to extrapolate, so the prompt would quote the `
         + `figure for ${deepest} rows while showing ${k}.`);
+      continue;
+    }
+    // ── "COVERS" MEANT "IS IN RANGE", AND THAT IS NOT COVERAGE (wsGM) ──────
+    // `poolRecallAt` is LINEAR BETWEEN MEASURED POINTS. So a seam at a depth
+    // this curve never measured quotes the model a base rate nobody produced —
+    // straight-line-guessed between two that were — while this check printed
+    // "covers the late seam (60)" underneath it. `POOL_RECALL_KS` holds 50 and
+    // 75 and nothing between them; a pool of 60 reads 77.7% because that is
+    // where the line happens to pass, and recall between two measured depths is
+    // not a line.
+    //
+    // That is the same defect as the corrected constant this whole module
+    // exists to replace, one level down: a number in the prompt with no
+    // measurement behind it. The fix for an uncovered depth is to MEASURE it —
+    // add it to `POOL_RECALL_KS` and re-run `_wsdr_curve.ts` — never to widen
+    // this test.
+    //
+    // The property, for any depth this or any future seam takes: the figure the
+    // prompt quotes must be a point on the curve, not a point on a chord of it.
+    if (!POOL_RECALL_KS.includes(k)) {
+      const below = [...POOL_RECALL_KS].filter((x) => x < k).pop();
+      const above = POOL_RECALL_KS.find((x) => x > k);
+      bad.push(`${what} is ${k} rows and the curve was never measured there — the nearest `
+        + `measured points are K=${below} and K=${above}. \`poolRecallAt\` interpolates `
+        + `LINEARLY between them, so the selector would be told a base rate nobody has `
+        + `measured, about the exact list it is being shown. Add ${k} to POOL_RECALL_KS `
+        + `and re-run scripts/_wsdr_curve.ts; do not relax this.`);
     }
   }
 

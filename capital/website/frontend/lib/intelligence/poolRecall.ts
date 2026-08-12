@@ -4,18 +4,20 @@
 // The selector's prompt told every model it ever called that the fund it is
 // looking for is "somewhere in this list about three quarters of the time".
 // That figure was measured on `computeVerdict`'s candidate list, median 105
-// rows. The list the selector is shown is `VERDICT_POOL` = 18, and wsDQ's free
-// screen of 45 real recall founders put the true figure there at 15/45 — about
-// one in three. The model was being told to reach down a list that usually does
-// not contain the answer, and it obeyed: mean deepest reach 13.6 of 17.
+// rows. The list the selector is shown is `VERDICT_POOL`, which was 18 when
+// wsDQ screened 45 real recall founders and put the true figure there at 15/45
+// — about one in three. The model was being told to reach down a list that
+// usually does not contain the answer, and it obeyed: mean deepest reach 13.6
+// of 17.
 //
 // ── Why a curve and not a corrected constant ──────────────────────────────
 // A second hand-typed percentage is the same defect with a better value. The
 // number is a FUNCTION OF THE LIST LENGTH, and the list length is exactly what
-// this workstream is changing: at the late seam the selector reads 18 rows, at
-// the early seam it reads `SELECT_DEPTH`. A constant would be wrong again the
-// moment either moves, and silently — nobody edits a sentence when they edit a
-// cap.
+// this workstream is changing: at the late seam the selector reads
+// `VERDICT_POOL` rows, at the early seam it reads `SELECT_DEPTH`. A constant
+// would be wrong again the moment either moves, and silently — nobody edits a
+// sentence when they edit a cap. (Which is why no number appears in this
+// paragraph: a value written here is the same defect wearing a comment.)
 //
 // So the whole curve is measured and committed by `scripts/_wsdr_curve.ts`, on
 // the HOLDOUT split (the prompt says "held-out companies", so it had better be

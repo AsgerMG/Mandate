@@ -132,17 +132,21 @@ if (requireCredentials("measure_funnel", ["DATABASE_URL", "VOYAGE_KEY"]) === "of
     + "run of 2026-08-12. Unset NO_PG and run against the live stores.");
 }
 
+import { meetsDataFloor } from "../lib/intelligence/accessMode";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
-import { VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
+import { parseDepth, SELECT_DEPTH, VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
 import {
   corpusProvenance, type DbInstrument, findPeersBySubsector, hydrateDbInstruments,
-  isGenericSubsector, loadDbInstruments, matchCompany, publishabilityContext,
-  publishabilityFailures, publishableInstruments,
+  isGenericSubsector, loadDbInstruments, matchCompany, publishableInstruments,
   requireLiveCorpus, resetGateHydration, suppressedForUnconfirmedLiveness,
 } from "../lib/intelligence/corpus";
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
+import { isClosed } from "../lib/intelligence/liveness";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
+import { registerNamesTheRow } from "../lib/intelligence/nameEvidence";
+import { isWithheldByPolicy } from "../lib/intelligence/offerableAxes";
+import { hasOfferRoute } from "../lib/intelligence/offerRoute";
 import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
 import {
   rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
@@ -195,6 +199,51 @@ const rowCutId = (n: number) => (n === PUBLISH_CAP ? "published" : `top_${n}`);
 const num = (v: string | undefined, d: number) =>
   (v !== undefined && v !== "" && Number.isFinite(Number(v)) ? Number(v) : d);
 
+/** ── THE DEPTHS THE LADDER IS EVALUATED AT ─────────────────────────────────
+ *
+ *  `POOL_SWEEP=18,25,40,60,all` runs the WHOLE funnel at each depth. Unset, the
+ *  list is `[VERDICT_POOL]` and the run does exactly what it did before.
+ *
+ *  ── WHY A SWEEP IS ONE RUN AND NOT FIVE ──────────────────────────────────
+ *  Everything above the cut — the intake, the Voyage embedding, the gate
+ *  hydration, `accessiblePool` — is independent of this number. Only
+ *  `accessible.slice(0, K)` and everything after it moves. So five depths are
+ *  five projections of ONE pool object per founder: the same founders, the same
+ *  embeddings, the same gates, one draw fingerprint. Five separate runs would be
+ *  five times the wall clock and five times the embedding spend, and would then
+ *  have to be compared UNPAIRED.
+ *
+ *  ── WHAT A FREE SWEEP CAN AND CANNOT SEE, SAID BEFORE THE NUMBERS ────────
+ *  For K' > K, `accessible.slice(0, K')` is a SUPERSET of `accessible.slice(0,
+ *  K)` WITH AN IDENTICAL PREFIX, and `orderMemoCandidates` no longer sorts. So
+ *  with no model in the loop there is exactly ONE mechanism by which a wider
+ *  pool can change the rows below it: `resolveNameCollisions` picks a label
+ *  class's survivor by `preferBetterEvidencedRow`, a total order INDEPENDENT OF
+ *  POSITION, so a better-evidenced sibling admitted at rank 30 can demote the
+ *  row that held that label at rank 3. That channel is counted directly below
+ *  rather than inferred from the won fund, because it is the entire
+ *  deterministic downside of widening and "the won fund did not move" is not the
+ *  same statement as "nothing moved".
+ *
+ *  The value of widening is realised at the stage this instrument may not buy.
+ *  What it CAN establish is the model's CEILING at each K — nobody outside
+ *  `pool_cut` is reachable by any ranker at any price — and the exact
+ *  deterministic cost of getting there.
+ *
+ *  The shipped default is always a member of the list, so the sweep's baseline
+ *  column IS the table above it, produced by the same code rather than by a
+ *  second definition of the same ladder. */
+const SWEEP_KS: number[] = (() => {
+  const raw = process.env.POOL_SWEEP;
+  const ks = (raw ?? "").split(",").map((s) => s.trim()).filter(Boolean)
+    .map((s) => parseDepth(s, `POOL_SWEEP element "${s}"`, { all: true }));
+  return [...new Set([VERDICT_POOL, ...ks])].sort((a, b) => a - b);
+})();
+
+/** A depth for a column heading. `Infinity` is the whole accessible pool, and
+ *  printing `Infinity` would be the one thing a reader cannot act on. */
+const kLabel = (k: number) => (Number.isFinite(k) ? String(k) : "all");
+
 /** ── ONE FOUNDER'S PASSAGE DOWN THE FUNNEL ─────────────────────────────────
  *
  *  Everything a stage can ask about a founder, computed once. A stage is a pure
@@ -222,24 +271,22 @@ interface Trace {
    *  `poolRecallCurve` measures. */
   rankAccessible: number | null;
   /** 1-based rank in `orderMemoCandidates().toWriter`, the <=8 candidates the
-   *  writer is shown. This is the head-to-head's `rankControl`. */
-  rankWriter: number | null;
-  /** ── THE SAME RANK, UNCAPPED (wsGI) ────────────────────────────────────
+   *  writer is shown, AT EACH SWEPT DEPTH. This is the head-to-head's
+   *  `rankControl`, and at `VERDICT_POOL` it is the shipped one.
    *
-   *  1-based rank in `orderMemoCandidates().ordered` -- the whole candidate
-   *  order, the array `toWriter` is the head of. `rankWriter` is DERIVED from
-   *  it, so the two cannot disagree, and there is still one call to
-   *  `orderMemoCandidates` per founder.
-   *
-   *  It exists because `rankWriter` alone cannot answer the question the cap
-   *  raises. A founder lost at the cap is lost somewhere in ranks 9..18 and
-   *  `null` says only "past 8", so the ladder can report the loss and not what
-   *  raising the cap would recover. That distinction is the whole of the cap
-   *  question, and it was unanswerable from this instrument's own record. */
-  rankOrdered: number | null;
+   *  The id list is carried beside the rank because the won fund not moving is
+   *  a weaker statement than nothing moving, and the only deterministic
+   *  mechanism a wider pool has (see `SWEEP_KS`) acts on rows this founder did
+   *  not win. */
+  writerAt: Map<number, { rank: number | null; ids: string[] }>;
   tableLen: number;
   accessibleLen: number;
 }
+
+/** The shipped seam's rank, so every reader of the default ladder asks for it
+ *  by meaning rather than by looking a depth up in a map. */
+const rankWriter = (t: Trace, pool: number): number | null =>
+  t.writerAt.get(pool)?.rank ?? null;
 
 /** ── A STAGE ───────────────────────────────────────────────────────────────
  *
@@ -261,8 +308,16 @@ interface Stage {
  *
  *  Derived from the code, not from a sketch. Every entry names the function
  *  that does the cut, because a stage whose mechanism cannot be pointed at is a
- *  story about the funnel rather than a measurement of it. */
-const STAGES: Stage[] = [
+ *  story about the funnel rather than a measurement of it.
+ *
+ *  ── IT IS A FUNCTION OF THE POOL DEPTH, AND THAT IS THE SWEEP ────────────
+ *  `pool` is the only thing in the funnel a sweep changes, so it is a PARAMETER
+ *  rather than a module constant read in six places. The report's own table is
+ *  `ladderAt(VERDICT_POOL)`; a swept column is the SAME function at another
+ *  depth. There is therefore no second definition of "the funnel" that could
+ *  drift from the first — which is the failure this whole instrument was built
+ *  to remove, arriving one level up. */
+function ladderAt(pool: number): Stage[] { return [
   {
     id: "answer_key",
     question: "the answer key names a fund this company actually won",
@@ -303,52 +358,30 @@ const STAGES: Stage[] = [
   },
   {
     id: "pool_cut",
-    question: `... and it survives the cut to VERDICT_POOL (${VERDICT_POOL} rows)`,
-    alive: (t) => t.rankAccessible != null && t.rankAccessible <= VERDICT_POOL,
+    question: `... and it survives the cut to VERDICT_POOL (${kLabel(pool)} rows)`,
+    alive: (t) => t.rankAccessible != null && t.rankAccessible <= pool,
   },
   {
     id: "writer_cap",
     question: `... and it survives the cut to the writer's candidates (${WRITER_CANDIDATE_CAP})`,
     // `orderMemoCandidates().toWriter`. Also applies the name-collision
     // DEMOTION, which can push a row over the cap without deleting it.
-    //
-    // ── READ THIS BEFORE BILLING ANYTHING TO THE CAP (wsGI) ────────────────
-    // This row is a real cut -- the rows past it never reach the writer -- but
-    // it is NOT what decides the published table, and the loss printed against
-    // it is not a loss the cap causes. `assembleBriefRows` publishes by
-    // CANDIDATE ORDER, so with nothing watch-only the founder reads ranks
-    // 1..PUBLISH_CAP whatever this constant is, and a fund at rank 9 is lost at
-    // the PUBLISHED cap two rows down however wide the writer's list gets.
-    //
-    // What the cap really governs is BACKFILL DEPTH: rank PUBLISH_CAP+k
-    // publishes only where k rows above it demoted as watch-only. So the
-    // reachable part of this loss is bounded by the watch-only budget printed
-    // below the table, and on the recorded distribution it is a fraction of a
-    // point. Whatever this row prints belongs to the ORDER -- the ranker, the
-    // pool and what reaches it -- not to a number in `caps.ts`. (Deliberately
-    // no figure here: it moves with the run, and the run prints it. A funnel
-    // loss quoted in a comment is the fifth incomparable number in the file
-    // written to stop the first four.)
-    alive: (t) => t.rankWriter != null,
+    alive: (t) => rankWriter(t, pool) != null,
   },
-  // ── A STAGE THAT NO LONGER EXISTS (wsGK, 2026-08-13) ────────────────────
-  // `watch_only` stood here, permanently UNMEASURED, and every row below it
-  // was therefore an upper bound. It was never unmeasurable in principle — it
-  // was unmeasurable for free, because it read prose only a paid memo call can
-  // produce, and it is the one stage between the writer cap and the published
-  // table that could lose a founder their fund.
-  //
-  // It is not a stage any more. `assembleBriefRows` publishes `rows.slice(0,
-  // cap)` and reads nothing from the reply to do it, so the writer's prose has
-  // no survivor set: `watchOnly` is now a count of published rows carrying a
-  // hedge, which is a copy-quality figure (FUND-4's) and not a funnel stage.
-  // A stage that removes nobody must not appear in a ladder, and an
-  // `alive: () => null` row that reports zero loss is worse than absent — it
-  // is a permanent asterisk on every figure beneath it for a mechanism that
-  // has stopped running.
-  //
-  // The consequence is the point: from here down the ladder is measured for
-  // free and end to end, with `model` the only estimated row left.
+  {
+    id: "watch_only",
+    question: "... and the writer's own prose does not demote it behind the actionable rows",
+    // `isWatchOnly(actionableNow, nextStep, whyEligible)` in `assembleBriefRows`
+    // reads text only the writer can produce. Measuring it means paying for a
+    // memo per founder, which is the one thing this instrument may not do.
+    alive: () => null,
+    unmeasured:
+      "WRT-WATCH-ONLY reads the writer's `nextStep` and `whyEligible` prose, so it "
+      + "cannot be evaluated without a paid memo per founder. It is a DEMOTION, not a "
+      + "deletion (`assembleBriefRows`: actionable rows first, the rest behind them in "
+      + "rank order), so it moves every row's position in BOTH directions and the rows "
+      + "below are neither an upper nor a lower bound — see the note under the table.",
+  },
   // ── THE ROW CUTS, GENERATED ────────────────────────────────────────────────
   // `published` keeps its name because the brief's own cap is what it is; the
   // rest are `top_<n>`. One `alive` body for all of them, so a cut cannot be
@@ -360,7 +393,7 @@ const STAGES: Stage[] = [
       : `... and it is in the first ${n} of them`,
     // Rank in `toWriter`. At n = TOP this is the head-to-head's
     // `rankControl <= 5`: our own scoring, no model.
-    alive: (t) => t.rankWriter != null && t.rankWriter <= n,
+    alive: (t) => { const r = rankWriter(t, pool); return r != null && r <= n; },
   })),
   {
     id: "model",
@@ -376,7 +409,7 @@ const STAGES: Stage[] = [
     // FOUNDERS THE THREE CUTS BELOW IT LOSE. Its effect is therefore only
     // observable at the end, which is where it is reported, and the rows
     // between `pool_cut` and here are the code's own order with no model in it.
-    question: `... and the MODEL, which re-orders the ${VERDICT_POOL} before the cuts below, `
+    question: `... and the MODEL, which re-orders the ${kLabel(pool)} before the cuts below, `
       + `still leaves it in the first ${TOP}`,
     alive: () => null,
     unmeasured:
@@ -385,7 +418,11 @@ const STAGES: Stage[] = [
       + "in a nested ladder; its effect is estimated below from the last paid head-to-head's "
       + "own tape, at the end where it becomes observable, and is never measured here.",
   },
-];
+]; }
+
+/** The shipped ladder. Everything the report prints outside the sweep section
+ *  is this one, so the default output is unchanged by the sweep existing. */
+const STAGES: Stage[] = ladderAt(VERDICT_POOL);
 
 /** THE PROPERTY. A funnel is nested: a stage may not revive a founder an
  *  earlier stage lost. Stated over an arbitrary stage list rather than over the
@@ -398,14 +435,14 @@ const STAGES: Stage[] = [
  *  through them, and a correct set of caps can still be traversed by a stage
  *  list that measures them out of order. Neither subsumes the other and there
  *  should not be a third. */
-function assertNested(t: Trace, verdicts: (boolean | null)[]): void {
+function assertNested(t: Trace, stages: Stage[], verdicts: (boolean | null)[]): void {
   let dead = false;
   for (let i = 0; i < verdicts.length; i++) {
     const v = verdicts[i];
     if (v === null) continue;
     if (dead && v === true) {
       throw new Error(
-        `measure_funnel: stage \`${STAGES[i].id}\` says the won fund is still present for `
+        `measure_funnel: stage \`${stages[i].id}\` says the won fund is still present for `
         + `${t.company}, but an earlier stage had already removed it. A funnel whose survivor `
         + `sets are not nested is not a funnel, and its per-stage losses do not add up to the `
         + `total. Fix the ladder, do not relax this.`);
@@ -414,21 +451,31 @@ function assertNested(t: Trace, verdicts: (boolean | null)[]): void {
   }
 }
 
-/** ── WHY A FUND IS NOT PUBLISHABLE ────────────────────────────────────────
+/** ── WHY A FUND IS NOT PUBLISHABLE, from the predicates themselves ─────────
  *
- *  Nothing is restated here. `publishabilityFailures` in `corpus.ts` IS the
- *  filter -- `publishableInstruments` keeps a row when it returns empty -- so
- *  this cannot drift from what actually dropped the row, and it cannot miss a
- *  clause the filter grows. That is not hypothetical: this file used to hold a
- *  copy, and the copy tested closure WITHOUT the successor-redirect exemption
- *  the filter applies, so a row dropped for any other reason that happened to
- *  be a closed scheme with a successor was reported as a closure. Every
- *  "the register says the window has shut" count published before 2026-08-13
- *  is an upper bound for that reason.
+ *  Each line CALLS the one definition rather than restating it, so a predicate
+ *  that changes meaning changes here too. What this cannot do is notice a
+ *  predicate being ADDED -- so it does not pretend to: a lost pair that none of
+ *  these explains is counted as `unattributed` and printed. That count going
+ *  above zero is the signal that `publishableInstruments` grew a clause this
+ *  list has not been told about, which is the only failure mode a reason list
+ *  has and the one it must not be silent about.
  *
- *  `unattributed` stays: it is now only reachable if the DEGRADATION clause,
- *  which is deliberately outside `publishabilityFailures`, drops a row this
- *  harness thought was undegraded -- still worth hearing about. */
+ *  Reasons OVERLAP by design. A row with no offer route and no data floor fails
+ *  both, and forcing a partition would require an order of precedence that the
+ *  filter itself does not have. */
+function whyNotPublishable(i: DbInstrument, hasChildren: ReadonlySet<string>): string[] {
+  const why: string[] = [];
+  if (i.isFramework) why.push("a framework record, not a fund");
+  if (hasChildren.has(i.id)) why.push("a parent with leaves — the leaves are offered instead");
+  if (!hasOfferRoute(i)) why.push("no application route on record");
+  if (!registerNamesTheRow(i)) why.push("nothing outside its own id names the row");
+  if (isWithheldByPolicy(i)) why.push("withheld by editorial policy");
+  if (isClosed(i)) why.push("the register says the window has shut");
+  if (!meetsDataFloor(i)) why.push("no amounts and no dates — below the data floor");
+  return why;
+}
+
 async function main() {
   const startedAt = new Date().toISOString();
   await hydrateDbInstruments();
@@ -457,7 +504,8 @@ async function main() {
   const corpus = loadDbInstruments();
   assertAncestorConvention(corpus);
   const byId = new Map(corpus.map((i) => [i.id, i]));
-  const pubCtx = publishabilityContext(corpus);
+  const hasChildren = new Set(
+    corpus.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
   const inCorpus = new Set(corpus.map((i) => i.id));
   const offerableRows = publishableInstruments();
   const offerable = new Set(offerableRows.map((i) => i.id));
@@ -545,15 +593,14 @@ async function main() {
     const wasDegraded = degraded.has(won);
     // Attribution for the corpus stage, computed only where something was lost.
     if (heldByCorpus && !isOfferable && !wasDegraded) {
-      const why = publishabilityFailures(byId.get(won) as DbInstrument, pubCtx);
+      const why = whyNotPublishable(byId.get(won) as DbInstrument, hasChildren);
       if (!why.length) unattributed++;
       for (const w of why) lostReasons.set(w, (lostReasons.get(w) ?? 0) + 1);
     }
 
     let rankTable: number | null = null;
     let rankAccessible: number | null = null;
-    let rankWriter: number | null = null;
-    let rankOrdered: number | null = null;
+    const writerAt = new Map<number, { rank: number | null; ids: string[] }>();
     let tableLen = 0;
     let accessibleLen = 0;
 
@@ -598,72 +645,52 @@ async function main() {
       // production's own cut. `orderMemoCandidates` no longer sorts -- it
       // carries the incoming order and applies the name-collision demotion and
       // the writer cap -- so this is the published ordering minus the model.
-      const poolCut = accessible.slice(0, VERDICT_POOL);
-      const poolIds = poolCut.map((r) => r.instrumentId)
-        .filter((id): id is string => Boolean(id));
-      // `ordered`, not `toWriter`: the cut is `.slice(0, WRITER_CANDIDATE_CAP)`
-      // of this array, so taking the head here and the rank below cannot
-      // disagree, and the ranks past the cap stay readable. Two calls to read
-      // one order would be two orders the first time either drifted.
-      const ordered = orderMemoCandidates({
-        instrumentTable: poolCut,
-        req: {
-          company: f.company, country: f.country, description: f.opts.description,
-          capitalSought: f.opts.capitalSought, eligibility: f.eligibility,
-          targetMarkets: undefined,
-        } as never,
-        records: [], dbPeers,
-        eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
-        log: new ExclusionLog(),
-      }).ordered.map((x) => x.row.instrumentId ?? x.row.channel);
-      const iO = ordered.indexOf(won);
-      rankOrdered = iO < 0 ? null : iO + 1;
-      rankWriter = rankOrdered != null && rankOrdered <= WRITER_CANDIDATE_CAP
-        ? rankOrdered : null;
+      //
+      // ── THE SWEEP, AND WHY IT IS THIS LINE AND NOTHING ABOVE IT ──────────
+      // `accessible` is the expensive object: one Voyage embedding and one gate
+      // hydration bought it. Every depth is a projection of it, so the loop is
+      // here rather than around the whole run, and the arms are paired to the
+      // founder by construction rather than by a matching seed.
+      for (const k of SWEEP_KS) {
+        const poolCut = accessible.slice(0, k);
+        const poolIds = poolCut.map((r) => r.instrumentId)
+          .filter((id): id is string => Boolean(id));
+        const toWriter = orderMemoCandidates({
+          instrumentTable: poolCut,
+          req: {
+            company: f.company, country: f.country, description: f.opts.description,
+            capitalSought: f.opts.capitalSought, eligibility: f.eligibility,
+            targetMarkets: undefined,
+          } as never,
+          records: [], dbPeers,
+          eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
+          log: new ExclusionLog(),
+        }).toWriter.map((x) => x.row.instrumentId ?? x.row.channel);
+        const iW = toWriter.indexOf(won);
+        writerAt.set(k, { rank: iW < 0 ? null : iW + 1, ids: toWriter });
+      }
     }
 
     const trace: Trace = {
       company: t.name, country: t.country, won,
       inCorpus: heldByCorpus, offerable: isOfferable, degraded: wasDegraded,
-      rankTable, rankAccessible, rankWriter, rankOrdered, tableLen, accessibleLen,
+      rankTable, rankAccessible, writerAt, tableLen, accessibleLen,
     };
-    assertNested(trace, STAGES.map((s) => s.alive(trace)));
+    // Every swept depth is checked, not just the shipped one. A sweep that
+    // reported a non-nested column would be reporting a funnel that is not a
+    // funnel, and the whole point of generating the columns from `ladderAt` is
+    // that the property travels with them.
+    for (const k of SWEEP_KS) {
+      const ladder = ladderAt(k);
+      assertNested(trace, ladder, ladder.map((s) => s.alive(trace)));
+    }
     traces.push(trace);
     if (traces.length % 50 === 0) console.log(`  ${traces.length}/${drawn.length}`);
   }
 
   // ── THE TABLE ─────────────────────────────────────────────────────────────
   const N = traces.length;
-  interface Row {
-    stage: Stage; remaining: number | null; share: number | null;
-    loss: number | null; lossShare: number | null;
-  }
-  const rows: Row[] = [];
-  let prev = N;
-  for (const s of STAGES) {
-    const verdicts = traces.map((t) => s.alive(t));
-    const anyMeasured = verdicts.some((v) => v !== null);
-    if (!anyMeasured) {
-      rows.push({ stage: s, remaining: null, share: null, loss: null, lossShare: null });
-      continue;
-    }
-    // A stage that is measured for SOME founders and not others would make
-    // `remaining` a count over two different denominators. Refuse rather than
-    // average: no stage in this ladder is partial today, and one that became
-    // partial would need its own denominator printed, not a silent blend.
-    if (verdicts.some((v) => v === null)) {
-      throw new Error(
-        `measure_funnel: stage \`${s.id}\` is measurable for some founders and not others. `
-        + "A count mixing the two is a ratio with two denominators, which is the whole "
-        + "class of defect this instrument exists to remove.");
-    }
-    const remaining = verdicts.filter(Boolean).length;
-    rows.push({
-      stage: s, remaining, share: (100 * remaining) / N,
-      loss: prev - remaining, lossShare: (100 * (prev - remaining)) / N,
-    });
-    prev = remaining;
-  }
+  const rows = funnelRows(STAGES, traces);
 
   const prov = corpusProvenance();
   const L: string[] = [];
@@ -706,7 +733,11 @@ async function main() {
   p(`                   cross-regime-only draw, which exists because a model reads`);
   p(`                   the query text and nothing here does.`);
   p(`levers             pool=${VERDICT_POOL} writer_cap=${WRITER_CANDIDATE_CAP} `
-    + `published_cap=${PUBLISH_CAP} top=${TOP}`);
+    + `published_cap=${PUBLISH_CAP} top=${TOP} select_depth=${kLabel(SELECT_DEPTH)}`);
+  if (SWEEP_KS.length > 1) {
+    p(`pool swept at      ${SWEEP_KS.map(kLabel).join(", ")} — the whole ladder at each, `
+      + `paired off one pool object`);
+  }
   p("```");
   p();
   for (const line of tally.lines(policy)) p(line.trim());
@@ -766,6 +797,10 @@ async function main() {
   // ── THE ESTIMATED STAGE, RE-DERIVED FROM THE PAID RUN'S OWN TAPE ──────────
   const est = estimateModelStage();
   const measuredTop = rows.find((r) => r.stage.id === rowCutId(TOP))!;
+
+  // ── THE SWEEP ─────────────────────────────────────────────────────────────
+  const sweep = SWEEP_KS.length > 1 ? sweepReport(traces, SWEEP_KS, est) : undefined;
+  if (sweep) { for (const line of sweep.lines) p(line); p(); }
   p("## The model stage — ESTIMATED, not measured");
   p();
   if (!est) {
@@ -812,125 +847,6 @@ async function main() {
     + "send them to the right funder) and it needs its own ladder, not a row in this one.");
   p();
 
-  // ── WHAT A WIDER WRITER CAP COULD BUY ─────────────────────────────────────
-  //
-  // The `writer_cap` row prints a loss and says nothing about whether the cap
-  // caused it. It did not: `assembleBriefRows` publishes by candidate order, so
-  // the cap's only reach into the published table is BACKFILL against the
-  // watch-only demotion. That makes the reachable part of its loss the product
-  // of two things this instrument can now both read for free -- the rank the
-  // won fund actually arrives at, and how often a row demotes.
-  //
-  // Printed as a table over depths rather than as a verdict on today's 8, so a
-  // reader can see the shape rather than take a sentence for it.
-  const budget = await watchOnlyBudget();
-  p(`## What a wider \`WRITER_CANDIDATE_CAP\` could buy`);
-  p();
-  p("A candidate at 1-based rank `r` in the candidate order publishes **iff**");
-  p("`r <= WRITER_CANDIDATE_CAP` **and** `r - w(r) <= " + PUBLISH_CAP + "`, where `w(r)` is the");
-  p("number of watch-only rows above it (`assembleBriefRows`, pinned by");
-  p("`briefRows.test.ts`). So rank " + (PUBLISH_CAP + 1) + "+k needs k rows to demote, and with nothing");
-  p("watch-only this constant changes NOTHING a founder reads, at any value.");
-  p();
-  if (budget) {
-    const share = (k: number) => {
-      let n = 0;
-      for (const [wo, c] of budget.byCount) if (wo >= k) n += c;
-      return n / budget.briefs;
-    };
-    p("```");
-    p(`watch-only budget  brief_records, ${budget.briefs} published brief(s), `
-      + `${budget.from} .. ${budget.to}`);
-    p(`                   production's own dropped_watch_only — real writer prose, no `
-      + `model call here`);
-    const keys = [...budget.byCount.keys()].sort((a, b) => a - b);
-    p(`                   ${keys.map((k) => `${k} -> ${budget.byCount.get(k)}`).join("   ")}`
-      + `   (mean ${budget.meanPerBrief.toFixed(2)} of ${budget.meanCandidates.toFixed(2)} candidates)`);
-    p("```");
-    p();
-    p("██ A DIFFERENT POPULATION from the ladder above, and it is not a row in it. These");
-    p("are the briefs this product has actually published, not these founders. It bounds");
-    p("the ladder's last rows; it may never be blended into them.");
-    p();
-    p(`| cap | ranks it admits | founders whose fund is there | needs w >= | P(w >=) here | reachable |`);
-    p("|---:|---|---:|---:|---:|---:|");
-    const atRank = (r: number) => traces.filter((t) => t.rankOrdered === r).length;
-    // The deepest rank any founder's fund actually reached, NOT `VERDICT_POOL`:
-    // that constant takes `all` (Infinity), and a loop bounded by a lever is a
-    // loop that hangs the day somebody sweeps it. This bound is a fact about
-    // the run and is finite by construction.
-    const deepest = Math.max(0, ...traces.map((t) => t.rankOrdered ?? 0));
-    for (let cap = WRITER_CANDIDATE_CAP + 1; cap <= deepest && cap <= 12; cap++) {
-      const k = cap - PUBLISH_CAP;
-      const n = atRank(cap);
-      const ps = share(k);
-      p(`| ${cap} | rank ${cap} | ${n} (${((100 * n) / N).toFixed(1)}%) | ${k} | `
-        + `${(100 * ps).toFixed(1)}% | ${((100 * n * ps) / N).toFixed(2)} pts |`);
-    }
-    // The total, because a reader deciding whether to spend a workstream here
-    // needs the sum and not a column to add up.
-    let total = 0;
-    for (let cap = WRITER_CANDIDATE_CAP + 1; cap <= deepest; cap++) {
-      total += (atRank(cap) * share(cap - PUBLISH_CAP)) / N;
-    }
-    const capRow = rows.find((r) => r.stage.id === "writer_cap");
-    p();
-    p(`**Raising the cap to the whole pool (deepest rank reached: ${deepest}) is worth `
-      + `${(100 * total).toFixed(2)} points**`
-      + (capRow?.remaining != null
-        ? `, against a +/-${halfWidth(capRow.remaining, N).toFixed(1)} half-width on this row.`
-        : "."));
-    p("The loss printed at `writer_cap` is the ORDER, not the cap: a fund at rank "
-      + (PUBLISH_CAP + 1) + "+ is cut");
-    p(`by the published cap of ${PUBLISH_CAP} however wide the writer's list is. It belongs to the`);
-    p("ranker and to what reaches it, and it will not be recovered by a constant.");
-    p();
-    // ── AND THE UNMEASURED STAGE, BOUNDED ────────────────────────────────────
-    // Not a survivor count -- it cannot be, on this population -- but the two
-    // directions are computable from the same distribution, and leaving the row
-    // blank invites the reading that the unknown is large. It is not.
-    const perRow = budget.meanPerBrief / budget.meanCandidates;
-    const pubRow = rows.find((r) => r.stage.id === "published");
-    const pub = pubRow?.remaining ?? 0;
-    const demotedMax = Math.round(pub * perRow);
-    // THE GAIN AT TODAY'S CAP, which is not `total`. `total` is what RAISING
-    // the cap would add -- ranks past it -- and using it here would credit the
-    // present funnel with founders the present funnel cannot reach. What the
-    // demotion buys today is the ranks between the published cap and the
-    // writer's, each needing its own number of demotions above it.
-    let promoted = 0;
-    for (let r = PUBLISH_CAP + 1; r <= WRITER_CANDIDATE_CAP; r++) {
-      promoted += atRank(r) * share(r - PUBLISH_CAP);
-    }
-    p("The same distribution bounds the UNMEASURED `watch_only` row in BOTH directions,");
-    p("which is what the row's own caveat cannot do — it names only the losing one.");
-    p();
-    p(`A row reads watch-only ${(100 * perRow).toFixed(1)}% of the time `
-      + `(${budget.meanPerBrief.toFixed(2)} of ${budget.meanCandidates.toFixed(2)} candidates). So:`);
-    p();
-    p(`- **it LOSES at most ${demotedMax} of the ${pub} founders at \`published\`** — that is every one`);
-    p("  whose own row reads watch-only, and it is an over-count, because a demoted row");
-    p("  still publishes wherever fewer actionable rows exist to fill the cap.");
-    p(`- **it GAINS about ${promoted.toFixed(1)}** — the founders whose fund sits at `
-      + (WRITER_CANDIDATE_CAP > PUBLISH_CAP + 1
-        ? `ranks ${PUBLISH_CAP + 1}-${WRITER_CANDIDATE_CAP}, inside the`
-        : `rank ${WRITER_CANDIDATE_CAP}, the one seat inside the`));
-    p("  writer's cap but past the published one, and is carried in by a demotion above");
-    p("  it. This is what today's headroom actually buys, and it is the whole of it.");
-    p();
-    p(`So \`published\`'s ${pub} is an upper bound by AT MOST ${demotedMax} founders `
-      + `(${((100 * demotedMax) / N).toFixed(1)} points), not by an`);
-    p("open-ended unknown, and the same holds for every row beneath it. Measuring it");
-    p("exactly still needs a paid memo per founder; bounding it did not.");
-    p();
-  } else {
-    p("██ THE WATCH-ONLY BUDGET WAS UNREADABLE. `brief_records` could not be reached, so");
-    p("this run cannot say what a wider cap would buy or bound the `watch_only` row. The");
-    p("figure is NOT remembered from a previous run: a rate quoted from a comment stops");
-    p("moving on the day the writer's behaviour does, which is the day it matters.");
-    p();
-  }
-
   // ── THE CORPUS LOSS, BY REASON ────────────────────────────────────────────
   p("## Why the corpus stage loses a fund");
   p();
@@ -945,9 +861,8 @@ async function main() {
   p("```");
   p();
   if (unattributed > 0) {
-    p("██ `publishableInstruments()` dropped a row `publishabilityFailures` says is publishable,");
-    p("so the DEGRADATION clause -- the only filter outside it -- took it while this harness");
-    p("read the row as undegraded. The stage COUNT above is still correct; the breakdown is short.");
+    p("██ `publishableInstruments()` has grown a clause `whyNotPublishable` has not been");
+    p("told about. The stage COUNT above is still correct; only this breakdown is short.");
     p();
   }
 
@@ -1053,6 +968,9 @@ async function main() {
     // differently, rather than plotting an N=30 smoke run beside a reference.
     sampled: n > 0, populationSize: population.length,
     levers: { VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP, rowCuts: ROW_CUTS },
+    // Null on a run with no sweep, never absent: a series where the field comes
+    // and goes cannot be asked "was this run swept" without inspecting prose.
+    poolSweep: sweep?.record ?? null,
     watchOnlyInProduction: wo ?? null,
     meanTableRows: Number(meanOf((t) => t.tableLen).toFixed(1)),
     meanAccessibleRows: Number(meanOf((t) => t.accessibleLen).toFixed(1)),
@@ -1071,6 +989,290 @@ async function main() {
   writeFileSync(path.join(dir, "latest.json"), body);
   writeRunHistory(dir, startedAt, body);
   console.log(`wrote ${path.join(dir, "latest.md")}`);
+}
+
+/** One column of the funnel: a stage list evaluated over one population.
+ *
+ *  Extracted so the sweep's columns and the report's own table come from ONE
+ *  counting rule. Two implementations of "how many founders survived stage s"
+ *  is exactly the shape of defect this file's header is about, and a sweep is a
+ *  standing invitation to write the second one. */
+interface FunnelRow {
+  stage: Stage; remaining: number | null; share: number | null;
+  loss: number | null; lossShare: number | null;
+}
+function funnelRows(stages: Stage[], traces: Trace[]): FunnelRow[] {
+  const N = traces.length;
+  const out: FunnelRow[] = [];
+  let prev = N;
+  for (const s of stages) {
+    const verdicts = traces.map((t) => s.alive(t));
+    const anyMeasured = verdicts.some((v) => v !== null);
+    if (!anyMeasured) {
+      out.push({ stage: s, remaining: null, share: null, loss: null, lossShare: null });
+      continue;
+    }
+    // A stage that is measured for SOME founders and not others would make
+    // `remaining` a count over two different denominators. Refuse rather than
+    // average: no stage in this ladder is partial today, and one that became
+    // partial would need its own denominator printed, not a silent blend.
+    if (verdicts.some((v) => v === null)) {
+      throw new Error(
+        `measure_funnel: stage \`${s.id}\` is measurable for some founders and not others. `
+        + "A count mixing the two is a ratio with two denominators, which is the whole "
+        + "class of defect this instrument exists to remove.");
+    }
+    const remaining = verdicts.filter(Boolean).length;
+    out.push({
+      stage: s, remaining, share: (100 * remaining) / N,
+      loss: prev - remaining, lossShare: (100 * (prev - remaining)) / N,
+    });
+    prev = remaining;
+  }
+  return out;
+}
+
+/** ── THE SWEEP SECTION ─────────────────────────────────────────────────────
+ *
+ *  The whole funnel at every depth, the two directions of every difference, and
+ *  the one deterministic mechanism by which a wider pool can hurt — counted
+ *  directly rather than inferred from the won fund.
+ *
+ *  Everything here is PAIRED to the founder: one pool object, five projections.
+ *  So a difference between two columns is a difference on the same 897 people
+ *  and needs no unpaired interval. `+/-` still appears on the LEVELS, because a
+ *  level is an estimate of a population rate and a paired delta is not. */
+function sweepReport(
+  traces: Trace[], ks: number[], est: ReturnType<typeof estimateModelStage>,
+): { lines: string[]; record: Record<string, unknown> } {
+  const N = traces.length;
+  const base = VERDICT_POOL;
+  const L: string[] = [];
+  const p = (s = "") => L.push(s);
+  const perK = new Map(ks.map((k) => [k, funnelRows(ladderAt(k), traces)]));
+  const at = (k: number, id: string) => perK.get(k)!.find((r) => r.stage.id === id);
+  const offerable = traces.filter((t) => t.offerable);
+
+  p("## The cut, swept — the whole funnel at every pool depth");
+  p();
+  p(`Paired. One pool object per founder, ${ks.length} projections of it, the same `
+    + "embeddings and");
+  p("the same gates behind every column. `pool_cut` is the row `BRIEF_VERDICT_POOL` moves;");
+  p("every row below it is what that costs.");
+  p();
+  p(`| stage | ${ks.map((k) => `K=${kLabel(k)}`).join(" | ")} |`);
+  p(`|---|${ks.map(() => "---:").join("|")}|`);
+  for (const s of ladderAt(base)) {
+    const cells = ks.map((k) => {
+      const r = at(k, s.id);
+      if (r?.remaining == null) return "—";
+      return `**${r.remaining}** ${r.share!.toFixed(1)}%`;
+    });
+    // A row identical in every column is a row the lever cannot reach, and
+    // saying so is more use than making the reader diff five numbers.
+    const flat = new Set(ks.map((k) => at(k, s.id)?.remaining ?? -1)).size === 1;
+    p(`| ${s.id}${flat ? "" : " ←"} | ${cells.join(" | ")} |`);
+  }
+  p();
+  p("`←` marks a row the lever moves. Every other row is identical at every depth, which is");
+  p("a measurement and not an assumption: the stages above the cut do not read this number,");
+  p("and the stages below it can only be reached through the one channel counted next.");
+  p();
+
+  // ── THE ONE DETERMINISTIC CHANNEL, BOTH DIRECTIONS ────────────────────────
+  p("### What a wider pool costs on the deterministic path");
+  p();
+  p("With no model in the loop a wider cut is a SUPERSET WITH AN IDENTICAL PREFIX, so the");
+  p("only way it can change the rows below `pool_cut` is `resolveNameCollisions`, whose");
+  p("survivor rule `preferBetterEvidencedRow` is a total order INDEPENDENT OF POSITION: a");
+  p("better-evidenced sibling admitted at rank 30 can demote the row that held that label at");
+  p("rank 3. Counted here on every founder, won fund or not, because \"the won fund did not");
+  p("move\" is a weaker statement than \"nothing moved\".");
+  p();
+  const cutIds = ["writer_cap", ...ROW_CUTS.map(rowCutId)];
+  p(`| K | founders whose \`toWriter\` differs from K=${kLabel(base)} | `
+    + `${cutIds.map((id) => `${id} entered / left`).join(" | ")} |`);
+  p(`|---|---:|${cutIds.map(() => "---:").join("|")}|`);
+  const churnByK: Record<string, number> = {};
+  const movesByK: Record<string, Record<string, { entered: number; left: number }>> = {};
+  for (const k of ks) {
+    const churn = offerable.filter((t) =>
+      (t.writerAt.get(k)?.ids ?? []).join(" ") !== (t.writerAt.get(base)?.ids ?? []).join(" "),
+    ).length;
+    churnByK[kLabel(k)] = churn;
+    const ladderK = ladderAt(k), ladderB = ladderAt(base);
+    const moves: Record<string, { entered: number; left: number }> = {};
+    const cells = cutIds.map((id) => {
+      const sK = ladderK.find((s) => s.id === id)!, sB = ladderB.find((s) => s.id === id)!;
+      const entered = traces.filter((t) => sK.alive(t) === true && sB.alive(t) !== true).length;
+      const left = traces.filter((t) => sK.alive(t) !== true && sB.alive(t) === true).length;
+      moves[id] = { entered, left };
+      return `+${entered} / -${left}`;
+    });
+    movesByK[kLabel(k)] = moves;
+    p(`| ${kLabel(k)} | ${churn} | ${cells.join(" | ")} |`);
+  }
+  p();
+  p("A net of zero over a churn of forty is a different fact from a net of zero over a churn");
+  p("of zero, so both are printed. `entered` and `left` are founders, counted separately.");
+  p();
+
+  // ── THE CEILING, WHICH IS THE WHOLE POINT ─────────────────────────────────
+  p("### The model's ceiling at each depth");
+  p();
+  p("`pool_cut` is the maximum ANY ranker can deliver at that depth, at any price: a founder");
+  p("whose won fund is outside the cut is unreachable by construction. The rows below it in");
+  p("the table above are our own deterministic order standing in for a ranker that is not in");
+  p("this run.");
+  p();
+  p("| K | mean rows the ranker is shown | the answer is on the list | vs the shipped default |");
+  p("|---|---:|---:|---:|");
+  const meanShown = (k: number) => offerable.length
+    ? offerable.reduce((a, t) => a + Math.min(k, t.accessibleLen), 0) / offerable.length : 0;
+  const baseShare = at(base, "pool_cut")!.share!;
+  for (const k of ks) {
+    const r = at(k, "pool_cut")!;
+    p(`| ${kLabel(k)}${k === base ? " (ships)" : ""} | ${meanShown(k).toFixed(1)} | `
+      + `**${r.share!.toFixed(1)}%** +/-${halfWidth(r.remaining!, N).toFixed(1)} | `
+      + `${k === base ? "—" : `${r.share! >= baseShare ? "+" : ""}${(r.share! - baseShare).toFixed(1)} pts`} |`);
+  }
+  p();
+
+  // ── WHAT THE FREE RUN CANNOT SEE, AS A FALSIFIABLE QUANTITY ───────────────
+  p("### The one thing only a paid run settles, stated as a number");
+  p();
+  const bands = bandConversions();
+  if (!est) {
+    p("██ No paid tape was found, so the break-even below cannot be computed and is not");
+    p("guessed at.");
+  } else {
+    const c18 = est.rankerRate;
+    p(`Let \`c_K\` be the model's EXACT@${TOP} rate among founders whose won fund is ON the `
+      + `menu it`);
+    p(`is shown. The tape measures \`c_${kLabel(base)}\` = **${(100 * c18).toFixed(1)}%** `
+      + `(${est.rankerHits}/${est.n}). Population EXACT@${TOP} is`);
+    p("`P(won inside K) x c_K`, so break-even at K needs `c_K = c_base x P_base / P_K`.");
+    p();
+    p(`| K | \`c_K\` break-even needs | relative collapse from ${(100 * c18).toFixed(1)}% `
+      + "| head degradation tolerable if the new band converts at 30% |");
+    p("|---|---:|---:|---:|");
+    const breakEven: Record<string, { requiredCk: number; relativeCollapse: number }> = {};
+    for (const k of ks) {
+      if (k === base) { p(`| ${kLabel(k)} (ships) | — | — | — |`); continue; }
+      const pB = baseShare / 100, pK = at(k, "pool_cut")!.share! / 100;
+      const req = c18 * (pB / pK);
+      const collapse = 1 - pB / pK;
+      // If the head keeps its accuracy, widening cannot lose for ANY conversion
+      // b >= 0 on the new band. So the tolerance is stated the other way round:
+      // how far the head may fall before a new band converting at b stops
+      // paying for it. b = 30% is below every band the tape measured at ranks
+      // 13-18, which is the nearest evidence there is.
+      const b = 0.30;
+      const tol = (pK - pB) * b / (pB * c18);
+      breakEven[kLabel(k)] = { requiredCk: req, relativeCollapse: collapse };
+      p(`| ${kLabel(k)} | ${(100 * req).toFixed(1)}% | ${(100 * collapse).toFixed(1)}% | `
+        + `${(100 * Math.min(tol, 1)).toFixed(0)}%${tol > 1 ? " (any)" : ""} |`);
+    }
+    p();
+    p("**Read the second column as the whole risk.** Hold the head's accuracy fixed and a");
+    p("wider menu cannot lose at any conversion rate `b >= 0` on the newly-visible band — it");
+    p("only ever adds founders who were unreachable. The entire case against widening is that");
+    p("a longer menu makes the model WORSE ON THE ROWS IT WAS ALREADY SHOWN, and no free run");
+    p("can measure that, because it is the model.");
+    p();
+  }
+  if (bands?.length) {
+    p("The nearest free evidence about the newly-visible band, re-derived from the same tape's");
+    p("per-founder rows rather than from its prose — the model's conversion by where the won");
+    p(`fund sat in the ${kLabel(base)}-row menu it was actually shown:`);
+    p();
+    p("| the won fund's rank in the menu | founders | control EXACT@5 | ranker EXACT@5 |");
+    p("|---|---:|---:|---:|");
+    for (const b of bands) {
+      p(`| ${b.label} | ${b.n} | ${b.control} (${(100 * b.control / b.n).toFixed(0)}%) | `
+        + `${b.ranker} (${(100 * b.ranker / b.n).toFixed(0)}%) |`);
+    }
+    p();
+    p("██ There is no row here for ranks past the end of that menu, because that band was");
+    p("never shown to a model. Its conversion rate is the one quantity this whole question");
+    p("turns on and it does not exist yet at any depth.");
+    p();
+  }
+
+  // ── THE OTHER LEVER, WHICH IS NOT A PREFERENCE ────────────────────────────
+  p("### The depth the selector can actually read");
+  p();
+  p(`\`AGENT_SELECT_DEPTH\` is ${kLabel(SELECT_DEPTH)}. \`agentSelectRows\` cuts the menu to `
+    + "it and returns");
+  p("`[...chosen, ...everything else in the shipped order]`, so a pool row past that depth is");
+  p("never shown and can only land behind all `SELECT_COUNT` picks — past the published cap.");
+  p("A pool wider than the depth therefore measures the depth while printing its own number.");
+  p("Every column above is honest about the CUT; only the columns at or below the depth are");
+  p("honest about what a founder could receive.");
+  p();
+
+  return {
+    lines: L,
+    record: {
+      ks: ks.map(kLabel), base: kLabel(base),
+      meanShown: Object.fromEntries(ks.map((k) => [kLabel(k), Number(meanShown(k).toFixed(1))])),
+      stages: Object.fromEntries(ks.map((k) => [kLabel(k), Object.fromEntries(
+        perK.get(k)!.map((r) => [r.stage.id, r.remaining]))])),
+      toWriterChurn: churnByK,
+      moves: movesByK,
+      selectDepth: kLabel(SELECT_DEPTH),
+      bands: bands ?? null,
+    },
+  };
+}
+
+/** ── THE PAID TAPE'S CONVERSION BY MENU RANK, RE-DERIVED ───────────────────
+ *
+ *  The tape carries `poolRankControl` — where the won fund sat in the menu the
+ *  model was shown — and the published ids of both arms, so the per-band
+ *  conversion is a free re-derivation rather than a figure copied out of a
+ *  report. Bands are generated from the menu length rather than written out, so
+ *  a tape taken at another depth bands itself.
+ *
+ *  Returns undefined if no tape carries the rank, and the report then says the
+ *  band table is unavailable rather than showing a remembered one. */
+function bandConversions(): { label: string; n: number; control: number; ranker: number }[] | undefined {
+  const dir = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "headtohead_wsGA");
+  interface TapeRow {
+    called?: boolean; reachable?: boolean; poolRankControl?: number | null;
+    publishedControl?: string[]; publishedRanker?: string[]; won?: string; menu?: number;
+  }
+  interface Tape { arm?: string; rows?: TapeRow[]; startedAt?: string }
+  let best: Tape | undefined;
+  try {
+    for (const f of readdirSync(dir).filter((x) => x.endsWith(".json"))) {
+      let tape: Tape;
+      try { tape = JSON.parse(readFileSync(path.join(dir, f), "utf8")) as Tape; } catch { continue; }
+      if (!tape.arm || ["off", "reverse", "dry"].includes(tape.arm)) continue;
+      if (!tape.rows?.length) continue;
+      if (!best || (tape.startedAt ?? "") > (best.startedAt ?? "")) best = tape;
+    }
+  } catch { return undefined; }
+  const graded = (best?.rows ?? []).filter((r) =>
+    r.called && r.reachable && typeof r.poolRankControl === "number");
+  if (!graded.length) return undefined;
+  const menu = Math.max(...graded.map((r) => r.menu ?? 0), 0)
+    || Math.max(...graded.map((r) => r.poolRankControl ?? 0));
+  const width = 3;
+  const out: { label: string; n: number; control: number; ranker: number }[] = [];
+  const hit = (ids: string[] | undefined, won: string | undefined) =>
+    Boolean(won && (ids ?? []).slice(0, TOP).includes(won));
+  for (let lo = 1; lo <= menu; lo += width) {
+    const hi = Math.min(lo + width - 1, menu);
+    const inBand = graded.filter((r) => (r.poolRankControl ?? 0) >= lo && (r.poolRankControl ?? 0) <= hi);
+    if (!inBand.length) continue;
+    out.push({
+      label: `${lo}-${hi}`, n: inBand.length,
+      control: inBand.filter((r) => hit(r.publishedControl, r.won)).length,
+      ranker: inBand.filter((r) => hit(r.publishedRanker, r.won)).length,
+    });
+  }
+  return out;
 }
 
 /** ── THE HISTORY, AND THE ONE RULE IT HAS ──────────────────────────────────
@@ -1118,11 +1320,8 @@ const MECHANISM: Record<string, string> = {
   founder_screen: "`buildInstrumentTableHydrated` = `candidateInstrumentIds`",
   gates_pass: "`accessiblePool` → `VER-BLOCKED`",
   pool_cut: "`.slice(0, VERDICT_POOL)`",
-  // NOT a cut that decides publication. `assembleBriefRows` publishes the head
-  // of this list by rank alone, so a founder counted lost here is lost to the
-  // ORDER, not to the number -- measured at 0.12 points if the cap were removed
-  // entirely. The watch-only demotion that used to backfill past it is gone.
-  writer_cap: "`.slice(0, WRITER_CANDIDATE_CAP)` — bounds the order, not the table",
+  writer_cap: "`orderMemoCandidates().toWriter`",
+  watch_only: "`isWatchOnly` in `assembleBriefRows` — needs the writer",
   model: "`agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the "
     + `${VERDICT_POOL}, applied above the two cuts below it`,
   // The row cuts are generated from ROW_CUTS, so their mechanisms are too: a
@@ -1175,76 +1374,6 @@ async function watchOnlyRate(): Promise<{
       };
     } finally { await client.end(); }
   } catch { return undefined; }
-}
-
-/** ── TWO READS OF ONE TABLE, AND THEY SHOULD BE ONE ────────────────────────
- *  `watchOnlyRate` above and `watchOnlyBudget` below both query `brief_records`
- *  for the same column, arrived at independently by two workstreams on the same
- *  night. Both are CALLED and they answer different questions -- the rate bounds
- *  the ladder's note, the distribution decides whether WRITER_CANDIDATE_CAP is a
- *  lever -- so neither is dead. They are nonetheless two implementations of one
- *  measurement, which is the shape this repo has been bitten by repeatedly, and
- *  the next person in this file should fold the rate into the budget rather than
- *  add a third.
- */
-/** ── THE WATCH-ONLY BUDGET, FROM PRODUCTION'S OWN BRIEFS (wsGI) ────────────
- *
- *  `WRT-WATCH-ONLY` reads prose only the writer can produce, so this instrument
- *  cannot evaluate it per founder without paying for a memo each. It does not
- *  follow that the stage is unknowable: `recordBrief` has written
- *  `dropped_watch_only` on every brief this product has ever published, so the
- *  RATE is on record even though the per-founder verdict is not.
- *
- *  That distinction is the whole value of the number. It cannot be a survivor
- *  count in the ladder -- it is a different population, and blending it in
- *  would be the exact defect this file exists to remove -- but it BOUNDS what
- *  the two rows beneath it can be, and it is what decides whether
- *  `WRITER_CANDIDATE_CAP` is a lever or a decoration:
- *
- *    a candidate at rank r publishes iff r <= WRITER_CANDIDATE_CAP and
- *    r - w(r) <= PUBLISH_CAP, where w(r) is the watch-only rows above it
- *
- *  so rank PUBLISH_CAP+k is reachable only where at least k rows demote. The
- *  distribution here is therefore the ceiling on everything a wider cap could
- *  ever buy, and `caps.ts` cites it as the reason its constant does not move.
- *
- *  READ, NEVER RETYPED. A rate copied into a comment is a rate that stops
- *  moving the day the writer's behaviour does, which is precisely when it
- *  matters. Returns undefined on any failure -- a missing table, an unreachable
- *  database, a fresh deployment with no briefs yet -- and the report then says
- *  the budget was unreadable rather than printing a remembered figure. */
-async function watchOnlyBudget(): Promise<{
-  briefs: number; byCount: Map<number, number>; meanPerBrief: number;
-  meanCandidates: number; from: string; to: string;
-} | undefined> {
-  const url = process.env.DATABASE_URL;
-  if (!url) return undefined;
-  let client: import("pg").Client | undefined;
-  try {
-    const { Client } = await import("pg");
-    client = new Client({ connectionString: url, connectionTimeoutMillis: 5000 });
-    await client.connect();
-    await client.query("SET statement_timeout = 10000");
-    const r = await client.query<{ wo: number; n: string }>(
-      `SELECT COALESCE(dropped_watch_only, 0)::int AS wo, COUNT(*)::text AS n
-         FROM brief_records WHERE candidate_count > 0 GROUP BY 1 ORDER BY 1`);
-    if (!r.rows.length) return undefined;
-    const agg = await client.query<{ briefs: string; mean: string; cand: string;
-      from: string; to: string }>(
-      `SELECT COUNT(*)::text AS briefs,
-              AVG(COALESCE(dropped_watch_only, 0))::text AS mean,
-              AVG(candidate_count)::text AS cand,
-              MIN(created_at)::date::text AS from, MAX(created_at)::date::text AS to
-         FROM brief_records WHERE candidate_count > 0`);
-    const a = agg.rows[0];
-    return {
-      briefs: Number(a.briefs),
-      byCount: new Map(r.rows.map((x) => [x.wo, Number(x.n)])),
-      meanPerBrief: Number(a.mean), meanCandidates: Number(a.cand),
-      from: a.from, to: a.to,
-    };
-  } catch { return undefined; }
-  finally { await client?.end().catch(() => {}); }
 }
 
 /** ── THE RECALL FLOOR'S OWN LAST PUBLISHED FIGURES ─────────────────────────

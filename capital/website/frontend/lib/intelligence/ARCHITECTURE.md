@@ -43,6 +43,20 @@ already paid for.
         │   away. It was 74.8% until the ladder stopped counting two
         │   encodings of one field as two obstacles (wsGE, verdict.ts).
         ▼
+  .slice(0, VERDICT_POOL)   the cut. On the LATE seam (the default) it runs
+        │                   BEFORE the ranker, so this IS the menu the model
+        │                   is shown — pipeline.ts:1759.
+        │
+        │   ██ THE LARGEST SINGLE LOSS IN THE PRODUCT, and it was not on
+        │   ██ this diagram at all. 79.5% of founders reach this line with
+        │   ██ their won fund still present and 49.8% leave it with the fund
+        │   ██ still present: -29.7 points, more than every stage above it
+        │   ██ combined (`npm run stages`, 897 held-out founders).
+        │   It is a plain prefix of an order that is already final, so it
+        │   deletes nothing a wider cut would not keep — see caps.ts for
+        │   where the number came from, which was never a recall or a cost
+        │   figure, and for the ceiling it buys at each depth.
+        ▼
   ══ STAGE 2 — THE RANKER.  AN LLM.  IT IS THE DEFAULT (wsGB). ════════════
   agentSelect.ts   agentSelectMemoPool → agentSelectRows → the model
         │          AGENT_SELECT=adviser, and `off` is the control arm
@@ -61,11 +75,19 @@ already paid for.
   pipeline.ts   synthesize() → the model writes whyEligible / nextStep only
 ```
 
-The caps, all of them, live in `caps.ts` and `briefChecks.ts`:
-`VERDICT_POOL = 18` → `SELECT_DEPTH = 40` (how deep the selector reads) →
-`SELECT_COUNT = 7` (how many seats it fills) → `WRITER_CANDIDATE_CAP = 8` →
-`institutionsMax = 7`. Screen one cuts the same
-pool at `DISPLAY_CAP = 6`.
+The caps, all of them, live in `caps.ts` and `briefChecks.ts`, in this order:
+`VERDICT_POOL` (the menu the model is shown) → `SELECT_DEPTH` (how deep the
+selector may read into it) → `SELECT_COUNT` (how many published seats it fills)
+→ `WRITER_CANDIDATE_CAP` → `institutionsMax`. Screen one cuts the same pool at
+`DISPLAY_CAP`.
+
+**The values are deliberately not written here.** They were, and moving one of
+them meant editing a number in two places or leaving this page stating a cap the
+code does not have — the second-copy defect this repo treats as the bug itself.
+`caps.ts` is the definition, `check_contracts.ts` asserts the ordering, and
+`caps.ts` asserts at module scope the half of it a swept lever can break. A
+reader who needs a number reads the module; a reader who needs the shape reads
+this line.
 
 **The last step is not a selection.** `assembleBriefRows` publishes by CANDIDATE
 ORDER, so with nothing watch-only the founder reads ranks 1..7 whatever
@@ -171,12 +193,14 @@ been failing."*
 | **Collapsing recurring calls** | They are genuinely different funds |
 | **Seat allocation / per-row routing** | An oracle *holding the answer key* gains one case in six hundred |
 | **Rebuilding the founder descriptions** | Delivered 1,898 pairs not ~6,300; feasibility estimate was wrong 8×; moved the number 27% → 26% |
-| **A longer menu / more depth** | 33 rows instead of 18 changes membership by nothing. EXACT@5 went 22.2% → 17.8%. On 9 founders the won fund sat at rank 19–40 and the model picked it **0 of 9**. `scripts/archive/_wsdq_seam.ts` — and note wsDQ's "depth is binding" inference is itself retracted |
+| ~~**A longer menu / more depth**~~ **RETRACTED (wsGM)** | It measured the SEAM, not the depth. `SELECT_COUNT` was 6, so at most six rows could be promoted from below the score's cut: wsDR promoted 64 rows across 30 of 45 founders and none was an answer — depth moved and the seat budget did not. Its 22.2% → 17.8% is ONE discordant founder on n=45, inside a ranker that disagrees with itself on 18% of founders. And 51 of its 133 menu rows carried no sentence saying what the fund pays for; after wsDW's repair that figure is flat at ~87% at every depth. The pool cut is now 40 on a swept funnel, n=897: the ceiling moves 49.8% → 66.7% and every stage below it is identical to the founder at every depth up to the whole pool. What remains unmeasured is the model's pick rate on a longer menu — `project-mgmt/findings/widen_wsGM.md` |
 | **Better screen-two questions** | Picks changed on 8 of 12 and the category errors survived the answer. The arm that measured it was a bench harness, not a shipped lever: no flag by that or any other name exists, and the row previously named one that does not (wsEN). The live descendant is `RANKER_ASKS`, which defaults off — a different design, in which the stage that picks writes the questions |
 | **Re-sorting the memo on the fit score** | MEMO@6 24.0% against `verdict`'s 27.6%; wsCR measured it moving the won leaf OUT of the published six 49 times for 13 in. `scripts/archive/_wsct_order.ts` — archived by wsGB, which deleted the arms it swept |
 | **The old LLM gate 2** | Every configuration that let the model REORDER measured at or below gate 1 on the same cases. Module deleted; the ladder is preserved in `project-mgmt/findings/dead_ranker_wsDO.md` §1 |
 
-What is **open**: judgement at depth 18–40, and row legibility. wsDV found the
+What is **open**: judgement at depth — now the model's pick rate on the 40-row
+menu it is shown after wsGM, which is the one quantity in this table that no
+free run can produce — and row legibility. wsDV found the
 nine missed rows were not refused but *unreadable* — zero of nine won rows
 carried a usable sentence saying what the fund pays for, against 39 of the 54
 rows the model chose instead.
