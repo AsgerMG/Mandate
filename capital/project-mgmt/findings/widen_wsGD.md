@@ -415,7 +415,7 @@ touched by this work.
 
 | check | state | why |
 |---|---|---|
-| `check_asking_cannot_shrink` | FAIL, 1 of 672 | Aleph Alpha, `institutionalOwner="unsure"` deletes one `satr_de_rnd` row. A corpus/gate defect, pre-existing. |
+| `check_asking_cannot_shrink` | FAIL, 1 of 672 | Aleph Alpha, `institutionalOwner="unsure"` deletes one `satr_de_rnd` row. **Re-run on the `main` worktree: identical failure, 1 of 672.** |
 | `check_applicant_identity` | FAIL, 2 | two instruments whose "who may apply" text describes a population that cannot in fact apply. Corpus text, pre-existing. |
 | `check_corpus_census` | FAIL | census #10 DEGRADED (sector coverage 8, down from 11) and DRIFTED (the scheduled ETL is not running this checkout). ETL, pre-existing. |
 
@@ -438,6 +438,25 @@ __recallSetDescribed.json  300 tune pairs
 
 `check_pool_recall_curve` and `check_contracts` pass at the default and at
 `BRIEF_VERDICT_POOL=all AGENT_SELECT_DEPTH=all`; `memoCandidates.test.ts` 10/10.
+
+At the shipped defaults the `caps.ts` change is provably inert: `depthLever`'s
+`all` branch fires only on the literal string, and the new warning's condition
+`18 > 40` is false. It is checked rather than argued — the recommended run was
+exercised end to end through `AGENT_SELECT=dry`, which builds production's own
+prompt and never calls, **for EUR 0.0000**:
+
+```
+levers             seam=late depth=40 count=7 effort=medium lookups=5 pool=40 published_cap=7
+base rate curve    846 held-out founders; P(won in the first 40)=63.8%
+agent-select exits (7 call(s) to the seam): 7 priced, not called
+draw               12 of 515 eligible, country cap 2 (15%) BOUND
+spend              EUR 0.0000
+```
+
+Note `515 eligible` against wsGA's 284 under `ONLY_IN_POOL=1`: the population
+the treatment can win on is where the widening shows up first. And note the
+rail: with `MAX_EUR=0` every founder reads "no call — outside the ceiling" and
+the seam is never reached, so a paid run must set it to a real number.
 
 ## 9. What is in this branch
 
