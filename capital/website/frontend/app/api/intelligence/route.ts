@@ -100,17 +100,12 @@ export async function POST(request: NextRequest) {
             capitalSought: Array.isArray(body.capitalSought)
               ? body.capitalSought.filter((v) => typeof v === "string")
               : undefined,
-            clarifications: Array.isArray(body.clarifications)
-              ? body.clarifications
-                  .filter(
-                    (c) =>
-                      c &&
-                      typeof c.question === "string" &&
-                      typeof c.answer === "string" &&
-                      c.answer.trim(),
-                  )
-                  .map((c) => ({ question: c.question.trim(), answer: c.answer.trim() }))
-              : undefined,
+            // `clarifications` was reconstructed here and is gone (wsFT): it was
+            // the first implementation of the follow-up round, nothing in the
+            // tree ever set it non-empty, and the two live carriers are
+            // `eligibility` (the fixed-answer half, merged) and `projectAnswers`
+            // (the prose half, with its fund and verbatim requirement). See
+            // IntelligenceRequest.
             targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
             eligibility: withIncorporationCountry(
               sanitizeEligibility(body.eligibility), body.country?.trim()),

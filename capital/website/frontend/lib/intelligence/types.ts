@@ -603,9 +603,20 @@ export interface IntelligenceRequest {
    *  German, Italian or French public capital. Empty = home market + EU-wide.
    *  Steers peer preference, the funder map and the landscape slices. */
   targetMarkets?: string[];
-  /** Answers to the tailored intake questions (phase 1), folded into the memo
-   *  context. Each is a question the agent asked and the option the founder picked. */
-  clarifications?: { question: string; answer: string }[];
+  // ── `clarifications` REMOVED (wsFT) ─────────────────────────────────────
+  // "Answers to the tailored intake questions (phase 1), folded into the memo
+  // context." It was the FIRST implementation of the follow-up round, and the
+  // round has two live carriers now: the fixed-answer half merges into
+  // `eligibility`, the prose half rides on `projectAnswers` with its fund and
+  // its verbatim requirement attached. This one carried a bare question/answer
+  // pair with no provenance at all.
+  //
+  // Nothing in the tree ever set it non-empty. `panel.tsx`'s `runMemo` took it
+  // as a parameter and all three call sites passed `[]`; the memo route
+  // rebuilt it from the body; `synthesize` had a prompt block guarded on
+  // `.length > 0` that therefore never rendered for any founder or any
+  // harness. Deleting it is byte-identical on every path: an absent field and
+  // an empty array both fail that guard and both emit the empty string.
   /** Structured scoping answers (the wizard's deterministic screens). */
   eligibility?: EligibilityAnswers;
   /**

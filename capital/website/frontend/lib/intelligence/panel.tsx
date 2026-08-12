@@ -432,7 +432,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         // wsDL: the same store, the same hazard. `eligForRequest` is what this
         // round was fetched for, and it is the caller's just-merged object
         // rather than the render-time `elig` this closure would otherwise read.
-        await runMemo([], undefined, eligForRequest);
+        await runMemo(undefined, eligForRequest);
         return;
       }
       setRound(data.round);
@@ -441,7 +441,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
       setProjectFreeText({});
       setScreen("adaptive");
     } catch {
-      await runMemo([], undefined, eligForRequest);
+      await runMemo(undefined, eligForRequest);
     } finally {
       setPreparing(false);
     }
@@ -492,7 +492,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     const nextCount = roundCount + 1;
     setRoundCount(nextCount);
     if (nextCount >= MAX_ROUNDS) {
-      await runMemo([], allProjectAnswers, merged);
+      await runMemo(allProjectAnswers, merged);
       return;
     }
     setPreparing(true);
@@ -505,7 +505,13 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     }
   }
 
-  // Stream the memo, folding in whatever clarifications we have.
+  // Stream the memo.
+  //
+  // It used to take a `clarifications` array as its first parameter and all
+  // three call sites passed `[]`. Removed with the field itself (wsFT): the
+  // follow-up round reaches the memo through `eligOverride` and
+  // `projectOverride`, which are the two threaded here for exactly that reason.
+  //
   // `projectOverride` exists because advanceRound() calls this in the same
   // tick as setProjectAnswers(), so the state hasn't flushed yet.
   // ── wsDL: `eligOverride` is the SAME defect as `projectOverride`, one store
@@ -526,7 +532,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // contents depend on render timing, which is the same class of defect with a
   // longer fuse.
   async function runMemo(
-    clarifications: { question: string; answer: string }[],
     projectOverride?: ProjectAnswer[],
     eligOverride?: EligibilityAnswers,
   ) {
@@ -546,7 +551,6 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
           ...basePayload(eligOverride),
-          clarifications,
           projectAnswers: projectOverride ?? projectAnswers,
           // The second answer object. Omitted entirely when the founder never
           // reached a follow-up screen, because absent means "nothing is late"
