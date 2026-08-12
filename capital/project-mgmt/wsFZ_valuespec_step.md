@@ -84,3 +84,63 @@ scheme_text; the other 244 belong to other passes.
 `encode_scheme_text_gates.py publish` (its `PUB_COLS` includes `value_spec`) — but that
 publish is scoped to `gate_key LIKE 'scheme_text_%'`, so the ~244 non-scheme_text gates
 the same encode pass would fill in are written locally and never shipped.
+
+## 5. The full chain, and where it already lives
+
+`make eligibility` (Makefile) is the chain, and it already puts `encode` immediately
+after the scheme-text run. In order, from written gate to used gate:
+
+| # | Step | Paid? | Note |
+|---|---|---|---|
+| 1 | `encode_scheme_text_gates.py run` | **$7.94** | the run happening now |
+| 2 | `encode_gates.py encode --fresh` | **~$1.2–1.4** | fills `value_spec`. **This is the second step.** |
+| 3 | `encode_regions.py run` | **~$0.4** | 52 calls, 49k input tokens (probed). Re-bills its whole candidate set every run — its scope is a regex on requirement text, not "unencoded" |
+| 4 | `check_gate_subject.py` | free (layer 1) | `--judge` is the paid layer; not run by default |
+| 5 | `apply_gate_role_overrides.py` | free | re-applies curated demotions that `triage` reverts |
+| 6 | `retract_unpertinent_text.py --write` | free | must land before the profile rebuild |
+| 7 | `audit_encoding_vs_reality.py --quarantine` | free | clears specs their own recipients contradict |
+| 8 | `coverage_gate.py` | free | refuses to publish a corpus that got worse |
+| 9 | `website/build/eligibility_export.py` | free | rewrites `public/data/instrument_terms.json` — the committed fallback corpus, which **does carry gates and valueSpec** (today: 7,471 gates, 3,232 with a spec, 1,070 scheme_text) |
+| 10 | `emit_theme_index.ts` | free | derived from the export |
+| 11 | `migrate_to_postgres.py` | free | truncate + reload; this is what the live site reads |
+| 12 | `embed_eligibility.py run` | Voyage, cents | reads **Postgres**, so it must follow step 11. Incremental on the natural key |
+| 13 | `build_instrument_profiles.py classify-titles` + `run --rebuild` | Voyage + model | the primary ranking index |
+| 14 | `_wsdr_curve.ts` | free | re-measures the base rate the selector is told |
+
+**Not in `make eligibility`: `emit_semantic_cache.ts`.** `semanticCache.generated.json`
+is the committed offline mirror every NO_PG check ranks on, and nothing in the target
+regenerates it. `check_corpus_currency.ts` is what catches the resulting staleness.
+
+Scoped alternative to steps 9–11 if a full `make eligibility` is not wanted:
+`encode_scheme_text_gates.py publish` ships `scheme_text_%` rows including `value_spec` —
+but only those rows, and it does not touch `instrument_terms.json`.
+
+## 6. Parent-less rows: the premise is right, with one correction
+
+`plan`'s 118-of-476 is the right shape. Replicated `scoreable()` against the live DB
+mid-run: 319 of 359 remaining rows are scoreable, and over the whole 687-row universe
+481 are. 476 − 358 = 118 checks out.
+
+`gateFitScorer` opens `if (group.length < 2) continue`, so a parent-less leaf gets no
+ranking discrimination. Correct.
+
+Exclusion: `assessInstrument` has no parent requirement, and `memoCandidates.ts:141`
+drops every row whose status is `blocked` (logged as `VER-BLOCKED`). So a parent-less
+row DOES gain exclusion — **but only once `value_spec` is filled in.** Unencoded, it
+gains neither. The claim is true of the encoded end state, not of the run alone.
+
+## 7. Three repo premises, checked against the code
+
+- **"`gate_role` must never be NULL"** — TRUE, but not for the stated reason.
+  `verdict.ts:160` explicitly HONOURS a NULL role (`!g.gateRole || g.gateRole === "filter"`).
+  The inertness comes from `encode_gates.py:700`, whose scope is `gate_role='filter'` —
+  a NULL-role gate is never encoded, so it never gets a spec, so it is never evaluated.
+- **"corrections must never go in `intake_field`"** — TRUE. `classify_gates_bulk.py`'s
+  ON CONFLICT overwrites it; both encoders read `intake_field_resolved`, and
+  `rankerAsks.ts:279` reads the field off `valueSpec.field` rather than `intakeField`.
+- **"only a cited rule may condemn"** — TRUE ONLY FOR THE STRUCTURAL PATH.
+  `verdict.ts:190` filters `isStructural(b.field) && b.cited`, but the tail is
+  `else if (blockers.length === 1) one_blocker; else blocked`. **Two uncited,
+  non-structural failed filters still produce `blocked`**, and `blocked` is dropped from
+  the memo. The docstring's "uncited rules NARROW but never CONDEMN" is not literally
+  true of the code. It does not affect this run (its gates are `llm_cited`).
