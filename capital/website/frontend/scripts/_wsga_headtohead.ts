@@ -227,6 +227,19 @@ interface Row {
    *  arm fell back on half its founders is measuring its own control on those
    *  founders and must say so. */
   fellBack: string | null;
+  /** Was the treatment arm actually run on this founder. A founder skipped
+   *  because the budget ceiling was reached is NOT a ranker miss, and grading
+   *  one as a miss is how a spend limit turns into a result. */
+  called: boolean;
+  /** ── THE FREE JITTER MEASUREMENT ──────────────────────────────────────
+   *  Under `arm=off` this harness projects the SAME pool array twice, so the
+   *  two published orders must be identical. `semantic.ts` orders with no
+   *  tiebreak and IS non-deterministic — the recall floor bounds the resulting
+   *  spread at 0.6 points across 39 runs — so this is that jitter, measured on
+   *  the exact ordering the paid run will grade, at zero cost, in the same
+   *  process. `null` when the arm is not `off` and the two orders are supposed
+   *  to differ. */
+  projectionStable: boolean | null;
   eur: number;
 }
 
@@ -271,6 +284,13 @@ async function main() {
    *  would be the better unit and is not available before the first reply
    *  arrives; this is the bound that can be enforced from the first founder. */
   const maxCalls = num(process.env.MAX_CALLS, Number.POSITIVE_INFINITY);
+  /** The rail that is in the unit the budget is actually in. `MAX_CALLS` can
+   *  only be set from a price nobody has measured on today's menus; this one is
+   *  enforced against what the API said it billed, and it stops the run rather
+   *  than reporting an overspend afterwards. Founders it stops on are recorded
+   *  as NOT CALLED and are excluded from the graded set — a spend limit must
+   *  never be able to turn itself into a result. */
+  const maxEur = num(process.env.MAX_EUR, Number.POSITIVE_INFINITY);
 
   // ── THE POPULATION ───────────────────────────────────────────────────────
   // `cross_regime_*` and nothing else. That provenance is prose about the
@@ -375,9 +395,10 @@ async function main() {
     const publishedControl = project(poolControl);
 
     // ── THE CONDITIONING GATE, decided before either arm has run ──────────
-    const budgetLeft = calls < maxCalls;
-    const worthCalling = (!onlyInPool || ceilingControl) && budgetLeft;
-    if (!budgetLeft) skippedForBudget++;
+    const budgetLeft = calls < maxCalls && spend < maxEur;
+    const wanted = !onlyInPool || ceilingControl;
+    const worthCalling = wanted && budgetLeft;
+    if (wanted && !budgetLeft) skippedForBudget++;
 
     let publishedRanker = publishedControl;
     let ceilingRanker = ceilingControl;
@@ -413,7 +434,9 @@ async function main() {
       rankRanker: worthCalling ? rankIn(publishedRanker, t.instrument) : null,
       publishedControl: publishedControl.slice(0, PUBLISH_CAP),
       publishedRanker: worthCalling ? publishedRanker.slice(0, PUBLISH_CAP) : [],
-      picks, menu, fellBack, eur,
+      picks, menu, fellBack, called: worthCalling, eur,
+      projectionStable: AGENT_SELECT_ARM === "off" && worthCalling
+        ? publishedControl.join("|") === publishedRanker.join("|") : null,
     });
 
     const mark = (b: boolean) => (b ? "Y" : "n");
@@ -427,8 +450,11 @@ async function main() {
   }
 
   // ── THE REPORT ───────────────────────────────────────────────────────────
-  const called = rows.filter((r) => r.rankRanker !== null || r.publishedRanker.length > 0);
-  const graded = onlyInPool ? rows.filter((r) => r.ceilingControl) : rows;
+  const called = rows.filter((r) => r.called);
+  // A founder the treatment never saw is not a treatment miss. Grading one as a
+  // miss is how a spend limit turns itself into a result, which is the one way
+  // a budget rail can corrupt the thing it is protecting.
+  const graded = rows.filter((r) => r.called && (!onlyInPool || r.ceilingControl));
   const L: string[] = [];
   const p = (s = "") => L.push(s);
   const prov = corpusProvenance();
@@ -584,9 +610,51 @@ async function main() {
     `The unstratified population is 53% DE+FR.`);
   p();
 
+  p(`## The void conditions, checked rather than promised`);
+  p();
+  p("Every one of these is a reason the pre-registration declares the run VOID —");
+  p("no conclusion of any kind. See project-mgmt/wsGA_prereg.md section 4.");
+  p();
+  const exits = agentSelectExits();
+  const fb = rows.filter((r) => r.fellBack).length;
+  const fbShare = called.length ? fb / called.length : 0;
+  const choseShare = calls ? exits.chose / calls : 1;
+  const voids: [string, boolean, string][] = [
+    ["ranker attestation clean", rankerClean, rankerLine],
+    ["fell back on <= 5% of calls", fbShare <= 0.05,
+      `${fb} of ${called.length} (${(100 * fbShare).toFixed(1)}%)`],
+    ["chose on >= 95% of calls", choseShare >= 0.95,
+      `${exits.chose} of ${calls} call(s)`],
+    ["no call cut off at max_tokens", !/[1-9]\d* CUT OFF/.test(agentSelectTallyLine()),
+      "read from the arm tally line above"],
+  ];
+  p(`| condition | | observed |`);
+  p(`|---|---|---|`);
+  for (const [what, ok, obs] of voids) {
+    p(`| ${what} | ${ok ? "ok" : "**VOID**"} | ${obs} |`);
+  }
+  p();
+  const stable = rows.filter((r) => r.projectionStable !== null);
+  if (stable.length) {
+    const unstable = stable.filter((r) => r.projectionStable === false).length;
+    p(`### Ordering jitter, measured free on this very run`);
+    p();
+    p(`Under \`arm=off\` this harness projects the SAME pool array twice. The two`);
+    p(`published orders differed on **${unstable} of ${stable.length}** founders.`);
+    p();
+    if (unstable) {
+      p("██ THAT IS NOT ZERO, AND IT IS A CEILING ON WHAT ANY PAID RUN CAN CLAIM. ██");
+      p(`A treatment effect smaller than ${((100 * unstable) / stable.length).toFixed(1)}% of pairs is`);
+      p("indistinguishable from re-running the control against itself.");
+    } else {
+      p("Zero. The ordering is deterministic on this population, so every discordant");
+      p("pair in a paid run is attributable to the arm and not to a tie-break.");
+    }
+    p();
+  }
+
   p(`## Fallbacks and reach`);
   p();
-  const fb = rows.filter((r) => r.fellBack).length;
   p(`- fell back to the shipped order: **${fb}** of ${called.length} call(s). ` +
     "A fallback publishes the CONTROL's order under the treatment's name.");
   if (called.length) {
@@ -602,7 +670,7 @@ async function main() {
   p(`- exits: \`${agentSelectExitLine()}\``);
   p();
   p("```");
-  p(JSON.stringify(agentSelectExits()));
+  p(JSON.stringify(exits));
   p("```");
   p();
 
