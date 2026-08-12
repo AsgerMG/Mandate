@@ -1,19 +1,19 @@
 {
- "startedAt": "2026-08-12T21:39:50.258Z",
+ "startedAt": "2026-08-12T22:28:40.397Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
  "n": 897,
  "drawFingerprint": "13cb71cf3a1d1847",
- "corpus": "snapshot instruments=1088",
+ "corpus": "postgres instruments=1088",
  "levers": {
   "VERDICT_POOL": 18,
   "WRITER_CANDIDATE_CAP": 8,
   "PUBLISH_CAP": 7,
   "TOP": 5
  },
- "meanTableRows": 81,
- "meanAccessibleRows": 69.1,
+ "meanTableRows": 86.2,
+ "meanAccessibleRows": 74,
  "stages": [
   {
    "id": "answer_key",
@@ -45,74 +45,65 @@
   {
    "id": "liveness_confirmed",
    "question": "... and its openness could be CONFIRMED (the degradation policy)",
-   "remaining": 805,
-   "sharePct": 89.74,
-   "lost": 9,
+   "remaining": 814,
+   "sharePct": 90.75,
+   "lost": 0,
    "unmeasured": false,
-   "halfWidthPts": 1.99
+   "halfWidthPts": 1.9
   },
   {
    "id": "founder_screen",
    "question": "... and this founder's screen keeps it (country, capital, channel + leaf caps)",
-   "remaining": 774,
-   "sharePct": 86.29,
-   "lost": 31,
+   "remaining": 792,
+   "sharePct": 88.29,
+   "lost": 22,
    "unmeasured": false,
-   "halfWidthPts": 2.25
+   "halfWidthPts": 2.1
   },
   {
    "id": "gates_pass",
    "question": "... and its encoded eligibility gates do not conclusively fail (accessiblePool)",
-   "remaining": 693,
-   "sharePct": 77.26,
-   "lost": 81,
+   "remaining": 713,
+   "sharePct": 79.49,
+   "lost": 79,
    "unmeasured": false,
-   "halfWidthPts": 2.74
+   "halfWidthPts": 2.64
   },
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (18 rows)",
-   "remaining": 437,
-   "sharePct": 48.72,
-   "lost": 256,
+   "remaining": 447,
+   "sharePct": 49.83,
+   "lost": 266,
    "unmeasured": false,
    "halfWidthPts": 3.27
   },
   {
    "id": "writer_cap",
    "question": "... and it survives the cut to the writer's candidates (8)",
-   "remaining": 310,
-   "sharePct": 34.56,
-   "lost": 127,
+   "remaining": 346,
+   "sharePct": 38.57,
+   "lost": 101,
    "unmeasured": false,
-   "halfWidthPts": 3.11
-  },
-  {
-   "id": "watch_only",
-   "question": "... and the writer's own prose does not demote it behind the actionable rows",
-   "remaining": null,
-   "sharePct": null,
-   "lost": null,
-   "unmeasured": true,
-   "halfWidthPts": null
+   "halfWidthPts": 3.19
   },
   {
    "id": "published",
    "question": "... and it is one of the 7 rows the brief publishes",
-   "remaining": 286,
-   "sharePct": 31.88,
-   "lost": 24,
+   "remaining": 329,
+   "sharePct": 36.68,
+   "lost": 17,
    "unmeasured": false,
-   "halfWidthPts": 3.05
+   "halfWidthPts": 3.15
   },
   {
    "id": "top_five",
    "question": "... and it is in the first 5 of them",
-   "remaining": 231,
-   "sharePct": 25.75,
-   "lost": 55,
+   "remaining": 279,
+   "sharePct": 31.1,
+   "lost": 50,
    "unmeasured": false,
-   "halfWidthPts": 2.86
+   "halfWidthPts": 3.03
   },
   {
    "id": "model",
