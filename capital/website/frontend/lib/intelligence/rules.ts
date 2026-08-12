@@ -136,9 +136,23 @@ export const EXCLUSION_RULES = {
   },
 
   // ── verdict stage ────────────────────────────────────────────────────────
+  // ── The `what` below was FALSE, and it hid the largest loss in the funnel ─
+  // It read "more than one encoded, CITED eligibility filter conclusively
+  // fails". `assessInstrument` requires neither the plural nor the citation:
+  // ONE cited structural filter is conclusive on its own, and two failures of
+  // ANY kind — uncited, non-structural, or two encodings of the SAME field —
+  // reach `blocked` by arithmetic. wsFZ established the citation half; wsGE
+  // measured what the arithmetic half costs and it is not small (see below).
+  //
+  // The register is read as the statement of what the funnel may remove a fund
+  // for, so an entry describing a stricter rule than the code applies is a
+  // licence nobody granted.
   "VER-BLOCKED": {
     stage: "verdict", kind: "fact", recoverable: false,
-    what: "Instrument removed because more than one encoded, cited eligibility filter conclusively fails.",
+    what: "Instrument removed because its encoded eligibility verdict is `blocked`: "
+      + "either one cited structural filter fails, or two or more filters fail "
+      + "whatever their citation, severity, or whether they encode the same "
+      + "requirement twice.",
     disposition: "keep",
   },
 
