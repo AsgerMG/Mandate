@@ -171,8 +171,8 @@ def push_db(dry: bool, skipped_pull: bool, force: bool = False) -> None:
                  "  reconcile explicitly:\n"
                  "    python3 ETL/events/load/reconcile_stores.py --report <record> <local>")
 
-    if not dry and not force:
-        check_push_is_not_a_deletion()
+    if not dry:
+        check_push_is_not_a_deletion(force=force)
 
     print("\n=== Pushing db.sqlite back to the Railway volume ===")
     cmd = ["npx", "--yes", "@railway/cli", "volume", "files",
@@ -183,17 +183,39 @@ def push_db(dry: bool, skipped_pull: bool, force: bool = False) -> None:
         sys.exit(f"push failed (rc={rc}) -- Railway volume still has the pre-push data")
 
 
-def check_push_is_not_a_deletion() -> None:
-    """Refuse the upload if the record holds rows this file does not.
+def judge_push(witness, local, force: bool):
+    """May this file be uploaded over the corpus of record, and what is the
+    operator shown first? Reads only; the caller does the uploading.
 
     The losing store is the RECORD and the winning store is the laptop — the
     opposite assignment from the pull, and the same one measurement, so the two
     directions cannot come to disagree about what "would be lost" means.
+
+    Split from the transfer so the DECISION can be tested where the transfer
+    cannot run: `test_overwrite_refusal.py` drives it against fixture stores,
+    with no credentials and no woken Railway service. `--force-overwrite` used
+    to be handled by never calling the comparison at all, which made the one
+    flag whose purpose is to delete rows knowingly the only path that could not
+    name one. It is an override now, not an exemption: the measurement runs and
+    is printed either way.
     """
     sys.path.insert(0, str(ROOT / "ETL" / "events" / "load"))
     sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
-    from reconcile_stores import format_loss, proven_loss, unknowns  # noqa: E402
+    from reconcile_stores import overwrite_gate  # noqa: E402
 
+    return overwrite_gate(
+        str(witness), str(local),
+        override="--force-overwrite" if force else None,
+        remedy=(f"  A copy of the record is at {witness} — it has not been touched.\n\n"
+                f"  Merge them in rather than deleting them:\n"
+                f"    python3 ETL/events/load/reconcile_stores.py \\\n"
+                f"        --into {local} --from {witness} --family events\n"
+                f"    then re-run this push.\n\n"
+                f"  Or --force-overwrite to destroy them knowingly."))
+
+
+def check_push_is_not_a_deletion(force: bool = False) -> None:
+    """Fetch the record as it is NOW and act on `judge_push`'s verdict."""
     sys.path.insert(0, str(ROOT / "ETL" / "events" / "extract"))
     from pull_db import verify  # noqa: E402
 
@@ -203,47 +225,32 @@ def check_push_is_not_a_deletion() -> None:
         ["npx", "--yes", "@railway/cli", "volume", "files",
          "--volume", "etl-pipeline-volume", "download", "/db.sqlite",
          str(witness), "--overwrite"]).returncode
-    if rc != 0:
-        witness.unlink(missing_ok=True)
-        sys.exit(f"\nREFUSED: could not read the corpus of record (rc={rc}), so this "
-                 f"push\n  cannot be shown to be safe. An overwrite whose cost is "
-                 f"unknown is not a\n  sync. Re-run, or --force-overwrite if you have "
-                 f"another reason to believe\n  the record holds nothing this file "
-                 f"lacks.")
-    problem = verify(witness)
+    problem = verify(witness) if rc == 0 else f"the download failed (rc={rc})"
     if problem:
         witness.unlink(missing_ok=True)
-        sys.exit(f"\nREFUSED: what came back from the volume is not a usable database "
-                 f"—\n  {problem}\n  The comparison cannot be made, so the push does "
-                 f"not happen.")
+        # An unmeasurable cost is not a zero cost. Without the override this is
+        # the end of the push; WITH it the upload proceeds, because an explicit
+        # override is a decision the operator is entitled to make — but it is
+        # told, in the same words the itemisation would have used, that nobody
+        # knows what it destroys.
+        if not force:
+            sys.exit(f"\nREFUSED: the corpus of record could not be read —\n  {problem}\n"
+                     f"  An overwrite whose cost is unknown is not a sync. Re-run, or\n"
+                     f"  --force-overwrite if you have another reason to believe the "
+                     f"record\n  holds nothing this file lacks.")
+        print(f"\nDESTROYING AN UNKNOWN NUMBER OF ROWS — --force-overwrite was given "
+              f"and the\n  corpus of record could not be read: {problem}\n"
+              f"  Nothing below this line knows what the upload deletes.")
+        return
 
-    lost = would_be_lost_wrapper(witness)
-    n = proven_loss(lost)
-    unk = unknowns(lost)
-    if unk:
-        print(f"\nNOT PROVEN SAFE — {len(unk)} table(s) on the record could not be "
-              f"compared row by row:")
-        for _f, t, d in unk:
-            print(f"    {t:<32} {d['rows_losing']:,} on the record vs "
-                  f"{d['rows_winning']:,} here — {d['why']}")
-    if n:
-        witness_note = f"  A copy of the record is at {witness} — it has not been touched."
-        sys.exit(f"\nREFUSED — the corpus of record holds {n:,} row(s) this file does "
-                 f"not.\n  Uploading over it is a deletion, not a sync.\n\n"
-                 f"{format_loss(lost, indent='  ')}\n\n{witness_note}\n\n"
-                 f"  Merge them in rather than deleting them:\n"
-                 f"    python3 ETL/events/load/reconcile_stores.py \\\n"
-                 f"        --into {DB} --from {witness} --family events\n"
-                 f"    then re-run this push.\n\n"
-                 f"  Or --force-overwrite to destroy them knowingly.")
+    proceed, told, _lost = judge_push(witness, DB, force)
+    if told:
+        print(told)
+    if not proceed:
+        sys.exit(2)
     witness.unlink(missing_ok=True)
-    print(f"  ok — the record holds no row this file lacks. Safe to overwrite.")
-
-
-def would_be_lost_wrapper(witness) -> dict:
-    """The record is the LOSING store here: it is the one about to be replaced."""
-    from reconcile_stores import would_be_lost
-    return would_be_lost(str(witness), str(DB))
+    if not told:
+        print("  ok — the record holds no row this file lacks. Safe to overwrite.")
 
 
 def main() -> None:

@@ -341,6 +341,14 @@ jobs:
       - name: An uncomparable table never reports itself as safe to overwrite
         run: python3 ETL/events/load/test_overwrite_guard.py
 
+      # The other half: the measurement being honest is not the same as the
+      # sync acting on it. Both refusals had a hole, and both were in the
+      # override -- --force-overwrite skipped the comparison entirely, and
+      # --discard-local printed its total after the swap. The flag whose whole
+      # purpose is to delete rows knowingly must name them first.
+      - name: A sync refuses while the store it replaces is the sole holder of a row
+        run: python3 ETL/events/load/test_overwrite_refusal.py
+
       # corpus-ledger/ is the only committed copy of the authored instrument
       # corpus -- 7,471 encoded gates that no extractor can regenerate. A
       # truncated or half-committed ledger is WORSE than none, because it reads
