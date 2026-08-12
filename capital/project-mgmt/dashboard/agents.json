@@ -2,12 +2,6 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsGJ",
-      "step": 5,
-      "what": "Fix the measuring stick before trusting anything it says",
-      "why": "The one end-to-end measurement we have was taken with the wrong ranking engine — a fallback, on every single founder — and against an offline copy of the corpus rather than the live one. So the headline figure describes a system we do not actually ship. Nothing else is worth measuring until this is right. It also adds the six-fund target you set."
-    },
-    {
       "id": "wsGK",
       "step": 6,
       "what": "Stop a single word in the write-up deleting the AI's top choice",
@@ -18,6 +12,18 @@
       "step": 6,
       "what": "The cap of eight, worth fourteen points and never examined",
       "why": "Between the AI choosing and the founder reading, the list is cut to eight. That cut costs fourteen points of accuracy — the second largest loss in the product — and nobody has ever asked why it is eight. Unlike the cut above it, this one is genuinely expensive to widen, so the answer may be that it is a fair price. Worth knowing which."
+    },
+    {
+      "id": "wsGM",
+      "step": 2,
+      "what": "Widen the shortlist the AI is shown, from eighteen funds to forty",
+      "why": "The largest single loss in the whole product — nearly thirty points — happens when we cut the list to eighteen before the AI sees it. That number was never a cost or accuracy decision; it was a stopgap for three problems that have all since moved elsewhere. Now that the measuring stick is trustworthy, this can finally be tested properly."
+    },
+    {
+      "id": "wsGL",
+      "step": 2,
+      "what": "The twenty-three points lost before any ranking happens",
+      "why": "Funds ruled out by their own written rules, rows we are not allowed to offer, and the founder's own screen together remove almost a quarter of right answers before the AI is asked anything. Every one of those founders won a fund we still offer today, so none of it is a closed fund. The question is how much is the world being what it is, and how much is us being stricter than the funders are."
     }
   ]
 }

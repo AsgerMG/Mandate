@@ -222,7 +222,12 @@ def headline() -> dict[str, object]:
     """
     run = json.loads(FUNNEL.read_text())
     by_id = {s["id"]: s for s in run["stages"]}
-    for stage_id, rows in (("top_six", 6), ("top_five", 5)):
+    # The ladder names these `top_6` / `top_5`; earlier drafts used
+    # `top_six` / `top_five`. Both spellings are accepted rather than pinned,
+    # because a rename in the harness must not be able to blank the headline --
+    # but an UNKNOWN stage still exits below rather than falling back.
+    for stage_id, rows in (("top_6", 6), ("top_six", 6),
+                           ("top_5", 5), ("top_five", 5)):
         st = by_id.get(stage_id)
         if st and st.get("sharePct") is not None:
             return {
@@ -238,6 +243,59 @@ def headline() -> dict[str, object]:
         f"we are building, so it must come from the funnel run -- fix the run "
         f"rather than falling back to a guard's figure."
     )
+
+
+"""Which stages the page shows, and what to call them in plain words.
+
+The ladder's own questions are precise and unreadable ("... and its encoded
+eligibility gates do not conclusively fail (accessiblePool)"). This is the
+translation, and it lives here rather than in the HTML so the table cannot
+drift from the run that produced it -- the numbers beside these labels are
+read from the run, never typed.
+
+A stage the ladder adds and this dict does not name is simply not shown, which
+is the safe direction: a new stage appearing unlabelled is better than a
+wrong label. A stage NAMED here and missing from the run exits loudly.
+"""
+FUNNEL_ROWS = [
+    ("answer_key",      "The corpus holds the fund they won",              "good"),
+    ("publishable",     "&hellip; and we are allowed to offer it",         "warn"),
+    ("founder_screen",  "&hellip; and the founder's own answers keep it",  "good"),
+    ("gates_pass",      "&hellip; and its written rules do not exclude them", "bad"),
+    ("pool_cut",        "&hellip; and it survives the cut to eighteen",    "bad"),
+    ("writer_cap",      "&hellip; and it survives the cut to eight",       "bad"),
+    ("published",       "&hellip; and it is one of the seven published",   "warn"),
+    ("top_6",           "&hellip; and it is in the six they read",         "warn"),
+]
+
+TONE = {"good": "var(--good)", "warn": "var(--warn)", "bad": "var(--bad)"}
+
+
+def funnel_table() -> str:
+    """The table body, generated from the run rather than written by hand."""
+    run = json.loads(FUNNEL.read_text())
+    by_id = {s["id"]: s for s in run["stages"]}
+    out, prev = [], None
+    for stage_id, label, tone in FUNNEL_ROWS:
+        st = by_id.get(stage_id)
+        if st is None:
+            sys.exit(f"the funnel run has no stage '{stage_id}', which this page names. "
+                     f"Rename it here or drop the row -- do not leave the page guessing.")
+        pct = st.get("sharePct")
+        if pct is None:
+            continue
+        lost = "" if prev is None else f"&minus;{prev - pct:.0f}"
+        prev = pct
+        last = stage_id == FUNNEL_ROWS[-1][0]
+        out.append(
+            f'        <tr style="border-bottom:1px solid var(--line)">\n'
+            f'          <td style="padding:8px 0'
+            f'{";font-weight:600" if last else ""}">{label}</td>\n'
+            f'          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);'
+            f'font-variant-numeric:tabular-nums;font-weight:600">{pct:.0f}%</td>\n'
+            f'          <td style="text-align:right;padding:8px 0;font-family:var(--mono);'
+            f'font-variant-numeric:tabular-nums;color:{TONE[tone]}">{lost}</td></tr>')
+    return "\n".join(out)
 
 
 def figures(data: list[list]) -> dict[str, object]:
@@ -294,6 +352,13 @@ def main() -> None:
         page, count=1, flags=re.S)
     if n != 1:
         sys.exit("the AGENTS block could not be replaced -- has the page been restructured?")
+
+    page, n = re.subn(
+        r"<!--FUNNEL-->.*?<!--/FUNNEL-->",
+        "<!--FUNNEL-->\n" + funnel_table() + "\n      <!--/FUNNEL-->",
+        page, count=1, flags=re.S)
+    if n != 1:
+        sys.exit("the FUNNEL block could not be replaced -- has the page been restructured?")
 
     figs = figures(data)
     page, n = re.subn(
