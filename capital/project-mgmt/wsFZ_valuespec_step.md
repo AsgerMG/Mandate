@@ -65,3 +65,22 @@ Measured in SQLite (mid-run, read-only) over `gate_key LIKE 'scheme_text_%'`:
 
 Pending encode, scheme_text rows only: **384**. Corpus-wide pending: **687**.
 308 instruments currently carry scheme_text gates.
+(Re-measured minutes later: 712 / 377 — the paid run is actively writing.)
+
+Cost, priced by probe (`count_tokens`, a free endpoint — no paid call made):
+
+- one 15-gate chunk = **3,291 input tokens**; output ~15 small JSON objects, ~900 tokens
+- Sonnet 5 intro pricing (through 2026-08-31): $2/$10 per MTok -> **~$0.016 per call**
+- projected pending at run end ~1,100 gates -> **74 calls -> ~$1.2** (~$1.7 at standard $3/$15)
+
+Use `--fresh`: without it the pass re-bills gates the encoder already looked at and
+correctly refused. Corpus-wide `--fresh` pending today is 621, of which 377 are
+scheme_text; the other 244 belong to other passes.
+
+## 4. `encode_gates.py encode` has NO publish path
+
+`main()` attaches `--publish` only to `repair-countries` and `retract-unreachable`.
+`encode` writes `value_spec` to SQLite and stops there. The specs reach Postgres via
+`encode_scheme_text_gates.py publish` (its `PUB_COLS` includes `value_spec`) — but that
+publish is scoped to `gate_key LIKE 'scheme_text_%'`, so the ~244 non-scheme_text gates
+the same encode pass would fill in are written locally and never shipped.
