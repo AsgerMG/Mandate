@@ -360,6 +360,37 @@ break-even requires a 36% relative collapse and a 98-founder estimate has a
 Raise `AGENT_SELECT_EFFORT`'s ceiling, or report the truncation count as a void
 check, before spending it.
 
+### The alternatives, priced against it
+
+**A cheap first pass, or two-stage selection.** Haiku 4.5 over the whole
+accessible pool is 19,821 input tokens (71.6 rows, measured) at $1/M, so
+**EUR 0.020** a brief, plus Sonnet's EUR 0.0626 on the eighteen it returns:
+**EUR 0.083**.
+
+Compare that with simply setting `BRIEF_VERDICT_POOL=all AGENT_SELECT_DEPTH=all`
+and letting Sonnet read the whole pool once: **EUR 0.108**, ceiling 74.8%, and
+it REMOVES a stage rather than adding one. The two-stage design saves
+EUR 0.025, cannot exceed the same 74.8% ceiling, and buys that saving by
+inserting a second model that can throw the answer away — a new instance of the
+exact failure this whole workstream is about. Its own precision over 72 rows is
+completely unmeasured.
+
+So two-stage is not the cheaper route to the same place; it is a slightly
+cheaper route to a strictly worse structure. **If the depth arm says the model
+holds up at 40, the next question is `all` at EUR 0.108, not a second model at
+EUR 0.083.** And if the depth arm says the model degrades with length, that is
+the same finding that would sink the Haiku pass, so the depth arm is the
+cheaper experiment either way — and it should be run first.
+
+**Rules that cut rows for reasons no longer true.** Checked, and two are closed:
+the **display-name collapse removes 0 answers of 820** (it demotes), and the
+**leaf cap** is inert — `shortlist.ts` records caps of 90, 103 and 250 producing
+byte-identical output on every metric and every stratum. The liveness and
+capital-type rules live inside `publishableInstruments()`, upstream of a
+population the recall set is conditioned on, so they cannot be measured this
+way at all (§2). The rule that IS still cutting is `accessiblePool`, and §5 is
+what it is really doing.
+
 ### If the answer comes back negative
 
 Then the first factor cannot be bought with depth, the model's 51% is the only
@@ -367,3 +398,47 @@ lever, and the honest next targets are the two this run already localises: the
 **4-6 band**, where the arm converts 2 of 16 against the score's 14 and the fund
 is in the published seven anyway; and `accessiblePool`, which deletes a fifth of
 all answers for zero tokens' worth of reason.
+
+---
+
+## 8. Build state
+
+`npm run check` on this branch: the same three failures as `main`, none of them
+touched by this work.
+
+| check | state | why |
+|---|---|---|
+| `check_asking_cannot_shrink` | FAIL, 1 of 672 | Aleph Alpha, `institutionalOwner="unsure"` deletes one `satr_de_rnd` row. A corpus/gate defect, pre-existing. |
+| `check_applicant_identity` | FAIL, 2 | two instruments whose "who may apply" text describes a population that cannot in fact apply. Corpus text, pre-existing. |
+| `check_corpus_census` | FAIL | census #10 DEGRADED (sector coverage 8, down from 11) and DRIFTED (the scheduled ETL is not running this checkout). ETL, pre-existing. |
+
+`check_recall_floor` after the `lib/intelligence/` edits — **all floors met, no
+drift**:
+
+```
+__recallSetDescribed.json  300 tune pairs
+  ok   pool     98% (floor 93%)
+  ok   exact5   25% (floor 15%)
+  ok   regime5  68% (floor 58%)
+       exact6   27%
+       DESCRIBED n=104  pool 98%  exact5 35%  exact6 38%  regime5 77%
+       BLANK     n=196  pool 97%  exact5 20%  exact6 21%  regime5 63%
+  ok   regime5  87% (floor 78%)  original join, n=100
+  ok   regime5  33% (floor 21%)  traced:childless_family, n=94
+  ok   regime5  80% (floor 68%)  traced:exact_attribution, n=106
+  [verdict] recall_floor = ok published as #751, code df182582798c68b0
+```
+
+`check_pool_recall_curve` and `check_contracts` pass at the default and at
+`BRIEF_VERDICT_POOL=all AGENT_SELECT_DEPTH=all`; `memoCandidates.test.ts` 10/10.
+
+## 9. What is in this branch
+
+| | |
+|---|---|
+| `scripts/_wsgd_stages.ts` | the free stage harness: rank at every seam, the blocking gate verbatim, the invented-answers arm, control invariance, prompt size at each K |
+| `lib/intelligence/caps.ts` | `VERDICT_POOL` accepts `all`; the git-sourced account of where 18 came from; the guard on `VERDICT_POOL > SELECT_DEPTH` |
+| `lib/intelligence/poolRecall.ts` | `poolRecallAtDepth`, `depthLabel`, `depthPhrase` — three harnesses would have printed 0.0% for the deepest arm there is |
+| `findings/stages_wsGD/` | the n=820 measurements |
+
+**Nothing here changes a shipped default.** `BRIEF_VERDICT_POOL` is still 18.
