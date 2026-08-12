@@ -2,16 +2,10 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsGB",
-      "step": 5,
-      "what": "Hand the choice of five to the model, and delete the arithmetic it replaces",
-      "why": "Built, verified, and waiting on the paid test finishing — because that test measures the model against the very code this change removes. Merging early would delete the thing being measured."
-    },
-    {
-      "id": "wsGC",
-      "step": 6,
-      "what": "Stop the memo writer quietly making the final cut",
-      "why": "Any fund the writer has nothing to say about vanishes from the founder's five without a word. Nobody chose it for that job. It survives the change above, so even once the model ranks the funds, the last word still belongs to the writer. First job is to count how often it actually happens — if the answer is twice in eighty-four, it is a footnote and not worth changing."
+      "id": "wsGD",
+      "step": 2,
+      "what": "Get the right fund onto the list the AI is shown",
+      "why": "We find the right fund 98% of the time and then cut it away before the model ever sees it — two founders in three are handed a list that does not contain their answer. This is now worth more than every other piece of work combined. The catch: an earlier attempt to simply show a longer list made things worse, so this has to be understood rather than turned up."
     }
   ]
 }
