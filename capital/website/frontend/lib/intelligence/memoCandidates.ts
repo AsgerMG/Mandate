@@ -397,8 +397,11 @@ export interface AssembledBriefRows {
  *
  * THE WATCH-ONLY DEMOTION (wsGK, this change). `[...actionable, ...the rest]`
  * stood where the slice below stands, sorting rows whose PROSE matched a
- * vocabulary behind rows whose prose did not. Three things made it worse than
- * the drop it replaced, not better:
+ * vocabulary behind rows whose prose did not. The first two below are why it
+ * is the same defect as the drop it replaced rather than the fix for it; the
+ * third is how often it has actually cost anything, which is less than the
+ * first two imply and is the reason this is cheap to remove rather than
+ * urgent:
  *
  *   IT EVICTED AT EVERY RANK, NOT THE LAST. The writer is shown
  *   `WRITER_CANDIDATE_CAP` (8) candidates and the brief publishes
