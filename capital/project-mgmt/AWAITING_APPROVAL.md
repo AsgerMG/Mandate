@@ -108,3 +108,38 @@ chosen and will publish. The prohibition on hedging itself is kept verbatim.
 way to see the effect is a paid bench run. `bench_report`'s watch-only counter
 is the number to read. Nothing is broken meanwhile — the change makes the
 contract agree with the code rather than contradict it.
+
+### 8. Corpus corrections wsGL proposed but did not apply
+
+Each is grounded in the funder's own page, evidence committed under
+`project-mgmt/evidence/`. None is applied, because each changes what founders
+are shown and several change the corpus itself.
+
+- **One gate row costs 16 founders.** `g1-territorio` sits on the Italian
+  state-aid parent and all 67 children inherit "the applicant must be in
+  Basilicata, Calabria or Sicily" — including Regione Lombardia's own
+  programme, whose page requires an operating base in *Lombardy*. Re-encode it
+  onto the child it actually describes.
+- **Two `borrowerModel` specs are inverted.** "Sole proprietorships are not
+  eligible" is encoded so that it excludes every incorporated company — exactly
+  whom it exists to admit.
+- **Six sector gates encode a consortium rule as an applicant rule**, which is
+  how a 6G chip company is blocked from a 6G call.
+- **The twenty "closed" funds are mostly between calls.** ADEME is running a
+  programme right now against a row we killed in March 2024. The corpus models
+  a *call*; the funder runs a *programme*. The right word — `between_calls`,
+  offerable with the caveat shown — is already in our own README and nothing
+  implements it.
+- **Poland needs coverage, not a rename.** All eight rows are our own query
+  slugs, and three of the five register names underneath are a 2015 regulation
+  and two aid *categories*. Ścieżka SMART, Kredyt technologiczny and sixteen
+  regional programmes are absent.
+- **`MIN_CHILD_EVENTS = 40` decides whether a fund exists.** It is why Lithuania
+  has one row.
+
+### 9. A check that is already failing on main
+
+`check_winner_not_gated` reports **274 wrongful deletions against a ceiling of
+207** — largest offender `sector` at 308. Same defect class as above, and not
+caused by any of last night's work. It needs a decision: fix the encodings
+underneath, or restate the ceiling with the reason.
