@@ -1,0 +1,132 @@
+(Use `node --trace-deprecation ...` to show where the warning was created)
+{
+ "asOf": "2026-08-12",
+ "evidenceRows": 193,
+ "byVerdict": {
+  "not_a_fund": 81,
+  "open": 50,
+  "unsettled": 43,
+  "between_calls": 11,
+  "retired": 8
+ },
+ "byAction": {
+  "rekey": 65,
+  "keep": 61,
+  "none": 43,
+  "suppress": 24
+ },
+ "suppress": {
+  "label": "settled non-offerable — propose removing",
+  "rowsProposed": 24,
+  "rowsActuallyInPool": 24,
+  "poolBefore": 771,
+  "poolAfter": 747,
+  "pctOfPool": 3.1,
+  "perCountry": [
+   {
+    "country": "IE",
+    "removed": 3,
+    "poolBefore": 9,
+    "poolAfter": 6,
+    "pctOfCountry": 33.3
+   },
+   {
+    "country": "SK",
+    "removed": 1,
+    "poolBefore": 3,
+    "poolAfter": 2,
+    "pctOfCountry": 33.3
+   },
+   {
+    "country": "IT",
+    "removed": 9,
+    "poolBefore": 67,
+    "poolAfter": 58,
+    "pctOfCountry": 13.4
+   },
+   {
+    "country": "FR",
+    "removed": 10,
+    "poolBefore": 89,
+    "poolAfter": 79,
+    "pctOfCountry": 11.2
+   },
+   {
+    "country": "DE",
+    "removed": 1,
+    "poolBefore": 103,
+    "poolAfter": 102,
+    "pctOfCountry": 1
+   }
+  ]
+ },
+ "rekey": {
+  "label": "wrong unit — do NOT remove until the replacement lands",
+  "rowsProposed": 65,
+  "rowsActuallyInPool": 65,
+  "poolBefore": 771,
+  "poolAfter": 706,
+  "pctOfPool": 8.4,
+  "perCountry": [
+   {
+    "country": "NO",
+    "removed": 65,
+    "poolBefore": 74,
+    "poolAfter": 9,
+    "pctOfCountry": 87.8
+   }
+  ]
+ },
+ "bothIfRekeyAlsoRan": {
+  "label": "suppress + rekey together",
+  "rowsProposed": 89,
+  "rowsActuallyInPool": 89,
+  "poolBefore": 771,
+  "poolAfter": 682,
+  "pctOfPool": 11.5,
+  "perCountry": [
+   {
+    "country": "NO",
+    "removed": 65,
+    "poolBefore": 74,
+    "poolAfter": 9,
+    "pctOfCountry": 87.8
+   },
+   {
+    "country": "IE",
+    "removed": 3,
+    "poolBefore": 9,
+    "poolAfter": 6,
+    "pctOfCountry": 33.3
+   },
+   {
+    "country": "SK",
+    "removed": 1,
+    "poolBefore": 3,
+    "poolAfter": 2,
+    "pctOfCountry": 33.3
+   },
+   {
+    "country": "IT",
+    "removed": 9,
+    "poolBefore": 67,
+    "poolAfter": 58,
+    "pctOfCountry": 13.4
+   },
+   {
+    "country": "FR",
+    "removed": 10,
+    "poolBefore": 89,
+    "poolAfter": 79,
+    "pctOfCountry": 11.2
+   },
+   {
+    "country": "DE",
+    "removed": 1,
+    "poolBefore": 103,
+    "poolAfter": 102,
+    "pctOfCountry": 1
+   }
+  ]
+ }
+}
