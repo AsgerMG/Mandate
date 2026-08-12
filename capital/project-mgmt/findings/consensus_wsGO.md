@@ -279,3 +279,33 @@ the variance this workstream was asked to average away. Output tokens are billed
 only when used, so raising `max_tokens` costs nothing on the calls that do not
 need it. **Reducing variance at the source is free; averaging it away costs 43%
 of every brief forever.** That is the order to try them in.
+
+---
+
+## Guard state
+
+**`lib/intelligence/` was not edited, so the three guard fingerprints have not
+drifted.** The only files this workstream adds are a script and this document.
+`git diff af55d2ad -- website/frontend/lib/intelligence/` is empty.
+
+The recall floor was run anyway, to state the figures rather than assume them:
+
+```
+GUARD_NO_PUBLISH=1 npx tsx scripts/check_recall_floor.ts
+  __recallSetDescribed.json  300 tune pairs, seed 20260806
+  ok   pool     98%  (floor 93%)
+  ok   exact5   25%  (floor 15%)
+  ok   regime5  68%  (floor 58%)
+       accessible 90%   exact6 27%   (reported, no floor)
+  ok   regime5  87% (floor 78%)  original join, n=100
+  ok   regime5  33% (floor 21%)  traced:childless_family, n=94
+  ok   regime5  80% (floor 68%)  traced:exact_attribution, n=106
+  verdict: ok, NOT published (GUARD_NO_PUBLISH)
+```
+
+Unchanged, as it must be. **Not mine, but it printed on the way past and should
+not be lost:** the floor flags that `organisationType` is answered for 146 of
+300 founders while `NEXT_PUBLIC_ORGANISATION_TYPE_ARM` is OFF, so those founders
+are judged against 215 cited structural gates no real founder can trip, at a
+measured cost of 4.0 points of accessible-pool recall. That belongs to whoever
+owns the intake arm.
