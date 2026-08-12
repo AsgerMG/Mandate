@@ -132,6 +132,25 @@ export function startTape(): () => string {
  * silently did not happen still surfaces, one layer out.
  */
 export async function publishVerdict(id: string, v: Verdict): Promise<void> {
+  // ── A GUARD RUN FROM AN UNMERGED BRANCH MUST NOT STAMP THE SHARED FEED ───
+  // `check_verdicts.ts` reads the LATEST verdict per guard and reports DRIFTED
+  // when its `code_fingerprint` does not match the checkout doing the reading.
+  // So a guard re-run in an agent worktree — which is how this repo works, and
+  // which the guard's own `refresh` command invites — writes a verdict bound to
+  // code that is not on main, and every build on main goes red for a change
+  // nobody merged. The fix is not to stop re-running the guards; it is to be
+  // able to re-run one for its FIGURES without claiming they cover main.
+  //
+  // Opt-in, so nothing that publishes today stops publishing, and loud, because
+  // a verdict that silently did not happen is the failure mode this whole
+  // channel exists to remove.
+  if (process.env.GUARD_NO_PUBLISH) {
+    console.log(`  [verdict] ${id} = ${v.status} NOT published (GUARD_NO_PUBLISH). `
+      + `The figures above are this checkout's; the shared feed still carries `
+      + `whatever the last merged run said, which is the honest state for a `
+      + `branch. Unset it on the run that is meant to speak for main.`);
+    return;
+  }
   const url = process.env.DATABASE_URL;
   if (!url) {
     // Not an error: a guard that skipped for want of credentials has decided
