@@ -43,6 +43,9 @@ from collections import Counter, defaultdict
 
 from liveness import NOTIFIED_DURATION  # noqa: E402
 from instrument_family import PARENT_MAP, SYNTHETIC_PARENTS, source_to_family  # noqa: E402
+from name_evidence import (  # noqa: E402
+    NAME_SOURCE_PARTITION_KEY, NAMES_PARTITION_KEY, declaration_for,
+    undeclared_error)
 from ndb_taxonomy import NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source  # noqa: E402
 from nuts_regions import delivery_region, staged_region_mix  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
@@ -234,8 +237,28 @@ CAPITAL_BY_BASIS: dict[str, str | None] = {
 # derived tables here when they are created.
 DERIVED_INSTRUMENT_TABLES = ("eligibility_clauses", "instrument_application",)
 
+# Every key here must have an entry in data/reference/register_instruments.json
+# carrying the register's OWN words for the code, and the value must be the kind
+# those words name. `ETL/schema/check_register_instrument_kinds.py` fails the
+# build otherwise -- see that file for what the silence cost.
 SATR_INSTRUMENT_MAP = {
-    "StateAidInstrumentG": "grant", "StateAidInstrumentDG": "grant",
+    # G is Guarantee and DG is Direct Grant. They were transposed here from the
+    # day the map was written: both read "grant", and `Garanti` three lines down
+    # proves the target value existed and was simply never given. The register's
+    # own words settle it -- SATR labels these codes "Guarantee" (17,023 awards)
+    # and "Direct grant/ Interest rate subsidy" -- and so does
+    # ETL/lib/satr_filters.py, which has carried `# Guarantee (generic)` next to
+    # this bid since the extractor was written.
+    #
+    # The cost of the typo was not eleven rows. It was every guarantee the
+    # register publishes: the state_aid_satr channel held 546 grants, 85 loans,
+    # 27 tax credits and ZERO guarantees against a feed publishing 17,023
+    # guarantee awards. SA.57625 Fondo di garanzia per le PMI -- the corpus's
+    # fifth-largest instrument by euro, whose own text reads "La garanzia e'
+    # attivabile solo a fronte di finanziamenti concessi da banche" -- was
+    # rendered to founders as "Grant (national government, state aid)" and was
+    # excluded from every founder who asked for guarantees.
+    "StateAidInstrumentG": "guarantee", "StateAidInstrumentDG": "grant",
     "Tilskudd": "grant",
     # Taote is "tax advantage or tax exemption" -- a distinct instrument, not a
     # grant. Collapsing it lost 7,850 events and made the intake's "Tax credits
@@ -248,7 +271,13 @@ SATR_INSTRUMENT_MAP = {
     # itself does not separate them, so neither can we. Kept as loan, and the
     # intake's recoverable-advance option maps to loan for the same reason.
     "StateAidInstrumentLradv": "loan", "StateAidInstrumentSL": "loan",
-    "Garanti": "guarantee", "StateAidInstrumentPRC": "guarantee",
+    "Garanti": "guarantee",
+    # PRC is "Provision of risk capital" in the register's own vocabulary
+    # (ETL/lib/satr_filters.py lists it under the EQUITY instrument pass, and
+    # SATR's label text on all 16 awards reads exactly that). Risk capital is
+    # equity, not a guarantee: it sat in the guarantee slot only because that
+    # slot was, until the line above, the one no register code could reach.
+    "StateAidInstrumentPRC": "equity",
     "StateAidInstrumentPRVRISKFIN": "equity",
     "StateAidInstrumentOFEI": "equity",
 }
@@ -341,6 +370,18 @@ def family_capital_type(counter: Counter) -> tuple[str, str]:
             return "blended", f"split vote {dict(real)}"
         return "undetermined", f"split vote across capital and non-capital {dict(real)}"
     return top_type, f"majority row vote ({top_n}/{total})"
+
+
+def named_by_institution_registry(family: str) -> bool:
+    """Does the NDB label registry name the institution behind this family?
+
+    `prettify` answers two different questions and returns a string either way,
+    so its callers could not tell "Bpifrance", which the NDB registry names,
+    from "SATR Pt Equity", which is the family key with the underscores taken
+    out. Anything that has to know which branch ran asks here.
+    """
+    ndb_id = classify_ndb_from_source(family + "_")
+    return bool(ndb_id and ndb_id in ALL_NDB_LABELS)
 
 
 def prettify(family: str) -> str:
@@ -628,6 +669,55 @@ def child_slug(text: str) -> str:
     out = "".join(ch for ch in out if not unicodedata.combining(ch))
     out = re.sub(r"[^a-z0-9]+", "_", out).strip("_")
     return out[:48] or "unknown"
+
+
+def child_key(row, fam: str, split_targets: set[str],
+              programme_split: set[str]) -> tuple[str, str, str] | None:
+    """Which child row this event belongs to, or None if its family does not split.
+
+    A state-aid rollup is a whole country's aid regime in one row: the right
+    unit for the curated eligibility layer, which is written against the
+    regime's framework document, and the wrong unit for a founder, who cannot
+    apply to "French R&D state aid". Underneath it sit real granting bodies
+    running real notified schemes, and this is the key that separates them.
+
+    A PROGRAMME child is keyed on the programme's own name, which is also what
+    the child will be called; nothing is synthesised, so a source publishing no
+    name simply does not split. A SCHEME child is keyed on (granting body,
+    notified scheme) -- who a founder approaches, and the legal identity of the
+    money.
+
+    ONE DEFINITION, because two callers derive rows from it: the full rebuild in
+    `main()`, and `recompute_capital_types.py`, which corrects one derived
+    column in place without destroying the eligibility layer. A comment in
+    `main()` has pointed at "child_key()" since the split was written and no
+    such function existed -- so the recompute path never had the key, silently
+    skipped every child, and left the founder-facing rows carrying whatever
+    capital type the last full rebuild gave them. That is how 13,892 awards of
+    `Fondo di garanzia per le PMI` stayed labelled `grant` through a corrected
+    map.
+    """
+    prog = (row["programme_name"] or "").strip() if row["programme_name"] else ""
+    if prog and row["source"] in programme_split:
+        return (fam, prog[:200], "")
+    if fam in split_targets and row["granting_authority"] and row["call_id"]:
+        return (fam, row["granting_authority"][:200], row["call_id"])
+    return None
+
+
+def child_instrument_id(fam: str, authority: str, scheme: str) -> str:
+    """The row id a `child_key` becomes. Same reason as `child_key`: ids must be
+    derived in one place, because the reconcile step cannot tell an id that
+    changed shape from an instrument that vanished.
+
+    `scheme` empty means a programme child: there is no notified scheme code,
+    the programme name IS the identity, and `child_slug` truncates to 48
+    characters -- programme names are long and share prefixes, so a digest of
+    the FULL name keeps ids unique and stable across runs.
+    """
+    if not scheme:
+        return f"{fam}__{child_slug(authority)}_{_name_digest(authority)}"
+    return f"{fam}__{child_slug(scheme)}__{child_slug(authority)}"
 
 
 # ── Framework-level rules ─────────────────────────────────────────────────
@@ -1083,16 +1173,7 @@ def main() -> None:
         # CHILDREN. Nothing is moved, so nothing is orphaned: the reconcile
         # above only deletes gates whose instrument disappeared, and no
         # instrument disappears here.
-        # A programme child is keyed on the programme's own NAME, which is
-        # also what it will be called. Nothing is synthesised: where a source
-        # publishes no name, it simply does not split.
-        prog = (r["programme_name"] or "").strip() if r["programme_name"] else ""
-        if prog and r["source"] in programme_split:
-            key = (fam, prog[:200], "")
-        elif fam in split_targets and r["granting_authority"] and r["call_id"]:
-            key = (fam, r["granting_authority"][:200], r["call_id"])
-        else:
-            key = None
+        key = child_key(r, fam, split_targets, programme_split)
         if key:
             c = child_rows.setdefault(key, dict(
                 events=0, eur=0.0, companies=set(), years=[],
@@ -1133,6 +1214,12 @@ def main() -> None:
         return counter.most_common(1)[0][0] if counter else None
 
     now = []
+    # Families whose name is nothing but a mechanical re-casing of their own id
+    # and whose feed has not said whether that key came from a source record or
+    # from our own query partitioning. Collected across the whole pass and
+    # raised once at the end, so a new feed gets ONE list to answer rather than
+    # a rebuild that dies on its first family and hides the other nine.
+    undeclared_families: set[str] = set()
     for fam in sorted(all_ids):
         is_framework = 0
         parent_id = PARENT_MAP.get(fam)
@@ -1147,6 +1234,7 @@ def main() -> None:
         if fam in dict(FRAMEWORK_INSTRUMENTS):
             is_framework = 1
             name = dict(FRAMEWORK_INSTRUMENTS)[fam]
+            name_source = "curated"
             capital_type, capital_basis = "framework", "framework record (no events)"
             country = "EU"
             ndb_id = None
@@ -1154,7 +1242,28 @@ def main() -> None:
             sample_titles = None
         else:
             name = OVERRIDE_NAMES.get(fam) or prettify(fam)
-            name_source = "curated" if fam in OVERRIDE_NAMES else "deterministic"
+            # ── Who named this row ───────────────────────────────────────────
+            # A mechanical re-casing of the family key is not a name, it is the
+            # id with its underscores taken out, and the corpus has to say so:
+            # eleven such labels were reaching founders' menus as funds. Which
+            # of the two `prettify` produced cannot be read off the row, so the
+            # answer is DECLARED per feed in
+            # data/reference/family_name_evidence.json and asserted below.
+            # See ETL/lib/name_evidence.py for the property and the over-fire
+            # that makes inference unusable here.
+            if fam in OVERRIDE_NAMES:
+                name_source = "curated"
+            elif named_by_institution_registry(fam):
+                name_source = "deterministic"
+            else:
+                decl = declaration_for(fam)
+                if decl is None:
+                    undeclared_families.add(fam)
+                    name_source = "deterministic"
+                elif decl["names"] == NAMES_PARTITION_KEY:
+                    name_source = NAME_SOURCE_PARTITION_KEY
+                else:
+                    name_source = "deterministic"
             if events == 0:
                 capital_type, capital_basis = "unknown", "synthetic rollup, no direct events"
             else:
@@ -1204,7 +1313,7 @@ def main() -> None:
 
         now.append(dict(
             id=fam, parent_id=parent_id, name=name,
-            name_source="curated" if (fam in OVERRIDE_NAMES or is_framework) else "deterministic",
+            name_source=name_source,
             country=country, administering_body=administering_body,
             administering_body_share=administering_body_share, ndb_id=ndb_id,
             source_family_bucket=source_family_bucket, capital_type=capital_type,
@@ -1216,6 +1325,13 @@ def main() -> None:
             sector_mix=json.dumps(dict(fam_sector_votes.get(fam, Counter()).most_common(8)))
                        if fam_sector_votes.get(fam) else None,
         ))
+
+    # Before anything is written. A family nobody has answered for is a row the
+    # corpus cannot say is a fund, and shipping it either way is a guess: keep
+    # it and a register artefact reaches a founder's menu as an offer; drop it
+    # and a real fund vanishes from every founder in its country.
+    if undeclared_families:
+        raise SystemExit(undeclared_error(sorted(undeclared_families)))
 
     # ── Children of the state-aid rollups ────────────────────────────────────
     # One row per (granting body, notified scheme). The body is who a founder
@@ -1246,15 +1362,7 @@ def main() -> None:
         # name. That is the whole point — "Tremplin pour la transition
         # ecologique des PME" is what a founder applies to, not "ADEME".
         is_programme = not scheme
-        # child_slug truncates to 48 characters, and programme names are long
-        # and share prefixes ("Aides aux actions en faveur de la transition
-        # ecologique ..."), so the slug alone collides. A short digest of the
-        # FULL name keeps ids unique and, more importantly, stable: ids must not
-        # move between runs, because the reconcile step cannot tell a renamed
-        # instrument from a vanished one.
-        child_id = (f"{fam}__{child_slug(authority)}_{_name_digest(authority)}"
-                    if is_programme
-                    else f"{fam}__{child_slug(scheme)}__{child_slug(authority)}")
+        child_id = child_instrument_id(fam, authority, scheme)
         # A scheme's OWN aid objective, not its regime's. Schemes under one
         # regime run under different GBER articles -- 9 distinct objectives
         # across satr_fr_rnd's 61 schemes -- and those articles carry different

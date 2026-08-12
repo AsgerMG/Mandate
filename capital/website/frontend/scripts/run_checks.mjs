@@ -106,6 +106,21 @@ const CHECKS = [
   ["liveness has one definition", ["npx", "tsx", "scripts/check_liveness.ts"]],
   ["openness is evidenced", ["npx", "tsx", "scripts/check_window_evidence.ts"]],
   ["offer routes are sourced", ["npx", "tsx", "scripts/check_offer_route.ts"]],
+  // Directly beneath it because it is the same class of question one step
+  // earlier: that one asks whether a row is an OFFER, this one whether it is an
+  // OBJECT. Twelve rows the loader had named after its own partition keys were
+  // in founders' pools -- Poland's ENTIRE pool was eight of them -- and every
+  // check in this list was green.
+  ["a row is named by something outside its id",
+   ["npx", "tsx", "scripts/check_name_evidence.ts"]],
+  // Hermetic Python: the register's own words for each aid-instrument code,
+  // our decision about what kind of capital that is, and the committed corpus
+  // snapshot. It sits here rather than with the other corpus checks because
+  // what it watches is a whole KIND of capital going missing: G (Guarantee) and
+  // DG (Direct grant) were transposed, and the corpus held zero guarantees from
+  // a feed publishing 17,023 guarantee awards.
+  ["capital kinds match the register",
+   ["python3", "../../ETL/schema/check_register_instrument_kinds.py"]],
   ["regions match NUTS", ["npx", "tsx", "scripts/check_regions.ts"]],
   ["theme index is not stale", ["npx", "tsx", "scripts/check_theme_index.ts"]],
   // The base rate the SELECTOR IS TOLD. A stale curve here does not degrade a
