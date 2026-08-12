@@ -96,6 +96,54 @@ AGENCIES: list[dict] = [
     # browser, which is the line already drawn in verify() below. They are
     # recorded here as refusing automated access, so nobody re-researches them
     # and quietly crosses it. Their 14 funds keep the measured descriptor.
+    #
+    # ── Norway, re-researched 2026-08-12 while building the calls harvest ──
+    # The question was "which Norwegian funder publishes calls a founder can
+    # apply to today". Four candidates beyond Forskningsradet, all rejected,
+    # each for a DIFFERENT reason -- which is why they are listed separately
+    # rather than as one "no":
+    #
+    #   Innovasjon Norge   403 to automated clients, re-confirmed. Not merely a
+    #                      User-Agent check: a full Chrome UA string plus
+    #                      Accept-Language on www.innovasjonnorge.no/no/
+    #                      finansiering/ still returns 403. The bulk award CSV
+    #                      keeps working because it is served from a different
+    #                      host (Azure blob), which is why the EVENTS layer is
+    #                      healthy while the website is unreachable. Nothing has
+    #                      changed since 2026-08-01; the line still holds.
+    #
+    #   Siva               Rejected on SUBSTANCE, not access, and that is the
+    #                      stronger reason -- getting in would not help. Siva
+    #                      funds incubators and industrial parks, which then
+    #                      support companies; a founder does not apply to Siva.
+    #                      Already recorded at project-mgmt/archive/
+    #                      gap_analysis_2026.md:308. Unchanged.
+    #
+    #   Enova              Reachable and genuinely publishes applicable support
+    #                      programmes with an open/closed statement in prose
+    #                      ("Neste soknadsfrist: Apent na", "Dette programmet er
+    #                      alltid apent og har ikke faste soknadsfrister"). But
+    #                      it publishes NO machine-readable calls feed: the site
+    #                      is Next.js over Sanity with no public query endpoint,
+    #                      and data.enova.no is an Azure API Management portal
+    #                      whose API list is empty until you register for a key.
+    #                      So the only route is an HTML scrape of the
+    #                      `stottetilbud` pages under each of its six business
+    #                      sectors. Deferred, not refused: it is a real source,
+    #                      it is simply the brittle kind, and Forskningsradet's
+    #                      register answers the same question with an API.
+    #
+    #   EEA/Norway Grants  Not a Norwegian fund for a Norwegian founder at all.
+    #                      Norway is the DONOR. The scheme's own country list is
+    #                      Bulgaria, Croatia, Cyprus, Czechia, Estonia, Greece,
+    #                      Hungary, Latvia, Lithuania, Malta, Poland, Portugal,
+    #                      Romania, Slovakia, Slovenia -- Norway is not on it.
+    #                      A Norwegian company can be a donor project partner in
+    #                      a beneficiary state's project, but the grant is
+    #                      awarded to the beneficiary there, not to the
+    #                      Norwegian firm. (Worth noting for a DIFFERENT
+    #                      workstream: all fifteen ARE in the 40-country scope,
+    #                      and eeagrants.org publishes a Calls page.)
     {
         "match": "enterprise_ireland_%",
         "agency": "Enterprise Ireland",
