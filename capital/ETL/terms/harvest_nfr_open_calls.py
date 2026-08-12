@@ -61,19 +61,23 @@ only one is a date:
                                           in lib/intelligence/liveness.ts — a
                                           statement, not a silence.
 
-36 of 65 current calls are "Løpende", so a loader that required a parseable
-date would drop more than half the register, and one that invented an end date
-for them would fabricate a closure. Both dates and the rolling statement are
-carried through; neither is guessed.
+15 of the 27 open business calls are "Løpende", so a loader that required a
+parseable date would drop more than half of them, and one that invented an end
+date for them would fabricate a closure. Both dates and the rolling statement
+are carried through; neither is guessed. A call whose window is neither — see
+`window()` — is reported and carried as unknown, which is a third thing and not
+a quiet default to either.
 
 ── What the detail page adds, and why it is worth the second request ──────
-The listing gives id, title, url, deadline label, status, tags and the
-`metadata` triple (available funds / support limits / duration). The detail page
-carries the rest of what an instrument row needs, as JSON embedded in
-`window.__REACT_COMPONENTS__` under the `TibiProposalPage` component:
+The listing gives id, title, url, a truncated deadline ("9. sep.", no year),
+status, tags and the `metadata` triple (available funds / support limits /
+duration). Everything else an instrument row needs is on the call's own page,
+as a JSON object literal inside `window.__REACT_COMPONENTS__` — under one of
+TWO component names, which is not cosmetic; see `COMPONENTS` below. From the
+richer of the two:
 
-  metadataLeft   Finansieringsordning, Søknadsfrist (FULL date + time + tz),
-                 Hvem retter utlysningen seg mot, Portefølje, Status
+  metadataLeft   Finansieringsordning, the `*frist*` labels (FULL date + time
+                 + tz), Hvem retter utlysningen seg mot, Portefølje, Status
   metadataRight  Støttegrenser, Antatt tilgjengelige midler, Prosjektvarighet,
                  earliest/latest permitted project start
   tabs           contentSections — "Hvem kan søke?" / "Hvem kan delta i
@@ -81,9 +85,8 @@ carries the rest of what an instrument row needs, as JSON embedded in
   applyButton    the real application URL (tibi.forskningsradet.no)
   byline         Publisert / Oppdatert dates
 
-The listing's date is truncated to "9. sep." with no year, so the full deadline
-is only available per call. 65 calls is 65 requests, which is why this harvest
-caches and is polite.
+27 open business calls is 27 requests, which is why this harvest caches and
+sleeps between them.
 
 The page also emits schema.org `Grant` JSON-LD, but it holds only id, name, a
 truncated description and the url — strictly less than the React payload, and
@@ -200,35 +203,120 @@ def is_open(p: dict) -> bool:
     return status_of(p)[0] == OPEN_THEME
 
 
-def parse_deadline(text: str) -> tuple[str | None, str]:
-    """(ISO date or None, window basis) for a Søknadsfrist string.
+def parse_date(text: str) -> str | None:
+    """ISO date from a Norwegian date string, or None. Ignores any time suffix.
 
-    Returns one of:
-      ("2026-09-09", "call_deadline")      a stated closing date
-      (None, "declares_open_ended")        the register states it is rolling
-      (None, "unparsed")                   a form this function does not know,
-                                           which the caller must surface rather
-                                           than treat as either of the above
+    Handles both the full form the detail page uses ("9. september 2026, kl.
+    13.00 CEST") and the abbreviated form its timeline uses ("1. jan. 2027").
     """
-    t = (text or "").strip()
-    if not t:
-        return None, "unparsed"
-    if t.casefold().startswith(ROLLING.casefold()):
-        return None, "declares_open_ended"
-    m = re.match(r"(\d{1,2})\.\s*([A-Za-zæøåÆØÅ]+)\.?\s*(\d{4})", t)
+    m = re.match(r"\s*(\d{1,2})\.\s*([A-Za-zæøåÆØÅ]+)\.?\s*(\d{4})", text or "")
     if not m:
-        return None, "unparsed"
+        return None
     month = _MONTHS_NO.get(m.group(2).casefold().rstrip("."))
     if not month:
-        return None, "unparsed"
+        return None
     try:
-        return dt.date(int(m.group(3)), month, int(m.group(1))).isoformat(), "call_deadline"
+        return dt.date(int(m.group(3)), month, int(m.group(1))).isoformat()
     except ValueError:
-        return None, "unparsed"
+        return None
 
 
-def detail(url_path: str) -> dict | None:
-    """The TibiProposalPage props for one call, or None.
+def deadlines(props: dict) -> list[tuple[str, str, str | None]]:
+    """Every application deadline the detail page states, as (label, text, iso).
+
+    ── Why a label PROPERTY and not a list of labels ──────────────────────
+    The register does not use a fixed deadline vocabulary. Across the 27 open
+    business calls on 2026-08-12 it wrote, for the same kind of fact:
+
+        "Søknadsfrist"
+        "Søknadsfrist for skisser"
+        "Søknadsfrist for full søknad etter invitasjon"
+        "Frist for å sende inn skisse"
+        "Frist for inviterte til å sende inn fullstendig søknad"
+
+    These are sentences, composed per call. Enumerating them would silently
+    drop the next phrasing someone types, and the failure would be invisible:
+    the call would simply arrive with no deadline and be treated as rolling.
+    The property is that a Norwegian deadline label contains the word `frist`,
+    and the test for an unseen case is exactly that.
+
+    Restricted to `metadataLeft`, which is where the register puts the
+    application window. `metadataRight` holds project facts (permitted start
+    dates, duration) and the timeline block holds things like SkatteFUNN's
+    `Garantifrist` -- a processing guarantee, not a door closing.
+    """
+    out = []
+    for it in ((props.get("metadataLeft") or {}).get("items") or []):
+        label = (it.get("label") or "").strip()
+        if "frist" not in label.casefold():
+            continue
+        text = (it.get("text") or "").strip()
+        out.append((label, text, parse_date(text)))
+    return out
+
+
+def window(props: dict) -> tuple[str | None, str, str]:
+    """(ISO entry deadline or None, window basis, the label it came from).
+
+    ── Which deadline closes the door on a founder ────────────────────────
+    A two-stage call states two: a sketch deadline, and a full-application
+    deadline "etter invitasjon" / "for inviterte". Only the FIRST is a door a
+    new applicant can walk through -- the second is reachable only by someone
+    already invited through the first. So the entry deadline is the EARLIEST
+    stated one, not the latest.
+
+    Taking the latest would have told a founder that M-ERA.NET's 2026 call was
+    open until 18 November when entry actually shut on 12 May. Taking the
+    earliest is also the conservative direction for liveness: it can retire a
+    row while a later stage is still running, which withholds a fund nobody
+    new could join anyway.
+
+    Basis values match SCHEME_END_BASIS / SOURCE_WINDOW_POLICY in
+    website/frontend/lib/intelligence/liveness.ts.
+    """
+    ds = deadlines(props)
+    if not ds:
+        return None, "unstated", ""
+    if all(t.casefold().startswith(ROLLING.casefold()) for _, t, _ in ds):
+        return None, "declares_open_ended", ds[0][0]
+    dated = [(iso, label) for label, _, iso in ds if iso]
+    if not dated:
+        return None, "unparsed", ds[0][0]
+    iso, label = min(dated)
+    return iso, "call_deadline", label
+
+
+# The register renders a call through one of two React components, and they are
+# NOT the same record. Discovered by harvesting all 27 open business calls:
+# 16 of them returned nothing until the second name was added.
+#
+#   TibiProposalPage  Forskningsrådet's OWN calls. Carries `tabs` ->
+#                     contentSections ("Hvem kan søke?", "Hvem kan delta i
+#                     prosjektet?") -- the eligibility prose -- plus
+#                     `applyButton` pointing at the tibi portal, and the
+#                     Støttegrenser / Antatt tilgjengelige midler figures.
+#   ProposalPage      INTERNATIONAL joint calls (ERA-NET, EuroHPC, CETP,
+#                     M-ERA.NET, partnership co-funds). No tabs, no
+#                     applyButton and no support limits -- because the money
+#                     and the application both run through the international
+#                     consortium, and Forskningsrådet is describing a call it
+#                     does not itself operate. It states the deadline, the
+#                     programme and the target groups, and nothing more.
+#
+# Both are admitted, but the difference is recorded per row as `page_shape`
+# rather than smoothed away: an international row genuinely has less evidence
+# behind it, and a loader that cannot see which kind it holds would assert an
+# eligibility text for rows that have none.
+COMPONENTS = ("TibiProposalPage", "ProposalPage")
+
+# The two components label the same fact differently. Aliases are ordered and
+# the first present wins; an unlabelled field stays empty rather than guessing.
+TARGET_GROUP_LABELS = ("Hvem retter utlysningen seg mot", "Målgrupper")
+THEME_LABELS = ("Portefølje", "Aktuelle temaområder")
+
+
+def detail(url_path: str) -> tuple[dict, str] | None:
+    """(props, component name) for one call, or None.
 
     The props are a JSON object literal inside a script tag, so it is read with
     a JSON decoder positioned at the opening brace rather than by regex -- the
@@ -238,48 +326,60 @@ def detail(url_path: str) -> dict | None:
     html = fetch_text(SITE + url_path, timeout=60)
     if not html:
         return None
-    marker = 'name: "TibiProposalPage"'
-    i = html.find(marker)
-    if i < 0:
-        return None
-    j = html.find("props: ", i)
-    if j < 0:
-        return None
-    try:
-        obj, _ = json.JSONDecoder().raw_decode(html[j + len("props: "):])
-        return obj
-    except ValueError:
-        return None
+    for name in COMPONENTS:
+        i = html.find(f'name: "{name}"')
+        if i < 0:
+            continue
+        j = html.find("props: ", i)
+        if j < 0:
+            continue
+        try:
+            obj, _ = json.JSONDecoder().raw_decode(html[j + len("props: "):])
+        except ValueError:
+            continue
+        return obj, name
+    return None
 
 
-def _labelled(props: dict, block: str, label: str) -> str:
-    for it in ((props.get(block) or {}).get("items") or []):
-        if (it.get("label") or "").strip().casefold() == label.casefold():
-            return (it.get("text") or "").strip()
+def _labelled(props: dict, block: str, *labels: str) -> str:
+    """First of `labels` present in `block`, verbatim. Empty if none are."""
+    items = (props.get(block) or {}).get("items") or []
+    for label in labels:
+        for it in items:
+            if (it.get("label") or "").strip().casefold() == label.casefold():
+                return (it.get("text") or "").strip()
     return ""
 
 
-def summarise(props: dict) -> dict:
+def summarise(props: dict, component: str) -> dict:
     """The fields an instrument row needs, verbatim from the detail page."""
-    deadline_text = _labelled(props, "metadataLeft", "Søknadsfrist")
-    iso, basis = parse_deadline(deadline_text)
+    iso, basis, label = window(props)
     sections = (((props.get("tabs") or {}).get("items") or [{}])[0]
                 .get("content", {}).get("tibi", {}).get("contentSections") or [])
     return {
+        "page_shape": component,
         "title": (props.get("title") or "").strip(),
         "scheme": _labelled(props, "metadataLeft", "Finansieringsordning"),
-        "deadline_text": deadline_text,
+        "programme": _labelled(props, "metadataLeft", "Program"),
+        # Every deadline the page states, kept whole. The entry deadline below
+        # is derived from these and the derivation must stay auditable.
+        "deadlines": [{"label": la, "text": t, "iso": i}
+                      for la, t, i in deadlines(props)],
+        "deadline_label": label,
         "deadline_iso": iso,
         "window_basis": basis,
-        "target_groups": _labelled(props, "metadataLeft",
-                                   "Hvem retter utlysningen seg mot"),
-        "portfolio": _labelled(props, "metadataLeft", "Portefølje"),
+        "target_groups": _labelled(props, "metadataLeft", *TARGET_GROUP_LABELS),
+        "portfolio": _labelled(props, "metadataLeft", *THEME_LABELS),
         "status_text": _labelled(props, "metadataLeft", "Status"),
         "support_limits": _labelled(props, "metadataRight", "Støttegrenser"),
         "available_funds": _labelled(props, "metadataRight",
                                      "Antatt tilgjengelige midler"),
         "duration": _labelled(props, "metadataRight", "Prosjektvarighet"),
+        # NULL on every international row, and left empty rather than
+        # back-filled with the call page: "where you apply" is a claim, and the
+        # call page is where you READ about applying.
         "apply_url": ((props.get("applyButton") or {}).get("url") or "").strip(),
+        "is_international": bool(props.get("isInternational")),
         "section_titles": [(s.get("sectionTitle") or "").strip() for s in sections],
         "status_themes": [s.get("theme") for s in (props.get("statusList") or [])],
     }
@@ -349,28 +449,58 @@ def main() -> None:
         return
 
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    bases = Counter()
+    bases, shapes = Counter(), Counter()
+    shut: list[tuple[str, str, str]] = []
+    today = dt.date.today().isoformat()
     written = 0
     for p in live:
-        props = detail(p["url"])
-        if not props:
+        got = detail(p["url"])
+        if not got:
             print(f"    no detail payload: {p['url']}", file=sys.stderr)
             continue
-        rec = summarise(props)
+        props, component = got
+        rec = summarise(props, component)
         rec.update(call_id=str(p.get("id")), url=SITE + p["url"], country=country,
                    fetched_at=dt.datetime.now().isoformat(timespec="seconds"))
         (CACHE_DIR / f"{rec['call_id']}.json").write_text(
             json.dumps(rec, ensure_ascii=False, indent=1), encoding="utf-8")
         bases[rec["window_basis"]] += 1
+        shapes[component] += 1
+        if rec["deadline_iso"] and rec["deadline_iso"] < today:
+            shut.append((rec["deadline_iso"], rec["deadline_label"], rec["title"]))
         written += 1
         time.sleep(0.3)
 
-    print(f"\n  cached {written} open calls -> {CACHE_DIR}")
+    print(f"\n  cached {written} of {len(live)} open calls -> {CACHE_DIR}")
     print(f"  window basis: {dict(bases)}")
-    if bases.get("unparsed"):
-        print(f"  {bases['unparsed']} deadlines in an unrecognised form — "
-              f"these must not be loaded as either dated or open-ended",
+    print(f"  page shape  : {dict(shapes)}")
+    if written < len(live):
+        print(f"  {len(live) - written} open calls yielded no detail payload — "
+              f"the register renders them through a component this harvest does "
+              f"not know; they must not be loaded from listing data alone",
               file=sys.stderr)
+    # `unstated` means the page carried no `*frist*` label at all; `unparsed`
+    # means it carried one whose value is neither a date nor "Løpende". Both are
+    # states in which the window is unknown, and a row with an unknown window
+    # must not be loaded as dated OR as open-ended -- those are the two claims
+    # the corpus makes about a window, and neither is available here.
+    for state in ("unstated", "unparsed"):
+        if bases.get(state):
+            print(f"  {bases[state]} calls with an {state} application window — "
+                  f"these must not be loaded as either dated or open-ended",
+                  file=sys.stderr)
+
+    # The case the two-stage rule exists for, counted rather than hidden. The
+    # register says "Søk nå" because a later stage is still running, while the
+    # stage that admits a NEW applicant has already shut. Both statements are
+    # true and they disagree about the only question a founder is asking, so
+    # the disagreement is reported: a loader must retire these, and if the count
+    # is ever large the rule deserves re-reading, not silent trust.
+    if shut:
+        print(f"\n  {len(shut)} of {written} are open per the register but their "
+              f"ENTRY deadline has passed — a new applicant cannot join:")
+        for iso, label, title in sorted(shut):
+            print(f"    {iso}  {label[:44]:44}  {title[:46]}")
 
 
 if __name__ == "__main__":
