@@ -312,3 +312,45 @@ not one figure moved**: pool 98% (floor 93), exact5 25% (15), regime5 68% (58),
 87% (78), 33% (21), 80% (68). It is insensitive to this change by construction:
 its `pool` counts the candidate table and its EXACT@5 reads the instant screen's
 six rows, both of which sit outside this cut.
+
+`npm run check`, run on this branch and on a `main` worktree with the same
+`GUARD_NO_PUBLISH=1`:
+
+```
+branch   10 of 51 failed: a comparator asks the rule's question, theme index is
+                          not stale, a filter can admit someone, open questions
+                          still cover the corpus, a winner is never gated out of
+                          the memo, asking a question never costs a fund, gate
+                          pertinence, applicant identity, site serves the ETL's
+                          corpus, published verdicts
+main     10 of 51 failed: (byte-identical list)
+```
+
+**No new red.** The one that most looks like mine is not: `a winner is never
+gated out of the memo` reads 274 against a ceiling of 207 on this branch and
+**274 on `main`** — it measures `accessiblePool`, which runs before this cut, and
+`check_winner_not_gated.ts` never imports `VERDICT_POOL`. That is wsGL's ground.
+
+`published verdicts` fails on both, on `main` for the pre-existing census
+DEGRADED. On this branch it additionally reports DRIFTED for six guards, which is
+the correct and expected consequence of editing `lib/intelligence/` with
+`GUARD_NO_PUBLISH=1`: the fingerprints moved and this worktree deliberately did
+not re-stamp the shared feed under `main`'s name. It clears when the guards run
+from `main` after a merge.
+
+`npx tsc --noEmit` clean; `npx vitest run` 641 of 641.
+
+---
+
+## 7. What happens next, and who owns it
+
+1. **The paid run** — item 2 of `AWAITING_APPROVAL.md`, EUR 11-13, unchanged in
+   design. Raise `MAX_TOKENS_BY_EFFORT` first and report the truncation count as
+   a void check (§4). Read the **population** figure, `ceiling x conditional`,
+   never the in-pool one: the two arms condition on different ceilings.
+2. **`all` is one clause away** and worth another 12.8 points of ceiling. It
+   needs `AGENT_SELECT_DEPTH` moved with it and 60/`all` measured onto the curve.
+   Settle the model's behaviour at 40 first.
+3. **The writer's cap is now what binds** — 28.1 points in one row. wsGI's.
+4. **`accessiblePool` still deletes the answer for 79 of 897** before any K
+   applies, and no depth recovers one. wsGL's.
