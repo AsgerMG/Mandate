@@ -77,6 +77,10 @@ const GUARD = "corpus_currency";
 const tape = startTape();
 
 import { isClosed, today } from "../lib/intelligence/liveness";
+// The ONE normaliser. `profileLeakIndex.generated.json` stores the squashed
+// form, Python squashes it on the way in, and this is the implementation the
+// artifact's own `squashProbes` are the cross-language contract for.
+import { squash } from "../lib/intelligence/recallLeaks";
 
 interface SnapshotRecord {
   id: string;
@@ -122,6 +126,11 @@ async function main() {
   await client.connect();
   let live: LiveRow[], profileMissing: number, profileOrphan: number, profiles: number;
   let profileIds: Set<string>, textProfileIds: Set<string>;
+  /** instrument id -> the profile string the LIVE index is embedded from. The
+   *  id set says which funds the index can rank; this says what it ranks them
+   *  ON, and only the second can see a rebuild that rewrote the text under an
+   *  unchanged id. */
+  let liveProfileText: Map<string, string>;
   try {
     live = (await client.query<LiveRow>(
       `SELECT id, name, scheme_end_date, scheme_end_date_basis, last_year, successor_scheme
@@ -142,10 +151,12 @@ async function main() {
       "SELECT instrument_id FROM instrument_profiles WHERE embedding IS NOT NULL"
     )).rows.map((r: { instrument_id: string }) => r.instrument_id));
     profiles = profileIds.size;
-    textProfileIds = new Set((await client.query(
-      `SELECT instrument_id FROM instrument_profiles
+    liveProfileText = new Map((await client.query(
+      `SELECT instrument_id, profile_text FROM instrument_profiles
         WHERE profile_text IS NOT NULL AND btrim(profile_text) <> ''`
-    )).rows.map((r: { instrument_id: string }) => r.instrument_id));
+    )).rows.map((r: { instrument_id: string; profile_text: string }) =>
+      [r.instrument_id, r.profile_text] as [string, string]));
+    textProfileIds = new Set(liveProfileText.keys());
   } finally {
     await client.end();
   }
@@ -205,9 +216,29 @@ async function main() {
   }
 
   // ── 3. EVERY offline mirror of the index must answer for the same corpus ──
-  // Compared on the ID SET, not on a count and not on a mtime. A count matches
+  // Compared on the CONTENT, not on a count and not on a mtime. A count matches
   // by coincidence the moment one fund is added and another withdrawn, and a
   // timestamp says when the file was written rather than what is in it.
+  //
+  // It was compared on the ID SET until 2026-08-12, and that is a weaker
+  // question than the one this section claims to ask. `build_instrument_profiles`
+  // rewrites `profile_text` IN PLACE: the ids do not move, the row count does
+  // not move, and the vectors every ranking is drawn from are new. On 2026-08-12
+  // the live index held 1,088 ids, the committed mirrors held the same 1,088,
+  // this check printed "ok — 1088 instruments, 1088 embedded profiles", and 513
+  // of those profiles had been rewritten under it. `check_hydration_parity` went
+  // red three archetypes deep with no way to name the cause.
+  //
+  // So the property is restated to the one the section header always claimed:
+  //
+  //     a committed mirror of the retrieval index must REPRODUCE the index the
+  //     live table holds -- not merely list the same funds
+  //
+  // The leak index is the mirror that can be held to it exactly, because it
+  // carries the profile strings themselves. The semantic cache carries only
+  // scores, which cannot be recomputed without the Voyage key, so it is re-cut
+  // WITH the leak index rather than tested separately: both are cut from
+  // `instrument_profiles`, and a rebuild that moves one has moved the other.
   //
   // Two artifacts are cut from `instrument_profiles` and committed, and BOTH
   // were found 70 instruments behind on 2026-08-07:
@@ -224,11 +255,13 @@ async function main() {
   // checking 1,014 of 1,084 profiles reports green over the other 70.
   const leakFile = path.join(process.cwd(), "lib", "intelligence", "profileLeakIndex.generated.json");
   let leakIds: Set<string> | null = null;
+  let leakText: Record<string, string> = {};
   let leakBuiltAt = "";
   try {
     const idx = JSON.parse(readFileSync(leakFile, "utf8")) as
       { profile: Record<string, string>; builtAt?: string };
-    leakIds = new Set(Object.keys(idx.profile ?? {}));
+    leakText = idx.profile ?? {};
+    leakIds = new Set(Object.keys(leakText));
     leakBuiltAt = idx.builtAt ?? "(unstamped)";
   } catch {
     problems.push(`lib/intelligence/profileLeakIndex.generated.json is missing or ` +
@@ -252,6 +285,36 @@ async function main() {
         `      from the set — which is the exact defect that artifact exists to catch.\n` +
         `      Rebuild: DATABASE_URL=... python3 ETL/terms/emit_profile_leak_index.py` +
         (missing.length ? `\n      e.g. missing ${missing.slice(0, 3).join(", ")}` : ""));
+    }
+    // ── The same mirror, on its CONTENT ──────────────────────────────────
+    // The artifact stores the squashed form, so the live side is squashed by
+    // `squash` from lib/intelligence/recallLeaks.ts -- the one implementation
+    // `check_recall_leaks` already reads this file through, and the one the
+    // artifact's own `squashProbes` are the contract for. Re-squashing here
+    // with a private regex would be a second normaliser, which is the exact
+    // duplication that let the original leak live.
+    const rewritten = [...leakIds].filter((id) => {
+      const live = liveProfileText.get(id);
+      return live !== undefined && squash(live) !== leakText[id];
+    });
+    if (rewritten.length) {
+      problems.push(
+        `${rewritten.length} of the ${leakIds.size} profile(s) in the committed mirrors were ` +
+        `REWRITTEN\n      in the live index after those mirrors were cut ` +
+        `(leak index built ${leakBuiltAt}).\n` +
+        `      The ids are unchanged, so every id-set comparison above passes; what the\n` +
+        `      index RANKS ON is not what the committed copies hold. Two consequences,\n` +
+        `      and the second is the one that is invisible:\n` +
+        `        - check_recall_leaks tests the recall set against text that has moved,\n` +
+        `          so a description that now leaks into a rewritten profile is not seen.\n` +
+        `        - semanticCache.generated.json is cut from these same rows, and every\n` +
+        `          NO_PG check ranks on it. Its scores are percentile ranks over the\n` +
+        `          whole corpus, so a rewrite anywhere moves the score of every fund --\n` +
+        `          including the ones whose own text did not change.\n` +
+        `      Re-cut BOTH mirrors of the index, in this order:\n` +
+        `        DATABASE_URL=... python3 ETL/terms/emit_profile_leak_index.py\n` +
+        `        cd website/frontend && npx tsx scripts/emit_semantic_cache.ts\n` +
+        `      e.g. ${rewritten.slice(0, 3).join(", ")}`);
     }
   }
 

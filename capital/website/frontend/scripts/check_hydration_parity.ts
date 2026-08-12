@@ -129,6 +129,12 @@ async function main() {
   // run -- and the reverse is another. Reported once at the end rather than
   // guessed at per archetype.
   let screenOnlyLive = 0, screenOnlyFallback = 0;
+  // Every difference this check can record, split into the ones that are about
+  // WHICH FUNDS the two stores hold and the ones that are about the ORDER they
+  // put the same funds in. Counted rather than inspected afterwards, because
+  // the diagnosis below turns on the distinction and reading it back out of
+  // formatted strings is how a guard comes to misattribute its own failure.
+  let orderOnlyDiffs = 0, corpusDiffs = 0;
 
   // ── Corpus level: the two stores may differ by the policy and nothing else ─
   const jc = json.__corpus, pc = pg.__corpus;
@@ -150,6 +156,7 @@ async function main() {
   const suppressed = new Set(jc.suppressed);
   const inventedByFallback = jc.publishable.filter((id) => !pgOfferable.has(id));
   if (inventedByFallback.length) {
+    corpusDiffs++;
     problems.push(
       `the fallback corpus would offer ${inventedByFallback.length} fund(s) the live ` +
       `register withholds. That is the harm this whole policy exists to stop.\n` +
@@ -158,6 +165,7 @@ async function main() {
   const lostUnaccounted = pc.publishable
     .filter((id) => !jsonOfferable.has(id) && !suppressed.has(id));
   if (lostUnaccounted.length) {
+    corpusDiffs++;
     problems.push(
       `${lostUnaccounted.length} fund(s) are offerable on Postgres, absent from the ` +
       `fallback, and NOT among the ${suppressed.size} the degradation policy withheld.\n` +
@@ -229,6 +237,7 @@ async function main() {
     const rankedOfferable = new Set(rc.publishable);
     const notHeld = handicap.filter((id) => rankedOfferable.has(id));
     if (notHeld.length) {
+      corpusDiffs++;
       problems.push(
         `the re-ranked live arm still offers ${notHeld.length} of the ${handicap.length} ` +
         `row(s) it was handed. The suppression override did not take, so the ranking ` +
@@ -240,6 +249,7 @@ async function main() {
   for (const label of archetypes(json)) {
     const a = json[label], b = ranked[label];
     if (!b) {
+      corpusDiffs++;
       problems.push(`${label}: missing from the Postgres run`);
       continue;
     }
@@ -258,25 +268,38 @@ async function main() {
     // freed slots. Order is still asserted exactly: that is what caught the
     // gate_key collation bug and the missing ORDER BY, and neither of those has
     // become less possible.
-    const shown = (x: string[]) => x.slice(0, DISPLAY_CAP).join("|");
-    if (shown(a.ids) !== shown(b.ids)) {
-      problems.push(
-        `${label}: the published rows differ from the live corpus re-ranked without the ` +
-        `withheld rows\n      fallback: ${shown(a.ids)}\n      live:     ${shown(b.ids)}`);
-    }
     // Pool membership, against that same re-ranked live run. Losing a row to
     // the policy is expected; losing one to anything else is not, and a row the
     // fallback ADDS must still be one the live register would itself have
     // offered -- the leaf cap may promote, it may never conjure a fund.
+    //
+    // Computed BEFORE the published-row comparison because that comparison's
+    // diagnosis turns on it: a top-N that differs out of two pools holding the
+    // same funds is a statement about SCORING, and a top-N that differs because
+    // one pool is missing a fund is a statement about HYDRATION. Reading the
+    // first as the second sends the next reader to regenerate a snapshot that
+    // was never wrong.
     const held = new Set(handicap);
     const lostFromPool = b.ids.filter((i) => !a.ids.includes(i) && !held.has(i));
     const gainedInPool = a.ids.filter((i) => !b.ids.includes(i) && !pgOfferable.has(i));
+    const shown = (x: string[]) => x.slice(0, DISPLAY_CAP).join("|");
+    if (shown(a.ids) !== shown(b.ids)) {
+      const samePool = !lostFromPool.length && !gainedInPool.length;
+      if (samePool) orderOnlyDiffs++; else corpusDiffs++;
+      problems.push(
+        `${label}: the published rows differ from the live corpus re-ranked without the ` +
+        `withheld rows` +
+        (samePool ? ` — out of pools holding the SAME ${a.ids.length} funds` : "") +
+        `\n      fallback: ${shown(a.ids)}\n      live:     ${shown(b.ids)}`);
+    }
     if (lostFromPool.length) {
+      corpusDiffs++;
       problems.push(
         `${label}: ${lostFromPool.length} fund(s) left the pool for a reason that is not the ` +
         `degradation policy\n      ${lostFromPool.slice(0, 8).join(", ")}`);
     }
     if (gainedInPool.length) {
+      corpusDiffs++;
       problems.push(
         `${label}: ${gainedInPool.length} fund(s) entered the fallback pool that the live ` +
         `register does not offer\n      ${gainedInPool.slice(0, 8).join(", ")}`);
@@ -287,6 +310,7 @@ async function main() {
       const rb = b.rows.find((r) => r.id === ra.id);
       if (!rb) continue;
       if (ra.gatesChecked !== rb.gatesChecked) {
+        corpusDiffs++;
         problems.push(`${label} / ${ra.id}: gatesChecked ${ra.gatesChecked} vs ${rb.gatesChecked}`);
       }
       // SAY WHICH, and never guess. Both of these messages used to name one
@@ -300,6 +324,7 @@ async function main() {
       if (ra.criteria.join("|") !== rb.criteria.join("|")) {
         const sameSet = ra.criteria.length === rb.criteria.length &&
           [...ra.criteria].sort().join("|") === [...rb.criteria].sort().join("|");
+        corpusDiffs++;
         problems.push(
           `${label} / ${ra.id}: published criteria differ — ` +
           (sameSet
@@ -313,6 +338,7 @@ async function main() {
       const A = a.screen.map(key), B = b.screen.map(key);
       const onlyFallback = A.filter((x) => !B.includes(x));
       const onlyLive = B.filter((x) => !A.includes(x));
+      corpusDiffs++;
       problems.push(
         `${label}: eligibility screen differs — ` +
         (onlyFallback.length === 0 && onlyLive.length === 0
@@ -358,12 +384,57 @@ async function main() {
         `reload)\n  without the snapshot following. The snapshot is the one shipping to ` +
         `founders on\n  a degraded request, so this direction is the more urgent of the two.`);
     }
+    // ── The second diagnosis: same funds, different order ────────────────────
+    // The condition is not a guess about what changed. This check compares four
+    // things a row carries -- pool membership, gatesChecked, published criteria,
+    // and the eligibility screen -- and every one of them agreeing while the
+    // PUBLISHED ORDER differs leaves exactly one input unaccounted for, because
+    // it is the one input the two stores do not share and this check cannot
+    // compare: the semantic score. The fallback ranks on the committed
+    // `semanticCache.generated.json`; the live arm ranks on pgvector over
+    // `instrument_profiles`. When that mirror is cut from a different state of
+    // the table, the two arms are ranking the same funds on different numbers.
+    //
+    // The scores are PERCENTILE ranks over the whole corpus, so a rebuild that
+    // rewrote any profile moves the score of every fund -- including funds whose
+    // own text never changed. That is why the symptom is a handful of archetypes
+    // rather than a whole country, and why it looks like a ranking regression.
+    //
+    // Measured on 2026-08-12: 3 archetypes -- one German, two Swedish -- differed
+    // on published rows only, out of pools holding the same funds, and 513 of the
+    // 1,088 live profiles had been rewritten since the mirror was cut.
+    if (orderOnlyDiffs && !corpusDiffs) {
+      console.error(
+        `\n  DIAGNOSIS: ${orderOnlyDiffs} archetype(s) differ on the PUBLISHED ORDER alone. ` +
+        `Both\n  stores hold the same funds in the pool, evaluate the same gates, publish the\n` +
+        `  same criteria and build the same eligibility screen. The only ranking input\n` +
+        `  they do not share is the SEMANTIC SCORE, so that is where the difference is:\n` +
+        `  the fallback ranks on lib/intelligence/semanticCache.generated.json and the\n` +
+        `  live arm on pgvector over instrument_profiles.\n` +
+        `\n  This is a STALE OFFLINE MIRROR, not a hydration defect and not a ranking\n` +
+        `  regression. Do not chase it in shortlist.ts. Re-cut both mirrors of the\n` +
+        `  index and run this again:\n` +
+        `    DATABASE_URL=... python3 ETL/terms/emit_profile_leak_index.py\n` +
+        `    cd website/frontend && npx tsx scripts/emit_semantic_cache.ts\n` +
+        `\n  check_corpus_currency names the same cause one step earlier, by comparing\n` +
+        `  the mirror's profile TEXT against the live index rather than its id set.`);
+    }
     await publishVerdict(GUARD, {
       status: "failed",
+      // The summary is the ONE line check_verdicts.ts shows a reader with no
+      // credentials, and "3 difference(s) over 12 archetypes" told that reader
+      // nothing they could act on. It now carries the diagnosis when there is
+      // one, so the cause travels through the channel rather than staying in
+      // the terminal of whoever happened to run it.
       summary: `${problems.length} difference(s) between the Postgres and JSON paths ` +
-               `over ${archetypes(json).length} archetypes`,
+               `over ${archetypes(json).length} archetypes` +
+               (orderOnlyDiffs && !corpusDiffs
+                 ? `; published ORDER only, same pools — the committed semantic mirror `
+                   + `is cut from a different state of instrument_profiles`
+                 : ""),
       metrics: { problems: problems.length, archetypes: archetypes(json).length,
-                 suppressed: suppressed.size },
+                 suppressed: suppressed.size,
+                 orderOnlyDiffs, corpusDiffs },
       detail: tape(),
     });
     process.exit(1);
