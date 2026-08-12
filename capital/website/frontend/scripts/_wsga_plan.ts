@@ -50,6 +50,28 @@ const PRICE_EUR: { effort: string; eur: number; source: string }[] = [
  *  stated rather than hidden. */
 const MENU_UPLIFT = 1.25;
 
+/** ── AND THE UPLIFT, CHECKED AGAINST TODAY'S CODE RATHER THAN ASSUMED ──────
+ *  `AGENT_SELECT=dry npx tsx scripts/_wsfg_cost.ts` builds the identical prompt
+ *  through the identical code path and never calls Anthropic. On 14 menus today
+ *  it reads:
+ *
+ *      system prompt        12,607 chars = 3,502 tok, identical on every brief
+ *      user prompt (menu)   mean 21,665 chars = 6,018 tok
+ *      INPUT / round one    9,520 tok
+ *
+ *  wsDQ recorded 7,878-10,569 input tokens per call on the runs the prices above
+ *  come from, so the input side has barely moved and 1.25 is CONSERVATIVE on the
+ *  total. The round-one-only figure at effort `medium` -- 9,520 input at
+ *  USD 2/Mtok plus 1,430 output (the wsDS thinking mean) at USD 10/Mtok -- is
+ *  EUR 0.0307 per call, against the 0.0365 the uplifted table below uses.
+ *
+ *  ROUND TWO IS DELIBERATELY NOT PRICED IN. `_wsfg_cost.ts` prices both rounds
+ *  and lands on EUR 0.0460, but round two fires only when the model DECLARES
+ *  itself unsure, and it has declared itself unsure 0 times in 24 measured calls
+ *  across two effort levels. Pricing a round that has never happened would
+ *  inflate the estimate by 50% and shrink the n it buys for no reason. */
+const DRY_PRICED_MEDIUM_EUR = 0.0307;
+
 /** USD ~ EUR, using cost.ts's own fixed rate so this file cannot disagree with
  *  the accumulator the run will report. */
 const USD_TO_EUR = 0.92;
@@ -258,6 +280,9 @@ function main() {
         `${(cost / USD_TO_EUR).toFixed(2).padStart(6)} USD` +
         (cost <= BUDGET_EUR ? "   fits" : "   OVER BUDGET"));
     }
+    p("");
+    p(`   the same at TODAY's dry-priced medium (EUR ${DRY_PRICED_MEDIUM_EUR})   ` +
+      `EUR ${(2 * today.inPool * DRY_PRICED_MEDIUM_EUR).toFixed(2)}`);
     p("");
     p(`expected discordant pairs at the in-pool rate ${(100 * d5).toFixed(1)}%          ` +
       `${mm}`);

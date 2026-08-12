@@ -215,15 +215,39 @@ the run is reported as UNDERPOWERED whatever its p-value.
 
 ### 5.3 THE HONEST BOTTOM LINE ON THE BUDGET
 
-**~10 dollars does not settle this on the tune population.** It buys the whole
-exam — all 120 answerable founders — and is powered to detect **+4.5 points**,
-which is twice the largest effect ever measured on this arm (+2.2 points, wsDR,
-p = 1.000) and nearly twice the gain that would justify shipping.
+**Priced from today's code, not from wsDR's older menus.**
+`AGENT_SELECT=dry npx tsx scripts/_wsfg_cost.ts` builds the identical prompt
+through the identical code path and calls nothing: system 12,607 chars (3,502
+tok), menu 21,665 chars (6,018 tok), **9,520 input tokens per call**. wsDQ
+recorded 7,878-10,569 on the runs the recorded prices come from, so the input
+side has barely moved. At effort `medium` the output side is the wsDS thinking
+mean, 1,430 tokens. **EUR 0.0307 per call = USD 0.033.**
 
-`SPLIT=all` at effort `medium` costs about **$11.35** and reaches **+2.9
-points**, which is the first configuration whose MDE is smaller than
-`WORTH_SHIPPING`. That is the run worth firing, and it is 13% over the stated
-budget rather than 3x over.
+Round two is not priced in. `_wsfg_cost.ts` prices both rounds and reads EUR
+0.0460, but round two fires only when the model DECLARES itself unsure, and it
+has done so **0 times in 24 measured calls** across two effort levels.
+
+| what you fire | calls | primary founders | discordant m | **MDE, population EXACT@5** | cost |
+|---|---:|---:|---:|---:|---:|
+| tune only (324), medium, REPEAT=2 | 240 | 120 | 26 | **+4.5 pts** | $8.01 |
+| SPLIT=all, medium, `MAX_EUR=9.2` | 299 | 249 | 53 | **+3.2 pts** | **$10.00** |
+| SPLIT=all, medium, `MAX_EUR=10.6` | 344 | 294 | 63 | **+2.8 pts** | $11.50 |
+| SPLIT=all, HIGH effort | — | ~113 | 24 | +4.7 pts | $10.00 |
+
+**So: YES, ~$10 is just enough — at exactly one configuration, and only just.**
+`SPLIT=all`, `ONLY_IN_POOL=1`, effort `medium`, `MAX_EUR=9.2` reaches **+3.2
+population points**, against a proposed `WORTH_SHIPPING` of +3.0.
+
+And the qualification that matters more than the answer: **$10 can detect an
+effect large enough to justify shipping, and cannot detect the effect actually
+observed.** The largest effect ever measured on this arm is +2.2 points (wsDR,
+n=45, exact p = 1.000). A run with an MDE of +3.2 will return INCONCLUSIVE if
+the truth is +2.2, and that is the modal outcome.
+
+Every other configuration is worse, and the naive ones are much worse:
+- effort `high` costs 2.5x per call and lands at +4.7 points on the same $10;
+- the tune-only population lands at +4.5 points and is EXHAUSTED at 324;
+- no conditioning (`ONLY_IN_POOL=0`) costs a factor of 1.6 on the effect size.
 
 ### 5.4 THE UNCERTAINTY IN THE POWER CALCULATION ITSELF
 
@@ -291,7 +315,7 @@ AGENT_SELECT=reverse N=324 MIN_DESCRIPTION_CHARS=0 REPEAT=2 \
 
 # 4. THE OWNER SETS WORTH_SHIPPING, and decides between 5a and 5b.
 
-# 5a. THE PAID RUN — one line. ~$11.35, the first configuration whose MDE
+# 5a. THE PAID RUN — one line.
 #     (+2.9 population points) is smaller than the proposed WORTH_SHIPPING.
 AGENT_SELECT=adviser AGENT_SELECT_EFFORT=medium \
   SPLIT=all N=773 MIN_DESCRIPTION_CHARS=0 \
@@ -330,8 +354,10 @@ variable that is not under test.
 
 ### STOP CONDITIONS, before the euro is spent
 
-- If the owner's `WORTH_SHIPPING` is **below +2.9 points**, 5a cannot see it.
-  Do not fire it; report that the exam is too short and price the larger one.
+- If the owner's `WORTH_SHIPPING` is **below +3.2 points**, step 5 cannot see
+  it. Do not fire it at $10; either raise the budget to $11.50 (MDE +2.8) or
+  report that the exam is too short and price the larger one. Getting to
+  +2.0 points needs about 600 in-pool calls and roughly $24.
 - If the `reverse` dry run's ranker line is not clean on the day, do not fire.
 - After the run, if `ranker vs ITSELF` discordance is within a factor of ~1.5 of
   `ranker vs CONTROL`, the result is VOID by section 4b, not inconclusive.
