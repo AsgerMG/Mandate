@@ -244,6 +244,22 @@ export interface InstrumentRow {
    *  MODEL-FACING, not founder-facing. Nothing renders it to a page; it exists
    *  so a model choosing between two siblings can read what each one is for. */
   description?: string;
+  /** WHO THE SCHEME SAYS MAY APPLY, in its own words, budgeted.
+   *
+   *  The other half of the fund's own page, and a different question from
+   *  `description`: that one says what the money is for, this one says who it
+   *  is open to. A row can answer either, both, or -- on 22% of the rows in a
+   *  fourteen-market spread before this field existed -- neither.
+   *
+   *  Set from `fundsSentence(leaf.eligibilityText, DEMANDS_SENTENCE_CHARS)`,
+   *  never raw: the median column is 694 characters and the p90 is 2,496.
+   *
+   *  Safe to read on the request path by the same argument as `description`,
+   *  in corpus.ts, and tested by the same probes: it is a statement of what the
+   *  fund DEMANDS, with no beneficiary, award or project title in it.
+   *
+   *  MODEL-FACING, not founder-facing, exactly like `description`. */
+  eligibilityText?: string;
   /** The agency or regime above this programme, when there is one. */
   familyName?: string;
   /** Cited requirements no comparator can decide — what the assessor weighs.

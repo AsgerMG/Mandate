@@ -382,7 +382,143 @@ const tape = startTape();
  *  described key. The honest statement is: the ranker's headline is stable
  *  across this change, and a described-founder headline must be quoted over
  *  `isDescribed()` with its n on screen. Both are now printed every run. */
-const FLOOR = { pool: 92, exact5: 15, regime5: 69 };
+/*  ── RE-DERIVED AFTER 53 SPANISH CALLS WERE CORRECTLY CLOSED, 2026-08-12 ──
+ *
+ *  ██ REGIME@5 GOES DOWN 69 -> 58 AND IT IS NOT A LOOSENING. READ THIS BEFORE
+ *  QUOTING IT AS ONE, AND BEFORE PROPOSING THAT THE CORPUS BE PUT BACK. ██
+ *
+ *  ── WHAT HAPPENED ────────────────────────────────────────────────────────
+ *  Commit `250e8a74` wrote a past `scheme_end_date` onto 53 `bdns_es_ayudas`
+ *  leaves whose date was NULL. NULL read as open, so all 53 were being offered
+ *  to founders as live guidance; their windows had shut between 2020-12-30 and
+ *  2026-06-29 and not one was future-dated. The publish was correct.
+ *
+ *  ── WHY A CORRECT CLOSURE MOVED A RANKING FLOOR SEVEN POINTS ─────────────
+ *  Not the ranker, and not the seat collapse. THE EXAM WAS REPLACED.
+ *
+ *    publishableInstruments()   837 -> 784
+ *    graded answer key        6,083 -> 5,447        (pairs whose answer is
+ *                                                    still offerable)
+ *    `sampleRecall` draws from `pop.graded`, so a shorter array RE-DRAWS
+ *    WHOLESALE at the same pinned seed:
+ *    pairs common to both 300-pair draws   157       48% OF THE EXAM CHANGED
+ *
+ *  THE SEED PINS THE DRAW, NOT THE POPULATION — the block below this one has
+ *  said so for weeks, and this is that hazard at full scale. `wsFK` measured it
+ *  by exact counterfactual (`_wsfk_partition.ts`): restore nothing but those 53
+ *  rows' offerability and four independent numbers snap back to the pre-break
+ *  tape simultaneously — graded 6,083, original join 103, childless 87,
+ *  exact_attribution 110.
+ *
+ *  ── AND THE 251 PAIRS THAT LEFT WERE THE BEST ONES ───────────────────────
+ *  All 251 departing pairs are `traced:exact_attribution`; `childless_family`
+ *  lost NOT ONE. exact_attribution scored 88.2% REGIME@5 against a 72.0%
+ *  headline, so removing them shrank the share of the BEST population (110 ->
+ *  99) and raised the share of the WORST (childless 87 -> 103, scoring 35.6%) —
+ *  the one population where REGIME@5 CANNOT pay sibling credit, because a
+ *  childless family is its own regime. Weighting the pre-break per-population
+ *  rates by the post-break mix gives 69.2%: ██ MIX ALONE IS 2.8 OF THE 7.0
+ *  POINTS ██, and the remaining 4.2 is exact_attribution's own rate on a
+ *  48%-different sample, 88.2 -> 80.8, inside the 7.9-point 2 SE at n=99.
+ *
+ *  Two hypotheses were ruled out by measurement, not by reasoning:
+ *    THE SEAT COLLAPSE   bisected. HEAD with it and 54bbea37 without it, on the
+ *                        same live corpus minutes apart, both read pool 98 /
+ *                        exact5 27 / regime5 65. It owns NONE of the drop.
+ *    TIE-BREAK JITTER    semantic.ts orders with no tiebreak and IS
+ *                        non-deterministic. Bounded rather than dismissed: 39
+ *                        runs across two settled corpus states put the widest
+ *                        within-state spread at 0.6 on regime5. It can account
+ *                        for at most 0.6 of the 7, and no run on either side
+ *                        lands in the gap.
+ *
+ *  ── WHY THE ANSWER IS NOT TO PUT THE CORPUS BACK ─────────────────────────
+ *  ██ Reverting would mean putting 53 dead calls back in front of founders in
+ *  order to green a number. ██ That is the whole argument, and it is enough on
+ *  its own. The confirming evidence is that the change moved the ranker's own
+ *  metrics UP, not down: over the same publish, pool ROSE 96.7 -> 98 and
+ *  EXACT@5 ROSE 26 -> 27. A ranking regression does not move those upward.
+ *
+ *  One thing this cannot separate, stated rather than glossed: the same publish
+ *  also rebuilt `instrument_profiles`, the primary semantic ranking signal, so
+ *  the 4.2-point rate half is confounded between the re-drawn pairs and the
+ *  re-embed. It cannot be un-confounded — Postgres cannot be rolled back, so no
+ *  commit run today can read the old corpus. What can be said is that the
+ *  re-embed moved both comparable metrics up.
+ *
+ *  ── THREE SEEDS, AS THE wsCQ BLOCK BELOW REQUIRES ────────────────────────
+ *  That block's standing instruction is that a re-derivation must be made with
+ *  three fresh seeds and never off the red run. `SPLIT=tune N=300 SEED=…
+ *  measure_recall.ts`, settled corpus, live Postgres, `__recallSetDescribed`
+ *  7,095 pairs / 5,447 graded on all three, `ranker: all request(s) on
+ *  EMBEDDING`, every run free (cache replay, 0 live calls):
+ *
+ *                     PINNED (20260806)   seed 7   seed 99    LOWEST
+ *      pool                  98              97       96        96
+ *      EXACT@5               27              22       23        22
+ *      REGIME@5              65              67       67        65
+ *
+ *  The pinned run reproduces the failing tape to the point (98 / 27 / 65), so
+ *  these three seeds are measuring the same corpus the guard is failing on.
+ *
+ *  ── THE MARGINS, BY THE CONVENTION THIS FILE HAS ALWAYS USED ─────────────
+ *  Both constraints are required and the BINDING one is the lower.
+ *
+ *  pool 93     RAISED from 92. 5 under pinned (98) = 93; 3 under the lowest
+ *              seed (96) = 93. Both land on the same number. Pool is still the
+ *              one CORRECTNESS floor — a fund the writer never sees cannot be
+ *              advised on at all — and it is still the most stable thing here.
+ *
+ *  exact5 15   HELD, and NOT RAISED — this is where this derivation departs
+ *              from the diagnosis that proposed it. wsFK proposed 17 on "10
+ *              under pinned (27)", having measured only the pinned seed. The
+ *              pinned seed turns out to be the HIGHEST of the three: the spread
+ *              is 27 / 22 / 23, so 17 would sit 5 points under the lowest seed
+ *              on the metric this file records swinging 20 -> 32 across a
+ *              single index rebuild. The 2026-08-07 block refused a raise for
+ *              exactly that arithmetic ("5 under pinned, half the stated
+ *              margin"). The convention's other constraint — 9 under the lowest
+ *              seed, the spacing the Doors derivation used — gives 22 - 9 = 13,
+ *              BELOW the 15 in force, so the binding constraint lands under the
+ *              floor and the floor stays. Nothing is lowered; 15 is now 7 under
+ *              the lowest seed rather than the 9 the convention specifies.
+ *
+ *  regime5 58  LOWERED from 69. 7 under pinned (65) = 58; 3 under the lowest
+ *              seed (65) = 62; the convention requires BOTH, so the binding one
+ *              is 58. This is the number that needs everything above sitting
+ *              permanently in this file, because lowering a floor is the same
+ *              CLASS of act as `coverage_gate --accept` and must never be done
+ *              on the strength of "it went red and we want it green". It is
+ *              done here because the exam changed underneath the floor, the
+ *              cause is established by exact counterfactual, the only way to
+ *              restore the old number is to re-offer dead calls, and the
+ *              ranker's own two comparable metrics both improved.
+ *
+ *  ── THIS FLOOR WILL DO IT AGAIN, AND THAT IS A DESIGN QUESTION ───────────
+ *  REGIME@5's headline is a weighted average over three populations that are
+ *  ALREADY floored separately below. Its only unique content is the MIX, and
+ *  the mix is a corpus fact rather than a ranking fact — every future closure
+ *  pass that retires dead calls moves it again, and re-baselining after each one
+ *  is a ratchet walked backwards on a schedule. Two durable options: floor a
+ *  composition-STANDARDISED REGIME@5 at fixed population weights, or retire the
+ *  headline floor and keep the three per-population ones, which are immune to
+ *  the mix and are what actually detect a ranking trade. RECORDED, NOT TAKEN:
+ *  it is the owner's decision and not a number to invent here.
+ *
+ *  Related and under-scoped: `REGIME_AT_5_NOT_COMPARABLE` warns only about
+ *  comparing across a recall-SET switch. The same arithmetic bites on any move
+ *  in population mix INSIDE one set, which is what happened here — the active
+ *  set was byte-identical on both sides of the break.
+ *
+ *  ── THE ANSWER KEY HAS BURNED MOST OF ITS HEADROOM ───────────────────────
+ *  ██ The ungraded share went 14.3% -> 23.2% against `UNGRADED_SHARE.max` of
+ *  33, whose own docstring says widening the band is NOT a legitimate response
+ *  to it firing. Another closure pass of this size trips it. ██ The response
+ *  when it does is to repair the key — extend the recall set onto funds that
+ *  are still offerable — not to touch that constant and not to touch these
+ *  floors. Flagged here because the trip will look like a data problem and is
+ *  actually this measurement running out of room. */
+const FLOOR = { pool: 93, exact5: 15, regime5: 58 };
 
 /*  ── THE `exact5` ZERO-MARGIN FLAG, ANSWERED FROM THE VERDICT TABLE ───────
  *
@@ -566,9 +702,76 @@ const FLOOR = { pool: 92, exact5: 15, regime5: 69 };
  *                     more, and the instruction that block left ("TIGHTEN IT
  *                     once there is history") is hereby withdrawn: there is
  *                     history now and it says the opposite. */
+/*  ── RE-DERIVED WITH THE HEADLINE, 2026-08-12 ─────────────────────────────
+ *
+ *  ██ THE CANARY WENT OFF EXACTLY AS ITS OWN DOCSTRING PREDICTED. ██
+ *  The block above `traced:exact_attribution 88` reads: "When this goes red —
+ *  and on that spread it will — the finding is that the canary population has
+ *  drifted, not that the ranker regressed, and the next re-derivation has to be
+ *  made with three fresh seeds rather than off the red run." It went red, the
+ *  finding IS that the population drifted, and this is that re-derivation.
+ *
+ *  What drifted, and it is not a ranking change: 53 closed Spanish calls were
+ *  correctly withdrawn from the offerable pool, and all 251 answer-key pairs
+ *  that left the tune pool with them were `traced:exact_attribution` — this
+ *  population, and only this one. `childless_family` lost none. See the wsFM
+ *  block above `FLOOR` for the full mechanism; the short form is that this
+ *  population's n and its membership both moved, so its rate is measured on
+ *  different pairs and not on a re-scored sample.
+ *
+ *  Same three seeds as the headline, tune split, N=300, settled corpus:
+ *
+ *      regime5 by population      pinned      seed 7      seed 99    LOWEST
+ *      original join              86 (n= 98)  86 (n=123)  88 (n=112)   86
+ *      traced:exact_attribution   81 (n= 99)  80 (n= 86)  77 (n=103)   77
+ *      traced:childless_family    30 (n=103)  30 (n= 91)  26 (n= 85)   26
+ *
+ *  Margin convention, unchanged: two standard errors at THIS population's n,
+ *  taken against the LOWEST seed rather than the pinned one. That second half
+ *  is the part that matters here — see `traced:exact_attribution` below.
+ *
+ *  original join 78   HELD. Lowest seed 86 at n=98; 1 SE is 3.5 points, so two
+ *                     is 7.0 and the convention lands on 79.0. That is one
+ *                     point above the floor in force, and the measurement did
+ *                     NOT rise — the lowest seed was 86 at the wsCQ derivation
+ *                     too. A floor that moves onto a measurement that did not
+ *                     rise is the coin flip with a comment the 2026-08-07 block
+ *                     names, so 78 stands. This population is untouched by the
+ *                     closure: it lost no pairs.
+ *
+ *  traced:exact_attribution 68  LOWERED from 88, and this departs from the
+ *                     73 the diagnosis proposed. wsFK computed 2 SE at the
+ *                     PINNED seed (7.9 at 80.8 on n=99, giving 73) because the
+ *                     pinned seed was all it had measured. The convention takes
+ *                     the LOWEST of three, and the lowest is 77 at n=103: 1 SE
+ *                     is 4.1, two is 8.3, and the convention lands on 68.7.
+ *                     73 would sit FOUR points under the lowest seed measured —
+ *                     less than one standard error — on the one population in
+ *                     this file that has already been red for precisely that
+ *                     reason. Setting it there would repeat the zero-margin
+ *                     mistake twenty points lower down.
+ *
+ *                     ██ SAID PLAINLY: at n~100 the convention's own margin is
+ *                     eight points wide, so a floor of 68 cannot detect a real
+ *                     eight-point regression on this population. ██ That is a
+ *                     limit of the sample size, not a decision made here, and
+ *                     the fix is more graded pairs rather than a tighter number
+ *                     — a tighter number on this n is a gate that flaps and
+ *                     then gets muted, which is this file's stated failure
+ *                     mode.
+ *
+ *  traced:childless_family 21  HELD. Lowest seed 26 at n=85; 1 SE is 4.8, two
+ *                     is 9.5, and the convention lands on 16.5 — BELOW the 21
+ *                     in force, so nothing is lowered and 21 stands, tighter
+ *                     than the convention by 4. Note this population GREW as a
+ *                     share of the draw (87 -> 103 pairs across the break)
+ *                     without losing a single pair, which is the arithmetic
+ *                     that pulled the headline down: it is the worst-scoring
+ *                     population and it cannot pay sibling credit, because a
+ *                     childless family is its own regime. */
 const POPULATION_FLOOR: Record<string, number> = {
   "original join": 78,
-  "traced:exact_attribution": 88,
+  "traced:exact_attribution": 68,
   "traced:childless_family": 21,
 };
 // FIXED, and deliberately not configurable — both of them.
