@@ -87,3 +87,39 @@ export function poolRecallAt(k: number): number | null {
  *  because it IS a base rate: quoting "33.4%" to a model over 71 founders
  *  claims a precision the sample does not carry. */
 export const asBaseRate = (p: number): number => Math.round((p * 100) / 5) * 5;
+
+/**
+ * The curve read at a DEPTH LEVER, which may be `Infinity` for `all`.
+ *
+ * `poolRecallAt` correctly refuses a non-finite k — it is the honest answer for
+ * a prompt, which must not quote a number nobody measured. It is the WRONG
+ * answer for a harness header, where `?? 0` then prints "0.0%" for the deepest
+ * arm there is, and three harnesses print exactly that line.
+ *
+ * Recall is monotone and bounded, and the curve's deepest measured point IS the
+ * whole-pool figure (`check_pool_recall_curve.ts` asserts that it plateaus), so
+ * "all" is that point. That is a read of the measurement rather than an
+ * extrapolation past it.
+ *
+ * `check_pool_recall_curve.ts` already open-coded this for an infinite
+ * `SELECT_DEPTH`; now that `BRIEF_VERDICT_POOL` takes `all` too there would be
+ * three copies of it, which is how the two spellings of one rule drift apart.
+ */
+export function poolRecallAtDepth(k: number): number | null {
+  if (Number.isFinite(k)) return poolRecallAt(k);
+  const pts = curve().recallAtK;
+  if (!pts?.length) return null;
+  return pts.reduce((a, b) => (b[0] > a[0] ? b : a))[1];
+}
+
+/** How a depth lever reads in a LEVERS line: its own spelling, so the line
+ *  round-trips back into the environment variable that produced it. */
+export const depthLabel = (k: number): string =>
+  Number.isFinite(k) ? String(k) : "all";
+
+/** How a depth reads in PROSE — "the first 18", "the whole pool". A separate
+ *  function from `depthLabel` because a levers line and a sentence want
+ *  different words, and one function returning a string that suits neither is
+ *  how "P(won in first all)" gets printed. */
+export const depthPhrase = (k: number): string =>
+  Number.isFinite(k) ? `the first ${k}` : "the whole pool";

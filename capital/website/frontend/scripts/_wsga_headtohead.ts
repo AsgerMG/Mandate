@@ -143,7 +143,7 @@ import {
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
-import { poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
+import { depthLabel, depthPhrase, poolRecallAtDepth, poolRecallN } from "../lib/intelligence/poolRecall";
 import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
@@ -600,9 +600,9 @@ async function main() {
   p(`draw fingerprint   ${drawFingerprint}  <- two runs quoting different fingerprints`);
   p(`                   graded different founders, whatever seed they name`);
   p(`levers             seam=${AGENT_SELECT_SEAM} depth=${SELECT_DEPTH} count=${SELECT_COUNT} ` +
-    `effort=${THINK_EFFORT} lookups=${LOOKUP_MAX} pool=${VERDICT_POOL} published_cap=${PUBLISH_CAP}`);
-  p(`base rate curve    ${poolRecallN()} held-out founders; P(won in first ${VERDICT_POOL})=` +
-    `${((poolRecallAt(VERDICT_POOL) ?? 0) * 100).toFixed(1)}%`);
+    `effort=${THINK_EFFORT} lookups=${LOOKUP_MAX} pool=${depthLabel(VERDICT_POOL)} published_cap=${PUBLISH_CAP}`);
+  p(`base rate curve    ${poolRecallN()} held-out founders; P(won in ${depthPhrase(VERDICT_POOL)})=` +
+    `${((poolRecallAtDepth(VERDICT_POOL) ?? 0) * 100).toFixed(1)}%`);
   p(`paid calls         ${calls}${Number.isFinite(maxCalls) ? ` of a MAX_CALLS ceiling of ${maxCalls}` : ""}` +
     `${skippedForBudget ? `, ${skippedForBudget} founder(s) skipped once the ceiling was hit` : ""}`);
   p(`call cap           ${Number.isFinite(maxCountryCalls)

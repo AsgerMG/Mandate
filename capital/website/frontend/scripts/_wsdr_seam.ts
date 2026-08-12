@@ -69,7 +69,9 @@ import {
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
-import { poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
+import {
+  depthLabel, depthPhrase, poolRecallAt, poolRecallAtDepth, poolRecallN,
+} from "../lib/intelligence/poolRecall";
 import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
 import {
@@ -331,11 +333,11 @@ async function main() {
     `in ONE process off ONE pool object`);
   p(`default seam for the product: AGENT_SELECT_SEAM=${AGENT_SELECT_SEAM}`);
   p(`levers: depth=${SELECT_DEPTH} count=${SELECT_COUNT} effort=${THINK_EFFORT} ` +
-    `lookups=${LOOKUP_MAX} pool=${VERDICT_POOL} published_cap=${PUBLISH_CAP}`);
+    `lookups=${LOOKUP_MAX} pool=${depthLabel(VERDICT_POOL)} published_cap=${PUBLISH_CAP}`);
   p(`base rate quoted to the model: curve on ${poolRecallN()} held-out founders, ` +
     `P(won in first 6)=${((poolRecallAt(6) ?? 0) * 100).toFixed(1)}% ` +
-    `P(won in first ${VERDICT_POOL})=${((poolRecallAt(VERDICT_POOL) ?? 0) * 100).toFixed(1)}% ` +
-    `P(won in first ${SELECT_DEPTH})=${((poolRecallAt(SELECT_DEPTH) ?? 0) * 100).toFixed(1)}%`);
+    `P(won in ${depthPhrase(VERDICT_POOL)})=${((poolRecallAtDepth(VERDICT_POOL) ?? 0) * 100).toFixed(1)}% ` +
+    `P(won in ${depthPhrase(SELECT_DEPTH)})=${((poolRecallAtDepth(SELECT_DEPTH) ?? 0) * 100).toFixed(1)}%`);
   p(`total EUR ${spend.toFixed(4)} over ${rows.length} founders x 2 seams`);
   p("```");
   p();

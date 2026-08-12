@@ -51,7 +51,8 @@ loadEnvLocal();
 const CREDENTIALS = requireCredentials("check_pool_recall_curve", ["DATABASE_URL"]);
 
 import {
-  POOL_RECALL_FILE, POOL_RECALL_KS, poolRecallAt, poolRecallN, resetPoolRecall,
+  depthLabel, depthPhrase, POOL_RECALL_FILE, POOL_RECALL_KS, poolRecallAt, poolRecallAtDepth,
+  poolRecallN, resetPoolRecall,
 } from "../lib/intelligence/poolRecall";
 import { generatedArtifactFailures } from "../lib/intelligence/generatedArtifact";
 // SELECT_DEPTH from the LEAF module, not from `agentSelect` which re-exports
@@ -162,13 +163,12 @@ async function main() {
     for (const b of bad) console.error(`  - ${b}`);
     process.exit(1);
   }
-  const depthLabel = Number.isFinite(SELECT_DEPTH) ? String(SELECT_DEPTH) : "the whole pool";
   console.log(`check_pool_recall_curve: ok — n=${n} held-out founders, monotone over `
-    + `K=${POOL_RECALL_KS[0]}..${deepest}, covers the late seam (${VERDICT_POOL}), the early `
-    + `seam (${depthLabel}) and the published table (6).`);
+    + `K=${POOL_RECALL_KS[0]}..${deepest}, covers the late seam (${depthLabel(VERDICT_POOL)}), the early `
+    + `seam (${depthLabel(SELECT_DEPTH)}) and the published table (6).`);
   console.log(`  P(won in first 6)=${((poolRecallAt(6) ?? 0) * 100).toFixed(1)}% · `
-    + `first ${VERDICT_POOL}=${((poolRecallAt(VERDICT_POOL) ?? 0) * 100).toFixed(1)}% · `
-    + `first ${depthLabel}=${((poolRecallAt(Number.isFinite(SELECT_DEPTH) ? SELECT_DEPTH : deepest) ?? 0) * 100).toFixed(1)}%`);
+    + `${depthPhrase(VERDICT_POOL)}=${((poolRecallAtDepth(VERDICT_POOL) ?? 0) * 100).toFixed(1)}% · `
+    + `${depthPhrase(SELECT_DEPTH)}=${((poolRecallAtDepth(SELECT_DEPTH) ?? 0) * 100).toFixed(1)}%`);
   console.log(`  ${corpusLine}`);
 }
 
