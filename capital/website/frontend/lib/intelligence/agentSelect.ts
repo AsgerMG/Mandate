@@ -1670,6 +1670,34 @@ export async function agentSelectRows(
     }
     return leave("dryPriced", rows);
   }
+  // ── THE ONE PLACE THIS STAGE SPENDS, AND THE ONE INTERLOCK ON IT (wsGB) ──
+  //
+  // A harness declares its credential contract through `requireCredentials`,
+  // and a contract without ANTHROPIC_API_KEY is that harness saying it does not
+  // call a model. That was free to trust while `AGENT_SELECT` defaulted to
+  // `off`; it defaults to `adviser` now, so a harness declaring
+  // ["DATABASE_URL", "VOYAGE_KEY"] and reaching this line would spend once per
+  // founder while its own contract said otherwise. See `NO_SPEND_ENV` in
+  // scripts/loadEnv.ts for the property and for why it travels through the
+  // environment instead of an import.
+  //
+  // NOT `leave(...)`. Every other exit here returns the shipped order, and that
+  // is right for a model that failed; this is a run that must not have STARTED,
+  // and returning the control's order under the treatment's name is the failure
+  // mode this whole module is instrumented against. It throws, in the founder
+  // loop, naming the harness and the one-word fix.
+  //
+  // Production never sets it: `requireCredentials` is a `scripts/` function and
+  // a Next.js request has not called it.
+  const declaredFree = process.env.WINCENT_DECLARED_NO_ANTHROPIC;
+  if (declaredFree) {
+    throw new Error(
+      `${declaredFree} declared a credential contract WITHOUT ANTHROPIC_API_KEY, and the `
+      + `ranking seam is about to call a model: AGENT_SELECT is "${AGENT_SELECT_ARM}", which `
+      + `is the default since the ranker shipped. Either declare the key, or say which free `
+      + `arm you meant — AGENT_SELECT=off for the control, =dry to price the prompt, `
+      + `=reverse for a permutation with no model in it.`);
+  }
   tally.calls++;
   try {
     const ask = async (
