@@ -214,6 +214,69 @@ function main() {
 
   p("## Power at the effect sizes that are actually in play");
   p();
+  // ── THE PLAN, ON TODAY'S MEASURED CEILING RATHER THAN wsDR'S ─────────────
+  // Read from the FREE control run if it has been made. Everything above is
+  // priced on wsDR's 45 founders; this section is priced on the whole eligible
+  // population, measured today, at no cost.
+  const ceilingFile = path.join(process.cwd(), "..", "..", "project-mgmt", "findings",
+    "headtohead_wsGA", "off_low_n324.json");
+  let today: {
+    n: number; inPool: number; c5: number; c6: number;
+  } | null = null;
+  try {
+    const j = JSON.parse(readFileSync(ceilingFile, "utf8")) as {
+      rows: { ceilingControl: boolean; rankControl: number | null }[];
+    };
+    const ip = j.rows.filter((r) => r.ceilingControl);
+    today = {
+      n: j.rows.length, inPool: ip.length,
+      c5: ip.filter((r) => r.rankControl != null && r.rankControl <= 5).length,
+      c6: ip.filter((r) => r.rankControl != null && r.rankControl <= 6).length,
+    };
+  } catch { /* the free control run has not been made yet */ }
+
+  if (today) {
+    const d5 = (m.at[5].b + m.at[5].c) / m.inPool;
+    const r = mdePowered(today.inPool, d5);
+    const mm = Math.round(today.inPool * d5);
+    p("## ██ THE PLAN, on today's measured ceiling ██");
+    p();
+    p("```");
+    p(`eligible population (tune, cross-regime described, graded)   ${today.n}`);
+    p(`   ^ EXHAUSTED. There is no larger draw available on this provenance.`);
+    p(`won fund inside the ${18}-row pool                            ` +
+      `${today.inPool}/${today.n} = ${((100 * today.inPool) / today.n).toFixed(1)}%`);
+    p(`control EXACT@5 on those ${today.inPool}                              ` +
+      `${today.c5}/${today.inPool} = ${((100 * today.c5) / today.inPool).toFixed(1)}%`);
+    p(`   ^ so ${today.inPool - today.c5} founders the ranker could FIX, and ` +
+      `${today.c5} it could BREAK.`);
+    p("");
+    p(`paid calls at ONLY_IN_POOL=1, REPEAT=2                       ${2 * today.inPool}`);
+    for (const pl of plans) {
+      const cost = 2 * today.inPool * pl.eur;
+      p(`   effort ${pl.effort.padEnd(7)} EUR ${cost.toFixed(2).padStart(6)} = ` +
+        `${(cost / USD_TO_EUR).toFixed(2).padStart(6)} USD` +
+        (cost <= BUDGET_EUR ? "   fits" : "   OVER BUDGET"));
+    }
+    p("");
+    p(`expected discordant pairs at the in-pool rate ${(100 * d5).toFixed(1)}%          ` +
+      `${mm}`);
+    p(`smallest ab of ${mm} that reaches p<=0.05                      ` +
+      `${criticalAb(mm) ?? "NONE"}`);
+    p(`MDE at 80% power, on the in-pool sub-population              ` +
+      `${r ? `+${r.pointsGain.toFixed(1)} pts` : "unreachable"}`);
+    p(`   ... expressed as a POPULATION EXACT@5 gain                ` +
+      `${r ? `+${(r.pointsGain * today.inPool / today.n).toFixed(1)} pts` : "—"}`);
+    p("```");
+    p();
+    p(`The in-pool discordance rate of ${(100 * d5).toFixed(1)}% is itself measured on FOURTEEN`);
+    p("founders. Its own 95% interval runs from roughly 5% to 51%, so the discordant");
+    p("count above could plausibly be anywhere from 6 to 60. At the low end the run");
+    p("is inconclusive by rule whatever it costs, and that risk cannot be priced away —");
+    p("it can only be reported.");
+    p();
+  }
+
   p("| design | effort | n | m@5 | power at +2 pts | +4 pts | +6 pts | +10 pts |");
   p("|---|---|---:|---:|---:|---:|---:|---:|");
   for (const [label, d] of [

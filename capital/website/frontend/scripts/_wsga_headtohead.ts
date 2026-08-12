@@ -303,6 +303,14 @@ async function main() {
   /** How many times the TREATMENT is run per founder. 1 is a comparison; 2 is a
    *  comparison WITH its own null. See the `publishedRankerB` block. */
   const repeat = Math.max(1, num(process.env.REPEAT, 1));
+  /** How many founders get the extra call(s). The NULL is an estimate of a
+   *  RATE, not a test of a small difference, so it needs far less n than the
+   *  effect does — and every euro spent on it is a euro not spent on power.
+   *  Repeating the first 50 called founders puts a +/-12 point interval around
+   *  the self-discordance rate, which is ample to tell "2% against 20%" from
+   *  "18% against 20%", and costs a fifth of repeating them all. */
+  const repeatFirst = num(process.env.REPEAT_FIRST, Number.POSITIVE_INFINITY);
+  let repeated = 0;
 
   // ── THE POPULATION ───────────────────────────────────────────────────────
   // `cross_regime_*` and nothing else. That provenance is prose about the
@@ -470,7 +478,9 @@ async function main() {
       eur = a.spent;
       ceilingRanker = a.pool.map(idOf).includes(t.instrument);
       publishedRanker = project(a.pool);
-      for (let k = 1; k < repeat; k++) {
+      const doRepeat = repeat > 1 && repeated < repeatFirst;
+      if (doRepeat) repeated++;
+      for (let k = 1; doRepeat && k < repeat; k++) {
         const b = await fire();
         eur += b.spent;
         // Only the FIRST retest is kept as the null; a third would need a
@@ -547,6 +557,8 @@ async function main() {
     `${((poolRecallAt(VERDICT_POOL) ?? 0) * 100).toFixed(1)}%`);
   p(`paid calls         ${calls}${Number.isFinite(maxCalls) ? ` of a MAX_CALLS ceiling of ${maxCalls}` : ""}` +
     `${skippedForBudget ? `, ${skippedForBudget} founder(s) skipped once the ceiling was hit` : ""}`);
+  p(`null (REPEAT)      ${repeated} founder(s) had the treatment fired twice` +
+    (Number.isFinite(repeatFirst) ? ` (REPEAT_FIRST=${repeatFirst})` : ""));
   p(`spend              EUR ${spend.toFixed(4)}` +
     (calls ? ` = EUR ${(spend / calls).toFixed(4)} per paid call` : ""));
   p("```");
@@ -800,7 +812,8 @@ async function main() {
   writeFileSync(path.join(OUT_DIR, `${stamp}.json`), JSON.stringify({
     startedAt, arm: AGENT_SELECT_ARM, seam: AGENT_SELECT_SEAM, effort: THINK_EFFORT,
     set: setFile, split, seed, n: rows.length, eligible: eligible.length,
-    countryCap: cap, capBound, onlyInPool, repeat, drawFingerprint,
+    countryCap: cap, capBound, onlyInPool, repeat, repeatFirst, repeated,
+    drawFingerprint,
     corpus: prov, rankerLine, rankerClean,
     calls, spendEur: spend, rows,
   }, null, 1));
