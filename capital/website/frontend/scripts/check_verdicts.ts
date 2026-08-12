@@ -27,7 +27,8 @@
 //   STALE     the verdict predates the corpus it describes. The census dates
 //             the corpus, so a verdict about the corpus taken before the
 //             newest census is a statement about a corpus we no longer hold.
-//   DEGRADED  the verdict says the guard failed.
+//   DEGRADED  the verdict says the guard failed — unless the registry's
+//             `accepted` block holds that exact failure, unexpired. See below.
 //   DRIFTED   the verdict was produced against different code from this
 //             checkout. For a `weekly` guard that means the Railway container
 //             is not running what is committed; for an `on_change` guard it is
@@ -67,6 +68,32 @@
 //
 // Both are credential-free.
 //
+// ── FAILING, versus failing for a reason somebody has accepted ─────────────
+// This file is the READOUT of the guards that hold credentials, so the instinct
+// is that it must be red whenever any of them is: a dashboard that reports green
+// over a red input is the defect the whole channel exists to remove.
+//
+// That instinct is right about the FACT and wrong about the SIGNAL. On
+// 2026-08-12 three guards were red for reasons already diagnosed, written down,
+// and routed to a person — and this file reported those same three facts a
+// second time, which made `npm run check` red for every branch in the
+// repository, including branches that touched nothing any of them watches. A
+// signal no branch can turn green is a signal people learn to step over, and
+// then it stops catching the fourth guard, the one nobody had looked at. The
+// repo has already paid for that lesson twice: `check_hydration_parity` says in
+// its own header that a guard failing for a reason its subject cannot fix is how
+// a guard gets muted, and `run_checks.mjs` exists because a red link hid
+// thirteen checks behind it.
+//
+// So the readout distinguishes the two, and the distinction is carried by
+// `accepted` in data/guard_registry.json — the block that already exists there
+// for guards a human has to type, in the same shape, for the same reason. What
+// keeps it from being a mute button is that an acceptance is bound to a specific
+// FAILURE (a regex the summary must match), covers DEGRADED only, expires on a
+// review date, and fails the build once the guard it covers goes green. Every
+// one of those is enforced in `acceptance()` below; the argument for each is in
+// the registry beside the entries.
+//
 //   npx tsx scripts/check_verdicts.ts
 //   npx tsx scripts/check_verdicts.ts --full
 import { execFileSync } from "node:child_process";
@@ -82,13 +109,22 @@ interface Spec {
   id: string; cadence: "weekly" | "on_change"; code: string[];
   refresh: string; needs: string[]; why: string;
 }
+/** One entry of the registry's `accepted` block. See its `$why` for the rules;
+ *  they are enforced in `acceptance()` below and nowhere else. */
+interface Accepted { reason: string; failure: string; review: string }
 interface Row {
   status: string; takenAt: string; producedBy: string;
   codeFingerprint: string; summary: string; metrics: Record<string, unknown>;
 }
 
 const reg = JSON.parse(readFileSync(REGISTRY, "utf8")) as
-  { feed: { url: string }; guards: Spec[] };
+  { feed: { url: string }; guards: Spec[]; accepted?: Record<string, unknown> };
+/** The `accepted` block, minus the `$`-prefixed prose keys the registry uses
+ *  throughout to carry its own reasoning. Same convention as `__`-prefixed keys
+ *  in the verdict dumps: documentation is never data. */
+const ACCEPTED: Record<string, Accepted> = Object.fromEntries(
+  Object.entries(reg.accepted ?? {}).filter(([k]) => !k.startsWith("$")),
+) as Record<string, Accepted>;
 const FEED = process.env.GUARD_FEED_URL || reg.feed.url;
 const FULL = process.argv.includes("--full");
 
@@ -171,9 +207,62 @@ function readsCorpus(g: Spec): boolean {
   return g.needs.some((n) => /DATABASE_URL|corpus/i.test(n));
 }
 
+/**
+ * Has somebody already decided about THIS failure of THIS guard?
+ *
+ * Returns the reason to print when the failure is held, or a problem string
+ * when an acceptance exists and does not apply — never a bare `false`, because
+ * "the acceptance did not apply" is itself something the reader has to be told
+ * or the block becomes a place entries go to be forgotten.
+ *
+ * The three bindings and the argument for each are in the registry's `accepted`
+ * `$why`. Enforced here, in the one reader: an acceptance that is interpreted in
+ * two places is an acceptance that means two things.
+ */
+function acceptance(id: string, latest: Row, now: number):
+    { held: string } | { void: string } | null {
+  const a = ACCEPTED[id];
+  if (!a) return null;
+  const shape = ["reason", "failure", "review"].filter((k) => !a[k as keyof Accepted]);
+  if (shape.length) {
+    return { void: `the acceptance for ${id} is missing ${shape.join(", ")}. An accepted ` +
+      `failure with no ${shape[0]} is a mute button, so it does not apply.` };
+  }
+  const left = days(Date.parse(`${a.review}T00:00:00Z`), now);
+  if (Number.isNaN(left)) {
+    return { void: `the acceptance for ${id} has an unreadable review date ` +
+      `(${JSON.stringify(a.review)}); it does not apply.` };
+  }
+  if (left <= 0) {
+    return { void: `the acceptance for ${id} EXPIRED on ${a.review}. The reason it ` +
+      `recorded was:\n        ${a.reason}\n      Re-examine it and either fix the guard ` +
+      `or set a new review date, deliberately.` };
+  }
+  // The failure is accepted, not the guard. A guard that has started failing a
+  // different way is a new fact and must reach a person.
+  let matches: boolean;
+  try {
+    matches = new RegExp(a.failure).test(latest.summary ?? "");
+  } catch (err) {
+    return { void: `the acceptance for ${id} carries an unusable \`failure\` pattern ` +
+      `${JSON.stringify(a.failure)} (${err}); it does not apply.` };
+  }
+  if (!matches) {
+    return { void: `${id} is failing, an acceptance exists, and it does NOT cover this ` +
+      `failure.\n      accepted:  /${a.failure}/\n      reported:  ` +
+      `${latest.summary || "(no summary)"}\n      The guard has started failing a ` +
+      `different way, which is a new fact nobody has decided about.` };
+  }
+  return { held: `${a.reason}\n      Accepted until ${a.review} (${left.toFixed(0)} day(s) left).` };
+}
+
 async function main() {
   const feed = await fetchFeed();
   const problems: string[] = [];
+  /** Failures somebody has already decided about. Printed in full, every run —
+   *  an acceptance that is not visible is indistinguishable from a check that
+   *  never looked. */
+  const accepted: string[] = [];
   const now = Date.now();
 
   // The newest census dates the corpus everything weekly is judged against.
@@ -200,13 +289,31 @@ async function main() {
       (latest.summary ? `\n${" ".repeat(28)}${latest.summary}` : "");
     console.log(line);
 
-    if (latest.status !== "ok") {
+    // DEGRADED is the one status an acceptance may cover: the guard RAN, on this
+    // corpus and this code, and reported what it found. The other three say the
+    // reader does not know what the guard would find, and not knowing is what
+    // this whole channel exists to remove — so they are checked below with no
+    // reference to the block at all.
+    const acc = latest.status === "ok" ? null : acceptance(g.id, latest, now);
+    if (acc && "held" in acc) {
+      accepted.push(`${g.id} — ${latest.status}: ${latest.summary || "(no summary)"}\n` +
+        `      ${acc.held}`);
+    } else if (latest.status !== "ok") {
       problems.push(
         `DEGRADED — ${g.id} last reported ${latest.status}:\n` +
         `        ${latest.summary || "(no summary)"}\n` +
         `      Taken ${latest.takenAt.slice(0, 16)}Z by ${latest.producedBy}. The guard\n` +
         `      is not the problem; what it guards is. Re-run to see the full output:\n` +
-        `        ${g.refresh}`);
+        `        ${g.refresh}` +
+        (acc ? `\n      NOTE: ${acc.void}` : ""));
+    } else if (ACCEPTED[g.id]) {
+      // Green, with an acceptance still standing over it. Left alone, that entry
+      // silently pre-authorises the next failure whose summary happens to match.
+      problems.push(
+        `OBSOLETE ACCEPTANCE — ${g.id} is green, and data/guard_registry.json still ` +
+        `accepts\n      a failure of it: /${ACCEPTED[g.id].failure}/\n` +
+        `      An acceptance that outlives the thing it accepted is pre-authorisation\n` +
+        `      for the next regression under the same wording. Delete the entry.`);
     }
 
     // DRIFTED. A verdict is a true statement about the code it judged; if that
@@ -276,8 +383,26 @@ async function main() {
     }
   }
 
+  // An acceptance for a guard that is not registered can never be reached, so it
+  // is not an acceptance — it is a note that looks like one, and it will look
+  // like one for as long as nobody types the id it was meant to hold.
+  for (const id of Object.keys(ACCEPTED)) {
+    if (!reg.guards.some((g) => g.id === id)) {
+      problems.push(
+        `UNREACHABLE ACCEPTANCE — data/guard_registry.json accepts a failure of ` +
+        `'${id}',\n      which is not a registered guard. Nothing will ever read it, so ` +
+        `whatever\n      it was written to hold is unheld.`);
+    }
+  }
+
   console.log(`\n  feed ${FEED}`);
   console.log(`  ${reg.guards.length} guard(s) registered, mode ${FULL ? "--full" : "on-change"}`);
+
+  if (accepted.length) {
+    console.log(`\n  ${accepted.length} failure(s) held under data/guard_registry.json ` +
+                `\`accepted\` — decided, not fixed:`);
+    for (const a of accepted) console.log(`  - ${a}\n`);
+  }
 
   if (problems.length) {
     console.error("\ncheck_verdicts: FAILED\n");
@@ -288,7 +413,10 @@ async function main() {
     process.exit(1);
   }
   console.log("check_verdicts: ok — every registered guard has a green verdict, " +
-              "taken on this code" + (FULL ? ", within its cadence." : "."));
+              "taken on this code" + (FULL ? ", within its cadence" : "") +
+              (accepted.length
+                ? `, or a failure held under an acceptance that has not expired.`
+                : "."));
 }
 
 main().catch((err) => {

@@ -92,6 +92,9 @@
    "review": "2026-11-30"
   }
  },
+ "accepted": {
+  "$why": "A failure somebody has already diagnosed, written down and routed to a person. check_verdicts.ts is the READOUT of the guards that hold credentials, and on 2026-08-12 three of them were red for reasons already decided -- which made `npm run check` red on every branch in the repository, including branches touching nothing any of them watches. A signal no branch can turn green is a signal people learn to step over, and then it stops catching the fourth guard, the one nobody had looked at. So the readout separates FAILING from FAILING FOR A REASON SOMEBODY ACCEPTED. What keeps this from being a mute button is enforced in acceptance() and nowhere else, so it cannot mean two things: an entry is bound to a specific FAILURE (a regex the guard's own summary must match, so a guard that starts failing a different way still reaches a person), it covers DEGRADED only (the other statuses say the reader does not know what the guard would find, and not knowing is what this channel exists to remove), it EXPIRES on its review date, it fails the build once the guard it covers goes GREEN (an acceptance that outlives what it accepted is pre-authorisation for the next regression under the same wording), and an acceptance naming an unregistered guard fails too (nothing would ever read it). Held failures are printed in full on every run: an acceptance nobody sees is indistinguishable from a check that never looked. THE BLOCK IS DELIBERATELY EMPTY. It was built on 2026-08-12 for three red guards and then not used for any of them, because each turned out to have a real fix or a dated end -- the mechanism exists for a failure that is genuinely someone's standing decision, not as somewhere to put today's inconvenience."
+ },
  "guards": [
   {
    "id": "census",
