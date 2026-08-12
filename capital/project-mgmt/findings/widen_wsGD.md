@@ -56,35 +56,44 @@ must raise `MAX_TOKENS_BY_EFFORT` with the menu and report the truncation count.
 
 ## 2. Every stage that removes the answer
 
-Measured on the 773-founder draw, one funnel, one pool object.
+`scripts/_wsgd_stages.ts`, **n=820 held-out described founders**, one funnel,
+one pool object, rank measured at every seam. Free.
 
-| stage | what it is | answer survives |
-|---|---|---:|
-| the corpus | 1,088 instruments | — |
-| `publishableInstruments()` | closure, capital-type editorial policy, unconfirmed-open withholding | **not measurable** |
-| gate 1 `buildInstrumentTableHydrated` | channel selection + leaf cap + materialisation | ~98% |
-| `accessiblePool` | the encoded eligibility verdict — `status === "blocked"` | **78.3%** |
-| `orderMemoCandidates` | display-name collapse — DEMOTES, never deletes | 78.3% |
-| `.slice(0, VERDICT_POOL)` | **the cut this workstream is about** | **36.7%** |
-| the model's seven | `agentSelectRows` names `SELECT_COUNT` | 70.4% of those |
-| the published five | `BRIEF_LIMITS.institutionsMax` is 7; EXACT@5 reads the top five | 51.0% of those |
+| stage | what it is | list length | answer survives | lost here |
+|---|---|---:|---:|---:|
+| the corpus | 1,088 instruments | 1,088 | — | — |
+| `publishableInstruments()` | closure, capital-type policy, unconfirmed-open | 771 | **not measurable** | 1,763 pairs |
+| gate 1 `buildInstrumentTableHydrated` | channels, leaf cap, materialisation | 86.4 | 97.2% | 23 |
+| `accessiblePool` | the encoded verdict — `status === "blocked"` | 71.6 | **74.8%** | **184** |
+| `orderMemoCandidates` | display-name collapse — DEMOTES, never deletes | 71.6 | 74.8% | **0** |
+| `.slice(0, VERDICT_POOL)` | **the cut this workstream is about** | 17.9 | **43.3%** | 258 |
+| the model's seven | `agentSelectRows` names `SELECT_COUNT` | 7 | 70.4% of those | |
+| the published five | EXACT@5 reads the top five of seven | 5 | 51.0% of those | |
 
-Two of these deserve to be read carefully.
+(43.3% on the holdout split matches the committed curve's 44.2%. The
+head-to-head's 36.7% is lower because its draw is `split=all` with a 15% country
+cap; the shapes agree, and every comparison below is made within one population.)
+
+Three of these deserve to be read carefully.
 
 **`publishableInstruments()` cannot appear in any recall figure this repo
 publishes.** The recall set is CONDITIONED on the won fund being publishable —
 `partitionByOfferable` drops the pair otherwise — so the closure filter, the
 capital-type withholding and the unconfirmed-open policy are invisible by
-construction. 1,763 pairs sit outside the graded population for that reason.
-That is the right design (a fund we deliberately do not offer is not a ranking
-miss) but it means **78.3% is a ceiling on top of an exclusion, not the
-product's true ceiling.**
+construction. **1,763 pairs (24.8%)** sit outside the graded population for that
+reason. That is the right design (a fund we deliberately do not offer is not a
+ranking miss) but it means 74.8% is a ceiling on top of an exclusion, not the
+product's true ceiling.
 
-**`accessiblePool` is the second-largest single cut in the funnel and it is not
-a depth problem.** It removes about 20 points — funds a company DEMONSTRABLY
-WON, on a row gate 1 had already selected, deleted because our own encoded
-filters say the founder conclusively fails them. No K reaches these: the row is
-gone before any cut is applied. See §5.
+**The name collapse costs nothing.** 0 of 820. It is a demotion, and
+`resolveNameCollisions` returns `visible + demoted === input`. The rule that
+`caps.ts` cited as one of three reasons to widen the pool to 18 does not remove
+a single answer.
+
+**`accessiblePool` is the second-largest cut in the funnel and it is not a depth
+problem** — 184 of 820 answers, deleted before any K applies. But it is also
+mostly not a corpus problem. See §5, which is the finding that most changes what
+the headline number means.
 
 ---
 
@@ -192,23 +201,67 @@ first is what the founder receives.
 
 ---
 
-## 5. The cheapest route of all, and it is not depth
+## 5. A fifth of the ceiling is the replay's own invention
 
-`accessiblePool` deletes the won fund on a fifth of founders. These are not
-funds we ranked badly. They are funds the company **received money from**, which
-our encoded eligibility calls a conclusive fail. No value of K recovers one.
+`accessiblePool` deletes the won fund on **184 of 820** held-out founders
+(22.4%). These are not funds we ranked badly. They are funds the company
+**received money from**, which our encoded eligibility calls a conclusive fail,
+and no value of K recovers one.
 
-`scripts/_wsgd_stages.ts` records, for every such founder, the blocking gate
-verbatim, and separately records whether removing THAT ONE ANSWER un-blocks the
-fund. The distinction matters because several of the answers the replay supplies
-are DERIVED rather than stated — `ticketBand` from the median award under a
-different notified scheme, `region` from a different scheme's beneficiary region
-— so a field that alone deletes the answer may be indicting our guess rather
-than our gates. The run's output is in `findings/stages_wsGD/`.
+Grouped by the intake field whose filter fired. `sole` counts founders for whom
+removing THAT ONE ANSWER un-blocks the fund:
 
-Whatever the split, this route has properties nothing else here has: it costs
-**zero tokens**, it raises the ceiling at **every** K simultaneously, and it is
-diagnosable entirely offline.
+| intake field | answers deleted | sole | a requirement it fired on |
+|---|---:|---:|---|
+| `ticketBand` | 120 | **104** | "Projects of 6 to 18 months must have total eligible project costs between £100,000 and £500,000." |
+| `organisationType` | 33 | 20 | "The coordinator must be a municipality, a municipal association, or a civil society organisation" |
+| `region` | 16 | 16 | "The applicant enterprise must be located in the target territories of the Programme" |
+| `sector` | 15 | 15 | "Projects must fall within at least one of three defined themes" |
+| `useOfFunds` | 11 | 11 | "Funds must be used to clarify uncertainty related to the commercial application of the research" |
+| `consortium` | 6 | 6 | "Only individual projects carried by a single company are eligible (no consortia)." |
+| `borrowerModel` | 6 | 6 | "Sole proprietorships (enkeltpersonforetak) are not eligible to apply." |
+
+**Do not read this as 184 encoding defects.** `check_winner_not_gated.ts` states
+this exact property over this exact seam, pins its debt at 207, and
+**deliberately leaves `ticketBand`, `consortium`, `useOfFunds` and `activities`
+unanswered**, in its own words:
+
+> a replay that hands every founder a made-up ticket band or consortium stance
+> manufactures failures the founder would never have produced, and a guard built
+> on those would ratchet on fiction.
+
+That is correct, and it is already decided. What has not been noticed is that
+**the same reasoning applies to the ceiling, and nobody applied it there.**
+Every recall figure this repo quotes — 36.7% in the pool, 63.3% unreachable,
+44.2% on the committed curve — is produced by a replay that answers those fields
+with exactly that fiction. The head-to-head's own disclosure says so plainly:
+`ticketBand` is *set* on 773/773 founders and *own* on 231, so seven founders in
+ten are carrying `CONSTANT_ANSWERS.ticketBand`, a stand-in, into a hard filter
+that can delete their answer. `useOfFunds` and `consortium` are PINNED uniform
+and own on **zero**.
+
+So `_wsgd_stages.ts` runs the identical funnel twice, **gate 1 held fixed**, with
+those four fields withdrawn on the second pass. The difference is not a proposal
+and not a fix; it is how much of the published ceiling is measurement error.
+
+> **`findings/stages_wsGD/stages.md`, "How much of the ceiling is the replay's
+> own invention", holds the n=820 result.**
+
+Two consequences, whichever way the number falls:
+
+1. **A depth arm should be run against the corrected ceiling.** If the answer is
+   in the pool far more often than 36.7% once the fiction is withdrawn, then the
+   marginal founders a wider K reaches are different founders, and the value of
+   widening is different too.
+2. **`ticketBand` is a statement of intent and it is deleting funds.** A founder
+   says what they hope to raise; `accessiblePool` treats that as a conclusive
+   disqualification, and it alone accounts for 104 of the 184. This repo already
+   has the doctrine for it — inform-never-remove, in `answerProvenance.ts` —
+   and applies it only to fields answered LATE. Whether an intent field should
+   ever hold conclusive disqualifying force is a product decision, not a bug,
+   and it belongs to the owner.
+
+This route costs **zero tokens** and raises the ceiling at **every** K at once.
 
 ---
 
@@ -218,10 +271,10 @@ Measured on the current corpus through production's own prompt builder:
 
 | K | rows carrying a `funds:` line |
 |---:|---:|
-| 6 | 85.4% |
-| 18 | 93.0% |
-| 40 | 91.3% |
-| the whole pool | 92.0% |
+| 6 | 87.5% |
+| 18 | 87.4% |
+| 40 | 86.5% |
+| the whole pool | 86.3% |
 
 wsEI measured 55.4% at rows 1-6 and **47.9% at rows 19-40** one day ago. The
 band a wider menu would add is no longer the least readable band; it is
