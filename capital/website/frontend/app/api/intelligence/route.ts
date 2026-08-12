@@ -31,12 +31,18 @@ export const dynamic = "force-dynamic";
 //                        open question — skipped entirely when they did not
 //   synthesize           one streamed writer call, plus ONE retry with thinking
 //                        off if the first returns empty or times out
-//   agentSelectRows      ZERO on the shipped path: AGENT_SELECT defaults to
-//                        `off`. On an arm, one call, plus one more under
-//                        AGENT_SELECT_UNSURE=tool when the model uses the tool
+//   agentSelectRows      ONE call — this is the stage that RANKS, and as of
+//                        wsGB `AGENT_SELECT` defaults to `adviser`, so it runs
+//                        on every brief. Plus one more under
+//                        AGENT_SELECT_UNSURE=tool when the model uses the tool,
+//                        and NONE at all for a founder whose accessible pool is
+//                        no longer than the seats on offer, which is ordinary
 //
-// So the shipped floor is two calls and the ceiling is well above it, which is
-// what 300 seconds is sized for.
+// The floor is still two — the ranker's call is the one stage that can be
+// skipped for an ordinary founder rather than an unusual one — but the TYPICAL
+// request now makes three, and the ceiling is well above that, which is what
+// 300 seconds is sized for. The line above said ZERO for the ranking stage;
+// that was true of the arm being off, and the arm is on.
 export const maxDuration = 300;
 
 // Rate limiting and the global spend ceiling now live in lib/intelligence/quota.ts,

@@ -2,7 +2,10 @@
 //
 // ── The disaster simulated ─────────────────────────────────────────────────
 // The cell is set the way a sweep would set it: the asking stage on, the
-// ranking stage it asks FOR left at its default. Nothing about that combination
+// ranking stage it asks FOR turned off. (Until wsGB that cell was also reached
+// by OMISSION, because `off` was the default; it no longer is, and the case
+// below that used to assert a throw on an unset variable now asserts the
+// property that survived the flip instead.) Nothing about that combination
 // errors on its own — the questions get written, the founder answers them, the
 // answers land in `EligibilityAnswers` and the arithmetic scorers read them.
 // What comes out is a real number for the deterministic ranker given six extra
@@ -64,22 +67,39 @@ describe("the asking stage refuses to run without the stage it asks for", () => 
     expect(err!.message).toMatch(/deterministic ranker published under the ranker-asks name/);
   });
 
-  it("throws when AGENT_SELECT is merely absent, which is how a sweep sets it", async () => {
-    // The likelier version: nobody sets the ranker off, they just do not set it
-    // at all. The default IS off, so this is the same cell reached by omission.
-    const err = await importUnder({ RANKER_ASKS: "on" });
-    expect(err, "an unset AGENT_SELECT was accepted where an explicit off was not")
-      .not.toBeNull();
+  it("reads the RESOLVED arm, not the raw variable — omission is not a third state", async () => {
+    // ── THE PREMISE THIS USED TO REST ON IS GONE (wsGB) ───────────────────
+    // It read: "nobody sets the ranker off, they just do not set it at all. The
+    // default IS off, so this is the same cell reached by omission" — and it
+    // asserted a THROW. `AGENT_SELECT` now defaults to `adviser`, so an unset
+    // variable is a ranking arm and refusing it would refuse the shipped
+    // configuration.
+    //
+    // What the case is FOR survives the flip, and it is not the throw: an unset
+    // `AGENT_SELECT` must behave exactly as the same arm spelled out. Written
+    // against `AGENT_SELECT_ARM` rather than against a literal, so it states the
+    // property for whatever the default becomes next and cannot go stale the way
+    // its predecessor did.
+    vi.resetModules();
+    const { AGENT_SELECT_ARM } = await import("./caps");
+    const omitted = await importUnder({ RANKER_ASKS: "on" });
+    const spelled = await importUnder({ RANKER_ASKS: "on", AGENT_SELECT: AGENT_SELECT_ARM });
+    expect(
+      omitted === null,
+      `omitting AGENT_SELECT behaved differently from spelling out its default `
+      + `("${AGENT_SELECT_ARM}"): the interlock is reading the environment rather `
+      + `than the resolved arm`,
+    ).toBe(spelled === null);
   });
 
-  it("does not throw with both off, which is what ships", async () => {
+  it("does not throw with both off, which is the control arm", async () => {
     // The positive control. Without it, the assertions above would pass on a
     // module that threw for some unrelated reason — a missing key, a bad
     // import — and the refusal would never have been tested at all.
     expect(await importUnder({ RANKER_ASKS: "off", AGENT_SELECT: "off" })).toBeNull();
   });
 
-  it("does not throw when both are on", async () => {
+  it("does not throw when both are on, which is what ships plus the asker", async () => {
     expect(await importUnder({ RANKER_ASKS: "on", AGENT_SELECT: "adviser" })).toBeNull();
   });
 

@@ -71,11 +71,17 @@ currently **winning**. The no-model control scored highest at every thinking
 level measured (16.7% against 13.9 / 11.1 / 13.9 / 8.3, N=36). Delete the
 control and we lose the ability to say whether the LLM is helping at all.
 
-**And a fourth fact that is easy to miss:** `AGENT_SELECT` defaults to `off`. On
-the shipped path today, `agentSelectMemoPool` returns its argument by reference,
-so the order a founder actually reads *is* the subset builder's order. The LLM
-ranker is the strategy; it is not yet the default. Do not describe the shipped
-product as LLM-ranked.
+**And a fourth fact that WAS easy to miss, and is no longer true (wsGB,
+2026-08-12):** `AGENT_SELECT` defaulted to `off`, so `agentSelectMemoPool`
+returned its argument by reference and the order a founder read *was* the subset
+builder's order. It now defaults to **`adviser`**. The shipped product IS
+LLM-ranked; `off` is the control arm, reached by naming it.
+
+Job 3 above is unchanged in substance and changed in direction: the score is
+still the control, and on the only end-to-end metric we have it was still
+winning when the owner decided to ship the ranker anyway. That decision makes
+the head-to-head a **baseline** rather than a gate. It does not make the
+control's number go away, and nothing here may be quoted as if it had.
 
 ### What it is NOT
 
