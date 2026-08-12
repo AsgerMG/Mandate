@@ -805,7 +805,32 @@ const POPULATION_FLOOR: Record<string, number> = {
 // pinned, and the sample is then a constant. Use `measure_recall.ts`, which
 // varies SEED, to find out whether a result is real.
 const N = 300;
-const SEED = DEFAULT_SEED;
+// ── `SEED=` OVERRIDES THE DRAW, AND THEN THIS RUN MAY NOT SPEAK FOR MAIN ──
+//
+// The convention every derivation block above states -- "a re-derivation must
+// be made with three fresh seeds and never off the red run" -- was NOT
+// executable for anything this file alone measures. `measure_recall.ts` varies
+// SEED and does not compute `accessible`, so the three seeds behind a floor on
+// the delivered pool could not be produced by any harness in the repo. That is
+// how `accessible` sat reported-and-unfloored: not because nobody wanted the
+// floor, but because the convention's own precondition was unreachable.
+//
+// The obvious hazard of an env-settable seed is that a red run gets reseeded
+// until it is green. That is closed HERE rather than by asking people not to:
+// an overridden seed cannot publish a verdict, so a reseeded pass cannot become
+// the figure the feed carries or the fingerprint a merge is judged against. It
+// can only inform a derivation that a human writes down, which is the one use
+// the convention has for it.
+const SEED = Number(process.env.SEED ?? DEFAULT_SEED);
+if (SEED !== DEFAULT_SEED) {
+  // Through the channel that already exists for exactly this claim, rather than
+  // a second one beside it: `GUARD_NO_PUBLISH` is how this repo says "these
+  // figures are real and they do not speak for main", and it says so loudly on
+  // the same screen as the numbers.
+  process.env.GUARD_NO_PUBLISH = `SEED=${SEED} overrides the pinned draw ${DEFAULT_SEED}`;
+  console.log(`  SEED=${SEED} (pinned draw is ${DEFAULT_SEED}) — this run informs a `
+    + `derivation and cannot publish a verdict.`);
+}
 
 async function main() {
   // Semantic ranking needs DATABASE_URL and VOYAGE_KEY, and the contract for

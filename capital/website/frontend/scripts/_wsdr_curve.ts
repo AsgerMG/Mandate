@@ -58,6 +58,9 @@ import {
   tableInputFromAnswers,
 } from "../lib/intelligence/shortlist";
 import { POOL_RECALL_FILE, POOL_RECALL_KS } from "../lib/intelligence/poolRecall";
+// The stamp and the check that reads it, from ONE implementation. Two would
+// drift the first time either side learned about a new filter.
+import { formatSubject, offerableSubject } from "./corpusSubject";
 import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "./founderIntake";
 import { isDescribed, loadRecallSet, partitionByOfferable, reattributeMissingAnswers } from "./recallSet";
 
@@ -139,6 +142,22 @@ async function main() {
     meanPoolLength: Number((poolLenTotal / (n || 1)).toFixed(1)),
     inPoolAtAll: Number((ranks.filter((r) => r != null).length / (n || 1)).toFixed(4)),
     corpus: `${prov.source} instruments=${prov.instruments}`,
+    // ── WHICH FUNDS THIS CURVE IS ABOUT, by content (wsGN) ─────────────────
+    // `corpus` above is provenance: which STORE answered, and how many rows it
+    // hydrated. It is not the subject. This curve is measured over the ranked
+    // ACCESSIBLE POOL, which is drawn from `publishableInstruments()` — the
+    // `offerable` set forty lines above — and that set is a function of the
+    // rows AND of `today()`, because a call's window shuts without anybody
+    // writing to Postgres.
+    //
+    // `instruments=1088` is a function of the rows alone, so it is structurally
+    // unable to carry either dependency. On 2026-08-12 fifty-three Spanish
+    // calls were correctly closed, the offerable set went 837 -> 784, this
+    // number did not move, and `check_pool_recall_curve` stayed green while the
+    // selector prompt quoted the model a base rate for a pool that no longer
+    // existed. A digest of the set itself cannot do that: it is a function of
+    // everything the set is a function of.
+    offerable: formatSubject(offerableSubject()),
     // ── WHICH RANKER PRODUCED THIS CURVE, in the artifact and not just on the
     // console (wsGE). `semanticFundMatch` returns an empty map on any failure
     // and every call site then drops to the lexical index, so a run can average
