@@ -169,8 +169,20 @@ def cut_depth() -> int:
     # `depthLever("BRIEF_VERDICT_POOL", 18)`. Match the shipped default in
     # either spelling rather than pinning the syntax -- the page must keep
     # telling the truth across a refactor, not fail on one.
+    # wsGD gave the lever an options object -- `depthLever("BRIEF_VERDICT_POOL",
+    # 18, { all: true })` -- so the arm that shows the model the WHOLE pool is
+    # expressible for the first time. The old pattern required the closing
+    # paren immediately after the default and stopped matching, and this
+    # function exited loudly rather than printing a stale 18. That is the
+    # behaviour we want and it is why the number is read rather than typed;
+    # what it costs is this: the read has to keep up with the declaration.
+    #
+    # Matched up to the default and no further, so the next option added does
+    # not break it again. Still fails hard if the default cannot be found at
+    # all -- a generator that falls back to a literal is the stale-number
+    # defect wearing a different hat.
     src = CAPS.read_text()
-    m = (re.search(r'export const VERDICT_POOL\s*=\s*depthLever\([^,]+,\s*(\d+)\)', src)
+    m = (re.search(r'export const VERDICT_POOL\s*=\s*depthLever\([^,]+,\s*(\d+)', src)
          or re.search(r"export const VERDICT_POOL\s*=\s*(\d+)", src))
     if not m:
         sys.exit(
