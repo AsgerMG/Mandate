@@ -8,22 +8,10 @@
       "why": "The largest single loss anywhere in the product — thirty points, more than every stage before it combined. That number was never a cost or accuracy decision; it was a stopgap for three problems that have all since moved elsewhere."
     },
     {
-      "id": "wsGL",
-      "step": 2,
-      "what": "The twenty-three points lost before the AI is asked anything",
-      "why": "Funds ruled out by their own written rules, rows we are not allowed to offer, and the founder's own screen. Every one of these founders won a fund we still offer today, so none of it is a closed fund. The question is how much is the world, and how much is us being stricter than the funders are."
-    },
-    {
       "id": "wsGN",
       "step": 5,
       "what": "Three safety checks that were watching the wrong thing",
       "why": "In one day, three automatic checks were caught measuring something other than what they promise — one graded a list the founder never sees, one could not notice fifty-three funds closing, one compared everything except the rules. Each was correct when written and quietly drifted. Fixing them one at a time invites a fourth; the job is to find what they have in common."
-    },
-    {
-      "id": "wsGO",
-      "step": 5,
-      "what": "Ask the AI more than once, and keep what it agrees with itself on",
-      "why": "Given exactly the same funds and the same question twice, the AI picks a different five about a fifth of the time. That variation is currently thrown away. Asking three times and keeping the consensus is the standard way to turn it into accuracy — but it triples the cost per founder, so the gain has to be measured on replies we have already paid for before anyone commits."
     }
   ]
 }
