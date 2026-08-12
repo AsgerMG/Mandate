@@ -10,6 +10,7 @@ import { FIELD_REACH } from "../lib/intelligence/types";
 import { VOCABULARY } from "../lib/intelligence/vocabulary";
 import { regionOptions } from "../lib/intelligence/regions.generated";
 import { toIso2 } from "../lib/intelligence/countryCodes";
+import { founderCountryList } from "../lib/intelligence/shortlist";
 import { founderIntake, founderPolicyFromEnv, ALL_INTAKE_FIELDS } from "./founderIntake";
 import type { IntakeField } from "./founderIntake";
 import { loadRecallSet } from "./recallSet";
@@ -86,4 +87,29 @@ console.log(`\ncomputeVerdict opts: capitalSought non-empty on ${optsCapital}, `
   console.log(`\nregion values checked against the control's own option list: `
     + `${checked} supplied, ${[...bad.values()].reduce((a, b) => a + b, 0)} not offered`);
   for (const [v, n] of bad) console.log(`  ${v} x${n}`);
+}
+
+// ── The class outside EligibilityAnswers: `targetMarkets` ──────────────────
+// `basePayload()` in panel.tsx sends company, country, description,
+// capitalSought, eligibility, profileSignal and projectAnswers. It does NOT
+// send targetMarkets, so `sanitizeTargetMarkets` reads undefined on every real
+// request. The harness sent `[founder's own country]` on every row.
+//
+// It has two effects and they are not the same. `founderCountryList` returns
+// the EXPLICIT list when one is given and the country union otherwise, so for
+// a founder whose only entity country is their own the two are the same list —
+// proved below over the whole set rather than argued. The second effect is not
+// inert: `eligibilityContext` and `knownFacts` put a "Target markets for public
+// capital: X" line in the model's context, and no real founder's request can
+// produce that line.
+{
+  let same = 0, differ = 0;
+  for (const r of rows) {
+    const f = founderIntake(r as never, policy);
+    const withIt = founderCountryList(f.country, [f.country], f.eligibility.entityCountries);
+    const without = founderCountryList(f.country, [], f.eligibility.entityCountries);
+    if (JSON.stringify(withIt) === JSON.stringify(without)) same++; else differ++;
+  }
+  console.log(`\nfounderCountryList with and without the harness's targetMarkets: `
+    + `${same} identical, ${differ} different`);
 }

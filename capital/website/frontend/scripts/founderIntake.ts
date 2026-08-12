@@ -550,7 +550,28 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
     country: r.country,
     eligibility: draft,
     opts: {
-      targetMarkets: [r.country],
+      // ── THE SECOND FIELD PRODUCTION NEVER POPULATES ──────────────────────
+      // `basePayload()` in panel.tsx sends company, country, description,
+      // capitalSought, eligibility, profileSignal and projectAnswers. It does
+      // not send `targetMarkets`, so `sanitizeTargetMarkets` reads undefined on
+      // every real request — and this resolver sent the founder's own country
+      // on every replayed one. Same class as the staged field above, and NOT
+      // caught by the rule that removed it: `targetMarkets` is a computeVerdict
+      // OPTION, not a key of `EligibilityAnswers`, so `FIELD_REACH` has nothing
+      // to say about it and no predicate keyed on that Record ever will.
+      //
+      // Two effects, and only one of them was inert. `founderCountryList`
+      // returns the explicit list when it is given one and the country union
+      // otherwise; for a founder whose only entity country is their own those
+      // are the same list, measured identical on all 7,095 rows of the shipped
+      // set, so nothing about country routing moves. The other effect was live:
+      // `eligibilityContext` and `knownFacts` put "Target markets for public
+      // capital: X" into the model's context, and no real founder's request can
+      // produce that line — so every model arm this repo has run read a fact
+      // about the founder that the product cannot state.
+      //
+      // `[]` is the production value, not an omission.
+      targetMarkets: [],
       // ── The pinned filter, removed ────────────────────────────────────────
       // `[]` is not "no answer supplied by accident": `instrumentServesCapital`
       // returns true on an empty preference by design, so it is the NEUTRAL
@@ -687,11 +708,14 @@ export class IntakeTally {
       const reason = this.backWhy.get(f);
       if (!reason) continue;
       out.push(`    ██ HELD BACK — ${unpopulatedNote(String(f), reason)}. `
-        + `${n}/${this.n} founders had a leak-free answer to it and were not `
-        + "given one, so no fund is excluded from this run by a question the "
-        + "product does not ask. Switch the arm on and re-measure to see what "
-        + "asking it would cost or win; do not compare the two numbers without "
-        + "saying which is which.");
+        + `${n}/${this.n} founders had a leak-free answer and were not given one, `
+        + "so nothing in this run is excluded by something a founder could not "
+        + "have said."
+        + (reason.why === "staged_off"
+          ? ` Switch ${reason.armEnv} on and re-measure to see what asking would `
+            + "cost or win; do not compare the two numbers without saying which "
+            + "is which."
+          : ""));
     }
     return out;
   }
