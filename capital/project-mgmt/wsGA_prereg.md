@@ -91,9 +91,11 @@ All three:
 1. EXACT@5: McNemar exact **p <= 0.05** with **z > 0** (the ranker's way);
 2. EXACT@6: the point estimate is **also non-negative** (`ab >= ba`);
 3. the run is adequately powered — see §5 — i.e. discordant pairs
-   **m >= M_MIN**, declared below.
+   **m >= M_MIN = 45**;
+4. and the null holds: `ranker vs ITSELF` discordance is materially below
+   `ranker vs CONTROL` discordance (§4b).
 
-Condition 2 is not decoration. wsDR measured +2.2 points at @5 and **-2.2 points
+Conditions 2 and 4 are not decoration. wsDR measured +2.2 points at @5 and **-2.2 points
 at @6** on the same 45 founders. A sign flip between two adjacent windows over
 one ordering is noise wearing a decimal point, and a rule that lets @5 alone
 declare a win would have declared one there.
@@ -141,30 +143,101 @@ Any one of these. Checked and printed by the harness itself.
 | `corpusProvenance().instruments` differs from the free control run made the same day | the exam changed under the run. |
 | `exits.chose` < 95% of `tally.calls` | most calls did not reach a decision, so most of the sample is the control. |
 
+## 4b. THE NULL, AND WHY IT IS PART OF THE DESIGN RATHER THAN AN EXTRA
+
+`REPEAT=2` fires the treatment TWICE per founder — same pool object, same
+prompt, same loop iteration — on the first `REPEAT_FIRST` called founders.
+
+Every prior run of this arm sampled the model once and therefore could not tell
+a judgement from a coin. Two discordance rates now come out of one run:
+
+| | |
+|---|---|
+| ranker vs CONTROL | the effect |
+| ranker vs ITSELF | the noise floor under it |
+
+**If those two are the same size, the head-to-head is measuring sampling noise
+and no amount of n fixes it.** That outcome is a VOID, not an inconclusive: it
+says the comparison cannot be made at this temperature, on this prompt, at all.
+
+The self-comparison is also a falsification test of the harness. Two samples of
+one arm must NOT be significantly different from each other; an exact p below
+0.05 on that line means something in the replay is not held constant and the
+primary result is discarded.
+
+The null estimates a RATE, not a small difference, so it does not need the
+effect's n. `REPEAT_FIRST=50` puts roughly a +/-12 point interval around the
+self-discordance rate — ample to separate "2% against 20%" from "18% against
+20%" — at a fifth of the cost of repeating everybody.
+
 ## 5. POWER — declared before, not computed after
 
 `M_MIN` is the number of discordant pairs at which the run can see an effect the
 size of `WORTH_SHIPPING` with 80% power, computed by
 `mdePowered()` in `_wsga_stats.ts`.
 
-Run `npx tsx scripts/_wsga_plan.ts` to reproduce the table. At the proposed
-settings (effort `medium`, conditioned draw, in-pool discordance 21.4% measured
-on wsDR):
+Run `npx tsx scripts/_wsga_plan.ts` to reproduce every number below. It reads
+the free control run's own tape rather than quoting it.
 
-- **the population is the binding constraint, not the budget.** The graded tune
-  population with a cross-regime description is **324 founders**. At the
-  measured in-pool rate that is roughly **90-110 paid calls**, and roughly
-  **20-24 discordant pairs**. The budget would have bought 250 calls.
-- at m = 22, the smallest gain detectable at 80% power is about **+7.5 points on
-  the in-pool sub-population**, which is about **+2.3 points of population
-  EXACT@5**.
-- **`M_MIN` = 22.**
+### 5.1 THE POPULATION IS THE BINDING CONSTRAINT, NOT THE BUDGET
 
-The in-pool discordance rate of 21.4% is itself measured on **fourteen**
-founders (3 discordant of 14 in wsDR). Its own 95% interval runs from roughly
-5% to 51%. That uncertainty is in the plan and is not hidden: if the true rate
-is at the low end, this run produces single-figure discordant pairs and is
-inconclusive by rule, whatever it costs.
+Measured free, at full n, on today's corpus
+(`project-mgmt/findings/headtohead_wsGA/off_low_n324.md`, 1,088 instruments,
+`ranker: all 324 request(s) on EMBEDDING`):
+
+```
+eligible population (tune, cross-regime described, graded)    324   EXHAUSTED
+won fund inside the 18-row pool                            120/324 = 37.0%
+control EXACT@5 on those 120                                60/120 = 50.0%
+   ^ 60 founders the ranker could FIX, and 60 it could BREAK
+204 of 324 founders (63.0%) have no answer in the pool at all
+```
+
+There is no larger draw on this provenance. `SPLIT=all` (tune + holdout) raises
+it to **773**, at the cost that the base-rate sentence quoted in the prompt was
+fitted on held-out founders — an aggregate over 846 companies, carrying nothing
+about any individual founder. Judged acceptable and flagged rather than assumed.
+
+### 5.2 WHAT THE MONEY BUYS, ON THE MEASURED CEILING
+
+At the in-pool discordance rate wsDR measured (21.4% at EXACT@5):
+
+| draw | in-pool calls | discordant m | MDE, in-pool | **MDE, population EXACT@5** | cost @ medium |
+|---|---:|---:|---:|---:|---:|
+| tune only, 324 | 120 | 26 | +12.1 pts | **+4.5 pts** | $4.76 |
+| SPLIT=all, 773 | ~286 | ~61 | +8.0 pts | **+2.9 pts** | $11.35 |
+| — | 400 | 86 | +6.7 pts | **+2.5 pts** | $15.87 |
+| — | 800 | 171 | +4.6 pts | **+1.7 pts** | $31.74 |
+
+**`M_MIN` = 45.** That is the discordant count at which the run detects a +3.0
+point population gain — the proposed `WORTH_SHIPPING` — at 80% power. Below it
+the run is reported as UNDERPOWERED whatever its p-value.
+
+### 5.3 THE HONEST BOTTOM LINE ON THE BUDGET
+
+**~10 dollars does not settle this on the tune population.** It buys the whole
+exam — all 120 answerable founders — and is powered to detect **+4.5 points**,
+which is twice the largest effect ever measured on this arm (+2.2 points, wsDR,
+p = 1.000) and nearly twice the gain that would justify shipping.
+
+`SPLIT=all` at effort `medium` costs about **$11.35** and reaches **+2.9
+points**, which is the first configuration whose MDE is smaller than
+`WORTH_SHIPPING`. That is the run worth firing, and it is 13% over the stated
+budget rather than 3x over.
+
+### 5.4 THE UNCERTAINTY IN THE POWER CALCULATION ITSELF
+
+The in-pool discordance rate of 21.4% is measured on **fourteen** founders — 3
+discordant of 14, in wsDR. Its own 95% interval runs from roughly 5% to 51%, so
+the discordant count could plausibly be a third of the plan or twice it. At the
+low end the run is inconclusive by rule whatever it costs. That risk cannot be
+priced away; it can only be reported, and it is the strongest single argument
+for firing once at the larger draw rather than twice at the smaller.
+
+What IS now bounded, free, by the `reverse` dry run: a **maximal** permutation
+of these eighteen rows moves **70.0%** of in-pool pairs across the EXACT@5 line.
+So 21.4% is well inside what is structurally possible, and the arm is not being
+asked to do something the seam forbids.
 
 ## 6. Secondary analyses — what they may and may not do
 
@@ -199,16 +272,66 @@ and that is a reason to stop before spending rather than a result.
   reads are in the order the writer chose to mention them. This run bounds what
   the cut throws away; it is not a claim about the finished brief.
 
-## 8. The order of operations
+## 8. THE COMMAND
 
-1. `npx tsx scripts/_wsga_plan.ts` — free. Re-read the power table.
-2. `AGENT_SELECT=off ... _wsga_headtohead.ts` — free. Measures the CEILING at
-   full n on today's corpus, and fixes `corpusProvenance().instruments` for the
-   void check.
-3. `AGENT_SELECT=reverse ... _wsga_headtohead.ts` — free. Proves the harness end
-   to end with a real permutation and no model, and bounds the discordance rate.
-4. **The owner sets `WORTH_SHIPPING`.**
-5. If step 2 says the ceiling puts `M_MIN` out of reach, **STOP**. Report that
-   the exam is too short and do not spend.
-6. Otherwise: `AGENT_SELECT=adviser AGENT_SELECT_EFFORT=medium ...` — one run,
-   once.
+Steps 1-3 are **done**, free, and on disk. Their artifacts are in
+`project-mgmt/findings/headtohead_wsGA/`.
+
+```bash
+# 1. FREE — the power table, priced from the record.        [DONE]
+cd website/frontend && npx tsx scripts/_wsga_plan.ts
+
+# 2. FREE — the ceiling at full n on today's corpus.        [DONE: 120/324 = 37.0%]
+AGENT_SELECT=off N=324 MIN_DESCRIPTION_CHARS=0 ONLY_IN_POOL=0 \
+  npx tsx scripts/_wsga_headtohead.ts
+
+# 3. FREE — the harness end to end, real permutation, zero model calls. [DONE]
+AGENT_SELECT=reverse N=324 MIN_DESCRIPTION_CHARS=0 REPEAT=2 \
+  npx tsx scripts/_wsga_headtohead.ts
+
+# 4. THE OWNER SETS WORTH_SHIPPING, and decides between 5a and 5b.
+
+# 5a. THE PAID RUN — one line. ~$11.35, the first configuration whose MDE
+#     (+2.9 population points) is smaller than the proposed WORTH_SHIPPING.
+AGENT_SELECT=adviser AGENT_SELECT_EFFORT=medium \
+  SPLIT=all N=773 MIN_DESCRIPTION_CHARS=0 \
+  ONLY_IN_POOL=1 REPEAT=2 REPEAT_FIRST=50 MAX_EUR=11 \
+  npx tsx scripts/_wsga_headtohead.ts
+
+# 5b. THE SAME RUN INSIDE $10 — MAX_EUR is enforced against what the API said
+#     it billed, and a founder it stops on is recorded as NOT CALLED and
+#     excluded from grading, so the rail cannot turn itself into a result.
+#     Costs ~13% of the power: the draw is a seeded shuffle, so a prefix is a
+#     clean random subsample.
+AGENT_SELECT=adviser AGENT_SELECT_EFFORT=medium \
+  SPLIT=all N=773 MIN_DESCRIPTION_CHARS=0 \
+  ONLY_IN_POOL=1 REPEAT=2 REPEAT_FIRST=50 MAX_EUR=9.2 \
+  npx tsx scripts/_wsga_headtohead.ts
+```
+
+Every lever is stated on the command line rather than defaulted, so the run's
+own header can be diffed against it.
+
+### Why `medium` and not `low`, and not `high`
+
+`low` is ruled out and correctly: wsDQ ran 12 calls at `low` against an 18-row
+menu and 10 of them spent **zero** thinking tokens — a snap judgement measured
+and reported as judgement.
+
+`medium` is the cheapest setting at which the model demonstrably thinks: wsDS
+recorded **35 of 36** calls thinking, 50,385 tokens. It costs EUR 0.0292 per
+call recorded, about EUR 0.037 on today's wider menus.
+
+`high` costs EUR 0.0776 per call — 2.7x — and wsDS measured what it buys on this
+exact question: MEMO@6 read **13.9 / 16.7 / 16.7 / 13.9** at off / low / medium
+/ high. The lever moves and the metric does not. Paying 2.7x for a level already
+measured flat against `medium` would spend the power this run needs on a
+variable that is not under test.
+
+### STOP CONDITIONS, before the euro is spent
+
+- If the owner's `WORTH_SHIPPING` is **below +2.9 points**, 5a cannot see it.
+  Do not fire it; report that the exam is too short and price the larger one.
+- If the `reverse` dry run's ranker line is not clean on the day, do not fire.
+- After the run, if `ranker vs ITSELF` discordance is within a factor of ~1.5 of
+  `ranker vs CONTROL`, the result is VOID by section 4b, not inconclusive.
