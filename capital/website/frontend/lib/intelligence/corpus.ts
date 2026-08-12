@@ -9,6 +9,7 @@ import {
 } from "./liveness";
 import { isWithheldByPolicy } from "./offerableAxes";
 import { hasOfferRoute } from "./offerRoute";
+import { registerNamesTheRow } from "./nameEvidence";
 import path from "path";
 import type { CompetitorRecord, FundSnapshot } from "./types";
 // Re-exported so existing callers (shortlist, pipeline, scripts) are unchanged.
@@ -227,6 +228,14 @@ export interface DbInstrument {
    *  behind. Never read it directly: `unconfirmedOpen()` in ./liveness is the
    *  only consumer, and the three values are `SOURCE_WINDOW_POLICY` there. */
   sourceWindowPolicy?: string | null;
+  /** Who NAMED this row. Recorded at ETL time from the extractor that composes
+   *  the event's `source` string, never inferred from the row — see
+   *  ./nameEvidence.ts for the property and for the over-fire that makes
+   *  inference unusable. `partition_key` means nobody named it: the name is a
+   *  mechanical re-casing of a key the loader composed out of its own query
+   *  partitioning, so the row is a bucket and not a fund. Its one consumer is
+   *  `registerNamesTheRow()` in `publishableInstruments()`. */
+  nameSource?: string | null;
   /** Whether an application route is known to EXIST for this row — a separate
    *  question from whether the window has shut. "none" means the source says
    *  there is no way in (aid fixed to a named beneficiary list, or a row whose
@@ -559,7 +568,7 @@ export async function hydrateDbInstruments(): Promise<void> {
     try {
       const [instRes, gateRes, appRes] = await Promise.all([
         client.query(
-          `SELECT id, parent_id, name, country, capital_type, is_framework,
+          `SELECT id, parent_id, name, name_source, country, capital_type, is_framework,
                   event_count, company_count, total_eur, source_family_bucket,
                   administering_body,
                   administering_body_share, last_year,
@@ -664,6 +673,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         schemeEndDate: inst.scheme_end_date ?? null,
         schemeEndBasis: inst.scheme_end_date_basis ?? null,
         sourceWindowPolicy: inst.source_window_policy ?? null,
+        nameSource: inst.name_source ?? null,
         routeStatus: inst.route_status ?? null,
         routeStatusSource: inst.route_status_source ?? null,
         successorScheme: inst.successor_scheme ?? null,
@@ -1216,6 +1226,19 @@ export function publishableInstruments(): DbInstrument[] {
     // to be reported as a closed fund rather than as not a fund. See
     // lib/intelligence/offerRoute.ts.
     hasOfferRoute(i) &&
+    // A row nothing outside its own id NAMES. Publishability asks whether a row
+    // has children, not whether it is a fund, and twelve loader-constructed
+    // bucket labels passed it: `SATR Pt Equity` reached a Portuguese founder
+    // unblocked, and Poland's entire offerable pool was eight `Sudop *` rows
+    // with no real Polish fund among them. Recorded at ETL time, never inferred
+    // here — see lib/intelligence/nameEvidence.ts.
+    //
+    // Asked separately from `hasOfferRoute` for the same reason that one is
+    // asked separately from closure: "the register says there is no way in" and
+    // "the register has never heard of this object" are different facts, and
+    // collapsing them would make the second citable only by the first's
+    // evidence, which does not exist for a row we invented.
+    registerNamesTheRow(i) &&
     // A row carrying a value this product has DECIDED not to offer — an
     // accelerator whose own page says it hands out coaching and no money, or a
     // cohort whose source will not say whether it pays a grant or takes a

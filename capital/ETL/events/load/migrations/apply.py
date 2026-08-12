@@ -556,6 +556,56 @@ def apply_031(conn: sqlite3.Connection) -> None:
     run_sql(conn, "031_corpus_run_marks.sql")
 
 
+def apply_032(conn: sqlite3.Connection) -> None:
+    """A fifth `name_source`: `partition_key` -- nobody named this row.
+
+    The four existing values all name somebody: `deterministic` (composed by us
+    from register fields), `curated`, `programme_feed`, `case_register`.
+    `partition_key` is the state they could not express -- the row's name is a
+    mechanical re-casing of a key the LOADER composed out of its own query
+    partitioning, so nothing outside the row's own id names it and the row is a
+    bucket rather than a fund. Twelve were in founders' pools; Poland's entire
+    offerable pool was eight of them. See
+    ETL/events/load/migrations/032_name_source_partition_key.sql and
+    data/reference/family_name_evidence.json.
+
+    Same in-place DDL edit as 026, for the same reason: SQLite cannot ALTER a
+    CHECK constraint, and rebuilding funding_instruments to widen one would mean
+    retyping a column list that is now past sixty entries. No data moves and
+    nothing can be dropped by omission.
+    """
+    ddl = conn.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name='funding_instruments'"
+    ).fetchone()
+    if ddl is None:
+        print("  skip 032 (funding_instruments absent)")
+        return
+    if "'partition_key'" in ddl[0]:
+        print("  skip 032 (already applied)")
+        return
+    old = "'programme_feed','case_register')"
+    if old not in ddl[0]:
+        raise SystemExit(
+            "032: the name_source CHECK is not in the shape this migration "
+            "expects. Inspect the DDL and update the migration rather than "
+            "loosening it -- a dropped constraint is how an undeclared value "
+            "gets in silently.")
+    new_ddl = ddl[0].replace(
+        old, "'programme_feed','case_register','partition_key')")
+    version = conn.execute("PRAGMA schema_version").fetchone()[0]
+    conn.execute("PRAGMA writable_schema=ON")
+    conn.execute(
+        "UPDATE sqlite_master SET sql=? WHERE type='table' AND name='funding_instruments'",
+        (new_ddl,))
+    conn.execute(f"PRAGMA schema_version={version + 1}")
+    conn.execute("PRAGMA writable_schema=OFF")
+    conn.commit()
+    bad = conn.execute("PRAGMA integrity_check").fetchone()[0]
+    if bad != "ok":
+        raise SystemExit(f"032: integrity_check failed after DDL edit: {bad}")
+    print("  applied 032: name_source gains partition_key")
+
+
 MIGRATIONS = {
     "004": apply_004,
     "005": apply_005,
@@ -585,6 +635,7 @@ MIGRATIONS = {
     "029": apply_029,
     "030": apply_030,
     "031": apply_031,
+    "032": apply_032,
 }
 
 

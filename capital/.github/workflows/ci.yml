@@ -146,6 +146,13 @@ jobs:
       - name: Offer routes are sourced
         if: always()
         run: npx tsx scripts/check_offer_route.ts
+      # The same class of question one step earlier: that one asks whether a row
+      # is an OFFER, this asks whether it is an OBJECT. Twelve rows named after
+      # the loader's own partition keys were in founders' pools and Poland's
+      # ENTIRE pool was eight of them.
+      - name: A row is named by something outside its id
+        if: always()
+        run: npx tsx scripts/check_name_evidence.ts
       - name: Regions match the NUTS reference
         if: always()
         run: npx tsx scripts/check_regions.ts
@@ -290,6 +297,22 @@ jobs:
       # raising, so the drift is silent.
       - name: One country map
         run: python3 ETL/schema/check_single_country_map.py
+
+      # What kind of capital an instrument is must agree with the register that
+      # published it, and no kind a register publishes may vanish from the
+      # corpus. G (Guarantee) and DG (Direct grant) were transposed on the day
+      # the map was written: the corpus held ZERO guarantees against a feed
+      # publishing 17,023 guarantee awards, and Italy's largest guarantee scheme
+      # was rendered to founders as a grant.
+      - name: Capital kinds match the register
+        if: always()
+        run: python3 ETL/schema/check_register_instrument_kinds.py
+
+      # Every family whose row name is a mechanical re-casing of its own id has
+      # been answered for, and an unanswered one raises rather than guessing.
+      - name: Name evidence is declared
+        if: always()
+        run: python3 ETL/events/load/test_name_evidence_declarations.py
 
       - name: Country resolution
         run: python3 ETL/lib/test_europe_scope.py

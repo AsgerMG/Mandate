@@ -1,0 +1,144 @@
+{
+ "$note": [
+  "The REGISTER'S OWN WORDS for every aid-instrument code the corpus carries.",
+  "",
+  "Evidence, not decision. What kind of capital a code IS remains one statement,",
+  "in SATR_INSTRUMENT_MAP in ETL/events/load/populate_funding_instruments.py.",
+  "This file is what that statement is CHECKED AGAINST, by",
+  "ETL/schema/check_register_instrument_kinds.py.",
+  "",
+  "── The failure that made it necessary ──────────────────────────────────",
+  "`StateAidInstrumentG` and `StateAidInstrumentDG` were transposed from the",
+  "day the map was written: G is Guarantee and DG is Direct Grant, and both",
+  "read `grant`. Nothing anywhere went red. The corpus's state_aid_satr channel",
+  "held 546 grants, 85 loans, 27 tax credits and ZERO guarantees against a feed",
+  "publishing 17,023 guarantee awards, and SA.57625 Fondo di garanzia per le PMI",
+  "-- the fifth-largest instrument in the corpus by euro, EUR 14.9B across",
+  "13,892 awards -- was rendered to founders as \"Grant (national government,",
+  "state aid)\" and excluded from every founder who asked for guarantees.",
+  "",
+  "Two lines of this repo had recorded the register's answer all along:",
+  "ETL/lib/satr_filters.py:50 carries `# Guarantee (generic)` beside the bid,",
+  "and ETL/events/load/load_satr.py:130-131 maps the register's own label text",
+  "\"guarantee\" -> G and \"direct grant\" -> DG. Neither was ever compared to the",
+  "map that decides what a founder is shown.",
+  "",
+  "── Where the labels come from ─────────────────────────────────────────",
+  "`satr_staging.aid_instrument_text` -- the verbatim string the EC State Aid",
+  "Transparency Register publishes on the award -- joined to",
+  "public_funding_events on satr_tm_id. Norwegian labels are the value of",
+  "Innovasjon Norge's own published column \"Type finansiering\"",
+  "(ETL/events/extract/extract_innovasjon_norge.py:176). Nothing here is",
+  "translated, paraphrased or inferred; `label_en` is a declared rendering and",
+  "carries its own source.",
+  "",
+  "── The two properties this file exists to test ────────────────────────",
+  "1. THE KIND WE ASSIGN A CODE MUST BE THE KIND THE REGISTER'S OWN WORDS NAME.",
+  "   Where those words name no kind in the product's capital vocabulary --",
+  "   \"Provision of risk capital\", \"Provision of risk finance\" -- a `kind_basis`",
+  "   is required, stating the judgement and citing it. Silence fails the build.",
+  "2. THE CORPUS MUST CONTAIN A NON-ZERO COUNT OF EVERY INSTRUMENT KIND ITS",
+  "   SOURCE REGISTERS PUBLISH. A feed with 17,023 guarantee awards and zero",
+  "   guarantee instruments in its channel is the defect above, and it must be",
+  "   loud rather than silent.",
+  "",
+  "Harvested 2026-08-12. `awards` is evidence of scale, not a threshold: a code",
+  "the register publishes at all must reach the corpus as a kind."
+ ],
+ "$harvested_at": "2026-08-12",
+ "$harvest_query": "SELECT e.aid_instrument, s.aid_instrument_text, count(*) FROM public_funding_events e JOIN satr_staging s ON s.tm_id = e.satr_tm_id WHERE e.aid_instrument IS NOT NULL GROUP BY 1,2",
+ "feeds": {
+  "satr": {
+   "register": "EU State Aid Transparency Register",
+   "channel": "state_aid_satr",
+   "labels_published_in": "en"
+  },
+  "innovasjon_norge": {
+   "register": "Innovasjon Norge tilsagnslister",
+   "channel": "national_dev_banks",
+   "labels_published_in": "no",
+   "note": "The channel, not the feed, is the unit the presence property is asked of. Innovasjon Norge's own risk-loan family genuinely mixes Lan and Garanti awards and votes `blended`, which every capital option admits -- so the fund is reachable and there is no defect. Asking the question per feed would call that legitimate blend a failure."
+  }
+ },
+ "instruments": {
+  "StateAidInstrumentDG": {
+   "feed": "satr",
+   "labels": ["Direct grant/ Interest rate subsidy", "Direct grant"],
+   "awards": 79821
+  },
+  "StateAidInstrumentG": {
+   "feed": "satr",
+   "labels": [
+    "Guarantee",
+    "Guarantee (where appropriate with a reference to the Commission decision (10))"
+   ],
+   "awards": 17023
+  },
+  "StateAidInstrumentLradv": {
+   "feed": "satr",
+   "labels": ["Loan/ Repayable advances", "Repayable advances"],
+   "awards": 13729,
+   "kind_basis": "The register itself does not separate a loan from a repayable advance under this code, so neither can we. Kept as `loan`, and the intake's recoverable-advance option maps to loan for the same reason."
+  },
+  "StateAidInstrumentSL": {
+   "feed": "satr",
+   "labels": ["Soft loan"],
+   "awards": 448
+  },
+  "StateAidInstrumentTaote": {
+   "feed": "satr",
+   "labels": [
+    "Tax advantage or tax exemption",
+    "Other forms of tax advantage",
+    "Tax allowance"
+   ],
+   "awards": 7850
+  },
+  "StateAidInstrumentOFEI": {
+   "feed": "satr",
+   "labels": ["Other forms of equity intervention"],
+   "awards": 7
+  },
+  "StateAidInstrumentPRC": {
+   "feed": "satr",
+   "labels": ["Provision of risk capital"],
+   "awards": 16,
+   "kind_basis": "The register's words name no kind in the product's capital vocabulary, so this is a declared judgement: risk capital is equity. ETL/lib/satr_filters.py:44 lists this bid in EQUITY_INSTRUMENTS -- the equity/risk-capital pass, defined there as capital deployment 'vs. straight subsidy / tax exemption / direct grant' -- and has since the extractor was written. It was mapped to `guarantee` only because, until the G/DG transposition was fixed, `guarantee` was the slot no register code could reach."
+  },
+  "StateAidInstrumentPRVRISKFIN": {
+   "feed": "satr",
+   "labels": ["Provision of risk finance"],
+   "awards": 950,
+   "kind_basis": "The register's words name no kind in the product's capital vocabulary. Declared `equity`: these are GBER Art. 21 risk-finance awards, which ETL/events/transform/reclassify_equity_class.py already labels instrument_class='risk_finance', and ETL/lib/satr_filters.py:45 lists the bid in EQUITY_INSTRUMENTS. project-mgmt/methodology.md records that the amounts are scheme-level aid amounts rather than tickets, which is a caveat about SIZE and not about kind."
+  },
+  "Tilskudd": {
+   "feed": "innovasjon_norge",
+   "labels": ["Tilskudd"],
+   "label_en": "grant",
+   "label_en_source": "Innovasjon Norge publishes its instrument column in Norwegian; `Tilskudd` is the Norwegian for a grant, and ETL/events/extract/extract_innovasjon_norge.py:22-23 routes exactly this value to grant_amount_eur while Lan/Garanti go to debt_amount_eur.",
+   "awards": 11048
+  },
+  "Lån": {
+   "feed": "innovasjon_norge",
+   "labels": ["Lån"],
+   "label_en": "loan",
+   "label_en_source": "Norwegian for loan. extract_innovasjon_norge.py:177 treats it as debt.",
+   "awards": 2214
+  },
+  "Lan": {
+   "feed": "innovasjon_norge",
+   "labels": ["Lan"],
+   "label_en": "loan",
+   "label_en_source": "The ASCII fold of `Lån`, declared so a feed delivered through an encoding-mangling path still types its loans rather than falling through to the amount columns.",
+   "awards": 0,
+   "kind_basis": "Zero awards carry it today. Kept declared rather than deleted: an alias that guards an encoding failure is only useful before the failure, and the check would otherwise read it as an invented code."
+  },
+  "Garanti": {
+   "feed": "innovasjon_norge",
+   "labels": ["Garanti"],
+   "label_en": "guarantee",
+   "label_en_source": "Norwegian for guarantee. extract_innovasjon_norge.py:244 assigns these awards the `ndb_guarantee` basis.",
+   "awards": 1526
+  }
+ }
+}

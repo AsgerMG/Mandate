@@ -34,7 +34,7 @@ def main() -> None:
     conn.row_factory = sqlite3.Row
 
     instruments = conn.execute("""
-        SELECT id, parent_id, name, country, capital_type, is_framework,
+        SELECT id, parent_id, name, name_source, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
                administering_body, administering_body_share,
                last_year, scheme_code, scheme_end_date,
@@ -161,6 +161,12 @@ def main() -> None:
         # deadline" from "this copy has not loaded one yet". Dropping it here
         # would hand the fallback back the ambiguity the column exists to end.
         "sourceWindowPolicy": inst["source_window_policy"],
+        # WHO NAMED this row. Carried for the same reason routeStatus is: without
+        # it the snapshot path would propose rows the Postgres path withholds,
+        # and the twelve loader-constructed bucket labels -- `SATR Pt Equity`,
+        # the eight `Sudop *` rows that were Poland's entire pool -- are exactly
+        # such rows. See website/frontend/lib/intelligence/nameEvidence.ts.
+        "nameSource": inst["name_source"],
         # Whether an application route is known to exist -- a SEPARATE axis from
         # liveness. Carried here for the same reason the basis is: without it
         # the snapshot path would propose rows the Postgres path withholds, and
