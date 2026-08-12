@@ -78,6 +78,28 @@ SINCE = "2018-01-01"
 REGISTERS = ("program", "utlysningar", "ansokningsomgangar")
 HOST = "vinnova.se"
 
+# ── The three-field card, and why only one of the three was ever read ───────
+# Every Vinnova round publishes the same three-card block, and the API names
+# them by TextID rather than by heading:
+#
+#   1  "Vad kan ni söka för?"   WHAT THE MONEY PAYS FOR
+#   2  "Vem kan söka?"          WHO MAY APPLY
+#   3  "Hur mycket kan ni söka?" the budget and the ceiling
+#
+# This loader read card 2 and walked past card 1, because it was written to
+# raise `eligibility_text` and card 1 is not that. The consequence is measured:
+# all 50 open Vinnova leaves now carry eligibility prose and NOT ONE carries a
+# description, and Sweden is the single largest block of undescribed demand in
+# the corpus -- 50 rows taking 3,329 places in a 256-founder replay of the real
+# recall population, more than any other country. The ranker cannot choose
+# between funds it cannot read, and card 1 is the sentence that makes them
+# readable. It was one integer away the whole time, on a CC0 API this repo
+# already fetches.
+#
+# Card 3 is deliberately still unread: the amount axis is `amount_min/max` and
+# owning it from prose here would put a second, unreconciled source on a column
+# another pass already fills.
+WHAT_IT_FUNDS = 1      # TextID of the "Vad kan ni söka för?" card
 WHO_MAY_APPLY = 2      # TextID of the "Vem kan söka?" card
 MIN_TEXT = 40
 MIN_SENTENCE = 40
@@ -110,11 +132,25 @@ def registers(cache: _Path, refresh: bool) -> dict[str, list[dict]]:
     return out
 
 
-def who_may_apply(rec: dict) -> str:
+def card(rec: dict, text_id: int) -> str:
+    """One card of a round's three-field block, in Swedish, whitespace-squashed.
+
+    Parameterised on TextID rather than duplicated per card: two copies of this
+    reader would drift, and the copy that drifts is the one that silently stops
+    returning text.
+    """
     for w in rec.get("WebTextLista") or []:
-        if w.get("TextID") == WHO_MAY_APPLY:
+        if w.get("TextID") == text_id:
             return re.sub(r"\s+", " ", (w.get("TextSv") or "")).strip()
     return ""
+
+
+def who_may_apply(rec: dict) -> str:
+    return card(rec, WHO_MAY_APPLY)
+
+
+def what_it_funds(rec: dict) -> str:
+    return card(rec, WHAT_IT_FUNDS)
 
 
 def closes(rec: dict):
@@ -175,8 +211,16 @@ def rounds_by_programme(reg: dict[str, list[dict]]) -> dict[str, dict]:
     return out
 
 
-def pick(rounds: list[dict], today: date):
-    usable = [r for r in rounds if len(who_may_apply(r)) >= MIN_TEXT]
+def pick(rounds: list[dict], today: date, text_id: int = WHO_MAY_APPLY):
+    """The round whose card `text_id` should speak for this programme.
+
+    Asked PER CARD, not once for the programme. A round may publish "Vad kan ni
+    söka för?" and leave "Vem kan söka?" empty, or the reverse -- 788 rounds
+    carry the block at all and only 666 have a card 1 over the length floor. A
+    single shared choice would silently inherit the other card's availability
+    and refuse text that is sitting there.
+    """
+    usable = [r for r in rounds if len(card(r, text_id)) >= MIN_TEXT]
     if not usable:
         return None, None
     live = [r for r in usable if (closes(r) or date.min) >= today]
@@ -203,53 +247,75 @@ def main() -> None:
 
     pg = psycopg2.connect(os.environ["DATABASE_URL"])
     cur = pg.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
-    cur.execute("""SELECT id, name, eligibility_text, scheme_end_date
+    cur.execute("""SELECT id, name, eligibility_text, description, scheme_end_date
                      FROM funding_instruments WHERE parent_id = %s""", (args.regime,))
     leaves = {r["id"]: dict(r) for r in cur.fetchall()}
     if not leaves:
         print("no leaves for that regime")
         return
 
-    drafted: dict[str, tuple[str, str, dict]] = {}
-    for iid, row in sorted(leaves.items()):
-        if norm(row["eligibility_text"]):
-            continue
-        # A scheme the register says has closed cannot be proposed, so writing
-        # application rules onto it would be writing rules nobody can use.
-        if row["scheme_end_date"] and str(row["scheme_end_date"]) < today.isoformat():
-            print(f"  skip     {iid:<46} register says closed "
-                  f"{row['scheme_end_date']}")
-            continue
-        rounds = by_title.get(norm(row["name"]))
-        if rounds is None:
-            print(f"  no match {iid:<46} no programme titled {row['name']!r}")
-            continue
-        rec, kind = pick(rounds, today)
-        if not rec:
-            print(f"  no text  {iid:<46} {len(rounds)} rounds, none with "
-                  f"a populated 'Vem kan söka?'")
-            continue
-        drafted[iid] = (who_may_apply(rec), kind, rec)
+    # ── One pass per CARD, keyed on the column that card fills ───────────────
+    # The two axes are independent in both directions: a leaf may already carry
+    # eligibility prose from an earlier run of this very script and still have
+    # no description (all 50 open leaves are in exactly that state today), and a
+    # round may publish one card and not the other. So "have we already got
+    # this" is asked per column, and a run is idempotent on each separately.
+    axes = (
+        ("description", WHAT_IT_FUNDS, "Vad kan ni söka för?"),
+        ("eligibility_text", WHO_MAY_APPLY, "Vem kan söka?"),
+    )
+    drafted: dict[str, dict[str, tuple[str, str, dict]]] = {c: {} for c, _, _ in axes}
+    for column, text_id, heading in axes:
+        print(f"\n── {column}  (card {text_id}, {heading!r}) ──")
+        for iid, row in sorted(leaves.items()):
+            if norm(row[column]):
+                continue
+            # A scheme the register says has closed cannot be proposed, so
+            # writing its rules onto it would be writing rules nobody can use.
+            # It applies to the description too: a sentence about what a dead
+            # scheme funds is a sentence about a fund a founder cannot have.
+            if row["scheme_end_date"] and str(row["scheme_end_date"]) < today.isoformat():
+                print(f"  skip     {iid:<46} register says closed "
+                      f"{row['scheme_end_date']}")
+                continue
+            rounds = by_title.get(norm(row["name"]))
+            if rounds is None:
+                print(f"  no match {iid:<46} no programme titled {row['name']!r}")
+                continue
+            rec, kind = pick(rounds, today, text_id)
+            if not rec:
+                print(f"  no text  {iid:<46} {len(rounds)} rounds, none with "
+                      f"a populated {heading!r}")
+                continue
+            drafted[column][iid] = (card(rec, text_id), kind, rec)
 
-    updates = []
+    updates: dict[str, list[tuple]] = {c: [] for c, _, _ in axes}
     now = datetime.now(timezone.utc)
-    for iid, (text, kind, rec) in sorted(drafted.items()):
-        others = [t for j, (t, _, _) in drafted.items() if j != iid]
-        others += [leaves[j]["eligibility_text"] or "" for j in leaves
-                   if j not in drafted and leaves[j]["eligibility_text"]]
-        if norm(text) in {norm(o) for o in others}:
-            print(f"  SHARED   {iid:<46} identical to a sibling's text; refused")
-            continue
-        share = own_share(text, others)
-        if share < MIN_OWN_SHARE:
-            print(f"  SHARED   {iid:<46} own_share {share:.2f}; refused")
-            continue
-        conf = "high" if kind == "open" else "medium"
-        print(f"  write    {iid:<46} {len(text):>4} chars  {kind:<4} "
-              f"closes {str(rec.get('Stangningsdatum'))[:10]}  conf {conf}")
-        updates.append((text, source_url(rec), conf, now, iid))
+    for column, _, _ in axes:
+        for iid, (text, kind, rec) in sorted(drafted[column].items()):
+            # The boilerplate gate, unchanged in method and MORE load-bearing on
+            # the description axis than on the eligibility one: `description` is
+            # the column the semantic index embeds, so a description shared
+            # across a regime does not merely fail to separate the leaves, it
+            # gives the retriever fifty identical vectors to rank.
+            others = [t for j, (t, _, _) in drafted[column].items() if j != iid]
+            others += [leaves[j][column] or "" for j in leaves
+                       if j not in drafted[column] and leaves[j][column]]
+            if norm(text) in {norm(o) for o in others}:
+                print(f"  SHARED   {column:<16} {iid:<46} identical to a sibling's; refused")
+                continue
+            share = own_share(text, others)
+            if share < MIN_OWN_SHARE:
+                print(f"  SHARED   {column:<16} {iid:<46} own_share {share:.2f}; refused")
+                continue
+            conf = "high" if kind == "open" else "medium"
+            print(f"  write    {column:<16} {iid:<46} {len(text):>4} chars  {kind:<4} "
+                  f"closes {str(rec.get('Stangningsdatum'))[:10]}  conf {conf}")
+            updates[column].append((text, source_url(rec), conf, now, iid))
 
-    print(f"\n{len(leaves)} leaves; {len(updates)} to write")
+    n_desc, n_elig = len(updates["description"]), len(updates["eligibility_text"])
+    print(f"\n{len(leaves)} leaves; {n_desc} descriptions and "
+          f"{n_elig} eligibility texts to write")
     if not args.write:
         print("[dry run] nothing written -- pass --write (and --postgres)")
         return
@@ -260,19 +326,35 @@ def main() -> None:
                              eligibility_confidence = ?, eligibility_fetched_at = ?
                        WHERE id = ?""",
                    [(t, u, c, w.isoformat(sep=" ", timespec="seconds"), i)
-                    for t, u, c, w, i in updates])
+                    for t, u, c, w, i in updates["eligibility_text"]])
+    # ── The description arm, deliberately its own statement ──────────────────
+    # It must not stamp `eligibility_confidence` or `eligibility_fetched_at`:
+    # those columns mean "we hold this scheme's own statement of WHO MAY APPLY,
+    # at this confidence, fetched then", and card 1 is not that. Folding the two
+    # together would record an eligibility fetch that never happened -- the same
+    # defect load_scheme_text.py carried, one source over.
+    sq.executemany("""UPDATE funding_instruments
+                         SET description = ?,
+                             eligibility_source_url = COALESCE(eligibility_source_url, ?)
+                       WHERE id = ?""",
+                   [(t, u, i) for t, u, _c, _w, i in updates["description"]])
     sq.commit()
     sq.close()
-    print(f"sqlite: {len(updates)} rows")
+    print(f"sqlite: {n_elig} eligibility rows, {n_desc} description rows")
 
     if args.postgres:
         w = pg.cursor()
         w.executemany("""UPDATE funding_instruments
                             SET eligibility_text = %s, eligibility_source_url = %s,
                                 eligibility_confidence = %s, eligibility_fetched_at = %s
-                          WHERE id = %s""", updates)
+                          WHERE id = %s""", updates["eligibility_text"])
+        w.executemany("""UPDATE funding_instruments
+                            SET description = %s,
+                                eligibility_source_url = COALESCE(eligibility_source_url, %s)
+                          WHERE id = %s""",
+                      [(t, u, i) for t, u, _c, _w, i in updates["description"]])
         pg.commit()
-        print(f"postgres: {len(updates)} rows -- this is the one the product reads")
+        print(f"postgres: {n_elig} + {n_desc} rows -- this is the one the product reads")
     else:
         print("postgres: NOT written. SQLite alone changes nothing a founder sees.")
     pg.close()
