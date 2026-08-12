@@ -139,6 +139,15 @@ async function main() {
     meanPoolLength: Number((poolLenTotal / (n || 1)).toFixed(1)),
     inPoolAtAll: Number((ranks.filter((r) => r != null).length / (n || 1)).toFixed(4)),
     corpus: `${prov.source} instruments=${prov.instruments}`,
+    // ── WHICH RANKER PRODUCED THIS CURVE, in the artifact and not just on the
+    // console (wsGE). `semanticFundMatch` returns an empty map on any failure
+    // and every call site then drops to the lexical index, so a run can average
+    // two ranking systems and write one number. The console said so and the
+    // file did not, which means a reader of the committed artifact — and the
+    // prompt quoting it — had no way to find out. It is the same defect this
+    // whole artifact exists to close, one level up: a number with no statement
+    // of what produced it.
+    ranker: rankerTallyLine(),
     generatedAt: new Date().toISOString(),
     recallAtK: curve,
   };
