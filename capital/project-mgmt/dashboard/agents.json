@@ -8,10 +8,10 @@
       "why": "More than a third of the funds we put in front of the chooser say nothing at all \u2014 no line about what they pay for, nothing about who they want. We already hold that text for 506 of them and have never shown it. A Norwegian founder's list is 88% blank; a German founder's is 0%, which is why this has been invisible."
     },
     {
-      "id": "wsFI",
+      "id": "wsFK",
       "step": 5,
-      "what": "Stop printing the same fund twice",
-      "why": "Twenty of the seats we publish go to a fund the founder is already being shown \u2014 one founder got five of seven rows under a single title. Those seats are not near-misses; recovering them is arithmetic rather than hope."
+      "what": "Find out why a quality floor broke tonight",
+      "why": "A guard that protects the shipped number started failing at 21:42. Getting the right fund in front of a founder improved; getting the right FAMILY of fund into the top five dropped seven points, below the level we said we would not go under. Either the fix has a side effect we should accept deliberately, or something regressed."
     }
   ]
 }
