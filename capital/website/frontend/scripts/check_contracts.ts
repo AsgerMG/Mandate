@@ -254,8 +254,9 @@ function main() {
   //
   //     VERDICT_POOL -> WRITER_CANDIDATE_CAP -> institutionsMax
   //
-  // plus SELECT_COUNT, which is a FLOOR against institutionsMax rather than a
-  // step in the chain — see the third entry below.
+  // plus SELECT_COUNT, which is not a step in the chain but is BRACKETED by it:
+  // at least institutionsMax, at most WRITER_CANDIDATE_CAP — see the last two
+  // entries below.
   //
   // Named, not counted (wsEW). This opened "Five caps" and listed four, while
   // `caps.ts` opened "Four caps" over the same funnel and listed three. The
@@ -323,6 +324,37 @@ function main() {
       why: "every published seat the selector does not name is filled from the order " +
         "the selector exists to be measured against, so a count below the published " +
         "cap silently hands part of the founder's table back to the control",
+    },
+    {
+      // ── AND THE OTHER END OF THE SAME FLOOR, WHICH NOTHING ASSERTED (wsGI) ─
+      //
+      // The pair above is a FLOOR on `SELECT_COUNT`. It had no ceiling, and the
+      // ceiling is `WRITER_CANDIDATE_CAP`: `agentSelectRows` returns
+      // `[...chosen, ...the rest in the pool's order]` and `orderMemoCandidates`
+      // then cuts that array to the writer cap. So a count above the cap means
+      // the model names picks that are thrown away before the writer, before the
+      // published table, before anything -- and every seat report, every
+      // "reached depth N" line and every head-to-head rate is quoted over a
+      // number of picks the founder could not have been served.
+      //
+      // This is the same class of defect as the `VERDICT_POOL > SELECT_DEPTH`
+      // hazard `caps.ts` warns about at the bottom of the file, and it arrives
+      // the same way: through a PAIR of levers, each individually valid, so
+      // neither `depthLever` nor the module-scope guard in `caps.ts` can see it.
+      // `AGENT_SELECT_COUNT` is an env lever and `WRITER_CANDIDATE_CAP` is not,
+      // which is exactly the asymmetry that makes it reachable from a shell
+      // loop -- and widening the pool is live work, so somebody is going to
+      // reach for the count next.
+      //
+      // NOT STRICT, for the same reason as above: a count EQUAL to the cap is
+      // the intended state at the top end too. Every pick the model makes
+      // reaches the writer, and the cap's one spare seat is the fallback row.
+      wider: "WRITER_CANDIDATE_CAP", wide: WRITER_CANDIDATE_CAP,
+      narrower: "SELECT_COUNT", narrow: SELECT_COUNT,
+      strict: false,
+      why: "the writer's candidates are the head of the array the selector permutes, so " +
+        "a count above the writer's cap makes the model name rows that are cut before " +
+        "the writer sees them and reports seats no founder could be served",
     },
   ];
   for (const f of funnel) {

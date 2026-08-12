@@ -228,6 +228,19 @@ interface Trace {
   /** 1-based rank in `orderMemoCandidates().toWriter`, the <=8 candidates the
    *  writer is shown. This is the head-to-head's `rankControl`. */
   rankWriter: number | null;
+  /** ── THE SAME RANK, UNCAPPED (wsGI) ────────────────────────────────────
+   *
+   *  1-based rank in `orderMemoCandidates().ordered` -- the whole candidate
+   *  order, the array `toWriter` is the head of. `rankWriter` is DERIVED from
+   *  it, so the two cannot disagree, and there is still one call to
+   *  `orderMemoCandidates` per founder.
+   *
+   *  It exists because `rankWriter` alone cannot answer the question the cap
+   *  raises. A founder lost at the cap is lost somewhere in ranks 9..18 and
+   *  `null` says only "past 8", so the ladder can report the loss and not what
+   *  raising the cap would recover. That distinction is the whole of the cap
+   *  question, and it was unanswerable from this instrument's own record. */
+  rankOrdered: number | null;
   tableLen: number;
   accessibleLen: number;
 }
@@ -302,6 +315,24 @@ const STAGES: Stage[] = [
     question: `... and it survives the cut to the writer's candidates (${WRITER_CANDIDATE_CAP})`,
     // `orderMemoCandidates().toWriter`. Also applies the name-collision
     // DEMOTION, which can push a row over the cap without deleting it.
+    //
+    // ── READ THIS BEFORE BILLING ANYTHING TO THE CAP (wsGI) ────────────────
+    // This row is a real cut -- the rows past it never reach the writer -- but
+    // it is NOT what decides the published table, and the loss printed against
+    // it is not a loss the cap causes. `assembleBriefRows` publishes by
+    // CANDIDATE ORDER, so with nothing watch-only the founder reads ranks
+    // 1..PUBLISH_CAP whatever this constant is, and a fund at rank 9 is lost at
+    // the PUBLISHED cap two rows down however wide the writer's list gets.
+    //
+    // What the cap really governs is BACKFILL DEPTH: rank PUBLISH_CAP+k
+    // publishes only where k rows above it demoted as watch-only. So the
+    // reachable part of this loss is bounded by the watch-only budget printed
+    // below the table, and on the recorded distribution it is a fraction of a
+    // point. Whatever this row prints belongs to the ORDER -- the ranker, the
+    // pool and what reaches it -- not to a number in `caps.ts`. (Deliberately
+    // no figure here: it moves with the run, and the run prints it. A funnel
+    // loss quoted in a comment is the fifth incomparable number in the file
+    // written to stop the first four.)
     alive: (t) => t.rankWriter != null,
   },
   {
@@ -316,7 +347,10 @@ const STAGES: Stage[] = [
       + "cannot be evaluated without a paid memo per founder. It is a DEMOTION, not a "
       + "deletion (`assembleBriefRows`: actionable rows first, the rest behind them in "
       + "rank order), so it moves every row's position in BOTH directions and the rows "
-      + "below are neither an upper nor a lower bound — see the note under the table.",
+      + "below are neither an upper nor a lower bound. It is nonetheless BOUNDED, and "
+      + "free: `dropped_watch_only` on every brief this product has published gives the "
+      + "rate where this population cannot give the verdict. A row reads watch-only 3.4% "
+      + "of the time, so the effect on `published` is at most ~11 founders (1.2 points).",
   },
   // ── THE ROW CUTS, GENERATED ────────────────────────────────────────────────
   // `published` keeps its name because the brief's own cap is what it is; the
@@ -533,6 +567,7 @@ async function main() {
     let rankTable: number | null = null;
     let rankAccessible: number | null = null;
     let rankWriter: number | null = null;
+    let rankOrdered: number | null = null;
     let tableLen = 0;
     let accessibleLen = 0;
 
@@ -580,7 +615,11 @@ async function main() {
       const poolCut = accessible.slice(0, VERDICT_POOL);
       const poolIds = poolCut.map((r) => r.instrumentId)
         .filter((id): id is string => Boolean(id));
-      const toWriter = orderMemoCandidates({
+      // `ordered`, not `toWriter`: the cut is `.slice(0, WRITER_CANDIDATE_CAP)`
+      // of this array, so taking the head here and the rank below cannot
+      // disagree, and the ranks past the cap stay readable. Two calls to read
+      // one order would be two orders the first time either drifted.
+      const ordered = orderMemoCandidates({
         instrumentTable: poolCut,
         req: {
           company: f.company, country: f.country, description: f.opts.description,
@@ -590,15 +629,17 @@ async function main() {
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
         log: new ExclusionLog(),
-      }).toWriter.map((x) => x.row.instrumentId ?? x.row.channel);
-      const iW = toWriter.indexOf(won);
-      rankWriter = iW < 0 ? null : iW + 1;
+      }).ordered.map((x) => x.row.instrumentId ?? x.row.channel);
+      const iO = ordered.indexOf(won);
+      rankOrdered = iO < 0 ? null : iO + 1;
+      rankWriter = rankOrdered != null && rankOrdered <= WRITER_CANDIDATE_CAP
+        ? rankOrdered : null;
     }
 
     const trace: Trace = {
       company: t.name, country: t.country, won,
       inCorpus: heldByCorpus, offerable: isOfferable, degraded: wasDegraded,
-      rankTable, rankAccessible, rankWriter, tableLen, accessibleLen,
+      rankTable, rankAccessible, rankWriter, rankOrdered, tableLen, accessibleLen,
     };
     assertNested(trace, STAGES.map((s) => s.alive(trace)));
     traces.push(trace);
@@ -784,6 +825,125 @@ async function main() {
     + "nesting property this whole ladder rests on. It is a different question (did we "
     + "send them to the right funder) and it needs its own ladder, not a row in this one.");
   p();
+
+  // ── WHAT A WIDER WRITER CAP COULD BUY ─────────────────────────────────────
+  //
+  // The `writer_cap` row prints a loss and says nothing about whether the cap
+  // caused it. It did not: `assembleBriefRows` publishes by candidate order, so
+  // the cap's only reach into the published table is BACKFILL against the
+  // watch-only demotion. That makes the reachable part of its loss the product
+  // of two things this instrument can now both read for free -- the rank the
+  // won fund actually arrives at, and how often a row demotes.
+  //
+  // Printed as a table over depths rather than as a verdict on today's 8, so a
+  // reader can see the shape rather than take a sentence for it.
+  const budget = await watchOnlyBudget();
+  p(`## What a wider \`WRITER_CANDIDATE_CAP\` could buy`);
+  p();
+  p("A candidate at 1-based rank `r` in the candidate order publishes **iff**");
+  p("`r <= WRITER_CANDIDATE_CAP` **and** `r - w(r) <= " + PUBLISH_CAP + "`, where `w(r)` is the");
+  p("number of watch-only rows above it (`assembleBriefRows`, pinned by");
+  p("`briefRows.test.ts`). So rank " + (PUBLISH_CAP + 1) + "+k needs k rows to demote, and with nothing");
+  p("watch-only this constant changes NOTHING a founder reads, at any value.");
+  p();
+  if (budget) {
+    const share = (k: number) => {
+      let n = 0;
+      for (const [wo, c] of budget.byCount) if (wo >= k) n += c;
+      return n / budget.briefs;
+    };
+    p("```");
+    p(`watch-only budget  brief_records, ${budget.briefs} published brief(s), `
+      + `${budget.from} .. ${budget.to}`);
+    p(`                   production's own dropped_watch_only — real writer prose, no `
+      + `model call here`);
+    const keys = [...budget.byCount.keys()].sort((a, b) => a - b);
+    p(`                   ${keys.map((k) => `${k} -> ${budget.byCount.get(k)}`).join("   ")}`
+      + `   (mean ${budget.meanPerBrief.toFixed(2)} of ${budget.meanCandidates.toFixed(2)} candidates)`);
+    p("```");
+    p();
+    p("██ A DIFFERENT POPULATION from the ladder above, and it is not a row in it. These");
+    p("are the briefs this product has actually published, not these founders. It bounds");
+    p("the ladder's last rows; it may never be blended into them.");
+    p();
+    p(`| cap | ranks it admits | founders whose fund is there | needs w >= | P(w >=) here | reachable |`);
+    p("|---:|---|---:|---:|---:|---:|");
+    const atRank = (r: number) => traces.filter((t) => t.rankOrdered === r).length;
+    // The deepest rank any founder's fund actually reached, NOT `VERDICT_POOL`:
+    // that constant takes `all` (Infinity), and a loop bounded by a lever is a
+    // loop that hangs the day somebody sweeps it. This bound is a fact about
+    // the run and is finite by construction.
+    const deepest = Math.max(0, ...traces.map((t) => t.rankOrdered ?? 0));
+    for (let cap = WRITER_CANDIDATE_CAP + 1; cap <= deepest && cap <= 12; cap++) {
+      const k = cap - PUBLISH_CAP;
+      const n = atRank(cap);
+      const ps = share(k);
+      p(`| ${cap} | rank ${cap} | ${n} (${((100 * n) / N).toFixed(1)}%) | ${k} | `
+        + `${(100 * ps).toFixed(1)}% | ${((100 * n * ps) / N).toFixed(2)} pts |`);
+    }
+    // The total, because a reader deciding whether to spend a workstream here
+    // needs the sum and not a column to add up.
+    let total = 0;
+    for (let cap = WRITER_CANDIDATE_CAP + 1; cap <= deepest; cap++) {
+      total += (atRank(cap) * share(cap - PUBLISH_CAP)) / N;
+    }
+    const capRow = rows.find((r) => r.stage.id === "writer_cap");
+    p();
+    p(`**Raising the cap to the whole pool (deepest rank reached: ${deepest}) is worth `
+      + `${(100 * total).toFixed(2)} points**`
+      + (capRow?.remaining != null
+        ? `, against a +/-${halfWidth(capRow.remaining, N).toFixed(1)} half-width on this row.`
+        : "."));
+    p("The loss printed at `writer_cap` is the ORDER, not the cap: a fund at rank "
+      + (PUBLISH_CAP + 1) + "+ is cut");
+    p(`by the published cap of ${PUBLISH_CAP} however wide the writer's list is. It belongs to the`);
+    p("ranker and to what reaches it, and it will not be recovered by a constant.");
+    p();
+    // ── AND THE UNMEASURED STAGE, BOUNDED ────────────────────────────────────
+    // Not a survivor count -- it cannot be, on this population -- but the two
+    // directions are computable from the same distribution, and leaving the row
+    // blank invites the reading that the unknown is large. It is not.
+    const perRow = budget.meanPerBrief / budget.meanCandidates;
+    const pubRow = rows.find((r) => r.stage.id === "published");
+    const pub = pubRow?.remaining ?? 0;
+    const demotedMax = Math.round(pub * perRow);
+    // THE GAIN AT TODAY'S CAP, which is not `total`. `total` is what RAISING
+    // the cap would add -- ranks past it -- and using it here would credit the
+    // present funnel with founders the present funnel cannot reach. What the
+    // demotion buys today is the ranks between the published cap and the
+    // writer's, each needing its own number of demotions above it.
+    let promoted = 0;
+    for (let r = PUBLISH_CAP + 1; r <= WRITER_CANDIDATE_CAP; r++) {
+      promoted += atRank(r) * share(r - PUBLISH_CAP);
+    }
+    p("The same distribution bounds the UNMEASURED `watch_only` row in BOTH directions,");
+    p("which is what the row's own caveat cannot do — it names only the losing one.");
+    p();
+    p(`A row reads watch-only ${(100 * perRow).toFixed(1)}% of the time `
+      + `(${budget.meanPerBrief.toFixed(2)} of ${budget.meanCandidates.toFixed(2)} candidates). So:`);
+    p();
+    p(`- **it LOSES at most ${demotedMax} of the ${pub} founders at \`published\`** — that is every one`);
+    p("  whose own row reads watch-only, and it is an over-count, because a demoted row");
+    p("  still publishes wherever fewer actionable rows exist to fill the cap.");
+    p(`- **it GAINS about ${promoted.toFixed(1)}** — the founders whose fund sits at `
+      + (WRITER_CANDIDATE_CAP > PUBLISH_CAP + 1
+        ? `ranks ${PUBLISH_CAP + 1}-${WRITER_CANDIDATE_CAP}, inside the`
+        : `rank ${WRITER_CANDIDATE_CAP}, the one seat inside the`));
+    p("  writer's cap but past the published one, and is carried in by a demotion above");
+    p("  it. This is what today's headroom actually buys, and it is the whole of it.");
+    p();
+    p(`So \`published\`'s ${pub} is an upper bound by AT MOST ${demotedMax} founders `
+      + `(${((100 * demotedMax) / N).toFixed(1)} points), not by an`);
+    p("open-ended unknown, and the same holds for every row beneath it. Measuring it");
+    p("exactly still needs a paid memo per founder; bounding it did not.");
+    p();
+  } else {
+    p("██ THE WATCH-ONLY BUDGET WAS UNREADABLE. `brief_records` could not be reached, so");
+    p("this run cannot say what a wider cap would buy or bound the `watch_only` row. The");
+    p("figure is NOT remembered from a previous run: a rate quoted from a comment stops");
+    p("moving on the day the writer's behaviour does, which is the day it matters.");
+    p();
+  }
 
   // ── THE CORPUS LOSS, BY REASON ────────────────────────────────────────────
   p("## Why the corpus stage loses a fund");
@@ -971,7 +1131,11 @@ const MECHANISM: Record<string, string> = {
   founder_screen: "`buildInstrumentTableHydrated` = `candidateInstrumentIds`",
   gates_pass: "`accessiblePool` → `VER-BLOCKED`",
   pool_cut: "`.slice(0, VERDICT_POOL)`",
-  writer_cap: "`orderMemoCandidates().toWriter`",
+  // NOT a cut that decides publication. `assembleBriefRows` ranks by CANDIDATE
+  // ORDER, so the published table is the head of this list and this cap only
+  // bounds how far the watch-only demotion can backfill into it. A founder
+  // counted lost here is lost to the ORDER, not to the number.
+  writer_cap: "`.slice(0, WRITER_CANDIDATE_CAP)` — bounds the backfill, not the table",
   watch_only: "`isWatchOnly` in `assembleBriefRows` — needs the writer",
   model: "`agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the "
     + `${VERDICT_POOL}, applied above the two cuts below it`,
@@ -1025,6 +1189,76 @@ async function watchOnlyRate(): Promise<{
       };
     } finally { await client.end(); }
   } catch { return undefined; }
+}
+
+/** ── TWO READS OF ONE TABLE, AND THEY SHOULD BE ONE ────────────────────────
+ *  `watchOnlyRate` above and `watchOnlyBudget` below both query `brief_records`
+ *  for the same column, arrived at independently by two workstreams on the same
+ *  night. Both are CALLED and they answer different questions -- the rate bounds
+ *  the ladder's note, the distribution decides whether WRITER_CANDIDATE_CAP is a
+ *  lever -- so neither is dead. They are nonetheless two implementations of one
+ *  measurement, which is the shape this repo has been bitten by repeatedly, and
+ *  the next person in this file should fold the rate into the budget rather than
+ *  add a third.
+ */
+/** ── THE WATCH-ONLY BUDGET, FROM PRODUCTION'S OWN BRIEFS (wsGI) ────────────
+ *
+ *  `WRT-WATCH-ONLY` reads prose only the writer can produce, so this instrument
+ *  cannot evaluate it per founder without paying for a memo each. It does not
+ *  follow that the stage is unknowable: `recordBrief` has written
+ *  `dropped_watch_only` on every brief this product has ever published, so the
+ *  RATE is on record even though the per-founder verdict is not.
+ *
+ *  That distinction is the whole value of the number. It cannot be a survivor
+ *  count in the ladder -- it is a different population, and blending it in
+ *  would be the exact defect this file exists to remove -- but it BOUNDS what
+ *  the two rows beneath it can be, and it is what decides whether
+ *  `WRITER_CANDIDATE_CAP` is a lever or a decoration:
+ *
+ *    a candidate at rank r publishes iff r <= WRITER_CANDIDATE_CAP and
+ *    r - w(r) <= PUBLISH_CAP, where w(r) is the watch-only rows above it
+ *
+ *  so rank PUBLISH_CAP+k is reachable only where at least k rows demote. The
+ *  distribution here is therefore the ceiling on everything a wider cap could
+ *  ever buy, and `caps.ts` cites it as the reason its constant does not move.
+ *
+ *  READ, NEVER RETYPED. A rate copied into a comment is a rate that stops
+ *  moving the day the writer's behaviour does, which is precisely when it
+ *  matters. Returns undefined on any failure -- a missing table, an unreachable
+ *  database, a fresh deployment with no briefs yet -- and the report then says
+ *  the budget was unreadable rather than printing a remembered figure. */
+async function watchOnlyBudget(): Promise<{
+  briefs: number; byCount: Map<number, number>; meanPerBrief: number;
+  meanCandidates: number; from: string; to: string;
+} | undefined> {
+  const url = process.env.DATABASE_URL;
+  if (!url) return undefined;
+  let client: import("pg").Client | undefined;
+  try {
+    const { Client } = await import("pg");
+    client = new Client({ connectionString: url, connectionTimeoutMillis: 5000 });
+    await client.connect();
+    await client.query("SET statement_timeout = 10000");
+    const r = await client.query<{ wo: number; n: string }>(
+      `SELECT COALESCE(dropped_watch_only, 0)::int AS wo, COUNT(*)::text AS n
+         FROM brief_records WHERE candidate_count > 0 GROUP BY 1 ORDER BY 1`);
+    if (!r.rows.length) return undefined;
+    const agg = await client.query<{ briefs: string; mean: string; cand: string;
+      from: string; to: string }>(
+      `SELECT COUNT(*)::text AS briefs,
+              AVG(COALESCE(dropped_watch_only, 0))::text AS mean,
+              AVG(candidate_count)::text AS cand,
+              MIN(created_at)::date::text AS from, MAX(created_at)::date::text AS to
+         FROM brief_records WHERE candidate_count > 0`);
+    const a = agg.rows[0];
+    return {
+      briefs: Number(a.briefs),
+      byCount: new Map(r.rows.map((x) => [x.wo, Number(x.n)])),
+      meanPerBrief: Number(a.mean), meanCandidates: Number(a.cand),
+      from: a.from, to: a.to,
+    };
+  } catch { return undefined; }
+  finally { await client?.end().catch(() => {}); }
 }
 
 /** ── THE RECALL FLOOR'S OWN LAST PUBLISHED FIGURES ─────────────────────────
