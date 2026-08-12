@@ -254,7 +254,10 @@ const STAGES: Stage[] = [
     unmeasured:
       "WRT-WATCH-ONLY reads the writer's `nextStep` and `whyEligible` prose, so it "
       + "cannot be evaluated without a paid memo per founder. Rows below are therefore "
-      + "an UPPER BOUND: the true survivor count at every later stage is <= the number shown.",
+      + "an UPPER BOUND: the true survivor count at every later stage is <= the number shown. "
+      + "BOUNDED, though, and free: `dropped_watch_only` on every brief this product has "
+      + "published gives the RATE where this population cannot give the verdict, and the "
+      + "cap section below turns it into a numeric bound in both directions.",
   },
   {
     id: "published",
@@ -747,18 +750,28 @@ async function main() {
     // directions are computable from the same distribution, and leaving the row
     // blank invites the reading that the unknown is large. It is not.
     const perRow = budget.meanPerBrief / budget.meanCandidates;
-    const atCap = rows.find((r) => r.stage.id === "writer_cap")?.remaining ?? 0;
-    const pub = rows.find((r) => r.stage.id === "published")?.remaining ?? 0;
-    p("The same distribution bounds the UNMEASURED `watch_only` row in both directions.");
+    const pubRow = rows.find((r) => r.stage.id === "published");
+    const pub = pubRow?.remaining ?? 0;
+    const demotedMax = Math.round(pub * perRow);
+    const promoted = total * N;
+    p("The same distribution bounds the UNMEASURED `watch_only` row in BOTH directions,");
+    p("which is what the row's own caveat cannot do — it names only the losing one.");
+    p();
     p(`A row reads watch-only ${(100 * perRow).toFixed(1)}% of the time `
-      + `(${budget.meanPerBrief.toFixed(2)} of ${budget.meanCandidates.toFixed(2)}), so of the `
-      + `${atCap} founders still alive at the`);
-    p(`cap roughly ${Math.round(atCap * perRow)} would have their OWN row demoted behind the actionable ones,`);
-    p(`against roughly ${(total * N).toFixed(0)} promoted into a seat it frees. The net is about `
-      + `${(Math.round(atCap * perRow) - total * N > 0 ? "-" : "+")}${Math.abs(Math.round(atCap * perRow) - total * N).toFixed(0)} `
-      + `founder(s)`);
-    p(`— so \`published\`'s ${pub} is an upper bound by about `
-      + `${Math.abs(Math.round(atCap * perRow) - total * N).toFixed(0)}, not by an open-ended unknown.`);
+      + `(${budget.meanPerBrief.toFixed(2)} of ${budget.meanCandidates.toFixed(2)} candidates). So:`);
+    p();
+    p(`- **it LOSES at most ${demotedMax} of the ${pub} founders at \`published\`** — that is every one`);
+    p("  whose own row reads watch-only, and it is an over-count, because a demoted row");
+    p("  still publishes wherever fewer actionable rows exist to fill the cap.");
+    p(`- **it GAINS about ${promoted.toFixed(0)}** — the founders whose fund sits at rank ${PUBLISH_CAP + 1}..`
+      + `${WRITER_CANDIDATE_CAP} and is carried in`);
+    p("  by a demotion above it. This one is already inside the count above, because");
+    p("  those ranks are within the cap.");
+    p();
+    p(`So \`published\`'s ${pub} is an upper bound by AT MOST ${demotedMax} founders `
+      + `(${((100 * demotedMax) / N).toFixed(1)} points), not by an`);
+    p("open-ended unknown, and the same holds for every row beneath it. Measuring it");
+    p("exactly still needs a paid memo per founder; bounding it did not.");
     p();
   } else {
     p("██ THE WATCH-ONLY BUDGET WAS UNREADABLE. `brief_records` could not be reached, so");
