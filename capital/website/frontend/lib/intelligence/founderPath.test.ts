@@ -96,24 +96,15 @@ interface OpenDefect { detail: string; review: string }
  * changes what a founder is shown and that is a measured surface.
  */
 const OPEN_DEFECTS: Record<string, OpenDefect> = {
-  "the shortlist survives the handoff to the intake route": {
-    detail:
-      "`sanitizeInstrumentIds` accepts /^[a-z0-9_]{1,60}$/, and the corpus's own " +
-      "SATR ids run past 60 characters " +
-      "(satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz " +
-      "is 72). The verdict route hands the panel every candidate id; the panel " +
-      "posts them back; the intake route silently deletes ~29% of them, INCLUDING " +
-      "rows the founder can see on screen one. Measured over the twelve " +
-      "archetypes: a mean of 3.7 of the founder's own six rows survive, 0 of 6 " +
-      "for GovTech and 1 of 6 for Life sciences and AgriTech. The adaptive " +
-      "round's gates, stakes and verbatim quotes are therefore fetched for a " +
-      "different shortlist from the one the founder is looking at — while the " +
-      "planner prompt's `candidateBlock` names the RIGHT funds, because that " +
-      "line reads `body.candidateInstrumentIds` unsanitised. No direct-call " +
-      "harness can see this: they pass computeVerdict's ids straight into " +
-      "gateReach.",
-    review: "2026-09-30",
-  },
+  // "the shortlist survives the handoff to the intake route" was here, and it
+  // is FIXED (wsFV). `sanitizeInstrumentIds` accepted `/^[a-z0-9_]{1,60}$/`
+  // while 394 of the corpus's 1,088 ids are longer than that, then cut the
+  // survivors with a `.slice(0, 40)` against a median shortlist of 90 — so the
+  // intake route kept 42.5% of every founder's candidate ids and a mean of 3.6
+  // of their own six rows, zero of six for GovTech. It now asks the corpus
+  // whether the id names a fund, which is the question, and the three
+  // assertions below are left in place unregistered so a regression is a
+  // failure rather than a new entry.
   "the profile signal the intake route inferred reaches the ranker": {
     detail:
       "panel.tsx `fetchRound` calls `setProfileSignal(data.profileSignal)` and " +
@@ -316,31 +307,84 @@ describe("the harness drives the panel's own request", () => {
 
 // ── 1. What one route hands the next ───────────────────────────────────────
 
+/**
+ * The shortlist the founder is looking at, as the intake route reconstructs it.
+ *
+ * Built with the route's own membership test rather than a copy of it: the
+ * corpus is the reference, so an id format introduced next month is covered
+ * without anyone editing this file.
+ */
+async function keptShortlist(ids: string[]): Promise<string[]> {
+  const [{ sanitizeInstrumentIds }, { instById }] = await Promise.all([
+    import("./sanitize"), import("./shortlist"),
+  ]);
+  const corpus = instById();
+  return sanitizeInstrumentIds(ids, (id) => corpus.has(id)) ?? [];
+}
+
 describe("a handoff between two routes loses nothing", () => {
   it("every candidate id the verdict route publishes survives the intake route", async () => {
-    const { sanitizeInstrumentIds } = await import("./sanitize");
     for (const [label, run] of runs) {
-      property("the shortlist survives the handoff to the intake route", () => {
-        const kept = new Set(sanitizeInstrumentIds(run.candidateInstrumentIds) ?? []);
-        const lost = run.candidateInstrumentIds.filter((id) => !kept.has(id));
-        expect(lost, `${label}: ${lost.length} of ${run.candidateInstrumentIds.length} ` +
-          `candidate ids are deleted at the intake route`).toEqual([]);
-      });
+      const kept = new Set(await keptShortlist(run.candidateInstrumentIds));
+      const lost = run.candidateInstrumentIds.filter((id) => !kept.has(id));
+      expect(lost.slice(0, 8), `${label}: ${lost.length} of ` +
+        `${run.candidateInstrumentIds.length} candidate ids are deleted at the ` +
+        `intake route, so the follow-up questions are written from a shortlist ` +
+        `this founder never saw`).toEqual([]);
     }
   });
 
   it("the funds on the founder's own screen survive it", async () => {
-    const { sanitizeInstrumentIds } = await import("./sanitize");
     for (const [label, run] of runs) {
-      property("the shortlist survives the handoff to the intake route", () => {
-        const six = run.screenSix
-          .map((r) => (r as unknown as { instrumentId?: string }).instrumentId)
-          .filter((x): x is string => Boolean(x));
-        const kept = new Set(sanitizeInstrumentIds(six) ?? []);
-        expect(six.filter((id) => !kept.has(id)),
-          `${label}: rows the founder is looking at are not in the shortlist the ` +
-          `follow-up questions are written from`).toEqual([]);
-      });
+      const six = run.screenSix
+        .map((r) => (r as unknown as { instrumentId?: string }).instrumentId)
+        .filter((x): x is string => Boolean(x));
+      const kept = new Set(await keptShortlist(six));
+      expect(six.filter((id) => !kept.has(id)),
+        `${label}: rows the founder is looking at are not in the shortlist the ` +
+        `follow-up questions are written from`).toEqual([]);
+    }
+  });
+
+  /**
+   * ── THE PROPERTY THE WHOLE OF STEP 3 RESTS ON (wsFV) ──────────────────────
+   *
+   *   EVERY FUND THE QUESTION WRITER IS TOLD ABOUT IS A FUND IT IS SHOWN THE
+   *   REQUIREMENTS FOR.
+   *
+   * Stated over the planner's own arguments, because that is where the two
+   * halves used to disagree: `candidateBlock` was built from the RAW request
+   * body and everything under it — the gates fetched by `hydrateGatesFor`, the
+   * per-fund stakes, the verbatim quotes — from the sanitised list. So the
+   * prompt named the founder's real top funds and described a different,
+   * shorter shortlist, and the model was asked to write questions separating
+   * funds whose requirements it had never been given. A prompt that names the
+   * right funds READS correct, which is why this is the worse half and why it
+   * needs an assertion rather than an eye.
+   *
+   * Asserted as a PREFIX rather than by counting to eight: everything
+   * downstream reads the front of this list, and a prefix test says "one list,
+   * in one order" without retyping a cap that lives in adaptiveRound.ts.
+   */
+  it("the funds named in the planner's prompt are the funds it is shown the requirements for", async () => {
+    const { instById } = await import("./shortlist");
+    const corpus = instById();
+    for (const [label, run] of runs) {
+      const company = run.wire.find((w) => w.route === "/api/intelligence/intake")!
+        .body.company as string;
+      const call = seen.planAdaptiveScreen.find(
+        (a) => (a[0] as { company?: string })?.company === company);
+      expect(call, `${label}: the planner was never called`).toBeTruthy();
+      const named = (call![3] as { name: string; country: string; supportType: string }[])
+        .map((c) => `${c.name}|${c.country}|${c.supportType}`);
+      // The shortlist whose gates, stakes and quotes the same call carries.
+      const grounded = (await keptShortlist(run.candidateInstrumentIds))
+        .map((id) => corpus.get(id))
+        .filter((i): i is NonNullable<typeof i> => Boolean(i))
+        .map((i) => `${i.name}|${i.country}|${i.capitalType}`);
+      expect(grounded.slice(0, named.length), `${label}: the prompt NAMES funds ` +
+        `that are not the front of the shortlist it is shown the requirements ` +
+        `for. Two lists where there must be one.`).toEqual(named);
     }
   });
 });

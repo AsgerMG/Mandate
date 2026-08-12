@@ -48,17 +48,31 @@ export const maxDuration = 60;
 const MIN_REACH_PCT = 15;
 const MIN_FAMILIES = 3;
 
-// brief_funnel_v2 question budget: 8-10 on one mandatory screen, split roughly
-// half generic gate-closers, half project questions. Was 8 generic and zero
-// project, which is why every memo read the same.
-// Raised from 4 with the first screen shrunk from 11 questions to 5: six
-// fields moved into this round, and a cap that did not move would have
-// silently dropped them. Still fewer questions in total than before, because
-// these are chosen against the founder's own shortlist rather than asked of
-// everyone.
+// ── THESE SIZE THE CANDIDATE POOLS, NOT THE SCREEN (wsFV) ──────────────────
+// They read as slot budgets and are not: both are how many CANDIDATES this
+// route offers the planner, and the screen's own cap is
+// `SCREEN_QUESTION_CAP = 6` in adaptiveRound.ts, which counts the generic and
+// project halves TOGETHER. So 6 + 4 candidates compete for six seats and the
+// panel a founder sees can never exceed six questions.
+//
+// The comments here said "8-10 on one mandatory screen" and "Total journey is
+// now 5 + 10 = 15, down from 20", and neither number is reachable: the journey
+// is 5 + at most 6. Corrected rather than deleted, because WHY each pool is the
+// size it is still matters — the reason a cap moved is the part a later reader
+// needs.
+//
+// Not renumbered here. Changing either would change which questions a founder
+// is asked, which is this round's own measured surface (workstreams AY/BH) and
+// costs a model-calling run to verify.
+//
+// Generic: the eligibility gate-closers, whose answers become
+// `EligibilityAnswers` and reach the stage that ranks. Raised from 4 when the
+// first screen shrank from 11 questions to 5 — six fields moved into this
+// round, and a pool that did not move would have silently dropped them.
 const GENERIC_QUESTION_CAP = 6;
-// Trimmed from 5 to keep the single panel at ten questions. Total journey is
-// now 5 + 10 = 15, down from 20.
+// Project: what this company actually does, phrased from the shortlist's own
+// requirement text. Trimmed from 5 when the round became a single panel. Was
+// zero for a long time, which is why every memo read the same.
 const PROJECT_QUESTION_CAP = 4;
 
 export async function POST(request: NextRequest) {
@@ -75,7 +89,16 @@ export async function POST(request: NextRequest) {
 
   await hydrateDbInstruments();
 
-  const candidateIds = sanitizeInstrumentIds(body.candidateInstrumentIds) ?? [];
+  // ── ONE SHORTLIST, AND IT IS THE FOUNDER'S (wsFV) ────────────────────────
+  // `instById()` is the same map `hydrateGatesFor`, `stakesByFund` and the
+  // candidate block below all resolve an id against, so an id that survives
+  // here is an id every one of them can actually look up. That is the whole
+  // membership question, and asking it against the map the consumers use is
+  // what makes the answer true by construction rather than by coincidence —
+  // the argument `pickRegion` makes for `regionNameFor` over a shape regex.
+  const corpus = instById();
+  const candidateIds =
+    sanitizeInstrumentIds(body.candidateInstrumentIds, (id) => corpus.has(id)) ?? [];
   // The adaptive round writes its questions from the funds' VERBATIM gate
   // text, so it needs phase two of hydration. Without this the quotes come
   // back empty and the questions silently fall back to paraphrase — the
@@ -102,8 +125,9 @@ export async function POST(request: NextRequest) {
     // brief_funnel_v2: the panel is one screen with two halves. The generic
     // half closes eligibility gates the verdict engine needs (fixed enums);
     // the project half asks what this company actually does, phrased from the
-    // shortlist's own requirement text. Budget is 8-10 total, so the generic
-    // side is capped tighter than the old 8 to make room.
+    // shortlist's own requirement text. The generic side is capped tighter than
+    // the old 8 to leave the project half room to compete for the screen's six
+    // seats — see the note on the two caps above.
     const genericFields = openFields.slice(0, GENERIC_QUESTION_CAP);
     // wsCD: the requirements no comparator can decide, ranked by how much
     // answering would separate THIS founder's siblings and capped by the arm's
@@ -153,8 +177,16 @@ export async function POST(request: NextRequest) {
       // the planner ask questions that decide between real candidates rather
       // than questions about gates in the abstract.
       planAdaptiveScreen(req, needsRound ? genericFields : [], projectGates,
-        (body.candidateInstrumentIds ?? []).slice(0, 8).map((id) => {
-          const inst = instById().get(id);
+        // `candidateIds`, NOT `body.candidateInstrumentIds` (wsFV). This read
+        // the raw body while every other argument on this call was built from
+        // the sanitised list, so the prompt NAMED one set of funds and showed
+        // the gates, stakes and verbatim quotes of a different, shorter one.
+        // That is the worse half of the defect: a prompt that names the right
+        // funds reads correct, and the model was being asked to write questions
+        // separating funds it was never shown the requirements for. The two
+        // lists are now one list, so they cannot disagree again.
+        candidateIds.slice(0, 8).map((id) => {
+          const inst = corpus.get(id);
           return inst
             ? { name: inst.name, country: inst.country, supportType: inst.capitalType }
             : null;

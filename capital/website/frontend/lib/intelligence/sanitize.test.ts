@@ -1,9 +1,17 @@
 import { describe, expect, it } from "vitest";
 import {
-  sanitizeEligibility, sanitizeFreeText, sanitizeProjectAnswers, MAX_DESCRIPTION_CHARS,
+  sanitizeEligibility, sanitizeFreeText, sanitizeInstrumentIds,
+  sanitizeProjectAnswers, MAX_DESCRIPTION_CHARS,
 } from "./sanitize";
+import { loadDbInstruments } from "./corpus";
 import { COMMERCIAL_ANSWER_PREFIX } from "./types";
 import { VOCABULARY } from "./vocabulary";
+
+/** The real corpus, because the property under test IS corpus membership. A
+ *  hand-written stub would let the sanitiser and the funds diverge, which is
+ *  the class of defect this whole file exists for. */
+const corpus = new Set(loadDbInstruments().map((i) => i.id));
+const inCorpus = (id: string) => corpus.has(id);
 
 /**
  * The sanitiser is the only thing between a real request and the pipeline, and
@@ -136,14 +144,14 @@ describe("a round-two answer cites a fund or cites nothing", () => {
   };
 
   it("keeps the answer", () => {
-    const out = sanitizeProjectAnswers([forged]);
+    const out = sanitizeProjectAnswers([forged], inCorpus);
     expect(out).toHaveLength(1);
     expect(out![0].answer).toBe(forged.answer);
     expect(out![0].questionId).toBe(forged.questionId);
   });
 
   it("strips every field that could attribute it to a fund", () => {
-    const [got] = sanitizeProjectAnswers([forged])!;
+    const [got] = sanitizeProjectAnswers([forged], inCorpus)!;
     // Named by property: an ungrounded answer may carry no instrument and no
     // requirement text, whatever the request claimed.
     expect(got.instrumentId).toBe("");
@@ -156,13 +164,85 @@ describe("a round-two answer cites a fund or cites nothing", () => {
 
   it("still refuses a grounded answer with no real instrument id", () => {
     const ungroundedButUnmarked = { ...forged, questionId: "who_pays", instrumentId: "" };
-    expect(sanitizeProjectAnswers([ungroundedButUnmarked])).toBeUndefined();
+    expect(sanitizeProjectAnswers([ungroundedButUnmarked], inCorpus)).toBeUndefined();
   });
 
   it("leaves a genuinely grounded answer whole", () => {
     const grounded = { ...forged, questionId: "eic_accelerator::establishment" };
-    const [got] = sanitizeProjectAnswers([grounded])!;
+    const [got] = sanitizeProjectAnswers([grounded], inCorpus)!;
     expect(got.instrumentId).toBe("eic_accelerator");
     expect(got.quote).toBe(grounded.quote);
+  });
+
+  // The same length rule that ate the shortlist ate the ANSWER, one field over
+  // (wsFV). `pickString(b.instrumentId, 60)` plus `/^[a-z0-9_]{1,60}$/` deleted
+  // a prose answer whole — the answer, its fund, its gate and its quote —
+  // whenever the fund it cited was one of the 394 corpus rows whose id is
+  // longer than that. Stated against the corpus's own longest id rather than
+  // against a number, so it keeps meaning when the longest id changes.
+  it("keeps an answer citing the longest-id fund the corpus holds", () => {
+    const longest = [...corpus].reduce((a, b) => (b.length > a.length ? b : a));
+    const grounded = {
+      ...forged, questionId: `${longest}::establishment`, instrumentId: longest,
+    };
+    const [got] = sanitizeProjectAnswers([grounded], inCorpus)!;
+    expect(got.instrumentId,
+      `a prose answer citing ${longest} (${longest.length} chars) was deleted at ` +
+      `the memo route`).toBe(longest);
+    expect(got.answer).toBe(grounded.answer);
+  });
+});
+
+// ── THE SHORTLIST ONE ROUTE HANDS THE NEXT (wsFV) ──────────────────────────
+//
+//   THE PROPERTY
+//   An id the corpus can produce is an id this sanitiser keeps, and an id the
+//   corpus cannot produce is one it drops.
+//
+// Stated that way rather than as a shape, because a shape is a claim about
+// today's ids: this rule was `/^[a-z0-9_]{1,60}$/` while 394 of the corpus's
+// 1,088 ids were longer than 60 characters, so the intake route silently
+// deleted 30.5% of every founder's shortlist and left the follow-up questions
+// grounded in funds the founder was not looking at. Raising the number would
+// have bought a delay, not a fix. The corpus is walked below, so an id format
+// introduced next month is covered the day the exporter writes one.
+describe("the shortlist survives its own sanitiser", () => {
+  it("keeps every id the corpus itself holds, whatever shape it has", () => {
+    const ids = [...corpus];
+    const kept = new Set(sanitizeInstrumentIds(ids, inCorpus) ?? []);
+    const lost = ids.filter((id) => !kept.has(id));
+    expect(lost.slice(0, 8),
+      `${lost.length} of the corpus's own ${ids.length} instrument ids are ` +
+      `deleted by the sanitiser that guards the shortlist handoff. The longest ` +
+      `id in the corpus is ${ids.reduce((a, b) => (b.length > a.length ? b : a)).length} ` +
+      `characters; a rule that admits a fund's id is a rule that asks whether ` +
+      `the fund exists, not what its id looks like.`).toEqual([]);
+  });
+
+  it("drops an id no fund holds, however well-shaped", () => {
+    // Correct shape under the retired rule, and not a fund. The sanitiser is
+    // STRICTER than the regex it replaced, not looser.
+    expect(sanitizeInstrumentIds(["not_a_real_fund"], inCorpus)).toBeUndefined();
+    expect(sanitizeInstrumentIds(["eic_accelerator", "not_a_real_fund"], inCorpus))
+      .toEqual(["eic_accelerator"]);
+  });
+
+  it("bounds its own output without a cap, by refusing to repeat a fund", () => {
+    // The `.slice(0, 40)` was the old bound and it cost the founder half their
+    // shortlist. The bound is now structural: every survivor is a DISTINCT
+    // corpus member, so the result can never be longer than the corpus however
+    // many ids a client posts, and nothing has to be revised when it grows.
+    const flood = Array.from({ length: 5_000 }, () => "eic_accelerator");
+    expect(sanitizeInstrumentIds(flood, inCorpus)).toEqual(["eic_accelerator"]);
+    const all = [...corpus, ...corpus];
+    expect((sanitizeInstrumentIds(all, inCorpus) ?? []).length).toBe(corpus.size);
+  });
+
+  it("preserves the verdict route's order, which is best-first", () => {
+    // Everything downstream reads a PREFIX of this list — `candidateBlock`
+    // takes eight, `stakesByFund` takes eight — so a sanitiser that reordered
+    // it would quietly change which funds the question writer is shown.
+    const ids = [...corpus].slice(0, 25).reverse();
+    expect(sanitizeInstrumentIds(ids, inCorpus)).toEqual(ids);
   });
 });

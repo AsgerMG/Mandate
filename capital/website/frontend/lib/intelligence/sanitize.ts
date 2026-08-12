@@ -225,13 +225,78 @@ export function sanitizeCapitalSought(raw: unknown): string[] | undefined {
   return pickEnumList(raw, CAPITAL_TYPE_VALUES);
 }
 
-const INSTRUMENT_ID_RE = /^[a-z0-9_]{1,60}$/;
+/**
+ * Is this one of our funds?
+ *
+ * Supplied by the caller rather than imported, and that is a boundary
+ * requirement, not a style choice: the corpus reaches Postgres and the
+ * filesystem, this module is a leaf that a `"use client"` component may import
+ * a value from (`app/privacy/page.tsx` already does, for
+ * MAX_DESCRIPTION_CHARS), and `scripts/check_client_boundary.ts` fails the
+ * build the moment those two meet. Every route that sanitises an instrument id
+ * has already awaited `hydrateDbInstruments()`, so the answer is in memory at
+ * the call site and costs nothing to pass.
+ */
+export type CorpusMembership = (instrumentId: string) => boolean;
 
-/** Whitelist a raw request body's `candidateInstrumentIds` field — internal
- *  DB ids only, never free text: lowercase/digits/underscore, length-capped. */
-export function sanitizeInstrumentIds(raw: unknown): string[] | undefined {
+/**
+ * Whitelist a raw request body's `candidateInstrumentIds` field — the shortlist
+ * one route hands the next.
+ *
+ * ── THE QUESTION IS "IS THIS ONE OF OUR FUNDS", SO THAT IS WHAT IS ASKED ────
+ * This was `/^[a-z0-9_]{1,60}$/` plus a `.slice(0, 40)`, and both were wrong in
+ * the same direction: they described a fund id instead of asking whether one
+ * exists. The corpus's own state-aid ids run past 60 characters
+ * (`satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai`
+ * is 75, and the longest in the corpus is 83), so the length rule silently
+ * deleted 30.5% of the candidate ids the verdict route had just published, and
+ * the cap then cut the survivors to 42.5% of what the founder was actually
+ * looking at. Measured over the twelve archetypes: a mean of 3.6 of the
+ * founder's own six rows reached the stage that writes their follow-up
+ * questions, and ZERO of six for GovTech.
+ *
+ * Raising the literal would have shipped the same defect on the next long id,
+ * so there is no literal. Corpus membership is the real question, it is
+ * self-maintaining, and an id format introduced next month is covered the day
+ * the corpus produces it — the same argument `pickRegion` above makes for
+ * validating a NUTS id against `regionNameFor` rather than against a shape.
+ *
+ * It is also STRICTER than the regex it replaces, not looser: every id it
+ * admits is an id our own exporter wrote, where the regex admitted any short
+ * lowercase word a client cared to invent.
+ *
+ * ── AND THE OUTPUT IS STILL BOUNDED, STRUCTURALLY ──────────────────────────
+ * A sanitiser may not hand an unbounded array to the rest of the request, and
+ * the `.slice(0, 40)` was the old bound. The bound now comes from the property
+ * instead of from a number: entries are DEDUPED and every survivor is a
+ * distinct member of the corpus, so the result can never be longer than the
+ * corpus however many ids a client posts. Nothing has to be revised when the
+ * corpus grows.
+ *
+ * ── WHY THE 40 IS NOT REPLACED BY A LARGER NUMBER ──────────────────────────
+ * It could not have been a prompt budget: nothing downstream of it puts more
+ * than eight funds in a prompt (`candidateBlock` slices 8 in adaptiveRound.ts,
+ * `stakesByFund` defaults to 8). It could not have been a hydration budget
+ * either: `/api/intelligence/verdict` already calls `hydrateGatesFor` on the
+ * identical, unsliced candidate list one route earlier in the same founder's
+ * journey, under `maxDuration = 15` against the intake route's 60. What it did
+ * do was move the denominators of the round's own stopping rule —
+ * `openFieldsForShortlist`'s reach percentages and `distinctFamilyCount`,
+ * against MIN_REACH_PCT and MIN_FAMILIES — onto a 40-fund shortlist while the
+ * founder's shortlist was a median of 90. That is an undocumented narrowing of
+ * a measured surface, not a budget.
+ */
+export function sanitizeInstrumentIds(
+  raw: unknown, inCorpus: CorpusMembership,
+): string[] | undefined {
   if (!Array.isArray(raw)) return undefined;
-  const out = raw.filter((x): x is string => typeof x === "string" && INSTRUMENT_ID_RE.test(x)).slice(0, 40);
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const x of raw) {
+    if (typeof x !== "string" || seen.has(x) || !inCorpus(x)) continue;
+    seen.add(x);
+    out.push(x);
+  }
   return out.length ? out : undefined;
 }
 
@@ -239,8 +304,20 @@ export function sanitizeInstrumentIds(raw: unknown): string[] | undefined {
  * Whitelist a raw request body's `projectAnswers` field (brief_funnel_v2
  * Stage 2b). Every string here reaches a model prompt, and `answer` can be
  * founder free text, so each field is length-capped and the instrument id is
- * shape-checked like any other. Count-capped at 12: the panel can only
- * generate 5 per round.
+ * checked against the corpus like any other. Count-capped at 12: the panel can
+ * only generate 5 per round.
+ *
+ * ── THE SAME LENGTH DEFECT LIVED HERE, ONE FIELD OVER (wsFV) ───────────────
+ * The id was read with `pickString(b.instrumentId, 60)` and then tested against
+ * the same `/^[a-z0-9_]{1,60}$/`, so a prose answer grounded in a state-aid
+ * fund whose id runs past 60 characters was deleted whole — the answer, its
+ * fund, its gate and its verbatim quote — on the memo route, the one a founder
+ * acts on. It did not fire before, and would have started firing the moment
+ * `sanitizeInstrumentIds` was fixed: the project questions are built from the
+ * intake route's shortlist by `openProjectGatesForShortlist`, so until that
+ * shortlist could contain a long id, no question could cite one. Fixing one and
+ * not the other would have moved the silent drop from the question to the
+ * answer, which is the same defect wearing the next field's name.
  *
  * These deliberately never become EligibilityAnswers, so nothing here can
  * reach the deterministic evaluator no matter what a client posts.
@@ -261,8 +338,8 @@ export function sanitizeInstrumentIds(raw: unknown): string[] | undefined {
  * The rule is stated as the property rather than as an exemption, so a question
  * pool added tomorrow is covered by whichever branch describes it:
  *
- *   an entry either CITES A FUND -- and then the id must have the corpus's own
- *   shape, exactly as before -- or it DECLARES ITSELF UNGROUNDED, which the
+ *   an entry either CITES A FUND -- and then the id must be a fund the corpus
+ *   actually holds, exactly as before -- or it DECLARES ITSELF UNGROUNDED, which the
  *   round-two vocabulary marks with `COMMERCIAL_ANSWER_PREFIX` on `questionId`,
  *   and then it must carry no fund citation at all.
  *
@@ -276,7 +353,9 @@ export function sanitizeInstrumentIds(raw: unknown): string[] | undefined {
  * cannot be attributed to one -- including `scoreEase`, whose key is
  * `instrumentId::gateKey` and cannot match a gate on any real instrument.
  */
-export function sanitizeProjectAnswers(raw: unknown): import("./types").ProjectAnswer[] | undefined {
+export function sanitizeProjectAnswers(
+  raw: unknown, inCorpus: CorpusMembership,
+): import("./types").ProjectAnswer[] | undefined {
   if (!Array.isArray(raw)) return undefined;
   const out = raw.flatMap((x) => {
     if (!x || typeof x !== "object") return [];
@@ -284,7 +363,10 @@ export function sanitizeProjectAnswers(raw: unknown): import("./types").ProjectA
     const questionId = pickString(b.questionId, 140);
     const question = pickString(b.question, 400);
     const answer = pickString(b.answer, 400);
-    const instrumentId = pickString(b.instrumentId, 60);
+    // NOT length-capped: the length that matters is the corpus's, and the test
+    // below is what bounds this string — a value no fund has cannot survive it,
+    // whatever its length.
+    const instrumentId = typeof b.instrumentId === "string" ? b.instrumentId.trim() : "";
     if (!questionId || !question || !answer) return [];
     // Grounded in no fund by declaration. Kept, with every field that could
     // attribute it to one emptied rather than trusted.
@@ -299,8 +381,7 @@ export function sanitizeProjectAnswers(raw: unknown): import("./types").ProjectA
         quote: "",
       }];
     }
-    if (!instrumentId) return [];
-    if (!INSTRUMENT_ID_RE.test(instrumentId)) return [];
+    if (!instrumentId || !inCorpus(instrumentId)) return [];
     return [{
       questionId,
       question,
