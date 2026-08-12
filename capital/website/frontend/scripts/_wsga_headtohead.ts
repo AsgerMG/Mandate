@@ -223,6 +223,11 @@ interface Row {
   /** The published projection itself, so a re-score does not need the corpus. */
   publishedControl: string[];
   publishedRanker: string[];
+  /** `REPEAT>=2` only: a SECOND independent reply to the identical prompt on
+   *  the identical pool, in the same loop iteration. The null. */
+  publishedRankerB: string[] | null;
+  rankRankerB: number | null;
+  picksB: number[] | null;
   /** Menu indices the model named, and how deep it reached. Empty on a free
    *  arm that did not call. */
   picks: number[];
@@ -295,6 +300,9 @@ async function main() {
    *  as NOT CALLED and are excluded from the graded set — a spend limit must
    *  never be able to turn itself into a result. */
   const maxEur = num(process.env.MAX_EUR, Number.POSITIVE_INFINITY);
+  /** How many times the TREATMENT is run per founder. 1 is a comparison; 2 is a
+   *  comparison WITH its own null. See the `publishedRankerB` block. */
+  const repeat = Math.max(1, num(process.env.REPEAT, 1));
 
   // ── THE POPULATION ───────────────────────────────────────────────────────
   // `cross_regime_*` and nothing else. That provenance is prose about the
@@ -419,6 +427,20 @@ async function main() {
     let menu = 0;
     let fellBack: string | null = null;
     let eur = 0;
+    /** ── THE NULL DISTRIBUTION, AND WHY IT IS NOT OPTIONAL ─────────────────
+     *  `REPEAT=2` runs the treatment TWICE on the same founder, the same pool
+     *  object and the same prompt, inside the same loop iteration. The second
+     *  reply is not a second treatment: it is the null against which the first
+     *  is read.
+     *
+     *  Both discordance rates then come out of one run. If the ranker disagrees
+     *  with the CONTROL on 20% of pairs and disagrees with ITSELF on 18%, the
+     *  head-to-head is measuring sampling noise and the comparison is over. No
+     *  amount of n fixes that, and nothing else in this repo can detect it:
+     *  every prior run sampled the model once and had no way to tell a
+     *  judgement from a coin. */
+    let publishedRankerB: string[] | null = null;
+    let picksB: number[] | null = null;
 
     if (worthCalling) {
       // ── WHICH ARRAY THE SEAM IS HANDED, and it is not a detail ───────────
@@ -432,19 +454,33 @@ async function main() {
       // no-op wearing the treatment's name -- the exact failure the arm
       // attestation exists to catch, arriving one layer above it.
       const input = AGENT_SELECT_SEAM === "early" ? poolFull : poolControl;
-      const { result, eur: spent } = await withCostTracking(
-        () => agentSelectMemoPool(input, req as never));
-      const poolRanker = AGENT_SELECT_SEAM === "early"
-        ? result.slice(0, VERDICT_POOL) : result;
-      const trace = agentSelectLastTrace();
-      picks = trace?.picks ?? [];
-      menu = trace?.menu.length ?? 0;
-      fellBack = trace?.fellBack ?? null;
-      eur = spent;
-      spend += spent;
-      if (AGENT_SELECT_ARM !== "off") calls++;
-      ceilingRanker = poolRanker.map(idOf).includes(t.instrument);
-      publishedRanker = project(poolRanker);
+      const fire = async () => {
+        const { result, eur: spent } = await withCostTracking(
+          () => agentSelectMemoPool(input, req as never));
+        spend += spent;
+        if (AGENT_SELECT_ARM !== "off") calls++;
+        const pool = AGENT_SELECT_SEAM === "early"
+          ? result.slice(0, VERDICT_POOL) : result;
+        return { pool, trace: agentSelectLastTrace(), spent };
+      };
+      const a = await fire();
+      picks = a.trace?.picks ?? [];
+      menu = a.trace?.menu.length ?? 0;
+      fellBack = a.trace?.fellBack ?? null;
+      eur = a.spent;
+      ceilingRanker = a.pool.map(idOf).includes(t.instrument);
+      publishedRanker = project(a.pool);
+      for (let k = 1; k < repeat; k++) {
+        const b = await fire();
+        eur += b.spent;
+        // Only the FIRST retest is kept as the null; a third would need a
+        // different statistic and this file does not pretend to have one.
+        if (k === 1) {
+          picksB = b.trace?.picks ?? [];
+          publishedRankerB = project(b.pool);
+          if (b.trace?.fellBack && !fellBack) fellBack = b.trace.fellBack;
+        }
+      }
     }
 
     rows.push({
@@ -458,6 +494,9 @@ async function main() {
       rankRanker: worthCalling ? rankIn(publishedRanker, t.instrument) : null,
       publishedControl: publishedControl.slice(0, PUBLISH_CAP),
       publishedRanker: worthCalling ? publishedRanker.slice(0, PUBLISH_CAP) : [],
+      publishedRankerB: publishedRankerB ? publishedRankerB.slice(0, PUBLISH_CAP) : null,
+      rankRankerB: publishedRankerB ? rankIn(publishedRankerB, t.instrument) : null,
+      picksB,
       picks, menu, fellBack, called: worthCalling, eur,
       projectionStable: AGENT_SELECT_ARM === "off" && worthCalling
         ? publishedControl.join("|") === publishedRanker.join("|") : null,
@@ -597,6 +636,48 @@ async function main() {
   p("evidence in it however many founders it cost.");
   p();
 
+  // ── THE NULL: the model against ITSELF, same prompt, same pool ──────────
+  const retested = graded.filter((r) => r.publishedRankerB !== null);
+  if (retested.length) {
+    p(`## The null — the ranker against ITSELF, same prompt, same pool, same second`);
+    p();
+    p("```");
+    for (const k of [5, 6]) {
+      const hit = (v: number | null) => v != null && v <= k;
+      const vsControl = paired(
+        retested.map((x) => hit(x.rankRanker)), retested.map((x) => hit(x.rankControl)));
+      const vsSelf = paired(
+        retested.map((x) => hit(x.rankRanker)), retested.map((x) => hit(x.rankRankerB)));
+      const dc = retested.length ? (100 * vsControl.discordant) / retested.length : 0;
+      const ds = retested.length ? (100 * vsSelf.discordant) / retested.length : 0;
+      p(`EXACT@${k}  ranker vs CONTROL  ${vsControl.discordant} discordant of ${retested.length} = ${dc.toFixed(1)}%`);
+      p(`EXACT@${k}  ranker vs ITSELF   ${vsSelf.discordant} discordant of ${retested.length} = ${ds.toFixed(1)}%` +
+        `   (ab ${vsSelf.ab}, ba ${vsSelf.ba}, exact p = ${vsSelf.p.toFixed(3)})`);
+      p(`          ratio ${ds > 0 ? (dc / ds).toFixed(2) : "n/a"}` +
+        (ds >= dc
+          ? "   ██ THE MODEL DISAGREES WITH ITSELF AS MUCH AS WITH THE SCORE ██"
+          : ""));
+    }
+    const samePicks = retested.filter(
+      (r) => (r.picks ?? []).join(",") === (r.picksB ?? []).join(",")).length;
+    p(`identical pick lists on ${samePicks}/${retested.length} founders ` +
+      `(${((100 * samePicks) / retested.length).toFixed(1)}%)`);
+    p("```");
+    p();
+    p("The second reply is not a second treatment. It is the NULL: two samples of");
+    p("one arm, on one prompt, on one pool object, in one loop iteration. If the");
+    p("ranker disagrees with itself about as often as it disagrees with the score,");
+    p("the head-to-head is measuring sampling noise and no n fixes it. Every prior");
+    p("run of this arm sampled the model once and had no way to tell a judgement");
+    p("from a coin.");
+    p();
+    p("The self-comparison is also a FALSIFICATION TEST of this harness: two");
+    p("samples of one arm must not be significantly different from each other. An");
+    p("exact p below 0.05 on the `ranker vs ITSELF` line means something in the");
+    p("replay is not held constant, and the primary result must be discarded.");
+    p();
+  }
+
   p(`## Secondary — the won fund's RANK, Wilcoxon signed-rank`);
   p();
   p("```");
@@ -713,12 +794,13 @@ async function main() {
   p();
 
   mkdirSync(OUT_DIR, { recursive: true });
-  const stamp = `${AGENT_SELECT_ARM}_${THINK_EFFORT}_n${rows.length}`;
+  const stamp = `${AGENT_SELECT_ARM}_${THINK_EFFORT}_n${rows.length}` +
+    (repeat > 1 ? `_x${repeat}` : "") + (process.env.RUN_TAG ? `_${process.env.RUN_TAG}` : "");
   writeFileSync(path.join(OUT_DIR, `${stamp}.md`), L.join("\n"));
   writeFileSync(path.join(OUT_DIR, `${stamp}.json`), JSON.stringify({
     startedAt, arm: AGENT_SELECT_ARM, seam: AGENT_SELECT_SEAM, effort: THINK_EFFORT,
     set: setFile, split, seed, n: rows.length, eligible: eligible.length,
-    countryCap: cap, capBound, onlyInPool, drawFingerprint,
+    countryCap: cap, capBound, onlyInPool, repeat, drawFingerprint,
     corpus: prov, rankerLine, rankerClean,
     calls, spendEur: spend, rows,
   }, null, 1));
