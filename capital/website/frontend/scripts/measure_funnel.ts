@@ -334,7 +334,7 @@ const STAGES: Stage[] = [
   {
     id: "model",
     // ── WHERE THE MODEL ACTUALLY SITS, AND WHY IT IS THE LAST ROW ANYWAY ────
-    // `agentSelectMemoPool` runs at `pipeline.ts:1756`, on the pool ALREADY cut
+    // `agentSelectMemoPool` runs in `pipeline.ts`'s ranking seam, on the pool ALREADY cut
     // to VERDICT_POOL and BEFORE `orderMemoCandidates` cuts to 8 and
     // `assembleBriefRows` cuts to 7. So it belongs three rows above this one.
     //
@@ -913,7 +913,7 @@ const MECHANISM: Record<string, string> = {
   pool_cut: "`.slice(0, VERDICT_POOL)`",
   writer_cap: "`orderMemoCandidates().toWriter`",
   watch_only: "`isWatchOnly` in `assembleBriefRows` — needs the writer",
-  model: "`agentSelectMemoPool` → Anthropic, at `pipeline.ts:1756` — a PERMUTATION of the "
+  model: "`agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the "
     + `${VERDICT_POOL}, applied above the two cuts below it`,
   // The row cuts are generated from ROW_CUTS, so their mechanisms are too: a
   // cut added to that list arrives with its mechanism rather than with a blank
