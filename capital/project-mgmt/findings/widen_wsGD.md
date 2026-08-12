@@ -153,7 +153,7 @@ established:
 2. **The rows were unreadable.** 51 of 133 audited menu rows carried no sentence
    saying what the fund pays for, and 0 of the 9 newly-visible won rows did
    (wsDV). wsDW repaired the splitter. On the current corpus the same
-   measurement reads **85-93% of rows carrying a `funds:` line** (§6).
+   measurement reads a flat **86-88% of rows carrying a `funds:` line at every depth** (§6).
 3. **The early seam does not widen the pool, and that is the trap inside the
    trap.** `SELECT_COUNT` was 6, so at most six rows could be promoted from
    below the score's cut; wsDR promoted 64 rows across 30 of 45 founders and
