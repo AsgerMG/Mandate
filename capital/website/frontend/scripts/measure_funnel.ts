@@ -721,7 +721,12 @@ async function main() {
     p(`| cap | ranks it admits | founders whose fund is there | needs w >= | P(w >=) here | reachable |`);
     p("|---:|---|---:|---:|---:|---:|");
     const atRank = (r: number) => traces.filter((t) => t.rankOrdered === r).length;
-    for (let cap = WRITER_CANDIDATE_CAP + 1; cap <= VERDICT_POOL && cap <= 12; cap++) {
+    // The deepest rank any founder's fund actually reached, NOT `VERDICT_POOL`:
+    // that constant takes `all` (Infinity), and a loop bounded by a lever is a
+    // loop that hangs the day somebody sweeps it. This bound is a fact about
+    // the run and is finite by construction.
+    const deepest = Math.max(0, ...traces.map((t) => t.rankOrdered ?? 0));
+    for (let cap = WRITER_CANDIDATE_CAP + 1; cap <= deepest && cap <= 12; cap++) {
       const k = cap - PUBLISH_CAP;
       const n = atRank(cap);
       const ps = share(k);
@@ -731,12 +736,13 @@ async function main() {
     // The total, because a reader deciding whether to spend a workstream here
     // needs the sum and not a column to add up.
     let total = 0;
-    for (let cap = WRITER_CANDIDATE_CAP + 1; cap <= VERDICT_POOL; cap++) {
+    for (let cap = WRITER_CANDIDATE_CAP + 1; cap <= deepest; cap++) {
       total += (atRank(cap) * share(cap - PUBLISH_CAP)) / N;
     }
     const capRow = rows.find((r) => r.stage.id === "writer_cap");
     p();
-    p(`**Raising the cap to the full pool of ${VERDICT_POOL} is worth ${(100 * total).toFixed(2)} points**`
+    p(`**Raising the cap to the whole pool (deepest rank reached: ${deepest}) is worth `
+      + `${(100 * total).toFixed(2)} points**`
       + (capRow?.remaining != null
         ? `, against a +/-${halfWidth(capRow.remaining, N).toFixed(1)} half-width on this row.`
         : "."));
