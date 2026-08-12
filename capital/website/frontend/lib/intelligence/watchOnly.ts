@@ -12,10 +12,10 @@
 // brief never shows a fund that is deprioritised or not relevant". Both were
 // already false when they were read: the drop had become a demotion, and a
 // demoted row published whenever fewer actionable rows existed than the cap.
-// What the demotion actually did is measured in `memoCandidates.ts` above
-// `assembleBriefRows` — with eight candidates cut to seven, one match anywhere
-// in the table evicted the fund it matched on, whatever rank the model had
-// given it.
+// What the demotion actually did, and how often, is measured in
+// `memoCandidates.ts` above `assembleBriefRows` — with eight candidates cut to
+// seven, one match anywhere in the table evicted the fund it matched on,
+// whatever rank the model had given it.
 //
 // ── WHY AN ENUMERATION IS TOLERATED HERE AND WOULD NOT BE ANYWHERE ELSE ───
 // The pattern is a list of eleven phrasings. That is a register, not a

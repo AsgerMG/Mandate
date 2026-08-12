@@ -1311,8 +1311,8 @@ async function synthesize(
   // WRITER_CANDIDATE_CAP, a permutation IS a deletion" — was the argument
   // against reading the writer's ORDER as a ranking, and it applied unchanged
   // to that sort, which was a permutation the writer's WORDS produced. It
-  // evicted the fund it matched on at any rank, the model's first included, in
-  // roughly one brief in eighteen. Nothing below the writer permutes now.
+  // evicted the fund it matched on at any rank, the model's first included.
+  // Nothing below the writer permutes now.
   const table = assembleBriefRows({
     rows: institutions, rowKeys, notes: narrative.institutionNotes,
     cap: BRIEF_INSTITUTION_CAP, clean: deDash,

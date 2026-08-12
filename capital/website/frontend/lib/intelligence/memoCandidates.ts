@@ -414,11 +414,24 @@ export interface AssembledBriefRows {
  *   rows — the head the funnel's `top_five` measures and the head the ranker
  *   was put in the selection seat to fill.
  *
- *   IT FIRED OFTEN ENOUGH TO MATTER. 8 matches in 128 candidate rows across
- *   the 19 recorded briefs (6.3%), and 8 in 168 rows across 30 memo-bench
- *   tapes (4.8%) — two independent counts of the same rate. At 8 candidates
- *   that is a match in roughly a third of briefs, and the model's own rank-one
- *   fund in about one brief in eighteen.
+ *   IT HAS FIRED, AND NOT RECENTLY — WHICH IS THE HONEST FIGURE AND CUTS BOTH
+ *   WAYS. Counted on `brief_records` in Postgres, 35 briefs, not on the
+ *   committed ledger export, which holds ids 2-20 and stops at 2026-07-30:
+ *   8 matches in 128 candidate rows over the 19 briefs to 2026-07-30 (6.3% of
+ *   rows, 6 of 19 briefs), and 0 in the 107 rows over the 14 briefs since.
+ *   Measuring on the export alone would have read the first number as current.
+ *
+ *   The last match is dated 2026-07-30, the day FUND-4 — "nextStep is an
+ *   action the founder can start" — entered the writer's own contract. n is 14
+ *   briefs, so the right reading is a bound, not a zero: at 0/107 the 95%
+ *   upper bound is 2.8% of rows, i.e. up to about one brief in five with a
+ *   match and one in thirty-five losing the model's top pick.
+ *
+ *   So this is being removed at its cheapest moment rather than its most
+ *   expensive. The case is not the saving. It is that the cost of one firing
+ *   is a fund the founder never sees and no page records, the benefit is now
+ *   covered by an instruction to the writer, and a hazard whose only defence
+ *   is the continued good behaviour of a model is not a design.
  *
  * The signal itself is not lost and was never the founder's to lose: the
  * sentence that matched is the row's own next step, and the founder reads it.

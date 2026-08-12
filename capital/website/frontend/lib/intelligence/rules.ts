@@ -174,11 +174,17 @@ export const EXCLUSION_RULES = {
   // because it is still a fact about a founder's brief that every recorded
   // brief counts.
   //
-  // What it cost while it demoted: 8 matches in 128 candidate rows over the 19
-  // recorded briefs, and with the writer shown 8 candidates against a published
-  // 7, a single match anywhere in the table evicted the fund it matched on —
-  // at rank 1 as readily as at rank 8. A regex over one model's prose was
-  // silently overruling another model's ranking on the row that matters most.
+  // What it cost while it demoted: with the writer shown 8 candidates against
+  // a published 7, a single match anywhere in the table evicted the fund it
+  // matched on — at rank 1 as readily as at rank 8. A regex over one model's
+  // prose was silently overruling another model's ranking on the row that
+  // matters most.
+  //
+  // Counted on `brief_records` in Postgres (35 briefs), NOT on the committed
+  // ledger export, which stops at 2026-07-30 and would have shown only the
+  // first half: 8 matches in 128 candidate rows over the 19 briefs to
+  // 2026-07-30, then 0 in 107 rows over the 14 since — the last one dated the
+  // day FUND-4 entered the writer's contract.
   "WRT-WATCH-ONLY": {
     stage: "writer", kind: "fact", recoverable: false,
     what: "Row published whose own copy reads as a thing to wait for rather than an action the founder can start.",

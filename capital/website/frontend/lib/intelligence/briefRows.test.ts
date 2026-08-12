@@ -37,9 +37,13 @@
 // choice, removed from the founder's brief by a regex over a different model's
 // prose. Both are the same expression; nothing in it read the rank.
 //
-// Rate, counted twice and independently: 8 matches in 128 candidate rows over
-// the 19 recorded briefs (6.3%), 8 in 168 rows over 30 memo-bench tapes
-// (4.8%). At 8 candidates that is a match in roughly a third of briefs.
+// Rate, from `brief_records` in Postgres (35 briefs) rather than the committed
+// ledger export (ids 2-20, nothing after 2026-07-30): 8 matches in 128
+// candidate rows over the 19 briefs to 2026-07-30, and 0 in the 107 rows over
+// the 14 since. The last match is the day FUND-4 — "nextStep is an action the
+// founder can start" — entered the writer's contract, so this is a hazard
+// currently held shut by a model's good behaviour, not one firing weekly. At
+// 0/107 the 95% upper bound is still 2.8% of rows.
 //
 // So the property is strengthened from "the reply's SILENCE cannot move a row"
 // to "nothing in the reply can", and it is swept over both: every subset of

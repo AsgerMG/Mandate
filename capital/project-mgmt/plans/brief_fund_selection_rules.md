@@ -119,11 +119,24 @@ an executioner.
 Demotion is deletion whenever the published cap is below the writer's: with 8
 candidates cut to 7, one match anywhere in the table made the seven
 non-matching rows exactly the published seven, so the matching fund was cut and
-the rank-8 fund took its seat — at rank 1 as readily as at rank 8. It fired on
-8 of 128 candidate rows across the 19 recorded briefs, so it changed the
-published set in roughly a third of them. Since the ranker took the selection
-seat, that is a regex over one model's prose overruling another model's
-ranking.
+the rank-8 fund took its seat — at rank 1 as readily as at rank 8. Since the
+ranker took the selection seat, that is a regex over one model's prose
+overruling another model's ranking.
+
+Measured on `brief_records` in Postgres, 35 briefs — **not** on
+`corpus-ledger/operational/brief_records.jsonl`, which holds ids 2-20 and
+nothing after 2026-07-30, so it shows only the era below and reads as current:
+
+| era | briefs | candidate rows | matches |
+|---|---:|---:|---:|
+| to 2026-07-30 | 19 | 128 | 8 (6 briefs) |
+| since 2026-08-08 | 14 | 107 | **0** |
+
+The last match is dated the day FUND-4 entered the writer's contract. So the
+enforcement is being removed at its cheapest moment: the case for removing it
+is not the saving, it is that one firing costs a fund nobody can see was lost,
+and the benefit is now carried by an instruction to the writer instead of by a
+sort. At 0/107 the 95% upper bound is still 2.8% of rows.
 
 The regex is now a detector and nothing else: `FUND-4` on the scoreboard,
 `WRT-WATCH-ONLY` in the exclusion log, and the row publishes at its rank

@@ -484,10 +484,12 @@ note per row in the order given.
 > 2026-08-13).** A demotion is a deletion whenever the published cap sits below
 > the writer's. At 8 candidates and 7 published, one match on the watch-only
 > vocabulary anywhere in the table cut the fund it matched on and promoted the
-> rank-8 fund into its seat, at any rank the ranker had given it. Measured: 8
-> matches in 128 candidate rows over the 19 recorded briefs, i.e. the published
-> set changed in roughly a third. The sort is gone; the regex reports and does
-> not select. Phase 4's disposition for #4 is now carried out as written.
+> rank-8 fund into its seat, at any rank the ranker had given it. Measured on
+> `brief_records` in Postgres: 8 matches in 128 candidate rows over the 19
+> briefs to 2026-07-30, then **0 in 107 rows over the 14 briefs since** — the
+> last one dated the day FUND-4 entered the writer's contract. The sort is
+> gone; the regex reports and does not select. Phase 4's disposition for #4 is
+> now carried out as written, at the moment it costs nothing.
 
 Verified live: `candidates=7 kept=7 rejected=0 omitted=0`, and EIC Accelerator
 ranks third for a French AI company on merit rather than being restored by a
