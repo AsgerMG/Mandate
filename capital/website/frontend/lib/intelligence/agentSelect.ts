@@ -112,8 +112,13 @@
 //     sort there is now nothing between this function's output and the page but
 //     the name collapse and two caps.
 //
-//     What the writer still decides is WHETHER a row publishes — it is dropped
-//     if the writer wrote no note for it — never WHERE.
+//     AND THE WRITER DECIDES NEITHER, AS OF wsGK. Both channels by which its
+//     reply could change the table are closed: a candidate it returns no note
+//     for keeps its seat and publishes from its own facts (wsGC), and copy
+//     that reads as a thing to wait for no longer sorts a row behind the
+//     others (wsGK — with 8 candidates cut to 7, that demotion evicted the
+//     fund it matched on at any rank, including the model's first choice).
+//     The writer changes what a row SAYS. This function decides the rest.
 //
 //   THE POOL DOES NOT CHANGE. The call sits AFTER `accessiblePool(...)
 //     .slice(0, VERDICT_POOL)`, so it permutes a fixed set of rows and cannot

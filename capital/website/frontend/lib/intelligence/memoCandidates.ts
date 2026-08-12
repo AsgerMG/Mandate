@@ -301,9 +301,12 @@ export interface MemoCandidateInput {
 
 /** ── WHICH ORDER THE BRIEF PUBLISHES IN ────────────────────────────────────
  *
- *  `candidates` **SHIPS.** The order the score already decided, i.e. the
- *            position of each row in `toWriter`. The writer's notes decide
- *            WHETHER a row publishes, never WHERE.
+ *  `candidates` **SHIPS.** The order the MODEL decided, i.e. the position of
+ *            each row in `toWriter`. There is no score left in it: the
+ *            deterministic sort was deleted in wsGB and `agentSelectMemoPool`
+ *            hands this module a ranking. The writer's notes decide neither
+ *            whether a row publishes nor where — the last channel by which
+ *            they could, the watch-only demotion, went in wsGK.
  *  `writer`   CONTROL, and what shipped until this was written. Rank rows by
  *            the index of their note in the writer's reply.
  *
@@ -370,7 +373,10 @@ export interface AssembledBriefRows {
   /** Candidate keys the writer returned no note for. They publish anyway; the
    *  list exists so the count is read rather than inferred from a short table. */
   unwritten: string[];
-  /** Keys demoted behind every actionable row. Demoted, never deleted. */
+  /** Keys whose published copy reads as a thing to wait for rather than do.
+   *  A REPORT, not an action: these rows publish at their own rank like any
+   *  other, and the list exists so the count reaches the exclusion log and the
+   *  brief's own record. See `watchOnly.ts`. */
   watchOnly: string[];
   /** Keys that fell below the cap. */
   cutByCap: string[];
@@ -381,43 +387,87 @@ export interface AssembledBriefRows {
  * reply.
  *
  * ── THE PROPERTY, AND THE TEST FOR A CASE NOBODY HAS SEEN ─────────────────
- * THE WRITER'S SILENCE NEVER MOVES A ROW, AND NOTHING IN THE REPLY EVER
- * REMOVES ONE. Which rows publish is decided by rank and by whether a row is
- * something the founder can act on, and by nothing else.
+ * WHICH ROWS PUBLISH, AND IN WHAT ORDER, IS DECIDED BY RANK ALONE. The
+ * writer's reply changes what a row SAYS and never whether it appears or where
+ * it sits.
  *
- * Two tests, on any reply at all rather than on the ones we have seen:
+ * The test, on any reply at all rather than on the ones we have seen: take any
+ * reply, delete any subset of its notes, and replace the text of any of the
+ * rest with anything whatsoever. `published` must come back as `rows.slice(0,
+ * cap)`, row for row and in the same order, every time. Anything that fails
+ * that is the writer selecting, and selecting is the ranker's job.
  *
- *   TOTALITY   `published` concatenated with `cutByCap` is a permutation of
- *              `rowKeys`, for every reply including an empty one. A reply that
- *              can shorten the candidate set is the writer selecting, and
- *              selecting is the ranker's job.
- *   SILENCE    delete any subset of the notes and assemble again; the published
- *              list must come back identical, row for row and in the same
- *              order. `unwrittenRowCopy` is held to the watch-only rule and
- *              tested to pass it, which is what makes this true rather than
- *              usually true.
+ * ██ THIS BECAME TRUE ON 2026-08-13; IT WAS NOT BEFORE ██
+ * A row whose own copy read as watch-only USED TO BE moved behind every
+ * actionable row, and with the cap one above the published count that put it
+ * outside the table -- so the writer's WORDS could change membership even
+ * though its silence could not. Two workstreams found the same contradiction
+ * on the same night and resolved it opposite ways: one weakened this docstring
+ * to describe the sort, the other removed the sort. The sort is gone, because
+ * the ranker was given the job of choosing and a regex over another model's
+ * prose taking it back was never designed.
  *
- * ██ WHAT THESE DELIBERATELY DO NOT COVER, AND WHY IT IS SAID HERE ██
- * A row whose own copy reads as watch-only IS moved, behind every actionable
- * row, and with the cap below the candidate count that can put it outside the
- * table. So the writer's WORDS can change membership even though its silence
- * cannot, and the earlier wording of this block ("decided by RANK ALONE...
- * the published list must come back identical") was flatly contradicted by the
- * sort ten lines below it. `briefRows.test.ts` had it right and pinned the
- * exception; this docstring did not, and `measure_funnel.ts` was reading rank
- * in `toWriter` as rank in the published table on the strength of it.
+ * It evicted at EVERY rank, not only the last: one match anywhere in the eight
+ * made the seven non-matching rows exactly the published seven, so a match on
+ * rank 1 removed the model's first choice. Nothing in the expression read the
+ * rank. Over the 35 briefs in `brief_records` on 2026-08-13, 6 (17%) demoted at
+ * least one row -- but ZERO of the 107 candidate rows written since 2026-08-08,
+ * the day FUND-4 entered the writer's own contract. The prose defect was fixed
+ * at the writing layer and the sort below it had been dead weight since.
  *
- * The movement is TWO-SIDED, which is the part that makes it hard to bound: an
- * actionable row is promoted past any watch-only row above it, as well as a
- * watch-only row being pushed behind the actionable ones. Over the 35 briefs in
- * `brief_records` on 2026-08-13, 6 (17%) demoted at least one row.
+ * ── TWO CHANNELS BY WHICH THE REPLY USED TO SELECT, AND WHAT THEY COST ────
+ * `worth: Boolean(note)` in `synthesize` (wsGC). A row the writer skipped was
+ * dropped and the next candidate down moved up into its seat. Over the
+ * recorded funnel counts it fired on 6 of 23 briefs, and on every one the cap
+ * still had room — each a candidate the ranker had put in the table, swapped
+ * for one it had put below it.
  *
- * This was `worth: Boolean(note)` in `synthesize`, and it was not a decision
- * anyone took: a row the writer skipped was dropped, the next candidate down
- * moved up into its seat, and the only trace was one line in the exclusion
- * log. Measured over the recorded funnel counts, that fired on 6 of 23 briefs,
- * and on every one of the six the cap still had room — so each was a candidate
- * the ranker had put in the table, swapped for one it had put below it.
+ * THE WATCH-ONLY DEMOTION (wsGK, this change). `[...actionable, ...the rest]`
+ * stood where the slice below stands, sorting rows whose PROSE matched a
+ * vocabulary behind rows whose prose did not. The first two below are why it
+ * is the same defect as the drop it replaced rather than the fix for it; the
+ * third is how often it has actually cost anything, which is less than the
+ * first two imply and is the reason this is cheap to remove rather than
+ * urgent:
+ *
+ *   IT EVICTED AT EVERY RANK, NOT THE LAST. The writer is shown
+ *   `WRITER_CANDIDATE_CAP` (8) candidates and the brief publishes
+ *   `institutionsMax` (7). With one match anywhere in the eight, the seven
+ *   actionable rows are exactly the published seven — so the matching fund was
+ *   cut and the rank-8 fund promoted into its seat, whether the match was on
+ *   rank 8 (a no-op) or on rank 1 (the model's first choice, gone). The gap
+ *   between the two caps used to be two seats and is now one, which is what
+ *   turned a demotion into a deletion.
+ *
+ *   IT WAS ALSO THE ONLY REORDER LEFT. A match on rank 2 that did not evict
+ *   still moved that fund to the back of the table, i.e. out of the first five
+ *   rows — the head the funnel's `top_five` measures and the head the ranker
+ *   was put in the selection seat to fill.
+ *
+ *   IT HAS FIRED, AND NOT RECENTLY — WHICH IS THE HONEST FIGURE AND CUTS BOTH
+ *   WAYS. Counted on `brief_records` in Postgres, 35 briefs, not on the
+ *   committed ledger export, which holds ids 2-20 and stops at 2026-07-30:
+ *   8 matches in 128 candidate rows over the 19 briefs to 2026-07-30 (6.3% of
+ *   rows, 6 of 19 briefs), and 0 in the 107 rows over the 14 briefs since.
+ *   Measuring on the export alone would have read the first number as current.
+ *
+ *   The last match is dated 2026-07-30, the day FUND-4 — "nextStep is an
+ *   action the founder can start" — entered the writer's own contract. n is 14
+ *   briefs, so the right reading is a bound, not a zero: at 0/107 the 95%
+ *   upper bound is 2.8% of rows, i.e. up to about one brief in five with a
+ *   match and one in thirty-five losing the model's top pick.
+ *
+ *   So this is being removed at its cheapest moment rather than its most
+ *   expensive. The case is not the saving. It is that the cost of one firing
+ *   is a fund the founder never sees and no page records, the benefit is now
+ *   covered by an instruction to the writer, and a hazard whose only defence
+ *   is the continued good behaviour of a model is not a design.
+ *
+ * The signal itself is not lost and was never the founder's to lose: the
+ * sentence that matched is the row's own next step, and the founder reads it.
+ * What is lost is a regex over one model's prose quietly overruling another
+ * model's ranking. `watchOnly` below still counts every match, `FUND-4` still
+ * raises it against the published report, and both are reports.
  *
  * Model-free and total: give it rows and a reply and it returns a table.
  */
@@ -456,23 +506,21 @@ export function assembleBriefRows(input: {
       // obstacle is never silently dropped just because the writer omitted it.
       blocker: row.blocker ? clean(note?.blockerPlain || row.blocker) : undefined,
     };
-    // Read off what PUBLISHES, not off the reply: the built copy is held to
-    // the same rule, and its test asserts it can never trip this.
-    return { key, entry, actionable: !isWatchOnly(undefined, entry.nextStep, entry.whyEligible) };
+    // Read off what PUBLISHES, not off the reply, so the code-built copy on an
+    // unwritten row is measured by the same rule the writer's is.
+    return { key, entry, waits: isWatchOnly(entry.nextStep, entry.whyEligible) };
   });
 
   const ranked = [...scored].sort(
     (a, b) => (rank.get(a.key) ?? Infinity) - (rank.get(b.key) ?? Infinity));
-  // Demotion, not deletion: actionable rows first, the rest behind them in
-  // rank order. If enough actionable routes exist a watch-only row never
-  // reaches the cut anyway; if they do not, a real fund the founder can only
-  // keep an eye on beats a shorter table with nothing in its place.
-  const order = [...ranked.filter((x) => x.actionable), ...ranked.filter((x) => !x.actionable)];
+  // ONE EXPRESSION, AND IT READS ONLY THE RANK. `waits` is carried out of here
+  // as a count and reaches no `filter` and no comparator. That is the whole of
+  // the property above: the table is the ranking, truncated.
   return {
-    published: order.slice(0, cap).map((x) => x.entry),
+    published: ranked.slice(0, cap).map((x) => x.entry),
     unwritten,
-    watchOnly: ranked.filter((x) => !x.actionable).map((x) => x.key),
-    cutByCap: order.slice(cap).map((x) => x.key),
+    watchOnly: ranked.filter((x) => x.waits).map((x) => x.key),
+    cutByCap: ranked.slice(cap).map((x) => x.key),
   };
 }
 
@@ -624,8 +672,17 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
   // exactly the input, which is the property `resolveNameCollisions` returns
   // two arrays to make expressible and `memoCandidates.test.ts` pins.
   const beforeWriterCap = [...collision.visible, ...collision.demoted];
+  // `CUT-WRITER-CAP`, and it used to be `SEL-LEAF-CAP`. That id's registry
+  // entry reads "instrument ranked below its channel's per-channel leaf limit",
+  // which is `selectLeafInstruments` in shortlist.ts and is a different
+  // mechanism at a different stage on a different number: one code for two
+  // rules made every count of either uninterpretable, and made a founder's
+  // record say their fund lost a per-channel contest it was never in. This is
+  // the same defect `shortlist.ts` records having fixed once already, where the
+  // SEL-LEAF-CAP reason string described branches the code had stopped
+  // executing. An exclusion code names ONE mechanism.
   for (const r of beforeWriterCap.slice(WRITER_CANDIDATE_CAP)) {
-    log.record("SEL-LEAF-CAP", r.row.instrumentId ?? r.row.channel,
+    log.record("CUT-WRITER-CAP", r.row.instrumentId ?? r.row.channel,
       `below the ${WRITER_CANDIDATE_CAP}-candidate cap shown to the writer, in the `
       + `order the pool arrived in`);
   }

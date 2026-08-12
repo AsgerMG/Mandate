@@ -335,23 +335,24 @@ const STAGES: Stage[] = [
     // written to stop the first four.)
     alive: (t) => t.rankWriter != null,
   },
-  {
-    id: "watch_only",
-    question: "... and the writer's own prose does not demote it behind the actionable rows",
-    // `isWatchOnly(actionableNow, nextStep, whyEligible)` in `assembleBriefRows`
-    // reads text only the writer can produce. Measuring it means paying for a
-    // memo per founder, which is the one thing this instrument may not do.
-    alive: () => null,
-    unmeasured:
-      "WRT-WATCH-ONLY reads the writer's `nextStep` and `whyEligible` prose, so it "
-      + "cannot be evaluated without a paid memo per founder. It is a DEMOTION, not a "
-      + "deletion (`assembleBriefRows`: actionable rows first, the rest behind them in "
-      + "rank order), so it moves every row's position in BOTH directions and the rows "
-      + "below are neither an upper nor a lower bound. It is nonetheless BOUNDED, and "
-      + "free: `dropped_watch_only` on every brief this product has published gives the "
-      + "rate where this population cannot give the verdict. A row reads watch-only 3.4% "
-      + "of the time, so the effect on `published` is at most ~11 founders (1.2 points).",
-  },
+  // ── A STAGE THAT NO LONGER EXISTS (wsGK, 2026-08-13) ────────────────────
+  // `watch_only` stood here, permanently UNMEASURED, and every row below it
+  // was therefore an upper bound. It was never unmeasurable in principle — it
+  // was unmeasurable for free, because it read prose only a paid memo call can
+  // produce, and it is the one stage between the writer cap and the published
+  // table that could lose a founder their fund.
+  //
+  // It is not a stage any more. `assembleBriefRows` publishes `rows.slice(0,
+  // cap)` and reads nothing from the reply to do it, so the writer's prose has
+  // no survivor set: `watchOnly` is now a count of published rows carrying a
+  // hedge, which is a copy-quality figure (FUND-4's) and not a funnel stage.
+  // A stage that removes nobody must not appear in a ladder, and an
+  // `alive: () => null` row that reports zero loss is worse than absent — it
+  // is a permanent asterisk on every figure beneath it for a mechanism that
+  // has stopped running.
+  //
+  // The consequence is the point: from here down the ladder is measured for
+  // free and end to end, with `model` the only estimated row left.
   // ── THE ROW CUTS, GENERATED ────────────────────────────────────────────────
   // `published` keeps its name because the brief's own cap is what it is; the
   // rest are `top_<n>`. One `alive` body for all of them, so a cut cannot be
@@ -1131,12 +1132,11 @@ const MECHANISM: Record<string, string> = {
   founder_screen: "`buildInstrumentTableHydrated` = `candidateInstrumentIds`",
   gates_pass: "`accessiblePool` → `VER-BLOCKED`",
   pool_cut: "`.slice(0, VERDICT_POOL)`",
-  // NOT a cut that decides publication. `assembleBriefRows` ranks by CANDIDATE
-  // ORDER, so the published table is the head of this list and this cap only
-  // bounds how far the watch-only demotion can backfill into it. A founder
-  // counted lost here is lost to the ORDER, not to the number.
-  writer_cap: "`.slice(0, WRITER_CANDIDATE_CAP)` — bounds the backfill, not the table",
-  watch_only: "`isWatchOnly` in `assembleBriefRows` — needs the writer",
+  // NOT a cut that decides publication. `assembleBriefRows` publishes the head
+  // of this list by rank alone, so a founder counted lost here is lost to the
+  // ORDER, not to the number -- measured at 0.12 points if the cap were removed
+  // entirely. The watch-only demotion that used to backfill past it is gone.
+  writer_cap: "`.slice(0, WRITER_CANDIDATE_CAP)` — bounds the order, not the table",
   model: "`agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the "
     + `${VERDICT_POOL}, applied above the two cuts below it`,
   // The row cuts are generated from ROW_CUTS, so their mechanisms are too: a

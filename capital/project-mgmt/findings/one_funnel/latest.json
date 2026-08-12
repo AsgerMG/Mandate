@@ -1,10 +1,15 @@
 {
+<<<<<<< HEAD
  "startedAt": "2026-08-12T22:32:01.464Z",
+=======
+ "startedAt": "2026-08-12T22:28:40.397Z",
+>>>>>>> wsGK-watch-only-eviction
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
  "n": 897,
  "drawFingerprint": "13cb71cf3a1d1847",
+<<<<<<< HEAD
  "onProductStores": true,
  "store": "postgres",
  "corpusObservedAt": "2026-08-12T22:32:02.111Z",
@@ -16,6 +21,9 @@
  "ranker": "ranker: all 814 request(s) on EMBEDDING",
  "sampled": false,
  "populationSize": 897,
+=======
+ "corpus": "postgres instruments=1088",
+>>>>>>> wsGK-watch-only-eviction
  "levers": {
   "VERDICT_POOL": 18,
   "WRITER_CANDIDATE_CAP": 8,
@@ -27,12 +35,15 @@
    5
   ]
  },
+<<<<<<< HEAD
  "watchOnlyInProduction": {
   "briefs": 35,
   "withDemotion": 6,
   "rows": 8,
   "share": 0.17142857142857143
  },
+=======
+>>>>>>> wsGK-watch-only-eviction
  "meanTableRows": 86.2,
  "meanAccessibleRows": 74,
  "stages": [
@@ -107,6 +118,7 @@
    "lost": 101,
    "unmeasured": false,
    "halfWidthPts": 3.19
+<<<<<<< HEAD
   },
   {
    "id": "watch_only",
@@ -116,6 +128,8 @@
    "lost": null,
    "unmeasured": true,
    "halfWidthPts": null
+=======
+>>>>>>> wsGK-watch-only-eviction
   },
   {
    "id": "published",
@@ -127,6 +141,7 @@
    "halfWidthPts": 3.15
   },
   {
+<<<<<<< HEAD
    "id": "top_6",
    "question": "... and it is in the first 6 of them",
    "remaining": 303,
@@ -142,6 +157,14 @@
    "sharePct": 31.1,
    "lost": 24,
    "unmeasured": false,
+=======
+   "id": "top_five",
+   "question": "... and it is in the first 5 of them",
+   "remaining": 279,
+   "sharePct": 31.1,
+   "lost": 50,
+   "unmeasured": false,
+>>>>>>> wsGK-watch-only-eviction
    "halfWidthPts": 3.03
   },
   {

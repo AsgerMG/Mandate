@@ -95,8 +95,10 @@ one, a wrong row is caught by a human reading the published page.
 
   The test: **could they begin it this week, and would they know they had
   begun?** Anything resolving to waiting, watching or deciding later fails,
-  whatever it is called. A row whose honest next step is to wait does not
-  belong in the brief at all.
+  whatever it is called. Every row you are given has already been chosen and
+  will publish, so hedging is not a way to decline one: if the only honest move
+  is to wait, write the thing the founder does NOW that makes the waiting
+  productive, and say what they are waiting for.
 - FUND-5 (hard) `whyEligible` and `nextStep` are always written. The fallback
   text the pipeline substitutes when they are missing is a defect, not a
   default.

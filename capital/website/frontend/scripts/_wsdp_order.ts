@@ -59,12 +59,16 @@
 //          and compared as the founder would read it: institution names, in
 //          order.
 //
-//      What (b) is NOT is a proof. The writer can still demote a row to
-//      watch-only on the strength of its own prose, and that is a model
-//      output. It can no longer reorder or omit: the publish order is the
-//      candidate order and a row it wrote nothing about publishes anyway
-//      (wsGC). So (b) is the last free step and it is stated as a projection,
-//      never as the finished table. (a) is the part that holds regardless.
+//      (b) IS NOW EXACT, AND IT WAS NOT WHEN IT WAS WRITTEN. This read "what
+//      (b) is NOT is a proof: the writer can still demote a row to watch-only
+//      on the strength of its own prose, and that is a model output." That
+//      demotion is gone (wsGK) — it evicted the fund it matched on at any
+//      rank, including the model's first. With it went the last thing between
+//      `toWriter.slice(0, cap)` and the page: the publish order is the
+//      candidate order, a row the writer wrote nothing about publishes anyway
+//      (wsGC), and no property of its prose moves a row. So the projection
+//      below is the finished table, not an estimate of it, and it is
+//      computable for free.
 //
 //   4. THE FLOORS ARE UNMOVED. `check_winner_not_gated` (207) and
 //      `check_winner_not_blocked` (15) under both arms, run separately.

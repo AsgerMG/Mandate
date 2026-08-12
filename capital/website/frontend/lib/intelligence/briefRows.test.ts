@@ -22,11 +22,35 @@
 // reply is swept below, not a handful of chosen ones, because the failure was
 // never about which fund it was.
 //
-// The one thing the reply may still move is a WATCH-ONLY row, and that is
-// deliberate and separate: watch-only is a signal the writer put in the copy
-// and the product acts on it. Silence is not a signal. So the sweep uses copy
-// with no watch-only vocabulary, and the watch-only interaction is pinned on
-// its own below.
+// ── wsGK — AND NEITHER DOES ITS WORDING ────────────────────────────────────
+//
+// The paragraph that stood here read: "the one thing the reply may still move
+// is a WATCH-ONLY row, and that is deliberate and separate". It was not
+// separate, and by the time it was written it was not deliberate either.
+//
+// `assembleBriefRows` sorted rows whose copy matched a vocabulary of eleven
+// phrasings behind rows whose copy did not. The writer is shown
+// WRITER_CANDIDATE_CAP (8) candidates and the brief publishes institutionsMax
+// (7), so ONE match anywhere in the eight makes the seven non-matching rows
+// exactly the published seven: the matching fund is cut and the rank-8 fund
+// takes its seat. At rank 8 that is a no-op. At rank 1 it is the model's first
+// choice, removed from the founder's brief by a regex over a different model's
+// prose. Both are the same expression; nothing in it read the rank.
+//
+// Rate, from `brief_records` in Postgres (35 briefs) rather than the committed
+// ledger export (ids 2-20, nothing after 2026-07-30): 8 matches in 128
+// candidate rows over the 19 briefs to 2026-07-30, and 0 in the 107 rows over
+// the 14 since. The last match is the day FUND-4 — "nextStep is an action the
+// founder can start" — entered the writer's contract, so this is a hazard
+// currently held shut by a model's good behaviour, not one firing weekly. At
+// 0/107 the 95% upper bound is still 2.8% of rows.
+//
+// So the property is strengthened from "the reply's SILENCE cannot move a row"
+// to "nothing in the reply can", and it is swept over both: every subset of
+// the notes, times every position the watch-only vocabulary can appear at.
+// The signal is not thrown away — `watchOnly` still names every match for the
+// exclusion log, FUND-4 still raises it, and the sentence that matched is the
+// row's own next step, which the founder reads.
 import { readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
@@ -137,15 +161,10 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
   });
 
   // ── TOTALITY: NOTHING IN A REPLY MAY SHORTEN THE CANDIDATE SET ──────────
-  // The sweep above pins the SILENCE half and deliberately uses copy with no
-  // watch-only vocabulary, so it says nothing about a reply whose words move
-  // rows. This is the half that holds for EVERY reply: a demotion reorders and
-  // the cap decides where the line falls, but no key may go missing on either
-  // side of it. Stated as a permutation rather than as a count, because a row
-  // duplicated into both halves would satisfy a count and is just as wrong.
-  //
-  // It is the property `measure_funnel.ts` needs to be able to say the row
-  // cuts are a reordering of `toWriter` and not a different set of funds.
+  // Stated as a permutation rather than as a count, because a row duplicated
+  // into both halves would satisfy a count and is just as wrong. It is the
+  // property `measure_funnel.ts` needs to be able to say the row cuts are a
+  // reordering of `toWriter` and not a different set of funds.
   it("keeps every candidate somewhere, for every reply including all-watch-only", () => {
     const sorted = [...rowKeys].sort();
     const partitionsAll = (notes: readonly WriterRowNote[]) => {
@@ -155,24 +174,77 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
     for (const mask of subsets(N)) {
       expect(partitionsAll(fullReply.filter((_, i) => (mask >> i) & 1))).toEqual(sorted);
     }
-    // The extreme the sweep cannot reach: every row demoted at once. Nothing is
-    // left to promote past, so the order is unchanged and the table is full.
     const allWatch = fullReply.map((n) => note(n.channel, { nextStep: "Monitor the next call." }));
     expect(partitionsAll(allWatch)).toEqual(sorted);
     expect(assemble(allWatch).published.map((r) => r.channel)).toEqual(rowKeys.slice(0, CAP));
   });
 
-  // Watch-only is the one thing in the reply that may still move a row, and it
-  // moves it BEHIND the written rows rather than out of the table. Pinned so
-  // that "the reply cannot change membership" is never read as covering it.
-  it("demotes a watch-only row behind the others and never deletes it", () => {
-    const flagged = fullReply.map((n, i) =>
+  // ── THE FAILURE THIS CHANGE IS ABOUT, AT THE RANK THAT MATTERS ──────────
+  // Named on its own as well as swept above, because the sweep proves the
+  // property and this proves the property is about something.
+  it("publishes the model's rank-one fund even when the writer hedged about it", () => {
+    const hedged = fullReply.map((n, i) =>
       i === 0 ? note(n.channel, { nextStep: "Monitor the next call." }) : n);
-    const got = assemble(flagged);
-    expect(got.published.map((r) => r.channel)).not.toContain(rowKeys[0]);
+    const got = assemble(hedged);
+    expect(got.published.map((r) => r.channel)).toEqual(baseline);
+    expect(got.published[0].channel).toBe(rowKeys[0]);
+    // Still carried out of here, so the count reaches the exclusion log and the
+    // brief's record. Reported, never acted on.
     expect(got.watchOnly).toEqual([rowKeys[0]]);
-    // Not deleted: it is the row the cap cut, and it sits last in the order.
-    expect(got.cutByCap).toEqual([rowKeys[0]]);
+    // And the fund the demotion used to promote into its seat is still cut.
+    expect(got.cutByCap).toEqual([rowKeys[N - 1]]);
+    // The founder is told, in the writer's own sentence, on the row itself.
+    expect(got.published[0].nextStep).toMatch(WATCH_ONLY_COPY);
+  });
+
+  // The vocabulary at every position, crossed with every subset of the notes:
+  // 8 positions x 256 replies. Nothing in the reply — presence, absence or
+  // wording — may change the table.
+  it("holds when the watch-only vocabulary appears at any rank, on any reply", () => {
+    const differed: string[] = [];
+    for (let at = 0; at < N; at++) {
+      const hedged = fullReply.map((n, i) =>
+        i === at ? note(n.channel, { nextStep: "Monitor the next call." }) : n);
+      for (const mask of subsets(N)) {
+        const kept = hedged.filter((_, i) => (mask >> i) & 1);
+        const got = assemble(kept).published.map((r) => r.channel);
+        if (JSON.stringify(got) !== JSON.stringify(baseline)) {
+          differed.push(`hedge at ${at}, mask ${mask}: ${got.join(",")}`);
+        }
+      }
+    }
+    expect(differed).toEqual([]);
+  });
+
+  // ── THE RED, SIMULATED: THE DEMOTION, REINSTATED ───────────────────────
+  // The deleted expression, kept as a control exactly like the drop above it.
+  // If this passed the property, the property would be pinning nothing.
+  it("the demotion that was removed does NOT satisfy it, at every rank but the last", () => {
+    const demotedByProse = (notes: readonly WriterRowNote[]) => {
+      const byKey = new Map(notes.map((n) => [n.channel, n]));
+      const waits = (k: string) => WATCH_ONLY_COPY.test(String(byKey.get(k)?.nextStep ?? ""));
+      // `[...ranked.filter(actionable), ...ranked.filter(!actionable)]`, cut.
+      return [...rowKeys.filter((k) => !waits(k)), ...rowKeys.filter(waits)].slice(0, CAP);
+    };
+    const substituted: number[] = [];
+    for (let at = 0; at < N; at++) {
+      const hedged = fullReply.map((n, i) =>
+        i === at ? note(n.channel, { nextStep: "Monitor the next call." }) : n);
+      if (JSON.stringify(demotedByProse(hedged)) !== JSON.stringify(baseline)) {
+        substituted.push(at);
+      }
+      // And the property is unmoved at the same position.
+      expect(assemble(hedged).published.map((r) => r.channel)).toEqual(baseline);
+    }
+    // Every rank but the eighth, whose row the cap was cutting anyway — which
+    // is why "it only fires on the last row" would have been the wrong reading.
+    expect(substituted).toEqual([...Array(N - 1).keys()]);
+    // The rank-one case spelled out: the fund the model put first is gone, and
+    // the one it put eighth is in the table.
+    const hedgedFirst = fullReply.map((n, i) =>
+      i === 0 ? note(n.channel, { nextStep: "Monitor the next call." }) : n);
+    expect(demotedByProse(hedgedFirst)).not.toContain(rowKeys[0]);
+    expect(demotedByProse(hedgedFirst)).toContain(rowKeys[N - 1]);
   });
 });
 
@@ -207,205 +279,20 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
 //
 // The test sweeps every watch-only PATTERN rather than a handful, because the
 // failure was never about which fund it was.
-describe("the candidate cap bounds the watch-only backfill, and nothing else", () => {
-  // READ, not retyped. This whole block is an argument about the DISTANCE
-  // between two constants, so a private copy of either would let the argument
-  // go on reading correctly about a funnel that had moved. `check_contracts`
-  // already asserts the two narrow; this asserts what the gap between them
-  // does, and both have to be talking about the same pair.
-  const PUBLISHED = BRIEF_LIMITS.institutionsMax;
-  const watchNote = (key: string) => note(key, { nextStep: "Monitor the next call." });
-
-  /** The property, computed from the definition rather than from the code under
-   *  test: which keys SHOULD publish, given which candidates are watch-only. */
-  function expected(keys: readonly string[], watch: ReadonlySet<string>, cap: number) {
-    const seen = keys.slice(0, cap);
-    return [...seen.filter((k) => !watch.has(k)), ...seen.filter((k) => watch.has(k))]
-      .slice(0, PUBLISHED);
-  }
-
-  // Wider than production so the cap has somewhere to move to, and expressed
-  // as a DISTANCE from the published cap rather than as a literal, so the sweep
-  // stays the same size relative to the funnel if the funnel moves. Three above
-  // the published cap is 2^(cap+3) watch-only patterns -- 1024 today -- each
-  // assembled at four cap values.
-  const N10 = PUBLISHED + 3;
-  const rows10 = Array.from({ length: N10 }, (_, i) => row(i));
-  const keys10 = rows10.map((r) => r.channel);
-
-  it("publishes exactly the rank the formula names, on every pattern × 4 caps",
-    () => {
-      const wrong: string[] = [];
-      for (let mask = 0; mask < 1 << N10; mask++) {
-        const watch = new Set(keys10.filter((_, i) => (mask >> i) & 1));
-        const notes = keys10.map((k) => (watch.has(k) ? watchNote(k) : note(k)));
-        for (const cap of [PUBLISHED, PUBLISHED + 1, PUBLISHED + 2, N10]) {
-          const got = assembleBriefRows({
-            rows: rows10.slice(0, cap), rowKeys: keys10.slice(0, cap),
-            notes, cap: PUBLISHED, clean,
-          }).published.map((r) => r.channel);
-          const want = expected(keys10, watch, cap);
-          if (JSON.stringify(got) !== JSON.stringify(want)) {
-            wrong.push(`mask ${mask} cap ${cap}: ${got.join(",")} != ${want.join(",")}`);
-          }
-        }
-      }
-      expect(wrong.slice(0, 5)).toEqual([]);
-    });
-
-  // The headline, isolated so it cannot be lost inside the sweep above: with
-  // nothing watch-only, raising the candidate cap changes NOTHING a founder
-  // reads. Anyone proposing to raise it to buy recall is proposing to buy
-  // nothing, and this is the line that says so.
-  it("is INERT when no candidate is watch-only, at every cap from 7 to 10", () => {
-    const notes = keys10.map((k) => note(k));
-    const tables = [PUBLISHED, PUBLISHED + 1, PUBLISHED + 2, N10].map((cap) =>
-      assembleBriefRows({
-        rows: rows10.slice(0, cap), rowKeys: keys10.slice(0, cap),
-        notes, cap: PUBLISHED, clean,
-      }).published.map((r) => r.channel));
-    for (const t of tables) expect(t).toEqual(keys10.slice(0, PUBLISHED));
-  });
-
-  // And the converse, so "inert" is never read as "unused": one watch-only row
-  // above the boundary and the spare seat is what publishes a real fund instead
-  // of a row telling the founder to wait. That is what the headroom is FOR.
-  it("reaches exactly one rank deeper per watch-only row above the boundary", () => {
-    for (let w = 0; w <= 3; w++) {
-      const watch = new Set(keys10.slice(0, w));
-      const notes = keys10.map((k) => (watch.has(k) ? watchNote(k) : note(k)));
-      const deepest = (cap: number) => {
-        const got = assembleBriefRows({
-          rows: rows10.slice(0, cap), rowKeys: keys10.slice(0, cap),
-          notes, cap: PUBLISHED, clean,
-        }).published.map((r) => keys10.indexOf(r.channel) + 1);
-        return Math.max(...got.filter((r) => !watch.has(keys10[r - 1])));
-      };
-      // Unbounded, the actionable head reaches rank 7+w. Bounded at 8 it can
-      // never reach past 8, whatever the demand.
-      expect(deepest(N10), `w=${w} uncapped`).toBe(PUBLISHED + w);
-      expect(deepest(PUBLISHED + 1), `w=${w} at cap 8`).toBe(Math.min(PUBLISHED + w, PUBLISHED + 1));
-    }
-  });
-
-  // ── THE RED, SIMULATED ─────────────────────────────────────────────────
-  // The sweep is worth nothing unless a plausible wrong implementation breaks
-  // it, so both are built here and shown to. Neither is a second copy of
-  // anything shipped: one is the rule wsGC deleted, the other is the rule
-  // somebody would write if they believed the cap ranks.
-  it("neither DELETING watch-only nor letting the cap reorder satisfies it", () => {
-    const watch = new Set([keys10[0], keys10[1]]);
-    const notes = keys10.map((k) => (watch.has(k) ? watchNote(k) : note(k)));
-    const want = expected(keys10, watch, N10);
-
-    // 1. "The cap ranks": publish the first `PUBLISHED` by rank with no
-    //    demotion at all. Wrong the moment anything above the boundary is
-    //    watch-only, which is the only case where the cap does anything.
-    const noDemotion = keys10.slice(0, PUBLISHED);
-    expect(noDemotion).not.toEqual(want);
-
-    // 2. The pre-wsGC rule: DELETE the watch-only row instead of demoting it.
-    //    It agrees with the shipped rule exactly while enough actionable rows
-    //    survive to fill the cap, and diverges the moment they do not -- which
-    //    is the short-table failure, and the reason the demotion exists. Stated
-    //    as the boundary rather than as one example, and swept, because "they
-    //    look the same on the case I tried" is how the deletion survived.
-    const deleteRule = (watchSet: ReadonlySet<string>) =>
-      keys10.filter((k) => !watchSet.has(k)).slice(0, PUBLISHED);
-    const agreeWhenEnough: number[] = [];
-    const differWhenNotEnough: number[] = [];
-    for (let mask = 0; mask < 1 << N10; mask++) {
-      const w = new Set(keys10.filter((_, i) => (mask >> i) & 1));
-      const same = JSON.stringify(deleteRule(w)) === JSON.stringify(expected(keys10, w, N10));
-      const enoughActionable = N10 - w.size >= PUBLISHED;
-      if (enoughActionable && !same) agreeWhenEnough.push(mask);
-      if (!enoughActionable && same) differWhenNotEnough.push(mask);
-    }
-    expect(agreeWhenEnough).toEqual([]);
-    expect(differWhenNotEnough).toEqual([]);
-
-    // And the shipped implementation agrees with the formula on the same input.
-    const got = assembleBriefRows({
-      rows: rows10, rowKeys: keys10, notes, cap: PUBLISHED, clean,
-    }).published.map((r) => r.channel);
-    expect(got).toEqual(want);
-  });
-});
-
-// ── WHAT AN UNWRITTEN ROW SAYS ────────────────────────────────────────────
-// Stated over a swept matrix of rows rather than over the ones the corpus
-// happens to hold, so a fund nobody has seen yet is covered by the same rules.
-describe("a row published without writer copy", () => {
-  const matrix: InstitutionEntry[] = [];
-  for (const verdict of ["open", "one_blocker", "unknown", undefined] as const) {
-    for (const gatesChecked of [0, 1, 4]) {
-      for (const stale of [false, true]) {
-        for (const link of [undefined, { url: "u", kind: "apply" as const, label: "l" },
-          { url: "u", kind: "programme" as const, label: "l" }]) {
-          matrix.push(row(matrix.length, { verdict, gatesChecked, stale, link,
-            lastAwardYear: stale ? 2019 : undefined }));
-        }
-      }
-    }
-  }
-
-  // The contract states the word caps; reading them from it keeps this from
-  // becoming a second copy that can disagree with what the writer is told.
-  const contract = readFileSync(new URL("../../contracts/brief/02-funds.md", import.meta.url), "utf8");
-  const capFor = (id: string) => {
-    const m = new RegExp(`${id} \\(judged\\)[\\s\\S]{0,120}?at most (\\d+) words`).exec(contract);
-    if (!m) throw new Error(`${id}'s word cap is not stated in the funds contract`);
-    return Number(m[1]);
-  };
-  const words = (s: string) => s.trim().split(/\s+/).filter(Boolean).length;
-
-  it("always fills both fields, whatever the row carries", () => {
-    for (const r of matrix) {
-      const c = unwrittenRowCopy(r);
-      expect(c.whyEligible.trim(), JSON.stringify(r)).not.toBe("");
-      expect(c.nextStep.trim(), JSON.stringify(r)).not.toBe("");
-    }
-  });
-
-  it("stays inside the word caps the contract states for written copy", () => {
-    for (const r of matrix) {
-      const c = unwrittenRowCopy(r);
-      expect(words(c.whyEligible)).toBeLessThanOrEqual(capFor("FUND-8"));
-      expect(words(c.nextStep)).toBeLessThanOrEqual(capFor("FUND-9"));
-    }
-  });
-
-  it("never gives a founder something to watch instead of something to do", () => {
-    for (const r of matrix) {
-      const c = unwrittenRowCopy(r);
-      expect(WATCH_ONLY_COPY.test(c.nextStep), c.nextStep).toBe(false);
-      expect(WATCH_ONLY_COPY.test(c.whyEligible), c.whyEligible).toBe(false);
-    }
-  });
-
-  it("says it is not an assessment, so it cannot be read as one", () => {
-    for (const r of matrix) {
-      expect(unwrittenRowCopy(r).whyEligible.startsWith(UNWRITTEN_ROW_LEAD)).toBe(true);
-    }
-  });
-
-  it("differs between two rows that differ, so a brief never repeats itself", () => {
-    const distinct = new Set(matrix.map((r) => JSON.stringify(unwrittenRowCopy(r))));
-    expect(distinct.size).toBeGreaterThan(1);
-    // Two rows the screen reached the same conclusion about DO read alike, and
-    // that is correct: the same facts are the same sentence. What must not
-    // happen is every row reading alike whatever it holds.
-    const sameFacts = [row(90, { verdict: "open", gatesChecked: 3 }),
-      row(91, { verdict: "open", gatesChecked: 3 })];
-    expect(unwrittenRowCopy(sameFacts[0])).toEqual(unwrittenRowCopy(sameFacts[1]));
-  });
-
-  it("is visible to FUND-5 on the published brief, not only in a log", () => {
-    const got = assemble(fullReply.slice(1));
-    const violations = checkBrief({ institutions: got.published }, undefined,
-      rows.map((r) => r.institution));
-    const fund5 = violations.filter((v) => v.ruleId === "FUND-5");
-    expect(fund5.length).toBe(1);
-    expect(fund5[0].detail).toContain(rows[0].institution);
-  });
-});
+// ── THE BACKFILL BLOCK THAT STOOD HERE IS GONE, AND SO IS THE BACKFILL ────
+// wsGI measured `WRITER_CANDIDATE_CAP` under the watch-only demotion and
+// concluded it is inert -- the founder reads ranks 1-7 at a cap of 8, 12 or 18,
+// and its only reach was how far a demotion could backfill past the published
+// count. That argument was right, and wsGK then removed the demotion on the
+// same night, so the mechanism the block pinned no longer exists: publication
+// is `rows.slice(0, cap)` and nothing in the reply reaches it.
+//
+// The conclusion SURVIVES and is stronger -- the cap is now unconditionally
+// inert for publication rather than inert-in-practice -- so `caps.ts` keeps
+// wsGI's measured argument for leaving it at 8. What is deleted is three tests
+// asserting a backfill that can no longer happen. A test that pins a removed
+// mechanism does not fail loudly later; it quietly certifies the wrong thing.
+//
+// The property that replaces all three is the sweep above: for every reply,
+// `published` is `rows.slice(0, cap)`. It covers the backfill case by making it
+// impossible rather than by describing it.

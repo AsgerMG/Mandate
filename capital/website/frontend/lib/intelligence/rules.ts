@@ -167,11 +167,29 @@ export const EXCLUSION_RULES = {
   // outlives the entry: THE FLAG REQUIRED ~40 LINES OF PROMPT GUARDRAILS TO STOP
   // IT DELETING WELL-MATCHED FUNDS, AND IT LET ORDERING DECIDE PUBLICATION. Read
   // it before handing any future model a delete.
+  // Recorded, and no longer a removal or a demotion (wsGK, 2026-08-13). The
+  // "demote-not-delete" disposition has been carried out and then some: the
+  // row publishes at the rank the ranker gave it, and the match changes
+  // nothing but this line and FUND-4 on the scoreboard. Kept in the register
+  // because it is still a fact about a founder's brief that every recorded
+  // brief counts.
+  //
+  // What it cost while it demoted: with the writer shown 8 candidates against
+  // a published 7, a single match anywhere in the table evicted the fund it
+  // matched on — at rank 1 as readily as at rank 8. A regex over one model's
+  // prose was silently overruling another model's ranking on the row that
+  // matters most.
+  //
+  // Counted on `brief_records` in Postgres (35 briefs), NOT on the committed
+  // ledger export, which stops at 2026-07-30 and would have shown only the
+  // first half: 8 matches in 128 candidate rows over the 19 briefs to
+  // 2026-07-30, then 0 in 107 rows over the 14 since — the last one dated the
+  // day FUND-4 entered the writer's contract.
   "WRT-WATCH-ONLY": {
-    stage: "writer", kind: "opinion", recoverable: false,
-    what: "Row deleted because the writer flagged it as not actionable, or its own prose matched the watch-only vocabulary.",
-    disposition: "demote-not-delete",
-    evidence: "Enforced by a regex over natural language containing ordinary words that also occur in valid next steps.",
+    stage: "writer", kind: "fact", recoverable: false,
+    what: "Row published whose own copy reads as a thing to wait for rather than an action the founder can start.",
+    disposition: "keep",
+    evidence: "Detected by a regex over natural language containing ordinary words that also occur in valid next steps — admissible because it now reports rather than selects.",
   },
   // Recorded, and no longer a removal (wsGC, 2026-08-12). Its disposition was
   // "remove" and the disposition has been carried out: a candidate the writer
@@ -190,6 +208,16 @@ export const EXCLUSION_RULES = {
   },
 
   // ── cut stage ────────────────────────────────────────────────────────────
+  // Two cuts to a fixed count, at two different counts, and they are two
+  // entries because one code cannot name two mechanisms: a reader who cannot
+  // tell which cut removed a fund cannot tell whether raising a cap would have
+  // kept it. `CUT-WRITER-CAP` was emitted as `SEL-LEAF-CAP` until wsGK, whose
+  // entry describes the per-channel leaf limit in `shortlist.ts`.
+  "CUT-WRITER-CAP": {
+    stage: "cut", kind: "fact", recoverable: false,
+    what: "Row ranked below the number of candidates the writer is shown.",
+    disposition: "keep",
+  },
   "CUT-CAP": {
     stage: "cut", kind: "fact", recoverable: false,
     what: "Row ranked below the published count.",
