@@ -320,10 +320,16 @@ Any one of these, and the proposal is dead:
 ### The test, and it needs no new code
 
 ```
-BRIEF_VERDICT_POOL=40 ONLY_IN_POOL=1 REPEAT=2 REPEAT_FIRST=50 \
-  AGENT_SELECT=adviser AGENT_SELECT_EFFORT=medium \
+BRIEF_VERDICT_POOL=40 AGENT_SELECT_DEPTH=40 \
+  AGENT_SELECT=adviser AGENT_SELECT_EFFORT=medium AGENT_SELECT_COUNT=7 \
+  N=773 SPLIT=all SEED=20260806 ONLY_IN_POOL=1 \
+  REPEAT=2 REPEAT_FIRST=50 MAX_CALLS=98 MAX_COUNTRY_CALLS=40 MAX_EUR=14 \
   npx tsx scripts/_wsga_headtohead.ts
 ```
+
+Every lever is wsGA's, `BRIEF_VERDICT_POOL` excepted, so the two reports differ
+in exactly one line of their own `levers` header. `MAX_EUR` is the rail: set it
+and the run stops rather than the invoice deciding.
 
 `_wsga_headtohead.ts` reads `VERDICT_POOL` from `caps.ts`, which reads the
 environment, so the pool width is already an arm. Three properties make the
