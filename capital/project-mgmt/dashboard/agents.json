@@ -2,16 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done \u2014 the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsFJ",
+      "id": "wsFM",
       "step": 5,
-      "what": "Put words on the blank cards",
-      "why": "More than a third of the funds we put in front of the chooser say nothing at all \u2014 no line about what they pay for, nothing about who they want. We already hold that text for 506 of them and have never shown it. A Norwegian founder's list is 88% blank; a German founder's is 0%, which is why this has been invisible."
+      "what": "Land the readable rows, and re-set a quality bar honestly",
+      "why": "Rows that said nothing halved this week \u2014 94% to 22% in Czechia, 22% to zero in Spain. Landing that, and re-setting one quality measure that broke when we stopped offering 53 Spanish grants that had already closed. Two of the four bars go UP; the one that falls does so because the funds it counted no longer exist."
     },
     {
-      "id": "wsFK",
-      "step": 5,
-      "what": "Find out why a quality floor broke tonight",
-      "why": "A guard that protects the shipped number started failing at 21:42. Getting the right fund in front of a founder improved; getting the right FAMILY of fund into the top five dropped seven points, below the level we said we would not go under. Either the fix has a side effect we should accept deliberately, or something regressed."
+      "id": "wsFN",
+      "step": 2,
+      "what": "Save the fix that produced this week's descriptions",
+      "why": "We published 108 new fund descriptions to production, but the code that generates them is in no branch anyone has merged. Re-run the loaders tomorrow and the descriptions silently revert \u2014 the same shape as the incident that cost us two months of paid classification in July. Also retiring fifteen stale branches by test rather than guesswork."
     }
   ]
 }
