@@ -1,17 +1,17 @@
 {
-  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done \u2014 the page shows what is happening now, and history lives in git.",
+  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
       "id": "wsFR",
       "step": 2,
       "what": "Stop calling guarantees grants, and stop offering funds that are not funds",
-      "why": "One transposed letter in a lookup table has been recording every guarantee scheme as a grant. Italy's largest \u2014 \u20ac14.9 billion, 13,892 awards \u2014 is shown to founders as a grant, while founders who ask for a guarantee are never shown it. Separately, eleven rows a founder can be offered are not funds at all but accounting labels: Poland's entire list is eight of them, so a Polish founder is currently shown nothing real."
+      "why": "One transposed letter in a lookup table has been recording every guarantee scheme as a grant. Italy's largest — €14.9 billion across 13,892 awards — is shown to founders as a grant, while a founder who asks for a guarantee is never shown it at all. Separately, eleven rows a founder can be offered are not funds but accounting labels: Poland's entire list is eight of them, so a Polish founder is currently shown nothing real."
     },
     {
-      "id": "wsFP",
-      "step": 2,
-      "what": "Find out what the silent funds actually are",
-      "why": "Rows that say nothing halved this week; the rest turned out not to be a display problem. Checking them one by one against the funders' own pages \u2014 and so far most are not fundable: Norway's forty-nine are either accounting codes or retired programmes, and none can be applied to today."
+      "id": "wsFS",
+      "step": 5,
+      "what": "Get the two blind spots in the eligibility read open again",
+      "why": "Two checks that decide whether a rule may rule a founder out have been failing, so the ranker is working with an eligibility read we cannot vouch for. Re-running the classifiers over the rules added this week closes both, and settles whether anything published since Sunday can be trusted to exclude a founder."
     }
   ]
 }
