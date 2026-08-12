@@ -213,6 +213,10 @@ interface Row {
    *  seam these are equal by construction. */
   ceilingControl: boolean;
   ceilingRanker: boolean;
+  /** The won fund is somewhere in the list the TREATMENT was SHOWN. Equal to
+   *  `ceilingControl` on the `late` seam; a superset on `early`. This, not
+   *  `ceilingControl`, is what `ONLY_IN_POOL` conditions on. */
+  reachable: boolean;
   /** Rank of the won fund in each arm's published projection, 1-based. */
   rankControl: number | null;
   rankRanker: number | null;
@@ -393,10 +397,19 @@ async function main() {
 
     const ceilingControl = poolControl.map(idOf).includes(t.instrument);
     const publishedControl = project(poolControl);
+    /** The won fund is somewhere in the list the TREATMENT will be SHOWN.
+     *  Under `late` that is the control's own eighteen and this equals
+     *  `ceilingControl`; under `early` it is the first `SELECT_DEPTH` rows of
+     *  the accessible pool, which is a superset. Conditioning on the control's
+     *  cut under `early` would throw away exactly the founders that seam exists
+     *  to reach. */
+    const shownDepth = AGENT_SELECT_SEAM === "early"
+      ? Math.min(SELECT_DEPTH, poolFull.length) : VERDICT_POOL;
+    const reachable = poolFull.slice(0, shownDepth).map(idOf).includes(t.instrument);
 
     // ── THE CONDITIONING GATE, decided before either arm has run ──────────
     const budgetLeft = calls < maxCalls && spend < maxEur;
-    const wanted = !onlyInPool || ceilingControl;
+    const wanted = !onlyInPool || reachable;
     const worthCalling = wanted && budgetLeft;
     if (wanted && !budgetLeft) skippedForBudget++;
 
@@ -408,8 +421,19 @@ async function main() {
     let eur = 0;
 
     if (worthCalling) {
+      // ── WHICH ARRAY THE SEAM IS HANDED, and it is not a detail ───────────
+      // `late`  the model is handed the pool the score already cut to
+      //         VERDICT_POOL and permutes it. Pool membership cannot move.
+      // `early` the model is handed the WHOLE accessible pool, reads
+      //         SELECT_DEPTH of it, and the top VERDICT_POOL of ITS order hold
+      //         the seats. Membership moves, which is why the ceiling is
+      //         reported per arm rather than once.
+      // Passing the 18-row pool under `early` and slicing afterwards would be a
+      // no-op wearing the treatment's name -- the exact failure the arm
+      // attestation exists to catch, arriving one layer above it.
+      const input = AGENT_SELECT_SEAM === "early" ? poolFull : poolControl;
       const { result, eur: spent } = await withCostTracking(
-        () => agentSelectMemoPool(poolControl, req as never));
+        () => agentSelectMemoPool(input, req as never));
       const poolRanker = AGENT_SELECT_SEAM === "early"
         ? result.slice(0, VERDICT_POOL) : result;
       const trace = agentSelectLastTrace();
@@ -429,7 +453,7 @@ async function main() {
       descriptionChars: (t.description ?? "").length,
       accessible: poolFull.length,
       rankAccessible: rankIn(poolFull.map(idOf), t.instrument),
-      ceilingControl, ceilingRanker,
+      ceilingControl, ceilingRanker, reachable,
       rankControl: rankIn(publishedControl, t.instrument),
       rankRanker: worthCalling ? rankIn(publishedRanker, t.instrument) : null,
       publishedControl: publishedControl.slice(0, PUBLISH_CAP),
@@ -454,12 +478,14 @@ async function main() {
   // A founder the treatment never saw is not a treatment miss. Grading one as a
   // miss is how a spend limit turns itself into a result, which is the one way
   // a budget rail can corrupt the thing it is protecting.
-  const graded = rows.filter((r) => r.called && (!onlyInPool || r.ceilingControl));
+  const graded = rows.filter((r) => r.called && (!onlyInPool || r.reachable));
   const L: string[] = [];
   const p = (s = "") => L.push(s);
   const prov = corpusProvenance();
   const rankerLine = rankerTallyLine();
 
+  const shownLabel = AGENT_SELECT_SEAM === "early"
+    ? `first ${SELECT_DEPTH} of the accessible pool` : `the control's ${VERDICT_POOL}`;
   const drawFingerprint = createHash("sha256")
     .update(rows.map((r) => `${r.company}::${r.won}`).join("\n")).digest("hex").slice(0, 16);
 
@@ -517,6 +543,7 @@ async function main() {
   p(`|---|---:|`);
   p(`| control (our own scoring) | ${pctOf(rows.filter((r) => r.ceilingControl).length, rows.length)} |`);
   p(`| ranker | ${pctOf(rows.filter((r) => r.ceilingRanker).length, rows.length)} |`);
+  p(`| SHOWN to the ranker (${shownLabel}) | ${pctOf(rows.filter((r) => r.reachable).length, rows.length)} |`);
   p();
   p(`Measured over the WHOLE draw of ${rows.length}, including the founders no call was made on.`);
   if (AGENT_SELECT_SEAM === "late") {
@@ -528,7 +555,7 @@ async function main() {
     p("recovered by any ranking gain.");
   }
   p();
-  const noCeiling = rows.length - rows.filter((r) => r.ceilingControl).length;
+  const noCeiling = rows.length - rows.filter((r) => r.reachable).length;
   p(`**${noCeiling} of ${rows.length} founders (${((100 * noCeiling) / rows.length).toFixed(1)}%) have no ` +
     `answer in the pool at all.** Neither arm can win on them and they are a concordant`);
   p(`miss in every paired test below.`);
