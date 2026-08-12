@@ -253,6 +253,24 @@ function main() {
     }
   }
 
+  // ── AN EXEMPTION NOTHING READS ───────────────────────────────────────────
+  // The same failure check_verdicts.ts calls an UNREACHABLE ACCEPTANCE. An
+  // entry naming a guard that has been renamed or deleted, or a seam that guard
+  // no longer touches, is a note that will never be evaluated and will never
+  // come due — it just sits there looking like oversight.
+  for (const [stem, ex] of Object.entries(EXEMPT)) {
+    if (!guards.includes(`${stem}.ts`)) {
+      problems.push(`EXEMPT names "${stem}", which is not a guard in ${SCRIPTS}. `
+        + `An exemption for a module that is gone is never read and never expires.`);
+      continue;
+    }
+    if (!SEAMS.some((s) => s.wide === ex.seam)) {
+      problems.push(`EXEMPT lets "${stem}" off the "${ex.seam}" seam, which is not in `
+        + `SEAMS. Either the seam was renamed and this exemption now covers nothing, `
+        + `or it covers a seam nobody declared.`);
+    }
+  }
+
   // ── IS EACH SEAM STILL REAL? ─────────────────────────────────────────────
   // A seam whose symbols have been renamed silently disarms this check exactly
   // as a renamed symbol disarmed the guards it watches, and it disarms it in
