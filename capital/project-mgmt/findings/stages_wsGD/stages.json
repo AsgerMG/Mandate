@@ -3,12 +3,12 @@
   "source": "postgres",
   "degraded": false,
   "instruments": 1088,
-  "hydratedAt": "2026-08-12T20:32:29.378Z",
-  "observedAt": "2026-08-12T20:32:29.379Z"
+  "hydratedAt": "2026-08-12T20:51:04.795Z",
+  "observedAt": "2026-08-12T20:51:04.798Z"
  },
- "n": 8,
+ "n": 6,
  "split": "holdout",
- "limit": 8,
+ "limit": 6,
  "rows": [
   {
    "company": "+ATLANTIC ASSOCIACAO PARA UM LABORATORIO COLABORATIVO DO ATLANTICO",
@@ -18,11 +18,118 @@
    "offerable": true,
    "rankHydrated": 2,
    "rankAccessible": 2,
+   "rankAccessibleReal": 2,
+   "nAccessibleReal": 35,
    "rankOrdered": 2,
    "nHydrated": 38,
    "nAccessible": 30,
    "nOrdered": 30,
+   "ownAnswer": [
+    "sector",
+    "entityCountries"
+   ],
    "blockedBy": [],
+   "unblockedBy": [],
+   "controlAt": {
+    "0": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ],
+    "6": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions"
+    ],
+    "12": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ],
+    "18": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ],
+    "25": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ],
+    "30": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ],
+    "40": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ],
+    "50": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ],
+    "60": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ],
+    "80": [
+     "horizon_eu_miss",
+     "innovationsfonden_other",
+     "innovationsfonden_innoexplorer__innoexplorer_3011c9",
+     "innovationsfonden_erhvervsforsker",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_grand_solutions",
+     "eic_pathfinder",
+     "eic_transition"
+    ]
+   },
    "describedAt": {
     "0": {
      "rows": 30,
@@ -86,11 +193,119 @@
    "offerable": true,
    "rankHydrated": 7,
    "rankAccessible": 7,
+   "rankAccessibleReal": 7,
+   "nAccessibleReal": 80,
    "rankOrdered": 7,
    "nHydrated": 88,
    "nAccessible": 75,
    "nOrdered": 75,
+   "ownAnswer": [
+    "sector",
+    "entityCountries",
+    "organisationType"
+   ],
    "blockedBy": [],
+   "unblockedBy": [],
+   "controlAt": {
+    "0": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ],
+    "6": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a"
+    ],
+    "12": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ],
+    "18": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ],
+    "25": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ],
+    "30": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ],
+    "40": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ],
+    "50": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ],
+    "60": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ],
+    "80": [
+     "vinnova_grant__sip_piia_8c6020",
+     "vinnova_grant__sip_metalliska_material_bdcee6",
+     "vinnova_grant__impact_innovation_swedish_metals_minerals_0c1ff5",
+     "vinnova_grant__sip_swedish_mining_innovation_0fc479",
+     "vinnova_grant__sip_infrasweden_8d7a71",
+     "vinnova_grant__sip_lighter_13097a",
+     "vinnova_grant__avancerad_digitalisering_eb7eab",
+     "vinnova_grant__cirkular_och_biobaserad_ekonomi_cbe_c96ab2"
+    ]
+   },
    "describedAt": {
     "0": {
      "rows": 75,
@@ -154,10 +369,17 @@
    "offerable": true,
    "rankHydrated": 1,
    "rankAccessible": null,
+   "rankAccessibleReal": 1,
+   "nAccessibleReal": 17,
    "rankOrdered": null,
    "nHydrated": 19,
    "nAccessible": 16,
    "nOrdered": 16,
+   "ownAnswer": [
+    "sector",
+    "entityCountries",
+    "organisationType"
+   ],
    "blockedBy": [
     {
      "field": "ticketBand",
@@ -172,6 +394,109 @@
      "verified": true
     }
    ],
+   "unblockedBy": [
+    "ticketBand"
+   ],
+   "controlAt": {
+    "0": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ],
+    "6": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4"
+    ],
+    "12": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ],
+    "18": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ],
+    "25": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ],
+    "30": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ],
+    "40": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ],
+    "50": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ],
+    "60": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ],
+    "80": [
+     "satr_gb_equity__sa_39065__mhclg",
+     "horizon_eu_cl6",
+     "horizon_eu_cbe",
+     "horizon_eu_cl3",
+     "horizon_eu_miss",
+     "horizon_eu_cl4",
+     "erc_poc",
+     "horizon_eu_cl5"
+    ]
+   },
    "describedAt": {
     "0": {
      "rows": 16,
@@ -235,10 +560,16 @@
    "offerable": true,
    "rankHydrated": 4,
    "rankAccessible": null,
+   "rankAccessibleReal": 4,
+   "nAccessibleReal": 24,
    "rankOrdered": null,
    "nHydrated": 28,
    "nAccessible": 23,
    "nOrdered": 23,
+   "ownAnswer": [
+    "sector",
+    "entityCountries"
+   ],
    "blockedBy": [
     {
      "field": "ticketBand",
@@ -253,6 +584,109 @@
      "verified": true
     }
    ],
+   "unblockedBy": [
+    "ticketBand"
+   ],
+   "controlAt": {
+    "0": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ],
+    "6": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp"
+    ],
+    "12": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ],
+    "18": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ],
+    "25": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ],
+    "30": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ],
+    "40": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ],
+    "50": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ],
+    "60": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ],
+    "80": [
+     "erc_poc",
+     "satr_gb_equity__sa_39065__mhclg",
+     "gh_edctp3",
+     "horizon_eu_cl1",
+     "horizon_eu_cl6",
+     "chp",
+     "euspa",
+     "horizon_eu_cbe"
+    ]
+   },
    "describedAt": {
     "0": {
      "rows": 23,
@@ -316,11 +750,119 @@
    "offerable": true,
    "rankHydrated": 24,
    "rankAccessible": 23,
+   "rankAccessibleReal": 23,
+   "nAccessibleReal": 72,
    "rankOrdered": 23,
    "nHydrated": 81,
    "nAccessible": 72,
    "nOrdered": 72,
+   "ownAnswer": [
+    "sector",
+    "entityCountries",
+    "organisationType"
+   ],
    "blockedBy": [],
+   "unblockedBy": [],
+   "controlAt": {
+    "0": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ],
+    "6": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem"
+    ],
+    "12": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ],
+    "18": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ],
+    "25": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ],
+    "30": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ],
+    "40": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ],
+    "50": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ],
+    "60": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ],
+    "80": [
+     "vinnova_grant__sip_drive_sweden_1c1174",
+     "vinnova_grant__inkubatorprogrammet_cc56dc",
+     "vinnova_grant__artificiell_intelligens_3277e6",
+     "satr_se_rnd__sa_112283__tillvaxtverket",
+     "vinnova_grant__innovativa_startups_programniva_a36873",
+     "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem",
+     "vinnova_grant__innovationsprojekt_i_foretag_programniva_dbc3dd",
+     "vinnova_grant__innovationsprogrammet_for_civil_militara_synergi_42185d"
+    ]
+   },
    "describedAt": {
     "0": {
      "rows": 72,
@@ -384,11 +926,119 @@
    "offerable": true,
    "rankHydrated": 7,
    "rankAccessible": 6,
+   "rankAccessibleReal": 6,
+   "nAccessibleReal": 35,
    "rankOrdered": 6,
    "nHydrated": 40,
    "nAccessible": 30,
    "nOrdered": 30,
+   "ownAnswer": [
+    "sector",
+    "entityCountries",
+    "organisationType"
+   ],
    "blockedBy": [],
+   "unblockedBy": [],
+   "controlAt": {
+    "0": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ],
+    "6": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e"
+    ],
+    "12": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ],
+    "18": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ],
+    "25": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ],
+    "30": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ],
+    "40": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ],
+    "50": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ],
+    "60": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ],
+    "80": [
+     "innovationsfonden_grand_solutions",
+     "innovationsfonden_erhvervsforsker",
+     "gh_edctp3",
+     "innovationsfonden_innofounder__innofounder_089d34",
+     "innovationsfonden_other",
+     "innovationsfonden_innobooster__innobooster_dd6e0e",
+     "erc_poc",
+     "eic_transition"
+    ]
+   },
    "describedAt": {
     "0": {
      "rows": 30,
@@ -442,155 +1092,6 @@
     "50": 36331,
     "60": 36331,
     "80": 36331
-   }
-  },
-  {
-   "company": "1SPATIAL GROUP",
-   "country": "GB",
-   "won": "innovate_uk",
-   "inCorpus": true,
-   "offerable": true,
-   "rankHydrated": 1,
-   "rankAccessible": null,
-   "rankOrdered": null,
-   "nHydrated": 27,
-   "nAccessible": 22,
-   "nOrdered": 22,
-   "blockedBy": [
-    {
-     "field": "ticketBand",
-     "requirement": "Projects of 6 to 18 months must have total eligible project costs between £100,000 and £500,000.",
-     "cited": true,
-     "verified": true
-    },
-    {
-     "field": "ticketBand",
-     "requirement": "Projects of 19 to 24 months must have total eligible project costs between £100,000 and £1 million.",
-     "cited": true,
-     "verified": true
-    }
-   ],
-   "describedAt": {
-    "0": {
-     "rows": 22,
-     "described": 21
-    },
-    "6": {
-     "rows": 6,
-     "described": 6
-    },
-    "12": {
-     "rows": 12,
-     "described": 12
-    },
-    "18": {
-     "rows": 18,
-     "described": 18
-    },
-    "25": {
-     "rows": 22,
-     "described": 21
-    },
-    "30": {
-     "rows": 22,
-     "described": 21
-    },
-    "40": {
-     "rows": 22,
-     "described": 21
-    },
-    "50": {
-     "rows": 22,
-     "described": 21
-    },
-    "60": {
-     "rows": 22,
-     "described": 21
-    },
-    "80": {
-     "rows": 22,
-     "described": 21
-    }
-   },
-   "promptChars": {
-    "0": 28121,
-    "6": 11736,
-    "12": 17901,
-    "18": 24461,
-    "25": 28121,
-    "30": 28121,
-    "40": 28121,
-    "50": 28121,
-    "60": 28121,
-    "80": 28121
-   }
-  },
-  {
-   "company": "1TO1DESIGN S.R.O.",
-   "country": "CZ",
-   "won": "tacr_fw",
-   "inCorpus": true,
-   "offerable": true,
-   "rankHydrated": 2,
-   "rankAccessible": 2,
-   "rankOrdered": 2,
-   "nHydrated": 72,
-   "nAccessible": 68,
-   "nOrdered": 68,
-   "blockedBy": [],
-   "describedAt": {
-    "0": {
-     "rows": 68,
-     "described": 56
-    },
-    "6": {
-     "rows": 6,
-     "described": 5
-    },
-    "12": {
-     "rows": 12,
-     "described": 9
-    },
-    "18": {
-     "rows": 18,
-     "described": 15
-    },
-    "25": {
-     "rows": 25,
-     "described": 18
-    },
-    "30": {
-     "rows": 30,
-     "described": 23
-    },
-    "40": {
-     "rows": 40,
-     "described": 30
-    },
-    "50": {
-     "rows": 50,
-     "described": 39
-    },
-    "60": {
-     "rows": 60,
-     "described": 48
-    },
-    "80": {
-     "rows": 68,
-     "described": 56
-    }
-   },
-   "promptChars": {
-    "0": 72802,
-    "6": 9679,
-    "12": 15323,
-    "18": 22097,
-    "25": 26529,
-    "30": 32048,
-    "40": 41214,
-    "50": 52910,
-    "60": 64438,
-    "80": 72802
    }
   }
  ]

@@ -76,6 +76,29 @@ const OUT = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "st
  *  these prompts; `_wsei_depth.ts` uses the same constant for the same reason. */
 const CHARS_PER_TOKEN = 3.6;
 
+/** ── THE FIELDS THE PRODUCT'S OWN GUARD REFUSES TO ANSWER ─────────────────
+ *
+ *  Copied in spirit, not in bytes, from `check_winner_not_gated.ts`, which
+ *  states this same property over the same seam and deliberately leaves these
+ *  UNANSWERED because:
+ *
+ *      "a replay that hands every founder a made-up ticket band or consortium
+ *       stance manufactures failures the founder would never have produced,
+ *       and a guard built on those would ratchet on fiction."
+ *
+ *  That reasoning is not confined to the guard. Every ceiling this repo quotes
+ *  — 36.7% in the pool, 63.3% unreachable — is computed by a replay that
+ *  answers exactly these fields with exactly that fiction, and `accessiblePool`
+ *  deletes the won fund on the strength of them. So the second arm below runs
+ *  the identical funnel with them removed, and the difference between the two
+ *  is how much of the published ceiling is our own invention.
+ *
+ *  It is a DIAGNOSTIC ARM and not a proposal: a real founder does answer a
+ *  ticket band, and a fund whose stated range genuinely excludes them should
+ *  still be dropped. What the arm bounds is how much of today's headline is
+ *  measurement error. */
+const INVENTED_FIELDS = ["ticketBand", "consortium", "useOfFunds", "activities"];
+
 interface PerFounder {
   company: string;
   country: string;
@@ -86,11 +109,19 @@ interface PerFounder {
   /** Rank (1-based) of the won fund at each seam, or null if absent there. */
   rankHydrated: number | null;
   rankAccessible: number | null;
+  /** The same rank with `INVENTED_FIELDS` unanswered. Gate 1 is held fixed, so
+   *  the only thing that moves is the encoded-verdict drop. */
+  rankAccessibleReal: number | null;
+  nAccessibleReal: number;
   rankOrdered: number | null;
   /** Length of the list at each seam. */
   nHydrated: number;
   nAccessible: number;
   nOrdered: number;
+  /** Askable fields this founder carried a value for that is DERIVED FROM
+   *  THIS COMPANY rather than from `CONSTANT_ANSWERS`. A blocker on a field
+   *  absent here fired on a stand-in, not on an answer. */
+  ownAnswer: string[];
   /** Only when `accessiblePool` deleted the won fund: what said so. */
   blockedBy: { field: string; requirement: string; cited: boolean; verified: boolean }[];
   /** Fields whose answer, removed ON ITS OWN, un-blocks the won fund. A field
@@ -183,6 +214,15 @@ async function main() {
     };
     const rankHydrated = rankIn(hydrated);
     const rankAccessible = rankIn(accessible);
+    // The same drop, with the replay's invented answers withdrawn. Gate 1 is
+    // NOT rebuilt: the ticket scorer reads `ticketBand` too, and rebuilding
+    // would confound the verdict drop with a different ranking. This isolates
+    // the one seam under test.
+    const realEligibility = { ...(f.eligibility as Record<string, unknown>) };
+    for (const k of INVENTED_FIELDS) delete realEligibility[k];
+    const accessibleReal: InstrumentRow[] = applyProfileSignal(
+      accessiblePool(hydrated, realEligibility as never, new ExclusionLog()),
+      undefined, undefined);
 
     // Only meaningful when the fund survived gate 1 and then did not survive
     // the verdict drop: that is the population whose answer OUR OWN ENCODING
@@ -252,8 +292,11 @@ async function main() {
     out.push({
       company: f.company, country: f.country, won: t.instrument,
       inCorpus: inCorpus.has(t.instrument), offerable: offerable.has(t.instrument),
-      rankHydrated, rankAccessible, rankOrdered: rankIn(ordered),
+      rankHydrated, rankAccessible,
+      rankAccessibleReal: rankIn(accessibleReal), nAccessibleReal: accessibleReal.length,
+      rankOrdered: rankIn(ordered),
       nHydrated: hydrated.length, nAccessible: accessible.length, nOrdered: ordered.length,
+      ownAnswer: f.ownAnswer as unknown as string[],
       blockedBy, unblockedBy, controlAt, describedAt, promptChars,
     });
     if (out.length % 10 === 0) console.log(`  ${out.length}/${graded.length}`);
@@ -301,6 +344,24 @@ async function main() {
   }
   lines.push("");
 
+  lines.push(`## How much of the ceiling is the replay's own invention\n`);
+  lines.push(`\`check_winner_not_gated.ts\` refuses to answer ${INVENTED_FIELDS.map((f) => `\`${f}\``).join(", ")} `
+    + `because "a replay that hands every founder a made-up ticket band or consortium stance `
+    + `manufactures failures the founder would never have produced, and a guard built on those `
+    + `would ratchet on fiction." Every ceiling this repo quotes is computed by a replay that `
+    + `answers them anyway. Gate 1 is held FIXED in both columns, so the only thing that moves `
+    + `is the encoded-verdict drop.\n`);
+  const realN = out.filter((r) => r.rankAccessibleReal != null).length;
+  lines.push(`| | pool length | won fund present | at K=18 | at K=40 |`);
+  lines.push(`|---|---:|---:|---:|---:|`);
+  const atK = (k: number, key: "rankAccessible" | "rankAccessibleReal") =>
+    out.filter((r) => r[key] != null && (r[key] as number) <= k).length;
+  lines.push(`| as replayed (the published figures) | ${mean(out.map((r) => r.nAccessible)).toFixed(1)} | `
+    + `${accN}/${n} — ${pct(accN, n)} | ${pct(atK(18, "rankAccessible"), n)} | ${pct(atK(40, "rankAccessible"), n)} |`);
+  lines.push(`| with the invented answers withdrawn | ${mean(out.map((r) => r.nAccessibleReal)).toFixed(1)} | `
+    + `${realN}/${n} — ${pct(realN, n)} | ${pct(atK(18, "rankAccessibleReal"), n)} | ${pct(atK(40, "rankAccessibleReal"), n)} |`);
+  lines.push("");
+
   lines.push(`## Recall, legibility and prompt size at each K\n`);
   lines.push(`| K | mean rows shown | won fund inside | rows with a \`funds:\` line | prompt chars | ~tokens |`);
   lines.push(`|---|---:|---:|---:|---:|---:|`);
@@ -325,7 +386,7 @@ async function main() {
     + `founder conclusively fails them. No depth reaches these: the row is gone before any K `
     + `is applied. Grouped by the field whose filter fired.\n`);
   const byField = new Map<string, {
-    n: number; cited: number; verified: number; sole: number; sample: string;
+    n: number; cited: number; verified: number; sole: number; own: number; sample: string;
   }>();
   for (const r of dropped) {
     const fields = new Set(r.blockedBy.map((b) => b.field));
@@ -333,11 +394,12 @@ async function main() {
       if (!fields.has(b.field)) continue;
       fields.delete(b.field);
       const cur = byField.get(b.field)
-        ?? { n: 0, cited: 0, verified: 0, sole: 0, sample: b.requirement };
+        ?? { n: 0, cited: 0, verified: 0, sole: 0, own: 0, sample: b.requirement };
       cur.n += 1;
       cur.cited += b.cited ? 1 : 0;
       cur.verified += b.verified ? 1 : 0;
       cur.sole += r.unblockedBy.includes(b.field) ? 1 : 0;
+      cur.own += r.ownAnswer.includes(b.field) ? 1 : 0;
       byField.set(b.field, cur);
     }
   }
@@ -347,10 +409,14 @@ async function main() {
     + `award under a different notified scheme, \`region\` from a different scheme's beneficiary `
     + `region — so a high \`sole\` count on a derived field is a claim about our guess before it `
     + `is a claim about our gates.\n`);
-  lines.push(`| intake field | founders whose answer it deleted | sole | cited | verified | a requirement it fired on |`);
-  lines.push(`|---|---:|---:|---:|---:|---|`);
+  lines.push(`\`own\` counts the subset where the answer that fired is DERIVED FROM THIS COMPANY. `
+    + `The rest fired on \`CONSTANT_ANSWERS\` — a stand-in the replay supplies so the denominator `
+    + `does not move with the answer mode — and a gate that deletes a won fund on a stand-in is `
+    + `evidence about the replay, not about the corpus.\n`);
+  lines.push(`| intake field | founders whose answer it deleted | sole | own | cited | verified | a requirement it fired on |`);
+  lines.push(`|---|---:|---:|---:|---:|---:|---|`);
   for (const [field, v] of [...byField.entries()].sort((a, b) => b[1].n - a[1].n)) {
-    lines.push(`| \`${field}\` | ${v.n} | ${v.sole} | ${v.cited} | ${v.verified} | `
+    lines.push(`| \`${field}\` | ${v.n} | ${v.sole} | ${v.own} | ${v.cited} | ${v.verified} | `
       + `${v.sample.replace(/\|/g, "/").slice(0, 110)} |`);
   }
   lines.push("");
