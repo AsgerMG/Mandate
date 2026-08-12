@@ -297,9 +297,29 @@ async function main() {
       if (!snapshotFields.includes(f)) {
         problems.push(`FIELD_NOTES excuses "${f}", which the snapshot no longer carries. ` +
           `An exemption for a field that is gone is an exemption nothing reads.`);
+      } else if (compared.includes(f) && !COLUMN_ALIAS[f]) {
+        // The same rule check_verdicts.ts applies to an acceptance whose guard
+        // has gone green. A note sitting on a field that IS compared covers
+        // nothing today, and pre-authorises the day the comparison is removed —
+        // at which point the field goes quiet and the note makes it look
+        // deliberate. An ALIAS is the one legitimate overlap, because it is a
+        // note ABOUT the comparison rather than instead of it.
+        problems.push(`FIELD_NOTES excuses "${f}" and it is compared anyway, so the note ` +
+          `covers nothing. Delete it: left standing it makes a future removal of that ` +
+          `comparison read as intentional.`);
       } else if (note.review < asOf) {
         problems.push(`the note excusing "${f}" from comparison came due on ${note.review}: ` +
           `${note.why}`);
+      }
+    }
+    // And the alias must still BE an alias. If the column it names disappears,
+    // `schemeEndBasis` silently stops being compared while its note goes on
+    // saying it is — which is this guard's own defect, one field wide.
+    for (const [f, col] of Object.entries(COLUMN_ALIAS)) {
+      if (snapshotFields.includes(f) && !liveColumns.has(col)) {
+        problems.push(`"${f}" is aliased to the column "${col}", which funding_instruments ` +
+          `does not have. The field is therefore compared against nothing while ` +
+          `FIELD_NOTES says it is compared through the alias.`);
       }
     }
     liveRows = compared.length
