@@ -2,16 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done \u2014 the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsFM",
-      "step": 5,
-      "what": "Land the readable rows, and re-set a quality bar honestly",
-      "why": "Rows that said nothing halved this week \u2014 94% to 22% in Czechia, 22% to zero in Spain. Landing that, and re-setting one quality measure that broke when we stopped offering 53 Spanish grants that had already closed. Two of the four bars go UP; the one that falls does so because the funds it counted no longer exist."
+      "id": "wsFR",
+      "step": 2,
+      "what": "Stop calling guarantees grants, and stop offering funds that are not funds",
+      "why": "One transposed letter in a lookup table has been recording every guarantee scheme as a grant. Italy's largest \u2014 \u20ac14.9 billion, 13,892 awards \u2014 is shown to founders as a grant, while founders who ask for a guarantee are never shown it. Separately, eleven rows a founder can be offered are not funds at all but accounting labels: Poland's entire list is eight of them, so a Polish founder is currently shown nothing real."
     },
     {
-      "id": "wsFN",
+      "id": "wsFP",
       "step": 2,
-      "what": "Save the fix that produced this week's descriptions",
-      "why": "We published 108 new fund descriptions to production, but the code that generates them is in no branch anyone has merged. Re-run the loaders tomorrow and the descriptions silently revert \u2014 the same shape as the incident that cost us two months of paid classification in July. Also retiring fifteen stale branches by test rather than guesswork."
+      "what": "Find out what the silent funds actually are",
+      "why": "Rows that say nothing halved this week; the rest turned out not to be a display problem. Checking them one by one against the funders' own pages \u2014 and so far most are not fundable: Norway's forty-nine are either accounting codes or retired programmes, and none can be applied to today."
     }
   ]
 }

@@ -1,16 +1,16 @@
 {
  "source": "railway postgres",
+ "asOf": "2026-08-12",
  "totals": {
   "n": 1021,
-  "d": 598,
-  "e": 592,
+  "d": 697,
+  "e": 687,
   "k": 858,
   "a": 851,
   "rt": 242,
-  "mute": 130
+  "mute": 80
  },
- "embeddedInstruments": 935,
- "profiles": 1088,
+ "note": "Measured before the 12 Aug extraction pass. Rows that say nothing to the chooser then fell 11.9% to 4.4% on the real prompt: Estonia 61% to zero, Netherlands and Italy to zero. Every one of the eleven still silent turned out to be a row that should not be offered at all -- 36 that are not funds, 23 retired, 31 closed, across six countries, with Norway's entire set in that bucket.",
  "countries": [
   {
    "cc": "ES",
@@ -45,8 +45,8 @@
   {
    "cc": "IT",
    "n": 86,
-   "d": 54,
-   "e": 48,
+   "d": 73,
+   "e": 62,
    "k": 86,
    "a": 85,
    "rt": 1,
@@ -56,7 +56,7 @@
    "cc": "NO",
    "n": 74,
    "d": 18,
-   "e": 18,
+   "e": 19,
    "k": 17,
    "a": 47,
    "rt": 72,
@@ -85,22 +85,22 @@
   {
    "cc": "EE",
    "n": 57,
-   "d": 4,
-   "e": 12,
+   "d": 47,
+   "e": 55,
    "k": 13,
    "a": 44,
    "rt": 46,
-   "mute": 42
+   "mute": 1
   },
   {
    "cc": "CZ",
    "n": 51,
-   "d": 5,
-   "e": 5,
+   "d": 35,
+   "e": 35,
    "k": 36,
    "a": 48,
    "rt": 15,
-   "mute": 15
+   "mute": 10
   },
   {
    "cc": "LV",
@@ -115,8 +115,8 @@
   {
    "cc": "NL",
    "n": 30,
-   "d": 24,
-   "e": 25,
+   "d": 27,
+   "e": 28,
    "k": 30,
    "a": 28,
    "rt": 2,
@@ -185,12 +185,12 @@
   {
    "cc": "DK",
    "n": 8,
-   "d": 0,
-   "e": 4,
+   "d": 4,
+   "e": 8,
    "k": 3,
    "a": 7,
    "rt": 4,
-   "mute": 4
+   "mute": 0
   },
   {
    "cc": "PT",
