@@ -37,6 +37,7 @@ import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
   requireLiveCorpus, resetGateHydration,
 } from "../lib/intelligence/corpus";
+import { accessiblePool } from "../lib/intelligence/memoCandidates";
 import { computeVerdict } from "../lib/intelligence/pipeline";
 import type { InstrumentRow } from "../lib/intelligence/types";
 import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
@@ -518,6 +519,23 @@ const tape = startTape();
  *  are still offerable — not to touch that constant and not to touch these
  *  floors. Flagged here because the trip will look like a data problem and is
  *  actually this measurement running out of room. */
+/*  ── WHAT `pool` IS, since every block above calls it something else ──────
+ *
+ *  Read the derivations above with this in hand: each one justifies the pool
+ *  floor as "the correctness floor — a fund the writer never sees cannot be
+ *  advised on". `pool` does not measure that and never has. It counts
+ *  `candidateInstrumentIds`, which `computeVerdict` returns BEFORE
+ *  `accessiblePool` drops a conclusively blocked row, and the writer is shown
+ *  the list after that drop.
+ *
+ *  The two are twenty points apart (wsGE, holdout, one founder per company:
+ *  100% reach the candidate table, 77.5% survive the drop), so the floors above
+ *  are calibrated on a retrieval metric while their prose claims a delivery
+ *  one. `accessible` below is the delivery metric, measured on the same replay
+ *  and reported unfloored until it has three seeds behind it. The history
+ *  blocks are left as they were written — they are a record of what was
+ *  believed at the time, and rewriting them would erase the mistake rather
+ *  than name it. */
 const FLOOR = { pool: 93, exact5: 15, regime5: 58 };
 
 /*  ── THE `exact5` ZERO-MARGIN FLAG, ANSWERED FROM THE VERDICT TABLE ───────
@@ -851,6 +869,30 @@ async function main() {
   const set = sampleRecall(tune, N, SEED);
 
   let pool = 0, exact5 = 0, regime5 = 0;
+  // ── ACCESSIBLE, reported and NOT floored (wsGE, 2026-08-12) ──────────────
+  //
+  // ██ `pool` IS NOT THE LIST ANYONE IS SHOWN, AND FOUR BLOCKS ABOVE SAY IT IS.
+  //
+  // Every derivation in this file justifies the pool floor as "the correctness
+  // floor — a fund the writer never sees cannot be advised on". That sentence
+  // is about the memo pool. `candidateInstrumentIds` is NOT the memo pool: it
+  // is the candidate table BEFORE `accessiblePool` removes a conclusively
+  // blocked row, and that filter is the single largest loss in the funnel.
+  //
+  // Measured by wsGE on the holdout split, one founder per company: 100% of won
+  // funds reach `candidateInstrumentIds` and 77.5% survive `accessiblePool`.
+  // `poolRecallCurve.generated.json` has been reading 77.5% since 2026-08-11
+  // while this gate read 98%, and nobody could tell whether the two disagreed
+  // or measured different things. They measure different things. Both are now
+  // on one screen, off one replay, so the question cannot be asked again.
+  //
+  // Unfloored on purpose, exactly as `exact6` is. This file's own convention is
+  // that a floor sits under a measurement taken on three seeds; this number has
+  // one run behind it, and a gate calibrated on a single seed is the zero-margin
+  // mistake the `traced:exact_attribution` block above is a monument to. Floor
+  // it at the next re-derivation, and floor it against `accessible` rather than
+  // moving `pool`: the two are different claims and both are worth watching.
+  let accessible = 0;
   // ── EXACT@6, reported and NOT floored ────────────────────────────────────
   // The brief publishes SIX rows and this gate reads the instant screen, whose
   // DISPLAY_CAP is 6. `exact5` stays the floored metric on the population it
@@ -925,10 +967,21 @@ async function main() {
     const top5 = table.slice(0, 5);
     const wantRegime = byId.get(t.instrument)?.parentId ?? t.instrument;
     const r5 = top5.some((id) => (byId.get(id)?.parentId ?? id) === wantRegime);
-    const inPool = (v.candidateInstrumentIds ?? []).includes(t.instrument);
+    const candidateIds = v.candidateInstrumentIds ?? [];
+    const inPool = candidateIds.includes(t.instrument);
+    // PRODUCTION'S OWN FUNCTION, not a second predicate that agrees with it
+    // today. `accessiblePool` reads `instrumentId` and, only for a log subject,
+    // `channel`; handing it the ids is therefore the same call the memo path
+    // makes over the same rows. Free: the gates for exactly these instruments
+    // were fetched by `buildInstrumentTableHydrated` inside `computeVerdict`.
+    const accessibleIds = accessiblePool(
+      candidateIds.map((id) => ({ instrumentId: id, channel: "" }) as InstrumentRow),
+      f.eligibility as never).map((r) => r.instrumentId);
+    const inAccessible = accessibleIds.includes(t.instrument);
     const e5 = top5.includes(t.instrument);
     const e6 = table.slice(0, 6).includes(t.instrument);
     if (inPool) pool++;
+    if (inAccessible) accessible++;
     if (e5) exact5++;
     if (e6) exact6++;
     if (r5) regime5++;
@@ -972,6 +1025,13 @@ async function main() {
     // comparing rows has no other way to find that out.
     if (k === "regime5") console.log(`         ^ ${REGIME_AT_5_NOT_COMPARABLE}`);
   }
+  // ACCESSIBLE immediately under POOL, because the gap between them is the
+  // single largest loss in the funnel and it was invisible while only the top
+  // line was printed. Unfloored — see the block at `let accessible`.
+  console.log(`         accessible ${((100 * accessible) / set.length).toFixed(0)}% ` +
+              "(no floor — reported; `pool` counts the candidate table, this " +
+              "counts what survives accessiblePool, which is the list the " +
+              "ranker and the writer are actually shown)");
   // EXACT@6 immediately under EXACT@5, unfloored and labelled as such, so the
   // sixth slot's worth is on the same screen as the metric it is not.
   console.log(`         exact6   ${((100 * exact6) / set.length).toFixed(0)}% ` +
@@ -1013,6 +1073,7 @@ async function main() {
   const metrics: Record<string, unknown> = {
     n: set.length, seed: SEED, set: file,
     pool: Number(got.pool.toFixed(1)), exact5: Number(got.exact5.toFixed(1)),
+    accessible: Number(((100 * accessible) / set.length).toFixed(1)),
     exact6: Number(((100 * exact6) / set.length).toFixed(1)),
     regime5: Number(got.regime5.toFixed(1)),
     floorPool: FLOOR.pool, floorExact5: FLOOR.exact5, floorRegime5: FLOOR.regime5,
@@ -1031,6 +1092,7 @@ async function main() {
   await publishVerdict(GUARD, {
     status: anyFailed ? "failed" : "ok",
     summary: `pool ${got.pool.toFixed(0)}% (floor ${FLOOR.pool}), ` +
+             `accessible ${((100 * accessible) / set.length).toFixed(0)}% (no floor), ` +
              `EXACT@5 ${got.exact5.toFixed(0)}% (floor ${FLOOR.exact5}), ` +
              `REGIME@5 ${got.regime5.toFixed(0)}% (floor ${FLOOR.regime5}) ` +
              `over ${set.length} tune pairs` +

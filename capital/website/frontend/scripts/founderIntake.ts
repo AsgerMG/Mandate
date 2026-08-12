@@ -51,7 +51,9 @@
 // sector or instrument id appears here or in any disposition.
 import { FIELD_REACH } from "../lib/intelligence/types";
 import type { EligibilityAnswers } from "../lib/intelligence/types";
-import { prefillOrganisationType } from "../lib/intelligence/organisationType";
+import {
+  ORGANISATION_TYPE_ARM, prefillOrganisationType,
+} from "../lib/intelligence/organisationType";
 import { answersFor, CONSTANT_ANSWERS } from "./recallSet";
 import type { AnswerMode, RecallRow } from "./recallSet";
 
@@ -120,10 +122,23 @@ export const INTAKE_SOURCE: Record<IntakeField, IntakeDisposition> = {
       + "reading the multilingual legal-form designator in the name",
     leak: "the input is the company's NAME STRING and nothing else. No award, "
       + "no channel, no instrument and no register row is consulted, so there "
-      + "is no path by which the won fund could reach it. Note it is inert "
-      + "today: FIELD_REACH declares it `staged` and ANSWER_USE records that "
-      + "none of the 484 organisation-kind gates resolves to it yet, so "
-      + "supplying it is honest and currently costless.",
+      + "is no path by which the won fund could reach it. ██ IT IS NO LONGER "
+      + "COSTLESS, AND IT IS NO LONGER A QUESTION PRODUCTION ASKS. ██ This "
+      + "entry read 'inert today: none of the 484 organisation-kind gates "
+      + "resolves to it yet, so supplying it is honest and currently costless'. "
+      + "On 2026-08-12, 215 organisationType filter gates were encoded with "
+      + "value specs, every one of them llm_cited — and organisationType is "
+      + "STRUCTURAL, so ONE of them conclusively removes a fund. Meanwhile "
+      + "ORGANISATION_TYPE_ARM is OFF in production: the control is not "
+      + "rendered and the field is never populated, so `evaluateSpec` reads "
+      + "null for every real founder and none of those 215 gates can fire. "
+      + "Measured cost of the divergence (wsGE, 820 held-out described "
+      + "founders, one per company): 33 founders — 4.0 points of accessible-"
+      + "pool recall — lose their own fund to a question the product does not "
+      + "ask. Every recall figure this repo publishes is that much pessimistic "
+      + "until the arm is turned on or this stops being answered. THE CHOICE IS "
+      + "DELIBERATE EITHER WAY: `IntakeTally` now prints the divergence on "
+      + "every run so it cannot be held silently.",
   },
 
   // ── PINNED, uniform across the population, and each one says what it costs ─
@@ -514,6 +529,31 @@ export class IntakeTally {
       out.push("    ██ OWN_HISTORY=corpus — the founder's own award history is "
         + "switched ON. `usedInField` can now be true because of the award being "
         + "predicted. THIS IS THE LEAK ARM. Do not publish this number.");
+    }
+    // ── A QUESTION THE HARNESS ANSWERS AND THE PRODUCT DOES NOT ASK ─────────
+    //
+    // The leak argument is not the only way a replayed founder can be the wrong
+    // founder. This one is the opposite failure and it had no disclosure at
+    // all: the harness answers a field whose production control is switched
+    // off, so the replay is judged against filters no real founder can trip.
+    //
+    // It cost 4.0 points of accessible-pool recall the day 215 cited,
+    // STRUCTURAL organisationType gates were encoded — an overnight
+    // "regression" that was entirely the harness's own answer meeting new
+    // gates. Printed unconditionally when it applies, because the failure mode
+    // is that nobody thinks to look.
+    //
+    // The property, for a field nobody has added yet: every field this tally
+    // reports as DERIVED or PINNED must be one production can populate. When
+    // one is not, say which, on screen, next to the numbers it moved.
+    const org = this.own.get("organisationType" as IntakeField) ?? 0;
+    if (ORGANISATION_TYPE_ARM === "off" && org > 0) {
+      out.push(`    ██ organisationType answered for ${org}/${this.n} founders `
+        + "while NEXT_PUBLIC_ORGANISATION_TYPE_ARM is OFF — production never "
+        + "populates this field, so these founders are being judged against "
+        + "215 cited STRUCTURAL gates no real founder can trip. Measured cost: "
+        + "4.0 points of accessible-pool recall. Turn the arm on, or stop "
+        + "answering it; do not quote the number without saying which.");
     }
     return out;
   }

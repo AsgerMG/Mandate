@@ -122,6 +122,40 @@ describe("status thresholds", () => {
     const ranks = order.map((s) => VERDICT_RANK[s]);
     expect(ranks).toEqual([...ranks].sort((x, y) => x - y));
   });
+
+  // THE BUG: the clause above counted GATE ROWS, and an instrument that
+  // encodes one requirement twice condemned itself off a single requirement.
+  // `innovate_uk` carries two byte-identical ticketBand specs, and it is the
+  // answer for 109 of 820 held-out founders — every one of them lost their own
+  // fund before the ranker saw it. Corpus-wide there are 668 surplus same-field
+  // filter rows across ~470 instruments, so this is a shape the corpus makes.
+  it("one field encoded twice is ONE thing in the way, not two", () => {
+    const inst = instrument([
+      gate({ op: "in", field: "ticketBand", allowed: ["lt25k"] }, "a"),
+      gate({ op: "in", field: "ticketBand", allowed: ["lt25k"] }, "b"),
+    ]);
+    const a = assessInstrument(inst, { ticketBand: "b500k_2m5" } as never);
+    expect(a.blockers).toHaveLength(2);   // both rows really did fail
+    expect(a.status).toBe("one_blocker"); // and they are one obstacle
+  });
+
+  it("two DIFFERENT curable fields is still blocked", () => {
+    const inst = instrument([
+      gate({ op: "in", field: "ticketBand", allowed: ["lt25k"] }, "a"),
+      gate({ op: "in", field: "consortium", allowed: ["yes"] }, "b"),
+    ]);
+    expect(assessInstrument(inst, { ticketBand: "b500k_2m5", consortium: "no" } as never).status)
+      .toBe("blocked");
+  });
+
+  // Severity is untouched by the dedupe: it never counted anything.
+  it("a repeated structural field still disqualifies, on severity not arithmetic", () => {
+    const inst = instrument([
+      gate({ op: "in", field: "entityCountries", allowed: ["FR"] }, "a"),
+      gate({ op: "in", field: "entityCountries", allowed: ["FR"] }, "b"),
+    ]);
+    expect(assessInstrument(inst, { entityCountries: ["DE"] } as never).status).toBe("blocked");
+  });
 });
 
 describe("severity: what failed, not how many", () => {

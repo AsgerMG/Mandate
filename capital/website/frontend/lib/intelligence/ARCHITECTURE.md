@@ -32,6 +32,16 @@ already paid for.
         ▼
   accessiblePool()          conclusively blocked rows dropped (VER-BLOCKED)
         │
+        │   ██ AND THIS IS WHERE IT IS LOST. The 97% above is the last
+        │   ██ number anyone quoted, and it is measured ABOVE this filter.
+        │   Mean 74 rows out. Measured on 820 held-out described founders,
+        │   one per company: 97.2% in, 87.6% out. Every loss between them
+        │   is an encoded eligibility verdict on a fund the founder in
+        │   question ACTUALLY WON, so each one is a disagreement between
+        │   two things we hold — a gate and a register record of that fund
+        │   paying that company — and not a founder being correctly turned
+        │   away. It was 74.8% until the ladder stopped counting two
+        │   encodings of one field as two obstacles (wsGE, verdict.ts).
         ▼
   ══ STAGE 2 — THE RANKER.  AN LLM.  IT IS THE DEFAULT (wsGB). ════════════
   agentSelect.ts   agentSelectMemoPool → agentSelectRows → the model
