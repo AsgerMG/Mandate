@@ -1047,6 +1047,48 @@ export function loadSignalsDigest(): SignalsDigest | null {
  * A child's own gates now OVERRIDE the parent's by key and add to the rest,
  * which is what "operating under a regime" actually means: specific rules
  * refine the general ones, they do not repeal them.
+ *
+ * ██ HALF THE PARENTS HERE ARE NOT REGIMES. ██ (wsGL, 2026-08-13, MEASURED AND
+ * DELIBERATELY NOT FIXED HERE — the repair belongs to the gate row.)
+ *
+ * The paragraphs above assume a parent is a rulebook, and for France's R&D
+ * framework it is. `satr_it_rnd` is not: it is the string "all Italian R&D state
+ * aid", a bucket of roughly 1,100 notified schemes with no shared document
+ * anywhere, and `registerNamesTheRow()` already refuses to PUBLISH it for
+ * exactly that reason. A requirement extracted from one programme's PDF and
+ * attached to such a row is a requirement of ONE member, and inheritance
+ * asserts it of all of them.
+ *
+ * It has happened. `satr_it_rnd` carries `g1-territorio` — "the applicant
+ * enterprise must be located in the target territories of the Programme (less
+ * developed regions: Basilicata, Calabria, Campania, Molise, Puglia, Sardegna,
+ * Sicilia)". It is `llm_2pass`, so cited; `region` is structural; so one failure
+ * is conclusive and `accessiblePool` deletes the row without telling the
+ * founder. All 67 children inherit it, among them Regione Lombardia's own
+ * Collabora e Innova, whose page requires "sede operativa in Lombardia".
+ * ONE gate row, 16 of the 70 conclusive blocks in the 820-founder replay.
+ * Corpus-wide there are 3,669 inherited filter-gate instances from parents
+ * nothing outside our loader names.
+ *
+ * ── Why the fix is NOT here, measured both ways ──────────────────────────
+ * Refusing inheritance from an unnamed parent works and costs too much
+ * elsewhere: +16 founders in the accessible pool (check_recall_floor
+ * `accessible` 90% -> 91%), verified winners the gate screen would delete
+ * 274 -> 251, AND `check_winner_not_gated`'s judgeable population 6,167 -> 4,610
+ * pairs, under its floor of 6,000. That guard is right to fail: trading a wrong
+ * rule for NO rule leaves a screen with nothing to say about a third more of the
+ * corpus, and a screen that cannot speak cannot show its next defect either.
+ *
+ * A narrower cut — inherit everything EXCEPT gates that are cited AND on a
+ * structural field, the only kind that ends the conversation on its own — is the
+ * right shape and needs `isCited`/`isStructural`, which live in verdict.ts,
+ * which imports this file. Doing it without restating either predicate needs
+ * them extracted to a leaf module first, and a second definition of an evidence
+ * tier is the defect this repo has already paid for twice.
+ *
+ * So the repair proposed instead is surgical and upstream: re-encode
+ * `g1-territorio` against the child it belongs to and unseed it from the
+ * rollup. Arms for all of it, free and re-runnable: scripts/_wsgl_arms.ts.
  */
 /** The merge rule itself, so the eager and lazy paths cannot diverge on it.
  *  A child's own gates override the parent's by key and add to the rest. */
