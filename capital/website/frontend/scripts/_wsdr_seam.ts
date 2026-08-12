@@ -276,7 +276,7 @@ async function main() {
         req: { ...req, targetMarkets: undefined } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(c.eligibility as never, poolIds),
-        semanticScores: semantic, log: l,
+        log: l,
       }).toWriter.map((x) => x.row);
     }
     const rankIn = (ids: string[], won: string) => {

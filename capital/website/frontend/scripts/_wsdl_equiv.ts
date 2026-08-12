@@ -2,8 +2,13 @@
 //
 // ── What has to be true, and why prose is not enough ──────────────────────
 // A selection seat was opened on the path a founder's brief actually takes.
-// The whole licence for that is that with `AGENT_SELECT` unset the shipped
-// path is what it was before the seam existed. This repo has twice published a
+// The licence for that WAS that with `AGENT_SELECT` unset the shipped path is
+// what it was before the seam existed. As of wsGB the default is `adviser` and
+// the seam is the shipped path, so `off` is the CONTROL rather than the
+// product — and this proof is what says the control is still a clean control.
+// Its refusal below is unchanged and is now the thing that makes it honest:
+// run it without `AGENT_SELECT=off` and it exits rather than comparing the
+// treatment with itself. This repo has twice published a
 // figure that turned out to be the control's — once because every model call
 // failed authentication and fell back silently, once because a typo in a flag
 // read as "off". Both were caught by an attestation, not by a reading of the
@@ -158,7 +163,7 @@ async function main() {
         req: { company: f.company, country: f.country, eligibility: f.eligibility, ...f.opts } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(f.eligibility as never, ids.slice(0, DISPLAY_CAP)),
-        semanticScores: semantic, log,
+        log,
       }).toWriter.map((c) => c.row.instrumentId ?? c.row.channel);
     };
     const writerBefore = await order(poolBefore);

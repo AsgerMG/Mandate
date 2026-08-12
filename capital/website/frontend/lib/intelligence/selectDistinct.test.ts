@@ -39,8 +39,17 @@ describe("the selector asks for distinct programmes", () => {
     // `exactly` is the default and its template is N zeros, which is correct
     // there. The atMost template is checked in the harness that sets the lever;
     // what is pinned here is that the default has not silently changed.
+    //
+    // ── IT MATCHED THE WHOLE OBJECT, AND THE OBJECT GREW (wsGB) ───────────
+    // This asserted `'{"picks":[0,0,0,0,0,0]}'` — the picks array AND the
+    // closing brace. `AGENT_SELECT` now defaults to `adviser`, which appends the
+    // `unsure` channel, so the template legitimately reads
+    // `{"picks":[...],"unsure":[0]}` and the case went red for a reason that has
+    // nothing to do with reply length. The property is about the PICKS array, so
+    // that is what it matches; `selectPromptProse.test.ts` owns what else the
+    // adviser's template carries.
     const p = buildPrompt(rows, { country: "DE", sector: "software_data_ai" }, 0, 6);
-    expect(p).toContain('{"picks":[0,0,0,0,0,0]}');
+    expect(p).toContain('{"picks":[0,0,0,0,0,0]');
   });
 
   it("says programmes, not index numbers, in the output contract", () => {

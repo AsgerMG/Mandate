@@ -177,7 +177,7 @@ async function rowsFor(f: Founder): Promise<InstitutionEntry[]> {
     } as never,
     records: [], dbPeers,
     eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
-    semanticScores: semantic, log,
+    log,
   });
   return buildRowsForCheck(ordered.map((c) => c.row), [], dbPeers).slice(0, K_MAX);
 }

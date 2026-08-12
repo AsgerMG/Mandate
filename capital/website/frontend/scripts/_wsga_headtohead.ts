@@ -106,21 +106,34 @@ loadEnvLocal();
 // order and the run reports the CONTROL's number under the treatment's banner.
 // That has happened here: the first 120-case run of this arm made 120 calls,
 // all of which failed authentication, and reported the control.
-const PAID_ARMS = new Set(["rows", "assist", "adviser"]);
-const ARM_ENV = process.env.AGENT_SELECT ?? "off";
+//
+// ── AND IT READS THE ARM FROM `caps.ts`, NOT FROM ITS OWN `?? "off"` (wsGB) ─
+// This line was `process.env.AGENT_SELECT ?? "off"` — a SECOND copy of a
+// default that lives in one place. It was harmless while the two copies agreed
+// and became a spending hazard the moment `caps.ts` made `adviser` the default:
+// invoked with no environment at all, the harness would have declared itself
+// free, skipped the ANTHROPIC_API_KEY contract, and then made a paid call per
+// founder. `caps.ts` imports nothing, so reading the resolved arm from it costs
+// this preamble no credential reach — the same argument that put the constant
+// there. The import is hoisted above this statement by ESM, which is what makes
+// reading it here legal at all.
+const PAID_ARMS = new Set<string>(["rows", "assist", "adviser"]);
 requireCredentials("wsga_headtohead",
-  PAID_ARMS.has(ARM_ENV)
+  PAID_ARMS.has(AGENT_SELECT_ARM)
     ? ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]
     : ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
-  AGENT_SELECT_ARM, AGENT_SELECT_SEAM, agentSelectExitLine, agentSelectExits,
+  AGENT_SELECT_SEAM, agentSelectExitLine, agentSelectExits,
   agentSelectLastTrace, agentSelectMemoPool, agentSelectTallyLine, LOOKUP_MAX,
   resetAgentSelectTally, SELECT_COUNT, SELECT_DEPTH, setAgentSelectTracing,
   THINK_EFFORT,
 } from "../lib/intelligence/agentSelect";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
-import { VERDICT_POOL } from "../lib/intelligence/caps";
+// The arm comes from `caps.ts` rather than from `agentSelect.ts`'s re-export of
+// it, because the credential preamble above reads it and that preamble must not
+// depend on the Anthropic client to find out whether it needs a key.
+import { AGENT_SELECT_ARM, VERDICT_POOL } from "../lib/intelligence/caps";
 import { withCostTracking } from "../lib/intelligence/cost";
 import {
   corpusProvenance, findPeersBySubsector, hydrateDbInstruments, hydrateGatesFor,
@@ -435,7 +448,7 @@ async function main() {
         req: { ...req, targetMarkets: undefined } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
-        semanticScores: semantic, log: l,
+        log: l,
       }).toWriter.map((x) => idOf(x.row));
     };
 

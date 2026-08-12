@@ -228,7 +228,7 @@ async function main() {
       req: {
         company: f.company, country: f.country, eligibility: f.eligibility, ...f.opts,
       } as never,
-      records: [], dbPeers, eligibilityScreen, semanticScores: semantic, log,
+      records: [], dbPeers, eligibilityScreen, log,
     });
     const memoIds = ordered.map((c) => c.row.instrumentId).filter(Boolean) as string[];
     const memoIdx = memoIds.indexOf(t.instrument);

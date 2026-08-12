@@ -78,7 +78,7 @@ async function main() {
              capitalSought: ["grant", "loan"], targetMarkets: [c.country], eligibility } as never,
       records: [], dbPeers,
       eligibilityScreen: evaluateEligibility(eligibility, poolIds),
-      semanticScores: semantic, log,
+      log,
     });
     const baseRows = toWriter.map((x) => x.row);
     // The verdict fields the writer's block reads are attached in synthesize()

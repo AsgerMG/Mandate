@@ -105,9 +105,43 @@ export function depthLever(
  * `agentSelect.ts` re-exports it, so every existing caller is unchanged and
  * there is still exactly one definition.
  *
- * The arms. `off` is the default and is bit-identical to the shipped path.
- * `reverse` is the ONE arm that is not a candidate for shipping and never will
- * be — see `reverseNonsense` in `agentSelect.ts` for what it is for.
+ * ── `adviser` IS THE DEFAULT. THE MODEL RANKS THE SUBSET (wsGB) ───────────
+ * It was `off`, and this file said so at four places. The architecture has
+ * always been "our code selects the candidate subset, an LLM ranks that
+ * subset"; what shipped was the first half of it, with the second half built,
+ * measured and switched off. The owner closed that on 2026-08-12: the ranker
+ * ships, and the head-to-head becomes a baseline rather than a gate.
+ *
+ * WHY `adviser` AND NOT ONE OF THE OTHER FOUR. Each is excluded by something
+ * already on record, not by taste:
+ *
+ *   `rows`     the same seat with no thinking, no prior and no retrieval. It is
+ *              the arm that was measured and lost: EXACT@6 17% against the
+ *              shipped 27%, with CHANNEL@5 falling 92% -> 75% — the model
+ *              leaving the right neighbourhood, not picking the wrong sibling.
+ *   `assist`   freezes the first `SELECT_KEEP` seats of the DETERMINISTIC
+ *              order. Shipping it would ship the thing this workstream removed,
+ *              in three of seven seats.
+ *   `dry`      builds the prompt and never calls. It prices the arm; it cannot
+ *              be the arm.
+ *   `reverse`  publishes the worst candidate first, on purpose, and refuses to
+ *              boot in a production build two guards below.
+ *
+ * `adviser` is also the TREATMENT arm named in `project-mgmt/wsGA_prereg.md`,
+ * so what ships is the configuration the pre-registered run measures, not a
+ * neighbour of it.
+ *
+ * ── `off` IS NOW THE CONTROL, AND IT IS STILL REACHABLE ───────────────────
+ * Nothing about the flip makes the off path dead: it is the control arm of the
+ * head-to-head, `scripts/_wsga_headtohead.ts` runs it by name, and every
+ * failure inside `agentSelectRows` still degrades to the same order it
+ * produces. What changed is which one you get by saying nothing.
+ *
+ * A CONSEQUENCE THAT IS NOT AN ACCIDENT: a brief now makes one more model call
+ * than it did, so the arm must be spelled `off` by any harness that means to be
+ * free. A harness carrying its own `?? "off"` would have gone on reporting the
+ * control's name over the treatment's spend — `scripts/_wsga_headtohead.ts`
+ * held exactly that copy and now reads this constant instead.
  */
 export type AgentSelectArm = "off" | "rows" | "assist" | "adviser" | "dry" | "reverse";
 const ARMS: AgentSelectArm[] = ["off", "rows", "assist", "adviser", "dry", "reverse"];
@@ -121,11 +155,12 @@ const ARMS: AgentSelectArm[] = ["off", "rows", "assist", "adviser", "dry", "reve
  * retracted figure, so neither is available here.
  */
 export const AGENT_SELECT_ARM: AgentSelectArm = (() => {
-  const raw = process.env.AGENT_SELECT ?? "off";
+  const raw = process.env.AGENT_SELECT ?? "adviser";
   if (!ARMS.includes(raw as AgentSelectArm)) {
     throw new Error(
       `AGENT_SELECT must be one of ${ARMS.join("|")}, got "${raw}". ` +
-      `It is read once at module scope precisely so a typo cannot read as "off".`);
+      `It is read once at module scope precisely so a typo cannot read as ` +
+      `"adviser" — which is now the default and now SPENDS.`);
   }
   if (raw === "reverse") {
     // Two guards, because "default off" is not enough for an arm whose whole
@@ -252,8 +287,11 @@ export const SELECT_DEPTH = depthLever("AGENT_SELECT_DEPTH", 40, { all: true });
  * empty, so every reply parsed to no usable pick and the run reported the
  * shipped order under the treatment's name.
  *
- * NOT A PRODUCTION CHANGE. It is read only when the arm is on, and the arm is
- * off by default.
+ * IT IS A PRODUCTION NUMBER NOW (wsGB). The line here used to close "NOT A
+ * PRODUCTION CHANGE... the arm is off by default", and the arm is on by
+ * default. This is how many of the seven published seats the model fills; the
+ * rest fall to the pool's own order, which is the fallback and not a second
+ * ranker.
  */
 export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 7);
 

@@ -121,12 +121,15 @@ SELECT = ROOT / "website/frontend/lib/intelligence/agentSelect.ts"
 def live_ranker() -> str:
     """Which ranker a founder's memo is actually ordered by, right now.
 
-    This is not decoration. `AGENT_SELECT` defaults to `off` and is set
-    nowhere in build, CI or deploy, so the LLM ranker is BUILT AND NOT
-    SWITCHED ON -- the order a founder reads today is the score's. A brief
-    that says "the AI picks five" while the AI is off is precisely the class
-    of confident-and-wrong this whole file exists to prevent, so the page
-    states whichever is live and the fact is read from the code, not typed.
+    This is not decoration. It was written when `AGENT_SELECT` defaulted to
+    `off` and was set nowhere in build, CI or deploy, so the LLM ranker was
+    BUILT AND NOT SWITCHED ON and the order a founder read was the score's.
+    wsGB flipped that default to `adviser`, so this read now returns "the AI
+    ranker" -- which is the whole point of reading it rather than typing it. A
+    brief that says "the AI picks five" while the AI is off, or that says "our
+    own scoring" while the model is in the seat, is the same class of
+    confident-and-wrong either way, and only a read of the code can be right in
+    both directions.
     """
     # The constant moved from agentSelect.ts to caps.ts when the arm became a
     # hermetic lever. Search both rather than pinning one path: the page's claim

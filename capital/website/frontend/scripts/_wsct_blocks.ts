@@ -166,7 +166,7 @@ async function main() {
     const { assessments } = orderMemoCandidates({
       instrumentTable,
       req: { company: "TestCo", country: t.country, eligibility, ...opts } as never,
-      records: [], dbPeers: [], eligibilityScreen, semanticScores: semantic, log,
+      records: [], dbPeers: [], eligibilityScreen, log,
     });
     const assessment = assessments.get(t.instrument);
     if (assessment?.status !== "blocked") continue;

@@ -198,10 +198,44 @@ export function isDeliberatelyOffline(): boolean {
  *                  without them
  * @throws when the run is not offline and a required key is missing
  */
+/**
+ * ── A HARNESS THAT DECLARED NO ANTHROPIC KEY MAY NOT SPEND (wsGB) ─────────
+ *
+ * The credential contract above is already the statement "this run needs a
+ * model" or "this run does not". Until 2026-08-12 the second statement was safe
+ * for free, because `AGENT_SELECT` defaulted to `off` and the ranking seam
+ * returned its argument by reference. It now defaults to `adviser`, and a
+ * harness that declares `["DATABASE_URL", "VOYAGE_KEY"]`, loads `.env.local`
+ * (which carries ANTHROPIC_API_KEY), and touches the memo seam will make a paid
+ * call per founder while its own contract says it is free.
+ *
+ * So the declaration is PUBLISHED here and enforced at the one place that
+ * spends — `agentSelectRows`, immediately before the call. The property, with a
+ * test for a harness nobody has written yet: a run whose declared credentials
+ * omit ANTHROPIC_API_KEY may not make a model call, whatever its name and
+ * whatever the arm.
+ *
+ * It is published through the environment rather than through an import because
+ * `lib/intelligence/` must not import from `scripts/`, and because ESM
+ * evaluates every imported module BEFORE the first statement of the importing
+ * script — so a module-scope read anywhere would run before this is called.
+ * That is also why the seam reads it at the moment of spending rather than
+ * once: this is an interlock, not a lever, and an interlock that is latched
+ * before the declaration exists latches nothing.
+ *
+ * REFUSAL, NOT FALLBACK. Deleting the key instead would make the call throw,
+ * `agentSelectRows` catch, and the run report the SHIPPED ORDER under the
+ * treatment's name — the exact failure this repo has retracted figures for. A
+ * harness that wants the free arm says so: `AGENT_SELECT=off`.
+ */
+export const NO_SPEND_ENV = "WINCENT_DECLARED_NO_ANTHROPIC";
+
 export function requireCredentials(
   context: string, keys: readonly string[],
   { optional = [] as readonly string[] } = {},
 ): CredentialState {
+  if ([...keys, ...optional].includes("ANTHROPIC_API_KEY")) delete process.env[NO_SPEND_ENV];
+  else process.env[NO_SPEND_ENV] = context;
   const state: CredentialState = isDeliberatelyOffline() ? "offline" : "live";
   if (state === "offline") {
     // One definition of "there is no database", instead of nineteen.
