@@ -1,14 +1,21 @@
 {
- "startedAt": "2026-08-12T22:09:46.046Z",
+ "startedAt": "2026-08-12T22:32:01.464Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
  "n": 897,
  "drawFingerprint": "13cb71cf3a1d1847",
- "corpus": "postgres instruments=1088",
+ "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-12T22:09:46.510Z",
+ "corpusObservedAt": "2026-08-12T22:32:02.111Z",
+ "corpus": "postgres instruments=1088",
+ "rankerTally": {
+  "embedding": 814,
+  "lexical": 0
+ },
  "ranker": "ranker: all 814 request(s) on EMBEDDING",
+ "sampled": false,
+ "populationSize": 897,
  "levers": {
   "VERDICT_POOL": 18,
   "WRITER_CANDIDATE_CAP": 8,

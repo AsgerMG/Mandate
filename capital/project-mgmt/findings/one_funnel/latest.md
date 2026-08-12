@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-12T22:09:46.046Z
-corpus             postgres instruments=1088 at 2026-08-12T22:09:46.510Z
+started            2026-08-12T22:32:01.464Z
+corpus             postgres instruments=1088 at 2026-08-12T22:32:02.111Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-12T22:09:46.510Z
+                   is REFUSED rather than labelled. observedAt 2026-08-12T22:32:02.111Z
 ranker: all 814 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -65,7 +65,7 @@ is not a move.
 | ... and it is one of the 7 rows the brief publishes | 329 | 36.7% +/-3.2 | -17 (1.9 pts) | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
 | ... and it is in the first 6 of them | 303 | 33.8% +/-3.1 | -26 (2.9 pts) | the first 6 rows of the same order, our own scoring |
 | ... and it is in the first 5 of them | 279 | 31.1% +/-3.0 | -24 (2.7 pts) | the first 5 rows of the same order, our own scoring |
-| ... and the MODEL, which re-orders the 18 before the cuts below, still leaves it in the first 5 | ? | ? | **UNMEASURED** | `agentSelectMemoPool` → Anthropic, at `pipeline.ts:1756` — a PERMUTATION of the 18, applied above the two cuts below it |
+| ... and the MODEL, which re-orders the 18 before the cuts below, still leaves it in the first 5 | ? | ? | **UNMEASURED** | `agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the 18, applied above the two cuts below it |
 
 ██ The 7, 6, 5-row cuts are rank within `toWriter`, and they assume `assembleBriefRows`
 carries that order into the published table. IT DOES NOT: it puts every actionable row
