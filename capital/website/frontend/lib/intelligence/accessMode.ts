@@ -88,6 +88,26 @@ export function accessMode(inst: DbInstrument): AccessMode {
  * offered it. It now means the non-dilutive routes; equity is opt-in, because
  * a founder who has not raised before does not know that leaving a field blank
  * is what put a cap-table investor in front of them.
+ *
+ * ── WHAT THIS COSTS, RE-MEASURED, BECAUSE IT WAS BEING BLAMED FOR THE LOT ──
+ * A prior measurement attributed almost the whole founder-screen loss to
+ * `SEL-CAPITAL`, "mostly tax credits". On the corpus of 2026-08-13, replayed
+ * over 820 held-out described founders (scripts/_wsge_attribution.ts), the
+ * founder screen loses 23 and the split is:
+ *
+ *     14  SEL-CHANNEL-CAP           the channel pool was already at its cap of
+ *                                   7 — chips_ju_kdt x4, edf x4, euspa x2,
+ *                                   europes_rail x2, eurohpc, clean_aviation
+ *      6  SEL-CHANNEL-NOT-SELECTED  a large-ticket channel the founder's ask
+ *                                   does not open — eib_venture x4,
+ *                                   innovation_fund x2
+ *      3  SEL-CAPITAL               this filter
+ *
+ * All three are `equity` — tesi_equity twice, eit_rawmaterials_portfolio once —
+ * and in every case the founder did not ask for equity. That is this guard
+ * doing exactly what it is written to do, and NOT ONE is a tax credit. The
+ * founder screen's real cost is the channel cap, which is a different file and
+ * a different question.
  */
 export function passesCapitalPreference(
   inst: DbInstrument,
@@ -116,13 +136,20 @@ export function passesCapitalPreference(
  * a fund we measured and found middling — so the less we knew, the better an
  * instrument did.
  *
- * Blast radius, re-measured against Postgres on 2026-08-13: of 1,088 corpus
- * rows, 18 pass every other publishable predicate and fail only this one, and
- * no country loses its last national route. (The "18 of 724" this line used to
- * quote was the same 18 against a corpus that has since grown to 1,088
- * instruments and 771 publishable — and it was self-contradictory as written,
- * since this test IS one of the predicates `publishableInstruments` applies, so
- * a publishable instrument can never be below the floor.)
+ * What it costs, re-derived against Postgres 2026-08-13: 18 rows are otherwise
+ * publishable and fail only this, out of 771 publishable — the same 18 the
+ * adoption note recorded against a smaller corpus of 724, so the floor has not
+ * widened as the corpus grew. No country loses its last national route to it.
+ *
+ * Every one of those 18 is a national or European investment vehicle with an
+ * award history we hold but no amounts and no dates: Almi Invest, HTGF,
+ * Coparion, EIFO, Invest-NL, CDP Venture Capital, Bpifrance's fund arm, the EIC
+ * Fund, SPRIND and six Enterprise Ireland lines. None carries a single encoded
+ * gate, so `accessMode` calls all of them "apply" for want of anything to read
+ * — which is exactly the encoding-backlog hazard `passesCapitalPreference`
+ * refuses to depend on. Admitting them is therefore not one decision but two,
+ * and the second is whether a row with no gates and no amounts may be published
+ * at all. See project-mgmt/evidence/wsgl_data_floor_2026-08-13.jsonl.
  *
  * ── The register clause, and why it is not a loosening ────────────────────
  * The two tests above are both AWARD facts, because award history was the only
@@ -150,19 +177,17 @@ export function passesCapitalPreference(
  *     this clause agreeing with it keeps the two from drifting.
  *   - It grants nothing on SCALE. These rows still have no award median, so
  *     `awardScorer` gives them 1.0 — the same neutral the corpus already gives
- *     the 141 publishable instruments with no usable one (no `awardP50`, or
- *     fewer than `AWARD_N_FLOOR` awards behind it; 2026-08-13, was 98) — and
- *     `scaleFit` 0.5 in the memo only.
+ *     the 95 publishable instruments without one — and `scaleFit` 0.5 in the
+ *     memo only.
  *
- * ── AND IT IS NO LONGER A NO-OP, WHICH IS THE POINT OF IT ─────────────────
- * At adoption this paragraph read "of the 41 instruments that fail the first
- * two tests, ZERO have a future call deadline", i.e. the clause admitted
- * nothing that existed yet. Re-measured against Postgres on 2026-08-13: 131
- * instruments have neither amounts nor a `lastYear`, and 87 of them are
- * admitted by a future call deadline. That is the register sources landing, and
- * it is what the clause was written for — but it means the third test now
- * carries a seventh of the corpus, so it is load-bearing and a change to it is
- * no longer free. Re-take both figures before quoting either.
+ * ██ THE BLAST RADIUS BELOW WAS TRUE AND IS NOT ANY MORE. ██ It read: "of the
+ * 41 instruments that fail the first two tests, ZERO have a future call
+ * deadline. The clause admits nothing that exists today." Against Postgres on
+ * 2026-08-13, 131 instruments fail the two award tests and 87 of them carry a
+ * future register-stated call deadline. The clause is now the ONLY thing
+ * keeping 87 rows in the corpus, which is what a call register is supposed to
+ * do — but it is no longer a no-op, and a reader who trusted that sentence
+ * would misjudge any change to this function by two orders of magnitude.
  */
 export function meetsDataFloor(inst: DbInstrument): boolean {
   const hasAmounts = (inst.totalEur ?? 0) > 0;
@@ -178,10 +203,11 @@ export function meetsDataFloor(inst: DbInstrument): boolean {
 /**
  * Instruments we hold too little about to say much, without holding nothing.
  *
- * 133 of the 771 publishable instruments have fewer than five tracked awards
- * (2026-08-13; it was 56 of 724 when this was written, and the growth is the
- * register sources, which by construction arrive with no award history at all).
- * There is no median award to quote, the sector
+ * 133 publishable instruments have fewer than five tracked awards (Postgres
+ * 2026-08-13; the line here said 56, from a corpus of 724 rather than 771, and
+ * the population has more than doubled while the threshold has not moved — a
+ * demotion this broad deserves re-reading rather than re-quoting). There is
+ * no median award to quote, the sector
  * history is a handful of companies, and precedent is close to noise — so
  * every judgement about them is thinner than it looks beside a fund measured
  * across thousands of awards.

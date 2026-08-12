@@ -132,21 +132,17 @@ if (requireCredentials("measure_funnel", ["DATABASE_URL", "VOYAGE_KEY"]) === "of
     + "run of 2026-08-12. Unset NO_PG and run against the live stores.");
 }
 
-import { meetsDataFloor } from "../lib/intelligence/accessMode";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
 import { VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
 import {
   corpusProvenance, type DbInstrument, findPeersBySubsector, hydrateDbInstruments,
-  isGenericSubsector, loadDbInstruments, matchCompany, publishableInstruments,
+  isGenericSubsector, loadDbInstruments, matchCompany, publishabilityContext,
+  publishabilityFailures, publishableInstruments,
   requireLiveCorpus, resetGateHydration, suppressedForUnconfirmedLiveness,
 } from "../lib/intelligence/corpus";
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
-import { isClosed } from "../lib/intelligence/liveness";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
-import { registerNamesTheRow } from "../lib/intelligence/nameEvidence";
-import { isWithheldByPolicy } from "../lib/intelligence/offerableAxes";
-import { hasOfferRoute } from "../lib/intelligence/offerRoute";
 import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
 import {
   rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
@@ -418,31 +414,21 @@ function assertNested(t: Trace, verdicts: (boolean | null)[]): void {
   }
 }
 
-/** ── WHY A FUND IS NOT PUBLISHABLE, from the predicates themselves ─────────
+/** ── WHY A FUND IS NOT PUBLISHABLE ────────────────────────────────────────
  *
- *  Each line CALLS the one definition rather than restating it, so a predicate
- *  that changes meaning changes here too. What this cannot do is notice a
- *  predicate being ADDED -- so it does not pretend to: a lost pair that none of
- *  these explains is counted as `unattributed` and printed. That count going
- *  above zero is the signal that `publishableInstruments` grew a clause this
- *  list has not been told about, which is the only failure mode a reason list
- *  has and the one it must not be silent about.
+ *  Nothing is restated here. `publishabilityFailures` in `corpus.ts` IS the
+ *  filter -- `publishableInstruments` keeps a row when it returns empty -- so
+ *  this cannot drift from what actually dropped the row, and it cannot miss a
+ *  clause the filter grows. That is not hypothetical: this file used to hold a
+ *  copy, and the copy tested closure WITHOUT the successor-redirect exemption
+ *  the filter applies, so a row dropped for any other reason that happened to
+ *  be a closed scheme with a successor was reported as a closure. Every
+ *  "the register says the window has shut" count published before 2026-08-13
+ *  is an upper bound for that reason.
  *
- *  Reasons OVERLAP by design. A row with no offer route and no data floor fails
- *  both, and forcing a partition would require an order of precedence that the
- *  filter itself does not have. */
-function whyNotPublishable(i: DbInstrument, hasChildren: ReadonlySet<string>): string[] {
-  const why: string[] = [];
-  if (i.isFramework) why.push("a framework record, not a fund");
-  if (hasChildren.has(i.id)) why.push("a parent with leaves — the leaves are offered instead");
-  if (!hasOfferRoute(i)) why.push("no application route on record");
-  if (!registerNamesTheRow(i)) why.push("nothing outside its own id names the row");
-  if (isWithheldByPolicy(i)) why.push("withheld by editorial policy");
-  if (isClosed(i)) why.push("the register says the window has shut");
-  if (!meetsDataFloor(i)) why.push("no amounts and no dates — below the data floor");
-  return why;
-}
-
+ *  `unattributed` stays: it is now only reachable if the DEGRADATION clause,
+ *  which is deliberately outside `publishabilityFailures`, drops a row this
+ *  harness thought was undegraded -- still worth hearing about. */
 async function main() {
   const startedAt = new Date().toISOString();
   await hydrateDbInstruments();
@@ -471,8 +457,7 @@ async function main() {
   const corpus = loadDbInstruments();
   assertAncestorConvention(corpus);
   const byId = new Map(corpus.map((i) => [i.id, i]));
-  const hasChildren = new Set(
-    corpus.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
+  const pubCtx = publishabilityContext(corpus);
   const inCorpus = new Set(corpus.map((i) => i.id));
   const offerableRows = publishableInstruments();
   const offerable = new Set(offerableRows.map((i) => i.id));
@@ -560,7 +545,7 @@ async function main() {
     const wasDegraded = degraded.has(won);
     // Attribution for the corpus stage, computed only where something was lost.
     if (heldByCorpus && !isOfferable && !wasDegraded) {
-      const why = whyNotPublishable(byId.get(won) as DbInstrument, hasChildren);
+      const why = publishabilityFailures(byId.get(won) as DbInstrument, pubCtx);
       if (!why.length) unattributed++;
       for (const w of why) lostReasons.set(w, (lostReasons.get(w) ?? 0) + 1);
     }
@@ -960,8 +945,9 @@ async function main() {
   p("```");
   p();
   if (unattributed > 0) {
-    p("██ `publishableInstruments()` has grown a clause `whyNotPublishable` has not been");
-    p("told about. The stage COUNT above is still correct; only this breakdown is short.");
+    p("██ `publishableInstruments()` dropped a row `publishabilityFailures` says is publishable,");
+    p("so the DEGRADATION clause -- the only filter outside it -- took it while this harness");
+    p("read the row as undegraded. The stage COUNT above is still correct; the breakdown is short.");
     p();
   }
 
