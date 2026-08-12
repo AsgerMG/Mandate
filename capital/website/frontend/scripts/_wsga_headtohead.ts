@@ -220,6 +220,15 @@ interface Row {
   /** Rank of the won fund in each arm's published projection, 1-based. */
   rankControl: number | null;
   rankRanker: number | null;
+  /** ── RANK IN THE POOL, WHICH IS WHAT THE SECONDARY TEST MUST READ ──────
+   *  The published projection is SEVEN rows, so a won fund at pool rank 9
+   *  under one arm and 14 under the other is `null` on both and the rank test
+   *  drops the pair. The dry run made that concrete: the Wilcoxon dropped 114
+   *  of 120 pairs and reported on three. The pool is eighteen rows and, on the
+   *  `late` seam, the same SET under both arms — so this rank exists for every
+   *  in-pool founder under both, which is the whole point of a rank test. */
+  poolRankControl: number | null;
+  poolRankRanker: number | null;
   /** The published projection itself, so a re-score does not need the corpus. */
   publishedControl: string[];
   publishedRanker: string[];
@@ -449,6 +458,7 @@ async function main() {
      *  judgement from a coin. */
     let publishedRankerB: string[] | null = null;
     let picksB: number[] | null = null;
+    let poolRankRanker: number | null = rankIn(poolControl.map(idOf), t.instrument);
 
     if (worthCalling) {
       // ── WHICH ARRAY THE SEAM IS HANDED, and it is not a detail ───────────
@@ -477,6 +487,7 @@ async function main() {
       fellBack = a.trace?.fellBack ?? null;
       eur = a.spent;
       ceilingRanker = a.pool.map(idOf).includes(t.instrument);
+      poolRankRanker = rankIn(a.pool.map(idOf), t.instrument);
       publishedRanker = project(a.pool);
       const doRepeat = repeat > 1 && repeated < repeatFirst;
       if (doRepeat) repeated++;
@@ -500,6 +511,8 @@ async function main() {
       accessible: poolFull.length,
       rankAccessible: rankIn(poolFull.map(idOf), t.instrument),
       ceilingControl, ceilingRanker, reachable,
+      poolRankControl: rankIn(poolControl.map(idOf), t.instrument),
+      poolRankRanker: poolRankRanker,
       rankControl: rankIn(publishedControl, t.instrument),
       rankRanker: worthCalling ? rankIn(publishedRanker, t.instrument) : null,
       publishedControl: publishedControl.slice(0, PUBLISH_CAP),
@@ -693,13 +706,25 @@ async function main() {
   p(`## Secondary — the won fund's RANK, Wilcoxon signed-rank`);
   p();
   p("```");
-  const w = wilcoxonSignedRank(
-    graded.map((r) => ({ control: r.rankControl, treatment: r.rankRanker })));
-  p(`n=${w.n} non-tied pairs (${w.dropped} dropped: the fund is absent from one arm's list)`);
-  p(`mean rank shift ${w.meanShift >= 0 ? "+" : ""}${w.meanShift.toFixed(2)} ` +
-    `(NEGATIVE favours the ranker — a lower rank is better)`);
-  p(`z = ${w.z >= 0 ? "+" : ""}${w.z.toFixed(2)}   p = ${w.p < 0.001 ? "<0.001" : w.p.toFixed(3)}`);
+  for (const [where, get] of [
+    [`POOL rank (of ${VERDICT_POOL}) — the sensitive one`,
+      (r: Row) => ({ control: r.poolRankControl, treatment: r.poolRankRanker })],
+    [`PUBLISHED rank (of ${PUBLISH_CAP})`,
+      (r: Row) => ({ control: r.rankControl, treatment: r.rankRanker })],
+  ] as [string, (r: Row) => { control: number | null; treatment: number | null }][]) {
+    const w = wilcoxonSignedRank(graded.map(get));
+    p(`${where}`);
+    p(`  n=${w.n} non-tied pairs (${w.dropped} dropped: the fund is absent from one arm's list)`);
+    p(`  mean rank shift ${w.meanShift >= 0 ? "+" : ""}${w.meanShift.toFixed(2)} ` +
+      `(NEGATIVE favours the ranker — a lower rank is better)`);
+    p(`  z = ${w.z >= 0 ? "+" : ""}${w.z.toFixed(2)}   p = ${w.p < 0.001 ? "<0.001" : w.p.toFixed(3)}`);
+  }
   p("```");
+  p();
+  p("TWO windows, and the first is the one to read. The published projection is");
+  p(`only ${PUBLISH_CAP} rows, so a won fund that sits at pool rank 9 under one arm and 14`);
+  p("under the other is absent from both and the pair is DROPPED. The dry run made");
+  p("that concrete: on the published window the rank test kept three pairs of 120.");
   p();
   p("SECONDARY BY PRE-REGISTRATION. It is a more powerful test of a DIFFERENT");
   p("quantity, and a more powerful test of a different quantity is not a second");
