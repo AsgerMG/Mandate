@@ -79,12 +79,16 @@ more stable object, no combiner over any number of samples can prefer it, and
 the sample count is spend with no mechanism behind it.
 
 The swing set makes it concrete. Of the 9 founders in play, only 2 have both
-ranks inside the top 7:
+ranks inside the top 7 — so only 2 are the cut-boundary case where the model is
+splitting hairs between comparables. Here are the other 6, plus the third
+near-miss:
 
 ```
 GREENERWAVE        A rank  5   B rank 17      ASS VAL'HOR   A rank 17   B rank 5
 EGÚ BRNO           A rank  4   B rank 12      WELL ID       A rank 18   B rank 5
 CASINVENT PHARMA   A rank  9   B rank  5      NORTURA       A rank  8   B rank 5
+NEXT GEN SENSORS   A rank  5   B rank  8
+                                     (the 2 boundary cases: 5/6 and 4/7)
 ```
 
 A fund at 5 in one sample and 17 in the other averages to 11. Consensus does not
