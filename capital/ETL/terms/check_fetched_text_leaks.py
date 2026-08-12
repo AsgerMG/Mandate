@@ -60,12 +60,26 @@ Normalisation is `squash` from recall_guards, imported for the reason that
 module's own docstring gives: two copies of a leak guard drift, and the copy
 that drifts is the one that silently stops catching things.
 
-DELIBERATELY NOT A CI STEP. It reads `data/raw/scheme_enrichment/found_*.json`,
-which is gitignored, and no CI step may depend on gitignored data. It is run by
-whoever fetched, after every batch, before the load.
+── Where this runs, and why it is not a CI step ────────────────────────────
+It reads `data/raw/scheme_enrichment/found_*.json`, which is gitignored, and no
+CI step in this repo may depend on gitignored data. So it can never be named by
+ci.yml or corpus-currency.yml, and the weekly Railway cron does not have the
+fetch files either. It is declared `manual` in data/guard_registry.json with
+that reason and a review date, which is what `check_guard_reachability.py`
+requires of a guard with no automatic home.
+
+`manual` was ALSO the whole of its wiring when this file was written, and the
+sentence that stood here said it "is run by whoever fetched, after every batch,
+before the load". That is an instruction, not a mechanism, and this repository's
+most reliably broken promise is an instruction living in a docstring. So the
+moment the property actually matters -- fetched text entering the corpus -- now
+enforces it: `load_scheme_text.py` calls `scan()` on exactly the files it is
+about to load and REFUSES TO WRITE on an active-set hit. Skipping the check is
+possible and has to be typed (`--skip-leak-check`), which is the difference
+between a decision and an omission.
 
   python3 ETL/terms/check_fetched_text_leaks.py --file found_EU_wsEO.json
-  python3 ETL/terms/check_fetched_text_leaks.py --since 2026-08-11
+  python3 ETL/terms/check_fetched_text_leaks.py
 """
 from __future__ import annotations
 
@@ -186,14 +200,27 @@ def titles_by_project(conn: sqlite3.Connection, ids: set[str]) -> dict[str, list
     return out
 
 
-def main() -> None:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--file", action="append", metavar="found_XX.json",
-                    help="check these files (repeatable). Default: every found_*.json")
-    args = ap.parse_args()
+def scan(files: list[_Path], verbose: bool = True) -> tuple[list[str], list[str]]:
+    """(fails, warns) over these fetch files. The whole check, minus the exit code.
 
-    files = ([SRC / f for f in args.file] if args.file
-             else sorted(SRC.glob("found_*.json")))
+    Split out of `main` so the LOADER can call it. The docstring above used to
+    end with "It is run by whoever fetched, after every batch, before the load",
+    which is an instruction and not a mechanism -- and an instruction in a
+    docstring is this repository's most reliably broken kind of promise. The one
+    moment the property actually matters is the moment fetched text enters the
+    corpus, so `load_scheme_text.py` calls this here and refuses to write over an
+    active-set hit. That does not make it reachable in the sense
+    `check_guard_reachability.py` means (the loader is not an automatic path, and
+    it reads gitignored data so it cannot become one) -- it is declared `manual`
+    in data/guard_registry.json for that. It makes the guard run when it counts.
+
+    `verbose` off for the in-loader call: the loader prints its own summary and
+    only the hits matter there.
+    """
+    def say(*a):
+        if verbose:
+            print(*a)
+
     records: list[tuple[str, str, str, str]] = []  # (file, id, field, text)
     for f in files:
         if not f.exists():
@@ -206,10 +233,10 @@ def main() -> None:
                 t = (rec.get(field) or "").strip()
                 if t:
                     records.append((f.name, iid, field, t))
-    print(f"{len(records)} fetched strings across {len(files)} file(s)")
+    say(f"{len(records)} fetched strings across {len(files)} file(s)")
 
     recall = recall_descriptions()
-    print(f"{len(recall)} recall descriptions over {MIN_QUERY} chars, "
+    say(f"{len(recall)} recall descriptions over {MIN_QUERY} chars, "
           f"{len({r[1] for r in recall})} instruments")
 
     conn = sqlite3.connect(DB, timeout=60)
@@ -217,7 +244,7 @@ def main() -> None:
     titles = titles_by_project(conn, {r[1] for r in records})
     conn.close()
     n_titles = sum(len(v) for v in titles.values())
-    print(f"{n_titles} own award titles held for {len(titles)} of these instruments "
+    say(f"{n_titles} own award titles held for {len(titles)} of these instruments "
           f"(families whose titles are statute names are excluded, see docstring)")
 
     # Recall rows grouped by the FAMILY of the fund they won, so a fetched
@@ -226,9 +253,9 @@ def main() -> None:
     by_family: dict[str, list[tuple[str, str, str, bool]]] = {}
     for name, inst, sq, active in recall:
         by_family.setdefault(family.get(inst, inst), []).append((name, inst, sq, active))
-    print(f"scoped to the won fund and its siblings: "
+    say(f"scoped to the won fund and its siblings: "
           f"{len(by_family)} instrument families carry a recall founder")
-    print(f"the active set is {active_set()}; a hit on a retired set warns, "
+    say(f"the active set is {active_set()}; a hit on a retired set warns, "
           f"a hit on the active set fails")
 
     fails: list[str] = []
@@ -251,6 +278,11 @@ def main() -> None:
                 fails.append(f"OWN TITLE    {fname} {iid}.{field} contains one of "
                              f"this instrument's own award titles")
 
+    return fails, warns
+
+
+def report(fails: list[str], warns: list[str]) -> bool:
+    """Print both lists the way the CLI always has. True if the active set is clean."""
     if warns:
         print(f"\n{len(warns)} hit(s) on a RETIRED recall set — no number that runs "
               f"today reads these rows, but a finding quoting them was measured "
@@ -261,10 +293,23 @@ def main() -> None:
         print(f"\nFAIL — {len(fails)} leak(s) on the active set:")
         for line in fails[:40]:
             print("  " + line)
-        raise SystemExit(1)
+        return False
     print(f"\nPASS — no fetched string contains an active-set recall description, "
           f"shares an {GRAM}-word run with one, or quotes its own instrument's "
           f"award titles.")
+    return True
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--file", action="append", metavar="found_XX.json",
+                    help="check these files (repeatable). Default: every found_*.json")
+    args = ap.parse_args()
+
+    files = ([SRC / f for f in args.file] if args.file
+             else sorted(SRC.glob("found_*.json")))
+    if not report(*scan(files)):
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

@@ -416,6 +416,11 @@ def main() -> None:
                     help="stage in SQLite WITHOUT publishing to Postgres. The "
                          "product will not see these rows until someone runs "
                          "publish_scheme_text_scoped.py. Prints a loud warning.")
+    # ── The leak check is ON, and turning it off is a thing you type ─────────
+    # See the note above `leak_check()` below.
+    ap.add_argument("--skip-leak-check", action="store_true",
+                    help="load WITHOUT asking check_fetched_text_leaks.py whether "
+                         "this batch contains the answer key. Say why in the commit.")
     args = ap.parse_args()
 
     conn = sqlite3.connect(DB)
@@ -424,15 +429,48 @@ def main() -> None:
 
     only = {c.strip().upper() for c in (args.country or [])} or None
 
+    def source_paths() -> list[_Path]:
+        return [f for f in sorted(SRC_DIR.glob("found_*.json"))
+                if not only or f.stem.split("_")[1].upper() in only]
+
     def source_files():
-        for f in sorted(SRC_DIR.glob("found_*.json")):
+        for f in source_paths():
             cc = f.stem.split("_")[1]
-            if only and cc.upper() not in only:
-                continue
             try:
                 yield cc, json.loads(f.read_text())
             except Exception:
                 continue
+
+    # ── Does this batch carry the answer key? Asked HERE, not in a docstring ─
+    # `check_fetched_text_leaks.py` cannot be a CI step: it reads
+    # data/raw/scheme_enrichment, which is gitignored. Its answer to that was to
+    # tell whoever fetched to run it "after every batch, before the load" -- a
+    # sentence in a docstring, which is the form of promise this repo breaks
+    # most reliably, and which nothing anywhere could observe being kept.
+    #
+    # This is the load. It is the single moment a fetched string stops being a
+    # file on one laptop and becomes corpus the ranker reads and the product
+    # shows, so it is the moment to ask. The check is scoped to exactly the
+    # files this run would load, so `--country SE` is not slowed or judged by
+    # somebody else's half-finished fetch.
+    #
+    # It runs on a DRY RUN too. A dry run exists to say what a write would do,
+    # and "it would import a founder's own answer" is the most important thing
+    # it could say -- finding that out only once --write is typed is finding out
+    # after the decision.
+    if not args.skip_leak_check:
+        from check_fetched_text_leaks import report, scan
+        fails, warns = scan(source_paths(), verbose=False)
+        print(f"leak check: {len(fails)} active-set hit(s), "
+              f"{len(warns)} retired-set warning(s) over {len(source_paths())} file(s)")
+        if fails or warns:
+            report(fails, warns)
+        if fails:
+            print("\nREFUSING TO LOAD. A fetched string on the ACTIVE recall set "
+                  "carries its own answer;\nloading it would inflate every recall "
+                  "number measured afterwards, invisibly and\npermanently. Fix the "
+                  "fetch, or pass --skip-leak-check and say why.")
+            raise SystemExit(1)
 
     # ── Pass 1: lifetime facts, before the liveness gate reads them ──────────
     # See lifetime_facts(). This must precede pass 2: the gate below asks the
