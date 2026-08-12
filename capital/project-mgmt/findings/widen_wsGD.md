@@ -212,15 +212,24 @@ and no value of K recovers one.
 Grouped by the intake field whose filter fired. `sole` counts founders for whom
 removing THAT ONE ANSWER un-blocks the fund:
 
-| intake field | answers deleted | sole | a requirement it fired on |
-|---|---:|---:|---|
-| `ticketBand` | 120 | **104** | "Projects of 6 to 18 months must have total eligible project costs between £100,000 and £500,000." |
-| `organisationType` | 33 | 20 | "The coordinator must be a municipality, a municipal association, or a civil society organisation" |
-| `region` | 16 | 16 | "The applicant enterprise must be located in the target territories of the Programme" |
-| `sector` | 15 | 15 | "Projects must fall within at least one of three defined themes" |
-| `useOfFunds` | 11 | 11 | "Funds must be used to clarify uncertainty related to the commercial application of the research" |
-| `consortium` | 6 | 6 | "Only individual projects carried by a single company are eligible (no consortia)." |
-| `borrowerModel` | 6 | 6 | "Sole proprietorships (enkeltpersonforetak) are not eligible to apply." |
+`sole` = removing that one answer un-blocks the fund. `own` = the answer that
+fired was DERIVED FROM THIS COMPANY rather than taken from `CONSTANT_ANSWERS`.
+
+| intake field | answers deleted | sole | **own** | a requirement it fired on |
+|---|---:|---:|---:|---|
+| `ticketBand` | 120 | **104** | **3** | "Projects of 6 to 18 months must have total eligible project costs between £100,000 and £500,000." |
+| `organisationType` | 33 | 20 | 33 | "The coordinator must be a municipality, a municipal association, or a civil society organisation" |
+| `region` | 16 | 16 | 16 | "The applicant enterprise must be located in the target territories of the Programme" |
+| `sector` | 15 | 15 | 15 | "Projects must fall within at least one of three defined themes" |
+| `useOfFunds` | 11 | 11 | **0** | "Funds must be used to clarify uncertainty related to the commercial application of the research" |
+| `consortium` | 6 | 6 | **0** | "Only individual projects carried by a single company are eligible (no consortia)." |
+| `borrowerModel` | 6 | 6 | 0 | "Sole proprietorships (enkeltpersonforetak) are not eligible to apply." |
+
+**Read the `own` column first.** `ticketBand` deletes 120 answers and only
+**three** of them fired on a band derived from that company. The other 117 fired
+on `CONSTANT_ANSWERS.ticketBand` — one made-up band, applied to seven founders
+in ten, against a cited and verified hard filter. `useOfFunds` and `consortium`
+are 0 for 17. That is not a corpus defect; it is the harness.
 
 **Do not read this as 184 encoding defects.** `check_winner_not_gated.ts` states
 this exact property over this exact seam, pins its debt at 207, and
@@ -245,8 +254,22 @@ So `_wsgd_stages.ts` runs the identical funnel twice, **gate 1 held fixed**, wit
 those four fields withdrawn on the second pass. The difference is not a proposal
 and not a fix; it is how much of the published ceiling is measurement error.
 
-> **`findings/stages_wsGD/stages.md`, "How much of the ceiling is the replay's
-> own invention", holds the n=820 result.**
+**The result, n=820, gate 1 held fixed:**
+
+| | pool length | won fund present | at K=18 | at K=40 |
+|---|---:|---:|---:|---:|
+| as replayed — **the published figures** | 71.6 | 613/820 — 74.8% | **43.3%** | **61.1%** |
+| with the invented answers withdrawn | 75.1 | 727/820 — **88.7%** | **55.7%** | **74.0%** |
+
+**Twelve and a half points of the headline ceiling are ours, not the world's.**
+"The answer is in the pool 43% of the time" is really 56%; "63% of founders have
+no answer on the list" is really 44%. Nothing about the product changed — only
+what the measurement was allowed to invent about the founder.
+
+The widening argument survives the correction intact, which is worth stating
+plainly: +17.8 points from K=18 to K=40 as published, **+18.3 points on the
+corrected ceiling**. Whichever number is the true one, the shape of the trade is
+the same.
 
 Two consequences, whichever way the number falls:
 
@@ -335,19 +358,17 @@ and the run stops rather than the invoice deciding.
 environment, so the pool width is already an arm. Three properties make the
 comparison sound and none of them needed building:
 
-- The **control is very nearly invariant, and the exception is measured rather
-  than assumed**. `project(poolControl)` publishes the score's own order cut to
-  the writer's eight, and the score's order is a prefix of itself, so a later
-  cut cannot reorder its head. That argument has one hole and it is worth
-  naming: `resolveNameCollisions` picks a label class's survivor by
-  `preferBetterEvidencedRow`, **a total order independent of position**, so a
-  wider pool can admit a better-evidenced sibling at rank 30, make it the
-  survivor, and demote the row that held that label in the top seven. The
-  control is therefore invariant except through the name collapse.
-  `_wsgd_stages.ts` builds the control's projection at every K and counts the
-  difference; see `findings/stages_wsGD/stages.md`. If the divergence is
-  material the comparison must be run against the control measured **in the same
-  process at the same pool width**, not against wsGA's printed control.
+- The **control is invariant, and that is measured rather than argued**. The
+  obvious argument — the score's order is a prefix of itself, so a later cut
+  cannot reorder its head — has a hole: `resolveNameCollisions` picks a label
+  class's survivor by `preferBetterEvidencedRow`, **a total order independent of
+  position**, so a wider pool could admit a better-evidenced sibling at rank 30,
+  make it the survivor, and demote the row that held that label in the top
+  seven. So `_wsgd_stages.ts` builds the control's projection at every K and
+  counts the difference. **It is identical to K=18 on 820 of 820 founders at
+  every K from 12 to the whole pool; the won fund enters 0 times and leaves 0
+  times.** The hole is real in the code and does not fire on this population, so
+  the two runs' control arms are directly comparable.
 - The **conditioning is already correct**. `shownDepth` is `VERDICT_POOL` on the
   late seam, so `ONLY_IN_POOL=1` conditions on "the answer is in the first
   forty" — which is the population the arm exists to reach, and exactly the
