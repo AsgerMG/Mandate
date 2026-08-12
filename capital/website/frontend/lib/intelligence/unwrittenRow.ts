@@ -44,12 +44,14 @@ import type { InstitutionEntry } from "./types";
  *  them, because a row with no note never published. */
 export const UNWRITTEN_ROW_LEAD = "No written assessment for this row;";
 
-/** True for prose this file generated, rather than a model.
+/** Prose this file generated, rather than a model.
  *
- *  Derived from the constant, never a second spelling of it. */
-export function isUnwrittenRowCopy(s: unknown): boolean {
-  return String(s ?? "").includes(UNWRITTEN_ROW_LEAD);
-}
+ *  Derived from the constant, never a second spelling of it, and exported
+ *  rather than rebuilt by each caller: the two places that needed to spot the
+ *  old fallback text each carried their own regex naming the same two
+ *  sentences, and both had gone stale in the same way. */
+export const UNWRITTEN_ROW_COPY = new RegExp(
+  UNWRITTEN_ROW_LEAD.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
 
 /**
  * The two model-written fields, built from the row instead.

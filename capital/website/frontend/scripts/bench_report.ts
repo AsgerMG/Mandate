@@ -20,6 +20,7 @@
  */
 import { readFileSync, readdirSync } from "node:fs";
 import { WATCH_ONLY_COPY } from "../lib/intelligence/watchOnly";
+import { UNWRITTEN_ROW_COPY } from "../lib/intelligence/unwrittenRow";
 // The contract checks, shared with the live pipeline so what we enforce and
 // what we measure are one artifact. Each violation carries the rule id
 // declared in contracts/, so a regression is named rather than described.
@@ -53,13 +54,18 @@ interface Row {
 
 const words = (s: unknown) => String(s ?? "").trim().split(/\s+/).filter(Boolean).length;
 
-/** Shared with the pipeline that drops these rows, so what we enforce and
+/** Shared with the pipeline that demotes these rows, so what we enforce and
  *  what we measure cannot drift apart. */
 const WATCH_ONLY = WATCH_ONLY_COPY;
 
-/** The template that fills in when the writer never wrote about a row. Three
- *  of Nortal's five rows read exactly this. */
-const BOILERPLATE = /verify eligibility directly with the fund|review the fund's current call/i;
+/** The copy that fills in when the writer never wrote about a row.
+ *
+ *  IMPORTED, not retyped. This was a private regex naming the two fallback
+ *  sentences the pipeline used to substitute, identical to the one in
+ *  briefChecks.ts and stale in the same way: the row carrying them was deleted
+ *  before it could publish, so this counter read zero on every bench run ever
+ *  made, and read it as good news. */
+const BOILERPLATE = UNWRITTEN_ROW_COPY;
 
 /** A row whose own justification argues against it — Nebius shipped "IPCEI
  *  Micro targets semiconductor value chains, not cloud infrastructure

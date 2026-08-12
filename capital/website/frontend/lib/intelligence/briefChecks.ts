@@ -18,7 +18,7 @@
 import { directsAtDepartment, whyNotApplyable } from "./applyableBody";
 import { distinguishers } from "./rowNovelty";
 import { WATCH_ONLY_COPY } from "./watchOnly";
-import { UNWRITTEN_ROW_LEAD } from "./unwrittenRow";
+import { UNWRITTEN_ROW_COPY } from "./unwrittenRow";
 import type { IntelligenceReport } from "./types";
 
 export interface CheckViolation {
@@ -55,8 +55,7 @@ const BACKEND_LEAKAGE: { pattern: RegExp; what: string }[] = [
  *  Now the row publishes and this fires on it. Derived from the one constant
  *  the copy is built from, never a second spelling of it — the previous
  *  version is what a check holding its own copy of the string decays into. */
-const BOILERPLATE = new RegExp(
-  UNWRITTEN_ROW_LEAD.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+const BOILERPLATE = UNWRITTEN_ROW_COPY;
 
 /** A row whose own justification argues against it. Only meaningful on rows
  *  with no declared blocker: a blocker row is SUPPOSED to name the obstacle. */
