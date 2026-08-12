@@ -149,7 +149,7 @@ import { isWithheldByPolicy } from "../lib/intelligence/offerableAxes";
 import { hasOfferRoute } from "../lib/intelligence/offerRoute";
 import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
 import {
-  rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
+  rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
 } from "../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
@@ -875,14 +875,36 @@ async function main() {
   const dir = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "one_funnel");
   mkdirSync(dir, { recursive: true });
   writeFileSync(path.join(dir, "latest.md"), out);
+  // ── ONE RECORD, WRITTEN TWICE ────────────────────────────────────────────
+  // `latest.json` is a SNAPSHOT of the newest run and is overwritten every
+  // time. `runs/<startedAt>.json` is HISTORY and is never overwritten. They are
+  // the same bytes on purpose: a series built from a second, thinner shape
+  // would be a second definition of what a run is, and the first thing to
+  // diverge would be which store and which ranker it used — the two fields the
+  // whole series depends on to mean anything.
+  //
   // AGGREGATE ONLY. No company name and no won-fund id leaves this process: the
   // answer key is 1.7 MB of real winning project titles and this instrument must
   // not become a second copy of it in a directory nothing guards.
-  writeFileSync(path.join(dir, "latest.json"), `${JSON.stringify({
+  const record = {
     startedAt, set: setFile, split, seed, n: N, drawFingerprint: fingerprint,
-    corpus: `${prov.source} instruments=${prov.instruments}`,
+    // ── WHAT THIS RUN ACTUALLY USED, NOT WHAT IT INTENDED ──────────────────
+    // Both guards above make a bad value unreachable today. They are recorded
+    // anyway, and as BOOLEANS rather than left to be parsed out of prose,
+    // because the series is only comparable if every point in it can be asked
+    // "were you measuring the shipped system" without a human reading a
+    // sentence. A run whose header said `snapshot` and `FELL BACK TO LEXICAL`
+    // was committed and planned from on 2026-08-12 precisely because the
+    // answer was only available as prose.
+    onProductStores: prov.source === "postgres" && !rankerTally().lexical,
     store: prov.source, corpusObservedAt: prov.observedAt,
+    corpus: `${prov.source} instruments=${prov.instruments}`,
+    rankerTally: rankerTally(),
     ranker: rankerTallyLine(),
+    // A sampled run has a wide interval on every row and is not the same
+    // measurement as the exact one. Flagged so a chart can drop it or draw it
+    // differently, rather than plotting an N=30 smoke run beside a reference.
+    sampled: n > 0, populationSize: population.length,
     levers: { VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP, rowCuts: ROW_CUTS },
     watchOnlyInProduction: wo ?? null,
     meanTableRows: Number(meanOf((t) => t.tableLen).toFixed(1)),
@@ -897,8 +919,46 @@ async function main() {
     corpusLossReasons: Object.fromEntries(lostReasons),
     corpusLossUnattributed: unattributed,
     modelStage: est ? { estimated: true, ...est } : { estimated: false },
-  }, null, 1)}\n`);
+  };
+  const body = `${JSON.stringify(record, null, 1)}\n`;
+  writeFileSync(path.join(dir, "latest.json"), body);
+  writeRunHistory(dir, startedAt, body);
   console.log(`wrote ${path.join(dir, "latest.md")}`);
+}
+
+/** ── THE HISTORY, AND THE ONE RULE IT HAS ──────────────────────────────────
+ *
+ *  APPEND ONLY. A run file is a statement about a moment and there is no
+ *  correct reason to change one: a re-measurement is a NEW run with its own
+ *  timestamp, fingerprint and store, and overwriting the old one would erase
+ *  the evidence that the two disagreed. `wx` is the flag that makes that a
+ *  property of the filesystem call rather than a convention, so a colliding
+ *  write fails loudly instead of silently replacing history.
+ *
+ *  Named by `startedAt`, which is what makes a collision essentially
+ *  impossible and also sorts the directory chronologically with no index file
+ *  to keep in step. Colons are stripped because they are legal on this
+ *  filesystem and not on every one a checkout may land on.
+ *
+ *  A failure here does NOT fail the run. `latest.md` and `latest.json` are
+ *  already on disk and carry the whole measurement; losing the history entry
+ *  costs a point on a chart, and taking the report down with it would cost two
+ *  hours. It is loud, which is the same trade `publishVerdict` makes. */
+function writeRunHistory(dir: string, startedAt: string, body: string): void {
+  const runs = path.join(dir, "runs");
+  const file = path.join(runs, `${startedAt.replace(/[:]/g, "-")}.json`);
+  try {
+    mkdirSync(runs, { recursive: true });
+    writeFileSync(file, body, { flag: "wx" });
+    console.log(`wrote ${file}`);
+  } catch (err) {
+    console.error(
+      `measure_funnel: the run record was NOT written to ${file}: ${err}\n`
+      + "  The measurement itself is intact in latest.md and latest.json; what is\n"
+      + "  missing is this run's point on the series. Do not fix it by copying\n"
+      + "  another run's file — a history entry that did not come from its own run\n"
+      + "  is the thing this directory exists to prevent.");
+  }
 }
 
 /** One-line mechanism per stage, printed beside it. A stage whose mechanism
