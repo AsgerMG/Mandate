@@ -67,6 +67,24 @@ export function setPlanner(mode: "answers" | "silent"): void { PLANNER = mode; }
  * silently routes every such run down the panel's empty-round branch. The
  * harness would then be grading a failure path while believing it was grading
  * the happy one.
+ *
+ * ── AND THEY ARE INTERLEAVED, NOT CONCATENATED (wsFV) ──────────────────────
+ * The four pools used to be emitted one whole pool at a time, A then B then D
+ * then C. `planAdaptiveScreen` enforces `SCREEN_QUESTION_CAP` in the order the
+ * reply arrives, so that made "which pool reaches the founder" a property of
+ * this stand-in's writing order rather than of the code under test: with Pool A
+ * full, the cap was spent before Pool C was read and no probe could ever answer
+ * a commercial question. It was masked, because a truncated shortlist
+ * under-filled Pool A on four of the twelve archetypes; restoring the founder's
+ * real shortlist filled it on all twelve and the coverage went to zero.
+ *
+ * Concatenating was also the stand-in DISOBEYING the prompt it was given, which
+ * is the one thing a stand-in may not do. That prompt says "include at least one
+ * and at most two from Pool C when a description exists" and "when Pool D is not
+ * empty you MUST include at least one" — instructions a real reply spreads
+ * across pools to satisfy. Round-robin is the smallest reply shape that obeys
+ * them, so the cap now truncates a spread reply, which is what production's cap
+ * actually meets.
  */
 function poolRefs(prompt: string, pool: "A" | "B" | "C" | "D"): string[] {
   const start = prompt.indexOf(`## Pool ${pool}`);
@@ -114,16 +132,23 @@ export class OfflineAnthropic {
             // `planAdaptiveScreen` deliberately applies no option floor to it.
             options: pool === "D" ? [] : WRITTEN_OPTIONS,
           }));
+        const pools = [
+          poolRefs(prompt, "A").map((ref) => ({
+            source: "field", ref, question: "", stake: "", options: [] as { value: string; label: string }[],
+          })),
+          written("gate", "B"),
+          written("open", "D"),
+          written("commercial", "C"),
+        ];
+        // Round-robin, so no pool can be starved by the cap purely for being
+        // written last. See the note above `poolRefs`.
+        const spread: unknown[] = [];
+        for (let i = 0; i < Math.max(...pools.map((p) => p.length), 0); i++) {
+          for (const p of pools) if (p[i]) spread.push(p[i]);
+        }
         return reply({
           theme: "A few more things",
-          questions: PLANNER === "silent" ? [] : [
-            ...poolRefs(prompt, "A").map((ref) => ({
-              source: "field", ref, question: "", stake: "", options: [],
-            })),
-            ...written("gate", "B"),
-            ...written("open", "D"),
-            ...written("commercial", "C"),
-          ],
+          questions: PLANNER === "silent" ? [] : spread,
         });
       }
       throw new Error(

@@ -4,6 +4,7 @@ import { checkQuota, recordCost } from "@/lib/intelligence/quota";
 import { recordEvent } from "@/lib/intelligence/telemetry";
 import { withCostTracking } from "@/lib/intelligence/cost";
 import { runIntelligence } from "@/lib/intelligence/pipeline";
+import { instById } from "@/lib/intelligence/shortlist";
 import {
   sanitizeFreeText,
   sanitizeEligibility,
@@ -90,6 +91,11 @@ export async function POST(request: NextRequest) {
       };
       try {
         await hydrateDbInstruments();
+        // The same membership test the intake route applies to the shortlist
+        // it grounds its questions in (wsFV): a prose answer names the fund it
+        // is about, and "is this one of our funds" is a question only the
+        // corpus can answer. Read after hydration, never before.
+        const corpus = instById();
         const { eur, calls } = await withCostTracking(async () => runIntelligence(
           {
             company: body.company.trim(),
@@ -129,7 +135,8 @@ export async function POST(request: NextRequest) {
                   sanitizeEligibility(body.eligibilityBeforeRound), body.country?.trim())
               : undefined,
             profileSignal: sanitizeProfileSignal(body.profileSignal),
-            projectAnswers: sanitizeProjectAnswers(body.projectAnswers),
+            projectAnswers: sanitizeProjectAnswers(
+              body.projectAnswers, (id) => corpus.has(id)),
           },
           send,
         ));
