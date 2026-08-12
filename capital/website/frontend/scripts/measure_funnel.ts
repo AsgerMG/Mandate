@@ -531,6 +531,17 @@ async function main() {
     + ` — one per company, described, drawn BEFORE the offerability cut`);
   p(`draw fingerprint   ${fingerprint}  <- two runs quoting different fingerprints`);
   p(`                   measured different founders, whatever seed they name`);
+  // WHICH leak bar this population clears, on the same screen as the numbers.
+  // `isDescribed` -- the curve's filter, so the pool rows below are comparable
+  // with the committed curve to the founder. It is a WEAKER bar than the
+  // head-to-head's `cross_regime`-only draw, and deliberately: that stricter bar
+  // exists because a MODEL reads the query text, and no model reads anything
+  // here. Every row is our own deterministic scoring.
+  p(`leak bar           isDescribed — `
+    + `\`own_project_title_leaks\` excluded, exact / 8-gram / sibling cleared by`);
+  p(`                   check_recall_leaks. NOT the head-to-head's stricter`);
+  p(`                   cross-regime-only draw, which exists because a model reads`);
+  p(`                   the query text and nothing here does.`);
   p(`levers             pool=${VERDICT_POOL} writer_cap=${WRITER_CANDIDATE_CAP} `
     + `published_cap=${PUBLISH_CAP} top=${TOP}`);
   p("```");
