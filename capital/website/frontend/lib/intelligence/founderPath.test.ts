@@ -127,21 +127,14 @@ const OPEN_DEFECTS: Record<string, OpenDefect> = {
       "call was made to produce.",
     review: "2026-09-30",
   },
-  "a commercial answer survives the route": {
-    detail:
-      "Pool C is the commercial half of the follow-up screen — who pays, how " +
-      "they charge, route to market, what an award buys — and the planner's own " +
-      "prompt says \"positioning has no other source\". `planAdaptiveScreen` " +
-      "builds every one of those questions with `instrumentId: \"\"`, because " +
-      "they are grounded in no fund; `sanitizeProjectAnswers` then refuses any " +
-      "entry whose `instrumentId` is empty. So EVERY commercial answer a founder " +
-      "types is deleted at the door of /api/intelligence, on every request, and " +
-      "the writer is asked to position a company from answers it never receives. " +
-      "Not a sampling result: it follows from the two lines and holds for every " +
-      "founder. `memo_bench` cannot see it — it hand-builds `projectAnswers` " +
-      "with real instrument ids.",
-    review: "2026-09-30",
-  },
+  // "a commercial answer survives the route" was here, and it is FIXED (wsFT).
+  // `sanitizeProjectAnswers` required a real instrument id on every entry and
+  // the commercial half of the screen is grounded in no fund by construction,
+  // so every one of those answers was deleted at the door of
+  // /api/intelligence. It now states the property instead -- an answer cites a
+  // fund, or declares itself ungrounded and is stripped of anything that could
+  // attribute it to one. The assertion below is the proof, and it is left in
+  // place unregistered so a regression is a failure rather than a new entry.
   "every field the memo route reads is a field the panel can send": {
     detail:
       "/api/intelligence reads `body.sector`, `body.companyType` and " +

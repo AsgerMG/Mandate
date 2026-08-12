@@ -27,6 +27,7 @@ import {
   BORROWER_MODELS,
   CONDITIONALITY_VALUES,
   MAX_DESCRIPTION_CHARS,
+  COMMERCIAL_ANSWER_PREFIX,
 } from "./types";
 import { regionNameFor } from "./regions.generated";
 
@@ -243,6 +244,37 @@ export function sanitizeInstrumentIds(raw: unknown): string[] | undefined {
  *
  * These deliberately never become EligibilityAnswers, so nothing here can
  * reach the deterministic evaluator no matter what a client posts.
+ *
+ * ── AN ANSWER IS GROUNDED IN A FUND, OR IN NOTHING. BOTH ARRIVE (wsFT) ─────
+ *
+ * This required a real instrument id on EVERY entry, and the follow-up screen
+ * has two halves: the gate-grounded questions, written from one fund's verbatim
+ * requirement, and the COMMERCIAL half, which `planAdaptiveScreen` builds with
+ * `instrumentId: ""` because it is grounded in no fund at all -- who pays, how
+ * they charge, route to market, what an award would buy. So every commercial
+ * answer a founder typed was deleted at the door of `/api/intelligence`, on
+ * every request, while the planner's own prompt told the model "positioning has
+ * no other source" and `pipeline.ts` kept a whole prompt block for answers that
+ * could never arrive. Registered as a live defect in `founderPath.test.ts`; the
+ * assertion there is what proves this fixed rather than this comment.
+ *
+ * The rule is stated as the property rather than as an exemption, so a question
+ * pool added tomorrow is covered by whichever branch describes it:
+ *
+ *   an entry either CITES A FUND -- and then the id must have the corpus's own
+ *   shape, exactly as before -- or it DECLARES ITSELF UNGROUNDED, which the
+ *   round-two vocabulary marks with `COMMERCIAL_ANSWER_PREFIX` on `questionId`,
+ *   and then it must carry no fund citation at all.
+ *
+ * The second half of that is the safety clause and it is not decoration: a
+ * prefix is a string a client can type, so an ungrounded entry has its
+ * instrument, name and quote FORCED empty here rather than merely checked.
+ * That is what stops a crafted request attaching founder prose to a real fund's
+ * requirement and having `pipeline.ts` and `agentSelect.ts` print it as that
+ * fund's own citation. Everything downstream that attributes an answer to a
+ * fund keys on the instrument id or on the quote, so an entry with neither
+ * cannot be attributed to one -- including `scoreEase`, whose key is
+ * `instrumentId::gateKey` and cannot match a gate on any real instrument.
  */
 export function sanitizeProjectAnswers(raw: unknown): import("./types").ProjectAnswer[] | undefined {
   if (!Array.isArray(raw)) return undefined;
@@ -253,7 +285,21 @@ export function sanitizeProjectAnswers(raw: unknown): import("./types").ProjectA
     const question = pickString(b.question, 400);
     const answer = pickString(b.answer, 400);
     const instrumentId = pickString(b.instrumentId, 60);
-    if (!questionId || !question || !answer || !instrumentId) return [];
+    if (!questionId || !question || !answer) return [];
+    // Grounded in no fund by declaration. Kept, with every field that could
+    // attribute it to one emptied rather than trusted.
+    if (questionId.startsWith(COMMERCIAL_ANSWER_PREFIX)) {
+      return [{
+        questionId,
+        question,
+        answer,
+        instrumentId: "",
+        instrumentName: "",
+        gateKey: pickString(b.gateKey, 120) ?? "",
+        quote: "",
+      }];
+    }
+    if (!instrumentId) return [];
     if (!INSTRUMENT_ID_RE.test(instrumentId)) return [];
     return [{
       questionId,

@@ -286,7 +286,6 @@ export async function driveFounderPath(
   ) => {
     const res = await post("/api/intelligence", {
       ...basePayload(eligOverride),
-      clarifications: [],
       projectAnswers: projectOverride ?? S.read("projectAnswers"),
       eligibilityBeforeRound: eligBeforeRound.current ?? undefined,
     });

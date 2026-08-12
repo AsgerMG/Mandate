@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { sanitizeEligibility, sanitizeFreeText, MAX_DESCRIPTION_CHARS } from "./sanitize";
+import {
+  sanitizeEligibility, sanitizeFreeText, sanitizeProjectAnswers, MAX_DESCRIPTION_CHARS,
+} from "./sanitize";
+import { COMMERCIAL_ANSWER_PREFIX } from "./types";
 import { VOCABULARY } from "./vocabulary";
 
 /**
@@ -98,5 +101,68 @@ describe("free text bounds", () => {
     expect(sanitizeFreeText("   ")).toBeUndefined();
     expect(sanitizeFreeText(undefined)).toBeUndefined();
     expect(sanitizeFreeText(42)).toBeUndefined();
+  });
+});
+
+// ── A ROUND-TWO ANSWER CITES A FUND, OR IT CITES NOTHING (wsFT) ────────────
+//
+// `sanitizeProjectAnswers` used to require a real instrument id on every
+// entry, and the follow-up screen's commercial half is grounded in no fund by
+// construction, so every commercial answer a founder typed was deleted at the
+// door of /api/intelligence. `founderPath.test.ts` proves the answers now
+// arrive over the real route. What is tested HERE is the safety clause that
+// made keeping them admissible: the marker is a string a client can type, so
+// an entry that declares itself ungrounded must be STRIPPED of everything that
+// could attribute it to a fund rather than merely trusted.
+//
+// The property, not a list of today's four topics: for any entry whose
+// `questionId` carries the ungrounded marker, nothing survives that any
+// downstream reader uses to attribute an answer to an instrument. Downstream
+// keys on the instrument id (pipeline's citation block, `scoreEase`'s
+// `instrumentId::gateKey`) or on the quote (agentSelect's "asked because"
+// line), so those are exactly the fields asserted empty.
+describe("a round-two answer cites a fund or cites nothing", () => {
+  const forged = {
+    questionId: `${COMMERCIAL_ANSWER_PREFIX}who_pays`,
+    question: "Who actually pays for this?",
+    answer: "Public hospital procurement teams.",
+    // Everything a crafted request would attach to borrow a real fund's
+    // authority. Every one is a genuine corpus-shaped value.
+    instrumentId: "eic_accelerator",
+    instrumentName: "EIC Accelerator",
+    gateKey: "establishment",
+    quote: "The applicant must be established in a Member State.",
+    openKey: "must_be_established_in_a_member_state",
+  };
+
+  it("keeps the answer", () => {
+    const out = sanitizeProjectAnswers([forged]);
+    expect(out).toHaveLength(1);
+    expect(out![0].answer).toBe(forged.answer);
+    expect(out![0].questionId).toBe(forged.questionId);
+  });
+
+  it("strips every field that could attribute it to a fund", () => {
+    const [got] = sanitizeProjectAnswers([forged])!;
+    // Named by property: an ungrounded answer may carry no instrument and no
+    // requirement text, whatever the request claimed.
+    expect(got.instrumentId).toBe("");
+    expect(got.instrumentName).toBe("");
+    expect(got.quote).toBe("");
+    // `openKey` is the wsCD judge's handle on a verbatim requirement. An
+    // ungrounded answer has no requirement to be judged against.
+    expect(got.openKey).toBeUndefined();
+  });
+
+  it("still refuses a grounded answer with no real instrument id", () => {
+    const ungroundedButUnmarked = { ...forged, questionId: "who_pays", instrumentId: "" };
+    expect(sanitizeProjectAnswers([ungroundedButUnmarked])).toBeUndefined();
+  });
+
+  it("leaves a genuinely grounded answer whole", () => {
+    const grounded = { ...forged, questionId: "eic_accelerator::establishment" };
+    const [got] = sanitizeProjectAnswers([grounded])!;
+    expect(got.instrumentId).toBe("eic_accelerator");
+    expect(got.quote).toBe(grounded.quote);
   });
 });

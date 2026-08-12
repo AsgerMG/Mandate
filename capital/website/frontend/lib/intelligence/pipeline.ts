@@ -883,13 +883,15 @@ async function synthesize(
         `flag the cost of anything that conflicts (e.g. equity/blended dilution ` +
         `when they asked for non-dilutive).`
       : "",
-    req.clarifications && req.clarifications.length > 0
-      ? `Founder's clarifications (their own answers to targeted questions, ` +
-        `AUTHORITATIVE about their situation): ` +
-        req.clarifications.map((c) => `${c.question} -> ${c.answer}`).join("; ") +
-        `. Use these to read archetype, ticket floor, dilution tolerance and ` +
-        `consortium-willingness, and route accordingly.`
-      : "",
+    // ── THE `clarifications` BLOCK, REMOVED (wsFT) ────────────────────────
+    // "Founder's clarifications (their own answers to targeted questions,
+    // AUTHORITATIVE about their situation)". It read `req.clarifications`,
+    // guarded on `.length > 0`, and no producer in the tree ever put anything
+    // in that array — `panel.tsx` passed `[]` at all three `runMemo` call
+    // sites and no script or test set it at all. So this block emitted the
+    // empty string on every founder and every harness run since it was
+    // written, while reading like the place the follow-up round arrived. The
+    // two blocks below are where it actually arrives.
     // brief_funnel_v2 Stage 2b. This is the block that makes the brief read
     // like it was written for THIS company: each line is the founder's own
     // answer to a question phrased from one fund's verbatim requirement.
