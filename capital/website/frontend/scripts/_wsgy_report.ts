@@ -134,6 +134,15 @@ function main() {
   p(`  the gap                 ${f1(pct(oracleAt6.length, N) - pct(shippedAt6.length, N))} points`
     + `  <- EVERYTHING any ordering work can ever take`);
   p(`  gates_pass              ${f1(pct(gatesPass.length, N))}%   the arm's own ceiling`);
+  // ── TWO DIFFERENT CEILINGS, AND CONFLATING THEM IS THE EASY MISTAKE ──────
+  // A MODEL re-orders the 40 rows it is shown; a SCORE re-orders the whole
+  // accessible pool before the cut. They have different ceilings and a proposal
+  // has to say which one it is.
+  const inCut = rows.filter((r) => (r.poolRank.shipped ?? Infinity) <= 40).length;
+  p(`  ceiling if only the 40-row CUT is reordered   ${inCut}/${N}  ${f1(pct(inCut, N))}%`);
+  p("                          — what any re-ranking of the menu can reach, model included");
+  p(`  ceiling if the whole POOL is reordered       ${gatesPass.length}/${N}  `
+    + `${f1(pct(gatesPass.length, N))}%   — what a better SCORE can reach`);
   p(`  oracle shortfall        ${oracleLost.length} founder(s) whose won fund was FIRST in the`);
   p("                          accessible pool and STILL not in the six");
   p("```");
@@ -178,6 +187,10 @@ function main() {
       const near = ranks.filter((r) => r >= 9 && r <= 15).length;
       const inPool = ranks.filter((r) => r <= 40).length;
       const out = ranks.filter((r) => r > 40).length;
+      p();
+      const climb = ranks.map((r) => r - SHOWN_ROWS).sort((a, b) => a - b);
+      p(`    places the answer must CLIMB to reach the six:  `
+        + `p25 ${quantile(climb, 0.25)}  MEDIAN ${quantile(climb, 0.5)}  p75 ${quantile(climb, 0.75)}`);
       p();
       p(`    ranks 9-15  ${near} (${f1(pct(near, ranks.length))}%)  <- what a small ordering gain reaches`);
       p(`    ranks <=40  ${inPool} (${f1(pct(inPool, ranks.length))}%)  <- a MODEL can see these`);
@@ -247,6 +260,18 @@ function main() {
   p("`shown` is the six rows the founder reads; `won` is the fund they actually took.");
   p("`relevance` is the shipped score itself and is the CONTROL: if the shown rows do");
   p("not sit above the won fund on it, the loss is not this score's ordering at all.");
+  p();
+  // ── HOW HIGH A ROW HAS TO SCORE TO BE ON THE PAGE ────────────────────────
+  // The percentiles below are only readable against the percentile the six rows
+  // actually occupy. A pool of 80 puts the sixth row at the 93rd percentile, so
+  // a won fund at the 65th is not "slightly mis-ranked": it is twenty-eight
+  // percentile points from the page, and that is the size of the improvement
+  // any ordering proposal has to deliver.
+  const meanPool = mean(gatesPass.map((r) => r.accessibleLen));
+  p("```");
+  p(`  mean accessible pool                     ${meanPool.toFixed(1)} rows`);
+  p(`  percentile a row needs to be in the six  ${(1 - SHOWN_ROWS / meanPool).toFixed(3)}`);
+  p("```");
   p();
   p(`| feature | MISS shown | MISS won | gap | HIT shown | HIT won | gap |`);
   p("|---|---:|---:|---:|---:|---:|---:|");

@@ -425,7 +425,18 @@ async function main() {
       };
 
       let shippedSix: string[] = [];
+      // ── THE SELF-CHECK, AND WHY IT EXISTS ────────────────────────────────
+      // `shipped` is the baseline every delta in this file is taken against,
+      // and it is measured INSIDE a loop that has already run four other arms
+      // through `orderMemoCandidates` and `evaluateEligibility` for the same
+      // founder. If either of those carried request-scoped state, the baseline
+      // would be a function of the arms beside it and every delta would be
+      // wrong in a way no half-width could show. `ONLY_ARM=shipped` runs the
+      // identical harness with nothing else in the loop; the two runs agreeing
+      // founder for founder is what makes the baseline the product's.
+      const only = process.env.ONLY_ARM;
       for (const arm of ARMS) {
+        if (only && arm !== only) continue;
         const ord = orders[arm];
         const iPool = ord.map((r) => r.instrumentId).indexOf(won);
         row.poolRank[arm] = iPool < 0 ? null : iPool + 1;
