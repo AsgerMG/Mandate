@@ -137,6 +137,53 @@ async function main() {
     });
   }
 
+  // ── The recurrence axis: what it says, and what nobody has asked ────────
+  //
+  // Two assertions and they are not the same kind. The first has teeth: a row
+  // offered DESPITE an expired window is offered on the strength of a funder's
+  // page, so an entry with no URL and no read date would be exactly the
+  // assertion this axis refuses to accept from anyone else. The second is a
+  // REPORT, and it is the one that matters most days.
+  //
+  // Not a ratchet, deliberately. A ratchet caps a number that must not grow;
+  // this one grows every time a call deadline is loaded, which is a coverage
+  // WIN, and a check that went red on it would be paid off by loading fewer
+  // deadlines. What it must never do is sit at zero because nobody is looking:
+  // it is printed on every run, beside the rows the audit has reached.
+  try {
+    delete process.env.DATABASE_URL;
+    const { loadDbInstruments } = await import("../lib/intelligence/corpus");
+    const { recurrenceRecord } = await import("../lib/intelligence/callRecurrence");
+    const { SCHEME_END_BASIS, callStatus } = await import("../lib/intelligence/liveness");
+    const rows = loadDbInstruments();
+    const unsourced = rows.filter((r) => callStatus(r) === "between_calls"
+      && !(recurrenceRecord(r.id)?.url && recurrenceRecord(r.id)?.checkedAt));
+    if (unsourced.length) {
+      problems.push({
+        axis: "call recurrence",
+        detail: `${unsourced.length} row(s) are offered although the window they ` +
+          `hold has shut, with no funder page behind the claim that the programme ` +
+          `continues (${unsourced.slice(0, 5).map((r) => r.id).join(", ")}). A row is ` +
+          `not lifted out of suppression by assertion — that is the rule the ` +
+          `withholding side of this axis is already held to.`,
+      });
+    }
+    const expired = rows.filter((r) =>
+      r.schemeEndBasis === SCHEME_END_BASIS.callDeadline && callStatus(r) !== "open");
+    const asked = expired.filter((r) => recurrenceRecord(r.id));
+    console.log(
+      `  call recurrence: ${asked.length}/${expired.length} rows with an expired ` +
+      `application deadline have had their funder's page read. The other ` +
+      `${expired.length - asked.length} are suppressed on OUR inference that the ` +
+      `programme ended, which is the thing this axis exists to stop asserting.`);
+  } catch (e) {
+    problems.push({
+      axis: "call recurrence",
+      detail: `the recurrence axis could not be evaluated: ` +
+        `${e instanceof Error ? e.message : String(e)}`,
+    });
+  }
+
   // ── No sixth copy ───────────────────────────────────────────────────────
   const roots = [
     resolve(process.cwd(), "lib"),
