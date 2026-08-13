@@ -2,22 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsGM",
-      "step": 2,
-      "what": "Widen the shortlist the AI sees, from eighteen funds to forty",
-      "why": "The largest single loss anywhere in the product — thirty points, more than every stage before it combined. That number was never a cost or accuracy decision; it was a stopgap for three problems that have all since moved elsewhere."
-    },
-    {
-      "id": "wsGN",
-      "step": 5,
-      "what": "Three safety checks that were watching the wrong thing",
-      "why": "In one day, three automatic checks were caught measuring something other than what they promise — one graded a list the founder never sees, one could not notice fifty-three funds closing, one compared everything except the rules. Each was correct when written and quietly drifted. Fixing them one at a time invites a fourth; the job is to find what they have in common."
-    },
-    {
       "id": "wsGP",
       "step": 5,
       "what": "Stop the test answering questions the real product never asks",
       "why": "Our own test fills in an answer for half the founders that the live product leaves blank — and then counts the funds it rules out as real losses. Four points of the gap we are chasing cannot happen to an actual founder. Two agents found it independently from opposite directions last night. Fixing it should make the headline number rise, because we stop charging ourselves for something that does not occur."
+    },
+    {
+      "id": "wsGQ",
+      "step": 5,
+      "what": "Is the biggest remaining loss real, or an artefact of testing without the AI?",
+      "why": "Widening the shortlist last night moved the largest loss onto the next cut down — the one that hands eight funds to the writer. On paper that now costs twenty-eight points. But our free test runs without the AI in the loop, so it cannot see the AI promoting a good fund up the list, which is the only thing that would rescue those points. Settling whether the number is real matters more than changing anything."
     }
   ]
 }
