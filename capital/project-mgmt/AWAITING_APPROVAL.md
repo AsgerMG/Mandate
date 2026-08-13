@@ -260,3 +260,33 @@ constraint and the check is green", which holds.** The run itself will report
 truncation, and if it is non-zero the run is void — as before.
 
 Neither change touches production: the effort lever defaults to `low`.
+
+### 11. `corpus_currency` is red, and it is a real divergence
+
+The check compares the committed snapshot against Postgres. It reports **52
+eligibility rules that demand something different across the two**, 36 of them
+on funds a founder can be offered, and **15 EU-level programmes** whose country
+reads `"EU"` in the snapshot and nothing in Postgres.
+
+The second is **not staleness** — it is an export-time derivation, so
+re-exporting will not converge them. Neither was caused by last night's work;
+both became visible only when the check was taught to compare rules at all,
+which it previously did not.
+
+**It needs a decision:** whether the snapshot or Postgres is right on each, and
+whether the export should stop deriving a value the source does not hold.
+
+### 12. One recovered fund is on the wrong axis
+
+`between_calls` correctly offers ADEME's PACTE Entreprises again — its programme
+does recur. But the row should not be offered at all: it is an *appel à
+manifestation d'intérêt* recruiting delivery bodies to run ADEME's SME advice
+network, and the applicant is the delivery body, not a funded company. We hold
+it as a €9.0M grant for companies.
+
+The withhold belongs on `route_status = 'none'` with the funder's own URL as its
+source. That is a Postgres write, so it is queued rather than applied. **13 of
+the 14 founders that change recovered cleanly; this is the 14th.**
+
+Also found and not folded in: **AEI CPP is typed as a loan** while the funder
+states *"Subvención y préstamo"* — and this may be systematic across AEI rows.
