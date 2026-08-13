@@ -2,10 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsGW",
-      "step": null,
-      "what": "Clear out the workings so the findings can be found",
-      "why": "Two hundred and eighteen research notes and a hundred scratch scripts have piled up. The risk is not disk space — it is someone paying again for an answer we already have, or quoting a figure that was true last week. The job is to sort what is a paid measurement's only record from what is genuinely spent, write an index of the first, and delete the second."
+      "id": "wsGX",
+      "step": 5,
+      "what": "The cut to forty, re-opened on a null that was measured wrong",
+      "why": "We closed off ranking months ago on a study that could not prove which ranking engine it ran on. Re-run properly, the single signals stay dead — but a blend of them beats what ships, by a margin that clears its own error bars, and its biggest term is how close the fund is to the founder's own country, which the live score does not contain at all. This does not change who picks the final six; the AI still does that. It changes which forty funds the AI is allowed to see, and that cut is the single largest place we lose the right answer."
+    },
+    {
+      "id": "wsGV",
+      "step": 5,
+      "what": "Three more facts on each fund, and a leak the guard cannot see",
+      "why": "We hold about forty-six facts on every fund and show the AI eleven. An audit killed thirty-one of the thirty-five we withhold — too rare, or identical across every fund on the menu. Three survived and get one measured trial each. The more important half: a fourth field is tempting and is computed from who actually won money before, and our safeguard against the AI reading the answer key checks field NAMES, so it would not catch it. That safeguard gets taught to reason about where a number came from."
     }
   ]
 }

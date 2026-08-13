@@ -187,7 +187,8 @@ been failing."*
 
 | route | verdict |
 |---|---|
-| **Deterministic ranking signals** | Nothing beats the shipped ranker outside its half-width. N=600, holdout, leak-free |
+| **A deterministic ranking signal, ALONE** | Nothing beats the shipped ranker outside its half-width. N=600, holdout, leak-free. **Confirmed under attestation** (`ranking_reopen_wsCS.md` §1): not one signal changes rank order against SHIPPED, and `eligibility (encoded gates)` runs at 1.4 ±0.4 against a 5.6 baseline, because "open" is a statement about what we have ENCODED. Closed for good |
+| ~~**A BLEND of them**~~ **NOT CLOSED — the null was an unpaired comparison** | wsBU read blend 22.7 ±3.4 against shipped 21.2 ±3.3 as "not a difference". Two marginal intervals answer *could these populations differ*; every arm here shares a draw, a pool and a denominator so the PAIRED question is available, and the dump was discarding that column. Carried: **+5.7 ±3.5, discordant 74/40, McNemar z=3.2**, attested, gains over 20 regimes with the largest at 20% (`regain_wsCU/README.md`). It is an **upper bound on a pure pool re-ordering** — it pays for no channel cap, no dedupe, no peer precedence, and wsBU's own unclipping arm bought +0.7 EXACT@5 for −6 REGIME@5 and −6 CHANNEL@5. Its largest weight is **proximity**, a term `rowRelevance` does not contain |
 | **Per-fund evidence** (state-aid case register, SATR fields) | +0.0, and structurally so. `scripts/archive/_wsdi_reach.ts` |
 | **Stage-2 open questions** | Flat at every question budget. `scripts/archive/_wscd_diag.ts`, `_wscd_landscape.ts` |
 | **Door-level rows** | 0 of 29 points. The leaf already IS the door |
