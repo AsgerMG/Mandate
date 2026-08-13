@@ -242,22 +242,36 @@ to exactly one mechanism.
   score_only -> shipped     THE WHOLE STACK                +7.2 pts   z=+4.19  p<0.001  (153/88)
 ```
 
-**The sign is the finding.** The stack does not discount a pure-reordering gain,
-it is worth **+7.2 points of EXACT@6, +8.5 of REGIME@6 and +8.7 of CHANNEL@6**
-on top of the score. So a pure-reordering arm is not scored in an
-over-generous frame; it is scored in a frame **7.2 points BELOW the product's
-own**, and a gain measured there has to clear that gap before it is a gain at
-all.
+**The sign is the finding.** The three constraints wsCS names as unpaid-for do
+not discount an ordering gain — they are worth **+7.2 points of EXACT@6, +8.5 of
+REGIME@6 and +8.7 of CHANNEL@6** on top of the score. A pure re-ordering of the
+pool by our own score is 7.2 points BELOW what a founder is served today. So the
+constraint stack is not a tax an experimental ordering has yet to pay; it is
+most of the ordering that currently works.
 
-Run the arithmetic on this population at the depth wsCS quotes: `score_only` at
-five rows is **25.2%** and the product is **33.0%**. wsCS's blend is +5.7 over
-its baseline as a pure re-ordering. 25.2 + 5.7 = 30.9, which is **below what
-ships**. The two frames are not identical — wsCS grades top-5 of
-`computeVerdict`'s table on 600 founders and this grades six rows of the memo
-path on 897 — so this is the arithmetic of the gap and not a like-for-like
-subtraction. It is nonetheless the whole explanation of `ship_blend_wsCV/`,
-which put the blend on the publishing path and measured **off 23% / on 24% /
-pure 24%** at EXACT@5, holdout n=600.
+At the depth wsCS quotes, the same gap on this population is **+7.8 points**:
+`score_only` at five rows is **25.2%** and the product is **33.0%**.
+
+**Read what that does to the blend arithmetic, carefully, because the frames are
+easy to swap.** wsCS's +5.0/+5.7 is the blend measured as a pure re-ordering
+against **the product's own five** — its §1 lists "SHIPPED — the product's own
+five" at 23.0 and "shipped pool score (theme+sector)" at 18.8 as separate arms,
+and the blend's 28.0 is compared to the first. So the +5.7 is NOT a gain that
+still has the stack to pay for; it is a gain measured against a baseline that
+already has the stack in it. wsCS's own §1 gap of **23.0 − 18.8 = +4.2** for the
+stack is the same quantity this file measures at +7.2 and +7.8, on a different
+path and population, and it corroborates it.
+
+Which makes the arithmetic damning rather than reassuring:
+
+```
+  the stack, on the shipped score       +7.2 EXACT@6   (+7.8 at five rows)
+  the blend, as a pure re-ordering       +5.0 / +5.7 EXACT@5   (wsCS, wsCU)
+  the blend WITH the stack, end to end   +1  —  off 23% / on 24% / pure 24%
+                                         (`ship_blend_wsCV/`, holdout n=600)
+```
+
+Two gains of +7 and +5 that compose to +1 are not two gains.
 
 ### Why the two gains are the same points found twice
 
