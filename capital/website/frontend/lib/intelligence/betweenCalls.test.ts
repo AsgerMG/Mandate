@@ -46,6 +46,7 @@ import { beforeAll, describe, expect, it, vi } from "vitest";
 import { publishabilityContext, publishabilityFailures, type DbInstrument } from "./corpus";
 import { CALL_RECURRENCE, SCHEME_END_BASIS, callStatus, isBetweenCalls, isClosed } from "./liveness";
 import { betweenCallsCaveat, recurrenceRecord } from "./callRecurrence";
+import { checkBrief } from "./briefChecks";
 
 /** The reason string `publishabilityFailures` pushes for a shut window, matched
  *  on its distinguishing words rather than restated in full: this file is
@@ -233,5 +234,57 @@ describe("the founder ADEME's programme was being kept from", () => {
       vi.doUnmock("./callRecurrence");
       vi.resetModules();
     }
+  });
+});
+
+// ── FUND-15 ────────────────────────────────────────────────────────────────
+//
+// The check exists because publishing a between-calls row is only better than
+// suppressing it while the prose does not hand the founder a date. The one
+// thing we do not hold for these rows is the next window, so a date offered as
+// when to apply is invented — and the founder cannot tell the difference.
+describe("FUND-15: the prose may not name a date the row does not carry", () => {
+  const CAVEAT = betweenCallsCaveat(
+    { ...generatedRow(3), callRecurrence: CALL_RECURRENCE.recurs }, AS_OF)!;
+
+  function fund15(row: Record<string, unknown>): string[] {
+    // The real checker over a minimal report. Only FUND-15 findings are
+    // returned; the fixture is not a valid brief in other respects and this
+    // file is not the place to assert that it is.
+    return checkBrief({ institutions: [{
+      institution: "Generated Body", channel: "x", supportType: "grant",
+      ticket: "", comparableFirms: [], whyEligible: "", nextStep: "",
+      ...row,
+    }] } as never).filter((x) => x.ruleId === "FUND-15").map((x) => x.detail);
+  }
+
+  it("passes a between-calls row whose copy names no date", () => {
+    expect(fund15({ betweenCalls: CAVEAT, nextStep: "Open a dossier with the regional office." }))
+      .toEqual([]);
+  });
+
+  it("passes a date the row itself carries", () => {
+    // The window that shut is ON the row and is the one date the founder can
+    // be told, so repeating it is not an invention.
+    const held = CAVEAT.match(/\d{4}-\d{2}-\d{2}/)![0];
+    expect(fund15({ betweenCalls: CAVEAT, nextStep: `The last round closed ${held}; prepare now.` }))
+      .toEqual([]);
+  });
+
+  it("FAILS a date nobody here holds, whatever the row's own dates are", () => {
+    // Generated rather than quoted: the rule is about the shape of the token,
+    // so any year outside the row's own is the same violation.
+    for (const yr of [2027, 2031, 2044]) {
+      expect(fund15({ betweenCalls: CAVEAT, nextStep: `Apply in the ${yr} round.` }))
+        .toHaveLength(1);
+      expect(fund15({ betweenCalls: CAVEAT, whyEligible: `Reopens ${yr}-03-01.` }))
+        .toHaveLength(1);
+    }
+  });
+
+  it("is silent on a row that is not between calls, whatever it says", () => {
+    // The rule is scoped to rows whose window has shut. An ordinary row naming
+    // its own live deadline is doing exactly what it should.
+    expect(fund15({ nextStep: "Submit before 2044-01-01." })).toEqual([]);
   });
 });
