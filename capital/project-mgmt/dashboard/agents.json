@@ -8,10 +8,10 @@
       "why": "We record a funding round; the funder runs a programme that reopens. When the round's date passes we stop offering it — so a French agency is taking applications today for a scheme we marked shut in March 2024. Eleven of fifteen rows checked against the funders' own pages are live or reopening. The founder should see the fund and be told the window has closed, which is more useful than hiding it and more honest than showing it as open."
     },
     {
-      "id": "wsGU",
-      "step": 2,
-      "what": "Rules that exclude exactly the people they were written to admit",
-      "why": "A fund says sole proprietorships may not apply; we encoded it so that it rejects every incorporated company instead. Another names universities as eligible and we blocked two of them. Underneath both sits a harder question: when a fund's purpose is narrower than anything our categories can express, the encoder picks the nearest one and turns everyone else away. That pattern accounts for three hundred more exclusions."
+      "id": "wsGW",
+      "step": null,
+      "what": "Clear out the workings so the findings can be found",
+      "why": "Two hundred and eighteen research notes and a hundred scratch scripts have piled up, and the risk is not disk space — it is someone paying again for an answer we already have, or quoting a figure that was true a week ago. The job is to sort what is a paid measurement's only record from what is genuinely spent, write an index of the first, and delete the second."
     }
   ]
 }
