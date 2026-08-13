@@ -8,6 +8,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
 import { scoreEase, whyEasyLine } from "./ease";
+import { betweenCallsCaveat } from "./callRecurrence";
 import { instrumentLink } from "./instrumentLink";
 import { assessAll } from "./verdict";
 import { recordBrief } from "./record";
@@ -535,6 +536,13 @@ export function writerCandidateEvidence(
           `- key "${rowKeys[i]}" (${r.institution})` +
           `${row.usedInField ? " [used by peers in your field]" : ""}` +
           `${r.stale ? ` [STALE, no award on record since ${r.lastAwardYear}]` : ""}` +
+          // Handed to the writer for ONE reason: so its next step is not "apply
+          // by", which would be false. It is not a channel for the writer to
+          // decide anything — the sentence the founder reads is `betweenCalls`
+          // on the row, built in code and published whatever the writer says.
+          `${r.betweenCalls ? ` [BETWEEN CALLS — ${r.betweenCalls} Do not write a deadline or an` +
+            ` application date for this row, and do not invent when it reopens; write the step` +
+            ` that is real today, which is preparing for the next round]` : ""}` +
           `${row.fitFlag ? ` [${row.fitFlag}]` : ""}: ` +
           // The verdict, and the obstacle where there is one. Without this the
           // writer cannot see which row is blocked, so it left blockerPlain empty
@@ -968,6 +976,11 @@ async function synthesize(
     return {
       ...entry,
       whyEasy: whyEasyLine(id ? easeById.get(id) : undefined, entry.institution),
+      // A row publishable DESPITE a window we hold having shut owes the founder
+      // the caveat, and the caveat is built here from the corpus rather than
+      // asked of the writer. `undefined` on every other row, so a caller cannot
+      // attach the sentence to a fund whose window is open.
+      betweenCalls: (id ? betweenCallsCaveat(instById().get(id) ?? {}) : null) ?? undefined,
       lastAwardYear: baseRows[idx].lastAwardYear,
       stale: isStale(baseRows[idx]),
       verdict: a?.status ?? "unknown",
