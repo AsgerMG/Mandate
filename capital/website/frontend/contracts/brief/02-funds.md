@@ -147,6 +147,21 @@ one, a wrong row is caught by a human reading the published page.
   not closed — we cannot tell which. Never promise it an upcoming call. Say it
   has been dormant since the year given, and make the next step confirming it
   still runs.
+- FUND-15 (hard) Where the window a row holds has shut and its programme runs
+  in rounds, the row's prose names no date the corpus does not hold, and
+  promises no reopening.
+
+  The test: **take every calendar reference in the row's own copy. Is each one
+  a date this row carries?** The window that shut is on the row and may be
+  named. The next one is held by nobody here, which is exactly what puts the
+  row in this state, so any date offered as when to apply was invented. The
+  caveat the founder reads is built from the row's own record and publishes
+  whatever the note says; the note's job is the step that is real today.
+
+  A calendar reference is a numeral that fixes a point in time, which is a
+  property of the token and not of a language: a plausible year, or a full
+  date. Nothing here names a month, a funder or a country, so a row loaded next
+  month from a register nobody has read is judged by the same test.
 - FUND-12 (soft) Rows are not ranked in the brief and must not be described as
   first, best or strongest relative to each other. The bottom line names the
   first move; the table presents the open doors that were found.

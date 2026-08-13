@@ -130,6 +130,83 @@ export function windowAbsenceIsTheRegisters(policy?: string | null): boolean {
     policy === SOURCE_WINDOW_POLICY.declaresOpenEnded;
 }
 
+/**
+ * WE MODEL A CALL. THE FUNDER RUNS A PROGRAMME.
+ *
+ * `call_deadline` above says a passed deadline closes a row "permanently: a
+ * call does not reopen, a successor call is a new row". The first half is true.
+ * The second is a statement about OUR SCHEMA that was being read as a statement
+ * about the world, and the world disagrees: the successor call is a new row
+ * only if somebody loaded it, and when nobody has, suppressing the row we hold
+ * deletes a programme that is running.
+ *
+ * ── What that cost, measured against the funders' own pages ───────────────
+ * `project-mgmt/evidence/wsgl_closed_calls_2026-08-13.jsonl` — 15 rows, each
+ * with the URL that was read and a verbatim quote in the source language:
+ *
+ *   3 rows are OPEN RIGHT NOW.     One of them is ADEME's DECARB IND, whose
+ *                                  2e relève runs 07 May – 07 Sep 2026 against
+ *                                  a row this file kills at 2024-03-07.
+ *   8 rows are BETWEEN CALLS.      The programme continues; this round shut.
+ *   4 rows are genuinely RETIRED.  The funder's page says it ended.
+ *
+ * 11 of 15 rows, 14 of 20 founders, suppressed on the expiry of one call.
+ *
+ * ── THE PROPERTY, and its test for a fund nobody has seen ─────────────────
+ *
+ *     SUPPRESSING A ROW ON A PASSED APPLICATION DEADLINE IS A CLAIM THAT THE
+ *     PROGRAMME ENDED. IT MAY BE MADE ONLY WHERE NOTHING RECORDED ON THE ROW
+ *     CONTRADICTS IT.
+ *
+ * The test, for a fund added next month, in a country and a language nobody
+ * here has read: ask its own funder's page whether the programme has run, or
+ * is running, a round after the one we hold. That question has an answer for
+ * every fund in every register, it is answerable from the source and from
+ * nowhere else, and the answer is what `CALL_RECURRENCE` records. No fund,
+ * feed, country or date appears in the rule.
+ *
+ * ── WHY IT MAY NOT BE DERIVED FROM THE CORPUS, measured not asserted ──────
+ * The obvious cheap route is to look for a later EDITION of the same programme
+ * among our own rows — wsCL's edition relation (`scripts/_wscl_recurrence.ts`)
+ * already states that as a property and validates its groups against an
+ * independent embedding. Run against the 113 rows this file closes on a call
+ * deadline, and scored against wsGL's 15 funder-page verdicts, it fires on
+ *
+ *   between_calls  2/8 recovered      open  0/3 recovered      retired  0/4
+ *
+ * and the numbers do not move across the whole θ band 0.30–0.90 (3/8 at 0.30).
+ * It recovers NONE of the three programmes that are open today, ADEME's among
+ * them, for a reason no threshold fixes: a programme is invisible to us in
+ * exactly the case that matters, when we never loaded its later round. The
+ * corpus cannot supply this, and `liveness.ts`'s own direction says why —
+ * the copy may FALSIFY a declaration, it may never SUPPLY one.
+ *
+ * So the fact is RECORDED, per row, from the funder's own source, exactly as
+ * `SOURCE_WINDOW_POLICY` and `ROUTE_STATUS` are. NULL is not "recurs": a row
+ * nobody has asked about stays suppressed, which is today's behaviour, so the
+ * unexamined state is the safe one and it is counted rather than assumed.
+ *
+ * ── WHAT THIS MAY NOT SAY ─────────────────────────────────────────────────
+ * `recurs` is a statement that the programme CONTINUES PAST the round we hold.
+ * It is not a reopening date and it must never be rendered as one. We do not
+ * hold the next window — that is the whole reason the row is in this state —
+ * and supplying a date the funder never gave is the failure this module exists
+ * to prevent, one axis over.
+ */
+export const CALL_RECURRENCE = {
+  /** The funder's own source establishes that the programme has run, or is
+   *  running, a round after the one this row holds. Requires a source: a row is
+   *  not lifted out of suppression by assertion. */
+  recurs: "recurs",
+  /** The funder's own source establishes that this was the whole programme —
+   *  a fixed envelope, a concluded call, an abolished scheme. Suppression is
+   *  then the funder's statement and not our inference. */
+  singleCall: "single_call",
+} as const;
+
+export type CallRecurrence =
+  (typeof CALL_RECURRENCE)[keyof typeof CALL_RECURRENCE];
+
 /** The minimum a row must expose to be judged. Deliberately narrow, so the
  *  Postgres rows, the JSON snapshot and the SQLite rows can all satisfy it. */
 export interface LivenessFacts {
@@ -141,6 +218,10 @@ export interface LivenessFacts {
    *  deliberately: an observation is computed from the corpus in hand, and
    *  anything computed from the corpus in hand is what self-cancelled. */
   sourceWindowPolicy?: string | null;
+  /** See `CALL_RECURRENCE`. Recorded from the funder's own page, never derived
+   *  here: the derivation was built, measured and is dead (0/3 on the rows that
+   *  are open today). Absent means nobody has asked, which suppresses. */
+  callRecurrence?: string | null;
 }
 
 export function today(): string {
@@ -173,6 +254,55 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
   const endYear = Number(end.slice(0, 4));
   if (row.lastYear != null && row.lastYear > endYear) return false;
   return true;
+}
+
+/**
+ * THE THREE STATES A WINDOW CAN BE IN, and there are three and not two.
+ *
+ *   open           the window we hold has not passed, or its expiry closes
+ *                  nothing (a renewed notification).
+ *   between_calls  the window we hold HAS passed, and the funder's own source
+ *                  says the programme continues past it. OFFERABLE, with the
+ *                  caveat shown — see `project-mgmt/evidence/README.md`, which
+ *                  has carried this word since before anything implemented it.
+ *   shut           the window we hold has passed and nothing recorded on the
+ *                  row contradicts the programme having ended. This is what
+ *                  `isClosed()` alone used to mean, applied to every row.
+ *
+ * ── WHY `isClosed()` IS UNCHANGED, and this is layered on top ─────────────
+ * `isClosed()` answers exactly one question — HAS THE WINDOW WE HOLD SHUT —
+ * and the answer for a between-calls row is YES. That is not a technicality:
+ * it is the fact the founder must be told. Widening `isClosed()` to mean "and
+ * therefore gone" would have made the two inseparable again, and it would have
+ * silently re-pointed `closedSql()`, `data/liveness.json` and every Python and
+ * SQL consumer projected from them at a different question. One definition per
+ * question; this is the second question.
+ *
+ * `publishableInstruments()` asks THIS one, because publishability is what the
+ * distinction changes. Everything else still asks `isClosed()` and gets the
+ * same answer it always got.
+ */
+export type CallStatus = "open" | "between_calls" | "shut";
+
+export function callStatus(row: LivenessFacts, asOf: string = today()): CallStatus {
+  if (!isClosed(row, asOf)) return "open";
+  return row.callRecurrence === CALL_RECURRENCE.recurs ? "between_calls" : "shut";
+}
+
+/** May this row be withheld on the strength of its own expired window?
+ *
+ *  The negation is the property: a fund whose programme recurs may not be
+ *  suppressed on the expiry of one call. Stated as a predicate so a caller
+ *  cannot restate it, and asked of the ROW, so a fund loaded next month is
+ *  judged by the same test with no edit anywhere. */
+export function isShut(row: LivenessFacts, asOf: string = today()): boolean {
+  return callStatus(row, asOf) === "shut";
+}
+
+/** True when this row is offered DESPITE a window we hold having shut. The
+ *  product owes the founder a caveat exactly here and nowhere else. */
+export function isBetweenCalls(row: LivenessFacts, asOf: string = today()): boolean {
+  return callStatus(row, asOf) === "between_calls";
 }
 
 // ── Can we CONFIRM this row is open? ───────────────────────────────────────
@@ -288,6 +418,7 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
  *  never reach a founder; the other four are the ways a row can be open. */
 export type OpennessEvidence =
   | "closed"
+  | "between_calls"
   | "declared_window"
   | "observed_renewal"
   | "successor_registration"
@@ -295,6 +426,11 @@ export type OpennessEvidence =
   | "basis_not_supplied";
 
 export function opennessEvidence(row: LivenessFacts, asOf: string = today()): OpennessEvidence {
+  // Asked before `closed`, because a between-calls row IS closed in the sense
+  // `isClosed()` means and is offered anyway. Its openness rests on nothing —
+  // it is not offered as open — which is why it is its own value here rather
+  // than a sixth way of being open.
+  if (isBetweenCalls(row, asOf)) return "between_calls";
   if (isClosed(row, asOf)) return "closed";
   const end = row.schemeEndDate ? String(row.schemeEndDate).slice(0, 10) : "";
   // A future end date closes nothing whatever its basis, so a missing basis is
@@ -345,6 +481,20 @@ export function unconfirmedOpen(
   switch (opennessEvidence(row, asOf)) {
     case "closed":
       // Not shown regardless; the caller has already dropped it.
+      return null;
+    case "between_calls":
+      // ── THE ONE STATE A STALE COPY CANNOT MAKE WRONG ────────────────────
+      // Every other clause here defends against a copy that is behind the
+      // register on a DEADLINE. This row is offered while asserting that the
+      // deadline it holds has already passed, so a deadline loaded since the
+      // copy was cut cannot falsify anything it says: the worst a fresher
+      // store could hold is a later window, which would move the row towards
+      // `open` and never towards withheld.
+      //
+      // Both halves of the claim it does make — the window we hold has shut,
+      // and the funder's source says the programme continues — travel ON the
+      // row. Neither is inferred from the corpus in hand, which is the
+      // property this whole half turns on.
       return null;
     case "declared_window":
     case "observed_renewal":
@@ -403,6 +553,28 @@ export function contradictsDeclaredPolicy<T extends LivenessFacts>(row: T): bool
 
 /** SQL for the same predicate, so the Python and SQL consumers do not restate
  *  it in prose. `col` prefixes columns for use inside a JOIN.
+ *
+ *  ── IT IS STILL `isClosed`, AND THAT IS A KNOWN, BOUNDED DIVERGENCE ──────
+ *  This projects the WINDOW test and nothing else, because that is what
+ *  `isClosed()` means and this is its SQL. It deliberately does not project
+ *  `isShut()`: `call_recurrence` is not a column in Postgres yet, so emitting
+ *  SQL that reads it would break every Python consumer on the next run.
+ *
+ *  The consequence, stated rather than discovered later. Three consumers ask
+ *  "may the product show this row" and get an answer that is now one row-class
+ *  too narrow — `extend_recall_set.py` ("never make an instrument the right
+ *  answer if the product may not show it"), `emit_peer_prior.py`, and
+ *  `load_scheme_text.py`'s `live_ids()`. They will treat a between-calls row as
+ *  unproposable while the brief offers it: the row gets no scheme text, no peer
+ *  prior, and is excluded the next time the recall set is REGENERATED. That
+ *  under-serves those rows; it cannot mis-serve a founder, because nothing in
+ *  that direction adds a row to a brief.
+ *
+ *  Closing it is one commit and it belongs with the column: add
+ *  `shut_sql()` to ETL/lib/liveness.py alongside `closed_sql()`, AND the
+ *  `call_recurrence` column outside `BUILT_COLUMNS` in
+ *  ETL/events/load/populate_funding_instruments.py, so a rebuild does not erase
+ *  it — the failure `route_status` records.
  *
  *  Dialect note: written for Postgres, where `scheme_end_date` is TEXT and must
  *  be cast to compare as a date. The SQLite consumers compare lexically, which

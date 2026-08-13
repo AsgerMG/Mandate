@@ -57,6 +57,11 @@ const BACKEND_LEAKAGE: { pattern: RegExp; what: string }[] = [
  *  version is what a check holding its own copy of the string decays into. */
 const BOILERPLATE = UNWRITTEN_ROW_COPY;
 
+/** A numeral that fixes a point in time. A property of the token, so it holds
+ *  in a language nobody here has read — the same test wsCL's edition relation
+ *  uses to tell a calendar year from a lot number. */
+const CALENDAR = /\b(?:19|20)\d{2}(?:-\d{2}-\d{2})?\b/g;
+
 /** A row whose own justification argues against it. Only meaningful on rows
  *  with no declared blocker: a blocker row is SUPPOSED to name the obstacle. */
 const SELF_CONTRADICTION = /\b(targets|aimed at|reserved for|designed for|focus(?:es|ed)? on)\b[^.]{0,80}\bnot\b/i;
@@ -341,6 +346,28 @@ export function checkBrief(
     if (BOILERPLATE.test(String(r.whyEligible ?? "")) || BOILERPLATE.test(String(r.nextStep ?? ""))) {
       v.push({ ruleId: "FUND-5", detail: `fallback boilerplate published: ${r.institution}` });
     }
+    // ── FUND-15 ────────────────────────────────────────────────────────────
+    // A between-calls row is published BECAUSE the funder's own source says the
+    // programme continues. The one thing that would make publishing it worse
+    // than suppressing it is prose that hands the founder a date: we do not
+    // hold the next window — that is definitionally what put the row here — so
+    // any date offered as when to apply is invented.
+    //
+    // Asked as a property of the TOKEN, not of a vocabulary: a numeral that
+    // fixes a point in time. `betweenCalls` is code-built and its own unit test
+    // pins that every date in it is one the row carries, so it is the honest
+    // register of what this row is allowed to say.
+    if (r.betweenCalls) {
+      const held = new Set(r.betweenCalls.match(CALENDAR) ?? []);
+      if (r.lastAwardYear != null) held.add(String(r.lastAwardYear));
+      for (const field of [r.nextStep, r.whyEligible]) {
+        for (const d of String(field ?? "").match(CALENDAR) ?? []) {
+          if (held.has(d) || held.has(d.slice(0, 4))) continue;
+          v.push({ ruleId: "FUND-15", detail:
+            `between-calls row names a date the corpus does not hold (${d}): ${r.institution}` });
+        }
+      }
+    }
     if (!r.blocker && SELF_CONTRADICTION.test(String(r.whyEligible ?? ""))) {
       v.push({ ruleId: "FUND-6", detail: `row argues against itself: ${r.institution}` });
     }
@@ -543,7 +570,8 @@ export function readerText(value: unknown, key = ""): string[] {
  *  rule can never exist in only one of the two places. */
 export const CHECK_RULE_IDS = [
   "BL-1", "BL-2",
-  "FUND-1", "FUND-2", "FUND-3", "FUND-4", "FUND-5", "FUND-6", "FUND-7", "FUND-B1",
+  "FUND-1", "FUND-2", "FUND-3", "FUND-4", "FUND-5", "FUND-6", "FUND-7", "FUND-15",
+  "FUND-B1",
   "POS-1", "SOP-1", "SOP-2",
   "BRIEF-1", "BRIEF-2", "BRIEF-3", "BRIEF-4",
   "VOI-B1", "BL-B1",

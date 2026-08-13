@@ -417,6 +417,24 @@ export interface InstitutionEntry {
    *  ANSWERED, not cleared — see the honesty note in ease.ts. Empty when
    *  there is nothing honest to claim. */
   whyEasy?: string;
+  /**
+   * Code-built, never model-written: the application window we hold has SHUT,
+   * and the funder's own source says the programme continues past it. Present
+   * only on such a row; absent means the row is not in that state, never that
+   * the caveat was dropped.
+   *
+   * It is a sentence and not a boolean because it is the sentence a founder
+   * reads, and because the two things it must say — which window shut, and what
+   * the funder's page establishes — are facts on the row that a flag would send
+   * the writer to reconstruct. `watchOnly.ts` is the evidence for why the writer
+   * may not be asked: every lever given to a model for "this one is not
+   * straightforward" has been used to smuggle weak funds in, and the model wrote
+   * "monitor calls" into rows it had itself flagged actionable.
+   *
+   * It states NO reopening date. We do not hold one — that is definitionally
+   * what puts a row in this state. See betweenCallsCaveat() in callRecurrence.ts.
+   */
+  betweenCalls?: string;
   /** Real comparable companies that drew on this exact channel, code-built. */
   comparableFirms: { name: string; amount: string }[];
   /** One concrete, actionable next step, model-written. */

@@ -516,6 +516,28 @@ export function InstitutionsTable(
                     one, so check its criteria yourself before committing time
                   </span>
                 )}
+                {/* THE BETWEEN-CALLS CAVEAT, and it renders ABOVE the prose
+                    and while the model is still streaming.
+
+                    Both of those are deliberate. It is code-built from the
+                    row's own record, so unlike `whyEligible` it is correct from
+                    the first frame and has nothing to wait for. And it is the
+                    fact that changes what the founder does with everything
+                    below it: a move written for a door that is shut this month
+                    reads differently once you know the door reopens. Under the
+                    prose it would be a footnote to a sentence it qualifies.
+
+                    Unlike `whyEasy`, which was removed from this cell for
+                    being a metric about our own gate coverage, this is an
+                    observation about the FUND — the window it ran and what its
+                    funder publishes — which is what BRIEF-4 asks a row to
+                    carry. It names no date we do not hold; FUND-15 fails the
+                    build if the prose beside it does. */}
+                {r.betweenCalls && (
+                  <span className="mb-1 block font-semibold text-[var(--muted-foreground)]">
+                    {r.betweenCalls}
+                  </span>
+                )}
                 {pending && !r.whyEligible ? <PlaceholderBar /> : r.whyEligible}
                 {/* `whyEasy` used to render here: "your answers speak to N of
                     its M documented eligibility rules". That is a ranking

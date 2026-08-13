@@ -132,21 +132,17 @@ if (requireCredentials("measure_funnel", ["DATABASE_URL", "VOYAGE_KEY"]) === "of
     + "run of 2026-08-12. Unset NO_PG and run against the live stores.");
 }
 
-import { meetsDataFloor } from "../lib/intelligence/accessMode";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
 import { parseDepth, SELECT_DEPTH, VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
 import {
   corpusProvenance, type DbInstrument, findPeersBySubsector, hydrateDbInstruments,
-  isGenericSubsector, loadDbInstruments, matchCompany, publishableInstruments,
+  isGenericSubsector, loadDbInstruments, matchCompany, publishabilityContext,
+  type PublishabilityContext, publishabilityFailures, publishableInstruments,
   requireLiveCorpus, resetGateHydration, suppressedForUnconfirmedLiveness,
 } from "../lib/intelligence/corpus";
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
-import { isClosed } from "../lib/intelligence/liveness";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
-import { registerNamesTheRow } from "../lib/intelligence/nameEvidence";
-import { isWithheldByPolicy } from "../lib/intelligence/offerableAxes";
-import { hasOfferRoute } from "../lib/intelligence/offerRoute";
 import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
 import {
   rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
@@ -464,16 +460,28 @@ function assertNested(t: Trace, stages: Stage[], verdicts: (boolean | null)[]): 
  *  Reasons OVERLAP by design. A row with no offer route and no data floor fails
  *  both, and forcing a partition would require an order of precedence that the
  *  filter itself does not have. */
-function whyNotPublishable(i: DbInstrument, hasChildren: ReadonlySet<string>): string[] {
-  const why: string[] = [];
-  if (i.isFramework) why.push("a framework record, not a fund");
-  if (hasChildren.has(i.id)) why.push("a parent with leaves — the leaves are offered instead");
-  if (!hasOfferRoute(i)) why.push("no application route on record");
-  if (!registerNamesTheRow(i)) why.push("nothing outside its own id names the row");
-  if (isWithheldByPolicy(i)) why.push("withheld by editorial policy");
-  if (isClosed(i)) why.push("the register says the window has shut");
-  if (!meetsDataFloor(i)) why.push("no amounts and no dates — below the data floor");
-  return why;
+/** ── IT IS THE FILTER'S OWN LIST, NOT A COPY OF IT (wsGT) ──────────────────
+ *
+ *  Seven predicates were restated here, and the docstring above already knew
+ *  what that costs: `publishableInstruments()` and its explanation drifted
+ *  once, and every row dropped for some other reason that happened to also be
+ *  a closed scheme with a successor was reported as a closure. The fix was to
+ *  make the filter and its explanation the same code — `publishabilityFailures`
+ *  in corpus.ts — and this harness never moved onto it.
+ *
+ *  It drifted again, the same way and on the same clause. The closure test here
+ *  read `isClosed`, i.e. "has the window we hold shut", while the filter asks
+ *  `isShut`, "and does anything recorded on the row contradict the programme
+ *  having ended". A between-calls row is closed by the first and publishable by
+ *  the second, so this list would have attributed a loss to a clause that did
+ *  not remove the row.
+ *
+ *  So it CALLS the definition. `wsgl_corpus_stage.ts` already did; this is the
+ *  last restatement. The `unattributed` counter below is what remains of the
+ *  hazard, and it is now the only one it can have: a clause added to the filter
+ *  arrives here for free. */
+function whyNotPublishable(i: DbInstrument, ctx: PublishabilityContext): string[] {
+  return publishabilityFailures(i, ctx);
 }
 
 async function main() {
@@ -504,8 +512,9 @@ async function main() {
   const corpus = loadDbInstruments();
   assertAncestorConvention(corpus);
   const byId = new Map(corpus.map((i) => [i.id, i]));
-  const hasChildren = new Set(
-    corpus.map((i) => i.parentId).filter((id): id is string => Boolean(id)));
+  // The filter's OWN context, so the attribution below is the filter's own
+  // list rather than a seventh restatement of it. See `whyNotPublishable`.
+  const pubCtx = publishabilityContext(corpus);
   const inCorpus = new Set(corpus.map((i) => i.id));
   const offerableRows = publishableInstruments();
   const offerable = new Set(offerableRows.map((i) => i.id));
@@ -593,7 +602,7 @@ async function main() {
     const wasDegraded = degraded.has(won);
     // Attribution for the corpus stage, computed only where something was lost.
     if (heldByCorpus && !isOfferable && !wasDegraded) {
-      const why = whyNotPublishable(byId.get(won) as DbInstrument, hasChildren);
+      const why = whyNotPublishable(byId.get(won) as DbInstrument, pubCtx);
       if (!why.length) unattributed++;
       for (const w of why) lostReasons.set(w, (lostReasons.get(w) ?? 0) + 1);
     }

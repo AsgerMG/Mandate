@@ -4,9 +4,13 @@
 import { readFileSync } from "fs";
 import { meetsDataFloor } from "./accessMode";
 import {
-  isClosed, today, unconfirmedOpen,
+  isClosed, isShut, today, unconfirmedOpen,
   type LivenessObservation,
 } from "./liveness";
+// A leaf, like ./evidenceTier and ./nameEvidence: it carries the funder-page
+// reading that says whether a programme continues past the round we hold, and
+// it may not import this file back.
+import { recordedCallRecurrence } from "./callRecurrence";
 import { isWithheldByPolicy } from "./offerableAxes";
 import { hasOfferRoute } from "./offerRoute";
 import { registerNamesTheRow, type NameEvidenceFacts } from "./nameEvidence";
@@ -238,6 +242,17 @@ export interface DbInstrument {
    *  behind. Never read it directly: `unconfirmedOpen()` in ./liveness is the
    *  only consumer, and the three values are `SOURCE_WINDOW_POLICY` there. */
   sourceWindowPolicy?: string | null;
+  /** Does the FUNDER'S OWN SOURCE say this programme continues past the round
+   *  this row holds? `CALL_RECURRENCE` in ./liveness. Absent means nobody has
+   *  read the page, which suppresses on an expired deadline exactly as it does
+   *  today — it is NOT neutral and never means "does not recur".
+   *
+   *  Not in either store yet: it is attached by `attachRecordedFacts` from
+   *  `./callRecurrence.generated.ts`, which is projected from the committed
+   *  funder-page evidence. That file states where it belongs and what the ETL
+   *  write has to do to survive an instrument rebuild. Never test it directly —
+   *  `callStatus()` / `isShut()` in ./liveness are the only readers. */
+  callRecurrence?: string | null;
   /** Who NAMED this row. Recorded at ETL time from the extractor that composes
    *  the event's `source` string, never inferred from the row — see
    *  ./nameEvidence.ts for the property and for the over-fire that makes
@@ -554,7 +569,7 @@ export async function hydrateDbInstruments(): Promise<void> {
   if (dbInstrumentsCache !== undefined) return;
   const url = process.env.DATABASE_URL;
   if (!url) {
-    dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
+    dbInstrumentsCache = resolveInheritedGates(attachRecordedFacts(loadDbInstrumentsFromJson() ?? []));
     provenance = {
       source: "snapshot", degraded: false,
       instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
@@ -665,7 +680,7 @@ export async function hydrateDbInstruments(): Promise<void> {
       const appByInstrument = new Map<string, { channel: string | null; timeline: string | null; url: string | null }>(
         (appRes.rows as { instrument_id: string; channel: string | null; timeline: string | null; url: string | null }[])
           .map((r) => [r.instrument_id, { channel: r.channel, timeline: r.timeline, url: r.url }]));
-      dbInstrumentsCache = resolveInheritedGates(instRes.rows.map((inst): DbInstrument => ({
+      dbInstrumentsCache = resolveInheritedGates(attachRecordedFacts(instRes.rows.map((inst): DbInstrument => ({
         id: inst.id,
         parentId: inst.parent_id,
         name: inst.name,
@@ -728,7 +743,7 @@ export async function hydrateDbInstruments(): Promise<void> {
         deliveryRegion: inst.delivery_region ?? null,
         deliveryRegionShare: inst.delivery_region_share ?? null,
         gates: gatesByInstrument.get(inst.id) ?? [],
-      })));
+      }))));
       provenance = {
         source: "postgres", degraded: false,
         instruments: dbInstrumentsCache.length, hydratedAt: new Date().toISOString(),
@@ -740,7 +755,7 @@ export async function hydrateDbInstruments(): Promise<void> {
     }
   } catch (err) {
     console.error("Postgres hydration failed, falling back to instrument_terms.json:", err);
-    dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
+    dbInstrumentsCache = resolveInheritedGates(attachRecordedFacts(loadDbInstrumentsFromJson() ?? []));
     // DEGRADED, and recorded as such. The request still succeeds — that is the
     // point of the fallback — but anything that turns this corpus into a
     // published figure can now be made to stop. See requireLiveCorpus().
@@ -929,7 +944,7 @@ export async function hydrateGatesFor(instrumentIds: string[]): Promise<void> {
  *  querying Postgres a second time. */
 export function loadDbInstruments(): DbInstrument[] {
   if (dbInstrumentsCache === undefined) {
-    dbInstrumentsCache = resolveInheritedGates(loadDbInstrumentsFromJson() ?? []);
+    dbInstrumentsCache = resolveInheritedGates(attachRecordedFacts(loadDbInstrumentsFromJson() ?? []));
     // The THIRD way to end up on the snapshot without asking for it: never
     // calling hydrateDbInstruments() at all. Recorded like the other two, and
     // degraded whenever DATABASE_URL was available and simply not used — that
@@ -1158,6 +1173,30 @@ export function mergeInheritedGates(
   return [...own, ...inherited.filter((g) => !keys.has(g.id)).map(mark)];
 }
 
+/**
+ * Attach the facts that are RECORDED ABOUT A ROW rather than stored on it.
+ *
+ * ── Why here and not in the SELECT ────────────────────────────────────────
+ * `check_store_columns` fails the build on a column that reaches the request
+ * path from one store only, and it is right to: a field in Postgres and not in
+ * the JSON export is the divergence class that already cost this project a
+ * production ranker running on means while every test passed. `call_recurrence`
+ * is in NEITHER store yet — populating it is a corpus write — so adding it to
+ * the SELECT would not just diverge, it would throw, and hydration would fall
+ * to the snapshot on every request.
+ *
+ * Attaching it after both loaders and before anything reads a row keeps the two
+ * stores identical by construction: there is exactly one line that sets it and
+ * both paths pass through it. When the column exists, this moves into the two
+ * loaders and this function keeps whatever else has joined it.
+ */
+function attachRecordedFacts(all: DbInstrument[]): DbInstrument[] {
+  return all.map((i) => {
+    const rec = recordedCallRecurrence(i.id);
+    return rec === null ? i : { ...i, callRecurrence: rec };
+  });
+}
+
 function resolveInheritedGates(all: DbInstrument[]): DbInstrument[] {
   const byId = new Map(all.map((i) => [i.id, i]));
   return all.map((i) => {
@@ -1302,8 +1341,12 @@ export function publishabilityContext(all: DbInstrument[]): PublishabilityContex
   // Scheme codes an OPEN leaf already offers. A closed scheme whose successor is
   // one of these needs no redirect: the successor is already its own row, and
   // reviving the predecessor under the same code would just duplicate it.
+  // `isShut`, not `isClosed`: a between-calls leaf IS offered, so it already
+  // occupies its scheme code and a predecessor redirecting onto that code would
+  // duplicate it. Reading `isClosed` here would have made the redirect fire
+  // against a row the founder can already see.
   const liveCodes = new Set(all
-    .filter((i) => !i.isFramework && !hasChildren.has(i.id) && !isClosed(i, asOf) && i.schemeCode)
+    .filter((i) => !i.isFramework && !hasChildren.has(i.id) && !isShut(i, asOf) && i.schemeCode)
     .map((i) => i.schemeCode as string));
   return { hasChildren, liveCodes, asOf };
 }
@@ -1377,7 +1420,22 @@ export function publishabilityFailures(
   // The `successorScheme` clause is the redirect described below: a closed row
   // whose successor we do NOT already hold as an open leaf is republished under
   // the successor's identity rather than dropped, so it is not a closure loss.
-  if (isClosed(i, ctx.asOf)
+  //
+  // ── AND IT ASKS `isShut`, NOT `isClosed` ────────────────────────────────
+  // We model a CALL. The funder runs a PROGRAMME. `isClosed` answers "has the
+  // window we hold shut", and answering only that suppressed 11 of the 15 rows
+  // wsGL checked against the funders' own pages — three of which are OPEN right
+  // now, ADEME's DECARB IND among them, whose current relève runs while this
+  // row sits killed at 2024-03-07. `isShut` adds the second question, which is
+  // the one publishability actually turns on: does anything RECORDED on the row
+  // contradict the programme having ended? See `CALL_RECURRENCE` in liveness.ts
+  // for the property, and for the measurement showing the corpus cannot answer
+  // it from its own rows.
+  //
+  // A between-calls row passes this clause and is offered WITH THE CAVEAT —
+  // `betweenCallsCaveat()` in ./callRecurrence, rendered by code, never asked
+  // of the writer.
+  if (isShut(i, ctx.asOf)
       && !(Boolean(i.successorScheme) && !ctx.liveCodes.has(i.successorScheme as string))) {
     why.push("the register says the window has shut");
   }
@@ -1392,7 +1450,12 @@ export function publishableInstruments(): DbInstrument[] {
   const all = loadDbInstruments();
   const ctx = publishabilityContext(all);
   const { hasChildren, liveCodes, asOf } = ctx;
-  const closed = (i: DbInstrument) => isClosed(i, asOf);
+  // The redirect exists to save rows the closure clause would otherwise drop,
+  // so it has to fire on exactly the rows that clause drops — `isShut`. A
+  // between-calls row is not dropped and must NOT be redirected: the redirect
+  // nulls `schemeEndDate`, which would erase the shut window the caveat is
+  // about and republish the row as if it were plainly open.
+  const closed = (i: DbInstrument) => isShut(i, asOf);
   // ── The successor redirect ────────────────────────────────────────────────
   // `successor_scheme` / `successor_title` are populated by the register itself
   // and, until now, read by nothing at all: a designed data field with no
