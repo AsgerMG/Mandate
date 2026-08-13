@@ -2,16 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsGS",
-      "step": 5,
-      "what": "Five faults in what we tell the AI before it chooses",
-      "why": "The instructions contradict themselves: one part says the right fund is on the list 97% of the time, another says 75%, and both reach the model in the same breath. It is told it has six choices when it has seven. It is asked for seven picks from a list where, on average, two funds actually qualify — and it says so, in its own words. And the founder's company name was dropped from the brief by accident during a file move, in a system where one founder in three was already indistinguishable from another."
+      "id": "wsGT",
+      "step": 2,
+      "what": "Funds we hide because one round closed, while the programme runs on",
+      "why": "We record a funding round; the funder runs a programme that reopens. When the round's date passes we stop offering it — so a French agency is taking applications today for a scheme we marked shut in March 2024. Eleven of fifteen rows checked against the funders' own pages are live or reopening. The founder should see the fund and be told the window has closed, which is more useful than hiding it and more honest than showing it as open."
     },
     {
-      "id": "wsGR",
+      "id": "wsGU",
       "step": 2,
-      "what": "One line of small print costing sixteen founders their fund",
-      "why": "A requirement to be based in southern Italy sits on a parent record covering all Italian research aid, and all sixty-seven funds beneath it inherit it — including Lombardy's own regional programme, whose published rules require being based in Lombardy. The obvious fix was tried and rolled back because it removed a safety check along with the bad rule. This does it narrowly."
+      "what": "Rules that exclude exactly the people they were written to admit",
+      "why": "A fund says sole proprietorships may not apply; we encoded it so that it rejects every incorporated company instead. Another names universities as eligible and we blocked two of them. Underneath both sits a harder question: when a fund's purpose is narrower than anything our categories can express, the encoder picks the nearest one and turns everyone else away. That pattern accounts for three hundred more exclusions."
     }
   ]
 }
