@@ -25,108 +25,20 @@
 // So the vocabulary is deliberately asymmetric: we say a door is OPEN (nothing
 // disqualifies you), never that you are approved. Overclaiming here is the one
 // failure that would cost a founder months.
-import EVIDENCE_TIERS from "./evidenceTiers.json";
 import { loadDbInstruments, type DbGate, type DbInstrument } from "./corpus";
 import { evaluateSpec, type ValueSpec } from "./comparator";
-import { fieldSeverity, type EligibilityAnswers } from "./types";
+import { type EligibilityAnswers } from "./types";
+// The two predicates that decide whether one rule may end the conversation —
+// `isCited` and `isStructural` — stood HERE, and this module imports corpus.ts.
+// That put them out of reach of corpus.ts itself, which is where gate
+// inheritance is decided and is exactly a place that has to ask the question.
+// They now live in a leaf that imports neither, and are re-exported so that
+// every caller reaches ONE definition whichever name it uses.
+import {
+  isAttributable, isCited, isConclusive, isFilter, isStructural,
+} from "./evidenceTier";
 
-/**
- * Can this founder do anything about a failed rule?
- *
- * ── Why severity, not arithmetic ───────────────────────────────────────────
- * `blocked` used to mean "two or more filters failed". The median publishable
- * instrument carries TWO filters in total, so failing the single most
- * disqualifying rule it has — establishment, headcount, an excluded activity —
- * left the fund published with a polite note. Every out-of-scope company in
- * the red-team set got a full table that way: a US business with no European
- * entity was offered German state aid, and a 40,000-person corporate was
- * offered SME-only lanes.
- *
- * What makes a failure fatal is not how many friends it has. It is whether the
- * founder could turn up differently. Where they are established, how many
- * people they employ, what they sell, who owns them: not this quarter. Whether
- * they will run a consortium, co-finance a quarter of the cost, or open a
- * local entity: a decision, and the brief exists to put that decision in front
- * of them.
- *
- * Read off the intake field the gate is encoded against, so it holds for
- * instruments and countries nobody has looked at yet.
- *
- * The classification itself lives with the fields in types.ts, keyed so the
- * compiler demands it for every intake field. Keeping it here made it a list
- * this engine happened to hold, which a new field could quietly miss.
- */
-
-/** True when failing this rule is a fact about the company, not a choice. */
-export function isStructural(field: string): boolean {
-  return fieldSeverity(field) === "structural";
-}
-
-/**
- * Rules traceable to the fund's own text.
- *
- * ── Why disqualification needs this second test ───────────────────────────
- * Severity says whether a founder COULD answer differently. It says nothing
- * about whether we are right that the rule exists.
- *
- * Most of the corpus outside state aid carries `llm_classified` gates: a
- * generic five-rule stub per instrument, inferred rather than read off a
- * document. The content is usually sound — ADEME's says "must be registered
- * or operating in France", which is certainly true — but it is not quotable,
- * and it was never encoded, so the largest French development bank has never
- * once been filtered by country.
- *
- * Refusing to encode uncited rules leaves those instruments permanently
- * unknown, which is its own failure: the brief publishes them without any idea
- * whether the founder qualifies. Encoding them and letting them disqualify is
- * worse — it would close a fund to a founder on the strength of a sentence we
- * cannot show them.
- *
- * So uncited rules NARROW but never CONDEMN. A failing uncited rule is a named
- * obstacle with its source stated; only a rule we can point at in the fund's
- * own text can end the conversation.
- */
-// Read from evidenceTiers.json, not written out here. The same policy used to
-// live as this Set and as a Python tuple in embed_eligibility.py, and they
-// diverged the day `register_derived` was added: the row showed those gates
-// while the embedder refused to embed them, so the advisor could display a fact
-// it could not retrieve. One file, both languages.
-const CITED = new Set(EVIDENCE_TIERS.cited.tiers);
-
-export function isCited(gate: Pick<DbGate, "verificationLevel">): boolean {
-  return CITED.has(gate.verificationLevel ?? "");
-}
-
-/**
- * `register_derived` is a third thing, and the reason it exists is that neither
- * existing tier describes it honestly.
- *
- * It is not cited: a GBER article inferred from a scheme's award history is a
- * majority vote (the floor is 50%, and a typical carrier is 43 of 64 awards),
- * so it describes what the scheme HAS funded, never what it requires. Calling
- * it cited would let it read as the fund's own eligibility rule.
- *
- * But it is not a model inference either, which is what `inventory_inferred`
- * connotes and what the narrowing rules above are calibrated for. The
- * aid_objective code is filed per award by the granting authority itself in the
- * SATR transparency register. That provenance is stronger than an extraction.
- *
- * So it is attributable-but-not-cited: good enough to state as a fact about how
- * the instrument is structured, not good enough to judge a founder by. It is
- * read by structuringNotes and by nothing else.
- *
- * These gates DO carry a valueSpec — the statutory aid-intensity ceiling the
- * article implies — so what keeps them out of verdicts is gateRole, not the
- * absence of a spec. `aid_intensity` describes the money, never the applicant,
- * and isFilter() admits only gateRole='filter'. evidenceTier.test.ts pins that,
- * because the day an aid_intensity spec becomes a filter is the day a founder
- * is disqualified by a majority vote.
- */
-const ATTRIBUTABLE = new Set(EVIDENCE_TIERS.attributable.tiers);
-
-export function isAttributable(gate: Pick<DbGate, "verificationLevel">): boolean {
-  return ATTRIBUTABLE.has(gate.verificationLevel ?? "");
-}
+export { isAttributable, isCited, isConclusive, isFilter, isStructural };
 
 export type VerdictStatus =
   /** Nothing we can check rules this founder out. */
@@ -155,12 +67,6 @@ export interface InstrumentAssessment {
   checked: number;
   passed: number;
   blockers: Blocker[];
-}
-
-function isFilter(g: DbGate): boolean {
-  // Untriaged gates (gateRole undefined) are still honoured, so the system
-  // degrades safely while encoding coverage grows.
-  return (!g.gateRole || g.gateRole === "filter") && Boolean(g.valueSpec);
 }
 
 /** Exported for unit tests: this is the real decision boundary, and testing
