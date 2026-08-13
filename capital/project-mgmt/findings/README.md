@@ -115,7 +115,7 @@ of the world that has since moved.
 | `scheme_evidence_wsBY.md` | Both free per-scheme sources add **+0.0, structurally** — a field constant inside a leaf's own cell cannot separate | NEG (its 85.5% ceiling is retracted as circular; the +0.0 stands) |
 | `call_residual_wsCL.md` | Collapsing a body's recurring calls buys nothing: only 6.8–13.9% of 295 catalogue rows group at all | NEG |
 | `ranking_reopen_wsCS.md` | Re-ran wsBU under attestation: the null mostly holds, but the blend beats shipped +4.8 ±3.3 | SUP by `regain_wsCU/` |
-| `regain_wsCU/` | Both gains survive against a founder who exists: blend +5.7 ±3.5, sixth row +2.8/+3.2 | LIVE |
+| `regain_wsCU/` | Both gains survive against a founder who exists: blend +5.7 ±3.5, sixth row +2.8/+3.2 | LIVE. **The "upper bound" caveat is now a number, and its SIGN is the opposite of what the caveat implied**: `rank_shape_wsGY.md` measures the channel cap, dedupe and peer precedence at **+7.2 EXACT / +8.5 REGIME**, so a pure-reordering arm is scored 7.2 points BELOW the product's own frame, not above it |
 | `signal_remeasure_wsBU.md` | Every ranking signal alone and blended | **SUP — see §1** |
 | `sixth_row_wsCR.md` | Publishing a sixth row is worth +3.6/+3.2; the cap of five was encoded in six places, two already stale | LIVE on the sixth row; §3 retracted, see §1 |
 | `rank_below_five_wsCM.md` | The in-pool misses sit at **median rank 22, not rank 6** — no near-miss population exists, so no re-ranking nudge pays | LIVE on the mechanism; numbers superseded, see §1 |
@@ -126,6 +126,7 @@ of the world that has since moved.
 | `first_test_wsDQ/` | First paid ranker run works at EUR 0.0171/brief — but 10/12 thought zero tokens and 0/12 declared unsure | LIVE |
 | `seam_wsDR/` | Seam position: early shows the model 33.4 rows vs 18.0 and reaches 25.1 deep vs 14.3 | LIVE. **Read the paired re-reading before quoting it** — `scripts/_wsei_reread_wsdr.ts` re-reads the committed run as pairs, free and offline, because the quoted 17.8% vs 22.2% is an *unpaired* reading of a paired design |
 | `ranker_asks_wsEJ/RESULTS.md` | The ranker's own question turn, built and rendered: 12/12 archetypes have a separating demand, whole surface is 7 fields | LIVE, unrun |
+| `rank_shape_wsGY.md` | The oracle ceiling on ALL ordering work is **86.3%** and its shortfall is zero — but the median miss sits at rank **27 of 79** and no fact we hold separates the shown rows from the answer. The constraint stack does not discount a pure-reordering gain, it is **worth +7.2 EXACT / +8.5 REGIME** on top of the score | LIVE |
 | `one_funnel/` | **The instrument of record.** Every stage, one population, one denominator | LIVE |
 
 ### Intake, questions and the ceiling
