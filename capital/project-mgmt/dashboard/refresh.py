@@ -21,11 +21,23 @@ the bug.
 
 EVERY FIGURE THE PAGE STATES IS WRITTEN HERE. The owner's rule is that the
 page reflects what is in production at all times, so nothing numeric is
-typed into the prose: the headline, the funnel percentages, the cut depth
-and the ceiling are all filled from `guard_verdicts`, the measured recall
-curve and `VERDICT_POOL` itself. The page ships with empty placeholders
-that render as em-dashes, so a page this script has never touched looks
-obviously unfilled rather than confidently wrong.
+typed into the prose. The page ships with empty placeholders that render as
+em-dashes, so a page this script has never touched looks obviously unfilled
+rather than confidently wrong.
+
+AND EVERY ONE OF THEM COMES FROM THE SAME LADDER RUN. `series()` still reads
+`guard_verdicts` for the CHART, which is a history of one guard over time and
+is labelled as such. Everything the prose asserts -- the headline, the funnel,
+the two factors, the worst step -- is `one_funnel/latest.json`, plus the two
+constants read out of the code itself (`VERDICT_POOL`, `AGENT_SELECT`).
+
+This used to mix in the pool-recall curve, which is measured on 830 holdout
+founders where the funnel uses 897 with every stage above applied. Its figure
+and the funnel's cut to the AI's list are different questions with adjacent
+answers, and they sat one line apart in this script's own stdout. Nothing on
+the page rendered it, which is the tell: main() now REFUSES to run if this
+module computes a figure the page does not render, because a number that only
+ever reaches a terminal is a number quoted without its population.
 """
 from __future__ import annotations
 
@@ -113,7 +125,6 @@ def series() -> list[list]:
     return out
 
 
-CURVE = ROOT / "website/frontend/lib/intelligence/poolRecallCurve.generated.json"
 CAPS = ROOT / "website/frontend/lib/intelligence/caps.ts"
 SELECT = ROOT / "website/frontend/lib/intelligence/agentSelect.ts"
 
@@ -232,7 +243,6 @@ def headline() -> dict[str, object]:
         if st and st.get("sharePct") is not None:
             return {
                 "published": round(st["sharePct"], 1),
-                "published2": round(st["sharePct"], 1),
                 "rows": rows,
                 "n": run["n"],
                 "stamp": run["startedAt"][:10],
@@ -256,16 +266,30 @@ read from the run, never typed.
 A stage the ladder adds and this dict does not name is simply not shown, which
 is the safe direction: a new stage appearing unlabelled is better than a
 wrong label. A stage NAMED here and missing from the run exits loudly.
+
+The fourth column is the same stage as a NOUN, for prose. The table's labels
+are continuations -- "... and it survives the cut to eight" -- and dropping one
+into a sentence reads like a transcript error. The prose below the table names
+whichever step is currently the worst, and that step moves, so the noun has to
+travel with the row rather than be written into the page.
 """
 FUNNEL_ROWS = [
-    ("answer_key",      "The corpus holds the fund they won",              "good"),
-    ("publishable",     "&hellip; and we are allowed to offer it",         "warn"),
-    ("founder_screen",  "&hellip; and the founder's own answers keep it",  "good"),
-    ("gates_pass",      "&hellip; and its written rules do not exclude them", "bad"),
-    ("pool_cut",        "&hellip; and it survives the cut to the AI's list", "warn"),
-    ("writer_cap",      "&hellip; and it survives the cut to eight",       "bad"),
-    ("published",       "&hellip; and it is one of the seven published",   "warn"),
-    ("top_6",           "&hellip; and it is in the six they read",         "warn"),
+    ("answer_key",      "The corpus holds the fund they won",              "good",
+     "holding it in the corpus at all"),
+    ("publishable",     "&hellip; and we are allowed to offer it",         "warn",
+     "our own rules on what may be offered"),
+    ("founder_screen",  "&hellip; and the founder's own answers keep it",  "good",
+     "the founder's own answers"),
+    ("gates_pass",      "&hellip; and its written rules do not exclude them", "bad",
+     "the fund's written eligibility rules"),
+    ("pool_cut",        "&hellip; and it survives the cut to the AI's list", "warn",
+     "the cut to the list the AI sees"),
+    ("writer_cap",      "&hellip; and it survives the cut to eight",       "bad",
+     "the cut to eight, after the AI has ranked"),
+    ("published",       "&hellip; and it is one of the seven published",   "warn",
+     "publishing seven of the eight"),
+    ("top_6",           "&hellip; and it is in the six they read",         "warn",
+     "the six a founder actually reads"),
 ]
 
 TONE = {"good": "var(--good)", "warn": "var(--warn)", "bad": "var(--bad)"}
@@ -276,7 +300,7 @@ def funnel_table() -> str:
     run = json.loads(FUNNEL.read_text())
     by_id = {s["id"]: s for s in run["stages"]}
     out, prev = [], None
-    for stage_id, label, tone in FUNNEL_ROWS:
+    for stage_id, label, tone, _noun in FUNNEL_ROWS:
         st = by_id.get(stage_id)
         if st is None:
             sys.exit(f"the funnel run has no stage '{stage_id}', which this page names. "
@@ -298,42 +322,103 @@ def funnel_table() -> str:
     return "\n".join(out)
 
 
+TARGET = 60.0   # the owner's near-term goal, and the only typed number on the page
+
+
 def figures(data: list[list]) -> dict[str, object]:
     """Every number the prose states, derived -- never typed.
 
-    The owner's rule: the page must reflect what is in production at all
-    times. So the headline, the funnel and the ceiling are all computed here
-    from the guard's own verdicts and the measured recall curve, and the page
-    ships with empty placeholders that read as em-dashes if this never runs.
-    A page that renders a stale number confidently is worse than one that
-    renders nothing.
+    The owner's rule: the page must reflect what is in production at all times.
+
+    EVERY FIGURE HERE COMES FROM ONE RUN OF ONE LADDER, on one population, and
+    that is not a style preference. This function used to mix three sources --
+    the funnel for the headline, `check_recall_floor`'s verdicts for the pool,
+    and the pool-recall curve for what the model is shown. The curve is
+    measured on 830 holdout founders and the funnel on 897 with every stage
+    above it applied, so its "77.5% at K=40" and the funnel's cut to the AI's
+    list are different questions with adjacent-looking answers. They sat one
+    line apart in this generator's own output. Nothing rendered them, so no
+    reader was misled -- but I read that line and quoted from it, which is the
+    same defect one step earlier.
+
+    So the rule is now structural: a figure is computed here only if the page
+    renders it, and main() exits if that stops being true.
     """
-    latest = data[-1]                      # [when, key, exact5, pool, regime5, floor, status]
-    curve = json.loads(CURVE.read_text())
-    at = {int(k): v for k, v in curve["recallAtK"]}
-    depth = cut_depth()
-    if depth not in at:
-        sys.exit(
-            f"the recall curve has no point at K={depth}, the depth production uses. "
-            f"Re-run scripts/_wsdr_curve.ts so the page can state the real figure."
-        )
+    run = json.loads(FUNNEL.read_text())
+    by_id = {s["id"]: s for s in run["stages"]}
+
+    def share(stage_id: str) -> float:
+        st = by_id.get(stage_id)
+        if st is None or st.get("sharePct") is None:
+            sys.exit(
+                f"the funnel run has no stage '{stage_id}', which the page's prose "
+                f"is derived from. Fix the run or the name -- do not let the page "
+                f"state an arithmetic it cannot check."
+            )
+        return float(st["sharePct"])
+
+    # The product is two factors and nothing else, and WHERE THE LINE IS DRAWN
+    # between them is the whole content of the split. It is drawn at the pool
+    # cut: everything above it is our own code deciding what the model may see,
+    # everything below it is what happens to a list once the model has it. So
+    # REACH is "the won fund is on the list the AI is shown" and CONVERT is
+    # "that list became the founder's rows".
+    #
+    # An earlier draft drew it at the gates instead, which put OUR OWN cut to
+    # forty inside the model's half and flattered the model by 8 points. The
+    # cut is deterministic, it is ours, and it is what wsGX is measuring --
+    # counting it as the model's would hide exactly the work in flight.
+    #
+    # Their product is the headline by construction, which is how the page can
+    # state the arithmetic for the target without anyone typing a percentage.
+    reach = share("pool_cut")
+    end = share(FUNNEL_ROWS[-1][0])
+    convert = end / reach * 100
+
+    # The largest single stage-to-stage loss, found rather than asserted. The
+    # prose used to name the cut to eight because that was true when it was
+    # written; the sentence must move when the loss does.
+    drops = []
+    prev = None
+    for stage_id, label, _tone, noun in FUNNEL_ROWS:
+        st = by_id.get(stage_id)
+        if st is None or st.get("sharePct") is None:
+            continue
+        pct = float(st["sharePct"])
+        if prev is not None:
+            drops.append((prev[1] - pct, noun, prev[0]))
+        prev = (noun, pct)
+    worst = max(drops)
+
     return {
-        **headline(),                      # published / published2 / rows / n / stamp
+        **headline(),                      # published / rows / n / stamp / stamp2
         "runs": len(data),
-        "floorExact5": round(latest[2]),   # the GUARD's figure, kept but demoted
-        "pool": round(latest[3]),
-        "depth": depth,
-        "shown": round(at[depth] * 100, 1),
-        "shown2": round(at[depth] * 100, 1),
-        "shown3": round(at[depth] * 100, 1),
-        # Two different pools, and conflating them is how the page lost a stage.
-        # `pool` is the candidate pool the floor grades. `accessible` is what
-        # survives the channel caps and actually reaches the memo path -- the
-        # curve's own ceiling, since no depth can exceed it. The difference
-        # between them is a real loss with a real cause, not a discrepancy.
-        "accessible": round(curve["inPoolAtAll"] * 100, 1),
-        "ceiling": round(curve["inPoolAtAll"] * 100, 1),
+        "depth": cut_depth(),
         "ranker": live_ranker(),
+        "reach": round(reach),
+        "convert": round(convert),
+        # What conversion would have to reach for the target, at today's reach.
+        # Above 100 it is unreachable at this reach and the page must say so
+        # rather than print an impossible percentage as if it were a plan.
+        "needConvert": round(TARGET / reach * 100),
+        "target": round(TARGET),
+        "worstLoss": round(worst[0]),
+        "worstLossAfter": worst[2],
+        "worstLossAt": worst[1],
+        # The step-by-step section below the table. Same run, same ladder --
+        # these used to be typed, and by this morning the page was telling the
+        # owner the list is cut to eighteen (it is forty) and that the gates
+        # cost twenty points (they cost four).
+        "instruments": "{:,}".format(
+            int(re.search(r"instruments=(\d+)", run["corpus"]).group(1))),
+        "shortlist": round(run["meanAccessibleRows"]),
+        "inShortlist": round(share("gates_pass")),
+        "gatesLoss": round(share("founder_screen") - share("gates_pass")),
+        "poolCutLoss": round(share("gates_pass") - share("pool_cut")),
+        "writerLoss": round(share("pool_cut") - share("writer_cap")),
+        "beforeAI": round(100 - share("pool_cut")),
+        "publishCap": run["levers"]["PUBLISH_CAP"],
+        "writerCap": run["levers"]["WRITER_CANDIDATE_CAP"],
     }
 
 
@@ -361,6 +446,29 @@ def main() -> None:
         sys.exit("the FUNNEL block could not be replaced -- has the page been restructured?")
 
     figs = figures(data)
+
+    # A figure this generator computes and the page never renders is not
+    # harmless. It is a number that reaches stdout, gets read, and gets quoted
+    # against the wrong population -- which is how the recall curve's
+    # "77.5% at K=40" (n=830, holdout) came to sit one line away from the
+    # funnel's pool cut (n=897, the whole ladder) as if they answered the same
+    # question. Worse, `figures()` exits hard when the curve has no point at
+    # production depth, so the page could refuse to update over a measurement
+    # it does not use. The curve's own currency is guarded where it belongs, by
+    # check_pool_recall_curve.ts.
+    #
+    # The property, and it holds for a figure added next year by someone who
+    # never reads this: every key in FIG is consumed by a data-fig attribute on
+    # the page. Nothing here names a figure.
+    rendered = set(re.findall(r'data-fig="([a-zA-Z0-9_]+)"', page))
+    orphans = sorted(set(figs) - rendered)
+    if orphans:
+        sys.exit(
+            "these figures are computed and never rendered: " + ", ".join(orphans)
+            + "\nEither put them on the page or stop computing them. A number that "
+            "only ever reaches the terminal gets quoted without its population."
+        )
+
     page, n = re.subn(
         r"const FIG = \{.*?\};",
         "const FIG = " + json.dumps(figs, separators=(",", ":")) + ";",
@@ -391,8 +499,13 @@ def main() -> None:
     for day in sorted(by_day):
         vals = by_day[day]
         print(f"  {day}  {len(vals):>3} runs   EXACT@5 {min(vals)} - {max(vals)}")
-    print(f"\nfigures: published {figs['published']}%  pool {figs['pool']}%  "
-          f"shown-to-model {figs['shown']}% at K={figs['depth']}  ceiling {figs['ceiling']}%")
+    # One line, one population, and every number on it is on the page. The old
+    # version printed the recall curve's figures beside the funnel's, which are
+    # measured on different populations.
+    print(f"\nfigures ({figs['n']} companies, {figs['stamp']}): "
+          f"published {figs['published']}% at {figs['rows']} rows  "
+          f"= reach {figs['reach']}% x convert {figs['convert']}%  "
+          f"| for {figs['target']}%, convert must reach {figs['needConvert']}%")
     print("Republish the page to update the artifact.")
 
 

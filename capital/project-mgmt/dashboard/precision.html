@@ -129,18 +129,20 @@
     <span class="big"><b data-fig="published">—</b><span style="font-size:.45em">%</span></span>
     <p class="cap">How often the fund a company actually won is among the
       <b data-fig="rows">&mdash;</b> we put in front of them. The near-term goal is
-      <strong>60%</strong>. Measured end to end on our own test set, not read off production
+      <strong><b data-fig="target">&mdash;</b>%</strong>. Measured end to end on our own test set, not read off production
       &mdash; it is the number we are building, and it moves only when the product does.</p>
   </section>
 
   <section>
     <h2>Where the right fund is lost</h2>
-    <p class="lede" style="margin-bottom:18px">Measured end to end on 897 companies whose
-      funding we already know, following the right answer the whole way through. One test,
-      one group, every stage.</p>
+    <p class="lede" style="margin-bottom:18px">Measured end to end on <b data-fig="n">&mdash;</b>
+      companies whose funding we already know, following the right answer the whole way
+      through. One test, one group, every stage. The order the founder reads is
+      <b data-fig="ranker">&mdash;</b>'s, and it is handed
+      <b data-fig="depth">&mdash;</b> funds to choose from.</p>
 
     <div class="drop" style="margin-top:24px;border-left-color:var(--accent)">
-      <span class="tag" style="color:var(--accent)">How we get to 60%</span>
+      <span class="tag" style="color:var(--accent)">How we get to <b data-fig="target">&mdash;</b>%</span>
       <table style="width:100%;border-collapse:collapse;margin:16px 0 6px;font-size:14.5px">
         <tr style="border-bottom:1px solid var(--line)">
           <th style="text-align:left;padding:6px 0;font-weight:600">&nbsp;</th>
@@ -182,29 +184,35 @@
       <!--/FUNNEL-->
       </table>
 
-      <p style="margin-top:14px"><strong>One loss is now bigger than everything else
-        combined.</strong> After the AI has ranked the funds, the list is cut to eight before
-        the write-up &mdash; and that costs <strong>thirty points</strong>. It was eleven a day
-        ago; widening the list the AI sees pushed the loss down onto this cut rather than
-        removing it.</p>
+      <p style="margin-top:14px"><strong>One step loses more than any other, by a wide
+        margin.</strong> It is the one between
+        &ldquo;<b data-fig="worstLossAfter">&mdash;</b>&rdquo; and
+        &ldquo;<b data-fig="worstLossAt">&mdash;</b>&rdquo;, which costs
+        <strong><b data-fig="worstLoss">&mdash;</b> points</strong> on its own. Which step that
+        is has moved before and will move again &mdash; widening the list the AI sees pushed
+        the loss downward rather than removing it &mdash; so the sentence is read off the run
+        rather than written.</p>
 
       <p style="margin-top:10px"><strong>Widening the AI's list is done, and cost nothing.</strong>
-        It sees forty funds instead of eighteen, which lifted the share of founders whose fund
-        it can even consider from 50% to 69%. Measured across 897 companies, not one lost
-        anything by it. But the gain is a <em>ceiling</em>: it only becomes accuracy if the AI
-        promotes a good fund up the list, and our free test runs without the AI, so it cannot
-        yet show that.</p>
+        It now sees <b data-fig="depth">&mdash;</b> funds instead of eighteen, and across every
+        company in the test not one lost anything by it. But the gain is a <em>ceiling</em>: it
+        only becomes accuracy if the AI promotes a good fund up the list, and our free test runs
+        without the AI, so it cannot yet show that.</p>
 
-      <p style="margin-top:10px"><strong>Why 60% and not 90%.</strong> Getting the right fund
-        in front of a founder is two things multiplied: it has to survive our own filters
-        (<strong>83%</strong> today), and the AI has to pick it out of forty
-        (<strong>~51%</strong> today). For 90%, the AI would have to be right about
-        <strong>95%</strong> of the time &mdash; at today's filters the arithmetic does not
-        reach 90% at all. 60% is reachable and every step to it is identified.</p>
+      <p style="margin-top:10px"><strong>Why <b data-fig="target">&mdash;</b>% and not 90%.</strong>
+        Getting the right fund in front of a founder is two things multiplied: our own code has
+        to put it on the list the AI is shown (<strong><b data-fig="reach">&mdash;</b>%</strong>
+        today), and that list has to become the founder's rows
+        (<strong><b data-fig="convert">&mdash;</b>%</strong> today). To hit
+        <b data-fig="target">&mdash;</b>%, the second number has to reach
+        <strong><b data-fig="needConvert">&mdash;</b>%</strong>. For 90% it would have to pass
+        100%, which is why 90% is not a plan at today's filters &mdash; it needs both halves
+        moved, and the first one is where the free work is.</p>
 
       <p style="margin-top:10px"><strong>And it is not a data problem.</strong> Not one of the
-        founders we lose had a fund that was closed. Roughly nineteen of the twenty-three points
-        lost before the AI is even asked are our own encoding errors.</p>
+        founders we lose had a fund that was closed. Of the <b data-fig="beforeAI">&mdash;</b> points
+        lost before the AI is asked anything, the great majority are our own encoding rather than
+        the funding landscape.</p>
     </div>
   </section>
 
@@ -217,49 +225,55 @@
         <div class="fh"><span class="fn">1</span>
           <h3>The founder tells us about themselves</h3>
           <span class="chip c-good">holds</span></div>
-        <p>One screen narrows 1,100 funds to a workable shortlist. Adding questions here buys nothing &mdash; measured.</p>
+        <p>One screen narrows <b data-fig="instruments">&mdash;</b> funds to a workable shortlist. Adding questions here buys nothing &mdash; measured.</p>
       </li>
       <li>
         <div class="fh"><span class="fn">2</span>
           <h3>We build the shortlist</h3>
           <span class="chip c-good">holds</span></div>
-        <p>About 105 funds, and the right one is in there. <strong>This is the asset.</strong> Everything after is about not squandering it.</p>
+        <p>About <b data-fig="shortlist">&mdash;</b> funds, and the right one is in there for <b data-fig="inShortlist">&mdash;</b>% of founders. <strong>This is the asset.</strong> Everything after is about not squandering it.</p>
       </li>
       <li style="background:var(--accent-soft)">
         <div class="fh"><span class="fn" style="background:var(--bad);color:#fff">!</span>
           <h3>Then the funds' own rules rule the founder out</h3>
-          <span class="chip c-bad">20 points lost</span></div>
-        <p>Each fund states who may apply. Applying those rules removes the right fund for one founder in five &mdash; and we do not yet know how much of that is the funds being strict and how much is us reading them too strictly. <strong>Being established now.</strong></p>
+          <span class="chip c-bad"><b data-fig="gatesLoss">&mdash;</b> points lost</span></div>
+        <p>Each fund states who may apply, and we encode those rules to apply them. The encoding was the problem, not the funds: on a like-for-like replay, funds wrongly ruled out fell from 251 to 14. <strong>The corrections are written and waiting on you</strong> &mdash; they are database changes, so nothing above reflects them yet.</p>
       </li>
       <li style="background:var(--accent-soft)">
         <div class="fh"><span class="fn" style="background:var(--bad);color:#fff">!</span>
-          <h3>Then we cut the list to eighteen</h3>
-          <span class="chip c-bad">28 points lost</span></div>
-        <p>The largest single loss, and not a step anybody designed &mdash; a stopgap for three problems that have since moved elsewhere. Widening it to forty puts the answer in front of the AI for 58% of founders instead of 37%, for about a euro-cent each.</p>
+          <h3>Then we cut the list to <b data-fig="depth">&mdash;</b></h3>
+          <span class="chip c-bad"><b data-fig="poolCutLoss">&mdash;</b> points lost</span></div>
+        <p>Not a step anybody designed &mdash; a stopgap for three problems that have since moved elsewhere. It was eighteen this week and widening it cost about a euro-cent a founder and lost nobody anything. <strong>Being worked on now:</strong> the order this cut uses has no sense of how near a fund is to the founder's own country, and a version that does beat it by five points in a properly paired test.</p>
       </li>
       <li>
         <div class="fh"><span class="fn">3</span>
           <h3>The AI asks what it still needs to know</h3>
-          <span class="chip c-good">fixed today</span></div>
+          <span class="chip c-good">fixed</span></div>
         <p>Live for every founder, and now written against their whole shortlist rather than two thirds of it.</p>
       </li>
       <li>
         <div class="fh"><span class="fn">4</span>
           <h3>The founder answers</h3>
-          <span class="chip c-good">fixed today</span></div>
+          <span class="chip c-good">fixed</span></div>
         <p>Half of what they typed was being discarded on arrival. Fixed. No answer can remove a fund &mdash; guarded, 672 answers, zero removals.</p>
+      </li>
+      <li style="background:var(--accent-soft)">
+        <div class="fh"><span class="fn" style="background:var(--bad);color:#fff">!</span>
+          <h3>Then we cut it again, to <b data-fig="writerCap">&mdash;</b>, before the write-up</h3>
+          <span class="chip c-bad"><b data-fig="writerLoss">&mdash;</b> points lost</span></div>
+        <p>The largest single loss on the page, and it happens <em>after</em> the AI has ranked. Our free test has no AI in it, so this figure is what our own scoring loses here &mdash; the real one depends on whether the AI pushes good funds up before the cut, which is the next thing to buy.</p>
       </li>
       <li>
         <div class="fh"><span class="fn">5</span>
-          <h3>The AI picks the five</h3>
-          <span class="chip c-warn">live today</span></div>
-        <p>Shipped this evening. On founders whose fund was reachable it scores <strong>51%</strong> against the old arithmetic's 46%.</p>
+          <h3>The AI picks them</h3>
+          <span class="chip c-warn">live, and unproven</span></div>
+        <p>It is switched on and every founder gets it. <strong>What it is worth is not yet established.</strong> The one paid comparison we have breached a condition we had set in advance for calling it off &mdash; four replies were cut off mid-sentence &mdash; so its result does not stand, and the figure it produced has been withdrawn from this page. Re-running it properly is the next thing that costs money.</p>
       </li>
       <li>
         <div class="fh"><span class="fn">6</span>
-          <h3>Five funds go into the memo</h3>
+          <h3><b data-fig="publishCap">&mdash;</b> funds go into the memo</h3>
           <span class="chip c-warn">one thing left</span></div>
-        <p>It reads well. But the writer was quietly deleting a fund from one brief in four &mdash; fixed today, and worth watching.</p>
+        <p>It reads well. But the writer was quietly deleting a fund from one brief in four &mdash; fixed, and worth watching.</p>
       </li>
     </ol>
   </section>
@@ -294,7 +308,7 @@
 <script>
 // Regenerated by project-mgmt/dashboard/refresh.py. Do not edit by hand.
 const D = [["2026-08-07T18:57","C",30.3,97.7,87.3,22,"ok"],["2026-08-07T22:09","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T09:47","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:24","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:48","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:55","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T11:39","C",29.7,97.3,86,22,"ok"],["2026-08-08T12:09","C",29.7,97.3,86,22,"ok"],["2026-08-08T15:19","C",29.7,97.3,86,22,"ok"],["2026-08-08T16:35","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T16:49","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T17:17","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T17:59","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:31","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:33","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:37","C",28,97.3,89.7,22,"ok"],["2026-08-08T21:43","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:53","C",28,97.3,89.7,22,"ok"],["2026-08-08T22:05","C",28.7,98,86.3,22,"ok"],["2026-08-08T22:14","C",29,98,86.7,22,"ok"],["2026-08-08T22:20","C",29,98,86.7,22,"ok"],["2026-08-08T22:23","C",29,98,86.7,22,"ok"],["2026-08-08T22:31","C",29,98,86.7,22,"ok"],["2026-08-08T23:07","C",29.3,98,87,22,"ok"],["2026-08-08T23:12","C",29.3,98,87,22,"ok"],["2026-08-08T23:19","C",27.3,98,84,22,"failed"],["2026-08-08T23:23","C",27,98,83.7,22,"failed"],["2026-08-08T23:23","C",27,98,83.7,22,"failed"],["2026-08-08T23:26","C",27,98,83.7,22,"failed"],["2026-08-08T23:30","C",27.3,98,84,22,"failed"],["2026-08-09T00:02","C",27.3,98,84,22,"failed"],["2026-08-09T00:11","C",29,98,91.3,22,"ok"],["2026-08-09T00:22","C",29,98,91.3,22,"ok"],["2026-08-09T00:27","C",29,98,91.3,22,"ok"],["2026-08-09T00:32","C",29,98,91.3,22,"ok"],["2026-08-09T00:36","C",29,98,91.3,22,"ok"],["2026-08-09T01:56","C",29,98,91.3,22,"ok"],["2026-08-09T02:00","C",28.7,98,91.3,22,"ok"],["2026-08-09T02:11","C",22,97,91.7,22,"ok"],["2026-08-09T02:14","C",22,97,91.7,22,"ok"],["2026-08-09T02:17","C",22,97,91.7,22,"ok"],["2026-08-09T02:20","C",22,97,91.7,22,"ok"],["2026-08-09T02:34","C",22.3,97,91.7,22,"ok"],["2026-08-09T08:46","D",25.3,94,76,15,"ok"],["2026-08-09T08:52","D",25.3,94,76,15,"ok"],["2026-08-09T08:58","D",25.3,94,76,15,"ok"],["2026-08-09T09:06","D",25.3,94,76,15,"ok"],["2026-08-09T09:10","D",25.3,94,76,15,"ok"],["2026-08-09T09:33","D",25.3,94,76,15,"ok"],["2026-08-09T09:35","D",25.3,94,76,15,"ok"],["2026-08-09T09:41","D",25.3,94,76,15,"ok"],["2026-08-09T09:50","D",25.3,94,76,15,"ok"],["2026-08-09T09:54","D",25.3,94,76,15,"ok"],["2026-08-09T10:11","D",25.3,94,76,15,"ok"],["2026-08-09T10:14","D",25.3,94,76,15,"ok"],["2026-08-09T10:30","D",25.3,94,76,15,"ok"],["2026-08-09T10:40","D",25.3,94,76,15,"ok"],["2026-08-09T10:45","D",25.3,94,76,15,"ok"],["2026-08-09T10:57","D",25.3,94,76,15,"ok"],["2026-08-09T11:44","D",25.3,94,76,15,"ok"],["2026-08-09T11:58","D",25.3,94,76,15,"ok"],["2026-08-09T11:58","D",25.3,94,76,15,"ok"],["2026-08-09T12:00","D",25.3,94,76,15,"ok"],["2026-08-09T12:12","D",25.3,94,76,15,"ok"],["2026-08-09T12:19","D",25.3,94,76,15,"ok"],["2026-08-09T13:14","D",25.3,94,76,15,"ok"],["2026-08-09T13:18","D",25.3,94,76,15,"ok"],["2026-08-09T13:38","D",25.3,94,76,15,"ok"],["2026-08-09T13:42","D",25.3,94,76,15,"ok"],["2026-08-09T13:53","D",25.3,94,76,15,"ok"],["2026-08-09T13:59","D",25.3,94,76,15,"ok"],["2026-08-09T14:09","D",25.3,94,76,15,"ok"],["2026-08-09T14:10","D",25.3,94,76,15,"ok"],["2026-08-09T14:12","D",25.3,94,76,15,"ok"],["2026-08-09T14:14","D",25.3,94,76,15,"ok"],["2026-08-09T14:18","D",25.3,94,76,15,"ok"],["2026-08-09T14:24","D",25.3,94,76,15,"ok"],["2026-08-09T15:01","D",25.3,94,76,15,"ok"],["2026-08-09T15:03","D",25,94,72,15,"failed"],["2026-08-09T15:04","D",25.3,94,76,15,"ok"],["2026-08-09T15:07","D",25.3,94,76,15,"ok"],["2026-08-09T15:14","D",25.3,94,76,15,"ok"],["2026-08-09T15:19","D",25.3,94,76,15,"ok"],["2026-08-09T15:29","D",25,94,76,15,"ok"],["2026-08-09T15:34","D",25.3,94,76,15,"ok"],["2026-08-09T15:40","D",25.3,94,76,15,"ok"],["2026-08-09T16:41","D",25.3,94,76,15,"ok"],["2026-08-09T16:45","D",25.3,94,76,15,"ok"],["2026-08-09T17:30","D",25.3,94,76,15,"ok"],["2026-08-09T17:34","D",25.3,94,76,15,"ok"],["2026-08-09T17:38","D",25.3,94,76,15,"ok"],["2026-08-09T17:44","D",25.3,94,76,15,"ok"],["2026-08-09T17:45","D",25.3,94,76,15,"ok"],["2026-08-09T17:49","D",25.3,94,76,15,"ok"],["2026-08-09T17:56","D",25.3,94,76,15,"ok"],["2026-08-09T18:04","D",25.3,94,76,15,"ok"],["2026-08-09T18:11","D",25.3,94,76,15,"ok"],["2026-08-09T18:12","D",25.3,94,76,15,"ok"],["2026-08-09T18:19","D",25.3,94,76,15,"ok"],["2026-08-09T18:21","D",25.3,94,76,15,"ok"],["2026-08-09T18:24","D",25.3,94,76,15,"ok"],["2026-08-09T19:14","D",25.3,94,76,15,"ok"],["2026-08-09T19:22","D",25.3,94,76,15,"ok"],["2026-08-09T19:43","D",25.3,94,76,15,"ok"],["2026-08-09T20:09","D",26,94,72.7,15,"ok"],["2026-08-09T20:09","D",26,94,72.7,15,"ok"],["2026-08-09T20:24","D",25.7,94,72.3,15,"failed"],["2026-08-09T20:27","D",26,94,72.7,15,"ok"],["2026-08-09T20:31","D",26,94,72.7,15,"ok"],["2026-08-09T20:36","D",26,94,72.7,15,"ok"],["2026-08-09T21:03","D",26,94,72.7,15,"ok"],["2026-08-09T21:06","D",26,94,72.7,15,"ok"],["2026-08-09T21:08","D",26,94,72.7,15,"ok"],["2026-08-09T21:09","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T21:12","D",26,94,72.7,15,"ok"],["2026-08-09T21:24","D",26,96.7,73,15,"ok"],["2026-08-09T21:31","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T21:59","D",27.3,94,72.7,15,"ok"],["2026-08-09T22:04","D",27.3,94,72.7,15,"ok"],["2026-08-09T22:18","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T22:39","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T23:01","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:05","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:23","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:28","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:32","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:32","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:49","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:49","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:53","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:53","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:57","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T17:39","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T17:50","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T18:49","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:17","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:26","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:29","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:34","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:40","D",26.3,96.7,73,15,"ok"],["2026-08-10T19:41","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:44","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:09","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:12","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:16","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:17","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:23","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:32","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:37","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:40","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T21:37","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T21:55","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:01","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:07","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:10","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:10","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:13","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:13","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:13","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:15","D",27,96.7,73,15,"ok"],["2026-08-10T22:21","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:47","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:50","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:52","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:54","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:57","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:59","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:59","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:04","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:05","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:07","C",26.7,96.7,72.7,15,"ok"],["2026-08-10T23:10","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:11","C",25.7,96.7,72.3,15,"ok"],["2026-08-10T23:12","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:13","C",25.7,96.7,72.3,15,"ok"],["2026-08-10T23:15","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:15","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:20","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:24","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T00:04","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T00:10","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T00:16","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T08:51","C",26,96.7,72,15,"ok"],["2026-08-11T09:10","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T09:30","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T09:35","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T09:43","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T09:49","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T11:20","C",26,96.7,72,15,"ok"],["2026-08-11T11:33","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T11:37","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T11:41","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T11:48","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T12:01","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T12:02","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T12:08","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T13:14","C",26,96.7,72,15,"ok"],["2026-08-11T16:38","C",26,96.7,72,15,"ok"],["2026-08-11T16:38","C",26,96.7,72,15,"ok"],["2026-08-11T16:38","C",25,97.3,72.3,15,"ok"],["2026-08-11T16:44","C",26,96.7,72,15,"ok"],["2026-08-11T16:53","C",26,96.7,72,15,"ok"],["2026-08-11T16:54","C",26,96.7,72,15,"ok"],["2026-08-11T16:56","C",26,96.7,72,15,"ok"],["2026-08-11T17:01","C",26,96.7,72,15,"ok"],["2026-08-11T17:08","C",26,96.7,72,15,"ok"],["2026-08-11T17:18","C",26,96.7,72,15,"ok"],["2026-08-11T17:28","C",26,96.7,72,15,"ok"],["2026-08-11T17:38","C",26,96.7,72,15,"ok"],["2026-08-11T17:51","C",26,96.7,72,15,"ok"],["2026-08-11T17:57","C",26,96.7,72,15,"ok"],["2026-08-11T21:42","C",26.7,98,65,15,"failed"],["2026-08-11T21:46","C",27.3,98,65.3,15,"failed"],["2026-08-11T21:52","C",27.3,98,65.3,15,"failed"],["2026-08-11T21:55","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:01","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:04","C",27,97.3,64.7,15,"failed"],["2026-08-11T22:06","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:12","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:12","C",26.7,98,65,15,"failed"],["2026-08-11T22:14","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:16","C",26.7,98,65,15,"failed"],["2026-08-11T22:22","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:25","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:32","C",26.7,98,65,15,"failed"],["2026-08-11T22:35","C",26.7,98,65,15,"failed"],["2026-08-11T22:38","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:40","C",26.7,98,65,15,"failed"],["2026-08-12T06:55","C",26.7,98,65,15,"ok"],["2026-08-12T07:06","C",26.7,98,65,15,"ok"],["2026-08-12T07:16","C",26.7,98,65,15,"ok"],["2026-08-12T07:22","C",26.7,98,65,15,"ok"],["2026-08-12T07:37","C",26.7,98,65,15,"ok"],["2026-08-12T07:47","C",26.7,98,65,15,"ok"],["2026-08-12T07:58","C",26.7,98,65,15,"ok"],["2026-08-12T08:07","C",26,98,64.7,15,"ok"],["2026-08-12T08:24","C",26.3,98,64.7,15,"ok"],["2026-08-12T08:40","C",25,97.7,67.3,15,"ok"],["2026-08-12T08:46","C",26.3,98,64.7,15,"ok"],["2026-08-12T08:47","C",25,97.7,67.3,15,"ok"],["2026-08-12T08:49","C",25,97.7,67.3,15,"ok"],["2026-08-12T08:50","C",26.3,98,64.7,15,"ok"],["2026-08-12T08:54","C",26.3,98,64.7,15,"ok"],["2026-08-12T08:54","C",26.3,98,64.7,15,"ok"],["2026-08-12T09:23","C",25,97.7,67.3,15,"ok"],["2026-08-12T16:30","C",25,97.7,67.3,15,"ok"],["2026-08-12T16:37","C",25,97.7,67.3,15,"ok"],["2026-08-12T16:49","C",25,97.7,67.3,15,"ok"],["2026-08-12T16:58","C",25,97.7,67.3,15,"ok"],["2026-08-12T18:21","C",25,97.7,67.7,15,"ok"],["2026-08-12T18:35","C",25,97.7,67.7,15,"ok"],["2026-08-12T19:25","C",25,97.7,67.7,15,"ok"],["2026-08-12T19:31","C",25,97.7,67.7,15,"ok"],["2026-08-12T20:48","C",25,97.7,67.7,15,"ok"],["2026-08-12T20:56","C",25,97.7,67.7,15,"ok"],["2026-08-12T20:59","C",25,97.7,67.7,15,"ok"],["2026-08-12T21:02","C",25,97.7,67.7,15,"ok"],["2026-08-12T21:37","C",25,97.7,67.7,15,"ok"],["2026-08-12T22:13","C",25,97.7,67.7,15,"ok"],["2026-08-12T22:26","C",25,97.7,67.7,15,"ok"],["2026-08-12T22:34","C",25,97.7,67.7,15,"ok"],["2026-08-12T22:40","C",25,97.7,67.7,15,"ok"],["2026-08-12T23:02","C",25,97.7,67.7,15,"ok"],["2026-08-12T23:07","C",25,97.7,67.3,15,"ok"]];
-const FIG = {"published":35.8,"published2":35.8,"rows":6,"n":897,"stamp":"2026-08-13","stamp2":"2026-08-13","runs":264,"floorExact5":25,"pool":98,"depth":40,"shown":77.5,"shown2":77.5,"shown3":77.5,"accessible":93.4,"ceiling":93.4,"ranker":"the AI ranker"};
+const FIG = {"published":35.8,"rows":6,"n":897,"stamp":"2026-08-13","stamp2":"2026-08-13","runs":264,"depth":40,"ranker":"the AI ranker","reach":72,"convert":50,"needConvert":84,"target":60,"worstLoss":31,"worstLossAfter":"the cut to the list the AI sees","worstLossAt":"the cut to eight, after the AI has ranked","instruments":"1,088","shortlist":80,"inShortlist":86,"gatesLoss":4,"poolCutLoss":15,"writerLoss":31,"beforeAI":28,"publishCap":7,"writerCap":8};
 
 (function () {
   for (const [k, v] of Object.entries(FIG))
