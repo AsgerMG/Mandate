@@ -43,38 +43,38 @@
 //   POP=recall N=250 npx tsx scripts/_wsde_dup.ts   # the gradable population
 import { writeFileSync } from "fs";
 
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 requireCredentials("wsde_dup", ["DATABASE_URL", "VOYAGE_KEY"]);
 
-import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
+import { BRIEF_LIMITS } from "../../lib/intelligence/briefChecks";
 import {
   corpusProvenance, findPeersBySubsector, hydrateDbInstruments, hydrateGatesFor,
   isGenericSubsector, loadDbInstruments, matchCompany, publishableInstruments,
   requireLiveCorpus, resetGateHydration,
-} from "../lib/intelligence/corpus";
-import { evaluateEligibility } from "../lib/intelligence/eligibility";
-import { ExclusionLog } from "../lib/intelligence/exclusions";
-import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
-import { buildRowsForCheck } from "../lib/intelligence/pipeline";
+} from "../../lib/intelligence/corpus";
+import { evaluateEligibility } from "../../lib/intelligence/eligibility";
+import { ExclusionLog } from "../../lib/intelligence/exclusions";
+import { accessiblePool, orderMemoCandidates } from "../../lib/intelligence/memoCandidates";
+import { buildRowsForCheck } from "../../lib/intelligence/pipeline";
 import {
   distinguishers, distinguishersWithin, factAxes, FRAMING_AXES, IDENTITY_AXES, rowGroups,
-} from "../lib/intelligence/rowNovelty";
-import { sanitizeEligibility } from "../lib/intelligence/sanitize";
-import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
+} from "../../lib/intelligence/rowNovelty";
+import { sanitizeEligibility } from "../../lib/intelligence/sanitize";
+import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
   tableInputFromAnswers, VERDICT_POOL,
-} from "../lib/intelligence/shortlist";
-import { COMPANIES } from "../lib/intelligence/__benchCompanies";
-import type { InstitutionEntry } from "../lib/intelligence/types";
-import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "./founderIntake";
-import { DEFAULT_SEED, sampleRecall } from "./recallSample";
+} from "../../lib/intelligence/shortlist";
+import { COMPANIES } from "../../lib/intelligence/__benchCompanies";
+import type { InstitutionEntry } from "../../lib/intelligence/types";
+import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "../founderIntake";
+import { DEFAULT_SEED, sampleRecall } from "../recallSample";
 import {
   assertAncestorConvention, assertGradablePopulation, loadRecallSet,
   partitionByOfferable, reattributeMissingAnswers, type AnswerMode,
-} from "./recallSet";
+} from "../recallSet";
 
 const num = (v: string | undefined, d: number) => (v && Number.isFinite(Number(v)) ? Number(v) : d);
 

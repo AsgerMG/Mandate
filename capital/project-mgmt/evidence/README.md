@@ -60,6 +60,11 @@ that we are not naming correctly.
 - `funder_evidence_2026-08-12.jsonl` — the rows held open only by our own award
   history, plus Norway. See `wsfx_findings.md` for what it established.
 - `wsfx_fetch.sh` — how the pages were fetched. Public pages, no credentials.
+- Selected by `website/frontend/scripts/_wsfx_pull.ts` — read-only, writes
+  nothing, and the only record of *which* rows were put to the funders and why.
+  The population is a query, not a list: rows whose openness rests on a past
+  `notified_duration` reopened by `last_year > endYear` in `isClosed()`, plus
+  Norway. Re-run it and the population is re-derived rather than trusted.
 
 ## wsGL, 2026-08-13 — the reachability audit
 
@@ -89,7 +94,40 @@ is not the question there:
 | `gate_wrong` | the funder's own page states a rule that our encoding of it does not match |
 | `harness_only` | the block cannot happen on a real request, because production never populates the field |
 
-Re-derive any of it for nothing:
+Re-derive any of it for nothing. Each file names the script that wrote it, so a
+line here can be re-checked rather than taken on trust:
 
     npx tsx scripts/wsgl_corpus_stage.ts      # the publishability loss, attributed
     IN=<wsge rows.json> npx tsx scripts/_wsgl_arms.ts   # what each repair recovers
+    npx tsx scripts/_wsgl_rows.ts             # -> wsgl_manufactured_rows_*.jsonl
+    npx tsx scripts/_wsgl_floor.ts            # -> wsgl_data_floor_*.jsonl
+    IN=<wsge rows.json> npx tsx scripts/_wsgl_contradictions.ts
+                                              # -> wsgl_gate_contradictions_*.jsonl
+    npx tsx scripts/_wsgl_snapshot.ts         # what the degradation policy withholds
+                                              #    off the COMMITTED snapshot, today
+
+`_wsgl_snapshot.ts` deletes `DATABASE_URL` on purpose, to force the snapshot
+path. It is the only thing here that reads what a reader without credentials
+would see, which is why it is not interchangeable with the others.
+
+## wsGU, 2026-08-13 — the gate-encoding corrections
+
+- `wsgu_gate_encoding_corrections_2026-08-13.jsonl` — the 63 corrections that
+  take `check_winner_not_gated` from 251 wrongful deletions to 14. Every row
+  carries the funder's URL, the verbatim quote and the reasoning. **Queued for
+  the owner in `AWAITING_APPROVAL.md` §0; not applied.**
+  Apply with `python3 ETL/terms/apply_gate_encoding_corrections.py --apply`
+  (a dry run without the flag, and it refuses outright if any row has drifted).
+
+The two scratch scripts behind it, both free and both reading the committed
+snapshot rather than the database:
+
+    npx tsx scripts/_wsgu_blockers.ts          # the exact gate ROWS behind each block
+    npx tsx scripts/_wsgu_constant_fields.ts   # what a gate keyed on a CONSTANT field
+                                               #   can do: reject, pass, or nothing
+
+`_wsgu_constant_fields.ts` is the one that generalises. `borrowerModel` is
+pinned to `operating` for every founder, so a rule written against it is not a
+filter on the applicant at all — it either rejects everyone or admits everyone.
+That is the shape of the Norges forskningsråd defect in §0, and the script finds
+the rest of the family rather than the instance.

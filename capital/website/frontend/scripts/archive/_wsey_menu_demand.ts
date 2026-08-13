@@ -28,7 +28,7 @@
 //   LIMIT=25 npx tsx scripts/_wsey_menu_demand.ts     (a smoke run)
 import { writeFileSync } from "fs";
 
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 delete process.env.ANTHROPIC_API_KEY;
@@ -37,16 +37,16 @@ requireCredentials("wsey_menu_demand", ["DATABASE_URL", "VOYAGE_KEY"]);
 import {
   findPeersBySubsector, hydrateDbInstruments, isGenericSubsector, loadDbInstruments,
   matchCompany, publishableInstruments, requireLiveCorpus, resetGateHydration,
-} from "../lib/intelligence/corpus";
-import { ExclusionLog } from "../lib/intelligence/exclusions";
-import { accessiblePool } from "../lib/intelligence/memoCandidates";
-import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
+} from "../../lib/intelligence/corpus";
+import { ExclusionLog } from "../../lib/intelligence/exclusions";
+import { accessiblePool } from "../../lib/intelligence/memoCandidates";
+import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, founderCountryList, tableInputFromAnswers,
-} from "../lib/intelligence/shortlist";
-import { VERDICT_POOL } from "../lib/intelligence/caps";
-import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "./founderIntake";
-import { isDescribed, loadRecallSet } from "./recallSet";
+} from "../../lib/intelligence/shortlist";
+import { VERDICT_POOL } from "../../lib/intelligence/caps";
+import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "../founderIntake";
+import { isDescribed, loadRecallSet } from "../recallSet";
 
 async function main() {
   await hydrateDbInstruments();

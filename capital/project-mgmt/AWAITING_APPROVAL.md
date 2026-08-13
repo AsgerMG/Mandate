@@ -23,8 +23,11 @@ multi-project company is described by project X while the key is the fund that
 paid for project Y. A founder we score as a miss may have been shown a *better*
 fund than the one they happened to win.
 
-The grader is already built and leak-tested (`scripts/_wsdx_grade.ts`,
-`check_grader_blind.ts`), reports the historical key and the adviser's judgement
+The grader is already built and leak-tested, but **it is not on main** — it
+lives on the tag `archive/wsDX-relevance-grade` and nowhere else, which is why
+`scripts/_wsdx_grade.ts` and `check_grader_blind.ts` do not exist if you go
+looking (`git show archive/wsDX-relevance-grade --stat`). It reports the
+historical key and the adviser's judgement
 side by side and throws rather than print one alone, and carries a
 pre-registered decoy test that discards the metric if it fails.
 
