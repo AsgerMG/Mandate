@@ -104,7 +104,7 @@ that failed to attest appears here; `requireCleanRanker` refuses to write one.
 | ... encoded gates do not conclusively fail | `accessiblePool` | 774 · 86.3% | 774 · 86.3% | 0 |
 | **... survives the cut to VERDICT_POOL (40)** | `.slice(0, VERDICT_POOL)` | **642 · 71.6%** | **625 · 69.7%** | **−17 (−1.9 pts)** |
 | **... survives the cut to the writer's 8** | `orderMemoCandidates().toWriter` | **362 · 40.4%** | **349 · 38.9%** | **−13 (−1.4 pts)** |
-| ... one of the 7 rows the brief publishes | `order.slice(0, institutionsMax)` | 347 · 38.7% | 336 · 37.5% | −11 |
+| ... one of the 7 rows the brief publishes | `order.slice(0, institutionsMax)` | 347 · 38.7% | 329 · 36.7% | −18 (−2.0 pts) |
 | **... in the first 6** | same order | **321 · 35.8%** | **312 · 34.8%** | **−9 (−1.0 pt)** |
 | ... in the first 5 | same order | 297 · 33.1% | 287 · 32.0% | −10 (−1.1 pts) |
 
