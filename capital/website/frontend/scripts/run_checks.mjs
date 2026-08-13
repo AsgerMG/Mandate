@@ -60,6 +60,13 @@ const CHECKS = [
   // Hermetic and sub-second: an ALL-CAPS name in code font in
   // lib/intelligence/*.md must exist somewhere in the tree.
   ["identifiers named in the docs exist", ["npx", "tsx", "scripts/check_doc_identifiers.ts"]],
+  // Directly under it, because it is the same promise pointing the other way.
+  // That one says a name in a doc must resolve to something real; this says a
+  // scratch instrument must be named by something real, or be retired. The
+  // `_ws*` convention had no retirement step and reached 104 files, at which
+  // point nobody could tell an instrument from a leftover — and the cost of
+  // that is an answer somebody paid for being re-bought.
+  ["scratch scripts are reachable", ["npx", "tsx", "scripts/check_ws_scripts.ts"]],
   ["rendered numbers", ["npx", "tsx", "scripts/check_rendered_numbers.ts"]],
   // Its sibling one level up: `check_rendered_numbers` says no number a VISITOR
   // reads may be an unsourced literal, and this says no number the OWNER PLANS
