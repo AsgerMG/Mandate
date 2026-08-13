@@ -43,13 +43,38 @@ set row — a harness object — and hands production an ordering. Nothing under
 `lib/` learns anything and no production path can construct it.
 `check_answer_not_reachable.ts` is green.
 
-**Where this reconciles with the instrument of record.** Same draw, same store,
-same levers. `pool_cut` reproduces `one_funnel/latest.md` exactly (643); every
-row below it lands within ONE founder (`writer_cap` 361 against 362,
-`published` 346/347, `top_6` 320/321, `top_5` 296/297). The two runs are 67
-minutes apart against a live corpus that other workstreams were writing to. A
-one-founder difference is 0.11 points against a ±3.1 half-width, and it is
-recorded rather than smoothed.
+**Where this reconciles with the instrument of record — and the drift both
+instruments are sitting in.** Same draw, same store, same levers. This run's
+`shipped` arm reproduces `one_funnel`'s `pool_cut` exactly (643) and lands
+within ONE founder on every row below it (`writer_cap` 361 against 362,
+`published` 346/347, `top_6` 320/321, `top_5` 296/297).
+
+That one founder is not a defect in either harness, and the control run says so
+precisely. `ONLY_ARM=shipped` re-runs this identical harness with nothing else
+in the loop, two hours later:
+
+```
+  founders whose PRE-ARM pool is identical in both runs        894/897
+  ...of which the shipped arm disagrees on ANY recorded value     0
+  founders whose pre-arm pool MOVED between the two runs           3
+     AQUALANDE     accessible rank 54 -> 55
+     BP EUROPA SE                    9 -> 10
+     LAYERONE                       19 -> 1
+```
+
+The three that moved differ in `rankAccessible`, which is computed **before any
+arm runs**, so the arm loop cannot be the cause — and given an identical pool
+the shipped baseline is byte-identical on all 894. The baseline every delta in
+§4 is taken against is the product's, not a function of the arms beside it.
+
+What moved is the corpus. `one_funnel` itself re-ran at 17:41 and reads
+`pool_cut` **642**, not the 643 it read at 16:27. Two other workstreams were
+republishing while this ran, and `semanticFundMatch` reads pgvector live. So
+**the shipped ordering drifts by about three founders in two hours right now —
+0.3 points, an order of magnitude inside the ±3.1 half-width.** Every arm
+comparison in §4 is PAIRED WITHIN ONE RUN and is therefore untouched by it; a
+figure from this file compared against a figure from a different run's table is
+not.
 
 ---
 

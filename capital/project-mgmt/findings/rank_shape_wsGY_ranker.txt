@@ -1,0 +1,51 @@
+(node:53559) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [wsGY rank shape]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  answer key, 7,095 pairs:
+    GRADED          5464 (77.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1631 (23.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+wsGY rank shape · set=__recallSetDescribed.json split=holdout · 897 founder(s) (the whole population) · draw 13cb71cf3a1d1847
+
+  25/897
+  50/897
+  75/897
+  100/897
+  125/897
+  150/897
+  175/897
+  200/897
+  225/897
+  250/897
+  275/897
+  300/897
+  325/897
+  350/897
+  375/897
+  400/897
+  425/897
+  450/897
+  475/897
+  500/897
+  525/897
+  550/897
+  575/897
+  600/897
+  625/897
+  650/897
+  675/897
+  700/897
+  725/897
+  750/897
+  775/897
+  800/897
+  825/897
+  850/897
+  875/897
+
+ranker: all 828 request(s) on EMBEDDING
+wrote /tmp/wsgy_full.json  (897 founders)
