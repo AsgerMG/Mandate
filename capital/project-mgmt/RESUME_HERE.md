@@ -1,5 +1,24 @@
 # Resume point — 2026-08-09 14:05
 
+> ## ⚠ THIS IS A SNAPSHOT OF 2026-08-09, NOT THE CURRENT STATE
+>
+> **62 merges have landed since it was written.** It is still the best account
+> of how the ceiling ladder was retracted down to 65.9%, and its `[ok …]`
+> attestations against `number_audit_wsCP_*.txt` are the only place those runs
+> are written up. Read it for that. Do not read it for where the product is.
+>
+> - **The instrument of record is `findings/one_funnel/latest.md`** — one
+>   population, one denominator, re-run against a live corpus and dated. It
+>   carries its own section on where it disagrees with a published figure, and
+>   "the one number" below is one of them: 25.0% is `check_recall_floor`'s, on
+>   the instant screen's six rows, not the memo's.
+> - **`findings/README.md`** indexes every finding, what it settled, and which
+>   ones state a superseded number with no banner.
+> - Landed since and not reflected below: the model picks the five (wsGB), the
+>   head-to-head (wsGA), K=40 ships (wsGD/wsGM), the accessible-pool ceiling was
+>   a counting bug and is 87.6% not 77.5% (wsGE), and the gate-encoding
+>   corrections now queued in `AWAITING_APPROVAL.md`.
+
 Written because a wake-up timer is a child of one CLI session and dies with it.
 This file does not. Main is pushed at `54e7bd6e`; everything below is either on
 main or on a named branch with commits.
