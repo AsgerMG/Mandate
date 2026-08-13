@@ -165,3 +165,30 @@ are shown and several change the corpus itself.
 207** — largest offender `sector` at 308. Same defect class as above, and not
 caused by any of last night's work. It needs a decision: fix the encodings
 underneath, or restate the ceiling with the reason.
+
+### 10. Truncation cannot be proven zero for free — the precondition changed shape
+
+I queued the paid run behind "prove truncation is zero". **That cannot be done
+without spending**: truncation is an *output*-token event, and no free run
+produces output tokens. The brief was also wrong that the truncating run used an
+eighteen-row menu — it was **already at forty**, so there was no growth to blame.
+
+What has been done instead makes the ceiling not bind and makes the binding
+**checkable**:
+
+- The output ceiling is doubled (6,144 → 12,288 at the effort the run used),
+  matching a ceiling that carried 46 recorded calls with zero truncations.
+- **The clock had to move with it**, and this is the sharp part: at the higher
+  ceiling the 90-second wall cut the call off *before* the token limit bound —
+  and a timeout is counted in a different bucket from a truncation. Fixing one
+  defect alone would have hidden it in the quieter counter.
+- A new check states the property over the *runs* rather than the values: a
+  ceiling measured to bind at an effort may not remain in force there. It was
+  proven red on the real record, not a simulation, and any future truncation
+  reds the build.
+
+**So the paid run's precondition is now "the ceiling is not the binding
+constraint and the check is green", which holds.** The run itself will report
+truncation, and if it is non-zero the run is void — as before.
+
+Neither change touches production: the effort lever defaults to `low`.
