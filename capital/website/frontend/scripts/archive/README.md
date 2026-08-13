@@ -32,6 +32,19 @@ The live architecture and the full register of routes measured dead is
 | `_wsdq_seam.ts` | the ranker on the twelve archetypes, stopping at the selection seam: depth vs judgement | **Route dead, and its original inference retracted.** wsDQ concluded "depth, not judgement, is binding"; wsDR measured that wrong. Depth is not the constraint — see ARCHITECTURE.md |
 | `_wsct_order.ts` | should the memo re-sort the shortlist's order at all — fit vs pool vs verdict, three arms over ONE pool | **Route dead, and the arms it swept are now deleted.** MEMO@6: fit 24.0%, pool 28.8%, verdict 27.6%; `verdict` shipped because it published no row carrying an obstacle where `pool` published 4.6%. Archived by wsGB, which made `AGENT_SELECT=adviser` the default and removed the deterministic memo sort all three were arms of. Two of the three are still runnable from a local sort in the file; the `fit` arm cannot be, because `scoreFitControl` went with it |
 
+### Archived by wsGW, 2026-08-13
+
+Five more, found the same way: their workstream merged its conclusion and left
+its instrument behind. Each is the only record of the reading below.
+
+| script | the question it bought | where the answer is recorded |
+|---|---|---|
+| `_wscv_publishes.ts` | **what an arm publishes, not where the answer ranks** — verdict mix, off-country rows and four other properties of the published five. Written because an ordering that scored 1.2 points more was rejected for putting obstacle-carrying rows on the page, and EXACT@5 cannot see that | `findings/ship_blend_wsCV/` — **route dead.** wsCU's +6.0 was a pure pool re-ordering; end to end on the publishing path the blend is a null |
+| `_wscy_rt.ts` | how many published application routes are the fund's own, and how many are a parent regime's addressee printed as this scheme's instruction | Settled and shipped: `emit_offer_route.ts` / `check_offer_route.ts` carry the route rule, and `workstream_y_ipcei_reversal.md` the principle |
+| `_wsde_dup.ts` | **how much of the published table is the same thing said again**, per axis, over the whole gradable population — the row-eight question, where EXACT@k keeps climbing ~2 points a row while REGIME@k and CHANNEL@k go flat | Shipped as a property: `lib/intelligence/rowNovelty.ts` + `rowNovelty.test.ts`. The merge is "wsDE: the tail was a catalogue, and it is now advice" |
+| `_wsey_menu_demand.ts` | which **open** funds actually reach a real founder's menu, at two depths (`accessiblePool`, ceiling 77.5%, and the `VERDICT_POOL` cut) — the correct prioritisation for text-fetching, against a coverage percentage that counts 228 rows in countries holding no founder | wsEY merged; the P1 it served is superseded. Its wsEO-generation twin is on `archive/wsEO-legibility` |
+| `_wsey_targets.ts` | emitted the per-country fetch target list for undescribed open rows, in the shape `load_scheme_text.py` reads back | Same. Kept because it is the only description of that file format outside the loader |
+
 ## Two things deliberately NOT archived
 
 `../_wsdw_rows.ts` and `../_wsdm_rows.ts` are also referenced by nothing, and

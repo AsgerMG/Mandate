@@ -6,12 +6,12 @@
  *
  * Run: npx tsx scripts/_wscy_rt.ts
  */
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 loadEnvLocal();
 requireCredentials("rt", ["DATABASE_URL"]);
 async function main() {
-  const { hydrateDbInstruments, publishableInstruments, loadDbInstruments } = await import("../lib/intelligence/corpus");
-  const { resolveRoute } = await import("../lib/intelligence/applicationRoute");
+  const { hydrateDbInstruments, publishableInstruments, loadDbInstruments } = await import("../../lib/intelligence/corpus");
+  const { resolveRoute } = await import("../../lib/intelligence/applicationRoute");
   await hydrateDbInstruments();
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
   const counts: Record<string, number> = { own: 0, programme: 0, withheld: 0, none: 0 };

@@ -40,7 +40,7 @@
 // FREE: one Voyage embed and one Postgres read per pair. No model calls.
 //
 //   POOL_BLEND=off SPLIT=tune N=250 npx tsx scripts/_wscv_publishes.ts
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 requireCredentials("wscv_publishes", ["DATABASE_URL", "VOYAGE_KEY"]);
@@ -48,19 +48,19 @@ requireCredentials("wscv_publishes", ["DATABASE_URL", "VOYAGE_KEY"]);
 import {
   corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
   requireLiveCorpus, resetGateHydration, toIso2,
-} from "../lib/intelligence/corpus";
-import { computeVerdict } from "../lib/intelligence/pipeline";
-import { POOL_BLEND } from "../lib/intelligence/poolBlend";
-import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
-import { assessInstrument } from "../lib/intelligence/verdict";
+} from "../../lib/intelligence/corpus";
+import { computeVerdict } from "../../lib/intelligence/pipeline";
+import { POOL_BLEND } from "../../lib/intelligence/poolBlend";
+import { rankerTallyLine, resetRankerTally } from "../../lib/intelligence/semantic";
+import { assessInstrument } from "../../lib/intelligence/verdict";
 import {
   founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
-} from "./founderIntake";
-import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
+} from "../founderIntake";
+import { DEFAULT_SEED, halfWidth, sampleRecall } from "../recallSample";
 import {
   assertAncestorConvention, assertGradablePopulation, loadRecallSet,
   partitionByOfferable, reattributeMissingAnswers, type AnswerMode,
-} from "./recallSet";
+} from "../recallSet";
 
 /** The cut the product publishes. */
 const TOP = 5;

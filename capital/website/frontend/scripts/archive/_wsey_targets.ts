@@ -16,7 +16,7 @@
 //   COUNTRIES=EE,SE,CZ STAGED=/tmp/wsey_after_b0.json npx tsx scripts/_wsey_targets.ts
 import { readFileSync, writeFileSync } from "fs";
 
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 delete process.env.ANTHROPIC_API_KEY;
@@ -24,7 +24,7 @@ requireCredentials("wsey_targets", ["DATABASE_URL"]);
 
 import {
   hydrateDbInstruments, loadDbInstruments, publishableInstruments, requireLiveCorpus,
-} from "../lib/intelligence/corpus";
+} from "../../lib/intelligence/corpus";
 
 const OUT = "/Users/asgermollergrimberg/Wincent/data/raw/scheme_enrichment";
 
