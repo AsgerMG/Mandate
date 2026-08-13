@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-13T16:27:28.879Z
-corpus             postgres instruments=1088 at 2026-08-13T16:27:29.437Z
+started            2026-08-13T16:56:27.029Z
+corpus             postgres instruments=1088 at 2026-08-13T16:56:27.514Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-13T16:27:29.437Z
+                   is REFUSED rather than labelled. observedAt 2026-08-13T16:56:27.514Z
 ranker: all 828 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -16,7 +16,7 @@ leak bar           isDescribed — `own_project_title_leaks` excluded, exact / 8
                    check_recall_leaks. NOT the head-to-head's stricter
                    cross-regime-only draw, which exists because a model reads
                    the query text and nothing here does.
-levers             pool=40 writer_cap=8 published_cap=7 top=5 select_depth=40
+levers             pool=40 writer_cap=8 published_cap=7 top=5 select_depth=40 row_order=off
 ```
 
 founder intake — 22 of 23 askable fields are asked in production today, identity=real own-history=withheld capital=withheld answers=strict consortium=yes
@@ -60,8 +60,8 @@ is not a move.
 | ... and its openness could be CONFIRMED (the degradation policy) | 828 | 92.3% +/-1.7 | 0 | `unconfirmedOpen` — the degradation clause of the same filter |
 | ... and this founder's screen keeps it (country, capital, channel + leaf caps) | 806 | 89.9% +/-2.0 | -22 (2.5 pts) | `buildInstrumentTableHydrated` = `candidateInstrumentIds` |
 | ... and its encoded eligibility gates do not conclusively fail (accessiblePool) | 774 | 86.3% +/-2.3 | -32 (3.6 pts) | `accessiblePool` → `VER-BLOCKED` |
-| ... and it survives the cut to VERDICT_POOL (40 rows) | 643 | 71.7% +/-2.9 | -131 (14.6 pts) | `.slice(0, VERDICT_POOL)` |
-| ... and it survives the cut to the writer's candidates (8) | 362 | 40.4% +/-3.2 | -281 (31.3 pts) | `orderMemoCandidates().toWriter` |
+| ... and it survives the cut to VERDICT_POOL (40 rows) | 642 | 71.6% +/-3.0 | -132 (14.7 pts) | `.slice(0, VERDICT_POOL)` |
+| ... and it survives the cut to the writer's candidates (8) | 362 | 40.4% +/-3.2 | -280 (31.2 pts) | `orderMemoCandidates().toWriter` |
 | ... and the writer's own prose does not demote it behind the actionable rows | ? | ? | **UNMEASURED** | `isWatchOnly` in `assembleBriefRows` — needs the writer |
 | ... and it is one of the 7 rows the brief publishes | 347 | 38.7% +/-3.2 | -15 (1.7 pts) | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
 | ... and it is in the first 6 of them | 321 | 35.8% +/-3.1 | -26 (2.9 pts) | the first 6 rows of the same order, our own scoring |
@@ -122,8 +122,8 @@ Reasons OVERLAP — a row can fail several — so these do not sum to the stage 
 | `check_recall_floor` pool **97.7%** | 300 tune pairs of __recallSetDescribed.json, answer already offerable, published 2026-08-12 | `founder_screen` given `liveness_confirmed` | 97.3% |
 | `check_recall_floor` EXACT@5 **25.0%** | same, and on the INSTANT SCREEN's six rows, not the memo's | `top_5` given `liveness_confirmed` | 35.9% |
 | `poolRecallCurve` inPoolAtAll 93.4% | 830 held-out, answer already offerable | `gates_pass` given `liveness_confirmed` | 93.5% |
-| `poolRecallCurve` at K=40 77.5% | same | `pool_cut` given `liveness_confirmed` | 77.7% |
-| head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 46.2% |
+| `poolRecallCurve` at K=40 77.5% | same | `pool_cut` given `liveness_confirmed` | 77.5% |
+| head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 46.3% |
 | head-to-head ranker EXACT@5 51.0% | same | `model` — UNMEASURED here | ? |
 | "we find the right fund 98% of the time" | no population — the sentence has none | `top_5` as a share of the START | 33.1% |
 

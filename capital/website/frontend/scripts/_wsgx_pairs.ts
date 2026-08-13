@@ -26,7 +26,23 @@
 //   BASE=/tmp/wsgx/trace_off.jsonl ARM=/tmp/wsgx/trace_on.jsonl \
 //     STAGE=pool_cut npx tsx scripts/_wsgx_pairs.ts
 //
-// STAGE is `pool_cut` (default), `founder_screen`, `gates_pass` or `writer_cap`.
+// STAGE is `pool_cut` (default), `founder_screen`, `gates_pass`, `writer_cap`,
+// `published`, `top_6` or `top_5`.
+//
+// ── GRADE AT BOTH CUTS, AND WHY THE SECOND ONE IS BOUNDED ─────────────────
+// `pool_cut` and `writer_cap` are the ladder's two largest losses (15 and 31
+// points of 66) and they are the SAME defect: the order our score puts the
+// funds in. They can move in opposite directions, and that case is the
+// informative one — a re-ordering that pulls a fund into the forty and leaves
+// it at rank 20 has bought REACHABILITY and no ACCURACY.
+//
+// But this ladder has no model in it. In production the AI re-orders the pool
+// ABOVE the writer cap, so a delta measured here at rank 8 is a delta against a
+// baseline the product does not run. The honest claim from this file is
+// therefore bounded: it says how much of that step is OUR ordering, on a path
+// with no model. How much of it the model already recovers is not measured
+// here and cannot be inferred from here.
+//
 // Cited by `project-mgmt/findings/proximity_wsGX/README.md`.
 import { readFileSync } from "fs";
 
@@ -57,7 +73,16 @@ const ALIVE: Record<string, (r: Row) => boolean> = {
   founder_screen: (r) => r.rankTable != null,
   gates_pass: (r) => r.rankAccessible != null,
   pool_cut: (r) => r.rankAccessible != null && r.rankAccessible <= POOL,
+  // Rank within `orderMemoCandidates().toWriter`, which is where the ladder's
+  // largest loss is. The three row cuts are the SAME rank read at three depths
+  // — one definition, generated, exactly as `measure_funnel.ts` generates them
+  // from ROW_CUTS, because a cut with its own subtly different definition of
+  // "in the first n rows" is how two ladders stop being one ladder.
   writer_cap: (r) => r.rankWriter != null,
+  ...Object.fromEntries([7, 6, 5].map((n) => [
+    n === 7 ? "published" : `top_${n}`,
+    (r: Row) => r.rankWriter != null && r.rankWriter <= n,
+  ])),
 };
 
 function main(): void {
