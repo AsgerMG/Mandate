@@ -47,10 +47,14 @@ mkdir -p "$OUT"
 # in the scratchpad and only AGGREGATE concentration figures reach the finding.
 TRACE=/private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsgx
 
+# `prox` is the ROW_PROXIMITY arm and every other name is a POOL_BLEND arm. The
+# two flags REFUSE to be set together (`assertOneOrdering`), so the arm name is
+# translated here once rather than at each call site.
 stages () { arm=$1
-  echo "=== stages POOL_BLEND=$arm  $(date -u +%FT%TZ) ==="
+  echo "=== stages arm=$arm  $(date -u +%FT%TZ) ==="
   before=$(ls "$FUNNEL/runs" 2>/dev/null | wc -l)
-  env POOL_BLEND="$arm" FUNNEL_TRACE="$TRACE/trace_$arm.jsonl" \
+  if [ "$arm" = "prox" ]; then blend=off; prox=first; else blend=$arm; prox=off; fi
+  env POOL_BLEND="$blend" ROW_PROXIMITY="$prox" FUNNEL_TRACE="$TRACE/trace_$arm.jsonl" \
     npm run stages > "$OUT/STAGES_$arm.txt" 2>&1 \
     || echo "FAILED stages $arm"
   cp "$FUNNEL/latest.md"   "$OUT/FUNNEL_$arm.md"   2>/dev/null
