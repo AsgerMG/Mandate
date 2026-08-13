@@ -35,7 +35,7 @@ import type { ExclusionLog } from "./exclusions";
 import { EXCLUSION_RULES } from "./rules";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit, sectorFitScorer } from "./fit";
-import { blendPoolScores, POOL_BLEND } from "./poolBlend";
+import { blendPoolScores, homeFirstScores, POOL_BLEND, ROW_PROXIMITY } from "./poolBlend";
 import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
@@ -2685,7 +2685,35 @@ export function materialiseInstrumentTable(
   // rebuild the pool fourteen times per comparison, and a `rowRelevance`
   // memoised per id would silently freeze the pool of whichever call came
   // first.
-  const blend = POOL_BLEND === "off" ? undefined : blendPoolScores(
+  // THE SHIPPED TWO-SIGNAL SCORE, once. `baseRelevance` and `rowRelevance` each
+  // held their own copy of this expression under a comment claiming there was
+  // "ONE definition of the base score"; there were two, and the arm below needs
+  // a third. Naming it is the difference between an arm that is a substitution
+  // and an arm that is three expressions that have to agree.
+  //
+  // Takes an id and not a row, because that is what every caller has and what
+  // the blend's own map is keyed by. A row with no instrument has no leaf and
+  // no sector history, and `sectorFor(undefined)` is the neutral this file
+  // gives a gap in our data everywhere else.
+  const shippedBase = (id: string | undefined) => {
+    const inst = id ? instById().get(id) : undefined;
+    const theme = id ? rel.get(id) ?? 0 : 0;
+    return wTheme * theme + (1 - wTheme) * sectorFor(inst);
+  };
+  // ── PROXIMITY AS A STRICT FIRST KEY, behind ROW_PROXIMITY (default off) ───
+  //
+  // The isolation arm for the term `POOL_BLEND` gives the largest weight and
+  // cannot attribute anything to, because it carries thirteen other columns.
+  // See `homeFirstScores` for why it is lexicographic rather than weighted, and
+  // for the prediction made about it before it was run. `assertOneOrdering` has
+  // already refused a run that set both.
+  const homeFirst = ROW_PROXIMITY === "off" ? undefined : homeFirstScores(
+    selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
+    founderCountries ?? [], shippedBase);
+  // Named for the SLOT and not for one of its occupants: two arms now fill it,
+  // and a variable called `blend` holding the proximity arm's map is the shape
+  // of a comment that is no longer true.
+  const poolScore = POOL_BLEND === "off" ? homeFirst : blendPoolScores(
     selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
     {
       founderSector,
@@ -2700,12 +2728,7 @@ export function materialiseInstrumentTable(
         .map((id, i) => [id, i])),
       year: new Date().getFullYear(),
     });
-  const baseRelevance = (id: string) => {
-    if (blend) return blend.get(id) ?? 0;
-    const inst = instById().get(id);
-    const theme = rel.get(id) ?? 0;
-    return wTheme * theme + (1 - wTheme) * sectorFor(inst);
-  };
+  const baseRelevance = (id: string) => poolScore ? poolScore.get(id) ?? 0 : shippedBase(id);
   // Re-rank SIBLINGS on registered purpose, award scale and delivery region.
   //
   // Diagnosed rather than guessed: with the pool cap fixed, 57 of 67 ranking
@@ -2834,16 +2857,19 @@ export function materialiseInstrumentTable(
   );
   const rowRelevance = (r: InstrumentRow) => {
     const inst = r.instrumentId ? instById().get(r.instrumentId) : undefined;
-    const theme = r.instrumentId ? rel.get(r.instrumentId) ?? 0 : 0;
-    // ONE definition of the base score, shared with `baseRelevance` above --
-    // which is what makes the POOL_BLEND arm a single substitution rather than
-    // two that must agree. A channel-level row has no leaf and therefore no
-    // blend score, so it takes the pool's own median: the blend's values ARE
-    // within-pool percentiles, so 0.5 is exactly the "no opinion" neutral this
-    // file gives a gap in our data everywhere else.
-    const fit = blend
-      ? (r.instrumentId ? blend.get(r.instrumentId) ?? 0.5 : 0.5)
-      : wTheme * theme + (1 - wTheme) * sectorFor(inst);
+    // ONE definition of the base score, `shippedBase` above, which both this
+    // and `baseRelevance` now call. It said "ONE definition" here before and
+    // there were two copies of the expression; the arm below would have made a
+    // third, and three copies of a sort key is how a re-ordering arm gets
+    // measured against a base score that is not the one it replaced.
+    //
+    // A channel-level row has no leaf and therefore no pool score, so it takes
+    // the pool's own median: these values ARE within-pool percentiles, so 0.5
+    // is exactly the "no opinion" neutral this file gives a gap in our data
+    // everywhere else.
+    const fit = poolScore
+      ? (r.instrumentId ? poolScore.get(r.instrumentId) ?? 0.5 : 0.5)
+      : shippedBase(r.instrumentId);
     // `pure` is the arm wsCU actually measured -- the blend ordering the pool
     // and nothing else touching it. The sibling reassignment and the ticket
     // multiplier are held off so the difference between `on` and `pure` is
