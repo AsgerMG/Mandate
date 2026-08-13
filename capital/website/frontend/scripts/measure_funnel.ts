@@ -835,9 +835,18 @@ async function main() {
   for (const s of STAGES.filter((x) => x.unmeasured)) {
     p(`- **${s.id}** — ${s.unmeasured}`);
   }
-  p("- **the intake.** Every founder here answers 23 fields resolved from their own "
-    + "register history, not from the first screen a real founder fills in. A ceiling "
-    + "measured on these answers bounds THIS harness, not the product.");
+  // No count here. "Every founder here answers 23 fields" was a literal, and it
+  // was false in both directions on the day it was written: 23 is how many the
+  // intake HAS, eight is how many carried a value, and one of the eight was a
+  // question production does not ask. The block at the top of this report is
+  // the derived answer to all three, so this bullet points at it instead of
+  // restating a number that cannot follow it.
+  p("- **the intake.** A replayed founder's answers are resolved from their own "
+    + "register history, not typed into the first screen a real founder fills in — "
+    + "and the founder-intake block above says, field by field, which carried a "
+    + "value, which were withheld for want of an honest source, and which were held "
+    + "back because production cannot populate them. A ceiling measured on these "
+    + "answers bounds THIS harness, not the product.");
   p("- **`discoverAndResearch`, `judgeOpenAnswers` and the `ProfileSignal`** are model "
     + "calls on the live request path. They are absent here, so `applyProfileSignal` "
     + "attaches nothing and the adaptive round's `lateFields` is empty.");

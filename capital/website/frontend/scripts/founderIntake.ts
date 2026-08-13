@@ -44,6 +44,22 @@
 // is WITHHELD AND SAID SO — never pinned to a constant quietly, which is what
 // `capitalSought` was.
 //
+// ── The SECOND rule, and it is not the same rule ───────────────────────────
+// Leak-freeness says nothing about whether the question is asked. On
+// 2026-08-12 this file answered `organisationType` — honestly derived, sound
+// leak argument, still sound — for every founder whose registered name carries
+// a legal-form designator, while the control that collects it renders only
+// behind an arm that is off. 215 cited, STRUCTURAL gates then evaluated
+// correctly against an answer no real founder can give, and 4.0 points of
+// accessible-pool recall were charged to exclusions that cannot happen.
+//
+//     A replayed founder may carry a value for a field only if production
+//     can put a value in that field for a real founder.
+//
+// `productionCannotPopulate` is that rule, read off `FIELD_REACH` rather than
+// off a list here, and `founderIntake` holds back anything it refuses. See
+// lib/intelligence/fieldReach.ts for the test that decides an unseen field.
+//
 // ── Why this is a property and not a register ─────────────────────────────
 // `INTAKE_SOURCE` is keyed on `keyof EligibilityAnswers`, so the compiler
 // refuses a new intake field until somebody has written down where a replayed
@@ -52,15 +68,48 @@
 import { FIELD_REACH } from "../lib/intelligence/types";
 import type { EligibilityAnswers } from "../lib/intelligence/types";
 import {
-  ORGANISATION_TYPE_ARM, prefillOrganisationType,
-} from "../lib/intelligence/organisationType";
+  productionCannotPopulate, unofferableValues, unpopulatedNote,
+} from "../lib/intelligence/fieldReach";
+import type { UnpopulatedReason } from "../lib/intelligence/fieldReach";
+import { prefillOrganisationType } from "../lib/intelligence/organisationType";
+import { panelContract } from "../lib/intelligence/__founderPath";
 import { answersFor, CONSTANT_ANSWERS } from "./recallSet";
 import type { AnswerMode, RecallRow } from "./recallSet";
 
 export type IntakeField = keyof EligibilityAnswers;
 
+/** ── THE SAME RULE FOR THE REQUEST, NOT THE ANSWERS ────────────────────────
+ *
+ *  `FIELD_REACH` is keyed on `keyof EligibilityAnswers`, so no predicate built
+ *  on it can say anything about a `computeVerdict` OPTION. `targetMarkets` was
+ *  exactly that blind spot: sent by this resolver on every replayed row and by
+ *  `basePayload()` on none, for as long as the resolver has existed.
+ *
+ *      A replayed founder's REQUEST may carry only what the panel's own
+ *      payload can carry.
+ *
+ *  `panelContract()` READS `basePayload` out of panel.tsx rather than
+ *  transcribing it, so a key the panel starts sending is allowed here on the
+ *  next run and a key it stops sending is refused on the next run, with no
+ *  edit. The only declaration below is of the knobs that are not request
+ *  fields at all — a harness POLICY is not an answer, and there is no founder
+ *  who could send one.
+ */
+const HARNESS_POLICY_OPTS: ReadonlySet<string> = new Set(["ownHistory"]);
+
+/** Empty is not an answer. `[]` on a preference is the neutral value the
+ *  product itself reads for a founder who has not ruled anything out, so it
+ *  carries no claim and needs no payload key. */
+const carriesAnAnswer = (v: unknown): boolean =>
+  Array.isArray(v) ? v.length > 0 : v !== undefined && v !== null && v !== "";
+
+/** What the form can send, read out of the form. */
+let payloadKeysCache: Set<string> | undefined;
+const panelPayloadKeys = (): Set<string> =>
+  (payloadKeysCache ??= new Set(panelContract().payloadKeys));
+
 /** WHERE a replayed founder's answer comes from, and why it cannot be the
- *  answer to the question being asked. One of four dispositions:
+ *  answer to the question being asked. One of five dispositions:
  *
  *   derived   a fact we hold about THIS COMPANY, with a leak argument.
  *   pinned    a constant, identical for every founder in the population. A
@@ -71,13 +120,26 @@ export type IntakeField = keyof EligibilityAnswers;
  *   withheld  we hold nothing that can answer it without leaking. Left unset,
  *             counted, and printed, so the gap is on screen rather than
  *             replaced by a constant nobody chose.
- *   n/a       not one of the 23 a founder is ever asked (FIELD_REACH says
- *             `unreachable` or `constant`).
+ *   staged    we CAN answer it, leak-free, and production does not ask it yet:
+ *             `FIELD_REACH` declares the field `staged` behind an arm that is
+ *             off. Held back while the arm is off and handed over the moment
+ *             it goes on, with no edit here. This is the disposition that did
+ *             not exist when `organisationType` was answered for 42% of the
+ *             set against gates no founder can trip — the taxonomy could say
+ *             "we can answer it" and could say "we cannot", and had no way to
+ *             say "we can, and the product is not asking".
+ *   n/a       not one a founder is ever asked (FIELD_REACH says `unreachable`
+ *             or `constant`).
+ *
+ *  The first three are about LEAKAGE, `staged` is about PRODUCTION REACH, and
+ *  the two are independent — which is why one honest disposition on each axis
+ *  is required rather than one verdict covering both.
  */
 export type IntakeDisposition =
   | { supply: "derived"; from: string; leak: string }
   | { supply: "pinned"; leak: string; cost: string }
   | { supply: "withheld"; why: string }
+  | { supply: "staged"; from: string; leak: string; whenOn: string }
   | { supply: "n/a"; why: string };
 
 export const INTAKE_SOURCE: Record<IntakeField, IntakeDisposition> = {
@@ -116,29 +178,25 @@ export const INTAKE_SOURCE: Record<IntakeField, IntakeDisposition> = {
       + "award's own register row would name the delivering body's catchment, "
       + "which is exactly what `regionScorer` separates siblings on.",
   },
+  // ── STAGED: derivable, leak-free, and not a question production asks ──────
   organisationType: {
-    supply: "derived",
+    supply: "staged",
     from: "prefillOrganisationType(company name) — production's own classifier, "
       + "reading the multilingual legal-form designator in the name",
     leak: "the input is the company's NAME STRING and nothing else. No award, "
       + "no channel, no instrument and no register row is consulted, so there "
-      + "is no path by which the won fund could reach it. ██ IT IS NO LONGER "
-      + "COSTLESS, AND IT IS NO LONGER A QUESTION PRODUCTION ASKS. ██ This "
-      + "entry read 'inert today: none of the 484 organisation-kind gates "
-      + "resolves to it yet, so supplying it is honest and currently costless'. "
-      + "On 2026-08-12, 215 organisationType filter gates were encoded with "
+      + "is no path by which the won fund could reach it. The leak argument is "
+      + "sound and always was; it is not the argument that failed here.",
+    whenOn: "On 2026-08-12, 215 organisationType filter gates were encoded with "
       + "value specs, every one of them llm_cited — and organisationType is "
-      + "STRUCTURAL, so ONE of them conclusively removes a fund. Meanwhile "
-      + "ORGANISATION_TYPE_ARM is OFF in production: the control is not "
-      + "rendered and the field is never populated, so `evaluateSpec` reads "
-      + "null for every real founder and none of those 215 gates can fire. "
-      + "Measured cost of the divergence (wsGE, 820 held-out described "
-      + "founders, one per company): 33 founders — 4.0 points of accessible-"
-      + "pool recall — lose their own fund to a question the product does not "
-      + "ask. Every recall figure this repo publishes is that much pessimistic "
-      + "until the arm is turned on or this stops being answered. THE CHOICE IS "
-      + "DELIBERATE EITHER WAY: `IntakeTally` now prints the divergence on "
-      + "every run so it cannot be held silently.",
+      + "STRUCTURAL, so ONE of them conclusively removes a fund. The arm that "
+      + "renders the control is off, so `evaluateSpec` reads null for every "
+      + "real founder and none of those 215 gates can fire for anyone. The "
+      + "harness answered it anyway, and 33 of 820 held-out described founders "
+      + "— 4.0 points of accessible-pool recall (wsGE) — lost their own fund to "
+      + "a question the product does not ask. Held back from 2026-08-13. It "
+      + "flows again on the run after the arm goes on, and on that run the "
+      + "gates it meets are gates a real founder meets too.",
   },
 
   // ── PINNED, uniform across the population, and each one says what it costs ─
@@ -287,18 +345,38 @@ export const ASKABLE_FIELDS: readonly IntakeField[] =
 export const ALL_INTAKE_FIELDS: readonly IntakeField[] =
   (Object.keys(INTAKE_SOURCE) as IntakeField[]).sort();
 
-// A disposition that says `n/a` must agree with FIELD_REACH, and one that says
-// anything else must agree that the field IS askable. Two hand-written tables
-// about the same fact drift; this is the line that stops them. It runs at
-// import, so no harness can start on a resolver that disagrees with itself.
+/** Askable AND actually asked: the staged half removed while its arm is off.
+ *  Derived from the same predicate the resolver enforces, so the disclosure
+ *  and the behaviour cannot disagree. */
+export const ASKED_FIELDS: readonly IntakeField[] =
+  (ASKABLE_FIELDS as IntakeField[]).filter((f) => productionCannotPopulate(f) === null);
+
+// ── The three tables must say the same thing ──────────────────────────────
+// A disposition of `n/a` must agree with FIELD_REACH that nothing asks the
+// field; a disposition of `staged` must agree that production is staging it;
+// and anything else must agree the field is asked today.
+//
+// ██ THE MIDDLE CLAUSE IS THE ONE THAT WAS MISSING, AND ITS ABSENCE DID NOT
+// MERELY ALLOW THE DEFECT — IT REQUIRED IT. ██ The old check read `askable ===
+// na` over an `ASKABLE_FIELDS` that filters only `unreachable` and `constant`,
+// so a `staged` field counted as askable and the check then REFUSED the one
+// honest disposition available (`n/a`), leaving `derived`, `pinned` or
+// `withheld`. Two of those three hand the value over. A guard that leaves no
+// way to state the truth gets a false statement.
+//
+// It runs at import, so no harness can start on a resolver that disagrees with
+// itself.
 for (const f of ALL_INTAKE_FIELDS) {
-  const askable = (ASKABLE_FIELDS as IntakeField[]).includes(f);
-  const na = INTAKE_SOURCE[f].supply === "n/a";
-  if (askable === na) {
+  const declared = INTAKE_SOURCE[f].supply;
+  const via = FIELD_REACH[f].via;
+  const want = via === "staged" ? "staged"
+    : (ASKABLE_FIELDS as IntakeField[]).includes(f) ? "asked" : "n/a";
+  const got = declared === "n/a" ? "n/a" : declared === "staged" ? "staged" : "asked";
+  if (got !== want) {
     throw new Error(
-      `founderIntake: INTAKE_SOURCE.${f} says "${INTAKE_SOURCE[f].supply}" but `
-      + `FIELD_REACH says via="${FIELD_REACH[f].via}". A field is askable or it `
-      + `is not, and the two tables must say the same thing.`);
+      `founderIntake: INTAKE_SOURCE.${f} says "${declared}" but FIELD_REACH says `
+      + `via="${via}". A field is asked, staged, or out of reach, and the two `
+      + `tables must say the same thing.`);
   }
 }
 
@@ -408,6 +486,11 @@ export interface ReplayedFounder {
    *  `founder-specific answers supplied:` line was added to prevent, and it
    *  belongs in the shared disclosure rather than in one harness. */
   ownAnswer: IntakeField[];
+  /** Fields this founder COULD have carried and did not, because production
+   *  cannot put a value there today. Counted rather than dropped: a value
+   *  quietly not handed over is the same kind of invisible as one quietly
+   *  handed over, and this file exists because of the second one. */
+  heldBack: { field: IntakeField; reason: UnpopulatedReason }[];
 }
 
 /** One replayed founder, built ONLY from declared dispositions.
@@ -421,7 +504,12 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
   const region = p.regionOverride?.(r) ?? a.region;
   const org = p.identity === "real" ? prefillOrganisationType(r.name) : null;
 
-  const eligibility: EligibilityAnswers = {
+  // Built in full first, then filtered through the production-reach rule below.
+  // Written this way ON PURPOSE: the answer we WOULD give and the answer we
+  // ARE ALLOWED to give are different facts, the run reports both, and a field
+  // held back appears as a held-back field rather than as an absence nobody
+  // can tell from "we never had one".
+  const draft: EligibilityAnswers = {
     // derived
     sector: r.sector ?? "other",
     entityCountries: [r.country],
@@ -442,12 +530,79 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
     // below so the run says how much of the intake it left blank.
   };
 
-  return {
+  // ── THE PRODUCTION-REACH RULE, applied to whatever the draft holds ────────
+  // Not "delete organisationType when the arm is off". Every key actually
+  // present is put to `productionCannotPopulate`, so a field added next month
+  // is covered the day someone writes its disposition, and a field whose arm
+  // flips is covered on the next run with no edit here.
+  //
+  // The two refusals are not the same and are not treated the same. A STAGED
+  // field is an answer whose time has not come: held back, counted, printed.
+  // An UNREACHABLE field is an applicant we invented — production has no path
+  // to it at all, so no run can be right about it — and that is a coding
+  // mistake, which throws.
+  const eligibility = draft as Record<string, unknown>;
+  const heldBack: { field: IntakeField; reason: UnpopulatedReason }[] = [];
+  for (const f of Object.keys(eligibility) as IntakeField[]) {
+    if (eligibility[f] === undefined) continue;
+    const reason = productionCannotPopulate(f);
+    if (!reason) continue;
+    if (reason.why === "unreachable") {
+      throw new Error(
+        `founderIntake: refusing to answer ${f} — ${unpopulatedNote(f, reason)}. `
+        + "A replayed founder who carries a value production can never carry is "
+        + "not a founder, and every stage measured below it inherits the error.");
+    }
+    delete eligibility[f];
+    heldBack.push({ field: f, reason });
+  }
+  // ── THE SAME RULE ONE LEVEL DOWN ─────────────────────────────────────────
+  // A field production asks can still be handed an answer its control never
+  // offers, and a gate that fires on THAT is just as impossible. Run second,
+  // because the menu for a field can depend on an earlier answer and the
+  // earlier answers are only final once the pass above has finished.
+  for (const f of Object.keys(eligibility) as IntakeField[]) {
+    const v = eligibility[f];
+    if (v === undefined) continue;
+    const off = unofferableValues(f, v, draft);
+    if (!off.length) continue;
+    const keep = Array.isArray(v) ? v.filter((x) => !off.includes(x as string)) : [];
+    // A list keeps the answers that ARE on the menu — dropping the whole list
+    // would replace one impossible answer with a different one. A scalar has
+    // nothing to keep and joins the withheld.
+    if (Array.isArray(v) && keep.length) eligibility[f] = keep;
+    else delete eligibility[f];
+    heldBack.push({ field: f, reason: { why: "unofferable_value", values: off } });
+  }
+  const held = new Set(heldBack.map((h) => h.field));
+
+  const founder: ReplayedFounder = {
     company: p.identity === "real" ? r.name : ANONYMOUS_FOUNDER,
     country: r.country,
-    eligibility,
+    eligibility: draft,
     opts: {
-      targetMarkets: [r.country],
+      // ── THE SECOND FIELD PRODUCTION NEVER POPULATES ──────────────────────
+      // `basePayload()` in panel.tsx sends company, country, description,
+      // capitalSought, eligibility, profileSignal and projectAnswers. It does
+      // not send `targetMarkets`, so `sanitizeTargetMarkets` reads undefined on
+      // every real request — and this resolver sent the founder's own country
+      // on every replayed one. Same class as the staged field above, and NOT
+      // caught by the rule that removed it: `targetMarkets` is a computeVerdict
+      // OPTION, not a key of `EligibilityAnswers`, so `FIELD_REACH` has nothing
+      // to say about it and no predicate keyed on that Record ever will.
+      //
+      // Two effects, and only one of them was inert. `founderCountryList`
+      // returns the explicit list when it is given one and the country union
+      // otherwise; for a founder whose only entity country is their own those
+      // are the same list, measured identical on all 7,095 rows of the shipped
+      // set, so nothing about country routing moves. The other effect was live:
+      // `eligibilityContext` and `knownFacts` put "Target markets for public
+      // capital: X" into the model's context, and no real founder's request can
+      // produce that line — so every model arm this repo has run read a fact
+      // about the founder that the product cannot state.
+      //
+      // `[]` is the production value, not an omission.
+      targetMarkets: [],
       // ── The pinned filter, removed ────────────────────────────────────────
       // `[]` is not "no answer supplied by accident": `instrumentServesCapital`
       // returns true on an empty preference by design, so it is the NEUTRAL
@@ -464,20 +619,42 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
       ownHistory: p.ownHistory,
     },
     supplied: (ASKABLE_FIELDS as IntakeField[])
-      .filter((f) => eligibility[f] !== undefined),
+      .filter((f) => draft[f] !== undefined),
     // Only where the value came from THIS COMPANY. `sector` and
     // `entityCountries` are read off the row, which is this company's own
     // register record; `ticketBand` counts only when `answersFor` derived it
     // rather than falling back; `region` only when one was actually resolved;
     // `organisationType` only when the name carried a designator.
+    //
+    // A field HELD BACK never counts as an own answer, however well we could
+    // have derived it: this list is what the founder was actually told to say,
+    // and a disclosure that counted an answer nobody was given is the reporting
+    // half of the same defect.
     ownAnswer: ([
       ["sector", Boolean(r.sector)],
       ["entityCountries", Boolean(r.country)],
       ["ticketBand", a.derived.ticket],
       ["region", Boolean(region)],
       ["organisationType", Boolean(org)],
-    ] as [IntakeField, boolean][]).filter(([, ok]) => ok).map(([f]) => f),
+    ] as [IntakeField, boolean][])
+      .filter(([f, ok]) => ok && !held.has(f)).map(([f]) => f),
+    heldBack,
   };
+
+  // The request-level half of the rule, over whatever `opts` happens to hold.
+  // Read from panel.tsx once per process — the form cannot change mid-run, and
+  // reading it per founder would be the same answer 7,095 times.
+  for (const [k, v] of Object.entries(founder.opts)) {
+    if (HARNESS_POLICY_OPTS.has(k) || !carriesAnAnswer(v)) continue;
+    if (panelPayloadKeys().has(k)) continue;
+    throw new Error(
+      `founderIntake: refusing to send \`${k}\` — panel.tsx's basePayload sends `
+      + `${[...panelPayloadKeys()].join(", ")} and not this. A replayed request that `
+      + "carries something no founder's request can carry is measured against a "
+      + "product nobody uses. Send the production value, or declare it a harness "
+      + "policy knob if it is not part of a request at all.");
+  }
+  return founder;
 }
 
 /** Counts what was actually handed to founders across a run. */
@@ -485,10 +662,27 @@ export class IntakeTally {
   private n = 0;
   private hits = new Map<IntakeField, number>();
   private own = new Map<IntakeField, number>();
+  /** How many founders had a derivable answer that production cannot hold. */
+  private back = new Map<IntakeField, number>();
+  private backWhy = new Map<IntakeField, UnpopulatedReason>();
   add(f: ReplayedFounder): void {
     this.n++;
     for (const k of f.supplied) this.hits.set(k, (this.hits.get(k) ?? 0) + 1);
     for (const k of f.ownAnswer) this.own.set(k, (this.own.get(k) ?? 0) + 1);
+    for (const { field, reason } of f.heldBack) {
+      this.back.set(field, (this.back.get(field) ?? 0) + 1);
+      // Values accumulate across founders. A line quoting the LAST founder's
+      // value would describe one row and read like a description of the run.
+      const prev = this.backWhy.get(field);
+      if (reason.why === "unofferable_value" && prev?.why === "unofferable_value") {
+        this.backWhy.set(field, {
+          why: "unofferable_value",
+          values: [...new Set([...prev.values, ...reason.values])].sort(),
+        });
+      } else {
+        this.backWhy.set(field, reason);
+      }
+    }
   }
   /** The lines a run prints. Withheld fields are printed too — a gap nobody
    *  can see on screen is the gap that gets pinned to a constant next time. */
@@ -503,11 +697,12 @@ export class IntakeTally {
       return `set ${String(h).padStart(4)}/${this.n} (${p(h).padStart(4)})  `
         + `own ${String(o).padStart(4)}/${this.n} (${p(o).padStart(4)})`;
     };
-    out.push(`  founder intake — ${ASKABLE_FIELDS.length} askable fields, `
+    out.push(`  founder intake — ${ASKED_FIELDS.length} of ${ASKABLE_FIELDS.length} `
+      + `askable fields are asked in production today, `
       + `identity=${policy.identity} own-history=${policy.ownHistory} `
       + `capital=${policy.capital} answers=${policy.answers} `
       + `consortium=${policy.consortium ?? "(unanswered)"}`);
-    const order = { derived: 0, pinned: 1, withheld: 2, "n/a": 3 } as const;
+    const order = { derived: 0, pinned: 1, withheld: 2, staged: 3, "n/a": 4 } as const;
     for (const f of [...ASKABLE_FIELDS].sort(
       (x, y) => order[INTAKE_SOURCE[x].supply] - order[INTAKE_SOURCE[y].supply] || x.localeCompare(y))) {
       const d = INTAKE_SOURCE[f];
@@ -517,6 +712,15 @@ export class IntakeTally {
         out.push(`    DERIVED   ${f.padEnd(20)} ${pct(f)}  ${d.from.split(",")[0]}`);
       } else if (d.supply === "pinned") {
         out.push(`    PINNED    ${f.padEnd(20)} ${pct(f)}  uniform — ${d.cost.split(".")[0]}`);
+      } else if (d.supply === "staged") {
+        // A staged field prints its `set`/`own` line like any other, because
+        // once its arm is on it IS any other. While the arm is off the numbers
+        // read zero and the HELD BACK block below says how many answers that
+        // zero is standing in for.
+        const b = this.back.get(f) ?? 0;
+        out.push(`    STAGED    ${f.padEnd(20)} ${pct(f)}  `
+          + (b ? `held back on ${b}/${this.n} — ${d.from.split("—")[0].trim()}`
+               : `production asks it; answered like any derived field`));
       }
     }
     out.push(`    ${policy.capital === "withheld" ? "WITHHELD  " : "PINNED    "}`
@@ -530,30 +734,34 @@ export class IntakeTally {
         + "switched ON. `usedInField` can now be true because of the award being "
         + "predicted. THIS IS THE LEAK ARM. Do not publish this number.");
     }
-    // ── A QUESTION THE HARNESS ANSWERS AND THE PRODUCT DOES NOT ASK ─────────
+    // ── QUESTIONS THE HARNESS COULD ANSWER AND THE PRODUCT DOES NOT ASK ─────
     //
     // The leak argument is not the only way a replayed founder can be the wrong
-    // founder. This one is the opposite failure and it had no disclosure at
-    // all: the harness answers a field whose production control is switched
-    // off, so the replay is judged against filters no real founder can trip.
+    // founder. This is the opposite failure: an answer that is perfectly honest
+    // about the company and that no real founder is ever asked for. Judged
+    // against it, the replay meets filters production cannot fire, and the
+    // exclusions charge real points to impossible events.
     //
-    // It cost 4.0 points of accessible-pool recall the day 215 cited,
-    // STRUCTURAL organisationType gates were encoded — an overnight
-    // "regression" that was entirely the harness's own answer meeting new
-    // gates. Printed unconditionally when it applies, because the failure mode
-    // is that nobody thinks to look.
+    // Until 2026-08-13 that happened, silently, on the field with the largest
+    // structural gate count in the corpus. It is no longer possible — the
+    // resolver holds such a field back — so what is printed here is the SIZE
+    // of what is being held back, which is the number a reader needs in order
+    // to know how different this measurement would be if the arm were on.
     //
-    // The property, for a field nobody has added yet: every field this tally
-    // reports as DERIVED or PINNED must be one production can populate. When
-    // one is not, say which, on screen, next to the numbers it moved.
-    const org = this.own.get("organisationType" as IntakeField) ?? 0;
-    if (ORGANISATION_TYPE_ARM === "off" && org > 0) {
-      out.push(`    ██ organisationType answered for ${org}/${this.n} founders `
-        + "while NEXT_PUBLIC_ORGANISATION_TYPE_ARM is OFF — production never "
-        + "populates this field, so these founders are being judged against "
-        + "215 cited STRUCTURAL gates no real founder can trip. Measured cost: "
-        + "4.0 points of accessible-pool recall. Turn the arm on, or stop "
-        + "answering it; do not quote the number without saying which.");
+    // Derived from the reasons the resolver actually recorded, so a field
+    // nobody has added yet is disclosed with no edit here.
+    for (const [f, n] of [...this.back].sort((x, y) => y[1] - x[1])) {
+      const reason = this.backWhy.get(f);
+      if (!reason) continue;
+      out.push(`    ██ HELD BACK — ${unpopulatedNote(String(f), reason)}. `
+        + `${n}/${this.n} founders had a leak-free answer and were not given one, `
+        + "so nothing in this run is excluded by something a founder could not "
+        + "have said."
+        + (reason.why === "staged_off"
+          ? ` Switch ${reason.armEnv} on and re-measure to see what asking would `
+            + "cost or win; do not compare the two numbers without saying which "
+            + "is which."
+          : ""));
     }
     return out;
   }
