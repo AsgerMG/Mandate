@@ -1116,7 +1116,7 @@ export function loadSignalsDigest(): SignalsDigest | null {
  *   check_winner_not_gated  winners deleted  274 -> 251   (the drop's own 251)
  *                           judgeable pairs  6,167 -> 6,167   ██ UNMOVED ██
  *   npm run stages          gates stage      83.17% -> 84.84%  (+15 of 897)
- *                           and it carries:  top-5 32.55% -> 32.78%
+ *                           and it carries:  top-5 32.55% -> 32.66%
  *
  * Same 23 founders the drop bought, and the population the drop destroyed is
  * untouched, because a demoted rule is still a rule the screen can speak with.

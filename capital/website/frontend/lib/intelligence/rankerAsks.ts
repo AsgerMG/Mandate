@@ -275,7 +275,6 @@ export interface SeparatingDemand {
 const answered = (v: unknown): boolean =>
   v != null && v !== "" && v !== "unsure" && !(Array.isArray(v) && v.length === 0);
 
-
 /** Every value the interface could actually record for a field. A field with
  *  no fixed answer set has none, and a question whose answer the product
  *  cannot store is a question whose answer cannot decide anything. */
