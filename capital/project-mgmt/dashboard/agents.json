@@ -2,22 +2,10 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsGY",
-      "step": 5,
-      "what": "What better ordering can buy, before anyone spends a week buying it",
-      "why": "Two steps lose forty-six of the sixty-six points, and both are the same thing: the order we put the funds in. Before we work on it, one question has to be answered. If the ordering were PERFECT — right fund first, every time it is anywhere on the list — what would the number be? That is the ceiling on every ordering effort we could ever run. It also asks where the right fund actually sits when we lose it: at rank nine, which a small improvement reaches, or at rank sixty, which no reshuffling of a forty-row list can."
-    },
-    {
-      "id": "wsGX",
-      "step": 5,
-      "what": "The ordering itself, and a term it does not contain",
-      "why": "We closed off this area months ago on a study that could not prove which ranking engine it ran on, and its conclusion was drawn from the wrong comparison. Re-run properly: single signals stay dead, but a blend of them beats what ships by a margin that clears its own error bars, and its biggest term is how near a fund is to the founder's own country — which our live scoring has no notion of. Graded at both places we cut the list, because a reshuffle can buy reach and no accuracy."
-    },
-    {
-      "id": "wsGV",
-      "step": 5,
-      "what": "Three more facts on each fund, and a leak the guard cannot see",
-      "why": "We hold about forty-six facts on every fund and show the AI eleven. An audit killed thirty-one of the thirty-five we withhold — too rare, or identical across every fund on the menu. Three survived and get one measured trial each. The more important half: a fourth field is tempting and is computed from who actually won money before, and our safeguard against the AI reading the answer key checks field NAMES, so it would not catch it. That safeguard gets taught to reason about where a number came from."
+      "id": "wsHA",
+      "step": 3,
+      "what": "Two thirds of the time we already show a cousin of the right fund",
+      "why": "We measured where the right fund sits when we miss it, and the answer changed the plan. In 63% of misses the founder is already looking at a SIBLING of the fund they would have won — same programme, wrong door. So we are not sending people to the wrong place; we are picking the wrong door in the right place. The question now is whether a fact that tells two doors apart even exists: in our data, on the funder's own page, or only in the founder's head. If it mostly does not exist, that caps what this product can promise and you need to know."
     },
     {
       "id": "wsGZ",
