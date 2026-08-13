@@ -1212,7 +1212,8 @@ export interface FieldReachability {
    * A comparator on a constant field is DECIDED AT ENCODE TIME: there is one
    * answer, so the rule either passes for everyone forever or fails for
    * everyone forever, and it can never separate two founders. Nine of the 101
-   * `borrowerModel` comparators in the corpus fail — and `borrowerModel` is
+   * `borrowerModel` comparators in the corpus fail, and eight of those are
+   * filters — and `borrowerModel` is
    * STRUCTURAL, so a cited one of those makes `assessInstrument` return
    * `blocked` and `accessiblePool` deletes the fund from every founder who
    * will ever ask for it.
@@ -1455,7 +1456,7 @@ export const ANSWER_USE: Record<keyof EligibilityAnswers, AnswerUse> = {
   exclusionFlags: { ranks: false, reason: "678 comparators on 626 instruments, the GBER and de minimis exclusions. Blocks rather than orders, and a blocked fund leaves the table" },
   lossesOverHalfCapital: { ranks: false, reason: "153 comparators. The undertaking-in-difficulty test: a hard bar on the screen, with no cure that is ours to offer" },
   fteBand: { ranks: false, reason: "147 comparators, the headcount half of the SME definition" },
-  borrowerModel: { ranks: false, reason: "99 comparators, and pinned to 'operating' for every founder (see FIELD_REACH) — so it evaluates correctly and always the same way" },
+  borrowerModel: { ranks: false, reason: "101 comparators, and pinned to 'operating' for every founder (see FIELD_REACH), so not one of them has ever separated two founders — 89 always pass, 3 are inert, and 9 always FAIL (8 of the 9 are filters; the ninth is a programme_fact and gates nobody). The claim that stood here, that they 'evaluate correctly and always the same way', was true of the second half only: borrowerModel is structural, so each of those eight deletes its fund from everyone who asks" },
   developmentStage: { ranks: false, reason: "63 comparators. TRL floors gate whole programmes rather than separating siblings of one regime" },
   cofinancingBand: { ranks: false, reason: "39 comparators. A co-financing floor is a condition of the same scheme for everyone who reaches it" },
   turnoverBand: { ranks: false, reason: "25 comparators, the turnover half of the SME definition" },
