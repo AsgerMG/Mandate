@@ -58,6 +58,11 @@ export interface Blocker {
   verified: boolean;
   /** Traceable to the fund's own text. Only a cited rule may disqualify. */
   cited: boolean;
+  /** Handed down from a row nothing outside our loader names — somebody else's
+   *  rule, applied here. Shown to the founder as a named obstacle and excluded
+   *  from every clause that CONDEMNS, the arithmetic one included. See the
+   *  property on `mergeInheritedGates` in corpus.ts. */
+  borrowed: boolean;
 }
 
 export interface InstrumentAssessment {
@@ -92,6 +97,7 @@ export function assessInstrument(
     else base.blockers.push({
       requirement: gate.requirement, field: spec.field,
       verified: gate.verified, cited: isCited(gate),
+      borrowed: Boolean(gate.borrowed),
     });
   }
 
@@ -152,12 +158,33 @@ export function assessInstrument(
   // are not: the founder gives one `activities` answer and it either clears
   // the fund's exclusions or it does not. If such a case is ever found, the
   // repair is to split the field, not to go back to counting rows.
+  //
+  // ── AND A BORROWED RULE IS NOT ONE OF THE THINGS COUNTED (wsGR) ─────────
+  //
+  // `borrowed` marks a rule handed down from a row nothing outside our loader
+  // names — read off ONE member's document and asserted of its siblings. It
+  // narrows and never condemns, and CONTRIBUTING TO THE ARITHMETIC IS
+  // CONDEMNING: a founder whose only other obstacle is curable would be
+  // deleted by somebody else's rule making up the second field.
+  //
+  // Leaving it in the count was a live defect and `check_answer_provenance`
+  // caught it: 4 founders of 672 cases against main's 1, all on
+  // `satr_de_rnd__sa_102344`. The row survived the pool for three of them
+  // BECAUSE the borrowed rule stopped condemning it alone, and then a follow-up
+  // answer made it the second field and deleted the fund from under them. A
+  // fund the founder saw and then lost is a worse outcome than one they never
+  // saw, which is the whole of SELECT-4.
+  //
+  // It still shows: the blocker is reported with its source stated, and a row
+  // holding nothing but borrowed obstacles is `one_blocker`, never `open`.
+  // Demoted, not deleted, in both directions.
   const structural = base.blockers.filter((b) => isStructural(b.field) && b.cited);
-  const fieldsInTheWay = new Set(base.blockers.map((b) => b.field)).size;
+  const fieldsInTheWay = new Set(
+    base.blockers.filter((b) => !b.borrowed).map((b) => b.field)).size;
   if (base.checked === 0) base.status = "unknown";
   else if (base.blockers.length === 0) base.status = "open";
   else if (structural.length > 0) base.status = "blocked";
-  else if (fieldsInTheWay === 1) base.status = "one_blocker";
+  else if (fieldsInTheWay <= 1) base.status = "one_blocker";
   else base.status = "blocked";
   return base;
 }

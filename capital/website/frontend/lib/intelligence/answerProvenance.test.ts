@@ -14,6 +14,7 @@ import { FIRST_PAGE_FIELDS, type EligibilityAnswers } from "./types";
 
 const blocker = (field: string): Blocker => ({
   requirement: `a verbatim rule about ${field}`, field, verified: true, cited: true,
+  borrowed: false,
 });
 const assessment = (blockers: Blocker[], status: InstrumentAssessment["status"]):
   InstrumentAssessment => ({
