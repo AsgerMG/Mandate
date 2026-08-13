@@ -192,6 +192,17 @@ export function windowAbsenceIsTheRegisters(policy?: string | null): boolean {
  * hold the next window — that is the whole reason the row is in this state —
  * and supplying a date the funder never gave is the failure this module exists
  * to prevent, one axis over.
+ *
+ * ── HOW TO SEE WHAT THIS LIFTED, WITHOUT SPENDING ANYTHING ────────────────
+ *   scripts/_wsgt_lifted.ts    every row this axis takes out of suppression,
+ *                              with the funder verdict and source behind each
+ *   scripts/_wsgt_caveats.ts   the sentence a founder is actually shown for
+ *                              each of them, which is where a reopening date
+ *                              would appear if this module ever leaked one
+ *   scripts/_wsgt_founder.ts   the end-to-end case: a French industrial-
+ *                              decarbonisation founder reaching ADEME, whose
+ *                              call we closed in March 2024 and which is
+ *                              taking applications today
  */
 export const CALL_RECURRENCE = {
   /** The funder's own source establishes that the programme has run, or is
