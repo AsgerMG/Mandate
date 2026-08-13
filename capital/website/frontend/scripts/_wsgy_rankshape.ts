@@ -156,6 +156,20 @@ export interface Row {
    *  is what says where a reordering moved the answer to, as opposed to whether
    *  it happened to cross a cut. */
   poolRank: Partial<Record<Arm, number | null>>;
+  /** ── EXACT@6 IS NOT ENOUGH TO JUDGE AN ARM, AND THAT IS THE WHOLE POINT ──
+   *  wsBU's unclipping arm bought +0.7 EXACT@5 for −6 REGIME@5 and −6
+   *  CHANNEL@5, and `ranking_reopen_wsCS.md` cites exactly that as why its +5.7
+   *  is an upper bound. An arm comparison that reports only the exact fund
+   *  therefore cannot tell a gain from a trade. Both are recorded per arm, at
+   *  six rows, on `measure_recall.ts`'s own definitions: regime = `parentId ??
+   *  id`, channel = `sourceFamilyBucket`.
+   *
+   *  These are NOT rows of the funnel ladder and must never be added to one:
+   *  REGIME credits a SIBLING of the won fund, so a founder can be lost at one
+   *  stage and credited at a later one, which breaks nesting. They are a
+   *  SECOND, PARALLEL reading of the same six rows. */
+  regimeAt6: Partial<Record<Arm, boolean>>;
+  channelAt6: Partial<Record<Arm, boolean>>;
   /** Which branch of `applyPeerPrecedence` this founder took, and how many
    *  leading seats the score kept. -1 = peer precedence did not run. */
   peerBranch: "specific" | "flat" | "none";
@@ -277,6 +291,11 @@ async function main() {
   const byId = new Map(corpus.map((i) => [i.id, i]));
   const inCorpus = new Set(corpus.map((i) => i.id));
   const offerable = new Set(publishableInstruments().map((i) => i.id));
+  // `measure_recall.ts`'s own two definitions, so a REGIME or CHANNEL figure
+  // here is comparable with every one this repo has published. Not restated in
+  // prose anywhere: a second definition of "same regime" is a second metric.
+  const regimeOf = (id: string) => String(byId.get(id)?.parentId ?? id);
+  const channelOf = (id: string) => String(byId.get(id)?.sourceFamilyBucket ?? "");
 
   const { file: setFile, rows: all } = loadRecallSet("wsGY rank shape");
   const fixed = reattributeMissingAnswers(
@@ -327,7 +346,7 @@ async function main() {
       company: t.name, country: t.country, won,
       inCorpus: inCorpus.has(won), offerable: isOfferable,
       rankTable: null, rankAccessible: null, accessibleLen: 0, tableLen: 0,
-      writerRank: {}, poolRank: {},
+      writerRank: {}, poolRank: {}, regimeAt6: {}, channelAt6: {},
       peerBranch: "none", scoreSeats: -1,
       aboveOnTierOnly: 0, aboveOnPeerOnly: 0, tiedAtWon: 0,
       featWon: {}, featShown: {},
@@ -405,6 +424,7 @@ async function main() {
           : [accessible[iAcc], ...accessible.filter((_r, i) => i !== iAcc)],
       };
 
+      let shippedSix: string[] = [];
       for (const arm of ARMS) {
         const ord = orders[arm];
         const iPool = ord.map((r) => r.instrumentId).indexOf(won);
@@ -425,6 +445,12 @@ async function main() {
         }).toWriter.map((x) => x.row.instrumentId ?? x.row.channel);
         const iW = toWriter.indexOf(won);
         row.writerRank[arm] = iW < 0 ? null : iW + 1;
+        // The six rows the founder reads, under this arm, read a second way.
+        const six = toWriter.slice(0, SHOWN_ROWS);
+        row.regimeAt6[arm] = six.some((id) => regimeOf(id) === regimeOf(won));
+        row.channelAt6[arm] = six.some((id) =>
+          channelOf(id) !== "" && channelOf(id) === channelOf(won));
+        if (arm === "shipped") shippedSix = six;
       }
 
       // ── WHAT SITS ABOVE IT, AND ON WHAT ──────────────────────────────────
@@ -470,8 +496,13 @@ async function main() {
         .map((r) => (r.instrumentId ? byId.get(r.instrumentId) : undefined))
         .filter((i): i is DbInstrument => Boolean(i));
       const wonInst = byId.get(won);
-      const shownIds = accessible.slice(0, SHOWN_ROWS)
-        .map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
+      // ── THE WON FUND IS EXCLUDED FROM `shown`, AND THAT IS NOT A DETAIL ──
+      // On a HIT the won fund IS one of the six, so leaving it in would make
+      // the hit column partly a measurement of itself and every feature would
+      // read "the shown rows look like the won fund" for the trivial reason.
+      // `shown` is therefore always THE OTHER ROWS ON THE PAGE, on hits and on
+      // misses alike, which is the only way the two columns compare.
+      const shownIds = shippedSix.filter((id) => id !== won);
       for (const [name, fn] of Object.entries(FEATURES)) {
         const allVals = poolInsts.map((i) => fn(i, ctx));
         if (wonInst) row.featWon[name] = percentile(fn(wonInst, ctx), allVals);

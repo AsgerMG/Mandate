@@ -174,7 +174,7 @@ function main() {
       p(`    p25 ${quantile(ranks, 0.25)}   MEDIAN ${quantile(ranks, 0.5)}   `
         + `p75 ${quantile(ranks, 0.75)}   p90 ${quantile(ranks, 0.90)}   max ${ranks[ranks.length - 1]}`);
       p();
-      p(...histogram(ranks));
+      for (const line of histogram(ranks)) p(line);
       const near = ranks.filter((r) => r >= 9 && r <= 15).length;
       const inPool = ranks.filter((r) => r <= 40).length;
       const out = ranks.filter((r) => r > 40).length;
@@ -213,6 +213,22 @@ function main() {
     p();
   }
   p("```");
+  p();
+  p("### The same arms read a second way — the trade EXACT@6 cannot see");
+  p();
+  p("wsBU's unclipping arm bought +0.7 EXACT@5 for −6 REGIME@5 and −6 CHANNEL@5.");
+  p("An arm judged on the exact fund alone cannot tell a gain from a trade, so the");
+  p("same six rows are read again here. REGIME credits a SIBLING of the won fund and");
+  p("is deliberately NOT a funnel row — it breaks nesting. It is a second question.");
+  p();
+  p(`| arm | EXACT@6 | REGIME@6 | CHANNEL@6 |`);
+  p("|---|---:|---:|---:|");
+  for (const a of ARMS) {
+    const e = rows.filter((r) => (r.writerRank[a] ?? Infinity) <= SHOWN_ROWS).length;
+    const g = rows.filter((r) => r.regimeAt6[a]).length;
+    const c = rows.filter((r) => r.channelAt6[a]).length;
+    p(`| \`${a}\` | ${f1(pct(e, N))}% | ${f1(pct(g, N))}% | ${f1(pct(c, N))}% |`);
+  }
   p();
 
   // ── 5. WHAT DISTINGUISHES THE ROWS ABOVE THE ANSWER FROM THE ANSWER ──────
