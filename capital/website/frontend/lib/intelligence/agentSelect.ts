@@ -1030,6 +1030,19 @@ const DESCRIPTOR_CHARS = 60;
  *  reads the whole descriptor as a single part. */
 const DESCRIPTOR_SEP = " \u00b7 ";
 
+/** How much of the registered purpose a row may spend.
+ *
+ *  Not a sentence budget: `registeredPurpose` is a composed phrase \u2014 the uses
+ *  of funds the scheme's articles permit, and then the articles. Measured over
+ *  the 421 instruments that carry one (`scripts/_wsgv_rowfields.ts`, live
+ *  corpus): p50 76 characters, p90 158, max 236.
+ *
+ *  140 leaves nearly all of the p90 intact and cuts only the tail, where a
+ *  scheme cites five articles at once. What a cut removes is the CITATION and
+ *  not the meaning, because `registeredPurpose` composes the uses of funds
+ *  first and the article list last. */
+const REGISTERED_PURPOSE_CHARS = 140;
+
 /**
  * The row's kind of capital, and the descriptor parts that are left.
  *
@@ -1102,12 +1115,64 @@ export function fitDescriptor(parts: string[], budget: number): string {
   return out.join(DESCRIPTOR_SEP);
 }
 
+/**
+ * WHICH ROWS ON THIS MENU ARE THE SAME NOTIFIED SCHEME, said in indices.
+ *
+ * ── The defect it targets, and only that one ──────────────────────────────
+ * SELECT-8 already gives the model the founder's test for whether two rows are
+ * one option: would a company turned down by one be turned down by the other?
+ * The model applies it to what it can see, and what it cannot see is that rows
+ * [3] and [11] are two granting bodies delivering ONE notified regime. Measured
+ * on the twelve bench companies, four of twelve spent two of six seats on a
+ * sibling pair, and thinking did not fix it — a missing FACT, not a missing
+ * judgement. `sameTitlePickCount` counts the strict subset of that defect which
+ * is decidable from the titles alone; this is the fact behind the rest of it.
+ *
+ * ── A FACT, NOT A RULE, and the difference is measured ────────────────────
+ * It states who shares a regime. It does not say pick one. Collapsing a
+ * notified scheme is the wsCG2 defect and this repo has the number for it:
+ * SA.111723 has fourteen leaves and fourteen different granting bodies, the
+ * dedupe that treated them as one was 50% of all misses, and pool recall fell
+ * 97% -> 83% when the notified-scheme repeat was made a filter. The founder's
+ * own test still decides; the row only stops hiding the input to it.
+ *
+ * ── Why an index list rather than the code alone ──────────────────────────
+ * A bare "SA.111723" on two rows forty lines apart is a fact the reader has to
+ * find by scanning. The code was in the row TITLE once and was removed because
+ * it produced a token zero times, which is the same lesson from the other side:
+ * an identifier nothing can act on earns nothing. The indices are what the
+ * model answers in, so this is the code rendered in the units of the decision.
+ *
+ * SILENT WHERE IT SEPARATES NOTHING. A row whose scheme code no other row on
+ * this menu shares gets no line — the fact is about a PAIR, and 50% of rows
+ * carry a code while far fewer share one with a row in front of this founder.
+ *
+ * LEAK: `scheme_code` is the SA number a scheme was notified under. It is on
+ * the register before the first award and does not move when the recipients
+ * change, which is why `check_answer_not_reachable.ts` classifies it an
+ * award-fact rather than a statistic over who won.
+ */
+export function schemeSiblings(rows: InstrumentRow[]): (i: number) => string {
+  const byCode = new Map<string, number[]>();
+  rows.forEach((r, i) => {
+    const c = (r.schemeCode ?? "").trim();
+    if (c) byCode.set(c, [...(byCode.get(c) ?? []), i]);
+  });
+  return (i: number) => {
+    const c = (rows[i]?.schemeCode ?? "").trim();
+    const group = c ? byCode.get(c) ?? [] : [];
+    if (group.length < 2) return "";
+    const others = group.filter((j) => j !== i).map((j) => `[${j}]`);
+    return `notified under the same scheme (${c}) as ${others.join(", ")}`;
+  };
+}
+
 /** One candidate as the model reads it. Everything here is either a statement
  *  of what the fund DEMANDS, an aggregate over its whole award history, or our
  *  own model-free read of the founder's answers against that fund's rules.
  *  `usedInField` is omitted on purpose — see the header. */
 function renderRow(
-  i: number, r: InstrumentRow, reqs: string[], peers?: Map<string, number>,
+  i: number, r: InstrumentRow, reqs: string[], siblings: string, peers?: Map<string, number>,
   assessments?: Map<string, InstrumentAssessment>,
 ): string {
   const facts: string[] = [];
@@ -1132,7 +1197,32 @@ function renderRow(
   const { capital, rest } = descriptorParts(r);
   if (capital) facts.push(capital);
   if (r.typicalAward != null && (r.typicalAwardN ?? 0) >= 5) {
-    facts.push(`typical award ${eur(r.typicalAward)} over ${r.typicalAwardN} real awards`);
+    // ── A MEDIAN IS ONE NUMBER, AND SCALE IS THE QUESTION IT CANNOT ANSWER ─
+    // The row has printed a median over real awards since it existed. Two
+    // funds with the same median are not the same fund: one whose middle half
+    // lands between EUR 200k and EUR 300k has a ticket, and one whose middle
+    // half spans EUR 25k to EUR 4M does not. A founder asking for EUR 2M is
+    // ruled out by the first and is inside the second, and the median alone
+    // says the same thing about both.
+    //
+    // ONE CLAUSE ON A LINE THAT ALREADY PRINTS THE MEDIAN, so the leak
+    // question has precedent rather than a new answer: these are two more
+    // percentiles of the same amounts, from the same column family, behind the
+    // same `typicalAwardN` floor. `check_answer_not_reachable.ts` classifies
+    // all four the same way and for the same reason — strip every recipient's
+    // identity and attributes from the award tables and a percentile of the
+    // amounts does not move.
+    //
+    // Silent where it would say nothing. p75 == p25 is a fund that has paid
+    // one amount, and "between EUR 50k and EUR 50k" spends characters to
+    // restate the median; the row prints the median alone there.
+    //
+    // AFTER the count, not between the median and it. Read aloud, "EUR 495k,
+    // half between EUR 343k and EUR 699k over 2,463 real awards" leaves the n
+    // dangling off the range when it belongs to all three numbers.
+    const span = r.awardP25 != null && r.awardP75 != null && r.awardP75 > r.awardP25
+      ? `, half between ${eur(r.awardP25)} and ${eur(r.awardP75)}` : "";
+    facts.push(`typical award ${eur(r.typicalAward)} over ${r.typicalAwardN} real awards${span}`);
   } else facts.push("no reliable award median");
   if (r.lastAwardYear) facts.push(`last awarded ${r.lastAwardYear}`);
   if (rest.length) facts.push(fitDescriptor(rest, DESCRIPTOR_CHARS));
@@ -1143,6 +1233,10 @@ function renderRow(
     `[${i}] ${oneLine(r.instrument, ROW_TITLE_CHARS)}`,
     `     ${facts.join(" · ")}`,
     verdict ? `     ${verdict}` : "",
+    // Who else on THIS menu is the same notified regime. See `schemeSiblings`:
+    // a fact about a pair, printed only where the pair is in front of the
+    // reader, and never a rule about which of them to take.
+    siblings ? `     ${siblings}` : "",
     // What the scheme itself says it funds — the single line that separates
     // two siblings sharing a descriptor. Two EDF rows both render as
     // "Grants · mostly defence & security"; their own pages say "stops before
@@ -1153,6 +1247,50 @@ function renderRow(
     // Distinct from `instrument_profiles.profile_text`, which carries real
     // winning project titles and is not reachable from here.
     //
+    // ── WHAT THE STATE SAID THIS SCHEME MAY PAY FOR ──────────────────────
+    // The GBER article the scheme was NOTIFIED under, as words: "industrial
+    // research, experimental development (Art. 25(2)(b), Art. 25(2)(c))".
+    // Measured live (`scripts/_wsgv_rowfields.ts`): 421 of 1,078 instruments
+    // carry one (39.1%), taking 127 distinct values.
+    //
+    // A DIFFERENT QUESTION FROM THE TWO LINES BELOW, which is why it is its own
+    // line and not folded into either. `funds:` is the body's own prose about
+    // what it pays for and `who may apply:` is its prose about who may ask;
+    // this is neither prose nor the body's — it is the legal envelope the
+    // Commission registered, and it is the same claim for every scheme citing
+    // that article. A founder who needs experimental development funded can
+    // read a scheme notified only for feasibility studies and stop.
+    //
+    // WHAT IT IS NOT. It has zero variance inside a sibling group, and that is
+    // measured rather than assumed: of the 34 notified schemes holding more
+    // than one leaf, the number where the registered purpose differs between
+    // leaves is ZERO. So it cannot separate siblings and nothing here pretends
+    // it can — that is what the line below this one is for. It separates
+    // ACROSS regimes,
+    // which is the cut the descriptor and the two sentences below all make
+    // badly, and it is the only field on the row that is statutory rather than
+    // measured or written by the grantor.
+    //
+    // IT LOST AS A SCORER AND THAT IS NOT THIS. `objectiveScorer` multiplies
+    // rows by whether their registered use of funds matches the founder's, and
+    // it was measured at zero — see the header there for why (coverage is not
+    // random: everything carrying an objective is a national scheme, so the
+    // boost became a channel prior). A number that cannot rank a menu is a
+    // different thing from a fact a reader cannot obtain elsewhere.
+    //
+    // LEAK: a NOTIFICATION fact, not award history. `emit_instrument_objectives
+    // .py` reads `satr_staging.objectives_text` per SA number — the text the
+    // Commission registered before a single award was made — and maps the
+    // article number through EU law (Reg. 651/2014), naming no fund, body or
+    // country. It is constant across every award the scheme has ever made, so
+    // the beneficiary-swap test in `check_answer_not_reachable.ts` leaves it
+    // unchanged and it is not in the events pass's derived set at all.
+    //
+    // Budgeted here rather than at construction because nothing else renders
+    // it: it is a short composed phrase, and the cap is a guard against an
+    // article list, not a sentence cut.
+    r.registeredPurpose
+      ? `     registered to fund: ${oneLine(r.registeredPurpose, REGISTERED_PURPOSE_CHARS)}` : "",
     // Already budgeted by `fundsSentence` on the row (180 chars, whole
     // sentences). Not re-cut here: one budget, one place.
     r.description ? `     funds: ${r.description}` : "",
@@ -1485,8 +1623,9 @@ export function buildPrompt(
   peers?: Map<string, number>, evidence?: Map<string, string[]>,
 ): string {
   const reqs = distinctive(head);
+  const sibling = schemeSiblings(head);
   const menu = head.map((r, i) => {
-    const row = renderRow(i, r, reqs(r), peers, ctx.assessments);
+    const row = renderRow(i, r, reqs(r), sibling(i), peers, ctx.assessments);
     const ev = r.instrumentId ? evidence?.get(r.instrumentId) : undefined;
     return ev?.length
       ? `${row}\n     you asked about this one — its own rules say: ${ev.map((e) => oneLine(e, 200)).join(" | ")}`

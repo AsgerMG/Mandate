@@ -2965,6 +2965,11 @@ export function materialiseInstrumentTable(
         // claims and the row should not present them identically.
         typicalAward: leaf.awardP50 ?? undefined,
         typicalAwardN: leaf.awardN ?? undefined,
+        // The same awards read at their quartiles. See InstrumentRow: a median
+        // over a fixed-ticket programme and a median over one that funds
+        // anything are the same number and different facts.
+        awardP25: leaf.awardP25 ?? undefined,
+        awardP75: leaf.awardP75 ?? undefined,
         aidIntensity: leaf.intensityP50 ?? undefined,
         aidIntensityN: leaf.intensityN ?? undefined,
         descriptor: fundDescriptor(leaf),

@@ -218,6 +218,20 @@ export interface InstrumentRow {
    *  from one with a EUR 127M median, and both sit under the same channel. */
   typicalAward?: number;
   typicalAwardN?: number;
+  /** The interquartile range of the same awards `typicalAward` is the median
+   *  of. A median is one number, and two funds sharing one are not the same
+   *  fund: EUR 250k over awards that all land between 200k and 300k is a
+   *  programme with a fixed ticket, and EUR 250k over awards spanning 25k to
+   *  4M is a programme that will fund almost anything and mostly funds small
+   *  things. A founder asking for EUR 2M can act on the second and not on the
+   *  first, and the median alone cannot separate them.
+   *
+   *  Carried under the corpus's own names rather than folded into
+   *  `typicalAward`: they are one measurement read at three points, and a row
+   *  that renamed two of the three would make a reader hold a mapping. Rendered
+   *  only behind `typicalAwardN`'s floor — one floor, one place. */
+  awardP25?: number;
+  awardP75?: number;
   /** Share of project cost this instrument actually covered, measured. The
    *  structuring answer: a founder plans around what they must fund
    *  themselves, which is the other side of this number. */
