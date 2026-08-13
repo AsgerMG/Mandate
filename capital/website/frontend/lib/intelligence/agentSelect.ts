@@ -138,12 +138,13 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 import {
-  AGENT_SELECT_ARM, depthLever, SELECT_COUNT, SELECT_DEPTH,
-  type AgentSelectArm,
+  AGENT_SELECT_ARM, depthLever, EFFORTS, MAX_TOKENS_BY_EFFORT, SELECT_COUNT,
+  SELECT_DEPTH, THINK_EFFORT, TIMEOUT_BY_EFFORT,
+  type AgentSelectArm, type ThinkEffort,
 } from "./caps";
 import { recordUsage } from "./cost";
 import { retrieveDemands } from "./demandRetrieval";
-import { asBaseRate, poolRecallAt, poolRecallN } from "./poolRecall";
+import { baseRateSentence } from "./poolRecall";
 import { regionNameFor } from "./regions.generated";
 import { oneLine, ROW_TITLE_CHARS } from "./schemeText";
 import {
@@ -152,7 +153,7 @@ import {
 } from "./types";
 import { checkSelection } from "./selectionChecks";
 import { peerPrior } from "./shortlist";
-import { fence } from "./untrusted";
+import { declaw, fence } from "./untrusted";
 import { assessAll, type InstrumentAssessment } from "./verdict";
 import { assembleInstructions } from "./contracts";
 
@@ -162,6 +163,13 @@ import { assembleInstructions } from "./contracts";
  *  file for why a pure environment read must not sit behind the Anthropic
  *  client. */
 export { AGENT_SELECT_ARM, type AgentSelectArm };
+/** The thinking lever and its two ceilings. Defined in `./caps` for the same
+ *  reason every other lever is, and re-exported so `_wsga_headtohead.ts`,
+ *  `_wsei_depth_arms.ts`, `_wsdq_run.ts` and `_wsdr_seam.ts` are unchanged. */
+export { EFFORTS, MAX_TOKENS_BY_EFFORT, THINK_EFFORT, TIMEOUT_BY_EFFORT, type ThinkEffort };
+/** The measured base rate, read at the depth of the list actually shown.
+ *  Defined in `./poolRecall` beside the curve it reads. */
+export { baseRateSentence };
 
 export const agentSelectEnabled = (): boolean => AGENT_SELECT_ARM !== "off";
 
@@ -323,6 +331,50 @@ export const SELECT_KEEP = depthLever("AGENT_SELECT_KEEP", 3, { min: 0 });
  * arm additive in exactly the sense `assist` is: the model can add a case it is
  * sure of without being able to spend a seat on one it is not.
  *
+ * ── STILL OFF, AND THAT IS NOW A DECISION RATHER THAN AN OMISSION (wsGS) ──
+ *
+ * Everything above was measured on an EIGHTEEN-row menu with SIX seats. Both
+ * numbers have moved: `VERDICT_POOL` is 40 and `SELECT_COUNT` is 7. Read the
+ * evidence at the depth that actually ships and it does not carry:
+ *
+ *   IT CANNOT BE RE-DERIVED AT FORTY, AND NOBODY HAS. `_wsdy_slots.ts` parses
+ *     recorded prompts, and every prompt on disk under `first_test_wsDQ` and
+ *     `dark_levers_wsDS` renders EIGHTEEN rows — including the runs whose tally
+ *     line says `depth=40`, because `VERDICT_POOL` was 18 when they ran and the
+ *     menu is the smaller of the two. So "at forty rows the pressure is worse"
+ *     is an extrapolation from a menu that no longer exists. Scaling 2.1 of 18
+ *     linearly puts it near 4.7 of 40 against SEVEN seats — still short, but a
+ *     survivors-to-seats ratio of 0.67 where the measured one was 0.35. The
+ *     direction of the change is toward LESS pressure, not more.
+ *
+ *   AND THE FORTY-ROW RUN'S OWN TAPE CONTRADICTS THE PATHOLOGY. wsGA ran 148
+ *     briefs at `depth=40 count=7` in `exactly` mode and its line records
+ *     `0 short reply` and `0 seat(s) on a row already picked under the SAME
+ *     TITLE`. The eighteen-row failure was the model spending seats it did not
+ *     believe in — sibling pairs and out-of-sector rows in the fifth and sixth
+ *     places. The floor that catches half of that read zero across 148 briefs.
+ *
+ * TURNING IT ON AGAINST AN EIGHTEEN-ROW MEASUREMENT WOULD BE THIS FILE'S OWN
+ * NAMED DEFECT — the base rate that was true of a 105-row pool and false of the
+ * list actually shown. So it stays off, and the reason is written down instead
+ * of the flag being flipped.
+ *
+ * ── WHAT WOULD FALSIFY THIS, and what cannot see it ──────────────────────
+ * `npm run stages` cannot: there is no model in that ladder, so this lever is
+ * invisible to it in both settings. Nothing free can decide it. What would
+ * change the answer is one of two things, both readable off a paid run's own
+ * tally line at forty rows and neither of them a new harness:
+ *
+ *   a non-zero `seat(s) on a row already picked under the SAME TITLE`, which is
+ *   the floor on seats spent for want of an alternative; or a per-row grading
+ *   showing picks in the last seats that fail the two disqualifiers THIS PROMPT
+ *   STATES — an award median an order of magnitude off the band, a descriptor
+ *   naming another sector.
+ *
+ * Either turns this from a lever left off into a lever that should be swept.
+ * Until then the honest position is that the evidence for it was measured on a
+ * menu the product no longer builds.
+ *
  * OFF BY DEFAULT, and read once at module scope with a throw on anything
  * unrecognised, for the reason every other lever in this file is: a flag that
  * reads a typo as its default reports the control's number under the
@@ -368,26 +420,12 @@ export const SELECT_COUNT_MODE: SelectCountMode = (() => {
  * integers and 1,536 tokens is ample, while bounding the worst case at about
  * EUR 0.014 of output per call.
  */
-// `off` is an EFFORT LEVEL here, not the absence of one, and that is what makes
-// thinking measurable as a lever. The arm previously had exactly one thinking
-// setting -- adaptive at `low` -- so "what does thinking buy" had no control to
-// be measured against except a different ARM, which changes the prompt, the
-// prior and the retrieval path at the same time. Naming `off` on this axis
-// keeps every one of those fixed and moves the one thing under test.
-const EFFORTS = ["off", "low", "medium", "high", "xhigh", "max"] as const;
-export type ThinkEffort = (typeof EFFORTS)[number];
-/** Validated at module scope for the same reason the arm is: an unrecognised
- *  effort must fail loudly, not silently fall through to the model default and
- *  bill at a depth nobody chose. */
-export const THINK_EFFORT: ThinkEffort = (() => {
-  const raw = process.env.AGENT_SELECT_EFFORT ?? "low";
-  if (!EFFORTS.includes(raw as ThinkEffort)) {
-    throw new Error(`AGENT_SELECT_EFFORT must be one of ${EFFORTS.join("|")}, got "${raw}"`);
-  }
-  return raw as ThinkEffort;
-})();
-/** Zero is a legitimate setting — wsDR ran the whole seam comparison at
- *  `lookups=0` — so this lever floors at 0 rather than 1. */
+// `EFFORTS`, `ThinkEffort`, `THINK_EFFORT`, `MAX_TOKENS_BY_EFFORT` and
+// `TIMEOUT_BY_EFFORT` are defined in `./caps`, the leaf module that holds every
+// other lever this stage reads, and re-exported at the imports above so every
+// caller that has always imported them from the ranker still can. They moved so
+// `check_maxtok_headroom.ts` can read a ceiling without pulling the Anthropic
+// client and the corpus layer in behind one number.
 export const LOOKUP_MAX = depthLever("AGENT_SELECT_LOOKUPS", 5, { min: 0 });
 
 /**
@@ -462,50 +500,6 @@ const LOOKUP_TOOL = {
 const MODEL = process.env.AGENT_SELECT_MODEL ?? "claude-sonnet-5";
 
 /**
- * ── THE CEILING HAS TO RISE WITH THE EFFORT, AND THIS IS NOT A TUNING KNOB ──
- *
- * `max_tokens` caps thinking and reply TOGETHER. The arm shipped 1,536 for the
- * adviser, which is ample at effort `low` -- Nortal's own prompt spends 360-519
- * thinking tokens there and answers in 37 characters. It is NOT ample above it.
- * Measured on that same prompt (`scripts/_wsds_probe.ts`, both runs recorded in
- * `findings/dark_levers_wsDS/probe_thinking.txt`):
- *
- *   effort low,  max_tokens 1536   360 thinking, answered
- *   effort high, max_tokens 1536   1,535 thinking, stop_reason=max_tokens,
- *                                  NO text block at all -> empty reply
- *   effort high, max_tokens 8192   5,995 thinking, answered
- *
- * An empty reply is counted as a fallback and publishes the shipped order. So a
- * thinking sweep run against a fixed 1,536 would have reported the CONTROL's
- * table under the treatment's banner at every level above `low`, and reported
- * it as the model declining to choose rather than as a truncation. That is the
- * exact class of error this workstream exists to stop, and it would have been
- * invisible: the tally line says "FELL BACK", not "was cut off".
- *
- * These numbers are ceilings, not budgets -- nothing bills for headroom, only
- * for tokens actually spent -- so they are set well clear of the measured spend
- * rather than trimmed to it. The cost of being generous is a worse worst case;
- * the cost of being tight is a measurement that silently describes the control.
- */
-const MAX_TOKENS_BY_EFFORT: Record<ThinkEffort, number> = {
-  off: 1024, low: 2048, medium: 6144, high: 12288, xhigh: 24576, max: 32768,
-};
-
-/**
- * Same argument as the token ceiling, for the clock.
- *
- * 40 seconds was chosen when the arm could not think. At `high` the probe spent
- * 5,995 thinking tokens on one call, and a timeout is indistinguishable
- * downstream from a model that declined -- both return the shipped order
- * through the same catch. A sweep whose deeper arms quietly time out measures
- * latency, not judgement.
- */
-const TIMEOUT_BY_EFFORT: Record<ThinkEffort, number> = {
-  off: 40_000, low: 40_000, medium: 90_000, high: 150_000,
-  xhigh: 240_000, max: 300_000,
-};
-
-/**
  * Constructed LAZILY, and that is not a style choice.
  *
  * ES imports are hoisted, so a module-scope `new Anthropic()` runs before the
@@ -525,6 +519,25 @@ const anthropic = (): Anthropic => (clientMemo ??= new Anthropic());
  *  otherwise print the control's number under the treatment's banner. */
 const tally = {
   calls: 0, ok: 0, failed: 0, shortReply: 0, invalidIds: 0,
+  /** ── TWO DENOMINATORS, AND THE LINE USED THE WRONG ONE (wsGS) ──────────
+   *
+   *  `calls` counts SEAM INVOCATIONS -- once per founder, incremented where the
+   *  arm decides to spend. `truncated`, `thoughtOn`, `thinkingTokens` and
+   *  `toolAsked` are incremented inside `ask()`, which runs a SECOND time on
+   *  every brief where retrieval fired. The published line divided the second
+   *  by the first and printed the impossible `thought on 210/148 call(s)`
+   *  (findings/headtohead_wsGA): 148 founders, 62 of them retrieved, 148+62 =
+   *  210 API calls, every one of which thought.
+   *
+   *  A ratio over the wrong denominator is not a rounding error -- it made a
+   *  per-call rate unreadable in the one direction that matters, because
+   *  `4 CUT OFF` was silently 4-in-210 and not 4-in-148.
+   *
+   *  THE PROPERTY: a counter incremented inside `ask()` is reported over
+   *  `apiCalls`; a counter incremented in `agentSelectRows` is reported over
+   *  `calls`. `apiCalls` is incremented on the same line that builds the
+   *  request, so a third round added tomorrow counts itself. */
+  apiCalls: 0,
   /** Picks that were a second row of a programme already picked -- SELECT-8
    *  stated in the prompt and measured here rather than assumed (wsDY). */
   siblingPicks: 0, siblingBriefs: 0,
@@ -610,7 +623,7 @@ export function agentSelectExits(): Record<ExitReason, number> {
   return { ...tally.exits };
 }
 export function resetAgentSelectTally(): void {
-  tally.calls = 0; tally.ok = 0; tally.failed = 0;
+  tally.calls = 0; tally.apiCalls = 0; tally.ok = 0; tally.failed = 0;
   tally.shortReply = 0; tally.invalidIds = 0;
   tally.siblingPicks = 0; tally.siblingBriefs = 0;
   tally.declinedSeats = 0; tally.declinedBriefs = 0;
@@ -646,7 +659,7 @@ export function agentSelectTallyLine(): string {
     // Reported on EVERY arm, because `tool` now fires on every arm. Printing it
     // only for the adviser is how a channel comes to run unreported.
     (UNSURE_MODE === "tool"
-      ? ` unsure=tool asked=${tally.toolAsked}/${tally.calls}` +
+      ? ` unsure=tool asked=${tally.toolAsked}/${tally.apiCalls} API call(s)` +
         (AGENT_SELECT_ARM === "adviser" ? "" :
           ` lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)`) : "") +
     ` model=${MODEL} — ${tally.ok}/${tally.calls} chose, ${tally.failed} FELL BACK to the` +
@@ -670,11 +683,16 @@ export function agentSelectTallyLine(): string {
     // alone never established that the lever moved. `truncated` is here for the
     // opposite reason: it is the only thing that distinguishes a ceiling set too
     // low from a model that declined, and both of those publish the control.
+    // Over `apiCalls`, not `calls`: round two is a second request on the same
+    // brief, so every counter incremented inside `ask()` has a denominator of
+    // its own. The line that printed "thought on 210/148 call(s)" was dividing
+    // by the founders.
     (AGENT_SELECT_ARM === "adviser"
-      ? `, thought on ${tally.thoughtOn}/${tally.calls} call(s)`
+      ? `, ${tally.apiCalls} API call(s) over ${tally.calls} brief(s)`
+        + `, thought on ${tally.thoughtOn}/${tally.apiCalls} API call(s)`
         + ` (${tally.thinkingTokens} thinking token(s) billed,`
         + ` ${tally.thinkingChars} readable char(s)),`
-        + ` ${tally.truncated} CUT OFF at max_tokens` : "") +
+        + ` ${tally.truncated}/${tally.apiCalls} CUT OFF at max_tokens` : "") +
     `, EUR ${tally.eur.toFixed(4)} total, EUR ${(tally.eur / tally.calls).toFixed(4)} per brief`;
 }
 /** `dry` only. The measured prompt sizes, for pricing an arm before running
@@ -900,6 +918,22 @@ const eur = (n: number | undefined | null): string =>
  * it: that module has no production caller and reordering a dead path to match
  * a live one is a change nothing can measure. The two numbers agreeing was
  * never the contract; this one now means something different from that one.
+ *
+ * ── THE CUT IS A PROPORTION, SO IT DID NOT MOVE WITH THE POOL (wsGS) ──────
+ * Read as a count it looks like a number nobody chose: 7 at eighteen rows, 14
+ * at forty. It is the same rule at both. `0.35` is a share OF THE LIST, and the
+ * question it asks — does this demand separate this row from the others in
+ * front of the model — is a question about the share and not about the count.
+ * A demand on 13 of 40 rows tells a reader as little as one on 6 of 18. Nothing
+ * here needs re-tuning because the pool widened, and a future reader who
+ * re-derives the count and "corrects" it will have changed the rule.
+ *
+ * The one part that is NOT proportional is `Math.max(2, ...)`, and it is inert
+ * on this path: `ceil(0.35 * L) >= 2` for every L >= 3, and `agentSelectRows`
+ * has already returned through `poolNotLongerThanCount` or
+ * `menuNotLongerThanWant` for anything shorter. It is kept because `distinctive`
+ * is exported and a caller with a two-row list would otherwise get a cutoff of
+ * 1, which suppresses every requirement any two rows share.
  */
 export function distinctive(rows: InstrumentRow[]): (r: InstrumentRow) => string[] {
   const seen = new Map<string, number>();
@@ -986,6 +1020,88 @@ function verdictLine(a: InstrumentAssessment | undefined): string {
   }
 }
 
+/** How many characters of the composed descriptor a row may spend. Unchanged
+ *  from the budget `oneLine(r.descriptor, 60)` used; what changed is WHICH end
+ *  of the composite pays for it. */
+const DESCRIPTOR_CHARS = 60;
+
+/** The separator `fundDescriptor` joins with. One definition, because a row
+ *  that splits on a different character than the one that joined it silently
+ *  reads the whole descriptor as a single part. */
+const DESCRIPTOR_SEP = " \u00b7 ";
+
+/**
+ * The row's kind of capital, and the descriptor parts that are left.
+ *
+ * ── The property, and its test for the unseen case ────────────────────────
+ * A ROW STATES EACH FACT ONCE, AND A BUDGET NEVER COSTS IT A FACT.
+ *
+ * `fundDescriptor` composes `CAPITAL_WORD[capitalType] · region · what it
+ * mostly funds`. The row was printing the raw `capitalType` column beside that
+ * whole string, so the kind of capital appeared twice — "grant" and then
+ * "Grants", four fields apart — and the characters went on the repeat.
+ *
+ * Two things follow, and neither is a list of known duplicates:
+ *
+ *   THE READER'S WORD WINS. Where a descriptor part names the same fact as the
+ *     `capitalType` column, that part IS the column rendered for a reader, and
+ *     it takes the slot the raw value used to hold. The raw value prints only
+ *     where no part names it — one statement of the fact, not fewer facts.
+ *   AND IT DOES NOT COMPETE FOR THE BUDGET. It is lifted out of the budgeted
+ *     text entirely, so a long region name can never cost the row its kind of
+ *     capital. Only the parts that are genuinely new to the row are budgeted.
+ *
+ * A part that restates a field the row prints beside the descriptor — the body,
+ * the country — is dropped. Normalisation is deliberately shallow: case,
+ * punctuation, and the plural the corpus's own word carries. It is not a
+ * stemmer; two facts that differ by more than that are two facts.
+ *
+ * Stated over the parts rather than over their positions, so a fourth clause
+ * added to `fundDescriptor` tomorrow is carried with no edit here.
+ */
+export function descriptorParts(r: InstrumentRow): { capital: string; rest: string[] } {
+  const norm = (s: string) =>
+    s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim().replace(/s$/, "");
+  const said = new Set([r.administeringBody, r.country]
+    .filter(Boolean).map((v) => norm(String(v))));
+  const parts = (r.descriptor ?? "").split(DESCRIPTOR_SEP)
+    .map((p) => p.trim())
+    .filter((p) => p && !said.has(norm(p)));
+  const key = r.capitalType ? norm(r.capitalType) : "";
+  const i = key ? parts.findIndex((p) => norm(p) === key) : -1;
+  return {
+    capital: i >= 0 ? parts[i] : (r.capitalType ?? ""),
+    rest: i >= 0 ? [...parts.slice(0, i), ...parts.slice(i + 1)] : parts,
+  };
+}
+
+/**
+ * Fit the parts into a budget, LAST FIRST.
+ *
+ * `fundDescriptor` puts what the scheme mostly funds at the end, and that is
+ * the one part of the composite the row does not already carry — the line that
+ * separates two rows of one body in one country. Cutting from the front of the
+ * string, which is what `oneLine` does, spent the budget on the parts that were
+ * redundant and then deleted the one that was not.
+ *
+ * Nothing is invented and nothing is reordered: the parts print in the order
+ * `fundDescriptor` composed them. What changes is which one pays when there is
+ * not room for all of them.
+ */
+export function fitDescriptor(parts: string[], budget: number): string {
+  const out: string[] = [];
+  let left = budget;
+  for (const p of [...parts].reverse()) {
+    // Below this a part is an ellipsis and a syllable, which is noise rather
+    // than an abbreviated fact.
+    if (left < 12) break;
+    const cut = oneLine(p, left);
+    out.unshift(cut);
+    left -= cut.length + DESCRIPTOR_SEP.length;
+  }
+  return out.join(DESCRIPTOR_SEP);
+}
+
 /** One candidate as the model reads it. Everything here is either a statement
  *  of what the fund DEMANDS, an aggregate over its whole award history, or our
  *  own model-free read of the founder's answers against that fund's rules.
@@ -997,12 +1113,29 @@ function renderRow(
   const facts: string[] = [];
   if (r.administeringBody) facts.push(oneLine(r.administeringBody, 70));
   if (r.country) facts.push(r.country);
-  if (r.capitalType) facts.push(r.capitalType);
+  // ── THE DESCRIPTOR IS THREE FACTS, AND TWO WERE ALREADY ON THE ROW (wsGS) ─
+  //
+  // `fundDescriptor` composes `CAPITAL_WORD[capitalType] · region · what it
+  // mostly funds`, joined by DESCRIPTOR_SEP. So the row was printing the kind
+  // of capital TWICE — once as the raw column value and once as the corpus's
+  // own word for it, four fields apart — and the region beside a country it
+  // usually sits inside.
+  //
+  // The third part is the only one of the three that is NOT already on this
+  // row: what the scheme mostly pays for. `oneLine(descriptor, 60)` cut from
+  // the END, so a long region name deleted exactly that clause and left the
+  // row repeating itself. `fitDescriptor` spends the budget from the last part
+  // backwards, so what gets dropped is what the row already said.
+  //
+  // The raw `capitalType` is kept as the FALLBACK for a row with no descriptor
+  // at all: the point is one statement of the fact, not fewer facts.
+  const { capital, rest } = descriptorParts(r);
+  if (capital) facts.push(capital);
   if (r.typicalAward != null && (r.typicalAwardN ?? 0) >= 5) {
     facts.push(`typical award ${eur(r.typicalAward)} over ${r.typicalAwardN} real awards`);
   } else facts.push("no reliable award median");
   if (r.lastAwardYear) facts.push(`last awarded ${r.lastAwardYear}`);
-  if (r.descriptor) facts.push(oneLine(r.descriptor, 60));
+  if (rest.length) facts.push(fitDescriptor(rest, DESCRIPTOR_CHARS));
   const pr = r.instrumentId ? peers?.get(r.instrumentId) : undefined;
   if (pr) facts.push(`#${pr} most-won by comparable companies`);
   const verdict = r.instrumentId ? verdictLine(assessments?.get(r.instrumentId)) : "";
@@ -1110,6 +1243,61 @@ export function sameTitlePickCount(rows: InstrumentRow[], picks: number[]): numb
 }
 
 export interface SelectContext {
+  /**
+   * ── THE COMPANY'S OWN NAME. RESTORED, NOT ADDED (wsGS) ────────────────
+   *
+   * `git log -S "ctx.company"` returns exactly one commit — 7ec6a0c8, the one
+   * that ADDED it, with the reasoning and the measurement in the same diff. No
+   * commit, comment, test or check anywhere in the tree records a decision to
+   * take it out. wsDL then moved the production seam from `computeVerdict` to
+   * `agentSelectMemoPool` and rewrote this context around the memo's request
+   * object, and the field did not survive the move. That is a deletion by
+   * omission, and it is the class of change this repo pays for most.
+   *
+   * WHY IT WAS PUT THERE. Measured on 120 replayed founders
+   * (`findings/adviser_design.md`, `scripts/_wsdf_dump.ts`): the founder half
+   * of the prompt is 658 characters against a 16,036-character whole, and
+   * 40 of the 120 receive a brief BYTE-IDENTICAL to another founder's once the
+   * fence nonce is removed. Same country, same sector, same pinned intake, and
+   * the same per-sector template description. One in three founders is, to the
+   * model, the same company — and a model cannot pick different funds for
+   * founders it cannot tell apart.
+   *
+   * The name is the first thing a real founder types and it fixes most of those
+   * collisions: "Lailaps Films GmbH" makes films, "BODENS KOMMUN" is a
+   * municipality, "FINNISH METEOROLOGICAL INSTITUTE" is a state research body.
+   * None of that is anywhere else in the prompt.
+   *
+   * STATED HONESTLY: that finding also says the collisions are "very likely an
+   * artifact of the harness, not of the product" — those descriptions were
+   * de-leaked, and stripping the answer out stripped the substance with it. So
+   * the 40/120 is what the name buys THE MEASUREMENT, which is the surface
+   * every number in this repo is read off. What it buys a real founder is
+   * smaller and is not zero.
+   *
+   * LEAK, measured rather than asserted, in that same commit. The risk is aid
+   * fixed to a named beneficiary, which would put the company itself on a
+   * candidate row. Over 87 gradable cases, the number of times a distinctive
+   * token of the founder's name lands on the row of the fund they actually won
+   * AND on no other row is TWO, and both are substring coincidences of
+   * nationality rather than identity: "finnish" inside "Business Finland",
+   * "tekniska" inside "flygtekniska". Zero name the company. Rows that DO name
+   * a beneficiary are aid with `routeStatus = "none"` and are never
+   * publishable, so they cannot reach this list at all.
+   *
+   * AND THE NAME IS ALREADY IN THIS BRIEF'S OTHER MODEL CALL. `synthesize` has
+   * sent `Founder's company: ${req.company}` to the writer throughout
+   * (pipeline.ts). A leak argument against showing the name to the stage that
+   * ORDERS the rows would have to explain why the stage that WRITES them may
+   * see it — and `ctx.description` beside it is fenced founder prose, which is
+   * far more identifying than a name.
+   *
+   * UNTRUSTED. In production this is a text field a founder types, so it is
+   * declawed like the description — a company may not be called "ignore your
+   * instructions". Clipped to a name's length, because the only thing that may
+   * arrive here is an identity.
+   */
+  company?: string;
   country?: string;
   sector?: string;
   /** The founder's own free text. UNTRUSTED — fenced, never interpolated raw. */
@@ -1276,53 +1464,12 @@ let systemMemo: string | null = null;
 export const selectorSystemPrompt = (): string =>
   (systemMemo ??= assembleInstructions("selector"));
 
-/**
- * ── THE BASE RATE, FOR THE LIST ACTUALLY IN FRONT OF IT (wsDR) ─────────────
- *
- * What this replaces was one sentence, hard-coded, and false by more than a
- * factor of two at the depth it was being read at: "somewhere in this list
- * about three quarters of the time" was measured on `computeVerdict`'s
- * candidate list, median 105 rows, and printed on a prompt showing 18. wsDQ
- * measured the truth for 18 rows at 15/45. The model was told to reach down a
- * list that usually does not contain the answer.
- *
- * The fix cannot be a second number, because the quantity is a FUNCTION OF THE
- * LIST LENGTH and this workstream exists to change the list length. It is read
- * from the measured curve at the menu's own depth, so it is true at the late
- * seam, true at the early seam, and true at whatever depth either becomes.
- *
- * Three facts, and the third is the one the old sentence hid: how often the
- * answer is not in the list at all. That share is unreachable by any choice the
- * model makes, and a model told the list "usually" contains the answer will
- * manufacture a pick for it.
- *
- * Returns "" when the curve is unavailable — see poolRecall.ts. No claim beats
- * a false one, and this file has now shipped the false one for four
- * workstreams.
- */
-export function baseRateSentence(listLength: number): string {
-  const p6 = poolRecallAt(Math.min(6, listLength));
-  const pn = poolRecallAt(listLength);
-  const n = poolRecallN();
-  if (p6 == null || pn == null || !n) return "";
-  const a = asBaseRate(p6), b = asBaseRate(pn);
-  const lines = [
-    `Measured on ${n} held-out companies, the scheme that actually paid out is in`,
-    `the first six rows about ${a}% of the time, and somewhere in this list of ${listLength}`,
-    `about ${b}% of the time.`,
-  ];
-  if (listLength > 6) {
-    lines.push(
-      `So about ${Math.max(0, b - a)}% of the time it is in this list but BELOW the sixth row --`,
-      `that is the whole of what a choice of yours can win -- and about ${100 - b}% of the`,
-      `time it is not in this list at all, and nothing you pick can reach it.`);
-  } else {
-    lines.push(
-      `So about ${100 - b}% of the time it is not in this list at all, and nothing you`,
-      `pick can reach it.`);
-  }
-  return `\n\n${lines.join("\n")}`;
-}
+// `baseRateSentence` moved to `./poolRecall` (wsGS), the leaf module that owns
+// the curve it reads. It is a pure function of that artifact and of the menu
+// length, it reaches nothing else, and `check_prompt_rates.ts` has to call it to
+// assert the rate is still delivered -- which through this module would drag the
+// Anthropic client and the corpus layer in behind one sentence. Re-exported at
+// the top of this file so `_wsdr_seam.ts` is unchanged.
 
 /**
  * EXPORTED FOR DIAGNOSTICS, and for one reason: what a model is told is a thing
@@ -1386,6 +1533,11 @@ export function buildPrompt(
         : "",
     ].filter(Boolean).join("\n")).join("\n\n"))
     : "";
+  // A NAME, not a paragraph: declawed and clipped, because the only thing that
+  // may arrive here is an identity. It is not `fence`d — a fence declares a
+  // block of founder PROSE and this is one line of it; declawing is the part
+  // that matters, and the label says what it is.
+  const named = ctx.company ? oneLine(declaw(ctx.company).text, 90) : "";
   const adviser = AGENT_SELECT_ARM === "adviser";
   // THE ONE LEVER wsDY LEFT READY. See SELECT_COUNT_MODE: under `atMost` the
   // number is a ceiling, the seats declined keep the empirical ranker's own
@@ -1495,7 +1647,9 @@ ${replyWith("Reply with")}, plus the index numbers of any you cannot separate:
   }
   return `Choose the ${want} public funding schemes this company should actually apply to.
 
-THE COMPANY
+THE COMPANY${named ? `
+  name: ${named}   (their own words for themselves -- read it, it is often the
+        most specific thing you will be told about what they do)` : ""}
   country: ${ctx.country ?? "unknown"}
   sector: ${ctx.sector ?? "unknown"}
 
@@ -1719,6 +1873,10 @@ export async function agentSelectRows(
       // on every axis, so it is offered whenever it is asked for. See the
       // closing block in `buildPrompt` for why `declare` is not.
       const useTool = UNSURE_MODE === "tool";
+      // Incremented HERE, on the line that builds the request, so a third round
+      // added tomorrow counts itself. Every counter below this point in `ask`
+      // is per-API-call and is reported over this number.
+      tally.apiCalls++;
       const r = await anthropic().messages.create({
       model: MODEL,
       ...(useTool ? { tools: [LOOKUP_TOOL] } : {}),
@@ -2073,6 +2231,11 @@ export async function agentSelectMemoPool(
      *  that chooses. It was being assembled, sent to the writer, and never
      *  shown to the ranker. */
     projectAnswers?: ProjectAnswer[];
+    /** The founder's own name for their company. Already required on
+     *  `IntelligenceRequest` and already on the object `runIntelligence` hands
+     *  here, so widening this type is the entirety of what was needed to put it
+     *  back in front of the stage that chooses. See `SelectContext.company`. */
+    company?: string;
   },
 ): Promise<InstrumentRow[]> {
   if (AGENT_SELECT_ARM === "off") {
@@ -2089,6 +2252,7 @@ export async function agentSelectMemoPool(
   }
   const ids = rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
   return agentSelectRows(rows, {
+    company: req.company,
     country: req.country,
     sector: req.eligibility?.sector ?? undefined,
     description: req.description,

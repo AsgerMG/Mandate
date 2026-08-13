@@ -51,17 +51,18 @@ history, and neither can name a winner.
 
 ## What the order in front of it already means
 
-Both numbers are measured on held-out companies through the shipped path, and
-they are the reason this stage exists rather than a claim about how well it
-will do:
+The list is ordered by an empirical ranker built from real award pairs, best
+first. That order is informative and it is not authoritative, so reaching down
+it is the job rather than a risk.
 
-- the fund a company actually won is somewhere in the candidate list about 97%
-  of the time. It is almost always here.
-- it is in the rows we currently publish about a quarter of the time. It is
-  usually not at the top.
-
-So the list is informative and it is not authoritative, and reaching down it is
-the job rather than a risk.
+How OFTEN it is worth reaching, and how far, is a measured quantity and it is
+stated in the request itself, not here — three figures, on the list actually in
+front of you: how often the answer is in the first rows, how often it is
+anywhere in the list, and how often it is not in the list at all. It is a
+FUNCTION OF THE LIST LENGTH, and these instructions are byte-identical on every
+request whatever length that is, so a number written here would be wrong at some
+depth by construction. It is read at request time from a curve measured on
+held-out companies and re-measured with the corpus.
 
 ## Rules
 

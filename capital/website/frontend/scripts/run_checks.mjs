@@ -46,6 +46,12 @@ const CHECKS = [
   ["unit tests", ["npx", "vitest", "run"]],
   ["segment config is a literal", ["npx", "tsx", "scripts/check_revalidate_literal.ts"]],
   ["output contracts", ["npx", "tsx", "scripts/check_contracts.ts"]],
+  // Directly under it, because it reads the same tree and asks the one question
+  // that check does not: `check_contracts` asks whether every rule is routed and
+  // enforced, this asks whether the PROSE states a frequency the code computes at
+  // request time. Two rates were live in the selector's system prompt while the
+  // same call carried the curve-derived ones in the user prompt.
+  ["a contract states no rate", ["npx", "tsx", "scripts/check_prompt_rates.ts"]],
   // Beside `check_contracts` because it grades the other half of the same
   // claim: that one counts a rule enforced when a literal names it, this one
   // asks whether the check deciding it is reachable from a request at all.
@@ -62,6 +68,12 @@ const CHECKS = [
   // the figures it watches are precisely the ones quoted in rooms where the
   // floor has not been run.
   ["published figures", ["npx", "tsx", "scripts/check_published_figures.ts"]],
+  // Beside the published figures because it is the same shape one layer down:
+  // that one says no number the OWNER PLANS ON may be unsourced, this one says no
+  // CEILING measured to bind on a paid run may still be in force. Hermetic — one
+  // leaf module, one route file, the committed project-mgmt/ tree — and it reads
+  // runs rather than values, so a future run that truncates reds the build.
+  ["a measured ceiling was raised", ["npx", "tsx", "scripts/check_maxtok_headroom.ts"]],
   // Sits in the hermetic block because it is: three committed JSON artifacts,
   // no credentials, no network. It watches the one thing the ranker cannot see
   // for itself -- whether a fund's recipient mix agrees with what those

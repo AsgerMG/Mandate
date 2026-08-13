@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-13T06:13:50.969Z
-corpus             postgres instruments=1088 at 2026-08-13T06:13:51.591Z
+started            2026-08-13T07:21:46.385Z
+corpus             postgres instruments=1088 at 2026-08-13T07:21:46.773Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-13T06:13:51.591Z
+                   is REFUSED rather than labelled. observedAt 2026-08-13T07:21:46.773Z
 ranker: all 814 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut

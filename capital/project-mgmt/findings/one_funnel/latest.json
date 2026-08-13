@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-13T06:13:50.969Z",
+ "startedAt": "2026-08-13T07:21:46.385Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-13T06:13:51.591Z",
+ "corpusObservedAt": "2026-08-13T07:21:46.773Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 814,

@@ -36,6 +36,7 @@
 // nothing else. There is no per-fund and no per-company information in the
 // curve, so it cannot tell any request anything about its own answer — which
 // is why it is admissible on the request path at all.
+import { SELECT_COUNT } from "./caps";
 import { loadGenerated } from "./generatedArtifact";
 
 /** The depths the curve is measured at. Chosen to bracket every list length
@@ -125,3 +126,79 @@ export const depthLabel = (k: number): string =>
  *  how "P(won in first all)" gets printed. */
 export const depthPhrase = (k: number): string =>
   Number.isFinite(k) ? `the first ${k}` : "the whole pool";
+
+/**
+ * ── THE BASE RATE, FOR THE LIST ACTUALLY IN FRONT OF IT (wsDR) ─────────────
+ *
+ * What this replaces was one sentence, hard-coded, and false by more than a
+ * factor of two at the depth it was being read at: "somewhere in this list
+ * about three quarters of the time" was measured on `computeVerdict`'s
+ * candidate list, median 105 rows, and printed on a prompt showing 18. wsDQ
+ * measured the truth for 18 rows at 15/45. The model was told to reach down a
+ * list that usually does not contain the answer.
+ *
+ * The fix cannot be a second number, because the quantity is a FUNCTION OF THE
+ * LIST LENGTH and this workstream exists to change the list length. It is read
+ * from the measured curve at the menu's own depth, so it is true at the late
+ * seam, true at the early seam, and true at whatever depth either becomes.
+ *
+ * Three facts, and the third is the one the old sentence hid: how often the
+ * answer is not in the list at all. That share is unreachable by any choice the
+ * model makes, and a model told the list "usually" contains the answer will
+ * manufacture a pick for it.
+ *
+ * Returns "" when the curve is unavailable — see the header. No claim beats a
+ * false one, and this file has now shipped the false one for four workstreams.
+ *
+ * ── IT LIVES HERE, NOT IN THE RANKER (wsGS) ──────────────────────────────
+ * It is a pure function of the committed curve and of one integer, and it
+ * reaches nothing else. `check_prompt_rates.ts` has to CALL it to assert that
+ * the rate the contracts no longer state is still delivered — and calling it
+ * through `agentSelect.ts` would drag the Anthropic client and the corpus layer
+ * in behind one sentence, which is the reach `check_env_loader` fails a build
+ * for. `agentSelect.ts` re-exports it, so every caller is unchanged.
+ *
+ * ── AND IT SAID SIX WHEN THE MODEL OWNS SEVEN (wsGS) ─────────────────────
+ * `Math.min(6, listLength)` and the literal "the sixth row" were written when
+ * `SELECT_COUNT` was 6. wsEN raised it to 7 — "THE SIX WAS THE WRONG PAGE'S
+ * CAP", `DISPLAY_CAP` being the instant screen's cut and not the memo's — and
+ * fixed the constant, `caps.ts` and `check_contracts.ts`, and left this file
+ * behind. Four paragraphs further down the same prompt then demanded "Exactly 7
+ * DISTINCT index numbers", so one request told the model both.
+ *
+ * What the stale six cost is not cosmetic: the sentence exists to size THE BAND
+ * A CHOICE CAN WIN — "in this list but below your last seat" — and computing it
+ * at six understates that band by the whole of the seventh seat, on the arm
+ * whose entire purpose is to fill it. The count is read from `SELECT_COUNT`
+ * now, so it cannot drift again: the seat count and the sentence about the
+ * seats have one source.
+ *
+ * `caps.ts` imports nothing, so reading it here keeps this module a leaf.
+ */
+export function baseRateSentence(listLength: number): string {
+  const seats = Math.min(SELECT_COUNT, listLength);
+  const pSeats = poolRecallAt(seats);
+  const pn = poolRecallAt(listLength);
+  const n = poolRecallN();
+  if (pSeats == null || pn == null || !n) return "";
+  const a = asBaseRate(pSeats), b = asBaseRate(pn);
+  // "the first six rows" / "the first row" — the number is the seat count and
+  // the noun agrees with it, so neither can be edited without the other.
+  const band = `the first ${seats} row${seats === 1 ? "" : "s"}`;
+  const lines = [
+    `Measured on ${n} held-out companies, the scheme that actually paid out is in`,
+    `${band} about ${a}% of the time, and somewhere in this list of ${listLength}`,
+    `about ${b}% of the time.`,
+  ];
+  if (listLength > seats) {
+    lines.push(
+      `So about ${Math.max(0, b - a)}% of the time it is in this list but BELOW row ${seats} --`,
+      `that is the whole of what a choice of yours can win -- and about ${100 - b}% of the`,
+      `time it is not in this list at all, and nothing you pick can reach it.`);
+  } else {
+    lines.push(
+      `So about ${100 - b}% of the time it is not in this list at all, and nothing you`,
+      `pick can reach it.`);
+  }
+  return `\n\n${lines.join("\n")}`;
+}
