@@ -35,6 +35,40 @@ describe("null is never false", () => {
   });
 });
 
+/**
+ * THE SAME PROPERTY, OVER EVERY OPERATOR, because stating it over one is what
+ * let it be false in another for months.
+ *
+ * `equals` read a NON_ANSWER as FALSE — `matchesAny(...) ?? false` — so a
+ * founder answering "Not sure" about their ownership failed
+ * `equals institutionalOwner "no"`, and `institutionalOwner` is structural and
+ * that gate is cited, so the fund was deleted. The `in` case above was pinned
+ * and passing throughout.
+ *
+ * The test for an operator nobody has written yet: this table is keyed on
+ * `ValueSpec["op"]`, so the compiler refuses a new operator until somebody has
+ * said what it does with a hedge. That is the fence, not the list below it.
+ */
+describe("no operator may read a hedge as a failure", () => {
+  const specs: Record<ValueSpec["op"], ValueSpec> = {
+    band_max: { op: "band_max", field: "fteBand", maxAllowed: "50-249" },
+    band_min: { op: "band_min", field: "fteBand", minAllowed: "50-249" },
+    in: { op: "in", field: "sector", allowed: ["agrifood"] },
+    not_in: { op: "not_in", field: "sector", allowed: ["agrifood"] },
+    region_within: { op: "region_within", field: "region", allowed: ["ITC4"] },
+    equals: { op: "equals", field: "institutionalOwner", value: "no" },
+    boolean_true: { op: "boolean_true", field: "consortium" },
+    boolean_false: { op: "boolean_false", field: "lossesOverHalfCapital" },
+    numeric_gte: { op: "numeric_gte", field: "foundedYear", threshold: 2000 },
+    numeric_lte: { op: "numeric_lte", field: "foundedYear", threshold: 2000 },
+  };
+  for (const [op, spec] of Object.entries(specs)) {
+    it.each([...NON_ANSWERS])(`${op}: "%s" is unanswered, not a failure`, (v) => {
+      expect(evaluateSpec(spec, v)).toBeNull();
+    });
+  }
+});
+
 describe("both answer shapes", () => {
   it("matches a string answer and an array answer identically", () => {
     const spec: ValueSpec = { op: "in", field: "entityCountries", allowed: ["Spain"] };

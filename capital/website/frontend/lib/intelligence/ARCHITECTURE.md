@@ -42,6 +42,10 @@ already paid for.
         │   paying that company — and not a founder being correctly turned
         │   away. It was 74.8% until the ladder stopped counting two
         │   encodings of one field as two obstacles (wsGE, verdict.ts).
+        │   On the 897-founder ladder (`npm run stages`) this stage reads
+        │   83.17% and became 84.84% when a register BUCKET stopped
+        │   handing conversation-ending rules to 453 children that never
+        │   earned them (wsGR, mergeInheritedGates in corpus.ts).
         ▼
   .slice(0, VERDICT_POOL)   the cut. On the LATE seam (the default) it runs
         │                   BEFORE the ranker, so this IS the menu the model

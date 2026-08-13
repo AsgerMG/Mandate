@@ -84,6 +84,11 @@ import { assembleInstructions } from "./contracts";
 import { loadDbInstruments, type DbGate, type DbInstrument } from "./corpus";
 import { recordUsage } from "./cost";
 import { doorLabelFor } from "./doorLabel";
+// `isFilter` and `specField` stood here as byte-identical copies of the pair in
+// verdict.ts, under the local name `isFilterGate`. Two definitions of "may this
+// gate decide a verdict" is the shape of defect that produced a third one in
+// Python; both now come from the leaf.
+import { isFilter, specField } from "./evidenceTier";
 import { fundsSentence, oneLine, ROW_TITLE_CHARS } from "./schemeText";
 import { FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
 import { declaw, fence } from "./untrusted";
@@ -270,17 +275,6 @@ export interface SeparatingDemand {
 const answered = (v: unknown): boolean =>
   v != null && v !== "" && v !== "unsure" && !(Array.isArray(v) && v.length === 0);
 
-const isFilterGate = (g: DbGate): boolean =>
-  (!g.gateRole || g.gateRole === "filter") && Boolean(g.valueSpec);
-
-/** The field a gate's own machine-readable spec is keyed on. Read off the
- *  spec rather than off `intakeField`, which is extractor-owned and measured
- *  wrong on roughly half a sample — and which the bulk extractor overwrites. */
-const specField = (g: DbGate): string | undefined => {
-  const f = (g.valueSpec as { field?: unknown } | null)?.field;
-  return typeof f === "string" && f ? f : undefined;
-};
-
 /** Every value the interface could actually record for a field. A field with
  *  no fixed answer set has none, and a question whose answer the product
  *  cannot store is a question whose answer cannot decide anything. */
@@ -344,7 +338,7 @@ export function separatingDemands(
   const acc = new Map<string, Acc>();
   for (const inst of shortlist) {
     for (const gate of inst.gates) {
-      if (!isFilterGate(gate)) continue;
+      if (!isFilter(gate)) continue;
       const field = specField(gate);
       if (!field) continue;
       if (answered((answers as Record<string, unknown> | undefined)?.[field])) continue;

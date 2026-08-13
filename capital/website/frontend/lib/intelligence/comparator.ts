@@ -232,8 +232,16 @@ export function evaluateSpec(spec: ValueSpec, answer: unknown): boolean | null {
       return spec.allowed ? matchesAny(answer, spec.allowed, spec.field) : null;
     case "region_within": {
       if (!spec.allowed?.length) return null;
+      // The NON_ANSWERS filter is here for the same reason it is in
+      // `matchesAny`, and it was missing here for the same months. This
+      // operator screened only for an EMPTY string, so "Not sure" on a region
+      // question was a NUTS id that overlaps nothing — false, on a structural
+      // field, from a cited gate, which deletes the fund. Found by stating the
+      // property over every operator rather than over `in` alone; see
+      // comparator.test.ts.
       const vals = (Array.isArray(answer) ? answer : [answer])
-        .filter((v): v is string => typeof v === "string" && v.trim() !== "");
+        .filter((v): v is string => typeof v === "string" && v.trim() !== ""
+          && !NON_ANSWERS.has(norm(v)));
       if (!vals.length) return null;
       return vals.some((v) => spec.allowed!.some((a) => regionsOverlap(v, a)));
     }
@@ -246,8 +254,19 @@ export function evaluateSpec(spec: ValueSpec, answer: unknown): boolean | null {
       // Same widening as `in`, for the same reason: `equals` is the
       // single-valued form of the same comparison and a country field encoded
       // either way must not depend on which one the encoder chose.
+      //
+      // ── AND THE SAME NULL, WHICH IT USED TO SWALLOW (wsGR) ──────────────
+      // This read `?? false`, and `matchesAny` returns null for exactly one
+      // thing: a NON_ANSWER. So "Not sure" was scored as FAILING an `equals`
+      // rule while it is unanswered under `in` and `not_in` — the same defect
+      // stated at the top of NON_ANSWERS, surviving in the one operator that
+      // opted out of it. `scheme_text_5` on the Baden-Wurttemberg R&D scheme
+      // is `equals institutionalOwner "no"`, `institutionalOwner` is
+      // structural and the gate is cited, so hedging on a question about
+      // ownership DELETED the fund. `check_asking_cannot_shrink` was red on
+      // exactly this pair and nothing else.
       return typeof answer === "string" && spec.value !== undefined
-        ? matchesAny(answer, [spec.value], spec.field) ?? false
+        ? matchesAny(answer, [spec.value], spec.field)
         : null;
     case "boolean_true":
       return answer === "yes" ? true : answer === "no" ? false : null;
