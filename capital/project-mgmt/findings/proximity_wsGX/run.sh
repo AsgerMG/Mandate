@@ -53,7 +53,15 @@ TRACE=/private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4
 stages () { arm=$1
   echo "=== stages arm=$arm  $(date -u +%FT%TZ) ==="
   before=$(ls "$FUNNEL/runs" 2>/dev/null | wc -l)
-  if [ "$arm" = "prox" ]; then blend=off; prox=first; else blend=$arm; prox=off; fi
+  # An arm NAME is not a flag VALUE. `off2` is a repeat of the shipped arm under
+  # a distinct name so its outputs do not overwrite the first one's, and passing
+  # it through as POOL_BLEND=off2 is what the first attempt did -- caught at
+  # import by `parsePoolBlend`, which is exactly the throw it exists for.
+  case "$arm" in
+    prox) blend=off;   prox=first ;;
+    off2) blend=off;   prox=off   ;;
+    *)    blend=$arm;  prox=off   ;;
+  esac
   env POOL_BLEND="$blend" ROW_PROXIMITY="$prox" FUNNEL_TRACE="$TRACE/trace_$arm.jsonl" \
     npm run stages > "$OUT/STAGES_$arm.txt" 2>&1 \
     || echo "FAILED stages $arm"
