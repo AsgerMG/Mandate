@@ -80,6 +80,55 @@ brief forever.
 
 ## Your decision, no money involved
 
+### 0. Apply 63 gate-encoding corrections — free, and it is the biggest single fix on the shortlist
+
+**`check_winner_not_gated` goes from 251 wrongful deletions to 14**, against a
+ceiling of 207 it has been failing. Nothing else on this list moves it, and no
+code change can: wsGR proved the residue is gate encodings, not inheritance.
+
+Every one of the 63 was checked against the funder's own page, and the file
+carries the URL, the verbatim quote and the reasoning per row:
+`project-mgmt/evidence/wsgu_gate_encoding_corrections_2026-08-13.jsonl`.
+
+**The quote and the requirement never change.** They are the funder's words
+and they are right. Only the comparator built from them moves: 48 quarantined
+(requirement stays visible, machine verdict stops), 8 re-keyed to the field
+their sentence actually turns on, 6 moved to the offer route, 1 narrowed.
+
+Three examples of what is being corrected:
+
+- **Vinnova's aviation programme** says the call is aimed at *"alla
+  organisationer inom flygområdet"* and names universities and university
+  colleges among its eligible party types. We encode it as
+  `sector == mobility_transport`, which deletes GKN Aerospace Sweden and two
+  Swedish university colleges from a programme the register says they won.
+- **Norges forskningsråd** writes *"Enkeltpersonforetak og
+  forskningsorganisasjoner kan ikke søke"* — sole proprietorships and research
+  organisations may not apply. We encode it as `borrowerModel not_in
+  ['operating']`, and every founder is pinned to `operating`, so it deletes the
+  fund from precisely the incorporated companies it exists to admit.
+- **Chips JU** publishes an Annex 4 of per-country national conditions. Three
+  of its rows — Slovakia, Norway, Poland — are encoded as three
+  instrument-wide establishment filters that contradict each other, since no
+  applicant is registered in all three.
+
+**What it costs, stated rather than buried.** Quarantining is not free: it
+turns "wrongly blocked" into "cannot be judged". The guard's judgeable
+population falls from 6,167 pairs to 6,052 against its anti-vacuity floor of
+6,000, and 7 of the 45 instruments touched are left with no encoded filter of
+their own at all. That is the honest state for those seven — ADEME's forestry
+and fuel-station schemes, Vinnova's aviation programme — whose eligibility is
+genuinely narrow and genuinely unexpressible in an eleven-value sector list.
+They should be RANKED with their requirement shown, not screened out of the
+founders who won them. But the headroom above that floor is 52 pairs, so the
+next pass of this kind needs a better field to move rules to, not more
+quarantine.
+
+**To apply:** `python3 ETL/terms/apply_gate_encoding_corrections.py --apply`,
+then publish. It is a dry run without the flag and refuses outright if any row
+has drifted; today all 63 match the corpus exactly.
+
+
 ### 4. A permission rule so four corpus corrections can be applied
 
 Blocked by the sandbox, for me and for every agent. Four rows, dry runs clean,

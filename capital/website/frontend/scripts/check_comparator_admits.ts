@@ -67,7 +67,7 @@ import path from "path";
 import { evaluateSpec, type ValueSpec } from "../lib/intelligence/comparator";
 import { VOCABULARY } from "../lib/intelligence/vocabulary";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
-import { FIELD_ENUM_HINTS } from "../lib/intelligence/types";
+import { FIELD_ENUM_HINTS, FIELD_REACH } from "../lib/intelligence/types";
 import { REGIONS_BY_COUNTRY } from "../lib/intelligence/regions.generated";
 
 /**
@@ -88,6 +88,41 @@ import { REGIONS_BY_COUNTRY } from "../lib/intelligence/regions.generated";
  * falls again; never raise it.
  */
 const INERT_CEILING = 45;
+
+/**
+ * ── DEBT, NOT A TARGET ─────────────────────────────────────────────────────
+ *
+ * Comparators on a PINNED field that reject the pin. They break the property
+ * at the top of this file exactly as `region in ["Sweden"]` did, and they were
+ * invisible for as long as `admissibleAnswers` probed with the vocabulary
+ * instead of the pin (see the note there).
+ *
+ * They are separated from the hard failure above for one reason: the fix is a
+ * CORPUS write, and the eight rows are already written down with their
+ * evidence in `project-mgmt/evidence/wsgu_gate_encoding_corrections_2026-08-13.jsonl`.
+ * Failing outright the day the probe was corrected would red the build on a
+ * defect nobody could land in the same commit, and this repo has already
+ * written down what happens to a guard that does that.
+ *
+ * What the eight are, and they are two different things:
+ *
+ *   2  the funder's own sentence INVERTED. `nfr_inno` writes "Enkeltpersonforetak
+ *      og forskningsorganisasjoner kan ikke søke" and it is encoded
+ *      `borrowerModel not_in ["operating"]`, which deletes the fund from every
+ *      incorporated company — precisely the applicants it exists to admit.
+ *      Chips JU's is the same shape: "Natural persons are NOT eligible" applied
+ *      to every legal person. Both belong on `organisationType`.
+ *   6  a true requirement carried by the wrong mechanism. Invest-NL invests in
+ *      funds, Enterprise Ireland Seed seeks fund managers, two SATR equity rows
+ *      are fund-of-funds. No operating company applies to any of them and that
+ *      is correct — but a gate DELETES the row in silence, where offerRoute.ts
+ *      exists to say "you do not apply to this directly".
+ *
+ * IT MAY FALL, NEVER RISE. It goes to zero the day those corrections are
+ * applied. A ninth arriving means an encoder has written another comparator
+ * against a question no founder is asked.
+ */
+const PINNED_REJECTION_CEILING = 8;
 
 const SYNTHETIC_STRING = "a-value-no-comparator-names";
 
@@ -140,14 +175,33 @@ function numericCandidates(spec: Record<string, unknown>): number[] {
 
 /** The answers a founder could really give for this field, out of everything
  *  worth trying — decided by the sanitiser, which is the whitelist every real
- *  request passes through. */
+ *  request passes through.
+ *
+ *  ── A PINNED FIELD HAS ONE ANSWER, NOT A VOCABULARY (wsGU) ───────────────
+ *  This read the field's whole declared vocabulary for every field, and for
+ *  one class of field that contradicted the property at the top of this file.
+ *  `FIELD_REACH` declares `borrowerModel` as `constant`: the intake pins it,
+ *  nobody is asked, and `fund_manager` is not an answer any founder can give.
+ *  Probing with the vocabulary therefore found `not_in ["operating"]`
+ *  satisfiable — by an answer that does not exist — and this check passed
+ *  nine comparators that reject every real founder. `borrowerModel` is
+ *  structural, so a cited one of those makes `assessInstrument` return
+ *  `blocked` and the fund is deleted from everyone.
+ *
+ *  A pinned field's candidate set is therefore the pin, and nothing else.
+ *  This is not special-casing `borrowerModel` — it reads the declaration, so
+ *  a field pinned or unpinned tomorrow is judged correctly with no edit here,
+ *  and a field that stops being pinned goes back to its vocabulary. */
 function admissibleAnswers(field: string, spec: Record<string, unknown>): unknown[] {
-  const tried = [
-    ...namedValues(spec),
-    ...declaredValues(field),
-    ...numericCandidates(spec),
-    SYNTHETIC_STRING,
-  ];
+  const reach = FIELD_REACH[field as keyof typeof FIELD_REACH];
+  const tried = reach?.via === "constant" && reach.pinned !== undefined
+    ? [reach.pinned]
+    : [
+      ...namedValues(spec),
+      ...declaredValues(field),
+      ...numericCandidates(spec),
+      SYNTHETIC_STRING,
+    ];
   const seen = new Set<string>();
   const out: unknown[] = [];
   for (const v of tried) {
@@ -168,6 +222,7 @@ function admissibleAnswers(field: string, spec: Record<string, unknown>): unknow
 const records = (JSON.parse(readFileSync(corpusPath, "utf8")).records ?? []) as Record_[];
 
 const rejectionOnly: string[] = [];
+const pinnedRejection: string[] = [];
 const inert: { field: string; op: string }[] = [];
 let filters = 0;
 let unprobeable = 0;
@@ -203,7 +258,12 @@ for (const rec of records) {
       if (r === false) canReject = true;
     }
     if (canAccept) continue;
-    if (canReject) {
+    if (canReject && FIELD_REACH[field as keyof typeof FIELD_REACH]?.via === "constant") {
+      // Same property, ratcheted rather than failed: see PINNED_REJECTION_CEILING.
+      pinnedRejection.push(
+        `  REJECTS EVERYONE (pinned field)  ${rec.id} — ${JSON.stringify(spec)}\n` +
+        `      ${(gate.requirement ?? "").slice(0, 100)}`);
+    } else if (canReject) {
       rejectionOnly.push(
         `  REJECTS EVERYONE  ${rec.id} — ${JSON.stringify(spec)}\n` +
         `      ${(gate.requirement ?? "").slice(0, 100)}\n` +
@@ -236,7 +296,25 @@ if (!filters) {
     "field that can express it (ETL/terms/encode_regions.py refile-national) " +
     "or drop the comparator.");
   process.exitCode = 1;
+} else if (pinnedRejection.length > PINNED_REJECTION_CEILING) {
+  console.error(`\nFAIL — ${pinnedRejection.length} comparator(s) reject the pinned `
+    + `answer of a field no founder is asked, above the ceiling of `
+    + `${PINNED_REJECTION_CEILING}:`);
+  for (const line of pinnedRejection) console.error(line);
+  console.error(
+    "\n  A pinned field has ONE answer. A comparator on it is decided at encode\n"
+    + "  time, so this is not a filter — it is a deletion of the fund from every\n"
+    + "  founder who will ever ask. Re-key the rule to the field its sentence\n"
+    + "  turns on, or move it to the offer route if the truth is that no founder\n"
+    + "  applies. RAISING THE CEILING IS NOT A FIX.");
+  process.exitCode = 1;
 } else {
+  if (pinnedRejection.length) {
+    console.log(`  ${pinnedRejection.length} comparator(s) reject the PINNED answer `
+      + `of a field no founder is asked (ceiling ${PINNED_REJECTION_CEILING}, debt — `
+      + `see the corrections file named at PINNED_REJECTION_CEILING):`);
+    for (const line of pinnedRejection) console.log(line);
+  }
   const byPair = new Map<string, number>();
   for (const i of inert) {
     const k = `${i.field} ${i.op}`;

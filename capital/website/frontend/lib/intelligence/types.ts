@@ -709,9 +709,94 @@ export const SECTOR_OPTIONS = [
   { value: "materials_chemicals", label: "Materials or chemicals" },
   { value: "space", label: "Space" },
   { value: "defense_security", label: "Defence or security" },
-  { value: "other", label: "Something else" },
+  // ── AN UNNAMED RESIDUAL, AND WHAT MAY NOT BE DONE WITH IT ────────────────
+  // This value does not name an industry. It means "a real industry that the
+  // ten above do not name" — the founder is telling us about the gaps in OUR
+  // list, not about themselves.
+  //
+  // A comparator may therefore never REQUIRE it. `sector equals "other"` says
+  // the fund admits exactly those applicants our vocabulary failed to place,
+  // which is a claim about this file and not about the fund. Five gates say
+  // it today: two ADEME forestry schemes, an Estonian tourism-software
+  // scheme, and two Estonian creative-economy schemes. Between them they
+  // deleted 26 companies from funds the award register says those companies
+  // won — including four agrifood companies cut from a forestry scheme whose
+  // nearest true value, `agrifood`, has the word "forestry" in its own label.
+  //
+  // `unnamedResidual` is the declaration the checks and the encoder read, so
+  // the rule holds for a residual added to any future enumeration without an
+  // edit anywhere else. It is NOT the same as an exclusion checklist's "none
+  // of these": `activities in ["none"]` asserts the ABSENCE of a named
+  // property and is a perfectly good requirement. This one asserts the
+  // PRESENCE of an unnamed one, and cannot be tested.
+  { value: "other", label: "Something else", unnamedResidual: true },
 ] as const;
 export type SectorValue = (typeof SECTOR_OPTIONS)[number]["value"];
+
+/**
+ * WHAT A FIELD'S ANSWER IS ABOUT — the applicant, or the project it submits.
+ *
+ * ── The property ──────────────────────────────────────────────────────────
+ *     A rule may only be encoded against a field whose answer is about the
+ *     same thing the rule constrains.
+ *
+ * `check_gate_subject.py` already refuses to make a filter out of a rule about
+ * a downstream beneficiary, and admits both `applicant` and `project` as
+ * filterable subjects — correctly, since a fund may restrict either. What
+ * nothing checked is the SECOND half: that the field chosen to decide a rule
+ * is about the same subject as the rule. A project rule keyed to an applicant
+ * field passes both existing checks and is wrong in the one way that costs a
+ * founder a fund.
+ *
+ * ── The test, for a rule nobody has seen ──────────────────────────────────
+ *     Take two applicants IDENTICAL in the attribute the field names. If the
+ *     rule can separate them, the field does not decide the rule.
+ *
+ * Two `software_data_ai` companies, one submitting an urban-mobility project
+ * and one not: EIT Urban Mobility's rule separates them and `sector` does not,
+ * so `sector` cannot decide it. This is the same test already written for
+ * `organisationType` a few hundred lines below — "if two applicants of the
+ * same kind could sit on opposite sides of the rule by differing only in
+ * headcount, turnover, age, place or sector, it is NOT this field" —
+ * generalised from one field to all of them.
+ *
+ * ── Why it is not enough to widen the vocabulary ──────────────────────────
+ * A finer sector list moves the boundary; it does not stop a boundary being
+ * asserted. The two subjects are INDEPENDENT: a materials company can run an
+ * aviation project, a software company an urban-mobility one, and the award
+ * register records both. No enumeration of what a company IS can decide a rule
+ * about what its project is ABOUT.
+ */
+export const FIELD_SUBJECT: Record<string, "applicant" | "project"> = {
+  // What the applicant IS, WHERE it is, and what it has done.
+  sector: "applicant",
+  organisationType: "applicant",
+  entityCountries: "applicant",
+  region: "applicant",
+  fteBand: "applicant",
+  turnoverBand: "applicant",
+  balanceBand: "applicant",
+  foundedYear: "applicant",
+  ownerOver25: "applicant",
+  institutionalOwner: "applicant",
+  institutionalBacking: "applicant",
+  nonEuControl: "applicant",
+  borrowerModel: "applicant",
+  lossesOverHalfCapital: "applicant",
+  exclusionFlags: "applicant",
+  activities: "applicant",
+  bankRelationship: "applicant",
+  // What the PROJECT is, needs, and commits to.
+  useOfFunds: "project",
+  activityCountries: "project",
+  developmentStage: "project",
+  consortium: "project",
+  cofinancingBand: "project",
+  ticketBand: "project",
+  conditionality: "project",
+  needBy: "project",
+  wouldOpenEntity: "project",
+};
 
 /**
  * What the money would be SPENT ON.
@@ -1119,6 +1204,36 @@ export interface FieldReachability {
    */
   armEnv?: string;
   /**
+   * REQUIRED for `via: "constant"`, and meaningless otherwise. THE value —
+   * the only answer any founder will ever give this field.
+   *
+   * ── Why it is a declaration and not a literal in a component ────────────
+   * It was a literal, in `panel.tsx`, and the consequence was not tidiness.
+   * A comparator on a constant field is DECIDED AT ENCODE TIME: there is one
+   * answer, so the rule either passes for everyone forever or fails for
+   * everyone forever, and it can never separate two founders. Nine of the 101
+   * `borrowerModel` comparators in the corpus fail, and eight of those are
+   * filters — and `borrowerModel` is
+   * STRUCTURAL, so a cited one of those makes `assessInstrument` return
+   * `blocked` and `accessiblePool` deletes the fund from every founder who
+   * will ever ask for it.
+   *
+   * `check_comparator_admits` states exactly the property that would have
+   * caught this — "over the answers a founder can actually give for the
+   * field" — and could not enforce it, because it derived its candidate
+   * answers from the field's whole VOCABULARY. So it believed founders could
+   * answer `fund_manager`, found `not_in ["operating"]` satisfiable, and
+   * passed all nine. The vocabulary is what the field could hold; this is
+   * what it does hold.
+   *
+   * The worst of the nine is `nfr_inno`: the funder writes
+   * "Enkeltpersonforetak og forskningsorganisasjoner kan ikke søke" — sole
+   * proprietorships and research organisations may not apply — and it is
+   * encoded `borrowerModel not_in ["operating"]`, which deletes the fund from
+   * every incorporated company, precisely the applicants it exists to admit.
+   */
+  pinned?: unknown;
+  /**
    * One value a founder could really give, used to probe `sanitizeEligibility`
    * end to end.
    *
@@ -1202,10 +1317,19 @@ export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = 
   // ── Pinned, not asked ───────────────────────────────────────────────────
   borrowerModel: {
     via: "constant",
-    note: "panel.tsx pins 'operating'. The lender/intermediary routing the other " +
-          "values unlock is out of scope for this tool's lean-founder persona, " +
-          "and an operating company is what such a founder truthfully is — so " +
-          "these rules evaluate correctly, they simply always evaluate the same way.",
+    pinned: "operating",
+    note: "panel.tsx reads `pinned` from here. The lender/intermediary routing " +
+          "the other values unlock is out of scope for this tool's lean-founder " +
+          "persona, and an operating company is what such a founder truthfully " +
+          "is. What used to stand here — 'so these rules evaluate correctly, " +
+          "they simply always evaluate the same way' — was false in its first " +
+          "half and the reason nobody looked at the second. Measured over the " +
+          "committed snapshot: 101 comparators, of which 89 always pass, 3 are " +
+          "inert because their operator cannot read an enum, and 9 always FAIL. " +
+          "Two of the nine are the funder's sentence inverted; the other seven " +
+          "are funds no founder may approach directly, which is a route fact " +
+          "(offerRoute.ts) wearing a gate's face — the row is deleted in " +
+          "silence instead of explained.",
   },
 
   // ── Nothing can answer these ────────────────────────────────────────────
@@ -1226,6 +1350,27 @@ export const FIELD_REACH: Record<keyof EligibilityAnswers, FieldReachability> = 
           "day it is answered, nine funds start false-blocking young companies.",
   },
 };
+
+/**
+ * The answers that are true of every founder before one is asked anything.
+ *
+ * Derived from FIELD_REACH rather than written out, so the intake and every
+ * guard read one declaration. Pinning a second field, or unpinning this one,
+ * is a single edit above and both readers follow.
+ *
+ * This is not a convenience. A pinned answer is the input a whole class of
+ * encoded comparators is decided against, and while it lived as a literal in
+ * `panel.tsx` no check could see it — so `check_comparator_admits` probed
+ * `borrowerModel` with all four of its vocabulary values and reported that
+ * nine rules which reject every real founder can admit somebody.
+ */
+export function pinnedAnswers(): EligibilityAnswers {
+  const out: Record<string, unknown> = {};
+  for (const [field, reach] of Object.entries(FIELD_REACH)) {
+    if (reach.via === "constant" && reach.pinned !== undefined) out[field] = reach.pinned;
+  }
+  return out as EligibilityAnswers;
+}
 
 /**
  * What the code does with the answer once it has it.
@@ -1311,7 +1456,7 @@ export const ANSWER_USE: Record<keyof EligibilityAnswers, AnswerUse> = {
   exclusionFlags: { ranks: false, reason: "678 comparators on 626 instruments, the GBER and de minimis exclusions. Blocks rather than orders, and a blocked fund leaves the table" },
   lossesOverHalfCapital: { ranks: false, reason: "153 comparators. The undertaking-in-difficulty test: a hard bar on the screen, with no cure that is ours to offer" },
   fteBand: { ranks: false, reason: "147 comparators, the headcount half of the SME definition" },
-  borrowerModel: { ranks: false, reason: "99 comparators, and pinned to 'operating' for every founder (see FIELD_REACH) — so it evaluates correctly and always the same way" },
+  borrowerModel: { ranks: false, reason: "101 comparators, and pinned to 'operating' for every founder (see FIELD_REACH), so not one of them has ever separated two founders — 89 always pass, 3 are inert, and 9 always FAIL (8 of the 9 are filters; the ninth is a programme_fact and gates nobody). The claim that stood here, that they 'evaluate correctly and always the same way', was true of the second half only: borrowerModel is structural, so each of those eight deletes its fund from everyone who asks" },
   developmentStage: { ranks: false, reason: "63 comparators. TRL floors gate whole programmes rather than separating siblings of one regime" },
   cofinancingBand: { ranks: false, reason: "39 comparators. A co-financing floor is a condition of the same scheme for everyone who reaches it" },
   turnoverBand: { ranks: false, reason: "25 comparators, the turnover half of the SME definition" },

@@ -51,6 +51,29 @@
  * and `evaluateSpec` returns null for an unanswered field, which is never a
  * blocker.
  *
+ * ██ AND ONE FIELD THAT IS NOT AN INVENTION, SO THIS GUARD UNDER-REPORTS ██
+ * (wsGU) The exclusion above is written against answers a HARNESS would make
+ * up. `borrowerModel` is not one: FIELD_REACH declares it `constant` and
+ * `pinnedAnswers()` gives it to every real request before a founder is asked
+ * anything. It is exactly as much a register-independent fact as the country,
+ * and leaving it undefined here hides a whole class of defect.
+ *
+ * Measured on this same snapshot, this same answer key and this same
+ * population by `_wsgu_production_answers.ts`: supplying the pin takes the
+ * number below from 251 to 290. The 39 are eight comparators that reject the
+ * pin — two of them the funder's own sentence inverted, `nfr_inno` encoding
+ * "sole proprietorships may not apply" as a rule that deletes the fund from
+ * every incorporated company.
+ *
+ * NOT FOLDED IN HERE YET, and deliberately. Adding it today would take a
+ * guard that is already red further from its ceiling on a corpus defect no
+ * code change can reach, which reads as a regression and is not one. The
+ * corrections are written down with their evidence in
+ * `project-mgmt/evidence/wsgu_gate_encoding_corrections_2026-08-13.jsonl`;
+ * after they land the two measurements agree at 14, and the pin should be
+ * supplied here from that day on. Until then this line is the record that the
+ * number below is a floor.
+ *
  * SILENCE IS NOT A PASS. A pair where no encoded filter could be evaluated at
  * all proves nothing, and is counted separately rather than as a pass. A run
  * in which everything went silent would sail through on `0 blocked`, so the
@@ -109,6 +132,28 @@ const WATCHES = path.join("public", "data", "instrument_terms.json");
  *  The residue is not an inheritance defect and no code change reaches it: it is
  *  the sector encodings named below, and it needs a pass over
  *  `ETL/terms/encode_gates.py`. Recorded in project-mgmt/AWAITING_APPROVAL.md.
+ *
+ *  ── AND THAT PASS IS NOW WRITTEN, WITH ITS EVIDENCE (wsGU) ────────────────
+ *  63 corrections, one per gate row, each against the funder's own page, in
+ *  `project-mgmt/evidence/wsgu_gate_encoding_corrections_2026-08-13.jsonl`.
+ *  The quote and the requirement never move — they are the funder's words and
+ *  they are right — only the comparator does: 48 quarantined, 8 re-keyed to
+ *  the field their sentence turns on, 6 moved to the offer route, 1 narrowed.
+ *
+ *  Applied in memory to this exact snapshot and re-run through this exact
+ *  engine by `_wsgu_counterfactual.ts`: 251 -> 14, and 290 -> 14 once the
+ *  pinned answer above is supplied. The 14 are two things and both are
+ *  deliberately left: 12 on ADEME's heavy-vehicle schemes, where the funder
+ *  really does say "dont l'activité est le transport de marchandises" and
+ *  `mobility_transport` is a faithful reading — so the question is whether
+ *  OUR sector classification of those twelve companies is right, which is a
+ *  different defect — and 2 on `eit_digital_vap`, whose country list is
+ *  correct for the Venture Incubation Program and may be attached to the
+ *  wrong programme, which is an attribution question the funder's own page
+ *  could not settle.
+ *
+ *  NOTHING HERE MOVES UNTIL THAT FILE IS APPLIED. It is a Postgres write, and
+ *  the workstream that wrote it was read-only by instruction.
  *
  *  ── What the ceiling was pinned at, and on what ───────────────────────────
  *  207 verified winners of 6,155 judgeable pairs (3.4%) were deleted from their
