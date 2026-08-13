@@ -67,6 +67,11 @@ export function isStructural(field: string): boolean {
  *  module this one exists to stay out of. */
 export interface EvidenceFacts {
   verificationLevel?: string | null;
+  /** True when this row is being judged by somebody else's document — a rule
+   *  handed down from a register bucket rather than a rulebook. Set by
+   *  `mergeInheritedGates` in corpus.ts, which is the only place that knows
+   *  whose row the rule is landing on. See the property stated there. */
+  borrowed?: boolean;
 }
 
 /** Everything needed to say what a gate MAY DO, and nothing else about it. */
@@ -112,6 +117,15 @@ export function isFilter(gate: GateFacts): boolean {
  * So uncited rules NARROW but never CONDEMN. A failing uncited rule is a named
  * obstacle with its source stated; only a rule we can point at in the fund's
  * own text can end the conversation.
+ *
+ * ── "THE FUND'S OWN" IS A FACT ABOUT THE PAIR, NOT ABOUT THE GATE ────────
+ * A tier is earned against a document, and a document belongs to a row. Hand
+ * the same gate down to a sibling and the quote is still real, but it is no
+ * longer in the text the founder is reading — it is hearsay about them. That
+ * is what `borrowed` records, and it is why this predicate reads it: the answer
+ * to "may this rule end the conversation" cannot be right if it is computed
+ * from the rule alone. See `mergeInheritedGates` in corpus.ts for whose rules
+ * get it and for the sixteen founders it cost.
  */
 // Read from evidenceTiers.json, not written out here. The same policy used to
 // live as this Set and as a Python tuple in embed_eligibility.py, and they
@@ -121,6 +135,7 @@ export function isFilter(gate: GateFacts): boolean {
 const CITED = new Set(EVIDENCE_TIERS.cited.tiers);
 
 export function isCited(gate: EvidenceFacts): boolean {
+  if (gate.borrowed) return false;
   return CITED.has(gate.verificationLevel ?? "");
 }
 
@@ -145,7 +160,7 @@ export function isCited(gate: EvidenceFacts): boolean {
  * These gates DO carry a valueSpec — the statutory aid-intensity ceiling the
  * article implies — so what keeps them out of verdicts is gateRole, not the
  * absence of a spec. `aid_intensity` describes the money, never the applicant,
- * and `isFilter()` above admits only gateRole='filter'.
+ * and `isFilter()` in verdict.ts admits only gateRole='filter'.
  * evidenceTier.test.ts pins that, because the day an aid_intensity spec becomes
  * a filter is the day a founder is disqualified by a majority vote.
  */
@@ -166,7 +181,8 @@ export function isAttributable(gate: EvidenceFacts): boolean {
  *
  * It is the question a caller asks when it is about to APPLY a rule to somebody
  * rather than evaluate it, which is why it lives beside the tiers rather than
- * inside the verdict engine.
+ * inside the verdict engine. `mergeInheritedGates` in corpus.ts is the first
+ * such caller.
  */
 export function isConclusive(gate: GateFacts): boolean {
   const field = specField(gate);

@@ -57,13 +57,16 @@
  * population that COULD be judged is floored as well as the verdict.
  *
  * ── Why this is a RATCHET and not a pass at zero ──────────────────────────
- * It is not zero. Four pairs survive as of today and each is a real encoding
- * defect worth fixing rather than a rule to weaken — a positive requirement
- * written against a catch-all sector bucket, and narrow scheme purposes
- * flattened onto an eleven-value taxonomy. A guard that reds the build on the
- * day it lands gets switched off, and a guard that calls those four acceptable
- * is a lie about four founders. So the debt is pinned at today's measurement
- * and may only fall.
+ * It is not zero, and it never was: the ceiling below was pinned at 207 pairs
+ * on the day this check was written. Each one is a real encoding defect worth
+ * fixing rather than a rule to weaken — a positive requirement written against
+ * a catch-all sector bucket, and narrow scheme purposes flattened onto an
+ * eleven-value taxonomy. A guard that reds the build on the day it lands gets
+ * switched off, and a guard that calls two hundred of these acceptable is a lie
+ * about two hundred founders. So the debt is pinned at that measurement and may
+ * only fall. ("Four pairs survive as of today" stood here, against a constant
+ * of 207 twenty lines below it and a sibling check whose own debt is 15. It
+ * described no measurement this file has ever taken.)
  *
  * ── Hermetic ──────────────────────────────────────────────────────────────
  * The committed corpus snapshot (`public/data/instrument_terms.json`, the same
@@ -97,14 +100,25 @@ const WATCHES = path.join("public", "data", "instrument_terms.json");
 
 /** ── DEBT, NOT A TARGET ────────────────────────────────────────────────────
  *
- *  207 verified winners of 6,155 judgeable pairs (3.4%) are deleted from their
- *  own fund by the encoded gate layer today, on register-derived facts alone.
- *  262 of the 269 blockers behind them are `sector`: a narrow scheme purpose
+ *  ██ THIS CHECK IS RED, AND THE CEILING IS NOT THE THING TO CHANGE. ██
+ *  Today it measures 251 deletions of 6,167 judgeable pairs (4.1%): 308 `sector`
+ *  blockers and 37 `entityCountries`. It was 274 until wsGR stopped a register
+ *  bucket handing a conversation-ending rule to 453 children that never
+ *  earned it (`mergeInheritedGates`, corpus.ts) — same 23 pairs the broad
+ *  version bought, and unlike it the judgeable population did not move at all.
+ *  The residue is not an inheritance defect and no code change reaches it: it is
+ *  the sector encodings named below, and it needs a pass over
+ *  `ETL/terms/encode_gates.py`. Recorded in project-mgmt/AWAITING_APPROVAL.md.
+ *
+ *  ── What the ceiling was pinned at, and on what ───────────────────────────
+ *  207 verified winners of 6,155 judgeable pairs (3.4%) were deleted from their
+ *  own fund by the encoded gate layer, on register-derived facts alone.
+ *  262 of the 269 blockers behind them were `sector`: a narrow scheme purpose
  *  ("must be a tourism service provider", "programmes must be aimed at
  *  manufacturing activities") encoded as equality against this product's
  *  eleven-value sector taxonomy, which cannot express it. One family encodes
  *  its requirement against the catch-all `other` bucket as a POSITIVE
- *  condition, which no company can satisfy on purpose. The remaining 6 are
+ *  condition, which no company can satisfy on purpose. The remaining 6 were
  *  `entityCountries` and are the same shape as the territorial screen's
  *  standing 15: a company seated in one country winning another country's
  *  scheme through an establishment no register we hold records.
@@ -189,7 +203,9 @@ function main() {
     const own = byId.get(id);
     if (!own) return [];
     const parent = own.parentId ? byId.get(own.parentId) : undefined;
-    return mergeInheritedGates(own.gates ?? [], parent?.gates);
+    // The PARENT, not its gates: the merge rule demotes a rule handed down from
+    // a row nothing outside our loader names, and it cannot tell without it.
+    return mergeInheritedGates(own.gates ?? [], parent);
   };
   const withSpec = records.reduce(
     (n, i) => n + (i.gates ?? []).filter((g) => g.valueSpec).length, 0);

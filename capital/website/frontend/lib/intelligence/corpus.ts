@@ -9,7 +9,11 @@ import {
 } from "./liveness";
 import { isWithheldByPolicy } from "./offerableAxes";
 import { hasOfferRoute } from "./offerRoute";
-import { registerNamesTheRow } from "./nameEvidence";
+import { registerNamesTheRow, type NameEvidenceFacts } from "./nameEvidence";
+// From the leaf, not from verdict.ts, which imports THIS file. See the property
+// under `mergeInheritedGates`: deciding whether a rule may be handed down with
+// full force means asking whether it could end a conversation on its own.
+import { isConclusive } from "./evidenceTier";
 import path from "path";
 import type { CompetitorRecord, FundSnapshot } from "./types";
 // Re-exported so existing callers (shortlist, pipeline, scripts) are unchanged.
@@ -157,6 +161,12 @@ export interface DbGate {
    *  instrument's OWN evidence. Absent means the gate belongs to the
    *  instrument itself. */
   inherited?: boolean;
+  /** Set on a gate handed down from a row nothing outside our loader names —
+   *  a requirement read off ONE member's document and asserted of all of them.
+   *  The quote is real and it is not this fund's, so the rule narrows and never
+   *  condemns: `isCited` reads this and answers false. Written by
+   *  `mergeInheritedGates`, never by the ETL. */
+  borrowed?: boolean;
 }
 
 export interface DbInstrument {
@@ -898,7 +908,7 @@ export async function hydrateGatesFor(instrumentIds: string[]): Promise<void> {
       const inst = byId.get(id);
       if (!inst) continue;
       const parent = inst.parentId ? byId.get(inst.parentId) : undefined;
-      inst.gates = mergeInheritedGates(inst.gates, parent?.gates);
+      inst.gates = mergeInheritedGates(inst.gates, parent);
       gatesResolved.add(id);
     }
   } catch (err) {
@@ -1048,8 +1058,7 @@ export function loadSignalsDigest(): SignalsDigest | null {
  * which is what "operating under a regime" actually means: specific rules
  * refine the general ones, they do not repeal them.
  *
- * ██ HALF THE PARENTS HERE ARE NOT REGIMES. ██ (wsGL, 2026-08-13, MEASURED AND
- * DELIBERATELY NOT FIXED HERE — the repair belongs to the gate row.)
+ * ██ HALF THE PARENTS HERE ARE NOT REGIMES. ██ (wsGL measured it, wsGR fixed it.)
  *
  * The paragraphs above assume a parent is a rulebook, and for France's R&D
  * framework it is. `satr_it_rnd` is not: it is the string "all Italian R&D state
@@ -1063,42 +1072,87 @@ export function loadSignalsDigest(): SignalsDigest | null {
  * enterprise must be located in the target territories of the Programme (less
  * developed regions: Basilicata, Calabria, Campania, Molise, Puglia, Sardegna,
  * Sicilia)". It is `llm_2pass`, so cited; `region` is structural; so one failure
- * is conclusive and `accessiblePool` deletes the row without telling the
+ * was conclusive and `accessiblePool` deleted the row without telling the
  * founder. All 67 children inherit it, among them Regione Lombardia's own
- * Collabora e Innova, whose page requires "sede operativa in Lombardia".
- * ONE gate row, 16 of the 70 conclusive blocks in the 820-founder replay.
- * Corpus-wide there are 3,669 inherited filter-gate instances from parents
- * nothing outside our loader names.
+ * programme, whose page requires "sede operativa in Lombardia" and 47 of whose
+ * own awards are in ITC4. ONE gate row, 16 of the 70 conclusive blocks in the
+ * 820-founder replay. Corpus-wide there are 3,669 inherited filter-gate
+ * instances from parents nothing outside our loader names.
  *
- * ── Why the fix is NOT here, measured both ways ──────────────────────────
- * Refusing inheritance from an unnamed parent works and costs too much
- * elsewhere: +16 founders in the accessible pool (check_recall_floor
- * `accessible` 90% -> 91%), verified winners the gate screen would delete
- * 274 -> 251, AND `check_winner_not_gated`'s judgeable population 6,167 -> 4,610
- * pairs, under its floor of 6,000. That guard is right to fail: trading a wrong
+ * ── THE PROPERTY ─────────────────────────────────────────────────────────
+ *
+ *     A REQUIREMENT INHERITED FROM A ROW NOTHING OUTSIDE OUR LOADER NAMES MAY
+ *     NARROW A CHILD. IT MAY NEVER CONDEMN ONE.
+ *
+ * The quote behind such a rule is real, and it is evidence about the member
+ * whose document it was read from. Applied to a sibling it is hearsay: we
+ * cannot point the founder at the text in front of them and show it there. And
+ * `isCited` already carries exactly that meaning — "traceable to the FUND'S OWN
+ * text" — so the tier is not a property of the gate alone, it is a property of
+ * the gate AND the row it is being applied to. A borrowed rule is not cited FOR
+ * THE CHILD, and uncited rules have always narrowed without condemning.
+ *
+ * The test for a row nobody has seen: point at the field in the source record
+ * the parent's name was read from. If the loader assembled that name out of its
+ * own query partitioning, every rule it hands down is demoted, whatever the
+ * country, the register or the field — see ./nameEvidence.ts. Nothing here
+ * names a fund, a gate id or a region.
+ *
+ * ── Why DEMOTED and not DROPPED, measured both ways ──────────────────────
+ * wsGL implemented the drop — refuse inheritance from an unnamed parent
+ * outright — and reverted it. It bought +16 founders in the accessible pool
+ * (check_recall_floor `accessible` 90% -> 91%) and took the verified winners
+ * the gate screen deletes from 274 to 251, but it took
+ * `check_winner_not_gated`'s judgeable population from 6,167 pairs to 4,610,
+ * under its floor of 6,000. That guard was right to fail it: trading a wrong
  * rule for NO rule leaves a screen with nothing to say about a third more of the
  * corpus, and a screen that cannot speak cannot show its next defect either.
  *
- * A narrower cut — inherit everything EXCEPT gates that are cited AND on a
- * structural field, the only kind that ends the conversation on its own — is the
- * right shape and needs `isCited`/`isStructural`, which live in verdict.ts,
- * which imports this file. Doing it without restating either predicate needs
- * them extracted to a leaf module first, and a second definition of an evidence
- * tier is the defect this repo has already paid for twice.
+ * Demotion keeps the rule in the assessment — it is still evaluated, still
+ * counted, still reported to the founder as an obstacle with its source stated
+ * — and takes away only the one power it never had the standing for. Measured
+ * on the same two, wsGR 2026-08-13:
  *
- * So the repair proposed instead is surgical and upstream: re-encode
- * `g1-territorio` against the child it belongs to and unseed it from the
- * rollup. Arms for all of it, free and re-runnable: scripts/_wsgl_arms.ts.
+ *   check_winner_not_gated  winners deleted  274 -> 251   (the drop's own 251)
+ *                           judgeable pairs  6,167 -> 6,167   ██ UNMOVED ██
+ *   npm run stages          gates stage      83.17% -> 84.84%  (+15 of 897)
+ *                           and it carries:  top-5 32.55% -> 32.78%
+ *
+ * Same 23 founders the drop bought, and the population the drop destroyed is
+ * untouched, because a demoted rule is still a rule the screen can speak with.
+ *
+ * ── What it reaches, exactly ─────────────────────────────────────────────
+ * 44 parents are buckets and 453 children hang off them. Of the 10,985 gate
+ * instances they hand down, 1,448 are demoted and 9,537 pass through unchanged.
+ * The framework-level state-aid exclusions — undertaking in difficulty, tobacco
+ * and weapons — are NOT among the losses: all 453 children carry them as their
+ * OWN gates, so they keep full force and go on blocking whom they exist to
+ * block. What is demoted is the residue: a rule read off one member's document.
  */
 /** The merge rule itself, so the eager and lazy paths cannot diverge on it.
  *  A child's own gates override the parent's by key and add to the rest. */
-export function mergeInheritedGates(own: DbGate[], inherited: DbGate[] | undefined): DbGate[] {
-  if (!inherited?.length) return own;
+export function mergeInheritedGates(
+  own: DbGate[],
+  /** The PARENT, not just its gates: whether a rule may be handed down with
+   *  full force depends on whether anything outside our loader names the row it
+   *  is being handed down from. */
+  parent: (NameEvidenceFacts & { gates?: DbGate[] }) | undefined,
+): DbGate[] {
+  if (!parent?.gates?.length) return own;
+  const inherited = parent.gates;
   // Marked, not shared: the parent's gate objects are referenced by the parent
-  // itself and by every other child, so the flag has to go on a copy. Callers
+  // itself and by every other child, so the flags have to go on a copy. Callers
   // that read a handful of fields per gate pay a shallow clone for the ability
   // to tell "this scheme says so" from "its regime says so".
-  const mark = (g: DbGate): DbGate => (g.inherited ? g : { ...g, inherited: true });
+  const bucket = !registerNamesTheRow(parent);
+  const mark = (g: DbGate): DbGate => {
+    // `borrowed` is set only where it changes something — on the rules that
+    // would otherwise end the conversation on their own — so its presence on a
+    // gate is the record of why that gate was demoted.
+    const borrowed = bucket && isConclusive(g) ? { borrowed: true } : null;
+    if (g.inherited && !borrowed) return g;
+    return { ...g, inherited: true, ...borrowed };
+  };
   if (!own.length) return inherited.map(mark);
   const keys = new Set(own.map((g) => g.id));
   return [...own, ...inherited.filter((g) => !keys.has(g.id)).map(mark)];
@@ -1107,9 +1161,9 @@ export function mergeInheritedGates(own: DbGate[], inherited: DbGate[] | undefin
 function resolveInheritedGates(all: DbInstrument[]): DbInstrument[] {
   const byId = new Map(all.map((i) => [i.id, i]));
   return all.map((i) => {
-    const inherited = i.parentId ? byId.get(i.parentId)?.gates : undefined;
-    if (!inherited?.length) return i;
-    return { ...i, gates: mergeInheritedGates(i.gates, inherited) };
+    const parent = i.parentId ? byId.get(i.parentId) : undefined;
+    if (!parent?.gates?.length) return i;
+    return { ...i, gates: mergeInheritedGates(i.gates, parent) };
   });
 }
 

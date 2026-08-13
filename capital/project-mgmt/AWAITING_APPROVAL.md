@@ -142,6 +142,13 @@ are shown and several change the corpus itself.
   Basilicata, Calabria or Sicily" — including Regione Lombardia's own
   programme, whose page requires an operating base in *Lombardy*. Re-encode it
   onto the child it actually describes.
+  **NO LONGER URGENT, and still right.** wsGR closed the founder-facing half in
+  code: a rule inherited from a row nothing outside our loader names now
+  *narrows* a child and can no longer *delete* it. The Lombardy founder is
+  offered Lombardy's programme again, and the wrongful deletions the gate screen
+  makes fell 274 → 251. What the re-encode still buys is the rule applying with
+  full force to the scheme it genuinely describes, where today it applies to
+  none of them.
 - **Two `borrowerModel` specs are inverted.** "Sole proprietorships are not
   eligible" is encoded so that it excludes every incorporated company — exactly
   whom it exists to admit.
@@ -161,7 +168,19 @@ are shown and several change the corpus itself.
 
 ### 9. A check that is already failing on main
 
-`check_winner_not_gated` reports **274 wrongful deletions against a ceiling of
-207** — largest offender `sector` at 308. Same defect class as above, and not
-caused by any of last night's work. It needs a decision: fix the encodings
-underneath, or restate the ceiling with the reason.
+`check_winner_not_gated` reported **274 wrongful deletions against a ceiling of
+207**. Not caused by any of last night's work.
+
+wsGR's inheritance fix took it to **251**, with the judgeable population
+untouched at 6,167 pairs, and that is as far as code reaches: the remaining 251
+are **308 `sector` blockers and 37 `entityCountries`**, every one of them a gate
+encoding rather than a rule. A narrow scheme purpose — "must be a tourism
+service provider", "aimed at manufacturing activities" — written as equality
+against an eleven-value taxonomy that cannot express it, and one family encoding
+its requirement against the catch-all `other` bucket as a *positive* condition
+no company can satisfy on purpose.
+
+**The ceiling has not been touched and must not be.** The decision is whether to
+fund a pass over the sector encodings in `ETL/terms/encode_gates.py`, which is
+where the other 44 points are. Until then the check stays red, and red is the
+honest colour: 251 founders would be deleted from a fund they demonstrably won.
