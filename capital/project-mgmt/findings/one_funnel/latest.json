@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-12T22:32:01.464Z",
+ "startedAt": "2026-08-12T23:46:19.378Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-12T22:32:02.111Z",
+ "corpusObservedAt": "2026-08-12T23:46:19.789Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 814,
@@ -34,7 +34,7 @@
   "share": 0.17142857142857143
  },
  "meanTableRows": 86.2,
- "meanAccessibleRows": 74,
+ "meanAccessibleRows": 76.7,
  "stages": [
   {
    "id": "answer_key",
@@ -84,65 +84,56 @@
   {
    "id": "gates_pass",
    "question": "... and its encoded eligibility gates do not conclusively fail (accessiblePool)",
-   "remaining": 713,
-   "sharePct": 79.49,
-   "lost": 79,
+   "remaining": 746,
+   "sharePct": 83.17,
+   "lost": 46,
    "unmeasured": false,
-   "halfWidthPts": 2.64
+   "halfWidthPts": 2.45
   },
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (18 rows)",
-   "remaining": 447,
-   "sharePct": 49.83,
-   "lost": 266,
+   "remaining": 459,
+   "sharePct": 51.17,
+   "lost": 287,
    "unmeasured": false,
    "halfWidthPts": 3.27
   },
   {
    "id": "writer_cap",
    "question": "... and it survives the cut to the writer's candidates (8)",
-   "remaining": 346,
-   "sharePct": 38.57,
-   "lost": 101,
+   "remaining": 357,
+   "sharePct": 39.8,
+   "lost": 102,
    "unmeasured": false,
-   "halfWidthPts": 3.19
-  },
-  {
-   "id": "watch_only",
-   "question": "... and the writer's own prose does not demote it behind the actionable rows",
-   "remaining": null,
-   "sharePct": null,
-   "lost": null,
-   "unmeasured": true,
-   "halfWidthPts": null
+   "halfWidthPts": 3.2
   },
   {
    "id": "published",
    "question": "... and it is one of the 7 rows the brief publishes",
-   "remaining": 329,
-   "sharePct": 36.68,
-   "lost": 17,
+   "remaining": 344,
+   "sharePct": 38.35,
+   "lost": 13,
    "unmeasured": false,
-   "halfWidthPts": 3.15
+   "halfWidthPts": 3.18
   },
   {
    "id": "top_6",
    "question": "... and it is in the first 6 of them",
-   "remaining": 303,
-   "sharePct": 33.78,
-   "lost": 26,
+   "remaining": 316,
+   "sharePct": 35.23,
+   "lost": 28,
    "unmeasured": false,
-   "halfWidthPts": 3.1
+   "halfWidthPts": 3.13
   },
   {
    "id": "top_5",
    "question": "... and it is in the first 5 of them",
-   "remaining": 279,
-   "sharePct": 31.1,
+   "remaining": 292,
+   "sharePct": 32.55,
    "lost": 24,
    "unmeasured": false,
-   "halfWidthPts": 3.03
+   "halfWidthPts": 3.07
   },
   {
    "id": "model",
