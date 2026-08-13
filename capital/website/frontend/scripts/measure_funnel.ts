@@ -143,6 +143,7 @@ import {
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
+import { POOL_BLEND } from "../lib/intelligence/poolBlend";
 import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
 import {
   rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
@@ -742,13 +743,31 @@ async function main() {
   p(`                   cross-regime-only draw, which exists because a model reads`);
   p(`                   the query text and nothing here does.`);
   p(`levers             pool=${VERDICT_POOL} writer_cap=${WRITER_CANDIDATE_CAP} `
-    + `published_cap=${PUBLISH_CAP} top=${TOP} select_depth=${kLabel(SELECT_DEPTH)}`);
+    + `published_cap=${PUBLISH_CAP} top=${TOP} select_depth=${kLabel(SELECT_DEPTH)} `
+    + `row_order=${POOL_BLEND}`);
   if (SWEEP_KS.length > 1) {
     p(`pool swept at      ${SWEEP_KS.map(kLabel).join(", ")} — the whole ladder at each, `
       + `paired off one pool object`);
   }
   p("```");
   p();
+  // ── A RUN THAT DID NOT USE THE SHIPPED ROW ORDER MUST SAY SO ──────────────
+  // `latest.md` is the file that gets quoted, and until now nothing in it named
+  // the ordering that produced it: `POOL_BLEND` is read at module scope inside
+  // `shortlist.ts`, so an arm run and a baseline run wrote byte-comparable
+  // headers and differed only in the numbers -- which is precisely the shape
+  // that let four figures on four populations be compared to each other. The
+  // arm is now on the levers line, and anything other than the shipped order
+  // gets the same banner the held-back intake fields get, because a founder is
+  // not served by it.
+  if (POOL_BLEND !== "off") {
+    p(`██ NOT THE SHIPPED ORDER — this run ranked every founder's table with `
+      + `\`POOL_BLEND=${POOL_BLEND}\`, an arm that is default-off and that no founder `
+      + `receives. Every number below is a measurement of that arm, not of the product. `
+      + `Do not quote a row from this run beside a row from a shipped run without saying `
+      + `which is which.`);
+    p();
+  }
   for (const line of tally.lines(policy)) p(line.trim());
   p();
 
@@ -985,7 +1004,12 @@ async function main() {
     // measurement as the exact one. Flagged so a chart can drop it or draw it
     // differently, rather than plotting an N=30 smoke run beside a reference.
     sampled: n > 0, populationSize: population.length,
-    levers: { VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP, rowCuts: ROW_CUTS },
+    levers: {
+      VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP, rowCuts: ROW_CUTS,
+      // The ordering arm, so the series in `runs/` can never contain a point
+      // nobody can attribute to a code path. See the banner above.
+      rowOrder: POOL_BLEND,
+    },
     // Null on a run with no sweep, never absent: a series where the field comes
     // and goes cannot be asked "was this run swept" without inspecting prose.
     poolSweep: sweep?.record ?? null,
