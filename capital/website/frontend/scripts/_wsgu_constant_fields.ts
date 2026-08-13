@@ -2,7 +2,8 @@ delete process.env.DATABASE_URL;
 import { readFileSync } from "fs";
 import path from "path";
 import { evaluateSpec } from "../lib/intelligence/comparator";
-import { FIELD_REACH, type ValueSpec } from "../lib/intelligence/types";
+import { FIELD_REACH } from "../lib/intelligence/types";
+import type { ValueSpec } from "../lib/intelligence/comparator";
 import { isFilter, isCited } from "../lib/intelligence/verdict";
 import { isStructural } from "../lib/intelligence/verdict";
 

@@ -1,4 +1,4 @@
-"""Two properties every gate cut from scheme text must satisfy, and the test.
+"""What a gate may gate on, and what its comparator may MEAN. Four properties.
 
 Both properties came out of the French corpus, and neither is a fact about
 France. They are stated here as properties with a machine test precisely so
@@ -30,6 +30,25 @@ and has no row for a private company at all. The absence is in their taxonomy,
 not in the scheme — the framework rule these run on is "personne morale publique
 ou privée (hors particulier ou service de l'État)". Where a scheme really does
 exclude companies (AVELO) the text says so in prose.
+
+── PROPERTY 4 — a comparator must mean what its sentence means ──────────────
+Properties 1 and 2 ask whether a rule may gate at all. Both are satisfied by a
+rule that is read perfectly and then encoded to say something the funder never
+said, and that is where most of this corpus's wrongful deletions live.
+
+4a  A rule about the PROJECT may not be decided by a field about the APPLICANT.
+    TEST: take two applicants identical in the attribute the field names. If
+    the rule can separate them, that field does not decide the rule.
+4b  A positive comparator may not REQUIRE a value meaning "a member of this
+    category our list does not name".
+
+Both are stated in full beside the code that runs them, below. In short: when a
+fund's stated purpose is narrower than any value the taxonomy holds, the
+encoder must SKIP. Not the nearest value, not the catch-all, and not a widened
+allow-list -- a widened list is still a conclusive claim, and `sector` is
+structural, so one false verdict deletes the fund. Nothing is lost: a fund's
+purpose is carried by `instrument_profiles` and ordered on by the semantic
+ranker, which DEMOTES where this screen DELETES.
 
 ── The test, in two layers ──────────────────────────────────────────────────
 LAYER 1 (free, mechanical, always runs). The extractor labels every gate with
@@ -194,6 +213,160 @@ def check_spec_geography(conn: sqlite3.Connection, country: str | None) -> int:
         return 1
     print("  PASS — every country field holds countries, every region rule uses "
           "region_within.")
+    return check_spec_means_what_the_rule_means(conn, country)
+
+
+# ── PROPERTY 4 — a comparator must MEAN what its sentence means ─────────────
+# Properties 1-3 ask whether a rule may gate at all and whether the engine can
+# read it. Both were satisfiable by a rule that is read perfectly and says
+# something the funder never said. Two ways that happened, and between them
+# they account for 132 of the 251 verified winners the gate screen deletes.
+#
+# ── 4a. SUBJECT AGREEMENT, IN THE DIRECTION THAT DELETES ───────────────────
+#   A rule about the PROJECT may not be decided by a field about the APPLICANT.
+#
+# Property 1 admits both `applicant` and `project` as filterable subjects, and
+# it is right to: a fund may restrict either. What nothing checked is that the
+# FIELD chosen to decide a project rule is a field about the project. Vinnova's
+# aviation programme is aimed at "alla organisationer inom flygområdet" and
+# names universities and university colleges among its eligible party types; it
+# is encoded `sector == mobility_transport`, and `sector` is what the COMPANY
+# builds. GKN Aerospace Sweden is an industrial manufacturer, two Swedish
+# university colleges are neither, and all three are deleted from a programme
+# the register says they won.
+#
+#   THE TEST, for a rule nobody has read: take two applicants IDENTICAL in the
+#   attribute the field names. If the rule can separate them, that field does
+#   not decide the rule.
+#
+# ONE DIRECTION, and the asymmetry is the finding rather than a convenience.
+# The symmetric version fires 117 times and 63 of those are the LABELLER being
+# loose, not the encoder being wrong: "the company must co-finance at least
+# 10%" is labelled `applicant` because the company is its grammatical subject,
+# and `cofinancingBand` is nonetheless exactly the field that decides it. A
+# project field asked to carry an applicant sentence is a wording mismatch. An
+# applicant field asked to carry a project sentence is a DELETION: the founder
+# answers truthfully about their company, the comparator reads it as an answer
+# about their project, and a structural cited failure removes the fund. Only
+# the second is this property's business.
+#
+# 54 today, of which 39 are `sector`.
+#
+# ── 4b. A REQUIREMENT MAY NOT BE A GAP IN OUR OWN VOCABULARY ────────────────
+#   A positive comparator may not REQUIRE a value that means "a real member of
+#   this category our list does not name".
+#
+# `sector other` is "Something else". Requiring it asserts that a fund admits
+# exactly those applicants our eleven-value list failed to place — a fact about
+# types.ts, not about the fund. Encoding a tourism scheme that way rejects
+# every tourism company that named a nearer industry AND admits any space
+# company that happened to pick "Something else".
+#
+# Both halves read declarations (FIELD_SUBJECT, unnamedResidualValues in
+# data/vocabularies.json) rather than restating them, so a field or a residual
+# added tomorrow is judged with no edit here. 4b is mechanical and complete;
+# 4a can only be checked where a subject label exists, which today is the
+# scheme-text gates.
+#
+# ── BOTH ARE DEBT, PINNED AT THE DAY THEY BECAME VISIBLE ────────────────────
+# Neither is a pass at zero, and neither may rise. The fix for every row is a
+# corpus write, and 63 of them are already written down with the funder's own
+# page and quote per row in
+# project-mgmt/evidence/wsgu_gate_encoding_corrections_2026-08-13.jsonl.
+# Applying that file takes the residual count from 27 to 18 and the subject
+# count from 54 to 50, and takes check_winner_not_gated from 251 to 14.
+#
+# The subject count barely moves and the reason matters more than the number:
+# 4a can only judge a gate that CARRIES a subject label, and only the
+# scheme-text extractor writes one. The 27 subject corrections in that file are
+# mostly on gates named `g1-*` or `llm_classified_*`, which this check cannot
+# see at all — so 54 is a floor on the real population, not a measure of it.
+# The label does not survive publication either: `verify_note` is not in
+# `public/data/instrument_terms.json`, so no hermetic guard can assert 4a over
+# the shipped corpus. Labelling every gate, and carrying the label into the
+# snapshot, is what would turn this ratchet into a real measurement.
+#
+# A ceiling raised here is a record that somebody accepted a new encoding that
+# says something its funder did not.
+RESIDUAL_CEILING = 27
+SUBJECT_MISMATCH_CEILING = 54
+
+
+def check_spec_means_what_the_rule_means(conn: sqlite3.Connection,
+                                         country: str | None) -> int:
+    vocab_path = _Path(__file__).resolve().parents[2] / "data" / "vocabularies.json"
+    vocab = json.loads(vocab_path.read_text())
+    field_subject: dict[str, str] = vocab["fieldSubject"]
+    residuals: dict[str, list[str]] = vocab["unnamedResidualValues"]
+
+    scope, params = "", ()
+    if country:
+        scope, params = " AND fi.country = ?", (country,)
+    rows = conn.execute(f"""
+        SELECT g.id, g.instrument_id, g.value_spec, g.verify_note,
+               substr(g.requirement, 1, 90) AS req
+          FROM eligibility_gates g
+          JOIN funding_instruments fi ON fi.id = g.instrument_id
+         WHERE g.value_spec IS NOT NULL AND g.gate_role = 'filter'{scope}""",
+                        params).fetchall()
+
+    residual_bad: list[str] = []
+    subject_bad: list[str] = []
+    for r in rows:
+        try:
+            spec = json.loads(r["value_spec"])
+        except (json.JSONDecodeError, TypeError):
+            continue
+        field, op = spec.get("field"), spec.get("op")
+        vals = spec.get("allowed") or ([spec["value"]] if "value" in spec else [])
+
+        if op in ("in", "equals"):
+            hit = [v for v in vals if v in set(residuals.get(field, ()))]
+            if hit:
+                residual_bad.append(
+                    f"  gate {r['id']} ({r['instrument_id']}): `{field} {op} {vals}` "
+                    f"REQUIRES {hit} — 'a member of this category our list does not "
+                    f"name' — {r['req']}")
+
+        # ONE DIRECTION. A project sentence carried by an applicant field is a
+        # deletion; the reverse is a wording mismatch. See 4a above.
+        subject, _ = label(r["verify_note"])
+        if subject == "project" and field_subject.get(field) == "applicant":
+            subject_bad.append(
+                f"  gate {r['id']} ({r['instrument_id']}): the rule is about the "
+                f"PROJECT, `{field}` is about the APPLICANT — {r['req']}")
+
+    print(f"\nlayer 1c: {len(rows)} encoded filters checked for what they MEAN")
+    print(f"  a requirement that is a gap in our vocabulary:  {len(residual_bad)} "
+          f"(ceiling {RESIDUAL_CEILING})")
+    print(f"  a rule decided by a field about something else: {len(subject_bad)} "
+          f"(ceiling {SUBJECT_MISMATCH_CEILING})")
+    if len(residual_bad) > RESIDUAL_CEILING:
+        print(f"\nFAIL — {len(residual_bad)} positive comparators require a residual "
+              f"value, above the ceiling of {RESIDUAL_CEILING}:")
+        for line in residual_bad[:40]:
+            print(line)
+        print("\n  There is no sentence a funder can write that this encodes. When a "
+              "fund's\n  stated purpose is narrower than any value the taxonomy holds, "
+              "the encoder\n  must SKIP -- not pick the nearest value, and not the "
+              "catch-all. The purpose\n  is not lost: it is what the semantic ranker "
+              "already orders on, and the\n  ranker demotes where this screen deletes.")
+        return 1
+    if len(subject_bad) > SUBJECT_MISMATCH_CEILING:
+        print(f"\nFAIL — {len(subject_bad)} rule(s) decided by a field about a "
+              f"different subject, above the ceiling of {SUBJECT_MISMATCH_CEILING}:")
+        for line in subject_bad[:40]:
+            print(line)
+        print("\n  Take two applicants identical in the attribute the field names. If "
+              "the rule\n  can separate them, that field does not decide the rule. "
+              "RAISING THIS CEILING\n  IS NOT A FIX.")
+        return 1
+    for line in residual_bad[:15]:
+        print(line)
+    for line in subject_bad[:15]:
+        print(line)
+    print("  DEBT, not a pass. Both counts are at their pinned ceilings and may only "
+          "fall.")
     return 0
 
 

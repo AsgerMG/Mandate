@@ -11,6 +11,7 @@ import {
   MIN_MATCHABLE_DESCRIPTION_CHARS,
   TICKET_BANDS,
   USEFUL_DESCRIPTION_CHARS,
+  pinnedAnswers,
   type EligibilityAnswers,
   type EligibilityCheck,
   type GroundedRound,
@@ -177,10 +178,13 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // one.
   const [descriptionSkipped, setDescriptionSkipped] = useState(false);
   const [capitalSought, setCapitalSought] = useState<string[]>([]);
-  // borrowerModel defaults to "operating" and is never asked on the first
-  // screen — the lender/intermediary routing it unlocks is out of scope for
-  // this tool's lean-founder persona.
-  const [elig, setElig] = useState<EligibilityAnswers>({ borrowerModel: "operating" });
+  // borrowerModel is pinned and never asked — the lender/intermediary routing
+  // it unlocks is out of scope for this tool's lean-founder persona. The value
+  // is READ from FIELD_REACH rather than written here, because it is not a
+  // presentational default: it is the single answer 101 encoded comparators
+  // are decided against, and a literal here made that invisible to the guard
+  // whose whole job is to say whether a filter can admit anyone.
+  const [elig, setElig] = useState<EligibilityAnswers>(pinnedAnswers());
   // ── The region question, and why it is on this screen ─────────────────────
   // It was asked adaptively, which meant most founders were never asked at all
   // — wsAO measured a region supplied for 46% of graded pairs. It is also the

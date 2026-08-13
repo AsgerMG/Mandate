@@ -18,7 +18,15 @@
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { BAND_ORDERS, MULTI_VALUE_FIELDS, VOCABULARY } from "../lib/intelligence/vocabulary";
-import { FIELD_REACH, TICKET_BANDS } from "../lib/intelligence/types";
+import {
+  FIELD_REACH, FIELD_SUBJECT, SECTOR_OPTIONS, TICKET_BANDS,
+} from "../lib/intelligence/types";
+
+/** Every option list that could carry an `unnamedResidual` value. Listed as
+ *  LISTS, not as the values inside them, so a residual marked on any option
+ *  in any of them reaches the ETL with no edit here. */
+const OPTION_LISTS: readonly { value: string; unnamedResidual?: boolean }[][] =
+  [SECTOR_OPTIONS as unknown as { value: string; unnamedResidual?: boolean }[]];
 
 export const OUT = resolve(process.cwd(), "../../data/vocabularies.json");
 
@@ -75,6 +83,24 @@ export function build(): string {
         .sort(),
       "none",
     ],
+    // ── What a field's answer is ABOUT ──────────────────────────────────────
+    // The encoder chooses a field for every rule it encodes, and until now
+    // nothing told it that a rule about the PROJECT cannot be decided by a
+    // fact about the APPLICANT. Twenty-three encoded comparators in the corpus
+    // make exactly that mistake on `sector` alone.
+    fieldSubject: FIELD_SUBJECT,
+    // ── Values that mean "an industry this list does not name" ──────────────
+    // A positive comparator may never REQUIRE one: it would assert that the
+    // fund admits exactly the applicants our vocabulary failed to place. See
+    // the note on SECTOR_OPTIONS.
+    unnamedResidualValues: Object.fromEntries(
+      Object.entries(VOCABULARY)
+        .map(([field]) => [field, OPTION_LISTS.flat()
+          .filter((o) => o.unnamedResidual)
+          .map((o) => o.value)
+          .filter((v) => VOCABULARY[field]?.values.includes(v))])
+        .filter(([, vs]) => (vs as string[]).length > 0),
+    ),
   }, null, 2) + "\n";
 }
 

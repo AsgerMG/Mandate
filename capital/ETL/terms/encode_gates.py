@@ -101,6 +101,11 @@ except FileNotFoundError:  # pragma: no cover
 ENUM_VALUES: dict[str, list[str]] = _VOCAB["enumValues"]
 BAND_ORDERS: dict[str, list[str]] = _VOCAB["bandOrders"]
 MULTI_VALUE_FIELDS = set(_VOCAB["multiValueFields"])
+#: field -> "applicant" | "project": what an answer to this field is ABOUT.
+FIELD_SUBJECT: dict[str, str] = _VOCAB["fieldSubject"]
+#: field -> the values meaning "a real member of this category our list does
+#: not name". Read, never restated; see SECTOR_OPTIONS in types.ts.
+UNNAMED_RESIDUALS: dict[str, list[str]] = _VOCAB["unnamedResidualValues"]
 # How each intake field gets answered, and therefore which ones a rule may be
 # keyed to at all. Read, never restated -- see FIELDS below.
 FIELD_REACH: dict[str, str] = _VOCAB["fieldReach"]
@@ -279,6 +284,79 @@ def refuse_unemittable(field: str, gid: int, what: str,
               f"owns it")
         return True
     return False
+
+
+# ── ...and a requirement may not be a gap in our own vocabulary ─────────────
+# THE PROPERTY:
+#   A positive comparator may not REQUIRE a value that means "a real member of
+#   this category our list does not name".
+#
+# `sector` has eleven values and `other` is "Something else". Requiring it says
+# the fund admits exactly those applicants our own list failed to place — a
+# fact about types.ts, not about the fund. Five gates said it when this was
+# written: two ADEME forestry schemes ("Applicant must be active in forestry,
+# forest exploitation or sawing"), an Estonian tourism-software scheme, and two
+# Estonian creative-economy schemes. Between them they deleted 26 companies
+# from funds the award register says those companies won, four of them agrifood
+# companies cut from a forestry scheme by a taxonomy whose `agrifood` label
+# reads "Agritech, food or forestry".
+#
+# The test for a value nobody has seen is the declaration itself
+# (`unnamedResidual` on the option, projected into data/vocabularies.json), so
+# a residual added to any future enumeration is refused with no edit here. The
+# direction is asymmetric for the same reason it is on country values:
+#   positive (in / equals) — refuse. There is no sentence a funder can write
+#       that this encodes correctly.
+#   negative (not_in)      — allowed and meaningful. "not the ones we could not
+#       place" is a real, if weak, restriction, and rewriting a fund's own rule
+#       to tidy our bookkeeping is the worse error.
+#
+# WHAT THE ENCODER SHOULD DO INSTEAD, and it is the answer to the general
+# question this defect poses: when a fund's stated purpose is NARROWER than any
+# value the taxonomy holds, `skip`. Not the nearest value, not the catch-all,
+# and not a widened allow-list — a widened list is still a conclusive claim,
+# and `sector` is STRUCTURAL, so one false verdict deletes the fund outright.
+# The purpose is not lost by skipping: it is what `instrument_profiles` embeds
+# and what the ranker already orders on. A theme belongs to the ranker, which
+# DEMOTES, not to the screen, which DELETES.
+def refuse_unnamed_residual(field: str, op: str, values: list[str], gid: int) -> bool:
+    """True when a positive comparator requires a residual value."""
+    if op not in ("in", "equals"):
+        return False
+    residuals = set(UNNAMED_RESIDUALS.get(field, ()))
+    hit = [v for v in values if v in residuals]
+    if not hit:
+        return False
+    print(f"    refused encoding on gate {gid}: `{field} {op} {values}` requires "
+          f"{hit}, which means 'an industry this list does not name'. A rule "
+          f"stated in a vocabulary narrower than ours is skipped, never "
+          f"approximated")
+    return True
+
+
+# ── ...and a rule about the PROJECT is not decided by a fact about the FIRM ──
+# THE PROPERTY:
+#   A rule may only be encoded against a field whose answer is about the same
+#   subject the rule constrains.
+#
+# THE TEST, for a rule nobody has seen:
+#   Take two applicants IDENTICAL in the attribute the field names. If the rule
+#   can separate them, the field does not decide the rule.
+#
+# Two `software_data_ai` companies, one submitting an urban-mobility project
+# and one not: EIT Urban Mobility's "the applicant's proposed innovations must
+# target the urban mobility market" separates them and `sector` does not. The
+# funder's own page enumerates energy, space tech, data/AI and health companies
+# as eligible mobility verticals, so the comparator rejects four of the
+# verticals it was written to attract.
+#
+# This is enforced here as far as it can be — the encoder is told the property
+# and its test in ENCODE_PROMPT, and a subject label, where one exists, is
+# checked mechanically by check_gate_subject.py against FIELD_SUBJECT. Stating
+# it in a prompt is not enforcing it; that lesson is written twice above this
+# line, and it is why the assertion lives in the checker as well.
+def subject_of(field: str) -> str | None:
+    return FIELD_SUBJECT.get(field)
 
 
 def connect() -> sqlite3.Connection:
@@ -652,8 +730,51 @@ the direction that genuinely restricts:
     who said they COULD collaborate.
 
 If a rule names an OPEN-ENDED or long membership set you cannot enumerate in full
-("EU Member States or Associated Countries", "EuroHPC Participating States"),
-`skip` it. A partial list becomes a wrongful exclusion of everyone you omitted.
+("EU Member States or Associated Countries", "EuroHPC Participating States",
+"digital tech, industrial tech, life sciences, chemistry OR RELATED BUSINESS
+AREAS"), `skip` it. A partial list becomes a wrongful exclusion of everyone you
+omitted.
+
+CRITICAL — A RULE ABOUT THE PROJECT IS NOT DECIDED BY A FACT ABOUT THE COMPANY.
+Every field is about one of two subjects. `sector`, `organisationType`,
+`entityCountries`, `region`, the size and ownership bands, `activities` and
+`exclusionFlags` are about the APPLICANT: what it is, where it is, what it has
+done. `useOfFunds`, `developmentStage`, `consortium`, `cofinancingBand`,
+`ticketBand`, `activityCountries` and `conditionality` are about the PROJECT.
+
+A rule constraining the project may not be encoded against an applicant field.
+
+  THE TEST: take two applicants IDENTICAL in the attribute the field names. If
+  the rule can separate them, that field does not decide the rule -> skip.
+
+  * "The applicant's proposed innovations must target the urban mobility
+    market" -> two software companies, one with a mobility project and one
+    without, sit on opposite sides. `sector` cannot decide it. -> skip
+  * "Projects must fall within one of three defined themes" -> the theme is the
+    project's. -> skip
+  * "Submissions must fit at least one of the listed technology domains" ->
+    the submission's. -> skip
+  * "At least one consortium member must be an energy-intensive industrial
+    company" -> a rule about the CONSORTIUM, and the coordinator may be
+    anything. -> skip
+  * "The company must be registered in Spain" -> two identically-registered
+    applicants cannot differ on it. `entityCountries` decides it. -> in["Spain"]
+
+Watch the sentence's own subject: "the project must...", "the solution must...",
+"submissions must...", "proposed innovations must...", "at least one partner
+must..." are all project-side. "The applicant must be...", "the company must
+have..." are applicant-side — but only when what follows names an attribute of
+the firm rather than of its work.
+
+AND NEVER APPROXIMATE ONTO A CATCH-ALL. `sector` has eleven values and `other`
+means "an industry this list does not name". When a fund's stated purpose is
+narrower than any value the list holds — "a tourism service provider", "active
+in forestry, forest exploitation or sawing", "an independent fuel-distribution
+station (NAF 47.30Z)" — the honest output is `skip`. Not the nearest value, not
+`other`, and not a widened allow-list: a widened list is still a conclusive
+claim, and `sector` is structural, so one false verdict deletes the fund from a
+founder entirely. Nothing is lost by skipping; a fund's purpose is already
+carried by the semantic ranker, which DEMOTES, where the gate screen DELETES.
 
 Prefer `skip` over a lossy encoding. A wrong comparator produces a confident wrong
 verdict, which is far worse than no verdict — and for a country rule it hides a
@@ -745,6 +866,13 @@ def cmd_encode(args) -> None:
             # anyone. What must not happen is a spec: this encoder cannot emit
             # `region_within`, so anything it wrote here would be inert.
             if refuse_unemittable(field, gid, "encoding"):
+                skipped += 1
+                continue
+            # A rule stated in a vocabulary narrower than ours must be skipped,
+            # never approximated onto the catch-all. Checked here rather than
+            # after `spec` is built so the refusal sees the model's own values
+            # whichever operator it chose.
+            if refuse_unnamed_residual(field, op, list(r.get("values") or []), gid):
                 skipped += 1
                 continue
             # A founder's answer for these fields is a LIST, so `equals` (a
