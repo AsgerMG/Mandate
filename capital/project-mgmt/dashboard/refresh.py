@@ -262,7 +262,7 @@ FUNNEL_ROWS = [
     ("publishable",     "&hellip; and we are allowed to offer it",         "warn"),
     ("founder_screen",  "&hellip; and the founder's own answers keep it",  "good"),
     ("gates_pass",      "&hellip; and its written rules do not exclude them", "bad"),
-    ("pool_cut",        "&hellip; and it survives the cut to eighteen",    "bad"),
+    ("pool_cut",        "&hellip; and it survives the cut to the AI's list", "warn"),
     ("writer_cap",      "&hellip; and it survives the cut to eight",       "bad"),
     ("published",       "&hellip; and it is one of the seven published",   "warn"),
     ("top_6",           "&hellip; and it is in the six they read",         "warn"),
