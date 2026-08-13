@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-13T06:13:50.969Z",
+ "startedAt": "2026-08-13T06:50:29.323Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-13T06:13:51.591Z",
+ "corpusObservedAt": "2026-08-13T06:50:29.732Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 814,
@@ -103,9 +103,9 @@
   {
    "id": "writer_cap",
    "question": "... and it survives the cut to the writer's candidates (8)",
-   "remaining": 357,
-   "sharePct": 39.8,
-   "lost": 265,
+   "remaining": 356,
+   "sharePct": 39.69,
+   "lost": 266,
    "unmeasured": false,
    "halfWidthPts": 3.2
   },
@@ -121,8 +121,8 @@
   {
    "id": "published",
    "question": "... and it is one of the 7 rows the brief publishes",
-   "remaining": 344,
-   "sharePct": 38.35,
+   "remaining": 343,
+   "sharePct": 38.24,
    "lost": 13,
    "unmeasured": false,
    "halfWidthPts": 3.18
@@ -130,20 +130,20 @@
   {
    "id": "top_6",
    "question": "... and it is in the first 6 of them",
-   "remaining": 316,
-   "sharePct": 35.23,
+   "remaining": 315,
+   "sharePct": 35.12,
    "lost": 28,
    "unmeasured": false,
-   "halfWidthPts": 3.13
+   "halfWidthPts": 3.12
   },
   {
    "id": "top_5",
    "question": "... and it is in the first 5 of them",
-   "remaining": 292,
-   "sharePct": 32.55,
+   "remaining": 291,
+   "sharePct": 32.44,
    "lost": 24,
    "unmeasured": false,
-   "halfWidthPts": 3.07
+   "halfWidthPts": 3.06
   },
   {
    "id": "model",

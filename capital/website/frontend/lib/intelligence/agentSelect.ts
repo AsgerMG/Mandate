@@ -138,8 +138,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 
 import {
-  AGENT_SELECT_ARM, depthLever, SELECT_COUNT, SELECT_DEPTH,
-  type AgentSelectArm,
+  AGENT_SELECT_ARM, depthLever, EFFORTS, MAX_TOKENS_BY_EFFORT, SELECT_COUNT,
+  SELECT_DEPTH, THINK_EFFORT, TIMEOUT_BY_EFFORT,
+  type AgentSelectArm, type ThinkEffort,
 } from "./caps";
 import { recordUsage } from "./cost";
 import { retrieveDemands } from "./demandRetrieval";
@@ -162,6 +163,10 @@ import { assembleInstructions } from "./contracts";
  *  file for why a pure environment read must not sit behind the Anthropic
  *  client. */
 export { AGENT_SELECT_ARM, type AgentSelectArm };
+/** The thinking lever and its two ceilings. Defined in `./caps` for the same
+ *  reason every other lever is, and re-exported so `_wsga_headtohead.ts`,
+ *  `_wsei_depth_arms.ts`, `_wsdq_run.ts` and `_wsdr_seam.ts` are unchanged. */
+export { EFFORTS, MAX_TOKENS_BY_EFFORT, THINK_EFFORT, TIMEOUT_BY_EFFORT, type ThinkEffort };
 
 export const agentSelectEnabled = (): boolean => AGENT_SELECT_ARM !== "off";
 
@@ -368,26 +373,12 @@ export const SELECT_COUNT_MODE: SelectCountMode = (() => {
  * integers and 1,536 tokens is ample, while bounding the worst case at about
  * EUR 0.014 of output per call.
  */
-// `off` is an EFFORT LEVEL here, not the absence of one, and that is what makes
-// thinking measurable as a lever. The arm previously had exactly one thinking
-// setting -- adaptive at `low` -- so "what does thinking buy" had no control to
-// be measured against except a different ARM, which changes the prompt, the
-// prior and the retrieval path at the same time. Naming `off` on this axis
-// keeps every one of those fixed and moves the one thing under test.
-const EFFORTS = ["off", "low", "medium", "high", "xhigh", "max"] as const;
-export type ThinkEffort = (typeof EFFORTS)[number];
-/** Validated at module scope for the same reason the arm is: an unrecognised
- *  effort must fail loudly, not silently fall through to the model default and
- *  bill at a depth nobody chose. */
-export const THINK_EFFORT: ThinkEffort = (() => {
-  const raw = process.env.AGENT_SELECT_EFFORT ?? "low";
-  if (!EFFORTS.includes(raw as ThinkEffort)) {
-    throw new Error(`AGENT_SELECT_EFFORT must be one of ${EFFORTS.join("|")}, got "${raw}"`);
-  }
-  return raw as ThinkEffort;
-})();
-/** Zero is a legitimate setting — wsDR ran the whole seam comparison at
- *  `lookups=0` — so this lever floors at 0 rather than 1. */
+// `EFFORTS`, `ThinkEffort`, `THINK_EFFORT`, `MAX_TOKENS_BY_EFFORT` and
+// `TIMEOUT_BY_EFFORT` are defined in `./caps`, the leaf module that holds every
+// other lever this stage reads, and re-exported at the imports above so every
+// caller that has always imported them from the ranker still can. They moved so
+// `check_maxtok_headroom.ts` can read a ceiling without pulling the Anthropic
+// client and the corpus layer in behind one number.
 export const LOOKUP_MAX = depthLever("AGENT_SELECT_LOOKUPS", 5, { min: 0 });
 
 /**
@@ -462,50 +453,6 @@ const LOOKUP_TOOL = {
 const MODEL = process.env.AGENT_SELECT_MODEL ?? "claude-sonnet-5";
 
 /**
- * ── THE CEILING HAS TO RISE WITH THE EFFORT, AND THIS IS NOT A TUNING KNOB ──
- *
- * `max_tokens` caps thinking and reply TOGETHER. The arm shipped 1,536 for the
- * adviser, which is ample at effort `low` -- Nortal's own prompt spends 360-519
- * thinking tokens there and answers in 37 characters. It is NOT ample above it.
- * Measured on that same prompt (`scripts/_wsds_probe.ts`, both runs recorded in
- * `findings/dark_levers_wsDS/probe_thinking.txt`):
- *
- *   effort low,  max_tokens 1536   360 thinking, answered
- *   effort high, max_tokens 1536   1,535 thinking, stop_reason=max_tokens,
- *                                  NO text block at all -> empty reply
- *   effort high, max_tokens 8192   5,995 thinking, answered
- *
- * An empty reply is counted as a fallback and publishes the shipped order. So a
- * thinking sweep run against a fixed 1,536 would have reported the CONTROL's
- * table under the treatment's banner at every level above `low`, and reported
- * it as the model declining to choose rather than as a truncation. That is the
- * exact class of error this workstream exists to stop, and it would have been
- * invisible: the tally line says "FELL BACK", not "was cut off".
- *
- * These numbers are ceilings, not budgets -- nothing bills for headroom, only
- * for tokens actually spent -- so they are set well clear of the measured spend
- * rather than trimmed to it. The cost of being generous is a worse worst case;
- * the cost of being tight is a measurement that silently describes the control.
- */
-const MAX_TOKENS_BY_EFFORT: Record<ThinkEffort, number> = {
-  off: 1024, low: 2048, medium: 6144, high: 12288, xhigh: 24576, max: 32768,
-};
-
-/**
- * Same argument as the token ceiling, for the clock.
- *
- * 40 seconds was chosen when the arm could not think. At `high` the probe spent
- * 5,995 thinking tokens on one call, and a timeout is indistinguishable
- * downstream from a model that declined -- both return the shipped order
- * through the same catch. A sweep whose deeper arms quietly time out measures
- * latency, not judgement.
- */
-const TIMEOUT_BY_EFFORT: Record<ThinkEffort, number> = {
-  off: 40_000, low: 40_000, medium: 90_000, high: 150_000,
-  xhigh: 240_000, max: 300_000,
-};
-
-/**
  * Constructed LAZILY, and that is not a style choice.
  *
  * ES imports are hoisted, so a module-scope `new Anthropic()` runs before the
@@ -525,6 +472,25 @@ const anthropic = (): Anthropic => (clientMemo ??= new Anthropic());
  *  otherwise print the control's number under the treatment's banner. */
 const tally = {
   calls: 0, ok: 0, failed: 0, shortReply: 0, invalidIds: 0,
+  /** ── TWO DENOMINATORS, AND THE LINE USED THE WRONG ONE (wsGS) ──────────
+   *
+   *  `calls` counts SEAM INVOCATIONS -- once per founder, incremented where the
+   *  arm decides to spend. `truncated`, `thoughtOn`, `thinkingTokens` and
+   *  `toolAsked` are incremented inside `ask()`, which runs a SECOND time on
+   *  every brief where retrieval fired. The published line divided the second
+   *  by the first and printed the impossible `thought on 210/148 call(s)`
+   *  (findings/headtohead_wsGA): 148 founders, 62 of them retrieved, 148+62 =
+   *  210 API calls, every one of which thought.
+   *
+   *  A ratio over the wrong denominator is not a rounding error -- it made a
+   *  per-call rate unreadable in the one direction that matters, because
+   *  `4 CUT OFF` was silently 4-in-210 and not 4-in-148.
+   *
+   *  THE PROPERTY: a counter incremented inside `ask()` is reported over
+   *  `apiCalls`; a counter incremented in `agentSelectRows` is reported over
+   *  `calls`. `apiCalls` is incremented on the same line that builds the
+   *  request, so a third round added tomorrow counts itself. */
+  apiCalls: 0,
   /** Picks that were a second row of a programme already picked -- SELECT-8
    *  stated in the prompt and measured here rather than assumed (wsDY). */
   siblingPicks: 0, siblingBriefs: 0,
@@ -610,7 +576,7 @@ export function agentSelectExits(): Record<ExitReason, number> {
   return { ...tally.exits };
 }
 export function resetAgentSelectTally(): void {
-  tally.calls = 0; tally.ok = 0; tally.failed = 0;
+  tally.calls = 0; tally.apiCalls = 0; tally.ok = 0; tally.failed = 0;
   tally.shortReply = 0; tally.invalidIds = 0;
   tally.siblingPicks = 0; tally.siblingBriefs = 0;
   tally.declinedSeats = 0; tally.declinedBriefs = 0;
@@ -646,7 +612,7 @@ export function agentSelectTallyLine(): string {
     // Reported on EVERY arm, because `tool` now fires on every arm. Printing it
     // only for the adviser is how a channel comes to run unreported.
     (UNSURE_MODE === "tool"
-      ? ` unsure=tool asked=${tally.toolAsked}/${tally.calls}` +
+      ? ` unsure=tool asked=${tally.toolAsked}/${tally.apiCalls} API call(s)` +
         (AGENT_SELECT_ARM === "adviser" ? "" :
           ` lookups=${tally.lookups} (${tally.resolved} brief(s) retrieved)`) : "") +
     ` model=${MODEL} — ${tally.ok}/${tally.calls} chose, ${tally.failed} FELL BACK to the` +
@@ -670,11 +636,16 @@ export function agentSelectTallyLine(): string {
     // alone never established that the lever moved. `truncated` is here for the
     // opposite reason: it is the only thing that distinguishes a ceiling set too
     // low from a model that declined, and both of those publish the control.
+    // Over `apiCalls`, not `calls`: round two is a second request on the same
+    // brief, so every counter incremented inside `ask()` has a denominator of
+    // its own. The line that printed "thought on 210/148 call(s)" was dividing
+    // by the founders.
     (AGENT_SELECT_ARM === "adviser"
-      ? `, thought on ${tally.thoughtOn}/${tally.calls} call(s)`
+      ? `, ${tally.apiCalls} API call(s) over ${tally.calls} brief(s)`
+        + `, thought on ${tally.thoughtOn}/${tally.apiCalls} API call(s)`
         + ` (${tally.thinkingTokens} thinking token(s) billed,`
         + ` ${tally.thinkingChars} readable char(s)),`
-        + ` ${tally.truncated} CUT OFF at max_tokens` : "") +
+        + ` ${tally.truncated}/${tally.apiCalls} CUT OFF at max_tokens` : "") +
     `, EUR ${tally.eur.toFixed(4)} total, EUR ${(tally.eur / tally.calls).toFixed(4)} per brief`;
 }
 /** `dry` only. The measured prompt sizes, for pricing an arm before running
@@ -1719,6 +1690,10 @@ export async function agentSelectRows(
       // on every axis, so it is offered whenever it is asked for. See the
       // closing block in `buildPrompt` for why `declare` is not.
       const useTool = UNSURE_MODE === "tool";
+      // Incremented HERE, on the line that builds the request, so a third round
+      // added tomorrow counts itself. Every counter below this point in `ask`
+      // is per-API-call and is reported over this number.
+      tally.apiCalls++;
       const r = await anthropic().messages.create({
       model: MODEL,
       ...(useTool ? { tools: [LOOKUP_TOOL] } : {}),

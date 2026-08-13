@@ -545,3 +545,132 @@ if (VERDICT_POOL > SELECT_DEPTH) {
       : `; every row past it cannot reach a founder. `) +
     `Move AGENT_SELECT_DEPTH with it, or set it to "all".`);
 }
+
+/**
+ * ── THE THINKING LEVER AND ITS TWO CEILINGS (moved here by wsGS) ───────────
+ *
+ * These lived in `agentSelect.ts` and are read from there by every harness, so
+ * that module re-exports them and no caller changes. They moved for the reason
+ * every other constant in this file moved: `check_maxtok_headroom.ts` has to
+ * compare a committed run's recorded ceiling against the ceiling in force, and
+ * reading it through `agentSelect.ts` would drag the Anthropic client and the
+ * corpus layer in behind one number — which is what `check_env_loader` fails a
+ * build for, correctly.
+ *
+ * `off` is an EFFORT LEVEL here, not the absence of one, and that is what makes
+ * thinking measurable as a lever. The arm previously had exactly one thinking
+ * setting -- adaptive at `low` -- so "what does thinking buy" had no control to
+ * be measured against except a different ARM, which changes the prompt, the
+ * prior and the retrieval path at the same time. Naming `off` on this axis
+ * keeps every one of those fixed and moves the one thing under test.
+ */
+export const EFFORTS = ["off", "low", "medium", "high", "xhigh", "max"] as const;
+export type ThinkEffort = (typeof EFFORTS)[number];
+/** Validated at module scope for the same reason the arm is: an unrecognised
+ *  effort must fail loudly, not silently fall through to the model default and
+ *  bill at a depth nobody chose. */
+export const THINK_EFFORT: ThinkEffort = (() => {
+  const raw = process.env.AGENT_SELECT_EFFORT ?? "low";
+  if (!EFFORTS.includes(raw as ThinkEffort)) {
+    throw new Error(`AGENT_SELECT_EFFORT must be one of ${EFFORTS.join("|")}, got "${raw}"`);
+  }
+  return raw as ThinkEffort;
+})();
+
+/**
+ * ── THE CEILING HAS TO RISE WITH THE EFFORT, AND THIS IS NOT A TUNING KNOB ──
+ *
+ * `max_tokens` caps thinking and reply TOGETHER. The arm shipped 1,536 for the
+ * adviser, which is ample at effort `low` -- Nortal's own prompt spends 360-519
+ * thinking tokens there and answers in 37 characters. It is NOT ample above it.
+ * Measured on that same prompt (`scripts/_wsds_probe.ts`, both runs recorded in
+ * `findings/dark_levers_wsDS/probe_thinking.txt`):
+ *
+ *   effort low,  max_tokens 1536   360 thinking, answered
+ *   effort high, max_tokens 1536   1,535 thinking, stop_reason=max_tokens,
+ *                                  NO text block at all -> empty reply
+ *   effort high, max_tokens 8192   5,995 thinking, answered
+ *
+ * An empty reply is counted as a fallback and publishes the shipped order. So a
+ * thinking sweep run against a fixed 1,536 would have reported the CONTROL's
+ * table under the treatment's banner at every level above `low`, and reported
+ * it as the model declining to choose rather than as a truncation. That is the
+ * exact class of error this workstream exists to stop, and it would have been
+ * invisible: the tally line says "FELL BACK", not "was cut off".
+ *
+ * These numbers are ceilings, not budgets -- nothing bills for headroom, only
+ * for tokens actually spent -- so they are set well clear of the measured spend
+ * rather than trimmed to it. The cost of being generous is a worse worst case;
+ * the cost of being tight is a measurement that silently describes the control.
+ *
+ * ── AND ONE OF THEM WAS MEASURED TO BIND, WHICH VOIDED A PAID RUN (wsGS) ──
+ *
+ * `findings/headtohead_wsGA/adviser_medium_n773_x2.md` records, in its own tally
+ * line: `effort=medium maxtok=6144 ... 4 CUT OFF at max_tokens`. Truncation was
+ * a declared VOID condition in `project-mgmt/wsGA_prereg.md` -- "a truncated
+ * reply is indistinguishable downstream from a model that declined" -- and it
+ * breached, so that run's headline does not stand. It was NOT a short menu: the
+ * same line says `depth=40`, so the eighteen-row era was already over and forty
+ * rows are what bound.
+ *
+ * ── THE PROPERTY, stated so it covers a level nobody has run yet ──────────
+ *
+ *   A CEILING MEASURED TO BIND AT AN EFFORT MAY NOT REMAIN IN FORCE THERE, and
+ *   its replacement must clear a ceiling that a run at that effort OR DEEPER
+ *   was measured to reach without binding.
+ *
+ * It is stated over the recorded runs rather than over a table of values, so an
+ * effort level added tomorrow is covered and so is a rung nobody has measured:
+ * `scripts/check_maxtok_headroom.ts` reads every committed tally line under
+ * project-mgmt/, and any future run that truncates turns it red until the
+ * ceiling above it moves. No number in this file is the guard's input.
+ *
+ * Applying it: `medium` rises to 12,288, which is the ceiling `high` -- an
+ * effort that spent 2-3x more thinking per call -- carried across 46 recorded
+ * calls with zero truncations (dark_levers_wsDS `curve/high.txt` 34/36 and
+ * `bench_high/SUMMARY.md` 12/12). `high` then rises to keep the ladder strictly
+ * increasing, because an effort that thinks deeper may not hold the shallower
+ * one's ceiling. `off` and `low` are untouched: thinking is disabled at `off`
+ * and `low` has never truncated in any recorded run.
+ */
+export const MAX_TOKENS_BY_EFFORT: Record<ThinkEffort, number> = {
+  off: 1024, low: 2048, medium: 12288, high: 16384, xhigh: 24576, max: 32768,
+};
+
+/**
+ * Same argument as the token ceiling, for the clock.
+ *
+ * 40 seconds was chosen when the arm could not think. At `high` the probe spent
+ * 5,995 thinking tokens on one call, and a timeout is indistinguishable
+ * downstream from a model that declined -- both return the shipped order
+ * through the same catch. A sweep whose deeper arms quietly time out measures
+ * latency, not judgement.
+ *
+ * ── AND RAISING A TOKEN CEILING WITHOUT THE CLOCK JUST MOVES THE FAULT ────
+ *
+ * A ceiling the clock cannot reach is not a ceiling. `medium` carried 6,144
+ * tokens against 90 seconds; at 12,288 the same wall would cut the call off
+ * before the ceiling ever bound -- and a timeout lands in `exits.threw` where a
+ * truncation lands in `truncated`, so the FIX for one defect would have hidden
+ * the other in the quieter counter. The two levers move together or neither
+ * moves.
+ *
+ * The clock is bounded from above by the route, not by taste:
+ * `app/api/intelligence/route.ts` declares `maxDuration = 300`, and the writer
+ * runs after this stage inside the same 300 seconds. So `max`'s 300,000 is
+ * already the whole request's budget and cannot rise; `medium` and `high` rise
+ * to 150s and 200s, which keeps every level strictly inside the route with room
+ * for the stage that follows it. NOT A PRODUCTION CHANGE: `AGENT_SELECT_EFFORT`
+ * defaults to `low`, whose 40 seconds is untouched.
+ */
+export const TIMEOUT_BY_EFFORT: Record<ThinkEffort, number> = {
+  off: 40_000, low: 40_000, medium: 150_000, high: 200_000,
+  xhigh: 240_000, max: 300_000,
+};
+
+/** The route this stage runs inside, in milliseconds. Named here so the guard
+ *  that checks the clock does not have to parse a Next segment config, and so
+ *  the reason a timeout may not rise is a value rather than a sentence.
+ *  Mirrors `maxDuration` in `app/api/intelligence/route.ts`; tied to it by
+ *  `check_maxtok_headroom.ts`, which reads both. */
+export const REQUEST_BUDGET_MS = 300_000;
