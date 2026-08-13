@@ -46,6 +46,12 @@ const CHECKS = [
   ["unit tests", ["npx", "vitest", "run"]],
   ["segment config is a literal", ["npx", "tsx", "scripts/check_revalidate_literal.ts"]],
   ["output contracts", ["npx", "tsx", "scripts/check_contracts.ts"]],
+  // Directly under it, because it reads the same tree and asks the one question
+  // that check does not: `check_contracts` asks whether every rule is routed and
+  // enforced, this asks whether the PROSE states a frequency the code computes at
+  // request time. Two rates were live in the selector's system prompt while the
+  // same call carried the curve-derived ones in the user prompt.
+  ["a contract states no rate", ["npx", "tsx", "scripts/check_prompt_rates.ts"]],
   // Beside `check_contracts` because it grades the other half of the same
   // claim: that one counts a rule enforced when a literal names it, this one
   // asks whether the check deciding it is reachable from a request at all.

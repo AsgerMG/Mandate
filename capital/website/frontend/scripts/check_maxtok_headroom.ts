@@ -80,8 +80,9 @@ const ROUTE = "website/frontend/app/api/intelligence/route.ts";
 const MIN_RECORDS = 5;
 const MIN_EFFORTS = 4;
 
-/** One recorded run, as its own tally line states it. */
-interface Record {
+/** One recorded run, as its own tally line states it. Named `Run` and not
+ *  `Record` because the latter shadows the built-in generic. */
+interface Run {
   file: string;
   effort: string;
   maxtok: number;
@@ -98,8 +99,8 @@ interface Record {
  * keys on is the counter's own name, which is the thing that cannot change
  * without somebody editing the counter.
  */
-export function recordsIn(file: string, text: string): Record[] {
-  const out: Record[] = [];
+export function recordsIn(file: string, text: string): Run[] {
+  const out: Run[] = [];
   for (const line of text.split("\n")) {
     if (!line.includes("agent-select:")) continue;
     const eff = line.match(/effort=([a-z]+)/);
@@ -132,7 +133,7 @@ function walk(dir: string): string[] {
  * written, and reports how many of them that ceiling rejects. If the answer is
  * zero, this guard is decorative and says so rather than reporting green.
  */
-function prove(records: Record[]): void {
+function prove(records: Run[]): void {
   const WAS: Record<string, number> = {
     off: 1024, low: 2048, medium: 6144, high: 12288, xhigh: 24576, max: 32768,
   };
@@ -155,7 +156,7 @@ function prove(records: Record[]): void {
 /** A guard whose own parser is broken is worse than no guard, because it is
  *  green. One synthetic line per shape it must handle, and one per failure. */
 function selfTest(): void {
-  const cases: [string, string, Partial<Record>][] = [
+  const cases: [string, string, Partial<Run>][] = [
     ["the wsGA line, old denominator",
      "agent-select: arm=adviser depth=40 count=7 effort=medium maxtok=6144 unsure=declare "
      + "lookups=134 (62 brief(s) retrieved) model=claude-sonnet-5 — 145/148 chose, "

@@ -144,7 +144,7 @@ import {
 } from "./caps";
 import { recordUsage } from "./cost";
 import { retrieveDemands } from "./demandRetrieval";
-import { asBaseRate, poolRecallAt, poolRecallN } from "./poolRecall";
+import { baseRateSentence } from "./poolRecall";
 import { regionNameFor } from "./regions.generated";
 import { oneLine, ROW_TITLE_CHARS } from "./schemeText";
 import {
@@ -167,6 +167,9 @@ export { AGENT_SELECT_ARM, type AgentSelectArm };
  *  reason every other lever is, and re-exported so `_wsga_headtohead.ts`,
  *  `_wsei_depth_arms.ts`, `_wsdq_run.ts` and `_wsdr_seam.ts` are unchanged. */
 export { EFFORTS, MAX_TOKENS_BY_EFFORT, THINK_EFFORT, TIMEOUT_BY_EFFORT, type ThinkEffort };
+/** The measured base rate, read at the depth of the list actually shown.
+ *  Defined in `./poolRecall` beside the curve it reads. */
+export { baseRateSentence };
 
 export const agentSelectEnabled = (): boolean => AGENT_SELECT_ARM !== "off";
 
@@ -1247,53 +1250,12 @@ let systemMemo: string | null = null;
 export const selectorSystemPrompt = (): string =>
   (systemMemo ??= assembleInstructions("selector"));
 
-/**
- * ── THE BASE RATE, FOR THE LIST ACTUALLY IN FRONT OF IT (wsDR) ─────────────
- *
- * What this replaces was one sentence, hard-coded, and false by more than a
- * factor of two at the depth it was being read at: "somewhere in this list
- * about three quarters of the time" was measured on `computeVerdict`'s
- * candidate list, median 105 rows, and printed on a prompt showing 18. wsDQ
- * measured the truth for 18 rows at 15/45. The model was told to reach down a
- * list that usually does not contain the answer.
- *
- * The fix cannot be a second number, because the quantity is a FUNCTION OF THE
- * LIST LENGTH and this workstream exists to change the list length. It is read
- * from the measured curve at the menu's own depth, so it is true at the late
- * seam, true at the early seam, and true at whatever depth either becomes.
- *
- * Three facts, and the third is the one the old sentence hid: how often the
- * answer is not in the list at all. That share is unreachable by any choice the
- * model makes, and a model told the list "usually" contains the answer will
- * manufacture a pick for it.
- *
- * Returns "" when the curve is unavailable — see poolRecall.ts. No claim beats
- * a false one, and this file has now shipped the false one for four
- * workstreams.
- */
-export function baseRateSentence(listLength: number): string {
-  const p6 = poolRecallAt(Math.min(6, listLength));
-  const pn = poolRecallAt(listLength);
-  const n = poolRecallN();
-  if (p6 == null || pn == null || !n) return "";
-  const a = asBaseRate(p6), b = asBaseRate(pn);
-  const lines = [
-    `Measured on ${n} held-out companies, the scheme that actually paid out is in`,
-    `the first six rows about ${a}% of the time, and somewhere in this list of ${listLength}`,
-    `about ${b}% of the time.`,
-  ];
-  if (listLength > 6) {
-    lines.push(
-      `So about ${Math.max(0, b - a)}% of the time it is in this list but BELOW the sixth row --`,
-      `that is the whole of what a choice of yours can win -- and about ${100 - b}% of the`,
-      `time it is not in this list at all, and nothing you pick can reach it.`);
-  } else {
-    lines.push(
-      `So about ${100 - b}% of the time it is not in this list at all, and nothing you`,
-      `pick can reach it.`);
-  }
-  return `\n\n${lines.join("\n")}`;
-}
+// `baseRateSentence` moved to `./poolRecall` (wsGS), the leaf module that owns
+// the curve it reads. It is a pure function of that artifact and of the menu
+// length, it reaches nothing else, and `check_prompt_rates.ts` has to call it to
+// assert the rate is still delivered -- which through this module would drag the
+// Anthropic client and the corpus layer in behind one sentence. Re-exported at
+// the top of this file so `_wsdr_seam.ts` is unchanged.
 
 /**
  * EXPORTED FOR DIAGNOSTICS, and for one reason: what a model is told is a thing
