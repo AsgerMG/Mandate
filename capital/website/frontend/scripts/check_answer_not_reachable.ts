@@ -200,8 +200,10 @@ const DERIVATION: Record<string, { class: Derivation; why: string }> = {
   scheme_code: { class: "award-fact", why: "the notified regime the awards were made under" },
   application_url: { class: "award-fact", why: "the fund's own submission page" },
   scheme_operators: { class: "award-fact", why: "the bodies that disburse under the scheme" },
+  award_p25: { class: "award-fact", why: "a percentile of the amounts" },
   award_p50: { class: "award-fact", why: "a percentile of the amounts" },
-  award_n: { class: "award-fact", why: "how many priced awards stand behind that percentile" },
+  award_p75: { class: "award-fact", why: "a percentile of the amounts" },
+  award_n: { class: "award-fact", why: "how many priced awards stand behind those percentiles" },
   intensity_p50: { class: "award-fact", why: "grant over project cost — two amounts" },
   intensity_n: { class: "award-fact", why: "how many projects stand behind that ratio" },
 
