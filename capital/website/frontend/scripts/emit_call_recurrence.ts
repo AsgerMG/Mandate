@@ -39,7 +39,7 @@ import { join, resolve } from "node:path";
 import { CALL_RECURRENCE } from "../lib/intelligence/liveness";
 
 const EVIDENCE_DIR = resolve(__dirname, "../../../project-mgmt/evidence");
-const OUT = resolve(__dirname, "../lib/intelligence/callRecurrence.generated.ts");
+export const OUT = resolve(__dirname, "../lib/intelligence/callRecurrence.generated.ts");
 
 /** The funder verdicts this axis knows how to read, and what each one means for
  *  "does the programme continue past the round we hold". Stated as a mapping
@@ -73,7 +73,19 @@ interface Rec {
   source: string;
 }
 
-function main(): void {
+export interface BuildResult {
+  source: string;
+  files: number; lines: number; emitted: number;
+  unsettled: number; unsourced: number;
+  byVerdict: Map<string, number>;
+}
+
+/** The file this SHOULD hold, from the evidence as it stands. Exported so
+ *  `check_liveness` can compare it to disk without a second implementation —
+ *  the shape `check_offer_route` uses, and for the same reason: a projection
+ *  that nothing compares is a projection that goes stale the first time an
+ *  evidence file lands and nobody re-runs the emitter. */
+export function build(): BuildResult {
   const recs = new Map<string, Rec>();
   const files = readdirSync(EVIDENCE_DIR).filter((f) => f.endsWith(".jsonl")).sort();
   let lines = 0, unsettled = 0, unsourced = 0;
@@ -131,16 +143,21 @@ export const CALL_RECURRENCE_RECORDS: Readonly<Record<string, RecurrenceRecord>>
 ${body}
 };
 `;
-  const before = (() => { try { return readFileSync(OUT, "utf8"); } catch { return ""; } })();
-  const write = process.env.WRITE === "1";
-  if (write) writeFileSync(OUT, out);
-  console.log(
-    `evidence files ${files.length}  lines ${lines}  emitted ${ids.length}  ` +
-    `unsettled/no-recurrence-statement ${unsettled}  no url or read date ${unsourced}`);
   const byVerdict = new Map<string, number>();
   for (const r of recs.values()) byVerdict.set(r.funderVerdict, (byVerdict.get(r.funderVerdict) ?? 0) + 1);
-  for (const [v, n] of [...byVerdict].sort()) console.log(`  ${String(n).padStart(4)}  ${v}`);
-  if (!write && before !== out) {
+  return { source: out, files: files.length, lines, emitted: ids.length, unsettled, unsourced, byVerdict };
+}
+
+function main(): void {
+  const r = build();
+  const before = (() => { try { return readFileSync(OUT, "utf8"); } catch { return ""; } })();
+  const write = process.env.WRITE === "1";
+  if (write) writeFileSync(OUT, r.source);
+  console.log(
+    `evidence files ${r.files}  lines ${r.lines}  emitted ${r.emitted}  ` +
+    `unsettled/no-recurrence-statement ${r.unsettled}  no url or read date ${r.unsourced}`);
+  for (const [v, n] of [...r.byVerdict].sort()) console.log(`  ${String(n).padStart(4)}  ${v}`);
+  if (!write && before !== r.source) {
     console.error(
       "\ncallRecurrence.generated.ts is STALE against the evidence. " +
       "Run WRITE=1 npx tsx scripts/emit_call_recurrence.ts");
@@ -148,4 +165,6 @@ ${body}
   }
 }
 
-main();
+// `main()` only when invoked directly, so `check_liveness` can import `build()`
+// without the emitter's own reporting and exit code running inside a check.
+if (process.argv[1] && process.argv[1].endsWith("emit_call_recurrence.ts")) main();

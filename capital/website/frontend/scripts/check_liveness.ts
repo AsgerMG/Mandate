@@ -151,6 +151,22 @@ async function main() {
   // deadlines. What it must never do is sit at zero because nobody is looking:
   // it is printed on every run, beside the rows the audit has reached.
   try {
+    // The projection must BE the evidence. A generated file nothing compares
+    // goes stale the first time an audit lands and nobody re-runs the emitter,
+    // and the failure is silent: the axis simply keeps answering for the rows
+    // it knew about. Same shape as check_offer_route's first assertion.
+    const { build, OUT: RECUR_OUT } = await import("./emit_call_recurrence");
+    let onDisk = "";
+    try { onDisk = readFileSync(RECUR_OUT, "utf8"); } catch { /* missing */ }
+    if (onDisk !== build().source) {
+      problems.push({
+        axis: "call recurrence",
+        detail: "lib/intelligence/callRecurrence.generated.ts is STALE against " +
+          "project-mgmt/evidence/*.jsonl, so a funder page somebody read is not " +
+          "reaching the axis. Run: WRITE=1 npx tsx scripts/emit_call_recurrence.ts",
+      });
+    }
+
     delete process.env.DATABASE_URL;
     const { loadDbInstruments } = await import("../lib/intelligence/corpus");
     const { recurrenceRecord } = await import("../lib/intelligence/callRecurrence");
