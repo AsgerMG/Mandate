@@ -698,6 +698,8 @@ async function main() {
     if (traces.length % 50 === 0) console.log(`  ${traces.length}/${drawn.length}`);
   }
 
+  writeFounderTrace(traces, byId, startedAt);
+
   // ── THE TABLE ─────────────────────────────────────────────────────────────
   const N = traces.length;
   const rows = funnelRows(STAGES, traces);
@@ -1315,6 +1317,64 @@ function bandConversions(): { label: string; n: number; control: number; ranker:
     });
   }
   return out;
+}
+
+/** The working tree. `process.cwd()` is `website/frontend` for every harness
+ *  here, and the repo is two levels up — the same derivation `latest.md`'s own
+ *  output path uses, so the two cannot disagree about where the tree is. */
+const REPO_ROOT = path.resolve(process.cwd(), "..", "..");
+
+/** ── THE PER-FOUNDER TRACE, AND WHY IT DOES NOT LIVE IN THE REPO ───────────
+ *
+ *  `latest.json` is AGGREGATE ONLY, deliberately. That makes it safe and makes
+ *  it unable to answer the one question this repo's standing rule asks of every
+ *  proposed change: **is the gain SPREAD or is it one market**. Two funnel runs
+ *  are the same founders in the same order — the draw fingerprint says so — so
+ *  the pairing exists; what was missing was anything to pair. A workstream that
+ *  wanted it had to either re-implement the ladder in a scratch script (a second
+ *  definition of the funnel, which is the defect this instrument was built to
+ *  remove) or report an unpaired difference of two marginal counts, which is
+ *  exactly the comparison that closed the blend route in error in wsBU.
+ *
+ *  So: opt-in, one line per founder, and REFUSED anywhere inside the working
+ *  tree. The regime is a `parentId`, which for a standalone fund IS the won
+ *  fund's id — so this file is a partial answer key, and the answer key may not
+ *  gain a second copy in a directory nothing guards. `check_answer_not_reachable`
+ *  scans the repo; a path outside it is outside that guard, which is the reason
+ *  the guard here is a refusal and not a warning.
+ *
+ *  The company NAME never appears. Pairing is positional: two runs quoting one
+ *  draw fingerprint drew the same founders in the same order, and that is
+ *  checked by the fingerprint rather than asserted by a name in this file. */
+function writeFounderTrace(
+  traces: Trace[], byId: Map<string, DbInstrument>, startedAt: string,
+): void {
+  const out = process.env.FUNNEL_TRACE;
+  if (!out) return;
+  const abs = path.resolve(out);
+  if (!path.relative(REPO_ROOT, abs).startsWith("..")) {
+    throw new Error(
+      `measure_funnel: FUNNEL_TRACE=${abs} is inside the working tree. Each line `
+      + "carries the REGIME of a fund a real company really won, and for a "
+      + "standalone fund the regime is that fund's own id — so this is a partial "
+      + "copy of the answer key, and the answer key does not get a second copy "
+      + "the leak guards do not scan. Write it outside the repo.");
+  }
+  const lines = traces.map((t, i) => JSON.stringify({
+    i, country: t.country,
+    // The ROLLUP the won fund belongs to. `measure_recall` computes the same
+    // quantity the same way (`parentId ?? id`), so a concentration figure from
+    // this file and one from that harness mean the same thing.
+    regime: String(byId.get(t.won)?.parentId ?? t.won),
+    inCorpus: t.inCorpus, offerable: t.offerable,
+    rankTable: t.rankTable, rankAccessible: t.rankAccessible,
+    rankWriter: rankWriter(t, VERDICT_POOL),
+    tableLen: t.tableLen, accessibleLen: t.accessibleLen,
+  }));
+  mkdirSync(path.dirname(abs), { recursive: true });
+  writeFileSync(abs, `${JSON.stringify({ startedAt, rowOrder: POOL_BLEND })}\n`
+    + `${lines.join("\n")}\n`);
+  console.log(`wrote founder trace ${abs} (${lines.length} founders)`);
 }
 
 /** ── THE HISTORY, AND THE ONE RULE IT HAS ──────────────────────────────────

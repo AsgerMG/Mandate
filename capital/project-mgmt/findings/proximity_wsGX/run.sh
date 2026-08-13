@@ -41,10 +41,17 @@ FUNNEL="$ROOT/project-mgmt/findings/one_funnel"
 cd "$ROOT/website/frontend" || exit 1
 mkdir -p "$OUT"
 
+# The per-founder traces are PAIRED across arms — same draw, same order, checked
+# by the draw fingerprint — and each carries the REGIME of a fund a real company
+# really won. `measure_funnel` refuses to write one inside the tree, so they land
+# in the scratchpad and only AGGREGATE concentration figures reach the finding.
+TRACE=/private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsgx
+
 stages () { arm=$1
   echo "=== stages POOL_BLEND=$arm  $(date -u +%FT%TZ) ==="
   before=$(ls "$FUNNEL/runs" 2>/dev/null | wc -l)
-  env POOL_BLEND="$arm" npm run stages > "$OUT/STAGES_$arm.txt" 2>&1 \
+  env POOL_BLEND="$arm" FUNNEL_TRACE="$TRACE/trace_$arm.jsonl" \
+    npm run stages > "$OUT/STAGES_$arm.txt" 2>&1 \
     || echo "FAILED stages $arm"
   cp "$FUNNEL/latest.md"   "$OUT/FUNNEL_$arm.md"   2>/dev/null
   cp "$FUNNEL/latest.json" "$OUT/FUNNEL_$arm.json" 2>/dev/null
