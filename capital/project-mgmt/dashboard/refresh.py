@@ -284,8 +284,13 @@ FUNNEL_ROWS = [
      "the fund's written eligibility rules"),
     ("pool_cut",        "&hellip; and it survives the cut to the AI's list", "warn",
      "the cut to the list the AI sees"),
-    ("writer_cap",      "&hellip; and it survives the cut to eight",       "bad",
-     "the cut to eight, after the AI has ranked"),
+    # NOT "the cut to eight". The cap is inert -- caps.ts:463 proves the
+    # founder reads ranks 1..7 whether it is 8, 12 or 18, and raising it to the
+    # whole pool measured +0.12 against a +/-3.2 half-width. What loses 31
+    # points here is the ORDER: a fund at rank 9 is lost at any cap. Labelling
+    # it by the cap sent me looking at a constant for a week.
+    ("writer_cap",      "&hellip; and our ranking puts it in the top eight", "bad",
+     "our own ranking of that list"),
     ("published",       "&hellip; and it is one of the seven published",   "warn",
      "publishing seven of the eight"),
     ("top_6",           "&hellip; and it is in the six they read",         "warn",
