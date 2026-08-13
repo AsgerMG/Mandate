@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-13T15:24:22.652Z",
+ "startedAt": "2026-08-13T15:50:50.399Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-13T15:24:23.153Z",
+ "corpusObservedAt": "2026-08-13T15:50:50.957Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 814,
@@ -94,9 +94,9 @@
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (40 rows)",
-   "remaining": 632,
-   "sharePct": 70.46,
-   "lost": 129,
+   "remaining": 631,
+   "sharePct": 70.35,
+   "lost": 130,
    "unmeasured": false,
    "halfWidthPts": 2.99
   },
@@ -105,7 +105,7 @@
    "question": "... and it survives the cut to the writer's candidates (8)",
    "remaining": 359,
    "sharePct": 40.02,
-   "lost": 273,
+   "lost": 272,
    "unmeasured": false,
    "halfWidthPts": 3.21
   },

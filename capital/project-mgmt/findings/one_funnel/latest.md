@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-13T15:24:22.652Z
-corpus             postgres instruments=1088 at 2026-08-13T15:24:23.153Z
+started            2026-08-13T15:50:50.399Z
+corpus             postgres instruments=1088 at 2026-08-13T15:50:50.957Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-13T15:24:23.153Z
+                   is REFUSED rather than labelled. observedAt 2026-08-13T15:50:50.957Z
 ranker: all 814 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -60,8 +60,8 @@ is not a move.
 | ... and its openness could be CONFIRMED (the degradation policy) | 814 | 90.7% +/-1.9 | 0 | `unconfirmedOpen` — the degradation clause of the same filter |
 | ... and this founder's screen keeps it (country, capital, channel + leaf caps) | 792 | 88.3% +/-2.1 | -22 (2.5 pts) | `buildInstrumentTableHydrated` = `candidateInstrumentIds` |
 | ... and its encoded eligibility gates do not conclusively fail (accessiblePool) | 761 | 84.8% +/-2.3 | -31 (3.5 pts) | `accessiblePool` → `VER-BLOCKED` |
-| ... and it survives the cut to VERDICT_POOL (40 rows) | 632 | 70.5% +/-3.0 | -129 (14.4 pts) | `.slice(0, VERDICT_POOL)` |
-| ... and it survives the cut to the writer's candidates (8) | 359 | 40.0% +/-3.2 | -273 (30.4 pts) | `orderMemoCandidates().toWriter` |
+| ... and it survives the cut to VERDICT_POOL (40 rows) | 631 | 70.3% +/-3.0 | -130 (14.5 pts) | `.slice(0, VERDICT_POOL)` |
+| ... and it survives the cut to the writer's candidates (8) | 359 | 40.0% +/-3.2 | -272 (30.3 pts) | `orderMemoCandidates().toWriter` |
 | ... and the writer's own prose does not demote it behind the actionable rows | ? | ? | **UNMEASURED** | `isWatchOnly` in `assembleBriefRows` — needs the writer |
 | ... and it is one of the 7 rows the brief publishes | 346 | 38.6% +/-3.2 | -13 (1.4 pts) | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
 | ... and it is in the first 6 of them | 318 | 35.5% +/-3.1 | -28 (3.1 pts) | the first 6 rows of the same order, our own scoring |
@@ -122,7 +122,7 @@ Reasons OVERLAP — a row can fail several — so these do not sum to the stage 
 | `check_recall_floor` pool **97.7%** | 300 tune pairs of __recallSetDescribed.json, answer already offerable, published 2026-08-12 | `founder_screen` given `liveness_confirmed` | 97.3% |
 | `check_recall_floor` EXACT@5 **25.0%** | same, and on the INSTANT SCREEN's six rows, not the memo's | `top_5` given `liveness_confirmed` | 36.0% |
 | `poolRecallCurve` inPoolAtAll 87.6% | 820 held-out, answer already offerable | `gates_pass` given `liveness_confirmed` | 93.5% |
-| `poolRecallCurve` at K=40 73.2% | same | `pool_cut` given `liveness_confirmed` | 77.6% |
+| `poolRecallCurve` at K=40 73.2% | same | `pool_cut` given `liveness_confirmed` | 77.5% |
 | head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 46.4% |
 | head-to-head ranker EXACT@5 51.0% | same | `model` — UNMEASURED here | ? |
 | "we find the right fund 98% of the time" | no population — the sentence has none | `top_5` as a share of the START | 32.7% |
