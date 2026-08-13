@@ -112,6 +112,18 @@ Three examples of what is being corrected:
   instrument-wide establishment filters that contradict each other, since no
   applicant is registered in all three.
 
+**What it costs, stated rather than buried.** Quarantining is not free: it
+turns "wrongly blocked" into "cannot be judged". The guard's judgeable
+population falls from 6,167 pairs to 6,052 against its anti-vacuity floor of
+6,000, and 7 of the 45 instruments touched are left with no encoded filter of
+their own at all. That is the honest state for those seven — ADEME's forestry
+and fuel-station schemes, Vinnova's aviation programme — whose eligibility is
+genuinely narrow and genuinely unexpressible in an eleven-value sector list.
+They should be RANKED with their requirement shown, not screened out of the
+founders who won them. But the headroom above that floor is 52 pairs, so the
+next pass of this kind needs a better field to move rules to, not more
+quarantine.
+
 **To apply:** `python3 ETL/terms/apply_gate_encoding_corrections.py --apply`,
 then publish. It is a dry run without the flag and refuses outright if any row
 has drifted; today all 63 match the corpus exactly.
