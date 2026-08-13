@@ -960,6 +960,88 @@ function verdictLine(a: InstrumentAssessment | undefined): string {
   }
 }
 
+/** How many characters of the composed descriptor a row may spend. Unchanged
+ *  from the budget `oneLine(r.descriptor, 60)` used; what changed is WHICH end
+ *  of the composite pays for it. */
+const DESCRIPTOR_CHARS = 60;
+
+/** The separator `fundDescriptor` joins with. One definition, because a row
+ *  that splits on a different character than the one that joined it silently
+ *  reads the whole descriptor as a single part. */
+const DESCRIPTOR_SEP = " \u00b7 ";
+
+/**
+ * The row's kind of capital, and the descriptor parts that are left.
+ *
+ * ── The property, and its test for the unseen case ────────────────────────
+ * A ROW STATES EACH FACT ONCE, AND A BUDGET NEVER COSTS IT A FACT.
+ *
+ * `fundDescriptor` composes `CAPITAL_WORD[capitalType] · region · what it
+ * mostly funds`. The row was printing the raw `capitalType` column beside that
+ * whole string, so the kind of capital appeared twice — "grant" and then
+ * "Grants", four fields apart — and the characters went on the repeat.
+ *
+ * Two things follow, and neither is a list of known duplicates:
+ *
+ *   THE READER'S WORD WINS. Where a descriptor part names the same fact as the
+ *     `capitalType` column, that part IS the column rendered for a reader, and
+ *     it takes the slot the raw value used to hold. The raw value prints only
+ *     where no part names it — one statement of the fact, not fewer facts.
+ *   AND IT DOES NOT COMPETE FOR THE BUDGET. It is lifted out of the budgeted
+ *     text entirely, so a long region name can never cost the row its kind of
+ *     capital. Only the parts that are genuinely new to the row are budgeted.
+ *
+ * A part that restates a field the row prints beside the descriptor — the body,
+ * the country — is dropped. Normalisation is deliberately shallow: case,
+ * punctuation, and the plural the corpus's own word carries. It is not a
+ * stemmer; two facts that differ by more than that are two facts.
+ *
+ * Stated over the parts rather than over their positions, so a fourth clause
+ * added to `fundDescriptor` tomorrow is carried with no edit here.
+ */
+export function descriptorParts(r: InstrumentRow): { capital: string; rest: string[] } {
+  const norm = (s: string) =>
+    s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim().replace(/s$/, "");
+  const said = new Set([r.administeringBody, r.country]
+    .filter(Boolean).map((v) => norm(String(v))));
+  const parts = (r.descriptor ?? "").split(DESCRIPTOR_SEP)
+    .map((p) => p.trim())
+    .filter((p) => p && !said.has(norm(p)));
+  const key = r.capitalType ? norm(r.capitalType) : "";
+  const i = key ? parts.findIndex((p) => norm(p) === key) : -1;
+  return {
+    capital: i >= 0 ? parts[i] : (r.capitalType ?? ""),
+    rest: i >= 0 ? [...parts.slice(0, i), ...parts.slice(i + 1)] : parts,
+  };
+}
+
+/**
+ * Fit the parts into a budget, LAST FIRST.
+ *
+ * `fundDescriptor` puts what the scheme mostly funds at the end, and that is
+ * the one part of the composite the row does not already carry — the line that
+ * separates two rows of one body in one country. Cutting from the front of the
+ * string, which is what `oneLine` does, spent the budget on the parts that were
+ * redundant and then deleted the one that was not.
+ *
+ * Nothing is invented and nothing is reordered: the parts print in the order
+ * `fundDescriptor` composed them. What changes is which one pays when there is
+ * not room for all of them.
+ */
+export function fitDescriptor(parts: string[], budget: number): string {
+  const out: string[] = [];
+  let left = budget;
+  for (const p of [...parts].reverse()) {
+    // Below this a part is an ellipsis and a syllable, which is noise rather
+    // than an abbreviated fact.
+    if (left < 12) break;
+    const cut = oneLine(p, left);
+    out.unshift(cut);
+    left -= cut.length + DESCRIPTOR_SEP.length;
+  }
+  return out.join(DESCRIPTOR_SEP);
+}
+
 /** One candidate as the model reads it. Everything here is either a statement
  *  of what the fund DEMANDS, an aggregate over its whole award history, or our
  *  own model-free read of the founder's answers against that fund's rules.
@@ -971,12 +1053,29 @@ function renderRow(
   const facts: string[] = [];
   if (r.administeringBody) facts.push(oneLine(r.administeringBody, 70));
   if (r.country) facts.push(r.country);
-  if (r.capitalType) facts.push(r.capitalType);
+  // ── THE DESCRIPTOR IS THREE FACTS, AND TWO WERE ALREADY ON THE ROW (wsGS) ─
+  //
+  // `fundDescriptor` composes `CAPITAL_WORD[capitalType] · region · what it
+  // mostly funds`, joined by DESCRIPTOR_SEP. So the row was printing the kind
+  // of capital TWICE — once as the raw column value and once as the corpus's
+  // own word for it, four fields apart — and the region beside a country it
+  // usually sits inside.
+  //
+  // The third part is the only one of the three that is NOT already on this
+  // row: what the scheme mostly pays for. `oneLine(descriptor, 60)` cut from
+  // the END, so a long region name deleted exactly that clause and left the
+  // row repeating itself. `fitDescriptor` spends the budget from the last part
+  // backwards, so what gets dropped is what the row already said.
+  //
+  // The raw `capitalType` is kept as the FALLBACK for a row with no descriptor
+  // at all: the point is one statement of the fact, not fewer facts.
+  const { capital, rest } = descriptorParts(r);
+  if (capital) facts.push(capital);
   if (r.typicalAward != null && (r.typicalAwardN ?? 0) >= 5) {
     facts.push(`typical award ${eur(r.typicalAward)} over ${r.typicalAwardN} real awards`);
   } else facts.push("no reliable award median");
   if (r.lastAwardYear) facts.push(`last awarded ${r.lastAwardYear}`);
-  if (r.descriptor) facts.push(oneLine(r.descriptor, 60));
+  if (rest.length) facts.push(fitDescriptor(rest, DESCRIPTOR_CHARS));
   const pr = r.instrumentId ? peers?.get(r.instrumentId) : undefined;
   if (pr) facts.push(`#${pr} most-won by comparable companies`);
   const verdict = r.instrumentId ? verdictLine(assessments?.get(r.instrumentId)) : "";
