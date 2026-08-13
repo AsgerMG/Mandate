@@ -153,7 +153,7 @@ import {
 } from "./types";
 import { checkSelection } from "./selectionChecks";
 import { peerPrior } from "./shortlist";
-import { fence } from "./untrusted";
+import { declaw, fence } from "./untrusted";
 import { assessAll, type InstrumentAssessment } from "./verdict";
 import { assembleInstructions } from "./contracts";
 
@@ -1084,6 +1084,61 @@ export function sameTitlePickCount(rows: InstrumentRow[], picks: number[]): numb
 }
 
 export interface SelectContext {
+  /**
+   * ── THE COMPANY'S OWN NAME. RESTORED, NOT ADDED (wsGS) ────────────────
+   *
+   * `git log -S "ctx.company"` returns exactly one commit — 7ec6a0c8, the one
+   * that ADDED it, with the reasoning and the measurement in the same diff. No
+   * commit, comment, test or check anywhere in the tree records a decision to
+   * take it out. wsDL then moved the production seam from `computeVerdict` to
+   * `agentSelectMemoPool` and rewrote this context around the memo's request
+   * object, and the field did not survive the move. That is a deletion by
+   * omission, and it is the class of change this repo pays for most.
+   *
+   * WHY IT WAS PUT THERE. Measured on 120 replayed founders
+   * (`findings/adviser_design.md`, `scripts/_wsdf_dump.ts`): the founder half
+   * of the prompt is 658 characters against a 16,036-character whole, and
+   * 40 of the 120 receive a brief BYTE-IDENTICAL to another founder's once the
+   * fence nonce is removed. Same country, same sector, same pinned intake, and
+   * the same per-sector template description. One in three founders is, to the
+   * model, the same company — and a model cannot pick different funds for
+   * founders it cannot tell apart.
+   *
+   * The name is the first thing a real founder types and it fixes most of those
+   * collisions: "Lailaps Films GmbH" makes films, "BODENS KOMMUN" is a
+   * municipality, "FINNISH METEOROLOGICAL INSTITUTE" is a state research body.
+   * None of that is anywhere else in the prompt.
+   *
+   * STATED HONESTLY: that finding also says the collisions are "very likely an
+   * artifact of the harness, not of the product" — those descriptions were
+   * de-leaked, and stripping the answer out stripped the substance with it. So
+   * the 40/120 is what the name buys THE MEASUREMENT, which is the surface
+   * every number in this repo is read off. What it buys a real founder is
+   * smaller and is not zero.
+   *
+   * LEAK, measured rather than asserted, in that same commit. The risk is aid
+   * fixed to a named beneficiary, which would put the company itself on a
+   * candidate row. Over 87 gradable cases, the number of times a distinctive
+   * token of the founder's name lands on the row of the fund they actually won
+   * AND on no other row is TWO, and both are substring coincidences of
+   * nationality rather than identity: "finnish" inside "Business Finland",
+   * "tekniska" inside "flygtekniska". Zero name the company. Rows that DO name
+   * a beneficiary are aid with `routeStatus = "none"` and are never
+   * publishable, so they cannot reach this list at all.
+   *
+   * AND THE NAME IS ALREADY IN THIS BRIEF'S OTHER MODEL CALL. `synthesize` has
+   * sent `Founder's company: ${req.company}` to the writer throughout
+   * (pipeline.ts). A leak argument against showing the name to the stage that
+   * ORDERS the rows would have to explain why the stage that WRITES them may
+   * see it — and `ctx.description` beside it is fenced founder prose, which is
+   * far more identifying than a name.
+   *
+   * UNTRUSTED. In production this is a text field a founder types, so it is
+   * declawed like the description — a company may not be called "ignore your
+   * instructions". Clipped to a name's length, because the only thing that may
+   * arrive here is an identity.
+   */
+  company?: string;
   country?: string;
   sector?: string;
   /** The founder's own free text. UNTRUSTED — fenced, never interpolated raw. */
@@ -1319,6 +1374,11 @@ export function buildPrompt(
         : "",
     ].filter(Boolean).join("\n")).join("\n\n"))
     : "";
+  // A NAME, not a paragraph: declawed and clipped, because the only thing that
+  // may arrive here is an identity. It is not `fence`d — a fence declares a
+  // block of founder PROSE and this is one line of it; declawing is the part
+  // that matters, and the label says what it is.
+  const named = ctx.company ? oneLine(declaw(ctx.company).text, 90) : "";
   const adviser = AGENT_SELECT_ARM === "adviser";
   // THE ONE LEVER wsDY LEFT READY. See SELECT_COUNT_MODE: under `atMost` the
   // number is a ceiling, the seats declined keep the empirical ranker's own
@@ -1428,7 +1488,9 @@ ${replyWith("Reply with")}, plus the index numbers of any you cannot separate:
   }
   return `Choose the ${want} public funding schemes this company should actually apply to.
 
-THE COMPANY
+THE COMPANY${named ? `
+  name: ${named}   (their own words for themselves -- read it, it is often the
+        most specific thing you will be told about what they do)` : ""}
   country: ${ctx.country ?? "unknown"}
   sector: ${ctx.sector ?? "unknown"}
 
@@ -2010,6 +2072,11 @@ export async function agentSelectMemoPool(
      *  that chooses. It was being assembled, sent to the writer, and never
      *  shown to the ranker. */
     projectAnswers?: ProjectAnswer[];
+    /** The founder's own name for their company. Already required on
+     *  `IntelligenceRequest` and already on the object `runIntelligence` hands
+     *  here, so widening this type is the entirety of what was needed to put it
+     *  back in front of the stage that chooses. See `SelectContext.company`. */
+    company?: string;
   },
 ): Promise<InstrumentRow[]> {
   if (AGENT_SELECT_ARM === "off") {
@@ -2026,6 +2093,7 @@ export async function agentSelectMemoPool(
   }
   const ids = rows.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
   return agentSelectRows(rows, {
+    company: req.company,
     country: req.country,
     sector: req.eligibility?.sector ?? undefined,
     description: req.description,
