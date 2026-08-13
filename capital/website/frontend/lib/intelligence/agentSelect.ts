@@ -331,6 +331,50 @@ export const SELECT_KEEP = depthLever("AGENT_SELECT_KEEP", 3, { min: 0 });
  * arm additive in exactly the sense `assist` is: the model can add a case it is
  * sure of without being able to spend a seat on one it is not.
  *
+ * ── STILL OFF, AND THAT IS NOW A DECISION RATHER THAN AN OMISSION (wsGS) ──
+ *
+ * Everything above was measured on an EIGHTEEN-row menu with SIX seats. Both
+ * numbers have moved: `VERDICT_POOL` is 40 and `SELECT_COUNT` is 7. Read the
+ * evidence at the depth that actually ships and it does not carry:
+ *
+ *   IT CANNOT BE RE-DERIVED AT FORTY, AND NOBODY HAS. `_wsdy_slots.ts` parses
+ *     recorded prompts, and every prompt on disk under `first_test_wsDQ` and
+ *     `dark_levers_wsDS` renders EIGHTEEN rows — including the runs whose tally
+ *     line says `depth=40`, because `VERDICT_POOL` was 18 when they ran and the
+ *     menu is the smaller of the two. So "at forty rows the pressure is worse"
+ *     is an extrapolation from a menu that no longer exists. Scaling 2.1 of 18
+ *     linearly puts it near 4.7 of 40 against SEVEN seats — still short, but a
+ *     survivors-to-seats ratio of 0.67 where the measured one was 0.35. The
+ *     direction of the change is toward LESS pressure, not more.
+ *
+ *   AND THE FORTY-ROW RUN'S OWN TAPE CONTRADICTS THE PATHOLOGY. wsGA ran 148
+ *     briefs at `depth=40 count=7` in `exactly` mode and its line records
+ *     `0 short reply` and `0 seat(s) on a row already picked under the SAME
+ *     TITLE`. The eighteen-row failure was the model spending seats it did not
+ *     believe in — sibling pairs and out-of-sector rows in the fifth and sixth
+ *     places. The floor that catches half of that read zero across 148 briefs.
+ *
+ * TURNING IT ON AGAINST AN EIGHTEEN-ROW MEASUREMENT WOULD BE THIS FILE'S OWN
+ * NAMED DEFECT — the base rate that was true of a 105-row pool and false of the
+ * list actually shown. So it stays off, and the reason is written down instead
+ * of the flag being flipped.
+ *
+ * ── WHAT WOULD FALSIFY THIS, and what cannot see it ──────────────────────
+ * `npm run stages` cannot: there is no model in that ladder, so this lever is
+ * invisible to it in both settings. Nothing free can decide it. What would
+ * change the answer is one of two things, both readable off a paid run's own
+ * tally line at forty rows and neither of them a new harness:
+ *
+ *   a non-zero `seat(s) on a row already picked under the SAME TITLE`, which is
+ *   the floor on seats spent for want of an alternative; or a per-row grading
+ *   showing picks in the last seats that fail the two disqualifiers THIS PROMPT
+ *   STATES — an award median an order of magnitude off the band, a descriptor
+ *   naming another sector.
+ *
+ * Either turns this from a lever left off into a lever that should be swept.
+ * Until then the honest position is that the evidence for it was measured on a
+ * menu the product no longer builds.
+ *
  * OFF BY DEFAULT, and read once at module scope with a throw on anything
  * unrecognised, for the reason every other lever in this file is: a flag that
  * reads a typo as its default reports the control's number under the
@@ -874,6 +918,22 @@ const eur = (n: number | undefined | null): string =>
  * it: that module has no production caller and reordering a dead path to match
  * a live one is a change nothing can measure. The two numbers agreeing was
  * never the contract; this one now means something different from that one.
+ *
+ * ── THE CUT IS A PROPORTION, SO IT DID NOT MOVE WITH THE POOL (wsGS) ──────
+ * Read as a count it looks like a number nobody chose: 7 at eighteen rows, 14
+ * at forty. It is the same rule at both. `0.35` is a share OF THE LIST, and the
+ * question it asks — does this demand separate this row from the others in
+ * front of the model — is a question about the share and not about the count.
+ * A demand on 13 of 40 rows tells a reader as little as one on 6 of 18. Nothing
+ * here needs re-tuning because the pool widened, and a future reader who
+ * re-derives the count and "corrects" it will have changed the rule.
+ *
+ * The one part that is NOT proportional is `Math.max(2, ...)`, and it is inert
+ * on this path: `ceil(0.35 * L) >= 2` for every L >= 3, and `agentSelectRows`
+ * has already returned through `poolNotLongerThanCount` or
+ * `menuNotLongerThanWant` for anything shorter. It is kept because `distinctive`
+ * is exported and a caller with a two-row list would otherwise get a cutoff of
+ * 1, which suppresses every requirement any two rows share.
  */
 export function distinctive(rows: InstrumentRow[]): (r: InstrumentRow) => string[] {
   const seen = new Map<string, number>();
