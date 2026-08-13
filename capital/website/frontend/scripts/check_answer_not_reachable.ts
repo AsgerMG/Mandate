@@ -210,10 +210,13 @@ const DERIVATION: Record<string, { class: Derivation; why: string }> = {
   // ── Statistics over WHO WON. Swap-variant, so the holdout is the licence. ──
   sector_mix: { class: "held-out",
     why: "a distribution over the RECIPIENTS' sectors, and the founder answers `sector`. " +
-      "It reaches the prompt on nearly every row as fundDescriptor's `mostly X` clause" },
+      "It reaches the prompt as fundDescriptor's `mostly X` clause, which fires on 709 of " +
+      "the 743 publishable instruments carrying a mix (95.4%, `_wsec_descriptor.ts`)" },
   delivery_region: { class: "held-out",
     why: "a plurality over the RECIPIENTS' NUTS regions, and the founder answers `region`. " +
-      "It reaches the prompt as the token distinguishRowNames appends to a same-name sibling" },
+      "It reaches the prompt as the token distinguishRowNames appends to a same-name " +
+      "sibling — rarely, and not never: 3 of 772 rows across 23 markets " +
+      "(`_wsgv_rowfields.ts` with MARKETS=1)" },
 };
 
 /** The ETL pass that derives instrument columns from the events corpus. */
