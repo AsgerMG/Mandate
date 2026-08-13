@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-12T23:46:19.378Z
-corpus             postgres instruments=1088 at 2026-08-12T23:46:19.789Z
+started            2026-08-13T00:07:17.220Z
+corpus             postgres instruments=1088 at 2026-08-13T00:07:17.621Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-12T23:46:19.789Z
+                   is REFUSED rather than labelled. observedAt 2026-08-13T00:07:17.621Z
 ranker: all 814 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -44,10 +44,10 @@ WITHHELD  turnoverBand                                              -  no filed 
 WITHHELD  wouldOpenEntity                                           -  a stance about the future
 STAGED    organisationType     set    0/897 (  0%)  own    0/897 (  0%)  held back on 356/897 — prefillOrganisationType(company name)
 WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
-██ HELD BACK — organisationType is STAGED behind NEXT_PUBLIC_ORGANISATION_TYPE_ARM, which is not "on" — the control is not rendered and production never populates it. 356/897 founders had a leak-free answer to it and were not given one, so no fund is excluded from this run by a question the product does not ask. Switch the arm on and re-measure to see what asking it would cost or win; do not compare the two numbers without saying which is which.
-██ HELD BACK — region was answered "FR", which the control never offers for this founder — production cannot produce that answer. 2/897 founders had a leak-free answer to it and were not given one, so no fund is excluded from this run by a question the product does not ask. Switch the arm on and re-measure to see what asking it would cost or win; do not compare the two numbers without saying which is which.
+██ HELD BACK — organisationType is STAGED behind NEXT_PUBLIC_ORGANISATION_TYPE_ARM, which is not "on" — the control is not rendered and production never populates it. 356/897 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said. Switch NEXT_PUBLIC_ORGANISATION_TYPE_ARM on and re-measure to see what asking would cost or win; do not compare the two numbers without saying which is which.
+██ HELD BACK — region was answered "FR", which the control never offers for this founder — production cannot produce that answer. 2/897 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said.
 
-Mean instrument table **86.2** rows, mean accessible pool **76.7** rows, over the 814 founders whose answer reached the founder stages.
+Mean instrument table **86.1** rows, mean accessible pool **76.6** rows, over the 814 founders whose answer reached the founder stages.
 
 `+/-` is the 95% binomial half-width on this run's own n. A move smaller than it
 is not a move.
@@ -96,7 +96,7 @@ measurement, and do not quote the projected count without this sentence.
 ## What this cannot see
 
 - **model** — one Anthropic call per founder. It re-orders the pool ABOVE the writer cap rather than removing anything, so it has no survivor set of its own and cannot be a row in a nested ladder; its effect is estimated below from the last paid head-to-head's own tape, at the end where it becomes observable, and is never measured here.
-- **the intake.** Every founder here answers 23 fields resolved from their own register history, not from the first screen a real founder fills in. A ceiling measured on these answers bounds THIS harness, not the product.
+- **the intake.** A replayed founder's answers are resolved from their own register history, not typed into the first screen a real founder fills in — and the founder-intake block above says, field by field, which carried a value, which were withheld for want of an honest source, and which were held back because production cannot populate them. A ceiling measured on these answers bounds THIS harness, not the product.
 - **`discoverAndResearch`, `judgeOpenAnswers` and the `ProfileSignal`** are model calls on the live request path. They are absent here, so `applyProfileSignal` attaches nothing and the adaptive round's `lateFields` is empty.
 - **REGIME@5 is deliberately not a row.** It credits a SIBLING of the won fund, so a founder can be lost at one stage and credited at a later one — which breaks the nesting property this whole ladder rests on. It is a different question (did we send them to the right funder) and it needs its own ladder, not a row in this one.
 
