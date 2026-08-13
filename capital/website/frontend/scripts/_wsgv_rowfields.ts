@@ -95,7 +95,7 @@ function regionTokenRows(rows: InstrumentRow[]): InstrumentRow[] {
 async function menuPass() {
   console.log(`\n══ MENUS ══ one founder per archetype, pool as the memo seam builds it\n`);
   let rowsSeen = 0, purposeRows = 0, quartileRows = 0, regionTokens = 0;
-  let menusWithSchemeSibling = 0, siblingRows = 0, purposeDistinct = 0;
+  let menusWithSchemeSibling = 0, siblingRows = 0, purposeDistinct = 0, purposeRestated = 0;
   const promptChars: number[] = [];
 
   for (const a of ARCHETYPES) {
@@ -138,6 +138,19 @@ async function menuPass() {
     const rt = regionTokenRows(pool);
     regionTokens += rt.length;
 
+    // IS IT NEW? A line that restates what the row already says is a cost with
+    // no benefit — `beyondTitle` exists because 28% of descriptions were the
+    // title said back. Same question, asked of the registered purpose against
+    // everything else the row prints in prose: if every content word of the
+    // purpose is already somewhere on the row, it is not a new fact.
+    for (const r of withPurpose) {
+      const already = [r.description, r.eligibilityText, ...(r.judgementCriteria ?? [])]
+        .filter(Boolean).join(" ").toLowerCase();
+      const words = (r.registeredPurpose ?? "").toLowerCase()
+        .replace(/\(art[^)]*\)/g, "").split(/[^\p{L}]+/u).filter((w) => w.length > 3);
+      if (words.length && words.every((w) => already.includes(w))) purposeRestated++;
+    }
+
     const codes = new Map<string, number>();
     for (const r of pool) {
       const c = (r.schemeCode ?? "").trim();
@@ -163,6 +176,8 @@ async function menuPass() {
   console.log(`\nover ${ARCHETYPES.length} menus, ${rowsSeen} rows:`);
   console.log(`  registeredPurpose on   ${purposeRows} (${pct(purposeRows, rowsSeen)}), ` +
     `${(purposeDistinct / ARCHETYPES.length).toFixed(1)} distinct values per menu`);
+  console.log(`    of which RESTATED    ${purposeRestated} (${pct(purposeRestated, purposeRows)}) ` +
+    `— every content word already elsewhere in that row's prose`);
   console.log(`  quartile range on      ${quartileRows} (${pct(quartileRows, rowsSeen)})`);
   console.log(`  rows in a scheme group ${siblingRows} (${pct(siblingRows, rowsSeen)}), ` +
     `on ${menusWithSchemeSibling}/${ARCHETYPES.length} menus`);
@@ -171,11 +186,65 @@ async function menuPass() {
   console.log(`  prompt chars           p50 ${quant(promptChars, 0.5)}  max ${Math.max(...promptChars)}`);
 }
 
+/**
+ * ONE FOUNDER PER MARKET, for the one question twelve archetypes cannot settle.
+ *
+ * `delivery_region`'s ONLY path to the prompt is the token
+ * `distinguishRowNames` appends when a same-name peer group is separated by
+ * region and not by body. The archetypes never hit it, and "never on twelve
+ * menus" is not the same claim as "never". The precedent for a branch that
+ * emits nothing is measured across markets — the scheme-code branch beside it
+ * was removed on exactly that evidence — so this asks the same way.
+ *
+ * The sector is held fixed so the only thing varying is the market.
+ */
+async function countryPass() {
+  const countries = [...new Set(loadDbInstruments()
+    .filter((i) => !i.isFramework && i.country && i.country !== "EU")
+    .map((i) => i.country as string))].sort();
+  console.log(`\n══ MARKETS ══ ${countries.length}, one founder each, sector held fixed\n`);
+  let rows = 0, tokens = 0, siblings = 0, purpose = 0;
+  const hits: string[] = [];
+  for (const country of countries) {
+    resetGateHydration();
+    const answers: EligibilityAnswers = {
+      sector: "health_life_sciences", entityCountries: [country],
+      ticketBand: "b500k_2m5", useOfFunds: ["rnd", "capex"], consortium: "unsure",
+    };
+    const log = new ExclusionLog();
+    const semantic = await semanticFundMatch("Wearable cardiac monitoring device with regulatory clearance pending");
+    const hydrated = await buildInstrumentTableHydrated({
+      fieldChannels: new Set<string>(),
+      founderCountries: founderCountryList(country, undefined, [country]),
+      capitalSought: [], description: "Wearable cardiac monitoring device with regulatory clearance pending", semantic,
+      ...tableInputFromAnswers(answers), log,
+    } as never);
+    const pool = accessiblePool(hydrated, answers, log).slice(0, VERDICT_POOL);
+    rows += pool.length;
+    const rt = regionTokenRows(pool);
+    tokens += rt.length;
+    if (rt.length) hits.push(`${country}:${rt.length}`);
+    purpose += pool.filter((r) => r.registeredPurpose).length;
+    const codes = new Map<string, number>();
+    for (const r of pool) {
+      const c = (r.schemeCode ?? "").trim();
+      if (c) codes.set(c, (codes.get(c) ?? 0) + 1);
+    }
+    siblings += [...codes.values()].filter((n) => n > 1).reduce((s, n) => s + n, 0);
+  }
+  console.log(`${countries.length} markets, ${rows} rows`);
+  console.log(`  registeredPurpose on   ${purpose} (${pct(purpose, rows)})`);
+  console.log(`  rows in a scheme group ${siblings} (${pct(siblings, rows)})`);
+  console.log(`  region token in title  ${tokens} (${pct(tokens, rows)})` +
+    `${hits.length ? ` — ${hits.join(" ")}` : " — the branch emitted nothing in any market"}`);
+}
+
 async function main() {
   await hydrateDbInstruments();
   requireLiveCorpus("wsgv_rowfields");
   corpusPass();
   if (process.env.MENUS !== "0") await menuPass();
+  if (process.env.MARKETS === "1") await countryPass();
 }
 
 main().then(() => process.exit(0));
