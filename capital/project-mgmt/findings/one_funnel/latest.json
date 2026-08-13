@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-13T07:21:46.385Z",
+ "startedAt": "2026-08-13T15:17:11.224Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-13T07:21:46.773Z",
+ "corpusObservedAt": "2026-08-13T15:17:11.805Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 814,
@@ -35,7 +35,7 @@
   "share": 0.17142857142857143
  },
  "meanTableRows": 86.1,
- "meanAccessibleRows": 76.6,
+ "meanAccessibleRows": 78.4,
  "stages": [
   {
    "id": "answer_key",
@@ -85,29 +85,29 @@
   {
    "id": "gates_pass",
    "question": "... and its encoded eligibility gates do not conclusively fail (accessiblePool)",
-   "remaining": 746,
-   "sharePct": 83.17,
-   "lost": 46,
+   "remaining": 761,
+   "sharePct": 84.84,
+   "lost": 31,
    "unmeasured": false,
-   "halfWidthPts": 2.45
+   "halfWidthPts": 2.35
   },
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (40 rows)",
-   "remaining": 622,
-   "sharePct": 69.34,
-   "lost": 124,
+   "remaining": 632,
+   "sharePct": 70.46,
+   "lost": 129,
    "unmeasured": false,
-   "halfWidthPts": 3.02
+   "halfWidthPts": 2.99
   },
   {
    "id": "writer_cap",
    "question": "... and it survives the cut to the writer's candidates (8)",
-   "remaining": 357,
-   "sharePct": 39.8,
-   "lost": 265,
+   "remaining": 359,
+   "sharePct": 40.02,
+   "lost": 273,
    "unmeasured": false,
-   "halfWidthPts": 3.2
+   "halfWidthPts": 3.21
   },
   {
    "id": "watch_only",
@@ -121,17 +121,17 @@
   {
    "id": "published",
    "question": "... and it is one of the 7 rows the brief publishes",
-   "remaining": 344,
-   "sharePct": 38.35,
+   "remaining": 346,
+   "sharePct": 38.57,
    "lost": 13,
    "unmeasured": false,
-   "halfWidthPts": 3.18
+   "halfWidthPts": 3.19
   },
   {
    "id": "top_6",
    "question": "... and it is in the first 6 of them",
-   "remaining": 316,
-   "sharePct": 35.23,
+   "remaining": 318,
+   "sharePct": 35.45,
    "lost": 28,
    "unmeasured": false,
    "halfWidthPts": 3.13
@@ -139,9 +139,9 @@
   {
    "id": "top_5",
    "question": "... and it is in the first 5 of them",
-   "remaining": 292,
-   "sharePct": 32.55,
-   "lost": 24,
+   "remaining": 293,
+   "sharePct": 32.66,
+   "lost": 25,
    "unmeasured": false,
    "halfWidthPts": 3.07
   },

@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-13T07:21:46.385Z
-corpus             postgres instruments=1088 at 2026-08-13T07:21:46.773Z
+started            2026-08-13T15:17:11.224Z
+corpus             postgres instruments=1088 at 2026-08-13T15:17:11.805Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-13T07:21:46.773Z
+                   is REFUSED rather than labelled. observedAt 2026-08-13T15:17:11.805Z
 ranker: all 814 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -47,7 +47,7 @@ WITHHELD  capitalSought                                             -  no leak-f
 ██ HELD BACK — organisationType is STAGED behind NEXT_PUBLIC_ORGANISATION_TYPE_ARM, which is not "on" — the control is not rendered and production never populates it. 356/897 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said. Switch NEXT_PUBLIC_ORGANISATION_TYPE_ARM on and re-measure to see what asking would cost or win; do not compare the two numbers without saying which is which.
 ██ HELD BACK — region was answered "FR", which the control never offers for this founder — production cannot produce that answer. 2/897 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said.
 
-Mean instrument table **86.1** rows, mean accessible pool **76.6** rows, over the 814 founders whose answer reached the founder stages.
+Mean instrument table **86.1** rows, mean accessible pool **78.4** rows, over the 814 founders whose answer reached the founder stages.
 
 `+/-` is the 95% binomial half-width on this run's own n. A move smaller than it
 is not a move.
@@ -59,13 +59,13 @@ is not a move.
 | ... and it is publishable on the corpus's own facts | 814 | 90.7% +/-1.9 | -83 (9.3 pts) | `publishableInstruments` — seven predicates, `corpus.ts` |
 | ... and its openness could be CONFIRMED (the degradation policy) | 814 | 90.7% +/-1.9 | 0 | `unconfirmedOpen` — the degradation clause of the same filter |
 | ... and this founder's screen keeps it (country, capital, channel + leaf caps) | 792 | 88.3% +/-2.1 | -22 (2.5 pts) | `buildInstrumentTableHydrated` = `candidateInstrumentIds` |
-| ... and its encoded eligibility gates do not conclusively fail (accessiblePool) | 746 | 83.2% +/-2.4 | -46 (5.1 pts) | `accessiblePool` → `VER-BLOCKED` |
-| ... and it survives the cut to VERDICT_POOL (40 rows) | 622 | 69.3% +/-3.0 | -124 (13.8 pts) | `.slice(0, VERDICT_POOL)` |
-| ... and it survives the cut to the writer's candidates (8) | 357 | 39.8% +/-3.2 | -265 (29.5 pts) | `orderMemoCandidates().toWriter` |
+| ... and its encoded eligibility gates do not conclusively fail (accessiblePool) | 761 | 84.8% +/-2.3 | -31 (3.5 pts) | `accessiblePool` → `VER-BLOCKED` |
+| ... and it survives the cut to VERDICT_POOL (40 rows) | 632 | 70.5% +/-3.0 | -129 (14.4 pts) | `.slice(0, VERDICT_POOL)` |
+| ... and it survives the cut to the writer's candidates (8) | 359 | 40.0% +/-3.2 | -273 (30.4 pts) | `orderMemoCandidates().toWriter` |
 | ... and the writer's own prose does not demote it behind the actionable rows | ? | ? | **UNMEASURED** | `isWatchOnly` in `assembleBriefRows` — needs the writer |
-| ... and it is one of the 7 rows the brief publishes | 344 | 38.4% +/-3.2 | -13 (1.4 pts) | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
-| ... and it is in the first 6 of them | 316 | 35.2% +/-3.1 | -28 (3.1 pts) | the first 6 rows of the same order, our own scoring |
-| ... and it is in the first 5 of them | 292 | 32.6% +/-3.1 | -24 (2.7 pts) | the first 5 rows of the same order, our own scoring |
+| ... and it is one of the 7 rows the brief publishes | 346 | 38.6% +/-3.2 | -13 (1.4 pts) | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
+| ... and it is in the first 6 of them | 318 | 35.5% +/-3.1 | -28 (3.1 pts) | the first 6 rows of the same order, our own scoring |
+| ... and it is in the first 5 of them | 293 | 32.7% +/-3.1 | -25 (2.8 pts) | the first 5 rows of the same order, our own scoring |
 | ... and the MODEL, which re-orders the 40 before the cuts below, still leaves it in the first 5 | ? | ? | **UNMEASURED** | `agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the 40, applied above the two cuts below it |
 
 ██ The 7, 6, 5-row cuts are rank within `toWriter`, and they assume `assembleBriefRows`
@@ -89,7 +89,7 @@ ranker  EXACT@5   50/98 = 51.0%
 ratio              1.111
 ```
 
-Applied to this run's own 292 founders at `top_5`, the model stage projects to **~324 founders (36.2% of the start)**.
+Applied to this run's own 293 founders at `top_5`, the model stage projects to **~326 founders (36.3% of the start)**.
 
 ██ ESTIMATED. ██ The ratio comes from 98 founders of a different draw, and that run's own McNemar put the difference inside its noise. Read it as a scale, not as a
 measurement, and do not quote the projected count without this sentence.
@@ -120,12 +120,12 @@ Reasons OVERLAP — a row can fail several — so these do not sum to the stage 
 | published figure | its population | this run's row | this run |
 |---|---|---|---:|
 | `check_recall_floor` pool **97.7%** | 300 tune pairs of __recallSetDescribed.json, answer already offerable, published 2026-08-12 | `founder_screen` given `liveness_confirmed` | 97.3% |
-| `check_recall_floor` EXACT@5 **25.0%** | same, and on the INSTANT SCREEN's six rows, not the memo's | `top_5` given `liveness_confirmed` | 35.9% |
-| `poolRecallCurve` inPoolAtAll 87.6% | 820 held-out, answer already offerable | `gates_pass` given `liveness_confirmed` | 91.6% |
-| `poolRecallCurve` at K=40 73.2% | same | `pool_cut` given `liveness_confirmed` | 76.4% |
-| head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 46.9% |
+| `check_recall_floor` EXACT@5 **25.0%** | same, and on the INSTANT SCREEN's six rows, not the memo's | `top_5` given `liveness_confirmed` | 36.0% |
+| `poolRecallCurve` inPoolAtAll 87.6% | 820 held-out, answer already offerable | `gates_pass` given `liveness_confirmed` | 93.5% |
+| `poolRecallCurve` at K=40 73.2% | same | `pool_cut` given `liveness_confirmed` | 77.6% |
+| head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 46.4% |
 | head-to-head ranker EXACT@5 51.0% | same | `model` — UNMEASURED here | ? |
-| "we find the right fund 98% of the time" | no population — the sentence has none | `top_5` as a share of the START | 32.6% |
+| "we find the right fund 98% of the time" | no population — the sentence has none | `top_5` as a share of the START | 32.7% |
 
 The last row is the one the four figures were being read as. It is the only one a
 founder experiences: of every company that won a fund we hold, this share would have
