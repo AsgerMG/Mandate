@@ -554,6 +554,28 @@ export function contradictsDeclaredPolicy<T extends LivenessFacts>(row: T): bool
 /** SQL for the same predicate, so the Python and SQL consumers do not restate
  *  it in prose. `col` prefixes columns for use inside a JOIN.
  *
+ *  ── IT IS STILL `isClosed`, AND THAT IS A KNOWN, BOUNDED DIVERGENCE ──────
+ *  This projects the WINDOW test and nothing else, because that is what
+ *  `isClosed()` means and this is its SQL. It deliberately does not project
+ *  `isShut()`: `call_recurrence` is not a column in Postgres yet, so emitting
+ *  SQL that reads it would break every Python consumer on the next run.
+ *
+ *  The consequence, stated rather than discovered later. Three consumers ask
+ *  "may the product show this row" and get an answer that is now one row-class
+ *  too narrow — `extend_recall_set.py` ("never make an instrument the right
+ *  answer if the product may not show it"), `emit_peer_prior.py`, and
+ *  `load_scheme_text.py`'s `live_ids()`. They will treat a between-calls row as
+ *  unproposable while the brief offers it: the row gets no scheme text, no peer
+ *  prior, and is excluded the next time the recall set is REGENERATED. That
+ *  under-serves those rows; it cannot mis-serve a founder, because nothing in
+ *  that direction adds a row to a brief.
+ *
+ *  Closing it is one commit and it belongs with the column: add
+ *  `shut_sql()` to ETL/lib/liveness.py alongside `closed_sql()`, AND the
+ *  `call_recurrence` column outside `BUILT_COLUMNS` in
+ *  ETL/events/load/populate_funding_instruments.py, so a rebuild does not erase
+ *  it — the failure `route_status` records.
+ *
  *  Dialect note: written for Postgres, where `scheme_end_date` is TEXT and must
  *  be cast to compare as a date. The SQLite consumers compare lexically, which
  *  is equivalent for ISO-8601 dates, and pass `sqlite: true`. */
