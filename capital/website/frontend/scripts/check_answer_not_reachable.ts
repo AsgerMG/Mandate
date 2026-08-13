@@ -129,10 +129,12 @@ const ANSWER_SOURCES: { pattern: RegExp; what: string }[] = [
 //          themselves in it, and a row selected because the founder matches it
 //          was selected by reading the answer key in aggregate.
 //
-// The test decides `company_count` the right way round, which is why it is
-// stated over identity AND attributes: distinct beneficiaries stay distinct
-// under the swap, so a count of them is an award fact, while their regions and
-// sectors are gone, so a plurality over those is not.
+// The swap is stated over identity AND attributes, and `company_count` is the
+// case that shows why. Distinct beneficiaries stay distinct under it, so a
+// COUNT of them does not move and is an award fact — a founder learns how many
+// companies this fund has paid and nothing about which. Their regions and
+// sectors are gone, so a plurality over those does move. A swap that stripped
+// only identity would classify the second with the first.
 //
 // ── AND THE ONE WAY A BENEFICIARY STATISTIC MAY STILL BE SHOWN ────────────
 // The ETL had already reached this distinction and built the remedy, under a
@@ -158,14 +160,18 @@ const ANSWER_SOURCES: { pattern: RegExp; what: string }[] = [
 // the same as "no founder's award influences this row".
 //
 // ── WHAT COUNTS AS REACHING ───────────────────────────────────────────────
-// `InstrumentRow` is the model-facing row — the object `renderRow` prints and
-// `buildPrompt` hands to the selector — so the modules that name that type are
-// the ones that build or render it. Any award-derived column read as a property
-// in one of them has reached the row's construction. This is deliberately an
-// OVER-approximation: it flags a column read only to SCORE with, and that is
-// correct rather than tolerated, because ranking on a statistic over who won is
-// the same leak as printing one. `peerPrior` is exactly that and is exactly why
-// it is held out.
+// `InstrumentRow` is the row the model reads — the object `renderRow` prints
+// and `buildPrompt` hands to the selector — so the scope is every module that
+// NAMES that type, and any award-derived column read as a property in one of
+// them has reached a row. Derived from the type rather than from a list of
+// filenames, because the next module to build a row is not on any list.
+//
+// Deliberately an OVER-approximation, twice over. It flags a column read only
+// to SCORE with, and that is correct rather than tolerated: ranking on a
+// statistic over who won is the same leak as printing one, which is exactly why
+// `peerPrior` is held out. And it covers the modules that render a row to the
+// PAGE as well as to the prompt, which is the same question asked of the other
+// surface a founder sees.
 //
 // What it does NOT do: it is a property-access scan, so a column reached
 // through a computed key (`leaf[k]`) is invisible to it. That is stated rather
