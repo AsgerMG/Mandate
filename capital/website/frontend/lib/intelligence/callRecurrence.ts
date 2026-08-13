@@ -104,8 +104,10 @@ export function betweenCallsCaveat(
   // different things. Neither states when the next window is; we do not hold
   // one, and that is what put the row in this state.
   const body = rec?.funderVerdict === "open"
+    // No em-dashes: this is code-built copy, and the house de-dash in
+    // `assembleBriefRows` is applied to MODEL prose only.
     ? `When the funder's own page was read on ${rec.checkedAt} it was running a later round of this programme. ` +
-      `We do not hold that round's dates — check the funder's page for the current window before planning around it.`
+      `We do not hold that round's dates, so check the funder's page for the current window before planning around it.`
     : `The funder's own page shows this programme running in rounds beyond the one we hold` +
       (rec ? ` (read ${rec.checkedAt})` : "") +
       `, so it is expected to open again. We do not hold the next window.`;
