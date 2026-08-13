@@ -8,6 +8,43 @@ this file and into the commit that acts on it.
 
 ---
 
+## READ THIS FIRST — wsGY changed which of these is worth doing
+
+`project-mgmt/findings/rank_shape_wsGY.md`, 2026-08-13, free, attested, on the
+funnel's own draw. Three results, and they re-rank everything below.
+
+1. **The ceiling is not the problem.** A perfect order puts the won fund in six
+   rows for **86.3%** of founders against 35.7% today, and all 774 land at
+   writer rank 1 — nothing below the pool can lose a correctly ranked answer.
+   60% is not blocked by anything structural.
+2. **Ranking is not how we take it.** On the 454 misses, the rows we show sit
+   within **four percentile points** of the fund they won on every fact we hold
+   — size, proximity, recency, award scale, text length. The score is not
+   biased against the answer, it is indifferent to it.
+3. **63.2% of misses already show a SIBLING of the won fund**, 85.7% the same
+   channel. The median failure is the wrong DOOR inside a regime already on the
+   page.
+
+**So the item to decide is §0, the 63 gate corrections, and its case is now
+much stronger than when it was written.** `leaf_separation_wsAO.md` measured
+that gates DO separate siblings — and siblings are where two thirds of the loss
+turns out to be. Gate encoding is the one lever we hold that acts on the
+failure wsGY identified. Nothing else in this file does.
+
+**And two spending items below are weaker than their text says:**
+
+- **§2, the EUR 11-13 confirming run on 18 → 40.** wsGY measured the widening's
+  deterministic downside at zero and put the model's own ceiling at **71.7%**
+  against a whole-pool 86.3%. The run would price something already bounded.
+  Not wrong to buy; no longer urgent.
+- **§1, the EUR 1.6 grader.** Still the right question about our answer key, and
+  still **not on main** — it exists only on `archive/wsDX-relevance-grade`.
+
+*(This block is a reading order, not a decision. Every item below stands as
+written and none has been acted on.)*
+
+---
+
 ## Spending
 
 ### 1. The blind relevance grader — EUR 1.6
@@ -88,6 +125,17 @@ brief forever.
 **`check_winner_not_gated` goes from 251 wrongful deletions to 14**, against a
 ceiling of 207 it has been failing. Nothing else on this list moves it, and no
 code change can: wsGR proved the residue is gate encodings, not inheritance.
+
+**Its case got stronger after it was written, and this is the paragraph to read
+if you read one.** wsGY has since measured that **63.2% of the founders we miss
+are already looking at a sibling of the fund they would have won** — same
+regime, wrong door — and that nothing else we hold about a fund separates the
+one they won from the ones we showed. `leaf_separation_wsAO.md` measured that
+**gates DO separate siblings**, and that the earlier negative was a harness
+handing all 300 founders identical answers. So the encoded gates are the only
+lever in this file that acts on the failure that turns out to dominate. A gate
+that deletes the right door, or fails to distinguish it from its neighbour, is
+the mechanism — not a rounding error on the side.
 
 Every one of the 63 was checked against the funder's own page, and the file
 carries the URL, the verbatim quote and the reasoning per row:
