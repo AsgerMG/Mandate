@@ -95,11 +95,24 @@ guard registry names the bar among the census's `code`:
        declared dependency; every input the census grades against is inside the
        fingerprint it publishes.
 
+Run before .dockerignore was corrected, that same derived check found the
+defect wsHC had evidenced from the other side, from first principles:
+
+  ETL/lib/guard_verdicts.py:61 REGISTRY reads `data/guard_registry.json`,
+    which .dockerignore keeps OUT of the image.
+
+...and, once the coverage test stopped reading "under a fingerprinted tree" as
+"hashed", a third input nobody had noticed:
+
+  ETL/lib/guard_verdicts.py:62 SCHEMA_SQL grades against
+    `ETL/schema/guard_verdicts.sql`, which is in the image and NOT in the
+    fingerprint.
+
 The test for the unseen case is in there and is not the baseline: it declares
 `project-mgmt/a_bar_nobody_has_written_yet` under five suffixes including none
 at all, and requires the fingerprint to move for each. A rule keyed on `.json`
 passes every other assertion in the file and fails that one.
 
 The fingerprint of this checkout moves as a result — ba21132f9cc7de04 ->
-b0a68fd2b7f1f060 — which is correct and is the point: it was never a hash of
+1dd643153d801a8c — which is correct and is the point: it was never a hash of
 everything that decides what the census publishes, and now it is.
