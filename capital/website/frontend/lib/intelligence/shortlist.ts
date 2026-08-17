@@ -528,6 +528,73 @@ const BAND_MID: Record<string, number> = Object.fromEntries(
 const AWARD_N_FLOOR = 5;
 const AWARD_MATCH = 1.35;
 
+/** The euro figure `awardScorer` compares a fund's award history against, read
+ *  out of the ONE table above rather than recomputed. Exported for the wsHE
+ *  direction diagnostic, which asks which SIDE of this number the door a
+ *  founder actually won sits on — a question that needs the served value, not a
+ *  second derivation of it that could drift from the served one. */
+export const bandMidEur = (band?: string): number | undefined =>
+  band ? BAND_MID[band] : undefined;
+
+/** ── THE AWARD TERM, AS AN ARM ────────────────────────────────────────────
+ *
+ *  `shipped` is today's behaviour bit for bit, and the DEFAULT: nothing a
+ *  founder sees changes until this is set. Same shape and same reason as
+ *  `POOL_BLEND` and `SIBLING_SCOPE` — read ONCE at module scope, so the arms
+ *  cannot differ within one request and the flag can never become a per-founder
+ *  behaviour. An unrecognised value THROWS rather than reading as `shipped`,
+ *  because a silent default on a misspelling is how an arm that never arrived
+ *  gets reported as "no effect" in both arms.
+ *
+ *  ── What is under test ───────────────────────────────────────────────────
+ *  wsHA measured, on the 287 founders shown a SIBLING of the fund they won,
+ *  that this scorer prefers the door we showed over the door they won 33.1% to
+ *  5.6%. wsHE measured why (`scripts/_wshe_award.ts`), and it is not subtle:
+ *
+ *    89.2% of won doors pay BELOW the founder's stated band, median 0.81
+ *    decades below it. So does 85.7% of what we show — but LESS far below,
+ *    median 0.63. The won door is the SMALLER of the two 68.2% of the time.
+ *
+ *  A symmetric proximity rule whose target sits ABOVE almost every candidate is
+ *  not a proximity rule at all: it degenerates into "prefer the larger payer",
+ *  and the larger payer is the wrong door two times in three. That is the whole
+ *  mechanism. It is corroborated independently by the fitted blend, which gives
+ *  `award median` a weight of -0.657 (`poolBlend.ts`) — smaller is better —
+ *  fitted on a different split by a different method.
+ *
+ *  ── The three arms, and why not a fourth ─────────────────────────────────
+ *  `off`      the term returns 1 everywhere. The cheapest question: is a signal
+ *             pointing the wrong way worth less than no signal?
+ *  `oneside`  the PROPERTY, not a refit: a grant is a COMPONENT of a raise, not
+ *             the raise, so a scheme that pays less than the whole ask is not
+ *             thereby a worse route — while a scheme whose typical cheque is far
+ *             larger than the entire ask is answering a different question. So
+ *             the penalty applies on the ABOVE side only and the term is neutral
+ *             at the top of its range below the ask. The test for an unseen
+ *             corpus: does the founder's number describe what they will RECEIVE
+ *             from this one scheme, or what they will assemble from several? If
+ *             the intake ever asks for a per-grant ticket rather than a round,
+ *             the symmetric rule becomes the right one again.
+ *
+ *  The obvious fourth arm — score the LOWER QUARTILE (`awardP25`) against the
+ *  same ask — was measured and is NOT here, because it was answered for free
+ *  and it loses: on the same 286 pairs the won door is closer on p25 34.6% of
+ *  the time against the shown door's 65.4%. Reading a smaller statistic off
+ *  BOTH doors moves both of them further below a target that was already above
+ *  both, so it cannot change which is nearer. The target is what is wrong, not
+ *  the statistic. */
+export type AwardTermArm = "shipped" | "off" | "oneside";
+
+/** Exported so a test can watch the throw happen, for the same reason
+ *  `parsePoolBlend` is: a guard nobody has proved can fail is a comment. */
+export function parseAwardTerm(v: string | undefined): AwardTermArm {
+  const s = v ?? "shipped";
+  if (s === "shipped" || s === "off" || s === "oneside") return s;
+  throw new Error(`unknown AWARD_TERM=${s} (expected: shipped, off, oneside)`);
+}
+
+export const AWARD_TERM: AwardTermArm = parseAwardTerm(process.env.AWARD_TERM);
+
 /** Does this scheme write cheques the size the founder is asking for?
  *
  *  `awardP50` is the median a fund has really paid over `awardN` awards; 852 of
@@ -550,15 +617,30 @@ const AWARD_MATCH = 1.35;
 // component by component. A copy of this arithmetic in the diagnostic would let
 // the score being explained and the score being shipped drift apart, which is
 // the one thing a diagnostic may not do.
+//
+// `arm` defaults to the process-wide `AWARD_TERM` and is a PARAMETER rather
+// than a module read inside the body, so a test can exercise all three arms in
+// one process. A flag only reachable through the environment is a flag whose
+// off-default branches nobody has ever watched execute.
 export function awardScorer(
-  _leaves: DbInstrument[], ticketBand?: string,
+  _leaves: DbInstrument[], ticketBand?: string, arm: AwardTermArm = AWARD_TERM,
 ): (i: DbInstrument) => number {
+  // The whole term, removed. See `AWARD_TERM`: it points the wrong way inside
+  // the sibling cell, and "no signal" is the cheapest thing to compare a
+  // wrong-signed one against.
+  if (arm === "off") return () => 1;
   const want = ticketBand ? BAND_MID[ticketBand] : undefined;
   if (!want) return () => 1;
   return (i: DbInstrument) => {
     if (i.awardP50 == null || i.awardP50 <= 0 || (i.awardN ?? 0) < AWARD_N_FLOOR) return 1;
-    // Decades away from the ask. 0 = same size, 1 = an order of magnitude out.
-    const decades = Math.abs(Math.log10(i.awardP50 / want));
+    // Decades away from the ask, SIGNED: negative = this scheme pays less than
+    // the founder asked for. `shipped` immediately takes the absolute value, so
+    // it is the same arithmetic it always was.
+    const signed = Math.log10(i.awardP50 / want);
+    // A scheme that pays LESS than the whole ask is not thereby a worse route
+    // -- a grant is a component of a raise. Only the far side is penalised.
+    if (arm === "oneside" && signed <= 0) return AWARD_MATCH;
+    const decades = Math.abs(signed);
     // Within a decade is treated as a match and scores at or above 1; beyond
     // that the multiplier decays but never reaches 0, because a fund that is
     // the wrong size is a weaker route, not a disqualified one -- our award
