@@ -2,22 +2,22 @@
   "what": "What is stopping us, in plain words. Hand-written because a machine cannot say who is waiting on whom. A blocker that clears is DELETED, not marked done.",
   "blockers": [
     {
-      "who": "you",
-      "what": "A pile of changes needs your yes",
-      "why": "Our master copy of the funding data is missing about 3,400 encoded rules that our working copy has, and the safety check that should have caught it has never once run. Nothing a founder sees is wrong today. But the day anything rebuilds from that master copy, it gets worse and we would not be told.",
-      "ask": "Say yes to the items in AWAITING_APPROVAL. Half an hour of your reading, no money."
+      "who": "us",
+      "what": "The product cannot use a fact even when we hand it one",
+      "why": "We tested what would happen if we knew perfectly what each founder's money was for — the strongest thing we know of for telling two near-identical funds apart. Nothing moved. Fifty-nine of our own rules turn on that field and not one verdict changed. Until that is fixed, asking founders a better question buys nothing, and a paid test would be measuring a product that cannot act on its own inputs.",
+      "ask": "Nothing. Being fixed now, and it is the reason the paid test is waiting."
     },
     {
       "who": "money",
-      "what": "One test, and it is ready to buy",
-      "why": "Our free test runs without the AI in it, so every improvement to the part where the AI picks the funds is invisible to us. The fix that had to come first is done and cost nothing — and it found that our safety limit had been raised using evidence from a list of eighteen funds while we now show forty. That is corrected, and the test can no longer quietly pass itself.",
-      "ask": "Say go, and about 15 euros. Nothing else is waiting on anything."
+      "what": "One test, held back on purpose",
+      "why": "You asked for every free improvement to land first, and that is right — a test run against a product we are mid-way through fixing tells us less than the same test run after. Three fixes are in flight across the shortlist, the ranking and the write-up. The test itself is ready and its safety conditions are now provable.",
+      "ask": "Nothing yet. I will come back for the 15 euros when the free work is done, with what changed."
     },
     {
-      "who": "us",
-      "what": "We have run out of free ideas for the biggest problem",
-      "why": "Two thirds of the time we get it wrong, we are showing a founder a fund from the RIGHT programme through the WRONG door. We have now proved three separate ways that nothing we already hold tells those two doors apart — not the descriptions, not the rules, not the AI's own reading of them. The remaining answer is to ask founders something we do not currently ask.",
-      "ask": "Nothing. This is mine to design, and I will bring you one question, not ten."
+      "who": "you",
+      "what": "One deployment still needs you, and only that",
+      "why": "The data corrections are being applied now under the go-ahead you gave. What I am not doing on my own is redeploying the pipeline container: it is 316 commits behind, carries six days of unreviewed changes, and its safety check has never once published a result. That is a deploy, not a data fix, and it should be a deliberate decision.",
+      "ask": "Read AWAITING_APPROVAL when you have half an hour. No money."
     }
   ]
 }
