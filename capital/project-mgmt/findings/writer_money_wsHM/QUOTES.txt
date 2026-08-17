@@ -1,0 +1,103 @@
+wsHM — every sentence in a RECORDED brief that reasons from money.
+Read directly from tapes already paid for. NO MODEL CALL was made to produce this file.
+
+==============================================================================
+wsDE 2026-08-10  SMART Photonics   7 rows
+------------------------------------------------------------------------------
+  the table, in the order the SCORE ranked it:
+    [0] median EUR 2,496,599  n=   626  EIC Accelerator
+    [1] median  EUR 605,861  n=   264  NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH
+    [2] median  EUR 660,000  n=   458  EIC Transition
+    [3] median  EUR 200,000  n=    43  NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innov
+    [4] median  EUR 226,166  n=   328  NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 
+    [5] median  EUR 145,725  n=    84  NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europ
+    [6] median  EUR 713,442  n=    86  NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027
+  the bottom line, which is where BL-5 makes the writer name the first move:
+    * You already carry €9.3M in traced EU and Dutch public capital since 2022, close to LioniX International's €13.0M and ahead of New Origin's €997K, so evaluators in this cluster already know how to fund a Dutch photonics foundry.
+    * The NL-EZK-B&I-I&K-RVO NXTGEN HIGHTECH scheme is your strongest first move. It is a national grant under GBER Art. 25 and peers VLC Photonics and LioniX drew €5.4M and €5.2M through it.
+    * EIC Accelerator suits your scaling stage: it pays a grant up to €2.5M and can add €0.5M to €10M in equity from the EIC Fund, matching the ticket size you are seeking.
+    * Chase the NXTGEN HIGHTECH grant alongside a co-financed regional line such as OPZuid in Noord-Brabant, since your own project funding covers over half the cost these schemes leave with you.
+    * Together these routes offer a non-dilutive grant path into the tens of millions, with equity only entering if you choose the EIC's blended option.
+==============================================================================
+wsDE 2026-08-10  Neura Robotics   8 rows
+------------------------------------------------------------------------------
+  the table, in the order the SCORE ranked it:
+    [0] median  EUR 660,000  n=   458  EIC Transition
+    [1] median  EUR 415,470  n=  5012  Horizon EU CL1
+    [2] median  EUR 381,500  n= 10666  Horizon EU CL4
+    [3] median  EUR 294,375  n=  5365  Horizon EU Miss
+    [4] median  EUR 272,226  n=  2420  Horizon EU CL3
+    [5] median  EUR 150,000  n=  1087  ERC POC
+    [6] median EUR 4,043,400  n=    57  Innovation Fund SSP
+    [7] median  EUR 653,125  n=   646  Clean Aviation
+  the bottom line, which is where BL-5 makes the writer name the first move:
+    * Neura Robotics has €4.3M in traced public funding, a 2022-2025 state aid award, while sector peers Wandercraft and PAL Robotics drew €25.4M and €9.5M respectively through EIB debt and Horizon grants.
+    * At 250+ staff you exceed the EU SME ceiling, so EIC Accelerator and SME-only lanes are closed to you as a solo applicant; EIC Transition stays open but only if you enter as part of a 2-5 entity consortium.
+    * The Horizon Europe clusters (CL1, CL3, CL4, Mission) and Innovation Fund are your real doors given your scale: multi-partner grants and large capex support built for companies at your size and ticket range.
+    * Innovation Fund Smart Systems and Products fits your capex profile directly: grants from €2.5M up to tens of millions for industrial-scale deployment, with no equity attached.
+    * A Horizon Europe consortium slot commonly returns €0.5M-€5M per partner in non-dilutive grant funding, stacked across a multi-year project.
+==============================================================================
+wsDC 2026-08-10  Neura Robotics   7 rows
+------------------------------------------------------------------------------
+  the table, in the order the SCORE ranked it:
+    [0] median EUR 4,043,400  n=    57  Innovation Fund SSP
+    [1] median  EUR 660,000  n=   458  EIC Transition
+    [2] median  EUR 381,500  n= 10666  Horizon EU CL4
+    [3] median  EUR 415,470  n=  5012  Horizon EU CL1
+    [4] median  EUR 272,226  n=  2420  Horizon EU CL3
+    [5] median  EUR 294,375  n=  5365  Horizon EU Miss
+    [6] median  EUR 150,000  n=  1087  ERC POC
+  the bottom line, which is where BL-5 makes the writer name the first move:
+    * You have €4.3M in traced state aid from 2022 to 2025, well below peers like German Bionic Systems (€15.0M via EIB) and FFT Produktionssysteme (€7.0M combined state aid and Horizon).
+    * Your 250+ headcount closes SME-only lanes, but Innovation Fund SSP and EIC Transition remain open on the screening and fit your scale and ticket range.
+    * Innovation Fund SSP is the standout first move: it is sized for capex grants from €2.5M into the tens or hundreds of millions, matching your €15M to €50M ask directly.
+    * Horizon EU clusters (CL1, CL3, CL4, Miss) and ERC POC are open on screening but route through multi-partner consortia, so treat them as a slower parallel track, not your lead.
+    * A successful Innovation Fund SSP grant is non-dilutive capital sized to your project cost, and your stated co-financing capacity already covers the share the aid-intensity ceiling leaves with you.
+==============================================================================
+wsDC 2026-08-10  SMART Photonics   7 rows
+------------------------------------------------------------------------------
+  the table, in the order the SCORE ranked it:
+    [0] median EUR 2,496,599  n=   626  EIC Accelerator
+    [1] median  EUR 605,861  n=   264  NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH
+    [2] median  EUR 660,000  n=   458  EIC Transition
+    [3] median  EUR 200,000  n=    43  NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innov
+    [4] median  EUR 226,166  n=   328  NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 
+    [5] median  EUR 145,725  n=    84  NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europ
+    [6] median  EUR 713,442  n=    86  NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027
+  the bottom line, which is where BL-5 makes the writer name the first move:
+    * You already have €9.3M in traced EU and Dutch public capital since 2022, including €2.8M from Chips JU, which puts you ahead of peer LioniX (€13.0M total) on the strategic-autonomy track and behind EFFECT Photonics's €11.7M single state-aid award.
+    * Your fastest next move is the NL-EZK NGFNH2201 NXTGEN HIGHTECH scheme, the same national grant route EFFECT Photonics used for €11.7M and LioniX used for €5.2M, both in your own Dutch photonics cluster.
+    * In parallel, sound out the ministry running the next IPCEI wave: your project scale and stage fit the profile, but sponsorship is the open question and only the ministry can answer it.
+    * EIC Accelerator stays open to you as a grant-only route up to €2.5M, without taking the equity option that would put the EIC Fund on your cap table.
+    * A win on the NXTGEN HIGHTECH grant alone could be worth tens of millions of euros under GBER Art. 25, disbursed faster and without diluting your ownership.
+==============================================================================
+wsCY  Neura Robotics   6 rows
+------------------------------------------------------------------------------
+  the table, in the order the SCORE ranked it:
+    [0] median  EUR 415,470  n=  5012  Horizon EU CL1
+    [1] median  EUR 381,500  n= 10666  Horizon EU CL4
+    [2] median  EUR 294,375  n=  5365  Horizon EU Miss
+    [3] median  EUR 272,226  n=  2420  Horizon EU CL3
+    [4] median  EUR 150,000  n=  1087  ERC POC
+    [5] median  EUR 660,000  n=   458  EIC Transition
+  the bottom line, which is where BL-5 makes the writer name the first move:
+    * You have €4.3M in traced public funding, well behind German Bionic Systems (€15.0M via EIB) and FFT Produktionssysteme (€7.0M across state aid and Horizon) in your sub-sector.
+    * Your 250+ headcount closes SME-only lanes like EIC Accelerator, but nothing in the screen rules you out of Horizon Europe's consortium-based clusters or Innovation Fund SSP.
+    * Innovation Fund SSP is the fund sized to your €15M-50M ticket: it funds large-scale industrial capex and nothing in its screen closes it to you.
+    * The Horizon EU clusters (CL1, CL3, CL4, Miss) and ERC POC all require a multi-partner consortium, so treat them as routes to pursue only once you have confirmed you can assemble one.
+    * A successful Innovation Fund SSP grant would fund tens of millions of euros of capex directly, without diluting equity or creating repayment obligations.
+==============================================================================
+fixture  sennder   5 rows
+------------------------------------------------------------------------------
+  the table, in the order the SCORE ranked it:
+    [0] median          n/a  n=     0  National state aid (R&D)
+    [1] median          n/a  n=     0  National state aid (equity)
+    [2] median          n/a  n=     0  Horizon EU CL5
+    [3] median          n/a  n=     0  Horizon EU CBE
+    [4] median          n/a  n=     0  EIC Pathfinder
+  the bottom line, which is where BL-5 makes the writer name the first move:
+    * No public funding is traced for sennder, while peers TIMOCOM (€1.0M state aid, 2025) and Transporeon (Horizon grant, 2023) drew on German and EU schemes at the same digital-logistics layer.
+    * At 250+ staff you exceed the EU SME ceiling, closing SME-only lanes like EIC Accelerator and HTGF outright; your realistic doors are the national state-aid schemes and Horizon's collaborative Clusters.
+    * Start with SATR De Rnd: TIMOCOM drew €1.0M from the same instrument, and your co-financing capacity clears its 75% own-contribution bar.
+    * Horizon EU CL5 fits your mobility-tech profile and pays up to 100% of costs on research actions, but only inside a three-country consortium.
+    * A first SATR De Rnd award is a grant, not a loan or equity stake, and sits on the same GBER Art. 25 basis that delivered TIMOCOM's €1.0M.
