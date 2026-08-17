@@ -219,19 +219,21 @@ and passes. Recorded because the honest version of "not mine" is a run, not an
 argument — and because a stale base is a cheap way for a workstream to spend an
 hour proving something about a commit nobody is shipping.
 
-A whole-suite re-run on the merge was still executing when this was written,
-contending with a second `npm run check` another session had started against the
-same Postgres. It is not load-bearing: every red on the pre-merge pass was
-reproduced individually on `main`, and the one that was not is the paragraph
-above.
-
+The whole-suite re-run on the merge did not print a summary — the worktree was
+removed under it when this branch merged, so it died on SIGTERM. It had reached
+all but the last few checks, and **its red set is four**:
 `check_field_matches_demand`, `check_comparator_admits`,
-`check_open_question_class` and `check_country_gates` are red, and each
-reproduces on `main` with the same message. They are corpus-state failures owned
-elsewhere; the counts move between two runs minutes apart because other
-workstreams are loading. `check_recall_floor` is green on both. Nothing in this
-diff reaches a gate, a comparator or the pool: it is prompt text, one hermetic
-module, one guard, and three contracts.
+`check_open_question_class`, `check_country_gates`. Each reproduces on `main`,
+and after the merge the two that carry a number agree with `main` TO THE DIGIT —
+64 inert comparators and 1,130 requirement texts with no judgement, on both. On
+the pre-merge base the same two read 67 and 1,085. That is the stale base again,
+showing up in a second place, and it is a stronger statement than "the same
+message".
+
+They are corpus-state failures owned elsewhere. `check_recall_floor` and
+`check_winner_not_gated` are green on both. Nothing in this diff reaches a gate,
+a comparator or the pool: it is prompt text, one hermetic module, one guard, and
+three contracts.
 
 ## §6 What this does NOT close
 
