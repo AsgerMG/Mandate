@@ -135,7 +135,21 @@ function recoveredMenus(): Record<string, number> {
 export function recordsIn(file: string, text: string): Run[] {
   const out: Run[] = [];
   for (const line of text.split("\n")) {
-    if (!line.includes("agent-select:")) continue;
+    // ── A RUN RECORD IS A LINE A HARNESS PRINTED, NOT ONE PROSE QUOTES ─────
+    // `includes` let a tally line QUOTED INSIDE another sentence parse as a
+    // recorded run. That is not hypothetical: committing the red-proof log for
+    // `tallyDenominator.test.ts` put four synthetic lines under project-mgmt/
+    // — `AssertionError: expected 'agent-select: …'` and `Received:
+    // "agent-select: …"` — and this guard counted them as paid runs. A test
+    // fixture that truncates would then red the build for a run nobody made,
+    // and a synthetic clean one would pad the menu-coverage line the owner
+    // reads before authorising a spend. Both are worse than a missed record.
+    //
+    // THE PROPERTY: the line must BEGIN with the counter's own prefix, so a
+    // quotation is never a measurement. Leading whitespace is allowed because
+    // console output is sometimes indented; a quote mark or any other prefix
+    // is not.
+    if (!/^\s*agent-select:/.test(line)) continue;
     const eff = line.match(/effort=([a-z]+)/);
     const cap = line.match(/maxtok=(\d+)/);
     // `N CUT OFF` or `N/M CUT OFF` — the numerator is the count either way.
@@ -284,6 +298,23 @@ function selfTest(): void {
   // "clean" — it must simply not be a record, which is what the arm-off line is.
   const armOff = recordsIn("synthetic", "agent-select: arm=off, no calls made");
   if (armOff.length) throw new Error("selfTest: a line with no ceiling parsed as a record");
+  // A REAL tally line QUOTED INSIDE another line is not a run. These two shapes
+  // are verbatim from a committed vitest log, and both parsed before wsHI.
+  const quoted = recordsIn("synthetic",
+    `Received: "agent-select: arm=adviser depth=40 count=7 effort=medium maxtok=34816 `
+    + `model=claude-sonnet-5 — 1/1 chose, 1/1 CUT OFF at max_tokens, EUR 0.1 total"\n`
+    + `AssertionError: expected 'agent-select: menu=12 rows arm=adviser effort=high `
+    + `maxtok=57344 — 1/1 chose, 3/3 CUT OFF at max_tokens' to contain 'x'`);
+  if (quoted.length) {
+    throw new Error(`selfTest: ${quoted.length} tally line(s) quoted inside prose parsed as `
+      + `recorded runs. A test log committed under ${WATCHES}/ would then gate a paid run.`);
+  }
+  // …while the same line, printed rather than quoted, still parses — indented,
+  // because console output sometimes is.
+  const indented = recordsIn("synthetic",
+    "   agent-select: menu=40 rows arm=adviser effort=medium maxtok=34816 — 1/1 chose, "
+    + "0/1 CUT OFF at max_tokens, EUR 0.1 total");
+  if (indented.length !== 1) throw new Error("selfTest: an indented real line stopped parsing");
 }
 
 // ── run ────────────────────────────────────────────────────────────────────
