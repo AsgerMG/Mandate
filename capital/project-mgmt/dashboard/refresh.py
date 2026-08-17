@@ -50,6 +50,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 PAGE = Path(__file__).resolve().parent / "precision.html"
 AGENTS = Path(__file__).resolve().parent / "agents.json"
+BLOCKERS = Path(__file__).resolve().parent / "blockers.json"
 
 
 def agent_rows() -> str:
@@ -71,6 +72,43 @@ def agent_rows() -> str:
         out.append(
             f'      <div class="row">{step}'
             f'<span class="txt"><b>{a["what"]}</b><span>{a["why"]}</span></span></div>')
+    out.append("    </div>")
+    return "\n".join(out)
+
+
+def blocker_rows() -> str:
+    """WHAT IS STOPPING US, in plain words, at the top of the page.
+
+    The owner said the page had become too complicated to see blockers in. It
+    had: everything true about this project was on it, in the order I happened
+    to learn it, and none of it said who was waiting on whom.
+
+    Hand-written, and it has to be -- a machine cannot say that a queue is
+    waiting on a person. What is enforced is the SHAPE: every blocker names WHO
+    (you / money / us) and states an ASK, because a blocker without an ask is a
+    complaint. A cleared blocker is DELETED from the file, never marked done,
+    for the same reason a finished agent is.
+    """
+    data = json.loads(BLOCKERS.read_text())
+    items = data.get("blockers") or []
+    if not items:
+        return '<p class="lede">Nothing is blocked. Everything in flight is ours to finish.</p>'
+    tone = {"you": "var(--bad)", "money": "var(--warn)", "us": "var(--accent)"}
+    out = ['<div class="rows">']
+    for b in items:
+        who = b["who"]
+        if who not in tone:
+            sys.exit(f"blocker '{b.get('what')}' names who='{who}'. It must be one of "
+                     f"{sorted(tone)} -- a blocker whose owner is unclear is not a blocker.")
+        if not b.get("ask"):
+            sys.exit(f"blocker '{b.get('what')}' has no `ask`. A blocker without an ask "
+                     f"is a complaint, and the owner cannot act on it.")
+        out.append(
+            f'      <div class="row"><span class="st" style="color:{tone[who]};'
+            f'border-color:{tone[who]}">{who}</span>'
+            f'<span class="txt"><b>{b["what"]}</b><span>{b["why"]}</span>'
+            f'<span style="color:{tone[who]};margin-top:6px">{b["ask"]}</span>'
+            f'</span></div>')
     out.append("    </div>")
     return "\n".join(out)
 
@@ -483,20 +521,6 @@ def figures(data: list[list]) -> dict[str, object]:
     end = share(FUNNEL_ROWS[-1][0])
     convert = end / reach * 100
 
-    # The largest single stage-to-stage loss, found rather than asserted. The
-    # prose used to name the cut to eight because that was true when it was
-    # written; the sentence must move when the loss does.
-    drops = []
-    prev = None
-    for stage_id, label, _tone, noun in FUNNEL_ROWS:
-        st = by_id.get(stage_id)
-        if st is None or st.get("sharePct") is None:
-            continue
-        pct = float(st["sharePct"])
-        if prev is not None:
-            drops.append((prev[1] - pct, noun, prev[0]))
-        prev = (noun, pct)
-    worst = max(drops)
 
     return {
         **headline(),                      # published / rows / n / stamp / stamp2
@@ -519,23 +543,53 @@ def figures(data: list[list]) -> dict[str, object]:
         "reachCeiling": round(share("gates_pass")),
         "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
         "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
-        "worstLoss": round(worst[0]),
-        "worstLossAfter": worst[2],
-        "worstLossAt": worst[1],
+        # Twelve figures were deleted here with the prose that used them.
+        # The page had grown a six-step section restating the table at four
+        # times the length, and seven paragraphs under it. The owner called it
+        # polluted twice. An executive page is the number, what is stopping us,
+        # where it is lost, and what is running -- and nothing else earns a row.
+        "milestone": round(MILESTONE),
+        # What conversion must reach for each, at TODAY's reach and at the
+        # ceiling the gates allow. Four figures rather than two, because "the
+        # second number has to reach 84%" reads as impossible until you see that
+        # at full reach it is 58%.
+        "needConvertMile": round(MILESTONE / reach * 100),
+        "reachCeiling": round(share("gates_pass")),
+        "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
+        "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
+        # Twelve more figures were deleted here with the prose that used
+        # them: a six-step section restating the table at four times the
+        # length, and seven paragraphs under it. The owner called the page
+        # polluted twice. An executive page is the number, what is stopping
+        # us, where it is lost, and what is running. Nothing else earns a row,
+        # and the orphan check above is what forced these to go with it.
+        "milestone": round(MILESTONE),
+        # What conversion must reach for each, at TODAY's reach and at the
+        # ceiling the gates allow. Four figures rather than two, because "the
+        # second number has to reach 84%" reads as impossible until you see that
+        # at full reach it is 58%.
+        "needConvertMile": round(MILESTONE / reach * 100),
+        "reachCeiling": round(share("gates_pass")),
+        "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
+        "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
+        # Twelve figures were deleted here with the prose that used them.
+        # The page had grown a six-step section restating the table at four
+        # times the length, and seven paragraphs under it. The owner called it
+        # polluted twice. An executive page is the number, what is stopping us,
+        # where it is lost, and what is running -- and nothing else earns a row.
+        "milestone": round(MILESTONE),
+        # What conversion must reach for each, at TODAY's reach and at the
+        # ceiling the gates allow. Four figures rather than two, because "the
+        # second number has to reach 84%" reads as impossible until you see that
+        # at full reach it is 58%.
+        "needConvertMile": round(MILESTONE / reach * 100),
+        "reachCeiling": round(share("gates_pass")),
+        "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
+        "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
         # The step-by-step section below the table. Same run, same ladder --
         # these used to be typed, and by this morning the page was telling the
         # owner the list is cut to eighteen (it is forty) and that the gates
         # cost twenty points (they cost four).
-        "instruments": "{:,}".format(
-            int(re.search(r"instruments=(\d+)", run["corpus"]).group(1))),
-        "shortlist": round(run["meanAccessibleRows"]),
-        "inShortlist": round(share("gates_pass")),
-        "gatesLoss": round(share("founder_screen") - share("gates_pass")),
-        "poolCutLoss": round(share("gates_pass") - share("pool_cut")),
-        "writerLoss": round(share("pool_cut") - share("writer_cap")),
-        "beforeAI": round(100 - share("pool_cut")),
-        "publishCap": run["levers"]["PUBLISH_CAP"],
-        "writerCap": run["levers"]["WRITER_CANDIDATE_CAP"],
     }
 
 
@@ -547,6 +601,13 @@ def main() -> None:
     page = PAGE.read_text()
     if "const D = " not in page:
         sys.exit(f"{PAGE} has no `const D = ` array to replace")
+
+    page, n = re.subn(
+        r"<!--BLOCKERS-->.*?<!--/BLOCKERS-->",
+        "<!--BLOCKERS-->" + blocker_rows() + "<!--/BLOCKERS-->",
+        page, count=1, flags=re.S)
+    if n != 1:
+        sys.exit("the BLOCKERS block could not be replaced -- has the page been restructured?")
 
     page, n = re.subn(
         r"<!--AGENTS-->.*?<!--/AGENTS-->",

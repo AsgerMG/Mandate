@@ -1,0 +1,23 @@
+{
+  "what": "What is stopping us, in plain words. Hand-written because a machine cannot say who is waiting on whom. A blocker that clears is DELETED, not marked done.",
+  "blockers": [
+    {
+      "who": "you",
+      "what": "A pile of changes needs your yes",
+      "why": "Our master copy of the funding data is missing about 3,400 encoded rules that our working copy has, and the safety check that should have caught it has never once run. Nothing a founder sees is wrong today. But the day anything rebuilds from that master copy, it gets worse and we would not be told.",
+      "ask": "Say yes to the items in AWAITING_APPROVAL. Half an hour of your reading, no money."
+    },
+    {
+      "who": "money",
+      "what": "We cannot see half of what we build",
+      "why": "Our free test runs without the AI in it. So every improvement to the part where the AI picks the funds is invisible to us — we ship it and hope. One paid test would show us. You have already approved it; it is waiting on a free fix that is running right now.",
+      "ask": "Nothing yet. About 15 euros when the fix lands, and I will tell you."
+    },
+    {
+      "who": "us",
+      "what": "We have run out of free ideas for the biggest problem",
+      "why": "Two thirds of the time we get it wrong, we are showing a founder a fund from the RIGHT programme through the WRONG door. We have now proved three separate ways that nothing we already hold tells those two doors apart — not the descriptions, not the rules, not the AI's own reading of them. The remaining answer is to ask founders something we do not currently ask.",
+      "ask": "Nothing. This is mine to design, and I will bring you one question, not ten."
+    }
+  ]
+}
