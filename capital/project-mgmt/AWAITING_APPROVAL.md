@@ -131,6 +131,158 @@ brief forever.
 
 ## Your decision, no money involved
 
+### 0. Five more rows named after their granting body, and the two publish steps the rename needs — free, wsHF, 2026-08-17
+
+`project-mgmt/findings/body_named_rows_wsHF.md`. The rename you authorised is
+**done in Postgres**: 22 rows under SA.40391, SA.56245 and SA.49781 now carry
+the scheme's registered title instead of a tax office's or a ministry's name.
+Four things it uncovered are outside what you approved and none has been acted
+on.
+
+**a. The property catches 27 rows, not 11.** wsHA's eleven were the rows in its
+own working set; the same three SA numbers carry 22 rows corpus-wide, which is
+what was written. **Five more carry the identical defect and were left alone:**
+
+| id | shown as | why it is not in the write |
+| --- | --- | --- |
+| `satr_fr_rnd__sa_59366__ministere_de_la_transition_ecologique_et_solidai` | Ministère de la Transition écologique et solidaire | a **fourth** SA number, not in the finding you approved. The register links it to **two** titled cases (SA.47101, SA.112158) and the rule refuses to guess which is the aid measure. Already withheld from the offerable pool, so no founder sees it today. Needs a person to read both records. |
+| `bpifrance_inov` | Bpifrance | no SA number — outside the state-aid register entirely |
+| `bpifrance_innovup_leader_idf` | Bpifrance | ditto, and the id says the row is *Innov'up Leader IdF*, so the name is wrong about a thing we already know |
+| `innovasjon_norge_loan_risk` | Innovasjon Norge | ditto |
+| `innovasjon_norge_loan_lowrisk` | Innovasjon Norge | ditto |
+
+All four national-development-bank rows are **offerable today**. They are a
+different repair — a funder page read by a person, per
+`project-mgmt/evidence/README.md` — not a register lookup, and Innovasjon Norge
+is one of the three agencies `seed_agency_routes.py` records as refusing
+automated access.
+
+**b. → promoted to its own item, §0bis below.**
+
+**c. `instrument_profiles` is stale for the 22 rows, and this is why the rename
+moved the funnel as little as it did.** `profile_text` is built from `name`,
+and the shipped ranker is an embedding over that text. Renaming in
+`funding_instruments` does not re-embed. Until
+`build_instrument_profiles.py` re-runs and the 22 vectors are refreshed, the
+ranker still scores these rows on "Finanzamt Aachen-Stadt". Re-embedding 22 rows
+is a few cents of Voyage and a publish step, and it is the action that would
+actually let the rename change an ordering.
+
+**d. Two register artefacts are now visible on shipped names**, deliberately not
+laundered: `Steuerliche Förderung von Forschung und Entwicklung [BMF]` carries
+the Commission's issuer annotation, and the Italian title carries their export's
+doubled apostrophe (`nell''ambito`). Both classes already existed on shipped
+rows named from this same register; cleaning them is a separate change with its
+own blast radius, not something to smuggle into a bounded one.
+
+
+### 0quater. 15 instruments show a dead end where the register names a live successor — free to fix, counted, wsHF, 2026-08-17
+
+`project-mgmt/findings/body_named_rows_wsHF.md` §3b. Found while fixing
+something else, **counted rather than asserted**, and not touched.
+
+`populate_funding_instruments.py` turns a closed scheme into a redirection by
+reading that case's **own** `caseLinks`. But `caseLinks` is directional — the
+Commission files the edge on whichever side it pleases — so a successor that
+filed the link on **its** record is invisible.
+
+```
+instruments carrying an SA number                 475
+...whose scheme the register says has CLOSED      220
+...live successor found FORWARD-only (today)       40
+...live successor ONLY on the OTHER side           15   <- MISSED TODAY
+   distinct SA numbers affected                    14
+```
+
+**A symmetric read finds 55 successors where we find 40 — +37.5%.** Fifteen
+instruments currently present a founder with a scheme the register says has
+closed, when the register also names the live scheme that replaced it:
+Thüringen's R&D programme, the Bundesförderung für Energie- und
+Ressourceneffizienz, Business Finland's young-company scheme, Sweden's
+`Förordning (2015:208)`, Wallonia's `Incitants en faveur des PME`, two Dutch
+`Besluit` schemes, Malta's RDI and SME schemes, and five more.
+
+**This is the `between_calls` shape** — we modelled one object and the funder ran
+another, which is how eleven funds came back in July. The fix is to use
+`link_map()` from `ETL/lib/scheme_title.py`, which already exists and is already
+tested, in place of the forward-only iteration. **Free, no new fetch** (all
+records are already on disk), but it writes `successor_scheme` /
+`successor_title` on live rows, which is a founder-visible claim and therefore
+yours.
+
+Reproduce: `python3 website/frontend/scripts/_wshf_successor_count.py`
+
+### 0ter. Three doors of SA.40391 are now indistinguishable — the door problem, at a size somebody can finish — free to investigate, wsHF, 2026-08-17
+
+`project-mgmt/findings/body_named_rows_wsHF.md`, and read it against
+`project-mgmt/findings/door_separation_wsHA/`. **This is not a regression report.
+It is the smallest fully-evidenced instance of the thing wsHA says is 63.2% of
+our misses, and it was created in public by a fix you authorised.**
+
+After the rename, these three rows print **the same string, byte for byte**,
+through the shipped `doorLabel()`:
+
+```
+satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances
+satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation
+satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+  -> "Régime cadre exempté de notification relatif aux aides à la recherche,
+      au développement et à l'innovation (RDI) pour la période 2014-2023"
+```
+
+`nameableBody` refuses to append a ministry, by design and correctly, so nothing
+separates them. **Nothing can pick between these three: not the model, not any
+ordering we could build, not a founder reading the page.**
+
+**The trade that produced it, both sides.** Before: three rows a founder could
+tell apart, none of which said what it was. After: three rows that say what they
+are and cannot be told apart. Distinct labels across the 22 renamed rows went
+**21 → 20**. The fix is still right — "Ministère de l'économie et des finances"
+was information about the ministry, not about the fund, so there was no
+information to trade away — but the result is not an unqualified improvement and
+should not be filed as one.
+
+**What is sitting unused, already fetched and already in the corpus.** The
+register separates these three and we hold all of it: the **granting body**
+(economy / agriculture / economy-equity), the **capital channel** (`satr_fr_equity`
+against `satr_fr_rnd`), the notified **period**, and the per-case **GBER
+objectives** (`SA.40391` carries nine articles: 25(2)(a-d), 26, 27, 28, 29, 30).
+Two of the three differ in channel and two differ in body.
+
+**Why it was NOT solved here.** Choosing the suffix that separates two doors of
+one scheme *is* the door problem. It is unbounded, it is a product decision
+about what a founder is told, and it was not in the authorisation. A rushed
+suffix tonight would be worth less to the next workstream than this: a live
+three-row instance, with the separating facts enumerated, in a regime whose
+siblings are 15.7% of wsHA's whole working set (`satr_fr_rnd`, 45 pairs).
+
+**No money. The next step is a person deciding what a door label should say.**
+
+### 0bis. Regenerate the committed snapshot, so the new naming check can be wired in — free, ~2 minutes, wsHF, 2026-08-17
+
+`website/frontend/public/data/instrument_terms.json` still carries the twenty-two
+old names. **Postgres is the store a founder's request reads, so this is not a
+live defect** — the new titles are already being served. The snapshot is the
+degradation path and what every hermetic `check_*` reads.
+
+**What it costs.** One command, no credentials beyond the ones already loaded,
+no model, no Voyage, no network:
+
+```
+python3 website/build/eligibility_export.py     # ~2 min, rewrites one file
+npx tsx website/frontend/scripts/check_body_named_rows.ts
+```
+
+**What it buys.** `check_body_named_rows.ts` can then be added to
+`npm run check` — **but only after §0a's four national-development-bank rows are
+settled**, because those four fail it on their own account and no snapshot
+regeneration touches them. Until both are done the check stays out of the build
+rather than being softened to pass, which would defeat the only thing it is for.
+
+**What to watch.** The export rewrites every row, so the diff will be larger
+than twenty-two lines and `check_corpus_currency` / `check_rendered_numbers`
+both read it. Regenerate on a branch and read the diff.
+
 ### 0a. Make the corpus of record match what is already shipping — free, ~30 minutes, nothing a founder sees changes either way
 
 `project-mgmt/findings/wsHB_record_divergence/`, 2026-08-17. **Read the reason

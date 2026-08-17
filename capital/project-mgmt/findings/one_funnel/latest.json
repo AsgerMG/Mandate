@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-13T17:41:19.889Z",
+ "startedAt": "2026-08-17T19:55:02.538Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-13T17:41:20.449Z",
+ "corpusObservedAt": "2026-08-17T19:55:03.270Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 828,
@@ -25,7 +25,8 @@
    7,
    6,
    5
-  ]
+  ],
+  "rowOrder": "off"
  },
  "poolSweep": null,
  "watchOnlyInProduction": {
@@ -34,8 +35,8 @@
   "rows": 8,
   "share": 0.17142857142857143
  },
- "meanTableRows": 88,
- "meanAccessibleRows": 79.7,
+ "meanTableRows": 87.8,
+ "meanAccessibleRows": 79.5,
  "stages": [
   {
    "id": "answer_key",
@@ -94,18 +95,18 @@
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (40 rows)",
-   "remaining": 642,
-   "sharePct": 71.57,
-   "lost": 132,
+   "remaining": 636,
+   "sharePct": 70.9,
+   "lost": 138,
    "unmeasured": false,
-   "halfWidthPts": 2.95
+   "halfWidthPts": 2.97
   },
   {
    "id": "writer_cap",
    "question": "... and it survives the cut to the writer's candidates (8)",
    "remaining": 362,
    "sharePct": 40.36,
-   "lost": 280,
+   "lost": 274,
    "unmeasured": false,
    "halfWidthPts": 3.21
   },
@@ -139,9 +140,9 @@
   {
    "id": "top_5",
    "question": "... and it is in the first 5 of them",
-   "remaining": 297,
-   "sharePct": 33.11,
-   "lost": 24,
+   "remaining": 298,
+   "sharePct": 33.22,
+   "lost": 23,
    "unmeasured": false,
    "halfWidthPts": 3.08
   },
@@ -172,5 +173,6 @@
   "rankerHits": 50,
   "controlRate": 0.45918367346938777,
   "rankerRate": 0.5102040816326531
- }
+ },
+ "counterfactual": null
 }
