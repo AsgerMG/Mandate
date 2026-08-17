@@ -1,9 +1,59 @@
 # wsHG — we CAN read what a founder's money is for from their own words, and it does not pick the right door
 
-**FOR THE OWNER, VERBATIM.** *(headline paragraph written after the funnel arm
-returns — see PENDING below)*
+**FOR THE OWNER, VERBATIM.** **Yes, we can tell what a founder's money is for
+from their own words — on 71.6% of them — and no, it does not pick the right
+door. It cost $1.07.** One cheap classification per founder, reading their
+description prose and nothing else, produced a real answer for 642 of 897 and a
+*different* answer from the harness's constant for half the population, so this
+is not a lucky guess reproducing the pin. But on the 86 pairs wsHA identified —
+where the corpus declares a different purpose for the two doors and the founder
+is asked exactly that on page one — the derived answer picks the won door 12
+times and the wrong door 10, **net +2 against the constant's +5**. On the pairs
+whose answer actually changed it is net −2. It is worse than the constant we
+already ship. Two things make that a useful result rather than a dead end.
+**First, the separator is real and we now know its price**: an answer *exists*
+that picks the right door on 64 of those 86, and `feasibility_study` alone is
+worth +25 — so wsHA §6's diagnosis stands, and what fails is reading the field
+off award prose, not the field. **Second, we found where the signal is being
+destroyed, and it is our own arithmetic**: on 28 of the 64 separable pairs the
+derived answer *contained* a separating option and scored both doors anyway,
+because `objectiveScorer` matches on overlap, so a richer answer separates less.
+Changing that rule to "prefer the door that matches more of the answer" takes
+the **shipped pin** from +5 to +14 without asking anyone anything — worth more
+than the answer change, on this evidence, and priced but deliberately not
+applied because `shortlist.ts` belongs to another workstream this hour. **The
+one thing this does not say is that founders cannot answer.** A real founder is
+asked and states it; these are award-derived descriptions, so 71.6% is a floor
+on what a real founder supplies and the 27.3% that says nothing is a fact about
+award prose. What it does say firmly: **stop deriving this field from prose**,
+and beware `production_capex` — a correct reading of a founder's own words that
+points at the wrong door 26 times to 5.
 
 ---
+
+```
+run                 2026-08-17, isolated worktree wsHG-useoffunds
+population          897 founder(s) — held out, described, one per company
+draw fingerprint    13cb71cf3a1d1847   <- IDENTICAL to one_funnel/latest.md and to
+                    door_separation_wsHA. The same founders, so §4 is comparable
+                    with wsHA §6 to the founder rather than to the rounding.
+derivation          one claude-haiku-4-5 call per founder, structured output,
+                    max_tokens 200, no thinking. Input: r.description ONLY.
+cost                $1.068 total — $0.983 the full run, $0.061 an interrupted run
+                    the leak pre-flight aborted, $0.024 a 20-founder smoke.
+                    NO ranker run, NO memo run, nothing re-bought. Cached by
+                    description hash, so re-running the derivation is FREE.
+pre-registered      PREREGISTRATION.md, committed 21:31:57, eight minutes before
+                    the first paid token (git log is the record, not this line)
+reproduce           OUT=/tmp/wshg_uof.json npx tsx scripts/_wshg_useoffunds.ts
+                    UOF=/tmp/wshg_uof.json npx tsx scripts/_wshg_doors.ts   (free)
+                    USE_OF_FUNDS=/tmp/wshg_uof.json npm run stages          (free, ~2h)
+```
+
+**Read-only on the product.** `shortlist.ts`, `objectiveScorer`, `OBJECTIVE_MATCH`,
+`memoCandidates.ts` and `caps.ts` are untouched. `founderIntake` still pins the
+field. The only shipped-adjacent change is a new default-off arm in
+`measure_funnel.ts`, which writes nothing.
 
 ## 1. What was asked, and what was in the way
 
