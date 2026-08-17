@@ -2,10 +2,10 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsHD",
-      "step": 3,
-      "what": "What the sixty-three corrections are actually worth",
-      "why": "Sixty-three funding rules are wrongly encoded — each one checked against the funder's own published page, with the quote and the reasoning written down. Fixing them is waiting on your approval because it means writing to the database. So far the case for them is an internal counter: wrongly excluded funds fall from 251 to 14. That is not the same as founders getting better answers. This measures what they would move on the real end-to-end number, so the decision comes with the figure that matters rather than the one that is easy to produce."
+      "id": "wsHE",
+      "step": 2,
+      "what": "A signal that is picking the wrong fund six times out of seven",
+      "why": "When we show a founder the wrong door of the right programme, the fund we show writes cheques closer to the amount they said they need than the fund they actually won — thirty-three percent of the time against six. Matching what a founder asks for against what a fund has historically paid is selecting against the right answer. It is the one live defect in our ranking that the diagnosis turned up, it is free to test, and it is the first thing pointed at the number rather than at understanding it."
     }
   ]
 }
