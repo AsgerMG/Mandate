@@ -31,6 +31,17 @@ that gates DO separate siblings — and siblings are where two thirds of the los
 turns out to be. Gate encoding is the one lever we hold that acts on the
 failure wsGY identified. Nothing else in this file does.
 
+> **AMENDED 2026-08-17 by measurement, `findings/gate_funnel_wsHD.md`.** The
+> paragraph above is right about GATE ENCODING and wrong about THESE 63 ROWS.
+> Run on the funnel, paired, they move six rows by **+0.4 points** (35.8% →
+> 36.2%, p=0.42) while moving the gate screen by +2.3 points (p<0.001), because
+> only **65 of 897 founders won a fund they touch** and 48 of the 63 are
+> QUARANTINES — which stop a comparator deleting a row for every founder, not
+> just the wronged one, and so lengthen every pool by about four rows. A gate
+> change that SEPARATES siblings is the lever wsGY's finding points at; a gate
+> change that REMOVES a comparator is its opposite. §0 is still worth applying;
+> it is a correctness fix, not the biggest single fix on the shortlist.
+
 **And two spending items below are weaker than their text says:**
 
 - **§2, the EUR 11-13 confirming run on 18 → 40.** wsGY measured the widening's
@@ -176,11 +187,37 @@ INSERT OR IGNORE union. `make republish` — which `check_corpus_census` prints 
 its closing advice — is therefore safe, and the surrounding paragraph currently
 reads as though it is not.
 
-### 0. Apply 63 gate-encoding corrections — free, and it is the biggest single fix on the shortlist
+### 0. Apply 63 gate-encoding corrections — free, a correctness fix, and NOT a funnel move
+
+**Now measured on the funnel instead of on a guard's counter — 2026-08-17,
+`findings/gate_funnel_wsHD.md`, free, paired, nothing written.** Applying them
+takes the brief from **35.8% to 36.2% at six rows**: four founders in 897,
+inside the run's own noise (exact McNemar p=0.42). What they unambiguously fix
+is one row higher: the gate screen stops deleting **21 founders' won fund** and
+deletes none of anybody else's, **86.3% → 88.6%, p<0.001**. Nine of those 21
+reach six rows, and five other founders are pushed out of six rows by the same
+change — quarantining a comparator stops it deleting a row for *every* founder,
+so the mean pool grows 79.5 → 83.2 rows for all 828 of them and the extra rows
+compete for the same forty-row and eight-row cuts. Two runs 45 minutes apart
+agree founder for founder.
+
+**Why the guard's number is so much larger, and both are true.** It counts
+7,095 register pairs where one ADEME forestry scheme supplies hundreds; the
+funnel counts 897 distinct founders, of whom **65 (7.2%) won a fund any of
+these 63 rules touches at all**. 65 is the ceiling on what this proposal can
+move at any row. **So apply it because the encodings contradict the funder's own
+pages and delete founders who demonstrably won — not because it moves the
+product.**
 
 **`check_winner_not_gated` goes from 251 wrongful deletions to 14**, against a
 ceiling of 207 it has been failing. Nothing else on this list moves it, and no
 code change can: wsGR proved the residue is gate encodings, not inheritance.
+
+**The store holds what the file was written against, checked today**
+(`_wshd_pg_drift.ts`, read-only): 62 of the 63 match Postgres exactly, 0
+drifted, 0 absent, and one — `chips_ju_kdt_unknown [G1-03]` — **already holds
+the proposed comparator in Postgres** though not in the committed snapshot. So
+applying the file changes 62 rows, not 63.
 
 **Its case got stronger after it was written, and this is the paragraph to read
 if you read one.** wsGY has since measured that **63.2% of the founders we miss

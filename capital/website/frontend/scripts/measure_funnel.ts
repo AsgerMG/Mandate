@@ -135,10 +135,12 @@ if (requireCredentials("measure_funnel", ["DATABASE_URL", "VOYAGE_KEY"]) === "of
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
 import { parseDepth, SELECT_DEPTH, VERDICT_POOL, WRITER_CANDIDATE_CAP } from "../lib/intelligence/caps";
 import {
-  corpusProvenance, type DbInstrument, findPeersBySubsector, hydrateDbInstruments,
+  corpusProvenance, type DbInstrument, findPeersBySubsector, gateOverlayReport,
+  hydrateDbInstruments,
   isGenericSubsector, loadDbInstruments, matchCompany, publishabilityContext,
   type PublishabilityContext, publishabilityFailures, publishableInstruments,
-  requireLiveCorpus, resetGateHydration, suppressedForUnconfirmedLiveness,
+  requireLiveCorpus, resetGateHydration, setGateOverlay,
+  suppressedForUnconfirmedLiveness,
 } from "../lib/intelligence/corpus";
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
@@ -236,6 +238,64 @@ const SWEEP_KS: number[] = (() => {
     .map((s) => parseDepth(s, `POOL_SWEEP element "${s}"`, { all: true }));
   return [...new Set([VERDICT_POOL, ...ks])].sort((a, b) => a - b);
 })();
+
+/** ── A PROPOSED GATE ENCODING, MEASURED WITHOUT BEING WRITTEN ──────────────
+ *
+ *  `GATE_OVERLAY=<path to a corrections jsonl>` runs the WHOLE ladder a second
+ *  time per founder with those comparators served instead of the store's, and
+ *  prints the two arms side by side.
+ *
+ *  ── The gap this closes ──────────────────────────────────────────────────
+ *  A gate-encoding correction is a proposal until its owner approves it, and
+ *  approving it means a write to the store the product serves from. Until now
+ *  the only thing that could report on a proposal was
+ *  `_wsgu_counterfactual.ts`, which applies the corrections in memory to the
+ *  COMMITTED SNAPSHOT and re-runs `assessInstrument` alone: it can say what a
+ *  guard's counter becomes (251 wrongful deletions to 14) and it cannot say
+ *  what a founder would see, because it contains no ranker, no pool cut and no
+ *  writer cap. The owner was being asked to authorise a write on the strength
+ *  of a guard's internal counter. This is how he gets the product number
+ *  instead, and it writes nothing.
+ *
+ *  ── Why the arms are PAIRED INSIDE ONE RUN ───────────────────────────────
+ *  The shipped ordering drifts between runs while other workstreams republish
+ *  `instrument_profiles` (wsGY watched a few founders move in a couple of
+ *  hours), so a before-run and an after-run are not comparable at the founder.
+ *  Both arms here see the same draw, the same intake, the same corpus read and
+ *  the same embedding — `semanticFundMatch` caches by description, so the
+ *  second arm costs no extra Voyage call and the ranker attestation still
+ *  counts every request as EMBEDDING. What differs between the arms is exactly
+ *  63 comparators, which is what makes the difference attributable to them.
+ *
+ *  ── It refuses rather than reports a flattering zero ─────────────────────
+ *  An overlay that applied nothing would print "the corrections change
+ *  nothing", which is both the most consequential possible finding and the
+ *  easiest one to produce by accident. So the run fails if the file is
+ *  unreadable, if it is empty, if any row's stored comparator is not the one
+ *  the proposal was written against (drift), or if no proposed comparator was
+ *  ever served. */
+interface GateProposal {
+  instrument_id: string;
+  gate_key: string;
+  action?: string;
+  clause?: string;
+  current_value_spec: unknown;
+  proposed_value_spec: unknown;
+}
+
+function loadGateProposal(): { file: string; rows: GateProposal[] } | undefined {
+  const file = process.env.GATE_OVERLAY;
+  if (!file) return undefined;
+  const abs = path.isAbsolute(file) ? file : path.join(process.cwd(), file);
+  const rows = readFileSync(abs, "utf8").split("\n").filter((l) => l.trim())
+    .map((l) => JSON.parse(l) as GateProposal);
+  if (!rows.length) {
+    throw new Error(`measure_funnel: GATE_OVERLAY=${file} holds no rows. A counterfactual `
+      + "arm that changes nothing would report the corrections as harmless, which is the "
+      + "one conclusion this must never reach by accident.");
+  }
+  return { file, rows };
+}
 
 /** A depth for a column heading. `Infinity` is the whole accessible pool, and
  *  printing `Infinity` would be the one thing a reader cannot act on. */
@@ -587,10 +647,128 @@ async function main() {
   const lostReasons = new Map<string, number>();
   let unattributed = 0;
 
+  // ── THE COUNTERFACTUAL ARM ────────────────────────────────────────────────
+  // Empty unless GATE_OVERLAY names a proposal. `tracesB` is the SAME founders
+  // in the same order, so every comparison below is paired at the founder and
+  // no seed has to match for it to be.
+  const proposal = loadGateProposal();
+  const overlayMap = new Map<string, { expect: unknown; spec: unknown }>(
+    (proposal?.rows ?? []).map((c) => [
+      `${c.instrument_id} ${c.gate_key}`,
+      { expect: c.current_value_spec, spec: c.proposed_value_spec },
+    ]));
+  const tracesB: Trace[] = [];
+  const overlayEverApplied = new Set<string>();
+  const overlayDriftSeen = new Set<string>();
+  if (proposal) {
+    console.log(`counterfactual arm: ${proposal.rows.length} proposed comparators from `
+      + `${proposal.file}\n  every founder runs the ladder TWICE — the store's encoding, `
+      + "then the proposal — paired, in this process, writing nothing\n");
+  }
+
   console.log(
     `one funnel · set=${setFile} split=${split} · ${drawn.length} founder(s)`
     + `${n > 0 ? ` sampled of ${population.length}` : " (the whole population)"}`
     + ` · draw ${fingerprint}\n`);
+
+  // ── ONE FOUNDER'S PASSAGE, SO IT CAN BE RUN TWICE ────────────────────────
+  // Extracted for the counterfactual arm and for nothing else: both arms must
+  // be the SAME code, or the difference between them is a difference between
+  // two harnesses. Every gate-dependent step is inside — the table build (which
+  // fetches gates), `accessiblePool` (which reads their verdicts) and the
+  // writer cut below it.
+  const passage = async (f: ReturnType<typeof founderIntake>, won: string) => {
+    const selfRecord = matchCompany(f.company, f.country);
+    const targetSub = selfRecord.matched && !isGenericSubsector(selfRecord.subsector)
+      ? selfRecord.subsector : "";
+    // The self record's own channels are WITHHELD -- for a founder replayed
+    // against the fund they actually won, their history CONTAINS THE ANSWER
+    // and `fieldChannels` is tier 1 of the row sort. Peers are kept, which is
+    // what production does for a founder who is not in the corpus.
+    const dbPeers = targetSub
+      ? findPeersBySubsector(targetSub, { country: f.country, limit: 4, exclude: [f.company] })
+      : [];
+    const semantic = await semanticFundMatch(f.opts.description ?? "");
+    const log = new ExclusionLog();
+    const hydrated = await buildInstrumentTableHydrated({
+      fieldChannels: new Set<string>(dbPeers.flatMap((r) => r.channels)),
+      founderCountries: founderCountryList(
+        f.country, f.opts.targetMarkets, f.eligibility.entityCountries),
+      capitalSought: f.opts.capitalSought,
+      description: f.opts.description,
+      semantic,
+      ...tableInputFromAnswers(f.eligibility),
+      log,
+    } as never);
+    const tableLen = hydrated.length;
+    const iTable = hydrated.map((r: InstrumentRow) => r.instrumentId).indexOf(won);
+    const rankTable = iTable < 0 ? null : iTable + 1;
+
+    const accessible = applyProfileSignal(
+      accessiblePool(hydrated, f.eligibility as never, log), undefined, undefined);
+    const accessibleLen = accessible.length;
+    const iAcc = accessible.map((r) => r.instrumentId).indexOf(won);
+    const rankAccessible = iAcc < 0 ? null : iAcc + 1;
+
+    // The writer's candidates, through production's own function on
+    // production's own cut. `orderMemoCandidates` no longer sorts -- it
+    // carries the incoming order and applies the name-collision demotion and
+    // the writer cap -- so this is the published ordering minus the model.
+    //
+    // ── THE SWEEP, AND WHY IT IS THIS LINE AND NOTHING ABOVE IT ──────────
+    // `accessible` is the expensive object: one Voyage embedding and one gate
+    // hydration bought it. Every depth is a projection of it, so the loop is
+    // here rather than around the whole run, and the arms are paired to the
+    // founder by construction rather than by a matching seed.
+    const writerAt = new Map<number, { rank: number | null; ids: string[] }>();
+    for (const k of SWEEP_KS) {
+      const poolCut = accessible.slice(0, k);
+      const poolIds = poolCut.map((r) => r.instrumentId)
+        .filter((id): id is string => Boolean(id));
+      const toWriter = orderMemoCandidates({
+        instrumentTable: poolCut,
+        req: {
+          company: f.company, country: f.country, description: f.opts.description,
+          capitalSought: f.opts.capitalSought, eligibility: f.eligibility,
+          targetMarkets: undefined,
+        } as never,
+        records: [], dbPeers,
+        eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
+        log: new ExclusionLog(),
+      }).toWriter.map((x) => x.row.instrumentId ?? x.row.channel);
+      const iW = toWriter.indexOf(won);
+      writerAt.set(k, { rank: iW < 0 ? null : iW + 1, ids: toWriter });
+    }
+    return { rankTable, rankAccessible, writerAt, tableLen, accessibleLen };
+  };
+
+  /** A founder whose answer never reached the founder stages. Not "lost
+   *  nothing": the ladder's corpus rows have already recorded why. */
+  const noPassage = () => ({
+    rankTable: null as number | null, rankAccessible: null as number | null,
+    writerAt: new Map<number, { rank: number | null; ids: string[] }>(),
+    tableLen: 0, accessibleLen: 0,
+  });
+
+  /** Run a founder's passage with a given gate encoding in force. The reset is
+   *  INSIDE, because the arms differ only in what hydration returns and each
+   *  therefore has to start from the cold corpus a request starts from. */
+  const arm = async (
+    f: ReturnType<typeof founderIntake>, won: string,
+    overlay?: Map<string, { expect: unknown; spec: unknown }>,
+  ) => {
+    resetGateHydration();
+    setGateOverlay(overlay);
+    try {
+      const pass = await passage(f, won);
+      // Read BEFORE the overlay comes off: `setGateOverlay` clears the
+      // attestation, so a report taken after the removal would say the
+      // proposal was never applied on every single founder.
+      return { pass, applied: overlay ? gateOverlayReport() : undefined };
+    } finally {
+      setGateOverlay(undefined);
+    }
+  };
 
   for (const t of drawn as RecallRow[]) {
     resetGateHydration();
@@ -608,83 +786,16 @@ async function main() {
       for (const w of why) lostReasons.set(w, (lostReasons.get(w) ?? 0) + 1);
     }
 
-    let rankTable: number | null = null;
-    let rankAccessible: number | null = null;
-    const writerAt = new Map<number, { rank: number | null; ids: string[] }>();
-    let tableLen = 0;
-    let accessibleLen = 0;
-
     // The founder stages are only asked of a founder whose answer survived the
     // corpus stages. Asking them of the rest would cost a Voyage call per
     // founder to establish a `false` the ladder already knows, and the nesting
     // property is what makes that sound rather than a shortcut.
-    if (isOfferable) {
-      const selfRecord = matchCompany(f.company, f.country);
-      const targetSub = selfRecord.matched && !isGenericSubsector(selfRecord.subsector)
-        ? selfRecord.subsector : "";
-      // The self record's own channels are WITHHELD -- for a founder replayed
-      // against the fund they actually won, their history CONTAINS THE ANSWER
-      // and `fieldChannels` is tier 1 of the row sort. Peers are kept, which is
-      // what production does for a founder who is not in the corpus.
-      const dbPeers = targetSub
-        ? findPeersBySubsector(targetSub, { country: f.country, limit: 4, exclude: [f.company] })
-        : [];
-      const semantic = await semanticFundMatch(f.opts.description ?? "");
-      const log = new ExclusionLog();
-      const hydrated = await buildInstrumentTableHydrated({
-        fieldChannels: new Set<string>(dbPeers.flatMap((r) => r.channels)),
-        founderCountries: founderCountryList(
-          f.country, f.opts.targetMarkets, f.eligibility.entityCountries),
-        capitalSought: f.opts.capitalSought,
-        description: f.opts.description,
-        semantic,
-        ...tableInputFromAnswers(f.eligibility),
-        log,
-      } as never);
-      tableLen = hydrated.length;
-      const iTable = hydrated.map((r: InstrumentRow) => r.instrumentId).indexOf(won);
-      rankTable = iTable < 0 ? null : iTable + 1;
-
-      const accessible = applyProfileSignal(
-        accessiblePool(hydrated, f.eligibility as never, log), undefined, undefined);
-      accessibleLen = accessible.length;
-      const iAcc = accessible.map((r) => r.instrumentId).indexOf(won);
-      rankAccessible = iAcc < 0 ? null : iAcc + 1;
-
-      // The writer's candidates, through production's own function on
-      // production's own cut. `orderMemoCandidates` no longer sorts -- it
-      // carries the incoming order and applies the name-collision demotion and
-      // the writer cap -- so this is the published ordering minus the model.
-      //
-      // ── THE SWEEP, AND WHY IT IS THIS LINE AND NOTHING ABOVE IT ──────────
-      // `accessible` is the expensive object: one Voyage embedding and one gate
-      // hydration bought it. Every depth is a projection of it, so the loop is
-      // here rather than around the whole run, and the arms are paired to the
-      // founder by construction rather than by a matching seed.
-      for (const k of SWEEP_KS) {
-        const poolCut = accessible.slice(0, k);
-        const poolIds = poolCut.map((r) => r.instrumentId)
-          .filter((id): id is string => Boolean(id));
-        const toWriter = orderMemoCandidates({
-          instrumentTable: poolCut,
-          req: {
-            company: f.company, country: f.country, description: f.opts.description,
-            capitalSought: f.opts.capitalSought, eligibility: f.eligibility,
-            targetMarkets: undefined,
-          } as never,
-          records: [], dbPeers,
-          eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
-          log: new ExclusionLog(),
-        }).toWriter.map((x) => x.row.instrumentId ?? x.row.channel);
-        const iW = toWriter.indexOf(won);
-        writerAt.set(k, { rank: iW < 0 ? null : iW + 1, ids: toWriter });
-      }
-    }
+    const a = isOfferable ? await arm(f, won) : { pass: noPassage(), applied: undefined };
 
     const trace: Trace = {
       company: t.name, country: t.country, won,
       inCorpus: heldByCorpus, offerable: isOfferable, degraded: wasDegraded,
-      rankTable, rankAccessible, writerAt, tableLen, accessibleLen,
+      ...a.pass,
     };
     // Every swept depth is checked, not just the shipped one. A sweep that
     // reported a non-nested column would be reporting a funnel that is not a
@@ -695,8 +806,30 @@ async function main() {
       assertNested(trace, ladder, ladder.map((s) => s.alive(trace)));
     }
     traces.push(trace);
+
+    // ── THE SAME FOUNDER, WITH THE PROPOSED COMPARATORS ────────────────────
+    // Second, so the shipped arm is never the one that inherits a warmed cache
+    // or a mutated corpus, and immediately, so the two arms are separated by
+    // milliseconds rather than by a republish.
+    if (proposal) {
+      const b = isOfferable
+        ? await arm(f, won, overlayMap) : { pass: noPassage(), applied: undefined };
+      for (const k of b.applied?.applied ?? []) overlayEverApplied.add(k);
+      for (const d of b.applied?.drift ?? []) overlayDriftSeen.add(d);
+      const traceB: Trace = {
+        company: t.name, country: t.country, won,
+        inCorpus: heldByCorpus, offerable: isOfferable, degraded: wasDegraded,
+        ...b.pass,
+      };
+      for (const k of SWEEP_KS) {
+        const ladder = ladderAt(k);
+        assertNested(traceB, ladder, ladder.map((s) => s.alive(traceB)));
+      }
+      tracesB.push(traceB);
+    }
     if (traces.length % 50 === 0) console.log(`  ${traces.length}/${drawn.length}`);
   }
+
 
   writeFounderTrace(traces, byId, startedAt);
 
@@ -827,6 +960,12 @@ async function main() {
   // ── THE ESTIMATED STAGE, RE-DERIVED FROM THE PAID RUN'S OWN TAPE ──────────
   const est = estimateModelStage();
   const measuredTop = rows.find((r) => r.stage.id === rowCutId(TOP))!;
+
+  // ── THE COUNTERFACTUAL ARM ────────────────────────────────────────────────
+  const counterfactual = proposal
+    ? counterfactualReport(traces, tracesB, proposal, overlayEverApplied, overlayDriftSeen)
+    : undefined;
+  if (counterfactual) { for (const line of counterfactual.lines) p(line); p(); }
 
   // ── THE SWEEP ─────────────────────────────────────────────────────────────
   const sweep = SWEEP_KS.length > 1 ? sweepReport(traces, SWEEP_KS, est) : undefined;
@@ -973,9 +1112,40 @@ async function main() {
   // read past is not a guard.
   requireCleanRanker("measure_funnel");
 
+  // ── AND NOTHING IS WRITTEN BY A COUNTERFACTUAL THAT NEVER FIRED ──────────
+  // The failure this closes is specific: an overlay that reached no gate
+  // produces two identical arms and a report saying the proposal changes
+  // nothing, which is the most consequential conclusion this instrument can
+  // reach and the easiest one to reach by accident. Drift is fatal for the
+  // same reason it is fatal in the applier — a proposal written against a
+  // comparator the store no longer holds is a proposal about something else.
+  if (counterfactual) {
+    if (overlayDriftSeen.size) {
+      throw new Error(
+        `measure_funnel: ${overlayDriftSeen.size} proposed comparator(s) were written against `
+        + "a stored value the store no longer holds, so the counterfactual arm measured a "
+        + "mixture of the proposal and the corpus that moved under it. Re-derive the "
+        + `proposal against the current store. First: ${[...overlayDriftSeen][0]}`);
+    }
+    if (!overlayEverApplied.size) {
+      throw new Error(
+        "measure_funnel: the counterfactual arm ran and NOT ONE proposed comparator ever "
+        + "reached the engine. The two arms are therefore identical by construction, and "
+        + "reporting that as \"the proposal changes nothing\" would be the worst output this "
+        + "harness can produce. Check that GATE_OVERLAY's ids match the store's.");
+    }
+  }
+
   const dir = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "one_funnel");
   mkdirSync(dir, { recursive: true });
-  writeFileSync(path.join(dir, "latest.md"), out);
+  // ── A COUNTERFACTUAL RUN DOES NOT BECOME `latest.md` ─────────────────────
+  // `latest.md` is the file that gets quoted, planned from and committed, and
+  // every figure in it should be one a founder receives. This run's baseline
+  // arm IS such a figure, but the file would also carry a proposed column, and
+  // a number that is quoted is a number that will eventually be quoted without
+  // its banner. So the counterfactual writes its own named file and leaves the
+  // shipped one alone.
+  writeFileSync(path.join(dir, counterfactual ? "counterfactual_latest.md" : "latest.md"), out);
   // ── ONE RECORD, WRITTEN TWICE ────────────────────────────────────────────
   // `latest.json` is a SNAPSHOT of the newest run and is overwritten every
   // time. `runs/<startedAt>.json` is HISTORY and is never overwritten. They are
@@ -1028,11 +1198,22 @@ async function main() {
     corpusLossReasons: Object.fromEntries(lostReasons),
     corpusLossUnattributed: unattributed,
     modelStage: est ? { estimated: true, ...est } : { estimated: false },
+    // Null on a run with no proposal, never absent — for the same reason
+    // `poolSweep` is. A point in this series must be answerable to "was this
+    // the shipped encoding" without a human reading prose.
+    counterfactual: counterfactual?.record ?? null,
   };
   const body = `${JSON.stringify(record, null, 1)}\n`;
-  writeFileSync(path.join(dir, "latest.json"), body);
-  writeRunHistory(dir, startedAt, body);
-  console.log(`wrote ${path.join(dir, "latest.md")}`);
+  // Same argument as `latest.md` above, and the same for the history: a run
+  // carrying a proposed arm is not a point in the series of what the product
+  // does, and a series that mixes the two cannot be read as either.
+  if (counterfactual) {
+    writeFileSync(path.join(dir, "counterfactual_latest.json"), body);
+  } else {
+    writeFileSync(path.join(dir, "latest.json"), body);
+    writeRunHistory(dir, startedAt, body);
+  }
+  console.log(`wrote ${path.join(dir, counterfactual ? "counterfactual_latest.md" : "latest.md")}`);
 }
 
 /** One column of the funnel: a stage list evaluated over one population.
@@ -1074,6 +1255,212 @@ function funnelRows(stages: Stage[], traces: Trace[]): FunnelRow[] {
     prev = remaining;
   }
   return out;
+}
+
+/** ── THE COUNTERFACTUAL SECTION ────────────────────────────────────────────
+ *
+ *  Two arms of the SAME ladder on the SAME founders in the SAME process: the
+ *  gate encoding the store holds, and the one a proposal would put there. It
+ *  reports the whole funnel both ways, because a proposal that moves one row
+ *  and costs another is a different decision from one that moves a row for
+ *  free, and a single number cannot tell them apart.
+ *
+ *  ── The attestation comes FIRST, and it can fail the run ─────────────────
+ *  The dangerous output of this section is "the proposal changes nothing",
+ *  which is indistinguishable from "the overlay never fired". So the number of
+ *  proposed comparators that were ACTUALLY SERVED to the engine is printed
+ *  above the tables, drift is printed by name, and both are asserted by the
+ *  caller before anything is written to disk.
+ *
+ *  ── Paired, so the interval is on the DISCORDANT founders ────────────────
+ *  A founder either moved or did not; the ones who did not carry no
+ *  information about whether the proposal works. So the movement is reported
+ *  as `entered` and `left` separately — never as a net alone — with an exact
+ *  two-sided binomial on the discordant pairs, which is McNemar's test without
+ *  the normal approximation that a handful of movers would not support. */
+function exactMcNemarP(entered: number, left: number): number {
+  const n = entered + left;
+  if (!n) return 1;
+  // Exact two-sided binomial at p=0.5: sum the pmf of every outcome no more
+  // likely than the observed one. With p=0.5 the pmf is symmetric, so that is
+  // twice the smaller tail, capped at 1.
+  const logFact: number[] = [0];
+  for (let i = 1; i <= n; i++) logFact[i] = logFact[i - 1] + Math.log(i);
+  const pmf = (k: number) =>
+    Math.exp(logFact[n] - logFact[k] - logFact[n - k] - n * Math.LN2);
+  const k = Math.min(entered, left);
+  let tail = 0;
+  for (let i = 0; i <= k; i++) tail += pmf(i);
+  return Math.min(1, 2 * tail);
+}
+
+function counterfactualReport(
+  a: Trace[], b: Trace[], proposal: { file: string; rows: GateProposal[] },
+  applied: Set<string>, drift: Set<string>,
+): { lines: string[]; record: Record<string, unknown> } {
+  const L: string[] = [];
+  const p = (s = "") => L.push(s);
+  const N = a.length;
+  const rowsA = funnelRows(STAGES, a);
+  const rowsB = funnelRows(STAGES, b);
+  const byAction = new Map<string, number>();
+  for (const c of proposal.rows) byAction.set(c.action ?? "?", (byAction.get(c.action ?? "?") ?? 0) + 1);
+
+  p("## The proposed gate encoding — a paired counterfactual, and NOT the product");
+  p();
+  p("██ NOTHING WAS WRITTEN. ██ The rows in the `proposed` column were produced by serving");
+  p("a different comparator to the eligibility engine IN THIS PROCESS ONLY. The store still");
+  p("holds what it held, and the `store` column is the shipped funnel — it is the same");
+  p("numbers as the table at the top of this report, from the same traces.");
+  p();
+  p("```");
+  p(`proposal           ${proposal.file}`);
+  p(`comparators        ${proposal.rows.length} proposed — `
+    + `${[...byAction].sort().map(([k, n]) => `${k} ${n}`).join(", ")}`);
+  p(`actually served    ${applied.size} of ${proposal.rows.length} reached the engine on at `
+    + `least one founder`);
+  p(`drift              ${drift.size} row(s) whose stored comparator was not the one the `
+    + `proposal was written`);
+  p("                   against — those keep the store's value and are named below");
+  p("pairing            same draw, same intake, same corpus read, same embedding cache.");
+  p("                   The arms differ in the comparators and in nothing else.");
+  p("```");
+  p();
+  if (drift.size) {
+    p("██ DRIFT ██ — these rows were NOT overlaid, so the proposed column understates or");
+    p("overstates the proposal by whatever they would have done:");
+    p();
+    for (const d of [...drift].sort()) p(`- ${d}`);
+    p();
+  }
+  // A proposal whose rows never reach a founder's shortlist is not a proposal
+  // about the funnel, and saying which ones never fired is the difference
+  // between "it does nothing" and "nobody was ever tested against it".
+  const never = proposal.rows
+    .map((c) => `${c.instrument_id} ${c.gate_key}`)
+    .filter((k) => !applied.has(k));
+  if (never.length) {
+    p(`${never.length} proposed comparator(s) were never served: no founder in this draw had `
+      + "the instrument");
+    p("in their shortlist, so this run says nothing about them either way.");
+    p();
+  }
+
+  p(`| stage | store | proposed | delta |`);
+  p(`|---|---:|---:|---:|`);
+  for (let i = 0; i < rowsA.length; i++) {
+    const ra = rowsA[i], rb = rowsB[i];
+    if (ra.remaining == null || rb.remaining == null) {
+      p(`| ${ra.stage.id} | UNMEASURED | UNMEASURED | — |`);
+      continue;
+    }
+    const d = rb.remaining - ra.remaining;
+    const dp = rb.share! - ra.share!;
+    p(`| ${ra.stage.id}${d ? " ←" : ""} | **${ra.remaining}** ${ra.share!.toFixed(1)}% | `
+      + `**${rb.remaining}** ${rb.share!.toFixed(1)}% | `
+      + `${d > 0 ? "+" : ""}${d} (${dp > 0 ? "+" : ""}${dp.toFixed(1)} pts) |`);
+  }
+  p();
+  p("`←` marks a row the proposal moves. A row it does not move is a measurement, not an");
+  p("assumption: both arms ran the same code on the same founders.");
+  p();
+
+  // ── THE MOVEMENT, BOTH DIRECTIONS, AT THE FOUNDER ─────────────────────────
+  p("### Which founders move, and in which direction");
+  p();
+  p("Paired at the founder. `entered` gained the row under the proposal, `left` lost it. A");
+  p("net of zero over a churn of forty is a different fact from a net of zero over a churn of");
+  p("zero, so both are printed, with an EXACT two-sided McNemar on the discordant pairs.");
+  p();
+  const movementIds = ["gates_pass", "pool_cut", "writer_cap", ...ROW_CUTS.map(rowCutId)];
+  p("| row | entered | left | net | exact McNemar p |");
+  p("|---|---:|---:|---:|---:|");
+  const movement: Record<string, { entered: number; left: number; p: number }> = {};
+  for (const id of movementIds) {
+    const s = STAGES.find((x) => x.id === id);
+    if (!s) continue;
+    let entered = 0, left = 0;
+    for (let i = 0; i < a.length; i++) {
+      const va = s.alive(a[i]) === true, vb = s.alive(b[i]) === true;
+      if (vb && !va) entered += 1;
+      if (va && !vb) left += 1;
+    }
+    const pv = exactMcNemarP(entered, left);
+    movement[id] = { entered, left, p: pv };
+    p(`| ${id} | +${entered} | -${left} | ${entered - left > 0 ? "+" : ""}${entered - left} | `
+      + `${pv < 0.001 ? "<0.001" : pv.toFixed(3)} |`);
+  }
+  p();
+
+  // ── THE COST CHANNEL, NAMED AND COUNTED ───────────────────────────────────
+  // A quarantined comparator stops deleting the founder it wrongly deleted,
+  // and it also stops deleting that row for EVERYONE ELSE. So the accessible
+  // pool gets longer for founders the proposal was never about, and a won fund
+  // sitting near the 40-row cut or the 8-row writer cap can be pushed out of it
+  // by rows that are now allowed to stay. That is the only mechanism by which
+  // this proposal can lose a founder, and it is counted directly rather than
+  // inferred from the net.
+  const offerableIdx = a.map((_, i) => i).filter((i) => a[i].offerable);
+  const meanAcc = (ts: Trace[]) => offerableIdx.length
+    ? offerableIdx.reduce((s, i) => s + ts[i].accessibleLen, 0) / offerableIdx.length : 0;
+  const grew = offerableIdx.filter((i) => b[i].accessibleLen > a[i].accessibleLen).length;
+  const shrank = offerableIdx.filter((i) => b[i].accessibleLen < a[i].accessibleLen).length;
+  p("### Why anybody LEAVES a row under a proposal that only un-blocks");
+  p();
+  p("A quarantined comparator stops deleting the founder it wrongly deleted, and it stops");
+  p("deleting that row for every other founder too. The pool gets longer, and a won fund");
+  p("near the 40-row cut or the 8-row writer cap can be pushed out of it by rows that are now");
+  p("allowed to stay. That is the whole of the cost, and it is counted, not inferred:");
+  p();
+  p("```");
+  p(`  mean accessible pool   ${meanAcc(a).toFixed(1)} rows  ->  ${meanAcc(b).toFixed(1)} rows`);
+  p(`  founders whose pool grew    ${grew} of ${offerableIdx.length}`);
+  p(`  founders whose pool shrank  ${shrank} of ${offerableIdx.length}`);
+  p("```");
+  p();
+
+  // ── WHERE THE GAIN LANDS ON THE LADDER ────────────────────────────────────
+  // A founder gained at `gates_pass` and lost again at `pool_cut` is not a
+  // founder the product serves any better, and the difference is invisible in
+  // a table of levels.
+  const survived = (t: Trace, id: string) => STAGES.find((x) => x.id === id)?.alive(t) === true;
+  const gainedGates = a.map((_, i) => i).filter((i) =>
+    survived(b[i], "gates_pass") && !survived(a[i], "gates_pass"));
+  const carried = (id: string) => gainedGates.filter((i) => survived(b[i], id)).length;
+  p("### What happens to the founders the proposal un-gates");
+  p();
+  p(`${gainedGates.length} founder(s) keep their won fund past \`gates_pass\` under the `
+    + "proposal that lost it under the");
+  p("store's encoding. A gain at the gate screen is only worth what survives the cuts below");
+  p("it, so this is where it lands:");
+  p();
+  p("```");
+  for (const id of ["pool_cut", "writer_cap", ...ROW_CUTS.map(rowCutId)]) {
+    p(`  ${String(carried(id)).padStart(4)} of ${gainedGates.length} still there at ${id}`);
+  }
+  p("```");
+  p();
+
+  return {
+    lines: L,
+    record: {
+      file: proposal.file, proposed: proposal.rows.length, served: applied.size,
+      drift: [...drift], neverServed: never,
+      stages: rowsA.map((ra, i) => ({
+        id: ra.stage.id, store: ra.remaining, proposed: rowsB[i].remaining,
+        delta: ra.remaining == null || rowsB[i].remaining == null
+          ? null : rowsB[i].remaining! - ra.remaining,
+      })),
+      movement,
+      unGatedCarriedTo: Object.fromEntries(
+        ["pool_cut", "writer_cap", ...ROW_CUTS.map(rowCutId)].map((id) => [id, carried(id)])),
+      unGated: gainedGates.length,
+      meanAccessibleStore: Number(meanAcc(a).toFixed(1)),
+      meanAccessibleProposed: Number(meanAcc(b).toFixed(1)),
+      poolGrew: grew, poolShrank: shrank,
+      n: N,
+    },
+  };
 }
 
 /** ── THE SWEEP SECTION ─────────────────────────────────────────────────────
