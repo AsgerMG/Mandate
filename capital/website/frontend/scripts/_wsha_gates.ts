@@ -47,7 +47,7 @@ import {
   loadDbInstruments, requireLiveCorpus,
 } from "../lib/intelligence/corpus";
 import {
-  awardScorer, gateFitScorer, objectiveScorer, regionScorer,
+  awardScorer, gateFitScorer, objectiveScorer, regionScorer, registeredPurpose,
 } from "../lib/intelligence/shortlist";
 import { assessInstrument } from "../lib/intelligence/verdict";
 import type { DoorRow, InstrumentSnapshot } from "./_wsha_doors";
@@ -107,6 +107,20 @@ function main() {
   const missingRow: string[] = [];
   const actionable: string[] = [];
 
+  // ── THE REGISTERED PURPOSE, WHICH IS ANSWER-INDEPENDENT ──────────────────
+  // Everything else on this page is measured under a replayed founder, and the
+  // replay PINS `useOfFunds` to one pair of values for all 897 of them —
+  // deliberately, because the only derivation available reads the objective off
+  // the scheme being predicted and would let the signal grade itself
+  // (`leaf_separation_wsAO.md` §2). So `objectiveScorer` below answers to a
+  // constant and cannot be read as its production headroom.
+  //
+  // This block does not depend on the founder at all. It asks only whether the
+  // CORPUS holds a different declared purpose for the two doors — the fact's
+  // existence, separated from whether any given founder's answer reaches it.
+  let bothPurpose = 0, onePurpose = 0, neitherPurpose = 0;
+  let purposeDiffers = 0, articlesDiffer = 0;
+
   for (const p of pairs) {
     const rec = byKey.get(`${p.company}::${p.won}`);
     if (!rec) { missingRow.push(p.company); continue; }
@@ -126,6 +140,20 @@ function main() {
     if (aw.status === "open" && as.status === "open") bothOpen++;
     if (aw.checked !== as.checked) checkedDiffer++;
     if (aw.blockers.length !== as.blockers.length) blockerDiffer++;
+
+    const pw = registeredPurpose(won.id); const ps = registeredPurpose(sib.id);
+    if (pw && ps) {
+      bothPurpose++;
+      if (pw !== ps) articlesDiffer++;
+      // The ARTICLES are the fine grain (25(2)(b) against 25(2)(c)); the
+      // `useOfFunds` half is the coarse grain, and it is the only half that
+      // maps onto a question a founder is actually asked. Counted apart,
+      // because a difference the intake vocabulary cannot express is not a
+      // difference the founder can state.
+      const uf = (s: string) => s.replace(/\s*\(Art\..*$/, "");
+      if (uf(pw) !== uf(ps)) purposeDiffers++;
+    } else if (pw || ps) onePurpose++;
+    else neitherPurpose++;
 
     // ── THE FOUR PER-LEAF SCORERS THE SIBLING REASSIGNMENT MULTIPLIES ──────
     // `openFitScorer` is the fifth and is neutral by construction here: it
@@ -184,7 +212,17 @@ function main() {
   }
   console.log("");
 
-  console.log("## 2. Does the shipped sibling reassignment have an opinion\n");
+  console.log("## 2. The registered purpose — the corpus alone, no founder in it\n");
+  console.log("```");
+  console.log(`both doors declare a purpose                     ${bothPurpose}  ${pct(bothPurpose, N)}`);
+  console.log(`  ...their GBER ARTICLES differ                  ${articlesDiffer}  ${pct(articlesDiffer, N)}`);
+  console.log(`  ...their USE OF FUNDS differ                   ${purposeDiffers}  ${pct(purposeDiffers, N)}`);
+  console.log(`      (the coarse half, the one the intake asks)`);
+  console.log(`exactly one door declares a purpose              ${onePurpose}  ${pct(onePurpose, N)}`);
+  console.log(`neither door declares one                        ${neitherPurpose}  ${pct(neitherPurpose, N)}`);
+  console.log("```\n");
+
+  console.log("## 3. Does the shipped sibling reassignment have an opinion\n");
   console.log("| scorer | has an opinion | favours the WON door | favours the SHOWN door |");
   console.log("|---|--:|--:|--:|");
   for (const [k, v] of Object.entries(scorers)) {
@@ -194,7 +232,7 @@ function main() {
   console.log("");
 
   if (actionable.length) {
-    console.log("## 3. Pairs where our OWN preference already picked the won door\n");
+    console.log("## 4. Pairs where our OWN preference already picked the won door\n");
     console.log("```");
     for (const a of actionable) console.log(a);
     console.log("```\n");
