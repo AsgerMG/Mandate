@@ -41,8 +41,10 @@ draw fingerprint    13cb71cf3a1d1847   <- IDENTICAL to one_funnel/latest.md and 
                     with wsHA §6 to the founder rather than to the rounding.
 derivation          one claude-haiku-4-5 call per founder, structured output,
                     max_tokens 200, no thinking. Input: r.description ONLY.
-cost                $1.068 total — $0.983 the full run, $0.061 an interrupted run
-                    the leak pre-flight aborted, $0.024 a 20-founder smoke.
+cost                $1.068 total — $0.983 the full run (817 founders), $0.061 a
+                    run the leak guard aborted at founder ~54 (which is why the
+                    check is now a PRE-FLIGHT over the whole population, at zero
+                    spend), $0.024 a 20-founder smoke. 887 classified in all.
                     NO ranker run, NO memo run, nothing re-bought. Cached by
                     description hash, so re-running the derivation is FREE.
 pre-registered      PREREGISTRATION.md, committed 21:31:57, eight minutes before
