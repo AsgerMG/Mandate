@@ -1,35 +1,38 @@
-# wsHG — we CAN read what a founder's money is for from their own words, and it does not pick the right door
+# wsHG — the field DOES separate the doors. Reading it off award prose does not.
 
-**FOR THE OWNER, VERBATIM.** **Yes, we can tell what a founder's money is for
-from their own words — on 71.6% of them — and no, it does not pick the right
-door. It cost $1.07.** One cheap classification per founder, reading their
-description prose and nothing else, produced a real answer for 642 of 897 and a
-*different* answer from the harness's constant for half the population, so this
-is not a lucky guess reproducing the pin. But on the 86 pairs wsHA identified —
-where the corpus declares a different purpose for the two doors and the founder
-is asked exactly that on page one — the derived answer picks the won door 12
-times and the wrong door 10, **net +2 against the constant's +5**. On the pairs
-whose answer actually changed it is net −2. It is worse than the constant we
-already ship. Two things make that a useful result rather than a dead end.
-**First, the separator is real and we now know its price**: an answer *exists*
-that picks the right door on 64 of those 86, and `feasibility_study` alone is
-worth +25 — so wsHA §6's diagnosis stands, and what fails is reading the field
-off award prose, not the field. **Second, we found where the signal is being
-destroyed, and it is our own arithmetic**: on 28 of the 64 separable pairs the
-derived answer *contained* a separating option and scored both doors anyway,
+**FOR THE OWNER, VERBATIM.** **The 86 pairs are separable on this field: an
+answer holding the truth picks the won door on 64 of 86, net +63 against the
+constant's +5.** That is the strongest evidence yet that `useOfFunds` is worth
+having, and it is a fact about the *field*, which a founder is asked on the
+first page and states about themselves. **What this workstream closes is one
+derivation of it, not the field.** Reading the answer off each founder's
+description prose works — 642 of 897, 71.6%, for $1.07 — and produces a
+genuinely different answer from the harness's constant for half the population,
+so it is not a lucky guess reproducing the pin. But it picks the won door 12
+times and the wrong door 10 (**net +2 against the constant's +5**; net −2 on the
+pairs whose answer actually changed), and in the funnel it is **inert**: −1
+founder at six rows, 38.7% → 38.6%, McNemar p = 1.000, and the 59 hard filter
+gates that turn on this field fire **zero** times. **These descriptions are
+written out of award records; a real founder is asked and states it. So 71.6%
+bounds today's harness, not the product** — the standing rule that a ceiling
+measured on today's intake bounds today's questions and not the target, and this
+run is a clean instance of it. Three things to carry forward. **One: the option
+table is the finding underneath the finding.** `feasibility_study` alone is
+worth **+25** and `production_capex` misleads **26:5** — and the classifier names
+`production_capex` for 120 founders *because it is reading them correctly*. One
+option carries most of the signal, another carries anti-signal, and whoever next
+touches the first-page question needs that table more than any aggregate. **Two:
+the scorer throws away signal it is handed** — on 28 of the 64 separable pairs
+the derived answer *contained* a separating option and scored both doors anyway,
 because `objectiveScorer` matches on overlap, so a richer answer separates less.
-I priced a rescoring rule that appeared to take the **shipped pin** from +5 to
-+14 — and then killed it, which is the more useful half: it wins by preferring
-the door with the *longer* registered purpose list (43 of 54), which is
-`leaf_separation_wsAO` §4's documentation-volume prior in a new place, and the
-control that removes the volume advantage is worth exactly nothing. **Do not
-quote the +14.** `shortlist.ts` was not touched. **The one thing none of this
-says is that founders cannot answer.** A real founder is
-asked and states it; these are award-derived descriptions, so 71.6% is a floor
-on what a real founder supplies and the 27.3% that says nothing is a fact about
-award prose. What it does say firmly: **stop deriving this field from prose**,
-and beware `production_capex` — a correct reading of a founder's own words that
-points at the wrong door 26 times to 5.
+**Three: I priced a rescoring fix at pin +5 → +14 and then killed it** — it wins
+by preferring the door with the *longer* registered purpose list (43 of 54),
+which is `leaf_separation_wsAO` §4's documentation-volume prior in a new place,
+and the control that removes the volume advantage is worth exactly nothing. **Do
+not quote the +14.** `shortlist.ts` was not touched. What this says firmly:
+**stop deriving this field from prose — but do not conclude the field is dead,
+because on the population where the doors differ it is worth +63 to know the
+truth.**
 
 ---
 
@@ -51,7 +54,7 @@ pre-registered      PREREGISTRATION.md, committed 21:31:57, eight minutes before
                     the first paid token (git log is the record, not this line)
 reproduce           OUT=/tmp/wshg_uof.json npx tsx scripts/_wshg_useoffunds.ts
                     UOF=/tmp/wshg_uof.json npx tsx scripts/_wshg_doors.ts   (free)
-                    USE_OF_FUNDS=/tmp/wshg_uof.json npm run stages          (free, ~2h)
+                    USE_OF_FUNDS=/tmp/wshg_uof.json npm run stages          (free, ~2h40m)
 ```
 
 **Read-only on the product.** `shortlist.ts`, `objectiveScorer`, `OBJECTIVE_MATCH`,
@@ -295,11 +298,76 @@ anyway, kept because they are independent of the above:
   are state-aid schemes and across channels the signal silently becomes a
   channel prior.
 
-## 7. Does it move the funnel
+## 7. Does it move the funnel — NO. It is inert.
 
-*(PENDING — the paired two-arm run over all 897, ~2 hours, free, contended with
-two other funnel runs on this machine. `USE_OF_FUNDS=/tmp/wshg_uof.json npm run
-stages`, draw `13cb71cf3a1d1847` confirmed at start.)*
+Paired within one process, both arms on the same draw, the same corpus read and
+the same embedding. **Every void condition cleared before this table was
+written**, in code rather than by eye:
+
+```
+population         897 founder(s), draw 13cb71cf3a1d1847  <- the funnel's own, and wsHA's
+store              POSTGRES BY DECISION
+ranker             all 1656 request(s) on EMBEDDING        <- no lexical fallback
+derived-answer arm 446 founder(s) changed, 451 control founder(s) byte-identical
+                   across both arms
+```
+
+The 451 control founders are the ones whose derived answer equals the pin. They
+were served an identical request in both arms, so their traces **must** match;
+the run throws if one does not. All 451 matched, so nothing below is a mixture
+of the answer and a corpus that moved under it.
+
+| stage | pinned | derived | delta |
+|---|---:|---:|---:|
+| answer_key | **897** 100.0% | **897** 100.0% | 0 |
+| in_corpus | **897** 100.0% | **897** 100.0% | 0 |
+| publishable | **828** 92.3% | **828** 92.3% | 0 |
+| liveness_confirmed | **828** 92.3% | **828** 92.3% | 0 |
+| founder_screen | **806** 89.9% | **806** 89.9% | 0 |
+| gates_pass | **774** 86.3% | **774** 86.3% | **0** |
+| pool_cut ← | **643** 71.7% | **644** 71.8% | +1 (+0.1 pts) |
+| writer_cap ← | **362** 40.4% | **361** 40.2% | −1 (−0.1 pts) |
+| published ← | **347** 38.7% | **346** 38.6% | −1 (−0.1 pts) |
+| top_6 ← | **321** 35.8% | **320** 35.7% | −1 (−0.1 pts) |
+| top_5 ← | **297** 33.1% | **296** 33.0% | −1 (−0.1 pts) |
+
+**Pre-registered outcome 3: DOES NOT PAY** (the bar was ≥ 1.0 point at six rows;
+the movement is −0.1). Published as a zero, as pre-registered.
+
+Movement at the founder, both directions, exact two-sided McNemar:
+
+| row | entered | left | net | p |
+|---|---:|---:|---:|---:|
+| gates_pass | +0 | −0 | 0 | 1.000 |
+| pool_cut | +3 | −2 | +1 | 1.000 |
+| writer_cap | +0 | −1 | −1 | 1.000 |
+| published | +0 | −1 | −1 | 1.000 |
+| top_6 | +0 | −1 | −1 | 1.000 |
+| top_5 | +0 | −1 | −1 | 1.000 |
+
+**The churn is the finding, not the net.** A net of zero over a churn of forty
+would be a signal cancelling itself out. This is a net of zero over a churn of
+**five discordant pairs across 446 changed founders**. The derived answer barely
+touches the funnel at all, and the mechanism table over the affected 446 only
+(pinned 39.9% → derived 39.7% at `published`) says the same thing undiluted.
+
+### Two mechanisms that were expected to fire and did not
+
+- **`gates_pass` moves 0.** `founderIntake` records that **59 hard filters turn
+  on this field**, and changing the answer for 446 founders opened and closed
+  exactly nothing. Those gates are not on these founders' paths.
+- **`objectiveScorer` is mostly neutral by construction.** It returns neutral
+  unless the candidate group contains *both* matching and non-matching leaves
+  (`if (!m || !k) return neutral`), and the sibling reassignment exits early when
+  the preference is flat across the channel. This is wsHA §5's 7.3% —
+  `objective` has an opinion on 7.3% of pairs — arriving from the other
+  direction, and it explains why a changed answer for half the population moves
+  five founders.
+
+So the field's two live paths into the product are, on this population, one
+inert and one nearly so. **That bounds what any better answer could buy through
+the current wiring** — and it is a separate, larger question from whether the
+field separates the doors, which §4's oracle answers yes.
 
 ## 8. The honest bound — what these numbers do and do not license
 
@@ -318,15 +386,23 @@ stages`, draw `13cb71cf3a1d1847` confirmed at start.)*
   Nothing here says a real founder cannot answer this question.
 - **Therefore §4's negative does not retire the route.** It says: *reading this
   field off award-derived prose does not pick the right door.* It does not say
-  *the field does not pick the right door* — §5's oracle says the opposite, on
+  *the field does not pick the right door* — §4's oracle says the opposite, on
   64 of 86. A ceiling measured on today's derived answers bounds today's
   harness, not the product.
-- **What it does license, firmly.** The harness's pin is not costing us
-  anything on this population. Replacing it with a derived answer is not an
-  improvement and on the changed pairs is a small regression, so **no workstream
-  should spend on deriving this field from prose again** without a different
-  source. And `production_capex` is a real hazard: a correct answer that points
-  the wrong way 5:1.
+- **And §7's zero is about the WIRING, on top of that.** The funnel moved five
+  founders because `gates_pass` is inert on this field and `objectiveScorer` is
+  neutral by construction on most groups — not because the answer was worthless.
+  A *perfect* answer would have to reach the ordering through those same two
+  paths. **Nobody has measured what an oracle answer is worth in the funnel**,
+  and that is now the cheap, obvious next measurement: this workstream built the
+  arm, so it is one free run (`USE_OF_FUNDS=<oracle> npm run stages`) and it
+  would separate "the wiring cannot carry this" from "our answer was bad".
+- **What it does license, firmly.** The harness's pin is not costing us anything
+  on this population. Replacing it with a derived answer is not an improvement,
+  is a small regression on the changed pairs, and is inert in the funnel — so
+  **no workstream should spend on deriving this field from prose again** without
+  a different source. And `production_capex` is a real hazard: a correct reading
+  of a founder's own words that points the wrong way 5:1.
 
 ---
 
@@ -345,6 +421,11 @@ stages`, draw `13cb71cf3a1d1847` confirmed at start.)*
   `OUT=/tmp/wshg_uof.json npx tsx scripts/_wshg_useoffunds.ts`
 - **`website/frontend/scripts/_wshg_doors.ts`** — §4. Offline, no credentials,
   no model, no database. `UOF=/tmp/wshg_uof.json npx tsx scripts/_wshg_doors.ts`
-- **`website/frontend/scripts/measure_funnel.ts`** — §5, via the new
-  `USE_OF_FUNDS` arm. `USE_OF_FUNDS=/tmp/wshg_uof.json npm run stages`, ~35 min,
-  free. Writes `one_funnel/useoffunds_latest.md` and leaves `latest.md` alone.
+- **`website/frontend/scripts/measure_funnel.ts`** — §7, via the new
+  `USE_OF_FUNDS` arm. `USE_OF_FUNDS=/tmp/wshg_uof.json npm run stages`. Free,
+  ~2h40m on a machine running three funnels at once. Writes
+  `one_funnel/useoffunds_latest.md` + `.json` and leaves `latest.md` alone,
+  because a run carrying a proposed arm is not a point in the series of what the
+  product does.
+- **`project-mgmt/findings/one_funnel/useoffunds_latest.md`** — §7's full output,
+  both arms, every stage.
