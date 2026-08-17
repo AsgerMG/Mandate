@@ -532,64 +532,17 @@ def figures(data: list[list]) -> dict[str, object]:
         # What conversion would have to reach for the target, at today's reach.
         # Above 100 it is unreachable at this reach and the page must say so
         # rather than print an impossible percentage as if it were a plan.
-        "needConvert": round(TARGET / reach * 100),
         "target": round(TARGET),
         "milestone": round(MILESTONE),
-        # What conversion must reach for each, at TODAY's reach and at the
-        # ceiling the gates allow. Four figures rather than two, because "the
-        # second number has to reach 84%" reads as impossible until you see that
-        # at full reach it is 58%.
+        # The scenario table. Each ROW on the page is a complete way to land at
+        # a result -- where we are, then what would have to change -- because
+        # the owner could not read the version that made him hold three
+        # percentages in his head and infer the fourth. A percentage of a
+        # percentage needs its own row, not a column header.
         "needConvertMile": round(MILESTONE / reach * 100),
         "reachCeiling": round(share("gates_pass")),
         "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
         "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
-        # Twelve figures were deleted here with the prose that used them.
-        # The page had grown a six-step section restating the table at four
-        # times the length, and seven paragraphs under it. The owner called it
-        # polluted twice. An executive page is the number, what is stopping us,
-        # where it is lost, and what is running -- and nothing else earns a row.
-        "milestone": round(MILESTONE),
-        # What conversion must reach for each, at TODAY's reach and at the
-        # ceiling the gates allow. Four figures rather than two, because "the
-        # second number has to reach 84%" reads as impossible until you see that
-        # at full reach it is 58%.
-        "needConvertMile": round(MILESTONE / reach * 100),
-        "reachCeiling": round(share("gates_pass")),
-        "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
-        "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
-        # Twelve more figures were deleted here with the prose that used
-        # them: a six-step section restating the table at four times the
-        # length, and seven paragraphs under it. The owner called the page
-        # polluted twice. An executive page is the number, what is stopping
-        # us, where it is lost, and what is running. Nothing else earns a row,
-        # and the orphan check above is what forced these to go with it.
-        "milestone": round(MILESTONE),
-        # What conversion must reach for each, at TODAY's reach and at the
-        # ceiling the gates allow. Four figures rather than two, because "the
-        # second number has to reach 84%" reads as impossible until you see that
-        # at full reach it is 58%.
-        "needConvertMile": round(MILESTONE / reach * 100),
-        "reachCeiling": round(share("gates_pass")),
-        "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
-        "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
-        # Twelve figures were deleted here with the prose that used them.
-        # The page had grown a six-step section restating the table at four
-        # times the length, and seven paragraphs under it. The owner called it
-        # polluted twice. An executive page is the number, what is stopping us,
-        # where it is lost, and what is running -- and nothing else earns a row.
-        "milestone": round(MILESTONE),
-        # What conversion must reach for each, at TODAY's reach and at the
-        # ceiling the gates allow. Four figures rather than two, because "the
-        # second number has to reach 84%" reads as impossible until you see that
-        # at full reach it is 58%.
-        "needConvertMile": round(MILESTONE / reach * 100),
-        "reachCeiling": round(share("gates_pass")),
-        "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
-        "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
-        # The step-by-step section below the table. Same run, same ladder --
-        # these used to be typed, and by this morning the page was telling the
-        # owner the list is cut to eighteen (it is forty) and that the gates
-        # cost twenty points (they cost four).
     }
 
 
@@ -727,7 +680,7 @@ def main() -> None:
     print(f"\nfigures ({figs['n']} companies, {figs['stamp']}): "
           f"published {figs['published']}% at {figs['rows']} rows  "
           f"= reach {figs['reach']}% x convert {figs['convert']}%  "
-          f"| for {figs['target']}%, convert must reach {figs['needConvert']}%")
+          f"| for {figs['milestone']}%, the AI's half must reach {figs['needConvertMile']}%")
     print("Republish the page to update the artifact.")
 
 
