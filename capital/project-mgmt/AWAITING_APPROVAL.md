@@ -443,3 +443,54 @@ sibling of the fund they would have won.
 
 **It changes nothing a founder sees today** — the brief reads Postgres, which has
 all 9,763. This is about where the only durable copy lives.
+
+### 14. Redeploy the ETL image — the container has never published a single guard verdict
+
+**The action:** `python3 ETL/lib/verify_cron.py --deploy` (i.e. `railway up`).
+Nothing else. No corpus write.
+
+**What is broken.** `guard_verdicts` holds **783 rows from `local`, 5 from
+`proof-local`, 4 from a merge, and zero, ever, from `etl-pipeline`** — across
+every guard, not only the census. Meanwhile `corpus_census` has rows #10 and #11
+from `etl-pipeline`. The mechanism is in the tree: `guard_verdicts.py` reads
+`data/guard_registry.json` at import, `.dockerignore` excludes `data/`, and
+`/app/data` is the mounted volume, which holds the corpus and not the registry.
+In `publish_corpus_census.main()` that call sits **after** the census INSERT and
+**before** the verdict publish, which is exactly the pattern the two tables show.
+
+**What it costs.** `check_corpus_census.ts` documents the verdict feed as the
+credential-free door — "how it came to run on every pull request without GitHub
+holding a credential to the production database". On that door the newest census
+is **#9, a laptop, 2026-08-08**. Every CI run without `DATABASE_URL` has been
+judging an eight-day-old reading of a *derived* store and cannot see the corpus
+of record at all.
+
+**The fix is already committed and is inert.** `.dockerignore` gains
+`!data/guard_registry.json`. The Railway service has `repoTriggers: []`, so
+nothing redeploys it on a push; the exception reaches the container only on the
+next `railway up`.
+
+**Two more things ride the same deploy**, and both are the reason to do it now
+rather than at the next convenient moment:
+
+- **The image is 316 commits and six days behind** (`f6ff3957`, 2026-08-11,
+  identified by recomputing `code_fingerprint` over history — wsHB reached the
+  same commit independently). Every gate encoder in it is the 2026-08-11 version.
+- **It carries a coverage baseline known to be wrong.** Its copy says
+  `eligibility 913`; `fe75156a` raised it to 937 the morning after the image was
+  built, because thirteen fields were below the mark the corpus had reached.
+  The container has been grading the corpus of record against a bar known to be
+  too low and publishing the result as a measurement.
+
+**Cost: zero.** A CLI upload. **Risk: the ordinary one** — a deploy while the
+Sunday cron may run, and the next run will be the first ever to publish container
+verdicts, so expect several to arrive red at once. That is the channel working
+for the first time, not a new failure.
+
+**One thing it does NOT fix, and I could not test it.** `data/reference/` is
+892 KB of committed input data excluded by the same `data/` pattern, and
+`check_offerable_decay.py` — one of the four guards the cron runs — reads
+`data/reference/offerable_baseline.json` at module level. The same question is
+very likely open for the other cron guards. Worth one pass before the deploy;
+`ETL/schema/check_census_imports.py::bar_is_fingerprinted` is the test, pointed
+at a wider set of entry points.

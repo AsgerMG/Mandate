@@ -1,25 +1,29 @@
 # wsHC — nothing lost a thousand gates; the corpus of record never received them
 
-**FOR THE OWNER, VERBATIM.** No gates are missing from the corpus of record in
-the sense of having been destroyed: the Railway volume has been read twice, on
-2026-08-09 and 2026-08-16, and both readings say 6,401. It has never been
-observed to hold more. The 7,471 is a **laptop** reading eight days old, and the
-laptop today holds **9,763**, as does the Postgres the product actually serves
-from. So the direction is the reverse of the alarm — **3,362 encoded gates exist
-only outside the store this repo declares of record**, and the volume cannot
-regenerate them because no gate-encoding step is in the weekly cron. What that
-costs is not today's brief, which reads Postgres and has every gate: it is that
-**157 of 1,021 publishable funds have evaluable eligibility rules only because
-of that unpromoted work**, and that sibling groups separated by gates fall from
-**40 of 41 to 26 of 41** on the record's contents — against exactly the failure
-wsGY measured, where 63.2% of the founders we miss are already shown a sibling
-of the fund they would have won. The guard was **not** blind to the divergence:
-`DIVERGED` named it, +1,070 and +3,362, in plain text. What it is blind to is a
-**fall in gate depth on one store over time**, because `coverage_gate.py`'s LOSS
-test iterates two hardcoded tuples that `instruments.gates` is not in, and
-because its one high-water mark is shared by three stores that are not supposed
-to be equal — which is why the volume's ordinary staleness is being reported to
-you under the word LOSS.
+**FOR THE OWNER, VERBATIM.** Nothing was destroyed. The Railway volume has been
+read twice, on 2026-08-09 and 2026-08-16, and both readings say 6,401 gates — it
+has never been observed to hold more. The 7,471 in the alarm is a **laptop**
+reading, and the laptop today holds **9,763**, as does the Postgres the product
+serves from. So the direction is the reverse of the alarm: **3,362 encoded gates
+exist only outside the store this repo declares of record**, and the volume
+cannot regenerate them, because no gate-encoding step is in the weekly cron.
+No founder is affected today; the brief reads Postgres and has every gate. What
+it costs is that the record's own contents are materially thinner — **157 of
+1,021 publishable funds would lose every evaluable rule, and sibling groups
+separated by gates fall from 40 of 41 to 26 of 41** — which is exactly the
+failure wsGY measured, where 63.2% of the founders we miss are already shown a
+sibling of the fund they would have won. **What the guard should have done is
+three things, and it did none of them.** It never judged `instruments.gates`
+against anything, because the loss test iterates two hardcoded tuples that gate
+counts are not in — now `SHRANK`, derived from what a census records rather than
+from a list, so a measure added next year is judged the day it exists. It
+published a verdict graded against a bar it did not fingerprint — census #11 said
+"down from a high of 913" while this repo says 937, and `DRIFTED` fired only by
+luck, because the Python happened to move in the same deploy. And the
+credential-free door that CI reads is dark: **`guard_verdicts` holds 783 rows
+from a laptop and zero, ever, from the container**, because the file that defines
+what a guard is was excluded from the image. All three are fixed and proven red
+before green; two of the fixes are inert until someone runs `railway up`.
 
 ---
 
@@ -376,16 +380,131 @@ It is also the honest reading of a fingerprint mismatch generally: the
 fingerprint covers two whole trees, so DRIFTED tells you *the container is not
 this checkout*, never *this number was measured differently*. Answering the
 second question takes a diff of the measuring modules, and that diff should be
-what the report offers. Recorded, not fixed, in §6.
+what the report offers. Recorded, not fixed, in §8.
 
 ---
 
-## 6. What this workstream did not do
+## 6. The bar was not fingerprinted, and DRIFTED fired by luck
+
+wsHB resolved the two high-water marks and reached this from the other side.
+Census #11's gate says *"down from a high of 913"*; `coverage_baseline.json` in
+this checkout says **937**, raised by `fe75156a` on 2026-08-12 09:45 — the
+morning after the running image was built — because thirteen fields were below
+the mark the corpus had actually reached. **937 is authoritative and the guard is
+too lenient**: against the right bar the same census fails on four counts with a
+39-row shortfall, not two counts and 15.
+
+**The general defect underneath it.** `code_fingerprint()` hashed `ETL/**.py` and
+`website/build/**.py`. `project-mgmt/coverage_baseline.json` is neither, and it
+is *the input the published verdict is computed against*. DRIFTED fired here only
+because the Python happened to move in the same deploy. **Redeploy with unchanged
+code and a stale bar and nothing whatsoever fires** — the census publishes a
+verdict graded against a bar no reader can identify.
+
+### The property
+
+> **A fingerprint published with a verdict covers every input that can change
+> that verdict.** Code is one of those inputs. It is not the only one, and
+> nothing about a file's suffix decides whether a file is one.
+
+The test that decides an unseen case: *take any file the judging code grades
+against, change one byte, and the fingerprint must move.* That is answerable
+about a file nobody has thought of yet, in a format nobody has used yet — which
+a register of blessed filenames can never be.
+
+Two halves, in two places on purpose:
+
+| | where | what it holds |
+|---|---|---|
+| the algorithm | `ETL/schema/test_verdict_bar_fingerprinted.py` | the hash moves for a declared non-code input, generically. It asserts this on `project-mgmt/a_bar_nobody_has_written_yet` under five suffixes **including none at all** — a rule keyed on `.json` passes every other assertion in the file and fails that one |
+| the declaration is complete | `ETL/schema/check_census_imports.py::bar_is_fingerprinted` | derived from the census's own import graph, not listed. Every module-level path constant resolving to a file the image contains must be inside the fingerprint. **An input added next year fails the day its constant appears.** |
+
+The declaration itself is `publish_corpus_census.JUDGEMENT_INPUTS`, so the hash
+stays a dumb content hash that two machines cannot disagree about — the one
+property a fingerprint must never lose.
+
+### Proven red before green, on the real tree
+
+Full output in `gate_divergence_wsHC_red.txt`. With the bar *declared* an input
+and `code_fingerprint` left exactly as it stood on 2026-08-16:
+
+```
+FAIL: a verdict can be published against a bar nobody can identify
+  - the bar changed 913 -> 937, the code did not, and the fingerprint did not move.
+    A verdict computed against the old bar and one computed against the new are
+    indistinguishable to every reader downstream. That is census #11.
+```
+
+Green after. This checkout's fingerprint moves `ba21132f9cc7de04` →
+`1dd643153d801a8c` as a result, which is correct and is the point.
+
+### The derived check found a second and a third input
+
+`ETL/schema/guard_verdicts.sql` — the table verdicts are written into — sits
+*under* `ETL/` and contributed nothing to the hash, because the walk takes only
+`.py`. "Under a fingerprinted tree" is not "hashed", and reading it as such would
+have put the same hole in the check that the check exists to close. And
+`data/guard_registry.json` — which decides what code a verdict is bound to and
+which exit codes count as a pass — led to §7.
+
+---
+
+## 7. No verdict has ever been published from the container
+
+Found by the check in §6 from first principles, and confirmed independently from
+the table:
+
+```sql
+SELECT produced_by, COUNT(*), MAX(taken_at) FROM guard_verdicts GROUP BY 1;
+  local         783   2026-08-13 16:17
+  wsAN2-merge     4   2026-08-08 09:47
+  proof-local     5   2026-08-07 22:09
+```
+
+**Zero rows, ever, from `etl-pipeline`** — across every guard, not only the
+census. Meanwhile `corpus_census` has rows #10 and #11 from `etl-pipeline`.
+
+The mechanism is in the tree. `guard_verdicts.REGISTRY` is
+`ROOT / "data" / "guard_registry.json"`; `.dockerignore` excludes `data/`, and
+`/app/data` is the mounted volume, which holds the corpus and not the registry.
+So `guard("census")` cannot resolve inside the container. In
+`publish_corpus_census.main()` that call sits **after** the census INSERT and
+**before** `publish(...)` — which is precisely the pattern the two tables show: a
+census row written, no verdict beside it. `railway_cron.py` runs its four
+corpus-side guards through the same runner, and none of them has ever recorded
+either.
+
+**What it costs.** `check_corpus_census.ts` documents the verdict feed as the
+credential-free door — "which is how it came to run on every pull request without
+GitHub holding a credential to the production database". On that door the newest
+census is **#9, a laptop, 2026-08-08**. Every CI run without `DATABASE_URL` has
+been judging an eight-day-old reading of a *derived* store and cannot see the
+corpus of record at all. The channel that covers every guard was covering the
+record with nothing.
+
+**Fixed here, not deployed.** `.dockerignore` gains `!data/guard_registry.json`.
+It takes effect on the next `railway up`; nothing redeploys the service on a push
+(`repoTriggers: []`). Queued in `AWAITING_APPROVAL.md`.
+
+---
+
+## 8. What this workstream did not do
 
 - **No corpus write.** Promoting the 3,362 gates to the volume is a write to the
   corpus of record and goes to `project-mgmt/AWAITING_APPROVAL.md`, not here.
-- **`eligibility` (898, high 913) and `sectors` (8, high 11) are wsHB's.**
-  §3(b) explains why the *word* on the eligibility line is wrong; it says nothing
-  about the axis.
+- **No deploy.** The `.dockerignore` fix is committed and inert until somebody
+  runs `railway up`. Queued with cost and risk.
+- **`eligibility` (898, high 913) and `sectors` (8, high 11) are wsHB's**, and
+  wsHB has settled which mark is authoritative. §3(b) explains why the *word* on
+  the eligibility line is wrong; it says nothing about the axis.
+- **`coverage_gate.py`'s mark is still one file over three stores.** §3(b) and
+  §4 explain it and the `SHRANK` arm demonstrates the per-store shape, but
+  keying `_high_water`/`advance` by `corpus_stores.store_id()` is not done —
+  it lands on the two axes wsHB is live on.
+- **The four cron guards were not put through §6's test.** It covers the census's
+  import graph, which is the declared scope of `check_census_imports.py`.
+  `check_offerable_decay.py` reads `data/reference/offerable_baseline.json` at
+  module level and `data/reference/` is 892 KB of committed input excluded from
+  the image by the same pattern, so the same question is very likely open there.
 - **DRIFTED naming the modules that actually differ** is a real improvement and
-  is not built here. It is a change to a guard wsHB is also reading.
+  is not built here.
