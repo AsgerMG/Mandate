@@ -1,5 +1,7 @@
 // wsHA — DOES A FACT THAT SEPARATES TWO DOORS OF ONE REGIME EXIST?
 //
+// @ws-active until 2026-09-30
+//
 // `rank_shape_wsGY.md` §2 closes on a hand-off: of the 454 founders who pass
 // their gates and never see the fund they won, **287 (63.2%) already see a
 // SIBLING of that fund** in their six rows and 389 (85.7%) see the same

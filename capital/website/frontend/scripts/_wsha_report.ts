@@ -1,5 +1,7 @@
 // wsHA — THE REPORT. OFFLINE, FREE, NO CREDENTIALS.
 //
+// @ws-active until 2026-09-30
+//
 // Reads `_wsha_doors.ts`'s JSON and answers the content question over the pairs
 // it isolated. Split from the measurement for the reason `_wsgy_report.ts`
 // states: a formatting change must never cost the run again.
@@ -36,8 +38,6 @@
 // grades the same rows.
 //
 //   IN=/tmp/wsha_doors.json PAIRS=/tmp/wsha_pairs.txt npx tsx scripts/_wsha_report.ts
-//
-// @ws-active until 2026-09-30
 import { readFileSync, writeFileSync } from "fs";
 
 import type { DoorRow, InstrumentSnapshot } from "./_wsha_doors";
