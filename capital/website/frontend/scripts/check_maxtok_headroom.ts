@@ -31,6 +31,20 @@
 //   2. THE CEILINGS ARE STRICTLY INCREASING IN EFFORT. An effort that thinks
 //      deeper may not hold a shallower one's ceiling — raising `medium` past
 //      `high` would "fix" this check by making `high` the binding level.
+//
+//   4. A CEILING SIZED ON A SHORTER MENU THAN THE ONE SHIPPING DOES NOT COUNT
+//      AS SIZED. Property 1 asks only "is the ceiling higher than the one that
+//      bound?", and wsGS satisfied it — with a number taken from EIGHTEEN-row
+//      runs while forty rows shipped, because the tally line printed `depth=40`
+//      (the LEVER) and never printed the menu (the FACT). Two ceilings later
+//      nobody had noticed. So when a run that truncated is known to have run a
+//      SHORTER menu than `VERDICT_POOL`, the replacement must clear that run's
+//      ceiling scaled by the menu ratio, not merely exceed it.
+//
+//      The ratio is deliberately linear in rows — the pessimistic end of the
+//      scalings `_wshi_tokens.ts` brackets — because the scaling is unmeasured
+//      and this guard may not be the optimistic party. Runs whose menu is
+//      genuinely unknown are reported, never silently cleared.
 //   3. NO TIMEOUT EXCEEDS THE ROUTE'S OWN BUDGET, and the timeouts are
 //      non-decreasing. A ceiling the clock cannot reach is not a ceiling: at
 //      12,288 tokens against a 90-second wall the call is cut off before
@@ -63,7 +77,7 @@ delete process.env.DATABASE_URL;
 
 import {
   EFFORTS, MAX_TOKENS_BY_EFFORT, REQUEST_BUDGET_MS, TIMEOUT_BY_EFFORT,
-  type ThinkEffort,
+  VERDICT_POOL, type ThinkEffort,
 } from "../lib/intelligence/caps";
 
 const ROOT = path.resolve(process.cwd(), "..", "..");
@@ -87,6 +101,25 @@ interface Run {
   effort: string;
   maxtok: number;
   truncated: number;
+  /** Rows the model was actually shown, longest over the run. `null` when the
+   *  line predates `menu=` and no recovered menu is on file for it. */
+  menu: number | null;
+}
+
+/** Where menus recovered from a pre-`menu=` run's own tape are kept, so an old
+ *  record can be judged without being edited. Written by
+ *  `scripts/_wshi_tokens.ts` from the tapes themselves. */
+const RECOVERED = "project-mgmt/findings/tokens_wsHI/measured_menus.json";
+function recoveredMenus(): Record<string, number> {
+  const f = path.join(ROOT, RECOVERED);
+  if (!existsSync(f)) return {};
+  const raw = JSON.parse(readFileSync(f, "utf8")) as
+    { runs?: Record<string, { menuMax?: number }> };
+  const out: Record<string, number> = {};
+  for (const [file, v] of Object.entries(raw.runs ?? {})) {
+    if (typeof v.menuMax === "number" && v.menuMax > 0) out[file] = v.menuMax;
+  }
+  return out;
 }
 
 /**
@@ -107,9 +140,14 @@ export function recordsIn(file: string, text: string): Run[] {
     const cap = line.match(/maxtok=(\d+)/);
     // `N CUT OFF` or `N/M CUT OFF` — the numerator is the count either way.
     const cut = line.match(/(\d+)(?:\/\d+)?\s+CUT OFF at max_tokens/);
+    // `menu=N rows` or `menu=N-M rows`; absent on every line written before
+    // wsHI, in which case the menu is recovered from the run's tape or is
+    // genuinely unknown. The MAX is what a ceiling has to survive.
+    const menu = line.match(/menu=(?:\d+-)?(\d+) rows/);
     if (!eff || !cap || !cut) continue;
     out.push({
       file, effort: eff[1], maxtok: Number(cap[1]), truncated: Number(cut[1]),
+      menu: menu ? Number(menu[1]) : null,
     });
   }
   return out;
@@ -134,22 +172,57 @@ function walk(dir: string): string[] {
  * zero, this guard is decorative and says so rather than reporting green.
  */
 function prove(records: Run[]): void {
-  const WAS: Record<string, number> = {
+  const PRE_WSGS: Record<string, number> = {
     off: 1024, low: 2048, medium: 6144, high: 12288, xhigh: 24576, max: 32768,
   };
-  const rejected = records.filter(
-    (r) => r.truncated > 0 && (WAS[r.effort] ?? Infinity) <= r.maxtok);
+  // The ceilings wsGS installed. Property 1 is SATISFIED by these — which is
+  // the point: they are the state property 4 exists to reject.
+  const PRE_WSHI: Record<string, number> = {
+    off: 1024, low: 2048, medium: 12288, high: 16384, xhigh: 24576, max: 32768,
+  };
+  const truncating = records.filter((r) => r.truncated > 0);
+
+  const p1 = truncating.filter((r) => (PRE_WSGS[r.effort] ?? Infinity) <= r.maxtok);
   console.log(`  PROVE property 1 against the ceilings in force before wsGS:`);
-  for (const r of rejected) {
+  for (const r of p1) {
     console.log(`    RED  ${r.file}  effort=${r.effort} maxtok=${r.maxtok} `
-      + `truncated=${r.truncated}, ceiling then ${WAS[r.effort]}`);
+      + `truncated=${r.truncated}, ceiling then ${PRE_WSGS[r.effort]}`);
   }
-  console.log(`    ${rejected.length} recorded run(s) rejected by the OLD ceilings  `
-    + `${rejected.length ? "— the guard bites on the real event"
+  console.log(`    ${p1.length} recorded run(s) rejected by the pre-wsGS ceilings  `
+    + `${p1.length ? "— the guard bites on the real event"
       : "██ NONE — THIS GUARD IS NOT ENFORCING ██"}`);
-  if (!rejected.length) {
+  if (!p1.length) {
     throw new Error("PROVE: no committed run is rejected by the pre-wsGS ceilings, so "
       + "this check cannot be shown to catch the failure it was written for.");
+  }
+
+  // ── property 4, against the ceilings that PASSED property 1 ──────────────
+  console.log(`  PROVE property 4 against the ceilings wsGS installed `
+    + `(which property 1 accepts):`);
+  if (SHIPPED_MENU == null) {
+    throw new Error("PROVE: VERDICT_POOL is `all`, so property 4 has no ratio to apply "
+      + "and cannot be shown to bite.");
+  }
+  const p4 = truncating.filter((r) => {
+    const now = PRE_WSHI[r.effort] ?? Infinity;
+    if (now <= r.maxtok) return false;                 // property 1 already rejects it
+    if (r.menu == null) return true;                   // unknown menu licenses nothing
+    return r.menu < SHIPPED_MENU && now <= (r.maxtok * SHIPPED_MENU) / r.menu;
+  });
+  for (const r of p4) {
+    const need = r.menu == null ? "unknown"
+      : String(Math.ceil((r.maxtok * SHIPPED_MENU) / r.menu));
+    console.log(`    RED  ${r.file}  effort=${r.effort} maxtok=${r.maxtok} `
+      + `menu=${r.menu ?? "?"} rows vs ${SHIPPED_MENU} shipping, `
+      + `ceiling then ${PRE_WSHI[r.effort]}, needs > ${need}`);
+  }
+  console.log(`    ${p4.length} recorded run(s) rejected  `
+    + `${p4.length ? "— a ceiling raised on the wrong menu is caught"
+      : "██ NONE — PROPERTY 4 IS NOT ENFORCING ██"}`);
+  if (!p4.length) {
+    throw new Error("PROVE: the ceilings wsGS installed pass property 4, so the property "
+      + "cannot be shown to catch the error it was written for — a ceiling sized on an "
+      + "eighteen-row menu while forty rows ship.");
   }
 }
 
@@ -167,11 +240,26 @@ function selfTest(): void {
      "agent-select: arm=adviser depth=40 count=7 effort=medium maxtok=12288 "
      + "model=claude-sonnet-5 — 145/148 chose, 210 API call(s) over 148 brief(s), "
      + "thought on 210/210 API call(s), 0/210 CUT OFF at max_tokens, EUR 9.2660 total",
-     { effort: "medium", maxtok: 12288, truncated: 0 }],
+     { effort: "medium", maxtok: 12288, truncated: 0, menu: null }],
     ["a clean run at another effort",
      "agent-select: arm=adviser depth=40 count=6 effort=high maxtok=12288 unsure=declare "
      + "model=claude-sonnet-5 — 34/36 chose, 0 CUT OFF at max_tokens, EUR 1.9112 total",
-     { effort: "high", maxtok: 12288, truncated: 0 }],
+     { effort: "high", maxtok: 12288, truncated: 0, menu: null }],
+    // The shape written from wsHI onward: the MENU is stated, and the clock is
+    // reported beside the truncation count. A parser that went blind on either
+    // would leave property 4 permanently vacuous and property 1 looking green.
+    ["the wsHI line — menu stated, fixed menu length",
+     "agent-select: menu=40 rows arm=adviser depth=40 count=7 effort=medium maxtok=34816 "
+     + "unsure=declare lookups=0 (0 brief(s) retrieved) model=claude-sonnet-5 — 148/148 "
+     + "chose, 210 API call(s) over 148 brief(s), thought on 210/210 API call(s) "
+     + "(488444 thinking token(s) billed, 627554 readable char(s)), 0/210 CUT OFF at "
+     + "max_tokens, slowest call 41230ms of 150000ms (27.5% of the clock), EUR 9.2660 total",
+     { effort: "medium", maxtok: 34816, truncated: 0, menu: 40 }],
+    ["the wsHI line — menu varies across founders, the MAX is what binds",
+     "agent-select: menu=12-40 rows arm=adviser depth=40 count=7 effort=high maxtok=57344 "
+     + "model=claude-sonnet-5 — 30/36 chose, 2/36 CUT OFF at max_tokens, "
+     + "slowest call 9000ms of 200000ms (4.5% of the clock), EUR 1.0000 total",
+     { effort: "high", maxtok: 57344, truncated: 2, menu: 40 }],
   ];
   for (const [name, line, want] of cases) {
     const got = recordsIn("synthetic", line);
@@ -244,8 +332,14 @@ if (!existsSync(routeFile)) {
 }
 
 // Property 1 — the measured one.
+const recovered = recoveredMenus();
 const records = walk(path.join(ROOT, WATCHES))
-  .flatMap((f) => recordsIn(path.relative(ROOT, f), readFileSync(f, "utf8")));
+  .flatMap((f) => recordsIn(path.relative(ROOT, f), readFileSync(f, "utf8")))
+  .map((r) => ({ ...r, menu: r.menu ?? recovered[r.file] ?? null }));
+
+/** The menu that ships. `all` means the pool is never cut, so no ratio exists
+ *  and property 4 cannot speak. */
+const SHIPPED_MENU = Number.isFinite(VERDICT_POOL) ? VERDICT_POOL : null;
 
 for (const r of records) {
   if (r.truncated <= 0) continue;
@@ -261,6 +355,27 @@ for (const r of records) {
       + `maxtok=${r.maxtok}, and the ceiling in force at ${r.effort} is still ${now}. `
       + `A ceiling measured to bind may not remain in force — raise it above ${r.maxtok}. `
       + `Never lower this bar to make the build green: truncation publishes the control.`);
+    continue;
+  }
+  // Property 4 — the ceiling was raised, but was it raised for THIS menu?
+  if (SHIPPED_MENU == null) continue;
+  if (r.menu == null) {
+    problems.push(`${r.file}: effort=${r.effort} truncated ${r.truncated} call(s) and the `
+      + `record does not state the MENU it showed, so the ceiling now in force cannot be `
+      + `judged against the ${SHIPPED_MENU}-row menu that ships. Either the line predates `
+      + `\`menu=\` — recover it from the run's own tape into ${RECOVERED} — or a counter was `
+      + `renamed. A truncating run whose menu is unknown licenses nothing.`);
+    continue;
+  }
+  if (r.menu >= SHIPPED_MENU) continue;       // measured at least as deep as we ship
+  const needed = (r.maxtok * SHIPPED_MENU) / r.menu;
+  if (now <= needed) {
+    problems.push(`${r.file}: effort=${r.effort} truncated ${r.truncated} call(s) at `
+      + `maxtok=${r.maxtok} on a ${r.menu}-row menu, but ${SHIPPED_MENU} rows ship. The `
+      + `ceiling in force is ${now}; a menu ${(SHIPPED_MENU / r.menu).toFixed(2)}x longer `
+      + `needs more than ${Math.ceil(needed)}. Raising a ceiling ABOVE the one that bound is `
+      + `not the same as sizing it for the menu that binds it — that is the error wsGS made `
+      + `and this property exists to catch. Never shrink the menu to make this green.`);
   }
 }
 
@@ -284,6 +399,24 @@ if (problems.length) {
   process.exit(1);
 }
 
+// ── the coverage the owner has to see before authorising a run ────────────
+// Not a failure: a menu nobody has bought cannot be conjured by reddening a
+// build, and failing here would only invite someone to shrink the menu. It is
+// reported because "the ceiling now in force has never been exercised at the
+// menu that ships" is precisely the state a paid run is supposed to leave.
+const atShipped = SHIPPED_MENU == null ? []
+  : records.filter((r) => (r.menu ?? 0) >= SHIPPED_MENU);
+if (SHIPPED_MENU != null) {
+  console.log(`  menu coverage: ${atShipped.length} recorded run(s) at the `
+    + `${SHIPPED_MENU}-row menu that ships`
+    + (atShipped.length ? "" : "   ██ THE CEILING HAS NEVER BEEN EXERCISED AT THIS MENU ██"));
+  if (!atShipped.length) {
+    console.log(`    Every ceiling above is projected from shorter menus. `
+      + `See project-mgmt/wsHK_prereg.md — that run is what supplies this line.`);
+  }
+}
+
 console.log(`check_maxtok_headroom: ok — ${records.length} recorded run(s) across `
-  + `${efforts.size} effort level(s); every ceiling measured to bind has since been raised, `
-  + `the ladder is strictly increasing, and no timeout exceeds the route's ${REQUEST_BUDGET_MS}ms.`);
+  + `${efforts.size} effort level(s); every ceiling measured to bind has since been raised `
+  + `and sized for the menu that ships, the ladder is strictly increasing, and no timeout `
+  + `exceeds the route's ${REQUEST_BUDGET_MS}ms.`);

@@ -17,7 +17,7 @@
 // `_wsgo_consensus.ts`, and for the same reason.
 //
 //   npx tsx scripts/_wshi_tokens.ts
-import { readFileSync, readdirSync, statSync, existsSync } from "fs";
+import { readFileSync, readdirSync, statSync, existsSync, writeFileSync, mkdirSync } from "fs";
 import path from "path";
 
 // ── the spend guard, before anything else ─────────────────────────────────
@@ -265,6 +265,33 @@ say();
 // ── §2 the per-call records ───────────────────────────────────────────────
 const wsDQ = usagesUnder(path.join(FIND, "first_test_wsDQ"));
 const benchHigh = usagesUnder(path.join(FIND, "dark_levers_wsDS", "bench_high"));
+// ── the menu, written where the GUARD can read it ─────────────────────────
+// A tally line written before wsHI does not state its menu, so `check_maxtok
+// _headroom.ts` cannot judge it against the menu now shipping. The menu is not
+// lost, though -- it is in the run's own tape, per founder. Recovering it here
+// and committing it beside the run makes the old record judgeable without
+// EDITING the old record, which is the one thing that must never happen to the
+// only copy of something that was paid for.
+const OUT_DIR = path.join(FIND, "tokens_wsHI");
+mkdirSync(OUT_DIR, { recursive: true });
+const menuRecord = {
+  note: "Menus RECOVERED from each run's own tape by scripts/_wshi_tokens.ts, for "
+    + "runs whose tally line predates `menu=`. Keyed by the file the tally line is "
+    + "in. Read by scripts/check_maxtok_headroom.ts. Never edit a paid run's own "
+    + "record; this sits beside it instead.",
+  runs: {
+    "project-mgmt/findings/headtohead_wsGA/adviser_medium_n773_x2.md": {
+      menuMin, menuMax,
+      from: `${path.relative(ROOT, tapeFile)}, \`menu\` on ${called.length} called founders`,
+    },
+  },
+};
+writeFileSync(path.join(OUT_DIR, "measured_menus.json"),
+  JSON.stringify(menuRecord, null, 2) + "\n");
+say(`    Recovered menu written to `
+  + `${path.relative(ROOT, path.join(OUT_DIR, "measured_menus.json"))} for the guard to read.`);
+say();
+
 say("§2  EVERY PER-CALL OUTPUT FIGURE THIS REPO OWNS");
 say("    (`reply_r1.txt` headers — the only records that are not an aggregate)");
 const table = (name: string, us: Usage[], cap: number): void => {
