@@ -13,6 +13,7 @@
 //
 // A stage that re-asks a settled fact is now a bug in one place rather than an
 // omission repeated in three.
+import { askLine } from "./money";
 import { BORROWER_MODELS, ORGANISATION_TYPE_OPTIONS, SECTOR_OPTIONS, TICKET_BANDS, USE_OF_FUNDS_OPTIONS } from "./types";
 import type { EligibilityAnswers, IntelligenceRequest } from "./types";
 
@@ -45,7 +46,11 @@ export function knownFacts(
     e?.useOfFunds?.length
       ? `What the money would pay for: ${e.useOfFunds.map((u) => label(USE_OF_FUNDS_OPTIONS, u)).join(", ")}`
       : "",
-    e?.ticketBand ? `Ticket sought: ${label(TICKET_BANDS, e.ticketBand)}` : "",
+    // NOT `Ticket sought: <band>`. That named a quantity without naming its
+    // subject, and every stage that read it invented one. See `money.ts` for
+    // what the recorded briefs did with it and why the label is one string
+    // both prompt sites read rather than two that agree.
+    e?.ticketBand ? askLine(label(TICKET_BANDS, e.ticketBand)) : "",
     e?.borrowerModel ? `Borrower model: ${label(BORROWER_MODELS, e.borrowerModel)}` : "",
     req.targetMarkets?.length ? `Target markets for public capital: ${req.targetMarkets.join(", ")}` : "",
     e?.entityCountries?.length ? `Entities/establishments in: ${e.entityCountries.join(", ")}` : "",

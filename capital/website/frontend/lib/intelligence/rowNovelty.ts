@@ -61,7 +61,7 @@ export const IDENTITY_AXES: ReadonlySet<string> = new Set([
 /** Written by the model from everything below. Excluded because they are the
  *  OUTPUT this module exists to differentiate: counting them as evidence that
  *  a row differs would let the writer's own paraphrase certify itself. */
-const WRITER_AXES: ReadonlySet<string> = new Set(["whyEligible", "nextStep", "blockerPlain"]);
+export const WRITER_AXES: ReadonlySet<string> = new Set(["whyEligible", "nextStep", "blockerPlain"]);
 
 /** The facts that answer "what kind of door is this, how big is it, and how do
  *  I get in". Stated once per group rather than once per row.

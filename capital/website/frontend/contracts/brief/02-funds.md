@@ -194,8 +194,9 @@ one, a wrong row is caught by a human reading the published page.
 
 ### Pass
 
-> whyEligible: Your stated project cost sits inside this scheme's €1-5M band,
-> and your national registration meets its establishment rule.
+> whyEligible: This scheme has paid a median €1.2M over 340 awards to R&D
+> projects like yours, and your national registration meets its establishment
+> rule.
 > nextStep: Open a dossier with the regional office for the next wave.
 
 ### Fail — breaks FUND-6 and FUND-B2
