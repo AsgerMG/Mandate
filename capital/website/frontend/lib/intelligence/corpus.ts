@@ -141,6 +141,104 @@ function parseSnapshot(md: string): FundSnapshot | null {
  *  cannot disagree about which gates are quotable. */
 const ASSERTABLE_LEVELS = new Set(["llm_2pass", "human_verified"]);
 
+// ── A GATE OVERLAY: measuring a PROPOSED comparator without writing one ────
+//
+// ── The defect this exists for ────────────────────────────────────────────
+// A gate-encoding correction is a proposal until its owner approves it, and
+// the only way anything in this repo could report what a proposal DOES to the
+// funnel was to write `value_spec` into the store the product serves from.
+// That is the one thing a proposal may not do: the write is the decision.
+// So `_wsgu_counterfactual.ts` measured the corrections where it could reach
+// them without writing — the committed snapshot, through `assessInstrument`
+// alone — and reported the guard's own counter, 251 wrongful deletions to 14.
+// A guard's counter is not a product number, and the owner was being asked to
+// authorise a write on the strength of one.
+//
+// This is the seam that lets the FUNNEL answer instead. A harness installs a
+// map of proposed comparators; hydration applies them to the gates as they
+// arrive, in memory, in that process only; nothing is written anywhere.
+//
+// ── Why it is a map installed by a caller and not a file read here ────────
+// `lib/` must not grow a code path that reads a file or an env var to decide
+// what a founder is served. The overlay is therefore INERT unless something
+// explicitly installs one, there is no default and no env name to typo, and a
+// server that never calls `setGateOverlay` cannot be affected by this code at
+// all. The harness owns the file, the drift refusal and the attestation.
+//
+// ── Why it verifies rather than trusts ────────────────────────────────────
+// A correction carries the comparator it was written against. If the store no
+// longer holds that comparator, applying the proposed one would overwrite a
+// decision the correction knows nothing about — so the mismatch is RECORDED as
+// drift and the store's own value is kept. A silent overlay that applied
+// nothing, or applied to rows that had moved, would produce a counterfactual
+// that says the corrections change nothing, which is the worst output this
+// file could have.
+export interface GateOverlayEntry {
+  /** The comparator the correction was written against. */
+  expect: unknown;
+  /** The comparator to serve instead. `null` = quarantined: the requirement
+   *  stays, the machine verdict stops. */
+  spec: unknown;
+}
+
+/** Keyed by `overlayKey`: the instrument and the gate, which is what makes a
+ *  gate row unique in either store. */
+let gateOverlay: Map<string, GateOverlayEntry> | undefined;
+const overlayApplied = new Set<string>();
+const overlayDrift: string[] = [];
+
+const overlayKey = (instrumentId: string, gateKey: string) => `${instrumentId} ${gateKey}`;
+
+/** Key order is not part of a comparator's identity — the emitter sorts, the
+ *  stores do not — so specs are compared canonically. */
+function canonSpec(spec: unknown): string {
+  if (spec === null || spec === undefined) return "null";
+  const v = typeof spec === "string" ? JSON.parse(spec) : spec;
+  if (v === null) return "null";
+  return JSON.stringify(v, Object.keys(v as object).sort());
+}
+
+/** Install (or, with `undefined`, remove) an in-memory overlay of proposed
+ *  comparators. Clears the applied/drift attestation, so a harness switching
+ *  arms measures each arm's own application rather than the run's total. */
+export function setGateOverlay(entries?: Iterable<readonly [string, GateOverlayEntry]>): void {
+  gateOverlay = entries ? new Map(entries) : undefined;
+  overlayApplied.clear();
+  overlayDrift.length = 0;
+}
+
+/** What the overlay actually did, for a harness to attest before it prints a
+ *  number. `applied` is the set of gate keys served from the overlay; `drift`
+ *  names every row whose stored comparator was not the one the correction was
+ *  written against, and those keep the store's value. */
+export function gateOverlayReport(): {
+  installed: number; applied: string[]; drift: string[];
+} {
+  return {
+    installed: gateOverlay?.size ?? 0,
+    applied: [...overlayApplied],
+    drift: [...overlayDrift],
+  };
+}
+
+/** The single point where a stored comparator becomes the one the engine sees.
+ *  Called from BOTH hydration phases, so a gate cannot arrive by a route the
+ *  overlay does not cover. */
+function overlaySpec(instrumentId: string, gateKey: string, stored: unknown): unknown {
+  if (!gateOverlay) return stored;
+  const key = overlayKey(instrumentId, gateKey);
+  const entry = gateOverlay.get(key);
+  if (!entry) return stored;
+  if (canonSpec(stored) !== canonSpec(entry.expect)) {
+    overlayDrift.push(`${instrumentId} [${gateKey}]: store holds `
+      + `${JSON.stringify(stored)}, the proposal was written against `
+      + `${JSON.stringify(entry.expect)}`);
+    return stored;
+  }
+  overlayApplied.add(key);
+  return entry.spec;
+}
+
 export interface DbGate {
   id: string;
   gateFamily?: string;
@@ -665,7 +763,8 @@ export async function hydrateDbInstruments(): Promise<void> {
           intakeFieldResolved: g.intake_field_resolved ?? undefined,
           requirement: g.requirement,
           value: g.value ?? "",
-          valueSpec: g.value_spec ? JSON.parse(g.value_spec) : null,
+          valueSpec: overlaySpec(g.instrument_id, g.gate_key,
+            g.value_spec ? JSON.parse(g.value_spec) : null),
           intakeField: g.intake_field ?? "none",
           // Framework records carry theirs from phase one (they are never in a
           // shortlist, so nothing would fetch it later); everything else gets
@@ -899,7 +998,8 @@ export async function hydrateGatesFor(instrumentIds: string[]): Promise<void> {
             intakeFieldResolved: r.intake_field_resolved ?? undefined,
             requirement: r.requirement,
             value: r.value ?? "",
-            valueSpec: r.value_spec ? JSON.parse(r.value_spec) : null,
+            valueSpec: overlaySpec(r.instrument_id, r.gate_key,
+              r.value_spec ? JSON.parse(r.value_spec) : null),
             intakeField: r.intake_field ?? "none",
             quote: r.quote ?? "",
             source: { file: r.source_file ?? "", locator: r.source_locator ?? "" },
