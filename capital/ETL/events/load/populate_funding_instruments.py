@@ -49,6 +49,7 @@ from name_evidence import (  # noqa: E402
 from ndb_taxonomy import NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source  # noqa: E402
 from nuts_regions import delivery_region, staged_region_mix  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
+from scheme_title import repair_body_named_rows  # noqa: E402
 
 ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
@@ -1615,6 +1616,33 @@ def main() -> None:
         if case_named:
             print(f"  named {case_named} instruments from the Commission's state-aid "
                   f"case register")
+
+        # ── The consequence of the skip above, repaired ──────────────────
+        # CASE_TITLE_NOT_A_SCHEME is right that an evaluation plan is not a
+        # scheme. What it never asserted is what those rows are called
+        # INSTEAD, and the answer was the loader's fallback: the granting
+        # BODY. Twenty-two rows reached founders as "Finanzamt Aachen-Stadt",
+        # "MFW SL" and "Ministère de l'économie et des finances" -- names that
+        # no ranker and no reader can choose over a sibling, because they say
+        # only who signs the cheque.
+        #
+        # The register itself holds the answer and this file already parses
+        # the field: an evaluation-plan case LINKS the scheme it evaluates.
+        # See ETL/lib/scheme_title.py for the property, the both-ways link map
+        # (SA.40391's link exists only on the other side) and the refusal to
+        # guess when a case links to two schemes.
+        #
+        # Fires ONLY on a row whose name folds equal to its granting body, so
+        # it can never touch a row the pass above named, and its worst case is
+        # to leave a defect that check_body_named_rows.ts then reports.
+        repaired = repair_body_named_rows(now, cases)
+        applied = [r for r in repaired if r["applied"]]
+        if applied:
+            print(f"  renamed {len(applied)} rows named after their granting body "
+                  f"from the scheme their register record links")
+        for r in repaired:
+            if not r["applied"]:
+                print(f"  UNRESOLVED body-named row {r['instrument_id']}: {r['reason']}")
 
     _names_path = ROOT / "data" / "reference" / "programme_names.json"
     programme_names = {
