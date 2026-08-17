@@ -182,8 +182,8 @@ export const AWARD_RELATION: string =
   `assembled from several awards, and the schemes founders actually go on to ` +
   `win pay a FRACTION of the figure they stated, the typical one off by most ` +
   `of an order of magnitude and many by more. A scheme paying less than that ` +
-  `figure is therefore the ` +
-  `ORDINARY case: it is never on its own a reason to call a row small, ` +
+  `figure is therefore the ORDINARY case: it is never on its own a reason to ` +
+  `call a row small, ` +
   `secondary, slow, a poor fit, or anything other than a door. The one money ` +
   `fact that does bear on a row runs the other way: a scheme whose typical ` +
   `award is far larger than the founder's entire stated need is answering a ` +
