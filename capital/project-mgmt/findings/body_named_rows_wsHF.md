@@ -102,7 +102,7 @@ than claiming it:
 initialism. No list of words reaches them without being extended per country
 forever; the relation reaches all of them and needs to know no language at all.
 
-### The test found a real hole on its first run
+### The test found a real hole on its first run — and it is a class, not an incident
 
 The suite is mostly **invented** cases — a Bulgarian agency in Cyrillic, a
 Finnish compound, a Latvian tax authority, a Japanese ministry, a case linked to
@@ -112,8 +112,31 @@ of the rule reused `applyableBody.fold()`, which ends `[^a-z0-9 ]`. It maps a
 Cyrillic name to the **empty string**, so two identical Bulgarian strings came
 back "nothing to compare" through the missing-column guard and the rule returned
 clean. That is precisely the "a row in a language nobody here reads goes
-unnoticed" failure the rule exists to prevent, and no real corpus row would have
-caught it. `foldAnyScript` uses `\p{L}`/`\p{N}`.
+unnoticed" failure the rule exists to prevent, and **no real corpus row would
+have caught it**. `foldAnyScript` uses `\p{L}`/`\p{N}`.
+
+**A LATIN-ONLY FOLD IS SAFE ONLY WHERE FAILING TO MATCH IS THE SAFE ANSWER.**
+That is the general shape, and it is worth more than the one bug. `fold()` is
+safe inside `applyableBody` itself: nothing outside the file imports it, and
+there a non-match means "I cannot tell whether this is a department", which the
+file states outright. It becomes a defect the moment a **decision** hangs on the
+comparison, because `"" === ""` and `"".includes("")` are both **true** — so
+two unrelated non-Latin strings are equal, and any non-Latin string contains any
+other.
+
+Swept for the same shape across the product. One more instance exists:
+
+> `doorLabel.ts`'s `flatten()` guards `if (!body || flatten(name).includes(flatten(body))) return name;`
+> — "do not append a body the name already carries". For a Greek or Cyrillic
+> row that test is **vacuously true**, so the door is silently never qualified
+> by the body that delivers it.
+
+**Ten corpus rows fold to empty (four offerable). Zero reach that guard today**,
+because none of them is in a multi-leaf scheme with a nameable body — so this is
+**latent, not live**, and it is reported as latent. It goes live the day a Greek
+or Bulgarian scheme gains a second leaf, which is an ordinary consequence of
+loading more of either country. `scripts/_wshf_foldaudit.ts` is the sweep and
+re-runs free.
 
 Where it lives:
 
@@ -161,11 +184,14 @@ field to redirect a closed scheme to its successor.
 | `SA.56245` | `Germany - Evaluation plan for the block exempted R&D tax incentive scheme "Forschungszulagengesetz"` | `SA.114724` | `Steuerliche Förderung von Forschung und Entwicklung [BMF]` |
 | `SA.49781` | `Evaluation plan for large R&D aid scheme under the Fund for sustainable growth` | `SA.42139` | `Intervento del fondo per la crescita sostenibile a favore di progetti di ricerca e sviluppo realizzati nell''ambito di accordi sottoscritti dal Ministero dello sviluppo economico con le regioni e le altre amministrazioni pubbliche.` |
 
-**`SA.40391` is why the link map is built both ways, and it is not a detail.**
-Its own record carries no `caseLinks` at all; the edge exists only on
-`SA.58995`'s side. A forward-only reading resolves three of the four skipped
-numbers and silently leaves the fourth — and the fourth is the one with **three
-offerable French rows**.
+**`caseLinks` IS DIRECTIONAL, AND THE REGISTER FILES THE EDGE ON WHICHEVER SIDE
+IT PLEASES.** That is a property of the source, not a note about one case.
+`SA.40391`'s own record carries no `caseLinks` at all; the edge to its scheme
+exists only on `SA.58995`'s side. A forward-only reading resolves three of the
+four skipped numbers, reports success, and silently leaves the fourth — and the
+fourth is the one with **three offerable French rows**. Anything in this repo
+that follows a register link must build the map symmetrically or it is
+measuring the Commission's filing habits rather than the relation.
 
 **Two things were deliberately NOT cleaned.** `[BMF]` is the Commission's own
 issuer annotation and `nell''ambito` is a doubled-apostrophe artefact of their
@@ -213,7 +239,31 @@ repair is mine to authorise.
 
 [FUNNEL_SECTION]
 
-## 6. What this cannot see
+## 6. What a founder actually sees — rendered, not reasoned about
+
+Run through the shipped `doorLabel()` rather than argued from its source
+(`scripts/_wshf_labels.ts`, free and offline). Every one of the 22 rows has
+`administeringBodyShare = 1.0`, comfortably over `BODY_SHARE_FLOOR`, so the
+disambiguator is free to speak wherever the body is nameable.
+
+| | before | after |
+| --- | --- | --- |
+| the 18 `SA.56245` rows | `Finanzamt Aachen-Stadt` | `Steuerliche Förderung von Forschung und Entwicklung [BMF] · via Finanzamt Aachen-Stadt` |
+| the 3 `SA.40391` rows | `Ministère de l'économie et des finances` / `... de l'Agriculture ...` | `Régime cadre exempté ... (RDI) pour la période 2014-2023` **— all three identical** |
+| the 1 `SA.49781` row | `Ministero delle Imprese e del Made in Italy - Direzione generale ...` | `Intervento del fondo per la crescita sostenibile ...` |
+| **distinct labels over the 22 rows** | **21** | **20** |
+
+**The French three are a real cost and it is stated rather than buried.**
+`nameableBody` refuses a ministry by design, so nothing is appended, and three
+rows that were at least distinguishable *from each other* now read identically.
+What they gained is that the label finally says what the thing IS. Both are
+true; a founder who could previously tell two doors apart but not tell what
+either was is not obviously better off than one who can tell what they are but
+not which is which. **This is the sharpest argument for treating the 22 as a
+correctness fix and not as a ranking improvement** — and the German 18, which
+gain the scheme AND keep the body, are the shape the fix should have everywhere.
+
+## 7. What this cannot see
 
 - **The embedding.** `instrument_profiles.profile_text` is built from `name` and
   is what the shipped ranker scores. This write does not re-embed it, so the
@@ -222,11 +272,7 @@ repair is mine to authorise.
 - **The model.** Both funnel runs are model-free; the six shown rows are the
   deterministic order. Whether a writer picking between two doors reads the name
   differently is not measurable without a paid memo per founder.
-- **`distinguishRowNames`.** After the rename, all eighteen `SA.56245` rows share
-  one title, and the shipped disambiguator appends `· via <body>` where the body
-  is nameable — which it is for a Finanzamt. So a founder sees
-  *"Steuerliche Förderung von Forschung und Entwicklung [BMF] · via Finanzamt
-  Aachen-Stadt"*, which is strictly more than before. For the two French
-  `SA.40391` rows the body is a ministry, which `nameableBody` refuses, so they
-  render identically to each other — the pre-existing shape `doorLabel.ts`'s own
-  header describes for `SA.111723`, not something introduced here.
+- **Two funnel runs shared this machine.** Another workstream was measuring
+  concurrently, which is why the before-arm ran slowly. It changes the wall
+  clock and not the arithmetic; both arms attest their draw fingerprint and
+  their ranker.
