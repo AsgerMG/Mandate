@@ -18,11 +18,13 @@ off award prose, not the field. **Second, we found where the signal is being
 destroyed, and it is our own arithmetic**: on 28 of the 64 separable pairs the
 derived answer *contained* a separating option and scored both doors anyway,
 because `objectiveScorer` matches on overlap, so a richer answer separates less.
-Changing that rule to "prefer the door that matches more of the answer" takes
-the **shipped pin** from +5 to +14 without asking anyone anything — worth more
-than the answer change, on this evidence, and priced but deliberately not
-applied because `shortlist.ts` belongs to another workstream this hour. **The
-one thing this does not say is that founders cannot answer.** A real founder is
+I priced a rescoring rule that appeared to take the **shipped pin** from +5 to
++14 — and then killed it, which is the more useful half: it wins by preferring
+the door with the *longer* registered purpose list (43 of 54), which is
+`leaf_separation_wsAO` §4's documentation-volume prior in a new place, and the
+control that removes the volume advantage is worth exactly nothing. **Do not
+quote the +14.** `shortlist.ts` was not touched. **The one thing none of this
+says is that founders cannot answer.** A real founder is
 asked and states it; these are award-derived descriptions, so 71.6% is a floor
 on what a real founder supplies and the 27.3% that says nothing is a fact about
 award prose. What it does say firmly: **stop deriving this field from prose**,
@@ -245,41 +247,51 @@ matches on **overlap**: any intersection counts. So an answer naming both
 either one, and a *richer* answer separates *less*. That is arithmetic, not a
 fact about founders.
 
-## 6. A proposal, priced and deliberately not applied
+## 6. A rescoring proposal, priced — and then retired by its own check
 
-**`shortlist.ts` is untouched.** It is another workstream's file this hour, and
-the claim in §5 is a claim about `objectiveScorer`'s arithmetic, so it is worth
-exactly what the counterfactual that prices it is worth. Two alternative rules,
-both computable from what the corpus already holds, scored on the same pairs:
+**`shortlist.ts` is untouched.** §5's claim is a claim about `objectiveScorer`'s
+arithmetic, so it is worth exactly what the counterfactual that prices it is
+worth. Two alternative rules, both computable from what the corpus already
+holds, scored on the same pairs:
 
-| | overlap (today) | coverage `|∩|` | jaccard `|∩|/|∪|` |
+| | overlap (today) | coverage `\|∩\|` | jaccard `\|∩\|/\|∪\|` |
 |---|--:|--:|--:|
 | derived answer | NET +2 | NET +6 | NET −3 |
 | **pin** | NET +5 | **NET +14** | NET +5 |
 
-Two readings, and the second is the one that matters.
+Coverage reads as a large win. **It is not, and the check that retires it is the
+most useful thing in this section.**
 
-1. **The rule change is worth more than the answer change.** Coverage — prefer
-   the door that matches *more* of the founder's answer — takes the shipped pin
-   from +5 to +14 without asking anyone anything.
-2. **Under every rule tested, the pin beats the derived answer.** That makes §4's
-   negative a property of the derivation, not of the rule it was scored by.
+```
+  Of the 54 pairs COVERAGE+pin separates, it picked the door registering MORE
+  purposes on 43 (79.6%), fewer on 2, the same on 9.
+  Mean registered purposes: won door 3.12, shown door 2.73.
+```
 
-**What this does NOT license, and the reasons are in the code.**
+`|reg ∩ answer|` grows with the **size** of the door's registered purpose list,
+so a door we happened to document more thoroughly scores higher for a reason
+that has nothing to do with the founder — and on this population the won door's
+list is the longer one. **That is `leaf_separation_wsAO.md` §4's
+documentation-volume prior arriving in a new place**, the one that had to be
+nulled out before gate fit could be believed; a ranker acting on it ranks its
+own coverage. And the control confirms it: **jaccard, which explicitly penalises
+a long list, is worth exactly nothing** — net +5, identical to today. The gain
+evaporates the moment volume is controlled for.
 
-- It is measured on **86 pairs**, restricted to the pair, model-free. It is a
-  lead, not a ranking result.
+**So there is no scoring-rule lead here, and the +14 must not be quoted.** This
+section exists to stop the next workstream buying it.
+
+Three further reasons a rule change would not have been safe on this evidence
+anyway, kept because they are independent of the above:
+
+- Measured on **86 pairs**, restricted to the pair, model-free.
 - `objectiveScorer` normalises with `penalty = OBJECTIVE_MATCH^(-m/k)` over the
   whole candidate group, so changing the match predicate changes `m` and `k` and
   therefore the penalty **for every founder**, not only for these 86.
 - `shortlist.ts`'s own comment records that this signal in the row sort cost
   **21 points of exact recall**, because all 421 objective-carrying instruments
   are state-aid schemes and across channels the signal silently becomes a
-  channel prior. Within a channel there is no such trade — which is why it lives
-  in the sibling reassignment — but a rule change is still not local.
-- The honest way to price it is a paired funnel arm, exactly like the one this
-  workstream built for the intake answer. **That arm does not exist for the
-  scorer.** Building it is the next step, and it is free.
+  channel prior.
 
 ## 7. Does it move the funnel
 

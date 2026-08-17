@@ -287,4 +287,43 @@ const line = (label: string, c: Record<Verdict, number>, n: number) => {
     for (const p of differ) c[fn(p)]++;
     console.log(line(label, c, n));
   }
+
+  // ── AND THE CHECK THAT RETIRES THE PROPOSAL ABOVE ───────────────────────
+  //
+  // COVERAGE reads as the winner and it must not be believed on that number.
+  // `|reg ∩ answer|` grows with the SIZE of the door's registered purpose
+  // list, so a door we have documented more thoroughly scores higher for a
+  // reason that has nothing to do with the founder. That is the
+  // documentation-volume prior `leaf_separation_wsAO.md` §4 had to null out
+  // before it could believe gate fit, arriving in a new place — and a ranker
+  // acting on it ranks its own coverage.
+  //
+  // Tested rather than worried about: when COVERAGE separates a pair, does it
+  // pick the door with the longer list? If it does, the rule is the prior.
+  let bigger = 0, smaller = 0, equal = 0, sep = 0;
+  for (const p of differ) {
+    const vw = p.won.filter((u) => PIN.includes(u)).length;
+    const vs = p.shown.filter((u) => PIN.includes(u)).length;
+    if (vw === vs) continue;
+    sep++;
+    const picked = vw > vs ? p.won : p.shown;
+    const other = vw > vs ? p.shown : p.won;
+    if (picked.length > other.length) bigger++;
+    else if (picked.length < other.length) smaller++;
+    else equal++;
+  }
+  const meanLen = (f: (p: Pair) => string[]) =>
+    (differ.reduce((a, p) => a + f(p).length, 0) / differ.length).toFixed(2);
+  console.log(`\n  ██ AND WHY COVERAGE MUST NOT BE BELIEVED ██`);
+  console.log(`  Of the ${sep} pairs COVERAGE+pin separates, it picked the door registering `
+    + `MORE\n  purposes on ${bigger} (${((100 * bigger) / sep).toFixed(1)}%), fewer on `
+    + `${smaller}, the same on ${equal}.`);
+  console.log(`  Mean registered purposes: won door ${meanLen((p) => p.won)}, `
+    + `shown door ${meanLen((p) => p.shown)}.`);
+  console.log(`  So COVERAGE is largely a DOCUMENTATION-VOLUME PRIOR — it prefers the door `
+    + `whose\n  purpose list we happened to record more of, and on this population the won `
+    + `door's\n  list is longer. That is leaf_separation_wsAO §4's prior in a new place, and `
+    + `a ranker\n  acting on it ranks its own coverage. JACCARD, which explicitly penalises `
+    + `a long\n  list, is worth nothing (net +5 = today). The apparent gain evaporates when `
+    + `volume\n  is controlled for, so THERE IS NO SCORING-RULE LEAD HERE.`);
 })();
