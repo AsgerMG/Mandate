@@ -1,0 +1,82 @@
+       |            ^
+    292|   });
+    293|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+
+ FAIL  lib/corpusCensus.test.ts > shrinkage > does catch the BLIND SPOT, where the share RISES
+TypeError: shrinkage is not a function
+ ❯ lib/corpusCensus.test.ts:305:12
+    303|       instruments: { gates: 7471, roots: 352, total: 861, frameworks: …
+    304|     };
+    305|     expect(shrinkage([after, before]).map((f) => f.measure)).toEqual([…
+       |            ^
+    306|   });
+    307|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+
+ FAIL  lib/corpusCensus.test.ts > shrinkage > does not let a reading that already failed raise the mark
+TypeError: shrinkage is not a function
+ ❯ lib/corpusCensus.test.ts:327:12
+    325|       instruments: { gates: 6368, roots: 350, total: 1086, frameworks:…
+    326|     };
+    327|     expect(shrinkage([sound, midRebuild, { ...CENSUS_3, id: 3, store: …
+       |            ^
+    328|       .toEqual([]);
+    329|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+
+ FAIL  lib/corpusCensus.test.ts > shrinkage > tolerates noise proportionally and nothing more
+TypeError: shrinkage is not a function
+ ❯ lib/corpusCensus.test.ts:337:12
+    335|     });
+    336|     // 0.5% of 7,471 is 37.4; a fall of 37 is inside it and 38 is not.
+    337|     expect(shrinkage([drop(7471 - 37), CENSUS_9])).toEqual([]);
+       |            ^
+    338|     expect(shrinkage([drop(7471 - 38), CENSUS_9]).length).toBe(1);
+    339|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+
+ FAIL  lib/corpusCensus.test.ts > shrinkage > never reports a measure a store has only ever recorded once
+TypeError: shrinkage is not a function
+ ❯ lib/corpusCensus.test.ts:342:12
+    340|
+    341|   it("never reports a measure a store has only ever recorded once", ()…
+    342|     expect(shrinkage([CENSUS_9])).toEqual([]);
+       |            ^
+    343|   });
+    344| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  10 failed | 11 passed (21)
+   Start at  19:20:13
+   Duration  177ms (transform 30ms, setup 0ms, import 38ms, tests 8ms, environment 0ms)
+
+     × judges what the census records, not what somebody listed 2ms
+     × covers a measure nobody has added yet 0ms
+     × takes numbers only, and finite ones 0ms
+     × catches the loss of a thousand gates with every instrument still there 0ms
+     × does not read one store's corpus as another store's history 0ms
+     × does not re-introduce the FALSE ALARM of 2026-08-06 0ms
+     × does catch the BLIND SPOT, where the share RISES 0ms
+     × does not let a reading that already failed raise the mark 0ms
+     × tolerates noise proportionally and nothing more 0ms
+     × never reports a measure a store has only ever recorded once 0ms
+⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  lib/corpusCensus.test.ts > censusMeasures > judges what the census records, not what somebody listed
+ FAIL  lib/corpusCensus.test.ts > censusMeasures > covers a measure nobody has added yet
+ FAIL  lib/corpusCensus.test.ts > censusMeasures > takes numbers only, and finite ones
+ FAIL  lib/corpusCensus.test.ts > shrinkage > catches the loss of a thousand gates with every instrument still there
+ FAIL  lib/corpusCensus.test.ts > shrinkage > does not read one store's corpus as another store's history
+ FAIL  lib/corpusCensus.test.ts > shrinkage > does not re-introduce the FALSE ALARM of 2026-08-06
+ FAIL  lib/corpusCensus.test.ts > shrinkage > does catch the BLIND SPOT, where the share RISES
+ FAIL  lib/corpusCensus.test.ts > shrinkage > does not let a reading that already failed raise the mark
+ FAIL  lib/corpusCensus.test.ts > shrinkage > tolerates noise proportionally and nothing more
+ FAIL  lib/corpusCensus.test.ts > shrinkage > never reports a measure a store has only ever recorded once
+      Tests  10 failed | 11 passed (21)
