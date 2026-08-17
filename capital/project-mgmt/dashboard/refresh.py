@@ -293,9 +293,22 @@ FUNNEL_ROWS = [
      "our own ranking of that list"),
     ("published",       "&hellip; and it is one of the seven published",   "warn",
      "publishing seven of the eight"),
-    ("top_6",           "&hellip; and it is in the six they read",         "warn",
-     "the six a founder actually reads"),
+    # ── EVERYTHING BELOW IS GRADING, NOT PRODUCT. The owner asked why there is
+    # a step picking 8, then 7, then 6, and the honest answer is that there
+    # isn't. `institutionsMax` is 7: the memo publishes SEVEN rows and that is
+    # the last thing the product does. `top_6` is `writerRank <= 6` -- us
+    # asking whether the answer is in the first six of our own seven, because
+    # six is the honest bar for "a founder actually read it". Nothing is
+    # dropped there. Showing it in the same column as a real cut inflates the
+    # number of places we appear to lose funds, so it is rendered separately.
+    ("top_6",           "&hellip; and it is in the first six of those seven", "warn",
+     "grading ourselves at six rather than seven"),
 ]
+
+#: How many of FUNNEL_ROWS are things the PRODUCT does. The rest are how
+#: strictly we grade. Derived from the published cap rather than counted, so
+#: raising `institutionsMax` moves the line by itself.
+GRADING_BELOW = "published"
 
 TONE = {"good": "var(--good)", "warn": "var(--warn)", "bad": "var(--bad)"}
 
@@ -331,19 +344,35 @@ def funnel_table() -> str:
             continue
         steps.append((stage_id, label, tone, pct, 0.0 if prev is None else prev - pct))
         prev = pct
-    total_lost = sum(s[4] for s in steps)
+    grading_ids = set()
+    hit = False
+    for sid, *_ in FUNNEL_ROWS:
+        if hit:
+            grading_ids.add(sid)
+        if sid == GRADING_BELOW:
+            hit = True
+    total_lost = sum(s[4] for s in steps if s[0] not in grading_ids)
     if total_lost <= 0:
         sys.exit("the funnel reports no loss at all, which means the run is broken "
                  "rather than that the product is perfect. Refusing to publish it.")
 
-    out = []
+    out, seen_grading = [], False
     for stage_id, label, tone, pct, lost in steps:
         last = stage_id == FUNNEL_ROWS[-1][0]
+        grading = seen_grading
+        if stage_id == GRADING_BELOW:
+            seen_grading = True
+        if grading and len(out) and "GRADING-SEP" not in out[-1]:
+            out.append(
+                '        <tr><!--GRADING-SEP--><td colspan="4" '
+                'style="padding:14px 0 6px;font-size:13.5px;color:var(--muted)">'
+                'The product stops here &mdash; seven rows are published. '
+                'Below is only how strictly we grade ourselves.</td></tr>')
         share = lost / total_lost * 100
         # A step that loses nothing gets no bar and no share, rather than a
         # zero-width bar that reads as a rendering fault.
         bar = share_txt = ""
-        if lost > 0.005:
+        if lost > 0.005 and not grading:
             bar = (f'<span style="display:block;height:9px;border-radius:2px;'
                    f'background:{TONE[tone]};width:{share:.1f}%"></span>')
             share_txt = f"{share:.0f}%"
