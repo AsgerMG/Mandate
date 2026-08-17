@@ -151,6 +151,7 @@ of the world that has since moved.
 
 | finding | what it settled | |
 |---|---|---|
+| `gate_divergence_wsHC.md` | **The record never lost the gates; it never received them.** The volume reads 6,401 on both readings it has; the laptop and Postgres hold 9,763, and no cron step can reproduce them. Its own contents would cost **157 of 1,021** publishable funds every evaluable rule and drop sibling separation **40/41 → 26/41**. Three guard defects fixed: gate counts judged by nothing (`SHRANK`), a verdict graded against an unfingerprinted bar, and **zero verdicts ever published from the container** | LIVE |
 | `workstream_y_ipcei_reversal.md` | **IPCEI is not closed** — the Commission lists 9 candidates in the design phase. wsW reasoned entirely from our own columns. This is Rule Zero's founding case | LIVE |
 | `workstream_w_ipcei_and_leaf_cap.md` | Retracted IPCEI's 11 wave leaves as non-offerable | RET by wsY — row-level outcome right, reasoning corpus-internal |
 | `liveness_single_source_wsP.md` | `scheme_end_date` carried two meanings under one name: 306 of 948 live leaves went dark; the proposed fix would have resurrected 50 dead Spanish calls | LIVE |

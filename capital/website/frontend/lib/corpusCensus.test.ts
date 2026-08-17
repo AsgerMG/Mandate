@@ -8,7 +8,10 @@
 // recorded error, an outcome nobody set, and two clean readings — which is more
 // failure modes than anyone would have thought to write down.
 import { describe, expect, it } from "vitest";
-import { admissibility, chooseCensus, CENSUS_KPI_KEYS, type CensusRow } from "./corpusCensus";
+import {
+  admissibility, censusMeasures, chooseCensus, shrinkage,
+  CENSUS_KPI_KEYS, type CensusRow,
+} from "./corpusCensus";
 
 /** corpus_census #4 — the ONLY reading ever taken inside the Railway container,
  *  and the one a naive live read would have put on the home page. The weekly
@@ -149,5 +152,193 @@ describe("chooseCensus", () => {
     // would eventually disagree about a tie.
     const { chosen } = chooseCensus([CENSUS_1, CENSUS_3]);
     expect(chosen?.id).toBe("3");
+  });
+});
+
+// ── Did THIS corpus get worse? ─────────────────────────────────────────────
+//
+// Fixtures again copied verbatim, this time the three rows that produced the
+// alarm wsHC was given: the laptop at 7,471 gates and the volume at 6,401,
+// five hours apart, on the SAME code fingerprint.
+const CENSUS_9: CensusRow = {
+  id: 9,
+  taken_at: new Date("2026-08-08T22:26:58.418Z"),
+  produced_by: "local",
+  code_fingerprint: "e25d3712f8cc48f2",
+  kpis: {
+    events: 299384, sectors: 11, champions: 9371, companies: 151426,
+    countries: 23, step_companies: 589, source_families: 11,
+    total_capital_eur_raw: 408433535420.6861,
+  },
+  instruments: { gates: 7471, roots: 352, total: 1088, frameworks: 10 },
+  coverage: null,
+  gate: { ok: true, failures: [], notes: [] },
+  run_outcome: "ok",
+  errors: [],
+  store: "local",
+};
+
+/** The same store, a week later, having lost the 1,070 gates of the
+ *  2026-08-08 encoding session and nothing else. Instruments unchanged at
+ *  1,088; every KPI unchanged or higher. This is the shape of the failure
+ *  coverage_gate.py's own header opens with — 453 instruments taken from a
+ *  full rulebook down to one rule each, with no instrument lost. */
+const CENSUS_LOCAL_AFTER_LOSS: CensusRow = {
+  ...CENSUS_9,
+  id: 12,
+  taken_at: new Date("2026-08-15T22:26:58.418Z"),
+  instruments: { gates: 6401, roots: 352, total: 1088, frameworks: 10 },
+};
+
+const CENSUS_10: CensusRow = {
+  id: 10,
+  taken_at: new Date("2026-08-09T03:13:37.009Z"),
+  produced_by: "etl-pipeline",
+  code_fingerprint: "e25d3712f8cc48f2",
+  kpis: {
+    events: 299428, sectors: 8, champions: 9372, companies: 151915,
+    countries: 23, step_companies: 589, source_families: 11,
+    total_capital_eur_raw: 408436443019.87,
+  },
+  instruments: { gates: 6401, roots: 352, total: 1088, frameworks: 10 },
+  coverage: null,
+  gate: { ok: false, failures: ["LOSS  eligibility: 898"], notes: [] },
+  run_outcome: "partial: refresh_open_calls.py",
+  errors: [],
+  store: "railway-volume",
+};
+
+const CENSUS_11: CensusRow = {
+  ...CENSUS_10,
+  id: 11,
+  taken_at: new Date("2026-08-16T03:15:13.352Z"),
+  code_fingerprint: "c99a0aeb2a070141",
+  kpis: { ...CENSUS_10.kpis, events: 299469, companies: 151936,
+          total_capital_eur_raw: 408444397332.38 },
+  run_outcome: "failed at classify_taxonomy.py (rc=1)",
+};
+
+describe("censusMeasures", () => {
+  it("judges what the census records, not what somebody listed", () => {
+    // The whole point. `instruments.gates` is recorded by
+    // publish_corpus_census.py and appears in no tuple in coverage_gate.py, so
+    // it was measured every week and judged by nothing.
+    const m = censusMeasures(CENSUS_9);
+    expect(m["instruments.gates"]).toBe(7471);
+    expect(m["kpis.companies"]).toBe(151426);
+  });
+
+  it("covers a measure nobody has added yet", () => {
+    // A test for the unseen case. Nothing in this repo has ever recorded
+    // `instruments.doors`; the day publish_corpus_census.py does, it must be
+    // judged with no edit here, in coverage_gate.py, or anywhere else.
+    const invented: CensusRow = {
+      ...CENSUS_9,
+      instruments: { ...CENSUS_9.instruments, doors: 4200 } as Record<string, number>,
+    };
+    expect(censusMeasures(invented)["instruments.doors"]).toBe(4200);
+  });
+
+  it("takes numbers only, and finite ones", () => {
+    const junk: CensusRow = {
+      ...CENSUS_9,
+      instruments: { gates: 7471, note: "rebuilt", broken: NaN } as unknown as Record<string, number>,
+    };
+    const m = censusMeasures(junk);
+    expect(m["instruments.gates"]).toBe(7471);
+    expect("instruments.note" in m).toBe(false);
+    expect("instruments.broken" in m).toBe(false);
+  });
+});
+
+describe("shrinkage", () => {
+  it("catches the loss of a thousand gates with every instrument still there", () => {
+    // RED BEFORE GREEN. Judged by everything that existed before this function,
+    // this pair is silent: admissibility passes both rows, the six coverage
+    // axes are instrument counts over a per-instrument boolean and move by 15,
+    // and no KPI moves at all.
+    expect(admissibility(CENSUS_LOCAL_AFTER_LOSS).admissible).toBe(true);
+
+    const found = shrinkage([CENSUS_LOCAL_AFTER_LOSS, CENSUS_9]);
+    expect(found.map((f) => f.measure)).toEqual(["instruments.gates"]);
+    expect(found[0]).toMatchObject({
+      store: "local", now: 6401, mark: 7471, markCensus: 9,
+    });
+    expect(found[0].tolerance).toBeCloseTo(37.355, 3);
+  });
+
+  it("does not read one store's corpus as another store's history", () => {
+    // The error that produced two confidently wrong conclusions in one evening.
+    // The volume has never held more than 6,401 gates; the laptop's 7,471 is
+    // not evidence that it did. Cross-store is DIVERGED's question.
+    const found = shrinkage([CENSUS_11, CENSUS_10, CENSUS_9]);
+    expect(found).toEqual([]);
+  });
+
+  it("does not re-introduce the FALSE ALARM of 2026-08-06", () => {
+    // 150 instruments joined, every axis GAINED about seventy, and five of six
+    // axes fell more than seven points AS SHARES. Nothing was lost. A test that
+    // reads an absolute count cannot see a share, so there is nothing here to
+    // fire on.
+    const before: CensusRow = {
+      ...CENSUS_9,
+      instruments: { gates: 6368, roots: 348, total: 1084, frameworks: 8 },
+    };
+    const after: CensusRow = {
+      ...CENSUS_9, id: 13, taken_at: new Date("2026-08-09T22:26:58.418Z"),
+      instruments: { gates: 6438, roots: 348, total: 1234, frameworks: 8 },
+    };
+    expect(shrinkage([after, before])).toEqual([]);
+  });
+
+  it("does catch the BLIND SPOT, where the share RISES", () => {
+    // Delete 150 instruments of which 130 had a known route: n 1011 -> 861,
+    // route 908 -> 778, share 89.8% -> 90.4%. A percentage gate passes this.
+    // The denominator is not consulted here at any point.
+    const before: CensusRow = {
+      ...CENSUS_9, instruments: { gates: 7471, roots: 352, total: 1011, frameworks: 10 },
+    };
+    const after: CensusRow = {
+      ...CENSUS_9, id: 14, taken_at: new Date("2026-08-09T22:26:58.418Z"),
+      instruments: { gates: 7471, roots: 352, total: 861, frameworks: 10 },
+    };
+    expect(shrinkage([after, before]).map((f) => f.measure)).toEqual(["instruments.total"]);
+  });
+
+  it("does not let a reading that already failed raise the mark", () => {
+    // The same rule coverage_gate.py applies with advance(): a census that
+    // failed the loss test does not become the new baseline. Otherwise a walk
+    // down one tolerated step at a time never fails on any single run.
+    //
+    // Census #4 is the real instance: a reading taken MID-REBUILD, 322
+    // instruments, that happens to record `frameworks: 10` where every sound
+    // reading of that corpus records 8. Left to raise the mark it would report
+    // a loss of two frameworks that never happened.
+    const midRebuild: CensusRow = {
+      ...CENSUS_3, id: 4, store: "unknown",
+      taken_at: new Date("2026-08-07T17:51:08.931Z"),
+      instruments: { gates: 4018, roots: 257, total: 322, frameworks: 10 },
+    };
+    const sound: CensusRow = {
+      ...CENSUS_3, id: 6, store: "unknown",
+      taken_at: new Date("2026-08-07T22:07:00.000Z"),
+      instruments: { gates: 6368, roots: 350, total: 1086, frameworks: 8 },
+    };
+    expect(shrinkage([sound, midRebuild, { ...CENSUS_3, id: 3, store: "unknown" }]))
+      .toEqual([]);
+  });
+
+  it("tolerates noise proportionally and nothing more", () => {
+    const drop = (gates: number): CensusRow => ({
+      ...CENSUS_9, id: 99, taken_at: new Date("2026-08-15T00:00:00.000Z"),
+      instruments: { ...CENSUS_9.instruments, gates },
+    });
+    // 0.5% of 7,471 is 37.4; a fall of 37 is inside it and 38 is not.
+    expect(shrinkage([drop(7471 - 37), CENSUS_9])).toEqual([]);
+    expect(shrinkage([drop(7471 - 38), CENSUS_9]).length).toBe(1);
+  });
+
+  it("never reports a measure a store has only ever recorded once", () => {
+    expect(shrinkage([CENSUS_9])).toEqual([]);
   });
 });

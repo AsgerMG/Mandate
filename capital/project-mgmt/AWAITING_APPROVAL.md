@@ -397,3 +397,100 @@ the 14 founders that change recovered cleanly; this is the 14th.**
 
 Also found and not folded in: **AEI CPP is typed as a loan** while the funder
 states *"Subvención y préstamo"* — and this may be systematic across AEI rows.
+
+### 13. Promote 3,362 encoded gates to the corpus of record — free, and it is the record's own rule
+
+**The write:** carry the 2026-08-08/09 and 2026-08-12 gate-encoding sessions from
+`local`/Postgres onto the Railway volume, by union, never by overwrite —
+`ETL/events/load/reconcile_stores.py`. Full working in
+`project-mgmt/findings/gate_divergence_wsHC.md`.
+
+**What the state actually is.** Nothing was lost. The volume reads 6,401 gates on
+both readings it has ever had, and 6,401 is 33 *above* the state both stores
+shared on 2026-08-07. The 7,471 in the guard's output is an eight-day-old laptop
+reading; the laptop today holds **9,763**, and so does the Postgres the product
+serves from. So `DIVERGED` is right and its direction is right: **3,362 gates
+exist only outside the store this repo declares of record.**
+
+**Why the volume cannot fix itself.** `railway_cron.py::STEPS` contains no gate
+encoder. `encode_gates.py`, `encode_scheme_text_gates.py`, `load_scheme_text.py`
+and `apply_gate_encoding_corrections.py` are not in the weekly run, and the image
+is 316 commits old, so it does not even hold the current versions. These rows
+exist where they were written and nowhere the cron can reach.
+
+**Cost: zero.** No model call, no re-derivation. The rows already exist; this
+copies them. The work they represent was paid for already —
+`encoding_method` is `scheme_text_extract` (2,467), `llm_encode` (826),
+`llm_orgtype` (44) and `llm_triage` (22), plus 141 `registered_region` rows.
+
+**Risk: low, and bounded by design.** The union path refuses an overwrite
+(`reconcile_stores.overwrite_gate`, `test_overwrite_refusal.py`), so a store that
+is behind cannot destroy one that is ahead. The volume gains rows and loses none.
+The residual risk is the ordinary one of any volume write: it happens while the
+weekly cron may run.
+
+**Why it is worth doing rather than leaving.** `corpus_stores.py` makes the
+volume of record on one test — *which store, if lost, could not be rebuilt?* For
+a third of the gate corpus that argument does not currently hold: the two copies
+are a gitignored file on one workstation and a projection that
+`migrate_to_postgres.py` truncates and reloads. And the record's own contents are
+materially thinner than what the product serves — measured on the local store
+with those sessions excluded, **157 of 1,021 publishable funds lose every
+evaluable rule**, and sibling groups separated by their gate sets fall from
+**40 of 41 to 26 of 41**. That is §0's argument on a different lever: gates are
+what separate siblings, and 63.2% of the founders we miss are already shown a
+sibling of the fund they would have won.
+
+**It changes nothing a founder sees today** — the brief reads Postgres, which has
+all 9,763. This is about where the only durable copy lives.
+
+### 14. Redeploy the ETL image — the container has never published a single guard verdict
+
+**The action:** `python3 ETL/lib/verify_cron.py --deploy` (i.e. `railway up`).
+Nothing else. No corpus write.
+
+**What is broken.** `guard_verdicts` holds **783 rows from `local`, 5 from
+`proof-local`, 4 from a merge, and zero, ever, from `etl-pipeline`** — across
+every guard, not only the census. Meanwhile `corpus_census` has rows #10 and #11
+from `etl-pipeline`. The mechanism is in the tree: `guard_verdicts.py` reads
+`data/guard_registry.json` at import, `.dockerignore` excludes `data/`, and
+`/app/data` is the mounted volume, which holds the corpus and not the registry.
+In `publish_corpus_census.main()` that call sits **after** the census INSERT and
+**before** the verdict publish, which is exactly the pattern the two tables show.
+
+**What it costs.** `check_corpus_census.ts` documents the verdict feed as the
+credential-free door — "how it came to run on every pull request without GitHub
+holding a credential to the production database". On that door the newest census
+is **#9, a laptop, 2026-08-08**. Every CI run without `DATABASE_URL` has been
+judging an eight-day-old reading of a *derived* store and cannot see the corpus
+of record at all.
+
+**The fix is already committed and is inert.** `.dockerignore` gains
+`!data/guard_registry.json`. The Railway service has `repoTriggers: []`, so
+nothing redeploys it on a push; the exception reaches the container only on the
+next `railway up`.
+
+**Two more things ride the same deploy**, and both are the reason to do it now
+rather than at the next convenient moment:
+
+- **The image is 316 commits and six days behind** (`f6ff3957`, 2026-08-11,
+  identified by recomputing `code_fingerprint` over history — wsHB reached the
+  same commit independently). Every gate encoder in it is the 2026-08-11 version.
+- **It carries a coverage baseline known to be wrong.** Its copy says
+  `eligibility 913`; `fe75156a` raised it to 937 the morning after the image was
+  built, because thirteen fields were below the mark the corpus had reached.
+  The container has been grading the corpus of record against a bar known to be
+  too low and publishing the result as a measurement.
+
+**Cost: zero.** A CLI upload. **Risk: the ordinary one** — a deploy while the
+Sunday cron may run, and the next run will be the first ever to publish container
+verdicts, so expect several to arrive red at once. That is the channel working
+for the first time, not a new failure.
+
+**One thing it does NOT fix, and I could not test it.** `data/reference/` is
+892 KB of committed input data excluded by the same `data/` pattern, and
+`check_offerable_decay.py` — one of the four guards the cron runs — reads
+`data/reference/offerable_baseline.json` at module level. The same question is
+very likely open for the other cron guards. Worth one pass before the deploy;
+`ETL/schema/check_census_imports.py::bar_is_fingerprinted` is the test, pointed
+at a wider set of entry points.

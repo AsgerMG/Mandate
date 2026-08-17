@@ -3,6 +3,20 @@
 # volume, never baked into the image; see Dockerfile).
 .git/
 data/
+# ...except the guard registry, which is not corpus. It is the DECLARATION of
+# what a guard is, what code its verdict is bound to, and what exit codes it
+# tolerates, and `ETL/lib/guard_verdicts.py` reads it at import to publish
+# anything at all. Excluded with the rest of data/, it is absent from the image
+# and absent from the volume, so every corpus-side guard the weekly cron runs
+# dies before it can write a verdict -- and the census's own verdict block dies
+# AFTER the census row is inserted, which is why corpus_census has rows from
+# `etl-pipeline` and guard_verdicts has none from any producer but a laptop.
+# Measured 2026-08-17: 783 verdicts from `local`, 5 from `proof-local`, 4 from
+# a merge, and zero, ever, from the container.
+#
+# This takes effect on the next `railway up`; nothing redeploys the service on
+# a push (repoTriggers: []). See project-mgmt/findings/gate_divergence_wsHC.md.
+!data/guard_registry.json
 website/frontend/node_modules/
 website/frontend/.next/
 website/frontend/out/

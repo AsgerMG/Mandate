@@ -432,6 +432,16 @@ jobs:
       - name: The census can run in the ETL image
         run: python3 ETL/schema/check_census_imports.py
 
+      # A verdict must be inseparable from the bar it was computed against.
+      # Census #11 published "eligibility 898, down from a high of 913" while
+      # this repo's coverage_baseline.json says 937 -- fe75156a raised thirteen
+      # fields the morning after the running image was built. The fingerprint
+      # hashed only .py, so nothing said which bar produced that verdict, and
+      # DRIFTED fired by luck. Hermetic: a synthetic tree in a temp directory.
+      - name: A verdict carries the bar it was graded against
+        if: always()
+        run: python3 ETL/schema/test_verdict_bar_fingerprinted.py
+
       - name: Cross-language constants
         run: python3 ETL/schema/check_cross_language_constants.py
 

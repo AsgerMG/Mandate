@@ -105,7 +105,10 @@
    ],
    "code": [
     "ETL",
-    "website/build"
+    "website/build",
+    "project-mgmt/coverage_baseline.json",
+    "data/guard_registry.json",
+    "ETL/schema/guard_verdicts.sql"
    ],
    "code_suffixes": [
     ".py"

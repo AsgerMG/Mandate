@@ -97,20 +97,60 @@ CREATE INDEX IF NOT EXISTS corpus_census_taken_idx
 # fingerprint the container could reproduce).
 FINGERPRINTED = ("ETL", "website/build")
 
+# ── ...and the BAR, which is not code and changes the verdict anyway ─────────
+#
+# The fingerprint answers "is the container running this checkout". A reader of
+# a VERDICT is asking something narrower and more useful: was this verdict
+# computed against the bar I am holding. Hashing only `.py` answers the first
+# and reads as though it answered the second.
+#
+# That is not a hypothetical distinction. Census #11's gate reports "eligibility
+# 898, down from a high of 913" while `project-mgmt/coverage_baseline.json` in
+# this checkout says 937: commit fe75156a raised thirteen fields on 2026-08-12,
+# the morning after the image was built, because every one of them was BELOW the
+# true mark. The container graded a corpus against a bar known to be too low and
+# published the result as a verdict. DRIFTED caught it — by luck, because the
+# Python happened to move in the same deploy. Redeploy with unchanged code and a
+# stale baseline and nothing whatsoever fires.
+#
+# So a non-code input the census GRADES AGAINST is fingerprinted with the code.
+# Declared here rather than discovered, so the hash stays a dumb content hash
+# that two machines cannot disagree about; `ETL/schema/check_census_imports.py`
+# derives the true set from the census's own import graph and fails if this
+# declaration is short of it, which is what covers an input added next year.
+JUDGEMENT_INPUTS = (
+    # The bar the coverage gate grades the corpus against.
+    "project-mgmt/coverage_baseline.json",
+    # What a guard IS: which code its verdict is bound to, and which exit codes
+    # count as a pass. `guard_verdicts.py` reads it at import; change a
+    # `tolerate` and the same run publishes a different verdict from the same
+    # code.
+    "data/guard_registry.json",
+    # The table the verdicts are written into. A column added or a constraint
+    # changed here changes what a published verdict can say.
+    "ETL/schema/guard_verdicts.sql",
+)
+
 
 def code_fingerprint(root: _Path = ROOT) -> str:
-    """A content hash of the Python this process is running.
+    """A content hash of everything that can change what this process publishes.
 
     Sorted by relative path, content only: it must be identical on a Railway
     container and on a CI checkout of the same commit, and must not depend on
     filesystem ordering or on where the tree happens to live.
+
+    A named file is taken whole whatever its suffix; a named directory
+    contributes its `.py`. `guard_verdicts.fingerprint` generalises this and
+    reproduces it exactly over the same paths — asserted, not believed, by
+    check_census_imports.py.
     """
     h = hashlib.sha256()
-    for rel in FINGERPRINTED:
+    for rel in FINGERPRINTED + JUDGEMENT_INPUTS:
         base = root / rel
         if not base.exists():
             continue
-        for f in sorted(base.rglob("*.py")):
+        files = [base] if base.is_file() else sorted(base.rglob("*.py"))
+        for f in files:
             if "__pycache__" in f.parts:
                 continue
             h.update(str(f.relative_to(root)).encode())
