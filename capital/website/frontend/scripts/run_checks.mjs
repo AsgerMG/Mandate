@@ -212,6 +212,13 @@ const CHECKS = [
   // reach says an answer arrives, this says something then does anything with
   // it. Four answers were lost in the gap between the two in one week.
   ["answers reach the ranker", ["npx", "tsx", "scripts/check_answer_reach.ts"]],
+  // And the THIRD consumer, which neither of the two above can see: the model
+  // that writes the brief. No model ranks today, so the writer is the de facto
+  // selector, and what it knows about the founder is one string. That string
+  // was a hand-kept list and had lost seven intake fields, `sector`,
+  // `useOfFunds` and `region` among them. Free and offline, so it runs here
+  // rather than beside the paid stages.
+  ["answers reach the writer", ["npx", "tsx", "scripts/check_answer_in_prompt.ts"]],
   ["gate pertinence", ["npx", "tsx", "scripts/check_gate_pertinence.ts"]],
   ["applicant identity", ["npx", "tsx", "scripts/check_applicant_identity.ts"]],
   ["corpus currency", ["npx", "tsx", "scripts/check_corpus_currency.ts"]],

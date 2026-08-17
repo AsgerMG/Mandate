@@ -72,6 +72,11 @@ const objectivesJson = JSON.parse(readFileSync(
   path.join(process.cwd(), "lib", "intelligence", "__objectives.json"), "utf8"),
 ) as Record<string, { useOfFunds?: string[] }>;
 
+/** The values an `in`/`not_in` spec names, or [] for an operator that names
+ *  none. Narrowed once here rather than cast at four call sites. */
+const allowedOf = (s: ValueSpec): string[] =>
+  "allowed" in s && Array.isArray(s.allowed) ? s.allowed as string[] : [];
+
 /** Every useOfFunds FILTER gate on a leaf, after inheritance — the set the
  *  verdict engine actually reads. */
 const uofGates = (i: DbInstrument): DbGate[] =>
@@ -82,7 +87,7 @@ const uofGates = (i: DbInstrument): DbGate[] =>
 const demandKey = (i: DbInstrument) => uofGates(i)
   .map((g) => {
     const s = g.valueSpec as ValueSpec;
-    return `${s.op}:${[...(s.allowed ?? [])].sort().join("|")}`;
+    return `${s.op}:${[...allowedOf(s)].sort().join("|")}`;
   })
   .sort().join(" & ");
 
@@ -123,8 +128,8 @@ function main() {
       gateInst.add(i.id); gateRows += gs.length;
       for (const g of gs) {
         const s = g.valueSpec as ValueSpec;
-        demands.set(`${s.op} [${[...(s.allowed ?? [])].sort().join(", ")}]`,
-          (demands.get(`${s.op} [${[...(s.allowed ?? [])].sort().join(", ")}]`) ?? 0) + 1);
+        const key = `${s.op} [${[...allowedOf(s)].sort().join(", ")}]`;
+        demands.set(key, (demands.get(key) ?? 0) + 1);
       }
     }
     console.log("## 0. What the corpus asks of this field\n");
@@ -288,9 +293,10 @@ function main() {
       const fromGates: string[] = [];
       for (const g of uofGates(i)) {
         const s = g.valueSpec as ValueSpec;
-        if (!s.allowed?.length) continue;      // numeric_gte on a token field: unreadable
-        if (s.op === "in") fromGates.push(...s.allowed);
-        else if (s.op === "not_in") fromGates.push(...OPTS.filter((o) => !s.allowed!.includes(o)));
+        const allowed = allowedOf(s);
+        if (!allowed.length) continue;      // numeric_gte on a token field: unreadable
+        if (s.op === "in") fromGates.push(...allowed);
+        else if (s.op === "not_in") fromGates.push(...OPTS.filter((o) => !allowed.includes(o)));
       }
       return [...new Set([...reg, ...fromGates])];
     };
