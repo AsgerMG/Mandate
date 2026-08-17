@@ -111,7 +111,9 @@ held-out companies and re-measured with the corpus.
   is a statistic over a country and sector cell, and close to half of what it
   ranks is inferred from awards made under other schemes rather than observed
   under this one. Treat it as one input among the others on the row. It is
-  outweighed by a demand this company fails and by a cheque of the wrong order.
+  outweighed by a demand this company fails, and by a cheque far larger than
+  this company's whole stated need, which is the one direction SELECT-7 allows
+  the money to speak in.
 - SELECT-7 (judged) The money cuts ONE WAY, and a fund that stopped paying out
   years ago is the wrong fund. A typical cheque far LARGER than this company's
   entire stated need is a scheme answering a different question. A typical
@@ -120,11 +122,12 @@ held-out companies and re-measured with the corpus.
   award is one contribution to one project. Where we hold too few awards to
   state a median, that is unknown rather than a mismatch.
 
-  **evidence:** this rule was symmetric, and measured against 897 founders
-  whose won scheme is known it selected against the answer. Almost every won
-  door pays below the stated figure, so "closest to the ask" became "prefer the
-  larger payer", and the larger payer was usually the wrong door. The score
-  term was removed (`AWARD_TERM`); this is the same arithmetic in words.
+  **evidence:** this rule was symmetric, and on 287 pairs drawn from 897
+  founders whose won scheme is known it selected against the answer. Almost
+  every won door pays below the stated figure, so "closest to the ask" became
+  "prefer the larger payer", and the larger payer was usually the wrong door.
+  The score term was removed (`AWARD_TERM`); this is the same arithmetic in
+  words.
 - SELECT-8 (judged) Give the founder real alternatives. Where candidates are
   otherwise comparable, spread across the levels that fund them and across the
   bodies that deliver them. Several variants of one regime is one option shown
