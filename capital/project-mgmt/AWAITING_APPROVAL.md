@@ -341,3 +341,49 @@ the 14 founders that change recovered cleanly; this is the 14th.**
 
 Also found and not folded in: **AEI CPP is typed as a loan** while the funder
 states *"Subvención y préstamo"* — and this may be systematic across AEI rows.
+
+### 13. Promote 3,362 encoded gates to the corpus of record — free, and it is the record's own rule
+
+**The write:** carry the 2026-08-08/09 and 2026-08-12 gate-encoding sessions from
+`local`/Postgres onto the Railway volume, by union, never by overwrite —
+`ETL/events/load/reconcile_stores.py`. Full working in
+`project-mgmt/findings/gate_divergence_wsHC.md`.
+
+**What the state actually is.** Nothing was lost. The volume reads 6,401 gates on
+both readings it has ever had, and 6,401 is 33 *above* the state both stores
+shared on 2026-08-07. The 7,471 in the guard's output is an eight-day-old laptop
+reading; the laptop today holds **9,763**, and so does the Postgres the product
+serves from. So `DIVERGED` is right and its direction is right: **3,362 gates
+exist only outside the store this repo declares of record.**
+
+**Why the volume cannot fix itself.** `railway_cron.py::STEPS` contains no gate
+encoder. `encode_gates.py`, `encode_scheme_text_gates.py`, `load_scheme_text.py`
+and `apply_gate_encoding_corrections.py` are not in the weekly run, and the image
+is 316 commits old, so it does not even hold the current versions. These rows
+exist where they were written and nowhere the cron can reach.
+
+**Cost: zero.** No model call, no re-derivation. The rows already exist; this
+copies them. The work they represent was paid for already —
+`encoding_method` is `scheme_text_extract` (2,467), `llm_encode` (816),
+`llm_orgtype` (44), plus 141 `registered_region`.
+
+**Risk: low, and bounded by design.** The union path refuses an overwrite
+(`reconcile_stores.overwrite_gate`, `test_overwrite_refusal.py`), so a store that
+is behind cannot destroy one that is ahead. The volume gains rows and loses none.
+The residual risk is the ordinary one of any volume write: it happens while the
+weekly cron may run.
+
+**Why it is worth doing rather than leaving.** `corpus_stores.py` makes the
+volume of record on one test — *which store, if lost, could not be rebuilt?* For
+a third of the gate corpus that argument does not currently hold: the two copies
+are a gitignored file on one workstation and a projection that
+`migrate_to_postgres.py` truncates and reloads. And the record's own contents are
+materially thinner than what the product serves — measured on the local store
+with those sessions excluded, **157 of 1,021 publishable funds lose every
+evaluable rule**, and sibling groups separated by their gate sets fall from
+**40 of 41 to 26 of 41**. That is §0's argument on a different lever: gates are
+what separate siblings, and 63.2% of the founders we miss are already shown a
+sibling of the fund they would have won.
+
+**It changes nothing a founder sees today** — the brief reads Postgres, which has
+all 9,763. This is about where the only durable copy lives.

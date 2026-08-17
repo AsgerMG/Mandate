@@ -163,19 +163,40 @@ Two other things are true, and they are the deliverable.
 ### (a) `instruments.gates` is judged by nothing over time
 
 `coverage_gate.py`'s LOSS test iterates `AXES` (six) and `KPI_AXES` (eight), both
-hardcoded tuples. `instruments.gates` is in neither, so the census records it and
-nothing has an opinion about whether it fell. It could go 9,763 → 1,088 on a
-single store and every LOSS test would still pass.
+hardcoded tuples. `instruments.gates` is in neither, so the census records it
+every week and nothing has an opinion about whether it fell. It could go 9,763 →
+1,088 on a single store and every LOSS test in the repo would still pass. That is
+a fact about the code, not an inference.
 
-The six coverage axes cannot substitute, because they are **instrument counts
-over a per-instrument boolean**. `eligibility` counts funds with *at least one*
-evaluable gate. Stripping 450 funds from a full rulebook down to one rule each
-moves it by zero. That is not hypothetical — it is the incident `coverage_gate.py`'s
-own header opens with ("seeding one framework rule took 453 instruments from a
-full regime rulebook down to a single rule each, and nothing failed"). The gate
-was written for that failure and still cannot see it, because it counts funds and
-the loss was depth. Here the arithmetic is on the record: 1,070 gates map to 15
-instruments of `eligibility`.
+**The six coverage axes are not a substitute, because they saturate.**
+`eligibility` is `n_eval >= 2` — a per-instrument boolean. A fund carrying forty
+evaluable rules and a fund carrying two score identically, so everything above
+the threshold is invisible to it. Measured on the local store, counting only
+directly-attached rows and therefore a strict lower bound (parent inheritance
+adds more slack):
+
+```
+evaluable gate rows, directly attached      3,710
+  sitting above the axis threshold of 2     1,782   (48%)
+  instruments carrying more than two          584 of 1,018
+```
+
+**1,782 evaluable rules — 48% of the depth in the corpus — can be deleted with
+the `eligibility` axis unmoved.** That is the shape of the incident
+`coverage_gate.py`'s own header opens with, and it is what makes a gate-count
+measure a different instrument rather than a redundant one.
+
+**Being fair to the axis on this particular loss:** it would have caught it, on
+one store. Re-running `coverage_report.build`'s `eligibility` definition over the
+local store with the two encoding sessions excluded gives 907 against 956 with
+the 08-08/09 session present — 49 instruments, against a tolerance of 5. So the
+axis is not blind here; it is *lossy*. It reports 49 for a loss of 1,070, says
+nothing about which quantity moved, and would have said nothing at all had the
+same 1,070 rows come off the funds that carry depth. (That reconstruction is
+approximate and stated as such: a `created_at` cutoff rebuilds which rows
+existed, not what they contained, and `apply_gate_encoding_corrections.py` has
+since edited older rows in place. The no-cutoff control gives 956 where census #9
+recorded 937, so read these as ±20.)
 
 ### (b) One high-water mark, three stores that are not supposed to be equal
 
@@ -231,7 +252,84 @@ Implementation, test for an unseen measure, and the red-then-green proof: §4.
 
 ## 4. The check
 
-*(this section is completed below — see the commit that adds `SHRANK`)*
+`shrinkage()` in `website/frontend/lib/corpusCensus.ts`, beside `admissibility`
+and pure like it, reported by a new `SHRANK` arm in `check_corpus_census.ts`.
+No new storage: the census table already is the per-store history.
+
+```
+lib/corpusCensus.ts             censusMeasures(), lossTolerance(), shrinkage()
+lib/corpusCensus.test.ts        10 assertions, committed red before the function existed
+scripts/check_corpus_census.ts  the SHRANK arm
+ETL/schema/check_cross_language_constants.py   the tolerance is coverage_gate's own
+```
+
+**The tolerance is not a new knob.** `LOSS_TOLERANCE_SHARE = 0.005`, proportional
+only with a floor of one, is `coverage_gate.KPI_TOLERANCE_SHARE`, and
+`check_cross_language_constants.py` now fails the build if the two spellings
+drift. The instrument axes' floor of three is deliberately not carried over: it
+exists because a parent/child re-split of one regime legitimately moves a handful
+of rows, no measure judged here has that mechanism, and a floor of three on
+`sectors` (11) or `countries` (23) would license losing a quarter of them.
+
+### Proven red before green
+
+Committed in that order, on purpose. The tests are in the tree one commit before
+the function is (`project-mgmt/findings/gate_divergence_wsHC_red.txt` is the run
+output), and the central one simulates the real failure rather than an imagined
+one: census #9's own payload, a week later, with the 1,070 gates of the 08-08
+session gone and **nothing else changed** — 1,088 instruments still there, every
+KPI equal or higher.
+
+```
+RED    lib/corpusCensus.test.ts   Tests  10 failed | 11 passed (21)
+       TypeError: shrinkage is not a function
+GREEN  lib/corpusCensus.test.ts   Tests  21 passed (21)
+```
+
+Judged by everything that existed before, that pair is silent: `admissibility`
+passes it, and no KPI moves.
+
+### The test for a case nobody has seen
+
+Nothing in this repo has ever recorded `instruments.doors`. The test invents it,
+puts it on a census, and asserts it is judged — with no edit to any list, in this
+file or in `coverage_gate.py`. That is the difference between a measure being
+covered and a measure having been remembered.
+
+### Neither recorded failure returns
+
+| | what it does |
+|---|---|
+| FALSE ALARM (2026-08-06) — 150 instruments join, every count rises ~70, five of six shares fall | **silent.** Nothing here reads a share, and no count fell. |
+| BLIND SPOT (never caught) — 150 instruments deleted, 130 with a route; `route` 908 → 778 while the share RISES 89.8% → 90.4% | **fires.** The count is 130 below its mark. The denominator is not consulted at any point. |
+| census #4 — the mid-rebuild reading, 322 instruments, `frameworks: 10` where every sound reading of that corpus says 8 | **silent.** A reading that failed the test does not raise the mark — `coverage_gate.advance()`'s rule, which is also what stops the mark being a ratchet. |
+
+### What it says about the corpus today
+
+Nothing, and that is the correct answer.
+
+```
+GUARD_NO_PUBLISH=1 npx tsx scripts/check_corpus_census.ts
+  → DEGRADED, DRIFTED, DIVERGED, SCHEMA, STALE.  No SHRANK.
+```
+
+No store has ever been observed to hold less than it once held. The volume reads
+6,401 twice; the laptop reads 7,471 three times. The alarm this workstream was
+given was a cross-store comparison, `DIVERGED` had it right, and the new arm
+declines to say it a second time in the wrong words.
+
+### What it does not cover, said out loud
+
+`censusMeasures` walks the census's `kpis` and `instruments` blocks. Adding a
+*measure* to either needs no edit; adding a new top-level *block* to the census
+would. `coverage` is excluded deliberately — it is `coverage_gate.py`'s own
+snapshot, judged by `coverage_gate.py`, and it carries `shares`, which is the one
+quantity this test must never read. The consequence is that defect (b), the
+single baseline file over three stores, is **demonstrated but not repaired**: the
+eligibility and sectors lines will keep saying "the corpus knew" about a corpus
+that never did until `coverage_gate.py`'s mark is keyed by store. That is one
+change to `_high_water`/`advance` and `corpus_stores.store_id()`, and it lands on
+the two axes wsHB is live on, which is why it is not made here.
 
 ---
 
