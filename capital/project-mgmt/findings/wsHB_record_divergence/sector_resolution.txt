@@ -1,0 +1,38 @@
+(node:43255) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+live corpus: 778 publishable leaves, 692 with a sector mix, 11 founder sectors in the vocabulary
+families the corpus of record can name: 8 [agrifood, defense_security, energy_cleantech, health_life_sciences, industrial_manufacturing, other, semiconductors_electronics, software_data_ai]
+
+  founder sector                 n>0  ceil  distinct    mean   |     n>0  ceil  distinct    mean    flips
+                              --- on the mixes that ship ---   |   --- rebuilt on the record ---
+  software_data_ai               500   212       214   0.483   |     500   239       203   0.510     4.4%
+  health_life_sciences           452    73       274   0.288   |     452    85       257   0.306     1.6%
+  energy_cleantech               572   166       278   0.423   |     572   179       261   0.451     3.3%
+  industrial_manufacturing       524   124       280   0.417   |     524   145       271   0.447     3.4%
+  semiconductors_electronics     383    23       237   0.190   |     383    34       235   0.213     1.8%
+  mobility_transport             362    39       204   0.152   |       0     0         1   0.000   100.0%
+  agrifood                       388    43       234   0.216   |     388    51       231   0.234     1.6%
+  materials_chemicals            381    12       229   0.148   |       0     0         1   0.000   100.0%
+  space                           58     3        48   0.019   |       0     0         1   0.000   100.0%
+  defense_security                82     5        69   0.029   |      82     6        69   0.034     0.4%
+  other                          552   170       273   0.462   |     552   193       255   0.491     4.1%
+
+  the term is IDENTICALLY ZERO — no order at all — for 3 of 11 founder sectors once the mixes are rebuilt on the record.
+
+  per archetype — the leaves their country can draw on:
+  archetype                 sector                       leaves  share  ceil   |  share  ceil
+  Robotics                  industrial_manufacturing        142    112    37   |    112    39
+  Hardware                  semiconductors_electronics       64     40     7   |     40     9
+  FinTech (business lending software_data_ai                135     70    18   |     70    24
+  FinTech (consumer banking software_data_ai                 64     47     7   |     47    11
+  AI B2C software           software_data_ai                135     70    18   |     70    24
+  AI B2B software           software_data_ai                142    118    49   |    118    55
+  GovTech                   software_data_ai                 91     75    38   |     75    44
+  Platform                  mobility_transport              142     80    10   |      0     0
+  Cloud / NeoCloud          software_data_ai                 64     47     7   |     47    11
+  MedTech                   health_life_sciences             46     27    12   |     27    12
+  Life sciences             health_life_sciences            142    102    11   |    102    12
+  AgriTech                  agrifood                         91     36     3   |     36     4
+
+  "share" is how many of those leaves score ANY sector signal; "ceil" how many tie at the
+    SECTOR_FULL_MATCH_SHARE ceiling, where the term stops separating them.
