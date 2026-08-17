@@ -175,4 +175,116 @@ const line = (label: string, c: Record<Verdict, number>, n: number) => {
       console.log(`    ${r.padEnd(28)} ${c}`);
     }
   }
+
+  // ── THE CONSTRUCTIVE HALF OF A NEGATIVE RESULT ──────────────────────────
+  // A derived answer that misses is only half the finding. The other half is
+  // WHICH answer would not have missed, because that is a statement about what
+  // to ask a real founder — and it is free to compute once the oracle exists.
+  //
+  // Two different questions, and they are printed separately because they
+  // license different things:
+  //
+  //   SEPARATES   the option picks the won door on its own. The count is what
+  //               asking that one question, alone, would be worth here.
+  //   MISLEADS    the option picks the SHOWN door. The same question asked of
+  //               a founder who answers it truthfully COSTS pairs, so a
+  //               question is only worth asking where the first column
+  //               dominates the second.
+  console.log(`\nWHICH SINGLE ANSWER WOULD HAVE SEPARATED THESE DOORS`);
+  console.log(`  Over the ${n} pairs, if every founder answered exactly this one option:\n`);
+  console.log(`  ${"option".padEnd(26)} separates  misleads   net`);
+  const perOption = OPTS.map((o) => {
+    let sep = 0, mis = 0;
+    for (const p of differ) {
+      const v = verdict(p, [o]);
+      if (v === "won") sep++; else if (v === "shown") mis++;
+    }
+    return { o, sep, mis };
+  }).sort((a, b) => (b.sep - b.mis) - (a.sep - a.mis));
+  for (const { o, sep, mis } of perOption) {
+    console.log(`  ${o.padEnd(26)} ${String(sep).padStart(6)}    ${String(mis).padStart(6)}   `
+      + `${(sep - mis >= 0 ? "+" : "") + String(sep - mis)}`);
+  }
+  console.log(`\n  Read this as what the FIRST-PAGE QUESTION is worth on this population, `
+    + `not as a\n  ranking change: the founder states one of these, and the state-aid block's `
+    + `two doors\n  are told apart by it or they are not.`);
+
+  // And how often the derived answer actually contained the separating option
+  // — the difference between "the question works" and "our reading of their
+  // prose produces the answer the question would have got".
+  let hadIt = 0, couldHave = 0;
+  for (const p of differ) {
+    const winners = OPTS.filter((o) => verdict(p, [o]) === "won");
+    if (!winners.length) continue;
+    couldHave++;
+    const u = labels[p.founder]?.uses ?? [];
+    if (winners.some((w) => u.includes(w))) hadIt++;
+  }
+  console.log(`\n  Of the ${couldHave} pairs a single option could separate, the derived `
+    + `answer CONTAINED\n  such an option on ${hadIt} `
+    + `(${((100 * hadIt) / couldHave).toFixed(1)}%) — but \`objectiveScorer\` scores on `
+    + `OVERLAP,\n  so an answer that also names an option the shown door registers scores `
+    + `both and\n  separates neither. That is the mechanism behind the net above.`);
+
+  // ── A PROPOSAL, PRICED, AND DELIBERATELY NOT APPLIED ────────────────────
+  //
+  //   ██ THIS SECTION CHANGES NOTHING. `shortlist.ts` IS UNTOUCHED. ██
+  //
+  // The line above says the multi-option answer is destroyed by the OVERLAP
+  // rule, and that is a claim about `objectiveScorer`'s arithmetic rather than
+  // about the founder's answer. A claim like that is worth exactly as much as
+  // the counterfactual that prices it, so here it is priced — offline, on the
+  // pair, with the same three answers as the table above.
+  //
+  // Two alternative rules, both computable from what the corpus already holds:
+  //
+  //   COVERAGE   prefer the door that matches MORE of the founder's answer.
+  //              |reg ∩ answer|, larger wins, equal is neutral. A founder who
+  //              says "research and a plant" is sent to whichever door covers
+  //              more of that, instead of to both.
+  //   JACCARD    prefer the door whose purpose is the better fit BOTH ways,
+  //              |∩| / |∪|. Penalises a door that registers ten purposes and
+  //              happens to include the founder's one.
+  //
+  // `objectiveScorer` is owned by another workstream this hour and is NOT
+  // edited here. This is the evidence for a proposal, not a proposal applied.
+  const score = (reg: string[], ans: string[]) => {
+    const inter = reg.filter((u) => ans.includes(u)).length;
+    const union = new Set([...reg, ...ans]).size;
+    return { inter, jac: union ? inter / union : 0 };
+  };
+  const byRule = (p: Pair, ans: string[], rule: "coverage" | "jaccard"): Verdict => {
+    if (!ans.length) return "neither";
+    const w = score(p.won, ans), s = score(p.shown, ans);
+    const [vw, vs] = rule === "coverage" ? [w.inter, s.inter] : [w.jac, s.jac];
+    if (vw === vs) return vw > 0 ? "both" : "neither";
+    return vw > vs ? "won" : "shown";
+  };
+  const answerOf = (p: Pair) => {
+    const u = labels[p.founder]?.uses ?? [];
+    return u.length ? u : PIN;
+  };
+  console.log(`\nPROPOSAL, PRICED AND NOT APPLIED — \`objectiveScorer\` scores on OVERLAP.`);
+  console.log(`  What the SAME derived answers are worth under two other rules. `
+    + `shortlist.ts is untouched.\n`);
+  for (const [label, fn] of [
+    ["OVERLAP (today)", (p: Pair) => verdict(p, answerOf(p))],
+    ["COVERAGE |∩|", (p: Pair) => byRule(p, answerOf(p), "coverage")],
+    ["JACCARD |∩|/|∪|", (p: Pair) => byRule(p, answerOf(p), "jaccard")],
+  ] as [string, (p: Pair) => Verdict][]) {
+    const c: Record<Verdict, number> = { won: 0, shown: 0, both: 0, neither: 0 };
+    for (const p of differ) c[fn(p)]++;
+    console.log(line(label, c, n));
+  }
+  console.log(`\n  And the same three rules under the PIN, so the reader can tell a `
+    + `rule change from\n  an answer change:\n`);
+  for (const [label, fn] of [
+    ["OVERLAP (today) + pin", (p: Pair) => verdict(p, PIN)],
+    ["COVERAGE + pin", (p: Pair) => byRule(p, PIN, "coverage")],
+    ["JACCARD + pin", (p: Pair) => byRule(p, PIN, "jaccard")],
+  ] as [string, (p: Pair) => Verdict][]) {
+    const c: Record<Verdict, number> = { won: 0, shown: 0, both: 0, neither: 0 };
+    for (const p of differ) c[fn(p)]++;
+    console.log(line(label, c, n));
+  }
 })();
