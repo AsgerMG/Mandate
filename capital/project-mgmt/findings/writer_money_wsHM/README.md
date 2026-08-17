@@ -167,6 +167,12 @@ rule for every stage, and is declared in `unenforcedRules.ts` as a judgement,
 because *"matching your ask directly"* names no figure and would pass any
 pattern over amounts.
 
+**What it costs to send.** The block is ~1,700 characters, about 430 input
+tokens, stated once per brief rather than once per row. Priced on `caps.ts`'s
+own measurement of the same prompt (258 input tokens per candidate, EUR 0.0013
+each, against a recorded EUR 0.24 brief) that is roughly EUR 0.002. It is not a
+consideration either way, and it is stated so nobody has to re-derive it.
+
 **No rate is stated anywhere in the prompt.** `check_prompt_rates` forbids one
 in `contracts/` because those files are byte-identical on every corpus;
 `money.ts` is assembled into the same prompt from the same kind of literal and
