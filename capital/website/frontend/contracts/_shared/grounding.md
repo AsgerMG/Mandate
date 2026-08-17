@@ -59,12 +59,12 @@ merely badly written.
   whom, over what span?** If the evidence does not answer it, the figure is not
   yours to compare.
 
-  The one relationship that holds: the schemes founders go on to win pay far
-  less than the figure they stated, by an order of magnitude or more. So a
-  scheme paying less than that figure is the ordinary case and is never on its
-  own a reason to call a row small, secondary or a poor fit. A scheme paying
-  far more than their entire stated need is answering a different question, and
-  saying so is fair.
+  The one relationship that holds: the schemes founders go on to win pay a
+  fraction of the figure they stated, the typical one off by most of an order
+  of magnitude and many by more. So a scheme paying less than that figure is
+  the ordinary case and is never on its own a reason to call a row small,
+  secondary or a poor fit. A scheme paying far more than their entire stated
+  need is answering a different question, and saying so is fair.
 
   **evidence:** a founder looking for €15M-€50M was told a scheme was "sized
   for capex grants from €2.5M into the tens or hundreds of millions, matching

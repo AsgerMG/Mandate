@@ -180,8 +180,9 @@ export const AWARD_RELATION: string =
   `The amount the founder is looking for and the amounts on these rows are ` +
   `not the same kind of quantity, so they do not compare. Public capital is ` +
   `assembled from several awards, and the schemes founders actually go on to ` +
-  `win pay far less than the figure they stated, usually by an order of ` +
-  `magnitude or more. A scheme paying less than that figure is therefore the ` +
+  `win pay a FRACTION of the figure they stated, the typical one off by most ` +
+  `of an order of magnitude and many by more. A scheme paying less than that ` +
+  `figure is therefore the ` +
   `ORDINARY case: it is never on its own a reason to call a row small, ` +
   `secondary, slow, a poor fit, or anything other than a door. The one money ` +
   `fact that does bear on a row runs the other way: a scheme whose typical ` +

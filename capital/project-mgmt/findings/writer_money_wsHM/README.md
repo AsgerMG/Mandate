@@ -92,7 +92,7 @@ median gap to the band's geometric midpoint: 1.82 decades — a factor of 66 bel
 ```
 
 wsHE measured the same direction on the doors people actually **won**: 89.2%
-pay below the stated band, median 0.81 decades. So the ask sits above essentially
+pay below the stated band, median 0.81 decades (a factor of 6.5), p10 at 1.39. So the ask sits above essentially
 every candidate, and a symmetric "closest to the ask" reading is not a proximity
 rule at all.
 
