@@ -588,7 +588,25 @@ export type AwardTermArm = "shipped" | "off" | "oneside";
 /** Exported so a test can watch the throw happen, for the same reason
  *  `parsePoolBlend` is: a guard nobody has proved can fail is a comment. */
 export function parseAwardTerm(v: string | undefined): AwardTermArm {
-  const s = v ?? "shipped";
+  // DEFAULT FLIPPED TO `oneside`, owner's decision 2026-08-17, on wsHE.
+  //
+  // The correctness case, which does not depend on the size of the gain: a
+  // founder's band is a RAISE and `awardP50` is what one scheme pays into one
+  // project. 89.2% of WON doors pay below the stated band, median 0.81 decades
+  // -- a factor of 6.5. A symmetric closest-to-the-ask rule whose target sits
+  // above almost every candidate is not a proximity rule; it degenerates into
+  // "prefer the larger payer", and the larger payer is the wrong door 68.2% of
+  // the time. The fitted blend weights award median at -0.657 by a different
+  // method on a different split.
+  //
+  // `oneside` over `off` because the two are statistically identical (+0.1,
+  // p=0.705) and `oneside` keeps the half of the original judgement the
+  // evidence does not contradict.
+  //
+  // QUOTE THE GAIN WITH ITS CONCENTRATION OR NOT AT ALL: 35.8% -> 38.2%
+  // EXACT@6, z=3.4 -- but remove `vinnova_grant` and it is +0.4 at z=0.9. One
+  // regime, 23% of founders, carries essentially the whole move.
+  const s = v ?? "oneside";
   if (s === "shipped" || s === "off" || s === "oneside") return s;
   throw new Error(`unknown AWARD_TERM=${s} (expected: shipped, off, oneside)`);
 }
