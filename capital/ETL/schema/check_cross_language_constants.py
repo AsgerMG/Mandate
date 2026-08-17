@@ -244,11 +244,48 @@ def scheduled_run_identity() -> list[str]:
     return problems
 
 
+def loss_tolerance() -> list[str]:
+    """How far a corpus measure may fall before that is a loss.
+
+    Two loss tests now run, on the same corpus, in two languages, and they must
+    not disagree about what counts as noise:
+
+      coverage_gate.KPI_TOLERANCE_SHARE   the ETL's gate, against the committed
+                                          baseline file, over the six coverage
+                                          axes and the eight headline figures
+      corpusCensus.LOSS_TOLERANCE_SHARE   the guard's SHRANK arm, against each
+                                          store's own census history, over
+                                          every measure the census records
+
+    The rule is one rule -- proportional only, with a floor of one -- and
+    coverage_gate.py carries its argument. A second spelling of a number is
+    what this file exists to stop rotting; two tolerances drifting apart would
+    make "did the corpus get worse" answerable two ways depending on which
+    check a person happened to run, which is worse than either answer.
+    """
+    py = (ROOT / "ETL/terms/coverage_gate.py").read_text()
+    ts = (ROOT / "website/frontend/lib/corpusCensus.ts").read_text()
+    m_py = re.search(r'^KPI_TOLERANCE_SHARE\s*=\s*([0-9.]+)', py, re.MULTILINE)
+    m_ts = re.search(r'^export const LOSS_TOLERANCE_SHARE\s*=\s*([0-9.]+)', ts, re.MULTILINE)
+    if m_py is None or m_ts is None:
+        missing = ("coverage_gate.KPI_TOLERANCE_SHARE" if m_py is None
+                   else "corpusCensus.LOSS_TOLERANCE_SHARE")
+        return [f"  could not be read from {missing} — the constant was renamed or\n"
+                f"    reformatted, and this check silently stopped comparing anything."]
+    if float(m_py.group(1)) != float(m_ts.group(1)):
+        return [f"  coverage_gate.KPI_TOLERANCE_SHARE is {m_py.group(1)}, "
+                f"corpusCensus.LOSS_TOLERANCE_SHARE is {m_ts.group(1)}\n"
+                f"    → the same fall in the same measure is a loss to one check and "
+                f"noise to the other"]
+    return []
+
+
 CHECKS = {
     "GBER article codes": gber_articles,
     "corpus KPI names": census_kpi_keys,
     "EUR formatting": eur_formatting,
     "scheduled run identity": scheduled_run_identity,
+    "corpus loss tolerance": loss_tolerance,
 }
 
 

@@ -83,7 +83,7 @@ import path from "path";
 // and serves the newest good one because a founder needs a number — but they
 // must not disagree about what "bad" means. Importing it is how that is
 // guaranteed rather than intended.
-import { admissibility, type CensusRow } from "../lib/corpusCensus";
+import { admissibility, shrinkage, type CensusRow } from "../lib/corpusCensus";
 // "Was this produced by a clock or by a person?", from the one definition both
 // freshness readers call. See DRIFTED below for the question it answers here,
 // and the SILENT block for why that question is NOT the one SILENT asks.
@@ -543,6 +543,39 @@ async function judge(rows: CensusRow[], pg: { instruments: number; gates: number
         `\n      Reconcile by union, never by overwrite:\n` +
         `        python3 ETL/events/load/reconcile_stores.py --help`);
     }
+  }
+
+  // ── SHRANK: has a store come to hold LESS than it once held? ─────────────
+  //
+  // DIVERGED above compares two stores at one moment. This compares ONE store
+  // against its own history, which is a different question and had no asker:
+  // `instruments.gates` has been recorded by every census since the table
+  // existed and judged by nothing, because coverage_gate.py's loss test
+  // iterates two hardcoded tuples and gates is in neither.
+  //
+  // The predicate lives in lib/corpusCensus.ts beside `admissibility`, is
+  // derived from the census payload rather than from a list, and is tested
+  // against both of the percentage gate's recorded failures. Read the property
+  // there; it is not restated here.
+  //
+  // The history is whatever rows this run fetched — 40 on the credentialled
+  // path, 12 from the feed. At the declared weekly cadence that is 40 weeks and
+  // 12 weeks of marks respectively, and a shorter window can only ever miss a
+  // loss, never invent one.
+  const shrank = shrinkage(rows);
+  if (shrank.length) {
+    problems.push(
+      `SHRANK — ${shrank.length} measure(s) where a store now holds LESS than it\n` +
+      `      once held. This is one store against its OWN history, not two stores\n` +
+      `      against each other: a derived store being behind the record is\n` +
+      `      DIVERGED above and is ordinary. This is not.\n` +
+      shrank.map((s) =>
+        `        ${s.store}/${s.measure}: census #${s.census} records ` +
+        `${s.now.toLocaleString()}, down from ${s.mark.toLocaleString()} at census ` +
+        `#${s.markCensus} (tolerance ${s.tolerance.toLocaleString(undefined, {
+          maximumFractionDigits: 1 })})`).join("\n") +
+      `\n      Something that store knew, it no longer knows. Find the run that did\n` +
+      `      it before anything syncs, because both sync paths move the whole file.`);
   }
 
   // ── SCHEMA: can every store reach the schema this checkout expects? ──────
