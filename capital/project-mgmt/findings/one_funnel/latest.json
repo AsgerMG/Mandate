@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-17T19:55:02.538Z",
+ "startedAt": "2026-08-17T20:22:15.099Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-17T19:55:03.270Z",
+ "corpusObservedAt": "2026-08-17T20:22:15.804Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 828,
@@ -26,7 +26,11 @@
    6,
    5
   ],
-  "rowOrder": "off"
+  "rowOrder": "off",
+  "arms": {
+   "POOL_BLEND": "off",
+   "AWARD_TERM": "oneside"
+  }
  },
  "poolSweep": null,
  "watchOnlyInProduction": {
@@ -95,20 +99,20 @@
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (40 rows)",
-   "remaining": 636,
-   "sharePct": 70.9,
-   "lost": 138,
+   "remaining": 657,
+   "sharePct": 73.24,
+   "lost": 117,
    "unmeasured": false,
-   "halfWidthPts": 2.97
+   "halfWidthPts": 2.9
   },
   {
    "id": "writer_cap",
    "question": "... and it survives the cut to the writer's candidates (8)",
-   "remaining": 362,
-   "sharePct": 40.36,
-   "lost": 274,
+   "remaining": 377,
+   "sharePct": 42.03,
+   "lost": 280,
    "unmeasured": false,
-   "halfWidthPts": 3.21
+   "halfWidthPts": 3.23
   },
   {
    "id": "watch_only",
@@ -122,29 +126,29 @@
   {
    "id": "published",
    "question": "... and it is one of the 7 rows the brief publishes",
-   "remaining": 347,
-   "sharePct": 38.68,
-   "lost": 15,
+   "remaining": 361,
+   "sharePct": 40.25,
+   "lost": 16,
    "unmeasured": false,
-   "halfWidthPts": 3.19
+   "halfWidthPts": 3.21
   },
   {
    "id": "top_6",
    "question": "... and it is in the first 6 of them",
-   "remaining": 321,
-   "sharePct": 35.79,
-   "lost": 26,
+   "remaining": 343,
+   "sharePct": 38.24,
+   "lost": 18,
    "unmeasured": false,
-   "halfWidthPts": 3.14
+   "halfWidthPts": 3.18
   },
   {
    "id": "top_5",
    "question": "... and it is in the first 5 of them",
-   "remaining": 298,
-   "sharePct": 33.22,
-   "lost": 23,
+   "remaining": 322,
+   "sharePct": 35.9,
+   "lost": 21,
    "unmeasured": false,
-   "halfWidthPts": 3.08
+   "halfWidthPts": 3.14
   },
   {
    "id": "model",

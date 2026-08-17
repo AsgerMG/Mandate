@@ -301,10 +301,26 @@ TONE = {"good": "var(--good)", "warn": "var(--warn)", "bad": "var(--bad)"}
 
 
 def funnel_table() -> str:
-    """The table body, generated from the run rather than written by hand."""
+    """The table body, generated from the run rather than written by hand.
+
+    THE OWNER'S ASK, 2026-08-17: "so I can see where we lose the most". The
+    table used to print a column of minus-signs in one type size, which made a
+    30-point step and a 2-point step look alike and left him to add up a column
+    to find out that two rows are two thirds of the problem. So each row now
+    carries a BAR whose width is that step's share of everything lost, and the
+    share as a figure beside it.
+
+    THE ORDER IS NOT SORTED BY SIZE, deliberately. This is a ladder: each
+    percentage is conditional on the row above it, and re-ordering by loss would
+    make every number on the page mean something it does not. The bar carries
+    the emphasis instead, which is what a bar is for.
+    """
     run = json.loads(FUNNEL.read_text())
     by_id = {s["id"]: s for s in run["stages"]}
-    out, prev = [], None
+
+    # Two passes: the widths are shares of the TOTAL lost, so the total has to
+    # exist before the first row is written.
+    steps, prev = [], None
     for stage_id, label, tone, _noun in FUNNEL_ROWS:
         st = by_id.get(stage_id)
         if st is None:
@@ -313,17 +329,38 @@ def funnel_table() -> str:
         pct = st.get("sharePct")
         if pct is None:
             continue
-        lost = "" if prev is None else f"&minus;{prev - pct:.0f}"
+        steps.append((stage_id, label, tone, pct, 0.0 if prev is None else prev - pct))
         prev = pct
+    total_lost = sum(s[4] for s in steps)
+    if total_lost <= 0:
+        sys.exit("the funnel reports no loss at all, which means the run is broken "
+                 "rather than that the product is perfect. Refusing to publish it.")
+
+    out = []
+    for stage_id, label, tone, pct, lost in steps:
         last = stage_id == FUNNEL_ROWS[-1][0]
+        share = lost / total_lost * 100
+        # A step that loses nothing gets no bar and no share, rather than a
+        # zero-width bar that reads as a rendering fault.
+        bar = share_txt = ""
+        if lost > 0.005:
+            bar = (f'<span style="display:block;height:9px;border-radius:2px;'
+                   f'background:{TONE[tone]};width:{share:.1f}%"></span>')
+            share_txt = f"{share:.0f}%"
         out.append(
             f'        <tr style="border-bottom:1px solid var(--line)">\n'
             f'          <td style="padding:8px 0'
             f'{";font-weight:600" if last else ""}">{label}</td>\n'
             f'          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);'
             f'font-variant-numeric:tabular-nums;font-weight:600">{pct:.0f}%</td>\n'
+            f'          <td style="width:34%;padding:8px 12px 8px 0">'
+            f'<span style="display:block;height:9px;border-radius:2px;'
+            f'background:var(--line)">{bar}</span></td>\n'
             f'          <td style="text-align:right;padding:8px 0;font-family:var(--mono);'
-            f'font-variant-numeric:tabular-nums;color:{TONE[tone]}">{lost}</td></tr>')
+            f'font-variant-numeric:tabular-nums;color:{TONE[tone]};white-space:nowrap">'
+            f'{f"&minus;{lost:.0f}" if lost > 0.005 else ""}'
+            f'<span style="color:var(--muted);font-size:12px">'
+            f'{f"&nbsp;&nbsp;{share_txt}" if share_txt else ""}</span></td></tr>')
     return "\n".join(out)
 
 
@@ -354,7 +391,17 @@ as noise. A second decision added later is one entry, and `main()` covers it
 the day it appears.
 """
 
-DECISIONS = ("target",)
+MILESTONE = 50.0
+"""The near-term milestone, set 2026-08-17. The GOAL stays 60.
+
+Both are decisions and both are guarded, for the reason in TARGET's docstring.
+The split is not decoration: the arithmetic separates them cleanly. Conversion
+is ~52% today; 50 needs it at ~58% against a reach ceiling of 86, and 60 needs
+it near 70. One of those has a route on the board and the other does not yet,
+and a page that shows only the further number cannot say which.
+"""
+
+DECISIONS = ("target", "milestone")
 
 
 def figures(data: list[list]) -> dict[str, object]:
@@ -434,6 +481,15 @@ def figures(data: list[list]) -> dict[str, object]:
         # rather than print an impossible percentage as if it were a plan.
         "needConvert": round(TARGET / reach * 100),
         "target": round(TARGET),
+        "milestone": round(MILESTONE),
+        # What conversion must reach for each, at TODAY's reach and at the
+        # ceiling the gates allow. Four figures rather than two, because "the
+        # second number has to reach 84%" reads as impossible until you see that
+        # at full reach it is 58%.
+        "needConvertMile": round(MILESTONE / reach * 100),
+        "reachCeiling": round(share("gates_pass")),
+        "needConvertMileAtCeiling": round(MILESTONE / share("gates_pass") * 100),
+        "needConvertAtCeiling": round(TARGET / share("gates_pass") * 100),
         "worstLoss": round(worst[0]),
         "worstLossAfter": worst[2],
         "worstLossAt": worst[1],
@@ -500,12 +556,34 @@ def main() -> None:
     # The test for a case nobody has seen is the guard's own input -- it reads
     # the VALUE out of `figs`, so a target moved to 70 looks for 70, and a
     # second decision added to DECISIONS is covered the day it is added.
-    body = re.sub(r"const FIG = \{.*?\};", "", page, flags=re.S)
+    # Scan only what a HUMAN writes. The four regions below are written by this
+    # script from the run and the guard feed, so a number inside them is a
+    # MEASUREMENT, and measurements are out of scope by construction (see
+    # TARGET's docstring). Caught by its own first run: `const D` is 264 rows of
+    # recall verdicts and four of them contain a bare 50, none of which is
+    # anybody typing the milestone.
+    body = page
+    for region in (r"const FIG = \{.*?\};", r"const D = \[.*?\];",
+                   r"<!--FUNNEL-->.*?<!--/FUNNEL-->", r"<!--AGENTS-->.*?<!--/AGENTS-->",
+                   # And STYLING, both places it lives. Stripping it is what
+                   # lets the check catch a bare "60%" in prose -- which is how
+                   # a decision actually gets re-typed -- without colliding with
+                   # `width:60%` or `max-width:60ch`. Exempting the percent sign
+                   # instead would have missed the very shape it needs to catch.
+                   r"<style>.*?</style>", r'style="[^"]*"'):
+        body = re.sub(region, "", body, flags=re.S)
     for key in DECISIONS:
         value = figs.get(key)
         if value is None:
             sys.exit(f"DECISIONS names '{key}' and figures() does not produce it.")
-        hits = re.findall(rf"(?<![\d.]){re.escape(str(value))}(?![\d.]|[a-zA-Z%])", body)
+        # A trailing period must NOT exempt the literal. The first version
+        # excluded `[\d.]` after the match, so "the milestone is 50." -- a
+        # sentence -- slipped through while "50%" was caught. Found by the
+        # PROVE step below rather than by reading it, which is the argument for
+        # having one. A period only makes it part of a number when a digit
+        # follows it.
+        hits = re.findall(
+            rf"(?<![\d.]){re.escape(str(value))}(?!\d|\.\d|[a-zA-Z])", body)
         if hits:
             sys.exit(
                 f"the page types '{value}' as a bare literal {len(hits)} time(s), and it is "
