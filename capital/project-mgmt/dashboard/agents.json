@@ -2,16 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsHA",
-      "step": 3,
-      "what": "Two thirds of the time we already show a cousin of the right fund",
-      "why": "We measured where the right fund sits when we miss it, and the answer changed the plan. In 63% of misses the founder is already looking at a SIBLING of the fund they would have won — same programme, wrong door. So we are not sending people to the wrong place; we are picking the wrong door in the right place. The question now is whether a fact that tells two doors apart even exists: in our data, on the funder's own page, or only in the founder's head. If it mostly does not exist, that caps what this product can promise and you need to know."
+      "id": "wsHB",
+      "step": 2,
+      "what": "What the corpus of record lost while we were away",
+      "why": "Our own safety check is refusing the newest corpus. Two things it can no longer name: three of the eleven sector families, and the written eligibility rules for fifteen funds. The second one matters most — that text is what makes a fund readable to the AI, and making rows readable was one of the biggest wins we have had, so losing it quietly undoes shipped work. The half-finished answer from before the interruption has been recovered and says the sectors are a column that is empty in one copy rather than rows that vanished. This finishes it, and says whether a founder feels any of it today."
     },
     {
-      "id": "wsGZ",
+      "id": "wsHC",
       "step": 2,
-      "what": "Three of our eleven sectors are missing from the corpus",
-      "why": "Our own safety check caught it: the corpus we run on now holds eight top-level sectors where it held eleven, and the snapshot the site falls back on still says eleven. This matters more than housekeeping, because sector is one of the two things our ranking scores a fund on — the same ranking the other two agents are working. If a quarter of that resolution went missing, every ordering measurement since is standing on it. The job is to say what happened, when, whether it was a deliberate tidy-up or a loss, and what it cost."
+      "what": "A thousand encoded rules the two copies disagree about",
+      "why": "The corpus of record holds about 1,070 fewer encoded eligibility rules than the working copy — a 14% gap, larger than either thing the safety check actually caught, and it caught neither of them. Those rules are the one thing measured to tell apart two funds from the same programme, which is where two thirds of our misses turn out to be. So this asks three things: are the two copies even counting the same thing, what does the gap cost if it is real, and what the check should have done — it has already been fooled twice in this family, once crying wolf and once staying silent while work was thrown away."
     }
   ]
 }
