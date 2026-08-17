@@ -131,6 +131,57 @@ brief forever.
 
 ## Your decision, no money involved
 
+### 0. Five more rows named after their granting body, and the two publish steps the rename needs — free, wsHF, 2026-08-17
+
+`project-mgmt/findings/body_named_rows_wsHF.md`. The rename you authorised is
+**done in Postgres**: 22 rows under SA.40391, SA.56245 and SA.49781 now carry
+the scheme's registered title instead of a tax office's or a ministry's name.
+Four things it uncovered are outside what you approved and none has been acted
+on.
+
+**a. The property catches 27 rows, not 11.** wsHA's eleven were the rows in its
+own working set; the same three SA numbers carry 22 rows corpus-wide, which is
+what was written. **Five more carry the identical defect and were left alone:**
+
+| id | shown as | why it is not in the write |
+| --- | --- | --- |
+| `satr_fr_rnd__sa_59366__ministere_de_la_transition_ecologique_et_solidai` | Ministère de la Transition écologique et solidaire | a **fourth** SA number, not in the finding you approved. The register links it to **two** titled cases (SA.47101, SA.112158) and the rule refuses to guess which is the aid measure. Already withheld from the offerable pool, so no founder sees it today. Needs a person to read both records. |
+| `bpifrance_inov` | Bpifrance | no SA number — outside the state-aid register entirely |
+| `bpifrance_innovup_leader_idf` | Bpifrance | ditto, and the id says the row is *Innov'up Leader IdF*, so the name is wrong about a thing we already know |
+| `innovasjon_norge_loan_risk` | Innovasjon Norge | ditto |
+| `innovasjon_norge_loan_lowrisk` | Innovasjon Norge | ditto |
+
+All four national-development-bank rows are **offerable today**. They are a
+different repair — a funder page read by a person, per
+`project-mgmt/evidence/README.md` — not a register lookup, and Innovasjon Norge
+is one of the three agencies `seed_agency_routes.py` records as refusing
+automated access.
+
+**b. The committed snapshot needs regenerating.** `website/frontend/public/data/instrument_terms.json`
+still carries the twenty-two old names. Postgres is the store the product reads,
+so **a founder served today already sees the new titles**; the snapshot is what
+CI and `check_*` read, and `check_body_named_rows.ts` therefore stays red until
+it is re-exported (`python3 website/build/eligibility_export.py`). That is why
+the new check is **not wired into `npm run check`** — wiring a red check in, or
+softening it to go green, are both worse than leaving it out and saying so.
+
+**c. `instrument_profiles` is stale for the 22 rows, and this is why the rename
+moved the funnel as little as it did.** `profile_text` is built from `name`,
+and the shipped ranker is an embedding over that text. Renaming in
+`funding_instruments` does not re-embed. Until
+`build_instrument_profiles.py` re-runs and the 22 vectors are refreshed, the
+ranker still scores these rows on "Finanzamt Aachen-Stadt". Re-embedding 22 rows
+is a few cents of Voyage and a publish step, and it is the action that would
+actually let the rename change an ordering.
+
+**d. Two register artefacts are now visible on shipped names**, deliberately not
+laundered: `Steuerliche Förderung von Forschung und Entwicklung [BMF]` carries
+the Commission's issuer annotation, and the Italian title carries their export's
+doubled apostrophe (`nell''ambito`). Both classes already existed on shipped
+rows named from this same register; cleaning them is a separate change with its
+own blast radius, not something to smuggle into a bounded one.
+
+
 ### 0a. Make the corpus of record match what is already shipping — free, ~30 minutes, nothing a founder sees changes either way
 
 `project-mgmt/findings/wsHB_record_divergence/`, 2026-08-17. **Read the reason
