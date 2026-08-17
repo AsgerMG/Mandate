@@ -1,0 +1,20 @@
+check_answer_in_prompt — PROFILE_BLOCK=shipped
+
+  not asked, so out of scope: organisationType (staged), foundedYear (unreachable), activityCountries (unreachable)
+
+  memo writer (scoping profile): 16/23 answered field(s) stated
+    MISSING  sector  (what they build, domain token, asked first_page)
+    MISSING  useOfFunds  (what the money is for, domain token, asked first_page)
+    MISSING  region  (region, domain region, asked first_page)
+    MISSING  balanceBand  (balance sheet, domain token, asked adaptive)
+    MISSING  activities  (regulated activities they are in, domain token, asked adaptive)
+    MISSING  exclusionFlags  (aid-law exclusions they declared, domain token, asked adaptive)
+    MISSING  conditionality  (conditions they would accept, domain token, asked adaptive)
+
+  adaptive round (known facts): 23/23 answered field(s) stated
+
+check_answer_in_prompt: 7 answer(s) the intake collects never reach a model that reads them.
+  A question we ask and an answer we do not forward is worse than a
+  question we do not ask: the founder pays for it either way and the
+  brief is written as if they had declined. Render the block from
+  ANSWER_LABEL (see knownFacts.ts) rather than from a list.

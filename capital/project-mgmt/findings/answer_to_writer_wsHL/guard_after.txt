@@ -1,0 +1,9 @@
+check_answer_in_prompt — PROFILE_BLOCK=complete
+
+  not asked, so out of scope: organisationType (staged), foundedYear (unreachable), activityCountries (unreachable)
+
+  memo writer (scoping profile): 23/23 answered field(s) stated
+
+  adaptive round (known facts): 23/23 answered field(s) stated
+
+  OK — every answered field reaches every model-facing block.
