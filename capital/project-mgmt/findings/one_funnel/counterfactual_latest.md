@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-17T17:53:12.860Z
-corpus             postgres instruments=1088 at 2026-08-17T17:53:13.344Z
+started            2026-08-17T18:15:30.468Z
+corpus             postgres instruments=1088 at 2026-08-17T18:15:31.017Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-17T17:53:13.344Z
+                   is REFUSED rather than labelled. observedAt 2026-08-17T18:15:31.017Z
 ranker: all 1656 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -131,6 +131,19 @@ zero, so both are printed, with an EXACT two-sided McNemar on the discordant pai
 | published | +10 | -3 | +7 | 0.092 |
 | top_6 | +9 | -5 | +4 | 0.424 |
 | top_5 | +7 | -5 | +2 | 0.774 |
+
+### Why anybody LEAVES a row under a proposal that only un-blocks
+
+A quarantined comparator stops deleting the founder it wrongly deleted, and it stops
+deleting that row for every other founder too. The pool gets longer, and a won fund
+near the 40-row cut or the 8-row writer cap can be pushed out of it by rows that are now
+allowed to stay. That is the whole of the cost, and it is counted, not inferred:
+
+```
+  mean accessible pool   79.5 rows  ->  83.2 rows
+  founders whose pool grew    828 of 828
+  founders whose pool shrank  0 of 828
+```
 
 ### What happens to the founders the proposal un-gates
 

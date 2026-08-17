@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-17T17:53:12.860Z",
+ "startedAt": "2026-08-17T18:15:30.468Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-17T17:53:13.344Z",
+ "corpusObservedAt": "2026-08-17T18:15:31.017Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 1656,
@@ -333,6 +333,10 @@
    "top_5": 7
   },
   "unGated": 21,
+  "meanAccessibleStore": 79.5,
+  "meanAccessibleProposed": 83.2,
+  "poolGrew": 828,
+  "poolShrank": 0,
   "n": 897
  }
 }

@@ -1,0 +1,93 @@
+wsHD run 1 of 2 — the counterfactual section, verbatim.
+Second run 45 minutes later reproduced every number founder for founder;
+the full second report is project-mgmt/findings/one_funnel/counterfactual_latest.md.
+This run predates the mean-pool block, which is why that block is absent here.
+
+```
+started            2026-08-17T17:53:12.860Z
+corpus             postgres instruments=1088 at 2026-08-17T17:53:13.344Z
+store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
+                   founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
+                   degradation path, offers strictly fewer instruments, and a run that took it
+                   is REFUSED rather than labelled. observedAt 2026-08-17T17:53:13.344Z
+ranker: all 1656 request(s) on EMBEDDING
+set                __recallSetDescribed.json  split=holdout  seed=20260806
+population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
+draw fingerprint   13cb71cf3a1d1847  <- two runs quoting different fingerprints
+                   measured different founders, whatever seed they name
+leak bar           isDescribed — `own_project_title_leaks` excluded, exact / 8-gram / sibling cleared by
+                   check_recall_leaks. NOT the head-to-head's stricter
+                   cross-regime-only draw, which exists because a model reads
+                   the query text and nothing here does.
+levers             pool=40 writer_cap=8 published_cap=7 top=5 select_depth=40 row_order=off
+```
+
+## The proposed gate encoding — a paired counterfactual, and NOT the product
+
+██ NOTHING WAS WRITTEN. ██ The rows in the `proposed` column were produced by serving
+a different comparator to the eligibility engine IN THIS PROCESS ONLY. The store still
+holds what it held, and the `store` column is the shipped funnel — it is the same
+numbers as the table at the top of this report, from the same traces.
+
+```
+proposal           ../../project-mgmt/evidence/wsgu_gate_encoding_corrections_2026-08-13.jsonl
+comparators        63 proposed — narrow 1, quarantine 48, rekey 8, route 6
+actually served    31 of 63 reached the engine on at least one founder
+drift              0 row(s) whose stored comparator was not the one the proposal was written
+                   against — those keep the store's value and are named below
+pairing            same draw, same intake, same corpus read, same embedding cache.
+                   The arms differ in the comparators and in nothing else.
+```
+
+32 proposed comparator(s) were never served: no founder in this draw had the instrument
+in their shortlist, so this run says nothing about them either way.
+
+| stage | store | proposed | delta |
+|---|---:|---:|---:|
+| answer_key | **897** 100.0% | **897** 100.0% | 0 (0.0 pts) |
+| in_corpus | **897** 100.0% | **897** 100.0% | 0 (0.0 pts) |
+| publishable | **828** 92.3% | **828** 92.3% | 0 (0.0 pts) |
+| liveness_confirmed | **828** 92.3% | **828** 92.3% | 0 (0.0 pts) |
+| founder_screen | **806** 89.9% | **806** 89.9% | 0 (0.0 pts) |
+| gates_pass ← | **774** 86.3% | **795** 88.6% | +21 (+2.3 pts) |
+| pool_cut ← | **643** 71.7% | **654** 72.9% | +11 (+1.2 pts) |
+| writer_cap ← | **362** 40.4% | **368** 41.0% | +6 (+0.7 pts) |
+| watch_only | UNMEASURED | UNMEASURED | — |
+| published ← | **347** 38.7% | **354** 39.5% | +7 (+0.8 pts) |
+| top_6 ← | **321** 35.8% | **325** 36.2% | +4 (+0.4 pts) |
+| top_5 ← | **297** 33.1% | **299** 33.3% | +2 (+0.2 pts) |
+| model | UNMEASURED | UNMEASURED | — |
+
+`←` marks a row the proposal moves. A row it does not move is a measurement, not an
+assumption: both arms ran the same code on the same founders.
+
+### Which founders move, and in which direction
+
+Paired at the founder. `entered` gained the row under the proposal, `left` lost it. A
+net of zero over a churn of forty is a different fact from a net of zero over a churn of
+zero, so both are printed, with an EXACT two-sided McNemar on the discordant pairs.
+
+| row | entered | left | net | exact McNemar p |
+|---|---:|---:|---:|---:|
+| gates_pass | +21 | -0 | +21 | <0.001 |
+| pool_cut | +19 | -8 | +11 | 0.052 |
+| writer_cap | +12 | -6 | +6 | 0.238 |
+| published | +10 | -3 | +7 | 0.092 |
+| top_6 | +9 | -5 | +4 | 0.424 |
+| top_5 | +7 | -5 | +2 | 0.774 |
+
+### What happens to the founders the proposal un-gates
+
+21 founder(s) keep their won fund past `gates_pass` under the proposal that lost it under the
+store's encoding. A gain at the gate screen is only worth what survives the cuts below
+it, so this is where it lands:
+
+```
+    19 of 21 still there at pool_cut
+    12 of 21 still there at writer_cap
+    10 of 21 still there at published
+     9 of 21 still there at top_6
+     7 of 21 still there at top_5
+```
+
+
