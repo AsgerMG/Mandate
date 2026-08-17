@@ -2,22 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsHE",
+      "id": "wsHH",
       "step": 2,
-      "what": "A signal that is picking the wrong fund six times out of seven",
-      "why": "When we show a founder the wrong door of the right programme, the fund we show writes cheques closer to the amount they said they need than the fund they actually won — thirty-three percent of the time against six. Matching what a founder asks for against what a fund has historically paid is selecting against the right answer. It is the one live defect in our ranking that the diagnosis turned up, it is free to test, and it is the first thing pointed at the number rather than at understanding it."
+      "what": "Why two funds from the same programme look identical to the AI",
+      "why": "Two thirds of everything we lose happens at the two places we cut the list, and the reason is that we cannot tell two doors of one programme apart. The odd part: the fact that DOES tell them apart is already in the text we feed the search engine — the descriptions differ in 96 cases out of a hundred. The suspicion is that we then rank funds by their POSITION in the list rather than by how close they actually are, which flattens two neighbours to nothing. If that is right, the fix is small. If it is wrong, the route is asking founders instead, and we need to know that before spending more here."
     },
     {
-      "id": "wsHG",
-      "step": 1,
-      "what": "Working out what a founder's money is for, from their own words",
-      "why": "The single biggest thing that tells two near-identical funds apart is what the money is actually for — it separates them on 30% of the cases we get wrong, and we already ask founders on the first page. We have never been able to test it, because the only way to fill that field for a test company reads the answer off the fund we are trying to predict. Reading it from the company's own description instead is honest, and cheap. If it works it works on a third of our misses."
-    },
-    {
-      "id": "wsHF",
-      "step": 2,
-      "what": "Eleven funds are shown to founders as the name of a ministry",
-      "why": "Instead of a scheme's real title, eleven rows carry the name of the government department that granted it. Twenty-eight of the cases we get wrong have at least one of these on the page. Nothing can choose a fund called 'Ministry of Finance' over the one beside it — not the AI, not a person reading. The official register holds the real titles and we already read 68 other rows from it, so this is a gap in something that works rather than something new to build."
+      "id": "wsHI",
+      "step": 5,
+      "what": "Making the next paid test trustworthy",
+      "why": "Half of what the product does is invisible to our free test, because that test runs without the AI. The only paid comparison we have is void — it set itself a condition, broke it, and the figure had to be withdrawn from this page. Worse, the counter that was supposed to detect the breach is itself wrong, and reported an impossible number. So before we spend anything again: give the AI enough room to answer a longer list, fix the counter, and write down in advance what would invalidate the run."
     }
   ]
 }
