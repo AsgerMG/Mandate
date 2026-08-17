@@ -57,7 +57,7 @@ import path from "path";
 // `check_env_loader` accepts.
 delete process.env.DATABASE_URL;
 
-import { AWARD_RELATION, askLine, isQuantityValue, MONEY_BASIS, moneyBasisBlock, ROW_QUANTITIES } from "../lib/intelligence/money";
+import { ANSWER_BASIS, AWARD_RELATION, isQuantityValue, MONEY_BASIS, moneyBasisBlock, ROW_QUANTITIES, withAnswerBasis } from "../lib/intelligence/money";
 // The row facts a model is HANDED are the row minus what it identifies itself
 // by and minus what the model itself wrote. Both sets come from `rowNovelty`,
 // which is where the prompt block gets them, so this check and the prompt
@@ -157,7 +157,7 @@ function main(): void {
 
   // No rate in the strings assembled into the prompt, by the same detector
   // that guards `contracts/`.
-  const promptText = [AWARD_RELATION, askLine("€500K – €2.5M"), ...Object.values(MONEY_BASIS)].join("\n\n");
+  const promptText = [AWARD_RELATION, ...Object.values(MONEY_BASIS), ...Object.values(ANSWER_BASIS)].join("\n\n");
   for (const hit of ratesIn("lib/intelligence/money.ts", promptText)) {
     problems.push(
       `money.ts states a rate ("${hit.sentence.slice(0, 90)}"). These strings are ` +
@@ -165,13 +165,19 @@ function main(): void {
       `at some depth by construction. State the direction; leave the figure in the finding.`);
   }
 
-  // The two sites that print the founder's own amount to a model read ONE
-  // label. Two that agree today is the defect this repo names most often.
-  for (const rel of ["lib/intelligence/pipeline.ts", "lib/intelligence/knownFacts.ts"]) {
-    const src = readFileSync(path.join(FRONTEND, rel), "utf8");
-    if (!/\baskLine\(/.test(src)) {
-      problems.push(`${rel} prints the founder's stated amount to a model but does not read askLine() from money.ts`);
-    }
+  // The founder's own amount reaches every prompt through ONE renderer.
+  // `intakeFactLines` is that renderer since wsHL made the field list a
+  // property; if it stops applying the basis, the qualifier silently vanishes
+  // from both the writer's and the planner's blocks at once.
+  const kf = readFileSync(path.join(FRONTEND, "lib/intelligence/knownFacts.ts"), "utf8");
+  if (!/\bwithAnswerBasis\(/.test(kf)) {
+    problems.push(
+      "knownFacts.ts renders the founder's own answers into every model prompt but no " +
+      "longer applies withAnswerBasis(), so a quantity reaches the model with no basis.");
+  }
+  if (withAnswerBasis("ticketBand", "how much they are looking for: EUR 15M - EUR 50M")
+      === "how much they are looking for: EUR 15M - EUR 50M") {
+    problems.push("withAnswerBasis adds nothing to ticketBand, which is the field measured doing the damage.");
   }
 
   if (problems.length) {

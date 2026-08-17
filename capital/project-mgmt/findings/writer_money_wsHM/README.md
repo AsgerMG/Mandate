@@ -198,7 +198,25 @@ writer named a fund that was not in the published table (BL-B1) in one of six
 recorded briefs, and BL-B1 is declared unenforced. That is a cheap mechanical
 check on a finished brief and it is somebody's next hour.
 
-## §5 What this does NOT close
+## §5 Verification, including the reds that are not mine
+
+`npx tsc --noEmit`, `npx vitest run` (804 pass, 16 new), `check_contracts`,
+`check_ws_scripts`, `check_answer_not_reachable`, `check_prompt_rates` (with
+`PROVE=1`), `check_money_basis`, `check_check_reachability`,
+`check_guard_subject`, `check_client_boundary` — all green.
+
+`npm run check` also reports five reds, and **every one of them reproduces on
+`main` with the same message**, so none is this branch's:
+`check_field_matches_demand` (10 comparators, identical), `check_comparator_
+admits` (inert comparators over the ceiling), `check_open_question_class`
+(requirement texts with no judgement), `check_country_gates` (1 positive
+country rule), and `check_winner_not_gated`. They are corpus-state failures and
+the counts move between two runs minutes apart, because other workstreams are
+loading. `check_recall_floor` is GREEN on both. Nothing in this diff reaches a
+gate, a comparator or the pool: it is prompt text, one hermetic module, one
+guard, and two contracts.
+
+## §6 What this does NOT close
 
 **It is unmeasured, and it cannot be measured for free.** Every claim above is
 about what the model was HANDED and what it WROTE on tapes already bought.

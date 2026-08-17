@@ -197,41 +197,31 @@ rows named from this same register; cleaning them is a separate change with its
 own blast radius, not something to smuggle into a bounded one.
 
 
-### 0quater. 15 instruments show a dead end where the register names a live successor — free to fix, counted, wsHF, 2026-08-17
+### ~~0quater. 15 instruments show a dead end where the register names a live successor~~ — **DONE 2026-08-18, wsHN**
 
-`project-mgmt/findings/body_named_rows_wsHF.md` §3b. Found while fixing
-something else, **counted rather than asserted**, and not touched.
+**Written to SQLite and Postgres, 15 rows, both `successor_scheme` and
+`successor_title`.** `caseLinks` is now read symmetrically by
+`live_successor` / `live_successors` in `ETL/lib/scheme_title.py`, beside the
+`link_map` that already existed, and `populate_funding_instruments.py` calls it
+instead of iterating a case's own links, so the next register refresh reads the
+relation rather than the Commission's filing habits. 40 -> 55 redirects, exactly
+as wsHF counted, and **no row already carrying a successor was repointed** by
+the symmetric read, so today's change is purely additive.
 
-`populate_funding_instruments.py` turns a closed scheme into a redirection by
-reading that case's **own** `caseLinks`. But `caseLinks` is directional — the
-Commission files the edge on whichever side it pleases — so a successor that
-filed the link on **its** record is invisible.
+**It moved nothing a founder sees, and that is measured, not assumed**
+(`_wshn_successor_reach.ts`, free, paired before and after in the same shape):
+the publishable corpus is **778 before and 778 after**, the revived set is the
+**same nine ids**, and **0 of the 897 founders** won a fund the redirect
+revives. All 15 either are not `isShut` by the product's own liveness test, or
+name a successor the corpus already holds as an open leaf — in which case the
+predecessor is correctly dropped and the founder is shown the successor itself.
+The field is now right and the loader is now right; the product effect today is
+nil. See `project-mgmt/findings/reach_wsHN.md`.
 
-```
-instruments carrying an SA number                 475
-...whose scheme the register says has CLOSED      220
-...live successor found FORWARD-only (today)       40
-...live successor ONLY on the OTHER side           15   <- MISSED TODAY
-   distinct SA numbers affected                    14
-```
-
-**A symmetric read finds 55 successors where we find 40 — +37.5%.** Fifteen
-instruments currently present a founder with a scheme the register says has
-closed, when the register also names the live scheme that replaced it:
-Thüringen's R&D programme, the Bundesförderung für Energie- und
-Ressourceneffizienz, Business Finland's young-company scheme, Sweden's
-`Förordning (2015:208)`, Wallonia's `Incitants en faveur des PME`, two Dutch
-`Besluit` schemes, Malta's RDI and SME schemes, and five more.
-
-**This is the `between_calls` shape** — we modelled one object and the funder ran
-another, which is how eleven funds came back in July. The fix is to use
-`link_map()` from `ETL/lib/scheme_title.py`, which already exists and is already
-tested, in place of the forward-only iteration. **Free, no new fetch** (all
-records are already on disk), but it writes `successor_scheme` /
-`successor_title` on live rows, which is a founder-visible claim and therefore
-yours.
-
-Reproduce: `python3 website/frontend/scripts/_wshf_successor_count.py`
+**One correction to wsHF's prose.** The affected countries are AT 1, BE 3, DE 4,
+FI 1, FR 1, IE 3, IT 1, SE 1. There are no Maltese and no Dutch rows: the two
+`Besluit` schemes are VLAIO's, which is Flanders, and the two schemes read as
+Malta's are Enterprise Ireland's and IDA Ireland's.
 
 ### 0ter. Three doors of SA.40391 are now indistinguishable — the door problem, at a size somebody can finish — free to investigate, wsHF, 2026-08-17
 
@@ -293,6 +283,15 @@ no model, no Voyage, no network:
 python3 website/build/eligibility_export.py     # ~2 min, rewrites one file
 npx tsx website/frontend/scripts/check_body_named_rows.ts
 ```
+
+> **ADDED 2026-08-18, wsHN — this item now also holds a red guard.** The 63 gate
+> corrections are applied to both stores, but `check_winner_not_gated.ts` reads
+> this same snapshot and `delete`s `DATABASE_URL` deliberately, so it still
+> reports **251 wrongful deletions against a ceiling of 207**. Regenerating the
+> snapshot is what takes it to **14**, verified by counterfactual after the
+> write. That makes this the cheapest red-to-green on the whole list — and it is
+> `python3 website/build/eligibility_export.py`, **not** `make republish`, whose
+> first step is `make pull-db` and therefore `railway up`.
 
 **What it buys.** `check_body_named_rows.ts` can then be added to
 `npm run check` — **but only after §0a's four national-development-bank rows are
@@ -360,91 +359,39 @@ INSERT OR IGNORE union. `make republish` — which `check_corpus_census` prints 
 its closing advice — is therefore safe, and the surrounding paragraph currently
 reads as though it is not.
 
-### 0. Apply 63 gate-encoding corrections — free, a correctness fix, and NOT a funnel move
+### ~~0. Apply 63 gate-encoding corrections~~ — **DONE 2026-08-18, wsHN**
 
-**Now measured on the funnel instead of on a guard's counter — 2026-08-17,
-`findings/gate_funnel_wsHD.md`, free, paired, nothing written.** Applying them
-takes the brief from **35.8% to 36.2% at six rows**: four founders in 897,
-inside the run's own noise (exact McNemar p=0.42). What they unambiguously fix
-is one row higher: the gate screen stops deleting **21 founders' won fund** and
-deletes none of anybody else's, **86.3% → 88.6%, p<0.001**. Nine of those 21
-reach six rows, and five other founders are pushed out of six rows by the same
-change — quarantining a comparator stops it deleting a row for *every* founder,
-so the mean pool grows 79.5 → 83.2 rows for all 828 of them and the extra rows
-compete for the same forty-row and eight-row cuts. Two runs 45 minutes apart
-agree founder for founder.
+**Written: 63 rows in SQLite, 62 in Postgres**, `value_spec` and
+`encoding_method` only. Zero drift on either store, each asked its own drift
+question with the same rule before either was written. Postgres already held the
+proposed comparator on `chips_ju_kdt_unknown [G1-03]`, which is why the counts
+differ by one. Gate count unchanged at **9,763 on both** — no row added, none
+lost. Every one of the 63 re-read back from Postgres afterwards and confirmed to
+carry the proposed comparator.
 
-**Why the guard's number is so much larger, and both are true.** It counts
-7,095 register pairs where one ADEME forestry scheme supplies hundreds; the
-funnel counts 897 distinct founders, of whom **65 (7.2%) won a fund any of
-these 63 rules touches at all**. 65 is the ceiling on what this proposal can
-move at any row. **So apply it because the encodings contradict the funder's own
-pages and delete founders who demonstrably won — not because it moves the
-product.**
+Applied because the encodings contradict the funders' own pages, **not** to move
+the number: wsHD's paired run puts it at +0.4 points at six rows, four founders,
+p=0.42, inside the noise.
 
-**`check_winner_not_gated` goes from 251 wrongful deletions to 14**, against a
-ceiling of 207 it has been failing. Nothing else on this list moves it, and no
-code change can: wsGR proved the residue is gate encodings, not inheritance.
+**Both stores on purpose.** `migrate_to_postgres.py` TRUNCATEs
+`eligibility_gates` and reloads it from SQLite, so a Postgres-only write is
+reverted by the next release publish; a SQLite-only write reaches no founder at
+all. `apply_gate_encoding_corrections.py` gained `--postgres` rather than a
+second script with a second copy of the drift rule.
 
-**The store holds what the file was written against, checked today**
-(`_wshd_pg_drift.ts`, read-only): 62 of the 63 match Postgres exactly, 0
-drifted, 0 absent, and one — `chips_ju_kdt_unknown [G1-03]` — **already holds
-the proposed comparator in Postgres** though not in the committed snapshot. So
-applying the file changes 62 rows, not 63.
+**`check_winner_not_gated` IS STILL RED AT 251, AND THAT IS NOT A FAILURE OF THE
+WRITE.** That guard reads the committed snapshot and `delete`s `DATABASE_URL` on
+purpose — it is the credential-free door that lets CI judge this property with
+no production credential. The counterfactual re-run after the write confirms the
+numbers unchanged: **251 -> 14 of a judgeable population falling 6,167 -> 6,052
+against a floor of 6,000, so 52 pairs of headroom.** The guard will report 14
+the moment the snapshot is regenerated, which is **§0bis** and was outside this
+workstream's authorisation. `check_gate_subject.py` — which reads the store —
+passes with the corrections in, at 18/27 and 50/54.
 
-**Its case got stronger after it was written, and this is the paragraph to read
-if you read one.** wsGY has since measured that **63.2% of the founders we miss
-are already looking at a sibling of the fund they would have won** — same
-regime, wrong door — and that nothing else we hold about a fund separates the
-one they won from the ones we showed. `leaf_separation_wsAO.md` measured that
-**gates DO separate siblings**, and that the earlier negative was a harness
-handing all 300 founders identical answers. So the encoded gates are the only
-lever in this file that acts on the failure that turns out to dominate. A gate
-that deletes the right door, or fails to distinguish it from its neighbour, is
-the mechanism — not a rounding error on the side.
-
-Every one of the 63 was checked against the funder's own page, and the file
-carries the URL, the verbatim quote and the reasoning per row:
-`project-mgmt/evidence/wsgu_gate_encoding_corrections_2026-08-13.jsonl`.
-
-**The quote and the requirement never change.** They are the funder's words
-and they are right. Only the comparator built from them moves: 48 quarantined
-(requirement stays visible, machine verdict stops), 8 re-keyed to the field
-their sentence actually turns on, 6 moved to the offer route, 1 narrowed.
-
-Three examples of what is being corrected:
-
-- **Vinnova's aviation programme** says the call is aimed at *"alla
-  organisationer inom flygområdet"* and names universities and university
-  colleges among its eligible party types. We encode it as
-  `sector == mobility_transport`, which deletes GKN Aerospace Sweden and two
-  Swedish university colleges from a programme the register says they won.
-- **Norges forskningsråd** writes *"Enkeltpersonforetak og
-  forskningsorganisasjoner kan ikke søke"* — sole proprietorships and research
-  organisations may not apply. We encode it as `borrowerModel not_in
-  ['operating']`, and every founder is pinned to `operating`, so it deletes the
-  fund from precisely the incorporated companies it exists to admit.
-- **Chips JU** publishes an Annex 4 of per-country national conditions. Three
-  of its rows — Slovakia, Norway, Poland — are encoded as three
-  instrument-wide establishment filters that contradict each other, since no
-  applicant is registered in all three.
-
-**What it costs, stated rather than buried.** Quarantining is not free: it
-turns "wrongly blocked" into "cannot be judged". The guard's judgeable
-population falls from 6,167 pairs to 6,052 against its anti-vacuity floor of
-6,000, and 7 of the 45 instruments touched are left with no encoded filter of
-their own at all. That is the honest state for those seven — ADEME's forestry
-and fuel-station schemes, Vinnova's aviation programme — whose eligibility is
-genuinely narrow and genuinely unexpressible in an eleven-value sector list.
-They should be RANKED with their requirement shown, not screened out of the
-founders who won them. But the headroom above that floor is 52 pairs, so the
-next pass of this kind needs a better field to move rules to, not more
-quarantine.
-
-**To apply:** `python3 ETL/terms/apply_gate_encoding_corrections.py --apply`,
-then publish. It is a dry run without the flag and refuses outright if any row
-has drifted; today all 63 match the corpus exactly.
-
+**Do not quote that guard's 251 as a product claim.** It counts 7,095 register
+pairs, of which one ADEME forestry scheme supplies hundreds; the funnel counts
+897 distinct founders, of whom 65 won a fund these rules touch at all.
 
 ### 4. A permission rule so four corpus corrections can be applied
 
@@ -652,6 +599,33 @@ Also found and not folded in: **AEI CPP is typed as a loan** while the funder
 states *"Subvención y préstamo"* — and this may be systematic across AEI rows.
 
 ### 13. Promote 3,362 encoded gates to the corpus of record — free, and it is the record's own rule
+
+> ## █ BLOCKED, AND NOT BY POLICY — 2026-08-18, wsHN █
+>
+> **This write cannot be performed without redeploying the ETL container, which
+> is §14.** wsHN was authorised to do it and stopped here rather than working
+> around it.
+>
+> Every channel between this machine and the volume — `pull_db.py`,
+> `pull_db_side.py`, `push_local.py`, `push_db_verified.py` — begins with
+> `railway_service.wake()`, and `wake()` is `railway up --service etl-pipeline`.
+> A cron-idle container has no SFTP, so the volume cannot be read or written
+> until one is running, and the only thing in this repository that starts one
+> deploys the working tree as a new image. `restore()` is a second `railway up`.
+> **So "reconcile by union, never by overwrite" is sound advice about a file
+> nothing here can currently open.** The Railway CLI is also not installed on
+> this machine; `npx --yes @railway/cli` would fetch it, but that is the smaller
+> of the two problems.
+>
+> The consequence is that **§13 and §14 are one decision, not two**, and §14 has
+> to be taken first. Redeploying moves the image 316 commits, which is exactly
+> the change §14 describes and prices. Nothing about §13 is safe to do while
+> pretending that step is incidental.
+>
+> **`DIVERGED` still reports it**, unchanged, after wsHN's writes:
+> `postgres/instruments.gates: derived 9,763, record 6,401 (+3,362)`. wsHN's own
+> corrections did not add or remove a gate on any store — 9,763 before and
+> after — so the 3,362 is the same 3,362 wsHC measured.
 
 **The write:** carry the 2026-08-08/09 and 2026-08-12 gate-encoding sessions from
 `local`/Postgres onto the Railway volume, by union, never by overwrite —

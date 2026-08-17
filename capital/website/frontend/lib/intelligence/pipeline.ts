@@ -34,6 +34,11 @@ function billed<T extends { model?: string; usage?: unknown }>(res: T, fallbackM
   return res;
 }
 import { semanticFundMatch } from "./semantic";
+// The founder's answers, rendered as a PROPERTY over the one exhaustive table
+// of how to say each intake field. Shared with the adaptive round rather than
+// restated here: the restatement is the defect this import removes. See
+// knownFacts.ts and `PROFILE_BLOCK` below.
+import { intakeFactLines } from "./knownFacts";
 import { BRIEF_LIMITS, checkBrief } from "./briefChecks";
 import {
   accessiblePool, assembleBriefRows, explainNoDoors, orderMemoCandidates,
@@ -42,7 +47,7 @@ import {
 import { ExclusionLog } from "./exclusions";
 import { assembleInstructions, assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
-import { askLine, isQuantityValue, MONEY_BASIS, moneyBasisBlock } from "./money";
+import { isQuantityValue, MONEY_BASIS, moneyBasisBlock } from "./money";
 import { AXIS_LABEL, distinguisherPhrases, rowGroups } from "./rowNovelty";
 import {
   findPeersBySubsector,
@@ -116,18 +121,65 @@ const client = new Anthropic(); // reads ANTHROPIC_API_KEY from the environment
 
 type Emit = (event: ProgressEvent) => void;
 
+const PROFILE_HEADING = "## Scoping profile (structured intake, AUTHORITATIVE)";
+
+/** ── WHICH ANSWERS THE MEMO WRITER IS TOLD ABOUT ──────────────────────────
+ *
+ *  `shipped` is the hand-kept list this function carried until 2026-08-18, bit
+ *  for bit, and it is kept only so a run can reproduce a prompt from before the
+ *  change. Same shape and same reason as `AWARD_TERM` and `SIBLING_SCOPE` in
+ *  shortlist.ts — read ONCE at module scope, and an unrecognised value THROWS
+ *  rather than reading as the default.
+ *
+ *  ── THE DEFAULT IS `complete`, AND WHY ──────────────────────────────────
+ *  The list was the same defect `check_answer_reach.ts` was written for, one
+ *  layer up. That guard proves an answer reaches the ROWS; nothing proved it
+ *  reaches the WRITER, and the writer is what ships. Compared field by field
+ *  against `ANSWER_LABEL` (which the compiler keeps exhaustive), the shipped
+ *  list omitted SEVEN intake fields — including `sector`, `useOfFunds` and
+ *  `region`, which are three of the six ANSWER_USE declares `ranks: true`, and
+ *  all three of which are asked on SCREEN ONE. The block is headed
+ *  AUTHORITATIVE, so a fact absent from it is not merely unmentioned: it is
+ *  absent from the only place the writer is told to trust.
+ *
+ *  `sector` and `useOfFunds` are by name the two answers `tableInputFromAnswers`
+ *  exists to stop losing. That fix repaired the ranking call sites and left
+ *  this one, so the memo has gone on being written by a model that was not told
+ *  what the company builds or what the money is for.
+ *
+ *  Default ON because a true answer the founder gave cannot make an
+ *  AUTHORITATIVE block less correct, and because the alternative is to keep
+ *  asking six questions on screen one and forward three of them. The arm exists
+ *  so a paid run can be paired against the old prompt, not because the omission
+ *  is defensible. */
+export type ProfileBlockArm = "shipped" | "complete";
+export const PROFILE_BLOCK: ProfileBlockArm = (() => {
+  const v = process.env.PROFILE_BLOCK ?? "complete";
+  if (v !== "shipped" && v !== "complete") {
+    throw new Error(`PROFILE_BLOCK must be shipped|complete, got "${v}"`);
+  }
+  return v;
+})();
+
 /** Human-readable scoping profile for prompts (writer + intake conditioning). */
 function eligibilityContext(e?: EligibilityAnswers, targetMarkets?: string[]): string {
   if (!e && !targetMarkets?.length) return "";
+  if (PROFILE_BLOCK === "complete") {
+    const lines = [
+      targetMarkets?.length ? `Target markets for public capital: ${targetMarkets.join(", ")}` : "",
+      ...intakeFactLines(e),
+    ].filter(Boolean);
+    return lines.length ? `${PROFILE_HEADING}\n${lines.join("\n")}` : "";
+  }
   const band = TICKET_BANDS.find((b) => b.value === e?.ticketBand);
   const model = BORROWER_MODELS.find((m) => m.value === e?.borrowerModel);
   const lines = [
-    // The ONE label, from `money.ts`, so this block and `knownFacts` cannot
-    // describe the founder's own answer differently to two models. It used to
-    // read `Ticket sought: <band>` in both, which named a quantity and not its
-    // subject; the recorded briefs then called it "your ask", "a project
-    // ticket" and "your capex ask" inside a single memo.
-    band ? askLine(band.label) : "",
+    // DELIBERATELY UNLABELLED, and it is the only place in the product that is.
+    // This arm exists to reproduce the prompt as it stood before 2026-08-18 bit
+    // for bit, so a paid run can be paired against it. wsHM's basis qualifier
+    // is on the `complete` path above, through `intakeFactLines`. Adding it
+    // here would make the reproduction arm reproduce nothing.
+    band ? `Ticket sought: ${band.label}` : "",
     model ? `Borrower model: ${model.label}` : "",
     targetMarkets?.length ? `Target markets for public capital: ${targetMarkets.join(", ")}` : "",
     e?.entityCountries?.length ? `Entities/establishments in: ${e.entityCountries.join(", ")}` : "",
@@ -149,8 +201,14 @@ function eligibilityContext(e?: EligibilityAnswers, targetMarkets?: string[]): s
     e?.institutionalBacking ? `Institutional investors aboard or anchoring: ${e.institutionalBacking}` : "",
     e?.needBy ? `Capital needed: ${e.needBy.replace(/_/g, " ")}` : "",
   ].filter(Boolean);
-  return lines.length ? `## Scoping profile (structured intake, AUTHORITATIVE)\n${lines.join("\n")}` : "";
+  return lines.length ? `${PROFILE_HEADING}\n${lines.join("\n")}` : "";
 }
+
+/** Exported for `check_answer_in_prompt.ts`, which builds this block for a
+ *  probe founder and fails the build on a field that never appears in it. The
+ *  guard must read the SHIPPED builder, not a second spelling of it — a second
+ *  spelling is the defect it exists to catch. */
+export const scopingProfileBlock = eligibilityContext;
 
 /** Human phrase for the founder's selected capital types, or "" when none/all. */
 function capitalSoughtLabel(values?: string[]): string {

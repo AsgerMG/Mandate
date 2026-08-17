@@ -5,25 +5,36 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  askLine, AWARD_RELATION, isQuantityValue, MONEY_BASIS, moneyBasisBlock, ROW_QUANTITIES,
+  ANSWER_BASIS, AWARD_RELATION, isQuantityValue, MONEY_BASIS, moneyBasisBlock,
+  ROW_QUANTITIES, withAnswerBasis,
 } from "./money";
 import { IDENTITY_AXES, WRITER_AXES } from "./rowNovelty";
 
-describe("askLine — the founder's own amount, with its subject", () => {
-  it("carries the band and says it is one figure for the whole need", () => {
-    const line = askLine("€15M – €50M");
-    expect(line).toContain("€15M – €50M");
+describe("withAnswerBasis — the founder's own quantity, with its subject", () => {
+  it("keeps the rendered line and adds what the number is a quantity of", () => {
+    const line = withAnswerBasis("ticketBand", "how much they are looking for: €15M – €50M");
+    expect(line).toContain("how much they are looking for: €15M – €50M");
     expect(line).toMatch(/ONE figure for the whole/i);
   });
 
   it("does not resolve an ambiguity the intake never asked about", () => {
     // The intake asks "how much are you looking for?" and offers one band.
     // Nothing on that screen separates a round from a project cost, so this
-    // line may not assert either. wsHE flagged splitting the QUESTION as the
-    // clean fix; until that happens the prompt states what we hold.
-    const line = askLine("€15M – €50M");
+    // may not assert either. wsHE flagged splitting the QUESTION as the clean
+    // fix; until that happens the prompt states what we hold.
+    const line = withAnswerBasis("ticketBand", "x");
     expect(line).toMatch(/not a project budget/i);
     expect(line).toMatch(/not what any single scheme pays/i);
+  });
+
+  it("leaves a field that is not a quantity exactly as rendered", () => {
+    expect(withAnswerBasis("sector", "what they build: Software & AI"))
+      .toBe("what they build: Software & AI");
+  });
+
+  it("names a share as a share, so it is not read as an amount", () => {
+    expect(ANSWER_BASIS.cofinancingBand).toMatch(/SHARE of project cost/);
+    expect(ANSWER_BASIS.cofinancingBand).toMatch(/not an amount/);
   });
 });
 

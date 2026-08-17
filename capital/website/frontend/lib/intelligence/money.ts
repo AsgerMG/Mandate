@@ -7,7 +7,8 @@
 //
 //   the ASK            the founder's answer to "how much are you looking for",
 //                      one number for their whole need, printed in the
-//                      AUTHORITATIVE scoping profile as `Ticket sought: X`.
+//                      AUTHORITATIVE scoping profile as `Ticket sought: X`
+//                      (now rendered by `intakeFactLines`, wsHL).
 //   the TICKET         a curated band for the KIND of door, hand-written once
 //                      per programme in `fund-processes/*.md`. Wide by
 //                      construction: 53 of 84 rows on the twelve archetypes
@@ -83,25 +84,49 @@
 import { AXIS_LABEL } from "./rowNovelty";
 
 /**
- * The founder's stated amount, introduced by what it is and what it is not.
+ * THE FOUNDER'S OWN ANSWERS THAT ARE QUANTITIES, and what each is a quantity
+ * of, keyed by the intake field.
  *
- * It replaced the bare `Ticket sought: <band>`, which named a quantity without
- * naming its subject. The intake asks "How much are you looking for?" and
- * offers one band; nothing on that screen asks the founder to split the number
- * by source or to separate a round from a project cost, so the honest label
- * says what we hold rather than asserting a basis we did not ask for. The
- * three readings the recorded briefs gave one answer -- "your ask", "a project
- * ticket", "your capex ask" -- were all invented downstream of this line.
+ * `knownFacts.intakeFactLines` renders every answered field as
+ * `ANSWER_LABEL[field]: value` -- a property wsHL made exhaustive over
+ * `EligibilityAnswers`, so a field added to the intake reaches every prompt
+ * with no edit. This is the same property for the QUANTITIES among them: the
+ * label says what the field IS, and this says what its number MEANS.
+ *
+ * `ticketBand` is the one that was doing damage. It replaced a bare
+ * `Ticket sought: <band>`, which named a quantity without naming its subject.
+ * The intake asks "How much are you looking for?" and offers one band; nothing
+ * on that screen asks the founder to split the number by source or to separate
+ * a round from a project cost, so the honest qualifier says what we hold rather
+ * than asserting a basis we did not ask for. The three readings the recorded
+ * briefs gave one answer -- "your ask", "a project ticket", "your capex ask" --
+ * were all invented downstream of this line.
  *
  * Splitting the question itself is the cleaner fix and it belongs to whoever
  * owns the intake (wsHE says the same). Until then the prompt states the
  * ambiguity instead of resolving it silently.
+ *
+ * PARTIAL on purpose: most intake fields are not quantities, and a qualifier on
+ * "what they build" would be noise. `check_money_basis.ts` does not demand an
+ * entry per field -- the row-side register is where the no-third-state rule
+ * lives, because a row's numbers are the ones a model compares against each
+ * other.
  */
-export const askLine = (bandLabel: string): string =>
-  `Amount they are looking for: ${bandLabel} ` +
-  `(their answer to "how much are you looking for", ONE figure for the whole ` +
-  `need. The intake did not ask them to split it by source, so it is not what ` +
-  `any single scheme pays and it is not a project budget)`;
+export const ANSWER_BASIS: Readonly<Record<string, string>> = {
+  ticketBand:
+    `their answer to "how much are you looking for", ONE figure for the whole ` +
+    `need. The intake did not ask them to split it by source, so it is not ` +
+    `what any single scheme pays and it is not a project budget`,
+  cofinancingBand:
+    `a SHARE of project cost they say they could put up themselves, not an amount`,
+  turnoverBand: `annual revenue of the company, not anything a fund pays`,
+  balanceBand: `total assets on the company's balance sheet, not anything a fund pays`,
+};
+
+/** One rendered intake line, with its basis where the field carries a quantity.
+ *  Called by `intakeFactLines`, so both prompt sites get it from one place. */
+export const withAnswerBasis = (field: string, line: string): string =>
+  ANSWER_BASIS[field] ? `${line} (${ANSWER_BASIS[field]})` : line;
 
 /**
  * EVERY QUANTITY A ROW RENDERS, DECLARED — money with its basis, and
