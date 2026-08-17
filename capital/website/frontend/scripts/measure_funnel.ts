@@ -143,6 +143,7 @@ import {
   suppressedForUnconfirmedLiveness,
 } from "../lib/intelligence/corpus";
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
+import { productionCannotPopulate, unofferableValues } from "../lib/intelligence/fieldReach";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
 import { POOL_BLEND } from "../lib/intelligence/poolBlend";
@@ -295,6 +296,111 @@ function loadGateProposal(): { file: string; rows: GateProposal[] } | undefined 
       + "one conclusion this must never reach by accident.");
   }
   return { file, rows };
+}
+
+/** ── A DERIVED INTAKE ANSWER, MEASURED WITHOUT BEING ADOPTED ──────────────
+ *
+ *  `USE_OF_FUNDS=<path to a {company: {uses, basis}} json>` runs the WHOLE
+ *  ladder a second time per founder with that founder's `useOfFunds` in place
+ *  of the harness's pin, and prints the two arms side by side.
+ *
+ *  ── The gap this closes ──────────────────────────────────────────────────
+ *  `founderIntake` pins `useOfFunds` for all 897 founders and says why: the
+ *  only derivation previously available read the register's `objectives_text`,
+ *  a statement about the SCHEME, and `objectiveScorer` ranks on that same
+ *  field. `door_separation_wsHA` §6 then measured that the corpus declares a
+ *  DIFFERENT purpose for the two doors on 30.0% of the pairs that cost us a
+ *  founder — the largest identified, statable, already-collected separator on
+ *  that population — and could not price it, because the harness holds the
+ *  field constant. This is how it gets priced.
+ *
+ *  ── Why it is the same seam as GATE_OVERLAY and not a new one ────────────
+ *  Same reason, same shape: the shipped ordering drifts between runs while
+ *  other workstreams republish `instrument_profiles`, so a before-run and an
+ *  after-run are not comparable at the founder. Both arms here see the same
+ *  draw, the same corpus read and the same embedding — `semanticFundMatch`
+ *  caches by description, and the description is identical in both arms, so
+ *  the second arm costs no extra Voyage call.
+ *
+ *  ── The control is INSIDE the arm, which a gate overlay cannot manage ────
+ *  A founder whose derived answer set-equals the pin is served an identical
+ *  request in both arms. Their two traces must therefore be identical, and any
+ *  founder for whom they are not is proof the corpus moved between the arms.
+ *  That is a drift detector the gate arm has to buy with `expect`/`spec`
+ *  bookkeeping, and here it is free. It is fatal, below.
+ *
+ *  ── It refuses rather than reports a flattering zero ─────────────────────
+ *  The run fails if the file is unreadable or empty, if no founder's answer
+ *  actually changed, or if a control founder's two traces differ. */
+interface UseOfFundsArm {
+  file: string;
+  /** company name -> the answer that replaces the pin. Only non-empty ones. */
+  byCompany: Map<string, string[]>;
+  /** How many rows the file held, including the ones that answer nothing. */
+  rows: number;
+}
+
+function loadUseOfFundsArm(): UseOfFundsArm | undefined {
+  const file = process.env.USE_OF_FUNDS;
+  if (!file) return undefined;
+  if (process.env.GATE_OVERLAY) {
+    throw new Error(
+      "measure_funnel: GATE_OVERLAY and USE_OF_FUNDS are both set. There is one "
+      + "counterfactual arm, so running both would attribute the difference between the "
+      + "arms to two changes at once. Run them separately.");
+  }
+  const abs = path.isAbsolute(file) ? file : path.join(process.cwd(), file);
+  const raw = JSON.parse(readFileSync(abs, "utf8")) as
+    Record<string, { uses?: string[] } | string[]>;
+  const byCompany = new Map<string, string[]>();
+  let rows = 0;
+  for (const [company, v] of Object.entries(raw)) {
+    rows++;
+    const uses = Array.isArray(v) ? v : (v.uses ?? []);
+    if (uses.length) byCompany.set(company, uses);
+  }
+  if (!byCompany.size) {
+    throw new Error(
+      `measure_funnel: USE_OF_FUNDS=${file} carries ${rows} row(s) and not one non-empty `
+      + "answer. A counterfactual arm that changes nothing would report the derived answer "
+      + "as harmless, which is the one conclusion this must never reach by accident.");
+  }
+  return { file, byCompany, rows };
+}
+
+/** ── THE SECOND ARM'S FOUNDER ─────────────────────────────────────────────
+ *
+ *  `founderIntake` has already applied the production-reach rule and the
+ *  offerable-value rule to arm A's answers. Both are re-applied here rather
+ *  than assumed, over the SAME functions, because a value this harness invents
+ *  is exactly as capable of being one production cannot serve as a value it
+ *  derived — and the whole point of `founderIntake` is that nothing gets to
+ *  skip those two rules by arriving through a different door.
+ *
+ *  A founder with no derived answer is returned UNCHANGED and keeps the pin,
+ *  the same fallback `answersFor` uses for a `ticketBand` it cannot derive: the
+ *  denominator must not move with the derivation. */
+function withDerivedUseOfFunds(
+  f: ReturnType<typeof founderIntake>, uses: string[] | undefined,
+): { founder: ReturnType<typeof founderIntake>; changed: boolean } {
+  if (!uses?.length) return { founder: f, changed: false };
+  if (productionCannotPopulate("useOfFunds")) {
+    throw new Error(
+      "measure_funnel: USE_OF_FUNDS was given an answer for a field production cannot "
+      + "populate. A replayed founder who carries a value production can never carry is not "
+      + "a founder, and every stage measured below it inherits the error.");
+  }
+  const draft = { ...f.eligibility, useOfFunds: uses };
+  const off = unofferableValues("useOfFunds", uses, draft as never);
+  if (off.length) {
+    throw new Error(
+      `measure_funnel: USE_OF_FUNDS answered ${off.map((v) => `"${v}"`).join(", ")} for `
+      + `"${f.company}", which the control never offers. A gate that fires on an answer no `
+      + "founder can give is a gate no founder meets.");
+  }
+  const before = [...(f.eligibility.useOfFunds ?? [])].sort().join("|");
+  const changed = before !== [...uses].sort().join("|");
+  return { founder: { ...f, eligibility: draft }, changed };
 }
 
 /** A depth for a column heading. `Infinity` is the whole accessible pool, and
@@ -660,6 +766,21 @@ async function main() {
   const tracesB: Trace[] = [];
   const overlayEverApplied = new Set<string>();
   const overlayDriftSeen = new Set<string>();
+
+  // ── THE SECOND KIND OF COUNTERFACTUAL ARM ─────────────────────────────────
+  // Same `tracesB`, same pairing, same process. What differs between the arms
+  // is one intake answer instead of a set of comparators.
+  const uof = loadUseOfFundsArm();
+  /** Founders whose answer actually moved, and founders it did not — the
+   *  second list is the arms' own control and is checked for drift below. */
+  const uofChanged: string[] = [];
+  const uofControl: number[] = [];
+  if (uof) {
+    console.log(`counterfactual arm: derived \`useOfFunds\` for ${uof.byCompany.size} of `
+      + `${uof.rows} founder(s) from ${uof.file}\n  every founder runs the ladder TWICE — `
+      + "the harness's pin, then their own derived answer — paired, in this process, "
+      + "writing nothing\n");
+  }
   if (proposal) {
     console.log(`counterfactual arm: ${proposal.rows.length} proposed comparators from `
       + `${proposal.file}\n  every founder runs the ladder TWICE — the store's encoding, `
@@ -827,6 +948,26 @@ async function main() {
       }
       tracesB.push(traceB);
     }
+
+    // ── THE SAME FOUNDER, WITH THEIR OWN DERIVED ANSWER ────────────────────
+    // Second for the same reason the gate arm is: the shipped arm never
+    // inherits a warmed cache or a mutated corpus, and the two arms are
+    // separated by milliseconds rather than by a republish.
+    if (uof) {
+      const { founder: fB, changed } = withDerivedUseOfFunds(f, uof.byCompany.get(t.name));
+      if (changed) uofChanged.push(t.name); else uofControl.push(tracesB.length);
+      const b = isOfferable ? await arm(fB, won) : { pass: noPassage(), applied: undefined };
+      const traceB: Trace = {
+        company: t.name, country: t.country, won,
+        inCorpus: heldByCorpus, offerable: isOfferable, degraded: wasDegraded,
+        ...b.pass,
+      };
+      for (const k of SWEEP_KS) {
+        const ladder = ladderAt(k);
+        assertNested(traceB, ladder, ladder.map((s) => s.alive(traceB)));
+      }
+      tracesB.push(traceB);
+    }
     if (traces.length % 50 === 0) console.log(`  ${traces.length}/${drawn.length}`);
   }
 
@@ -964,7 +1105,9 @@ async function main() {
   // ── THE COUNTERFACTUAL ARM ────────────────────────────────────────────────
   const counterfactual = proposal
     ? counterfactualReport(traces, tracesB, proposal, overlayEverApplied, overlayDriftSeen)
-    : undefined;
+    : uof
+      ? useOfFundsReport(traces, tracesB, uof, uofChanged, uofControl)
+      : undefined;
   if (counterfactual) { for (const line of counterfactual.lines) p(line); p(); }
 
   // ── THE SWEEP ─────────────────────────────────────────────────────────────
@@ -1119,7 +1262,11 @@ async function main() {
   // reach and the easiest one to reach by accident. Drift is fatal for the
   // same reason it is fatal in the applier — a proposal written against a
   // comparator the store no longer holds is a proposal about something else.
-  if (counterfactual) {
+  // Scoped to `proposal`, not to `counterfactual`: there is now a second kind
+  // of counterfactual arm and neither of these two refusals is about it. A
+  // derived-answer run tripped the "no comparator was ever served" throw
+  // because it serves no comparators by design.
+  if (proposal) {
     if (overlayDriftSeen.size) {
       throw new Error(
         `measure_funnel: ${overlayDriftSeen.size} proposed comparator(s) were written against `
@@ -1136,6 +1283,44 @@ async function main() {
     }
   }
 
+  // ── AND THE SAME TWO REFUSALS FOR THE DERIVED-ANSWER ARM ─────────────────
+  // Not one founder changed is the same flattering zero as an overlay that
+  // reached no gate. The control check is the stronger of the two and has no
+  // equivalent on the gate arm: a founder whose derived answer equals the pin
+  // was served an IDENTICAL request in both arms, so their two traces must be
+  // identical. One that is not is proof the corpus moved between the arms, and
+  // the delta this run reports would be a mixture of the answer and the drift.
+  if (uof) {
+    if (!uofChanged.length) {
+      throw new Error(
+        "measure_funnel: the derived-answer arm ran and NOT ONE founder's `useOfFunds` "
+        + "actually changed. The two arms are identical by construction, and reporting that "
+        + "as \"the derived answer changes nothing\" would be the worst output this harness "
+        + `can produce. Check that USE_OF_FUNDS=${uof.file} is keyed by company name.`);
+    }
+    const drifted: string[] = [];
+    for (const i of uofControl) {
+      const a = traces[i], b = tracesB[i];
+      const same = a.inCorpus === b.inCorpus && a.offerable === b.offerable
+        && a.degraded === b.degraded && a.rankTable === b.rankTable
+        && a.rankAccessible === b.rankAccessible && a.tableLen === b.tableLen
+        && a.accessibleLen === b.accessibleLen
+        && SWEEP_KS.every((k) =>
+          (a.writerAt.get(k)?.ids ?? []).join("|") === (b.writerAt.get(k)?.ids ?? []).join("|"));
+      if (!same) drifted.push(a.company);
+    }
+    if (drifted.length) {
+      throw new Error(
+        `measure_funnel: ${drifted.length} of ${uofControl.length} CONTROL founders — whose `
+        + "derived answer equals the pin, so both arms served them an identical request — "
+        + "have different traces in the two arms. The corpus moved under this run and the "
+        + "delta is a mixture of the derived answer and that movement. Re-run. "
+        + `First: ${drifted[0]}`);
+    }
+    console.log(`derived-answer arm: ${uofChanged.length} founder(s) changed, `
+      + `${uofControl.length} control founder(s) byte-identical across both arms`);
+  }
+
   const dir = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "one_funnel");
   mkdirSync(dir, { recursive: true });
   // ── A COUNTERFACTUAL RUN DOES NOT BECOME `latest.md` ─────────────────────
@@ -1145,7 +1330,11 @@ async function main() {
   // a number that is quoted is a number that will eventually be quoted without
   // its banner. So the counterfactual writes its own named file and leaves the
   // shipped one alone.
-  writeFileSync(path.join(dir, counterfactual ? "counterfactual_latest.md" : "latest.md"), out);
+  // A derived-intake run and a gate-proposal run are different counterfactuals
+  // and must not overwrite each other's file: two arms named the same thing is
+  // how a reader ends up comparing one proposal's number with another's.
+  const cfName = uof ? "useoffunds_latest" : "counterfactual_latest";
+  writeFileSync(path.join(dir, counterfactual ? `${cfName}.md` : "latest.md"), out);
   // ── ONE RECORD, WRITTEN TWICE ────────────────────────────────────────────
   // `latest.json` is a SNAPSHOT of the newest run and is overwritten every
   // time. `runs/<startedAt>.json` is HISTORY and is never overwritten. They are
@@ -1208,12 +1397,12 @@ async function main() {
   // carrying a proposed arm is not a point in the series of what the product
   // does, and a series that mixes the two cannot be read as either.
   if (counterfactual) {
-    writeFileSync(path.join(dir, "counterfactual_latest.json"), body);
+    writeFileSync(path.join(dir, `${cfName}.json`), body);
   } else {
     writeFileSync(path.join(dir, "latest.json"), body);
     writeRunHistory(dir, startedAt, body);
   }
-  console.log(`wrote ${path.join(dir, counterfactual ? "counterfactual_latest.md" : "latest.md")}`);
+  console.log(`wrote ${path.join(dir, counterfactual ? `${cfName}.md` : "latest.md")}`);
 }
 
 /** One column of the funnel: a stage list evaluated over one population.
@@ -1459,6 +1648,165 @@ function counterfactualReport(
       meanAccessibleProposed: Number(meanAcc(b).toFixed(1)),
       poolGrew: grew, poolShrank: shrank,
       n: N,
+    },
+  };
+}
+
+/** ── THE DERIVED-INTAKE-ANSWER SECTION ─────────────────────────────────────
+ *
+ *  Two arms of the SAME ladder on the SAME founders in the SAME process: the
+ *  `useOfFunds` the harness pins, and the one derived from each founder's own
+ *  description prose. It reports the WHOLE FUNNEL both ways, for the same
+ *  reason the gate counterfactual does — an intake answer that moves one row
+ *  and costs two somewhere else has not helped, and a single number cannot say
+ *  so.
+ *
+ *  `useOfFunds` reaches the funnel by TWO paths and they pull in opposite
+ *  directions, which is why the whole ladder is the only honest report:
+ *
+ *    * 59 HARD FILTERS turn on it (`founderIntake`'s own cost note), so a
+ *      changed answer opens and closes funds at `gates_pass` — for the won
+ *      fund AND for everything competing with it.
+ *    * `objectiveScorer` multiplies it into the score inside the within-regime
+ *      sibling reassignment, so it reorders `pool_cut` and below.
+ *
+ *  A gain at `gates_pass` that is given back at six rows is a real result and
+ *  the table shows it as one. */
+function useOfFundsReport(
+  a: Trace[], b: Trace[], uof: UseOfFundsArm, changed: string[], control: number[],
+): { lines: string[]; record: Record<string, unknown> } {
+  const L: string[] = [];
+  const p = (s = "") => L.push(s);
+  const rowsA = funnelRows(STAGES, a);
+  const rowsB = funnelRows(STAGES, b);
+
+  p("## The derived intake answer, measured without being adopted");
+  p();
+  p("```");
+  p(`answers            ${uof.file}`);
+  p(`derived            ${uof.byCompany.size} of ${uof.rows} founder(s) got a non-empty `
+    + "answer from their own");
+  p("                   description prose; the rest keep the harness's pin, the same "
+    + "fallback");
+  p("                   `answersFor` uses for a ticketBand it cannot derive");
+  p(`actually moved     ${changed.length} founder(s) — the rest were served an IDENTICAL `
+    + "request in both");
+  p(`                   arms and are the CONTROL: ${control.length} founder(s), verified `
+    + "byte-identical");
+  p("                   across the two arms before this table was written");
+  p("pin                industrial_research, experimental_development — uniform, for "
+    + "everyone");
+  p("paths              59 hard filter gates turn on this field, and `objectiveScorer` "
+    + "multiplies");
+  p("                   it into the score. The two can cancel; the table below is how you "
+    + "see that.");
+  p("```");
+  p();
+  p("**Nothing was written.** The derived answer is an in-memory substitution in this "
+    + "process only.");
+  p("`founderIntake` still pins the field, and this run does not change what any founder "
+    + "is served.");
+  p();
+
+  p(`| stage | pinned | derived | delta |`);
+  p(`|---|---:|---:|---:|`);
+  for (let i = 0; i < rowsA.length; i++) {
+    const ra = rowsA[i], rb = rowsB[i];
+    if (ra.remaining == null || rb.remaining == null) {
+      p(`| ${ra.stage.id} | UNMEASURED | UNMEASURED | — |`);
+      continue;
+    }
+    const d = rb.remaining - ra.remaining;
+    const dp = rb.share! - ra.share!;
+    p(`| ${ra.stage.id}${d ? " ←" : ""} | **${ra.remaining}** ${ra.share!.toFixed(1)}% | `
+      + `**${rb.remaining}** ${rb.share!.toFixed(1)}% | `
+      + `${d > 0 ? "+" : ""}${d} (${dp > 0 ? "+" : ""}${dp.toFixed(1)} pts) |`);
+  }
+  p();
+  p("`←` marks a row the derived answer moves. A row it does not move is a measurement, "
+    + "not an");
+  p("assumption: both arms ran the same code on the same founders in the same process.");
+  p();
+
+  // ── THE MOVEMENT, BOTH DIRECTIONS, AT THE FOUNDER ────────────────────────
+  p("### Which founders move, and in which direction");
+  p();
+  p("Paired at the founder. `entered` gained the row under the derived answer, `left` lost "
+    + "it. A net");
+  p("of zero over a churn of forty is a different fact from a net of zero over a churn of "
+    + "zero, so");
+  p("both are printed, with an EXACT two-sided McNemar on the discordant pairs.");
+  p();
+  const movementIds = ["gates_pass", "pool_cut", "writer_cap", ...ROW_CUTS.map(rowCutId)];
+  p("| row | entered | left | net | exact McNemar p |");
+  p("|---|---:|---:|---:|---:|");
+  const movement: Record<string, { entered: number; left: number; p: number }> = {};
+  for (const id of movementIds) {
+    const s = STAGES.find((x) => x.id === id);
+    if (!s) continue;
+    let entered = 0, left = 0;
+    for (let i = 0; i < a.length; i++) {
+      const va = s.alive(a[i]) === true, vb = s.alive(b[i]) === true;
+      if (vb && !va) entered += 1;
+      if (va && !vb) left += 1;
+    }
+    const pv = exactMcNemarP(entered, left);
+    movement[id] = { entered, left, p: pv };
+    p(`| ${id} | +${entered} | -${left} | ${entered - left > 0 ? "+" : ""}${entered - left} | `
+      + `${pv < 0.001 ? "<0.001" : pv.toFixed(3)} |`);
+  }
+  p();
+
+  // ── AND THE SAME MOVEMENT OVER THE FOUNDERS WHO ACTUALLY CHANGED ────────
+  // The table above averages the derivation together with the ~half of the
+  // population it left on the pin, so it understates the effect per founder
+  // affected by exactly that dilution. Both denominators are printed rather
+  // than one chosen, because the product question and the mechanism question
+  // want different ones.
+  const moved = new Set(changed);
+  const ia = a.map((t, i) => i).filter((i) => moved.has(a[i].company));
+  if (ia.length) {
+    p(`### Restricted to the ${ia.length} founders whose answer actually changed`);
+    p();
+    p("The table above is over all " + a.length + " founders, roughly half of whom kept the "
+      + "pin, so it");
+    p("dilutes the effect by that share. This is the same movement over the affected "
+      + "founders only.");
+    p("It is the MECHANISM figure. The one above is the PRODUCT figure, because the "
+      + "product would");
+    p("have to serve everybody.");
+    p();
+    p("| row | pinned | derived | entered | left |");
+    p("|---|---:|---:|---:|---:|");
+    for (const id of movementIds) {
+      const s = STAGES.find((x) => x.id === id);
+      if (!s) continue;
+      let ra = 0, rb = 0, entered = 0, left = 0;
+      for (const i of ia) {
+        const va = s.alive(a[i]) === true, vb = s.alive(b[i]) === true;
+        if (va) ra++; if (vb) rb++;
+        if (vb && !va) entered++;
+        if (va && !vb) left++;
+      }
+      p(`| ${id} | ${ra} ${((100 * ra) / ia.length).toFixed(1)}% | `
+        + `${rb} ${((100 * rb) / ia.length).toFixed(1)}% | +${entered} | -${left} |`);
+    }
+    p();
+  }
+
+  return {
+    lines: L,
+    record: {
+      kind: "use_of_funds",
+      file: uof.file, rows: uof.rows, derived: uof.byCompany.size,
+      changed: changed.length, control: control.length,
+      stages: rowsA.map((r, i) => ({
+        id: r.stage.id,
+        pinned: r.remaining, derived: rowsB[i].remaining,
+        delta: r.remaining == null || rowsB[i].remaining == null
+          ? null : rowsB[i].remaining! - r.remaining,
+      })),
+      movement,
     },
   };
 }
