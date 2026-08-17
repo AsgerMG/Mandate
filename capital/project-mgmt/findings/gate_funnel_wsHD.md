@@ -48,6 +48,12 @@ store, `apply_gate_encoding_corrections.py` was never invoked, and nothing was
 republished. The proposed comparators were served to the eligibility engine
 **in one process's memory** and discarded when it exited.
 
+`npx tsc --noEmit` clean, `npx vitest run` 764 passing, `check_contracts` and
+`check_ws_scripts` green. `npm run check` is red on 14 of 55 — **every one of
+them red on the base commit with this workstream's two edited files reverted**,
+checked one by one rather than assumed, including `a winner is never gated out
+of the memo`, which is the guard §0 exists to fix.
+
 ---
 
 ## 1. How a proposal can be measured without being written
