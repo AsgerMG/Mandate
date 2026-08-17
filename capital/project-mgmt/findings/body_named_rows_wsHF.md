@@ -7,8 +7,8 @@ state-aid case register, written to Postgres on your specific authorisation for
 `SA.40391`, `SA.56245` and `SA.49781` and nothing else. It was **22 rows, not
 the eleven in wsHA's finding** — eleven was the count inside wsHA's working set;
 the same three SA numbers carry twenty-two rows corpus-wide, and every one of
-them had the identical defect and the identical remedy. **It moved the funnel by
-[FUNNEL_HEADLINE].** That is the honest result and it was the expected one: the
+them had the identical defect and the identical remedy. **It moved the funnel by nothing: six rows 35.8% before and 35.8%
+after, on 897 founders, same draw, same ranker.** That is the honest result and it was the expected one: the
 shipped ranker scores an *embedding of `instrument_profiles.profile_text`*, that
 text is built from `name`, and renaming in `funding_instruments` does not
 re-embed it — so the ranker is still reading "Finanzamt Aachen-Stadt" until a
@@ -333,9 +333,64 @@ Wiring a red check in, or softening it until it goes green, are both worse than
 leaving it out and saying so. Neither the snapshot regeneration nor the NDB
 repair is mine to authorise.
 
-## 5. What it moved
+## 5. What it moved: nothing, and here is the whole funnel both ways
 
-[FUNNEL_SECTION]
+Two full reference runs, n=897, the whole held-out population, **both attesting
+`ranker: all 828 request(s) on EMBEDDING`** and both on `corpus postgres
+instruments=1088`. `NO_PG` was never set. Same draw fingerprint
+`13cb71cf3a1d1847` on both arms, asserted in code rather than eyeballed — so
+these are the same founders.
+
+**This is a BEFORE/AFTER pair on two runs, not a paired within-run comparison,
+and it could not be anything else:** a corpus write is global, so there is no
+way to hold both arms inside one run. `rank_shape_wsGY.md` measured the shipped
+ordering drifting by about three founders in two hours while workstreams
+republish `instrument_profiles`; the two arms here are ~75 minutes apart. That
+drift is the noise floor for every row below and it is printed, not assumed.
+
+| stage | before | after | move |
+|---|---:|---:|---:|
+| the answer key names a fund this company actually won | 897 (100.0%) | 897 (100.0%) | — |
+| ... and the corpus still holds that fund | 897 (100.0%) | 897 (100.0%) | — |
+| ... and it is publishable on the corpus's own facts | 828 (92.3%) | 828 (92.3%) | — |
+| ... and its openness could be CONFIRMED | 828 (92.3%) | 828 (92.3%) | — |
+| ... and this founder's screen keeps it | 806 (89.9%) | 806 (89.9%) | — |
+| ... and its encoded gates do not conclusively fail | 774 (86.3%) | 774 (86.3%) | — |
+| ... and it survives the cut to VERDICT_POOL (40 rows) | 643 (71.7%) | 636 (70.9%) | **-0.8 pts (-7)**, inside +/-3 |
+| ... and it survives the cut to the writer's candidates (8) | 362 (40.4%) | 362 (40.4%) | — |
+| ... and the writer's prose does not demote it | ? | ? | UNMEASURED |
+| ... and it is one of the 7 rows the brief publishes | 347 (38.7%) | 347 (38.7%) | — |
+| **... and it is in the first 6 of them** | **321 (35.8%)** | **321 (35.8%)** | **0.0 pts** |
+| ... and it is in the first 5 of them | 297 (33.1%) | 298 (33.2%) | +0.1 pts (+1), inside +/-3.1 |
+| ... and the MODEL still leaves it in the first 5 | ? | ? | UNMEASURED |
+
+**Nine of eleven measured stages are identical to the founder.** The headline row
+— the six rows a founder actually reads — is **35.8% both ways, not one founder
+different**.
+
+**The one stage that moved by more than a single founder is the 40-row pool cut,
+-7 founders, and it is not an effect.** It sits inside its own +/-3-point band,
+and every one of those seven is back by the next stage (362 → 362). A loss that
+fully recovers one stage later is reshuffling near a cut line, which is exactly
+what the drift warning predicts; a real effect would propagate.
+
+### Why zero was the right expectation, stated before the run and not after
+
+`instrument_profiles.profile_text` is built from `name`, and the shipped ranker
+is a Voyage embedding **over that text**. Renaming in `funding_instruments` does
+not re-embed anything. **The ranker that ordered both arms was reading
+"Finanzamt Aachen-Stadt" in both.** Re-embedding is a publish step nobody
+authorised — `AWAITING_APPROVAL.md` §0 c.
+
+So this measurement does not say "better names do not help ordering". It says
+**this write could not have moved the ordering**, and it did not, which is the
+weaker and more honest claim. What it does rule out is the alternative worry:
+that renaming twenty-two rows would *break* something. It did not.
+
+**The row is still worth fixing because it was wrong.** A founder shown
+"Finanzamt Aachen-Stadt" as a fund is being shown the name of a tax office. That
+is a defect whether or not any number moves, and reporting a zero is the point
+of measuring rather than the cost of it.
 
 ## 6. What a founder actually sees — rendered, not reasoned about
 
