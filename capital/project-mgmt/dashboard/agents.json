@@ -2,10 +2,10 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsHB",
-      "step": 2,
-      "what": "What the corpus of record lost while we were away",
-      "why": "Our own safety check is refusing the newest corpus. Two things it can no longer name: three of the eleven sector families, and the written eligibility rules for fifteen funds. The second one matters most — that text is what makes a fund readable to the AI, and making rows readable was one of the biggest wins we have had, so losing it quietly undoes shipped work. The half-finished answer from before the interruption has been recovered and says the sectors are a column that is empty in one copy rather than rows that vanished. This finishes it, and says whether a founder feels any of it today."
+      "id": "wsHA",
+      "step": 3,
+      "what": "Two thirds of the time we already show a cousin of the right fund",
+      "why": "The measurement was written before the interruption and never run; it is running now. In 63% of the founders we miss, they are already looking at a SIBLING of the fund they would have won — same programme, wrong door. So we are not sending people to the wrong place; we are picking the wrong door in the right place. The question is whether a fact that tells two doors apart even exists: in our data, on the funder's own page, or only in the founder's head. If it mostly does not, that caps what this product can promise and you need to know it."
     },
     {
       "id": "wsHC",
