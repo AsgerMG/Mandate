@@ -149,7 +149,7 @@ import {
   rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
 } from "../lib/intelligence/semantic";
 import {
-  applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
+  applyProfileSignal, AWARD_TERM, buildInstrumentTableHydrated, founderCountryList,
   tableInputFromAnswers,
 } from "../lib/intelligence/shortlist";
 import type { InstrumentRow } from "../lib/intelligence/types";
@@ -192,6 +192,23 @@ const ROW_CUTS: number[] = [...new Set([PUBLISH_CAP, 6, TOP])].sort((a, b) => b 
 /** Stable stage id for a row cut. The brief's own cap keeps the name every
  *  earlier run of this harness wrote, so two reports can be diffed. */
 const rowCutId = (n: number) => (n === PUBLISH_CAP ? "published" : `top_${n}`);
+
+/** ── EVERY MODULE-SCOPE ARM THAT CHANGES WHAT A FOUNDER IS SHOWN ───────────
+ *
+ *  Declared once, with its shipped default, so the levers line and the
+ *  not-the-shipped-order banner are both DERIVED from this list rather than
+ *  hand-written per arm. A third arm added next month is named and bannered
+ *  with no edit to either site — which is the property, and the test for an
+ *  unseen case is: is this value read once at module scope, and can two runs
+ *  differing only in it produce different rows? Then it belongs here.
+ *
+ *  `value` is the SHIPPED CONSTANT, never `process.env`. A variable that never
+ *  reached the run would otherwise label the report with the arm somebody
+ *  meant, which is the exact false null this file's header was written about. */
+const RANKING_ARMS: { label: string; env: string; value: string; shipped: string }[] = [
+  { label: "row_order", env: "POOL_BLEND", value: POOL_BLEND, shipped: "off" },
+  { label: "award_term", env: "AWARD_TERM", value: AWARD_TERM, shipped: "shipped" },
+];
 
 const num = (v: string | undefined, d: number) =>
   (v !== undefined && v !== "" && Number.isFinite(Number(v)) ? Number(v) : d);
@@ -746,25 +763,30 @@ async function main() {
   p(`                   the query text and nothing here does.`);
   p(`levers             pool=${VERDICT_POOL} writer_cap=${WRITER_CANDIDATE_CAP} `
     + `published_cap=${PUBLISH_CAP} top=${TOP} select_depth=${kLabel(SELECT_DEPTH)} `
-    + `row_order=${POOL_BLEND}`);
+    + `${RANKING_ARMS.map((a) => `${a.label}=${a.value}`).join(" ")}`);
   if (SWEEP_KS.length > 1) {
     p(`pool swept at      ${SWEEP_KS.map(kLabel).join(", ")} — the whole ladder at each, `
       + `paired off one pool object`);
   }
   p("```");
   p();
-  // ── A RUN THAT DID NOT USE THE SHIPPED ROW ORDER MUST SAY SO ──────────────
-  // `latest.md` is the file that gets quoted, and until now nothing in it named
-  // the ordering that produced it: `POOL_BLEND` is read at module scope inside
-  // `shortlist.ts`, so an arm run and a baseline run wrote byte-comparable
-  // headers and differed only in the numbers -- which is precisely the shape
-  // that let four figures on four populations be compared to each other. The
-  // arm is now on the levers line, and anything other than the shipped order
-  // gets the same banner the held-back intake fields get, because a founder is
-  // not served by it.
-  if (POOL_BLEND !== "off") {
+  // ── A RUN THAT DID NOT USE THE SHIPPED ORDERING MUST SAY SO ───────────────
+  // `latest.md` is the file that gets quoted, and it used to name nothing about
+  // the ordering that produced it: these arms are read at module scope inside
+  // `shortlist.ts` and `poolBlend.ts`, so an arm run and a baseline run wrote
+  // byte-comparable headers and differed only in the numbers -- which is
+  // precisely the shape that let four figures on four populations be compared
+  // to each other.
+  //
+  // A LIST, NOT TWO `if`s. `RANKING_ARMS` is the one place an arm is declared
+  // with its shipped default, so the levers line above and the banner below are
+  // both derived from it and a THIRD arm added next month is named and bannered
+  // with no edit here. The property: any module-scope lever that changes what a
+  // founder is shown appears on the levers line, and any one of them off its
+  // shipped default banners the run.
+  for (const a of RANKING_ARMS.filter((x) => x.value !== x.shipped)) {
     p(`██ NOT THE SHIPPED ORDER — this run ranked every founder's table with `
-      + `\`POOL_BLEND=${POOL_BLEND}\`, an arm that is default-off and that no founder `
+      + `\`${a.env}=${a.value}\` (shipped: \`${a.shipped}\`), an arm no founder `
       + `receives. Every number below is a measurement of that arm, not of the product. `
       + `Do not quote a row from this run beside a row from a shipped run without saying `
       + `which is which.`);
@@ -1008,9 +1030,12 @@ async function main() {
     sampled: n > 0, populationSize: population.length,
     levers: {
       VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP, rowCuts: ROW_CUTS,
-      // The ordering arm, so the series in `runs/` can never contain a point
-      // nobody can attribute to a code path. See the banner above.
+      // The ordering arms, so the series in `runs/` can never contain a point
+      // nobody can attribute to a code path. `rowOrder` keeps its own key
+      // because every run file already written carries it and a series is not
+      // re-readable if a field is renamed under it. See the banner above.
       rowOrder: POOL_BLEND,
+      arms: Object.fromEntries(RANKING_ARMS.map((a) => [a.env, a.value])),
     },
     // Null on a run with no sweep, never absent: a series where the field comes
     // and goes cannot be asked "was this run swept" without inspecting prose.
@@ -1372,7 +1397,12 @@ function writeFounderTrace(
     tableLen: t.tableLen, accessibleLen: t.accessibleLen,
   }));
   mkdirSync(path.dirname(abs), { recursive: true });
-  writeFileSync(abs, `${JSON.stringify({ startedAt, rowOrder: POOL_BLEND })}\n`
+  // `awardTerm` beside `rowOrder` for the same reason `rowOrder` is here: two
+  // traces are paired positionally on the draw fingerprint, so the ONE thing a
+  // pair cannot recover for itself is which arm each side was taken under. Read
+  // from the shipped constant, never from `process.env` — a variable that never
+  // reached the run would otherwise label the run with the arm somebody meant.
+  writeFileSync(abs, `${JSON.stringify({ startedAt, rowOrder: POOL_BLEND, awardTerm: AWARD_TERM })}\n`
     + `${lines.join("\n")}\n`);
   console.log(`wrote founder trace ${abs} (${lines.length} founders)`);
 }
