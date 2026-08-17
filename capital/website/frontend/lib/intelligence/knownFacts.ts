@@ -13,11 +13,134 @@
 //
 // A stage that re-asks a settled fact is now a bug in one place rather than an
 // omission repeated in three.
-import { BORROWER_MODELS, ORGANISATION_TYPE_OPTIONS, SECTOR_OPTIONS, TICKET_BANDS, USE_OF_FUNDS_OPTIONS } from "./types";
+//
+// ── AND THE WRITER NEVER SWITCHED OVER (wsHL) ──────────────────────────────
+// The paragraph above describes an extraction that was only half finished. The
+// `heading` parameter below exists so the memo writer can keep its established
+// "Scoping profile" wording — and the memo writer never called this function.
+// It kept its own copy, `eligibilityContext` in pipeline.ts, and the two
+// drifted exactly as `check_answer_reach.ts`'s docstring says two copies of one
+// mapping always do. Measured 2026-08-18 by comparing both blocks against
+// `ANSWER_LABEL`, which the compiler makes exhaustive:
+//
+//   missing from the WRITER's block    sector, useOfFunds, region, activities,
+//                                      exclusionFlags, institutionalOwner,
+//                                      balanceBand
+//   missing from THIS one              region, exclusionFlags,
+//                                      institutionalOwner, balanceBand
+//
+// Three of those — `sector`, `useOfFunds` and `region` — are the fields
+// ANSWER_USE declares `ranks: true`, and all three are asked on SCREEN ONE.
+// They are the same two answers `tableInputFromAnswers` was written to stop
+// losing, lost again one layer over: the ranking half was fixed and the PROMPT
+// half was not, and the prompt is what the model that writes the brief reads.
+// `region` was missing from both, and check_answer_reach calls it "the single
+// biggest measured lever in the product".
+//
+// So the list is gone. What is rendered is now a PROPERTY — every field the
+// founder answered, in the words `ANSWER_LABEL` gives — which is the shape
+// `intakeAnswerLines` in agentSelect.ts already uses for the selector, and for
+// the same stated reason. `check_answer_in_prompt.ts` holds it to that.
+import {
+  ACTIVITY_OPTIONS, ANSWER_LABEL, BORROWER_MODELS, EXCLUSION_OPTIONS,
+  FIELD_VALUE_DOMAIN, ORGANISATION_TYPE_OPTIONS, SECTOR_OPTIONS, TICKET_BANDS,
+  USE_OF_FUNDS_OPTIONS,
+} from "./types";
 import type { EligibilityAnswers, IntelligenceRequest } from "./types";
+import { regionNameFor } from "./regions.generated";
 
-const label = (options: readonly { value: string; label: string }[], v?: string) =>
-  options.find((o) => o.value === v)?.label ?? v ?? "";
+/**
+ * Option tables that carry a human label, for PRETTINESS ONLY.
+ *
+ * A field absent from here renders its raw vocabulary value with underscores
+ * turned into spaces, which is honest and is what half of the old list already
+ * did. Nothing about whether a field APPEARS is decided here — that is decided
+ * by `ANSWER_LABEL`, which is keyed on `keyof EligibilityAnswers` so the
+ * compiler demands an entry for every intake field, and it is enforced by
+ * `check_answer_in_prompt.ts`. A partial record cannot silently drop a field
+ * from the prompt; the worst it can do is spell one plainly.
+ */
+const LABELLED: Partial<Record<keyof EligibilityAnswers,
+  readonly { value: string; label: string }[]>> = {
+  sector: SECTOR_OPTIONS,
+  organisationType: ORGANISATION_TYPE_OPTIONS,
+  useOfFunds: USE_OF_FUNDS_OPTIONS,
+  activities: ACTIVITY_OPTIONS,
+  exclusionFlags: EXCLUSION_OPTIONS,
+  borrowerModel: BORROWER_MODELS,
+  ticketBand: TICKET_BANDS,
+};
+
+/** Answered, in this product's one sense of the word: `["none"]` is an answer
+ *  and `[]` is silence. See EligibilityAnswers. */
+const answered = (v: unknown): boolean =>
+  v != null && v !== "" && !(Array.isArray(v) && v.length === 0);
+
+/**
+ * A NUTS id AND the place it names — `DE7 (Hessen)`.
+ *
+ * The same rendering, for the same reason, as `namedRegion` in agentSelect.ts:
+ * the founder answered with the code the question offered and every candidate
+ * row describes the same place in words, so a model handed only one of the two
+ * has no way to see that they match. Keyed on `FIELD_VALUE_DOMAIN` rather than
+ * on the field name, so a second region-valued field is rendered this way with
+ * no edit here.
+ */
+export const sayIntakeValue = (field: keyof EligibilityAnswers, v: unknown): string => {
+  if (FIELD_VALUE_DOMAIN[field] === "region") {
+    const id = String(v);
+    const name = regionNameFor(id);
+    return name && name.toLowerCase() !== id.toLowerCase() ? `${id} (${name})` : id;
+  }
+  const opt = LABELLED[field]?.find((o) => o.value === String(v));
+  return opt ? opt.label : String(v).replace(/_/g, " ");
+};
+
+/**
+ * Every intake field the founder answered, as one line each.
+ *
+ * A property, not a register: the field list is `Object.keys(ANSWER_LABEL)`,
+ * which the compiler keeps exhaustive over `EligibilityAnswers`, so a field
+ * added to the intake tomorrow reaches every model that reads this block with
+ * no edit in this file. A field nobody answered prints nothing, so there is no
+ * way to accumulate empty labels.
+ *
+ * These are our own words for our own questions and our own vocabulary values,
+ * never founder prose, so they are trusted and need no fencing.
+ */
+export function intakeFactLines(e?: EligibilityAnswers): string[] {
+  if (!e) return [];
+  const keys = Object.keys(ANSWER_LABEL) as (keyof EligibilityAnswers)[];
+  return keys
+    .filter((k) => answered((e as Record<string, unknown>)[k]))
+    .map((k) => {
+      const v = (e as Record<string, unknown>)[k];
+      return `${ANSWER_LABEL[k]}: ${(Array.isArray(v) ? v : [v]).map((x) => sayIntakeValue(k, x)).join(", ")}`;
+    });
+}
+
+/**
+ * The consequences a bare value does not carry.
+ *
+ * Kept as EXTRA lines rather than as replacements: `intakeFactLines` above
+ * already states what the founder answered, and these say what that answer
+ * MEANS for aid law. Dropping them when the list became a property would have
+ * traded one silent loss for another — the undertaking-in-difficulty note in
+ * particular is the one line that changes what a writer may claim.
+ */
+function consequenceLines(e?: EligibilityAnswers): string[] {
+  return [
+    e?.ownerOver25 === "yes"
+      ? "NOTE: an owner holding 25% or more means the SME test needs the linked-enterprise check"
+      : "",
+    e?.nonEuControl === "yes"
+      ? "NOTE: majority non-EU control restricts the defence lanes"
+      : "",
+    e?.lossesOverHalfCapital === "yes"
+      ? "FLAG: accumulated losses may exceed half of share capital (undertaking-in-difficulty risk: most GBER aid blocked until equity is restored)"
+      : "",
+  ].filter(Boolean);
+}
 
 /**
  * The founder's own answers, formatted for a model prompt.
@@ -34,37 +157,11 @@ export function knownFacts(
     req.company ? `Company: ${req.company}` : "",
     req.country ? `Incorporated in: ${req.country}` : "",
     req.companyType ? `Self-described type: ${req.companyType}` : "",
-    // The three that were missing and that the question stage most needed.
-    // The kind of body, which decides who may apply at all. Kept beside the
-    // company line and NOT beside team size, because a model that reads them
-    // together starts treating "SME" as an organisation type, which is the
-    // exact confusion that lost this demand for a year.
-    e?.organisationType ? `Kind of organisation: ${label(ORGANISATION_TYPE_OPTIONS, e.organisationType)}` : "",
-    e?.sector ? `Sector: ${label(SECTOR_OPTIONS, e.sector)}` : "",
-    e?.developmentStage ? `Development stage: ${e.developmentStage.replace(/_/g, " ")}` : "",
-    e?.useOfFunds?.length
-      ? `What the money would pay for: ${e.useOfFunds.map((u) => label(USE_OF_FUNDS_OPTIONS, u)).join(", ")}`
-      : "",
-    e?.ticketBand ? `Ticket sought: ${label(TICKET_BANDS, e.ticketBand)}` : "",
-    e?.borrowerModel ? `Borrower model: ${label(BORROWER_MODELS, e.borrowerModel)}` : "",
+    // Not an EligibilityAnswers field: it is a request-level fact, so it
+    // cannot come from the property above and is stated here.
     req.targetMarkets?.length ? `Target markets for public capital: ${req.targetMarkets.join(", ")}` : "",
-    e?.entityCountries?.length ? `Entities/establishments in: ${e.entityCountries.join(", ")}` : "",
-    e?.wouldOpenEntity ? `Would open a local entity where required: ${e.wouldOpenEntity}` : "",
-    e?.fteBand ? `Team size: ${e.fteBand} FTE` : "",
-    e?.turnoverBand ? `Turnover: ${e.turnoverBand}` : "",
-    e?.activities?.length ? `Regulated activities: ${e.activities.join(", ")}` : "",
-    e?.ownerOver25 === "yes" ? "Has an owner holding 25% or more (SME test needs the linked-enterprise check)" : "",
-    e?.nonEuControl === "yes" ? "Majority non-EU controlled (defence lanes restricted)" : "",
-    e?.cofinancingBand ? `Co-financing capacity: ${e.cofinancingBand} of project cost` : "",
-    e?.lossesOverHalfCapital === "yes"
-      ? "FLAG: accumulated losses may exceed half of share capital (undertaking-in-difficulty risk: most GBER aid blocked until equity is restored)"
-      : "",
-    e?.conditionality?.length ? `Accepts conditions: ${e.conditionality.join(", ")}` : "",
-    e?.activityCountries?.length ? `Funded activity will sit in: ${e.activityCountries.join(", ")}` : "",
-    e?.consortium ? `Consortium-ready (3+ partners): ${e.consortium}` : "",
-    e?.bankRelationship ? `Bank relationship that would lend if guaranteed: ${e.bankRelationship}` : "",
-    e?.institutionalBacking ? `Institutional investors aboard or anchoring: ${e.institutionalBacking}` : "",
-    e?.needBy ? `Capital needed: ${e.needBy.replace(/_/g, " ")}` : "",
+    ...intakeFactLines(e),
+    ...consequenceLines(e),
   ].filter(Boolean);
   return lines.length ? `${heading}\n${lines.join("\n")}` : "";
 }

@@ -1,0 +1,200 @@
+(node:79604) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+# wsHL — which of the three wires carries a stated useOfFunds
+
+```
+corpus              postgres instruments=1088
+pairs               287   (wsHA's own door pairs)
+```
+
+## 0. What the corpus asks of this field
+
+```
+useOfFunds FILTER gates      436 on 330 instrument(s)
+registered purposes          421 instrument(s) (__objectives.json)
+
+the ten commonest demands, and whether the PIN clears each
+   114  PASS  in [experimental_development, feasibility_study, industrial_research]
+    74  FAIL  in [production_capex]
+    74  PASS  in [experimental_development, feasibility_study, industrial_research, rd_facilities]
+    60  PASS  in [experimental_development, industrial_research]
+    12  PASS  in [experimental_development, feasibility_study, industrial_research, ip_protection, rd_facilities]
+    12  PASS  not_in [production_capex]
+    12  PASS  not_in [feasibility_study, market_launch]
+     9  FAIL  in [production_capex, working_capital]
+     8  PASS  not_in [working_capital]
+     5  PASS  in [experimental_development]
+```
+
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [wsHL wiring]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+## 1. Does the pair carry a useOfFunds demand at all
+
+```
+at least one door carries a useOfFunds FILTER gate   57  19.9%
+  ...and the two doors DEMAND DIFFERENT THINGS       40  13.9%
+  ...both doors make the SAME demand (separates 0)   17  5.9%
+founders not in the recall set (skipped)            0
+```
+
+## 2. The three wires — can ANY answer move each
+
+```
+VERDICT   a pair where some answer changes a door's STATUS      57  19.9%
+          (pairs where a useOfFunds gate exists to move it)      57
+GATE FIT  a pair where some answer changes gateFitScorer         42  14.6%
+          flat under every one of the nine answers               245
+REGISTER  a pair where some answer gives objectiveScorer an      86  30.0%
+          opinion (registered purpose differs and is matchable)
+```
+
+## 3. Where a FAILING useOfFunds gate lands, under the pin
+
+```
+doors whose useOfFunds gate FAILS the pin           15
+  the door is BLOCKED (a second field fails too)    0
+  the door survives as one_blocker/open             15   <- the answer is collected and the row is kept
+```
+
+## 4. THE CROSS-TAB — the register is silent, the fund's own text is not
+
+```
+pairs where objectiveScorer can NEVER have an opinion,
+but the two doors' own ENCODED gates demand different things:  17  5.9%
+  ademe_aid              won: in:production_capex
+                         shown: (none)
+  eic                    won: (none)
+                         shown: in:experimental_development|feasibility_study
+  eic                    won: in:experimental_development|feasibility_study
+                         shown: in:experimental_development|feasibility_study|industrial_research
+  eic                    won: (none)
+                         shown: in:experimental_development|feasibility_study
+  eic                    won: in:experimental_development|feasibility_study|industrial_research
+                         shown: in:experimental_development|feasibility_study
+  eic                    won: in:experimental_development|feasibility_study|industrial_research
+                         shown: in:experimental_development|feasibility_study
+  horizon_eu_partnership won: not_in:feasibility_study
+                         shown: (none)
+  horizon_eu_partnership won: not_in:feasibility_study
+                         shown: (none)
+  innovation_fund        won: in:production_capex & in:production_capex
+                         shown: (none)
+  satr_de_rnd            won: in:experimental_development|feasibility_study|industrial_research
+                         shown: in:experimental_development|feasibility_study|industrial_research & in:experimental_development|industrial_research
+  satr_de_rnd            won: in:experimental_development|feasibility_study|industrial_research & in:experimental_development|industrial_research
+                         shown: in:experimental_development|feasibility_study|industrial_research
+  satr_de_rnd            won: in:experimental_development|feasibility_study|industrial_research & in:experimental_development|industrial_research
+                         shown: in:experimental_development|feasibility_study|industrial_research
+```
+
+## 5. Which door does each statement of the fact pick
+
+```
+  source      answer       won  shown  silent    accuracy
+  register    PIN           13      8     266       50.9%
+  register    ORACLE        64      1     222       61.0%
+  gates       PIN            0      0     287       50.0%
+  gates       ORACLE         2      0     285       50.3%
+  both        PIN           12      5     270       51.2%
+  both        ORACLE        57      0     230       59.9%
+
+  wsHH's null on this population, the door's NAME re-embedded:      50.9%
+```
+
+## 6. Volume control — is a source just a longer list
+
+```
+  register   of  21 pairs the PIN separates, the picked door's list is LONGER 20, shorter 0, equal 1
+             mean declared purposes: won door 3.11, shown door 2.77
+  gates      of   0 pairs the PIN separates, the picked door's list is LONGER 0, shorter 0, equal 0
+             mean declared purposes: won door 3.13, shown door 3.10
+  both       of  17 pairs the PIN separates, the picked door's list is LONGER 16, shorter 0, equal 1
+             mean declared purposes: won door 3.58, shown door 3.22
+
+  A source that picks the longer list is the documentation-volume prior
+  in a new place and must not be shipped on its number. See wsHG §6.
+```
+
+## 7. THE DEFECT — separation falls as the founder says more
+
+```
+  |answer|   subsets   pairs separated (mean)   net won-shown (mean)   accuracy
+         1         8                    31.1                   4.1      50.7%
+         2        28                    31.7                   5.1      50.9%
+         3        56                    26.7                   4.7      50.8%
+         4        70                    20.8                   3.7      50.6%
+         5        56                    15.0                   2.7      50.5%
+         6        28                     9.5                   1.8      50.3%
+         7         8                     4.4                   0.9      50.2%
+         8         1                     0.0                   0.0      50.0%
+
+  The PIN is one of the 28 two-option subsets: 21 separated, net +5, 50.9%.
+  The BEST SINGLE option a founder could state separates 41 pairs.
+  An answer naming ALL EIGHT — every true thing about a real project —
+  separates 0 pairs. The question invites that answer and the wire cannot read it.
+
+  per single option, the shape wsHG §5 found and this reproduces from the corpus:
+    industrial_research        separates  27  misleads   8  net +19
+    experimental_development   separates  20  misleads  17  net +3
+    feasibility_study          separates  33  misleads   8  net +25
+    rd_facilities              separates  30  misleads  11  net +19
+    ip_protection              separates  20  misleads  10  net +10
+    production_capex           separates   5  misleads  26  net -21
+    market_launch              separates   3  misleads  14  net -11
+    working_capital            separates   3  misleads  14  net -11
+```
+
+## 8. gateFitScorer — the only wire that reads the fund's own words
+
+```
+  answer                   won  shown  silent    accuracy
+  PIN                        7      9     271       49.7%
+  ORACLE (single option)    20      8     259       52.1%
+
+  pairs whose gateFit verdict CHANGES with the answer   42  14.6%
+  wsHH's null on this population                        50.9%
+```
+
+## 9. A candidate change, priced — and retired by §10
+
+```
+  |answer|  arm          pairs separated (mean)   net (mean)   accuracy (mean)
+  1         shipped                       31.1          4.1             50.7%
+  1         splitting                     38.5         -3.3             49.4%
+  2         shipped                       31.7          5.1             50.9%
+  2         splitting                     46.2          2.6             50.4%
+  3         shipped                       26.7          4.7             50.8%
+  3         splitting                     48.5          5.4             50.9%
+  4         shipped                       20.8          3.7             50.6%
+  4         splitting                     49.5          6.9             51.2%
+  5         shipped                       15.0          2.7             50.5%
+  5         splitting                     50.5          7.9             51.4%
+  6         shipped                        9.5          1.8             50.3%
+  6         splitting                     51.4          8.6             51.5%
+  7         shipped                        4.4          0.9             50.2%
+  7         splitting                     52.3          9.0             51.6%
+  8         shipped                        0.0          0.0             50.0%
+  8         splitting                     53.0          9.0             51.6%
+
+  the two answers that are not a subset average — the harness's PIN, and the
+  whole vocabulary, which is what a founder ticking every true thing gives us
+
+  PIN       shipped      won  13  shown   8  silent 266  net +5  acc 50.9%
+  PIN       splitting    won  34  shown  22  silent 231  net +12  acc 52.1%
+  ALL EIGHT shipped      won   0  shown   0  silent 287  net +0  acc 50.0%
+  ALL EIGHT splitting    won  31  shown  22  silent 234  net +9  acc 51.6%
+
+  wsHH's null on this population, the door's NAME re-embedded:  50.9%
+```
+
+## 10. Volume control on the candidate
+
+```
+  PIN       shipped     of  21 separated, picked door's list LONGER  20, shorter   0, equal   1
+  PIN       splitting   of  56 separated, picked door's list LONGER  43, shorter   4, equal   9
+  ALL EIGHT shipped     of   0 separated, picked door's list LONGER   0, shorter   0, equal   0
+  ALL EIGHT splitting   of  53 separated, picked door's list LONGER  53, shorter   0, equal   0
+
+  A rule that picks the longer list is expressing the population's base rate
+  (won door 3.11 purposes, shown door 2.77), not the founder's answer.
+```

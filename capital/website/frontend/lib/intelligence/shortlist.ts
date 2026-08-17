@@ -677,6 +677,40 @@ export function registeredPurpose(id?: string): string | undefined {
     : what;
 }
 
+/** ── THE MATCH RULE IS SETTLED, AND THE FAMILY IS EXHAUSTED (wsHL) ────────
+ *
+ *  This function was rewritten twice by two workstreams and reverted twice, so
+ *  the closure is recorded HERE rather than in either finding.
+ *
+ *  The test below is `reg.some(u => answer.includes(u))`: a disjunction against
+ *  a disjunction. It gets weaker as either side grows, so a founder who ticks
+ *  every true thing about their project is scored exactly as one who declined
+ *  to answer. Measured on wsHA's 287 sibling-miss pairs over every subset of
+ *  the vocabulary of each size (`scripts/_wshl_wiring.ts` §7), pairs this
+ *  function can tell apart at all:
+ *
+ *      |answer|   1     2     3     4     5     6     7     8
+ *      pairs     31.1  31.7  26.7  20.8  15.0   9.5   4.4   0.0
+ *
+ *  That looks like a defect with a fix, and every fix is the same rule:
+ *
+ *   - MORE of what the founder named wins (`|reg ∩ answer|`, or matching on
+ *     the part of the answer that splits the group). wsHG priced the first at
+ *     net +14 and retired it; wsHL built the second, got net +12 on the same
+ *     pairs, and ran the same control: of the 56 pairs it separates it picks
+ *     the door with the LONGER registered list on 43, shorter on 4. Under an
+ *     answer naming all eight options it is 53 of 53. They are one rule.
+ *   - LESS wins (jaccard) — wsHG measured it worth exactly nothing.
+ *   - NEITHER — the term is constant and ranks nothing.
+ *
+ *  A registered purpose list is the GBER articles a scheme was notified under,
+ *  so its length is the scheme's BREADTH; the won door averages 3.11 purposes
+ *  against the shown door's 2.77. Any rule monotone in that length expresses
+ *  the population's base rate, which is `proximity_wsGX`'s
+ *  A_POPULATION_PRIOR_IS_NOT_A_ROW_SIGNAL. There is no third direction, so
+ *  there is no rule change here to find. What is left is the ANSWER: the
+ *  harness pins this field, and a constant answer through a binary match term
+ *  can only ever be a prior. */
 /** Exported for the ordering diagnostic; see `awardScorer` above. */
 export function objectiveScorer(
   ids: (string | undefined)[], useOfFunds?: string[],
