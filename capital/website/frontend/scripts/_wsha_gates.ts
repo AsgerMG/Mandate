@@ -106,6 +106,7 @@ function main() {
   const statusPair = new Map<string, number>();
   const missingRow: string[] = [];
   const actionable: string[] = [];
+  const favouredRanks: number[] = [];
 
   // ── THE REGISTERED PURPOSE, WHICH IS ANSWER-INDEPENDENT ──────────────────
   // Everything else on this page is measured under a replayed founder, and the
@@ -184,11 +185,24 @@ function main() {
         c.favoursWon++;
         // THE ACTIONABLE CASE. Our own reassignment preferred the door the
         // founder won, over the door we put on the page, and the page still
-        // showed the other one. Named in full so it is checkable.
+        // showed the other one.
+        //
+        // The pool rank is what decides between two very different stories.
+        // The reassignment is RANK-PRESERVING within a channel: it hands the
+        // channel's existing score slots to its leaves in `pref` order, so a
+        // leaf preferred over its sibling receives the better of their two
+        // slots. If the won door is nonetheless sitting deep in the accessible
+        // pool, the preference did not reach the ordering at all — and that is
+        // a defect. If it is sitting just above the cut, the preference DID
+        // act and something after it (peer precedence, the scheme dedupe, the
+        // writer cap) took the row back off the page, which is the mechanism
+        // `rank_shape_wsGY.md` §4 already prices at net +3.2 EXACT.
+        favouredRanks.push(p.rankAccessible ?? -1);
         if (actionable.length < 25) {
           actionable.push(
             `${p.company} (${p.country}) · pref won=${prefWon.toFixed(4)} `
-            + `shown=${prefSib.toFixed(4)} · ${p.won} OVER ${p.siblingsShown[0]}`);
+            + `shown=${prefSib.toFixed(4)} · won door at pool rank `
+            + `${p.rankAccessible}/${p.accessibleLen} · ${p.won} OVER ${p.siblingsShown[0]}`);
         }
       } else c.favoursShown++;
     }
@@ -233,7 +247,19 @@ function main() {
 
   if (actionable.length) {
     console.log("## 4. Pairs where our OWN preference already picked the won door\n");
+    const sorted = [...favouredRanks].sort((a, b) => a - b);
+    const q = (f: number) => sorted[Math.min(sorted.length - 1, Math.floor(f * sorted.length))];
     console.log("```");
+    console.log(
+      `pool rank of the won door on these ${sorted.length} pairs:  `
+      + `min ${sorted[0]}  p25 ${q(0.25)}  MEDIAN ${q(0.5)}  p75 ${q(0.75)}  max ${sorted[sorted.length - 1]}`);
+    console.log(
+      `  ...at rank 7 or better (the preference reached the order, `
+      + `something after it removed the row)   ${sorted.filter((r) => r <= 6).length}`);
+    console.log(
+      `  ...outside the 40-row pool cut (the preference never reached the order)`
+      + `                     ${sorted.filter((r) => r > 40).length}`);
+    console.log("");
     for (const a of actionable) console.log(a);
     console.log("```\n");
   }
