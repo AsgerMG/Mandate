@@ -9,12 +9,20 @@
  * snapshot" is not evidence that it matches the store a founder is served from.
  * This asks the store directly, and it only ever SELECTs.
  *
+ * It also answers the question the funnel's own aggregate report deliberately
+ * cannot: WHICH funds the proposal is about, and how many founders in the
+ * funnel's population won one of them. `measure_funnel.ts` is aggregate-only by
+ * construction — no won-fund id leaves that process — so the attribution lives
+ * here, where the population is the answer key and nothing is published.
+ *
  *   cd website/frontend && npx tsx scripts/_wshd_pg_drift.ts
+ *   cd website/frontend && npx tsx scripts/_wshd_pg_drift.ts --winners
  */
 import { readFileSync } from "fs";
 import path from "path";
 
 import { loadEnvLocal } from "./loadEnv";
+import { isDescribed, loadRecallSet, type RecallRow } from "./recallSet";
 
 loadEnvLocal();
 delete process.env.ANTHROPIC_API_KEY;
@@ -37,7 +45,46 @@ const canon = (o: unknown): string => {
   return JSON.stringify(v, Object.keys(v as object).sort());
 };
 
+/** How many founders of the funnel's own population won a fund one of these
+ *  corrections touches. Held out, described, one per company — the same three
+ *  restrictions `measure_funnel` applies, so the counts are commensurable with
+ *  its rows rather than with a different draw. */
+function winners(corrections: Correction[]): void {
+  const { rows } = loadRecallSet("wshd winners");
+  const seen = new Set<string>();
+  const population = (rows as RecallRow[])
+    .filter((r) => r.split === "holdout" && isDescribed(r))
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .filter((r) => (seen.has(r.name) ? false : (seen.add(r.name), true)));
+  const wonBy = new Map<string, number>();
+  for (const r of population) wonBy.set(r.instrument, (wonBy.get(r.instrument) ?? 0) + 1);
+
+  const byInstrument = new Map<string, { gates: number; won: number }>();
+  for (const c of corrections) {
+    const e = byInstrument.get(c.instrument_id) ?? { gates: 0, won: wonBy.get(c.instrument_id) ?? 0 };
+    e.gates += 1;
+    byInstrument.set(c.instrument_id, e);
+  }
+  const ranked = [...byInstrument].sort((a, b) => b[1].won - a[1].won);
+  const reach = ranked.filter(([, e]) => e.won > 0);
+  console.log(`\n${population.length} founders in the funnel's population `
+    + `(holdout, described, one per company)`);
+  console.log(`${byInstrument.size} instruments carry the ${corrections.length} corrections; `
+    + `${reach.length} of them were won by somebody in that population`);
+  console.log(`${reach.reduce((a, [, e]) => a + e.won, 0)} founders won a fund this proposal `
+    + `touches — the ceiling on what it can move, before any gate is evaluated\n`);
+  for (const [id, e] of ranked) {
+    console.log(`  ${String(e.won).padStart(4)} founders  ${String(e.gates).padStart(2)} gate(s)  ${id}`);
+  }
+}
+
 async function main() {
+  if (process.argv.includes("--winners")) {
+    const corrections = readFileSync(path.join(process.cwd(), CORRECTIONS), "utf8")
+      .split("\n").filter(Boolean).map((l) => JSON.parse(l) as Correction);
+    winners(corrections);
+    return;
+  }
   const url = process.env.DATABASE_URL;
   if (!url) throw new Error("_wshd_pg_drift: no DATABASE_URL — this question is about Postgres");
   const corrections = readFileSync(path.join(process.cwd(), CORRECTIONS), "utf8")
