@@ -59,7 +59,7 @@ Not from memory: `eligibilityContext` and `writerCandidateEvidence` in
 
 | # | what the model sees | where it comes from | on how many rows |
 |---|---|---|---|
-| 1 | `Ticket sought: €15M – €50M` in the **AUTHORITATIVE** scoping profile | the founder's answer to *"How much are you looking for?"* — one band, one figure | every request |
+| 1 | `Ticket sought: €15M – €50M` in the **AUTHORITATIVE** scoping profile (now `how much they are looking for:` since wsHL) | the founder's answer to *"How much are you looking for?"* — one band, one figure | every request |
 | 2 | `ticket Wide, scheme-dependent: from €100k to tens of €M under GBER` | **hand-written prose**, one line per CHANNEL in `fund-processes/*.md`, carried by every leaf under it | **84 of 84**, either on its own row line or in its group header |
 | 3 | `typical award: 713,442 over 86 awards` | this leaf's **measured median** over real awards | **72 of 84** — never on row 0, by construction |
 | 4 | `comparable firms funded through it: VLC Photonics (€5.4M)` | that company's **total across the whole channel**, summed over years | every row with a traced peer |
@@ -140,7 +140,10 @@ labelling is the part of it that makes the statement possible.**
   ask, penalised far above it. The prompt now says the same thing in words, so
   the paid run measures one position rather than two that cancel.
 
-The property, in `lib/intelligence/money.ts`:
+The property, in `lib/intelligence/money.ts`, in two registers — one for the
+founder's own answers (`ANSWER_BASIS`, applied inside wsHL's `intakeFactLines`,
+so the writer's block and the planner's cannot describe the founder's number
+differently) and one for the row (`ROW_QUANTITIES`):
 
 > **A money quantity handed to a model carries the basis it is measured on.**
 > The test, for a field nobody has added yet: of any euro figure a prompt
@@ -217,6 +220,16 @@ gate, a comparator or the pool: it is prompt text, one hermetic module, one
 guard, and two contracts.
 
 ## §6 What this does NOT close
+
+**wsHL landed on top of this and made it better.** It replaced the two
+hand-kept founder-profile lists with one property over `ANSWER_LABEL`. The
+basis moved onto that property rather than fighting it, which is why
+`ANSWER_BASIS` is keyed by intake field and applied in `intakeFactLines`: after
+wsHL there is exactly one renderer of the founder's own answers, so there is
+exactly one place the qualifier can be lost. `check_money_basis` ties to it.
+`PROFILE_BLOCK=shipped` keeps its bare `Ticket sought:` on purpose — that arm
+reproduces the pre-2026-08-18 prompt bit for bit and labelling it would make the
+reproduction arm reproduce nothing.
 
 **It is unmeasured, and it cannot be measured for free.** Every claim above is
 about what the model was HANDED and what it WROTE on tapes already bought.
