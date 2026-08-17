@@ -18,7 +18,8 @@ from pathlib import Path
 _ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(_ROOT / "ETL" / "lib"))
 from scheme_title import (  # noqa: E402
-    fold_any_script, link_map, named_after_its_granting_body, officially_named,
+    fold_any_script, link_map, live_successor, live_successors,
+    named_after_its_granting_body, officially_named,
     repair_body_named_rows, scheme_title_via_links)
 
 FAILURES: list[str] = []
@@ -172,6 +173,76 @@ check(row["country"] == "DE" and row["total_eur"] == 1.0
 again = repair_body_named_rows(rows, reg)
 check(again == [], f"a second pass wanted to rename {len(again)} more row(s); the "
                    "repair must be a fixed point or a rebuild loop will drift")
+
+# ── The successor redirect follows the SAME directional field ────────────
+# The defect wsHN wrote out: the dead scheme carries no links, the LIVE
+# successor filed the edge on its own record, and a forward-only reading shows
+# the founder a dead end while the register names the replacement.
+def dated(title, end, links=None):
+    rec = case(title, links)
+    rec["caseMeasureEndDate"] = [end]
+    return rec
+
+
+TODAY = "2026-08-18"
+succ_cases = {
+    # closed, no links of its own
+    "SA.500": dated("Besluit O&O Kennisintensief", "2023-12-31"),
+    # its live replacement, which filed the edge
+    "SA.501": dated("Besluit O&O Kennisintensief 2024", "2029-12-31", ["SA.500"]),
+}
+sa, title = live_successor("SA.500", succ_cases, today=TODAY)
+check((sa, title) == ("SA.501", "Besluit O&O Kennisintensief 2024"),
+      f"a successor that filed the link on ITS OWN record was not found: "
+      f"{sa!r}/{title!r}. This is the 15-instrument defect: forward-only, those "
+      "founders see a dead end and the register names the replacement.")
+
+# A CLOSED link is not a redirection.
+closed_only = {
+    "SA.510": dated("Dead scheme", "2022-12-30", ["SA.511"]),
+    "SA.511": dated("Also dead", "2023-06-29"),
+}
+sa, reason = live_successor("SA.510", closed_only, today=TODAY)
+check(sa is None and "still shows as running" in reason,
+      f"a CLOSED linked case was offered as a successor ({sa!r}) -- a redirect "
+      "must point somewhere a founder can actually apply")
+
+# A link with NO end date is silence, not liveness. Reading absence as "running"
+# would manufacture a redirect out of a record the register says nothing about,
+# and a redirect is shown to the founder as a fact.
+undated = {
+    "SA.520": dated("Dead scheme", "2022-12-30", ["SA.521"]),
+    "SA.521": case("A case we hold no dates for"),
+}
+sa, reason = live_successor("SA.520", undated, today=TODAY)
+check(sa is None,
+      f"a case with no caseMeasureEndDate was treated as still running ({sa!r})")
+
+# Several live candidates: it PICKS, deterministically, and does not refuse --
+# unlike the NAME rule, because every candidate satisfies what a redirect
+# claims. The multiplicity stays countable through `live_successors`.
+several = {
+    "SA.530": dated("Dead scheme", "2022-12-30"),
+    "SA.532": dated("Successor B", "2030-12-31", ["SA.530"]),
+    "SA.531": dated("Successor A", "2031-12-31", ["SA.530"]),
+}
+sa, title = live_successor("SA.530", several, today=TODAY)
+check((sa, title) == ("SA.531", "Successor A"),
+      f"the choice among several live successors is not deterministic: {sa!r}. "
+      "Filing order is not stable under a symmetric map, so sorted SA order is "
+      "what makes two runs of the same register agree.")
+check([s for s, _ in live_successors("SA.530", several, today=TODAY)]
+      == ["SA.531", "SA.532"],
+      "live_successors must expose every candidate, so a report can count the "
+      "multiplicity without re-deriving the rule and drifting from the loader")
+
+# A case the register holds nothing for (`_miss`) is not a successor.
+missing = {
+    "SA.540": dated("Dead scheme", "2022-12-30", ["SA.541"]),
+    "SA.541": {"_reference": "SA.541", "_miss": True},
+}
+sa, _ = live_successor("SA.540", missing, today=TODAY)
+check(sa is None, f"a case record we do not hold was offered as a successor ({sa!r})")
 
 # ── The real three, against the register snapshot on disk if it is here ──
 _real = _ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"

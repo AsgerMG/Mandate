@@ -49,7 +49,7 @@ from name_evidence import (  # noqa: E402
 from ndb_taxonomy import NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source  # noqa: E402
 from nuts_regions import delivery_region, staged_region_mix  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
-from scheme_title import repair_body_named_rows  # noqa: E402
+from scheme_title import link_map, live_successor, repair_body_named_rows  # noqa: E402
 
 ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
@@ -1560,9 +1560,9 @@ def main() -> None:
             v = rec.get(key)
             return (v[0] if isinstance(v, list) and v else v) or ""
 
-        def _links(rec):
-            v = rec.get("caseLinks") or []
-            return v if isinstance(v, list) else [v]
+        # `caseLinks` is directional, so the traversal is built once, both ways,
+        # and every reader of the field in this file goes through it.
+        _edges = link_map(cases)
 
         # The register's word on a scheme's NOTIFIED DURATION -- which is not
         # the same thing as its closure, and reading it as one hid 306 leaves on
@@ -1593,23 +1593,17 @@ def main() -> None:
             # "superseded". Naming the successor turns a dead end into a
             # redirection; only a successor still running counts.
             #
-            # ── UNREVIEWED: this reads `caseLinks` FORWARD ONLY ────────────
-            # `caseLinks` is directional and the Commission files the edge on
-            # whichever side it pleases. Anything following a register link
-            # must build the map symmetrically or it measures their filing
-            # habits rather than the relation -- SA.40391 carries no links at
-            # all and the edge to its scheme lives only on SA.58995's record.
-            # `link_map()` in ETL/lib/scheme_title.py is the symmetric reading.
-            # A successor that filed the link on its OWN side is invisible
-            # here, so this loop under-reports redirects. Not measured; see
-            # project-mgmt/findings/body_named_rows_wsHF.md.
-            for link in _links(rec):
-                other = cases.get(str(link).strip()) or {}
-                oend = _one(other, "caseMeasureEndDate")[:10]
-                if oend and oend >= _today:
-                    row["successor_scheme"] = str(link).strip()
-                    row["successor_title"] = _one(other, "caseTitle")
-                    break
+            # The traversal is SYMMETRIC (`live_successor` -> `link_map`).
+            # This loop used to iterate the case's OWN `caseLinks`, and the
+            # Commission files each edge once on whichever side it pleases, so
+            # a successor that recorded the link on ITS record was invisible:
+            # 15 instruments across 14 schemes, against 40 found forward-only,
+            # measured by wsHF and written by wsHN. Those 15 founders were
+            # shown a dead end while the register named the replacement.
+            succ, title = live_successor(sa, cases, _edges, _today)
+            if succ:
+                row["successor_scheme"] = succ
+                row["successor_title"] = title
         if closed:
             print(f"  {closed} instruments sit under a scheme the register says has "
                   f"closed to new applications")

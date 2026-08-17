@@ -182,6 +182,96 @@ def scheme_title_via_links(
     return title, other
 
 
+def live_successor(
+    sa: str,
+    cases: dict[str, dict],
+    edges: dict[str, set[str]] | None = None,
+    today: str | None = None,
+) -> tuple[str | None, str]:
+    """The still-running case that replaced `sa`. Returns `(sa_number, title)`
+    or `(None, reason)`.
+
+    ── Why this is here and not inlined in the loader ─────────────────────
+    A prolonged GBER measure gets a NEW SA number, so "the register says this
+    scheme ended" usually means "it was superseded". Naming the successor turns
+    a dead end into a redirection, and `successor_scheme` / `successor_title`
+    are shown to a founder as exactly that.
+
+    The link that names the successor is `caseLinks`, and `caseLinks` IS
+    DIRECTIONAL: the Commission files the edge once, on whichever side it
+    pleases. `populate_funding_instruments.py` used to iterate a case's OWN
+    links, so a successor that filed the edge on ITS record was invisible --
+    measured by wsHF at 15 instruments across 14 schemes, against 40 found
+    forward-only. A 37.5% under-report, and every one of those 15 founders was
+    shown a dead end while the register named the replacement.
+
+    So the traversal is `link_map`, which is symmetric, and it lives beside the
+    other reader of that field rather than being written twice. Anything in
+    this repo that follows a register link must build the map both ways or it
+    is measuring the Commission's filing habits rather than the relation.
+
+    ── What counts as a successor ─────────────────────────────────────────
+    Only a linked case the register still shows as running: `caseMeasureEndDate`
+    absent-or-future. A closed case cannot be a redirection, and a link with no
+    end date tells us nothing, so neither qualifies.
+
+    ── Determinism where the register offers several ──────────────────────
+    Candidates are considered in sorted SA order and the first live one wins,
+    so the same register always yields the same answer -- the forward-only loop
+    took filing order, which is not stable under a symmetric map.
+
+    It does NOT refuse on several, and that is a deliberate difference from
+    `scheme_title_via_links`, which does. A NAME asserts what an object IS, so
+    guessing between two is a false claim about the object. A REDIRECT asserts
+    only that a live scheme replaced a dead one, and every candidate here
+    satisfies that; withholding it returns the founder to the dead end this
+    whole pass exists to remove. `live_successors` exposes the full list for a
+    caller that wants to count or report the multiplicity.
+    """
+    live = live_successors(sa, cases, edges, today)
+    if not live:
+        edges = link_map(cases) if edges is None else edges
+        return None, (f"{sa} links to no case the register still shows as running "
+                      f"(links: {sorted(edges.get(sa, ())) or 'none'})")
+    return live[0]
+
+
+def live_successors(
+    sa: str,
+    cases: dict[str, dict],
+    edges: dict[str, set[str]] | None = None,
+    today: str | None = None,
+) -> list[tuple[str, str]]:
+    """Every still-running case linked to `sa`, as `(sa_number, title)`, sorted.
+
+    The set `live_successor` picks its answer from. Separate so that the
+    multiplicity is countable without re-deriving the rule -- a report that
+    wants to say "three of the 55 had a second live candidate" reads this, and
+    cannot drift from what the loader actually wrote.
+
+    A link with NO `caseMeasureEndDate` is excluded rather than assumed live.
+    The register omits the field on records it holds nothing about, so reading
+    absence as "still running" would manufacture redirects out of silence --
+    the opposite failure to the one this pass fixes, and a louder one, because
+    a redirect is shown to the founder as a fact.
+    """
+    from datetime import date
+
+    edges = link_map(cases) if edges is None else edges
+    today = today or date.today().isoformat()
+
+    out: list[tuple[str, str]] = []
+    for other in sorted(edges.get(sa, ())):
+        rec = cases.get(other)
+        if not isinstance(rec, dict) or rec.get("_miss"):
+            continue
+        end = _one(rec, "caseMeasureEndDate")[:10]
+        if not end or end < today:
+            continue
+        out.append((other, _one(rec, "caseTitle") or _one(rec, "caseOriginalTitle")))
+    return out
+
+
 def repair_body_named_rows(rows: list[dict], cases: dict[str, dict]) -> list[dict]:
     """Rename every row that is shown under its granting body's name.
 
