@@ -1592,6 +1592,17 @@ def main() -> None:
             # A prolonged scheme gets a new SA number, so "ended" often means
             # "superseded". Naming the successor turns a dead end into a
             # redirection; only a successor still running counts.
+            #
+            # ── UNREVIEWED: this reads `caseLinks` FORWARD ONLY ────────────
+            # `caseLinks` is directional and the Commission files the edge on
+            # whichever side it pleases. Anything following a register link
+            # must build the map symmetrically or it measures their filing
+            # habits rather than the relation -- SA.40391 carries no links at
+            # all and the edge to its scheme lives only on SA.58995's record.
+            # `link_map()` in ETL/lib/scheme_title.py is the symmetric reading.
+            # A successor that filed the link on its OWN side is invisible
+            # here, so this loop under-reports redirects. Not measured; see
+            # project-mgmt/findings/body_named_rows_wsHF.md.
             for link in _links(rec):
                 other = cases.get(str(link).strip()) or {}
                 oend = _one(other, "caseMeasureEndDate")[:10]

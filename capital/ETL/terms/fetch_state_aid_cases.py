@@ -67,6 +67,23 @@ KEEP = ["caseTitle", "caseOriginalTitle", "caseObjectivesStr", "caseObjectives",
         "caseInitiationDate", "caseLastDecisionDate", "caseMeasureEndDate",
         "caseExpenditures", "caseLinks", "caseSimplifiedProcedure"]
 
+# ── `caseLinks` IS DIRECTIONAL. READ IT BOTH WAYS OR NOT AT ALL ────────────
+# The Commission files the edge between two related cases on WHICHEVER SIDE IT
+# PLEASES, and the other side may carry nothing at all. SA.40391's record has no
+# `caseLinks`; the edge to the scheme it evaluates exists only on SA.58995's.
+#
+# So: ANYTHING FOLLOWING A REGISTER LINK MUST BUILD THE MAP SYMMETRICALLY, or it
+# is measuring the Commission's filing habits rather than the relation. A
+# forward-only reading of the four evaluation-plan cases resolves three,
+# REPORTS SUCCESS, and silently drops the fourth -- which is the one with three
+# offerable French rows behind it. `link_map()` in ETL/lib/scheme_title.py is
+# the symmetric reading; use it rather than iterating `caseLinks` directly.
+#
+# The successor-redirect in populate_funding_instruments.py reads `caseLinks`
+# forward-only and is UNREVIEWED against this: a prolonged scheme whose
+# successor filed the link on its own side is a redirect we would not offer.
+# Found 2026-08-17, not measured, recorded here so it is not re-derived.
+
 
 def scheme_codes(conn: sqlite3.Connection) -> list[tuple[str, float]]:
     """Every notified scheme an instrument sits under, largest first — so a

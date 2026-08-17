@@ -176,6 +176,52 @@ rows named from this same register; cleaning them is a separate change with its
 own blast radius, not something to smuggle into a bounded one.
 
 
+### 0ter. Three doors of SA.40391 are now indistinguishable — the door problem, at a size somebody can finish — free to investigate, wsHF, 2026-08-17
+
+`project-mgmt/findings/body_named_rows_wsHF.md`, and read it against
+`project-mgmt/findings/door_separation_wsHA/`. **This is not a regression report.
+It is the smallest fully-evidenced instance of the thing wsHA says is 63.2% of
+our misses, and it was created in public by a fix you authorised.**
+
+After the rename, these three rows print **the same string, byte for byte**,
+through the shipped `doorLabel()`:
+
+```
+satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances
+satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation
+satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+  -> "Régime cadre exempté de notification relatif aux aides à la recherche,
+      au développement et à l'innovation (RDI) pour la période 2014-2023"
+```
+
+`nameableBody` refuses to append a ministry, by design and correctly, so nothing
+separates them. **Nothing can pick between these three: not the model, not any
+ordering we could build, not a founder reading the page.**
+
+**The trade that produced it, both sides.** Before: three rows a founder could
+tell apart, none of which said what it was. After: three rows that say what they
+are and cannot be told apart. Distinct labels across the 22 renamed rows went
+**21 → 20**. The fix is still right — "Ministère de l'économie et des finances"
+was information about the ministry, not about the fund, so there was no
+information to trade away — but the result is not an unqualified improvement and
+should not be filed as one.
+
+**What is sitting unused, already fetched and already in the corpus.** The
+register separates these three and we hold all of it: the **granting body**
+(economy / agriculture / economy-equity), the **capital channel** (`satr_fr_equity`
+against `satr_fr_rnd`), the notified **period**, and the per-case **GBER
+objectives** (`SA.40391` carries nine articles: 25(2)(a-d), 26, 27, 28, 29, 30).
+Two of the three differ in channel and two differ in body.
+
+**Why it was NOT solved here.** Choosing the suffix that separates two doors of
+one scheme *is* the door problem. It is unbounded, it is a product decision
+about what a founder is told, and it was not in the authorisation. A rushed
+suffix tonight would be worth less to the next workstream than this: a live
+three-row instance, with the separating facts enumerated, in a regime whose
+siblings are 15.7% of wsHA's whole working set (`satr_fr_rnd`, 45 pairs).
+
+**No money. The next step is a person deciding what a door label should say.**
+
 ### 0bis. Regenerate the committed snapshot, so the new naming check can be wired in — free, ~2 minutes, wsHF, 2026-08-17
 
 `website/frontend/public/data/instrument_terms.json` still carries the twenty-two

@@ -16,8 +16,53 @@ publish step nobody has authorised runs. **The row is still worth fixing because
 it was wrong.** A door labelled with a tax office's name cannot be chosen over
 its sibling by anything — not the model, not a founder reading the page.
 
-The part worth your attention is not the rename. It is **why the rows were like
-that**, because it was not an oversight. `populate_funding_instruments.py`
+## ██ THE THING TO READ FIRST: the fix reproduced the project's central defect, in miniature and in public
+
+Three of the twenty-two rows are France's `SA.40391`. Rendered through the
+shipped `doorLabel()`, **all three now print the same string, byte for byte:**
+
+```
+Régime cadre exempté de notification relatif aux aides à la recherche,
+au développement et à l’innovation (RDI) pour la période 2014-2023
+```
+
+`nameableBody` refuses to append a ministry — correctly, by design — so nothing
+separates them. **Nothing can now pick between those three doors: not the model,
+not an ordering we could ever build, not a founder reading the page.**
+
+That is not a blemish on this fix. It is `door_separation_wsHA`'s finding
+happening in front of us, at a size small enough to hold in one hand. wsHA
+measured that **63.2% of the founders we miss are already shown a SIBLING of the
+fund they would have won** — the right regime, the wrong door — and that what
+fails is telling two doors of one scheme apart. Here are three doors of one
+scheme, identical on the page, with the register's own period, granting body and
+legal base sitting unused beside them.
+
+**The trade, both sides, neither flattened:**
+
+| | before | after |
+| --- | --- | --- |
+| the 3 `SA.40391` rows | three rows a founder could tell apart, **none of which said what it was** | three rows that **say what they are**, and cannot be told apart |
+| the 18 `SA.56245` rows | `Finanzamt Aachen-Stadt` | `Steuerliche Förderung ... [BMF] · via Finanzamt Aachen-Stadt` — **both** |
+| distinct labels over all 22 | **21** | **20** |
+
+**This does not make the fix wrong.** A name that tells a founder nothing has no
+value to trade away, and "Ministère de l'économie et des finances" was never
+information about the fund — it was information about the ministry. But this
+finding should not be read as an unqualified improvement either, and the German
+eighteen show what the fixed shape looks like: the scheme *and* the door.
+
+**Deliberately not solved here.** Finding the suffix that separates those three
+is the door problem itself; it is unbounded and it is not what was authorised.
+It is filed as its own item in `AWAITING_APPROVAL.md` — a live, tiny,
+fully-evidenced instance of the general problem is worth more to the next
+workstream than a suffix rushed tonight.
+
+---
+
+## Why the rows were like that, which is the other thing worth your time
+
+It was not an oversight. `populate_funding_instruments.py`
 already names 430 of 453 state-aid children from this register. Four SA numbers
 sat in a hand-written skip list, `CASE_TITLE_NOT_A_SCHEME`, with a **correct**
 reason: the register record those numbers resolve to is an *evaluation plan*,
@@ -133,10 +178,30 @@ Swept for the same shape across the product. One more instance exists:
 
 **Ten corpus rows fold to empty (four offerable). Zero reach that guard today**,
 because none of them is in a multi-leaf scheme with a nameable body — so this is
-**latent, not live**, and it is reported as latent. It goes live the day a Greek
-or Bulgarian scheme gains a second leaf, which is an ordinary consequence of
-loading more of either country. `scripts/_wshf_foldaudit.ts` is the sweep and
-re-runs free.
+**latent, not live**, and it is reported as latent rather than fixed on
+speculation. `scripts/_wshf_foldaudit.ts` is the sweep and re-runs free.
+
+> **WHAT MAKES IT GO LIVE — for whoever trips it.** All three conditions have
+> to hold at once for a single row, and today the corpus never has more than
+> two:
+>
+> 1. the row's `name` or `administeringBody` is written in a **non-Latin
+>    script** (Greek and Cyrillic are the two in scope: EL, BG, and any CY/RS
+>    load), **and**
+> 2. its `schemeCode` has **more than one leaf**, so `ambiguousSchemes()`
+>    contains it and `doorLabel` decides to qualify the row, **and**
+> 3. `nameableBody` accepts its body — a non-null body, not a department by
+>    `applyableBody`'s Latin-script register (a Greek body is never a
+>    department to it, so this is nearly automatic), with
+>    `administeringBodyShare >= 0.75`.
+>
+> **Condition 2 is the trigger, and it arrives by ordinary work:** loading a
+> second granting body under an existing Greek or Bulgarian SA number. Today
+> every non-Latin row is `__unknown`, a single leaf. The symptom will be
+> silent — a door that simply never says which body delivers it, while its
+> Latin-script siblings do — so the check is: run
+> `scripts/_wshf_foldaudit.ts`; a non-zero "SILENCED" count is this bug, and
+> the fix is `foldAnyScript` from `bodyNamedRow.ts` in `doorLabel.flatten`.
 
 Where it lives:
 
@@ -253,15 +318,11 @@ disambiguator is free to speak wherever the body is nameable.
 | the 1 `SA.49781` row | `Ministero delle Imprese e del Made in Italy - Direzione generale ...` | `Intervento del fondo per la crescita sostenibile ...` |
 | **distinct labels over the 22 rows** | **21** | **20** |
 
-**The French three are a real cost and it is stated rather than buried.**
-`nameableBody` refuses a ministry by design, so nothing is appended, and three
-rows that were at least distinguishable *from each other* now read identically.
-What they gained is that the label finally says what the thing IS. Both are
-true; a founder who could previously tell two doors apart but not tell what
-either was is not obviously better off than one who can tell what they are but
-not which is which. **This is the sharpest argument for treating the 22 as a
-correctness fix and not as a ranking improvement** — and the German 18, which
-gain the scheme AND keep the body, are the shape the fix should have everywhere.
+**The French three are the finding, not a caveat on it — see the block at the
+top of this file.** Three doors of one notified scheme are now byte-identical on
+the page, which is `door_separation_wsHA`'s 63.2% reproduced at a size somebody
+can actually work on. The German eighteen are the shape the fix should have
+everywhere: they gain the scheme *and* keep the door.
 
 ## 7. What this cannot see
 
