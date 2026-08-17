@@ -2,28 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsGY",
-      "step": 5,
-      "what": "What better ordering can buy, before anyone spends a week buying it",
-      "why": "Two steps lose forty-six of the sixty-six points, and both are the same thing: the order we put the funds in. Before we work on it, one question has to be answered. If the ordering were PERFECT — right fund first, every time it is anywhere on the list — what would the number be? That is the ceiling on every ordering effort we could ever run. It also asks where the right fund actually sits when we lose it: at rank nine, which a small improvement reaches, or at rank sixty, which no reshuffling of a forty-row list can."
-    },
-    {
-      "id": "wsGX",
-      "step": 5,
-      "what": "The ordering itself, and a term it does not contain",
-      "why": "We closed off this area months ago on a study that could not prove which ranking engine it ran on, and its conclusion was drawn from the wrong comparison. Re-run properly: single signals stay dead, but a blend of them beats what ships by a margin that clears its own error bars, and its biggest term is how near a fund is to the founder's own country — which our live scoring has no notion of. Graded at both places we cut the list, because a reshuffle can buy reach and no accuracy."
-    },
-    {
-      "id": "wsGV",
-      "step": 5,
-      "what": "Three more facts on each fund, and a leak the guard cannot see",
-      "why": "We hold about forty-six facts on every fund and show the AI eleven. An audit killed thirty-one of the thirty-five we withhold — too rare, or identical across every fund on the menu. Three survived and get one measured trial each. The more important half: a fourth field is tempting and is computed from who actually won money before, and our safeguard against the AI reading the answer key checks field NAMES, so it would not catch it. That safeguard gets taught to reason about where a number came from."
-    },
-    {
-      "id": "wsGZ",
+      "id": "wsHB",
       "step": 2,
-      "what": "Three of our eleven sectors are missing from the corpus",
-      "why": "Our own safety check caught it: the corpus we run on now holds eight top-level sectors where it held eleven, and the snapshot the site falls back on still says eleven. This matters more than housekeeping, because sector is one of the two things our ranking scores a fund on — the same ranking the other two agents are working. If a quarter of that resolution went missing, every ordering measurement since is standing on it. The job is to say what happened, when, whether it was a deliberate tidy-up or a loss, and what it cost."
+      "what": "What the corpus of record lost while we were away",
+      "why": "Our own safety check is refusing the newest corpus. Two things it can no longer name: three of the eleven sector families, and the written eligibility rules for fifteen funds. The second one matters most — that text is what makes a fund readable to the AI, and making rows readable was one of the biggest wins we have had, so losing it quietly undoes shipped work. The half-finished answer from before the interruption has been recovered and says the sectors are a column that is empty in one copy rather than rows that vanished. This finishes it, and says whether a founder feels any of it today."
+    },
+    {
+      "id": "wsHC",
+      "step": 2,
+      "what": "A thousand encoded rules the two copies disagree about",
+      "why": "The corpus of record holds about 1,070 fewer encoded eligibility rules than the working copy — a 14% gap, larger than either thing the safety check actually caught, and it caught neither of them. Those rules are the one thing measured to tell apart two funds from the same programme, which is where two thirds of our misses turn out to be. So this asks three things: are the two copies even counting the same thing, what does the gap cost if it is real, and what the check should have done — it has already been fooled twice in this family, once crying wolf and once staying silent while work was thrown away."
     }
   ]
 }

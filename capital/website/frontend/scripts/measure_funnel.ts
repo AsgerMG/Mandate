@@ -143,6 +143,7 @@ import {
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
+import { POOL_BLEND } from "../lib/intelligence/poolBlend";
 import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
 import {
   rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
@@ -697,6 +698,8 @@ async function main() {
     if (traces.length % 50 === 0) console.log(`  ${traces.length}/${drawn.length}`);
   }
 
+  writeFounderTrace(traces, byId, startedAt);
+
   // ── THE TABLE ─────────────────────────────────────────────────────────────
   const N = traces.length;
   const rows = funnelRows(STAGES, traces);
@@ -742,13 +745,31 @@ async function main() {
   p(`                   cross-regime-only draw, which exists because a model reads`);
   p(`                   the query text and nothing here does.`);
   p(`levers             pool=${VERDICT_POOL} writer_cap=${WRITER_CANDIDATE_CAP} `
-    + `published_cap=${PUBLISH_CAP} top=${TOP} select_depth=${kLabel(SELECT_DEPTH)}`);
+    + `published_cap=${PUBLISH_CAP} top=${TOP} select_depth=${kLabel(SELECT_DEPTH)} `
+    + `row_order=${POOL_BLEND}`);
   if (SWEEP_KS.length > 1) {
     p(`pool swept at      ${SWEEP_KS.map(kLabel).join(", ")} — the whole ladder at each, `
       + `paired off one pool object`);
   }
   p("```");
   p();
+  // ── A RUN THAT DID NOT USE THE SHIPPED ROW ORDER MUST SAY SO ──────────────
+  // `latest.md` is the file that gets quoted, and until now nothing in it named
+  // the ordering that produced it: `POOL_BLEND` is read at module scope inside
+  // `shortlist.ts`, so an arm run and a baseline run wrote byte-comparable
+  // headers and differed only in the numbers -- which is precisely the shape
+  // that let four figures on four populations be compared to each other. The
+  // arm is now on the levers line, and anything other than the shipped order
+  // gets the same banner the held-back intake fields get, because a founder is
+  // not served by it.
+  if (POOL_BLEND !== "off") {
+    p(`██ NOT THE SHIPPED ORDER — this run ranked every founder's table with `
+      + `\`POOL_BLEND=${POOL_BLEND}\`, an arm that is default-off and that no founder `
+      + `receives. Every number below is a measurement of that arm, not of the product. `
+      + `Do not quote a row from this run beside a row from a shipped run without saying `
+      + `which is which.`);
+    p();
+  }
   for (const line of tally.lines(policy)) p(line.trim());
   p();
 
@@ -985,7 +1006,12 @@ async function main() {
     // measurement as the exact one. Flagged so a chart can drop it or draw it
     // differently, rather than plotting an N=30 smoke run beside a reference.
     sampled: n > 0, populationSize: population.length,
-    levers: { VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP, rowCuts: ROW_CUTS },
+    levers: {
+      VERDICT_POOL, WRITER_CANDIDATE_CAP, PUBLISH_CAP, TOP, rowCuts: ROW_CUTS,
+      // The ordering arm, so the series in `runs/` can never contain a point
+      // nobody can attribute to a code path. See the banner above.
+      rowOrder: POOL_BLEND,
+    },
     // Null on a run with no sweep, never absent: a series where the field comes
     // and goes cannot be asked "was this run swept" without inspecting prose.
     poolSweep: sweep?.record ?? null,
@@ -1291,6 +1317,64 @@ function bandConversions(): { label: string; n: number; control: number; ranker:
     });
   }
   return out;
+}
+
+/** The working tree. `process.cwd()` is `website/frontend` for every harness
+ *  here, and the repo is two levels up — the same derivation `latest.md`'s own
+ *  output path uses, so the two cannot disagree about where the tree is. */
+const REPO_ROOT = path.resolve(process.cwd(), "..", "..");
+
+/** ── THE PER-FOUNDER TRACE, AND WHY IT DOES NOT LIVE IN THE REPO ───────────
+ *
+ *  `latest.json` is AGGREGATE ONLY, deliberately. That makes it safe and makes
+ *  it unable to answer the one question this repo's standing rule asks of every
+ *  proposed change: **is the gain SPREAD or is it one market**. Two funnel runs
+ *  are the same founders in the same order — the draw fingerprint says so — so
+ *  the pairing exists; what was missing was anything to pair. A workstream that
+ *  wanted it had to either re-implement the ladder in a scratch script (a second
+ *  definition of the funnel, which is the defect this instrument was built to
+ *  remove) or report an unpaired difference of two marginal counts, which is
+ *  exactly the comparison that closed the blend route in error in wsBU.
+ *
+ *  So: opt-in, one line per founder, and REFUSED anywhere inside the working
+ *  tree. The regime is a `parentId`, which for a standalone fund IS the won
+ *  fund's id — so this file is a partial answer key, and the answer key may not
+ *  gain a second copy in a directory nothing guards. `check_answer_not_reachable`
+ *  scans the repo; a path outside it is outside that guard, which is the reason
+ *  the guard here is a refusal and not a warning.
+ *
+ *  The company NAME never appears. Pairing is positional: two runs quoting one
+ *  draw fingerprint drew the same founders in the same order, and that is
+ *  checked by the fingerprint rather than asserted by a name in this file. */
+function writeFounderTrace(
+  traces: Trace[], byId: Map<string, DbInstrument>, startedAt: string,
+): void {
+  const out = process.env.FUNNEL_TRACE;
+  if (!out) return;
+  const abs = path.resolve(out);
+  if (!path.relative(REPO_ROOT, abs).startsWith("..")) {
+    throw new Error(
+      `measure_funnel: FUNNEL_TRACE=${abs} is inside the working tree. Each line `
+      + "carries the REGIME of a fund a real company really won, and for a "
+      + "standalone fund the regime is that fund's own id — so this is a partial "
+      + "copy of the answer key, and the answer key does not get a second copy "
+      + "the leak guards do not scan. Write it outside the repo.");
+  }
+  const lines = traces.map((t, i) => JSON.stringify({
+    i, country: t.country,
+    // The ROLLUP the won fund belongs to. `measure_recall` computes the same
+    // quantity the same way (`parentId ?? id`), so a concentration figure from
+    // this file and one from that harness mean the same thing.
+    regime: String(byId.get(t.won)?.parentId ?? t.won),
+    inCorpus: t.inCorpus, offerable: t.offerable,
+    rankTable: t.rankTable, rankAccessible: t.rankAccessible,
+    rankWriter: rankWriter(t, VERDICT_POOL),
+    tableLen: t.tableLen, accessibleLen: t.accessibleLen,
+  }));
+  mkdirSync(path.dirname(abs), { recursive: true });
+  writeFileSync(abs, `${JSON.stringify({ startedAt, rowOrder: POOL_BLEND })}\n`
+    + `${lines.join("\n")}\n`);
+  console.log(`wrote founder trace ${abs} (${lines.length} founders)`);
 }
 
 /** ── THE HISTORY, AND THE ONE RULE IT HAS ──────────────────────────────────

@@ -13,8 +13,9 @@ import { describe, expect, it } from "vitest";
 
 import type { DbInstrument } from "./corpus";
 import {
-  BLEND_SIGNALS, BLEND_WEIGHTS, blendPoolScores, parsePoolBlend, proximityFit,
-  rankNormalise, reconcileBlendColumns, type BlendContext,
+  assertOneOrdering, BLEND_SIGNALS, BLEND_WEIGHTS, blendPoolScores, homeFirstScores,
+  parsePoolBlend, parseRowProximity, proximityFit, rankNormalise, reconcileBlendColumns,
+  type BlendContext,
 } from "./poolBlend";
 
 const inst = (id: string, over: Partial<DbInstrument> = {}): DbInstrument => ({
@@ -190,5 +191,57 @@ describe("blendPoolScores", () => {
     const pool = [inst("a"), inst("b"), inst("c")];
     const s = blendPoolScores(pool, ctx());
     expect(new Set(s.values()).size).toBe(1);
+  });
+});
+
+// ── THE ISOLATED PROXIMITY ARM ─────────────────────────────────────────────
+//
+// `homeFirstScores` exists to attribute the blend's largest weight, so what it
+// has to guarantee is exactly two things: that the stratum is STRICT (no base
+// score, however good, lifts an EU-wide row past a home one) and that it is a
+// tie-break and nothing more inside each stratum. Both are asserted here, and
+// so is the throw that protects the first one.
+describe("homeFirstScores", () => {
+  const de = (id: string) => inst(id, { country: "DE" });
+  const eu = (id: string) => inst(id, { country: "EU" });
+
+  it("puts every home row above every EU-wide row, whatever the base score says", () => {
+    const pool = [eu("eu_best"), de("de_worst"), eu("eu_ok"), de("de_ok")];
+    const base = new Map([["eu_best", 1], ["eu_ok", 0.9], ["de_ok", 0.2], ["de_worst", 0]]);
+    const s = homeFirstScores(pool, ["DE"], (id) => base.get(id) ?? 0);
+    expect(s.get("de_worst")!).toBeGreaterThan(s.get("eu_best")!);
+    expect(s.get("de_ok")!).toBeGreaterThan(s.get("de_worst")!);
+    expect(s.get("eu_best")!).toBeGreaterThan(s.get("eu_ok")!);
+  });
+
+  it("keeps the shipped order inside a stratum", () => {
+    const pool = [de("a"), de("b"), de("c")];
+    const base = new Map([["a", 0.1], ["b", 0.9], ["c", 0.5]]);
+    const s = homeFirstScores(pool, ["DE"], (id) => base.get(id) ?? 0);
+    expect(s.get("b")!).toBeGreaterThan(s.get("c")!);
+    expect(s.get("c")!).toBeGreaterThan(s.get("a")!);
+  });
+
+  // The stratum term is 1 and only dominates a base inside the unit interval.
+  // A base outside it would make this a WEIGHTING wearing the word
+  // "stratification", which is the claim the finding rests on.
+  it("refuses a base score it cannot dominate", () => {
+    expect(() => homeFirstScores([de("a")], ["DE"], () => 4.2))
+      .toThrow(/outside \[0,1\]/);
+  });
+
+  it("throws rather than defaulting to off on a misspelling", () => {
+    expect(() => parseRowProximity("FIRST")).toThrow(/unknown ROW_PROXIMITY=FIRST/);
+    expect(() => parseRowProximity("on")).toThrow(/unknown ROW_PROXIMITY/);
+    expect(parseRowProximity(undefined)).toBe("off");
+  });
+
+  // Two arms that both REPLACE the base score do not compose: one would win and
+  // the run would be reported under both names.
+  it("refuses two orderings on one table", () => {
+    expect(() => assertOneOrdering("on", "first")).toThrow(/do not compose/);
+    expect(() => assertOneOrdering("pure", "first")).toThrow(/do not compose/);
+    expect(() => assertOneOrdering("off", "first")).not.toThrow();
+    expect(() => assertOneOrdering("on", "off")).not.toThrow();
   });
 });

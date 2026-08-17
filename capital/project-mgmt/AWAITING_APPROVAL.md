@@ -8,6 +8,43 @@ this file and into the commit that acts on it.
 
 ---
 
+## READ THIS FIRST — wsGY changed which of these is worth doing
+
+`project-mgmt/findings/rank_shape_wsGY.md`, 2026-08-13, free, attested, on the
+funnel's own draw. Three results, and they re-rank everything below.
+
+1. **The ceiling is not the problem.** A perfect order puts the won fund in six
+   rows for **86.3%** of founders against 35.7% today, and all 774 land at
+   writer rank 1 — nothing below the pool can lose a correctly ranked answer.
+   60% is not blocked by anything structural.
+2. **Ranking is not how we take it.** On the 454 misses, the rows we show sit
+   within **four percentile points** of the fund they won on every fact we hold
+   — size, proximity, recency, award scale, text length. The score is not
+   biased against the answer, it is indifferent to it.
+3. **63.2% of misses already show a SIBLING of the won fund**, 85.7% the same
+   channel. The median failure is the wrong DOOR inside a regime already on the
+   page.
+
+**So the item to decide is §0, the 63 gate corrections, and its case is now
+much stronger than when it was written.** `leaf_separation_wsAO.md` measured
+that gates DO separate siblings — and siblings are where two thirds of the loss
+turns out to be. Gate encoding is the one lever we hold that acts on the
+failure wsGY identified. Nothing else in this file does.
+
+**And two spending items below are weaker than their text says:**
+
+- **§2, the EUR 11-13 confirming run on 18 → 40.** wsGY measured the widening's
+  deterministic downside at zero and put the model's own ceiling at **71.7%**
+  against a whole-pool 86.3%. The run would price something already bounded.
+  Not wrong to buy; no longer urgent.
+- **§1, the EUR 1.6 grader.** Still the right question about our answer key, and
+  still **not on main** — it exists only on `archive/wsDX-relevance-grade`.
+
+*(This block is a reading order, not a decision. Every item below stands as
+written and none has been acted on.)*
+
+---
+
 ## Spending
 
 ### 1. The blind relevance grader — EUR 1.6
@@ -83,11 +120,78 @@ brief forever.
 
 ## Your decision, no money involved
 
+### 0a. Make the corpus of record match what is already shipping — free, ~30 minutes, nothing a founder sees changes either way
+
+`project-mgmt/findings/wsHB_record_divergence/`, 2026-08-17. **Read the reason
+this is not urgent first: no founder is affected.** Postgres — the store the
+product actually reads — is byte-identical to the laptop on every instrument
+measure, and its funds carry all eleven sector families. The gate's DEGRADED
+verdict is keeping the record's thinner corpus off the site, which is the gate
+working. This item is about closing an exposure, not repairing a live defect.
+
+**The exposure.** The Railway volume is missing the 2026-08-01 sector-label
+recovery and the 3,362 eligibility gates encoded since 2026-08-09. Any rebuild
+run against it publishes a corpus in which the sector term is *identically zero*
+for founders in mobility, materials and space — the term does not degrade, it
+stops existing — and the eligibility axis drops from 963 funds to 898.
+
+**Three actions, in increasing cost. None has been performed.**
+
+1. **`railway up` — redeploy the container.** It is running commit `f6ff3957`
+   from 2026-08-11 and is therefore grading every weekly census against a
+   coverage baseline that was corrected the following morning (`fe75156a`),
+   which makes the gate report a 15-row eligibility shortfall where the true one
+   is 39. It also means the census's own DRIFTED class is the only thing
+   flagging it. Cost: one CLI upload. Risk: the deployed image and HEAD differ
+   by six days of ETL changes; read the diff before pushing it at a Sunday cron.
+   Command: `python3 ETL/lib/verify_cron.py --deploy`.
+
+2. **Promote ONE table — `company_sector_labels` — to the volume.** 144,493
+   rows, primary-keyed on `name_key`, already in `reconcile_stores.py`'s
+   IDENTITY map. The container's weekly `classify_taxonomy.py restore` step then
+   repairs `companies.sector_top` unaided on the next Sunday, for free, and
+   `sectors` returns to 11. Cost: free. Risk: **lowest of the three** — one
+   table, no `companies` write, no events touched, and the union never deletes a
+   target row. This is the action I would take first.
+
+3. **A full `push_local.py` cycle** to carry the 3,362 gates across and bring
+   the record's eligibility axis to ≥963. Cost: free, but it runs 43 extractors.
+   Risk: this is the direction that ends in a whole-file upload. It is guarded —
+   `push_local.py` downloads a witness copy of the record and refuses through
+   `overwrite_gate` if the push would delete a row — and the volume is currently
+   ahead by 21 companies, 41 events and €7.95M, so **expect it to refuse** and
+   to require `make pull-db` (which unions, safely) first. Do not reach for
+   `--force-overwrite`.
+
+**What I did NOT do and why:** no production write of any kind. The volume was
+never opened — `pull_db.py` is the only channel to it and it overwrites 645 MB,
+so on a machine 3,362 gates ahead it is a demolition, not a read. Every figure
+above was derived from the census series, the laptop, and Postgres.
+
+**One correction for whoever owns the sync path.** `reconcile_stores.py`'s
+header, `test_overwrite_refusal.py` and `check_corpus_census.ts`'s DIVERGED
+message all still say *"both sync paths move the whole file with `--overwrite`"*.
+That is no longer true of the pull: `make pull-db` is a side-file fetch plus an
+INSERT OR IGNORE union. `make republish` — which `check_corpus_census` prints as
+its closing advice — is therefore safe, and the surrounding paragraph currently
+reads as though it is not.
+
 ### 0. Apply 63 gate-encoding corrections — free, and it is the biggest single fix on the shortlist
 
 **`check_winner_not_gated` goes from 251 wrongful deletions to 14**, against a
 ceiling of 207 it has been failing. Nothing else on this list moves it, and no
 code change can: wsGR proved the residue is gate encodings, not inheritance.
+
+**Its case got stronger after it was written, and this is the paragraph to read
+if you read one.** wsGY has since measured that **63.2% of the founders we miss
+are already looking at a sibling of the fund they would have won** — same
+regime, wrong door — and that nothing else we hold about a fund separates the
+one they won from the ones we showed. `leaf_separation_wsAO.md` measured that
+**gates DO separate siblings**, and that the earlier negative was a harness
+handing all 300 founders identical answers. So the encoded gates are the only
+lever in this file that acts on the failure that turns out to dominate. A gate
+that deletes the right door, or fails to distinguish it from its neighbour, is
+the mechanism — not a rounding error on the side.
 
 Every one of the 63 was checked against the funder's own page, and the file
 carries the URL, the verbatim quote and the reasoning per row:
