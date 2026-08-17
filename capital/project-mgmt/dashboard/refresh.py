@@ -327,7 +327,34 @@ def funnel_table() -> str:
     return "\n".join(out)
 
 
-TARGET = 60.0   # the owner's near-term goal, and the only typed number on the page
+TARGET = 60.0
+"""The owner's near-term goal.
+
+It is the one figure here that is a DECISION rather than a measurement, which
+is exactly why it needs guarding differently. A stale measurement announces
+itself -- the run stamp moves, the orphan check fires, the ladder disagrees. A
+re-typed decision does not. It just quietly disagrees with itself in two
+places, and both look deliberate.
+
+I claimed in this file that it was "the only typed number on the page". That
+was false when I wrote it: 60 also set the chart's y-axis scale and its
+gridline stops, so moving the goal to 70 would have left the red line running
+off the top of its own chart with nothing failing. That is the fault
+`ETL/schema/check_cross_language_constants.py` exists to prevent, in its own
+words -- "every one carried a 'keep in sync' comment that did not work" -- and
+its rule is the one that applies here: anything that CAN be generated should
+be, and where a duplicate cannot be removed, a check must fail when it
+diverges. Here the duplicate CAN be removed, so it is: the chart reads
+`FIG.target`.
+
+DECISIONS names the figures this applies to. It is deliberately not "every
+figure": a measurement re-typed is caught by other means, and a rule broad
+enough to cover layout constants would collide with `max-width:60ch` and read
+as noise. A second decision added later is one entry, and `main()` covers it
+the day it appears.
+"""
+
+DECISIONS = ("target",)
 
 
 def figures(data: list[list]) -> dict[str, object]:
@@ -465,6 +492,28 @@ def main() -> None:
     # The property, and it holds for a figure added next year by someone who
     # never reads this: every key in FIG is consumed by a data-fig attribute on
     # the page. Nothing here names a figure.
+    # A DECISION may not be re-typed anywhere in the page. See TARGET's own
+    # docstring for why decisions are guarded and measurements are not.
+    #
+    # Bare means bare: not part of a longer number, and not carrying a unit, so
+    # `max-width:60ch` is not a copy of a 60% target and is not reported as one.
+    # The test for a case nobody has seen is the guard's own input -- it reads
+    # the VALUE out of `figs`, so a target moved to 70 looks for 70, and a
+    # second decision added to DECISIONS is covered the day it is added.
+    body = re.sub(r"const FIG = \{.*?\};", "", page, flags=re.S)
+    for key in DECISIONS:
+        value = figs.get(key)
+        if value is None:
+            sys.exit(f"DECISIONS names '{key}' and figures() does not produce it.")
+        hits = re.findall(rf"(?<![\d.]){re.escape(str(value))}(?![\d.]|[a-zA-Z%])", body)
+        if hits:
+            sys.exit(
+                f"the page types '{value}' as a bare literal {len(hits)} time(s), and it is "
+                f"the value of the decision '{key}'.\nA decision has one home. Read it from "
+                f"FIG.{key} instead -- a re-typed decision does not go stale, it quietly "
+                f"disagrees with itself and both copies look deliberate."
+            )
+
     rendered = set(re.findall(r'data-fig="([a-zA-Z0-9_]+)"', page))
     orphans = sorted(set(figs) - rendered)
     if orphans:

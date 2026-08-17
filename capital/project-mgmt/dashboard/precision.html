@@ -359,14 +359,21 @@ const FIG = {"published":35.8,"rows":6,"n":897,"stamp":"2026-08-13","stamp2":"20
   if (!svg || !D.length) return;
   const W = 820, H = 300, L = 46, R = 14, T = 16, B = 34;
   const iw = W - L - R, ih = H - T - B;
-  const y = p => T + ih - (p / 60) * ih;               // 0–60% scale
+  // The axis IS the target, read from FIG and never typed. It used to be a
+  // literal here and in the gridline stops below, so moving the goal upward
+  // would have left the red line running off the top of its own chart with
+  // nothing failing. refresh.py refuses to publish a page that types it again.
+  const y = p => T + ih - (p / FIG.target) * ih;
   const era = D.map(r => r[1]);
   const brk = era.indexOf("D");                        // first run under the new key
   const x = i => L + (D.length === 1 ? iw / 2 : (i / (D.length - 1)) * iw);
   const el = (t, a) => { const n = document.createElementNS("http://www.w3.org/2000/svg", t);
     for (const k in a) n.setAttribute(k, a[k]); return n; };
 
-  for (const g of [0, 20, 40, 60]) {
+  // Gridlines derived from the target too — four bands, whatever it is.
+  const BANDS = 3;
+  for (let b = 0; b <= BANDS; b++) {
+    const g = Math.round((FIG.target / BANDS) * b);
     svg.appendChild(el("line", { x1: L, x2: W - R, y1: y(g), y2: y(g),
       stroke: "var(--line)", "stroke-width": 1 }));
     const t = el("text", { x: L - 9, y: y(g) + 4, "text-anchor": "end",
