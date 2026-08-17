@@ -9,9 +9,9 @@
     },
     {
       "who": "money",
-      "what": "We cannot see half of what we build",
-      "why": "Our free test runs without the AI in it. So every improvement to the part where the AI picks the funds is invisible to us — we ship it and hope. One paid test would show us. You have already approved it; it is waiting on a free fix that is running right now.",
-      "ask": "Nothing yet. About 15 euros when the fix lands, and I will tell you."
+      "what": "One test, and it is ready to buy",
+      "why": "Our free test runs without the AI in it, so every improvement to the part where the AI picks the funds is invisible to us. The fix that had to come first is done and cost nothing — and it found that our safety limit had been raised using evidence from a list of eighteen funds while we now show forty. That is corrected, and the test can no longer quietly pass itself.",
+      "ask": "Say go, and about 15 euros. Nothing else is waiting on anything."
     },
     {
       "who": "us",

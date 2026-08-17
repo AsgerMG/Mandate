@@ -1,17 +1,4 @@
 {
-  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
-  "agents": [
-    {
-      "id": "wsHH",
-      "step": 2,
-      "what": "Why two funds from the same programme look identical to the AI",
-      "why": "Two thirds of everything we lose happens at the two places we cut the list, and the reason is that we cannot tell two doors of one programme apart. The odd part: the fact that DOES tell them apart is already in the text we feed the search engine — the descriptions differ in 96 cases out of a hundred. The suspicion is that we then rank funds by their POSITION in the list rather than by how close they actually are, which flattens two neighbours to nothing. If that is right, the fix is small. If it is wrong, the route is asking founders instead, and we need to know that before spending more here."
-    },
-    {
-      "id": "wsHI",
-      "step": 5,
-      "what": "Making the next paid test trustworthy",
-      "why": "Half of what the product does is invisible to our free test, because that test runs without the AI. The only paid comparison we have is void — it set itself a condition, broke it, and the figure had to be withdrawn from this page. Worse, the counter that was supposed to detect the breach is itself wrong, and reported an impossible number. So before we spend anything again: give the AI enough room to answer a longer list, fix the counter, and write down in advance what would invalidate the run."
-    }
-  ]
+  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done \u2014 the page shows what is happening now, and history lives in git.",
+  "agents": []
 }
