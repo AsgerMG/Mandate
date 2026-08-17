@@ -243,6 +243,107 @@ export function parsePoolBlend(v: string | undefined): PoolBlendArm {
 
 export const POOL_BLEND: PoolBlendArm = parsePoolBlend(process.env.POOL_BLEND);
 
+/** ── THE PROXIMITY TERM, ISOLATED ─────────────────────────────────────────
+ *
+ *  `off` is the shipped behaviour bit for bit, and the default.
+ *
+ *  `first` orders the pool by PROXIMITY STRATUM first and by the shipped score
+ *  within each stratum. It exists because the blend's largest weight by a
+ *  distance is proximity and the blend has thirteen other columns, so an arm
+ *  that moves cannot be attributed to the term the weight names. This one can.
+ *
+ *  ── Why lexicographic and not a fitted weight ────────────────────────────
+ *  A weight is a free parameter, and a free parameter fitted on the split it is
+ *  reported on is not a measurement. The strict stratification has none: it is
+ *  the LARGEST ordering effect proximity can have, so it is an upper bound on
+ *  what any weighting of this term could buy at the pool cut — and if the bound
+ *  is not positive, no softer version of it is.
+ *
+ *  ── And why the answer is probably no, said before it was run ────────────
+ *  Inside a founder's table the country screen has already run
+ *  (`instrumentServesCountry` in `selectInstrumentRows`), so every row is either
+ *  the founder's own country's or EU-wide and `proximityFit` takes exactly two
+ *  values. Home-above-EU-wide is therefore not a geography rule here, it is a
+ *  rule that buries the pan-European programmes — and `selectLeafInstruments`
+ *  already carries a comment recording that exact rule being measured at a
+ *  25-point pool-reach cost and reverted to parity. */
+export type RowProximityArm = "off" | "first";
+
+/** Exported so a test can watch the throw happen, for the same reason
+ *  `parsePoolBlend` is. A silent default on a misspelling is how an arm that
+ *  never arrived gets reported as "no effect". */
+export function parseRowProximity(v: string | undefined): RowProximityArm {
+  const s = v ?? "off";
+  if (s === "off" || s === "first") return s;
+  throw new Error(`unknown ROW_PROXIMITY=${s} (expected: off, first)`);
+}
+
+export const ROW_PROXIMITY: RowProximityArm = parseRowProximity(process.env.ROW_PROXIMITY);
+
+/** TWO ORDERINGS CANNOT SORT ONE TABLE. Both flags substitute the same base
+ *  score, so a run with both set would silently measure whichever the caller
+ *  happened to check first and report it under both names. Exported and taking
+ *  its arguments so a test can prove it fails. */
+export function assertOneOrdering(blend: PoolBlendArm, prox: RowProximityArm): void {
+  if (blend !== "off" && prox !== "off") {
+    throw new Error(
+      `POOL_BLEND=${blend} and ROW_PROXIMITY=${prox} are both set. Each REPLACES the `
+      + "row's base score, so together they do not compose — one of them would win "
+      + "silently and the run would be reported under both names. Set one.");
+  }
+}
+
+assertOneOrdering(POOL_BLEND, ROW_PROXIMITY);
+
+/**
+ * Score a whole pool with proximity as a strict first key.
+ *
+ * Returns the same shape `blendPoolScores` returns and for the same reasons: a
+ * within-pool percentile in [0,1], monotone in the ordering, so the ticket
+ * multiplier and the sibling reassignment downstream keep meaning what they
+ * mean. Adding a constant to the raw score instead would NOT be lexicographic
+ * once `ticketFit` multiplies it — a home row at 1.0 times 0.5 sorts below an
+ * EU-wide row at 0.9 times 1.0 — which is the whole reason this returns a
+ * percentile rather than a sum.
+ *
+ * `base` is the shipped two-signal score, passed in rather than recomputed:
+ * the caller owns that definition and a second copy of it here is the "keep in
+ * sync" defect this file's own header was written about.
+ */
+export function homeFirstScores(
+  pool: readonly DbInstrument[], founderCountries: string[], base: (id: string) => number,
+): Map<string, number> {
+  const out = new Map<string, number>();
+  if (!pool.length) return out;
+  // `base` is in [0,1] for every row (a percentile blended with a share), and
+  // the stratum term is STRICTLY WIDER than that interval so the sort is exactly
+  // lexicographic: the worst home row scores 2, the best EU-wide row scores 1.
+  //
+  // The obvious `+1` is WRONG at the endpoints and a unit test caught it: an
+  // EU-wide row with a base of exactly 1.0 ties a home row with a base of
+  // exactly 0.0, and `rankNormalise` then puts them at the same mid-rank. A
+  // stratification that is strict "except at the boundary" is not a
+  // stratification, and the boundary is where the whole arm's effect lives.
+  //
+  // The bound on `base` is asserted rather than assumed: a base outside the
+  // unit interval would silently make this a weighting wearing the word
+  // "stratification", and the finding's upper-bound claim rests on it not being
+  // one.
+  const raw = pool.map((i) => {
+    const b = base(i.id);
+    if (!(b >= 0 && b <= 1)) {
+      throw new Error(
+        `homeFirstScores: base score ${b} for ${i.id} is outside [0,1]. The stratum `
+        + "term is 2 and only dominates a base that is, so this would no longer be a "
+        + "strict stratification — it would be an unstated weighting.");
+    }
+    return (proximityFit(i, founderCountries) >= 1 ? 2 : 0) + b;
+  });
+  const pct = rankNormalise(raw);
+  pool.forEach((i, k) => out.set(i.id, pct[k]));
+  return out;
+}
+
 /** Within-pool percentile rank, ties at the mid-rank.
  *
  *  Ties get the SAME value on purpose: a feature that cannot tell two

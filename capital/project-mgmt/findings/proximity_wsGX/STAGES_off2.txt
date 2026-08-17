@@ -1,0 +1,21 @@
+
+> wincent-frontend@0.1.0 stages
+> npx tsx scripts/measure_funnel.ts
+
+/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsGX-proximity/website/frontend/lib/intelligence/poolBlend.ts:241
+  throw new Error(`unknown POOL_BLEND=${s} (expected: off, on, pure)`);
+        ^
+
+Error: unknown POOL_BLEND=off2 (expected: off, on, pure)
+    at parsePoolBlend (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsGX-proximity/website/frontend/lib/intelligence/poolBlend.ts:241:9)
+    at i (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsGX-proximity/website/frontend/lib/intelligence/poolBlend.ts:244:41)
+    at Object.<anonymous> (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsGX-proximity/website/frontend/lib/intelligence/poolBlend.ts:404:17)
+    at Module._compile (node:internal/modules/cjs/loader:1706:14)
+    at Object.transformer (/Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-C557imBs.cjs:9:3619)
+    at Module.load (node:internal/modules/cjs/loader:1441:32)
+    at Module._load (node:internal/modules/cjs/loader:1263:12)
+    at TracingChannel.traceSync (node:diagnostics_channel:328:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:237:24)
+    at Module.require (node:internal/modules/cjs/loader:1463:12)
+
+Node.js v22.21.1
