@@ -69,6 +69,14 @@ export const UNENFORCED_RULES: Record<string, UnenforcedRule> = {
   "GND-6": { why: "judgement", predicate: "every claim about this company traces to the founder's words or a matched record" },
   "GND-7": { why: "judgement", predicate: "each recommendation is supported by the same evidence a claim would need" },
   "GND-8": { why: "judgement", predicate: "the register is intelligence about awards, not exhortation" },
+  // The PROMPT half of this is enforced: `check_money_basis.ts` fails the
+  // build on a money-bearing row field with no declared basis in `money.ts`,
+  // so the model is never handed an unlabelled euro figure. What is left to
+  // judge is the PROSE half, and it is a judgement rather than a keyword hunt
+  // -- "matching your ask directly" and "sized to your project cost" name no
+  // figure and would pass any pattern over amounts, while a legitimate
+  // sentence about what a scheme has paid carries several.
+  "GND-9": { why: "judgement", predicate: "no sentence relates the founder's stated amount to a scheme's award as though the two were one quantity" },
   "GND-B1": { why: "judgement", predicate: "a dilutive instrument is never described without its cost" },
   "GND-B2": { why: "judgement", predicate: "no eligibility is asserted that the supplied screen leaves open" },
 

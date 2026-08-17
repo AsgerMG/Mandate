@@ -47,6 +47,7 @@ import {
 import { ExclusionLog } from "./exclusions";
 import { assembleInstructions, assembleWriterInstructions } from "./contracts";
 import { buildProvenance } from "./provenance";
+import { isQuantityValue, MONEY_BASIS, moneyBasisBlock } from "./money";
 import { AXIS_LABEL, distinguisherPhrases, rowGroups } from "./rowNovelty";
 import {
   findPeersBySubsector,
@@ -173,6 +174,11 @@ function eligibilityContext(e?: EligibilityAnswers, targetMarkets?: string[]): s
   const band = TICKET_BANDS.find((b) => b.value === e?.ticketBand);
   const model = BORROWER_MODELS.find((m) => m.value === e?.borrowerModel);
   const lines = [
+    // DELIBERATELY UNLABELLED, and it is the only place in the product that is.
+    // This arm exists to reproduce the prompt as it stood before 2026-08-18 bit
+    // for bit, so a paid run can be paired against it. wsHM's basis qualifier
+    // is on the `complete` path above, through `intakeFactLines`. Adding it
+    // here would make the reproduction arm reproduce nothing.
     band ? `Ticket sought: ${band.label}` : "",
     model ? `Borrower model: ${model.label}` : "",
     targetMarkets?.length ? `Target markets for public capital: ${targetMarkets.join(", ")}` : "",
@@ -1103,6 +1109,24 @@ async function synthesize(
   // its own. Nothing is dropped: a row that shares nothing simply forms a run
   // of one and reads exactly as it did before.
   const institutionsEvidence = writerCandidateEvidence(institutions, rowKeys, baseRows);
+  // ── AND WHAT THE EUROS ON THEM ARE QUANTITIES OF (wsHM) ──────────────────
+  //
+  // The block above prints up to four euro quantities per row, measured on
+  // four different bases, and printed nothing that said so. Unlabelled, the
+  // model matched them against the founder's own stated amount and used the
+  // match to decide which door to name first -- which is the term wsHE
+  // measured pointing the wrong way and removed from the score, surviving one
+  // stage later in prose. `money.ts` carries the evidence and the property.
+  //
+  // Derived from the rows actually present rather than declared: a money field
+  // added to `InstitutionEntry` tomorrow appears here with no edit, and
+  // `check_money_basis.ts` fails the build until someone says what it is a
+  // quantity of.
+  const moneyBlock = moneyBasisBlock(
+    [...new Set(institutions.flatMap((r) =>
+      Object.entries(r as unknown as Record<string, unknown>)
+        .filter(([axis, v]) => MONEY_BASIS[axis] && isQuantityValue(axis, v))
+        .map(([axis]) => axis)))]);
   const channelEnum = rowKeys;
 
   // Schema is built per-request (not a static const): institutionNotes must
@@ -1254,6 +1278,12 @@ async function synthesize(
           `note turns on the line marked WHAT SETS THIS ROW APART, which is ` +
           `that row's own facts and no other row's.\n` +
           `${institutionsEvidence || "(none)"}\n\n` +
+          // AFTER the rows, not before them: the model has just read four
+          // euro figures per row and this is what they mean. Stated once for
+          // the table -- the claim is about the quantities, not about any
+          // particular row, and 84 copies would spend the context the
+          // founder's own answers need.
+          `${moneyBlock}\n\n` +
           `## Funding-process briefs (use to make nextStep concrete)\n` +
           `${processes || "(none)"}\n\n` +
           `## What is on the policy agenda now (grounds "positioning")\n` +

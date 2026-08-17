@@ -48,6 +48,32 @@ merely badly written.
   companies are proof that public capital flows into this space, never a race
   the reader is losing.
 
+- GND-9 (judged) **Two euro figures on different bases do not compare.** The
+  amount a founder says they are looking for is one figure for their whole
+  need. A scheme's typical award is what it pays into one project. A comparable
+  company's amount is its total across a whole channel over years. Say which
+  you mean, and never state a relationship between two of them as though they
+  were the same quantity.
+
+  The test: **of any figure you write, a quantity of what, paid by whom to
+  whom, over what span?** If the evidence does not answer it, the figure is not
+  yours to compare.
+
+  The one relationship that holds: the schemes founders go on to win pay a
+  fraction of the figure they stated, the typical one off by most of an order
+  of magnitude and many by more. So a scheme paying less than that figure is
+  the ordinary case and is never on its own a reason to call a row small,
+  secondary or a poor fit. A scheme paying far more than their entire stated
+  need is answering a different question, and saying so is fair.
+
+  **evidence:** a founder looking for €15M-€50M was told a scheme was "sized
+  for capex grants from €2.5M into the tens or hundreds of millions, matching
+  your €15M to €50M ask directly" and named the first move on that basis. That
+  scheme's measured median is €4.0M over 57 awards, below the floor of the band
+  it was said to match. In the same brief the two smallest payers were talked
+  down, one as "typically funds smaller proof-of-concept extensions", the other
+  as "normally SME-scaled".
+
 ## Banned
 
 - GND-B1 Presenting a dilutive instrument as though it carried no cost.

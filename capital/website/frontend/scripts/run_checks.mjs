@@ -52,6 +52,12 @@ const CHECKS = [
   // request time. Two rates were live in the selector's system prompt while the
   // same call carried the curve-derived ones in the user prompt.
   ["a contract states no rate", ["npx", "tsx", "scripts/check_prompt_rates.ts"]],
+  // Directly under it because it reads the same detector on the other file
+  // assembled verbatim into a prompt, and asks the question that one does not:
+  // whether every euro figure the model is handed says what it is a quantity
+  // OF. Four different bases were printed as four bare numbers and the model
+  // matched them. See lib/intelligence/money.ts.
+  ["a euro figure says what it is a quantity of", ["npx", "tsx", "scripts/check_money_basis.ts"]],
   // Beside `check_contracts` because it grades the other half of the same
   // claim: that one counts a rule enforced when a literal names it, this one
   // asks whether the check deciding it is reachable from a request at all.

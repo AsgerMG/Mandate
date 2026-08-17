@@ -24,6 +24,7 @@ import {
 import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
+import { isQuantityValue, MONEY_BASIS, moneyBasisBlock } from "../lib/intelligence/money";
 import { buildRowsForCheck, writerCandidateEvidence } from "../lib/intelligence/pipeline";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
 import { rankerTallyLine, resetRankerTally, semanticFundMatch } from "../lib/intelligence/semantic";
@@ -100,6 +101,13 @@ async function main() {
     console.log(`\n${"=".repeat(100)}\n${c.company} (${c.country})  ` +
       `candidates ${institutions.length}/${WRITER_CANDIDATE_CAP}, publishes ${BRIEF_LIMITS.institutionsMax}`);
     console.log(writerCandidateEvidence(institutions, rowKeys, baseRows));
+    // And the block that says what the euros on those rows ARE (wsHM). It is
+    // part of the same user message, so a preview without it would be a
+    // preview of a prompt nobody is sent -- which is this script's whole rule.
+    console.log("\n" + moneyBasisBlock([...new Set(institutions.flatMap((r) =>
+      Object.entries(r as unknown as Record<string, unknown>)
+        .filter(([axis, v]) => MONEY_BASIS[axis] && isQuantityValue(axis, v))
+        .map(([axis]) => axis)))]));
   }
   console.log(`\n${rankerTallyLine()}`);
 }

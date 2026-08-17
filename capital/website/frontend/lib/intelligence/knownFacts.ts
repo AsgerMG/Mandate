@@ -47,6 +47,10 @@ import {
   USE_OF_FUNDS_OPTIONS,
 } from "./types";
 import type { EligibilityAnswers, IntelligenceRequest } from "./types";
+// The basis a quantity is measured on, for the intake fields that carry one.
+// One register, read here, so both prompt sites describe the founder's own
+// number the same way. See money.ts for what the recorded briefs did without it.
+import { withAnswerBasis } from "./money";
 import { regionNameFor } from "./regions.generated";
 
 /**
@@ -115,7 +119,11 @@ export function intakeFactLines(e?: EligibilityAnswers): string[] {
     .filter((k) => answered((e as Record<string, unknown>)[k]))
     .map((k) => {
       const v = (e as Record<string, unknown>)[k];
-      return `${ANSWER_LABEL[k]}: ${(Array.isArray(v) ? v : [v]).map((x) => sayIntakeValue(k, x)).join(", ")}`;
+      const line = `${ANSWER_LABEL[k]}: ${(Array.isArray(v) ? v : [v]).map((x) => sayIntakeValue(k, x)).join(", ")}`;
+      // A quantity carries what it is a quantity OF. `ANSWER_LABEL` says what
+      // the FIELD is; a number needs its basis as well, or the reader supplies
+      // one. `ticketBand` is the case that was measured doing damage.
+      return withAnswerBasis(k, line);
     });
 }
 
