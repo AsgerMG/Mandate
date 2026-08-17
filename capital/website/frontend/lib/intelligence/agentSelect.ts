@@ -538,6 +538,36 @@ const tally = {
    *  `calls`. `apiCalls` is incremented on the same line that builds the
    *  request, so a third round added tomorrow counts itself. */
   apiCalls: 0,
+  /** ── THE MENU THE MODEL WAS ACTUALLY SHOWN (wsHI) ──────────────────────
+   *
+   *  The line printed `depth=`, which is `SELECT_DEPTH` -- a CAP, and one that
+   *  has read 40 on every recorded run in this tree since before the ranker
+   *  shipped. The menu handed over is `min(SELECT_DEPTH, pool)` and the pool is
+   *  cut upstream by `VERDICT_POOL`. The two were equal exactly never.
+   *
+   *  It cost a paid run. wsGS raised the token ceiling on the stated ground
+   *  that wsGA's truncations happened at forty rows "because the same line says
+   *  depth=40". wsGA's own tape records `menu: 18` on all 98 called founders:
+   *  VERDICT_POOL was 18 until the day AFTER that run. The replacement ceiling
+   *  was therefore sized on evidence from a menu less than half the length of
+   *  the one shipping.
+   *
+   *  THE PROPERTY: the record states the menu it MEASURED, never the lever that
+   *  bounded it. Reported as a range because it varies per founder -- a short
+   *  accessible pool yields a short menu -- and the max is what a ceiling has
+   *  to survive. `check_maxtok_headroom.ts` reads it back. */
+  menuMin: Infinity as number, menuMax: 0,
+  /** ── THE OTHER WAY A CEILING FAILS, AND THE QUIETER ONE ────────────────
+   *
+   *  A ceiling the clock cannot reach never truncates: the call times out
+   *  first, which lands in `exits.threw` rather than in `truncated`. So a
+   *  truncation count of zero is compatible with a ceiling that never had a
+   *  chance to bind, and no recorded run in this tree states its own duration,
+   *  so nothing can tell the two apart after the fact.
+   *
+   *  The slowest call is the one number that settles it: against
+   *  `TIMEOUT_BY_EFFORT` it says how much of the clock the run actually used. */
+  slowestMs: 0,
   /** Picks that were a second row of a programme already picked -- SELECT-8
    *  stated in the prompt and measured here rather than assumed (wsDY). */
   siblingPicks: 0, siblingBriefs: 0,
@@ -623,6 +653,7 @@ export function agentSelectExits(): Record<ExitReason, number> {
   return { ...tally.exits };
 }
 export function resetAgentSelectTally(): void {
+  tally.menuMin = Infinity; tally.menuMax = 0; tally.slowestMs = 0;
   tally.calls = 0; tally.apiCalls = 0; tally.ok = 0; tally.failed = 0;
   tally.shortReply = 0; tally.invalidIds = 0;
   tally.siblingPicks = 0; tally.siblingBriefs = 0;
@@ -650,7 +681,15 @@ export function agentSelectTallyLine(): string {
       `reaches the memo.`;
   }
   if (!tally.calls) return `agent-select: arm=${AGENT_SELECT_ARM}, no calls made`;
-  return `agent-select: arm=${AGENT_SELECT_ARM} depth=${Number.isFinite(SELECT_DEPTH) ? SELECT_DEPTH : "all"} count=${SELECT_COUNT_MODE === "atMost" ? "<=" : ""}${SELECT_COUNT}` +
+  // `menu=` BEFORE `depth=`, because it is the fact and `depth=` is the lever
+  // that bounds it. A reader who takes the first number they meet as "how many
+  // rows the model saw" is now right rather than wrong -- which is the whole
+  // defect wsHI found, and the reason a paid run was resized on the strength of
+  // an eighteen-row measurement that read as forty. See `tally.menuMax`.
+  const menu = tally.menuMax
+    ? (tally.menuMin === tally.menuMax ? `${tally.menuMax}` : `${tally.menuMin}-${tally.menuMax}`)
+    : "none";
+  return `agent-select: menu=${menu} rows arm=${AGENT_SELECT_ARM} depth=${Number.isFinite(SELECT_DEPTH) ? SELECT_DEPTH : "all"} count=${SELECT_COUNT_MODE === "atMost" ? "<=" : ""}${SELECT_COUNT}` +
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
     (AGENT_SELECT_ARM === "adviser"
       ? ` effort=${THINK_EFFORT} maxtok=${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}`
@@ -692,7 +731,13 @@ export function agentSelectTallyLine(): string {
         + `, thought on ${tally.thoughtOn}/${tally.apiCalls} API call(s)`
         + ` (${tally.thinkingTokens} thinking token(s) billed,`
         + ` ${tally.thinkingChars} readable char(s)),`
-        + ` ${tally.truncated}/${tally.apiCalls} CUT OFF at max_tokens` : "") +
+        + ` ${tally.truncated}/${tally.apiCalls} CUT OFF at max_tokens`
+        // Beside the truncation count, never apart from it: a zero here is only
+        // evidence the ceiling holds if the clock was not the thing that cut
+        // the calls off instead. Percentage of the wall this effort is allowed.
+        + `, slowest call ${tally.slowestMs}ms of ${TIMEOUT_BY_EFFORT[THINK_EFFORT]}ms`
+        + ` (${((tally.slowestMs / TIMEOUT_BY_EFFORT[THINK_EFFORT]) * 100).toFixed(1)}% of the clock)`
+      : "") +
     `, EUR ${tally.eur.toFixed(4)} total, EUR ${(tally.eur / tally.calls).toFixed(4)} per brief`;
 }
 /** `dry` only. The measured prompt sizes, for pricing an arm before running
@@ -1997,6 +2042,10 @@ export async function agentSelectRows(
       + `=reverse for a permutation with no model in it.`);
   }
   tally.calls++;
+  // The menu as HANDED OVER, recorded on the same line that decides to spend,
+  // so the record can never again describe a lever instead of a measurement.
+  tally.menuMin = Math.min(tally.menuMin, menuRows.length);
+  tally.menuMax = Math.max(tally.menuMax, menuRows.length);
   try {
     const ask = async (
       evidence?: Map<string, string[]>,
@@ -2016,6 +2065,7 @@ export async function agentSelectRows(
       // added tomorrow counts itself. Every counter below this point in `ask`
       // is per-API-call and is reported over this number.
       tally.apiCalls++;
+      const startedAt = Date.now();
       const r = await anthropic().messages.create({
       model: MODEL,
       ...(useTool ? { tools: [LOOKUP_TOOL] } : {}),
@@ -2071,6 +2121,13 @@ export async function agentSelectRows(
       // thought". Both produce an empty reply and both return the shipped
       // order; only one of them is about the model.
       if (r.stop_reason === "max_tokens") tally.truncated++;
+      // Recorded beside the truncation for the reason the truncation counter
+      // exists: a ceiling the clock cannot reach times out instead of binding,
+      // and the timeout is counted somewhere else entirely. Only calls that
+      // RETURNED are timed -- one that threw never reaches this line -- so this
+      // is the slowest SUCCESSFUL call, which is what has to be compared
+      // against TIMEOUT_BY_EFFORT to say whether the ceiling had a chance.
+      tally.slowestMs = Math.max(tally.slowestMs, Date.now() - startedAt);
       recordUsage(r.model ?? MODEL, r.usage as never);
       // Local euro tally as well, because a bench run has no AsyncLocalStorage
       // context and recordUsage is a no-op there — which is exactly the run

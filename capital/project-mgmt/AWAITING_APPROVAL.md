@@ -97,6 +97,27 @@ own paid run — on funds sitting at ranks 7-18 the model found them **22 times 
 The EUR 11-13 buys the confirmation that the model's accuracy does not collapse
 on the longer list. **The change itself is free and needs no new code.**
 
+> **PRECONDITION MET 2026-08-17, `findings/tokens_wsHI/` — this is safe to
+> authorise.** The blocker was that the last paid run at this seam is VOID by
+> its own pre-registration (four calls cut off at `max_tokens`), and the next
+> one could not be bought until truncation was provably zero with a counter
+> worth trusting. Three things were wrong and are now fixed:
+> the ceiling was sized on **eighteen**-row evidence while forty ships (the
+> tape says `menu: 18` on all 98 called founders; `depth=40` is a lever, not a
+> measurement) and is now 34,816, derived so that P(any truncation in the run)
+> < 5%; the truncation counter's denominator is pinned by a test that drives
+> the seam and fails on the old code; and a zero can no longer be produced by
+> the clock cutting calls off instead, because the run reports its slowest call
+> and voids on `exits.threw`.
+>
+> **Pre-registration: `project-mgmt/wsHK_prereg.md`** — exact command, hard
+> `MAX_EUR` interlock capping both arms at EUR 16, seven void conditions each
+> readable off one printed line, and a non-inferiority primary (EXACT@6,
+> McNemar, lower bound above −3.0pp) because the ceiling gain is already bought
+> and this run only has to show the model does not give it back.
+>
+> **Nothing here touches production** — the effort lever defaults to `low`.
+
 ### 3. Sampling the model more than once — **designed, priced, and I recommend NO**
 
 Now measured for free, so this needs your attention only if you disagree with
@@ -556,6 +577,49 @@ constraint and the check is green", which holds.** The run itself will report
 truncation, and if it is non-zero the run is void — as before.
 
 Neither change touches production: the effort lever defaults to `low`.
+
+> **AMENDED 2026-08-17 by measurement, `findings/tokens_wsHI/`. Two sentences
+> above are wrong and the precondition did not hold.**
+>
+> **1. The menu was eighteen, not forty.** I wrote that "the brief was also
+> wrong that the truncating run used an eighteen-row menu — it was **already at
+> forty**". It was not. The tape records `menu: 18` on all 98 called founders,
+> no pick index above 17, and accessible pools up to 128 rows. `depth=40` in
+> that line is `SELECT_DEPTH`, a **cap** that has read 40 on every recorded run
+> since before the ranker shipped; the menu is cut upstream by
+> `BRIEF_VERDICT_POOL`, which went 18 → 40 **the day after** that run.
+> **Forty rows have never been bought at all.**
+>
+> **2. So the doubled ceiling was sized on the wrong evidence.** 12,288 came
+> from eighteen-row runs while forty ships. It is now **34,816** at the effort
+> the run uses, derived against this run's own abort condition rather than a
+> quantile: any truncation voids the run, so the quantity to bound is
+> P(at least one in the whole run), and at 12,288 that was **100%** for a
+> 630-call run under the pessimistic menu scaling. Raising it costs **nothing**
+> — output tokens bill only when used.
+>
+> **3. A truncation count of zero was not yet trustworthy, for a reason the
+> item above half-identified and then stopped short of.** It is right that a
+> timeout lands in a different bucket. What follows from that is stronger: a
+> ceiling the clock cannot reach **never truncates**, so `truncated = 0` is
+> compatible with a ceiling that never had a chance to bind — and no recorded
+> run in this repo states its own duration, so nothing could tell the two apart
+> after the fact. The line now reports the slowest call against its own clock,
+> and `exits.threw` is a void condition beside truncation.
+>
+> **What is now true, and it is checkable rather than asserted:** the
+> denominator is pinned by a test that drives the seam and fails on the old
+> code (5 of 6 red); the tally line states `menu=` (the fact) beside `depth=`
+> (the lever); and `check_maxtok_headroom` gained a property that rejects a
+> ceiling sized on a shorter menu than the one shipping — proven red on the
+> real record at the ceilings this item installed.
+>
+> **The precondition is met and the run is safe to authorise.** Its
+> pre-registration is `project-mgmt/wsHK_prereg.md` — exact command, hard
+> `MAX_EUR` interlock at EUR 16 for both arms, and seven void conditions each
+> of which is now a field the tally line prints. The one thing still open is
+> what only this run can close: `check_maxtok_headroom` prints
+> `0 recorded run(s) at the 40-row menu that ships`, and wsHK is what flips it.
 
 ### 11. `corpus_currency` is red, and it is a real divergence
 

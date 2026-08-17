@@ -609,9 +609,28 @@ export const THINK_EFFORT: ThinkEffort = (() => {
  * line: `effort=medium maxtok=6144 ... 4 CUT OFF at max_tokens`. Truncation was
  * a declared VOID condition in `project-mgmt/wsGA_prereg.md` -- "a truncated
  * reply is indistinguishable downstream from a model that declined" -- and it
- * breached, so that run's headline does not stand. It was NOT a short menu: the
- * same line says `depth=40`, so the eighteen-row era was already over and forty
- * rows are what bound.
+ * breached, so that run's headline does not stand.
+ *
+ * ── AND wsGS THEN READ THE WRONG FIELD TO SIZE THE REPLACEMENT (wsHI) ─────
+ *
+ * This paragraph used to end: "It was NOT a short menu: the same line says
+ * `depth=40`, so the eighteen-row era was already over and forty rows are what
+ * bound." That is false, and the tape says so per founder.
+ *
+ * `depth=` prints `SELECT_DEPTH`. That lever has read 40 on EVERY recorded run
+ * in this tree -- including wsDQ, from long before the pool was forty rows --
+ * because it is a cap, not a measurement. The menu the model is handed is cut
+ * upstream by `VERDICT_POOL`, which was 18 until `7191f227 BRIEF_VERDICT_POOL
+ * 18 -> 40` on 2026-08-13, THE DAY AFTER wsGA ran.
+ * `findings/headtohead_wsGA/adviser_medium_n773_x2.json` records `menu: 18` on
+ * all 98 called founders, no pick index above 17, and accessible pools up to
+ * 128 rows -- so eighteen was the lever, not the founder.
+ *
+ *   THE FOUR TRUNCATIONS HAPPENED AT EIGHTEEN ROWS. FORTY HAS NEVER BEEN RUN.
+ *
+ * A tally line that cannot state the menu it used is how that happened, so the
+ * line now prints `menu=` from the rows actually handed over. See
+ * `agentSelectTallyLine`.
  *
  * ── THE PROPERTY, stated so it covers a level nobody has run yet ──────────
  *
@@ -625,16 +644,58 @@ export const THINK_EFFORT: ThinkEffort = (() => {
  * project-mgmt/, and any future run that truncates turns it red until the
  * ceiling above it moves. No number in this file is the guard's input.
  *
- * Applying it: `medium` rises to 12,288, which is the ceiling `high` -- an
- * effort that spent 2-3x more thinking per call -- carried across 46 recorded
- * calls with zero truncations (dark_levers_wsDS `curve/high.txt` 34/36 and
- * `bench_high/SUMMARY.md` 12/12). `high` then rises to keep the ladder strictly
- * increasing, because an effort that thinks deeper may not hold the shallower
- * one's ceiling. `off` and `low` are untouched: thinking is disabled at `off`
- * and `low` has never truncated in any recorded run.
+ * ── SIZING THE REPLACEMENT: THE BAR IS THE ABORT CONDITION, NOT A QUANTILE ─
+ *
+ * wsGS set `medium` to 12,288 because `high` had carried that ceiling across 46
+ * recorded calls -- but every one of those calls was an EIGHTEEN-row menu too,
+ * so the evidence and the defect share the same blind spot.
+ *
+ * `scripts/_wshi_tokens.ts` derives these numbers instead, free, from every
+ * per-call usage record in the tree (`reply_r1.txt` headers: 12 exact
+ * observations at `high`, 12 at `low`) plus the tally lines' aggregates. Output
+ * length is lognormal; the fits are
+ *
+ *   effort=high    mu 8.741  sigma 0.367   MLE on 12 exact observations
+ *   effort=medium  mu 7.627  sigma 0.529   mean 2,361 + censoring 4/210 @ 6,144
+ *
+ * The quantity to bound is NOT the truncation rate. wsHK's pre-registration
+ * makes any truncation void the run, so what matters is
+ *
+ *   P(at least one truncation anywhere in the run) = 1 - (1 - p)^N
+ *
+ * and a p99.9 ceiling voids a 630-call run one time in ten. The bar taken is
+ * P(void) < 5% at N = 630 -- three times wsGA's 210 API calls -- under the
+ * worst credible menu scaling, which is linear in rows (18 -> 40, x2.22).
+ * Menu scaling is UNMEASURED and this is deliberately its pessimistic end.
+ *
+ * That bar gives `medium` 34,816 and `high` 57,344 directly. `xhigh` and `max`
+ * have never been run at any menu and have no distribution to fit, so they
+ * continue the x1.65 step the two measured rungs establish between themselves,
+ * clipped to claude-sonnet-5's own 128,000 output cap. Extrapolating a measured
+ * step is a stated assumption; a round number would be an unstated one.
+ *
+ * `off` and `low` are UNTOUCHED. Thinking is disabled at one and near-zero at
+ * the other (wsDQ: max 339 of 1,536 over 12 calls), neither has ever truncated,
+ * and widening a ceiling that has never bound only worsens the worst case on
+ * the two rungs where a runaway reply would be least expected.
+ *
+ * ── WHAT THIS DOES NOT FIX, AND WHY A ZERO CAN STILL LIE ──────────────────
+ *
+ * A ceiling the clock cannot reach does not truncate -- it TIMES OUT, and a
+ * timeout lands in `exits.threw` where a truncation lands in `truncated`. The
+ * record cannot settle whether 34,816 tokens fit in 150,000ms: wsDS produced a
+ * 10,596-token reply inside high's then-150s wall, which bounds throughput from
+ * BELOW at 70.6 tok/s and therefore says nothing about the ceiling. No recorded
+ * run states its own duration.
+ *
+ * So `truncated = 0` is not on its own evidence that the ceiling holds. The
+ * tally now reports the slowest call it made, and wsHK's pre-registration voids
+ * on `threw` as well as on truncation. Timeouts are deliberately NOT moved
+ * here: wsGS raised them one commit ago and there is no measurement to justify
+ * moving them again.
  */
 export const MAX_TOKENS_BY_EFFORT: Record<ThinkEffort, number> = {
-  off: 1024, low: 2048, medium: 12288, high: 16384, xhigh: 24576, max: 32768,
+  off: 1024, low: 2048, medium: 34_816, high: 57_344, xhigh: 96_256, max: 128_000,
 };
 
 /**
