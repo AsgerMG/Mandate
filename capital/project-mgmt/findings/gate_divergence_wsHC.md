@@ -29,8 +29,12 @@ stores read     railway-volume  via corpus_census rows (READ ONLY)
                 local           data/db.sqlite, opened mode=ro
                 postgres        corpus_census + live COUNT(*) (READ ONLY)
 cost            zero. No paid model call, no corpus write, no publish.
-reproduce       GUARD_NO_PUBLISH=1 npx tsx scripts/check_corpus_census.ts
-                  (from website/frontend)
+reproduce       python3 ETL/terms/_wshc_gate_cohorts.py cohorts      §1 cohort table
+                python3 ETL/terms/_wshc_gate_cohorts.py cost         §2 and §3(a)
+                python3 ETL/terms/_wshc_gate_cohorts.py history      §1 census table
+                python3 ETL/terms/_wshc_gate_cohorts.py fingerprint  §5
+                GUARD_NO_PUBLISH=1 npx tsx scripts/check_corpus_census.ts
+                  (from website/frontend — the guard's own output)
 ```
 
 Every figure below carries its store. Two numbers from two stores read as one
@@ -98,8 +102,9 @@ dates every row:
 and 174 were replacements, netting the +3,362 the guard reports.)
 
 Both unpromoted cohorts are paid research, not derivation:
-`encoding_method` is `scheme_text_extract` (2,467), `llm_encode` (816),
-`llm_orgtype` (44), plus 141 `registered_region` and 36 quarantined.
+`encoding_method` is `scheme_text_extract` (2,467), `llm_encode` (826), `llm_orgtype` (44) and
+`llm_triage` (22), plus 141 rows with no method (`registered_region`) and 36
+quarantined.
 
 ### The volume cannot catch up on its own
 

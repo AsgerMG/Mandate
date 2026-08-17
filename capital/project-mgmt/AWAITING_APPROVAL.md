@@ -364,8 +364,8 @@ exist where they were written and nowhere the cron can reach.
 
 **Cost: zero.** No model call, no re-derivation. The rows already exist; this
 copies them. The work they represent was paid for already —
-`encoding_method` is `scheme_text_extract` (2,467), `llm_encode` (816),
-`llm_orgtype` (44), plus 141 `registered_region`.
+`encoding_method` is `scheme_text_extract` (2,467), `llm_encode` (826),
+`llm_orgtype` (44) and `llm_triage` (22), plus 141 `registered_region` rows.
 
 **Risk: low, and bounded by design.** The union path refuses an overwrite
 (`reconcile_stores.overwrite_gate`, `test_overwrite_refusal.py`), so a store that
