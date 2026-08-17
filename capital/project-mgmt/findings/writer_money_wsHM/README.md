@@ -219,6 +219,12 @@ and passes. Recorded because the honest version of "not mine" is a run, not an
 argument — and because a stale base is a cheap way for a workstream to spend an
 hour proving something about a commit nobody is shipping.
 
+A whole-suite re-run on the merge was still executing when this was written,
+contending with a second `npm run check` another session had started against the
+same Postgres. It is not load-bearing: every red on the pre-merge pass was
+reproduced individually on `main`, and the one that was not is the paragraph
+above.
+
 `check_field_matches_demand`, `check_comparator_admits`,
 `check_open_question_class` and `check_country_gates` are red, and each
 reproduces on `main` with the same message. They are corpus-state failures owned
