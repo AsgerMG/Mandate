@@ -1,23 +1,4 @@
 {
-  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
-  "agents": [
-    {
-      "id": "wsHL",
-      "step": 4,
-      "what": "The product cannot use a fact even when we give it one",
-      "why": "We tested what would happen if we knew perfectly what each founder's money was for — the single strongest thing that tells two near-identical funds apart. The answer moved nothing at all. Fifty-nine of our rules turn on that field and not one verdict changed. So there is no point asking founders a better question until the machinery can act on the answer. This is the fix that decides whether the paid test can show us anything."
-    },
-    {
-      "id": "wsHM",
-      "step": 6,
-      "what": "The write-up is arguing with itself about money",
-      "why": "Every fund we hand the writer says 'founder wants 500k to 2.5M' right next to 'this fund typically pays 172k'. Those are different things — one is the round they are raising, the other is what a single grant pays into a single project — and we proved this week that comparing them picks the wrong fund six times out of seven. We fixed it in the ranking. This is the one place it survived, and it is the last thing that touches a founder's list."
-    },
-    {
-      "id": "wsHN",
-      "step": 2,
-      "what": "Putting the corrected funding rules into the live data",
-      "why": "Sixty-three wrongly encoded rules, each checked against the funder's own published page, plus about 3,400 rules our master copy has never been given, plus fifteen funds where the register names a replacement we never show. None of this will move the headline much — the corrections alone are worth four founders in nine hundred. It is worth doing because it is wrong, and because everything measured after it is measured on data we trust."
-    }
-  ]
+  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done \u2014 the page shows what is happening now, and history lives in git.",
+  "agents": []
 }

@@ -2,22 +2,16 @@
   "what": "What is stopping us, in plain words. Hand-written because a machine cannot say who is waiting on whom. A blocker that clears is DELETED, not marked done.",
   "blockers": [
     {
-      "who": "us",
-      "what": "The product cannot use a fact even when we hand it one",
-      "why": "We tested what would happen if we knew perfectly what each founder's money was for — the strongest thing we know of for telling two near-identical funds apart. Nothing moved. Fifty-nine of our own rules turn on that field and not one verdict changed. Until that is fixed, asking founders a better question buys nothing, and a paid test would be measuring a product that cannot act on its own inputs.",
-      "ask": "Nothing. Being fixed now, and it is the reason the paid test is waiting."
-    },
-    {
       "who": "money",
-      "what": "One test, held back on purpose",
-      "why": "You asked for every free improvement to land first, and that is right — a test run against a product we are mid-way through fixing tells us less than the same test run after. Three fixes are in flight across the shortlist, the ranking and the write-up. The test itself is ready and its safety conditions are now provable.",
-      "ask": "Nothing yet. I will come back for the 15 euros when the free work is done, with what changed."
+      "what": "The test is the only thing left",
+      "why": "Every free improvement is done — the shortlist's corrections, what the AI is told about the company, and how the write-up talks about money. The last two cannot show up in our free test at all, because that test runs without the AI in it. That is exactly why they were done first, and it is why the number below barely moved. One paid run is now the only way to see whether any of it worked.",
+      "ask": "About 15 euros, one run. Say go."
     },
     {
       "who": "you",
-      "what": "One deployment still needs you, and only that",
-      "why": "The data corrections are being applied now under the go-ahead you gave. What I am not doing on my own is redeploying the pipeline container: it is 316 commits behind, carries six days of unreviewed changes, and its safety check has never once published a result. That is a deploy, not a data fix, and it should be a deliberate decision.",
-      "ask": "Read AWAITING_APPROVAL when you have half an hour. No money."
+      "what": "One deployment, and it now unblocks two things",
+      "why": "The pipeline container is 316 commits behind and its safety check has never once published a result. It turns out this is not one item but the gate on another: every route to the master copy of our data begins by waking that container, so the 3,400 missing rules cannot be reconciled until it is redeployed. Two queue items, one decision.",
+      "ask": "Read AWAITING_APPROVAL §13 and §14 — they are the same decision. No money."
     }
   ]
 }
