@@ -176,6 +176,42 @@ rows named from this same register; cleaning them is a separate change with its
 own blast radius, not something to smuggle into a bounded one.
 
 
+### 0quater. 15 instruments show a dead end where the register names a live successor — free to fix, counted, wsHF, 2026-08-17
+
+`project-mgmt/findings/body_named_rows_wsHF.md` §3b. Found while fixing
+something else, **counted rather than asserted**, and not touched.
+
+`populate_funding_instruments.py` turns a closed scheme into a redirection by
+reading that case's **own** `caseLinks`. But `caseLinks` is directional — the
+Commission files the edge on whichever side it pleases — so a successor that
+filed the link on **its** record is invisible.
+
+```
+instruments carrying an SA number                 475
+...whose scheme the register says has CLOSED      220
+...live successor found FORWARD-only (today)       40
+...live successor ONLY on the OTHER side           15   <- MISSED TODAY
+   distinct SA numbers affected                    14
+```
+
+**A symmetric read finds 55 successors where we find 40 — +37.5%.** Fifteen
+instruments currently present a founder with a scheme the register says has
+closed, when the register also names the live scheme that replaced it:
+Thüringen's R&D programme, the Bundesförderung für Energie- und
+Ressourceneffizienz, Business Finland's young-company scheme, Sweden's
+`Förordning (2015:208)`, Wallonia's `Incitants en faveur des PME`, two Dutch
+`Besluit` schemes, Malta's RDI and SME schemes, and five more.
+
+**This is the `between_calls` shape** — we modelled one object and the funder ran
+another, which is how eleven funds came back in July. The fix is to use
+`link_map()` from `ETL/lib/scheme_title.py`, which already exists and is already
+tested, in place of the forward-only iteration. **Free, no new fetch** (all
+records are already on disk), but it writes `successor_scheme` /
+`successor_title` on live rows, which is a founder-visible claim and therefore
+yours.
+
+Reproduce: `python3 website/frontend/scripts/_wshf_successor_count.py`
+
 ### 0ter. Three doors of SA.40391 are now indistinguishable — the door problem, at a size somebody can finish — free to investigate, wsHF, 2026-08-17
 
 `project-mgmt/findings/body_named_rows_wsHF.md`, and read it against

@@ -271,6 +271,39 @@ links to **two** titled cases (`SA.47101` and `SA.112158`). The function returns
 the check goes red on it. Putting a name in front of a founder that the register
 does not support is worse than a loud failure.
 
+## 3b. A second defect the symmetry rule uncovered, counted rather than asserted
+
+The same directional field is read **forward-only** somewhere else, and that one
+is live. `populate_funding_instruments.py`'s successor-redirect — the code that
+turns a closed scheme into a redirection rather than a dead end — iterates a
+case's **own** `caseLinks`. A successor that filed the link on **its** record is
+invisible to it.
+
+Counted over the fetched register and Postgres
+(`website/frontend/scripts/_wshf_successor_count.py`, free, one query):
+
+```
+instruments carrying an SA number                 475
+...whose scheme the register says has CLOSED      220
+...live successor found FORWARD-only (today)       40
+...live successor ONLY on the OTHER side           15   <- MISSED TODAY
+   distinct SA numbers affected                    14
+```
+
+**A symmetric read finds 55 successors where the shipped code finds 40 — a 37.5%
+increase in redirects, on 15 instruments whose founders are currently shown a
+dead end instead of the scheme that replaced it.** The fourteen are named in the
+script's output and span DE (5), IT, AT, FI, FR, SE, BE, NL (2), plus two Maltese
+schemes. `SA.59366` — the fourth skipped number, the one this workstream's rule
+refused to guess on — is among them, and its second link is exactly this: not a
+rival scheme but its **successor**, `SA.112158`.
+
+**Not fixed here.** It is a different code path with a different blast radius
+(`successor_scheme` and `successor_title` are shown to founders as a
+redirection), and it is outside the authorisation. This is the shape of the
+`between_calls` defect: modelling one object and finding the funder ran another.
+Queued in `AWAITING_APPROVAL.md`.
+
 ## 4. What was NOT written, and why the new check is not wired in
 
 The property catches five rows beyond the authorisation. **None was touched.**
