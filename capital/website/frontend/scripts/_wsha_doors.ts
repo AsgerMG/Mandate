@@ -85,9 +85,10 @@ import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCan
 import {
   rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
 } from "../lib/intelligence/semantic";
+import { POOL_BLEND } from "../lib/intelligence/poolBlend";
 import {
-  applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
-  tableInputFromAnswers,
+  applyProfileSignal, AWARD_TERM, buildInstrumentTableHydrated, founderCountryList,
+  SIBLING_SCOPE, tableInputFromAnswers,
 } from "../lib/intelligence/shortlist";
 import type { InstrumentRow } from "../lib/intelligence/types";
 import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "./founderIntake";
@@ -374,6 +375,14 @@ async function main() {
     levers: {
       VERDICT_POOL, WRITER_CANDIDATE_CAP,
       publishedCap: BRIEF_LIMITS.institutionsMax, shown: SHOWN_ROWS,
+      // The ranking arms this run was taken under, read from the SHIPPED
+      // constants and not from `process.env`. wsHE compares two dumps of this
+      // file taken minutes apart, and the whole failure mode a paired A/B has
+      // is a dump that is silently the same arm twice — an unset variable, a
+      // misspelling, a subshell that lost it. A dump that cannot say which arm
+      // produced it is not evidence, so `_wshe_arms.ts` REFUSES a pair whose
+      // arms agree.
+      AWARD_TERM, POOL_BLEND, SIBLING_SCOPE,
     },
     ranker: rankerTallyLine(),
   };
