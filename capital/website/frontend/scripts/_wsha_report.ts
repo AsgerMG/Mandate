@@ -26,8 +26,19 @@
 //
 //   IN=/tmp/wsha_doors.json npx tsx scripts/_wsha_report.ts
 //
+// ── AND THE ONE THING A TABLE CANNOT DECIDE ────────────────────────────────
+// `PAIRS=<path>` writes the pairs out in FULL — both doors' names, their
+// descriptions and their eligibility texts, untruncated. The table above says
+// which columns VARY. Whether a founder could STATE the thing that varies is a
+// judgement over the words themselves, and this repo's standing rule is that a
+// judgement is made by reading, not by a rule invented to avoid reading. The
+// dump is deterministic (sorted, every pair, no sampling), so a second reader
+// grades the same rows.
+//
+//   IN=/tmp/wsha_doors.json PAIRS=/tmp/wsha_pairs.txt npx tsx scripts/_wsha_report.ts
+//
 // @ws-active until 2026-09-30
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 
 import type { DoorRow, InstrumentSnapshot } from "./_wsha_doors";
 
@@ -274,6 +285,42 @@ function main() {
     if (!ex?.length) continue;
     console.log(`\`${f}\` — ${pct(t.bothKnown, t.n)} both-known`);
     for (const e of ex) console.log(`  ${e}`);
+  }
+
+  // ── THE PAIRS IN FULL, FOR THE JUDGEMENT A TABLE CANNOT MAKE ─────────────
+  const pairsOut = process.env.PAIRS;
+  if (pairsOut) {
+    const txt = (v: unknown) => (v === null || v === undefined ? "(none)" : String(v));
+    const lines: string[] = [
+      `wsHA pairs — ${sibMiss.length} founders, draw ${dump.meta.fingerprint}`,
+      "Every founder who passed their gates, missed the fund they won, and saw a",
+      "SIBLING of it. WON is the door they took; SHOWN is the highest-ranked",
+      "sibling we put on the page instead.",
+      "",
+    ];
+    // Grouped by regime and sorted, so a reader grading these is grading the
+    // door choice inside one programme at a time rather than jumping between
+    // regimes with every row.
+    for (const r of [...sibMiss].sort((a, b) =>
+      a.wonRegime.localeCompare(b.wonRegime) || a.company.localeCompare(b.company))) {
+      const w = snap.get(r.won); const s0 = snap.get(r.siblingsShown[0]);
+      lines.push("=".repeat(78));
+      lines.push(`${r.company} (${r.country})   regime: ${r.wonRegime}`);
+      lines.push(`  rank of the won door in the accessible pool: ${r.rankAccessible}/${r.accessibleLen}`);
+      for (const [tag, s] of [["WON  ", w], ["SHOWN", s0]] as const) {
+        lines.push("-".repeat(78));
+        lines.push(`${tag} ${s?.id ?? "(missing)"}`);
+        lines.push(`  name          ${txt(s?.fields.name)}`);
+        lines.push(`  schemeCode    ${txt(s?.fields.schemeCode)}   capitalType ${txt(s?.fields.capitalType)}`);
+        lines.push(`  body          ${txt(s?.fields.administeringBody)}`);
+        lines.push(`  window        ${txt(s?.fields.schemeEndDate)} (${txt(s?.fields.schemeEndBasis)})  recurrence ${txt(s?.fields.callRecurrence)}`);
+        lines.push(`  description   ${txt(s?.fields.description)}`);
+        lines.push(`  eligibility   ${txt(s?.fields.eligibilityText)}`);
+      }
+      lines.push("");
+    }
+    writeFileSync(pairsOut, lines.join("\n"));
+    console.log(`\nwrote ${pairsOut}  (${sibMiss.length} pairs, in full)`);
   }
 }
 
