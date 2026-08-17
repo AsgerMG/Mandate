@@ -201,23 +201,31 @@ writer named a fund that was not in the published table (BL-B1) in one of six
 recorded briefs, and BL-B1 is declared unenforced. That is a cheap mechanical
 check on a finished brief and it is somebody's next hour.
 
-## §5 Verification, including the reds that are not mine
+## §5 Verification, and one red that looked like mine and was not
 
-`npx tsc --noEmit`, `npx vitest run` (804 pass, 16 new), `check_contracts`,
+`npx tsc --noEmit`, `npx vitest run` (806 pass, 18 new), `check_contracts`,
 `check_ws_scripts`, `check_answer_not_reachable`, `check_prompt_rates` (with
 `PROVE=1`), `check_money_basis`, `check_check_reachability`,
-`check_guard_subject`, `check_client_boundary` — all green.
+`check_guard_subject`, `check_client_boundary`, and wsHL's own
+`check_answer_in_prompt` (23/23 answered fields reach both model-facing blocks)
+— all green on the merge.
 
-`npm run check` also reports five reds, and **every one of them reproduces on
-`main` with the same message**, so none is this branch's:
-`check_field_matches_demand` (10 comparators, identical), `check_comparator_
-admits` (inert comparators over the ceiling), `check_open_question_class`
-(requirement texts with no judgement), `check_country_gates` (1 positive
-country rule), and `check_winner_not_gated`. They are corpus-state failures and
-the counts move between two runs minutes apart, because other workstreams are
-loading. `check_recall_floor` is GREEN on both. Nothing in this diff reaches a
-gate, a comparator or the pool: it is prompt text, one hermetic module, one
-guard, and two contracts.
+**`check_winner_not_gated` read 251 against a ceiling of 207 and it was the
+BASE, not the branch.** `scripts/agent-worktree.sh` branches from
+`origin/main`, which by then was five commits behind the local checkout; wsHL
+and wsHN merged during the session. On the pre-merge base it read 251; on
+`main` at the same hour it read 207 and passed; after merging main it reads 207
+and passes. Recorded because the honest version of "not mine" is a run, not an
+argument — and because a stale base is a cheap way for a workstream to spend an
+hour proving something about a commit nobody is shipping.
+
+`check_field_matches_demand`, `check_comparator_admits`,
+`check_open_question_class` and `check_country_gates` are red, and each
+reproduces on `main` with the same message. They are corpus-state failures owned
+elsewhere; the counts move between two runs minutes apart because other
+workstreams are loading. `check_recall_floor` is green on both. Nothing in this
+diff reaches a gate, a comparator or the pool: it is prompt text, one hermetic
+module, one guard, and three contracts.
 
 ## §6 What this does NOT close
 
