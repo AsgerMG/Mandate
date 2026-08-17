@@ -157,13 +157,7 @@ different repair — a funder page read by a person, per
 is one of the three agencies `seed_agency_routes.py` records as refusing
 automated access.
 
-**b. The committed snapshot needs regenerating.** `website/frontend/public/data/instrument_terms.json`
-still carries the twenty-two old names. Postgres is the store the product reads,
-so **a founder served today already sees the new titles**; the snapshot is what
-CI and `check_*` read, and `check_body_named_rows.ts` therefore stays red until
-it is re-exported (`python3 website/build/eligibility_export.py`). That is why
-the new check is **not wired into `npm run check`** — wiring a red check in, or
-softening it to go green, are both worse than leaving it out and saying so.
+**b. → promoted to its own item, §0bis below.**
 
 **c. `instrument_profiles` is stale for the 22 rows, and this is why the rename
 moved the funnel as little as it did.** `profile_text` is built from `name`,
@@ -181,6 +175,31 @@ doubled apostrophe (`nell''ambito`). Both classes already existed on shipped
 rows named from this same register; cleaning them is a separate change with its
 own blast radius, not something to smuggle into a bounded one.
 
+
+### 0bis. Regenerate the committed snapshot, so the new naming check can be wired in — free, ~2 minutes, wsHF, 2026-08-17
+
+`website/frontend/public/data/instrument_terms.json` still carries the twenty-two
+old names. **Postgres is the store a founder's request reads, so this is not a
+live defect** — the new titles are already being served. The snapshot is the
+degradation path and what every hermetic `check_*` reads.
+
+**What it costs.** One command, no credentials beyond the ones already loaded,
+no model, no Voyage, no network:
+
+```
+python3 website/build/eligibility_export.py     # ~2 min, rewrites one file
+npx tsx website/frontend/scripts/check_body_named_rows.ts
+```
+
+**What it buys.** `check_body_named_rows.ts` can then be added to
+`npm run check` — **but only after §0a's four national-development-bank rows are
+settled**, because those four fail it on their own account and no snapshot
+regeneration touches them. Until both are done the check stays out of the build
+rather than being softened to pass, which would defeat the only thing it is for.
+
+**What to watch.** The export rewrites every row, so the diff will be larger
+than twenty-two lines and `check_corpus_currency` / `check_rendered_numbers`
+both read it. Regenerate on a branch and read the diff.
 
 ### 0a. Make the corpus of record match what is already shipping — free, ~30 minutes, nothing a founder sees changes either way
 
