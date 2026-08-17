@@ -1392,6 +1392,33 @@ function counterfactualReport(
   }
   p();
 
+  // ── THE COST CHANNEL, NAMED AND COUNTED ───────────────────────────────────
+  // A quarantined comparator stops deleting the founder it wrongly deleted,
+  // and it also stops deleting that row for EVERYONE ELSE. So the accessible
+  // pool gets longer for founders the proposal was never about, and a won fund
+  // sitting near the 40-row cut or the 8-row writer cap can be pushed out of it
+  // by rows that are now allowed to stay. That is the only mechanism by which
+  // this proposal can lose a founder, and it is counted directly rather than
+  // inferred from the net.
+  const offerableIdx = a.map((_, i) => i).filter((i) => a[i].offerable);
+  const meanAcc = (ts: Trace[]) => offerableIdx.length
+    ? offerableIdx.reduce((s, i) => s + ts[i].accessibleLen, 0) / offerableIdx.length : 0;
+  const grew = offerableIdx.filter((i) => b[i].accessibleLen > a[i].accessibleLen).length;
+  const shrank = offerableIdx.filter((i) => b[i].accessibleLen < a[i].accessibleLen).length;
+  p("### Why anybody LEAVES a row under a proposal that only un-blocks");
+  p();
+  p("A quarantined comparator stops deleting the founder it wrongly deleted, and it stops");
+  p("deleting that row for every other founder too. The pool gets longer, and a won fund");
+  p("near the 40-row cut or the 8-row writer cap can be pushed out of it by rows that are now");
+  p("allowed to stay. That is the whole of the cost, and it is counted, not inferred:");
+  p();
+  p("```");
+  p(`  mean accessible pool   ${meanAcc(a).toFixed(1)} rows  ->  ${meanAcc(b).toFixed(1)} rows`);
+  p(`  founders whose pool grew    ${grew} of ${offerableIdx.length}`);
+  p(`  founders whose pool shrank  ${shrank} of ${offerableIdx.length}`);
+  p("```");
+  p();
+
   // ── WHERE THE GAIN LANDS ON THE LADDER ────────────────────────────────────
   // A founder gained at `gates_pass` and lost again at `pool_cut` is not a
   // founder the product serves any better, and the difference is invisible in
@@ -1428,6 +1455,9 @@ function counterfactualReport(
       unGatedCarriedTo: Object.fromEntries(
         ["pool_cut", "writer_cap", ...ROW_CUTS.map(rowCutId)].map((id) => [id, carried(id)])),
       unGated: gainedGates.length,
+      meanAccessibleStore: Number(meanAcc(a).toFixed(1)),
+      meanAccessibleProposed: Number(meanAcc(b).toFixed(1)),
+      poolGrew: grew, poolShrank: shrank,
       n: N,
     },
   };
