@@ -227,11 +227,17 @@ above.
 
 `check_field_matches_demand`, `check_comparator_admits`,
 `check_open_question_class` and `check_country_gates` are red, and each
-reproduces on `main` with the same message. They are corpus-state failures owned
-elsewhere; the counts move between two runs minutes apart because other
-workstreams are loading. `check_recall_floor` is green on both. Nothing in this
-diff reaches a gate, a comparator or the pool: it is prompt text, one hermetic
-module, one guard, and three contracts.
+reproduces on `main` **with the same NUMBERS, not merely the same message** —
+**64 inert comparators and 1,130 unjudged texts on the merge and on `main`
+alike**, against 67 and 1,085 on the stale base this worktree branched from.
+That is the stronger claim and it is the one that matters: "same message" would
+survive a diff that changed what the guard counts, and identical counts do not.
+The base's different figures are the five-commit lag, not this work.
+
+They are corpus-state failures owned elsewhere; counts move between runs minutes
+apart while other workstreams load. `check_recall_floor` is green on both.
+Nothing in this diff reaches a gate, a comparator or the pool: it is prompt
+text, one hermetic module, one guard, and three contracts.
 
 ## §6 What this does NOT close
 
