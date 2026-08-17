@@ -9,9 +9,13 @@
 the `AWARD_TERM=oneside` flip. **Quote it with its concentration or not at all**
 — remove `vinnova_grant` and the flip is +0.4 at z=0.9.
 
-Milestone **50%**, goal **60%**. Both are decisions, both live once in
-`project-mgmt/dashboard/refresh.py`, and the generator refuses to publish a page
-that re-types either.
+**NORTH STAR: 86-90%**, set by the owner 2026-08-17. Milestone **50%**, goal
+**60%** on the way. The milestone and goal are decisions and live once in
+`project-mgmt/dashboard/refresh.py`; the generator refuses a page that re-types
+either. **The north star is NOT typed** — it is `reachCeiling`, what perfect
+ordering would score today, so it rises on its own as encodings are corrected.
+See `project_north_star` in memory for what sits between 86 and 90 and what is
+not recoverable.
 
 ## The one thing to understand
 
