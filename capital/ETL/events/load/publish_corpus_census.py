@@ -118,7 +118,18 @@ FINGERPRINTED = ("ETL", "website/build")
 # that two machines cannot disagree about; `ETL/schema/check_census_imports.py`
 # derives the true set from the census's own import graph and fails if this
 # declaration is short of it, which is what covers an input added next year.
-JUDGEMENT_INPUTS = ("project-mgmt/coverage_baseline.json",)
+JUDGEMENT_INPUTS = (
+    # The bar the coverage gate grades the corpus against.
+    "project-mgmt/coverage_baseline.json",
+    # What a guard IS: which code its verdict is bound to, and which exit codes
+    # count as a pass. `guard_verdicts.py` reads it at import; change a
+    # `tolerate` and the same run publishes a different verdict from the same
+    # code.
+    "data/guard_registry.json",
+    # The table the verdicts are written into. A column added or a constraint
+    # changed here changes what a published verdict can say.
+    "ETL/schema/guard_verdicts.sql",
+)
 
 
 def code_fingerprint(root: _Path = ROOT) -> str:

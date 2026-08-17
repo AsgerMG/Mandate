@@ -142,6 +142,121 @@ def one_fingerprint() -> list[str]:
     return []
 
 
+def root_relative_constant(node: ast.Assign) -> str | None:
+    """`NAME = ROOT / "a" / "b"` -> "a/b", for a module-level assignment.
+
+    Module level and upper-case on purpose: that is the shape a JUDGEMENT INPUT
+    takes -- a file the module grades against, resolved once at import. The
+    hundreds of `ROOT / "data" / ...` paths built inside functions are working
+    files of one step, not the bar a published verdict is computed against, and
+    requiring every one of them to be declared would make this check noise.
+    """
+    parts: list[tuple[str, str | None]] = []
+
+    def walk(n: ast.expr) -> None:
+        if isinstance(n, ast.BinOp) and isinstance(n.op, ast.Div):
+            walk(n.left)
+            walk(n.right)
+        elif isinstance(n, ast.Name):
+            parts.append(("name", n.id))
+        elif isinstance(n, ast.Constant) and isinstance(n.value, str):
+            parts.append(("str", n.value))
+        else:
+            parts.append(("other", None))
+
+    walk(node.value)
+    if not parts or parts[0] != ("name", "ROOT") or len(parts) < 2:
+        return None
+    if any(kind != "str" for kind, _ in parts[1:]):
+        return None
+    return "/".join(v for _, v in parts[1:] if v)
+
+
+def in_the_image(rel: str) -> bool:
+    """Would `COPY . .` carry this file into the ETL image?
+
+    Read from `.dockerignore`, which is the one committed statement of what the
+    build context excludes. Deliberately not a second opinion about it: a file
+    the container does not have cannot be part of a fingerprint the container
+    could reproduce, and demanding one would produce a permanent false DRIFTED.
+    """
+    patterns = [ln.strip() for ln in (ROOT / ".dockerignore").read_text().splitlines()
+                if ln.strip() and not ln.startswith("#")]
+    excluded = False
+    for pattern in patterns:
+        negate = pattern.startswith("!")
+        body = pattern.lstrip("!").rstrip("/")
+        if rel == body or rel.startswith(body + "/") or Path(rel).name == body:
+            excluded = not negate
+    return not excluded
+
+
+def bar_is_fingerprinted(modules: set[Path]) -> list[str]:
+    """Every input the census GRADES AGAINST is inside the fingerprint it publishes.
+
+    ── The failure ────────────────────────────────────────────────────────
+    Census #11 published `LOSS eligibility: 898, down from a high of 913` while
+    `project-mgmt/coverage_baseline.json` in this checkout says 937 -- `fe75156a`
+    raised thirteen fields the morning after the running image was built, every
+    one of them BELOW the mark the corpus had actually reached. The fingerprint
+    hashed `ETL/**.py` and `website/build/**.py`; the bar is neither, so a reader
+    of that verdict had no way to know which bar produced it. DRIFTED fired only
+    because the Python happened to drift in the same deploy.
+
+    ── Why this is derived and not a list ─────────────────────────────────
+    `publish_corpus_census.JUDGEMENT_INPUTS` DECLARES the inputs, so the hash
+    stays a dumb content hash that two machines cannot disagree about. This
+    proves the declaration COMPLETE, by walking the census's own import graph --
+    the same walk `main()` already does for dependencies -- and reading the
+    module-level path constants out of it. A second bar added next year fails
+    here the day its constant appears, with no edit to this function.
+    """
+    sys.path.insert(0, str(ROOT / "ETL/events/load"))
+    from publish_corpus_census import FINGERPRINTED, JUDGEMENT_INPUTS  # noqa: PLC0415
+
+    def is_hashed(rel: str) -> bool:
+        """Is this file ACTUALLY inside the hash — not merely under a path the
+        hash walks. `code_fingerprint` takes a named file whole and takes only
+        `.py` from a named directory, so `ETL/schema/guard_verdicts.sql` sits
+        under a fingerprinted tree and contributes nothing to the hash. Reading
+        "under ETL/" as "covered" would put the same hole in the check that the
+        check exists to close."""
+        if rel in JUDGEMENT_INPUTS:
+            return True
+        return (rel.endswith(".py")
+                and any(rel.startswith(tree.rstrip("/") + "/") for tree in FINGERPRINTED))
+
+    problems: list[str] = []
+    for module in sorted(modules):
+        for node in ast.parse(module.read_text(), filename=str(module)).body:
+            if not isinstance(node, ast.Assign):
+                continue
+            rel = root_relative_constant(node)
+            if rel is None or not (ROOT / rel).is_file():
+                continue
+            name = getattr(node.targets[0], "id", "?")
+            where = f"{module.relative_to(ROOT)}:{node.lineno} {name}"
+            if is_hashed(rel):
+                continue
+            if not in_the_image(rel):
+                problems.append(
+                    f"{where} reads `{rel}`, which .dockerignore keeps OUT of the "
+                    f"image.\n    The container executes this module and the file "
+                    f"is not there to read. Either the\n    module cannot run in "
+                    f"the image, or .dockerignore needs an exception -- it cannot "
+                    f"be\n    fingerprinted either way, because a hash the "
+                    f"container cannot reproduce is a permanent\n    false DRIFTED.")
+                continue
+            problems.append(
+                f"{where} grades against `{rel}`, which is in the image and NOT in "
+                f"the fingerprint.\n    A verdict computed against it carries a hash "
+                f"that does not move when it moves, so\n    two verdicts from two "
+                f"different bars are indistinguishable to every reader. Add it to\n"
+                f"    publish_corpus_census.JUDGEMENT_INPUTS and to the census "
+                f"entry's `code` in\n    data/guard_registry.json.")
+    return problems
+
+
 def main() -> int:
     declared = declared_distributions()
     stdlib = set(sys.stdlib_module_names) | {"__future__"}
@@ -168,6 +283,8 @@ def main() -> int:
                     f"in the standard library, nor in this repository, nor declared "
                     f"in requirements.txt")
 
+    offenders += bar_is_fingerprinted(seen)
+
     print(f"census import graph: {len(seen)} module(s) reachable from "
           + ", ".join(str(e.relative_to(ROOT)) for e in ENTRIES))
     if offenders:
@@ -180,7 +297,8 @@ def main() -> int:
         print("  requirements.txt if the image genuinely needs it.")
         return 1
     print("ok — every import resolves to the standard library, this repository, "
-          "or a declared dependency.")
+          "or a declared dependency; every input the census grades against is "
+          "inside the fingerprint it publishes.")
     return 0
 
 
