@@ -164,13 +164,105 @@ that separates them. That is a fact about the derivation, not about the doors �
 and it means wsHA §6's diagnosis stands: the separator is real, statable and
 already collected, and reading it off award-derived prose is not how you get it.
 
-## 5. Does it move the funnel
+## 5. Which answer WOULD have separated them, and the trap in the middle
 
-*(PENDING — the paired two-arm run)*
+The oracle says an answer exists on 64 of 86. Which one, if a real founder
+stated it:
 
-## 6. The honest bound
+| option | separates | misleads | net |
+|---|--:|--:|--:|
+| `feasibility_study` | 33 | 8 | **+25** |
+| `industrial_research` | 27 | 8 | +19 |
+| `rd_facilities` | 30 | 11 | +19 |
+| `ip_protection` | 20 | 10 | +10 |
+| `experimental_development` | 20 | 17 | +3 |
+| `market_launch` | 3 | 14 | −11 |
+| `working_capital` | 3 | 14 | −11 |
+| `production_capex` | 5 | 26 | **−21** |
 
-*(PENDING)*
+**`production_capex` is the trap, and it is why the derivation goes negative.**
+The classifier names it for 120 founders, and it is *reading their prose
+correctly* — these companies really are building manufacturing capacity. On this
+population that answer points at the wrong door 26 times to 5. The derivation is
+not wrong about the founder; the answer is wrong about the doors.
+
+### The signal is carried and then thrown away by the scorer
+
+**On 28 of the 64 separable pairs (43.8%) the derived answer CONTAINED a
+separating option — and still scored both doors the same.** `objectiveScorer`
+matches on **overlap**: any intersection counts. So an answer naming both
+`experimental_development` and `production_capex` overlaps a door registering
+either one, and a *richer* answer separates *less*. That is arithmetic, not a
+fact about founders.
+
+## 6. A proposal, priced and deliberately not applied
+
+**`shortlist.ts` is untouched.** It is another workstream's file this hour, and
+the claim in §5 is a claim about `objectiveScorer`'s arithmetic, so it is worth
+exactly what the counterfactual that prices it is worth. Two alternative rules,
+both computable from what the corpus already holds, scored on the same pairs:
+
+| | overlap (today) | coverage `|∩|` | jaccard `|∩|/|∪|` |
+|---|--:|--:|--:|
+| derived answer | NET +2 | NET +6 | NET −3 |
+| **pin** | NET +5 | **NET +14** | NET +5 |
+
+Two readings, and the second is the one that matters.
+
+1. **The rule change is worth more than the answer change.** Coverage — prefer
+   the door that matches *more* of the founder's answer — takes the shipped pin
+   from +5 to +14 without asking anyone anything.
+2. **Under every rule tested, the pin beats the derived answer.** That makes §4's
+   negative a property of the derivation, not of the rule it was scored by.
+
+**What this does NOT license, and the reasons are in the code.**
+
+- It is measured on **86 pairs**, restricted to the pair, model-free. It is a
+  lead, not a ranking result.
+- `objectiveScorer` normalises with `penalty = OBJECTIVE_MATCH^(-m/k)` over the
+  whole candidate group, so changing the match predicate changes `m` and `k` and
+  therefore the penalty **for every founder**, not only for these 86.
+- `shortlist.ts`'s own comment records that this signal in the row sort cost
+  **21 points of exact recall**, because all 421 objective-carrying instruments
+  are state-aid schemes and across channels the signal silently becomes a
+  channel prior. Within a channel there is no such trade — which is why it lives
+  in the sibling reassignment — but a rule change is still not local.
+- The honest way to price it is a paired funnel arm, exactly like the one this
+  workstream built for the intake answer. **That arm does not exist for the
+  scorer.** Building it is the next step, and it is free.
+
+## 7. Does it move the funnel
+
+*(PENDING — the paired two-arm run over all 897, ~2 hours, free, contended with
+two other funnel runs on this machine. `USE_OF_FUNDS=/tmp/wshg_uof.json npm run
+stages`, draw `13cb71cf3a1d1847` confirmed at start.)*
+
+## 8. The honest bound — what these numbers do and do not license
+
+**They bound derived answers on described founders, and nothing else.**
+
+- **The population.** 897 held-out, *described*, one-per-company founders — 27%
+  of the recall set. `recallSet.ts` establishes that no work moves that ceiling:
+  532 of 5,729 missing descriptions could be rebuilt, and admitting siblings is
+  the only relaxation with any yield, and admitting siblings is the leak. A
+  founder with no description is not in any figure here.
+- **The prose is not the answer.** These descriptions are project descriptions
+  recovered from *other* awards. A real founder is asked "what would this
+  funding actually pay for?" on the first page and **states** it. The 71.6%
+  coverage is a floor on what a real founder can supply, and the 27.3%
+  `cannot_tell` is a fact about award prose, **not** a fact about founders.
+  Nothing here says a real founder cannot answer this question.
+- **Therefore §4's negative does not retire the route.** It says: *reading this
+  field off award-derived prose does not pick the right door.* It does not say
+  *the field does not pick the right door* — §5's oracle says the opposite, on
+  64 of 86. A ceiling measured on today's derived answers bounds today's
+  harness, not the product.
+- **What it does license, firmly.** The harness's pin is not costing us
+  anything on this population. Replacing it with a derived answer is not an
+  improvement and on the changed pairs is a small regression, so **no workstream
+  should spend on deriving this field from prose again** without a different
+  source. And `production_capex` is a real hazard: a correct answer that points
+  the wrong way 5:1.
 
 ---
 
