@@ -1,82 +1,105 @@
-       |            ^
-    292|   });
-    293|
+wsHC — the two guards, proven red before green.
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯
+Both runs are on the real tree, at the commits stated. Neither number below is
+from a fixture: each is the state the repository was in on 2026-08-16.
 
- FAIL  lib/corpusCensus.test.ts > shrinkage > does catch the BLIND SPOT, where the share RISES
-TypeError: shrinkage is not a function
- ❯ lib/corpusCensus.test.ts:305:12
-    303|       instruments: { gates: 7471, roots: 352, total: 861, frameworks: …
-    304|     };
-    305|     expect(shrinkage([after, before]).map((f) => f.measure)).toEqual([…
-       |            ^
-    306|   });
-    307|
+════════════════════════════════════════════════════════════════════════════
+1. THE LOSS TEST — a store that holds less than it once held
+════════════════════════════════════════════════════════════════════════════
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯
+RED — lib/corpusCensus.test.ts committed one commit BEFORE shrinkage() existed.
 
- FAIL  lib/corpusCensus.test.ts > shrinkage > does not let a reading that already failed raise the mark
-TypeError: shrinkage is not a function
- ❯ lib/corpusCensus.test.ts:327:12
-    325|       instruments: { gates: 6368, roots: 350, total: 1086, frameworks:…
-    326|     };
-    327|     expect(shrinkage([sound, midRebuild, { ...CENSUS_3, id: 3, store: …
-       |            ^
-    328|       .toEqual([]);
-    329|   });
+  $ npx vitest run lib/corpusCensus.test.ts
+   FAIL  lib/corpusCensus.test.ts > shrinkage > catches the loss of a thousand
+         gates with every instrument still there
+  TypeError: shrinkage is not a function
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯
+   Test Files  1 failed (1)
+        Tests  10 failed | 11 passed (21)
 
- FAIL  lib/corpusCensus.test.ts > shrinkage > tolerates noise proportionally and nothing more
-TypeError: shrinkage is not a function
- ❯ lib/corpusCensus.test.ts:337:12
-    335|     });
-    336|     // 0.5% of 7,471 is 37.4; a fall of 37 is inside it and 38 is not.
-    337|     expect(shrinkage([drop(7471 - 37), CENSUS_9])).toEqual([]);
-       |            ^
-    338|     expect(shrinkage([drop(7471 - 38), CENSUS_9]).length).toBe(1);
-    339|   });
+The simulated failure is census #9's own recorded payload a week later, with
+the 1,070 gates of the 2026-08-08 encoding session gone and nothing else
+changed: 1,088 instruments still there, every KPI equal or higher. Judged by
+everything that existed before, that pair is SILENT — `admissibility` passes it
+and no canonical figure moves.
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯
+GREEN — after lib/corpusCensus.ts gained censusMeasures/lossTolerance/shrinkage.
 
- FAIL  lib/corpusCensus.test.ts > shrinkage > never reports a measure a store has only ever recorded once
-TypeError: shrinkage is not a function
- ❯ lib/corpusCensus.test.ts:342:12
-    340|
-    341|   it("never reports a measure a store has only ever recorded once", ()…
-    342|     expect(shrinkage([CENSUS_9])).toEqual([]);
-       |            ^
-    343|   });
-    344| });
+  $ npx vitest run lib/corpusCensus.test.ts
+   Test Files  1 passed (1)
+        Tests  21 passed (21)
 
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯
+  $ npx vitest run
+   Test Files  55 passed (55)
+        Tests  764 passed (764)
 
+Included in those 21, and each an assertion about something that must NOT fire:
 
- Test Files  1 failed (1)
-      Tests  10 failed | 11 passed (21)
-   Start at  19:20:13
-   Duration  177ms (transform 30ms, setup 0ms, import 38ms, tests 8ms, environment 0ms)
+  the 2026-08-06 FALSE ALARM   150 instruments join, every count rises about
+                               seventy, five of six axes fall as shares —
+                               silent, because nothing here reads a share.
+  the BLIND SPOT               150 instruments deleted, 130 with a known route:
+                               route 908 -> 778 while the share RISES 89.8% ->
+                               90.4% — fires, on a count 130 below its mark.
+  census #4                    the real mid-rebuild reading, 322 instruments,
+                               recording frameworks:10 where every sound
+                               reading of that corpus records 8 — silent,
+                               because a reading that failed does not raise a
+                               mark.
+  a measure nobody has added   `instruments.doors`, invented by the test, is
+                               judged with no edit to any list.
 
-     × judges what the census records, not what somebody listed 2ms
-     × covers a measure nobody has added yet 0ms
-     × takes numbers only, and finite ones 0ms
-     × catches the loss of a thousand gates with every instrument still there 0ms
-     × does not read one store's corpus as another store's history 0ms
-     × does not re-introduce the FALSE ALARM of 2026-08-06 0ms
-     × does catch the BLIND SPOT, where the share RISES 0ms
-     × does not let a reading that already failed raise the mark 0ms
-     × tolerates noise proportionally and nothing more 0ms
-     × never reports a measure a store has only ever recorded once 0ms
-⎯⎯⎯⎯⎯⎯ Failed Tests 10 ⎯⎯⎯⎯⎯⎯⎯
- FAIL  lib/corpusCensus.test.ts > censusMeasures > judges what the census records, not what somebody listed
- FAIL  lib/corpusCensus.test.ts > censusMeasures > covers a measure nobody has added yet
- FAIL  lib/corpusCensus.test.ts > censusMeasures > takes numbers only, and finite ones
- FAIL  lib/corpusCensus.test.ts > shrinkage > catches the loss of a thousand gates with every instrument still there
- FAIL  lib/corpusCensus.test.ts > shrinkage > does not read one store's corpus as another store's history
- FAIL  lib/corpusCensus.test.ts > shrinkage > does not re-introduce the FALSE ALARM of 2026-08-06
- FAIL  lib/corpusCensus.test.ts > shrinkage > does catch the BLIND SPOT, where the share RISES
- FAIL  lib/corpusCensus.test.ts > shrinkage > does not let a reading that already failed raise the mark
- FAIL  lib/corpusCensus.test.ts > shrinkage > tolerates noise proportionally and nothing more
- FAIL  lib/corpusCensus.test.ts > shrinkage > never reports a measure a store has only ever recorded once
-      Tests  10 failed | 11 passed (21)
+On the corpus as it stands the arm says nothing, which is the correct answer:
+no store has ever been observed to fall.
+
+  $ GUARD_NO_PUBLISH=1 npx tsx scripts/check_corpus_census.ts
+    -> DEGRADED, DRIFTED, DIVERGED, SCHEMA, STALE.  No SHRANK.
+
+════════════════════════════════════════════════════════════════════════════
+2. THE BAR — a verdict computed against an input nobody can identify
+════════════════════════════════════════════════════════════════════════════
+
+The simulated failure is the one that actually happened: the baseline moves
+while the code does not. `fe75156a` raised thirteen fields of
+project-mgmt/coverage_baseline.json on 2026-08-12 09:45, the morning after the
+image the container is still running was built.
+
+RED — the bar DECLARED an input, `code_fingerprint` left as it stood on
+2026-08-16 (hashing `ETL/**.py` and `website/build/**.py` and nothing else):
+
+  $ python3 ETL/schema/test_verdict_bar_fingerprinted.py
+  FAIL: a verdict can be published against a bar nobody can identify
+
+    - the bar changed 913 -> 937, the code did not, and the fingerprint did not move.
+      A verdict computed against the old bar and one computed against the new are
+      indistinguishable to every reader downstream. That is census #11.
+
+    - publish_corpus_census.code_fingerprint gives 0b85d34deb4de1b8 and
+      guard_verdicts.fingerprint gives 6fcd88b9f63ff438
+      over the same paths. The census would read DRIFTED against a container
+      running exactly this code.
+
+  exit=1
+
+GREEN — after code_fingerprint covers FINGERPRINTED + JUDGEMENT_INPUTS and the
+guard registry names the bar among the census's `code`:
+
+  $ python3 ETL/schema/test_verdict_bar_fingerprinted.py
+  ok: the fingerprint moves for every declared input
+      (project-mgmt/coverage_baseline.json) and for the code, on content and
+      not on names, whatever an input is called
+  exit=0
+
+  $ python3 ETL/schema/check_census_imports.py
+  ok — every import resolves to the standard library, this repository, or a
+       declared dependency; every input the census grades against is inside the
+       fingerprint it publishes.
+
+The test for the unseen case is in there and is not the baseline: it declares
+`project-mgmt/a_bar_nobody_has_written_yet` under five suffixes including none
+at all, and requires the fingerprint to move for each. A rule keyed on `.json`
+passes every other assertion in the file and fails that one.
+
+The fingerprint of this checkout moves as a result — ba21132f9cc7de04 ->
+b0a68fd2b7f1f060 — which is correct and is the point: it was never a hash of
+everything that decides what the census publishes, and now it is.

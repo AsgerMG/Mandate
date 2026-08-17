@@ -105,7 +105,8 @@
    ],
    "code": [
     "ETL",
-    "website/build"
+    "website/build",
+    "project-mgmt/coverage_baseline.json"
    ],
    "code_suffixes": [
     ".py"
