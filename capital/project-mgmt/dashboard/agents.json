@@ -8,10 +8,10 @@
       "why": "The measurement was written before the interruption and never run; it is running now. In 63% of the founders we miss, they are already looking at a SIBLING of the fund they would have won — same programme, wrong door. So we are not sending people to the wrong place; we are picking the wrong door in the right place. The question is whether a fact that tells two doors apart even exists: in our data, on the funder's own page, or only in the founder's head. If it mostly does not, that caps what this product can promise and you need to know it."
     },
     {
-      "id": "wsHC",
-      "step": 2,
-      "what": "A thousand encoded rules the two copies disagree about",
-      "why": "The corpus of record holds about 1,070 fewer encoded eligibility rules than the working copy — a 14% gap, larger than either thing the safety check actually caught, and it caught neither of them. Those rules are the one thing measured to tell apart two funds from the same programme, which is where two thirds of our misses turn out to be. So this asks three things: are the two copies even counting the same thing, what does the gap cost if it is real, and what the check should have done — it has already been fooled twice in this family, once crying wolf and once staying silent while work was thrown away."
+      "id": "wsHD",
+      "step": 3,
+      "what": "What the sixty-three corrections are actually worth",
+      "why": "Sixty-three funding rules are wrongly encoded — each one checked against the funder's own published page, with the quote and the reasoning written down. Fixing them is waiting on your approval because it means writing to the database. So far the case for them is an internal counter: wrongly excluded funds fall from 251 to 14. That is not the same as founders getting better answers. This measures what they would move on the real end-to-end number, so the decision comes with the figure that matters rather than the one that is easy to produce."
     }
   ]
 }
