@@ -214,6 +214,43 @@ inside such a file an unrecognised verdict still throws, and skipped files are
 named on every run. The regenerated projection is byte-identical, so nothing the
 axis decides moved.
 
+## 7. The memo changed, which is the only thing that settles it
+
+`npx tsx scripts/prodcheck.ts`, same company — **A.M.L. MICROTECHNIQUE
+LORRAINE** — same corpus (`POSTGRES`, 1,088 instruments), one brief.
+Full output in `project-mgmt/findings/prodcheck_wsHQ/run_2026-08-18_after.txt`.
+
+**SA.40453 appears nowhere in the run.** All seven published schemes carry a
+live window; the two French regimes in the table are SA.111728 and SA.112158,
+both running to 2026-12-30. The won fund, SA.40391 — itself a scheme that ended
+2020-12-30 — is now **ABSENT from the candidate pool** rather than sitting in the
+funnel's denominator marked reachable.
+
+| | 2026-08-18, before | 2026-08-18, after |
+|---|---|---|
+| row 5 | *Régime cadre ... PME 2014-2020*, **SA.40453, ended 2020-12-30**, EUR 980,817, link 200, "confirm this regime is still accepting applications" | not published |
+| rows carrying a dead window | 1 of 7 | 0 of 7 |
+| the won fund | in the pool at rank 99 of 118, on a scheme that ended | absent, because the scheme ended |
+
+**One caveat on this run, stated rather than buried.** It went through
+`PRODCHECK_URL=http://localhost:3100` — a server running THIS BRANCH against
+live Postgres — because the worktree cannot build under Turbopack (`node_modules`
+is a symlink out of the filesystem root; `next dev --webpack` works). The
+deployment serves `main`, and this branch is not merged, so **the live site is
+still publishing SA.40453 until this merges and Vercel redeploys.** The corpus
+is identical; only the code differs.
+
+## 8. What the same run says that is NOT this workstream's
+
+Both were already recorded as defects 2 and 5 of `prodcheck_wsHP` and both are
+still live:
+
+- Row 3 renders as *"... pour la période 2024-2026 · `rnd  sa 111728  region
+  grand est`"* — `distinguishRowNames`'s id-slug fallback, unchanged.
+- The bottom line says *"Start with the Grand Est regional scheme
+  (`satr_fr_rnd__sa_111728`)"*. The writer is now putting a raw instrument id
+  in the founder's own prose, which is a step worse than the label doing it.
+
 ## Reproduce
 
 ```
