@@ -45,6 +45,26 @@
 //      scalings `_wshi_tokens.ts` brackets — because the scaling is unmeasured
 //      and this guard may not be the optimistic party. Runs whose menu is
 //      genuinely unknown are reported, never silently cleared.
+//   5. A CEILING THE TRANSPORT WILL NOT CARRY IS NOT A CEILING — IT IS AN
+//      OUTAGE. Properties 1-4 all ask whether a ceiling is BIG ENOUGH. None of
+//      them asked whether the request can be sent at all, and it cannot: the
+//      Anthropic SDK refuses a NON-STREAMING request whose `max_tokens` implies
+//      a generation longer than ten minutes, client-side, before a socket is
+//      opened. `agentSelect.ts` does not stream. So the ceilings wsGS and wsHI
+//      installed for `medium` and above made every call at those efforts throw,
+//      at EUR 0.0000, into `exits.threw` — where `agentSelectRows` catches it
+//      and PUBLISHES THE SHIPPED ORDER. A run at those efforts reports the
+//      CONTROL's number under the TREATMENT's banner and bills nothing, which
+//      is the one failure shape no counter in the tally line can distinguish
+//      from success. Measured live by wsHO: 2 of 2 calls at `medium`.
+//
+//      THE LIMIT IS ASKED OF THE TRANSPORT, NOT RETYPED HERE. The check calls
+//      the SDK's own `calculateNonstreamingTimeout` and treats its throw as the
+//      answer, so an SDK upgrade that moves the boundary moves this guard with
+//      it and a number nobody can find in the source cannot go stale. Whether
+//      the call streams is read from `agentSelect.ts` itself, so adding
+//      `stream: true` lifts the constraint automatically and correctly.
+//
 //   3. NO TIMEOUT EXCEEDS THE ROUTE'S OWN BUDGET, and the timeouts are
 //      non-decreasing. A ceiling the clock cannot reach is not a ceiling: at
 //      12,288 tokens against a 90-second wall the call is cut off before
@@ -75,6 +95,8 @@ import path from "path";
 // stronger of the two statements `check_env_loader` accepts, and the true one.
 delete process.env.DATABASE_URL;
 
+import Anthropic from "@anthropic-ai/sdk";
+
 import {
   EFFORTS, MAX_TOKENS_BY_EFFORT, REQUEST_BUDGET_MS, TIMEOUT_BY_EFFORT,
   VERDICT_POOL, type ThinkEffort,
@@ -87,6 +109,10 @@ const WATCHES = "project-mgmt";
 /** The file that declares how long the whole request may take. The selector is
  *  one stage inside it and the writer runs after. */
 const ROUTE = "website/frontend/app/api/intelligence/route.ts";
+/** The file that MAKES the call the ceilings bound. Read to find out whether it
+ *  streams, because that single fact decides whether the transport will carry a
+ *  large `max_tokens` at all. */
+const SEAM = "website/frontend/lib/intelligence/agentSelect.ts";
 
 /** Non-vacuity. Each is a state in which this check would pass while seeing
  *  nothing, and each has a real cause: a moved tree, a renamed counter, a
@@ -347,6 +373,47 @@ for (const e of EFFORTS) {
   prevMs = ms;
 }
 
+// ── Property 5 — the transport will actually carry the ceiling ────────────
+// Asked of the SDK rather than restated. `calculateNonstreamingTimeout` is the
+// exact function `messages.create` calls on a non-streaming request; if it
+// throws for a value, that value cannot be sent, full stop. Constructed with an
+// explicit dummy key so nothing is read from the environment and no credential
+// dependency is acquired — the client opens no socket to answer this.
+const seamFile = path.join(ROOT, SEAM);
+if (!existsSync(seamFile)) {
+  problems.push(`${SEAM} is missing — whether the seam streams cannot be established, `
+    + `and the ceilings above bound a call nobody can find.`);
+} else {
+  const seamSrc = readFileSync(seamFile, "utf8");
+  // The stage's own request. `stream: true` anywhere in the module is taken as
+  // streaming: this property is about whether the ceiling CAN be carried, and a
+  // module that streams somewhere is one where the fix has begun. It is a
+  // deliberate false-negative in the safe direction — a check that goes green
+  // too early is visible, one that reds forever gets deleted.
+  const streams = /\bstream\s*:\s*true\b/.test(seamSrc)
+    || /\.messages\s*\.\s*stream\s*\(/.test(seamSrc);
+  if (!streams) {
+    const probe = new Anthropic({ apiKey: "check_maxtok_headroom-no-network" });
+    for (const e of EFFORTS) {
+      const v = MAX_TOKENS_BY_EFFORT[e];
+      let carried = true;
+      try {
+        probe.calculateNonstreamingTimeout(v, undefined);
+      } catch {
+        carried = false;
+      }
+      if (!carried) {
+        problems.push(`MAX_TOKENS_BY_EFFORT.${e} is ${v}, which the Anthropic SDK REFUSES `
+          + `to send on a non-streaming request — it throws before a socket is opened and `
+          + `${SEAM} does not stream. Every call at effort=${e} therefore lands in `
+          + `\`exits.threw\`, the shipped order is published, and the run bills EUR 0.0000 `
+          + `while reporting the CONTROL under the TREATMENT's name. Measured live by wsHO: `
+          + `2 of 2. Fix it by streaming the request, not by calling the ceiling measured.`);
+      }
+    }
+  }
+}
+
 // …and REQUEST_BUDGET_MS is the route's real number, not a remembered one.
 const routeFile = path.join(ROOT, ROUTE);
 if (!existsSync(routeFile)) {
@@ -422,7 +489,30 @@ if (efforts.size < MIN_EFFORTS) {
     + `(expected at least ${MIN_EFFORTS}): ${[...efforts].join(", ") || "none"}.`);
 }
 
-if (process.env.PROVE) prove(records);
+if (process.env.PROVE) {
+  prove(records);
+  // ── PROVE property 5 goes red on the ladder that was actually in force ──
+  // Not a simulation: these are the six values `caps.ts` held between wsHI and
+  // wsHO, and the transport is asked about each one exactly as the seam would.
+  const WSHI_LADDER: Record<string, number> = {
+    off: 1024, low: 2048, medium: 34_816, high: 57_344, xhigh: 96_256, max: 128_000,
+  };
+  const probe5 = new Anthropic({ apiKey: "check_maxtok_headroom-no-network" });
+  console.log(`  PROVE property 5 against the ladder wsHI installed:`);
+  const dead: string[] = [];
+  for (const [e, v] of Object.entries(WSHI_LADDER)) {
+    try { probe5.calculateNonstreamingTimeout(v, undefined); } catch { dead.push(`${e}=${v}`); }
+  }
+  for (const d of dead) console.log(`    RED  ${d} — the SDK refuses to send it non-streaming`);
+  console.log(`    ${dead.length} of ${Object.keys(WSHI_LADDER).length} rung(s) rejected  `
+    + (dead.length
+      ? "— every paid run at those efforts published the control and billed nothing"
+      : "██ NONE — PROPERTY 5 IS NOT ENFORCING ██"));
+  if (!dead.length) {
+    throw new Error("PROVE: the ladder wsHI installed passes property 5, so the property "
+      + "cannot be what caught wsHO's two thrown calls. Something is not being asked.");
+  }
+}
 
 if (problems.length) {
   console.error(`check_maxtok_headroom: ${problems.length} problem(s)`);

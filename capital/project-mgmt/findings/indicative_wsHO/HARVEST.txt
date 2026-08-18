@@ -1,0 +1,121 @@
+wsHO harvest · /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsHO-indicative/project-mgmt/findings/indicative_wsHO/main_tape.jsonl
+78 called founder(s) with a full transcript, 85 API turn(s)
+levers as recorded: SELECT_COUNT=7 SELECT_COUNT_MODE=exactly
+
+0. IS THERE ANY REASONING TO READ?
+  founders whose reply carried ANY reasoning text  18/78
+
+1. DOES IT SAY, IN ITS OWN WORDS, THAT IT IS FILLING SEATS?
+  ADDITIVE MANUFACTURING SOLUTIONS LTD (round 1): "...ts emphasis on blended finance with equity components. Other Horizon clusters like energy (CL5) and bio-based (CBE) are weaker matches for this project profile. After weighing the options, the strongest candidates are CL4 manufacturing, English Aid, Innovate UK, EIC Pathfinder, EIC Accelerator, and..."
+  1 transcript(s) of 85 matched any of 12 seat-filling phrasings
+
+2. THE ONLY HEDGE THE REPLY CONTRACT ADMITS: `unsure`
+  briefs naming at least one unsure row   7/78 (9.0%)
+  rows named unsure in total              17
+  The prompt invites this explicitly and caps it at 5. A model that
+  cannot separate two funds has exactly one way to say so.
+
+3. OF THE ROWS THE MODEL READ, HOW MANY SURVIVE THE PROMPT'S OWN
+   TWO DISQUALIFIERS — GENEROUSLY, SO EVERY NUMBER IS AN UPPER BOUND
+  founders measured                        78
+  mean menu length                         37.8 rows
+  MEAN SURVIVING ROWS                      11.5  (wsDY measured 2.1 of 18)
+  median / min / max                       8 / 2 / 38
+  FEWER SURVIVORS THAN THE 7 SEATS         26/78 (33.3%)  (wsDY: 10 of 12 at eighteen rows)
+  survivor histogram: 2:3 3:6 4:3 5:7 6:7 7:6 8:8 9:4 10:2 11:4 12:1 13:2 14:3 15:4 16:3 18:3 20:1 23:3 24:1 25:1 26:1 29:1 31:1 36:1 37:1 38:1
+
+4. SEATS FILLED WITH A ROW THAT FAILS THE PROMPT'S OWN RULES
+  picks made                               546
+  picks OUTSIDE the surviving set          264 (48.4%)
+  mean per founder                         3.38 of 7 seats
+  founders with at least one such pick     69/78
+  With SELECT_COUNT_MODE=exactly the model cannot decline a seat, so on
+  a founder with fewer survivors than seats these picks are not a
+  judgement it made — they are the only reply the contract allows.
+
+5. WHERE THE FILLERS LAND RELATIVE TO THE ANSWER
+  stratum R founders (won fund in the forty, not in our six)  43
+  ...of those, at least one filler picked AND still a miss    29
+  This is an association on a small n, not a mechanism. It says where to
+  point an `atMost` arm, and it does not price one.
+
+6. PER FOUNDER
+  founder                           str  menu  survive  picks off  six c/m
+  Bouyer Leroux                     C      40        2          7  Y/Y
+  AEROSPACE VALLEY                  R      40        2          6  n/n
+  CHOMARAT TEXTILES INDUSTRIES      R      40        2          6  n/n
+  ADVANCED MANUFACTURING SHEFFIELD  C      30        3          6  Y/Y
+  3T ADDITIVE MANUFACTURING         C      30        3          7  Y/n
+  CELLUGY                           C      37        3          6  Y/Y
+  CIGNUS INSTRUMENTS                C      40        3          5  Y/Y
+  SITAEL                            C      40        3          6  Y/Y
+  ALIVE LABS                        C      30        3          6  Y/Y
+  UNIVERSITA' DEGLI STUDI DI MILAN  R      40        4          5  n/n
+  CEMONITE                          R      40        4          6  n/n
+  NC SPECTRUM                       R      40        4          3  n/n
+  RATIER-FIGEAC                     R      40        5          4  n/Y
+  APTUNION INDUSTRIE                C      40        5          4  Y/Y
+  FSTECHNOLOGY                      R      40        5          5  n/n
+  Heimann Sensor GmbH               C      40        5          4  Y/Y
+  OHB System AG                     C      40        5          4  Y/Y
+  UNIVERSITE DE BORDEAUX            R      40        5          4  n/n
+  AQDOT                             C      31        5          4  Y/Y
+  ENANTIS S.R.O.                    R      40        6          5  n/n
+  AEROTEX                           C      31        6          3  Y/Y
+  3D REPO                           C      25        6          5  Y/Y
+  HOPROD                            R      40        6          3  n/Y
+  MECACHROME FRANCE                 C      40        6          2  Y/Y
+  FORGES D'ALBERT                   R      40        6          3  n/Y
+  ACTA MOBILIER                     R      40        6          3  n/n
+  MARITIME ROBOTICS                 C      40        7          3  Y/Y
+  HENNLICH S.R.O.                   R      40        7          5  n/n
+  RISE RESEARCH INSTITUTES OF SWED  R      40        7          6  n/n
+  ANDERSEN MEK VERKSTED             R      40        7          5  n/n
+  MARTEL INNOVATE BV                R      40        7          4  n/n
+  VALEO EAUTOMOTIVE GERMANY         C      40        7          2  Y/Y
+  AVA OCEAN                         R      40        8          3  n/n
+  TALGA GROUP LTD                   R      40        8          5  n/n
+  CACTUX S.R.O.                     R      40        8          5  n/n
+  MEYER WERFT                       C      40        8          3  Y/Y
+  KLOSSER INNOVASJON                R      40        8          4  n/n
+  GREENERWAVE                       R      40        8          5  n/n
+  QUANTUNE TECHNOLOGIES GMBH        R      40        8          3  n/n
+  Scienion GmbH                     C      40        8          2  Y/Y
+  CARIAD SE                         R      40        9          3  n/n
+  CENTRE FOR PROCESS INNOVATION LI  C      19        9          2  Y/Y
+  AUGMENTCITY                       R      40        9          4  n/n
+  X FAB DRESDEN                     R      40        9          2  n/Y
+  EURNEX E V                        R      40       10          2  n/Y
+  BERNHARD NOCHT INSTITUT FUER TRO  C      40       10          2  Y/Y
+  AF OFFSHORE DECOM                 C      40       11          4  Y/Y
+  WISE SRL                          C      40       11          2  Y/n
+  ALCOA NORWAY                      C      40       11          3  Y/Y
+  SHIFT MATERIALS                   R      40       11          3  n/n
+  CEALTECH                          R      40       12          3  n/Y
+  NELLIE TECHNOLOGIES               R      24       13          4  n/n
+  BRISTOL BATH REGIONAL CAPITAL     C      24       13          3  Y/Y
+  BIO ME                            R      40       14          1  n/n
+  AIXTRON SE                        R      40       14          6  n/Y
+  FEV EUROPE                        C      40       14          3  Y/Y
+  TOUL ENERGIE                      R      40       15          2  n/Y
+  DESTINUS SPAIN                    C      40       15          3  Y/Y
+  AERNNOVA COMPOSITES ILLESCAS SA   C      40       15          2  Y/n
+  ARISTON                           R      40       15          5  n/Y
+  CELLFION AB                       C      40       16          4  Y/Y
+  SWERIM                            R      40       16          5  n/n
+  BP EUROPA SE                      R      40       16          3  n/n
+  JANSEN RECYCLING GROUP B V        R      40       18          2  n/n
+  TELECOM ITALIA SPA O TIM          R      40       18          5  n/n
+  NEXTWORKS                         R      40       18          0  n/n
+  ASOCIACION DE INVESTIGACION DE L  C      40       20          4  Y/Y
+  CU SERVICES LIMITED               C      24       23          0  Y/n
+  CRCAM NORD MIDI PYRENEES          R      40       23          0  n/Y
+  ADDITIVE MANUFACTURING SOLUTIONS  C      24       23          0  Y/Y
+  CELLEVATE AB                      C      40       24          1  Y/n
+  LE BIO MARAIS                     R      40       25          3  n/n
+  SCANDINAVIAN REAL HEART AB        R      40       26          1  n/Y
+  BRISTOL CITY COUNCIL              C      30       29          0  Y/n
+  Aktiv                             C      32       31          0  Y/n
+  AALBORG KOMMUNE                   C      37       36          0  Y/Y
+  UNIVERSITA DEGLI STUDI DI NAPOLI  R      40       37          0  n/n
+  UNIVERSITA COMMERCIALE LUIGI BOC  R      40       38          0  n/n
