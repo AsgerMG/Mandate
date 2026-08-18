@@ -1,0 +1,85 @@
+
+GREEN  0. the real tree, unmodified
+
+RED    1. STALE: one row backdated 48 days
+    theme index is not stale: last observed 48.9 days ago, past the 7-day cap. Nobody has looked at it since.
+      Run: cd website/frontend && npm run check --only="theme index is not stale"
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+  Refresh all:       cd website/frontend && npm run check
+
+RED    2. UNOWNED: a founder-tier check goes red with nobody's name on it
+    theme index is not stale: is RED and NOBODY HAS LOOKED. It exited 1 and said:
+      check_theme_index: themeIndex.generated.ts is STALE.
+      Fix it, or write it down: data/guard_registry.json -> suite_accepted, with a class (defect / guard / corpus-state), an owner, the date it went red, the failure it is bound to, and a review date.
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+
+RED    3. EXPIRED: a hold whose review date has passed
+    country gates: the acceptance for country gates EXPIRED on 2026-08-01. The reason it recorded was:
+        Gate 393752 demands establishment in Turkey and no founder answer can satisfy it, so eit_digital_vap is hidden from everyone. check_winner_not_gated independently lists two real winners deleted by that same instrument (FutureOn NO, ScanTrust CH). The fix is `python3 ETL/terms/encode_gates.py repair-countries`, a Postgres write. Queued in AWAITING_APPROVAL.md.
+      Re-examine it and either fix the subject or set a new review date, deliberately.
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+
+RED    4. CAPPED: a hold stretched to 141 days from the day it went red
+    country gates: the acceptance for country gates runs 141 day(s) from 2026-08-12 to 2026-12-31, past the 14-day cap. A hold longer than the silence it is holding is not a decision, it is the silence with a date on it. Shorten it, or fix the thing.
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+  Refresh all:       cd website/frontend && npm run check
+  Own a red:         data/guard_registry.json -> suite_accepted
+
+RED    5. BOUND: the check has started failing a different way
+    country gates: country gates is failing, an acceptance exists, and it does NOT cover this failure.
+      accepted:  /some other failure entirely/
+      reported:  FAIL — 1 positive country rules no founder answer can satisfy. Each one hides its fund:
+      The subject has started failing a different way, which is a new fact nobody has decided about.
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+
+RED    6. OBSOLETE: an acceptance over a check that has gone green
+    theme index is not stale: is GREEN, and data/guard_registry.json still accepts a failure of it:
+      /1 positive country rules no founder answer can satisfy/
+      An acceptance that outlives the thing it accepted is pre-authorisation for the next regression under the same wording. Delete the entry.
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+
+RED    7. UNTIERED: a check that never said who is hurt when it fails
+    theme index is not stale: declares no tier. data/guard_registry.json -> suite_tiers must say who experiences this failure: `founder` (a person is handed something wrong, and it fails the build) or `report` (true, nobody is harmed today, recorded and printed and fails nothing) — with one sentence of `protects` naming what that person would experience.
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+  Refresh all:       cd website/frontend && npm run check
+  Own a red:         data/guard_registry.json -> suite_accepted
+
+RED    8. INCOMPLETE: a check the record has never seen
+    theme index is not stale: never observed. project-mgmt/check_status.json carries no result for it, so nothing in this tree knows whether it passes.
+      Run: cd website/frontend && npm run check --only="theme index is not stale"
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+  Refresh all:       cd website/frontend && npm run check
+
+RED    9. NO RECORD AT ALL
+    (the record): project-mgmt/check_status.json does not exist. Nothing in this tree says what the check suite last found, which is the state this file exists to remove.
+      Run: cd website/frontend && npm run check
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+  Refresh all:       cd website/frontend && npm run check
+
+GREEN  10. green again, the tree restored

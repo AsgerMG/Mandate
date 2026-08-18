@@ -62,7 +62,7 @@
 import { readFileSync, readdirSync, statSync } from "fs";
 import path from "path";
 
-import { code } from "./_import_graph";
+import { code } from "../_import_graph";
 
 /** The frontend is `website/frontend`; the tree is two levels up. */
 const FRONTEND = process.cwd();

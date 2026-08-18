@@ -66,8 +66,12 @@ import {
   type Accepted, type RedClass,
 } from "./acceptance";
 
-export const ROOT = path.join(__dirname, "..", "..", "..");
-export const RECORD = path.join(ROOT, "data", "check_status.json");
+/** The repository root. Four levels, because this module lives one deeper than
+ *  the checks do (scripts/lib -> scripts -> frontend -> website -> root). */
+export const ROOT = path.join(__dirname, "..", "..", "..", "..");
+/** project-mgmt/, not data/: `data` is gitignored, and a record CI cannot
+ *  read is the defect this file exists to remove, one level down. */
+export const RECORD = path.join(ROOT, "project-mgmt", "check_status.json");
 export const REGISTRY = path.join(ROOT, "data", "guard_registry.json");
 export const RUNNER = path.join(ROOT, "website", "frontend", "scripts", "run_checks.mjs");
 
@@ -108,13 +112,15 @@ export interface Record_ {
 /** The suite, read off the runner rather than restated. A second list of what
  *  the suite contains is the first list's next defect. */
 export function suiteLabels(src = readFileSync(RUNNER, "utf8")): string[] {
-  const block = src.slice(src.indexOf("const CHECKS = ["));
-  const labels = [...block.matchAll(/^\s*\[\s*(?:"([^"]+)"|"([^"]+)",)/gm)]
-    .map((m) => m[1] ?? m[2])
-    .filter(Boolean) as string[];
-  // Multi-line entries put the label on its own line ahead of the argv array.
-  const wrapped = [...block.matchAll(/^\s*\["([^"]+)",\s*$/gm)].map((m) => m[1]);
-  const all = [...new Set([...labels, ...wrapped])];
+  const block = src.slice(src.indexOf("const CHECKS = ["), src.indexOf("\n];", src.indexOf("const CHECKS = [")));
+  // An entry is `["<label>", [ … ]]`, and it may wrap after the label. Anchored
+  // at two-space indentation so the ARGV array's own first string — which sits
+  // four spaces in on a wrapped entry, and is "npx" or "python3" — is not read
+  // as a label. That is the parse this check exists to be sure of: it found 61
+  // where the suite ran 59, and both extras were argv heads.
+  const all = [...new Set(
+    [...block.matchAll(/^ {2}\["([^"]+)",/gm)].map((m) => m[1]),
+  )];
   if (all.length < MIN_SUITE_SIZE) {
     throw new Error(
       `suiteLabels parsed only ${all.length} check(s) out of run_checks.mjs, under the `
@@ -135,12 +141,44 @@ export function loadAccepted(file = REGISTRY): Record<string, Accepted> {
   return entriesOf<Accepted>(reg.suite_accepted);
 }
 
+/** WHO EXPERIENCES THIS FAILURE — a `founder` red fails the build, a `report`
+ *  red is recorded and printed and fails nothing. See the block's own `$why`
+ *  in data/guard_registry.json for the argument and for why `protects` is
+ *  prose rather than a category. */
+export type Tier = "founder" | "report";
+export interface TierDecl {
+  tier: Tier;
+  protects: string;
+  /** REFLEXIVE: this row's value is produced by the very command that reads it.
+   *
+   *  `unit tests` hosts check_red_debt.test.ts and `a red check is owned` IS
+   *  check_red_debt. Judging their recorded outcome is reading your own echo,
+   *  and it LATCHES: a failing test writes `unit tests: red`, the next run
+   *  reads that row, fails on it, and writes it again — a loop with no exit
+   *  that does not depend on anything being wrong. Observed on 2026-08-18, one
+   *  run after the mechanism was built.
+   *
+   *  So freshness and tiering still apply to these rows — a stale one is still
+   *  stale — and the OWNED clause does not. Nothing is lost: if vitest is
+   *  failing you are looking at vitest failing. */
+  reflexive?: boolean;
+}
+
+export function loadTiers(file = REGISTRY): Record<string, TierDecl> {
+  const reg = JSON.parse(readFileSync(file, "utf8")) as
+    { suite_tiers?: Record<string, unknown> };
+  return entriesOf<TierDecl>(reg.suite_tiers);
+}
+
 export interface Problem { label: string; why: string }
 export interface Held { label: string; cls: RedClass; why: string }
 
 export interface Judgement {
   problems: Problem[];
   held: Held[];
+  /** RED, and on a check nobody is harmed by today. Printed in full on every
+   *  run and recorded; it fails nothing. See `suite_tiers.$why`. */
+  reported: { label: string; protects: string; summary: string }[];
   green: string[];
   /** Every label observed, with the age of its observation in days. */
   ages: { label: string; days: number }[];
@@ -155,10 +193,12 @@ export function judgeSuite(
   record: Record_ | null,
   accepted: Record<string, Accepted>,
   now: number,
+  tiers: Record<string, TierDecl> = {},
   maxAgeDays = MAX_OBSERVATION_AGE_DAYS,
 ): Judgement {
   const problems: Problem[] = [];
   const held: Held[] = [];
+  const reported: Judgement["reported"] = [];
   const green: string[] = [];
   const ages: { label: string; days: number }[] = [];
 
@@ -169,12 +209,37 @@ export function judgeSuite(
         + `the check suite last found, which is the state this file exists to remove.\n`
         + `      Run: cd website/frontend && npm run check`,
     });
-    return { problems, held, green, ages };
+    return { problems, held, reported, green, ages };
   }
 
   const obs = record.observations ?? {};
 
   for (const label of suite) {
+    // A check with no tier has never answered the question the tier block
+    // exists to force: who is hurt when this fails? Refusing it here is what
+    // stops the suite growing another forty-nine checks nobody costed.
+    const t = tiers[label];
+    if (Object.keys(tiers).length && !t) {
+      problems.push({
+        label,
+        why: `declares no tier. data/guard_registry.json -> suite_tiers must say who `
+          + `experiences this failure: \`founder\` (a person is handed something wrong, `
+          + `and it fails the build) or \`report\` (true, nobody is harmed today, `
+          + `recorded and printed and fails nothing) — with one sentence of \`protects\` `
+          + `naming what that person would experience.`,
+      });
+      continue;
+    }
+    if (t && !t.protects?.trim()) {
+      problems.push({
+        label,
+        why: `declares tier ${JSON.stringify(t.tier)} and no \`protects\` sentence. The `
+          + `sentence is the work: a tier you cannot justify in one line is a check that `
+          + `should not be failing a build.`,
+      });
+      continue;
+    }
+
     const o = obs[label];
     if (!o) {
       problems.push({
@@ -201,7 +266,21 @@ export function judgeSuite(
       continue;
     }
 
+    if (o.code !== 0 && t?.reflexive) {
+      reported.push({
+        label,
+        protects: t.protects,
+        summary: `${o.summary}   [reflexive — this row is written by the command that `
+          + `reads it, so it is not judged here; the failure is in front of you]`,
+      });
+      continue;
+    }
+
     const a = accepted[label];
+    if (o.code !== 0 && t && t.tier === "report") {
+      reported.push({ label, protects: t.protects, summary: o.summary });
+      continue;
+    }
     if (o.code === 0) {
       green.push(label);
       if (a) {
@@ -245,13 +324,22 @@ export function judgeSuite(
     }
   }
 
-  return { problems, held, green, ages };
+  return { problems, held, reported, green, ages };
 }
 
 /** The report, shared by the CLI and by the runner's own summary so the two
  *  cannot describe the same tree differently. */
 export function report(j: Judgement): string {
   const out: string[] = [];
+  if (j.reported.length) {
+    out.push(`  ${j.reported.length} report-tier check(s) RED — recorded, not a build failure:`);
+    for (const r of j.reported) {
+      out.push(`    ${r.label}`);
+      out.push(`      ${r.summary}`);
+      out.push(`      watches: ${r.protects}`);
+    }
+    out.push("");
+  }
   if (j.held.length) {
     out.push(`  ${j.held.length} red check(s) HELD — decided, owned, and dated:`);
     for (const h of j.held) {

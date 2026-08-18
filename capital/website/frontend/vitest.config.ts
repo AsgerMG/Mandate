@@ -5,7 +5,11 @@ export default defineConfig({
   resolve: { alias: { "@": resolve(__dirname, ".") } },
   test: {
     environment: "node",
-    include: ["lib/**/*.test.ts"],
+    // `scripts/` joins `lib/` here for one file and a stated reason:
+    // scripts/check_red_debt.test.ts is the silence-breaker, and it has to run
+    // in the command everybody actually types. Its subject is the build's own
+    // state, which is not app code and does not belong under lib/.
+    include: ["lib/**/*.test.ts", "scripts/**/*.test.ts"],
     coverage: {
       provider: "v8",
       // Only the modules these tests are actually about. Reporting coverage

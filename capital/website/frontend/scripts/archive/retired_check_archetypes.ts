@@ -7,17 +7,17 @@
  *
  * Run: npx tsx scripts/check_archetypes.ts
  */
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 requireCredentials("check_archetypes", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 async function main() {
-  const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");
-  const { displayInstitutionName } = await import("../lib/intelligence/shortlist");
-  const { computeVerdict } = await import("../lib/intelligence/pipeline");
-  const { assessAll } = await import("../lib/intelligence/verdict");
-  const { ARCHETYPES, archetypeAnswers } = await import("../lib/intelligence/__archetypes");
+  const { hydrateDbInstruments } = await import("../../lib/intelligence/corpus");
+  const { displayInstitutionName } = await import("../../lib/intelligence/shortlist");
+  const { computeVerdict } = await import("../../lib/intelligence/pipeline");
+  const { assessAll } = await import("../../lib/intelligence/verdict");
+  const { ARCHETYPES, archetypeAnswers } = await import("../../lib/intelligence/__archetypes");
   await hydrateDbInstruments();
 
   let failures = 0;

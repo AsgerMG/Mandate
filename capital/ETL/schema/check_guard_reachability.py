@@ -119,6 +119,13 @@ def guard_modules() -> list[Path]:
         if not d.is_dir():
             continue
         for p in sorted(d.iterdir()):
+            # A `*.test.ts` beside a check is not a second check needing a
+            # runner: its automatic path is the test runner, by construction,
+            # and `npx vitest run` is in CI and in every agent's verification
+            # block. Demanding a CI step for it would be demanding that vitest
+            # be invoked twice.
+            if p.name.endswith(".test.ts"):
+                continue
             if p.name.startswith("check_") and p.suffix in (".py", ".ts"):
                 found.append(p)
     return found

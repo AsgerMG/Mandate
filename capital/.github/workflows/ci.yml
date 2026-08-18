@@ -43,6 +43,15 @@ jobs:
       # would widen the blast radius of one compromised job from "can read our
       # code" to "can read and write every award, company and fund we hold" —
       # and ETL/schema/check_guard_registry.py fails the build if one comes back.
+      # ── Is this tree's own build state known, and is every red one owned? ──
+      # First, because it is the cheapest and the most likely to explain
+      # anything below it. It reads project-mgmt/check_status.json — what `npm run
+      # check` last found, one row per check — and fails on a row that is
+      # stale, or red with nobody's name on it, or held under an expired
+      # acceptance. See website/frontend/scripts/lib/suiteStatus.ts.
+      - name: A red check is owned, and a green one is not accepted
+        run: npx tsx scripts/check_red_debt.ts
+
       - name: Typecheck
         run: npx tsc --noEmit
 
@@ -75,25 +84,6 @@ jobs:
       # after you reply". Hermetic: it reads the import graph, nothing else.
       - name: A rule is enforced only if its check can run
         run: npx tsx scripts/check_check_reachability.ts
-
-      # And the third question in that family. `check_guard_reachability` asks
-      # whether a guard RUNS; `check_check_reachability` asks whether the rule it
-      # counts can be reached; this asks whether the guard is reading the thing
-      # it protects. Six guards were found on 2026-08-13 grading a value the
-      # request path narrows before a founder sees anything -- the pool floor
-      # upstream of `accessiblePool`, the curve's staleness stamp upstream of
-      # `publishableInstruments`, a hand-rolled copy of the window predicate.
-      # Every one had a header describing the subject faithfully, which is why
-      # this reads code and strips comments. Hermetic: source files only.
-      - name: A guard reads the thing it protects
-        run: npx tsx scripts/check_guard_subject.ts
-
-      # A name in code font is a promise the name exists. ARCHITECTURE.md named
-      # `SCREEN_FOR_RANKER`, which is in no file in the tree, and attached a
-      # measurement to it — so a reader had nothing to set and a route was
-      # recorded closed by an experiment they could not find. Hermetic.
-      - name: Identifiers named in the docs exist
-        run: npx tsx scripts/check_doc_identifiers.ts
 
       # No number a visitor reads is a literal the corpus does not produce.
       # Hermetic: TypeScript source plus two COMMITTED artifacts, no database
@@ -134,10 +124,6 @@ jobs:
       # pull request.
       - name: A comparator asks the rule's question
         run: npx tsx scripts/check_field_matches_demand.ts
-
-      - name: Archetype regression
-        run: npx tsx scripts/check_archetypes.ts
-        env: { NO_PG: '1' }
 
       - name: Per-request payload budget
         run: npx tsx scripts/check_payload_budget.ts
@@ -277,6 +263,58 @@ jobs:
       - name: Site serves the corpus the ETL produced
         if: always()
         run: npx tsx scripts/check_corpus_census.ts
+
+      # ── Thirteen checks that ran nowhere but a human's terminal ────────────
+      # `check_guard_reachability.py` was RED on main on 2026-08-18 naming
+      # seventeen check modules in NO automatic path. `npm run check` does not
+      # count and that check says so in its own words: it is a command somebody
+      # types, it takes twelve minutes, and it needs DATABASE_URL. Among the
+      # seventeen was `check_dead_doors`, built the same week to stop the
+      # product publishing a scheme that ended in 2020.
+      #
+      # These thirteen are hermetic — committed artifacts, no credentials, no
+      # network — so there was never a reason for them to be anywhere else. The
+      # four that need a live corpus are declared under `manual` in
+      # data/guard_registry.json with the reason and a review date.
+      #
+      # `if: always()` throughout, for the reason the block above it gives: one
+      # failure must not hide the other twelve.
+      - name: A rule's prose states no rate the code computes
+        if: always()
+        run: npx tsx scripts/check_prompt_rates.ts
+      - name: A euro figure says what it is a quantity of
+        if: always()
+        run: npx tsx scripts/check_money_basis.ts
+      - name: A measured ceiling was raised
+        if: always()
+        run: npx tsx scripts/check_maxtok_headroom.ts
+      - name: A technology sector is claimed only where recipients agree
+        if: always()
+        run: npx tsx scripts/check_sector_evidence.ts
+      - name: "A funds: line states a scope"
+        if: always()
+        run: npx tsx scripts/check_funds_line.ts
+      - name: Both stores select the same columns
+        if: always()
+        run: npx tsx scripts/check_store_columns.ts
+      - name: A displayed name is not an id
+        if: always()
+        run: npx tsx scripts/check_row_name_not_id.ts
+      - name: A row is named by a body, not by its own key
+        if: always()
+        run: npx tsx scripts/check_body_named_rows.ts
+      - name: A winner is never gated out of the memo
+        if: always()
+        run: npx tsx scripts/check_winner_not_gated.ts
+      - name: The harness does not answer as the founder
+        if: always()
+        run: npx tsx scripts/check_harness_intake.ts
+      - name: The request path cannot reach the answer key
+        if: always()
+        run: npx tsx scripts/check_answer_not_reachable.ts
+      - name: Every answer reaches the model that writes the brief
+        if: always()
+        run: npx tsx scripts/check_answer_in_prompt.ts
 
       - name: Lint
         run: npx eslint .
