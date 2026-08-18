@@ -21,11 +21,15 @@
 import { readFileSync } from "fs";
 import path from "path";
 
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 import { isDescribed, loadRecallSet, type RecallRow } from "./recallSet";
 
 loadEnvLocal();
 delete process.env.ANTHROPIC_API_KEY;
+// The whole question here is what POSTGRES holds — the header says so twice.
+// Undeclared, a run without the key would have read the committed snapshot and
+// answered a question about the store it exists to distinguish itself from.
+requireCredentials("wshd_pg_drift", ["DATABASE_URL"]);
 
 const CORRECTIONS = path.join("..", "..", "project-mgmt", "evidence",
   "wsgu_gate_encoding_corrections_2026-08-13.jsonl");

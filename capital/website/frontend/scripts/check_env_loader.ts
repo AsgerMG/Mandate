@@ -100,8 +100,22 @@ const CREDENTIALS = ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY", "OPENAI_
 /** Any spelling of an env FILE: `.env`, `.env.local`, `.env.production`, and
  *  tsx/node's `--env-file=` flag. Deliberately wider than the one spelling
  *  that caused the incident — the property is "no file is named out here",
- *  not "not that file". */
-const ENV_FILE = /(?:--env-file[= ]\S*)|(?:['"`][^'"`\n]*\.env(?:\.[A-Za-z0-9_]+)*['"`])/;
+ *  not "not that file".
+ *
+ *  A FILE, though, and that word is doing work this pattern used to skip. The
+ *  first version matched any quoted run of characters containing `.env`, which
+ *  is also what a PROPERTY ACCESS looks like when it is quoted inside a
+ *  sentence: `_wsho_strata.ts` prints "…never from `process.env` —" to say it
+ *  reads a shipped constant instead, and that sentence was reported as the
+ *  defect it is denying. The check was red for six days partly on it.
+ *
+ *  So the quoted alternative asks the question the property means: is this a
+ *  DOTFILE AT A PATH BOUNDARY — the start of the string, or just after a
+ *  separator? `.env.local`, `./.env.local`, `../../.env` and `/srv/app/.env`
+ *  all are; `process.env`, `import.meta.env` and any other `<identifier>.env`
+ *  are not, and cannot be, because an env file is a dotfile by convention and
+ *  nothing this repo loads is named otherwise. */
+const ENV_FILE = /(?:--env-file[= ]\S*)|(?:['"`](?:[^'"`\n]*[/\\])?\.env(?:\.[A-Za-z0-9_]+)*['"`])/;
 
 function walk(dir: string): string[] {
   const out: string[] = [];

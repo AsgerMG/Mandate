@@ -46,7 +46,7 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
 delete process.env.ANTHROPIC_API_KEY;
-if (requireCredentials("wshe_award", ["DATABASE_URL"]) === "offline") {
+if (requireCredentials("wshe_award", ["DATABASE_URL", "VOYAGE_KEY"]) === "offline") {
   throw new Error(
     "_wshe_award: NO_PG is set, which deletes DATABASE_URL and serves the "
     + "committed snapshot. The snapshot's award columns are a different vintage "

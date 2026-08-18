@@ -24,6 +24,16 @@ const CMP = path.join(EV, "wshh_profile_components_2026-08-17.json");
  *  describing a floor that no longer ships. */
 import { RELEVANCE_FLOOR } from "../lib/intelligence/relevance";
 
+// Pinned OFFLINE, deliberately, because the header above says this run needs no
+// credentials and nothing enforced it. Every module below reads DATABASE_URL and
+// VOYAGE_KEY lazily, inside the functions that use them, so destroying them here
+// is what makes the claim true rather than merely stated: with the keys present
+// this would have ranked on pgvector against Postgres and printed a number
+// indistinguishable from the offline one it advertises.
+delete process.env.DATABASE_URL;
+delete process.env.VOYAGE_KEY;
+
+
 interface CosFile {
   draw: string; corpusSize: number; totalProfiles: number;
   corpusWithProfile: number; pairs: PairMeasurement[];

@@ -32,13 +32,17 @@ import { hydrateDbInstruments, loadDbInstruments, publishableInstruments,
          publishabilityContext, publishabilityFailures,
          requireLiveCorpus } from "../lib/intelligence/corpus";
 import { isShut } from "../lib/intelligence/liveness";
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 import { isDescribed, loadRecallSet, type RecallRow } from "./recallSet";
 
 loadEnvLocal();
 // No writer, no ranker, no judge is called from here. Removing the key makes
 // that a property of the process rather than a claim in a comment.
 delete process.env.ANTHROPIC_API_KEY;
+// It opens its own pg Client on DATABASE_URL below, and `requireLiveCorpus`
+// inside main() cannot save it: with no key, hydration records
+// source=snapshot, degraded=false, and that guard passes.
+requireCredentials("wshn_successor_reach", ["DATABASE_URL"]);
 
 async function main(): Promise<void> {
   await hydrateDbInstruments();
