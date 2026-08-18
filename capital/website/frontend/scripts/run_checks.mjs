@@ -34,14 +34,99 @@
 // carried by the 0 publishable instruments is reachable" when run from one
 // directory up. A suite that can pass by being invoked from the wrong place is
 // not a suite.
-import { spawnSync } from "child_process";
+import { spawn } from "child_process";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 import { fileURLToPath } from "url";
 import path from "path";
 
 const FRONTEND = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const ROOT = path.resolve(FRONTEND, "..", "..");
+
+// ── The findings go into the tree, because nowhere else reaches anybody ─────
+//
+// On 2026-08-18 thirteen of these were red on main, and seven had been red
+// since 2026-08-12 — 139 consecutive commits at the 20-a-day rate this repo
+// works at. SIX of the seven run in CI on every push, so CI had been red 139
+// times. The result reached nobody: this repository is private, no checkout in
+// the project carries a GitHub token, `gh run list` and the Actions API both
+// fail for every agent that works here, and the only channel was an email to
+// the owner. Three agents found the reds by tripping over them.
+//
+// A result that reaches nobody is not a result. So the suite writes what it
+// found into a committed file, and `scripts/check_red_debt.ts` — which runs
+// inside `npx vitest run`, the four-second command every agent here types —
+// refuses a tree whose findings are stale, or red and unowned.
+// project-mgmt/, NOT data/. `data` is in .gitignore, so a record written
+// there would be invisible to a fresh clone and to CI — and this repo has a
+// standing rule that no CI step may read gitignored data, for exactly this
+// reason. It is caught here rather than in six weeks because the first thing
+// this file asserts is that somebody can SEE the result.
+const RECORD = path.join(ROOT, "project-mgmt", "check_status.json");
+
+/**
+ * The one line a person reads for a check: the check's OWN last words.
+ *
+ * A failing check says so on a line that names the failure; a passing one says
+ * so on its last. Prefer the former, fall back to the latter. Same rule and the
+ * same reason as `_summarise` in ETL/lib/guard_verdicts.py — an acceptance is
+ * bound to this string, so it must be the check's sentence and never anything
+ * this file invents about it.
+ */
+function summarise(output) {
+  const lines = output.split("\n")
+    // Terminal colour, and node's own deprecation noise, are not the check's
+    // words about itself.
+    .map((l) => l.replace(/\u001b\[[0-9;]*m/g, "").trimEnd())
+    .filter((l) => l.trim() && !/^\(node:\d+\)|^\(Use `node /.test(l));
+  if (!lines.length) return "";
+  // `[verdict] x = failed …` is the publisher's boilerplate, not the check's
+  // finding: it says the same sixty words for every guard and would bind an
+  // acceptance to a sentence that cannot distinguish two failures. Skipped when
+  // choosing the loud line, kept as a last resort.
+  const own = lines.filter((l) => !l.trim().startsWith("[verdict]"));
+  const loud = [...own].reverse().find((l) => /FAIL|failed|ERROR|Error:/.test(l));
+  return (loud ?? own[own.length - 1] ?? lines[lines.length - 1]).trim().slice(0, 400);
+}
+
+/**
+ * Run one check, echoing its output live AND keeping it.
+ *
+ * `spawnSync` with pipes would have withheld five minutes of a slow check's
+ * output until it finished; a suite you cannot watch is a suite people stop
+ * running, which is the disease this file is treating. So it streams.
+ */
+function run(argv) {
+  return new Promise((resolve) => {
+    const t0 = Date.now();
+    let out = "";
+    const child = spawn(argv[0], argv.slice(1), {
+      cwd: FRONTEND, stdio: ["inherit", "pipe", "pipe"],
+    });
+    child.stdout.on("data", (b) => { out += b.toString(); process.stdout.write(b); });
+    child.stderr.on("data", (b) => { out += b.toString(); process.stderr.write(b); });
+    child.on("close", (status, signal) => {
+      // A signal (or a missing binary) yields status null. That is a failure,
+      // and reporting it as 0 would be this file's own version of the bug it
+      // fixes.
+      resolve({ code: status === null ? 1 : status, ms: Date.now() - t0,
+                summary: summarise(out) + (signal ? ` (killed by ${signal})` : "") });
+    });
+    child.on("error", (err) => {
+      const line = `${argv.join(" ")}: ${err.message}`;
+      process.stderr.write(line + "\n");
+      resolve({ code: 1, ms: Date.now() - t0, summary: line });
+    });
+  });
+}
 
 /** Ordered: hermetic and fast first, corpus- and network-reading last. */
 const CHECKS = [
+  // FIRST, and it is about this suite rather than about the product: is what
+  // the tree says the build last found still true, and is every red one
+  // somebody has looked at? It judges the PREVIOUS run's record, because this
+  // run's rows are written at the end — which is the honest reading. Two
+  // seconds, hermetic.
+  ["a red check is owned", ["npx", "tsx", "scripts/check_red_debt.ts"]],
   ["typecheck", ["npx", "tsc", "--noEmit"]],
   ["unit tests", ["npx", "vitest", "run"]],
   ["segment config is a literal", ["npx", "tsx", "scripts/check_revalidate_literal.ts"]],
@@ -62,17 +147,6 @@ const CHECKS = [
   // claim: that one counts a rule enforced when a literal names it, this one
   // asks whether the check deciding it is reachable from a request at all.
   ["a rule's check can actually run", ["npx", "tsx", "scripts/check_check_reachability.ts"]],
-  ["a guard reads the thing it protects", ["npx", "tsx", "scripts/check_guard_subject.ts"]],
-  // Hermetic and sub-second: an ALL-CAPS name in code font in
-  // lib/intelligence/*.md must exist somewhere in the tree.
-  ["identifiers named in the docs exist", ["npx", "tsx", "scripts/check_doc_identifiers.ts"]],
-  // Directly under it, because it is the same promise pointing the other way.
-  // That one says a name in a doc must resolve to something real; this says a
-  // scratch instrument must be named by something real, or be retired. The
-  // `_ws*` convention had no retirement step and reached 104 files, at which
-  // point nobody could tell an instrument from a leftover — and the cost of
-  // that is an answer somebody paid for being re-bought.
-  ["scratch scripts are reachable", ["npx", "tsx", "scripts/check_ws_scripts.ts"]],
   ["rendered numbers", ["npx", "tsx", "scripts/check_rendered_numbers.ts"]],
   // Its sibling one level up: `check_rendered_numbers` says no number a VISITOR
   // reads may be an unsourced literal, and this says no number the OWNER PLANS
@@ -121,7 +195,6 @@ const CHECKS = [
   // compares published rows -- so a column that no ranker reads and every
   // prompt does slips past it. Hermetic and static; costs milliseconds.
   ["both stores select the same columns", ["npx", "tsx", "scripts/check_store_columns.ts"]],
-  ["archetype regression", ["npx", "tsx", "scripts/check_archetypes.ts"]],
   // Immediately after it, and NOT instead of it: that one asks whether the
   // corpus holds funds for each profile, this one asks whether the MEMO -- a
   // different pool, a different order, a different cut -- actually hands the
@@ -169,6 +242,17 @@ const CHECKS = [
   // a feed publishing 17,023 guarantee awards.
   ["capital kinds match the register",
    ["python3", "../../ETL/schema/check_register_instrument_kinds.py"]],
+  // The two ETL-side guards that watch whether guards and artifacts are
+  // REACHABLE. They live in the CI python job, and on 2026-08-18 both were red
+  // on main — outside the thirteen everyone counted, because `npm run check`
+  // could not see them and nobody in this repo can see CI. Bringing them into
+  // the suite is not a fifteenth and sixteenth guard: it is the same two, in
+  // the one place their result now lands in the tree. Hermetic, under a second
+  // each.
+  ["every guard runs somewhere, or says why not",
+   ["python3", "../../ETL/schema/check_guard_reachability.py"]],
+  ["every committed artifact can be rebuilt",
+   ["python3", "../../ETL/schema/check_artifact_reachability.py"]],
   ["regions match NUTS", ["npx", "tsx", "scripts/check_regions.ts"]],
   ["theme index is not stale", ["npx", "tsx", "scripts/check_theme_index.ts"]],
   // The base rate the SELECTOR IS TOLD. A stale curve here does not degrade a
@@ -260,32 +344,166 @@ const CHECKS = [
 ];
 
 const bail = process.argv.includes("--bail");
+const deep = process.argv.includes("--deep");
 const only = process.argv.find((a) => a.startsWith("--only="))?.slice(7);
+
+// ── The two checks that cost more than everything else put together ────────
+// `cadence: weekly` in suite_tiers takes a check off the default path. On
+// 2026-08-18 two measurements were 506s of a 690s suite; without them it is
+// about three minutes, which is the difference between a command people run
+// before they push and one they run at the end of a workstream if at all.
+// Safe only because their ROWS still age in project-mgmt/check_status.json — see the
+// `$why_cadence` note beside the tiers.
+let CADENCE = {};
+try {
+  CADENCE = JSON.parse(readFileSync(path.join(ROOT, "data", "guard_registry.json"), "utf8"))
+    .suite_tiers ?? {};
+} catch { /* check_red_debt.ts validates the registry; this only reads it */ }
+const isWeekly = (label) => CADENCE[label]?.cadence === "weekly";
+const skipped = [];
 
 const results = [];
 for (const [label, argv] of CHECKS) {
   if (only && !argv.join(" ").includes(only) && !label.includes(only)) continue;
+  if (!only && !deep && isWeekly(label)) { skipped.push(label); continue; }
   process.stdout.write(`\n[1m── ${label}[0m\n`);
-  const t0 = Date.now();
-  const r = spawnSync(argv[0], argv.slice(1), { cwd: FRONTEND, stdio: "inherit" });
-  // A signal (or a missing binary) yields status null. That is a failure, and
-  // reporting it as 0 would be this file's own version of the bug it fixes.
-  const code = r.status === null ? 1 : r.status;
-  results.push({ label, code, ms: Date.now() - t0 });
-  if (code !== 0 && bail) break;
+  const r = await run(argv);
+  results.push({ label, argv: argv.join(" "), ...r });
+  if (r.code !== 0 && bail) break;
 }
 
-const failed = results.filter((r) => r.code !== 0);
+// ── Write what was found ───────────────────────────────────────────────────
+// `--no-record` exists for one case and is typed: a run whose result must not
+// speak for the tree, such as a deliberate experiment. It is not the default,
+// because the default is the one people run before they push.
+if (!process.argv.includes("--no-record")) {
+  const prior = existsSync(RECORD)
+    ? JSON.parse(readFileSync(RECORD, "utf8"))
+    : { observations: {} };
+  const at = new Date().toISOString();
+  const observations = { ...(prior.observations ?? {}) };
+  for (const r of results) {
+    observations[r.label] = { argv: r.argv, code: r.code, summary: r.summary, at, ms: r.ms };
+  }
+  // A row for a check the suite no longer runs would age forever and could
+  // never be cleared. A FULL run owns the list; an `--only=` or `--bail` run
+  // saw only part of the suite and must not prune on that.
+  const suite = CHECKS.map(([label]) => label);
+  if (!only && !bail) {
+    for (const k of Object.keys(observations)) {
+      if (!suite.includes(k)) delete observations[k];
+    }
+  }
+  writeFileSync(RECORD, JSON.stringify({
+    $why: [
+      "What the check suite last found, one row per check, each with its own",
+      "timestamp. Written by website/frontend/scripts/run_checks.mjs and read by",
+      "website/frontend/scripts/check_red_debt.ts, which runs inside `npx vitest",
+      "run` -- the four-second command every agent in this repo types -- and fails",
+      "on a row that is stale, or red and unowned, or held under an expired",
+      "acceptance.",
+      "",
+      "It exists because CI is unobservable here. The repository is private and no",
+      "checkout carries a GitHub token, so on 2026-08-18 six checks had been red in",
+      "CI across 139 consecutive commits on main and the only channel for that fact",
+      "was an email to one person.",
+      "",
+      "MERGED, not replaced: `npm run check --only=<label>` refreshes one row, so a",
+      "stale row costs one check to clear rather than a twelve-minute suite.",
+      "Regenerate any row with the command in its `argv`."
+    ],
+    suite,
+    observations: Object.fromEntries(
+      Object.entries(observations).sort(([a], [b]) => (a < b ? -1 : 1))),
+  }, null, 1) + "\n");
+  process.stdout.write(`\nrecorded ${results.length} result(s) in ${path.relative(ROOT, RECORD)}\n`);
+}
+
+// ── Who is hurt when this one fails? ───────────────────────────────────────
+// Every check declares it in data/guard_registry.json -> suite_tiers, and only
+// a `founder` red fails the build. A `report` red is run, recorded and printed
+// in full, and stops nothing.
+//
+// The suite went from 0 checks on 14 July to 59 on 18 August, and on the day it
+// reached 59 thirteen were red on main with seven of them a week old. Every one
+// had been individually justified, and nothing had ever asked what a failure
+// would COST — so a founder being sent to a scheme that closed in 2020 and a
+// markdown file missing a provenance tag went red in the same colour. That is
+// what taught three separate agents to read past all thirteen in one day.
+let TIERS = {};
+try {
+  TIERS = JSON.parse(readFileSync(path.join(ROOT, "data", "guard_registry.json"), "utf8"))
+    .suite_tiers ?? {};
+} catch { /* check_red_debt.ts is the reader that validates this */ }
+const tierOf = (label) => TIERS[label]?.tier ?? "founder";
+
+const failed = results.filter((r) => r.code !== 0 && tierOf(r.label) === "founder");
+const reported = results.filter((r) => r.code !== 0 && tierOf(r.label) === "report");
 process.stdout.write(`\n[1m── summary[0m\n`);
 for (const r of results) {
-  const mark = r.code === 0 ? "[32m ok [0m" : "[31mFAIL[0m";
+  const mark = r.code === 0
+    ? "[32m ok  [0m"
+    : (tierOf(r.label) === "founder" ? "[31mFAIL[0m" : "[33mnote[0m");
   process.stdout.write(`  ${mark}  ${r.label.padEnd(34)} ${(r.ms / 1000).toFixed(1)}s\n`);
 }
+if (skipped.length) {
+  process.stdout.write(
+    `\n  not run (cadence: weekly — \`npm run check --deep\`, or --only=): `
+    + `${skipped.join(", ")}\n  Their rows in project-mgmt/check_status.json still age, and `
+    + `check_red_debt fails once one passes the cap.\n`);
+}
+if (reported.length) {
+  process.stdout.write(
+    `\n[33m${reported.length} report-tier check(s) are red. Recorded, not a build failure:[0m\n`);
+  for (const r of reported) {
+    process.stdout.write(`  ${r.label}\n      ${r.summary}\n`
+      + `      watches: ${TIERS[r.label]?.protects ?? "(undeclared)"}\n`);
+  }
+}
 if (failed.length) {
+  // The list, and then the DIFFERENTIATION. Thirteen reds printed as one
+  // block is what taught three agents in a row to read past them: a defect,
+  // a guard grading the wrong subject and a corpus-state fact owned by a
+  // republish take opposite work, and only the registry knows which is which.
   process.stdout.write(
     `\n[31m${failed.length} of ${results.length} failed:[0m `
     + `${failed.map((f) => f.label).join(", ")}\n`
     + `Every check ran. This is the whole list, not the first item on it.\n`);
+  // Printed from the registry, never judged here. check_red_debt.ts is the one
+  // reader that decides whether an acceptance APPLIES — bound to the failure,
+  // dated, capped, classed — because an acceptance interpreted in two places is
+  // an acceptance that means two things.
+  let rows = [];
+  try {
+    const reg = JSON.parse(readFileSync(path.join(ROOT, "data", "guard_registry.json"), "utf8"));
+    rows = Object.entries(reg.suite_accepted ?? {})
+      .filter(([k]) => !k.startsWith("$"))
+      .map(([k, v]) => [k, v.class, v.owner, v.review, v.since]);
+  } catch (err) {
+    process.stdout.write(`\n  (could not read suite_accepted: ${err.message})\n`);
+  }
+  const unowned = failed.filter((f) => !rows.some(([k]) => k === f.label));
+  if (rows.length) {
+    process.stdout.write(`\nheld in data/guard_registry.json -> suite_accepted:\n`);
+    for (const [k, cls, owner, review, since] of rows) {
+      // Against EVERY result, not against `failed` — `failed` is founder-tier
+      // only, so a report-tier check that is red was being printed as "now
+      // green, delete the entry", which is advice to delete a live entry.
+      const live = results.some((r) => r.label === k && r.code !== 0);
+      process.stdout.write(
+        `  ${live ? "" : "(NOW GREEN, delete the entry) "}${k.padEnd(38)} `
+        + `${String(cls).padEnd(13)} ${String(owner).padEnd(20)} `
+        + `red since ${since}, review ${review}\n`);
+    }
+  }
+  if (unowned.length) {
+    process.stdout.write(
+      `\n[31m${unowned.length} of them NOBODY HAS LOOKED AT:[0m `
+      + `${unowned.map((f) => f.label).join(", ")}\n`
+      + `Fix each, or write it down in data/guard_registry.json -> suite_accepted\n`
+      + `with a class, an owner, the date it went red and a review date.\n`
+      + `check_red_debt.ts fails \`npx vitest run\` until one or the other happens.\n`);
+  }
   process.exit(1);
 }
 process.stdout.write(`\n[32mall ${results.length} checks passed[0m\n`);

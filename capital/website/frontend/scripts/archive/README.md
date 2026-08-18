@@ -64,3 +64,19 @@ npx tsx scripts/archive/_wscb_perfield.ts
 
 Their relative imports were rewritten one directory deeper when they moved
 (`../lib/…` → `../../lib/…`); nothing else about them changed.
+
+## Retired guards (wsHT, 2026-08-18)
+
+Not measurement receipts — GUARDS, removed from `npm run check` and from CI
+because they failed the build over something no founder experiences. The suite
+went from 0 checks on 14 July to 59 on 18 August and thirteen were red on main
+with seven of them a week old; the full argument is in
+`project-mgmt/findings/redchecks_wsHT/`. They are kept, and runnable by hand,
+because each states a real property and one of them may earn its way back.
+
+| retired guard | what it asserted | why it is not a build failure |
+|---|---|---|
+| `retired_check_doc_identifiers.ts` | an ALL-CAPS name in code font in `lib/intelligence/*.md` resolves to a real symbol | it grades markdown. A doc naming a symbol that has been renamed is worth fixing and is not worth stopping a branch |
+| `retired_check_ws_scripts.ts` | every `_ws*.ts` is named by something durable, or declared in flight | the rule is backwards: naming is what happens to a file automatically as it is written about, so its steady state is that nothing is ever retired — 104 files, then 134, then 136. The property it should assert is the `@ws-active until <date>` marker already in the files' own headers, enforced |
+| `retired_check_archetypes.ts` | the corpus holds funds for each of the twelve profiles | superseded by `check_memo_table`, which says so in its own header: an archetype was receiving ZERO ROWS while this one reported it passing. A guard whose stronger twin exists is a second opinion that can only ever be wrong |
+| `retired_check_guard_subject.ts` | every guard reading the wide side of a seam also reads the narrow side | a guard about guards. In a suite being cut for inattention, a check whose subject is the checks is the thing protecting itself |

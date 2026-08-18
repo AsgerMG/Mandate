@@ -103,7 +103,19 @@ const DIRTY_RANKER = /FELL BACK TO LEXICAL/;
  *  sign rather than to cite. Percentages are what gets planned on. */
 const FIGURE = /(?<![\w.])\d{1,3}(?:\.\d+)?%/g;
 
-const TAG_OK = /\[ok\s+([A-Za-z0-9_.\-]+)\]/;
+/** `[ok <artifact>]`, where the artifact is named by its path UNDER
+ *  project-mgmt/findings/ — `rank_shape_wsGY.md`, or
+ *  `sibling_embedding_wsHH/README.md`.
+ *
+ *  The slash is not cosmetic. This check read only the flat files directly in
+ *  findings/, and the repo has since moved to a directory per workstream: on
+ *  2026-08-18, 315 of the 534 artifacts under findings/ — 59% — were nested and
+ *  therefore unnameable. A figure whose evidence exists and cannot be cited
+ *  fails this check with no fix available but to write `[unverifiable]` over a
+ *  file somebody produced, which is how a guard teaches people to lie to it.
+ *  The property is unchanged and no floor moved: the artifact must exist, and
+ *  must contain the figure. */
+const TAG_OK = /\[ok\s+([A-Za-z0-9_.\-\/]+)\]/;
 const TAG_RETRACTED = /\[retracted\]/;
 const TAG_TARGET = /\[target\]/;
 const TAG_UNVERIFIABLE = /\[unverifiable:\s*\S[^\]]*\]/;
@@ -196,14 +208,22 @@ export function judge(u: Unit, artifacts: Map<string, string>): Failure | null {
   return null;
 }
 
+/** Every artifact under findings/, keyed by its path relative to that
+ *  directory. Walked rather than listed: see TAG_OK for what a flat listing
+ *  cost. */
 function loadArtifacts(root: string): Map<string, string> {
   const dir = path.join(root, ARTIFACT_DIR);
   const out = new Map<string, string>();
   if (!existsSync(dir)) return out;
-  for (const f of readdirSync(dir)) {
-    if (!/\.(txt|md|json)$/.test(f)) continue;
-    out.set(f, readFileSync(path.join(dir, f), "utf8"));
-  }
+  const walk = (abs: string, rel: string): void => {
+    for (const e of readdirSync(abs, { withFileTypes: true })) {
+      const key = rel ? `${rel}/${e.name}` : e.name;
+      if (e.isDirectory()) { walk(path.join(abs, e.name), key); continue; }
+      if (!/\.(txt|md|json)$/.test(e.name)) continue;
+      out.set(key, readFileSync(path.join(abs, e.name), "utf8"));
+    }
+  };
+  walk(dir, "");
   return out;
 }
 

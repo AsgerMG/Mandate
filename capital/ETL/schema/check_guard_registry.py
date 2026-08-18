@@ -213,7 +213,16 @@ def main() -> int:
     elif not runner.exists():
         problems.append(f"`npm run check` runs {runner.name}, which does not exist")
     else:
-        ordered = re.findall(r'scripts/(check_\w+)\.ts', runner.read_text())
+        # The CHECKS array, not the whole file. The pattern used to run over
+        # every byte of run_checks.mjs, so a `check_*.ts` named in a COMMENT or
+        # in a printed sentence after the array counted as the last check --
+        # which it is not, and which made the header prose a load-bearing part
+        # of the ordering. website/frontend/scripts/lib/suiteStatus.ts reads
+        # the same array with the same narrowing, for the same reason.
+        src = runner.read_text()
+        start = src.index("const CHECKS = [")
+        ordered = re.findall(r'scripts/(check_\w+)\.ts',
+                             src[start:src.index("\n];", start)])
         if "check_verdicts" not in ordered:
             problems.append("run_checks.mjs no longer runs check_verdicts.ts. That is "
                             "the step where a machine WITH credentials refreshes the "

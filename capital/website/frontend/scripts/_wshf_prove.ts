@@ -4,8 +4,12 @@
 import { bodyNamedRows } from "../lib/intelligence/bodyNamedRow";
 import { doorLabelFor } from "../lib/intelligence/doorLabel";
 async function main() {
-  const { loadEnvLocal } = await import("./loadEnv");
+  const { loadEnvLocal, requireCredentials } = await import("./loadEnv");
   loadEnvLocal();
+  // "against POSTGRES ... not a SELECT" is the first line of this file. Without
+  // the key the shipped predicate chain runs against the committed snapshot and
+  // proves nothing about the write.
+  requireCredentials("wshf_prove", ["DATABASE_URL"]);
   const { hydrateDbInstruments, publishableInstruments, corpusProvenance } =
     await import("../lib/intelligence/corpus");
   await hydrateDbInstruments();

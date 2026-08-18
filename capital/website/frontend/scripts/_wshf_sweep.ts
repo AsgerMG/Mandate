@@ -10,6 +10,12 @@
 import { bodyNamedRows } from "../lib/intelligence/bodyNamedRow";
 
 async function main() {
+  // DATABASE_URL is OPTIONAL here and that is the header's own claim: this
+  // reads the committed snapshot, or Postgres when a key is present. Declared
+  // rather than left implicit so the two runs are told apart deliberately.
+  const { loadEnvLocal, requireCredentials } = await import("./loadEnv");
+  loadEnvLocal();
+  requireCredentials("wshf_sweep", [], { optional: ["DATABASE_URL"] });
   const { publishableInstruments } = await import("../lib/intelligence/corpus");
   const pool = publishableInstruments();
   const hits = bodyNamedRows(pool);

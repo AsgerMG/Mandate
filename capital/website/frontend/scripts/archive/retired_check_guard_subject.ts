@@ -184,7 +184,7 @@ function scopeOf(file: string, seen = new Set<string>()): string {
   try { text = code(readFileSync(full, "utf8")); } catch { return ""; }
   if (seen.size) return text;
   let out = text;
-  // Static `from "./x"` AND dynamic `await import("./x")`. Both are how a guard
+  // Static `from "../x"` AND dynamic `await import("../x")`. Both are how a guard
   // reaches a local helper, and several of these files use the second because a
   // module that touches Postgres must not be imported before the credential
   // contract at the top of the file has run.

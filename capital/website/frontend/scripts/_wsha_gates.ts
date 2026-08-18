@@ -34,7 +34,7 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
 delete process.env.ANTHROPIC_API_KEY;
-if (requireCredentials("wsha_gates", ["DATABASE_URL"]) === "offline") {
+if (requireCredentials("wsha_gates", ["DATABASE_URL", "VOYAGE_KEY"]) === "offline") {
   throw new Error(
     "_wsha_gates: NO_PG is set, which deletes DATABASE_URL and serves the "
     + "committed snapshot instead. The snapshot carries a different gate set "
