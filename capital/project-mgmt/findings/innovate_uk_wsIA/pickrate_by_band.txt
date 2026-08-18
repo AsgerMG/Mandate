@@ -1,0 +1,32 @@
+==========================================================================================
+wsHO
+  rank 0-6   OBSTRUCTED  rows=   75 picked=   8 =  10.7%  meanSeat=1.12  seat7share=0.0%
+  rank 0-6   OPEN        rows=  463 picked= 208 =  44.9%  meanSeat=1.62  seat7share=5.3%
+  rank 0-6   UNASSESSED  rows=    8 picked=   3 =  37.5%  meanSeat=2.67  seat7share=0.0%
+  rank 14+   OBSTRUCTED  rows=  247 picked=   9 =   3.6%  meanSeat=4.22  seat7share=22.2%
+  rank 14+   OPEN        rows= 1520 picked= 190 =  12.5%  meanSeat=4.08  seat7share=24.7%
+  rank 14+   OTHER       rows=    9 picked=   0 =   0.0%  meanSeat=nan  seat7share=0.0%
+  rank 14+   UNASSESSED  rows=   80 picked=   5 =   6.2%  meanSeat=4.60  seat7share=20.0%
+  rank 7-13  OBSTRUCTED  rows=   81 picked=   3 =   3.7%  meanSeat=4.67  seat7share=0.0%
+  rank 7-13  OPEN        rows=  438 picked= 116 =  26.5%  meanSeat=3.55  seat7share=13.8%
+  rank 7-13  UNASSESSED  rows=   27 picked=   4 =  14.8%  meanSeat=5.00  seat7share=25.0%
+  --- rows at menu rank 0,1,2 only ---
+    OPEN        rows= 210 picked=109= 51.9%  inSix=106= 50.5%  meanSeat=1.12
+    OBSTRUCTED  rows=  21 picked=  6= 28.6%  inSix=  6= 28.6%  meanSeat=1.33
+    UNASSESSED  rows=   3 picked=  1= 33.3%  inSix=  1= 33.3%  meanSeat=2.00
+==========================================================================================
+wsHW
+  rank 0-6   OBSTRUCTED  rows=   83 picked=   8 =   9.6%  meanSeat=3.00  seat7share=25.0%
+  rank 0-6   OPEN        rows=  451 picked= 222 =  49.2%  meanSeat=1.85  seat7share=7.7%
+  rank 0-6   UNASSESSED  rows=   12 picked=   2 =  16.7%  meanSeat=2.00  seat7share=0.0%
+  rank 14+   OBSTRUCTED  rows=  241 picked=   8 =   3.3%  meanSeat=4.38  seat7share=37.5%
+  rank 14+   OPEN        rows= 1532 picked= 178 =  11.6%  meanSeat=4.06  seat7share=23.0%
+  rank 14+   OTHER       rows=    9 picked=   0 =   0.0%  meanSeat=nan  seat7share=0.0%
+  rank 14+   UNASSESSED  rows=   79 picked=   3 =   3.8%  meanSeat=5.00  seat7share=66.7%
+  rank 7-13  OBSTRUCTED  rows=   88 picked=   3 =   3.4%  meanSeat=2.67  seat7share=0.0%
+  rank 7-13  OPEN        rows=  438 picked= 117 =  26.7%  meanSeat=3.39  seat7share=9.4%
+  rank 7-13  UNASSESSED  rows=   20 picked=   5 =  25.0%  meanSeat=4.40  seat7share=40.0%
+  --- rows at menu rank 0,1,2 only ---
+    OPEN        rows= 204 picked=120= 58.8%  inSix=112= 54.9%  meanSeat=1.37
+    OBSTRUCTED  rows=  28 picked=  4= 14.3%  inSix=  3= 10.7%  meanSeat=1.50
+    UNASSESSED  rows=   2 picked=  1= 50.0%  inSix=  1= 50.0%  meanSeat=2.00

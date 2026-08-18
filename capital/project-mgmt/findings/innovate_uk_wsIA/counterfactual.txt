@@ -1,0 +1,12 @@
+================================================================================
+wsHO
+  observed delta            +1.66  (rescue 11/43, harm 7/35)
+  if obstructed won-rows harmed at the OPEN rate (13.0%): +4.56  swing +2.90 pts
+  founders with >=1 OBSTRUCTED row in the ranker's top 6: 48/78 = 61.5%
+  if the band sort were REINSTATED, OUR OWN six would lose the won fund on 11/12 of the obstructed-won founders
+================================================================================
+wsHW
+  observed delta            -3.08  (rescue 13/45, harm 11/33)
+  if obstructed won-rows harmed at the OPEN rate (13.6%): +5.33  swing +8.41 pts
+  founders with >=1 OBSTRUCTED row in the ranker's top 6: 49/78 = 62.8%
+  if the band sort were REINSTATED, OUR OWN six would lose the won fund on 10/11 of the obstructed-won founders

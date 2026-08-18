@@ -1,0 +1,32 @@
+========================================================================
+wsHO called: 78
+called C=35 R=43
+ called by regime: [('innovate_uk', 11), ('satr_de_rnd', 10), ('horizon_eu_partnership', 8), ('satr_fr_rnd', 7), ('satr_it_rnd', 7), ('ademe_aid', 5), ('satr_se_rnd', 4), ('tacr_tp', 2), ('nfr_energiforskning', 2), ('nfr_energix', 2), ('nfr_maroff', 1), ('nfr_pes2020', 1), ('innovationsfonden_innoexplorer', 1), ('satr_nl_rnd', 1), ('innovationsfonden_global_research', 1), ('eit_climate_kic', 1), ('cdti_perte_aerosalud', 1), ('nfr_gr_nnform', 1), ('tacr_cl', 1), ('innovation_fund', 1), ('nfr_iktpluss', 1), ('innovationsfonden_other', 1), ('nfr_bia', 1), ('nfr_ukjent', 1), ('nfr_gr_nnplattform', 1), ('vinnova_grant', 1), ('edf', 1), ('nfr_klimaforskning', 1), ('cdti_cervera', 1), ('nfr_naeringsph', 1)]
+ called C by regime: [('innovate_uk', 11), ('satr_de_rnd', 5), ('nfr_energiforskning', 2), ('ademe_aid', 2), ('horizon_eu_partnership', 2), ('satr_it_rnd', 2), ('nfr_maroff', 1), ('innovationsfonden_innoexplorer', 1), ('satr_se_rnd', 1), ('innovationsfonden_global_research', 1), ('cdti_perte_aerosalud', 1), ('nfr_energix', 1), ('innovationsfonden_other', 1), ('satr_fr_rnd', 1), ('vinnova_grant', 1), ('edf', 1), ('cdti_cervera', 1)]
+ called R by regime: [('satr_fr_rnd', 6), ('horizon_eu_partnership', 6), ('satr_it_rnd', 5), ('satr_de_rnd', 5), ('satr_se_rnd', 3), ('ademe_aid', 3), ('tacr_tp', 2), ('nfr_pes2020', 1), ('satr_nl_rnd', 1), ('nfr_energix', 1), ('eit_climate_kic', 1), ('nfr_gr_nnform', 1), ('tacr_cl', 1), ('innovation_fund', 1), ('nfr_iktpluss', 1), ('nfr_bia', 1), ('nfr_ukjent', 1), ('nfr_gr_nnplattform', 1), ('nfr_klimaforskning', 1), ('nfr_naeringsph', 1)]
+ harms=7 [('innovate_uk', 3), ('innovationsfonden_innoexplorer', 1), ('satr_it_rnd', 1), ('cdti_perte_aerosalud', 1), ('vinnova_grant', 1)]
+ rescues=11 [('satr_fr_rnd', 4), ('horizon_eu_partnership', 2), ('satr_de_rnd', 2), ('nfr_energix', 1), ('satr_it_rnd', 1), ('satr_se_rnd', 1)]
+ C called=35, innovate_uk in called C=11
+ iuk harm rate 3/11=27.3%   other 4/24=16.7%
+ Fisher one-sided p = 0.3807
+ expected iuk harms if uniform = 2.20
+ innovate_uk in called R=0, rescued=0
+ iuk harm founders: [('CU SERVICES LIMITED', 'innovate_uk'), ('BRISTOL CITY COUNCIL', 'innovate_uk'), ('3T ADDITIVE MANUFACTURING', 'innovate_uk')]
+ iuk C non-harm: [('ADVANCED MANUFACTURING SHEFFIELD', 'innovate_uk'), ('ADDITIVE MANUFACTURING SOLUTIONS LTD', 'innovate_uk'), ('AEROTEX', 'innovate_uk'), ('3D REPO', 'innovate_uk'), ('BRISTOL BATH REGIONAL CAPITAL', 'innovate_uk'), ('CENTRE FOR PROCESS INNOVATION LIMITED LBG', 'innovate_uk'), ('AQDOT', 'innovate_uk'), ('ALIVE LABS', 'innovate_uk')]
+ iuk R founders: []
+========================================================================
+wsHW called: 78
+called C=33 R=45
+ called by regime: [('innovate_uk', 10), ('satr_de_rnd', 9), ('horizon_eu_partnership', 8), ('satr_fr_rnd', 7), ('satr_it_rnd', 7), ('ademe_aid', 5), ('satr_se_rnd', 4), ('tacr_tp', 2), ('nfr_energiforskning', 2), ('nfr_energix', 2), ('nfr_gr_nnplattform', 2), ('nfr_maroff', 1), ('nfr_pes2020', 1), ('innovationsfonden_innoexplorer', 1), ('satr_nl_rnd', 1), ('innovationsfonden_global_research', 1), ('eit_climate_kic', 1), ('cdti_perte_aerosalud', 1), ('nfr_gr_nnform', 1), ('tacr_cl', 1), ('innovation_fund', 1), ('nfr_iktpluss', 1), ('innovationsfonden_other', 1), ('nfr_bia', 1), ('nfr_ukjent', 1), ('vinnova_grant', 1), ('edf', 1), ('nfr_klimaforskning', 1), ('cdti_cervera', 1), ('nfr_naeringsph', 1), ('nfr_nyskapning', 1)]
+ called C by regime: [('innovate_uk', 10), ('satr_de_rnd', 4), ('nfr_energiforskning', 2), ('ademe_aid', 2), ('horizon_eu_partnership', 2), ('satr_it_rnd', 2), ('nfr_maroff', 1), ('innovationsfonden_innoexplorer', 1), ('satr_se_rnd', 1), ('innovationsfonden_global_research', 1), ('cdti_perte_aerosalud', 1), ('nfr_energix', 1), ('innovationsfonden_other', 1), ('satr_fr_rnd', 1), ('vinnova_grant', 1), ('edf', 1), ('cdti_cervera', 1)]
+ called R by regime: [('satr_fr_rnd', 6), ('horizon_eu_partnership', 6), ('satr_it_rnd', 5), ('satr_de_rnd', 5), ('satr_se_rnd', 3), ('ademe_aid', 3), ('tacr_tp', 2), ('nfr_gr_nnplattform', 2), ('nfr_pes2020', 1), ('satr_nl_rnd', 1), ('nfr_energix', 1), ('eit_climate_kic', 1), ('nfr_gr_nnform', 1), ('tacr_cl', 1), ('innovation_fund', 1), ('nfr_iktpluss', 1), ('nfr_bia', 1), ('nfr_ukjent', 1), ('nfr_klimaforskning', 1), ('nfr_naeringsph', 1), ('nfr_nyskapning', 1)]
+ harms=11 [('innovate_uk', 7), ('innovationsfonden_innoexplorer', 1), ('satr_it_rnd', 1), ('innovationsfonden_global_research', 1), ('cdti_perte_aerosalud', 1)]
+ rescues=13 [('satr_fr_rnd', 5), ('horizon_eu_partnership', 2), ('satr_it_rnd', 2), ('satr_de_rnd', 2), ('nfr_energix', 1), ('nfr_gr_nnform', 1)]
+ C called=33, innovate_uk in called C=10
+ iuk harm rate 7/10=70.0%   other 4/23=17.4%
+ Fisher one-sided p = 0.0059
+ expected iuk harms if uniform = 3.33
+ innovate_uk in called R=0, rescued=0
+ iuk harm founders: [('CU SERVICES LIMITED', 'innovate_uk'), ('BRISTOL CITY COUNCIL', 'innovate_uk'), ('3T ADDITIVE MANUFACTURING', 'innovate_uk'), ('ADDITIVE MANUFACTURING SOLUTIONS LTD', 'innovate_uk'), ('AEROTEX', 'innovate_uk'), ('BRISTOL BATH REGIONAL CAPITAL', 'innovate_uk'), ('AQDOT', 'innovate_uk')]
+ iuk C non-harm: [('ADVANCED MANUFACTURING SHEFFIELD', 'innovate_uk'), ('3D REPO', 'innovate_uk'), ('CENTRE FOR PROCESS INNOVATION LIMITED LBG', 'innovate_uk')]
+ iuk R founders: []
