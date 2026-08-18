@@ -91,7 +91,8 @@ describe("categoryError", () => {
     // The property that makes the replacement safe to swap in: wherever the
     // corpus can speak, a row the strict test kept is never one this kills for
     // a founder whose sector the fund has funded.
-    for (const mix of [{ alpha: 5, gamma: 5 }, { beta: 3 }, { alpha: 1 }]) {
+    const kept: Record<string, number>[] = [{ alpha: 5, gamma: 5 }, { beta: 3 }, { alpha: 1 }];
+    for (const mix of kept) {
       expect(categoryError(mix, "alpha", nb)).not.toBe(true);
     }
   });
