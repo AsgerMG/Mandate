@@ -34,10 +34,13 @@
 // database, no key, nothing that can spend.
 import { describe, expect, it, afterEach, beforeEach, vi } from "vitest";
 
+import fs from "node:fs";
+import path from "node:path";
+
 import type { InstrumentRow, ProjectAnswer } from "./types";
 
 const SAVED = { ...process.env };
-const KEYS = ["AGENT_SELECT", "AGENT_SELECT_UNSURE"] as const;
+const KEYS = ["AGENT_SELECT", "AGENT_SELECT_UNSURE", "AGENT_SELECT_ORDER_CLAIM"] as const;
 
 beforeEach(() => {
   for (const k of KEYS) delete process.env[k];
@@ -209,5 +212,97 @@ describe("the unsure template shows the shape, not the answer", () => {
     const p = mod.buildPrompt(rows, {}, 0, 2);
     expect(p).toMatch(/lookup_requirements/);
     expect(p).not.toContain('"unsure"');
+  });
+});
+
+describe("the prompt does not describe machinery we deleted", () => {
+  // ── THE PROPERTY, AND WHY IT IS ASSERTED ACROSS TWO FILES ───────────────
+  // Every sentence in a model-facing prompt that describes what this system
+  // will DO with the reply must have an executing counterpart. The reader's
+  // test is to NAME THE FUNCTION; what a test can do is MARRY the two sources
+  // so neither can move alone.
+  //
+  // The failure being pinned: the selector prompt promised a verdict-band sort
+  // — "a row with a named obstacle is published below the rows nothing rules
+  // them out of, whatever place you give it" — for seven days after wsGB
+  // deleted the sort. The model obeyed it, taking an obstructed row at the
+  // head of its list 9.6% of the time against 49.2% for an open one.
+  //
+  // So the assertion is conditional, not absolute: IF `orderMemoCandidates`
+  // performs no sort, the shipped prompt may not claim one. Reinstating the
+  // sort makes the sentence true again and this test go quiet on its own,
+  // which is the correct behaviour — it forbids the DIVERGENCE, not either
+  // state.
+  const memoSrc = fs.readFileSync(
+    path.join(__dirname, "memoCandidates.ts"), "utf8");
+
+  it("orderMemoCandidates still performs no sort", () => {
+    const from = memoSrc.indexOf("export function orderMemoCandidates");
+    expect(from).toBeGreaterThan(-1);
+    // To the next top-level export, which is where the function ends.
+    const rest = memoSrc.slice(from + 1);
+    const to = rest.search(/\nexport (?:function|const|interface|type) /);
+    const body = to < 0 ? rest : rest.slice(0, to);
+    // COMMENTS ARE NOT CODE, and this caught itself on the first run: the
+    // function's own note explains at length that the sort is gone, quoting
+    // `.sort((a, b) => a.i - b.i)` to say why keeping one for the look of it
+    // would be worse than none. A check that reads prose as machinery is the
+    // same class of error as a prompt that describes machinery as prose.
+    const code = body
+      .replace(/\/\*[\s\S]*?\*\//g, "")
+      .split("\n").map((l) => l.replace(/\/\/.*$/, "")).join("\n");
+    expect(code).not.toMatch(/\.sort\(/);
+  });
+
+  it("so the shipped prompt does not promise one", async () => {
+    const mod = await armed({ AGENT_SELECT: "rows" });
+    const p = mod.buildPrompt(rows, {}, 0, 2);
+    expect(p).not.toContain(mod.ORDER_CLAIM_PROSE.bandSort);
+    expect(p).not.toMatch(/honoured WITHIN a qualification band/);
+    expect(p).not.toMatch(/whatever place you give it/);
+  });
+
+  it("and says instead what the code really does with the order", async () => {
+    const mod = await armed({ AGENT_SELECT: "rows" });
+    const p = mod.buildPrompt(rows, {}, 0, 2);
+    expect(p).toContain(mod.ORDER_CLAIM_PROSE.published);
+    // The three load-bearing clauses, each named against a function in the
+    // lever's own comment: the reorder, the absence of a re-sort, and the cut.
+    expect(p).toMatch(/your order is the published order/);
+    expect(p).toMatch(/Nothing re-sorts the result afterwards/);
+    expect(p).toMatch(/cut at a fixed length/);
+  });
+
+  it("does not delete the model's account of what happens downstream", async () => {
+    // Deleting the false bullet and leaving a gap is the other way to get this
+    // wrong: a model told nothing about how its order is used has to guess,
+    // and the guess it made last time cost a founder the fund they won.
+    const mod = await armed({ AGENT_SELECT: "rows" });
+    const p = mod.buildPrompt(rows, {}, 0, 2);
+    expect(p).toMatch(/Judge fit on substance:[\s\S]*your order is the published order/);
+  });
+
+  it("keeps the retired text reachable, and only by being named", async () => {
+    // Measurable later against a recorded control rather than argued about.
+    const mod = await armed({ AGENT_SELECT: "rows", AGENT_SELECT_ORDER_CLAIM: "bandSort" });
+    const p = mod.buildPrompt(rows, {}, 0, 2);
+    expect(p).toContain(mod.ORDER_CLAIM_PROSE.bandSort);
+    expect(p).not.toContain(mod.ORDER_CLAIM_PROSE.published);
+  });
+
+  it("a typo throws rather than reading as the default", async () => {
+    await expect(armed({ AGENT_SELECT: "rows", AGENT_SELECT_ORDER_CLAIM: "bandsort" }))
+      .rejects.toThrow(/AGENT_SELECT_ORDER_CLAIM must be one of/);
+  });
+
+  it("the two TRUE bullets either side of it are untouched", async () => {
+    // wsIA could not separate the false sentence from its neighbours, and both
+    // neighbours are true and push the same way. They stay, and they stay
+    // pinned, so a later run that measures the removal is measuring the
+    // removal and not a rewritten paragraph.
+    const mod = await armed({ AGENT_SELECT: "rows" });
+    const p = mod.buildPrompt(rows, {}, 0, 2);
+    expect(p).toMatch(/A named obstacle IS a fault, and a real one/);
+    expect(p).toMatch(/stated demands this company plainly fails is the wrong scheme/);
   });
 });

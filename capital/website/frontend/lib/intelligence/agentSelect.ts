@@ -471,6 +471,110 @@ export const UNSURE_MODE: UnsureMode = (() => {
   return raw as UnsureMode;
 })();
 
+/**
+ * ── WHAT THE PROMPT TELLS THE MODEL HAPPENS TO ITS ORDER ───────────────────
+ *
+ * THE PROPERTY, AND THE TEST. Every sentence in a model-facing prompt that
+ * describes what this system will DO with the reply must have an executing
+ * counterpart, and the test is a reader's rather than a matcher's: take the
+ * sentence and NAME THE FUNCTION THAT PERFORMS IT. A sentence that survives
+ * that test unnamed is not a stylistic problem, it is a false description of
+ * our own machinery, and the model is entitled to act on it.
+ *
+ * ── The one that failed the test ──────────────────────────────────────────
+ * From 2026-08-11 to 2026-08-19 this bullet read:
+ *
+ *   "your order is honoured WITHIN a qualification band, not across one: a row
+ *    with a named obstacle is published below the rows nothing rules them out
+ *    of, whatever place you give it."
+ *
+ * No function performed it. `wsGB` deleted the verdict-band sort on 08-12 —
+ * `memoCandidates.ts` records the removal ("the SORT ITSELF ... only the last
+ * of those three survives") and `pipeline.ts` states the consequence flatly
+ * ("There is no band sort, so there is nothing to protect them from"). The
+ * sentence was never revisited, and wsHW's re-read certified the prompt
+ * byte-identical to wsHO's, which is exactly why seven days of divergence
+ * survived an audit designed to catch changes.
+ *
+ * The model obeyed it. Across ~2,900 menu rows over two recorded runs it takes
+ * an OPEN row at the head of the list 49.2% of the time and an OBSTRUCTED row
+ * 9.6% — a 5x suppression on n=534 head rows, the most reproducible thing in
+ * either tape. AEROTEX is the act caught on tape: the selector placed the fund
+ * that founder actually won in the LAST seat, a demotion exactly as instructed.
+ *
+ * ── WHAT IT DOES NOT SAY, AND WHY THAT MATTERS ────────────────────────────
+ * The 5x is attributable to the PARAGRAPH, not to this one sentence. The two
+ * bullets either side of it are TRUE and push the same way — "a named obstacle
+ * IS a fault, and a real one", "a scheme whose stated demands this company
+ * plainly fails is the wrong scheme". Either would depress an obstructed row
+ * on its own. So no gain is claimed here and none should be quoted: separating
+ * the three is a paid arm nobody has bought. This is a correctness fix. A
+ * prompt that describes deleted machinery is wrong at any price.
+ *
+ * ── AND REINSTATING THE SORT IS THE TRAP, NOT THE FIX ─────────────────────
+ * Making the sentence true by putting the band sort back was measured on the
+ * same tapes and costs more than it saves: OUR OWN published table would lose
+ * the won fund on 10 of 11 obstructed-won founders, because the score's 39.02%
+ * EXACT@6 depends on publishing exactly those obstructed rows. The obstacle is
+ * information the founder is owed, not a penalty the pipeline applies.
+ *
+ * ── What the default now says, and why each clause is true ────────────────
+ * Named against the code, clause by clause, because that is the test above:
+ *   "the rows you name move to the front, in your order"  — `agentSelectRows`
+ *     is a PURE REORDER; picks move to the front in the model's own order.
+ *   "the rest keep our ranking behind them"               — same function: every
+ *     other row keeps its shipped relative position.
+ *   "nothing re-sorts the result"                         — `orderMemoCandidates`
+ *     has no `.sort()` at all; `publishRankByKey` reads a positional index.
+ *   "the table is cut at a fixed length"                  — `WRITER_CANDIDATE_CAP`
+ *     then `BRIEF_LIMITS.institutionsMax`.
+ *   "a row whose institution is already named moves to the back" —
+ *     `resolveNameCollisions`, demote-not-delete, SEL-DUPE-NAME.
+ *   "the obstacle is printed beside the row"              — `pipeline.ts` sets
+ *     `blocker` from the assessment, in the fund's own words.
+ *
+ * It deliberately adds NO new push in either direction. The judgement about
+ * what an obstacle is worth already lives in the two true bullets around it;
+ * this one states the mechanism and stops, so that the arms differ in what the
+ * model is told about our code and not in how hard it is leaned on.
+ *
+ * ── Why the false text stays reachable ────────────────────────────────────
+ * `bandSort` serves the retired paragraph verbatim, so the difference is
+ * measurable later against a recorded control rather than argued about. It is
+ * a description of machinery that does not exist and must never be the
+ * default. Read once at module scope and throwing on anything unrecognised,
+ * for the reason every lever in this file is: a flag that reads a typo as its
+ * default reports the control's number under the treatment's name.
+ */
+const ORDER_CLAIMS = ["published", "bandSort"] as const;
+export type OrderClaim = (typeof ORDER_CLAIMS)[number];
+export const ORDER_CLAIM: OrderClaim = (() => {
+  const raw = process.env.AGENT_SELECT_ORDER_CLAIM ?? "published";
+  if (!ORDER_CLAIMS.includes(raw as OrderClaim)) {
+    throw new Error(
+      `AGENT_SELECT_ORDER_CLAIM must be one of ${ORDER_CLAIMS.join("|")}, got "${raw}". ` +
+      `It is read once at module scope precisely so a typo cannot read as "published".`);
+  }
+  return raw as OrderClaim;
+})();
+
+export const ORDER_CLAIM_PROSE: Record<OrderClaim, string> = {
+  published:
+`  * your order is the published order. The rows you name move to the front in
+    the order you name them, the rows you do not name keep our own ranking
+    behind them, and the table is cut at a fixed length — so a place you spend
+    is a place spent. Nothing re-sorts the result afterwards: a row with a
+    named obstacle publishes exactly where you put it, with the obstacle
+    printed beside it in the fund's own words. The only row that moves is one
+    whose institution a row above it already names, and it moves to the back`,
+  bandSort:
+`  * your order is honoured WITHIN a qualification band, not across one: a row
+    with a named obstacle is published below the rows nothing rules them out of,
+    whatever place you give it. So spend your best places on schemes that are
+    both open and right, and do not try to promote an obstructed scheme past an
+    open one`,
+};
+
 /** The one tool the selector may call. Its input is INDICES INTO THE MENU IT
  *  WAS SHOWN, never a free-text query and never an instrument id — so the model
  *  cannot use it to reach a fund it was not already offered, and the retrieval
@@ -1870,11 +1974,7 @@ Judge fit on substance:
     company needs is the wrong scheme however well the rest fits
   * a scheme whose stated demands this company plainly fails is the wrong scheme
     even if it is near the top
-  * your order is honoured WITHIN a qualification band, not across one: a row
-    with a named obstacle is published below the rows nothing rules them out of,
-    whatever place you give it. So spend your best places on schemes that are
-    both open and right, and do not try to promote an obstructed scheme past an
-    open one
+${ORDER_CLAIM_PROSE[ORDER_CLAIM]}
   * a scheme that stopped paying out years ago is the wrong scheme
   * where two are equally good, prefer the one whose title is specific to what
     this company does over the one whose title is generic
