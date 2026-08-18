@@ -1,6 +1,28 @@
 # wsHX — what the record was missing, and how much of our own target is unreachable by construction
 
-**FOR THE OWNER, VERBATIM.** _(job 1 paragraph lands here)_
+**FOR THE OWNER, VERBATIM.** **The corpus of record now has the 3,362 gates, and
+nothing on it was touched to put them there** — every other row in every other
+table is byte-for-byte what it was, proven by hashing all twelve family tables
+before and after. It was one command away from being much worse than that.
+Promoting the family the obvious way — `reconcile_stores.py --family
+instruments` — is green on the overwrite gate, correctly: *no row* would have
+been lost. What that gate cannot see is COLUMNS, and the same command had **374
+values queued to be displaced on rows both stores already hold**, across
+nineteen columns that share no reason — 91 `capital_type_basis`, 70
+`name_source`, 48 `name`, one `scheme_end_date`, which is written weekly **on
+the record** and nowhere else. `owner_is_source` picks a winner once, for a
+whole family, and a family has more than one owner. So the promotion is now
+`--inserts-only`: it carries the rows nobody disputes and refuses to settle a
+dispute as a side effect. **And the record was missing more than gates.** It
+still calls all 44 loader-composed bucket labels `deterministic` — every
+`sudop_*`, every `satr_*_equity`, `chips_ju_kdt_unknown` — where the laptop
+calls them `partition_key`, which is the value `registerNamesTheRow()` reads to
+withhold a row from every founder. `assign_name_evidence.py` is not in
+`railway_cron.py::STEPS`, exactly as no gate encoder is, so **the record cannot
+reach that state on its own and anything rebuilt from it today would put
+Poland's entire offerable pool back in front of founders.** That is a second
+promotion, in the same direction, and I have not made it: it changes a
+publishability verdict on 44 rows and it is yours.
 
 **And the second half, which is the one that changes what we plan.** Of the 897
 founders we grade every measurement against, **78 name a fund the product may
@@ -42,6 +64,125 @@ reproduce       cd website/frontend
                 ROWS=1 npx tsx scripts/_wshx_dead_answers.ts   # + every row named
 full output     project-mgmt/findings/dead_answers_wsHX_census.txt
 ```
+
+---
+
+## 0. The promotion, and the near miss inside it
+
+### What the two stores actually held
+
+`reconcile_stores.py --report`, both stores read-only, 2026-08-19:
+
+| table | corpus of record | this laptop | only on the record | only on the laptop |
+|---|---:|---:|---:|---:|
+| `funding_instruments` | 1,088 | 1,088 | 0 | 0 |
+| `funding_instrument_sources` | 980 | 980 | 0 | 0 |
+| **`eligibility_gates`** | **6,401** | **9,763** | **0** | **3,362** |
+| `eligibility_clauses` | 893 | 893 | 0 | 0 |
+| `instrument_application` | 285 | 285 | 0 | 0 |
+| `companies` | 164,050 | 164,029 | **21** | 0 |
+| `public_funding_events` | 311,440 | 311,399 | **≥41** | uncomparable |
+
+wsHC's reading is confirmed exactly: **the record has never been given the
+3,362 gates and nothing was ever lost.** It is also ahead in the other
+direction — 21 companies and at least 41 awards exist only on it, which is why
+a push of the laptop was never the answer.
+
+### The near miss
+
+The documented promotion path is `pull_db.py --carry-forward`, then a union
+into the laptop, then `push_local.py --skip-pull`. Two things are wrong with it
+here. `push_local.py`'s own `main()` runs 43 extractors and
+`classify_taxonomy.py run --max-cost 20` — a **paid model call** — so the
+guard was used and the pipeline around it was not. And the union direction was
+inverted: building it **into the record** keeps every row the record holds alone
+by construction rather than by a comparison, and never reads
+`public_funding_events` — the one table nothing can key — from the laptop at all.
+
+Then the dry run said this, and it is the finding:
+
+```
+funding_instruments   +0 new, 416 merged, 374 conflicts, 0 kept that the source lacks
+```
+
+`overwrite_gate` was **green** on that same operation — `proven loss: 0 row(s)`
+— and it was right. It measures ROWS. Every one of those 374 values sits on a
+row both stores hold, so nothing it counts would have moved. Nineteen columns
+disagreed, and they do not share a reason:
+
+| column | rows | who is right |
+|---|---:|---|
+| `capital_type_basis` | 91 | not established |
+| `name_source` | 70 | **the laptop** — see below |
+| `name` | 48 | not established |
+| `eligibility_fetched_at` | 46 | the laptop, trivially |
+| `capital_type` | 26 | not established |
+| `sector_mix` | 19 | not established |
+| `scheme_end_date` | 1 | **the record** — `refresh_open_calls.py` writes it weekly, there and nowhere else |
+| 12 more | 73 | not established |
+
+`owner_is_source` answers "who is right" **once, for a whole family**. A family
+has more than one owner. So `reconcile_stores.py` gained `--inserts-only` and
+`--table`, and `test_promotion_is_inserts_only.py` states the property:
+
+> **A transfer run as a PROMOTION may add rows the target does not have and may
+> change NOTHING ELSE.** Every row the target already holds must be
+> byte-for-byte identical afterwards, whatever the source says about it and
+> whatever column the disagreement is in.
+
+Its test for the unseen case is a column this repository has never named, on a
+table declared into the family map at runtime. Proven red against the old
+`merge_table`: it names all four displaced values and the two counters.
+
+**I got the direction wrong once and it is worth recording.** I first read the
+record's Spanish titles as the cleaner ones — `bdns_conv_922188` reads *"Ayudas
+para provisión conjunto de equipamiento … 5G redes muy rurales"* on the record
+and *"PROYECTO DE ORDEN QUE ESTABLECEN BBRR DE LA CONCESIÓN DE …"* on the
+laptop and Postgres — and wrote it into a commit message. It is backwards.
+`name_source` says the record's is `deterministic` (**we** composed it from
+register fields) and the laptop's is `case_register` (**the Commission's** own
+title). `nameEvidence.ts` is explicit that the second is the stronger evidence.
+The record's title is prettier because we wrote it. The commit is corrected in
+place; the property never depended on the answer, which is why the test's
+fixture no longer models one.
+
+### What was written, and the proof
+
+```
+eligibility_gates   +3,362 new, 0 merged, 0 conflicts, 6,401 shared LEFT AS THE TARGET HAS THEM
+```
+
+Then, before the upload, every family table hashed on both sides:
+
+| | record | union | |
+|---|---:|---:|---|
+| `eligibility_gates` | 6,401 | **9,763** | 0 deleted, **0 changed**, 3,362 added |
+| `companies` | 164,050 | 164,050 | byte-identical |
+| `public_funding_events` | 311,440 | 311,440 | byte-identical |
+| `funding_instruments` | 1,088 | 1,088 | byte-identical |
+| the other eight family tables | | | byte-identical |
+
+### The second thing the record is missing, which I did not do
+
+`assign_name_evidence.py` is not in `railway_cron.py::STEPS` — for exactly the
+reason no gate encoder is. So the record still carries:
+
+```
+laptop  case_register 452  deterministic 306  programme_feed 203  curated 83  partition_key 44
+record  case_register 430  deterministic 376  programme_feed 203  curated 79  partition_key  0
+```
+
+**All 44** rows the laptop withholds as `partition_key` — every `sudop_*`,
+every `satr_*_equity`, `chips_ju_kdt_unknown` — the record still calls
+`deterministic`, which is offerable. Migration 032 widens the CHECK constraint
+and moves no data, so the weekly cron will not repair it. **Anything rebuilt
+from the corpus of record today puts Poland's entire offerable pool back in
+front of founders.** It is a one-command promotion in the same direction, it
+changes a publishability verdict on 44 rows, and it is a decision rather than a
+transfer — so it is queued, not done.
+
+And it is the same 44 rows job 2 counts from the other end: 26 of the 78
+founders we cannot serve won one of them.
 
 ---
 
