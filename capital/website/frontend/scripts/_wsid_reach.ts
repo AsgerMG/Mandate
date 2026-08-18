@@ -1,19 +1,26 @@
-// wsID — HOW MANY FOUNDERS LOSE A ROW TO A COLLISION THE CUT INVENTED.
+// wsID — WHAT THE OLD CUT WAS COSTING, COUNTED ON THE ROWS A FOUNDER IS SERVED.
 //
 // Free: one Voyage embed and one Postgres read per founder, no model call, no
-// write. Production's own table build, so this grades the rows a founder is
-// actually served.
+// write. Production's own table build, pool and candidate order — a second
+// implementation would grade rows nobody is served.
 //
-// ── The question ───────────────────────────────────────────────────────────
-// `distinguishRowNames` groups rows by their RAW label. `resolveNameCollisions`
-// keys on `rowRenderedLabel`, the same string cut to ROW_TITLE_CHARS. Two rows
-// whose titles differ only past character 120 are therefore INVISIBLE to the
-// disambiguator -- it sees two distinct names and has nothing to resolve -- and
-// IDENTICAL to the collapse, which demotes one of them out of the founder's
-// table. nameCollision.ts's own contract says the two must be one function.
+// ── Why this is a single run and not a before/after pair ──────────────────
+// The old collapse key is `oneLine(r.instrument, ROW_TITLE_CHARS)` per row, and
+// it is a pure function of a row this run already holds. So the counterfactual
+// is EXACT rather than estimated: every row the old key would have demoted is
+// computable beside the row the new key keeps, on the same founder, the same
+// draw and the same corpus. No cross-run drift, no second arm.
 //
-// So, per founder: how many collisions fire on a pair whose FULL names differ,
-// and how often is the row demoted by one of them the fund this founder won.
+// ── What each line means ──────────────────────────────────────────────────
+//   WOULD-DEMOTE  rows that render alike under the old per-row cut while their
+//                 full names DIFFER. The collapse sent these to the back of the
+//                 table, behind every visible row, so a row here was out of the
+//                 pool the writer sees.
+//   RECOVERED     of those, the ones now inside the published six — a seat a
+//                 founder gets back, on a fund whose name really is its own.
+//   SAME NAME     rows that collide on their FULL names too. Not this
+//                 workstream's: one corpus name on two rows is one option shown
+//                 twice and the collapse is right to demote it.
 //
 //   SPLIT=all N=897 npx tsx scripts/_wsid_reach.ts
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
@@ -21,16 +28,19 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 requireCredentials("wsid_reach", ["DATABASE_URL", "VOYAGE_KEY"]);
 
-import { SELECT_DEPTH } from "../lib/intelligence/caps";
+import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
 import {
-  findPeersBySubsector, hydrateDbInstruments, isGenericSubsector, loadDbInstruments,
-  matchCompany, publishableInstruments, requireLiveCorpus, resetGateHydration,
+  findPeersBySubsector, hydrateDbInstruments, hydrateGatesFor, isGenericSubsector,
+  loadDbInstruments, matchCompany, publishableInstruments, requireLiveCorpus, resetGateHydration,
 } from "../lib/intelligence/corpus";
+import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
+import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
 import { oneLine, ROW_TITLE_CHARS } from "../lib/intelligence/schemeText";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
 import {
-  buildInstrumentTableHydrated, founderCountryList, tableInputFromAnswers, VERDICT_POOL,
+  applyProfileSignal, buildInstrumentTableHydrated, founderCountryList, rowRenderedLabels,
+  tableInputFromAnswers, VERDICT_POOL,
 } from "../lib/intelligence/shortlist";
 import type { InstrumentRow } from "../lib/intelligence/types";
 import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "./founderIntake";
@@ -41,7 +51,8 @@ import {
 } from "./recallSet";
 
 const num = (v: string | undefined, d: number) => (v && Number.isFinite(Number(v)) ? Number(v) : d);
-const rendered = (r: InstrumentRow) => oneLine(r.instrument, ROW_TITLE_CHARS).toLowerCase();
+/** The key the collapse used before wsID: one row at a time, first 120 chars. */
+const oldKey = (r: InstrumentRow) => oneLine(r.instrument, ROW_TITLE_CHARS).toLowerCase();
 
 function founders(): RecallRow[] {
   const { file, rows: all } = loadRecallSet();
@@ -58,7 +69,7 @@ function founders(): RecallRow[] {
     num(process.env.SEED, DEFAULT_SEED));
 }
 
-async function tableFor(t: RecallRow, policy: FounderPolicy): Promise<InstrumentRow[]> {
+async function servedRows(t: RecallRow, policy: FounderPolicy) {
   resetGateHydration();
   const f = founderIntake(t, policy);
   const self = matchCompany(f.company, f.country);
@@ -66,7 +77,8 @@ async function tableFor(t: RecallRow, policy: FounderPolicy): Promise<Instrument
   const dbPeers = sub
     ? findPeersBySubsector(sub, { country: f.country, limit: 4, exclude: [f.company] }) : [];
   const semantic = await semanticFundMatch(f.opts.description ?? "");
-  return buildInstrumentTableHydrated({
+  const log = new ExclusionLog();
+  const table = await buildInstrumentTableHydrated({
     fieldChannels: new Set<string>(dbPeers.flatMap((r) => r.channels)),
     founderCountries: founderCountryList(
       f.country, (f.opts.targetMarkets ?? []) as string[],
@@ -75,8 +87,27 @@ async function tableFor(t: RecallRow, policy: FounderPolicy): Promise<Instrument
     description: f.opts.description ?? "",
     semantic,
     ...tableInputFromAnswers(f.eligibility as never),
-    log: new ExclusionLog(),
+    log,
   } as never);
+  const pool = applyProfileSignal(
+    accessiblePool(table, f.eligibility as never).slice(0, VERDICT_POOL), undefined, undefined);
+  const poolIds = pool.map((r) => r.instrumentId).filter(Boolean) as string[];
+  await hydrateGatesFor(poolIds);
+  const { ordered } = orderMemoCandidates({
+    instrumentTable: pool,
+    req: {
+      company: f.company, country: f.country, description: f.opts.description ?? "",
+      capitalSought: f.opts.capitalSought, targetMarkets: f.opts.targetMarkets,
+      eligibility: f.eligibility,
+    } as never,
+    records: [], dbPeers,
+    eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
+    log,
+  });
+  return {
+    table, pool,
+    six: ordered.map((c) => c.row).slice(0, BRIEF_LIMITS.institutionsMax - 1),
+  };
 }
 
 async function main() {
@@ -86,55 +117,56 @@ async function main() {
     ...founderPolicyFromEnv(), answers: (process.env.ANSWERS ?? "off") as AnswerMode,
   };
   const set = founders();
-  console.log(`founders=${set.length} split=${process.env.SPLIT ?? "tune"} `
-    + `pool=${VERDICT_POOL} menu=${SELECT_DEPTH}`);
+  console.log(`founders=${set.length} split=${process.env.SPLIT ?? "tune"} pool=${VERDICT_POOL}`);
 
-  let anyCollision = 0, cutInvented = 0, wonDemoted = 0, wonDemotedCutInvented = 0;
-  let seatsLost = 0, seatsLostCutInvented = 0;
+  let fWouldDemote = 0, fRecovered = 0, fSameName = 0, fUnseparable = 0, fPool = 0;
+  let nWouldDemote = 0, nRecovered = 0, nSameName = 0, nPool = 0;
+  let wonRecovered = 0, wonPool = 0;
   const examples: string[] = [];
 
   for (const t of set) {
-    const table = await tableFor(t, policy);
-    // The pool as the memo sees it: the collapse's losers were appended at the
-    // very back by `materialiseInstrumentTable`, so the whole array is the
-    // universe and the first VERDICT_POOL of it is what competes.
-    const by = new Map<string, InstrumentRow[]>();
-    for (const r of table) by.set(rendered(r), [...(by.get(rendered(r)) ?? []), r]);
-    let has = false, hasInvented = false, wd = false, wdInvented = false;
-    for (const [, peers] of by) {
-      if (peers.length < 2) continue;
-      has = true;
-      seatsLost += peers.length - 1;
-      const raws = new Set(peers.map((r) => r.instrument.trim().toLowerCase()));
-      const invented = raws.size > 1;
-      if (invented) { hasInvented = true; seatsLostCutInvented += peers.length - 1; }
-      // The demoted rows are the ones behind the survivor in the array.
-      const idx = peers.map((r) => table.indexOf(r));
-      const keptAt = Math.min(...idx);
-      for (const r of peers) {
-        if (table.indexOf(r) === keptAt) continue;
-        if (r.instrumentId === t.instrument) { wd = true; if (invented) wdInvented = true; }
-      }
-      if (invented && examples.length < 10) {
-        examples.push(`${t.name} (${t.country}) — ${peers.length} rows render alike, `
-          + `${raws.size} distinct full names:\n`
-          + peers.map((r) => `      ${r.instrumentId}\n        ${r.instrument}`).join("\n"));
-      }
+    const { table, pool, six } = await servedRows(t, policy);
+    const { labelOf, merged } = rowRenderedLabels(table);
+    if (merged.length) fUnseparable++;
+    // Under the OLD key, every row behind the first of its group was demoted.
+    const seen = new Map<string, InstrumentRow>();
+    const wouldDemote: InstrumentRow[] = [];
+    let sameName = 0;
+    for (const r of table) {
+      const k = oldKey(r);
+      const first = seen.get(k);
+      if (!first) { seen.set(k, r); continue; }
+      if (first.instrument.trim().toLowerCase() === r.instrument.trim().toLowerCase()) sameName++;
+      else wouldDemote.push(r);
     }
-    if (has) anyCollision++;
-    if (hasInvented) cutInvented++;
-    if (wd) wonDemoted++;
-    if (wdInvented) wonDemotedCutInvented++;
+    const inSix = wouldDemote.filter((r) => six.includes(r));
+    const inPool = wouldDemote.filter((r) => pool.includes(r));
+    nWouldDemote += wouldDemote.length; nRecovered += inSix.length; nSameName += sameName;
+    nPool += inPool.length;
+    if (wouldDemote.length) fWouldDemote++;
+    if (inSix.length) fRecovered++;
+    if (inPool.length) fPool++;
+    if (sameName) fSameName++;
+    if (inSix.some((r) => r.instrumentId === t.instrument)) wonRecovered++;
+    if (inPool.some((r) => r.instrumentId === t.instrument)) wonPool++;
+    if (inSix.length && examples.length < 8) {
+      examples.push(`${t.name} (${t.country}) — ${inSix.length} recovered seat(s) in the six:\n`
+        + inSix.map((r) => `      ${r.instrumentId}\n        now reads: ${labelOf(r)}`).join("\n"));
+    }
   }
 
   const pct = (n: number) => `${(100 * n / set.length).toFixed(1)}%`;
   console.log("");
-  console.log(`founders with >=1 rendered-label collision anywhere in the table  ${anyCollision} (${pct(anyCollision)})`);
-  console.log(`   ...where the colliding rows have DIFFERENT full names          ${cutInvented} (${pct(cutInvented)})`);
-  console.log(`seats demoted by the collapse, total                              ${seatsLost}`);
-  console.log(`   ...demoted on a pair the cut made identical                    ${seatsLostCutInvented}`);
-  console.log(`founders whose WON fund was the demoted row                       ${wonDemoted} (${pct(wonDemoted)})`);
-  console.log(`   ...on a pair the cut made identical                            ${wonDemotedCutInvented} (${pct(wonDemotedCutInvented)})`);
+  console.log(`WOULD-DEMOTE  founders with >=1 distinct fund the old cut merged   ${fWouldDemote} (${pct(fWouldDemote)})`);
+  console.log(`              rows, total                                          ${nWouldDemote}`);
+  console.log(`IN THE POOL   founders gaining >=1 of them in the ${VERDICT_POOL}-row menu       ${fPool} (${pct(fPool)})`);
+  console.log(`              seats, total                                          ${nPool}`);
+  console.log(`              ...and the recovered row is the fund they WON         ${wonPool} (${pct(wonPool)})`);
+  console.log(`RECOVERED     founders gaining >=1 of them in the published six     ${fRecovered} (${pct(fRecovered)})`);
+  console.log(`              seats, total                                          ${nRecovered}`);
+  console.log(`              ...and the recovered row is the fund they WON         ${wonRecovered} (${pct(wonRecovered)})`);
+  console.log(`SAME NAME     founders with >=1 pair sharing a FULL name            ${fSameName} (${pct(fSameName)})   rows ${nSameName}`);
+  console.log(`UNSEPARABLE   founders where no cut could separate a distinct pair  ${fUnseparable} (${pct(fUnseparable)})`);
   console.log("");
   for (const e of examples) console.log("  " + e + "\n");
 }

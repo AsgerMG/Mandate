@@ -40,6 +40,23 @@ describe("cutTitlesApart — THE PROPERTY: a cut may not merge two names that di
     expect(merged).toEqual([]);
   });
 
+  it("separates a pair that diverges in the three characters oneLine spends on its stop", () => {
+    // The boundary. `oneLine` shows the first ROW_TITLE_CHARS - 3 and then
+    // "...", so a divergence at 117, 118 or 119 is invisible to it and INSIDE
+    // the budget. Found by running the real corpus, not by reading the code:
+    // it accounted for every unresolved group on 25 of 60 recall founders.
+    for (const at of [ROW_TITLE_CHARS - 3, ROW_TITLE_CHARS - 2, ROW_TITLE_CHARS - 1]) {
+      const stem = rep("s", at);
+      const a = `${stem}A${rep("t", 200)}`;
+      const b = `${stem}B${rep("t", 200)}`;
+      expect(oneLine(a)).toBe(oneLine(b));
+      const { titles, merged } = cutTitlesApart([a, b]);
+      expect(titles[0]).not.toBe(titles[1]);
+      expect(titles[0].length).toBeLessThanOrEqual(ROW_TITLE_CHARS);
+      expect(merged).toEqual([]);
+    }
+  });
+
   it("is blind to script — the divergence may be in Greek or Cyrillic", () => {
     const gr = rep("Καθεστώς ενίσχυσης έρευνας και ανάπτυξης για μικρομεσαίες ", 150);
     const { titles, merged } = cutTitlesApart([`${gr} Α`, `${gr} Β`]);

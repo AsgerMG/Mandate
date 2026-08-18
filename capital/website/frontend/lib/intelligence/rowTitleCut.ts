@@ -141,10 +141,21 @@ export function cutTitlesApart(
       let k = 1;
       while (k < room && new Set(distinct.map((t) => t.slice(p, p + k))).size < best) k++;
       const head = max - ELISION.length - k;
-      // A divergence INSIDE the head is one the plain cut already showed, so
-      // there is nothing here to repair and an elision would only remove text
-      // the reader can currently see.
-      if (p <= head) continue;
+      // ── THE BOUNDARY, and it is the one case a reasonable guard gets wrong ─
+      // `headCut` spends three characters on "...", so it shows only the first
+      // `max - 3`. A pair diverging in the three characters BETWEEN that and
+      // the budget collides under the plain cut while sitting inside the head
+      // this function would print. Eliding there would repair nothing and print
+      // the same character twice; a one-glyph marker instead of a three-glyph
+      // one buys exactly the room needed, and says the same thing.
+      if (p < head) {
+        for (const i of idx) {
+          if (full[i].length <= max) continue;
+          out[i] = full[i].slice(0, max - ELISION.length) + ELISION;
+          moved = true;
+        }
+        continue;
+      }
       for (const i of idx) {
         if (full[i].length <= max) continue;
         out[i] = full[i].slice(0, head) + ELISION + full[i].slice(p, p + k);
