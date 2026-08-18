@@ -213,27 +213,47 @@ export const BRIEF_LIMITS: BriefLimits = {
   bodyWords: 700,
 };
 
+/** The three row fields the WRITER fills. Pinned by its own output schema
+ *  (`institutionNotes`), not by memory: everything else on a published row is
+ *  the corpus's text about the fund. */
+const WRITER_WRITTEN_ROW_FIELDS = new Set(["whyEligible", "nextStep", "blocker"]);
+
 /**
  * The text a HUMAN wrote about the funds in this table.
  *
  * It is what an id word may legitimately be accounted for by: a slug built out
- * of a fund's own title is not an identifier leaking, it is the title. Passed
- * as an argument rather than read off a type inside `rowIdentity`, because each
+ * of a fund's own title, or out of the body the register names as taking its
+ * applications, is not an identifier leaking -- it is text this very report
+ * puts in front of the founder somewhere else on the same row. Passed as an
+ * argument rather than read off a type inside `rowIdentity`, because each
  * caller must be able to defend what it admits and none may quietly widen
- * another's — see the note there.
+ * another's.
  *
- * NOT the granting body raw. `nameableBody` refuses to print a ministry, and
- * admitting the column here would license exactly the laundering the property
- * exists to catch. Nothing below reads one: `institution` already carries a
- * body only where the register supported naming it.
+ * DERIVED FROM THE ROW, not a field list. A hand-kept list here is the defect
+ * `readerText` was built to remove one layer up, and it fails in the direction
+ * that hurts: a corpus field somebody forgot makes its own words look like
+ * identifiers, and the first run of this rule over the archetypes reported the
+ * granting body of a German scheme and a Dutch province as leaks because both
+ * are printed on the row as `schemeOperators` and neither was on the list.
+ *
+ * TWO SUBTRACTIONS, and both are the point:
+ *  * the writer's own three fields, because prose cannot certify itself -- an
+ *    id in `nextStep` would otherwise account for the same id in a bullet;
+ *  * nothing here reads `administeringBody`. `schemeOperators` is a PUBLISHED
+ *    field and is admitted as published text; the raw column is not, for the
+ *    reason stated in rowIdentity.ts.
  */
 export function fundText(
   institutions: readonly IntelligenceReport["institutions"][number][],
 ): string[] {
   return institutions.flatMap((r) => [
-    r.institution, r.descriptor, r.familyName, r.supportType, r.schemeCode,
-    r.country, r.legalBasis, r.registeredPurpose, r.applicationRouteFor,
-  ].filter((x): x is string => typeof x === "string" && x.length > 0));
+    // The notified code. The walk treats it as an identifier because the
+    // renderer resolves it into a link, and it is nonetheless a public
+    // reference somebody assigned and the page shows.
+    r.schemeCode ?? "",
+    ...readerText(Object.fromEntries(Object.entries(r)
+      .filter(([k]) => !WRITER_WRITTEN_ROW_FIELDS.has(k)))),
+  ]).filter((x) => x.length > 0);
 }
 
 /**

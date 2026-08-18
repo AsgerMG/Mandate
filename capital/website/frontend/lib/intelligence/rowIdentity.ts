@@ -367,7 +367,14 @@ export function internalIdTokensIn(
       // between the parts of a name, so a bare word in a sentence is the
       // founder's language and is never examined.
       const fragment = whole
-        || (words.length >= 2 && internalIdWordsIn(token, s.id, humanFields).length > 0);
+        || (words.length >= 2 && internalIdWordsIn(token, s.id, humanFields)
+          // A SINGLE LETTER IS NOT AN IDENTITY. 125 ids in this corpus carry a
+          // one-character word, almost all of them a French elision the slug
+          // split off (`d_installations`), and matching on one turned "R&D&I"
+          // in a real archetype's row copy into a reported leak. A letter
+          // identifies nothing, so it is not evidence that a token came from
+          // the store.
+          .some((w) => w.length > 1));
       if (fragment) {
         hits.push({ token, instrumentId: s.id, whole });
         break;
