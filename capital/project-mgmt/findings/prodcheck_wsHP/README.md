@@ -317,3 +317,27 @@ instrument id. It matches on display name only. wsHR fixed the published-rank
 matcher for exactly this class and the bullet matcher was left on the old basis —
 **so the instrument that reads production has the same defect twice, once fixed
 and once not.**
+
+---
+
+## RUN 3 — 2026-08-18 19:47, after wsHQ merged and Vercel redeployed. Both fixes live.
+
+Same founder, same deployment, `source POSTGRES / 1088 / observedAt 19:47:17Z`.
+
+**The 2020 scheme is gone from a real founder's memo.** `SA.40453` — *"pour la
+période 2014-2020"*, published as row 4 an hour ago with a live link and a
+EUR 980,817 typical award — **appears nowhere.** Every published row now carries
+a live window: five say *période 2024-2026*, one is Horizon, one is EIC.
+
+**And the row names stayed clean**, so wsHR held across wsHQ's merge.
+
+**One consequence worth stating rather than burying.** Her won fund,
+`satr_fr_rnd__sa_40391`, moved from *pool row 96 of 118* to **ABSENT FROM THE
+POOL** — because it too ended 2020-12-30. That is correct: we no longer count a
+dead scheme as reachable. It is also the sharper version of wsHQ's finding —
+**nine founders in the answer key won a scheme that has since ended**, so part
+of the target we grade ourselves against is unreachable by construction, and
+was inflating `publishable` rather than measuring the product.
+
+Three runs, EUR 0.75 total. Every defect above was invisible to a green offline
+suite.
