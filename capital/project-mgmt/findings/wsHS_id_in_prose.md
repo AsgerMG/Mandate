@@ -146,9 +146,17 @@ The guard fired on its first live run and what it caught was **not the writer**.
 `channelBreakdown` and `activeYears` from that block and nothing else).
 `NON_READER_KEYS` carried the singular `channel` and not the plural, so BRIEF-3
 and BRIEF-4 had been grading a value nobody reads and the repair rewrote it.
-`channels` is now classified where it belongs. That the miss and the wrong
-repair are the same one-line fact, in one file, is the argument for the check
-and the repair sharing the walk.
+`channels` is now classified where it belongs, with a regression test rather
+than a second paid run: the classification is a pure code fact and buying a
+brief to observe it would be a run with no question behind it. That the miss and
+the wrong repair are the same one-line fact, in one file, is the argument for
+the check and the repair sharing the walk.
+
+**Read the two together.** `prodcheck` sees what the founder sees, which is the
+report *after* the repair; the deployment's log is where the pre-repair truth
+lives. A clean `memo ids` line plus no `memo_id_redacted` means the writer wrote
+nothing wrong; a clean line plus the event means it did and we caught it. Run 4
+was the second case, on a field that turned out not to be the writer's.
 
 ## Verification
 

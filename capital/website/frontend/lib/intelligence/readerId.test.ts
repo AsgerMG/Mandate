@@ -110,6 +110,23 @@ describe("the walk reaches every field, and only the reader's", () => {
   });
 });
 
+describe("the walk knows a machine list from prose", () => {
+  it("does not treat the founder's own source-family codes as text", () => {
+    // FOUND BY THE FIRST LIVE RUN OF THE REPAIR. `self.channels` is the list of
+    // source-family codes a company's awards came through; `panelReport` prints
+    // `euCapital`, `channelBreakdown` and `activeYears` from that block and
+    // never this one. The key set carried the singular `channel` and not the
+    // plural, so two rules had been grading a value nobody reads -- and the
+    // repair rewrote one, which is how it surfaced.
+    const self = { euCapital: "EUR 1.0M", channelBreakdown: "state aid, EUR 1.0M",
+                   channels: ["state_aid_satr"], activeYears: "2021" };
+    expect(readerText({ self })).not.toContain("state_aid_satr");
+    const out = mapReaderText({ self }, () => "REWRITTEN");
+    expect(out.self.channels).toEqual(["state_aid_satr"]);
+    expect(out.self.euCapital).toBe("REWRITTEN");
+  });
+});
+
 describe("BRIEF-5 — the rule, on a whole brief", () => {
   const report = (over: Record<string, unknown>) => ({
     bottomLine: ["one", "two", "three", "four"],
