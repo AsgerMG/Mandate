@@ -17,6 +17,33 @@ data/
 # This takes effect on the next `railway up`; nothing redeploys the service on
 # a push (repoTriggers: []). See project-mgmt/findings/gate_divergence_wsHC.md.
 !data/guard_registry.json
+
+# ...and the offerable baseline, for the same reason found the same way. Of the
+# four guards `railway_cron.py::GUARDS` runs, `check_offerable_decay.py` reads
+# `data/reference/offerable_baseline.json` -- committed, 1.5 KB, a REFERENCE
+# input and not corpus. Excluded with the rest of `data/`, it is absent from the
+# image and absent from the volume, so that guard would fail on the first run
+# after the deploy that finally lets verdicts through.
+#
+# It fails differently from the registry and that difference is why it was
+# missed: the registry is read at IMPORT, so it killed the verdict block
+# silently; this is read inside a function, so it dies loudly when the guard
+# runs. A loud failure on the first working run would have read as "the new
+# channel is broken" rather than "one file is missing".
+#
+# The other three are clean: store_schema and corpus_marks touch no data/ path,
+# and aggregate_independence reads data/db.sqlite, which IS the mounted volume.
+#
+# UNVERIFIED BY A BUILD, and say so rather than assume it. `.dockerignore`
+# resolves by last-matching-pattern over the whole path -- it has no
+# "don't descend into an excluded directory" rule, which is a .gitignore
+# behaviour -- so a two-level re-inclusion under `data/` should work exactly as
+# the one-level registry line above does. There is no docker CLI on this
+# machine to prove it, and `COPY . .` at Dockerfile:26 means this file is the
+# only thing governing it. **Check the image after the first `railway up`:** if
+# check_offerable_decay still cannot find its baseline, the fix is to move the
+# file out of `data/` rather than to fight the pattern.
+!data/reference/offerable_baseline.json
 website/frontend/node_modules/
 website/frontend/.next/
 website/frontend/out/
