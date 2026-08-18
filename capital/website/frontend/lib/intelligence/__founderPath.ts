@@ -136,6 +136,35 @@ export interface FounderRun {
 
 type Handler = (r: Request) => Promise<Response>;
 
+/**
+ * HOW a route call reaches the routes.
+ *
+ * The four calls, their order, the payload each carries and the id handoff
+ * between them are the SEQUENCE, and there is one copy of it (`driveFounderPath`
+ * below). Whether that sequence runs against the handler modules in this process
+ * or against a deployment over HTTPS is the TRANSPORT, and it is the only thing
+ * that differs between the hermetic test and `scripts/prodcheck.ts`.
+ *
+ * Split here rather than by copying the sequence, because a second copy of the
+ * sequence is exactly the defect this module exists to make impossible: the two
+ * copies drift, and the one nobody runs is the one that keeps passing.
+ */
+export type FounderTransport =
+  (route: string, body: Record<string, unknown>) => Promise<Response>;
+
+/** The default: the real route handlers, in this process, over real
+ *  `Request`/`Response` objects. No network, no credentials. */
+export async function inProcessTransport(): Promise<FounderTransport> {
+  const H = await handlers();
+  return (route, body) => H[route](new Request(`http://founder.test${route}`, {
+    method: "POST",
+    headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.9" },
+    // JSON.stringify is not decoration: it is the boundary. `undefined` fields
+    // vanish here, and anything that is not JSON never arrives at all.
+    body: JSON.stringify(body),
+  }));
+}
+
 async function handlers(): Promise<Record<string, Handler>> {
   const [region, verdict, intake, memo] = await Promise.all([
     import("@/app/api/intelligence/region/route"),
@@ -170,6 +199,10 @@ export interface DriveOptions {
   /** Stop after the ranked set is observable (`partial`), rather than waiting
    *  for the writer to fail. Default true, and it is what keeps this free. */
   stopAt?: "ranked" | "end";
+  /** Where the four calls go. Defaults to the route handlers in this process;
+   *  `scripts/prodcheck.ts` passes one that fetches a deployment. The SEQUENCE
+   *  is the same either way, and that is the whole point. */
+  transport?: FounderTransport;
 }
 
 /**
@@ -185,18 +218,12 @@ export async function driveFounderPath(
 ): Promise<FounderRun> {
   const answerRoundTwo = opts.answerRoundTwo ?? true;
   const stopAt = opts.stopAt ?? "ranked";
-  const H = await handlers();
+  const send = opts.transport ?? await inProcessTransport();
   const wire: { route: string; body: Record<string, unknown> }[] = [];
 
   const post = async (route: string, body: Record<string, unknown>) => {
     wire.push({ route, body: JSON.parse(JSON.stringify(body)) as Record<string, unknown> });
-    // JSON.stringify is not decoration: it is the boundary. `undefined` fields
-    // vanish here, and anything that is not JSON never arrives at all.
-    return H[route](new Request(`http://founder.test${route}`, {
-      method: "POST",
-      headers: { "content-type": "application/json", "x-forwarded-for": "203.0.113.9" },
-      body: JSON.stringify(body),
-    }));
+    return send(route, body);
   };
 
   // panel.tsx's state, with panel.tsx's initial values.
