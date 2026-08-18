@@ -1,5 +1,18 @@
 # wsHO — a forty-row call costs 4.6 cents and 96% of it is the prompt; the ceiling above `low` could not be sent at all; and the model's ordering is a wash
 
+> ██ **WITHDRAWN IN PART, 2026-08-19 — read `findings/ruler_wsIB/` first.** ██
+>
+> Every figure below of the form "fails the prompt's own two disqualifiers" is a
+> figure about **strict string equality between one taxonomy label and another**,
+> and about a sector rule **that is not in the prompt** — `buildPrompt`'s only
+> sector sentence is a tie-break about the TITLE and disqualifies nothing. The
+> same ruler throws out the fund the company ACTUALLY WON on 43.6% and 46.2% of
+> founders. Re-derived with a ruler calibrated against that labelled set:
+> **48.4% / 48.0% of picks becomes 3.3% / 2.7%**, mean survivors of forty rows
+> goes 11.5 → 30.2, and **the founders holding fewer qualifying rows than seats
+> goes from 26/78 and 27/78 to 0/78 and 0/78.** The mechanism does not occur at
+> the depth that ships. Reproduce free: `npx tsx scripts/_wsib_ruler.ts`.
+
 **FOR THE OWNER, VERBATIM.** Three euro sixty-nine bought all three answers. **A
 forty-row call at the shipped settings costs EUR 0.0459 a founder, and 95.6% of
 that is the PROMPT — thinking is 4.4%.** So the EUR 0.0217–0.0483 spread that
