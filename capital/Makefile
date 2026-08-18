@@ -190,6 +190,17 @@ eligibility:
 	# one field over and which the vocabulary check cannot see (country fields
 	# are free text). A violation FAILS the target rather than warning.
 	python3 ETL/terms/check_gate_subject.py
+	# One field has one answer. Two filter gates on one ORDERED field whose
+	# requirement texts state different numeric thresholds cannot both be the
+	# bound that one answer is tested against -- they are branches the applicant
+	# selects into, and assessInstrument conjoins every filter, which is the
+	# narrowest reading and wrong for everyone. innovate_uk sat in that state
+	# with both windows of one Smart Grants competition ANDed across an agency
+	# of 17,012 awards, and no guard we own could see it: wsGE's by-field
+	# counting makes two gates on ONE field ONE thing in the way, so nothing
+	# ever blocked and no blocked-count moved. What moved was the qualification
+	# BAND, on 109 of 897 founders. FAILS the target, like the line above it.
+	python3 ETL/terms/check_gate_branches.py
 	# THE SECOND PATH TO PRODUCTION. encode_gates.py triage rewrites gate_role
 	# from a paid model pass, so every curated demotion above is reverted by the
 	# two lines above it -- and this target then exports and publishes. refresh.py

@@ -42,6 +42,18 @@ there and 63 in SQLite.
   python3 ETL/terms/apply_gate_encoding_corrections.py            # dry run
   python3 ETL/terms/apply_gate_encoding_corrections.py --apply
   python3 ETL/terms/apply_gate_encoding_corrections.py --apply --postgres
+
+WHICH CORRECTIONS, AND WHY THAT IS AN ARGUMENT NOW
+--------------------------------------------------
+`--corrections` names the file. It defaulted to wsGU's and nothing else, so the
+second workstream to derive a correction set had two choices: append its rows to
+another workstream's evidence file, which destroys the provenance of both, or
+copy this file and get a second drift rule that can quietly become laxer than
+this one. Both are the failure `build_plan` is written once to avoid. The
+default is unchanged, so every existing invocation means what it did.
+
+  python3 ETL/terms/apply_gate_encoding_corrections.py \\
+      --corrections project-mgmt/evidence/wsic_gate_branch_corrections_2026-08-19.jsonl
 """
 from __future__ import annotations
 
@@ -61,8 +73,8 @@ import os  # noqa: E402
 import sqlite3  # noqa: E402
 
 ROOT = _Path(__file__).resolve().parents[2]
-CORRECTIONS = (ROOT / "project-mgmt" / "evidence"
-               / "wsgu_gate_encoding_corrections_2026-08-13.jsonl")
+DEFAULT_CORRECTIONS = (ROOT / "project-mgmt" / "evidence"
+                       / "wsgu_gate_encoding_corrections_2026-08-13.jsonl")
 
 
 def canon(spec) -> str | None:
@@ -143,6 +155,10 @@ def report(store: str, plan, drift, already, total: int) -> bool:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--apply", action="store_true", help="actually write")
+    ap.add_argument("--corrections", default=str(DEFAULT_CORRECTIONS),
+                    help="the JSONL of corrections to apply. One file per "
+                         "workstream, so a correction keeps the evidence and "
+                         "the drift refusal it was derived with.")
     ap.add_argument("--postgres", action="store_true",
                     help="also write Postgres, which is the store the brief "
                          "reads. SQLite alone is not durable: "
@@ -151,7 +167,11 @@ def main() -> int:
                          "write is reverted by the next release publish.")
     args = ap.parse_args()
 
-    rows = [json.loads(l) for l in CORRECTIONS.read_text().splitlines() if l.strip()]
+    corrections_path = _Path(args.corrections)
+    if not corrections_path.is_absolute():
+        corrections_path = ROOT / corrections_path
+    rows = [json.loads(l) for l in corrections_path.read_text().splitlines() if l.strip()]
+    print(f"corrections: {corrections_path.relative_to(ROOT)}")
     conn = sqlite3.connect(DB, timeout=60)
     conn.row_factory = sqlite3.Row
 
