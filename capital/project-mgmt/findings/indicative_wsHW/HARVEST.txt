@@ -1,0 +1,121 @@
+wsHO harvest · ../../project-mgmt/findings/indicative_wsHW/main_tape.jsonl
+78 called founder(s) with a full transcript, 83 API turn(s)
+levers as recorded: SELECT_COUNT=7 SELECT_COUNT_MODE=exactly
+
+0. IS THERE ANY REASONING TO READ?
+  founders whose reply carried ANY reasoning text  6/78
+
+1. DOES IT SAY, IN ITS OWN WORDS, THAT IT IS FILLING SEATS?
+  FORGES D'ALBERT (round 1): "...ce the nuclear supplier modernization angle could qualify, though the transport-sector aviation R&D scheme seems like a weaker fit. Narrowing down to seven candidates while being careful that several of these are just regional variants of the same underlying regime rather than truly distinct program..."
+  1 transcript(s) of 83 matched any of 12 seat-filling phrasings
+
+2. THE ONLY HEDGE THE REPLY CONTRACT ADMITS: `unsure`
+  briefs naming at least one unsure row   5/78 (6.4%)
+  rows named unsure in total              10
+  The prompt invites this explicitly and caps it at 5. A model that
+  cannot separate two funds has exactly one way to say so.
+
+3. OF THE ROWS THE MODEL READ, HOW MANY SURVIVE THE PROMPT'S OWN
+   TWO DISQUALIFIERS — GENEROUSLY, SO EVERY NUMBER IS AN UPPER BOUND
+  founders measured                        78
+  mean menu length                         37.9 rows
+  MEAN SURVIVING ROWS                      11.2  (wsDY measured 2.1 of 18)
+  median / min / max                       8 / 2 / 38
+  FEWER SURVIVORS THAN THE 7 SEATS         27/78 (34.6%)  (wsDY: 10 of 12 at eighteen rows)
+  survivor histogram: 2:4 3:5 4:5 5:8 6:5 7:8 8:6 9:3 10:5 11:1 12:1 13:4 15:3 16:6 17:1 18:1 21:1 22:3 24:1 25:1 26:1 28:1 31:1 36:1 37:1 38:1
+
+4. SEATS FILLED WITH A ROW THAT FAILS THE PROMPT'S OWN RULES
+  picks made                               546
+  picks OUTSIDE the surviving set          262 (48.0%)
+  mean per founder                         3.36 of 7 seats
+  founders with at least one such pick     70/78
+  With SELECT_COUNT_MODE=exactly the model cannot decline a seat, so on
+  a founder with fewer survivors than seats these picks are not a
+  judgement it made — they are the only reply the contract allows.
+
+5. WHERE THE FILLERS LAND RELATIVE TO THE ANSWER
+  stratum R founders (won fund in the forty, not in our six)  45
+  ...of those, at least one filler picked AND still a miss    30
+  This is an association on a small n, not a mechanism. It says where to
+  point an `atMost` arm, and it does not price one.
+
+6. PER FOUNDER
+  founder                           str  menu  survive  picks off  six c/m
+  Bouyer Leroux                     C      40        2          5  Y/Y
+  AEROSPACE VALLEY                  R      40        2          7  n/n
+  SITAEL                            C      40        2          6  Y/Y
+  CHOMARAT TEXTILES INDUSTRIES      R      40        2          5  n/n
+  ADVANCED MANUFACTURING SHEFFIELD  C      29        3          5  Y/Y
+  3T ADDITIVE MANUFACTURING         C      29        3          7  Y/n
+  CELLUGY                           C      37        3          6  Y/n
+  CEMONITE                          R      40        3          6  n/n
+  NC SPECTRUM                       R      40        3          4  n/n
+  FSTECHNOLOGY                      R      40        4          6  n/n
+  CIGNUS INSTRUMENTS                C      40        4          4  Y/Y
+  HOPROD                            R      40        4          3  n/Y
+  FORGES D'ALBERT                   R      40        4          3  n/Y
+  ACTA MOBILIER                     R      40        4          4  n/n
+  RATIER-FIGEAC                     R      40        5          3  n/Y
+  APTUNION INDUSTRIE                C      40        5          3  Y/Y
+  3D REPO                           C      24        5          5  Y/Y
+  UNIVERSITA' DEGLI STUDI DI MILAN  R      40        5          4  n/n
+  Heimann Sensor GmbH               C      40        5          3  Y/Y
+  OHB System AG                     C      40        5          4  Y/Y
+  CIOL                              R      40        5          5  n/n
+  AQDOT                             C      30        5          5  Y/n
+  ENANTIS S.R.O.                    R      40        6          6  n/n
+  AEROTEX                           C      30        6          4  Y/n
+  ANDERSEN MEK VERKSTED             R      40        6          5  n/n
+  MECACHROME FRANCE                 C      40        6          2  Y/Y
+  UNIVERSITE DE BORDEAUX            R      40        6          4  n/n
+  MARITIME ROBOTICS                 C      40        7          4  Y/Y
+  INFUTURE                          R      40        7          3  n/n
+  AVA OCEAN                         R      40        7          2  n/Y
+  HENNLICH S.R.O.                   R      40        7          5  n/n
+  RISE RESEARCH INSTITUTES OF SWED  R      40        7          4  n/n
+  MARTEL INNOVATE BV                R      40        7          3  n/n
+  GREENERWAVE                       R      40        7          5  n/n
+  VALEO EAUTOMOTIVE GERMANY         C      40        7          2  Y/Y
+  TALGA GROUP LTD                   R      40        8          4  n/n
+  CACTUX S.R.O.                     R      40        8          5  n/n
+  MEYER WERFT                       C      40        8          3  Y/Y
+  KLOSSER INNOVASJON                R      40        8          3  n/n
+  AUGMENTCITY                       R      40        8          3  n/n
+  QUANTUNE TECHNOLOGIES GMBH        R      40        8          3  n/n
+  CARIAD SE                         R      40        9          3  n/n
+  CENTRE FOR PROCESS INNOVATION LI  C      24        9          2  Y/Y
+  X FAB DRESDEN                     R      40        9          2  n/Y
+  AF OFFSHORE DECOM                 C      40       10          3  Y/Y
+  EURNEX E V                        R      40       10          3  n/Y
+  WISE SRL                          C      40       10          1  Y/n
+  SHIFT MATERIALS                   R      40       10          3  n/n
+  BERNHARD NOCHT INSTITUT FUER TRO  C      40       10          1  Y/Y
+  ALCOA NORWAY                      C      40       11          3  Y/Y
+  ARISTON                           R      40       12          6  n/Y
+  BIO ME                            R      40       13          1  n/n
+  CEALTECH                          R      40       13          4  n/Y
+  NELLIE TECHNOLOGIES               R      23       13          5  n/n
+  BRISTOL BATH REGIONAL CAPITAL     C      23       13          4  Y/n
+  TOUL ENERGIE                      R      40       15          1  n/Y
+  AIXTRON SE                        R      40       15          6  n/Y
+  BP EUROPA SE                      R      40       15          3  n/n
+  TELECOM ITALIA SPA O TIM          R      40       16          5  n/n
+  CELLFION AB                       C      40       16          4  Y/Y
+  SWERIM                            R      40       16          6  n/n
+  AERNNOVA COMPOSITES ILLESCAS SA   C      40       16          2  Y/n
+  FEV EUROPE                        C      40       16          4  Y/Y
+  NEXTWORKS                         R      40       16          2  n/n
+  DESTINUS SPAIN                    C      40       17          5  Y/Y
+  JANSEN RECYCLING GROUP B V        R      40       18          2  n/n
+  ASOCIACION DE INVESTIGACION DE L  C      40       21          4  Y/Y
+  CU SERVICES LIMITED               C      23       22          0  Y/n
+  CRCAM NORD MIDI PYRENEES          R      40       22          1  n/Y
+  ADDITIVE MANUFACTURING SOLUTIONS  C      23       22          0  Y/n
+  CELLEVATE AB                      C      40       24          1  Y/Y
+  LE BIO MARAIS                     R      40       25          2  n/Y
+  SCANDINAVIAN REAL HEART AB        R      40       26          0  n/n
+  BRISTOL CITY COUNCIL              C      29       28          0  Y/n
+  Aktiv                             C      32       31          0  Y/n
+  AALBORG KOMMUNE                   C      37       36          0  Y/Y
+  UNIVERSITA DEGLI STUDI DI NAPOLI  R      40       37          0  n/n
+  UNIVERSITA COMMERCIALE LUIGI BOC  R      40       38          0  n/Y
