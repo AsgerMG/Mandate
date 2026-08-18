@@ -2,16 +2,22 @@
   "what": "What is stopping us, in plain words. Hand-written because a machine cannot say who is waiting on whom. A blocker that clears is DELETED, not marked done.",
   "blockers": [
     {
-      "who": "money",
-      "what": "Small tests now, one big one when it looks finished",
-      "why": "Your call, and it is the right one: a full test against a product we are still changing is paying full price for a number that expires at the next change. So from now on it is small indicative runs while things move, and one proper run when the product looks finished. A four-euro run is going now — it also measures the thing that makes the big one's price uncertain.",
-      "ask": "Nothing. I will ask once, when it is worth asking."
+      "who": "us",
+      "what": "We put a dead scheme in front of a real founder",
+      "why": "We sent one company through the live site and read what she got. Row five was a scheme that ended in December 2020 — with a working link, a typical grant size, and a line telling her to check it is still open. It is not one row: 336 of our 1,088 funds have an end date already in the past, and some of those expired four days ago. We had built the machinery to catch exactly this in July and it did not fire.",
+      "ask": "Nothing. Being fixed now, and the fix is not done until her memo comes back without it."
+    },
+    {
+      "who": "us",
+      "what": "Everything we measure happens somewhere a founder has never been",
+      "why": "This is the reason the number never seems to move. Every test we have calls the engine directly and skips the actual website — so two weeks of improvements were measured in a place no person visits. The first time we sent a real company through the live site, it took twenty minutes to find three defects that every offline test had passed. From now on nothing counts as finished until one real founder's answer has been read.",
+      "ask": "Nothing. This one is mine and it is already changed."
     },
     {
       "who": "you",
       "what": "One deployment, and it now unblocks two things",
-      "why": "The pipeline container is 316 commits behind and its safety check has never once published a result. It turns out this is not one item but the gate on another: every route to the master copy of our data begins by waking that container, so the 3,400 missing rules cannot be reconciled until it is redeployed. Two queue items, one decision.",
-      "ask": "Read AWAITING_APPROVAL §13 and §14 — they are the same decision. No money."
+      "why": "The pipeline container is behind and its safety check has never once published a result. Every route to the master copy of our data begins by waking that container, so the 3,400 missing rules cannot be reconciled until it is redeployed. You said you fixed the redeploy — the proof arrives with the next scheduled run, and I will confirm it then rather than assume it.",
+      "ask": "Install the Railway CLI here when convenient, and I will take the reconcile and future deploy checks off your plate."
     }
   ]
 }

@@ -2,10 +2,16 @@
   "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
   "agents": [
     {
-      "id": "wsHO",
-      "step": 5,
-      "what": "A four-euro test, to find out what the fifteen-euro one really costs",
-      "why": "The full test is priced somewhere between fifteen and thirty-three euros, and the whole gap is one thing nobody has measured: whether showing the AI forty funds instead of eighteen makes it think for longer. Thinking was half the last bill. A small run measures that as a side effect, proves the run can be trusted before we pay for the big one, and still gives a direction on whether the AI orders better than we do."
+      "id": "wsHQ",
+      "step": 2,
+      "what": "Stop offering funds that have already closed",
+      "why": "A real founder was shown a scheme that ended in 2020, as her fifth recommendation, with a link and an invitation to apply. 336 of 1,088 funds have an end date in the past and more expire every week. We built the thing that should catch this in July — it distinguishes a closed round from a closed programme — and it did not fire here. Fixing it means finding out why, not bolting on a second mechanism."
+    },
+    {
+      "id": "wsHR",
+      "step": 6,
+      "what": "Two rows told her the name of a government department",
+      "why": "We renamed 22 funds away from being titled after the ministry that grants them, and it worked. But a fallback that fills in a missing label prints the fund's internal identifier as if it were prose, and the ministry name came straight back through it on two of her seven rows. The same memo also gave advice about a fund that was not on her list at all. Underneath both: a published row carries no identifier, so nothing downstream can even say which fund it is."
     }
   ]
 }
