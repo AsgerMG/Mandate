@@ -69,7 +69,7 @@ User flagged that the home-page KPI claimed "53 countries" but the country list 
 
 **Implementation pattern**: three layers of defence so the scope is held at every layer the data passes through.
 
-1. **Pre-insert filter in extractors** — new helper [ETL/lib/europe_scope.py](../ETL/lib/europe_scope.py) loaded from [data/europe_scope.json](../data/europe_scope.json). Exports `canonicalise_country(code)` that maps aliases and returns None for out-of-scope codes. Every new extractor should call it; existing extractors get protection from layer 2.
+1. **Pre-insert filter in extractors** — new helper [ETL/lib/europe_scope.py](../ETL/lib/europe_scope.py) loaded from [reference/europe_scope.json](../reference/europe_scope.json). Exports `canonicalise_country(code)` that maps aliases and returns None for out-of-scope codes. Every new extractor should call it; existing extractors get protection from layer 2.
 2. **DB triggers** — `trg_companies_country_scope` and `trg_companies_country_scope_update` `BEFORE INSERT/UPDATE` triggers in [ETL/load/schema.sql](../ETL/load/schema.sql). Fire on every write to `companies.country`. Any out-of-scope code `RAISE(ABORT, ...)` with a message pointing at `docs/europe_scope.md` and the helper module. Verified by smoke test: `INSERT ... country = 'IL'` fails, `INSERT ... country = 'DE'` succeeds.
 3. **View-time filter** — `v_european_companies` in [analysis/views.sql](../analysis/views.sql) inner-joined into `v_events`. Belt-and-braces if the triggers are ever disabled for a raw-SQL bulk import. Now thin (just a WHERE) because aliases are canonicalised in place; pre-Sprint-14 it carried a full CASE-expression alias map.
 

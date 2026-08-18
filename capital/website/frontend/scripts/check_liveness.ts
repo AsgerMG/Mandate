@@ -81,10 +81,10 @@ async function main() {
     problems.push({
       axis: "etl projection",
       detail: onDisk
-        ? "data/liveness.json is STALE — the ETL is judging liveness by an older " +
+        ? "reference/liveness.json is STALE — the ETL is judging liveness by an older " +
           "rule than the product, so the funds it withholds are not the funds " +
           "the product hides. Run: npx tsx scripts/emit_liveness.ts"
-        : "data/liveness.json is missing — ETL/lib/liveness.py cannot start. " +
+        : "reference/liveness.json is missing — ETL/lib/liveness.py cannot start. " +
           "Run: npx tsx scripts/emit_liveness.ts",
     });
   }
@@ -113,7 +113,7 @@ async function main() {
           `(${unanswered.slice(0, 5).map((r) => r.id).join(", ")}${
             unanswered.length > 5 ? ", …" : ""}). Nobody has asked whether their ` +
           `register states an application window, so every fallback copy withholds ` +
-          `them. Declare their feed in data/reference/source_window_policy.json and ` +
+          `them. Declare their feed in reference/source_window_policy.json and ` +
           `run: python3 ETL/terms/assign_source_window_policy.py --write`,
       });
     }

@@ -214,7 +214,7 @@ async function main() {
   //
   // Closed 2026-08-08. The fact is now RECORDED per row at ETL time as
   // `source_window_policy` -- see lib/intelligence/liveness.ts and
-  // data/reference/source_window_policy.json -- so a copy carries it however
+  // reference/source_window_policy.json -- so a copy carries it however
   // far behind it has fallen. Re-measured the same day:
   //
   //   copy                                 offered  withheld  DEAD OFFERED

@@ -23,6 +23,7 @@ for _anc in _Path(__file__).resolve().parents:
 from etl_env import ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
+import collections
 import subprocess
 import sys
 from pathlib import Path
@@ -205,6 +206,39 @@ def guards() -> list[str]:
     return failed
 
 
+def run_step(step: list[str]) -> tuple[int, str]:
+    """Run one step, streaming it, and keep the last line it said on stderr.
+
+    ── Why the tail travels ───────────────────────────────────────────────
+    On 2026-08-16 `classify_taxonomy.py` exited 1 and the census recorded
+    `failed at classify_taxonomy.py (rc=1)`. That is the whole record: Railway
+    deletes the container's logs with the container, so the traceback was gone,
+    the step is one of four invocations of the same script, and WHICH of the
+    four -- and why -- could not be recovered from anything that survived. It
+    took a reproduction of the image to learn that the answer was one line:
+    `FileNotFoundError: reference/activity_codebook.json`.
+
+    So the last line goes into the census's `run_outcome`, which lands in the
+    Postgres the website already reads. stdout is untouched and stderr is
+    echoed as it arrives, so the live log is exactly what it was; the only
+    change is that a run that dies at 03:00 on a Sunday now says what killed
+    it somewhere that outlives the container.
+    """
+    proc = subprocess.Popen(step, stderr=subprocess.PIPE, text=True, bufsize=1)
+    tail: collections.deque[str] = collections.deque(maxlen=4)
+    assert proc.stderr is not None
+    for line in proc.stderr:
+        sys.stderr.write(line)
+        if line.strip():
+            tail.append(line.rstrip())
+    sys.stderr.flush()
+    proc.wait()
+    # The last non-empty line, which for an uncaught exception is the exception
+    # itself. Bounded, because run_outcome is read by a human in a guard's
+    # output and a 200-line traceback there helps nobody.
+    return proc.returncode, (tail[-1][:300] if tail else "")
+
+
 partial = []
 for step in STEPS:
     print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
@@ -219,31 +253,35 @@ for step in STEPS:
     # it and never finished. That is the fact that used to exist only as an exit
     # code in a log Railway deletes with the container.
     with corpus_marks.mark(label, "railway_cron.py") as report:
-        result = subprocess.run(step)
+        returncode, why = run_step(step)
         matched = next(((name, rc) for name, rc in PARTIAL_OK.items()
                         if any(name in part for part in step)), None)
-        tolerated = bool(matched) and result.returncode == matched[1]
-        report(corpus_marks.OK if result.returncode == 0 else
+        tolerated = bool(matched) and returncode == matched[1]
+        report(corpus_marks.OK if returncode == 0 else
                corpus_marks.PARTIAL if tolerated else corpus_marks.FAILED,
-               f"rc={result.returncode}")
-    if result.returncode == 0:
+               f"rc={returncode}" + (f": {why}" if why and returncode else ""))
+    if returncode == 0:
         continue
     if tolerated:
-        print(f"=== PARTIAL: {' '.join(step)} (rc={result.returncode}) — "
+        print(f"=== PARTIAL: {' '.join(step)} (rc={returncode}) — "
               f"continuing with what published ===", flush=True)
         # Name the SCRIPT, not whatever happened to be second-from-last in the
         # argv. A two-element step reported "python3" as the partial, which is
         # a summary line that tells nobody which step half-worked.
         partial.append(matched[0])
         continue
-    print(f"=== FAILED: {' '.join(step)} (rc={result.returncode}) ===", flush=True)
+    print(f"=== FAILED: {' '.join(step)} (rc={returncode}) ===", flush=True)
     # No guards on this path, deliberately. The pipeline stopped part-way, so
     # the corpus is half-built and a guard's verdict on it would be a true
     # statement about a state that never ships. The census still goes out
     # carrying the failure, and check_verdicts.ts then reports every guard as
     # STALE against it -- which is the accurate description of what happened.
-    census(f"failed at {Path(step[1]).name} (rc={result.returncode})")
-    sys.exit(result.returncode)
+    # `label`, not the script name: three steps here are the same script with
+    # different subcommands, and "failed at classify_taxonomy.py" named all
+    # three at once. Plus what it said, for the reason run_step explains.
+    census(f"failed at {label} (rc={returncode})"
+           + (f": {why}" if why else ""))
+    sys.exit(returncode)
 
 # Guards BEFORE the census, so the census stays the last thing written and keeps
 # dating the run. A guard failure does not stop this: see GUARDS above.

@@ -91,7 +91,7 @@ GISCO_NUTS_DIR = ROOT / "data" / "raw" / "gisco_nuts"
 POSTCODE_FILE = (ROOT / "data" / "raw" / "gisco_postcode_nuts"
                  / "PCODE_2025_NUTS-2024_v2.0.csv")
 
-# NUTS 2024 is current and is what data/reference/nuts_regions.json already
+# NUTS 2024 is current and is what reference/nuts_regions.json already
 # uses. The older vintages are consulted ONLY for names 2024 no longer carries,
 # because the register keeps publishing some of them, and every resolution
 # records which vintage answered so a stale hit is visible rather than silent.
@@ -350,7 +350,7 @@ def main() -> None:
     ap.add_argument("--calibrate", action="store_true",
                     help="measure the register's region against recipients' postcodes")
     ap.add_argument("--refresh-reference", action="store_true",
-                    help="rebuild data/reference/nuts_names.json from data/raw/gisco_nuts")
+                    help="rebuild reference/nuts_names.json from data/raw/gisco_nuts")
     args = ap.parse_args()
 
     if args.refresh_reference:

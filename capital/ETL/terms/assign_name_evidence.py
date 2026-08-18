@@ -1,5 +1,5 @@
 """Write `name_source` for families whose name is a mechanical re-casing of
-their own id, from the declarations in data/reference/family_name_evidence.json.
+their own id, from the declarations in reference/family_name_evidence.json.
 
 ── Why a script and not just the rebuild ─────────────────────────────────
 populate_funding_instruments.py writes this column on every run, and it FAILS

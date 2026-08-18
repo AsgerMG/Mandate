@@ -3,7 +3,7 @@
 The State Aid Transparency Register publishes the beneficiary's region as a
 NAME ("Arr. Liege", "Vlaams Gewest", "Oberösterreich"), on all 122,814 rows.
 Turning that into a NUTS id is a lookup in Eurostat's own name register
-(data/reference/nuts_names.json, levels 0-3, four vintages) rather than a rule
+(reference/nuts_names.json, levels 0-3, four vintages) rather than a rule
 with an error rate.
 
 This module exists because two consumers needed the same lookup and a copy in
@@ -27,7 +27,7 @@ from pathlib import Path
 from etl_env import ROOT
 from europe_scope import name_to_iso2
 
-NAMES_FILE = ROOT / "data" / "reference" / "nuts_names.json"
+NAMES_FILE = ROOT / "reference" / "nuts_names.json"
 
 # Eurostat writes EL for Greece and UK for the United Kingdom; everything else
 # in this product is keyed by ISO2. Resolved here exactly as emit_regions.py
@@ -59,7 +59,7 @@ def load_reference(path: Path | None = None) -> dict:
     return json.loads(p.read_text())
 
 
-REGIONS_FILE = ROOT / "data" / "reference" / "nuts_regions.json"
+REGIONS_FILE = ROOT / "reference" / "nuts_regions.json"
 
 
 def subnational_names(path: Path | None = None) -> set[str]:

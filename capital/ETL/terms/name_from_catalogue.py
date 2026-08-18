@@ -51,8 +51,8 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent))
 from seed_agency_routes import AGENCIES  # noqa: E402
 
 MANIFEST = ROOT / "data" / "raw" / "agency_catalogues" / "manifest.json"
-PROPOSALS = ROOT / "data" / "reference" / "programme_names_proposed.json"
-CURATED = ROOT / "data" / "reference" / "programme_names.json"
+PROPOSALS = ROOT / "reference" / "programme_names_proposed.json"
+CURATED = ROOT / "reference" / "programme_names.json"
 
 MODEL = "claude-sonnet-5"
 

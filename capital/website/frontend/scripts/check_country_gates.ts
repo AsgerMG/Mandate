@@ -1,7 +1,7 @@
 /**
  * A country-typed comparator must name a country the corpus recognises.
  *
- * FREE — no model calls, no cache. It reads `data/europe_scope.json`, the same
+ * FREE — no model calls, no cache. It reads `reference/europe_scope.json`, the same
  * file `ETL/lib/europe_scope.py` reads, so the vocabulary is READ by both
  * languages and restated by neither.
  *
@@ -61,7 +61,7 @@ const COUNTRY_FIELDS = new Set(["entityCountries", "activityCountries"]);
 
 /** The canon, read from the file ETL reads. Never restated here. */
 function corpusCountryNames(): Set<string> {
-  const p = path.resolve(__dirname, "../../../data/europe_scope.json");
+  const p = path.resolve(__dirname, "../../../reference/europe_scope.json");
   const scope = JSON.parse(readFileSync(p, "utf8")) as {
     countries: { iso2: string; name: string }[];
   };

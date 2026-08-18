@@ -69,7 +69,7 @@ const tape = startTape();
 
 const ROOT = join(__dirname, "..", "..", "..");
 const CACHE = join(ROOT, "data", "applicant_identity.json");
-const CALIBRATION = join(ROOT, "data", "reference", "applicant_identity_calibration.json");
+const CALIBRATION = join(ROOT, "reference", "applicant_identity_calibration.json");
 
 /** One entry of `cases` in the calibration file: the verbatim gate text, the
  *  verdict it must draw, and the reason the case is held. `why` is not

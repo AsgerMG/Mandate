@@ -221,7 +221,7 @@ def cmd_sql(conn: sqlite3.Connection, out: str) -> None:
           f"({len(vetoed)} companies, {len(changed)} instruments)")
 
 
-EVIDENCE = ROOT / "data" / "reference" / "instrument_recipient_activity.json"
+EVIDENCE = ROOT / "reference" / "instrument_recipient_activity.json"
 MAX_ACTIVITIES = 12
 
 

@@ -2,7 +2,7 @@
  * Project the liveness rule to JSON so the Python ETL and its SQL read the SAME
  * definition the product uses, instead of four hand-copies.
  *
- * FREE. Writes data/liveness.json at the repo root.
+ * FREE. Writes reference/liveness.json at the repo root.
  *
  * The rule used to live in five places at once — publishableInstruments(),
  * live_ids(), measure_country_class.ts, emit_peer_prior.py and
@@ -23,7 +23,7 @@ import {
   RENEWAL_EVIDENCE_HORIZON_YEARS, SCHEME_END_BASIS, SOURCE_WINDOW_POLICY, closedSql,
 } from "../lib/intelligence/liveness";
 
-export const OUT = resolve(process.cwd(), "../../data/liveness.json");
+export const OUT = resolve(process.cwd(), "../../reference/liveness.json");
 
 export function build(): string {
   return JSON.stringify({

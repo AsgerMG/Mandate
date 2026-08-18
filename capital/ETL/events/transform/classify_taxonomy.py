@@ -378,11 +378,11 @@ NACE_TIER: list[tuple[str, str, str]] = [
 # content producer into a software company.
 
 # ── The codebook itself lives in ONE file both languages read ────────────────
-# data/reference/activity_codebook.json. `check_sector_evidence.ts` states the
+# reference/activity_codebook.json. `check_sector_evidence.ts` states the
 # same property over the published corpus, and a second copy of these fragments
 # is exactly the defect a "keep in sync" comment announces rather than prevents.
 _CODEBOOK = json.loads(
-    (ROOT / "data" / "reference" / "activity_codebook.json").read_text(encoding="utf-8"))
+    (ROOT / "reference" / "activity_codebook.json").read_text(encoding="utf-8"))
 
 # Official activity descriptors that NAME a specific activity with no
 # technology, science or engineering dimension: content and media production,

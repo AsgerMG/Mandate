@@ -470,6 +470,16 @@ jobs:
       - name: The census can run in the ETL image
         run: python3 ETL/schema/check_census_imports.py
 
+      # ...and so must every other step the weekly cron runs. wsCZ committed
+      # data/reference/activity_codebook.json on 2026-08-10; classify_taxonomy.py
+      # reads it at module level; data/ is the Railway volume and git ignores it
+      # whole, so the file has never existed where the cron runs. The 2026-08-16
+      # run raised FileNotFoundError before its first statement and railway_cron
+      # exited, skipping six steps and all four guards. Three days of no refresh,
+      # and nothing said so. Hermetic: imports under an audit hook.
+      - name: The cron can read, in the image, what it reads at import
+        run: python3 ETL/schema/check_cron_image_inputs.py
+
       # A verdict must be inseparable from the bar it was computed against.
       # Census #11 published "eligibility 898, down from a high of 913" while
       # this repo's coverage_baseline.json says 937 -- fe75156a raised thirteen

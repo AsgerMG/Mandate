@@ -187,7 +187,7 @@
    "code": [
     "ETL/terms/check_offerable_decay.py",
     "ETL/lib/liveness.py",
-    "data/reference/offerable_baseline.json"
+    "reference/offerable_baseline.json"
    ],
    "command": [
     "python3",
@@ -289,8 +289,8 @@
    "code": [
     "website/frontend/scripts/check_applicant_identity.ts",
     "data/applicant_identity.json",
-    "data/reference/applicant_identity_calibration.json",
-    "data/reference/applicant_identity_repairs.json",
+    "reference/applicant_identity_calibration.json",
+    "reference/applicant_identity_repairs.json",
     "ETL/terms/repair_applicant_identity.py"
    ],
    "refresh": "cd website/frontend && npx tsx scripts/check_applicant_identity.ts",
@@ -406,7 +406,7 @@
    "since": "2026-08-12",
    "review": "2026-08-26",
    "failure": "10 comparator\\(s\\) decide a founder against a rule their answer does not determine",
-   "reason": "Ten real encodings: eight jurisdiction rules turning on China, Norway, Denmark, Spain and Peru against questions that name no country, and two ownership rules asked at 25% while the rule turns on 40% and 12.5%. A founder answers truthfully and loses a fund that admits them. The corrections belong in data/reference/gate_encoding_overrides.json — a direct UPDATE is reverted by the next encode pass — and applying them is a Postgres write plus a snapshot republish. Queued in AWAITING_APPROVAL.md."
+   "reason": "Ten real encodings: eight jurisdiction rules turning on China, Norway, Denmark, Spain and Peru against questions that name no country, and two ownership rules asked at 25% while the rule turns on 40% and 12.5%. A founder answers truthfully and loses a fund that admits them. The corrections belong in reference/gate_encoding_overrides.json — a direct UPDATE is reverted by the next encode pass — and applying them is a Postgres write plus a snapshot republish. Queued in AWAITING_APPROVAL.md."
   },
   "country gates": {
    "class": "defect",
@@ -455,6 +455,14 @@
    "review": "2026-08-22",
    "failure": "DEGRADED — (applicant_identity|census) last reported failed",
    "reason": "The readout of the eleven credentialled guards, so it is red whenever any of them is — today applicant_identity and the census, both owned above. Underneath it is a structural fact wsHC measured and this run confirms: all 783 rows in guard_verdicts say produced_by=local. The container has NEVER published a verdict, so the credential-free door CI reads has been dark since the day it was built. The redeploy is in AWAITING_APPROVAL.md."
+  },
+  "both stores agree": {
+   "class": "corpus-state",
+   "owner": "the publish \u2014 the same republish `corpus currency` is waiting on",
+   "since": "2026-08-18",
+   "review": "2026-09-01",
+   "failure": "^live:\\s+[a-z0-9_|]+$",
+   "reason": "Postgres moved and the committed snapshot did not. It was green at 21:18 on 2026-08-18 and red at 21:50, and it is red on main with no branch in the way \u2014 verified by running check_hydration_parity.ts in the primary checkout. Three archetypes now rank differently on the two paths and one fund leaves the pool for a reason that is not the degradation policy. Same cause and same fix as `corpus currency`, which is already held here: `make eligibility` plus a profile rebuild, a production step. Recorded by wsHU because a full suite run observed it, not caused by one."
   }
  },
  "suite_tiers": {
@@ -695,6 +703,11 @@
   "every committed artifact can be rebuilt": {
    "tier": "report",
    "protects": "A committed artifact with no provable producer cannot be rebuilt, so when it goes wrong there is nothing to regenerate it from. Real, and today's five are answer keys and pinned fixtures nobody is served from — it belongs in a report."
+  }
+  ,
+  "the cron can read what it imports": {
+   "tier": "corpus",
+   "protects": "The corpus of record. A cron step that reads a committed data/ path at import cannot start in the container — data/ is the mounted volume and git ignores the tree whole — and railway_cron.py exits on it, so the load, the classifier, the sanity check, both window refreshes and all four guards are skipped and the weekly refresh stops without a word. It stopped on 2026-08-16 and ran three more days before anybody asked why."
   }
  }
 }

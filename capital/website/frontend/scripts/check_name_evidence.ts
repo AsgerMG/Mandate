@@ -86,7 +86,7 @@ async function main() {
       }
       console.error(
         "    They are declared `partition_key` in " +
-        "data/reference/family_name_evidence.json and must be withheld by\n" +
+        "reference/family_name_evidence.json and must be withheld by\n" +
         "    registerNamesTheRow() in publishableInstruments(). If that filter " +
         "was removed, restore it;\n" +
         "    if the declaration is wrong, fix it there, with the extractor line " +

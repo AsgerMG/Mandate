@@ -253,6 +253,12 @@ const CHECKS = [
    ["python3", "../../ETL/schema/check_guard_reachability.py"]],
   ["every committed artifact can be rebuilt",
    ["python3", "../../ETL/schema/check_artifact_reachability.py"]],
+  // The weekly ETL died on 2026-08-16 reading a committed file that has never
+  // existed where it runs, and stayed dead for three days: the corpus of record
+  // stopped being refreshed and nothing in this suite could tell. It imports
+  // every script the cron names, with every tracked data/ path made unreadable.
+  ["the cron can read what it imports",
+   ["python3", "../../ETL/schema/check_cron_image_inputs.py"]],
   ["regions match NUTS", ["npx", "tsx", "scripts/check_regions.ts"]],
   ["theme index is not stale", ["npx", "tsx", "scripts/check_theme_index.ts"]],
   // The base rate the SELECTOR IS TOLD. A stale curve here does not degrade a

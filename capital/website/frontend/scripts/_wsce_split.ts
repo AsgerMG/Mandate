@@ -14,7 +14,7 @@
 //
 // This is a property with a test for unseen cases, not a register. It names no
 // fund, no country, no sector and no band. The domains are READ from
-// data/vocabularies.json and data/reference/ at run time, and each banded
+// data/vocabularies.json and reference/ at run time, and each banded
 // field's numeric dimension and span are derived by PARSING ITS OWN LIVE BAND
 // LABELS — so a reband moves this file's answers without editing this file.
 // That is exactly the property the Innovate UK defect violated: a frozen band
@@ -52,8 +52,8 @@ const BAND_BOUNDS: Record<string, number | null> = VOCAB.bandBounds;
 const ENUM_VALUES: Record<string, string[]> = VOCAB.enumValues;
 
 // ── the live geographic closed sets ─────────────────────────────────────────
-const NUTS = JSON.parse(readFileSync(`${ROOT}/data/reference/nuts_regions.json`, "utf8"));
-const NUTS_NAMES = JSON.parse(readFileSync(`${ROOT}/data/reference/nuts_names.json`, "utf8"));
+const NUTS = JSON.parse(readFileSync(`${ROOT}/reference/nuts_regions.json`, "utf8"));
+const NUTS_NAMES = JSON.parse(readFileSync(`${ROOT}/reference/nuts_names.json`, "utf8"));
 const NUTS_IDS = new Set<string>();
 const NUTS_NAME_TOKENS = new Set<string>();
 (function harvestNuts() {

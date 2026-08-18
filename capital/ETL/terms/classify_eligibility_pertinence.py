@@ -142,7 +142,7 @@ CACHE = ROOT / "data" / "eligibility_pertinence.json"
 #: Known-answer cases, judged in the same pass and into the same cache as the
 #: live corpus so the classifier is measured on exactly the path it runs on.
 #: The check asserts these; see the file's own _why_not_a_word_list.
-CALIBRATION = ROOT / "data" / "reference" / "pertinence_calibration.json"
+CALIBRATION = ROOT / "reference" / "pertinence_calibration.json"
 MODEL = "claude-opus-5"
 #: Rows per model call. Small enough that one bad row cannot cost a whole
 #: chunk, large enough that the instruction is amortised. Gate requirements are
@@ -273,7 +273,7 @@ def save_cache(cache: dict) -> None:
             "website/frontend/scripts/check_gate_pertinence.ts, which FAILS THE BUILD "
             "on a filter gate whose current text has no verdict here. Do not hand-edit "
             "a verdict: correct the text, or record the case in "
-            "data/reference/gate_role_overrides.json where the reasoning lives."),
+            "reference/gate_role_overrides.json where the reasoning lives."),
         "_property": PROPERTY.replace("\n", " "),
         "_property_version": PROPERTY_VERSION,
         "_versions": (

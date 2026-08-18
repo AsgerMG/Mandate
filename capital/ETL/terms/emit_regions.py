@@ -1,6 +1,6 @@
 """Generate the frontend's region module from the NUTS reference data.
 
-data/reference/nuts_regions.json is the source of truth (Eurostat GISCO, NUTS
+reference/nuts_regions.json is the source of truth (Eurostat GISCO, NUTS
 2024). The frontend cannot import from outside its own tree, so the list is
 generated into lib/intelligence/regions.generated.ts rather than hand-copied —
 a hand-copied vocabulary drifts, and when it drifts nothing fails: the encoder
@@ -24,10 +24,10 @@ from etl_env import ROOT  # noqa: E402
 
 import json  # noqa: E402
 
-SRC = ROOT / "data" / "reference" / "nuts_regions.json"
+SRC = ROOT / "reference" / "nuts_regions.json"
 OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "regions.generated.ts"
 
-HEADER = '''// GENERATED from data/reference/nuts_regions.json — do not edit by hand.
+HEADER = '''// GENERATED from reference/nuts_regions.json — do not edit by hand.
 // Source: Eurostat GISCO, NUTS 2024. Regenerate with
 // `python3 ETL/terms/emit_regions.py`; check_regions.ts fails the build if
 // this file and the reference data disagree.

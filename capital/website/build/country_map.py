@@ -43,7 +43,7 @@ OUT_PATH = str(SITE_DATA / "country_map.json")
 SCOPE_PATH = str(DATA / "europe_scope.json")
 
 # Single source of truth for the corpus's Europe scope. See docs/europe_scope.md
-# for the rationale. Edit data/europe_scope.json — not this file — to change.
+# for the rationale. Edit reference/europe_scope.json — not this file — to change.
 with open(SCOPE_PATH) as _f:
     _SCOPE = json.load(_f)
 

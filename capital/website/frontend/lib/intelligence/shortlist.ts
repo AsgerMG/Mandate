@@ -1385,7 +1385,7 @@ export function fundDescriptor(inst: DbInstrument): string {
  * ambiguous row, they never see the programme at all.
  *
  * Where a real programme name exists it is already the row's name (see
- * data/reference/programme_names.json). Where an agency publishes none, the
+ * reference/programme_names.json). Where an agency publishes none, the
  * distinguishing identifier the corpus does hold is used, in descending order
  * of how much it tells a reader: the notified scheme code, then the fragment
  * of the instrument's own id that its same-named siblings do not share, then

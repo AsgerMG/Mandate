@@ -93,7 +93,7 @@ truncated description and the url — strictly less than the React payload, and
 it states no deadline at all. It is not used.
 
 ── The one thing a loader MUST do first, or it ships a false claim ────────
-`data/reference/source_window_policy.json` declares, for all of Norway:
+`reference/source_window_policy.json` declares, for all of Norway:
 
     {"match": {"source_family_bucket": "national_dev_banks", "country": "NO"},
      "policy": "publishes_no_window"}

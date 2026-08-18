@@ -15,7 +15,7 @@ encode_gates.py triages every gate with a paid model call and writes gate_role
 directly, so a correction made in the database is silently reverted the next
 time triage runs. This puts the corrections back, from TWO sources:
 
-  1. data/reference/gate_role_overrides.json -- hand corrections, one entry per
+  1. reference/gate_role_overrides.json -- hand corrections, one entry per
      gate, each carrying the reasoning for that specific case. Read the file.
   2. data/eligibility_pertinence.json -- the pertinence verdicts, keyed by a
      digest of the requirement TEXT. Any deciding gate whose text was judged a
@@ -61,8 +61,8 @@ import os  # noqa: E402
 import re  # noqa: E402
 import sqlite3  # noqa: E402
 
-SRC = ROOT / "data" / "reference" / "gate_role_overrides.json"
-ENCODINGS = ROOT / "data" / "reference" / "gate_encoding_overrides.json"
+SRC = ROOT / "reference" / "gate_role_overrides.json"
+ENCODINGS = ROOT / "reference" / "gate_encoding_overrides.json"
 PERTINENCE = ROOT / "data" / "eligibility_pertinence.json"
 
 #: Where a gate goes when its text is a report rather than a condition. Not a

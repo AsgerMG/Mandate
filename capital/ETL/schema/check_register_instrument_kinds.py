@@ -2,7 +2,7 @@
 published it, and no kind a register publishes may vanish from the corpus.
 
 HERMETIC: three committed files -- the register's own words
-(data/reference/register_instruments.json), our decision
+(reference/register_instruments.json), our decision
 (SATR_INSTRUMENT_MAP in ETL/events/load/populate_funding_instruments.py) and
 the shipped corpus snapshot
 (website/frontend/public/data/instrument_terms.json). No database, no network,
@@ -60,7 +60,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-REFERENCE = ROOT / "data/reference/register_instruments.json"
+REFERENCE = ROOT / "reference/register_instruments.json"
 POPULATE = ROOT / "ETL/events/load/populate_funding_instruments.py"
 SNAPSHOT = ROOT / "website/frontend/public/data/instrument_terms.json"
 
