@@ -440,6 +440,79 @@ export const SELECT_KEEP = depthLever("AGENT_SELECT_KEEP", 3, { min: 0 });
  * reads a typo as its default reports the control's number under the
  * treatment's name.
  */
+/**
+ * ── SHOULD THE PROMPT SAY WHAT `mostly X` IS? (wsIB) — PROPOSED, OFF ──────
+ *
+ * OFF BY DEFAULT AND IT MUST STAY OFF UNTIL SOMEBODY BUYS THE MEASUREMENT.
+ * Nothing free can decide this: it changes the bytes the model reads, so every
+ * tape on disk answers a different question.
+ *
+ * ── The observation, and it is not the one wsIB was sent to find ──────────
+ * I was asked whether the prompt's sector disqualifier should say "unrelated"
+ * rather than "another". IT DOES NOT SAY EITHER. There is no descriptor
+ * disqualifier in this prompt. Read the block below: the only sector sentence
+ * is a TIE-BREAK about the TITLE ("where two are equally good, prefer the one
+ * whose title is specific to what this company does"), and it disqualifies
+ * nothing. The phrase "a descriptor naming another sector" exists only in this
+ * file's own comments and in four measurement scripts, all of which attributed
+ * it to the prompt. That is the defect wsIB closed, and it makes the prompt
+ * change I was asked to propose unnecessary: there is no wrong word to fix.
+ *
+ * ── What IS wrong, and it is the opposite shape ───────────────────────────
+ * Every row prints `mostly X`, and THE LEGEND BELOW DOES NOT MENTION IT. Six
+ * bullets explain the title, the body, the cheque, the year, the qualification
+ * line and the row-specific requirement. The descriptor is not among them, so
+ * the model meets an unexplained one-word sector label on every row and has to
+ * decide for itself what it means. The reasoning wsDS paid for says what it
+ * decided:
+ *
+ *   bunq   "only #2 and #4 explicitly match the software and AI sector"
+ *   Neura  "that's just three options when I need six distinct picks"
+ *
+ * It read the label as a RESTRICTION. It is not one. `sectorClause` renders the
+ * single largest bucket of a distribution, and only when that bucket clears
+ * `FOCUS_SHARE`; the median top share is 0.47, so `mostly X` typically means
+ * "X is the biggest slice of a fund that also funds several other things".
+ * Measured on the answer key: the founder's own sector is the largest bucket of
+ * the fund they actually WON on 26 of 78 founders. A model filtering on that
+ * label discards the right answer two times in three, which is the same
+ * arithmetic that broke the ruler — the model was simply making the ruler's
+ * mistake first.
+ *
+ * ── The proposal, and why it is a LEGEND line and not a new rule ──────────
+ * `explain` adds one bullet to the block that explains the other six. It states
+ * what the number is and does not tell the model what to conclude from it,
+ * because a sentence telling the model to discount the descriptor would be this
+ * file's own named defect: an instruction written to move a metric rather than
+ * to describe the page.
+ *
+ * ── The cheaper alternative, and whoever buys this should sweep both ──────
+ * `ROW_DESCRIPTOR=share` already exists in `shortlist.ts` and renders
+ * "47% software & AI" instead of "mostly software & AI". It states the number
+ * on the row itself and needs no prose at all. It is the stronger arm on
+ * priors, because a legend can be skimmed past and a number on the row cannot,
+ * and it is the one to sweep first.
+ *
+ * ── What would falsify the whole idea ─────────────────────────────────────
+ * If the model's picks are already indifferent to the descriptor, this changes
+ * nothing and costs tokens. That is checkable on a tape for free and it has not
+ * been done: grade picks against the row's descriptor and see whether a row
+ * whose descriptor matches the founder is likelier to be picked than one whose
+ * descriptor does not, holding the shipped rank fixed. If the enrichment is
+ * near 1.0, do not buy this.
+ */
+const SECTOR_NOTES = ["off", "explain"] as const;
+export type SectorNote = (typeof SECTOR_NOTES)[number];
+export const SECTOR_NOTE: SectorNote = (() => {
+  const raw = process.env.AGENT_SELECT_SECTOR_NOTE ?? "off";
+  if (!SECTOR_NOTES.includes(raw as SectorNote)) {
+    throw new Error(
+      `AGENT_SELECT_SECTOR_NOTE must be one of ${SECTOR_NOTES.join("|")}, got "${raw}". ` +
+      `Read once at module scope so a typo cannot read as "off".`);
+  }
+  return raw as SectorNote;
+})();
+
 const COUNT_MODES = ["exactly", "atMost"] as const;
 export type SelectCountMode = (typeof COUNT_MODES)[number];
 export const SELECT_COUNT_MODE: SelectCountMode = (() => {
@@ -1803,6 +1876,15 @@ wasted and is not left empty: it keeps the empirical ranker's own choice, which
 is what ships without you. So naming a scheme you have just judged wrong is
 strictly worse than naming fewer. If two of these deserve a place, name two.`
     : "";
+  // wsIB, off by default. One legend line for a label the legend never
+  // explained. See SECTOR_NOTE above for what it is and what would falsify it.
+  const sectorNote = SECTOR_NOTE === "explain"
+    ? `
+  * where a row says "mostly X", X is simply the largest single sector in what
+    that scheme has already paid for — usually under half of it. It is a
+    description of the scheme's past recipients, not a restriction on who may
+    apply, and a scheme is not ruled out by it`
+    : "";
   const framing = keep > 0
     ? `An empirical ranker has already claimed the top ${keep} place${keep === 1 ? "" : "s"} on this
 company's shortlist, and those are settled -- they are not shown below and they
@@ -1923,7 +2005,7 @@ own rule-by-rule read of this company's answers against it:
     "nothing we can check rules them out" is not approval — most schemes have
     far more rules than we hold — and "no encoded rule could be evaluated" is
     ignorance, not a fault. A named obstacle IS a fault, and a real one.
-  * any requirement that is specific to it rather than shared with the whole list
+  * any requirement that is specific to it rather than shared with the whole list${sectorNote}
 
 Judge fit on substance:
   * a scheme whose typical cheque is an order of magnitude away from what this
