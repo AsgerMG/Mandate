@@ -273,3 +273,47 @@ One brief per run, on the deployment's own quota. The cost line
 served to the client: per-request unit economics on a public unauthenticated
 endpoint is a disclosure, and the route boundary is not the place to fix it.
 Read it with `vercel logs <deployment>` while a run is in flight.
+
+---
+
+## RUN 2 — 2026-08-18 19:35, after wsHR merged. Two fixes confirmed, two new defects.
+
+Same founder, same deployment, `source POSTGRES / 1088 / observedAt 19:35:06Z`.
+
+**Confirmed live, and this is what "seen in production" is for:**
+
+- `row names   ok — none of 7 reveals an instrument id`. wsHR's fix is in front
+  of founders. Rows 4-7 now read as real scheme titles with real qualifiers —
+  `· via Conseil régional Occitanie`, `· via REGION GRAND EST`, `· Grants ·
+  via Conseil régional` — where run 1 printed
+  `· rnd  sa 111728  ministere de l economie et des finances ·`.
+- All 7 links resolve 200.
+
+**Still broken, and now visibly so — this is wsHQ's:**
+
+Published row 4 is `SA.40453`, and its own title says what it is:
+
+> *Régime cadre exempté de notification relatif aux aides en faveur des PME
+> pour **la période 2014-2020*** · via Conseil régional Occitanie
+
+Offered as `open (7 encoded filters evaluated)`, EUR 980,817 typical award, live
+link. **The row now honestly announces that its period ended six years ago and
+we publish it anyway.**
+
+**NEW — the memo prints a raw internal identifier to the founder.** Bottom line,
+bullet 2, verbatim:
+
+> *"Start with the Grand Est regional scheme
+> (`satr_fr_rnd__sa_111728__region_grand_est`): it is delivered by REGION GRAND
+> EST, which is your own region…"*
+
+wsHR removed the id from the row NAMES. The writer puts it back in its own
+prose, in the first thing a founder reads. Nothing offline sees this: the rows
+are clean and the guard that checks them passes.
+
+**NEW — `prodcheck`'s bullet matcher gives a false negative.** It annotated that
+same bullet `[names no row on the table]`, and the bullet contains row 6's exact
+instrument id. It matches on display name only. wsHR fixed the published-rank
+matcher for exactly this class and the bullet matcher was left on the old basis —
+**so the instrument that reads production has the same defect twice, once fixed
+and once not.**
