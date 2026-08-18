@@ -319,6 +319,52 @@ function report(tape: string) {
   console.log(`  failures  ${sOff}   FORCED ${sForced} (${pct(sForced, sOff)})   ELECTIVE ${sElect} (${pct(sElect, sOff)})`);
   console.log(`  generous  ${totOff}   FORCED ${totForced} (${pct(totForced, totOff)})   ELECTIVE ${totElective} (${pct(totElective, totOff)})`);
 
+
+  // ── 9. THE RULER ON THE GROUND TRUTH ────────────────────────────────────
+  // Everything above grades picks against two rules reconstructed from the
+  // prompt. The one row on the menu we KNOW is right is the fund the company
+  // actually won. If the ruler disqualifies THAT, then a pick "failing the
+  // prompt's own rules" is not evidence the pick is wrong, and the headline
+  // rate is measuring the ruler.
+  const grad = cases.filter((c) => c.wonIdx != null);
+  const wonSurv = grad.filter((c) => c.survivors.has(c.wonIdx!)).length;
+  const strictCases2 = analyse(tape, true);
+  const wonSurvStrict = strictCases2.filter((c) => c.wonIdx != null && c.survivors.has(c.wonIdx!)).length;
+  const declinedWon = grad.filter((c) => c.r.picks.includes(c.wonIdx!) && !c.survivors.has(c.wonIdx!)).length;
+  console.log(`\n9. WOULD THE RULER DISQUALIFY THE FUND THE COMPANY ACTUALLY WON?`);
+  console.log(`  founders whose won fund is on the menu           ${grad.length}`);
+  console.log(`  ...whose won fund SURVIVES both rules            ${wonSurv} (${pct(wonSurv, grad.length)})`);
+  console.log(`  ...whose won fund FAILS at least one             ${grad.length - wonSurv} (${pct(grad.length - wonSurv, grad.length)})`);
+  console.log(`  ...same, under the STRICT reading                ${wonSurvStrict} survive (${pct(wonSurvStrict, grad.length)})`);
+  console.log(`  the model PICKED the won fund and the ruler`);
+  console.log(`    calls that pick a failure                      ${declinedWon}`);
+  console.log(`  Every one of those ${declinedWon} is a seat \`atMost\` would invite the model to`);
+  console.log(`  decline, on the row that was the right answer.`);
+  // Named cases, because a rate this size is either a real finding or a broken
+  // regex and only the rendered rows can tell you which.
+  console.log(`\n  the first few, with the rule that killed them and the row as the model read it`);
+  let shown = 0;
+  for (const c of grad) {
+    if (c.survivors.has(c.wonIdx!) || shown >= 4) continue;
+    const first = c.r.turns.find((t) => t.round === 1)!;
+    const cand = rowsOf(first.prompt).find((x) => x.i === c.wonIdx);
+    if (!cand) continue;
+    shown++;
+    const floor = BAND_FLOOR[c.r.ticketBand];
+    const theme = SECTOR_WORD[c.r.sector];
+    const m = money(cand.block);
+    const dm = /mostly ([^·\n]+)/.exec(cand.block);
+    const why = [
+      floor !== undefined && m !== null && m < floor / 10
+        ? `MONEY: typical EUR ${m.toLocaleString()} against a band floor/10 of EUR ${(floor / 10).toLocaleString()}` : "",
+      dm && theme && dm[1].trim() !== theme
+        ? `THEME: the founder is "${theme}", the row is "${dm[1].trim()}"` : "",
+    ].filter(Boolean);
+    console.log(`    ${c.r.company} won ${c.r.won}`);
+    for (const w of why) console.log(`      ${w}`);
+    console.log(`      ${cand.block.split("\n")[0].slice(0, 96)}`);
+  }
+
   // ── 8. THE CASES THAT DECIDE IT ─────────────────────────────────────────
   console.log(`\n8. FOUNDERS WITH NO SEAT PRESSURE AT ALL AND OFF-LIST PICKS ANYWAY`);
   const ample = cases.filter((c) => c.survivors.size >= SELECT_COUNT);

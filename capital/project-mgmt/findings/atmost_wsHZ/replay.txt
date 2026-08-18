@@ -70,6 +70,32 @@ indicative_wsHO · 78 called founder(s) with a transcript
   failures  365   FORCED 242 (66.3%)   ELECTIVE 123 (33.7%)
   generous  264   FORCED 69 (26.1%)   ELECTIVE 195 (73.9%)
 
+9. WOULD THE RULER DISQUALIFY THE FUND THE COMPANY ACTUALLY WON?
+  founders whose won fund is on the menu           78
+  ...whose won fund SURVIVES both rules            44 (56.4%)
+  ...whose won fund FAILS at least one             34 (43.6%)
+  ...same, under the STRICT reading                25 survive (32.1%)
+  the model PICKED the won fund and the ruler
+    calls that pick a failure                      10
+  Every one of those 10 is a seat `atMost` would invite the model to
+  decline, on the row that was the right answer.
+
+  the first few, with the rule that killed them and the row as the model read it
+    ENANTIS S.R.O. won tacr_tp
+      MONEY: typical EUR 30,000 against a band floor/10 of EUR 50,000
+      THEME: the founder is "health & life sciences", the row is "software & AI"
+      [17] GAMA 2
+    BIO ME won nfr_pes2020
+      MONEY: typical EUR 8,000 against a band floor/10 of EUR 50,000
+      THEME: the founder is "health & life sciences", the row is "industrial manufacturing"
+      [23] Prosj.etabl.støtte H
+    Bouyer Leroux won ademe_aid__aap_decarb_ind_pdr_fdi_43019f
+      THEME: the founder is "materials & chemicals", the row is "energy & cleantech"
+      [2] AAP DECARB IND (PDR-FDI)
+    AIXTRON SE won satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung
+      THEME: the founder is "industrial manufacturing", the row is "semiconductors & electronics"
+      [31] Änderung der Bekanntmachung der Richtlinie zur Förderung der Mikroelektronik-Forschung von 
+
 8. FOUNDERS WITH NO SEAT PRESSURE AT ALL AND OFF-LIST PICKS ANYWAY
   founders with >= 7 survivors                    52/78
   their picks failing the disqualifiers            142/364 (39.0%)
@@ -160,6 +186,32 @@ indicative_wsHW · 78 called founder(s) with a transcript
   mean survivors  generous 11.2  ->  strict 5.0
   failures  365   FORCED 251 (68.8%)   ELECTIVE 114 (31.2%)
   generous  262   FORCED 76 (29.0%)   ELECTIVE 186 (71.0%)
+
+9. WOULD THE RULER DISQUALIFY THE FUND THE COMPANY ACTUALLY WON?
+  founders whose won fund is on the menu           78
+  ...whose won fund SURVIVES both rules            42 (53.8%)
+  ...whose won fund FAILS at least one             36 (46.2%)
+  ...same, under the STRICT reading                24 survive (30.8%)
+  the model PICKED the won fund and the ruler
+    calls that pick a failure                      10
+  Every one of those 10 is a seat `atMost` would invite the model to
+  decline, on the row that was the right answer.
+
+  the first few, with the rule that killed them and the row as the model read it
+    ENANTIS S.R.O. won tacr_tp
+      MONEY: typical EUR 30,000 against a band floor/10 of EUR 50,000
+      THEME: the founder is "health & life sciences", the row is "software & AI"
+      [17] GAMA 2
+    BIO ME won nfr_pes2020
+      MONEY: typical EUR 8,000 against a band floor/10 of EUR 50,000
+      THEME: the founder is "health & life sciences", the row is "industrial manufacturing"
+      [18] Prosj.etabl.støtte H
+    Bouyer Leroux won ademe_aid__aap_decarb_ind_pdr_fdi_43019f
+      THEME: the founder is "materials & chemicals", the row is "energy & cleantech"
+      [2] AAP DECARB IND (PDR-FDI)
+    AIXTRON SE won satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung
+      THEME: the founder is "industrial manufacturing", the row is "semiconductors & electronics"
+      [31] Änderung der Bekanntmachung der Richtlinie zur Förderung der Mikroelektronik-Forschung von 
 
 8. FOUNDERS WITH NO SEAT PRESSURE AT ALL AND OFF-LIST PICKS ANYWAY
   founders with >= 7 survivors                    51/78
