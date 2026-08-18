@@ -374,10 +374,20 @@ async function main() {
       for (const f of compared) {
         const a = normaliseValue(s[f]), b = normaliseValue(l[columnFor(f)]);
         if (a === b) continue;
-        // The one permitted shape, and only this one: the column is empty and
+        // The one permitted shape, and only this one: the column is NULL and
         // the snapshot carries the exact default the reader applies. Anything
         // else about the same field is still a disagreement about the world.
-        if (b === "" && a === READ_DEFAULT[f]?.value) { defaulted.set(f, (defaulted.get(f) ?? 0) + 1); continue; }
+        //
+        // Tested on the RAW cell, not on `b`. `normaliseValue` folds NULL and
+        // the empty string to the same "", and the two are not the same thing
+        // here: `?? "EU"` fires on NULL and NOT on "", so a column holding ""
+        // would answer "" on Postgres and "EU" on the snapshot -- a genuine
+        // divergence that the folded form would have waved through under this
+        // very tolerance.
+        if (l[columnFor(f)] == null && a === READ_DEFAULT[f]?.value) {
+          defaulted.set(f, (defaulted.get(f) ?? 0) + 1);
+          continue;
+        }
         const seen = divergent.get(f) ?? { n: 0, eg: "" };
         seen.n++;
         if (!seen.eg) {
