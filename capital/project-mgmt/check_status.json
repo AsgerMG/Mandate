@@ -192,10 +192,10 @@
   },
   "both stores agree": {
    "argv": "npx tsx scripts/check_hydration_parity.ts",
-   "code": 1,
-   "summary": "live:     eic_pathfinder|eic_transition|eic_accelerator|satr_de_rnd__sa_112843__bundesministerium_fur_bildung_und_forschung|gh_edctp3|satr_de_rnd__sa_64558__investitionsbank_berlin",
-   "at": "2026-08-18T21:50:24.871Z",
-   "ms": 27142
+   "code": 0,
+   "summary": "check_hydration_parity: ok — 12 archetypes agree on both paths, and the two corpora differ by exactly the 36 row(s) the degradation policy withheld",
+   "at": "2026-08-18T22:04:18.446Z",
+   "ms": 28641
   },
   "both stores select the same columns": {
    "argv": "npx tsx scripts/check_store_columns.ts",
@@ -229,8 +229,8 @@
    "argv": "npx tsx scripts/check_corpus_currency.ts",
    "code": 0,
    "summary": "check_corpus_currency: ok — the snapshot and Postgres agree on every liveness verdict, every instrument is retrievable, and both committed mirrors of the index (scores, profile text) cover exactly the live one.",
-   "at": "2026-08-18T21:46:12.214Z",
-   "ms": 3086
+   "at": "2026-08-18T22:03:34.642Z",
+   "ms": 3274
   },
   "country gates": {
    "argv": "npx tsx scripts/check_country_gates.ts",
