@@ -1,0 +1,14 @@
+# check_dead_doors, RED against the rule as it shipped
+# RENEWAL_EVIDENCE_HORIZON_YEARS set to 9999, which IS the shipped behaviour:
+# the renewal clause had no horizon, so an award in any later year kept the row open forever.
+
+published rows: 778 of 1088
+  open on a prolongation an award still evidences: 119
+  offered with the between-calls caveat shown:     11
+  withheld on a window nothing contradicts:        206
+  ...of the withheld and caveated, 202 have had NO funder page read. Each is a programme we are calling ended without having asked, and reading one page is the whole remedy — see project-mgmt/evidence/README.md.
+
+FAILED — 1 problem(s): a door is offered on a fact that has expired:
+  - the renewal horizon is 9999 years, past this guard's ceiling of 3. An award that old evidences a prolongation nothing else in the corpus does — 99.6% of rows with a window still open report inside three years — so every row it carries is a door offered on a fact no live scheme's evidence looks like. Argue it in the commit, or ask the funder instead.
+
+exit=0

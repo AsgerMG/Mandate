@@ -131,6 +131,16 @@ const CHECKS = [
   ["every archetype gets a table", ["npx", "tsx", "scripts/check_memo_table.ts"]],
   ["liveness has one definition", ["npx", "tsx", "scripts/check_liveness.ts"]],
   ["openness is evidenced", ["npx", "tsx", "scripts/check_window_evidence.ts"]],
+  // Directly beneath the two of them because it asks the question neither can.
+  // `check_liveness` asks whether "is this fund open" has ONE definition, and
+  // `check_window_evidence` whether openness rests on a deadline we hold. Both
+  // were green on 2026-08-18 while a scheme that ended 2020-12-30 was published
+  // to a real founder as row 5 of seven with a link and a EUR 980,817 award,
+  // because the fact its openness rested on -- an award in 2022 -- had itself
+  // expired and nothing asked whether a fact can go out of date. It reads the
+  // PUBLISHED table against live Postgres, not the corpus: three stages sit
+  // between the rule and the founder.
+  ["no door is offered on an expired fact", ["npx", "tsx", "scripts/check_dead_doors.ts"]],
   ["offer routes are sourced", ["npx", "tsx", "scripts/check_offer_route.ts"]],
   // Directly beneath it because it is the same class of question one step
   // earlier: that one asks whether a row is an OFFER, this one whether it is an

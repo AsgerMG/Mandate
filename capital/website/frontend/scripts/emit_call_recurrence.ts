@@ -77,6 +77,9 @@ export interface BuildResult {
   source: string;
   files: number; lines: number; emitted: number;
   unsettled: number; unsourced: number;
+  /** Evidence files that carry no verdict in this axis's vocabulary, named so a
+   *  file that MEANT to speak here and misspelled it is visible. */
+  skipped: string[];
   byVerdict: Map<string, number>;
 }
 
@@ -85,15 +88,54 @@ export interface BuildResult {
  *  the shape `check_offer_route` uses, and for the same reason: a projection
  *  that nothing compares is a projection that goes stale the first time an
  *  evidence file lands and nobody re-runs the emitter. */
+/** The records in a file, skipping blanks. */
+function records(f: string): Record<string, unknown>[] {
+  return readFileSync(join(EVIDENCE_DIR, f), "utf8").trim().split("\n")
+    .filter((l) => l.trim()).map((l) => JSON.parse(l) as Record<string, unknown>);
+}
+
+/**
+ * IS THIS FILE ABOUT THIS AXIS AT ALL?
+ *
+ * ── The fault ─────────────────────────────────────────────────────────────
+ * `project-mgmt/evidence/` is one directory for every kind of funder reading,
+ * and `verdict` is the word each of them reached for. wsHA's door audit writes
+ * `held` and `name_gap` there; wsHF's title audit writes `name_gap`; one wsHA
+ * file writes a whole English sentence. Every one of those threw here, because
+ * this emitter treated any `verdict` string as a claim ON THIS AXIS that it had
+ * not been taught. `check_liveness` had been red since 2026-08-17 and the
+ * recurrence projection unverified with it — the exact silent-staleness this
+ * emitter is compared against disk to prevent.
+ *
+ * ── The property, and why it is not a list of filenames ───────────────────
+ * A file speaks on this axis when at least one of its records carries a verdict
+ * IN THIS AXIS'S VOCABULARY. Nothing else about a file is consulted — not its
+ * name, not its date, not who wrote it — so an evidence file landing next year
+ * from a workstream nobody here has met is admitted or ignored by what it says.
+ *
+ * The teeth are kept exactly where they were: INSIDE a file that speaks here,
+ * an unrecognised verdict still throws, so a recurrence audit that starts
+ * writing `paused` cannot be silently dropped. What is skipped is reported by
+ * name, so a file that meant to speak here and misspelled its vocabulary shows
+ * up as a skipped file rather than as nothing at all.
+ */
+function speaksOnThisAxis(f: string): boolean {
+  return records(f).some((r) => r.verdict != null && String(r.verdict) in AXIS);
+}
+
 export function build(): BuildResult {
   const recs = new Map<string, Rec>();
-  const files = readdirSync(EVIDENCE_DIR).filter((f) => f.endsWith(".jsonl")).sort();
+  const all = readdirSync(EVIDENCE_DIR).filter((f) => f.endsWith(".jsonl")).sort();
+  const files = all.filter(speaksOnThisAxis);
+  const skipped = all.filter((f) => !files.includes(f));
   let lines = 0, unsettled = 0, unsourced = 0;
   for (const f of files) {
-    for (const line of readFileSync(join(EVIDENCE_DIR, f), "utf8").trim().split("\n")) {
-      if (!line.trim()) continue;
-      const row = JSON.parse(line);
-      const verdict = String(row.verdict ?? "");
+    for (const row of records(f)) {
+      // Within a file that DOES speak here, a record with no verdict made no
+      // statement — wsGL's audits mix shapes — and an unrecognised verdict is a
+      // statement this axis has no decision for and still throws below.
+      if (row.verdict == null) continue;
+      const verdict = String(row.verdict);
       if (!(verdict in AXIS)) {
         throw new Error(
           `emit_call_recurrence: ${f} carries verdict \`${verdict}\`, which this axis has ` +
@@ -103,8 +145,9 @@ export function build(): BuildResult {
       lines++;
       const axis = AXIS[verdict];
       if (axis === null) { unsettled++; continue; }
-      const url = row.checked?.url;
-      const checkedAt = row.checked?.checked_at;
+      const checked = (row.checked ?? {}) as { url?: unknown; checked_at?: unknown };
+      const url = checked.url;
+      const checkedAt = checked.checked_at;
       if (!url || !checkedAt) { unsourced++; continue; }
       const id = String(row.instrument_id);
       // Last file wins, and files sort by name, which for this directory is by
@@ -145,7 +188,7 @@ ${body}
 `;
   const byVerdict = new Map<string, number>();
   for (const r of recs.values()) byVerdict.set(r.funderVerdict, (byVerdict.get(r.funderVerdict) ?? 0) + 1);
-  return { source: out, files: files.length, lines, emitted: ids.length, unsettled, unsourced, byVerdict };
+  return { source: out, files: files.length, lines, emitted: ids.length, unsettled, unsourced, skipped, byVerdict };
 }
 
 function main(): void {
@@ -157,6 +200,10 @@ function main(): void {
     `evidence files ${r.files}  lines ${r.lines}  emitted ${r.emitted}  ` +
     `unsettled/no-recurrence-statement ${r.unsettled}  no url or read date ${r.unsourced}`);
   for (const [v, n] of [...r.byVerdict].sort()) console.log(`  ${String(n).padStart(4)}  ${v}`);
+  if (r.skipped.length) {
+    console.log(`  ${r.skipped.length} evidence file(s) carry no verdict in this axis's ` +
+      `vocabulary and were not read: ${r.skipped.join(", ")}`);
+  }
   if (!write && before !== r.source) {
     console.error(
       "\ncallRecurrence.generated.ts is STALE against the evidence. " +
