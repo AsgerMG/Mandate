@@ -1,6 +1,6 @@
-(node:41183) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(node:42958) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)
-provenance {"source":"postgres","degraded":false,"instruments":1088,"hydratedAt":"2026-08-18T22:31:12.797Z","observedAt":"2026-08-18T22:31:12.798Z"}
+provenance {"source":"postgres","degraded":false,"instruments":1088,"hydratedAt":"2026-08-18T22:33:25.811Z","observedAt":"2026-08-18T22:33:25.812Z"}
 asOf 2026-08-18  corpus 1088  publishable 760
 renewal horizon 2 year(s)
 
@@ -31,36 +31,53 @@ founders 37 of 897 (4.12%) — 25 distinct funds
       7  withheld by editorial policy
   founders failing more than one clause: 0
 
-══ 3. permanent vs recoverable ══
-  PERMANENT   13  (1.45% of the key)
-        7  withheld by editorial policy
-        6  the call deadline passed (call_deadline)
-  RECOVERABLE 65  (7.25% of the key)
-       26  nothing outside its own id names the row
-       19  no application route on record
+══ 3. three tiers of unreachable ══
+  A_gone_or_withheld    13  (1.45% of the key)
+        7  withheld by editorial policy — our standing decision, reversible only by the owner
+        6  the application deadline passed (call_deadline)
+  B_not_a_door          45  (5.02% of the key)
+       26  nothing outside its own id names the object — a loader-constructed label
+       19  no application route exists on the object the key names
+  C_our_defect          20  (2.23% of the key)
        11  no amounts and no dates — below the data floor
         9  a notified duration expired and nobody has asked the funder
 
 ══ 4. what the funnel reads on the honest population ══
   we grade against N = 897
-  of which M = 13 cannot be got right by anyone
-  honest denominator N - M = 884
+    A gone or withheld   13
+    B not a door         45
+    C our own defect     20  — stays in the denominator, it is work we can do
 
-  every published stage figure, on both denominators:
-  stage              N=897        honest N=884        delta
-  answer_key            897 100.00%    884 100.00%   +0.00 pts
-  in_corpus             897 100.00%    884 100.00%   +0.00 pts
-  publishable           819  91.30%    819  92.65%   +1.34 pts
-  liveness_confirmed    819  91.30%    819  92.65%   +1.34 pts
-  founder_screen        797  88.85%    797  90.16%   +1.31 pts
-  gates_pass            786  87.63%    786  88.91%   +1.29 pts
-  pool_cut              668  74.47%    668  75.57%   +1.10 pts
-  writer_cap            383  42.70%    383  43.33%   +0.63 pts
+  There are two defensible values of M and this prints BOTH, because
+  choosing one of them is choosing how the number reads.
+    M = A       = 13   the strict reading: the door is gone or we refuse it
+    M = A + B   = 58   also counting answers that name something with no door
+
+  stage                N=897          M=A (884)       M=A+B (839)
+  answer_key            897 100.00%    884 100.00%    839 100.00%
+  in_corpus             897 100.00%    884 100.00%    839 100.00%
+  publishable           819  91.30%    819  92.65%    819  97.62%
+  liveness_confirmed    819  91.30%    819  92.65%    819  97.62%
+  founder_screen        797  88.85%    797  90.16%    797  94.99%
+  gates_pass            786  87.63%    786  88.91%    786  93.68%
+  pool_cut              668  74.47%    668  75.57%    668  79.62%
+  writer_cap            383  42.70%    383  43.33%    383  45.65%
   watch_only           UNMEASURED
-  published             370  41.25%    370  41.86%   +0.61 pts
-  top_6                 345  38.46%    345  39.03%   +0.57 pts
-  top_5                 323  36.01%    323  36.54%   +0.53 pts
+  published             370  41.25%    370  41.86%    370  44.10%
+  top_6                 345  38.46%    345  39.03%    345  41.12%
+  top_5                 323  36.01%    323  36.54%    323  38.50%
   model                UNMEASURED
+
+  Say the rise plainly, and say which half of it is real.
+    publishable  91.30% → 92.65% → 97.62%   +1.34 / +6.32 pts
+    top_5        36.01% → 36.54% → 38.50%   +0.53 / +2.49 pts
+  The publishable move is the whole finding and it is LARGE: on the wider
+  reading nearly every founder we lose there is one whose answer names an
+  object no founder could have applied to. The top_5 move is small and
+  sits inside the ±3.1 pt half-width the funnel already carries at n=897,
+  so it is not an improvement in anything and must not be quoted as one.
+  NOTHING ABOUT THE PRODUCT CHANGED. What moved is what we admit we grade
+  against — and the honest report is both numbers, never the second alone.
 
 ══ 5. every founder whose won fund is not publishable ══
   1. ZAKŁAD PRACY CHRONIONEJ - PRZEDSIĘBIORSTWO PRODUKCYJNO HANDLOWO USŁUGOWE "LESTER" ADAM STOSIK 2. AUTOAQUA S.C. ADAM STOSIK
