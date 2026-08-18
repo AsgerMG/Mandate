@@ -159,21 +159,56 @@ def _instance_status() -> str | None:
 
 
 def wake(timeout_s: int = 180) -> None:
-    """Set startCommand to sleep infinity, deploy, and wait for RUNNING."""
+    """Set startCommand to sleep infinity, deploy, and wait for RUNNING.
+
+    ── A FAILED WAKE MUST NOT LEAVE THE CRON OFF ─────────────────────────────
+    Every caller invokes this OUTSIDE its `try`, because there is nothing to
+    restore until the wake has happened — `pull_db.py` and `push_local.py` both
+    do, and that is the natural shape. It means an exception raised anywhere
+    below skips the caller's `finally` entirely.
+
+    And the very first line has already written the config. On 2026-08-19 a
+    `railway up` returned 1 ("Deploy failed", cause unrecorded by the CLI) and
+    this function raised straight through: the service instance was left saying
+    `sleep infinity` with NO cron schedule, the weekly ETL was off, and nothing
+    in the process that failed said so. `verify_cron.py` found it, because
+    somebody thought to run it.
+
+    So the rollback belongs HERE, where the write happened, and not in every
+    caller's `finally` where it provably cannot reach. The original exception
+    is re-raised either way — a wake that failed must still be an error — and a
+    rollback that ALSO fails is printed rather than swallowed, because at that
+    point the schedule really is off and a person has to know.
+    """
     print("[railway_service] waking etl-pipeline (temporary sleep-infinity deploy)...")
     _set_service_instance("sleep infinity", None)
-    subprocess.run(
-        RAILWAY + ["up", "--service", SERVICE_NAME, "--environment", "production",
-                   "--ci", "--message", "wake for file transfer (auto)"],
-        check=True,
-    )
-    deadline = time.time() + timeout_s
-    while time.time() < deadline:
-        if _instance_status() == "RUNNING":
-            print("[railway_service] awake.")
-            return
-        time.sleep(5)
-    raise TimeoutError("etl-pipeline didn't reach RUNNING within timeout")
+    try:
+        subprocess.run(
+            RAILWAY + ["up", "--service", SERVICE_NAME, "--environment", "production",
+                       "--ci", "--message", "wake for file transfer (auto)"],
+            check=True,
+        )
+        deadline = time.time() + timeout_s
+        while time.time() < deadline:
+            if _instance_status() == "RUNNING":
+                print("[railway_service] awake.")
+                return
+            time.sleep(5)
+        raise TimeoutError("etl-pipeline didn't reach RUNNING within timeout")
+    except BaseException:
+        print("[railway_service] the wake FAILED — rolling the schedule back before "
+              "raising...")
+        try:
+            problems = restore()
+        except BaseException as exc:      # noqa: BLE001 - reported, never hidden
+            problems = [f"the rollback itself raised: {exc!r}"]
+        if problems:
+            print("[railway_service] AND THE ROLLBACK DID NOT TAKE. The weekly ETL "
+                  "is OFF:")
+            for pr in problems:
+                print(f"  - {pr}")
+            print("  python3 ETL/lib/verify_cron.py --deploy")
+        raise
 
 
 def restore(attempts: int = 3) -> list[str]:
