@@ -694,8 +694,55 @@ export const THINK_EFFORT: ThinkEffort = (() => {
  * here: wsGS raised them one commit ago and there is no measurement to justify
  * moving them again.
  */
+/**
+ * ── AND THEN THE TRANSPORT REFUSED TO CARRY THEM (wsHO) ───────────────────
+ *
+ * wsHI derived `off 1,024 / low 2,048 / medium 34,816 / high 57,344 /
+ * xhigh 96,256 / max 128,000` against its own abort condition, and every one of
+ * the four values above `low` was UNSENDABLE. `@anthropic-ai/sdk` refuses a
+ * NON-STREAMING request whose `max_tokens` implies more than ten minutes of
+ * generation, client-side, before a socket is opened:
+ *
+ *     client.js, calculateNonstreamingTimeout
+ *     expectedTime = (60min * max_tokens) / 128,000   throws if > 10min
+ *     => max_tokens > 128,000 * (10/60) = 21,333 cannot be sent
+ *
+ * `agentSelect.ts` does not stream. So every call at `medium` and above threw
+ * into `exits.threw`, `agentSelectRows` caught it, THE SHIPPED ORDER WAS
+ * PUBLISHED, and the run billed EUR 0.0000 — a run reporting the CONTROL's
+ * number under the TREATMENT's banner, which is the one failure shape no
+ * counter in the tally line can tell from success. wsHO measured it live on the
+ * first two calls it tried to buy: `2 the call threw, shipped order kept`.
+ *
+ * PRODUCTION WAS NEVER AFFECTED — `AGENT_SELECT_EFFORT` defaults to `low` and
+ * `low` is untouched here. What was affected is every paid MEASUREMENT above
+ * it, including the one wsHK is pre-registered to run.
+ *
+ * ── Why these numbers, and what they are not ──────────────────────────────
+ *
+ * They are NOT a distribution's answer. They are what the transport will carry,
+ * spaced so the ladder stays strictly increasing, with the top left below the
+ * 21,333 boundary rather than on it because the SDK computes it in floating
+ * point and a ceiling that depends on a rounding mode is not a ceiling.
+ * `medium` clears 13,654 — the value `check_maxtok_headroom.ts` property 4
+ * requires, being wsGA's binding 6,144 scaled by the 40/18 menu ratio — so the
+ * property that made wsHI raise it at all is still satisfied.
+ *
+ * wsHI's own bar (P(any truncation in a 630-call run) < 5% under linear menu
+ * scaling) needed 32,768 and IS THEREFORE UNREACHABLE ON A NON-STREAMING
+ * REQUEST AT ANY VALUE. That is the finding, and it is not fixed by choosing a
+ * different number here.
+ *
+ * ── The one-line way back to wsHI's ladder ────────────────────────────────
+ * Stream the request — `messages.stream(...).finalMessage()` in place of
+ * `messages.create(...)` — and the limit disappears entirely, at which point
+ * these values may go back to wsHI's derived ones. `check_maxtok_headroom.ts`
+ * property 5 reads whether the seam streams and asks the SDK itself whether it
+ * would send each value, so that restoration is guarded rather than remembered
+ * and an SDK upgrade that moves the boundary moves the guard with it.
+ */
 export const MAX_TOKENS_BY_EFFORT: Record<ThinkEffort, number> = {
-  off: 1024, low: 2048, medium: 34_816, high: 57_344, xhigh: 96_256, max: 128_000,
+  off: 1024, low: 2048, medium: 14_336, high: 16_384, xhigh: 18_432, max: 20_480,
 };
 
 /**
