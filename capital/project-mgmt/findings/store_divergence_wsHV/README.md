@@ -67,6 +67,17 @@ published as a zero rather than dropped.
 
 <!-- FUNNEL -->
 
+## One thing the republish carried that nobody asked it to
+
+`coverage_gate.py` reports the eligibility axis — instruments with **two or more
+evaluable filter gates** — rising from **937 to 959**, and `complete on all six`
+from 821 to 825. No gate was added (9,763 before and after); this is
+`sync_gates_from_yaml.py` putting YAML-authored encodings back into the record
+where they had drifted, which is what `make eligibility` is for. It is a gain,
+the high-water mark ratcheted **up**, and no floor was moved — but part of it is
+other workstreams' work landing in a shared `db.sqlite`, not this one's, and it
+is recorded here so nobody reads it as a claim.
+
 ## What is live and what is not
 
 The Postgres half is **live now**: production reads Railway Postgres, so the
