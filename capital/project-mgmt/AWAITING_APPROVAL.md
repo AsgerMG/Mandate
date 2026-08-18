@@ -50,6 +50,53 @@ destroy whatever the other store holds alone.
 Every route to the volume begins by waking the container, so **this cannot
 happen before §1.** One decision, in two steps.
 
+### 2b. The record still calls 44 bucket labels offerable — free
+
+Found while doing §2. `assign_name_evidence.py` is not in
+`railway_cron.py::STEPS` either, so the record has never been given the
+`name_source` verdicts. It carries `partition_key` on **zero** rows where the
+laptop carries it on **44** — every `sudop_*`, every `satr_*_equity`,
+`chips_ju_kdt_unknown`. `registerNamesTheRow()` reads exactly that value to
+withhold a row from every founder, and migration 032 widens the CHECK
+constraint without moving data, so the weekly cron will not repair it.
+**Anything rebuilt from the corpus of record today puts Poland's entire
+offerable pool back in front of founders.**
+
+Not done, deliberately: it moves a publishability verdict on 44 rows, which is
+a decision and not a transfer. One command once you say so:
+
+```
+reconcile_stores.py --into record.sqlite --from local.sqlite \
+    --family instruments --table funding_instruments --inserts-only
+```
+
+— except that `--inserts-only` will NOT carry it, because these are shared
+rows. Carrying a column across shared rows needs the column named, and that is
+the thing §2 established nobody should do by family. Say the word and it gets
+a one-column promotion with its own before/after.
+
+### 2c. 58 of the 897 founders we grade against cannot be got right — your call
+
+Not a corpus defect. A defect in the thing we measure ourselves with, and
+removing a founder from a recall set is a decision about what we are trying to
+do. The count and the argument are in
+`project-mgmt/findings/dead_answers_wsHX.md`; **nothing was changed.**
+
+| tier | founders | what it is |
+|---|---:|---|
+| A gone or withheld | 13 | 6 dead call deadlines, 7 withheld by editorial policy |
+| B not a door | 45 | 19 IPCEI approval waves (nothing to apply to), 26 loader bucket labels |
+| C our own defect | 20 | 11 equity rows below the data floor, 9 unexamined notified durations |
+
+Tier C stays in the denominator; closing it is work we can do. Tiers A and B
+are the question. On M=13 the funnel reads `publishable` 92.65% and `top_5`
+36.54%; on M=A+B=58 it reads **97.62%** and **38.50%**, against 91.30% and
+36.01% today. **Both get published or neither does** — the top_5 move is inside
+the funnel's own half-width and is not an improvement in anything.
+
+Seventy-eight founders is **thirty-one funds**. Five Polish bucket labels carry
+22 of them, eight IPCEI waves carry 19, and one French regime carries 8.
+
 ### 3. Three doors of SA.40391 are now indistinguishable — free to investigate
 
 Renaming them to their register title made them **byte-identical on the page**.
@@ -57,6 +104,11 @@ That is the project's central defect at a size somebody can finish: 63% of the
 founders we miss are already shown a sibling of the fund they would have won.
 The separating facts we already hold are granting body, capital channel (two of
 the three differ), notified period, and nine per-case GBER objectives.
+
+**wsHX sizes it:** SA.40391 is the single largest item in the answer key's
+unreachable set — **8 of the 78** founders, across its R&D and equity
+registrations. It is tier C, not tier A: its notified duration expired and
+nobody has read the funder's page. One page-read decides eight founders.
 
 ---
 
