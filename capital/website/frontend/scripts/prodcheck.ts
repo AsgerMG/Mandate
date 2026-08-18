@@ -66,6 +66,9 @@ import {
 import type {
   InstitutionEntry, IntelligenceReport, ProgressEvent,
 } from "../lib/intelligence/types";
+import {
+  internalIdWordsIn, qualifierSegments,
+} from "../lib/intelligence/rowIdentity";
 import { founderIntake, founderPolicyFromEnv } from "./founderIntake";
 import { isDescribed, loadRecallSet, type RecallRow } from "./recallSet";
 
@@ -163,6 +166,28 @@ function moneyLine(r: InstitutionEntry): string {
   if (r.ticket) bits.push(`ticket ${r.ticket}`);
   if (r.aidIntensity != null) bits.push(`intensity ${Math.round(r.aidIntensity * 100)}%`);
   return bits.length ? bits.join("  ·  ") : "── NO MONEY LINE ON THIS ROW ──";
+}
+
+/**
+ * Every part of a published row's NAME that the disambiguator added and that
+ * came out of our own instrument id.
+ *
+ * The accounted-for text is what the DEPLOYMENT served — this script holds no
+ * corpus and must not pretend to. `descriptor` carries the region clause, so a
+ * legitimate "· Grand Est" is explained; `supportType` explains a capital-type
+ * qualifier and `schemeCode` a notified code. The row's own TITLE never needs
+ * explaining because `qualifierSegments` does not return it: a loader that
+ * derives an id FROM a title would otherwise make every word of that title
+ * look like a leak.
+ *
+ * See `internalIdWordsIn` (rowIdentity.ts) for why the granting body is not on
+ * this list, and why this is a property rather than a list of bad fragments.
+ */
+function idLeak(r: InstitutionEntry): string[] {
+  const shown = [r.schemeCode, r.supportType, r.country, r.descriptor,
+                 r.familyName, r.ticket];
+  return qualifierSegments(r.institution)
+    .flatMap((seg) => internalIdWordsIn(seg, r.instrumentId, shown));
 }
 
 /** Does the link on the row go anywhere? A row reads as instruction, so a dead
@@ -288,7 +313,24 @@ async function main(): Promise<void> {
     console.log(`   verdict   ${r.verdict ?? "—"}${r.gatesChecked != null
       ? ` (${r.gatesChecked} encoded filters evaluated)` : ""}`);
     console.log(`   link      ${statuses[i]}`);
+    console.log(`   id        ${r.instrumentId ?? "── NONE ──"}`);
+    const segs = qualifierSegments(r.institution);
+    if (segs.length) {
+      console.log(`   named by  ${segs.map((x) => `"${x}"`).join(", ")}`
+        + `${idLeak(r).length ? `   ██ FROM THE INSTRUMENT ID: ${idLeak(r).join(" ")}` : ""}`);
+    }
   });
+
+  // ── 3b. IS ANY ROW NAMED AFTER OUR OWN STORAGE KEY? ──────────────────────
+  // Decidable from outside, which is the point: this is the one thing about
+  // wsHN's rename that only a production look could establish. A founder read
+  // "· rnd  sa 111728  ministere de l economie et des finances" inside a fund's
+  // name three weeks after 22 rows were renamed away from that ministry, and
+  // every offline harness was green.
+  const leaky = rows.filter((r) => idLeak(r).length);
+  console.log(`\nrow names   ${leaky.length
+    ? `██ ${leaky.length} of ${rows.length} REVEAL AN INSTRUMENT ID`
+    : `ok — none of ${rows.length} reveals an instrument id`}`);
 
   // ── 4. THE MEMO, IN FULL ─────────────────────────────────────────────────
   console.log(rule("4. THE MEMO, AS WRITTEN — read it, do not parse it"));
@@ -301,7 +343,25 @@ async function main(): Promise<void> {
     }
   } else {
     console.log("\n## Bottom line\n");
-    for (const b of report.bottomLine) console.log(`- ${b}\n`);
+    // WHICH PUBLISHED ROW EACH BULLET IS ABOUT, printed beside it.
+    //
+    // A bullet gives a fund a verdict and a blocker, and a founder then goes
+    // to the table to find it. One real brief's third bullet told a founder
+    // that ADEME's incentive-effect rule closed PACTE Industrie to her; there
+    // was no PACTE Industrie row (wsHP run 1). The writer is now handed exactly
+    // the published table (WRITER_CANDIDATE_CAP = institutionsMax), so a fund
+    // it names and cannot be found here came from its own web research rather
+    // than from a candidate we cut — a different defect with a different fix,
+    // and this line is what tells the two apart. It NAMES no verdict: only a
+    // reader can say whether an unmatched bullet is about a fund at all.
+    for (const b of report.bottomLine) {
+      const named = rows
+        .map((r, i) => [i + 1, norm(r.institution.split(" · ")[0])] as const)
+        .filter(([, n]) => n.length >= 6 && norm(b).includes(n))
+        .map(([i]) => `row ${i}`);
+      console.log(`- ${b}`);
+      console.log(`  [names ${named.length ? named.join(", ") : "no row on the table"}]\n`);
+    }
     console.log("\n## Positioning\n");
     console.log(report.positioning);
     console.log("\n## State of play\n");
