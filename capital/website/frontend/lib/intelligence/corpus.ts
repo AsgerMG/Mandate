@@ -492,6 +492,94 @@ export interface DbInstrument {
 
 let dbInstrumentsCache: DbInstrument[] | null | undefined;
 
+/** The hydration a concurrent caller should await instead of starting a second
+ *  one. Cleared when it settles. */
+let hydrationInFlight: Promise<void> | undefined;
+
+/** When this process last ASKED Postgres, successful or not. Epoch ms; 0 means
+ *  never. */
+let lastPostgresAttempt = 0;
+
+/**
+ * How long a degraded instance serves the snapshot before it asks again.
+ *
+ * ── The defect this closes ────────────────────────────────────────────────
+ * The fallback is right for the REQUEST that meets the failure and wrong for
+ * the INSTANCE that meets it. `dbInstrumentsCache !== undefined` was the whole
+ * of the no-op test, so one cancelled statement at cold start pinned that
+ * serverless instance to the committed snapshot for its entire life, and every
+ * founder Vercel routed to it afterwards was ranked on a stale corpus by a
+ * process that had long since stopped asking.
+ *
+ * Measured on the live deployment, 2026-08-18 23:09-23:11 UTC, 32 requests
+ * across 6 instances (grouped by `hydratedAt`, which identifies the hydration
+ * event and therefore the instance):
+ *
+ *   instance hydrated at 23:09:52.498Z   snapshot, "canceling statement due to
+ *                                        statement timeout", 8 of its 8 requests
+ *   the other five                       postgres, 24 of 24
+ *
+ * One unlucky millisecond, 25% of production traffic, for as long as Vercel
+ * kept that instance warm. Nothing recovered it and nothing could: the process
+ * never asked again.
+ *
+ * 30 seconds is chosen against the two costs it sits between. Too short and a
+ * genuinely unreachable database adds a connect timeout to a large share of
+ * requests; too long and an instance that lost a race keeps its stale corpus
+ * through a founder's whole session. At 30s a wedged database costs at most one
+ * 2s connect attempt per instance per half-minute, and a transient loss is
+ * repaired before the founder's second question.
+ */
+const HYDRATION_RETRY_AFTER_MS = 30_000;
+
+/**
+ * The server-side bound on the phase-one read.
+ *
+ * ── What the old 2000 was actually bounding ───────────────────────────────
+ * Not the query. Measured against the production register on 2026-08-18 with
+ * EXPLAIN (ANALYZE, BUFFERS), the three phase-one statements EXECUTE in 3.5 ms
+ * in total:
+ *
+ *   instruments   Sort + Seq Scan, 1088 rows, shared hit=330   2.487 ms
+ *   framework gates  Nested Loop + idx_eg_instrument, 89 rows  0.844 ms
+ *   application   Seq Scan, 285 rows                           0.130 ms
+ *
+ * No index is missing; the instruments read is a deliberate whole-table read
+ * and an index cannot improve one. What the remaining 1996 ms was bounding is
+ * the SEND: the instrument row set is ~1.6 MB on the wire (eligibility_text
+ * 604 kB, description 345 kB, sector_mix 143 kB), Postgres counts transmission
+ * inside `statement_timeout`, and every serverless cold start opens a fresh
+ * connection through Railway's shared public TCP proxy. So the elapsed time is
+ * a property of concurrency and bandwidth, not of the database. Same day, same
+ * corpus, N simultaneous hydrations:
+ *
+ *   concurrency    1      4      8     12     20
+ *   query ms     225    324    575    822   1269      (aggregate ~23 MB/s, a
+ *                                                      shared pipe, not a lock)
+ *
+ * A bound of 2000 ms therefore cancelled healthy reads whenever enough cold
+ * starts collided, and reported it as if the database were slow.
+ *
+ * 6000 ms is sized to the work rather than to the symptom: ~1700x the measured
+ * execution, ~4.7x the slowest transfer observed at 20-way concurrency, and
+ * still under half of `/api/intelligence/verdict`'s own 15 s maxDuration, so a
+ * wedged register still degrades inside the request's budget rather than
+ * spending it. It is NOT a licence for the payload to grow into it: 1.6 MB is
+ * the number this constant was set against, and shrinking phase one (the one
+ * lever that scales with the corpus) remains the real fix.
+ */
+const HYDRATION_STATEMENT_TIMEOUT_MS = 6000;
+
+/** Should a process that already holds a corpus ask Postgres again?
+ *
+ *  Only when it holds a DEGRADED one: it asked for live data, did not get it,
+ *  and is serving a copy in the meantime. A process with no DATABASE_URL is on
+ *  the snapshot deliberately and has nothing to retry. */
+function postgresIsWorthRetrying(): boolean {
+  return provenance.degraded
+    && Date.now() - lastPostgresAttempt >= HYDRATION_RETRY_AFTER_MS;
+}
+
 /** WHICH corpus this process is actually ranking on.
  *
  *  ── Why a request cannot be allowed to hide this ──────────────────────────
@@ -664,7 +752,22 @@ function loadDbInstrumentsFromJson(): DbInstrument[] | null {
  *  snapshot," never a broken request. No-ops if already hydrated this
  *  invocation (dbInstrumentsCache !== undefined). */
 export async function hydrateDbInstruments(): Promise<void> {
-  if (dbInstrumentsCache !== undefined) return;
+  // ── A DEGRADED CACHE IS NOT A HYDRATED ONE ──────────────────────────────
+  // Read the block above `HYDRATION_RETRY_AFTER_MS`. `dbInstrumentsCache !==
+  // undefined` alone made one cancelled statement permanent for the life of
+  // the serverless instance holding it, which is how 25% of production traffic
+  // came to be served off the snapshot by a single unlucky cold start.
+  if (dbInstrumentsCache !== undefined && !postgresIsWorthRetrying()) return;
+  // Two calls in one instance must not both open a connection and both write
+  // `provenance`. Nothing enforced this before; it never bit because each
+  // invocation hydrated once, and it would bite now that a retry can start
+  // while an earlier call is still in flight.
+  if (hydrationInFlight) return hydrationInFlight;
+  hydrationInFlight = hydrateOnce().finally(() => { hydrationInFlight = undefined; });
+  return hydrationInFlight;
+}
+
+async function hydrateOnce(): Promise<void> {
   const url = process.env.DATABASE_URL;
   if (!url) {
     dbInstrumentsCache = resolveInheritedGates(attachRecordedFacts(loadDbInstrumentsFromJson() ?? []));
@@ -675,6 +778,10 @@ export async function hydrateDbInstruments(): Promise<void> {
     };
     return;
   }
+  // Stamped BEFORE the attempt, not after it: an attempt that dies in
+  // connect() is still an attempt, and clocking it on success would let an
+  // unreachable database be retried on every single request.
+  lastPostgresAttempt = Date.now();
   try {
     const { Client } = await import("pg");
     // statement_timeout can't be set at connection time here: neither the
@@ -687,7 +794,7 @@ export async function hydrateDbInstruments(): Promise<void> {
     // in the proxy path has grounds to reject it.
     const client = new Client({ connectionString: url, connectionTimeoutMillis: 2000 });
     await client.connect();
-    await client.query("SET statement_timeout = 2000");
+    await client.query(`SET statement_timeout = ${HYDRATION_STATEMENT_TIMEOUT_MS}`);
     try {
       const [instRes, gateRes, appRes] = await Promise.all([
         client.query(
@@ -779,6 +886,15 @@ export async function hydrateDbInstruments(): Promise<void> {
       const appByInstrument = new Map<string, { channel: string | null; timeline: string | null; url: string | null }>(
         (appRes.rows as { instrument_id: string; channel: string | null; timeline: string | null; url: string | null }[])
           .map((r) => [r.instrument_id, { channel: r.channel, timeline: r.timeline, url: r.url }]));
+      // A RETRY REPLACES THE OBJECTS PHASE TWO MUTATES. `gatesFetched`,
+      // `gatesResolved` and `phaseOneGates` are all keyed by instrument id and
+      // record work done ON THE OLD ARRAY; carried across a swap they would
+      // tell the new corpus that gates it has never fetched are already there,
+      // and every one of those instruments would assess as `unknown` forever.
+      // Cheap to clear and impossible to get right later.
+      gatesFetched.clear();
+      gatesResolved.clear();
+      phaseOneGates = undefined;
       dbInstrumentsCache = resolveInheritedGates(attachRecordedFacts(instRes.rows.map((inst): DbInstrument => ({
         id: inst.id,
         parentId: inst.parent_id,
