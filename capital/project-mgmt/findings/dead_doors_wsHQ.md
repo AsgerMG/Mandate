@@ -121,6 +121,45 @@ that reading the funder's page brings rows *back* — 11 of the 15 it read. The
 guard prints the unexamined count on every run so the number cannot sit at zero
 by nobody looking.
 
+### The funnel: `npm run stages`, the same draw, before and after
+
+Both runs are `split=holdout seed=20260806 n=897`, **draw fingerprint
+`13cb71cf3a1d1847`**, live Postgres, and there is no model anywhere in this
+ladder — so this is a paired comparison, not two runs put beside each other.
+
+| stage | before | after | delta |
+|---|---|---|---|
+| answer_key | 897 (100.00%) | 897 (100.00%) | 0.00 |
+| in_corpus | 897 (100.00%) | 897 (100.00%) | 0.00 |
+| **publishable** | 828 (92.31%) | **819 (91.30%)** | **-1.01 pts** |
+| liveness_confirmed | 828 (92.31%) | 819 (91.30%) | -1.01 pts |
+| founder_screen | 806 (89.86%) | 797 (88.85%) | -1.01 pts |
+| gates_pass | 795 (88.63%) | 786 (87.63%) | -1.00 pts |
+| **pool_cut** | 669 (74.58%) | **668 (74.47%)** | **-0.11 pts** |
+| writer_cap | 382 (42.59%) | 383 (42.70%) | +0.11 pts |
+| published | 368 (41.03%) | 370 (41.25%) | +0.22 pts |
+| top_6 | 345 (38.46%) | 345 (38.46%) | 0.00 |
+| **top_5** | 321 (35.79%) | **323 (36.01%)** | **+0.22 pts** |
+
+Read it in one line: **the entire cost lands on `publishable`, and it lands
+there because nine founders' own won fund is a scheme that ended.** The loss is
+attributed exactly — `corpusLossReasons` for "the register says the window has
+shut" goes 6 → 15, +9, with nothing unattributed. Those nine could never have
+been a hit in a brief that is honest about what is open; they were in the
+denominator claiming they could.
+
+Below that stage the change is **positive at every cut**. Only one founder is
+lost at `pool_cut`, because 18 dead rows leaving every pool frees seats for
+live ones — mean accessible rows 83.2 → 81.8 — and `top_5` **rises 35.79% →
+36.01%**. The trade the owner asked to have measured rather than assumed is
+therefore not a trade: withholding the dead doors did not cost reach where
+reach can still convert.
+
+Two things this does NOT say. `top_6` is flat and every figure here carries a
+±3.1 pt half-width at n=897, so +0.22 is inside the noise and the claim is
+"no measurable loss", never "an improvement". And `publishable` -1.01 pts is
+real and reproducible: it is the honest floor moving to where it always was.
+
 Two rows are worth naming for what they say about the corpus rather than the
 rule:
 
@@ -128,10 +167,13 @@ rule:
   ended 2020-12-30 and is now correctly withheld. The answer key names dead
   schemes as winners, and the funnel counts them in its denominator.
 - **`Fondo di garanzia per le PMI`**, the 13,892-award row whose suppression
-  caused the 306-leaf incident, has FOUR registrations in the corpus. The
-  2020-12-30 one is withheld; the 2026-12-30 one, last award 2026, is untouched.
-  Withholding a dead registration does not delete the fund, because the live
-  registration is its own row.
+  caused the 306-leaf incident, is one of the 5 rows that gained the caveat
+  rather than being withheld — a funder page read on 2026-08-12 says the
+  programme is running, so the founder now reads *"The application window we
+  hold closed on 2020-12-30. When the funder's own page was read on 2026-08-12
+  it was running a later round of this programme."* It kept its place in the
+  table and stopped pretending its 2020 window was current. Its three sibling
+  registrations, including the 2026-12-30 one, are untouched.
 
 ## 5. The guard, red then green
 
