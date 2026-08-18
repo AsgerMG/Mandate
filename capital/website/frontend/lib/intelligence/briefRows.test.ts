@@ -296,3 +296,12 @@ describe("which rows publish is decided by rank, not by what the writer wrote ab
 // The property that replaces all three is the sweep above: for every reply,
 // `published` is `rows.slice(0, cap)`. It covers the backfill case by making it
 // impossible rather than by describing it.
+//
+// ── AND THEN THE SPARE SEAT WENT TOO (wsHR, 2026-08-18) ──────────────────
+// `WRITER_CANDIDATE_CAP` is 7 now, equal to the published cap, so every
+// sentence above about "8 against a published 7" is history. The block reads
+// the cap as INERT, which is what made it look free; it is inert for
+// PUBLICATION and was never inert for the WRITER, which was being handed a
+// fund the founder could not be shown and gave one a verdict and a blocker in
+// a real brief. `check_contracts.ts` ties the two caps, in both directions.
+// The sweep above is unaffected: it is stated over an arbitrary cap.

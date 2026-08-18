@@ -469,6 +469,14 @@ export interface AssembledBriefRows {
  * model's ranking. `watchOnly` below still counts every match, `FUND-4` still
  * raises it against the published report, and both are reports.
  *
+ * ── `cutByCap` IS EMPTY NOW, AND THAT IS THE FIX, NOT A BUG (wsHR) ────────
+ * `WRITER_CANDIDATE_CAP` was lowered to `institutionsMax`, so `rows` arrives
+ * already the length of the table and nothing is cut here. The count is still
+ * reported rather than removed: it is what goes non-zero the day the two caps
+ * come apart again, and a cap gap is how a founder came to be told that ADEME's
+ * incentive-effect rule closed a fund that was not on her table. See the
+ * WRITER_CANDIDATE_CAP block in caps.ts and the pair in check_contracts.ts.
+ *
  * Model-free and total: give it rows and a reply and it returns a table.
  */
 export function assembleBriefRows(input: {
