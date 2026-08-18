@@ -256,6 +256,27 @@ the owner, not for me. The union above is the minimal grounded correction; the
 larger question — a `programme_fact`, or a leaf per competition — is **unresolved
 and flagged, not answered here.**
 
+### (c) A caveat on (a) that I cannot settle from a tape
+
+**Two instructions in the prompt push the same way and this evidence cannot
+separate them.** Besides the band-sort sentence, the same block says *"a named
+obstacle IS a fault, and a real one"* and *"a scheme whose stated demands this
+company plainly fails is the wrong scheme even if it is near the top"*. Both are
+TRUE statements and both would depress an obstructed row on their own.
+
+So the 9.6%-vs-49.2% head suppression is attributable to the paragraph, not to
+the one false sentence in it. **Deleting the false sentence may not recover the
+whole swing** — and it should still be deleted, because a prompt that describes
+deleted machinery is wrong whatever it is worth.
+
+What separates them is free and already in the tapes for anyone who wants it:
+`AEROTEX`'s seat-7 pick is the signature of the *band-sort* sentence
+specifically — a model acting on "this row is a real fault" would decline the
+row, not spend a seat parking it last. That is one founder, so it is a
+hypothesis, not a measurement.
+
+**The clean separation is a paid arm and I did not buy one.**
+
 ## WHAT IN THE BRIEF TURNED OUT TO BE WRONG
 
 - **"7 of 11 with n=11 is small" — correct to worry, and the worry lands on the
