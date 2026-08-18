@@ -141,6 +141,93 @@ describe("the property: a recurring programme survives one call's expiry", () =>
   });
 });
 
+/**
+ * THE SECOND WAY A ROW'S OWN WINDOW CLOSES, and the one that reached a founder.
+ *
+ * The population above carries a passed CALL DEADLINE. These carry a passed
+ * NOTIFIED DURATION whose only contradiction is an award year that has itself
+ * gone stale — the shape of SA.40453, published as row 5 of seven on
+ * 2026-08-18 with "confirm this regime is still accepting applications" under
+ * it. `betweenCalls` did not fire for it and that was not a fault in
+ * `betweenCalls`: the row was never CLOSED, so `callStatus()` never reached
+ * the recurrence question and the row was offered as plainly open.
+ *
+ * Same three assertions, same generated population, no id named anywhere: once
+ * the renewal evidence is outside the register's own reporting lag the row's
+ * own window has closed, and from there only the funder's source may lift it.
+ */
+function staleRenewalRow(n: number): DbInstrument {
+  const row = generatedRow(n);
+  const endYear = 2018 + (n % 3);
+  return {
+    ...row,
+    id: `generated_notified_${n % 5}__row_${n}`,
+    // The notification's expiry, not a call's: renewal is routine and expiry
+    // alone is not closure. What closes it is that the renewal is old.
+    schemeEndDate: `${endYear}-12-30`,
+    schemeEndBasis: SCHEME_END_BASIS.notifiedDuration,
+    // Strictly later than the expiry, so the renewal clause fires — and more
+    // than RENEWAL_EVIDENCE_HORIZON_YEARS behind AS_OF, so what it evidences
+    // has stopped being current.
+    lastYear: endYear + 1,
+  } as unknown as DbInstrument;
+}
+
+const STALE_POPULATION = Array.from({ length: 40 }, (_, n) => staleRenewalRow(n));
+
+describe("the property: a prolongation evidences openness only while it is current", () => {
+  it("offers the row while the renewal is still inside the register's lag", () => {
+    // The recovery half, and it is not decoration: a rule with no horizon
+    // would close every notified duration the moment its year passed, which is
+    // the 306-leaf event this axis was built after.
+    for (const row of STALE_POPULATION) {
+      const fresh = { ...row, lastYear: Number(AS_OF.slice(0, 4)) - 1 };
+      expect(isClosed(fresh, AS_OF)).toBe(false);
+      expect(callStatus(fresh, AS_OF)).toBe("open");
+      expect(failuresFor(fresh).join(" ")).not.toMatch(CLOSURE);
+    }
+  });
+
+  it("closes the row once the renewal has gone stale and NOBODY HAS ASKED", () => {
+    for (const row of STALE_POPULATION) {
+      expect(isClosed(row, AS_OF)).toBe(true);
+      expect(callStatus(row, AS_OF)).toBe("shut");
+      expect(failuresFor(row).join(" ")).toMatch(CLOSURE);
+    }
+  });
+
+  it("offers it WITH THE CAVEAT once the funder's source says the programme recurs", () => {
+    for (const row of STALE_POPULATION) {
+      const recurring = { ...row, callRecurrence: CALL_RECURRENCE.recurs };
+      expect(isClosed(recurring, AS_OF)).toBe(true);
+      expect(callStatus(recurring, AS_OF)).toBe("between_calls");
+      expect(failuresFor(recurring).join(" ")).not.toMatch(CLOSURE);
+      // The founder is told, in code-built copy, that the window we hold shut.
+      expect(betweenCallsCaveat(recurring, AS_OF)).toMatch(/window we hold/);
+    }
+  });
+
+  it("keeps it closed when the funder's source says it was the whole programme", () => {
+    for (const row of STALE_POPULATION) {
+      const oneOff = { ...row, callRecurrence: CALL_RECURRENCE.singleCall };
+      expect(callStatus(oneOff, AS_OF)).toBe("shut");
+      expect(failuresFor(oneOff).join(" ")).toMatch(CLOSURE);
+    }
+  });
+
+  it("is decided by the CLOCK, so the same row answers differently next year", () => {
+    // The defect in one line: the shipped rule compared the award year to the
+    // END DATE only, so it gave the same answer in 2021 and in 2026 and the
+    // row could never age out. 336 rows carry a past end date and some expired
+    // four days ago, so this accrues continuously.
+    for (const row of STALE_POPULATION) {
+      const y = row.lastYear as number;
+      expect(isClosed(row, `${y + 1}-06-01`)).toBe(false);
+      expect(isClosed(row, `${y + 3}-06-01`)).toBe(true);
+    }
+  });
+});
+
 describe("the caveat says the window shut and never says when it reopens", () => {
   const ROW = { ...generatedRow(1), callRecurrence: CALL_RECURRENCE.recurs };
 

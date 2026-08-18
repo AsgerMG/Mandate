@@ -32,7 +32,37 @@ describe("liveness", () => {
     // lawfully be granted under an expired measure, so a later award year is
     // evidence the notification was prolonged.
     expect(isClosed(
-      { schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2021 }, AS_OF)).toBe(false);
+      { schemeEndDate: "2024-12-30", schemeEndBasis: N, lastYear: 2025 }, AS_OF)).toBe(false);
+  });
+
+  // ── And the prolongation it evidences ends where the award year ends ────
+  it("re-closes a notified duration whose renewal evidence has gone stale", () => {
+    // SA.40453, published to a real founder as row 5 of seven on 2026-08-18
+    // with "confirm this regime is still accepting applications" under it. The
+    // 2022 award evidences a prolongation THROUGH 2022 and says nothing about
+    // 2026, so four years later the declared expiry is again the last thing
+    // anybody has stated about this window.
+    expect(isClosed(
+      { schemeEndDate: "2020-12-30", schemeEndBasis: N, lastYear: 2022 }, AS_OF)).toBe(true);
+  });
+
+  it("judges the renewal against the CLOCK, not against the expiry", () => {
+    // The same row, same award year, read at two different times. A rule that
+    // only compared lastYear to the end date would answer identically on both
+    // and is the rule that shipped SA.40453; a fund loaded next year is judged
+    // by this same test with no edit anywhere.
+    const row = { schemeEndDate: "2022-12-30", schemeEndBasis: N, lastYear: 2023 };
+    expect(isClosed(row, "2025-01-01")).toBe(false);
+    expect(isClosed(row, "2026-01-01")).toBe(true);
+  });
+
+  it("holds the horizon open for the register's own reporting lag", () => {
+    // Measured on rows whose openness is established WITHOUT any award year —
+    // a declared duration still in the future — 56.6% report no award in the
+    // current year and 16.2% none for two years. A horizon of zero would call
+    // most demonstrably-open schemes dead. See RENEWAL_EVIDENCE_HORIZON_YEARS.
+    expect(isClosed(
+      { schemeEndDate: "2023-12-30", schemeEndBasis: N, lastYear: 2024 }, "2026-08-06")).toBe(false);
   });
 
   it("keeps a call deadline closed even though it awarded afterwards", () => {

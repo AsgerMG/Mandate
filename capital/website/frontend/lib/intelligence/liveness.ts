@@ -66,7 +66,9 @@
  * direction: 94% of notified durations expire on 12-30 or 06-29 (the statutory
  * GBER boundary days), so a same-year award almost certainly precedes the
  * expiry and the row correctly stays closed. Only a STRICTLY later award year
- * counts as evidence of renewal.
+ * counts as evidence of renewal, and only while that year is still within the
+ * register's own reporting lag — see `RENEWAL_EVIDENCE_HORIZON_YEARS`, which is
+ * what stops a prolongation evidenced in 2022 being read as openness in 2026.
  */
 
 /** Which register supplied `scheme_end_date`, and therefore what it means.
@@ -240,6 +242,87 @@ export function today(): string {
 }
 
 /**
+ * HOW LONG AN OBSERVED RENEWAL GOES ON MEANING SOMETHING.
+ *
+ * ── The defect, found on a real founder's memo ────────────────────────────
+ * On 2026-08-18 `npm run prodcheck` published, as row 5 of seven, SA.40453 —
+ * *Régime cadre exempté ... PME pour la période 2014-2020*, `scheme_end_date`
+ * 2020-12-30, basis `notified_duration` — with a working link, a EUR 980,817
+ * typical award and the next step "confirm this regime is still accepting
+ * applications". `betweenCalls` is the mechanism for a row whose window has
+ * shut and it did not fire, for a reason that is not a bug in it: the row was
+ * never CLOSED. `isClosed()` read `last_year = 2022 > 2020` and returned false,
+ * so `callStatus()` returned `open` and never reached the recurrence question.
+ * The row was not offered despite a shut window. It was offered as open.
+ *
+ * ── What the renewal clause may and may not conclude ──────────────────────
+ * The clause above is right about the legal fact and wrong about its EXTENT.
+ * Aid granted under a notified or block-exempted measure after its notified
+ * duration is only lawful if the measure was prolonged, so an award in year Y
+ * does establish a prolongation. It establishes one THROUGH YEAR Y. It says
+ * nothing whatever about Y+1, and reading it as permanent openness is the
+ * forbidden direction this file already names one axis over:
+ *
+ *     the copy may FALSIFY a declaration. It may never SUPPLY one.
+ *
+ * A 2022 award falsifies "this window shut in 2020". It does not supply a new
+ * window running to today. Four years later the last thing anybody has stated
+ * about SA.40453 is still an expiry in the past.
+ *
+ * ── THE PROPERTY, and its test for a fund nobody here has read ────────────
+ *
+ *     A ROW WHOSE OWN WINDOW HAS CLOSED IS NOT OFFERED AS OPEN. Its window is
+ *     judged on the LATEST DATED FACT anybody has stated about it — the
+ *     declared expiry, or a prolongation an award year evidences — and when
+ *     that fact is in the past the row may be offered ONLY where the funder's
+ *     own source says the programme continues past the round we hold, and then
+ *     only WITH THE CAVEAT SHOWN.
+ *
+ * The test, for a fund loaded next year from a register in a language nobody
+ * here reads: take every date the row carries that bears on its window, take
+ * the latest, and ask whether it has passed. If it has, the row's own window
+ * has closed and `CALL_RECURRENCE` is the only thing that may lift it — NULL
+ * is not "recurs". No fund, feed, country, sector or date appears in the rule.
+ *
+ * ── WHY THE HORIZON IS TWO YEARS, measured rather than chosen ─────────────
+ * "Latest dated fact has passed" is exact for a declared expiry and coarse for
+ * an award year, because `last_year` is a YEAR and the register publishes with
+ * a lag: an award granted this year may lawfully be unpublished for months, so
+ * a live scheme routinely shows no award for the current year. Taken literally
+ * the rule would close schemes that are running.
+ *
+ * So it is measured, on the one population whose openness is established
+ * WITHOUT reference to any award year — rows whose declared notified duration
+ * is still in the future. `scripts/_wshq_lag.ts`, live Postgres, 2026-08-18,
+ * 228 such rows:
+ *
+ *   last award this year        43.4%   cumulative  43.4%
+ *   last award 1 year ago       40.4%   cumulative  83.8%
+ *   last award 2 years ago      12.3%   cumulative  96.1%
+ *   last award 3 years ago       3.5%   cumulative  99.6%
+ *
+ * A horizon of 0 would call 56.6% of demonstrably-open rows stale; 1 year,
+ * 16.2%; 2 years, 3.9%. Two years is where the register's own lag is spent,
+ * and past it a silence is no longer explained by publication delay.
+ *
+ * It is a FIXED constant and deliberately not computed from the corpus at
+ * request time, for the reason `populationRecordsDeadlines` was deleted: a
+ * copy stale enough to be dangerous shows a long apparent lag, which would
+ * widen the horizon exactly when it should narrow. The number above is a
+ * measurement written down, not a reading taken. Re-take it with
+ * `scripts/_wshq_lag.ts` and move the constant deliberately, in a commit that
+ * says what moved.
+ */
+export const RENEWAL_EVIDENCE_HORIZON_YEARS = 2;
+
+/** Is a prolongation evidenced by an award in `lastYear` still current as of
+ *  `asOf`? Asked of the ROW's own year and the clock, so a fund loaded next
+ *  year is judged by the same test with no edit anywhere. */
+export function renewalIsCurrent(lastYear: number, asOf: string = today()): boolean {
+  return lastYear + RENEWAL_EVIDENCE_HORIZON_YEARS >= Number(asOf.slice(0, 4));
+}
+
+/**
  * Has the declared window passed AND does observed activity agree?
  *
  * `asOf` is injectable so tests can pin a date; it defaults to today.
@@ -262,8 +345,16 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
   // Notified duration: expiry is not closure on its own. Aid granted after it
   // is only lawful under a prolonged measure, so a strictly later award year is
   // evidence the notification was renewed and our snapshot is behind.
+  //
+  // AND THAT EVIDENCE IS ITSELF DATED — see `RENEWAL_EVIDENCE_HORIZON_YEARS`.
+  // An award in year Y establishes the measure was prolonged THROUGH Y and
+  // nothing after it. Once Y is outside the register's own reporting lag the
+  // renewal has stopped being current, the declared expiry is again the last
+  // thing anybody has stated about this window, and the row is closed — which
+  // is not the end of it, because `callStatus()` then asks the funder.
   const endYear = Number(end.slice(0, 4));
-  if (row.lastYear != null && row.lastYear > endYear) return false;
+  if (row.lastYear != null && row.lastYear > endYear
+      && renewalIsCurrent(row.lastYear, asOf)) return false;
   return true;
 }
 
@@ -598,9 +689,16 @@ export function closedSql(opts: { col?: string; sqlite?: boolean } = {}): string
   const endYear = opts.sqlite
     ? `CAST(substr(${c}scheme_end_date, 1, 4) AS INTEGER)`
     : `EXTRACT(year FROM ${c}scheme_end_date::date)::int`;
+  // The renewal horizon, in the same SQL, because a projection that dropped it
+  // would have the ETL judging SA.40453 open while the product suppresses it —
+  // which is the five-copies fault this whole file exists to end.
+  const nowYear = opts.sqlite
+    ? `CAST(strftime('%Y', 'now') AS INTEGER)`
+    : `EXTRACT(year FROM current_date)::int`;
   return (
     `(${c}scheme_end_date IS NOT NULL AND ${past}` +
     ` AND NOT (COALESCE(${c}scheme_end_date_basis, '') = '${SCHEME_END_BASIS.notifiedDuration}'` +
-    ` AND ${c}last_year IS NOT NULL AND ${c}last_year > ${endYear}))`
+    ` AND ${c}last_year IS NOT NULL AND ${c}last_year > ${endYear}` +
+    ` AND ${c}last_year + ${RENEWAL_EVIDENCE_HORIZON_YEARS} >= ${nowYear}))`
   );
 }
