@@ -123,8 +123,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": true,
-   "turns": []
+   "sameArray": true
   },
   {
    "company": "ADVANCED AIR MOBILITY AAM AB",
@@ -166,8 +165,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "TOUL ENERGIE",
@@ -209,8 +207,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": true,
-   "turns": []
+   "sameArray": true
   },
   {
    "company": "ACS SOLUTIONS",
@@ -252,8 +249,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "AF OFFSHORE DECOM",
@@ -295,8 +291,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "AB TASTY",
@@ -338,8 +333,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "ARBOAIR AB",
@@ -381,8 +375,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "AISTI CORPORATION OY",
@@ -424,8 +417,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "A.M.L. MICROTECHNIQUE LORRAINE",
@@ -467,8 +459,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "AKIRAM THERAPEUTICS AB",
@@ -510,8 +501,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "ANFERRA AB",
@@ -553,8 +543,7 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   },
   {
    "company": "CYTO365 AB",
@@ -596,8 +585,9 @@
    "inTokens": [],
    "thinkTokens": [],
    "eur": 0,
-   "sameArray": false,
-   "turns": []
+   "sameArray": false
   }
- ]
+ ],
+ "transcriptsLiveIn": "medium_blocked_tape.jsonl",
+ "note": "`rows[].turns` are stripped here and kept IN FULL in the tape beside this file. The tape is the copy of record; this is the summary. Nothing paid for is lost."
 }

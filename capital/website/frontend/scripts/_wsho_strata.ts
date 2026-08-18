@@ -700,9 +700,9 @@ async function main() {
   p(`| | n | count | rate |`);
   p(`|---|---:|---:|---:|`);
   p(`| **rescue** — won fund enters the six under the model | ${nR} | ${rescued} | `
-    + `${(100 * rescue).toFixed(1)}% +/-${(100 * halfWidth(rescued, nR || 1)).toFixed(1)} |`);
+    + `${(100 * rescue).toFixed(1)}% +/-${halfWidth(rescued, nR || 1).toFixed(1)} |`);
   p(`| **harm** — won fund LEAVES the six under the model | ${nC} | ${harmed} | `
-    + `${(100 * harm).toFixed(1)}% +/-${(100 * halfWidth(harmed, nC || 1)).toFixed(1)} |`);
+    + `${(100 * harm).toFixed(1)}% +/-${halfWidth(harmed, nC || 1).toFixed(1)} |`);
   p();
   p("```");
   p(`delta = s_R * rescue  -  s_C * harm`);
