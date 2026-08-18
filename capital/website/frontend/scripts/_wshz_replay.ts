@@ -64,6 +64,7 @@ const BAND_FLOOR: Record<string, number> = {
 interface Turn { round: number; prompt: string; reply: string; thinking: string }
 interface Row {
   company: string; country: string; stratum: string; sector: string; ticketBand: string;
+  won: string;
   called: boolean; picks: number[]; menu: number;
   hitControl: boolean; hitTreatment: boolean;
   poolRankControl: number | null; poolRankTreatment: number | null;
