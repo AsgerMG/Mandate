@@ -16,11 +16,19 @@ The 51 split cleanly, and the larger half has a direction:
   held one — a fund screening a founder on a co-financing band or a
   use-of-funds list in one corpus, and on nothing in the other.
 * **39** were **regional rules whose permitted region list was narrower in the
-  snapshot**, in every single case a strict subset of Postgres's. So a founder
-  in **CZ07 or CZ08** (Central and Moravia-Silesia), in **DE9, DEA–DEG** (Lower
-  Saxony through Thuringia — the whole of eastern Germany plus the north) or in
-  **FRG0** was **refused by the fallback corpus and admitted by the live one**,
-  on the same fund, for the same company, decided by which store answered.
+  snapshot** — in every single one of the 39, a strict subset of Postgres's. A
+  founder in those regions was **refused by the fallback corpus and admitted by
+  the live one**, on the same fund, for the same company, decided by which
+  store happened to answer. 31 were Czech schemes missing **CZ07 Střední
+  Morava** and **CZ08 Moravskoslezsko**; 6 were German, missing **DE9
+  Niedersachsen** and **DEA Nordrhein-Westfalen** through **DEG Thüringen**;
+  2 French, missing **FRG0**.
+
+  Two of the German six say what this cost in one line. `nrw_bank` — the
+  development bank **of North Rhine-Westphalia** — carried a snapshot rule that
+  **excluded DEA, which is North Rhine-Westphalia**. `nbank` — the development
+  bank **of Lower Saxony** — excluded **DE9, which is Lower Saxony**. On the
+  fallback corpus, each of those banks refused the founders it exists to serve.
 
 **The stated fix would have destroyed the thing it was meant to publish.** The
 22 names are the register titles wsHF wrote for SA.40391, SA.56245 and
@@ -78,12 +86,24 @@ the high-water mark ratcheted **up**, and no floor was moved — but part of it 
 other workstreams' work landing in a shared `db.sqlite`, not this one's, and it
 is recorded here so nobody reads it as a claim.
 
-## What is live and what is not
+## Seen in production
 
-The Postgres half is **live now**: production reads Railway Postgres, so the
+`npm run prodcheck`, one founder — A.M.L. MICROTECHNIQUE LORRAINE, FR — through
+`euro-inv-tracker.vercel.app`, 185s end to end, three routes all 200, six
+events, 5,380 characters of memo, no truncation, and `memo ids ok — none of 307
+founder-facing strings carries one of the 7 ids this deployment served`.
+
+The deployment attests **`source postgres, degraded false, instruments 1088`**,
+hydrated **after** this republish. So the Postgres half is **live now**: the
 register titles and the 51 corrected rules are in front of founders already. The
 snapshot half — the corpus a degraded request falls back to — ships when this
 branch merges and Vercel deploys.
+
+One thing worth the owner's eye, visible in that brief and not caused by this
+work: three of the five published rows are the **same scheme title**, separated
+only by their `· via <body>` qualifier. The qualifier mechanism is doing its job
+— the rows are distinguishable — but this is the same shape as the open
+SA.40391 item in `AWAITING_APPROVAL.md`, now observed on a second scheme.
 
 ## Files
 
