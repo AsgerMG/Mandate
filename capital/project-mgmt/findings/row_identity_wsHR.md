@@ -77,32 +77,58 @@ reads `· via Conseil régional d'Ile-de-France`. Duplicate seats on the rendere
 label — what the disambiguator exists to prevent — are unchanged at **0
 published, 0 menu** on the recall population.
 
-## 3. The writer's page and the founder's page are the same page
+## 3. Two channels hand the writer an unpublished fund, and wsHP named the wrong one
 
 Her third bottom-line bullet gave *PACTE Industrie* a verdict and a blocker and
-there was no PACTE Industrie row. `WRITER_CANDIDATE_CAP` was
-`institutionsMax + 1`, the writer writes before the cut, and since wsGK removed
-the watch-only sort `w(r)` is identically zero — so rank 8 is unpublishable at
-ANY value of that cap. The spare seat bought nothing and cost that.
+there was no PACTE Industrie row. wsHP read that as the writer being shown one
+more candidate than the table publishes. **It was not**, and the way to find out
+was to close that channel and run the same founder again: the bullet came back,
+about ADEME's écoconception route.
 
-**The fix is the cut, not a rule about what the writer may name.** BL-B1
-("naming a fund that is not in the published table") is already a Banned rule
-and did not fire, because it tests whether a bullet CONTAINS a cut candidate's
-full display name and the writer wrote the fund's short name. Tightening that
-is chasing a model's phrasing with a string match; the next brief abbreviates
-differently. The cut removes the thing being named: with the candidate list
-equal to the published table there is no fund on the writer's page that is not
-on the founder's, whatever the model calls it, and BL-B1 becomes a tripwire on
-the caps rather than a filter on prose.
+**Channel A — the spare candidate seat. Closed by CUTTING, and it was free.**
+`WRITER_CANDIDATE_CAP` was `institutionsMax + 1`, the writer writes before the
+cut, and since wsGK removed the watch-only sort `w(r)` is identically zero — so
+rank 8 is unpublishable at ANY value of that cap. The spare seat bought nothing
+(`caps.ts` measures its whole reach at 0.12 points against a ±3.2 half-width)
+and could still hand the writer a fund the founder cannot see. `check_contracts`
+now ties the two caps in both directions, each with its own reason.
 
-**It is not `worth: Boolean(note)` returning (wsGC), and the direction is the
-difference.** That let the writer's SILENCE delete a row the ranker had chosen.
+It is **not** `worth: Boolean(note)` returning (wsGC), and the direction is the
+difference. That let the writer's SILENCE delete a row the ranker had chosen.
 This is code cutting by RANK before the call: the ranker still chooses every
 seat, the writer still cannot add, drop or reorder one, and a candidate it
-writes nothing about still publishes from its own facts. `check_contracts.ts`
-ties the two caps in both directions, each with its own reason — a cap below the
-published count ships rows with no assessment, a cap above it hands the writer a
-fund the founder cannot see.
+writes nothing about still publishes from its own facts.
+
+**Channel B — the round-two facts, and this is the one that fired.**
+`brief_funnel_v2` Stage 2b puts one line per answered question into the writer's
+prompt: *`<fund>` requires: "`<verbatim gate text>`" / Asked: ... / They
+answered: ...*, and closes "where an answer shows a requirement is not met, say
+so plainly and give the cure". Those questions are grounded in the **whole
+candidate pool by design** — their answers are what decides which funds publish,
+so the grounding cannot be the published table without being circular — and the
+fund that prompted one is routinely not a row. The writer did exactly what it
+was told, about a fund the founder would never see, on both runs.
+
+**CONSTRAINED, not cut, and not redacted.** Cutting is impossible (see the
+circularity). Redacting is worse than it looks: the name sits inside the fund's
+own verbatim quote and inside the question phrased from it, so stripping it
+either breaks the quotation or leaves the name in the line beneath. What CAN be
+stated exactly is the boundary, and it is now stated in the block: these lines
+are facts about the FOUNDER, the funds in them were screened and are not the
+table, use the answer anywhere and never give one of them a verdict, a blocker,
+a next step or a recommendation.
+
+**And BL-B1 was blind, for a reason worth writing down.** The rule already
+exists — "naming a fund that is not in the published table" — and did not fire
+on either brief. It required the bullet to contain the fund's WHOLE display
+name, and the corpus name is *"PACTE Industrie - Parcours Accompagnement et
+Compétences pour la Transition Énergétique de l'Industrie"*, 101 characters. A
+writer calls it PACTE Industrie. It also had nothing left to compare against
+once channel A closed, because its evidence set was the candidate list and that
+list is now the table. It is given the round-two fund names as well, and
+compares on the lead segment of a name as well as the whole of it. Both sides
+are compared on the head of the name, so a published row's appended door does
+not read as a fund that is not in the table.
 
 ---
 
@@ -120,6 +146,38 @@ The fix is that the RENDERER must cut the title and keep the qualifier
 says is wrong — "the disambiguator did its work and the renderer removed it" —
 and it changes which rows the collapse demotes, so it needs a funnel run rather
 than a label run. **Left open deliberately**, with the number above.
+
+## The closing run — same founder, same path
+
+`row_identity_wsHR_prodcheck.txt`. A.M.L. MICROTECHNIQUE LORRAINE, the four
+route calls over HTTP against a server running this branch, live Postgres, one
+real brief. **`PRODCHECK_URL` is set, and the run says so in its own header**:
+Vercel preview deployments sit behind deployment protection and there is no
+bypass secret on the project, so the alternative was a production deploy of
+unreviewed work. This is the founder's path end to end on this code; it is not
+the published deployment, and nothing here should be read as one.
+
+```
+row names   ok — none of 7 reveals an instrument id
+```
+
+Seven rows, every one carrying its instrument id. Four are named by the door
+they are — `· via REGION GRAND EST`, `· via Conseil régional`, `· via Conseil
+régional Occitanie` — where the run three hours earlier printed
+`· rnd  sa 111728  ministere de l economie et des finances` on two of them.
+Note what the id fragment was actually saying on row 5: its id names the
+MINISTRY that notified SA.40453, while the door the founder is given is Conseil
+régional Occitanie. The slug was not merely unreadable, it was a second body in
+the same name.
+
+Every fund the bottom line names is a published row: Horizon EU CL4 (row 1), the
+three French R&D regimes by their granting bodies (rows 2-4), the CNC-run scheme
+(row 7) and the equity regime via Conseil régional (row 6). No PACTE Industrie,
+no ADEME route, no fund that is not on the page.
+
+Two paid briefs, ~EUR 0.5 against a EUR 1 budget. The first is what established
+that channel A was not the one firing; without it this workstream would have
+shipped a correct fix and a wrong diagnosis.
 
 ## Verification
 
