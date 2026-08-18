@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-18T18:53:32.257Z",
+ "startedAt": "2026-08-18T22:14:33.518Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-18T18:53:32.742Z",
+ "corpusObservedAt": "2026-08-18T22:14:34.015Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 819,
@@ -18,7 +18,7 @@
  "populationSize": 897,
  "levers": {
   "VERDICT_POOL": 40,
-  "WRITER_CANDIDATE_CAP": 8,
+  "WRITER_CANDIDATE_CAP": 7,
   "PUBLISH_CAP": 7,
   "TOP": 5,
   "rowCuts": [
@@ -34,10 +34,10 @@
  },
  "poolSweep": null,
  "watchOnlyInProduction": {
-  "briefs": 35,
+  "briefs": 38,
   "withDemotion": 6,
   "rows": 8,
-  "share": 0.17142857142857143
+  "share": 0.15789473684210525
  },
  "meanTableRows": 86.4,
  "meanAccessibleRows": 81.8,
@@ -81,17 +81,17 @@
   {
    "id": "founder_screen",
    "question": "... and this founder's screen keeps it (country, capital, channel + leaf caps)",
-   "remaining": 797,
-   "sharePct": 88.85,
-   "lost": 22,
+   "remaining": 798,
+   "sharePct": 88.96,
+   "lost": 21,
    "unmeasured": false,
-   "halfWidthPts": 2.06
+   "halfWidthPts": 2.05
   },
   {
    "id": "gates_pass",
    "question": "... and its encoded eligibility gates do not conclusively fail (accessiblePool)",
-   "remaining": 786,
-   "sharePct": 87.63,
+   "remaining": 787,
+   "sharePct": 87.74,
    "lost": 11,
    "unmeasured": false,
    "halfWidthPts": 2.15
@@ -99,20 +99,20 @@
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (40 rows)",
-   "remaining": 668,
-   "sharePct": 74.47,
-   "lost": 118,
+   "remaining": 666,
+   "sharePct": 74.25,
+   "lost": 121,
    "unmeasured": false,
-   "halfWidthPts": 2.85
+   "halfWidthPts": 2.86
   },
   {
    "id": "writer_cap",
-   "question": "... and it survives the cut to the writer's candidates (8)",
-   "remaining": 383,
-   "sharePct": 42.7,
-   "lost": 285,
+   "question": "... and it survives the cut to the writer's candidates (7)",
+   "remaining": 373,
+   "sharePct": 41.58,
+   "lost": 293,
    "unmeasured": false,
-   "halfWidthPts": 3.24
+   "halfWidthPts": 3.23
   },
   {
    "id": "watch_only",
@@ -126,29 +126,29 @@
   {
    "id": "published",
    "question": "... and it is one of the 7 rows the brief publishes",
-   "remaining": 370,
-   "sharePct": 41.25,
-   "lost": 13,
+   "remaining": 373,
+   "sharePct": 41.58,
+   "lost": 0,
    "unmeasured": false,
-   "halfWidthPts": 3.22
+   "halfWidthPts": 3.23
   },
   {
    "id": "top_6",
    "question": "... and it is in the first 6 of them",
-   "remaining": 345,
-   "sharePct": 38.46,
-   "lost": 25,
+   "remaining": 350,
+   "sharePct": 39.02,
+   "lost": 23,
    "unmeasured": false,
-   "halfWidthPts": 3.18
+   "halfWidthPts": 3.19
   },
   {
    "id": "top_5",
    "question": "... and it is in the first 5 of them",
-   "remaining": 323,
-   "sharePct": 36.01,
-   "lost": 22,
+   "remaining": 325,
+   "sharePct": 36.23,
+   "lost": 25,
    "unmeasured": false,
-   "halfWidthPts": 3.14
+   "halfWidthPts": 3.15
   },
   {
    "id": "model",
