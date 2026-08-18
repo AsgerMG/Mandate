@@ -108,6 +108,40 @@ same in both cases: **re-attribute the answer to the scheme that actually paid.*
 That is a change to the recall set, which is yours to make and is why nothing
 here touches it.
 
+**Tier C is eleven equity funds and one French regime.** All eleven below the
+data floor are equity — `eic_fund` (3), `eifo_coinvest` (2),
+`almi_invest_equity` (2), `htgf_equity`, `cdp_vc_equity`, `cdp_vc_fof`,
+`invest_nl_equity` — which is `project_pipeline_channel_audit`'s finding
+arriving from the other direction: the equity channel is not thin in the
+brief because founders do not ask for it, it is thin because the rows carry
+no amounts and no dates and cannot clear the floor. And of the nine unexamined
+notified durations, **eight are one scheme**: SA.40391, across its R&D and its
+equity registration. One funder page, read once, decides eight founders.
+
+## 2b. Seventy-eight founders is thirty-one funds
+
+The founder is the unit the funnel counts. The FUND is the unit anybody would
+act on, and a repair list of thirty-one reads very differently from a loss of
+seventy-eight:
+
+| founders | fund | tier |
+|---:|---|---|
+| 7 + 1 | `satr_fr_rnd__sa_40391__…` and its equity twin | C — nobody has asked the funder |
+| 6 | `sudop_bgk_kit_v3` | B — a label |
+| 6 | `sudop_ncbr_aid` | B — a label |
+| 6 | `sudop_regional_inv` | B — a label |
+| 5 | `eit_food_rfs` | A — editorial policy |
+| 4 | `ipcei_micro` | B — no door |
+| 3 | `sudop_rd_centers` | B — a label |
+| 3 | `ipcei_hy2tech` · `ipcei_tech4cure` | B — no door |
+| 3 | `eic_fund` | C — below the data floor |
+| 3 | `ademe_aid__innov_eau_ec2654` | A — the deadline passed |
+| … | 20 more funds, 1–2 founders each | |
+
+Five Polish bucket labels carry 22 founders. Eight IPCEI waves carry 19. One
+French regime carries 8. **Three decisions and one page-read cover 49 of the
+78.**
+
 ## 3. The honest population — both numbers, and the flattering one named as such
 
 There are two defensible values of M and the census prints both, side by side,

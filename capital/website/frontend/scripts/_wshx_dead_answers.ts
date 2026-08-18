@@ -277,6 +277,23 @@ async function main() {
   console.log(`  NOTHING ABOUT THE PRODUCT CHANGED. What moved is what we admit we grade`);
   console.log(`  against — and the honest report is both numbers, never the second alone.`);
 
+  // ── 4b. THE FUNDS BEHIND THE FOUNDERS ───────────────────────────────────
+  // Founders are the unit the funnel counts; FUNDS are the unit anybody would
+  // act on. 78 founders is 24 funds, and a repair list of 24 reads differently
+  // from a loss of 78.
+  console.log(`\n══ 4b. the funds behind the 78 ══`);
+  const byFund = new Map<string, { n: number; cause: string }>();
+  for (const r of notPub) {
+    const { cause } = tierOf(r);
+    const e = byFund.get(r.id) ?? { n: 0, cause };
+    e.n += 1;
+    byFund.set(r.id, e);
+  }
+  console.log(`  ${notPub.length} founders on ${byFund.size} distinct funds`);
+  for (const [id, e] of [...byFund.entries()].sort((a, b) => b[1].n - a[1].n)) {
+    console.log(`    ${String(e.n).padStart(3)}  ${id.padEnd(64)} ${e.cause}`);
+  }
+
   // ── 5. THE ROWS, NAMED ──────────────────────────────────────────────────
   if (process.env.ROWS) {
     console.log(`\n══ 5. every founder whose won fund is not publishable ══`);

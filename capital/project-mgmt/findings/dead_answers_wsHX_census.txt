@@ -1,6 +1,6 @@
-(node:42958) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(node:47095) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
 (Use `node --trace-deprecation ...` to show where the warning was created)
-provenance {"source":"postgres","degraded":false,"instruments":1088,"hydratedAt":"2026-08-18T22:33:25.811Z","observedAt":"2026-08-18T22:33:25.812Z"}
+provenance {"source":"postgres","degraded":false,"instruments":1088,"hydratedAt":"2026-08-18T22:38:47.296Z","observedAt":"2026-08-18T22:38:47.297Z"}
 asOf 2026-08-18  corpus 1088  publishable 760
 renewal horizon 2 year(s)
 
@@ -78,6 +78,40 @@ founders 37 of 897 (4.12%) — 25 distinct funds
   so it is not an improvement in anything and must not be quoted as one.
   NOTHING ABOUT THE PRODUCT CHANGED. What moved is what we admit we grade
   against — and the honest report is both numbers, never the second alone.
+
+══ 4b. the funds behind the 78 ══
+  78 founders on 31 distinct funds
+      7  satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances   a notified duration expired and nobody has asked the funder
+      6  sudop_bgk_kit_v3                                                 nothing outside its own id names the object — a loader-constructed label
+      6  sudop_ncbr_aid                                                   nothing outside its own id names the object — a loader-constructed label
+      6  sudop_regional_inv                                               nothing outside its own id names the object — a loader-constructed label
+      5  eit_food_rfs                                                     withheld by editorial policy — our standing decision, reversible only by the owner
+      4  ipcei_micro                                                      no application route exists on the object the key names
+      3  ipcei_hy2tech                                                    no application route exists on the object the key names
+      3  eic_fund                                                         no amounts and no dates — below the data floor
+      3  sudop_rd_centers                                                 nothing outside its own id names the object — a loader-constructed label
+      3  ademe_aid__innov_eau_ec2654                                      the application deadline passed (call_deadline)
+      3  ipcei_tech4cure                                                  no application route exists on the object the key names
+      2  eifo_coinvest                                                    no amounts and no dates — below the data floor
+      2  ipcei_hy2move                                                    no application route exists on the object the key names
+      2  ipcei_mect                                                       no application route exists on the object the key names
+      2  almi_invest_equity                                               no amounts and no dates — below the data floor
+      2  ipcei_eubatin                                                    no application route exists on the object the key names
+      2  eit_digital_vap                                                  withheld by editorial policy — our standing decision, reversible only by the owner
+      2  satr_lt_equity                                                   nothing outside its own id names the object — a loader-constructed label
+      2  chips_ju_kdt_unknown                                             nothing outside its own id names the object — a loader-constructed label
+      2  ipcei_batteries                                                  no application route exists on the object the key names
+      1  satr_it_rnd__sa_49781__ministero_delle_imprese_e_del_made_in_italy_dire a notified duration expired and nobody has asked the funder
+      1  ademe_aid__ecoconception_textile_d_habillement_texhabi_3ff5cf    the application deadline passed (call_deadline)
+      1  satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances a notified duration expired and nobody has asked the funder
+      1  htgf_equity                                                      no amounts and no dates — below the data floor
+      1  bdns_es_ayudas__programa_para_actuaciones_de_autoconsumo_y_almac_1f5394 the application deadline passed (call_deadline)
+      1  cdp_vc_equity                                                    no amounts and no dates — below the data floor
+      1  bdns_es_ayudas__ayudas_tecniospring_industry_d96c88              the application deadline passed (call_deadline)
+      1  ipcei_hy2infra                                                   no application route exists on the object the key names
+      1  cdp_vc_fof                                                       no amounts and no dates — below the data floor
+      1  sudop_parp_rd                                                    nothing outside its own id names the object — a loader-constructed label
+      1  invest_nl_equity                                                 no amounts and no dates — below the data floor
 
 ══ 5. every founder whose won fund is not publishable ══
   1. ZAKŁAD PRACY CHRONIONEJ - PRZEDSIĘBIORSTWO PRODUKCYJNO HANDLOWO USŁUGOWE "LESTER" ADAM STOSIK 2. AUTOAQUA S.C. ADAM STOSIK
