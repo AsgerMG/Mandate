@@ -411,7 +411,35 @@ def report(a_path: str, b_path: str) -> int:
 
 
 def merge_table(tgt: sqlite3.Connection, src: sqlite3.Connection, table: str,
-                owner_is_source: bool, dry: bool) -> dict:
+                owner_is_source: bool, dry: bool, inserts_only: bool = False) -> dict:
+    """Union `src` into `tgt` on the table's own identity.
+
+    ── `inserts_only`, and why a PROMOTION is not a MERGE ──────────────────
+    Two different operations wear the word "union" here and conflating them
+    cost a near miss on 2026-08-19.
+
+    A row the target does not have is UNAMBIGUOUS: inserting it takes nothing
+    away from anybody, and it is the whole of what "promote the 3,362 gates
+    the record has never been given" asks for.
+
+    A row BOTH stores have, whose columns disagree, is not a transfer. It is a
+    JUDGEMENT about whose evidence is better, and `owner_is_source` decides it
+    at the granularity of a FAMILY — which is too coarse to be true. Measured
+    on the two live stores: the laptop owns the gate encodings and the record
+    owns 46 cleaned, founder-readable Spanish scheme titles that neither the
+    laptop nor Postgres has (`bdns_conv_922188` reads "Ayudas para provisión
+    ... 5G redes muy rurales" on the record and "PROYECTO DE ORDEN QUE
+    ESTABLECEN BBRR DE LA CONCESIÓN DE ..." on the other two). One family, two
+    owners, in the same table.
+
+    `overwrite_gate` could not have caught it: it counts ROWS that would be
+    lost and every one of those rows exists in both stores, so it reported
+    `proven loss: 0` while 374 column values were queued to be displaced.
+
+    So a promotion says `inserts_only=True` and takes the rows nobody disputes.
+    The disputed columns stay disputed, visibly, for whoever can settle them
+    per column instead of per family.
+    """
     keys = IDENTITY.get(table)
     if not keys:
         return {"skipped": "no identity declared"}
@@ -434,8 +462,10 @@ def merge_table(tgt: sqlite3.Connection, src: sqlite3.Connection, table: str,
             [tuple(src_rows[k][c] for c in shared) for k in new_keys])
     inserted = len(new_keys)
 
-    # 2. rows both have — column by column
-    for k in src_rows:
+    # 2. rows both have — column by column. Skipped entirely for a promotion:
+    # see the docstring. The rows are still COUNTED and reported, so "we did not
+    # touch these" is a stated fact rather than an empty result.
+    for k in ([] if inserts_only else src_rows):
         if k not in tgt_rows:
             continue
         s, t = src_rows[k], tgt_rows[k]
@@ -470,6 +500,7 @@ def merge_table(tgt: sqlite3.Connection, src: sqlite3.Connection, table: str,
     return {
         "inserted": inserted, "updated": updated, "conflicts": conflicts,
         "kept_only_in_target": len([k for k in tgt_rows if k not in src_rows]),
+        "shared_untouched": len([k for k in src_rows if k in tgt_rows]) if inserts_only else 0,
         "columns_dropped": missing_in_target, "conflict_log": conflict_log,
     }
 
@@ -483,6 +514,14 @@ def main() -> int:
     ap.add_argument("--from", dest="source", help="the store to take rows from")
     ap.add_argument("--family", action="append", choices=sorted(FAMILIES),
                     help="which table family the SOURCE owns; repeatable")
+    ap.add_argument("--table", action="append",
+                    help="restrict to these tables within the family; repeatable. "
+                         "A family is the unit of OWNERSHIP, not always the unit of "
+                         "a transfer.")
+    ap.add_argument("--inserts-only", action="store_true",
+                    help="carry ONLY rows the target does not have. Rows both stores "
+                         "hold are left exactly as the target has them, however they "
+                         "differ. This is what a PROMOTION is; see merge_table.")
     ap.add_argument("--dry-run", action="store_true",
                     help="say what would move, write nothing")
     args = ap.parse_args()
@@ -499,20 +538,34 @@ def main() -> int:
     print(f"into  {args.into}\nfrom  {args.source}\nfamily {', '.join(args.family)}"
           + ("   (DRY RUN)" if args.dry_run else "") + "\n")
 
+    if args.inserts_only:
+        print("INSERTS ONLY — rows both stores hold are left exactly as the target "
+              "has them.\n")
+    if args.table:
+        unknown = [t for t in args.table
+                   if not any(t in FAMILIES[f] for f in args.family)]
+        if unknown:
+            ap.error(f"--table names {unknown}, which is not in {args.family}")
+
     total_conflicts = 0
     for family in args.family:
         for t in FAMILIES[family]:
+            if args.table and t not in args.table:
+                continue
             if not (has(tgt, t) and has(src, t)):
                 print(f"  {t:<30} skipped (absent from one store)")
                 continue
-            r = merge_table(tgt, src, t, owner_is_source=True, dry=args.dry_run)
+            r = merge_table(tgt, src, t, owner_is_source=True, dry=args.dry_run,
+                            inserts_only=args.inserts_only)
             if "skipped" in r:
                 print(f"  {t:<30} skipped — {r['skipped']}")
                 continue
             total_conflicts += r["conflicts"]
             print(f"  {t:<30} +{r['inserted']:,} new, {r['updated']:,} merged, "
                   f"{r['conflicts']:,} conflicts, {r['kept_only_in_target']:,} kept "
-                  f"that the source lacks")
+                  f"that the source lacks"
+                  + (f", {r['shared_untouched']:,} shared LEFT AS THE TARGET HAS THEM"
+                     if args.inserts_only else ""))
             if r["columns_dropped"]:
                 print(f"      columns the target has no room for (run migrations "
                       f"first): {r['columns_dropped']}")
@@ -524,8 +577,13 @@ def main() -> int:
         print("\nDRY RUN — nothing written.")
     else:
         tgt.commit()
-        print(f"\nWritten. {total_conflicts:,} conflicts resolved in favour of the "
-              f"source, every one printed above. No row was deleted.")
+        if args.inserts_only:
+            print("\nWritten. Rows the target did not have were INSERTED; every row "
+                  "it already\n  had is byte-for-byte as it was. No row was deleted "
+                  "and no column displaced.")
+        else:
+            print(f"\nWritten. {total_conflicts:,} conflicts resolved in favour of the "
+                  f"source, every one printed above. No row was deleted.")
     tgt.close()
     src.close()
     return 0
