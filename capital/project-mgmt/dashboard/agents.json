@@ -1,4 +1,11 @@
 {
-  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done \u2014 the page shows what is happening now, and history lives in git.",
-  "agents": []
+  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
+  "agents": [
+    {
+      "id": "wsHO",
+      "step": 5,
+      "what": "A four-euro test, to find out what the fifteen-euro one really costs",
+      "why": "The full test is priced somewhere between fifteen and thirty-three euros, and the whole gap is one thing nobody has measured: whether showing the AI forty funds instead of eighteen makes it think for longer. Thinking was half the last bill. A small run measures that as a side effect, proves the run can be trusted before we pay for the big one, and still gives a direction on whether the AI orders better than we do."
+    }
+  ]
 }
