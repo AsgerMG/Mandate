@@ -19,7 +19,9 @@
  */
 import { writeFileSync } from "node:fs";
 import { resolve } from "node:path";
-import { SCHEME_END_BASIS, SOURCE_WINDOW_POLICY, closedSql } from "../lib/intelligence/liveness";
+import {
+  RENEWAL_EVIDENCE_HORIZON_YEARS, SCHEME_END_BASIS, SOURCE_WINDOW_POLICY, closedSql,
+} from "../lib/intelligence/liveness";
 
 export const OUT = resolve(process.cwd(), "../../data/liveness.json");
 
@@ -38,6 +40,11 @@ export function build(): string {
      *  and a second copy of three string literals is how the last cross-store
      *  vocabulary drifted. */
     sourceWindowPolicy: SOURCE_WINDOW_POLICY,
+    /** How long an award year goes on evidencing a prolongation. Projected as
+     *  a NUMBER as well as being baked into the SQL, because ETL/lib/liveness.py
+     *  answers row-wise too and a hand-copied 2 there is the sixth copy of the
+     *  rule this file exists to prevent. */
+    renewalEvidenceHorizonYears: RENEWAL_EVIDENCE_HORIZON_YEARS,
     /** SQL for `this row is closed`, per dialect. Both are generated from the
      *  same function, so a change to the rule cannot reach one store only. */
     closedSql: {

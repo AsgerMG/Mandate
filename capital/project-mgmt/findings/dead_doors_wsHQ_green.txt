@@ -1,0 +1,15 @@
+# check_dead_doors, GREEN after the fix, with PROVE=1
+# PROVE puts 25 rows a founder IS being shown into the exact state of the memo's row 5 --
+# a notified duration years past, one award after it, no funder page read -- and requires
+# the guard to name every one of them and the filter to let none of them through.
+
+  PROVE: 25 open rows given a 2020 notified duration, one award in 2022, and no funder page.
+    the guard reports  25 dead door(s)  RED — enforcing
+    the filter lets    0 of them through  none — the rule is wired
+published rows: 760 of 1088
+  open on a prolongation an award still evidences: 96
+  offered with the between-calls caveat shown:     16
+  withheld on a window nothing contradicts:        224
+  ...of the withheld and caveated, 220 have had NO funder page read. Each is a programme we are calling ended without having asked, and reading one page is the whole remedy — see project-mgmt/evidence/README.md.
+
+ok — no published row rests its openness on a date behind us

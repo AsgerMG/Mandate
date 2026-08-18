@@ -9,8 +9,9 @@
     "publishesNoWindow": "publishes_no_window",
     "declaresOpenEnded": "declares_open_ended"
   },
+  "renewalEvidenceHorizonYears": 2,
   "closedSql": {
-    "postgres": "(scheme_end_date IS NOT NULL AND scheme_end_date::date < current_date AND NOT (COALESCE(scheme_end_date_basis, '') = 'notified_duration' AND last_year IS NOT NULL AND last_year > EXTRACT(year FROM scheme_end_date::date)::int))",
-    "sqlite": "(scheme_end_date IS NOT NULL AND scheme_end_date < date('now') AND NOT (COALESCE(scheme_end_date_basis, '') = 'notified_duration' AND last_year IS NOT NULL AND last_year > CAST(substr(scheme_end_date, 1, 4) AS INTEGER)))"
+    "postgres": "(scheme_end_date IS NOT NULL AND scheme_end_date::date < current_date AND NOT (COALESCE(scheme_end_date_basis, '') = 'notified_duration' AND last_year IS NOT NULL AND last_year > EXTRACT(year FROM scheme_end_date::date)::int AND last_year + 2 >= EXTRACT(year FROM current_date)::int))",
+    "sqlite": "(scheme_end_date IS NOT NULL AND scheme_end_date < date('now') AND NOT (COALESCE(scheme_end_date_basis, '') = 'notified_duration' AND last_year IS NOT NULL AND last_year > CAST(substr(scheme_end_date, 1, 4) AS INTEGER) AND last_year + 2 >= CAST(strftime('%Y', 'now') AS INTEGER)))"
   }
 }

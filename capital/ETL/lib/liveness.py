@@ -74,6 +74,15 @@ DECLARES_OPEN_ENDED: str = _S["sourceWindowPolicy"]["declaresOpenEnded"]
 SOURCE_WINDOW_POLICIES: frozenset[str] = frozenset(
     _S["sourceWindowPolicy"].values())
 
+#: How long an award year goes on evidencing that a notified duration was
+#: prolonged. Read from the projection rather than spelled here: an award in
+#: year Y establishes a prolongation THROUGH Y and nothing after it, and a
+#: hand-copied horizon is how this module and ``isClosed()`` would come to
+#: disagree about which schemes are dead. See RENEWAL_EVIDENCE_HORIZON_YEARS in
+#: website/frontend/lib/intelligence/liveness.ts for the measurement behind the
+#: value.
+RENEWAL_EVIDENCE_HORIZON_YEARS: int = int(_S["renewalEvidenceHorizonYears"])
+
 # A third basis, `closed_beneficiary_list`, existed on 2026-08-07 and was
 # removed the same day. "There is no way into this row" is not a kind of date
 # and does not belong on this axis; it lives in ETL/lib/offer_route.py. Its
@@ -116,8 +125,15 @@ def is_closed(row, as_of: str | None = None) -> bool:
     if (get("scheme_end_date_basis") or "") != NOTIFIED_DURATION:
         return True
     # Aid granted after a notified duration expires is only lawful under a
-    # prolonged measure, so a strictly later award year is evidence of renewal.
+    # prolonged measure, so a strictly later award year is evidence of renewal
+    # -- of a renewal THROUGH THAT YEAR, and no further. Once the award year is
+    # outside the register's own reporting lag the prolongation has stopped
+    # being current and the declared expiry is again the last thing anybody has
+    # stated about this window. SA.40453 was published to a founder as an open
+    # door in 2026 on the strength of a 2022 award.
     last_year = get("last_year")
-    if last_year is not None and int(last_year) > int(end[:4]):
+    this_year = int(as_of[:4])
+    if (last_year is not None and int(last_year) > int(end[:4])
+            and int(last_year) + RENEWAL_EVIDENCE_HORIZON_YEARS >= this_year):
         return False
     return True
