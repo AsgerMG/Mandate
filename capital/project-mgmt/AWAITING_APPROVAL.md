@@ -152,6 +152,36 @@ brief forever.
 
 ## Your decision, no money involved
 
+### 0. The seven checks still red, each with what it costs to close — wsHT, 2026-08-18
+
+`project-mgmt/findings/redchecks_wsHT/`. Thirteen of 59 checks were red on main
+and seven had been red for seven days across 139 commits. **Four are fixed and
+green in `wsHT-redchecks`; two are demoted to reports; seven need you, and every
+one of them is now dated in `data/guard_registry.json -> suite_accepted` with a
+review date that will red the build when it passes.** Listed by what it costs.
+
+| # | what | cost | who is hurt today |
+|---|---|---|---|
+| a | **`encode_gates.py repair-countries`** — one positive country rule demands establishment in **Turkey** and no founder answer can satisfy it, so `eit_digital_vap` is hidden from everyone. `check_winner_not_gated` independently lists two real winners deleted by that instrument (FutureOn NO, ScanTrust CH) | free, **a Postgres write** | every founder who would match that fund |
+| b | **Ten comparator quarantines** — eight jurisdiction rules turning on China, Norway, Denmark, Spain and Peru against questions that name no country; two ownership rules asked at 25% while the rule turns on 40% and 12.5%. The corrections go in `data/reference/gate_encoding_overrides.json`, which survives re-extraction | free, **a Postgres write + a snapshot republish** | a founder answers truthfully and loses a fund that admits them |
+| c | **`make eligibility` + `build_instrument_profiles.py run` + `emit_semantic_cache.ts`** — the snapshot and Postgres disagree on 22 names, 22 name sources, 15 countries and **51 eligibility rules, 36 of them on offerable funds**. `accessiblePool` is built from those rules, so a degraded request admits and refuses different funds. The 22 names are wsHS's rename landing in Postgres and not in the snapshot | free, **a republish** | 26% of founders served off the snapshot were shown a fund whose deadline had passed; on Postgres, 0% |
+| d | **The ETL is broken, not just stale.** Census #11 records the run failing at `classify_taxonomy.py (rc=1)` and the coverage gate refused the corpus: eligibility 898 down from 913, **sectors 8 down from 11 — and sectors is a figure on the home page.** The gate refusing is why nobody is being served the bad numbers | free, **needs a person to read the run** | nobody yet, because the gate held |
+| e | **The container has never once published a verdict.** All 783 rows in `guard_verdicts` say `produced_by=local`. The credential-free door CI reads has been dark since it was built, which is why `check_dead_doors`, `check_memo_table`, `check_pool_recall_curve` and `check_window_evidence` have no automatic home. `python3 ETL/lib/verify_cron.py --deploy` | free, **a deploy** | the four guards above run only when a human types the command |
+| f | **Two published "who may apply" texts describe a population that cannot apply** — an Italian SME guarantee only a bank may submit, a Dutch subsidy granted via the NXTGEN foundation | free, **a text fix in Postgres** | a founder told to knock on a door only a bank may open |
+| g | **`classify_eligibility_pertinence.py --classify`** — 1,345 requirement texts on verdict-deciding gates have no pertinence verdict, and an unjudged gate can still decide one. That is the exact state the IPCEI gates were in when they wrongly unpublished a fund | **PAID.** Sonnet-5 classification of 1,345 texts; on `findings/tokens_wsHI/` pricing, order **EUR 3-8** | every founder whose verdict turns on one of them |
+
+**And one sweep, which is not a check and should not be one.** There are 136
+`_ws*` scratch scripts in `website/frontend/scripts/`. `check_ws_scripts` kept
+them alive if anything named them, which is a rule whose steady state is that
+nothing is ever retired — 104 files, then 134, then 136. I retired the check
+(it failed builds over scratch hygiene, which no founder experiences) and did
+NOT do the sweep, because 136 files is a destructive move and the standing rule
+is that a paid measurement's only record is **archived, never deleted**. The
+files' own headers already carry `@ws-active until <date>`; the honest sweep is
+to archive every one whose date has passed, ~15 lines to enforce afterwards.
+**Say the word and it is one commit.**
+
+
 ### 0. Five more rows named after their granting body, and the two publish steps the rename needs — free, wsHF, 2026-08-17
 
 `project-mgmt/findings/body_named_rows_wsHF.md`. The rename you authorised is
