@@ -47,7 +47,7 @@ import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCan
 import { regionNameFor } from "../lib/intelligence/regions.generated";
 import { internalIdWordsIn, qualifierSegments } from "../lib/intelligence/rowIdentity";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
-import { rowRenderedLabel } from "../lib/intelligence/shortlist";
+import { rowRenderedLabels } from "../lib/intelligence/shortlist";
 import { semanticFundMatch } from "../lib/intelligence/semantic";
 import {
   applyProfileSignal, buildInstrumentTableHydrated, founderCountryList,
@@ -115,8 +115,12 @@ function recallFounders(): Founder[] {
 
 /** Seats spent twice: rows a reader cannot tell apart on the label they read. */
 function dupSeats(rows: InstrumentRow[]): number {
+  // The label is a fact about the TABLE, not about a row: `cutTitlesApart`
+  // spends the budget on what separates the rows in front of one reader. Asking
+  // it row by row would grade a string nobody is shown.
+  const { labelOf } = rowRenderedLabels(rows);
   const by = new Map<string, number>();
-  for (const r of rows) by.set(rowRenderedLabel(r), (by.get(rowRenderedLabel(r)) ?? 0) + 1);
+  for (const r of rows) by.set(labelOf(r), (by.get(labelOf(r)) ?? 0) + 1);
   return [...by.values()].filter((n) => n > 1).reduce((a, n) => a + n - 1, 0);
 }
 
@@ -205,7 +209,8 @@ async function main() {
     const md = dupSeats(menu), pd = dupSeats(published);
     if (process.env.DUPDUMP && md) {
       const by = new Map<string, InstrumentRow[]>();
-      for (const r of menu) by.set(rowRenderedLabel(r), [...(by.get(rowRenderedLabel(r)) ?? []), r]);
+      const { labelOf: menuLabel } = rowRenderedLabels(menu);
+      for (const r of menu) by.set(menuLabel(r), [...(by.get(menuLabel(r)) ?? []), r]);
       for (const [k, g] of by) {
         if (g.length < 2) continue;
         console.log(`\nDUP ${f.company}  x${g.length}  "${k.slice(0, 100)}"`);

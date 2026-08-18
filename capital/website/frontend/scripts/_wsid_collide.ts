@@ -22,7 +22,8 @@ import {
 import { oneLine, ROW_TITLE_CHARS } from "../lib/intelligence/schemeText";
 import { distinguishRowNames } from "../lib/intelligence/shortlist";
 import { doorLabelFor } from "../lib/intelligence/doorLabel";
-import type { DbInstrument, InstrumentRow } from "../lib/intelligence/types";
+import type { DbInstrument } from "../lib/intelligence/corpus";
+import type { InstrumentRow } from "../lib/intelligence/types";
 
 const rowOf = (i: DbInstrument): InstrumentRow => ({
   channel: i.sourceFamilyBucket ?? i.id,

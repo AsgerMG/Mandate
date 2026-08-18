@@ -31,11 +31,24 @@
 // it is a blind one. The two fixtures below are the shapes that produced those
 // numbers, verbatim in structure: two DE leaves of one Thüringen programme and
 // two of one Jülich Richtlinie, each pair separated only past character 120.
+//
+// ── AND WHAT wsID CHANGED, WHICH IS THE ANSWER AND NOT THE KEY ────────────
+// wsFE's key was right and its remedy was the wrong half of the trade. It made
+// the collapse SEE the pair — and the collapse's answer is to demote one of
+// them out of the founder's table, so a real second door was being spent to pay
+// for a cut. `cutTitlesApart` spends the same 120 characters on the part that
+// DIFFERS, so the pair arrives distinct and both doors keep their seats. The
+// collapse now fires only where the full names really are one name, which is a
+// corpus defect and is somebody's to fix rather than something to hide.
+//
+// So these fixtures flip: the pairs below are no longer collapsed, and the
+// tests assert the label separates them. The pair that MUST still collapse —
+// one name, two rows — is pinned at the bottom.
 import { describe, expect, it } from "vitest";
 
 import { resolveNameCollisions } from "./nameCollision";
 import { ROW_TITLE_CHARS } from "./schemeText";
-import { rowRenderedLabel } from "./shortlist";
+import { rowRenderedLabels } from "./shortlist";
 import type { InstrumentRow } from "./types";
 
 const row = (instrumentId: string, instrument: string): InstrumentRow =>
@@ -49,7 +62,10 @@ const JUELICH =
   "Richtlinie über die Gewährung von Zuwendungen zur Förderung von Vorhaben im Forschungs- "
   + "und Entwicklungsbereich der industriellen Gemeinschaftsforschung";
 
-describe("rowRenderedLabel", () => {
+/** The one label, for a whole table at once. */
+const labels = (rows: InstrumentRow[]) => rows.map(rowRenderedLabels(rows).labelOf);
+
+describe("rowRenderedLabels", () => {
   it("the fixtures really are longer than the cut, or this test proves nothing", () => {
     // Without this the pair could be passing for a reason that has nothing to
     // do with truncation, and the whole file would go quietly vacuous the day
@@ -58,19 +74,22 @@ describe("rowRenderedLabel", () => {
     expect(JUELICH.length).toBeGreaterThan(ROW_TITLE_CHARS);
   });
 
-  it("RED BEFORE wsFE: the raw label calls two unreadable twins distinct", () => {
-    // What `distinguishRowNames` produced: the same title, plus an id fragment
-    // that lands past character 120.
+  it("shows the difference instead of collapsing it (wsID)", () => {
+    // What `distinguishRowNames` produced: the same title, plus a qualifier
+    // that lands past character 120. Under wsFE's per-row cut both rows read
+    // the same and one was demoted; the budget now reaches the qualifier.
     const a = row("satr_de_rnd__sa_1__tab", `${THUERINGEN} · sa 1`);
     const b = row("satr_de_rnd__sa_2__tab", `${THUERINGEN} · sa 2`);
+    const [la, lb] = labels([a, b]);
 
-    // The raw labels differ, which is why the old key found nothing...
-    expect(a.instrument).not.toBe(b.instrument);
-    // ...and the labels the founder and the selector actually read are equal.
-    expect(rowRenderedLabel(a)).toBe(rowRenderedLabel(b));
+    expect(la).not.toBe(lb);
+    expect(la.length).toBeLessThanOrEqual(ROW_TITLE_CHARS);
+    // The head is still the programme, so the row has not paid its subject for
+    // its suffix.
+    expect(la.startsWith("förderprogramm des freistaats thüringen")).toBe(true);
   });
 
-  it("collapses both reported pairs, and demotes rather than deletes", () => {
+  it("both reported pairs now keep their seats — nothing is demoted", () => {
     const input = [
       row("thu_1", `${THUERINGEN} · sa 1`),
       row("jul_1", `${JUELICH} · sa 3`),
@@ -80,15 +99,36 @@ describe("rowRenderedLabel", () => {
     ];
     const prefer = (x: InstrumentRow, y: InstrumentRow) =>
       (x.instrumentId ?? "").localeCompare(y.instrumentId ?? "");
-    const { visible, demoted, collisions } =
-      resolveNameCollisions(input, rowRenderedLabel, prefer);
+    const { labelOf, merged } = rowRenderedLabels(input);
+    const { visible, demoted, collisions } = resolveNameCollisions(input, labelOf, prefer);
 
-    expect(visible.map((r) => r.instrumentId)).toEqual(["thu_1", "jul_1", "alone"]);
-    expect(demoted.map((r) => r.instrumentId)).toEqual(["thu_2", "jul_2"]);
+    expect(visible.map((r) => r.instrumentId))
+      .toEqual(["thu_1", "jul_1", "thu_2", "jul_2", "alone"]);
+    expect(demoted).toEqual([]);
+    expect(collisions).toEqual([]);
+    // And nothing was given up quietly: the cut resolved every group.
+    expect(merged).toEqual([]);
+  });
+
+  it("STILL collapses two rows that are one name, and demotes rather than deletes", () => {
+    // The half of the property that does not move. Six Innovasjon Norge leaves
+    // are all called "Innovasjon Norge" in the corpus today; that is one option
+    // shown six times and no cut may pretend otherwise.
+    const input = [
+      row("in_1", THUERINGEN),
+      row("in_2", THUERINGEN),
+      row("alone", "Eurostars"),
+    ];
+    const { labelOf } = rowRenderedLabels(input);
+    const { visible, demoted, collisions } = resolveNameCollisions(
+      input, labelOf, (x, y) => (x.instrumentId ?? "").localeCompare(y.instrumentId ?? ""));
+
+    expect(visible.map((r) => r.instrumentId)).toEqual(["in_1", "alone"]);
+    expect(demoted.map((r) => r.instrumentId)).toEqual(["in_2"]);
     // The invariant that makes this a demotion and not the deletion that took
-    // pool recall 97% -> 83%: the losers are still in the universe.
+    // pool recall 97% -> 83%: the loser is still in the universe.
     expect(visible.length + demoted.length).toBe(input.length);
-    expect(collisions).toHaveLength(2);
+    expect(collisions).toHaveLength(1);
   });
 
   it("does NOT collapse a pair the disambiguator separated inside the cut", () => {
@@ -101,7 +141,8 @@ describe("rowRenderedLabel", () => {
       row("cdti_b", "Proyectos de I+D · IDEPA"),
     ];
     const { visible, demoted } = resolveNameCollisions(
-      input, rowRenderedLabel, (x, y) => (x.instrumentId ?? "").localeCompare(y.instrumentId ?? ""));
+      input, rowRenderedLabels(input).labelOf,
+      (x, y) => (x.instrumentId ?? "").localeCompare(y.instrumentId ?? ""));
 
     expect(visible).toHaveLength(2);
     expect(demoted).toHaveLength(0);
@@ -110,6 +151,7 @@ describe("rowRenderedLabel", () => {
   it("case is not a distinction a reader uses", () => {
     const a = row("a", "Fonds Unique Interministériel");
     const b = row("b", "FONDS UNIQUE INTERMINISTÉRIEL");
-    expect(rowRenderedLabel(a)).toBe(rowRenderedLabel(b));
+    const [la, lb] = labels([a, b]);
+    expect(la).toBe(lb);
   });
 });
