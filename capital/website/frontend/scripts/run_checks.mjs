@@ -486,7 +486,10 @@ if (failed.length) {
   if (rows.length) {
     process.stdout.write(`\nheld in data/guard_registry.json -> suite_accepted:\n`);
     for (const [k, cls, owner, review, since] of rows) {
-      const live = failed.some((f) => f.label === k);
+      // Against EVERY result, not against `failed` — `failed` is founder-tier
+      // only, so a report-tier check that is red was being printed as "now
+      // green, delete the entry", which is advice to delete a live entry.
+      const live = results.some((r) => r.label === k && r.code !== 0);
       process.stdout.write(
         `  ${live ? "" : "(NOW GREEN, delete the entry) "}${k.padEnd(38)} `
         + `${String(cls).padEnd(13)} ${String(owner).padEnd(20)} `

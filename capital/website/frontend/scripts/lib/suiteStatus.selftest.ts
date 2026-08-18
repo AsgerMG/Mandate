@@ -76,6 +76,11 @@ const CASES: [string, () => number][] = [
   // judging it makes a failure self-sustaining: red row -> guard fails -> the
   // command that hosts the guard fails -> red row. Observed once, on the run
   // after this mechanism was built.
+  ["an acceptance over a REPORT-tier check fails — it can never be read",
+   () => 1 - Math.min(1, judgeSuite(
+     SUITE, RED, with_({}), NOW,
+     { ...TIERS, alpha: { tier: "report", protects: "an internal ratchet" } }).problems.length)],
+
   ["a REFLEXIVE red is reported and does not latch",
    () => {
      const t = { ...TIERS, alpha: { ...TIERS.alpha, reflexive: true } };

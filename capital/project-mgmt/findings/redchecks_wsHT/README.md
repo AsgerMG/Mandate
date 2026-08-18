@@ -245,8 +245,29 @@ expired hold, on a hold bound to the wrong failure, on a hold longer than the
 cap, and on an acceptance over a green check, before any of them passed.
 
 **And the suite got faster, which is the other half.** `asking a question never
-costs a fund` and `recall floor` are `cadence: weekly` and leave the default path
-— 690s becomes about 180s. That is only safe because their rows still age: at 7
-days `npx vitest run` goes red for everybody with `npm run check --deep` printed
-beside the name. Taking a slow measurement off the fast path no longer takes it
-out of sight.
+costs a fund` and `recall floor` are `cadence: weekly` and leave the default
+path. **690 seconds became 145** — measured, not projected. That is only safe
+because their rows still age: at 7 days `npx vitest run` goes red for everybody
+with `npm run check --deep` printed beside the name. Taking a slow measurement
+off the fast path no longer takes it out of sight.
+
+## 5. Where the tree stands
+
+`npm run check` on `wsHT-redchecks`, 2:25, 58 rows:
+
+```
+  48 green
+   7 red and HELD      every one dated, owned, and queued in AWAITING_APPROVAL.md
+   3 red and REPORTED  recorded and printed; they fail nothing
+   0 "nobody has looked"
+```
+
+Against main's `13 of 59 failed` with nothing distinguishing any of them.
+
+Four are genuinely fixed — theme index, rendered numbers, one env loader,
+published figures — and the guard bugs found underneath two of them are fixed
+with the property stated more precisely, never more loosely. **No floor, ceiling
+or tolerance was moved anywhere in this workstream.** The inert-comparator
+ceiling is still 45 against 64, the open-question ceiling still 400 against
+1,130, and `check_published_figures` still demands three verified figures. What
+changed is who those two reds are allowed to stop, and whether anybody is told.

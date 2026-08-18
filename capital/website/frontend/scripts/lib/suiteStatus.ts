@@ -279,6 +279,19 @@ export function judgeSuite(
     const a = accepted[label];
     if (o.code !== 0 && t && t.tier === "report") {
       reported.push({ label, protects: t.protects, summary: o.summary });
+      // A report-tier red is never held, so an acceptance over one can never be
+      // read. The TIER is the decision — `protects` already says what it
+      // watches and who reads it — and a second, expiring decision beside it
+      // would be a note that looks like an acceptance.
+      if (accepted[label]) {
+        problems.push({
+          label,
+          why: `is report-tier, and data/guard_registry.json also accepts a failure of `
+            + `it. A report-tier red is never held, so that entry can never be read. The `
+            + `tier IS the decision; delete the acceptance, or make the check `
+            + `founder-tier and mean it.`,
+        });
+      }
       continue;
     }
     if (o.code === 0) {

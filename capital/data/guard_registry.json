@@ -455,14 +455,6 @@
    "review": "2026-08-22",
    "failure": "DEGRADED — (applicant_identity|census) last reported failed",
    "reason": "The readout of the eleven credentialled guards, so it is red whenever any of them is — today applicant_identity and the census, both owned above. Underneath it is a structural fact wsHC measured and this run confirms: all 783 rows in guard_verdicts say produced_by=local. The container has NEVER published a verdict, so the credential-free door CI reads has been dark since the day it was built. The redeploy is in AWAITING_APPROVAL.md."
-  },
-  "every committed artifact can be rebuilt": {
-   "class": "corpus-state",
-   "owner": "the answer-key producers — pre-existing, not wsHT's",
-   "since": "2026-08-18",
-   "review": "2026-09-01",
-   "failure": "has NO PROVABLE producer|check_artifact_reachability: FAILED",
-   "reason": "Five committed artifacts, __recallSetDescribed.json among them, bind no path a script then writes, so nothing in the tree proves how they were made. Red on main before this workstream and unchanged by it. Report-tier: the five are answer keys and pinned fixtures, and no founder is served from any of them — but a pinned holdout nobody can rebuild is how a recall figure becomes unfalsifiable, so it is not nothing."
   }
  },
  "suite_tiers": {

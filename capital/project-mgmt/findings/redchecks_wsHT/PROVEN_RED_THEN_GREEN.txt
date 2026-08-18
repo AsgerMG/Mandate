@@ -83,3 +83,14 @@ check_red_debt: FAILED — 1 problem(s) above.
   Refresh all:       cd website/frontend && npm run check
 
 GREEN  10. green again, the tree restored
+
+RED    11. A HOLD ON A REPORT: an acceptance that can never be read
+    a filter can admit someone: is report-tier, and data/guard_registry.json also accepts a failure of it. A report-tier red is never held, so that entry can never be read. The tier IS the decision; delete the acceptance, or make the check founder-tier and mean it.
+
+check_red_debt: FAILED — 1 problem(s) above.
+  project-mgmt/check_status.json is what this tree knows about its own build.
+  Refresh one row:   cd website/frontend && npm run check --only="<label>"
+  Refresh all:       cd website/frontend && npm run check
+  Own a red:         data/guard_registry.json -> suite_accepted
+
+GREEN  12. green again
