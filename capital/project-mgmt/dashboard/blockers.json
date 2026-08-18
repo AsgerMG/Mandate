@@ -3,21 +3,21 @@
   "blockers": [
     {
       "who": "us",
-      "what": "We put a dead scheme in front of a real founder",
-      "why": "We sent one company through the live site and read what she got. Row five was a scheme that ended in December 2020 — with a working link, a typical grant size, and a line telling her to check it is still open. It is not one row: 336 of our 1,088 funds have an end date already in the past, and some of those expired four days ago. We had built the machinery to catch exactly this in July and it did not fire.",
-      "ask": "Nothing. Being fixed now, and the fix is not done until her memo comes back without it."
+      "what": "Thirteen safety checks are failing and nobody had said so",
+      "why": "While fixing what a real founder sees, three separate agents reported the same thing independently: thirteen of our fifty-nine checks are red on the main branch, and have been for days. One of them — the check on the very machinery we fixed today — had been red since Sunday and went unmentioned for five days. A check nobody reads is not a check.",
+      "ask": "Nothing. Mine, and next."
     },
     {
       "who": "us",
-      "what": "Everything we measure happens somewhere a founder has never been",
-      "why": "This is the reason the number never seems to move. Every test we have calls the engine directly and skips the actual website — so two weeks of improvements were measured in a place no person visits. The first time we sent a real company through the live site, it took twenty minutes to find three defects that every offline test had passed. From now on nothing counts as finished until one real founder's answer has been read.",
-      "ask": "Nothing. This one is mine and it is already changed."
+      "what": "Nine of the companies we grade ourselves against won a fund that no longer exists",
+      "why": "Our score is measured against what nine hundred companies actually won. For nine of them the scheme has since closed — so part of the target is unreachable by definition, and it was quietly inflating one of our numbers rather than measuring the product. Found only because we stopped a dead scheme being recommended and watched what happened to the score.",
+      "ask": "Nothing yet. I want to know how many more before proposing anything."
     },
     {
       "who": "you",
       "what": "One deployment, and it now unblocks two things",
-      "why": "The pipeline container is behind and its safety check has never once published a result. Every route to the master copy of our data begins by waking that container, so the 3,400 missing rules cannot be reconciled until it is redeployed. You said you fixed the redeploy — the proof arrives with the next scheduled run, and I will confirm it then rather than assume it.",
-      "ask": "Install the Railway CLI here when convenient, and I will take the reconcile and future deploy checks off your plate."
+      "why": "Every route to the master copy of our data begins by waking the pipeline container, so the 3,400 missing rules cannot be reconciled until it is redeployed. You said you fixed the redeploy — the proof arrives with the next scheduled run and I will confirm it then rather than assume.",
+      "ask": "Install the Railway CLI here when convenient and I will take this off your plate for good."
     }
   ]
 }

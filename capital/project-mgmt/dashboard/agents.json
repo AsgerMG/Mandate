@@ -1,17 +1,4 @@
 {
-  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done — the page shows what is happening now, and history lives in git.",
-  "agents": [
-    {
-      "id": "wsHQ",
-      "step": 2,
-      "what": "Stop offering funds that have already closed",
-      "why": "A real founder was shown a scheme that ended in 2020, as her fifth recommendation, with a link and an invitation to apply. 336 of 1,088 funds have an end date in the past and more expire every week. We built the thing that should catch this in July — it distinguishes a closed round from a closed programme — and it did not fire here. Fixing it means finding out why, not bolting on a second mechanism."
-    },
-    {
-      "id": "wsHR",
-      "step": 6,
-      "what": "Two rows told her the name of a government department",
-      "why": "We renamed 22 funds away from being titled after the ministry that grants them, and it worked. But a fallback that fills in a missing label prints the fund's internal identifier as if it were prose, and the ministry name came straight back through it on two of her seven rows. The same memo also gave advice about a fund that was not on her list at all. Underneath both: a published row carries no identifier, so nothing downstream can even say which fund it is."
-    }
-  ]
+  "what": "Agents in flight, and why. A finished agent is REMOVED from this file, not marked done \u2014 the page shows what is happening now, and history lives in git.",
+  "agents": []
 }
