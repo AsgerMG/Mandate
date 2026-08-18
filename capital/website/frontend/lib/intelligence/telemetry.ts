@@ -50,7 +50,16 @@ export type EventKind =
   | "brief_rule_violated"
   /** `checkBrief` itself threw while inspecting a published brief. The brief
    *  still ships; this says the instrument is broken, not the output. */
-  | "brief_check_failed";
+  | "brief_check_failed"
+  /** The writer printed one of our own keys into text a founder reads, and it
+   *  was replaced with the fund's name before the brief was served (BRIEF-5).
+   *  A degradation: the founder gets clean prose, and this is the only way the
+   *  contract's effect on a live model is ever visible from outside. */
+  | "memo_id_redacted"
+  /** The redaction itself threw. The brief still ships, which means an
+   *  identifier may have reached the page: the instrument is broken and this
+   *  is not a degradation the system absorbed. */
+  | "memo_id_redact_failed";
 
 /** Degradations are expected occasionally; errors are not. Kept apart so a
  *  digest can distinguish "the system absorbed a problem" from "it failed". */
@@ -61,6 +70,9 @@ const DEGRADATIONS: ReadonlySet<EventKind> = new Set<EventKind>([
   // usable, and the system absorbed the problem rather than failing. A check
   // that THREW is an error -- the instrument is broken and nothing is watching.
   "brief_rule_violated",
+  // Same argument one step earlier: the identifier was caught and the founder
+  // reads the fund's name. The REPAIR failing is an error, and is not here.
+  "memo_id_redacted",
 ]);
 
 let ensured = false;

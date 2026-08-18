@@ -39,7 +39,9 @@ import { semanticFundMatch } from "./semantic";
 // restated here: the restatement is the defect this import removes. See
 // knownFacts.ts and `PROFILE_BLOCK` below.
 import { intakeFactLines } from "./knownFacts";
-import { BRIEF_LIMITS, checkBrief } from "./briefChecks";
+import { BRIEF_LIMITS, checkBrief, fundText } from "./briefChecks";
+import { redactInternalIds } from "./rowIdentity";
+import { mapReaderText } from "./readerSurface";
 import {
   accessiblePool, assembleBriefRows, explainNoDoors, orderMemoCandidates,
   WRITER_CANDIDATE_CAP,
@@ -1292,6 +1294,15 @@ async function synthesize(
           `institutionNotes entry per row, keyed by the exact "channel" value ` +
           `shown after "key" (two rows can share a fund family under different ` +
           `keys; they are separate institutions and each needs its own note). ` +
+          // WHY THE KEY IS HERE AT ALL, said where it is handed over.
+          // 322 instruments share 143 display names, so a NAME cannot key
+          // this table and the writer needs something that can. What was
+          // never said is that the key is not also publishable — and a real
+          // brief opened by printing one in brackets to the founder. The
+          // input stays; BRIEF-5 in the contract states the rule, and
+          // `redactInternalIds` below holds whatever the model does.
+          `That key is ours, for addressing this list. It is not the fund's ` +
+          `name and the founder never sees it: write what the fund is called.\n` +
           `Support type, ticket and comparable firms already render in the ` +
           `table: write only whyEligible, nextStep and blockerPlain.\n` +
           `A row marked STALE has no award on record for over three years.\n` +
@@ -1515,7 +1526,7 @@ async function synthesize(
   // Wrapped, because a defect in a check must never be able to cost a founder
   // their brief. The check runs last, after the report is fully assembled, and
   // its own failure is an event rather than an exception.
-  const publishedReport = {
+  const assembledReport = {
     self,
     eligibilityScreen,
     // Read, never retyped. This was a literal 5 -- a private copy of
@@ -1548,6 +1559,58 @@ async function synthesize(
                 watchOnly: table.watchOnly.length,
                 candidates: institutions.length },
   };
+
+  // ── AND NOT ONE OF OUR KEYS IN ANY OF IT (BRIEF-5) ──────────────────────
+  //
+  // The writer is handed `key "<instrument id>"` per row so it can return a
+  // note per row -- 322 instruments share 143 display names, so a name cannot
+  // key this table. That input is legitimate and stays. What the founder is
+  // SHOWN is a different question, and a real brief answered it wrong: the
+  // first substantive bullet of a production memo printed a row's storage key
+  // in brackets to the founder, while every offline guard passed because the
+  // ROWS were clean and this was prose.
+  //
+  // So the output is held rather than the input starved. The contract now says
+  // plainly that the key is ours; this is what holds when the model does it
+  // anyway. It runs over `mapReaderText` -- the same walk `checkBrief` grades
+  // through -- so a report field added tomorrow is repaired and checked
+  // together, and `link.url` and `instrumentId` are carried through untouched.
+  //
+  // Substitution, not deletion: the writer prints the key where it means the
+  // fund, so the fund's name is what belonged in that position. See
+  // `redactInternalIds`.
+  //
+  // Wrapped for the same reason the check below is: a defect in a repair must
+  // never cost a founder their memo. If this throws, the assembled report is
+  // what ships and the failure is an event.
+  let publishedReport = assembledReport;
+  try {
+    const rules = finalInstitutions
+      .filter((r) => r.instrumentId)
+      .map((r) => ({ id: r.instrumentId as string,
+                     name: r.institution.split(" · ")[0] }));
+    const human = fundText(finalInstitutions);
+    const redacted: string[] = [];
+    if (rules.length) {
+      publishedReport = mapReaderText(assembledReport, (text) => {
+        const out = redactInternalIds(text, rules, human);
+        for (const h of out.hits) redacted.push(h.token);
+        return out.text;
+      });
+    }
+    if (redacted.length) {
+      // NOT a silent fix. The founder is served clean prose and we are told
+      // that the writer wrote a key into it, which is the only way the
+      // contract's effect on a live model is ever visible.
+      recordEvent("memo_id_redacted",
+        `an internal identifier was written into founder-facing text and replaced: `
+        + redacted.slice(0, 5).join(", "),
+        { count: redacted.length });
+    }
+  } catch (err) {
+    recordEvent("memo_id_redact_failed",
+      `redactInternalIds threw on a published brief: ${String(err)}`);
+  }
 
   try {
     // EVERY FUND NAME THE WRITER WAS SHOWN, not just the candidate rows.

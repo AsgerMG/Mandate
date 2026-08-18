@@ -10,6 +10,7 @@
 // question is written from a fund's own requirement text. A question we cannot
 // ground in a real rule on a real shortlisted instrument does not get asked,
 // because its only purpose is to resolve a gate that is genuinely open.
+import { redactInternalIds } from "./rowIdentity";
 import Anthropic from "@anthropic-ai/sdk";
 import { assembleInstructions } from "./contracts";
 import { recordUsage } from "./cost";
@@ -532,10 +533,45 @@ export async function planAdaptiveScreen(
       }
     }
     if (!fields.length && !written.length) return null;
+
+    // ── AND NOT ONE OF OUR KEYS IN ANY OF IT (BRIEF-5) ────────────────────
+    //
+    // This prompt hands the model `ref "<instrument id>::<gate key>"` per
+    // candidate, for the same reason the memo writer is handed a key per row:
+    // the answer has to come back attached to the gate it was asked about. The
+    // memo's version of that exposure reached a founder's bottom line as a raw
+    // slug, and there is no argument that the same model on the same corpus
+    // would not do it here -- the questions ARE model prose, and they are the
+    // first thing the founder reads.
+    //
+    // Applied to the four founder-facing strings by hand rather than through
+    // `mapReaderText`, deliberately: this object also carries `gateKey` and
+    // `openKey`, which are machine keys that ROUTE THE ANSWER. Rewriting one of
+    // those would not leak an id, it would lose an answer.
+    const idRules = written
+      .filter((w) => w.instrumentId)
+      .map((w) => ({ id: w.instrumentId, name: w.instrumentName }));
+    // What a human wrote about these funds: their names, and the requirement
+    // text the question was phrased from -- which the founder reads as the
+    // citation under the question.
+    const human = written.flatMap((w) => [w.instrumentName, w.quote]);
+    const scrub = <T extends string | undefined>(t: T): T =>
+      (t == null || !idRules.length ? t : redactInternalIds(t, idRules, human).text) as T;
+
     return {
-      theme: deDash(String(parsed.theme ?? "").trim()) || "A few more things",
-      questions: fields,
-      projectQuestions: written,
+      theme: scrub(deDash(String(parsed.theme ?? "").trim())) || "A few more things",
+      questions: fields.map((f) => ({
+        ...f,
+        question: scrub(f.question),
+        stake: scrub(f.stake),
+        options: f.options?.map((o) => ({ ...o, label: scrub(o.label) })),
+      })),
+      projectQuestions: written.map((w) => ({
+        ...w,
+        question: scrub(w.question),
+        stake: scrub(w.stake),
+        options: w.options.map((o) => scrub(o)),
+      })),
     };
   } catch (err) {
     console.error("adaptive screen planning failed:", err);

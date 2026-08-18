@@ -67,8 +67,10 @@ import type {
   InstitutionEntry, IntelligenceReport, ProgressEvent,
 } from "../lib/intelligence/types";
 import {
-  internalIdWordsIn, qualifierSegments,
+  internalIdTokensIn, internalIdWordsIn, qualifierSegments,
 } from "../lib/intelligence/rowIdentity";
+import { fundText } from "../lib/intelligence/briefChecks";
+import { readerText } from "../lib/intelligence/readerSurface";
 import { founderIntake, founderPolicyFromEnv } from "./founderIntake";
 import { isDescribed, loadRecallSet, type RecallRow } from "./recallSet";
 
@@ -360,11 +362,29 @@ async function main(): Promise<void> {
     // than from a candidate we cut — a different defect with a different fix,
     // and this line is what tells the two apart. It NAMES no verdict: only a
     // reader can say whether an unmatched bullet is about a fund at all.
+    //
+    // ── AND IT ASKS BY ID, NOT ONLY BY NAME (wsHS) ────────────────────────
+    // This matched a bullet to a row on the DISPLAY NAME alone, and run 2
+    // annotated `[names no row on the table]` beside a bullet carrying row 6's
+    // exact instrument id. wsHR had already fixed the published-rank matcher
+    // for precisely this class -- a row is identified by its id, never by a
+    // name 322 instruments share 143 of -- and this one was left on the old
+    // basis. The instrument that reads production had the same defect twice,
+    // once fixed and once not, and a false negative here is worse than the
+    // false positive wsHR caught: it reads clean.
+    //
+    // Naming a row BY ITS ID is itself the defect (BRIEF-5), so the annotation
+    // says which basis matched rather than merging the two into "row 6".
+    const humanFundText = fundText(report.institutions);
     for (const b of report.bottomLine) {
-      const named = rows
-        .map((r, i) => [i + 1, norm(r.institution.split(" · ")[0])] as const)
-        .filter(([, n]) => n.length >= 6 && norm(b).includes(n))
-        .map(([i]) => `row ${i}`);
+      const named = rows.flatMap((r, i) => {
+        if (r.instrumentId
+            && internalIdTokensIn(b, [r.instrumentId], humanFundText).length) {
+          return [`row ${i + 1} ██ BY ITS INTERNAL ID`];
+        }
+        const head = norm(r.institution.split(" · ")[0]);
+        return head.length >= 6 && norm(b).includes(head) ? [`row ${i + 1}`] : [];
+      });
       console.log(`- ${b}`);
       console.log(`  [names ${named.length ? named.join(", ") : "no row on the table"}]\n`);
     }
@@ -387,6 +407,27 @@ async function main(): Promise<void> {
     console.log("\n## The eligibility screen the founder is shown\n");
     for (const c of report.eligibilityScreen) {
       console.log(`- [${c.status}] ${c.check} — ${c.finding}`);
+    }
+
+    // ── 4b. IS OUR OWN KEY ANYWHERE IN WHAT SHE READS? (BRIEF-5) ──────────
+    // The row-name check above grades the seven labels. This grades EVERY
+    // string the report carries -- the bullets, positioning, the state of play,
+    // the caveat, each row's why/blocker/window/next step, the screen -- and
+    // it is the one that would have caught run 2, where the rows were clean and
+    // the FIRST SUBSTANTIVE BULLET printed a row's storage key in brackets.
+    // Asked of the ids the deployment itself served, so no id format is
+    // written down here and a shape introduced next year is inside it.
+    const servedIds = rows
+      .map((r) => r.instrumentId).filter((x): x is string => Boolean(x));
+    const proseLeaks = readerText(report)
+      .flatMap((t) => internalIdTokensIn(t, servedIds, fundText(report.institutions))
+        .map((h) => ({ token: h.token, text: t })));
+    console.log(`\nmemo ids    ${proseLeaks.length
+      ? `██ ${proseLeaks.length} INTERNAL IDENTIFIER(S) IN TEXT THE FOUNDER READS`
+      : `ok — none of ${readerText(report).length} founder-facing strings carries `
+        + `one of the ${servedIds.length} ids this deployment served`}`);
+    for (const l of proseLeaks.slice(0, 5)) {
+      console.log(`   ${l.token}\n     in: ${l.text.slice(0, 120)}`);
     }
   }
 

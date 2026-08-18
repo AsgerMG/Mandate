@@ -340,7 +340,15 @@ export interface InstrumentRow {
 export interface InstitutionEntry {
   institution: string;   // display name, e.g. "EIC Accelerator"
   /** WHICH FUND THIS ROW IS. The leaf instrument's own id, carried from
-   *  `InstrumentRow.instrumentId` — never rendered, never handed to a model.
+   *  `InstrumentRow.instrumentId`.
+   *
+   *  NEVER RENDERED. It IS handed to a model — this line used to say it was
+   *  not, and the writer has been given one per row as `key "<id>"` for as long
+   *  as there have been per-row notes, because 322 instruments share 143
+   *  display names and a name cannot key a table. The writer then printed one
+   *  into a founder's bottom line. BRIEF-5 states the rule and
+   *  `redactInternalIds` holds the output; what is not true is that this value
+   *  stays inside the machine.
    *
    *  It exists because a published row had no identity at all. `institution`
    *  is a DISPLAY name and 322 instruments share only 143 of them

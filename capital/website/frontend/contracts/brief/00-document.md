@@ -44,6 +44,22 @@ content, and it sat between the reader and the thing they came for.
   verdict phrase as a row heading, and a table of statute quotations each
   printed twice with its source filename and page number.
 
+- BRIEF-5 (hard) An identifier we gave you is ours, not the reader's. Keys,
+  references and lookup handles are supplied so you can point at a row without
+  ambiguity, and they exist for that and nothing else. Where the reader needs
+  to know which fund you mean, use what the fund is called.
+
+  The test: **did a person write this string about the fund, or did we generate
+  it to find the fund?** A string of the second kind never reaches the page,
+  wherever in the brief it would appear, and there is no position in a sentence
+  where printing one helps the reader.
+
+  **evidence:** a brief opened by telling a founder to start with a named
+  regional scheme and then printed our storage key for it in brackets, in the
+  first thing they read. The rows themselves were clean, so the guard on row
+  names passed and so did every other offline check.
+
+
 ## Banned
 
 - BRIEF-B1 Any section, heading or block beyond the four above.
