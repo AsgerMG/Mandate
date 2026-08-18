@@ -1,9 +1,9 @@
 {
- "takenAt": "2026-08-11",
+ "takenAt": "2026-08-18",
  "instruments": 1021,
- "complete": 821,
+ "complete": 825,
  "shares": {
-  "eligibility": 91.77,
+  "eligibility": 93.93,
   "funds": 91.09,
   "where": 100.0,
   "amount": 83.35,
@@ -11,7 +11,7 @@
   "live": 89.42
  },
  "counts": {
-  "eligibility": 937,
+  "eligibility": 959,
   "funds": 930,
   "where": 1021,
   "amount": 851,
@@ -30,14 +30,14 @@
  },
  "highWater": {
   "counts": {
-   "eligibility": 937,
+   "eligibility": 959,
    "funds": 930,
    "where": 1021,
    "amount": 851,
    "route": 908,
    "live": 913
   },
-  "complete": 821,
+  "complete": 825,
   "kpis": {
    "companies": 151915,
    "events": 299428,

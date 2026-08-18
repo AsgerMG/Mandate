@@ -432,14 +432,6 @@
    "failure": "check_applicant_identity: FAILED",
    "reason": "Two published 'who may apply' texts describe a population that cannot apply: an Italian SME guarantee only a bank or intermediary may submit, and a Dutch subsidy granted via the NXTGEN foundation rather than to the firms that join the project. Both are TEXT corrections in Postgres and not verdict edits — the check says so itself. Small, real, and a production write."
   },
-  "corpus currency": {
-   "class": "corpus-state",
-   "owner": "the publish — `make eligibility` + profile rebuild",
-   "since": "2026-08-18",
-   "review": "2026-09-01",
-   "failure": "check_corpus_currency: FAILED",
-   "reason": "The committed snapshot and Postgres disagree on 3 fields over 1,088 instruments (22 names, 22 name sources, 15 countries) and on 51 eligibility rules, 36 of them on offerable funds. accessiblePool is built from those rules, so a degraded request admits and refuses different funds. The 22 names are wsHS's rename work landing in Postgres and not in the snapshot. The fix is a republish, which is a production step. Queued in AWAITING_APPROVAL.md."
-  },
   "site serves the ETL's corpus": {
    "class": "corpus-state",
    "owner": "the ETL — the pipeline itself is broken",
@@ -455,14 +447,6 @@
    "review": "2026-08-22",
    "failure": "DEGRADED — (applicant_identity|census) last reported failed",
    "reason": "The readout of the eleven credentialled guards, so it is red whenever any of them is — today applicant_identity and the census, both owned above. Underneath it is a structural fact wsHC measured and this run confirms: all 783 rows in guard_verdicts say produced_by=local. The container has NEVER published a verdict, so the credential-free door CI reads has been dark since the day it was built. The redeploy is in AWAITING_APPROVAL.md."
-  },
-  "both stores agree": {
-   "class": "corpus-state",
-   "owner": "the publish \u2014 the same republish `corpus currency` is waiting on",
-   "since": "2026-08-18",
-   "review": "2026-09-01",
-   "failure": "^live:\\s+[a-z0-9_|]+$",
-   "reason": "Postgres moved and the committed snapshot did not. It was green at 21:18 on 2026-08-18 and red at 21:50, and it is red on main with no branch in the way \u2014 verified by running check_hydration_parity.ts in the primary checkout. Three archetypes now rank differently on the two paths and one fund leaves the pool for a reason that is not the degradation policy. Same cause and same fix as `corpus currency`, which is already held here: `make eligibility` plus a profile rebuild, a production step. Recorded by wsHU because a full suite run observed it, not caused by one."
   }
  },
  "suite_tiers": {
@@ -703,8 +687,7 @@
   "every committed artifact can be rebuilt": {
    "tier": "report",
    "protects": "A committed artifact with no provable producer cannot be rebuilt, so when it goes wrong there is nothing to regenerate it from. Real, and today's five are answer keys and pinned fixtures nobody is served from — it belongs in a report."
-  }
-  ,
+  },
   "the cron can read what it imports": {
    "tier": "corpus",
    "protects": "The corpus of record. A cron step that reads a committed data/ path at import cannot start in the container — data/ is the mounted volume and git ignores the tree whole — and railway_cron.py exits on it, so the load, the classifier, the sanity check, both window refreshes and all four guards are skipped and the weekly refresh stops without a word. It stopped on 2026-08-16 and ran three more days before anybody asked why."

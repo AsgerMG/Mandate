@@ -141,6 +141,41 @@ const FIELD_NOTES: Record<string, { why: string; review: string }> = {
  *  the two together would make "renamed" and "unchecked" look alike. */
 const COLUMN_ALIAS: Record<string, string> = { schemeEndBasis: "scheme_end_date_basis" };
 
+/**
+ * Fields where the SNAPSHOT MATERIALISES A DEFAULT that the Postgres path
+ * applies at READ time instead. Not an exemption — a NARROWER comparison.
+ *
+ * `country` is NULL on the 15 EU-level instruments (chips_ju, edf, eic, the
+ * seven EIT KICs, innovation_fund, ipcei, the two Horizon rollups). The
+ * exporter writes `inst["country"] or "EU"` (website/build/eligibility_export.py)
+ * and the Postgres hydrator writes `inst.country ?? "EU"`
+ * (lib/intelligence/corpus.ts). A founder is therefore answered "EU" on either
+ * path — the two stores agree about the world and differ only about WHERE the
+ * default is applied. A raw cell-by-cell comparison cannot see that, and it
+ * reported 15 rows for six days as though a republish would clear them. No
+ * republish can: it is what the exporter is written to do.
+ *
+ * So the difference is permitted in EXACTLY ONE SHAPE and no other:
+ *
+ *     Postgres holds NOTHING and the snapshot holds precisely this value.
+ *
+ * A snapshot that says "DE" where Postgres says "FR" still fails. A snapshot
+ * that says "EU" where Postgres says "DE" still fails. And if the default in
+ * either language changes without the other, the snapshot stops holding this
+ * exact string and this check goes red — which is the drift a plain exemption
+ * would have hidden. The value is restated here because the two definitions
+ * are in two languages; that duplication is itself the thing being watched.
+ */
+const READ_DEFAULT: Record<string, { value: string; why: string; review: string }> = {
+  country: {
+    value: "EU",
+    why: "eligibility_export.py writes `or \"EU\"`; corpus.ts writes `?? \"EU\"`. "
+      + "Same answer to a founder, applied at export on one path and at read on "
+      + "the other.",
+    review: "2026-12-31",
+  },
+};
+
 const snakeCase = (s: string) => s.replace(/([a-z0-9])([A-Z])/g, "$1_$2").toLowerCase();
 const columnFor = (field: string) => COLUMN_ALIAS[field] ?? snakeCase(field);
 
@@ -329,12 +364,30 @@ async function main() {
     // ── The comparison itself, over every field that resolved to a column ──
     const byId = new Map(liveRows.map((r) => [String(r.id), r]));
     const divergent = new Map<string, { n: number; eg: string }>();
+    /** Rows that differ ONLY by a default the reader applies — counted and
+     *  printed rather than dropped, so the tolerance is visible in the log
+     *  of a green run and not only in the source of the check. */
+    const defaulted = new Map<string, number>();
     for (const s of snapshot.records as unknown as Record<string, unknown>[]) {
       const l = byId.get(String(s.id));
       if (!l) continue;
       for (const f of compared) {
         const a = normaliseValue(s[f]), b = normaliseValue(l[columnFor(f)]);
         if (a === b) continue;
+        // The one permitted shape, and only this one: the column is NULL and
+        // the snapshot carries the exact default the reader applies. Anything
+        // else about the same field is still a disagreement about the world.
+        //
+        // Tested on the RAW cell, not on `b`. `normaliseValue` folds NULL and
+        // the empty string to the same "", and the two are not the same thing
+        // here: `?? "EU"` fires on NULL and NOT on "", so a column holding ""
+        // would answer "" on Postgres and "EU" on the snapshot -- a genuine
+        // divergence that the folded form would have waved through under this
+        // very tolerance.
+        if (l[columnFor(f)] == null && a === READ_DEFAULT[f]?.value) {
+          defaulted.set(f, (defaulted.get(f) ?? 0) + 1);
+          continue;
+        }
         const seen = divergent.get(f) ?? { n: 0, eg: "" };
         seen.n++;
         if (!seen.eg) {
@@ -352,8 +405,26 @@ async function main() {
         [...divergent].sort((a, b) => b[1].n - a[1].n).slice(0, SHOW)
           .map(([f, d]) => `      ${f}: ${d.n} row(s)  e.g. ${d.eg}`).join("\n"));
     }
+    // A READ_DEFAULT that stops firing is a note nothing reads: either the
+    // column got filled in, or the exporter stopped defaulting. Both are real
+    // changes, and both would otherwise leave a permanent tolerance standing
+    // over a comparison that no longer needs it.
+    for (const [f, d] of Object.entries(READ_DEFAULT)) {
+      if (!compared.includes(f)) {
+        problems.push(`READ_DEFAULT covers "${f}", which is not a compared field. ` +
+          `A tolerance on a field nothing compares covers nothing.`);
+      } else if (!defaulted.get(f)) {
+        problems.push(`READ_DEFAULT permits "${f}" to differ by the reader's default ` +
+          `"${d.value}", and NO row differs that way any more. Delete it: left ` +
+          `standing it pre-authorises the next real divergence on this field.`);
+      } else if (d.review < asOf) {
+        problems.push(`the READ_DEFAULT on "${f}" came due on ${d.review}: ${d.why}`);
+      }
+    }
     console.log(`  fields: ${compared.length} compared against funding_instruments, ` +
-      `${Object.keys(FIELD_NOTES).length} noted, ${unclassified.length} unclassified`);
+      `${Object.keys(FIELD_NOTES).length} noted, ${unclassified.length} unclassified` +
+      ([...defaulted].map(([f, n]) => `, ${n} ${f} row(s) equal through the reader's ` +
+        `default "${READ_DEFAULT[f].value}"`).join("")));
   } finally {
     await client2.end();
   }

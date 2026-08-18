@@ -4,23 +4,23 @@
  "measuredOn": "the holdout split of the described recall population, one founder per company",
  "n": 821,
  "meanPoolLength": 81.8,
- "inPoolAtAll": 0.9586,
+ "inPoolAtAll": 0.9598,
  "corpus": "postgres instruments=1088",
  "offerable": "offerable=760 ids=25c7df59f657ca42 asOf=2026-08-18",
  "ranker": "ranker: all 821 request(s) on EMBEDDING",
- "generatedAt": "2026-08-18T19:21:02.958Z",
+ "generatedAt": "2026-08-18T21:52:59.072Z",
  "recallAtK": [
   [
    1,
-   0.1705
+   0.1717
   ],
   [
    3,
-   0.3216
+   0.3252
   ],
   [
    6,
-   0.4202
+   0.4263
   ],
   [
    10,
@@ -28,27 +28,27 @@
   ],
   [
    18,
-   0.5871
+   0.5907
   ],
   [
    25,
-   0.6724
+   0.6748
   ],
   [
    30,
-   0.7308
+   0.7345
   ],
   [
    40,
-   0.8136
+   0.8112
   ],
   [
    50,
-   0.8477
+   0.8465
   ],
   [
    75,
-   0.8916
+   0.8867
   ],
   [
    100,
@@ -56,11 +56,11 @@
   ],
   [
    150,
-   0.9586
+   0.9598
   ],
   [
    250,
-   0.9586
+   0.9598
   ]
  ]
 }
