@@ -31,6 +31,16 @@
 export const NON_READER_KEYS = new Set([
   "url", "link", "channel", "instrumentId", "generatedAt", "provenance",
   "schemeCode", "id", "kind", "verdict", "accessMode",
+  // The plural, which was missing while the singular was here. `self.channels`
+  // is the list of SOURCE-FAMILY CODES a company's awards came through --
+  // `state_aid_satr` and its siblings -- and `panelReport` prints
+  // `euCapital`, `channelBreakdown` and `activeYears` from that block and
+  // never this. It was found by the FIRST live run of the id repair, which
+  // reported having replaced `state_aid_satr` in "founder-facing text": the
+  // text was this field, and it is not founder-facing. Two rules had been
+  // grading a value nobody reads, which is the crying wolf this walk's own
+  // header refuses.
+  "channels",
   // A citation names a document. That is an identifier, and showing it is the
   // product working -- a rule displayed without its source is not evidence. The
   // first run of this walk over a real brief flagged 40 `.pdf` locators as
