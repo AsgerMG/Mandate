@@ -1,0 +1,182 @@
+
+==============================================================================
+indicative_wsHO · 78 called founder(s) with a transcript
+==============================================================================
+
+0. SELF-TEST — the permutation model against the run's own record
+  founders where the won fund is on the menu   78
+  rebuilt poolRankTreatment matches the tape   78/78
+
+1. WHEN A PICK FAILED, WAS THERE SOMEWHERE BETTER TO GO?
+  picks made                                       546
+  picks failing the two disqualifiers              264 (48.4%)
+  ...FORCED  (fewer survivors than the 7 seats)   69 (26.1% of the failures)
+  ...ELECTIVE (a survivor was left on the menu)    195 (73.9% of the failures)
+  founders with at least one ELECTIVE filler       68/78 (87.2%)
+  founders who spent a seat off-list while a
+    qualifying row sat unpicked on the menu        68/78 (87.2%)
+  qualifying rows left unpicked on those founders  419 (mean 6.2)
+
+2. THE FREE COUNTERFACTUAL — the most favourable `atMost` there is
+  founders who would have returned FEWER picks     69/78 (88.5%)
+  seats handed back to the shipped order           264 (mean 3.8 on those founders)
+  founders whose SIX would change at all           see below
+  won fund in the six BEFORE (of 78 gradable)   39
+  won fund in the six AFTER                        37
+  ██ WON FUND GAINED  2: 3T ADDITIVE MANUFACTURING (C), AERNNOVA COMPOSITES ILLESCAS SA (C)
+  ██ WON FUND LOST    4: AIXTRON SE (R), ARISTON (R), SCANDINAVIAN REAL HEART AB (R), X FAB DRESDEN (R)
+
+3. WHAT ACTUALLY REACHES THE FOUNDER IN A DECLINED SEAT
+  rows promoted into the six by declining          175
+  ...that survive the SAME two disqualifiers       59 (33.7%)
+  ...that FAIL them, i.e. the founder sees a
+     disqualified row either way                   116 (66.3%)
+
+4. THE SIX SHOWN, WHICH IS WHAT A FOUNDER ACTUALLY READS
+  rows shown across all founders                   468
+  ...failing the two disqualifiers, TODAY          214 (45.7%)
+  ...failing them under the favourable `atMost`    155 (33.1%)
+  READ THIS WITH ITS ARTEFACT NAMED. A pick-rate falls whenever picks
+  fall, so 48% -> anything is not evidence. This is better but it is not
+  clean either: the picks KEPT are survivors by construction, so this
+  counterfactual seats 3.6 guaranteed survivors at the front of every
+  six. It is an upper bound on the arm, not a reading of it. Section 7
+  is the comparison that does not depend on the arm behaving perfectly.
+
+5. DOES THE MODEL SELECT ON THESE TWO RULES AT ALL?
+  P(picked | survives both rules)                  31.5%  (282/896)
+  P(picked | fails at least one)                   12.9%  (264/2052)
+  enrichment                                       2.45x
+
+6. THE SHIPPED ORDER ON THE SAME RULER — no model at all
+  the WHOLE MENU failing the two disqualifiers     2052/2948 (69.6%)  <- the base rate
+  control six failing the two disqualifiers        210/468 (44.9%)
+  the model's SIX                                214/468 (45.7%)
+  ...the favourable `atMost`                      155/468 (33.1%)
+  EXACT@6  control 35  ·  model today 39  ·  favourable atMost 37
+  ██ THE MODEL'S SIX AND THE FREE SCORE'S SIX FAIL THESE RULES AT THE SAME
+     RATE (44.9% vs 45.7%), and both are ~25 points better than the
+     menu they were cut from. So the ~48% headline is a property of the
+     POOL under this ruler, not a symptom of the count mode. A selector
+     that never read the prompt scores the same.
+  The 33.1% above is BELOW the control only because the counterfactual
+  retains picks that are survivors by construction. Declining EVERY seat
+  is the control at 44.9% — that is the true floor of the licence.
+
+7. THE SAME SPLIT UNDER A STRICT SURVIVOR SET — the bracket
+  a row we cannot price or cannot describe now FAILS, so survivors
+  collapse and every failure that CAN be forced now is.
+  mean survivors  generous 11.5  ->  strict 5.2
+  failures  365   FORCED 242 (66.3%)   ELECTIVE 123 (33.7%)
+  generous  264   FORCED 69 (26.1%)   ELECTIVE 195 (73.9%)
+
+8. FOUNDERS WITH NO SEAT PRESSURE AT ALL AND OFF-LIST PICKS ANYWAY
+  founders with >= 7 survivors                    52/78
+  their picks failing the disqualifiers            142/364 (39.0%)
+  every one of these is ELECTIVE by construction. `atMost` addresses none of them.
+
+  worst ELECTIVE cases (survivors on the menu, seat spent elsewhere)
+  founder                            str  surv  off  forced  elect  unpicked survivors
+  AIXTRON SE                           R    14    6       0      6                  13
+  RISE RESEARCH INSTITUTES OF SWED     R     7    6       0      6                   6
+  TELECOM ITALIA SPA O TIM             R    18    5       0      5                  16
+  SWERIM                               R    16    5       0      5                  14
+  HENNLICH S.R.O.                      R     7    5       0      5                   5
+  TALGA GROUP LTD                      R     8    5       0      5                   6
+  ANDERSEN MEK VERKSTED                R     7    5       0      5                   5
+  CACTUX S.R.O.                        R     8    5       0      5                   6
+  ARISTON                              R    15    5       0      5                  13
+  GREENERWAVE                          R     8    5       0      5                   6
+  ENANTIS S.R.O.                       R     6    5       1      4                   4
+  AF OFFSHORE DECOM                    C    11    4       0      4                   8
+
+==============================================================================
+indicative_wsHW · 78 called founder(s) with a transcript
+==============================================================================
+
+0. SELF-TEST — the permutation model against the run's own record
+  founders where the won fund is on the menu   78
+  rebuilt poolRankTreatment matches the tape   78/78
+
+1. WHEN A PICK FAILED, WAS THERE SOMEWHERE BETTER TO GO?
+  picks made                                       546
+  picks failing the two disqualifiers              262 (48.0%)
+  ...FORCED  (fewer survivors than the 7 seats)   76 (29.0% of the failures)
+  ...ELECTIVE (a survivor was left on the menu)    186 (71.0% of the failures)
+  founders with at least one ELECTIVE filler       65/78 (83.3%)
+  founders who spent a seat off-list while a
+    qualifying row sat unpicked on the menu        65/78 (83.3%)
+  qualifying rows left unpicked on those founders  409 (mean 6.3)
+
+2. THE FREE COUNTERFACTUAL — the most favourable `atMost` there is
+  founders who would have returned FEWER picks     70/78 (89.7%)
+  seats handed back to the shipped order           262 (mean 3.7 on those founders)
+  founders whose SIX would change at all           see below
+  won fund in the six BEFORE (of 78 gradable)   35
+  won fund in the six AFTER                        37
+  ██ WON FUND GAINED  6: 3T ADDITIVE MANUFACTURING (C), CELLUGY (C), AERNNOVA COMPOSITES ILLESCAS SA (C), AEROTEX (C), BRISTOL BATH REGIONAL CAPITAL (C), AQDOT (C)
+  ██ WON FUND LOST    4: AIXTRON SE (R), AVA OCEAN (R), ARISTON (R), X FAB DRESDEN (R)
+
+3. WHAT ACTUALLY REACHES THE FOUNDER IN A DECLINED SEAT
+  rows promoted into the six by declining          175
+  ...that survive the SAME two disqualifiers       67 (38.3%)
+  ...that FAIL them, i.e. the founder sees a
+     disqualified row either way                   108 (61.7%)
+
+4. THE SIX SHOWN, WHICH IS WHAT A FOUNDER ACTUALLY READS
+  rows shown across all founders                   468
+  ...failing the two disqualifiers, TODAY          216 (46.2%)
+  ...failing them under the favourable `atMost`    149 (31.8%)
+  READ THIS WITH ITS ARTEFACT NAMED. A pick-rate falls whenever picks
+  fall, so 48% -> anything is not evidence. This is better but it is not
+  clean either: the picks KEPT are survivors by construction, so this
+  counterfactual seats 3.6 guaranteed survivors at the front of every
+  six. It is an upper bound on the arm, not a reading of it. Section 7
+  is the comparison that does not depend on the arm behaving perfectly.
+
+5. DOES THE MODEL SELECT ON THESE TWO RULES AT ALL?
+  P(picked | survives both rules)                  32.4%  (284/877)
+  P(picked | fails at least one)                   12.6%  (262/2076)
+  enrichment                                       2.57x
+
+6. THE SHIPPED ORDER ON THE SAME RULER — no model at all
+  the WHOLE MENU failing the two disqualifiers     2076/2953 (70.3%)  <- the base rate
+  control six failing the two disqualifiers        209/468 (44.7%)
+  the model's SIX                                216/468 (46.2%)
+  ...the favourable `atMost`                      149/468 (31.8%)
+  EXACT@6  control 33  ·  model today 35  ·  favourable atMost 37
+  ██ THE MODEL'S SIX AND THE FREE SCORE'S SIX FAIL THESE RULES AT THE SAME
+     RATE (44.7% vs 46.2%), and both are ~25 points better than the
+     menu they were cut from. So the ~48% headline is a property of the
+     POOL under this ruler, not a symptom of the count mode. A selector
+     that never read the prompt scores the same.
+  The 31.8% above is BELOW the control only because the counterfactual
+  retains picks that are survivors by construction. Declining EVERY seat
+  is the control at 44.7% — that is the true floor of the licence.
+
+7. THE SAME SPLIT UNDER A STRICT SURVIVOR SET — the bracket
+  a row we cannot price or cannot describe now FAILS, so survivors
+  collapse and every failure that CAN be forced now is.
+  mean survivors  generous 11.2  ->  strict 5.0
+  failures  365   FORCED 251 (68.8%)   ELECTIVE 114 (31.2%)
+  generous  262   FORCED 76 (29.0%)   ELECTIVE 186 (71.0%)
+
+8. FOUNDERS WITH NO SEAT PRESSURE AT ALL AND OFF-LIST PICKS ANYWAY
+  founders with >= 7 survivors                    51/78
+  their picks failing the disqualifiers            138/357 (38.7%)
+  every one of these is ELECTIVE by construction. `atMost` addresses none of them.
+
+  worst ELECTIVE cases (survivors on the menu, seat spent elsewhere)
+  founder                            str  surv  off  forced  elect  unpicked survivors
+  AIXTRON SE                           R    15    6       0      6                  14
+  SWERIM                               R    16    6       0      6                  15
+  ARISTON                              R    12    6       0      6                  11
+  ENANTIS S.R.O.                       R     6    6       1      5                   5
+  DESTINUS SPAIN                       C    17    5       0      5                  15
+  TELECOM ITALIA SPA O TIM             R    16    5       0      5                  14
+  NELLIE TECHNOLOGIES                  R    13    5       0      5                  11
+  HENNLICH S.R.O.                      R     7    5       0      5                   5
+  CACTUX S.R.O.                        R     8    5       0      5                   6
+  GREENERWAVE                          R     7    5       0      5                   5
+  MARITIME ROBOTICS                    C     7    4       0      4                   4
+  CELLFION AB                          C    16    4       0      4                  13
