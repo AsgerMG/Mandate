@@ -117,6 +117,39 @@ prose, and the event is the only way the contract's effect on a live model is
 visible from outside. `memo_id_redact_failed` is an error, because then an
 identifier may have reached the page.
 
+## Production run 4 — the memo, from the deployment a founder uses
+
+`npm run prodcheck`, default founder, `https://euro-inv-tracker.vercel.app`,
+deployment `dpl_4ntLA5BCaxFCSghVF97r7r8ysSc7` (production target, aliased, built
+from this merge). One brief, **EUR 0.317**, against a EUR 1 budget.
+
+```
+row names   ok — none of 7 reveals an instrument id
+memo ids    ok — none of 349 founder-facing strings carries one of the 7 ids
+            this deployment served
+```
+
+and the bullet matcher tells the truth now: bullet 4 reads `[names row 2]`,
+which run 2's name-only matcher could not have said.
+
+**The interesting part is in the deployment's own log**, and it is not what was
+expected:
+
+```
+[degraded] memo_id_redacted: an internal identifier was written into
+founder-facing text and replaced: state_aid_satr { count: 1 }
+```
+
+The guard fired on its first live run and what it caught was **not the writer**.
+`state_aid_satr` is a source-family code, and it was sitting in `self.channels`
+— a list `panelReport` never prints (it renders `euCapital`,
+`channelBreakdown` and `activeYears` from that block and nothing else).
+`NON_READER_KEYS` carried the singular `channel` and not the plural, so BRIEF-3
+and BRIEF-4 had been grading a value nobody reads and the repair rewrote it.
+`channels` is now classified where it belongs. That the miss and the wrong
+repair are the same one-line fact, in one file, is the argument for the check
+and the repair sharing the walk.
+
 ## Verification
 
 - `npx tsc --noEmit` clean; `npx vitest run` 841 passing including
