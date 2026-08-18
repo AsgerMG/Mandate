@@ -54,8 +54,10 @@ EU-level rows; `eligibility_export.py` writes `or "EU"` and `corpus.ts` writes
 about the world and differ only about *where* the default is applied — which a
 raw cell comparison cannot see, so it reported 15 rows under a fix that could
 never clear them. `READ_DEFAULT` states that as a **narrower** comparison rather
-than an exemption: the difference is permitted in exactly one shape, Postgres
-empty *and* the snapshot holding precisely the reader's default. "DE" against
+than an exemption: the difference is permitted in exactly one shape, the column
+holding **NULL** *and* the snapshot holding precisely the reader's default —
+tested on the raw cell, because `normaliseValue` folds NULL and `""` together
+and the reader's `?? "EU"` does not. "DE" against
 "FR" still fails; "EU" against "DE" still fails; and if either language's
 default changes without the other, the snapshot stops holding that exact string
 and the guard goes red. The tolerance also polices itself — if no row differs
