@@ -119,7 +119,7 @@ if (mode === "offline") {
 import {
   AGENT_SELECT_SEAM, agentSelectExitLine, agentSelectExits, agentSelectLastTrace,
   agentSelectMemoPool, agentSelectTallyLine, LOOKUP_MAX, resetAgentSelectTally,
-  SELECT_COUNT, SELECT_COUNT_MODE, SELECT_DEPTH, setAgentSelectTracing,
+  SECTOR_NOTE, SELECT_COUNT, SELECT_COUNT_MODE, SELECT_DEPTH, setAgentSelectTracing,
   THINK_EFFORT, TIMEOUT_BY_EFFORT, UNSURE_MODE,
 } from "../lib/intelligence/agentSelect";
 import { BRIEF_LIMITS } from "../lib/intelligence/briefChecks";
@@ -526,6 +526,7 @@ async function main() {
   p(`POOL_BLEND         ${POOL_BLEND}          ROW_PROXIMITY ${ROW_PROXIMITY}`);
   p(`VERDICT_POOL       ${VERDICT_POOL}           SELECT_DEPTH ${SELECT_DEPTH}   menu = min(depth, pool)`);
   p(`SELECT_COUNT       ${SELECT_COUNT}            SELECT_COUNT_MODE ${SELECT_COUNT_MODE}`);
+  p(`SECTOR_NOTE        ${SECTOR_NOTE}${SECTOR_NOTE === "explain" ? "      <- wsIB, NEVER SEEN BY A MODEL BEFORE" : ""}`);
   p(`AGENT_SELECT_UNSURE ${UNSURE_MODE}     LOOKUP_MAX ${LOOKUP_MAX}`);
   p(`WRITER_CANDIDATE_CAP ${WRITER_CANDIDATE_CAP}   published_cap ${BRIEF_LIMITS.institutionsMax}   shown ${SHOWN_ROWS}`);
   p(`AGENT_SELECT_EFFORT ${THINK_EFFORT}      maxtok ${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}   clock ${TIMEOUT_BY_EFFORT[THINK_EFFORT]}ms`);
@@ -834,7 +835,7 @@ async function main() {
       arm: AGENT_SELECT_ARM, seam: AGENT_SELECT_SEAM, effort: THINK_EFFORT,
       AWARD_TERM, PROFILE_BLOCK, POOL_BLEND, ROW_PROXIMITY,
       VERDICT_POOL, SELECT_DEPTH, SELECT_COUNT, SELECT_COUNT_MODE,
-      UNSURE_MODE, LOOKUP_MAX, WRITER_CANDIDATE_CAP,
+      UNSURE_MODE, LOOKUP_MAX, WRITER_CANDIDATE_CAP, SECTOR_NOTE,
       publishedCap: BRIEF_LIMITS.institutionsMax, shown: SHOWN_ROWS,
       maxTokens: MAX_TOKENS_BY_EFFORT[THINK_EFFORT],
       clockMs: TIMEOUT_BY_EFFORT[THINK_EFFORT],

@@ -115,6 +115,11 @@ company-selection rule, same seam, same arm, same rung.
   ceiling that shipped**. At 8,192 the model can finish a sentence it was
   cutting. Reported: the output-token distribution against the new ceiling, and
   **whether replies actually got longer**.
+- **[WITHDRAWN 2026-08-19 — see `findings/ruler_wsIB/`. The instrument behind
+  these two numbers disqualifies the fund the company actually won on 43.6% of
+  founders, and the sector rule it attributes to the prompt is not in the
+  prompt. Re-derived: 48.4% is 3.3%, and 0 of 156 founders hold fewer
+  qualifying rows than seats.]**
 - **IS THE SLOT-FILLING DEFECT STILL REAL.** wsHO measured **48.4% of picks
   failing the prompt's own two disqualifiers, and 39.0% on founders with ample
   qualifying rows**, and concluded `atMost` is worth an arm. Re-read on these
