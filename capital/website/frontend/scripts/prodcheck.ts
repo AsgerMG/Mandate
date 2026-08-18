@@ -254,6 +254,25 @@ async function main(): Promise<void> {
   console.log("\nThis is a LOOK at one founder, not a measurement. No percentage is "
     + "printed\nand none may be derived from it.");
 
+  // ── WHAT THIS FILE IS ALLOWED TO FAIL ON ─────────────────────────────────
+  // Nothing about the BRIEF. One founder cannot fail a build: the header's rule
+  // is that this is a look and not a number, and a judgement drawn from n=1 is
+  // exactly the weak statistic it forbids.
+  //
+  // The corpus source is not that kind of claim. It is not a sample of anything
+  // — it is a binary property of the process that served this request, observed
+  // exactly, and one observation of the wrong answer is proof rather than
+  // evidence of a rate. So it is the one thing here that ends the run non-zero.
+  //
+  // Until now it did not, and that is the defect being closed: the worst thing
+  // this instrument could find printed four lines of blocks and exited 0. That
+  // is the same shape as a CI suite sitting red across 139 consecutive commits
+  // with nobody able to see it. A result that fails nothing reaches nobody.
+  //
+  // Set below, acted on at the very end, so everything else still prints: a
+  // check that stops the report it was printing takes away the evidence.
+  let corpusBroken: string | null = null;
+
   const t0 = Date.now();
   const run = await driveFounderPath({
     company: replayed.company,
@@ -266,6 +285,16 @@ async function main(): Promise<void> {
 
   // ── 1. WHICH CORPUS PRODUCTION ACTUALLY USED ─────────────────────────────
   // First, because it can invalidate everything below it.
+  //
+  // WHAT IT CAN AND CANNOT SEE, stated because the difference is load-bearing:
+  // this reads the VERDICT route's answer, so it is the provenance of the
+  // instance that served the verdict. The memo is a different route and Vercel
+  // may run it in a different instance, which hydrates its own corpus and could
+  // have made the opposite decision. So a green here is not proof the brief
+  // below was written on Postgres — only that the founder's first screen was.
+  // Closing that would mean the streaming route emitting its own provenance;
+  // until it does, the honest reading of section 1 is "the screen", not "the
+  // memo".
   const verdictSeen = seen.find((s) => s.route === "/api/intelligence/verdict");
   const corpus = (verdictSeen?.body as { corpus?: {
     source?: string; degraded?: boolean; instruments?: number;
@@ -276,6 +305,8 @@ async function main(): Promise<void> {
     console.log("UNOBSERVABLE — this deployment's verdict route serves no `corpus`");
     console.log("block, so which store it ranked on cannot be established from");
     console.log("outside. Nothing below can be attributed to a corpus.");
+    corpusBroken = "the deployment served no corpus provenance, so which store it "
+      + "ranked on cannot be established from outside";
   } else {
     console.log(`source       ${String(corpus.source).toUpperCase()}`);
     console.log(`instruments  ${corpus.instruments}`);
@@ -284,10 +315,17 @@ async function main(): Promise<void> {
       console.log(`degraded     YES — Postgres was asked and refused: ${corpus.error}`);
     }
     if (corpus.source !== "postgres") {
-      console.log("\n██ STOP. This deployment is NOT on Postgres.");
-      console.log("██ Every gate correction this project has published lives in Postgres");
-      console.log("██ and NONE of them has reached a founder. That is the finding; the");
-      console.log("██ brief below is a brief about a stale copy and grades nothing.");
+      console.log("\n██ STOP. The instance that served this request is NOT on Postgres.");
+      console.log("██ Every gate correction this project has published lives in Postgres,");
+      console.log("██ and none of them is in the copy this brief was built from. The brief");
+      console.log("██ below is a brief about a stale copy and grades nothing.");
+      console.log("██");
+      console.log("██ It is an INSTANCE, not the whole deployment: provenance is decided");
+      console.log("██ once per serverless instance, so the others may be on Postgres and");
+      console.log("██ this one may not be the one a founder gets. How many are not is a");
+      console.log("██ question `npm run prodcorpus` answers for free, without a brief.");
+      corpusBroken = `the instance that served this run ranked on ${corpus.source}`
+        + `${corpus.error ? `, because Postgres said "${corpus.error}"` : ""}`;
     }
   }
 
@@ -459,6 +497,14 @@ async function main(): Promise<void> {
   console.log("cost         logged by the deployment, not served to the client:");
   console.log("             `vercel logs <deployment>` -> `[cost] brief cost EUR ...`");
   console.log("");
+
+  if (corpusBroken) {
+    console.error(`prodcheck: FAILED — ${corpusBroken}.`);
+    console.error("  Everything above is printed and is true of the run. None of it is "
+      + "true of\n  the corpus this project publishes. Re-read section 1 before "
+      + "reading anything\n  else, and watch this for free with `npm run prodcorpus`.");
+    process.exitCode = 1;
+  }
 }
 
 main().catch((e) => {
