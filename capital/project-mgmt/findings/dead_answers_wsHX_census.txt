@@ -1,0 +1,377 @@
+(node:41183) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+provenance {"source":"postgres","degraded":false,"instruments":1088,"hydratedAt":"2026-08-18T22:31:12.797Z","observedAt":"2026-08-18T22:31:12.798Z"}
+asOf 2026-08-18  corpus 1088  publishable 760
+renewal horizon 2 year(s)
+
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [wsHX dead-answer census]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+set __recallSetDescribed.json  split=holdout  N=897  fingerprint 13cb71cf3a1d1847
+  == the committed funnel run's draw.
+
+founders whose won fund is not in the corpus at all: 0
+
+══ 1. won funds whose scheme_end_date is already past ══
+founders 37 of 897 (4.12%) — 25 distinct funds
+  call_deadline        founders  20   funds  15   still publishable  14   [open 0 / between_calls 14 / shut 6]
+  notified_duration    founders  17   funds  10   still publishable   8   [open 8 / between_calls 0 / shut 9]
+
+  notified_duration split — expiry is not closure:
+    a CURRENT award year evidences the prolongation: 8 founder(s) — the fund is open, the date is just a stale notification
+    no current award year: 9 founder(s) — the declared expiry is again the last thing anybody has stated
+  call_deadline: 20 founder(s) — a passed deadline is closure, and 14 are carried by a funder page that says the programme recurs
+
+══ 2. founders whose won fund is NOT publishable ══
+78 of 897 (8.70%)
+  by reason (reasons OVERLAP by design — these do not sum):
+     26  nothing outside its own id names the row
+     19  no application route on record
+     15  the register says the window has shut
+     11  no amounts and no dates — below the data floor
+      7  withheld by editorial policy
+  founders failing more than one clause: 0
+
+══ 3. permanent vs recoverable ══
+  PERMANENT   13  (1.45% of the key)
+        7  withheld by editorial policy
+        6  the call deadline passed (call_deadline)
+  RECOVERABLE 65  (7.25% of the key)
+       26  nothing outside its own id names the row
+       19  no application route on record
+       11  no amounts and no dates — below the data floor
+        9  a notified duration expired and nobody has asked the funder
+
+══ 4. what the funnel reads on the honest population ══
+  we grade against N = 897
+  of which M = 13 cannot be got right by anyone
+  honest denominator N - M = 884
+
+  every published stage figure, on both denominators:
+  stage              N=897        honest N=884        delta
+  answer_key            897 100.00%    884 100.00%   +0.00 pts
+  in_corpus             897 100.00%    884 100.00%   +0.00 pts
+  publishable           819  91.30%    819  92.65%   +1.34 pts
+  liveness_confirmed    819  91.30%    819  92.65%   +1.34 pts
+  founder_screen        797  88.85%    797  90.16%   +1.31 pts
+  gates_pass            786  87.63%    786  88.91%   +1.29 pts
+  pool_cut              668  74.47%    668  75.57%   +1.10 pts
+  writer_cap            383  42.70%    383  43.33%   +0.63 pts
+  watch_only           UNMEASURED
+  published             370  41.25%    370  41.86%   +0.61 pts
+  top_6                 345  38.46%    345  39.03%   +0.57 pts
+  top_5                 323  36.01%    323  36.54%   +0.53 pts
+  model                UNMEASURED
+
+══ 5. every founder whose won fund is not publishable ══
+  1. ZAKŁAD PRACY CHRONIONEJ - PRZEDSIĘBIORSTWO PRODUKCYJNO HANDLOWO USŁUGOWE "LESTER" ADAM STOSIK 2. AUTOAQUA S.C. ADAM STOSIK
+    sudop_bgk_kit_v3
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  1M Track Sp. z o. o.
+    sudop_ncbr_aid
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  1s1 Energy
+    ipcei_hy2tech
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  3D BISTRO Sp. z o. o.
+    sudop_ncbr_aid
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  3D MEDICAL
+    satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+    end=2020-12-30 basis=notified_duration lastYear=2021 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  3D-Micromac
+    ipcei_micro
+    end=- basis=NULL lastYear=2018 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  3DEUS DYNAMICS SAS
+    eic_fund
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  4D Knight sp. z o.o.
+    sudop_ncbr_aid
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  5lines.ai Sp. z o.o.
+    sudop_ncbr_aid
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  7bulls.com sp. z o.o.
+    sudop_ncbr_aid
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  7Sprints Sp. z o.o.
+    sudop_ncbr_aid
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  A.M.L. MICROTECHNIQUE LORRAINE
+    satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+    end=2020-12-30 basis=notified_duration lastYear=2021 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  A.V. SIMULATION
+    satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+    end=2020-12-30 basis=notified_duration lastYear=2021 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  A&G KOPERTY GOŁDAPSKA FABRYKA KOPERT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+    sudop_bgk_kit_v3
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  ACCIAI SPECIALI TERNI
+    satr_it_rnd__sa_49781__ministero_delle_imprese_e_del_made_in_italy_dire
+    end=2020-12-30 basis=notified_duration lastYear=2023 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  Ace Aquatec
+    eit_food_rfs
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=none
+    ["withheld by editorial policy"]
+  Acodyne ApS
+    eifo_coinvest
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  ACOME
+    satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+    end=2020-12-30 basis=notified_duration lastYear=2021 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  ACT 1892
+    ademe_aid__ecoconception_textile_d_habillement_texhabi_3ff5cf
+    end=2025-06-30 basis=call_deadline lastYear=2025 status=shut evidence=closed rec=single_call
+    ["the register says the window has shut"]
+  ADAMUS SPÓŁKA AKCYJNA
+    sudop_bgk_kit_v3
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  ADDEV MATERIALS AEROSPACE SAS
+    satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+    end=2020-12-30 basis=notified_duration lastYear=2021 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  ADHEX TECHNOLOGIES
+    satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+    end=2020-12-30 basis=notified_duration lastYear=2021 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  ADIONICS
+    satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances
+    end=2020-12-30 basis=notified_duration lastYear=2021 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  ADIVO GMBH
+    htgf_equity
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  ADVANCED WIRELESS SOLUTIONS AND SERVICES
+    satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances
+    end=2020-12-30 basis=notified_duration lastYear=2021 status=shut evidence=closed rec=none
+    ["the register says the window has shut"]
+  AgroSustain
+    eit_food_rfs
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=none
+    ["withheld by editorial policy"]
+  Air Products
+    ipcei_hy2move
+    end=- basis=NULL lastYear=2024 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  AJUNTAMENT DE BARCELONA
+    bdns_es_ayudas__programa_para_actuaciones_de_autoconsumo_y_almac_1f5394
+    end=2023-12-31 basis=call_deadline lastYear=2026 status=shut evidence=closed rec=single_call
+    ["the register says the window has shut"]
+  AKPIL SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+    sudop_bgk_kit_v3
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  ALE MŁYN Maciej Gałecki
+    sudop_rd_centers
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  Aledia
+    ipcei_mect
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  ALF - SENSOR SPÓŁKA JAWNA
+    sudop_bgk_kit_v3
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  ALGINOR
+    eic_fund
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  Aliga
+    eit_food_rfs
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=none
+    ["withheld by editorial policy"]
+  ALIGNEDBIO AB
+    almi_invest_equity
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  AlixLabs
+    almi_invest_equity
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  ALTAROAD
+    eic_fund
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  ALUHOUSE SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ SPÓŁKA KOMANDYTOWA
+    sudop_bgk_kit_v3
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  ANALYTICAL R & D  Sp. z o.o. Sp. k.
+    sudop_regional_inv
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  Ansaldo
+    ipcei_hy2tech
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  AQUA SOLUTION Spółka z ograniczoną odpowiedzialnością
+    sudop_regional_inv
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  Arkema
+    ipcei_eubatin
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  Atlant 3D
+    eit_digital_vap
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=none
+    ["withheld by editorial policy"]
+  AURORA PROPULSION TECHNOLOGIES OY
+    satr_lt_equity
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  AUTONOMOUS CLEAN WATER APPLIANCE (ACWA) ROBOTICS
+    ademe_aid__innov_eau_ec2654
+    end=2025-01-13 basis=call_deadline lastYear=2026 status=shut evidence=closed rec=single_call
+    ["the register says the window has shut"]
+  AXELERA AI BV
+    cdp_vc_equity
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  BLUE WORLD TECHNOLOGIES APS
+    eifo_coinvest
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
+  BLUEMAPPING
+    ademe_aid__innov_eau_ec2654
+    end=2025-01-13 basis=call_deadline lastYear=2026 status=shut evidence=closed rec=single_call
+    ["the register says the window has shut"]
+  BMH Bolesław Mostowski
+    sudop_regional_inv
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  Bon Vivant
+    eit_food_rfs
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=none
+    ["withheld by editorial policy"]
+  Bosch
+    ipcei_micro
+    end=- basis=NULL lastYear=2018 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  BYTELAB SOLUTIONS SL
+    bdns_es_ayudas__ayudas_tecniospring_industry_d96c88
+    end=2023-12-30 basis=call_deadline lastYear=2022 status=shut evidence=closed rec=single_call
+    ["the register says the window has shut"]
+  Carbon
+    ipcei_eubatin
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  CASP SYSTEM SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+    sudop_regional_inv
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  CNC CONSULTING SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+    sudop_rd_centers
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  Codasip
+    ipcei_mect
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  COMEX Polska Spółka z ograniczoną odpowiedzialnością
+    sudop_regional_inv
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  COMPUTOMICS GMBH
+    eit_food_rfs
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=none
+    ["withheld by editorial policy"]
+  CORTEC GMBH
+    ipcei_micro
+    end=- basis=NULL lastYear=2018 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  CORWAVE
+    ipcei_tech4cure
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  COSMOTECH SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+    sudop_regional_inv
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  Cummins
+    ipcei_hy2tech
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  DAMIR SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+    sudop_rd_centers
+    end=- basis=NULL lastYear=2023 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  Defensphere OÜ
+    satr_lt_equity
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  E 4 COMPUTER ENGINEERING SPA
+    chips_ju_kdt_unknown
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  EIDGENOESSISCHE TECHNISCHE HOCHSCHULE ZUERICH
+    chips_ju_kdt_unknown
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=recurs
+    ["nothing outside its own id names the row"]
+  Endurance
+    ipcei_batteries
+    end=- basis=NULL lastYear=2019 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  Enel X
+    ipcei_batteries
+    end=- basis=NULL lastYear=2019 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  ExactCure
+    eit_digital_vap
+    end=- basis=NULL lastYear=2022 status=open evidence=no_deadline_recorded rec=none
+    ["withheld by editorial policy"]
+  FINEHEART
+    ipcei_tech4cure
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  Gasnetz Hamburg GmbH
+    ipcei_hy2infra
+    end=- basis=NULL lastYear=2024 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  INSTITUT MINES-TELECOM
+    ademe_aid__innov_eau_ec2654
+    end=2025-01-13 basis=call_deadline lastYear=2026 status=shut evidence=closed rec=single_call
+    ["the register says the window has shut"]
+  IQE
+    ipcei_micro
+    end=- basis=NULL lastYear=2018 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  NOME
+    cdp_vc_fof
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=none
+    ["no amounts and no dates — below the data floor"]
+  P&Q SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ
+    sudop_parp_rd
+    end=- basis=NULL lastYear=2021 status=open evidence=no_deadline_recorded rec=none
+    ["nothing outside its own id names the row"]
+  POWERFUL MEDICAL SRO
+    ipcei_tech4cure
+    end=- basis=NULL lastYear=2025 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  Tomark
+    ipcei_hy2move
+    end=- basis=NULL lastYear=2024 status=open evidence=no_deadline_recorded rec=none
+    ["no application route on record"]
+  VERTORO
+    invest_nl_equity
+    end=- basis=NULL lastYear=- status=open evidence=no_deadline_recorded rec=recurs
+    ["no amounts and no dates — below the data floor"]
