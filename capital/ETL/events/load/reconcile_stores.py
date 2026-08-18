@@ -424,13 +424,21 @@ def merge_table(tgt: sqlite3.Connection, src: sqlite3.Connection, table: str,
 
     A row BOTH stores have, whose columns disagree, is not a transfer. It is a
     JUDGEMENT about whose evidence is better, and `owner_is_source` decides it
-    at the granularity of a FAMILY — which is too coarse to be true. Measured
-    on the two live stores: the laptop owns the gate encodings and the record
-    owns 46 cleaned, founder-readable Spanish scheme titles that neither the
-    laptop nor Postgres has (`bdns_conv_922188` reads "Ayudas para provisión
-    ... 5G redes muy rurales" on the record and "PROYECTO DE ORDEN QUE
-    ESTABLECEN BBRR DE LA CONCESIÓN DE ..." on the other two). One family, two
-    owners, in the same table.
+    once, for a whole FAMILY — which is too coarse to be true. Measured on the
+    two live stores on 2026-08-19, `funding_instruments` disagreed on 374
+    values across 19 columns, and the columns do not share a reason: 91
+    `capital_type_basis`, 70 `name_source`, 48 `name`, 46
+    `eligibility_fetched_at`, 26 `capital_type`, 19 `sector_mix`, and one
+    `scheme_end_date` — that last written weekly ON THE RECORD by
+    `refresh_open_calls.py` and nowhere else.
+
+    `name_source` is the one that shows why a family cannot own this. It is not
+    metadata: `registerNamesTheRow()` withholds a row from every founder when
+    it reads `partition_key`. The laptop calls 44 loader-composed buckets
+    `partition_key` and the record still calls them `deterministic`. Run the
+    merge in either direction and a PUBLISHABILITY decision on 44 rows moves as
+    a side effect of promoting eligibility gates — which is not a thing anybody
+    asked for and not a thing anybody would have reviewed.
 
     `overwrite_gate` could not have caught it: it counts ROWS that would be
     lost and every one of those rows exists in both stores, so it reported

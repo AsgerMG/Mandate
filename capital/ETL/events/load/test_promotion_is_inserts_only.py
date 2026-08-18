@@ -12,15 +12,17 @@ THE NEAR MISS THIS ENCODES. On 2026-08-19 the corpus of record was missing
         --family instruments
 
 `overwrite_gate` was green on it — `proven loss: 0 row(s)` — and it was right:
-no row would have been lost. What it does not measure is that the same command
-had 374 column values queued to be displaced on rows BOTH stores hold, among
-them 46 cleaned, founder-readable Spanish scheme titles that exist on the
-record and on neither the laptop nor Postgres. `bdns_conv_922188` reads
-"Ayudas para provisión conjunto de equipamiento activo e infraestructura para
-dotar de comunicaciones móviles 5G ..." on the record and "PROYECTO DE ORDEN
-QUE ESTABLECEN BBRR DE LA CONCESIÓN DE AYUDAS PARA ..." on the other two. The
-family the laptop owns for gates is the family the record owns for titles, and
-`owner_is_source` decides ownership per FAMILY, which is too coarse to be true.
+no row would have been lost. What it does not measure is COLUMNS. The same
+command had 374 values queued to be displaced on rows BOTH stores hold, across
+19 columns that do not share a reason: 91 `capital_type_basis`, 70
+`name_source`, 48 `name`, 26 `capital_type`, and one `scheme_end_date` — that
+last written weekly ON THE RECORD by `refresh_open_calls.py`.
+
+`name_source` is why a FAMILY cannot own this. `registerNamesTheRow()` withholds
+a row from every founder when it reads `partition_key`; the laptop calls 44
+loader-composed buckets `partition_key` and the record still calls them
+`deterministic`. Run the merge either way and a publishability decision on 44
+rows moves as a side effect of promoting eligibility gates.
 
 THE PROPERTY, not the list. No table, column, store or count is a rule below:
 
@@ -103,17 +105,19 @@ def main() -> None:
         # `value_spec` it would be an enumeration wearing a test.
         extra = "a_column_added_next_year"
 
-        # target: two shared rows carrying values only IT has, plus one of its own
+        # target: two shared rows carrying values only IT has, plus one of its own.
+        # Which store is "better" is deliberately not modelled — the property is
+        # that a promotion does not decide, whichever way the answer runs.
         build(target, table, extra, [
-            ("inst_a", "g1", "the record's own cleaned wording", "record-only-1", "t0"),
-            ("inst_b", "g1", "another of the record's", "record-only-2", "t0"),
-            ("inst_z", "g9", "a row the source has never seen", "record-only-3", "t0"),
+            ("inst_a", "g1", "the target's wording", "target-only-1", "t0"),
+            ("inst_b", "g1", "another of the target's", "target-only-2", "t0"),
+            ("inst_z", "g9", "a row the source has never seen", "target-only-3", "t0"),
         ])
         # source: the same two shared rows, disagreeing on every column, plus the
         # rows the promotion exists to carry
         build(source, table, extra, [
-            ("inst_a", "g1", "THE LAPTOP'S RAW REGISTER BOILERPLATE", "laptop-1", "t1"),
-            ("inst_b", "g1", "ALSO THE LAPTOP'S", "laptop-2", "t1"),
+            ("inst_a", "g1", "the source's wording", "source-1", "t1"),
+            ("inst_b", "g1", "also the source's", "source-2", "t1"),
             ("inst_new1", "g1", "a gate the record has never been given", "new-1", "t1"),
             ("inst_new2", "g2", "and another", "new-2", "t1"),
         ])
