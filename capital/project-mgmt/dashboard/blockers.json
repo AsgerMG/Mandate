@@ -3,21 +3,15 @@
   "blockers": [
     {
       "who": "you",
-      "what": "The data pipeline is broken, not just behind",
-      "why": "Our weekly job that refreshes the funding data has been failing since Saturday — it stops partway through, at the step that classifies what sector each company is in. The consequence is visible: we can name eight sectors where we could name eleven, and that count is a figure on our own home page. Nobody is being served the bad numbers, because a safety gate is refusing to publish them — which is the gate doing its job. But the pipeline itself needs a person.",
-      "ask": "This one needs you. It sits alongside the container redeploy in AWAITING_APPROVAL, and they are related."
-    },
-    {
-      "who": "you",
-      "what": "Two publishes, and neither is risky",
-      "why": "Yesterday's corrections are live in the database and not yet in the copy the site falls back on, so the two disagree about 22 fund names and 51 eligibility rules. And the container that runs the weekly job has never once published a safety verdict in its life, so the check our automated builds read has been dark since the day it was built. Both are ordinary publishing steps we have deliberately not taken on our own.",
-      "ask": "Read AWAITING_APPROVAL when you have half an hour. No money."
+      "what": "One sector is still missing, and it is on our home page",
+      "why": "The weekly job is fixed and redeployed — it had been dying on a file that was never in the container, before its first line. But the step that repairs our sector labels was deployed a week ago and has never once run, because that same crash killed it every Sunday. So we can still name eight sectors where we could name eleven. Getting the eleventh back means copying labels into the master database: an ordinary write, but a write.",
+      "ask": "Say go and I do it. The alternative is asking a model to re-derive them, which prices at about 136 dollars and is not worth it."
     },
     {
       "who": "us",
-      "what": "Nine of the companies we grade ourselves against won a fund that no longer exists",
-      "why": "Part of the target we measure against is unreachable by definition, and it was quietly inflating one of our numbers rather than measuring the product. Found only because we stopped a dead scheme being recommended and watched what happened to the score. I want the true count before proposing anything.",
-      "ask": "Nothing. Mine."
+      "what": "Some of the companies we grade ourselves against won a fund that no longer exists",
+      "why": "Nine so far — and nine is what one workstream happened to trip over, not a count. Those are answers nobody could ever get right, and until yesterday they sat in our denominator making one number look better than the product is. Being counted properly now. When it is done you get two figures, not one: what we grade against, and how much of it is unreachable by anyone.",
+      "ask": "Nothing yet. The count comes to you with the argument, and changing what we grade against is your call, not mine."
     }
   ]
 }
