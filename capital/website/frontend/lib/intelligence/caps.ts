@@ -741,8 +741,26 @@ export const THINK_EFFORT: ThinkEffort = (() => {
  * would send each value, so that restoration is guarded rather than remembered
  * and an SDK upgrade that moves the boundary moves the guard with it.
  */
+/* ── `low` IS THE RUNG THAT SHIPS, AND IT WAS AT 92.3% (wsHO, 2026-08-18) ──
+ * Every rung above `low` threw before a socket opened, so wsHO's 85 paid calls
+ * ran HERE — at the forty-row menu production serves. Measured: mean output 215
+ * tokens, p95 1,017, and a largest reply of **1,891 against a ceiling of
+ * 2,048**. Nothing truncated, and that is the point: 0 of 85 is a pass, and one
+ * more sentence on that founder's reply would have made it a truncated brief in
+ * production rather than a red line in a test.
+ *
+ * `low` was left alone by wsHI on EIGHTEEN-row evidence, at a time when the
+ * menu was eighteen. wsHO then measured menu scaling as SUPER-linear — menu
+ * x2.22 gives mean output x3.6 and max x5.6 — so the one rung nobody re-sized
+ * is the one now carrying the widened menu.
+ *
+ * 8,192 is 4.3x the largest reply seen and 8x p95, it stays far below the
+ * SDK's non-streaming limit of 21,333 that killed the four rungs above, and it
+ * keeps the ladder strictly increasing. It costs NOTHING: output tokens bill
+ * only when used, and 95.6% of this call's bill is the prompt.
+ */
 export const MAX_TOKENS_BY_EFFORT: Record<ThinkEffort, number> = {
-  off: 1024, low: 2048, medium: 14_336, high: 16_384, xhigh: 18_432, max: 20_480,
+  off: 1024, low: 8192, medium: 14_336, high: 16_384, xhigh: 18_432, max: 20_480,
 };
 
 /**
