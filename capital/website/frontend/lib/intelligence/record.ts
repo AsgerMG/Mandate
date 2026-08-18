@@ -27,8 +27,12 @@ export interface BriefRecord {
   capitalSought?: string[];
   /** The shortlist as published, with the code-computed verdict per row —
    *  the part we would need in order to check a decision later. */
+  /** `instrumentId` first, and it was missing: without it this record says a
+   *  fund was published and cannot say WHICH fund, so every later reading of
+   *  the column has to guess by display name across 322 instruments sharing
+   *  143 names. The column is JSONB, so carrying it needs no migration. */
   institutions: Pick<InstitutionEntry,
-    "institution" | "channel" | "country" | "verdict" | "blocker" | "stale">[];
+    "instrumentId" | "institution" | "channel" | "country" | "verdict" | "blocker" | "stale">[];
   /** Rows the pipeline dropped and why, so a thin brief can be explained
    *  after the fact instead of guessed at. */
   droppedBlocked: number;

@@ -178,24 +178,26 @@ async function linkStatus(r: InstitutionEntry): Promise<string> {
 }
 
 /**
- * Normalised for comparison only.
+ * Normalised for comparison only. Used for the LABEL check below, never to
+ * decide which fund a row is.
  *
- * ── Published rows carry no instrument id, and that is the finding ────────
- * `InstitutionEntry` has `institution`, `channel`, `schemeCode` and no id. So
- * nothing downstream of the writer — not this file, not an adviser, not a
- * founder — can say WHICH fund a published row is. Matching the answer key
- * against the table is therefore a NAME match, and the first version of this
- * function also accepted containment either way. On the very first run that
- * scored a hit: the won fund is `...sa_40391__ministere_de_l_economie_et_des_
+ * ── It used to be the only way to ask, and it answered wrong ──────────────
+ * `InstitutionEntry` carried `institution`, `channel` and `schemeCode` and no
+ * id, so nothing downstream of the writer could say WHICH fund a published row
+ * was — not this file, not an adviser, not a founder. Matching the answer key
+ * against the table was therefore a NAME match, and the first version of this
+ * function accepted containment either way. On the very first run that scored
+ * a hit: the won fund is `...sa_40391__ministere_de_l_economie_et_des_
  * finances` and row 4 rendered as `... · rnd  sa 111728  ministere de l
  * economie et des finances · via Conseil régional`, so the won name sat inside
  * the row's name and the run reported "published row 4" for a different
- * notified scheme, two regimes and six years apart.
+ * notified scheme, two regimes and six years apart. That is the trap
+ * `EligibilityCheck` warns about — 322 instruments share 143 names — arriving
+ * through a fuzzy comparison instead of a shared identity.
  *
- * That is the exact trap `EligibilityCheck` warns about — 322 instruments share
- * 143 names — arriving through a fuzzy comparison instead of a shared name. So
- * containment is gone: EXACT normalised equality, and the id-based pool rank
- * printed beside it is the statement to trust.
+ * `InstitutionEntry.instrumentId` closed it (wsHR). The published rank below
+ * is now an EXACT id match, the same comparison the pool rank has always used,
+ * and this normaliser is left only for the id-in-the-label check.
  */
 const norm = (s: string) => s.toLowerCase().normalize("NFKD")
   .replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
@@ -264,8 +266,8 @@ async function main(): Promise<void> {
   const poolRank = run.candidateInstrumentIds.indexOf(row.instrument);
   const screenRank = run.screenSix.findIndex(
     (r) => (r as unknown as { instrumentId?: string }).instrumentId === row.instrument);
-  const wonName = norm(row.instrumentName ?? row.instrument);
-  const publishedRank = rows.findIndex((r) => norm(r.institution) === wonName);
+  const publishedRank = rows.findIndex((r) => r.instrumentId === row.instrument);
+  const noId = rows.filter((r) => !r.instrumentId).length;
   console.log(rule("2. THE FUND THIS COMPANY ACTUALLY WON"));
   console.log(`won          ${row.instrumentName ?? "—"}  [${row.instrument}]`);
   console.log(`pool         ${poolRank < 0 ? "ABSENT from the candidate pool"
@@ -273,8 +275,8 @@ async function main(): Promise<void> {
   console.log(`first screen ${screenRank < 0 ? "ABSENT from the six instant rows"
     : `row ${screenRank + 1}`}   (by instrument id — exact)`);
   console.log(`published    ${publishedRank < 0 ? "ABSENT from the published table"
-    : `row ${publishedRank + 1}`}   (by EXACT name — published rows carry no`
-    + " instrument id, so this cannot be an id match; trust the pool row above)");
+    : `row ${publishedRank + 1}`}   (by instrument id — exact)`
+    + (noId ? `   [${noId} of ${rows.length} rows carry no id]` : ""));
 
   // ── 3. THE PUBLISHED ROWS, AS A FOUNDER SEES THEM ────────────────────────
   console.log(rule(`3. THE PUBLISHED ROWS (${rows.length})`));

@@ -479,6 +479,10 @@ function buildInstitutions(
 ): InstitutionEntry[] {
   return rows.map((row) => ({
     institution: displayInstitutionName(row),
+    // WHICH FUND THIS ROW IS. Carried first because everything else on the row
+    // is a description of it and this is the only thing that names it. See the
+    // field's own note on InstitutionEntry for what its absence cost.
+    instrumentId: row.instrumentId,
     channel: row.channel,
     supportType: supportTypeLabel(row),
     ticket: row.ticket,
@@ -1946,6 +1950,7 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     eligibility: req.eligibility,
     capitalSought: req.capitalSought,
     institutions: report.institutions.map((i) => ({
+      instrumentId: i.instrumentId,
       institution: i.institution, channel: i.channel, country: i.country,
       verdict: i.verdict, blocker: i.blocker, stale: i.stale,
     })),

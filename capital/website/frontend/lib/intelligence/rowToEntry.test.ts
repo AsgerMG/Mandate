@@ -38,6 +38,35 @@ function buildInstitutionsBody(): string {
 }
 
 describe("instrument row -> institution entry", () => {
+  /**
+   * A PUBLISHED ROW CAN BE SAID WHICH FUND IT IS.
+   *
+   * `instrumentId` is the one field on the entry that is not a description of
+   * the fund but the NAME of it, and it is the only one this test can state as
+   * a property rather than as a rendered-field sweep: the sweep below asks
+   * "does everything the table renders survive the hop", and identity is
+   * precisely the thing the table does NOT render. So it needs its own
+   * assertion or nothing has one.
+   *
+   * What its absence cost, twice, on the same day: `scripts/prodcheck.ts` had
+   * to match a founder's won fund against the published table by NAME, and
+   * reported a hit on a different notified scheme six years apart because the
+   * won fund's name sat inside the other's rendered label; and
+   * `brief_records.institutions` recorded seven rows per brief with no way to
+   * say which funds they were.
+   */
+  it("the row's identity survives the hop, so a published row can be named", () => {
+    expect(buildInstitutionsBody(),
+      "buildInstitutions drops instrumentId, so nothing downstream of the writer "
+      + "can say which fund a published row is")
+      .toContain("instrumentId: row.instrumentId");
+    // And it is RECORDED, not merely computed: a brief record that cannot name
+    // its own rows is the same defect one layer down.
+    expect(pipeline,
+      "brief_records stores the published rows without their instrument ids")
+      .toMatch(/institutions: report\.institutions\.map\([\s\S]{0,60}?instrumentId: i\.instrumentId/);
+  });
+
   it.each(["judgementCriteria", "structuringNotes"])(
     "%s survives the hop into the memo", (field) => {
       // It is rendered...

@@ -339,6 +339,27 @@ export interface InstrumentRow {
  *  nextStep are model-written, keyed back onto these rows by channel. */
 export interface InstitutionEntry {
   institution: string;   // display name, e.g. "EIC Accelerator"
+  /** WHICH FUND THIS ROW IS. The leaf instrument's own id, carried from
+   *  `InstrumentRow.instrumentId` — never rendered, never handed to a model.
+   *
+   *  It exists because a published row had no identity at all. `institution`
+   *  is a DISPLAY name and 322 instruments share only 143 of them
+   *  ("Norges Forskningsrad" alone covers 65 — the same warning
+   *  `EligibilityCheck.instrumentId` carries), `channel` is a source family
+   *  that legitimately emits several rows, and `schemeCode` is a notified
+   *  regime with up to eighteen leaves under it. So nothing downstream of the
+   *  writer could say which fund a founder had been handed: not an adviser,
+   *  not the brief record, not a harness. `scripts/prodcheck.ts` matched the
+   *  answer key by name, the won fund's name sat inside a DIFFERENT notified
+   *  scheme's rendered label, and the run reported a hit two regimes and six
+   *  years apart — the 322-share-143-names trap arriving through a fuzzy
+   *  comparison because there was nothing exact to compare.
+   *
+   *  Optional because a row can legitimately be a whole channel with no leaf
+   *  behind it (a programme-level row), which is the same reason
+   *  `InstrumentRow.instrumentId` is optional. Absent means "this row is not a
+   *  leaf", never "we lost track of it". */
+  instrumentId?: string;
   channel: string;       // internal source_family code
   supportType: string;   // e.g. "Grant", "Loan / guarantee", "Equity stake"
   ticket: string;        // curated ticket size, from FundSnapshot
