@@ -432,14 +432,6 @@
    "failure": "check_applicant_identity: FAILED",
    "reason": "Two published 'who may apply' texts describe a population that cannot apply: an Italian SME guarantee only a bank or intermediary may submit, and a Dutch subsidy granted via the NXTGEN foundation rather than to the firms that join the project. Both are TEXT corrections in Postgres and not verdict edits — the check says so itself. Small, real, and a production write."
   },
-  "corpus currency": {
-   "class": "corpus-state",
-   "owner": "the publish — `make eligibility` + profile rebuild",
-   "since": "2026-08-18",
-   "review": "2026-09-01",
-   "failure": "check_corpus_currency: FAILED",
-   "reason": "The committed snapshot and Postgres disagree on 3 fields over 1,088 instruments (22 names, 22 name sources, 15 countries) and on 51 eligibility rules, 36 of them on offerable funds. accessiblePool is built from those rules, so a degraded request admits and refuses different funds. The 22 names are wsHS's rename work landing in Postgres and not in the snapshot. The fix is a republish, which is a production step. Queued in AWAITING_APPROVAL.md."
-  },
   "site serves the ETL's corpus": {
    "class": "corpus-state",
    "owner": "the ETL — the pipeline itself is broken",

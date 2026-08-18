@@ -227,10 +227,10 @@
   },
   "corpus currency": {
    "argv": "npx tsx scripts/check_corpus_currency.ts",
-   "code": 1,
-   "summary": "check_corpus_currency: FAILED",
-   "at": "2026-08-18T21:50:24.871Z",
-   "ms": 2808
+   "code": 0,
+   "summary": "check_corpus_currency: ok — the snapshot and Postgres agree on every liveness verdict, every instrument is retrievable, and both committed mirrors of the index (scores, profile text) cover exactly the live one.",
+   "at": "2026-08-18T21:46:12.214Z",
+   "ms": 3086
   },
   "country gates": {
    "argv": "npx tsx scripts/check_country_gates.ts",
