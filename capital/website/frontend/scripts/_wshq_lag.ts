@@ -1,13 +1,18 @@
 // How far behind is the register? Measured on rows whose openness is established
 // INDEPENDENTLY of any award year — a declared end date still in the future.
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
-import { hydrateDbInstruments, loadDbInstruments } from "../lib/intelligence/corpus";
+// Without the key this measures the committed snapshot and prints a number
+// indistinguishable from a live one. _wshq_lag quotes figures that reached a
+// finding and, for the lag, a shipped constant.
+requireCredentials("_wshq_lag", ["DATABASE_URL"]);
+import { hydrateDbInstruments, loadDbInstruments, requireLiveCorpus } from "../lib/intelligence/corpus";
 import { SCHEME_END_BASIS, today } from "../lib/intelligence/liveness";
 const asOf = today();
 const thisYear = Number(asOf.slice(0, 4));
 async function main() {
   await hydrateDbInstruments();
+  requireLiveCorpus("_wshq_lag");
   const all = loadDbInstruments();
   const open = all.filter((r) => r.schemeEndDate && String(r.schemeEndDate).slice(0,10) >= asOf
     && r.schemeEndBasis === SCHEME_END_BASIS.notifiedDuration && r.lastYear != null);

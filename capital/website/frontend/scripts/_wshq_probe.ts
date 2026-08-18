@@ -1,12 +1,17 @@
 // Why is SA.40453 published? Ask the real corpus, row by row.
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
-import { hydrateDbInstruments, loadDbInstruments, publishableInstruments, publishabilityFailures, publishabilityContext, corpusProvenance } from "../lib/intelligence/corpus";
+// Without the key this measures the committed snapshot and prints a number
+// indistinguishable from a live one. _wshq_probe quotes figures that reached a
+// finding and, for the lag, a shipped constant.
+requireCredentials("_wshq_probe", ["DATABASE_URL"]);
+import { hydrateDbInstruments, loadDbInstruments, publishableInstruments, publishabilityFailures, publishabilityContext, corpusProvenance, requireLiveCorpus } from "../lib/intelligence/corpus";
 import { callStatus, isClosed, opennessEvidence, today } from "../lib/intelligence/liveness";
 import { recurrenceRecord } from "../lib/intelligence/callRecurrence";
 
 async function main() {
   await hydrateDbInstruments();
+  requireLiveCorpus("_wshq_probe");
   console.log("provenance", JSON.stringify(corpusProvenance()));
   const all = loadDbInstruments();
   const asOf = today();

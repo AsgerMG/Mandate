@@ -1,7 +1,11 @@
 // What each renewal horizon costs and buys, on the live corpus.
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
-import { hydrateDbInstruments, loadDbInstruments, publishableInstruments, publishabilityFailures, publishabilityContext } from "../lib/intelligence/corpus";
+// Without the key this measures the committed snapshot and prints a number
+// indistinguishable from a live one. _wshq_horizon quotes figures that reached a
+// finding and, for the lag, a shipped constant.
+requireCredentials("_wshq_horizon", ["DATABASE_URL"]);
+import { hydrateDbInstruments, loadDbInstruments, publishableInstruments, publishabilityFailures, publishabilityContext, requireLiveCorpus } from "../lib/intelligence/corpus";
 import { SCHEME_END_BASIS, today } from "../lib/intelligence/liveness";
 import { recurrenceRecord } from "../lib/intelligence/callRecurrence";
 
@@ -19,6 +23,7 @@ function newlyStale(r: any, grace: number): boolean {
 
 async function main() {
   await hydrateDbInstruments();
+  requireLiveCorpus("_wshq_horizon");
   const all = loadDbInstruments();
   const ctx = publishabilityContext(all);
   const pub = publishableInstruments();
