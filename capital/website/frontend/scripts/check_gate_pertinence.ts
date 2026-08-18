@@ -138,7 +138,7 @@ const CREDENTIALS = requireCredentials(
 
 const REPO = path.resolve(process.cwd(), "../..");
 const CACHE = path.join(REPO, "data", "eligibility_pertinence.json");
-const CALIBRATION = path.join(REPO, "data", "reference", "pertinence_calibration.json");
+const CALIBRATION = path.join(REPO, "reference", "pertinence_calibration.json");
 const SNAPSHOT = path.join(process.cwd(), "public", "data", "instrument_terms.json");
 
 type Verdict = { verdict: string; reason: string; sample?: string; v?: number };
@@ -262,7 +262,7 @@ async function main() {
           (got ? `\n        model said: ${got.reason}` : "") +
           `\n        why this case exists: ${c.why}`).join("\n") +
         `\n    Re-run the classifier. If a case is genuinely wrong, argue with ` +
-        `the case in data/reference/pertinence_calibration.json — do not delete ` +
+        `the case in reference/pertinence_calibration.json — do not delete ` +
         `it to make the build green.`,
     });
   }
@@ -345,7 +345,7 @@ async function main() {
         (reports.length > 10 ? `\n      … and ${reports.length - 10} more` : "") +
         `\n    A report is real evidence about the scheme and is worth keeping — ` +
         `it just may not DECIDE. Move it to gate_role='programme_fact' via ` +
-        `data/reference/gate_role_overrides.json (encode_gates.py rewrites ` +
+        `reference/gate_role_overrides.json (encode_gates.py rewrites ` +
         `gate_role from a paid triage pass, so a bare UPDATE is reverted), then ` +
         `python3 ETL/terms/apply_gate_role_overrides.py.`,
     });

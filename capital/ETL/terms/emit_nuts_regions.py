@@ -1,7 +1,7 @@
-"""Rebuild data/reference/nuts_regions.json from Eurostat's NUTS register.
+"""Rebuild reference/nuts_regions.json from Eurostat's NUTS register.
 
 ── Why this file exists ───────────────────────────────────────────────────
-`data/reference/nuts_regions.json` arrived in one commit on 2026-07-31 with its
+`reference/nuts_regions.json` arrived in one commit on 2026-07-31 with its
 source named in prose -- "Eurostat GISCO, NUTS 2024 (NUTS_AT_2024.csv)" -- and
 no way to produce it again. It has four readers:
 
@@ -73,7 +73,7 @@ import csv  # noqa: E402
 import json  # noqa: E402
 from collections import defaultdict  # noqa: E402
 
-OUT = ROOT / "data" / "reference" / "nuts_regions.json"
+OUT = ROOT / "reference" / "nuts_regions.json"
 # Same directory and same vintage constant as audit_region_claims.py, which
 # builds the sibling nuts_names.json from the same download.
 GISCO_NUTS_DIR = ROOT / "data" / "raw" / "gisco_nuts"

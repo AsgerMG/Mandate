@@ -1,7 +1,14 @@
 # data — the database, its backups, and the read-side SQL
 
-Everything data-at-rest lives here. The DB itself and the caches are generated build
-artifacts (gitignored); the SQL and the scope config are version-controlled.
+Everything data-at-rest lives here, and **only** that. This directory is the CORPUS:
+generated, matched whole by `.gitignore` (a bare `data` at line 57), and mounted from a
+Railway volume at `/app/data` in the ETL image. Nothing under it reaches the container by
+being committed — `railway up` applies `.gitignore` to the upload, so a file placed here
+travels only if a human copies it onto the volume.
+
+Committed input that CODE reads therefore lives in **`reference/`** at the repo root, not
+here. Putting one here stopped the weekly ETL for three days on 2026-08-16; see
+`reference/README.md` and `project-mgmt/findings/wsHU_etl_stopped/`.
 
 ```
 db.sqlite              the built database (+ -wal/-shm sidecars) — gitignored, ~500MB
@@ -10,8 +17,12 @@ views.sql              the v_* read views (v_events, v_company_breadth, …)
 queries/               ad-hoc analytical SQL (e.g. q09_state_aid.sql)
 raw/                   per-source API/HTML caches — gitignored, reproducible by ETL/extract
 processed/             derived intermediates (CSV/JSONL) — gitignored
-europe_scope.json      the 40-country corpus scope (the one tracked config here)
 ```
+
+Some files here are force-added past the ignore rule — the read-side SQL, the authored
+`instrument_terms/` YAML, and the caches the pipeline itself writes and re-reads. They all
+belong to this store. None of them is read by a module the weekly cron imports, which is
+the line `ETL/schema/check_cron_image_inputs.py` enforces.
 
 ## Read side vs write side
 

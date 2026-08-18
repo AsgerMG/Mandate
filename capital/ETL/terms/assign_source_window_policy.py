@@ -19,7 +19,7 @@ Measured 2026-08-07 on the snapshot pushed back to its pre-call-register shape:
 812 rows offered, 0 withheld, 84 of them closed according to the live register.
 
 So the fact is RECORDED instead of inferred. `source_window_policy` is written
-here from data/reference/source_window_policy.json, which holds one answer per
+here from reference/source_window_policy.json, which holds one answer per
 feed plus the field and the page it was read off. A copy carries the column
 however far behind it has fallen, which is the property a tally over the rows
 in hand can never have.
@@ -54,7 +54,7 @@ import sqlite3  # noqa: E402
 from etl_env import DB, ROOT  # noqa: E402
 from liveness import CALL_DEADLINE, SOURCE_WINDOW_POLICIES  # noqa: E402
 
-REFERENCE = ROOT / "data/reference/source_window_policy.json"
+REFERENCE = ROOT / "reference/source_window_policy.json"
 
 # The keys a declaration may match on, in the order a row is tested. `id` is the
 # narrowest and wins; `source_family_bucket` is the widest and loses. Order here
@@ -87,7 +87,7 @@ def load_declarations() -> list[dict]:
             raise SystemExit(
                 f"{REFERENCE.name}: '{d['policy']}' is not one of "
                 f"{sorted(SOURCE_WINDOW_POLICIES)}. The vocabulary is projected "
-                f"from lib/intelligence/liveness.ts into data/liveness.json — a "
+                f"from lib/intelligence/liveness.ts into reference/liveness.json — a "
                 f"fourth value here is a value the product reads as 'nobody "
                 f"asked', which withholds the row.")
         if set(d["match"]) - set(MATCH_KEYS):
@@ -234,7 +234,7 @@ def main() -> None:
         raise SystemExit(
             f"\n{len(unmatched)} publishable rows carry no declaration. That is "
             f"not a failure of this run -- they are correctly NULL and correctly "
-            f"withheld -- but it is a gap in data/reference/source_window_policy."
+            f"withheld -- but it is a gap in reference/source_window_policy."
             f"json, and check_liveness.ts fails the build until it is closed.")
 
 

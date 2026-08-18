@@ -75,7 +75,7 @@ API_BASE = "https://data.vinnova.se/api"
 # what makes the split safe: "Innovativa startups", "EUREKA Eurostars",
 # "Fordonsstrategisk forskning och innovation - FFI".
 PROGRAMME_API = f"{API_BASE}/program/2000-01-01"
-PROGRAMME_CACHE = _ETL_ROOT / "data" / "reference" / "vinnova_programmes.json"
+PROGRAMME_CACHE = _ETL_ROOT / "reference" / "vinnova_programmes.json"
 
 
 def programme_names() -> dict[str, str]:

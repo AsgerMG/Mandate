@@ -1,7 +1,7 @@
 """Is this fund still open? The Python view of the ONE definition.
 
 The rule itself lives in website/frontend/lib/intelligence/liveness.ts and is
-projected to data/liveness.json by `npx tsx scripts/emit_liveness.ts`. This
+projected to reference/liveness.json by `npx tsx scripts/emit_liveness.ts`. This
 module reads that projection. It deliberately does not restate the rule: five
 independent restatements of it are what hid 306 leaves on 2026-08-06, including
 `Fondo di garanzia per le PMI`, Italy's flagship SME guarantee fund with 13,892
@@ -28,7 +28,7 @@ for _anc in Path(__file__).resolve().parents:
         break
 from etl_env import ROOT as REPO_ROOT  # noqa: E402
 
-_SPEC_PATH = REPO_ROOT / "data" / "liveness.json"
+_SPEC_PATH = REPO_ROOT / "reference" / "liveness.json"
 
 
 def _spec() -> dict:
@@ -51,7 +51,7 @@ NOTIFIED_DURATION: str = _S["basis"]["notifiedDuration"]
 CALL_DEADLINE: str = _S["basis"]["callDeadline"]
 
 # ── Does the register that publishes this row state a window for it? ────────
-# Written by ETL/terms/assign_source_window_policy.py from data/reference/
+# Written by ETL/terms/assign_source_window_policy.py from reference/
 # source_window_policy.json, read by the product's degradation policy. The
 # names come from the projection rather than being spelled here, for the reason
 # the module docstring gives: a hand-copied vocabulary is a vocabulary that

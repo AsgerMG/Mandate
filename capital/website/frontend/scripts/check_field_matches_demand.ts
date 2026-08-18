@@ -261,7 +261,7 @@ for (const v of violations) {
 console.error(
   `\nA comparator here is not a wrong answer, it is a wrong QUESTION: the founder answers`
   + `\ntruthfully and loses a fund that admits them. Correct the encoding in`
-  + `\ndata/reference/gate_encoding_overrides.json — that file survives re-extraction, a`
+  + `\nreference/gate_encoding_overrides.json — that file survives re-extraction, a`
   + `\ndirect UPDATE does not. Quarantining the comparator (field: none) is a legitimate`
   + `\nfix and usually the right one: the requirement text keeps showing, the machine`
   + `\nverdict stops.`);

@@ -55,10 +55,10 @@ interface Codebook {
   licenses_technology: string[]; nontech: string[]; unspecific: string[];
 }
 const codebook: Codebook = JSON.parse(readFileSync(
-  path.join(ROOT, "data", "reference", "activity_codebook.json"), "utf8"));
+  path.join(ROOT, "reference", "activity_codebook.json"), "utf8"));
 const evidence: { records: Record<string, { described: number; activities: Record<string, number> }> } =
   JSON.parse(readFileSync(
-    path.join(ROOT, "data", "reference", "instrument_recipient_activity.json"), "utf8"));
+    path.join(ROOT, "reference", "instrument_recipient_activity.json"), "utf8"));
 
 /** Identical three-step test to check_sector_evidence.ts, off the same
  *  codebook. Duplicating the FRAGMENTS would be the defect; applying the

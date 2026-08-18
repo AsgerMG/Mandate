@@ -69,7 +69,7 @@ import json
 import re
 import sqlite3
 
-CEILINGS_JSON = ROOT / "data" / "reference" / "gber_aid_intensity.json"
+CEILINGS_JSON = ROOT / "reference" / "gber_aid_intensity.json"
 CASES_JSON = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
 
 # Art. 25(5) sets a different ceiling per RESEARCH CATEGORY, and the category is

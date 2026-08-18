@@ -1,7 +1,7 @@
 # Europe scope — corpus filter
 
 **Decided**: 2026-05-29 (Sprint 14, in-thread with Asger).
-**Authority**: [data/europe_scope.json](../data/europe_scope.json) is the single source of truth. Every downstream consumer (SQL views, the site-data builders, country-map data generator, the front-end map component, the Python helper, the SQLite triggers) loads from or mirrors that file. Edit the JSON, not the consumers.
+**Authority**: [reference/europe_scope.json](../reference/europe_scope.json) is the single source of truth. Every downstream consumer (SQL views, the site-data builders, country-map data generator, the front-end map component, the Python helper, the SQLite triggers) loads from or mirrors that file. Edit the JSON, not the consumers.
 
 **Status**: Out-of-scope rows have been **deleted** from the live DB. The scope is enforced by a SQLite `BEFORE INSERT` trigger on `companies.country` so future scrapes that try to insert outside the scope will fail loudly. This is not a view-time filter only — it's a corpus-level filter, applied destructively, with a defensive layer to keep it that way. See "Enforcement: how the scope is actually held" below.
 
@@ -61,7 +61,7 @@ Alternative considered and rejected: upgrade the topology to `world-50m`. The 50
 
 ## How the scope propagates through the pipeline
 
-1. [data/europe_scope.json](../data/europe_scope.json) — authoritative country list and aliases.
+1. [reference/europe_scope.json](../reference/europe_scope.json) — authoritative country list and aliases.
 2. [ETL/lib/europe_scope.py](../ETL/lib/europe_scope.py) — Python helper. **Every extractor should call `canonicalise_country()` before inserting a company.** Maps aliases (EL→GR, UK→GB, PO→PL, SW→SE, GL→DK) and returns `None` for out-of-scope codes so the caller can skip the row. Has a self-test runnable with `python3 ETL/lib/europe_scope.py`.
 3. [ETL/load/schema.sql](../ETL/load/schema.sql) — defines `trg_companies_country_scope` (INSERT) and `trg_companies_country_scope_update` (UPDATE) which `RAISE(ABORT, ...)` if an out-of-scope country code is written to `companies.country`. **This is the enforcement floor**: any extractor that skips the Python helper will hit the trigger and fail with a pointer to this file.
 4. [data/views.sql](../data/views.sql) — defines `v_european_companies` (defensive filter) and inner-joins it into `v_events`. Belt-and-braces — if the trigger is ever disabled (e.g. for a raw-SQL bulk import), the view layer still keeps analytics clean. Every read-side query joins through `v_events` so analyses inherit the filter automatically.
@@ -86,7 +86,7 @@ Every new extractor MUST do one of two things before inserting into `companies`:
 - **Recommended**: call `from scripts.europe_scope import canonicalise_country` and apply it to the country code, skipping rows where it returns `None`.
 - **Acceptable**: catch the SQLite `IntegrityError` raised by the trigger and skip the row. Loud, ugly logs but functionally equivalent.
 
-NOT acceptable: bypassing the trigger via `DROP TRIGGER`, raw `INSERT OR IGNORE` with `PRAGMA foreign_keys = OFF`, or any other workaround. If the scope ever needs to expand, edit `data/europe_scope.json` and re-run the propagation steps in the "When to revise" section below.
+NOT acceptable: bypassing the trigger via `DROP TRIGGER`, raw `INSERT OR IGNORE` with `PRAGMA foreign_keys = OFF`, or any other workaround. If the scope ever needs to expand, edit `reference/europe_scope.json` and re-run the propagation steps in the "When to revise" section below.
 
 ## Numbers after the filter (corpus delta)
 
@@ -104,7 +104,7 @@ Capital impact is small (<1%) because dropped companies are mostly Horizon co-fu
 
 The scope is hard-coded in three places that must stay in sync:
 
-1. `data/europe_scope.json` — source of truth.
+1. `reference/europe_scope.json` — source of truth.
 2. The SQL string literal inside `trg_companies_country_scope` and `trg_companies_country_scope_update` in [ETL/load/schema.sql](../ETL/load/schema.sql).
 3. The SQL string literal inside `v_european_companies` in [data/views.sql](../data/views.sql).
 4. (`ETL/lib/europe_scope.py` reads the JSON at import — no edit needed.)
@@ -113,7 +113,7 @@ SQLite triggers can't read JSON files at parse time, hence the duplication. A fu
 
 ### Adding a country
 
-1. Add the entry to `data/europe_scope.json` (with `numeric` for the topojson ID; mark `rendererFallback: "marker"` if the country is too small for world-110m).
+1. Add the entry to `reference/europe_scope.json` (with `numeric` for the topojson ID; mark `rendererFallback: "marker"` if the country is too small for world-110m).
 2. Update the country-code allowlist in **both** SQL triggers in `ETL/load/schema.sql` AND in `v_european_companies` in `data/views.sql`.
 3. Reinstall the triggers on the live DB: `sqlite3 data/db.sqlite "DROP TRIGGER trg_companies_country_scope; DROP TRIGGER trg_companies_country_scope_update;"` and re-apply the relevant block from `ETL/load/schema.sql`.
 4. Re-run `make data` (reinstalls `data/views.sql`, then regenerates every site JSON including `country_map.json`).

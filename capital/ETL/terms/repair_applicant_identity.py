@@ -28,7 +28,7 @@ be withdrawn. This one has two, and the choice matters:
     cannot read at source -- the claim is withdrawn, as before. Never invented.
 
 ── Why the repairs live in a file and this is still not an enumeration ────
-`data/reference/applicant_identity_repairs.json` names ids, and that is fine,
+`reference/applicant_identity_repairs.json` names ids, and that is fine,
 because it is not what DETECTS anything. The detector is the property in the
 classifier, applied per text; the test is derived, per text, in
 `check_applicant_identity.ts`. A row reaches this file only after the property
@@ -91,7 +91,7 @@ import re  # noqa: E402
 import sqlite3  # noqa: E402
 
 CACHE = ROOT / "data" / "applicant_identity.json"
-REPAIRS = ROOT / "data" / "reference" / "applicant_identity_repairs.json"
+REPAIRS = ROOT / "reference" / "applicant_identity_repairs.json"
 #: The SAME ledger the pertinence retraction writes to. Two files would be two
 #: answers to "what have we withdrawn and why".
 LEDGER = ROOT / "data" / "retracted_eligibility_text.json"

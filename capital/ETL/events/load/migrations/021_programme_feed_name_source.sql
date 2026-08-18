@@ -7,7 +7,7 @@
 -- ENERGIFORSKNING, GRONNFORM, Innobooster, Grand Solutions.
 --
 -- The distinction is not cosmetic. `curated` carries a per-name source URL in
--- data/reference/programme_names.json and is a standing human decision;
+-- reference/programme_names.json and is a standing human decision;
 -- `programme_feed` is re-derived on every load from a >=80%-dominant vote across
 -- the instrument's own events, so it self-corrects when the feed does and needs
 -- no maintenance. Collapsing them would hide which names a person is answerable

@@ -114,10 +114,11 @@ def require_reference(path, why: str):
             f"REFUSING TO RUN: {path} is missing.\n"
             f"    {why}\n"
             "    An absent reference file is not an empty one. This path is "
-            "under data/raw or data/reference, both gitignored in part, so the "
-            "usual cause is running from an agent worktree — which shares the "
-            "real db.sqlite and has none of the inputs. Run from the repository "
-            "root, or symlink the directory in.")
+            "under data/, which .gitignore matches whole, so the usual cause is "
+            "running from an agent worktree — which shares the real db.sqlite and "
+            "has none of the inputs. Run from the repository root, or symlink the "
+            "directory in. Committed inputs live in reference/ and are exempt: "
+            "they are tracked, so every worktree and the ETL image carry them.")
     return path
 
 

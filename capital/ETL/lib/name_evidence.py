@@ -25,7 +25,7 @@ prefix, from `satr_pt_equity`, whose token is a country crossed with the filter
 set we send to a search API.
 
 The distinction lives in the EXTRACTOR, where the `source` string is composed.
-So it is recorded there, in data/reference/family_name_evidence.json, exactly as
+So it is recorded there, in reference/family_name_evidence.json, exactly as
 `source_window_policy` is -- and read here by both the rebuild and the corpus.
 
 Silence is the one forbidden state: a family whose name is a mechanical
@@ -37,7 +37,7 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-REFERENCE = ROOT / "data" / "reference" / "family_name_evidence.json"
+REFERENCE = ROOT / "reference" / "family_name_evidence.json"
 
 # The three verdicts a declaration may carry. `partition_key` is the only one
 # that withholds a row, and it is the only one that is a statement about US

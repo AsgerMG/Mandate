@@ -14,7 +14,7 @@ import { PieChart, Pie, Cell } from "recharts";
 const GEO_URL = "/data/world-110m.json";
 
 // ISO 3166-1 numeric → alpha-2 for the 40-country Europe scope. The
-// authoritative list lives in data/europe_scope.json; this dictionary is
+// authoritative list lives in reference/europe_scope.json; this dictionary is
 // derived from it. See docs/europe_scope.md for the rationale.
 // Note: Malta (470), Liechtenstein (438), and Kosovo (383) are in scope but
 // absent from world-110m at this resolution; they render below as labelled

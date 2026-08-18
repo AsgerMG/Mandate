@@ -31,7 +31,7 @@ it just as this one did. What must hold is:
     a value used as a JOIN KEY must be a value nothing renames.
 
 `name` has four writers — the split, the state-aid case register,
-data/reference/programme_names.json, and apply_override_names.py. The ID has
+reference/programme_names.json, and apply_override_names.py. The ID has
 one, and `child_slug`'s own docstring commits to its stability across runs
 because the reconcile step cannot tell a renamed instrument from a vanished
 one. So the test is behavioural and needs to know nothing about which column is
@@ -128,7 +128,7 @@ def main() -> None:
     if prog != PROG_CHILD:
         FAILURES.append(
             "a PROGRAMME child stopped being placeable when its display name "
-            "was rewritten from data/reference/programme_names.json. Same "
+            "was rewritten from reference/programme_names.json. Same "
             "defect, different renamer — which is why this asserts the property "
             "and not one column.")
 

@@ -36,9 +36,9 @@
  * from the verdict:
  *
  *   public/data/instrument_terms.json          the published `sectorMix`
- *   data/reference/instrument_recipient_activity.json
+ *   reference/instrument_recipient_activity.json
  *                                              what the recipients say they do
- *   data/reference/activity_codebook.json      which activities are technology
+ *   reference/activity_codebook.json      which activities are technology
  *
  * The middle file carries descriptors and award counts and NOTHING else — no
  * sector, no veto, no judgement. The verdict is computed here. A check that
@@ -70,9 +70,9 @@ interface ActivityRecord {
 }
 
 const codebook: Codebook = JSON.parse(
-  readFileSync(path.join(ROOT, "data", "reference", "activity_codebook.json"), "utf8"));
+  readFileSync(path.join(ROOT, "reference", "activity_codebook.json"), "utf8"));
 const evidence: { records: Record<string, ActivityRecord> } = JSON.parse(
-  readFileSync(path.join(ROOT, "data", "reference", "instrument_recipient_activity.json"), "utf8"));
+  readFileSync(path.join(ROOT, "reference", "instrument_recipient_activity.json"), "utf8"));
 /** The shipped snapshot, unless a harness names another — the same
  *  `SNAPSHOT_FILE` convention `corpus.ts` uses, and it announces itself for the
  *  same reason: it must never be the quiet reason this check passed. It is what

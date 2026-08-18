@@ -154,7 +154,7 @@ SUBNATIONAL = subnational_names()
 #   recognises, and must be stored under the corpus's own name for it.
 #
 # The test for a value nobody has seen is `europe_scope.name_to_iso2`, which is
-# the same resolver every extractor already uses, reading data/europe_scope.json
+# the same resolver every extractor already uses, reading reference/europe_scope.json
 # -- so the vocabulary is read, never restated, and check_country_gates.ts holds
 # the published corpus to the same file.
 #

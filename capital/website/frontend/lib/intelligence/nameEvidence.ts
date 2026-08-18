@@ -36,7 +36,7 @@
  *
  * The distinction lives in the EXTRACTOR that composes the event's `source`
  * string, so it is recorded there — declared per feed in
- * data/reference/family_name_evidence.json, written by
+ * reference/family_name_evidence.json, written by
  * ETL/events/load/populate_funding_instruments.py (and by
  * ETL/terms/assign_name_evidence.py for a corpus that already exists), and
  * merely READ here. Same shape, and the same reason, as `sourceWindowPolicy`.

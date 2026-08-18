@@ -98,11 +98,11 @@ NOK_PER_EUR_FALLBACK = 11.5
 #
 # No cleverer split fixes this, because "PES-EU" and "PESORDNING" are both
 # valid codes and nothing in the string says where the code ends. So we resolve
-# against NFR's own published register (data/reference/nfr_activities.json,
+# against NFR's own published register (reference/nfr_activities.json,
 # from their open CC-BY dataset), longest code first, which is the only
 # non-guessing rule available.
 _ACTIVITIES: dict[str, str] = json.loads(
-    (_ETL_ROOT / "data" / "reference" / "nfr_activities.json").read_text())
+    (_ETL_ROOT / "reference" / "nfr_activities.json").read_text())
 _ACTIVITY_CODES = sorted(_ACTIVITIES, key=len, reverse=True)
 
 

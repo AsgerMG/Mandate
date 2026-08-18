@@ -134,7 +134,7 @@ CREATE INDEX idx_classify_audit_company ON classify_audit(company_id);
 CREATE INDEX idx_classify_audit_changed_at ON classify_audit(changed_at);
 
 -- Sprint 14 (2026-05-29): Europe-scope enforcement. The corpus is restricted
--- to a 40-country EU/Europe scope defined in data/europe_scope.json. These
+-- to a 40-country EU/Europe scope defined in reference/europe_scope.json. These
 -- triggers reject INSERTs and UPDATEs that would put a company outside the
 -- scope. Extractors should call europe_scope.canonicalise_country()
 -- before inserting so aliases (EL->GR, UK->GB, PO->PL, SW->SE, GL->DK) get

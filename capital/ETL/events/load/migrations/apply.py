@@ -567,7 +567,7 @@ def apply_032(conn: sqlite3.Connection) -> None:
     bucket rather than a fund. Twelve were in founders' pools; Poland's entire
     offerable pool was eight of them. See
     ETL/events/load/migrations/032_name_source_partition_key.sql and
-    data/reference/family_name_evidence.json.
+    reference/family_name_evidence.json.
 
     Same in-place DDL edit as 026, for the same reason: SQLite cannot ALTER a
     CHECK constraint, and rebuilding funding_instruments to widen one would mean

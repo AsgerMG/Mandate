@@ -19,7 +19,7 @@
 -- award of EUR 255,571, and Poland's entire offerable pool was eight `Sudop *`
 -- rows with no real Polish fund among them.
 --
--- The value is DECLARED per feed in data/reference/family_name_evidence.json
+-- The value is DECLARED per feed in reference/family_name_evidence.json
 -- and written by ETL/events/load/populate_funding_instruments.py (and, for a
 -- corpus that already exists, ETL/terms/assign_name_evidence.py). It is read by
 -- website/frontend/lib/intelligence/nameEvidence.ts, whose one consumer is

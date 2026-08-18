@@ -65,7 +65,7 @@ REGION_OP = SINGLE_OPERATOR_FIELDS["region"]
 
 MODEL = "claude-sonnet-5"
 CHUNK = 12
-NUTS_PATH = ROOT / "data" / "reference" / "nuts_regions.json"
+NUTS_PATH = ROOT / "reference" / "nuts_regions.json"
 
 # Requirement text worth spending a call on. Deliberately broad and merely a
 # PREFILTER, never the decision: it selects candidates, and the model decides

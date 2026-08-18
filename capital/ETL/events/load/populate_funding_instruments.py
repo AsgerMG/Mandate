@@ -238,7 +238,7 @@ CAPITAL_BY_BASIS: dict[str, str | None] = {
 # derived tables here when they are created.
 DERIVED_INSTRUMENT_TABLES = ("eligibility_clauses", "instrument_application",)
 
-# Every key here must have an entry in data/reference/register_instruments.json
+# Every key here must have an entry in reference/register_instruments.json
 # carrying the register's OWN words for the code, and the value must be the kind
 # those words name. `ETL/schema/check_register_instrument_kinds.py` fails the
 # build otherwise -- see that file for what the silence cost.
@@ -429,7 +429,7 @@ OVERRIDE_NAMES = {
     # workstream's problem and not a pre-existing one.
     #
     # Named from the programme's own page, same standard as
-    # data/reference/programme_names.json: the name a founder would recognise
+    # reference/programme_names.json: the name a founder would recognise
     # and could search for, not an expansion invented here.
     "eit_climate_kic_asa": "EIT Climate-KIC Amazon Sustainability Accelerator",
     "eit_climate_kic_cdr": "EIT Climate-KIC Carbon Removal ClimAccelerator",
@@ -1249,7 +1249,7 @@ def main() -> None:
             # eleven such labels were reaching founders' menus as funds. Which
             # of the two `prettify` produced cannot be read off the row, so the
             # answer is DECLARED per feed in
-            # data/reference/family_name_evidence.json and asserted below.
+            # reference/family_name_evidence.json and asserted below.
             # See ETL/lib/name_evidence.py for the property and the over-fire
             # that makes inference unusable here.
             if fam in OVERRIDE_NAMES:
@@ -1480,7 +1480,7 @@ def main() -> None:
     # (Czech Republic)" or "EIS (KredEx + Enterprise Estonia)" and a founder
     # cannot tell which product is theirs. The names come from each agency's own
     # register or catalogue and are recorded with their source in
-    # data/reference/programme_names.json; anything the agency itself never
+    # reference/programme_names.json; anything the agency itself never
     # named, or that could not be resolved confidently, is deliberately absent
     # and keeps the measured descriptor instead.
     #
@@ -1649,7 +1649,7 @@ def main() -> None:
             if not r["applied"]:
                 print(f"  UNRESOLVED body-named row {r['instrument_id']}: {r['reason']}")
 
-    _names_path = ROOT / "data" / "reference" / "programme_names.json"
+    _names_path = ROOT / "reference" / "programme_names.json"
     programme_names = {
         k: v["name"] for k, v in json.loads(_names_path.read_text()).items()
         if not k.startswith("_")

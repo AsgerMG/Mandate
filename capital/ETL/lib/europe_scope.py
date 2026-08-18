@@ -1,7 +1,7 @@
 """Shared Europe-scope helper for all extractors.
 
 The corpus is restricted to the 40-country EU/Europe scope defined in
-`data/europe_scope.json` (Sprint 14, 2026-05-29). At the DB layer this is
+`reference/europe_scope.json` (Sprint 14, 2026-05-29). At the DB layer this is
 enforced by the `trg_companies_country_scope` BEFORE INSERT trigger — any
 extractor that tries to insert a company with an out-of-scope country code
 will fail with a clear error message.
@@ -49,7 +49,7 @@ from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 import json
 from pathlib import Path
 
-_SCOPE_PATH = _ETL_ROOT / "data" / "europe_scope.json"
+_SCOPE_PATH = _ETL_ROOT / "reference" / "europe_scope.json"
 
 with open(_SCOPE_PATH) as _f:
     _SCOPE = json.load(_f)

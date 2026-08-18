@@ -87,7 +87,7 @@ import os  # noqa: E402
 import re  # noqa: E402
 
 CACHE = ROOT / "data" / "applicant_identity.json"
-CALIBRATION = ROOT / "data" / "reference" / "applicant_identity_calibration.json"
+CALIBRATION = ROOT / "reference" / "applicant_identity_calibration.json"
 MODEL = "claude-opus-5"
 CHUNK = 12
 #: The applicant is named early in a "who may apply" block, and this judgement

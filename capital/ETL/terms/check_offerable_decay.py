@@ -42,7 +42,7 @@ Limb 1 without limb 2 misses decay from a job that runs and returns nothing.
 Limb 2 without limb 1 only speaks after founders have already been underserved.
 
 ── Baseline ───────────────────────────────────────────────────────────────
-`data/reference/offerable_baseline.json`, committed, written by `--baseline`.
+`reference/offerable_baseline.json`, committed, written by `--baseline`.
 It records the counts AND the date, so a stale baseline is visible rather than
 quietly permissive. Re-baseline deliberately after a load that changes scope,
 and say why in the commit message -- that is the whole audit trail.
@@ -76,7 +76,7 @@ import os  # noqa: E402
 
 from liveness import CALL_DEADLINE, closed_sql  # noqa: E402
 
-BASELINE = ROOT / "data" / "reference" / "offerable_baseline.json"
+BASELINE = ROOT / "reference" / "offerable_baseline.json"
 
 # A country may lose this share of its offerable inventory without explanation
 # before the run fails. Not zero: a handful of deadlines pass in any given week
@@ -167,7 +167,7 @@ def check(m: dict, tolerance: float, grace: int) -> int:
         print(f"NO BASELINE at {BASELINE}.\n"
               "  This guard cannot judge decay without one and will not pass quietly.\n"
               "  Run:  python3 ETL/terms/check_offerable_decay.py --baseline\n"
-              "  then: git add -f data/reference/offerable_baseline.json\n"
+              "  then: git add -f reference/offerable_baseline.json\n"
               "  (`data` is blanket-gitignored; -f is required and is why this "
               "check refuses rather than warns)")
         return 1

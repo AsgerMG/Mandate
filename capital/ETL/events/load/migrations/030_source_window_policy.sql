@@ -41,7 +41,7 @@
 -- fails the build when a publishable row carries no policy.
 --
 -- Written by ETL/terms/assign_source_window_policy.py from the per-feed
--- evidence in data/reference/source_window_policy.json. Read by
+-- evidence in reference/source_window_policy.json. Read by
 -- unconfirmedOpen() in website/frontend/lib/intelligence/liveness.ts, which is
 -- the only consumer.
 ALTER TABLE funding_instruments ADD COLUMN source_window_policy TEXT;

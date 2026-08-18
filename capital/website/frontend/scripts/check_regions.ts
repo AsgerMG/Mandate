@@ -23,7 +23,7 @@ delete process.env.DATABASE_URL;
 
 const ROOT = join(__dirname, "..", "..", "..");
 const ref = JSON.parse(
-  readFileSync(join(ROOT, "data", "reference", "nuts_regions.json"), "utf8"),
+  readFileSync(join(ROOT, "reference", "nuts_regions.json"), "utf8"),
 ) as { regions: Record<string, { id: string; level: number; name: string }[]> };
 
 const problems: string[] = [];
@@ -55,7 +55,7 @@ const upstream: string[] = [];
 // exact rather than a spot check — the 2024 level-1/2 ids in one must be
 // precisely the ids in the other.
 const names = JSON.parse(
-  readFileSync(join(ROOT, "data", "reference", "nuts_names.json"), "utf8"),
+  readFileSync(join(ROOT, "reference", "nuts_names.json"), "utf8"),
 ) as { current_vintage: number; ids: Record<string, [string, number]> };
 
 const refIds = new Set(Object.values(ref.regions).flat().map((r) => r.id));

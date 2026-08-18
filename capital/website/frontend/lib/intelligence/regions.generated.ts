@@ -1,4 +1,4 @@
-// GENERATED from data/reference/nuts_regions.json — do not edit by hand.
+// GENERATED from reference/nuts_regions.json — do not edit by hand.
 // Source: Eurostat GISCO, NUTS 2024. Regenerate with
 // `python3 ETL/terms/emit_regions.py`; check_regions.ts fails the build if
 // this file and the reference data disagree.

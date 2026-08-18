@@ -13,7 +13,7 @@
 // never had one, and never will, so a copy of it cannot be missing a deadline
 // at any age.
 //
-// `data/reference/source_window_policy.json` was RECONSTRUCTED on 2026-08-09
+// `reference/source_window_policy.json` was RECONSTRUCTED on 2026-08-09
 // from the column values in Railway Postgres, after the original was lost with
 // its worktree. The reconstruction could only recover what the column said, so
 // it is keyed `(source_family_bucket, country)` — 48 declarations, no `id`, no

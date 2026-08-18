@@ -187,7 +187,7 @@
    "code": [
     "ETL/terms/check_offerable_decay.py",
     "ETL/lib/liveness.py",
-    "data/reference/offerable_baseline.json"
+    "reference/offerable_baseline.json"
    ],
    "command": [
     "python3",
@@ -289,8 +289,8 @@
    "code": [
     "website/frontend/scripts/check_applicant_identity.ts",
     "data/applicant_identity.json",
-    "data/reference/applicant_identity_calibration.json",
-    "data/reference/applicant_identity_repairs.json",
+    "reference/applicant_identity_calibration.json",
+    "reference/applicant_identity_repairs.json",
     "ETL/terms/repair_applicant_identity.py"
    ],
    "refresh": "cd website/frontend && npx tsx scripts/check_applicant_identity.ts",
@@ -406,7 +406,7 @@
    "since": "2026-08-12",
    "review": "2026-08-26",
    "failure": "10 comparator\\(s\\) decide a founder against a rule their answer does not determine",
-   "reason": "Ten real encodings: eight jurisdiction rules turning on China, Norway, Denmark, Spain and Peru against questions that name no country, and two ownership rules asked at 25% while the rule turns on 40% and 12.5%. A founder answers truthfully and loses a fund that admits them. The corrections belong in data/reference/gate_encoding_overrides.json — a direct UPDATE is reverted by the next encode pass — and applying them is a Postgres write plus a snapshot republish. Queued in AWAITING_APPROVAL.md."
+   "reason": "Ten real encodings: eight jurisdiction rules turning on China, Norway, Denmark, Spain and Peru against questions that name no country, and two ownership rules asked at 25% while the rule turns on 40% and 12.5%. A founder answers truthfully and loses a fund that admits them. The corrections belong in reference/gate_encoding_overrides.json — a direct UPDATE is reverted by the next encode pass — and applying them is a Postgres write plus a snapshot republish. Queued in AWAITING_APPROVAL.md."
   },
   "country gates": {
    "class": "defect",

@@ -14,7 +14,7 @@
  * 306 leaves including `Fondo di garanzia per le PMI` (13,892 awards).
  *
  * So: this module is the definition, `scripts/emit_liveness.ts` projects it to
- * data/liveness.json for the Python and SQL consumers, and
+ * reference/liveness.json for the Python and SQL consumers, and
  * `scripts/check_liveness.ts` fails the build if that projection is stale.
  *
  * ── The property, and why the obvious test is wrong ───────────────────────
@@ -376,7 +376,7 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
  * and the answer for a between-calls row is YES. That is not a technicality:
  * it is the fact the founder must be told. Widening `isClosed()` to mean "and
  * therefore gone" would have made the two inseparable again, and it would have
- * silently re-pointed `closedSql()`, `data/liveness.json` and every Python and
+ * silently re-pointed `closedSql()`, `reference/liveness.json` and every Python and
  * SQL consumer projected from them at a different question. One definition per
  * question; this is the second question.
  *
@@ -473,7 +473,7 @@ export function isBetweenCalls(row: LivenessFacts, asOf: string = today()): bool
 // however far behind it has fallen, which is the property "derived from the
 // rows present" can never have. See `SOURCE_WINDOW_POLICY` below for the three
 // values and ETL/terms/assign_source_window_policy.py for how each row gets
-// one; data/reference/source_window_policy.json holds the per-feed evidence.
+// one; reference/source_window_policy.json holds the per-feed evidence.
 //
 // Establishing it meant reading the registers rather than our own columns, and
 // the answer contradicted what the proportion had inferred. The proportion read
