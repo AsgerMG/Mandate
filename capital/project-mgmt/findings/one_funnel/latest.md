@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-18T18:53:32.257Z
-corpus             postgres instruments=1088 at 2026-08-18T18:53:32.742Z
+started            2026-08-18T22:14:33.518Z
+corpus             postgres instruments=1088 at 2026-08-18T22:14:34.015Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-18T18:53:32.742Z
+                   is REFUSED rather than labelled. observedAt 2026-08-18T22:14:34.015Z
 ranker: all 819 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -16,7 +16,7 @@ leak bar           isDescribed — `own_project_title_leaks` excluded, exact / 8
                    check_recall_leaks. NOT the head-to-head's stricter
                    cross-regime-only draw, which exists because a model reads
                    the query text and nothing here does.
-levers             pool=40 writer_cap=8 published_cap=7 top=5 select_depth=40 row_order=off award_term=oneside
+levers             pool=40 writer_cap=7 published_cap=7 top=5 select_depth=40 row_order=off award_term=oneside
 ```
 
 ██ NOT THE SHIPPED ORDER — this run ranked every founder's table with `AWARD_TERM=oneside` (shipped: `shipped`), an arm no founder receives. Every number below is a measurement of that arm, not of the product. Do not quote a row from this run beside a row from a shipped run without saying which is which.
@@ -60,14 +60,14 @@ is not a move.
 | ... and the corpus still holds that fund | 897 | 100.0% +/-0.0 | 0 | `loadDbInstruments` |
 | ... and it is publishable on the corpus's own facts | 819 | 91.3% +/-1.8 | -78 (8.7 pts) | `publishableInstruments` — seven predicates, `corpus.ts` |
 | ... and its openness could be CONFIRMED (the degradation policy) | 819 | 91.3% +/-1.8 | 0 | `unconfirmedOpen` — the degradation clause of the same filter |
-| ... and this founder's screen keeps it (country, capital, channel + leaf caps) | 797 | 88.9% +/-2.1 | -22 (2.5 pts) | `buildInstrumentTableHydrated` = `candidateInstrumentIds` |
-| ... and its encoded eligibility gates do not conclusively fail (accessiblePool) | 786 | 87.6% +/-2.2 | -11 (1.2 pts) | `accessiblePool` → `VER-BLOCKED` |
-| ... and it survives the cut to VERDICT_POOL (40 rows) | 668 | 74.5% +/-2.9 | -118 (13.2 pts) | `.slice(0, VERDICT_POOL)` |
-| ... and it survives the cut to the writer's candidates (8) | 383 | 42.7% +/-3.2 | -285 (31.8 pts) | `orderMemoCandidates().toWriter` |
+| ... and this founder's screen keeps it (country, capital, channel + leaf caps) | 798 | 89.0% +/-2.1 | -21 (2.3 pts) | `buildInstrumentTableHydrated` = `candidateInstrumentIds` |
+| ... and its encoded eligibility gates do not conclusively fail (accessiblePool) | 787 | 87.7% +/-2.1 | -11 (1.2 pts) | `accessiblePool` → `VER-BLOCKED` |
+| ... and it survives the cut to VERDICT_POOL (40 rows) | 666 | 74.2% +/-2.9 | -121 (13.5 pts) | `.slice(0, VERDICT_POOL)` |
+| ... and it survives the cut to the writer's candidates (7) | 373 | 41.6% +/-3.2 | -293 (32.7 pts) | `orderMemoCandidates().toWriter` |
 | ... and the writer's own prose does not demote it behind the actionable rows | ? | ? | **UNMEASURED** | `isWatchOnly` in `assembleBriefRows` — needs the writer |
-| ... and it is one of the 7 rows the brief publishes | 370 | 41.2% +/-3.2 | -13 (1.4 pts) | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
-| ... and it is in the first 6 of them | 345 | 38.5% +/-3.2 | -25 (2.8 pts) | the first 6 rows of the same order, our own scoring |
-| ... and it is in the first 5 of them | 323 | 36.0% +/-3.1 | -22 (2.5 pts) | the first 5 rows of the same order, our own scoring |
+| ... and it is one of the 7 rows the brief publishes | 373 | 41.6% +/-3.2 | 0 | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
+| ... and it is in the first 6 of them | 350 | 39.0% +/-3.2 | -23 (2.6 pts) | the first 6 rows of the same order, our own scoring |
+| ... and it is in the first 5 of them | 325 | 36.2% +/-3.1 | -25 (2.8 pts) | the first 5 rows of the same order, our own scoring |
 | ... and the MODEL, which re-orders the 40 before the cuts below, still leaves it in the first 5 | ? | ? | **UNMEASURED** | `agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the 40, applied above the two cuts below it |
 
 ██ The 7, 6, 5-row cuts are rank within `toWriter`, and they assume `assembleBriefRows`
@@ -76,8 +76,8 @@ ahead of every watch-only one, after the ranker (`memoCandidates.ts`). The effec
 TWO-SIDED, so these rows are not a bound in either direction — a won fund that is
 actionable is PROMOTED past any watch-only row above it and can enter a cut it is shown
 outside of, and a won fund whose own copy reads as watch-only is pushed behind every
-actionable row and can leave one it is shown inside. Measured on the 35 real briefs in
-`brief_records`: 6 of them (17%) demoted at least one row, 8 rows in total. It is a small
+actionable row and can leave one it is shown inside. Measured on the 38 real briefs in
+`brief_records`: 6 of them (16%) demoted at least one row, 8 rows in total. It is a small
 perturbation of a table this size, and it is not zero.
 
 ## The model stage — ESTIMATED, not measured
@@ -91,7 +91,7 @@ ranker  EXACT@5   50/98 = 51.0%
 ratio              1.111
 ```
 
-Applied to this run's own 323 founders at `top_5`, the model stage projects to **~359 founders (40.0% of the start)**.
+Applied to this run's own 325 founders at `top_5`, the model stage projects to **~361 founders (40.3% of the start)**.
 
 ██ ESTIMATED. ██ The ratio comes from 98 founders of a different draw, and that run's own McNemar put the difference inside its noise. Read it as a scale, not as a
 measurement, and do not quote the projected count without this sentence.
@@ -121,13 +121,13 @@ Reasons OVERLAP — a row can fail several — so these do not sum to the stage 
 
 | published figure | its population | this run's row | this run |
 |---|---|---|---:|
-| `check_recall_floor` pool **98.7%** | 300 tune pairs of __recallSetDescribed.json, answer already offerable, published 2026-08-17 | `founder_screen` given `liveness_confirmed` | 97.3% |
-| `check_recall_floor` EXACT@5 **26.3%** | same, and on the INSTANT SCREEN's six rows, not the memo's | `top_5` given `liveness_confirmed` | 39.4% |
-| `poolRecallCurve` inPoolAtAll 93.4% | 830 held-out, answer already offerable | `gates_pass` given `liveness_confirmed` | 96.0% |
-| `poolRecallCurve` at K=40 77.5% | same | `pool_cut` given `liveness_confirmed` | 81.6% |
-| head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 48.4% |
+| `check_recall_floor` pool **97.7%** | 300 tune pairs of __recallSetDescribed.json, answer already offerable, published 2026-08-18 | `founder_screen` given `liveness_confirmed` | 97.4% |
+| `check_recall_floor` EXACT@5 **26.7%** | same, and on the INSTANT SCREEN's six rows, not the memo's | `top_5` given `liveness_confirmed` | 39.7% |
+| `poolRecallCurve` inPoolAtAll 96.0% | 821 held-out, answer already offerable | `gates_pass` given `liveness_confirmed` | 96.1% |
+| `poolRecallCurve` at K=40 81.1% | same | `pool_cut` given `liveness_confirmed` | 81.3% |
+| head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 48.8% |
 | head-to-head ranker EXACT@5 51.0% | same | `model` — UNMEASURED here | ? |
-| "we find the right fund 98% of the time" | no population — the sentence has none | `top_5` as a share of the START | 36.0% |
+| "we find the right fund 98% of the time" | no population — the sentence has none | `top_5` as a share of the START | 36.2% |
 
 The last row is the one the four figures were being read as. It is the only one a
 founder experiences: of every company that won a fund we hold, this share would have

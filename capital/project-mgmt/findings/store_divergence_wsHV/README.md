@@ -80,7 +80,47 @@ move is a fraction of the ±3.4pt half-width on n=821. That is what wsHF
 expected — a fund's name carries little against its stated scope — and it is
 published as a zero rather than dropped.
 
-<!-- FUNNEL -->
+## The funnel, before and after
+
+Same instrument, same population, same draw: `npm run stages`, n=897, the whole
+holdout population, draw `13cb71cf3a1d1847` on both sides, both on Postgres,
+both attesting `ranker: all 819 request(s) on EMBEDDING`.
+
+| stage | before | after | delta (95% half-width) |
+| --- | --- | --- | --- |
+| the answer key names a fund this company won | 897 · 100.00% | 897 · 100.00% | +0.00 |
+| ... and the corpus still holds it | 897 · 100.00% | 897 · 100.00% | +0.00 |
+| ... and it is publishable | 819 · 91.30% | 819 · 91.30% | +0.00 (±1.84) |
+| ... and its openness could be CONFIRMED | 819 · 91.30% | 819 · 91.30% | +0.00 (±1.84) |
+| ... and this founder's screen keeps it | 797 · 88.85% | **798 · 88.96%** | +0.11 (±2.05) |
+| ... and its gates do not fail (`accessiblePool`) | 786 · 87.63% | **787 · 87.74%** | +0.11 (±2.15) |
+| ... and it survives the cut to VERDICT_POOL (40) | 668 · 74.47% | 666 · 74.25% | −0.22 (±2.86) |
+| ... and it survives the writer's candidates | 383 · 42.70% | 373 · 41.58% | −1.12 (±3.23) † |
+| ... and it is one of the 7 rows published | 370 · 41.25% | 373 · 41.58% | +0.33 (±3.23) † |
+| ... and it is in the first 6 | 345 · 38.46% | 350 · 39.02% | +0.56 (±3.19) † |
+| ... and it is in the first 5 | 323 · 36.01% | 325 · 36.23% | +0.22 (±3.15) † |
+
+**The answer is zero, and the clean half of the table is the half that answers
+the question.** `pool_cut` is where the ranked order is cut to 40 rows — it is
+the ranker-sensitive stage, it is upstream of every confound, and it moved
+**−0.22pt against a ±2.86pt half-width**. Rebuilding the profiles so a corrected
+name could finally reach the ranker changed the ranking by nothing measurable.
+That is what wsHF expected and it is published as a zero.
+
+**† The four rows below `pool_cut` are confounded and must not be read as this
+work's.** `WRITER_CANDIDATE_CAP` moved from **8 to 7** in commit `65300766`,
+which landed at 21:03 CEST — **ten minutes after the baseline run started**. So
+the before arm was measured at 8 and the after arm at 7, and the −1.12pt at
+`writer_cap` is that cap doing exactly what it was changed to do, not the
+corpus. `published` rises to meet it because the two caps are now equal. Nothing
+below `pool_cut` is a before/after of this republish, and re-running with the
+old cap would mean moving a ceiling to make a number look comparable, which is
+not a trade worth making for a stage that was already inside its interval.
+
+One detail worth keeping: `founder_screen` and `gates_pass` each gained
+**exactly one founder**. That is the right shape for the region-rule
+corrections — a founder whose fund the old rules refused — but one case at
+±2.05pt is an anecdote, not a measurement, and it is recorded as one.
 
 ## `make eligibility` was NOT run whole, and that is a decision you should see
 
