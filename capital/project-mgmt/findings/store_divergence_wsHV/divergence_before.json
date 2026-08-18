@@ -1,0 +1,581 @@
+{
+ "measuredAt": "2026-08-18T21:28:05.904Z",
+ "snapshotGeneratedAt": "2026-08-17T22:24:49+00:00",
+ "snapshotRecords": 1088,
+ "comparedFields": 35,
+ "fieldDiffs": {
+  "country": {
+   "n": 15,
+   "rows": [
+    {
+     "id": "chips_ju",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "edf",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eic",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_climate_kic",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_digital",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_food",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_health",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_innoenergy",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_manufacturing",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_rawmaterials",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "horizon_eu_partnership",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "horizon_eu_pillar_ii",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "innovation_fund",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "ipcei",
+     "snapshot": "EU",
+     "postgres": ""
+    }
+   ]
+  },
+  "name": {
+   "n": 22,
+   "rows": [
+    {
+     "id": "satr_de_rnd__sa_56245__fa_fur_korperschaften_ii",
+     "snapshot": "FA für Körperschaften II",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__fa_fur_korperschaften_iv",
+     "snapshot": "FA für Körperschaften IV",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_aachen_stadt",
+     "snapshot": "Finanzamt Aachen-Stadt",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_aschaffenburg",
+     "snapshot": "Finanzamt Aschaffenburg",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_darmstadt",
+     "snapshot": "Finanzamt Darmstadt",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_erlangen",
+     "snapshot": "Finanzamt Erlangen",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_freiburg_stadt",
+     "snapshot": "Finanzamt Freiburg-Stadt",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_furstenfeldbruck",
+     "snapshot": "Finanzamt Fürstenfeldbruck",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_gie_en",
+     "snapshot": "Finanzamt Gießen",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_heidelberg",
+     "snapshot": "Finanzamt Heidelberg",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_heilbronn",
+     "snapshot": "Finanzamt Heilbronn",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_munchen_abt_3",
+     "snapshot": "Finanzamt München Abt. 3",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_offenburg",
+     "snapshot": "Finanzamt Offenburg",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_stuttgart_korperschaften",
+     "snapshot": "Finanzamt Stuttgart-Körperschaften",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_wiesbaden",
+     "snapshot": "Finanzamt Wiesbaden",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzverwaltung_niedersachsen",
+     "snapshot": "Finanzverwaltung Niedersachsen",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__mfw_sl",
+     "snapshot": "MFW SL",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__zentralfinanzamt_nurnberg",
+     "snapshot": "Zentralfinanzamt Nürnberg",
+     "postgres": "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+    },
+    {
+     "id": "satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances",
+     "snapshot": "Ministère de l'économie et des finances",
+     "postgres": "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2014-2023"
+    },
+    {
+     "id": "satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation",
+     "snapshot": "Ministère de l'Agriculture et de l'alimentation",
+     "postgres": "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2014-2023"
+    },
+    {
+     "id": "satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances",
+     "snapshot": "Ministère de l'économie et des finances",
+     "postgres": "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2014-2023"
+    },
+    {
+     "id": "satr_it_rnd__sa_49781__ministero_delle_imprese_e_del_made_in_italy_dire",
+     "snapshot": "Ministero delle Imprese e del Made in Italy - Direzione generale per gli incentivi alle imprese",
+     "postgres": "Intervento del fondo per la crescita sostenibile a favore di progetti di ricerca e sviluppo realizzati nell''ambito di accordi sottoscritti dal Ministero dello sviluppo economico con le regioni e le altre amministrazioni pubbliche."
+    }
+   ]
+  },
+  "nameSource": {
+   "n": 22,
+   "rows": [
+    {
+     "id": "satr_de_rnd__sa_56245__fa_fur_korperschaften_ii",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__fa_fur_korperschaften_iv",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_aachen_stadt",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_aschaffenburg",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_darmstadt",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_erlangen",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_freiburg_stadt",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_furstenfeldbruck",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_gie_en",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_heidelberg",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_heilbronn",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_munchen_abt_3",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_offenburg",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_stuttgart_korperschaften",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzamt_wiesbaden",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__finanzverwaltung_niedersachsen",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__mfw_sl",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_de_rnd__sa_56245__zentralfinanzamt_nurnberg",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    },
+    {
+     "id": "satr_it_rnd__sa_49781__ministero_delle_imprese_e_del_made_in_italy_dire",
+     "snapshot": "deterministic",
+     "postgres": "case_register"
+    }
+   ]
+  }
+ },
+ "gates": {
+  "snapshot": 9763,
+  "postgres": 9763,
+  "missing": [],
+  "extra": [],
+  "changed": [
+   {
+    "key": "innovationsfonden_grand_solutions G4-02",
+    "snapshot": "[\"filter\",\"{\\\"field\\\":\\\"cofinancingBand\\\",\\\"op\\\":\\\"boolean_true\\\"}\",\"cofinancingBand\"]",
+    "postgres": "[\"filter\",\"\",\"cofinancingBand\"]"
+   },
+   {
+    "key": "altum_anm_kepa g5_use_of_funds_categories",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"production_capex\\\\\\\"]\\\",\\\"field\\\":\\\"useOfFunds\\\",\\\"op\\\":\\\"in\\\"}\",\"useOfFunds\"]",
+    "postgres": "[\"filter\",\"\",\"useOfFunds\"]"
+   },
+   {
+    "key": "satr_cz_rnd g2_rescue_restructuring_exclusion",
+    "snapshot": "[\"filter\",\"{\\\"field\\\":\\\"exclusionFlags\\\",\\\"op\\\":\\\"boolean_false\\\"}\",\"exclusionFlags\"]",
+    "postgres": "[\"filter\",\"\",\"exclusionFlags\"]"
+   },
+   {
+    "key": "ipcei_hy2tech g5-fid-innovation-requirement",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"industrial_research\\\\\\\",\\\\\\\"experimental_development\\\\\\\"]\\\",\\\"field\\\":\\\"useOfFunds\\\",\\\"op\\\":\\\"in\\\"}\",\"useOfFunds\"]",
+    "postgres": "[\"filter\",\"\",\"useOfFunds\"]"
+   },
+   {
+    "key": "satr_cz_equity g6-no-enforcement",
+    "snapshot": "[\"filter\",\"{\\\"field\\\":\\\"exclusionFlags\\\",\\\"op\\\":\\\"boolean_false\\\"}\",\"exclusionFlags\"]",
+    "postgres": "[\"filter\",\"\",\"exclusionFlags\"]"
+   },
+   {
+    "key": "satr_cz_equity g6-no-criminal-conviction",
+    "snapshot": "[\"filter\",\"{\\\"field\\\":\\\"exclusionFlags\\\",\\\"op\\\":\\\"boolean_false\\\"}\",\"exclusionFlags\"]",
+    "postgres": "[\"filter\",\"\",\"exclusionFlags\"]"
+   },
+   {
+    "key": "chips_ju_kdt_unknown G1-05",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"yes\\\\\\\"]\\\",\\\"field\\\":\\\"consortium\\\",\\\"op\\\":\\\"in\\\"}\",\"consortium\"]",
+    "postgres": "[\"filter\",\"\",\"consortium\"]"
+   },
+   {
+    "key": "chips_ju_kdt_unknown G1-06",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"yes\\\\\\\"]\\\",\\\"field\\\":\\\"consortium\\\",\\\"op\\\":\\\"in\\\"}\",\"consortium\"]",
+    "postgres": "[\"filter\",\"\",\"consortium\"]"
+   },
+   {
+    "key": "chips_ju_kdt_unknown G1-07",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"yes\\\\\\\"]\\\",\\\"field\\\":\\\"consortium\\\",\\\"op\\\":\\\"in\\\"}\",\"consortium\"]",
+    "postgres": "[\"filter\",\"\",\"consortium\"]"
+   },
+   {
+    "key": "chips_ju_kdt_unknown G1-08",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"yes\\\\\\\"]\\\",\\\"field\\\":\\\"consortium\\\",\\\"op\\\":\\\"in\\\"}\",\"consortium\"]",
+    "postgres": "[\"filter\",\"\",\"consortium\"]"
+   },
+   {
+    "key": "satr_fr_rnd__sa_111723__region_pays_de_la_loire g1-sme-eti-region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"FRG\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"FRG\\\\\\\",\\\\\\\"FRG0\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "invitalia_smart_start g5_export_esclusi",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"market_launch\\\\\\\"]\\\",\\\"field\\\":\\\"useOfFunds\\\",\\\"op\\\":\\\"not_in\\\"}\",\"useOfFunds\"]",
+    "postgres": "[\"filter\",\"\",\"useOfFunds\"]"
+   },
+   {
+    "key": "invitalia_smart_start g3_importo_spese_ammissibili",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"b100k_500k\\\\\\\",\\\\\\\"b500k_2m5\\\\\\\"]\\\",\\\"field\\\":\\\"ticketBand\\\",\\\"op\\\":\\\"in\\\"}\",\"ticketBand\"]",
+    "postgres": "[\"filter\",\"\",\"ticketBand\"]"
+   },
+   {
+    "key": "satr_cz_equity__sa_106249__statni_fond_podpory_investic registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_63670__ministerstvo_zivotniho_prostredi_cr_odbor_podpor registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_63671__ministerstvo_zivotniho_prostredi_cr_odbor_podpor registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_111730__ministerstvo_dopravy registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_104221__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_104222__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_109785__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_109786__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_112169__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_113941__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_114427__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_116919__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_118043__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_118838__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_60437__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_60510__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_60519__ministerstvo_prumyslu_a_obchodu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_55058__ministerstvo_prumyslu_a_obchodu_odbor_vyzkumu_vy registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_111735__ministerstvo_zivotniho_prostredi registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_111780__ministerstvo_zivotniho_prostredi registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_111787__ministerstvo_zivotniho_prostredi registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_112295__ministerstvo_zivotniho_prostredi registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_109050__ministerstvo_zivotniho_prostredi_odbor_fondu_eu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_109051__ministerstvo_zivotniho_prostredi_odbor_fondu_eu registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_112630__statni_zemedelsky_intervencni_fond registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_118285__statni_zemedelsky_intervencni_fond registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_103288__technologicka_agentura_cr registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_104437__technologicka_agentura_cr registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_107607__technologicka_agentura_cr registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_119259__technologicka_agentura_cr registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_cz_rnd__sa_54297__technologicka_agentura_cr registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"CZ01\\\\\\\",\\\\\\\"CZ02\\\\\\\",\\\\\\\"CZ03\\\\\\\",\\\\\\\"CZ04\\\\\\\",\\\\\\\"CZ05\\\\\\\",\\\\\\\"CZ06\\\\\\\",\\\\\\\"CZ07\\\\\\\",\\\\\\\"CZ08\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\",\\\\\\\"DE9\\\\\\\",\\\\\\\"DEA\\\\\\\",\\\\\\\"DEB\\\\\\\",\\\\\\\"DEC\\\\\\\",\\\\\\\"DED\\\\\\\",\\\\\\\"DEE\\\\\\\",\\\\\\\"DEF\\\\\\\",\\\\\\\"DEG\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_de_rnd__sa_101541__investitionsbank_berlin registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\",\\\\\\\"DE9\\\\\\\",\\\\\\\"DEA\\\\\\\",\\\\\\\"DEB\\\\\\\",\\\\\\\"DEC\\\\\\\",\\\\\\\"DED\\\\\\\",\\\\\\\"DEE\\\\\\\",\\\\\\\"DEF\\\\\\\",\\\\\\\"DEG\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_de_rnd__sa_112200__ministerium_fur_wirtschaft_arbeit_energie_und_ve registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\",\\\\\\\"DE9\\\\\\\",\\\\\\\"DEA\\\\\\\",\\\\\\\"DEB\\\\\\\",\\\\\\\"DEC\\\\\\\",\\\\\\\"DED\\\\\\\",\\\\\\\"DEE\\\\\\\",\\\\\\\"DEF\\\\\\\",\\\\\\\"DEG\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_de_rnd__sa_112200__nbank registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\",\\\\\\\"DE9\\\\\\\",\\\\\\\"DEA\\\\\\\",\\\\\\\"DEB\\\\\\\",\\\\\\\"DEC\\\\\\\",\\\\\\\"DED\\\\\\\",\\\\\\\"DEE\\\\\\\",\\\\\\\"DEF\\\\\\\",\\\\\\\"DEG\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_de_rnd__sa_105973__nrw_bank registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\",\\\\\\\"DE9\\\\\\\",\\\\\\\"DEA\\\\\\\",\\\\\\\"DEB\\\\\\\",\\\\\\\"DEC\\\\\\\",\\\\\\\"DED\\\\\\\",\\\\\\\"DEE\\\\\\\",\\\\\\\"DEF\\\\\\\",\\\\\\\"DEG\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   },
+   {
+    "key": "satr_de_rnd__sa_62312__nrw_bank registered_region",
+    "snapshot": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]",
+    "postgres": "[\"filter\",\"{\\\"allowed\\\":\\\"[\\\\\\\"DE2\\\\\\\",\\\\\\\"DE3\\\\\\\",\\\\\\\"DE4\\\\\\\",\\\\\\\"DE5\\\\\\\",\\\\\\\"DE7\\\\\\\",\\\\\\\"DE8\\\\\\\",\\\\\\\"DE9\\\\\\\",\\\\\\\"DEA\\\\\\\",\\\\\\\"DEB\\\\\\\",\\\\\\\"DEC\\\\\\\",\\\\\\\"DED\\\\\\\",\\\\\\\"DEE\\\\\\\",\\\\\\\"DEF\\\\\\\",\\\\\\\"DEG\\\\\\\"]\\\",\\\"field\\\":\\\"region\\\",\\\"op\\\":\\\"region_within\\\"}\",\"region\"]"
+   }
+  ]
+ }
+}

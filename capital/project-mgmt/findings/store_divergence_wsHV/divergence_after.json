@@ -1,0 +1,95 @@
+{
+ "measuredAt": "2026-08-18T21:41:30.736Z",
+ "snapshotGeneratedAt": "2026-08-18T21:37:17+00:00",
+ "snapshotRecords": 1088,
+ "comparedFields": 35,
+ "fieldDiffs": {
+  "country": {
+   "n": 15,
+   "rows": [
+    {
+     "id": "chips_ju",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "edf",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eic",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_climate_kic",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_digital",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_food",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_health",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_innoenergy",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_manufacturing",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "eit_rawmaterials",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "horizon_eu_partnership",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "horizon_eu_pillar_ii",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "innovation_fund",
+     "snapshot": "EU",
+     "postgres": ""
+    },
+    {
+     "id": "ipcei",
+     "snapshot": "EU",
+     "postgres": ""
+    }
+   ]
+  }
+ },
+ "gates": {
+  "snapshot": 9763,
+  "postgres": 9763,
+  "missing": [],
+  "extra": [],
+  "changed": []
+ }
+}
