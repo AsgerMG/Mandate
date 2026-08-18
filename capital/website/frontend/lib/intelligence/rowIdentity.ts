@@ -255,3 +255,177 @@ export function qualifierSegments(name: string): string[] {
 /** How a qualifier is joined to a name. One spelling, so the code that appends
  *  and the code that reads it back cannot disagree. */
 export const SEGMENT_JOIN = " · ";
+
+// ── AND THE SAME PROPERTY IN PROSE, WHICH IS WHERE IT CAME BACK ────────────
+//
+// ── The defect, found in production and by nothing else (wsHP run 2) ───────
+// The row NAMES were fixed and confirmed live. The first substantive bullet of
+// the next brief a real founder was served read:
+//
+//     Start with the Grand Est regional scheme
+//     (satr_fr_rnd__sa_111728__region_grand_est): it is delivered by ...
+//
+// The rows were clean, so `check_row_name_not_id` passed, and every other
+// offline harness with it. The writer had put the key back in its own prose.
+//
+// ── Why the writer has ids at all, which is the thing to establish first ───
+// LEGITIMATELY. `pipeline.ts` hands it one candidate per line as
+// `- key "<instrument id>" (<name>)` and requires one `institutionNotes` entry
+// back per key, because two rows can share a fund family and a NAME cannot tell
+// them apart -- 322 instruments share 143 names, the same reason
+// `InstitutionEntry.instrumentId` exists at all. Starving the input would put
+// the writer back to keying notes by a name that does not identify a row.
+//
+// So the input stays and the OUTPUT is guarded: the contract tells the writer
+// plainly that a key is for its own reference and never for the reader, and
+// what a founder is shown is redacted in code whatever the model does.
+//
+// ── The property, which is the row property with the subject widened ───────
+// NOTHING A FOUNDER READS MAY CONTAIN AN INTERNAL IDENTIFIER. An id is a key,
+// not a name: it exists so WE can find the fund, and the reader is shown what
+// the fund is called. That holds in a row's name, in a bullet, in a next step,
+// in a caveat, and in any field added to the report tomorrow.
+//
+// ── The test, for an id shape nobody has seen ──────────────────────────────
+// NOT a pattern for "our id format". The format is whatever a loader built out
+// of whatever a register published, and the next one is unguessable -- which is
+// why this asks the corpus instead of a list. The ids in play are the ids the
+// request handed the writer, so an id shape introduced next year is inside this
+// test the day it appears, with no edit here.
+//
+// Two ways a token can be a key, and both are needed:
+//
+//  1. IT CARRIES A WORD THAT CAME FROM AN ID AND FROM NOTHING ANYBODY WROTE.
+//     The row-name property exactly (`internalIdWordsIn`), asked of one token.
+//  2. IT IS THE WHOLE KEY, however spelled. A key whose every word happens to
+//     be accounted for -- an id built entirely from the fund's own title --
+//     passes (1) and is still an identifier on the page.
+//
+// Both are asked of ONE WHITESPACE-DELIMITED TOKEN carrying TWO OR MORE words,
+// and that is what keeps the test off ordinary prose. Prose spells a compound
+// with spaces: "Horizon EU CL4" is three tokens and can never match the single
+// token `horizon_eu_cl4`, whatever separator a future id uses between them. A
+// single word in a sentence is one word and is never examined.
+
+/**
+ * A comparison basis for WHOLE-KEY equality that survives re-spelling.
+ *
+ * `flatWords` splits on punctuation, which covers every separator, and this
+ * additionally splits where a compound was joined by CASE or by a letter
+ * meeting a digit. Applied to BOTH sides, so the two are compared on the same
+ * basis and a key the writer re-cased is still the key. Never a display form,
+ * and never used to decide anything about a single word.
+ */
+function keySpelling(s: string | null | undefined): string {
+  return flatWords(String(s ?? "")
+    .replace(/(\p{Ll})(\p{Lu})/gu, "$1 $2")
+    .replace(/(\p{L})(\p{N})/gu, "$1 $2")
+    .replace(/(\p{N})(\p{L})/gu, "$1 $2")).join(" ");
+}
+
+/** One token of founder-facing text that is our key for something. */
+export interface InternalIdToken {
+  /** The token as it stands in the text, punctuation and all. */
+  token: string;
+  /** The id it is a spelling of. */
+  instrumentId: string;
+  /** True when the token is the WHOLE key rather than a fragment of one. */
+  whole: boolean;
+}
+
+/** Non-word characters at the ends of a token: the brackets and stops prose
+ *  puts around a parenthetical, which are not part of the thing itself. */
+const EDGE_PUNCTUATION = /^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu;
+
+/**
+ * Every token of `text` that is one of `ids` rather than a word somebody wrote.
+ * EMPTY is the only passing answer for anything a founder is shown.
+ *
+ * `ids` is the set in play for this request, never a format. `humanFields` is
+ * the same argument `internalIdWordsIn` takes and carries the same rule: what a
+ * caller can defend showing, and never `administeringBody` raw.
+ */
+export function internalIdTokensIn(
+  text: string,
+  ids: readonly (string | null | undefined)[],
+  humanFields: readonly (string | null | undefined)[],
+): InternalIdToken[] {
+  const hits: InternalIdToken[] = [];
+  const spellings = ids
+    .map((id) => ({ id: String(id ?? ""), words: flatWords(id), key: keySpelling(id) }))
+    .filter((s) => s.words.length > 0);
+  if (!spellings.length) return hits;
+  for (const token of String(text ?? "").split(/\s+/)) {
+    const words = flatWords(token);
+    const asKey = keySpelling(token);
+    for (const s of spellings) {
+      // (2) THE WHOLE KEY. Safe on a token of any length because it demands
+      // the token spell the ENTIRE multi-word id and nothing else.
+      const whole = s.words.length >= 2 && asKey === s.key;
+      // (1) A WORD FROM THE ID AND FROM NOTHING ANYBODY WROTE, asked only of a
+      // token that is itself a compound. ONE word is a word: prose puts spaces
+      // between the parts of a name, so a bare word in a sentence is the
+      // founder's language and is never examined.
+      const fragment = whole
+        || (words.length >= 2 && internalIdWordsIn(token, s.id, humanFields).length > 0);
+      if (fragment) {
+        hits.push({ token, instrumentId: s.id, whole });
+        break;
+      }
+    }
+  }
+  return hits;
+}
+
+/** What a founder may be shown in place of one of our keys. `name` empty means
+ *  there is nothing to show: the key is removed and the aside around it with
+ *  it. */
+export interface ReaderIdRule { id: string; name?: string | null }
+
+/**
+ * `text` with every one of our keys replaced by the name of the thing it keys.
+ *
+ * ── Why substitute rather than strip ───────────────────────────────────────
+ * The writer prints a key where it means the fund, and almost always right
+ * after naming that fund in its own words. The reader needed the fund's name in
+ * that position, so putting it there is both the honest repair and the one that
+ * cannot leave a sentence fragment behind. Where nothing can be named -- a key
+ * for a row that does not publish -- the key goes, and an aside emptied by its
+ * removal goes with it, because a bracket exists to add something and there is
+ * then nothing left to add.
+ *
+ * ── This is a repair, and it is deliberately not a gate ───────────────────
+ * A founder waiting on a memo is not served by us refusing to hand it over.
+ * The caller records what was replaced; `checkBrief` states the same property
+ * as a rule so a surface this misses is still reported.
+ */
+export function redactInternalIds(
+  text: string,
+  rules: readonly ReaderIdRule[],
+  humanFields: readonly (string | null | undefined)[],
+): { text: string; hits: InternalIdToken[] } {
+  const hits = internalIdTokensIn(text, rules.map((r) => r.id), humanFields);
+  if (!hits.length) return { text, hits };
+  const nameFor = new Map(rules.map((r) => [r.id, (r.name ?? "").trim()]));
+  const byToken = new Map(hits.map((h) => [h.token, h]));
+  const repaired = text.split(/(\s+)/).map((piece) => {
+    const hit = byToken.get(piece);
+    if (!hit) return piece;
+    // The brackets and stops around the key are prose and stay; only the thing
+    // itself is replaced.
+    const core = piece.replace(EDGE_PUNCTUATION, "");
+    return piece.replace(core, nameFor.get(hit.instrumentId) || "");
+  }).join("");
+  return { text: tidyAfterRemoval(repaired), hits };
+}
+
+/** An aside whose only content was a key, and the spacing left behind it.
+ *  Nothing here judges text; it repairs the punctuation a removal broke. */
+function tidyAfterRemoval(s: string): string {
+  return s
+    .replace(/\(\s*\)|\[\s*\]|\{\s*\}/g, "")
+    .replace(/\s+([,.;:!?)\]])/g, "$1")
+    .replace(/([(\[])\s+/g, "$1")
+    .replace(/[ \t]{2,}/g, " ")
+    .trim();
+}

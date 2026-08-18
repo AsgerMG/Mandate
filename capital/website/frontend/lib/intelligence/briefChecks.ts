@@ -19,6 +19,11 @@ import { directsAtDepartment, whyNotApplyable } from "./applyableBody";
 import { distinguishers } from "./rowNovelty";
 import { WATCH_ONLY_COPY } from "./watchOnly";
 import { UNWRITTEN_ROW_COPY } from "./unwrittenRow";
+// The walk that says WHICH TEXT a founder reads. Imported, never restated:
+// `pipeline.ts` repairs the same surface through the same walk, and a check
+// and a repair that disagree about the field list is how a defect ships.
+import { internalIdTokensIn } from "./rowIdentity";
+import { mapReaderText, readerText } from "./readerSurface";
 import type { IntelligenceReport } from "./types";
 
 export interface CheckViolation {
@@ -207,6 +212,29 @@ export const BRIEF_LIMITS: BriefLimits = {
   stateOfPlayWords: 200,
   bodyWords: 700,
 };
+
+/**
+ * The text a HUMAN wrote about the funds in this table.
+ *
+ * It is what an id word may legitimately be accounted for by: a slug built out
+ * of a fund's own title is not an identifier leaking, it is the title. Passed
+ * as an argument rather than read off a type inside `rowIdentity`, because each
+ * caller must be able to defend what it admits and none may quietly widen
+ * another's — see the note there.
+ *
+ * NOT the granting body raw. `nameableBody` refuses to print a ministry, and
+ * admitting the column here would license exactly the laundering the property
+ * exists to catch. Nothing below reads one: `institution` already carries a
+ * body only where the register supported naming it.
+ */
+export function fundText(
+  institutions: readonly IntelligenceReport["institutions"][number][],
+): string[] {
+  return institutions.flatMap((r) => [
+    r.institution, r.descriptor, r.familyName, r.supportType, r.schemeCode,
+    r.country, r.legalBasis, r.registeredPurpose, r.applicationRouteFor,
+  ].filter((x): x is string => typeof x === "string" && x.length > 0));
+}
 
 /**
  * Every hard-rule violation in a finished brief.
@@ -527,6 +555,36 @@ export function checkBrief(
     }
   }
 
+  // ── BRIEF-5: OUR KEY FOR A FUND, PRINTED TO THE FOUNDER ─────────────────
+  //
+  // Found live (wsHP run 2), in the first substantive bullet of a real brief:
+  // "Start with the Grand Est regional scheme
+  // (satr_fr_rnd__sa_111728__region_grand_est): it is delivered by ...".
+  //
+  // The writer HAS the ids legitimately -- it is handed one per row so it can
+  // return a note per row, because 322 instruments share 143 names and a name
+  // cannot key a table. Nothing had ever said that the key was not also
+  // publishable, and the row-name guard could not see it: the rows were clean
+  // and this is prose.
+  //
+  // The ids in play are read off the report rather than passed in. That is not
+  // convenience: it is the only set that cannot go stale, because the rows the
+  // writer was handed ARE the published rows (WRITER_CANDIDATE_CAP equals the
+  // published cap, which check_contracts enforces), and a caller cannot forget
+  // to supply what the check reads out of its own subject.
+  const idsInPlay = institutions.map((r) => r.instrumentId).filter(Boolean) as string[];
+  if (idsInPlay.length) {
+    const human = fundText(institutions);
+    for (const s of readerText(report)) {
+      const [hit] = internalIdTokensIn(s, idsInPlay, human);
+      if (hit) {
+        v.push({ ruleId: "BRIEF-5", detail:
+          `an internal identifier reached founder-facing text: "${hit.token}"` });
+        break;
+      }
+    }
+  }
+
   // ── FUND-B1: the table's own facts, restated in prose ───────────────────
   // The support type, the ticket and the comparable firms RENDER as columns.
   // Repeating them in a sentence spends the reader's attention on something
@@ -560,42 +618,10 @@ export function checkBrief(
 const MACHINERY_VOCABULARY =
   /\b(?:encoded (?:gate|rule|filter)s?|gate coverage|eligibility screen coverage|verification level|instrument id|our corpus|the corpus (?:holds|says)|rule count|coverage ratio)\b/i;
 
-/** Keys whose values are machine identifiers rather than prose a founder
- *  reads. Everything else in the report is on the page in some form.
- *
- *  This is a closed set because the report's SHAPE is closed -- these are the
- *  keys the renderer resolves into hrefs and lookups rather than printing. A
- *  key added tomorrow is prose until someone says otherwise, which is the safe
- *  default: the cost of scanning an identifier is a false positive someone
- *  reads, and the cost of missing a field is a rule that silently stops
- *  applying to it. */
-const NON_READER_KEYS = new Set([
-  "url", "link", "channel", "instrumentId", "generatedAt", "provenance",
-  "schemeCode", "id", "kind", "verdict", "accessMode",
-  // A citation names a document. That is an identifier, and showing it is the
-  // product working -- a rule displayed without its source is not evidence. The
-  // first run of this walk over a real brief flagged 40 `.pdf` locators as
-  // "internal machinery in reader text", which is precisely the crying wolf
-  // this file's own header refuses.
-  "file", "locator",
-  // Computed, ranked on, and NOT PRINTED (see panelReport). Text nobody reads
-  // cannot violate a rule about what a founder reads. It carries the gate-count
-  // phrasing verbatim, so leaving it in would have made every brief fail
-  // BRIEF-4 forever on a string that never reaches the page.
-  "whyEasy",
-]);
-
-/** Every string in the report a founder can read, whatever nesting it is at. */
-export function readerText(value: unknown, key = ""): string[] {
-  if (typeof value === "string") return NON_READER_KEYS.has(key) ? [] : [value];
-  if (Array.isArray(value)) return value.flatMap((x) => readerText(x, key));
-  if (value && typeof value === "object") {
-    return Object.entries(value as Record<string, unknown>)
-      .filter(([k]) => !NON_READER_KEYS.has(k))
-      .flatMap(([k, x]) => readerText(x, k));
-  }
-  return [];
-}
+// `readerText` used to be defined here and is imported now. Re-exported so
+// the callers that know it by this name keep working -- and so there is exactly
+// one implementation behind both names.
+export { readerText, mapReaderText };
 
 /** Every rule id this module can emit — checked against the contracts so a
  *  rule can never exist in only one of the two places. */
@@ -606,4 +632,5 @@ export const CHECK_RULE_IDS = [
   "POS-1", "SOP-1", "SOP-2",
   "BRIEF-1", "BRIEF-2", "BRIEF-3", "BRIEF-4",
   "VOI-B1", "BL-B1",
+  "BRIEF-5",
 ] as const;
