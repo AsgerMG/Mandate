@@ -1,5 +1,5 @@
 import { NextRequest } from "next/server";
-import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
+import { corpusProvenance, hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { computeVerdict } from "@/lib/intelligence/pipeline";
 import { sanitizeCapitalSought, sanitizeEligibility, sanitizeFreeText,
   withIncorporationCountry, sanitizeTargetMarkets,
@@ -32,6 +32,21 @@ export async function POST(request: NextRequest) {
 
   try {
     await hydrateDbInstruments();
+    // ── WHICH CORPUS THIS DEPLOYMENT ACTUALLY RANKED ON ────────────────────
+    // `hydrateDbInstruments` degrades to the committed snapshot on any Postgres
+    // failure and continues — which is right for a founder mid-request and was,
+    // until now, invisible from outside the process. `corpusProvenance()` has
+    // existed since wsCF and is read by fourteen harnesses, every one of which
+    // runs the pipeline IN ITS OWN PROCESS. Not one of them can say which corpus
+    // the DEPLOYMENT is on, so "are the gate corrections we publish reaching a
+    // founder at all" had no observation anywhere.
+    //
+    // It is on the verdict route because this is the route that decides which
+    // funds exist for this founder, and because it is the cheap one: a reader
+    // can ask the question without provoking a memo. Read AFTER hydration.
+    //
+    // Safe to serve unauthenticated, by the same argument as /api/guards: a
+    // store name, a count, and two timestamps. It names no fund and no founder.
     const verdict = await computeVerdict(
       body.company.trim(),
       body.country?.trim() || undefined,
@@ -44,7 +59,7 @@ export async function POST(request: NextRequest) {
         description: sanitizeFreeText(body.description),
       },
     );
-    return Response.json(verdict);
+    return Response.json({ ...verdict, corpus: corpusProvenance() });
   } catch (err) {
     console.error("verdict route failed:", err);
     return Response.json({ error: "Could not compute the verdict." }, { status: 500 });
