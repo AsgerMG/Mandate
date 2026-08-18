@@ -65,8 +65,13 @@ outlive the condition it describes.
 **Did the rebuild move the number?** `instrument_profiles.profile_text` is built
 from the fund's `name` and the ranker embeds it, so until the profiles were
 rebuilt both arms of any before/after were ordered by an index still reading
-*Finanzamt Aachen-Stadt*. 1,088 profiles and 2,292 gate embeddings were re-cut
-on voyage-3.5 — about 650K tokens, **under EUR 0.05**. The answer, on the
+*Finanzamt Aachen-Stadt*. 1,088 profiles (1.82M characters of `profile_text`)
+and 2,292 gate embeddings were re-cut on **voyage-3.5** — on the order of 0.7M
+tokens at USD 0.06/1M, so **about USD 0.04**; adding the query embeddings the
+base-rate and funnel runs each make, the whole workstream's Voyage spend is
+**roughly USD 0.10**. No Anthropic call was made outside the one prodcheck
+brief: `make eligibility`'s four model passes were **deliberately skipped**
+(see below). The answer, on the
 re-measured base rate over the same 821 holdout founders, is **no**: in-pool at
 any depth 95.86% → 95.98%, K=6 42.02% → 42.63%, K=40 81.36% → 81.12%. Every
 move is a fraction of the ±3.4pt half-width on n=821. That is what wsHF
@@ -74,6 +79,35 @@ expected — a fund's name carries little against its stated scope — and it is
 published as a zero rather than dropped.
 
 <!-- FUNNEL -->
+
+## `make eligibility` was NOT run whole, and that is a decision you should see
+
+The target's four model passes were measured before running anything, and they
+are **not** the no-ops the "incremental" comment implies on today's corpus:
+
+| step | pending work | run? |
+| --- | --- | --- |
+| `encode_gates.py triage` | 0 untriaged gates | n/a, free |
+| `encode_gates.py encode --fresh` | **5,674 gates** the encoder has never seen | **skipped** |
+| `encode_scheme_text_gates.py run` | cuts gates from 688 instruments' scheme text | **skipped** |
+| `encode_regions.py run` | **788 candidate gates**, 87 with a wrong spec today | **skipped** |
+| `build_instrument_profiles.py classify-titles` | Anthropic title classification | **skipped** |
+
+None of them is needed to make the two stores agree — the corpus content was
+already in SQLite, and what was broken was that it had never been exported or
+published. Everything else in the target ran in order: `emit_vocabulary`,
+`emit_regions`, `sync_gates_from_yaml`, `check_gate_subject`,
+`apply_gate_role_overrides`, `retract_unpertinent_text --write`,
+`audit_encoding_vs_reality --quarantine`, `coverage_gate`,
+`eligibility_export`, `emit_theme_index`, `migrate_to_postgres`,
+`embed_eligibility run`, `build_instrument_profiles run --rebuild`, and the
+base-rate curve.
+
+**So `make eligibility` is not currently a free target**, and its comment
+("re-running only embeds what actually changed") is true of the embeddings and
+false of the encoders. Anyone told to "just run `make eligibility`" will buy
+those four passes. That is worth either a price line in the Makefile or a
+`--no-model` mode; it is not something this workstream should decide alone.
 
 ## One thing the republish carried that nobody asked it to
 
