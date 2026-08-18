@@ -218,11 +218,17 @@ export const BRIEF_LIMITS: BriefLimits = {
 export function checkBrief(
   report: Partial<IntelligenceReport>,
   plug?: string,
-  /** The institution names the writer was SHOWN, which is a superset of what
-   *  published. Required to decide BL-B1; when it is absent the rule reports
-   *  that it could not be evaluated rather than passing silently, because an
-   *  optional argument that quietly disables a rule is how SOP-2 went five
-   *  months without once evaluating its own predicate. */
+  /** EVERY FUND NAME THE WRITER WAS SHOWN, from any block of its prompt.
+   *  Required to decide BL-B1; when it is absent the rule reports that it could
+   *  not be evaluated rather than passing silently, because an optional
+   *  argument that quietly disables a rule is how SOP-2 went five months
+   *  without once evaluating its own predicate.
+   *
+   *  It used to be the CANDIDATE list alone, on the argument that the writer
+   *  "named that fund because we showed it" — right, and the candidates are not
+   *  the only place we show one. The round-two block names a fund per question,
+   *  grounded in the whole pool by design, and that is where the two recorded
+   *  failures of this rule actually came from. The caller passes both. */
   candidatesShown?: string[],
 ): CheckViolation[] {
   const v: CheckViolation[] = [];
@@ -420,13 +426,38 @@ export function checkBrief(
   if (candidatesShown === undefined) {
     v.push({ ruleId: "BL-B1", detail: "not evaluated: the caller did not pass the candidates the writer was shown" });
   } else {
-    const published = new Set(institutions.map((r) => foldKey(r.institution)));
-    const cut = candidatesShown.filter((n) => !published.has(foldKey(n)));
+    // A published row's name may carry a qualifier the disambiguator appended
+    // ("... · via Conseil régional"), so the head of the name is what a bullet
+    // would repeat. Compared on the same basis on both sides.
+    const head = (n: string) => foldKey(n.split(" · ")[0]);
+    const published = new Set(institutions.map((r) => head(r.institution)));
+    const cut = candidatesShown.filter((n) => !published.has(head(n)));
     for (const [i, b] of bullets.entries()) {
+      const bullet = foldKey(b);
       for (const name of cut) {
-        if (name.trim().length >= 6 && String(b).includes(name.trim())) {
-          v.push({ ruleId: "BL-B1", detail:
-            `bullet ${i + 1} names "${name.trim()}", which was cut and is not in the table` });
+        // A WRITER ABBREVIATES, AND THE OLD TEST DID NOT.
+        //
+        // This required the bullet to contain the fund's WHOLE display name.
+        // The recorded failure was a bullet reading "PACTE Industrie is open to
+        // you on paper, but ADEME's incentive-effect rule ..." against a
+        // corpus name of "PACTE Industrie - Parcours Accompagnement et
+        // Compétences pour la Transition Énergétique de l'Industrie", so the
+        // rule saw nothing on the brief it exists for.
+        //
+        // The lead segment is what a person calls the fund: everything before
+        // the first separator a compound corpus title is built with. Still an
+        // exact containment against a name WE showed the writer — this is not
+        // fund recognition in general, and it names no fund, country or sector.
+        // 12 characters, because a short lead segment ("Grants", "Aid") is a
+        // word, not a name, and would match every brief.
+        const lead = head(name).split(/\s+[-—:]\s+|\s*\(/)[0].trim();
+        for (const form of new Set([head(name), lead])) {
+          if (form.length >= 12 && bullet.includes(form)) {
+            v.push({ ruleId: "BL-B1", detail:
+              `bullet ${i + 1} names "${form}", a fund shown to the writer that is `
+              + "not in the published table" });
+            break;
+          }
         }
       }
     }

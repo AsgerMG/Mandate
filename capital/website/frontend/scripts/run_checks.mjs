@@ -139,6 +139,18 @@ const CHECKS = [
   // check in this list was green.
   ["a row is named by something outside its id",
    ["npx", "tsx", "scripts/check_name_evidence.ts"]],
+  // Directly beneath it, one stage later and on a different subject. That one
+  // asks whether the RECORD was named by something outside its id -- a
+  // provenance column. This asks whether the LABEL the disambiguator builds for
+  // it reveals one -- the text itself. A row passes that one and fails this:
+  // SA.111728's five leaves all carry a register-given title, and two of them
+  // still reached a real founder reading
+  // "· rnd  sa 111728  ministere de l economie et des finances" three weeks
+  // after 22 rows were renamed away from exactly that ministry. Hermetic,
+  // sub-second, and it grades the WHOLE publishable corpus as one table, so no
+  // bench profile has to happen to draw the group.
+  ["a displayed name is not an id",
+   ["npx", "tsx", "scripts/check_row_name_not_id.ts"]],
   // Hermetic Python: the register's own words for each aid-instrument code,
   // our decision about what kind of capital that is, and the committed corpus
   // snapshot. It sits here rather than with the other corpus checks because

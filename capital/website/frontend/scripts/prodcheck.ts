@@ -66,6 +66,9 @@ import {
 import type {
   InstitutionEntry, IntelligenceReport, ProgressEvent,
 } from "../lib/intelligence/types";
+import {
+  internalIdWordsIn, qualifierSegments,
+} from "../lib/intelligence/rowIdentity";
 import { founderIntake, founderPolicyFromEnv } from "./founderIntake";
 import { isDescribed, loadRecallSet, type RecallRow } from "./recallSet";
 
@@ -165,6 +168,28 @@ function moneyLine(r: InstitutionEntry): string {
   return bits.length ? bits.join("  ·  ") : "── NO MONEY LINE ON THIS ROW ──";
 }
 
+/**
+ * Every part of a published row's NAME that the disambiguator added and that
+ * came out of our own instrument id.
+ *
+ * The accounted-for text is what the DEPLOYMENT served — this script holds no
+ * corpus and must not pretend to. `descriptor` carries the region clause, so a
+ * legitimate "· Grand Est" is explained; `supportType` explains a capital-type
+ * qualifier and `schemeCode` a notified code. The row's own TITLE never needs
+ * explaining because `qualifierSegments` does not return it: a loader that
+ * derives an id FROM a title would otherwise make every word of that title
+ * look like a leak.
+ *
+ * See `internalIdWordsIn` (rowIdentity.ts) for why the granting body is not on
+ * this list, and why this is a property rather than a list of bad fragments.
+ */
+function idLeak(r: InstitutionEntry): string[] {
+  const shown = [r.schemeCode, r.supportType, r.country, r.descriptor,
+                 r.familyName, r.ticket];
+  return qualifierSegments(r.institution)
+    .flatMap((seg) => internalIdWordsIn(seg, r.instrumentId, shown));
+}
+
 /** Does the link on the row go anywhere? A row reads as instruction, so a dead
  *  link is not a cosmetic defect. */
 async function linkStatus(r: InstitutionEntry): Promise<string> {
@@ -178,24 +203,26 @@ async function linkStatus(r: InstitutionEntry): Promise<string> {
 }
 
 /**
- * Normalised for comparison only.
+ * Normalised for comparison only. Used for the LABEL check below, never to
+ * decide which fund a row is.
  *
- * ── Published rows carry no instrument id, and that is the finding ────────
- * `InstitutionEntry` has `institution`, `channel`, `schemeCode` and no id. So
- * nothing downstream of the writer — not this file, not an adviser, not a
- * founder — can say WHICH fund a published row is. Matching the answer key
- * against the table is therefore a NAME match, and the first version of this
- * function also accepted containment either way. On the very first run that
- * scored a hit: the won fund is `...sa_40391__ministere_de_l_economie_et_des_
+ * ── It used to be the only way to ask, and it answered wrong ──────────────
+ * `InstitutionEntry` carried `institution`, `channel` and `schemeCode` and no
+ * id, so nothing downstream of the writer could say WHICH fund a published row
+ * was — not this file, not an adviser, not a founder. Matching the answer key
+ * against the table was therefore a NAME match, and the first version of this
+ * function accepted containment either way. On the very first run that scored
+ * a hit: the won fund is `...sa_40391__ministere_de_l_economie_et_des_
  * finances` and row 4 rendered as `... · rnd  sa 111728  ministere de l
  * economie et des finances · via Conseil régional`, so the won name sat inside
  * the row's name and the run reported "published row 4" for a different
- * notified scheme, two regimes and six years apart.
+ * notified scheme, two regimes and six years apart. That is the trap
+ * `EligibilityCheck` warns about — 322 instruments share 143 names — arriving
+ * through a fuzzy comparison instead of a shared identity.
  *
- * That is the exact trap `EligibilityCheck` warns about — 322 instruments share
- * 143 names — arriving through a fuzzy comparison instead of a shared name. So
- * containment is gone: EXACT normalised equality, and the id-based pool rank
- * printed beside it is the statement to trust.
+ * `InstitutionEntry.instrumentId` closed it (wsHR). The published rank below
+ * is now an EXACT id match, the same comparison the pool rank has always used,
+ * and this normaliser is left only for the id-in-the-label check.
  */
 const norm = (s: string) => s.toLowerCase().normalize("NFKD")
   .replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, " ").trim();
@@ -211,7 +238,13 @@ async function main(): Promise<void> {
   const seen: Seen[] = [];
 
   console.log(rule("PRODCHECK — one founder, through the live deployment"));
-  console.log(`deployment   ${BASE}   (from data/guard_registry.json)`);
+  // WHERE THIS RAN, and how that was decided. A run record that says
+  // "from data/guard_registry.json" while pointing at a laptop is a false
+  // record of a deploy, which is the one thing a look at production must never
+  // be able to produce.
+  console.log(`deployment   ${BASE}   ${process.env.PRODCHECK_URL
+    ? "(PRODCHECK_URL — NOT the published deployment)"
+    : "(from data/guard_registry.json)"}`);
   console.log(`founder      ${row.name}  (${row.country}, sector ${row.sector ?? "—"})`);
   console.log(`answer key   ${setFile} — this company really won `
     + `${row.instrumentName ?? row.instrument}  [${row.instrument}]`);
@@ -264,8 +297,8 @@ async function main(): Promise<void> {
   const poolRank = run.candidateInstrumentIds.indexOf(row.instrument);
   const screenRank = run.screenSix.findIndex(
     (r) => (r as unknown as { instrumentId?: string }).instrumentId === row.instrument);
-  const wonName = norm(row.instrumentName ?? row.instrument);
-  const publishedRank = rows.findIndex((r) => norm(r.institution) === wonName);
+  const publishedRank = rows.findIndex((r) => r.instrumentId === row.instrument);
+  const noId = rows.filter((r) => !r.instrumentId).length;
   console.log(rule("2. THE FUND THIS COMPANY ACTUALLY WON"));
   console.log(`won          ${row.instrumentName ?? "—"}  [${row.instrument}]`);
   console.log(`pool         ${poolRank < 0 ? "ABSENT from the candidate pool"
@@ -273,8 +306,8 @@ async function main(): Promise<void> {
   console.log(`first screen ${screenRank < 0 ? "ABSENT from the six instant rows"
     : `row ${screenRank + 1}`}   (by instrument id — exact)`);
   console.log(`published    ${publishedRank < 0 ? "ABSENT from the published table"
-    : `row ${publishedRank + 1}`}   (by EXACT name — published rows carry no`
-    + " instrument id, so this cannot be an id match; trust the pool row above)");
+    : `row ${publishedRank + 1}`}   (by instrument id — exact)`
+    + (noId ? `   [${noId} of ${rows.length} rows carry no id]` : ""));
 
   // ── 3. THE PUBLISHED ROWS, AS A FOUNDER SEES THEM ────────────────────────
   console.log(rule(`3. THE PUBLISHED ROWS (${rows.length})`));
@@ -286,7 +319,24 @@ async function main(): Promise<void> {
     console.log(`   verdict   ${r.verdict ?? "—"}${r.gatesChecked != null
       ? ` (${r.gatesChecked} encoded filters evaluated)` : ""}`);
     console.log(`   link      ${statuses[i]}`);
+    console.log(`   id        ${r.instrumentId ?? "── NONE ──"}`);
+    const segs = qualifierSegments(r.institution);
+    if (segs.length) {
+      console.log(`   named by  ${segs.map((x) => `"${x}"`).join(", ")}`
+        + `${idLeak(r).length ? `   ██ FROM THE INSTRUMENT ID: ${idLeak(r).join(" ")}` : ""}`);
+    }
   });
+
+  // ── 3b. IS ANY ROW NAMED AFTER OUR OWN STORAGE KEY? ──────────────────────
+  // Decidable from outside, which is the point: this is the one thing about
+  // wsHN's rename that only a production look could establish. A founder read
+  // "· rnd  sa 111728  ministere de l economie et des finances" inside a fund's
+  // name three weeks after 22 rows were renamed away from that ministry, and
+  // every offline harness was green.
+  const leaky = rows.filter((r) => idLeak(r).length);
+  console.log(`\nrow names   ${leaky.length
+    ? `██ ${leaky.length} of ${rows.length} REVEAL AN INSTRUMENT ID`
+    : `ok — none of ${rows.length} reveals an instrument id`}`);
 
   // ── 4. THE MEMO, IN FULL ─────────────────────────────────────────────────
   console.log(rule("4. THE MEMO, AS WRITTEN — read it, do not parse it"));
@@ -299,7 +349,25 @@ async function main(): Promise<void> {
     }
   } else {
     console.log("\n## Bottom line\n");
-    for (const b of report.bottomLine) console.log(`- ${b}\n`);
+    // WHICH PUBLISHED ROW EACH BULLET IS ABOUT, printed beside it.
+    //
+    // A bullet gives a fund a verdict and a blocker, and a founder then goes
+    // to the table to find it. One real brief's third bullet told a founder
+    // that ADEME's incentive-effect rule closed PACTE Industrie to her; there
+    // was no PACTE Industrie row (wsHP run 1). The writer is now handed exactly
+    // the published table (WRITER_CANDIDATE_CAP = institutionsMax), so a fund
+    // it names and cannot be found here came from its own web research rather
+    // than from a candidate we cut — a different defect with a different fix,
+    // and this line is what tells the two apart. It NAMES no verdict: only a
+    // reader can say whether an unmatched bullet is about a fund at all.
+    for (const b of report.bottomLine) {
+      const named = rows
+        .map((r, i) => [i + 1, norm(r.institution.split(" · ")[0])] as const)
+        .filter(([, n]) => n.length >= 6 && norm(b).includes(n))
+        .map(([i]) => `row ${i}`);
+      console.log(`- ${b}`);
+      console.log(`  [names ${named.length ? named.join(", ") : "no row on the table"}]\n`);
+    }
     console.log("\n## Positioning\n");
     console.log(report.positioning);
     console.log("\n## State of play\n");

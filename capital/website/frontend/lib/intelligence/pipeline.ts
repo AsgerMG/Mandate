@@ -479,6 +479,10 @@ function buildInstitutions(
 ): InstitutionEntry[] {
   return rows.map((row) => ({
     institution: displayInstitutionName(row),
+    // WHICH FUND THIS ROW IS. Carried first because everything else on the row
+    // is a description of it and this is the only thing that names it. See the
+    // field's own note on InstitutionEntry for what its absence cost.
+    instrumentId: row.instrumentId,
     channel: row.channel,
     supportType: supportTypeLabel(row),
     ticket: row.ticket,
@@ -987,7 +991,31 @@ async function synthesize(
         `how this company sits against it, rather than describing the fund in ` +
         `general terms. Where an answer shows a requirement is not met, say so ` +
         `plainly and give the cure. Never restate an answer as a fact the ` +
-        `founder did not give.`
+        `founder did not give.` +
+        // ── THE SECOND CHANNEL TO AN UNPUBLISHED FUND, AND THE ONE THAT
+        //    ACTUALLY FIRED (wsHR) ────────────────────────────────────────
+        // wsHP read a bullet giving *PACTE Industrie* a verdict and a blocker
+        // with no PACTE Industrie row, and attributed it to the writer being
+        // shown one more candidate than the table publishes. That cap is now
+        // tied to the published count (caps.ts) — and the bullet came back
+        // anyway on the same founder, about ADEME's écoconception route. It
+        // comes from HERE. These questions are grounded in the whole candidate
+        // pool BY DESIGN, because their answers are what decides which funds
+        // publish, so the fund that prompted one is routinely not a row.
+        //
+        // Constrained rather than redacted, and the reason is that the name is
+        // inside evidence we deliberately show: the fund's own verbatim quote
+        // and the question phrased from it. Stripping the name out of a
+        // quotation either breaks the quotation or leaves the name in the
+        // question beside it. What can be stated exactly is the BOUNDARY —
+        // these lines are facts about the FOUNDER, and the fund is the source
+        // of the requirement, not a door being offered.
+        `\nThe funds named in this block were screened for this founder and are ` +
+        `NOT the table. Use the ANSWER, and the requirement it is measured ` +
+        `against, anywhere. Never give a fund named only here a verdict, a ` +
+        `blocker, a next step or a recommendation for or against: the founder ` +
+        `cannot find it on the page and has no way to act on what you said. ` +
+        `Every fund you name in the bottom line must be one of the rows below.`
       : "",
     // The commercial half of round 2. Its only consumers are positioning and
     // the payoff bullet — it never touches eligibility, and it is labelled so
@@ -1522,11 +1550,19 @@ async function synthesize(
   };
 
   try {
-    // `candidatesShown` is what the writer was SHOWN, not what published --
-    // that is the superset BL-B1 needs, and passing it is what stops that rule
-    // reporting itself unevaluated on every real request.
+    // EVERY FUND NAME THE WRITER WAS SHOWN, not just the candidate rows.
+    //
+    // The candidates alone were the superset BL-B1 was written against, and
+    // they are no longer a superset of anything: `WRITER_CANDIDATE_CAP` equals
+    // the published cap, so that list IS the table and the rule had nothing
+    // left to compare. The round-two block is the other place this prompt
+    // names a fund -- one per question, grounded in the whole pool by design --
+    // and it is where both recorded failures of this rule came from.
     const violations = checkBrief(
-      publishedReport, STATE_OF_PLAY_OFFER, institutions.map((r) => r.institution));
+      publishedReport, STATE_OF_PLAY_OFFER, [
+        ...institutions.map((r) => r.institution),
+        ...(req.projectAnswers ?? []).map((p) => p.instrumentName).filter(Boolean),
+      ] as string[]);
     if (violations.length) {
       recordEvent("brief_rule_violated",
         violations.map((v) => `${v.ruleId}: ${v.detail}`).join("; "),
@@ -1946,6 +1982,7 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
     eligibility: req.eligibility,
     capitalSought: req.capitalSought,
     institutions: report.institutions.map((i) => ({
+      instrumentId: i.instrumentId,
       institution: i.institution, channel: i.channel, country: i.country,
       verdict: i.verdict, blocker: i.blocker, stale: i.stale,
     })),

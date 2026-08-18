@@ -489,12 +489,55 @@ export const SELECT_COUNT = depthLever("AGENT_SELECT_COUNT", 7);
  *  one thing already on record above: at 9 the writer stopped writing all of
  *  them.
  *
- *  Raise it when the measured P(w >= 2) times the rank-9 mass exceeds the
- *  measuring run's own half-width. `npm run stages` prints both, and the
- *  watch-only budget it reads comes from `brief_records` rather than from this
- *  comment, so the day the writer starts hedging this decision reverses itself
- *  in a number instead of in a memory. */
-export const WRITER_CANDIDATE_CAP = 8;
+ *  ██ AND "IT BUYS NOTHING" WAS NOT FREE. IT IS 7 NOW (wsHR, 2026-08-18) ██
+ *
+ *  The paragraph above settles the number by asking what the spare seat BUYS.
+ *  The question nobody asked is what it COSTS, and a real founder paid it. Her
+ *  brief's third bottom-line bullet gave *PACTE Industrie* a verdict and a
+ *  blocker — "ADEME's incentive-effect rule requires the aid application to
+ *  precede the start of work ... that closes this route for the current phase"
+ *  — and there was no PACTE Industrie row on her table. She was told to stop
+ *  pursuing a fund she was never shown (wsHP run 1; the same shape is on
+ *  record for a different founder in `findings/writer_money_wsHM/QUOTES.txt`,
+ *  so it is not a one-off).
+ *
+ *  It is the spare seat, exactly. Candidate 8 is a fund the writer is ASKED to
+ *  assess and the founder CANNOT be shown: `w(r)` in the rule above is
+ *  identically zero since wsGK removed the watch-only sort, so the rule
+ *  collapses to `r <= institutionsMax` and rank 8 is unreachable at any value
+ *  of this constant. The block above says so itself — "with no watch-only row
+ *  this constant is inert" — and reads that as harmless.
+ *
+ *  ── WHY THE CUT, AND NOT A RULE ABOUT WHAT THE WRITER MAY NAME ────────────
+ *  BL-B1 ("naming a fund that is not in the published table") is a Banned rule
+ *  and it did not fire, because it tests whether a bullet CONTAINS a cut
+ *  candidate's full display name and the writer wrote the fund's short name.
+ *  Tightening that test is chasing a model's phrasing with a string match: the
+ *  next brief abbreviates differently and the rule is blind again.
+ *
+ *  The cut is not that. It removes the thing being named. With the candidate
+ *  list equal to the published table there is no fund on the writer's page
+ *  that is not on the founder's, whatever the model calls it — and BL-B1
+ *  becomes a tripwire on the caps rather than a filter on prose.
+ *
+ *  It is NOT `worth: Boolean(note)` returning (wsGC), and the difference is
+ *  the direction. That let the WRITER'S SILENCE delete a row the ranker had
+ *  chosen, so the reply decided membership. This is code cutting by RANK
+ *  before the writer is called: the ranker still chooses every seat, the
+ *  writer still cannot add, drop or reorder one, and a candidate it writes
+ *  nothing about still publishes from its own facts.
+ *
+ *  WHAT IT COSTS, stated because the block above priced the other direction:
+ *  one candidate's worth of prompt, EUR 0.0013 a brief, and the 0.12-point
+ *  ceiling measured above is the bound on what the seat could ever have been
+ *  worth in the other direction. Nothing measurable, against a bullet that
+ *  told a founder to give up on a fund she could not see.
+ *
+ *  The tie to the published cap is asserted in `check_contracts.ts`, in both
+ *  directions and with a reason each way. It cannot be stated here: this file
+ *  imports nothing, deliberately, and `institutionsMax` lives beside the rule
+ *  that enforces it. */
+export const WRITER_CANDIDATE_CAP = 7;
 
 // ── THE FUNNEL INVARIANT, ASSERTED WHERE THE LEVER CAN BREAK IT ───────────
 // `check_contracts.ts` already asserts VERDICT_POOL > WRITER_CANDIDATE_CAP >

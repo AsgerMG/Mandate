@@ -26,7 +26,7 @@ import { instrumentServesCapital, instrumentServesCountry } from "./capitalPrefe
 // four places below, which is why a harness could measure the lexical ranker
 // and report about it in the embedding ranker's words. See semantic.ts.
 import { semanticSeparation, rankerUsed } from "./semantic";
-import { nameableBody } from "./rowIdentity";
+import { nameableBody, SEGMENT_JOIN } from "./rowIdentity";
 import { doorLabel } from "./doorLabel";
 import { TICKET_BANDS, bandFloorEur } from "./types";
 import type { EligibilityAnswers } from "./types";
@@ -1484,7 +1484,97 @@ export function preferBetterEvidencedRow(a: InstrumentRow, b: InstrumentRow): nu
     || (a.instrumentId ?? "").localeCompare(b.instrumentId ?? "");
 }
 
-function distinguishRowNames(rows: InstrumentRow[]): void {
+/**
+ * WHAT A ROW MAY BE TOLD APART BY, most actionable first.
+ *
+ * Every one is text somebody wrote about the fund. None is an internal
+ * identifier — see the property block at the bottom of `rowIdentity.ts` for
+ * what the fourth entry here used to be and what it put in front of a founder.
+ *
+ * The granting body is not in this list because it is not a qualifier: it is a
+ * DOOR, it is spelled `· via X` by `withDoor`, and `nameableBody` decides on
+ * evidence whether we may claim it at all. It is applied first, below, and
+ * these run behind it.
+ */
+const NAME_AXES: { axis: string; value: (r: InstrumentRow) => string }[] = [
+  {
+    // Where the money actually lands, which is the thing a founder can act on:
+    // fourteen leaves share the French RDI regime's name and the ones a given
+    // founder can apply to are the ones delivering into their region.
+    //
+    // ONLY the resolved NAME. `regionNameFor` returns null for a code the
+    // corpus does not know, and falling back to the raw NUTS id would print
+    // "FRK2" as a fund's name — the same defect as the id fragment, arriving
+    // through a different column. Same standard `sanitize.ts` already applies.
+    axis: "region",
+    value: (r) => (r.deliveryRegion ? regionNameFor(r.deliveryRegion) ?? "" : ""),
+  },
+  // The notified code is a PUBLISHED identifier: a founder or their adviser can
+  // look SA.111728 up in the Commission's own register, which is exactly what
+  // an instrument id is not. It separates two distinct schemes publishing under
+  // one shared title, which is the collision `resolveNameCollisions` is left
+  // holding today.
+  { axis: "scheme", value: (r) => (r.schemeCode ?? "").trim() },
+  // Last, and weak, but real: two lines of one agency that differ only in
+  // whether they hand over a grant or a loan differ in the thing a founder
+  // cares about most.
+  //
+  // Through `CAPITAL_WORD`, never the raw column. `capital_type` holds
+  // `recoverable_advance` and `counter_guarantee`, and a row named
+  // "... · counter_guarantee" is a database value wearing a fund's name — the
+  // same defect as the id fragment one column over. A value the map does not
+  // answer for yields no token at all.
+  { axis: "capital", value: (r) => CAPITAL_WORD[(r.capitalType ?? "").trim()] ?? "" },
+];
+
+/**
+ * Separate rows that render under one title — WITHOUT INVENTING A NAME.
+ *
+ * ── The property, and the test for a case nobody has seen ─────────────────
+ * A ROW'S DISPLAYED NAME IS BUILT ONLY OUT OF TEXT SOMEBODY WROTE ABOUT THE
+ * FUND. The test is `internalIdWordsIn` in rowIdentity.ts: flatten the
+ * appended qualifier and the instrument id the same way, and no word may reach
+ * the page from the id and from nothing else. It needs no register of known
+ * bad fragments, which is what makes it a test for the NEXT one.
+ *
+ * ── What it replaced, measured on 36 recall founders ──────────────────────
+ * The last branch of the old cascade was `instrumentId.slice(prefix)` with the
+ * underscores turned into spaces. It fired on 20 of 252 published rows across
+ * 9 of 36 founders — and on that population it was the ONLY branch that ever
+ * fired, so every qualifier this function produced was an internal id. A real
+ * founder read
+ *   "· rnd  sa 111728  ministere de l economie et des finances ·"
+ * inside a fund's name, three weeks after wsHN renamed 22 rows away from
+ * exactly that ministry. Only a production look found it (wsHP run 1).
+ *
+ * ── Why the body branch never fired, which is the same defect ─────────────
+ * `bodyDistinguishes` was `bodies.size === peers.length`: ONE duplicate body
+ * anywhere in the group threw the body away for every peer in it. The French
+ * group contains `satr_fr_rnd__sa_111728__ministere...` and
+ * `satr_fr_equity__sa_111728__ministere...` — two regimes, one title, one
+ * body — so five rows whose bodies are published at a 1.0 vote share and are
+ * DISTINCT in four cases fell to the id fragment together. The file already
+ * records fixing this exact all-or-nothing shape once, for `nameableBody`, and
+ * left it standing one line above on the raw column.
+ *
+ * So nothing here is asked of the GROUP. Each row is named from what IT can
+ * support, and the only group-level question is the one that actually matters:
+ * DO THE LABELS COME OUT DIFFERENT. An axis is added where it separates rows
+ * that still read the same, and never anywhere else.
+ *
+ * ── And when nothing can separate them, they stay the same ────────────────
+ * Deliberately. `resolveNameCollisions` runs one line below and demotes — not
+ * deletes — a row it cannot tell apart from another, which is what that
+ * function is for. Two rows a founder cannot distinguish are one option shown
+ * twice, and filling the gap with our storage key does not make them two
+ * options; it makes them one option and a leak.
+ *
+ * EXPORTED so the property above has a test rather than a comment. It cannot
+ * be asserted structurally the way `rowToEntry.test.ts` asserts a field hop —
+ * the question is what COMES OUT for an id nobody has seen — and the caller
+ * that would have to be driven instead is a whole hydrated instrument table.
+ */
+export function distinguishRowNames(rows: InstrumentRow[]): void {
   const byName = new Map<string, InstrumentRow[]>();
   for (const r of rows) {
     // The label the DEDUPE will collapse on, not a second one computed here.
@@ -1503,79 +1593,46 @@ function distinguishRowNames(rows: InstrumentRow[]): void {
   }
   for (const [name, peers] of byName) {
     if (peers.length < 2) continue;
-    // Sorted, because the shared prefix below is computed by folding over this
-    // list and the dedupe now keys on the label it produces. Unsorted, the two
-    // stores return rows in different sequences, produce different labels, keep
-    // different survivors, and the parity check fails on order.
-    const ids = peers.map((p) => p.instrumentId ?? "").sort();
-    // The shared prefix is the agency; what follows identifies the programme.
-    let prefix = ids[0] ?? "";
-    for (const id of ids) {
-      let i = 0;
-      while (i < prefix.length && i < id.length && prefix[i] === id[i]) i++;
-      prefix = prefix.slice(0, i);
-    }
-    // The token must be the field that actually DIFFERS among these peers.
-    //
-    // It preferred `schemeCode`, and peers collide precisely because they share
-    // one: nine French children under SA.111723 all rendered
-    // "FR R&D state aid scheme SA.111723", were declared indistinguishable, and
-    // eight were dropped. Measured on 60 real recipients, this dedupe was 50%
-    // of all misses -- larger than the ranking and the leaf cap combined.
-    //
-    // The granting body is what a founder actually approaches and is what
-    // separates them: Region Normandie versus Caisse des Depots, under the same
-    // notified regime.
+    // A total order on the peers, so two stores returning the rows in different
+    // sequences produce the same labels and the hydration-parity check holds.
     peers.sort((a, b) => (a.instrumentId ?? "").localeCompare(b.instrumentId ?? ""));
-    // Whether the body SEPARATES these peers is a question about the column,
-    // so it is asked of the column. Whether a body may be PRINTED is a question
-    // about evidence, so it is asked of `nameableBody` — per peer, below.
-    //
-    // Those are two different questions and collapsing them into one broke the
-    // labels when it was tried: two of a twelve-leaf scheme's bodies are
-    // ministries and are refused, so a group test on `nameableBody` failed for
-    // the whole group and sent all twelve rows to the id-slug fallback. Seen by
-    // running it, not by reading it.
-    const named = new Map(peers.map((p) => [p, nameableBody(p)]));
-    const bodies = new Set(peers.map((p) => (p.administeringBody ?? "").trim()));
-    const bodyDistinguishes = bodies.size === peers.length && !bodies.has("");
-    // Where the body does not separate them, WHERE THE MONEY GOES often does,
-    // and it is the thing a founder can act on: fourteen leaves share the
-    // French RDI regime's name, and the ones a given founder can actually apply
-    // to are the ones delivering into their region. Preferred over the id
-    // fragment, which is an internal slug and tells a reader nothing.
-    const regions = new Set(peers.map((p) => p.deliveryRegion ?? ""));
-    const regionDistinguishes = regions.size === peers.length && !regions.has("");
-    // A scheme-code branch was written here, tested the same way body and region
-    // are tested, and REMOVED. Rationale it was written on: peers that collide
-    // on a shared TITLE often carry different notified codes, and a code is a
-    // published identifier where the id fragment below is an internal slug.
-    // Rationale it was removed on: measured across 22 markets after the grouping
-    // key was corrected, it produced a token ZERO times -- the granting body
-    // separates every pair the corpus actually contains. A branch nothing can
-    // emit is the SEL-BAND defect in code rather than in the register.
-    for (const r of peers) {
-      // A BODY is printed through the one function that prints bodies, so this
-      // row and the question rendered under it cannot spell one door two ways.
-      // The other tokens are not doors -- a region, an id fragment, a notified
-      // code, a capital type -- and carry no `via`, because `via` is a claim
-      // about who granted the money and none of them says that.
-      //
-      // A peer whose body separates it but which the register will not let us
-      // NAME (a ministry, a scattered or unmeasured vote) falls through to
-      // those: it still has to be told apart from its peers, and it is simply
-      // never told apart by a claim we cannot support.
-      const body = bodyDistinguishes ? named.get(r) : null;
-      if (body) { r.instrument = withDoor(name, body); continue; }
-      const token = (regionDistinguishes && r.deliveryRegion
-             ? regionNameFor(r.deliveryRegion) ?? r.deliveryRegion : "")
-        || (r.instrumentId ?? "").slice(prefix.length).replace(/^_+/, "").replace(/_/g, " ")
-        || r.schemeCode
-        || r.capitalType
-        || "";
-      if (token) r.instrument = `${name} \u00b7 ${token}`;
+    // THE DOOR, per row and never per group. `nameableBody` is the evidence
+    // standard: it refuses a ministry, a missing body and a vote too scattered
+    // to be a door, and a row it refuses simply goes without one. A body is
+    // true of the row whether or not its peers happen to share it, so it is
+    // applied first and the axes below run behind it.
+    const door = new Map(peers.map((p) => [p, nameableBody(p)] as const));
+    const quals = new Map(peers.map((p) => [p, [] as string[]] as const));
+    // `via` LAST, always: `splitDoor` reads the final ` · via ` to hand FUND-7
+    // the two halves of a published name, and a qualifier appended after the
+    // body would be judged as part of the body.
+    const label = (r: InstrumentRow) => {
+      const base = [name, ...quals.get(r)!].join(SEGMENT_JOIN);
+      const body = door.get(r);
+      return body ? withDoor(base, body) : base;
+    };
+    for (const ax of NAME_AXES) {
+      for (const [, still] of groupBy(peers, label)) {
+        if (still.length < 2) continue;
+        const vals = still.map((r) => ax.value(r));
+        // Does this axis separate anything HERE? Asked of the rows that still
+        // read alike, not of the whole group: a fact that tells two of five
+        // rows apart is worth printing on those two.
+        if (new Set(vals.filter(Boolean)).size < 2) continue;
+        still.forEach((r, i) => { if (vals[i]) quals.get(r)!.push(vals[i]); });
+      }
     }
+    for (const r of peers) r.instrument = label(r);
   }
+}
+
+/** Rows by the label they currently read as. */
+function groupBy(
+  peers: InstrumentRow[], label: (r: InstrumentRow) => string,
+): Map<string, InstrumentRow[]> {
+  const by = new Map<string, InstrumentRow[]>();
+  for (const r of peers) by.set(label(r), [...(by.get(label(r)) ?? []), r]);
+  return by;
 }
 
 /**

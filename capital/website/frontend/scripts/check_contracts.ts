@@ -303,11 +303,45 @@ function main() {
         "spent further by the blocked drop and the display-name dedupe before the cut",
     },
     {
+      // ── THE WRITER'S PAGE AND THE FOUNDER'S ARE THE SAME PAGE (wsHR) ─────
+      //
+      // These two were STRICT, one seat apart, and the pair below is the same
+      // assertion pointing the other way: together they tie the caps EQUAL.
+      // Two entries rather than a new `equal` flag, because the two directions
+      // fail for entirely different reasons and a guard that only says "7 = 7"
+      // teaches the person who trips it nothing.
+      //
+      // The strictness was justified by "the published table is the head of the
+      // ranked candidate list, and at equality there is no head". That is true
+      // and it was never the point: a head exists so that something can be cut
+      // from BELOW it, and nothing has cut anything since wsGK removed the
+      // watch-only sort. Candidate `institutionsMax + 1` cannot publish at any
+      // value of the writer's cap -- caps.ts says so itself -- so the one thing
+      // the spare seat could still do was let the writer ASSESS a fund the
+      // founder would never see. It did: a real brief's third bullet told a
+      // founder that ADEME's incentive-effect rule closed PACTE Industrie to
+      // her, and PACTE Industrie was not on her table (wsHP run 1).
+      //
+      // The paragraph above this array anticipated exactly this -- "inheriting
+      // a dead reason is how this pair came to be justified by a mechanism that
+      // had already stopped running" -- and left it strict rather than decide.
+      // This is the decision.
       wider: "WRITER_CANDIDATE_CAP", wide: WRITER_CANDIDATE_CAP,
       narrower: "BRIEF_LIMITS.institutionsMax", narrow: BRIEF_LIMITS.institutionsMax,
-      why: "the published table is the head of the ranked candidate list, and at equality " +
-        "there is no head: every candidate publishes and the ranking below the cap is never " +
-        "exercised. See the paragraph above before relaxing this one",
+      strict: false,
+      why: "every published row is a row the writer was asked to assess, so a candidate " +
+        "cap below the published cap ships rows with no written assessment and no page " +
+        "saying why",
+    },
+    {
+      wider: "BRIEF_LIMITS.institutionsMax", wide: BRIEF_LIMITS.institutionsMax,
+      narrower: "WRITER_CANDIDATE_CAP", narrow: WRITER_CANDIDATE_CAP,
+      strict: false,
+      why: "the writer may not be shown a fund the founder cannot be: it writes the " +
+        "bottom line before the cut, so a candidate past the published cap is a fund it " +
+        "can give a verdict and a blocker on and the founder can never find. BL-B1 is the " +
+        "rule and it could not see it -- the bullet named the fund by a short name the " +
+        "check compares nothing against",
     },
     {
       // ── THE SELECTOR MUST BE ABLE TO REACH EVERY PUBLISHED SEAT ──────────
