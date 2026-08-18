@@ -180,8 +180,14 @@ describe("checkBrief runs on the brief the founder is handed", () => {
     // Keyed on the ARGUMENT BEING THERE, not on what the local holding the
     // candidate rows is called. It named `scored`, a local that no longer
     // exists, so a rename would have read here as a deleted argument.
+    //
+    // Nor on its SHAPE. The argument was one `.map` over the candidate rows
+    // and is now a union of every block of the prompt that names a fund --
+    // the rows plus the round-two requirements -- so a pattern anchored to a
+    // single expression would have read a widened argument as a deleted one,
+    // which is the same defect as the rename it already survived once.
     expect(pipeline).toMatch(
-      /checkBrief\([\s\S]{0,200}?STATE_OF_PLAY_OFFER,\s*[A-Za-z_$][\w$]*\.map/);
+      /checkBrief\([\s\S]{0,200}?STATE_OF_PLAY_OFFER,[\s\S]{0,400}?\.map\(/);
   });
 
   it("cannot withhold a brief: the call is wrapped and only records", () => {

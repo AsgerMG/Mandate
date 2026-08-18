@@ -1,0 +1,213 @@
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [prodcheck]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+
+──────────────────────────────────────────────────────────────────────────────
+PRODCHECK — one founder, through the live deployment
+──────────────────────────────────────────────────────────────────────────────
+deployment   http://localhost:3100   (from data/guard_registry.json)
+founder      A.M.L. MICROTECHNIQUE LORRAINE  (FR, sector semiconductors_electronics)
+answer key   __recallSetDescribed.json — this company really won Ministère de l'économie et des finances  [satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances]
+description  "AML est une entreprise industrielle innovante, disposant de compétences \nprocess élargies, reconnues dans les domaines hyperfréquences aéronautiques. \nLe projet vise à mettre en œuvre une technologie disruptive de \nfonctionnalisation de surface, complément essentiel de la chaine de valeur de \nla fabrication additive. Cette diversification a pour objectif le développement \nde nouveaux dépôts sur tous types de matériaux."
+
+This is a LOOK at one founder, not a measurement. No percentage is printed
+and none may be derived from it.
+
+──────────────────────────────────────────────────────────────────────────────
+1. THE CORPUS THE DEPLOYMENT RANKED ON
+──────────────────────────────────────────────────────────────────────────────
+source       POSTGRES
+instruments  1088
+observedAt   2026-08-18T19:20:07.702Z
+
+──────────────────────────────────────────────────────────────────────────────
+2. THE FUND THIS COMPANY ACTUALLY WON
+──────────────────────────────────────────────────────────────────────────────
+won          Ministère de l'économie et des finances  [satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances]
+pool         row 95 of 118   (by instrument id — exact)
+first screen ABSENT from the six instant rows   (by instrument id — exact)
+published    ABSENT from the published table   (by instrument id — exact)
+
+──────────────────────────────────────────────────────────────────────────────
+3. THE PUBLISHED ROWS (7)
+──────────────────────────────────────────────────────────────────────────────
+
+1. Horizon EU CL4  (EU)
+   family    Horizon Europe Pillar II (all clusters)
+   money     Typical award EUR 381,500 · 10,666 awards  ·  ticket Typically €0.5M–€5M per partner inside a multi-partner consortium
+   verdict   open (6 encoded filters evaluated)
+   link      200 ok  programme  https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home
+   id        horizon_eu_cl4
+
+2. Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026 · via REGION GRAND EST  (FR)
+   family    FR R&D state aid regime
+   money     Typical award EUR 170,000 · 73 awards  ·  ticket Wide, scheme-dependent: from €100k to tens of €M under GBER
+   verdict   open (9 encoded filters evaluated)
+   link      200 ok  scheme  https://competition-cases.ec.europa.eu/cases/SA.111728
+   id        satr_fr_rnd__sa_111728__region_grand_est
+
+3. Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026  (FR)
+   family    FR R&D state aid regime
+   money     Typical award EUR 484,000 · 368 awards  ·  ticket Wide, scheme-dependent: from €100k to tens of €M under GBER
+   verdict   open (7 encoded filters evaluated)
+   link      200 ok  scheme  https://competition-cases.ec.europa.eu/cases/SA.112158
+   id        satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai
+
+4. EIC Accelerator  (EU)
+   family    EIC (all tracks)
+   money     Typical award EUR 2,496,599 · 626 awards  ·  ticket Grant up to €2.5M; equity €0.5M–€10M via the EIC Fund
+   verdict   unknown (0 encoded filters evaluated)
+   link      200 ok  programme  https://eic.ec.europa.eu/eic-funding-opportunities/eic-accelerator_en
+   id        eic_accelerator
+
+5. Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020 · via Conseil régional Occitanie  (FR)
+   family    FR R&D state aid regime
+   money     Typical award EUR 980,817 · 91 awards  ·  ticket Wide, scheme-dependent: from €100k to tens of €M under GBER
+   verdict   open (7 encoded filters evaluated)
+   link      200 ok  scheme  https://competition-cases.ec.europa.eu/cases/SA.40453
+   id        satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances
+
+6. Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026 · via Conseil régional  (FR)
+   family    FR equity state aid regime
+   money     Typical award EUR 180,000 · 401 awards  ·  ticket Wide, scheme-dependent: from €100k to tens of €M under GBER
+   verdict   open (7 encoded filters evaluated)
+   link      200 ok  scheme  https://competition-cases.ec.europa.eu/cases/SA.111729
+   id        satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances
+
+7. Horizon EU CL5  (EU)
+   family    Horizon Europe Pillar II (all clusters)
+   money     Typical award EUR 338,794 · 11,224 awards  ·  ticket Typically €0.5M–€5M per partner inside a multi-partner consortium
+   verdict   open (6 encoded filters evaluated)
+   link      200 ok  programme  https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home
+   id        horizon_eu_cl5
+
+row names   ok — none of 7 reveals an instrument id
+
+──────────────────────────────────────────────────────────────────────────────
+4. THE MEMO, AS WRITTEN — read it, do not parse it
+──────────────────────────────────────────────────────────────────────────────
+
+## Bottom line
+
+- You have €1.0M in traced public funding from 2021, one state aid award via development banks. Peers in your sub-sector, like Aubert & Duval and AddUp, have drawn far more across several awards over multiple years.
+  [names no row on the table]
+
+- Your surface-functionalisation project has already started. This closes the ADEME écoconception route, which requires a written aid application before work begins, so that door is shut for this project as scoped.
+  [names no row on the table]
+
+- Start with the Grand Est regional R&D scheme, since it is delivered by your own Conseil régional and is the fastest route from where you stand today.
+  [names no row on the table]
+
+- A grant here would fund faster prototyping and first customer validation with aerospace manufacturers, the exact use you named for this money.
+  [names no row on the table]
+
+- EIC Accelerator is worth preparing in parallel: it can add a grant of up to €2.5M and, if you take the equity option, capital from the EIC Fund alongside a strategic investor on your cap table.
+  [names row 4]
+
+
+## Positioning
+
+Frame your work as the missing industrial step between additive manufacturing and flight-ready aerospace hardware: surface functionalisation as a qualification bottleneck, not a coating add-on. This fits how funders in your sector actually score: national R&D aid schemes and Horizon industrial clusters reward demonstrated industrial capability and a clear route to qualified production, not a commercial pitch. The Commission's own design work on the European Competitiveness Fund, still under negotiation for the 2028 budget, groups digital, industrial and defence priorities into windows worth tens of billions each; additive manufacturing enablement sits inside that industrial and digital leadership frame, which is worth naming when you describe the strategic case for your work, even though the fund itself is not yet open. For EIC Accelerator specifically, the case to make is the counterfactual: what public money buys you now is speed to a validated deposition process ahead of a first aerospace customer, which is exactly the evidence its evaluators weight under Impact and Implementation. Do not frame this around who buys the coated parts beyond aerospace manufacturers and their tier-1 suppliers, since that is the only market you have described.
+
+## State of play
+
+Horizon CL4 and CL5, both on your table, sit inside a live redesign: the Commission's proposed European Competitiveness Fund, worth €234 billion, would fold Horizon Europe's €175 billion into four new windows from 2028, with a Digital leadership window worth €51.5 billion and a Resilience, security, defence, industry and space window worth €125.2 billion. Window allocations and eligibility rules are still being negotiated with the Council and Parliament, so a Horizon consortium bid built today may need reframing against a different window once the new structure lands. EIC Accelerator has just opened a dedicated €100M defence call, distinct from its standard track, worth checking against your dual-use potential in aerospace supply chains. No recent movement is recorded on the French regional and national state aid schemes in your table; those remain governed by their existing GBER-based rules.
+
+## Caveats
+
+Figures shown are committed amounts from public registers on each instrument's own reporting basis, coverage varies by country, and absence from the database is not proof that no funding was received.
+
+## What the memo says about each row
+
+### Horizon EU CL4
+what it is  Grants · mostly semiconductors & electronics
+why         Nothing in the screen rules you out. Your consortium-readiness is met, and no China, Russia or Belarus links apply to you.
+next step   Search the Funding & Tenders Portal for an open CL4 topic matching surface functionalisation or additive manufacturing.
+
+### Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026 · via REGION GRAND EST
+what it is  Grants · Grand Est · mostly industrial manufacturing
+why         You are established in Grand Est, the region this scheme requires, and your co-financing capacity covers the share R&D aid ceilings leave with you.
+next step   Contact the Conseil régional Grand Est to open an R&D aid dossier under this scheme.
+
+### Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026
+what it is  Grants · mostly mobility & transport
+why         Nothing in the screen closes this scheme to you, and your R&D aid co-financing capacity is already established.
+next step   Confirm with the Ministère de la Transition écologique et solidaire which body actually administers applications for this scheme.
+
+### EIC Accelerator
+what it is  Grants · mostly health & life sciences
+why         Your project is applied, industrial and aimed at qualifying a new deposition process for aerospace supply, matching the commercialisation focus this instrument funds.
+next step   Submit the short EIC Accelerator application (5-page summary, deck, short video) against the next open cut-off.
+
+### Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020 · via Conseil régional Occitanie
+what it is  Grants · mostly industrial manufacturing
+why         Nothing in the screen rules you out, though this scheme runs via Conseil régional Occitanie, not your own Grand Est region.
+next step   Confirm with Conseil régional Occitanie whether the scheme still runs before preparing an application.
+
+### Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026 · via Conseil régional
+what it is  Loans · mostly software & AI
+why         Your stated co-financing capacity of over half of project cost covers what this risk-finance scheme leaves with an SME beneficiary.
+next step   Ask your Conseil régional which office administers this loan scheme for SMEs in your sector.
+
+### Horizon EU CL5
+what it is  Grants · mostly energy & cleantech
+why         No written assessment for this row; 6 of this scheme's own eligibility rules were checked and none rules this company out.
+next step   Confirm the current call and its eligibility criteria with the body running this scheme.
+
+
+## The eligibility screen the founder is shown
+
+- [met] Undertaking-in-difficulty exclusion — Not in difficulty on the share-capital limb; the GBER exclusion does not bite.
+- [met] Grant co-financing capacity — Stated co-financing capacity covers the own-share that R&D aid-intensity ceilings leave with the company.
+- [met] Consortium-based instruments — Consortium-ready: the Horizon/JU family and collaboration bonuses stay on the table.
+- [not_met] IPCEI-class projects — The stated ticket sits below IPCEI scale; the instrument is not a realistic lane for this raise.
+- [info] De minimis headroom — Small national schemes typically run under the de minimis ceiling of EUR 300,000 over three years, counted across the whole group; prior aid in our register counts toward it.
+- [met] Horizon EU CL4: For the relevant Innovation Actions and Research and Innovation Actions, legal entities established in China are not eligible to participate in any capacity, subject to case-by-case exceptions. — For the relevant Innovation Actions and Research and Innovation Actions, legal entities established in China are not eligible to participate in any capacity, subject to case-by-case exceptions.
+- [likely_met] Horizon EU CL4: Unless the call/topic conditions provide otherwise, a consortium must include at least three independent legal entities each established in a different country, with at least one in a Member State and at least two others in different Member States or Associated Countries. — Unless the call/topic conditions provide otherwise, a consortium must include at least three independent legal entities each established in a different country, with at least one in a Member State and at least two others in different Member States or Associated Countries.
+- [likely_met] Horizon EU CL4: Applications for Pre-commercial procurement and PPI actions must fulfil the three-independent-entity criterion, with a minimum of two beneficiaries being independent public procurers each established in a different Member State or Associated Country, and at least one in a Member State. — Applications for Pre-commercial procurement and PPI actions must fulfil the three-independent-entity criterion, with a minimum of two beneficiaries being independent public procurers each established in a different Member State or Associated Country, and at least one in a Member State.
+- [met] Horizon EU CL4: Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity. — Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.
+- [met] Horizon EU CL4: Applicants subject to EU administrative sanctions (exclusion) or in situations such as bankruptcy, winding up, court-administered affairs, arrangement with creditors, or suspended business activities cannot participate. — Applicants subject to EU administrative sanctions (exclusion) or in situations such as bankruptcy, winding up, court-administered affairs, arrangement with creditors, or suspended business activities cannot participate.
+- [likely_met] Horizon EU CL4: Funding flows to a multi-partner consortium, not a single company; must join or form one with 3+ organisations from 3+ member/associated states — Funding flows to a multi-partner consortium, not a single company; must join or form one with 3+ organisations from 3+ member/associated states
+- [met] Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself. — Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored. — Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026: Undertakings subject to an outstanding recovery order following a prior Commission decision declaring French aid illegal and incompatible are excluded. — Undertakings subject to an outstanding recovery order following a prior Commission decision declaring French aid illegal and incompatible are excluded.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026: The scheme applies to the whole national territory of France; beneficiaries may be required to have an establishment or branch in France at the time aid is paid. — The scheme applies to the whole national territory of France; beneficiaries may be required to have an establishment or branch in France at the time aid is paid.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026: Primary agricultural production (except risk-finance aid) and certain agricultural processing/marketing activities tied to producer prices or quantities are excluded sectors. — Primary agricultural production (except risk-finance aid) and certain agricultural processing/marketing activities tied to producer prices or quantities are excluded sectors.
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026: Applicant must be established/operating in France (national/regional scheme) — Applicant must be established/operating in France (national/regional scheme)
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur de l’accès des PME au financement pour la période 2024-2026: Firms in difficulty (losses eroding more than half of subscribed capital) generally excluded from GBER R&D&I aid — Firms in difficulty (losses eroding more than half of subscribed capital) generally excluded from GBER R&D&I aid
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself. — Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored. — Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Companies must be located in the Grand Est region. — Companies must be located in the Grand Est region.
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Applicant must be established in the Grand Est region — Applicant must be established in the Grand Est region
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid. — Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs. — Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market. — Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market.
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Applicant must have operations or establishment in France (national/regional scheme) — Applicant must have operations or establishment in France (national/regional scheme)
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules) — Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules)
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself. — Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored. — Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid. — Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid.
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs. — Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs.
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market. — Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market.
+- [likely_met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Applicant must have operations or establishment in France (national/regional scheme) — Applicant must have operations or establishment in France (national/regional scheme)
+- [likely_met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules) — Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules)
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself. — Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored. — Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020: Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid. — Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020: Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs. — Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020: Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market. — Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market.
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020: Applicant must have operations or establishment in France (national/regional scheme) — Applicant must have operations or establishment in France (national/regional scheme)
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020: Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules) — Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules)
+
+──────────────────────────────────────────────────────────────────────────────
+5. THE CALL
+──────────────────────────────────────────────────────────────────────────────
+elapsed      167.7s wall clock, whole path
+  /api/intelligence/region  200  644ms
+  /api/intelligence/verdict  200  2302ms
+  /api/intelligence/intake  200  11026ms
+events       6  (4 status, 1 partial, 1 report, 0 error)
+prose        4,926 characters of model-written text
+truncation   none visible — the memo ends on a closed sentence
+cost         logged by the deployment, not served to the client:
+             `vercel logs <deployment>` -> `[cost] brief cost EUR ...`
+

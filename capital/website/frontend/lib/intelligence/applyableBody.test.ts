@@ -224,6 +224,47 @@ describe("checkBrief now fires FUND-7 on the brief that was rendered and read", 
   });
 });
 
+describe("BL-B1 — a bullet may not advise on a fund the founder cannot find", () => {
+  // THE RECORDED FAILURE, verbatim in shape. A real brief's third bullet gave
+  // this fund a verdict and a blocker and there was no such row; the rule did
+  // not fire, because it required the bullet to contain the fund's WHOLE
+  // corpus name and the writer wrote what a person calls it.
+  const PACTE = "PACTE Industrie - Parcours Accompagnement et Compétences pour la "
+    + "Transition Énergétique de l’Industrie";
+
+  it("catches the fund named by its lead segment, not its whole corpus title", () => {
+    const v = checkBrief(report({
+      bottomLine: [
+        "one",
+        "PACTE Industrie is open to you on paper, but ADEME's incentive-effect rule "
+        + "requires the aid application to precede the start of work.",
+        "three", "four",
+      ],
+    }), undefined, [REAL.vinnova, PACTE]);
+    expect(v.map((x) => x.ruleId)).toEqual(["BL-B1"]);
+    expect(v[0].detail).toContain("bullet 2");
+  });
+
+  it("says nothing about a fund that IS on the table", () => {
+    const v = checkBrief(report({
+      bottomLine: [`Start with ${REAL.vinnova}.`, "two", "three", "four"],
+    }), undefined, [REAL.vinnova, PACTE]);
+    expect(v).toEqual([]);
+  });
+
+  it("a published row's appended door does not hide it from the comparison", () => {
+    // `distinguishRowNames` may append "· via <body>" to a published name. The
+    // bullet repeats the head of the name, so both sides are compared on it --
+    // otherwise every disambiguated row would read as a fund that is not in
+    // the table.
+    const v = checkBrief(report({
+      institutions: [row({ institution: `${REAL.vinnova} · via Region Skåne` })],
+      bottomLine: [`Start with ${REAL.vinnova}.`, "two", "three", "four"],
+    }), undefined, [`${REAL.vinnova} · via Region Skåne`]);
+    expect(v).toEqual([]);
+  });
+});
+
 describe("FUND-5 is violated first by nothing being written", () => {
   it("catches an empty whyEligible, which the schema's `required` permits", () => {
     const v = checkBrief(report({ institutions: [row({ whyEligible: "" })] }));

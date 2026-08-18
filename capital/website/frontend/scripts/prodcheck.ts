@@ -238,7 +238,13 @@ async function main(): Promise<void> {
   const seen: Seen[] = [];
 
   console.log(rule("PRODCHECK — one founder, through the live deployment"));
-  console.log(`deployment   ${BASE}   (from data/guard_registry.json)`);
+  // WHERE THIS RAN, and how that was decided. A run record that says
+  // "from data/guard_registry.json" while pointing at a laptop is a false
+  // record of a deploy, which is the one thing a look at production must never
+  // be able to produce.
+  console.log(`deployment   ${BASE}   ${process.env.PRODCHECK_URL
+    ? "(PRODCHECK_URL — NOT the published deployment)"
+    : "(from data/guard_registry.json)"}`);
   console.log(`founder      ${row.name}  (${row.country}, sector ${row.sector ?? "—"})`);
   console.log(`answer key   ${setFile} — this company really won `
     + `${row.instrumentName ?? row.instrument}  [${row.instrument}]`);
