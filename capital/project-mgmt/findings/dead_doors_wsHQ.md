@@ -126,6 +126,9 @@ by nobody looking.
 Both runs are `split=holdout seed=20260806 n=897`, **draw fingerprint
 `13cb71cf3a1d1847`**, live Postgres, and there is no model anywhere in this
 ladder — so this is a paired comparison, not two runs put beside each other.
+Both sides are `7b125138` plus or minus this change alone; wsHR merged
+afterwards and moves `writer_cap` and below, so the absolute figures here are
+this change measured in isolation and not a claim about today's head.
 
 | stage | before | after | delta |
 |---|---|---|---|
@@ -242,14 +245,16 @@ is identical; only the code differs.
 
 ## 8. What the same run says that is NOT this workstream's
 
-Both were already recorded as defects 2 and 5 of `prodcheck_wsHP` and both are
-still live:
+The run was taken against `7b125138`, before wsHR merged, so it still shows
+wsHP's defects 2 and 5: row 3 renders as *"... 2024-2026 · `rnd  sa 111728
+region grand est`"*, and the bottom line says *"Start with the Grand Est
+regional scheme (`satr_fr_rnd__sa_111728`)"* — the writer echoing the id out of
+the label it was handed, into the founder's own prose.
 
-- Row 3 renders as *"... pour la période 2024-2026 · `rnd  sa 111728  region
-  grand est`"* — `distinguishRowNames`'s id-slug fallback, unchanged.
-- The bottom line says *"Start with the Grand Est regional scheme
-  (`satr_fr_rnd__sa_111728`)"*. The writer is now putting a raw instrument id
-  in the founder's own prose, which is a step worse than the label doing it.
+**wsHR has since fixed both** (`row_identity_wsHR.md`: 0 of 252 published rows
+reveal an id) and this branch is rebased onto it. Nothing here re-reports them
+as open; they are noted only so the run record above is read for what it is —
+this change measured in isolation, on the code that shipped the defect.
 
 ## Reproduce
 
