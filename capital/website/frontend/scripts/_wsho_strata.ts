@@ -151,7 +151,15 @@ import {
   partitionByOfferable, reattributeMissingAnswers, type RecallRow,
 } from "./recallSet";
 
-const OUT_DIR = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "indicative_wsHO");
+// ── WHERE THE ARTEFACT LANDS ───────────────────────────────────────────────
+// wsHO's own directory is the DEFAULT, so its reproduce line still reproduces
+// it byte for byte. A RE-READ of this instrument months later is a different
+// artefact and may not be written on top of the one it is compared against:
+// `OUT_ROOT` names the folder, `OUT_TAG` names the file inside it, and the paid
+// tape of the first run is therefore unreachable from the second.
+const OUT_DIR = path.join(
+  process.cwd(), "..", "..", "project-mgmt", "findings",
+  process.env.OUT_ROOT ?? "indicative_wsHO");
 
 const num = (v: string | undefined, d: number) =>
   (v !== undefined && v !== "" && Number.isFinite(Number(v)) ? Number(v) : d);
@@ -163,6 +171,12 @@ const SHOWN_ROWS = 6;
  *  computed on. Asserted so a silent change to the recall set cannot make this
  *  file's strata a partition of some other population. */
 const FUNNEL_DRAW = "13cb71cf3a1d1847";
+
+/** What `AGENT_SELECT_EFFORT` is when nobody sets it — `caps.ts`'s own default,
+ *  stated once so the report can say whether the run it is describing is the
+ *  product or an arm. Retyped here and nowhere else; `check_ws_scripts` has no
+ *  opinion on it, so it is pinned by the branch above being wrong out loud. */
+const SHIPPED_EFFORT: typeof THINK_EFFORT = "low";
 
 type Stratum = "R" | "C" | "D" | "U";
 
@@ -517,15 +531,29 @@ async function main() {
   p(`AGENT_SELECT_EFFORT ${THINK_EFFORT}      maxtok ${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}   clock ${TIMEOUT_BY_EFFORT[THINK_EFFORT]}ms`);
   p("```");
   p();
-  p(`**ONE lever is deliberately NOT the shipped default, and it is the only one.**`);
-  p("`AGENT_SELECT_EFFORT` ships as `low` (max_tokens 2,048, 40s clock). This run is");
-  p("at `medium`, because BOTH of its first two jobs are questions about `medium` and");
-  p("neither can be answered at `low`: `tokens_wsHI`'s EUR 0.0217-0.0483 spread is a");
-  p("`medium` price, and the ceiling wsHI raised to 34,816 — the one this run exists");
-  p("to exercise live for the first time — is `medium`'s. It is also wsGA's rung and");
-  p("wsHK's, so the cost figure composes with the only record that exists. Quoting a");
-  p("cost for the wrong rung is the wsGS failure and it is named here so it cannot");
-  p("happen quietly. What `low` costs at forty rows is NOT measured by this run.");
+  // ── THE EFFORT SENTENCE IS READ FROM THE RUN, NOT TYPED (wsHW) ──────────
+  // This paragraph was a fixed string saying "this run is at `medium`", and
+  // wsHO's own artefact printed it while running at `low` — the addendum had
+  // moved the rung and the report writer had not. A run that cannot state its
+  // own rung correctly cannot be composed with any other, and quoting a cost
+  // for the wrong rung is the wsGS failure exactly. So it is a branch on the
+  // constant now, and there is no sentence that can be true of one run and
+  // printed by another.
+  if (THINK_EFFORT === SHIPPED_EFFORT) {
+    p(`**EVERY LEVER ABOVE IS THE SHIPPED DEFAULT. Nothing was tuned for the measurement.**`);
+    p(`\`AGENT_SELECT_EFFORT\` is \`${THINK_EFFORT}\`, which is what production runs`);
+    p(`(max_tokens ${MAX_TOKENS_BY_EFFORT[THINK_EFFORT].toLocaleString("en-US")}, `
+      + `${(TIMEOUT_BY_EFFORT[THINK_EFFORT] / 1000).toFixed(0)}s clock). The cost, the ceiling and the`);
+    p(`ordering below are therefore the SHIPPED rung's and no other's.`);
+  } else {
+    p(`██ **\`AGENT_SELECT_EFFORT\` IS NOT THE SHIPPED DEFAULT.** It ships as`);
+    p(`\`${SHIPPED_EFFORT}\` (max_tokens ${MAX_TOKENS_BY_EFFORT[SHIPPED_EFFORT].toLocaleString("en-US")}, `
+      + `${(TIMEOUT_BY_EFFORT[SHIPPED_EFFORT] / 1000).toFixed(0)}s clock) and this run is at`);
+    p(`\`${THINK_EFFORT}\` (max_tokens ${MAX_TOKENS_BY_EFFORT[THINK_EFFORT].toLocaleString("en-US")}, `
+      + `${(TIMEOUT_BY_EFFORT[THINK_EFFORT] / 1000).toFixed(0)}s clock). Every figure below is that rung's`);
+    p(`and composes with nothing measured at another. Quoting a cost for the wrong`);
+    p(`rung is the wsGS failure and it is named here so it cannot happen quietly.`);
+  }
   p();
   p("```");
   p(`leak bar           ${crossRegimeOnly ? "cross_regime ONLY on paid calls (wsGA's stricter bar)" : "isDescribed (one_funnel's bar) — LOOSER"}`);
