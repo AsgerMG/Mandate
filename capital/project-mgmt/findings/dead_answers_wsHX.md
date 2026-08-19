@@ -164,6 +164,26 @@ Railway's builder went unhealthy at roughly 22:50 UTC and has not recovered:
            "Failed to stream build logs" on every deploy since 22:56
 ```
 
+**The weekly ETL is NOT off, and that is checked rather than assumed.** Railway
+runs the latest SUCCESSFUL deployment; a failed one does not replace it. Every
+deployment and the schedule baked into each:
+
+```
+00:07 UTC  INITIALIZING  cron '0 3 * * 0'  start railway_cron.py   the rollback
+23:37 UTC  FAILED        cron None         start sleep infinity
+23:09 UTC  FAILED        cron '0 3 * * 0'  start railway_cron.py
+22:56 UTC  FAILED        cron None         start sleep infinity
+22:44 UTC  SUCCESS       cron '0 3 * * 0'  start railway_cron.py   ← what runs
+22:01 UTC  FAILED        cron '0 3 * * 0'  start railway_cron.py   ← before I touched it
+```
+
+The service instance reads `0 3 * * 0` / `python3
+ETL/events/extract/railway_cron.py`, and the last deployment that succeeded
+bakes the same pair. Note the 22:01 failure: **the builder was already failing
+before this workstream deployed anything.** `verify_cron.py` will report red
+while the newest deployment is FAILED, and it is right to — that is a true
+statement about the latest deployment and not about what is scheduled.
+
 Every route to the volume in this repository begins with a deploy, so the
 upload cannot be attempted, let alone forced. **The union file is retained**
 and finishing is one command:
