@@ -60,9 +60,10 @@ python3 ETL/events/load/promote_to_record.py \
 **the union is BUILT and PROVEN and not yet uploaded.**
 9,763 gates, and all eleven other family tables hash byte-identical to the
 record it was built from. Railway's builder has failed every deploy since 22:50
-UTC (503s from its own API, build-log streaming down, four FAILED, one stuck 33
-minutes — including one failure at 22:01, before this workstream deployed
-anything), and every route to the volume begins with a deploy. **The weekly ETL
+UTC — **five consecutive failures**, 503 "no healthy upstream" from its own API,
+build-log streaming down, the last build failing after 29 minutes in
+INITIALIZING, and one failure at 22:01 before this workstream deployed
+anything, and every route to the volume begins with a deploy. **The weekly ETL
 is not off:** the last SUCCESSFUL deployment bakes `0 3 * * 0` and the real
 start command, and the service instance agrees. Finishing is one command once
 the builder is healthy — see `project-mgmt/findings/dead_answers_wsHX.md` §0.

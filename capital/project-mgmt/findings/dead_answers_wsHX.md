@@ -164,6 +164,7 @@ Railway's builder went unhealthy at roughly 22:50 UTC and has not recovered:
 22:56 UTC  FAILED        wake for the upload
 23:09 UTC  FAILED        verify_cron.py --deploy, the repair for the above
 23:37 UTC  FAILED        wake for the upload, second attempt (33 min INITIALIZING)
+00:07 UTC  FAILED        the rollback that wake() now fires itself (29 min)
            HTTP 503 "no healthy upstream" from the Railway API itself
            "Failed to stream build logs" on every deploy since 22:56
 ```
@@ -173,7 +174,7 @@ runs the latest SUCCESSFUL deployment; a failed one does not replace it. Every
 deployment and the schedule baked into each:
 
 ```
-00:07 UTC  INITIALIZING  cron '0 3 * * 0'  start railway_cron.py   the rollback
+00:07 UTC  FAILED        cron '0 3 * * 0'  start railway_cron.py   the rollback
 23:37 UTC  FAILED        cron None         start sleep infinity
 23:09 UTC  FAILED        cron '0 3 * * 0'  start railway_cron.py
 22:56 UTC  FAILED        cron None         start sleep infinity
@@ -183,9 +184,9 @@ deployment and the schedule baked into each:
 
 The service instance reads `0 3 * * 0` / `python3
 ETL/events/extract/railway_cron.py`, and the last deployment that succeeded
-bakes the same pair. The deploy still in flight at 00:36 UTC carries the same
-pair too, so it is correct whether it succeeds or fails. **No `sleep infinity`
-deployment is live and none can become live**: both of them FAILED. Note the 22:01 failure: **the builder was already failing
+bakes the same pair. **No `sleep infinity` deployment is live and none can
+become live**: both of them FAILED. Five consecutive builds failed between
+22:56 and 00:36 UTC, the last after 29 minutes in INITIALIZING. Note the 22:01 failure: **the builder was already failing
 before this workstream deployed anything.** `verify_cron.py` will report red
 while the newest deployment is FAILED, and it is right to — that is a true
 statement about the latest deployment and not about what is scheduled.
