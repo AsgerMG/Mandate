@@ -25,9 +25,11 @@ thing, in §1.
 any more.** `CHANNEL_BACKFILL` defaults to `on` (shortlist.ts:2094) and the
 backfill fills every free slot up to `MIN_CHANNELS_CONSIDERED = 7` from
 `blendedFit`, so an empty `fieldChannels` yields a pool of **exactly the same
-size**, differently composed. `fieldChannels` only *crowds out* the backfill
-when it exceeds the cap, which is **22 of 897 founders (2.5%)**. The live lever
-is `usedInField`, tier 1 of the row sort — and that half of the brief is right.
+size**, differently composed. A `fieldChannels` of size *s* leaves `7 - s` slots
+to the backfill, so it displaces rather than adds; it crowds the backfill out
+**entirely** only at `s >= 7`, which is **22 of 897 founders (2.5%)**. The live
+lever is `usedInField`, tier 1 of the row sort — and that half of the brief is
+right.
 
 **3. The tier this is all about is already measured to COST accuracy.**
 `shortlist.ts:3305-3311`, in the sort's own comment: the `usedInField` and fit
@@ -256,9 +258,10 @@ type SubsectorLabel =
 ```
 
 `CompetitorRecord.subsector` carries that instead of a string. Every call site
-must answer the third case, because a two-branch `switch` does not compile —
-and there are **five** such sites (pipeline.ts 1705, 1813, 1816; corpus.ts
-1921; and every harness through `door()`). Add a sector tomorrow and nothing
+must answer the third case, because a two-branch `switch` does not compile.
+There are **four** in `lib/` (corpus.ts 1921; pipeline.ts 1705, 1813, 1816) and
+roughly thirty harnesses reaching them through the same `door()` shape. Add a
+sector tomorrow and nothing
 changes; drain the backlog and a company migrates from `unclassified` to
 `specific` with no code edit; introduce a fourth label state and every consumer
 is asked about it on the next build. No sub-sector name appears anywhere.
