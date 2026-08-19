@@ -1,12 +1,12 @@
 # One funnel — every stage, one population, one denominator
 
 ```
-started            2026-08-18T22:14:33.518Z
-corpus             postgres instruments=1088 at 2026-08-18T22:14:34.015Z
+started            2026-08-19T16:14:25.298Z
+corpus             postgres instruments=1088 at 2026-08-19T16:14:25.878Z
 store              POSTGRES BY DECISION, not by which credentials loaded. It is the corpus a
                    founder's request reads; the committed snapshot is `hydrateDbInstruments`'s
                    degradation path, offers strictly fewer instruments, and a run that took it
-                   is REFUSED rather than labelled. observedAt 2026-08-18T22:14:34.015Z
+                   is REFUSED rather than labelled. observedAt 2026-08-19T16:14:25.878Z
 ranker: all 819 request(s) on EMBEDDING
 set                __recallSetDescribed.json  split=holdout  seed=20260806
 population         897 founder(s) — one per company, described, drawn BEFORE the offerability cut
@@ -17,7 +17,19 @@ leak bar           isDescribed — `own_project_title_leaks` excluded, exact / 8
                    cross-regime-only draw, which exists because a model reads
                    the query text and nothing here does.
 levers             pool=40 writer_cap=7 published_cap=7 top=5 select_depth=40 row_order=off award_term=oneside
+request stages     `npm run stages` against `runIntelligence`, stage by stage
+  discovering  ABSENT — `discoverAndResearch` is a paid web-search-grounded call the request path makes on every brief; this run passes `records: []`, so no web-found comparable's channels union into `fieldChannels` -- which seeds `codes` in `selectInstrumentRows` (pool membership) and sets `usedInField` (tier 1 of the row sort, above the entire score).
+  querying_db  REDUCED — `matchCompany` and `findPeersBySubsector` run, but the request path also matches the web-found names and, for a founder NOT in the corpus, takes the peer sub-sector from those matches. Here an unmatched founder gets no peers at all, and `fieldChannels` is empty for 34.3% of this population.
+  generating   ABSENT — No writer call is made. `orderMemoCandidates` is production's own cut, so the candidates handed to the writer are real; the rows the writer would publish out of them are not measured here and no figure below is a published order.
+  done         runs
 ```
+
+██ THE REQUEST PATH'S `discovering` STAGE IS ABSENT IN THIS RUN. `discoverAndResearch` is a paid web-search-grounded call the request path makes on every brief; this run passes `records: []`, so no web-found comparable's channels union into `fieldChannels` -- which seeds `codes` in `selectInstrumentRows` (pool membership) and sets `usedInField` (tier 1 of the row sort, above the entire score). Every number below is a measurement of a pipeline that DOES NOT HAVE that stage, not of the one a founder is served. Do not quote a figure from this run as end-to-end without saying so.
+
+██ THE REQUEST PATH'S `querying_db` STAGE IS REDUCED IN THIS RUN. `matchCompany` and `findPeersBySubsector` run, but the request path also matches the web-found names and, for a founder NOT in the corpus, takes the peer sub-sector from those matches. Here an unmatched founder gets no peers at all, and `fieldChannels` is empty for 34.3% of this population. Every number below is a measurement of a pipeline that runs that stage on less than the request path hands it, not of the one a founder is served. Do not quote a figure from this run as end-to-end without saying so.
+
+██ THE REQUEST PATH'S `generating` STAGE IS ABSENT IN THIS RUN. No writer call is made. `orderMemoCandidates` is production's own cut, so the candidates handed to the writer are real; the rows the writer would publish out of them are not measured here and no figure below is a published order. Every number below is a measurement of a pipeline that DOES NOT HAVE that stage, not of the one a founder is served. Do not quote a figure from this run as end-to-end without saying so.
+
 
 ██ NOT THE SHIPPED ORDER — this run ranked every founder's table with `AWARD_TERM=oneside` (shipped: `shipped`), an arm no founder receives. Every number below is a measurement of that arm, not of the product. Do not quote a row from this run beside a row from a shipped run without saying which is which.
 
@@ -49,7 +61,7 @@ WITHHELD  capitalSought                                             -  no leak-f
 ██ HELD BACK — organisationType is STAGED behind NEXT_PUBLIC_ORGANISATION_TYPE_ARM, which is not "on" — the control is not rendered and production never populates it. 356/897 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said. Switch NEXT_PUBLIC_ORGANISATION_TYPE_ARM on and re-measure to see what asking would cost or win; do not compare the two numbers without saying which is which.
 ██ HELD BACK — region was answered "FR", which the control never offers for this founder — production cannot produce that answer. 2/897 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said.
 
-Mean instrument table **86.4** rows, mean accessible pool **81.8** rows, over the 819 founders whose answer reached the founder stages.
+Mean instrument table **86.3** rows, mean accessible pool **81.8** rows, over the 819 founders whose answer reached the founder stages.
 
 `+/-` is the 95% binomial half-width on this run's own n. A move smaller than it
 is not a move.
@@ -62,12 +74,12 @@ is not a move.
 | ... and its openness could be CONFIRMED (the degradation policy) | 819 | 91.3% +/-1.8 | 0 | `unconfirmedOpen` — the degradation clause of the same filter |
 | ... and this founder's screen keeps it (country, capital, channel + leaf caps) | 798 | 89.0% +/-2.1 | -21 (2.3 pts) | `buildInstrumentTableHydrated` = `candidateInstrumentIds` |
 | ... and its encoded eligibility gates do not conclusively fail (accessiblePool) | 787 | 87.7% +/-2.1 | -11 (1.2 pts) | `accessiblePool` → `VER-BLOCKED` |
-| ... and it survives the cut to VERDICT_POOL (40 rows) | 666 | 74.2% +/-2.9 | -121 (13.5 pts) | `.slice(0, VERDICT_POOL)` |
-| ... and it survives the cut to the writer's candidates (7) | 373 | 41.6% +/-3.2 | -293 (32.7 pts) | `orderMemoCandidates().toWriter` |
+| ... and it survives the cut to VERDICT_POOL (40 rows) | 672 | 74.9% +/-2.8 | -115 (12.8 pts) | `.slice(0, VERDICT_POOL)` |
+| ... and it survives the cut to the writer's candidates (7) | 374 | 41.7% +/-3.2 | -298 (33.2 pts) | `orderMemoCandidates().toWriter` |
 | ... and the writer's own prose does not demote it behind the actionable rows | ? | ? | **UNMEASURED** | `isWatchOnly` in `assembleBriefRows` — needs the writer |
-| ... and it is one of the 7 rows the brief publishes | 373 | 41.6% +/-3.2 | 0 | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
-| ... and it is in the first 6 of them | 350 | 39.0% +/-3.2 | -23 (2.6 pts) | the first 6 rows of the same order, our own scoring |
-| ... and it is in the first 5 of them | 325 | 36.2% +/-3.1 | -25 (2.8 pts) | the first 5 rows of the same order, our own scoring |
+| ... and it is one of the 7 rows the brief publishes | 374 | 41.7% +/-3.2 | 0 | `order.slice(0, BRIEF_LIMITS.institutionsMax)` |
+| ... and it is in the first 6 of them | 349 | 38.9% +/-3.2 | -25 (2.8 pts) | the first 6 rows of the same order, our own scoring |
+| ... and it is in the first 5 of them | 324 | 36.1% +/-3.1 | -25 (2.8 pts) | the first 5 rows of the same order, our own scoring |
 | ... and the MODEL, which re-orders the 40 before the cuts below, still leaves it in the first 5 | ? | ? | **UNMEASURED** | `agentSelectMemoPool` → Anthropic, in `pipeline.ts` — a PERMUTATION of the 40, applied above the two cuts below it |
 
 ██ The 7, 6, 5-row cuts are rank within `toWriter`, and they assume `assembleBriefRows`
@@ -91,7 +103,7 @@ ranker  EXACT@5   50/98 = 51.0%
 ratio              1.111
 ```
 
-Applied to this run's own 325 founders at `top_5`, the model stage projects to **~361 founders (40.3% of the start)**.
+Applied to this run's own 324 founders at `top_5`, the model stage projects to **~360 founders (40.1% of the start)**.
 
 ██ ESTIMATED. ██ The ratio comes from 98 founders of a different draw, and that run's own McNemar put the difference inside its noise. Read it as a scale, not as a
 measurement, and do not quote the projected count without this sentence.
@@ -122,12 +134,12 @@ Reasons OVERLAP — a row can fail several — so these do not sum to the stage 
 | published figure | its population | this run's row | this run |
 |---|---|---|---:|
 | `check_recall_floor` pool **97.7%** | 300 tune pairs of __recallSetDescribed.json, answer already offerable, published 2026-08-18 | `founder_screen` given `liveness_confirmed` | 97.4% |
-| `check_recall_floor` EXACT@5 **26.7%** | same, and on the INSTANT SCREEN's six rows, not the memo's | `top_5` given `liveness_confirmed` | 39.7% |
+| `check_recall_floor` EXACT@5 **26.7%** | same, and on the INSTANT SCREEN's six rows, not the memo's | `top_5` given `liveness_confirmed` | 39.6% |
 | `poolRecallCurve` inPoolAtAll 96.0% | 821 held-out, answer already offerable | `gates_pass` given `liveness_confirmed` | 96.1% |
-| `poolRecallCurve` at K=40 81.1% | same | `pool_cut` given `liveness_confirmed` | 81.3% |
-| head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 48.8% |
+| `poolRecallCurve` at K=40 81.1% | same | `pool_cut` given `liveness_confirmed` | 82.1% |
+| head-to-head control EXACT@5 45.9% | 98, split=all, cross-regime only, in-pool | `top_5` given `pool_cut` | 48.2% |
 | head-to-head ranker EXACT@5 51.0% | same | `model` — UNMEASURED here | ? |
-| "we find the right fund 98% of the time" | no population — the sentence has none | `top_5` as a share of the START | 36.2% |
+| "we find the right fund 98% of the time" | no population — the sentence has none | `top_5` as a share of the START | 36.1% |
 
 The last row is the one the four figures were being read as. It is the only one a
 founder experiences: of every company that won a fund we hold, this share would have

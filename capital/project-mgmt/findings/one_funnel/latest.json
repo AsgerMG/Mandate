@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-18T22:14:33.518Z",
+ "startedAt": "2026-08-19T16:14:25.298Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-18T22:14:34.015Z",
+ "corpusObservedAt": "2026-08-19T16:14:25.878Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 819,
@@ -39,7 +39,7 @@
   "rows": 8,
   "share": 0.15789473684210525
  },
- "meanTableRows": 86.4,
+ "meanTableRows": 86.3,
  "meanAccessibleRows": 81.8,
  "stages": [
   {
@@ -99,18 +99,18 @@
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (40 rows)",
-   "remaining": 666,
-   "sharePct": 74.25,
-   "lost": 121,
+   "remaining": 672,
+   "sharePct": 74.92,
+   "lost": 115,
    "unmeasured": false,
-   "halfWidthPts": 2.86
+   "halfWidthPts": 2.84
   },
   {
    "id": "writer_cap",
    "question": "... and it survives the cut to the writer's candidates (7)",
-   "remaining": 373,
-   "sharePct": 41.58,
-   "lost": 293,
+   "remaining": 374,
+   "sharePct": 41.69,
+   "lost": 298,
    "unmeasured": false,
    "halfWidthPts": 3.23
   },
@@ -126,8 +126,8 @@
   {
    "id": "published",
    "question": "... and it is one of the 7 rows the brief publishes",
-   "remaining": 373,
-   "sharePct": 41.58,
+   "remaining": 374,
+   "sharePct": 41.69,
    "lost": 0,
    "unmeasured": false,
    "halfWidthPts": 3.23
@@ -135,20 +135,20 @@
   {
    "id": "top_6",
    "question": "... and it is in the first 6 of them",
-   "remaining": 350,
-   "sharePct": 39.02,
-   "lost": 23,
+   "remaining": 349,
+   "sharePct": 38.91,
+   "lost": 25,
    "unmeasured": false,
    "halfWidthPts": 3.19
   },
   {
    "id": "top_5",
    "question": "... and it is in the first 5 of them",
-   "remaining": 325,
-   "sharePct": 36.23,
+   "remaining": 324,
+   "sharePct": 36.12,
    "lost": 25,
    "unmeasured": false,
-   "halfWidthPts": 3.15
+   "halfWidthPts": 3.14
   },
   {
    "id": "model",
