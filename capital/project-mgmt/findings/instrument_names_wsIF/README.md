@@ -54,13 +54,17 @@ This is the correction that changes what the defect *is*. wsID's *"50% of
 founders see a pair the corpus itself calls the same thing"* is measured on the
 **served table**, and the table is not the page.
 
-`scripts/_wsif_reach.ts`, production's own build, pool and candidate order:
+`scripts/_wsif_reach.ts`, production's own build, pool and candidate order,
+**all 897 held-out founders**:
 
 ```
-TABLE  founders whose served table holds an unnamed pair     40.0%   (8/20 pilot)
-MENU   founders shown an unnamed pair in the 40-row menu      0.0%
-SIX    founders shown an unnamed pair in the published six    0.0%
+TABLE  founders whose served table holds an unnamed pair    48.2%   (432/897)
+MENU   founders shown an unnamed pair in the 40-row menu     0.0%   (0/897)
+SIX    founders shown an unnamed pair in the published six   0.0%   (0/897)
 ```
+
+48.2% independently reproduces wsID's 50% within two points, on the full
+population and by a different method. **And the next two lines are zero.**
 
 **Zero, on both.** `resolveNameCollisions` has already demoted every duplicate
 to the back of the table, behind every visible row, and the 40-row slice never
@@ -291,7 +295,7 @@ garantier`, `Internasjonale tilskuddsprogrammer`, taken byte-for-byte from
 | rows touched, step 2 | `funding_instruments` — **8 rows, in each of 2 stores** |
 | columns touched, step 2 | `name`, `name_source`, `name_basis`, `updated_at`. **Nothing else** — `capital_type`, every award statistic, `eligibility_text` and both application fields are untouched |
 | rows created | **zero**. `programme_name` is constant per source after the canonical mapping, so `programme_split` (`COUNT(DISTINCT programme_name) > 1`) does not fire. This is the assertion to re-check before applying |
-| founders reached | see §8 |
+| founders reached | **387 of 897 (43.1%)** gain a row in the forty-row menu, **155 (17.3%)** in the published six, and for **12 (1.3%)** the recovered row is the fund they won. Measured free on all 897, §8 |
 | what does NOT change | no row enters or leaves the corpus; no gate is touched (`eligibility_gates` untouched — wsIE and wsHX are in there and this stays out); no floor, tolerance or ceiling moves |
 
 ### Preconditions, verified read-only against live Postgres
@@ -326,9 +330,44 @@ to 20 by then, the guard goes **red**, which is the point.
 with every same-name leaf given a name of its own, mutated **in memory** and
 never written. Numbers in `wsif_reach_897.txt` beside this file.
 
-*(Filled in from the completed run; the pilot at n=20 read: menu gain 40.0% of
-founders / 20 rows, six gain 20.0% / 7 rows, and the gained row was the fund
-they won for 1 founder in 20.)*
+```
+TABLE     founders whose served table holds an unnamed pair       432 (48.2%)
+MENU      founders shown an unnamed pair in the 40-row menu         0 (0.0%)
+SIX       founders shown an unnamed pair in the published six       0 (0.0%)
+
+GAINED    founders whose menu gains a row the collapse demoted     387 (43.1%)   rows 848
+          ...and it is the fund they WON                            28 (3.1%)
+          founders whose SIX gains such a row                      155 (17.3%)   rows 211
+          ...and it is the fund they WON                            12 (1.3%)
+COST      arm B founders whose six holds >=2 rows of ONE class      59 (6.6%)
+          ...>=3 rows of one class                                  12 (1.3%)
+CHECK     arm B founders still holding an unseparable pair           0
+```
+
+**It moves the published six for 155 founders in 897 and wins twelve of them
+their fund.** Set beside wsID, which moved the six for 8 in 300 and won nobody:
+this is roughly six times the seat movement and it is **the first naming change
+in this repo that is not zero on the outcome**. Twelve founders is twelve
+founders, and it is 1.3%.
+
+Where the menu rows are, in arm A — and this is the shape of the work:
+
+```
+  83  NO  innovasjon norge - grants
+  63  IT  avviso pubblico ... campioni nazionali (SA.110595)
+  47  LV  aizdevumi siko (mikro), mazo un videjo ... (Altum)
+  46  FR  regime cadre exempte ... RDI 2024-2026 (SA.111723 rnd)
+  42  ES  cdti (spain)
+  29  FR  regime cadre exempte ... RDI 2024-2026 (SA.111723 equity)
+  16  FR  regime cadre exempte ... environnement (SA.111726)
+   9  ES  financiacion igape-pymes 2026
+   5  FR  bpifrance
+```
+
+**Norway is the largest single class and the SATR ministries are the largest
+group** (154 rows across four French and Italian classes). The two need
+different repairs and only the first is a rename, which is §3's point in
+numbers.
 
 **Two honest caveats, and the second is a cost.**
 
@@ -336,11 +375,13 @@ they won for 1 founder in 20.)*
   reads *Oppstartstilskudd* differently from *Innovasjon Norge* is not
   measurable without a paid run.
 * **Six names for six leaves of one funder lets that funder take seats the
-  collapse was accidentally rationing.** On the pilot, one Norwegian founder's
-  published six went from one Innovasjon Norge row to **four**. That is a real
-  regression in menu breadth and it is reported rather than assumed away — it is
-  the argument for option B or C in §5, and it is the reason this is a decision
-  and not a fix.
+  collapse was accidentally rationing.** After the rename **59 founders (6.6%)**
+  have two rows of one class in their published six and **12 (1.3%)** have three
+  or more. One Norwegian founder's six goes from one Innovasjon Norge row to
+  four. That is a real regression in menu breadth, it is reported rather than
+  assumed away, and it is the strongest argument for option B in §5: naming the
+  actual OFFER rather than the category would put four different Innovasjon
+  Norge products on that page instead of four rows of one category.
 
 ---
 
