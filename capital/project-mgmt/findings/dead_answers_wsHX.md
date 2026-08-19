@@ -397,10 +397,45 @@ because the thing we told ourselves they won is not a fund.**
   loaded next year from a register nobody here reads lands in a tier with no
   edit to the census. No fund, feed, country or source name appears in the test.
 
+## Verify
+
+```
+npx tsc --noEmit                                   clean
+npx vitest run                                     846 passed (62 files)
+npx tsx scripts/check_contracts.ts                 ok, 10 contracts, 105 rules
+npx tsx scripts/check_red_debt.ts                  ok — every check observed and owned
+python3 ETL/events/load/test_promotion_is_inserts_only.py   ok  (NEW)
+python3 ETL/lib/test_wake_rolls_back.py                     ok  (NEW)
+python3 ETL/events/load/test_overwrite_refusal.py           ok
+python3 ETL/events/load/test_overwrite_guard.py             ok
+GUARD_NO_PUBLISH=1 npx tsx scripts/check_corpus_census.ts   FAILED — unchanged
+```
+
+The census guard is red on DIVERGED / DRIFTED / SCHEMA / STALE, exactly as it
+was before this workstream, and for the reason this workstream could not close:
+the union is not on the volume. It is already owned in `check_red_debt` as
+*"site serves the ETL's corpus"*. **Note that it will stay red on DIVERGED even
+after the upload lands**, because it reads `corpus_census` ROWS and only a cron
+run writes one — the proof of the promotion is a re-read of the volume, not a
+green guard.
+
+**`npm run prodcheck` was NOT run, and the reason is that it would measure
+nothing.** It is required for job 1 because promoting the gates changes what the
+record holds — and the record is unchanged, because the upload did not land.
+Nothing on this branch is founder-facing (two Python modules, two Python tests,
+one free census script and documentation), the deployment serves `main`, and the
+product reads Postgres rather than the volume in any case. A paid run that
+cannot move is not a check. It belongs with the upload, and it is named in
+AWAITING_APPROVAL §2 as part of finishing it.
+
 ## Reproduce
 
 ```
 cd website/frontend
 npx tsx scripts/_wshx_dead_answers.ts          # the census, free
 ROWS=1 npx tsx scripts/_wshx_dead_answers.ts   # + every one of the 78 named
+
+python3 ETL/events/load/reconcile_stores.py --report record.sqlite local.sqlite
+python3 ETL/events/load/reconcile_stores.py --into record.sqlite --from local.sqlite \
+    --family instruments --table eligibility_gates --inserts-only --dry-run
 ```
