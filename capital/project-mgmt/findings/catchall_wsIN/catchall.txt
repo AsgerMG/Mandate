@@ -1,0 +1,182 @@
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [wsIN catch-all]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+set __recallSetDescribed.json  ·  897 holdout described founders, one per company
+won channel resolvable for 897/897
+
+1. WHICH LABELS ABSORB THE SHUT DOOR
+   door SHUT (fieldChannels empty)   308/897  (34.3%)
+     founder not in the corpus       24
+     founder matched, label refused  284
+       ...a REAL catch-all label     171   the classifier looked and said "too thin"
+       ...NO LABEL AT ALL            113   the classifier has not reached them
+
+   label                                      founders   corpus rows   eligible peers
+                                                         in bucket     if the rule let us look
+   other / other                                 86       30725        28956
+   semiconductors_electronics / (empty)          42           0            0
+   software_data_ai / (empty)                    25           0            0
+   (none) / (empty)                              22           0            0
+   software_data_ai / software_general           18        6727         6380
+   health_life_sciences / health_general         17        2833         1955
+   energy_cleantech / energy_general             13        3207         2935
+   energy_cleantech / (empty)                    13           0            0
+   semiconductors_electronics / electronics_general    11        1728         1626
+   industrial_manufacturing / industrial_general    11       10173         9676
+   defense_security / (empty)                    11           0            0
+   agrifood / agrifood_general                   10        4086         3823
+   defense_security / defense_general             2         244          212
+   space / space_general                          1         157          135
+   mobility_transport / mobility_general          1        1205         1123
+   materials_chemicals / materials_general        1         411          396
+
+   SPARSITY OR SUPPRESSION: `...because the sub-sector yielded no peers` is 0 in
+   wsIM's own output and 0 here. Not one founder's door is shut for want of a
+   peer. Every one is shut by `isGenericSubsector`, a rule, on a bucket that
+   holds peers -- the counts above are what it refuses to look at.
+
+2. WHAT A FALLBACK WOULD BUY, ON THE 284 THE RULE SHUTS OUT
+   PROMOTES  = won channel is in the set  -> the founder's own fund rises to tier 1
+   DEMOTES   = set is non-empty and the won channel is NOT in it -> the founder's
+               own fund falls BELOW every row the fallback promoted. Empty today,
+               so today it neither promotes nor demotes anybody.
+
+   fallback              fills      PROMOTES        DEMOTES     mean |set|
+   SECTOR_TOP            262/284   216/284   76.1%    46   16.2%   4.6
+   SECTOR_TOP_SPECIFIC   176/284   115/284   40.5%    61   21.5%   4.3
+   INTAKE_SECTOR         284/284   240/284   84.5%    44   15.5%   4.3
+   LIFT_THE_RULE         171/284   157/284   55.3%    14    4.9%   4.1
+
+   SECTOR_TOP           peers in the founder's own sector_top, any sub-sector
+   SECTOR_TOP_SPECIFIC  same, but peers whose OWN sub-sector is specific
+   INTAKE_SECTOR        peers in the sector the FOUNDER declared at intake
+   LIFT_THE_RULE        peers inside the catch-all bucket itself
+
+3. THE BAR: what the REAL door achieves where it is open (n=589)
+   SPECIFIC_SUBSECTOR    589/589   527/589   89.5%    62   10.5%   3.2
+   and what each FALLBACK scores on those SAME founders -- a held-out test of the
+   fallback against a door that works, on founders whose answer we know:
+   SECTOR_TOP            589/589   509/589   86.4%    80   13.6%   3.9
+   SECTOR_TOP_SPECIFIC   589/589   477/589   81.0%   112   19.0%   3.7
+   INTAKE_SECTOR         589/589   514/589   87.3%    75   12.7%   3.9
+   LIFT_THE_RULE         589/589   527/589   89.5%    62   10.5%   3.2
+
+4. IS THE HIT INFORMATIVE, OR IS IT JUST THE BASE RATE?
+   national_dev_banks        530  59.1%
+   state_aid_satr            186  20.7%
+   horizon_eu_pillar_ii       47  5.2%
+   horizon_eu_partnership     39  4.3%
+   eic                        24  2.7%
+   ipcei                      19  2.1%
+   innovation_fund            15  1.7%
+   eit                        11  1.2%
+   edf                        10  1.1%
+   eib                         8  0.9%
+   chips_ju                    8  0.9%
+
+   A CONSTANT ARM, for exactly that reason: the same score for a set that reads
+   nothing about the founder at all.
+   CONSTANT top-1           284/284   134/284   47.2%   150   52.8%   [national_dev_banks]
+   CONSTANT top-2           284/284   219/284   77.1%    65   22.9%   [national_dev_banks state_aid_satr]
+   CONSTANT top-3           284/284   240/284   84.5%    44   15.5%   [national_dev_banks state_aid_satr horizon_eu_pillar_ii]
+   CONSTANT top-4           284/284   252/284   88.7%    32   11.3%   [national_dev_banks state_aid_satr horizon_eu_pillar_ii horizon_eu_partnership]
+
+5. THE SAME FALLBACKS, ON THE TWO POPULATIONS SEPARATELY
+   -- REAL CATCH-ALL (n=171)
+      SECTOR_TOP            171/171   153/171   89.5%    18   10.5%
+      SECTOR_TOP_SPECIFIC    85/171    62/171   36.3%    23   13.5%
+      INTAKE_SECTOR         171/171   155/171   90.6%    16    9.4%
+      LIFT_THE_RULE         171/171   157/171   91.8%    14    8.2%
+   -- NO LABEL YET (n=113)
+      SECTOR_TOP             91/113    63/113   55.8%    28   24.8%
+      SECTOR_TOP_SPECIFIC    91/113    53/113   46.9%    38   33.6%
+      INTAKE_SECTOR         113/113    85/113   75.2%    28   24.8%
+      LIFT_THE_RULE           0/113     0/113    0.0%     0    0.0%
+   -- UNMATCHED (n=24)
+      SECTOR_TOP              0/24     0/24    0.0%     0    0.0%
+      SECTOR_TOP_SPECIFIC     0/24     0/24    0.0%     0    0.0%
+      INTAKE_SECTOR          24/24    21/24   87.5%     3   12.5%
+      LIFT_THE_RULE           0/24     0/24    0.0%     0    0.0%
+
+6. HOW MUCH OF THE FALLBACK IS ACTUALLY ABOUT THIS FOUNDER
+   fallback              distinct sets   modal set's share   modal set
+   SECTOR_TOP                  57            15.3%   edf horizon_eu_partnership horizon_eu_pillar_ii national_dev_banks state_aid_satr
+   SECTOR_TOP_SPECIFIC         40             6.8%   chips_ju horizon_eu_partnership horizon_eu_pillar_ii ipcei national_dev_banks state_aid_satr
+   INTAKE_SECTOR               58            15.8%   edf horizon_eu_partnership horizon_eu_pillar_ii national_dev_banks state_aid_satr
+   LIFT_THE_RULE               29            23.4%   edf horizon_eu_partnership horizon_eu_pillar_ii national_dev_banks state_aid_satr
+
+7. IF THE PENDING TIER-2 BACKLOG WERE DRAINED, HOW MANY DOORS OPEN?
+   yield estimated from the classifier's OWN rate on the companies it has
+   already reached in the same sector_top. An estimate, not a measurement.
+   sector_top                     founders   already-labelled in corpus   specific   expected opens
+   semiconductors_electronics        42                    4378      60.5%            25.4
+   software_data_ai                  25                   16428      59.0%            14.8
+   (none)                            22                       0       0.0%             0.0
+   energy_cleantech                  13                   23021      86.1%            11.2
+   defense_security                  11                     802      69.6%             7.7
+   expected doors opened by draining the backlog: 59 of 113
+   which would take the shut share from 34.3% to about 27.8%
+
+8. EVERY CANDIDATE AGAINST THE FREE COMPARATORS, PER POPULATION
+   -- REAL CATCH-ALL (n=171)
+      SECTOR_TOP           fills  171/171  promotes  89.5%  demotes  10.5%
+      SECTOR_TOP_SPECIFIC  fills   85/171  promotes  36.3%  demotes  13.5%
+      INTAKE_SECTOR        fills  171/171  promotes  90.6%  demotes   9.4%
+      LIFT_THE_RULE        fills  171/171  promotes  91.8%  demotes   8.2%
+      PRIOR top-3          fills  171/171  promotes  26.9%  demotes  73.1%
+      PRIOR top-4          fills  171/171  promotes  27.5%  demotes  72.5%
+      CONSTANT top-3       fills  171/171  promotes  93.6%  demotes   6.4%
+      CONSTANT top-4       fills  171/171  promotes  96.5%  demotes   3.5%
+   -- NO LABEL YET (n=113)
+      SECTOR_TOP           fills   91/113  promotes  55.8%  demotes  24.8%
+      SECTOR_TOP_SPECIFIC  fills   91/113  promotes  46.9%  demotes  33.6%
+      INTAKE_SECTOR        fills  113/113  promotes  75.2%  demotes  24.8%
+      LIFT_THE_RULE        fills    0/113  promotes   0.0%  demotes   0.0%
+      PRIOR top-3          fills  113/113  promotes  47.8%  demotes  52.2%
+      PRIOR top-4          fills  113/113  promotes  57.5%  demotes  42.5%
+      CONSTANT top-3       fills  113/113  promotes  70.8%  demotes  29.2%
+      CONSTANT top-4       fills  113/113  promotes  77.0%  demotes  23.0%
+   -- UNMATCHED (n=24)
+      SECTOR_TOP           fills    0/24  promotes   0.0%  demotes   0.0%
+      SECTOR_TOP_SPECIFIC  fills    0/24  promotes   0.0%  demotes   0.0%
+      INTAKE_SECTOR        fills   24/24  promotes  87.5%  demotes  12.5%
+      LIFT_THE_RULE        fills    0/24  promotes   0.0%  demotes   0.0%
+      PRIOR top-3          fills   24/24  promotes  50.0%  demotes  50.0%
+      PRIOR top-4          fills   24/24  promotes  50.0%  demotes  50.0%
+      CONSTANT top-3       fills   24/24  promotes  50.0%  demotes  50.0%
+      CONSTANT top-4       fills   24/24  promotes  66.7%  demotes  33.3%
+   -- ALL 284 SHUT-BY-RULE (n=284)
+      SECTOR_TOP           fills  262/284  promotes  76.1%  demotes  16.2%
+      SECTOR_TOP_SPECIFIC  fills  176/284  promotes  40.5%  demotes  21.5%
+      INTAKE_SECTOR        fills  284/284  promotes  84.5%  demotes  15.5%
+      LIFT_THE_RULE        fills  171/284  promotes  55.3%  demotes   4.9%
+      PRIOR top-3          fills  284/284  promotes  35.2%  demotes  64.8%
+      PRIOR top-4          fills  284/284  promotes  39.4%  demotes  60.6%
+      CONSTANT top-3       fills  284/284  promotes  84.5%  demotes  15.5%
+      CONSTANT top-4       fills  284/284  promotes  88.7%  demotes  11.3%
+   -- HELD OUT: door open (n=589)
+      SECTOR_TOP           fills  589/589  promotes  86.4%  demotes  13.6%
+      SECTOR_TOP_SPECIFIC  fills  589/589  promotes  81.0%  demotes  19.0%
+      INTAKE_SECTOR        fills  589/589  promotes  87.3%  demotes  12.7%
+      LIFT_THE_RULE        fills  589/589  promotes  89.5%  demotes  10.5%
+      PRIOR top-3          fills  589/589  promotes  24.6%  demotes  75.4%
+      PRIOR top-4          fills  589/589  promotes  27.7%  demotes  72.3%
+      CONSTANT top-3       fills  589/589  promotes  86.8%  demotes  13.2%
+      CONSTANT top-4       fills  589/589  promotes  90.7%  demotes   9.3%
+
+9. PAIRED: LIFT_THE_RULE vs the best free comparator, on the 171 it can serve
+   vs PRIOR top-3      lift only 120   PRIOR top-3 only   9   both  37   neither   5
+   vs PRIOR top-4      lift only 120   PRIOR top-4 only  10   both  37   neither   4
+   vs CONSTANT top-3   lift only   5   CONSTANT top-3 only   8   both 152   neither   6
+
+10. THE INTAKE SECTOR AGAINST THE CORPUS LABEL
+   matched founders where they AGREE   823
+   ...where they DIFFER               28
+   ...corpus has no sector_top at all 22
+     +ATLANTIC ASSOCIACAO PARA UM LABORATORIO COLABORATIVO DO ATLANTICO corpus=space intake=other
+     ABSOLICON SOLAR COLLECTOR AB corpus=energy_cleantech intake=other
+     ADDITIVE MANUFACTURING SOLUTIONS LTD corpus=industrial_manufacturing intake=other
+     AIRBORNE COMPOSITES corpus=industrial_manufacturing intake=other
+     Airbus corpus=energy_cleantech intake=defense_security
+     ALGINOR corpus=agrifood intake=other
+   of the 86 founders labelled other/other, the intake sector is a
+   SPECIFIC sector for 0 of them
