@@ -649,21 +649,50 @@ export const USEFUL_DESCRIPTION_CHARS = 60;
 /** Request body posted to /api/intelligence. */
 export interface IntelligenceRequest {
   company: string;
-  sector?: string;
+  // ── `sector` REMOVED (wsIK) ─────────────────────────────────────────────
+  // A top-level `sector?: string`, read by /api/intelligence and
+  // /api/intelligence/intake off the request body, sent by `basePayload()`
+  // never. The founder DOES answer sector — on the first screen, into
+  // `eligibility.sector` — and that answer reaches every model-facing block
+  // through `intakeFactLines`, which `check_answer_in_prompt` holds to the
+  // property. So this was a second, unreachable copy of a live field: its two
+  // consumers (`scopingProfileBlock`'s "Sector:" line and the comparable-
+  // company search's) emitted the empty string on every request ever served.
   country?: string;
   description?: string;
-  /** How the founder describes the company (deep-tech breakthrough, applied
-   *  innovation, application-layer software, services). Free text — re-orders the
-   *  instrument shortlist far more than sector does. */
+  /** How the company reads on the four-point tech-depth scale (deep-tech
+   *  breakthrough, applied innovation, application-layer software, services).
+   *  Re-orders the instrument shortlist far more than sector does.
+   *
+   *  NOT AN INPUT. The first screen stopped asking on 2026-07-26 and the two
+   *  routes that still read `body.companyType` off the request stopped in wsIK,
+   *  so nothing outside the pipeline can set it: `runIntelligence` resolves it
+   *  from `profileSignal.techDepthRead` — the model's read of the founder's own
+   *  description — and every consumer downstream reads that one resolution.
+   *  Declared here rather than in a second type because `knownFacts` and the
+   *  prompt builders take a `Pick<IntelligenceRequest, ...>` of it. */
   companyType?: string;
   /** Capital types the founder wants, from CAPITAL_OPTIONS. Empty = no preference
    *  (treat as "show everything"). Filters and ranks the instrument shortlist. */
   capitalSought?: string[];
-  /** Countries where the founder wants to RAISE public capital (full English
-   *  names). May differ from the HQ country — an Irish company can target
-   *  German, Italian or French public capital. Empty = home market + EU-wide.
-   *  Steers peer preference, the funder map and the landscape slices. */
-  targetMarkets?: string[];
+  // ── `targetMarkets` REMOVED (wsIK) ──────────────────────────────────────
+  // "Countries where the founder wants to RAISE public capital." The first
+  // screen never had a control for it and `basePayload()` never sent it, so on
+  // every request this product has served it was `undefined`. All three routes
+  // read it anyway, which made it a field only a harness could fill — and
+  // forty-odd of them filled it with the founder's own country, which is the
+  // value that changes nothing.
+  //
+  // Its two effects, separated because only one was inert: `founderCountryList`
+  // returned the explicit list instead of the country union, measured IDENTICAL
+  // on 7,095 of 7,095 recall rows and on all 24 bench founders; and
+  // `eligibilityContext`/`knownFacts` put a "Target markets for public capital:
+  // X" line into the model's context that no founder's request could produce.
+  //
+  // `entityCountries` is the live carrier of "which countries' funds may I
+  // see", it is asked on the first screen, and `withIncorporationCountry` folds
+  // the HQ country into it. See founderCountryList for why a future "where do
+  // you want to raise" must union rather than override.
   // ── `clarifications` REMOVED (wsFT) ─────────────────────────────────────
   // "Answers to the tailored intake questions (phase 1), folded into the memo
   // context." It was the FIRST implementation of the follow-up round, and the

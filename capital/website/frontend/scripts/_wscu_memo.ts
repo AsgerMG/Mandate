@@ -189,7 +189,7 @@ async function main() {
     const hydrated = await buildInstrumentTableHydrated({
       fieldChannels,
       founderCountries: founderCountryList(
-        f.country, f.opts.targetMarkets, f.eligibility.entityCountries),
+        f.country, f.eligibility.entityCountries),
       capitalSought: f.opts.capitalSought,
       description: f.opts.description,
       semantic,

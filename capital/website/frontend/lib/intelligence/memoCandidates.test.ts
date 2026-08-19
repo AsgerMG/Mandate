@@ -74,7 +74,7 @@ function order(rows: InstrumentRow[], over: Partial<MemoCandidateInput> = {}) {
     instrumentTable: rows,
     req: {
       company: "TestCo", country: "Iceland", description: "a test company",
-      capitalSought: ["grant"], targetMarkets: ["Iceland"], eligibility: ANSWERS,
+      capitalSought: ["grant"], eligibility: ANSWERS,
     } as IntelligenceRequest,
     records: [], dbPeers: [], eligibilityScreen: [],
     log: new ExclusionLog(),

@@ -416,7 +416,7 @@ async function main() {
     const hydrated = await buildInstrumentTableHydrated({
       fieldChannels: new Set<string>(dbPeers.flatMap((r) => r.channels)),
       founderCountries: founderCountryList(
-        f.country, f.opts.targetMarkets, f.eligibility.entityCountries),
+        f.country, f.eligibility.entityCountries),
       capitalSought: f.opts.capitalSought,
       description: f.opts.description,
       semantic,
@@ -445,7 +445,7 @@ async function main() {
       const poolIds = pool.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
       return orderMemoCandidates({
         instrumentTable: pool,
-        req: { ...req, targetMarkets: undefined } as never,
+        req: { ...req, } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),
         log: l,

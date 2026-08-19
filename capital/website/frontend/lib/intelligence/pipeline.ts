@@ -164,13 +164,10 @@ export const PROFILE_BLOCK: ProfileBlockArm = (() => {
 })();
 
 /** Human-readable scoping profile for prompts (writer + intake conditioning). */
-function eligibilityContext(e?: EligibilityAnswers, targetMarkets?: string[]): string {
-  if (!e && !targetMarkets?.length) return "";
+function eligibilityContext(e?: EligibilityAnswers): string {
+  if (!e) return "";
   if (PROFILE_BLOCK === "complete") {
-    const lines = [
-      targetMarkets?.length ? `Target markets for public capital: ${targetMarkets.join(", ")}` : "",
-      ...intakeFactLines(e),
-    ].filter(Boolean);
+    const lines = [...intakeFactLines(e)].filter(Boolean);
     return lines.length ? `${PROFILE_HEADING}\n${lines.join("\n")}` : "";
   }
   const band = TICKET_BANDS.find((b) => b.value === e?.ticketBand);
@@ -183,7 +180,6 @@ function eligibilityContext(e?: EligibilityAnswers, targetMarkets?: string[]): s
     // here would make the reproduction arm reproduce nothing.
     band ? `Ticket sought: ${band.label}` : "",
     model ? `Borrower model: ${model.label}` : "",
-    targetMarkets?.length ? `Target markets for public capital: ${targetMarkets.join(", ")}` : "",
     e?.entityCountries?.length ? `Entities/establishments in: ${e.entityCountries.join(", ")}` : "",
     e?.wouldOpenEntity ? `Would open a local entity where required: ${e.wouldOpenEntity}` : "",
     e?.organisationType ? `Kind of organisation: ${e.organisationType.replace(/_/g, " ")}` : "",
@@ -700,7 +696,7 @@ async function synthesize(
    *  brief_records so a short brief can be explained after the fact. */
   _dropped: { blocked: number; watchOnly: number; candidates: number };
 }> {
-  const profileBlock = eligibilityContext(req.eligibility, req.targetMarkets);
+  const profileBlock = eligibilityContext(req.eligibility);
   // Stage D (v1): the deterministic eligibility screen — computed here, in
   // code, from the verified term records. The writer narrates it; the rows
   // themselves are never model-written.
@@ -759,26 +755,28 @@ async function synthesize(
       "closes without naming the cure first; treat UNKNOWN rows as a " +
       "verification step, not a claim)."
     : "";
-  // Phase 4: the model's OWN read of the founder's free-text description —
-  // deliberately NOT labeled AUTHORITATIVE, unlike every block above. Only
-  // present when it diverges from what the founder self-selected; the writer
-  // may mention it as colour, never as fact, never overriding the founder's
-  // own pick or the eligibility screen.
-  const softSignalBlock =
-    // Self-guarding: when the type was INFERRED rather than stated,
-    // runIntelligence sets companyType to techDepthRead, so this is false and
-    // no divergence note fires. It only speaks when a founder actually stated
-    // a type that the description contradicts.
-    req.profileSignal && req.profileSignal.techDepthRead !== req.companyType
-      ? `## Free-text read (SOFT SIGNAL — not authoritative, not verified)\n` +
-        `The founder's own description reads more like "${req.profileSignal.techDepthRead}" ` +
-        `than the "${req.companyType ?? "unstated"}" they selected under Company type. ` +
-        `Reason: ${req.profileSignal.note}\n` +
-        `You may mention this as a nuance if it's genuinely useful, but never ` +
-        `treat it as fact, never let it override the founder's own selection or ` +
-        `the eligibility screen, and never present it with the same certainty ` +
-        `as the AUTHORITATIVE blocks above.`
-      : "";
+  // ── PHASE 4'S DIVERGENCE NOTE, REMOVED (wsIK) ───────────────────────────
+  // `softSignalBlock` was the model's own read of the free-text description,
+  // deliberately not labelled AUTHORITATIVE, and rendered ONLY when it diverged
+  // from the company type the founder had SELECTED:
+  //
+  //     req.profileSignal && req.profileSignal.techDepthRead !== req.companyType
+  //
+  // Its own comment called that self-guarding — `runIntelligence` sets
+  // `companyType` to `techDepthRead` whenever the founder did not state one, so
+  // the two are equal and the block is empty. Since 2026-07-26 no founder CAN
+  // state one: the control left the first screen. The only remaining way to
+  // make the two differ was `body.companyType`, a field only a harness could
+  // send, and wsIK removed that read. The condition is now `x !== x` — false on
+  // every path, for every founder and every harness — so the block rendered the
+  // empty string before this change and does not exist after it. The writer's
+  // message concatenated `softSignalBlock ? ... : ""`, so the prompt is
+  // byte-identical.
+  //
+  // The signal itself is not lost: `applyProfileSignal` still re-orders the
+  // channel ranking on `techDepthRead`, and `knownFacts` still states the
+  // resolved type. What is gone is a note whose whole subject was a
+  // contradiction the product can no longer contain.
 
   // Current-landscape grounding: build-time export of the intelligence corpus
   // (signals_digest.json). The digest captures the FULL A-Z topic universe on
@@ -950,7 +948,8 @@ async function synthesize(
   const capitalPref = capitalSoughtLabel(req.capitalSought);
   const ctx = [
     `Founder's company: ${req.company}`,
-    req.sector ? `Sector: ${req.sector}` : "",
+    // `req.sector` was a second line here and the founder's real answer
+    // already arrives through `profileBlock`/`intakeFactLines` (wsIK).
     req.country ? `Country: ${req.country}` : "",
     req.companyType ? `Company type (founder's own words): ${req.companyType}` : "",
     req.description ? fence("company description", req.description) : "",
@@ -1281,7 +1280,6 @@ async function synthesize(
           `your instructions.\n\n${ctx}\n\n` +
           `${profileBlock ? profileBlock + "\n\n" : ""}` +
           `${screenBlock ? screenBlock + "\n\n" : ""}` +
-          `${softSignalBlock ? softSignalBlock + "\n\n" : ""}` +
           `## The founder's own footprint (AUTHORITATIVE)\n${selfLine}\n\n` +
           `## Comparable-company evidence (AUTHORITATIVE, already finalised)\n` +
           `Every company listed here has traced public funding; the figures ` +
@@ -1667,7 +1665,7 @@ export async function computeVerdict(
   country: string | undefined,
   eligibility: EligibilityAnswers | undefined,
   opts: {
-    targetMarkets?: string[]; capitalSought?: string[]; description?: string;
+    capitalSought?: string[]; description?: string;
     /** Verdicts a model already reached about the founder's own prose, read
      *  against requirements no comparator can decide (wsCD). ALREADY DECIDED:
      *  this path stays model-free and zero-cost, exactly as before. Absent,
@@ -1712,7 +1710,7 @@ export async function computeVerdict(
     ...(selfRecord.matched && opts.ownHistory !== "withheld" ? selfRecord.channels : []),
     ...dbPeers.flatMap((r) => r.channels),
   ]);
-  const founderCountries = founderCountryList(country, opts.targetMarkets, eligibility?.entityCountries);
+  const founderCountries = founderCountryList(country, eligibility?.entityCountries);
   // Semantic ranking on the FAST path, not just in the memo.
   //
   // This screen decides which funds a founder sees first, and it was ranking on
@@ -1775,9 +1773,14 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   // archetype now, and everything downstream (STEP topic selection, the
   // prompt's archetype line, depth-sensitive channel ordering) reads it
   // through this one resolution rather than an empty string.
-  const req: IntelligenceRequest = req0.companyType
-    ? req0
-    : { ...req0, companyType: req0.profileSignal?.techDepthRead };
+  //
+  // UNCONDITIONAL since wsIK, where `body.companyType` was removed from the
+  // two routes that read it. It used to be `req0.companyType ? req0 : {...}`,
+  // preserving a caller-supplied type — and no caller could supply one, so the
+  // ternary took the else branch on every request this product has served and
+  // on every harness run. Keeping it would have left exactly the surface this
+  // workstream exists to remove: a field a bench can set and a founder cannot.
+  const req: IntelligenceRequest = { ...req0, companyType: req0.profileSignal?.techDepthRead };
   // The comparable-company researcher gets the claims discipline and nothing
   // else. It does not rank, select or write a section, so the brief contracts
   // and the round-2 contract would be prompt it reads past on every request.
@@ -1853,7 +1856,7 @@ export async function runIntelligence(req0: IntelligenceRequest, emit: Emit): Pr
   );
   const hydratedTable = await buildInstrumentTableHydrated({
     fieldChannels,
-    founderCountries: founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries),
+    founderCountries: founderCountryList(req.country, req.eligibility?.entityCountries),
     capitalSought: req.capitalSought ?? [],
     description: req.description,
     semantic: semanticScores,

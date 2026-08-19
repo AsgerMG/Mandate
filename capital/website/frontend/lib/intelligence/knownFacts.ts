@@ -157,7 +157,7 @@ function consequenceLines(e?: EligibilityAnswers): string[] {
  * while the planner introduces the block as what it must not re-ask.
  */
 export function knownFacts(
-  req: Pick<IntelligenceRequest, "company" | "country" | "description" | "companyType" | "targetMarkets">,
+  req: Pick<IntelligenceRequest, "company" | "country" | "description" | "companyType">,
   e?: EligibilityAnswers,
   heading = "## What the founder has already told us (AUTHORITATIVE)",
 ): string {
@@ -165,9 +165,6 @@ export function knownFacts(
     req.company ? `Company: ${req.company}` : "",
     req.country ? `Incorporated in: ${req.country}` : "",
     req.companyType ? `Self-described type: ${req.companyType}` : "",
-    // Not an EligibilityAnswers field: it is a request-level fact, so it
-    // cannot come from the property above and is stated here.
-    req.targetMarkets?.length ? `Target markets for public capital: ${req.targetMarkets.join(", ")}` : "",
     ...intakeFactLines(e),
     ...consequenceLines(e),
   ].filter(Boolean);

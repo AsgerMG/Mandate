@@ -116,7 +116,7 @@ async function menuPass() {
     const semantic = await semanticFundMatch(a.description);
     const hydrated = await buildInstrumentTableHydrated({
       fieldChannels: new Set<string>(),
-      founderCountries: founderCountryList(a.country, undefined, answers.entityCountries),
+      founderCountries: founderCountryList(a.country, answers.entityCountries),
       capitalSought: [],
       description: a.description,
       semantic,
@@ -215,7 +215,7 @@ async function countryPass() {
     const semantic = await semanticFundMatch("Wearable cardiac monitoring device with regulatory clearance pending");
     const hydrated = await buildInstrumentTableHydrated({
       fieldChannels: new Set<string>(),
-      founderCountries: founderCountryList(country, undefined, [country]),
+      founderCountries: founderCountryList(country, [country]),
       capitalSought: [], description: "Wearable cardiac monitoring device with regulatory clearance pending", semantic,
       ...tableInputFromAnswers(answers), log,
     } as never);

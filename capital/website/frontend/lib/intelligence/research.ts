@@ -86,7 +86,16 @@ export async function discoverAndResearch(
 ): Promise<CompetitorIntel[]> {
   const ctx = [
     `Company: ${req.company}`,
-    req.sector ? `Sector: ${req.sector}` : "",
+    // ── NO INTAKE ANSWER REACHES THIS PROMPT, AND NOW IT SAYS SO ──────────
+    // `req.sector ? \`Sector: ...\`` was here. The route read `body.sector`,
+    // the panel never sent it, so the line rendered empty on every request
+    // this product has served and its removal is byte-identical (wsIK).
+    // What that exposes rather than fixes: `ctx` is built from the request's
+    // top-level fields only, so the comparable-company search has never been
+    // told the founder's sector, ticket, stage or use of funds — the answers
+    // sit in `req.eligibility` and nothing here reads them. Wiring
+    // `intakeFactLines(req.eligibility)` in would change what this paid stage
+    // searches for, so it is a measured change and not a tidy-up.
     req.country ? `Country: ${req.country}` : "",
     req.companyType ? `Company type: ${req.companyType}` : "",
     req.description ? fence("company description", req.description) : "",

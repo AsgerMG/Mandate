@@ -48,7 +48,7 @@ async function main() {
           borrowerModel: "operating", ticketBand: band, consortium: "yes",
           useOfFunds: ["industrial_research", "experimental_development"],
         } as never, {
-          targetMarkets: [country], capitalSought: ["grant", "loan"],
+          capitalSought: ["grant", "loan"],
           description: "We develop and commercialise software, data and AI products. "
             + "We are seeking public funding for research and development work.",
         } as never);

@@ -132,7 +132,7 @@ async function main() {
         ...dbPeers.flatMap((r) => r.channels),
       ]),
       founderCountries: founderCountryList(
-        c.country, undefined, (eligibility as { entityCountries?: string[] }).entityCountries),
+        c.country, (eligibility as { entityCountries?: string[] }).entityCountries),
       capitalSought: ["grant", "loan"],
       description: c.description,
       semantic,

@@ -98,7 +98,7 @@ async function main() {
     const log = new ExclusionLog();
     const table = await P.buildInstrumentTableHydrated({
       fieldChannels: new Set<string>(),
-      founderCountries: P.founderCountryList(t.country, [t.country], [t.country]),
+      founderCountries: P.founderCountryList(t.country, [t.country]),
       capitalSought: ["grant", "loan"],
       description: t.description,
       semantic: await semanticFundMatch(t.description),
@@ -121,7 +121,7 @@ async function main() {
     const { ordered, toWriter, assessments } = orderMemoCandidates({
       instrumentTable: pool,
       req: { company: t.company, country: t.country, description: t.description,
-             capitalSought: ["grant", "loan"], targetMarkets: [t.country],
+             capitalSought: ["grant", "loan"],
              eligibility: el } as never,
       records: [], dbPeers: [],
       eligibilityScreen: evaluateEligibility(el, poolIds),

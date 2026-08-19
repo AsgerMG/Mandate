@@ -19,7 +19,6 @@ import {
   sanitizeEligibility,
   withIncorporationCountry,
   sanitizeInstrumentIds,
-  sanitizeTargetMarkets,
   sanitizeFreeText,
 } from "@/lib/intelligence/sanitize";
 import {
@@ -106,14 +105,17 @@ export async function POST(request: NextRequest) {
   await hydrateGatesFor(candidateIds);
   const eligibility = withIncorporationCountry(
     sanitizeEligibility(body.eligibility), body.country?.trim());
+  // ── THREE READS REMOVED (wsIK) ──────────────────────────────────────────
+  // `body.sector`, `body.companyType` and `body.targetMarkets`. `basePayload()`
+  // sends none of them, so all three were `undefined` on every request and only
+  // a harness could fill them. `sector` is already here inside `eligibility`;
+  // `companyType` is resolved from the profile signal in `runIntelligence` and
+  // is not an input; `targetMarkets` is gone from the request entirely.
   const req = {
     company: body.company.trim(),
-    sector: body.sector?.trim() || undefined,
     country: body.country?.trim() || undefined,
     description: sanitizeFreeText(body.description),
-    companyType: body.companyType?.trim() || undefined,
     capitalSought: sanitizeCapitalSought(body.capitalSought),
-    targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
     eligibility,
   };
 

@@ -64,7 +64,7 @@ async function rank(t: Pair, description: string | undefined) {
     // for why a constant here is what keeps the objective signal leak-free.
     useOfFunds: ["industrial_research", "experimental_development"],
   } as never, {
-    targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+    capitalSought: ["grant", "loan"],
     description,
   } as never);
 }

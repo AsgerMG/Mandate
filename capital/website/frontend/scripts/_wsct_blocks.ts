@@ -138,14 +138,14 @@ async function main() {
     } as never;
     const description = t.description || t.selfDescription || undefined;
     const opts = {
-      targetMarkets: [t.country], capitalSought: a.capitalSought, description,
+      capitalSought: a.capitalSought, description,
     };
 
     const semantic = await semanticFundMatch(description ?? "");
     const log = new ExclusionLog();
     const hydrated = await buildInstrumentTableHydrated({
       fieldChannels: new Set<string>(),
-      founderCountries: founderCountryList(t.country, opts.targetMarkets, [t.country]),
+      founderCountries: founderCountryList(t.country, [t.country]),
       capitalSought: a.capitalSought,
       description,
       semantic,

@@ -332,10 +332,11 @@ async function main() {
       // select, folded into entityCountries server-side by
       // withIncorporationCountry. Mirrored here, or the probe would hold the
       // founder's country fixed while varying entityCountries and conclude
-      // that the country answer changes nothing. targetMarkets is left empty
-      // for the same reason: it would re-add the country under test.
+      // that the country answer changes nothing. (`targetMarkets` used to be
+      // left empty here for the same reason — it would have re-added the
+      // country under test. The field is gone, wsIK.)
       founderCountries: founderCountryList(
-        answers?.entityCountries?.[0] ?? p.country, [], answers?.entityCountries),
+        answers?.entityCountries?.[0] ?? p.country, answers?.entityCountries),
       capitalSought: [...p.capitalSought],
       description: p.description,
       semantic: sem,

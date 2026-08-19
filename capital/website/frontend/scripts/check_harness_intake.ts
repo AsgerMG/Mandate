@@ -47,6 +47,8 @@
 import { readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 
+import { stripCommentsAndStrings } from "../lib/intelligence/__sourceScan";
+
 import {
   ALL_INTAKE_FIELDS, ANONYMOUS_FOUNDER, ASKABLE_FIELDS, INTAKE_SOURCE,
   founderIntake, founderPolicyFromEnv,
@@ -59,31 +61,19 @@ const SCRIPTS = path.join(process.cwd(), "scripts");
 /** The intake keys a harness must never write itself. `capitalSought` is not a
  *  field of `EligibilityAnswers` — it is a `computeVerdict` option — and it is
  *  the one that did the most damage, so it is added explicitly rather than
- *  inherited. `targetMarkets` and `description` are the caller's query, not the
- *  founder's answers, and stay out. */
+ *  inherited. `description` is the caller's query, not the founder's answers,
+ *  and stays out. `targetMarkets` was named here as the other exclusion and no
+ *  longer exists: wsIK removed the field from the request, from all three
+ *  routes and from `founderCountryList`, because it was one only a harness
+ *  could send. `check_request_surface.ts` is the rule that generalises it. */
 const GUARDED_KEYS: readonly string[] = [...ALL_INTAKE_FIELDS, "capitalSought"];
 
 /** Comments and string bodies removed, so a key named inside a doc block or a
- *  message cannot be mistaken for one being passed. Crude on purpose: it
- *  over-strips rather than under-strips, and the direction of that error is the
- *  safe one for a guard that must not cry wolf. */
-export function strip(src: string): string {
-  let out = "";
-  let i = 0;
-  const n = src.length;
-  while (i < n) {
-    const c = src[i], d = src[i + 1];
-    if (c === "/" && d === "/") { while (i < n && src[i] !== "\n") i++; continue; }
-    if (c === "/" && d === "*") { i += 2; while (i < n && !(src[i] === "*" && src[i + 1] === "/")) i++; i += 2; continue; }
-    if (c === '"' || c === "'" || c === "`") {
-      const q = c; i++;
-      while (i < n && src[i] !== q) { if (src[i] === "\\") i++; i++; }
-      i++; out += '""'; continue;
-    }
-    out += c; i++;
-  }
-  return out;
-}
+ *  message cannot be mistaken for one being passed. ONE copy, shared with the
+ *  route-surface guard, which had the same need and a private regex that read
+ *  comments as code — see `__sourceScan.ts` for what that cost. Re-exported
+ *  because this file's own self-test names it. */
+export const strip = stripCommentsAndStrings;
 
 /** ── What counts as "writing an intake", and why it is not "names a key" ──
  *

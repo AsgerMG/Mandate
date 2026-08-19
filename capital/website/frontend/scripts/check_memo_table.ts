@@ -103,7 +103,7 @@ async function main() {
         ...(selfRecord.matched ? selfRecord.channels : []),
         ...dbPeers.flatMap((r) => r.channels),
       ]),
-      founderCountries: founderCountryList(c.country, [c.country], [c.country]),
+      founderCountries: founderCountryList(c.country, [c.country]),
       capitalSought: ["grant", "loan"],
       description: c.description,
       semantic,
@@ -124,7 +124,7 @@ async function main() {
     const { toWriter } = orderMemoCandidates({
       instrumentTable,
       req: { company: c.company, country: c.country, description: c.description,
-             capitalSought: ["grant", "loan"], targetMarkets: [c.country], eligibility } as never,
+             capitalSought: ["grant", "loan"], eligibility } as never,
       records: [], dbPeers,
       eligibilityScreen: evaluateEligibility(eligibility, poolIds.slice(0, 6)),
       log,

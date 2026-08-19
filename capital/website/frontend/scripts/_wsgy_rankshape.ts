@@ -370,7 +370,7 @@ async function main() {
       // from THE SAME first country the table was built with; two derivations
       // of one founder's country list would be two priors under one name.
       const founderCountries = founderCountryList(
-        f.country, f.opts.targetMarkets, f.eligibility.entityCountries);
+        f.country, f.eligibility.entityCountries);
       const hydrated = await buildInstrumentTableHydrated({
         fieldChannels: new Set<string>(dbPeers.flatMap((r) => r.channels)),
         founderCountries,
@@ -448,7 +448,6 @@ async function main() {
           req: {
             company: f.company, country: f.country, description: f.opts.description,
             capitalSought: f.opts.capitalSought, eligibility: f.eligibility,
-            targetMarkets: undefined,
           } as never,
           records: [], dbPeers,
           eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),

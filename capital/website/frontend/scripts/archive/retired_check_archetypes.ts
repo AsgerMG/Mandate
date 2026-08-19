@@ -29,7 +29,6 @@ async function main() {
   for (const a of ARCHETYPES) {
     const answers = archetypeAnswers(a) as never;
     const v = await computeVerdict("TestCo", a.country, answers, {
-      targetMarkets: [a.country],
       capitalSought: ["grant", "loan"],
       description: a.description,
     });

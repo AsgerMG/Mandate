@@ -2,7 +2,7 @@ import { NextRequest } from "next/server";
 import { corpusProvenance, hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { computeVerdict } from "@/lib/intelligence/pipeline";
 import { sanitizeCapitalSought, sanitizeEligibility, sanitizeFreeText,
-  withIncorporationCountry, sanitizeTargetMarkets,
+  withIncorporationCountry,
 } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest } from "@/lib/intelligence/types";
 
@@ -52,7 +52,9 @@ export async function POST(request: NextRequest) {
       body.country?.trim() || undefined,
       withIncorporationCountry(sanitizeEligibility(body.eligibility), body.country?.trim()),
       {
-        targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
+        // `targetMarkets: sanitizeTargetMarkets(body.targetMarkets)` was here
+        // (wsIK). The panel never sent the field, so this read was `undefined`
+        // on every request and only a harness could fill it.
         capitalSought: sanitizeCapitalSought(body.capitalSought),
         // Drives thematic leaf selection (relevance.ts), so the shortlist the
         // adaptive round is grounded in already reflects what they do.

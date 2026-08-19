@@ -152,7 +152,7 @@ async function main() {
         borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
         useOfFunds: ["industrial_research", "experimental_development"],
       } as never, {
-        targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+        capitalSought: ["grant", "loan"],
         description: t.description || t.selfDescription || undefined,
         log,
       } as never);

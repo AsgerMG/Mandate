@@ -176,7 +176,7 @@ async function main() {
       useOfFunds: ["industrial_research", "experimental_development"],
       region: a.region,
     } as never, {
-      targetMarkets: [t.country], capitalSought: a.capitalSought,
+      capitalSought: a.capitalSought,
       description: t.description || t.selfDescription || undefined,
       log: new ExclusionLog(),
     } as never);

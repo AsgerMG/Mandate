@@ -147,7 +147,7 @@ async function main() {
         ...(selfRecord.matched ? selfRecord.channels : []),
         ...dbPeers.flatMap((r) => r.channels),
       ]),
-      founderCountries: founderCountryList(c.country, undefined, eligibility.entityCountries),
+      founderCountries: founderCountryList(c.country, eligibility.entityCountries),
       capitalSought: req.capitalSought,
       description: c.description,
       semantic,
@@ -175,7 +175,7 @@ async function main() {
       const l = new ExclusionLog();
       const o = orderMemoCandidates({
         instrumentTable: pool,
-        req: { ...req, targetMarkets: undefined } as never,
+        req: { ...req, } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(eligibility as never, ids.slice(0, DISPLAY_CAP)),
         log: l,

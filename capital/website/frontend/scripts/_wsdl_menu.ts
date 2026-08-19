@@ -85,7 +85,7 @@ async function main() {
   const semantic = await semanticFundMatch(a.description);
   const hydrated = await buildInstrumentTableHydrated({
     fieldChannels: new Set<string>(),
-    founderCountries: founderCountryList(a.country, undefined, eligibility.entityCountries),
+    founderCountries: founderCountryList(a.country, eligibility.entityCountries),
     capitalSought: [],
     description: a.description,
     semantic,

@@ -622,6 +622,10 @@
    "tier": "report",
    "protects": "Whether a replay harness answered the intake on the founder's behalf. It grades a measurement, not an output -- but it is why every EXACT@5 this repo published had usedInField false on every row."
   },
+  "a route reads only what a founder can send": {
+   "tier": "founder",
+   "protects": "An answer the founder gives that no route reads, or a field a route reads that no screen sends. The first is the sector defect -- the taxonomy split left sanitize.ts validating against the retired vocabulary and every real request had its sector discarded for a day. The second is its mirror: /api/intelligence read body.sector, body.companyType and body.targetMarkets and the panel sent none of them, so forty-odd harnesses could set an input the founder could not."
+  },
   "peer prior canary": {
    "tier": "report",
    "protects": "A regenerated peer prior cost ten graded cases. It watches a measurement input; the owner reads it."

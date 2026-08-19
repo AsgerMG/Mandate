@@ -564,7 +564,7 @@ export function orderMemoCandidates(input: MemoCandidateInput): MemoCandidateOrd
     // company was being handed an Estonian equity scheme at rank 2, which the
     // writer then had to apologise for in the row itself.
     new Set(
-      founderCountryList(req.country, req.targetMarkets, req.eligibility?.entityCountries)
+      founderCountryList(req.country, req.eligibility?.entityCountries)
         .map((c) => toIso2(c))
         .filter(Boolean)
         .map((c) => c.toUpperCase()),

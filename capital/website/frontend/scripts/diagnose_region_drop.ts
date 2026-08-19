@@ -100,7 +100,7 @@ async function main() {
         useOfFunds: ["industrial_research", "experimental_development"],
         region,
       } as never, {
-        targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+        capitalSought: ["grant", "loan"],
         description: t.description || t.selfDescription || undefined,
       } as never);
       return (v.instrumentTable ?? []) as any[];

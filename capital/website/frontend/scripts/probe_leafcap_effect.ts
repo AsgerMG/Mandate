@@ -38,7 +38,7 @@ async function main() {
       borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
       useOfFunds: ["industrial_research", "experimental_development"],
     } as never, {
-      targetMarkets: [country], capitalSought: ["grant", "loan"],
+      capitalSought: ["grant", "loan"],
       description: "We build software for industrial automation.", log,
     } as never);
     const counts = log.countsByRule();

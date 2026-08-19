@@ -14,15 +14,22 @@ requireCredentials("memo_harness",
 import { runIntelligence } from "./lib/intelligence/pipeline";
 import type { ProgressEvent } from "./lib/intelligence/types";
 
+// EXACTLY WHAT A FOUNDER'S OWN REQUEST CARRIES, and no more (wsIK).
+// This carried `sector: "artificial intelligence"` (never a value the sector
+// select offers), `companyType: "Deep-tech breakthrough"` (a control that left
+// the first screen in July) and `targetMarkets: ["France", "Germany"]` — the
+// only site in the whole tree where a harness's country list genuinely differed
+// from the one production would have built for the same founder, since every
+// other one passed the founder's own country and collapsed to the same array.
+// It publishes no figure, which is why it survived: it is a scratch runner for
+// looking at a brief. That is also exactly how a harness ends up grading a
+// product nobody uses. `scripts/check_request_surface.ts` judges this file now.
 const req = {
   company: "Mistral AI",
-  sector: "artificial intelligence",
   country: "France",
-  companyType: "Deep-tech breakthrough",
   description:
     "Frontier AI lab building open and commercial large language models; scaling training compute and European data-centre capacity. Seeking EUR 20M+ of public or public-anchored capital for industrial-scale compute build-out.",
   capitalSought: ["loan", "equity", "grant"],
-  targetMarkets: ["France", "Germany"],
   eligibility: {
     ticketBand: "b15m_50m",
     borrowerModel: "operating",
