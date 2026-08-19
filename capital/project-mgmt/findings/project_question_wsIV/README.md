@@ -90,14 +90,30 @@ requests on EMBEDDING. Full dump: `ceiling_holdout_n300.txt`.
 | answer (first 90 chars of their own words) | 76 | 76.7% | 9.0% | **23.0%** | 61.0% |
 | real (the whole description) | 522 | 77.3% | 8.7% | **23.7%** | 62.7% |
 
-Paired against the founder who wrote nothing: template **+1.7pp**, answer
-**+3.3pp**, real **+4.0pp**. A short answer recovers **83%** of everything the
-whole description is worth — which is the useful half of this result: the
-feature does not need a paragraph, and the seat it costs buys most of what the
-box would have.
+Paired against the founder who wrote nothing:
 
-**The unwelcome half is the size of the gap.** The whole description is worth
-+4.0pp here, not the ~20 points this workstream was briefed with. See §5.
+| arm | lift | discordant | McNemar |
+|---|---:|---|---|
+| template | +1.7pp | 33 (19 for, 14 against) | z=0.87, p≈0.38 |
+| answer | +3.3pp | 42 (26 for, 16 against) | z=1.54, p≈0.12 |
+| real | +4.0pp | 44 (28 for, 16 against) | z=1.81, p≈0.07 |
+
+**NOT ONE OF THESE SEPARATES FROM THE BLANK ARM AT n=300, and the headline is
+that sentence rather than any of the three numbers.** What the run does
+establish is a shape, and the shape is consistent across four arms and three
+metrics: the lift is monotone in how much text the founder gives, and the
+90-character answer sits at 83% of what the whole 522-character description is
+worth. If the effect is real, one short answer captures most of it and the
+question does not need a paragraph. That ratio is a ratio of two small
+differences and carries all their noise; it is a design input, not a figure to
+quote.
+
+**And the gap itself is +4.0pp, not the ~20 points this workstream was briefed
+with.** That is the more consequential reading. §5 shows the briefed number
+does not reproduce on the recall set that ships, by re-running the script it
+came from — so the ceiling on this feature is genuinely small, and the brief's
+premise was resting on a retired measurement rather than on this arm being
+weak.
 
 ### What this CANNOT measure, stated plainly
 
@@ -148,16 +164,58 @@ about the selector*, not about what screen two asks. All twelve of its bench
 companies also carried a full description, so the population Pool P exists for
 was not in it.
 
-**And one number in the product is measured on a retired set.** The intake's
-founder-facing copy tells a founder a description finds the right fund "about
-half as often", citing 48.9% vs 21.3% from
-`scripts/measure_description_lift.ts` "on the enriched holdout".
-`__recallSetEnriched.json` is in `RETIRED_RECALL_SETS` — "still 172 nameable
-instruments and the unrepaired sibling attribution". On the ACTIVE set the
-template arm reproduces exactly (21.3%) and the real arm does not come close
-(23.7%). The template figure being identical while the real one collapses is
-what a nameability problem looks like, not noise. **Not changed here**: it is a
-founder-facing claim, and `wsIT` is on the funnel.
+**And the number the product SHOWS A FOUNDER does not reproduce on the recall
+set that ships.** This is the most consequential thing this workstream found
+and it was not what it was looking for.
+
+The intake tells a founder, in the box, that a description finds the right fund
+"about half as often" without one. The contract comment above that copy names
+its source exactly: `scripts/measure_description_lift.ts`, EXACT@5 **48.9%**
+real vs **21.3%** template, "on the enriched holdout". `__recallSetEnriched.json`
+is listed in `RETIRED_RECALL_SETS`.
+
+Re-run **unmodified**, on the ACTIVE set (`__recallSetDescribed.json`), holdout,
+n=300 — dump in `description_lift_active_set_n300.txt`:
+
+```
+  arm        in pool            EXACT@1            EXACT@5            REGIME@5
+  real        232/300 (77.3%)     26/300 (8.7%)     71/300 (23.7%)    188/300 (62.7%)
+  template    224/300 (74.7%)     22/300 (7.3%)     64/300 (21.3%)    186/300 (62.0%)
+
+  EXACT@5 lift from the founder's own words: +2.3pp
+  discordant 39 (23 for the description, 16 against)
+```
+
+**The template arm reproduces to the decimal (21.3%). The real arm is 23.7%,
+not 48.9%.** A lift of +2.3pp, not +27.6pp. Independently reproduced by
+`_wsiv_answer_lift.ts`, which shares no code path with it beyond
+`computeVerdict`.
+
+It is a population change, not a ranker regression, and the script's own
+by-source table says which population:
+
+| where the description came from | n | EXACT@5 real vs template |
+|---|---:|---|
+| `own_award_text` | 147 | 29.3% vs 25.9% = **+3.4pp** |
+| `cross_regime_summary` | 113 | 15.0% vs 17.7% = **−2.7pp** |
+| `own_project_title` | 31 | 32.3% vs 16.1% = **+16.1pp** |
+| `cross_regime_title` | 9 | 11.1% vs 11.1% = +0.0pp |
+
+`__recallSetDescribed.json` built 887 of its 1,898 descriptions by recovering
+text from **another regime's** award of the same company, and those rows are
+NEGATIVE: a description of a different project is worse than the canned sector
+sentence. The retired sets were made almost entirely of the `own_project_title`
+rows, which still carry +16.1pp — and which are also the most leak-adjacent
+cell in the table, being the title of the very project the fund funded, on
+n=31.
+
+**What this does and does not say.** It does NOT say a founder's own words are
+worthless: the two own-text cells are both positive and the largest sub-
+population is +3.4pp. It says the headline pair on the intake screen is
+measured on a set that has been retired, and that the blended figure on the set
+that ships is small. **Not changed here** — it is founder-facing copy, the
+constant it derives from is a floor this workstream may not move, and `wsIT` is
+on the funnel this week.
 
 ## 6. What is still unknown
 
