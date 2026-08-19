@@ -146,7 +146,7 @@ import { evaluateEligibility } from "../lib/intelligence/eligibility";
 import { productionCannotPopulate, unofferableValues } from "../lib/intelligence/fieldReach";
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
-import { POOL_BLEND } from "../lib/intelligence/poolBlend";
+import { POOL_BLEND, parsePoolBlend } from "../lib/intelligence/poolBlend";
 import {
   type HarnessStages, renderStageDeclaration, stageAbsent, stageReduced, stageRuns,
 } from "../lib/intelligence/stageDeclaration";
@@ -156,7 +156,7 @@ import {
 } from "../lib/intelligence/semantic";
 import {
   applyProfileSignal, AWARD_TERM, buildInstrumentTableHydrated, founderCountryList,
-  tableInputFromAnswers,
+  parseAwardTerm, tableInputFromAnswers,
 } from "../lib/intelligence/shortlist";
 import type { InstrumentRow } from "../lib/intelligence/types";
 import { founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy } from "./founderIntake";
@@ -253,9 +253,28 @@ const rowCutId = (n: number) => (n === PUBLISH_CAP ? "published" : `top_${n}`);
  *  `value` is the SHIPPED CONSTANT, never `process.env`. A variable that never
  *  reached the run would otherwise label the report with the arm somebody
  *  meant, which is the exact false null this file's header was written about. */
+//  ── `shipped` IS READ FROM THE PARSER, NEVER TYPED ────────────────────────
+//
+//  It was a literal, and on 2026-08-17 the owner flipped `AWARD_TERM`'s default
+//  to `oneside` (`shortlist.ts:610`). The literal here still said `shipped`, so
+//  EVERY RUN SINCE printed a full-width "NOT THE SHIPPED ORDER — an arm no
+//  founder receives" banner ABOUT THE SHIPPED ORDER. A workstream reading the
+//  2026-08-19 funnel discounted a correct 38.91% as an arm measurement because
+//  of it.
+//
+//  A false warning is cheaper than a false number and still expensive: this one
+//  made a real figure unquotable for two days. So the default is obtained the
+//  only way that cannot drift — by asking the parser what it returns for no
+//  environment variable at all. Flip a default and this follows it in the same
+//  commit, with no edit here.
+//
+//  The test for an unseen arm is the same question: can you write its `shipped`
+//  without calling its parser? If yes, it does not belong in this table.
 const RANKING_ARMS: { label: string; env: string; value: string; shipped: string }[] = [
-  { label: "row_order", env: "POOL_BLEND", value: POOL_BLEND, shipped: "off" },
-  { label: "award_term", env: "AWARD_TERM", value: AWARD_TERM, shipped: "shipped" },
+  { label: "row_order", env: "POOL_BLEND", value: POOL_BLEND,
+    shipped: parsePoolBlend(undefined) },
+  { label: "award_term", env: "AWARD_TERM", value: AWARD_TERM,
+    shipped: parseAwardTerm(undefined) },
 ];
 
 const num = (v: string | undefined, d: number) =>
