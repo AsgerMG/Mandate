@@ -253,6 +253,19 @@ eligibility:
 	# Audit BEFORE publishing, and quarantine rules their own recipients
 	# contradict, so a wrong rule cannot reach a founder's brief.
 	python3 ETL/terms/audit_encoding_vs_reality.py --quarantine
+	# A VERIFIED CORRECTION MUST SURVIVE THIS TARGET. Every step above can write
+	# `value_spec`, and one of them did: `encode_gates.py encode` selects
+	# `filter AND value_spec IS NULL`, which is the exact shape of a quarantine,
+	# so the default pass re-derived comparators over 22 rows across four
+	# hand-verified correction sets -- the oldest six days old and never
+	# noticed, because the revert is partial and silent and moves no total.
+	# Here rather than in CI because the evidence is committed but the corpus is
+	# not, and here rather than after the publish because migrate_to_postgres.py
+	# below TRUNCATEs eligibility_gates and reloads it from SQLite: this is the
+	# last moment at which a reverted correction is still only local. FAILS the
+	# target. The population is re-derived from project-mgmt/evidence/ on every
+	# run, so the next correction set is covered the day it lands.
+	python3 ETL/terms/check_corrections_applied.py
 	# Refuse to publish a corpus that got worse. Every serious defect this
 	# week was silent -- a thinner corpus still produces a confident brief --
 	# so the coverage measurement is made load-bearing here, BEFORE the export
@@ -266,6 +279,11 @@ eligibility:
 	# gates on every request; check_theme_index.ts fails the build if stale.
 	cd website/frontend && npx tsx scripts/emit_theme_index.ts
 	python3 ETL/terms/migrate_to_postgres.py
+	# The same assertion against the store the brief actually reads, now that it
+	# has been written. Asked of BOTH stores rather than of one and assumed of
+	# the other, for the reason apply_gate_encoding_corrections.py already
+	# gives: they do not hold the same gate table.
+	python3 ETL/terms/check_corrections_applied.py --postgres
 	python3 ETL/terms/embed_eligibility.py run
 	python3 ETL/terms/build_instrument_profiles.py classify-titles
 	python3 ETL/terms/build_instrument_profiles.py run --rebuild

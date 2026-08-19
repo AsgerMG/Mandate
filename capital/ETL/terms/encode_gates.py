@@ -550,6 +550,12 @@ def cmd_triage(args) -> None:
     conn = connect()
     where, params = tier_clause(args.include_classified)
     extra = "" if args.rebuild else " AND gate_role IS NULL"
+    # Same exemption as encode and retriage: this UPDATE writes
+    # encoding_method='llm_triage', so an unguarded --rebuild erases every
+    # withdrawal record in the corpus and the encoder's exclusion then sees
+    # nothing to exclude. The default pass is already safe (a quarantined gate
+    # has a gate_role); --rebuild was not.
+    extra += " AND (encoding_method IS NULL OR encoding_method != 'quarantined')"
     rows = conn.execute(
         f"""SELECT id, gate_family, intake_field, requirement, value
             FROM eligibility_gates WHERE {where}{extra}
@@ -616,11 +622,17 @@ def cmd_retriage(args) -> None:
     prompt, run again on the gates that landed in limbo.
     """
     conn = connect()
+    # A WITHDRAWN GATE IS NOT IN LIMBO, IT IS DECIDED. "filter with no spec" is
+    # also the exact shape of every quarantine, so without this clause the pass
+    # re-judges 186 gates whose comparator was deliberately removed and stamps
+    # encoding_method='llm_retriage' over the record that says so -- which is
+    # how a withdrawal stops being visible to the encoder's own exclusion.
     rows = conn.execute(
         """SELECT id, gate_family, intake_field, requirement, value
              FROM eligibility_gates
             WHERE gate_role = 'filter'
               AND (value_spec IS NULL OR value_spec = '')
+              AND (encoding_method IS NULL OR encoding_method != 'quarantined')
             ORDER BY instrument_id, gate_key""").fetchall()
     if args.limit:
         rows = rows[: args.limit]
@@ -810,16 +822,40 @@ fund the founder actually qualifies for. Return ONLY the JSON object."""
 def cmd_encode(args) -> None:
     conn = connect()
     where, params = tier_clause(args.include_classified)
+    # ── A WITHDRAWN COMPARATOR IS NOT A MISSING ONE ────────────────────────
+    # This clause is unconditional, and it is the only thing that makes a
+    # correction survive a pipeline pass. It used to live inside the --fresh
+    # branch below, where it protected nothing: a quarantined gate has
+    # value_spec NULL BY DEFINITION, so the default pass -- the one
+    # `make eligibility` actually runs -- selected every quarantine in the
+    # corpus and paid a model to invent the comparator that had just been
+    # deliberately withdrawn. Measured 2026-08-19: 159 of the 186 quarantined
+    # gates were in the default pass's working set, and it silently reverted
+    # 22 rows across four hand-verified correction sets, the oldest six days
+    # old. `--rebuild` was worse still: it cleared every spec first, so the
+    # exclusion could not even be expressed.
+    #
+    # The property, stated so it holds for a gate nobody has seen yet: a gate
+    # whose comparator was withdrawn by a decision outside this encoder must
+    # not be handed back to this encoder, whatever flags it is run with. The
+    # withdrawal is recorded as encoding_method='quarantined' and its test is
+    # `check_corrections_applied.py`, which re-derives the population from the
+    # evidence directory rather than naming a gate.
+    not_withdrawn = (" AND (encoding_method IS NULL OR"
+                     " encoding_method != 'quarantined')")
     if args.rebuild:
         # Clear first. Without this, a gate the re-run now (correctly) refuses
         # to encode keeps its previous, wrong spec — so a rebuild could never
-        # actually remove a bad encoding, only add to it.
+        # actually remove a bad encoding, only add to it. A withdrawn gate is
+        # exempt: there is nothing to clear (its spec is already NULL) and
+        # clearing would be the first half of re-encoding it.
         cleared = conn.execute(
-            f"UPDATE eligibility_gates SET value_spec=NULL WHERE {where} AND value_spec IS NOT NULL",
-            params).rowcount
+            f"UPDATE eligibility_gates SET value_spec=NULL WHERE {where} "
+            f"AND value_spec IS NOT NULL{not_withdrawn}", params).rowcount
         conn.commit()
         print(f"cleared {cleared:,} existing specs (--rebuild)")
     extra = "" if args.rebuild else " AND value_spec IS NULL"
+    extra += not_withdrawn
     # A gate with value_spec NULL is not the same as a gate never tried: most
     # of them have been through the encoder, which looked at the requirement
     # and correctly refused ("certain sectors are excluded, including..." names
@@ -827,12 +863,7 @@ def cmd_encode(args) -> None:
     # restricts the pass to gates triage has seen but encode never has, which
     # is the only set where new spend can produce new coverage.
     if getattr(args, "fresh", False):
-        # 'quarantined' is excluded alongside 'llm_encode': those specs were
-        # cleared by audit_encoding_vs_reality.py because their own recipients
-        # contradicted them, and re-deriving from the same text would just put
-        # the same wrong rule back.
-        extra += (" AND (encoding_method IS NULL OR"
-                  " encoding_method NOT IN ('llm_encode', 'quarantined'))")
+        extra += " AND (encoding_method IS NULL OR encoding_method != 'llm_encode')"
     # Scoping a pass to one country is what lets a workstream encode the gates
     # it just cut without also paying for, and silently changing, every other
     # market's pending set in the middle of its own before/after measurement.
