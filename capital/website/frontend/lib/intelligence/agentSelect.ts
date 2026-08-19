@@ -2251,6 +2251,13 @@ ${tail}`;
  * re-gated, so `candidateInstrumentIds` is unchanged as a SET and the pool
  * metric cannot move.
  *
+ * ONE EXCEPTION, and it is a lever rather than a path: under
+ * `AGENT_SELECT_ABSTAIN=confirmed` (wsIJ, default `off`) a reply whose first
+ * choice is the first row we offered publishes the INPUT ORDER instead of the
+ * model's. Still a permutation, still the same set — but the sentence above
+ * would otherwise be false for that founder, and a comment that is no longer
+ * true is this file's most expensive kind of defect.
+ *
  * Returns the input untouched on every failure path.
  */
 export async function agentSelectRows(
