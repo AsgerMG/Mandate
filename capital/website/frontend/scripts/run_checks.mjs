@@ -255,6 +255,21 @@ const CHECKS = [
   // happen to draw the group.
   ["a cut title still tells two funds apart",
    ["npx", "tsx", "scripts/check_row_titles_distinct.ts"]],
+  // ── WHY THIS WAS INVISIBLE, WHICH IS THE POINT ────────────────────────────
+  // It ran in ci.yml and NOWHERE ELSE. So `check_red_debt` -- the thing that
+  // exists precisely because nobody can see CI -- reported "every check is
+  // observed, fresh, and green or owned" while this one was failing on every
+  // push to main and mailing the owner each time. A check the debt register
+  // cannot see is the exact defect the debt register was built for, and it had
+  // one of its own.
+  //
+  // It is red right now, on four rows, and legitimately: two Bpifrance and two
+  // Innovasjon Norge instruments are shown to a founder under the name of the
+  // body that grants them. That is a decision the owner holds, not a bug to
+  // paper over -- the check's own message forbids both escapes (delete the row,
+  // invent a label). It stays red and OWNED until he answers.
+  ["a row is not named after the body that grants it",
+   ["npx", "tsx", "scripts/check_body_named_rows.ts"]],
   // Hermetic Python: the register's own words for each aid-instrument code,
   // our decision about what kind of capital that is, and the committed corpus
   // snapshot. It sits here rather than with the other corpus checks because

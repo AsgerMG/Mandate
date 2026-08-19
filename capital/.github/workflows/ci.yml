@@ -8,6 +8,20 @@ on:
   pull_request:
   push:
     branches: [main]
+    # ── WHY THESE PATHS DO NOT RUN CI ──────────────────────────────────────
+    # On 2026-08-19 fifteen merges landed on main and every one spent the full
+    # matrix, on an account with 2,000 Actions minutes a month. A large share of
+    # those pushes touched nothing but the dashboard, a findings write-up or a
+    # planning note -- files no check in this workflow reads.
+    #
+    # Scoped by what the checks READ, not by what looks unimportant:
+    # `project-mgmt/` is written BY the checks (check_status.json) and read only
+    # by check_red_debt, which runs inside vitest and is therefore covered by the
+    # next code push. `data/guard_registry.json` is the one file under a skipped
+    # path that checks DO read, so it is excluded from the skip below.
+    paths-ignore:
+      - 'project-mgmt/**'
+      - '**/*.md'
 
 concurrency:
   group: ci-${{ github.ref }}

@@ -37,7 +37,17 @@ import time
 from difflib import SequenceMatcher
 from pathlib import Path
 
-import pdfplumber
+# ── WHY THIS IMPORT IS LAZY ────────────────────────────────────────────────
+# `classify.py` imports IF_SOURCE_SECTOR from this module -- a dict of source
+# names, nothing to do with PDFs -- and `classify_taxonomy.py` imports classify.
+# So `test_sector_evidence.py`, a pure taxonomy test, dragged a PDF parser in at
+# module scope and died in CI with ModuleNotFoundError. The Python job installs
+# no dependencies at all, deliberately: it byte-compiles and runs schema checks,
+# and it should not need a wheel to read a constant.
+#
+# pdfplumber is used at exactly ONE site, inside the fiche reader. Importing it
+# there costs nothing at extraction time and stops a heavy dependency being a
+# precondition for reading a dictionary.
 
 BASE_DIR = _ETL_ROOT
 RAW_DIR = BASE_DIR / "data" / "raw" / "innovation_fund"
@@ -107,6 +117,7 @@ def parse_fiche(pdf_path: Path) -> tuple[str | None, float | None]:
     """
     lines: list[str] = []
     try:
+        import pdfplumber  # lazy: see the note beside the stdlib imports
         with pdfplumber.open(pdf_path) as pdf:
             for page in pdf.pages[:2]:
                 # Right column contains all metadata fields (COORDINATOR, AMOUNT…)
