@@ -146,9 +146,9 @@
   "a route reads only what a founder can send": {
    "argv": "npx tsx scripts/check_request_surface.ts",
    "code": 0,
-   "summary": "check_request_surface: ok — 4 route(s) read nothing panel.tsx cannot send them, 78 request literal(s) across 481 source file(s) name only sendable fields, over 10 IntelligenceRequest field(s) and 10 sendable key(s).",
-   "at": "2026-08-19T10:47:44.224Z",
-   "ms": 1388
+   "summary": "check_request_surface: ok — 4 route(s) read nothing panel.tsx cannot send them, 78 request literal(s) across 483 source file(s) name only sendable fields, over 10 IntelligenceRequest field(s) and 10 sendable key(s).",
+   "at": "2026-08-19T10:51:58.347Z",
+   "ms": 1093
   },
   "a row is named by something outside its id": {
    "argv": "npx tsx scripts/check_name_evidence.ts",

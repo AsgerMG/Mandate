@@ -106,22 +106,34 @@ export function requestFields(): string[] {
       .filter((k): k is string => Boolean(k)))].sort();
 }
 
-/** Files whose object literals are judged: everything a person writes that is
- *  not the form itself and not a route. Walked, so a new directory of
- *  harnesses is in scope without being added anywhere. */
+/**
+ * Files whose object literals are judged: everything a person writes that is
+ * not the form itself and not a route.
+ *
+ * Walked, so a new directory of harnesses is in scope without being added
+ * anywhere — AND the frontend root itself is walked, not only `scripts/` and
+ * `lib/`. That is not tidiness: `.memo_harness.ts` lives at the root, is
+ * ignored by every convention in this repo because of its leading dot, and was
+ * the ONE site in the tree that passed `targetMarkets: ["France", "Germany"]`
+ * for a French founder — the only place where the harness's country list
+ * genuinely differed from the one production would have built. A guard whose
+ * walk stopped at the two obvious directories would have missed the only
+ * non-degenerate instance of the defect it was written for.
+ */
 function sourceFiles(): string[] {
   const out: string[] = [];
-  const skipDir = new Set(["node_modules", ".next", "app"]);
-  const walk = (dir: string) => {
+  const skipDir = new Set(["node_modules", ".next", "app", "public", ".git"]);
+  const walk = (dir: string, recurse: boolean) => {
     for (const name of readdirSync(dir).sort()) {
       const p = path.join(dir, name);
-      if (statSync(p).isDirectory()) { if (!skipDir.has(name)) walk(p); continue; }
+      if (statSync(p).isDirectory()) { if (recurse && !skipDir.has(name)) walk(p, true); continue; }
       if (!name.endsWith(".ts") && !name.endsWith(".tsx")) continue;
       out.push(path.relative(ROOT, p));
     }
   };
-  walk(path.join(ROOT, "scripts"));
-  walk(path.join(ROOT, "lib"));
+  walk(ROOT, false);
+  walk(path.join(ROOT, "scripts"), true);
+  walk(path.join(ROOT, "lib"), true);
   return out;
 }
 
