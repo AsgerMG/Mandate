@@ -292,6 +292,89 @@ export { SELECT_COUNT };
 export const SELECT_KEEP = depthLever("AGENT_SELECT_KEEP", 3, { min: 0 });
 
 /**
+ * ── WHEN MAY THE MODEL REORDER AT ALL? (wsIJ) ─────────────────────────────
+ *
+ * THE PROPERTY, and it is the whole lever:
+ *
+ *   **The model's ordering is published only when the model's own first choice
+ *   is NOT the first row we offered it. When its first choice confirms our
+ *   first row, we publish our own order unchanged.**
+ *
+ * It is total and decidable on any reply: `picks[0] === 0` or it does not, for
+ * every founder, every menu and every arm, with nothing enumerated and no fund,
+ * body, country or regime named. A new reply tomorrow is classified by the same
+ * one-line test.
+ *
+ * ── WHY THAT PARTICULAR FACT ──────────────────────────────────────────────
+ *
+ * The model's first choice is the only part of its reply that can be scored
+ * against our own prior BEFORE any outcome is known. When it agrees with us
+ * about the single best row, its reply has told us nothing our score did not
+ * already say -- and the remaining six picks are then churn, on a model that
+ * disagrees with ITSELF on 18% of identical prompts (wsII). When it disagrees
+ * about the first row, the reply is carrying information, and its whole
+ * ordering is worth taking.
+ *
+ * ── WHAT IT IS WORTH, MEASURED FREE ON TWO PAID TAPES ─────────────────────
+ *
+ * `scripts/_wsij_conditional.ts`, offline, on the 76 founders both paid runs
+ * called. Against TODAY's behaviour, paired on the same call:
+ *
+ *     EXACT@6          +4.96 points   95% [-0.76, +10.68]   60 of 60 LORO
+ *     reciprocal rank  +0.0049        95% [-0.0116, +0.0215]  35 of 60 LORO
+ *
+ * That is the mirror image of wsII and should be read as one. wsII: the model
+ * improves the ORDERING (recip 60/60) and does not improve VISIBILITY (EXACT@6
+ * 29/60). This: abstention recovers VISIBILITY and leaves the ordering where it
+ * was. It is a complement to the model's ordering, not a rival to it.
+ *
+ * It is NOT merely "reorder fewer founders". Abstaining on the same NUMBER of
+ * founders chosen at random scores -0.0294 / -0.0265 on reciprocal rank against
+ * this rule's -0.0007 / +0.0110: p = 0.006 and p = 0.004, in the two runs
+ * independently.
+ *
+ * ── WHY IT DEFAULTS TO `off` ──────────────────────────────────────────────
+ *
+ * Because the EXACT@6 interval still touches zero on 76 founders, and EXACT@6
+ * is the only measure this rule moves. It is a candidate with a pre-registered
+ * confirmation (`project-mgmt/wsIJ_prereg.md`), not a result. `off` is
+ * byte-for-byte today's behaviour: the predicate is not evaluated.
+ *
+ * ── AND WHAT IT IS NOT ────────────────────────────────────────────────────
+ *
+ * Not `assist`. `assist` freezes our top rows and never SHOWS them to the
+ * model, so the model cannot confirm or contradict them and there is nothing to
+ * abstain on. This rule shows the model everything, exactly as today, and uses
+ * its answer to decide whether to believe the rest of its answer.
+ */
+const ABSTAIN_MODES = ["off", "confirmed"] as const;
+export type AbstainMode = (typeof ABSTAIN_MODES)[number];
+export const ABSTAIN_MODE: AbstainMode = (() => {
+  const raw = process.env.AGENT_SELECT_ABSTAIN ?? "off";
+  if (!ABSTAIN_MODES.includes(raw as AbstainMode)) {
+    throw new Error(
+      `AGENT_SELECT_ABSTAIN must be one of ${ABSTAIN_MODES.join("|")}, got "${raw}". ` +
+      `Read once, up front, so a typo cannot read as "off" and report a run of ` +
+      `today's behaviour under the arm's name.`);
+  }
+  return raw as AbstainMode;
+})();
+
+/**
+ * THE RULE ITSELF, as one function, so the property has exactly one home and
+ * the test below has exactly one thing to point at.
+ *
+ * `picks` are indices into the menu the model was SHOWN. Under the shipped arm
+ * that menu starts at our own top row, so index 0 is our first row. Under
+ * `assist` the frozen leaders are not on the menu at all, so index 0 is the
+ * first row we offered -- which is the same sentence, and the reason the rule
+ * is stated over the menu rather than over the pool.
+ */
+export function abstains(picks: number[]): boolean {
+  return ABSTAIN_MODE === "confirmed" && picks[0] === 0;
+}
+
+/**
  * ── MAY IT NAME FEWER THAN THE PAGE HAS SEATS? (wsDY) ─────────────────────
  *
  * `exactly` is the shipped regime and the default: the reply is exactly
@@ -855,7 +938,7 @@ const tally = {
  *  model. */
 export type ExitReason =
   | "armOff" | "reversed" | "poolNotLongerThanCount" | "menuNotLongerThanWant"
-  | "dryPriced" | "noUsablePick" | "threw" | "chose";
+  | "dryPriced" | "noUsablePick" | "threw" | "chose" | "confirmed";
 
 /** The ONLY way out of `agentSelectRows`. Every `return` in that function goes
  *  through here, so the counter cannot be forgotten at a new exit — the way it
@@ -876,6 +959,7 @@ const EXIT_WHAT: Record<ExitReason, string> = {
   noUsablePick: "no usable pick, shipped order kept",
   threw: "the call threw, shipped order kept",
   chose: "the model chose",
+  confirmed: "the model's first choice was ours, our order kept (wsIJ)",
 };
 export function agentSelectExitLine(): string {
   const total = Object.values(tally.exits).reduce((a, b) => a + b, 0);
@@ -929,6 +1013,11 @@ export function agentSelectTallyLine(): string {
     : "none";
   return `agent-select: menu=${menu} rows arm=${AGENT_SELECT_ARM} depth=${Number.isFinite(SELECT_DEPTH) ? SELECT_DEPTH : "all"} count=${SELECT_COUNT_MODE === "atMost" ? "<=" : ""}${SELECT_COUNT}` +
     (AGENT_SELECT_ARM === "assist" ? ` keep=${SELECT_KEEP}` : "") +
+    // Printed only when it is ON. A lever that reads `abstain=off` on every
+    // line trains the reader to skip the field, and this is the field that
+    // says whether the run's order is the model's at all.
+    (ABSTAIN_MODE === "confirmed"
+      ? ` abstain=confirmed (${tally.exits.confirmed} of ${tally.exits.confirmed + tally.exits.chose} kept ours)` : "") +
     (AGENT_SELECT_ARM === "adviser"
       ? ` effort=${THINK_EFFORT} maxtok=${MAX_TOKENS_BY_EFFORT[THINK_EFFORT]}`
         + (UNSURE_MODE === "declare" ? ` unsure=declare` : "")
@@ -2162,6 +2251,13 @@ ${tail}`;
  * re-gated, so `candidateInstrumentIds` is unchanged as a SET and the pool
  * metric cannot move.
  *
+ * ONE EXCEPTION, and it is a lever rather than a path: under
+ * `AGENT_SELECT_ABSTAIN=confirmed` (wsIJ, default `off`) a reply whose first
+ * choice is the first row we offered publishes the INPUT ORDER instead of the
+ * model's. Still a permutation, still the same set — but the sentence above
+ * would otherwise be false for that founder, and a comment that is no longer
+ * true is this file's most expensive kind of defect.
+ *
  * Returns the input untouched on every failure path.
  */
 export async function agentSelectRows(
@@ -2621,13 +2717,24 @@ export async function agentSelectRows(
     }
     const frozen = rows.slice(0, keep);
     const taken = new Set([...frozen, ...chosen]);
-    const out = [...frozen, ...chosen, ...rows.filter((r) => !taken.has(r))];
+    // wsIJ. `abstains` is the whole rule; see its declaration for what it is
+    // worth and why it defaults off. Deliberately HERE, below every tally and
+    // below `lastDecision`: what the model said is recorded either way, so a
+    // tape taken under this lever can still be re-scored as if it were off,
+    // and a run of the two arms costs one call and not two.
+    const kept = abstains(picks);
+    const out = kept
+      ? rows
+      : [...frozen, ...chosen, ...rows.filter((r) => !taken.has(r))];
     if (traceMemo) {
       traceMemo.picks = picks;
       traceMemo.pickedIds = chosen.map((r) => r.instrumentId ?? r.channel);
       traceMemo.poolOut = out.map((r) => r.instrumentId ?? r.channel);
+      if (kept) traceMemo.fellBack =
+        "AGENT_SELECT_ABSTAIN=confirmed and the model's first choice was our " +
+        "first row, so our own order was published (wsIJ)";
     }
-    return leave("chose", out);
+    return leave(kept ? "confirmed" : "chose", out);
   } catch (err) {
     tally.failed++;
     console.error("[agentSelect] call failed, keeping the shipped order:", String(err));
