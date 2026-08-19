@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/tmp/an.py", line 34, in <module>
+    cmp("on.jsonl","off.jsonl","on(peers)","off(peers)")
+  File "/tmp/an.py", line 9, in cmp
+    A, B = load(a_p), load(b_p)
+           ^^^^^^^^^
+  File "/tmp/an.py", line 4, in load
+    return {r["company"]: r for r in (json.loads(l) for l in open(p))}
+                                                             ^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'on.jsonl'
