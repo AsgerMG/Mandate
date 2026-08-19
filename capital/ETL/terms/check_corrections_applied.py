@@ -91,13 +91,30 @@ def canon(spec) -> str | None:
     return json.dumps(spec, sort_keys=True)
 
 
-def corrections() -> list[tuple[str, dict]]:
-    out: list[tuple[str, dict]] = []
+def corrections() -> tuple[list[tuple[str, dict]], list[tuple[str, dict]]]:
+    """(in force, prepared but not applied).
+
+    A correction set is PREPARED before it is authorised and applied, and a
+    check that enforced it from the moment it was written would make preparing
+    one impossible. `"applied": false` marks that state, and the ABSENCE of the
+    field means in force -- so every file written before this check existed is
+    enforced, and a new file has to opt out deliberately.
+
+    That is a way to silence this check, and it is left visible rather than
+    closed: a pending set is PRINTED on every run with its gates named, and
+    moving a row from enforced to pending is a diff on committed evidence.
+    Making it unforgeable would mean a second store of what is authorised,
+    which is the thing this file exists to avoid needing.
+    """
+    live: list[tuple[str, dict]] = []
+    pending: list[tuple[str, dict]] = []
     for f in sorted(EVIDENCE.glob(GLOB)):
         for line in f.read_text().splitlines():
-            if line.strip():
-                out.append((f.name, json.loads(line)))
-    return out
+            if not line.strip():
+                continue
+            c = json.loads(line)
+            (pending if c.get("applied") is False else live).append((f.name, c))
+    return live, pending
 
 
 def conflicts(rows) -> list[str]:
@@ -153,7 +170,7 @@ def main() -> int:
                          "after it, Postgres is the only one that matters.")
     args = ap.parse_args()
 
-    rows = corrections()
+    rows, pending = corrections()
     files = sorted({f for f, _ in rows})
     print(f"evidence: {len(files)} correction files under "
           f"{EVIDENCE.relative_to(ROOT)}/{GLOB}")
@@ -162,6 +179,14 @@ def main() -> int:
     if not rows:
         return _sys.exit(f"no correction files matched {EVIDENCE}/{GLOB} — this "
                          "check cannot pass vacuously.")
+    if pending:
+        # Printed, never enforced, and never silent. An unapplied proposal is a
+        # decision waiting on a person; an unapplied proposal nobody can see is
+        # how one gets forgotten.
+        print(f"\nPREPARED, NOT APPLIED — {len(pending)} row(s) awaiting authorisation:")
+        for f, c in pending:
+            print(f"  {f}: {c['instrument_id']} [{c['gate_key']}] "
+                  f"{c.get('action', '?')}/{c.get('clause', '?')}")
 
     clash = conflicts(rows)
     if clash:
