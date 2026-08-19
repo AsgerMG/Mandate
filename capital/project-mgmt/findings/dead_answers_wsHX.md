@@ -47,9 +47,10 @@ choosing between them is choosing how the score reads. On the strict
 denominator `publishable` goes 91.30% → 92.65% and `top_5` 36.01% → 36.54%; on
 the wider one, 97.62% and 38.50%. **Nothing about the product improved.** The
 top_5 move is inside the half-width the funnel already carries and must never be
-quoted as a gain. The `publishable` move is the finding: **almost the entire
-loss at that stage is the answer key naming objects that are not funds, not the
-corpus failing to hold funds it should.** The key is unchanged — removing a
+quoted as a gain. The `publishable` move is the finding: **45 of the 78
+founders we lose at that stage are lost because the object we recorded as their
+won fund is not a fund, and a further 13 because the door is gone or we refuse
+it — 58 of 78, against 20 that are the corpus failing to hold what it should.** The key is unchanged — removing a
 founder from a recall set is a decision about what we are trying to do, and it
 is yours.
 
@@ -57,7 +58,10 @@ is yours.
 
 ```
 run             2026-08-19, isolated worktree wsHX-gates off main at a94d267c
-cost            job 2: zero. No paid model call, no write, Postgres read only.
+cost            NO PAID MODEL CALL anywhere in this workstream, either job.
+                job 1: two 645 MB Railway volume transfers, read only; one
+                  union built into a local copy; nothing uploaded.
+                job 2: zero. No write, Postgres read only.
 population      __recallSetDescribed.json  split=holdout  N=897
                 draw fingerprint 13cb71cf3a1d1847 — ASSERTED, not printed:
                 the committed funnel run's own draw, so every figure here and
