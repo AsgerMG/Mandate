@@ -54,6 +54,9 @@
  * one implementation of the candidate order in this repo.
  */
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
+import {
+  type HarnessStages, renderStageDeclaration, stageAbsent, stageRuns,
+} from "../lib/intelligence/stageDeclaration";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
@@ -81,6 +84,29 @@ async function main() {
 
   await hydrateDbInstruments();
   requireLiveCorpus("trace_pool");
+
+  // ── WHAT THIS TRACE IS A TRACE OF ────────────────────────────────────────
+  // The pool printed below is not the pool a founder's memo is built from, and
+  // for a reason blunter than the funnel's: `fieldChannels` is passed EMPTY
+  // here. Not "missing the web half" — empty. So `usedInField` is false on
+  // every row, tier 1 of the sort is flat, and the ordering below is the score
+  // alone. Exhaustive over the request path's stages by the compiler; a stage
+  // added to `runIntelligence` stops this file building until it is answered.
+  const STAGES: HarnessStages = {
+    discovering: stageAbsent(
+      "`discoverAndResearch` is not called, so no web-found comparable's channels "
+      + "reach `fieldChannels`."),
+    querying_db: stageAbsent(
+      "Neither is `matchCompany` nor `findPeersBySubsector`: `fieldChannels` is passed "
+      + "as an EMPTY set, so `usedInField` — tier 1 of the row sort, above the entire "
+      + "score — is false on every row below and the order shown is the score alone."),
+    generating: stageAbsent(
+      "No writer call. `orderMemoCandidates` gives the candidates the writer would "
+      + "have read; which of them it would publish is not traced here."),
+    done: stageRuns(),
+  };
+  for (const line of renderStageDeclaration("`npm run trace`", STAGES)) console.log(line);
+  console.log("");
 
   for (const t of COMPANIES) {
     // Gate hydration is per-founder in production. Resetting between companies

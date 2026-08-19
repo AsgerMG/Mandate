@@ -91,7 +91,22 @@ async function main() {
 
   const { hydrateDbInstruments } = await import("../lib/intelligence/corpus");
   const { runIntelligence } = await import("../lib/intelligence/pipeline");
+  const {
+    renderStageDeclaration, stageRuns,
+  } = await import("../lib/intelligence/stageDeclaration");
   await hydrateDbInstruments();
+
+  // This bench calls `runIntelligence` itself, so every stage of the memo
+  // request path runs here -- including the paid comparable search that no
+  // free harness in this directory makes. That is worth SAYING rather than
+  // leaving to be inferred: it is the reason a number from this bench and a
+  // number from `npm run stages` are not comparable, and the reason this one
+  // costs money. Exhaustive by the compiler over the request path's stages.
+  for (const line of renderStageDeclaration("`npm run bench`", {
+    discovering: stageRuns(), querying_db: stageRuns(),
+    generating: stageRuns(), done: stageRuns(),
+  })) console.log(line);
+  console.log("");
 
   const sampleArg = args.indexOf("--sample");
   const sample = sampleArg !== -1 ? Number(args[sampleArg + 1]) : 2;

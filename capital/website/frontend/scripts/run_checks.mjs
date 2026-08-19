@@ -186,6 +186,15 @@ const CHECKS = [
   ["a comparator asks the rule's question",
    ["npx", "tsx", "scripts/check_field_matches_demand.ts"]],
   ["one env loader", ["npx", "tsx", "scripts/check_env_loader.ts"]],
+  // Immediately after it, because it is the same defect one level up. That one
+  // says a harness must declare the CREDENTIALS it reads, because a run without
+  // them measures the fallback and prints a number indistinguishable from a
+  // real one. This one says a harness must declare the STAGES it does not run,
+  // for exactly that reason: `npm run stages` has never called the paid
+  // comparable search whose output is tier 1 of the row sort, and the funnel
+  // figure was read as end-to-end for weeks.
+  ["a harness declares the stages it does not run",
+   ["npx", "tsx", "scripts/check_stage_declaration.ts"]],
   ["client/server boundary", ["npx", "tsx", "scripts/check_client_boundary.ts"]],
   ["payload budget", ["npx", "tsx", "scripts/check_payload_budget.ts"]],
   // Next to the payload budget because they read the same two artifacts and

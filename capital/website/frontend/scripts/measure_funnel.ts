@@ -147,6 +147,9 @@ import { productionCannotPopulate, unofferableValues } from "../lib/intelligence
 import { ExclusionLog } from "../lib/intelligence/exclusions";
 import { accessiblePool, orderMemoCandidates } from "../lib/intelligence/memoCandidates";
 import { POOL_BLEND } from "../lib/intelligence/poolBlend";
+import {
+  type HarnessStages, renderStageDeclaration, stageAbsent, stageReduced, stageRuns,
+} from "../lib/intelligence/stageDeclaration";
 import { POOL_RECALL_KS, poolRecallAt, poolRecallN } from "../lib/intelligence/poolRecall";
 import {
   rankerTally, rankerTallyLine, requireCleanRanker, resetRankerTally, semanticFundMatch,
@@ -162,6 +165,48 @@ import {
   assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
   partitionByOfferable, reattributeMissingAnswers, type RecallRow,
 } from "./recallSet";
+
+/** ── WHAT THIS RUN IS A MEASUREMENT OF, STAGE BY STAGE ────────────────────
+ *
+ *  The header already refuses `NO_PG`, names its stores and banners any
+ *  ranking arm off its shipped default, because a number whose pipeline is not
+ *  stated is a number that gets compared to a different one. A STAGE THE
+ *  REQUEST PATH RUNS AND THIS ONE DOES NOT is the same defect one level up,
+ *  and it went unstated for longer: this file has never run
+ *  `discoverAndResearch`, and the funnel figure, the derived ceiling and the
+ *  base-rate sentence inside the selector's own prompt were all read as
+ *  end-to-end.
+ *
+ *  `HarnessStages` is `Record<PipelineStep, ...>`, so this object is exhaustive
+ *  over the request path's own stage vocabulary BY THE COMPILER. A stage added
+ *  to `runIntelligence` tomorrow stops this file building until somebody says
+ *  what this run does about it. That is the test for the unseen case; there is
+ *  no list of stage names anywhere, here or in a check.
+ *
+ *  What it does NOT claim: that adding the stage would raise the number. On
+ *  the fifty-one recovered production runs, nine of the twelve companies run
+ *  twice produced a DIFFERENT `fieldChannels` on the second run against the
+ *  same frozen request, because the stage's input is the live web. Running it
+ *  here would not make this instrument faithful, it would make it stochastic.
+ *  See project-mgmt/findings/stage_declared_wsIM/. */
+const HARNESS_STAGES: HarnessStages = {
+  discovering: stageAbsent(
+    "`discoverAndResearch` is a paid web-search-grounded call the request path "
+    + "makes on every brief; this run passes `records: []`, so no web-found "
+    + "comparable's channels union into `fieldChannels` -- which seeds `codes` in "
+    + "`selectInstrumentRows` (pool membership) and sets `usedInField` (tier 1 of "
+    + "the row sort, above the entire score)."),
+  querying_db: stageReduced(
+    "`matchCompany` and `findPeersBySubsector` run, but the request path also "
+    + "matches the web-found names and, for a founder NOT in the corpus, takes the "
+    + "peer sub-sector from those matches. Here an unmatched founder gets no peers "
+    + "at all, and `fieldChannels` is empty for 34.3% of this population."),
+  generating: stageAbsent(
+    "No writer call is made. `orderMemoCandidates` is production's own cut, so the "
+    + "candidates handed to the writer are real; the rows the writer would publish "
+    + "out of them are not measured here and no figure below is a published order."),
+  done: stageRuns(),
+};
 
 const PUBLISH_CAP = BRIEF_LIMITS.institutionsMax;
 /** The rank the head-to-head, the recall floor and every EXACT@K figure in this
@@ -1041,7 +1086,14 @@ async function main() {
     p(`pool swept at      ${SWEEP_KS.map(kLabel).join(", ")} — the whole ladder at each, `
       + `paired off one pool object`);
   }
+  // INSIDE the fenced header, beside the stores and the levers, because it is
+  // the same kind of fact: what this number is a number about. The banner for
+  // any stubbed stage comes out below the fence where it cannot be skimmed.
+  const stageLines = renderStageDeclaration("`npm run stages`", HARNESS_STAGES);
+  for (const line of stageLines.filter((l) => !l.startsWith("██") && l !== "")) p(line);
   p("```");
+  p();
+  for (const line of stageLines.filter((l) => l.startsWith("██"))) { p(line); p(); }
   p();
   // ── A RUN THAT DID NOT USE THE SHIPPED ORDERING MUST SAY SO ───────────────
   // `latest.md` is the file that gets quoted, and it used to name nothing about
