@@ -66,7 +66,7 @@ SIX    founders shown an unnamed pair in the published six   0.0%   (0/897)
 48.2% independently reproduces wsID's 50% within two points, on the full
 population and by a different method. **And the next two lines are zero.**
 
-**Zero, on both.** `resolveNameCollisions` has already demoted every duplicate
+`resolveNameCollisions` has already demoted every duplicate
 to the back of the table, behind every visible row, and the 40-row slice never
 reaches it. A Norwegian founder's table carries **all six** Innovasjon Norge
 grant leaves; **exactly one** survives into the menu.
