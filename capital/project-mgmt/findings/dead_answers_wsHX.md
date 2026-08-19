@@ -183,7 +183,9 @@ deployment and the schedule baked into each:
 
 The service instance reads `0 3 * * 0` / `python3
 ETL/events/extract/railway_cron.py`, and the last deployment that succeeded
-bakes the same pair. Note the 22:01 failure: **the builder was already failing
+bakes the same pair. The deploy still in flight at 00:36 UTC carries the same
+pair too, so it is correct whether it succeeds or fails. **No `sleep infinity`
+deployment is live and none can become live**: both of them FAILED. Note the 22:01 failure: **the builder was already failing
 before this workstream deployed anything.** `verify_cron.py` will report red
 while the newest deployment is FAILED, and it is right to — that is a true
 statement about the latest deployment and not about what is scheduled.
