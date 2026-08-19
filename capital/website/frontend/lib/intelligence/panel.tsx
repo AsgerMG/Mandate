@@ -171,12 +171,38 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // companyType is no longer asked — inferProfileSignal reads it from the
   // description server-side (see runIntelligence). Kept out of state entirely.
   const [description, setDescription] = useState("");
-  // Set when the founder dismisses the "you are about to skip the single most
-  // useful answer" prompt. Purely presentational — nothing downstream reads it,
-  // and the pipeline degrades to peer precedence and sector share exactly as it
-  // did before, so a skipped description is a thinner brief and never a broken
+  // ── The two flags that turn skipping the description into a DECISION ─────
+  // `descriptionAsked` latches the one time a submit is stopped to say what an
+  // empty box costs. `descriptionSkipped` latches when the founder answers that
+  // by going on anyway. Between them the founder is asked once and never
+  // nagged, and no path through this screen is closed.
+  //
+  // Both are purely presentational: nothing downstream reads either, the
+  // pipeline degrades to peer precedence and sector share exactly as it did
+  // before, and a skipped description is a thinner brief rather than a broken
   // one.
+  //
+  // NEITHER IS RECORDED, ANYWHERE, DELIBERATELY. Whether founders actually fill
+  // this box in is the one number that would say what this friction was worth,
+  // and the owner decided on 2026-08-19 not to collect it: no route writes it,
+  // no telemetry carries it, and the effect of this change on real behaviour is
+  // unmeasured by design. The change is justified by the measured LIFT alone
+  // (see USEFUL_DESCRIPTION_CHARS), not by any observation of the skip rate,
+  // which is unknown today and stays unknown.
+  const [descriptionAsked, setDescriptionAsked] = useState(false);
   const [descriptionSkipped, setDescriptionSkipped] = useState(false);
+  // The submit that gets stopped puts the cursor back in this box. A cost
+  // stated at the bottom of a long form is a cost stated where nobody is
+  // looking; the founder is returned to the field that fixes it.
+  const descriptionRef = useRef<HTMLTextAreaElement | null>(null);
+  // Reads the two floors, never moves them. `thin` is "below the length that
+  // separates funds"; `unmatchable` is the harder truth underneath it, where
+  // both matchers return nothing at all and the ranking is sector-only. The
+  // copy below branches on which of the two is true, because saying
+  // "sector-only" about a thirty-character answer would be false.
+  const descriptionLength = description.trim().length;
+  const descriptionThin = descriptionLength < USEFUL_DESCRIPTION_CHARS;
+  const descriptionUnmatchable = descriptionLength < MIN_MATCHABLE_DESCRIPTION_CHARS;
   const [capitalSought, setCapitalSought] = useState<string[]>([]);
   // borrowerModel is pinned and never asked — the lender/intermediary routing
   // it unlocks is out of scope for this tool's lean-founder persona. The value
@@ -392,6 +418,27 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // follow-ups are how the right funds get found, not an optional extra.
   async function handleContinue() {
     if (!company.trim() || preparing) return;
+    // ── The description is asked for ONCE, at the moment it is about to be
+    // lost ────────────────────────────────────────────────────────────────
+    // The box has been optional since it existed, and the notice about what
+    // skipping costs sat UNDER the submit — below the fold on a phone, and on
+    // a path the founder never had to touch, because the frictionless way past
+    // it was the primary button itself. Its "Continue without it" link did not
+    // continue anything: it dismissed the warning and left the founder to
+    // press Continue anyway. So the single most valuable answer on the screen
+    // could be skipped without ever reading why not to.
+    //
+    // Now the first submit that would throw it away stops, puts the cursor
+    // back in the box, and states the cost there. THE BUTTON IS NEVER
+    // DISABLED and the stop happens at most once per session: press Continue
+    // again, or take the explicit way out beside the box, and the form goes.
+    // A form that will not submit is worse than a thin brief.
+    if (descriptionThin && !descriptionAsked && !descriptionSkipped) {
+      setDescriptionAsked(true);
+      descriptionRef.current?.focus();
+      descriptionRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+      return;
+    }
     setError(null);
     setPreparing(true);
     // The screen-one answers, frozen before a single follow-up question is
@@ -668,31 +715,106 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                   decision the founder makes rather than an accident of an
                   empty box. */}
               <label className="block text-sm">
-                <span className={fieldLabel}>
+                {/* `flex-wrap` on THIS label only. `fieldLabel` is a
+                    non-wrapping flex row, which is right for the short captions
+                    that share it and wrong for the longest one on the screen: at
+                    390px the question and its qualifier were squeezed into two
+                    ragged columns with the info dot shoved to the far edge. */}
+                <span className={fieldLabel + " flex-wrap gap-x-1"}>
                   What are you building?
-                  <span className="ml-1 font-normal text-[var(--muted-foreground)]">(a sentence or two)</span>
+                  <span className="font-normal text-[var(--muted-foreground)]">(a sentence or two)</span>
                   <InfoDot>
                     Describe the project the money would fund, not the company tagline.
                   </InfoDot>
                 </span>
-                <textarea value={description} onChange={(e) => setDescription(e.target.value)}
-                  rows={3} maxLength={MAX_DESCRIPTION_CHARS}
+                <textarea ref={descriptionRef}
+                  value={description} onChange={(e) => setDescription(e.target.value)}
+                  rows={5} maxLength={MAX_DESCRIPTION_CHARS}
                   placeholder={"e.g. We build collision-avoidance software for satellite operators. "
                     + "The project would develop an onboard autonomous manoeuvring system and fly it "
                     + "on a demonstrator."}
-                  className={inputCls + " min-h-[5.5rem] resize-y leading-relaxed"} />
-                {/* Two thresholds, two different truths, so the nudge never
-                    overstates: under MIN_MATCHABLE it is discarded outright,
-                    under USEFUL it is embedded but scores everything alike. */}
-                {description.trim().length > 0
-                  && description.trim().length < USEFUL_DESCRIPTION_CHARS && (
-                  <span className="mt-1.5 block text-xs text-[var(--muted-foreground)]">
-                    {description.trim().length < MIN_MATCHABLE_DESCRIPTION_CHARS
-                      ? "Too short to match on — add what you are building and what the project would do."
-                      : "A little more would help: what the project itself would build or prove."}
+                  /* Five rows, not three. The example IS the instruction on
+                     this field, and at 390px three rows cut it off mid-sentence:
+                     the founder saw half a sample answer and no full stop. Sized
+                     so the whole of it fits on the narrowest screen we render
+                     for. The box being visibly bigger than a line is also the
+                     cheapest honest signal that a paragraph is what helps, which
+                     is the entire finding this screen is built around. */
+                  className={inputCls + " min-h-[8.5rem] resize-y leading-relaxed"} />
+                {/* Two thresholds, two different truths, so neither line ever
+                    overstates: under MIN_MATCHABLE the description is discarded
+                    outright and the ranking really is sector-only, under USEFUL
+                    it is embedded but scores nearly everything alike.
+
+                    Written as GUIDANCE, not as a warning. "Too short" tells a
+                    founder they are wrong and leaves them there. The three
+                    things named instead are the three that actually separate
+                    one fund from another in the demand text we match against,
+                    so a founder who reads the line can act on it. */}
+                {descriptionLength > 0 && descriptionThin && (
+                  <span className="mt-1.5 block text-xs leading-relaxed text-[var(--muted-foreground)]">
+                    {descriptionUnmatchable
+                      ? "Too short to match on yet. What problem, for whom, and what the project itself would build or prove."
+                      : "Keep going: what problem, for whom, and what the project itself would build or prove."}
                   </span>
                 )}
               </label>
+
+              {/* ── What an empty box costs, said where it can still be fixed ─
+                  This used to sit under the submit, at the bottom of a long
+                  form, on a path no founder had to touch: the frictionless way
+                  past it was the primary button itself, and its "Continue
+                  without it" link continued nothing — it dismissed the warning
+                  and left the founder to press Continue anyway. A cost stated
+                  where nobody is looking is not a cost anybody pays attention
+                  to.
+
+                  It now appears only after a submit has been stopped once
+                  (`descriptionAsked`), directly under the box the founder has
+                  just been returned to, with the way out on the same line of
+                  sight as the way forward. OUTSIDE the <label> deliberately: a
+                  button inside it would also focus the textarea on click.
+
+                  The skip really skips. `setDescriptionSkipped` then
+                  `handleContinue` in one tick is the same-tick state hazard
+                  this file has been burned by three times, and it is safe here
+                  for a reason worth stating rather than assuming: the gate in
+                  `handleContinue` cannot fire because `descriptionAsked` is
+                  already committed, so the closure never needs to see the
+                  `descriptionSkipped` it cannot see. */}
+              {descriptionAsked && descriptionThin && !descriptionSkipped && !preparing && (
+                <div className="rounded-[var(--radius)] border border-[var(--border)] border-l-2 border-l-[var(--primary)] bg-[var(--muted)]/40 px-4 py-3">
+                  {/* contract: "about half as often" is the measured description
+                      lift, and the two figures are its endpoints rather than a
+                      manner of speaking. `scripts/measure_description_lift.ts`,
+                      paired and leak-checked on the enriched holdout, the same
+                      companies with the same intake answers ranked twice:
+                      EXACT@5 is 48.9% on the founder's own description of the
+                      project and 21.3% on the canned sector sentence a founder
+                      who skips this box is represented by. Both are recorded in
+                      the docstring of USEFUL_DESCRIPTION_CHARS in types.ts,
+                      which is where they come from and where they must be
+                      changed. A product measurement, not a corpus one: it moves
+                      when the ranker moves, not when the ETL runs. */}
+                  <p className="text-[13px] leading-relaxed text-[var(--foreground)]">
+                    {descriptionUnmatchable
+                      ? "Without a description we match you on sector alone, and find the right fund about half as often."
+                      : "A line this short barely separates one fund from another: it scores much like a sector template."}
+                    {" "}
+                    <span className="text-[var(--muted-foreground)]">
+                      Ranked both ways on companies whose funding is on record, a description of the
+                      project itself put the fund they actually won in the top five 48.9% of the
+                      time, against 21.3% without one. It is the largest difference anything on this
+                      screen makes.
+                    </span>
+                  </p>
+                  <button type="button"
+                    onClick={() => { setDescriptionSkipped(true); void handleContinue(); }}
+                    className="mt-2 text-[13px] font-medium text-[var(--muted-foreground)] underline underline-offset-2 hover:text-[var(--foreground)]">
+                    Continue anyway
+                  </button>
+                </div>
+              )}
               {/* Country and region share a column and read as one "where are
                   you" block. They stay SEPARATE labels: two selects inside one
                   label leaves the caption ambiguous, so clicking "Incorporated
@@ -949,30 +1071,20 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
               </button>
             </div>
 
-            {/* ── Skipping the description, made explicit ───────────────────
-                The submit is never disabled for a missing description: a form
-                that will not move is how a founder leaves. But an empty box
-                used to cost them the whole thematic half of the ranking in
-                silence, so the cost is stated once, at the moment they are
-                about to pay it, and they answer for themselves. Clicking
-                through sets descriptionSkipped, which suppresses the prompt for
-                the rest of the session — asked once, not nagged. */}
-            {!descriptionSkipped && !preparing && Boolean(company.trim())
-              && description.trim().length < USEFUL_DESCRIPTION_CHARS && (
-              /* contract: "about half as often" is the measured description lift,
-                 not a manner of speaking. scripts/measure_description_lift.ts,
-                 paired and leak-checked on the enriched holdout: EXACT@5 is
-                 48.9% with the founder's own description and 21.3% with the
-                 canned sector sentence, so skipping the box lands the right
-                 fund 44% as often. A product measurement, not a corpus figure
-                 — it moves when the ranker moves, not when the ETL runs. */
-              <p className="rounded-[var(--radius)] border border-[var(--border)] bg-[var(--muted)]/40 px-4 py-3 text-xs leading-relaxed text-[var(--muted-foreground)]">
-                Without a description, matching is sector-only and lands on the right fund about
-                half as often.{" "}
-                <button type="button" onClick={() => setDescriptionSkipped(true)}
-                  className="underline underline-offset-2 hover:text-[var(--foreground)]">
-                  Continue without it
-                </button>
+            {/* ── Why the button just did nothing ──────────────────────────
+                A stopped submit that says nothing at the button is a dead
+                button, and a dead button is how a founder leaves. So the one
+                time the description gate fires, the reason and the way through
+                are both stated right here, where the click happened, while the
+                cost itself is stated up at the box that fixes it.
+
+                THE BUTTON IS NEVER DISABLED FOR A MISSING DESCRIPTION and the
+                stop happens at most once: `descriptionAsked` is latched by the
+                time this renders, so pressing Continue again submits. */}
+            {descriptionAsked && descriptionThin && !descriptionSkipped && !preparing && (
+              <p className="text-xs leading-relaxed text-[var(--muted-foreground)]">
+                We stopped once to ask about what you are building, at the top of the form.
+                Press Continue again to go on without it.
               </p>
             )}
           </form>
