@@ -1,0 +1,68 @@
+BASE       /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_off.jsonl
+           row_order=off  award_term=oneside  2026-08-19T17:27:30.488Z
+ARM        /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_on.jsonl
+           row_order=on  award_term=oneside  2026-08-19T17:42:02.743Z
+population 897 drawn, 819 past the corpus stages
+ARM ARRIVED (pool  ) the won fund's rank differs for 456/819, median shift 2 row(s)
+ARM ARRIVED (writer) the won fund's rank differs for 234/819, median shift 1 row(s)
+regimes    96 distinct won-fund regime(s) in the paired population
+
+── pool_cut@40 (reach) ─────────────────────────────────────────
+  base    +82.17   arm    +80.10
+  PAIRED delta     -2.08  [-3.54, -0.61]  P(>0)=0.002
+  discordant 39  (arm only 11, base only 28)
+  McNemar z  2.72
+  NULL       sign-flip 95% [-1.34, +1.59]  p=0.0100  CLEARS its null
+  LORO       worst -2.39 without innovate_uk (n=109)   best -0.78 without horizon_eu_pillar_ii (n=47)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -17 founder(s) over 11 regime(s), largest single regime 65% (horizon_eu_pillar_ii)
+             horizon_eu_pillar_ii:-11  horizon_eu_partnership:-7  vinnova_grant:-3  satr_de_rnd:+1  nfr_naeringsph:+1  satr_se_rnd:+1
+
+── published@7 ─────────────────────────────────────────────────
+  base    +45.67   arm    +41.88
+  PAIRED delta     -3.79  [-5.74, -1.95]  P(>0)=0.000
+  discordant 61  (arm only 15, base only 46)
+  McNemar z  3.97
+  NULL       sign-flip 95% [-1.83, +1.83]  p=0.0002  CLEARS its null
+  LORO       worst -4.37 without innovate_uk (n=109)   best -2.33 without horizon_eu_pillar_ii (n=47)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -31 founder(s) over 20 regime(s), largest single regime 42% (horizon_eu_pillar_ii)
+             horizon_eu_pillar_ii:-13  vinnova_grant:-12  horizon_eu_partnership:-4  nfr_energix:-3  ademe_aid:+2  bdns_es_ayudas:+2
+
+── EXACT@6 ─────────────────────────────────────────────────────
+  base    +42.61   arm    +40.05
+  PAIRED delta     -2.56  [-4.64, -0.49]  P(>0)=0.008
+  discordant 73  (arm only 26, base only 47)
+  McNemar z  2.46
+  NULL       sign-flip 95% [-2.08, +2.08]  p=0.0182  CLEARS its null
+  LORO       worst -2.96 without innovate_uk (n=109)   best -1.17 without horizon_eu_pillar_ii (n=47)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -21 founder(s) over 23 regime(s), largest single regime 57% (horizon_eu_pillar_ii)
+             horizon_eu_pillar_ii:-12  vinnova_grant:-6  horizon_eu_partnership:-3  nfr_energix:-3  ademe_aid:+2  satr_nl_rnd:+2
+
+── EXACT@5 ─────────────────────────────────────────────────────
+  base    +39.56   arm    +37.12
+  PAIRED delta     -2.44  [-4.64, -0.24]  P(>0)=0.012
+  discordant 82  (arm only 31, base only 51)
+  McNemar z  2.21
+  NULL       sign-flip 95% [-2.20, +2.20]  p=0.0347  CLEARS its null
+  LORO       worst -3.00 without ademe_aid (n=20)   best -0.65 without horizon_eu_pillar_ii (n=47)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -20 founder(s) over 25 regime(s), largest single regime 75% (horizon_eu_pillar_ii)
+             horizon_eu_pillar_ii:-15  vinnova_grant:-7  ademe_aid:+4  horizon_eu_partnership:-3  nfr_energix:-3  innovationsfonden_innofounder:+2
+
+── recip (writer order) ────────────────────────────────────────
+  base   +0.2629   arm   +0.2801
+  PAIRED delta   +0.0172  [-0.0053, +0.0388]  P(>0)=0.937
+  moved      234 founder(s) with a non-zero delta
+  NULL       sign-flip 95% [-0.0215, +0.0214]  p=0.1150  INSIDE its null
+  LORO       worst -0.0291 without innovate_uk (n=109)   best +0.0354 without vinnova_grant (n=208)
+             sign holds in 95/96 leave-one-regime-out folds
+
+── recip (pool order) ──────────────────────────────────────────
+  base   +0.2846   arm   +0.3039
+  PAIRED delta   +0.0193  [-0.0027, +0.0402]  P(>0)=0.961
+  moved      456 founder(s) with a non-zero delta
+  NULL       sign-flip 95% [-0.0211, +0.0208]  p=0.0698  INSIDE its null
+  LORO       worst -0.0268 without innovate_uk (n=109)   best +0.0369 without vinnova_grant (n=208)
+             sign holds in 95/96 leave-one-regime-out folds
