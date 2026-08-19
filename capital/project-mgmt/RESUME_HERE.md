@@ -1,4 +1,4 @@
-# Resume here — 2026-08-19, ~01:30
+# Resume here — 2026-08-19, ~17:00
 
 **A snapshot, not a standing document.** If the date above is old, trust
 `project-mgmt/findings/one_funnel/latest.md` and `git log` over anything here.
@@ -6,88 +6,87 @@
 ## The number
 
 **39.0% at six rows**, n=897, run `2026-08-18T22:14`, draw `13cb71cf3a1d1847`,
-`ranker: all 819 request(s) on EMBEDDING`, corpus postgres 1088.
+`ranker: all 819 request(s) on EMBEDDING`.
 
-**It moved 38.46 → 39.02 and that is NOT a result.** wsHV's own reading, kept
-because it is the honest one: `pool_cut` — the ranker-sensitive stage, upstream
-of every confound — moved **−0.22 against ±2.86**. Rebuilding the fund profiles
-moved nothing. And the four stages *below* `pool_cut` are not comparable at all,
-because `WRITER_CANDIDATE_CAP` went 8 → 7 in `65300766`, ten minutes after the
-baseline run started. Do not present the headline movement as a gain.
+**It is UNDERSTATED and the dashboard now says so.** The funnel builds the
+instant screen's pool and then reports the memo's ordering out of it, with
+`discoverAndResearch` stubbed out — a stage production runs on every brief.
 
-**NORTH STAR: 86-90%**, set by the owner 2026-08-17. Milestone **50%**, goal
-**60%** on the way. Both live once in `project-mgmt/dashboard/refresh.py` and the
-generator refuses a page that re-types either. **The north star is not typed** —
-it is `reachCeiling`, what perfect ordering scores today, so it rises on its own
-as encodings are corrected.
+**And it cannot be made faithful at any price.** Run the same founder through
+that stage twice and it answers differently **nine times in twelve**. A faithful
+funnel would print a new number daily and compare to nothing already published.
+Reproducible-and-understated is the deliberate trade. `check_stage_declaration`
+now forces any harness that stubs a production stage to say so in its output.
 
-## The one thing to understand
+**NORTH STAR 86-90%**, milestone 50, goal 60. Both live once in
+`refresh.py`; the north star is `reachCeiling`, derived, never typed. Note
+`reachCeiling` is downstream of the stub.
 
-```
-reach 74  ×  convert 53  =  39.0
-```
+## READ THIS BEFORE MEASURING ANYTHING
 
-**Reach alone cannot reach the milestone.** At the hard ceiling of what the gates
-allow, today's conversion still falls short; the AI's half has to reach ~67% for
-the milestone. There is no other route. Two steps carry most of what the product
-loses and they are the same defect — **the order**. Everything below "seven
-published" on the dashboard is *grading*, not product.
+**NEVER score an ordering change on EXACT@6 alone.** Its half-width **floors near
+4.1 points at any affordable price** and only 666 of 897 founders are reachable
+at all. Twice today it called a real effect a null. Reciprocal rank is the
+sensitive instrument — but wsIJ showed recip is the *wrong* primary for an arm
+that is recip-neutral by construction, and wsIL showed the right primary can be
+neither. **Argue the primary; never copy it.**
 
-## Yesterday's structural finding, which is the important one
+**Trace the READER before measuring the lever.** Eleven routes measured dead and
+every one failed the same way: the consumer had already stopped reading it, and
+the comment above it was the last thing still claiming otherwise. See
+`project_dead_route_pattern` in memory.
 
-**Every harness bypassed the production route.** `measure_funnel.ts` has zero
-references to `/api/intelligence`. `npm run prodcheck` sends ONE real company
-through the live deployment's four routes and found **five defects in twenty
-minutes** that a green 846-test suite had passed, for about EUR 1.30. All five
-are fixed and confirmed in a real founder's memo: a scheme that ended in 2020, a
-row named by an id slug, a raw database key in the prose, a row that could not
-say which fund it was, and the founder's raise labelled as the fund's award.
+**A key may only be priced on a population where it FIRES.** The `usedInField`
+tier carried a "costs 51→49" note measured on a run where the key was false on
+every row. `check_field_tier_priced` guards it now.
 
-`prodcheck` is a **LOOK** — one company, no percentage, `assertOneFounder` ends
-the run on a second. The heavy run is the **VERIFICATION**. They never merge.
+**The prompt is a function of the corpus statistic it measures** —
+`poolRecall.ts:189` tells the model its own base rate, and that curve moved
+between two preregistrations. Pin it by hash or the run is void.
 
-## In flight
+## The strategy, corrected today
 
-- **wsHW** — the EUR 4 re-read. wsHO's exact design, strata and sample, so the
-  difference is attributable to the week's work and nothing else. Ends with a
-  `prodcheck` read. Every figure labelled `indicative, n=`; it may not print a
-  percentage that reaches the dashboard.
-- **wsHX** — promote the 3,362 gates **by union, never overwrite** (unblocked by
-  the successful redeploy), and count how many of the 897 answers are schemes
-  that have since closed. Nine found by accident, **not a census**. It may NOT
-  change the answer key — it brings the count and the argument.
+**The "LLM ordering is a wash" verdict is WITHDRAWN. It was our ruler.** On
+reciprocal rank both paid runs are **positive and clear of zero** (+0.0739,
++0.0716), positive in **60/60** leave-one-regime-out, where the binary was 29/60
+and crossed sign between runs.
 
-## Next, in order
+**The one live candidate:** `AGENT_SELECT_ABSTAIN` — publish the model's order
+only when its own first pick is not the row we offered first. **+4.96 EXACT@6,
+60/60 LORO**, interval touches zero. **Confirmable FREE** alongside whatever is
+bought next, because it applies after the reply is parsed. Default off.
+`project-mgmt/wsIJ_prereg.md`.
 
-1. **Merge wsHW and wsHX** when they report; verify, push, remove worktrees.
-2. **The eleventh sector** — needs the owner. `restore` is a pure function of
-   `company_sector_labels`, the volume's copy is empty, so the fixed pipeline
-   still reports 8 of 11, and that is a figure on our own home page. The LLM
-   alternative prices at ~USD 136.
-3. **Three doors of SA.40391 are byte-identical on the page** — the project's
-   central defect at a size somebody can finish, separating facts already held.
-4. **The intake.** Three measurements point there: the score is *indifferent*
-   not biased (wsGY, perfect ordering = 86.3%); a perfect answer to the largest
-   statable separator is inert (wsHG, `gates_pass` moved zero); the largest
-   already-wired separator carries no information (wsHH, embedding picks the won
-   door 44.9% where its NAME lands 50.9% — **a candidate must beat 50.9% on the
-   287 pairs**, free check `npx tsx scripts/_wshh_report.ts`).
-5. **Not yet, deliberately:** the full EUR 30.70 run. Indicative while the
-   product moves; one full run when it looks finished.
+## Waiting on the owner
+
+1. **The promotion.** `make pull-db` then `promote_to_record.py --file
+   data/db.sqlite` (dry run, then `--apply`). Local is a **superset on every
+   table** — verified. His standing rule caught a stale union file that would
+   have reverted his own corrections; it is renamed `STALE_DO_NOT_PUSH_*`.
+   **The row-level gate does NOT protect column values.**
+2. **Two German branch rules** — ~8,000 assessments, all toward open.
+   `wsih_de_branch_corrections_2026-08-19.jsonl`, prepared, unapplied.
+3. **Innovasjon Norge** — our six leaves are the funder's *category* column; the
+   real offers are in a second column we never loaded. Name / re-split / collapse.
+   155 founders gain a seat, 12 recover their won fund.
+4. **The classifier backlog** — ~USD 5.40, 14,604 companies (10% of the shipped
+   index) with a sector and no sub-sector. 113 of the 897.
+5. **The one purchase worth making** — EUR 15-18, research-only paired subsample
+   n≈60, twice per founder, against its own noise floor.
 
 ## Rules that cost something when broken
 
-- `npm run stages` is **~2 hours at n=897**. The ~18 min figure is N=200 — I
-  quoted it without its population for a week and every agent brief carried it.
-- **Never run two funnels at once** if avoidable. They are safe (each pins its
-  corpus at start) but cross-run *levels* are not comparable.
-- `NO_PG=1` is forbidden: serves a snapshot AND drops the ranker to lexical.
-  It cost 5.3 points once.
-- Every ranker run must attest `ranker: all N request(s) on EMBEDDING`.
+- `npm run stages` is **~2 hours at n=897** and it is `scripts/measure_funnel.ts`,
+  **not** `_wsgd_stages.ts` — two briefs named the wrong file.
+- `NO_PG=1` is **forbidden**. Any script reading `DATABASE_URL`/`VOYAGE_KEY` must
+  `requireCredentials(...)`; a **half-declaration passes the gate and still ranks
+  lexically**.
+- **`npm run shadow` DOES NOT EXIST.** `npm run trace` does.
+- **`npm run check --only=<label>` does not honour `--only`** — it runs all 61.
+- **Never move a floor, tolerance or ceiling.** When a change *improves* one,
+  lower it in the same commit — `check_channel_prior_complete` demanded exactly
+  that today and it is the behaviour to copy.
+- **Never delete data or structure.** Union and insert-only.
+- **Agents do not touch Railway service configuration.** One took the weekly ETL
+  down for 75 minutes.
 - Agents **commit incrementally**, own worktree via `scripts/agent-worktree.sh`.
-- **Check nothing is running inside a worktree before removing it.** I deleted
-  `node_modules` out from under a live two-hour measurement.
-- **Never move a floor, tolerance or ceiling to make a build green.**
-- The Railway CLI is **not missing** — `railway_service.py` shells `npx --yes
-  @railway/cli` and it is authenticated. I claimed otherwise twice by testing
-  `command -v railway`.
