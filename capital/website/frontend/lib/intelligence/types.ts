@@ -1873,6 +1873,23 @@ export const COMMERCIAL_ANSWER_PREFIX = "commercial::";
  *  siblings, never decide a legal eligibility verdict. */
 export const OPEN_ANSWER_PREFIX = "open::";
 
+/**
+ * questionId prefix marking the round-2 question that asks the founder to
+ * DESCRIBE THEIR OWN PROJECT (wsIV).
+ *
+ * The split matters at read time for the opposite reason to the two above.
+ * Those two mark answers that must be kept OUT of something — the eligibility
+ * verdict, the legal decision. This one marks the answer that must be let INTO
+ * something: it is the only round-2 answer that is not evidence about a fund,
+ * it is the founder's own words about their own company, and the panel routes
+ * it into `description` rather than into `projectAnswers` so that it reaches
+ * the theme cosine (`semanticFundMatch`/`themeRelevance`) that the typed box
+ * feeds. A ProjectAnswer, by its own docstring, is "writer context and
+ * ease-scoring input only"; that is precisely the reach this answer must NOT
+ * be limited to.
+ */
+export const PROJECT_ANSWER_PREFIX = "project::";
+
 export interface ProjectAnswer {
   questionId: string;
   question: string;

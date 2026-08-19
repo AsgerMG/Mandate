@@ -200,7 +200,7 @@ been failing."*
 | **Seat allocation / per-row routing** | An oracle *holding the answer key* gains one case in six hundred |
 | **Rebuilding the founder descriptions** | Delivered 1,898 pairs not ~6,300; feasibility estimate was wrong 8×; moved the number 27% → 26% |
 | ~~**A longer menu / more depth**~~ **RETRACTED (wsGM)** | It measured the SEAM, not the depth. `SELECT_COUNT` was 6, so at most six rows could be promoted from below the score's cut: wsDR promoted 64 rows across 30 of 45 founders and none was an answer — depth moved and the seat budget did not. Its 22.2% → 17.8% is ONE discordant founder on n=45, inside a ranker that disagrees with itself on 18% of founders. And 51 of its 133 menu rows carried no sentence saying what the fund pays for; after wsDW's repair that figure is flat at ~87% at every depth. The pool cut is now 40 on a swept funnel, n=897: the ceiling moves 49.8% → 66.7% and every stage below it is identical to the founder at every depth up to the whole pool. What remains unmeasured is the model's pick rate on a longer menu — `project-mgmt/findings/widen_wsGM.md` |
-| **Better screen-two questions** | Picks changed on 8 of 12 and the category errors survived the answer. The arm that measured it was a bench harness, not a shipped lever: no flag by that or any other name exists, and the row previously named one that does not (wsEN). The live descendant is `RANKER_ASKS`, which defaults off — a different design, in which the stage that picks writes the questions |
+| **Better screen-two questions**, *for the stage that picks* | Picks changed on 8 of 12 and the category errors survived the answer. The arm that measured it was a bench harness, not a shipped lever: no flag by that or any other name exists, and the row previously named one that does not (wsEN). The live descendant is `RANKER_ASKS`, which defaults off — a different design, in which the stage that picks writes the questions. **NARROWED (wsIV).** What that experiment moved was the SELECTOR'S PROMPT: `_wsdt_screen.ts` computed `semanticFundMatch(c.description)` once and shared it between both arms, so the theme cosine — `THEME_WEIGHT = 0.6` of the leaf score — was held fixed by construction and no answer in it could move the ranking. All twelve of its companies also had a full description. So it closes *answers delivered to the reader as prose*, and says nothing about an answer that joins the string the cosine is taken against, on a founder who has no string. That is `PROJECT_QUESTION_ARM`, default off |
 | **Re-sorting the memo on the fit score** | MEMO@6 24.0% against `verdict`'s 27.6%; wsCR measured it moving the won leaf OUT of the published six 49 times for 13 in. `scripts/archive/_wsct_order.ts` — archived by wsGB, which deleted the arms it swept |
 | **The old LLM gate 2** | Every configuration that let the model REORDER measured at or below gate 1 on the same cases. Module deleted; the ladder is preserved in `project-mgmt/findings/dead_ranker_wsDO.md` §1 |
 
@@ -216,7 +216,8 @@ rows the model chose instead.
 ## 5. Every flag in here is a reproducibility arm, not a lever
 
 `POOL_BLEND`, `SIBLING_SCOPE`, `CHANNEL_BACKFILL`, `SECTOR_NEUTRAL_ARM`,
-`AGENT_SELECT*`, `OPEN_QUESTION_ARM`, `NEXT_PUBLIC_ORGANISATION_TYPE_ARM`. wsEH
+`AGENT_SELECT*`, `OPEN_QUESTION_ARM`, `NEXT_PUBLIC_ORGANISATION_TYPE_ARM`,
+`PROJECT_QUESTION_ARM`. wsEH
 re-checked all of them: **not one is set to a non-default value anywhere in the
 repo's build, CI or deployment config.** That is still true and it now means
 something different for `AGENT_SELECT`, whose DEFAULT changed: the ranker runs

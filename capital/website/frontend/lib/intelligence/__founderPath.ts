@@ -67,7 +67,7 @@ import path from "node:path";
 import {
   matchBrace, matchParen, stripCommentsAndStrings, topLevelKeys, topLevelSpreads,
 } from "./__sourceScan";
-import { FIELD_ENUM_HINTS } from "./types";
+import { FIELD_ENUM_HINTS, MAX_DESCRIPTION_CHARS, PROJECT_ANSWER_PREFIX } from "./types";
 import type {
   EligibilityAnswers, ProfileSignal, ProgressEvent, ProjectAnswer,
 } from "./types";
@@ -261,10 +261,10 @@ export async function driveFounderPath(
     S.render();
   }
 
-  const basePayload = (eligOverride?: EligibilityAnswers) => ({
+  const basePayload = (eligOverride?: EligibilityAnswers, descriptionOverride?: string) => ({
     company: S.read("company"),
     country: S.read("country"),
-    description: S.read("description"),
+    description: descriptionOverride ?? S.read("description"),
     capitalSought: S.read("capitalSought"),
     eligibility: eligOverride ?? S.read("elig"),
     profileSignal: S.read("profileSignal"),
@@ -313,9 +313,10 @@ export async function driveFounderPath(
 
   const runMemo = async (
     projectOverride?: ProjectAnswer[], eligOverride?: EligibilityAnswers,
+    descriptionOverride?: string,
   ) => {
     const res = await post("/api/intelligence", {
-      ...basePayload(eligOverride),
+      ...basePayload(eligOverride, descriptionOverride),
       projectAnswers: projectOverride ?? S.read("projectAnswers"),
       eligibilityBeforeRound: eligBeforeRound.current ?? undefined,
     });
@@ -371,12 +372,17 @@ export async function driveFounderPath(
       (merged as Record<string, unknown>)[q.field] = ans;
     }
     const picked: ProjectAnswer[] = [];
+    // panel.tsx, verbatim: the Pool P answer is routed into `description` and
+    // not into `projectAnswers`, which is the property `founderPath.test.ts`
+    // asserts on the wire rather than on this transcription.
+    const describedProject: string[] = [];
     if (answerRoundTwo) {
       for (const q of projectQuestions) {
         const answer = q.openText
           ? "We build and sell this ourselves; the award would pay for the pilot line."
           : (q.options?.[0] || "");
         if (!answer) continue;
+        if (q.id.startsWith(PROJECT_ANSWER_PREFIX)) { describedProject.push(answer); continue; }
         const qq = q as unknown as ProjectAnswer & { id: string };
         picked.push({
           questionId: qq.id, question: q.question, answer,
@@ -387,12 +393,15 @@ export async function driveFounderPath(
       }
     }
     const allProjectAnswers = [...S.read("projectAnswers"), ...picked];
+    const nextDescription = [S.read("description").trim(), ...describedProject]
+      .filter(Boolean).join("\n\n").slice(0, MAX_DESCRIPTION_CHARS);
     S.set("projectAnswers", allProjectAnswers);
     S.set("elig", merged);
+    S.set("description", nextDescription);
     S.set("roundCount", S.read("roundCount") + 1);
     // MAX_ROUNDS is 1, so this is always the branch taken — the second verdict
     // fetch inside advanceRound is unreachable on the shipped path.
-    await runMemo(allProjectAnswers, merged);
+    await runMemo(allProjectAnswers, merged, nextDescription);
   }
 
   return {

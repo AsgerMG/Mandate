@@ -86,7 +86,7 @@ export function setPlanner(mode: "answers" | "silent"): void { PLANNER = mode; }
  * them, so the cap now truncates a spread reply, which is what production's cap
  * actually meets.
  */
-function poolRefs(prompt: string, pool: "A" | "B" | "C" | "D"): string[] {
+function poolRefs(prompt: string, pool: "A" | "B" | "C" | "D" | "P"): string[] {
   const start = prompt.indexOf(`## Pool ${pool}`);
   if (start < 0) return [];
   const rest = prompt.slice(start);
@@ -123,16 +123,21 @@ export class OfflineAnthropic {
         });
       }
       if ("questions" in props) {
-        const written = (source: string, pool: "B" | "C" | "D") =>
+        const written = (source: string, pool: "B" | "C" | "D" | "P") =>
           poolRefs(prompt, pool).map((ref) => ({
             source, ref,
             question: `Does this describe your company? (${ref})`,
             stake: "Decides whether this route stays open to you",
             // An open question has no options by construction, and
             // `planAdaptiveScreen` deliberately applies no option floor to it.
-            options: pool === "D" ? [] : WRITTEN_OPTIONS,
+            options: pool === "D" || pool === "P" ? [] : WRITTEN_OPTIONS,
           }));
         const pools = [
+          // Pool P first, as its own instruction in the prompt demands. It is
+          // present only when the route asked for it (a thin description with
+          // the arm on), so on every other run this is an empty array and the
+          // round-robin below is unchanged.
+          written("project", "P"),
           poolRefs(prompt, "A").map((ref) => ({
             source: "field", ref, question: "", stake: "", options: [] as { value: string; label: string }[],
           })),

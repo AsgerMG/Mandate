@@ -16,7 +16,7 @@ import { assembleInstructions } from "./contracts";
 import { recordUsage } from "./cost";
 import { declaw, fence } from "./untrusted";
 import { recordEvent } from "./telemetry";
-import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS, OPEN_ANSWER_PREFIX, type EligibilityAnswers } from "./types";
+import { COMMERCIAL_ANSWER_PREFIX, COMPANY_TYPE_OPTIONS, FIELD_ENUM_HINTS, OPEN_ANSWER_PREFIX, PROJECT_ANSWER_PREFIX, USEFUL_DESCRIPTION_CHARS, type EligibilityAnswers } from "./types";
 import { knownFacts } from "./knownFacts";
 import type {
   IntelligenceRequest, ProfileSignal, ProjectQuestion,
@@ -128,6 +128,58 @@ function fieldOptions(
 
 export const SCREEN_QUESTION_CAP = 6;
 
+// ── POOL P: ASK FOR THE PROJECT WHEN WE DO NOT HAVE IT (wsIV) ─────────────
+//
+// Step 3 of the owner's architecture is "looking at that subset, the LLM
+// generates additional questions". Pool P is the one question that pool can ask
+// which no static form can: the ~40 candidate funds are already on the table,
+// so the question can name the fork THIS founder's shortlist actually turns on
+// and ask them to describe their project against it.
+//
+// ── Why this is not the route wsDT measured dead ──────────────────────────
+// wsDT ("SCREEN_FOR_RANKER", archived at `archive/wsDT-questions-for-ranker`)
+// re-aimed this planner at the stage that picks and delivered the answers to
+// the selector's PROMPT. Its own harness computed `semanticFundMatch(
+// c.description)` ONCE, before either arm ran, and shared it between them: the
+// theme cosine was held fixed BY CONSTRUCTION, so no answer in that experiment
+// could ever move it. Its null is a finding about the selector reading prose,
+// which is what its commit message says. It is not evidence about an answer
+// that joins the text the cosine is taken against, and all twelve of its bench
+// companies had a full description, so the population Pool P exists for was not
+// in it at all.
+//
+// ── What the founder is asked, and what they are not ──────────────────────
+// "What are you building, who is it for, and what would this money pay for" is
+// a fact the founder owns. "Which funding topic are you" is not, and that is
+// the question the retired routes asked. The prompt below states the
+// distinction as a property rather than banning words.
+//
+// ── When it fires ─────────────────────────────────────────────────────────
+// Only when the description is thinner than `USEFUL_DESCRIPTION_CHARS` — the
+// floor below which `measure_description_lift` shows a description scoring like
+// the canned sector template. A founder who wrote a real one is never asked
+// again: the intake's own stop-once nudge already had its turn, and a second
+// ask would be nagging someone who complied.
+//
+// DEFAULT OFF. This changes what a founder is asked.
+export const PROJECT_QUESTION_ARM: "on" | "off" =
+  process.env.PROJECT_QUESTION_ARM === "on" ? "on" : "off";
+
+/** The one id Pool P can produce. Fixed, because the answer is routed by it. */
+export const PROJECT_QUESTION_ID = `${PROJECT_ANSWER_PREFIX}description`;
+
+/**
+ * Whether this founder gets the describe-your-project question.
+ *
+ * Exported because the panel's own test asserts the pairing between the
+ * condition and the routing, and a second copy of `< USEFUL_DESCRIPTION_CHARS`
+ * is exactly the "keep in sync" comment this repo treats as the bug.
+ */
+export function wantsProjectQuestion(description: string | undefined): boolean {
+  return PROJECT_QUESTION_ARM === "on"
+    && (description ?? "").trim().length < USEFUL_DESCRIPTION_CHARS;
+}
+
 export interface PlannedScreen {
   theme: string;
   /** Fixed-answer-space questions. Both the question and the option LABELS are
@@ -187,7 +239,9 @@ export async function planAdaptiveScreen(
   const facts = knownFacts(req, req.eligibility,
     "## What the founder has ALREADY told us. Never ask any of this again.");
   const enumFields = openFields.filter((f) => FIELD_ENUM_HINTS[f.field]);
-  if (!enumFields.length && !projectGates.length && !openQuestions.length && !req.description) return null;
+  const askProject = wantsProjectQuestion(req.description);
+  if (!enumFields.length && !projectGates.length && !openQuestions.length
+      && !askProject && !req.description) return null;
 
   const candidateBlock = candidates.slice(0, 8)
     .map((c) => `  - ${c.name} (${c.country}, ${c.supportType})`).join("\n");
@@ -220,7 +274,7 @@ export async function planAdaptiveScreen(
           properties: {
             // Which pool this question came from, so the caller can rebuild it
             // with the right grounding without guessing.
-            source: { type: "string", enum: ["field", "gate", "commercial", "open"] },
+            source: { type: "string", enum: ["field", "gate", "commercial", "open", "project"] },
             /** field name, gate key, or commercial topic */
             ref: { type: "string" },
             /** For source "gate" and "commercial" only: the whole question. */
@@ -344,6 +398,34 @@ export async function planAdaptiveScreen(
               `about their own project without having read anything.\n` +
               `${openBlock}\n\n`
             : "") +
+          (askProject
+            ? `## Pool P: the project itself (source "project", ref "project")\n` +
+              `This founder has told us almost nothing about what they are ` +
+              `building: ${(req.description ?? "").trim().length} characters of ` +
+              `free text. Everything above is ranked on their sector alone, and ` +
+              `the funds in front of them are the funds that suit the AVERAGE ` +
+              `company in that sector rather than this one.\n` +
+              `So ask ONE question, and ask it FIRST: get them to say, in their ` +
+              `own words, what they are building, who it is for, and what this ` +
+              `money would pay for. Two or three sentences, from memory, with ` +
+              `no document open.\n` +
+              `GROUND IT IN THE LIST ABOVE — that is the whole reason this ` +
+              `question is worth more here than on a blank form. You can see ` +
+              `the candidates and what each still turns on, so name the fork ` +
+              `their shortlist actually hangs on and ask them to describe their ` +
+              `project against it ("These routes split on whether the work is ` +
+              `X or Y. In your own words, what are you actually building, and ` +
+              `what would the money pay for?").\n` +
+              `ASK ABOUT THEIR COMPANY, NEVER ABOUT THE FUNDING LANDSCAPE. The ` +
+              `test is whether the answer is a fact they own: what they build, ` +
+              `who buys it, what the money buys is theirs. Which programme ` +
+              `theme, which call topic, which cluster or which category they ` +
+              `belong to is OURS to work out from their answer, and a founder ` +
+              `who has never applied for public funding cannot answer it — ` +
+              `asking anyway returns a guess that we then rank on.\n` +
+              `Return an EMPTY options array and copy the ref exactly. There is ` +
+              `no option list for this: it is prose.\n\n`
+            : "") +
           `## How to choose\n` +
           // Four is the target and six is the ceiling. This bullet used to say
           // "Aim to USE the full six... Cutting to two is not selectivity",
@@ -419,6 +501,21 @@ export async function planAdaptiveScreen(
           `only questions on the screen that can resolve a requirement no ` +
           `checkbox will ever settle, and a screen without one leaves that ` +
           `fund's biggest condition untested.\n\n` +
+          (askProject
+            ? `- POOL P IS NOT OPTIONAL AND IT GOES FIRST. Exactly one ` +
+              `question with source "project", at the top of the screen. It is ` +
+              `the only question here whose answer re-ranks the whole ` +
+              `shortlist rather than resolving one fund, and it is the one ` +
+              `thing about this founder we do not have. If that costs the ` +
+              `sixth question, spend it: six is the ceiling and four is the ` +
+              `target, so the question it displaces is the one the bar above ` +
+              `says should not have been asked.\n` +
+              `- AND POOL C IS NOT REQUIRED ON THIS SCREEN. The instruction ` +
+              `above says to include one when a description exists, because ` +
+              `positioning has no other source. On this founder Pool P IS that ` +
+              `source: their commercial model is part of what they are about to ` +
+              `tell you. Include one only if it earns the seat on the bar above.\n\n`
+            : "") +
           `Return ONLY the JSON object for the schema.`,
       }],
     }), INTAKE_MODEL);
@@ -454,9 +551,21 @@ export async function planAdaptiveScreen(
       // round DOWN is not a floor either, so one slot is RESERVED whenever
       // open candidates exist: a non-open question may not take the last seat
       // while an open one is still waiting for it.
-      const reserved = openQuestions.length && !written.some((w) => w.openText) ? 1 : 0;
-      const seats = SCREEN_QUESTION_CAP - (q.source === "open" ? 0 : reserved);
-      if (fields.length + written.length >= seats) continue;
+      //
+      // ONE RESERVATION PER POOL A MODEL MAY ROUND DOWN, and a question of a
+      // reserved kind does not pay its own reservation. Pool P gets one for the
+      // same reason Pool D has one: it is a single mandatory slot that the
+      // model will happily spend on a fifth question it can write options for.
+      //
+      // The open-pool predicate is `w.openKey`, not `w.openText`, since wsIV:
+      // Pool P questions are also `openText`, so testing that would have let a
+      // describe-your-project question satisfy Pool D's reservation and quietly
+      // drop the open question it was being held for.
+      const openPending = openQuestions.length > 0 && !written.some((w) => w.openKey);
+      const projectPending = askProject && !written.some((w) => w.id === PROJECT_QUESTION_ID);
+      const reserved = (openPending && q.source !== "open" ? 1 : 0)
+        + (projectPending && q.source !== "project" ? 1 : 0);
+      if (fields.length + written.length >= SCREEN_QUESTION_CAP - reserved) continue;
       const options = (q.options ?? [])
         .map((o) => deDash(String(o?.label ?? "").trim()))
         .filter(Boolean)
@@ -521,6 +630,25 @@ export async function planAdaptiveScreen(
           gateKey: o.gateKey, quote: o.requirement, locator: o.locator,
           openText: true, openKey: o.key,
         });
+      } else if (q.source === "project" && askProject
+                 && !written.some((w) => w.id === PROJECT_QUESTION_ID)) {
+        // No instrument, no gate key and no quote, exactly like the commercial
+        // half: this question is not grounded in a fund's requirement text and
+        // must never be read as evidence about one. What makes it legitimate is
+        // the opposite of grounding — it asks for a fact the founder owns.
+        //
+        // `openText` so the panel renders a prose box; NO `openKey`, so
+        // `judgeOpenAnswers` never sees it and it cannot reach an eligibility
+        // judgement. Its whole reach is `description`, which the panel arranges.
+        seenRefs.add(q.ref);
+        written.push({
+          id: PROJECT_QUESTION_ID,
+          question: deDash(q.question.trim()),
+          stake: deDash((q.stake ?? "").trim()) || undefined, options: [],
+          instrumentId: "", instrumentName: "", gateKey: "project_description",
+          quote: "", locator: "",
+          openText: true,
+        });
       } else if (q.source === "commercial" && options.length >= 2) {
         seenRefs.add(q.ref);
         written.push({
@@ -566,7 +694,15 @@ export async function planAdaptiveScreen(
         stake: scrub(f.stake),
         options: f.options?.map((o) => ({ ...o, label: scrub(o.label) })),
       })),
-      projectQuestions: written.map((w) => ({
+      // Pool P leads its half of the screen. The prompt asks for it first and
+      // reply order is preserved everywhere else, but "first in the model's
+      // array" is not "first the founder reads": the panel renders the generic
+      // half above this one, so within this half it is put where the founder
+      // meets it before being asked anything about a fund.
+      projectQuestions: [
+        ...written.filter((w) => w.id === PROJECT_QUESTION_ID),
+        ...written.filter((w) => w.id !== PROJECT_QUESTION_ID),
+      ].map((w) => ({
         ...w,
         question: scrub(w.question),
         stake: scrub(w.stake),
