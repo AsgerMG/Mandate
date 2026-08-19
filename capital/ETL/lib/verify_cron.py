@@ -148,23 +148,50 @@ def restore_and_verify(mode: str = "deploy", attempts: int = 3, settle_s: int = 
     """
     from railway_service import set_service_instance
 
+    # ── EVERY CALL HERE REACHES RAILWAY, SO EVERY ONE CAN FAIL ──────────────
+    # This is THE repair command — the one every other failure path prints as
+    # the fix — and on 2026-08-19 it died on the outage it exists to repair:
+    # `set_service_instance` sat outside the try, Railway's control plane
+    # returned `Unauthorized` for a minute, and the repair exited on a stack
+    # trace with the weekly ETL still off. `check()` had the same hole.
+    #
+    # A repair tool must be the most patient thing in the system, not the most
+    # brittle. Nothing below raises on a transport failure; a failed attempt is
+    # an attempt, and the loop keeps its own counsel until it has either
+    # confirmed the schedule or run out of attempts.
+    last: list[str] = []
     for attempt in range(1, attempts + 1):
         print(f"\n-- restore attempt {attempt}/{attempts} ({mode})")
-        set_service_instance(REAL_START_COMMAND, REAL_CRON_SCHEDULE)
+        try:
+            set_service_instance(REAL_START_COMMAND, REAL_CRON_SCHEDULE)
+        except Exception as exc:                       # noqa: BLE001
+            last = [f"the config write failed: {exc!r}"]
+            print(f"   config write failed: {exc}")
+            time.sleep(10)
+            continue
         try:
             deploy(f"restore weekly schedule {REAL_CRON_SCHEDULE} (verify_cron)")
-        except subprocess.CalledProcessError as exc:
+        except Exception as exc:                       # noqa: BLE001
+            last = [f"the {mode} failed: {exc!r}"]
             print(f"   {mode} failed: {exc}")
             time.sleep(10)
             continue
         # Railway needs a moment before the new deployment is the latest one.
         for _ in range(20):
             time.sleep(settle_s)
-            problems = check()
+            try:
+                problems = check()
+            except Exception as exc:                   # noqa: BLE001
+                last = [f"Railway could not be read back: {exc!r}"]
+                continue
+            last = problems
             if not problems:
                 return []
         print("   still not verified; retrying")
-    return check()
+    try:
+        return check()
+    except Exception as exc:                           # noqa: BLE001
+        return last or [f"Railway could not be read at all: {exc!r}"]
 
 
 def main() -> int:

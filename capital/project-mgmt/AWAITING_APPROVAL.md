@@ -107,6 +107,66 @@ to verify the precondition read-only first the way the other three were.
 The alternative is asking a model to re-derive the labels, which prices at about
 **USD 136**. The weekly job's `--max-cost 20` correctly refuses it.
 
+**wsHX sizes it:** SA.40391 is the single largest item in the answer key's
+unreachable set — **8 of the 78** founders, across its R&D and equity
+registrations. It is tier C, not tier A: its notified duration expired and
+nobody has read the funder's page. One page-read decides eight founders.
+
+### 5. Land the 3,362 encoded gates — one command, needs you at a terminal
+
+The corpus of record has never been given the gates encoded since 2026-08-09,
+and no cron step can reproduce them. The union is **built and proven**:
+`data/wshx_union_ready_to_push.sqlite`, 9,763 gates, with all eleven other family
+tables byte-identical to the record. It passed the safety gate at the upload
+(`proven loss: 0`); the transfer itself failed on an expired token.
+
+```
+python3 ETL/events/load/promote_to_record.py \
+  --file data/wshx_union_ready_to_push.sqlite --apply
+```
+
+**It needs a `railway login`, which is interactive — that is the only reason
+this is yours and not mine.** And after tonight, agents do not touch Railway
+service configuration at all.
+
+The near-miss worth knowing: the obvious command would have been wrong.
+`--family instruments` passes the overwrite gate cleanly and had **374 column
+values queued to be displaced**, including `name_source`, which decides whether
+a row is withheld from every founder.
+
+### 6. The record calls 44 rows offerable that we withhold — free, but it is a verdict
+
+Found while doing the above. The record carries the withholding flag on **zero**
+rows where the laptop carries it on **44** — every Polish `sudop_*`, every
+`satr_*_equity`. **Anything rebuilt from the record today puts Poland's entire
+offerable pool back in front of founders.** The weekly job cannot repair it; the
+step that assigns those verdicts is not in its list.
+
+Not done deliberately: it moves a publishability verdict on 44 rows, which is a
+decision rather than a transfer. Say the word and it gets a one-column promotion
+with its own before-and-after.
+
+### 7. Should 58 founders stay in the set we grade ourselves against? — your call
+
+**Not a corpus defect — a defect in our own measuring stick**, and removing a
+founder from it is a decision about what we are trying to do. Nothing was
+changed.
+
+| | founders | what it is |
+|---|---:|---|
+| gone or withheld | 13 | 6 dead deadlines, 7 withheld by our own policy |
+| **not a door** | **45** | 19 approval waves with nothing to apply to, 26 loader labels |
+| our own defect | 20 | 11 equity rows below the data floor, 9 unexamined durations |
+
+The middle row is the question: those 45 are not funds anybody could ever apply
+to. Tier C stays in — closing it is work we can do.
+
+Dropping the 58 moves our headline from 91.3% to **97.6%** on the reach measure.
+**Both figures get published or neither does**, and the six-row number barely
+moves — it is inside the instrument's own margin and is not an improvement in
+anything. I am not proposing this to make a number look better; I am proposing
+it because grading ourselves on unanswerable questions tells us nothing.
+
 ---
 
 ## Costs money
