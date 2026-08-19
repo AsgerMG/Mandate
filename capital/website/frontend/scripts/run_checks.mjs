@@ -234,6 +234,18 @@ const CHECKS = [
   // bench profile has to happen to draw the group.
   ["a displayed name is not an id",
    ["npx", "tsx", "scripts/check_row_name_not_id.ts"]],
+  // And directly beneath THAT, because it is the third question about one
+  // string and the only one asked of the string as it is CUT. Those two ask
+  // what a name is built out of; this asks whether the 120 characters a reader
+  // actually gets still tell two funds apart. Four Catalan ICF loan lines
+  // notified under four different aid regulations reached the model's menu as
+  // one string four times, and the collapse below the menu resolved that by
+  // demoting three real funds out of the table. Hermetic, sub-second, and it
+  // grades each market's whole offerable pool as one table -- the widest table
+  // any founder in that market can be handed -- so no bench profile has to
+  // happen to draw the group.
+  ["a cut title still tells two funds apart",
+   ["npx", "tsx", "scripts/check_row_titles_distinct.ts"]],
   // Hermetic Python: the register's own words for each aid-instrument code,
   // our decision about what kind of capital that is, and the committed corpus
   // snapshot. It sits here rather than with the other corpus checks because
