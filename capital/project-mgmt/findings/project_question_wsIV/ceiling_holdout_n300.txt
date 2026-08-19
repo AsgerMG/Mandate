@@ -1,0 +1,15 @@
+(node:21460) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  … 20/300
+  … 40/300
+  … 60/300
+  … 80/300
+  … 100/300
+  … 120/300
+  … 140/300
+  … 160/300
+  … 180/300
+  … 200/300
+  … 220/300
