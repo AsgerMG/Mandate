@@ -10,6 +10,8 @@
 // That is why every call here is bounded and every failure is recorded rather
 // than thrown — see recordEvent("research_degraded").
 import Anthropic from "@anthropic-ai/sdk";
+import { COMPARABLE_CONTEXT_ARM, type ComparableContextArm } from "./caps";
+import { comparableFactLines } from "./comparableFacts";
 import { recordUsage } from "./cost";
 import { recordEvent } from "./telemetry";
 import { fence } from "./untrusted";
@@ -77,6 +79,68 @@ async function askWithSearch(model: string, system: string, user: string): Promi
     .join("\n");
 }
 
+/**
+ * Everything the comparable-company search is told about the founder.
+ *
+ * ── Exported so it can be graded without paying for it ────────────────────
+ * This is the one string that separates the two arms, and it is built from the
+ * request alone -- no database, no corpus, no network. So `scripts/_wsil_ctx.ts`
+ * renders BOTH arms for every founder in the held-out population for free and
+ * says exactly what the treatment would change and on how many of them. A
+ * second copy of this block in that script would be grading a prompt no
+ * founder is served, which is the standing rule `writerCandidateEvidence` is
+ * exported under.
+ *
+ * ── Arm `description` — what has always run ───────────────────────────────
+ * The request's TOP-LEVEL fields only. `req.sector ? \`Sector: ...\`` used to
+ * sit here; the route read `body.sector`, the panel never sent it, so the line
+ * rendered empty on every request this product has served and wsIK's removal
+ * of it was byte-identical. What that exposed rather than fixed is this
+ * function's whole subject: the founder answers seven eligibility questions on
+ * the first screen and NOT ONE of them has ever reached the only stage that
+ * searches the open web for companies like theirs.
+ *
+ * ── Arm `answers` — the treatment ─────────────────────────────────────────
+ * Plus the answered intake fields that describe the COMPANY, by the property in
+ * `comparableFacts.ts` -- which is a smaller block than `intakeFactLines`, on
+ * purpose and for a stated reason. See that file.
+ *
+ * The heading is not decoration either. The founder's own prose is FENCED as
+ * untrusted; these lines are our own words for our own questions and are
+ * trusted, and the sentence says what the model is to DO with them. Without it
+ * a bare "how much they are looking for: EUR 2M to 10M" beneath a search
+ * instruction reads as a filter on the companies to return, and the stage's
+ * value to everything downstream is the number of peers that DB-match -- a
+ * search that narrows finds fewer of them, which is the mechanism by which
+ * this arm could LOSE.
+ */
+export function comparableSearchContext(
+  req: IntelligenceRequest,
+  /** Defaulted from the module-scope arm, so production reads the environment
+   *  ONCE and no call site can change what a founder is served. It is a
+   *  parameter at all so the free grader can render both arms in ONE process
+   *  and diff them per founder -- with an env read inside this function that
+   *  would take two runs and a file, and the thing being compared would be two
+   *  processes rather than two strings. */
+  arm: ComparableContextArm = COMPARABLE_CONTEXT_ARM,
+): string {
+  const facts = arm === "answers" ? comparableFactLines(req.eligibility) : [];
+  return [
+    `Company: ${req.company}`,
+    req.country ? `Country: ${req.country}` : "",
+    req.companyType ? `Company type: ${req.companyType}` : "",
+    req.description ? fence("company description", req.description) : "",
+    facts.length
+      ? `\nWhat this company told us about itself. Use it to judge whether a ` +
+        `candidate is at a similar altitude in a similar field. It is NOT a ` +
+        `filter: a good comparable may differ on any of these.\n` +
+        facts.map((l) => `- ${l}`).join("\n")
+      : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
 // ── Stages 1+3 merged: discover competitors AND research them in one search pass.
 // Two serial web-search calls were the timeout; one pass finds the peers and
 // their snapshots together, then we DB-match the names (no LLM) below.
@@ -84,24 +148,7 @@ export async function discoverAndResearch(
   req: IntelligenceRequest,
   instructions: string,
 ): Promise<CompetitorIntel[]> {
-  const ctx = [
-    `Company: ${req.company}`,
-    // ── NO INTAKE ANSWER REACHES THIS PROMPT, AND NOW IT SAYS SO ──────────
-    // `req.sector ? \`Sector: ...\`` was here. The route read `body.sector`,
-    // the panel never sent it, so the line rendered empty on every request
-    // this product has served and its removal is byte-identical (wsIK).
-    // What that exposes rather than fixes: `ctx` is built from the request's
-    // top-level fields only, so the comparable-company search has never been
-    // told the founder's sector, ticket, stage or use of funds — the answers
-    // sit in `req.eligibility` and nothing here reads them. Wiring
-    // `intakeFactLines(req.eligibility)` in would change what this paid stage
-    // searches for, so it is a measured change and not a tidy-up.
-    req.country ? `Country: ${req.country}` : "",
-    req.companyType ? `Company type: ${req.companyType}` : "",
-    req.description ? fence("company description", req.description) : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
+  const ctx = comparableSearchContext(req);
 
   const text = await askWithSearch(
     SEARCH_MODEL,

@@ -112,11 +112,25 @@ export const sayIntakeValue = (field: keyof EligibilityAnswers, v: unknown): str
  * These are our own words for our own questions and our own vocabulary values,
  * never founder prose, so they are trusted and need no fencing.
  */
-export function intakeFactLines(e?: EligibilityAnswers): string[] {
+export function intakeFactLines(
+  e?: EligibilityAnswers,
+  /** Which fields this reader may see. Omitted, every answered field is
+   *  rendered, which is what every caller but the comparable-company search
+   *  wants and what this function did before the parameter existed.
+   *
+   *  A PREDICATE and not a list: the one stage that narrows the block
+   *  (`comparableFacts.ts`) derives its predicate from an exhaustive Record,
+   *  so the narrowing is a declared property and this function stays the
+   *  single renderer. The alternative -- a second renderer beside this one, or
+   *  a caller grepping these strings for the labels it wants -- is the
+   *  two-copies-of-one-mapping defect `check_answer_reach.ts` exists for, and
+   *  a label reworded on one side of it goes silently wrong. */
+  admits: (f: keyof EligibilityAnswers) => boolean = () => true,
+): string[] {
   if (!e) return [];
   const keys = Object.keys(ANSWER_LABEL) as (keyof EligibilityAnswers)[];
   return keys
-    .filter((k) => answered((e as Record<string, unknown>)[k]))
+    .filter((k) => admits(k) && answered((e as Record<string, unknown>)[k]))
     .map((k) => {
       const v = (e as Record<string, unknown>)[k];
       const line = `${ANSWER_LABEL[k]}: ${(Array.isArray(v) ? v : [v]).map((x) => sayIntakeValue(k, x)).join(", ")}`;
