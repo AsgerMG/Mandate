@@ -9,6 +9,7 @@ import {
   FIELD_ENUM_HINTS,
   MAX_DESCRIPTION_CHARS,
   MIN_MATCHABLE_DESCRIPTION_CHARS,
+  PROJECT_ANSWER_PREFIX,
   TICKET_BANDS,
   USEFUL_DESCRIPTION_CHARS,
   pinnedAnswers,
@@ -372,10 +373,16 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // that haven't made it into `elig` state yet (React state updates aren't
   // synchronous — see advanceRound, which needs the just-merged answers
   // immediately, not next render's stale closure).
-  const basePayload = (eligOverride?: EligibilityAnswers) => ({
+  // `descriptionOverride` is `eligOverride` one field over, and it exists for
+  // the identical reason (wsDL): `advanceRound` may extend the description with
+  // the founder's Pool P answer and then call the memo in the SAME TICK, so a
+  // closure reading `description` state would send the box as it stood before
+  // the round -- i.e. would drop the answer this whole feature exists to
+  // collect, silently, on exactly the founders who have nothing else.
+  const basePayload = (eligOverride?: EligibilityAnswers, descriptionOverride?: string) => ({
     company,
     country,
-    description,
+    description: descriptionOverride ?? description,
     capitalSought,
     eligibility: eligOverride ?? elig,
     profileSignal,
@@ -392,12 +399,14 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // The deterministic, code-only eligibility verdict — never shown on its
   // own, only used to ground which real fund gates the adaptive round is
   // allowed to ask about (see handleContinue/advanceRound below).
-  async function fetchVerdict(eligOverride?: EligibilityAnswers): Promise<Verdict | null> {
+  async function fetchVerdict(
+    eligOverride?: EligibilityAnswers, descriptionOverride?: string,
+  ): Promise<Verdict | null> {
     try {
       const res = await fetch("/api/intelligence/verdict", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(basePayload(eligOverride)),
+        body: JSON.stringify(basePayload(eligOverride, descriptionOverride)),
       });
       const data = (await res.json().catch(() => ({}))) as Partial<Verdict>;
       return {
@@ -460,6 +469,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     eligForRequest: EligibilityAnswers,
     candidateInstrumentIds: string[],
     wantProfileSignal: boolean,
+    descriptionOverride?: string,
   ) {
     setPreparing(true);
     setError(null);
@@ -468,7 +478,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          ...basePayload(),
+          ...basePayload(undefined, descriptionOverride),
           eligibility: eligForRequest,
           candidateInstrumentIds,
           wantProfileSignal,
@@ -487,7 +497,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         // wsDL: the same store, the same hazard. `eligForRequest` is what this
         // round was fetched for, and it is the caller's just-merged object
         // rather than the render-time `elig` this closure would otherwise read.
-        await runMemo(undefined, eligForRequest);
+        await runMemo(undefined, eligForRequest, descriptionOverride);
         return;
       }
       setRound(data.round);
@@ -496,7 +506,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
       setProjectFreeText({});
       setScreen("adaptive");
     } catch {
-      await runMemo(undefined, eligForRequest);
+      await runMemo(undefined, eligForRequest, descriptionOverride);
     } finally {
       setPreparing(false);
     }
@@ -516,6 +526,17 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     // Project answers are collected in parallel and kept OUT of `merged` by
     // design: they carry their fund + gate citation to the writer instead.
     const picked: ProjectAnswer[] = [];
+    // ── AND ONE OF THEM IS NOT A PROJECT ANSWER AT ALL (wsIV) ─────────────
+    // Pool P asks the founder to describe their own project, and its answer is
+    // the only thing on this screen that is not evidence about a fund. Routed
+    // into `description` rather than `projectAnswers` DELIBERATELY, because
+    // that is the difference between reaching the writer and reaching the
+    // ranking: `semanticFundMatch(req.description)` and `themeRelevance(
+    // description, ...)` are taken against this string and against nothing
+    // else, and it is 0.6 of the leaf score (THEME_WEIGHT). A ProjectAnswer's
+    // own docstring says it is "writer context and ease-scoring input only",
+    // which is exactly the reach this answer must not be limited to.
+    const describedProject: string[] = [];
     for (const q of round?.projectQuestions ?? []) {
       const choice = projectPicks[q.id];
       const free = projectFreeText[q.id]?.trim();
@@ -526,6 +547,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         ? free
         : choice === NONE_OF_THESE ? (free || NONE_OF_THESE) : (choice || free);
       if (!answer) continue;
+      if (q.id.startsWith(PROJECT_ANSWER_PREFIX)) { describedProject.push(answer); continue; }
       picked.push({
         questionId: q.id,
         question: q.question,
@@ -539,22 +561,30 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
       });
     }
     const allProjectAnswers = [...projectAnswers, ...picked];
+    // Appended, never replaced: a founder who wrote three words and then
+    // answered Pool P said both things, and the box they typed into is the one
+    // the intake warned them about. Capped by the same constant the form caps
+    // at, so a long answer cannot make the request larger than one a founder
+    // could have typed in the first place.
+    const nextDescription = [description.trim(), ...describedProject]
+      .filter(Boolean).join("\n\n").slice(0, MAX_DESCRIPTION_CHARS);
     setProjectAnswers(allProjectAnswers);
     setProjectPicks({});
     setProjectFreeText({});
     setElig(merged);
+    setDescription(nextDescription);
     setRound(null);
     const nextCount = roundCount + 1;
     setRoundCount(nextCount);
     if (nextCount >= MAX_ROUNDS) {
-      await runMemo(allProjectAnswers, merged);
+      await runMemo(allProjectAnswers, merged, nextDescription);
       return;
     }
     setPreparing(true);
     try {
-      const v = await fetchVerdict(merged);
+      const v = await fetchVerdict(merged, nextDescription);
       setRoutesInPlay(v?.instrumentTable?.length ?? 0);
-      await fetchRound(merged, v?.candidateInstrumentIds ?? [], false);
+      await fetchRound(merged, v?.candidateInstrumentIds ?? [], false, nextDescription);
     } finally {
       setPreparing(false);
     }
@@ -589,6 +619,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   async function runMemo(
     projectOverride?: ProjectAnswer[],
     eligOverride?: EligibilityAnswers,
+    descriptionOverride?: string,
   ) {
     if (running) return;
     setRunning(true);
@@ -605,7 +636,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          ...basePayload(eligOverride),
+          ...basePayload(eligOverride, descriptionOverride),
           projectAnswers: projectOverride ?? projectAnswers,
           // The second answer object. Omitted entirely when the founder never
           // reached a follow-up screen, because absent means "nothing is late"
