@@ -355,9 +355,25 @@ vault-status:
 #
 # `pull_db.py` is still there for the case where you genuinely mean to discard
 # local state. Read its header first.
+# ── WHY THIS IS SCOPED ─────────────────────────────────────────────────────
+# The unscoped merge REFUSES, every time, and correctly: keying on `id` across
+# these two stores finds 4 collisions and 188 aliases -- four EU joint
+# undertakings whose ids mean a different administering body on each side, and
+# 174 eligibility gates that are the same rule under two ids. A blind union
+# would silently duplicate the gates and take the SHORTER of the two fund names.
+#
+# `companies` and `public_funding_events` are the two tables the weekly cron
+# actually adds to, and both audit clean: 0 collisions, 0 aliases. So the pull
+# takes exactly those, and anything else that diverges is a decision somebody
+# has to make with the audit in front of them rather than a transfer.
+#
+# 2026-08-19: an unscoped `make pull-db` inside a script was read as a fatal
+# error and stopped the promotion it was the first step of. The refusal is the
+# guard working; scoping it is what makes the target usable.
 pull-db:
 	python3 ETL/events/extract/pull_db_side.py /tmp/volume-db.sqlite
-	python3 ETL/lib/merge_volume_into_local.py /tmp/volume-db.sqlite --write
+	python3 ETL/lib/merge_volume_into_local.py /tmp/volume-db.sqlite \
+	    --only companies,public_funding_events --write
 
 # The other half of the automation split: everything that can't run on
 # Railway (cloud-blocked NETWORK sources + MANUAL sources with a file
