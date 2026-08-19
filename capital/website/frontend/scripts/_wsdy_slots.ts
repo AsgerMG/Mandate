@@ -28,59 +28,39 @@
 // costs nothing, makes no call, and cannot describe a prompt other than the one
 // that was sent.
 //
-//   npx tsx scripts/_wsdy_slots.ts [dir]
-import { readFileSync, readdirSync, existsSync } from "fs";
+//   npx tsx scripts/_wsdy_slots.ts [dir]//
+// ██ THE THEME TEST IN HERE IS WITHDRAWN. wsIB, 2026-08-19. ██
+//
+// Every number this file prints about "the prompt's own two disqualifiers" is a
+// number about strict string equality between one taxonomy label and another.
+// That test throws out the fund the company ACTUALLY WON on 43.6% and 46.2% of
+// founders across the two paid forty-row tapes, against the 48.4% and 48.0% at
+// which it condemns the model, and the sector rule it attributes to the prompt
+// is not in the prompt: `buildPrompt`'s only sector sentence is a tie-break
+// about the TITLE and disqualifies nothing. The tests themselves now live once,
+// in `scripts/_ruler.ts`, and `npx tsx scripts/_wsib_ruler.ts` reproduces every
+// figure below before reporting the calibrated ones -- 48.4% becomes 3.3%, and
+// 26 of 78 founders short of seats becomes 0 of 78. This file is kept so the
+// withdrawn numbers can still be reproduced; do not quote them.
+//
+import { readFileSync, existsSync } from "fs";
 import path from "path";
 
 import { COMPANIES } from "../lib/intelligence/__benchCompanies";
+import { SECTOR_WORD } from "../lib/intelligence/shortlist";
+import { awardMedian, awardMismatch, menuRows, themeMismatch } from "./_ruler";
 
 const DIR = process.argv[2] ?? path.join(
   process.cwd(), "..", "..", "project-mgmt", "findings", "first_test_wsDQ");
 
-/** The descriptor a row would carry if it were on this company's own theme.
- *  These are the corpus's own `mostly X` labels, read off the rendered rows
- *  rather than invented: the point is what a reader of the ROW sees. */
-const THEME: Record<string, string> = {
-  software_data_ai: "software & AI",
-  industrial_manufacturing: "industrial manufacturing",
-  health_life_sciences: "health & life sciences",
-  agrifood: "agrifood",
-  mobility_transport: "mobility & transport",
-  semiconductors_electronics: "semiconductors & electronics",
-};
-
-/** The bottom of what the founder said they need, in euro. The prompt's money
- *  rule is stated against "what this company needs", and the generous reading
- *  of it -- the one that counts the MOST rows as survivors -- is the bottom of
- *  the band, divided by ten for "an order of magnitude". */
-const BAND_FLOOR: Record<string, number> = {
-  b100k_500k: 100_000, b500k_2m5: 500_000, b2m5_15m: 2_500_000,
-  b15m_50m: 15_000_000, gt50m: 50_000_000,
-};
-
-const money = (s: string): number | null => {
-  const m = s.match(/typical award EUR ([\d.]+)([MkB]?)/);
-  if (!m) return null;
-  const n = Number(m[1]);
-  return m[2] === "B" ? n * 1e9 : m[2] === "M" ? n * 1e6 : m[2] === "k" ? n * 1e3 : n;
-};
-
-interface Row { i: number; head: string; block: string }
-
-function rowsOf(prompt: string): Row[] {
-  const start = prompt.indexOf("\nCANDIDATES\n");
-  const body = start < 0 ? prompt : prompt.slice(start + 12);
-  const out: Row[] = [];
-  let cur: Row | null = null;
-  for (const line of body.split("\n")) {
-    const m = line.match(/^\[(\d+)\] /);
-    if (m) { if (cur) out.push(cur); cur = { i: Number(m[1]), head: line, block: line }; }
-    else if (cur && line.startsWith("     ")) cur.block += `\n${line}`;
-    else if (cur && !line.trim()) { out.push(cur); cur = null; }
-  }
-  if (cur) out.push(cur);
-  return out;
-}
+/** THE SECTOR MAP THAT WAS HERE HELD SIX ENTRIES WHERE `shortlist.ts` HOLDS
+ *  TEN. A founder in `energy & cleantech` or `materials & chemicals` therefore
+ *  had EVERY described row counted off-theme, because `theme` came back
+ *  undefined and the expression `!desc || (theme && ...)` is falsy for it. None
+ *  of the twelve bench companies is in one of the four missing sectors, so this
+ *  file's own numbers are unchanged by the repair -- but the three other copies
+ *  of this ruler imported `SECTOR_WORD` and this one did not, which is what a
+ *  "keep in sync" comment buys. The tests now live once, in `_ruler.ts`. */
 
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
 
@@ -97,19 +77,14 @@ const perCompany: { company: string; both: number }[] = [];
 for (const c of COMPANIES) {
   const f = path.join(DIR, slug(c.company), "prompt_r1.txt");
   if (!existsSync(f)) { console.log(`${c.company.padEnd(20)} (no recorded prompt)`); continue; }
-  const rows = rowsOf(readFileSync(f, "utf8"));
-  const theme = THEME[c.sector];
-  const floor = (BAND_FLOOR[c.ticketBand] ?? 0) / 10;
+  const rows = menuRows(readFileSync(f, "utf8"));
   let onTheme = 0, rightSize = 0, both = 0;
   for (const r of rows) {
-    // On theme: the row's own `mostly X` descriptor is this company's, or it
-    // carries none at all. A row that names another sector is off theme.
-    const desc = r.head.length ? r.block.match(/· mostly ([^·\n]+)/) : null;
-    const t = !desc || (theme && desc[1].trim() === theme);
-    // Right size: within an order of magnitude of the floor of the band, or no
-    // median at all ("no reliable award median" is unknown, not a mismatch).
-    const m = money(r.block);
-    const s = m == null || m >= floor;
+    // Both applied GENEROUSLY, as they always were here: a row with no
+    // descriptor is on theme and a row with no median is the right size, so
+    // `null` -- cannot say -- counts as surviving.
+    const t = themeMismatch(r.block, SECTOR_WORD[c.sector]) !== true;
+    const s = awardMismatch(awardMedian(r.block), c.ticketBand) !== true;
     if (t) onTheme++;
     if (s) rightSize++;
     if (t && s) both++;

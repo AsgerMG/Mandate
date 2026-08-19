@@ -1,0 +1,100 @@
+corpus snapshot: 1088 instruments, 11 sector keys, neighbourhood derived from co-funding lift
+
+==============================================================================
+indicative_wsHO/main_tape.jsonl   78 called founder(s)
+==============================================================================
+
+1. THE FALSE-DISQUALIFICATION RATE — the fund the company actually won
+   labelled rows recovered from the tape        78
+   RETIRED ruler disqualifies it                34 (43.6%)
+   CALIBRATED ruler disqualifies it             10 (12.8%)
+   ...of which the MONEY rule alone             9 (11.5%)
+   the money rule is the prompt's own and is NOT fixed here. Every number
+   quoted from the calibrated ruler carries its 11.5% with it.
+
+   the theme rule still fires on the won fund of:
+     AIXTRON SE (industrial_manufacturing) won satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung
+
+2. THE BASE RATE — every row of every menu
+   menu rows graded                             2948
+   RETIRED ruler disqualifies                   2052 (69.6%)
+   CALIBRATED ruler disqualifies                591 (20.0%)
+   rows no title join could resolve             2 (counted as surviving)
+
+3. SURVIVORS AND SEATS — the case for `atMost`, re-derived
+   MEAN SURVIVING ROWS, retired ruler           11.5
+   MEAN SURVIVING ROWS, calibrated ruler        30.2
+   fewer survivors than the 7 seats, retired    26/78 (33.3%)
+   fewer survivors than the 7 seats, calibrated 0/78 (0.0%)
+   MEAN SURVIVING ROWS, MONEY RULE ONLY         31.1
+   fewer survivors than the 7 seats, money only 0/78 (0.0%)
+   the calibrated and money-only lines are all but the same number: once
+   the theme test may not condemn the answer key, the money rule is the ruler.
+
+4. THE HEADLINE — picks said to fail the prompt's own disqualifiers
+   picks graded                                 546
+   RETIRED ruler calls a failure                264 (48.4%)
+   CALIBRATED ruler calls a failure             18 (3.3%)
+
+==============================================================================
+indicative_wsHW/main_tape.jsonl   78 called founder(s)
+==============================================================================
+
+1. THE FALSE-DISQUALIFICATION RATE — the fund the company actually won
+   labelled rows recovered from the tape        78
+   RETIRED ruler disqualifies it                36 (46.2%)
+   CALIBRATED ruler disqualifies it             11 (14.1%)
+   ...of which the MONEY rule alone             10 (12.8%)
+   the money rule is the prompt's own and is NOT fixed here. Every number
+   quoted from the calibrated ruler carries its 12.8% with it.
+
+   the theme rule still fires on the won fund of:
+     AIXTRON SE (industrial_manufacturing) won satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung
+
+2. THE BASE RATE — every row of every menu
+   menu rows graded                             2953
+   RETIRED ruler disqualifies                   2076 (70.3%)
+   CALIBRATED ruler disqualifies                610 (20.7%)
+   rows no title join could resolve             2 (counted as surviving)
+
+3. SURVIVORS AND SEATS — the case for `atMost`, re-derived
+   MEAN SURVIVING ROWS, retired ruler           11.2
+   MEAN SURVIVING ROWS, calibrated ruler        30.0
+   fewer survivors than the 7 seats, retired    27/78 (34.6%)
+   fewer survivors than the 7 seats, calibrated 0/78 (0.0%)
+   MEAN SURVIVING ROWS, MONEY RULE ONLY         30.9
+   fewer survivors than the 7 seats, money only 0/78 (0.0%)
+   the calibrated and money-only lines are all but the same number: once
+   the theme test may not condemn the answer key, the money rule is the ruler.
+
+4. THE HEADLINE — picks said to fail the prompt's own disqualifiers
+   picks graded                                 546
+   RETIRED ruler calls a failure                262 (48.0%)
+   CALIBRATED ruler calls a failure             15 (2.7%)
+
+==============================================================================
+wsDY's eighteen-row prompts: /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsIB-ruler/project-mgmt/findings/first_test_wsDQ
+==============================================================================
+
+  company               menu   retired   calibrated   money only
+  Neura Robotics          18         0            2            3
+  SMART Photonics         18         0            2            2
+  Silvr                   18         8           13           13
+  bunq                    18         0            1            1
+  Photoroom               18         2           13           17
+  Aleph Alpha             18         0            0            0
+  Nortal                  18         2            3            3
+  sennder                 18         4           15           15
+  Nebius                  18         0            0            0
+  Corti                   18         6           14           14
+  BioNTech                18         0            1            1
+  eAgronom                18         3           12           12
+
+  MEAN SURVIVORS, retired ruler       2.1   (published as "2.1 of 18")
+  MEAN SURVIVORS, calibrated ruler    6.3
+  fewer than the six seats, retired   10/12   (published as "ten of the twelve")
+  fewer than the six seats, calibrated 7/12
+  MEAN SURVIVORS, MONEY RULE ONLY     6.8
+  fewer than the six seats, money only 7/12  <- the whole residual, and this is the rule that
+                                            throws out the won fund one time in eight
+  rows no title join could resolve    2/216 — counted as surviving, so the calibrated mean is an UPPER bound here

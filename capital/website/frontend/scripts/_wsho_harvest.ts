@@ -10,7 +10,21 @@
 // Separated from the measurement for `_wshh_report.ts`'s reason: a formatting
 // change must never cost the run again.
 //
-//   npx tsx scripts/_wsho_harvest.ts [tape.jsonl]
+//   npx tsx scripts/_wsho_harvest.ts [tape.jsonl]//
+// ██ THE THEME TEST IN HERE IS WITHDRAWN. wsIB, 2026-08-19. ██
+//
+// Every number this file prints about "the prompt's own two disqualifiers" is a
+// number about strict string equality between one taxonomy label and another.
+// That test throws out the fund the company ACTUALLY WON on 43.6% and 46.2% of
+// founders across the two paid forty-row tapes, against the 48.4% and 48.0% at
+// which it condemns the model, and the sector rule it attributes to the prompt
+// is not in the prompt: `buildPrompt`'s only sector sentence is a tie-break
+// about the TITLE and disqualifies nothing. The tests themselves now live once,
+// in `scripts/_ruler.ts`, and `npx tsx scripts/_wsib_ruler.ts` reproduces every
+// figure below before reporting the calibrated ones -- 48.4% becomes 3.3%, and
+// 26 of 78 founders short of seats becomes 0 of 78. This file is kept so the
+// withdrawn numbers can still be reproduced; do not quote them.
+//
 //
 // ── THE QUESTION ──────────────────────────────────────────────────────────
 //
@@ -64,6 +78,9 @@ import path from "path";
 // the founder never saw.
 import { SECTOR_WORD } from "../lib/intelligence/shortlist";
 import { SELECT_COUNT, SELECT_COUNT_MODE } from "../lib/intelligence/agentSelect";
+// The two tests, and the prompt parsing, live once. Four copies of them had
+// already drifted (see `_ruler.ts`), which is why they are imported here.
+import { awardMedian, awardMismatch, menuRows, themeMismatch } from "./_ruler";
 
 // Pinned OFFLINE, deliberately, because the header above says this run needs no
 // credentials and nothing enforced it. Every module below reads DATABASE_URL and
@@ -78,14 +95,6 @@ delete process.env.VOYAGE_KEY;
 const TAPE = process.argv[2] ?? path.join(
   process.cwd(), "..", "..", "project-mgmt", "findings", "indicative_wsHO", "main_tape.jsonl");
 
-/** The bottom of what the founder said they need, in euro. wsDY's own map, and
- *  the generous reading of "an order of magnitude": the band FLOOR over ten. A
- *  band this map does not know makes every row survive, which cannot inflate
- *  the seat-filling count. */
-const BAND_FLOOR: Record<string, number> = {
-  b100k_500k: 100_000, b500k_2m5: 500_000, b2m5_15m: 2_500_000,
-  b15m_50m: 15_000_000, gt50m: 50_000_000,
-};
 
 interface Turn { round: number; prompt: string; reply: string; thinking: string }
 interface Row {
@@ -94,28 +103,6 @@ interface Row {
   turns: Turn[];
 }
 
-/** A rendered candidate, `[i] title` plus its indented block. */
-function rowsOf(prompt: string): { i: number; head: string; block: string }[] {
-  const start = prompt.indexOf("\nCANDIDATES\n");
-  const body = start < 0 ? prompt : prompt.slice(start + 12);
-  const out: { i: number; head: string; block: string }[] = [];
-  let cur: { i: number; head: string; block: string } | null = null;
-  for (const line of body.split("\n")) {
-    const m = /^\[(\d+)\] /.exec(line);
-    if (m) { if (cur) out.push(cur); cur = { i: Number(m[1]), head: line, block: line }; }
-    else if (cur && line.startsWith("     ")) cur.block += `\n${line}`;
-    else if (cur && !line.trim()) { out.push(cur); cur = null; }
-  }
-  if (cur) out.push(cur);
-  return out;
-}
-
-const money = (s: string): number | null => {
-  const m = /typical award EUR ([\d.]+)([MkB]?)/.exec(s);
-  if (!m) return null;
-  const n = Number(m[1]);
-  return m[2] === "B" ? n * 1e9 : m[2] === "M" ? n * 1e6 : m[2] === "k" ? n * 1e3 : n;
-};
 
 const pct = (a: number, b: number) => `${((100 * a) / (b || 1)).toFixed(1)}%`;
 const mean = (xs: number[]) => (xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0);
@@ -204,19 +191,20 @@ function main() {
   for (const r of called) {
     const first = r.turns.find((t) => t.round === 1);
     if (!first) continue;
-    const cands = rowsOf(first.prompt);
+    const cands = menuRows(first.prompt);
     if (!cands.length) continue;
-    const floor = BAND_FLOOR[r.ticketBand];
-    if (floor === undefined) unknownBand++;
     const theme = SECTOR_WORD[r.sector];
+    let sawUnknownBand = false;
     const okIdx = new Set<number>();
     for (const c of cands) {
-      const m = money(c.block);
-      const sizeOk = floor === undefined || m === null || m >= floor / 10;
-      const dm = /mostly ([^·\n]+)/.exec(c.block);
-      const themeOk = !dm || !theme || dm[1].trim() === theme;
-      if (sizeOk && themeOk) okIdx.add(c.i);
+      // GENEROUS in both directions, as before: `null` means cannot say and a
+      // row we cannot check survives.
+      const size = awardMismatch(awardMedian(c.block), r.ticketBand);
+      if (size === null && awardMedian(c.block) !== null) sawUnknownBand = true;
+      const themeOk = themeMismatch(c.block, theme) !== true;
+      if (size !== true && themeOk) okIdx.add(c.i);
     }
+    if (sawUnknownBand) unknownBand++;
     const outside = r.picks.filter((i) => !okIdx.has(i)).length;
     survivors.push(okIdx.size);
     menus.push(cands.length);

@@ -37,7 +37,21 @@
 import { readFileSync } from "fs";
 import path from "path";
 import { SECTOR_WORD } from "../lib/intelligence/shortlist";
-import { SELECT_COUNT } from "../lib/intelligence/agentSelect";
+// The two tests and the prompt parsing live once, in `_ruler.ts`.
+import { awardMedian, BAND_FLOOR, menuRows } from "./_ruler";
+import { SELECT_COUNT } from "../lib/intelligence/agentSelect";//
+// ██ THE THEME TEST IN HERE IS WITHDRAWN. wsIB, 2026-08-19. ██
+//
+// This file is the one that FOUND the defect -- section 9 points the ruler at
+// the won fund and it throws it out on 43.6% and 46.2% of founders. What it
+// could not do was say what the right ruler is. `scripts/_ruler.ts` now holds
+// the two tests once, calibrated against that same labelled set, and
+// `npx tsx scripts/_wsib_ruler.ts` reproduces every figure below before
+// reporting the corrected ones: 48.4% of picks becomes 3.3%, and the 26 of 78
+// founders holding fewer survivors than seats becomes 0 of 78. The
+// forced-versus-elective bracket this file records at 26-69% is settled at zero
+// forced. Kept so the withdrawn numbers reproduce; do not quote them.
+//
 
 // Pinned OFFLINE for `_wsho_harvest.ts`'s reason: every module below reads these
 // lazily, so destroying them is what makes "no DB, no key" true rather than
@@ -52,14 +66,6 @@ const TAPES = process.argv.slice(2).length ? process.argv.slice(2) : [
   path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "indicative_wsHW", "main_tape.jsonl"),
 ];
 
-/** wsDY's own map and the generous reading of "an order of magnitude": the band
- *  FLOOR over ten. Identical to `_wsho_harvest.ts` on purpose — a second
- *  definition of the survivor set would make this file's numbers incomparable
- *  with the two findings it is auditing. */
-const BAND_FLOOR: Record<string, number> = {
-  b100k_500k: 100_000, b500k_2m5: 500_000, b2m5_15m: 2_500_000,
-  b15m_50m: 15_000_000, gt50m: 50_000_000,
-};
 
 interface Turn { round: number; prompt: string; reply: string; thinking: string }
 interface Row {
@@ -71,27 +77,6 @@ interface Row {
   turns: Turn[];
 }
 
-function rowsOf(prompt: string): { i: number; block: string }[] {
-  const start = prompt.indexOf("\nCANDIDATES\n");
-  const body = start < 0 ? prompt : prompt.slice(start + 12);
-  const out: { i: number; block: string }[] = [];
-  let cur: { i: number; block: string } | null = null;
-  for (const line of body.split("\n")) {
-    const m = /^\[(\d+)\] /.exec(line);
-    if (m) { if (cur) out.push(cur); cur = { i: Number(m[1]), block: line }; }
-    else if (cur && line.startsWith("     ")) cur.block += `\n${line}`;
-    else if (cur && !line.trim()) { out.push(cur); cur = null; }
-  }
-  if (cur) out.push(cur);
-  return out;
-}
-
-const money = (s: string): number | null => {
-  const m = /typical award EUR ([\d.]+)([MkB]?)/.exec(s);
-  if (!m) return null;
-  const n = Number(m[1]);
-  return m[2] === "B" ? n * 1e9 : m[2] === "M" ? n * 1e6 : m[2] === "k" ? n * 1e3 : n;
-};
 
 const pct = (a: number, b: number) => `${((100 * a) / (b || 1)).toFixed(1)}%`;
 
@@ -122,13 +107,13 @@ function analyse(tape: string, strict = false) {
   for (const r of called) {
     const first = r.turns.find((t) => t.round === 1);
     if (!first) continue;
-    const cands = rowsOf(first.prompt);
+    const cands = menuRows(first.prompt);
     if (!cands.length) continue;
     const floor = BAND_FLOOR[r.ticketBand];
     const theme = SECTOR_WORD[r.sector];
     const survivors = new Set<number>();
     for (const c of cands) {
-      const m = money(c.block);
+      const m = awardMedian(c.block);
       const dm = /mostly ([^·\n]+)/.exec(c.block);
       // GENEROUS (the harvest's own reading, so the numbers stay comparable):
       // an unknown band, an unpriced row and an undescribed row all survive.
@@ -348,12 +333,12 @@ function report(tape: string) {
   for (const c of grad) {
     if (c.survivors.has(c.wonIdx!) || shown >= 4) continue;
     const first = c.r.turns.find((t) => t.round === 1)!;
-    const cand = rowsOf(first.prompt).find((x) => x.i === c.wonIdx);
+    const cand = menuRows(first.prompt).find((x) => x.i === c.wonIdx);
     if (!cand) continue;
     shown++;
     const floor = BAND_FLOOR[c.r.ticketBand];
     const theme = SECTOR_WORD[c.r.sector];
-    const m = money(cand.block);
+    const m = awardMedian(cand.block);
     const dm = /mostly ([^·\n]+)/.exec(cand.block);
     const why = [
       floor !== undefined && m !== null && m < floor / 10

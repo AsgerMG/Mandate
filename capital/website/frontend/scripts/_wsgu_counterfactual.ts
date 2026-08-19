@@ -40,55 +40,16 @@ import path from "path";
 import { mergeInheritedGates, type DbGate, type DbInstrument } from "../lib/intelligence/corpus";
 import type { EligibilityAnswers } from "../lib/intelligence/types";
 import { assessInstrument } from "../lib/intelligence/verdict";
+import { applyCorrections, loadCorrections, type Correction } from "./gateCorrections";
 import { loadRecallSet, type RecallRow } from "./recallSet";
 
 const SNAPSHOT = path.join("public", "data", "instrument_terms.json");
 const CORRECTIONS = path.join("..", "..", "project-mgmt", "evidence",
   "wsgu_gate_encoding_corrections_2026-08-13.jsonl");
 
-interface Correction {
-  instrument_id: string;
-  gate_key: string;
-  action: string;
-  clause: string;
-  current_value_spec: Record<string, unknown>;
-  proposed_value_spec: Record<string, unknown> | null;
-}
-
 function load(): { records: any[]; corrections: Correction[] } {
   const records = JSON.parse(readFileSync(path.join(process.cwd(), SNAPSHOT), "utf8")).records ?? [];
-  const corrections = readFileSync(path.join(process.cwd(), CORRECTIONS), "utf8")
-    .split("\n").filter(Boolean).map((l) => JSON.parse(l) as Correction);
-  return { records, corrections };
-}
-
-/** Deep-copy the records and apply every correction, refusing silently to
- *  apply none: a counterfactual that changed nothing and reported an
- *  improvement would be the worst possible output of this file. */
-function applyCorrections(records: any[], corrections: Correction[]): any[] {
-  const out = JSON.parse(JSON.stringify(records)) as any[];
-  const byId = new Map(out.map((r) => [r.id, r]));
-  let applied = 0;
-  for (const c of corrections) {
-    const inst = byId.get(c.instrument_id);
-    const gate = (inst?.gates ?? []).find((g: any) => g.id === c.gate_key);
-    if (!gate) throw new Error(`correction targets a gate that is not in the snapshot: `
-      + `${c.instrument_id} [${c.gate_key}]`);
-    // Key order is not part of a comparator's identity — the emitter sorts,
-    // the snapshot does not — so compare the specs canonically rather than
-    // by their serialisation.
-    const canon = (o: unknown): string => JSON.stringify(o, Object.keys(
-      (o ?? {}) as object).sort());
-    if (canon(gate.valueSpec) !== canon(c.current_value_spec)) {
-      throw new Error(`correction is stale — ${c.instrument_id} [${c.gate_key}] now holds `
-        + `${JSON.stringify(gate.valueSpec)}, the correction was written against `
-        + `${JSON.stringify(c.current_value_spec)}`);
-    }
-    gate.valueSpec = c.proposed_value_spec;   // null = quarantined
-    applied += 1;
-  }
-  if (applied !== corrections.length) throw new Error("not every correction applied");
-  return out;
+  return { records, corrections: loadCorrections(CORRECTIONS) };
 }
 
 const { rows } = loadRecallSet("wsgu counterfactual");

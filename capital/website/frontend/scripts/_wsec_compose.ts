@@ -10,6 +10,21 @@
 // selector is shown, which is where the 33-point gap lives.
 //
 //   npx tsx scripts/_wsec_compose.ts [tape.json]
+//
+// ██ THE THEME TEST IN HERE IS WITHDRAWN. wsIB, 2026-08-19. ██
+//
+// `survives` below is wsDY's strict string equality between a row's `mostly X`
+// clause and the founder's own sector label. It throws out the fund the company
+// ACTUALLY WON on 43.6% and 46.2% of founders across the two paid forty-row
+// tapes -- and section 5 of this very file already asked that question and said
+// "if the won fund is routinely ruled out by our own two tests, then those
+// tests are wrong and no reordering built on them can help". It was right. The
+// tests now live once, in `scripts/_ruler.ts`, calibrated against that labelled
+// set; `npx tsx scripts/_wsib_ruler.ts` reports the corrected figures. The
+// disqualified-last ORDERING this file sweeps is built on the withdrawn test
+// and any gain it shows is a gain from an ordering key that does not measure
+// what it claims to.
+//
 import { readFileSync } from "fs";
 
 // ── PINNED OFFLINE, WHICH IS THE STRONGER DECLARATION ─────────────────────
@@ -36,13 +51,9 @@ const FILE = process.argv[2] ?? "/tmp/wsec_pool.json";
 const SHOWN = VERDICT_POOL;
 const PUBLISHED = BRIEF_LIMITS.institutionsMax;
 
-/** The bottom of what the founder said they need, in euro — wsDY's reading of
- *  the prompt's own money disqualifier, kept identical so the two counts are
- *  comparable. Generous: an order of magnitude below the FLOOR of the band. */
-const BAND_FLOOR: Record<string, number> = {
-  b100k_500k: 100_000, b500k_2m5: 500_000, b2m5_15m: 2_500_000,
-  b15m_50m: 15_000_000, gt50m: 50_000_000,
-};
+// The band floors live once, in `_ruler.ts`. Four copies of them and of the
+// two tests had drifted; this file's copy was one of the four.
+import { BAND_FLOOR } from "./_ruler";
 
 const pct = (a: number, b: number) => `${((100 * a) / (b || 1)).toFixed(1)}%`;
 const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / (xs.length || 1);
