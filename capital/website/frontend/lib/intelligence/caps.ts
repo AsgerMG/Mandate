@@ -843,3 +843,52 @@ export const TIMEOUT_BY_EFFORT: Record<ThinkEffort, number> = {
  *  Mirrors `maxDuration` in `app/api/intelligence/route.ts`; tied to it by
  *  `check_maxtok_headroom.ts`, which reads both. */
 export const REQUEST_BUDGET_MS = 300_000;
+
+/**
+ * ── WHAT THE COMPARABLE-COMPANY SEARCH IS TOLD ABOUT THE FOUNDER (wsIL) ────
+ *
+ * `research.ts` is a paid, web-search-grounded call made on every brief, and
+ * its context has always been the request's TOP-LEVEL fields: company, country,
+ * the model's tech-depth read, and the founder's prose. Not one intake answer
+ * has ever reached it -- they sit in `req.eligibility` and nothing there reads
+ * them (found by wsIK, correctly not acted on, because acting on it changes
+ * what a paid stage searches for).
+ *
+ * It is an arm and not a fix because the stage's output is not decoration. It
+ * reaches the RANKING: web-found peers are DB-matched, their channels union
+ * into `fieldChannels`, and `usedInField` is tier 1 of the row sort, above the
+ * entire score. A change here can move which channels are in the pool at all.
+ *
+ * And the direction is genuinely open. The stage's value to the ranking is the
+ * number of peers that DB-match, the search prompt asks for a SIMILAR ALTITUDE
+ * and a similar field rather than a direct competitor, and the two most recent
+ * results on this product both cut against more context: a perfect answer to
+ * the largest separator we could state moved the gates stage by zero (wsHG),
+ * and a longer menu made the selector WORSE (wsDR, EXACT@5 22.2% -> 17.8%).
+ * Four extra constraints on a similarity search is a plausible way to find
+ * fewer matchable peers, not more.
+ *
+ *   `description`  today's behaviour, and the default. The founder's prose and
+ *                  nothing they answered.
+ *   `answers`      plus every answered intake field that describes the COMPANY,
+ *                  by the property in `comparableFacts.ts`.
+ *
+ * Read ONCE at module scope and thrown on, for the reason every other arm in
+ * this file is: an arm that reads a typo as the control reports the control's
+ * number under the treatment's name, and this repo has retracted a figure for
+ * exactly that.
+ */
+export type ComparableContextArm = "description" | "answers";
+const COMPARABLE_CONTEXT_ARMS: ComparableContextArm[] = ["description", "answers"];
+
+export const COMPARABLE_CONTEXT_ARM: ComparableContextArm = (() => {
+  const raw = process.env.COMPARABLE_CONTEXT ?? "description";
+  if (!COMPARABLE_CONTEXT_ARMS.includes(raw as ComparableContextArm)) {
+    throw new Error(
+      `COMPARABLE_CONTEXT must be one of ${COMPARABLE_CONTEXT_ARMS.join("|")}, ` +
+      `got "${raw}". It is read once at module scope precisely so a typo cannot ` +
+      `read as "description" -- which is the CONTROL, so a swept arm would report ` +
+      `the control's number under the treatment's name.`);
+  }
+  return raw as ComparableContextArm;
+})();
