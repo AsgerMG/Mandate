@@ -43,6 +43,7 @@
   "offer routes are sourced",
   "a row is named by something outside its id",
   "a displayed name is not an id",
+  "a cut title still tells two funds apart",
   "capital kinds match the register",
   "every guard runs somewhere, or says why not",
   "every committed artifact can be rebuilt",
@@ -91,6 +92,13 @@
    "summary": "check_prompt_rates: ok — 526 sentence(s) across 10 contract file(s) state no rate, and baseRateSentence delivers all three figures at every one of 14 menu depth(s) the product can show.",
    "at": "2026-08-18T21:50:24.871Z",
    "ms": 887
+  },
+  "a cut title still tells two funds apart": {
+   "argv": "npx tsx scripts/check_row_titles_distinct.ts",
+   "code": 0,
+   "summary": "check_row_titles_distinct: ok — 724 offerable rows across 22 markets, 0 groups merged by the 120-character cut; 26 rows share a full name with a sibling (ratchet 26).",
+   "at": "2026-08-19T00:03:08.170Z",
+   "ms": 1126
   },
   "a displayed name is not an id": {
    "argv": "npx tsx scripts/check_row_name_not_id.ts",
