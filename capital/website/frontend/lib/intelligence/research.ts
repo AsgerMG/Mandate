@@ -198,8 +198,3 @@ export async function discoverAndResearch(
     }));
 }
 
-// ── Stage 4: synthesise the report (structured output, no tools) ─────────────
-// The schema is built per-request inside synthesize() (not a static const):
-// institutionNotes.channel is constrained to an enum of the actual candidate
-// channels for THIS founder, the same discipline generateGroundedRound()
-// already uses for its field enum below.
