@@ -196,6 +196,17 @@ jobs:
       - name: Open questions still cover the corpus
         if: always()
         run: npx tsx scripts/check_open_question_class.ts
+      # The same ratchet shape one artifact over. That one counts requirements
+      # with no judgement; this counts CHANNELS with no probability.
+      # channelPrior.generated.json shipped holding 9 of the corpus's 11, and the
+      # reader is `prior[c] ?? 0`, so the two it omitted -- one of them the won
+      # channel of 471 of the funnel's 897 founders -- were being scored as
+      # impossible rather than as unmeasured. It DELETES DATABASE_URL and
+      # VOYAGE_KEY on its way past and reads the committed snapshot, so it runs
+      # here with no credentials and cannot pass by having nothing to read.
+      - name: A channel is never told it is impossible
+        if: always()
+        run: npx tsx scripts/check_channel_prior_complete.ts
       # Third of the same class, found by the same audit. It DELETES
       # DATABASE_URL on its way past and reads the committed snapshot, so it is
       # hermetic by construction rather than by luck. It holds the stand-in for
