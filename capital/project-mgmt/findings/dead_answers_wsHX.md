@@ -486,3 +486,45 @@ the CLI's own error text:
 
 Every deploy since 22:56 also reports `Failed to stream build logs: Failed to
 retrieve build log`, which the three successful ones did not.
+
+---
+
+## Appendix — a queue item whose precondition does not hold
+
+Found while the promotion's witness was downloading, and it is free money.
+
+`AWAITING_APPROVAL` §4 on main, *"Restore the eleventh sector"*, says:
+
+> `restore` is a pure function of `company_sector_labels`; **the volume's copy
+> is empty**, so the repaired pipeline still reports 8 sectors of 11. The route
+> is a union pull then a ~645 MB push through `overwrite_gate`, and I would
+> want to verify the precondition read-only first the way the other three were.
+> The alternative is asking a model to re-derive the labels, which prices at
+> about **USD 136**.
+
+**The precondition is false, and verifying it read-only is exactly what this
+workstream already did.** `reconcile_stores.py --report` against the volume
+pulled at 2026-08-19 00:44 UTC:
+
+| store | rows | distinct `sector_top` | only-A | only-B |
+|---|---:|---:|---:|---:|
+| corpus of record | 144,493 | **11** | 0 | 0 |
+| this laptop | 144,493 | **11** | 0 | 0 |
+
+Byte-identical — the table hashes the same on both stores. Every column is
+populated: `sector_top` 144,493 non-empty, `subsector` 131,973, `method` and
+`labelled_at` 144,493 each. **The eleventh sector is already on the volume.**
+
+So neither branch of that item is needed as written. There is nothing to pull
+and nothing to push for this table, and **the USD 136 re-derivation would be
+paying a model to recreate 144,493 rows the record already holds.**
+
+What this does NOT establish is why the census still reads 8. The labels are
+present, `railway_cron.py::STEPS` already carries the
+`classify_taxonomy.py restore` step that reads them (line 78 on main), and
+census #11 — the most recent, 2026-08-16 — **failed at `classify_taxonomy.py`
+(rc=1)**. The most economical hypothesis is therefore that no complete pass has
+run since the `restore` step was added, and that the next successful weekly run
+resolves it for free. That is a hypothesis and it is labelled as one: the
+measurement here is only that the labels are on the volume, which is enough to
+retire the USD 136 option and the 645 MB round trip.
