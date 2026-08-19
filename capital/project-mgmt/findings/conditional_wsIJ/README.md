@@ -116,9 +116,13 @@ vs today's behaviour, paired on the same call. EXACT@6 in points; recip absolute
 > EXACT@6, exactly and always: the model cannot rescue anybody into seats it is
 > not allowed to touch.
 
-**`assist` is already this policy and was already measured** — EXACT@6 17%
-against the shipped 27% (`agentSelect.ts`, `SELECT_KEEP`). The simulation above
-agrees with a live paid result arrived at two years of workstreams earlier.
+**And `freeze` is not a new idea here.** `SELECT_KEEP` / the `assist` arm is the
+same instinct, measured live and recorded in `agentSelect.ts` at **EXACT@6 17%
+against the shipped 27%**. It is not the same treatment — `assist` never SHOWS
+the model the frozen rows, so it cannot be simulated from these tapes and its
+loss has a second cause. The simulation above is the *better-informed* version
+of it, applied post hoc to a model that saw everything, and it still does not
+pay for itself.
 
 ## 3. THE THRESHOLD, FITTED ON ONE RUN AND READ OFF THE OTHER
 
