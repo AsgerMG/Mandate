@@ -50,13 +50,26 @@ destroy whatever the other store holds alone.
 Every route to the volume begins by waking the container, so **this cannot
 happen before §1.** One decision, in two steps.
 
-### 3. Three doors of SA.40391 are now indistinguishable — free to investigate
+### 3. ~~Three doors of SA.40391 are now indistinguishable~~ — STRUCK 2026-08-19
 
-Renaming them to their register title made them **byte-identical on the page**.
-That is the project's central defect at a size somebody can finish: 63% of the
-founders we miss are already shown a sibling of the fund they would have won.
-The separating facts we already hold are granting body, capital channel (two of
-the three differ), notified period, and nine per-case GBER objectives.
+**This asked you to decide about rows that have not been on the page since
+2026-08-18.** All three leaves are withheld — the Commission's own record gives
+`caseMeasureEndDate 2020-12-30`, so `publishabilityFailures` says the window has
+shut. `dead_doors_wsHQ` withheld them the day *after* wsHF found them
+byte-identical, and said so in its own report. Nobody joined the two up, and I
+then briefed an agent to fix it.
+
+**The class behind it was real and is now fixed** (wsID). Our 120-character cut
+was merging two funds whose names diverge past that point, so a genuine second
+door was being spent to pay for a render budget. Sized honestly: it moves the
+published six for **8 founders in 300** and wins nobody their fund on that
+sample. What it changes is the menu — 36% get back a distinct fund the cut had
+merged.
+
+**What is left needs no decision from you, only work:** 50% of founders see a
+pair *the corpus itself* calls the same thing — six Innovasjon Norge leaves all
+literally named "Innovasjon Norge". No cut can separate those. It is a corpus
+repair, now ratcheted so it cannot get worse.
 
 ---
 
