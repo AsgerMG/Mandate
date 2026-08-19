@@ -87,10 +87,19 @@ def canon(spec) -> str | None:
 
 
 def proposed(c) -> tuple[str | None, str]:
-    """The two columns a correction writes. One definition, both stores."""
+    """The two columns a correction writes. One definition, both stores.
+
+    A correction may name its own `encoding_method`, because provenance is not
+    the same fact for every repair: wsGU's corrections were re-readings of the
+    funder's words, wsIE's converted a bound out of the funder's currency at a
+    pinned ECB rate, and `check_gate_currency.py` re-derives THAT class rather
+    than trusting it. A quarantine is always a quarantine and cannot be
+    relabelled -- the whole point of it is that no comparator is asserted.
+    """
     spec = c["proposed_value_spec"]
-    return (json.dumps(spec) if spec else None,
-            "quarantined" if spec is None else "wsgu_corrected")
+    if spec is None:
+        return (None, "quarantined")
+    return (json.dumps(spec), c.get("encoding_method") or "wsgu_corrected")
 
 
 def build_plan(fetch, rows) -> tuple[list, list, list]:
