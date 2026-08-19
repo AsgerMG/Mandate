@@ -132,11 +132,14 @@ def main() -> int:
           f"envelope from {rates['window_start']} ({rates['window_years']}y)")
 
     stores = [("sqlite", rows_sqlite)] + ([("postgres", rows_postgres)] if a.postgres else [])
-    bad_total = 0
+    worst = 0
     for name, get in stores:
         rows = get()
         bad = violations(rows)
-        bad_total += len(bad)
+        # The WORST store, not the sum. Reporting 12 + 12 as 24 would say there
+        # are twice as many broken rules as there are, and the two stores hold
+        # the same corpus.
+        worst = max(worst, len(bad))
         print(f"\n{name}: {len(rows)} encoded filters, {len(bad)} on a euro scale "
               f"from numerals not shown to be euro")
         for v in bad:
@@ -145,9 +148,9 @@ def main() -> int:
                 print(f"      spec: {json.dumps(v['spec'], sort_keys=True)}")
                 print(f"      req : {v['requirement']}")
                 print(f"      quote: {v['quote']}")
-    if bad_total:
-        print(f"\nFAIL: {bad_total} comparator(s) place a founder on a euro scale using "
-              f"numerals the funder did not write in euro.")
+    if worst:
+        print(f"\nFAIL: {worst} comparator(s) in {len(stores)} store(s) place a founder on a "
+              f"euro scale using numerals the funder did not write in euro.")
         print("Convert with euro_money.stable_band, or quarantine. Never widen a band "
               "so a conversion fits.")
         return 1
