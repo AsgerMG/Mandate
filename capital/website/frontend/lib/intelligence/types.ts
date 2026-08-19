@@ -634,15 +634,40 @@ export const MIN_MATCHABLE_DESCRIPTION_CHARS = 12;
  * Shortest description that actually SEPARATES funds, as opposed to merely
  * being long enough to embed.
  *
- * Not a guess. `scripts/measure_description_lift.ts` ranks the same companies
- * twice, once on what they really said about their project and once on the
- * canned sector sentence a founder who skips this box is represented by:
- * EXACT@5 goes from 21.3% to 48.9% on the holdout, and the pool hit rate from
- * 77.1% to 94.1% — the largest single measured lever in the product, and an
- * intake change rather than a model one. The recovered descriptions that
- * produce it run to a sentence or two; a five-word answer scores like the
- * template. This is the floor the form nudges towards, never a hard reject:
- * see the intake, which lets a founder go on without it deliberately.
+ * ── RE-GROUNDED, NOT MOVED (wsIT, 2026-08-19) ─────────────────────────────
+ * The value is unchanged and the evidence under it is new, because the old
+ * evidence had stopped being true of the product. It was
+ * `measure_description_lift.ts` — EXACT@5 21.3% to 48.9% — and that harness
+ * runs on `__recallSetEnriched.json`, which `RETIRED_RECALL_SETS` lists as
+ * retired, through `computeVerdict`, which returns the INSTRUMENT TABLE and
+ * never calls `orderMemoCandidates`. It measured a path no founder reads.
+ *
+ * The funnel now measures the same question directly, on the shipped path and
+ * the active key: the same 897 founders with the same intake answers, ranked
+ * once on what they said and once with the box empty
+ * (`project-mgmt/findings/descriptions_wsIT/`, `DESCRIPTION=full|none`).
+ *
+ *   EXACT@6   38.91% -> 34.56%   paired -4.76 [-7.33, -2.20], McNemar z=3.61,
+ *                                clears its sign-flip null, 96/96 LORO folds
+ *   ... for the founders whose description is about the project the money is
+ *       for:  52.05% -> 42.50%   paired -9.55 [-13.18, -6.14], z=5.09, 29/29
+ *   ... for the founders whose description is about a DIFFERENT project of
+ *       theirs:               +0.79 [-2.90, +4.22] — worth nothing at all
+ *
+ * ── WHY 60 AND NOT 120, WHICH THE SAME RUNS ALSO PRICE ────────────────────
+ * Capping every founder's answer costs nothing at all down to 120 characters
+ * (EXACT@6 +0.00 at both 300 and 120, both inside their nulls) and starts
+ * costing at 60 (`pool_cut` -1.83 [-3.42, -0.24], which clears its null;
+ * EXACT@6 -0.98, which does not). So 60 is the first cap where the measurement
+ * moves, and it is the right floor for a NUDGE — the point below which the
+ * evidence runs out — while 120 is where the last point of value is already
+ * banked. Nothing above 120 characters has ever been shown to pay. The
+ * constant was NOT moved to 120 on that evidence: raising a floor makes the
+ * form nag more founders, and what the extra sixty characters buy has not been
+ * measured, only what removing them costs, which is nothing.
+ *
+ * This is the floor the form nudges towards, never a hard reject: see the
+ * intake, which lets a founder go on without it deliberately.
  */
 export const USEFUL_DESCRIPTION_CHARS = 60;
 
