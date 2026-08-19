@@ -1,0 +1,285 @@
+(node:23387) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+corpus rows                 1088
+offerable rows              760
+
+== OFFERABLE: 26 rows in 10 same-name classes ==
+    13 rows    4 cls  LV,FR,ES,NO family:national_dev_banks                      "aizdevumi sīko (mikro), mazo un vidējo saimnieciskās darbības veicēju "
+     5 rows    2 cls  FR       SA.111723                                      "régime cadre exempté de notification relatif aux aides à la recherche,"
+     4 rows    2 cls  ES       family:state_aid_satr                          "financiación igape-pymes 2026, concurrencia no competitiva, mínimis pe"
+     2 rows    1 cls  FR       SA.111726                                      "régime cadre exempté relatif aux aides en faveur de la protection de l"
+     2 rows    1 cls  IT       SA.110595                                      "avviso pubblico per il potenziamento di strutture di ricerca e creazio"
+
+== WHOLE CORPUS: 47 rows in 20 same-name classes ==
+    21 rows    8 cls  LV,FR,ES,EE,IE,NO,NL family:national_dev_banks                      "aizdevumi sīko (mikro), mazo un vidējo saimnieciskās darbības veicēju "
+     5 rows    2 cls  FR       SA.111723                                      "régime cadre exempté de notification relatif aux aides à la recherche,"
+     5 rows    2 cls  FR       SA.58995                                       "régime cadre exempté de notification relatif aux aides à la recherche,"
+     4 rows    2 cls  ES       family:state_aid_satr                          "financiación igape-pymes 2026, concurrencia no competitiva, mínimis pe"
+     2 rows    1 cls  EU       family:?                                       "de minimis ceiling (reg. 2023/2831)"
+     2 rows    1 cls  IT       MIXED(SA.57625+family:national_dev_banks)      "fondo di garanzia per le pmi"
+     2 rows    1 cls  FR       SA.111726                                      "régime cadre exempté relatif aux aides en faveur de la protection de l"
+     2 rows    1 cls  FR       SA.40391                                       "régime cadre exempté de notification relatif aux aides à la recherche,"
+     2 rows    1 cls  IT       SA.110595                                      "avviso pubblico per il potenziamento di strutture di ricerca e creazio"
+     2 rows    1 cls  IT       SA.47037                                       "disposizioni per la concessione delle agevolazioni finanziarie, a norm"
+
+== of the whole-corpus same-name rows, 17 are ALREADY withheld ==
+     9  no amounts and no dates — below the data floor
+     6  the register says the window has shut
+     3  a framework record, not a fund
+     2  a parent with leaves — the leaves are offered instead
+
+== OFFERABLE same-name classes, in full ==
+
+  NO  x6  "innovasjon norge · grants"
+      innovasjon_norge_grant_cluster
+        raw name         "Innovasjon Norge"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           656 events / 324 cos / EUR 89216567  lastYear 2026
+      innovasjon_norge_grant_innovation
+        raw name         "Innovasjon Norge"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           4045 events / 2716 cos / EUR 686963646  lastYear 2026
+      innovasjon_norge_grant_international
+        raw name         "Innovasjon Norge"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           639 events / 481 cos / EUR 55741425  lastYear 2025
+      innovasjon_norge_grant_regional
+        raw name         "Innovasjon Norge"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           2335 events / 1518 cos / EUR 253315289  lastYear 2026
+      innovasjon_norge_grant_sector
+        raw name         "Innovasjon Norge"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           228 events / 163 cos / EUR 38415618  lastYear 2026
+      innovasjon_norge_grant_startup
+        raw name         "Innovasjon Norge"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           3145 events / 2536 cos / EUR 115907627  lastYear 2026
+
+  FR  x3  "bpifrance"
+      bpifrance_innovup_leader_idf
+        raw name         "Bpifrance"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             "Bpifrance" share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           144 events / 144 cos / EUR 50881500  lastYear -
+      bpifrance_inov
+        raw name         "Bpifrance"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             "Bpifrance" share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           753 events / 729 cos / EUR 517691111  lastYear 2025
+      bpifrance_pmup_idf
+        raw name         "Bpifrance"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             "Région Île-de-France" share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           96 events / 96 cos / EUR 50348000  lastYear -
+
+  FR  x3  "régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innov"
+      satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances
+        raw name         "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2024-2026"
+        scheme           SA.111723   parent satr_fr_rnd   family state_aid_satr
+        capitalType      grant
+        body             "Ministère de l'économie et des finances" share 1
+        deliveryRegion   null share -
+        operators        ["Conseil régional Nouvelle-Aquitaine","Conseil régional","REGION GRAND EST","Caisse des Dépôts","Conseil régional Hauts-de-France","Région Pays de la Loire"]
+        nameSource       case_register   route -
+        awards           1681 events / 1287 cos / EUR 1856157733  lastYear 2025
+      satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai
+        raw name         "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2024-2026"
+        scheme           SA.111723   parent satr_fr_rnd   family state_aid_satr
+        capitalType      grant
+        body             "Ministère de la Transition écologique et solidaire" share 1
+        deliveryRegion   null share -
+        operators        ["Conseil régional Nouvelle-Aquitaine","Conseil régional","REGION GRAND EST","Caisse des Dépôts","Conseil régional Hauts-de-France","Région Pays de la Loire"]
+        nameSource       case_register   route -
+        awards           610 events / 408 cos / EUR 269572343  lastYear 2025
+      satr_fr_rnd__sa_111723__ministere_des_armees
+        raw name         "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2024-2026"
+        scheme           SA.111723   parent satr_fr_rnd   family state_aid_satr
+        capitalType      grant
+        body             "Ministère des Armées" share 1
+        deliveryRegion   null share -
+        operators        ["Conseil régional Nouvelle-Aquitaine","Conseil régional","REGION GRAND EST","Caisse des Dépôts","Conseil régional Hauts-de-France","Région Pays de la Loire"]
+        nameSource       case_register   route -
+        awards           193 events / 134 cos / EUR 136953917  lastYear 2025
+
+  LV  x2  "aizdevumi sīko (mikro), mazo un vidējo saimnieciskās darbības veicēju un lauksaimniecības un mežsaim"
+      altum_aue
+        raw name         "Aizdevumi sīko (mikro), mazo un vidējo saimnieciskās darbības veicēju un lauksaimniecības un mežsaimniecības pakalpojumu kooperatīvo sabiedrību attīstības veicināšanai"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      loan
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       programme_feed   route -
+        awards           33 events / 22 cos / EUR 14238086  lastYear 2024
+      altum_aui
+        raw name         "Aizdevumi sīko (mikro), mazo un vidējo saimnieciskās darbības veicēju un lauksaimniecības un mežsaimniecības pakalpojumu kooperatīvo sabiedrību attīstības veicināšanai"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      loan
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       programme_feed   route -
+        awards           57 events / 47 cos / EUR 51867372  lastYear 2026
+
+  ES  x2  "financiación igape-pymes 2026, concurrencia no competitiva, mínimis pesca"
+      bdns_conv_880456
+        raw name         "Financiación Igape-pymes 2026, concurrencia no competitiva, mínimis pesca"
+        scheme              parent -   family state_aid_satr
+        capitalType      grant
+        body             "INSTITUTO GALLEGO DE PROMOCIÓN ECONÓMICA (IGAPE)" share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       programme_feed   route -
+        awards           0 events / 0 cos / EUR 0  lastYear -
+      bdns_conv_880548
+        raw name         "Financiación Igape-pymes 2026, concurrencia no competitiva, mínimis pesca"
+        scheme              parent -   family state_aid_satr
+        capitalType      grant
+        body             "INSTITUTO GALLEGO DE PROMOCIÓN ECONÓMICA (IGAPE)" share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       programme_feed   route -
+        awards           0 events / 0 cos / EUR 0  lastYear -
+
+  ES  x2  "financiación igape-pymes 2026, concurrencia no competitiva, mínimis agrícola"
+      bdns_conv_880457
+        raw name         "Financiación Igape-pymes 2026, concurrencia no competitiva, mínimis agrícola"
+        scheme              parent -   family state_aid_satr
+        capitalType      grant
+        body             "INSTITUTO GALLEGO DE PROMOCIÓN ECONÓMICA (IGAPE)" share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       programme_feed   route -
+        awards           0 events / 0 cos / EUR 0  lastYear -
+      bdns_conv_880579
+        raw name         "Financiación Igape-pymes 2026, concurrencia no competitiva, mínimis agrícola"
+        scheme              parent -   family state_aid_satr
+        capitalType      grant
+        body             "INSTITUTO GALLEGO DE PROMOCIÓN ECONÓMICA (IGAPE)" share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       programme_feed   route -
+        awards           0 events / 0 cos / EUR 0  lastYear -
+
+  ES  x2  "cdti (spain)"
+      cdti_idi
+        raw name         "CDTI (Spain)"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           1028 events / 845 cos / EUR 462577366  lastYear 2026
+      cdti_neotec
+        raw name         "CDTI (Spain)"
+        scheme           -   parent -   family national_dev_banks
+        capitalType      grant
+        body             null share -
+        deliveryRegion   null share -
+        operators        null
+        nameSource       deterministic   route -
+        awards           576 events / 576 cos / EUR 173949187  lastYear 2025
+
+  FR  x2  "régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innov"
+      satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances
+        raw name         "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2024-2026"
+        scheme           SA.111723   parent satr_fr_equity   family state_aid_satr
+        capitalType      loan
+        body             "Ministère de l'économie et des finances" share 1
+        deliveryRegion   null share -
+        operators        ["Conseil régional Nouvelle-Aquitaine","Conseil régional","REGION GRAND EST","Caisse des Dépôts","Conseil régional Hauts-de-France","Région Pays de la Loire"]
+        nameSource       case_register   route -
+        awards           3053 events / 2573 cos / EUR 1002833675  lastYear 2025
+      satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai
+        raw name         "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2024-2026"
+        scheme           SA.111723   parent satr_fr_equity   family state_aid_satr
+        capitalType      loan
+        body             "Ministère de la Transition écologique et solidaire" share 1
+        deliveryRegion   null share -
+        operators        ["Conseil régional Nouvelle-Aquitaine","Conseil régional","REGION GRAND EST","Caisse des Dépôts","Conseil régional Hauts-de-France","Région Pays de la Loire"]
+        nameSource       case_register   route -
+        awards           261 events / 169 cos / EUR 84569054  lastYear 2025
+
+  FR  x2  "régime cadre exempté relatif aux aides en faveur de la protection de l'environnement pour la période"
+      satr_fr_rnd__sa_111726__direction_generale_de_l_amenagement_du_logement_
+        raw name         "Régime cadre exempté relatif aux aides en faveur de la protection de l'environnement pour la période 2024-2026"
+        scheme           SA.111726   parent satr_fr_rnd   family state_aid_satr
+        capitalType      grant
+        body             "Direction Générale de l'Aménagement, du Logement et de la Nature" share 1
+        deliveryRegion   null share -
+        operators        ["Agence Seine Normandie","Conseil régional Nouvelle-Aquitaine","Caisse des Dépôts","REGION GRAND EST","Région NORMANDIE","Conseil régional d'Ile-de-France"]
+        nameSource       case_register   route -
+        awards           109 events / 102 cos / EUR 39645372  lastYear 2025
+      satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai
+        raw name         "Régime cadre exempté relatif aux aides en faveur de la protection de l'environnement pour la période 2024-2026"
+        scheme           SA.111726   parent satr_fr_rnd   family state_aid_satr
+        capitalType      grant
+        body             "Ministère de la Transition écologique et solidaire" share 1
+        deliveryRegion   null share -
+        operators        ["Agence Seine Normandie","Conseil régional Nouvelle-Aquitaine","Caisse des Dépôts","REGION GRAND EST","Région NORMANDIE","Conseil régional d'Ile-de-France"]
+        nameSource       case_register   route -
+        awards           1458 events / 1056 cos / EUR 1991512184  lastYear 2025
+
+  IT  x2  "avviso pubblico per il potenziamento di strutture di ricerca e creazione di “campioni nazionali” di "
+      satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi
+        raw name         "Avviso pubblico per il potenziamento di strutture di ricerca e creazione di “campioni nazionali” di R&S su alcune Key Enabling Technologies da finanziare nell’ambito del PNRR, Missione 4 Componente 2 Investimento 1.4 finanziato dall’Unione europea – NextGenerationEU."
+        scheme           SA.110595   parent satr_it_rnd   family state_aid_satr
+        capitalType      grant
+        body             "MINISTERO DELL'UNIVERSITA' E DELLA RICERCA - DIREZIONE GENERALE DELLA RICERCA" share 1
+        deliveryRegion   null share -
+        operators        ["Ufficio Coordinamento PNRR e Dipartimenti di Eccellenza","Università degli Studi di Palermo - Area Ricerca e Trasferimento Tecnologico","POLITECNICO DI MILANO","Università degli Studi di Padova"]
+        nameSource       case_register   route -
+        awards           78 events / 34 cos / EUR 30903180  lastYear 2025
+      satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc
+        raw name         "Avviso pubblico per il potenziamento di strutture di ricerca e creazione di “campioni nazionali” di R&S su alcune Key Enabling Technologies da finanziare nell’ambito del PNRR, Missione 4 Componente 2 Investimento 1.4 finanziato dall’Unione europea – NextGenerationEU."
+        scheme           SA.110595   parent satr_it_rnd   family state_aid_satr
+        capitalType      grant
+        body             "Ufficio Coordinamento PNRR e Dipartimenti di Eccellenza" share 1
+        deliveryRegion   null share -
+        operators        ["Ufficio Coordinamento PNRR e Dipartimenti di Eccellenza","Università degli Studi di Palermo - Area Ricerca e Trasferimento Tecnologico","POLITECNICO DI MILANO","Università degli Studi di Padova"]
+        nameSource       case_register   route -
+        awards           47 events / 31 cos / EUR 8157510  lastYear 2024
