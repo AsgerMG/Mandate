@@ -1,0 +1,124 @@
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [wsIM mediator]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+set __recallSetDescribed.json  ·  897 holdout described founders, one per company
+
+A. `fieldChannels` AS `npm run stages` BUILDS IT
+   founders whose fieldChannels is EMPTY          308/897  (34.3%)
+     ...because the founder is not in the corpus  24  <- production's own
+                                                       fallback for exactly this
+                                                       case is the modal sub-sector
+                                                       of the MATCHED WEB PEERS
+                                                       (pipeline.ts 1814-1820), and
+                                                       the harness has none.
+     ...because the sub-sector is a catch-all     284
+     ...because the sub-sector yielded no peers   0
+   size of fieldChannels:
+      0 channel(s)   308  34.3%
+      1 channel(s)    62  6.9%
+      2 channel(s)   166  18.5%
+      3 channel(s)   135  15.1%
+      4 channel(s)   126  14.0%
+      5 channel(s)    54  6.0%
+      6 channel(s)    24  2.7%
+      7 channel(s)    13  1.4%
+      8 channel(s)     9  1.0%
+
+B. RECOVERED PRODUCTION RUNS — 51 run(s), 13 compan(ies), live web search
+   production fieldChannels is recovered as a LOWER BOUND: the report records a
+   comparable firm only where its channel became a published row, at most three
+   per channel. Every channel counted below is one the search really produced.
+
+   Neura Robotics   2026-07-26 self=in  peers= 3 noStage= 3 withStage= 4 J=0.75 +[national_dev_banks]
+   Silvr            2026-07-26 self=in  peers= 0 noStage= 1 withStage= 1 J=1.00 +[]
+   SMART Photonics  2026-07-26 self=in  peers= 0 noStage= 4 withStage= 4 J=1.00 +[]
+   bunq             2026-07-26 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   Photoroom        2026-07-26 self=in  peers= 0 noStage= 1 withStage= 2 J=0.50 +[national_dev_banks]
+   Aleph Alpha      2026-07-26 self=in  peers= 5 noStage= 5 withStage= 5 J=1.00 +[]
+   Nortal           2026-07-26 self=out peers= 0 noStage= 0 withStage= 6 J=0.00 +[edf national_dev_banks horizon_eu_pillar_ii state_aid_satr horizon_eu_partnership chips_ju]
+   sennder          2026-07-26 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   Nebius           2026-07-26 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   Corti            2026-07-26 self=in  peers= 3 noStage= 3 withStage= 3 J=1.00 +[]
+   eAgronom         2026-07-26 self=in  peers= 0 noStage= 2 withStage= 3 J=0.67 +[horizon_eu_pillar_ii]
+   BioNTech         2026-07-26 self=in  peers= 2 noStage= 3 withStage= 4 J=0.75 +[national_dev_banks]
+   BioNTech         2026-07-26 self=in  peers= 2 noStage= 3 withStage= 4 J=0.75 +[national_dev_banks]
+   eAgronom         2026-07-26 self=in  peers= 0 noStage= 2 withStage= 3 J=0.67 +[eit]
+   BioNTech         2026-07-26 self=in  peers= 2 noStage= 3 withStage= 4 J=0.75 +[national_dev_banks]
+   eAgronom         2026-07-26 self=in  peers= 0 noStage= 2 withStage= 4 J=0.50 +[eit horizon_eu_pillar_ii]
+   SMART Photonics  2026-07-26 self=in  peers= 0 noStage= 4 withStage= 6 J=0.67 +[national_dev_banks horizon_eu_partnership]
+   Neura Robotics   2026-07-26 self=in  peers= 3 noStage= 3 withStage= 4 J=0.75 +[national_dev_banks]
+   Silvr            2026-07-26 self=in  peers= 0 noStage= 1 withStage= 1 J=1.00 +[]
+   bunq             2026-07-27 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   Aleph Alpha      2026-07-27 self=in  peers= 5 noStage= 5 withStage= 5 J=1.00 +[]
+   Photoroom        2026-07-27 self=in  peers= 0 noStage= 1 withStage= 1 J=1.00 +[]
+   Nortal           2026-07-27 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   sennder          2026-07-27 self=out peers= 0 noStage= 0 withStage= 2 J=0.00 +[national_dev_banks state_aid_satr]
+   Nebius           2026-07-27 self=out peers= 0 noStage= 0 withStage= 2 J=0.00 +[state_aid_satr national_dev_banks]
+   Corti            2026-07-27 self=in  peers= 3 noStage= 3 withStage= 4 J=0.75 +[state_aid_satr]
+   Nebius           2026-07-27 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   Corti            2026-07-27 self=in  peers= 3 noStage= 3 withStage= 4 J=0.75 +[state_aid_satr]
+   Corti            2026-07-27 self=in  peers= 3 noStage= 3 withStage= 4 J=0.75 +[state_aid_satr]
+   Nebius           2026-07-27 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   Photoroom        2026-07-27 self=in  peers= 0 noStage= 1 withStage= 2 J=0.50 +[national_dev_banks]
+   sennder          2026-07-27 self=out peers= 0 noStage= 0 withStage= 1 J=0.00 +[national_dev_banks]
+   sennder          2026-07-27 self=out peers= 0 noStage= 0 withStage= 1 J=0.00 +[national_dev_banks]
+   Neura Robotics   2026-07-27 self=in  peers= 3 noStage= 3 withStage= 3 J=1.00 +[]
+   BioNTech         2026-07-27 self=in  peers= 2 noStage= 3 withStage= 4 J=0.75 +[national_dev_banks]
+   eAgronom         2026-07-27 self=in  peers= 0 noStage= 2 withStage= 2 J=1.00 +[]
+   Silvr            2026-07-27 self=in  peers= 0 noStage= 1 withStage= 1 J=1.00 +[]
+   eAgronom         2026-07-27 self=in  peers= 0 noStage= 2 withStage= 3 J=0.67 +[horizon_eu_pillar_ii]
+   SMART Photonics  2026-07-27 self=in  peers= 0 noStage= 4 withStage= 5 J=0.80 +[horizon_eu_partnership]
+   bunq             2026-07-27 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   Nortal           2026-07-27 self=out peers= 0 noStage= 0 withStage= 5 J=0.00 +[edf national_dev_banks horizon_eu_pillar_ii state_aid_satr horizon_eu_partnership]
+   Aleph Alpha      2026-07-27 self=in  peers= 5 noStage= 5 withStage= 5 J=1.00 +[]
+   eAgronom         2026-07-27 self=in  peers= 0 noStage= 2 withStage= 3 J=0.67 +[horizon_eu_pillar_ii]
+   Nebius           2026-07-27 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   Corti            2026-07-27 self=in  peers= 3 noStage= 3 withStage= 4 J=0.75 +[state_aid_satr]
+   Neura Robotics   2026-07-28 self=in  peers= 3 noStage= 3 withStage= 3 J=1.00 +[]
+   Photoroom        2026-07-28 self=in  peers= 0 noStage= 1 withStage= 2 J=0.50 +[national_dev_banks]
+   BioNTech         2026-07-29 self=in  peers= 2 noStage= 3 withStage= 3 J=1.00 +[]
+   sennder          2026-07-29 self=out peers= 0 noStage= 0 withStage= 0 J=1.00 +[]
+   sennder          2026-07-30 self=out peers= 0 noStage= 0 withStage= 2 J=0.00 +[state_aid_satr horizon_eu_pillar_ii]
+   Cisteo MEDICAL   2026-08-11 self=in  peers= 5 noStage= 5 withStage= 5 J=1.00 +[]
+
+   runs where the PAID STAGE added at least one channel  27/51  (52.9%)
+   ...of those, runs where fieldChannels was EMPTY without it  7
+   runs where the HARNESS's fieldChannels differs from the request path's
+     (the paid stage AND the deliberately withheld own history)  34/51  (66.7%)
+   per company:
+     Aleph Alpha        0/3
+     BioNTech           4/5
+     Cisteo MEDICAL     0/1
+     Corti              4/5
+     Nebius             1/5
+     Neura Robotics     2/4
+     Nortal             2/3
+     Photoroom          3/4
+     SMART Photonics    2/3
+     Silvr              0/3
+     bunq               0/3
+     eAgronom           5/6
+     sennder            4/6
+
+
+C. THE SAME COMPANY, RUN AGAIN — the stage against itself, already paid for
+     Aleph Alpha        3 run(s) -> 1 distinct fieldChannels set(s)
+     BioNTech           5 run(s) -> 2 distinct fieldChannels set(s)
+     Corti              5 run(s) -> 2 distinct fieldChannels set(s)
+     Nebius             5 run(s) -> 2 distinct fieldChannels set(s)
+     Neura Robotics     4 run(s) -> 2 distinct fieldChannels set(s)
+     Nortal             3 run(s) -> 3 distinct fieldChannels set(s)
+     Photoroom          4 run(s) -> 2 distinct fieldChannels set(s)
+     SMART Photonics    3 run(s) -> 3 distinct fieldChannels set(s)
+     Silvr              3 run(s) -> 1 distinct fieldChannels set(s)
+     bunq               3 run(s) -> 1 distinct fieldChannels set(s)
+     eAgronom           6 run(s) -> 4 distinct fieldChannels set(s)
+     sennder            6 run(s) -> 4 distinct fieldChannels set(s)
+   companies run more than once            12
+   ...whose fieldChannels was NOT stable   9
+   The input is the live web. A harness that reproduced this stage exactly would
+   still not reproduce its OUTPUT, which is why declaring the stage absent is a
+   different act from promising to add it.
+
+   `fieldChannels` identical => every downstream stage is bit-identical for that
+   founder, so the rate above is a HARD UPPER BOUND on the share of founders
+   whose published rows can differ. It is not an estimate of that share.
