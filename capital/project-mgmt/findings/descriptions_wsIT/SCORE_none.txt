@@ -1,0 +1,68 @@
+BASE       /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsIT-descriptions/project-mgmt/findings/descriptions_wsIT/traces/trace_full.jsonl
+           row_order=off  award_term=oneside  description=full  2026-08-19T19:32:17.605Z
+ARM        /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsIT-descriptions/project-mgmt/findings/descriptions_wsIT/traces/trace_none.jsonl
+           row_order=off  award_term=oneside  description=none (the box left empty, as production posts it)  2026-08-19T20:36:25.315Z
+population 897 drawn, 819 past the corpus stages
+ARM ARRIVED (pool  ) the won fund's rank differs for 625/819, median shift 3 row(s)
+ARM ARRIVED (writer) the won fund's rank differs for 304/819, median shift 2 row(s)
+regimes    96 distinct won-fund regime(s) in the paired population
+
+── pool_cut@40 (reach) ─────────────────────────────────────────
+  base    +82.17   arm    +77.66
+  PAIRED delta     -4.52  [-6.84, -2.32]  P(>0)=0.000
+  discordant 89  (arm only 26, base only 63)
+  McNemar z  3.92
+  NULL       sign-flip 95% [-2.32, +2.32]  p=0.0002  CLEARS its null
+  LORO       worst -5.21 without g1 (n=109)   best -1.80 without g0 (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -37 founder(s) over 21 regime(s), largest single regime 70% (g0)
+             g0:-26  g3:-9  g10:-9  g15:+4  g5:-3  g4:+2
+
+── published@7 ─────────────────────────────────────────────────
+  base    +45.67   arm    +39.93
+  PAIRED delta     -5.74  [-8.18, -3.30]  P(>0)=0.000
+  discordant 107  (arm only 30, base only 77)
+  McNemar z  4.54
+  NULL       sign-flip 95% [-2.56, +2.56]  p=0.0000  CLEARS its null
+  LORO       worst -6.62 without g1 (n=109)   best -3.76 without g0 (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -47 founder(s) over 29 regime(s), largest single regime 51% (g0)
+             g0:-24  g3:-13  g10:-4  g17:+4  g5:-3  g11:+2
+
+── EXACT@6 ─────────────────────────────────────────────────────
+  base    +42.61   arm    +37.85
+  PAIRED delta     -4.76  [-7.33, -2.20]  P(>0)=0.000
+  discordant 117  (arm only 39, base only 78)
+  McNemar z  3.61
+  NULL       sign-flip 95% [-2.56, +2.56]  p=0.0003  CLEARS its null
+  LORO       worst -5.49 without g1 (n=109)   best -2.95 without g0 (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -39 founder(s) over 31 regime(s), largest single regime 54% (g0)
+             g0:-21  g3:-11  g17:+5  g5:-3  g10:-3  g31:-2
+
+── EXACT@5 ─────────────────────────────────────────────────────
+  base    +39.56   arm    +34.68
+  PAIRED delta     -4.88  [-7.57, -2.20]  P(>0)=0.000
+  discordant 132  (arm only 46, base only 86)
+  McNemar z  3.48
+  NULL       sign-flip 95% [-2.69, +2.69]  p=0.0003  CLEARS its null
+  LORO       worst -5.63 without g1 (n=109)   best -3.11 without g0 (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -40 founder(s) over 32 regime(s), largest single regime 53% (g0)
+             g0:-21  g3:-14  g17:+5  g6:-4  g5:-3  g31:-2
+
+── recip (writer order) ────────────────────────────────────────
+  base   +0.2629   arm   +0.1849
+  PAIRED delta   -0.0780  [-0.0988, -0.0575]  P(>0)=0.000
+  moved      304 founder(s) with a non-zero delta
+  NULL       sign-flip 95% [-0.0223, +0.0211]  p=0.0000  CLEARS its null
+  LORO       worst -0.0832 without g2 (n=45)   best -0.0578 without g0 (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+
+── recip (pool order) ──────────────────────────────────────────
+  base   +0.2846   arm   +0.2104
+  PAIRED delta   -0.0742  [-0.0943, -0.0545]  P(>0)=0.000
+  moved      625 founder(s) with a non-zero delta
+  NULL       sign-flip 95% [-0.0212, +0.0200]  p=0.0000  CLEARS its null
+  LORO       worst -0.0794 without g2 (n=45)   best -0.0556 without g0 (n=208)
+             sign holds in 96/96 leave-one-regime-out folds

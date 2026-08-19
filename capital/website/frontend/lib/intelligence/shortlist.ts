@@ -2999,9 +2999,17 @@ export function materialiseInstrumentTable(
   // while the shipped score is 0.6 x semantic. That is the mechanism of the
   // loss and not merely a description of the weights: wsIR split the funnel by
   // `descriptionSource` and the blend costs -4.55 EXACT@6 on the 440 founders
-  // whose query text is their OWN WORDS against -0.26 on the 379 querying with
-  // another company's borrowed text. Demoting semantic destroys signal exactly
-  // where signal exists. 20 of 26 of wsGX's pool-cut losses were Horizon: a
+  // whose query text is about the project that won the fund, against -0.26 on
+  // the 379 whose text is about a DIFFERENT project of their own. (wsIR called
+  // the second group "another company's borrowed text" and so did this comment.
+  // `rebuild_recall_descriptions.py` keys its candidates on
+  // `cid_by_name[(name, country)]` -- the SAME company. Every founder in the
+  // funnel queries with their own words; what differs is which award those
+  // words were written for. See descriptions_wsIT.) Demoting semantic destroys
+  // signal exactly where signal exists, and wsIT's paired arms say the same
+  // thing causally: emptying the box costs -9.55 EXACT@6 in the first group and
+  // +0.79 -- nothing -- in the second.
+  // 20 of 26 of wsGX's pool-cut losses were Horizon: a
   // large positive weight on a home-country bit buries the pan-European
   // programmes, which is a rule this codebase shipped once at a 25-point reach
   // cost and reverted (see `selectLeafInstruments`).

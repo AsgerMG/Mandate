@@ -191,6 +191,21 @@ ever measured on this product.** The funnel population splits 52.0% the
 company's own words against 47.9% *another company's* text borrowed across
 regimes, and the two are not the same product:
 
+> **CORRECTION (wsIT, 2026-08-19). "Another company's text" is wrong, and it is
+> wrong in both directions this section is read.**
+> `ETL/terms/rebuild_recall_descriptions.py` keys its candidates on
+> `cid_by_name[(p["name"], p["country"])]` — **the same company**, under a
+> different programme, exactly as its own docstring says in capitals. Every
+> founder in the funnel queries with their own words. What differs is WHICH
+> AWARD those words were written for: `own_award_text` and `own_project_title`
+> are the abstract or title of **the award that is the answer**;
+> `cross_regime_*` is the same firm describing **a different project of
+> theirs**. The 20 points is on-point against off-point, not own against
+> borrowed — and it is also mostly composition: the two strata differ at
+> regime total-variation 0.801 and 6.1x on median lifetime award, and the gap
+> is +8.8 within country and unmeasurable within regime.
+> See `project-mgmt/findings/descriptions_wsIT/`.
+
 | stratum | n paired | base `pool_cut` | base **EXACT@6** | blend delta EXACT@6 | McNemar z | null |
 |---|---:|---:|---:|---|---:|---|
 | **own words** | 440 | 90.23% | **52.05%** | **−4.55** [−7.50, −1.82] | 3.09 | **clears** |
@@ -219,7 +234,11 @@ indifference. On this population the score is **not** indifferent to the answer
 founders differ from borrowed-text founders in more than their text (they are the
 companies whose award records carry usable prose at all). It does **not** show
 that asking a founder for a description would move a real founder from 31.66% to
-52.05%. It shows the population is heterogeneous by 20 points on a field we
+52.05%. **wsIT ran the arm** — the same founders, the box emptied — and the
+answer is **−9.55 EXACT@6 [−13.18, −6.14]** where the text is about the project
+that won and **+0.79 [−2.90, +4.22]** where it is about another project of the
+same company. This paragraph's caution was right and the size it was cautious
+about was roughly half of 20. It shows the population is heterogeneous by 20 points on a field we
 already record, and that no ranking result should be quoted without it. The
 committed trace carries the column so any closed route can be re-scored this way
 for EUR 0.00.

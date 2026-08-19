@@ -815,28 +815,49 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                   `descriptionSkipped` it cannot see. */}
               {descriptionAsked && descriptionThin && !descriptionSkipped && !preparing && (
                 <div className="rounded-[var(--radius)] border border-[var(--border)] border-l-2 border-l-[var(--primary)] bg-[var(--muted)]/40 px-4 py-3">
-                  {/* contract: "about half as often" is the measured description
-                      lift, and the two figures are its endpoints rather than a
-                      manner of speaking. `scripts/measure_description_lift.ts`,
-                      paired and leak-checked on the enriched holdout, the same
-                      companies with the same intake answers ranked twice:
-                      EXACT@5 is 48.9% on the founder's own description of the
-                      project and 21.3% on the canned sector sentence a founder
-                      who skips this box is represented by. Both are recorded in
-                      the docstring of USEFUL_DESCRIPTION_CHARS in types.ts,
+                  {/* contract: the two figures are a MEASUREMENT and not a manner
+                      of speaking, so they are replaced when a better measurement
+                      of the same quantity exists — and one now does.
+
+                      WHAT WAS HERE, AND WHY IT WENT (wsIT, 2026-08-19). This
+                      said 48.9% against 21.3%, from
+                      `scripts/measure_description_lift.ts`. That harness is
+                      paired and leak-checked and its DESIGN was never the
+                      problem; two things underneath it were. It runs on
+                      `__recallSetEnriched.json`, which this repo's own
+                      RETIRED_RECALL_SETS lists as retired, and it ranks through
+                      `computeVerdict`, which returns
+                      `instrumentTable.slice(0, DISPLAY_CAP)` and never calls
+                      `orderMemoCandidates` — so it measured the instrument
+                      table, not the rows a founder is shown, and left out the
+                      precedence stack `rank_shape_wsGY` prices at +7.2 points.
+                      A 27.6-point claim was on this screen for a path no
+                      founder reads.
+
+                      The figures below are the same question asked on the
+                      shipped path, on the active answer key, over the same 897
+                      founders with the same intake answers, ranked twice:
+                      `project-mgmt/findings/descriptions_wsIT/`, arms `full`
+                      and `none`, paired delta -4.76 EXACT@6 [-7.33, -2.20],
+                      McNemar z=3.61, clears its sign-flip null, sign holds in
+                      96 of 96 leave-one-regime-out folds. The second pair is
+                      the founders whose description was about the project the
+                      money was for: -9.55 [-13.18, -6.14], z=5.09, 29 of 29
+                      folds. Both are in USEFUL_DESCRIPTION_CHARS in types.ts,
                       which is where they come from and where they must be
                       changed. A product measurement, not a corpus one: it moves
                       when the ranker moves, not when the ETL runs. */}
                   <p className="text-[13px] leading-relaxed text-[var(--foreground)]">
                     {descriptionUnmatchable
-                      ? "Without a description we match you on sector alone, and find the right fund about half as often."
-                      : "A line this short barely separates one fund from another: it scores much like a sector template."}
+                      ? "Without a description the thematic half of the ranking switches off, and we find the right fund several points less often."
+                      : "A line this short is close to the point where the thematic half stops separating one fund from another."}
                     {" "}
                     <span className="text-[var(--muted-foreground)]">
-                      Ranked both ways on companies whose funding is on record, a description of the
-                      project itself put the fund they actually won in the top five 48.9% of the
-                      time, against 21.3% without one. It is the largest difference anything on this
-                      screen makes.
+                      Ranked both ways on 897 companies whose funding is on record — the same
+                      companies, the same answers — a description of the project put the fund they
+                      actually won in these rows 38.9% of the time, against 34.6% with the box left
+                      empty. For the founders whose description was about the project the money was
+                      for, 52% against 42%.
                     </span>
                   </p>
                   <button type="button"

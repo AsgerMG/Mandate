@@ -159,7 +159,9 @@ import {
   parseAwardTerm, tableInputFromAnswers,
 } from "../lib/intelligence/shortlist";
 import type { InstrumentRow } from "../lib/intelligence/types";
-import { founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy } from "./founderIntake";
+import {
+  describeDescriptionPolicy, founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
+} from "./founderIntake";
 import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
 import {
   assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
@@ -1052,7 +1054,7 @@ async function main() {
   }
 
 
-  writeFounderTrace(traces, byId, startedAt);
+  writeFounderTrace(traces, byId, startedAt, policy);
 
   // ── THE TABLE ─────────────────────────────────────────────────────────────
   const N = traces.length;
@@ -1425,8 +1427,18 @@ async function main() {
   // A derived-intake run and a gate-proposal run are different counterfactuals
   // and must not overwrite each other's file: two arms named the same thing is
   // how a reader ends up comparing one proposal's number with another's.
-  const cfName = uof ? "useoffunds_latest" : "counterfactual_latest";
-  writeFileSync(path.join(dir, counterfactual ? `${cfName}.md` : "latest.md"), out);
+  // ── A DESCRIPTION ARM IS A COUNTERFACTUAL TOO (wsIT) ─────────────────────
+  // `DESCRIPTION=` cuts down or replaces the free-text box every founder is
+  // ranked on. That is a run about founders who said LESS than the ones the
+  // product serves, so by the rule directly above it may not become `latest.md`
+  // either — and it needs its own name, because a length arm and a gate
+  // proposal are different counterfactuals. Enforced here rather than left to
+  // the operator's `git checkout`, which is what every previous arm relied on.
+  const described = policy.description !== "full";
+  const cfName = uof ? "useoffunds_latest"
+    : described ? "description_latest" : "counterfactual_latest";
+  const file = counterfactual || described ? `${cfName}.md` : "latest.md";
+  writeFileSync(path.join(dir, file), out);
   // ── ONE RECORD, WRITTEN TWICE ────────────────────────────────────────────
   // `latest.json` is a SNAPSHOT of the newest run and is overwritten every
   // time. `runs/<startedAt>.json` is HISTORY and is never overwritten. They are
@@ -1464,6 +1476,10 @@ async function main() {
       // because every run file already written carries it and a series is not
       // re-readable if a field is renamed under it. See the banner above.
       rowOrder: POOL_BLEND,
+      // What the founder was allowed to SAY. `full` on every run that has ever
+      // been written; recorded from the run's own policy object so a length arm
+      // can never be read out of this series as a point about the product.
+      description: describeDescriptionPolicy(policy),
       arms: Object.fromEntries(RANKING_ARMS.map((a) => [a.env, a.value])),
     },
     // Null on a run with no sweep, never absent: a series where the field comes
@@ -1491,13 +1507,13 @@ async function main() {
   // Same argument as `latest.md` above, and the same for the history: a run
   // carrying a proposed arm is not a point in the series of what the product
   // does, and a series that mixes the two cannot be read as either.
-  if (counterfactual) {
+  if (counterfactual || described) {
     writeFileSync(path.join(dir, `${cfName}.json`), body);
   } else {
     writeFileSync(path.join(dir, "latest.json"), body);
     writeRunHistory(dir, startedAt, body);
   }
-  console.log(`wrote ${path.join(dir, counterfactual ? `${cfName}.md` : "latest.md")}`);
+  console.log(`wrote ${path.join(dir, file)}`);
 }
 
 /** One column of the funnel: a stage list evaluated over one population.
@@ -2178,6 +2194,7 @@ const REPO_ROOT = path.resolve(process.cwd(), "..", "..");
  *  checked by the fingerprint rather than asserted by a name in this file. */
 function writeFounderTrace(
   traces: Trace[], byId: Map<string, DbInstrument>, startedAt: string,
+  policy: FounderPolicy,
 ): void {
   const out = process.env.FUNNEL_TRACE;
   if (!out) return;
@@ -2207,7 +2224,15 @@ function writeFounderTrace(
   // pair cannot recover for itself is which arm each side was taken under. Read
   // from the shipped constant, never from `process.env` — a variable that never
   // reached the run would otherwise label the run with the arm somebody meant.
-  writeFileSync(abs, `${JSON.stringify({ startedAt, rowOrder: POOL_BLEND, awardTerm: AWARD_TERM })}\n`
+  // `description` joins them for exactly the same reason, and it was added the
+  // day a second arm existed that changes the QUERY rather than the order: two
+  // traces from two description policies are positionally pairable and
+  // otherwise indistinguishable. Taken from the policy object the run actually
+  // built its founders from, never from `process.env`.
+  writeFileSync(abs, `${JSON.stringify({
+    startedAt, rowOrder: POOL_BLEND, awardTerm: AWARD_TERM,
+    description: describeDescriptionPolicy(policy),
+  })}\n`
     + `${lines.join("\n")}\n`);
   console.log(`wrote founder trace ${abs} (${lines.length} founders)`);
 }

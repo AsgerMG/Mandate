@@ -1,0 +1,29 @@
+=== 1. HOW NEAR THE ANSWER'S OWN WORDS ===
+  own    n= 392  vocabulary shared with the WON fund's profile 0.324, with a random fund 0.133, LIFT +0.191   shares any 5-gram: 0.8%
+  cross  n= 396  vocabulary shared with the WON fund's profile 0.168, with a random fund 0.097, LIFT +0.071   shares any 5-gram: 0.0%
+  The own-words stratum sits about 2.7x nearer the answer's vocabulary and is not
+  QUOTING it — 5-gram sharing is under 1% either side. It is near because it is a
+  description of the project that won that fund, which is what a founder would
+  type; it is also written FOR that call, which a founder's would not be.
+
+=== 2. TEXT THAT IS NOT A FOUNDER DESCRIBING ANYTHING ===
+  own_award_text         n= 378  register-record or partner-list text  33 ( 8.7%)   of which publishable  11
+  own_project_title      n=  89  register-record or partner-list text   9 (10.1%)   of which publishable   9
+  cross_regime_summary   n= 330  register-record or partner-list text   7 ( 2.1%)   of which publishable   5
+  cross_regime_title     n= 100  register-record or partner-list text   2 ( 2.0%)   of which publishable   2
+  23 rows are a REGISTER RECORD, not prose (`Authority: … | Sector: … | Form: …`), concentrated in PL; 0 of them are publishable, so they do not
+  contaminate the scored ladder — but they are counted as descriptions everywhere.
+
+=== 3. WHAT CONTENT PAYS, WITHIN REGIME ===
+  n=792 publishable prose founders, EXACT@6 42.0%
+  feature                           n with  RAW gap  WITHIN-regime                  95%
+  what it BUILDS (a technology)        440     +4.6           +7.4   [-3.0, +17.2]
+  what PROBLEM it solves               368     +7.8           -1.7   [-11.7, +9.1]
+  FOR WHOM (a market or user)          280     +2.9           +1.8   [-7.6, +12.3]
+  what it would PROVE (a verb)         357     +7.1           +0.5   [-11.2, +10.5]
+  a number or quantity                 321     -2.6           -5.9   [-15.2, +4.4]
+  more than one sentence               333     +4.1           -2.3   [-17.4, +13.5]
+
+  Not one of the six clears its own interval. The intake's three asks are not
+  separable on this evidence, and the one with the largest point estimate is the
+  one the form's LABEL already asks for.

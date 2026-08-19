@@ -86,134 +86,134 @@
    "argv": "npx tsx scripts/check_field_matches_demand.ts",
    "code": 1,
    "summary": "FAIL — 7 comparator(s) decide a founder against a rule their answer does not determine",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1264
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1384
   },
   "a contract states no rate": {
    "argv": "npx tsx scripts/check_prompt_rates.ts",
    "code": 0,
    "summary": "check_prompt_rates: ok — 526 sentence(s) across 10 contract file(s) state no rate, and baseRateSentence delivers all three figures at every one of 14 menu depth(s) the product can show.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 756
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1224
   },
   "a cut title still tells two funds apart": {
    "argv": "npx tsx scripts/check_row_titles_distinct.ts",
    "code": 0,
    "summary": "check_row_titles_distinct: ok — 724 offerable rows across 22 markets, 0 groups merged by the 120-character cut; 26 rows share a full name with a sibling (ratchet 26).",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 812
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1016
   },
   "a displayed name is not an id": {
    "argv": "npx tsx scripts/check_row_name_not_id.ts",
    "code": 0,
    "summary": "check_row_name_not_id: ok — 724 publishable rows, 51 carrying a qualifier, none revealing an instrument id. 10 label(s) still shared by two or more rows, which the collapse demotes.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 810
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1001
   },
   "a euro figure says what it is a quantity of": {
    "argv": "npx tsx scripts/check_money_basis.ts",
    "code": 0,
    "summary": "check_money_basis: ok — 5 quantity-bearing field(s) across 40 rendered row(s), every one declared. Money, and labelled to the writer: comparableFirms, structuringNotes, ticket, typicalAward.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 944
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1227
   },
   "a filter can admit someone": {
    "argv": "npx tsx scripts/check_comparator_admits.ts",
    "code": 0,
    "summary": "PASS — every encoded filter that can reject an answer can also accept one.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1008
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1201
   },
   "a funds: line states a scope": {
    "argv": "npx tsx scripts/check_funds_line.ts",
    "code": 0,
    "summary": "PASS — every rendered line spends its budget and ends on a finished phrase, or says that it is cut.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 949
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1051
   },
   "a harness declares the stages it does not run": {
    "argv": "npx tsx scripts/check_stage_declaration.ts",
    "code": 0,
    "summary": "ok — every one of them declares, in its own output, what the request path does that it does not.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 815
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 889
   },
   "a measured ceiling was raised": {
    "argv": "npx tsx scripts/check_maxtok_headroom.ts",
    "code": 0,
    "summary": "check_maxtok_headroom: ok — 24 recorded run(s) across 4 effort level(s); every ceiling measured to bind has since been raised and sized for the menu that ships, the ladder is strictly increasing, and no timeout exceeds the route's 300000ms.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 944
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1040
   },
   "a red check is owned": {
    "argv": "npx tsx scripts/check_red_debt.ts",
-   "code": 1,
-   "summary": "check_red_debt: FAILED — 1 problem(s) above.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1044
+   "code": 0,
+   "summary": "FAIL — 1086 requirement texts have no judgement, above the ceiling of 400.",
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1183
   },
   "a route reads only what a founder can send": {
    "argv": "npx tsx scripts/check_request_surface.ts",
    "code": 0,
-   "summary": "check_request_surface: ok — 4 route(s) read nothing panel.tsx cannot send them, 81 request literal(s) across 497 source file(s) name only sendable fields, over 10 IntelligenceRequest field(s) and 10 sendable key(s).",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1020
+   "summary": "check_request_surface: ok — 4 route(s) read nothing panel.tsx cannot send them, 81 request literal(s) across 501 source file(s) name only sendable fields, over 10 IntelligenceRequest field(s) and 10 sendable key(s).",
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1163
   },
   "a row is named by something outside its id": {
    "argv": "npx tsx scripts/check_name_evidence.ts",
    "code": 0,
    "summary": "check_name_evidence: ok — every one of the 724 publishable rows is named by something outside its own id (44 partition-key rows in the corpus, all withheld)",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 825
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1003
   },
   "a row is not named after the body that grants it": {
    "argv": "npx tsx scripts/check_body_named_rows.ts",
    "code": 1,
    "summary": "check_body_named_rows: FAIL — 4 offerable row(s) are shown to a founder as the name of the body that grants them.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 778
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 965
   },
   "a rule's check can actually run": {
    "argv": "npx tsx scripts/check_check_reachability.ts",
    "code": 0,
    "summary": "check_check_reachability: ok — 4 check module(s) with 34 rule id(s), every module reachable from a request entry point and all 6 exported decider(s) named there (76 modules in path, 5 API routes).",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 907
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1078
   },
   "a winner is never gated out of the memo": {
    "argv": "npx tsx scripts/check_winner_not_gated.ts",
    "code": 0,
    "summary": "encoding this product cannot yet express.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 870
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1090
   },
   "a winner is never screened out": {
    "argv": "npx tsx scripts/check_winner_not_blocked.ts",
    "code": 0,
    "summary": "is not shipped.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 776
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 960
   },
   "answers reach the ranker": {
    "argv": "npx tsx scripts/check_answer_reach.ts",
    "code": 1,
    "summary": "FAIL [ranker: embedding] — 1 field(s) whose answer goes nowhere:",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 20075
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 20458
   },
   "answers reach the writer": {
    "argv": "npx tsx scripts/check_answer_in_prompt.ts",
    "code": 0,
    "summary": "OK — every answered field reaches every model-facing block.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1293
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1297
   },
   "applicant identity": {
    "argv": "npx tsx scripts/check_applicant_identity.ts",
    "code": 1,
    "summary": "check_applicant_identity: FAILED",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1714
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1519
   },
   "asking a question never costs a fund": {
    "argv": "npx tsx scripts/check_asking_cannot_shrink.ts",
@@ -226,204 +226,204 @@
    "argv": "npx tsx scripts/check_hydration_parity.ts",
    "code": 1,
    "summary": "a degraded request, so this direction is the more urgent of the two.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 27494
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 27961
   },
   "both stores select the same columns": {
    "argv": "npx tsx scripts/check_store_columns.ts",
    "code": 0,
    "summary": "check_store_columns: ok — all 35 column(s) the request path selects are exported to the fallback",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 722
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 850
   },
   "capital kinds match the register": {
    "argv": "python3 ../../ETL/schema/check_register_instrument_kinds.py",
    "code": 0,
    "summary": "check_register_instrument_kinds: ok — 12 register instrument codes, every kind the registers publish (equity, grant, guarantee, loan, tax_credit) present in its channel",
-   "at": "2026-08-19T16:51:58.646Z",
+   "at": "2026-08-19T19:54:54.193Z",
    "ms": 111
   },
   "capital reach": {
    "argv": "npx tsx scripts/check_capital_reach.ts",
    "code": 0,
    "summary": "check_capital_reach: ok — every value carried by the 724 publishable instruments is reachable by some intake answer, or declared unofferable with a reason (axes: capital_type, country).",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 969
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1088
   },
   "client/server boundary": {
    "argv": "npx tsx scripts/check_client_boundary.ts",
    "code": 0,
    "summary": "check_client_boundary: ok — no client module reaches fs, pg or another server-only import",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 863
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 842
   },
   "corpus currency": {
    "argv": "npx tsx scripts/check_corpus_currency.ts",
    "code": 1,
    "summary": "check_corpus_currency: FAILED",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 2925
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 3031
   },
   "country gates": {
    "argv": "npx tsx scripts/check_country_gates.ts",
    "code": 1,
    "summary": "FAIL — 1 positive country rules no founder answer can satisfy. Each one hides its fund:",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 968
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1133
   },
   "degradation policy": {
    "argv": "npx tsx scripts/check_degradation.ts",
    "code": 0,
    "summary": "check_degradation: ok — every fund offered off the fallback corpus is one the live register still calls open.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 15283
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 15907
   },
   "dependency audit": {
    "argv": "npx tsx scripts/check_dependencies.ts",
    "code": 0,
    "summary": "no unreviewed high or critical advisories",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1821
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1903
   },
   "every archetype gets a table": {
    "argv": "npx tsx scripts/check_memo_table.ts",
    "code": 0,
    "summary": "all 12 archetypes publish a table that holds up",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 16840
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 16108
   },
   "every committed artifact can be rebuilt": {
    "argv": "python3 ../../ETL/schema/check_artifact_reachability.py",
    "code": 1,
    "summary": "check_artifact_reachability: FAILED",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 6726
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 6717
   },
   "every guard runs somewhere, or says why not": {
    "argv": "python3 ../../ETL/schema/check_guard_reachability.py",
    "code": 1,
    "summary": "check_guard_reachability: FAILED",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 29
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 30
   },
   "gate field reach": {
    "argv": "npx tsx scripts/check_gate_field_reach.ts",
    "code": 0,
    "summary": "panel.tsx reads `pinned` from here. The lender/intermediary routing the other values unlock is out of scope for this tool's lean-founder persona, and an operating company is what such a founder truthfully is. What used to stand here — 'so these rules evaluate correctly, they simply always evaluate the same way' — was false in its first half and the reason nobody looked at the second. Measured over",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1101
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1387
   },
   "gate pertinence": {
    "argv": "npx tsx scripts/check_gate_pertinence.ts",
    "code": 1,
    "summary": "- [unjudged filter gate] 1349 distinct requirement text(s) on gates that can decide a verdict have no pertinence verdict, across 1645 gate(s). Unjudged is a FAILURE, not a pass — an unjudged gate is exactly the state the IPCEI gates were in:",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1309
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1512
   },
   "harness answers as the founder": {
    "argv": "npx tsx scripts/check_harness_intake.ts",
    "code": 0,
    "summary": "check_harness_intake: ok — 24 replay harness(es), 23 askable intake fields, 5 held to zero inlined keys, 14 ratcheted.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1324
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1554
   },
   "leaf cap headroom": {
    "argv": "npx tsx scripts/check_leaf_cap.ts",
    "code": 0,
    "summary": "check_leaf_cap: ok — cap 250, widest group 102 (state_aid_satr DE), headroom 148 across 39 channel/country groups.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 838
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1067
   },
   "liveness has one definition": {
    "argv": "npx tsx scripts/check_liveness.ts",
    "code": 0,
    "summary": "liveness: one definition, one projection, no hand-rolled copies",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1380
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1791
   },
   "missing-data neutral": {
    "argv": "npx tsx scripts/check_missing_data_neutral.ts",
    "code": 0,
    "summary": "ok — furthest from the middle: defense_security at the 44th percentile, band 20-60. (The constant this replaced, 0.5, sat at the 79th.)",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 870
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1097
   },
   "no door is offered on an expired fact": {
    "argv": "npx tsx scripts/check_dead_doors.ts",
    "code": 0,
    "summary": "ok — no published row rests its openness on a date behind us",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1270
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1414
   },
   "offer routes are sourced": {
    "argv": "npx tsx scripts/check_offer_route.ts",
    "code": 0,
    "summary": "check_offer_route: ok — 724 publishable, 11 withheld as not-an-offer (all sourced), 285 with no recorded route across 10 families, none above its ceiling.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 819
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 970
   },
   "one env loader": {
    "argv": "npx tsx scripts/check_env_loader.ts",
    "code": 0,
-   "summary": "check_env_loader: ok — 459 files, one loader, every declared credential accounted for.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 888
+   "summary": "check_env_loader: ok — 461 files, one loader, every declared credential accounted for.",
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1016
   },
   "open questions still cover the corpus": {
    "argv": "npx tsx scripts/check_open_question_class.ts",
    "code": 1,
    "summary": "FAIL — 1086 requirement texts have no judgement, above the ceiling of 400.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 855
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 897
   },
   "openness is evidenced": {
    "argv": "npx tsx scripts/check_window_evidence.ts",
    "code": 0,
    "summary": "ok",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1184
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1524
   },
   "output contracts": {
    "argv": "npx tsx scripts/check_contracts.ts",
    "code": 0,
    "summary": "check_contracts: ok — 10 contracts, 105 rules, 34 enforced, 71 declared unenforced (buildable 6, judgement 64, no-artifact 1), 5 report fields governed",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 781
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 925
   },
   "payload budget": {
    "argv": "npx tsx scripts/check_payload_budget.ts",
    "code": 0,
    "summary": "when it breaks; see the note at the top of this file.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 923
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1103
   },
   "peer prior canary": {
    "argv": "npx tsx scripts/check_peer_prior_canary.ts",
    "code": 0,
    "summary": "check_peer_prior_canary: ok — every floored population is above its floor.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 757
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 876
   },
   "published figures": {
    "argv": "npx tsx scripts/check_published_figures.ts",
    "code": 1,
-   "summary": "check_published_figures: found 3 figure(s) in 3 unit(s) — under the floor of 15/8. The extractor has stopped seeing the document, which is how the last version of a check like this went green over a page it could not read.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 980
+   "summary": "check_published_figures: found 4 figure(s) in 4 unit(s) — under the floor of 15/8. The extractor has stopped seeing the document, which is how the last version of a check like this went green over a page it could not read.",
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1011
   },
   "published verdicts": {
    "argv": "npx tsx scripts/check_verdicts.ts",
    "code": 1,
    "summary": "- DEGRADED — applicant_identity last reported failed:",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 2882
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 4038
   },
   "quotations match documents": {
    "argv": "npx tsx scripts/check_extracted_quotes.ts",
    "code": 0,
-   "summary": "check_extracted_quotes: ok — 3 extraction record(s), 11 records pass, 0 fail, 0 too close to a sibling",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 4942
+   "summary": "check_extracted_quotes: skipped — data/raw/instrument_docs is absent, so there is nothing to verify a quotation against. This is the normal state in CI; the check is real on any machine that holds the corpus.",
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 965
   },
   "recall floor": {
    "argv": "npx tsx scripts/check_recall_floor.ts",
@@ -436,92 +436,92 @@
    "argv": "npx tsx scripts/check_recall_leaks.ts",
    "code": 0,
    "summary": "(336 instruments indexed, 25,826 titles, 40 digest probes agree).",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1029
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1206
   },
   "regions match NUTS": {
    "argv": "npx tsx scripts/check_regions.ts",
    "code": 0,
    "summary": "check_regions: ok — 417 regions across 39 countries, and the 449 reference ids are exactly NUTS 2024 levels 1-2",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1409
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1353
   },
   "rendered numbers": {
    "argv": "npx tsx scripts/check_rendered_numbers.ts",
    "code": 0,
    "summary": "self-test passed: it flags a bare figure inside an interpolated paragraph, clears the derived one, and does not let a footnote clear the next paragraph.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1101
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1274
   },
   "request path cannot reach the answer": {
    "argv": "npx tsx scripts/check_answer_not_reachable.ts",
    "code": 0,
    "summary": "check_answer_not_reachable: ok — 64 modules reachable from the request path, none names an answer-bearing source (6 sources checked); 22 of the events pass's 38 derived column(s) reach a row, every one classified, and the 4 the holdout covers are the ones that need it.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 784
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 894
   },
   "sector evidence": {
    "argv": "npx tsx scripts/check_sector_evidence.ts",
    "code": 0,
    "summary": "ok — 7 of 360 instruments claim a technology sector their own recipients contradict (pinned 7)",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 799
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 916
   },
   "segment config is a literal": {
    "argv": "npx tsx scripts/check_revalidate_literal.ts",
    "code": 0,
    "summary": "check_revalidate_literal: ok — every segment config in app/ is a literal, and every revalidate equals CORPUS_REVALIDATE_SECONDS (3600).",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 782
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 939
   },
   "selector's base rate is current": {
    "argv": "npx tsx scripts/check_pool_recall_curve.ts",
    "code": 0,
    "summary": "measured on postgres instruments=1088 / offerable=760 ids=25c7df59f657ca42 asOf=2026-08-18, live postgres instruments=1088 / offerable=760 ids=25c7df59f657ca42 asOf=2026-08-19",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1400
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1571
   },
   "site serves the ETL's corpus": {
    "argv": "npx tsx scripts/check_corpus_census.ts",
    "code": 1,
    "summary": "the pipeline that produced it did not finish cleanly: \"failed at classify_taxonomy.py (rc=1)\". Part of the corpus is not refreshed.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1212
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1436
   },
   "the cron can read what it imports": {
    "argv": "python3 ../../ETL/schema/check_cron_image_inputs.py",
    "code": 0,
    "summary": "ok — every module the weekly cron imports can read, in the image, everything it reads at import.",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 30204
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 36256
   },
   "theme index is not stale": {
    "argv": "npx tsx scripts/check_theme_index.ts",
    "code": 0,
    "summary": "check_theme_index: ok — 1088 instruments indexed",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 834
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1090
   },
   "typecheck": {
    "argv": "npx tsc --noEmit",
    "code": 0,
    "summary": "",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 2088
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 2205
   },
   "unit tests": {
    "argv": "npx vitest run",
-   "code": 1,
-   "summary": "Tests  1 failed | 932 passed (933)",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 4722
+   "code": 0,
+   "summary": "Duration  4.42s (transform 3.96s, setup 0ms, import 5.90s, tests 11.71s, environment 7ms)",
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 5101
   },
   "vocabulary contract": {
    "argv": "npx tsx scripts/check_vocabularies.ts",
    "code": 0,
    "summary": "all intake vocabularies correspond to the data",
-   "at": "2026-08-19T16:51:58.646Z",
-   "ms": 1349
+   "at": "2026-08-19T19:54:54.193Z",
+   "ms": 1676
   }
  }
 }
