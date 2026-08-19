@@ -1,32 +1,35 @@
 # wsHX — what the record was missing, and how much of our own target is unreachable by construction
 
-> ## ⚠ OPERATIONAL ALARM — READ THIS FIRST
+> ## ⚠ THE WEEKLY ETL WAS OFF FOR ~75 MINUTES. IT IS BACK ON.
 >
-> **The weekly ETL cron is OFF as of 2026-08-19 ~01:40 UTC and I could not turn
-> it back on.** The service instance config is correct (`0 3 * * 0`,
-> `python3 ETL/events/extract/railway_cron.py`) but Railway runs the LATEST
-> DEPLOYMENT, and that is `dea9c4c7` — `sleep infinity`, `cron=None` — which
-> succeeded at 00:51 UTC as the wake for a volume transfer. **Every attempt to
-> deploy the restored schedule since has failed on Railway's side**: `502 Bad
-> Gateway` on upload, `503 no healthy upstream` from the API, and
-> `Unauthorized` from an auth service that is part of the same outage (the
-> stored token was independently checked and is valid until 02:00:58 UTC).
->
-> **The repair, the moment Railway is healthy:**
+> **Resolved at 2026-08-19 01:53 UTC and confirmed from Railway**, not from an
+> exit code:
 >
 > ```
-> python3 ETL/lib/verify_cron.py --deploy
+> service instance   cron '0 3 * * 0'  start 'python3 ETL/events/extract/railway_cron.py'
+> latest deployment  cron '0 3 * * 0'  status SUCCESS  built 2026-08-19 01:53 UTC
+> ok — the weekly ETL is scheduled, deployed, and running this code.
 > ```
 >
-> If it reports `Unauthorized`, the CLI session expired during the outage and
-> needs one interactive `npx --yes @railway/cli login` first — which is why
-> this could not be finished from a non-interactive session.
+> **What happened, because it is the most serious thing in this workstream.**
+> The volume upload failed on a transient `Unauthorized`. `restore()` then
+> called `_set_service_instance` OUTSIDE its own try, so the error raised
+> straight out of a `finally`, replaced the clean "upload failed" with a stack
+> trace, and left the service on `sleep infinity` with no cron. Unlike every
+> earlier failure that night the wake deployment had SUCCEEDED, so the
+> sleep-infinity manifest was the live one and the cron genuinely did not fire.
+> Railway's control plane was returning 502/503/401 across the whole window, so
+> the repair took eleven attempts.
 >
-> **Nothing was lost and no data is at risk.** The corpus of record was never
-> written: the upload failed before it started and the volume still holds the
-> pre-push data. The prepared file is kept at
+> **`restore()`'s own docstring promised this could not happen.** The promise
+> was only ever true of `deploy()`, the one call that was wrapped.
+> `verify_cron.restore_and_verify` — THE repair command — had the identical
+> hole and died on the outage it exists to repair, after one attempt. Both are
+> fixed and `test_repair_survives_the_outage.py` holds them there.
+>
+> **No data was ever at risk.** The corpus of record was never written; the
+> upload failed before it began. The prepared file is kept at
 > `data/wshx_union_ready_to_push.sqlite`.
-
 
 **FOR THE OWNER, VERBATIM.** **The union is built and proven and it is not yet
 on the volume: Railway's builder has failed every deploy since 22:50 UTC** —
@@ -221,6 +224,15 @@ statement about the latest deployment and not about what is scheduled.
 
 Every route to the volume in this repository begins with a deploy, so the
 upload cannot be attempted, let alone forced.
+
+**I stopped rather than retrying the upload once Railway recovered, and the
+reason is the incident above.** The CLI's stored token expired at 02:00:58 UTC,
+seven minutes after the cron was confirmed back. A wake plus a 648 MB witness
+download plus a 648 MB upload is twenty minutes or more, so it would have run
+out of authorisation MID-TRANSFER — with the service woken and no way to
+restore the schedule. That is precisely the state that took seventy-five
+minutes and eleven deploys to get out of, and doing it again to save one
+session's wait would be trading a real outage for a convenience.
 
 **The union file is kept, and finishing it is one committed command:**
 
