@@ -60,6 +60,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB  # noqa: E402
+from euro_money import euro_scales, stable_band  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
@@ -668,6 +669,22 @@ ENCODE_SCHEMA = {
                 "boolean_true", "boolean_false", "numeric_gte", "numeric_lte", "skip"]},
             "values": {"type": "array", "items": {"type": "string"}},
             "threshold": {"type": "number"},
+            # ── The currency step ──────────────────────────────────────────
+            # The band scales are EURO. `TICKET_BANDS` is labelled "EUR 100K -
+            # EUR 500K"; turnoverBand and balanceBand carry the euro thresholds
+            # of the SME definition. The funder writes the rule in the funder's
+            # own money. Until 2026-08-19 nothing between the two, and
+            # "maksimalt 500 000 kroner" -- EUR 46k -- was stored as a EUR 500k
+            # ceiling.
+            #
+            # The model READS the unit off the sentence and returns it. The
+            # model does NOT do the arithmetic: `amount` and `currency` go to
+            # euro_money.stable_band, which converts at a pinned ECB rate and
+            # refuses outright if the band would depend on which rate. Reading
+            # a unit out of Norwegian prose is a language task; multiplying is
+            # not, and a model that does both silently does the second badly.
+            "currency": {"type": "string"},
+            "amount": {"type": "number"},
         },
         "required": ["id", "op", "values"]}}},
     "required": ["results"],
@@ -691,6 +708,15 @@ Operators:
 
 Use the EXACT band/enum vocabulary given for the field — never invent a value.
 For country fields, values are full English country names ("Germany", "Spain").
+
+MONEY: the ticketBand, turnoverBand and balanceBand scales are denominated in
+EUROS. If the rule states an amount, return "currency" as its ISO 4217 code
+exactly as the funder wrote it — "EUR" for euro, "NOK" for kroner, "SEK" for
+kronor, "HUF" for forint, whatever the sentence says — and "amount" as the bound
+itself in that currency, unrounded and unconverted. DO NOT convert it yourself
+and DO NOT pick the band you think it lands in: return the number the funder
+wrote and the code will convert it at a pinned rate. "maksimalt 500 000 kroner"
+is currency NOK, amount 500000. If the rule states no amount, omit both.
 
 CRITICAL — encode only RESTRICTIONS, never PERMISSIONS. These two read alike and
 mean opposite things. Auditing the first pass against real recipients caught this
@@ -829,6 +855,7 @@ def cmd_encode(args) -> None:
 
     cl = client()
     done = skipped = 0
+    fx_converted: set[int] = set()
     for i in range(0, len(rows), ENCODE_CHUNK):
         chunk = rows[i : i + ENCODE_CHUNK]
         parts = []
@@ -883,6 +910,63 @@ def cmd_encode(args) -> None:
             if op == "equals" and field in MULTI_VALUE_FIELDS:
                 op = "in"
                 r["values"] = r["values"][:1]
+            # ── A numeric comparator needs a numeric answer ────────────────
+            # comparator.ts's numeric_gte/numeric_lte both begin
+            # `typeof answer === "number"`, and the only number in
+            # EligibilityAnswers is `foundedYear`. Every field carrying a band
+            # order or an enum is answered with a STRING, so a numeric op on
+            # one evaluates to null for every founder alive -- not "fails", not
+            # "passes", INERT, forever. All 46 numeric specs in the corpus on
+            # 2026-08-19 are on such a field and not one of them has ever
+            # decided anything.
+            if op in ("numeric_gte", "numeric_lte") and (
+                    field in BAND_ORDERS or field in ENUM_VALUES):
+                print(f"    refused {op} on `{field}` for gate {gid}: its answer is a "
+                      f"band/enum string and comparator.ts requires a number — the "
+                      f"spec would be inert")
+                skipped += 1
+                continue
+
+            # ── The currency step ─────────────────────────────────────────────
+            # THE PROPERTY: a comparator on a euro-denominated scale may only be
+            # derived from numerals denominated in euro, and a converted band is
+            # admissible only if it is the same at every rate the currency has
+            # held over the pinned ECB window. Otherwise the exchange rate is
+            # deciding a hard eligibility verdict, and no rate is good enough.
+            ccy = (r.get("currency") or "EUR").upper()
+            if field in euro_scales() and ccy not in ("EUR", "", "NONE"):
+                amount = r.get("amount")
+                if amount is None:
+                    print(f"    skipped gate {gid}: rule is in {ccy} and the bound "
+                          f"was not returned, so it cannot be converted")
+                    skipped += 1
+                    continue
+                if op not in ("band_max", "band_min"):
+                    # A range in a foreign currency needs BOTH bounds converted
+                    # and this schema carries one. Refuse rather than convert
+                    # half of it and store the other half as written.
+                    print(f"    skipped gate {gid}: `{op}` on a euro scale from a "
+                          f"{ccy} amount needs every bound converted, not one")
+                    skipped += 1
+                    continue
+                try:
+                    band = stable_band(field, float(amount), ccy)
+                except KeyError as e:
+                    print(f"    skipped gate {gid}: {e}")
+                    skipped += 1
+                    continue
+                if band is None:
+                    print(f"    skipped gate {gid}: {amount:,.0f} {ccy} falls in "
+                          f"different {field} bands across the pinned rate window — "
+                          f"the exchange rate would be deciding the verdict")
+                    skipped += 1
+                    continue
+                if r["values"] and r["values"][0] != band:
+                    print(f"    gate {gid}: {amount:,.0f} {ccy} is `{band}` on {field}, "
+                          f"not `{r['values'][0]}` as returned — converted")
+                r["values"] = [band]
+                fx_converted.add(gid)
+
             spec: dict = {"op": op, "field": field}
             if op in ("numeric_gte", "numeric_lte"):
                 if r.get("threshold") is None:
@@ -997,9 +1081,15 @@ def cmd_encode(args) -> None:
                     spec["allowed"] = good
                 else:
                     spec["value"] = good[0]
+            # A band that came THROUGH a currency conversion says so on the
+            # row. `check_gate_currency.py` re-derives it rather than trusting
+            # the label -- a mislabelled row still fails -- but the label is
+            # what tells a reader why a Norwegian rule reading "500 000" is
+            # stored as a EUR 25k-100k ceiling.
+            method = "fx_converted" if gid in fx_converted else "llm_encode"
             conn.execute(
-                "UPDATE eligibility_gates SET value_spec=?, encoding_method='llm_encode' WHERE id=?",
-                (json.dumps(spec, ensure_ascii=False), gid))
+                "UPDATE eligibility_gates SET value_spec=?, encoding_method=? WHERE id=?",
+                (json.dumps(spec, ensure_ascii=False), method, gid))
             done += 1
         conn.commit()
         print(f"  {min(i + ENCODE_CHUNK, len(rows)):,}/{len(rows):,}  encoded={done:,} skipped={skipped:,}")

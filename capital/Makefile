@@ -201,6 +201,18 @@ eligibility:
 	# ever blocked and no blocked-count moved. What moved was the qualification
 	# BAND, on 109 of 897 founders. FAILS the target, like the line above it.
 	python3 ETL/terms/check_gate_branches.py
+	# THE BANDS ARE EURO AND THE FUNDER'S SENTENCE IS NOT. `TICKET_BANDS` is
+	# labelled in euro and turnoverBand/balanceBand carry the euro thresholds of
+	# the SME definition, but a rule is written in the funder's own currency and
+	# encode_gates.py had no currency step at all. "maksimalt 500 000 kroner" is
+	# EUR 46k and was encoded as a EUR 500k ceiling; "maximum 50 000 000 Ft" is
+	# EUR 137k and was encoded as a EUR 50 MILLION one. Sterling at 1.17 lands in
+	# the same coarse band and hid the class for months. The check names ONE
+	# currency, the euro, and treats anything not shown to be euro as not euro,
+	# so a Czech scheme arriving tomorrow is covered with no edit. FAILS the
+	# target, like the two lines above it.
+	python3 ETL/terms/test_euro_money.py
+	python3 ETL/terms/check_gate_currency.py
 	# THE SECOND PATH TO PRODUCTION. encode_gates.py triage rewrites gate_role
 	# from a paid model pass, so every curated demotion above is reverted by the
 	# two lines above it -- and this target then exports and publishes. refresh.py
