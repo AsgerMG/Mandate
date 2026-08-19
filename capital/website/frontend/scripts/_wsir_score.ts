@@ -54,7 +54,16 @@ interface Row {
   rankTable: number | null; rankAccessible: number | null; rankWriter: number | null;
   tableLen: number; accessibleLen: number;
 }
-interface Trace { header: { startedAt: string; rowOrder: string; awardTerm: string }; rows: Row[] }
+interface Trace {
+  header: {
+    startedAt: string; rowOrder: string; awardTerm: string;
+    /** Absent on every trace written before wsIT. Printed rather than defaulted:
+     *  a run whose description policy is unknown is not a run whose description
+     *  policy was `full`, and the difference is the whole of wsIT's arm. */
+    description?: string;
+  };
+  rows: Row[];
+}
 
 function load(file: string): Trace {
   const lines = readFileSync(file, "utf8").trim().split("\n");
@@ -200,9 +209,12 @@ function main(): void {
   const pairs = base.rows.map((b, i) => ({ b, a: arm.rows[i] })).filter((p) => p.b.offerable && inStratum(p.b));
 
   console.log(`BASE       ${baseFile}`);
-  console.log(`           row_order=${base.header.rowOrder}  award_term=${base.header.awardTerm}  ${base.header.startedAt}`);
+  const desc = (t: Trace) => t.header.description ?? "UNRECORDED (trace predates wsIT)";
+  console.log(`           row_order=${base.header.rowOrder}  award_term=${base.header.awardTerm}  `
+    + `description=${desc(base)}  ${base.header.startedAt}`);
   console.log(`ARM        ${armFile}`);
-  console.log(`           row_order=${arm.header.rowOrder}  award_term=${arm.header.awardTerm}  ${arm.header.startedAt}`);
+  console.log(`           row_order=${arm.header.rowOrder}  award_term=${arm.header.awardTerm}  `
+    + `description=${desc(arm)}  ${arm.header.startedAt}`);
   console.log(`population ${base.rows.length} drawn, ${pairs.length} past the corpus stages`);
 
   // ── DID THE ARM ARRIVE ───────────────────────────────────────────────────

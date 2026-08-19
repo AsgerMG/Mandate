@@ -1,0 +1,78 @@
+trace trace_off.jsonl, 897 founders, 467 own-words / 430 cross-regime
+
+=== THE LADDER, BY STRATUM — where the 20 points enter ===
+stage             own n    own %  crs n    crs %     gap  own|prev  crs|prev  NEW gap
+drawn               467  100.00%    430  100.00%   +0.00   100.00%   100.00%    +0.00
+publishable         440   94.22%    379   88.14%   +6.08    94.22%    88.14%    +6.08
+founder_screen      429   91.86%    369   85.81%   +6.05    97.50%    97.36%    +0.14
+gates_pass          423   90.58%    364   84.65%   +5.93    98.60%    98.64%    -0.04
+pool_cut@40         397   85.01%    276   64.19%  +20.82    93.85%    75.82%   +18.03
+writer_cap@7        247   52.89%    127   29.53%  +23.36    62.22%    46.01%   +16.20
+top_6               229   49.04%    120   27.91%  +21.13    92.71%    94.49%    -1.78
+top_5               214   45.82%    110   25.58%  +20.24    93.45%    91.67%    +1.78
+top_1               102   21.84%     38    8.84%  +13.00    47.66%    34.55%   +13.12
+
+  reciprocal rank (writer order, miss=0), publishable denominator: own 0.3377  cross 0.1760  diff +0.1617
+  reciprocal rank (pool order):                                    own 0.3567  cross 0.2009  diff +0.1558
+  mean instrument-table rows: own 77.0  cross 97.2  — the cross stratum searches a materially larger haystack
+
+=== ARE THE STRATA EXCHANGEABLE? ===
+
+  country: total-variation distance 0.542 over 19 values   [own spans 16, cross spans 16]
+    SE                         own  43.9%   cross   5.1%    +38.8
+    FR                         own   7.1%   cross  23.5%    -16.4
+    GB                         own  16.1%   cross   8.6%     +7.5
+    NO                         own   4.5%   cross  20.2%    -15.7
+    DE                         own   3.6%   cross  14.2%    -10.5
+    IT                         own   3.6%   cross  10.5%     -6.8
+
+  sector: total-variation distance 0.228 over 11 values   [own spans 11, cross spans 11]
+    other                      own  20.3%   cross  10.9%     +9.4
+    health_life_sciences       own  19.3%   cross  10.5%     +8.8
+    energy_cleantech           own   9.0%   cross  20.9%    -11.9
+    software_data_ai           own  16.1%   cross  12.8%     +3.3
+    semiconductors_electronics own   8.8%   cross  14.4%     -5.6
+    industrial_manufacturing   own   8.1%   cross   8.1%     -0.0
+
+  regime (opaque group id): total-variation distance 0.801 over 111 values   [own spans 35, cross spans 94]
+    g0                         own  42.8%   cross   1.9%    +41.0
+    g1                         own  16.1%   cross   7.9%     +8.2
+    g2                         own   0.0%   cross  12.1%    -12.1
+    g3                         own   9.9%   cross   0.2%     +9.6
+    g4                         own   0.0%   cross  10.2%    -10.2
+    g5                         own   3.0%   cross   5.8%     -2.8
+
+=== ... AND ON THE AWARD RECORD ITSELF ===
+  field            own median   cross median   ratio   rank-sum p
+  n_awards                  2              5    2.50x   5.2e-35
+  max_award           290,290        964,099    3.32x   8.3e-30
+  sum_award           380,283      2,325,096    6.11x   2.9e-31
+  last_year             2,024          2,025    1.00x   6.2e-11
+
+  A company only HAS cross-regime text if it won under two regimes. The stratum
+  is therefore a selection on being bigger and better documented — and it scores
+  WORSE, because the funds those companies win are pan-European and crowded.
+
+=== THE 20 POINTS, ADJUSTED (publishable denominator, EXACT@6) ===
+  raw — wsIR's 52.05 vs 31.66              +20.38   95% [+13.95, +27.14]
+  within COUNTRY                          +8.80   95% [+2.40, +17.33]   10 informative strata
+  within SECTOR                          +18.87   95% [+12.08, +25.90]   11 informative strata
+  within REGIME                           -1.68   95% [-18.49, +19.61]   6 informative strata
+  within REGIME, at pool_cut             +18.47   5 informative strata
+
+  Regimes holding BOTH strata (>=3 each): 7 of 96, covering 408/819 founders (50%). Provenance is nearly COLLINEAR with regime,
+  which is the reason the within-regime interval is wide rather than a reason
+  to prefer the raw number.
+
+=== LENGTH IS PROVENANCE, WHICH IS WHY THE OBSERVATIONAL CURVE SAYS NOTHING ===
+  own_award_text         n= 378  median    93 chars  p25    62  p75   200   EXACT@6  57.0%
+  own_project_title      n=  89  median    85 chars  p25    61  p75   109   EXACT@6  32.6%
+  cross_regime_title     n= 100  median    82 chars  p25    60  p75   107   EXACT@6  40.0%
+  cross_regime_summary   n= 330  median  1000 chars  p25   999  p75  1000   EXACT@6  28.9%
+
+  the observational curve, and the regime hiding inside it:
+       12-80    n= 235  EXACT@6  44.3%   largest regime g0 carries 55% of the band
+       80-150   n= 195  EXACT@6  39.5%   largest regime g0 carries 35% of the band
+      150-600   n=  65  EXACT@6  32.3%   largest regime g2 carries 35% of the band
+      600-1100  n= 289  EXACT@6  49.5%   largest regime g1 carries 30% of the band
+     1100-4000  n=  35  EXACT@6  11.4%   largest regime g4 carries 23% of the band
