@@ -22,6 +22,26 @@ now forces any harness that stubs a production stage to say so in its output.
 `refresh.py`; the north star is `reachCeiling`, derived, never typed. Note
 `reachCeiling` is downstream of the stub.
 
+## OPEN: the funnel calls its own headline an arm, and it is wrong
+
+`one_funnel/latest.md` prints:
+
+> ██ NOT THE SHIPPED ORDER — this run ranked every founder's table with
+> `AWARD_TERM=oneside` (shipped: `shipped`), an arm no founder receives.
+
+**`oneside` IS the shipped default.** `shortlist.ts:592` — *"DEFAULT FLIPPED TO
+`oneside`, owner's decision 2026-08-17, on wsHE."* So 38.91% is the product, and
+the warning label on it is stale. wsIQ read our own headline as an arm because of
+it and said so in its report.
+
+**The number stands; the banner lies.** I could not find the emitter — the string
+is in generated artefacts under `findings/` but not in any `.ts` I searched
+(`measure_funnel.ts`, `_wsgd_stages.ts`, the `██` grep). Whoever finds it should
+make the banner compare against `parseAwardTerm(undefined)` rather than a typed
+literal, so it cannot drift from the default again — the same fix
+`_wsho_strata.ts` already got today for its effort rung, which printed "this run
+is at `medium`" while running at `low`.
+
 ## READ THIS BEFORE MEASURING ANYTHING
 
 **NEVER score an ordering change on EXACT@6 alone.** Its half-width **floors near
