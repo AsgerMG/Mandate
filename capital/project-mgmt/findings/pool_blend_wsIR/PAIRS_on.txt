@@ -1,0 +1,68 @@
+########## pool_cut
+ARM ARRIVED  the won fund's accessible rank differs for 456/819 founder(s), median shift 2 row(s)
+stage      pool_cut (K=40)
+BASE       /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_off.jsonl  row_order=off  2026-08-19T17:27:30.488Z
+ARM        /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_on.jsonl  row_order=on  2026-08-19T17:42:02.743Z
+population 897 founder(s), 819 of them past the corpus stages
+
+BASE alive 673  75.0% +/-2.8
+ARM  alive 656  73.1% +/-2.9
+PAIRED     -17 founder(s) = -1.9 points
+discordant 39  arm only 11, base only 28
+McNemar z  2.72
+
+GAINS   11 founder(s) across 7 regime(s), largest 36%
+        satr_de_rnd:4  vinnova_grant:2  nfr_naeringsph:1  satr_se_rnd:1  ademe_aid:1  nfr_iktforskning:1
+LOSSES  28 founder(s) across 6 regime(s), largest 39%
+        horizon_eu_pillar_ii:11  horizon_eu_partnership:7  vinnova_grant:5  satr_de_rnd:3  eic:1  satr_fr_equity:1
+########## writer_cap
+ARM ARRIVED  the won fund's accessible rank differs for 456/819 founder(s), median shift 2 row(s)
+stage      writer_cap
+BASE       /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_off.jsonl  row_order=off  2026-08-19T17:27:30.488Z
+ARM        /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_on.jsonl  row_order=on  2026-08-19T17:42:02.743Z
+population 897 founder(s), 819 of them past the corpus stages
+
+BASE alive 374  41.7% +/-3.2
+ARM  alive 343  38.2% +/-3.2
+PAIRED     -31 founder(s) = -3.5 points
+discordant 61  arm only 15, base only 46
+McNemar z  3.97
+
+GAINS   15 founder(s) across 9 regime(s), largest 20%
+        satr_de_rnd:3  vinnova_grant:2  ademe_aid:2  bdns_es_ayudas:2  satr_it_rnd:2  tacr_ti:1
+LOSSES  46 founder(s) across 15 regime(s), largest 30%
+        vinnova_grant:14  horizon_eu_pillar_ii:13  horizon_eu_partnership:4  nfr_energix:3  satr_de_rnd:2  nfr_pes:1
+########## top_6
+ARM ARRIVED  the won fund's accessible rank differs for 456/819 founder(s), median shift 2 row(s)
+stage      top_6
+BASE       /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_off.jsonl  row_order=off  2026-08-19T17:27:30.488Z
+ARM        /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_on.jsonl  row_order=on  2026-08-19T17:42:02.743Z
+population 897 founder(s), 819 of them past the corpus stages
+
+BASE alive 349  38.9% +/-3.2
+ARM  alive 328  36.6% +/-3.2
+PAIRED     -21 founder(s) = -2.3 points
+discordant 73  arm only 26, base only 47
+McNemar z  2.46
+
+GAINS   26 founder(s) across 15 regime(s), largest 27%
+        vinnova_grant:7  ademe_aid:2  satr_nl_rnd:2  satr_it_rnd:2  satr_de_rnd:2  horizon_eu_pillar_ii:2
+LOSSES  47 founder(s) across 15 regime(s), largest 30%
+        horizon_eu_pillar_ii:14  vinnova_grant:13  horizon_eu_partnership:4  nfr_energix:3  satr_de_rnd:2  satr_it_rnd:2
+########## top_5
+ARM ARRIVED  the won fund's accessible rank differs for 456/819 founder(s), median shift 2 row(s)
+stage      top_5
+BASE       /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_off.jsonl  row_order=off  2026-08-19T17:27:30.488Z
+ARM        /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_on.jsonl  row_order=on  2026-08-19T17:42:02.743Z
+population 897 founder(s), 819 of them past the corpus stages
+
+BASE alive 324  36.1% +/-3.1
+ARM  alive 304  33.9% +/-3.1
+PAIRED     -20 founder(s) = -2.2 points
+discordant 82  arm only 31, base only 51
+McNemar z  2.21
+
+GAINS   31 founder(s) across 14 regime(s), largest 29%
+        vinnova_grant:9  ademe_aid:4  satr_de_rnd:4  innovationsfonden_innofounder:2  satr_nl_rnd:2  satr_it_rnd:2
+LOSSES  51 founder(s) across 16 regime(s), largest 31%
+        vinnova_grant:16  horizon_eu_pillar_ii:15  horizon_eu_partnership:3  nfr_energix:3  satr_de_rnd:2  eic:2

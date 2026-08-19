@@ -1,0 +1,81 @@
+(node:40665) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  answer key, 7,095 pairs:
+    GRADED          5416 (76.3%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1679 (23.7%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing { stage: 'gates', error: 'timeout expired' }
+corpus=postgres instruments=1088 at 2026-08-19T18:47:42.859Z
+set=__recallSetDescribed.json split=holdout seed=20260806  replayed 600
+  founder intake — 22 of 23 askable fields are asked in production today, identity=real own-history=withheld capital=withheld answers=off consortium=yes
+    DERIVED   entityCountries      set  600/600 (100%)  own  600/600 (100%)  companies.country
+    DERIVED   region               set    0/600 (  0%)  own    0/600 (  0%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set  600/600 (100%)  own  600/600 (100%)  companies.sector_top
+    DERIVED   ticketBand           set  600/600 (100%)  own    0/600 (  0%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set  600/600 (100%)  own    0/600 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set  600/600 (100%)  own    0/600 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set  600/600 (100%)  own    0/600 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    STAGED    organisationType     set    0/600 (  0%)  own    0/600 (  0%)  held back on 275/600 — prefillOrganisationType(company name)
+    WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
+    ██ HELD BACK — organisationType is STAGED behind NEXT_PUBLIC_ORGANISATION_TYPE_ARM, which is not "on" — the control is not rendered and production never populates it. 275/600 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said. Switch NEXT_PUBLIC_ORGANISATION_TYPE_ARM on and re-measure to see what asking would cost or win; do not compare the two numbers without saying which is which.
+  ranker: all 591 request(s) on EMBEDDING
+  arm=99fd8d19  retrieval:default  founder_answers:default  fund_evidence:default  instructions:default   <- ALL LEVERS AT DEFAULT (this is a control run)
+  cache: 0/0 hit (n/a)  mode=replay  arm=99fd8d19  0 live calls -- this run was free
+  in pool                  583/600 (97% +/-1.3)
+  EXACT scheme in top 5    160/600 (27% +/-3.5)
+  EXACT scheme in top 6    185/600 (31% +/-3.7)   <- what the instant screen PUBLISHES; the line above grades five of them
+  same REGIME in top 5     398/600 (66% +/-3.8)   <- the operational number
+    ^ REGIME@5 under __recallSetDoors.json is not comparable with any figure measured under __recallSetComposed.json: a childless family is its own regime, so the metric no longer pays sibling-group-size credit. Quote EXACT@5 across the switch. See recallSet.ts.
+  same DOOR in top 5       160/600 (27% +/-3.5)   <- scheme VIA the granting body
+    of which could differ from EXACT at all: 125/600 (21% of pairs have a nameable body); DOOR - EXACT = 0 pairs
+    gain concentration: 0 pair(s) across 0 regime(s), largest 0% -- (none)
+  same CHANNEL in top 5    518/600 (86% +/-2.7)
+    mode=profile               n= 467  pool 99%  exact5 23%  regime5 66%
+    mode=project               n= 133  pool 92%  exact5 39%  regime5 67%
+    traced:exact_attribution   n= 198  pool 100%  exact5 29%  regime5 81%
+    traced:childless_family    n= 175  pool 97%  exact5 31%  regime5 31%
+    original join              n= 227  pool 95%  exact5 21%  regime5 81%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n= 190  pool 99%  exact5 41%  regime5 41%
+    regime 2-5                 n=  22  pool 68%  exact5 41%  regime5 41%
+    regime 6-20                n=  74  pool 89%  exact5 16%  regime5 45%
+    regime 21-50               n= 109  pool 100%  exact5 25%  regime5 100%
+    regime 51+                 n= 205  pool 100%  exact5 17%  regime5 83%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n= 124  pool 96%  exact5 10%  regime5 60%
+    DE                         n= 115  pool 96%  exact5 16%  regime5 89%
+    SE                         n=  77  pool 97%  exact5 36%  regime5 92%
+    NO                         n=  68  pool 99%  exact5 35%  regime5 35%
+    IT                         n=  41  pool 98%  exact5 29%  regime5 88%
+    EE                         n=  36  pool 100%  exact5 19%  regime5 19%
+    ES                         n=  35  pool 94%  exact5 34%  regime5 63%
+    LV                         n=  26  pool 100%  exact5 31%  regime5 31%
+    GB                         n=  23  pool 100%  exact5 100%  regime5 100%
+    CZ                         n=  22  pool 100%  exact5 27%  regime5 27%
+    NL                         n=  20  pool 100%  exact5 15%  regime5 90%
+    DK                         n=   9  pool 100%  exact5 67%  regime5 67%
+    FI                         n=   2  pool 50%  exact5 0%  regime5 0%
+    AT                         n=   1  pool 100%  exact5 0%  regime5 0%
+    PT                         n=   1  pool 100%  exact5 0%  regime5 100%
+
+no OUT= given: no per-case tape, and no miss taxonomy. Every number above is a scalar you would have to re-run to explain. Add OUT=/tmp/recall.json.

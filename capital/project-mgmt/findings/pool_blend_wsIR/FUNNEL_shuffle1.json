@@ -1,0 +1,182 @@
+{
+ "startedAt": "2026-08-19T18:11:22.931Z",
+ "set": "__recallSetDescribed.json",
+ "split": "holdout",
+ "seed": 20260806,
+ "n": 897,
+ "drawFingerprint": "13cb71cf3a1d1847",
+ "onProductStores": true,
+ "store": "postgres",
+ "corpusObservedAt": "2026-08-19T18:11:23.463Z",
+ "corpus": "postgres instruments=1088",
+ "rankerTally": {
+  "embedding": 819,
+  "lexical": 0
+ },
+ "ranker": "ranker: all 819 request(s) on EMBEDDING",
+ "sampled": false,
+ "populationSize": 897,
+ "levers": {
+  "VERDICT_POOL": 40,
+  "WRITER_CANDIDATE_CAP": 7,
+  "PUBLISH_CAP": 7,
+  "TOP": 5,
+  "rowCuts": [
+   7,
+   6,
+   5
+  ],
+  "rowOrder": "shuffle",
+  "arms": {
+   "POOL_BLEND": "shuffle",
+   "AWARD_TERM": "oneside"
+  }
+ },
+ "poolSweep": null,
+ "watchOnlyInProduction": {
+  "briefs": 38,
+  "withDemotion": 6,
+  "rows": 8,
+  "share": 0.15789473684210525
+ },
+ "meanTableRows": 86.3,
+ "meanAccessibleRows": 81.8,
+ "stages": [
+  {
+   "id": "answer_key",
+   "question": "the answer key names a fund this company actually won",
+   "remaining": 897,
+   "sharePct": 100,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 0
+  },
+  {
+   "id": "in_corpus",
+   "question": "... and the corpus still holds that fund",
+   "remaining": 897,
+   "sharePct": 100,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 0
+  },
+  {
+   "id": "publishable",
+   "question": "... and it is publishable on the corpus's own facts",
+   "remaining": 819,
+   "sharePct": 91.3,
+   "lost": 78,
+   "unmeasured": false,
+   "halfWidthPts": 1.84
+  },
+  {
+   "id": "liveness_confirmed",
+   "question": "... and its openness could be CONFIRMED (the degradation policy)",
+   "remaining": 819,
+   "sharePct": 91.3,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 1.84
+  },
+  {
+   "id": "founder_screen",
+   "question": "... and this founder's screen keeps it (country, capital, channel + leaf caps)",
+   "remaining": 798,
+   "sharePct": 88.96,
+   "lost": 21,
+   "unmeasured": false,
+   "halfWidthPts": 2.05
+  },
+  {
+   "id": "gates_pass",
+   "question": "... and its encoded eligibility gates do not conclusively fail (accessiblePool)",
+   "remaining": 787,
+   "sharePct": 87.74,
+   "lost": 11,
+   "unmeasured": false,
+   "halfWidthPts": 2.15
+  },
+  {
+   "id": "pool_cut",
+   "question": "... and it survives the cut to VERDICT_POOL (40 rows)",
+   "remaining": 606,
+   "sharePct": 67.56,
+   "lost": 181,
+   "unmeasured": false,
+   "halfWidthPts": 3.06
+  },
+  {
+   "id": "writer_cap",
+   "question": "... and it survives the cut to the writer's candidates (7)",
+   "remaining": 304,
+   "sharePct": 33.89,
+   "lost": 302,
+   "unmeasured": false,
+   "halfWidthPts": 3.1
+  },
+  {
+   "id": "watch_only",
+   "question": "... and the writer's own prose does not demote it behind the actionable rows",
+   "remaining": null,
+   "sharePct": null,
+   "lost": null,
+   "unmeasured": true,
+   "halfWidthPts": null
+  },
+  {
+   "id": "published",
+   "question": "... and it is one of the 7 rows the brief publishes",
+   "remaining": 304,
+   "sharePct": 33.89,
+   "lost": 0,
+   "unmeasured": false,
+   "halfWidthPts": 3.1
+  },
+  {
+   "id": "top_6",
+   "question": "... and it is in the first 6 of them",
+   "remaining": 273,
+   "sharePct": 30.43,
+   "lost": 31,
+   "unmeasured": false,
+   "halfWidthPts": 3.01
+  },
+  {
+   "id": "top_5",
+   "question": "... and it is in the first 5 of them",
+   "remaining": 242,
+   "sharePct": 26.98,
+   "lost": 31,
+   "unmeasured": false,
+   "halfWidthPts": 2.9
+  },
+  {
+   "id": "model",
+   "question": "... and the MODEL, which re-orders the 40 before the cuts below, still leaves it in the first 5",
+   "remaining": null,
+   "sharePct": null,
+   "lost": null,
+   "unmeasured": true,
+   "halfWidthPts": null
+  }
+ ],
+ "corpusLossReasons": {
+  "nothing outside its own id names the row": 26,
+  "no application route on record": 19,
+  "the register says the window has shut": 15,
+  "no amounts and no dates — below the data floor": 11,
+  "withheld by editorial policy": 7
+ },
+ "corpusLossUnattributed": 0,
+ "modelStage": {
+  "estimated": true,
+  "file": "adviser_medium_n773_x2.json",
+  "fingerprint": "37e0879c895d4d6a",
+  "n": 98,
+  "controlHits": 45,
+  "rankerHits": 50,
+  "controlRate": 0.45918367346938777,
+  "rankerRate": 0.5102040816326531
+ },
+ "counterfactual": null
+}

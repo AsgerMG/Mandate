@@ -36,7 +36,7 @@ import type { ExclusionLog } from "./exclusions";
 import { EXCLUSION_RULES } from "./rules";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit, sectorFitScorer } from "./fit";
-import { blendPoolScores, homeFirstScores, POOL_BLEND, ROW_PROXIMITY } from "./poolBlend";
+import { blendPoolScores, homeFirstScores, POOL_BLEND, POOL_BLEND_SEED, ROW_PROXIMITY, shuffleScores } from "./poolBlend";
 import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
@@ -2968,18 +2968,45 @@ export function materialiseInstrumentTable(
   // ── THE BLENDED POOL SCORE, behind POOL_BLEND (default off) ───────────────
   //
   // `baseRelevance` below is the two-signal score the whole product ranks on:
-  // semantic percentile and sector share, at a fixed weight. wsCS, wsCU and
-  // this workstream measured a fourteen-signal conditional logit against it as
-  // a pure pool re-ordering and it won by +6.0 ±3.3 points of EXACT@5 on 600
-  // holdout founders (McNemar z = 3.5 over 106 discordant pairs, gains spread
-  // over 20 regimes, largest 17%).
+  // semantic percentile and sector share, at a fixed weight. wsCS and wsCU
+  // measured a fourteen-signal conditional logit against it as a PURE POOL
+  // RE-ORDERING and it won by +5.0 and +5.7 points of EXACT@5 on 600 holdout
+  // founders (McNemar z = 2.9 and 3.2, gains spread over 20 regimes).
   //
-  // Its largest weight by a distance is PROXIMITY -- whether the fund is the
-  // founder's own country's, EU-wide, or neither -- and `baseRelevance` does
-  // not contain that term in any form. So this is not a re-weighting of what
-  // ships. It introduces a signal, and the whole question wsCV exists to
-  // answer is whether that signal survives the stages between this line and
-  // the founder's screen.
+  // ██ THAT NUMBER IS NOT A PREDICTION OF A GAIN, AND THE ARM IS CLOSED ██
+  //
+  // A pure re-ordering is scored in a frame with NO peer precedence, no scheme
+  // dedupe and no boolean tiers. `rank_shape_wsGY` prices that whole stack at
+  // +7.2 points of EXACT@6 (`score_only` 28.4% -> `shipped` 35.7%, z=+4.19) and
+  // states the consequence: an arm scored as a pure re-ordering must clear 7.2
+  // before it is news. +5.7 does not. The blend RE-DERIVES IN SCORE FORM most
+  // of what peer precedence already delivers in ORDER form, and then replaces
+  // the order that delivered all of it.
+  //
+  // Measured end to end three times, and it is a real negative, not a null:
+  //
+  //   ship_blend_wsCV   measure_recall/memo -- no discordant count, sign flips
+  //                     between splits. Right verdict, inadequate evidence.
+  //   proximity_wsGX    measure_funnel n=897, PAIRED: -1.9 pool_cut, z=2.87
+  //   pool_blend_wsIR   measure_funnel n=897, PAIRED, both measures:
+  //                     EXACT@6 -2.56 [-4.64, -0.49] z=2.46, clears a
+  //                     within-pool shuffle null, sign holds in 96/96
+  //                     leave-one-regime-out folds. `pure` is worse, not
+  //                     better, so the machinery below is not absorbing it.
+  //
+  // Its largest weight by a distance is PROXIMITY (4.062) -- whether the fund
+  // is the founder's own country's or EU-wide -- against SEMANTIC at 1.519,
+  // while the shipped score is 0.6 x semantic. That is the mechanism of the
+  // loss and not merely a description of the weights: wsIR split the funnel by
+  // `descriptionSource` and the blend costs -4.55 EXACT@6 on the 440 founders
+  // whose query text is their OWN WORDS against -0.26 on the 379 querying with
+  // another company's borrowed text. Demoting semantic destroys signal exactly
+  // where signal exists. 20 of 26 of wsGX's pool-cut losses were Horizon: a
+  // large positive weight on a home-country bit buries the pan-European
+  // programmes, which is a rule this codebase shipped once at a 25-point reach
+  // cost and reverted (see `selectLeafInstruments`).
+  //
+  // KEPT AS A DEFAULT-OFF ARM, as the reproduction path for those numbers.
   //
   // Computed ONCE per request over the whole pool, because the weights were
   // fitted on WITHIN-POOL PERCENTILE RANKS and a candidate's score is only
@@ -3016,7 +3043,14 @@ export function materialiseInstrumentTable(
   // Named for the SLOT and not for one of its occupants: two arms now fill it,
   // and a variable called `blend` holding the proximity arm's map is the shape
   // of a comment that is no longer true.
-  const poolScore = POOL_BLEND === "off" ? homeFirst : blendPoolScores(
+  const poolScore = POOL_BLEND === "off" ? homeFirst
+    // The null arm substitutes a RANDOM order into the same slot and leaves
+    // every downstream stage alone, so `shuffle` differs from `on` in exactly
+    // one thing: whether the numbers in the slot carry information.
+    : POOL_BLEND === "shuffle" ? shuffleScores(
+      selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
+      POOL_BLEND_SEED)
+    : blendPoolScores(
     selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
     {
       founderSector,

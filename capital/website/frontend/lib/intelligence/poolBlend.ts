@@ -227,21 +227,100 @@ reconcileBlendColumns(Object.keys(BLEND_SIGNALS), Object.keys(BLEND_WEIGHTS));
  *         attributed to the shipped machinery rather than argued about. It is a
  *         diagnostic, not a candidate.
  *
+ *  `shuffle` orders the pool AT RANDOM and keeps every downstream stage, so it
+ *         is the NULL for `on`: it answers whether `on`'s effect is bigger than
+ *         re-ordering the same pools by coin flip. See `shuffleScores`.
+ *
  *  An unrecognised value THROWS rather than reading as `off`. A silent default
  *  on a misspelling is how a flag that never arrived gets reported as "no
  *  effect" in both arms, which is the shape of every false null in this
  *  project's history. */
-export type PoolBlendArm = "off" | "on" | "pure";
+export type PoolBlendArm = "off" | "on" | "pure" | "shuffle";
 
 /** Exported so a test can watch the throw happen. See `reconcileBlendColumns`:
  *  a guard nobody has proved can fail is a comment with a `throw` in it. */
 export function parsePoolBlend(v: string | undefined): PoolBlendArm {
   const s = v ?? "off";
-  if (s === "off" || s === "on" || s === "pure") return s;
-  throw new Error(`unknown POOL_BLEND=${s} (expected: off, on, pure)`);
+  if (s === "off" || s === "on" || s === "pure" || s === "shuffle") return s;
+  throw new Error(`unknown POOL_BLEND=${s} (expected: off, on, pure, shuffle)`);
 }
 
 export const POOL_BLEND: PoolBlendArm = parsePoolBlend(process.env.POOL_BLEND);
+
+/** ── THE NULL ARM ─────────────────────────────────────────────────────────
+ *
+ *  `shuffle` orders the pool AT RANDOM and then runs every downstream stage
+ *  unchanged, exactly as `on` does. It exists because an ordering arm that is
+ *  only compared to the shipped order cannot be told apart from churn.
+ *
+ *  wsIJ found a whole gradient that random reordering reproduced with a STEEPER
+ *  slope, and wsII's re-test churn floor is ten founders on a population of
+ *  seventy-eight. A re-ordering necessarily moves founders across every cut in
+ *  both directions; the question a null answers is whether the NET movement is
+ *  bigger than moving the same founders by coin flip. If the arm does not clear
+ *  this, the arm is arithmetic.
+ *
+ *  ── Why the permutation is per-founder and reproducible ──────────────────
+ *  The seed is derived from the POOL'S OWN MEMBERSHIP — the sorted instrument
+ *  ids — so two founders with different pools get independent permutations,
+ *  the same founder gets the same permutation on every run, and nothing about
+ *  the founder's identity or their answer key is read. A constant random order
+ *  shared by every founder would be a founder-blind prior, which is a different
+ *  and much weaker null: it could still beat the shipped order by accident of
+ *  which funds it happened to favour.
+ *
+ *  `POOL_BLEND_SEED` moves the whole family of permutations, so the null is a
+ *  DISTRIBUTION over seeds rather than a single draw. One shuffle is one sample
+ *  of the null and must never be quoted as "the" null. */
+export function shuffleScores(
+  pool: readonly DbInstrument[], seed: number,
+): Map<string, number> {
+  const out = new Map<string, number>();
+  if (!pool.length) return out;
+  if (pool.length === 1) { out.set(pool[0].id, 0.5); return out; }
+  // FNV-1a over the sorted ids, so the salt is a property of the POOL and not
+  // of the order it happened to arrive in — an arm whose null depended on the
+  // incoming order would be correlated with the very thing it is a null for.
+  let h = (seed >>> 0) ^ 0x811c9dc5;
+  for (const id of [...pool].map((p) => p.id).sort()) {
+    for (let k = 0; k < id.length; k++) h = Math.imul(h ^ id.charCodeAt(k), 16777619) >>> 0;
+  }
+  // EACH CANDIDATE DRAWS FROM ITS OWN ID, not from its position in the array.
+  // The first version of this walked the pool with one generator, which made a
+  // candidate's draw depend on where it happened to sit in the incoming order —
+  // so the "random" order was correlated with the order it was a null for. The
+  // unit test below (`depends on the pool's membership, not on the order it
+  // arrives in`) is what caught it, and it is kept for that reason.
+  const raw = pool.map((i) => {
+    let g = h;
+    for (let k = 0; k < i.id.length; k++) g = Math.imul(g ^ i.id.charCodeAt(k), 16777619) >>> 0;
+    return mulberry32(g)();
+  });
+  // Then the SAME `rankNormalise` the fitted blend uses, so the null lands on
+  // the identical [0,1] percentile scale and every downstream comparison (the
+  // ticket multiplier, the sibling slots, `scoreSeats`) reads it the way it
+  // reads the arm. A null on a different scale would be testing the scale.
+  const pct = rankNormalise(raw);
+  pool.forEach((i, k) => out.set(i.id, pct[k]));
+  return out;
+}
+
+/** The PRNG the null draws from. Copied from `scripts/_wsiq_rescore.ts`, which
+ *  is the estimator this project validated against published figures, so a
+ *  reader comparing an arm to its null is not also comparing two generators. */
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = Math.imul(a ^ (a >>> 15), 1 | a);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+/** Read once at module scope, like every other arm here. */
+export const POOL_BLEND_SEED = Number(process.env.POOL_BLEND_SEED ?? 1);
+
 
 /** ── THE PROXIMITY TERM, ISOLATED ─────────────────────────────────────────
  *
