@@ -61,8 +61,11 @@ const SCRIPTS = path.join(process.cwd(), "scripts");
 /** The intake keys a harness must never write itself. `capitalSought` is not a
  *  field of `EligibilityAnswers` — it is a `computeVerdict` option — and it is
  *  the one that did the most damage, so it is added explicitly rather than
- *  inherited. `targetMarkets` and `description` are the caller's query, not the
- *  founder's answers, and stay out. */
+ *  inherited. `description` is the caller's query, not the founder's answers,
+ *  and stays out. `targetMarkets` was named here as the other exclusion and no
+ *  longer exists: wsIK removed the field from the request, from all three
+ *  routes and from `founderCountryList`, because it was one only a harness
+ *  could send. `check_request_surface.ts` is the rule that generalises it. */
 const GUARDED_KEYS: readonly string[] = [...ALL_INTAKE_FIELDS, "capitalSought"];
 
 /** Comments and string bodies removed, so a key named inside a doc block or a
