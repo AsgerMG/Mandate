@@ -189,19 +189,35 @@ while the newest deployment is FAILED, and it is right to — that is a true
 statement about the latest deployment and not about what is scheduled.
 
 Every route to the volume in this repository begins with a deploy, so the
-upload cannot be attempted, let alone forced. **The union file is retained**
-and finishing is one command:
+upload cannot be attempted, let alone forced.
+
+**The union file is kept, and finishing it is one committed command:**
 
 ```
-python3 <scratch>/wshx_push.py --apply
+python3 ETL/events/load/promote_to_record.py \
+    --file data/wshx_union_ready_to_push.sqlite --apply
 ```
 
-which wakes, downloads a FRESH witness, judges the upload against it with
-`overwrite_gate` — the same function both sync directions call — and uploads
-only if the record holds nothing the union lacks. It deliberately does not run
-`push_local.py`'s `main()`: that runs 43 extractors and
-`classify_taxonomy.py run --max-cost 20`, a paid model call. The guard is used;
-the pipeline around it is not.
+`promote_to_record.py` is new and it is the reason this promotion sat undone
+for ten days while being described, correctly, as one command. There was no
+such command. `push_local.py --skip-pull` skips the pull **and nothing else**:
+it still runs 43 extractors, the manual inbox, and `classify_taxonomy.py run
+--max-cost 20`, which is a paid model call. So the only route to the guarded
+upload was hours of unwanted work and a bill.
+
+This is the upload and its guard and nothing else, and it shares BOTH halves
+rather than restating either — `push_local.judge_push` for the decision,
+`pull_db.verify` for "is what came back a whole database". It wakes, downloads
+a FRESH witness, judges against it at the moment of the upload, and uploads
+only if the record holds nothing the file lacks. It has **no
+`--force-overwrite`**: the weekly cycle needs one because it has a deadline, a
+promotion does not, and the honest answer to "the record holds rows this file
+lacks" is to union them in and run again. It also checkpoints the WAL first and
+refuses if anything is left in it — a volume upload carries one file, and a
+database missing its last transaction passes `quick_check` looking perfect.
+`--file` is required and deliberately NOT defaulted to `data/db.sqlite`:
+uploading the working corpus by forgetting an argument is the accident this
+tool must not make convenient.
 
 ### One defect fixed because the outage exposed it
 
