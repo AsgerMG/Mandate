@@ -114,3 +114,8 @@ bought next, because it applies after the reply is parsed. Default off.
 - **Agents do not touch Railway service configuration.** One took the weekly ETL
   down for 75 minutes.
 - Agents **commit incrementally**, own worktree via `scripts/agent-worktree.sh`.
+- **`npm run dev` and `npm run drive` cannot start in an agent worktree** —
+  Turbopack rejects the `node_modules` symlink the helper creates. Use
+  `npx next dev --webpack`. The helper now says so on stdout. **Do not let an
+  agent skip the looking**: the last two founder-facing defects were invisible
+  to a typecheck and obvious in a browser at 390px.

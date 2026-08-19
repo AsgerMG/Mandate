@@ -63,3 +63,22 @@ echo "worktree ready: $DEST"
 echo "  node_modules, .env.local and data/db.sqlite are SYMLINKS to $ROOT"
 echo "  size: $(du -sh "$DEST" 2>/dev/null | cut -f1) (a copied one is ~1.3G)"
 echo "  remove with: git worktree remove --force $DEST"
+echo
+# ── THE ONE THING THE SYMLINK BREAKS, AND ITS WORKAROUND ────────────────────
+# Turbopack resolves the real path of every root it is given and refuses one
+# that escapes the project: "Symlink [project]/node_modules is invalid, it
+# points out of the filesystem root". That is EXACTLY the symlink four lines
+# up, so `npm run dev` and `npm run drive` cannot start in a worktree at all.
+#
+# Every agent told to render a page and look at it hits this, discovers it
+# alone, and either works around it or quietly skips the looking -- which is the
+# expensive outcome, because the last two founder-facing defects we shipped were
+# both invisible to a typecheck and obvious in a browser at 390px.
+#
+# The webpack dev server has no such rule and starts in about a third of a
+# second. Printed here rather than fixed in package.json because `npm run dev`
+# in the PRIMARY checkout should stay on the fast path.
+echo "  LOOKING AT A PAGE FROM HERE: \`npm run dev\` and \`npm run drive\` will NOT start."
+echo "    Turbopack rejects the node_modules symlink above (\"points out of the"
+echo "    filesystem root\"). Use:  npx next dev --webpack"
+echo "    Do not skip the looking: it is where founder-facing defects show up."
