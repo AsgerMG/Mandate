@@ -64,8 +64,8 @@ import { dbInstrumentsByBucket } from "../lib/intelligence/shortlist";
 /** ── THE RATCHETS ──────────────────────────────────────────────────────────
  *  Measured 2026-08-19 against the shipped artifact. They come DOWN, never up.
  *  Regenerating the prior takes both to 0; bring them here in the same commit. */
-const MAX_UNREPRESENTED_CHANNELS = 2;
-const MAX_MISSING_CELL_KEYS = 732;
+const MAX_UNREPRESENTED_CHANNELS = 0;
+const MAX_MISSING_CELL_KEYS = 0;
 
 type Prior = {
   channels?: string[];
