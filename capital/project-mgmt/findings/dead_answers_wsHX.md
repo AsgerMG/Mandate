@@ -462,3 +462,27 @@ python3 ETL/events/load/reconcile_stores.py --report record.sqlite local.sqlite
 python3 ETL/events/load/reconcile_stores.py --into record.sqlite --from local.sqlite \
     --family instruments --table eligibility_gates --inserts-only --dry-run
 ```
+
+---
+
+## Postscript — is it Railway, or is it us?
+
+Worth settling, because "the platform is broken" is the most self-serving
+diagnosis available and it should not be taken on faith.
+
+**It is Railway.** Three independent facts, none of which depends on trusting
+the CLI's own error text:
+
+1. **A deploy failed at 22:01 UTC**, before this workstream had run `railway up`
+   at all.
+2. **The API itself served `HTTP 503 "no healthy upstream"`** to a bare
+   `query { me { email } }` — a query with no relation to this project.
+3. **The sidecar hypothesis is excluded by timing.** The obvious repo-side
+   cause would be the two 647 MB store copies sitting in `data/`. They were
+   moved out of the repo at 23:35 UTC, and the deploys at **23:37 and 00:07
+   both failed anyway**, with `data/` holding nothing unusual. (`data` is
+   fully gitignored in any case — `.gitignore:57` — and the successful builds
+   report a 16 MB snapshot.)
+
+Every deploy since 22:56 also reports `Failed to stream build logs: Failed to
+retrieve build log`, which the three successful ones did not.
