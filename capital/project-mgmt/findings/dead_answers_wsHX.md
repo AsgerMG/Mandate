@@ -1,5 +1,33 @@
 # wsHX — what the record was missing, and how much of our own target is unreachable by construction
 
+> ## ⚠ OPERATIONAL ALARM — READ THIS FIRST
+>
+> **The weekly ETL cron is OFF as of 2026-08-19 ~01:40 UTC and I could not turn
+> it back on.** The service instance config is correct (`0 3 * * 0`,
+> `python3 ETL/events/extract/railway_cron.py`) but Railway runs the LATEST
+> DEPLOYMENT, and that is `dea9c4c7` — `sleep infinity`, `cron=None` — which
+> succeeded at 00:51 UTC as the wake for a volume transfer. **Every attempt to
+> deploy the restored schedule since has failed on Railway's side**: `502 Bad
+> Gateway` on upload, `503 no healthy upstream` from the API, and
+> `Unauthorized` from an auth service that is part of the same outage (the
+> stored token was independently checked and is valid until 02:00:58 UTC).
+>
+> **The repair, the moment Railway is healthy:**
+>
+> ```
+> python3 ETL/lib/verify_cron.py --deploy
+> ```
+>
+> If it reports `Unauthorized`, the CLI session expired during the outage and
+> needs one interactive `npx --yes @railway/cli login` first — which is why
+> this could not be finished from a non-interactive session.
+>
+> **Nothing was lost and no data is at risk.** The corpus of record was never
+> written: the upload failed before it started and the volume still holds the
+> pre-push data. The prepared file is kept at
+> `data/wshx_union_ready_to_push.sqlite`.
+
+
 **FOR THE OWNER, VERBATIM.** **The union is built and proven and it is not yet
 on the volume: Railway's builder has failed every deploy since 22:50 UTC** —
 503s from its own API, build-log streaming down, three deploys FAILED and one

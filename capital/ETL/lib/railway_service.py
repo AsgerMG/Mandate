@@ -225,22 +225,48 @@ def restore(attempts: int = 3) -> list[str]:
     the write. It returns the remaining problems rather than raising, because
     every caller invokes it from a `finally` and an exception there would
     replace the real error with this one. Callers must check the return value.
+
+    ── AND THAT CONTRACT WAS ONLY TRUE OF ONE OF ITS THREE CALLS ────────────
+    The sentence above was written when this function's only failure mode was
+    `deploy()`, which was caught. `_set_service_instance()` and `check()` reach
+    Railway too, and neither was. On 2026-08-19 the API returned `Unauthorized`
+    for about a minute; the config write raised `CalledProcessError` straight
+    out of a `finally`, replaced a clean "upload failed" with a stack trace,
+    and left the service on `sleep infinity` with NO cron schedule — the exact
+    outcome this docstring promises cannot happen. The live deployment then sat
+    woken, and the weekly ETL was off until a person noticed.
+
+    So every call that can reach the network is now inside the retry, and every
+    failure becomes a PROBLEM STRING rather than an exception. `Exception` and
+    not `BaseException`: a ctrl-c should still stop this, and it is the one
+    exit where a human is present to read what happened.
     """
     from verify_cron import check  # local: verify_cron imports this module
 
     problems: list[str] = []
     for attempt in range(1, attempts + 1):
         print(f"[railway_service] restoring cron schedule (attempt {attempt})...")
-        _set_service_instance(REAL_START_COMMAND, REAL_CRON_SCHEDULE)
+        try:
+            _set_service_instance(REAL_START_COMMAND, REAL_CRON_SCHEDULE)
+        except Exception as exc:                       # noqa: BLE001
+            problems = [f"the config write failed: {exc!r}"]
+            print(f"[railway_service] config write failed: {exc}")
+            time.sleep(10)
+            continue
         try:
             deploy("restore cron schedule (auto)")
-        except subprocess.CalledProcessError as exc:
+        except Exception as exc:                       # noqa: BLE001
+            problems = [f"the deploy failed: {exc!r}"]
             print(f"[railway_service] deploy failed: {exc}")
             time.sleep(10)
             continue
         for _ in range(10):
             time.sleep(10)
-            problems = check()
+            try:
+                problems = check()
+            except Exception as exc:                   # noqa: BLE001
+                problems = [f"Railway could not be read back: {exc!r}"]
+                continue
             if not problems:
                 print("[railway_service] restored, and confirmed from Railway.")
                 return []
