@@ -23,8 +23,12 @@ describe("parseDescriptionPolicy", () => {
   it("reads a character cap", () => {
     expect(parseDescriptionPolicy("120")).toEqual({ capChars: 120 });
   });
-  it("reads the skipped-the-box arm", () => {
+  it("reads BOTH skipped-the-box arms, which are not the same condition", () => {
+    // `template` is the answer key's stand-in for a blank row; `none` is what
+    // production actually posts. A run that meant one and got the other would
+    // be off by a whole canned sentence of signal.
     expect(parseDescriptionPolicy("template")).toBe("template");
+    expect(parseDescriptionPolicy("none")).toBe("none");
   });
   it("refuses anything else rather than falling back to full", () => {
     // A typo that silently ran the shipped arm would label a baseline as a
@@ -64,6 +68,7 @@ describe("describeDescriptionPolicy", () => {
   it("names every arm, so no run can be read without knowing which it was", () => {
     expect(describeDescriptionPolicy(policy("full"))).toBe("full");
     expect(describeDescriptionPolicy(policy("template"))).toMatch(/canned/);
+    expect(describeDescriptionPolicy(policy("none"))).toMatch(/empty/);
     expect(describeDescriptionPolicy(policy({ capChars: 60 }))).toMatch(/60/);
   });
 });

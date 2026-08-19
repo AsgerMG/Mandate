@@ -456,15 +456,21 @@ export interface FounderPolicy {
    *
    *  `full` is the shipped behaviour and the default. A number is a CAP in
    *  characters, applied at a word boundary the way `rebuild_recall_descriptions`
-   *  truncates, because a founder does not stop typing mid-word. `template`
-   *  replaces the text with the canned sector sentence a founder who SKIPS the
-   *  box is represented by — the founder-facing arm, since skipping is a thing
-   *  a real founder does and borrowing another award's prose is not.
+   *  truncates, because a founder does not stop typing mid-word.
+   *
+   *  TWO skip arms, because "the founder said nothing" has two meanings here and
+   *  conflating them is how the archive's own description figure became hard to
+   *  read. `template` substitutes the canned sector sentence the recall set uses
+   *  for its 5,197 blank rows — the condition `measure_description_lift.ts`
+   *  compares against, so a number under it is comparable with that harness.
+   *  `none` sends NO description at all, which is what `basePayload()` actually
+   *  posts for a founder who leaves the box empty. Only `none` is the product's
+   *  counterfactual; `template` is the answer key's.
    *
    *  This only ever REMOVES text. It cannot tell us what a longer answer than
    *  the one on file would be worth, and no run under it should be read as
    *  though it could. */
-  description: "full" | "template" | { capChars: number };
+  description: "full" | "template" | "none" | { capChars: number };
 }
 
 const oneOf = <T extends string>(name: string, v: string | undefined, allowed: readonly T[], dflt: T): T => {
@@ -500,10 +506,10 @@ export function founderPolicyFromEnv(env: NodeJS.ProcessEnv = process.env): Foun
  *  so a harness that sets nothing measures the founder as the product has them. */
 export function parseDescriptionPolicy(v: string | undefined): FounderPolicy["description"] {
   if (v === undefined || v === "full") return "full";
-  if (v === "template") return "template";
+  if (v === "template" || v === "none") return v;
   const n = Number(v);
   if (!Number.isInteger(n) || n < 1) {
-    throw new Error(`DESCRIPTION must be full|template|<positive integer chars>, got "${v}"`);
+    throw new Error(`DESCRIPTION must be full|template|none|<positive integer chars>, got "${v}"`);
   }
   return { capChars: n };
 }
@@ -570,6 +576,7 @@ export interface ReplayedFounder {
  *  sector sentence. `template` forces that fallback for EVERYONE, which is what
  *  makes it the arm for "the founder skipped the box". */
 function describedAs(r: RecallRow, p: FounderPolicy): string | undefined {
+  if (p.description === "none") return undefined;
   const template = r.selfDescription || undefined;
   if (p.description === "template") return template;
   const own = r.description || template || undefined;
@@ -726,7 +733,8 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
 export function describeDescriptionPolicy(p: FounderPolicy): string {
   return p.description === "full" ? "full"
     : p.description === "template" ? "template (the canned sector sentence)"
-      : `capped at ${p.description.capChars} chars`;
+      : p.description === "none" ? "none (the box left empty, as production posts it)"
+        : `capped at ${p.description.capChars} chars`;
 }
 
 /** Counts what was actually handed to founders across a run. */
