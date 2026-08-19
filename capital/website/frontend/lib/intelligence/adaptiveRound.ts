@@ -509,7 +509,12 @@ export async function planAdaptiveScreen(
               `thing about this founder we do not have. If that costs the ` +
               `sixth question, spend it: six is the ceiling and four is the ` +
               `target, so the question it displaces is the one the bar above ` +
-              `says should not have been asked.\n\n`
+              `says should not have been asked.\n` +
+              `- AND POOL C IS NOT REQUIRED ON THIS SCREEN. The instruction ` +
+              `above says to include one when a description exists, because ` +
+              `positioning has no other source. On this founder Pool P IS that ` +
+              `source: their commercial model is part of what they are about to ` +
+              `tell you. Include one only if it earns the seat on the bar above.\n\n`
             : "") +
           `Return ONLY the JSON object for the schema.`,
       }],

@@ -11,6 +11,7 @@ import { instById } from "@/lib/intelligence/shortlist";
 import {
   planAdaptiveScreen,
   inferProfileSignal,
+  wantsProjectQuestion,
 } from "@/lib/intelligence/adaptiveRound";
 import { askForRanker, rankerAsksEnabled } from "@/lib/intelligence/rankerAsks";
 import { intakeAnswerLines } from "@/lib/intelligence/agentSelect";
@@ -272,7 +273,17 @@ export async function POST(request: NextRequest) {
           // Q-5's own condition, and the planner's: the commercial half is
           // expected exactly when the founder has described their company,
           // because positioning has no other source.
-          expectCommercial: Boolean(req.description?.trim()),
+          // AND NOT WHEN POOL P IS ON THIS SCREEN (wsIV). Q-5's premise is
+          // "positioning has no other source than Pool C". For a founder whose
+          // description is too thin to separate anything, Pool P is that
+          // source -- their commercial model is part of what they are being
+          // asked to describe -- and the planner is told so in the same words.
+          // Expecting Pool C anyway would log a violation on every screen where
+          // the two instructions agree, which is how a check stops being read.
+          // `wantsProjectQuestion` is false with the arm off, so this line is
+          // inert on the shipped default.
+          expectCommercial: Boolean(req.description?.trim())
+            && !wantsProjectQuestion(req.description),
         }) : []),
         // Q-10 reads the question against the options the FOUNDER SEES, so the
         // fallback matters: where the model gave nothing usable the panel

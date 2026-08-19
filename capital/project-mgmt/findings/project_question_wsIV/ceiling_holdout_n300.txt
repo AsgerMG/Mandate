@@ -13,3 +13,25 @@ recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,
   … 180/300
   … 200/300
   … 220/300
+  … 240/300
+  … 260/300
+  … 280/300
+  … 300/300
+
+POOL P CEILING — set=__recallSetDescribed.json, split=holdout, 300 companies, every arm the SAME case. answer arm = first 90 chars, word boundary.
+  eligible pairs with a real description: 1093
+
+  arm        mean chars   in pool            EXACT@1            EXACT@5            REGIME@5
+  blank               0    232/300 (77.3%)     14/300 (4.7%)     59/300 (19.7%)    170/300 (56.7%)
+  template          123    224/300 (74.7%)     22/300 (7.3%)     64/300 (21.3%)    186/300 (62.0%)
+  answer             76    230/300 (76.7%)     27/300 (9.0%)     69/300 (23.0%)    183/300 (61.0%)
+  real              522    232/300 (77.3%)     26/300 (8.7%)     71/300 (23.7%)    188/300 (62.7%)
+
+  EXACT@5 against a founder who wrote nothing (paired, McNemar counts):
+    template  +1.7pp   discordant 33 (19 for, 14 against)
+    answer    +3.3pp   discordant 42 (26 for, 16 against)
+    real      +4.0pp   discordant 44 (28 for, 16 against)
+
+  SHARE OF THE WHOLE DESCRIPTION'S VALUE RECOVERED BY ONE SHORT ANSWER: 83%
+
+  ranker: all 900 request(s) on EMBEDDING
