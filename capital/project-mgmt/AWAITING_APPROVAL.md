@@ -50,7 +50,14 @@ destroy whatever the other store holds alone.
 Every route to the volume begins by waking the container, so **this cannot
 happen before §1.** One decision, in two steps.
 
-**wsHX, 2026-08-19: the union is BUILT and PROVEN and not yet uploaded.**
+**wsHX, 2026-08-19 — one command, and it now exists.**
+
+```
+python3 ETL/events/load/promote_to_record.py \
+    --file data/wshx_union_ready_to_push.sqlite --apply
+```
+
+**the union is BUILT and PROVEN and not yet uploaded.**
 9,763 gates, and all eleven other family tables hash byte-identical to the
 record it was built from. Railway's builder has failed every deploy since 22:50
 UTC (503s from its own API, build-log streaming down, four FAILED, one stuck 33
