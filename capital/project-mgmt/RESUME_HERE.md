@@ -96,8 +96,12 @@ bought next, because it applies after the reply is parsed. Default off.
 
 ## Rules that cost something when broken
 
-- `npm run stages` is **~2 hours at n=897** and it is `scripts/measure_funnel.ts`,
-  **not** `_wsgd_stages.ts` — two briefs named the wrong file.
+- **`npm run stages` is ~14 MINUTES at n=897, not two hours.** Measured from the
+  runs' own timestamps: 14.5, 12.5, 16.8, 14.3 min. The single 51-minute run was
+  two funnels contending. **I quoted "~2 hours" in every agent brief for a week**
+  and it made free measurements look expensive — the reason several arms were
+  never run. It is `scripts/measure_funnel.ts`, **not** `_wsgd_stages.ts`; two
+  briefs named the wrong file as well.
 - `NO_PG=1` is **forbidden**. Any script reading `DATABASE_URL`/`VOYAGE_KEY` must
   `requireCredentials(...)`; a **half-declaration passes the gate and still ranks
   lexically**.
