@@ -213,6 +213,21 @@ eligibility:
 	# target, like the two lines above it.
 	python3 ETL/terms/test_euro_money.py
 	python3 ETL/terms/check_gate_currency.py
+	# A COMPARATOR THAT NO ANSWER SHAPE CAN SATISFY IS NOT A RULE. comparator.ts
+	# opens numeric_gte/numeric_lte with `typeof answer === "number"` and the only
+	# number in EligibilityAnswers is foundedYear, which is unreachable and which
+	# no gate encodes on -- so all 46 numeric comparators were keyed to fields
+	# answered with a string and NOT ONE HAS EVER DECIDED ANYTHING. Proved on 897
+	# founders x 34 instruments x every band answer swept: 174,915 assessments,
+	# and quarantining all 43 moves no status, no filter checked, no filter
+	# passed, no blocking field. The operator is not the defect -- 18 more are
+	# inert from boolean_false on a LIST field and from band bounds written in
+	# another field's vocabulary -- so the check states the general property
+	# (operator must act on the shape its field admits), derives both halves from
+	# data/vocabularies.json, and names no gate. It reads POSTGRES as well,
+	# because check_comparator_admits.ts deliberately reads only the snapshot and
+	# that leaves the store this pass just wrote to unchecked. FAILS the target.
+	python3 ETL/terms/check_comparator_storable.py --postgres
 	# THE SECOND PATH TO PRODUCTION. encode_gates.py triage rewrites gate_role
 	# from a paid model pass, so every curated demotion above is reverted by the
 	# two lines above it -- and this target then exports and publishes. refresh.py

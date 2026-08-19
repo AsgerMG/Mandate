@@ -86,8 +86,30 @@ import { REGIONS_BY_COUNTRY } from "../lib/intelligence/regions.generated";
  * It stood at 58 when this check was written and fell to 45 when
  * reband_ticket_gates.py was finally applied to both stores. Lower it when it
  * falls again; never raise it.
+ *
+ * ── AND THE JUSTIFICATION ABOVE HAS EXPIRED (wsIG, 2026-08-19) ────────────
+ * "Two guards permanently red for one cause" was true when frozen band orders
+ * caused most of these. None of the 64 found today is caused by a frozen order:
+ * 46 are numeric operators on fields answered with a STRING, which
+ * `evaluateSpec` can only ever return null for, and the rest are `boolean_false`
+ * on a LIST field and band bounds written in another field's vocabulary. The
+ * cause is one encoder reaching for something storable when the sentence it is
+ * reading has no field that can carry it.
+ *
+ * It rose 45 -> 64 because `encode_scheme_text_gates.py` seeded 19 more gates on
+ * such fields and the encode pass duly encoded them. `encode_gates.py` now
+ * refuses numeric ones outright, and `ETL/terms/check_comparator_storable.py`
+ * states the general property against POSTGRES inside `make eligibility` -- this
+ * check reads the committed snapshot on purpose and so cannot see a corpus write
+ * until the next export.
+ *
+ * 21 is what lands when wsIG's 43 quarantines are applied, and 18 when wsIE's
+ * three are. Both writes are prepared and unapplied; this check is deliberately
+ * red until they land. The residual is enumerated with its evidence in the
+ * ratchet note in check_comparator_storable.py -- it is a corpus decision, not a
+ * remainder.
  */
-const INERT_CEILING = 45;
+const INERT_CEILING = 21;
 
 /**
  * ── DEBT, NOT A TARGET ─────────────────────────────────────────────────────
