@@ -94,7 +94,29 @@ def blocker_rows() -> str:
     if not items:
         return '<p class="lede">Nothing is blocked. Everything in flight is ours to finish.</p>'
     tone = {"you": "var(--bad)", "money": "var(--warn)", "us": "var(--accent)"}
-    out = ['<div class="rows">']
+
+    # ── THE LEDE IS COUNTED, NOT TYPED ─────────────────────────────────────
+    # It read "Three things, and only one of them needs you" while two needed
+    # him. A sentence that restates a number the file below it already carries
+    # is the same defect as a target typed beside its own generated figure: it
+    # is right on the day it is written and wrong the next time anybody edits
+    # the data. So it is derived, and the page has no sentence about the
+    # blockers that the blockers cannot contradict.
+    n = len(items)
+    mine = sum(1 for b in items if b["who"] == "you")
+    word = {1: "One", 2: "Two", 3: "Three", 4: "Four", 5: "Five", 6: "Six"}.get(n, str(n))
+    thing = "thing" if n == 1 else "things"
+    if mine == 0:
+        tail = "and none of them needs you"
+    elif mine == n:
+        tail = "and they all need you" if n > 1 else "and it needs you"
+    elif mine == 1:
+        tail = "and only one of them needs you"
+    else:
+        tail = f"and {word.lower() if mine > 3 else {2:'two',3:'three'}[mine]} of them need you"
+    lede = f'<p class="lede" style="margin-bottom:14px">{word} {thing}, {tail}.</p>'
+
+    out = [lede, '<div class="rows">']
     for b in items:
         who = b["who"]
         if who not in tone:
