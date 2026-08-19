@@ -44,6 +44,14 @@ import type { InstrumentRow } from "../lib/intelligence/types";
 
 /** Two funds the corpus calls the same thing. It cannot go up.
  *
+ *  MEASURED NEXT VALUE: 20, in nine classes. `scripts/_wsiu_titles.ts` renders
+ *  this same snapshot through this same chain with the eight `innovasjon_norge`
+ *  leaves carrying the funder's own `Virkemiddelkategori`, and the count falls
+ *  26 -> 20. The number below stays at 26 until that write is applied AND
+ *  published AND the snapshot re-exported, because this guard reads the
+ *  snapshot: lowering it first turns `npm run check` red on a corpus that has
+ *  not moved yet. Lower it to 20 in the commit that re-exports.
+ *
  *  26 offerable rows on the committed snapshot, 2026-08-19, in ten classes.
  *  Six Innovasjon Norge leaves are all literally "Innovasjon Norge · Grants";
  *  three Bpifrance rows are all "Bpifrance"; five French leaves of SA.111723

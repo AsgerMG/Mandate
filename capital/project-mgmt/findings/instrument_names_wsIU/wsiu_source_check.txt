@@ -1,0 +1,68 @@
+funder's open data : /Users/asgermollergrimberg/Wincent/data/raw/innovasjon_norge/Tildelinger.csv  (73254 rows)
+published at       : https://data.norge.no/nb/datasets/d5f090ca-4e43-3303-a5e6-54247ea69d72
+funder's own pages : 15 fetched under /Users/asgermollergrimberg/Wincent/data/raw/instrument_docs
+
+══ Virkemiddelkategori — does the funder's own site publish this string? ══
+  no   'Distriksutviklingstilskudd'                         
+  no   'Distriktsutviklingstilskudd'                        
+  no   'Innovasjonstilskudd'                                
+  no   'Internasjonale tilskuddsprogrammer'                 
+  no   'Klynger og nettverk'                                
+  YES  'Lavrisikolån'                                       loan_lowrisk_lavrisikolan,loan_risk_seksjon_lan
+  no   'Næringsspesifikke utviklingstiltak'                 
+  YES  'Oppstartstilskudd'                                  grant_sector_tilskudd_overview,grant_startup_oppstartstilskudd_1,grant_startup_oppstartstilskudd_2
+  no   'Risikolån og garantier'                             
+  -> 2/9 published by the funder as words a founder reads
+
+══ Underkategori — does the funder's own site publish this string? ══
+  no   ''                                              114  
+  no   'Andre distriktsutviklingstilskudd'              34  
+  no   'Andre innovasjonstilskudd'                    1505  
+  no   'Andre næringsspesifikke tilskudd'              217  
+  no   'Andre oppstartstilskudd'                       116  
+  YES  'Bedriftsnettverk'                              397  grant_cluster_bedriftsnettverk,grant_cluster_seksjon_nettverk,grant_sector_tilskudd_overview
+  no   'Bedriftsutviklingstilskudd'                   1524  
+  YES  'Bioøkonomiordningen'                           541  grant_sector_tilskudd_overview
+  no   'Distriktsrettede garantier'                      9  
+  YES  'Distriktsrettede risikolån'                    358  loan_risk_seksjon_lan
+  no   'Distriktsrettet etablerertilskudd'             484  
+  no   'Diverse NFD'                                     5  
+  no   'EØS-tilskudd'                                  437  
+  no   'Forsknings- og utviklingstilskudd'             492  
+  no   'Investeringstilskudd'                          566  
+  YES  'Klyngeprogrammet'                              305  grant_cluster_nic,grant_cluster_seksjon_nettverk
+  no   'Landsdekkende etablerertilskudd'              2545  
+  no   'Landsdekkende garantier'                      1533  
+  no   'Landsdekkende innovasjonslån'                  243  
+  no   'Landsdekkende innovasjonstilskudd'             245  
+  no   'Landsdekkende risikolån'                       799  
+  no   'Lavrisikolån fiskeflåte'                       471  
+  no   'Lavrisikolån industri og tjenesteyting'        220  
+  no   'Lavrisikolån landbruk'                          72  
+  no   'Mentortjenesten'                               789  
+  YES  'Miljøteknologi'                                450  grant_innovation_tilskudd_miljoteknologi,grant_sector_tilskudd_overview
+  no   'Næringsspesifikke risikolån'                    11  
+  no   'Næringsutvikling og bistand'                    89  
+  no   'Næringsutviklingstilskudd'                     133  
+  no   'Regional omstilling'                            85  
+  no   'Risikolån landbruk'                             44  
+  no   'Rådgiving'                                      10  
+  no   'Tilskudd til EU-rådgivning'                     75  
+  no   'Tilskudd til maritim næring'                    11  
+  -> 5/34 published by the funder as words a founder reads
+
+══ RESIDUAL BUCKETS in Underkategori — rows a re-split would MANUFACTURE ══
+  grant_innovation           1505  'Andre innovasjonstilskudd'
+  grant_innovation             10  'Rådgiving'
+  grant_innovation              5  'Diverse NFD'
+  grant_international         114  ''
+  grant_regional               34  'Andre distriktsutviklingstilskudd'
+  grant_sector                217  'Andre næringsspesifikke tilskudd'
+  grant_startup               116  'Andre oppstartstilskudd'
+  -> 2001 awards sit under a value that names no offer
+
+══ THE TYPO TRAP ══
+    9613  'Distriktsutviklingstilskudd' -> grant_regional
+      97  'Distriksutviklingstilskudd' -> grant_regional
+  Both map to ONE leaf. Writing the raw cell gives that leaf two programme_name
+  values and trips programme_split; the canonical label per slug does not.

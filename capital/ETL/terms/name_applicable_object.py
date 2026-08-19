@@ -69,10 +69,28 @@ reads every number back out of Postgres. A name that lives in only one of the
 two stores is a name the founder may or may not see, which is not a state this
 workstream is allowed to leave behind.
 
+── A name this file's own pass cannot reach ───────────────────────────────
+`build()` is BDNS-shaped: it needs a `codigoBDNS` to fetch an official record
+with, and a funder that publishes its own name in a column of a CC0 CSV has no
+such code. But `write` and `reconcile` are register-agnostic -- they are the
+only DUAL-STORE name writer in this repo, and the only alternative,
+`populate_funding_instruments.py`, rebuilds the entire instruments table to
+change eight names.
+
+So `--from-jsonl` takes the decisions from a sourced file instead of from the
+pass, and everything downstream is the same code: the same collision refusal,
+the same two writes, the same read-back out of Postgres. What the file has to
+supply is what `build()` supplies -- and it must supply the PROVENANCE too:
+every line names the source FIELD and the URL it is published at, because a
+name derived from our own columns is the error Rule Zero names, and a file
+format that lets one through would reintroduce it by the back door.
+
 Usage:
   python3 ETL/terms/name_applicable_object.py --verify-source --country ES
   python3 ETL/terms/name_applicable_object.py --country ES --report
   python3 ETL/terms/name_applicable_object.py --country ES --write
+  python3 ETL/terms/name_applicable_object.py --from-jsonl <path> --report
+  python3 ETL/terms/name_applicable_object.py --from-jsonl <path> --write
 """
 from __future__ import annotations
 
@@ -488,6 +506,141 @@ def report(results: list[dict]) -> None:
             print(f"\n  !! {r['outcome']}  {r['id'][:40]}  {r.get('note','')[:160]}")
 
 
+# ── A sourced decision file, for a class the pass cannot reach ─────────────
+
+DECISION_FIELDS = ("id", "current_name", "new_name", "new_name_source",
+                   "name_basis", "source_field", "source_url")
+
+
+def from_jsonl(path: _Path) -> list[dict]:
+    """Decisions written by hand against a funder's own file, not by the pass.
+
+    Shaped exactly like `build()`'s output so `drop_collisions`, `report`,
+    `write` and `reconcile` do not learn a second format -- `name` is the name
+    the row holds now, `new_name` the one it should hold.
+
+    Four things are REFUSED rather than defaulted, and each of them is a way a
+    name could arrive unsourced:
+
+      a missing field        `source_field` and `source_url` say where the name
+                             came from. A decision file without them is a table
+                             of strings, which is what this module exists to
+                             not be.
+      `applied: false`       PREPARED IS NOT AUTHORISED. The same flag
+                             `check_corrections_applied.py` reads, refusing the
+                             same way `apply_gate_encoding_corrections.py`
+                             refuses -- otherwise the marker would mean "not
+                             enforced" to one tool and nothing at all to the
+                             tool that does the writing.
+      a duplicate id         two lines disagreeing about one row is
+                             unresolvable, and last-line-wins would make the
+                             name depend on file order.
+      `new_name` == body     a row named exactly after the body that grants it
+                             carries nothing `administering_body` does not
+                             already carry. That is `check_body_named_rows`'s
+                             property and this is the write that could
+                             reintroduce it.
+    """
+    rows = [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
+    if not rows:
+        raise SystemExit(f"{path}: no decisions")
+
+    missing = [f"{r.get('id', '?')}: missing {k}"
+               for r in rows for k in DECISION_FIELDS if not r.get(k)]
+    if missing:
+        raise SystemExit("REFUSED — decisions are not fully sourced:\n  "
+                         + "\n  ".join(missing))
+
+    unapproved = [r["id"] for r in rows if r.get("applied") is False]
+    if unapproved:
+        raise SystemExit(
+            f'REFUSED — {len(unapproved)} line(s) are marked "applied": false, i.e.\n'
+            "  prepared and awaiting authorisation:\n  " + "\n  ".join(unapproved)
+            + "\n\n  Remove the flag from the evidence line once the write is approved.\n"
+              "  Nothing was read from either store.")
+
+    seen: set[str] = set()
+    dupes = [r["id"] for r in rows if r["id"] in seen or seen.add(r["id"])]
+    if dupes:
+        raise SystemExit(f"REFUSED — duplicate ids in {path.name}: {sorted(set(dupes))}")
+
+    return [{"id": r["id"], "name": r["current_name"], "new_name": r["new_name"],
+             "new_name_source": r["new_name_source"],
+             "name_basis": f"{r['name_basis']}; field={r['source_field']}; "
+                           f"source={r['source_url']}",
+             "outcome": "sourced_file"} for r in rows]
+
+
+def held_names(ids: list[str], postgres: bool) -> dict[str, dict[str, str | None]]:
+    """What each store holds for these rows TODAY, and the body that grants them.
+
+    Both stores are asked the same question rather than one being asked and the
+    other assumed: SQLite and Postgres have diverged under three workstreams
+    this month, and a precondition verified on the authoring store alone is a
+    precondition not verified on the store the founder reads.
+    """
+    q = ",".join("?" * len(ids))
+    conn = sqlite3.connect(DB)
+    out = {i: {"sqlite": None, "sqlite_body": None, "pg": None} for i in ids}
+    for iid, name, body in conn.execute(
+            f"SELECT id, name, administering_body FROM funding_instruments "
+            f"WHERE id IN ({q})", ids):
+        out[iid]["sqlite"], out[iid]["sqlite_body"] = name, body
+    conn.close()
+    if postgres:
+        with pg_conn() as c:
+            for iid, name in c.execute(
+                    "SELECT id, name FROM funding_instruments WHERE id = ANY(%s)",
+                    (ids,)).fetchall():
+                out[iid]["pg"] = name
+    return out
+
+
+def check_preconditions(results: list[dict], postgres: bool) -> bool:
+    """Refuse the file if the corpus has moved under any line of it.
+
+    ALREADY IS NOT DRIFT, for the reason `apply_gate_encoding_corrections.py`
+    gives: a row that already holds the proposed name has arrived where the
+    decision was taking it, by some other route. It is named and skipped.
+
+    A partial write is refused outright rather than applied to the rows that
+    still match, because a half-applied set leaves nothing recording which half
+    is which -- and here the halves are in two different stores.
+    """
+    ids = [r["id"] for r in results]
+    held = held_names(ids, postgres)
+    drift, already, absent = [], [], []
+    for r in results:
+        h = held[r["id"]]
+        if h["sqlite"] is None:
+            absent.append(f"{r['id']}: not in SQLite")
+            continue
+        if h["sqlite_body"] and _fold(r["new_name"]) == _fold(h["sqlite_body"]):
+            drift.append(f"{r['id']}: proposed name is exactly its administering_body "
+                         f"({h['sqlite_body']!r}) — see check_body_named_rows")
+            continue
+        for store in ("sqlite", "pg") if postgres else ("sqlite",):
+            if h[store] is None:
+                absent.append(f"{r['id']}: not in {store}")
+            elif _fold(h[store]) == _fold(r["new_name"]):
+                already.append(f"{r['id']} [{store}]")
+            elif _fold(h[store]) != _fold(r["name"]):
+                drift.append(f"{r['id']} [{store}]: now holds {h[store]!r}, the decision "
+                             f"was written against {r['name']!r}")
+    print(f"\npreconditions: {len(results)} decisions, {len(drift)} drifted, "
+          f"{len(already)} already applied, {len(absent)} absent"
+          + ("" if postgres else "   [SQLITE ONLY — Postgres not checked]"))
+    for a in already:
+        print(f"  ALREADY  {a}")
+    for a in absent:
+        print(f"  ABSENT   {a}")
+    if drift or absent:
+        print("\nREFUSED — nothing written to either store. Re-derive the decisions "
+              "against\n  the current corpus rather than applying a partial set.")
+        return False
+    return True
+
+
 # ── Writes ─────────────────────────────────────────────────────────────────
 
 def ensure_columns() -> None:
@@ -560,6 +713,15 @@ def reconcile(results: list[dict]) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--country", default="ES")
+    ap.add_argument("--from-jsonl", metavar="PATH",
+                    help="take the decisions from a sourced JSONL instead of "
+                         "running the BDNS pass. One file per workstream, so a "
+                         "name keeps the evidence it was derived with.")
+    ap.add_argument("--sqlite-only", action="store_true",
+                    help="report against the authoring store alone, for a dry "
+                         "run with no DATABASE_URL. Refused with --write: a "
+                         "name in one store is a name the founder may or may "
+                         "not see.")
     ap.add_argument("--verify-source", action="store_true")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--write", action="store_true")
@@ -571,8 +733,23 @@ def main() -> None:
     if a.verify_source:
         verify_source(a.country, a.limit or 10_000)
         return
-    results = build(a.country, a.limit, a.workers)
-    report(results)
+    if a.from_jsonl:
+        if a.sqlite_only and a.write:
+            raise SystemExit("--sqlite-only cannot be combined with --write: a name "
+                             "that lives in only one store is a name the founder may "
+                             "or may not see.")
+        path = _Path(a.from_jsonl)
+        if not path.is_absolute():
+            path = ROOT / path
+        results = from_jsonl(path)
+        print(f"decisions: {path}")
+        drop_collisions(results)
+        report(results)
+        if not check_preconditions(results, postgres=not a.sqlite_only):
+            raise SystemExit(1)
+    else:
+        results = build(a.country, a.limit, a.workers)
+        report(results)
     if a.out:
         _Path(a.out).write_text(json.dumps(results, ensure_ascii=False, indent=1))
         print(f"\ndecisions -> {a.out}")
