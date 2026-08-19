@@ -1,28 +1,33 @@
 # wsHX — what the record was missing, and how much of our own target is unreachable by construction
 
-**FOR THE OWNER, VERBATIM.** **The corpus of record now has the 3,362 gates, and
-nothing on it was touched to put them there** — every other row in every other
-table is byte-for-byte what it was, proven by hashing all twelve family tables
-before and after. It was one command away from being much worse than that.
-Promoting the family the obvious way — `reconcile_stores.py --family
-instruments` — is green on the overwrite gate, correctly: *no row* would have
-been lost. What that gate cannot see is COLUMNS, and the same command had **374
-values queued to be displaced on rows both stores already hold**, across
-nineteen columns that share no reason — 91 `capital_type_basis`, 70
-`name_source`, 48 `name`, one `scheme_end_date`, which is written weekly **on
-the record** and nowhere else. `owner_is_source` picks a winner once, for a
-whole family, and a family has more than one owner. So the promotion is now
-`--inserts-only`: it carries the rows nobody disputes and refuses to settle a
-dispute as a side effect. **And the record was missing more than gates.** It
-still calls all 44 loader-composed bucket labels `deterministic` — every
-`sudop_*`, every `satr_*_equity`, `chips_ju_kdt_unknown` — where the laptop
-calls them `partition_key`, which is the value `registerNamesTheRow()` reads to
-withhold a row from every founder. `assign_name_evidence.py` is not in
-`railway_cron.py::STEPS`, exactly as no gate encoder is, so **the record cannot
-reach that state on its own and anything rebuilt from it today would put
-Poland's entire offerable pool back in front of founders.** That is a second
-promotion, in the same direction, and I have not made it: it changes a
-publishability verdict on 44 rows and it is yours.
+**FOR THE OWNER, VERBATIM.** **The union is built and proven and it is not yet
+on the volume: Railway's builder has failed every deploy since 22:50 UTC** —
+503s from its own API, build-log streaming down, three deploys FAILED and one
+stuck 33 minutes — and every route to that volume goes through a deploy. The
+file is finished and kept: 9,763 gates, 311,440 awards, 164,050 companies, and
+**every one of the twelve family tables other than `eligibility_gates` hashes
+byte-identical to the record it was built from.** Finishing it is one command
+once the builder is healthy. **What matters more is what the dry run found on
+the way, because the obvious version of this job would have been wrong.**
+Promoting the family the documented way — `reconcile_stores.py --family
+instruments` — is GREEN on the overwrite gate, `proven loss: 0 row(s)`, and the
+gate is right: no *row* would have gone. It counts rows. The same command had
+**374 column values queued to be displaced on rows both stores already hold**,
+across nineteen columns that share no reason — 91 `capital_type_basis`, 70
+`name_source`, 48 `name`, and one `scheme_end_date`, which is written weekly
+**on the record** by `refresh_open_calls.py` and nowhere else. `owner_is_source`
+picks a winner once, for a whole family, and a family has more than one owner.
+So the promotion is now `--inserts-only`: it carries the 3,362 rows nobody
+disputes and refuses to settle a dispute as a side effect. **And the record is
+missing more than gates.** It still calls all 44 loader-composed bucket labels
+`deterministic` — every `sudop_*`, every `satr_*_equity`,
+`chips_ju_kdt_unknown` — where the laptop calls them `partition_key`, the value
+`registerNamesTheRow()` reads to withhold a row from every founder.
+`assign_name_evidence.py` is not in `railway_cron.py::STEPS`, exactly as no gate
+encoder is, so **the record cannot reach that state on its own and anything
+rebuilt from it today puts Poland's entire offerable pool back in front of
+founders.** That is a second promotion, in the same direction, and I have not
+made it: it moves a publishability verdict on 44 rows and it is yours.
 
 **And the second half, which is the one that changes what we plan.** Of the 897
 founders we grade every measurement against, **78 name a fund the product may
@@ -145,6 +150,49 @@ title). `nameEvidence.ts` is explicit that the second is the stronger evidence.
 The record's title is prettier because we wrote it. The commit is corrected in
 place; the property never depended on the answer, which is why the test's
 fixture no longer models one.
+
+### The upload, and why it has not landed
+
+Railway's builder went unhealthy at roughly 22:50 UTC and has not recovered:
+
+```
+22:44 UTC  SUCCESS       the restore after the record was pulled — the last good deploy
+22:56 UTC  FAILED        wake for the upload
+23:09 UTC  FAILED        verify_cron.py --deploy, the repair for the above
+23:37 UTC  FAILED        wake for the upload, second attempt (33 min INITIALIZING)
+           HTTP 503 "no healthy upstream" from the Railway API itself
+           "Failed to stream build logs" on every deploy since 22:56
+```
+
+Every route to the volume in this repository begins with a deploy, so the
+upload cannot be attempted, let alone forced. **The union file is retained**
+and finishing is one command:
+
+```
+python3 <scratch>/wshx_push.py --apply
+```
+
+which wakes, downloads a FRESH witness, judges the upload against it with
+`overwrite_gate` — the same function both sync directions call — and uploads
+only if the record holds nothing the union lacks. It deliberately does not run
+`push_local.py`'s `main()`: that runs 43 extractors and
+`classify_taxonomy.py run --max-cost 20`, a paid model call. The guard is used;
+the pipeline around it is not.
+
+### One defect fixed because the outage exposed it
+
+The first failed wake left the service instance saying `sleep infinity` with
+**no cron schedule at all** — the weekly ETL off, with nothing in the failing
+process saying so. `wake()` writes that config on its first line and then
+deploys, and every caller invokes `wake()` OUTSIDE its `try`, because there is
+nothing to restore until the wake has happened. So the `finally` that would
+have repaired it is unreachable by construction, in both directions, on every
+failure. `railway_service.wake()` now rolls back where the write happened,
+re-raises regardless, and prints the repair command if the rollback itself
+fails. `test_wake_rolls_back.py` drives it hermetically and its unseen case is a
+`BaseException` that is not an `Exception` — a ctrl-c between the config write
+and the deploy costs a week of ETL and a narrower catch cannot see it. **It
+fired for real on the second failed wake, in this run's own log.**
 
 ### What was written, and the proof
 
