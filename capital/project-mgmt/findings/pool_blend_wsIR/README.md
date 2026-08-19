@@ -228,15 +228,54 @@ for EUR 0.00.
 
 ## 4. The harm side — coverage, not only accuracy
 
-<!--COVERAGE-->
+The owner has reserved the accuracy-versus-coverage decision for himself, so the
+coverage side is measured rather than argued. **The funnel deliberately has no
+REGIME row** — it credits a SIBLING of the won fund, which would break the
+nesting the whole ladder rests on — so this comes from `measure_recall.ts`,
+N=600 holdout, the same harness `ship_blend_wsCV` used, so the numbers are
+directly comparable to its committed ones.
+
+| | `off` | `on` | delta |
+|---|---:|---:|---:|
+| EXACT scheme in top 5 | 168/600 (28%) | 160/600 (27%) | −8 |
+| EXACT scheme in top 6 | 194/600 (32%) | 185/600 (31%) | −9 |
+| **same REGIME in top 5** | **439/600 (73%)** | **398/600 (66%)** | **−41 = −6.8 pts** |
+| **same CHANNEL in top 5** | **558/600 (93%)** | **518/600 (86%)** | **−40 = −6.7 pts** |
+
+**There is no trade here to decide.** The question the owner reserved was
+whether an arm buys accuracy at the price of coverage. This one **loses on both
+axes, and it loses coverage roughly three times as fast as accuracy.** Whatever
+the six-rows question turns out to be, `POOL_BLEND` is not the lever that poses
+it.
+
+The mechanism is the same one twice: a 4.062 weight on a home-country bit buries
+pan-European programmes, and Horizon and the EIC are exactly the funders whose
+regimes and channels the shipped order was reaching. wsGX saw 20 of 26 pool-cut
+losses land on Horizon; the concentration table in §1 shows `horizon_eu_pillar_ii`
+and `horizon_eu_partnership` carrying 18 of the 17-founder net pool-cut loss and
+57% of the EXACT@6 net.
+
+**Two honest caveats.**
+
+1. **These two rows are UNPAIRED marginal counts** — `measure_recall.ts` emits no
+   per-pair file. That is precisely the defect this report criticises `wsCV` for,
+   and it is stated rather than hidden. The deltas are large against their own
+   half-widths (−6.8 and −6.7 against ±3.5 and ±2.0/2.7) and both point the same
+   way as every paired figure above, so the reading is safe; but they are the
+   weakest evidence in this document and they are not the basis of its verdict.
+2. **wsCV measured this flat and today it is not.** Its holdout read REGIME 412
+   → 416 and CHANNEL 526 → 523, essentially no movement. Nine days of corpus and
+   a different draw separate the two, and I cannot reconcile them further without
+   a per-pair file neither run produced.
 
 **`check_winner_not_gated`'s standing debt of 207 cannot move here, and the
 funnel proves it rather than the argument doing so.** That check measures the
 ENCODED GATE layer deleting a verified winner from its own fund; `POOL_BLEND`
-substitutes a base score below the gates. The proof is on the ladder above:
-`gates_pass` is **787 in all three arms**, identical, as are `publishable` and
-`founder_screen`. An arm that changes no founder's gate outcome cannot raise a
-gate debt.
+substitutes a base score *below* the gates. The proof is on the ladder: `gates_pass`
+is **787 in all five arms** — `off`, `on`, `pure` and both shuffles — as are
+`publishable` (819) and `founder_screen` (798). An arm that changes no founder's
+gate outcome cannot raise a gate debt, and the null arm re-orders the pool at
+random without moving it either.
 
 ---
 
@@ -320,3 +359,105 @@ including one against myself.
    wsCV, wsGX and now this workstream all measured it negative end to end. A
    reader of that comment today would conclude the blend is a promising unshipped
    win. Fixed in this branch.
+
+---
+
+## 7. What this does and does not recommend
+
+**Nothing here ships.** `POOL_BLEND` stays `off`, which is what it already was.
+The arm is kept default-off as the reproduction path for these numbers, and
+`shuffle` is kept beside it because the value of the ordering slot is worth
+being able to re-measure.
+
+**The route is closed, and this time on evidence that can be checked.** wsIQ
+classified `ship_blend_wsCV` as the worst closure in the archive — "UNMEASURABLE",
+overturned by three marginal count sets with no discordant count. It is now
+measured: paired, on both measures, against a null, with leave-one-regime-out,
+on committed traces. **It moves from UNMEASURABLE to REAL NEGATIVE.**
+
+**What should NOT be concluded from it:**
+
+- Not "ordering is a dead end". The null says the opposite: **the slot is worth
+  9.4 points** and nothing has taken any of it.
+- Not "fitted models lose to hand-tuned ones". The blend loses to a stack that
+  includes an infinitely strong population prior; it beats chance by 7 points.
+- Not that the +6.0 was fraudulent. It was correct in its own frame and its
+  frame was 7.2 points below the product. **The defect was never the number; it
+  was that nobody priced the frame before spending four workstreams inside it.**
+  wsGY priced it on 2026-08-17 and the arithmetic has been available since.
+
+**The one thing in this report that deserves a decision is not the blend.** It
+is §3: the funnel population splits by **20 points of EXACT@6** on a field we
+already record, and the blend's entire measured harm falls on the better half.
+That is not a ranking finding and it is not mine to act on.
+
+---
+
+## 8. How to reproduce, and what was verified
+
+**The scoring is free and needs no credentials** — it reads the committed traces
+and nothing else:
+
+```bash
+cd website/frontend
+BASE=../../project-mgmt/findings/pool_blend_wsIR/traces/trace_off.jsonl \
+ARM=../../project-mgmt/findings/pool_blend_wsIR/traces/trace_on.jsonl \
+  npx tsx scripts/_wsir_score.ts            # both measures, null, LORO
+STRATUM=own    ... npx tsx scripts/_wsir_score.ts   # §3, the own-words half
+STRATUM=cross_regime_summary,cross_regime_title ...  # §3, the borrowed half
+BASE=... ARM=... STAGE=top_6 npx tsx scripts/_wsgx_pairs.ts   # wsGX's pairer
+```
+
+**The committed traces reproduce every figure in this report to the decimal,
+including the leave-one-regime-out fold counts.** That was checked rather than
+assumed: the same scorer was run against the raw scratchpad dumps and against
+the redacted committed files, and the outputs match line for line.
+
+**The arms** (~14 min each, no model call, Postgres required):
+
+```bash
+POOL_BLEND=off|on|pure FUNNEL_TRACE=<path OUTSIDE the repo> npm run stages
+POOL_BLEND=shuffle POOL_BLEND_SEED=1 FUNNEL_TRACE=<outside> npm run stages
+POOL_BLEND=off|on SPLIT=holdout N=600 npx tsx scripts/measure_recall.ts
+```
+
+### Attestation
+
+- Five funnel runs, all `ranker: all 819 request(s) on EMBEDDING`; two recall
+  runs, both `all 591 request(s) on EMBEDDING`. **No run fell back to lexical.**
+- `corpus postgres instruments=1088`, `store POSTGRES BY DECISION`, draw
+  `13cb71cf3a1d1847`, `AWARD_TERM=oneside` in every arm. **`NO_PG=1` never set.**
+- **EUR 0.00.** `measure_funnel.ts` deletes `ANTHROPIC_API_KEY` at import. No
+  paid call, no production write, no Railway, no `data/db.sqlite`.
+- No arm run was allowed to touch the product's series: `one_funnel/latest.*` is
+  restored from git after every arm and each run's history point is moved here.
+- `npx tsc --noEmit` clean · `npx vitest run` **941 passed** · `check_contracts`
+  ok (10 contracts, 105 rules, 34 enforced).
+- No floor, tolerance or ceiling was moved.
+
+---
+
+## 9. One thing found in passing, NOT fixed here, and it is not this workstream's to fix
+
+`check_winner_not_gated` passes and the 207 debt has not risen — it reads **24**.
+But the two numbers are not measured on the same thing, and the gap is wide
+enough to matter:
+
+- `BLOCKED_CEILING = 207`, whose own docstring ends *"Measured 2026-08-09 over
+  `__recallSetDoors.json`."*
+- The check's run banner today: *"recall set: `__recallSetDescribed.json`
+  7,095 pairs"*.
+
+**So the live reading (24, on Described) is not comparable to the ceiling (207,
+on Doors), and I have deliberately NOT lowered the ratchet.** Lowering a ceiling
+onto an incomparable population is how a guard stops guarding, and the standing
+rule about never moving a floor exists for exactly this shape.
+
+**The hole is the other direction and is worth someone's attention:** if the
+current population genuinely blocks ~24, a ceiling of 207 will not fail until
+roughly 180 additional verified winners are newly deleted from their own fund. A
+guard with that much slack would pass through a large regression in silence.
+Whoever owns the gate layer should either re-pin the ceiling on the set the
+check actually reads, or pin the check to the set the ceiling was measured on.
+Both are one-line changes and choosing between them is a judgement about which
+set is the answer key of record, which is not mine to make.
