@@ -436,6 +436,35 @@ export interface FounderPolicy {
    *  knob still works and so the disclosure counts what was ACTUALLY handed
    *  over, from either source. */
   regionOverride?: (r: RecallRow) => string | undefined;
+  /** ── HOW MUCH THE FOUNDER TYPED (wsIT) ────────────────────────────────
+   *
+   *  `THEME_WEIGHT = 0.6` and the theme cosine is taken against the free-text
+   *  box, so the box is the largest single term in the score. Two constants
+   *  claim to know where it stops paying — `USEFUL_DESCRIPTION_CHARS = 60`
+   *  ("shortest description that actually SEPARATES funds") and
+   *  `MIN_MATCHABLE_DESCRIPTION_CHARS = 12` — and NEITHER has ever been
+   *  measured on the funnel. The evidence behind the first is
+   *  `measure_description_lift.ts`, which ranks through `computeVerdict` (not
+   *  the memo path) on `__recallSetEnriched.json` (a RETIRED set).
+   *
+   *  An OBSERVATIONAL length curve cannot settle it: description length is
+   *  almost perfectly confounded with provenance here — a recovered project
+   *  title is ~90 characters and a recovered summary runs to the cap — and
+   *  provenance is confounded with regime, country and company size in turn.
+   *  So the same founder is asked twice, and the only difference is how much
+   *  of what they said we keep.
+   *
+   *  `full` is the shipped behaviour and the default. A number is a CAP in
+   *  characters, applied at a word boundary the way `rebuild_recall_descriptions`
+   *  truncates, because a founder does not stop typing mid-word. `template`
+   *  replaces the text with the canned sector sentence a founder who SKIPS the
+   *  box is represented by — the founder-facing arm, since skipping is a thing
+   *  a real founder does and borrowing another award's prose is not.
+   *
+   *  This only ever REMOVES text. It cannot tell us what a longer answer than
+   *  the one on file would be worth, and no run under it should be read as
+   *  though it could. */
+  description: "full" | "template" | { capChars: number };
 }
 
 const oneOf = <T extends string>(name: string, v: string | undefined, allowed: readonly T[], dflt: T): T => {
@@ -463,7 +492,41 @@ export function founderPolicyFromEnv(env: NodeJS.ProcessEnv = process.env): Foun
     answers: oneOf("ANSWERS", env.ANSWERS,
       ["off", "real", "strict", "ticket", "capital"] as const, "strict") as AnswerMode,
     consortium: consortium === "none" ? undefined : consortium,
+    description: parseDescriptionPolicy(env.DESCRIPTION),
   };
+}
+
+/** `DESCRIPTION=full|template|<chars>`. Default `full` — the shipped behaviour,
+ *  so a harness that sets nothing measures the founder as the product has them. */
+export function parseDescriptionPolicy(v: string | undefined): FounderPolicy["description"] {
+  if (v === undefined || v === "full") return "full";
+  if (v === "template") return "template";
+  const n = Number(v);
+  if (!Number.isInteger(n) || n < 1) {
+    throw new Error(`DESCRIPTION must be full|template|<positive integer chars>, got "${v}"`);
+  }
+  return { capChars: n };
+}
+
+/** To a character cap at a word boundary, never mid-word.
+ *
+ *  The same rule `ETL/terms/rebuild_recall_descriptions.py:truncate` applies at
+ *  `MAX_DESCRIPTION_CHARS`, and for the same reason: the embedding is what reads
+ *  the string, and half a word is not what a founder would have typed. The
+ *  boundary is only moved back when there is a space reasonably near the cut, so
+ *  a cap of 20 on a single long token still yields 20 characters rather than
+ *  nothing. */
+export function capAtWord(text: string, limit: number): string {
+  const t = text.trim();
+  if (t.length <= limit) return t;
+  const cut = t.slice(0, limit);
+  // `lastIndexOf` returns -1 when the cut contains no space at all, and -1 is
+  // greater than `limit - 120` for every cap under 120 — so the naive form
+  // silently dropped the last character of every short cap. Caught by
+  // `descriptionPolicy.test.ts` before a single arm was run.
+  const space = cut.lastIndexOf(" ");
+  return (space > 0 && space > limit - 120 ? cut.slice(0, space) : cut)
+    .replace(/[ ,;:-]+$/, "");
 }
 
 export interface ReplayedFounder {
@@ -500,6 +563,20 @@ export interface ReplayedFounder {
  *  `check_harness_intake.ts` fails the build on one that does not, because the
  *  defect this file repairs was precisely a second copy of the intake living
  *  in the gate. */
+/** The free-text box as this policy hands it over.
+ *
+ *  `full` is `r.description || r.selfDescription` — the shipped fallback chain,
+ *  in which a founder with nothing on file is already represented by the canned
+ *  sector sentence. `template` forces that fallback for EVERYONE, which is what
+ *  makes it the arm for "the founder skipped the box". */
+function describedAs(r: RecallRow, p: FounderPolicy): string | undefined {
+  const template = r.selfDescription || undefined;
+  if (p.description === "template") return template;
+  const own = r.description || template || undefined;
+  if (p.description === "full" || !own) return own;
+  return capAtWord(own, p.description.capChars) || undefined;
+}
+
 export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
   const a = answersFor(r, p.answers);
   const region = p.regionOverride?.(r) ?? a.region;
@@ -603,7 +680,7 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
       // from the column the corpus labels funds with, and the `other_scheme`
       // guard makes it anti-correlated rather than neutral.
       capitalSought: p.capital === "pinned" ? [...CONSTANT_ANSWERS.capitalSought] : [],
-      description: r.description || r.selfDescription || undefined,
+      description: describedAs(r, p),
       ownHistory: p.ownHistory,
     },
     supplied: (ASKABLE_FIELDS as IntakeField[])
@@ -643,6 +720,13 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
       + "policy knob if it is not part of a request at all.");
   }
   return founder;
+}
+
+/** One word for the header, so an arm can never be read off a run without it. */
+export function describeDescriptionPolicy(p: FounderPolicy): string {
+  return p.description === "full" ? "full"
+    : p.description === "template" ? "template (the canned sector sentence)"
+      : `capped at ${p.description.capChars} chars`;
 }
 
 /** Counts what was actually handed to founders across a run. */
@@ -689,7 +773,15 @@ export class IntakeTally {
       + `askable fields are asked in production today, `
       + `identity=${policy.identity} own-history=${policy.ownHistory} `
       + `capital=${policy.capital} answers=${policy.answers} `
-      + `consortium=${policy.consortium ?? "(unanswered)"}`);
+      + `consortium=${policy.consortium ?? "(unanswered)"} `
+      + `description=${describeDescriptionPolicy(policy)}`);
+    if (policy.description !== "full") {
+      out.push("    \u2588\u2588 DESCRIPTION IS NOT THE SHIPPED VALUE. "
+        + `${describeDescriptionPolicy(policy)} — every founder's free-text box was `
+        + "cut down or replaced before ranking. This run measures what the product "
+        + "scores when founders say LESS, and is not comparable with a run that "
+        + "does not say so on this line.");
+    }
     const order = { derived: 0, pinned: 1, withheld: 2, staged: 3, "n/a": 4 } as const;
     for (const f of [...ASKABLE_FIELDS].sort(
       (x, y) => order[INTAKE_SOURCE[x].supply] - order[INTAKE_SOURCE[y].supply] || x.localeCompare(y))) {
