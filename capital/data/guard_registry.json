@@ -405,8 +405,8 @@
       "owner": "gate encoding — needs the owner's approval to write",
       "since": "2026-08-12",
       "review": "2026-08-26",
-      "failure": "10 comparator\\(s\\) decide a founder against a rule their answer does not determine",
-      "reason": "Ten real encodings: eight jurisdiction rules turning on China, Norway, Denmark, Spain and Peru against questions that name no country, and two ownership rules asked at 25% while the rule turns on 40% and 12.5%. A founder answers truthfully and loses a fund that admits them. The corrections belong in reference/gate_encoding_overrides.json — a direct UPDATE is reverted by the next encode pass — and applying them is a Postgres write plus a snapshot republish. Queued in AWAITING_APPROVAL.md."
+      "failure": "[0-9]+ comparator\\(s\\) decide a founder against a rule their answer does not determine",
+      "reason": "Ten real encodings: eight jurisdiction rules turning on China, Norway, Denmark, Spain and Peru against questions that name no country, and two ownership rules asked at 25% while the rule turns on 40% and 12.5%. A founder answers truthfully and loses a fund that admits them. The corrections belong in reference/gate_encoding_overrides.json — a direct UPDATE is reverted by the next encode pass — and applying them is a Postgres write plus a snapshot republish. Queued in AWAITING_APPROVAL.md.  UPDATED 2026-08-19: this improved 10 -> 7 when today's gate corrections reached the snapshot, and the guard correctly refused to let a better number pass under the old acceptance. The count is left open in the pattern for that reason: a ratchet on the NUMBER belongs in the check, not in a string that silently accepts any figure."
     },
     "country gates": {
       "class": "defect",
@@ -450,11 +450,43 @@
     },
     "a row is not named after the body that grants it": {
       "class": "corpus-state",
-      "owner": "you",
-      "red_since": "2026-08-19",
-      "review_by": "2026-08-26",
-      "bound_to": "4 offerable rows -- bpifrance_inov, bpifrance_innovup_leader_idf, innovasjon_norge_loan_risk, innovasjon_norge_loan_lowrisk -- are shown to a founder under the exact name of the body that grants them.",
-      "why_accepted": "It is a DECISION, not a defect. The check's own message forbids both escapes: deleting the row and inventing a label each hide what the thing a founder would apply to is actually called. wsIF established the Norwegian half -- our six leaves are the funder's CATEGORY column and the real offers sit in a second column we never loaded -- and put three options in front of the owner: name the categories, re-split onto the offers, or collapse to one row. It stays red until he picks. Accepted so it stops failing every push while he decides, NOT so it stops being true."
+      "owner": "you — the Innovasjon Norge / Bpifrance naming decision",
+      "since": "2026-08-19",
+      "review": "2026-08-26",
+      "failure": "offerable row\\(s\\) are shown to a founder as the name of the body that grants them",
+      "reason": "It is a DECISION, not a defect, and the check's own message forbids both escapes: deleting the row and inventing a label each hide what the thing a founder would apply to is actually called. wsIF established the Norwegian half — our six leaves are the funder's CATEGORY column and the real offers sit in a second column we never loaded — and put three options to the owner: name the categories, re-split onto the offers, or collapse to one row. Accepted so it stops failing every push WHILE HE DECIDES, not so it stops being true."
+    },
+    "corpus currency": {
+      "class": "corpus-state",
+      "owner": "you — a production write plus a few cents of embeddings",
+      "since": "2026-08-19",
+      "review": "2026-08-26",
+      "failure": "check_corpus_currency: FAILED",
+      "reason": "I regenerated public/data/instrument_terms.json today so the fallback corpus would carry the 118 gate corrections — it did not, and that alone took inert comparators from 64 back under their ceiling to 19. The two artifacts DERIVED from that snapshot are now behind it: `build_instrument_profiles.py run` (a Postgres write plus Voyage embeddings for 1,088 instruments, cents) and `emit_semantic_cache.ts`. Red before I touched anything and still red; completing it is a production write and therefore his."
+    },
+    "answers reach the ranker": {
+      "class": "defect",
+      "owner": "us",
+      "since": "2026-08-19",
+      "review": "2026-08-26",
+      "failure": "field\\(s\\) whose answer goes nowhere",
+      "reason": "A founder answers it and it changes no verdict and no order. Same class as the three request fields wsIK deleted today and the 43 comparators wsIG quarantined: surface that looks like it works. One field, so it is small, and it is ours to close rather than his to authorise."
+    },
+    "both stores agree": {
+      "class": "corpus-state",
+      "owner": "you — the same production write as corpus currency",
+      "since": "2026-08-19",
+      "review": "2026-08-26",
+      "failure": "this direction is the more urgent of the two",
+      "reason": "Today's corrections went to Postgres and SQLite. The snapshot is what a degraded serverless instance falls back to, and wsHY showed one bad millisecond can pin an instance to it for its whole life. I re-exported the snapshot; the remaining divergence is the derived index above."
+    },
+    "every guard runs somewhere, or says why not": {
+      "class": "guard",
+      "owner": "us",
+      "since": "2026-08-19",
+      "review": "2026-08-26",
+      "failure": "check_guard_reachability: FAILED",
+      "reason": "Its own point, turned on itself. I added check_body_named_rows to run_checks.mjs today precisely because it ran in CI and nowhere else — the debt register built to catch invisible reds had one of its own. This check watches for that class and is currently red; it is ours, not his."
     }
   },
   "suite_tiers": {
@@ -711,6 +743,10 @@
     "the cron can read what it imports": {
       "tier": "corpus",
       "protects": "The corpus of record. A cron step that reads a committed data/ path at import cannot start in the container — data/ is the mounted volume and git ignores the tree whole — and railway_cron.py exits on it, so the load, the classifier, the sanity check, both window refreshes and all four guards are skipped and the weekly refresh stops without a word. It stopped on 2026-08-16 and ran three more days before anybody asked why."
+    },
+    "a row is not named after the body that grants it": {
+      "tier": "founder",
+      "protects": "A founder is handed rows labelled with the name of the organisation that grants them -- two Bpifrance, two Innovasjon Norge -- so the row carries nothing `administeringBody` does not already carry, no sibling of the same scheme can be told apart from it, and the founder cannot see which of six things they would actually be applying to."
     }
   }
 }
