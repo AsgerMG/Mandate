@@ -15,6 +15,7 @@ import type { DbInstrument } from "./corpus";
 import {
   assertOneOrdering, BLEND_SIGNALS, BLEND_WEIGHTS, blendPoolScores, homeFirstScores,
   parsePoolBlend, parseRowProximity, proximityFit, rankNormalise, reconcileBlendColumns,
+  shuffleScores,
   type BlendContext,
 } from "./poolBlend";
 
@@ -73,11 +74,17 @@ describe("the arm flag", () => {
     expect(parsePoolBlend("off")).toBe("off");
     expect(parsePoolBlend("on")).toBe("on");
     expect(parsePoolBlend("pure")).toBe("pure");
+    expect(parsePoolBlend("shuffle")).toBe("shuffle");
   });
 
   // An arm that silently falls back to shipped reports "no effect" and cannot
   // be told from a flag that never arrived. That is the shape of every false
   // null in this project's history, so the misspelling has to be loud.
+  it("reads the null arm too, so a misspelt null cannot read as `off`", () => {
+    expect(parsePoolBlend("shuffle")).toBe("shuffle");
+    expect(() => parsePoolBlend("shuffled")).toThrow(/unknown POOL_BLEND=shuffled/);
+  });
+
   it("throws on anything else rather than reading as off", () => {
     expect(() => parsePoolBlend("ON")).toThrow(/unknown POOL_BLEND=ON/);
     expect(() => parsePoolBlend("true")).toThrow(/unknown POOL_BLEND/);
@@ -243,5 +250,46 @@ describe("homeFirstScores", () => {
     expect(() => assertOneOrdering("pure", "first")).toThrow(/do not compose/);
     expect(() => assertOneOrdering("off", "first")).not.toThrow();
     expect(() => assertOneOrdering("on", "off")).not.toThrow();
+  });
+});
+
+
+/** The null arm has to be a NULL: a real permutation, stable enough to
+ *  reproduce and different enough between seeds to be a distribution. A null
+ *  that quietly returned the incoming order would make every arm look good, and
+ *  nothing else in the file would notice. */
+describe("the shuffle arm, which is the null `on` is judged against", () => {
+  const pool = Array.from({ length: 40 }, (_, k) => inst(`i${k}`));
+
+  it("returns one percentile per candidate, on the same [0,1] scale as the blend", () => {
+    const out = shuffleScores(pool, 1);
+    expect(out.size).toBe(pool.length);
+    const vals = [...out.values()].sort((a, b) => a - b);
+    expect(vals[0]).toBe(0);
+    expect(vals[vals.length - 1]).toBe(1);
+    // A permutation, not a heap of ties: every candidate gets its own rank.
+    expect(new Set(vals).size).toBe(pool.length);
+  });
+
+  it("is reproducible for one seed and different for another", () => {
+    const a = shuffleScores(pool, 1);
+    const b = shuffleScores(pool, 1);
+    const c = shuffleScores(pool, 2);
+    expect([...a.entries()]).toEqual([...b.entries()]);
+    expect([...a.entries()]).not.toEqual([...c.entries()]);
+  });
+
+  it("does not simply hand back the order it was given", () => {
+    const out = shuffleScores(pool, 1);
+    const asGiven = pool.map((_, k) => k / (pool.length - 1));
+    expect(pool.map((i) => out.get(i.id))).not.toEqual(asGiven);
+  });
+
+  it("depends on the pool's membership, not on the order it arrives in", () => {
+    const forward = shuffleScores(pool, 1);
+    const backward = shuffleScores([...pool].reverse(), 1);
+    // Same pool, same seed, same score per candidate however it was presented:
+    // a null correlated with the incoming order would be a null for nothing.
+    for (const i of pool) expect(backward.get(i.id)).toBe(forward.get(i.id));
   });
 });

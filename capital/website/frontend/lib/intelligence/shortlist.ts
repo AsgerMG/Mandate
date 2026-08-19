@@ -36,7 +36,7 @@ import type { ExclusionLog } from "./exclusions";
 import { EXCLUSION_RULES } from "./rules";
 import { accessMode, passesCapitalPreference } from "./accessMode";
 import { sectorFit, sectorFitScorer } from "./fit";
-import { blendPoolScores, homeFirstScores, POOL_BLEND, ROW_PROXIMITY } from "./poolBlend";
+import { blendPoolScores, homeFirstScores, POOL_BLEND, POOL_BLEND_SEED, ROW_PROXIMITY, shuffleScores } from "./poolBlend";
 import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
@@ -3016,7 +3016,14 @@ export function materialiseInstrumentTable(
   // Named for the SLOT and not for one of its occupants: two arms now fill it,
   // and a variable called `blend` holding the proximity arm's map is the shape
   // of a comment that is no longer true.
-  const poolScore = POOL_BLEND === "off" ? homeFirst : blendPoolScores(
+  const poolScore = POOL_BLEND === "off" ? homeFirst
+    // The null arm substitutes a RANDOM order into the same slot and leaves
+    // every downstream stage alone, so `shuffle` differs from `on` in exactly
+    // one thing: whether the numbers in the slot carry information.
+    : POOL_BLEND === "shuffle" ? shuffleScores(
+      selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
+      POOL_BLEND_SEED)
+    : blendPoolScores(
     selections.map((s) => s.leaf).filter((l): l is DbInstrument => Boolean(l)),
     {
       founderSector,
