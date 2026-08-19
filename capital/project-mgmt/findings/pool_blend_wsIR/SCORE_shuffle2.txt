@@ -1,0 +1,68 @@
+BASE       /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_off.jsonl
+           row_order=off  award_term=oneside  2026-08-19T17:27:30.488Z
+ARM        /private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/wsir/trace_shuffle2.jsonl
+           row_order=shuffle  award_term=oneside  2026-08-19T18:25:49.713Z
+population 897 drawn, 819 past the corpus stages
+ARM ARRIVED (pool  ) the won fund's rank differs for 507/819, median shift 3 row(s)
+ARM ARRIVED (writer) the won fund's rank differs for 222/819, median shift 2 row(s)
+regimes    96 distinct won-fund regime(s) in the paired population
+
+── pool_cut@40 (reach) ─────────────────────────────────────────
+  base    +82.17   arm    +74.60
+  PAIRED delta     -7.57  [-9.65, -5.49]  P(>0)=0.000
+  discordant 80  (arm only 9, base only 71)
+  McNemar z  6.93
+  NULL       sign-flip 95% [-2.20, +2.20]  p=0.0000  CLEARS its null
+  LORO       worst -8.73 without innovate_uk (n=109)   best -5.24 without vinnova_grant (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -62 founder(s) over 21 regime(s), largest single regime 48% (vinnova_grant)
+             vinnova_grant:-30  horizon_eu_pillar_ii:-16  eic:-3  horizon_eu_partnership:-2  ademe_aid:+2  nfr_teknologikonver:-2
+
+── published@7 ─────────────────────────────────────────────────
+  base    +45.67   arm    +36.26
+  PAIRED delta     -9.40  [-11.72, -7.08]  P(>0)=0.000
+  discordant 95  (arm only 9, base only 86)
+  McNemar z  7.90
+  NULL       sign-flip 95% [-2.32, +2.32]  p=0.0000  CLEARS its null
+  LORO       worst -10.85 without innovate_uk (n=109)   best -6.55 without vinnova_grant (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -77 founder(s) over 22 regime(s), largest single regime 48% (vinnova_grant)
+             vinnova_grant:-37  horizon_eu_pillar_ii:-15  eic:-5  nfr_energix:-3  satr_de_rnd:-3  nfr_nanoteknologi:-3
+
+── EXACT@6 ─────────────────────────────────────────────────────
+  base    +42.61   arm    +33.09
+  PAIRED delta     -9.52  [-11.84, -7.20]  P(>0)=0.000
+  discordant 104  (arm only 13, base only 91)
+  McNemar z  7.65
+  NULL       sign-flip 95% [-2.44, +2.44]  p=0.0000  CLEARS its null
+  LORO       worst -10.99 without innovate_uk (n=109)   best -6.38 without vinnova_grant (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -78 founder(s) over 25 regime(s), largest single regime 50% (vinnova_grant)
+             vinnova_grant:-39  horizon_eu_pillar_ii:-14  eic:-4  nfr_energix:-3  satr_nl_rnd:+3  nfr_nanoteknologi:-3
+
+── EXACT@5 ─────────────────────────────────────────────────────
+  base    +39.56   arm    +28.45
+  PAIRED delta    -11.11  [-13.55, -8.67]  P(>0)=0.000
+  discordant 119  (arm only 14, base only 105)
+  McNemar z  8.34
+  NULL       sign-flip 95% [-2.56, +2.56]  p=0.0000  CLEARS its null
+  LORO       worst -12.68 without innovate_uk (n=109)   best -7.53 without vinnova_grant (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+  CONCENTRATION net -91 founder(s) over 32 regime(s), largest single regime 49% (vinnova_grant)
+             vinnova_grant:-45  horizon_eu_pillar_ii:-15  eic:-4  nfr_fflja:-3  nfr_energix:-3  satr_nl_rnd:+3
+
+── recip (writer order) ────────────────────────────────────────
+  base   +0.2629   arm   +0.1513
+  PAIRED delta   -0.1116  [-0.1320, -0.0913]  P(>0)=0.000
+  moved      222 founder(s) with a non-zero delta
+  NULL       sign-flip 95% [-0.0232, +0.0218]  p=0.0000  CLEARS its null
+  LORO       worst -0.1181 without satr_fr_rnd (n=45)   best -0.0743 without vinnova_grant (n=208)
+             sign holds in 96/96 leave-one-regime-out folds
+
+── recip (pool order) ──────────────────────────────────────────
+  base   +0.2846   arm   +0.1776
+  PAIRED delta   -0.1070  [-0.1269, -0.0875]  P(>0)=0.000
+  moved      507 founder(s) with a non-zero delta
+  NULL       sign-flip 95% [-0.0224, +0.0207]  p=0.0000  CLEARS its null
+  LORO       worst -0.1132 without satr_fr_rnd (n=45)   best -0.0722 without vinnova_grant (n=208)
+             sign holds in 96/96 leave-one-regime-out folds

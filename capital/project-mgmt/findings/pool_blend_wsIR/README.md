@@ -119,7 +119,50 @@ Two corrections fall out of it:
 
 ## 2. The null
 
-<!--NULL-->
+**The brief asked for a within-pool shuffle null, and it is the section that
+most changes how the negative should be read.** `POOL_BLEND=shuffle` orders the
+pool at random and leaves every downstream stage alone, so it differs from `on`
+in exactly one thing: whether the numbers in the slot carry information. Two
+seeds, because one shuffle is one sample of a null and must never be quoted as
+"the" null.
+
+| measure | shuffle seed 1 | shuffle seed 2 | **`on` (the blend)** |
+|---|---:|---:|---:|
+| `pool_cut@40` | −8.18 [−10.26, −6.11] | −7.57 [−9.65, −5.49] | **−2.08** |
+| `published@7` | −8.55 [−10.87, −6.23] | −9.40 [−11.72, −7.08] | **−3.79** |
+| **EXACT@6** | **−9.28** [−11.72, −6.96] | **−9.52** [−11.84, −7.20] | **−2.56** |
+| EXACT@5 | −10.01 [−12.45, −7.57] | −11.11 [−13.55, −8.67] | −2.44 |
+| recip (writer) | −0.1078 [−0.1290, −0.0871] | −0.1116 [−0.1320, −0.0913] | **+0.0172** |
+
+McNemar z between 6.93 and 8.34 on every binary cut; the two seeds agree to
+within a quarter of a point. **The ordering slot is worth about 9.4 points of
+EXACT@6 and 0.11 of reciprocal rank.** That is a larger number than any ordering
+lever this project has shipped, and it is the first time the value of the slot
+itself has been measured rather than assumed.
+
+**Three things follow, and the middle one is the fairest thing that can be said
+about the blend.**
+
+1. **The blend's negative is not arithmetic.** It sits far outside the churn a
+   random re-ordering of the same pools produces, and its own sign-flip null
+   clears at every binary cut.
+2. **The blend is a competent ordering that is beaten.** Against chance at −9.40
+   and shipped at 0, the blend at −2.56 **recovers 73% of the gap and gives back
+   27%**. On reciprocal rank it beats chance decisively (+0.017 against −0.11).
+   It is not a bad model; it is a model that reconstructs less than the
+   precedence stack it displaces — which is precisely wsGY's +7.2 against the
+   blend's +5.7, arriving a second time by a different route.
+3. **It also prices the thing the ordering work has been arguing about.** wsGY's
+   *"you cannot re-weight a column of zeroes"* is about the shown rows being
+   indifferent to the answer. The slot they sit in is not indifferent: destroy
+   it and 9.4 points leave. The room is real; nothing tried so far has taken any
+   of it, and the best-fitted alternative gives back a quarter of what the
+   simple thing already earns.
+
+**One caveat, stated because it bounds the claim.** Two seeds is a spread, not a
+distribution. They agree closely enough to make the qualitative reading safe —
+the blend is nowhere near chance — but no interval here should be read as a
+calibrated null quantile.
 
 ---
 
