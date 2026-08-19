@@ -615,7 +615,21 @@ def cmd_run(args) -> None:
                       verify_note=excluded.verify_note,
                       gate_role=excluded.gate_role,
                       intake_field_resolved=excluded.intake_field_resolved,
-                      encoding_method='scheme_text_extract',
+                      -- A WITHDRAWAL SURVIVES A RE-CUT. Re-reading the same
+                      -- eligibility_text produces the same sentence, so this
+                      -- ON CONFLICT is how a gate gets refreshed rather than
+                      -- how it gets decided again -- but stamping
+                      -- 'scheme_text_extract' unconditionally erased the one
+                      -- column recording that a human-verified pass had
+                      -- removed this gate's comparator, and the next
+                      -- `encode_gates.py encode --fresh` then re-derived it.
+                      -- value_spec is not in this SET list, so the row kept a
+                      -- NULL spec and looked quarantined while no longer being
+                      -- marked as such: the marker and the state disagreed and
+                      -- only the marker is what any pass reads.
+                      encoding_method=CASE
+                        WHEN eligibility_gates.encoding_method = 'quarantined'
+                          THEN 'quarantined' ELSE 'scheme_text_extract' END,
                       updated_at=CURRENT_TIMESTAMP
                 """, (inst["id"], f"scheme_text_{i}", k["gate_family"],
                       k["requirement"], k["value"], k["quote"],

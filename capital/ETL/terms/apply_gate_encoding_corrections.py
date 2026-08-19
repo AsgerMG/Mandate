@@ -181,6 +181,22 @@ def main() -> int:
         corrections_path = ROOT / corrections_path
     rows = [json.loads(l) for l in corrections_path.read_text().splitlines() if l.strip()]
     print(f"corrections: {corrections_path.relative_to(ROOT)}")
+    # PREPARED IS NOT AUTHORISED. A correction set is written before it is
+    # approved, and `"applied": false` is how check_corrections_applied.py is
+    # told not to enforce it yet. The same flag has to stop THIS file, or the
+    # marker would mean "not enforced" to one tool and nothing at all to the
+    # tool that does the writing -- and a prepared set would be one command
+    # away from being production.
+    unapproved = [f"{c['instrument_id']} [{c['gate_key']}]"
+                  for c in rows if c.get("applied") is False]
+    if unapproved:
+        print(f"\nREFUSED — {len(unapproved)} row(s) in this file are marked "
+              f'"applied": false, i.e. prepared and awaiting authorisation:')
+        for u in unapproved:
+            print(f"  {u}")
+        print("\n  Remove the flag from the evidence line once the write is "
+              "approved.\n  Nothing was written to either store.")
+        return 1
     conn = sqlite3.connect(DB, timeout=60)
     conn.row_factory = sqlite3.Row
 
