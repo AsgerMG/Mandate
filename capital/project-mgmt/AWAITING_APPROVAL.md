@@ -50,6 +50,22 @@ destroy whatever the other store holds alone.
 Every route to the volume begins by waking the container, so **this cannot
 happen before §1.** One decision, in two steps.
 
+**wsHX, 2026-08-19: the union is BUILT and PROVEN and not yet uploaded.**
+9,763 gates, and all eleven other family tables hash byte-identical to the
+record it was built from. Railway's builder has failed every deploy since 22:50
+UTC (503s from its own API, build-log streaming down, four FAILED, one stuck 33
+minutes — including one failure at 22:01, before this workstream deployed
+anything), and every route to the volume begins with a deploy. **The weekly ETL
+is not off:** the last SUCCESSFUL deployment bakes `0 3 * * 0` and the real
+start command, and the service instance agrees. Finishing is one command once
+the builder is healthy — see `project-mgmt/findings/dead_answers_wsHX.md` §0.
+
+**And the promotion is no longer the command written above.** `--family
+instruments` had 374 column values queued to be displaced on rows both stores
+hold — including `name_source`, which decides publishability. It is
+`--table eligibility_gates --inserts-only` now, and
+`test_promotion_is_inserts_only.py` holds it there.
+
 ### 2b. The record still calls 44 bucket labels offerable — free
 
 Found while doing §2. `assign_name_evidence.py` is not in
