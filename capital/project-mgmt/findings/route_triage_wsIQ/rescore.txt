@@ -1,0 +1,72 @@
+
+0. THE HARNESS ANCHORS — the two arms whose answer is known
+===========================================================
+  arm=off      324 founders, discordant on rankControl/rankRanker: 0
+               A GENUINE NULL BY CONSTRUCTION: the flag is off, the order is not touched.
+  arm=reverse  120 in-pool founders, the pool order deliberately inverted.
+
+1. wsGA arm=adviser — DID IT MOVE THE ORDER?
+============================================
+  98 founders called with the won fund in the 18-row menu.
+  the won fund's POOL RANK changes on 75/98 = 76.5%
+  mean raw rank shift -0.76 (negative favours the ranker) — wsGA published -0.76, Wilcoxon p=0.414
+  THIS IS NOT A GENUINE NULL. The arm reordered nearly every menu.
+
+2. THE RECONSTRUCTION, PROVEN BEFORE IT IS USED
+===============================================
+  treatment pool rank reconstructs from picks on 98/98 calls
+
+3. wsGA arm=adviser — BOTH MEASURES, PAIRED, vs our own order
+=============================================================
+  n=98. Published by wsGA: EXACT@5 McNemar z=+0.80 p=0.522, EXACT@6 z=+0.95 p=0.430.
+  EXACT@5, points                        +6.12  [-7.14, +18.37]  P(>0)=0.817
+  EXACT@6, points                        +9.18  [-4.08, +22.45]  P(>0)=0.900
+  reciprocal rank                      +0.0155  [-0.0372, +0.0694]  P(>0)=0.716
+
+3b. THE SAME ARM ON THE PUBLISHED PROJECTION — reproducing wsGA's own table
+===========================================================================
+  control EXACT@5 45/98   ranker 50/98   (wsGA published 45/98 and 50/98)
+  control EXACT@6 51/98   ranker 57/98   (wsGA published 51/98 and 57/98)
+  discordant at 5: 39 (wsGA published 39). The extraction is the same rows wsGA scored.
+
+4. THE NULLS — wsIJ's trap, run on wsGA's own menus
+===================================================
+  null A — seven rows drawn uniformly from the same menu
+     EXACT@5   -16.33   model +6.12   p(null >= model) = 0.0000
+     EXACT@6   -14.92   model +9.18   p(null >= model) = 0.0000
+     recip    -0.0976   model +0.0155   p(null >= model) = 0.0000
+  null B — depth profile transferred from a random donor founder
+     EXACT@5    -9.51   model +6.12   p(null >= model) = 0.0003
+     EXACT@6    -7.65   model +9.18   p(null >= model) = 0.0003
+     recip    -0.0471   model +0.0155   p(null >= model) = 0.0055
+  arm=reverse (the pool order inverted, n=120) — the sign check
+     EXACT@6   -36.67   recip -0.1358
+
+5. wsGA arm=adviser — LEAVE ONE COUNTRY OUT
+===========================================
+  recip positive in 9/10 folds; EXACT@6 positive in 10/10
+
+6. wsDR — the DEPTH route, re-scored as far as the artefact allows
+==================================================================
+  45 founders. The won fund is in the pool on 14 — the only founders any ordering can move.
+  wsDR published EXACT@5 off 9/45=20.0%, late 10/45=22.2%, early 8/45=17.8%. That whole ladder
+  is 14 movable founders and a two-founder difference, with no interval printed.
+  The artefact never records the won fund's ID. It is recoverable on 13/14,
+  and ONLY where the fund reached some arm's published seven — so the recovered set is
+  conditioned on success and biased toward the top. Read the numbers below with that.
+
+  seam=late (18 rows) — the model's order against our own inside that arm, n=13
+    EXACT@5, points                     -23.08  [-46.15, +0.00]  P(>0)=0.000
+    reciprocal rank                    -0.0444  [-0.2137, +0.1230]  P(>0)=0.297
+
+  seam=early (40 rows) — the model's order against our own inside that arm, n=13
+    EXACT@5, points                     -23.08  [-46.15, +0.00]  P(>0)=0.000
+    reciprocal rank                    -0.1012  [-0.2379, -0.0025]  P(>0)=0.021
+
+  VERDICT: unmeasurable, and only partly recoverable. Not a genuine null.
+
+7. ANCHOR — the estimator reproduces wsII's published figures
+=============================================================
+  indicative_wsHO: EXACT@6 +1.6768 [-5.94, +9.30]   recip +0.0739 [+0.0284, +0.1193]   mean menu 37.8
+  indicative_wsHW: EXACT@6 -3.0986 [-11.78, +5.59]   recip +0.0716 [+0.0103, +0.1329]   mean menu 37.9
+  wsII published: wsHO +1.6768 / +0.0739, wsHW -3.0986 / +0.0716.
