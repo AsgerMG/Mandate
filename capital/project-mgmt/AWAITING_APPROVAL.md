@@ -13,63 +13,99 @@ Pruned 2026-08-18 on the owner's instruction.
 
 ## Needs you
 
-### 1. Redeploy the container — HELD until wsHU reports, on your call
+**Four production writes. Three are prepared to the same standard — exact
+command, preconditions verified read-only in BOTH stores, blast radius counted,
+reversal written down and detectable. `make eligibility` is deliberately red
+until two of them land; nothing was loosened to hide that.**
 
-`python3 ETL/lib/verify_cron.py --deploy`. Zero cost, one CLI upload.
+### 1. Quarantine two Innovate UK gates — 109 founders, every move toward open
 
-**The correction that matters here: the Railway CLI was never missing.** I told
-you twice it was blocked on it. `railway_service.py` calls
-`npx --yes @railway/cli`, which fetches on demand — and it is authenticated as
-you right now (`railway 5.41.2`, `Logged in as asger@grimberg.dk`). I tested for
-a global binary, found none, and concluded the wrong thing. Same shape as the
-defects we spent the day fixing: I checked what I expected rather than what runs.
+```
+python3 ETL/terms/apply_gate_encoding_corrections.py --apply --postgres \
+  --corrections project-mgmt/evidence/wsic_gate_branch_corrections_2026-08-19.jsonl
+```
 
-**Why it is worth doing.** `guard_verdicts` holds 783 rows and **every one says
-`produced_by=local`** — the container has never published a verdict in its life,
-so the credential-free feed CI reads has been dark since it was built. The image
-is also 316 commits behind and carries a coverage baseline known to be wrong
-(913 where the corrected figure is 937), so it has been grading the corpus
-against a bar that is too low and publishing the result as a measurement.
+**2 rows, 2 columns, 1 instrument, in each of 2 stores.** Preconditions verified
+against live Postgres; SQLite dry run `2 to write, 0 drifted`.
 
-**Why it is held.** It would ship six days of unreviewed ETL changes on top of a
-pipeline wsHU is currently diagnosing as broken, and the next scheduled run
-would be the first ever to publish verdicts — several red at once, on a state we
-do not yet understand. Expect those reds either way: that is the channel
-working, not a new fault.
+We hold Innovate UK's two eligibility routes as things you must satisfy *both*
+of. They are alternatives. The £1m route was open to all ten founders we
+blocked — grounded on UKRI's own guidance and the competition page, not inferred
+from our corpus.
 
-**It also gates §2.**
+**This one pair was 81% of every named obstacle sitting on a fund a company
+actually won.** Obstructed winners across the population fall **134 → 25**. It
+hid because we count obstacles by *field*, so two gates on one field read as one
+thing in the way, and every guard we own reported a flat zero.
 
-### 2. Promote 3,362 encoded gates to the corpus of record — free
+It quarantines rather than merging the two rules, and that was the agent
+correcting my instruction: the gate bounds *total project cost*, our field means
+*the grant they are asking for*, and the branch selector is project duration,
+which we never ask. A merged rule would still be a machine verdict about a
+number the founder never gave us.
 
-The record has never been GIVEN the gates encoded since 2026-08-09, and no cron
-step can reproduce them (`railway_cron.py::STEPS` has no gate encoder). Nothing
-was lost. `reconcile_stores.py`, **by union, never by overwrite** — both
-`pull_db.py` and `push_local.py` move the whole file with `--overwrite` and
-destroy whatever the other store holds alone.
+**Reversal:** restore the stored spec with `encoding_method='llm_encode'`;
+`check_gate_branches.py` goes red again, so undoing it is detectable.
 
-Every route to the volume begins by waking the container, so **this cannot
-happen before §1.** One decision, in two steps.
+### 2. Correct twelve gates banded in the wrong currency — 177 founders (19.7%)
 
-### 3. ~~Three doors of SA.40391 are now indistinguishable~~ — STRUCK 2026-08-19
+```
+python3 ETL/terms/apply_gate_encoding_corrections.py --apply --postgres \
+  --corrections project-mgmt/evidence/wsie_currency_band_corrections_2026-08-19.jsonl
+```
 
-**This asked you to decide about rows that have not been on the page since
-2026-08-18.** All three leaves are withheld — the Commission's own record gives
-`caseMeasureEndDate 2020-12-30`, so `publishabilityFailures` says the window has
-shut. `dead_doors_wsHQ` withheld them the day *after* wsHF found them
-byte-identical, and said so in its own report. Nobody joined the two up, and I
-then briefed an agent to fix it.
+**10 rows, 2 columns, 8 instruments, in each of 2 stores.** Preconditions
+verified **10/10 in Postgres and 10/10 in SQLite, 0 drifted**.
 
-**The class behind it was real and is now fixed** (wsID). Our 120-character cut
-was merging two funds whose names diverge past that point, so a genuine second
-door was being spent to pay for a render budget. Sized honestly: it moves the
-published six for **8 founders in 300** and wins nobody their fund on that
-sample. What it changes is the menu — 36% get back a distinct fund the cut had
-merged.
+We had no currency handling at all: £500,000 and 500,000 kronor were both banded
+as if the numerals were euros. Sterling survives — the bands are four times
+wider than the error. Kronor, kroner, zloty and forint crossed a band edge every
+single time. The worst encoded a Hungarian ceiling of about **€137,000 as €50
+million**.
 
-**What is left needs no decision from you, only work:** 50% of founders see a
-pair *the corpus itself* calls the same thing — six Innovasjon Norge leaves all
-literally named "Innovasjon Norge". No cut can separate those. It is a corpus
-repair, now ratcheted so it cannot get worse.
+**Every transition is toward open. No row leaves a pool; no founder loses a
+fund.** Only two founders won a corrected instrument, so reading won funds alone
+would have called this nothing.
+
+Two convert, eight quarantine — because the currency error never occurs alone.
+Seven sat on top of a scope error, a disjunction we held as a conjunction, or
+provenance naming the wrong document. And one is refused on principle: NOK 1m is
+€81k at the decade's weakest krone and €114k at its strongest, and our band edge
+sits at €100k between them. **No rate is good enough, so no rate is used.**
+
+### 3. Quarantine 43 gates that can never run — 0 founders reached
+
+```
+python3 ETL/terms/apply_gate_encoding_corrections.py --apply --postgres \
+  --corrections project-mgmt/evidence/wsig_inert_comparator_corrections_2026-08-19.jsonl
+```
+
+**43 rows, 2 columns, 34 instruments, in each of 2 stores.** Preconditions
+**43/43, 0 drifted**.
+
+These compare a number against an answer that is never a number. They have never
+failed anybody, never passed anybody, never been evaluated once — measured at
+**174,915 assessments, zero change**. Five of them are "must be an SME" rules
+that have never applied to anyone.
+
+**This buys no accuracy and I am not claiming it does.** It stops 34 instruments
+carrying rules that look enforced and are not, and it brings two ratchets
+**down** (45 → 21, 64 → 21) rather than widening them.
+
+Worth knowing: **the guard for this was already red on main**, has been since it
+was written, and printed the offending gates every run. That is the third time
+this month a red nobody could see was the actual finding.
+
+### 4. Restore the eleventh sector — a figure on our own home page
+
+**Less prepared than the three above, and I am saying so rather than dressing it
+up.** `restore` is a pure function of `company_sector_labels`; the volume's copy
+is empty, so the repaired pipeline still reports **8 sectors of 11**. The route
+is a union pull then a ~645 MB push through `overwrite_gate`, and I would want
+to verify the precondition read-only first the way the other three were.
+
+The alternative is asking a model to re-derive the labels, which prices at about
+**USD 136**. The weekly job's `--max-cost 20` correctly refuses it.
 
 ---
 
