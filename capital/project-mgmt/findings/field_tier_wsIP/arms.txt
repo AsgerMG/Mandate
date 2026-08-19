@@ -1,10 +1,14 @@
-Traceback (most recent call last):
-  File "/tmp/an.py", line 34, in <module>
-    cmp("on.jsonl","off.jsonl","on(peers)","off(peers)")
-  File "/tmp/an.py", line 9, in cmp
-    A, B = load(a_p), load(b_p)
-           ^^^^^^^^^
-  File "/tmp/an.py", line 4, in load
-    return {r["company"]: r for r in (json.loads(l) for l in open(p))}
-                                                             ^^^^^^^
-FileNotFoundError: [Errno 2] No such file or directory: 'on.jsonl'
+wsIP — paired arm comparisons on the funnel's 897 founders.
+Produced by scripts/_wsip_fieldtier.ts (one tape per arm) + a 4,000-resample
+paired bootstrap. Free, offline, credentials destroyed. 2026-08-19.
+
+             on(peers) vs off(peers)         dRecip +0.02464  95%CI [+0.01663,+0.03337]  EXACT 219-214=+5 (onlyon( 6, onlyoff 1)  rank1 54 vs 28  moved 199  better 183 worse 16
+             on(peers) vs tiebreak           dRecip +0.02463  95%CI [+0.01662,+0.03338]  EXACT 219-214=+5 (onlyon( 6, onlytie 1)  rank1 54 vs 28  moved 199  better 183 worse 16
+             on(peers) vs selective          dRecip +0.00900  95%CI [+0.00427,+0.01416]  EXACT 219-213=+6 (onlyon( 6, onlysel 0)  rank1 54 vs 47  moved 167  better 156 worse 11
+             on(peers) vs weight0.25         dRecip +0.01712  95%CI [+0.01045,+0.02451]  EXACT 219-214=+5 (onlyon( 5, onlywei 0)  rank1 54 vs 34  moved 148  better 141 worse 7
+            on(const3) vs off(const3)        dRecip +0.02362  95%CI [+0.01574,+0.03183]  EXACT 230-209=+21 (onlyon( 24, onlyoff 3)  rank1 40 vs 27  moved 425  better 381 worse 44
+             on(peers) vs on(const3)         dRecip +0.00198  95%CI [-0.00733,+0.01122]  EXACT 219-230=-11 (onlyon( 12, onlyon( 23)  rank1 54 vs 40  moved 498  better 211 worse 287
+
+   on(peers)  rank1  54  rank2  17  rank3  19  rank4  67  rank5  29  rank6  33  absent  32  median(in-table) 17
+  off(peers)  rank1  28  rank2  17  rank3  17  rank4  84  rank5  32  rank6  36  absent  32  median(in-table) 17
+  on(const3)  rank1  40  rank2  33  rank3  42  rank4  59  rank5  29  rank6  27  absent  25  median(in-table) 17
