@@ -2098,6 +2098,70 @@ export const CHANNEL_BACKFILL = (() => {
   return v;
 })();
 
+/** WHERE `usedInField` ENTERS THE ROW ORDER. Shipped behaviour is `on`, and
+ *  every arm below defaults to it, so nothing a founder receives changes until
+ *  someone sets this deliberately.
+ *
+ *  Same shape and same reason as `CHANNEL_BACKFILL` above: read once at module
+ *  scope so two arms cannot differ within a request, and an unrecognised value
+ *  THROWS rather than reading as "off", because a silent default on a
+ *  misspelling is how a flag that never arrived gets reported as "no effect" in
+ *  both arms.
+ *
+ *    on         tier 1 of the comparator, above the entire score. SHIPPED.
+ *    off        the tier is not consulted at all; the score decides.
+ *    tiebreak   demoted BELOW `rowRelevance` -- it separates rows the score
+ *               could not, and never overrules a score difference.
+ *    weight     no hard tier; `FIELD_TIER_WEIGHT` is added to the row's score
+ *               inside `rowRelevance`, so the signal competes with thematic fit
+ *               instead of pre-empting it.
+ *    selective  the hard tier, but only on tables where the flag is not
+ *               near-constant across the candidate rows -- see
+ *               `fieldSignalDegenerate` below. */
+export const FIELD_TIER = (() => {
+  const v = process.env.FIELD_TIER ?? "on";
+  const arms = ["on", "off", "tiebreak", "weight", "selective"];
+  if (!arms.includes(v)) {
+    throw new Error(`unknown FIELD_TIER=${v} (expected: ${arms.join(", ")})`);
+  }
+  return v as "on" | "off" | "tiebreak" | "weight" | "selective";
+})();
+
+/** The bonus `FIELD_TIER=weight` adds to a flagged row's `rowRelevance`.
+ *  `rowRelevance` is a within-pool percentile in [0,1] before the ticket
+ *  multiplier, so this is expressed in the same units: 0.10 is "worth a tenth
+ *  of the pool". Read only when FIELD_TIER === "weight". */
+export const FIELD_TIER_WEIGHT = (() => {
+  const v = Number(process.env.FIELD_TIER_WEIGHT ?? "0.10");
+  if (!Number.isFinite(v) || v < 0 || v > 1) {
+    throw new Error(`unknown FIELD_TIER_WEIGHT=${process.env.FIELD_TIER_WEIGHT} (expected 0..1)`);
+  }
+  return v;
+})();
+
+/** Is the field signal saying anything about THIS table?
+ *
+ *  Stated as a property of the flag's distribution over the candidate rows, not
+ *  as a threshold on any named channel or count of peers. A key that is true on
+ *  every row, or on none, orders nothing -- that much is arithmetic. The case
+ *  this predicate exists for is the one in between and closer to the ends than
+ *  it looks: when the flag is true on MOST rows, promoting them re-orders the
+ *  table almost entirely by channel membership and the score is left to break
+ *  ties inside a block it did not choose. wsIN measured the underlying signal
+ *  at 89.5% against a founder-blind constant's 90.7% on the population where
+ *  its door is open, so a tier that fires broadly is buying a constant's worth
+ *  of information at tier 1's price.
+ *
+ *  `share` is the fraction of candidate rows carrying the flag. Degenerate
+ *  outside (0, MAX]: 0 and 1 are inert by arithmetic, and above MAX the key is
+ *  a channel re-sort wearing a founder's name. */
+export const FIELD_TIER_MAX_SHARE = 0.5;
+export function fieldSignalDegenerate(flagged: number, total: number): boolean {
+  if (total === 0) return true;
+  const share = flagged / total;
+  return share === 0 || share > FIELD_TIER_MAX_SHARE;
+}
+
 /** How the two orthogonal predictors share the ranked pool.
  *
  *  ── The property, and why the shipped value is a statement about the wrong
@@ -3159,7 +3223,14 @@ export function materialiseInstrumentTable(
     // with REGIME@5 unchanged at 89%.
     const base = POOL_BLEND === "pure" ? fit
       : r.instrumentId ? reassigned.get(r.instrumentId) ?? fit : fit;
-    return base * ticket;
+    // FIELD_TIER=weight: the proven-in-field signal as a term in the score
+    // rather than a key above it. Added after the ticket multiplier, not
+    // inside it, because the multiplier is a statement about the fund's award
+    // sizes and this is a statement about the founder's field; multiplying
+    // them would make the bonus worth less on exactly the funds whose ticket
+    // does not match, which is not the judgement being tested.
+    const fieldBonus = FIELD_TIER === "weight" && r.usedInField ? FIELD_TIER_WEIGHT : 0;
+    return base * ticket + fieldBonus;
   };
   // Tier 2 of the row comparator, hoisted out of it so the diagnostic in
   // tableTrace.ts reads THE comparator's own predicate rather than a second
@@ -3169,6 +3240,10 @@ export function materialiseInstrumentTable(
   const fitDemoted = (r: InstrumentRow) =>
     r.fit !== "" && r.fit !== "startup_ready" &&
     !(r.fit === "consortium_institutional" && consortiumOk);
+  // Read off the SELECTIONS, before the sort, so the predicate sees the whole
+  // candidate set exactly once rather than being recomputed per comparison.
+  const fieldDegenerate = fieldSignalDegenerate(
+    selections.filter((s) => s.base.usedInField).length, selections.length);
   const ranked = selections
     .map(({ base, leaf }): InstrumentRow => {
       if (!leaf) {
@@ -3301,15 +3376,36 @@ export function materialiseInstrumentTable(
       } as InstrumentRow;
     })
     .sort((a, b) => {
-      // Proven-in-field first.
+      // Proven-in-field first. `FIELD_TIER` selects where this signal enters;
+      // `on` is shipped and is this tier.
       //
-      // Measured cost of these two tiers, tune split: EXACT@5 51% -> 49%,
-      // REGIME@5 76% -> 73%. Kept, because they encode a product judgement the
-      // recall number cannot see -- a fund proven in the founder's field, and
-      // capital a startup can actually take, belong above a marginally better
-      // thematic match they cannot use. Three points is the price and it is
-      // recorded here so it is a choice rather than an oversight.
-      if (a.usedInField !== b.usedInField) return a.usedInField ? -1 : 1;
+      // ── THE PRICE IN THIS COMMENT WAS NEVER THIS TIER'S ───────────────────
+      // It read: "Measured cost of these two tiers, tune split: EXACT@5 51% ->
+      // 49%, REGIME@5 76% -> 73%. Three points is the price." Both halves are
+      // wrong and the repo already contained the refutation.
+      //
+      // The measurement behind it (32cd36c5) ran on a harness where every
+      // replayed company was `TestCo`, and `matchCompany("TestCo", ...)`
+      // returns matched:false for every country -- so `fieldChannels` was
+      // EMPTY and `usedInField` false on every row of every replay.
+      // THIS TIER NEVER FIRED IN THE RUN THAT PRICED IT. The whole delta
+      // belongs to the tier below, and `project-mgmt/research/pool_to_table.md`
+      // says so in as many words: "The tier cannot cost or gain anything on
+      // this harness... Its production cost is real and remains unmeasured."
+      // That note also re-measured the tier below ALONE at EXACT@5 35% -> 34%
+      // -- a point in the tier's FAVOUR, not three against.
+      //
+      // wsIP measured this tier for the first time, on the funnel's own 897
+      // founders with real corpus matches and real peer draws (FIELD_TIER=off,
+      // `scripts/_wsip_fieldtier.ts`). The result is in the findings; what
+      // belongs at the comparator is the rule that keeps it honest, and it is
+      // `check_field_tier_priced.ts`: a price quoted here must name the arm
+      // that produced it, and no arm may be priced on a run in which it did
+      // not fire.
+      if (FIELD_TIER === "on" ||
+          (FIELD_TIER === "selective" && !fieldDegenerate)) {
+        if (a.usedInField !== b.usedInField) return a.usedInField ? -1 : 1;
+      }
       // Startup-ready capital next, unless the founder is consortium-ready
       // (then consortium/institutional rows aren't artificially demoted).
       const da = fitDemoted(a), db = fitDemoted(b);
@@ -3335,6 +3431,11 @@ export function materialiseInstrumentTable(
       const ra = Math.round(rowRelevance(a) * 1e6);
       const rb = Math.round(rowRelevance(b) * 1e6);
       if (ra !== rb) return rb - ra;
+      // FIELD_TIER=tiebreak: the same signal, but it may only separate rows the
+      // score could not. It never overrules a score difference.
+      if (FIELD_TIER === "tiebreak" && a.usedInField !== b.usedInField) {
+        return a.usedInField ? -1 : 1;
+      }
       const pa = INSTRUMENT_PRIORITY.indexOf(a.channel);
       const pb = INSTRUMENT_PRIORITY.indexOf(b.channel);
       if (pa !== pb) return pa - pb;

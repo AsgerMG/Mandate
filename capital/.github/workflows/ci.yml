@@ -207,6 +207,17 @@ jobs:
       - name: A channel is never told it is impossible
         if: always()
         run: npx tsx scripts/check_channel_prior_complete.ts
+      # A SORT KEY THAT NEVER FIRES HAS NO PRICE. `usedInField` is tier 1 of the
+      # row comparator and carried a measured cost -- EXACT@5 51% -> 49% -- for a
+      # year. The run that produced it replayed every company as `TestCo`, which
+      # matches nothing, so the key was false on every row and never fired; the
+      # delta belonged to the tier below it. Two workstreams reasoned from that
+      # number before wsIP re-measured the tier as WORTH +0.0246 reciprocal rank.
+      # This fails when the tier stops separating, so the next comment like it
+      # cannot outlive the run behind it. Credentials destroyed, committed inputs.
+      - name: A ranking key is priced where it fires
+        if: always()
+        run: npx tsx scripts/check_field_tier_priced.ts
       # Third of the same class, found by the same audit. It DELETES
       # DATABASE_URL on its way past and reads the committed snapshot, so it is
       # hermetic by construction rather than by luck. It holds the stand-in for
