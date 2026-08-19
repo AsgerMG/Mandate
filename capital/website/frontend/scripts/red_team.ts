@@ -11,6 +11,9 @@
  *
  * Run: NO_PG=1 npx tsx scripts/red_team.ts
  */
+import {
+  type HarnessStages, renderStageDeclaration, stageNotOnThisPath, stageRuns,
+} from "../lib/intelligence/stageDeclaration";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
@@ -22,6 +25,27 @@ async function main() {
   const { sanitizeEligibility } = await import("../lib/intelligence/sanitize");
   const { displayInstitutionName } = await import("../lib/intelligence/shortlist");
   const { assessAll } = await import("../lib/intelligence/verdict");
+
+  // ── WHICH REQUEST PATH THIS IS ───────────────────────────────────────────
+  // `computeVerdict`, and that is the whole answer. There are TWO request
+  // paths: the memo route runs `runIntelligence`, which pays for a
+  // web-search-grounded comparable search on every brief; the instant verdict
+  // route runs this one, which is MODEL-FREE BY CONTRACT and has never called
+  // it. So the search is not a stage this run is short of — it is a stage the
+  // path this run reproduces does not have, and saying that is different from
+  // apologising for it. Exhaustive over the request path's stages by the
+  // compiler, so a stage added tomorrow stops this file building.
+  const STAGES: HarnessStages = {
+    discovering: stageNotOnThisPath(
+      "`computeVerdict`, the instant verdict route, which is model-free by contract "
+      + "and never calls `discoverAndResearch` for any founder either"),
+    querying_db: stageRuns(),
+    generating: stageNotOnThisPath(
+      "`computeVerdict`, which publishes a table and no memo — there is no writer on "
+      + "this path for any founder"),
+    done: stageRuns(),
+  };
+  for (const line of renderStageDeclaration("`npm run redteam`", STAGES)) console.log(line);
 
   console.log("\nOut-of-scope cases: what would we have put in front of them?\n");
   for (const c of RED_TEAM) {

@@ -135,6 +135,9 @@ async function main() {
 
   const client = new Anthropic();
   const { computeVerdict, runIntelligence } = await import("../lib/intelligence/pipeline");
+  const {
+    renderStageDeclaration, stageRuns,
+  } = await import("../lib/intelligence/stageDeclaration");
   const { planAdaptiveScreen } = await import("../lib/intelligence/adaptiveRound");
   const { openFieldsForShortlist, openProjectGatesForShortlist } =
     await import("../lib/intelligence/gateReach");
@@ -144,6 +147,16 @@ async function main() {
     code = execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim() +
       (execSync("git status --porcelain", { encoding: "utf8" }).trim() ? "+dirty" : "");
   } catch { /* not a git checkout */ }
+
+  // Both request paths, whole: the instant screen through `computeVerdict` and
+  // the memo through `runIntelligence`, which pays for the comparable search.
+  // Said out loud because "FULL funnel" is a claim, and the one instrument in
+  // this repo that prints the funnel PERCENTAGE -- `npm run stages` -- does not
+  // run that stage. Exhaustive by the compiler over the request path's stages.
+  for (const line of renderStageDeclaration("`npm run funnel`", {
+    discovering: stageRuns(), querying_db: stageRuns(),
+    generating: stageRuns(), done: stageRuns(),
+  })) console.log(line);
 
   console.log(`\nrunning ${queue.length} companies through the FULL funnel\n`);
   const rows: FunnelRow[] = [];

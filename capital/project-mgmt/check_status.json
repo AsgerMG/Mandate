@@ -33,6 +33,7 @@
   "vocabulary contract",
   "a comparator asks the rule's question",
   "one env loader",
+  "a harness declares the stages it does not run",
   "client/server boundary",
   "payload budget",
   "both stores select the same columns",
@@ -128,6 +129,13 @@
    "summary": "PASS — every rendered line spends its budget and ends on a finished phrase, or says that it is cut.",
    "at": "2026-08-18T21:50:24.871Z",
    "ms": 968
+  },
+  "a harness declares the stages it does not run": {
+   "argv": "npx tsx scripts/check_stage_declaration.ts",
+   "code": 0,
+   "summary": "ok — every one of them declares, in its own output, what the request path does that it does not.",
+   "at": "2026-08-19T11:42:40.917Z",
+   "ms": 1227
   },
   "a measured ceiling was raised": {
    "argv": "npx tsx scripts/check_maxtok_headroom.ts",

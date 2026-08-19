@@ -1949,9 +1949,16 @@ export type ProgressEvent =
   | { type: "report"; data: IntelligenceReport }
   | { type: "error"; message: string };
 
+/** THE REQUEST PATH'S OWN STAGES. Every member is emitted by
+ *  `runIntelligence` and rendered to the founder while they wait, and
+ *  `HarnessStages` in stageDeclaration.ts is a Record over exactly this union
+ *  -- so a stage added here is a stage every harness must answer for before it
+ *  builds. `"researching"` used to sit between querying_db and generating: no
+ *  emit site had ever sent it and no consumer had ever read it, so it was a
+ *  stage in the vocabulary and nowhere else, and a harness declaring it absent
+ *  would have been declaring a stage the product does not have. */
 export type PipelineStep =
   | "discovering"
   | "querying_db"
-  | "researching"
   | "generating"
   | "done";
