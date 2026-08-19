@@ -90,6 +90,7 @@ import { doorLabelFor } from "./doorLabel";
 // Python; both now come from the leaf.
 import { isFilter, specField } from "./evidenceTier";
 import { fundsSentence, oneLine, ROW_TITLE_CHARS } from "./schemeText";
+import { cutTitles } from "./rowTitleCut";
 import { FIELD_ENUM_HINTS, type EligibilityAnswers } from "./types";
 import { declaw, fence } from "./untrusted";
 import { assessAll, type VerdictStatus } from "./verdict";
@@ -491,12 +492,17 @@ export function separatingDemands(
 /** The candidate lines, from the same corpus rows the ranker will read. */
 export function askCandidates(rankedIds: string[], window = ASK_WINDOW): AskCandidate[] {
   const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
+  const inWindow = rankedIds.slice(0, window).map((id) => byId.get(id));
+  // Cut against each other, not one at a time: a question that names two
+  // candidates by one string is a question the founder cannot answer. See
+  // rowTitleCut.ts — the budget is the same, the part it is spent on is not.
+  const titles = cutTitles(inWindow.map((inst) => (inst ? doorLabelFor(inst) : "")), ROW_TITLE_CHARS);
   return rankedIds.slice(0, window).flatMap((id, i) => {
     const inst = byId.get(id);
     if (!inst) return [];
     return [{
       instrumentId: id,
-      name: oneLine(doorLabelFor(inst), ROW_TITLE_CHARS),
+      name: titles[i],
       country: inst.country,
       capitalType: inst.capitalType,
       funds: fundsSentence(inst.description),

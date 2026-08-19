@@ -147,6 +147,7 @@ import { retrieveDemands } from "./demandRetrieval";
 import { baseRateSentence } from "./poolRecall";
 import { regionNameFor } from "./regions.generated";
 import { oneLine, ROW_TITLE_CHARS } from "./schemeText";
+import { cutTitles } from "./rowTitleCut";
 import {
   ANSWER_LABEL, ANSWER_USE, FIELD_VALUE_DOMAIN,
   type EligibilityAnswers, type InstrumentRow, type ProjectAnswer,
@@ -1456,6 +1457,12 @@ export function schemeSiblings(rows: InstrumentRow[]): (i: number) => string {
 function renderRow(
   i: number, r: InstrumentRow, reqs: string[], siblings: string, peers?: Map<string, number>,
   assessments?: Map<string, InstrumentAssessment>,
+  /** This row's title as cut ALONGSIDE the rest of the menu. Passed in rather
+   *  than computed here because the cut is a fact about the whole menu: whether
+   *  a character may be given up depends on which other rows the model is
+   *  reading. Absent, the row falls back to the plain cut, which is what a
+   *  caller holding one row can honestly say. */
+  title?: string,
 ): string {
   const facts: string[] = [];
   if (r.administeringBody) facts.push(oneLine(r.administeringBody, 70));
@@ -1512,7 +1519,7 @@ function renderRow(
   if (pr) facts.push(`#${pr} most-won by comparable companies`);
   const verdict = r.instrumentId ? verdictLine(assessments?.get(r.instrumentId)) : "";
   return [
-    `[${i}] ${oneLine(r.instrument, ROW_TITLE_CHARS)}`,
+    `[${i}] ${title ?? oneLine(r.instrument, ROW_TITLE_CHARS)}`,
     `     ${facts.join(" · ")}`,
     verdict ? `     ${verdict}` : "",
     // Who else on THIS menu is the same notified regime. See `schemeSiblings`:
@@ -1906,8 +1913,16 @@ export function buildPrompt(
 ): string {
   const reqs = distinctive(head);
   const sibling = schemeSiblings(head);
+  // ── THE TITLES ARE CUT AGAINST EACH OTHER, NOT ONE AT A TIME (wsID) ──────
+  // `oneLine` per row takes the first 120 characters, and on the legal titles
+  // this corpus is full of that is the part two funds SHARE. Four Catalan loan
+  // lines notified under four different aid regulations reached this menu as
+  // one string four times; so did a Basque programme's "Área 1" and "Área 2".
+  // The model was not choosing badly between them, it was choosing between
+  // identical strings. Same budget, spent on the part that differs.
+  const titles = cutTitles(head.map((r) => r.instrument), ROW_TITLE_CHARS);
   const menu = head.map((r, i) => {
-    const row = renderRow(i, r, reqs(r), sibling(i), peers, ctx.assessments);
+    const row = renderRow(i, r, reqs(r), sibling(i), peers, ctx.assessments, titles[i]);
     const ev = r.instrumentId ? evidence?.get(r.instrumentId) : undefined;
     return ev?.length
       ? `${row}\n     you asked about this one — its own rules say: ${ev.map((e) => oneLine(e, 200)).join(" | ")}`

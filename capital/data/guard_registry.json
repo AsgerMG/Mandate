@@ -553,6 +553,10 @@
    "tier": "founder",
    "protects": "Twelve rows named after the loader's own partition keys were in founders' pools; Poland's ENTIRE pool was eight of them."
   },
+  "a cut title still tells two funds apart": {
+   "tier": "founder",
+   "protects": "A founder is handed a table with a real fund missing from it. Two funds whose names differ only past character 120 render as one string, so the name collapse demotes one of them out of the table and out of the pool the writer reads -- and neither the founder nor the model has anything left to prefer the other by. Measured on 300 recall founders: the old per-row cut merged a distinct fund for 47.3% of them, and 36.0% gain at least one of those rows back in the 40-row menu."
+  },
   "a displayed name is not an id": {
    "tier": "founder",
    "protects": "A real founder read the row label 'rnd sa 111728 ministere de l economie et des finances'."

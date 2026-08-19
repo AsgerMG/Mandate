@@ -28,6 +28,7 @@ import { instrumentServesCapital, instrumentServesCountry } from "./capitalPrefe
 import { semanticSeparation, rankerUsed } from "./semantic";
 import { nameableBody, SEGMENT_JOIN } from "./rowIdentity";
 import { doorLabel } from "./doorLabel";
+import { cutTitlesApart } from "./rowTitleCut";
 import { TICKET_BANDS, bandFloorEur } from "./types";
 import type { EligibilityAnswers } from "./types";
 import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
@@ -1410,8 +1411,8 @@ function rowDisplayLabel(r: InstrumentRow): string {
 }
 
 /**
- * The label a row renders AS FAR AS ANYONE CAN READ IT — and why the collapse
- * keys on this rather than on `rowDisplayLabel` itself.
+ * The label each row renders AS FAR AS ANYONE CAN READ IT — for a whole table
+ * at once, because the cut is a question about a GROUP and never about one row.
  *
  * ── The property, with its test for the unseen case ───────────────────────
  * NO TWO ROWS A FOUNDER IS SHOWN ARE INDISTINGUISHABLE TO A READER. The test
@@ -1437,6 +1438,25 @@ function rowDisplayLabel(r: InstrumentRow): string {
  * leaves. A key that scores zero on a defect that is visibly there is not a
  * strict key, it is a blind one. Keyed on the rendered label: 0 and 0.
  *
+ * ── AND WHY IT TAKES THE WHOLE TABLE (wsID) ───────────────────────────────
+ * Keying the collapse on the cut string was right and it was only half the
+ * repair, because it left the two sides asking DIFFERENT QUESTIONS.
+ * `distinguishRowNames` groups by the RAW label, so a pair whose titles differ
+ * only past character 120 is not a collision to it — there is nothing to
+ * resolve, two distinct names went in — while to this key the same pair is one
+ * string, and the collapse demotes one of them out of the founder's table.
+ * `nameCollision.ts`'s own contract is that the disambiguator and the collapse
+ * use ONE label; a per-row cut cannot honour it, because whether a character
+ * can be given up depends on who else is on the page.
+ *
+ * Measured over the corpus, `scripts/_wsid_collide.ts`: 113 of 760 publishable
+ * leaves share a rendered title with a leaf a founder in the same country could
+ * be shown beside it, and on 64 of them the full names DIFFER — four Catalan
+ * loan lines under four different aid regulations, a Basque programme's "Área
+ * 1" against its "Área 2". Those are real second doors and the cut was deleting
+ * them. `cutTitlesApart` spends the same budget on the part that differs, so
+ * they arrive here as the distinct strings they are.
+ *
  * ── Case ─────────────────────────────────────────────────────────────────
  * Folded, because two titles differing only in capitalisation are not two
  * options to a reader, and because `sameTitlePickCount` — the shipped
@@ -1447,8 +1467,15 @@ function rowDisplayLabel(r: InstrumentRow): string {
  * has to be the cut `renderRow` actually makes, or this is a question about a
  * string no one is shown.
  */
-export function rowRenderedLabel(r: InstrumentRow): string {
-  return oneLine(rowDisplayLabel(r), ROW_TITLE_CHARS).toLowerCase();
+export function rowRenderedLabels(rows: readonly InstrumentRow[]): {
+  labelOf: (r: InstrumentRow) => string;
+  /** Sets of DISTINCT full labels that still render alike. Nothing in this
+   *  repo may separate them, so a caller that cares reports them. */
+  merged: string[][];
+} {
+  const { titles, merged } = cutTitlesApart(rows.map(rowDisplayLabel), ROW_TITLE_CHARS);
+  const by = new Map(rows.map((r, i) => [r, titles[i].toLowerCase()] as const));
+  return { labelOf: (r) => by.get(r) ?? "", merged };
 }
 
 /**
@@ -3367,7 +3394,23 @@ export function materialiseInstrumentTable(
   // two facts cancel. The raw label collided zero times across 36 founders
   // while the rendered one collided 18 times on the menu and 6 times in the
   // published seven, so the raw key was not strict, it was blind.
-  const collision = resolveNameCollisions(ranked, rowRenderedLabel, preferBetterEvidencedRow);
+  // ONE label, built for the whole table at once. Per-row it could not be one:
+  // whether a character may be given up depends on which other rows are on the
+  // page, which is why `distinguishRowNames` above and this collapse could ask
+  // different questions of the same pair for as long as the cut was blind.
+  const { labelOf, merged } = rowRenderedLabels(ranked);
+  const collision = resolveNameCollisions(ranked, labelOf, preferBetterEvidencedRow);
+  // What no cut could separate. After wsID a collapse should only ever fire on
+  // rows carrying the SAME name — a corpus defect, six Innovasjon Norge leaves
+  // all called "Innovasjon Norge" — so a non-empty `merged` is the other thing:
+  // two funds with different names that no budget could tell apart. It is
+  // recorded rather than silently resolved, because picking one of two funds a
+  // reader cannot distinguish is the failure this whole path exists to avoid.
+  for (const group of merged) {
+    log?.record("SEL-DUPE-NAME", "unseparable",
+      `${group.length} rows carry DIFFERENT names that no ${ROW_TITLE_CHARS}-character `
+      + `cut can tell apart: ${group.map((g) => JSON.stringify(g.slice(0, 160))).join(" vs ")}`);
+  }
   for (const { row, kept, label: name } of collision.collisions) {
     // The NAME they collided on, and WHICH row survived. Without both, the log
     // says a collision happened and nothing about whether the two rows were
