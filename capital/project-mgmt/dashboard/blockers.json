@@ -10,14 +10,14 @@
     {
       "who": "you",
       "what": "Six Norwegian entries are categories, not funds",
-      "why": "Innovasjon Norge publishes its money under broad category headings, and underneath those the actual programmes a founder applies to. We took the headings. So a Norwegian founder is offered one row that stands for six things, and which of the six they get is decided by an accident of how well each is encoded — the two largest funds in the country are among the ones hidden. Naming them properly gains a seat in the published six for 155 founders, and for twelve it is the fund they actually won.",
+      "why": "Innovasjon Norge publishes its money under broad category headings, and underneath those the actual programmes a founder applies to. We took the headings. So a Norwegian founder is offered one row standing for six things, and which of the six they get is decided by an accident of how well each is encoded — the two largest funds in the country are among the ones hidden. Naming them properly gains a seat in the published six for 155 founders, and for twelve it is the fund they actually won.",
       "ask": "Three ways to go: name the categories honestly, re-split onto the real programmes, or collapse to a single row. I lean toward re-splitting. It is your call because it changes what a whole country is offered."
     },
     {
       "who": "us",
-      "what": "Our own test cannot see the changes we are making",
-      "why": "We paid to run the same test twice, a week apart, on the same 78 founders. The answer changed on ten of them. That is the test disagreeing with itself, not the product moving — so a full run would cost about thirty euros to measure its own noise. You have already called this: fix the instrument before spending again.",
-      "ask": "Nothing yet. I will bring you what it takes to make the measurement steady, and what that costs."
+      "what": "We were grading the AI with a ruler too blunt to see it",
+      "why": "We scored the AI's ordering as a yes-or-no: is the right fund in the six. On that measure it looked like a coin flip and I told you twice it did nothing. Scored by WHERE the fund lands, both paid runs are positive and stay positive when you drop any one country's funds. Two things follow. Three points of accuracy cannot be bought on the yes-or-no measure at any price, so a full run priced in that currency was never going to answer anything. And there is now one real candidate: publish the AI's order only when its own first pick differs from ours, worth about five points, confirmable for free alongside whatever we buy next.",
+      "ask": "Nothing. This was ours to get wrong and ours to fix."
     }
   ]
 }
