@@ -14,7 +14,7 @@
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 
 loadEnvLocal();
-requireCredentials("wsid_collide", ["DATABASE_URL"]);
+requireCredentials("wsid_collide", ["DATABASE_URL", "VOYAGE_KEY"]);
 
 import {
   hydrateDbInstruments, publishableInstruments, requireLiveCorpus,

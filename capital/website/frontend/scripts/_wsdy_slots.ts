@@ -43,6 +43,10 @@
 // 26 of 78 founders short of seats becomes 0 of 78. This file is kept so the
 // withdrawn numbers can still be reproduced; do not quote them.
 //
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+loadEnvLocal();
+requireCredentials("_wsdy_slots", ["DATABASE_URL", "VOYAGE_KEY"]);
+
 import { readFileSync, existsSync } from "fs";
 import path from "path";
 

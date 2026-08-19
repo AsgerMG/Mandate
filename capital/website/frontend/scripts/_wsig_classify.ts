@@ -4,9 +4,10 @@
  *  B lie entirely under B's lower edge <= T). It is VACUOUS iff B is the lowest
  *  band: then nobody is excluded and the "fix" only hides the inertness. */
 import { Client } from "pg";
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 import { BAND_ORDERS } from "../lib/intelligence/vocabulary";
 loadEnvLocal();
+requireCredentials("_wsig_classify", ["DATABASE_URL"]);
 // Lower edge of each band, in the field's own natural unit (EUR, %, headcount).
 const EDGES: Record<string, number[]> = {
   turnoverBand:    [0, 2e6, 1e7, 5e7],

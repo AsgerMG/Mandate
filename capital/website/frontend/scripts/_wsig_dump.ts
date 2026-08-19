@@ -1,7 +1,8 @@
 import { Client } from "pg";
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 import { writeFileSync } from "fs";
 loadEnvLocal();
+requireCredentials("_wsig_dump", ["DATABASE_URL"]);
 const c = new Client({ connectionString: process.env.DATABASE_URL });
 const J = `nullif(value_spec,'')::jsonb`;
 (async () => {

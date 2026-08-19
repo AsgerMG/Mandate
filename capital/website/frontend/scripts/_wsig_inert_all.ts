@@ -1,11 +1,12 @@
 import { Client } from "pg";
-import { loadEnvLocal } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
 import { evaluateSpec, type ValueSpec } from "../lib/intelligence/comparator";
 import { VOCABULARY } from "../lib/intelligence/vocabulary";
 import { sanitizeEligibility } from "../lib/intelligence/sanitize";
 import { FIELD_ENUM_HINTS, FIELD_REACH } from "../lib/intelligence/types";
 import { REGIONS_BY_COUNTRY } from "../lib/intelligence/regions.generated";
 loadEnvLocal();
+requireCredentials("_wsig_inert_all", ["DATABASE_URL"]);
 const REGION_FIELDS: Record<string,string[]> = { region: Object.values(REGIONS_BY_COUNTRY).flatMap(rs=>rs.map(r=>r.id)) };
 const isMulti=(f:string)=>Boolean(VOCABULARY[f]?.multi);
 function declaredValues(f:string){const v=VOCABULARY[f];if(v?.values.length)return [...v.values];if(f in REGION_FIELDS)return REGION_FIELDS[f];const h=FIELD_ENUM_HINTS[f];if(h?.options?.length)return h.options.map((o:any)=>o.value);return [];}
