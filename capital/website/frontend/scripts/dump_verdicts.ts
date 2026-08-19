@@ -49,7 +49,6 @@ async function main() {
   const out: Record<string, unknown> = {};
   for (const a of A) {
     const v = await computeVerdict("TestCo", a.country, archetypeAnswers(a) as never, {
-      targetMarkets: [a.country],
       capitalSought: ["grant", "loan"],
       description: a.description,
     } as never);

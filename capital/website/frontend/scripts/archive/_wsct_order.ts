@@ -155,13 +155,13 @@ async function main() {
       region: a.region,
     } as never;
     const description = t.description || t.selfDescription || undefined;
-    const opts = { targetMarkets: [t.country], capitalSought: a.capitalSought, description };
+    const opts = { capitalSought: a.capitalSought, description };
 
     const semantic = await semanticFundMatch(description ?? "");
     const log = new ExclusionLog();
     const hydrated = await buildInstrumentTableHydrated({
       fieldChannels: new Set<string>(),
-      founderCountries: founderCountryList(t.country, opts.targetMarkets, [t.country]),
+      founderCountries: founderCountryList(t.country, [t.country]),
       capitalSought: a.capitalSought,
       description,
       semantic,
@@ -175,7 +175,7 @@ async function main() {
     const eligibilityScreen = evaluateEligibility(eligibility, poolIds.slice(0, DISPLAY_CAP));
 
     // The founder's own countries, by the product's own derivation.
-    const mine = new Set(founderCountryList(t.country, opts.targetMarkets, [t.country])
+    const mine = new Set(founderCountryList(t.country, [t.country])
       .map((c) => toIso2(c).toUpperCase()).filter(Boolean));
     const offCountry = (id?: string) => {
       const c = (id ? instById().get(id)?.country : "")?.toUpperCase() ?? "";

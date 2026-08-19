@@ -11,7 +11,6 @@ import {
   withIncorporationCountry,
   sanitizeProfileSignal,
   sanitizeProjectAnswers,
-  sanitizeTargetMarkets,
 } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest, ProgressEvent } from "@/lib/intelligence/types";
 
@@ -104,11 +103,20 @@ export async function POST(request: NextRequest) {
         const corpus = instById();
         const { eur, calls } = await withCostTracking(async () => runIntelligence(
           {
+            // ── THREE READS REMOVED (wsIK) ───────────────────────────────
+            // `body.sector`, `body.companyType` and `body.targetMarkets` were
+            // read here and `basePayload()` sends none of them, so all three
+            // were `undefined` on every request this product has ever served.
+            // A field only a harness can fill is a field the benches can move
+            // and the founder cannot, which is the shape of every instrument
+            // defect this week. `sector` already reaches the writer inside
+            // `eligibility` (check_answer_in_prompt proves it); `companyType`
+            // is resolved from the profile signal inside `runIntelligence`;
+            // `targetMarkets` is gone from the request entirely — see
+            // IntelligenceRequest and founderCountryList.
             company: body.company.trim(),
-            sector: body.sector?.trim() || undefined,
             country: body.country?.trim() || undefined,
             description: sanitizeFreeText(body.description),
-            companyType: body.companyType?.trim() || undefined,
             capitalSought: Array.isArray(body.capitalSought)
               ? body.capitalSought.filter((v) => typeof v === "string")
               : undefined,
@@ -118,7 +126,6 @@ export async function POST(request: NextRequest) {
             // `eligibility` (the fixed-answer half, merged) and `projectAnswers`
             // (the prose half, with its fund and verbatim requirement). See
             // IntelligenceRequest.
-            targetMarkets: sanitizeTargetMarkets(body.targetMarkets),
             eligibility: withIncorporationCountry(
               sanitizeEligibility(body.eligibility), body.country?.trim()),
             // The same answers as they stood before the follow-up screen, run

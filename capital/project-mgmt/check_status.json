@@ -62,6 +62,7 @@
   "recall set does not leak",
   "request path cannot reach the answer",
   "harness answers as the founder",
+  "a route reads only what a founder can send",
   "peer prior canary",
   "quotations match documents",
   "dependency audit",
@@ -141,6 +142,13 @@
    "summary": "check_red_debt: FAILED — 1 problem(s) above.",
    "at": "2026-08-18T21:50:24.871Z",
    "ms": 1140
+  },
+  "a route reads only what a founder can send": {
+   "argv": "npx tsx scripts/check_request_surface.ts",
+   "code": 0,
+   "summary": "check_request_surface: ok — 4 route(s) read nothing panel.tsx cannot send them, 78 request literal(s) across 481 source file(s) name only sendable fields, over 10 IntelligenceRequest field(s) and 10 sendable key(s).",
+   "at": "2026-08-19T10:47:44.224Z",
+   "ms": 1388
   },
   "a row is named by something outside its id": {
    "argv": "npx tsx scripts/check_name_evidence.ts",

@@ -215,11 +215,6 @@ export function withIncorporationCountry(
   return { ...(elig ?? {}), entityCountries: [c, ...existing] };
 }
 
-/** Whitelist a raw request body's `targetMarkets` field: free-text country names, length- and count-capped. */
-export function sanitizeTargetMarkets(raw: unknown): string[] | undefined {
-  return pickStringList(raw);
-}
-
 /** Whitelist a raw request body's `capitalSought` field against CAPITAL_OPTIONS. */
 export function sanitizeCapitalSought(raw: unknown): string[] | undefined {
   return pickEnumList(raw, CAPITAL_TYPE_VALUES);

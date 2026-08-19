@@ -47,7 +47,7 @@ async function main() {
       borrowerModel: "operating", ticketBand: "b500k_2m5", consortium: "yes",
       useOfFunds: ["industrial_research", "experimental_development"],
     } as never, {
-      targetMarkets: [country], capitalSought,
+      capitalSought,
       description: "We build software for industrial automation.", log,
     } as never);
     const ids = new Set(v.candidateInstrumentIds ?? []);

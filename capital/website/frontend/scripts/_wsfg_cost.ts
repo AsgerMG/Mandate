@@ -94,7 +94,7 @@ async function main() {
     const log = new ExclusionLog();
     const hydrated = await buildInstrumentTableHydrated({
       fieldChannels: new Set<string>(),
-      founderCountries: founderCountryList(country, undefined, eligibility.entityCountries),
+      founderCountries: founderCountryList(country, eligibility.entityCountries),
       capitalSought: [],
       description: DESCRIPTION,
       semantic,

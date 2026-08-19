@@ -893,12 +893,33 @@ export const LARGE_SCALE_MIN_EUR = 15_000_000;
 export const opensLargeScaleLane = (ticketBand?: string): boolean =>
   ticketBand ? (bandFloorEur(ticketBand) ?? 0) >= LARGE_SCALE_MIN_EUR : false;
 
-/** Which countries' national instruments should be in play: explicit
- *  targetMarkets (where the founder wants to RAISE) wins when given, else
- *  HQ country + wherever an entity already exists. */
-export function founderCountryList(country?: string, targetMarkets?: string[], entityCountries?: string[]): string[] {
-  const explicit = (targetMarkets ?? []).filter(Boolean);
-  if (explicit.length) return explicit;
+/**
+ * Which countries' national instruments should be in play: the HQ country plus
+ * wherever an entity already exists.
+ *
+ * ── The `targetMarkets` override, REMOVED (wsIK) ───────────────────────────
+ * This took a third argument, "where the founder wants to RAISE", and returned
+ * it INSTEAD of the country union whenever it was non-empty. No founder could
+ * ever populate it: `basePayload()` in panel.tsx does not send `targetMarkets`
+ * and the first screen has no control for it, so `sanitizeTargetMarkets` read
+ * `undefined` on every real request the product has ever served. Only a
+ * harness could reach it, and forty-odd of them did — `check_memo_table` among
+ * them, which passed the founder's own country as their target market.
+ *
+ * Removing it is byte-identical on every population this repo measures on:
+ * the explicit list won only when non-empty, every harness passed the
+ * founder's own country, and `withIncorporationCountry` puts that same country
+ * first in `entityCountries` — so both branches returned the same array.
+ * Measured, not argued: 7,095 of 7,095 rows of the shipped recall set, plus
+ * all 12 bench companies and all 12 archetypes. Zero differences.
+ *
+ * If "where do you want to raise" is ever asked, it must not come back as this
+ * function's override. Returning the explicit list DELETED the founder's home
+ * country from the list of countries whose funds they may see, so an Irish
+ * founder who ticked "Germany" would have lost every Irish instrument. A union
+ * is the shape that question wants, and it is `entityCountries`' shape already.
+ */
+export function founderCountryList(country?: string, entityCountries?: string[]): string[] {
   return [...new Set([country, ...(entityCountries ?? [])].filter((c): c is string => Boolean(c)))];
 }
 

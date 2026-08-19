@@ -157,7 +157,7 @@ async function main() {
       region: a.region,
     } as never;
     const opts = {
-      targetMarkets: [t.country], capitalSought: a.capitalSought,
+      capitalSought: a.capitalSought,
       description: t.description || undefined,
     };
 

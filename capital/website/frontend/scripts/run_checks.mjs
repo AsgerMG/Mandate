@@ -328,6 +328,13 @@ const CHECKS = [
   // `usedInField` — tier 1 of the row sort — came to be false on every row of
   // every EXACT@5 this repo has published. Hermetic, sub-second, no database.
   ["harness answers as the founder", ["npx", "tsx", "scripts/check_harness_intake.ts"]],
+  // The same question one level up, and they are not the same question: that
+  // one asks whether a harness answered the intake FOR the founder, this one
+  // whether the question is answerable by a founder at all. /api/intelligence
+  // read three fields `basePayload()` has never sent, so only a bench could
+  // fill them -- and the benches did.
+  ["a route reads only what a founder can send",
+    ["npx", "tsx", "scripts/check_request_surface.ts"]],
   // Hermetic, sub-second, and it reads the same answer key the recall floor
   // grades on. It sits HERE rather than beside the floor because it is the
   // cheap half of the same question: the floor needs credentials, takes three

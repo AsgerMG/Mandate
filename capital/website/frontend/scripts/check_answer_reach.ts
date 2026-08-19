@@ -335,7 +335,7 @@ async function main() {
       // that the country answer changes nothing. targetMarkets is left empty
       // for the same reason: it would re-add the country under test.
       founderCountries: founderCountryList(
-        answers?.entityCountries?.[0] ?? p.country, [], answers?.entityCountries),
+        answers?.entityCountries?.[0] ?? p.country, answers?.entityCountries),
       capitalSought: [...p.capitalSought],
       description: p.description,
       semantic: sem,

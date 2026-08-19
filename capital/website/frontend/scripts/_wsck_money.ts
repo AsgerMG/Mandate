@@ -85,7 +85,7 @@ async function main() {
         borrowerModel: "operating", ticketBand, consortium: "yes",
         useOfFunds: ["industrial_research", "experimental_development"],
       } as never, {
-        targetMarkets: [t.country], capitalSought: CONSTANT_ANSWERS.capitalSought,
+        capitalSought: CONSTANT_ANSWERS.capitalSought,
         description: t.description || t.selfDescription || undefined,
       } as never);
       return ((v.instrumentTable ?? []).slice(0, 5)

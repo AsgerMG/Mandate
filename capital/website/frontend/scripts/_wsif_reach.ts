@@ -118,7 +118,7 @@ async function servedRows(t: RecallRow, policy: FounderPolicy): Promise<Served> 
   const table = await buildInstrumentTableHydrated({
     fieldChannels: new Set<string>(dbPeers.flatMap((r) => r.channels)),
     founderCountries: founderCountryList(
-      f.country, (f.opts.targetMarkets ?? []) as string[],
+      f.country,
       (f.eligibility.entityCountries ?? []) as string[]),
     capitalSought: (f.opts.capitalSought ?? []) as string[],
     description: f.opts.description ?? "",
@@ -134,7 +134,7 @@ async function servedRows(t: RecallRow, policy: FounderPolicy): Promise<Served> 
     instrumentTable: pool,
     req: {
       company: f.company, country: f.country, description: f.opts.description ?? "",
-      capitalSought: f.opts.capitalSought, targetMarkets: f.opts.targetMarkets,
+      capitalSought: f.opts.capitalSought,
       eligibility: f.eligibility,
     } as never,
     records: [], dbPeers,

@@ -205,7 +205,7 @@ async function main() {
   // ── Round two, exactly as the intake route runs it ───────────────────────
   const req0 = {
     company: f.company, country: f.country, description,
-    capitalSought: f.opts.capitalSought, targetMarkets: f.opts.targetMarkets,
+    capitalSought: f.opts.capitalSought,
     eligibility: f.eligibility,
   };
   const openFields = openFieldsForShortlist(candidateIds, f.eligibility as never);
@@ -282,7 +282,7 @@ async function main() {
     // What `_wsdq_run.ts` hands to `runIntelligence`, byte for byte.
     request: {
       company: f.company, country: f.country, description,
-      capitalSought: f.opts.capitalSought, targetMarkets: f.opts.targetMarkets,
+      capitalSought: f.opts.capitalSought,
       eligibility: merged, projectAnswers,
       ...(profileSignal ? { profileSignal } : {}),
     },

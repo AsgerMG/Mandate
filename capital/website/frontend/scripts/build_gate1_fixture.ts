@@ -64,7 +64,7 @@ async function main() {
       useOfFunds: ["industrial_research", "experimental_development"],
     };
     const v: any = await computeVerdict("TestCo", t.country, el, {
-      targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+      capitalSought: ["grant", "loan"],
       description: t.description || undefined,
     } as never);
     const ordered: string[] = (v.instrumentTable ?? []).map((r: any) => r.instrumentId).filter(Boolean);

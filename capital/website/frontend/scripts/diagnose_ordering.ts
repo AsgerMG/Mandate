@@ -93,7 +93,7 @@ async function main() {
       region: undefined,
     };
     const v = await computeVerdict("TestCo", t.country, eligibility as never, {
-      targetMarkets: [t.country], capitalSought: ["grant", "loan"], description,
+      capitalSought: ["grant", "loan"], description,
     } as never);
     const order: string[] = v.candidateInstrumentIds ?? [];
     const at = order.indexOf(t.instrument);

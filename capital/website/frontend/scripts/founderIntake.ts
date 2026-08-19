@@ -83,7 +83,9 @@ export type IntakeField = keyof EligibilityAnswers;
  *  `FIELD_REACH` is keyed on `keyof EligibilityAnswers`, so no predicate built
  *  on it can say anything about a `computeVerdict` OPTION. `targetMarkets` was
  *  exactly that blind spot: sent by this resolver on every replayed row and by
- *  `basePayload()` on none, for as long as the resolver has existed.
+ *  `basePayload()` on none, for as long as the resolver has existed. It is now
+ *  gone from the product altogether (wsIK), and this rule is what stops the
+ *  next one — it names no field, so a knob added tomorrow is in scope.
  *
  *      A replayed founder's REQUEST may carry only what the panel's own
  *      payload can carry.
@@ -469,7 +471,6 @@ export interface ReplayedFounder {
   country: string;
   eligibility: EligibilityAnswers;
   opts: {
-    targetMarkets: string[];
     capitalSought: string[];
     description?: string;
     ownHistory: OwnHistoryMode;
@@ -581,28 +582,15 @@ export function founderIntake(r: RecallRow, p: FounderPolicy): ReplayedFounder {
     country: r.country,
     eligibility: draft,
     opts: {
-      // ── THE SECOND FIELD PRODUCTION NEVER POPULATES ──────────────────────
-      // `basePayload()` in panel.tsx sends company, country, description,
-      // capitalSought, eligibility, profileSignal and projectAnswers. It does
-      // not send `targetMarkets`, so `sanitizeTargetMarkets` reads undefined on
-      // every real request — and this resolver sent the founder's own country
-      // on every replayed one. Same class as the staged field above, and NOT
-      // caught by the rule that removed it: `targetMarkets` is a computeVerdict
-      // OPTION, not a key of `EligibilityAnswers`, so `FIELD_REACH` has nothing
-      // to say about it and no predicate keyed on that Record ever will.
-      //
-      // Two effects, and only one of them was inert. `founderCountryList`
-      // returns the explicit list when it is given one and the country union
-      // otherwise; for a founder whose only entity country is their own those
-      // are the same list, measured identical on all 7,095 rows of the shipped
-      // set, so nothing about country routing moves. The other effect was live:
-      // `eligibilityContext` and `knownFacts` put "Target markets for public
-      // capital: X" into the model's context, and no real founder's request can
-      // produce that line — so every model arm this repo has run read a fact
-      // about the founder that the product cannot state.
-      //
-      // `[]` is the production value, not an omission.
-      targetMarkets: [],
+      // ── THE SECOND FIELD PRODUCTION NEVER POPULATED, NOW DELETED ─────────
+      // This sent `targetMarkets: [the founder's own country]` on every
+      // replayed row while `basePayload()` sent it on none. wsGP set it to the
+      // production value `[]`; wsIK removed the field from
+      // `IntelligenceRequest`, from all three routes and from
+      // `founderCountryList`, so there is no longer anything to set. The
+      // measurement that justified it is in shortlist.ts: 7,095 of 7,095 rows
+      // identical either way, and a model-context line no request could
+      // produce. The rule below is what generalises it.
       // ── The pinned filter, removed ────────────────────────────────────────
       // `[]` is not "no answer supplied by accident": `instrumentServesCapital`
       // returns true on an empty preference by design, so it is the NEUTRAL

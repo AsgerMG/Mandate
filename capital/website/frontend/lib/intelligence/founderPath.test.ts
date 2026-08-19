@@ -126,24 +126,20 @@ const OPEN_DEFECTS: Record<string, OpenDefect> = {
   // fund, or declares itself ungrounded and is stripped of anything that could
   // attribute it to one. The assertion below is the proof, and it is left in
   // place unregistered so a regression is a failure rather than a new entry.
-  "every field the memo route reads is a field the panel can send": {
-    detail:
-      "/api/intelligence reads `body.sector`, `body.companyType` and " +
-      "`body.targetMarkets`, and `basePayload()` sends none of the three. On " +
-      "every real request all three are undefined, so `req.sector` never " +
-      "renders its prompt line and `founderCountryList(country, targetMarkets, " +
-      "entityCountries)` never receives a target market. Each omission is " +
-      "individually defensible — sector rides inside `eligibility`, companyType " +
-      "is inferred, targetMarkets was deliberately dropped from screen one — " +
-      "but nothing says so and nothing stops a harness supplying them. " +
-      "`check_memo_table` passes `founderCountryList(c.country, [c.country], " +
-      "[c.country])`, so every bench number in this repo is measured on a " +
-      "country list a founder's own request cannot produce. That is " +
-      "`check_harness_intake`'s property one level up: not whether the harness " +
-      "answered for the founder, but whether the question is answerable by a " +
-      "founder at all.",
-    review: "2026-09-30",
-  },
+  // "every field the memo route reads is a field the panel can send" was here,
+  // and it is FIXED (wsIK). /api/intelligence read `body.sector`,
+  // `body.companyType` and `body.targetMarkets` and `basePayload()` sent none
+  // of the three, so all three were `undefined` on every request served and
+  // only a harness could fill them — and forty-odd did. All three reads are
+  // gone from all three routes, `sector` and `targetMarkets` are gone from
+  // `IntelligenceRequest` (`eligibility.sector` is the founder's real answer
+  // and reaches every model-facing block already; `targetMarkets` changed
+  // nothing on 7,095 of 7,095 recall rows), and `companyType` is now resolved
+  // inside `runIntelligence` from the profile signal rather than accepted from
+  // a caller. The assertion below is generalised from the memo route to EVERY
+  // route and left unregistered, so a regression is a failure rather than a new
+  // entry — and `scripts/check_request_surface.ts` is the same property in the
+  // build, where it also judges the harnesses.
   "one field is reconstructed the same way by every route": {
     detail:
       "`capitalSought` is whitelisted against CAPITAL_OPTIONS by " +
@@ -527,16 +523,37 @@ describe("the three routes agree about the request", () => {
 });
 
 describe("a field a route reads is a field a founder can supply", () => {
-  it("the memo route reads nothing the panel cannot send", async () => {
+  /**
+   * Asserted against the body THIS RUN put on the wire, route by route, rather
+   * than against a list of keys.
+   *
+   * Every route, not just the memo one: the intake route read the same three
+   * unsendable fields and the register named only `/api/intelligence`, so a
+   * guard written to the register would have left two thirds of the defect in
+   * place. The routes come from the driver's own `wire`, so a fifth call the
+   * panel starts making is judged here without an edit.
+   */
+  it("no route reads a field this founder's own request did not carry", async () => {
     const { routeReads } = await import("./__founderPath");
-    const sent = new Set(Object.keys(
-      runs.get(PROBE[0].label)!.wire.find((w) => w.route === "/api/intelligence")!.body));
-    const read = routeReads("app/api/intelligence/route.ts");
-    property("every field the memo route reads is a field the panel can send", () => {
-      expect(read.filter((f) => !sent.has(f)),
-        "the memo route reads these fields and no founder's request carries " +
-        "them, so only a harness can").toEqual([]);
-    });
+    const ROUTE_FILE: Record<string, string> = {
+      "/api/intelligence": "app/api/intelligence/route.ts",
+      "/api/intelligence/verdict": "app/api/intelligence/verdict/route.ts",
+      "/api/intelligence/intake": "app/api/intelligence/intake/route.ts",
+      "/api/intelligence/region": "app/api/intelligence/region/route.ts",
+    };
+    const run = runs.get(PROBE[0].label)!;
+    const seenRoutes = [...new Set(run.wire.map((w) => w.route))];
+    expect(seenRoutes.length, "the driver made no calls at all").toBeGreaterThan(0);
+    for (const route of seenRoutes) {
+      const file = ROUTE_FILE[route];
+      expect(file, `${route} has no route file in this map — a new route was ` +
+        `added and this property stopped covering it`).toBeTruthy();
+      const sent = new Set(Object.keys(
+        run.wire.find((w) => w.route === route)!.body));
+      expect(routeReads(file).filter((f) => !sent.has(f)),
+        `${route} reads these fields and this founder's own request did not ` +
+        `carry them, so only a harness can`).toEqual([]);
+    }
   });
 });
 

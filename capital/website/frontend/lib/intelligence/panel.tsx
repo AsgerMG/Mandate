@@ -205,8 +205,12 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // founder's first pick and nothing may write over it afterwards.
   const [orgTypeTouched, setOrgTypeTouched] = useState(false);
   const [orgTypePrefill, setOrgTypePrefill] = useState<string | null>(null);
-  // targetMarkets left the first screen (34 instruments, heavy multi-select);
-  // founderCountryList falls back to the incorporation country.
+  // ── `targetMarkets` IS GONE, NOT MERELY UNASKED (wsIK) ──────────────────
+  // It left the first screen as a heavy country multi-select, and the request
+  // field, the three route reads and `founderCountryList`'s override went with
+  // it. Which countries' funds a founder may see is decided by `entityCountries`
+  // — asked on this screen, with the incorporation country folded in by
+  // `withIncorporationCountry` — and by nothing else.
 
   const [screen, setScreen] = useState<"intake" | "adaptive">("intake");
   const [preparing, setPreparing] = useState(false);
@@ -763,8 +767,13 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
                 universe hardest even though few gates cite them.
                 DROPPED from this screen: companyType (inferred from the
                 description by inferProfileSignal, and it gates nothing) and
-                targetMarkets (a heavy country multi-select for 34 instruments,
-                already optional — the adaptive round asks when it matters).
+                targetMarkets (a heavy country multi-select for 34 instruments).
+                "the adaptive round asks when it matters" was here and was
+                FALSE (wsIK): the round asks fields of EligibilityAnswers and
+                targetMarkets was never one, so nothing in the product could
+                ever ask it. It is now deleted rather than unasked — see
+                founderCountryList for the measurement and for why a future
+                "where do you want to raise" must union rather than override.
                 Hard ceiling of eight: a longer first screen reads as an
                 interrogation and is where founders leave. ── */}
 

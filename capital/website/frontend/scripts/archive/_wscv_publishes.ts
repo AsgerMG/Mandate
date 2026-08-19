@@ -111,7 +111,7 @@ async function main() {
     const insts = five.map((r: { instrumentId?: string }) =>
       (r.instrumentId ? byId.get(r.instrumentId) : undefined))
       .filter((i): i is NonNullable<typeof i> => Boolean(i));
-    const founderIso = (f.opts.targetMarkets ?? [f.country]).map((c) => toIso2(c));
+    const founderIso = [f.country].map((c) => toIso2(c));
     let offHere = 0;
     for (const i of insts) {
       rows++;

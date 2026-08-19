@@ -22,7 +22,6 @@ const req = {
   description:
     "Frontier AI lab building open and commercial large language models; scaling training compute and European data-centre capacity. Seeking EUR 20M+ of public or public-anchored capital for industrial-scale compute build-out.",
   capitalSought: ["loan", "equity", "grant"],
-  targetMarkets: ["France", "Germany"],
   eligibility: {
     ticketBand: "b15m_50m",
     borrowerModel: "operating",

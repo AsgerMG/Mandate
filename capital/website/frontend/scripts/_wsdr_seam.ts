@@ -222,7 +222,7 @@ async function main() {
         ...dbPeers.flatMap((r) => r.channels),
       ]),
       founderCountries: founderCountryList(
-        c.country, undefined, (c.eligibility as { entityCountries?: string[] }).entityCountries),
+        c.country, (c.eligibility as { entityCountries?: string[] }).entityCountries),
       capitalSought: c.capitalSought,
       description: c.description,
       semantic,
@@ -275,7 +275,7 @@ async function main() {
       const poolIds = pool.map((r) => r.instrumentId).filter((id): id is string => Boolean(id));
       return orderMemoCandidates({
         instrumentTable: pool,
-        req: { ...req, targetMarkets: undefined } as never,
+        req: { ...req, } as never,
         records: [], dbPeers,
         eligibilityScreen: evaluateEligibility(c.eligibility as never, poolIds),
         log: l,

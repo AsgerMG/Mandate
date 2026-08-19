@@ -91,7 +91,7 @@ async function main() {
       borrowerModel: "operating", ticketBand: a.ticketBand, consortium: "yes",
       useOfFunds: ["industrial_research", "experimental_development"], region: a.region,
     } as never, {
-      targetMarkets: [t.country], capitalSought: a.capitalSought,
+      capitalSought: a.capitalSought,
       description: t.description || t.selfDescription || undefined,
     } as never);
     const pool = (v.candidateInstrumentIds ?? []) as string[];

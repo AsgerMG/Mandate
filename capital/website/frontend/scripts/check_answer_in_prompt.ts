@@ -110,12 +110,15 @@ function main() {
     (answers as Record<string, unknown>)[f] = s;
   }
 
+  // Exactly the shape a route hands the pipeline, and nothing more: a probe
+  // carrying a field no request can carry grades a prompt no founder sees.
+  // `targetMarkets: ["Germany"]` was here until wsIK removed the field.
   const req = {
     company: "Probe GmbH", country: "Germany", description: "",
-    companyType: undefined, targetMarkets: ["Germany"],
+    companyType: undefined,
   };
   const blocks: [string, string][] = [
-    ["memo writer (scoping profile)", scopingProfileBlock(answers, req.targetMarkets)],
+    ["memo writer (scoping profile)", scopingProfileBlock(answers)],
     ["adaptive round (known facts)", knownFacts(req, answers)],
   ];
 

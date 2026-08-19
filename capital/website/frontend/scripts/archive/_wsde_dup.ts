@@ -88,7 +88,6 @@ interface Founder {
   description: string;
   eligibility: Record<string, unknown>;
   capitalSought: string[];
-  targetMarkets: string[];
 }
 
 /** The twelve archetypes, intake built exactly as check_memo_table builds it. */
@@ -98,7 +97,6 @@ function archetypeFounders(): Founder[] {
     country: c.country,
     description: c.description,
     capitalSought: ["grant", "loan"],
-    targetMarkets: [c.country],
     eligibility: sanitizeEligibility({
       sector: c.sector, activities: c.activities ?? ["none"],
       useOfFunds: ["experimental_development", "industrial_research"],
@@ -136,7 +134,6 @@ function recallFounders(): Founder[] {
       country: f.country,
       description: f.opts.description ?? "",
       capitalSought: (f.opts.capitalSought ?? []) as string[],
-      targetMarkets: (f.opts.targetMarkets ?? []) as string[],
       eligibility: f.eligibility as Record<string, unknown>,
     };
   });
@@ -158,7 +155,7 @@ async function rowsFor(f: Founder): Promise<InstitutionEntry[]> {
   const hydrated = await buildInstrumentTableHydrated({
     fieldChannels: new Set<string>(dbPeers.flatMap((r) => r.channels)),
     founderCountries: founderCountryList(
-      f.country, f.targetMarkets, (f.eligibility.entityCountries ?? []) as string[]),
+      f.country, (f.eligibility.entityCountries ?? []) as string[]),
     capitalSought: f.capitalSought,
     description: f.description,
     semantic,
@@ -173,7 +170,7 @@ async function rowsFor(f: Founder): Promise<InstitutionEntry[]> {
     instrumentTable,
     req: {
       company: f.company, country: f.country, description: f.description,
-      capitalSought: f.capitalSought, targetMarkets: f.targetMarkets, eligibility: f.eligibility,
+      capitalSought: f.capitalSought, eligibility: f.eligibility,
     } as never,
     records: [], dbPeers,
     eligibilityScreen: evaluateEligibility(f.eligibility as never, poolIds),

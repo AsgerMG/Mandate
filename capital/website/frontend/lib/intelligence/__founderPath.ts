@@ -64,6 +64,9 @@
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";
+import {
+  matchBrace, matchParen, stripCommentsAndStrings, topLevelKeys, topLevelSpreads,
+} from "./__sourceScan";
 import { FIELD_ENUM_HINTS } from "./types";
 import type {
   EligibilityAnswers, ProfileSignal, ProgressEvent, ProjectAnswer,
@@ -408,6 +411,14 @@ export async function driveFounderPath(
  * ranking on an input no founder has. That is `check_harness_intake`'s property
  * one level up: not "did the harness answer for the founder", but "is this
  * question answerable by a founder at all".
+ *
+ * ── IT READ COMMENTS AS CODE (wsIK) ────────────────────────────────────────
+ * This matched the regex over the RAW file. When the three unsendable reads
+ * were deleted from `app/api/intelligence/route.ts` and a comment left in their
+ * place naming what had gone, the guard went on reporting all three as live —
+ * it was grading the comment. A guard that cannot be cleared by fixing the code
+ * is a guard that gets muted, so the source is stripped first, by the one
+ * stripper `check_harness_intake` already had.
  */
 
 /**
@@ -420,9 +431,67 @@ export async function driveFounderPath(
  * route the panel starts calling shows up here on the next run.
  */
 export function routeReads(routeFile: string): string[] {
-  const src = readFileSync(path.join(process.cwd(), routeFile), "utf8");
+  const src = stripCommentsAndStrings(
+    readFileSync(path.join(process.cwd(), routeFile), "utf8"));
   return [...new Set(
     [...src.matchAll(/\bbody\.([A-Za-z0-9_]+)/g)].map((m) => m[1]))].sort();
+}
+
+/**
+ * What the panel can put in the body of a request to ONE route.
+ *
+ * `panelContract().payloadKeys` is `basePayload()` alone, and three of the four
+ * calls add keys of their own — `candidateInstrumentIds` and
+ * `wantProfileSignal` on the intake route, `eligibilityBeforeRound` on the
+ * memo, and the region call sends neither `basePayload` nor anything like it.
+ * A union over all four would say the memo route may read
+ * `wantProfileSignal`, which it may not.
+ *
+ * So the body expression of each `fetch("<route>", ...)` is read out of
+ * panel.tsx: its own top-level keys, plus `basePayload`'s when it is spread in.
+ * A key the panel starts sending is allowed on the next run with no edit here,
+ * and a route it stops calling disappears from the map.
+ */
+export function panelSends(): Record<string, string[]> {
+  const src = stripCommentsAndStrings(
+    readFileSync(path.join(process.cwd(), "lib", "intelligence", "panel.tsx"), "utf8"));
+  const base = panelContract().payloadKeys;
+  const out: Record<string, string[]> = {};
+  const re = /fetch\(""\s*,/g;
+  // The route name is the string literal the stripper collapsed, so the routes
+  // are taken in order from the UNSTRIPPED source and paired by position.
+  const raw = readFileSync(
+    path.join(process.cwd(), "lib", "intelligence", "panel.tsx"), "utf8");
+  const routes = [...raw.matchAll(/fetch\("(\/api\/intelligence[^"]*)"\s*,/g)].map((m) => m[1]);
+  let m: RegExpExecArray | null, i = 0;
+  while ((m = re.exec(src))) {
+    const route = routes[i++];
+    if (!route) continue;
+    const open = src.indexOf("{", m.index + m[0].length - 1);
+    const close = matchBrace(src, open);
+    if (open < 0 || close < 0) continue;
+    const init = src.slice(open + 1, close);
+    // `body: JSON.stringify(<expr>)` — the expression is what reaches the wire.
+    const b = /\bbody\s*:\s*JSON\.stringify\s*\(/.exec(init);
+    if (!b) continue;
+    const argOpen = b.index + b[0].length - 1;
+    const argClose = matchParen(init, argOpen);
+    if (argClose < 0) continue;
+    const expr = init.slice(argOpen + 1, argClose).trim();
+    const keys = new Set<string>();
+    if (/^basePayload\s*\(/.test(expr)) {
+      for (const k of base) keys.add(k);
+    } else if (expr.startsWith("{")) {
+      const body = expr.slice(1, matchBrace(expr, 0));
+      for (const k of topLevelKeys(body)) keys.add(k);
+      for (const sp of topLevelSpreads(body)) {
+        if (sp === "basePayload") for (const k of base) keys.add(k);
+      }
+    }
+    const prev = out[route] ?? [];
+    out[route] = [...new Set([...prev, ...keys])].sort();
+  }
+  return out;
 }
 
 export function panelContract(): { payloadKeys: string[]; routes: string[] } {

@@ -111,7 +111,7 @@ async function main() {
     } as never;
 
     const v: any = await computeVerdict("TestCo", t.country, eligibility, {
-      targetMarkets: [t.country], capitalSought: ["grant", "loan"],
+      capitalSought: ["grant", "loan"],
       description: t.description || undefined,
     } as never);
 

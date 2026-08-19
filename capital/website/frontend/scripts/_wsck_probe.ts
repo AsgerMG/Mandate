@@ -46,7 +46,7 @@ async function main() {
         entityCountries: [country], sector: "other", activities: ["none"],
         borrowerModel: "operating", ticketBand: band, consortium: "yes",
         useOfFunds: ["industrial_research", "experimental_development"],
-      } as never, { targetMarkets: [country], capitalSought: ["grant", "loan"] } as never);
+      } as never, { capitalSought: ["grant", "loan"] } as never);
       tops.push(((v.instrumentTable ?? []).slice(0, 5)
         .map((r: { instrumentId?: string }) => r.instrumentId)).join(","));
     }

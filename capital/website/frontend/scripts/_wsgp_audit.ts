@@ -10,7 +10,6 @@ import { FIELD_REACH } from "../lib/intelligence/types";
 import { VOCABULARY } from "../lib/intelligence/vocabulary";
 import { regionOptions } from "../lib/intelligence/regions.generated";
 import { toIso2 } from "../lib/intelligence/countryCodes";
-import { founderCountryList } from "../lib/intelligence/shortlist";
 import { founderIntake, founderPolicyFromEnv, ALL_INTAKE_FIELDS } from "./founderIntake";
 import type { IntakeField } from "./founderIntake";
 import { loadRecallSet } from "./recallSet";
@@ -30,7 +29,7 @@ const policy = founderPolicyFromEnv();
 
 const setCount = new Map<IntakeField, number>();
 const badValues = new Map<IntakeField, Map<string, number>>();
-let optsCapital = 0, optsDesc = 0, optsMarkets = 0;
+let optsCapital = 0, optsDesc = 0;
 
 for (const r of rows) {
   const f = founderIntake(r as never, policy);
@@ -50,7 +49,6 @@ for (const r of rows) {
   }
   if (f.opts.capitalSought.length) optsCapital++;
   if (f.opts.description) optsDesc++;
-  if (f.opts.targetMarkets.length) optsMarkets++;
 }
 
 console.log(`\n${rows.length} founders replayed under `
@@ -73,7 +71,7 @@ for (const [k, m] of badValues) {
   console.log(`  ${k}: ${[...m].map(([v, n]) => `${v} x${n}`).join(", ")}`);
 }
 console.log(`\ncomputeVerdict opts: capitalSought non-empty on ${optsCapital}, `
-  + `description on ${optsDesc}, targetMarkets on ${optsMarkets} of ${rows.length}`);
+  + `description on ${optsDesc} of ${rows.length}`);
 
 // ── The same question one level down: is every VALUE one production offers? ─
 // A field production asks can still be handed a value its control cannot
@@ -99,27 +97,21 @@ console.log(`\ncomputeVerdict opts: capitalSought non-empty on ${optsCapital}, `
   for (const [v, n] of bad) console.log(`  ${v} x${n}`);
 }
 
-// ── The class outside EligibilityAnswers: `targetMarkets` ──────────────────
+// ── The class outside EligibilityAnswers: `targetMarkets` — CLOSED (wsIK) ──
 // `basePayload()` in panel.tsx sends company, country, description,
-// capitalSought, eligibility, profileSignal and projectAnswers. It does NOT
-// send targetMarkets, so `sanitizeTargetMarkets` reads undefined on every real
-// request. The harness sent `[founder's own country]` on every row.
+// capitalSought, eligibility, profileSignal and projectAnswers. It did NOT send
+// targetMarkets, and all three routes read it, so only a harness could populate
+// it — and this harness sent `[founder's own country]` on every row until wsGP
+// set it to `[]`.
 //
-// It has two effects and they are not the same. `founderCountryList` returns
-// the EXPLICIT list when one is given and the country union otherwise, so for
-// a founder whose only entity country is their own the two are the same list —
-// proved below over the whole set rather than argued. The second effect is not
-// inert: `eligibilityContext` and `knownFacts` put a "Target markets for public
-// capital: X" line in the model's context, and no real founder's request can
-// produce that line.
-{
-  let same = 0, differ = 0;
-  for (const r of rows) {
-    const f = founderIntake(r as never, policy);
-    const withIt = founderCountryList(f.country, [f.country], f.eligibility.entityCountries);
-    const without = founderCountryList(f.country, [], f.eligibility.entityCountries);
-    if (JSON.stringify(withIt) === JSON.stringify(without)) same++; else differ++;
-  }
-  console.log(`\nfounderCountryList with and without the harness's targetMarkets: `
-    + `${same} identical, ${differ} different`);
-}
+// The measurement that block printed is preserved in shortlist.ts: on all 7,095
+// rows of the shipped set the country list was IDENTICAL with and without it,
+// because `withIncorporationCountry` already puts the founder's country first
+// in `entityCountries`. The second effect was not inert — `eligibilityContext`
+// and `knownFacts` put a "Target markets for public capital: X" line into the
+// model's context that no real request could produce — and that is why the
+// field is now gone from `IntelligenceRequest`, from all three routes and from
+// `founderCountryList` rather than merely set to `[]` here. There is nothing
+// left to compare, so the comparison is not kept as a tautology.
+//
+// `check_request_surface.ts` is the guard that stops the class coming back.

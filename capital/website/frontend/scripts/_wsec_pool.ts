@@ -143,7 +143,7 @@ async function main() {
     const semantic = await semanticFundMatch(f.opts.description ?? "");
     const log = new ExclusionLog();
     const countries = founderCountryList(
-      f.country, f.opts.targetMarkets, f.eligibility.entityCountries);
+      f.country, f.eligibility.entityCountries);
     const hydrated = await buildInstrumentTableHydrated({
       fieldChannels: new Set<string>(dbPeers.flatMap((r) => r.channels)),
       founderCountries: countries,
