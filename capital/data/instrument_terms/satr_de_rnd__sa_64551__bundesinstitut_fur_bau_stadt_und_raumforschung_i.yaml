@@ -1,0 +1,59 @@
+id: satr_de_rnd__sa_64551__bundesinstitut_fur_bau_stadt_und_raumforschung_i
+name: Zukunft Bau Forschungsförderung - Richtlinie des Bundesministeriums des Innern, für Bau und Heimat
+  (BMI) zur Förderung von Forschungs- und Entwicklungsvorhaben im Rahmen des Innovationsprogramms Zukunft
+  Bau [BMI]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-broad-applicant-base
+  gate_family: G1_nexus
+  requirement: Eligible applicants are all natural or legal persons, including territorial authorities
+    (Gebietskörperschaften), engaged in R&D on construction, architecture, and the building and housing
+    economy; research and knowledge-dissemination institutions under GBER Article 2(83) and micro-enterprises/SMEs
+    are explicitly welcomed.
+  value: Broad applicant base incl. public bodies, research institutions, micro/SMEs
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind alle natürlichen oder juristischen Personen einschließlich Gebietskörperschaften,
+    die sich mit der Forschung und Entwicklung in den Bereichen Bauwesen, Architektur sowie Bau- und Wohnungswirtschaft
+    befassen. Die Antragstellung von Einrichtungen für Forschung und Wissensverbreitung im Sinne von Artikel
+    2 Nummer 83 AGVO (Forschungseinrichtungen) wie auch von Kleinstunternehmen sowie KMU wird explizit
+    begrüßt.
+  source:
+    file: https://www.zukunftbau.de/programme/forschungsfoerderung
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-agreement-and-coordinator
+  gate_family: G1_nexus
+  requirement: For joint (Verbund) projects, participating institutions must set out their cooperation
+    in a written cooperation agreement and designate a single lead coordinator who acts as the sole grant
+    recipient.
+  value: Consortium requires written cooperation agreement + single coordinator
+  intake_field: consortium
+  quote: Für derartige größere Verbundprojekte haben die beteiligten Einrichtungen (Verbundpartner) ihre
+    Zusammenarbeit in einer schriftlichen Kooperationsvereinbarung zu regeln und einen Hauptverantwortlichen
+    (Koordinator) zu benennen, der die Funktion des alleinigen Zuwendungsempfängers übernimmt.
+  source:
+    file: https://www.zukunftbau.de/programme/forschungsfoerderung
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+- id: g1-germany-establishment-payout
+  gate_family: G1_nexus
+  requirement: At the time a grant is paid out, the applicant must have an establishment or branch in
+    Germany.
+  value: German establishment required at payout
+  intake_field: wouldOpenEntity
+  quote: Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung muss der Antragsteller über eine Betriebsstätte
+    oder Niederlassung in der Bundesrepublik Deutschland verfügen.
+  source:
+    file: https://www.zukunftbau.de/programme/forschungsfoerderung
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

@@ -1,0 +1,3 @@
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [leak check]
+  profile index: 1,088 instruments, built 2026-08-08T10:16:03+00:00
+check_recall_leaks: ok — 1,366 described rows, 0 leaks at exact / 8-gram / sibling, 222 squash probes agree.

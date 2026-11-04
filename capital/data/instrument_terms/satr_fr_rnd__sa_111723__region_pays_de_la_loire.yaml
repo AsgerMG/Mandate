@@ -1,0 +1,38 @@
+id: satr_fr_rnd__sa_111723__region_pays_de_la_loire
+name: Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation
+  (RDI) pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sme-eti-region
+  gate_family: G1_nexus
+  requirement: Eligible applicants are SMEs or mid-caps (ETI) registered in the Trade Register and located
+    in the Pays de la Loire region.
+  value: SME/ETI, Trade Register, located in Pays de la Loire
+  intake_field: activityCountries
+  quote: Peuvent candidater les PME ou les ETI immatriculées au Registre du Commerce et localisées en
+    Pays de la Loire.
+  source:
+    file: https://les-aides.fr/aide/SDlv3w/region-des-pays-de-la-loire/appel-a-projets-pays-de-la-loire-innovation-pia3.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-compliance-required
+  gate_family: G1_nexus
+  requirement: Companies must be up to date with their fiscal, social and environmental obligations, and
+    with any debts owed to the State, the Region, and Bpifrance.
+  value: Up to date on fiscal/social/environmental obligations and public debts
+  intake_field: none
+  quote: Les entreprises doivent être à jour de leurs obligations fiscales, sociales et environnementales
+    ainsi que de leurs éventuelles dettes auprès de l'Etat, de la Région et de Bpifrance.
+  source:
+    file: https://les-aides.fr/aide/SDlv3w/region-des-pays-de-la-loire/appel-a-projets-pays-de-la-loire-innovation-pia3.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (2/2 gates passed mechanical verbatim-substring
+  check -> llm_cited).

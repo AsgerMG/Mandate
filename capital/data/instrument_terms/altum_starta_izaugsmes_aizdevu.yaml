@@ -1,0 +1,169 @@
+id: altum_starta_izaugsmes_aizdevu
+name: altum_starta_izaugsmes_aizdevu
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-registration-age
+  gate_family: G1_nexus
+  requirement: Business must be registered no more than 7 years ago (or applicant
+    may apply before establishing a company).
+  value: <=7 years since registration, or pre-registration
+  intake_field: foundedYear
+  quote: also available to self-employed individuals, micro, small, medium and large
+    businesses** registered no more than 7 years ago
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-pre-establishment
+  gate_family: G1_nexus
+  requirement: Applicant may apply for the loan before the company is established,
+    provided they have a clear business plan.
+  value: pre-establishment applicants eligible with business plan
+  intake_field: developmentStage
+  quote: You can apply for a loan even before establishing a company and without prior
+    business experience. The only requirement is to have a clear business plan.
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-employee-cap
+  gate_family: G2_size_ownership
+  requirement: Eligible businesses include self-employed individuals, micro, small,
+    medium and large businesses with up to 3,000 employees.
+  value: up to 3,000 employees
+  intake_field: fteBand
+  quote: also available to self-employed individuals, micro, small, medium and large
+    businesses** registered no more than 7 years ago
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-employee-cap-footnote
+  gate_family: G2_size_ownership
+  requirement: The 'large businesses' category eligible under this instrument is capped
+    at up to 3,000 employees.
+  value: up to 3,000 employees
+  intake_field: fteBand
+  quote: '**with up to 3,000 employees'
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-loan-ceiling
+  gate_family: G3_financial
+  requirement: The maximum loan amount is EUR 250,000.
+  value: up to EUR 250,000
+  intake_field: ticketBand
+  quote: loan up to EUR 250,000
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-interest-rate
+  gate_family: G3_financial
+  requirement: The loan carries a fixed interest rate starting from 4.9%.
+  value: fixed interest rate from 4.9%
+  intake_field: none
+  quote: fixed interest rate from 4.9%
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4-loan-terms
+  gate_family: G4_borrower_model
+  requirement: 'The support is provided as a loan (not a grant), with different maximum
+    maturities depending on use: working capital up to 3 years, investment up to 10
+    years, real estate up to 15 years.'
+  value: loan; working capital up to 3 years, investment up to 10 years, real estate
+    up to 15 years
+  intake_field: borrowerModel
+  quote: "purchase of raw materials, fuel costs, rental payments \n up to 3 years"
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-use-working-capital
+  gate_family: G5_use_of_funds
+  requirement: Funds may be used for working capital purposes such as purchase of
+    raw materials, fuel costs, and rental payments.
+  value: 'working capital: raw materials, fuel, rent'
+  intake_field: none
+  quote: "purchase of raw materials, fuel costs, rental payments \n up to 3 years"
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-use-investment
+  gate_family: G5_use_of_funds
+  requirement: Funds may be used for investments such as equipment, machinery, and
+    commercial vehicle purchases.
+  value: 'investment: equipment, machinery, commercial vehicles'
+  intake_field: none
+  quote: "equipment, machinery, commercial vehicle purchases \n up to 10 years"
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-use-real-estate
+  gate_family: G5_use_of_funds
+  requirement: Funds may be used for real estate acquisition, construction or reconstruction.
+  value: 'real estate: acquisition, construction, reconstruction'
+  intake_field: none
+  quote: "for acquisition, construction or reconstruction \n up to 15 years"
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-de-minimis
+  gate_family: G6_conditionality
+  requirement: Loans are granted as de minimis state aid in accordance with EU Commission
+    Regulation No. 2023/2831.
+  value: de minimis aid under Regulation (EU) 2023/2831
+  intake_field: conditionality
+  quote: Loans are granted as de minimis aid in accordance with Commission Regulation
+    (EU) No. 2023/2831 of 13 December 2023.
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-national-regulation
+  gate_family: G6_conditionality
+  requirement: The programme is regulated by Cabinet of Ministers Regulation No. 328
+    of May 31, 2016, on Microloans and Start-up Loans, and administered by the State
+    Agency for Development and Entrepreneurship Support (SADES).
+  value: governed by Cabinet Regulation No. 328 (2016), administered by SADES
+  intake_field: none
+  quote: The program is regulated by the Cabinet of Ministers Regulation No. 328 of
+    May 31, 2016, "Regulations on Microloans and Start-up Loans." The program is administered
+    by the State Agency for Development and Entrepreneurship Support (SADES).
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The program is regulated by the Cabinet
+    of Ministe'''
+obligations:
+- requirement: Beneficiaries must comply with the publicity requirements of the funds.
+  quote: "Beneficiaries must comply with \n the publicity requirements of the funds"
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/12 gates, 1/1 obligations
+  passed mechanical check -> llm_cited).
+application:
+  channel: The applicant fills in and submits the 'Apply'/'Sign up for a consultation'
+    form on the Altum website, providing their name, company name, phone number and
+    e-mail address; Altum then contacts them regarding the start-up loan application.
+  typical_timeline: ''
+  url: ''
+  quote: "Name * \n \n \n \n Company name * \n \n \n \n \n Phone * \n \n \n \n E-mail\
+    \ * \n \n \n \n \n \n \n \n \n \n By sending the application, you confirm that\
+    \ you agree to the processing of your personal data specified in the application."
+  source:
+    file: altum_starta_izaugsmes_aizdevu_start_loan_en.html
+    locator: chunk 1

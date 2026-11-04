@@ -1,0 +1,81 @@
+id: satr_se_rnd__sa_106543__naturvardsverket
+name: Stöd till lokala klimatinvesteringar - klimatklivet
+administering_body: see source document
+country: SE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-recipients
+  gate_family: G1_nexus
+  requirement: Klimatklivet is open to municipalities, regions, companies and organisations across Sweden.
+  value: Municipalities, regions, companies, organisations (Sweden-wide)
+  intake_field: borrowerModel
+  quote: Klimatklivet är riktat till kommuner, regioner, företag och organisationer i hela Sverige.
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-no-individuals
+  gate_family: G1_nexus
+  requirement: Private individuals cannot apply for support.
+  value: Private individuals excluded
+  intake_field: none
+  quote: Privatpersoner kan inte söka stöd.
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-vehicle-purchase-excluded
+  gate_family: G5_use_of_funds
+  requirement: Support may not be given for measures involving the purchase of a passenger car, light
+    truck, light bus, or class I bus.
+  value: Passenger car / light truck / light or class I bus purchases excluded
+  intake_field: none
+  quote: avser köp av en personbil, lätt lastbil, lätt buss, eller buss i klass I
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-not-started-before-decision
+  gate_family: G6_conditionality
+  requirement: Support may not be given for a measure that has already started before a funding decision
+    has been made.
+  value: Measure must not have started before funding decision
+  intake_field: none
+  quote: har påbörjats innan beslut i frågan om stöd har fattats
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-company-cofinancing-cap
+  gate_family: G3_financial
+  requirement: Support to companies may amount to at most 70% of the investment cost.
+  value: Max 70% of investment cost (companies)
+  intake_field: cofinancingBand
+  quote: Stödet får uppgå till högst 70 procent av företagets investeringskostnad.
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g3-noncompany-cofinancing-cap
+  gate_family: G3_financial
+  requirement: Support to non-companies (e.g. municipalities) may be given up to at most 50% of the investment
+    cost.
+  value: Max 50% of investment cost (non-companies)
+  intake_field: cofinancingBand
+  quote: Stöd till andra än företag får endast ges i den omfattning som krävs för att en åtgärd ska genomföras,
+    dock högst med 50 procent av investeringskostnaden.
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (6/6 gates passed mechanical verbatim-substring
+  check -> llm_cited).

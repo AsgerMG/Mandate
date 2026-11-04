@@ -1,0 +1,38 @@
+id: satr_de_equity__sa_115337__landwirtschaftliche_rentenbank
+name: Bund - LR-Optionales Darlehen im Rahmen des „ANK NABO“
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Applications may be submitted by farmers, contract farming businesses
+    (Lohnunternehmen), machinery rings (Maschinenring), or nature conservation associations.
+  value: Farmers, Lohnunternehmen, Maschinenring, or nature conservation associations
+  intake_field: none
+  quote: Die Antragstellung für die Gewährung eines Zuschusses erfolgt durch den
+    Zuschussempfangenden (Landwirtinnen und Landwirte, Lohnunternehmerinnen und
+    Lohnunternehmer, Maschinenring, Naturschutzverband) im Portal der Rentenbank.
+  source:
+    file: https://www.rentenbank.de/export/sites/rentenbank/dokumente/programminformationen/PgmInfo-EKN-02-2024-ANK-NABO.pdf
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g4-optional-loan
+  gate_family: G4_borrower_model
+  requirement: The remaining financing does not have to be covered by a loan; the applicant
+    may optionally use a premium-rate refinancing loan offered by Rentenbank.
+  value: Optional premium-rate loan for remaining financing (not mandatory)
+  intake_field: borrowerModel
+  quote: Die Restfinanzierung muss nicht mit einem Darlehen finanziert werden. Gleichwohl
+    bietet die Rentenbank eine Refinanzierung zu Premiumkonditionen an.
+  source:
+    file: https://www.rentenbank.de/export/sites/rentenbank/dokumente/programminformationen/PgmInfo-EKN-02-2024-ANK-NABO.pdf
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text. Only 2 gates - source text is
+  short and does not support more without fabrication.

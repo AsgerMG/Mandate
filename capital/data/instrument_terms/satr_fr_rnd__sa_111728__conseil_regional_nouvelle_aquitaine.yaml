@@ -1,0 +1,46 @@
+id: satr_fr_rnd__sa_111728__conseil_regional_nouvelle_aquitaine
+name: Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g2-min-headcount
+  gate_family: G2_size_ownership
+  requirement: Eligible enterprises must have a headcount of at least 10 people.
+  value: Min 10 employees
+  intake_field: fteBand
+  quote: entreprises dont l'effectif est supérieur ou égal à 10 personnes
+  source:
+    file: https://les-aides.nouvelle-aquitaine.fr/economie-et-emploi/aide-aux-investissements-performance-industrielle
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-sufficient-equity
+  gate_family: G3_financial
+  requirement: The company must have sufficient equity and financial capacity appropriate to the scale
+    of the investment.
+  value: Sufficient equity / financial capacity for investment size
+  intake_field: balanceBand
+  quote: L'entreprise doit disposer de fonds propres suffisants et d'une capacité financière adaptée à
+    l'ampleur de l'investissement.
+  source:
+    file: https://les-aides.nouvelle-aquitaine.fr/economie-et-emploi/aide-aux-investissements-performance-industrielle
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-min-investment
+  gate_family: G3_financial
+  requirement: The minimum eligible investment amount is EUR 120,000 excluding tax.
+  value: 'Min investment: EUR 120,000 (excl. tax)'
+  intake_field: ticketBand
+  quote: 'Montant minimum d''investissement éligible : 120 000 € HT.'
+  source:
+    file: https://les-aides.nouvelle-aquitaine.fr/economie-et-emploi/aide-aux-investissements-performance-industrielle
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

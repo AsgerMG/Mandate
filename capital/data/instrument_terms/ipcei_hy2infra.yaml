@@ -1,0 +1,263 @@
+id: ipcei_hy2infra
+name: ipcei_hy2infra
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Only pre-selected undertakings listed in the participating Member States' notification
+    and forming part of the Hy2Infra individual projects are eligible aid beneficiaries.
+  value: listed participating undertakings only
+  intake_field: entityCountries
+  quote: These measures are granted only to the aid beneficiaries chosen by the participating
+    Member States and listed in section 2.4.2 on the basis of their individual projects. It
+    is not available to all undertakings
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.92-93
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Aid must be granted by one of the participating Member States and financed
+    through State budget resources, imputable to that State.
+  value: State resources / imputability required
+  intake_field: entityCountries
+  quote: The public support measures of the participating Member States will be financed with
+    funds stemming from the respective State budgets. The measures therefore involve State
+    resources and are imputable to the relevant States.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.92
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Aid must not be conditional on the beneficiary having its headquarters in,
+    or being predominantly established in, the granting Member State, nor on use of nationally
+    produced goods or national services.
+  value: no HQ/localisation or national-content condition allowed
+  intake_field: nonEuControl
+  quote: granting of aid that is subject to the obligation for the beneficiary to have its
+    headquarters in the Member State concerned or to be predominantly established in that
+    Member State,
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.91
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: Aid is provided as direct grants to participating undertakings.
+  value: direct grant
+  intake_field: borrowerModel
+  quote: The aid measures in the form of direct grants to the participating undertakings will
+    relieve them from costs that they would have had to bear themselves under normal market
+    conditions.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.92
+  verified: llm_cited
+- id: G4-02
+  gate_family: G4_borrower_model
+  requirement: A claw-back mechanism requires beneficiaries to repay 70% of any positive project
+    surplus (NPV of actual cash flows including State aid) arising during the project lifetime
+    to the granting Member State.
+  value: 70% claw-back on positive surplus
+  intake_field: borrowerModel
+  quote: The claw-back mechanism then triggers an obligation for the beneficiary to repay
+    to the relevant Member State 70% of the surplus.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.91
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: 'Maximum aid is determined by the funding gap: discounted aid must not exceed
+    the notified funding gap and nominal aid must not exceed eligible costs.'
+  value: aid ≤ funding gap (discounted) and ≤ eligible costs (nominal)
+  intake_field: cofinancingBand
+  quote: the discounted value of the notified aid amounts does not exceed the notified funding
+    gap (which itself is expressed in discounted terms) and that their nominal value does
+    not exceed the eligible costs
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.127
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: The project must involve important co-financing by the beneficiaries themselves;
+    co-financing across Hy2Infra amounts to EUR 5.41 billion (44% of financing need).
+  value: co-financing required; EUR 5.41bn / 44% of financing need
+  intake_field: cofinancingBand
+  quote: the project must involve important co-financing by the beneficiaries. The amount
+    of State aid per undertaking/project is provided in Table 18...The Commission estimates
+    that the co-financing by the beneficiaries for the implementation of the projects is EUR
+    5.41 billion in total
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.107
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: Total eligible costs for Hy2Infra amount to EUR 11.51 billion, only covering
+    costs falling within categories (a)-(h) of the Annex to the IPCEI Communication.
+  value: EUR 11.51 billion total eligible costs
+  intake_field: none
+  quote: They also submit that the total Hy2Infra eligible costs (82) will amount to EUR 11.51
+    billion.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.87
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs must be necessary for and exclusively related to construction
+    of the infrastructure until it becomes fully operational; operating costs (supplies, maintenance)
+    are excluded.
+  value: construction-phase costs only, operating costs excluded
+  intake_field: developmentStage
+  quote: the Commission verified that the eligible costs were necessary for and exclusively
+    related to the construction of the infrastructure until the infrastructure becomes fully
+    operational, as set out in point 25 of the IPCEI Communication.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.127
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: Only depreciation costs incurred during the project's forecast period relating
+    to capital expenditure incurred during the construction period are eligible; residual
+    value of assets at end of forecast period is excluded.
+  value: depreciation of construction-period capex only; no residual value
+  intake_field: developmentStage
+  quote: only depreciation costs that will be incurred during a project’s forecast period
+    (107) and which relate to capital expenditures incurred during the construction period
+    were considered eligible. Hence, any residual value of project assets at the end of a
+    project’s forecast period is excluded from eligible costs.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.127
+  verified: llm_cited
+- id: G5-03
+  gate_family: G5_use_of_funds
+  requirement: Aid application must be submitted before the start of works on the individual
+    project (formal incentive effect requirement).
+  value: application must precede start of works
+  intake_field: needBy
+  quote: the application for aid must precede the starts of the works.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.125
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: Without the aid, the project would be impossible, realised on a smaller scale,
+    narrower scope, insufficient speed, or in a manner significantly restricting expected
+    benefits (necessity/counterfactual test).
+  value: counterfactual necessity test required
+  intake_field: conditionality
+  quote: Without the aid, the realisation of the project should be impossible, or it should
+    be realised in a smaller scale, with a more narrow scope, or not with sufficient speed,
+    or in a different manner that would significantly restrict its expected benefits.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.125
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: Projects involving construction of infrastructure must comply with principles
+    of open and non-discriminatory access, non-discriminatory pricing and network operation,
+    including those laid down in Union law.
+  value: open and non-discriminatory access required
+  intake_field: conditionality
+  quote: projects involving the construction of an infrastructure must comply with principles
+    of open and non-discriminatory access to the infrastructure and non-discriminatory pricing
+    and network operation, including those laid down in Union law
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.114
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: The project must comply with the do-no-significant-harm (DNSH) principle across
+    the six environmental objectives of the Taxonomy Regulation.
+  value: DNSH compliance required
+  intake_field: conditionality
+  quote: the participating Member States submit that each of them complies with the environmental
+    objectives set out in Article 9 of Regulation (EU) 2020/852 (74) (“Taxonomy Regulation”).
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.81
+  verified: false
+  verify_note: 'fragment not found verbatim: ''the participating Member States submit that
+    each o'''
+obligations:
+- requirement: Participating undertakings and Member States must submit annual reporting on
+    execution of activities, spillovers, and DNSH compliance to national funding authorities
+    and the Commission.
+  quote: the participating undertakings will report annually the execution of their activities,
+    as regards the advancements of their individual projects, the individually committed spillovers
+    and the compliance with the DNSH principle to the national funding authorities.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.139
+  verified: llm_cited
+- requirement: The concerned Member States must report to the Commission on the application
+    of the claw-back mechanism annually by the end of September until the end of the project's
+    lifetime.
+  quote: The application of the claw-back mechanism will be reported by the Member State to
+    the European Commission by the end of September each year until the end of the project’s
+    lifetime.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.143
+  verified: llm_cited
+- requirement: Beneficiaries must maintain separate analytical accounting and have ex-post
+    financial figures subject to annual approval by an independent auditor as the basis for
+    the claw-back mechanism.
+  quote: The basis for the claw-back mechanism will be ex-post financial figures, which have
+    been subject to annual approval by an independent auditor. For this purpose, separate
+    analytical accounting will be required from the participating undertakings in the relevant
+    Member State.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.91
+  verified: llm_cited
+- requirement: The participating Member States must comply with transparency and publication
+    requirements, publishing the full text of the individual aid granting decision and related
+    information.
+  quote: the participating Member States have committed to publish in the Commission’s transparency
+    award module or on a comprehensive State aid website, at national or regional level, the
+    full text of the individual aid granting decision and its implementing provisions or a
+    link to it
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.92
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (13/14 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation with other aid to cover the same eligible costs is permitted provided the
+    total public funding does not exceed the most favourable funding rate under applicable
+    Union law rules.
+  quote: the participating Member States have confirmed that the total amount of public funding
+    granted in relation to the same eligible costs will not exceed the most favourable funding
+    rate laid down in the applicable rules of Union law
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.132
+  verified: llm_cited
+application:
+  channel: National funding authorities of participating Member States, following national
+    calls and funding agreements; notified collectively to the European Commission under Article
+    107(3)(b) TFEU.
+  typical_timeline: Application for aid must precede the start of works; national funding
+    agreements concluded following the Commission's approval decision; annual reporting thereafter
+    until end of project lifetime.
+  quote: the participating undertakings’ individual projects are governed by funding agreements
+    to be concluded with the relevant funding authority within each participating Member State.
+  source:
+    file: ipcei_hy2infra_commission_decision_SA102825.pdf
+    locator: ipcei_hy2infra_commission_decision_SA102825.pdf#p.87
+  verified: llm_cited

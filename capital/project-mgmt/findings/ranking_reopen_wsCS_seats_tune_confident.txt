@@ -1,0 +1,37 @@
+(node:63235) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T20:37:58.817Z
+ranker: all 594 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune seed=20260806 PEER_FILL=confident replayed 600
+
+EXACT@5 148/600 (24.7% +/-3.4)
+
+SEATS THE SCORE KEPT  (peer precedence ran on 600/600; the rest had no peer prior or too short a table)
+    0 seat(s)   273 founders  EXACT@5 27.8% +/-5.3
+    1 seat(s)   123 founders  EXACT@5 23.6% +/-7.5
+    2 seat(s)    28 founders  EXACT@5 28.6% +/-16.7
+    3 seat(s)   139 founders  EXACT@5 22.3% +/-6.9
+    4 seat(s)    13 founders  EXACT@5 0.0% +/-0.0
+    5 seat(s)     8 founders  EXACT@5 0.0% +/-0.0
+    6 seat(s)     4 founders  EXACT@5 25.0% +/-42.4
+    7 seat(s)     2 founders  EXACT@5 0.0% +/-0.0
+   14 seat(s)    10 founders  EXACT@5 30.0% +/-28.4
+  branch flat      n= 482  EXACT@5 25.1% +/-3.9  seats min 0 median 0 max 14
+  branch specific  n= 118  EXACT@5 22.9% +/-7.6  seats min 3 median 3 max 3
+
+PAIRED against /tmp/wsCS_head.json (arm head), same draw pair for pair:
+  head 24.5%  ->  confident 24.7%   delta 0.2 points
+  seat count differs on 359/600 founders (60%)
+  discordant 23: +12 / -11
+  gains over 7 regime(s): satr_de_rnd x3, ademe_aid x2, satr_nl_rnd x2
+  losses over 6 regime(s): vinnova_grant x3, bdns_es_ayudas x3, tacr_tl x2
+
+  -> /tmp/wsCS_conf.json

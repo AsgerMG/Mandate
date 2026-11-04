@@ -1,0 +1,234 @@
+id: satr_lu_rnd
+name: satr_lu_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_established_lu
+  gate_family: G1_nexus
+  requirement: The applicant must be an enterprise established in Luxembourg.
+  value: Enterprise established in Luxembourg
+  intake_field: entityCountries
+  quote: L’aide est destinée aux entreprises établies au Luxembourg.
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1_eligible_activities
+  gate_family: G1_nexus
+  requirement: The activity funded must be experimental development, fundamental research,
+    or industrial research.
+  value: Experimental development / fundamental research / industrial research
+  intake_field: none
+  quote: le développement expérimental , c’est-à-dire l’acquisition, l’association, la mise
+    en forme ainsi que l’utilisation de connaissances et d’aptitudes scientifiques, technologiques,
+    commerciales en vue de développer des produits, procédés ou des services nouveaux ou améliorés
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2_sme_size_classification
+  gate_family: G2_size_ownership
+  requirement: The enterprise size must be classified according to Annex I of Regulation (EU)
+    No 651/2014.
+  value: SME/large classification per Annex I Reg. 651/2014
+  intake_field: fteBand
+  quote: la taille de l’entreprise, conformément à l’annexe I du règlement (UE) n° 651/2014
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2_young_company_business_plan
+  gate_family: G2_size_ownership
+  requirement: Enterprises less than 3 years old must provide a business plan including a
+    3-year cash flow forecast.
+  value: Company age < 3 years triggers additional documentation
+  intake_field: foundedYear
+  quote: Pour toute entreprise de moins de 3 ans , il est obligatoire de fournir un business
+    plan qui comprend un plan de trésorerie prévisionnel sur une durée de 3 ans.
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3_min_aid_amount
+  gate_family: G3_financial
+  requirement: The gross aid amount per R&D project cannot be lower than EUR 1,000 for SMEs
+    and EUR 100,000 for large enterprises.
+  value: 'Minimum aid: EUR 1,000 (SME) / EUR 100,000 (large)'
+  intake_field: ticketBand
+  quote: 1.000 euros pour les petites et moyennes entreprises ;  et 100.000 euros pour les
+    grandes entreprises.
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3_max_aid_rates
+  gate_family: G3_financial
+  requirement: 'The maximum aid intensity is based on eligible costs and varies by company
+    size and project type: experimental development 20-40%, industrial research 40-60%.'
+  value: 'Aid intensity: 20-40% (experimental development), 40-60% (industrial research),
+    by size'
+  intake_field: turnoverBand
+  quote: Développement expérimental - taux de base 20 % 30 % 40 % Recherche industrielle -
+    taux de base 40 % 50 % 60 %
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3_bonus_collaboration
+  gate_family: G3_financial
+  requirement: Aid rate increases may apply if the project involves effective collaboration
+    between an SME and another enterprise, or between an enterprise and a research organisation
+    meeting cost-sharing and publication conditions.
+  value: Bonus for effective collaboration (SME, cross-border, or with research organisation)
+  intake_field: consortium
+  quote: entre des entreprises parmi lesquelles figure au moins une PME, ou est mené dans
+    au moins 2 États membres, ou dans un État membre et une partie contractante à l’accord
+    sur l’Espace économique européen, et aucune entreprise unique ne supporte seule plus de
+    70 % des coûts admissibles
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3_large_enterprise_threshold
+  gate_family: G3_financial
+  requirement: For requests above EUR 500,000 from large enterprises, a description of the
+    likely counterfactual scenario in the absence of aid must be provided.
+  value: Requests > EUR 500,000 from large enterprises require counterfactual scenario
+  intake_field: ticketBand
+  quote: pour les demandes supérieures à 500.000 euros qui émanent de grandes entreprises
+    , la description du scénario contrefactuel probable en l’absence d’aide.
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3_de_minimis_declaration
+  gate_family: G3_financial
+  requirement: For aid amounts below EUR 100,000, a sworn declaration regarding other de minimis
+    aid received must be provided, in accordance with Regulation (EU) 2023/2831 or Regulation
+    (EU) No 1407/2013.
+  value: Aid < EUR 100,000 requires de minimis declaration
+  intake_field: ticketBand
+  quote: pour les aides inférieures à 100.000 euros , une déclaration sur l’honneur qui porte
+    sur d’autres aides de minimis reçues conformément au règlement (UE) 2023/2831 ou au règlement
+    (UE) n° 1407/2013
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3_invoice_minimum
+  gate_family: G3_financial
+  requirement: Invoices of EUR 500 or less are not eligible for reimbursement under the aid.
+  value: 'Minimum eligible invoice: > EUR 500'
+  intake_field: none
+  quote: Il est à noter que les factures inférieures ou égales à 500 euros ne sont pas admissibles
+    à l’aide.
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g4_grant_mechanism
+  gate_family: G4_borrower_model
+  requirement: The aid is provided mainly in the form of a grant (subsidy) covering a percentage
+    of eligible costs.
+  value: Subvention (grant)
+  intake_field: borrowerModel
+  quote: Les entreprises porteuses d’un projet de recherche et développement (R&D) peuvent
+    bénéficier d’une aide principalement, sous forme de subvention.
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4_payment_after_completion
+  gate_family: G4_borrower_model
+  requirement: The capital subsidy is paid after project completion, though tranches may be
+    requested after part of the costs have been incurred.
+  value: Payment after completion, tranches possible
+  intake_field: borrowerModel
+  quote: La subvention en capital est versée après l’achèvement du projet.
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g5_eligible_costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs must be directly linked to the R&D project, including personnel,
+    instruments/equipment, contract research, and additional overheads.
+  value: 'Eligible costs: personnel, equipment, contract research, overheads directly linked
+    to R&D project'
+  intake_field: none
+  quote: 'Les coûts admissibles sont ceux directement liés aux projets de R&D , notamment
+    : les frais de personnel  : chercheurs, techniciens et autres personnels d’appui s’ils
+    sont employés pour le projet'
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_apply_before_work_starts
+  gate_family: G6_conditionality
+  requirement: The application must be submitted before the start of work on the project.
+  value: Application must precede start of works
+  intake_field: needBy
+  quote: La demande doit être transmise avant le début des travaux .
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_general_conditions
+  gate_family: G6_conditionality
+  requirement: Beneficiaries must meet the general conditions applicable to all aid in the
+    field of research, development and innovation.
+  value: Must meet general RDI aid conditions
+  intake_field: none
+  quote: Les bénéficiaires de l’aide doivent remplir les conditions générales applicables
+    à toutes les aides en matière de recherche, développement et innovation.
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: The application file must include company details, size classification, organisational
+    chart, last 2 years' annual accounts, project description with dates, economic potential,
+    eligible cost list, aid amount requested, business plan and financing plan showing own
+    funds.
+  quote: le nom et la description de l’entreprise ; la taille de l’entreprise, conformément
+    à l’annexe I du règlement (UE) n° 651/2014  ; l’organigramme de l’entreprise ; les comptes
+    annuels clôturés des 2 derniers exercices fiscaux de l’entreprise requérante
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: For collaboration bonus eligibility, research and knowledge-dissemination organisations
+    must bear at least 10% of eligible costs and have the right to publish their own research
+    results.
+  quote: 'Ces organismes doivent : supporter au moins 10 % des coûts admissibles ;  et avoir
+    le droit de publier les résultats de leurs propres recherches.'
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 3
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Not explicitly detailed beyond the de minimis declaration requirement for aid below
+    EUR 100,000.
+  quote: pour les aides inférieures à 100.000 euros , une déclaration sur l’honneur qui porte
+    sur d’autres aides de minimis reçues conformément au règlement (UE) 2023/2831 ou au règlement
+    (UE) n° 1407/2013
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited
+application:
+  channel: Online application via an assistant on My Guichet.lu, requiring LuxTrust or eID
+    authentication.
+  typical_timeline: Application must be submitted before the start of works; payment requested
+    after project completion or partial completion.
+  quote: Vous (ou votre mandataire) devez introduire la demande d’aide à travers un assistant
+    en ligne disponible sur My Guichet.lu .
+  source:
+    file: satr_lu_rnd_guichet_aides_rdi.html
+    locator: chunk 2
+  verified: llm_cited

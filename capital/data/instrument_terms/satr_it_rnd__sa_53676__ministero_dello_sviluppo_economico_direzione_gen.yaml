@@ -1,0 +1,38 @@
+id: satr_it_rnd__sa_53676__ministero_dello_sviluppo_economico_direzione_gen
+name: Aiuti a progetti di ricerca e sviluppo nel settore aerospaziale
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-aerospace-sector
+  gate_family: G1_nexus
+  requirement: Only enterprises that predominantly carry out industrial activities in the aerospace sector
+    may benefit from the financing.
+  value: Predominantly aerospace industrial activity
+  intake_field: none
+  quote: Possono beneficiare del finanziamento le imprese che svolgono in via prevalente attivita' industriali
+    nel settore aerospaziale
+  source:
+    file: https://www.incentivi.gov.it/it/catalogo/incentivi-ricerca-e-sviluppo-nel-settore-aerospaziale
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-sector-turnover-threshold
+  gate_family: G3_financial
+  requirement: In the two financial years preceding the application, the applicant must have recorded
+    average aerospace-sector turnover of at least 50% of total turnover (large enterprises) or at least
+    25% (others).
+  value: Aerospace turnover share >=50% (large) or >=25% (other), prior 2 years
+  intake_field: turnoverBand
+  quote: nei due esercizi precedenti la presentazione della domanda abbiano registrato un fatturato medio
+    nel settore di almeno il 50% per le grandi imprese o di almeno il 25%
+  source:
+    file: https://www.incentivi.gov.it/it/catalogo/incentivi-ricerca-e-sviluppo-nel-settore-aerospaziale
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (2/2 gates passed mechanical verbatim-substring
+  check -> llm_cited).

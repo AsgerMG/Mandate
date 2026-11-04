@@ -1,0 +1,85 @@
+id: eit_innoenergy_highway
+name: eit_innoenergy_highway
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-geography
+  gate_family: G1_nexus
+  requirement: Applicant companies should be based mainly in Europe, though USA and Japan
+    are also considered.
+  value: Mainly Europe, also USA and Japan
+  intake_field: entityCountries
+  quote: Mainly Europe, but also USA and Japan
+  source:
+    file: eit_innoenergy_highway_forstartups_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-sector
+  gate_family: G1_nexus
+  requirement: Applicant must operate in a clean tech / clean energy transition related field.
+  value: Clean tech / clean energy fields
+  intake_field: activityCountries
+  quote: Fields related to clean tech
+  source:
+    file: eit_innoenergy_highway_forstartups_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-development-stage
+  gate_family: G2_size_ownership
+  requirement: Applicant must be an early-stage company.
+  value: Early-stage development
+  intake_field: developmentStage
+  quote: Early-stage development
+  source:
+    file: eit_innoenergy_highway_forstartups_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-proof-of-concept
+  gate_family: G2_size_ownership
+  requirement: Applicant company must have at least a proof of concept or prototype developed.
+  value: At least proof of concept/prototype
+  intake_field: developmentStage
+  quote: Companies with at least a proof of concept/prototype
+  source:
+    file: eit_innoenergy_highway_forstartups_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-team
+  gate_family: G2_size_ownership
+  requirement: Applicant must have a complementary, diverse and execution-driven founding/management
+    team.
+  value: Complementary, diverse, execution-driven team
+  intake_field: borrowerModel
+  quote: A complementary, diverse and execution-driven team
+  source:
+    file: eit_innoenergy_highway_forstartups_page.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4-impact-solution
+  gate_family: G4_borrower_model
+  requirement: Investment targets people with high-impact solutions advancing the clean energy
+    transition, including CAPEX-heavy hardware, software, first-of-a-kind technologies, or
+    business model innovation.
+  value: High-impact clean energy transition solutions
+  intake_field: borrowerModel
+  quote: We invest in people with high-impact solutions advancing the clean energy transition
+    – be it CAPEX-heavy hardware solutions or software, FOAK technologies or business model
+    innovations.
+  source:
+    file: eit_innoenergy_highway_forstartups_page.html
+    locator: chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (6/6 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Apply via InnoEnergy's online application ("Apply now!")
+  typical_timeline: ''
+  quote: Apply now!
+  source:
+    file: eit_innoenergy_highway_forstartups_page.html
+    locator: chunk 1
+  verified: llm_cited

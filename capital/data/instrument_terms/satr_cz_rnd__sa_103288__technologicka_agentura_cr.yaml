@@ -1,0 +1,50 @@
+id: satr_cz_rnd__sa_103288__technologicka_agentura_cr
+name: Program na podporu aplikovaného výzkumu a inovací SIGMA
+administering_body: see source document
+country: CZ
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicant-types
+  gate_family: G1_nexus
+  requirement: Applicants may be research and knowledge-dissemination organisations, enterprises (legal
+    or natural persons carrying out economic activity), organisational units of the state, or territorial
+    self-governing units.
+  value: Research orgs, enterprises, state bodies, or territorial units
+  intake_field: borrowerModel
+  quote: Organizace pro výzkum a šíření znalostí – právnické osoby, které splňují definici výzkumné organizace
+    podle čl. 2 odst. 83 Nařízení
+  source:
+    file: https://tacr.gov.cz/program/program-sigma/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-cofinancing-capability
+  gate_family: G3_financial
+  requirement: Enterprise applicants must demonstrate the ability to co-finance the project from non-public
+    funds.
+  value: Must show non-public co-financing capability
+  intake_field: cofinancingBand
+  quote: které řeší projekt samostatně nebo ve spolupráci s dalšími účastníky a prokáží schopnost projekt
+    spolufinancovat z neveřejných prostředků.
+  source:
+    file: https://tacr.gov.cz/program/program-sigma/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-preferred-cooperation-model
+  gate_family: G1_nexus
+  requirement: The preferred model of cooperation is participation of an enterprise together with a research
+    organisation.
+  value: 'Preferred: enterprise + research org'
+  intake_field: consortium
+  quote: Preferovaným modelem spolupráce je účast podniku ve spolupráci s výzkumnou organizací.
+  source:
+    file: https://tacr.gov.cz/program/program-sigma/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

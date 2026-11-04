@@ -1,0 +1,273 @@
+id: ipcei_micro
+name: ipcei_micro
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Aid proposal must concern a single, clearly defined project or an integrated
+    group of complementary single projects aiming at the same objective (IPCEI).
+  value: single project or integrated project with common objective
+  intake_field: consortium
+  quote: the aid proposal concerns a single project which is clearly defined in respect of
+    its objectives as well as the terms of its implementation, including its participants
+    and its funding.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.77
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Aid must be granted by, and imputable to, the notifying Member States' national/regional
+    authorities (France, Germany, Italy, UK) via State budget or local resources.
+  value: France, Germany, Italy, UK national/regional authorities
+  intake_field: entityCountries
+  quote: The aid will be granted by the Direction General for Enterprise in France, by the
+    Federal Ministry for Economic Affairs and Energy in Germany, by the Ministry of Economic
+    Development in Italy and by the Welsh Government in the UK.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.76
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Support is only granted to the specific beneficiaries listed in the decision,
+    not open to all undertakings in a comparable situation.
+  value: listed beneficiaries only
+  intake_field: consortium
+  quote: The Member States only grant support to the beneficiaries listed in recital (248)
+    above and the funding is not available to all undertakings in a comparable situation.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.76
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: The project must involve important collaborative interactions including undertakings
+    of different sizes across the consortium.
+  value: undertakings of different sizes and sectors
+  intake_field: consortium
+  quote: the project involves important collaborative interactions in terms of number of partners,
+    involvement of organisations of different sectors and the involvement of undertakings
+    of different sizes.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.83
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: 'Co-financing by beneficiaries must be present: aid to individual beneficiaries
+    must not cover 100% of individual project costs.'
+  value: co-financing required; aid < 100% of project costs
+  intake_field: cofinancingBand
+  quote: co-financing of the beneficiaries is present, as evidenced by the fact that aid to
+    individual beneficiaries does not cover 100% of the individual projects' costs.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.83
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: Aid amount must not exceed the individually identified funding gap of each
+    beneficiary and must not exceed eligible costs; aid may reach up to 100% of eligible costs
+    provided it does not exceed the funding gap.
+  value: aid ≤ funding gap ≤ 100% eligible costs
+  intake_field: ticketBand
+  quote: The aid could reach up to 100% of the eligible costs, provided that the aid amount
+    does not exceed the funding gap.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.89
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: The project must be important in size or scope, evidenced by number of participants,
+    scale of total investment, and level of State aid.
+  value: 29 partners, 370 indirect partners, >EUR 7.8 billion total investment
+  intake_field: ticketBand
+  quote: As evidenced by the number of participating companies (29 partners and 370 indirect
+    partners), the amount of total investments (over EUR 7.8 billion) and the amounts of State
+    aid
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.86
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: Support is provided in the form of grants and loans for R&D&I and FID activities.
+  value: grants and loans
+  intake_field: borrowerModel
+  quote: the Commission considers that the public resources granted to the aid beneficiaries
+    in the form of grants and loans for the R&D&I and FID activities as described within the
+    framework of this IPCEI Microelectronics project qualify as State aid within the meaning
+    of Article 107(1) TFEU.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.76
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Funded R&D&I projects must be of major innovative nature or constitute important
+    added value in R&D&I relative to the state of the art.
+  value: major innovative R&D&I beyond state of the art
+  intake_field: developmentStage
+  quote: R&D&I projects must be of a major innovative nature or constitute an important added
+    value in terms of R&D&I in the light of the state of the art in the sector concerned.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.83
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: Funded First Industrial Deployment (FID) projects must enable a new product/service
+    with high research and innovation content and/or deployment of a fundamentally innovative
+    production process; regular upgrades or newer versions of existing products do not qualify.
+  value: new/innovative product or fundamentally innovative process, not regular upgrades
+  intake_field: developmentStage
+  quote: projects comprising of industrial deployment must allow for the development of a
+    new product or service with high research and innovation content and/or the deployment
+    of a fundamentally innovative production process. Regular upgrades without an innovative
+    dimension of existing facilities and the development of newer versions of existing products
+    do not qualify as IPCEI.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.83
+  verified: llm_cited
+- id: G5-03
+  gate_family: G5_use_of_funds
+  requirement: FID costs are only eligible where industrial deployment follows on from an
+    R&D&I activity and itself contains a very important R&D&I component that is an integral
+    and necessary element for successful implementation.
+  value: FID must contain very important embedded R&D&I component
+  intake_field: developmentStage
+  quote: the industrial deployment follows on from an R&D&I activity and itself contains a
+    very important R&D&I component47 which constitutes an integral and necessary element for
+    the successful implementation of the project48
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.91
+  verified: llm_cited
+- id: G5-04
+  gate_family: G5_use_of_funds
+  requirement: FID must not cover mass production or commercial activities; only costs incurred
+    before the end date of FID are eligible.
+  value: no mass production/commercial activity coverage
+  intake_field: developmentStage
+  quote: The Commission has also verified that FID does not cover mass production or commercial
+    activities.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.92
+  verified: llm_cited
+- id: G5-05
+  gate_family: G5_use_of_funds
+  requirement: Mere engineering work accompanying normal first industrial deployment activities
+    does not qualify as the required R&D&I in FID.
+  value: engineering work alone insufficient
+  intake_field: developmentStage
+  quote: Mere engineering work accompanying normal activities of first industrial deployment
+    does not constitute the required R&D&I in FID.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.91
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: Aid must be notified to the Commission before being put into effect (standstill
+    obligation under Article 108(3) TFEU).
+  value: prior notification required
+  intake_field: conditionality
+  quote: By notifying the measures before putting them into effect, the German, French, Italian
+    and the UK authorities have fulfilled their obligations under Article 108(3) TFEU.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.77
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: The funding must not relate to environmentally harmful subsidies, in line with
+    the principle of phasing out such subsidies.
+  value: no environmentally harmful subsidies
+  intake_field: conditionality
+  quote: the public funding of the IPCEI Microelectronics does not relate to environmentally
+    harmful subsidies, therefore it is not in conflict with the principle of phasing out such
+    subsidies, as required by point 19 of the IPCEI Communication.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.83
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: The aid must not subsidize costs that undertakings would anyhow incur nor compensate
+    for normal business risks; it must be necessary to induce a change in beneficiary behaviour.
+  value: must induce behavioural change, not cover normal business risk
+  intake_field: conditionality
+  quote: the Member States have sufficiently demonstrated that the aid measures do not subsidize
+    the costs of the projects that the undertakings would anyhow incur and do not compensate
+    for the normal business risks of the companies.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.89
+  verified: llm_cited
+obligations:
+- requirement: Execution of the project must be subject to regular reporting, including annual
+    reports on progress, results, and spillover actions.
+  quote: the execution of the project must be subject to regular reporting.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.97
+  verified: llm_cited
+- requirement: Member States must provide the Commission with an annual report containing
+    progress and results of the IPCEI Microelectronics, technology fields, and companies,
+    including detailed reporting on spillover actions undertaken and results achieved.
+  quote: The Member States must provide the Commission with an annual report, containing the
+    progress and results of the IPCEI Microelectronics, the technology fields and the companies.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.97
+  verified: llm_cited
+- requirement: Participating companies must report annually to their national funding authorities
+    on technical advancements and individually committed spillovers.
+  quote: the annual execution of the IPCEI Microelectronics activities as regards the technical
+    advancements and individually committed spillovers, will be subject to reporting by the
+    participating companies (to their national funding authorities)
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.97
+  verified: llm_cited
+- requirement: The transparency requirements of the IPCEI Communication must be fulfilled
+    by the Member States.
+  quote: The transparency requirement, specified in section 4.3 of the IPCEI Communication,
+    is fulfilled (see recital (258) above).
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.97
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/16 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Not explicitly detailed as a standalone cumulation clause in the extracted text; the
+    document references co-financing and eligible cost/funding gap ceilings rather than a
+    cumulation rule with other aid schemes.
+  quote: co-financing of the beneficiaries is present, as evidenced by the fact that aid to
+    individual beneficiaries does not cover 100% of the individual projects' costs.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.83
+  verified: llm_cited
+application:
+  channel: National notifying authorities (Direction General for Enterprise in France, Federal
+    Ministry for Economic Affairs and Energy in Germany, Ministry of Economic Development
+    in Italy, Welsh Government in the UK) notify aid measures to the European Commission for
+    assessment under Article 107(3)(b) TFEU as an IPCEI.
+  typical_timeline: Not specified in extracted text.
+  quote: The aid will be granted by the Direction General for Enterprise in France, by the
+    Federal Ministry for Economic Affairs and Energy in Germany, by the Ministry of Economic
+    Development in Italy and by the Welsh Government in the UK.
+  source:
+    file: ipcei_microelectronics_first_de_decision_2018.pdf
+    locator: p.76
+  verified: llm_cited

@@ -1,0 +1,22 @@
+(node:75071) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [recall floor]
+  answer key, 7,095 pairs:
+    GRADED          6779 (95.5%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD         316 (4.5%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+  corpus=postgres instruments=1088
+  ranker: all 297 request(s) on EMBEDDING
+  __recallSetDoors.json  300 tune pairs
+    ok   pool     94% (floor 89%)
+    ok   exact5   25% (floor 15%)
+    ok   regime5  76% (floor 69%)
+         ^ REGIME@5 under __recallSetDoors.json is not comparable with any figure measured under __recallSetComposed.json: a childless family is its own regime, so the metric no longer pays sibling-group-size credit. Quote EXACT@5 across the switch. See recallSet.ts.
+    ok   regime5  83% (floor 70%)  original join, n=92
+    ok   regime5  31% (floor 21%)  traced:childless_family, n=72
+    ok   regime5  96% (floor 88%)  traced:exact_attribution, n=136
+  [verdict] recall_floor = ok published as #256, code 5889531f42f7b8d3
+check_recall_floor: ok — 300 tune pairs of __recallSetDoors.json at seed 20260806, all floors met.

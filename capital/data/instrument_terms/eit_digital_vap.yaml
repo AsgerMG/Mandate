@@ -1,0 +1,269 @@
+id: eit_digital_vap
+name: eit_digital_vap
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_prior_eic_support
+  gate_family: G1_nexus
+  requirement: Applicant must currently be supported by, or have previously been supported
+    by, the EIC Accelerator/SME Instrument, or hold an EIC Seal of Excellence.
+  value: EIC beneficiary or Seal of Excellence holder
+  intake_field: institutionalBacking
+  quote: You are supported by the EIC or have been previously supported by the EIC Accelerator/SME
+    Instrument or you are a Seal of Excellence holder
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.4
+  verified: llm_cited
+- id: g1_hq_location
+  gate_family: G1_nexus
+  requirement: The applicant company's headquarters must be based in the EU 27 or in a Horizon
+    Europe associated country.
+  value: EU27 or Horizon Europe associated country HQ
+  intake_field: entityCountries
+  quote: Your headquarter is based in the EU 27 or in one of the Horizon Europe associated
+    countries
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.4
+  verified: llm_cited
+- id: g1_incorporation_date_2022
+  gate_family: G1_nexus
+  requirement: The applicant company must have been incorporated after 1 January 2012.
+  value: Incorporated after 01/01/2012
+  intake_field: foundedYear
+  quote: Your company was incorporated after 01/01/2012
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.4
+  verified: llm_cited
+- id: g1_domain_fit
+  gate_family: G1_nexus
+  requirement: The company must operate in one of five defined digital domains.
+  value: Digital Industry, Digital Cities, Digital Wellbeing, Digital Tech, Digital Finance
+  intake_field: developmentStage
+  quote: 'The company operates in one of the following five domains: Digital Industry, Digital
+    Cities,
+
+    Digital Wellbeing, Digital Tech and Digital Finance.'
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.4
+  verified: llm_cited
+- id: g3_financial_threshold
+  gate_family: G3_financial
+  requirement: 'The company must meet at least one of three financial thresholds: minimum
+    €300,000 annual revenue in 2021, minimum €300,000 revenue in 2022 (through June 30), or
+    €2,000,000 total funding received.'
+  value: €300,000 revenue (2021 or H1 2022) OR €2,000,000 total funding received
+  intake_field: turnoverBand
+  quote: 'Min. €300,000 annual revenue (2021) OR
+
+    o
+
+    Min. €300,000 revenue (In 2022 until June 30) OR
+
+    o
+
+    €2,000,0000 of total funding received.'
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.4
+  verified: llm_cited
+- id: g4_grant_value
+  gate_family: G4_borrower_model
+  requirement: Selected companies receive a non-repayable growth support package (services/access
+    to finance and market) valued at €50,000, not a loan or equity investment from the programme.
+  value: €50,000 growth support package (in-kind services)
+  intake_field: borrowerModel
+  quote: 'a collaboration model that allows selected EIC
+
+    beneficiaries and Seal-of-Excellence holders access to the EIT Digital international growth
+    support
+
+    package worth 50.000 EUR, in 2022.'
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.3
+  verified: llm_cited
+- id: g5_use_of_support
+  gate_family: G5_use_of_funds
+  requirement: Support must be used for access-to-finance and access-to-market services aimed
+    at raising Series A/B funding and expanding international market share.
+  value: Access to Finance and Access to Market services
+  intake_field: none
+  quote: 'Access to Finance, raising capital: Financing needs assessment, investment-readiness
+    coaching,
+
+    investor meetings, exclusive investor events, links to over 1000+ international VCs.'
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.3
+  verified: llm_cited
+- id: g1_selection_cap
+  gate_family: G1_nexus
+  requirement: Only ten digital scaleups are finally selected by the EIT Digital Management
+    Committee through a competitive multi-step process.
+  value: 10 companies selected
+  intake_field: none
+  quote: Final selection of ten digital scaleups by the EIT Digital Management Committee
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.4
+  verified: llm_cited
+- id: g1_vip_incorporation_2025
+  gate_family: G1_nexus
+  requirement: For the 28DIGITAL Venture Incubation Program, applicant startups must be incorporated
+    in 2025 or later; startups incorporated before 1 January 2025 are not eligible.
+  value: Incorporated 2025 or later
+  intake_field: foundedYear
+  quote: Startups incorporated before 1 January 2025 are not eligible.
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_venture_program_page.html#chunk 1
+  verified: llm_cited
+- id: g1_vip_location
+  gate_family: G1_nexus
+  requirement: Applicants must reside in or be established in an eligible EU Member State
+    or a listed Horizon Europe Associated Country.
+  value: EU Member States + Montenegro, North Macedonia, Serbia, Türkiye, Ukraine
+  intake_field: entityCountries
+  quote: "Horizon Europe Associated Countries \n Montenegro, North Macedonia, Serbia, Türkiye,\
+    \ Ukraine."
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_venture_program_page.html#chunk 1
+  verified: llm_cited
+- id: g2_vip_team_size
+  gate_family: G2_size_ownership
+  requirement: Applicant must be a multidisciplinary team with a minimum of two members.
+  value: Minimum 2 team members
+  intake_field: none
+  quote: open to multidisciplinary teams (minimum two members) and early-stage startups incorporated
+    in 2025 or later who reside in or are established in one of the following eligible locations
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_venture_program_page.html#chunk 1
+  verified: llm_cited
+- id: g1_vip_one_application
+  gate_family: G1_nexus
+  requirement: Only one application per team or startup is allowed for the call.
+  value: One application per team/startup
+  intake_field: none
+  quote: Only one application per team or startup is allowed.
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_venture_program_page.html#chunk 1
+  verified: llm_cited
+- id: g1_vip_domain_stage
+  gate_family: G1_nexus
+  requirement: Applicants must operate within one of 28DIGITAL's strategic domains and demonstrate
+    a prototype, Proof-of-Concept, or near-MVP stage.
+  value: Prototype/PoC/near-MVP stage, strategic domain fit
+  intake_field: developmentStage
+  quote: Applicants must operate within one of 28DIGITAL’s strategic domains and demonstrate
+    a prototype, Proof-of-Concept, or near-MVP stage.
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_venture_program_page.html#chunk 1
+  verified: llm_cited
+- id: g4_vip_prizes
+  gate_family: G4_borrower_model
+  requirement: 'Selected teams receive non-repayable cash prizes: €5,000 Growth Package Prize
+    after Stage 1 and up to €25,000 Final Prize based on performance in Stage 2.'
+  value: €5,000 Stage 1 prize + up to €25,000 Stage 2 prize
+  intake_field: borrowerModel
+  quote: Selected teams receive a €5,000 Growth Package Prize.
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_venture_program_page.html#chunk 1
+  verified: llm_cited
+- id: g6_vip_equity_commitment
+  gate_family: G6_conditionality
+  requirement: Selected ventures must commit to providing 28DIGITAL with 5% equity through
+    a SAFE (Simple Agreement for Future Equity) in exchange for the support package.
+  value: 5% equity via SAFE
+  intake_field: conditionality
+  quote: Selected ventures will commit to providing 28DIGITAL with 5% equity through a SAFE
+    (Simple Agreement for Future Equity).
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_venture_program_page.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Selected companies must sign the Scaleup Support Agreement with EIT Digital
+    Accelerator.
+  quote: Sign the Scaleup Support Agreement with EIT Digital Accelerator
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.5
+  verified: llm_cited
+- requirement: Selected companies must appoint internal resources to ensure successful collaboration
+    with the EIT Digital Accelerator.
+  quote: 'Appoint the necessary internal resources to allow for a successful collaboration
+    with the EIT
+
+    Digital Accelerator, minimize collaboration delays and maximize impact'
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.5
+  verified: llm_cited
+- requirement: Selected companies must submit a mandatory final report at the end of the acceleration
+    period covering the acceleration description, key objectives identified, and lessons learned.
+  quote: 'A mandatory final report is expected at the end of the acceleration period. Templates
+    for the
+
+    reports will be provided. The reports will contain at least:
+
+    Acceleration description
+
+    o
+
+    Key objectives (pain points) identified
+
+    o
+
+    Lessons learned (successes and outcomes)'
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.5
+  verified: llm_cited
+- requirement: A success fee will apply for deals closed after the 12-month acceleration period,
+    though no fee applies during the acceleration period itself.
+  quote: 'No success fees will be charged for deals closed during the 12
+
+    months of acceleration period. However, for deals closed after said 12 months, a success
+    fee will
+
+    apply.'
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.5
+  verified: llm_cited
+- requirement: Teams must incorporate their venture and demonstrate a validated MVP before
+    applying for the Final Prize stage.
+  quote: Teams that successfully complete Stage 1, incorporate their venture, and demonstrate
+    a validated MVP may apply for the Final Prize stage.
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_venture_program_page.html#chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online submission tool / application form
+  typical_timeline: 'EIT Digital Accelerator 2022: submissions opened 29 March 2022, closed
+    10 May 2022, support started 1 July 2022. 28DIGITAL Venture Incubation Program: applications
+    close 9 June 2026 at 17:00 Brussels time.'
+  quote: 'Submissions open: March 29, 2022, 12:00 CEST
+
+    • Submissions close: May 10, 2022, 17:00 CEST.
+
+    • Accelerator support (indicative) start date: July 01, 2022'
+  source:
+    file: eit_digital_vap_venture_program_page.html
+    locator: eit_digital_vap_call_2022.pdf#p.3
+  verified: llm_cited

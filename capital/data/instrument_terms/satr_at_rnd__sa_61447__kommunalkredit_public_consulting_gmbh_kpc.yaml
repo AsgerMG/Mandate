@@ -1,0 +1,74 @@
+id: satr_at_rnd__sa_61447__kommunalkredit_public_consulting_gmbh_kpc
+name: klimaaktiv mobil, Verlängerung
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-groups
+  gate_family: G1_nexus
+  requirement: Eligible target groups are businesses and other commercially active organisations, local
+    authorities (cities/municipalities), religious communities, associations, and federations.
+  value: Business, local authority, religious community, association, or federation
+  intake_field: borrowerModel
+  quote: "Zielgruppen dieses Förderungsprogramms sind Betriebe und sonstige unternehmerisch tätige\n \
+    \        Organisationen, Gebietskörperschaften wie Städte und Gemeinden sowie Konfessionsgemeinschaften,\
+    \ Vereine\n         und Verbände."
+  source:
+    file: https://www.umweltfoerderung.at/mittelherkunft/klimaaktiv-mobil
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-individuals-and-private-use-excluded
+  gate_family: G1_nexus
+  requirement: Private individuals and projects mainly for private use are excluded from funding.
+  value: Private individuals / private-use projects excluded
+  intake_field: none
+  quote: "Von der Förderung ausgenommen sind Privatpersonen und Projekte, welche hauptsächlich der privaten\n\
+    \         Nutzung dienen."
+  source:
+    file: https://www.umweltfoerderung.at/mittelherkunft/klimaaktiv-mobil
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-other-schemes-excluded
+  gate_family: G5_use_of_funds
+  requirement: Projects already funded by other support systems (e.g. agricultural or housing subsidy
+    schemes) are excluded.
+  value: Projects funded elsewhere (agri/housing schemes) excluded
+  intake_field: none
+  quote: "Projekte, die von anderen Förderungssystemen, beispielsweise der Landwirtschafts- oder der\n\
+    \         Wohnbauförderung gefördert werden, sind ebenfalls ausgenommen."
+  source:
+    file: https://www.umweltfoerderung.at/mittelherkunft/klimaaktiv-mobil
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-investment-by-applicant
+  gate_family: G6_conditionality
+  requirement: The investment must be made and operated by the applicant itself (subject to exceptions
+    for leasing and contracting arrangements).
+  value: Applicant must make and operate the investment
+  intake_field: none
+  quote: Die Investition ist von der antragsstellenden Person zu tätigen und zu betreiben.
+  source:
+    file: https://www.umweltfoerderung.at/mittelherkunft/klimaaktiv-mobil
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+- id: g1-gesbr-excluded
+  gate_family: G1_nexus
+  requirement: A civil-law partnership (GesbR) is not a legal person and therefore cannot act as the applicant/recipient.
+  value: GesbR cannot be applicant
+  intake_field: none
+  quote: "Eine Gesellschaft bürgerlichen Rechts ist keine juristische Person und kann daher nicht als\n\
+    \         förderungswerbende/empfangende Person auftreten."
+  source:
+    file: https://www.umweltfoerderung.at/mittelherkunft/klimaaktiv-mobil
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (5/5 gates passed mechanical verbatim-substring
+  check -> llm_cited).

@@ -1,0 +1,80 @@
+(node:63889) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T22:45:08.113Z
+ranker: all 500 request(s) on EMBEDDING
+set=__recallSetDoors.json split=holdout replayed 250
+  founder intake — 23 askable fields, identity=real own-history=withheld capital=withheld answers=off consortium=yes
+    DERIVED   entityCountries      set  250/250 (100%)  own  250/250 (100%)  companies.country
+    DERIVED   organisationType     set  103/250 ( 41%)  own  103/250 ( 41%)  prefillOrganisationType(company name) — production's own classifier
+    DERIVED   region               set    0/250 (  0%)  own    0/250 (  0%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set  250/250 (100%)  own  250/250 (100%)  companies.sector_top
+    DERIVED   ticketBand           set  250/250 (100%)  own    0/250 (  0%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set  250/250 (100%)  own    0/250 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set  250/250 (100%)  own    0/250 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set  250/250 (100%)  own    0/250 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
+published cap under test: BRIEF_LIMITS.institutionsMax=6, writer cap 7
+  tier 1 (usedInField) live for the won leaf's own channel on 62/250 (24.8% +/-5.4) of pairs — peers only, never this founder
+
+── THE INSTANT SCREEN ──
+  SCREEN@5  55/250 (22.0% +/-5.1)
+  SCREEN@6  63/250 (25.2% +/-5.4)
+  gain of the sixth row on the screen: +3.2 pts (8 pairs)
+
+── THE MEMO'S CANDIDATE ORDER (what the cut actually cuts) ──
+  MEMO@1   12/250 (4.8% +/-2.6)
+  MEMO@2   19/250 (7.6% +/-3.3)
+  MEMO@3   27/250 (10.8% +/-3.8)
+  MEMO@4   37/250 (14.8% +/-4.4)
+  MEMO@5   45/250 (18.0% +/-4.8)
+  MEMO@6   53/250 (21.2% +/-5.1)
+  MEMO@7   61/250 (24.4% +/-5.3)   <- writer cap
+  gain of the sixth row in the memo: +3.2 pts (8 pairs)
+  ██ MEMO@6 21.2% against SCREEN@6 25.2% — the memo keeps 84% of what the screen got right
+
+  memo order depth: min 11 p25 16 median 17 max 18
+  founders whose memo order even HAS a sixth row: 250/250 (100.0%)
+
+── WHERE THE GAIN LANDS (memo rank exactly 6) ──
+  8 pairs across 6 distinct regimes and 5 countries
+    vinnova_grant                                      2
+    bdns_es_ayudas                                     2
+    ademe_aid                                          1
+    satr_it_rnd                                        1
+    satr_fr_rnd                                        1
+    satr_nl_rnd                                        1
+  largest single regime holds 2 of 8 (25%)
+
+── WHERE THE MEMO LOSES A LEAF THE POOL HELD (wsCT owns the fix) ──
+  won leaf inside the memo pool (top 18):        123/250 (49.2% +/-6.2)
+  ...and inside its first six BEFORE the re-sort: 63/250 (25.2% +/-5.4)
+  ...and inside the memo order after re-sort/drop: 53/250 (21.2% +/-5.1)
+  in the pool but absent from the memo order: 18
+    VER-BLOCKED                           17
+    SEL-DUPE-NAME                          1
+  the fit re-sort moves the won leaf OUT of the top six 14 times, INTO it 4 times
+
+  screen and memo agree on the won leaf's rank in 44/49 pairs where both contain it

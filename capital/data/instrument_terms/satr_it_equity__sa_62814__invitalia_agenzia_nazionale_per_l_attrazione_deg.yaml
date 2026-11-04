@@ -1,0 +1,44 @@
+id: satr_it_equity__sa_62814__invitalia_agenzia_nazionale_per_l_attrazione_deg
+name: Misure per l’autoimprenditorialità - Nuove imprese a tasso zero
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g2-micro-small-recent
+  gate_family: G2_size_ownership
+  requirement: Micro and small enterprises must have been established no more than 60 months before the
+    aid application date.
+  value: Established <= 60 months before application
+  intake_field: foundedYear
+  quote: Micro e piccole imprese costituite da non piu' di 60 mesi alla data di presentazione della domanda
+    di agevolazione
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/misure-per-l-autoimprenditorialita-nuove-imprese-a-tasso-zero
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-ownership-age-gender
+  gate_family: G2_size_ownership
+  requirement: More than half of the shareholders and shareholding must be held by persons aged 18-35
+    or by women.
+  value: '>50% of shareholders/shares held by persons aged 18-35 or by women'
+  intake_field: none
+  quote: la compagine societaria sia composta, per oltre la meta' numerica dei soci e di quote di partecipazione,
+    da soggetti di eta' compresa tra i 18 ed i 35 anni ovvero da donne
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/misure-per-l-autoimprenditorialita-nuove-imprese-a-tasso-zero
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-individuals-may-apply
+  gate_family: G1_nexus
+  requirement: Individuals intending to establish a new company may also apply.
+  value: Individuals intending to found a company may apply
+  intake_field: borrowerModel
+  quote: Possono presentare domanda anche persone fisiche che intendano costituire una nuova impresa.
+  source:
+    file: https://www.mimit.gov.it/it/incentivi/misure-per-l-autoimprenditorialita-nuove-imprese-a-tasso-zero
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

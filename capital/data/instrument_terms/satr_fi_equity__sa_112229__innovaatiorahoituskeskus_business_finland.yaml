@@ -1,0 +1,67 @@
+id: satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland
+name: Business Finlandin tukiohjelma tutkimus- ja kehittämishankkeisiin
+administering_body: see source document
+country: FI
+capital_type: unknown
+status: draft
+gates:
+- id: g1-operating-in-finland
+  gate_family: G1_nexus
+  requirement: Funding is intended for companies operating in Finland.
+  value: Must be operating in Finland
+  intake_field: entityCountries
+  quote: Rahoitus on tarkoitettu Suomessa toimiville yrityksille.
+  source:
+    file: https://www.businessfinland.fi/en/services/funding/funding-services/research-and-development-funding/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-sole-trader-as-natural-person
+  gate_family: G1_nexus
+  requirement: A sole trader is treated as a natural person for eligibility purposes.
+  value: Sole traders classed as natural persons
+  intake_field: borrowerModel
+  quote: Yksityinen elinkeinonharjoittaja katsotaan luonnolliseksi henkilöksi.
+  source:
+    file: https://www.businessfinland.fi/en/services/funding/funding-services/research-and-development-funding/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-any-size
+  gate_family: G2_size_ownership
+  requirement: Funding is granted to companies of any size.
+  value: All company sizes eligible
+  intake_field: turnoverBand
+  quote: Rahoitusta myönnetään kaiken kokoisille yrityksille.
+  source:
+    file: https://www.businessfinland.fi/en/services/funding/funding-services/research-and-development-funding/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g3-excl-firm-in-difficulty
+  gate_family: G3_financial
+  requirement: Funding is not granted to companies in difficulty as defined in Article 2(18) of the General
+    Block Exemption Regulation.
+  value: 'Excluded: undertaking in difficulty (GBER Art. 2(18))'
+  intake_field: lossesOverHalfCapital
+  quote: Rahoitusta ei myönnetä vaikeuksissa oleville yrityksille niin kuin ne on määritelty yleisen ryhmäpoikkeusasetuksen
+    2 artiklan 18 kohdassa.
+  source:
+    file: https://www.businessfinland.fi/en/services/funding/funding-services/research-and-development-funding/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-unpaid-recovery-order
+  gate_family: G3_financial
+  requirement: Funding is not paid to a company subject to an unpaid recovery order issued after a prior
+    Commission decision declaring aid unlawful and incompatible with the internal market.
+  value: 'Excluded: unpaid EC recovery order'
+  intake_field: none
+  quote: Rahoitusta ei makseta yritykselle, jolle on annettu sellaiseen komission aikaisempaan päätökseen
+    perustuva maksamaton perintämääräys, jossa tuki on julistettu sääntöjenvastaiseksi ja sisämarkkinoille
+    soveltumattomaksi
+  source:
+    file: https://www.businessfinland.fi/en/services/funding/funding-services/research-and-development-funding/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

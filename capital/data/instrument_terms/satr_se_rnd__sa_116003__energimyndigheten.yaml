@@ -1,0 +1,55 @@
+id: satr_se_rnd__sa_116003__energimyndigheten
+name: Förordning (2008:761) om statligt stöd till forskning och utveckling samt innovation inom energiområdet
+  (förlängning)
+administering_body: see source document
+country: SE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-not-individuals
+  gate_family: G1_nexus
+  requirement: Aid may be given to companies and non-companies, but not to private individuals.
+  value: Companies and non-company entities only, no individuals
+  intake_field: borrowerModel
+  quote: Stöd får lämnas till företag och andra än företag. Stöd får dock inte lämnas till privatpersoner.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-2008761-om-statligt-stod-till_sfs-2008-761/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-apply-before-start
+  gate_family: G6_conditionality
+  requirement: A precondition for aid is that a written application has been submitted to the authority
+    before work on the activity or project begins.
+  value: Written application required before work starts
+  intake_field: needBy
+  quote: En förutsättning för stöd är att en skriftlig ansökan om stöd lämnats in till myndigheten innan
+    arbetet med verksamheten eller projektet inleds.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-2008761-om-statligt-stod-till_sfs-2008-761/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-utilization-requirement
+  gate_family: G6_conditionality
+  requirement: Aid may only be granted if the Swedish Energy Agency assesses that the results can be put
+    to use.
+  value: Results must be assessed as usable
+  intake_field: none
+  quote: Stöd får endast medges om Statens energimyndighet bedömer att resultatet kan komma att nyttiggöras.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-2008761-om-statligt-stod-till_sfs-2008-761/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-no-double-funding
+  gate_family: G6_conditionality
+  requirement: Aid may not be given for costs for which public aid has already been given.
+  value: No double funding of the same costs
+  intake_field: none
+  quote: Stöd får inte lämnas för kostnader som offentligt stöd redan har lämnats för.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-2008761-om-statligt-stod-till_sfs-2008-761/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

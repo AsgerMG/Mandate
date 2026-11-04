@@ -1,0 +1,212 @@
+# prodcheck, A.M.L. MICROTECHNIQUE LORRAINE, after the fix
+#
+# PRODCHECK_URL=http://localhost:3100 -- a server running THIS BRANCH against live
+# Postgres. NOT the deployment: euro-inv-tracker.vercel.app serves main, and this
+# branch is not merged. The corpus is the same one production ranks on (POSTGRES,
+# 1088 instruments); the code is the difference.
+#
+# BEFORE (run_2026-08-18.txt, the live deployment):
+#   row 5 = Regime cadre exempte ... PME pour la periode 2014-2020, SA.40453,
+#           scheme_end_date 2020-12-30, EUR 980,817 typical award, link 200,
+#           next step 'confirm this regime is still accepting applications'.
+#
+# AFTER: SA.40453 appears nowhere in this run. All seven published schemes carry
+#        a live window -- SA.111728 and SA.112158 run to 2026-12-30.
+#        The won fund SA.40391, itself a scheme that ended 2020-12-30, is now
+#        ABSENT from the candidate pool rather than counted as reachable.
+
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [prodcheck]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+
+──────────────────────────────────────────────────────────────────────────────
+PRODCHECK — one founder, through the live deployment
+──────────────────────────────────────────────────────────────────────────────
+deployment   http://localhost:3100   (from data/guard_registry.json)
+founder      A.M.L. MICROTECHNIQUE LORRAINE  (FR, sector semiconductors_electronics)
+answer key   __recallSetDescribed.json — this company really won Ministère de l'économie et des finances  [satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances]
+description  "AML est une entreprise industrielle innovante, disposant de compétences \nprocess élargies, reconnues dans les domaines hyperfréquences aéronautiques. \nLe projet vise à mettre en œuvre une technologie disruptive de \nfonctionnalisation de surface, complément essentiel de la chaine de valeur de \nla fabrication additive. Cette diversification a pour objectif le développement \nde nouveaux dépôts sur tous types de matériaux."
+
+This is a LOOK at one founder, not a measurement. No percentage is printed
+and none may be derived from it.
+
+──────────────────────────────────────────────────────────────────────────────
+1. THE CORPUS THE DEPLOYMENT RANKED ON
+──────────────────────────────────────────────────────────────────────────────
+source       POSTGRES
+instruments  1088
+observedAt   2026-08-18T19:38:21.872Z
+
+──────────────────────────────────────────────────────────────────────────────
+2. THE FUND THIS COMPANY ACTUALLY WON
+──────────────────────────────────────────────────────────────────────────────
+won          Ministère de l'économie et des finances  [satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances]
+pool         ABSENT from the candidate pool   (by instrument id — exact)
+first screen ABSENT from the six instant rows   (by instrument id — exact)
+published    ABSENT from the published table   (by EXACT name — published rows carry no instrument id, so this cannot be an id match; trust the pool row above)
+
+──────────────────────────────────────────────────────────────────────────────
+3. THE PUBLISHED ROWS (7)
+──────────────────────────────────────────────────────────────────────────────
+
+1. Chips JU KDT  (EU)
+   family    Chips Joint Undertaking
+   money     Typical award EUR 241,151 · 2,174 awards  ·  ticket Large; EU grant blended with national co-funding
+   verdict   open (2 encoded filters evaluated)
+   link      200 ok  programme  https://www.chips-ju.europa.eu/calls
+
+2. Eurohpc  (EU)
+   family    Horizon Europe partnerships & Joint Undertakings
+   money     Typical award EUR 326,813 · 347 awards  ·  ticket Typically €0.5M–€5M per partner, partnership-routed
+   verdict   open (1 encoded filters evaluated)
+   link      200 ok  programme  https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home
+
+3. Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026 · rnd  sa 111728  region grand est  (FR)
+   family    FR R&D state aid regime
+   money     Typical award EUR 170,000 · 73 awards  ·  ticket Wide, scheme-dependent: from €100k to tens of €M under GBER
+   verdict   open (9 encoded filters evaluated)
+   link      200 ok  scheme  https://competition-cases.ec.europa.eu/cases/SA.111728
+
+4. Horizon EU CL4  (EU)
+   family    Horizon Europe Pillar II (all clusters)
+   money     Typical award EUR 381,500 · 10,666 awards  ·  ticket Typically €0.5M–€5M per partner inside a multi-partner consortium
+   verdict   open (6 encoded filters evaluated)
+   link      200 ok  programme  https://ec.europa.eu/info/funding-tenders/opportunities/portal/screen/home
+
+5. Bpifrance · inov  (FR)
+   money     Typical award EUR 449,356 · 705 awards  ·  ticket Wide: grants and soft loans from €100k to €10M+  ·  intensity 45%
+   verdict   open (8 encoded filters evaluated)
+   link      200 ok  apply  https://www.picxel.bpifrance.fr/accueil
+
+6. Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026  (FR)
+   family    FR R&D state aid regime
+   money     Typical award EUR 484,000 · 368 awards  ·  ticket Wide, scheme-dependent: from €100k to tens of €M under GBER
+   verdict   open (7 encoded filters evaluated)
+   link      200 ok  scheme  https://competition-cases.ec.europa.eu/cases/SA.112158
+
+7. Soutien à la modernisation des industries techniques et à l'innovation technologique  (FR)
+   family    FR R&D state aid regime
+   money     Typical award EUR 89,858 · 71 awards  ·  ticket Wide, scheme-dependent: from €100k to tens of €M under GBER
+   verdict   open (7 encoded filters evaluated)
+   link      200 ok  scheme  https://competition-cases.ec.europa.eu/cases/SA.111938
+
+──────────────────────────────────────────────────────────────────────────────
+4. THE MEMO, AS WRITTEN — read it, do not parse it
+──────────────────────────────────────────────────────────────────────────────
+
+## Bottom line
+
+- You have €1.0M in traced public funding from a 2021 state-aid dev-bank award. Comparable aerospace suppliers like Figeac Aéro drew €4.3M and Ratier-Figeac €28.9M through repeated national and EU awards over several years.
+
+- Start with the Grand Est regional scheme (satr_fr_rnd__sa_111728). It is a national R&D aid line open to industrial companies established more than a year ago in your region, and nothing in the screen closes it to you.
+
+- The ADEME ecodesign fund is also worth opening now. You confirmed you have not started the work and would apply before beginning, which is exactly the incentive-effect condition ADEME requires.
+
+- Chips JU, EuroHPC and Horizon CL4 stay open on the screen but need a multi-partner consortium across several countries, so treat them as a medium-term track rather than this month's action.
+
+- The near-term payoff is a non-dilutive grant against your surface-functionalization R&D, sized to what these schemes actually pay per project, not a stake in your company and not a loan to repay.
+
+
+## Positioning
+
+Frame your pitch around what each door actually rewards. For the Grand Est regional scheme and Bpifrance, the case is industrial: an established manufacturer in Grand Est diversifying a proven hyperfrequency-aerospace process base into a new surface-treatment capability that serves aerospace primes and additive-metal producers. For ADEME, the case is narrower: your written application must land before any experimental work starts, so lead with the project description, not results you do not yet have. For Chips JU and Horizon CL4, the case is consortium fit: your surface-functionalization technology is a process step other value-chain partners need, so position it as a capability a foundry, an additive-manufacturing house or an aerospace tier-1 would want inside their own bid, since your revenue model is equipment sold or leased to whoever eventually bears the cost, the aerospace manufacturer or prime. None of the evidence says you sell to a public buyer or an end consumer, so keep the argument to the process capability and its industrial use, not to any named customer type beyond what you have stated.
+
+## State of play
+
+Horizon CL4 sits inside a live redesign: the Commission's 16 July 2025 proposal folds Horizon Europe's budget into a new European Competitiveness Fund from 2028, split into four windows, with a Digital leadership window worth €51.5B and a Resilience, security, defence, industry and space window worth €125.2B. Which window absorbs industrial process technologies like yours, and on what criteria, is still being negotiated with the Council and Parliament, so an application built on today's CL4 framing may need to be re-argued once the window boundaries are set. EuroHPC has also opened new quantum-access calls and bundled quantum compute allocations into its existing infrastructure rules as of June 2026, which matters if you use HPC resources to validate coatings or deposition processes ahead of an EuroHPC or Horizon bid. Your national and regional rows (Grand Est, ADEME, CNC) are not tracked in this policy corpus, so nothing here implies a near-term change to their gates.
+
+## Caveats
+
+Figures shown are committed amounts from public registers on each instrument's own reporting basis, not cash received; database coverage varies by country and instrument, so absence from it is not proof that no funding exists.
+
+## What the memo says about each row
+
+### Chips JU KDT
+what it is  Grants · mostly semiconductors & electronics
+why         Your semiconductor-adjacent surface-functionalization work fits the Chips JU value chain, and nothing in the screen excludes you, but the scheme funds consortia, not single companies.
+next step   Contact an RTO or foundry already active in Chips JU to explore joining a consortium bid.
+
+### Eurohpc
+what it is  Grants · mostly semiconductors & electronics
+why         No written assessment for this row; 1 of this scheme's own eligibility rules were checked and none rules this company out.
+next step   Confirm the current call and its eligibility criteria with the body running this scheme.
+
+### Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026 · rnd  sa 111728  region grand est
+what it is  Grants · Grand Est · mostly industrial manufacturing
+why         You are an industrial manufacturer established over a year ago in Grand Est, which is exactly what this GBER Article 25 R&D regime requires.
+next step   Contact the Conseil régional Grand Est to open an R&D aid dossier under this regime.
+
+### Horizon EU CL4
+what it is  Grants · mostly semiconductors & electronics
+why         Your surface-functionalization R&D fits the Digital/Industry cluster's scope, and you confirmed you can run in a 3+ partner consortium, which this instrument requires.
+next step   Search the EU Funding & Tenders Portal for an open CL4 call matching your technology and start partner outreach.
+
+### Bpifrance · inov
+what it is  Grants · mostly software & AI
+why         Your project cost is expected to fall inside the €1M-€5M band this scheme requires, and you are a single applicant filing a non-collaborative project, which fits its rule.
+next step   Open an Aide à l'innovation dossier directly with Bpifrance for the next vague.
+
+### Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026
+what it is  Grants · mostly mobility & transport
+why         This scheme funds R&D for decarbonisation and safety in air transport, a category your surface-functionalization work for aerospace parts sits inside.
+next step   Confirm with the granting authority for this scheme which office administers applications for your project.
+
+### Soutien à la modernisation des industries techniques et à l'innovation technologique
+what it is  Grants · mostly software & AI
+why         This scheme funds modernisation of technical industries and is administered by CNC, and nothing in the screen rules your company out on control or establishment grounds.
+next step   Contact CNC directly to confirm the current call and application route for your project.
+
+
+## The eligibility screen the founder is shown
+
+- [met] Undertaking-in-difficulty exclusion — Not in difficulty on the share-capital limb; the GBER exclusion does not bite.
+- [met] Consortium-based instruments — Consortium-ready: the Horizon/JU family and collaboration bonuses stay on the table.
+- [not_met] IPCEI-class projects — The stated ticket sits below IPCEI scale; the instrument is not a realistic lane for this raise.
+- [info] De minimis headroom — Small national schemes typically run under the de minimis ceiling of EUR 300,000 over three years, counted across the whole group; prior aid in our register counts toward it.
+- [met] Bpifrance: Applicant must be a company registered in France in the commercial and companies register (RCS) at the time of application submission. — Applicant must be a company registered in France in the commercial and companies register (RCS) at the time of application submission.
+- [met] Bpifrance: The applicant must not be an 'undertaking in difficulty' under EU law, otherwise the project is ineligible. — The applicant must not be an 'undertaking in difficulty' under EU law, otherwise the project is ineligible.
+- [met] Bpifrance: The applicant must be up to date with its fiscal and social obligations. — The applicant must be up to date with its fiscal and social obligations.
+- [met] Bpifrance: The project must present a total cost of between €1 million and €5 million, except in exceptional cases. — The project must present a total cost of between €1 million and €5 million, except in exceptional cases.
+- [likely_met] Bpifrance: Company must be registered/operating in France — Company must be registered/operating in France
+- [likely_met] Bpifrance: Company must not be in financial distress (not have lost more than half its capital) — Company must not be in financial distress (not have lost more than half its capital)
+- [likely_met] Bpifrance: Applicant is a single operating company (not a fund or holding-only structure) — Applicant is a single operating company (not a fund or holding-only structure)
+- [likely_met] Bpifrance: Funds must support an innovation, R&D or scale-up project — Funds must support an innovation, R&D or scale-up project
+- [likely_met] Chips JU KDT: Natural persons are not eligible to participate, except self-employed persons/sole traders without separate legal personality. — Natural persons are not eligible to participate, except self-employed persons/sole traders without separate legal personality.
+- [met] Chips JU KDT: Applicants subject to an EU exclusion decision or in specified exclusion situations (bankruptcy, tax/social security breach, grave professional misconduct, fraud/corruption, deficiencies in EU contract obligations, irregularities, circumvention of legal obligations) cannot receive EU funding. — Applicants subject to an EU exclusion decision or in specified exclusion situations (bankruptcy, tax/social security breach, grave professional misconduct, fraud/corruption, deficiencies in EU contract obligations, irregularities, circumvention of legal obligations) cannot receive EU funding.
+- [likely_met] Chips JU KDT: Must apply as part of a cross-border consortium (companies, RTOs, universities, foundries), not as a solo applicant — Must apply as part of a cross-border consortium (companies, RTOs, universities, foundries), not as a solo applicant
+- [likely_met] Eurohpc: Applicant must typically be part of a consortium (multi-partner project) rather than a solo entity — Applicant must typically be part of a consortium (multi-partner project) rather than a solo entity
+- [met] Horizon EU CL4: For the relevant Innovation Actions and Research and Innovation Actions, legal entities established in China are not eligible to participate in any capacity, subject to case-by-case exceptions. — For the relevant Innovation Actions and Research and Innovation Actions, legal entities established in China are not eligible to participate in any capacity, subject to case-by-case exceptions.
+- [likely_met] Horizon EU CL4: Unless the call/topic conditions provide otherwise, a consortium must include at least three independent legal entities each established in a different country, with at least one in a Member State and at least two others in different Member States or Associated Countries. — Unless the call/topic conditions provide otherwise, a consortium must include at least three independent legal entities each established in a different country, with at least one in a Member State and at least two others in different Member States or Associated Countries.
+- [likely_met] Horizon EU CL4: Applications for Pre-commercial procurement and PPI actions must fulfil the three-independent-entity criterion, with a minimum of two beneficiaries being independent public procurers each established in a different Member State or Associated Country, and at least one in a Member State. — Applications for Pre-commercial procurement and PPI actions must fulfil the three-independent-entity criterion, with a minimum of two beneficiaries being independent public procurers each established in a different Member State or Associated Country, and at least one in a Member State.
+- [met] Horizon EU CL4: Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity. — Legal entities established in Russia, Belarus, or non-government controlled territories of Ukraine are not eligible to participate in any capacity.
+- [met] Horizon EU CL4: Applicants subject to EU administrative sanctions (exclusion) or in situations such as bankruptcy, winding up, court-administered affairs, arrangement with creditors, or suspended business activities cannot participate. — Applicants subject to EU administrative sanctions (exclusion) or in situations such as bankruptcy, winding up, court-administered affairs, arrangement with creditors, or suspended business activities cannot participate.
+- [likely_met] Horizon EU CL4: Funding flows to a multi-partner consortium, not a single company; must join or form one with 3+ organisations from 3+ member/associated states — Funding flows to a multi-partner consortium, not a single company; must join or form one with 3+ organisations from 3+ member/associated states
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself. — Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored. — Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Companies must be located in the Grand Est region. — Companies must be located in the Grand Est region.
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Applicant must be established in the Grand Est region — Applicant must be established in the Grand Est region
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid. — Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs. — Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs.
+- [met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market. — Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market.
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Applicant must have operations or establishment in France (national/regional scheme) — Applicant must have operations or establishment in France (national/regional scheme)
+- [likely_met] Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2024-2026: Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules) — Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules)
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself. — Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored. — Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid. — Aid cannot require the beneficiary to have its registered seat in France, but it may require an establishment or branch in France at the time aid is paid.
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs. — Undertakings in difficulty (as defined, e.g. more than half of subscribed share capital lost due to accumulated losses) are excluded from the scheme, subject to exceptions for young SMEs.
+- [met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market. — Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market.
+- [likely_met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Applicant must have operations or establishment in France (national/regional scheme) — Applicant must have operations or establishment in France (national/regional scheme)
+- [likely_met] Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026: Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules) — Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules)
+
+──────────────────────────────────────────────────────────────────────────────
+5. THE CALL
+──────────────────────────────────────────────────────────────────────────────
+elapsed      165.8s wall clock, whole path
+  /api/intelligence/region  200  543ms
+  /api/intelligence/verdict  200  2268ms
+  /api/intelligence/intake  200  11154ms
+events       6  (4 status, 1 partial, 1 report, 0 error)
+prose        5,096 characters of model-written text
+truncation   none visible — the memo ends on a closed sentence
+cost         logged by the deployment, not served to the client:
+             `vercel logs <deployment>` -> `[cost] brief cost EUR ...`
+

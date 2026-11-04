@@ -1,0 +1,10 @@
+(node:25248) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+FR  distinct published-five orderings across lt25k/b100k_500k/b2m5_15m/gt50m: 4 of 4
+ES  distinct published-five orderings across lt25k/b100k_500k/b2m5_15m/gt50m: 4 of 4
+SE  distinct published-five orderings across lt25k/b100k_500k/b2m5_15m/gt50m: 4 of 4
+DE  distinct published-five orderings across lt25k/b100k_500k/b2m5_15m/gt50m: 4 of 4
+ranker: nothing ranked
+
+PATH IS LIVE in every country probed. A +0.0 from _wsck_money.ts is therefore a
+real null: the answer arrives, reorders the table, and does not move the won leaf.

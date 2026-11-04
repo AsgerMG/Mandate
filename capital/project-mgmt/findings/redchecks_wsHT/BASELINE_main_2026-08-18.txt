@@ -1,0 +1,1057 @@
+
+> wincent-frontend@0.1.0 check
+> node scripts/run_checks.mjs
+
+
+[1m── typecheck[0m
+
+[1m── unit tests[0m
+
+ RUN  v4.1.10 /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsHT-redchecks/website/frontend
+
+
+[founder-path] KNOWN DEFECT, still live: the profile signal the intake route inferred reaches the ranker
+  panel.tsx `fetchRound` calls `setProfileSignal(data.profileSignal)` and then, when the round comes back empty, calls `runMemo` IN THE SAME TICK. `basePayload()` re-reads the render-time `profileSignal`, which is still null. This is the identical hazard `projectOverride` and `eligOverride` were threaded to fix, at the fourth call site the comment above `eligBeforeRound` predicted. Cost: `applyProfileSignal` is a no-op and `companyType` stays undefined for every founder whose first round is empty, so the memo's channel ordering loses the one signal the intake call was made to produce.
+  review by 2026-09-30
+
+[founder-path] KNOWN DEFECT, still live: one field is reconstructed the same way by every route
+  `capitalSought` is whitelisted against CAPITAL_OPTIONS by verdict/route.ts and intake/route.ts (`sanitizeCapitalSought`) and by route.ts with a hand-rolled `filter((v) => typeof v === 'string')`. Three routes, one field, two sanitisers — and the memo, the one a founder acts on, is the permissive one. `sanitizeCapitalSought` exists and route.ts does not import it.
+  review by 2026-09-30
+
+[founder-path] KNOWN DEFECT, still live: every field the memo route reads is a field the panel can send
+  /api/intelligence reads `body.sector`, `body.companyType` and `body.targetMarkets`, and `basePayload()` sends none of the three. On every real request all three are undefined, so `req.sector` never renders its prompt line and `founderCountryList(country, targetMarkets, entityCountries)` never receives a target market. Each omission is individually defensible — sector rides inside `eligibility`, companyType is inferred, targetMarkets was deliberately dropped from screen one — but nothing says so and nothing stops a harness supplying them. `check_memo_table` passes `founderCountryList(c.country, [c.country], [c.country])`, so every bench number in this repo is measured on a country list a founder's own request cannot produce. That is `check_harness_intake`'s property one level up: not whether the harness answered for the founder, but whether the question is answerable by a founder at all.
+  review by 2026-09-30
+
+ Test Files  61 passed (61)
+      Tests  842 passed (842)
+   Start at  22:21:34
+   Duration  4.27s (transform 3.68s, setup 0ms, import 6.04s, tests 10.50s, environment 6ms)
+
+
+[1m── segment config is a literal[0m
+check_revalidate_literal: ok — every segment config in app/ is a literal, and every revalidate equals CORPUS_REVALIDATE_SECONDS (3600).
+
+[1m── output contracts[0m
+check_contracts: ok — 10 contracts, 105 rules, 34 enforced, 71 declared unenforced (buildable 6, judgement 64, no-artifact 1), 5 report fields governed
+
+[1m── a contract states no rate[0m
+check_prompt_rates: ok — 526 sentence(s) across 10 contract file(s) state no rate, and baseRateSentence delivers all three figures at every one of 14 menu depth(s) the product can show.
+
+[1m── a euro figure says what it is a quantity of[0m
+check_money_basis: ok — 5 quantity-bearing field(s) across 40 rendered row(s), every one declared. Money, and labelled to the writer: comparableFirms, structuringNotes, ticket, typicalAward.
+
+[1m── a rule's check can actually run[0m
+check_check_reachability: ok — 4 check module(s) with 34 rule id(s), every module reachable from a request entry point and all 6 exported decider(s) named there (74 modules in path, 5 API routes).
+
+[1m── a guard reads the thing it protects[0m
+check_guard_subject: 57 guards, 3 seams, 7 guard/seam pair(s) observed
+  check_archetypes: reads candidateInstrumentIds only — EXEMPT until 2026-10-31
+  check_guard_subject: reads candidateInstrumentIds AND accessiblePool
+  check_guard_subject: reads corpusProvenance AND publishableInstruments
+  check_guard_subject: reads SOURCE_WINDOW_POLICY.publishesWindow AND opennessEvidence
+  check_pool_recall_curve: reads corpusProvenance AND publishableInstruments
+  check_recall_floor: reads candidateInstrumentIds AND accessiblePool
+  check_recall_floor: reads corpusProvenance AND publishableInstruments
+check_guard_subject: ok — every guard that reads the wide side of a seam also reads the narrow side, or says why not.
+
+[1m── identifiers named in the docs exist[0m
+check_doc_identifiers: ok — 15 identifier(s) in lib/intelligence/*.md, every one resolving to a real symbol or key (557 source files searched).
+
+[1m── scratch scripts are reachable[0m
+check_ws_scripts: ok — 134 scratch script(s), every one reachable from something durable (128 named directly, 3 reached through an import, 3 declared in flight).
+
+[1m── rendered numbers[0m
+check_rendered_numbers: FAILED
+
+  1 literal quantity(ies) reach a visitor without coming from the corpus
+  and without saying where they came from:
+
+    lib/intelligence/types.ts:1520
+      half   — a quantity word beside something the corpus counts
+      “101 comparators, and pinned to 'operating' for every founder (see FIELD_REACH), so not one of them has ever separated two founders”
+
+  Two ways to fix each, and only two:
+    IT IS A CORPUS FIGURE   derive it. lib/corpusProse.ts holds the prose
+                            quantities; lib/data.corpusStats() holds the KPIs.
+                            A "use client" module takes it as a prop.
+    IT IS NOT              attribute it. Add a <Src n={…} /> footnote in the
+                            same element, a url: in the same object, or a
+                            provenance comment (external: / corpus: /
+                            contract: …) attached to the node.
+
+
+[1m── published figures[0m
+check_published_figures: only 0 figure(s) carry [ok <artifact>], under the floor of 3. A document where everything is retracted or unverifiable is not a plan.
+
+[1m── a measured ceiling was raised[0m
+  menu coverage: 6 recorded run(s) at the 40-row menu that ships
+check_maxtok_headroom: ok — 22 recorded run(s) across 4 effort level(s); every ceiling measured to bind has since been raised and sized for the menu that ships, the ladder is strictly increasing, and no timeout exceeds the route's 300000ms.
+
+[1m── sector evidence[0m
+  100% of 174 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 77%  —  Fonds d'investissement en faveur du secteur de l’audiovisuel
+  100% of 77 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 71%  —  Bayerische Richtlinien für die Förderung von Film-, Fernseh-
+  100% of 71 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 67%  —  Soutien à la modernisation des industries techniques et à l'
+  96% of 45 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 69%  —  Bayerische Richtlinien für die Förderung von Film-, Fernseh-
+  91% of 43 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 56%  —  Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB
+  80% of 46 awards went to "Motion picture, video and television programme produ"
+      but the mix reads software_data_ai 63%  —  Screen Flanders
+  60% of 40 awards went to "SECTION S – ARTS, SPORTS AND RECREATION"
+      but the mix reads software_data_ai 63%  —  Régime cadre exempté de notification relatif aux aides à la 
+
+ok — 7 of 360 instruments claim a technology sector their own recipients contradict (pinned 7)
+
+[1m── a funds: line states a scope[0m
+check_funds_line: 697 instrument(s) carry the description column in the committed snapshot
+  668 render a funds: line (463 of them marked as elided), 29 say nothing the row already says
+  budget 180 chars, floor 108
+check_funds_line: 688 instrument(s) carry the eligibility column in the committed snapshot
+  688 render a who may apply: line (329 of them marked as elided), 0 say nothing the row already says
+  budget 240 chars, floor 144
+  PASS — every rendered line spends its budget and ends on a finished phrase, or says that it is cut.
+
+[1m── vocabulary contract[0m
+(node:14280) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+all intake vocabularies correspond to the data
+
+[1m── a comparator asks the rule's question[0m
+check_field_matches_demand — 2516 deciding comparators on a field we ask
+
+FAIL — 10 comparator(s) decide a founder against a rule their answer does not determine
+  quantity 2 · jurisdiction 8
+
+  chips_ju_kdt/scheme_text_4  [nonEuControl] jurisdiction
+    rule turns on china; the question names no country and the answer cannot carry one
+    asked:  Is your company majority-owned or controlled from outside the EU?
+    demand: Entities directly or indirectly controlled by China or a China-established entity are not eligible to participate in Innovation Actions (and some R&I Actions per call con
+  chips_ju_kdt_unknown/G1-05  [consortium] jurisdiction
+    rule turns on norway; the question names no country and the answer cannot carry one
+    asked:  Could you run this project with three or more partners, or only on your own?
+    demand: Norway requires at least one Norwegian company partner and a minimum share of Norwegian partner effort to come from business partners. At least one Norwegian company must
+  chips_ju_kdt_unknown/G1-06  [consortium] jurisdiction
+    rule turns on denmark; the question names no country and the answer cannot carry one
+    asked:  Could you run this project with three or more partners, or only on your own?
+    demand: Denmark requires at least one Danish company partner and a minimum share of Danish partner effort to come from Danish business partners. At least one Danish company must 
+  chips_ju_kdt_unknown/G1-07  [consortium] jurisdiction
+    rule turns on czech republic; the question names no country and the answer cannot carry one
+    asked:  Could you run this project with three or more partners, or only on your own?
+    demand: Czech Republic requires the Czech fraction of the consortium to include at least one enterprise and at least one research organisation (Public-Private-Partnership princip
+  chips_ju_kdt_unknown/G1-08  [consortium] jurisdiction
+    rule turns on spain; the question names no country and the answer cannot carry one
+    asked:  Could you run this project with three or more partners, or only on your own?
+    demand: Spain (AEI) requires Spanish non-profit research organizations to participate in consortia with at least one Spanish profit organization partner funded by MINAETD. Spanis
+  eit_urban_mobility/scheme_text_1  [ownerOver25] quantity
+    asked at 25%, rule turns on 40%
+    asked:  Does any single shareholder own more than 25% of your company?
+    demand: Individual founders or executive team members must jointly hold more than 40% of the company's equity before the current fundraising round. Your startup has individual fo
+  innovationsfonden_innofounder__innofounder_089d34/scheme_text_2  [ownerOver25] quantity
+    asked at 25%, rule turns on 12.5%
+    asked:  Does any single shareholder own more than 25% of your company?
+    demand: Each founder must own at least 12.5 percent of the company Each founder must own at least 12.5 percent of the company 12.5%
+  satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland/scheme_text_4  [exclusionFlags] jurisdiction
+    rule turns on peru; the question names no country and the answer cannot carry one
+    asked:  Do any of these apply to your company right now?
+    demand: Applicant must not have an outstanding recovery order following a prior European Commission decision declaring aid illegal and incompatible with the internal market Rahoi
+  satr_fi_rnd__sa_112227__innovaatiorahoituskeskus_business_finland/scheme_text_2  [exclusionFlags] jurisdiction
+    rule turns on peru; the question names no country and the answer cannot carry one
+    asked:  Do any of these apply to your company right now?
+    demand: The applicant must not have an outstanding recovery order from a prior European Commission decision declaring aid illegal and incompatible with the internal market. Rahoi
+  satr_fi_rnd__sa_112229__innovaatiorahoituskeskus_business_finland/scheme_text_4  [exclusionFlags] jurisdiction
+    rule turns on peru; the question names no country and the answer cannot carry one
+    asked:  Do any of these apply to your company right now?
+    demand: Applicant must not have an outstanding recovery order following a prior European Commission decision declaring aid illegal and incompatible with the internal market Rahoi
+
+A comparator here is not a wrong answer, it is a wrong QUESTION: the founder answers
+truthfully and loses a fund that admits them. Correct the encoding in
+data/reference/gate_encoding_overrides.json — that file survives re-extraction, a
+direct UPDATE does not. Quarantining the comparator (field: none) is a legitimate
+fix and usually the right one: the requirement text keeps showing, the machine
+verdict stops.
+
+[1m── one env loader[0m
+check_env_loader: 11 problem(s)
+
+  scripts/_wsgp_audit.ts: reads DATABASE_URL (through lib/intelligence/shortlist.ts), VOYAGE_KEY (through lib/intelligence/shortlist.ts) and declares nothing.
+    Without the key this measures the offline fallback and prints a
+    number indistinguishable from a real one. requireLiveCorpus()
+    will NOT catch it: with no DATABASE_URL, hydration records
+    source=snapshot, degraded=false, and that guard passes.
+    Add requireCredentials("_wsgp_audit", ["DATABASE_URL", "VOYAGE_KEY"]),
+    or delete the variable to pin this script offline on purpose.
+
+  scripts/_wsha_gates.ts: reads VOYAGE_KEY (through lib/intelligence/shortlist.ts) but does not declare it.
+    A half-contract passes the gate and still measures the wrong
+    system: DATABASE_URL without VOYAGE_KEY ranks lexically, because
+    semanticFundMatch returns an empty map and callers fall through.
+    Declared: DATABASE_URL.
+
+  scripts/_wshd_pg_drift.ts: reads DATABASE_URL and declares nothing.
+    Without the key this measures the offline fallback and prints a
+    number indistinguishable from a real one. requireLiveCorpus()
+    will NOT catch it: with no DATABASE_URL, hydration records
+    source=snapshot, degraded=false, and that guard passes.
+    Add requireCredentials("_wshd_pg_drift", ["DATABASE_URL"]),
+    or delete the variable to pin this script offline on purpose.
+
+  scripts/_wshe_award.ts: reads VOYAGE_KEY (through lib/intelligence/shortlist.ts) but does not declare it.
+    A half-contract passes the gate and still measures the wrong
+    system: DATABASE_URL without VOYAGE_KEY ranks lexically, because
+    semanticFundMatch returns an empty map and callers fall through.
+    Declared: DATABASE_URL.
+
+  scripts/_wshf_prove.ts: reads DATABASE_URL (through lib/intelligence/doorLabel.ts, lib/intelligence/corpus.ts) and declares nothing.
+    Without the key this measures the offline fallback and prints a
+    number indistinguishable from a real one. requireLiveCorpus()
+    will NOT catch it: with no DATABASE_URL, hydration records
+    source=snapshot, degraded=false, and that guard passes.
+    Add requireCredentials("_wshf_prove", ["DATABASE_URL"]),
+    or delete the variable to pin this script offline on purpose.
+
+  scripts/_wshf_sweep.ts: reads DATABASE_URL (through lib/intelligence/corpus.ts) and declares nothing.
+    Without the key this measures the offline fallback and prints a
+    number indistinguishable from a real one. requireLiveCorpus()
+    will NOT catch it: with no DATABASE_URL, hydration records
+    source=snapshot, degraded=false, and that guard passes.
+    Add requireCredentials("_wshf_sweep", ["DATABASE_URL"]),
+    or delete the variable to pin this script offline on purpose.
+
+  scripts/_wshh_report.ts: reads DATABASE_URL (through lib/intelligence/relevance.ts) and declares nothing.
+    Without the key this measures the offline fallback and prints a
+    number indistinguishable from a real one. requireLiveCorpus()
+    will NOT catch it: with no DATABASE_URL, hydration records
+    source=snapshot, degraded=false, and that guard passes.
+    Add requireCredentials("_wshh_report", ["DATABASE_URL"]),
+    or delete the variable to pin this script offline on purpose.
+
+  scripts/_wshn_successor_reach.ts: reads DATABASE_URL and declares nothing.
+    Without the key this measures the offline fallback and prints a
+    number indistinguishable from a real one. requireLiveCorpus()
+    will NOT catch it: with no DATABASE_URL, hydration records
+    source=snapshot, degraded=false, and that guard passes.
+    Add requireCredentials("_wshn_successor_reach", ["DATABASE_URL"]),
+    or delete the variable to pin this script offline on purpose.
+
+  scripts/_wsho_harvest.ts: reads DATABASE_URL (through lib/intelligence/shortlist.ts, lib/intelligence/agentSelect.ts), VOYAGE_KEY (through lib/intelligence/shortlist.ts, lib/intelligence/agentSelect.ts) and declares nothing.
+    Without the key this measures the offline fallback and prints a
+    number indistinguishable from a real one. requireLiveCorpus()
+    will NOT catch it: with no DATABASE_URL, hydration records
+    source=snapshot, degraded=false, and that guard passes.
+    Add requireCredentials("_wsho_harvest", ["DATABASE_URL", "VOYAGE_KEY"]),
+    or delete the variable to pin this script offline on purpose.
+
+  scripts/_wsho_strata.ts: names an env file in code (`process.env`).
+    Every harness used to do this and thirty-four of them named the
+    WRONG one: ./.env.local is gitignored, so in a worktree they
+    loaded nothing, said nothing, and measured the offline fallback.
+    Use scripts/loadEnv.ts — import { loadEnvLocal } and call it.
+
+  scripts/check_answer_in_prompt.ts: reads DATABASE_URL (through lib/intelligence/pipeline.ts), VOYAGE_KEY (through lib/intelligence/pipeline.ts) and declares nothing.
+    Without the key this measures the offline fallback and prints a
+    number indistinguishable from a real one. requireLiveCorpus()
+    will NOT catch it: with no DATABASE_URL, hydration records
+    source=snapshot, degraded=false, and that guard passes.
+    Add requireCredentials("check_answer_in_prompt", ["DATABASE_URL", "VOYAGE_KEY"]),
+    or delete the variable to pin this script offline on purpose.
+
+
+[1m── client/server boundary[0m
+check_client_boundary: ok — no client module reaches fs, pg or another server-only import
+
+[1m── payload budget[0m
+per-request payload 5.84 MB   (worst founder: DE)
+  phase one         4.34 MB   (every instrument + framework gates; independent of the pool cap)
+  phase two         1.50 MB   (gates for 141 leaves + their regimes, at cap 250)
+full snapshot       10.55 MB   (JSON fallback; 6.21 MB of it deferred to the shortlist)
+instruments         1,088
+gates               9,763
+per instrument      3.9 KB   (phase one)
+cost of the cap     0 KB would be added by removing POOL_LEAVES_PER_CHANNEL entirely (0 more leaves)
+headroom to budget  2.2 MB (~542 more instruments at today's phase-one rate)
+
+WARN: past 4 MB. Plan the next hydration split now rather than
+when it breaks; see the note at the top of this file.
+
+[1m── both stores select the same columns[0m
+check_store_columns: ok — all 35 column(s) the request path selects are exported to the fallback
+
+[1m── archetype regression[0m
+(node:14637) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+archetype                     rows  pool  verdicted  reachable  statuses
+------------------------------------------------------------------------------------------------
+Robotics                      6     105   99         93         {"unknown":6,"open":69,"blocked":12,"one_blocker":18}
+Hardware                      6     49    43         42         {"open":27,"unknown":6,"blocked":7,"one_blocker":9}
+FinTech (business lending)    6     81    75         77         {"unknown":6,"open":69,"one_blocker":2,"blocked":4}
+FinTech (consumer banking)    6     49    43         44         {"unknown":6,"open":28,"one_blocker":10,"blocked":5}
+AI B2C software               6     131   119        45         {"blocked":86,"open":32,"unknown":12,"one_blocker":1}
+AI B2B software               6     117   111        102        {"open":90,"blocked":15,"one_blocker":6,"unknown":6}
+GovTech                       6     87    81         75         {"open":18,"unknown":6,"blocked":12,"one_blocker":51}
+Platform                      6     131   119        62         {"blocked":69,"open":49,"unknown":12,"one_blocker":1}
+Cloud / NeoCloud              6     80    74         76         {"unknown":6,"open":69,"blocked":4,"one_blocker":1}
+MedTech                       6     105   99         90         {"unknown":6,"open":67,"blocked":15,"one_blocker":17}
+Life sciences                 6     116   110        101        {"open":89,"blocked":15,"one_blocker":6,"unknown":6}
+AgriTech                      6     86    80         74         {"unknown":6,"open":17,"blocked":12,"one_blocker":51}
+------------------------------------------------------------------------------------------------
+all 12 archetypes pass
+
+[1m── every archetype gets a table[0m
+(node:14851) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+company             ranked  accessible  rows  verdict
+------------------------------------------------------------------------------------------------
+Neura Robotics         114          94     7  ok
+SMART Photonics         49          39     7  ok
+Silvr                  109          49     7  ok
+bunq                    47          35     7  ok
+Photoroom              110          52     7  ok
+Aleph Alpha            114         104     7  ok
+Nortal                  80          65     7  ok
+sennder                106          91     7  ok
+Nebius                  57          45     7  ok
+Corti                   33          29     7  ok
+BioNTech               114          94     7  ok
+eAgronom                86          78     7  ok
+------------------------------------------------------------------------------------------------
+ranker: all 12 request(s) on EMBEDDING
+not evaluated at this stage (writer fields are empty): BL-1, BL-2, BL-B1, BRIEF-1, BRIEF-2, FUND-4, FUND-5, FUND-6, POS-1, SOP-1, SOP-2
+all 12 archetypes publish a table that holds up
+
+[1m── liveness has one definition[0m
+  call recurrence: 15/116 rows with an expired application deadline have had their funder's page read. The other 101 are suppressed on OUR inference that the programme ended, which is the thing this axis exists to stop asserting.
+liveness: one definition, one projection, no hand-rolled copies
+
+[1m── openness is evidenced[0m
+(node:15180) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+rows asserting openness on OUR COPY holding no deadline: 36 of 760 publishable (baseline 89)
+  concentration: FR:31 ES:5
+
+proposed withholds in wsCO_window_register.json: 33 (33 still in the corpus), asked 2026-08-09
+  every one quotes the register's own date, and none empties its regime
+
+ok
+
+[1m── no door is offered on an expired fact[0m
+(node:15246) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+published rows: 760 of 1088
+  open on a prolongation an award still evidences: 96
+  offered with the between-calls caveat shown:     16
+  withheld on a window nothing contradicts:        224
+  ...of the withheld and caveated, 220 have had NO funder page read. Each is a programme we are calling ended without having asked, and reading one page is the whole remedy — see project-mgmt/evidence/README.md.
+
+ok — no published row rests its openness on a date behind us
+
+[1m── offer routes are sourced[0m
+check_offer_route: ok — 724 publishable, 11 withheld as not-an-offer (all sourced), 285 with no recorded route across 10 families, none above its ceiling.
+
+[1m── a row is named by something outside its id[0m
+check_name_evidence: ok — every one of the 724 publishable rows is named by something outside its own id (44 partition-key rows in the corpus, all withheld)
+
+[1m── a displayed name is not an id[0m
+check_row_name_not_id: ok — 724 publishable rows, 47 carrying a qualifier, none revealing an instrument id. 10 label(s) still shared by two or more rows, which the collapse demotes.
+
+[1m── capital kinds match the register[0m
+check_register_instrument_kinds: ok — 12 register instrument codes, every kind the registers publish (equity, grant, guarantee, loan, tax_credit) present in its channel
+
+[1m── regions match NUTS[0m
+check_regions: 1 corpus country is outside the NUTS classification, so regional rules there stay unevaluable: GB (GB)
+check_regions: ok — 417 regions across 39 countries, and the 449 reference ids are exactly NUTS 2024 levels 1-2
+
+[1m── theme index is not stale[0m
+check_theme_index: themeIndex.generated.ts is STALE.
+  run: cd website/frontend && npx tsx scripts/emit_theme_index.ts
+  same instruments, different tokens — a tokenising rule in relevance.ts changed
+
+[1m── selector's base rate is current[0m
+(node:15615) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+check_pool_recall_curve: ok — n=821 held-out founders, monotone over K=1..250, covers the late seam (40), the early seam (40) and the published table (6).
+  P(won in first 6)=42.0% · the first 40=81.4% · the first 40=81.4%
+  measured on postgres instruments=1088 / offerable=760 ids=25c7df59f657ca42 asOf=2026-08-18, live postgres instruments=1088 / offerable=760 ids=25c7df59f657ca42 asOf=2026-08-18
+
+[1m── leaf cap headroom[0m
+check_leaf_cap: ok — cap 250, widest group 102 (state_aid_satr DE), headroom 148 across 39 channel/country groups.
+
+[1m── missing-data neutral[0m
+check_missing_data_neutral: 11 founder sector(s) over 724 publishable leaves.
+  software_data_ai         stand-in 0.491  at percentile  50  of  638 scored leaves  (86 have no history)
+  health_life_sciences     stand-in 0.146  at percentile  50  of  638 scored leaves  (86 have no history)
+  energy_cleantech         stand-in 0.273  at percentile  50  of  638 scored leaves  (86 have no history)
+  industrial_manufacturing stand-in 0.351  at percentile  50  of  638 scored leaves  (86 have no history)
+  semiconductors_electronics stand-in 0.078  at percentile  50  of  638 scored leaves  (86 have no history)
+  mobility_transport       stand-in 0.044  at percentile  50  of  638 scored leaves  (86 have no history)
+  agrifood                 stand-in 0.083  at percentile  50  of  638 scored leaves  (86 have no history)
+  materials_chemicals      stand-in 0.057  at percentile  50  of  638 scored leaves  (86 have no history)
+  other                    stand-in 0.376  at percentile  50  of  638 scored leaves  (86 have no history)
+  space                    stand-in 0.000  at percentile  46  of  638 scored leaves  (86 have no history)
+  defense_security         stand-in 0.000  at percentile  44  of  638 scored leaves  (86 have no history)
+  ok — furthest from the middle: defense_security at the 44th percentile, band 20-60. (The constant this replaced, 0.5, sat at the 79th.)
+
+[1m── capital reach[0m
+check_capital_reach: ok — every value carried by the 724 publishable instruments is reachable by some intake answer, or declared unofferable with a reason (axes: capital_type, country).
+
+[1m── a filter can admit someone[0m
+check_comparator_admits: 3656 encoded filters in public/data/instrument_terms.json
+  64 inert comparator(s) — no answer produces any verdict, so they never block anyone (ceiling 45):
+       13  turnoverBand numeric_gte
+       12  cofinancingBand numeric_gte
+        8  exclusionFlags boolean_false
+        5  ticketBand numeric_gte
+        4  balanceBand numeric_gte
+        4  turnoverBand band_max
+        3  ownerOver25 numeric_gte
+        3  cofinancingBand boolean_true
+        2  fteBand numeric_gte
+        2  exclusionFlags numeric_lte
+        1  nonEuControl numeric_lte
+        1  cofinancingBand numeric_lte
+        1  developmentStage band_max
+        1  conditionality boolean_true
+        1  lossesOverHalfCapital numeric_gte
+        1  ticketBand numeric_lte
+        1  ticketBand band_min
+        1  useOfFunds numeric_gte
+
+FAIL — inert comparators rose to 64, above the ceiling of 45. Something is writing comparators whose operator cannot act on their field. Fix the encoder, do not raise the ceiling.
+
+[1m── open questions still cover the corpus[0m
+watching openQuestionClass.generated.json
+snapshot: 1088 instruments, 6347 filter gates
+artifact: 1146/1146 classified by claude-sonnet-5 at 2026-08-09T11:52:28.883Z
+in scope for an open question: 2177 distinct texts
+  covered by the artifact     : 1047 (48.1%)  {"encodable":765,"judgeable":317,"unaskable":112}
+  UNCOVERED                   : 1130 (ceiling 400)
+
+FAIL — 1130 requirement texts have no judgement, above the ceiling of 400.
+  Those requirements are silently never asked about. Re-run
+  scripts/emit_open_question_class.ts and LOWER the ceiling; raising it
+  is not a fix, it is a record that the drift was accepted.
+
+[1m── a winner is never screened out[0m
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [check_winner_not_blocked]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+watching officialCatchments.generated.json — 427 of 1088 instruments carry an officially declared catchment, cut at 2026-08-09T17:54:19.503Z
+answer key __recallSetDescribed.json: 7,095 pairs
+  no leak-free region, cannot be judged        6380
+  register silent on the fund, KEPT not blocked 133
+  testable: leak-free region + official catchment 582 (floor 550)
+  VERIFIED WINNERS THE SCREEN WOULD BLOCK      15 2.6% (ceiling 15)
+      BYLOGIX SOCIETA' A RESPONSABILITA' LIMITATA (IT, ITI) -> satr_it_rnd__sa_115378__finpiemonte_s_p_a
+      Siemens (DE, BE2) -> satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz
+      CULTIMATE FOODS (DE, DE3) -> satr_de_rnd__sa_103582__nbank
+      Siemens (DE, BE2) -> satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz
+      Siemens (DE, BE2) -> satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung
+      Global Climate Changer GmbH (DE, DE3) -> satr_de_rnd__sa_113239__sachsen_sab
+      V.M.C. S.P.A. (IT, ITH) -> satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori
+      The Makers Food GmbH (DE, DE3) -> satr_de_rnd__sa_114510__nrw_bank
+      ConstantinTelevision GmbH (DE, DE2) -> satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg
+      W&B Television GmbH (DE, DE3) -> satr_de_equity__sa_118637__lfa_forderbank_bayern
+      sus.raw GmbH (DE, DEA) -> satr_de_rnd__sa_110061__vdi_vde_innovation_und_technik
+      J & W S.R.L. (IT, ITH) -> satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori
+      Siemens Energy Global GmbH & Co. KG (DE, DE2) -> satr_de_rnd__sa_64558__investitionsbank_berlin
+      H2 MOBILITY Deutschland GmbH & Co. KG (DE, DE2) -> satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+      Mint Hydrogen Germany GmbH (DE, DE2) -> satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+
+PASS — no verified winner is newly blocked; the standing debt of 15
+  has not risen. It is debt, not a target: it is why the territorial screen
+  is not shipped.
+
+[1m── a winner is never gated out of the memo[0m
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [check_winner_not_gated]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+watching public/data/instrument_terms.json — 1088 instruments, 3940 gates carrying a machine-readable spec, cut at 2026-08-17T22:24:49+00:00
+answer key __recallSetDescribed.json: 7,095 pairs
+  names an instrument the snapshot does not hold  192
+  no encoded filter evaluable, cannot be judged   851
+  testable: at least one filter evaluated         6052 (floor 6000)
+  VERIFIED WINNERS THE GATE SCREEN WOULD DELETE   14 0.2% (ceiling 207)
+      ALIAREC ENVIRONNEMENT (FR) -> ademe_aid__appel_a_projets_vehicules_lourds_electriques_202_fbfe6f  [sector]
+      ALTERMAT (FR) -> ademe_aid__appel_a_projets_vehicules_lourds_electriques_202_fbfe6f  [sector]
+      ANDRE LAFONT TRAVAUX PUBLICS (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      ATIL (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BETON THERON (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BPCE LEASE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BPIFRANCE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      BRASSERIE VIGNERON (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CM CIC LEASING SOLUTIONS (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CREDIT AGRICOLE LEASING & FACTORING (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      CREDIT MUTUEL LEASING (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      DAIMLER TRUCK FINANCIAL SERVICES FRANCE (FR) -> ademe_aid__dispositif_de_soutien_pme_vehicules_lourds_elect_a83119  [sector]
+      FutureOn (NO) -> eit_digital_vap  [entityCountries]
+      ScanTrust (CH) -> eit_digital_vap  [entityCountries]
+  by intake field: sector 12, entityCountries 2
+
+PASS — no verified winner is newly deleted by the gate screen; the standing
+  debt of 207 has not risen. It is debt, not a target: each one is an
+  encoding this product cannot yet express.
+
+[1m── asking a question never costs a fund[0m
+(node:16099) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+12 founders x 56 (field, value) case(s)
+------------------------------------------------------------------------------------------------
+Neura Robotics               0 removed     4 displaced past the writer cap
+SMART Photonics              0 removed     0 displaced past the writer cap
+Silvr                        0 removed     5 displaced past the writer cap
+bunq                         0 removed     6 displaced past the writer cap
+Photoroom                    0 removed     0 displaced past the writer cap
+Aleph Alpha                  0 removed    11 displaced past the writer cap
+Nortal                       0 removed     2 displaced past the writer cap
+sennder                      0 removed    14 displaced past the writer cap
+Nebius                       0 removed     7 displaced past the writer cap
+Corti                        0 removed     1 displaced past the writer cap
+BioNTech                     0 removed     0 displaced past the writer cap
+eAgronom                     0 removed     9 displaced past the writer cap
+------------------------------------------------------------------------------------------------
+cases tested                                   672 (floor 400)
+ANSWERS THAT REMOVED A FUND FROM THE POOL       0
+answers that displaced one past WRITER_CANDIDATE_CAP=7   59   NOT A FAILURE
+  Reported so it is never invisible. A late answer that turns `unknown` or
+  `open` into `one_blocker` moves the row's BAND, and past a cap a demotion
+  at the tail does not publish. That is the cap, and P2 owns it; the only
+  code with a zero here is code where answering changes nothing.
+
+PASS — over 672 admissible answers on 12 founders, answering a
+  follow-up question never costs a fund its place in the pool.
+
+[1m── recall set does not leak[0m
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [leak check]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  profile index: 1,088 instruments, built 2026-08-12T16:33:19+00:00
+check_recall_leaks: ok — 1,898 described rows, 0 leaks at exact / 8-gram / sibling, 236 squash probes agree.
+  of those, 887 claim cross-regime provenance and additionally carry no fund name, no scheme code and no own award title
+  (336 instruments indexed, 25,826 titles, 40 digest probes agree).
+
+[1m── request path cannot reach the answer[0m
+check_answer_not_reachable: ok — 62 modules reachable from the request path, none names an answer-bearing source (6 sources checked); 22 of the events pass's 38 derived column(s) reach a row, every one classified, and the 4 the holdout covers are the ones that need it.
+
+[1m── harness answers as the founder[0m
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [harness intake]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  self-test: 10 detector cases and 7,095 resolver rows agree; 7 distinct fields actually supplied
+check_harness_intake: ok — 24 replay harness(es), 23 askable intake fields, 5 held to zero inlined keys, 14 ratcheted.
+
+[1m── peer prior canary[0m
+peer prior canary: peerPrior.generated.json — 260 cells, 4213 entries
+  graded against __recallSetDescribed.json, 7095 pairs, no corpus and no credentials
+    ok   regime@5 25.7% (floor -)  holdout:childless_family, n=1180   [exact@5 25.7%, in cell 60.0% (floor -)]
+    ok   regime@5 85.9% (floor -)  holdout:exact_attribution, n=1809   [exact@5 14.9%, in cell 65.3% (floor -)]
+    ok   regime@5 79.5% (floor -)  holdout:original join, n=1170   [exact@5 21.4%, in cell 78.5% (floor -)]
+    ok   regime@5 27.6% (floor 24)  tune:childless_family, n=855   [exact@5 27.6%, in cell 64.8% (floor 61)]
+    ok   regime@5 88.0% (floor 85)  tune:exact_attribution, n=1263   [exact@5 14.6%, in cell 64.4% (floor 61)]
+    ok   regime@5 79.7% (floor 78)  tune:original join, n=818   [exact@5 17.8%, in cell 77.8% (floor 74)]
+check_peer_prior_canary: ok — every floored population is above its floor.
+
+[1m── quotations match documents[0m
+check_extracted_quotes: skipped — data/raw/instrument_docs is absent, so there is nothing to verify a quotation against. This is the normal state in CI; the check is real on any machine that holds the corpus.
+
+[1m── dependency audit[0m
+high/critical advisories: 3  (3 accepted, 0 needing action)
+  accepted until 2026-09-30  next
+  accepted until 2026-09-30  postcss
+  accepted until 2026-09-30  sharp
+
+no unreviewed high or critical advisories
+
+[1m── country gates[0m
+check_country_gates: 358 country-typed comparators, canon holds 40 countries
+
+  25 not_in rules name a place outside the corpus. True, inert, deliberately not failed:
+  gate 392799 (ihi, IHI) entityCountries not_in ["Canada"]
+      Legal entities established in Canada are not eligible to receive IHI JU funding for topics
+  gate 392800 (ihi, IHI) entityCountries not_in ["South Korea"]
+      Legal entities established in the Republic of Korea are not eligible to receive IHI JU fun
+  gate 392854 (erc_poc, ERC POC) entityCountries not_in ["Russia","Belarus","Ukraine non-government controlled"]
+      Legal entities established in Russia, Belarus, or non-government controlled territories of
+  gate 392860 (erc_poc, ERC POC) entityCountries not_in ["China"]
+      For IA and RIA actions covered, legal entities established in China are not eligible to pa
+  gate 392861 (erc_poc, ERC POC) entityCountries not_in ["China MIIT"]
+      Chinese universities administered by or under supervision of the Ministry of Industry and 
+  gate 392920 (horizon_eu_cbe, Horizon EU CBE) entityCountries not_in ["Russia","Belarus","Ukraine non-government controlled"]
+      Legal entities established in Russia, Belarus, or non-government controlled territories of
+  gate 392923 (horizon_eu_cbe, Horizon EU CBE) entityCountries not_in ["China"]
+      Legal entities established in China are not eligible to participate in any capacity in IA 
+  gate 392934 (horizon_eu_cl1, Horizon EU CL1) entityCountries not_in ["Russia","Belarus","Ukraine non-government controlled"]
+      Legal entities established in Russia, Belarus, or non-government controlled territories of
+  gate 392957 (horizon_eu_cl3, Horizon EU CL3) entityCountries not_in ["Russia","Belarus","Ukraine non-government controlled"]
+      Legal entities established in Russia, Belarus, or non-government controlled territories of
+  gate 392960 (horizon_eu_cl3, Horizon EU CL3) entityCountries not_in ["China"]
+      For IA and RIA actions identified as affected, legal entities established in China are not
+
+FAIL — 1 positive country rules no founder answer can satisfy. Each one hides its fund:
+  gate 393752 (eit_digital_vap, EIT Digital Vap) entityCountries in ["Turkey"]
+      Applicants must reside in or be established in an eligible EU Member State or a listed Hor
+
+Fix: python3 ETL/terms/encode_gates.py repair-countries
+
+[1m── gate field reach[0m
+check_gate_field_reach: 3928 encoded comparators over 24 fields; 26 intake fields declared
+
+  1 field(s) answered by a pinned constant. Reachable, evaluated, and always the same — reported, never failed:
+  borrowerModel: 85 comparators on 83 instruments, 20.1% of events
+      [equals:51, in:33, not_in:1]
+      e.g. gate 389854 (InvestEU financial-intermediary architec) — The EU guarantee may also cover funding or guarantees extended by an implementing partner 
+      panel.tsx reads `pinned` from here. The lender/intermediary routing the other values unlock is out of scope for this tool's lean-founder persona, and an operating company is what such a founder truthfully is. What used to stand here — 'so these rules evaluate correctly, they simply always evaluate the same way' — was false in its first half and the reason nobody looked at the second. Measured over the committed snapshot: 101 comparators, of which 89 always pass, 3 are inert because their operator cannot read an enum, and 9 always FAIL. Two of the nine are the funder's sentence inverted; the other seven are funds no founder may approach directly, which is a route fact (offerRoute.ts) wearing a gate's face — the row is deleted in silence instead of explained.
+  PASS — every encoded rule is keyed to a field some answer can reach.
+
+[1m── answers reach the ranker[0m
+(node:22262) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [answer reach]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+
+  RANKER GRADED: EMBEDDING — 12 of 12 probe founders ranked by embeddings, observed via rankerUsed() on the score maps this run built its tables from.
+    EMBEDDING — pgvector over instrument_profiles, query embedded by Voyage (VOYAGE_KEY). This is the ranker the memo ships on.
+
+check_answer_reach: 1 field(s) STAGED and not asked — organisationType (arm NEXT_PUBLIC_ORGANISATION_TYPE_ARM=off)
+  Wired and encodable, exempt only until the arm goes on. Re-run with the arm set to "on" to grade them.
+
+check_answer_reach [ranker: embedding]: 23 of 26 intake fields are collected (the rest are declared unreachable and belong to check_gate_field_reach); 12 probe founders; 6 proved to rank, 17 declared memo-only
+
+  Proved to change the published rows:
+  ticketBand — GAIA ARKITEKTUR AB (SE/industrial_manufacturing): "lt25k" changes the published rows
+  sector — GAIA ARKITEKTUR AB (SE/industrial_manufacturing): "software_data_ai" changes the published rows
+  useOfFunds — INES PLATEFORME FORMATION EVALUATION (FR/energy_cleantech): ["rd_facilities"] changes the published rows
+  region — INES PLATEFORME FORMATION EVALUATION (FR/energy_cleantech): "FRF1" changes the published rows
+  consortium — GAIA ARKITEKTUR AB (SE/industrial_manufacturing): "no" changes the published rows
+  entityCountries — GAIA ARKITEKTUR AB (SE/industrial_manufacturing): ["Norway"] changes the published rows
+
+  Collected, not ranking — by decision:
+  activities — 611 comparators on 598 instruments — the largest encoded axis in the corpus, and it is an EXCLUSION axis: it blocks funds rather than ordering them
+      read by: the rows (INES PLATEFORME FORMATION EVALUATION (FR/energy_cleantech): ["primary_agriculture"] changes the published rows)
+  exclusionFlags — 678 comparators on 626 instruments, the GBER and de minimis exclusions. Blocks rather than orders, and a blocked fund leaves the table
+      read by: the rows (INES PLATEFORME FORMATION EVALUATION (FR/energy_cleantech): ["insolvency"] changes the published rows)
+  lossesOverHalfCapital — 153 comparators. The undertaking-in-difficulty test: a hard bar on the screen, with no cure that is ours to offer
+      read by: the rows (GAIA ARKITEKTUR AB (SE/industrial_manufacturing): "yes" changes the published rows)
+  fteBand — 147 comparators, the headcount half of the SME definition
+      read by: the rows (INES PLATEFORME FORMATION EVALUATION (FR/energy_cleantech): "50-249" changes the published rows)
+  borrowerModel — 101 comparators, and pinned to 'operating' for every founder (see FIELD_REACH), so not one of them has ever separated two founders — 89 always pass, 3 are inert, and 9 always FAIL (8 of the 9 are filters; the ninth is a programme_fact and gates nobody). The claim that stood here, that they 'evaluate correctly and always the same way', was true of the second half only: borrowerModel is structural, so each of those eight deletes its fund from everyone who asks
+      read by: the rows (INES PLATEFORME FORMATION EVALUATION (FR/energy_cleantech): "balance_sheet_lender" changes the published rows)
+  developmentStage — 63 comparators. TRL floors gate whole programmes rather than separating siblings of one regime
+      read by: the rows (Ace Aquatec (GB/agrifood): "pilot_customers" changes the published rows)
+  cofinancingBand — 39 comparators. A co-financing floor is a condition of the same scheme for everyone who reaches it
+      read by: the rows (AKHETONICS (DE/semiconductors_electronics): "<25%" changes the published rows)
+  turnoverBand — 25 comparators, the turnover half of the SME definition
+      read by: the rows (BECHANGE AB (SE/software_data_ai): "10-50M" changes the published rows)
+  nonEuControl — 17 comparators, mostly EDF and defence ownership conditions
+      read by: the eligibility screen (GAIA ARKITEKTUR AB (SE/industrial_manufacturing): "yes" changes the eligibility screen)
+  ownerOver25 — 14 comparators, the linked-enterprise half of the SME test
+      read by: the eligibility screen (INES PLATEFORME FORMATION EVALUATION (FR/energy_cleantech): "yes" changes the eligibility screen)
+  institutionalBacking — 12 comparators; it also feeds the memo's framing of what kind of raise this is
+      read by: the eligibility screen (DELIVRONE (FR/mobility_transport): "yes" changes the eligibility screen)
+  bankRelationship — 8 comparators on guarantee instruments, where having a lender is a precondition to applying at all
+      read by: the eligibility screen (AKHETONICS (DE/semiconductors_electronics): "yes" changes the eligibility screen)
+  conditionality — 7 comparators. It is the founder's stated willingness, which belongs in the memo's advice rather than in a score
+      read by: the eligibility screen (BECHANGE AB (SE/software_data_ai): ["local_entity"] changes the eligibility screen)
+  balanceBand — 4 comparators, the balance-sheet half of the SME definition
+      read by: the rows (BECHANGE AB (SE/software_data_ai): ">43M" changes the published rows)
+  wouldOpenEntity — 4 comparators, and its real job is the CURE on an establishment blocker — it is what turns 'you are not eligible' into 'you would be, if'
+      read by: the eligibility screen (GAIA ARKITEKTUR AB (SE/industrial_manufacturing): "yes" changes the eligibility screen)
+  institutionalOwner — 2 comparators, the public-body half of the linked-enterprise test
+      read by: the eligibility screen (AKHETONICS (DE/semiconductors_electronics): "yes" changes the eligibility screen)
+  needBy — 2 comparators. Timing is served by the deadline and liveness layer (offerRoute.ts), not by the row sort
+      read by: the eligibility screen (BECHANGE AB (SE/software_data_ai): "asap_weeks" changes the eligibility screen)
+  PASS [ranker: embedding] — every question we ask changes something a founder sees, under the ranker the memo ships on.
+
+[1m── answers reach the writer[0m
+check_answer_in_prompt — PROFILE_BLOCK=complete
+
+  not asked, so out of scope: organisationType (staged), foundedYear (unreachable), activityCountries (unreachable)
+
+  memo writer (scoping profile): 23/23 answered field(s) stated
+
+  adaptive round (known facts): 23/23 answered field(s) stated
+
+  OK — every answered field reaches every model-facing block.
+
+[1m── gate pertinence[0m
+  - [unjudged filter gate] 1345 distinct requirement text(s) on gates that can decide a verdict have no pertinence verdict, across 1641 gate(s). Unjudged is a FAILURE, not a pass — an unjudged gate is exactly the state the IPCEI gates were in:
+      almi_invest_equity/scheme_text_0
+        Applicant must be a Swedish startup
+      almi_invest_equity/scheme_text_1
+        Company must be at pre-seed, seed or early growth stage
+      almi_invest_equity/scheme_text_2
+        Company must not be led by a single founder; must have a team
+      almi_invest_equity/scheme_text_3
+        Consultancy businesses, local small businesses, standalone business ideas, and companies primarily seeking loa
+      almi_invest_equity/scheme_text_7
+        Target market must be large and often international, and the business must be built for rapid scaling rather t
+      altum_anm_digi/scheme_text_0
+        Applicant must not show signs of being a firm in difficulty
+      altum_anm_digi/scheme_text_1
+        Applicant must not be currently undergoing insolvency proceedings
+      altum_anm_digi/scheme_text_2
+        Applicant must have no tax arrears
+      … and 1337 more
+    Run: python3 ETL/terms/classify_eligibility_pertinence.py --classify
+  - [published eligibility prose states something an applicant cannot act on] 2 of 590 distinct eligibility_text value(s) in Postgres are unjudged, judged under a superseded property, or judged REPORT — 2 of them REPORT, shown to a founder under "who may apply":
+      satr_cz_equity__sa_106249__statni_fond_podpory_investic
+        Žádosti o dotaci lze podávat do srpna 2026; způsobilé výdaje jsou uznávány od 1. února 2020. Podrobné vymezení
+        report (v3): Deadlines, eligible-cost dates, provider and consultation services; eligibility deferred to regulation — administrative.
+      nfr_gr_nnplattform
+        bedrifter, forskningsinstitutter og andre samarbeidspartnere
+        report (v3): Bare fragment listing entity types; no requirement or threshold stated.
+    Unlike a gate there is no inert role to move this to: the column IS the claim. Either the text is replaced with what the official source says about who may apply, or it is retracted — python3 ETL/terms/retract_unpertinent_text.py --write, which derives the set from these verdicts and archives what it clears.
+    Retracting changes what INSTRUMENT_PROFILES is built from — not eligibility_embeddings, which reads gates and clauses only and never touches this column. instrument_profiles is the primary ranking signal (build_instrument_profiles.py puts this text in under "Who may apply, from the scheme's own page"), so rebuild it and re-measure recall rather than editing the column alone: build_instrument_profiles.py run --rebuild, then re-cut the two committed mirrors (emit_profile_leak_index.py, emit_semantic_cache.ts).
+
+2 pertinence problem(s) — the product may be judging founders by statements they cannot act on
+
+[1m── applicant identity[0m
+check_applicant_identity: FAILED
+
+  - satr_it_equity__sa_57625__banca_del_mezzogiorno_mediocredito_centrale_s_p_ (IT) "Fondo di garanzia per le PMI"
+      describes a population that CANNOT APPLY: SMEs/professionals described, but text states bank or intermediary submits guarantee request, not them.
+      Fix the TEXT so it states who submits — the funder's own "who may
+      apply" block usually does — or withdraw it. Do not edit the verdict.
+
+  - satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat (NL) "NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH"
+      describes a population that CANNOT APPLY: Firms/knowledge institutions merely join a project; subsidy is granted via the NXTGEN foundation, not them.
+      Fix the TEXT so it states who submits — the funder's own "who may
+      apply" block usually does — or withdraw it. Do not edit the verdict.
+
+  687 published texts, 7 calibration cases
+  [verdict] applicant_identity = failed NOT published (GUARD_NO_PUBLISH). The figures above are this checkout's; the shared feed still carries whatever the last merged run said, which is the honest state for a branch. Unset it on the run that is meant to speak for main.
+
+[1m── corpus currency[0m
+(node:22713) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  fields: 35 compared against funding_instruments, 3 noted, 0 unclassified
+  gates: 9763 in the snapshot, 9763 in Postgres
+  snapshot generated 2026-08-17T22:24:49+00:00, 1088 records
+  postgres 1088 instruments, 1088 embedded profiles, as of 2026-08-18
+  semantic cache 18 descriptions, leak index 1088 profiles (built 2026-08-12T16:33:19+00:00)
+
+check_corpus_currency: FAILED
+
+  - 3 field(s) hold a DIFFERENT VALUE in the two corpora, over
+      35 compared fields and 1088 instruments.
+      A founder served off the snapshot is answered from these values.
+      name: 22 row(s)  e.g. satr_de_rnd__sa_56245__fa_fur_korperschaften_ii: snapshot "FA für Körperschaften II" vs postgres "Steuerliche Förderung von Forschung und Entwicklung [BMF]"
+      nameSource: 22 row(s)  e.g. satr_de_rnd__sa_56245__fa_fur_korperschaften_ii: snapshot "deterministic" vs postgres "case_register"
+      country: 15 row(s)  e.g. chips_ju: snapshot "EU" vs postgres ""
+
+  - the two corpora state DIFFERENT ELIGIBILITY RULES.
+      0 live rule(s) the snapshot has never seen (0 on offerable funds)
+      0 snapshot rule(s) no longer in Postgres (0 on offerable funds)
+      51 rule(s) present in both that DEMAND SOMETHING DIFFERENT (36 on offerable funds)
+      accessiblePool is built from these, so a degraded request does not merely
+      rank differently — it admits and refuses different funds.
+      e.g. innovationsfonden_grand_solutions / G4-02
+      e.g. altum_anm_kepa / g5_use_of_funds_categories
+      e.g. satr_cz_rnd / g2_rescue_restructuring_exclusion
+
+  Every figure this repo publishes depends on which of these two
+  corpora the run happened to load, and the run is not told. Until
+  they agree, a pool/recall number is a property of the connection.
+
+  Fix: regenerate and republish the snapshot —
+    make eligibility
+  which re-exports public/data/instrument_terms.json from the same
+  store Postgres is published from, and rebuilds the profile index:
+    python3 ETL/terms/build_instrument_profiles.py run
+  and re-cut the offline mirror of that index, which is committed:
+    npx tsx scripts/emit_semantic_cache.ts
+  [verdict] corpus_currency = failed NOT published (GUARD_NO_PUBLISH). The figures above are this checkout's; the shared feed still carries whatever the last merged run said, which is the honest state for a branch. Unset it on the run that is meant to speak for main.
+
+[1m── site serves the ETL's corpus[0m
+check_corpus_census: note — census #6 (unknown) predates the schema_state column; nothing to check for it.
+  corpus of record: railway-volume
+  * railway-volume  # 11   2.7d  151,936 companies · 299,469 events · 1,088 instruments · 6,401 gates
+    local           #  9   9.9d  151,426 companies · 299,384 events · 1,088 instruments · 7,471 gates
+    unknown         #  6  10.9d  151,426 companies · 297,933 events · 1,086 instruments · 6,368 gates
+    postgres        live       — · — · 1,088 instruments · 9,763 gates
+  site serves 151,426 companies · 299,384 events · 23 countries
+
+check_corpus_census: FAILED
+
+  - DEGRADED — census #11 is not fit to publish:
+        the coverage gate did not pass this corpus — the gate FAILED: LOSS  eligibility: 898 instruments, down from a high of 913 (tolerance 5). Something the corpus knew, it no longer knows.; LOSS  sectors: 8, down from a high of 11 (tolerance 1). This is a figure on the home page.. The gate exists to refuse a corpus that got worse; an absent verdict is not a passing one.
+        the pipeline that produced it did not finish cleanly: "failed at classify_taxonomy.py (rc=1)". Part of the corpus is not refreshed.
+      The site will NOT serve these figures. It is falling back to an
+      older reading, which is the gate working — but the corpus itself
+      still needs looking at, and only a person can do that.
+
+  - DRIFTED — census #11 was produced by code fingerprinted c99a0aeb2a070141, this checkout is bfe4bf88092c51ef.
+      The scheduled ETL is not running the code in this repository. It has no
+      repo trigger; only `railway up` redeploys it. Fix:
+        python3 ETL/lib/verify_cron.py --deploy
+
+  - DIVERGED — 2 measure(s) where a DERIVED store is AHEAD of the
+      corpus of record (railway-volume). Each is a row that exists in exactly one
+      place, and both sync paths (pull_db.py, push_local.py) move the whole
+      file with --overwrite, so the next sync in either direction destroys it.
+        local/instruments.gates: derived 7,471, record 6,401 (+1,070 held only by the derived store)
+        postgres/instruments.gates: derived 9,763, record 6,401 (+3,362 held only by the derived store)
+      Reconcile by union, never by overwrite:
+        python3 ETL/events/load/reconcile_stores.py --help
+
+  - SCHEMA — a store cannot reach the schema this checkout expects:
+        the stores do not have the same migrations:
+          railway-volume: 28 applied
+          local: 27 applied
+      Migrations are a pipeline step, not a thing to remember:
+        python3 ETL/events/load/migrations/apply.py all
+
+  - STALE — the committed synthesis.json does not describe the corpus the ETL
+      holds. The live page reads the census, so founders are not seeing these
+      numbers today — but this file IS what they see when Postgres is
+      unreachable or the newest censuses fail the gate, and it is drifting:
+        events: site 299384, ETL corpus 299469
+        sectors: site 11, ETL corpus 8
+        champions: site 9371, ETL corpus 9372
+        companies: site 151426, ETL corpus 151936
+        totalCapitalEurRaw: site 408433535420.6861, ETL corpus 408444397332.38
+      census #11 taken 2026-08-16T03:15Z by etl-pipeline, 2.7 days ago.
+
+  The site's headline figures follow the census on their own (wsAK), but
+  only through a census the coverage gate has passed. Anything above means
+  either the corpus needs a person, or the committed fallback has drifted.
+
+  Fix (pulls the ETL's db, regenerates, gates, and tells you what to commit):
+    make republish
+
+[1m── degradation policy[0m
+check_degradation: 12 archetypes, fallback corpus vs the live register, as of 2026-08-18
+
+WHAT THE POLICY COSTS
+  Robotics               shown  6 (live  6)   pool 105 (live 105)   withheld   0
+  Hardware               shown  6 (live  6)   pool  49 (live  49)   withheld   0
+  FinTech (business lending) shown  6 (live  6)   pool  81 (live  81)   withheld   0
+  FinTech (consumer banking) shown  6 (live  6)   pool  49 (live  49)   withheld   0
+  AI B2C software        shown  6 (live  6)   pool 126 (live 131)   withheld   5
+  AI B2B software        shown  6 (live  6)   pool  86 (live 117)   withheld  31
+  GovTech                shown  6 (live  6)   pool  87 (live  87)   withheld   0
+  Platform               shown  6 (live  6)   pool 126 (live 131)   withheld   5
+  Cloud / NeoCloud       shown  6 (live  6)   pool  80 (live  80)   withheld   0
+  MedTech                shown  6 (live  6)   pool 105 (live 105)   withheld   0
+  Life sciences          shown  6 (live  6)   pool  85 (live 116)   withheld  31
+  AgriTech               shown  6 (live  6)   pool  86 (live  86)   withheld   0
+
+  72 row-withholdings across the set; 72 rows shown in total; 0 of 12 archetypes shown a closed fund.
+
+WHAT THIS CHECK DOES NOT COVER
+  It runs against the committed snapshot, which is republished on every
+  corpus change. That is the state where the assertion cannot fail. Run
+  `npx tsx scripts/probe_stale_snapshot.ts` for the states where it can:
+  on a copy predating the call-register loads it now withholds 163 rows,
+  94 of which the live register refuses, and offers no dead call at all.
+  That is source_window_policy doing the work the derived rule could not.
+
+check_degradation: ok — every fund offered off the fallback corpus is one the live register still calls open.
+  [verdict] degradation = ok NOT published (GUARD_NO_PUBLISH). The figures above are this checkout's; the shared feed still carries whatever the last merged run said, which is the honest state for a branch. Unset it on the run that is meant to speak for main.
+
+[1m── both stores agree[0m
+  degradation policy withheld 36 row(s) from the fallback corpus; 760 offerable on Postgres, 724 on the snapshot
+check_hydration_parity: ok — 12 archetypes agree on both paths, and the two corpora differ by exactly the 36 row(s) the degradation policy withheld
+  [verdict] hydration_parity = ok NOT published (GUARD_NO_PUBLISH). The figures above are this checkout's; the shared feed still carries whatever the last merged run said, which is the honest state for a branch. Unset it on the run that is meant to speak for main.
+
+[1m── recall floor[0m
+(node:23877) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions  [recall floor]
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  answer key, 7,095 pairs:
+    GRADED          5416 (76.3%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1679 (23.7%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+  corpus=postgres instruments=1088
+  ranker: all 294 request(s) on EMBEDDING
+  founder intake — 22 of 23 askable fields are asked in production today, identity=real own-history=withheld capital=withheld answers=strict consortium=yes
+    DERIVED   entityCountries      set  300/300 (100%)  own  300/300 (100%)  companies.country
+    DERIVED   region               set   40/300 ( 13%)  own   40/300 ( 13%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set  300/300 (100%)  own  300/300 (100%)  companies.sector_top
+    DERIVED   ticketBand           set  300/300 (100%)  own   48/300 ( 16%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set  300/300 (100%)  own    0/300 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set  300/300 (100%)  own    0/300 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set  300/300 (100%)  own    0/300 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    STAGED    organisationType     set    0/300 (  0%)  own    0/300 (  0%)  held back on 140/300 — prefillOrganisationType(company name)
+    WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
+    ██ HELD BACK — organisationType is STAGED behind NEXT_PUBLIC_ORGANISATION_TYPE_ARM, which is not "on" — the control is not rendered and production never populates it. 140/300 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said. Switch NEXT_PUBLIC_ORGANISATION_TYPE_ARM on and re-measure to see what asking would cost or win; do not compare the two numbers without saying which is which.
+    ██ HELD BACK — region was answered "BE2", "BE3", which the control never offers for this founder — production cannot produce that answer. 2/300 founders had a leak-free answer and were not given one, so nothing in this run is excluded by something a founder could not have said.
+  __recallSetDescribed.json  300 tune pairs
+    ok   pool     98% (floor 93%)
+    ok   accessible 96% (floor 85%)
+         ^ what the writer is shown. The 2 points between pool and this are the eligibility gates.
+    ok   exact5   27% (floor 15%)
+    ok   regime5  70% (floor 58%)
+         ^ REGIME@5 under __recallSetDoors.json is not comparable with any figure measured under __recallSetComposed.json: a childless family is its own regime, so the metric no longer pays sibling-group-size credit. Quote EXACT@5 across the switch. See recallSet.ts.
+         exact6   30% (no floor — reported; the screen publishes six rows and exact5 is floored on five)
+         DESCRIBED n= 94  pool 98%  exact5 36%  exact6 38%  regime5 79%
+         BLANK     n=206  pool 98%  exact5 22%  exact6 27%  regime5 66%  <- queries with one of eleven canned sector sentences
+    ok   regime5  82% (floor 78%)  original join, n=119
+    ok   regime5  23% (floor 21%)  traced:childless_family, n=82
+    ok   regime5  94% (floor 68%)  traced:exact_attribution, n=99
+  [verdict] recall_floor = ok NOT published (GUARD_NO_PUBLISH). The figures above are this checkout's; the shared feed still carries whatever the last merged run said, which is the honest state for a branch. Unset it on the run that is meant to speak for main.
+check_recall_floor: ok — 300 tune pairs of __recallSetDescribed.json at seed 20260806, all floors met.
+
+[1m── published verdicts[0m
+  census                   failed  9.9d old  code e25d3712f8cc48f2  by local
+                            151426 companies, 299384 events, 23 countries; gate True; run partial: corpus restored by hand after workstream BM's chain proofs; no pipeline run has yet completed end to end
+  store_schema             ok      10.4d old  code 629c7d5d49aeb722  by local
+                            every column in every store is creatable from committed DDL, apart from 17 recorded in schema_debt.json.
+  aggregate_independence   ok      10.9d old  code 7aea8d95997ccac9  by local
+                            check_aggregate_independence: ok — closing all 780 offerable instruments leaves every corpus figure unchanged (151,426 companies, 297,933 events, 23 countries); offerable falls to 0.
+  offerable_decay          ok      10.9d old  code 15695faef8a08edb  by local
+                            warning: FR: -9 unexplained
+  corpus_marks             ok      9.4d old  code 46af78bc87486960  by local
+                            The next run of ETL/refresh.py or railway_cron.py records the first marks; from then on this is a real answer.
+  corpus_currency          failed  0.0d old  code 09ddad633fb69bd3  by local
+                            2 disagreement(s) between the committed snapshot and Postgres (1088 instruments, 1088 profiles)
+  hydration_parity         ok      0.0d old  code fd4bd2a17cb2e4b0  by local
+                            12 archetypes agree on both paths; the two corpora differ by exactly the 36 row(s) the degradation policy withheld
+  degradation              ok      0.0d old  code 9182f449b5fed14d  by local
+                            every fund offered off the fallback corpus is one the live register still calls open
+  recall_floor             ok      0.0d old  code f7426b6360ff3bd5  by local
+                            pool 98% (floor 93), accessible 96% (floor 85), EXACT@5 27% (floor 15), REGIME@5 70% (floor 58) over 300 tune pairs
+  applicant_identity       failed  0.0d old  code 5eb66b407ccc113f  by local
+                            2 published eligibility text(s) describe a population that cannot apply to the fund
+  index_freshness          ok      7.3d old  code 66f6324a9986ec59  by local
+                            check_index_freshness: ok — everything showable is retrievable
+
+  feed https://euro-inv-tracker.vercel.app/api/guards
+  11 guard(s) registered, mode on-change
+
+check_verdicts: FAILED
+
+  - DEGRADED — census last reported failed:
+        151426 companies, 299384 events, 23 countries; gate True; run partial: corpus restored by hand after workstream BM's chain proofs; no pipeline run has yet completed end to end
+      Taken 2026-08-08T22:26Z by local. The guard
+      is not the problem; what it guards is. Re-run to see the full output:
+        python3 ETL/events/load/publish_corpus_census.py
+
+  - DRIFTED — census was judged at code e25d3712f8cc48f2, this checkout is bfe4bf88092c51ef.
+      Bound to: ETL, website/build, project-mgmt/coverage_baseline.json, data/guard_registry.json, ETL/schema/guard_verdicts.sql
+      The scheduled ETL is not running the code in this repository. It has no
+      repo trigger; only `railway up` redeploys it:
+        python3 ETL/lib/verify_cron.py --deploy
+
+  - DRIFTED — store_schema was judged at code 629c7d5d49aeb722, this checkout is 6eca634cc00c450e.
+      Bound to: ETL/schema/check_store_schema.py, ETL/schema/schema_debt.json, ETL/events/load/schema.sql, ETL/events/load/migrations, ETL/schema/postgres_schema.sql
+      The scheduled ETL is not running the code in this repository. It has no
+      repo trigger; only `railway up` redeploys it:
+        python3 ETL/lib/verify_cron.py --deploy
+
+  - DRIFTED — offerable_decay was judged at code 15695faef8a08edb, this checkout is 2fd575b45503ba2e.
+      Bound to: ETL/terms/check_offerable_decay.py, ETL/lib/liveness.py, data/reference/offerable_baseline.json
+      The scheduled ETL is not running the code in this repository. It has no
+      repo trigger; only `railway up` redeploys it:
+        python3 ETL/lib/verify_cron.py --deploy
+
+  - DEGRADED — corpus_currency last reported failed:
+        2 disagreement(s) between the committed snapshot and Postgres (1088 instruments, 1088 profiles)
+      Taken 2026-08-18T20:12Z by local. The guard
+      is not the problem; what it guards is. Re-run to see the full output:
+        cd website/frontend && npx tsx scripts/check_corpus_currency.ts
+
+  - DRIFTED — hydration_parity was judged at code fd4bd2a17cb2e4b0, this checkout is 48132f41cb4ecd11.
+      Bound to: website/frontend/scripts/check_hydration_parity.ts, website/frontend/lib/intelligence, website/frontend/public/data/instrument_terms.json
+      The code this guard judges has changed since it last ran, so its verdict
+      does not cover what is about to ship. Re-run it where the credentials
+      are (it publishes its own verdict):
+        cd website/frontend && npx tsx scripts/check_hydration_parity.ts
+
+  - DRIFTED — degradation was judged at code 9182f449b5fed14d, this checkout is ffbf1d844505f909.
+      Bound to: website/frontend/scripts/check_degradation.ts, website/frontend/lib/intelligence, website/frontend/public/data/instrument_terms.json
+      The code this guard judges has changed since it last ran, so its verdict
+      does not cover what is about to ship. Re-run it where the credentials
+      are (it publishes its own verdict):
+        cd website/frontend && npx tsx scripts/check_degradation.ts
+
+  - DEGRADED — applicant_identity last reported failed:
+        2 published eligibility text(s) describe a population that cannot apply to the fund
+      Taken 2026-08-18T20:17Z by local. The guard
+      is not the problem; what it guards is. Re-run to see the full output:
+        cd website/frontend && npx tsx scripts/check_applicant_identity.ts
+
+  These guards need a corpus that CI is not allowed to see, so they run
+  where the data is and publish what they found. A verdict that is
+  missing, old, red, or bound to different code is not a pass.
+
+[1m── summary[0m
+  [32m ok [0m  typecheck                          5.9s
+  [32m ok [0m  unit tests                         4.9s
+  [32m ok [0m  segment config is a literal        1.0s
+  [32m ok [0m  output contracts                   1.0s
+  [32m ok [0m  a contract states no rate          0.9s
+  [32m ok [0m  a euro figure says what it is a quantity of 1.0s
+  [32m ok [0m  a rule's check can actually run    1.0s
+  [32m ok [0m  a guard reads the thing it protects 0.8s
+  [32m ok [0m  identifiers named in the docs exist 2.0s
+  [32m ok [0m  scratch scripts are reachable      2.1s
+  [31mFAIL[0m  rendered numbers                   1.2s
+  [31mFAIL[0m  published figures                  0.8s
+  [32m ok [0m  a measured ceiling was raised      1.0s
+  [32m ok [0m  sector evidence                    0.9s
+  [32m ok [0m  a funds: line states a scope       1.0s
+  [32m ok [0m  vocabulary contract                1.8s
+  [31mFAIL[0m  a comparator asks the rule's question 1.6s
+  [31mFAIL[0m  one env loader                     1.4s
+  [32m ok [0m  client/server boundary             1.0s
+  [32m ok [0m  payload budget                     1.1s
+  [32m ok [0m  both stores select the same columns 0.9s
+  [32m ok [0m  archetype regression               12.0s
+  [32m ok [0m  every archetype gets a table       16.7s
+  [32m ok [0m  liveness has one definition        1.8s
+  [32m ok [0m  openness is evidenced              1.6s
+  [32m ok [0m  no door is offered on an expired fact 1.6s
+  [32m ok [0m  offer routes are sourced           1.0s
+  [32m ok [0m  a row is named by something outside its id 1.0s
+  [32m ok [0m  a displayed name is not an id      0.9s
+  [32m ok [0m  capital kinds match the register   0.1s
+  [32m ok [0m  regions match NUTS                 1.0s
+  [31mFAIL[0m  theme index is not stale           1.0s
+  [32m ok [0m  selector's base rate is current    1.7s
+  [32m ok [0m  leaf cap headroom                  1.0s
+  [32m ok [0m  missing-data neutral               1.0s
+  [32m ok [0m  capital reach                      0.9s
+  [31mFAIL[0m  a filter can admit someone         1.3s
+  [31mFAIL[0m  open questions still cover the corpus 1.0s
+  [32m ok [0m  a winner is never screened out     1.4s
+  [32m ok [0m  a winner is never gated out of the memo 1.2s
+  [32m ok [0m  asking a question never costs a fund 309.9s
+  [32m ok [0m  recall set does not leak           1.6s
+  [32m ok [0m  request path cannot reach the answer 0.9s
+  [32m ok [0m  harness answers as the founder     1.6s
+  [32m ok [0m  peer prior canary                  1.0s
+  [32m ok [0m  quotations match documents         1.0s
+  [32m ok [0m  dependency audit                   2.1s
+  [31mFAIL[0m  country gates                      1.1s
+  [32m ok [0m  gate field reach                   1.4s
+  [32m ok [0m  answers reach the ranker           18.4s
+  [32m ok [0m  answers reach the writer           1.2s
+  [31mFAIL[0m  gate pertinence                    1.5s
+  [31mFAIL[0m  applicant identity                 1.1s
+  [31mFAIL[0m  corpus currency                    3.0s
+  [31mFAIL[0m  site serves the ETL's corpus       1.3s
+  [32m ok [0m  degradation policy                 15.5s
+  [32m ok [0m  both stores agree                  28.2s
+  [32m ok [0m  recall floor                       195.5s
+  [31mFAIL[0m  published verdicts                 3.9s
+
+[31m13 of 59 failed:[0m rendered numbers, published figures, a comparator asks the rule's question, one env loader, theme index is not stale, a filter can admit someone, open questions still cover the corpus, country gates, gate pertinence, applicant identity, corpus currency, site serves the ETL's corpus, published verdicts
+Every check ran. This is the whole list, not the first item on it.

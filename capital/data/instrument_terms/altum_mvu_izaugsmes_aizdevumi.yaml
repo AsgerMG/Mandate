@@ -1,0 +1,213 @@
+id: altum_mvu_izaugsmes_aizdevumi
+name: altum_mvu_izaugsmes_aizdevumi
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sector-exclusion
+  gate_family: G1_nexus
+  requirement: Applicant must be a company operating outside the financial and insurance sectors.
+  value: outside financial and insurance sectors
+  intake_field: entityCountries
+  quote: for companies outside the financial and insurance sectors
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-sector-support
+  gate_family: G1_nexus
+  requirement: Project must fall within the sectors supported under the applicable State aid
+    framework.
+  value: within sectors supported under State aid framework
+  intake_field: none
+  quote: within the sectors supported under the State aid frameworku
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-borrower-type
+  gate_family: G2_size_ownership
+  requirement: Eligible borrowers are small and medium-sized enterprises, mid-caps, and self-employed
+    persons in the general economy sectors.
+  value: SMEs, mid-caps, self-employed persons
+  intake_field: fteBand
+  quote: Economic activity support for sectors of the general economy for small and medium-sized
+    enterprises, mid-caps and self-employed persons.
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-sector-carveout
+  gate_family: G2_size_ownership
+  requirement: Separate support programmes apply to agricultural or fisheries sector businesses,
+    which are excluded from this general instrument.
+  value: excludes agriculture/fisheries (separate programs)
+  intake_field: none
+  quote: lother support programs available to the agricultural or fisheries sectors
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-wc-loan-terms
+  gate_family: G3_financial
+  requirement: Working capital loans are available up to EUR 1,000,000 for up to 5 years at
+    an annual rate from 2.5% + 6-month EURIBOR.
+  value: up to EUR 1,000,000, up to 5 years, from 2.5%+6m EURIBOR
+  intake_field: ticketBand
+  quote: "up to EUR 1 000 000 \n up to 5 years* \n annual rate from 2.5% + 6 months. EURIBOR\
+    \ **"
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-investment-loan-terms
+  gate_family: G3_financial
+  requirement: Investment loans for fixed assets are available up to EUR 5,000,000 for up
+    to 15 years at an annual rate from 2.5% + 6-month EURIBOR.
+  value: up to EUR 5,000,000, up to 15 years, from 2.5%+6m EURIBOR
+  intake_field: ticketBand
+  quote: "up to EUR 5 000 000 \n up to 15 years* \n annual rate from 2.5% + 6 months. EURIBOR**"
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-collateral-100k
+  gate_family: G3_financial
+  requirement: Collateral requirements are mitigated for loans of up to EUR 100,000.
+  value: mitigated collateral up to EUR 100,000
+  intake_field: ticketBand
+  quote: Mitigated collateral requirements for loans of up to EUR 100 000
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-ltv-above-100k
+  gate_family: G3_financial
+  requirement: Loans above EUR 100,000 must have a loan-to-value ratio of at least 135%.
+  value: LTV ratio ≥135% for loans >EUR 100,000
+  intake_field: ticketBand
+  quote: Loans above EUR 100 000 are required to have a loan-to-value ratio of at least 135%
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-fixed-rate-micro-rural
+  gate_family: G3_financial
+  requirement: A fixed annual rate from 4.9% applies if the loan is granted as a small loan
+    in rural areas or as a micro loan.
+  value: fixed rate from 4.9% for micro/rural small loans
+  intake_field: ticketBand
+  quote: fixed annual rate from 4.9% if the loan is granted as a small loan in rural areas
+    or as a micro loan
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4-de-minimis-or-regional
+  gate_family: G4_borrower_model
+  requirement: Aid is granted as de minimis aid under Commission Regulation (EU) 2023/2831,
+    or, for SME growth loans, may also be provided as regional aid under Commission Regulation
+    (EU) No 651/2014.
+  value: de minimis (2023/2831) or regional aid (651/2014) for SME growth loans
+  intake_field: borrowerModel
+  quote: The aid is granted in the form of de minimis aid in accordance with Commission Regulation
+    (EU) 2023/2831 of 13 December 2023. For SME growth loans the aid may also be provided
+    as regional aid under Commission Regulation (EU) No 651/2014.
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-exclude-share-acquisition-refinancing
+  gate_family: G5_use_of_funds
+  requirement: Loan funds may not be used for acquisition of company shares or for refinancing
+    of existing loans.
+  value: excludes share acquisition and refinancing
+  intake_field: none
+  quote: that do not intend to use the loan for acquisition of company shares and refinancing
+    of the existing loans
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-exclude-real-estate-transactions
+  gate_family: G5_use_of_funds
+  requirement: Loan funds may not be used for real estate transactions, with specific exceptions
+    for renting/operating real estate (Group 68.2) and, for SME growth loans, buying/selling
+    own real estate (Group 68.1) under conditions relating to construction/renewal of apartment
+    houses outside certain regions.
+  value: excludes real estate transactions with narrow NACE exceptions
+  intake_field: none
+  quote: unrelated to real estate transactions*
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-real-estate-exception-detail
+  gate_family: G5_use_of_funds
+  requirement: Exception applies for NACE Group 68.1 for SME growth loans only where the operator
+    performs construction, renewal or reconstruction of a structure whose primary use is an
+    apartment house of three or more apartments located outside Jūrmala, Rīga city and adjacent
+    districts.
+  value: apartment house exception outside Riga/Jurmala and adjacent districts
+  intake_field: none
+  quote: as regards SME growth loans – except for group 68.1 “Buying and Selling of Own Real
+    Estate”, provided the economic operator performs construction, renewal or reconstruction
+    of the real estate (structure), whose primary exploitation type according to the normative
+    regulations regarding classification of structures is the apartment house of three or
+    more apartments situated outside Jūrmala city, Rīga city and administrative territories
+    of the districts adjacent to Rīga city (Mārupe district, Olaine district, Ķekava district,
+    Salaspils district, Ropaži district, Ādaži district)
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-creditworthiness
+  gate_family: G6_conditionality
+  requirement: Projects must meet ALTUM's creditworthiness assessment criteria to receive
+    the loan.
+  value: must meet ALTUM creditworthiness criteria
+  intake_field: conditionality
+  quote: that meet ALTUM creditworthiness assessment criteria
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Borrower must not use the loan proceeds for acquisition of company shares or
+    refinancing existing loans.
+  quote: that do not intend to use the loan for acquisition of company shares and refinancing
+    of the existing loans
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: Loans above EUR 100,000 must be secured with collateral providing a loan-to-value
+    ratio of at least 135%.
+  quote: Loans above EUR 100 000 are required to have a loan-to-value ratio of at least 135%
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/14 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid under this instrument is granted as de minimis aid, subject to the de minimis
+    regulation ceilings, or alternatively as regional aid for SME growth loans, implying cumulation
+    rules under the applicable EU State aid regulations apply.
+  quote: The aid is granted in the form of de minimis aid in accordance with Commission Regulation
+    (EU) 2023/2831 of 13 December 2023. For SME growth loans the aid may also be provided
+    as regional aid under Commission Regulation (EU) No 651/2014.
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: Applications submitted directly to ALTUM (mans.altum.lv portal or contact channels)
+  typical_timeline: Not specified in source text
+  quote: mans.altum.lv
+  source:
+    file: altum_growth_loan_sme.html
+    locator: chunk 1
+  verified: llm_cited

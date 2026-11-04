@@ -1,0 +1,57 @@
+id: satr_hu_rnd__sa_119085__nkfih
+name: A Nemzeti Kutatási, Fejlesztési és Innovációs Alapból nyújtott, a 651/2014/EU bizottsági
+  rendelet szerinti állami támogatások
+administering_body: see source document
+country: 'HU'
+capital_type: unknown
+status: draft
+gates:
+- id: g5-rd-categories
+  gate_family: G5_use_of_funds
+  requirement: Aid for R&D projects may only be granted for projects falling into one of
+    four categories - basic research, applied (industrial) research, experimental
+    development, or feasibility study.
+  value: 'R&D category required: basic research, applied research, experimental development,
+    or feasibility study'
+  intake_field: developmentStage
+  quote: 'A kutatás-fejlesztési projekthez nyújtott támogatás az alábbi kategóriába tartozó
+    kutatás-fejlesztési projekt részére nyújtható: a) alapkutatás; b) alkalmazott (ipari)
+    kutatás; c) kísérleti fejlesztés; d) megvalósíthatósági tanulmány.'
+  source:
+    file: https://nkfih.gov.hu/palyazoknak/nkfi-alap/palyazati-csomag/altalanos-palyazati-utmutato-2021
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g3-notification-thresholds
+  gate_family: G3_financial
+  requirement: Notification thresholds vary by R&D category - basic research EUR 40 million,
+    applied/industrial research EUR 20 million, experimental development EUR 15 million,
+    and feasibility study EUR 7.5 million per study.
+  value: 'Notification thresholds: EUR 40M (basic), 20M (applied), 15M (experimental), 7.5M
+    (feasibility)'
+  intake_field: ticketBand
+  quote: 'Bejelentési értékhatárok: alapkutatás 40 millió EUR, alkalmazott (ipari) kutatás
+    20 millió EUR, kísérleti fejlesztés 15 millió EUR, megvalósíthatósági tanulmányonként
+    7,5 millió EUR.'
+  source:
+    file: https://nkfih.gov.hu/palyazoknak/nkfi-alap/palyazati-csomag/altalanos-palyazati-utmutato-2021
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-gber-legal-basis
+  gate_family: G1_nexus
+  requirement: Where the support constitutes state aid, it may only be granted for R&D
+    projects under the rules of Chapters I-II and Article 25 of Regulation (EU) No 651/2014
+    (GBER).
+  value: Aid must be granted under GBER Chapters I-II and Article 25
+  intake_field: none
+  quote: azt kizárólag a 651/2014/EU bizottsági rendelet I-II. fejezetének és III. fejezetének
+    25. cikke szerinti szabályok alapján lehet nyújtani.
+  source:
+    file: https://nkfih.gov.hu/palyazoknak/nkfi-alap/palyazati-csomag/altalanos-palyazati-utmutato-2021
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

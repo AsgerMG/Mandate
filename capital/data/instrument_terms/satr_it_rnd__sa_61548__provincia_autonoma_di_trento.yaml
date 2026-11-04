@@ -1,0 +1,50 @@
+id: satr_it_rnd__sa_61548__provincia_autonoma_di_trento
+name: Aiuti alle imprese LP 6/99 - proroga <b>SA</b>.40795
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-any-sector-any-size
+  gate_family: G1_nexus
+  requirement: Eligible recipients are enterprises of all economic sectors and any size, including newly-formed
+    companies and research centres, carrying out or intending to carry out activities falling within the
+    codes listed in Table A of the general rules, with the exclusions specified in point 4(2) of those
+    rules.
+  value: Any sector/size incl. newco and research centres, subject to Table A code list/exclusions
+  intake_field: turnoverBand
+  quote: Destinatari dei criteri sono le imprese di tutti i settori economici e di qualsiasi dimensione,
+    incluse new-co e centri di ricerca, che svolgono o che intendono svolgere attivita' rientranti nei
+    codici individuati dalla tabella A allegata alle norme di carattere generale, con esclusione in ogni
+    caso dei soggetti individuati al punto 4 comma 2 delle norme di carattere generale stesse.
+  source:
+    file: http://www.apiae.provincia.tn.it/ambiti_intervento_aiuti/-Aiuti_economici/pagina40.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortia-eligible
+  gate_family: G1_nexus
+  requirement: Consortia and networks of enterprises with legal personality may also access the aid.
+  value: Consortia/networks with legal personality eligible
+  intake_field: consortium
+  quote: Possono accedere anche consorzi e reti di impresa con personalita' giuridica.
+  source:
+    file: http://www.apiae.provincia.tn.it/ambiti_intervento_aiuti/-Aiuti_economici/pagina40.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-financial-sector-excluded
+  gate_family: G1_nexus
+  requirement: Entities carrying out financial, credit, and insurance activities are excluded in all cases.
+  value: Financial/credit/insurance sector excluded
+  intake_field: none
+  quote: Sono in ogni caso esclusi i soggetti che svolgono attivita' finanziaria, creditizia e assicurativa.
+  source:
+    file: http://www.apiae.provincia.tn.it/ambiti_intervento_aiuti/-Aiuti_economici/pagina40.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

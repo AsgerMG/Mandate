@@ -1,0 +1,393 @@
+id: horizon_eu_cl4
+name: horizon_eu_cl4
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-establishment-country
+  gate_family: G1_nexus
+  requirement: Applicants must be established in an EU Member State, Associated Country, or
+    another eligible country listed in the Annex, or eligibility must otherwise be provided
+    for in the specific call/topic conditions.
+  value: EU Member States, Associated Countries, or listed third countries
+  intake_field: entityCountries
+  quote: 'To be eligible for funding, applicants must be established in one of the following
+    countries:'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.11
+  verified: llm_cited
+- id: g1-russia-belarus-exclusion
+  gate_family: G1_nexus
+  requirement: Legal entities established in Russia, Belarus, or non-government controlled
+    territories of Ukraine are not eligible to participate in any capacity.
+  value: 'Excluded: Russia, Belarus, non-government controlled Ukraine territories'
+  intake_field: entityCountries
+  quote: 'such legal entities are not eligible to participate in any capacity. This
+
+    includes participation as beneficiaries, affiliated entities, associated partners, third
+    parties
+
+    giving in-kind contributions, subcontractors or recipients of financial support to third
+    parties (if
+
+    any).'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.11
+  verified: llm_cited
+- id: g1-russia-ownership-exclusion
+  gate_family: G1_nexus
+  requirement: Legal entities established outside Russia whose proprietary rights are more
+    than 50% owned directly or indirectly by a Russian-established person, entity, or body
+    are not eligible to participate in any capacity.
+  value: '>50% Russian-owned entities excluded'
+  intake_field: nonEuControl
+  quote: 'legal entities established outside Russia whose
+
+    proprietary rights are directly or indirectly owned for more than 50% by a legal person,
+    entity
+
+    or body established in Russia are also not eligible to participate in any capacity.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.11
+  verified: llm_cited
+- id: g1-hungary-trusts-exclusion
+  gate_family: G1_nexus
+  requirement: Hungarian public interest trusts established under Hungarian Act IX of 2021
+    (or entities they maintain) are not eligible to participate in any funded role.
+  value: 'Excluded from funded roles: Hungarian public interest trusts under Act IX 2021'
+  intake_field: entityCountries
+  quote: 'such entities are not eligible to participate in any funded role
+
+    (beneficiaries, affiliated entities, subcontractors, recipients of financial support to
+    third parties,
+
+    etc.).'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.11
+  verified: llm_cited
+- id: g1-china-exclusion-IA-RIA
+  gate_family: G1_nexus
+  requirement: For the relevant Innovation Actions and Research and Innovation Actions, legal
+    entities established in China are not eligible to participate in any capacity, subject
+    to case-by-case exceptions.
+  value: Chinese entities excluded from IA/RIA actions (case-by-case exceptions possible)
+  intake_field: entityCountries
+  quote: 'this includes participation of legal entities established in
+
+    China in any capacity (as beneficiaries, affiliated entities, associated partners, third
+    parties
+
+    giving in-kind contributions, subcontractors or recipients of financial support to third
+    parties (if
+
+    any)).'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.8
+  verified: llm_cited
+- id: g1-miit-universities-exclusion
+  gate_family: G1_nexus
+  requirement: Chinese public universities administered by or under the supervision of the
+    Ministry of Industry and Information Technology (MIIT) are not eligible to participate
+    in any action under the Work Programme.
+  value: 'Excluded: MIIT-supervised Chinese universities'
+  intake_field: entityCountries
+  quote: 'universities (higher
+
+    education establishments) established in China which are public bodies, that are administered
+
+    by or fall under the supervision of the Ministry of Industry and Information Technology
+    (MIIT)
+
+    are not eligible to participate in any action under all parts of this Work Programme.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.8
+  verified: llm_cited
+- id: g1-highrisk-5g-suppliers-exclusion
+  gate_family: G1_nexus
+  requirement: Entities assessed as high-risk suppliers of mobile network communication equipment
+    (and entities they own or control) are not eligible to participate as beneficiaries, affiliated
+    entities, or associated partners in actions concerning European communication networks.
+  value: 'Excluded: assessed high-risk 5G/mobile network suppliers'
+  intake_field: entityCountries
+  quote: 'Entities that are assessed as high-risk suppliers of mobile network communication
+    equipment (and any entities they own or control) are not eligible to participate as beneficiaries,
+    affiliated
+
+    entities and associated partners.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.9
+  verified: llm_cited
+- id: g1-consortium-composition
+  gate_family: G2_size_ownership
+  requirement: Unless the call/topic conditions provide otherwise, a consortium must include
+    at least three independent legal entities each established in a different country, with
+    at least one in a Member State and at least two others in different Member States or Associated
+    Countries.
+  value: Minimum 3 independent entities, 3 different countries (1 MS + 2 others in MS/AC)
+  intake_field: consortium
+  quote: 'only legal entities forming
+
+    a consortium are eligible to participate in actions provided that the consortium includes,
+    as
+
+    beneficiaries, three legal entities independent from each other and each established in
+    a different
+
+    country'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.13
+  verified: llm_cited
+- id: g1-csa-establishment
+  gate_family: G1_nexus
+  requirement: To be eligible as beneficiaries in Coordination and Support Actions, legal
+    entities must be established in a Member State or Associated Country, unless specific
+    call/topic conditions provide otherwise.
+  value: 'CSA beneficiaries: Member State or Associated Country'
+  intake_field: entityCountries
+  quote: 'To be eligible to participate as beneficiaries (or affiliated
+
+    entities) in ‘Coordination and support’ actions, legal entities must be established in
+    a Member
+
+    State or Associated Country, unless the specific call/topic conditions provide otherwise'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.13
+  verified: llm_cited
+- id: g1-pcp-ppi-procurer-requirement
+  gate_family: G1_nexus
+  requirement: Applications for Pre-commercial procurement and PPI actions must fulfil the
+    three-independent-entity criterion, with a minimum of two beneficiaries being independent
+    public procurers each established in a different Member State or Associated Country, and
+    at least one in a Member State.
+  value: 'PCP/PPI: min 2 public procurers, different MS/AC, 1 in MS'
+  intake_field: consortium
+  quote: 'a minimum of two beneficiaries must be
+
+    independent legal entities that are public procurers32, each established in a different
+    Member
+
+    State or Associated Country and with at least one of them established in a Member State.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.14
+  verified: llm_cited
+- id: g4-exclusion-financial-situation
+  gate_family: G4_borrower_model
+  requirement: Applicants subject to EU administrative sanctions (exclusion) or in situations
+    such as bankruptcy, winding up, court-administered affairs, arrangement with creditors,
+    or suspended business activities cannot participate.
+  value: 'Excluded: bankruptcy, winding up, court-administered affairs, suspended business,
+    EU administrative sanctions'
+  intake_field: lossesOverHalfCapital
+  quote: 'bankruptcy, winding up, affairs administered by the courts, arrangement with creditors,
+
+    suspended business activities or other similar procedures (including procedures for
+
+    persons with unlimited liability for the applicant’s debts);'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.22
+  verified: llm_cited
+- id: g4-operational-capacity
+  gate_family: G4_borrower_model
+  requirement: Applicants must have the know-how, qualifications and resources (operational
+    capacity) to successfully implement their tasks in the project.
+  value: Operational capacity required, assessed via 'Quality and efficiency of implementation'
+    criterion
+  intake_field: borrowerModel
+  quote: 'Applicants must have the know-how, qualifications and resources to successfully
+    implement
+
+    their tasks in the project and contribute their share (including, when appropriate, sufficient
+
+    experience in EU/transnational projects of comparable size).'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.22
+  verified: llm_cited
+- id: g5-civil-applications-only
+  gate_family: G5_use_of_funds
+  requirement: Projects must focus exclusively on civil applications and must not aim at human
+    cloning for reproductive purposes, heritable genetic modification of human beings, or
+    creation of human embryos solely for research or stem cell procurement purposes.
+  value: Civil applications only; specific prohibited research activities excluded
+  intake_field: none
+  quote: 'Projects must focus exclusively on civil applications and must not:
+
+    – aim at human cloning for reproductive purposes;
+
+    – intend to modify the genetic heritage of human beings which could make such changes
+
+    heritable (except for research relating to cancer treatment of the gonads, which may be
+
+    financed);
+
+    – intend to create human embryos solely for the purpose of research, or for the purpose
+    of
+
+    stem cell procurement, including by means of somatic cell nuclear transfer.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.14
+  verified: llm_cited
+- id: g5-eligible-activities-scope
+  gate_family: G5_use_of_funds
+  requirement: Applications will only be considered eligible if their content corresponds,
+    wholly or in part, to the topic description for which they are submitted.
+  value: Content must correspond to topic description
+  intake_field: developmentStage
+  quote: 'Applications will only be
+
+    considered eligible if their content corresponds, wholly or in part, to the topic description
+    for
+
+    which it is submitted.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.14
+  verified: llm_cited
+- id: g6-completed-projects-exclusion
+  gate_family: G6_conditionality
+  requirement: Applications for projects that have already been completed will be rejected;
+    ongoing projects are assessed case-by-case with no reimbursement for costs incurred before
+    submission.
+  value: Completed projects rejected; ongoing projects assessed case-by-case
+  intake_field: developmentStage
+  quote: 'Completed/ongoing projects — Applications for projects that have already been completed
+    will be rejected.
+
+    Applications for projects that have already started will be assessed on a case-by-case
+    basis'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.37
+  verified: llm_cited
+obligations:
+- requirement: Applications must include a plan for exploitation and dissemination of results,
+    including communication activities, unless otherwise provided in specific call/topic conditions.
+  quote: 'Applications must include a plan for the exploitation and dissemination of results
+    including
+
+    communication activities, unless provided otherwise in the specific call/topic conditions.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.4
+  verified: llm_cited
+- requirement: Beneficiaries must take measures to promote gender equality and, for certain
+    public bodies, research organisations and higher education establishments, must have a
+    gender equality plan meeting minimum requirements at grant signature and throughout the
+    grant.
+  quote: 'legal entities from Member States and Associated Countries that are
+
+    public bodies, research organisations or higher education establishments (including private
+
+    research organisations and private higher education establishments) applying as beneficiaries
+
+    or affiliated entities must have at the moment of grant signature and during the duration
+    of the
+
+    grant a gender equality plan'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.18
+  verified: llm_cited
+- requirement: Projects must comply with ethical principles and applicable EU, international
+    and national law, and applicants must complete an ethics self-assessment as part of the
+    application.
+  quote: 'Projects must comply with ethical principles (including the highest standards of
+    research
+
+    integrity) and applicable EU, international and national law.
+
+    Applicants must have completed the ethics self-assessment as part of their application.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.16
+  verified: llm_cited
+- requirement: Beneficiaries must ensure their projects are not subject to national/third-country
+    security requirements affecting implementation, and must notify any potential security
+    issues immediately to the granting authority.
+  quote: 'beneficiaries must ensure that their projects are not subject to national/third-
+
+    country security requirements that could affect implementation or put into question the
+    award
+
+    of the grants (e.g. technology restrictions, national security classification, etc.).
+    Any potential
+
+    security issues must be notified immediately to the granting authority.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.18
+  verified: llm_cited
+- requirement: Grants may not give a profit, and this no-profit rule will be checked by the
+    granting authority at the end of the project.
+  quote: 'Grants may NOT give a profit (i.e. surplus of revenues + EU grant over costs). This
+    will
+
+    be checked by the granting authority at the end of the project.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.38
+  verified: llm_cited
+- requirement: Participants must conclude a written consortium agreement, unless otherwise
+    provided for in specific call conditions, to govern implementation and internal arrangements.
+  quote: 'participants must conclude a written consortium
+
+    agreement to ensure the smooth and successful implementation of the action and to deal
+    with
+
+    exceptional or unforeseen circumstances, unless otherwise provided for in the specific
+    call
+
+    conditions.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.37
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: 'There is strict prohibition of double funding from the EU budget: any given action
+    may receive only one grant from the EU budget (except EU Synergy grants), and the same
+    costs cannot be declared to two different EU actions; combination with EU operating grants
+    is possible only if costs are kept clearly separated and not declared twice.'
+  quote: 'There is strict prohibition of double funding from the EU budget. Any given action
+
+    may receive only ONE grant from the EU budget (except for EU Synergy grants) and same
+    costs
+
+    may under NO circumstances be declared to two different EU actions.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.38
+  verified: llm_cited
+application:
+  channel: EU Funding & Tenders Portal electronic submission system
+  typical_timeline: 'Around 5 months from submission deadline for evaluation outcome; around
+    8 months from submission deadline for grant agreement signature (for two-stage calls:
+    around 3 months for first-stage results, 5 months for second-stage results, 8 months from
+    second-stage deadline for signature).'
+  quote: 'information on the outcome of the evaluation: around 5 months from the deadline
+    for
+
+    submission;
+
+    – indicative date for the signing of grant agreements: around 8 months from the deadline
+
+    for submission.'
+  source:
+    file: horizon_eu_general_annexes_2026_2027.pdf
+    locator: horizon_eu_general_annexes_2026_2027.pdf#p.31
+  verified: llm_cited

@@ -1,0 +1,24 @@
+==========================================================================================
+wsHO
+  C OBSTRUCTED  n= 12 pickedAnywhere=  8 inSix(hitT)=  8  meanSeatIfPicked=1.12
+  C OPEN        n= 23 pickedAnywhere= 20 inSix(hitT)= 20  meanSeatIfPicked=1.00
+  R OBSTRUCTED  n=  8 pickedAnywhere=  3 inSix(hitT)=  3  meanSeatIfPicked=4.00
+  R OPEN        n= 34 pickedAnywhere=  9 inSix(hitT)=  8  meanSeatIfPicked=3.33
+  R UNASSESSED  n=  1 pickedAnywhere=  0 inSix(hitT)=  0  meanSeatIfPicked=nan
+  HARM: obstructed won-row 4/12=33.3%  vs other 3/23=13.0%  Fisher p=0.1634
+  obstructed C founders (won regime): [('innovate_uk', 11), ('satr_it_rnd', 1)]
+  harmed & obstructed: [('CU SERVICES LIMITED', 'innovate_uk', 'seat=None'), ('BRISTOL CITY COUNCIL', 'innovate_uk', 'seat=None'), ('3T ADDITIVE MANUFACTURIN', 'innovate_uk', 'seat=None'), ('WISE SRL', 'satr_it_rnd', 'seat=None')]
+  harmed & NOT obstructed: [('Aktiv', 'innovationsfonden_innoexplorer', 'OPEN', 'seat=None'), ('AERNNOVA COMPOSITES ILLE', 'cdti_perte_aerosalud', 'OPEN', 'seat=None'), ('CELLEVATE AB', 'vinnova_grant', 'OPEN', 'seat=None')]
+  won row picked but at SEAT 7 (cut by the six): 1 -> [('JANSEN RECYCLING GROUP', 'OPEN')]
+==========================================================================================
+wsHW
+  C OBSTRUCTED  n= 11 pickedAnywhere=  4 inSix(hitT)=  3  meanSeatIfPicked=1.50
+  C OPEN        n= 22 pickedAnywhere= 19 inSix(hitT)= 19  meanSeatIfPicked=1.11
+  R OBSTRUCTED  n=  8 pickedAnywhere=  4 inSix(hitT)=  4  meanSeatIfPicked=2.00
+  R OPEN        n= 36 pickedAnywhere= 11 inSix(hitT)=  9  meanSeatIfPicked=3.91
+  R UNASSESSED  n=  1 pickedAnywhere=  0 inSix(hitT)=  0  meanSeatIfPicked=nan
+  HARM: obstructed won-row 8/11=72.7%  vs other 3/22=13.6%  Fisher p=0.0014
+  obstructed C founders (won regime): [('innovate_uk', 10), ('satr_it_rnd', 1)]
+  harmed & obstructed: [('CU SERVICES LIMITED', 'innovate_uk', 'seat=None'), ('BRISTOL CITY COUNCIL', 'innovate_uk', 'seat=None'), ('3T ADDITIVE MANUFACTURIN', 'innovate_uk', 'seat=None'), ('WISE SRL', 'satr_it_rnd', 'seat=None'), ('ADDITIVE MANUFACTURING S', 'innovate_uk', 'seat=None'), ('AEROTEX', 'innovate_uk', 'seat=6'), ('BRISTOL BATH REGIONAL CA', 'innovate_uk', 'seat=None'), ('AQDOT', 'innovate_uk', 'seat=None')]
+  harmed & NOT obstructed: [('Aktiv', 'innovationsfonden_innoexplorer', 'OPEN', 'seat=None'), ('CELLUGY', 'innovationsfonden_global_research', 'OPEN', 'seat=None'), ('AERNNOVA COMPOSITES ILLE', 'cdti_perte_aerosalud', 'OPEN', 'seat=None')]
+  won row picked but at SEAT 7 (cut by the six): 3 -> [('JANSEN RECYCLING GROUP', 'OPEN'), ('AEROTEX', 'OBSTRUCTED'), ('CEMONITE', 'OPEN')]

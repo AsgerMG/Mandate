@@ -1,0 +1,49 @@
+id: satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum
+name: Sēklas kapitāla, sākuma kapitāla un izaugsmes kapitāla fondi
+administering_body: see source document
+country: LV
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: Recipients must meet the micro/small/medium enterprise definition in Annex I of Commission
+    Regulation No. 651/2014, assessed at group level, at the time the funding decision is made.
+  value: SME per EU Reg. 651/2014 Annex I (group level)
+  intake_field: turnoverBand
+  quote: sīkā (mikro), mazā un vidējā saimnieciskās darbības veicēja definīcijai (turpmāk ‒ MVU grupas
+    līmenis)
+  source:
+    file: https://www.altum.lv/pakalpojumi/biznesa-uzsacejiem/risk-capital/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-non-listed
+  gate_family: G2_size_ownership
+  requirement: The recipient must not be a listed (publicly quoted) company at group level, per the definition
+    in Article 2(76) of Regulation 651/2014.
+  value: Not publicly listed at group level
+  intake_field: institutionalOwner
+  quote: nekotējas MVU grupas līmenī atbilstoši Komisijas regulas Nr. 651/2014 2. panta 76. punktā minētajai
+    definīcijai
+  source:
+    file: https://www.altum.lv/pakalpojumi/biznesa-uzsacejiem/risk-capital/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-art21-risk-finance-conditions
+  gate_family: G3_financial
+  requirement: The recipient must meet the requirements of Article 21(3) of Regulation 651/2014 at SME
+    group level.
+  value: Meets Art. 21(3) EU Reg. 651/2014 conditions (group level)
+  intake_field: none
+  quote: Komisijas regulas Nr. 651/2014 21. panta 3. punktā noteiktajām prasībām MVU grupas līmenī
+  source:
+    file: https://www.altum.lv/pakalpojumi/biznesa-uzsacejiem/risk-capital/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

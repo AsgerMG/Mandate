@@ -1,0 +1,78 @@
+corpus=postgres instruments=1088  multi-leaf regimes=52 leaves=780  labelled=120
+
+====================================================================================
+CEILING FOR A PERFECT ANSWER, all multi-leaf leaves
+====================================================================================
+question                     mean class   alone   <=5 (CEILING@5)     >20
+nothing asked (today)              48.9      0%                8%     66%
+money, shipped bands               34.5      3%               17%     51%
+money, finer low end               27.1      5%               24%     49%
+where you are (region)             27.7     16%               39%     43%
+what it pays for (stage)           47.6      6%               14%     66%
+what you are (who)                 46.7      8%               18%     65%
+technology / measure               37.2      7%               19%     53%
+money(fine) + region               15.1     23%               51%     27%
+money(fine) + tech                 21.6     13%               37%     38%
+region + tech                      17.0     23%               50%     31%
+all three                           9.9     31%               62%     17%
+
+Same table restricted to FULLY LABELLED regimes (ademe_aid)
+question                     mean class   alone   <=5 (CEILING@5)     >20
+nothing asked (today)              76.0      0%                0%    100%
+money, shipped bands               68.3      1%                5%     95%
+money, finer low end               28.2      1%                5%     84%
+where you are (region)             66.4      1%                7%     93%
+what it pays for (stage)           72.1      3%                3%     97%
+what you are (who)                 72.1      3%                3%     97%
+technology / measure                2.1     54%               91%      0%
+money(fine) + region               25.3      8%               12%     80%
+money(fine) + tech                  1.6     67%              100%      0%
+region + tech                       2.1     57%               91%      0%
+all three                           1.6     67%              100%      0%
+
+====================================================================================
+CEILING@5 PER REGIME (share of leaves whose residual class fits in five rows)
+====================================================================================
+regime                     n      nothing     money,     money,      where       what  technolog        all
+satr_de_rnd              103           0%         0%         2%        57%         1%         0%        57%
+bdns_es_ayudas            88           0%         0%         0%         0%         0%        26%        26%
+ademe_aid                 76           0%         5%         5%         7%         3%        91%       100%
+satr_it_rnd               68           0%         4%        12%        49%         0%         0%        51%
+vinnova_grant             50           0%         2%        10%         0%         0%         0%        10%
+satr_fr_rnd               43           0%         5%         7%        44%         0%         0%        49%
+satr_cz_rnd               35           0%         0%         0%        40%         0%         0%        71%
+satr_nl_rnd               28           0%         4%        11%        25%         0%         0%        36%
+satr_at_rnd               23           0%        22%        22%        26%         0%         0%        48%
+satr_it_equity            19           0%        16%        68%        42%         5%         0%       100%
+satr_be_rnd               17           0%        35%        35%       100%         0%         0%       100%
+satr_de_equity            15           0%         0%        40%        53%         0%         0%       100%
+ipcei                     12           0%       100%        33%         0%       100%         0%        33%
+satr_se_rnd               12           0%        25%        33%        25%         8%         0%        50%
+satr_fi_rnd               11           0%        36%        36%       100%         0%         0%       100%
+horizon_eu_partnership    10           0%        20%        20%         0%        10%         0%        20%
+
+legend: nothing=nothing asked (today), money,=money, shipped bands, money,=money, finer low end, where=where you are (region), what=what it pays for (stage), technolog=technology / measure, all=all three
+
+====================================================================================
+REGION NULL MODEL — is it the region, or is it having been written down?
+====================================================================================
+key                                          mean class   alone     <=5
+region: full (gates+footprint+catchment)           27.7     16%     39%
+region: encoded gate VALUE only                    35.5      6%     23%
+NULL: merely HAS a region gate                     38.2      1%     12%
+region: footprint+catchment only                   28.8     14%     36%
+
+====================================================================================
+REACH: regimes where the question CHANGES anything, and the leaves in them
+====================================================================================
+question                      regimes moved  leaves in them  countries
+money, shipped bands                     29             684         16
+money, finer low end                     36             731         19
+where you are (region)                   32             559         18
+what it pays for (stage)                 23             317         13
+what you are (who)                       40             703         20
+technology / measure                      2             164          2
+money(fine) + region                     42             751         21
+money(fine) + tech                       36             731         19
+region + tech                            33             647         19
+all three                                42             751         21

@@ -1,0 +1,213 @@
+id: altum_garantijas_3_1_1_1_pas_k
+name: altum_garantijas_3_1_1_1_pas_k
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-registration
+  gate_family: G1_nexus
+  requirement: Only economic operators (legal persons) registered in Latvia can receive the
+    credit guarantee.
+  value: Latvia-registered legal persons only
+  intake_field: entityCountries
+  quote: Kredīta garantiju var saņemt Latvijā reģistrēti saimnieciskās darbības veicēji –
+    juridiskas personas.
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-channel
+  gate_family: G1_nexus
+  requirement: Applicant must apply via a financier (bank or leasing company), not directly
+    to Altum.
+  value: Application submitted through financier (bank/leasing company)
+  intake_field: bankRelationship
+  quote: Pieteikumu garantijai sagatavo un iesniedz finansētājs –  banka vai līzinga kompānija,
+    pievienojot finansētāja un uzņēmuma sagatavotos dokumentus.
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-tax-debt
+  gate_family: G6_conditionality
+  requirement: Guarantee cannot be granted or extended if the applicant has a tax debt administered
+    by the State Revenue Service exceeding EUR 150, unless a payment extension, voluntary
+    compliance decision, or settlement agreement exists.
+  value: Tax debt threshold EUR 150 exclusion
+  intake_field: none
+  quote: Garantiju nevar sniegt un pagarināt, ja saimnieciskās darbības veicējam ir Valsts
+    ieņēmumu dienesta administrēto nodokļu (nodevu) parāds, kas kopsummā pārsniedz 150 euro
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-excluded-sectors
+  gate_family: G5_use_of_funds
+  requirement: Guarantee is not issued for activities in excluded sectors including primary
+    agricultural production, fisheries/aquaculture, financial and insurance activities, gambling
+    and betting, tobacco manufacturing/trade, weapons/ammunition/alcohol trade, and real estate
+    operations (NACE L 68.1, 68.31).
+  value: Excluded NACE sectors
+  intake_field: none
+  quote: lauksaimniecības produktu primārā ražošana zvejniecības produktu primārā ražošana
+    un akvakultūra finanšu un apdrošināšanas darbības azartspēles un derības tabakas izstrādājumu
+    ražošana un tirdzniecība ieroču, munīcijas un alkohola tirdzniecība operācijas ar nekustamo
+    īpašumu
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-excluded-transport
+  gate_family: G5_use_of_funds
+  requirement: Guarantee is not issued for acquisition of freight road transport vehicles
+    by undertakings performing road freight transport for hire.
+  value: 'Excluded: freight vehicle purchase for road haulage operators'
+  intake_field: none
+  quote: kravas autotransporta līdzekļu iegāde komersantiem, kas veic komercpārvadājumus ar
+    autotransportu
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-excluded-completed-projects
+  gate_family: G5_use_of_funds
+  requirement: Guarantee is not issued for projects that are physically completed or fully
+    implemented, except when extending the term of a previously issued Altum guarantee.
+  value: 'Excluded: physically completed/fully implemented projects'
+  intake_field: none
+  quote: projektiem, kas ir fiziski pabeigti vai pilnībā īstenoti, izņemot, ja tiek pagarināts
+    ALTUM iepriekš izsniegtas garantijas termiņš
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-insolvency-exclusion
+  gate_family: G6_conditionality
+  requirement: Guarantee is not granted to companies meeting insolvency initiation criteria,
+    or those declared insolvent by court, undergoing legal protection or out-of-court legal
+    protection processes, or under bankruptcy procedure, composition, or settlement by court
+    judgment.
+  value: Insolvency/bankruptcy exclusion
+  intake_field: none
+  quote: tas atbilst maksātnespējas procedūras ierosināšanas kritērijiem ar tiesas spriedumu
+    ir pasludināts maksātnespējas process, tiek īstenots tiesiskās aizsardzības process vai
+    ārpustiesas tiesiskās aizsardzības process ar tiesas spriedumu ir sākta bankrota procedūra,
+    piemērota sanācija vai mierizlīgums
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-guarantee-percentage
+  gate_family: G3_financial
+  requirement: The guarantee covers up to 80% of the principal amount of the financing.
+  value: Up to 80% of principal
+  intake_field: none
+  quote: Līdz 80% no finansējuma pamatsummas
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-guarantee-amount
+  gate_family: G3_financial
+  requirement: The maximum guarantee amount is up to EUR 5 million.
+  value: Up to EUR 5,000,000
+  intake_field: ticketBand
+  quote: Līdz 5 mEUR
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-guarantee-term
+  gate_family: G3_financial
+  requirement: The guarantee term is up to 10 years.
+  value: Up to 10 years
+  intake_field: none
+  quote: Līdz 10 gadiem
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-portfolio-guarantee
+  gate_family: G3_financial
+  requirement: Portfolio guarantees are available up to EUR 250 thousand, covering 80% of
+    the financing principal.
+  value: Up to EUR 250,000, 80% coverage
+  intake_field: ticketBand
+  quote: Līdz 250 tūkt. EUR 80% no finansējuma pamatsummas
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-de-minimis
+  gate_family: G6_conditionality
+  requirement: The guarantee is issued as de minimis aid under Commission Regulation (EU)
+    No 1407/2013 of 18.12.2013.
+  value: De minimis aid under Reg. 1407/2013
+  intake_field: cofinancingBand
+  quote: Garantija tiek izsniegta kā de minimis atbalsts saskaņā ar Komisijas 18.12.2013.
+    regulu (ES) Nr. 1407/2013.
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4-guarantee-use
+  gate_family: G4_borrower_model
+  requirement: The guarantee mechanism secures bank financing (loans, leasing/factoring, or
+    various performance guarantees) when existing collateral is insufficient.
+  value: Credit guarantee instrument, not direct financing
+  intake_field: borrowerModel
+  quote: Ja ar esošo nodrošinājumu nepietiek bankas aizdevumam, iespējams, var līdzēt garantija
+    Ar garantiju nodrošina Investīciju aizdevumu Apgrozāmo līdzekļu aizdevumu Finanšu līzingu
+    un faktoringu Konkursu, avansa maksājumu, izpildes vai garantijas laika garantijas u.c.
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Applicants must submit a declaration on the SME qualification category of the
+    enterprise as part of the application.
+  quote: Deklarācija par komercsabiedrības kvalifikāciju mazās un vidējās komercsabiedrības
+    kategorijai
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: Applicants must submit a confirmation form for credit guarantees.
+  quote: Apliecinājums kredītu garantijām
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: Applicants must submit information for de minimis aid accounting and granting
+    purposes using the form applicable from 01.07.2019.
+  quote: Veidlapa par sniedzamo informāciju de minimis atbalsta uzskaitei un piešķiršanai
+    no 01.07.2019
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (13/13 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The guarantee is granted as de minimis aid, meaning it is subject to de minimis aggregation
+    rules under EU Regulation 1407/2013.
+  quote: Garantija tiek izsniegta kā de minimis atbalsts saskaņā ar Komisijas 18.12.2013.
+    regulu (ES) Nr. 1407/2013.
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: Application is prepared and submitted by the financier (bank or leasing company)
+    via the mans.altum.lv system, together with documents prepared by the financier and the
+    company.
+  typical_timeline: Not specified in text.
+  quote: Pieteikumu garantijai sagatavo un iesniedz finansētājs –  banka vai līzinga kompānija,
+    pievienojot finansētāja un uzņēmuma sagatavotos dokumentus. Dokumenti aizpildāmi mans.altum.lv
+    sistēmā
+  source:
+    file: altum_garantijas_3_1_1_1_pas_k_kredita_garantijas_2022_wayback.html
+    locator: chunk 1
+  verified: false

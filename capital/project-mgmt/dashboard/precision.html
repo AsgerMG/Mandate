@@ -1,0 +1,342 @@
+<title>Wincent — are we naming the right fund?</title>
+
+<style>
+  :root{
+    --ink:#14181b; --paper:#faf9f7; --panel:#ffffff; --line:#e3e1dc;
+    --accent:#1c6b5e; --accent-soft:#e6f0ed;
+    --good:#2f7048; --warn:#a8720c; --bad:#a33c2f;
+    --muted:#6a7075;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root:not([data-theme="light"]){
+      --ink:#eceae5; --paper:#101315; --panel:#181c1f; --line:#2a2f33;
+      --accent:#5cb8a6; --accent-soft:#17332e;
+      --good:#5ea87a; --warn:#cf9a2c; --bad:#d2705f;
+      --muted:#949a9f;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ink:#eceae5; --paper:#101315; --panel:#181c1f; --line:#2a2f33;
+    --accent:#5cb8a6; --accent-soft:#17332e;
+    --good:#5ea87a; --warn:#cf9a2c; --bad:#d2705f;
+    --muted:#949a9f;
+  }
+
+  body{background:var(--paper);color:var(--ink);font-family:var(--sans);
+       line-height:1.6;-webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px;margin:0 auto;padding:48px 22px 90px;
+        display:flex;flex-direction:column;gap:44px;}
+
+  h1{font-size:clamp(26px,4vw,36px);font-weight:700;letter-spacing:-.025em;
+     line-height:1.15;margin:0;text-wrap:balance;}
+  h2{font-size:19px;font-weight:700;letter-spacing:-.015em;margin:0 0 4px;}
+  p{margin:0;}
+  .lede{font-size:17px;color:var(--muted);max-width:60ch;}
+  .date{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;
+        text-transform:uppercase;color:var(--muted);}
+  header{display:flex;flex-direction:column;gap:12px;}
+
+  .headline{background:var(--panel);border:1px solid var(--line);border-radius:4px;
+            padding:28px 30px;display:flex;flex-direction:column;gap:6px;}
+  .headline .big{font-family:var(--mono);font-variant-numeric:tabular-nums;
+                 font-size:clamp(52px,11vw,76px);font-weight:600;line-height:1;
+                 letter-spacing:-.04em;color:var(--accent);}
+  .headline .cap{font-size:15.5px;color:var(--muted);max-width:56ch;}
+
+  .funnel{display:flex;flex-direction:column;gap:20px;}
+  .stage{display:flex;flex-direction:column;gap:8px;}
+  .stage .top{display:flex;justify-content:space-between;align-items:baseline;gap:14px;}
+  .stage .what{font-size:15.5px;font-weight:600;}
+  .stage .pct{font-family:var(--mono);font-variant-numeric:tabular-nums;
+              font-size:21px;font-weight:600;letter-spacing:-.02em;white-space:nowrap;}
+  .bar{height:11px;border-radius:2px;background:var(--line);overflow:hidden;}
+  .bar span{display:block;height:100%;border-radius:2px;}
+  .stage .why{font-size:14px;color:var(--muted);max-width:62ch;}
+  .ok .pct{color:var(--good);}    .ok .bar span{background:var(--good);}
+  .lose .pct{color:var(--bad);}   .lose .bar span{background:var(--bad);}
+  .end .pct{color:var(--warn);}   .end .bar span{background:var(--warn);}
+
+  .drop{border-left:3px solid var(--bad);padding:2px 0 2px 16px;
+        display:flex;flex-direction:column;gap:6px;}
+  .drop .tag{font-family:var(--mono);font-size:11px;letter-spacing:.09em;
+             text-transform:uppercase;color:var(--bad);}
+  .drop p{font-size:15.5px;}
+
+  figure{margin:0;display:flex;flex-direction:column;gap:10px;}
+  .chartbox{overflow-x:auto;}
+  svg{display:block;min-width:520px;width:100%;height:auto;}
+  figcaption{font-size:13.5px;color:var(--muted);max-width:64ch;}
+
+  .rows{display:flex;flex-direction:column;border-top:1px solid var(--line);}
+  .row{display:flex;gap:16px;padding:14px 0;border-bottom:1px solid var(--line);
+       align-items:baseline;}
+  .row .st{font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;
+           text-transform:uppercase;padding:2px 8px;border-radius:2px;
+           border:1px solid;white-space:nowrap;flex:none;min-width:78px;text-align:center;}
+  .s-done{color:var(--good);border-color:var(--good);}
+  .s-now{color:var(--accent);border-color:var(--accent);}
+  .s-wait{color:var(--warn);border-color:var(--warn);}
+  .row .txt{font-size:15px;}
+  .row .txt b{font-weight:650;}
+  .row .txt span{color:var(--muted);display:block;font-size:14px;margin-top:2px;}
+
+  .ask{background:var(--accent-soft);border:1px solid var(--accent);
+       border-radius:4px;padding:22px 24px;display:flex;flex-direction:column;gap:8px;}
+  .ask h2{color:var(--accent);}
+  .ask p{font-size:15.5px;}
+
+  footer{border-top:1px solid var(--line);padding-top:18px;
+         font-size:13.5px;color:var(--muted);max-width:64ch;}
+
+  .chip{display:inline-block;font-family:var(--mono);font-size:10.5px;
+        letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;
+        border-radius:2px;white-space:nowrap;border:1px solid;flex:none;}
+  .c-good{color:var(--good);border-color:var(--good);}
+  .c-warn{color:var(--warn);border-color:var(--warn);}
+  .c-bad{color:var(--bad);border-color:var(--bad);}
+
+</style>
+
+<div class="wrap">
+
+  <header>
+    <span class="date">Wincent · progress brief · <b data-fig="stamp">—</b></span>
+    <h1>Are we naming the right fund?</h1>
+    <p class="lede">We put a handful of funds in front of a founder. This page tracks one
+      thing: how often the fund they would actually have won is one of them.</p>
+  </header>
+
+  <section class="headline">
+    <span class="date">Our own test &middot; <b data-fig="n">&mdash;</b> companies whose funding we know</span>
+    <span class="big"><b data-fig="published">—</b><span style="font-size:.45em">%</span></span>
+    <p class="cap">How often the fund a company actually won is among the
+      <b data-fig="rows">&mdash;</b> we put in front of them. Measured on our own test set, not
+      read off production &mdash; it moves only when the product does.</p>
+    <p class="cap" style="margin-top:10px">It is <em>understated</em>, on purpose. One stage
+      production runs on every brief &mdash; a live web search for comparable companies, which
+      helps decide which kinds of funding a founder is shown &mdash; is switched off here. Run
+      the same founder twice through it and it answers differently nine times in twelve, so a
+      figure that included it would change every day and compare to nothing. We would rather
+      be repeatable and a little pessimistic.</p>
+    <p class="cap" style="margin-top:10px">Next milestone
+      <strong><b data-fig="milestone">&mdash;</b>%</strong> &middot; goal
+      <strong><b data-fig="target">&mdash;</b>%</strong> &middot; north star
+      <strong><b data-fig="reachCeiling">&mdash;</b>%</strong>. The north star is not a number we
+      chose: it is what we would score <em>today</em> if the right fund were always ranked first.
+      It rises on its own as we correct funds we have encoded wrongly.</p>
+  </section>
+
+  <section>
+    <h2>What is stopping us</h2>
+<!--BLOCKERS--><p class="lede" style="margin-bottom:14px">Four things, and three of them need you.</p>
+<div class="rows">
+      <div class="row"><span class="st" style="color:var(--bad);border-color:var(--bad)">you</span><span class="txt"><b>Two of our funding rules need a person, not a machine</b><span>A German development bank says SMEs qualify and larger mid-sized firms also qualify. We hold that as a single test, so the second half of the sentence quietly narrows the first and blocks companies the bank would lend to. Fixing it opens roughly eight thousand of our own assessments. The trouble is that nothing we ask a founder tells us which half of the rule they are in, so the honest repair is to stop asserting a machine verdict there and keep the rule visible as text.</span><span style="color:var(--bad);margin-top:6px">Say go and I withdraw both machine verdicts. Nobody loses a fund; some stop being wrongly blocked.</span></span></div>
+      <div class="row"><span class="st" style="color:var(--bad);border-color:var(--bad)">you</span><span class="txt"><b>Six Norwegian entries are categories, not funds</b><span>Innovasjon Norge publishes its money under broad category headings, and underneath those the actual programmes a founder applies to. We took the headings. So a Norwegian founder is offered one row standing for six things, and which of the six they get is decided by an accident of how well each is encoded — the two largest funds in the country are among the ones hidden. Naming them properly gains a seat in the published six for 155 founders, and for twelve it is the fund they actually won.</span><span style="color:var(--bad);margin-top:6px">Three ways to go: name the categories honestly, re-split onto the real programmes, or collapse to a single row. I lean toward re-splitting. It is your call because it changes what a whole country is offered.</span></span></div>
+      <div class="row"><span class="st" style="color:var(--bad);border-color:var(--bad)">you</span><span class="txt"><b>A tenth of our companies were never classified at all</b><span>Our pipeline sorts companies into a sector and then a sub-sector. The second step was left as a queue for a language model to finish, and it never ran — the comment in the code still says 'pending'. So 14,604 companies, a tenth of everything we ship, have a top-level sector and nothing beneath it. That is not the same as us judging them unclassifiable, and until today our own code could not tell those two apart. It affects 113 of the companies we grade ourselves against.</span><span style="color:var(--bad);margin-top:6px">About five dollars and forty cents of model time to finish the queue. Say go.</span></span></div>
+      <div class="row"><span class="st" style="color:var(--accent);border-color:var(--accent)">us</span><span class="txt"><b>We were grading the AI with a ruler too blunt to see it</b><span>We scored the AI's ordering as a yes-or-no: is the right fund in the six. On that measure it looked like a coin flip and I told you twice it did nothing. Scored by WHERE the fund lands, both paid runs are positive and stay positive when you drop any one country's funds. Two things follow. Three points of accuracy cannot be bought on the yes-or-no measure at any price, so a full run priced in that currency was never going to answer anything. And there is now one real candidate: publish the AI's order only when its own first pick differs from ours, worth about five points, confirmable for free alongside whatever we buy next.</span><span style="color:var(--accent);margin-top:6px">Nothing. This was ours to get wrong and ours to fix.</span></span></div>
+    </div><!--/BLOCKERS-->
+  </section>
+
+  <section>
+    <h2>Where the right fund is lost</h2>
+    <p class="lede" style="margin-bottom:18px">Measured end to end on <b data-fig="n">&mdash;</b>
+      companies whose funding we already know, following the right answer the whole way
+      through. One test, one group, every stage. The order the founder reads is
+      <b data-fig="ranker">&mdash;</b>'s, and it is handed
+      <b data-fig="depth">&mdash;</b> funds to choose from.</p>
+
+    <div class="drop" style="margin-top:24px;border-left-color:var(--accent)">
+      <span class="tag" style="color:var(--accent)">Every step, and what it costs</span>
+      <table style="width:100%;border-collapse:collapse;margin:16px 0 6px;font-size:14.5px">
+        <tr style="border-bottom:1px solid var(--line)">
+          <th style="text-align:left;padding:6px 0;font-weight:600">&nbsp;</th>
+          <th style="text-align:right;padding:6px 12px;font-weight:600">still there</th>
+          <th style="padding:6px 12px 6px 0;font-weight:600;text-align:left">share of everything we lose</th>
+          <th style="text-align:right;padding:6px 0;font-weight:600">lost here</th></tr>
+<!--FUNNEL-->
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">The corpus holds the fund they won</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600">100%</td>
+          <td style="width:34%;padding:8px 12px 8px 0"><span style="display:block;height:9px;border-radius:2px;background:var(--line)"></span></td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--good);white-space:nowrap"><span style="color:var(--muted);font-size:12px"></span></td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">&hellip; and we are allowed to offer it</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600">91%</td>
+          <td style="width:34%;padding:8px 12px 8px 0"><span style="display:block;height:9px;border-radius:2px;background:var(--line)"><span style="display:block;height:9px;border-radius:2px;background:var(--warn);width:14.9%"></span></span></td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--warn);white-space:nowrap">&minus;9<span style="color:var(--muted);font-size:12px">&nbsp;&nbsp;15%</span></td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">&hellip; and the founder's own answers keep it</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600">89%</td>
+          <td style="width:34%;padding:8px 12px 8px 0"><span style="display:block;height:9px;border-radius:2px;background:var(--line)"><span style="display:block;height:9px;border-radius:2px;background:var(--good);width:4.0%"></span></span></td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--good);white-space:nowrap">&minus;2<span style="color:var(--muted);font-size:12px">&nbsp;&nbsp;4%</span></td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">&hellip; and its written rules do not exclude them</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600">88%</td>
+          <td style="width:34%;padding:8px 12px 8px 0"><span style="display:block;height:9px;border-radius:2px;background:var(--line)"><span style="display:block;height:9px;border-radius:2px;background:var(--bad);width:2.1%"></span></span></td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--bad);white-space:nowrap">&minus;1<span style="color:var(--muted);font-size:12px">&nbsp;&nbsp;2%</span></td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">&hellip; and it survives the cut to the AI's list</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600">75%</td>
+          <td style="width:34%;padding:8px 12px 8px 0"><span style="display:block;height:9px;border-radius:2px;background:var(--line)"><span style="display:block;height:9px;border-radius:2px;background:var(--warn);width:22.0%"></span></span></td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--warn);white-space:nowrap">&minus;13<span style="color:var(--muted);font-size:12px">&nbsp;&nbsp;22%</span></td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">&hellip; and our ranking puts it in the top eight</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600">42%</td>
+          <td style="width:34%;padding:8px 12px 8px 0"><span style="display:block;height:9px;border-radius:2px;background:var(--line)"><span style="display:block;height:9px;border-radius:2px;background:var(--bad);width:57.0%"></span></span></td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--bad);white-space:nowrap">&minus;33<span style="color:var(--muted);font-size:12px">&nbsp;&nbsp;57%</span></td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">&hellip; and it is one of the seven published</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600">42%</td>
+          <td style="width:34%;padding:8px 12px 8px 0"><span style="display:block;height:9px;border-radius:2px;background:var(--line)"></span></td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--warn);white-space:nowrap"><span style="color:var(--muted);font-size:12px"></span></td></tr>
+        <tr><!--GRADING-SEP--><td colspan="4" style="padding:14px 0 6px;font-size:13.5px;color:var(--muted)">The product stops here &mdash; seven rows are published. Below is only how strictly we grade ourselves.</td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0;font-weight:600">&hellip; and it is in the first six of those seven</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600">39%</td>
+          <td style="width:34%;padding:8px 12px 8px 0"><span style="display:block;height:9px;border-radius:2px;background:var(--line)"></span></td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;color:var(--warn);white-space:nowrap">&minus;3<span style="color:var(--muted);font-size:12px"></span></td></tr>
+      <!--/FUNNEL-->
+      </table>
+
+      <p style="margin-top:14px"><strong>Two steps are three quarters of it, and they are the same thing: the order we put the funds in.</strong> Not which funds we find &mdash; we already have the right one on the shortlist. We put it too far down.</p>
+
+      <p style="margin-top:10px"><strong>What it takes to reach
+        <b data-fig="milestone">&mdash;</b>%, and then <b data-fig="target">&mdash;</b>%.</strong>
+        Two things have to go right for one founder. We have to get their fund onto the
+        shortlist the AI sees, and the AI has to put it on their page. Each row below is a
+        complete way to land at that result &mdash; the <strong>bold</strong> number is the one
+        that would have to change.</p>
+
+      <table style="width:100%;border-collapse:collapse;margin:14px 0 4px;font-size:14.5px">
+        <tr style="border-bottom:1px solid var(--line)">
+          <th style="text-align:left;padding:6px 0;font-weight:600">&nbsp;</th>
+          <th style="text-align:right;padding:6px 12px;font-weight:600">onto the AI's shortlist</th>
+          <th style="text-align:right;padding:6px 12px;font-weight:600">and onto their page</th>
+          <th style="text-align:right;padding:6px 0;font-weight:600">we end up at</th></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">where we are today</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums"><b data-fig="reach">&mdash;</b>%</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums"><b data-fig="convert">&mdash;</b>%</td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600"><b data-fig="published">&mdash;</b>%</td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">fix only the AI's half</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums"><b data-fig="reach">&mdash;</b>%</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;color:var(--warn)"><b data-fig="needConvertMile">&mdash;</b>%</td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600"><b data-fig="milestone">&mdash;</b>%</td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">fix the shortlist as far as it can go, and the AI</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;color:var(--good)"><b data-fig="reachCeiling">&mdash;</b>%</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;color:var(--good)"><b data-fig="needConvertMileAtCeiling">&mdash;</b>%</td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600"><b data-fig="milestone">&mdash;</b>%</td></tr>
+        <tr style="border-bottom:1px solid var(--line)">
+          <td style="padding:8px 0">and to reach the goal, both again</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;color:var(--bad)"><b data-fig="reachCeiling">&mdash;</b>%</td>
+          <td style="text-align:right;padding:8px 12px;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:700;color:var(--bad)"><b data-fig="needConvertAtCeiling">&mdash;</b>%</td>
+          <td style="text-align:right;padding:8px 0;font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600"><b data-fig="target">&mdash;</b>%</td></tr>
+      </table>
+
+      <p style="margin-top:10px">The first column can never beat
+        <b data-fig="reachCeiling">&mdash;</b>% &mdash; that is every fund left after the funders'
+        own rules. <strong>So there is no row where we hit the milestone without the second
+        column moving.</strong> That is why the AI's half is the only route, and the two
+        ordering steps in the table above are where it lives.</p>
+    </div>
+  </section>
+
+  <figure>
+    <h2>Every run, in order</h2>
+    <p class="lede" style="margin-bottom:6px">Small dots are the automatic check that runs on
+      every change &mdash; an early warning, not the goal. The red line is where we actually
+      stand.</p>
+    <div class="chartbox"><svg id="chart" viewBox="0 0 820 300" role="img"
+      aria-label="Every recorded accuracy measurement in order, split by a change of answer key"></svg></div>
+    <figcaption id="cap"></figcaption>
+  <section>
+    <h2>Working right now</h2>
+    <p class="lede" style="margin-bottom:14px">What is in flight this minute, and why it
+      matters to a step above. A finished piece disappears from this list &mdash; the page
+      shows what is happening, not what has happened.</p>
+<!--AGENTS--><p class="lede">Nothing in flight right now.</p><!--/AGENTS-->
+  </section>
+
+  <footer>
+    Every number on this page is written by a script that reads the live production
+    database &mdash; none of them is typed by hand, so the page cannot quietly go stale.
+    Last regenerated <b data-fig="stamp2">—</b> from <b data-fig="runs">—</b> recorded runs.
+  </footer>
+
+</div>
+
+<script>
+// Regenerated by project-mgmt/dashboard/refresh.py. Do not edit by hand.
+const D = [["2026-08-07T18:57","C",30.3,97.7,87.3,22,"ok"],["2026-08-07T22:09","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T09:47","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:24","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:48","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T10:55","C",29.7,96.7,85.7,22,"ok"],["2026-08-08T11:39","C",29.7,97.3,86,22,"ok"],["2026-08-08T12:09","C",29.7,97.3,86,22,"ok"],["2026-08-08T15:19","C",29.7,97.3,86,22,"ok"],["2026-08-08T16:35","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T16:49","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T17:17","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T17:59","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:31","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:33","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:37","C",28,97.3,89.7,22,"ok"],["2026-08-08T21:43","C",29.7,97.3,86.3,22,"ok"],["2026-08-08T21:53","C",28,97.3,89.7,22,"ok"],["2026-08-08T22:05","C",28.7,98,86.3,22,"ok"],["2026-08-08T22:14","C",29,98,86.7,22,"ok"],["2026-08-08T22:20","C",29,98,86.7,22,"ok"],["2026-08-08T22:23","C",29,98,86.7,22,"ok"],["2026-08-08T22:31","C",29,98,86.7,22,"ok"],["2026-08-08T23:07","C",29.3,98,87,22,"ok"],["2026-08-08T23:12","C",29.3,98,87,22,"ok"],["2026-08-08T23:19","C",27.3,98,84,22,"failed"],["2026-08-08T23:23","C",27,98,83.7,22,"failed"],["2026-08-08T23:23","C",27,98,83.7,22,"failed"],["2026-08-08T23:26","C",27,98,83.7,22,"failed"],["2026-08-08T23:30","C",27.3,98,84,22,"failed"],["2026-08-09T00:02","C",27.3,98,84,22,"failed"],["2026-08-09T00:11","C",29,98,91.3,22,"ok"],["2026-08-09T00:22","C",29,98,91.3,22,"ok"],["2026-08-09T00:27","C",29,98,91.3,22,"ok"],["2026-08-09T00:32","C",29,98,91.3,22,"ok"],["2026-08-09T00:36","C",29,98,91.3,22,"ok"],["2026-08-09T01:56","C",29,98,91.3,22,"ok"],["2026-08-09T02:00","C",28.7,98,91.3,22,"ok"],["2026-08-09T02:11","C",22,97,91.7,22,"ok"],["2026-08-09T02:14","C",22,97,91.7,22,"ok"],["2026-08-09T02:17","C",22,97,91.7,22,"ok"],["2026-08-09T02:20","C",22,97,91.7,22,"ok"],["2026-08-09T02:34","C",22.3,97,91.7,22,"ok"],["2026-08-09T08:46","D",25.3,94,76,15,"ok"],["2026-08-09T08:52","D",25.3,94,76,15,"ok"],["2026-08-09T08:58","D",25.3,94,76,15,"ok"],["2026-08-09T09:06","D",25.3,94,76,15,"ok"],["2026-08-09T09:10","D",25.3,94,76,15,"ok"],["2026-08-09T09:33","D",25.3,94,76,15,"ok"],["2026-08-09T09:35","D",25.3,94,76,15,"ok"],["2026-08-09T09:41","D",25.3,94,76,15,"ok"],["2026-08-09T09:50","D",25.3,94,76,15,"ok"],["2026-08-09T09:54","D",25.3,94,76,15,"ok"],["2026-08-09T10:11","D",25.3,94,76,15,"ok"],["2026-08-09T10:14","D",25.3,94,76,15,"ok"],["2026-08-09T10:30","D",25.3,94,76,15,"ok"],["2026-08-09T10:40","D",25.3,94,76,15,"ok"],["2026-08-09T10:45","D",25.3,94,76,15,"ok"],["2026-08-09T10:57","D",25.3,94,76,15,"ok"],["2026-08-09T11:44","D",25.3,94,76,15,"ok"],["2026-08-09T11:58","D",25.3,94,76,15,"ok"],["2026-08-09T11:58","D",25.3,94,76,15,"ok"],["2026-08-09T12:00","D",25.3,94,76,15,"ok"],["2026-08-09T12:12","D",25.3,94,76,15,"ok"],["2026-08-09T12:19","D",25.3,94,76,15,"ok"],["2026-08-09T13:14","D",25.3,94,76,15,"ok"],["2026-08-09T13:18","D",25.3,94,76,15,"ok"],["2026-08-09T13:38","D",25.3,94,76,15,"ok"],["2026-08-09T13:42","D",25.3,94,76,15,"ok"],["2026-08-09T13:53","D",25.3,94,76,15,"ok"],["2026-08-09T13:59","D",25.3,94,76,15,"ok"],["2026-08-09T14:09","D",25.3,94,76,15,"ok"],["2026-08-09T14:10","D",25.3,94,76,15,"ok"],["2026-08-09T14:12","D",25.3,94,76,15,"ok"],["2026-08-09T14:14","D",25.3,94,76,15,"ok"],["2026-08-09T14:18","D",25.3,94,76,15,"ok"],["2026-08-09T14:24","D",25.3,94,76,15,"ok"],["2026-08-09T15:01","D",25.3,94,76,15,"ok"],["2026-08-09T15:03","D",25,94,72,15,"failed"],["2026-08-09T15:04","D",25.3,94,76,15,"ok"],["2026-08-09T15:07","D",25.3,94,76,15,"ok"],["2026-08-09T15:14","D",25.3,94,76,15,"ok"],["2026-08-09T15:19","D",25.3,94,76,15,"ok"],["2026-08-09T15:29","D",25,94,76,15,"ok"],["2026-08-09T15:34","D",25.3,94,76,15,"ok"],["2026-08-09T15:40","D",25.3,94,76,15,"ok"],["2026-08-09T16:41","D",25.3,94,76,15,"ok"],["2026-08-09T16:45","D",25.3,94,76,15,"ok"],["2026-08-09T17:30","D",25.3,94,76,15,"ok"],["2026-08-09T17:34","D",25.3,94,76,15,"ok"],["2026-08-09T17:38","D",25.3,94,76,15,"ok"],["2026-08-09T17:44","D",25.3,94,76,15,"ok"],["2026-08-09T17:45","D",25.3,94,76,15,"ok"],["2026-08-09T17:49","D",25.3,94,76,15,"ok"],["2026-08-09T17:56","D",25.3,94,76,15,"ok"],["2026-08-09T18:04","D",25.3,94,76,15,"ok"],["2026-08-09T18:11","D",25.3,94,76,15,"ok"],["2026-08-09T18:12","D",25.3,94,76,15,"ok"],["2026-08-09T18:19","D",25.3,94,76,15,"ok"],["2026-08-09T18:21","D",25.3,94,76,15,"ok"],["2026-08-09T18:24","D",25.3,94,76,15,"ok"],["2026-08-09T19:14","D",25.3,94,76,15,"ok"],["2026-08-09T19:22","D",25.3,94,76,15,"ok"],["2026-08-09T19:43","D",25.3,94,76,15,"ok"],["2026-08-09T20:09","D",26,94,72.7,15,"ok"],["2026-08-09T20:09","D",26,94,72.7,15,"ok"],["2026-08-09T20:24","D",25.7,94,72.3,15,"failed"],["2026-08-09T20:27","D",26,94,72.7,15,"ok"],["2026-08-09T20:31","D",26,94,72.7,15,"ok"],["2026-08-09T20:36","D",26,94,72.7,15,"ok"],["2026-08-09T21:03","D",26,94,72.7,15,"ok"],["2026-08-09T21:06","D",26,94,72.7,15,"ok"],["2026-08-09T21:08","D",26,94,72.7,15,"ok"],["2026-08-09T21:09","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T21:12","D",26,94,72.7,15,"ok"],["2026-08-09T21:24","D",26,96.7,73,15,"ok"],["2026-08-09T21:31","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T21:59","D",27.3,94,72.7,15,"ok"],["2026-08-09T22:04","D",27.3,94,72.7,15,"ok"],["2026-08-09T22:18","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T22:39","D",26.3,96.7,73.3,15,"ok"],["2026-08-09T23:01","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:05","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:23","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:28","D",27.3,96.7,73.3,15,"ok"],["2026-08-09T23:32","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:32","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:49","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:49","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:53","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:53","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T16:57","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T17:39","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T17:50","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T18:49","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:17","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:26","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:29","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:34","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:40","D",26.3,96.7,73,15,"ok"],["2026-08-10T19:41","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T19:44","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:09","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:12","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:16","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:17","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:23","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:32","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:37","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T20:40","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T21:37","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T21:55","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:01","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:07","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:10","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:10","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:13","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:13","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:13","D",27.3,96.7,73.3,15,"ok"],["2026-08-10T22:15","D",27,96.7,73,15,"ok"],["2026-08-10T22:21","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:47","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:50","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:52","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:54","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:57","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:59","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T22:59","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:04","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:05","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:07","C",26.7,96.7,72.7,15,"ok"],["2026-08-10T23:10","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:11","C",25.7,96.7,72.3,15,"ok"],["2026-08-10T23:12","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:13","C",25.7,96.7,72.3,15,"ok"],["2026-08-10T23:15","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:15","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:20","C",26.3,96.7,72.3,15,"ok"],["2026-08-10T23:24","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T00:04","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T00:10","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T00:16","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T08:51","C",26,96.7,72,15,"ok"],["2026-08-11T09:10","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T09:30","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T09:35","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T09:43","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T09:49","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T11:20","C",26,96.7,72,15,"ok"],["2026-08-11T11:33","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T11:37","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T11:41","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T11:48","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T12:01","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T12:02","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T12:08","C",26.3,96.7,72.3,15,"ok"],["2026-08-11T13:14","C",26,96.7,72,15,"ok"],["2026-08-11T16:38","C",26,96.7,72,15,"ok"],["2026-08-11T16:38","C",26,96.7,72,15,"ok"],["2026-08-11T16:38","C",25,97.3,72.3,15,"ok"],["2026-08-11T16:44","C",26,96.7,72,15,"ok"],["2026-08-11T16:53","C",26,96.7,72,15,"ok"],["2026-08-11T16:54","C",26,96.7,72,15,"ok"],["2026-08-11T16:56","C",26,96.7,72,15,"ok"],["2026-08-11T17:01","C",26,96.7,72,15,"ok"],["2026-08-11T17:08","C",26,96.7,72,15,"ok"],["2026-08-11T17:18","C",26,96.7,72,15,"ok"],["2026-08-11T17:28","C",26,96.7,72,15,"ok"],["2026-08-11T17:38","C",26,96.7,72,15,"ok"],["2026-08-11T17:51","C",26,96.7,72,15,"ok"],["2026-08-11T17:57","C",26,96.7,72,15,"ok"],["2026-08-11T21:42","C",26.7,98,65,15,"failed"],["2026-08-11T21:46","C",27.3,98,65.3,15,"failed"],["2026-08-11T21:52","C",27.3,98,65.3,15,"failed"],["2026-08-11T21:55","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:01","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:04","C",27,97.3,64.7,15,"failed"],["2026-08-11T22:06","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:12","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:12","C",26.7,98,65,15,"failed"],["2026-08-11T22:14","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:16","C",26.7,98,65,15,"failed"],["2026-08-11T22:22","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:25","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:32","C",26.7,98,65,15,"failed"],["2026-08-11T22:35","C",26.7,98,65,15,"failed"],["2026-08-11T22:38","C",27.3,98,65.3,15,"failed"],["2026-08-11T22:40","C",26.7,98,65,15,"failed"],["2026-08-12T06:55","C",26.7,98,65,15,"ok"],["2026-08-12T07:06","C",26.7,98,65,15,"ok"],["2026-08-12T07:16","C",26.7,98,65,15,"ok"],["2026-08-12T07:22","C",26.7,98,65,15,"ok"],["2026-08-12T07:37","C",26.7,98,65,15,"ok"],["2026-08-12T07:47","C",26.7,98,65,15,"ok"],["2026-08-12T07:58","C",26.7,98,65,15,"ok"],["2026-08-12T08:07","C",26,98,64.7,15,"ok"],["2026-08-12T08:24","C",26.3,98,64.7,15,"ok"],["2026-08-12T08:40","C",25,97.7,67.3,15,"ok"],["2026-08-12T08:46","C",26.3,98,64.7,15,"ok"],["2026-08-12T08:47","C",25,97.7,67.3,15,"ok"],["2026-08-12T08:49","C",25,97.7,67.3,15,"ok"],["2026-08-12T08:50","C",26.3,98,64.7,15,"ok"],["2026-08-12T08:54","C",26.3,98,64.7,15,"ok"],["2026-08-12T08:54","C",26.3,98,64.7,15,"ok"],["2026-08-12T09:23","C",25,97.7,67.3,15,"ok"],["2026-08-12T16:30","C",25,97.7,67.3,15,"ok"],["2026-08-12T16:37","C",25,97.7,67.3,15,"ok"],["2026-08-12T16:49","C",25,97.7,67.3,15,"ok"],["2026-08-12T16:58","C",25,97.7,67.3,15,"ok"],["2026-08-12T18:21","C",25,97.7,67.7,15,"ok"],["2026-08-12T18:35","C",25,97.7,67.7,15,"ok"],["2026-08-12T19:25","C",25,97.7,67.7,15,"ok"],["2026-08-12T19:31","C",25,97.7,67.7,15,"ok"],["2026-08-12T20:48","C",25,97.7,67.7,15,"ok"],["2026-08-12T20:56","C",25,97.7,67.7,15,"ok"],["2026-08-12T20:59","C",25,97.7,67.7,15,"ok"],["2026-08-12T21:02","C",25,97.7,67.7,15,"ok"],["2026-08-12T21:37","C",25,97.7,67.7,15,"ok"],["2026-08-12T22:13","C",25,97.7,67.7,15,"ok"],["2026-08-12T22:26","C",25,97.7,67.7,15,"ok"],["2026-08-12T22:34","C",25,97.7,67.7,15,"ok"],["2026-08-12T22:40","C",25,97.7,67.7,15,"ok"],["2026-08-12T23:02","C",25,97.7,67.7,15,"ok"],["2026-08-12T23:07","C",25,97.7,67.3,15,"ok"],["2026-08-17T22:38","C",26.3,98.7,69.3,15,"ok"],["2026-08-17T22:40","C",26.3,98.7,69.3,15,"ok"],["2026-08-18T20:16","C",26.7,97.7,70,15,"ok"]];
+const FIG = {"published":38.9,"rows":6,"n":897,"stamp":"2026-08-19","stamp2":"2026-08-19","runs":267,"depth":40,"ranker":"the AI ranker","reach":75,"convert":52,"target":60,"milestone":50,"needConvertMile":67,"reachCeiling":88,"needConvertMileAtCeiling":57,"needConvertAtCeiling":68};
+
+(function () {
+  for (const [k, v] of Object.entries(FIG))
+    document.querySelectorAll(`[data-fig="${k}"]`).forEach(n => { n.textContent = v; });
+  for (const [k, v] of Object.entries(FIG))
+    document.querySelectorAll(`[data-bar="${k}"]`).forEach(n => { n.style.width = v + "%"; });
+
+  const svg = document.getElementById("chart");
+  if (!svg || !D.length) return;
+  const W = 820, H = 300, L = 46, R = 14, T = 16, B = 34;
+  const iw = W - L - R, ih = H - T - B;
+  // The axis IS the target, read from FIG and never typed. It used to be a
+  // literal here and in the gridline stops below, so moving the goal upward
+  // would have left the red line running off the top of its own chart with
+  // nothing failing. refresh.py refuses to publish a page that types it again.
+  const y = p => T + ih - (p / FIG.target) * ih;
+  const era = D.map(r => r[1]);
+  const brk = era.indexOf("D");                        // first run under the new key
+  const x = i => L + (D.length === 1 ? iw / 2 : (i / (D.length - 1)) * iw);
+  const el = (t, a) => { const n = document.createElementNS("http://www.w3.org/2000/svg", t);
+    for (const k in a) n.setAttribute(k, a[k]); return n; };
+
+  // Gridlines derived from the target too — four bands, whatever it is.
+  const BANDS = 3;
+  for (let b = 0; b <= BANDS; b++) {
+    const g = Math.round((FIG.target / BANDS) * b);
+    svg.appendChild(el("line", { x1: L, x2: W - R, y1: y(g), y2: y(g),
+      stroke: "var(--line)", "stroke-width": 1 }));
+    const t = el("text", { x: L - 9, y: y(g) + 4, "text-anchor": "end",
+      fill: "var(--muted)", "font-size": 11, "font-family": "var(--mono)" });
+    t.textContent = g + "%"; svg.appendChild(t);
+  }
+  if (brk > 0) {
+    const bx = (x(brk - 1) + x(brk)) / 2;
+    svg.appendChild(el("line", { x1: bx, x2: bx, y1: T, y2: T + ih,
+      stroke: "var(--muted)", "stroke-width": 1, "stroke-dasharray": "3 4" }));
+    const t = el("text", { x: bx + 7, y: T + 13, fill: "var(--muted)",
+      "font-size": 11, "font-family": "var(--sans)" });
+    t.textContent = "harder exam from here"; svg.appendChild(t);
+  }
+  D.forEach((r, i) => svg.appendChild(el("circle", { cx: x(i), cy: y(r[2]), r: 3.1,
+    fill: r[1] === "D" ? "var(--accent)" : "var(--muted)", "fill-opacity": .85 })));
+
+  // THE NUMBER AT THE TOP OF THE PAGE, on the same axes as the alarm behind it.
+  // Measured end to end rather than by the regression check, so it is drawn as
+  // its own mark instead of being appended to that series -- one line would
+  // read as a trend between two different measurements. It gets a line of its
+  // own the moment there are two of these runs to join.
+  if (typeof FIG.published === "number") {
+    const px = W - R - 4, py = y(FIG.published);
+    svg.appendChild(el("line", { x1: L, x2: px, y1: py, y2: py,
+      stroke: "var(--bad)", "stroke-width": 1.5, "stroke-dasharray": "5 4" }));
+    svg.appendChild(el("circle", { cx: px, cy: py, r: 5.5, fill: "var(--bad)" }));
+    const lab = el("text", { x: px - 10, y: py - 11, "text-anchor": "end",
+      fill: "var(--bad)", "font-size": 12.5, "font-weight": 650,
+      "font-family": "var(--sans)" });
+    lab.textContent = `${FIG.published}% end to end — what we are building`;
+    svg.appendChild(lab);
+  }
+
+  const cap = document.getElementById("cap");
+  if (cap) cap.textContent =
+    `${D.length} runs, ${D[0][0].slice(0, 10)} to ${D[D.length - 1][0].slice(0, 10)}. `
+    + `Dots left of the break were scored against an older answer key that knew only `
+    + `9 countries; the two sides answer different questions and are never joined by a line.`;
+})();
+</script>

@@ -1,0 +1,287 @@
+id: satr_cz_equity
+name: satr_cz_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-seat
+  gate_family: G1_nexus
+  requirement: Applicant must be a legal entity with registered seat in an EU Member State,
+    an EEA Agreement contracting state, or Switzerland.
+  value: EU/EEA/Switzerland registered seat
+  intake_field: entityCountries
+  quote: Žadatelem o podporu (dále jen „žadatel“) může být právnická osoba, která má své sídlo
+    na území a) některého z členských států Evropské unie, b) státu, který je smluvní stranou
+    Dohody o Evropském hospodářském prostoru, nebo c) Švýcarské konfederace.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 3
+  verified: llm_cited
+- id: g1-purpose-territory
+  gate_family: G1_nexus
+  requirement: Funds may only be used for construction of rental housing located in the territory
+    of the Czech Republic.
+  value: Construction must be on Czech territory
+  intake_field: activityCountries
+  quote: Toto nařízení upravuje podmínky použití peněžních prostředků ze Státního fondu podpory
+    investic (dále jen „Fond“) formou dotace nebo úvěru ke krytí části nákladů spojených s
+    výstavbou, kterou vznikne nájemní byt nebo bytový dům s nájemními byty na území České
+    republiky.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 1
+  verified: llm_cited
+- id: g6-no-tax-arrears
+  gate_family: G6_conditionality
+  requirement: Applicant must have no outstanding tax, customs, social security or health
+    insurance arrears at the date of application, except deferred ones.
+  value: No unpaid arrears
+  intake_field: none
+  quote: nemá ke dni podání žádosti o poskytnutí podpory evidován nedoplatek, s výjimkou nedoplatku,
+    u kterého je povoleno posečkání jeho úhrady nebo rozložení jeho úhrady na splátky
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 5 odst. 1 písm. a)
+  verified: llm_cited
+- id: g6-no-insolvency
+  gate_family: G6_conditionality
+  requirement: Applicant must not be in bankruptcy or liquidation, and must not have had an
+    insolvency petition dismissed for lack of assets within the last 3 years before application.
+  value: Not insolvent/in liquidation
+  intake_field: none
+  quote: není v úpadku nebo v likvidaci a v posledních 3 letech před podáním žádosti nebyl
+    zamítnut návrh na prohlášení úpadku pro nedostatek jeho majetku
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 5 odst. 1 písm. b)
+  verified: llm_cited
+- id: g6-no-enforcement
+  gate_family: G6_conditionality
+  requirement: Applicant must not be a person against whom enforcement of a judgment or execution
+    proceedings are pending.
+  value: No enforcement proceedings
+  intake_field: none
+  quote: není osobou, proti které je veden výkon rozhodnutí nebo exekuce
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 5 odst. 1 písm. c)
+  verified: llm_cited
+- id: g4-undertaking-in-difficulty
+  gate_family: G4_borrower_model
+  requirement: Applicant must not be an undertaking in difficulty under the EU State aid regulation
+    as of the effective date of the support agreement.
+  value: Not an undertaking in difficulty
+  intake_field: none
+  quote: není ke dni nabytí účinnosti smlouvy o poskytnutí podpory podnikem v obtížích podle
+    přímo použitelného předpisu Evropské unie upravujícího veřejné podpory
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 5 odst. 1 písm. d)
+  verified: llm_cited
+- id: g6-no-recovery-order
+  gate_family: G6_conditionality
+  requirement: Applicant must not be subject to an outstanding recovery order following a
+    European Commission decision as of the effective date of the support agreement.
+  value: No pending EC recovery order
+  intake_field: none
+  quote: není ke dni nabytí účinnosti smlouvy o poskytnutí podpory podnikem, na který byl
+    v návaznosti na rozhodnutí Evropské komise vystaven inkasní příkaz
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 5 odst. 1 písm. e)
+  verified: llm_cited
+- id: g6-no-criminal-conviction
+  gate_family: G6_conditionality
+  requirement: Applicant must not have been finally convicted of offences related to its business
+    activity, economic crimes, property crimes, bribery, or indirect corruption, unless deemed
+    not convicted.
+  value: No relevant criminal conviction
+  intake_field: none
+  quote: nebyl pravomocně odsouzen pro trestný čin, jehož skutková podstata souvisí s předmětem
+    činnosti žadatele, pro trestný čin hospodářský, trestný čin proti majetku, trestný čin
+    přijetí úplatku, trestný čin podplacení nebo pro trestný čin nepřímého úplatkářství, pokud
+    se na něj nehledí, jako by nebyl odsouzen
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 5 odst. 1 písm. f)
+  verified: llm_cited
+- id: g1-sole-owner-land
+  gate_family: G1_nexus
+  requirement: Applicant must be the exclusive owner of the land on which construction will
+    take place (or hold equivalent right of construction per subsequent clauses).
+  value: Sole ownership of construction site
+  intake_field: none
+  quote: je výlučným vlastníkem pozemku, na kterém bude pr
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 1, § 5 odst. 1 písm. g) (truncated)
+  verified: llm_cited
+- id: g4_grant_ceiling
+  gate_family: G4_borrower_model
+  requirement: A grant (dotace) may be provided up to 25% of total eligible costs.
+  value: Grant ≤ 25% of eligible costs
+  intake_field: none
+  quote: Dotace může být poskytnuta až do výše 25 % celkových způsobilých nákladů.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 11 odst. 1
+  verified: llm_cited
+- id: g4_loan_ceiling
+  gate_family: G4_borrower_model
+  requirement: A loan (úvěr) may be provided up to 90% of total eligible costs.
+  value: Loan ≤ 90% of eligible costs
+  intake_field: none
+  quote: Úvěr může být poskytnut až do výše 90 % celkových způsobilých nákladů.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 11 odst. 2
+  verified: llm_cited
+- id: g3_total_support_ceiling
+  gate_family: G3_financial
+  requirement: Total combined support (grant + loan) may not exceed 90% of total eligible
+    costs.
+  value: Total support ≤ 90% of eligible costs
+  intake_field: none
+  quote: Celková podpora může být poskytnuta až do výše 90 % celkových způsobilých nákladů.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 11 odst. 3
+  verified: llm_cited
+- id: g3_interest_rate_band
+  gate_family: G3_financial
+  requirement: The interest rate is set as the EU base rate for the Czech Republic reduced
+    by up to 3 percentage points, with a floor of 1% and a cap of 3% per annum, fixed for
+    the loan term.
+  value: Interest rate 1%-3% p.a.
+  intake_field: none
+  quote: Úroková sazba se stanovuje ve výši základní sazby Evropské unie 6 ) pro Českou republiku
+    platné ke dni nabytí účinnosti smlouvy o poskytnutí podpory snížené až o 3 procentní body,
+    nejméně však ve výši 1 % a nejvýše ve výši 3 % ročně.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 11 odst. 4
+  verified: llm_cited
+- id: g3_aid_threshold_or_deminimis
+  gate_family: G3_financial
+  requirement: Total support under the investment-gap financing test must not exceed the eligible
+    costs minus operating profit and must not exceed the notification threshold under the
+    EU regulation, or alternatively must not exceed the remaining de minimis limit.
+  value: Aid capped by GBER threshold or de minimis limit
+  intake_field: none
+  quote: nesmí přesáhnout výši rozdílu mezi způsobilými náklady a provozním ziskem z investice
+    a nesmí přesáhnout prahovou hodnotu stanovenou v přímo použitelném předpisu Evropské unie
+    7 ) , nebo b) § 5 odst. 3 písm. b) nesmí přesáhnout nevyčerpaný limit podpory malého rozsahu
+    podle přímo použitelného předpisu Evropské unie 8 )
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 11 odst. 5
+  verified: llm_cited
+- id: g5_eligible_costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs are expenditures on construction of rental flats or apartment
+    buildings with rental flats, including necessary accessories, and demolition costs necessary
+    for the construction.
+  value: Construction and necessary demolition costs only
+  intake_field: none
+  quote: Způsobilými náklady jsou výdaje vynaložené na výstavbu nájemního bytu nebo bytového
+    domu s nájemními byty včetně příslušenství, bez kterého nelze tento nájemní byt nebo bytový
+    dům užívat. Způsobilými náklady jsou i náklady na demolici, pokud je nezbytná pro výstavbu.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 9 odst. 1
+  verified: llm_cited
+- id: g5_use_funds_restricted
+  gate_family: G5_use_of_funds
+  requirement: Support may only be used for eligible costs and drawn only on the basis of
+    submitted documents, either as a lump sum or gradually per the support agreement procedure.
+  value: Funds restricted to eligible costs, documented drawdown
+  intake_field: none
+  quote: Podporu lze použít pouze na způsobilé náklady a čerpat pouze na základě předložených
+    dokladů, a to jednorázově nebo postupně podle postupu uvedeného ve smlouvě o poskytnutí
+    podpory.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 12 odst. 2
+  verified: llm_cited
+- id: g6_loan_term_cap
+  gate_family: G6_conditionality
+  requirement: The loan repayment period may be set for a maximum of 30 years.
+  value: Loan term ≤ 30 years
+  intake_field: none
+  quote: Dobu splácení úvěru je možné stanovit nejvýše na 30 let.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 12 odst. 5
+  verified: llm_cited
+- id: g6_transfer_restriction
+  gate_family: G6_conditionality
+  requirement: From the effective date of the support agreement and throughout the construction
+    period, the land, building or flat cannot be transferred to a third party or encumbered
+    with a lien or other security without the Fund's consent.
+  value: No transfer/encumbrance without Fund consent during construction
+  intake_field: none
+  quote: Ode dne nabytí účinnosti smlouvy o poskytnutí podpory a po celou dobu výstavby nájemního
+    bytu nebo bytového domu s nájemními byty nelze pozemek, stavbu nebo byt bez souhlasu Fondu
+    převést na třetí osobu nebo zatížit zástavním právem, nebo jiným zajišťovacím nástrojem
+    ve prospěch třetí osoby.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 12 odst. 4
+  verified: llm_cited
+obligations:
+- requirement: Applicant must insure the under-construction building with insurance proceeds
+    assigned in favor of the Fund up to the amount of the loan provided, before drawdown begins.
+  quote: pojistit rozestavěnou stavbu s podmínkou vinkulace pojistného plnění ve prospěch
+    Fondu, a to do výše poskytnutého úvěru
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 12 odst. 3 písm. b)
+  verified: llm_cited
+- requirement: Drawdown of support may only begin within the period stipulated in the support
+    agreement.
+  quote: Zahájit čerpání podpory je možné pouze ve lhůtě stanovené ve smlouvě o poskytnutí
+    podpory.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 12 odst. 1
+  verified: llm_cited
+- requirement: The loan must be repaid in regular monthly installments comprising principal
+    and interest.
+  quote: Úvěr se splácí pravidelnými měsíčními splátkami zahrnujícími splátku jistiny a úroku.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 12 odst. 6
+  verified: llm_cited
+- requirement: The Fund must publish on its website the call for applications and the EU base
+    rate for the Czech Republic.
+  quote: Fond uveřejní na svých internetových stránkách a) výzvu pro podávání žádosti o poskytnutí
+    podpory a b) výši základní sazby Evropské unie pro Českou republiku podle § 11 odst. 4.
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 13
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (18/18 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Total support is capped either by the gap-funding method (eligible costs minus operating
+    profit, subject to the GBER notification threshold) or by the remaining available de minimis
+    aid limit, depending on which legal basis under § 5 odst. 3 applies.
+  quote: a) § 5 odst. 3 písm. a) nesmí přesáhnout výši rozdílu mezi způsobilými náklady a
+    provozním ziskem z investice a nesmí přesáhnout prahovou hodnotu stanovenou v přímo použitelném
+    předpisu Evropské unie 7 ) , nebo b) § 5 odst. 3 písm. b) nesmí přesáhnout nevyčerpaný
+    limit podpory malého rozsahu podle přímo použitelného předpisu Evropské unie 8 )
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 11 odst. 5
+  verified: llm_cited
+application:
+  channel: Application submitted to the Státní fond podpory investic (State Investment Support
+    Fund) following a published call for applications.
+  typical_timeline: Not specified in the source text.
+  quote: výzvu pro podávání žádosti o poskytnutí podpory
+  source:
+    file: satr_cz_equity_zakonyprolidi_107_2023.html
+    locator: chunk 3, § 13 písm. a)
+  verified: llm_cited

@@ -1,0 +1,33 @@
+(node:27970) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  … 25/300
+  … 50/300
+  … 75/300
+  … 100/300
+  … 125/300
+  … 150/300
+  … 175/300
+  … 200/300
+  … 225/300
+  … 250/300
+  … 275/300
+  … 300/300
+
+PAIRED description test — set=__recallSetDescribed.json, split=holdout, 300 companies, both arms same case
+  eligible pairs with a real description: 1093
+
+  arm        in pool            EXACT@1            EXACT@5            REGIME@5
+  real        232/300 (77.3%)     26/300 (8.7%)     71/300 (23.7%)    188/300 (62.7%)
+  template    224/300 (74.7%)     22/300 (7.3%)     64/300 (21.3%)    186/300 (62.0%)
+
+  EXACT@5 lift from the founder's own words: +2.3pp
+  paired outcomes: both 48 · real only 23 · template only 16 · neither 213
+  discordant 39 (23 for the description, 16 against)
+
+  by where the description came from — EXACT@5, then REGIME@5:
+    own_award_text         n= 147  EXACT  29.3% vs  25.9% =  +3.4pp   REGIME  70.7% vs  70.7% =  +0.0pp
+    cross_regime_summary   n= 113  EXACT  15.0% vs  17.7% =  -2.7pp   REGIME  58.4% vs  60.2% =  -1.8pp
+    own_project_title      n=  31  EXACT  32.3% vs  16.1% = +16.1pp   REGIME  54.8% vs  38.7% = +16.1pp
+    cross_regime_title     n=   9  EXACT  11.1% vs  11.1% =  +0.0pp   REGIME  11.1% vs  22.2% = -11.1pp

@@ -1,0 +1,43 @@
+id: satr_de_rnd__sa_112241__bayerisches_staatsministerium_fur_wirtschaft_lan
+name: Digitalisierung im Rahmen des Bayerischen Verbundforschungsprogramms (BayVFP, 2024-25) [BY]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-bavaria-location
+  gate_family: G1_nexus
+  requirement: Applicants (companies, extramural research institutions, universities) must have their
+    seat or establishment in the Free State of Bavaria.
+  value: Seat or establishment in Bavaria
+  intake_field: entityCountries
+  quote: 3.2.1 Unternehmen mit Sitz oder Niederlassung im Freistaat Bayern;
+  source:
+    file: https://www.gesetze-bayern.de/Content/Document/BayVV_7071_W_10442/true
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-preference
+  gate_family: G2_size_ownership
+  requirement: SMEs per Annex I GBER are given preferential consideration.
+  value: SMEs preferred (per Annex I GBER)
+  intake_field: turnoverBand
+  quote: 3.3 Kleine und mittlere Unternehmen (KMU) gemäß Anhang I AGVO werden bevorzugt berücksichtigt.
+  source:
+    file: https://www.gesetze-bayern.de/Content/Document/BayVV_7071_W_10442/true
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g3-undertaking-in-difficulty
+  gate_family: G3_financial
+  requirement: Undertakings in difficulty under Article 1(4)(c) in conjunction with Article 2 No. 18 GBER
+    are not funded.
+  value: Undertakings in difficulty excluded
+  intake_field: lossesOverHalfCapital
+  quote: 4.8 Unternehmen in Schwierigkeiten gemäß Art. 1 Abs. 4 Buchst. c) in Verbindung mit Art. 2 Nr.
+    18 AGVO werden nicht gefördert.
+  source:
+    file: https://www.gesetze-bayern.de/Content/Document/BayVV_7071_W_10442/true
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

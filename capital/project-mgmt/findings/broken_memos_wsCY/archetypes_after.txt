@@ -1,0 +1,185 @@
+company            fte     ranked  alive  poolAlive  firstAlive  ->writer  blocked by
+----------------------------------------------------------------------------------------------------------------------
+Neura Robotics     250+       115     22          0/18       81         7/7  {"fteBand":18}
+    1. [open       ] Horizon EU CL1                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    2. [open       ] Horizon EU CL4                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    3. [open       ] Horizon EU Miss                                          EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    4. [open       ] Horizon EU CL3                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    5. [open       ] ERC POC                                                  EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    6. [open       ] EIC Transition                                           EU  -      -
+       route [own]     : Funding and Tender Opportunities Portal; 3-step process (proposal writing, evaluator evaluation, EIC jur
+    7. [open       ] Innovation Fund SSP                                      EU  -      -
+       route [own]     : Electronic submission via the EU Funding & Tenders Portal Electronic Submission System
+SMART Photonics    50-249      50     38         16/18        1         7/7  {"borrowerModel":1,"developmentStage":1}
+    1. [open       ] EIC Accelerator                                          EU  -      -
+       route [own]     : Funding and Tenders portal, via short proposal then full proposal then EIC Jury interview
+    2. [open       ] NL-EZK-B&I-I&K-RVO NGFNH2201 NXTGEN HIGHTECH             NL  -      Ministerie van Economische Zaken en Klimaat
+       route: (none recorded)
+    3. [open       ] EIC Transition                                           EU  -      -
+       route [own]     : Funding and Tender Opportunities Portal; 3-step process (proposal writing, evaluator evaluation, EIC jur
+    4. [open       ] NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatie NL  NL36   provincie Zuid-Holland
+       route: (none recorded)
+    5. [open       ] NL_BZK_CSDO_NB OP Zuid Subsidieregeling OPZuid 2021 - 20 NL  NL41   provincie Noord-Brabant
+       route: (none recorded)
+    6. [open       ] NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese  NL  NL41   provincie Noord-Brabant
+       route: (none recorded)
+    7. [open       ] NL-EZK-B&I-I&K Subsidieregeling JTF 2021 - 2027          NL  NL3    Kansen voor West
+       route: (none recorded)
+Silvr              50-249     106     47         12/18        1         7/7  {"fteBand":5,"consortium":1,"ticketBand":1,"borrowerModel":1,"developmentStage":1}
+    1. [open       ] Régime cadre exempté de notification relatif aux aides e FR  -      Ministère de l'économie et des finances
+       route [INHERITED]: Aid is granted by French public authorities (national/regional) under this notified block exemption fram
+    2. [open       ] Régime cadre exempté de notification relatif aux aides à FR  -      Ministère de l'économie et des finances
+       route [INHERITED]: Aid is granted by French public authorities (national/regional) under this notified block exemption fram
+    3. [open       ] Soutien à la modernisation des industries techniques et  FR  FR10   CNC
+       route: (none recorded)
+    4. [open       ] Ministère de l'Agriculture et de l'alimentation · via Co FR  -      Ministère de l'Agriculture et de l'alimentat
+       route [INHERITED]: Aid is granted by French public authorities (national/regional) under this notified block exemption fram
+    5. [open       ] Régime cadre exempté de notification relatif aux aides à FR  -      Ministère de l'économie et des finances
+       route [INHERITED]: Aid is granted by French public authorities (national/regional) under this notified block exemption fram
+    6. [open       ] Régime cadre exempté de notification relatif aux aides à FR  -      Ministère de la Transition écologique et sol
+       route [INHERITED]: Aid is granted by French public authorities (national/regional) under this notified block exemption fram
+    7. [open       ] Ministère de l'économie et des finances · rnd  sa 40391  FR  -      Ministère de l'économie et des finances
+       route [INHERITED]: Aid is granted by French public authorities (national/regional) under this notified block exemption fram
+bunq               250+        47     34         17/18        1         7/7  {"developmentStage":1,"fteBand":1}
+    1. [open       ] NL-EZK-KE: DEI+ wijziging en openstelling van de subsidi NL  -      Ministerie van Economische Zaken en Klimaat
+       route: (none recorded)
+    2. [open       ] NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatie NL  NL36   provincie Zuid-Holland
+       route: (none recorded)
+    3. [open       ] EIC Transition                                           EU  -      -
+       route [own]     : Funding and Tender Opportunities Portal; 3-step process (proposal writing, evaluator evaluation, EIC jur
+    4. [open       ] NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese  NL  NL41   provincie Noord-Brabant
+       route: (none recorded)
+    5. [open       ] NL-EZK-B&I-I&K-RVO wijziging RNES 3.2 PPS-innovatie      NL  -      Ministerie van Economische Zaken en Klimaat
+       route: (none recorded)
+    6. [open       ] NL-EZK-B&I-I&K wijziging Subsidieregeling JTF 2021 - 202 NL  NL11   Samenwerkingsverband Noord-Nederland
+       route: (none recorded)
+    7. [open       ] NL-EZK-KE: DEI+ budgetophoging subsidiemodules inzake de NL  -      Ministerie van Economische Zaken en Klimaat
+       route: (none recorded)
+Photoroom          50-249     106     48          8/18        2         7/7  {"fteBand":9,"consortium":1,"ticketBand":1,"developmentStage":2}
+    1. [open       ] Soutien à la modernisation des industries techniques et  FR  FR10   CNC
+       route: (none recorded)
+    2. [open       ] Bpifrance · inov                                         FR  -      -
+       route [own]     : Online submission via Bpifrance's dedicated platform (Picxel)
+    3. [open       ] Horizon EU CL1                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    4. [open       ] Régime exempté de notification N°SA.XXXXX relatif aux ai FR  -      Ministère de la Transition écologique et sol
+       route: (none recorded)
+    5. [open       ] Régime cadre exempté de notification relatif aux aides à FR  -      Ministère de l'économie et des finances
+       route [INHERITED]: Aid is granted by French public authorities (national/regional) under this notified block exemption fram
+    6. [open       ] EIC Accelerator                                          EU  -      -
+       route [own]     : Funding and Tenders portal, via short proposal then full proposal then EIC Jury interview
+    7. [open       ] EIB Venture                                              EU  -      -
+       route [own]     : Applicants sign up for an EIB contact account and apply directly to the EIB Venture Debt team.
+Aleph Alpha        50-249     115    105         18/18        1         7/7  {}
+    1. [open       ] Quantencomputer-Demonstrationsaufbauten                  DE  -      Bundesministerium für Bildung und Forschung
+       route: (none recorded)
+    2. [open       ] NRW.SeedCon                                              DE  DEA    NRW.BANK
+       route [INHERITED]: Applicants first submit an electronic project outline (Skizze) to the commissioned project agency (VDI T
+    3. [open       ] Richtlinie zur Förderung innovativer Netzarchitekturen i DE  -      TÜV Rheinland Forschungs- und Innovationsman
+       route: (none recorded)
+    4. [open       ] Bayerische Richtlinien für die Förderung von Film-, Fern DE  DE21   LfA Förderbank Bayern
+       route: (none recorded)
+    5. [open       ] Richtlinie zur Fördermaßnahme: "KMU-innovativ: Informati DE  -      Bundesministerium für Bildung und Forschung
+       route: (none recorded)
+    6. [open       ] Programm zur Förderung von Forschung, Innovationen und T DE  DE30   Investitionsbank Berlin
+       route: (none recorded)
+    7. [open       ] Förderrichtlinie Business-Angel-Bonus JTF 2021–2027      DE  DED5   Sachsen_SAB
+       route: (none recorded)
+Nortal             250+        80     67         16/18        1         7/7  {"cofinancingBand":1,"fteBand":2}
+    1. [open       ] Ida-Viru ettevotluse investeeringute toetus              EE  -      -
+       route [own]     : Applications for every EIS measure are submitted through the state e-toetus environment, from the measur
+    2. [open       ] Turismisektori kesksete digilahenduste toetus            EE  -      -
+       route [own]     : Applications for every EIS measure are submitted through the state e-toetus environment, from the measur
+    3. [open       ] Rakendusuuringu ja tootearenduse toetus                  EE  -      Ettevõtluse ja Innovatsiooni Sihtasutus
+       route [INHERITED]: Applications are submitted to Ettevõtluse ja Innovatsiooni Sihtasutus (Enterprise Estonia / EIS) via the
+    4. [open       ] Ettevõtete tootearendustoetus                            EE  -      -
+       route [own]     : Applications for every EIS measure are submitted through the state e-toetus environment, from the measur
+    5. [open       ] Ettevõtja teadus- ja arendustöötaja toetus 2025          EE  -      EIS (KredEx + Enterprise Estonia)
+       route: (none recorded)
+    6. [open       ] Starditoetus (start-up grant)                            EE  -      -
+       route [own]     : Applications for every EIS measure are submitted through the state e-toetus environment, from the measur
+    7. [open       ] Ettevõtja teadus- ja arendustöötaja toetus 2024          EE  -      EIS (KredEx + Enterprise Estonia)
+       route: (none recorded)
+sennder            250+       107     18          2/18        5         7/7  {"fteBand":16}
+    1. [open       ] Clean Aviation                                           EU  -      -
+       route [own]     : EU Funding & Tenders opportunities portal via published Calls for Proposals
+    2. [open       ] Sesar JU                                                 EU  -      -
+       route [own]     : Open, transparent and competitive calls for proposals published under Horizon Europe (DES ER/IR calls) a
+    3. [open       ] EIC Transition                                           EU  -      -
+       route [own]     : Funding and Tender Opportunities Portal; 3-step process (proposal writing, evaluator evaluation, EIC jur
+    4. [open       ] IHI                                                      EU  -      -
+       route [own]     : Electronic Submission System of the EU Funding & Tenders Portal (SEDIA), submitted online by the coordin
+    5. [open       ] Horizon EU CL1                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    6. [open       ] Horizon EU CL4                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    7. [open       ] Gh Edctp3                                                EU  -      -
+       route [own]     : EU Funding & Tenders Portal via EC eGrants IT systems, following Horizon Europe General Annexes procedur
+Nebius             250+        57     44         17/18        1         7/7  {"developmentStage":1,"fteBand":1}
+    1. [open       ] NL-EZK-KE: DEI+ wijziging en openstelling van de subsidi NL  -      Ministerie van Economische Zaken en Klimaat
+       route: (none recorded)
+    2. [open       ] NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatie NL  NL36   provincie Zuid-Holland
+       route: (none recorded)
+    3. [open       ] EIC Transition                                           EU  -      -
+       route [own]     : Funding and Tender Opportunities Portal; 3-step process (proposal writing, evaluator evaluation, EIC jur
+    4. [open       ] NL_BZK_CSDO_NB Subsidieregeling cofinanciering Europese  NL  NL41   provincie Noord-Brabant
+       route: (none recorded)
+    5. [open       ] NL-EZK-B&I-I&K-RVO wijziging RNES 3.2 PPS-innovatie      NL  -      Ministerie van Economische Zaken en Klimaat
+       route: (none recorded)
+    6. [open       ] NL-EZK-B&I-I&K wijziging Subsidieregeling JTF 2021 - 202 NL  NL11   Samenwerkingsverband Noord-Nederland
+       route: (none recorded)
+    7. [open       ] NL-EZK-KE: DEI+ budgetophoging subsidiemodules inzake de NL  -      Ministerie van Economische Zaken en Klimaat
+       route: (none recorded)
+Corti              50-249      33     28         16/18        2         7/7  {"exclusionFlags":1,"lossesOverHalfCapital":1,"developmentStage":2}
+    1. [open       ] Internationale Samarbejder                               DK  -      -
+       route [own]     : e-grant portal (Danish participants), following international portal application for the international p
+    2. [open       ] Global Research Collaborations                           DK  -      -
+       route: (none recorded)
+    3. [open       ] Innoexplorer                                             DK  -      Innovationsfonden
+       route: (none recorded)
+    4. [open       ] Erhvervsforsker                                          DK  -      -
+       route [own]     : Electronic application via www.e-grant.dk, submitted by the company supervisor
+    5. [open       ] ERC POC                                                  EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    6. [open       ] EIC Transition                                           EU  -      -
+       route [own]     : Funding and Tender Opportunities Portal; 3-step process (proposal writing, evaluator evaluation, EIC jur
+    7. [open       ] Horizon EU CL1                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+BioNTech           250+       115     21          2/18        3         7/7  {"fteBand":16}
+    1. [open       ] Gh Edctp3                                                EU  -      -
+       route [own]     : EU Funding & Tenders Portal via EC eGrants IT systems, following Horizon Europe General Annexes procedur
+    2. [open       ] Horizon EU CL1                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    3. [open       ] IHI                                                      EU  -      -
+       route [own]     : Electronic Submission System of the EU Funding & Tenders Portal (SEDIA), submitted online by the coordin
+    4. [open       ] Clean Aviation                                           EU  -      -
+       route [own]     : EU Funding & Tenders opportunities portal via published Calls for Proposals
+    5. [open       ] Horizon EU CL4                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    6. [open       ] Horizon EU Miss                                          EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+    7. [open       ] Horizon EU CL3                                           EU  -      -
+       route [own]     : EU Funding & Tenders Portal electronic submission system
+eAgronom           10-49       86     77         17/18        1         7/7  {"sector":1,"useOfFunds":1}
+    1. [open       ] Ettevotte arenguprogramm (enterprise development)        EE  -      -
+       route [own]     : Applications for every EIS measure are submitted through the state e-toetus environment, from the measur
+    2. [open       ] Toetus ettevõtjate toote-, teenuse ja protsessiarenduse  EE  -      -
+       route [own]     : Applications for every EIS measure are submitted through the state e-toetus environment, from the measur
+    3. [open       ] Ettevõtja rakendusuuringute toetus (alates 02.06.2023)   EE  -      Ettevõtluse ja Innovatsiooni Sihtasutus
+       route [INHERITED]: Applications are submitted to Ettevõtluse ja Innovatsiooni Sihtasutus (Enterprise Estonia / EIS) via the
+    4. [open       ] Ettevõtte arenguprogrammi toetus 2024-2027               EE  -      Ettevõtluse ja Innovatsiooni Sihtasutus
+       route [INHERITED]: Applications are submitted to Ettevõtluse ja Innovatsiooni Sihtasutus (Enterprise Estonia / EIS) via the
+    5. [open       ] Rohetoetus: roheauditi läbiviimine                       EE  -      -
+       route [own]     : Applications for every EIS measure are submitted through the state e-toetus environment, from the measur
+    6. [open       ] Digitaliseerimise teekaardi toetus                       EE  -      EIS (KredEx + Enterprise Estonia)
+       route: (none recorded)
+    7. [open       ] Rohetoetus: arendustegevuse elluviimine ja ärimudeli muu EE  -      -
+       route [own]     : Applications for every EIS measure are submitted through the state e-toetus environment, from the measur
+
+published cap 6
+ranker: all 12 request(s) on EMBEDDING

@@ -1,0 +1,83 @@
+id: satr_fr_rnd__sa_111723__conseil_regional_occitanie
+name: Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation
+  (RDI) pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g2-size-categories
+  gate_family: G2_size_ownership
+  requirement: Beneficiaries are small enterprises (independent, fewer than 50 employees), medium enterprises
+    (independent, fewer than 250 employees), and mid-cap enterprises (independent, 250 to fewer than 5,000
+    employees).
+  value: PE <50, ME <250, ETI 250-4999 employees, independent
+  intake_field: fteBand
+  quote: 'Petites entreprises (PE) : entreprises indépendantes de moins de 50 salariés. Moyennes entreprises
+    (ME) : entreprises indépendantes de moins de 250 salariés. Entreprises de taille intermédiaire (ETI)
+    : entreprises indépendantes de 250 à moins de 5 000 salariés.'
+  source:
+    file: https://www.laregion.fr/Contrat-Innovation
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-large-enterprise-restriction
+  gate_family: G2_size_ownership
+  requirement: Large enterprises (5,000+ employees) are only eligible exceptionally, as part of collaborative
+    projects.
+  value: Large enterprises only via collaborative projects
+  intake_field: fteBand
+  quote: Les grandes entreprises (5 000 salariés et plus) ne sont éligibles qu'à titre exceptionnel, dans
+    le cadre de projets collaboratifs.
+  source:
+    file: https://www.laregion.fr/Contrat-Innovation
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-association-eligibility
+  gate_family: G1_nexus
+  requirement: Associations are eligible if they hold an insertion/adapted enterprise accreditation, or
+    if their income statement shows at least 50% of revenue from sales.
+  value: Associations eligible if accredited or >=50% sales revenue
+  intake_field: borrowerModel
+  quote: Les associations sont éligibles si elles disposent d'un agrément entreprise d'insertion/adaptée,
+    ou si le compte de résultat de la structure fait apparaître au moins 50% de recettes issues de la
+    vente.
+  source:
+    file: https://www.laregion.fr/Contrat-Innovation
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-institutions
+  gate_family: G1_nexus
+  requirement: Research establishments (collaborative projects only) — public scientific and technological
+    institutions, research organisations, universities, and private structures under agreement with the
+    State — are eligible.
+  value: Research orgs eligible, collaborative projects only
+  intake_field: consortium
+  quote: 'Les établissements de recherche (projets collaboratifs uniquement) : établissements publics
+    à caractère scientifique et technologique, organismes de recherche, universités, et structures privées
+    sous convention avec l''Etat, sont éligibles.'
+  source:
+    file: https://www.laregion.fr/Contrat-Innovation
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-exclusions
+  gate_family: G1_nexus
+  requirement: Excluded are local authorities and majority publicly-owned companies; real-estate civil
+    companies and sole proprietorships (except tourism/leisure); companies in financial services, liberal
+    professions, banks, insurance; retail (B2C); training organisations; CUMA; and farms deriving less
+    than 50% of revenue from agriculture.
+  value: Public bodies, SCIs, financial services, retail, farms <50% agri revenue excluded
+  intake_field: borrowerModel
+  quote: 'Sont exclus : les collectivités et sociétés à capitaux majoritairement publics ; les sociétés
+    civiles immobilières et les entreprises individuelles (hors tourisme/loisirs) ; les entreprises exerçant
+    des activités de services financiers, les professions libérales, les banques, les assurances ; le
+    commerce de détail (B to C) ; les organismes de formation ; les CUMA ; les exploitations agricoles
+    dont moins de 50% du chiffre d''affaires est d''origine agricole.'
+  source:
+    file: https://www.laregion.fr/Contrat-Innovation
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

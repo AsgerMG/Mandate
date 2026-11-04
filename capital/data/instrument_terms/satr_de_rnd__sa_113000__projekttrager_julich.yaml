@@ -1,0 +1,36 @@
+id: satr_de_rnd__sa_113000__projekttrager_julich
+name: Richtlinie über die Gewährung von Zuwendungen zur Förderung von Einzel-, Gemeinschafts- und Verbundvorhaben
+  im Forschungs-, Entwicklungs- und Innovationsbereich (FEI-Richtlinie - FEI RL) [NW]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-entities
+  gate_family: G1_nexus
+  requirement: Recipients can be companies, associations, foundations, public-law corporations and institutions,
+    as well as research and knowledge-dissemination institutions.
+  value: Companies, associations, foundations, public bodies, or research/knowledge institutions
+  intake_field: borrowerModel
+  quote: Zuwendungsempfangende können Unternehmen, Vereine, Stiftungen, Körperschaften und Anstalten des
+    öffentlichen Rechts sowie Einrichtungen für Forschung und für Wissensverbreitung sein.
+  source:
+    file: https://recht.nrw.de/lrmb/verwaltungsvorschrift/30122023-richtlinie-ueber-die-gewaehrung-von-zuwendungen-zur-foerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-org-definition
+  gate_family: G1_nexus
+  requirement: A qualifying research/knowledge-dissemination institution is one whose main task is to
+    conduct independent basic research, industrial research or experimental development, or to disseminate
+    such results through teaching, publication or knowledge transfer.
+  value: Research org must have independent R&D or dissemination as main task
+  intake_field: none
+  quote: deren Hauptaufgabe darin besteht, unabhängige Grundlagenforschung, industrielle Forschung oder
+    experimentelle Entwicklung zu betreiben oder die Ergebnisse solcher Tätigkeiten durch Lehre, Veröffentlichung
+    oder Wissenstransfer zu verbreiten.
+  source:
+    file: https://recht.nrw.de/lrmb/verwaltungsvorschrift/30122023-richtlinie-ueber-die-gewaehrung-von-zuwendungen-zur-foerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

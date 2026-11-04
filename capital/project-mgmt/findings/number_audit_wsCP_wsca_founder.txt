@@ -1,0 +1,43 @@
+instruments 1088, population 895
+multi-leaf regimes 36, holding 605 leaves
+
+NOTHING ASKED (today): mean class 50.50   alone 0.0%   CEILING@5 7.6%
+
+ONE property known, nothing else — the ceiling a single question could reach
+property                     mean cls   CEIL@5 (matchable)    present-only
+[corpus] administering_body     22.93                51.1%           51.1%
+[corpus] delivery_region        33.93                29.9%           29.9%
+region                          37.73                21.7%           22.8%
+[corpus] catchment_regions      38.00                21.5%           21.5%
+[corpus] award decade           26.43                20.8%           20.8%
+organisationType                38.53                18.8%           20.5%
+developmentStage                49.93                10.7%           12.9%
+exclusionFlags                  50.33                10.4%           10.4%
+entityCountries                 48.77                 9.9%           20.7%
+sector                          48.10                 9.4%           14.7%
+ticketBand                      50.15                 9.3%            9.8%
+useOfFunds                      50.17                 9.3%           11.2%
+[corpus] capital_type           42.71                 9.3%            9.3%
+borrowerModel                   50.43                 8.9%           20.8%
+fteBand                         49.48                 8.8%           13.6%
+consortium                      47.74                 8.6%           20.3%
+nonEuControl                    50.41                 8.3%            9.4%
+ownerOver25                     50.43                 8.1%            8.6%
+turnoverBand                    50.16                 8.1%           16.4%
+cofinancingBand                 50.45                 7.9%           11.7%
+activities                      50.47                 7.8%            7.9%
+balanceBand                     50.34                 7.8%            8.1%
+activityCountries               50.50                 7.6%           16.2%
+bankRelationship                50.50                 7.6%            7.8%
+conditionality                  50.50                 7.6%            9.8%
+foundedYear                     50.50                 7.6%           10.9%
+institutionalBacking            50.50                 7.6%            8.1%
+institutionalOwner              50.50                 7.6%            8.6%
+lossesOverHalfCapital           50.50                 7.6%           13.2%
+needBy                          50.50                 7.6%           10.4%
+wouldOpenEntity                 50.49                 7.6%            8.3%
+
+EVERY intake field answered perfectly, at once:  mean 25.60   CEILING@5 40.3%
+  + region + capital type off the corpus:       mean 19.14   CEILING@5 51.7%
+
+for reference, the IDENTITY ceiling (adds verbatim eligibility_text, which no founder can state): 85.5%

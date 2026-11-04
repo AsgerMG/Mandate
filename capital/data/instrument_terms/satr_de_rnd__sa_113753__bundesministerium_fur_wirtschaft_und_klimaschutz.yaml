@@ -1,0 +1,55 @@
+id: satr_de_rnd__sa_113753__bundesministerium_fur_wirtschaft_und_klimaschutz
+name: Luftfahrtforschungsprogramm des Bundes [BMWK IVD2]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eea-seat-required
+  gate_family: G1_nexus
+  requirement: Applicants must in principle be an institution from the European Economic Area (EEA) or
+    Switzerland, or another foreign institution with a seat or establishment in the EEA or Switzerland,
+    but must have an establishment or branch in Germany by the time the aid is paid out.
+  value: EEA/CH-based applicant; German establishment required at payout
+  intake_field: entityCountries
+  quote: Antragsberechtigt ist grundsätzlich jede Einrichtung aus dem Europäischen Wirtschaftsraum (EWR)
+    oder der Schweiz und andere ausländische Einrichtungen mit Sitz oder Niederlassung im EWR oder in
+    der Schweiz. Der Antragsteller muss jedoch zum Zeitpunkt der Auszahlung der Beihilfe über eine Betriebsstätte
+    oder Niederlassung in der Bundesrepublik Deutschland verfügen.
+  source:
+    file: https://luftfahrtforschungsprogramm.de/foerderung/lufo/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-gber-art1-exclusions
+  gate_family: G1_nexus
+  requirement: Companies or sectors covered by the exclusion cases in Article 1(2), (3) and (5) GBER are
+    excluded from funding.
+  value: GBER Article 1(2)/(3)/(5) sector/case exclusions apply
+  intake_field: none
+  quote: Von der Förderung ausgeschlossen sind Unternehmen beziehungsweise Sektoren in den Fällen des
+    Artikels 1 Absatz 2, 3 und 5 AGVO.
+  source:
+    file: https://luftfahrtforschungsprogramm.de/foerderung/lufo/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-disruptive-line-science-only
+  gate_family: G1_nexus
+  requirement: In the 'Disruptive Technologien klimaneutrale Luftfahrt' programme line, only science institutions
+    are entitled to apply; applicants need not come from the aviation sector as long as the primary exploitation
+    perspective lies in aviation.
+  value: 'Disruptive-tech line: science institutions only'
+  intake_field: developmentStage
+  quote: In der Programmlinie "Disruptive Technologien klimaneutrale Luftfahrt" sind ausschließlich Wissenschaftseinrichtungen
+    antragsberechtigt. Die Antragsteller müssen dabei nicht zwingend aus dem Luftfahrtumfeld stammen,
+    solange die primäre Verwertungsperspektive in der Luftfahrt vorgesehen ist.
+  source:
+    file: https://luftfahrtforschungsprogramm.de/foerderung/lufo/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

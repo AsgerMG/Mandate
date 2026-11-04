@@ -1,0 +1,36 @@
+id: satr_de_rnd__sa_115248__projekttrager_julich
+name: Richtlinie über die Gewährung von Zuwendungen zur Förderung von Einzel-, Gemeinschafts- und Verbundvorhaben
+  im Forschungs-, Entwicklungs- und Innovationsbereich (FEI-Richtlinie - FEI RL) [NW]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-recipients
+  gate_family: G1_nexus
+  requirement: Eligible recipients are companies, associations, foundations, public-law corporations and
+    institutions, and research/knowledge-dissemination entities.
+  value: Companies, associations, foundations, public bodies, research/dissemination entities
+  intake_field: borrowerModel
+  quote: Zuwendungsempfangende können Unternehmen, Vereine, Stiftungen, Körperschaften und Anstalten des
+    öffentlichen Rechts sowie Einrichtungen für Forschung und für Wissensverbreitung sein.
+  source:
+    file: https://recht.nrw.de/lrmb/verwaltungsvorschrift/30122023-richtlinie-ueber-die-gewaehrung-von-zuwendungen-zur-foerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-entity-definition
+  gate_family: G1_nexus
+  requirement: Research/knowledge-dissemination entities are defined as those whose main task is independent
+    basic research, industrial research or experimental development, or disseminating the results of such
+    activities through teaching, publication or knowledge transfer.
+  value: 'Research entities: main task must be R&D or dissemination of R&D results'
+  intake_field: borrowerModel
+  quote: deren Hauptaufgabe darin besteht, unabhängige Grundlagenforschung, industrielle Forschung oder
+    experimentelle Entwicklung zu betreiben oder die Ergebnisse solcher Tätigkeiten durch Lehre, Veröffentlichung
+    oder Wissenstransfer zu verbreiten
+  source:
+    file: https://recht.nrw.de/lrmb/verwaltungsvorschrift/30122023-richtlinie-ueber-die-gewaehrung-von-zuwendungen-zur-foerderung/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

@@ -1,0 +1,300 @@
+id: altum_mikro_aizdevumi_3_1_1_4_
+name: altum_mikro_aizdevumi_3_1_1_4_
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sector
+  gate_family: G1_nexus
+  requirement: Support is available for general economy sectors for SMEs, large merchants
+    and self-employed persons; agriculture/fishery sectors are excluded and use other support
+    programmes.
+  value: General economy sectors, excluding agriculture/fishery
+  intake_field: entityCountries
+  quote: Saimnieciskās darbības atbalsts vispārējās tautsaimniecības nozarēm maziem un vidējiem
+    komersantiem, lielajiem komersantiem un pašnodarbinātām personām.*   *lauksaimniecības
+    vai zivsaimniecības nozarēm pieejamas citas atbalsta programmas
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-excluded-sectors
+  gate_family: G1_nexus
+  requirement: Loans are intended for projects that do not operate in the financial and insurance
+    sector, nor for multilevel marketing project realisation, and are not connected with real
+    estate operations (with specified exceptions).
+  value: Excludes financial/insurance sector, multilevel marketing, real estate operations
+  intake_field: entityCountries
+  quote: "uzņēmumiem, kas  nedarbojas finanšu un apdrošināšanas nozarē, kā arī tīkla (Multilevel)\
+    \ mārketinga  projektu realizācijai \n kas nav saistīti ar operācijām ar nekustamo īpašumu*"
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-no-refinancing
+  gate_family: G1_nexus
+  requirement: Loans are intended for projects that do not plan to use the loan to refinance
+    existing loans.
+  value: No refinancing of existing loans
+  intake_field: none
+  quote: kas neplāno aizdevumu izmantot esošo aizdevumu refinansēšanai
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-approved-sectors
+  gate_family: G1_nexus
+  requirement: Projects must correspond to sectors supported under state aid regulation.
+  value: Must be in state-aid-supported sectors
+  intake_field: none
+  quote: kas atbilst atbalstītajām nozarēm saskaņā ar valsts atbalsta regulējumu
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-creditworthiness
+  gate_family: G1_nexus
+  requirement: Projects must meet ALTUM's creditworthiness assessment criteria.
+  value: Must meet ALTUM creditworthiness criteria
+  intake_field: none
+  quote: kas atbilst ALTUM kredītspējas vērtēšanas kritērijiem
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-sme-declaration
+  gate_family: G2_size_ownership
+  requirement: Applicants must submit a declaration on the company's status as a small or
+    medium-sized enterprise as part of the loan application.
+  value: SME status declaration required
+  intake_field: fteBand
+  quote: Deklarāc ija par komercsabiedrības atbilstību mazajai vai vidējai komercsabiedrībai
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-loan-amount-working-capital
+  gate_family: G3_financial
+  requirement: Working capital loans are available up to EUR 1,000,000.
+  value: up to EUR 1,000,000
+  intake_field: ticketBand
+  quote: līdz 1 000 000 EUR
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-loan-amount-investment
+  gate_family: G3_financial
+  requirement: Fixed asset investment loans are available up to EUR 5,000,000.
+  value: up to EUR 5,000,000
+  intake_field: ticketBand
+  quote: līdz 5 000 000 EUR
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-loan-term-working-capital
+  gate_family: G3_financial
+  requirement: Working capital loans have a term of up to 5 years (with variation by loan
+    type).
+  value: up to 5 years
+  intake_field: none
+  quote: līdz 5 gadiem*
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-loan-term-investment
+  gate_family: G3_financial
+  requirement: Fixed asset investment loans have a term of up to 15 years (with variation
+    by loan type).
+  value: up to 15 years
+  intake_field: none
+  quote: līdz 15 gadiem*
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-interest-rate
+  gate_family: G3_financial
+  requirement: The annual interest rate is from 3% plus 6-month EURIBOR, or a fixed rate from
+    4.9% for rural micro/small loans.
+  value: from 3% + 6-month EURIBOR (or fixed 4.9%)
+  intake_field: none
+  quote: gada likme no 3% + 6 mēn. EURIBOR **
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-min-cofinancing
+  gate_family: G3_financial
+  requirement: The applicant must provide co-financing for the project, with minimum own participation
+    in an investment project of at least 10%.
+  value: minimum own contribution ≥10% for investment projects
+  intake_field: cofinancingBand
+  quote: projekta īstenošanai nepieciešamo līdzfinansējumu - minimālā līdzdalība investīciju
+    projektā ir vismaz 10%*
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3-equity-ratio
+  gate_family: G3_financial
+  requirement: The adjusted equity ratio must be at least 10% (20% for real estate developer
+    projects).
+  value: adjusted equity share ≥10% (20% for real estate)
+  intake_field: balanceBand
+  quote: koriģētais pašu kapitāla īpatsvars ≥ 10% (20%**)
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3-net-debt-ebitda
+  gate_family: G3_financial
+  requirement: Planned Net Debt/EBITDA ratio must not exceed 5 (7.5 for start-ups in development
+    stage).
+  value: Net Debt/EBITDA ≤5 (≤7.5 for startups)
+  intake_field: turnoverBand
+  quote: plānotās Neto saistības EBITDA ≤5 (7.5***)
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3-dscr
+  gate_family: G3_financial
+  requirement: The debt service coverage ratio (DSCR) must be at least 1.2 (1.4 for real estate
+    developer projects).
+  value: DSCR ≥1.2 (≥1.4 for real estate)
+  intake_field: turnoverBand
+  quote: parāda apkalpošanas seguma attiecība (DSCR) ≥1.2 (1.4**)
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3-collateral-above-100k
+  gate_family: G3_financial
+  requirement: For loans above EUR 100,000, collateral coverage of at least 135% of the loan
+    (loan-to-collateral ratio) is required.
+  value: collateral ≥135% for loans >EUR 100,000
+  intake_field: ticketBand
+  quote: Aizdevumiem virs 100 000 EUR tiek prasīts saistību nodrošinājums vismaz 135% apmērā
+    (aizdevuma attiecība pret nodrošinājumu)
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g3-collateral-below-100k
+  gate_family: G3_financial
+  requirement: For loans up to EUR 100,000, reduced collateral requirements apply, generally
+    limited to pledging any real estate or vehicle purchased with loan funds.
+  value: reduced collateral for loans ≤EUR 100,000
+  intake_field: ticketBand
+  quote: Aizdevumiem līdz 100 000 EUR samazinātas nodrošinājuma prasības****
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g4-deminimis
+  gate_family: G4_borrower_model
+  requirement: Support is granted as de minimis aid under Commission Regulation (EU) 2023/2831,
+    or for SME growth loans also as regional aid under Regulation (EU) No 651/2014.
+  value: De minimis aid (Reg. 2023/2831) or regional aid (Reg. 651/2014) for SME growth loans
+  intake_field: none
+  quote: Atbalsts tiek sniegts kā d e minimis atbalsts saskaņā ar 13.12.2023. Komisijas Regulu
+    (ES) Nr.2023/2831 . MVU izaugsmes aizdevumiem var tikt sniegts arī kā reģionālais atbalsts
+    saskaņā ar Komisijas regulu (ES) Nr. 651/2014.
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4-no-negative-registry
+  gate_family: G4_borrower_model
+  requirement: For reduced-collateral loans, the company, its owners, officials and beneficial
+    owners must have no active arrears in the Bank of Latvia Credit Register or other debtor
+    registers, nor a negative record cleared in the last year.
+  value: No active/recent negative credit register entries
+  intake_field: ownerOver25
+  quote: Uzņēmumam, tā īpašniekiem, amatpersonām, patiesā labuma guvējiem nevar būt  aktuāls
+    kavējums Latvijas Bankas Kredītu reģistrā, citos parādnieku reģistros vai  pēdējā gada
+    laikā dzēsts negatīvs ieraksts Latvijas Bankas Kredītu reģistrā
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g5-exclude-real-estate-nace
+  gate_family: G5_use_of_funds
+  requirement: Loans exclude projects in NACE group 68.2 (renting/managing own or leased real
+    estate), and for SME growth loans also exclude group 68.1, with certain exceptions for
+    construction outside major cities.
+  value: Excludes NACE 68.2 and (for SME growth loans) 68.1 with exceptions
+  intake_field: none
+  quote: izņemot NACE 2.1 red.  68.2 grupu “Sava vai nomāta nekustamā īpašuma izīrēšana un
+    pārvaldīšana” un MVU izaugsmes aizdevumiem izņemot 68.1 grupu “Sava nekustama īpašuma
+    pirkšana un pārdošana”
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-collateral-pledge
+  gate_family: G5_use_of_funds
+  requirement: Any real estate or registrable vehicle purchased using loan funds must be pledged
+    in favour of ALTUM.
+  value: Purchased real estate/vehicle must be pledged to ALTUM
+  intake_field: none
+  quote: par labu ALTUM jāieķīlā par aizdevuma līdzekļiem iegādājamais nekustamais īpašums
+    vai reģistrējamais transportlīdzeklis, ja tādi tiek iegādāti.
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Support recipients must comply with fund publicity requirements.
+  quote: "Atbalsta saņēmējiem ir jāievēro \n fondu publicitātes prasības"
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: ALTUM assesses the company's financial situation and credit history, including
+    verifying there is no outstanding tax debt to the State Revenue Service (or that a repayment
+    agreement is being observed) and that the company and its owners/officials/beneficial
+    owners are not listed in debtor registers.
+  quote: "pārliecinās, vai uzņēmumam nav VID nodokļu parāda, vai ir noslēgta un tiek ievērota\
+    \ vienošanās par parāda pakāpenisku nomaksu \n pārliecinās, vai uzņēmums un tā īpašnieki,\
+    \ patiesā labuma guvēji nav iekļauti Latvijas Bankas vai citos parādnieku reģistros"
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Applicants must provide information on the VID EDS de minimis section regarding
+    state aid received by the company and related persons, plus a 6-month account statement
+    and proof of the origin of own contribution funds.
+  quote: "VID EDS sadaļā De minimis aizpildīta informācija par saņemto valsts atbalstu uzņēmumam\
+    \ un saistītajām personām  \n Konta izraksts par pēdējiem 6 mēnešiem \n Līdzdalības līdzekļu\
+    \ izcelsmes pamatojums"
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (21/21 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: State aid is granted as de minimis aid under Commission Regulation (EU) 2023/2831;
+    the de minimis declaration requires disclosure of aid already received by the company
+    and related persons, implying cumulation with other de minimis aid must be tracked.
+  quote: Atbalsts tiek sniegts kā d e minimis atbalsts saskaņā ar 13.12.2023. Komisijas Regulu
+    (ES) Nr.2023/2831 .
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: Online via the mans.altum.lv client portal
+  typical_timeline: Register, complete client questionnaire, then submit loan application
+    with supporting financial documents (not older than 3 months)
+  quote: Reģistrējies mans.altum.lv
+  source:
+    file: altum_mikro_aizdevumi_3_1_1_4_apgrozamiem_investicijam.html
+    locator: chunk 2
+  verified: llm_cited

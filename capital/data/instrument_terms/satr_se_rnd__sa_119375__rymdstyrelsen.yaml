@@ -1,0 +1,72 @@
+id: satr_se_rnd__sa_119375__rymdstyrelsen
+name: Statligt stöd till forskning och utveckling inom rymdområdet (förlängning)
+administering_body: see source document
+country: SE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-tax-registration
+  gate_family: G1_nexus
+  requirement: Support may only be given to companies approved for Swedish F-tax registration, or, for
+    foreign companies, that hold a certificate proving equivalent tax/fee registration in their home country.
+  value: F-skatt approved (SE) or equivalent home-country tax registration
+  intake_field: entityCountries
+  quote: Stöd får endast lämnas till företag som är godkända för F-skatt eller, i fråga om utländska företagare
+    och företag, har ett intyg eller en annan handling som visar att företagaren eller företaget i sitt
+    hemland genom registrering eller på annat sätt genomgår motsvarande kontroll i fråga om skatter och
+    avgifter.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-20201015-om-statligt-stod-till_sfs-2020-1015/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-liquidation-bankruptcy-exclusion
+  gate_family: G1_nexus
+  requirement: Support may not be given to a company that is in liquidation, bankrupt, or undergoing company
+    reorganisation; that has tax/fee debts referred for enforcement; or that has an unpaid debt relating
+    to repayment of support previously given by the Swedish National Space Agency.
+  value: No liquidation/bankruptcy/reorganisation, tax debt, or unpaid Rymdstyrelsen repayment
+  intake_field: none
+  quote: 'Stöd får inte lämnas till ett företag som
+
+    1. är i likvidation, försatt i konkurs eller genomgår företagsrekonstruktion,
+
+    2. har skatte- eller avgiftsskulder eller andra skulder som har överlämnats till Kronofogdemyndigheten
+    och som vid indrivning handläggs som allmänt mål, eller
+
+    3. har en skuld som inte betalats i rätt tid och som avser återkrav av stöd som har lämnats av Rymdstyrelsen.'
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-20201015-om-statligt-stod-till_sfs-2020-1015/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-no-trading-ban
+  gate_family: G1_nexus
+  requirement: Support may not be given if the recipient is subject to a trading/business prohibition
+    (näringsförbud).
+  value: No trading prohibition (näringsförbud)
+  intake_field: none
+  quote: Stöd får inte lämnas om stödmottagaren har näringsförbud.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-20201015-om-statligt-stod-till_sfs-2020-1015/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-de-minimis-ceiling
+  gate_family: G3_financial
+  requirement: For de minimis aid applications, total aid to the company (combined with other aid under
+    §8) must not exceed the ceiling in Article 3.2 of Regulation (EU) 2023/2831.
+  value: De minimis ceiling per Art. 3.2 EU Reg. 2023/2831
+  intake_field: ticketBand
+  quote: Om ansökan avser stöd som omfattas av kommissionens förordning (EU) 2023/2831, får stöd ges endast
+    om stödet till det berörda företaget tillsammans med allt annat stöd som avses i 8 § inte överskrider
+    det tak som följer av artikel 3.2 i den förordningen.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-20201015-om-statligt-stod-till_sfs-2020-1015/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (4/4 gates passed mechanical verbatim-substring
+  check -> llm_cited).

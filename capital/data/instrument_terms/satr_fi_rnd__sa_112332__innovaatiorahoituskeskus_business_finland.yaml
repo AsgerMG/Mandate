@@ -1,0 +1,44 @@
+id: satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland
+name: Energiatuki 2024-2027
+administering_body: see source document
+country: 'FI'
+capital_type: unknown
+status: draft
+gates:
+- id: g2-any-size
+  gate_family: G2_size_ownership
+  requirement: Energy aid may be granted to investment and review projects of companies and
+    organisations of all sizes.
+  value: Open to companies/organisations of any size
+  intake_field: none
+  quote: Energiatukea voidaan myöntää kaikenkokoisten yritysten ja yhteisöjen investointi-
+    ja katselmushankkeisiin.
+  source:
+    file: https://www.businessfinland.fi/suomalaisille-asiakkaille/palvelut/rahoitus/energiatuki
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-excluded-entities
+  gate_family: G1_nexus
+  requirement: Energy aid is not granted to housing companies, residential real estate
+    (including care facilities), farms or farm-linked projects (with limited exceptions for
+    non-agricultural energy use), fishing and aquaculture companies, state-budget-funded
+    start-up projects, mainly state-budget-funded organisations, state agencies and
+    institutions, or new-build projects (except new-technology projects).
+  value: Excludes housing companies, farms, fisheries, state bodies, most new-build projects
+  intake_field: none
+  quote: 'Kohteet ja toimijat joille energiatukea ei myönnetä: asunto-osakeyhtiöt;
+    asuinkiinteistöt (mukaan lukien hoivakiinteistöt); maatilat tai maatilakytkentäiset
+    hankkeet (rajatuin poikkeuksin maatalouden tuotantotoiminnan ulkopuoliselle
+    energiankäytölle); kalastus- ja vesiviljely-yritykset; valtion talousarviosta rahoitetut
+    perustamishankkeet; pääosin valtion talousarviosta rahoitetut organisaatiot; valtion
+    virastot ja laitokset; sekä uudisrakennushankkeet lukuun ottamatta uuden teknologian
+    hankkeita.'
+  source:
+    file: https://www.businessfinland.fi/suomalaisille-asiakkaille/palvelut/rahoitus/energiatuki
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

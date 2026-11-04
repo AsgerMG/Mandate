@@ -1,0 +1,33 @@
+id: satr_nl_rnd__sa_110899__ministerie_van_economische_zaken_en_klimaat
+name: NL_EZK_KE_Regeling nationale EZK- en LNV-subsidies, Titel 4.5 Investeringssubsidie duurzame energie
+  (wijziging 2024)
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-users
+  gate_family: G1_nexus
+  requirement: The ISDE subsidy is for homeowners and business users.
+  value: Homeowners and business users
+  intake_field: borrowerModel
+  quote: De Investeringssubsidie duurzame energie en energiebesparing (ISDE) is er voor woningeigenaren
+    en zakelijke gebruikers.
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/isde
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-business-user-definition
+  gate_family: G1_nexus
+  requirement: Business users include companies, government bodies, associations, housing corporations,
+    and owners of holiday homes.
+  value: 'Business users: companies, governments, associations, housing corporations, holiday-home owners'
+  intake_field: borrowerModel
+  quote: Zakelijke gebruikers zijn bijvoorbeeld bedrijven, overheden, verenigingen, woningbouwcorporaties
+    en eigenaren van (een) vakantiewoning(en)
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/isde
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

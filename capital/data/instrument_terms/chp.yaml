@@ -1,0 +1,294 @@
+id: chp
+name: chp
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant consortium must include at least one partner that is a member of
+    Hydrogen Europe or Hydrogen Europe Research for specific listed topics (e.g. HORIZON-JU-CLEANH2-2026-03-03,
+    04-02, 06-01, 06-02).
+  value: At least one partner in the consortium must be a member of either Hydrogen Europe
+    or Hydrogen Europe Research
+  intake_field: consortium
+  quote: At least one partner in the consortium must be a member of either Hydrogen Europe
+    or Hydrogen Europe Research.
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.111
+  verified: llm_cited
+- id: g2
+  gate_family: G3_financial
+  requirement: Maximum Clean Hydrogen JU contribution requestable for topic HORIZON-JU-CLEANH2-2026-04-02
+    is EUR 8.00 million; proposals requesting more will not be evaluated.
+  value: EUR 8.00 million maximum
+  intake_field: ticketBand
+  quote: 'The maximum Clean Hydrogen JU contribution that may be requested is EUR
+
+    8.00 million – proposals requesting Clean Hydrogen JU contributions above
+
+    this amount will not be evaluated.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.111
+  verified: llm_cited
+- id: g3
+  gate_family: G3_financial
+  requirement: Maximum Clean Hydrogen JU contribution requestable for topic HORIZON-JU-CLEANH2-2026-06-01
+    (Large-scale Hydrogen Valley) is EUR 17.00 million; proposals requesting more will not
+    be evaluated.
+  value: EUR 17.00 million maximum
+  intake_field: ticketBand
+  quote: 'The maximum Clean Hydrogen JU contribution that may be requested is EUR
+
+    17.00 million – proposals requesting Clean Hydrogen JU contributions above
+
+    this amount will not be evaluated.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.127
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: Maximum Clean Hydrogen JU contribution requestable for topic HORIZON-JU-CLEANH2-2026-06-02
+    (Small-scale Hydrogen Valley) is EUR 8.00 million; proposals requesting more will not
+    be evaluated.
+  value: EUR 8.00 million maximum
+  intake_field: ticketBand
+  quote: 'The maximum Clean Hydrogen JU contribution that may be requested is EUR
+
+    8.00 million – proposals requesting Clean Hydrogen JU contributions above
+
+    this amount will not be evaluated.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.132
+  verified: llm_cited
+- id: g5
+  gate_family: G4_borrower_model
+  requirement: Funding is provided as a lump sum grant per the 2021 EU lump sum contribution
+    decision under Horizon Europe.
+  value: Lump sum grant
+  intake_field: borrowerModel
+  quote: 'Eligible costs will take the form of a lump sum as defined in the Decision of 7
+
+    July 2021 authorising the use of lump sum contributions under the Horizon
+
+    Europe Programme'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.111
+  verified: llm_cited
+- id: g6
+  gate_family: G5_use_of_funds
+  requirement: Purchases of equipment, infrastructure or other assets must generally be declared
+    as depreciation costs, except specifically listed items (e.g. reversible solid oxide cells
+    system, hydrogen storage and related infrastructure) which may be declared as full capitalised
+    costs.
+  value: Depreciation costs default; capitalised costs exception for named assets
+  intake_field: none
+  quote: 'Purchases of equipment, infrastructure or other assets used for the action must
+
+    be declared as depreciation costs. However, for the following equipment,
+
+    infrastructure or other assets purchased specifically for the action (or
+
+    developed as part of the action tasks): (reversible) solid oxide cells system,
+
+    hydrogen storage and other hydrogen related infrastructure needed for the
+
+    demonstration of the (reversible) solid oxide cells system, costs may
+
+    exceptionally be declared as full capitalised costs.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.111
+  verified: llm_cited
+- id: g7
+  gate_family: G5_use_of_funds
+  requirement: For Hydrogen Valley topics, equipment/infrastructure purchases for hydrogen
+    production plant, distribution and storage infrastructure and hydrogen end-uses may exceptionally
+    be declared as full capitalised costs rather than depreciation.
+  value: Capitalised costs exception for hydrogen production/distribution/storage/end-use
+    infrastructure
+  intake_field: none
+  quote: 'hydrogen production plant, distribution
+
+    and storage infrastructure and hydrogen end-uses, costs may exceptionally be
+
+    declared as full capitalised costs.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.127
+  verified: llm_cited
+- id: g8
+  gate_family: G1_nexus
+  requirement: The page limit of the application (admissibility condition) is set at 70 pages
+    for certain Innovation Action topics, as an exception to General Annex A.
+  value: 70-page limit
+  intake_field: none
+  quote: The page limit of the application is 70 pages.
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.111
+  verified: llm_cited
+- id: g9
+  gate_family: G1_nexus
+  requirement: For all Innovation Actions in this call, the general admissibility page limit
+    for applications is 70 pages.
+  value: 70 pages for all Innovation Actions
+  intake_field: none
+  quote: For all Innovation Actions the page limit of the applications are 70 pages.
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.139
+  verified: llm_cited
+- id: g10
+  gate_family: G3_financial
+  requirement: An additional eligibility criterion caps the maximum JU contribution requestable
+    specifically for high-TRL demonstration actions expected to leverage co-funding/private
+    investment, listed by topic code.
+  value: Maximum JU contribution per topic cap (high-TRL demonstration actions)
+  intake_field: ticketBand
+  quote: 'Therefore,
+
+    proposals requesting contributions above the amounts specified per each topic below
+
+    will not be evaluated'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.139
+  verified: llm_cited
+- id: g11
+  gate_family: G4_borrower_model
+  requirement: The type of action for HORIZON-JU-CLEANH2-2026-04-02 is an Innovation Action,
+    distinct from research/RIA funding mechanics.
+  value: Innovation Action
+  intake_field: borrowerModel
+  quote: Innovation Action
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.111
+  verified: llm_cited
+- id: g12
+  gate_family: G4_borrower_model
+  requirement: Technology Readiness Level activities for topic 04-02 must start at TRL 5 and
+    achieve TRL 7 by project end.
+  value: TRL 5 to TRL 7
+  intake_field: developmentStage
+  quote: 'Activities are expected to start at TRL 5 and achieve TRL 7 by the end of the
+
+    project - see General Annex B.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.111
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Activities are expected to start at TRL 5 and
+    achi'''
+- id: g13
+  gate_family: G4_borrower_model
+  requirement: Technology Readiness Level for Hydrogen Valley topics requires applications
+    to be at least TRL 6 at project start, targeting TRL 8 at project end.
+  value: TRL 6 start, TRL 8 target
+  intake_field: developmentStage
+  quote: 'The TRL of the applications in the project should be at least 6 at the beginning
+
+    of the project while the overall concept should target a TRL 8 at the end of the
+
+    project - see General Annex B.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.127
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The TRL of the applications in the project
+    should '''
+obligations:
+- requirement: Beneficiaries in topics involving standardisation activities must inform the
+    granting authority, up to 4 years after the end of the action, if the results could reasonably
+    be expected to contribute to European or international standards.
+  quote: 'Beneficiaries must, up to 4 years after the end of the action,
+
+    inform the granting authority if the results could reasonably be expected to contribute
+    to
+
+    European or international standards.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.142
+  verified: llm_cited
+- requirement: Beneficiaries under topic 03-03 must inform the granting authority up to 4
+    years after the action ends if results could contribute to European or international standards.
+  quote: 'Beneficiaries must, up to 4 years after the end of the action, inform the granting
+
+    authority if the results could reasonably be expected to contribute to European
+
+    or international standards.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.98
+  verified: llm_cited
+- requirement: Proposals must demonstrate contribution to EU competitiveness and industrial
+    leadership, including origin of equipment, components and infrastructure purchased/built,
+    which will be evaluated and monitored during project implementation.
+  quote: 'Proposals are expected to demonstrate the contribution to EU competitiveness and
+    industrial
+
+    leadership of the activities to be funded including but not limited to the origin of the
+    equipment
+
+    and components as well infrastructure purchased and built during the project. These aspects
+
+    will be evaluated and monitored during the project implementation.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.101
+  verified: llm_cited
+- requirement: Private members must submit an in-kind contribution for additional activities
+    (IKAA) report by 31 May each year as required by the SBA.
+  quote: 'The IKAA report
+
+    should be submitted by 31 of May (Article 11(2) of the SBA).'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.207
+  verified: llm_cited
+- requirement: Operating and equipment costs for running real-life tests on an existing site
+    to generate data for techno-economic analysis are not eligible costs.
+  quote: 'However,
+
+    operating and equipment costs for running these tests are not eligible.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.66
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/13 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Applicants may pursue synergies and cumulative funding with other EU, national or
+    regional programmes and financial instruments, provided this is reflected in a financing
+    structure and strategy in line with state-aid rules; this is expected for Hydrogen Valley
+    flagship projects.
+  quote: 'such synergies should be reflected in a financing structure and strategy describing
+    the
+
+    business model, including envisaged sources of co-
+
+    funding/co-financing and in line with state-aid rules.'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.162
+  verified: llm_cited
+application:
+  channel: Funding and Tenders Portal (Horizon Europe call submission)
+  typical_timeline: Not specified in extracted text
+  quote: 'This decision is available on the Funding and Tenders Portal, in the reference documents
+    section for
+
+    Horizon Europe, under ‘Simplified costs decisions’'
+  source:
+    file: chp_clean_hydrogen_awp2026.pdf
+    locator: chp_clean_hydrogen_awp2026.pdf#p.111
+  verified: llm_cited

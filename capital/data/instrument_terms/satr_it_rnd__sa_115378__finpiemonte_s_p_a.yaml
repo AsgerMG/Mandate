@@ -1,0 +1,49 @@
+id: satr_it_rnd__sa_115378__finpiemonte_s_p_a
+name: Bando SWIch - Supporto alle a\u0013vità di ricerca, sviluppo, innovazione e alle fasi di industrializzazione
+  dei rela\u001Bvi risulta\u001B funzionali alla accelerazione della messa in produzione e/o commercializzazione
+  - edizione 2024.
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sme-startup-piemonte
+  gate_family: G1_nexus
+  requirement: SMEs and innovative start-ups with an operational/production site in Piemonte may apply
+    directly.
+  value: SME/innovative start-up with Piemonte site
+  intake_field: entityCountries
+  quote: 'Sono soggetti beneficiari: PMI e start-up innovative con sede operativa/produttiva in Piemonte;'
+  source:
+    file: https://www.regione.piemonte.it/web/temi/fondi-progetti-europei/fondo-europeo-sviluppo-regionale-fesr/programma-regionale-fesr-2021-2027/bando-swich-edizione-2024-sostegno-alle-attivita-ricerca-sviluppo-alla-valorizzazione-economica
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-large-enterprise-needs-sme
+  gate_family: G1_nexus
+  requirement: Large enterprises with a site in Piemonte may participate exclusively in collaboration
+    with an SME.
+  value: 'Large enterprise: Piemonte site + must partner with an SME'
+  intake_field: consortium
+  quote: grandi imprese con sede operativa/produttiva in Piemonte, esclusivamente in collaborazione con
+    PMI;
+  source:
+    file: https://www.regione.piemonte.it/web/temi/fondi-progetti-europei/fondo-europeo-sviluppo-regionale-fesr/programma-regionale-fesr-2021-2027/bando-swich-edizione-2024-sostegno-alle-attivita-ricerca-sviluppo-alla-valorizzazione-economica
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-org-needs-enterprise
+  gate_family: G1_nexus
+  requirement: Research organisations may participate exclusively in collaboration with enterprises.
+  value: Research org must partner with an enterprise
+  intake_field: consortium
+  quote: organismi di ricerca esclusivamente in collaborazione con imprese;
+  source:
+    file: https://www.regione.piemonte.it/web/temi/fondi-progetti-europei/fondo-europeo-sviluppo-regionale-fesr/programma-regionale-fesr-2021-2027/bando-swich-edizione-2024-sostegno-alle-attivita-ricerca-sviluppo-alla-valorizzazione-economica
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

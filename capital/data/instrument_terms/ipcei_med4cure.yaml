@@ -1,0 +1,406 @@
+id: ipcei_med4cure
+name: ipcei_med4cure
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-participants
+  gate_family: G1_nexus
+  requirement: Only the listed direct participants established in the six participating Member
+    States (Slovakia, Hungary, France, Italy, Belgium, Spain) are eligible beneficiaries of
+    the notified aid measures under the IPCEI Med4Cure.
+  value: 14 direct participants from six Member States
+  intake_field: entityCountries
+  quote: 'This section briefly describes the 14 direct participants involved in the IPCEI
+
+    Med4Cure.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.20
+  verified: llm_cited
+- id: g1-nexus-application-timing
+  gate_family: G1_nexus
+  requirement: Applicants must have submitted their aid applications before the start of works
+    on their individual project.
+  value: Application must precede start of works
+  intake_field: foundedYear
+  quote: 'The participating Member States confirmed that all undertakings have submitted their
+    applications for
+
+    aid before the respective start of works of their individual projects.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.62
+  verified: llm_cited
+- id: g2-sme-status
+  gate_family: G2_size_ownership
+  requirement: Direct participants are categorised as SME or large undertaking, with the majority
+    (nine of fourteen) qualifying as SMEs, affecting claw-back and other conditions.
+  value: 9 of 14 direct participants are SMEs
+  intake_field: fteBand
+  quote: 'The majority (nine) of the direct participants qualify as SMEs, according
+
+    to the participating Member States.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.20
+  verified: llm_cited
+- id: g2-sme-turnover-threshold
+  gate_family: G2_size_ownership
+  requirement: SME status is defined with reference to the EUR 50 million annual turnover
+    threshold under the GBER SME definition.
+  value: SME turnover threshold EUR 50 million
+  intake_field: turnoverBand
+  quote: 'One of the conditions to qualify as an SME is that the undertaking’s annual turnover
+    must not exceed
+
+    EUR 50 million'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.102
+  verified: llm_cited
+- id: g2-economic-unit
+  gate_family: G2_size_ownership
+  requirement: Two direct participants forming one economic unit for State aid purposes are
+    treated jointly for eligibility and size assessment.
+  value: Two participants form one economic unit
+  intake_field: institutionalOwner
+  quote: 'Two of these direct participants may be considered to form one economic unit for
+    the purposes of
+
+    the application of State aid rules, and for this reason they are presented together
+
+    below'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.20
+  verified: llm_cited
+- id: g2-undertaking-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: Direct participants must not be undertakings in difficulty as defined in the
+    Rescue and Restructuring Guidelines.
+  value: Not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: 'the participating Member
+
+    States have further confirmed that the direct participants are not undertakings in
+
+    difficulty as defined in the Guidelines on State aid for rescuing and restructuring
+
+    non-financial undertakings in difficulty'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.62
+  verified: llm_cited
+- id: g3-eligible-costs-total
+  gate_family: G3_financial
+  requirement: Total eligible costs across the IPCEI Med4Cure are capped at EUR 3.05 billion,
+    defining the maximum aidable cost base.
+  value: EUR 3.05 billion total eligible costs
+  intake_field: cofinancingBand
+  quote: 'the total eligible costs (84) in the IPCEI
+
+    Med4Cure are EUR 3.05 billion.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.59
+  verified: llm_cited
+- id: g3-total-aid-nominal
+  gate_family: G3_financial
+  requirement: The overall notified State aid amount is capped at EUR 1.01 billion in nominal
+    terms across all direct participants.
+  value: EUR 1.01 billion nominal state aid
+  intake_field: cofinancingBand
+  quote: 'The overall notified State aid is thus EUR 1.01 billion in nominal terms and EUR
+
+    [700 – 800] million in discounted terms.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.62
+  verified: llm_cited
+- id: g3-aid-not-exceed-eligible-costs
+  gate_family: G3_financial
+  requirement: The nominal aid amount granted to each project must not exceed the eligible
+    costs of that project, and the maximum aid level is capped by the identified funding gap.
+  value: Aid capped by funding gap and eligible costs
+  intake_field: cofinancingBand
+  quote: 'the aid could
+
+    cover all of the eligible costs. However, the nominal aid amount shall not exceed the
+
+    eligible costs.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.60
+  verified: llm_cited
+- id: g3-claw-back-threshold
+  gate_family: G3_financial
+  requirement: The claw-back mechanism applies to individual projects where the notified/disbursed
+    nominal state aid amount per Member State is EUR 50 million or more.
+  value: Claw-back threshold EUR 50 million nominal aid
+  intake_field: cofinancingBand
+  quote: 'This claw-back mechanism applies to each project within the IPCEI Med4Cure for which
+
+    state aid in nominal terms of EUR 50 million or more (per Member State, or in case one
+
+    project of one aid beneficiary if it is conducted in multiple Member States) have been
+
+    approved by the Commission'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.111
+  verified: llm_cited
+- id: g4-aid-instrument
+  gate_family: G4_borrower_model
+  requirement: The aid to direct participants is disbursed exclusively in the form of direct
+    grants, not loans or equity.
+  value: Direct grant instrument only
+  intake_field: borrowerModel
+  quote: 'The aid to be granted by the participating Member States will take the form of direct
+
+    grants.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.62
+  verified: llm_cited
+- id: g4-claw-back-repayment
+  gate_family: G4_borrower_model
+  requirement: The grant mechanism includes a conditional repayment (claw-back) obligation
+    triggered if the project generates a surplus above the beneficiary's cost of capital.
+  value: Conditional claw-back repayment obligation
+  intake_field: borrowerModel
+  quote: 'the claw-back mechanism notified by the participating
+
+    Member States will apply only to those investments which reach, based on the ex
+
+    post cash flow results and of State aid disbursements, a rate of return exceeding the
+
+    beneficiaries’ cost of capital (specifically the beneficiaries’ WACC, see Annex II).'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.102
+  verified: llm_cited
+- id: g5-eligible-cost-categories
+  gate_family: G5_use_of_funds
+  requirement: Funded costs must fall within the categories (a)-(h) listed in the Annex on
+    eligible costs to the IPCEI Communication, covering only R&D&I and FID phase activities.
+  value: Eligible costs limited to Annex categories (a)-(h)
+  intake_field: developmentStage
+  quote: 'The Commission confirms that these costs fall within the categories listed in points
+    (a) to
+
+    (h) as set out in the Annex to the IPCEI Communication.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.96
+  verified: llm_cited
+- id: g5-fid-no-mass-production
+  gate_family: G5_use_of_funds
+  requirement: Funds may only be used for R&D&I and First Industrial Deployment (FID) activities
+    up to the point of stabilised mass production; mass production or commercial activities
+    are excluded from eligible costs.
+  value: Funds exclude mass production/commercial activities
+  intake_field: developmentStage
+  quote: 'the FID as described by the participating
+
+    Member States for the different aid beneficiaries does not cover mass production or
+
+    commercial activities.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.98
+  verified: llm_cited
+- id: g5-fid-innovation-requirement
+  gate_family: G5_use_of_funds
+  requirement: FID funding must relate to development of a new product/service with high R&D&I
+    content or deployment of a fundamentally innovative production process; regular upgrades
+    or newer versions of existing products do not qualify.
+  value: FID must be fundamentally innovative, not regular upgrades
+  intake_field: developmentStage
+  quote: 'projects comprising of FID
+
+    must allow for the development of a new product or service with high research and
+
+    innovation content or the deployment of a fundamentally innovative production
+
+    process. Regular upgrades without an innovative dimension of existing facilities and
+
+    the development of newer versions of existing products do not qualify as FID.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.85
+  verified: llm_cited
+- id: g5-eligibility-period
+  gate_family: G5_use_of_funds
+  requirement: Costs are only eligible if incurred within the defined eligibility period per
+    work stream, starting March 2022 and ending at the latest during specified FID phase quarters
+    up to 2036.
+  value: Eligibility period from March 2022 to Q1/Q4 2034-2036 depending on WS
+  intake_field: needBy
+  quote: 'Works in this WS
+
+    started in March 2022. The last eligible year during the
+
+    FID phase is Q1 2036, at the latest.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.62
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Works in this WS\nstarted in March 2022. The
+    last e'''
+- id: g6-no-breach-union-law
+  gate_family: G6_conditionality
+  requirement: Aid must not be granted where it, or conditions attached to it, would constitute
+    a non-severable violation of Union law, including requirements to headquarter in the granting
+    Member State, use national goods/services, or restrict use of results in other Member
+    States.
+  value: No violation of Union law as condition of aid
+  intake_field: conditionality
+  quote: 'aid under
+
+    the IPCEI Med4Cure will not be granted to the direct participants if it constitutes by
+    itself, by
+
+    virtue of the conditions attached to it or of its financing method, a non-severable
+
+    violation of Union law'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.63
+  verified: llm_cited
+- id: g6-suspension-unlawful-aid
+  gate_family: G6_conditionality
+  requirement: Granting of new aid is suspended to any beneficiary that still holds earlier
+    unlawful and incompatible aid until it has been reimbursed or paid into a blocked account.
+  value: Suspension until repayment of prior unlawful aid
+  intake_field: conditionality
+  quote: 'the participating Member States have furthermore committed to suspend the
+
+    granting of the notified aid if the beneficiary still has at its disposal earlier unlawful
+
+    aid that was declared incompatible by a Commission Decision'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.62
+  verified: llm_cited
+obligations:
+- requirement: Direct participants must prepare annual reports on the execution of their individual
+    projects, and the Facilitation Group must draft an annual report on the IPCEI as a whole,
+    submitted to the Commission.
+  quote: 'Annual reports will be prepared by the direct participants on the execution of their
+
+    individual projects.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.108
+  verified: llm_cited
+- requirement: The participating Member States must report annually to the Commission on the
+    implementation of the claw-back mechanism each year by the end of September until the
+    project's lifetime ends.
+  quote: 'The participating Member States are required to report to the Commission on the
+
+    implementation of the claw-back mechanism each year by the end of September until
+
+    the end of a project’s lifetime.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.64
+  verified: llm_cited
+- requirement: Direct participants must disseminate IP-protected results of their projects
+    on fair, reasonable and non-discriminatory (FRAND) terms.
+  quote: 'All direct participants will disseminate IP-protected
+
+    results of their individual projects under the IPCEI Med4Cure on fair, reasonable,
+
+    and non-discriminatory terms (“FRAND”).'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.55
+  verified: llm_cited
+- requirement: The participating Member States must publish the full text of the individual
+    aid granting decision and related information in the Commission's transparency award module
+    or a comprehensive State aid website, in line with the transparency requirements.
+  quote: 'the participating Member
+
+    States have committed to publish in the
+
+    Commission’s transparency award module or on a comprehensive State aid website,
+
+    at national or regional level, the full text of the individual aid granting decision and
+
+    its implementing provisions or a link to it, as well as all related information as
+
+    specified in point 48 of the IPCEI Communication'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.65
+  verified: llm_cited
+- requirement: Separate analytical accounting must be maintained by aid beneficiaries in the
+    relevant Member State for the purposes of the claw-back mechanism, based on ex post figures
+    approved annually by an independent auditor.
+  quote: 'The basis for the claw-back mechanism will be ex post figures, which have been subject
+    to annual
+
+    approval by an independent auditor. For this purpose, separate analytical accounting
+
+    will be required from the direct participants in the relevant Member State.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.62
+  verified: llm_cited
+- requirement: If a Repayment Obligation exists, the aid beneficiary must provide a guarantee
+    of repayment via a letter of credit, a claw-back bank account, or an equivalent instrument
+    accepted by the Member State and Commission.
+  quote: 'The following methods are available to the participating Member States to guarantee
+    the
+
+    fulfilment of the Repayment Obligation (should one exist): (1) a letter of credit renewed
+
+    every year, (2) a “Claw-back” account with regular transfers, or (3) an equivalent instrument
+
+    accepted by the respective Member State’s authorities and the Commission services.'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.113
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (17/18 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation of the notified aid with other aid, de minimis aid, or Union funding covering
+    the same eligible costs is permitted for most participating Member States (except Italy)
+    provided the combined public funding does not exceed the most favourable funding rate
+    under applicable Union law.
+  quote: 'most of the participating Member States have indicated that cumulation with
+
+    other aid, de minimis aid (89) or Union funding will be allowed to cover the same
+
+    eligible costs, provided that the total amount of public funding granted in relation to
+
+    the same eligible costs does not exceed the most favourable funding rate laid down in
+
+    the applicable rules of Union law, pursuant to point 35 of the IPCEI
+
+    Communication'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.63
+  verified: llm_cited
+application:
+  channel: National funding agreements concluded by participating Member States following
+    Commission approval; State aid is subject to prior Commission approval before any grant
+    can be made.
+  typical_timeline: Aid may only be granted after notification and Commission decision approving
+    the aid for execution of the IPCEI; national funding agreements are expected to be concluded
+    following the Commission's decision.
+  quote: 'The participating Member States submit that they shall not grant State aid to any
+    of
+
+    the direct participants before the notification of the Commission’s decision
+
+    approving the aid for the execution of the IPCEI Med4Cure'
+  source:
+    file: ipcei_med4cure_sa104974_decision_2024.pdf
+    locator: ipcei_med4cure_sa104974_decision_2024.pdf#p.66
+  verified: llm_cited

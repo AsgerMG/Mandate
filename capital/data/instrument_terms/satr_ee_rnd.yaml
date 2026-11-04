@@ -1,0 +1,332 @@
+id: satr_ee_rnd
+name: satr_ee_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-legal-form
+  gate_family: G1_nexus
+  requirement: Applicant must be a company registered in the Estonian Business Register.
+  value: Eesti äriregistrisse kantud äriühing
+  intake_field: entityCountries
+  quote: Toetuse taotlejaks võib olla Eesti äriregistrisse kantud äriühing.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 6, §14(1)
+  verified: llm_cited
+- id: g1-no-prior-activity-start
+  gate_family: G1_nexus
+  requirement: Applicant must not start project activities or commit to them before submitting
+    the application.
+  value: Not started before application submission
+  intake_field: developmentStage
+  quote: Taotleja ei tohi alustada projektiga seotud tegevusi ega võtta kohustusi nimetatud
+    tegevuste elluviimiseks enne taotluse esitamist Ettevõtluse ja Innovatsiooni Sihtasutusele.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 3, §8(4)
+  verified: llm_cited
+- id: g2-size-based-aid-rate
+  gate_family: G2_size_ownership
+  requirement: Applicant's SME/large enterprise size classification (per GBER Annex I) determines
+    the maximum aid intensity applicable.
+  value: small/medium/large enterprise per GBER Annex I
+  intake_field: fteBand
+  quote: keskmise suurusega ettevõtja on ettevõtja, kes vastab üldise grupierandi määruse
+    lisas I sätestatud kriteeriumitele
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 2, §4(4)
+  verified: llm_cited
+- id: g2-difficulty-exclusion
+  gate_family: G2_size_ownership
+  requirement: Support is not granted to an undertaking in difficulty within the meaning of
+    the regulation.
+  value: excluded if undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: käesoleva määruse tähenduses raskustes olevale ettevõtjale
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 2, §1(5)
+  verified: llm_cited
+- id: g2-no-insolvency
+  gate_family: G2_size_ownership
+  requirement: No liquidation, compulsory dissolution or bankruptcy proceedings may be initiated
+    against the applicant, partner, or the person exercising controlling influence over them.
+  value: No pending insolvency/bankruptcy proceedings
+  intake_field: institutionalOwner
+  quote: Taotleja ja partneri või tema üle valitsevat mõju omava isiku suhtes ei tohi olla
+    algatatud likvideerimis-, sundlõpetamis- või pankrotimenetlust ega tehtud pankrotiotsust.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 6, §14(5)
+  verified: llm_cited
+- id: g2-tax-debt
+  gate_family: G2_size_ownership
+  requirement: Applicant and partner's tax and payment debt including interest must not exceed
+    EUR 100, or its payment must be scheduled, and mandatory tax declarations and annual reports
+    must have been filed.
+  value: Tax debt ≤ EUR 100 or scheduled; declarations filed
+  intake_field: none
+  quote: Taotleja ja partneri maksu- ja maksevõlg koos intressidega ei tohi olla suurem kui
+    100 eurot või peab selle tasumine olema ajatatud.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 6, §14(3)
+  verified: llm_cited
+- id: g3-min-max-rnd
+  gate_family: G3_financial
+  requirement: Grant for applied research or product development projects ranges from a minimum
+    of EUR 100,000 to a maximum of EUR 2,000,000 per project.
+  value: EUR 100,000 - EUR 2,000,000
+  intake_field: ticketBand
+  quote: Rakendusuuringu või tootearenduse projekti läbiviimiseks taotletava toetuse minimaalne
+    summa on sada tuhat eurot ja maksimaalne summa on kaks miljonit eurot ühe projekti kohta.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 5, §10(1)
+  verified: llm_cited
+- id: g3-min-max-infra
+  gate_family: G3_financial
+  requirement: Grant for R&D infrastructure investment projects ranges from a minimum of EUR
+    100,000 to a maximum of EUR 5,000,000 per project.
+  value: EUR 100,000 - EUR 5,000,000
+  intake_field: ticketBand
+  quote: TA taristu investeeringute teostamise projekti läbiviimiseks taotletava toetuse minimaalne
+    summa on sada tuhat eurot ja maksimaalne summa on viis miljonit eurot ühe projekti kohta.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 5, §10(2)
+  verified: llm_cited
+- id: g3-aid-intensity-applied-research
+  gate_family: G3_financial
+  requirement: Maximum aid intensity for applied research projects is 70% of eligible costs
+    for small enterprises, 60% for medium, and 50% for large enterprises.
+  value: 70%/60%/50% depending on enterprise size
+  intake_field: turnoverBand
+  quote: 70 protsenti abikõlblikest kuludest väikeettevõtja korral; 2) 60 protsenti abikõlblikest
+    kuludest keskmise suurusega ettevõtja korral; 3) 50 protsenti abikõlblikest kuludest suurettevõtja
+    korral.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 5, §10(4)
+  verified: llm_cited
+- id: g3-aid-intensity-product-dev
+  gate_family: G3_financial
+  requirement: Maximum aid intensity for product development projects is 45% for small enterprises,
+    35% for medium, and 25% for large enterprises.
+  value: 45%/35%/25% depending on enterprise size
+  intake_field: turnoverBand
+  quote: 45 protsenti abikõlblikest kuludest väikeettevõtja korral; 2) 35 protsenti abikõlblikest
+    kuludest keskmise suurusega ettevõtja korral; 3) 25 protsenti abikõlblikest kuludest suurettevõtja
+    korral.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 5, §10(6)
+  verified: llm_cited
+- id: g3-cofinancing-requirement
+  gate_family: G3_financial
+  requirement: Applicant must provide co-financing that covers the portion of eligible costs
+    not covered by the grant, and the project budget must include the required co-financing.
+  value: Own-financing required to cover the gap
+  intake_field: cofinancingBand
+  quote: Omafinantseeringu määr peab katma abikõlblikest kuludest osa, mida toetus ei kata.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 5, §10(14)
+  verified: llm_cited
+- id: g3-min-cost-document
+  gate_family: G3_financial
+  requirement: Each cost document's eligible cost amount excluding VAT must be at least EUR
+    100.
+  value: Minimum EUR 100 per cost document (excl. VAT)
+  intake_field: none
+  quote: Kuludokumendi abikõlblike kulude summa peab olema ilma käibemaksuta vähemalt 100
+    eurot.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 4, §9(11)
+  verified: llm_cited
+- id: g4-grant-instrument
+  gate_family: G4_borrower_model
+  requirement: Support is provided as a non-repayable grant (state aid or de minimis aid),
+    paid based on actual costs or a flat rate for administrative costs.
+  value: Non-repayable grant / state aid or de minimis aid
+  intake_field: borrowerModel
+  quote: Toetust makstakse toetuse saajale vastavalt taotluse rahuldamise otsuses sätestatud
+    tingimustele tegelike kulude või omafinantseeringu ulatuses tasutud kuludokumentide alusel.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 11, §25(1)
+  verified: llm_cited
+- id: g5-eligible-activities
+  gate_family: G5_use_of_funds
+  requirement: Funds may be used for applied research, product development, related feasibility
+    studies, first IP protection filing related to those activities, R&D infrastructure investments
+    for enterprises, or IPCEI project implementation.
+  value: Applied research; product development; feasibility study; IP first protection; R&D
+    infrastructure; IPCEI
+  intake_field: none
+  quote: rakendusuuringu läbiviimine; 2) tootearenduse läbiviimine; 3) punktis 1 või 2 nimetatud
+    tegevusele teostatavusuuringu läbiviimine; 4) punktis 1 või 2 nimetatud tegevusega seotud
+    intellektuaalomandi esmakaitse taotlemine
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 3, §8(1)
+  verified: llm_cited
+- id: g5-eligible-costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs include travel, staff wages and related taxes, externally purchased
+    research/knowledge/patents, consulting services, equipment rental/acquisition, and materials/supplies
+    for applied research and product development activities.
+  value: Travel, wages, contracted research, equipment, materials
+  intake_field: none
+  quote: taotleja ja partneri projektiga seotud töötajate lähetuskulu vastavalt Vabariigi
+    Valitsuse 25. juuni 2009. a määruse nr 110
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 4, §9(2)
+  verified: llm_cited
+- id: g5-vat-ineligible
+  gate_family: G5_use_of_funds
+  requirement: Value added tax is not an eligible cost.
+  value: VAT excluded
+  intake_field: none
+  quote: Käibemaks on mitteabikõlblik kulu.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 5, §9(12)
+  verified: llm_cited
+- id: g5-related-party-exclusion
+  gate_family: G5_use_of_funds
+  requirement: Costs from transactions between related parties (as defined by the income tax
+    act) or between project partners are not eligible, unless unavoidable and not harmful
+    to other partners' interests.
+  value: Related-party transactions excluded (with narrow exception)
+  intake_field: none
+  quote: isikute vahel, kes on tulumaksuseaduse § 8 lõike 1 kohaselt seotud isikud, välja
+    arvatud, kui nimetatud tehingud on projekti eesmärkide saavutamiseks vältimatud ja ei
+    kahjusta teiste projekti partnerite huvisid
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 4-5, §9(10)
+  verified: llm_cited
+- id: g6-de-minimis-ceiling
+  gate_family: G6_conditionality
+  requirement: De minimis aid granted to the applicant and partner together with aid requested
+    under this regulation must not exceed the ceiling set in the De Minimis Regulation, with
+    cumulation rules applied and single undertaking definition used.
+  value: De minimis ceiling per EU regulation applies
+  intake_field: conditionality
+  quote: Taotlejale ja partnerile antud vähese tähtsusega abi koos käesoleva määruse raames
+    taotletava vähese tähtsusega abiga ei tohi ületada vähese tähtsusega abi määruse artikli
+    3 lõikes 2 sätestatud piirmäära
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 6, §14(6)
+  verified: llm_cited
+- id: g6-repayment-obligation
+  gate_family: G6_conditionality
+  requirement: If a previously received grant subject to repayment has a due repayment obligation,
+    it must have been paid before a new grant decision can be made.
+  value: Prior repayable amounts due must be settled
+  intake_field: conditionality
+  quote: Kui taotleja või partner on varem saanud toetust, mis on kuulunud tagasimaksmisele,
+    peavad tagasimaksed, mille maksmise tähtpäev on saabunud, olema nõutud summas tasutud.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 6, §14(4)
+  verified: llm_cited
+obligations:
+- requirement: Beneficiary must implement the project and use the support strictly according
+    to the application and the funding decision.
+  quote: viima projekti ellu, tagama selle juhtimise ja kasutama toetust vastavalt taotluses
+    toodud teabele ning taotluse rahuldamise otsuses sätestatule
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 11, §26(2)(1)
+  verified: llm_cited
+- requirement: Beneficiary must keep project accounting separately distinguishable from other
+    financial documents.
+  quote: tagama, et raamatupidamises on toetatava projekti kulud ja neid kajastavad kulu-
+    ja maksedokumendid muudest toetuse saaja kulu- ja maksedokumentidest selgelt eristatavad
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 11, §26(2)(3)
+  verified: llm_cited
+- requirement: Beneficiary must submit interim and final reports on project implementation
+    per the funding decision schedule.
+  quote: 'Toetuse saaja esitab järgmised aruanded: 1) vahearuanne; 2) lõpparuanne.'
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 10, §24(1)
+  verified: llm_cited
+- requirement: Beneficiary must retain all documentation related to the application, support,
+    and project for at least ten years from the date of the funding decision.
+  quote: säilitama taotluse, toetuse ja projekti teostamisega seonduvat dokumentatsiooni vähemalt
+    kümme aastat alates taotluse rahuldamise otsuse tegemisest
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 11, §26(2)(11)
+  verified: llm_cited
+- requirement: Beneficiary must allow supervisory access to premises and territories used
+    for project implementation and assist audits.
+  quote: võimaldama järelevalvet teostavale isikule juurdepääsu projekti teostamisega seotud
+    ruumidesse ja territooriumidele, mida toetuse saaja kasutab
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 11, §26(2)(7)
+  verified: llm_cited
+- requirement: Beneficiary must notify the granting authority in writing of changes to controlling
+    shareholders/owners or governing body members.
+  quote: teavitama Ettevõtluse ja Innovatsiooni Sihtasutust kirjalikult, kui muutub toetuse
+    saaja oluliste otsuste tegemise õigust omav osanik või aktsionär või juhtorgani liige,
+    seda ka juhul, kui muudatused nähtuvad äriregistrist
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 11, §26(2)(5)
+  verified: llm_cited
+- requirement: Beneficiary must repay the granted support in full or in part if the funding
+    decision is annulled.
+  quote: Toetuse saajal tuleb saadud toetus taotluse rahuldamise otsuse osaliselt või täielikult
+    kehtetuks tunnistamise otsuse kohaselt tagastada.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 10, §22(11)
+  verified: llm_cited
+- requirement: Beneficiary must repay the reclaimed amount within 60 calendar days of the
+    recovery decision taking effect, with default interest of 0.1% per day for late repayment.
+  quote: Toetuse saaja peab maksma tagasi tagasinõude otsuses nimetatud summa 60 kalendripäeva
+    jooksul otsuse kehtima hakkamise päevast arvates.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 12, §28(2)
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (19/19 gates, 8/8 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: State aid or de minimis aid received for the same activity from other public sources,
+    together with aid already granted under this regulation, is deducted from newly granted
+    support; de minimis aid cumulation follows the EU De Minimis Regulation's rules and ceiling,
+    treating related entities as a single undertaking.
+  quote: eraldatud toetusest arvestatakse maha samale tegevusele käesoleva määruse alusel
+    varasemalt saadud ning teistest avaliku sektori allikatest saadav riigiabi.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 10, §22 intro
+  verified: llm_cited
+application:
+  channel: Applications are submitted to Ettevõtluse ja Innovatsiooni Sihtasutus (Enterprise
+    Estonia / EIS) via the e-toetuse structural aid register environment, either on a rolling
+    basis or via calls (voorupõhine).
+  typical_timeline: Rolling applications processed within 40 working days of registration;
+    call-based applications processed within 60 working days of call closure, extendable by
+    up to 10 working days for justified reasons.
+  quote: Jooksva taotlemise korral 40 tööpäeva taotluse registreerimisest arvates; 2) voorulise
+    taotlemise korral 60 tööpäeva taotlusvooru sulgumisest arvates.
+  source:
+    file: satr_ee_rnd_riigiteataja_maarus_wayback.html
+    locator: chunk 7, §16(3)
+  verified: llm_cited

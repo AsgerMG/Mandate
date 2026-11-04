@@ -1,0 +1,76 @@
+id: nfr_inno
+name: nfr_inno
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-registered-foretaksregisteret
+  gate_family: G1_nexus
+  requirement: Applicant must be a company registered in the Norwegian Central Coordinating
+    Register for Legal Entities (Foretaksregisteret) with economic activity in Norway.
+  value: Registered in Norwegian foretaksregister with economic activity in Norway
+  intake_field: entityCountries
+  quote: Bedrifter som er registrert i det norske foretaksregisteret og som har økonomisk
+    aktivitet i Norge, kan søke.
+  source:
+    file: nfr_inno_innovasjonsprosjekt_naeringslivet_overview.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g1-public-enterprises
+  gate_family: G1_nexus
+  requirement: Public enterprises conducting industrial or commercial activity may also apply
+    as the applicant.
+  value: Public enterprises with industrial/commercial activity eligible
+  intake_field: borrowerModel
+  quote: Offentlige foretak som driver virksomhet av industriell eller forretningsmessig karakter,
+    kan også stå som søker.
+  source:
+    file: nfr_inno_innovasjonsprosjekt_naeringslivet_overview.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g1-sole-proprietorships-excluded
+  gate_family: G1_nexus
+  requirement: Sole proprietorships (enkeltpersonforetak) are not eligible to apply.
+  value: Sole proprietorships excluded
+  intake_field: borrowerModel
+  quote: Enkeltpersonforetak og forskningsorganisasjoner kan ikke søke.
+  source:
+    file: nfr_inno_innovasjonsprosjekt_naeringslivet_overview.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g1-research-organisations-excluded
+  gate_family: G1_nexus
+  requirement: Research organisations are not eligible to apply as the applicant.
+  value: Research organisations excluded
+  intake_field: borrowerModel
+  quote: Enkeltpersonforetak og forskningsorganisasjoner kan ikke søke.
+  source:
+    file: nfr_inno_innovasjonsprosjekt_naeringslivet_overview.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g6-skattefunn-sequencing
+  gate_family: G6_conditionality
+  requirement: Applicants wishing to apply for both Innovasjonsprosjekt i næringslivet and
+    SkatteFUNN tax credit support must submit the Innovasjonsprosjekt application before applying
+    for SkatteFUNN.
+  value: Innovasjonsprosjekt application must precede SkatteFUNN application
+  intake_field: conditionality
+  quote: Du kan søke både Innovasjonsprosjekt i næringslivet og SkatteFUNN, men da må du sende
+    søknad til Innovasjonsprosjekt i næringslivet før du søker SkatteFUNN-støtte.
+  source:
+    file: nfr_inno_innovasjonsprosjekt_naeringslivet_overview.html
+    locator: '#chunk 1'
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (5/5 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Application submitted per annual calls (utlysninger) via Forskningsrådet
+  typical_timeline: Deadlines set by the annual calls
+  quote: Fristen eller fristene kommer frem av de årlige utlysningene.
+  source:
+    file: nfr_inno_innovasjonsprosjekt_naeringslivet_overview.html
+    locator: '#chunk 1'
+  verified: llm_cited

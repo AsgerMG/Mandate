@@ -1,0 +1,307 @@
+id: satr_be_equity
+name: satr_be_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-flanders-nexus
+  gate_family: G1_nexus
+  requirement: Applicant must be a Belgian independent producer (per the Flemish Media Decree)
+    applying for spending on audiovisual works within the Flemish Region; foreign producers
+    must partner with a Belgian co-producer meeting all selection conditions.
+  value: Belgian independent producer or foreign producer via Belgian co-producer
+  intake_field: entityCountries
+  quote: Belgische onafhankelijke producenten (cfr. Vlaams Mediadecreet ) kunnen via Screen
+    Flanders tot 400.000 euro terugbetaalbare voorschotten aanvragen als economische ondersteuning
+    voor hun audiovisuele uitgaven binnen het Vlaamse Gewest. Buitenlandse producenten die
+    een aanvraag bij Screen Flanders wensen in te dienen, kunnen hiervoor een beroep doen
+    op een Belgische coproducent, die aan alle selectievoorwaarden voldoet.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g1-wallimage-nexus
+  gate_family: G1_nexus
+  requirement: Applicant company must be established in Wallonia, or plan to establish itself
+    there shortly, to submit a financing application to Wallimage Entreprises.
+  value: Established in Wallonia or planning to be
+  intake_field: entityCountries
+  quote: être installés en Wallonie (ou avoir le projet de vous y installer sous peu)
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_wallimage_entreprises.html#chunk 1
+  verified: llm_cited
+- id: g5-flanders-eligible-projects
+  gate_family: G5_use_of_funds
+  requirement: The audiovisual work must be a feature film or series (fiction, documentary
+    or animation) of at least 60 minutes, with series having at least three episodes; soaps,
+    telenovelas, sitcoms, webseries and experimental series are excluded.
+  value: Feature films/series ≥60 min, ≥3 episodes; excludes soaps, telenovelas, sitcoms,
+    webseries, experimental series
+  intake_field: none
+  quote: Het audiovisuele werk moet minstens 60 minuten bedragen en series moeten uit minstens
+    drie afleveringen bestaan. Zowel fictie- als documentaireseries moeten een doorlopend
+    verhaal brengen. Majoritair Belgische fictieseries komen slechts in bepaalde gevallen
+    in aanmerking. Voor soaps, telenovelles, sitcoms, webseries en experimentele series kan
+    je geen Screen Flanders-steun aanvragen.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g5-flanders-eligible-expenses
+  gate_family: G5_use_of_funds
+  requirement: Eligible expenses must be audiovisual expenses aimed at completing the intended
+    audiovisual work, invoiced by a VAT-liable company with registered office and operational
+    establishment with demonstrable continuous activity in the Flemish Region, paid there,
+    invoiced and paid within the spending period, invoiced directly to the applicant, structuring
+    for the Flemish audiovisual sector, and realistic and market-conform in price.
+  value: Audiovisual completion expenses meeting Flemish-establishment, timing, direct-invoicing,
+    structuring and market-price conditions
+  intake_field: none
+  quote: gefactureerd worden vanuit een btw-plichtige onderneming met maatschappelijke zetel
+    en operationele exploitatiezetel met aantoonbare en continue activiteit in het Vlaamse
+    Gewest en betaald worden in het Vlaamse Gewest
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g3-flanders-cofinancing
+  gate_family: G3_financial
+  requirement: At the time of application, at least 50% of the total financing for the project
+    must already be available.
+  value: ≥50% of total project financing secured at application time
+  intake_field: cofinancingBand
+  quote: op het moment van de aanvraag is reeds 50% van de totale financiering voor het project
+    beschikbaar
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g3-flanders-min-spend
+  gate_family: G3_financial
+  requirement: The project must realize at least €250,000 (excluding VAT) of eligible audiovisual
+    expenses in the Flemish Region.
+  value: Minimum €250,000 excl. VAT eligible spend in Flemish Region
+  intake_field: turnoverBand
+  quote: jouw project zal minimaal 250.000 euro (exclusief btw) aan in aanmerking komende
+    audiovisuele uitgaven realiseren in het Vlaamse Gewest
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g6-flanders-application-timing
+  gate_family: G6_conditionality
+  requirement: The application must be submitted before the first day of shooting or animation.
+  value: Application before first shooting/animation day
+  intake_field: none
+  quote: de aanvraag is ingediend vóór de eerste opnamedag / eerste animatiedag
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g6-flanders-resubmission-limit
+  gate_family: G6_conditionality
+  requirement: The project may have been submitted a maximum of one prior time, and must not
+    have received support on that previous submission.
+  value: Max one prior submission without prior award
+  intake_field: none
+  quote: jouw project is al maximaal één keer ingediend en kreeg bij de vorige indiening geen
+    steun
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g6-flanders-cultural-test
+  gate_family: G6_conditionality
+  requirement: The project must meet at least three (for animation) or four (for fiction and
+    documentary) of the cultural conditions within the cultural test.
+  value: Minimum cultural test score (3 for animation, 4 for fiction/documentary)
+  intake_field: none
+  quote: jouw project voldoet minstens aan drie (voor animatie) of aan vier (voor fictie en
+    documentaire) van de culturele voorwaarden, opgenomen binnen de culturele toets (zie Screen
+    Flanders handleiding)
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g3-flanders-aid-intensity
+  gate_family: G3_financial
+  requirement: 'The state aid percentage must not exceed the maximum allowed threshold: total
+    state aid is capped at 50% of the total production budget, rising to 60% for co-productions
+    financed by more than one EU member state involving producers from more than one member
+    state, and to 75% for difficult audiovisual works.'
+  value: Aid intensity cap 50% (60% multi-state coproduction, 75% difficult works)
+  intake_field: none
+  quote: De totale staatssteun bedraagt maximum 50% van het totale productiebudget van het
+    project. Dit percentage wordt verhoogd tot 60% voor coproducties die door meer dan één
+    lidstaat van de EU worden gefinancierd en waarbij producenten uit meer dan één lidstaat
+    betrokken zijn en tot 75% wanneer het om een moeilijk audiovisueel werk gaat
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- id: g6-flanders-not-firm-in-difficulty
+  gate_family: G6_conditionality
+  requirement: On the date of submission the applicant must not be an undertaking in difficulty
+    (UiD) and must have no pending procedure requiring repayment of previously granted aid.
+  value: Not an undertaking in difficulty; no pending recovery procedure
+  intake_field: lossesOverHalfCapital
+  quote: op de indieningsdatum van jouw steunaanvraag ben jij als steunaanvrager geen onderneming
+    in moeilijkheden (OIM) en heb je geen procedure lopen waarbij een toegekende steun wordt
+    teruggevorderd
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''op de indieningsdatum van jouw steunaanvraag
+    ben j'''
+- id: g6-flanders-complete-application
+  gate_family: G6_conditionality
+  requirement: The online application and project budget must be fully and correctly completed
+    and submitted before the deadline.
+  value: Complete, correct online application submitted before deadline
+  intake_field: needBy
+  quote: de online aanvraag en projectbegroting zijn volledig en correct ingevuld en de aanvraag
+    is voor het verstrijken van de deadline ingediend
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 2
+  verified: llm_cited
+- id: g3-flanders-min-spend-ratio
+  gate_family: G3_financial
+  requirement: The minimum spending obligation in the Flemish Region amounts to 100% of the
+    granted aid.
+  value: Minimum spend obligation = 100% of granted aid, in Flemish Region
+  intake_field: none
+  quote: De minimale uitgavenverplichting in het Vlaamse Gewest bedraagt 100% van de toegekende
+    steun.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 2
+  verified: llm_cited
+- id: g4-flanders-repayable-advance
+  gate_family: G4_borrower_model
+  requirement: Screen Flanders grants support in the form of repayable advances on net receipts,
+    with a pro-rata recoupment percentage owed from the first euro of net receipts, pari passu
+    and pari rank with other financiers.
+  value: Repayable advance on net receipts with pro-rata recoupment, first-rank pari passu
+  intake_field: borrowerModel
+  quote: Screen Flanders kent de steun toe in de vorm van terugbetaalbare voorschotten op
+    netto-ontvangsten. Van deze netto-ontvangsten dien je een pro rata recoupmentpercentage
+    terug te betalen.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 2
+  verified: llm_cited
+- id: g3-flanders-ticket
+  gate_family: G3_financial
+  requirement: Per project, up to €400,000 in support can be requested.
+  value: Up to €400,000 per project
+  intake_field: ticketBand
+  quote: Per project kan je tot 400.000 euro steun aanvragen.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 2
+  verified: llm_cited
+- id: g4-wallimage-model
+  gate_family: G4_borrower_model
+  requirement: Wallimage Entreprises invests as shareholder and/or lender (chirographic or
+    convertible loans), covering a maximum of 50% of identified needs and on the same terms
+    as private partners.
+  value: Equity and/or loan (chirographic or convertible), max 50% of needs, pari passu with
+    private partners
+  intake_field: borrowerModel
+  quote: Wallimage couvre maximum 50% des besoins identifiés et intervient aux mêmes conditions
+    que les partenaires privés.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_wallimage_entreprises.html#chunk 1
+  verified: llm_cited
+- id: g1-wallimage-sector
+  gate_family: G1_nexus
+  requirement: Wallimage Entreprises finances companies in the broad audiovisual sector, including
+    gaming (film services, animation/effects/post-production studios, equipment rental, innovative
+    content production, TV production houses, video game studios, creative digital agencies
+    with audiovisual dimension, and Musictech companies).
+  value: Audiovisual and gaming sector companies (specific sub-sectors listed)
+  intake_field: none
+  quote: 'Sociétés de services cinématographiques : studios son, studios d’animation, studios
+    d’effets spéciaux, sociétés de post-production image et/ou son, sociétés de location de
+    matériel cinématographique (caméras, lumière, loges, …)'
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_wallimage_entreprises.html#chunk 1
+  verified: llm_cited
+- id: g5-wallimage-use-of-funds
+  gate_family: G5_use_of_funds
+  requirement: Wallimage finances company needs linked to creation or development, whether
+    related to investments or working capital.
+  value: Investment or working capital, for creation or growth phase
+  intake_field: developmentStage
+  quote: Wallimage finance les besoins de votre entreprise, qu’ils soient liés à sa création,
+    son développement et qu’ils concernent des investissements ou du fonds de roulement.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_wallimage_entreprises.html#chunk 1
+  verified: llm_cited
+- id: g4-wallimage-application-requirements
+  gate_family: G4_borrower_model
+  requirement: To file a request, the applicant must propose an activity aligned with the
+    targeted market, present a coherent business model with tangible profitability potential,
+    and present a coherent, professional team.
+  value: Market-aligned activity, coherent profitable business model, coherent professional
+    team
+  intake_field: borrowerModel
+  quote: proposer une activité en phase avec le marché visé
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_wallimage_entreprises.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Expenses proven for VAF support are not eligible for subsidy under Screen Flanders;
+    expenses proven under the Belgian Federal Tax Shelter are eligible insofar as they qualify
+    for Screen Flanders.
+  quote: Uitgaven die bewezen moeten worden voor VAF-steun zijn niet subsidieerbaar. Uitgaven
+    die moeten bewezen worden in het kader van de Belgische Federale Tax Shelter wel, voor
+    zover ze in aanmerking komen voor Screen Flanders.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+- requirement: Eligible expenses must be exclusive of VAT and must not be invoiced before
+    the date of submission of the aid application; invoices must be established according
+    to legal provisions and be sufficiently detailed.
+  quote: In aanmerking komende uitgaven zijn exclusief btw en mogen niet gefactureerd zijn
+    vóór de datum van indiening van de steunaanvraag. We aanvaarden de uitgaven enkel op basis
+    van facturen die zijn opgesteld volgens de wettelijke bepalingen en voldoende gedetailleerd
+    zijn.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (18/19 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: State aid intensity is capped relative to total production budget, with higher thresholds
+    allowed for multi-state co-productions and difficult audiovisual works, implying interaction
+    with cumulation of aid sources such as the Tax Shelter.
+  quote: het staatssteunpercentage overschrijdt de maximaal toegelaten drempel niet. De totale
+    staatssteun bedraagt maximum 50% van het totale productiebudget van het project.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Online application submitted during a specific call (oproep) with fixed deadlines,
+    assessed by a jury of economic and cultural experts on a competitive, ranked basis until
+    budget is exhausted; Wallimage requires direct contact for financing requests.
+  typical_timeline: 'Two calls per year (deadlines in March and September for Screen Flanders);
+    Oproep 1: 06-03-2026, Oproep 2: 04-09-2026'
+  quote: Screen Flanders heeft twee oproepen per jaar met deadlines in maart en september.
+    Elke oproep beschikt over een specifieke budgetenveloppe.
+  source:
+    file: be_screenflanders_criteria.html
+    locator: be_screenflanders_criteria.html#chunk 2
+  verified: llm_cited

@@ -1,0 +1,122 @@
+RED PROOF — the denominator and the menu, reverted to their pre-fix form
+
+Edits applied to lib/intelligence/agentSelect.ts for this run only:
+  truncated/apiCalls -> truncated/calls        (the wsGS defect)
+  thoughtOn/apiCalls -> thoughtOn/calls        (the wsGS defect)
+  removed 'menu=${menu} rows' from the line    (the wsHI defect)
+
+
+ RUN  v4.1.10 /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsHI-tokens/website/frontend
+
+ ❯ lib/intelligence/tallyDenominator.test.ts (6 tests | 5 failed) 334ms
+     × reports per API CALL, not per founder, when one founder costs two calls 295ms
+     × reports a clean run as zero over the calls it actually made 5ms
+     × puts every per-call counter over the same denominator 9ms
+     × states the rows actually shown, not the depth lever 7ms
+     × reports a range when the menu varies between founders 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  lib/intelligence/tallyDenominator.test.ts > the truncation counter's denominator > reports per API CALL, not per founder, when one founder costs two calls
+AssertionError: expected { n: 1, of: 1 } to deeply equal { n: 1, of: 2 }
+
+- Expected
++ Received
+
+  {
+    "n": 1,
+-   "of": 2,
++   "of": 1,
+  }
+
+ ❯ lib/intelligence/tallyDenominator.test.ts:134:26
+    132|     // hundred per cent — and an arm that fires the seam twice for one…
+    133|     // would report a truncation rate double its real one.
+    134|     expect(cutOff(line)).toEqual({ n: 1, of: 2 });
+       |                          ^
+    135|     expect(line).not.toContain("1/1 CUT OFF");
+    136|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  lib/intelligence/tallyDenominator.test.ts > the truncation counter's denominator > reports a clean run as zero over the calls it actually made
+AssertionError: expected { n: +0, of: 2 } to deeply equal { n: +0, of: 3 }
+
+- Expected
++ Received
+
+  {
+    "n": 0,
+-   "of": 3,
++   "of": 2,
+  }
+
+ ❯ lib/intelligence/tallyDenominator.test.ts:163:26
+    161|     const line = m.agentSelectTallyLine();
+    162|
+    163|     expect(cutOff(line)).toEqual({ n: 0, of: 3 });
+       |                          ^
+    164|     expect(line).toContain("3 API call(s) over 2 brief(s)");
+    165|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  lib/intelligence/tallyDenominator.test.ts > the truncation counter's denominator > puts every per-call counter over the same denominator
+AssertionError: expected Set{ '2', '1' } to deeply equal Set{ '2' }
+
+- Expected
++ Received
+
+  Set {
++   "1",
+    "2",
+  }
+
+ ❯ lib/intelligence/tallyDenominator.test.ts:182:26
+    180|     const denominators = new Set(ratios.map((r) => r[2]));
+    181|     expect(ratios.length).toBeGreaterThanOrEqual(2);
+    182|     expect(denominators).toEqual(new Set(["2"]));
+       |                          ^
+    183|     // …and none of them may exceed it, which is the shape of the impo…
+    184|     // `thought on 210/148` the old line printed.
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  lib/intelligence/tallyDenominator.test.ts > the menu the line reports > states the rows actually shown, not the depth lever
+AssertionError: expected 'agent-select: arm=adviser depth=40 co…' to contain 'menu=12 rows'
+
+Expected: "menu=12 rows"
+Received: "agent-select: arm=adviser depth=40 count=7 effort=medium maxtok=34816 unsure=declare lookups=0 (0 brief(s) retrieved) model=claude-sonnet-5 — 1/1 chose, 0 FELL BACK to the shipped order (0 empty reply, 0 unparseable), 0 short reply, 0 unusable id(s), 0 seat(s) on a row already picked under the SAME TITLE (a floor) across 0 brief(s), 0 SELECT-rule violation(s) on 0 reply(ies), 1 API call(s) over 1 brief(s), thought on 1/1 API call(s) (5 thinking token(s) billed, 0 readable char(s)), 0/1 CUT OFF at max_tokens, slowest call 0ms of 150000ms (0.0% of the clock), EUR 0.0169 total, EUR 0.0169 per brief"
+
+ ❯ lib/intelligence/tallyDenominator.test.ts:200:18
+    198|     // The exact confusion that resized a ceiling on the wrong evidenc…
+    199|     // lever says 40, the model saw 12, and only one of those is a mea…
+    200|     expect(line).toContain("menu=12 rows");
+       |                  ^
+    201|     expect(line).toContain("depth=40");
+    202|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  lib/intelligence/tallyDenominator.test.ts > the menu the line reports > reports a range when the menu varies between founders
+AssertionError: expected 'agent-select: arm=adviser depth=40 co…' to contain 'menu=9-12 rows'
+
+Expected: "menu=9-12 rows"
+Received: "agent-select: arm=adviser depth=40 count=7 effort=medium maxtok=34816 unsure=declare lookups=0 (0 brief(s) retrieved) model=claude-sonnet-5 — 2/2 chose, 0 FELL BACK to the shipped order (0 empty reply, 0 unparseable), 0 short reply, 0 unusable id(s), 0 seat(s) on a row already picked under the SAME TITLE (a floor) across 0 brief(s), 0 SELECT-rule violation(s) on 0 reply(ies), 2 API call(s) over 2 brief(s), thought on 2/2 API call(s) (10 thinking token(s) billed, 0 readable char(s)), 0/2 CUT OFF at max_tokens, slowest call 0ms of 150000ms (0.0% of the clock), EUR 0.0339 total, EUR 0.0169 per brief"
+
+ ❯ lib/intelligence/tallyDenominator.test.ts:214:38
+    212|     // The MAX is what a ceiling has to survive, so both ends are prin…
+    213|     // the guard reads the upper one.
+    214|     expect(m.agentSelectTallyLine()).toContain("menu=9-12 rows");
+       |                                      ^
+    215|   });
+    216| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 1 passed (6)
+   Start at  23:03:17
+   Duration  515ms (transform 263ms, setup 0ms, import 37ms, tests 334ms, environment 0ms)
+

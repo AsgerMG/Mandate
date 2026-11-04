@@ -1,0 +1,49 @@
+id: satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie
+name: Förderbekanntmachung zur angewandten Energieforschung im Rahmen des 8. Energieforschungsprogramms
+  [BMWK IIB5]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Eligible applicants are commercial enterprises and members of the liberal professions (in
+    particular lawyers, engineers, architects) with an establishment in Germany.
+  value: Commercial enterprises and liberal professions with German establishment
+  intake_field: entityCountries
+  quote: Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft sowie Angehörige der Freien Berufe
+    (insbesondere Rechtsanwälte, Ingenieure, Architekten) mit einer Betriebsstätte oder Niederlassung
+    in Deutschland.
+  source:
+    file: https://www.bundesanzeiger.de/pub/publication/3a7Fi1a1avaemMlUmpS/content/3a7Fi1a1avaemMlUmpS/BAnz%20AT%2031.05.2024%20B1.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-also-eligible-research
+  gate_family: G1_nexus
+  requirement: Universities and research institutions per Article 2(83) GBER, associations with R&D capacity
+    in Germany, and public authorities/administrative bodies are also eligible applicants.
+  value: 'Also eligible: universities, research institutions, associations with R&D capacity, public authorities'
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind auch Hochschulen und Forschungseinrichtungen gemäß Artikel 2 Nummer 83
+    AGVO, Vereine mit Forschungs- und Entwicklungskapazitäten in Deutschland sowie Gebietskörperschaften
+    und Einrichtungen der öffentlichen Verwaltung.
+  source:
+    file: https://www.bundesanzeiger.de/pub/publication/3a7Fi1a1avaemMlUmpS/content/3a7Fi1a1avaemMlUmpS/BAnz%20AT%2031.05.2024%20B1.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-first-use-territory
+  gate_family: G6_conditionality
+  requirement: The first use of results from funded projects may only take place in Germany, the European
+    Economic Area, or Switzerland.
+  value: First use of project results restricted to Germany/EEA/Switzerland
+  intake_field: activityCountries
+  quote: Die Erstnutzung von Ergebnissen der geförderten Projekte darf nur in Deutschland oder im Europäischen
+    Wirtschaftsraum (EWR) und der Schweiz erfolgen.
+  source:
+    file: https://www.bundesanzeiger.de/pub/publication/3a7Fi1a1avaemMlUmpS/content/3a7Fi1a1avaemMlUmpS/BAnz%20AT%2031.05.2024%20B1.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation

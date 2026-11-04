@@ -1,0 +1,314 @@
+id: chips_ju_kdt_unknown
+name: chips_ju_kdt_unknown
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: 'Applicant must be a legal entity registered/established in the relevant Participating
+    State to receive national co-funding (e.g. Norway: registered commercial enterprise in
+    Norway; Poland: organization must be registered in Poland; Sweden: registered as Aktiebolag
+    with permanent establishment in Sweden; Denmark: registered in the Central Business Register
+    CVR).'
+  value: Registration/establishment in the Participating State required
+  intake_field: entityCountries
+  quote: 'Norwegian companies: Commercial enterprises registered in Norway (The Register of
+    Business Enterprises).'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.112
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Poland requires organisation to be registered in Poland to be eligible to apply.
+  value: Organization must be registered in Poland
+  intake_field: entityCountries
+  quote: Organization must be registered in Poland.
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.115
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Slovak Republic requires participants (Large Enterprise, SME, University, Research
+    institutes) to be registered in the Slovak Republic.
+  value: Registered in Slovak Republic
+  intake_field: entityCountries
+  quote: Large Enterprise, SME, University, Research institutes registered in the Slovak Republic
+    are eligible.
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.119
+  verified: llm_cited
+- id: G1-04
+  gate_family: G1_nexus
+  requirement: Spain requires minimum Spanish participation share of the national consortium
+    in eligible costs.
+  value: Minimum 5% Spanish participation share of eligible costs
+  intake_field: entityCountries
+  quote: Minimum share of the Spanish consortium 5% in terms of eligible costs.
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.124
+  verified: llm_cited
+- id: G1-05
+  gate_family: G1_nexus
+  requirement: Norway requires at least one Norwegian company partner and a minimum share
+    of Norwegian partner effort to come from business partners.
+  value: At least 1 Norwegian company; ≥50% of Norwegian eligible costs from business partners
+  intake_field: consortium
+  quote: At least one Norwegian company must be involved as a partner in the project, and
+    at least 50 % of the efforts (eligible costs) of Norwegian partners in the project must
+    be from business partners.
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.112
+  verified: llm_cited
+- id: G1-06
+  gate_family: G1_nexus
+  requirement: Denmark requires at least one Danish company partner and a minimum share of
+    Danish partner effort to come from Danish business partners.
+  value: At least 1 Danish company; ≥50% of Danish eligible costs from Danish business partners
+  intake_field: consortium
+  quote: At least one Danish company must be involved as a partner in the project, and at
+    least 50 % of the efforts (total eligible costs) of Danish partners in the project must
+    be from Danish business partners.
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.73
+  verified: llm_cited
+- id: G1-07
+  gate_family: G1_nexus
+  requirement: Czech Republic requires the Czech fraction of the consortium to include at
+    least one enterprise and at least one research organisation (Public-Private-Partnership
+    principle).
+  value: At least 1 enterprise + 1 research organisation among Czech partners
+  intake_field: consortium
+  quote: 'The Czech fraction of a KDT project consortium must be configured from at least
+
+    one enterprise and at least one research organisation, both these entities fulfilling
+    the
+
+    requirements stipulated in the clause 1 “Type or nature of participants”, thus complying
+
+    with the Public-Private-Partnership principle.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.70
+  verified: llm_cited
+- id: G1-08
+  gate_family: G1_nexus
+  requirement: Spain (AEI) requires Spanish non-profit research organizations to participate
+    in consortia with at least one Spanish profit organization partner funded by MINAETD.
+  value: At least 1 Spanish for-profit partner alongside non-profit research org
+  intake_field: consortium
+  quote: 'Spanish non-profit research organizations funded by AEI must participate in consortia
+    with
+
+    at least one Spanish profit organization partner, which will be funded by the
+
+    MINAETD.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.127
+  verified: llm_cited
+- id: G1-09
+  gate_family: G1_nexus
+  requirement: Germany requires overall project effort with German participants to be at least
+    50 person years, with German participation at least 10% of overall effort.
+  value: ≥50 person years total; German share ≥10%
+  intake_field: consortium
+  quote: 'To be eligible for national funding, the overall effort of any project with participants
+    from
+
+    Germany should be at least 50 person years. Additionally, German participation in this
+
+    project should be at least 10% of the overall effort.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.85
+  verified: llm_cited
+- id: G1-10
+  gate_family: G1_nexus
+  requirement: At the EU-level KDT call, the project must not exceed 50 participants and per-partner
+    EU contribution is capped at 40% of total EU funding for the project.
+  value: Max 50 participants; per-partner cap 40% of EU contribution
+  intake_field: consortium
+  quote: 'Size limit: the maximum size of the project is 50 participants.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.37
+  verified: llm_cited
+obligations:
+- requirement: Applicants established in Horizon 2020 Associated Countries or negotiating
+    association will be treated as entities established in an Associated Country for eligibility
+    purposes, subject to the association agreement applying at grant signature.
+  quote: 'applicants established in Horizon 2020
+
+    Associated Countries or in other third countries negotiating association to Horizon Europe
+
+    will be treated as entities established in an Associated Country, if the Horizon Europe
+
+    association agreement with the third country concerned applies at the time of signature
+    of
+
+    the grant agreement.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.37
+  verified: llm_cited
+- requirement: The EU contribution per project is capped at 12M€ under the general call conditions.
+  quote: 'Capping: The EU contribution per project is capped at 12M€ and the maximum
+
+    contribution per partner in a project is limited to 40% of the total EU funding for
+
+    the project.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.37
+  verified: llm_cited
+- requirement: Proposals that do not comply with the size and capping conditions will be excluded.
+  quote: Proposals that do not comply to the above will be excluded.
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.37
+  verified: llm_cited
+- requirement: Beneficiaries must submit declarations regarding company size and financial
+    situation as part of national funding conditions under state aid rules.
+  quote: 'Beneficiaries
+
+    must submit declarations regarding company size and financial situation.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.114
+  verified: llm_cited
+- requirement: National funding is subject to reduction if required to respect state aid intensity
+    limits when combined with other public funding.
+  quote: 'National funding will be subject to conditions in current state aid rules (Commission
+
+    Regulation (EU) No 651/2014). If other public funding, besides the EU funding, will be
+
+    granted for the project, the listed maximum rates for national funding will be reduced
+    if
+
+    required to ensure that aid intensity limits in the state aid rules are respected.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.113
+  verified: llm_cited
+- requirement: Spanish MINAETD will verify participants are not undertakings in difficulty/crisis
+    as defined by EU state aid regulation.
+  quote: 'MINAETD will check if the participants are eligible making sure they are not in
+
+    crisis as defined by EU regulation 651/2014.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.124
+  verified: llm_cited
+- requirement: Spain (AEI) limits a Principal Investigator to submitting only one proposal
+    across the KDT 2021 RIA and IA calls combined; multiple submissions render the PI ineligible
+    in all but one.
+  quote: 'Principal Investigators can only apply for funding in one proposal in KDT 2021
+
+    calls RIA and IA all together. The limit is NOT one proposal per subprogram (RIA
+
+    or IA), but one proposal in both RIA and IA. If one PI submits two or more
+
+    proposals he/she will be declared ineligible in all but one.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.127
+  verified: llm_cited
+- requirement: Czech applicants that seriously breached obligations towards the MEYS under
+    prior programmes will be considered ineligible for national funding.
+  quote: 'applicants that seriously breached their obligations towards the MEYS,
+
+    acting as the NFA, stemming from the applicable legislation or the Grant Agreement
+
+    issued by the MEYS during validity of the KDT programme or any of its predecessors,
+
+    shall be considered ineligible for the national funding.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.70
+  verified: llm_cited
+- requirement: Projects must not have already benefited from public funding nor be redundant
+    with similar projects already funded, per French national conditions.
+  quote: 'The work to be done by the partners must neither have already benefited from public
+
+    funding (excluding generic fiscal aid) nor be redundant with similar projects already
+
+    funded by French authorities.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.79
+  verified: llm_cited
+- requirement: Greek projects submitted for funding must not have already benefited from public
+    funding nor be redundant or overlap with already funded projects.
+  quote: 'The project submitted for funding must neither have already benefited from public
+    funding
+
+    nor be redundant or overlap with projects or part of projects already funded.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.90
+  verified: llm_cited
+- requirement: In Belgium, projects with potential military applications (including dual use)
+    may have funding restricted, and Wallonia projects must target civilian technologies only.
+  quote: Projects must be targeted at civilian technologies, products, processes and services
+    only.
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.64
+  verified: llm_cited
+- requirement: Germany excludes entertainment/gaming projects and projects lacking exclusive
+    civil application focus from BMBF funding.
+  quote: 'Projects in entertainment and gaming
+
+    • Projects that do not have an exclusive focus on civil applications and civil exploitation'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.86
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (10/10 gates, 12/12 obligations passed
+  mechanical check -> llm_cited).
+cumulation:
+  text: For undertakings, state aid with identifiable eligible costs may be cumulated with
+    other State aid either on different eligible costs, or on the same/overlapping eligible
+    costs only if the cumulation does not exceed the highest applicable aid intensity or aid
+    amount.
+  quote: 'Cumulation: In case of undertakings aid with identifiable eligible costs may be
+    cumulated with:
+
+    (a) any other State aid, as long as those measures concern different identifiable eligible
+
+    costs,
+
+    (b) any other State aid, in relation to the same eligible costs, partly or fully overlapping,
+
+    only if such cumulation does not result in exceeding the highest aid intensity or aid
+    amount
+
+    as defined above.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.92
+  verified: llm_cited
+application:
+  channel: National applications are submitted to national funding authorities in parallel
+    with the KDT JU proposal submission, following country-specific procedures (e.g. Italy
+    MUR deadline, Austria eCall, Poland National Application Form, Germany National Grant
+    table).
+  typical_timeline: National application/eligibility documents (e.g. Part C) must be submitted
+    at Project Outline and/or Full Project Proposal stage, with national grant agreements
+    signed after KDT JU grant agreements are signed.
+  quote: 'submitted to MUR by the same deadline of the KDT call. Any participant who does
+
+    not send its national application by this deadline, will be considered ineligible.'
+  source:
+    file: chips_ju_kdt_work_programme_2021.pdf
+    locator: chips_ju_kdt_work_programme_2021.pdf#p.102
+  verified: llm_cited

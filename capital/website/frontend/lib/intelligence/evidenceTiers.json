@@ -1,0 +1,22 @@
+{
+  "_comment": "The evidence tiers, and what each one is allowed to do. ONE definition, read by both languages: verdict.ts (beside it) imports it directly, ETL/terms/embed_eligibility.py reads it by path at run time. It previously existed as a Python list of levels in the embedder and a TypeScript Set in verdict.ts, which is the shape of bug this repo has now been bitten by three times — and it bit again immediately: `register_derived` was admitted to the row by the read path while the embedder, holding its own list, silently refused to embed it. The advisor could display a fact it could not retrieve.",
+  "_allowed_values_are_defined_by": "ETL/events/load/migrations/020_register_derived_tier.sql — the CHECK constraint on eligibility_gates.verification_level. ETL/terms/migrate_to_postgres.py parses that constraint to build the Postgres one, so the SQL is the schema authority and this file is the POLICY authority: which of those tiers may be shown, judged on, or retrieved.",
+
+  "cited": {
+    "tiers": ["llm_cited", "llm_2pass", "human_verified"],
+    "may": "decide a verdict, appear as a judgement criterion, appear as a structuring note, be embedded for retrieval",
+    "why": "backed by a quote from the fund's own text, so it can be shown to the founder and defended."
+  },
+
+  "attributable": {
+    "tiers": ["llm_cited", "llm_2pass", "human_verified", "register_derived"],
+    "may": "appear as a structuring note, be embedded for retrieval",
+    "may_not": "decide a verdict, appear as a judgement criterion",
+    "why": "register_derived is filed by the granting authority in a public register, so its provenance is real, but it is a majority vote across a scheme's awards rather than a statement of that scheme's rule. Strong enough to state as a fact about how the instrument is structured; not strong enough to judge a founder by."
+  },
+
+  "inadmissible": {
+    "tiers": ["inventory_inferred", "llm_classified"],
+    "why": "a model reading metadata with no quote behind it. Embedding these would put ungrounded guesses into retrieval results, which is the exact failure this subsystem exists to prevent. 1,551 llm_classified gates are excluded on this ground; the fix for them is real documents, not a lower bar."
+  }
+}

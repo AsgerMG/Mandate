@@ -1,0 +1,65 @@
+(node:31683) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T22:00:20.239Z
+ranker: all 1182 request(s) on EMBEDDING
+set=__recallSetDoors.json split=holdout seed=20260806  replayed 600
+  founder intake — 23 askable fields, identity=real own-history=withheld capital=withheld answers=off consortium=yes
+    DERIVED   entityCountries      set  600/600 (100%)  own  600/600 (100%)  companies.country
+    DERIVED   organisationType     set  255/600 ( 43%)  own  255/600 ( 43%)  prefillOrganisationType(company name) — production's own classifier
+    DERIVED   region               set    0/600 (  0%)  own    0/600 (  0%)  the register's beneficiary region on an award under a DIFFERENT notified scheme (`regionSource = other_scheme`)
+    DERIVED   sector               set  600/600 (100%)  own  600/600 (100%)  companies.sector_top
+    DERIVED   ticketBand           set  600/600 (100%)  own    0/600 (  0%)  the median award this company received UNDER A DIFFERENT NOTIFIED SCHEME (`answerTicketSource = other_scheme`)
+    PINNED    activities           set  600/600 (100%)  own    0/600 (  0%)  uniform — 611 comparators, an EXCLUSION axis
+    PINNED    consortium           set  600/600 (100%)  own    0/600 (  0%)  uniform — asked in the ADAPTIVE round, so on the instant path no real founder has answered it
+    PINNED    useOfFunds           set  600/600 (100%)  own    0/600 (  0%)  uniform — 59 hard filters turn on it
+    WITHHELD  balanceBand                                               -  no filed accounts anywhere in the corpus
+    WITHHELD  bankRelationship                                          -  nothing in the corpus states whether a company has a lender
+    WITHHELD  cofinancingBand                                           -  aid intensity is a property of the SCHEME, not of the applicant's willingness to co-finance
+    WITHHELD  conditionality                                            -  a stated willingness, not a fact
+    WITHHELD  developmentStage                                          -  no TRL or maturity fact about a company
+    WITHHELD  exclusionFlags                                            -  the GBER and de minimis exclusions are self-declared and nothing in the register records them for a beneficiary
+    WITHHELD  fteBand                                                   -  we hold no headcount for any company
+    WITHHELD  institutionalBacking                                      -  derivable in principle from `private_funding_events` — a source no public award appears in, so it could not leak — but that table is not in `public/data/companies_index
+    WITHHELD  institutionalOwner                                        -  no ownership data
+    WITHHELD  lossesOverHalfCapital                                      -  derived by sanitizeEligibility from exclusionFlags, which is itself withheld
+    WITHHELD  needBy                                                    -  a founder's own timing
+    WITHHELD  nonEuControl                                              -  no ultimate-control data
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
+  pool: median 106 candidates, won fund in pool 588/600 (98%)
+  EXACT@5 per signal, ties resolved by expectation. A figure inside its own half-width
+  of the random baseline is not a signal.
+  signal                                           overall      original join   childless_family  exact_attribution
+  -----------------------------------------------------------------------------------------------------------------
+  random baseline                               5.7 +/-0.3         5.1 +/-0.3         6.6 +/-0.6         5.7 +/-0.6
+  SHIPPED (the product's own five)             22.2 +/-3.3        25.4 +/-6.0        19.3 +/-6.4        21.2 +/-5.1
+  collaborative prior (peer)                   21.9 +/-3.3        24.9 +/-5.9        19.0 +/-6.3        21.3 +/-5.0
+  semantic (founder's text)                    20.2 +/-3.2        21.0 +/-5.6        22.1 +/-6.8        18.4 +/-4.8
+  sector share (unclipped)                     19.5 +/-3.1        23.3 +/-5.7        17.1 +/-6.0        17.7 +/-4.7
+  shipped pool score (theme+sector)            18.6 +/-3.1        22.7 +/-5.7        20.0 +/-6.5        14.4 +/-4.4
+  sector share (shipped, clipped)              18.1 +/-2.2        21.2 +/-4.1        16.6 +/-4.1        16.5 +/-3.1
+  shipped score, siblings by sector count      16.2 +/-2.9        19.5 +/-5.4        19.3 +/-6.4        11.6 +/-4.0
+  proximity (home country)                     10.5 +/-1.5         6.0 +/-0.7        12.4 +/-2.8        13.1 +/-3.1
+  encoded gate count                            8.9 +/-2.1         9.4 +/-3.7         6.2 +/-3.9        10.0 +/-3.2
+  sector count (posterior)                      8.8 +/-2.3        12.7 +/-4.6         3.4 +/-3.0         8.8 +/-3.5
+  recency (last award year)                     6.4 +/-0.5         6.0 +/-0.6         6.5 +/-1.0         6.6 +/-0.8
+  total EUR                                     4.7 +/-1.7         3.9 +/-2.7         0.7 +/-1.4         7.6 +/-3.3
+  event count                                   4.3 +/-1.6         2.9 +/-2.3         0.7 +/-1.4         7.6 +/-3.3
+  company count                                 4.3 +/-1.6         2.9 +/-2.3         0.7 +/-1.4         7.6 +/-3.3
+  award median                                  3.3 +/-1.4         4.9 +/-3.0         6.9 +/-4.1         0.0 +/-0.0
+  award scale fit                               3.2 +/-1.4         2.9 +/-2.3         8.3 +/-4.5         0.4 +/-0.8
+  eligibility (encoded gates)                   1.5 +/-0.4         3.8 +/-1.0         0.9 +/-0.7         0.0 +/-0.0
+
+  n per population: original join 205   traced:childless_family 145   traced:exact_attribution 250
+  random baseline 5.7% +/-0.3 — computed on THESE pools, not remembered from another population.
+  features -> /tmp/wscu/NEW.holdout.json (600 pairs)

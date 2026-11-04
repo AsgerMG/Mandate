@@ -1,0 +1,56 @@
+id: satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz
+name: Änderung der Förderrichtlinie für die Bundesförderung im Bereich Cloud- und Edge-Infrastruktur und
+  -Services im Rahmen des IPCEI-CIS [BMWK, IVA3]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Eligible recipients are commercial enterprises with a registered seat, branch or establishment
+    in Germany, and state/non-state universities, research institutions, public bodies and other institutions
+    with an interest in R&D&I.
+  value: Commercial enterprise (DE establishment) or public research/education body
+  intake_field: entityCountries
+  quote: Zuwendungsempfänger können Unternehmen der gewerblichen Wirtschaft mit Sitz, einer Niederlassung
+    oder Betriebsstätte in Deutschland sowie staatliche und nicht staatliche Hochschulen, Forschungseinrichtungen,
+    öffentliche Einrichtungen und sonstige Einrichtungen mit FuEuI-Interesse sein.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Artikel/Industrie/ipcei-cis.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-recovery-order-exclusion
+  gate_family: G1_nexus
+  requirement: An undertaking that has not complied with a recovery order following a prior Commission
+    decision declaring aid unlawful and incompatible with the internal market may not receive funding
+    under this directive.
+  value: No outstanding EU State-aid recovery order
+  intake_field: none
+  quote: Einem Unternehmen, das einer Rückforderungsanordnung aufgrund eines früheren Beschlusses der
+    Kommission zur Feststellung der Unzulässigkeit einer von demselben Mitgliedstaat gewährten Beihilfe
+    und ihrer Unvereinbarkeit mit dem Binnenmarkt nicht nachgekommen ist, darf keine Förderung nach dieser
+    Förderrichtlinie gewährt werden.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Artikel/Industrie/ipcei-cis.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-insolvency-exclusion
+  gate_family: G1_nexus
+  requirement: Companies for which insolvency proceedings have been applied for or opened are not eligible
+    to apply.
+  value: No pending/opened insolvency proceedings
+  intake_field: none
+  quote: Nicht antragsberechtigt sind Unternehmen, über deren Vermögen ein Insolvenzverfahren beantragt
+    oder eröffnet worden ist.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Artikel/Industrie/ipcei-cis.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

@@ -1,0 +1,166 @@
+id: altum_anm_digi
+name: altum_anm_digi
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G4_borrower_model
+  requirement: For project implementation, a digital development roadmap must have been received.
+  value: digital development roadmap required
+  intake_field: borrowerModel
+  quote: projekta īstenošanai ir saņemta digitālās attīstības ceļa karte;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: The project must be implemented in an eligible economic activity sector.
+  value: eligible sector required
+  intake_field: activityCountries
+  quote: projekts tiks īstenots atbalstāmā saimnieciskās darbības nozarē;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: The company must not show signs of being an undertaking in difficulty.
+  value: no undertaking in difficulty
+  intake_field: none
+  quote: komersantam nav grūtībās nonākuša uzņēmuma pazīmes;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: The company must have no tax debts.
+  value: no tax debts
+  intake_field: none
+  quote: komersantam nav nodokļu parādu;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: The company must have no payment delays recorded in the Bank of Latvia's Credit
+    Register.
+  value: no credit register payment delays
+  intake_field: none
+  quote: komersantam nav maksājumu kavējumi Latvijas Bankas Kredītu reģistrā;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g6
+  gate_family: G2_size_ownership
+  requirement: The company must not have an active insolvency process.
+  value: no active insolvency process
+  intake_field: none
+  quote: komersantam nav aktuāls maksātnespējas process;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g7
+  gate_family: G3_financial
+  requirement: Equity must be positive in the last closed financial year.
+  value: positive equity in last financial year
+  intake_field: balanceBand
+  quote: pēdējā noslēgtā finanšu gadā pašu kapitāls ir pozitīvs;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g8
+  gate_family: G3_financial
+  requirement: The project must be economically justified.
+  value: economically justified project required
+  intake_field: none
+  quote: projekts ir ekonomiski pamatots;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g9
+  gate_family: G2_size_ownership
+  requirement: The company must contribute its own funds to the project of at least 5% of
+    eligible costs, or at least 25% of eligible costs if the project is not co-financed by
+    another financier.
+  value: own funds contribution 5% or 25%
+  intake_field: cofinancingBand
+  quote: komersantam ir savi naudas līdzekļi līdzdalībai projektā vismaz sākot no 5% projekta
+    attiecināmajām izmaksām vai vismaz 25% no attiecināmajām izmaksām, ja projektu nefinansē
+    cits finansētājs;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g10
+  gate_family: G3_financial
+  requirement: The company must provide sufficient collateral for the loan.
+  value: sufficient collateral required
+  intake_field: none
+  quote: komersantam ir pietiekams nodrošinājums;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g11
+  gate_family: G2_size_ownership
+  requirement: The company owners' guarantee must constitute not less than 10% of the granted
+    loan amount.
+  value: owner guarantee at least 10% of loan
+  intake_field: ownerOver25
+  quote: uzņēmumu īpašnieku galvojums veido ne mazāk kā 10% apmērā no piešķirtās aizdevuma
+    summas;
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g12
+  gate_family: G5_use_of_funds
+  requirement: Costs for installation, integration and other implementation-related activities
+    of the asset may be eligible only if included in the total purchase price under the same
+    purchase agreement; costs from separately concluded service contracts are not eligible.
+  value: installation/integration costs eligible only if bundled in purchase agreement
+  intake_field: none
+  quote: Izmaksas, kas izriet no atsevišķi slēgtiem līgumiem par pakalpojumu nodrošināšanu,
+    nav attiecināmas.
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+obligations:
+- requirement: Interest payments on the Altum loan must be made for the use of the loan, while
+    repayment of the principal is only required starting from the eighth month after project
+    completion, under specified capital discount conditions.
+  quote: komersantam ir jāveic procentu maksājumi par aizdevuma izmantošanu, taču pamatsummas
+    atmaksa ir veicama, tikai sākot ar astoto mēnesi pēc projekta pabeigšanas
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/12 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: State aid rules under the General Block Exemption Regulation (VGAR) or de minimis
+    conditions may apply depending on the situation.
+  quote: ttiecināmi VGAR nosacījumi un izmaksas, uz kurām attiektos de minimis nosacījumi.
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited
+application:
+  channel: Contact Altum directly
+  typical_timeline: Not specified
+  quote: P. -Pk. 8:30-17:00 | altum@altum.lv | 67774010
+  source:
+    file: altum_anm_digi_digitalizacija_lv.html
+    locator: chunk 5
+  verified: llm_cited

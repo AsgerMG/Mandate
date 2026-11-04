@@ -1,0 +1,237 @@
+id: satr_ie_equity
+name: satr_ie_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-cultural-cert
+  gate_family: G1_nexus
+  requirement: The film must be certified by the Revenue Commissioner and the Minister for
+    Arts, Sport and Tourism (or the Irish Film Board) as satisfying verifiable, national,
+    cultural criteria.
+  value: Certification of cultural criteria required
+  intake_field: developmentStage
+  quote: which have been certified by the Revenue Commissioner and the Minister for Arts,
+    Sport and Tourism as satisfying certain verifiable, national, cultural criteria
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.2
+  verified: llm_cited
+- id: g1-territorial
+  gate_family: G1_nexus
+  requirement: The producer must be free to spend at least 20% of the film budget in other
+    Member States (territorial condition).
+  value: Min. 20% of budget spendable in other Member States
+  intake_field: activityCountries
+  quote: the producer must be free to spend at least 20% of the film budget in other Member
+    States
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.4
+  verified: llm_cited
+- id: g3-max-investment-single-film
+  gate_family: G3_financial
+  requirement: Maximum eligible investment in a single film under the tax incentive is €50
+    million.
+  value: €50,000,000 max eligible investment per film
+  intake_field: ticketBand
+  quote: The maximum eligible investment in a single film is €50 million.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.2
+  verified: llm_cited
+- id: g3-writeoff-percentage
+  gate_family: G3_financial
+  requirement: The proportion of investment which can be written off for tax purposes by an
+    investor is up to 100%, though the maximum investment raised by a film remains 80% of
+    production budget.
+  value: 100% write-off; 80% of budget raise cap
+  intake_field: ticketBand
+  quote: The proportion of the investment which can be written off for tax purposes by an
+    investor increases from 80% to 100%
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.2
+  verified: llm_cited
+- id: g3-tax-incentive-budget
+  gate_family: G3_financial
+  requirement: The overall budget of the Irish film tax incentive scheme is capped at approximately
+    €25 million per year (€100 million total 2009-2012).
+  value: €25m/year, €100m total (2009-2012)
+  intake_field: cofinancingBand
+  quote: The budget of the Irish film tax incentive for the period 2009-2012 is estimated
+    to be €25 million per year, ie, €100 million for the duration of the scheme.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.2
+  verified: llm_cited
+- id: g4-development-loan-limit
+  gate_family: G4_borrower_model
+  requirement: Development loans from the Irish Film Board are capped at €100,000 per project
+    and are used for research, development, and feasibility exploration.
+  value: €100,000 max per project (development loan)
+  intake_field: borrowerModel
+  quote: Development loans are intended to facilitate the research, development and feasibility
+    exploration of a proposed film up to a limit of €100,000 per project.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.2
+  verified: llm_cited
+- id: g4-production-loan-nature
+  gate_family: G4_borrower_model
+  requirement: Production loans are interest-free investments by the Irish Film Board in production
+    and sales, subject to recoupment and profit participation measures rather than interest.
+  value: Interest-free investment with recoupment/profit participation
+  intake_field: borrowerModel
+  quote: The investment is not subject to interest; however rigorous measures for recoupment
+    and profit participation are applied.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.2
+  verified: llm_cited
+- id: g3-production-funding-tiers
+  gate_family: G3_financial
+  requirement: 'Production funding aid intensity limits scale down as project budget increases:
+    65% up to €1.5m, 40% up to €5m, and the greater of €2m or 25% above €5m.'
+  value: 65%/40%/25% or €2m tiered aid intensity
+  intake_field: ticketBand
+  quote: 'Over €100,000 Up to €1.5 million 65%
+
+    Over €1.5 million Up to €5 million 40%
+
+    Over €5 million The greater of
+
+    €2 million and
+
+    25%'
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.3
+  verified: llm_cited
+- id: g3-project-cap-practice
+  gate_family: G3_financial
+  requirement: In practice, funding awarded to any one project by the Irish Film Board is
+    highly unlikely to exceed €1 million, and more than €1.5 million should not be contemplated.
+  value: ~€1m typical cap, €1.5m absolute practical ceiling
+  intake_field: ticketBand
+  quote: The Irish Film Board’s current level of resources dictates that funding awarded to
+    any one project is highly unlikely to exceed €1 million, and more than €1.5 million should
+    not be contemplated.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.3
+  verified: llm_cited
+- id: g4-ultra-low-budget-funding
+  gate_family: G4_borrower_model
+  requirement: Ultra-low-budget film projects receive 100% production funding capped at a
+    maximum production budget of €100,000, for art/experimental/short films by first-time
+    young film makers.
+  value: 100% funding, €100,000 max budget (ultra-low-budget)
+  intake_field: borrowerModel
+  quote: 'The Irish Film Board also provides 100% production funding to ultra-low-
+
+    budget film projects with a maximum production budget of €100,000.'
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.3
+  verified: llm_cited
+- id: g3-total-loan-budget
+  gate_family: G3_financial
+  requirement: The total budget for development and production loans and ultra low budget
+    projects is €18m per year (2009-2012), €72 million total.
+  value: €18m/year, €72m total (2009-2012)
+  intake_field: cofinancingBand
+  quote: The total budget for development and production loans and ultra low budget projects
+    is €18m per year between 2009 and 2012, ie, a total of €72 million.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.3
+  verified: llm_cited
+- id: g3-max-aid-intensity
+  gate_family: G3_financial
+  requirement: The maximum cumulative aid intensity is 50%, except for films certified as
+    difficult or low budget films.
+  value: 50% max aid intensity (higher for difficult/low-budget films)
+  intake_field: ticketBand
+  quote: The maximum cumulative aid intensity is 50% except in the case of films which are
+    certified by the Irish Film Board as being difficult or low budget films.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.3
+  verified: llm_cited
+- id: g1-low-budget-threshold
+  gate_family: G1_nexus
+  requirement: For higher aid intensities, a low budget film is defined as one with a budget
+    of less than €3 million.
+  value: <€3 million qualifies as low budget film
+  intake_field: ticketBand
+  quote: For the purpose of awarding aid intensities higher than 50%, the Irish authorities
+    consider that a low budget film is one whose budget is less than €3 million.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.3
+  verified: llm_cited
+- id: g1-difficult-film-cert
+  gate_family: G1_nexus
+  requirement: To be approved as 'difficult', the Irish Film Board must be satisfied the film
+    will be realised to a high standard of quality and faces definable commercial/distribution
+    difficulties.
+  value: Requires Irish Film Board certification as 'difficult'
+  intake_field: developmentStage
+  quote: the film project presented prior to production (a) will be realised to a high standard
+    of technical, professional and artistic quality, and (b) faces difficulties for definable
+    reasons in terms of its appeal to commercial financiers or distributors, or its potential
+    to attract viable audience numbers
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.3
+  verified: llm_cited
+obligations:
+- requirement: The scheme must not provide aid supplements for specific film-making activities.
+  quote: the scheme does not provide aid supplements for specific film-making activities
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.4
+  verified: llm_cited
+- requirement: Development loans and ultra-low-budget projects must respect the conditions
+    of the de minimis aid Regulation (EC) No 1998/2006.
+  quote: The Irish authorities have committed to treat the development loans and ultra-low-budget
+    projects under the de minimis rules and to respect the conditions set out in Commission
+    Regulation (EC) No 1998/2006 on the application of Articles 87 and 88 of the Treaty to
+    de minimis aid
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The Irish authorities have committed to treat
+    the '''
+- requirement: The aid must be directed towards a cultural product, applying verifiable national
+    criteria, as required by the Cinema Communication.
+  quote: the aid is directed towards a cultural product, applying verifiable national criteria
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.4
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/14 gates, 2/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Maximum cumulative aid intensity is capped at 50% of the project budget, except for
+    films certified as difficult or low budget, where higher cumulative intensities may apply.
+  quote: The maximum cumulative aid intensity is 50% except in the case of films which are
+    certified by the Irish Film Board as being difficult or low budget films.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.3
+  verified: llm_cited
+application:
+  channel: Certification and funding decisions administered by the Irish Film Board and Revenue
+    Commissioner/Minister for Arts, Sport and Tourism under the Irish film tax incentive and
+    Irish Film Board Act.
+  typical_timeline: Scheme extended until 31 December 2012; funding period 2009-2012.
+  quote: The scheme is extended until 31 December 2012.
+  source:
+    file: satr_ie_equity_ec_case_irish_film_support_scheme.pdf
+    locator: satr_ie_equity_ec_case_irish_film_support_scheme.pdf#p.2
+  verified: llm_cited

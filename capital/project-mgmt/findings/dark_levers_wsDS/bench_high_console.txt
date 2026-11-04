@@ -1,0 +1,21 @@
+(node:45448) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+  Neura Robotics     pool 18 picks [8,6,1,10,9,7]     deepest 10 · 0 in / 0 out · unsure 0 · EUR 0.0843
+  SMART Photonics    pool 18 picks [0,1,2,11,10,7]    deepest 11 · 2 in / 2 out · unsure 0 · EUR 0.0813
+  Silvr              pool 18 picks [16,17,1,0,8,9]    deepest 17 · 4 in / 4 out · unsure 0 · EUR 0.0822
+  bunq               pool 18 picks [2,4,5,12,13,16]   deepest 16 · 3 in / 3 out · unsure 0 · EUR 0.0961
+  Photoroom          pool 18 picks [5,4,1,16,6,17]    deepest 17 · 1 in / 1 out · unsure 0 · EUR 0.0466
+  Aleph Alpha        pool 18 picks [4,10,16,2,14,8]   deepest 16 · 4 in / 4 out · unsure 0 · EUR 0.0814
+  Nortal             pool 18 picks [0,3,4,12,13,5]    deepest 13 · 2 in / 2 out · unsure 0 · EUR 0.0775
+  sennder            pool 18 picks [1,0,10,17,12,2]   deepest 17 · 1 in / 1 out · unsure 0 · EUR 0.1134
+  Nebius             pool 18 picks [3,13,9,0,17,15]   deepest 17 · 3 in / 3 out · unsure 0 · EUR 0.1037
+  Corti              pool 18 picks [10,6,7,0,11,13]   deepest 13 · 3 in / 3 out · unsure 0 · EUR 0.0617
+  BioNTech           pool 18 picks [1,0,2,15,5,11]    deepest 15 · 2 in / 2 out · unsure 0 · EUR 0.0552
+  eAgronom           pool 18 picks [8,2,10,15,1,6]    deepest 15 · 3 in / 3 out · unsure 0 · EUR 0.0479
+
+corpus=postgres instruments=1088 at 2026-08-11T08:19:44.964Z
+ranker: all 12 request(s) on EMBEDDING
+agent-select: arm=adviser depth=40 count=6 effort=high maxtok=12288 lookups=0 (0 brief(s) retrieved) model=claude-sonnet-5 — 12/12 chose, 0 FELL BACK to the shipped order (0 empty reply, 0 unparseable), 0 short reply, 0 unusable id(s), thought on 12/12 call(s) (79252 thinking token(s) billed, 106087 readable char(s)), 0 CUT OFF at max_tokens, EUR 0.9314 total, EUR 0.0776 per brief
+levers: AGENT_SELECT=adviser depth=40 count=6 effort=high lookups=5 pool=18 published_cap=7
+spend: EUR 0.9314 total, EUR 0.0776 per brief
+wrote /Users/asgermollergrimberg/Wincent/.claude/worktrees/wsDS-dark-levers/project-mgmt/findings/dark_levers_wsDS/bench_high/SUMMARY.md

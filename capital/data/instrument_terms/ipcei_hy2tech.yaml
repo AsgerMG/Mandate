@@ -1,0 +1,262 @@
+id: ipcei_hy2tech
+name: ipcei_hy2tech
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-ipcei-member-state-notification
+  gate_family: G1_nexus
+  requirement: Aid must be granted by a Member State via a notified IPCEI aid measure to undertakings
+    participating in the Hy2Tech integrated project across the four Technology Fields.
+  value: IPCEI Hy2Tech - Member State notified aid to participating undertakings
+  intake_field: entityCountries
+  quote: In order to be eligible for aid under Article 107(3)(b) TFEU, the notified measures
+    must involve a project. That project must be of common European interest, and it must
+    be important.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.88
+  verified: llm_cited
+- id: g1-integrated-project
+  gate_family: G1_nexus
+  requirement: The project must qualify as an 'integrated project' comprising a group of single
+    projects inserted in a common structure, roadmap or programme aiming at the same objective
+    and based on a coherent systemic approach.
+  value: Integrated project across 4 Technology Fields, 41 individual projects
+  intake_field: consortium
+  quote: the Commission may consider eligible an ‘integrated project’, that is to say, a group
+    of single projects inserted in a common structure, roadmap or programme aiming at the
+    same objective and based on a coherent systemic approach
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.88
+  verified: llm_cited
+- id: g1-common-european-interest
+  gate_family: G1_nexus
+  requirement: The project must be of common European interest, generating spill-over effects
+    and benefits extending beyond the participating undertakings to the EU economy and society.
+  value: Spill-over effects to SMEs, RTOs and other sectors required
+  intake_field: consortium
+  quote: the benefits of Hy2Tech are not limited to the participating undertakings, but extend
+    to the EU economy and society
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.100
+  verified: llm_cited
+- id: g2-participating-undertakings-sme-large
+  gate_family: G2_size_ownership
+  requirement: Both large undertakings and SMEs (including start-ups) may participate as beneficiaries
+    within Hy2Tech, with some SMEs undertaking large projects.
+  value: SMEs and large undertakings both eligible as participating undertakings
+  intake_field: fteBand
+  quote: In Hy2Tech, notwithstanding their size, some SMEs will be undertaking large (in certain
+    circumstances very large) projects.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.86
+  verified: llm_cited
+- id: g4-two-phase-structure
+  gate_family: G4_borrower_model
+  requirement: 'Aid is structured as a grant covering eligible costs of two distinct phases:
+    R&D&I activities and First Industrial Deployment (FID), with aid capped by the lower of
+    eligible costs or funding gap.'
+  value: Grant aid capped at lower of eligible costs (nominal) or funding gap (discounted
+    NPV)
+  intake_field: borrowerModel
+  quote: the maximum permitted aid level is determined with regard to the identified funding
+    gap in relation to the eligible costs. The amounts of State aid are capped in nominal
+    terms by the eligible costs
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.80
+  verified: llm_cited
+- id: g4-funding-gap-method
+  gate_family: G4_borrower_model
+  requirement: The maximum permitted aid amount is determined by a funding gap calculation,
+    being the difference between the NPV of the factual (project) scenario and the NPV of
+    the counterfactual scenario, discounted at the WACC.
+  value: Funding gap = NPV(factual) - NPV(counterfactual), discounted at WACC
+  intake_field: borrowerModel
+  quote: The funding gap is equal to the difference between the NPV of the IPCEI project (or
+    factual scenario) and the NPV of the counterfactual scenario (or the scenario where no
+    State aid is provided).
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.131
+  verified: llm_cited
+- id: g5-rd-and-fid-eligible-costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs are limited to R&D&I and FID activities as defined in the Annex
+    to the IPCEI Communication, and funds may not be used for mass production or commercial
+    activities.
+  value: R&D&I and FID costs only; excludes mass production/commercial activities
+  intake_field: none
+  quote: aid granted under Hy2Tech is limited to R&D&I and FID projects and does not extend
+    to the mass production phase of any of the products, services or processes resulting from
+    the individual projects
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.80
+  verified: llm_cited
+- id: g5-fid-innovation-requirement
+  gate_family: G5_use_of_funds
+  requirement: FID activities funded must concern the development of a new product/service
+    with high research and innovation content and/or a fundamentally innovative production
+    process, not mere regular upgrades of existing facilities.
+  value: FID must be highly innovative, not regular upgrades
+  intake_field: developmentStage
+  quote: Concern "the development of a new product or service with high research and innovation
+    content and/or the deployment of a fundamentally innovative production process"
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.127
+  verified: llm_cited
+- id: g5-fid-scope-limit
+  gate_family: G5_use_of_funds
+  requirement: FID activities must cover the upscaling of pilot facilities or first-in-kind
+    equipment through the testing phase and bringing batch production to scale, but must not
+    correspond to mass production or commercial activities.
+  value: FID = upscaling/pilot through testing; excludes mass production
+  intake_field: developmentStage
+  quote: Consist in "the upscaling of pilot facilities, or [to] the first-in-kind equipment
+    and facilities which cover the steps subsequent to the pilot line including the testing
+    phase and bring batch production to scale
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.128
+  verified: llm_cited
+- id: g5-fid-capex-opex-condition
+  gate_family: G5_use_of_funds
+  requirement: FID CAPEX and OPEX are eligible only insofar as the industrial deployment follows
+    on from an R&D&I activity and itself contains a very important R&D&I component that is
+    an integral and necessary element for successful implementation.
+  value: CAPEX/OPEX eligible only with embedded very important R&D&I component
+  intake_field: none
+  quote: Relates to the capital and operating expenditures ("CAPEX" and "OPEX"), as long as
+    the industrial deployment follows on from an R&D&I activity and itself contains a very
+    important R&D&I component, which constitutes an integral and necessary element for the
+    successful implementation of the project
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.128
+  verified: llm_cited
+- id: g5-depreciation-costs
+  gate_family: G5_use_of_funds
+  requirement: For instruments, equipment, buildings, infrastructure and land not used during
+    the full life of Hy2Tech, only depreciation costs corresponding to the project's life
+    are eligible.
+  value: Only pro-rata depreciation costs eligible for shared-use assets
+  intake_field: none
+  quote: if instruments and equipment or buildings, infrastructure and land are not to be
+    used during the full life for Hy2Tech, the Commission has verified that only the depreciation
+    costs corresponding to the life of Hy2Tech are considered for the calculation of the eligible
+    costs
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.127
+  verified: llm_cited
+- id: g6-cofinancing-union-funds
+  gate_family: G6_conditionality
+  requirement: Some Member States will use co-funding or co-financing from EU funds (ERDF,
+    Just Transition Fund, Innovation Fund, RRF) for individual projects, which is treated
+    as consistent with the IPCEI Communication's cumulation rules.
+  value: Co-financing with ERDF/JTF/Innovation Fund/RRF permitted
+  intake_field: cofinancingBand
+  quote: The Commission acknowledges that some Member States (namely, Austria, Belgium, Estonia,
+    Greece, Finland, Italy, Poland, Portugal and Spain) will be using for all of their projects
+    co-funding or co-financing from the European Regional Development Fund, the Just Transition
+    Fund, the Innovation Fund and the RRF.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.105
+  verified: llm_cited
+- id: g6-clawback-threshold
+  gate_family: G6_conditionality
+  requirement: A claw-back mechanism applies at minimum to participating undertakings with
+    a notified aid amount, per individual project, above EUR 50 million, including for SMEs
+    undertaking large projects.
+  value: Claw-back applies above EUR 50 million notified aid per project
+  intake_field: conditionality
+  quote: the claw-back mechanism will apply at minimum to participating undertakings having
+    a notified aid amount, per individual project, above EUR 50 million, although Member States
+    can be more restrictive
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.86
+  verified: llm_cited
+- id: g6-reporting-obligation
+  gate_family: G6_conditionality
+  requirement: Member States must report to the Commission on the implementation of the claw-back
+    mechanism one month after each application of the mechanism.
+  value: Reporting due one month after each claw-back application
+  intake_field: conditionality
+  quote: The Member States are required to report to the Commission the implementation of
+    the claw-back mechanism one month after each application.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.86
+  verified: llm_cited
+obligations:
+- requirement: Participating undertakings must disseminate knowledge and results of the project
+    widely, including through FRAND licensing of IP protected results, especially benefiting
+    SMEs and start-ups.
+  quote: IP protected results and patents developed within the course of HYVIA’s project shall
+    be made widely available for application domains other than terrestrial mobility and transport
+    through FRAND licensing whenever possible, especially for start-ups and SMEs.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.71
+  verified: llm_cited
+- requirement: Hy2Tech's implementation, including committed dissemination activities and
+    spill-overs of participating undertakings, must be monitored at both integrated and national
+    governance levels in compliance with the IPCEI Communication and national funding agreements.
+  quote: at both integrated and national governance levels Hy2Tech will monitor the correct
+    implementation of the committed dissemination activities and spill-overs of the participating
+    undertakings
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.100
+  verified: llm_cited
+- requirement: Aid beneficiaries must demonstrate that depreciation periods used for eligible
+    cost calculations correspond to good accounting practice.
+  quote: The Commission has also required that the aid beneficiaries demonstrate that the
+    depreciation periods used corresponded to good accounting practice.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.127
+  verified: llm_cited
+- requirement: Beneficiaries must establish KPIs to identify the moment stabilised mass production
+    is reached, and any costs relating to production after KPIs are met must be excluded from
+    eligible FID costs.
+  quote: the Commission first examined whether the different beneficiaries established KPIs
+    (e.g. quality of product, durability, compatibility, energy consumption, safety, environmental
+    impact, etc.) for identifying the moment in time that they reach a stabilised mass production.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.129
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/14 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Co-funding or co-financing of individual Hy2Tech projects from other Union funds (ERDF,
+    Just Transition Fund, Innovation Fund, RRF) is expressly acknowledged and treated as consistent
+    with the IPCEI Communication.
+  quote: The inclusion of co-funding or co-financing of individual projects within Hy2Tech
+    is consistent with point 21(e) of the IPCEI Communication.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.105
+  verified: llm_cited
+application:
+  channel: National funding agreements administered by Member State authorities following
+    Commission approval of the notified aid measures under Article 107(3)(b) TFEU.
+  typical_timeline: Aid disbursed by Member States over the project life span, potentially
+    in several instalments, discounted to present value at time of grant.
+  quote: Member States may choose to disburse State aid in several instalments over a certain
+    period of time, e.g. during the life span of a project.
+  source:
+    file: ipcei_hy2tech_commission_decision_SA64647.pdf
+    locator: ipcei_hy2tech_commission_decision_SA64647.pdf#p.80
+  verified: llm_cited

@@ -1,0 +1,155 @@
+### GUARD=peer (in-sample map: may see the awards it predicts)
+corpus=sqlite awards placed on a leaf: 236467 of 296988  (99% dated)
+GUARD=peer  FIT=posterior  POP=all
+
+── subsector (94) · 2694 graded holdout pairs in multi-leaf regimes
+   unlabelled founders (get chance): 574 (21%)
+   top-1   13.4%   uniform   3.4%   lift +9.9%
+   top-5   38.6%   uniform  14.6%   lift +24.0%
+
+── sector_top (11) · 2694 graded holdout pairs in multi-leaf regimes
+   unlabelled founders (get chance): 316 (12%)
+   top-1    9.8%   uniform   3.4%   lift +6.3%
+   top-5   33.3%   uniform  14.6%   lift +18.7%
+
+subsector (94): per-regime top-5, regimes with >=20 graded pairs
+   regime                        n  sibs    top5  uniform    lift
+   bdns_es_ayudas              627    88   31.5%     5.7%  +25.8%
+   ademe_aid                   534    76   39.7%     6.6%  +33.1%
+   satr_de_rnd                 377   103   29.3%     4.9%  +24.5%
+   vinnova_grant               323    50   28.5%    10.0%  +18.5%
+   satr_it_rnd                 179    68   27.3%     7.4%  +19.9%
+   satr_fr_rnd                 173    43   34.5%    11.6%  +22.9%
+   satr_nl_rnd                 105    28   54.9%    17.9%  +37.0%
+   horizon_eu_partnership       60    10   50.0%    50.0%   +0.0%
+   horizon_eu_pillar_ii         55    10   50.0%    50.0%   +0.0%
+   satr_se_rnd                  50    12   69.8%    41.7%  +28.2%
+   satr_de_equity               46    15   65.9%    33.3%  +32.6%
+   satr_fr_equity               29     9   54.0%    55.6%   -1.5%
+   innovation_fund              25     9   54.9%    55.6%   -0.7%
+   eic                          24     5  100.0%   100.0%   +0.0%
+   satr_it_equity               21    19   90.5%    26.3%  +64.2%
+
+sector_top (11): per-regime top-5, regimes with >=20 graded pairs
+   regime                        n  sibs    top5  uniform    lift
+   bdns_es_ayudas              627    88   21.9%     5.7%  +16.2%
+   ademe_aid                   534    76   24.6%     6.6%  +18.0%
+   satr_de_rnd                 377   103   23.9%     4.9%  +19.0%
+   vinnova_grant               323    50   28.1%    10.0%  +18.1%
+   satr_it_rnd                 179    68   20.1%     7.4%  +12.8%
+   satr_fr_rnd                 173    43   50.9%    11.6%  +39.2%
+   satr_nl_rnd                 105    28   54.3%    17.9%  +36.4%
+   horizon_eu_partnership       60    10   50.0%    50.0%   +0.0%
+   horizon_eu_pillar_ii         55    10   50.0%    50.0%   +0.0%
+   satr_se_rnd                  50    12   78.0%    41.7%  +36.3%
+   satr_de_equity               46    15   69.6%    33.3%  +36.2%
+   satr_fr_equity               29     9   65.5%    55.6%  +10.0%
+   innovation_fund              25     9   50.0%    55.6%   -5.6%
+   eic                          24     5  100.0%   100.0%   +0.0%
+   satr_it_equity               21    19   81.0%    26.3%  +54.6%
+
+### FIT=size — the popularity null model
+corpus=sqlite awards placed on a leaf: 236467 of 296988  (99% dated)
+GUARD=peer  FIT=size  POP=all
+
+── subsector (94) · 2694 graded holdout pairs in multi-leaf regimes
+   top-1    4.3%   uniform   3.4%   lift +0.8%
+   top-5   15.9%   uniform  14.6%   lift +1.4%
+
+subsector (94): per-regime top-5, regimes with >=20 graded pairs
+   regime                        n  sibs    top5  uniform    lift
+   bdns_es_ayudas              627    88    4.9%     5.7%   -0.7%
+   ademe_aid                   534    76    4.5%     6.6%   -2.1%
+   satr_de_rnd                 377   103    6.6%     4.9%   +1.8%
+   vinnova_grant               323    50    8.7%    10.0%   -1.3%
+   satr_it_rnd                 179    68    0.0%     7.4%   -7.4%
+   satr_fr_rnd                 173    43   41.6%    11.6%  +30.0%
+   satr_nl_rnd                 105    28   18.1%    17.9%   +0.2%
+   horizon_eu_partnership       60    10   50.0%    50.0%   +0.0%
+   horizon_eu_pillar_ii         55    10   50.0%    50.0%   +0.0%
+   satr_se_rnd                  50    12   52.0%    41.7%  +10.3%
+   satr_de_equity               46    15   32.6%    33.3%   -0.7%
+   satr_fr_equity               29     9   55.2%    55.6%   -0.4%
+   innovation_fund              25     9   50.0%    55.6%   -5.6%
+   eic                          24     5  100.0%   100.0%   +0.0%
+   satr_it_equity               21    19   61.9%    26.3%  +35.6%
+
+### POP=post_cut GUARD=peer — CONTROL: post-2023 pairs, FULL-history map
+corpus=sqlite awards placed on a leaf: 236467 of 296988  (99% dated)
+GUARD=peer  FIT=posterior  POP=post_cut  CUT=2023
+
+── subsector (94) · 1546 graded holdout pairs in multi-leaf regimes
+   unlabelled founders (get chance): 232 (15%)
+   top-1   15.3%   uniform   2.5%   lift +12.8%
+   top-5   39.4%   uniform  11.2%   lift +28.2%
+
+── sector_top (11) · 1546 graded holdout pairs in multi-leaf regimes
+   unlabelled founders (get chance): 97 (6%)
+   top-1   10.9%   uniform   2.5%   lift +8.4%
+   top-5   32.7%   uniform  11.2%   lift +21.5%
+
+subsector (94): per-regime top-5, regimes with >=20 graded pairs
+   regime                        n  sibs    top5  uniform    lift
+   bdns_es_ayudas              323    88   35.4%     5.7%  +29.7%
+   satr_de_rnd                 314   103   29.6%     4.9%  +24.7%
+   ademe_aid                   308    76   41.6%     6.6%  +35.1%
+   satr_it_rnd                 158    68   25.0%     7.4%  +17.6%
+   satr_fr_rnd                 118    43   38.6%    11.6%  +26.9%
+   vinnova_grant                93    50   32.0%    10.0%  +22.0%
+   satr_nl_rnd                  84    28   56.7%    17.9%  +38.8%
+   satr_se_rnd                  49    12   69.2%    41.7%  +27.6%
+   satr_de_equity               43    15   63.6%    33.3%  +30.2%
+   satr_it_equity               20    19   90.0%    26.3%  +63.7%
+
+sector_top (11): per-regime top-5, regimes with >=20 graded pairs
+   regime                        n  sibs    top5  uniform    lift
+   bdns_es_ayudas              323    88   22.1%     5.7%  +16.4%
+   satr_de_rnd                 314   103   25.5%     4.9%  +20.6%
+   ademe_aid                   308    76   27.9%     6.6%  +21.3%
+   satr_it_rnd                 158    68   19.6%     7.4%  +12.3%
+   satr_fr_rnd                 118    43   44.1%    11.6%  +32.4%
+   vinnova_grant                93    50   25.6%    10.0%  +15.6%
+   satr_nl_rnd                  84    28   54.8%    17.9%  +36.9%
+   satr_se_rnd                  49    12   77.6%    41.7%  +35.9%
+   satr_de_equity               43    15   67.4%    33.3%  +34.1%
+   satr_it_equity               20    19   80.0%    26.3%  +53.7%
+
+### GUARD=temporal CUT=2023 — same pairs, map may only see pre-2024
+corpus=sqlite awards placed on a leaf: 236467 of 296988  (99% dated)
+GUARD=temporal  FIT=posterior  POP=all  CUT=2023
+
+── subsector (94) · 1546 graded holdout pairs in multi-leaf regimes
+   unlabelled founders (get chance): 232 (15%)
+   top-1    5.5%   uniform   2.5%   lift +3.0%
+   top-5   13.5%   uniform  11.2%   lift +2.3%
+
+── sector_top (11) · 1546 graded holdout pairs in multi-leaf regimes
+   unlabelled founders (get chance): 97 (6%)
+   top-1    4.5%   uniform   2.5%   lift +2.0%
+   top-5    9.5%   uniform  11.2%   lift -1.7%
+
+subsector (94): per-regime top-5, regimes with >=20 graded pairs
+   regime                        n  sibs    top5  uniform    lift
+   bdns_es_ayudas              323    88   11.4%     5.7%   +5.8%
+   satr_de_rnd                 314   103    9.5%     4.9%   +4.7%
+   ademe_aid                   308    76   14.4%     6.6%   +7.8%
+   satr_it_rnd                 158    68    1.5%     7.4%   -5.8%
+   satr_fr_rnd                 118    43   13.1%    11.6%   +1.5%
+   vinnova_grant                93    50   26.7%    10.0%  +16.7%
+   satr_nl_rnd                  84    28    6.7%    17.9%  -11.2%
+   satr_se_rnd                  49    12    6.0%    41.7%  -35.7%
+   satr_de_equity               43    15   31.0%    33.3%   -2.3%
+   satr_it_equity               20    19   25.0%    26.3%   -1.3%
+
+sector_top (11): per-regime top-5, regimes with >=20 graded pairs
+   regime                        n  sibs    top5  uniform    lift
+   bdns_es_ayudas              323    88    8.2%     5.7%   +2.5%
+   satr_de_rnd                 314   103    8.3%     4.9%   +3.4%
+   ademe_aid                   308    76    5.8%     6.6%   -0.8%
+   satr_it_rnd                 158    68    0.0%     7.4%   -7.4%
+   satr_fr_rnd                 118    43    5.1%    11.6%   -6.5%
+   vinnova_grant                93    50   23.4%    10.0%  +13.4%
+   satr_nl_rnd                  84    28    2.4%    17.9%  -15.5%
+   satr_se_rnd                  49    12    0.0%    41.7%  -41.7%
+   satr_de_equity               43    15   27.9%    33.3%   -5.4%
+   satr_it_equity               20    19   25.0%    26.3%   -1.3%

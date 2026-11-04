@@ -1,0 +1,194 @@
+id: cdp_vc_equity
+name: cdp_vc_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a startup that CDP Venture Capital invests in as lead investor
+    in an investment round.
+  value: CDP Venture Capital acts as lead investor
+  intake_field: borrowerModel
+  quote: This guide outlines our standard approach to term sheets when CDP Venture Capital
+    acts as the lead investor in an investment round.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.1
+  verified: llm_cited
+- id: g2
+  gate_family: G4_borrower_model
+  requirement: In very early stages, investment is made via quasi-equity instruments such
+    as SAFEs or PFIs, allowing delayed entry into the cap table until a conversion event.
+  value: SAFE / PFI quasi-equity instruments for early stage
+  intake_field: developmentStage
+  quote: In the very early stages, we primarily use quasi-equity instruments such as SAFEs
+    (Simple Agreements for Future Equity) or PFIs (Participating Financial Instruments).
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.1
+  verified: llm_cited
+- id: g3
+  gate_family: G4_borrower_model
+  requirement: Equity investments are structured as a capital increase, i.e., issuance of
+    new shares or quotas subscribed by the investor, typically once the startup has reached
+    a level of maturity.
+  value: Equity via capital increase (new shares/quotas)
+  intake_field: borrowerModel
+  quote: Equity investments occur through a capital increase, meaning the issuance of new
+    shares or quotas subscribed by the investor.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+- id: g4
+  gate_family: G4_borrower_model
+  requirement: Equity investment eligibility requires the startup to have reached a threshold
+    of maturity/trust, evidenced by product, market, execution track record, and initial metrics.
+  value: 'Maturity threshold: product, market, track record, metrics'
+  intake_field: developmentStage
+  quote: there is a product, a market, initial execution track record, and often a first set
+    of metrics.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+- id: g5
+  gate_family: G4_borrower_model
+  requirement: Investment instrument choice depends on the maturity of the startup and market
+    context, ranging from quasi-equity (early stage) to equity (later stage).
+  value: Instrument varies by startup maturity
+  intake_field: developmentStage
+  quote: CDP Venture Capital employs different investment instruments depending on the maturity
+    of the startup and the market context.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.1
+  verified: llm_cited
+- id: g6
+  gate_family: G6_conditionality
+  requirement: Quasi-equity instruments include a valuation cap defining the maximum valuation
+    at which the instrument converts into shares.
+  value: Valuation cap on conversion
+  intake_field: conditionality
+  quote: they typically include a valuation cap, which sets the maximum valuation at which
+    the instrument may convert into shares.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.1
+  verified: llm_cited
+- id: g7
+  gate_family: G6_conditionality
+  requirement: Quasi-equity instruments may include a conversion floor setting a minimum conversion
+    valuation to limit dilutive impact on founders.
+  value: Conversion floor clause
+  intake_field: conditionality
+  quote: other provisions may be included, such as a conversion floor, which sets a minimum
+    conversion valuation and limits the dilutive impact on founders
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.1
+  verified: llm_cited
+- id: g8
+  gate_family: G6_conditionality
+  requirement: A Most Favored Nation clause may apply, ensuring the investor receives the
+    most favorable terms granted to any subsequent investor at conversion.
+  value: MFN clause
+  intake_field: conditionality
+  quote: Another commonly used clause is the Most Favored Nation (MFN), which ensures that,
+    at conversion, the investor receives the most favorable terms granted to any subsequent
+    investor.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.1
+  verified: llm_cited
+- id: g9
+  gate_family: G6_conditionality
+  requirement: Equity terms may include a liquidation preference ensuring the investor recovers
+    at least the invested capital before proceeds are distributed to other shareholders.
+  value: Liquidation preference
+  intake_field: conditionality
+  quote: It ensures that, primarily in the event of a sale or liquidation of the company,
+    the investor has the right to recover at least the capital invested before proceeds are
+    distributed to other shareholders.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+- id: g10
+  gate_family: G6_conditionality
+  requirement: An anti-dilution clause may recalibrate the investor's position if the company
+    raises capital at a lower valuation (down round).
+  value: Anti-dilution clause for down rounds
+  intake_field: conditionality
+  quote: The anti-dilution clause, instead, allows the investor’s position to be recalibrated
+    if the company raises capital at a lower valuation than the one at which the investor
+    originally invested (a so-called down round).
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+- id: g11
+  gate_family: G6_conditionality
+  requirement: Governance mechanisms scale with investment stage, from a non-voting board
+    observer in early stages to board seats as the company grows.
+  value: Board observer/board seat governance rights
+  intake_field: conditionality
+  quote: In the very early stages, the presence of a non-voting observer may be sufficient
+    to grant the investor a channel that ensures ongoing visibility into the company’s activities.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+- id: g12
+  gate_family: G6_conditionality
+  requirement: Governance includes reserved matters requiring active investor involvement,
+    such as bylaw amendments, extraordinary transactions, and structural changes.
+  value: Reserved matters requiring investor consent
+  intake_field: conditionality
+  quote: Beyond the Board of Directors, governance also includes reserved matters, that is,
+    decisions requiring the active involvement of investors.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+obligations:
+- requirement: Shareholders are subject to Right of First Offer (ROFO), giving the investor
+    the right to purchase shares being sold by other shareholders before third parties.
+  quote: the Right of First Offer (ROFO), the right to purchase shares being sold by other
+    shareholders before they are offered to third parties, helps maintain a coherent ownership
+    structure over time
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+- requirement: Tag-along and drag-along rights govern scenarios where shareholders decide
+    to sell their stake, protecting minority investor interests.
+  quote: Tag-along and drag-along rights are designed to transparently and orderly manage
+    scenarios in which one or more shareholders decide to sell their stake.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+- requirement: Sell mandates may be introduced to explore IPO or M&A opportunities once the
+    company reaches a certain stage of development.
+  quote: Additional mechanisms, such as sell mandates, are often introduced to explore IPO
+    or M&A opportunities once the company reaches a certain stage of development.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/12 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Not specified in the source text; investment occurs via direct negotiation of term
+    sheets with CDP Venture Capital as lead investor.
+  typical_timeline: Not specified in the source text.
+  quote: This guide outlines our standard approach to term sheets when CDP Venture Capital
+    acts as the lead investor in an investment round.
+  source:
+    file: cdp_vc_equity_term_sheet_guidelines.pdf
+    locator: cdp_vc_equity_term_sheet_guidelines.pdf#p.1
+  verified: llm_cited

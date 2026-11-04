@@ -1,0 +1,245 @@
+id: satr_sk_equity
+name: satr_sk_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-territory
+  gate_family: G1_nexus
+  requirement: Aid is provided to undertakings operating in the territory of the Slovak Republic,
+    in both less-developed and more-developed NUTS II regions.
+  value: Slovak Republic (all regions)
+  intake_field: activityCountries
+  quote: Pomoc je poskytovaná podnikom pôsobiacim na celom území Slovenskej republiky v menej
+    rozvinutých ako aj vo viac rozvinutých regiónoch.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.8
+  verified: llm_cited
+- id: g1-nexus-undertaking
+  gate_family: G1_nexus
+  requirement: Recipient must be an undertaking within the meaning of Article 107(1) TFEU
+    carrying out an economic activity of offering goods and/or services on the market, regardless
+    of legal form or financing method.
+  value: Undertaking per Art. 107(1) TFEU
+  intake_field: borrowerModel
+  quote: Za podnik sa považuje každý subjekt, ktorý vykonáva hospodársku činnosť spočívajúcu
+    v ponuke tovaru a/alebo služieb na trhu, bez ohľadu na jeho právnu formu a spôsob jeho
+    financovania.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g2-sme-size
+  gate_family: G2_size_ownership
+  requirement: Recipient must be a small undertaking meeting the definition in Annex I of
+    Regulation 651/2014 (micro, small and medium-sized enterprises).
+  value: Small enterprise (Annex I of Reg. 651/2014)
+  intake_field: turnoverBand
+  quote: spĺňajú definíciu malých podnikov uvedenú v prílohe I. Nariadenia 651/2014 definujúcu
+    mikropodniky, malé a stredné podniky (MSP), (príloha č. 1 schémy)
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g2-unlisted
+  gate_family: G2_size_ownership
+  requirement: Eligible recipients must be small unquoted undertakings (not listed on the
+    official stock exchange list, excluding alternative trading platforms).
+  value: Small unlisted undertaking
+  intake_field: ownerOver25
+  quote: Oprávnenými prijímateľmi pomoci sú malé nekótované podniky4, ktoré boli zapísané
+    do obchodného registra alebo živnostenského registra pred najviac piatimi rokmi
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g2-registration-age
+  gate_family: G2_size_ownership
+  requirement: Undertaking must have been registered in the commercial register or trade register
+    for no more than five years, not have taken over the activity of another undertaking,
+    not yet have distributed profits, and not have arisen from a concentration.
+  value: Registered ≤5 years, no profit distribution, no takeover of another business, not
+    formed via concentration
+  intake_field: foundedYear
+  quote: ktoré boli zapísané do obchodného registra alebo živnostenského registra pred najviac
+    piatimi rokmi, neprebrali činnosť iného podniku, ešte neprerozdeľovali zisky a nevznikli
+    v dôsledku koncentrácie
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g2-concentration
+  gate_family: G2_size_ownership
+  requirement: Undertakings formed through concentration of eligible undertakings remain eligible
+    for up to five years from the registration date of the oldest undertaking involved in
+    the concentration.
+  value: 'Concentration eligibility window: 5 years from oldest merging entity''s registration'
+  intake_field: foundedYear
+  quote: Podniky, ktoré vznikli v dôsledku koncentrácie medzi podnikmi oprávnenými získať
+    pomoc podľa tejto schémy sa takisto považujú za oprávnené podniky, a to až do piatich
+    rokov od dátumu zápisu do obchodného registra najstaršieho z podnikov, ktorý sa zúčastnil
+    koncentrácie.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g2-economic-unit
+  gate_family: G2_size_ownership
+  requirement: Recipient status is assessed at group level as an 'Economic Unit' - two separate
+    legal entities forming one economic unit through controlling interest or other functional,
+    economic and organisational links are treated together.
+  value: Assessed as Economic Unit (group level)
+  intake_field: institutionalOwner
+  quote: V tejto súvislosti sa prijímateľ chápe na úrovni skupiny - „Economic Unit“ - dva
+    oddelené právne subjekty, jedna hospodárska jednotka (kontrolný podiel a iné funkčné,
+    hospodárske a organizačné prepojenia).
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g2-recovery-order
+  gate_family: G2_size_ownership
+  requirement: An undertaking subject to an outstanding recovery order following a previous
+    European Commission decision declaring aid granted by the same Member State illegal and
+    incompatible with the internal market cannot be a recipient.
+  value: No outstanding EC recovery order against recipient
+  intake_field: institutionalBacking
+  quote: Prijímateľom pomoci nemôže byť podnik, voči, ktorému sa nárokuje vrátenie pomoci
+    na základe predchádzajúceho rozhodnutia Európskej komisie, v ktorom bola táto pomoc, poskytnutá
+    tým istým členským štátom, označená za neoprávnenú a nezlučiteľnú s vnútorným trhom.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g4-instrument-type
+  gate_family: G4_borrower_model
+  requirement: Aid under this scheme is provided exclusively in the form of capital or quasi-capital
+    investments; provision by loans, guarantees, grants, interest rate reductions or guarantee
+    fee reductions, or their combination with capital/quasi-capital investments, is excluded.
+  value: Capital or quasi-capital investment only; loans/guarantees/grants excluded
+  intake_field: borrowerModel
+  quote: Podľa tejto schémy je vylúčené poskytovanie pomoci formou úverov, záruk, grantov,
+    zníženia úrokových sadzieb a poplatkov za záruky alebo ich kombinácie s kapitálovými a
+    kvázi kapitálovými investíciami.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g4-legal-basis-art22
+  gate_family: G4_borrower_model
+  requirement: Aid is granted in accordance with Article 22 of Regulation 651/2014 as start-up
+    aid, applied via capital or quasi-capital investments.
+  value: Art. 22 Regulation 651/2014 start-up aid
+  intake_field: borrowerModel
+  quote: Pomoc podľa tejto schémy sa poskytuje v súlade s článkom 22 Nariadenia 651/2014 ako
+    pomoc pre začínajúce podniky, ktoré sú oprávnenými prijímateľmi pomoci podľa tejto schémy
+    pri uskutočnení investície vo forme kapitálových alebo kvázi kapitálových investícií.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.6
+  verified: llm_cited
+- id: g5-eligible-projects
+  gate_family: G5_use_of_funds
+  requirement: Eligible projects include establishing a new undertaking, financing the initial
+    stage (seed and start-up capital), expansion, strengthening general activities, realising
+    new projects, market penetration, and new development of existing undertakings.
+  value: Seed/start-up capital, expansion, general activity strengthening, new projects, market
+    penetration, new development
+  intake_field: developmentStage
+  quote: a) zakladanie nového podniku, b) financovanie počiatočnej etapy podniku (t.j. „seed“
+    kapitál a „start-up“ kapitál“), c) financovanie rozširovania podnikov, d) financovanie
+    posilňovania všeobecných činností podniku, e) financovanie realizácie nových projektov
+    prijímajúceho podniku, f) financovanie prenikania podniku na nové trhy, g) financovanie
+    nového vývoja existujúcich podnikov.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.8
+  verified: llm_cited
+- id: g5-viable-business-plan
+  gate_family: G5_use_of_funds
+  requirement: Investments must be profit-oriented and financing must be based on a viable
+    business plan detailing the product, sales development and profitability, and establishing
+    preliminary financial viability.
+  value: Viable business plan required, profit-oriented investment
+  intake_field: borrowerModel
+  quote: rizikové financovanie poskytované oprávneným podnikom sa zakladá na životaschopnom
+    podnikateľskom pláne, ktorý obsahuje podrobnosti o produkte, o vývoji predaja a rentabilite
+    a ktorý stanovuje predbežnú finančnú životaschopnosť
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.8
+  verified: llm_cited
+- id: g5-exit-strategy
+  gate_family: G5_use_of_funds
+  requirement: For each capital or quasi-capital investment there must be a clear and realistic
+    exit strategy.
+  value: Clear and realistic exit strategy required
+  intake_field: borrowerModel
+  quote: pre každú kapitálovú a kvázi kapitálovú investíciu existuje jasná a realistická stratégia
+    vystúpenia
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.8
+  verified: llm_cited
+- id: g5-ineligible-activities
+  gate_family: G5_use_of_funds
+  requirement: Certain projects are excluded from eligibility, including decommissioning/construction
+    of nuclear power plants, investments aimed at reducing greenhouse gas emissions from activities
+    listed in Annex I of Directive 2003/87/EC, and production/sale of tobacco products and
+    spirit distillates and related products.
+  value: 'Excluded: nuclear plants, ETS-covered GHG reduction investments, tobacco and spirits
+    production/sale'
+  intake_field: none
+  quote: a) odstavenie alebo výstavba jadrových elektrární; b) investície, ktorých cieľom
+    je zníženie emisií skleníkových plynov z činností uvedených v prílohe 1 k smernici 2003/87/ES,
+    c) produkcia a predaj tabakových výrobkov a liehovinových destilátov a príbuzných produktov
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.8
+  verified: llm_cited
+- id: g6-domestic-products-exclusion
+  gate_family: G6_conditionality
+  requirement: Aid may not be conditional on the beneficiary's obligation to use domestic
+    products or services, nor may it restrict the beneficiary's ability to exploit R&D&I results
+    in other EU Member States.
+  value: No domestic-use conditionality; no restriction on exploiting R&D&I results across
+    EU
+  intake_field: conditionality
+  quote: pomoc, pri ktorej je jej poskytnutie podmienené povinnosťou, aby žiadateľ / prijímateľ
+    používal domáce výrobky alebo služby
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.8
+  verified: llm_cited
+- id: g6-financial-intermediary-aml
+  gate_family: G6_conditionality
+  requirement: The scheme's implementer (financial intermediary) must comply with all applicable
+    legislation on prevention of money laundering, counter-terrorism financing and tax fraud,
+    and cannot be an entity established in a jurisdiction non-cooperative with the EU on internationally
+    agreed tax standards.
+  value: AML/CTF/tax-fraud compliance required; no non-cooperative jurisdiction intermediaries
+  intake_field: none
+  quote: Vykonávateľ schémy musí dodržiavať všetky uplatniteľné právne predpisy o predchádzaní
+    praniu špinavých peňazí, boji proti terorizmu, daňových podvodoch a pod3.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.5
+  verified: llm_cited
+obligations:
+- requirement: The agreement between the Scheme Administrator and the Scheme Implementer must
+    ensure full compliance with conditions for provision of ERDF funds and allow thorough
+    control and monitoring of operations by the Aid Provider, Administrator, Implementer and
+    other authorised audit bodies.
+  quote: Zmluva medzi Administrátorom schémy a Vykonávateľom schémy musí taktiež zabezpečovať
+    dôsledné plnenie podmienok pri poskytovaní prostriedkov z EFRR, ako aj umožňovať dôkladnú
+    kontrolu a monitorovanie operácií zo strany Poskytovateľa pomoci, Administrátora schémy,
+    Vykonávateľa schémy ako aj iných poverených audítorských orgánov.
+  source:
+    file: satr_sk_equity_seed_startup_capital.pdf
+    locator: satr_sk_equity_seed_startup_capital.pdf#p.5
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/16 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).

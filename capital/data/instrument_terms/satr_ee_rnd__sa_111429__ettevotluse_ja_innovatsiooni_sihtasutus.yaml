@@ -1,0 +1,63 @@
+id: satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus
+name: Ettevõtete digipöörde toetus (pikendamine kuni 31.12.2026)
+administering_body: see source document
+country: 'EE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-legal-entity
+  gate_family: G1_nexus
+  requirement: Applicant must be a private legal entity registered in the Estonian business
+    register.
+  value: Private legal entity registered in Estonia
+  intake_field: entityCountries
+  quote: Eesti äriregistris registreeritud eraõiguslik juriidiline isik.
+  source:
+    file: https://eis.ee/toetused/digipoorde-toetus/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g3-min-turnover
+  gate_family: G3_financial
+  requirement: The applicant's main activity area must have generated at least EUR 200,000
+    in turnover in Estonia.
+  value: 'Min turnover: EUR 200,000 in main activity area'
+  intake_field: turnoverBand
+  quote: Taotleja põhitegevusalal peab olema Eestis vähemalt 200 000 eurot
+  source:
+    file: https://eis.ee/toetused/digipoorde-toetus/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g3-de-minimis-cap
+  gate_family: G3_financial
+  requirement: De minimis aid granted must not exceed EUR 300,000.
+  value: 'De minimis cap: EUR 300,000'
+  intake_field: ticketBand
+  quote: Vähese tähtsusega abi (VTA) ei ületa 300 000 eurot.
+  source:
+    file: https://eis.ee/toetused/digipoorde-toetus/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-good-standing
+  gate_family: G1_nexus
+  requirement: Additional requirements include no relevant criminal record entries, active
+    (not terminated or suspended) business activity, tax debt under EUR 100 or deferred,
+    submitted tax declarations and annual reports, and no bankruptcy or liquidation
+    proceedings.
+  value: Good standing required (no criminal record, active status, low/deferred tax debt,
+    filings up to date, no insolvency)
+  intake_field: lossesOverHalfCapital
+  quote: puuduvad karistusregistri kanded teatud karistusseadustiku paragrahvide alusel,
+    aktiivne äritegevus (mitte lõpetatud ega peatatud), maksuvõlg alla 100 euro või
+    ajatatud, esitatud maksudeklaratsioonid ja majandusaasta aruanded, ei ole pankrotis ega
+    likvideerimisel.
+  source:
+    file: https://eis.ee/toetused/digipoorde-toetus/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

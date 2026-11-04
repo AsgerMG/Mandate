@@ -1,0 +1,183 @@
+id: almi_invest_equity
+name: almi_invest_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a Swedish startup.
+  value: Sweden
+  intake_field: entityCountries
+  quote: Almi Invest invests in Swedish startups at the pre-seed, seed and early growth stages.
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2
+  gate_family: G4_borrower_model
+  requirement: Company must be at pre-seed, seed or early growth stage.
+  value: pre-seed, seed, early growth
+  intake_field: developmentStage
+  quote: We invest in startups at an early stage &ndash; typically pre-seed, seed or early
+    growth.
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G4_borrower_model
+  requirement: Company must have a scalable business model built for rapid scaling, not just
+    organic growth.
+  value: scalable, rapid growth potential
+  intake_field: borrowerModel
+  quote: Are built for rapid scaling &ndash; not just organic growth
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G4_borrower_model
+  requirement: Company must have a team capable of executing at pace.
+  value: capable execution team required
+  intake_field: borrowerModel
+  quote: Have a team capable of executing at pace
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G4_borrower_model
+  requirement: Company must solve a clear problem for paying customers.
+  value: clear problem, paying customers
+  intake_field: borrowerModel
+  quote: Solve a clear problem for paying customers
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G1_nexus
+  requirement: Company must target a large, often international market.
+  value: large/international market
+  intake_field: activityCountries
+  quote: Target a large, often international market
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g7
+  gate_family: G4_borrower_model
+  requirement: Company must be willing to work with active owners and collaborative development.
+  value: open to active ownership
+  intake_field: borrowerModel
+  quote: Are ready to work with active owners and collaborative development
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g8
+  gate_family: G4_borrower_model
+  requirement: Company must already show some progress, such as a prototype, pilot project
+    or early customer engagement.
+  value: prototype/pilot/early traction required
+  intake_field: developmentStage
+  quote: This could include a prototype, pilot project or early customer engagement that demonstrates
+    the viability of the idea.
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g9
+  gate_family: G1_nexus
+  requirement: Venture capital is not suitable for consultancy businesses, local small businesses,
+    standalone business ideas, or companies primarily seeking loans; such applicants are excluded.
+  value: excludes consultancies, local small businesses, standalone ideas, loan-seekers
+  intake_field: borrowerModel
+  quote: 'Venture capital is generally not suitable for: Consultancy businesses Local small
+    businesses Standalone business ideas Companies primarily seeking loans'
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g10
+  gate_family: G2_size_ownership
+  requirement: Almi Invest does not invest in companies led by a single founder; at least
+    two founders or an early-stage team with defined roles is required.
+  value: minimum two founders / team required
+  intake_field: borrowerModel
+  quote: No. Almi Invest does not invest in companies led by a single founder. We invest in
+    teams because rapidly growing businesses require multiple people with complementary skills
+    and expertise.
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g11
+  gate_family: G3_financial
+  requirement: Almi Invest typically invests SEK 1-4 million in an initial funding round;
+    the GreenTech Fund invests SEK 5-10 million.
+  value: SEK 1-4 million (SEK 5-10 million GreenTech Fund)
+  intake_field: ticketBand
+  quote: Almi Invest typically invests SEK 1&ndash;4 million in an initial funding round,
+    while our GreenTech Fund invests SEK 5&ndash;10 million.
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g12
+  gate_family: G2_size_ownership
+  requirement: Almi Invest always invests as a minority shareholder.
+  value: minority shareholder only
+  intake_field: ownerOver25
+  quote: We always invest as a minority shareholder and alongside private investors.
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g13
+  gate_family: G6_conditionality
+  requirement: Almi Invest, as a state-owned venture capital company, is required to co-invest
+    alongside independent private co-investors and can never invest alone.
+  value: mandatory co-investment with private investors
+  intake_field: cofinancingBand
+  quote: As a state-owned venture capital company, we are required to invest alongside independent
+    co-investors. We can therefore never invest on our own.
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Applicant must be able to clearly explain the problem solved, value creation,
+    growth potential, team, and use of capital to reach the next milestone (investment readiness).
+  quote: What problem you solve and for whom How your solution creates value How the business
+    can grow and scale Who is behind the company How the capital will be used to achieve the
+    next milestone
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (13/13 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Not directly specified; co-investment with private investors is mandatory rather than
+    a state-aid cumulation rule.
+  quote: As a state-owned venture capital company, we are required to invest alongside independent
+    co-investors. We can therefore never invest on our own.
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: Pitch submission followed by meeting, analysis, due diligence, investment decision,
+    and execution of agreements.
+  typical_timeline: Submission of a pitch, Initial meeting, In-depth analysis, Due diligence,
+    Investment decision, Agreements and execution
+  quote: 'The process typically includes: Submission of a pitch Initial meeting In-depth analysis
+    Due diligence Investment decision Agreements and execution'
+  source:
+    file: almi_invest_criteria.html
+    locator: chunk 1
+  verified: llm_cited

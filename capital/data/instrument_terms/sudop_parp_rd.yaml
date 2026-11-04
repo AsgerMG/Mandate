@@ -1,0 +1,20 @@
+id: sudop_parp_rd
+name: Sudop Parp Rd
+administering_body: see source document
+country: PL
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-only-poland
+  gate_family: G2_size_ownership
+  requirement: Only micro, small and medium enterprises conducting business activity in the territory
+    of the Republic of Poland may apply for co-financing.
+  value: Micro/small/medium enterprise operating in Poland
+  intake_field: fteBand
+  quote: O dofinansowanie mogą ubiegać się wyłącznie mikro, mali i średni przedsiębiorcy prowadzący działalność
+    gospodarczą na terytorium Rzeczypospolitej Polskiej.
+  source:
+    file: https://www.parp.gov.pl/component/grants/grants/sciezka-smart
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

@@ -1,0 +1,379 @@
+id: innovation_fund_hbank_2024_maritime
+name: innovation_fund_hbank_2024_maritime
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Applicants must be legal entities (public or private bodies) established in
+    any country in the world (eligible countries are unrestricted).
+  value: any country in the world
+  intake_field: entityCountries
+  quote: 'be established in one of the eligible countries: any country in the world.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.12
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Natural persons are not eligible, except self-employed persons/sole traders
+    without separate legal personality.
+  value: natural persons excluded except sole traders
+  intake_field: borrowerModel
+  quote: Natural persons are NOT eligible (with the exception of self-employed persons, i.e.
+    sole traders, where the company does not have legal personality separate from that of
+    the natural person).
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.12
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Natural persons are NOT eligible (with the
+    excepti'''
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: The project itself must be physically located in an EU Member State or EEA
+    country (Norway, Iceland, Liechtenstein).
+  value: EU Member States or EEA countries (Norway, Iceland, Liechtenstein)
+  intake_field: activityCountries
+  quote: 'Projects must be located in EU Member States or EEA countries (i.e. Norway, Iceland
+
+    or Liechtenstein).'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.14
+  verified: llm_cited
+- id: G1-04
+  gate_family: G1_nexus
+  requirement: EU bodies (other than the Joint Research Centre) cannot be part of the consortium;
+    entities subject to EU restrictive measures or EU conditionality measures are not eligible
+    in any capacity.
+  value: EU bodies excluded (except JRC); restrictive/conditionality-measure entities excluded
+  intake_field: consortium
+  quote: 'EU bodies (with the exception of the European Commission Joint Research
+
+    Centre) can NOT be part of the consortium.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.13
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: Only projects with a minimum installed electrolyser capacity of at least 5
+    MWe, located in a single location (no virtual pooling), are eligible.
+  value: minimum 5 MWe, single location, no virtual pooling
+  intake_field: developmentStage
+  quote: 'Minimum installed capacity: only projects with a minimum installed capacity of
+
+    the electrolyser of at least 5 MWe are eligible.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.9
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: For the MARITIME topic, projects must supply at least 60% of their expected
+    total production volume to off-takers belonging to the maritime sector; fuel traders/intermediaries
+    and virtual agreements do not qualify as off-takers.
+  value: minimum 60% supply to maritime off-takers
+  intake_field: developmentStage
+  quote: 'Projects under this topic must supply at least 60% of their expected total volume
+
+    of production as stated in the bid to off-takers belonging to the maritime sector.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.9
+  verified: llm_cited
+- id: G2-03
+  gate_family: G2_size_ownership
+  requirement: Applicants must have stable and sufficient financial resources, and organisations
+    participating in several projects must have sufficient capacity to implement all of them;
+    financial capacity check is skipped for public bodies/international organisations or if
+    the requested grant is not more than EUR 60,000.
+  value: financial capacity required; exemptions for public bodies or grants ≤EUR 60,000
+  intake_field: turnoverBand
+  quote: 'The check will normally be done for all beneficiaries, except:
+
+    − public bodies (entities established as public body under national law, including
+
+    local, regional or national authorities) or international organisations
+
+    − if the individual requested grant amount is not more than EUR 60 000.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.15
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: Only bids not exceeding EUR 4/kg of RFNBO hydrogen produced are eligible; higher
+    bid prices are rejected as ceiling price is breached.
+  value: EUR 4/kg ceiling price
+  intake_field: ticketBand
+  quote: 'For all topics: EUR 4/kg of RFNBO hydrogen produced
+
+    Proposals with bid prices above the ceiling price will be rejected.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.14
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: For the MARITIME topic, the requested grant amount (bid price × expected yearly
+    volume × 10 years) must not exceed the topic budget.
+  value: grant amount capped at topic budget for MARITIME
+  intake_field: ticketBand
+  quote: 'For topic INNOVFUND-2024-AUC-RFNBOH2-MARITIME: not exceed the topic
+
+    budget (see section 3)'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.14
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: A completion guarantee covering 8% of the requested maximum grant amount must
+    be provided, issued by an approved bank/financial institution in the EU/EEA with a minimum
+    rating (e.g. BBB- from S&P/Fitch, Baa3 from Moody's, BBB(low) from DBRS).
+  value: completion guarantee = 8% of grant, minimum bank rating BBB-/Baa3/BBB(low)
+  intake_field: cofinancingBand
+  quote: 'A completion guarantee covering 8% of the requested maximum grant amount and
+
+    using the mandatory template will be required to avoid speculative bids.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.26
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: The grant is a unit grant reimbursing a fixed premium per unit of verified/certified
+    RFNBO hydrogen production ('pay as bid'); there is no pre-financing payment.
+  value: unit grant, fixed premium per kg, pay-as-bid, no pre-financing
+  intake_field: borrowerModel
+  quote: 'The grant will be a unit grant. This means that it will reimburse a fixed amount
+    per unit,
+
+    based on unit contributions, corresponding to the fixed premium per unit of production
+
+    of the final product as stated in the bid (‘pay as bid’).'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.23
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Funds may only support installation of new, additional RFNBO hydrogen production
+    capacity where start of works had not yet taken place at the time of grant application,
+    plus verified/certified production over up to 10 years.
+  value: new capacity only, no prior start of works, up to 10 years production
+  intake_field: none
+  quote: 'Installation of new, additional, RFNBO hydrogen production capacity (i.e. hydrogen
+
+    production capacity for which at the time of the grant application the start of works
+    did
+
+    not yet take place) as well as the verified and certified production of RFNBO hydrogen'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.9
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: Projects must limit sourcing of electrolyser stacks (surface treatment, cell
+    unit production, or stack assembly) carried out in China to no more than 25% (in MWe)
+    of total electrolyser capacity as expressed in the bid.
+  value: max 25% (MWe) China-sourced electrolyser stacks
+  intake_field: none
+  quote: 'Projects must limit the sourcing of electrolyser stacks with surface treatment or
+    cell
+
+    unit production or stack assembly carried out in China to no more than 25% (in MWe)
+
+    of the total electrolyser capacity as expressed in the bid (see section 9).'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.9
+  verified: llm_cited
+- id: G5-03
+  gate_family: G5_use_of_funds
+  requirement: Projects must comply with ISO 22734:2019 for hydrogen generators using water
+    electrolysis and must keep operational control with an EU/EEA-established entity, storing
+    data within the EU/EEA.
+  value: ISO 22734:2019 compliance; EU/EEA operational control and data storage
+  intake_field: none
+  quote: 'Projects must ensure the security of the funded installations by keeping the operational
+
+    control of the installation with an entity established in the EU/EEA and by storing the
+
+    data within the EU/EEA (see section 10).'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.9
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: For the capacity bid, works must not have started by the time of application
+    submission (fair bid condition).
+  value: no start of works before submission
+  intake_field: conditionality
+  quote: 'for the capacity to which the bid refers, the works must not have started by the
+
+    time of submission of this application (in line with the definitions in paragraph
+
+    82 of the Guidelines on State aid for climate, environmental protection and
+
+    energy34)'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.26
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: All consortium partners must comply at all times with the Deggendorf rule,
+    excluding undertakings subject to a state aid recovery obligation.
+  value: Deggendorf rule compliance required
+  intake_field: conditionality
+  quote: 'all partners in the project consortium must at all times before and during the
+
+    project implementation be in compliance with the Deggendorf rule (Deggendorf
+
+    rule excludes undertakings that have received incompatible state aid and are
+
+    subject to a state aid recovery obligation) .'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.26
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: Applicants subject to an EU exclusion decision or in defined exclusion situations
+    (bankruptcy, tax/social security breach, grave professional misconduct, fraud/corruption,
+    etc.) cannot participate.
+  value: standard EU financial regulation exclusion grounds
+  intake_field: conditionality
+  quote: 'Applicants which are subject to an EU exclusion decision or in one of the following
+
+    exclusion situations that bar them from receiving EU funding can NOT participate'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.16
+  verified: llm_cited
+obligations:
+- requirement: Financial close must be reached within 2.5 years after grant signature, or
+    the grant may be terminated and the completion guarantee called.
+  quote: 'Please be aware that financial close must be reached within 2.5 years after grant
+
+    signature (required as deliverable for WP 1; see above). If this is not achieved within
+
+    the required time-limit, we may terminate the grant agreement and call the completion
+
+    guarantee (see art 32 and Annex 5).'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.24
+  verified: llm_cited
+- requirement: Entry into operation must be reached within 5 years after grant signature with
+    capacity matching the bid, or the grant will be terminated and the guarantee called.
+  quote: 'Please be aware that entry into operation must be reached within 5 years after grant
+
+    signature and that the project must at that moment be able to demonstrate a
+
+    nameplate capacity equal to the capacity expressed in the bid (required as deliverable
+
+    for WP 2; see above).'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.24
+  verified: llm_cited
+- requirement: After entry into operation, the installation must operate for at least 10 years
+    (unless the committed volume is reached earlier under production flexibility rules).
+  quote: 'After entry into operation, the installation must operate for at least 10 years
+    (unless
+
+    the total volume committed to in Annex 1 of the Grant Agreement is reached earlier
+
+    due to the production flexibility rules; see above).'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.24
+  verified: llm_cited
+- requirement: Produced volume must not fall on average below 30% of expected yearly average
+    volume for three consecutive years, calculated on a rolling 3-year basis, or grant may
+    be terminated/reduced.
+  quote: 'The volume produced must be verified and certified (required as deliverable for
+    WP
+
+    3 -22; see above) and not fall on average below 30% of the expected yearly average
+
+    volume as stated in the bid for three consecutive years.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.24
+  verified: llm_cited
+- requirement: For the MARITIME topic, at least 60% of produced hydrogen volume must be supplied
+    to maritime off-takers and verified/certified, or the grant may be reduced.
+  quote: 'In addition, for topic INNOVFUND-2024-AUC-RFNBOH2-MARITIME, supply to an off-
+
+    taker belonging to the maritime sector must be verified and certified (required as
+
+    deliverable for the final WP; see above) and must be at least 60% of the volume of
+
+    hydrogen produced during the implementation period.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.24
+  verified: llm_cited
+- requirement: Beneficiaries must certify that hydrogen produced achieves at least 70% GHG
+    savings under the RED Delegated Act, or the grant may be reduced.
+  quote: 'The beneficiaries will need to provide certification that the total volume of hydrogen
+
+    produced by the supported electrolyser capacity achieves at least 70% GHG savings according
+    to the rules set out in the Delegated Act C(2023)1086
+
+    supplementing the Renewable Energy Directive 2018/2001'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.24
+  verified: llm_cited
+- requirement: A completion guarantee letter of intent must be submitted at proposal submission
+    and the actual guarantee provided within two months of the evaluation result letter, or
+    the application may be considered withdrawn.
+  quote: 'The completion guarantee must be provided within two months of receiving the evaluation
+
+    result letter (invitation to grant preparation). If no guarantee is received within this
+
+    time-limit, the granting authority may consider the application as withdrawn and decide
+
+    to terminate grant preparation.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.27
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/17 gates, 7/7 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: There is a strict prohibition of double funding from the EU budget; any given action
+    may receive only one grant from the EU budget, and specific combination rules apply per
+    Annex 3 (e.g. no combination with public support for RFNBO CAPEX/OPEX or ETS indirect
+    cost compensation).
+  quote: 'There is a strict prohibition of double funding from the EU budget. Any given action
+
+    may receive only one grant from the EU budget.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.38
+  verified: llm_cited
+application:
+  channel: Funding & Tenders Portal Electronic Submission System (online only)
+  typical_timeline: One-stage submission with one-step evaluation; standard procedure, followed
+    by grant preparation with legal checks before signature.
+  quote: 'Proposals must be submitted electronically via the Funding & Tenders Portal Electronic
+
+    Submission System (accessible via the Topic page in the Calls for proposals section).
+
+    Paper submissions are NOT possible.'
+  source:
+    file: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf
+    locator: innovfund_2024_hydrogen_auction_general_maritime_call_document.pdf#p.11
+  verified: llm_cited

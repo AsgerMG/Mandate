@@ -1,0 +1,120 @@
+id: eu_sme_definition
+name: EU SME definition (GBER Annex I)
+administering_body: see source document
+country: EU
+capital_type: framework
+borrower_models:
+- operating_company
+status: draft
+gates:
+- id: g1
+  gate_family: G2_size_ownership
+  requirement: To qualify as an SME, the enterprise must employ fewer than 250 persons and
+    have annual turnover not exceeding EUR 50 million and/or annual balance sheet total not
+    exceeding EUR 43 million.
+  value: <250 FTE; turnover ≤ EUR 50M and/or balance sheet ≤ EUR 43M
+  intake_field: fteBand
+  quote: The category of micro, small and medium-sized enterprises (‘SMEs’) is made up of
+    enterprises which employ fewer than 250 persons and which have an annual turnover not
+    exceeding EUR 50 million, and/or an annual balance sheet total not exceeding EUR 43 million.
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.174
+  verified: llm_2pass
+- id: g2
+  gate_family: G2_size_ownership
+  requirement: To qualify as a small enterprise, the enterprise must employ fewer than 50
+    persons and have annual turnover and/or annual balance sheet total not exceeding EUR 10
+    million.
+  value: <50 FTE; turnover and/or balance sheet ≤ EUR 10M
+  intake_field: turnoverBand
+  quote: Within the SME category, a small enterprise is defined as an enterprise which employs
+    fewer than 50 persons and whose annual turnover and/or annual balance sheet total does
+    not exceed EUR 10 million.
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.174
+  verified: llm_2pass
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: To qualify as a micro-enterprise, the enterprise must employ fewer than 10
+    persons and have annual turnover and/or annual balance sheet total not exceeding EUR 2
+    million.
+  value: <10 FTE; turnover and/or balance sheet ≤ EUR 2M
+  intake_field: balanceBand
+  quote: Within the SME category, a micro-enterprise is defined as an enterprise which employs
+    fewer than 10 persons and whose annual turnover and/or annual balance sheet total does
+    not exceed EUR 2 million.
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.174
+  verified: llm_2pass
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: An enterprise cannot be considered autonomous (and must count partner enterprise
+    data proportionally) if an upstream enterprise holds, alone or jointly with linked enterprises,
+    25% or more of its capital or voting rights, unless the holder falls within specified
+    exempt investor categories.
+  value: 25% or more capital/voting rights held by another enterprise triggers partner-enterprise
+    aggregation
+  intake_field: ownerOver25
+  quote: an enterprise (upstream enterprise) holds, either solely or jointly with one or more
+    linked enterprises within the meaning of paragraph 3, 25 % or more of the capital or voting
+    rights of another enterprise (downstream enterprise).
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.174
+  verified: false
+  verify_note: The quote only defines what constitutes an 'upstream enterprise' holding 25%
+    or more of capital/voting rights in a 'downstream enterprise.' It does not mention autonomy
+    status, partner-enterprise aggregation requirements, or exempt investor categories - these
+    are external claims not established by this quote alone.
+- id: g5
+  gate_family: G2_size_ownership
+  requirement: An enterprise cannot be considered an SME if 25% or more of its capital or
+    voting rights are directly or indirectly controlled, jointly or individually, by one or
+    more public bodies (except for specified exempt investors).
+  value: 25% or more public-body control disqualifies SME status
+  intake_field: institutionalOwner
+  quote: Except in the cases set out in paragraph 2, second subparagraph, an enterprise cannot
+    be considered an SME if 25 % or more of the capital or voting rights are directly or indirectly
+    controlled, jointly or individually, by one or more public bodies.
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.175
+  verified: llm_2pass
+- id: g6
+  gate_family: G2_size_ownership
+  requirement: Enterprises are classified as 'linked' if one has a majority of voting rights,
+    the right to appoint/remove a majority of the management body, a dominant influence via
+    contract or statute, or controls a majority of voting rights via agreement with other
+    shareholders in another enterprise; data of linked enterprises must be aggregated 100%.
+  value: Majority voting rights / control relationship = linked enterprise, 100% data aggregation
+    required
+  intake_field: ownerOver25
+  quote: '‘Linked enterprises’ are enterprises which have any of the following relationships
+    with each other: (a) an enterprise has a majority of the shareholders'' or members'' voting
+    rights in another enterprise;'
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.175
+  verified: false
+  verify_note: quote not found verbatim in document
+- id: g7
+  gate_family: G2_size_ownership
+  requirement: For non-autonomous enterprises, headcount and financial data must be calculated
+    by adding proportional data of partner enterprises and 100% of the data of linked enterprises
+    to the enterprise's own accounts.
+  value: 'Aggregation rule: proportional for partners, 100% for linked enterprises'
+  intake_field: ownerOver25
+  quote: To the data referred to in the first subparagraph are added the data of any partner
+    enterprise of the enterprise in question situated immediately upstream or downstream from
+    it. Aggregation is proportional to the percentage interest in the capital or voting rights
+    (whichever is greater).
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.176
+  verified: false
+  verify_note: quote not found verbatim in document
+verify_by: '2026-10-01'
+notes: Extracted 4/7 gates at llm_2pass by ETL/terms/extract_terms.py.

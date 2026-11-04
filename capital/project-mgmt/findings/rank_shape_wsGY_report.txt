@@ -1,0 +1,206 @@
+# wsGY — how much of the 46 points is reachable by reordering, and where the answer sits when we lose it
+
+```
+startedAt          2026-08-13T17:34:05.990Z
+finishedAt         2026-08-13T17:48:58.642Z
+set                __recallSetDescribed.json
+split              holdout
+seed               20260806
+n                  897
+populationSize     897
+fingerprint        13cb71cf3a1d1847
+store              postgres
+instruments        1088
+levers             {"VERDICT_POOL":40,"WRITER_CANDIDATE_CAP":8,"publishedCap":7}
+ranker             ranker: all 828 request(s) on EMBEDDING
+arms               ["score_only","sorted","collapsed","shipped","oracle"]
+features           ["relevance","usedInField","fitDemoted","proximity","totalEur","eventCount","companyCount","awardP50","lastYear","peerKnown","textLen"]
+```
+
+population    897 founder(s) — the SAME draw as `one_funnel/latest.md`, one per
+              company, held out, described, drawn BEFORE the offerability cut.
+              Every share below is over this denominator unless it says otherwise.
+
+## 1. The ladder, under every arm, on one population
+
+`gates_pass` is the same set for every arm — an arm is a PERMUTATION of the
+accessible pool and cannot add or remove a founder from it. Everything below it
+is the arm's own.
+
+```
+  offerable + screened + gates_pass   774/897  86.3% +/-2.3
+```
+
+| cut | score_only | sorted | collapsed | shipped | oracle |
+|---|---:|---:|---:|---:|---:|
+| `pool_cut` | 582 (64.9%) | 592 (66.0%) | 568 (63.3%) | 643 (71.7%) | 774 (86.3%) |
+| `writer_cap` | 318 (35.5%) | 334 (37.2%) | 332 (37.0%) | 361 (40.2%) | 774 (86.3%) |
+| `published_7` | 296 (33.0%) | 317 (35.3%) | 316 (35.2%) | 346 (38.6%) | 774 (86.3%) |
+| `top_6` | 255 (28.4%) | 292 (32.6%) | 291 (32.4%) | 320 (35.7%) | 774 (86.3%) |
+| `top_5` | 226 (25.2%) | 263 (29.3%) | 261 (29.1%) | 296 (33.0%) | 774 (86.3%) |
+
+## 2. The oracle ceiling — the won fund placed FIRST in the accessible pool
+
+```
+  oracle, six rows        774/897  86.3% +/-2.3
+  shipped, six rows       320/897  35.7% +/-3.1
+  the gap                 50.6 points  <- EVERYTHING any ordering work can ever take
+  gates_pass              86.3%   the arm's own ceiling
+  ceiling if only the 40-row CUT is reordered   643/897  71.7%
+                          — what any re-ranking of the menu can reach, model included
+  ceiling if the whole POOL is reordered       774/897  86.3%   — what a better SCORE can reach
+  oracle shortfall        0 founder(s) whose won fund was FIRST in the
+                          accessible pool and STILL not in the six
+```
+
+## 3. Where the won fund actually sits when we lose it
+
+The rank is in the ACCESSIBLE POOL, shipped order — the quantity every cut below
+`gates_pass` reads. **41+ is outside the 40-row pool: no permutation of a 40-row
+list contains it**, so it is unreachable by reordering the cut, at any price.
+
+**lost at `pool_cut` (n=131)**
+```
+    p25 54   MEDIAN 72   p75 93   p90 103   max 121
+
+    7-8         0    0.0%  
+    9-15        0    0.0%  
+    16-25       0    0.0%  
+    26-40       0    0.0%  
+    41-60      45   34.4%  ##############
+    61-100     69   52.7%  #####################
+    101+       17   13.0%  #####
+
+    places the answer must CLIMB to reach the six:  p25 48  MEDIAN 66  p75 87
+
+    ranks 9-15  0 (0.0%)  <- what a small ordering gain reaches
+    ranks <=40  0 (0.0%)  <- a MODEL can see these
+    ranks 41+   131 (100.0%)  <- no reordering of the 40 reaches these
+```
+
+**lost at `writer_cap` (n=282)**
+```
+    p25 15   MEDIAN 21   p75 30   p90 35   max 40
+
+    7-8         0    0.0%  
+    9-15       75   26.6%  ###########
+    16-25      92   32.6%  #############
+    26-40     115   40.8%  ################
+    41-60       0    0.0%  
+    61-100      0    0.0%  
+    101+        0    0.0%  
+
+    places the answer must CLIMB to reach the six:  p25 9  MEDIAN 15  p75 24
+
+    ranks 9-15  75 (26.6%)  <- what a small ordering gain reaches
+    ranks <=40  282 (100.0%)  <- a MODEL can see these
+    ranks 41+   0 (0.0%)  <- no reordering of the 40 reaches these
+```
+
+**ALL lost below six rows (n=454)**
+```
+    p25 15   MEDIAN 27   p75 46   p90 86   max 121
+
+    7-8        41    9.0%  ####
+    9-15       75   16.5%  #######
+    16-25      92   20.3%  ########
+    26-40     115   25.3%  ##########
+    41-60      45    9.9%  ####
+    61-100     69   15.2%  ######
+    101+       17    3.7%  #
+
+    places the answer must CLIMB to reach the six:  p25 9  MEDIAN 21  p75 40
+
+    ranks 9-15  75 (16.5%)  <- what a small ordering gain reaches
+    ranks <=40  323 (71.1%)  <- a MODEL can see these
+    ranks 41+   131 (28.9%)  <- no reordering of the 40 reaches these
+```
+
+## 4. What the constraint stack costs, at the cut, on the shipped score
+
+Each arm is the one above it plus exactly one mechanism, so a delta is
+attributable. Paired McNemar on the same founders, at six rows.
+
+```
+  score_only -> sorted
+    the two boolean tiers (usedInField, fitDemoted)
+    six rows  28.4% -> 32.6%   delta +4.1 points
+         McNemar(signed) z = +4.39  on 71 discordant (sorted 54, score_only 17; both 238, neither 588)  exact p = <0.001  -- sorted wins, outside its own noise
+
+  sorted -> collapsed
+    the display-name collision demotion
+    six rows  32.6% -> 32.4%   delta -0.1 points
+         McNemar(signed) z = -0.33  on 9 discordant (collapsed 4, sorted 5; both 287, neither 601)  exact p = 1.000  -- only 9 discordants, READ THE EXACT p, not the z
+
+  collapsed -> shipped
+    peer precedence + the notified-scheme dedupe
+    six rows  32.4% -> 35.7%   delta +3.2 points
+         McNemar(signed) z = +2.04  on 203 discordant (shipped 116, collapsed 87; both 204, neither 490)  exact p = 0.049  -- shipped wins, outside its own noise
+
+  score_only -> shipped
+    **THE WHOLE STACK** — the discount on any pure-reordering upper bound
+    six rows  28.4% -> 35.7%   delta +7.2 points
+         McNemar(signed) z = +4.19  on 241 discordant (shipped 153, score_only 88; both 167, neither 489)  exact p = <0.001  -- shipped wins, outside its own noise
+
+```
+
+### The same arms read a second way — the trade EXACT@6 cannot see
+
+wsBU's unclipping arm bought +0.7 EXACT@5 for −6 REGIME@5 and −6 CHANNEL@5.
+An arm judged on the exact fund alone cannot tell a gain from a trade, so the
+same six rows are read again here. REGIME credits a SIBLING of the won fund and
+is deliberately NOT a funnel row — it breaks nesting. It is a second question.
+
+| arm | EXACT@6 | REGIME@6 | CHANNEL@6 |
+|---|---:|---:|---:|
+| `score_only` | 28.4% | 60.5% | 73.4% |
+| `sorted` | 32.6% | 62.7% | 75.5% |
+| `collapsed` | 32.4% | 62.2% | 75.1% |
+| `shipped` | 35.7% | 69.0% | 82.1% |
+| `oracle` | 86.3% | 87.6% | 89.3% |
+
+## 5. What the score puts above the answer
+
+Every number is a PERCENTILE WITHIN THAT FOUNDER'S OWN ACCESSIBLE POOL, averaged
+over founders. 0.50 = the middle of the pool, i.e. no preference. That is what
+separates "the score prefers big funds" from "big funds are what the pool is made
+of" — a raw mean cannot.
+
+`shown` is the six rows the founder reads; `won` is the fund they actually took.
+`relevance` is the shipped score itself and is the CONTROL: if the shown rows do
+not sit above the won fund on it, the loss is not this score's ordering at all.
+
+```
+  mean accessible pool                     79.3 rows
+  percentile a row needs to be in the six  0.924
+```
+
+| feature | MISS shown | MISS won | gap | HIT shown | HIT won | gap |
+|---|---:|---:|---:|---:|---:|---:|
+| `relevance` | 0.672 | 0.653 | +0.019 | 0.654 | 0.734 | -0.080 |
+| `usedInField` | 0.544 | 0.531 | +0.013 | 0.559 | 0.627 | -0.068 |
+| `fitDemoted` | 0.485 | 0.494 | -0.009 | 0.463 | 0.466 | -0.003 |
+| `proximity` | 0.552 | 0.545 | +0.007 | 0.562 | 0.703 | -0.142 |
+| `totalEur` | 0.532 | 0.500 | +0.032 | 0.490 | 0.643 | -0.153 |
+| `eventCount` | 0.543 | 0.516 | +0.026 | 0.542 | 0.669 | -0.128 |
+| `companyCount` | 0.547 | 0.511 | +0.035 | 0.548 | 0.674 | -0.126 |
+| `awardP50` | 0.554 | 0.507 | +0.047 | 0.520 | 0.385 | +0.134 |
+| `lastYear` | 0.520 | 0.536 | -0.016 | 0.530 | 0.607 | -0.078 |
+| `peerKnown` | 0.762 | 0.602 | +0.160 | 0.749 | 0.817 | -0.068 |
+| `textLen` | 0.475 | 0.490 | -0.015 | 0.502 | 0.449 | +0.053 |
+
+MISS n=454   HIT n=320
+
+## 6. Which mechanism put a row above the answer that the answer OUTSCORED
+
+```
+  founders with >=1 row above them on a BOOLEAN TIER alone   40/774 (5.2%)   891 rows in total
+  founders with >=1 row above them on PEER/DEDUPE alone      529/774 (68.3%)   7799 rows in total
+
+  founders whose won fund is TIED on the score with >=1 other row  0/774 (0.0%)
+
+  peer branch specific   396 founders   six rows  38.4%
+  peer branch flat       378 founders   six rows  44.4%
+  peer branch none         0 founders   six rows   0.0%
+```
+

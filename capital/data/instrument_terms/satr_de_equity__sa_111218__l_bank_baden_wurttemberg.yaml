@@ -1,0 +1,51 @@
+id: satr_de_equity__sa_111218__l_bank_baden_wurttemberg
+name: Gründungs- und Wachstumsfinanzierung Baden-Württemberg (GuW-BW) [BW/WM]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: Eligible applicants are founders and SMEs per the EU definition (fewer than 250 employees,
+    at most EUR 50m annual turnover or at most EUR 43m annual balance sheet total) with an establishment
+    or investment project in Baden-Württemberg.
+  value: SME (<250 FTE, <=EUR50m turnover/<=EUR43m balance) with BW establishment
+  intake_field: fteBand
+  quote: Antragsberechtigt sind Existenzgründerinnen und Existenzgründer sowie kleine und mittlere Unternehmen
+    (KMU) im Sinne der EU-Definition (weniger als 250 Mitarbeiter, höchstens 50 Mio. Euro Jahresumsatz
+    oder höchstens 43 Mio. Euro Jahresbilanzsumme) mit einer Betriebsstätte oder Investitionsvorhaben
+    in Baden-Württemberg.
+  source:
+    file: https://www.l-bank.de/produkte/wirtschaftsfoerderung/guw-bw.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-freelancers-eligible
+  gate_family: G1_nexus
+  requirement: Freelance professionals (Freiberuflich Tätige) are also entitled to apply.
+  value: Freelancers eligible
+  intake_field: borrowerModel
+  quote: Freiberuflich Tätige sind ebenfalls antragsberechtigt.
+  source:
+    file: https://www.l-bank.de/produkte/wirtschaftsfoerderung/guw-bw.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-young-company-bonus
+  gate_family: G2_size_ownership
+  requirement: For the Young Enterprise Bonus, the applicant must have been self-employed for less than
+    5 years or the company must have been active on the market for less than 5 years.
+  value: 'Young-company bonus: founded/self-employed <5 years'
+  intake_field: foundedYear
+  quote: 'Für den Junge-Unternehmen-Bonus gilt zusätzlich: Sie haben sich vor weniger als 5 Jahren selbstständig
+    gemacht oder Ihr Unternehmen ist seit weniger als 5 Jahren am Markt aktiv.'
+  source:
+    file: https://www.l-bank.de/produkte/wirtschaftsfoerderung/guw-bw.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

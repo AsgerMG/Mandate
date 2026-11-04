@@ -1,0 +1,125 @@
+===== PRECISION — BEFORE =====
+contradicted instruments on this corpus: 7 (6 of them offerable)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          5027 (70.9%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        2068 (29.1%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+ranker: all 295 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 300
+
+██ founders shown at least one CONTRADICTED fund in their top 5: 24/300 (8.0% +/-3.1)
+   contradicted rows published: 24 of 1500 rows shown (1.60%)
+     Efuzif (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     TopQM-Systems AG (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     ASINCO GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     comuneo UG (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     BRIGTHTFLOW (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     ANAXAGO (FR, software_data_ai) <- Soutien à la modernisation des industries techniques e
+     Autobahn Security GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+     SYSGO GmbH (DE, software_data_ai) <- Bayerische Richtlinien für die Förderung von Film-, Fe
+
+===== PRECISION — AFTER =====
+contradicted instruments on this corpus: 0 (0 of them offerable)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          5027 (70.9%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        2068 (29.1%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+ranker: all 295 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 300
+
+██ founders shown at least one CONTRADICTED fund in their top 5: 0/300 (0.0% +/-0.0)
+   contradicted rows published: 0 of 1500 rows shown (0.00%)
+
+===== ALEPH ALPHA — BEFORE =====
+ranker: all 1 request(s) on EMBEDDING
+
+Aleph Alpha (Germany) — the rows the writer is handed
+
+  1. Quantencomputer-Demonstrationsaufbauten
+       DE  grant  mix semiconductors_electronics 50%
+  2. NRW.SeedCon
+       DE  grant  mix software_data_ai 84%
+  3. Richtlinie zur Förderung innovativer Netzarchitekturen im Mobilfunk 
+       DE  grant  mix software_data_ai 80%
+  4. Bayerische Richtlinien für die Förderung von Film-, Fernseh- und and
+       DE  loan  mix software_data_ai 71%
+  5. Richtlinie zur Fördermaßnahme: "KMU-innovativ: Informations- und Kom
+       DE  grant  mix software_data_ai 72%
+  6. Programm zur Förderung von Forschung, Innovationen und Technologien 
+       DE  grant  mix software_data_ai 60%
+  7. Förderrichtlinie Business-Angel-Bonus JTF 2021–2027 [SN]
+       DE  grant  mix software_data_ai 42%
+  8. Bayerische Richtlinien für die Förderung von Film-, Fernseh- und and
+       DE  loan  mix software_data_ai 69%
+  9. Förderrichtlinie
+„Digitalisierung der Fahrzeughersteller und Zuliefe
+       DE  grant  mix software_data_ai 44%
+  10. EXIST Forschungstransfer (Förderphase II) [BMWK VIIC4]
+       DE  grant  mix software_data_ai 51%
+  11. Änderung der Förderrichtlinie für die Bundesförderung im Bereich Clo
+       DE  grant  mix software_data_ai 55%
+  12. Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB]
+       DE  loan  mix software_data_ai 56%
+  13. Zentrales Innovationsprogramm Mittelstand [BMWK VIB4]
+       DE  grant  mix industrial_manufacturing 32%
+  14. FRL MINT-Fachkräfteprogramm ESF Plus 2021–2027 [SN]
+       DE  grant  mix other 45%
+  15. Richtlinie zur Förderung der „6G-Industrieprojekte zur Erforschung v
+       DE  grant  mix software_data_ai 67%
+  16. Digitalisierung der Materialforschung in Deutschland „MaterialDigita
+       DE  grant  mix software_data_ai 34%
+  17. Zentrales Innovationsprogramm Mittelstand (ZIM)
+       DE  grant  mix industrial_manufacturing 41%
+  18. Richtlinie zur Förderung von Forschungs- und Entwicklungsprojekten i
+       DE  grant  mix mobility_transport 46%
+
+===== ALEPH ALPHA — AFTER =====
+ranker: all 1 request(s) on EMBEDDING
+
+Aleph Alpha (Germany) — the rows the writer is handed
+
+  1. Quantencomputer-Demonstrationsaufbauten
+       DE  grant  mix semiconductors_electronics 50%
+  2. NRW.SeedCon
+       DE  grant  mix software_data_ai 84%
+  3. Richtlinie zur Förderung innovativer Netzarchitekturen im Mobilfunk 
+       DE  grant  mix software_data_ai 80%
+  4. Bayerische Richtlinien für die Förderung von Film-, Fernseh- und and
+       DE  loan  mix other 100%
+  5. Richtlinie zur Fördermaßnahme: "KMU-innovativ: Informations- und Kom
+       DE  grant  mix software_data_ai 72%
+  6. Programm zur Förderung von Forschung, Innovationen und Technologien 
+       DE  grant  mix software_data_ai 60%
+  7. Förderrichtlinie Business-Angel-Bonus JTF 2021–2027 [SN]
+       DE  grant  mix software_data_ai 38%
+  8. Bayerische Richtlinien für die Förderung von Film-, Fernseh- und and
+       DE  loan  mix other 100%
+  9. Förderrichtlinie
+„Digitalisierung der Fahrzeughersteller und Zuliefe
+       DE  grant  mix software_data_ai 44%
+  10. EXIST Forschungstransfer (Förderphase II) [BMWK VIIC4]
+       DE  grant  mix software_data_ai 51%
+  11. Änderung der Förderrichtlinie für die Bundesförderung im Bereich Clo
+       DE  grant  mix software_data_ai 55%
+  12. Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB]
+       DE  loan  mix other 100%
+  13. Zentrales Innovationsprogramm Mittelstand [BMWK VIB4]
+       DE  grant  mix industrial_manufacturing 31%
+  14. FRL MINT-Fachkräfteprogramm ESF Plus 2021–2027 [SN]
+       DE  grant  mix other 46%
+  15. Richtlinie zur Förderung der „6G-Industrieprojekte zur Erforschung v
+       DE  grant  mix software_data_ai 67%
+  16. Digitalisierung der Materialforschung in Deutschland „MaterialDigita
+       DE  grant  mix software_data_ai 34%
+  17. Zentrales Innovationsprogramm Mittelstand (ZIM)
+       DE  grant  mix industrial_manufacturing 40%
+  18. Richtlinie zur Förderung von Forschungs- und Entwicklungsprojekten i
+       DE  grant  mix mobility_transport 42%

@@ -1,0 +1,45 @@
+id: satr_lv_rnd__sa_103894__centrala_finansu_un_ligumu_agentura
+name: Latvijas Atveseļošanas un noturības mehānisma plāna 5.1.r. reformu un investīciju virziena "Produktivitātes
+  paaugstināšana caur investīciju apjoma palielināšanu P&A" 5.1.1.r. reformas "Inovāciju pārvaldība un
+  privāto P&A investīciju motivācija" 5.1.1.2.i. investīcijas "Atbalsta instruments inovāciju klasteru
+  attīstībai" īstenošanas noteikumi kompetences centru ietvarosnoteikumi kompetences centru ietvaros
+administering_body: see source document
+country: LV
+capital_type: unknown
+status: draft
+gates:
+- id: g1-closed-list-of-competence-centres
+  gate_family: G1_nexus
+  requirement: Project applications may only be submitted by a closed, named list of eight competence
+    centres (limited liability companies), such as 'LEO pētījumu centrs', the Latvian Food Competence
+    Centre, the IT Competence Centre, the Forestry Sector Competence Centre, the Mechanical Engineering
+    Competence Centre, the Pharmacy/Biomedicine/Medical Technology Competence Centre, ETKC, and VMKC.
+  value: Closed list of 8 named competence-centre applicants
+  intake_field: borrowerModel
+  quote: '14. Investīcijas ietvaros projekta iesniegumus var iesniegt šādi kompetences centri:
+
+    14.1. sabiedrība ar ierobežotu atbildību "LEO pētījumu centrs";
+
+    14.2. sabiedrība ar ierobežotu atbildību "Latvijas pārtikas kompetences centrs";
+
+    14.3. sabiedrība ar ierobežotu atbildību "IT Kompetences centrs";
+
+    14.4. sabiedrība ar ierobežotu atbildību "Meža nozares kompetences centrs";
+
+    14.5. sabiedrība ar ierobežotu atbildību "Mašīnbūves kompetences centrs";
+
+    14.6. sabiedrība ar ierobežotu atbildību "Farmācijas, biomedicīnas un medicīnas tehnoloģiju Kompetences
+    centrs";
+
+    14.7. sabiedrība ar ierobežotu atbildību "ETKC";
+
+    14.8. sabiedrība ar ierobežotu atbildību "VMKC".'
+  source:
+    file: https://likumi.lv/ta/id/333825
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (1/1 gates passed mechanical verbatim
+  check -> llm_cited).

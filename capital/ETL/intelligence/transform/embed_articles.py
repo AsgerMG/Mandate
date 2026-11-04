@@ -1,0 +1,277 @@
+"""Chunk + embed hydrated articles for local vector retrieval (embed step).
+
+Architecture (ported from a proven prior design):
+  * Model: small multilingual sentence-embedding model via fastembed — ONNX on
+    CPU, entirely local, no API key, no network call after the one-time model
+    download (~220MB). Default: paraphrase-multilingual-MiniLM-L12-v2 (384-dim;
+    the corpus mixes EN/DE/FR so an English-only bge-small won't do). A hosted
+    model (Voyage, OpenAI) is a documented drop-in — implement the Embedder
+    protocol (embed(texts) -> list[list[float]], expose .dim) and swap it in
+    get_embedder(). Override via SIGNALS_EMBED_MODEL env var.
+  * Storage: sqlite-vec vec0 virtual table in data/signals.sqlite. The
+    dimension is config-driven (embedding_meta table records model+dim);
+    changing models means DROP chunk_embeddings + re-embed everything —
+    vectors from different models are not comparable, enforced at startup.
+  * Chunking (before embedding): ~1,500-character passages with ~200-character
+    overlap, paragraph-aware, each carrying exact char_start/char_end offsets
+    back into articles.raw_text — that's what lets a generated claim later
+    cite an exact span, not just "the article".
+  * The embed step is explicit and RESUMABLE: chunks lacking an embedding row
+    are found by anti-join, processed in batches of 128, committed per batch.
+    Kill it anytime — the next run picks up where it left off. Monotonic
+    progress, not a fragile all-or-nothing job.
+
+Retrieval lives in ETL/lib/signals_retrieval.py (semantic_search +
+topic_passages — the guaranteed-coverage path for must-cover topics).
+
+Usage:
+  python3 ETL/intelligence/transform/embed_articles.py status
+  python3 ETL/intelligence/transform/embed_articles.py run [--limit N]
+  python3 ETL/intelligence/transform/embed_articles.py query "text" [-k 5]
+"""
+from __future__ import annotations
+
+# --- ETL path bootstrap (see ETL/lib/etl_env.py) ---
+import sys as _sys
+from pathlib import Path as _Path
+for _anc in _Path(__file__).resolve().parents:
+    if (_anc / "lib" / "etl_env.py").exists():
+        _sys.path.insert(0, str(_anc / "lib"))
+        break
+from etl_env import SIGNALS_DB  # noqa: E402
+# --- end ETL path bootstrap ---
+
+import argparse
+import os
+import sqlite3
+import struct
+
+DEFAULT_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+EMBED_MODEL = os.environ.get("SIGNALS_EMBED_MODEL", DEFAULT_MODEL)
+CHUNK_CHARS = 1500
+CHUNK_OVERLAP = 200
+BATCH = 128
+
+
+# ── Embedder protocol ─────────────────────────────────────────────────────────
+class FastembedEmbedder:
+    """Local ONNX/CPU embedder. The default; no key, no network after download."""
+
+    def __init__(self, model_name: str):
+        try:
+            from fastembed import TextEmbedding
+        except ImportError:
+            raise SystemExit("fastembed not installed:  pip3 install fastembed")
+        info = {m["model"]: m for m in TextEmbedding.list_supported_models()}
+        if model_name not in info:
+            raise SystemExit(
+                f"model '{model_name}' not in fastembed's supported list; "
+                f"multilingual options: "
+                + ", ".join(m for m in info if "multilingual" in m.lower()))
+        self.model_name = model_name
+        self.dim = info[model_name]["dim"]
+        self._model = TextEmbedding(model_name)
+
+    def embed(self, texts: list[str]) -> list[list[float]]:
+        return [v.tolist() for v in self._model.embed(texts, batch_size=BATCH)]
+
+
+def get_embedder():
+    """Swap point for a hosted embedder (Voyage/OpenAI): return any object with
+    .embed(texts)->list[list[float]], .dim, .model_name."""
+    return FastembedEmbedder(EMBED_MODEL)
+
+
+def vec_blob(v: list[float]) -> bytes:
+    return struct.pack(f"{len(v)}f", *v)
+
+
+# ── DB / vec0 ────────────────────────────────────────────────────────────────
+def connect_vec(embedder=None) -> sqlite3.Connection:
+    """Open signals.sqlite; ensure the (plain) embeddings table exists and the
+    configured model matches what the index was built with. No SQLite extension:
+    macOS framework Python can't load them, and numpy brute-force cosine is
+    faster than an ANN index needs to be at this corpus scale."""
+    con = sqlite3.connect(SIGNALS_DB, timeout=30)
+    con.row_factory = sqlite3.Row
+    con.execute("PRAGMA busy_timeout=15000")
+    if embedder is not None:
+        con.execute("""CREATE TABLE IF NOT EXISTS chunk_embeddings (
+            chunk_id INTEGER PRIMARY KEY REFERENCES article_chunks(id),
+            embedding BLOB NOT NULL)""")
+        meta = con.execute("SELECT model, dim FROM embedding_meta WHERE id = 1").fetchone()
+        if meta is None:
+            con.execute("INSERT INTO embedding_meta (id, model, dim) VALUES (1, ?, ?)",
+                        (embedder.model_name, embedder.dim))
+            con.commit()
+        elif meta["model"] != embedder.model_name or meta["dim"] != embedder.dim:
+            raise SystemExit(
+                f"embedding_meta says the index was built with {meta['model']} "
+                f"(dim {meta['dim']}) but the configured model is "
+                f"{embedder.model_name} (dim {embedder.dim}).\n"
+                "Vectors from different models are not comparable. To switch:\n"
+                "  sqlite3 data/signals.sqlite \"DROP TABLE chunk_embeddings; "
+                "DELETE FROM embedding_meta; DELETE FROM article_chunks;\"\n"
+                "then re-run this step (full re-chunk + re-embed).")
+    return con
+
+
+# ── Chunking with exact source offsets ───────────────────────────────────────
+def chunk_with_offsets(text: str) -> list[tuple[str, int, int]]:
+    """Paragraph-aware ~CHUNK_CHARS windows with ~CHUNK_OVERLAP overlap.
+    Returns (chunk_text, char_start, char_end); offsets index into `text`
+    exactly, so downstream claims can cite precise spans."""
+    spans: list[tuple[int, int]] = []
+    pos = 0
+    for para in text.split("\n"):
+        if para.strip():
+            start = text.index(para, pos)
+            spans.append((start, start + len(para)))
+            pos = start + len(para)
+        else:
+            pos += len(para) + 1
+    if not spans:
+        return []
+
+    chunks: list[tuple[str, int, int]] = []
+    i = 0
+    while i < len(spans):
+        start_i = i
+        # A single paragraph longer than the cap: hard-split it with overlap.
+        if spans[start_i][1] - spans[start_i][0] > CHUNK_CHARS:
+            s, e = spans[start_i]
+            while s < e:
+                piece_end = min(s + CHUNK_CHARS, e)
+                chunks.append((text[s:piece_end], s, piece_end))
+                if piece_end >= e:
+                    break
+                s = piece_end - CHUNK_OVERLAP
+            i = start_i + 1
+            continue
+        # Grow the window paragraph by paragraph.
+        end = spans[i][1]
+        while i + 1 < len(spans) and spans[i + 1][1] - spans[start_i][0] <= CHUNK_CHARS:
+            i += 1
+            end = spans[i][1]
+        chunks.append((text[spans[start_i][0]:end], spans[start_i][0], end))
+        # Overlap: next window re-includes the last paragraph that begins
+        # within CHUNK_OVERLAP of this chunk's end, when there is one.
+        nxt = i + 1
+        for j in range(i, start_i, -1):
+            if end - spans[j][0] <= CHUNK_OVERLAP:
+                nxt = j
+                break
+        i = max(nxt, start_i + 1)
+    return chunks
+
+
+# ── Commands ─────────────────────────────────────────────────────────────────
+def cmd_status(_args) -> None:
+    con = sqlite3.connect(SIGNALS_DB)
+    try:
+        pending_chunk = con.execute(
+            """SELECT COUNT(*) FROM articles a WHERE a.full_text_fetched = 1
+               AND NOT EXISTS (SELECT 1 FROM article_chunks c
+                               WHERE c.article_id = a.id)""").fetchone()[0]
+        chunks = con.execute("SELECT COUNT(*) FROM article_chunks").fetchone()[0]
+        meta = con.execute(
+            "SELECT model, dim FROM embedding_meta WHERE id = 1").fetchone()
+        embedded = 0
+        if meta:
+            try:
+                embedded = con.execute(
+                    "SELECT COUNT(*) FROM chunk_embeddings").fetchone()[0]
+            except sqlite3.OperationalError:
+                embedded = -1
+    finally:
+        con.close()
+    print(f"hydrated articles awaiting chunking: {pending_chunk:,}")
+    print(f"chunks stored: {chunks:,}")
+    if meta:
+        print(f"index: {meta[0]} (dim {meta[1]}) · embeddings: "
+              f"{'needs sqlite-vec to count' if embedded == -1 else f'{embedded:,}'}")
+    else:
+        print("index: not yet created (first `run` creates it)")
+
+
+def cmd_run(args) -> None:
+    embedder = get_embedder()
+    con = connect_vec(embedder)
+
+    # Phase 1 — chunk hydrated articles that have no chunks yet.
+    sql = """SELECT a.id, a.title, a.raw_text FROM articles a
+             WHERE a.full_text_fetched = 1
+             AND NOT EXISTS (SELECT 1 FROM article_chunks c WHERE c.article_id = a.id)
+             ORDER BY a.id"""
+    if args.limit:
+        sql += f" LIMIT {int(args.limit)}"
+    new_chunks = 0
+    for r in con.execute(sql).fetchall():
+        pieces = chunk_with_offsets(r["raw_text"])
+        if pieces:
+            # Title prepended to the first chunk anchors headline retrieval;
+            # its offsets still cover the first body span.
+            rows = [(r["id"], 0, f"{r['title']}\n{pieces[0][0]}",
+                     pieces[0][1], pieces[0][2])]
+            rows += [(r["id"], idx + 1, t, cs, ce)
+                     for idx, (t, cs, ce) in enumerate(pieces[1:])]
+        else:
+            rows = [(r["id"], 0, r["title"], 0, 0)]
+        con.executemany(
+            "INSERT OR IGNORE INTO article_chunks "
+            "(article_id, chunk_index, chunk_text, char_start, char_end) "
+            "VALUES (?,?,?,?,?)", rows)
+        con.commit()
+        new_chunks += len(rows)
+
+    # Phase 2 — embed every chunk lacking a vector (anti-join = resumable).
+    todo = con.execute("""
+        SELECT c.id, c.chunk_text FROM article_chunks c
+        WHERE c.id NOT IN (SELECT chunk_id FROM chunk_embeddings)
+        ORDER BY c.id""").fetchall()
+    print(f"chunked {new_chunks:,} new; embedding {len(todo):,} chunks "
+          f"({embedder.model_name}, batches of {BATCH})")
+    done = 0
+    for i in range(0, len(todo), BATCH):
+        batch = todo[i:i + BATCH]
+        vecs = embedder.embed([b["chunk_text"] for b in batch])
+        con.executemany(
+            "INSERT INTO chunk_embeddings (chunk_id, embedding) VALUES (?,?)",
+            [(b["id"], vec_blob(v)) for b, v in zip(batch, vecs)])
+        con.commit()                      # per-batch commit — kill-safe
+        done += len(batch)
+        if done % (BATCH * 8) == 0:
+            print(f"  {done:,}/{len(todo):,}")
+    con.close()
+    print(f"done: {done:,} embeddings written.")
+
+
+def cmd_query(args) -> None:
+    from signals_retrieval import semantic_search
+    hits = semantic_search(args.text, k=args.k)
+    if not hits:
+        print("no results — is the index populated? (run `status`)")
+    for h in hits:
+        head = " ".join(h["chunk_text"].split())[:150]
+        print(f"[{h['similarity']:.3f}] {h['source_key']} · {h['published_at']} · "
+              f"{h['title'][:70]}\n        {head}")
+
+
+def main() -> None:
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("status").set_defaults(fn=cmd_status)
+    p = sub.add_parser("run")
+    p.add_argument("--limit", type=int)
+    p.set_defaults(fn=cmd_run)
+    q = sub.add_parser("query")
+    q.add_argument("text")
+    q.add_argument("-k", type=int, default=5)
+    q.set_defaults(fn=cmd_query)
+    args = ap.parse_args()
+    args.fn(args)
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,59 @@
+id: satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus
+name: Rakendusuuringu ja tootearenduse toetus
+administering_body: see source document
+country: EE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-cooperation-optional
+  gate_family: G1_nexus
+  requirement: A company may apply independently or in cooperation with other companies, scientific establishments,
+    testing laboratories, or intellectual property experts.
+  value: Solo or in cooperation with companies/research bodies/IP experts
+  intake_field: consortium
+  quote: A company will be able to apply independently or in cooperation with other companies, scientific
+    establishments, testing laboratories or intellectual property experts.
+  source:
+    file: https://eis.ee/en/services/programme-for-applied-research/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-open-registry
+  gate_family: G1_nexus
+  requirement: The programme is open to all companies registered in the Estonian business registry, regardless
+    of size or years of operation.
+  value: Any company in Estonian business registry, any size/age
+  intake_field: entityCountries
+  quote: The programme is open for all companies registered in the Estonian business registry, regardless
+    of their size or years of operation.
+  source:
+    file: https://eis.ee/en/services/programme-for-applied-research/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-not-in-difficulty
+  gate_family: G1_nexus
+  requirement: The applicant company must not be in difficulty.
+  value: Not an undertaking in difficulty
+  intake_field: none
+  quote: The company must not be in difficulties.
+  source:
+    file: https://eis.ee/en/services/programme-for-applied-research/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-ticket-band
+  gate_family: G3_financial
+  requirement: The amount of support requested must be between EUR 250,000 and EUR 2,000,000.
+  value: EUR 250,000 - 2,000,000
+  intake_field: ticketBand
+  quote: The amount of support requested is 250,000 to 2,000,000 euros.
+  source:
+    file: https://eis.ee/en/services/programme-for-applied-research/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (4/4 gates passed mechanical verbatim-substring
+  check -> llm_cited).

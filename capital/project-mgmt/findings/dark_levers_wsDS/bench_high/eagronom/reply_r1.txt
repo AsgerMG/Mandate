@@ -1,0 +1,31 @@
+model=claude-sonnet-5  EUR 0.0479  usage={"input_tokens":7824,"cache_creation_input_tokens":0,"cache_read_input_tokens":0,"cache_creation":{"ephemeral_5m_input_tokens":0,"ephemeral_1h_input_tokens":0},"output_tokens":3644,"output_tokens_details":{"thinking_tokens":3615},"service_tier":"standard","inference_geo":"global"}
+
+THINKING (5613 chars)
+==============================================================================
+Looking at the funding requirements, this company needs between €500k and €2.5M for their R&D work in agrifood, and they're at the pilot stage with solid co-financing lined up. Most of the available schemes I'm reviewing are significantly smaller—typically in the tens of thousands to around €250k range—so I need to focus on the larger, research-focused programs that might actually match their cheque size and thematic fit.
+
+The smaller awards in the €5k-15k bracket are clearly off the table since they're an order of magnitude too small. There's also a €72k SME development program that's borderline—it's still far from their €500k minimum ask, and it doesn't seem R&D-focused enough anyway. The most promising candidates are the ones explicitly targeting applied research and product development, which directly align with their experimental development and industrial research needs. EUROSTARS looks particularly relevant given the agrifood focus. The co-financing requirement is actually satisfied—the company's >50% capacity falls within the 20-75% band, so this isn't a genuine obstacle despite the flag. The ambiguity here is whether >50% might exceed the 75% ceiling, but that's uncertain enough to treat as doubt rather than outright rejection.
+
+Now I'm working through the ranking logic: rows with named obstacles should sit below the unobstructed ones per the qualification band rule, though they can still be included as candidates. Looking at the other programs—[8] is applied research and product development with no obstacle flagged and a solid track record, [10] covers applied research with no blocking issues, and [15] is product development support.
+
+The real constraint here is the funding gap: the company is asking for €500k–2.5M, but these grants max out around €250k, which is roughly 2–10 times smaller than their lower bound. It's a significant mismatch, and while these appear to be the only national grants available in this category, the SELECT-7 principle says a scheme whose typical award is an order of magnitude away from what's requested is the wrong fit.
+
+Looking at the range more carefully: €500k versus €116k is about 4.3x (not quite a full order of magnitude), but €2.5M versus €116k is roughly 21x—definitely order of magnitude territory. Since the range is so wide, I should focus on the lower bound of €500k and identify which schemes come closest. The larger awards around €230–250k are the best available match, still off by 2–3x but reasonably close.
+
+The tiny grants—€5k to €15k—are clearly disqualified; they're 100x smaller than the ask and fall firmly into order-of-magnitude mismatch territory.
+
+Now filtering the mid-range options: €72k is still too small. €176k has promise but the program description emphasizes grant-scale awards in the tens of thousands of EUR, which doesn't align well, plus it hasn't awarded since 2022 and focuses on tourism rather than agrifood. €56k is too small and lacks thematic connection. €98k is industrial manufacturing-focused, not agrifood—the development activities angle touches on green transition and business model change, but it's not core R&D. The enterprise development program at €214k looks more promising as a potential match.
+
+Narrowing down to the strongest R&D candidates that fit both agrifood sector and funding size: EUROSTARS stands out as agrifood-specific, followed by a few others. EUROSTARS has the highest thematic match but there's uncertainty around consortium requirements. The TRL3-7 program has explicit applied research and experimental development that directly matches what the founder needs, making it a very strong thematic fit—though it's flagged with a co-financing obstacle that drops it below the unobstructed options per the ranking rules.
+
+Looking at what's openly qualifying without obstacles: EUROSTARS, plus several others with strong R&D themes. Since EUROSTARS has no disqualifying factors, I'll treat it as open. So my top candidates are these five open ones, plus the TRL3-7 program as a sixth pick despite its obstacle, since the thematic match is too good to exclude. Now I need to check how these spread across different delivery bodies to meet the selection criteria.
+
+Most of these schemes are administered through EIS or its variants, so there's limited diversity across bodies since they're all national programs. But that's probably not a major concern here. EUROSTARS is particularly strong because the company's agrifood tech focus—combining farm management software with carbon programs—aligns perfectly with what EUROSTARS emphasizes. On the co-financing side, the company's ability to contribute over 50% is actually an advantage, since many grants favor higher co-financing percentages.
+
+The bigger question is the consortium requirement. EUROSTARS typically demands an international multi-country partnership as a core condition, and the company only has an Estonian entity with uncertain ability to assemble a 3+ partner consortium. That's a real risk, though it's not explicitly encoded as a disqualifying rule in the data. Following the SELECT-4 approach, I'll treat this as an open question rather than a rejection—if no encoded rule flags it, I should keep it in consideration.
+
+So I'm settling on six options: [1], [2], [6], [8], [10], [15]. Now I need to rank them by qualification openness and thematic fit with available funding. The applied research and product development programs with the highest win rates and clearest alignment should come first, with EUROSTARS positioned lower due to the consortium uncertainty despite its strong funding amount.…
+
+REPLY (37 chars)
+==============================================================================
+{"picks":[8,2,10,15,1,6],"unsure":[]}

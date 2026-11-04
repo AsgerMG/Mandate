@@ -1,0 +1,184 @@
+id: innovasjon_norge_grant_innovation
+name: innovasjon_norge_grant_innovation
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G2_size_ownership
+  requirement: Applicant must be a small or medium-sized enterprise with an innovation project
+    (for innovasjonskontrakter).
+  value: SME with innovation project
+  intake_field: fteBand
+  quote: Målgruppe Små og mellomstore bedrifter med innovasjonsprosjekt
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Scheme targets supplier companies developing new products or solutions in a
+    binding collaboration with one or more pilot customers.
+  value: Supplier company with pilot customer collaboration
+  intake_field: borrowerModel
+  quote: Ordningen gir tilskudd til leverandørbedrifter som utvikler nye produkter eller løsninger
+    i forpliktende samarbeid med en eller flere pilotkunder.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G3_financial
+  requirement: The innovation project must have significant commercial potential.
+  value: Significant commercial potential required
+  intake_field: none
+  quote: innovasjonsprosjektet skal ha betydelig kommersielt potensial
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: Minimum grant amount for innovasjonskontrakter is NOK 1 million.
+  value: Minimum NOK 1,000,000
+  intake_field: ticketBand
+  quote: Hvor mye Minimum 1 million kroner
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G6_conditionality
+  requirement: To receive services, the company must uphold principles of responsible business
+    conduct and have a conscious approach to its own sustainability risk.
+  value: Responsible business conduct required
+  intake_field: none
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G6_conditionality
+  requirement: Financing from Innovasjon Norge must comply with the state aid regulations,
+    including five general conditions for state aid.
+  value: State aid rules compliance required
+  intake_field: none
+  quote: Finansiering fra Innovasjon Norge må være i samsvar med statsstøtteregelverket. Det
+    er fem generelle vilkår for statsstøtte som må ivaretas .
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- id: g7
+  gate_family: G6_conditionality
+  requirement: Applicant must disclose in the application whether other public support has
+    been or will be sought for the project.
+  value: Disclosure of other public aid required
+  intake_field: cofinancingBand
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- id: g8
+  gate_family: G6_conditionality
+  requirement: The grant is calculated assuming no other public support beyond what is stated
+    in the application is received for the same eligible project costs, including SkatteFunn;
+    the grant may be reduced or lapse if such other aid is later received for the same costs.
+  value: Grant reduced/lapses if other aid received for same costs
+  intake_field: cofinancingBand
+  quote: Ved fastsettelse av tilskuddsbeløpet legger derfor vi til grunn at det ikke mottas
+    annen offentlig støtte, herunder Skattefunn, enn det som er oppgitt i søknaden.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- id: g9
+  gate_family: G1_nexus
+  requirement: Environmental technology scheme targets companies developing environmental
+    technology.
+  value: Companies developing environmental technology
+  intake_field: borrowerModel
+  quote: Målgruppe Bedrifter som utvikler miljøteknologi
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_miljoteknologi.html#chunk 1
+  verified: llm_cited
+- id: g10
+  gate_family: G5_use_of_funds
+  requirement: Miljøteknologi grant funds development, piloting and demonstration of new environmental
+    technology with solutions that give clear environmental benefits and potential for commercialization.
+  value: Development, piloting, demonstration of environmental tech
+  intake_field: none
+  quote: Miljøteknologiordningen gir tilskudd til utvikling, pilotering og demonstrasjon av
+    ny miljøteknologi. Ordningen retter seg mot løsninger som gir tydelige miljøgevinster
+    og har potensial for kommersialisering.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_miljoteknologi.html#chunk 1
+  verified: llm_cited
+- id: g11
+  gate_family: G3_financial
+  requirement: Minimum grant amount for miljøteknologi scheme is NOK 1 million.
+  value: Minimum NOK 1,000,000
+  intake_field: ticketBand
+  quote: Hvor mye Minimum 1 million kroner
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_miljoteknologi.html#chunk 1
+  verified: llm_cited
+- id: g12
+  gate_family: G6_conditionality
+  requirement: To receive miljøteknologi services, the company must uphold principles of responsible
+    business conduct and have a conscious approach to its own sustainability risk.
+  value: Responsible business conduct required
+  intake_field: none
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_miljoteknologi.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Applicant must disclose in the application whether other public aid has been
+    sought or will be sought for the project.
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+- requirement: Company must uphold principles of responsible business conduct and maintain
+    awareness of its own sustainability risk to receive services.
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_miljoteknologi.html#chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/12 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: If other public aid, including SkatteFunn, is received after the offer for the same
+    eligible costs, the grant may be reduced correspondingly or lapse; this does not preclude
+    receiving other public aid for different project costs not covered by this grant.
+  quote: I tilfelle slik annen offentlig støtte, herunder SkatteFunn, likevel blir mottatt
+    etter at vårt tilbud er gitt, og til dekning av de samme kostnadene, vil tilskuddet fra
+    oss kunne bli redusert tilsvarende eller bortfalle.
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Online application via Min side (Innovasjon Norge applicant portal)
+  typical_timeline: Rolling deadline (løpende)
+  quote: Søknadsfrist Løpende
+  source:
+    file: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html
+    locator: innovasjon_norge_grant_innovation_tilskudd_innovasjonskontrakter.html#chunk 1
+  verified: llm_cited

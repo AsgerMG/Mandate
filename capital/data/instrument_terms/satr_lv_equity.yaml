@@ -1,0 +1,355 @@
+id: satr_lv_equity
+name: satr_lv_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eu-establishment
+  gate_family: G1_nexus
+  requirement: Support is granted to business operators established in the European Union,
+    with at least 75% of each fund's total investment volume directed to business operators
+    established in the Republic of Latvia.
+  value: EU establishment required; ≥75% of fund volume to Latvia-established operators
+  intake_field: entityCountries
+  quote: saimnieciskās darbības veicējiem, kuru saimnieciskās darbības vieta ir Eiropas Savienībā,
+    un vismaz 75 % no kopējā katra sēklas kapitāla, sākuma kapitāla un izaugsmes kapitāla
+    fonda ieguldījumu apjoma tiek sniegti saimnieciskās darbības veicējiem, kuru saimnieciskās
+    darbības vieta ir Latvijas Republikā
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 3-4 (23. punkts)
+  verified: llm_cited
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: Business operators must qualify as micro, small or medium-sized enterprises
+    at group level per Commission Regulation No. 651/2014 Annex I, and must not be listed
+    at SME group level.
+  value: Must be SME (micro/small/medium) at group level; not listed
+  intake_field: fteBand
+  quote: Komisijas regulas Nr. 651/2014 1. pielikumā minētajai sīkā (mikro), mazā un vidējā
+    saimnieciskās darbības veicēja definīcijai (turpmāk ‒ MVU grupas līmenis)
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 3 (20.1. punkts)
+  verified: llm_cited
+- id: g2-not-connected
+  gate_family: G2_size_ownership
+  requirement: The seed, start-up and growth capital funds must not become a connected undertaking
+    of the business operator receiving investment.
+  value: Fund and investee must not be connected undertakings
+  intake_field: institutionalOwner
+  quote: Sēklas kapitāla, sākuma kapitāla un izaugsmes kapitāla fondi veic sēklas kapitāla,
+    sākuma kapitāla un izaugsmes kapitāla ieguldījumus saimnieciskās darbības veicējos, nekļūstot
+    par to saistīto saimnieciskās darbības veicēju saskaņā ar Komisijas regulas Nr. 651/2014
+    1. pielikuma 3. panta 3. punktu
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 5 (26. punkts)
+  verified: llm_cited
+- id: g3-seed-cap
+  gate_family: G3_financial
+  requirement: A seed capital fund may provide a maximum of EUR 250,000 seed capital investment
+    per business operator.
+  value: Max EUR 250,000 per business operator (seed)
+  intake_field: ticketBand
+  quote: Sēklas kapitāla fonds vienam saimnieciskās darbības veicējam sniedz sēklas kapitāla
+    ieguldījumu ne vairāk kā 250 000 euro apmērā
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (32. punkts)
+  verified: llm_cited
+- id: g3-startup-cap
+  gate_family: G3_financial
+  requirement: A start-up capital fund provides investment per business operator at SME group
+    level not exceeding 15% of the start-up fund's volume, unless approved otherwise by Altum
+    within Regulation 651/2014 limits.
+  value: Max 15% of fund volume per operator (start-up), extendable with Altum approval
+  intake_field: ticketBand
+  quote: Sākuma kapitāla fonds vienam saimnieciskās darbības veicējam MVU grupas līmenī sniedz
+    sākuma kapitāla ieguldījumu, kura apmērs nepārsniedz 15 procentus no sākuma kapitāla fonda
+    apjoma vai vairāk, ja to apstiprina sabiedrība Altum un tiek ievērots Komisijas regulas
+    Nr. 651/2014 21. panta 8. punktā noteiktais ieguldījuma apmēra ierobežojums
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (35. punkts)
+  verified: llm_cited
+- id: g3-growth-cap
+  gate_family: G3_financial
+  requirement: A growth capital fund provides investment per business operator at SME group
+    level not exceeding 15% of the growth fund's volume, unless approved otherwise by Altum
+    within Regulation 651/2014 limits.
+  value: Max 15% of fund volume per operator (growth), extendable with Altum approval
+  intake_field: ticketBand
+  quote: Izaugsmes kapitāla fonds vienam saimnieciskās darbības veicējam MVU grupas līmenī
+    sniedz izaugsmes kapitāla ieguldījumu, kura apmērs nepārsniedz 15 procentus no izaugsmes
+    kapitāla fonda apjoma vai vairāk, ja to apstiprina sabiedrība Altum un tiek ievērots Komisijas
+    regulas Nr. 651/2014 21. panta 8. punktā noteiktais ieguldījuma apmēra ierobežojums
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (39. punkts)
+  verified: llm_cited
+- id: g3-cofinancing-seed
+  gate_family: G3_financial
+  requirement: Private participants of the seed capital fund must co-finance at fund level
+    at least 10% of the seed capital investment amount.
+  value: ≥10% private co-financing (seed)
+  intake_field: cofinancingBand
+  quote: sēklas kapitāla fondu privātie dalībnieki piedalās ar savu līdzfinansējumu fonda
+    līmenī, kura apmērs tiek noteikts publiskā iepirkumu procedūrā un kas nav mazāks par 10
+    % no sēklas kapitāla ieguldījumu apmēra
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (33. punkts)
+  verified: llm_cited
+- id: g3-cofinancing-startup
+  gate_family: G3_financial
+  requirement: Private participants of the start-up capital fund must co-finance at fund level
+    at least 25% of the start-up capital investment amount.
+  value: ≥25% private co-financing (start-up)
+  intake_field: cofinancingBand
+  quote: sākuma kapitāla fonda privātie dalībnieki piedalās ar savu līdzfinansējumu fonda
+    līmenī, kura apmērs tiek noteikts publiskā iepirkumu procedūrā un kas nav mazāks par 25
+    % no sākuma kapitāla ieguldījumu apmēra
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (36. punkts)
+  verified: llm_cited
+- id: g3-cofinancing-growth
+  gate_family: G3_financial
+  requirement: Private participants of the growth capital fund must co-finance at fund level
+    at least 40% of the growth capital investment amount.
+  value: ≥40% private co-financing (growth)
+  intake_field: cofinancingBand
+  quote: izaugsmes kapitāla fonda privātie dalībnieki piedalās ar savu līdzfinansējumu fonda
+    līmenī, kura apmērs tiek noteikts publiskā iepirkumu procedūrā un kas nav mazāks par 40
+    % no izaugsmes kapitāla ieguldījumu apmēra
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (40. punkts)
+  verified: llm_cited
+- id: g3-min-private-thresholds
+  gate_family: G3_financial
+  requirement: Seed/start-up/growth capital investments at intermediary or business operator
+    level must attract co-financing from independent private investors meeting minimum thresholds
+    (e.g. at least 10%, 20%, 30%, 40% or 60% depending on SME category and funding source/period)
+    per Regulation 651/2014 Art 21(12).
+  value: Minimum private investor participation thresholds varying by SME category (10-60%)
+  intake_field: cofinancingBand
+  quote: vismaz 10 procenti no riska finansējuma ieguldījuma, kas sniegts saimnieciskās darbības
+    veicējiem, kuri MVU grupas līmenī atbilst Komisijas regulas Nr. 651/2014 21. panta 3.
+    punkta "a" apakšpunktam
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 4 (25.1.1.
+      punkts)
+  verified: llm_cited
+- id: g4-instrument-form
+  gate_family: G4_borrower_model
+  requirement: Seed, start-up and growth capital investments are made as equity investments
+    or quasi-equity investments, or, in the case of de minimis support, as a loan.
+  value: Equity, quasi-equity, or de minimis loan instrument
+  intake_field: borrowerModel
+  quote: Sēklas kapitāla, sākuma kapitāla un izaugsmes kapitāla ieguldījumu veic kā pašu kapitāla
+    ieguldījumu saskaņā ar Komisijas regulas Nr. 651/2014 2. panta 74. punktu vai kvazikapitāla
+    ieguldījumu saskaņā ar Komisijas regulas Nr. 651/2014 2. panta 66. punktu, vai – de minimis
+    atbalsta gadījumā – kā aizdevumu
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 4 (24. punkts)
+  verified: llm_cited
+- id: g4-delivery-via-intermediary
+  gate_family: G4_borrower_model
+  requirement: Support in the form of seed, start-up and growth capital investment is delivered
+    to final beneficiaries by financial intermediaries selected by Altum, not directly by
+    the state.
+  value: Delivered via financial intermediaries selected by Altum
+  intake_field: borrowerModel
+  quote: Atbalstu sēklas kapitāla, sākuma kapitāla un izaugsmes kapitāla ieguldījumu veidā
+    saimnieciskās darbības veicējiem, kas ir pasākuma gala labuma guvēji, sniedz finanšu starpnieki,
+    kurus sabiedrība Altum izvēlas atbilstoši normatīvajiem aktiem publisko iepirkumu jomā
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 2 (4. punkts)
+  verified: llm_cited
+- id: g5-seed-purpose
+  gate_family: G5_use_of_funds
+  requirement: Seed capital investments must be used to finance the establishment and development
+    of the business operator.
+  value: Fund establishment and development only (seed)
+  intake_field: developmentStage
+  quote: Sēklas kapitāla ieguldījumus saimnieciskās darbības veicējiem sniedz, lai finansētu
+    saimnieciskās darbības veicēja izveidi un attīstību
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (31. punkts)
+  verified: llm_cited
+- id: g5-startup-purpose
+  gate_family: G5_use_of_funds
+  requirement: Start-up capital investments, including follow-on investments, must be used
+    to finance the development of the business operator.
+  value: Fund development only (start-up)
+  intake_field: developmentStage
+  quote: Sākuma kapitāla ieguldījumus, tai skaitā turpmākos ieguldījumus, saimnieciskās darbības
+    veicējiem sniedz, lai finansētu to attīstību
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (34. punkts)
+  verified: llm_cited
+- id: g5-growth-purpose
+  gate_family: G5_use_of_funds
+  requirement: Growth capital investments, including follow-on investments, must be used to
+    finance the growth and competitiveness of the business operator.
+  value: Fund growth and competitiveness only
+  intake_field: developmentStage
+  quote: Izaugsmes kapitāla ieguldījumus, tai skaitā turpmākos ieguldījumus, saimnieciskās
+    darbības veicējiem sniedz, lai finansētu to izaugsmi un konkurētspēju
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6 (38. punkts)
+  verified: llm_cited
+- id: g5-excluded-sectors
+  gate_family: G5_use_of_funds
+  requirement: Support may not be given to activities such as alcoholic beverage trade, gambling
+    and betting, weapons and ammunition trade, real estate operations, residential real estate
+    development, insurance and banking services, and other excluded sectors under Regulation
+    651/2014.
+  value: 'Excluded: alcohol trade, gambling, weapons, real estate, banking/insurance'
+  intake_field: none
+  quote: alkoholisko dzērienu tirdzniecībai (NACE 2.1. redakcijas klase 46.34 "Dzērienu vairumtirdzniecība",
+    klase 47.25 "Dzērienu mazumtirdzniecībā" un klase 47.92. "Specializētas mazumtirdzniecības
+    starpniecības pakalpojumi")
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 5 (28.4. punkts)
+  verified: llm_cited
+- id: g5-land-limit
+  gate_family: G5_use_of_funds
+  requirement: Investments may include acquisition of undeveloped and developed land only
+    up to 10% of the total seed/start-up/growth capital investment in the business operator.
+  value: Land acquisition capped at 10% of investment amount
+  intake_field: none
+  quote: tādos investīciju projektos, kas ietver neapbūvētas zemes iegādi un apbūvētas zemes
+    iegādi par summu, kuras apmērs nepārsniedz 10 % no sēklas kapitāla, sākuma kapitāla vai
+    izaugsmes kapitāla ieguldījuma kopējā apmēra saimnieciskās darbības veicējā
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 5-6 (30. punkts)
+  verified: false
+  verify_note: 'fragment not found verbatim: ''tādos investīciju projektos, kas ietver neapbūvēta'''
+- id: g6-exclusion-arrears
+  gate_family: G6_conditionality
+  requirement: Business operators with tax or duty arrears exceeding EUR 150, without a granted
+    payment deferral or SRS voluntary compliance decision, are excluded from support.
+  value: Excluded if tax/duty arrears >EUR 150 without deferral
+  intake_field: none
+  quote: tiem ir nodokļu vai nodevu parādi, tai skaitā valsts sociālās apdrošināšanas obligāto
+    iemaksu parādi, kas kopsummā pārsniedz 150 euro , un nav piešķirts samaksas termiņa pagarinājums
+    vai nav Valsts ieņēmumu dienesta lēmuma par nokavēto nodokļu maksājumu labprātīgu izpildi
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 3 (22.1. punkts)
+  verified: llm_cited
+- id: g6-exclusion-insolvency
+  gate_family: G6_conditionality
+  requirement: Business operators subject to insolvency, legal protection or out-of-court
+    legal protection proceedings, or whose economic activity has ceased, are excluded from
+    support.
+  value: Excluded if insolvent/in legal protection/ceased activity
+  intake_field: none
+  quote: tiem ar tiesas spriedumu ir pasludināts maksātnespējas process vai ar tiesas spriedumu
+    tiek īstenots tiesiskās aizsardzības process, vai ar tiesas lēmumu tiek īstenots ārpustiesas
+    tiesiskās aizsardzības process, vai to saimnieciskā darbība ir izbeigta
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 3 (22.2. punkts)
+  verified: llm_cited
+- id: g6-exclusion-undertaking-in-difficulty
+  gate_family: G6_conditionality
+  requirement: Business operators qualifying as an undertaking in difficulty per Regulation
+    651/2014 Art. 2(18), assessed at connected-enterprise group level, are excluded from support
+    financed from ERDF funding.
+  value: Excluded if undertaking in difficulty (ERDF-funded support)
+  intake_field: lossesOverHalfCapital
+  quote: tie, tai skaitā vērtējot saistīto uzņēmumu grupas līmenī, atbilst grūtībās nonākuša
+    uzņēmuma statusam saskaņā ar Komisijas regulas Nr.  651/2014  2. panta 18. punktā noteikto
+    definīciju, ja atbalsts tiek finansēts no Eiropas Reģionālās attīstības fonda finansējuma
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 3-4 (22.6.
+      punkts)
+  verified: llm_cited
+- id: g6-exclusion-recovery-order
+  gate_family: G6_conditionality
+  requirement: Business operators subject to an outstanding recovery order following a prior
+    European Commission decision declaring aid illegal and incompatible with the common market
+    are excluded from support.
+  value: Excluded if subject to EC recovery order
+  intake_field: none
+  quote: uz tiem, tai skaitā vērtējot saistīto uzņēmumu grupas līmenī, attiecas līdzekļu atgūšanas
+    rīkojums saskaņā ar iepriekšēju Eiropas Komisijas lēmumu, ar ko atbalsts tiek atzīts par
+    nelikumīgu un nesaderīgu ar kopējo tirgu
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 3 (22.3. punkts)
+  verified: llm_cited
+- id: g6-cumulation-same-costs
+  gate_family: G6_conditionality
+  requirement: Support under these regulations may not be combined with support received under
+    another state aid programme for the same eligible costs, if the other programme's costs
+    are financed from EU fund resources.
+  value: No cumulation with EU-fund-financed aid for same costs
+  intake_field: conditionality
+  quote: saimnieciskās darbības veicējam piešķirto atbalstu sēklas kapitāla, sākuma kapitāla
+    un izaugsmes kapitāla ieguldījumu veidā nedrīkst apvienot ar citā valsts atbalsta programmā
+    saņemto atbalstu par vienām un tām pašām izmaksām, ja citas valsts atbalsta programmas
+    izmaksas tiek finansētas no Eiropas Savienības fondu līdzekļiem
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 6-7 (44. punkts)
+  verified: false
+  verify_note: 'fragment not found verbatim: ''saimnieciskās darbības veicējam piešķirto atbalstu'''
+obligations:
+- requirement: Financial intermediaries must maintain detailed records and documentation demonstrating
+    compliance with these regulations for 10 years from the date of the last grant of support.
+  quote: Finanšu starpnieki nodrošina atbilstoši šiem noteikumiem sniegtā atbalsta uzskaiti,
+    tai skaitā detalizētu dokumentāciju, kas nepieciešama, lai noteiktu, ka ir izpildīti šo
+    noteikumu nosacījumi. Minēto uzskaiti un dokumentāciju finanšu starpnieki glabā 10 gadus
+    no pēdējā atbalsta piešķiršanas dienas
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 7 (45. punkts)
+  verified: llm_cited
+- requirement: Business operators must retain information about support received under these
+    regulations for the entire support period, and at least 10 years from the date of receiving
+    support.
+  quote: Saimnieciskās darbības veicēji informāciju par atbilstoši šiem noteikumiem saņemto
+    atbalstu glabā visu atbalsta saņemšanas laiku, bet ne mazāk kā 10 gadus no atbalsta saņemšanas
+    dienas
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 7 (46. punkts)
+  verified: llm_cited
+- requirement: If Regulation 651/2014 or Regulation 2023/2831 requirements are breached, the
+    beneficiary must repay all illegal aid received under the project, together with interest,
+    using funds free from state aid.
+  quote: atbalsta saņēmējam ir pienākums atmaksāt atbalsta sniedzējam visu projekta ietvaros
+    saņemto nelikumīgo atbalstu no līdzekļiem, kas ir brīvi no valsts atbalsta, kopā ar procentiem
+    atbilstoši Komercdarbības atbalsta kontroles likuma IV vai V nodaļas nosacījumiem
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 7 (48. punkts)
+  verified: llm_cited
+- requirement: If a business operator plans to cumulate state aid, it must submit information
+    on planned and granted aid (date, provider, measure, intensity, amount) together with
+    the project application.
+  quote: informāciju par plānoto un piešķirto komercdarbības atbalstu, norādot atbalsta piešķiršanas
+    datumu, atbalsta sniedzēju, atbalsta pasākumu, atbalsta intensitāti un plānoto vai piešķirto
+    atbalsta summu, iesniedz kopā ar projektu
+  source:
+    file: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html
+    locator: satr_lv_equity_mk_noteikumi_284072_seed_growth_kapitals.html#chunk 7 (44.1 punkts)
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (20/22 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).

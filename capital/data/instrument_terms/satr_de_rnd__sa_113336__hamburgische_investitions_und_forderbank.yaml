@@ -1,0 +1,50 @@
+id: satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank
+name: Programm A ("Energetische Modernisierung") der Förderrichtlinie "Modernisierung von
+  Mietwohnungen - Förderrichtlinie für energetische Modernisierung,
+  Ausstattungsverbesserungen und umfassende Modernisierung von Mietwohnungen" [HH]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Applications may be submitted by the owner or the holder of a heritable
+    building right (Erbbauberechtigter).
+  value: Applicant must be owner or Erbbauberechtigter
+  intake_field: none
+  quote: Anträge können vom Eigentümer oder Erbbauberechtigten gestellt werden.
+  source:
+    file: https://www.ifbhh.de/programme/immobilienwirtschaft/mietwohnungen-modernisieren/energetisch-modernisieren-immo/energetische-modernisierung-von-mietwohnungen-mod-a
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-energy-thresholds
+  gate_family: G6_conditionality
+  requirement: Minimum requirement is a final energy demand of at most 90 kWh/m2a and an
+    energy saving of at least 20%.
+  value: 'Requires: final energy demand <=90 kWh/m2a and >=20% energy saving'
+  intake_field: none
+  quote: Mindestanforderung ist ein Endenergiebedarf von ≤ 90 kWh/m2a und eine
+    Energieeinsparung von mind. 20 %.
+  source:
+    file: https://www.ifbhh.de/programme/immobilienwirtschaft/mietwohnungen-modernisieren/energetisch-modernisieren-immo/energetische-modernisierung-von-mietwohnungen-mod-a
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-no-early-start
+  gate_family: G6_conditionality
+  requirement: Funding is excluded if the measure was started without the approval of IFB
+    Hamburg.
+  value: Excludes projects started without IFB Hamburg approval
+  intake_field: none
+  quote: Eine Förderung ist ausgeschlossen, wenn ohne Zustimmung der IFB Hamburg mit der
+    Maßnahme begonnen wurde.
+  source:
+    file: https://www.ifbhh.de/programme/immobilienwirtschaft/mietwohnungen-modernisieren/energetisch-modernisieren-immo/energetische-modernisierung-von-mietwohnungen-mod-a
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

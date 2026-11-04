@@ -1,0 +1,57 @@
+id: satr_de_equity__sa_111005__kreditanstalt_fur_wiederaufbau
+name: ERP-Förderkredit KMU (365/366) [BMWK VIIC1]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Eligible applicants are natural persons, legal persons majority privately
+    owned, and legally capable partnerships engaged in or starting a commercial or
+    independent freelance activity, with a company seat in Germany or abroad, for projects
+    in Germany.
+  value: Majority privately-owned entity/individual, project must be in Germany
+  intake_field: institutionalOwner
+  quote: Antragsberechtigt sind natürliche Personen, juristische Personen, die sich
+    mehrheitlich in Privatbesitz befinden, sowie rechtsfähige Personengesellschaften, die
+    in Ausübung oder zur Aufnahme einer gewerblichen oder selbständigen freiberuflichen
+    Tätigkeit handeln, mit Unternehmenssitz in Deutschland oder im Ausland, für Vorhaben in
+    Deutschland.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Gr%C3%BCndung-und-Nachfolge/F%C3%B6rderprodukte/ERP-F%C3%B6rderkredit-KMU-(365-366)/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-thresholds
+  gate_family: G2_size_ownership
+  requirement: Funded are SMEs per the EU Commission definition, with fewer than 250
+    employees and annual turnover of at most EUR 50 million or annual balance sheet total
+    of at most EUR 43 million.
+  value: '<250 FTE and (<=EUR 50M turnover or <=EUR 43M balance sheet)'
+  intake_field: fteBand
+  quote: Gefördert werden kleine und mittlere Unternehmen im Sinne der Definition der
+    Europäischen Kommission mit weniger als 250 Mitarbeitern und einem Jahresumsatz von
+    höchstens 50 Millionen Euro oder einer Jahresbilanzsumme von höchstens 43 Millionen
+    Euro.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Gr%C3%BCndung-und-Nachfolge/F%C3%B6rderprodukte/ERP-F%C3%B6rderkredit-KMU-(365-366)/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-side-business-social-enterprise
+  gate_family: G1_nexus
+  requirement: Side-business start-ups and commercial social enterprises with a profit
+    motive are also eligible for funding.
+  value: Side-business start-ups and for-profit social enterprises also eligible
+  intake_field: none
+  quote: Gefördert werden auch Gründungen im Nebenerwerb und gewerbliche Sozialunternehmen
+    mit Gewinnerzielungsabsicht.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Gr%C3%BCndung-und-Nachfolge/F%C3%B6rderprodukte/ERP-F%C3%B6rderkredit-KMU-(365-366)/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

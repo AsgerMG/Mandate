@@ -1,0 +1,5445 @@
+{
+  "countries": {
+    "FR": {
+      "name": "France",
+      "companies": 30714,
+      "totalEur": 74630313399,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 14187,
+          "eur": 26823382674
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 3381,
+          "eur": 2497573413
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 23129,
+          "eur": 9702430600
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 348,
+          "eur": 477027986
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 55,
+          "eur": 15000
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 51,
+          "eur": 31019135317
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 36,
+          "eur": 1927498656
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 23,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 60,
+          "eur": 1661214599
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 246,
+          "eur": 522035153
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 51,
+          "eur": 31019135317
+        },
+        {
+          "label": "Minist\u00e8re de l'\u00e9conomie et des finances",
+          "family": "state_aid",
+          "companies": 7142,
+          "eur": 13977163945
+        },
+        {
+          "label": "Minist\u00e8re de la Transition \u00e9cologique et solidaire",
+          "family": "state_aid",
+          "companies": 3992,
+          "eur": 10845242617
+        },
+        {
+          "label": "ADEME (France)",
+          "family": "ndb",
+          "companies": 19011,
+          "eur": 8586913360
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 3381,
+          "eur": 2497573413
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 36,
+          "eur": 1927498656
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 60,
+          "eur": 1661214599
+        },
+        {
+          "label": "Bpifrance",
+          "family": "ndb",
+          "companies": 983,
+          "eur": 619323069
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 246,
+          "eur": 522035153
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 3134,
+          "eur": 496596629
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 348,
+          "eur": 477027986
+        },
+        {
+          "label": "Conseil r\u00e9gional Nouvelle-Aquitaine",
+          "family": "state_aid",
+          "companies": 567,
+          "eur": 281906472
+        },
+        {
+          "label": "Conseil r\u00e9gional Hauts-de-France",
+          "family": "state_aid",
+          "companies": 156,
+          "eur": 263899253
+        },
+        {
+          "label": "Conseil r\u00e9gional",
+          "family": "state_aid",
+          "companies": 407,
+          "eur": 208560963
+        },
+        {
+          "label": "Caisse des D\u00e9p\u00f4ts",
+          "family": "state_aid",
+          "companies": 179,
+          "eur": 189845873
+        },
+        {
+          "label": "REGION GRAND EST",
+          "family": "state_aid",
+          "companies": 288,
+          "eur": 164089658
+        },
+        {
+          "label": "Minist\u00e8re des Arm\u00e9es",
+          "family": "state_aid",
+          "companies": 226,
+          "eur": 159578292
+        },
+        {
+          "label": "Conseil r\u00e9gional d'Ile-de-France",
+          "family": "state_aid",
+          "companies": 244,
+          "eur": 159125367
+        },
+        {
+          "label": "Direction G\u00e9n\u00e9rale de l'Am\u00e9nagement, du Logement et de la Nature",
+          "family": "state_aid",
+          "companies": 133,
+          "eur": 85971295
+        },
+        {
+          "label": "Minist\u00e8re de l'Agriculture et de l'alimentation",
+          "family": "state_aid",
+          "companies": 108,
+          "eur": 76131215
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 7796
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 7708
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 3076
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 2996
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 2823
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 1610
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 1320
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 798
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 695
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 117
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 69
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 1,
+        "rankByEur": 2,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Energy & cleantech"
+        ]
+      }
+    },
+    "DE": {
+      "name": "Germany",
+      "companies": 22272,
+      "totalEur": 136977597763,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 25720,
+          "eur": 72655202559
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 4189,
+          "eur": 3545405489
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 1216,
+          "eur": 618481128
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 386,
+          "eur": 561409609
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 91,
+          "eur": 100000
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 87,
+          "eur": 57082200359
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 19,
+          "eur": 1481794317
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 21,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 22,
+          "eur": 514909258
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 349,
+          "eur": 518095045
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 87,
+          "eur": 57082200359
+        },
+        {
+          "label": "Bundesfinanzministerium",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 34500000000
+        },
+        {
+          "label": "Bundesministerium f\u00fcr Wirtschaft und Klimaschutz",
+          "family": "state_aid",
+          "companies": 3493,
+          "eur": 13720437908
+        },
+        {
+          "label": "BAFA (German Federal Office Economics & Export Control)",
+          "family": "state_aid",
+          "companies": 3261,
+          "eur": 6819004650
+        },
+        {
+          "label": "Bundesministerium f\u00fcr Wirtschaft und Energie",
+          "family": "state_aid",
+          "companies": 1527,
+          "eur": 6047674165
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 4189,
+          "eur": 3545405489
+        },
+        {
+          "label": "BMBF (German Federal Research Ministry)",
+          "family": "state_aid",
+          "companies": 2096,
+          "eur": 1676621088
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 19,
+          "eur": 1481794317
+        },
+        {
+          "label": "Forschungszentrum J\u00fclich",
+          "family": "state_aid",
+          "companies": 1383,
+          "eur": 1345349271
+        },
+        {
+          "label": "Bayerisches Staatsministerium f\u00fcr Wirtschaft, Landesentwicklung und Energie",
+          "family": "state_aid",
+          "companies": 1145,
+          "eur": 996459948
+        },
+        {
+          "label": "KfW",
+          "family": "state_aid",
+          "companies": 596,
+          "eur": 867219138
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 452,
+          "eur": 618481128
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 386,
+          "eur": 561409609
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 349,
+          "eur": 518095045
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 22,
+          "eur": 514909258
+        },
+        {
+          "label": "SAB Sachsen",
+          "family": "state_aid",
+          "companies": 851,
+          "eur": 498650408
+        },
+        {
+          "label": "NBank (Lower Saxony)",
+          "family": "state_aid",
+          "companies": 394,
+          "eur": 485183867
+        },
+        {
+          "label": "DLR Projekttr\u00e4ger (German Aerospace/R&D Agency)",
+          "family": "state_aid",
+          "companies": 490,
+          "eur": 408693314
+        },
+        {
+          "label": "Bundesanstalt f\u00fcr Verwaltungsdienstleistungen",
+          "family": "state_aid",
+          "companies": 175,
+          "eur": 321264459
+        },
+        {
+          "label": "ILB Brandenburg",
+          "family": "state_aid",
+          "companies": 312,
+          "eur": 306292301
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 4346
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 4240
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 3837
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 2720
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 1533
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 1531
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 1262
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 914
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 893
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 134
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 89
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 2,
+        "rankByEur": 1,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Industrial & manufacturing"
+        ]
+      }
+    },
+    "IT": {
+      "name": "Italy",
+      "companies": 20499,
+      "totalEur": 58969905706,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 21906,
+          "eur": 29890960929
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 3971,
+          "eur": 2462345862
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 462,
+          "eur": 275904083
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 225,
+          "eur": 280692734
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 22,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 48,
+          "eur": 24764640000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 19,
+          "eur": 550343082
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 16,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 29,
+          "eur": 635507576
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 190,
+          "eur": 109511441
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 48,
+          "eur": 24764640000
+        },
+        {
+          "label": "MedioCredito Centrale",
+          "family": "state_aid",
+          "companies": 12291,
+          "eur": 15081619287
+        },
+        {
+          "label": "GSE (Italian Energy Services Manager)",
+          "family": "state_aid",
+          "companies": 891,
+          "eur": 6755266532
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 3971,
+          "eur": 2462345862
+        },
+        {
+          "label": "Invitalia",
+          "family": "state_aid",
+          "companies": 1752,
+          "eur": 2231241041
+        },
+        {
+          "label": "MIMIT (Italian Ministry of Enterprise)",
+          "family": "state_aid",
+          "companies": 1790,
+          "eur": 1852741901
+        },
+        {
+          "label": "MITE (Italian Ecological Transition Ministry)",
+          "family": "state_aid",
+          "companies": 433,
+          "eur": 979472190
+        },
+        {
+          "label": "MUR (Italian Ministry of Universities and Research)",
+          "family": "state_aid",
+          "companies": 584,
+          "eur": 667051449
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 29,
+          "eur": 635507576
+        },
+        {
+          "label": "ICO (Spain)",
+          "family": "state_aid",
+          "companies": 502,
+          "eur": 572626220
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 19,
+          "eur": 550343082
+        },
+        {
+          "label": "Direzione Generale dell'Internazionalizzazione e della Comunicazione",
+          "family": "state_aid",
+          "companies": 73,
+          "eur": 346530905
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 225,
+          "eur": 280692734
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 379,
+          "eur": 275904083
+        },
+        {
+          "label": "agenzia delle entrate",
+          "family": "state_aid",
+          "companies": 600,
+          "eur": 213227341
+        },
+        {
+          "label": "Agenzia per la Coesione Territoriale",
+          "family": "state_aid",
+          "companies": 10,
+          "eur": 128127772
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 190,
+          "eur": 109511441
+        },
+        {
+          "label": "Lazio Innova",
+          "family": "state_aid",
+          "companies": 201,
+          "eur": 91917347
+        },
+        {
+          "label": "ASA - Societ\u00e0 di consulenza e assistenza alle imprese",
+          "family": "state_aid",
+          "companies": 460,
+          "eur": 90760445
+        },
+        {
+          "label": "Provincia Autonoma di Trento",
+          "family": "state_aid",
+          "companies": 167,
+          "eur": 87366888
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 7125
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 4195
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 2203
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 1882
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 1563
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 962
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 925
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 781
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 504
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 74
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 70
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 3,
+        "rankByEur": 3,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Industrial & manufacturing"
+        ]
+      }
+    },
+    "ES": {
+      "name": "Spain",
+      "companies": 12341,
+      "totalEur": 28048526719,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2,
+          "eur": 525000
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 4960,
+          "eur": 3309662466
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 13288,
+          "eur": 9584621585
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 310,
+          "eur": 374775987
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 61,
+          "eur": 50000
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 22,
+          "eur": 12776160000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 33,
+          "eur": 1200943822
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 18,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 42,
+          "eur": 759835595
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 122,
+          "eur": 41952265
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 22,
+          "eur": 12776160000
+        },
+        {
+          "label": "Spain BDNS (regional agencies)",
+          "family": "ndb",
+          "companies": 7568,
+          "eur": 5275833054
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 4960,
+          "eur": 3309662466
+        },
+        {
+          "label": "IDAE (Spain \u2014 Energy Diversification & Saving)",
+          "family": "ndb",
+          "companies": 1237,
+          "eur": 2092534284
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 33,
+          "eur": 1200943822
+        },
+        {
+          "label": "CDTI (Spain)",
+          "family": "ndb",
+          "companies": 2093,
+          "eur": 1195216659
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 42,
+          "eur": 759835595
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 310,
+          "eur": 374775987
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 465,
+          "eur": 310574792
+        },
+        {
+          "label": "Agencia Andaluza de la Energ\u00eda",
+          "family": "ndb",
+          "companies": 262,
+          "eur": 134907799
+        },
+        {
+          "label": "GAIN (Galician Innovation Agency)",
+          "family": "ndb",
+          "companies": 253,
+          "eur": 128751863
+        },
+        {
+          "label": "ICE (Castilla y Le\u00f3n Enterprise Institute)",
+          "family": "ndb",
+          "companies": 229,
+          "eur": 105109890
+        },
+        {
+          "label": "ACCI\u00d3 (Catalonia Enterprise Agency)",
+          "family": "ndb",
+          "companies": 362,
+          "eur": 100886516
+        },
+        {
+          "label": "ICAEN (Catalan Energy Institute)",
+          "family": "ndb",
+          "companies": 195,
+          "eur": 72266389
+        },
+        {
+          "label": "IVACE (Valencia Competitiveness Institute)",
+          "family": "ndb",
+          "companies": 296,
+          "eur": 71807684
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 122,
+          "eur": 41952265
+        },
+        {
+          "label": "SEKUENS (Asturias Science & Innovation)",
+          "family": "ndb",
+          "companies": 121,
+          "eur": 31537372
+        },
+        {
+          "label": "SODERCAN (Cantabria Regional Development)",
+          "family": "ndb",
+          "companies": 34,
+          "eur": 29785907
+        },
+        {
+          "label": "IGAPE (Galician Economic Promotion)",
+          "family": "ndb",
+          "companies": 88,
+          "eur": 18362819
+        },
+        {
+          "label": "ADER (La Rioja Development Agency)",
+          "family": "ndb",
+          "companies": 83,
+          "eur": 17046558
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 2364
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 1507
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1296
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 1179
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 1074
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 894
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 719
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 413
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 311
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 88
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 69
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 4,
+        "rankByEur": 4,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Energy & cleantech",
+          "Software, data & AI"
+        ]
+      }
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "companies": 10551,
+      "totalEur": 7180801207,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 401,
+          "eur": 555249819
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1959,
+          "eur": 515988182
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 12130,
+          "eur": 6037871292
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 52,
+          "eur": 65196848
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 43,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 4,
+          "eur": 0
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 19,
+          "eur": 6495066
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 12118,
+          "eur": 6037871292
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 1959,
+          "eur": 515988182
+        },
+        {
+          "label": "HMRC",
+          "family": "state_aid",
+          "companies": 218,
+          "eur": 323918753
+        },
+        {
+          "label": "MHCLG",
+          "family": "state_aid",
+          "companies": 122,
+          "eur": 149699914
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 52,
+          "eur": 65196848
+        },
+        {
+          "label": "Innovate UK / UKRI",
+          "family": "state_aid",
+          "companies": 25,
+          "eur": 20961003
+        },
+        {
+          "label": "DESNZ",
+          "family": "state_aid",
+          "companies": 7,
+          "eur": 19645486
+        },
+        {
+          "label": "KfW",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 14448560
+        },
+        {
+          "label": "Invest Northern Ireland",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 10032284
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 19,
+          "eur": 6495066
+        },
+        {
+          "label": "Welsh Assembly Government",
+          "family": "state_aid",
+          "companies": 3,
+          "eur": 4640482
+        },
+        {
+          "label": "Department for Business, Energy & Industrial Strategy",
+          "family": "state_aid",
+          "companies": 2,
+          "eur": 4553615
+        },
+        {
+          "label": "Conseil r\u00e9gional Hauts-de-France",
+          "family": "state_aid",
+          "companies": 4,
+          "eur": 4164315
+        },
+        {
+          "label": "British Business Bank",
+          "family": "state_aid",
+          "companies": 2,
+          "eur": 1571599
+        },
+        {
+          "label": "Business Finland Venture Capital",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 1500003
+        },
+        {
+          "label": "Regione Lombardia - DG Ricerca, Innovazione, Universit\u00e0, Export e Internazionalizzazione",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 113805
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 2506
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 1805
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 1647
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 848
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 542
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 535
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 525
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 415
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 373
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 65
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 55
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 5,
+        "rankByEur": 13,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Health & life sciences"
+        ]
+      }
+    },
+    "NO": {
+      "name": "Norway",
+      "companies": 9178,
+      "totalEur": 4560720077,
+      "byFamily": [
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1019,
+          "eur": 1196143745
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 15177,
+          "eur": 2048808543
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 49,
+          "eur": 70652383
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 17,
+          "eur": 5000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 20,
+          "eur": 1151657790
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 5,
+          "eur": 79460083
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 21,
+          "eur": 13992533
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "Innovasjon Norge",
+          "family": "ndb",
+          "companies": 13190,
+          "eur": 1239560171
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 1019,
+          "eur": 1196143745
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 20,
+          "eur": 1151657790
+        },
+        {
+          "label": "Norges Forskningsr\u00e5d",
+          "family": "ndb",
+          "companies": 1925,
+          "eur": 776060627
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 5,
+          "eur": 79460083
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 49,
+          "eur": 70652383
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 59,
+          "eur": 33187745
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 21,
+          "eur": 13992533
+        },
+        {
+          "label": "EIT KIC",
+          "family": "eit",
+          "companies": 17,
+          "eur": 5000
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 2298
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1841
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 1204
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 1007
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 856
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 524
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 443
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 225
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 221
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 94
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 29
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 6,
+        "rankByEur": 15,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Other"
+        ]
+      }
+    },
+    "NL": {
+      "name": "Netherlands",
+      "companies": 5624,
+      "totalEur": 22282987660,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 5533,
+          "eur": 6448555753
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 2263,
+          "eur": 2331127905
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 198,
+          "eur": 130899316
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 228,
+          "eur": 380135105
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 23,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 17,
+          "eur": 11721360000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 14,
+          "eur": 829467705
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 13,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 7,
+          "eur": 84879143
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 188,
+          "eur": 356562732
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 17,
+          "eur": 11721360000
+        },
+        {
+          "label": "RVO Netherlands",
+          "family": "state_aid",
+          "companies": 3277,
+          "eur": 4603347103
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 2263,
+          "eur": 2331127905
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 14,
+          "eur": 829467705
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 228,
+          "eur": 380135105
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 188,
+          "eur": 356562732
+        },
+        {
+          "label": "Kansen voor West",
+          "family": "state_aid",
+          "companies": 373,
+          "eur": 341307880
+        },
+        {
+          "label": "Ministerie van Financien",
+          "family": "state_aid",
+          "companies": 352,
+          "eur": 330000352
+        },
+        {
+          "label": "BOM (Brabantse Ontwikkelingsmaatschappij)",
+          "family": "state_aid",
+          "companies": 354,
+          "eur": 252045509
+        },
+        {
+          "label": "Ministerie van Binnenlandse Zaken en Koninkrijksrelaties",
+          "family": "state_aid",
+          "companies": 7,
+          "eur": 241834295
+        },
+        {
+          "label": "Provincie Gelderland",
+          "family": "state_aid",
+          "companies": 285,
+          "eur": 152135378
+        },
+        {
+          "label": "NOM (Noord-Nederland Ontwikkeling)",
+          "family": "state_aid",
+          "companies": 230,
+          "eur": 139134920
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 176,
+          "eur": 130899316
+        },
+        {
+          "label": "Ministerie van Infrastructuur en Waterstaat",
+          "family": "state_aid",
+          "companies": 48,
+          "eur": 89560347
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 7,
+          "eur": 84879143
+        },
+        {
+          "label": "Ministerie van Volksgezondheid, Welzijn, Sport",
+          "family": "state_aid",
+          "companies": 136,
+          "eur": 65235371
+        },
+        {
+          "label": "provincie Overijssel",
+          "family": "state_aid",
+          "companies": 77,
+          "eur": 39225036
+        },
+        {
+          "label": "provincie Zuid-Holland",
+          "family": "state_aid",
+          "companies": 125,
+          "eur": 37864383
+        },
+        {
+          "label": "Ministerie van Onderwijs, Cultuur en Wetenschap",
+          "family": "state_aid",
+          "companies": 29,
+          "eur": 22014260
+        },
+        {
+          "label": "Provincie Utrecht",
+          "family": "state_aid",
+          "companies": 81,
+          "eur": 19878174
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 1211
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 967
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 675
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 627
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 608
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 568
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 417
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 245
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 127
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 29
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 25
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 7,
+        "rankByEur": 5,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Energy & cleantech",
+          "Other"
+        ]
+      }
+    },
+    "SE": {
+      "name": "Sweden",
+      "companies": 4723,
+      "totalEur": 9287439418,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2232,
+          "eur": 2611224298
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1010,
+          "eur": 888663111
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3762,
+          "eur": 1452709663
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 114,
+          "eur": 196769299
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 20,
+          "eur": 10000
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 4,
+          "eur": 2859468640
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 14,
+          "eur": 1114797509
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 10,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 7,
+          "eur": 107368057
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 75,
+          "eur": 56428841
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 4,
+          "eur": 2859468640
+        },
+        {
+          "label": "Vinnova",
+          "family": "state_aid",
+          "companies": 3769,
+          "eur": 1616466930
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 14,
+          "eur": 1114797509
+        },
+        {
+          "label": "Naturv\u00e5rdsverket (Swedish Environment Agency)",
+          "family": "state_aid",
+          "companies": 867,
+          "eur": 1102382539
+        },
+        {
+          "label": "Energimyndigheten (Swedish Energy Agency)",
+          "family": "state_aid",
+          "companies": 575,
+          "eur": 1058310839
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 1010,
+          "eur": 888663111
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 114,
+          "eur": 196769299
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 7,
+          "eur": 107368057
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 91,
+          "eur": 62699205
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 75,
+          "eur": 56428841
+        },
+        {
+          "label": "Tillv\u00e4xtverket (Swedish Growth Agency)",
+          "family": "state_aid",
+          "companies": 48,
+          "eur": 30408571
+        },
+        {
+          "label": "Rymdstyrelsen (Swedish Space Agency)",
+          "family": "state_aid",
+          "companies": 53,
+          "eur": 29054453
+        },
+        {
+          "label": "Trafikverket",
+          "family": "state_aid",
+          "companies": 49,
+          "eur": 26382509
+        },
+        {
+          "label": "Jordbruksverket",
+          "family": "state_aid",
+          "companies": 51,
+          "eur": 24311932
+        },
+        {
+          "label": "L\u00e4nsstyrelsen i Sk\u00e5ne l\u00e4n",
+          "family": "state_aid",
+          "companies": 7,
+          "eur": 22996700
+        },
+        {
+          "label": "L\u00e4nsstyrelsen i V\u00e4sterbottens l\u00e4n",
+          "family": "state_aid",
+          "companies": 4,
+          "eur": 20926097
+        },
+        {
+          "label": "Formas (Swedish Research Council for Environment)",
+          "family": "state_aid",
+          "companies": 58,
+          "eur": 16669099
+        },
+        {
+          "label": "L\u00e4nsstyrelsen i V\u00e4stra G\u00f6taland",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 14984247
+        },
+        {
+          "label": "L\u00e4nsstyrelsen i Stockholms l\u00e4n",
+          "family": "state_aid",
+          "companies": 9,
+          "eur": 14569211
+        },
+        {
+          "label": "Region G\u00e4vleborg",
+          "family": "state_aid",
+          "companies": 3,
+          "eur": 7504429
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 866
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 800
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 659
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 601
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 496
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 327
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 258
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 216
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 180
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 52
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 47
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 8,
+        "rankByEur": 9,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Energy & cleantech"
+        ]
+      }
+    },
+    "HU": {
+      "name": "Hungary",
+      "companies": 4305,
+      "totalEur": 3709345247,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 4319,
+          "eur": 2682575259
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 425,
+          "eur": 131117210
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 13,
+          "eur": 3709043
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 21,
+          "eur": 14013712
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 5,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 5,
+          "eur": 824100000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 2,
+          "eur": 49993901
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 13,
+          "eur": 3836123
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "Kecskem\u00e9t Megyei Jog\u00fa V\u00e1ros \u00d6nkorm\u00e1nyzata",
+          "family": "state_aid",
+          "companies": 2,
+          "eur": 1566120550
+        },
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 5,
+          "eur": 824100000
+        },
+        {
+          "label": "NKFIH (Hungarian National R&D Fund)",
+          "family": "state_aid",
+          "companies": 376,
+          "eur": 324686463
+        },
+        {
+          "label": "AVHGA",
+          "family": "state_aid",
+          "companies": 1864,
+          "eur": 299872868
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 425,
+          "eur": 131117210
+        },
+        {
+          "label": "K\u00fclgazdas\u00e1gi \u00e9s K\u00fcl\u00fcgyminiszt\u00e9rium",
+          "family": "state_aid",
+          "companies": 25,
+          "eur": 100144977
+        },
+        {
+          "label": "KEHOP IH",
+          "family": "state_aid",
+          "companies": 3,
+          "eur": 72978126
+        },
+        {
+          "label": "Kultur\u00e1lis \u00e9s Innov\u00e1ci\u00f3s Miniszt\u00e9rium",
+          "family": "state_aid",
+          "companies": 16,
+          "eur": 63334750
+        },
+        {
+          "label": "P\u00e9nz\u00fcgyminiszt\u00e9rium Gazdas\u00e1gfejleszt\u00e9si Programok\u00e9rt Felel\u0151s Helyettes \u00c1llamtitk\u00e1rs\u00e1g",
+          "family": "state_aid",
+          "companies": 1152,
+          "eur": 56999770
+        },
+        {
+          "label": "Hiventures (Hungary)",
+          "family": "state_aid",
+          "companies": 50,
+          "eur": 50432064
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 2,
+          "eur": 49993901
+        },
+        {
+          "label": "Magyar Eximbank",
+          "family": "state_aid",
+          "companies": 39,
+          "eur": 44222951
+        },
+        {
+          "label": "Energia\u00fcgyi Miniszt\u00e9rium",
+          "family": "state_aid",
+          "companies": 6,
+          "eur": 20508392
+        },
+        {
+          "label": "Innov\u00e1ci\u00f3s \u00e9s Technol\u00f3giai Miniszt\u00e9rium",
+          "family": "state_aid",
+          "companies": 32,
+          "eur": 19268291
+        },
+        {
+          "label": "MFB (Hungary)",
+          "family": "state_aid",
+          "companies": 14,
+          "eur": 15246707
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 21,
+          "eur": 14013712
+        },
+        {
+          "label": "K\u00f6zigazgat\u00e1si \u00e9s Ter\u00fcletfejleszt\u00e9si Miniszt\u00e9rium",
+          "family": "state_aid",
+          "companies": 30,
+          "eur": 11839825
+        },
+        {
+          "label": "Kecskem\u00e9t V\u00e1rosfejleszt\u00e9si Alap",
+          "family": "state_aid",
+          "companies": 4,
+          "eur": 11017747
+        },
+        {
+          "label": "GINOP IH",
+          "family": "state_aid",
+          "companies": 9,
+          "eur": 9827894
+        },
+        {
+          "label": "Nemzetgazdas\u00e1gi Miniszt\u00e9rium",
+          "family": "state_aid",
+          "companies": 632,
+          "eur": 9192237
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 1580
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1244
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 498
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 276
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 212
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 158
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 145
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 73
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 44
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 12
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 4
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 9,
+        "rankByEur": 16,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Agrifood",
+          "Other"
+        ]
+      }
+    },
+    "EE": {
+      "name": "Estonia",
+      "companies": 4155,
+      "totalEur": 3033900848,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 618,
+          "eur": 746257022
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 322,
+          "eur": 152905250
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3883,
+          "eur": 1451052685
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 35,
+          "eur": 24104665
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 6,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 3,
+          "eur": 388620000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 2,
+          "eur": 33532000
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 2,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 9,
+          "eur": 236522402
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 4,
+          "eur": 906824
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IDAE (Spain \u2014 Energy Diversification & Saving)",
+          "family": "ndb",
+          "companies": 279,
+          "eur": 902140005
+        },
+        {
+          "label": "EIS (KredEx + Enterprise Estonia)",
+          "family": "ndb",
+          "companies": 3880,
+          "eur": 715648726
+        },
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 3,
+          "eur": 388620000
+        },
+        {
+          "label": "Elering AS",
+          "family": "state_aid",
+          "companies": 23,
+          "eur": 325650048
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 9,
+          "eur": 236522402
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 322,
+          "eur": 152905250
+        },
+        {
+          "label": "KIK (Estonian Environmental Investment Centre)",
+          "family": "state_aid",
+          "companies": 78,
+          "eur": 145530453
+        },
+        {
+          "label": "Spain BDNS (regional agencies)",
+          "family": "ndb",
+          "companies": 114,
+          "eur": 59223986
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 2,
+          "eur": 33532000
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 35,
+          "eur": 24104665
+        },
+        {
+          "label": "P\u00f5llumajanduse Registrite ja Informatsiooni Amet",
+          "family": "state_aid",
+          "companies": 33,
+          "eur": 22019796
+        },
+        {
+          "label": "Agencia Andaluza de la Energ\u00eda",
+          "family": "ndb",
+          "companies": 1,
+          "eur": 6023013
+        },
+        {
+          "label": "Riigi Tugiteenuste Keskus",
+          "family": "state_aid",
+          "companies": 7,
+          "eur": 4143975
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 16,
+          "eur": 4039080
+        },
+        {
+          "label": "Altum (Latvia)",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 2369321
+        },
+        {
+          "label": "ADEME (France)",
+          "family": "ndb",
+          "companies": 20,
+          "eur": 2264356
+        },
+        {
+          "label": "Business Finland Venture Capital",
+          "family": "state_aid",
+          "companies": 5,
+          "eur": 2060005
+        },
+        {
+          "label": "ILTE (Lithuania)",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 1989956
+        },
+        {
+          "label": "Kaitseministeerium",
+          "family": "state_aid",
+          "companies": 13,
+          "eur": 1989332
+        },
+        {
+          "label": "Lithuanian Ministry of Economy and Innovation",
+          "family": "state_aid",
+          "companies": 6,
+          "eur": 1069288
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 890
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 748
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 412
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 251
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 208
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 186
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 160
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 77
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 70
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 43
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 8
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 10,
+        "rankByEur": 19,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Other"
+        ]
+      }
+    },
+    "BE": {
+      "name": "Belgium",
+      "companies": 3803,
+      "totalEur": 8039175377,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 3637,
+          "eur": 3359177780
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 2450,
+          "eur": 1694586553
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 157,
+          "eur": 96567853
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 111,
+          "eur": 162044049
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 11,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 8,
+          "eur": 433554196
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 18,
+          "eur": 1660571907
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 8,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 6,
+          "eur": 108815836
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 58,
+          "eur": 523857202
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 2450,
+          "eur": 1694586553
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 18,
+          "eur": 1660571907
+        },
+        {
+          "label": "VLAIO (Flanders Innovation & Entrepreneurship)",
+          "family": "state_aid",
+          "companies": 1821,
+          "eur": 1240916116
+        },
+        {
+          "label": "SPW DGO \u00c9conomie (Wallonia)",
+          "family": "state_aid",
+          "companies": 1367,
+          "eur": 1079348199
+        },
+        {
+          "label": "ENERGIE",
+          "family": "state_aid",
+          "companies": 97,
+          "eur": 729279931
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 58,
+          "eur": 523857202
+        },
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 8,
+          "eur": 433554196
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 111,
+          "eur": 162044049
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 6,
+          "eur": 108815836
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 157,
+          "eur": 96567853
+        },
+        {
+          "label": "spw_energie",
+          "family": "state_aid",
+          "companies": 18,
+          "eur": 74016413
+        },
+        {
+          "label": "ewi_flanders",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 53585764
+        },
+        {
+          "label": "Innoviris (Brussels R&D)",
+          "family": "state_aid",
+          "companies": 69,
+          "eur": 46449888
+        },
+        {
+          "label": "Omgeving",
+          "family": "state_aid",
+          "companies": 22,
+          "eur": 33920658
+        },
+        {
+          "label": "Wallimage SA",
+          "family": "state_aid",
+          "companies": 139,
+          "eur": 33822506
+        },
+        {
+          "label": "WVG_VIPA",
+          "family": "state_aid",
+          "companies": 27,
+          "eur": 16602792
+        },
+        {
+          "label": "Vlaamse MilieuMaatschappij",
+          "family": "state_aid",
+          "companies": 12,
+          "eur": 16426172
+        },
+        {
+          "label": "BE-FEDERAL",
+          "family": "state_aid",
+          "companies": 4,
+          "eur": 16243318
+        },
+        {
+          "label": "bewe_brussels",
+          "family": "state_aid",
+          "companies": 44,
+          "eur": 9262809
+        },
+        {
+          "label": "Conseil r\u00e9gional Hauts-de-France",
+          "family": "state_aid",
+          "companies": 3,
+          "eur": 4053025
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 798
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 720
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 481
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 451
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 380
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 352
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 164
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 158
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 131
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 29
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 26
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 11,
+        "rankByEur": 11,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Software, data & AI"
+        ]
+      }
+    },
+    "CZ": {
+      "name": "Czechia",
+      "companies": 3630,
+      "totalEur": 9667114030,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 3819,
+          "eur": 8514727428
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 511,
+          "eur": 233098122
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 569,
+          "eur": 333958731
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 40,
+          "eur": 27230118
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 6,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 3,
+          "eur": 517200000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 3,
+          "eur": 20321974
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 3,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 1,
+          "eur": 3930825
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 30,
+          "eur": 16646832
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "Ministerstvo \u017eivotn\u00edho prost\u0159ed\u00ed",
+          "family": "state_aid",
+          "companies": 469,
+          "eur": 4814232782
+        },
+        {
+          "label": "Ministerstvo pr\u016fmyslu a obchodu",
+          "family": "state_aid",
+          "companies": 1662,
+          "eur": 1233354089
+        },
+        {
+          "label": "MINISTERSTVO \u017dIVOTN\u00cdHO PROST\u0158ED\u00cd \u010cR, Odbor podpory transformace na n\u00edzkouhl\u00edkovou ekonomiku",
+          "family": "state_aid",
+          "companies": 156,
+          "eur": 1126225431
+        },
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 3,
+          "eur": 517200000
+        },
+        {
+          "label": "TA\u010cR (Czech Republic)",
+          "family": "state_aid",
+          "companies": 1162,
+          "eur": 516174452
+        },
+        {
+          "label": "Statut\u00e1rn\u00ed m\u011bsto Brno",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 324909780
+        },
+        {
+          "label": "Ministerstvo \u0161kolstv\u00ed, ml\u00e1de\u017ee a t\u011blov\u00fdchovy, Odbor 32",
+          "family": "state_aid",
+          "companies": 31,
+          "eur": 242676138
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 511,
+          "eur": 233098122
+        },
+        {
+          "label": "Ministerstvo \u017eivotn\u00edho prost\u0159ed\u00ed, Odbor fond\u016f EU",
+          "family": "state_aid",
+          "companies": 68,
+          "eur": 144386380
+        },
+        {
+          "label": "Ministerstvo Dopravy",
+          "family": "state_aid",
+          "companies": 37,
+          "eur": 107650724
+        },
+        {
+          "label": "St\u00e1tn\u00ed zem\u011bd\u011blsk\u00fd interven\u010dn\u00ed fond",
+          "family": "state_aid",
+          "companies": 246,
+          "eur": 75654330
+        },
+        {
+          "label": "Ministerstvo zem\u011bd\u011blstv\u00ed",
+          "family": "state_aid",
+          "companies": 50,
+          "eur": 71863855
+        },
+        {
+          "label": "Ministerstvo pr\u016fmyslu a obchodu, Odbor v\u00fdzkumu v\u00fdvoje a inovac\u00ed",
+          "family": "state_aid",
+          "companies": 157,
+          "eur": 59554868
+        },
+        {
+          "label": "St\u00e1tn\u00ed fond podpory investic",
+          "family": "state_aid",
+          "companies": 102,
+          "eur": 50465941
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 46,
+          "eur": 35765973
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 40,
+          "eur": 27230118
+        },
+        {
+          "label": "Ministerstvo \u0161kolstv\u00ed, ml\u00e1de\u017ee a t\u011blov\u00fdchovy",
+          "family": "state_aid",
+          "companies": 65,
+          "eur": 26025538
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 3,
+          "eur": 20321974
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 30,
+          "eur": 16646832
+        },
+        {
+          "label": "Ministerstvo vnitra \u010cesk\u00e9 republiky",
+          "family": "state_aid",
+          "companies": 19,
+          "eur": 6376841
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 749
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 600
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 597
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 520
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 433
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 185
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 143
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 131
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 127
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 41
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 19
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 12,
+        "rankByEur": 7,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Energy & cleantech",
+          "Other"
+        ]
+      }
+    },
+    "AT": {
+      "name": "Austria",
+      "companies": 3468,
+      "totalEur": 7493310121,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 4532,
+          "eur": 3136339747
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1243,
+          "eur": 903132876
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 127,
+          "eur": 54047311
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 84,
+          "eur": 98848075
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 18,
+          "eur": 60000
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 11,
+          "eur": 2977800000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 4,
+          "eur": 114660575
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 3,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 5,
+          "eur": 38811047
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 116,
+          "eur": 169610491
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 11,
+          "eur": 2977800000
+        },
+        {
+          "label": "FFG (Austria)",
+          "family": "state_aid",
+          "companies": 1855,
+          "eur": 1198767462
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 1243,
+          "eur": 903132876
+        },
+        {
+          "label": "Kommunalkredit Public Consulting (Austria)",
+          "family": "state_aid",
+          "companies": 1055,
+          "eur": 832086454
+        },
+        {
+          "label": "AWS (Austria Wirtschaftsservice)",
+          "family": "state_aid",
+          "companies": 571,
+          "eur": 705517238
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 116,
+          "eur": 169610491
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 4,
+          "eur": 114660575
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 84,
+          "eur": 98848075
+        },
+        {
+          "label": "OeMAG Abwicklungsstelle f\u00fcr \u00d6kostrom AG",
+          "family": "state_aid",
+          "companies": 102,
+          "eur": 79816017
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 126,
+          "eur": 54047311
+        },
+        {
+          "label": "\u00d6sterreichische Hotel- und Tourismusbank (\u00d6HT)",
+          "family": "state_aid",
+          "companies": 196,
+          "eur": 46958131
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 5,
+          "eur": 38811047
+        },
+        {
+          "label": "AWISTA",
+          "family": "state_aid",
+          "companies": 23,
+          "eur": 35526873
+        },
+        {
+          "label": "Wirtschaftsagentur Wien",
+          "family": "state_aid",
+          "companies": 118,
+          "eur": 28656812
+        },
+        {
+          "label": "SFG (Styria)",
+          "family": "state_aid",
+          "companies": 53,
+          "eur": 28359470
+        },
+        {
+          "label": "KWF (Carinthia)",
+          "family": "state_aid",
+          "companies": 85,
+          "eur": 24555854
+        },
+        {
+          "label": "Amt der Nieder\u00f6sterreichischen Landesregierung, Abteilung WST3 \"Wirtschaft, Tourismus und Technologie\"",
+          "family": "state_aid",
+          "companies": 79,
+          "eur": 24461069
+        },
+        {
+          "label": "Amt der Ober\u00f6sterreichischen Landesregierung, Direktion f\u00fcr Landesplanung, wirtschaftliche und l\u00e4ndliche Entwicklung, Ab",
+          "family": "state_aid",
+          "companies": 41,
+          "eur": 17588577
+        },
+        {
+          "label": "Wirtschaftsagentur Burgenland GmbH",
+          "family": "state_aid",
+          "companies": 57,
+          "eur": 16704487
+        },
+        {
+          "label": "Amt der Steierm\u00e4rkischen Landesregierung, Abteilung 12 \"Wirtschaft, Tourismus, Wissenschaft und Forschung\"",
+          "family": "state_aid",
+          "companies": 38,
+          "eur": 15429025
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 864
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 727
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 425
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 419
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 233
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 205
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 193
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 140
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 103
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 16
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 13
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 13,
+        "rankByEur": 12,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Other",
+          "Energy & cleantech"
+        ]
+      }
+    },
+    "LV": {
+      "name": "Latvia",
+      "companies": 3439,
+      "totalEur": 597953925,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 608,
+          "eur": 428440927
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 204,
+          "eur": 61962049
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3565,
+          "eur": 70734855
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 6,
+          "eur": 4214228
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 4,
+          "eur": 0
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1,
+          "eur": 4416000
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 1,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 3,
+          "eur": 24612795
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 11,
+          "eur": 3573072
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "CFLA (Latvian Central Finance and Contracting Agency)",
+          "family": "state_aid",
+          "companies": 440,
+          "eur": 316058509
+        },
+        {
+          "label": "Altum (Latvia)",
+          "family": "ndb",
+          "companies": 3720,
+          "eur": 174883824
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 204,
+          "eur": 61962049
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 3,
+          "eur": 24612795
+        },
+        {
+          "label": "Finan\u0161u ministrija",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 6171062
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 1,
+          "eur": 4416000
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 6,
+          "eur": 4214228
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 11,
+          "eur": 3573072
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 6,
+          "eur": 1012388
+        },
+        {
+          "label": "ILTE (Lithuania)",
+          "family": "state_aid",
+          "companies": 3,
+          "eur": 700000
+        },
+        {
+          "label": "Lithuanian Ministry of Economy and Innovation",
+          "family": "state_aid",
+          "companies": 2,
+          "eur": 350000
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 1475
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 421
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 404
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 397
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 202
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 154
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 121
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 57
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 49
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 18
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 6
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 14,
+        "rankByEur": 23,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Other",
+          "Industrial & manufacturing"
+        ]
+      }
+    },
+    "PL": {
+      "name": "Poland",
+      "companies": 3119,
+      "totalEur": 9807514489,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2,
+          "eur": 462548
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 886,
+          "eur": 369183904
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3525,
+          "eur": 4149623204
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 54,
+          "eur": 49819005
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 15,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 11,
+          "eur": 4720462860
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 11,
+          "eur": 498014986
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 7,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 1,
+          "eur": 3997716
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 16,
+          "eur": 15950267
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 11,
+          "eur": 4720462860
+        },
+        {
+          "label": "NCBR (Poland \u2014 National Centre for R&D)",
+          "family": "ndb",
+          "companies": 2463,
+          "eur": 2600555915
+        },
+        {
+          "label": "PARP (Poland \u2014 Agency for Enterprise Development)",
+          "family": "ndb",
+          "companies": 285,
+          "eur": 549154797
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 11,
+          "eur": 498014986
+        },
+        {
+          "label": "ABM (Poland \u2014 Medical Research Agency)",
+          "family": "ndb",
+          "companies": 56,
+          "eur": 402681293
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 886,
+          "eur": 369183904
+        },
+        {
+          "label": "BGK (Poland)",
+          "family": "ndb",
+          "companies": 274,
+          "eur": 365206864
+        },
+        {
+          "label": "OPI (Poland \u2014 Information Processing Institute)",
+          "family": "ndb",
+          "companies": 66,
+          "eur": 132721295
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 381,
+          "eur": 99303041
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 54,
+          "eur": 49819005
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 16,
+          "eur": 15950267
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 1,
+          "eur": 3997716
+        },
+        {
+          "label": "ILTE (Lithuania)",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 250000
+        },
+        {
+          "label": "Altum (Latvia)",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 212548
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 380
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 349
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 290
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 165
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 165
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 156
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 143
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 113
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 99
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 18
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 16
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 15,
+        "rankByEur": 6,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Industrial & manufacturing"
+        ]
+      }
+    },
+    "DK": {
+      "name": "Denmark",
+      "companies": 3096,
+      "totalEur": 3491019874,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 6,
+          "eur": 5515559
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 886,
+          "eur": 742656713
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 3135,
+          "eur": 984872351
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 73,
+          "eur": 125061312
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 12,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 2,
+          "eur": 768000000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 13,
+          "eur": 795430052
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 8,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 6,
+          "eur": 24636406
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 27,
+          "eur": 44847482
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "Innovationsfonden",
+          "family": "ndb",
+          "companies": 2975,
+          "eur": 968072411
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 13,
+          "eur": 795430052
+        },
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 2,
+          "eur": 768000000
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 886,
+          "eur": 742656713
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 73,
+          "eur": 125061312
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 27,
+          "eur": 44847482
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 6,
+          "eur": 24636406
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 39,
+          "eur": 16799940
+        },
+        {
+          "label": "Forschungszentrum J\u00fclich",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 2755958
+        },
+        {
+          "label": "Business Finland Venture Capital",
+          "family": "state_aid",
+          "companies": 4,
+          "eur": 2000003
+        },
+        {
+          "label": "EIS (KredEx + Enterprise Estonia)",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 759598
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 876
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 596
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 389
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 273
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 264
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 147
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 144
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 88
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 78
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 27
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 15
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 16,
+        "rankByEur": 18,
+        "totalCountries": 23,
+        "dominantFamily": "National Dev. Banks",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Health & life sciences"
+        ]
+      }
+    },
+    "GR": {
+      "name": "Greece",
+      "companies": 2566,
+      "totalEur": 9487518348,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 1725,
+          "eur": 2008961604
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 2223,
+          "eur": 1473381889
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 145,
+          "eur": 90128407
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 46,
+          "eur": 44073149
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 1,
+          "eur": 7500
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 8,
+          "eur": 4804800000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 8,
+          "eur": 741003327
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 3,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 29,
+          "eur": 305448527
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 48,
+          "eur": 19713945
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 8,
+          "eur": 4804800000
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 2223,
+          "eur": 1473381889
+        },
+        {
+          "label": "Special Recovery Fund Coordination Service - \u0395\u03b9\u03b4\u03b9\u03ba\u03ae \u03a5\u03c0\u03b7\u03c1\u03b5\u03c3\u03af\u03b1 \u03a3\u03c5\u03bd\u03c4\u03bf\u03bd\u03b9\u03c3\u03bc\u03bf\u03cd \u03a4\u03b1\u03bc\u03b5\u03af\u03bf\u03c5 \u0391\u03bd\u03ac\u03ba\u03b1\u03bc\u03c8\u03b7\u03c2",
+          "family": "state_aid",
+          "companies": 514,
+          "eur": 874476176
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 8,
+          "eur": 741003327
+        },
+        {
+          "label": "MINISTRY OF ENVIRONMENT & ENERGY",
+          "family": "state_aid",
+          "companies": 76,
+          "eur": 374512995
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 29,
+          "eur": 305448527
+        },
+        {
+          "label": "gsrt_gr",
+          "family": "state_aid",
+          "companies": 35,
+          "eur": 168845842
+        },
+        {
+          "label": "Managing Authority of the Operational Programme Competitiveness, Entrepreneurship & Innovation",
+          "family": "state_aid",
+          "companies": 57,
+          "eur": 111899330
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 145,
+          "eur": 90128407
+        },
+        {
+          "label": "Directorate-General for Private Investments",
+          "family": "state_aid",
+          "companies": 28,
+          "eur": 84422357
+        },
+        {
+          "label": "\u0395\u03a5\u0394 \u03c0\u03c1\u03bf\u03b3\u03c1\u03ac\u03bc\u03bc\u03b1\u03c4\u03bf\u03c2 \u0391\u03bd\u03c4\u03b1\u03b3\u03c9\u03bd\u03b9\u03c3\u03c4\u03b9\u03ba\u03cc\u03c4\u03b7\u03c4\u03b1",
+          "family": "state_aid",
+          "companies": 211,
+          "eur": 81680529
+        },
+        {
+          "label": "Hellenic Development Bank",
+          "family": "state_aid",
+          "companies": 49,
+          "eur": 51495094
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 46,
+          "eur": 44073149
+        },
+        {
+          "label": "\u2022 \u03a5\u03a0\u0395\u039d / \u0393\u03b5\u03bd\u03b9\u03ba\u03ae \u0393\u03c1\u03b1\u03bc\u03bc\u03b1\u03c4\u03b5\u03af\u03b1 \u0395\u03bd\u03ad\u03c1\u03b3\u03b5\u03b9\u03b1\u03c2 \u03ba\u03b1\u03b9 \u039f\u03c1\u03c5\u03ba\u03c4\u03ce\u03bd \u03a0\u03c1\u03ce\u03c4\u03c9\u03bd \u03a5\u03bb\u03ce\u03bd",
+          "family": "state_aid",
+          "companies": 9,
+          "eur": 42890000
+        },
+        {
+          "label": "European Investment Fund",
+          "family": "state_aid",
+          "companies": 77,
+          "eur": 36983692
+        },
+        {
+          "label": "\u0393\u0394\u039f\u03a5 \u03a5\u03a0\u039f\u0399\u039a",
+          "family": "state_aid",
+          "companies": 168,
+          "eur": 36633878
+        },
+        {
+          "label": "\u0395\u03a0\u0399\u03a4\u0395\u039b\u0399\u039a\u0397 \u0394\u039f\u039c\u0397 \u0395\u03a3\u03a0\u0391 \u03a5\u03a0\u039f\u03a5\u03a1\u0393\u0395\u0399\u039f\u03a5 \u03a0\u0391\u0399\u0394\u0395\u0399\u0391\u03a3, \u0398\u03a1\u0397\u03a3\u039a\u0395\u03a5\u039c\u0391\u03a4\u03a9\u039d \u039a\u0391\u0399 \u0391\u0398\u039b\u0397\u03a4\u0399\u03a3\u039c\u039f\u03a5",
+          "family": "state_aid",
+          "companies": 142,
+          "eur": 34128007
+        },
+        {
+          "label": "Ministry of Agricultural Development - \u03a5\u03c0\u03bf\u03c5\u03c1\u03b3\u03b5\u03af\u03bf \u0391\u03b3\u03c1\u03bf\u03c4\u03b9\u03ba\u03ae\u03c2 \u0391\u03bd\u03ac\u03c0\u03c4\u03c5\u03be\u03b7\u03c2",
+          "family": "state_aid",
+          "companies": 266,
+          "eur": 31537203
+        },
+        {
+          "label": "Managing Authority of the Operational Programme Transport Infrastructure, Environment and Sustainable Development",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 19971028
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 48,
+          "eur": 19713945
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 751
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 446
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 418
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 354
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 182
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 125
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 92
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 72
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 53
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 45
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 10
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 17,
+        "rankByEur": 8,
+        "totalCountries": 23,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Software, data & AI"
+        ]
+      }
+    },
+    "FI": {
+      "name": "Finland",
+      "companies": 2159,
+      "totalEur": 8259409848,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2432,
+          "eur": 3023315512
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 942,
+          "eur": 878325711
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 327,
+          "eur": 943360265
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 84,
+          "eur": 133465803
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 16,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 12,
+          "eur": 2659358000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 8,
+          "eur": 337507375
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 5,
+          "eur": 0
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 4,
+          "eur": 222781046
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 101,
+          "eur": 61296136
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "Business Finland",
+          "family": "ndb",
+          "companies": 1999,
+          "eur": 2880919732
+        },
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 12,
+          "eur": 2659358000
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 942,
+          "eur": 878325711
+        },
+        {
+          "label": "Ty\u00f6- ja elinkeinoministeri\u00f6",
+          "family": "state_aid",
+          "companies": 96,
+          "eur": 767701658
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 8,
+          "eur": 337507375
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 4,
+          "eur": 222781046
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 84,
+          "eur": 133465803
+        },
+        {
+          "label": "Business Finland Venture Capital",
+          "family": "state_aid",
+          "companies": 75,
+          "eur": 105100039
+        },
+        {
+          "label": "ELY Centres (Finnish Regional Development)",
+          "family": "state_aid",
+          "companies": 311,
+          "eur": 87418073
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 101,
+          "eur": 61296136
+        },
+        {
+          "label": "Ymp\u00e4rist\u00f6ministeri\u00f6",
+          "family": "state_aid",
+          "companies": 47,
+          "eur": 40464729
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 46,
+          "eur": 36418434
+        },
+        {
+          "label": "Energiavirasto (Finnish Energy Authority)",
+          "family": "state_aid",
+          "companies": 18,
+          "eur": 18698901
+        },
+        {
+          "label": "Etel\u00e4-Pohjanmaan elinkeino-, liikenne- ja ymp\u00e4rist\u00f6keskus",
+          "family": "state_aid",
+          "companies": 4,
+          "eur": 4258807
+        },
+        {
+          "label": "Liikenne- ja viestint\u00e4virasto",
+          "family": "state_aid",
+          "companies": 9,
+          "eur": 4072060
+        },
+        {
+          "label": "Kuntarahoitus Oyj",
+          "family": "state_aid",
+          "companies": 2,
+          "eur": 3626305
+        },
+        {
+          "label": "Keski-Suomen elinkeino-, liikenne- ja ymp\u00e4rist\u00f6keskus",
+          "family": "state_aid",
+          "companies": 12,
+          "eur": 3427577
+        },
+        {
+          "label": "Pohjois-Karjalan elinkeino-, liikenne- ja ymp\u00e4rist\u00f6keskus",
+          "family": "state_aid",
+          "companies": 2,
+          "eur": 3085399
+        },
+        {
+          "label": "Helsingin kaupunki",
+          "family": "state_aid",
+          "companies": 8,
+          "eur": 2740502
+        },
+        {
+          "label": "\u00c5lands landskapsregering",
+          "family": "state_aid",
+          "companies": 6,
+          "eur": 2454280
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 636
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 325
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 307
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 246
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 152
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 149
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 122
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 75
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 63
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 20
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 11
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 18,
+        "rankByEur": 10,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Other"
+        ]
+      }
+    },
+    "PT": {
+      "name": "Portugal",
+      "companies": 1667,
+      "totalEur": 5698992276,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 816,
+          "eur": 743584675
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 1352,
+          "eur": 639375589
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 94,
+          "eur": 31886449
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 78,
+          "eur": 97990646
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 7,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 4,
+          "eur": 3669360000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 6,
+          "eur": 478257912
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 3,
+          "eur": 30513892
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 44,
+          "eur": 8023113
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 4,
+          "eur": 3669360000
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 1352,
+          "eur": 639375589
+        },
+        {
+          "label": "Centro 2030",
+          "family": "state_aid",
+          "companies": 134,
+          "eur": 496236467
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 6,
+          "eur": 478257912
+        },
+        {
+          "label": "COMPETE 2030",
+          "family": "state_aid",
+          "companies": 357,
+          "eur": 103482956
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 78,
+          "eur": 97990646
+        },
+        {
+          "label": "PO SEUR",
+          "family": "state_aid",
+          "companies": 13,
+          "eur": 35922805
+        },
+        {
+          "label": "Lisboa 2020",
+          "family": "state_aid",
+          "companies": 26,
+          "eur": 32953465
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 92,
+          "eur": 31886449
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 3,
+          "eur": 30513892
+        },
+        {
+          "label": "Norte 2030",
+          "family": "state_aid",
+          "companies": 127,
+          "eur": 28901760
+        },
+        {
+          "label": "Alentejo 2030",
+          "family": "state_aid",
+          "companies": 38,
+          "eur": 9689895
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 44,
+          "eur": 8023113
+        },
+        {
+          "label": "Banco Portugu\u00eas de Fomento",
+          "family": "state_aid",
+          "companies": 5,
+          "eur": 7658560
+        },
+        {
+          "label": "Algarve 2030",
+          "family": "state_aid",
+          "companies": 16,
+          "eur": 6769398
+        },
+        {
+          "label": "TAM PRALGARVE",
+          "family": "state_aid",
+          "companies": 13,
+          "eur": 6350743
+        },
+        {
+          "label": "TAMPRCENTRO",
+          "family": "state_aid",
+          "companies": 65,
+          "eur": 5580676
+        },
+        {
+          "label": "PO CENTRO",
+          "family": "state_aid",
+          "companies": 3,
+          "eur": 3730991
+        },
+        {
+          "label": "Minist\u00e9rio das Finan\u00e7as",
+          "family": "state_aid",
+          "companies": 6,
+          "eur": 3000006
+        },
+        {
+          "label": "Instrumento Financeiro para a Reabilita\u00e7\u00e3o e Revitaliza\u00e7\u00e3o Urbanas",
+          "family": "state_aid",
+          "companies": 11,
+          "eur": 1966555
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 245
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 236
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 218
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 166
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 164
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 162
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 80
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 63
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 45
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 14
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 9
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 19,
+        "rankByEur": 14,
+        "totalCountries": 23,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Other",
+          "Software, data & AI"
+        ]
+      }
+    },
+    "IE": {
+      "name": "Ireland",
+      "companies": 1595,
+      "totalEur": 2623052485,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 1370,
+          "eur": 1345512512
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 782,
+          "eur": 553286801
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 59,
+          "eur": 45511942
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 76,
+          "eur": 110917496
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 17,
+          "eur": 45000
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 1,
+          "eur": 510000000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1,
+          "eur": 39475000
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 4,
+          "eur": 0
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 21,
+          "eur": 18303734
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IDA Ireland",
+          "family": "state_aid",
+          "companies": 161,
+          "eur": 708064604
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 782,
+          "eur": 553286801
+        },
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 1,
+          "eur": 510000000
+        },
+        {
+          "label": "Enterprise Ireland",
+          "family": "ndb",
+          "companies": 754,
+          "eur": 419549972
+        },
+        {
+          "label": "SEAI (Irish Sustainable Energy Authority)",
+          "family": "state_aid",
+          "companies": 272,
+          "eur": 111050532
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 76,
+          "eur": 110917496
+        },
+        {
+          "label": "Screen Ireland",
+          "family": "state_aid",
+          "companies": 144,
+          "eur": 72382848
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 52,
+          "eur": 45511942
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 1,
+          "eur": 39475000
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 21,
+          "eur": 18303734
+        },
+        {
+          "label": "Department of Agriculture, Food and the Marine",
+          "family": "state_aid",
+          "companies": 3,
+          "eur": 17319783
+        },
+        {
+          "label": "Department of Climate, Energy and the Environment",
+          "family": "state_aid",
+          "companies": 3,
+          "eur": 10443288
+        },
+        {
+          "label": "Strategic Banking Corporation of Ireland",
+          "family": "state_aid",
+          "companies": 31,
+          "eur": 4736062
+        },
+        {
+          "label": "Udaras na Gaeltachta",
+          "family": "state_aid",
+          "companies": 7,
+          "eur": 1080655
+        },
+        {
+          "label": "Conseil r\u00e9gional Hauts-de-France",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 884768
+        },
+        {
+          "label": "EIT KIC",
+          "family": "eit",
+          "companies": 17,
+          "eur": 45000
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 496
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 276
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 227
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 167
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 164
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 104
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 56
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 27
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 25
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 10
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 3
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 20,
+        "rankByEur": 20,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Other"
+        ]
+      }
+    },
+    "SK": {
+      "name": "Slovakia",
+      "companies": 1534,
+      "totalEur": 3706961921,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 1630,
+          "eur": 1208168052
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 247,
+          "eur": 84157457
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 10,
+          "eur": 1881110
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 9,
+          "eur": 6940731
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 5,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 14,
+          "eur": 2376713784
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1,
+          "eur": 21500000
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 1,
+          "eur": 5984408
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 7,
+          "eur": 1616379
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 14,
+          "eur": 2376713784
+        },
+        {
+          "label": "Ministerstvo \u017eivotn\u00e9ho prostredia SR",
+          "family": "state_aid",
+          "companies": 364,
+          "eur": 364018961
+        },
+        {
+          "label": "Ministerstvo hospod\u00e1rstva SR",
+          "family": "state_aid",
+          "companies": 271,
+          "eur": 268384323
+        },
+        {
+          "label": "Ministerstvo \u0161kolstva, vedy, v\u00fdskumu a ml\u00e1de\u017ee SR",
+          "family": "state_aid",
+          "companies": 78,
+          "eur": 109731099
+        },
+        {
+          "label": "Ministerstvo financi\u00ed SR",
+          "family": "state_aid",
+          "companies": 291,
+          "eur": 108614939
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 247,
+          "eur": 84157457
+        },
+        {
+          "label": "Ministerstvo invest\u00edci\u00ed, region\u00e1lneho rozvoja a informatiz\u00e1cie SR",
+          "family": "state_aid",
+          "companies": 33,
+          "eur": 81340167
+        },
+        {
+          "label": "\u00darad podpredsedu vl\u00e1dy Slovenskej republiky pre Pl\u00e1n obnovy a znalostn\u00fa ekonomiku",
+          "family": "state_aid",
+          "companies": 82,
+          "eur": 49015709
+        },
+        {
+          "label": "Ministerstvo \u0161kolstva, vedy, v\u00fdskumu a \u0161portu SR",
+          "family": "state_aid",
+          "companies": 75,
+          "eur": 46999353
+        },
+        {
+          "label": "Ministerstvo pr\u00e1ce, soci\u00e1lnych vec\u00ed a rodiny SR",
+          "family": "state_aid",
+          "companies": 78,
+          "eur": 43495870
+        },
+        {
+          "label": "\u00darad vl\u00e1dy SR",
+          "family": "state_aid",
+          "companies": 32,
+          "eur": 38873777
+        },
+        {
+          "label": "Ministerstvo dopravy a v\u00fdstavby SR",
+          "family": "state_aid",
+          "companies": 40,
+          "eur": 38819013
+        },
+        {
+          "label": "SIEA (Slovak Innovation & Energy Agency)",
+          "family": "state_aid",
+          "companies": 70,
+          "eur": 26271569
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 1,
+          "eur": 21500000
+        },
+        {
+          "label": "Ministerstvo obrany SR",
+          "family": "state_aid",
+          "companies": 32,
+          "eur": 11339137
+        },
+        {
+          "label": "V\u00fdskumn\u00e1 agent\u00fara",
+          "family": "state_aid",
+          "companies": 21,
+          "eur": 11110124
+        },
+        {
+          "label": "APVV (Slovak Research Agency)",
+          "family": "state_aid",
+          "companies": 50,
+          "eur": 8652361
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 9,
+          "eur": 6940731
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 1,
+          "eur": 5984408
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 9,
+          "eur": 1881110
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 678
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 265
+        },
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 232
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 100
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 67
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 58
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 33
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 30
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 29
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 23
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 3
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 21,
+        "rankByEur": 17,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Energy & cleantech",
+          "Other"
+        ]
+      }
+    },
+    "LU": {
+      "name": "Luxembourg",
+      "companies": 437,
+      "totalEur": 1354940769,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 400,
+          "eur": 1115219744
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 239,
+          "eur": 199280709
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 24,
+          "eur": 8394326
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 11,
+          "eur": 19311957
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 2,
+          "eur": 0
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1,
+          "eur": 12694904
+        },
+        {
+          "family": "eib",
+          "label": "EIB",
+          "companies": 2,
+          "eur": 0
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 1,
+          "eur": 39129
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "Minist\u00e8re de l'Energie et de l'Amenagement du Territoire",
+          "family": "state_aid",
+          "companies": 57,
+          "eur": 608091222
+        },
+        {
+          "label": "Minist\u00e8re de l'Economie",
+          "family": "state_aid",
+          "companies": 340,
+          "eur": 492324201
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 239,
+          "eur": 199280709
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 11,
+          "eur": 19311957
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 1,
+          "eur": 12694904
+        },
+        {
+          "label": "Forschungszentrum J\u00fclich",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 9760000
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 24,
+          "eur": 8394326
+        },
+        {
+          "label": "BAFA (German Federal Office Economics & Export Control)",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 4535371
+        },
+        {
+          "label": "RVO Netherlands",
+          "family": "state_aid",
+          "companies": 1,
+          "eur": 508950
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 1,
+          "eur": 39129
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "software_data_ai",
+          "label": "Software, data & AI",
+          "companies": 119
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 112
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 78
+        },
+        {
+          "sector": "industrial_manufacturing",
+          "label": "Industrial & manufacturing",
+          "companies": 37
+        },
+        {
+          "sector": "mobility_transport",
+          "label": "Mobility & transport",
+          "companies": 16
+        },
+        {
+          "sector": "materials_chemicals",
+          "label": "Materials & chemicals",
+          "companies": 13
+        },
+        {
+          "sector": "health_life_sciences",
+          "label": "Health & life sciences",
+          "companies": 12
+        },
+        {
+          "sector": "space",
+          "label": "Space",
+          "companies": 12
+        },
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 10
+        },
+        {
+          "sector": "agrifood",
+          "label": "Agrifood",
+          "companies": 9
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 3
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 22,
+        "rankByEur": 22,
+        "totalCountries": 23,
+        "dominantFamily": "State Aid (SATR)",
+        "dominantSectors": [
+          "Software, data & AI",
+          "Energy & cleantech"
+        ]
+      }
+    },
+    "RO": {
+      "name": "Romania",
+      "companies": 399,
+      "totalEur": 1592420924,
+      "byFamily": [
+        {
+          "family": "state_aid",
+          "label": "State Aid (SATR)",
+          "companies": 2,
+          "eur": 1276276
+        },
+        {
+          "family": "horizon_eu",
+          "label": "Horizon EU",
+          "companies": 679,
+          "eur": 212034914
+        },
+        {
+          "family": "ndb",
+          "label": "National Dev. Banks",
+          "companies": 25,
+          "eur": 11418252
+        },
+        {
+          "family": "eic",
+          "label": "EIC",
+          "companies": 11,
+          "eur": 8194999
+        },
+        {
+          "family": "eit",
+          "label": "EIT KIC",
+          "companies": 7,
+          "eur": 0
+        },
+        {
+          "family": "ipcei",
+          "label": "IPCEI",
+          "companies": 3,
+          "eur": 1173600000
+        },
+        {
+          "family": "innovation_fund",
+          "label": "Innovation Fund",
+          "companies": 1,
+          "eur": 146415990
+        },
+        {
+          "family": "edf",
+          "label": "EDF",
+          "companies": 4,
+          "eur": 22922300
+        },
+        {
+          "family": "chips_ju",
+          "label": "Chips JU",
+          "companies": 28,
+          "eur": 16558192
+        }
+      ],
+      "byVehicle": [
+        {
+          "label": "IPCEI",
+          "family": "ipcei",
+          "companies": 3,
+          "eur": 1173600000
+        },
+        {
+          "label": "Horizon EU",
+          "family": "horizon_eu",
+          "companies": 679,
+          "eur": 212034914
+        },
+        {
+          "label": "Innovation Fund",
+          "family": "innovation_fund",
+          "companies": 1,
+          "eur": 146415990
+        },
+        {
+          "label": "EDF",
+          "family": "edf",
+          "companies": 4,
+          "eur": 22922300
+        },
+        {
+          "label": "Chips JU",
+          "family": "chips_ju",
+          "companies": 28,
+          "eur": 16558192
+        },
+        {
+          "label": "National Dev. Banks",
+          "family": "ndb",
+          "companies": 24,
+          "eur": 11418252
+        },
+        {
+          "label": "EIC",
+          "family": "eic",
+          "companies": 11,
+          "eur": 8194999
+        },
+        {
+          "label": "Magyar Turisztikai \u00dcgyn\u00f6ks\u00e9g",
+          "family": "state_aid",
+          "companies": 2,
+          "eur": 1276276
+        }
+      ],
+      "bySector": [
+        {
+          "sector": "semiconductors_electronics",
+          "label": "Semiconductors & electronics",
+          "companies": 16
+        },
+        {
+          "sector": "defense_security",
+          "label": "Defence & security",
+          "companies": 3
+        },
+        {
+          "sector": "other",
+          "label": "Other",
+          "companies": 2
+        },
+        {
+          "sector": "energy_cleantech",
+          "label": "Energy & cleantech",
+          "companies": 1
+        }
+      ],
+      "narrative": {
+        "rankByCompanies": 23,
+        "rankByEur": 21,
+        "totalCountries": 23,
+        "dominantFamily": "Horizon EU",
+        "dominantSectors": [
+          "Semiconductors & electronics",
+          "Defence & security"
+        ]
+      }
+    },
+    "AL": {
+      "name": "Albania",
+      "excluded": true
+    },
+    "BA": {
+      "name": "Bosnia and Herzegovina",
+      "excluded": true
+    },
+    "BG": {
+      "name": "Bulgaria",
+      "excluded": true
+    },
+    "CH": {
+      "name": "Switzerland",
+      "excluded": true
+    },
+    "CY": {
+      "name": "Cyprus",
+      "excluded": true
+    },
+    "HR": {
+      "name": "Croatia",
+      "excluded": true
+    },
+    "IS": {
+      "name": "Iceland",
+      "excluded": true
+    },
+    "LI": {
+      "name": "Liechtenstein",
+      "excluded": true
+    },
+    "LT": {
+      "name": "Lithuania",
+      "excluded": true
+    },
+    "MD": {
+      "name": "Moldova",
+      "excluded": true
+    },
+    "ME": {
+      "name": "Montenegro",
+      "excluded": true
+    },
+    "MK": {
+      "name": "North Macedonia",
+      "excluded": true
+    },
+    "MT": {
+      "name": "Malta",
+      "excluded": true
+    },
+    "RS": {
+      "name": "Serbia",
+      "excluded": true
+    },
+    "SI": {
+      "name": "Slovenia",
+      "excluded": true
+    },
+    "UA": {
+      "name": "Ukraine",
+      "excluded": true
+    },
+    "XK": {
+      "name": "Kosovo",
+      "excluded": true
+    }
+  }
+}

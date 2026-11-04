@@ -1,0 +1,775 @@
+[
+  {
+    "ref": "ranker::exclusionFlags",
+    "field": "exclusionFlags",
+    "requirement": "Aid is not available to an undertaking in difficulty, or to one subject to an outstanding recovery decision. Accumulated losses above half of subscribed capital, or insolvency proceedings, put a company in that position until the equity is restored.",
+    "instrumentId": "satr_fr_rnd__sa_111938__cnc",
+    "instrumentName": "Soutien à la modernisation des industries techniques et à l'innovation technologique",
+    "gateKey": "G3_financial",
+    "locator": "",
+    "carriers": 13,
+    "alsoWorded": [
+      {
+        "instrumentName": "Soutien à la modernisation des industries techniques et à l'innovation technologique",
+        "requirement": "Aid is excluded for an undertaking subject to an outstanding recovery order following a prior Commission decision declaring aid granted by France illegal and incompatible with the internal market."
+      },
+      {
+        "instrumentName": "Soutien à la modernisation des industries techniques et à l'innovation technologique",
+        "requirement": "Company must not be in financial difficulty (excludes firms with losses exceeding half of subscribed capital, per GBER undertaking-in-difficulty rules)"
+      }
+    ],
+    "splits": [
+      {
+        "value": "insolvency",
+        "opens": [],
+        "closes": [
+          "satr_fr_rnd__sa_111938__cnc",
+          "horizon_eu_cl1",
+          "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine",
+          "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+        ]
+      },
+      {
+        "value": "losses_over_half_capital",
+        "opens": [],
+        "closes": [
+          "satr_fr_rnd__sa_111938__cnc",
+          "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine",
+          "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+        ]
+      },
+      {
+        "value": "recovery_order",
+        "opens": [],
+        "closes": [
+          "satr_fr_rnd__sa_111938__cnc",
+          "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine",
+          "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+        ]
+      },
+      {
+        "value": "sanctions",
+        "opens": [],
+        "closes": [
+          "horizon_eu_cl1"
+        ]
+      },
+      {
+        "value": "tax_arrears",
+        "opens": [],
+        "closes": [
+          "bpifrance_inov"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_fr_rnd__sa_111938__cnc",
+        "name": "Soutien à la modernisation des industries techniques et à l'innovation technologique",
+        "rank": 1
+      },
+      {
+        "instrumentId": "bpifrance_inov",
+        "name": "Bpifrance",
+        "rank": 2
+      },
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 3
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+        "name": "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2014-2023",
+        "rank": 5
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Tender for PV installations on buildings with a rated power between 100 kW and 8 MW",
+        "rank": 8
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Appels d'offres pour installations énergie solaire au sol entre 500 kWc et 17 MWc",
+        "rank": 9
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Complément de rémunération pour l'éolien terrestre àpd 2017",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances",
+        "name": "Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020",
+        "rank": 11
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine",
+        "name": "Régime cadre exempté de notification relatif aux aides à la protection de l’environnement pour la période 2014-2023",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Régime d’aides de l’ADEME exempté de notification relatif aux aides à la protection de l’environnement pour la période 2014-2023 (système d’aides à la réalisation)",
+        "rank": 13
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Régime cadre exempté de notification relatif aux aides à la protection de l’environnement pour la période 2014-2020",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Régime cadre exempté relatif aux aides en faveur de la protection de l'environnement pour la période 2024-2026",
+        "rank": 15
+      }
+    ],
+    "kind": "separating",
+    "score": 13
+  },
+  {
+    "ref": "ranker::activities",
+    "field": "activities",
+    "requirement": "Tobacco, gambling and betting, and weapons and munitions are outside the scope of this aid. The exclusion is set by the framework the scheme is notified under, not by the scheme itself.",
+    "instrumentId": "satr_fr_rnd__sa_111938__cnc",
+    "instrumentName": "Soutien à la modernisation des industries techniques et à l'innovation technologique",
+    "gateKey": "G1_nexus",
+    "locator": "",
+    "carriers": 12,
+    "alsoWorded": [
+      {
+        "instrumentName": "Bpifrance",
+        "requirement": "Companies operating in listed excluded sectors (trading, business consulting, regulated professions, financial/insurance/real estate activities, cafés/hotels/restaurants, training bodies, road freight transport, logistics, digital services consulting/maintenance/training, personal services, communication/multimedia, primary agriculture/fishing/aquaculture/forestry) are excluded from the scheme."
+      }
+    ],
+    "splits": [
+      {
+        "value": "financial_services",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "primary_agriculture",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "fisheries_aquaculture",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "road_freight",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "real_estate",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "gambling_betting",
+        "opens": [],
+        "closes": [
+          "satr_fr_rnd__sa_111938__cnc",
+          "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine",
+          "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+        ]
+      },
+      {
+        "value": "tobacco",
+        "opens": [],
+        "closes": [
+          "satr_fr_rnd__sa_111938__cnc",
+          "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine",
+          "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+        ]
+      },
+      {
+        "value": "weapons",
+        "opens": [],
+        "closes": [
+          "satr_fr_rnd__sa_111938__cnc",
+          "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances",
+          "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine",
+          "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai",
+          "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "satr_fr_rnd__sa_111938__cnc",
+        "name": "Soutien à la modernisation des industries techniques et à l'innovation technologique",
+        "rank": 1
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Régime exempté de notification N°SA.XXXXX relatif aux aides à la recherche et au développement pour la décarbonation, la compétitivité et la sécurité du transport aérien pour la période 2024-2026",
+        "rank": 4
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances",
+        "name": "Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation (RDI) pour la période 2014-2023",
+        "rank": 5
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Tender for PV installations on buildings with a rated power between 100 kW and 8 MW",
+        "rank": 8
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Appels d'offres pour installations énergie solaire au sol entre 500 kWc et 17 MWc",
+        "rank": 9
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Complément de rémunération pour l'éolien terrestre àpd 2017",
+        "rank": 10
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances",
+        "name": "Régime cadre exempté de notification relatif aux aides en faveur des PME pour la période 2014-2020",
+        "rank": 11
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine",
+        "name": "Régime cadre exempté de notification relatif aux aides à la protection de l’environnement pour la période 2014-2023",
+        "rank": 12
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Régime d’aides de l’ADEME exempté de notification relatif aux aides à la protection de l’environnement pour la période 2014-2023 (système d’aides à la réalisation)",
+        "rank": 13
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Régime cadre exempté de notification relatif aux aides à la protection de l’environnement pour la période 2014-2020",
+        "rank": 14
+      },
+      {
+        "instrumentId": "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai",
+        "name": "Régime cadre exempté relatif aux aides en faveur de la protection de l'environnement pour la période 2024-2026",
+        "rank": 15
+      },
+      {
+        "instrumentId": "bpifrance_pmup_idf",
+        "name": "Bpifrance",
+        "rank": 16
+      }
+    ],
+    "kind": "separating",
+    "score": 12
+  },
+  {
+    "ref": "ranker::consortium",
+    "field": "consortium",
+    "requirement": "A consortium must include at least three independent legal entities established in three different countries, with at least one in a Member State and at least two others in different Member States/Associated Countries.",
+    "instrumentId": "horizon_eu_cl1",
+    "instrumentName": "Horizon EU CL1",
+    "gateKey": "G1_nexus",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.13",
+    "carriers": 3,
+    "alsoWorded": [
+      {
+        "instrumentName": "Horizon EU CL1",
+        "requirement": "Must join or form a consortium of 3+ independent legal entities from 3+ member/associated states, answering a specific call topic"
+      },
+      {
+        "instrumentName": "EIC Transition",
+        "requirement": "Consortia must include entities established in different Member States or Associated Countries per applicable configuration."
+      }
+    ],
+    "splits": [
+      {
+        "value": "no",
+        "opens": [],
+        "closes": [
+          "horizon_eu_cl1",
+          "eic_transition",
+          "eic_pathfinder"
+        ]
+      },
+      {
+        "value": "unsure",
+        "opens": [],
+        "closes": [
+          "eic_pathfinder"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 3
+      },
+      {
+        "instrumentId": "eic_transition",
+        "name": "EIC Transition",
+        "rank": 17
+      },
+      {
+        "instrumentId": "eic_pathfinder",
+        "name": "EIC Pathfinder",
+        "rank": 18
+      }
+    ],
+    "kind": "separating",
+    "score": 1.5
+  },
+  {
+    "ref": "ranker::nonEuControl",
+    "field": "nonEuControl",
+    "requirement": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are also not eligible to participate.",
+    "instrumentId": "horizon_eu_cl1",
+    "instrumentName": "Horizon EU CL1",
+    "gateKey": "G1_nexus",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [],
+        "closes": [
+          "horizon_eu_cl1"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 3
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.25
+  },
+  {
+    "ref": "ranker::turnoverBand",
+    "field": "turnoverBand",
+    "requirement": "Eligible applicants are SMEs and mid-caps developing highly innovative technologies, solutions or platforms.",
+    "instrumentId": "eib_venture",
+    "instrumentName": "EIB Venture",
+    "gateKey": "G2_size_ownership",
+    "locator": "eib_venture_debt_page.html#chunk 2",
+    "carriers": 2,
+    "alsoWorded": [
+      {
+        "instrumentName": "EIB Venture",
+        "requirement": "To qualify as a fast-growing enterprise by turnover growth, a firm must show average annualised turnover growth greater than 10% per year over a three-year period."
+      },
+      {
+        "instrumentName": "Bpifrance",
+        "requirement": "The company's turnover must not exceed €50M or its balance sheet total must not exceed €43M."
+      }
+    ],
+    "splits": [
+      {
+        "value": ">50M",
+        "opens": [],
+        "closes": [
+          "eib_venture",
+          "bpifrance_pmup_idf"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "eib_venture",
+        "name": "EIB Venture",
+        "rank": 7
+      },
+      {
+        "instrumentId": "bpifrance_pmup_idf",
+        "name": "Bpifrance",
+        "rank": 16
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.25
+  },
+  {
+    "ref": "ranker::wouldOpenEntity",
+    "field": "wouldOpenEntity",
+    "requirement": "Natural persons or legal entities intending to set up an SME or mid-cap are eligible applicants.",
+    "instrumentId": "eic_accelerator",
+    "instrumentName": "EIC Accelerator",
+    "gateKey": "G2_size_ownership",
+    "locator": "chunk 1, Who can apply?",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "no",
+        "opens": [],
+        "closes": [
+          "eic_accelerator"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "eic_accelerator",
+        "name": "EIC Accelerator",
+        "rank": 6
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.14285714285714285
+  },
+  {
+    "ref": "ranker::institutionalBacking",
+    "field": "institutionalBacking",
+    "requirement": "An applicant must have already raised equity from professional investors, have a sustainable business model and business plan, and have solid corporate governance in place.",
+    "instrumentId": "eib_venture",
+    "instrumentName": "EIB Venture",
+    "gateKey": "G4_borrower_model",
+    "locator": "eib_venture_debt_page.html#chunk 2",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "no",
+        "opens": [],
+        "closes": [
+          "eib_venture"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "eib_venture",
+        "name": "EIB Venture",
+        "rank": 7
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.125
+  },
+  {
+    "ref": "ranker::region",
+    "field": "region",
+    "requirement": "The company must have at least one establishment located in Île-de-France.",
+    "instrumentId": "bpifrance_pmup_idf",
+    "instrumentName": "Bpifrance",
+    "gateKey": "G1_nexus",
+    "locator": "bpifrance_pmup_idf_guide_candidat_2024.pdf#p.6",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "FRF1",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRI1",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRK1",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRK",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRD1",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRC1",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRC",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRH",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRB",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRF2",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRM",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRC2",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRF",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRY1",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRY3",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRD2",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRE",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRY4",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRJ1",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRI2",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRF3",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRY2",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRY5",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRJ2",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRE1",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRD",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRI",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRJ",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRG",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRE2",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRI3",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRL",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRY",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      },
+      {
+        "value": "FRK2",
+        "opens": [],
+        "closes": [
+          "bpifrance_pmup_idf"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "bpifrance_pmup_idf",
+        "name": "Bpifrance",
+        "rank": 16
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.058823529411764705
+  }
+]

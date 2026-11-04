@@ -1,0 +1,401 @@
+id: satr_at_rnd
+name: satr_at_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_nexus_at_niederlassung
+  gate_family: G1_nexus
+  requirement: The funding beneficiary must have an operating site or establishment in Austria
+    at the time of payout of the aid.
+  value: Betriebsstätte oder Niederlassung in Österreich erforderlich
+  intake_field: entityCountries
+  quote: 'ist die Gewährung einer Beihilfe davon ab-
+
+    hängig zu machen, dass die Förderungsnehmenden zum Zeitpunkt der Auszahlung der Beihilfe
+
+    eine Betriebsstätte oder Niederlassung in Österreich haben'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.16
+  verified: llm_cited
+- id: g1_nexus_consortium_exception
+  gate_family: G1_nexus
+  requirement: For consortium projects, applicants based outside Austria may also be funded,
+    provided at least one consortium partner has an establishment in Austria and the benefit
+    of the foreign partners for the consortium/Austrian R&D location is demonstrated.
+  value: Konsortialpartner mit Niederlassung in Österreich erforderlich, Nutzendarstellung
+    für ausländische Partner
+  intake_field: consortium
+  quote: 'Bei Konsortialvorhaben gemäß
+
+    3.1.4 können auch Förderungswerbende mit Sitz außerhalb Österreichs gefördert werden,
+    in-
+
+    sofern mindestens ein Konsortialpartner eine Niederlassung in Österreich hat'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.16
+  verified: llm_cited
+- id: g1_nexus_gesbr_excluded
+  gate_family: G1_nexus
+  requirement: A Gesellschaft bürgerlichen Rechts (GesbR, civil law partnership) is generally
+    not eligible to apply due to lack of legal capacity.
+  value: GesbR grundsätzlich nicht antragslegitimiert
+  intake_field: borrowerModel
+  quote: 'Eine Gesellschaft bürgerlichen Rechts (GesbR) ist aufgrund mangelnder Rechtsfähigkeit
+    grund-
+
+    sätzlich nicht antragslegitimiert.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.16
+  verified: llm_cited
+- id: g2_kmu_definition
+  gate_family: G2_size_ownership
+  requirement: 'SME status follows the EU competition law SME definition: fewer than 250 employees,
+    annual turnover under EUR 50 million or balance sheet total under EUR 43 million, considering
+    linked/partner enterprises.'
+  value: <250 FTE; <€50m turnover or <€43m balance sheet
+  intake_field: fteBand
+  quote: 'So gelten als KMU jene Unternehmen bis 249 Mitarbeiterinnen/Mitarbeiter, einem Jahresumsatz
+
+    unter 50 Mio. Euro oder einer Bilanzsumme unter 43 Mio. Euro'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.52
+  verified: llm_cited
+- id: g2_large_enterprise_ownership_cap
+  gate_family: G2_size_ownership
+  requirement: For SME classification, ownership participation by a large enterprise must
+    not exceed 25%.
+  value: max 25% ownership by large enterprise
+  intake_field: ownerOver25
+  quote: 'Die Beteiligung durch ein großes Unternehmen darf 25 % nicht überschrei-
+
+    ten.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.52
+  verified: llm_cited
+- id: g2_ku_definition
+  gate_family: G2_size_ownership
+  requirement: Small enterprises (KU) are defined as employing fewer than 50 people and having
+    turnover or annual balance sheet not exceeding EUR 10 million.
+  value: <50 FTE; <€10m turnover/balance sheet
+  intake_field: fteBand
+  quote: 'Sind Unternehmen, die weniger als 50 Mitarbeiterinnen/Mitarbeiter beschäftigen und
+    de-
+
+    ren Umsatz oder Jahresbilanz 10 Mio. Euro nicht überschreitet.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.52
+  verified: llm_cited
+- id: g2_startup_aid_conditions
+  gate_family: G2_size_ownership
+  requirement: Start-up aid under Art 22 GBER is only eligible for unlisted small enterprises
+    registered no more than five years ago, which have not yet distributed profits and were
+    not created through a merger.
+  value: unlisted small enterprise, ≤5 years since registration, no profit distribution, not
+    formed by merger
+  intake_field: foundedYear
+  quote: 'Beihilfefähig sind nicht börsennotierte kleine Unternehmen, deren Eintragung ins
+    Handelsre-
+
+    gister höchstens fünf Jahre zurückliegt, die noch keine Gewinne ausgeschüttet haben und
+    die
+
+    nicht durch einen Zusammenschluss gegründet wurden.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.22
+  verified: llm_cited
+- id: g3_financial_soundness_check
+  gate_family: G3_financial
+  requirement: FFG checks the economic performance capacity of applicants and whether the
+    company is subject to insolvency proceedings or meets conditions for creditor-initiated
+    insolvency opening.
+  value: no insolvency; economic capacity verified
+  intake_field: lossesOverHalfCapital
+  quote: 'Ebenso wird überprüft, ob ein zu förderndes Unternehmen Gegen-
+
+    stand eines Insolvenzverfahrens ist oder die im innerstaatlichen Recht vorgesehenen Voraus-
+
+    setzungen für die Eröffnung eines Insolvenzverfahrens auf Antrag seiner Gläubiger vorliegen.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.37
+  verified: llm_cited
+- id: g3_undertaking_in_difficulty_exclusion
+  gate_family: G3_financial
+  requirement: Undertakings in difficulty are generally excluded from aid under this scheme,
+    with a transitional exception for those that became undertakings in difficulty between
+    1 Jan 2020 and 31 Dec 2021.
+  value: Unternehmen in Schwierigkeiten ausgeschlossen (Ausnahme 2020-2021)
+  intake_field: lossesOverHalfCapital
+  quote: 'Abwei-
+
+    chend davon gilt die AGVO auch für Unternehmen, die am 31. Dezember 2019 keine Un-
+
+    ternehmen in Schwierigkeiten waren, aber in der Zeit vom 1. Januar 2020 bis zum 31. Dezem-
+
+    ber 2021 zu Unternehmen in Schwierigkeiten wurden.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.16
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Abwei-\nchend davon gilt die AGVO auch für
+    Unterneh'''
+- id: g3_beratungsdienste_intensity
+  gate_family: G3_financial
+  requirement: Maximum aid intensity for SME advisory services aid is 50% of eligible costs.
+  value: max 50% eligible costs
+  intake_field: cofinancingBand
+  quote: 'Maximale Beihilfeintensität: max. 50 % der beihilfefähigen Kosten'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.22
+  verified: llm_cited
+- id: g3_startup_loan_caps
+  gate_family: G3_financial
+  requirement: Start-up aid loans have a maximum nominal amount of EUR 1.1 million (or EUR
+    1.65 million in assisted areas under Art 107(3)(c) TFEU) with a ten-year term.
+  value: max €1.1m (€1.65m in assisted areas), 10-year term
+  intake_field: ticketBand
+  quote: 'als Kredit zu nicht marktüblichen Zinssätzen, mit einer Laufzeit von zehn Jahren
+    und
+
+    einem Nennbetrag von höchstens 1,1 Mio. EUR beziehungsweise 1,65 Mio. EUR bei
+
+    Unternehmen mit Sitz in einem Fördergebiet nach Artikel 107 Absatz 3 Buchstabe c
+
+    AEUV'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.22
+  verified: llm_cited
+- id: g3_simplified_procedure_threshold
+  gate_family: G3_financial
+  requirement: A simplified grant procedure may be used only where the intended aid amount
+    does not exceed EUR 20,000 in the individual case.
+  value: ≤€20,000 simplified procedure threshold
+  intake_field: ticketBand
+  quote: 'sofern
+
+    eine vorgesehene Förderungshöhe von 20.000 EUR im Einzelfall nicht überschritten wird,
+    ein
+
+    vereinfachter Ablauf der Förderungsgewährung vorgesehen werden'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.36
+  verified: llm_cited
+- id: g3_research_infra_intensity
+  gate_family: G3_financial
+  requirement: Maximum aid intensity for investment aid for research infrastructures is 50%
+    of eligible costs, raisable to 60% for infrastructures with public funding from at least
+    two Member States or Union-level selected infrastructures.
+  value: max 50% (up to 60%) eligible costs
+  intake_field: cofinancingBand
+  quote: 'max. 50 % der beihilfefähigen Kosten der Forschungsinfrastrukturen
+
+    • die Beihilfeintensität kann auf bis zu 60 % angehoben werden, sofern die öffentlichen
+    Mit-
+
+    tel von mindestens zwei Mitgliedstaaten oder für eine auf Unionsebene bewertete und
+
+    ausgewählte Forschungsinfrastruktur bereitgestellt werden'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.26
+  verified: llm_cited
+- id: g4_borrower_model_forms
+  gate_family: G4_borrower_model
+  requirement: Funding is provided in the form of non-repayable grants, interest- and amortisation-subsidised
+    loans, or annuity/interest/credit cost subsidies, or a targeted combination of grant and
+    loan; FFG may also assume guarantees.
+  value: grant, loan, annuity/interest subsidy, or combination; guarantees possible
+  intake_field: borrowerModel
+  quote: 'nicht rückzahlbaren8 Zuschüssen (= sonstige Geldzuwendung);
+
+    • Darlehen (zins- und amortisationsbegünstigt);
+
+    • Annuitäten-, Zinsen- und Kreditkostenzuschüssen.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_industrie_richtlinie_2024_2026.pdf#p.15
+  verified: llm_cited
+- id: g4_solidarity_liability
+  gate_family: G4_borrower_model
+  requirement: Granting of aid to a third-party beneficiary is generally conditional on that
+    party providing proof of joint and several liability (§891 ABGB) for repayment before
+    conclusion of the funding contract.
+  value: Solidarhaftung erforderlich vor Vertragsabschluss
+  intake_field: borrowerModel
+  quote: 'Die Gewährung einer Förderung, deren Begünstigte Dritte sind, ist grundsätzlich
+    davon ab-
+
+    hängig zu machen, dass diese7 vor Abschluss des Förderungsvertrages nachweislich die Soli-
+
+    darhaftung (§ 891 ABGB) für die Rückzahlung der Förderung im Fall des Eintritts eines
+    Rück-
+
+    zahlungsgrundes übernimmt.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_industrie_richtlinie_2024_2026.pdf#p.15
+  verified: llm_cited
+- id: g5_use_of_funds_testing_infra
+  gate_family: G5_use_of_funds
+  requirement: Eligible investment costs must relate to research equipment, knowledge-based
+    resources, ICT infrastructure, or testing and experimentation facilities such as test
+    beds, pilot lines, demonstration plants and related supporting services.
+  value: equipment, ICT infra, test beds, pilot lines, demonstration plants
+  intake_field: none
+  quote: 'Einrichtungen, Ausrüstung, Kapazitäten und Ressourcen wie Prüfstände, Pilotlinien,
+    Demonst-
+
+    rationsanlagen, Erprobungseinrichtungen oder Reallabore und damit zusammenhängende
+
+    unterstützende Dienste.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_industrie_richtlinie_2024_2026.pdf#p.24
+  verified: llm_cited
+- id: g5_incentive_effect_no_prior_start
+  gate_family: G5_use_of_funds
+  requirement: An incentive effect is excluded, and thus the project ineligible, if work on
+    the funded project began before the funding application was submitted.
+  value: work must not have started before application submission
+  intake_field: developmentStage
+  quote: 'Das Vorliegen eines Anreizeffekts ist hierbei insbesondere
+
+    dann auszuschließen, wenn mit den Arbeiten im zu fördernden Vorhaben vor dem Einlangen
+
+    eines Förderungsantrags begonnen wurde.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.38
+  verified: llm_cited
+- id: g6_cofinancing_secured
+  gate_family: G6_conditionality
+  requirement: Overall financing of the project must appear financially secured considering
+    the funding, demonstrated via a cost, time and financing plan.
+  value: financing plan required, project must be financially secured
+  intake_field: cofinancingBand
+  quote: 'Die Durchführung des Vorhabens muss unter Berücksichtigung der Förderung auf Basis
+    dieser
+
+    Richtlinie finanziell gesichert erscheinen.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.37
+  verified: llm_cited
+- id: g6_no_exclusion_grounds
+  gate_family: G6_conditionality
+  requirement: The application must declare that no statutory or other exclusion grounds apply
+    to the applicant.
+  value: no exclusion grounds
+  intake_field: conditionality
+  quote: 'kein gesetzlicher Ausschlussgrund vorliegt und
+
+    • keine sonstigen Ausschlussgründe vorliegen.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.33
+  verified: llm_cited
+obligations:
+- requirement: The recipient must begin performance according to the agreed schedule, otherwise
+    immediately after grant, carry it out promptly and complete it within the agreed or otherwise
+    reasonable period.
+  quote: 'mit der Durchführung der Leistung gemäß dem vereinbarten Zeitplan, ansonsten unver-
+
+    züglich nach Gewährung der Förderung beginnt, die Leistung zügig durchführt und diese
+
+    innerhalb der vereinbarten, ansonsten innerhalb einer angemessenen Frist abschließt'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.38
+  verified: llm_cited
+- requirement: The recipient must immediately and on its own initiative report to FFG all
+    events that delay, prevent, or require modification of the funded activity or agreed conditions.
+  quote: 'der FFG alle Ereignisse, welche die Durchführung der geförderten Leistung verzögern
+    oder
+
+    unmöglich machen, oder eine Abänderung gegenüber dem Förderungsantrag oder verein-
+
+    barten Auflagen und Bedingungen erfordern würde, unverzüglich und aus eigener Initia-
+
+    tive anzeigt'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.38
+  verified: llm_cited
+- requirement: Recipients must not cease operations, sell for consideration, or breach an
+    operating obligation before proper completion of the project or within 3 years thereafter,
+    on pain of repayment.
+  quote: 'die Förderungsnehmenden vor ordnungsgemäßem Abschluss des geförderten Vorha-
+
+    bens25 oder innerhalb einer Frist von 3 Jahren nach deren Abschluss den Betrieb einstellen
+
+    oder entgeltlich veräußern oder eine allfällige Betriebspflicht nicht einhalten'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.43
+  verified: llm_cited
+- requirement: Funding may only be granted on the basis of a written funding contract, containing
+    minimum required content elements including legal basis, parties, duration, amount, eligible/non-eligible
+    costs, deadlines, payment conditions, and repayment provisions.
+  quote: Eine Förderung darf nur aufgrund eines schriftlichen Förderungsvertrages gewährt
+    werden.
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.37
+  verified: llm_cited
+- requirement: FFG conducts control of the designated use of funds and compliance with contractual
+    conditions, including at least annual interim controls for multi-year services based on
+    usage reports.
+  quote: 'Die FFG hat eine Kontrolle der widmungsgemäßen Verwendung der Förderungsmittel sowie
+
+    der Einhaltung der vertraglichen Förderungsbestimmungen, Bedingungen und Auflagen
+
+    durchzuführen.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.41
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (18/19 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid under this guideline may not be cumulated with de-minimis aid for the same eligible
+    costs if the cumulation would exceed the aid intensities set out in section 4.2; funding
+    decisions require checking against other potential funders for prohibited multiple funding.
+  quote: 'Beihilfen auf Basis dieser Richtlinie dürfen nicht mit De-minimis-Beihilfen für
+    dieselben beihil-
+
+    fefähigen Kosten kumuliert werden, wenn durch diese Kumulierung die in Punkt 4.2. festge-
+
+    legten Beihilfeintensitäten überschritten werden.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.41
+  verified: llm_cited
+application:
+  channel: Written application via FFG's electronic submission platform within the deadline
+    set in the call for proposals, using the specified form
+  typical_timeline: Applications processed either continuously (open call/Antragsverfahren)
+    or evaluated at a fixed deadline (competitive call/Wettbewerbsverfahren); simplified procedure
+    for grants up to EUR 20,000
+  quote: 'Die Förderungswerbenden haben bei der FFG einen schriftlichen Förderungsantrag,
+    unter Ver-
+
+    wendung des jeweiligen Formulars, innerhalb der in der Aufforderung zur Einreichung von
+
+    Förderungsanträgen festgelegten Frist, einzureichen.'
+  source:
+    file: at_ffg_kmu_richtlinie_2024_2026.pdf
+    locator: at_ffg_kmu_richtlinie_2024_2026.pdf#p.32
+  verified: llm_cited

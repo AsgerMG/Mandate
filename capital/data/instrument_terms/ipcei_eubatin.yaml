@@ -1,0 +1,319 @@
+id: ipcei_eubatin
+name: ipcei_eubatin
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-undertakings-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: Participating companies must not be undertakings in difficulty.
+  value: not undertakings in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: 'They have further confirmed that the participating companies are not
+
+    undertakings in difficulty.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.89
+  verified: llm_cited
+- id: g1-nexus-eu-value-chain
+  gate_family: G1_nexus
+  requirement: The project must involve companies operating at different levels of the EU
+    battery value chain forming an integrated project of common European interest.
+  value: EU battery value chain participants across 46 individual projects
+  intake_field: activityCountries
+  quote: 'the main aim of
+
+    EuBatIn is to develop an innovative and sustainable battery value chain in the
+
+    EU that goes substantially beyond the state-of-the-art and which brings
+
+    together companies operating at different levels of the battery value chain'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.92
+  verified: llm_cited
+- id: g4-aid-instrument-grants
+  gate_family: G4_borrower_model
+  requirement: Aid is granted predominantly as direct grants, with repayable advances used
+    for FID activities of certain beneficiaries.
+  value: predominantly direct grants; repayable advances for some FID
+  intake_field: borrowerModel
+  quote: 'The aid to be granted by all the participating Member States will
+
+    predominantly take the form of direct grants. In the case of Hydrometal and
+
+    Prayon, Belgium has decided to provide direct grants for the R&D&I activities
+
+    of the companies and mainly repayable advances for the FID activities.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.89
+  verified: llm_cited
+- id: g5-use-of-funds-rdi-fid
+  gate_family: G5_use_of_funds
+  requirement: Funds may only cover eligible R&D&I costs and First Industrial Deployment (FID)
+    costs as defined in the Annex on eligible costs to the IPCEI Communication, excluding
+    mass production or commercial activity costs.
+  value: eligible R&D&I and FID costs only, excluding mass production/commercial activities
+  intake_field: developmentStage
+  quote: 'The Commission moreover verified that the FID as described by the Member
+
+    States for the different aid beneficiaries does not cover mass production or
+
+    commercial activities.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.124
+  verified: llm_cited
+- id: g5-fid-innovation-content
+  gate_family: G5_use_of_funds
+  requirement: FID activities must concern development of a new product/service with high
+    R&D&I content and/or a fundamentally innovative production process, not regular upgrades
+    or newer versions of existing products.
+  value: high R&D&I content FID only; no regular upgrades
+  intake_field: developmentStage
+  quote: 'Concern “the development of a new product or service with high
+
+    research and innovation content and/or the deployment of a
+
+    fundamentally innovative production process'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.122
+  verified: llm_cited
+- id: g6-necessity-of-aid
+  gate_family: G6_conditionality
+  requirement: Aid must not subsidise costs the undertaking would incur anyway and must not
+    compensate normal business risk; without aid the project would be impossible or realised
+    in smaller scope.
+  value: necessity test required
+  intake_field: conditionality
+  quote: 'the aid must not subsidise the
+
+    costs of a project that an undertaking would anyhow incur and must not
+
+    compensate for the normal business risk of an economic activity.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.119
+  verified: llm_cited
+- id: g6-application-before-start-of-works
+  gate_family: G6_conditionality
+  requirement: The aid application must precede the start of works, defined as the start of
+    construction or the first firm commitment to order equipment or other commitment making
+    the investment irreversible.
+  value: application must precede start of works
+  intake_field: needBy
+  quote: 'the aid application must
+
+    precede the starts of the works, which is either the start of construction works
+
+    on the investment or the first firm commitment to order equipment or other
+
+    commitment that makes the investment irreversible, whichever is the first in
+
+    time.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.119
+  verified: llm_cited
+- id: g6-cumulation
+  gate_family: G6_conditionality
+  requirement: Cumulation with other aid, de minimis aid, or EU funding is allowed only to
+    the extent that total funding does not exceed the aid amount declared compatible under
+    this decision.
+  value: cumulation capped at declared compatible aid amount
+  intake_field: cofinancingBand
+  quote: 'cumulation with other aid, de minimis aid, or EU
+
+    funding will be allowed to cover the same
+
+    eligible costs, as long as the total funding will not exceed the aid amount
+
+    which is declared compatible with the internal market under this decision.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.89-90
+  verified: false
+  verify_note: 'fragment not found verbatim: ''cumulation with other aid, de minimis aid,
+    or EU\nf'''
+- id: g6-claw-back-mechanism
+  gate_family: G6_conditionality
+  requirement: A claw-back mechanism applies at minimum to participating companies with a
+    notified aid amount per Member State above EUR 50 million, based on ex post audited figures.
+  value: claw-back for aid >EUR 50 million per Member State
+  intake_field: ticketBand
+  quote: 'The claw-back mechanism will apply at minimum to participating companies
+
+    having a notified aid amount, per Member State, above EUR 50 million'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.90
+  verified: llm_cited
+- id: g6-suspension-unlawful-aid
+  gate_family: G6_conditionality
+  requirement: Award/payment of notified aid is suspended if the beneficiary still holds earlier
+    unlawful aid declared incompatible until it is reimbursed with interest.
+  value: suspension until repayment of prior unlawful aid
+  intake_field: conditionality
+  quote: 'The participating Member States have committed to suspend the award and/or
+
+    payment of the notified aid if the beneficiary still has at its disposal earlier
+
+    unlawful aid that was declared incompatible by a Commission Decision (either
+
+    as individual aid or aid under an aid scheme being declared incompatible),
+
+    until that beneficiary has reimbursed or paid into a blocked account the total
+
+    amount of unlawful and incompatible aid and the corresponding recovery
+
+    interest.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.89
+  verified: llm_cited
+- id: g6-transparency
+  gate_family: G6_conditionality
+  requirement: Member States must respect transparency and publication requirements under
+    points 45 and 46 of the IPCEI Communication.
+  value: transparency/publication obligations apply
+  intake_field: conditionality
+  quote: 'The Member States have in their notification committed to respect the
+
+    transparency and publication requirements of points 45 and 46 of the IPCEI
+
+    Communication.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.90
+  verified: llm_cited
+- id: g6-prior-commission-approval
+  gate_family: G6_conditionality
+  requirement: Effective implementation of the State aid is subject to prior approval by the
+    European Commission.
+  value: prior Commission approval required
+  intake_field: conditionality
+  quote: 'All the participating Member States have subjected the effective
+
+    implementation of State aid to the prior approval of the Commission.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.89
+  verified: llm_cited
+- id: g5-funding-period-end
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs may only be incurred within the defined funding period per Work
+    Stream, with the FID phase ending at the latest in 2028.
+  value: eligible costs incurred up to 2028 (FID phase end) per WS
+  intake_field: needBy
+  quote: 'The last eligible year during the FID phase is at
+
+    the latest 2028.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.89
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The last eligible year during the FID phase
+    is at\n'''
+- id: g1-integrated-project
+  gate_family: G1_nexus
+  requirement: The measure must relate to an 'integrated project' consisting of complementary
+    and necessary individual projects across the value chain aiming at the same objective.
+  value: integrated project of complementary/necessary sub-projects
+  intake_field: consortium
+  quote: 'a group of single
+
+    projects inserted in a common structure, roadmap or programme aiming at the
+
+    same objective and based on a coherent systemic approach.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.92
+  verified: llm_cited
+- id: g3-total-eligible-costs
+  gate_family: G3_financial
+  requirement: The project's total eligible costs and importance are assessed against quantitative
+    thresholds, here approximately EUR 5.4 billion in total eligible costs across 42 participating
+    companies.
+  value: approx. EUR 5.4 billion total eligible costs
+  intake_field: turnoverBand
+  quote: 'the amount of total eligible costs
+
+    (approximatively EUR 5.4 billion)'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.118
+  verified: llm_cited
+obligations:
+- requirement: Member States must monitor implementation of committed dissemination activities
+    and spillover effects of participating companies at both integrated and national governance
+    levels.
+  quote: 'the Commission
+
+    notes that at both integrated and national governance levels EuBatIn will
+
+    monitor the correct implementation of the committed dissemination activities
+
+    and spillovers of the participating companies'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.102
+  verified: llm_cited
+- requirement: Member States must report to the Commission on implementation of the claw-back
+    mechanism one month after each application.
+  quote: 'The Member States are required to report to the Commission the
+
+    implementation of the claw-back mechanism one month after each application.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.90
+  verified: llm_cited
+- requirement: Separate analytical accounting is required from participating companies for
+    the claw-back mechanism, subject to annual approval by an independent auditor.
+  quote: 'separate analytical
+
+    accounting will be required from the participating companies in the relevant
+
+    Member State.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.90
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (13/15 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation with other aid, de minimis aid, or EU funding is permitted for the same
+    eligible costs only up to the total aid amount declared compatible under the decision.
+  quote: 'cumulation with other aid, de minimis aid, or EU
+
+    funding will be allowed to cover the same
+
+    eligible costs, as long as the total funding will not exceed the aid amount
+
+    which is declared compatible with the internal market under this decision.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.89-90
+  verified: false
+application:
+  channel: Notification by Member States to the European Commission under Article 107(3)(b)
+    TFEU / IPCEI Communication procedure
+  typical_timeline: Aid application must precede the start of works (construction or first
+    firm commitment to order equipment)
+  quote: 'the aid application must
+
+    precede the starts of the works, which is either the start of construction works
+
+    on the investment or the first firm commitment to order equipment or other
+
+    commitment that makes the investment irreversible, whichever is the first in
+
+    time.'
+  source:
+    file: ipcei_eubatin_commission_decision_SA55831.pdf
+    locator: p.119
+  verified: llm_cited

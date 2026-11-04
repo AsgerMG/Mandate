@@ -1,0 +1,96 @@
+{
+  "_comment": "Hand corrections to gate_role, applied after the LLM triage that sets it. A gate here was triaged as a `filter` with a machine-readable value_spec, which means it can DISQUALIFY a founder and remove the fund from their brief silently -- but its own wording does not state a requirement. Found by looking for rules whose text hedges about whether they apply at all ('typically', 'predominantly', 'may also'), then reading each one. The hedging was a way to FIND these; it is deliberately NOT a rule in the pipeline, because a word-matching filter would be exactly the enumerated register this repo forbids and would catch rules that hedge a threshold while stating a real requirement.",
+  "_why_a_file": "encode_gates.py writes gate_role directly from a paid triage pass, so a manual UPDATE would be silently reverted the next time triage runs. This is reapplied after it. Gates whose requirement is a COMPATIBILITY FINDING about aid already granted belong here too: verbatim and correctly attributed, but the wrong KIND of statement for a column a founder reads as a test they can pass.",
+  "_roles": "programme_fact = true of the instrument, says nothing about who qualifies. vague = a real condition we cannot turn into a test. Neither can decide a verdict; both still show on the row. filter = a deliberate decision to KEEP the gate deciding, which is only meaningful now that a second, automatic source can demote one.",
+  "_precedence": "apply_gate_role_overrides.py applies the pertinence verdicts FIRST and this file SECOND, so a curated decision beats the classifier. That ordering is what makes a `filter` entry here mean something: a human who has read the gate and its source outranks a model reading one sentence. Before 2026-08-07 the two entries at the bottom of this list were prose in `_kept_as_filters`, which no code could read -- so a classifier that judged them badly would have silently reversed a decision that had already been made and written down.",
+  "overrides": [
+    {
+      "instrument_id": "eic_fund",
+      "gate_key": "g4",
+      "role": "programme_fact",
+      "was": "filter on conditionality",
+      "requirement": "The Fund takes minority equity stakes, typically around 10% but can go higher.",
+      "why": "Describes what the instrument does with its money, not a test the founder passes or fails. As a filter it could exclude a founder for the Fund's own investment policy."
+    },
+    {
+      "instrument_id": "tesi_equity",
+      "gate_key": "g2-growth-revenue",
+      "role": "programme_fact",
+      "was": "filter on turnoverBand",
+      "requirement": "Growth equity target companies typically already have significant, often international revenue.",
+      "why": "A description of who the fund has tended to back, not a stated threshold. Blocking a company for being below a 'typical' revenue nobody published is the overclaim this corpus exists to avoid."
+    },
+    {
+      "instrument_id": "tesi_equity",
+      "gate_key": "g2-venture-stage",
+      "role": "vague",
+      "was": "filter on developmentStage",
+      "requirement": "Venture capital investments require companies with strong potential for growth.",
+      "why": "A real intention, but 'strong potential' is not checkable against any intake answer. Kept as information; it must not decide a verdict."
+    },
+    {
+      "instrument_id": "eu_investeu_intermediary",
+      "gate_key": "g3",
+      "role": "programme_fact",
+      "was": "filter on borrowerModel",
+      "requirement": "The EU guarantee may also cover funding or guarantees extended by an implementing partner.",
+      "why": "'May also cover' widens the guarantee's scope. It is a permission, and encoding a permission as a filter inverts it into a restriction."
+    },
+    {
+      "instrument_id": "satr_fr_equity",
+      "gate_key": "g2_undertaking_in_difficulty_excluded",
+      "role": "vague",
+      "was": "filter on lossesOverHalfCapital",
+      "requirement": "Undertakings in difficulty are excluded from the scheme, except young companies within their first years.",
+      "why": "THE WORST OF THE SEVEN. The rule carries an exception for young companies and the value_spec does not encode it, so as a filter it blocks precisely the founders the exception protects -- an early-stage company with accumulated losses, which is most of them. Downgraded until the exception can be encoded rather than dropped."
+    },
+    {
+      "instrument_id": "ipcei_hy2infra",
+      "gate_key": "G1-01",
+      "role": "programme_fact",
+      "was": "filter on nexus (llm_cited)",
+      "requirement": "Only pre-selected undertakings listed in the participating Member States' notification and forming part of the Hy2Infra individual projects are eligible aid beneficiaries.",
+      "why": "A compatibility FINDING about aid already granted to a named beneficiary list, not a condition an applicant can satisfy. Its quote -- 'These measures are granted only to the aid beneficiaries chosen by the participating Member States and listed in section 2.4.2 ... It is not available to all undertakings' -- is the Commission establishing SELECTIVITY under Article 107(1), a test applied to the measure by the assessor, about companies already chosen. It can never be true-or-false OF AN APPLICANT, which is what a filter must be. As a filter it would disqualify every founder who reads it, silently, for not already having been chosen."
+    },
+    {
+      "instrument_id": "ipcei_batteries",
+      "gate_key": "G1-02",
+      "role": "programme_fact",
+      "was": "filter on nexus (llm_cited)",
+      "requirement": "Only the specific companies listed as Direct Participants (selected via national open and transparent calls) are eligible aid beneficiaries under the notified IPCEI Batteries measures.",
+      "why": "The same selectivity finding, and the source of the sentence retracted from eligibility_text on 2026-08-07: 'The Member States only grant support to the beneficiaries listed section 2.2.6 and the funding is not available to all undertakings in a comparable situation.' The retraction removed it from the column a founder reads as 'who may apply' and left it encoded as a filter, which is the same claim in a place that can decide a verdict."
+    },
+    {
+      "instrument_id": "ipcei_med4cure",
+      "gate_key": "g1-nexus-participants",
+      "role": "programme_fact",
+      "was": "filter on nexus (llm_2pass, intake_field_resolved=entityCountries)",
+      "requirement": "Only the listed direct participants established in the six participating Member States (Slovakia, Hungary, France, Italy, Belgium, Spain) are eligible beneficiaries of the notified aid measures under the IPCEI Med4Cure.",
+      "why": "The worst of the four: llm_2pass, so ASSERTABLE, and resolved onto entityCountries, so evaluable -- it could have decided a verdict against a founder in the wrong country. It also fails on pertinence independently of its kind: the quote is 'This section briefly describes the 14 direct participants involved in the IPCEI Med4Cure', a section header, which does not state the requirement written above it."
+    },
+    {
+      "instrument_id": "ipcei_micro",
+      "gate_key": "G1-03",
+      "role": "programme_fact",
+      "was": "already programme_fact -- recorded, not changed",
+      "requirement": "Support is only granted to the specific beneficiaries listed in the decision, not open to all undertakings in a comparable situation.",
+      "why": "Listed so the population is complete and a reader can see the fourth instance. It already carries the inert role and needs no change; it is the same sentence as ipcei_batteries/G1-02, which is how the pattern was found."
+    },
+    {
+      "instrument_id": "satr_de_rnd",
+      "gate_key": "g1_nexus_works_in_germany_dns",
+      "role": "filter",
+      "was": "prose in _kept_as_filters, which no code could read",
+      "requirement": "Work under the DNS Mobilitat programme must generally be carried out in Germany, and results should primarily be used in Germany or the EEA.",
+      "why": "KEPT AS A FILTER, deliberately. 'Generally' hedges a THRESHOLD -- how much of the work -- not whether the rule applies at all, and a founder can check where they will do the work. Recorded as an entry rather than a sentence at the bottom of the file because the pertinence classifier now demotes automatically, and a decision that only exists as prose is a decision the pipeline can silently reverse. Note this is a regime-level rule extracted from one scheme's document, which remains the separate open item."
+    },
+    {
+      "instrument_id": "satr_de_rnd",
+      "gate_key": "g3_own_contribution_sicherheit",
+      "role": "filter",
+      "was": "prose in _kept_as_filters, which no code could read",
+      "requirement": "An appropriate own contribution to eligible costs is required, generally at least 75% of eligible costs for commercial enterprises and economically-active research bodies.",
+      "why": "KEPT AS A FILTER, deliberately, for the same reason: 'appropriate' and 'generally' hedge the SIZE of the contribution, and the 75% figure is a real, checkable requirement of the scheme. Same regime-level caveat as its sibling."
+    }
+  ]
+}

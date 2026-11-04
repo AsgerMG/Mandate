@@ -1,0 +1,68 @@
+id: satr_de_rnd__sa_107108__thuringer_aufbaubank
+name: Förderprogramm des Freistaats Thüringen zur Förderung von Forschung, Technologie und Innovation
+  (FTI) Richtlinie FTI-Thüringen TECHNOLOGIE [TH]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-base-eligibility
+  gate_family: G2_size_ownership
+  requirement: SMEs are eligible across all funding categories of the scheme.
+  value: SME eligible in all funding categories
+  intake_field: turnoverBand
+  quote: Zuwendungsberechtigt sind in allen Fördergegenständen KMU,
+  source:
+    file: https://www.aufbaubank.de/Foerderprogramme/FTI-Thueringen-TECHNOLOGIE
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-fue-individuell-large-enterprise
+  gate_family: G1_nexus
+  requirement: In the 'Thüringen FuE individuell' funding category, applied-research-adjacent research
+    institutions are eligible, and large enterprises are additionally eligible only for projects supporting
+    critical technologies within the meaning of the STEP Regulation.
+  value: 'FuE individuell: research institutions always; large enterprises only for STEP critical tech'
+  intake_field: developmentStage
+  quote: a) Im Fördergegenstand Thüringen FuE individuell wirtschaftsnahe Forschungseinrichtungen sowie,
+    sofern es sich um Vorhaben handelt, welche kritische Technologien im Sinne der STEP-VO unterstützen,
+    große Unternehmen.
+  source:
+    file: https://www.aufbaubank.de/Foerderprogramme/FTI-Thueringen-TECHNOLOGIE
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-verbund-requires-sme
+  gate_family: G1_nexus
+  requirement: In the 'Thüringen Verbund' and 'Thüringen Verbund Dynamik' funding categories, large enterprises
+    and science institutions may only participate in consortium with an SME, unless the project supports
+    critical technologies within the meaning of the STEP Regulation, in which case SME participation is
+    not required.
+  value: 'Verbund tracks: large enterprises/science institutions need SME partner, waived for STEP critical
+    tech'
+  intake_field: consortium
+  quote: In den Fördergegenständen Thüringen Verbund und Thüringen Verbund Dynamik große Unternehmen und
+    Wissenschaftseinrichtungen ausschließlich im Verbund mit KMU. Bei der Förderung von Vorhaben, welche
+    kritische Technologien im Sinne der STEP-VO unterstützen, ist die Beteiligung eines KMU nicht erforderlich.
+  source:
+    file: https://www.aufbaubank.de/Foerderprogramme/FTI-Thueringen-TECHNOLOGIE
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-innovationsgutschein-science-only
+  gate_family: G1_nexus
+  requirement: In the 'Innovationsgutschein' funding category (InnoPrepare and InnoSecure), only science
+    institutions are entitled to apply.
+  value: 'Innovationsgutschein (InnoPrepare/InnoSecure): science institutions only'
+  intake_field: borrowerModel
+  quote: c) Im Fördergegenstand Innovationsgutschein in den Fördergegenständen InnoPrepare und InnoSecure
+    Wissenschaftseinrichtungen.
+  source:
+    file: https://www.aufbaubank.de/Foerderprogramme/FTI-Thueringen-TECHNOLOGIE
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (4/4 gates passed mechanical verbatim
+  check -> llm_cited).

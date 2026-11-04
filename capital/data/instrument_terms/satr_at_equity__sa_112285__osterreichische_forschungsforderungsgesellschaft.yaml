@@ -1,0 +1,50 @@
+id: satr_at_equity__sa_112285__osterreichische_forschungsforderungsgesellschaft
+name: FFG-KMU-Richtlinie 2024-2026
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-only
+  gate_family: G2_size_ownership
+  requirement: Applicants must be micro, small or medium-sized enterprises per the EC recommendation of
+    6 May 2003, and must not be part of the Austrian federal administration.
+  value: SME per EC 6 May 2003 definition; not federal administration
+  intake_field: turnoverBand
+  quote: Förderungswerbende können nur außerhalb der österreichischen Bundesverwaltung stehende natürliche
+    oder juristische Personen bzw. Personengesellschaften sein, die als Kleinstunternehmen, kleine und
+    mittlere Unternehmen gemäß der Empfehlung der Kommission vom 6. Mai 2003 gelten.
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-KMU-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-unpaid-recovery-order
+  gate_family: G3_financial
+  requirement: Companies that have not complied with a recovery order from a prior European Commission
+    decision finding aid unlawful are excluded until repayment is completed.
+  value: 'Excluded until repayment: unpaid EC recovery order'
+  intake_field: none
+  quote: ist ein Unternehmen, das einer Rückforderungsanordnung aufgrund eines früheren Beschlusses der
+    Europäischen Kommission zur Feststellung der Unzulässigkeit einer Förderung und ihrer Unvereinbarkeit
+    nicht nachgekommen ist, solange von der Teilnahme ausgeschlossen, bis das Unternehmen die Rückabwicklung
+    der inkompatiblen Förderung vollzogen hat
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-KMU-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-firm-in-difficulty
+  gate_family: G3_financial
+  requirement: No aid may be granted to undertakings in difficulty, subject to certain regulation-specific
+    exceptions.
+  value: 'Excluded: undertaking in difficulty (with narrow exceptions)'
+  intake_field: lossesOverHalfCapital
+  quote: dürfen keine Beihilfen an Unternehmen in Schwierigkeiten, ausgenommen Beihilferegelungen zur
+    Bewältigung der Folgen bestimmter Naturkatastrophen, Beihilferegelungen für Unternehmensneugründungen
+    und regionale Betriebsbeihilferegelungen
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-KMU-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

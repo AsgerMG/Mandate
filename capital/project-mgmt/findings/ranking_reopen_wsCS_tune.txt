@@ -1,0 +1,40 @@
+(node:44640) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T20:17:05.277Z
+ranker: all 1154 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune seed=20260806  replayed 600
+  pool: median 97 candidates, won fund in pool 563/600 (94%)
+  EXACT@5 per signal, ties resolved by expectation. A figure inside its own half-width
+  of the random baseline is not a signal.
+  signal                                           overall      original join   childless_family  exact_attribution
+  -----------------------------------------------------------------------------------------------------------------
+  random baseline                               5.9 +/-0.3         5.2 +/-0.3         7.7 +/-0.7         5.2 +/-0.5
+  SHIPPED (the product's own five)             24.3 +/-3.4        25.7 +/-6.0        32.7 +/-7.2        17.0 +/-4.9
+  collaborative prior (peer)                   22.9 +/-3.3        24.8 +/-5.9        28.4 +/-6.8        17.2 +/-4.9
+  semantic (founder's text)                    19.5 +/-3.2        15.1 +/-4.9        23.0 +/-6.4        21.0 +/-5.3
+  sector share (unclipped)                     19.5 +/-3.1        19.8 +/-5.4        21.3 +/-6.1        17.8 +/-4.9
+  shipped pool score (theme+sector)            18.8 +/-3.1        15.3 +/-4.9        24.2 +/-6.6        17.9 +/-5.0
+  sector share (shipped, clipped)              16.6 +/-2.0        16.5 +/-3.4        19.9 +/-4.3        14.4 +/-2.8
+  shipped score, siblings by sector count      12.8 +/-2.7        11.2 +/-4.3        22.4 +/-6.4         7.4 +/-3.4
+  proximity (home country)                     10.3 +/-1.4         6.2 +/-0.6        14.8 +/-3.0        10.8 +/-2.7
+  encoded gate count                            8.3 +/-2.0         7.7 +/-3.4         9.7 +/-4.5         7.9 +/-2.8
+  sector count (posterior)                      7.0 +/-2.0        10.2 +/-4.1         4.2 +/-3.1         6.1 +/-3.1
+  recency (last award year)                     6.2 +/-0.5         5.8 +/-0.6         7.1 +/-1.2         5.8 +/-0.8
+  award scale fit                               5.7 +/-1.9         3.9 +/-2.6        11.5 +/-4.9         3.1 +/-2.2
+  total EUR                                     3.5 +/-1.5         3.4 +/-2.5         1.8 +/-2.0         4.8 +/-2.8
+  award median                                  3.3 +/-1.4         1.5 +/-1.6         7.9 +/-4.1         1.7 +/-1.7
+  event count                                   3.2 +/-1.4         2.9 +/-2.3         1.2 +/-1.7         4.8 +/-2.8
+  company count                                 3.2 +/-1.4         2.9 +/-2.3         1.2 +/-1.7         4.8 +/-2.8
+  eligibility (encoded gates)                   1.9 +/-0.5         3.7 +/-1.1         2.1 +/-1.1         0.1 +/-0.1
+
+  n per population: original join 206   traced:childless_family 165   traced:exact_attribution 229
+  random baseline 5.9% +/-0.3 — computed on THESE pools, not remembered from another population.
+  features -> /tmp/wsCS_tune.json (600 pairs)

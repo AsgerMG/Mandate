@@ -1,0 +1,46 @@
+id: satr_cz_equity__sa_51154__podpurny_a_garancni_rolnicky_a_lesnicky_fond_a_s
+name: Investment loans Farmer
+administering_body: see source document
+country: CZ
+capital_type: unknown
+status: draft
+gates:
+- id: g1-primary-agri-producer
+  gate_family: G1_nexus
+  requirement: Applicants must be agricultural entrepreneurs active in the field of primary agricultural
+    production.
+  value: Agricultural entrepreneur, primary production
+  intake_field: borrowerModel
+  quote: zemědělským podnikatelům působící v oblasti zemědělské prvovýroby,
+  source:
+    file: https://www.pgrlf.cz/program-investicni-uvery-zemedelec/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-classification
+  gate_family: G2_size_ownership
+  requirement: The applicant must be classified in the small and medium-sized enterprise category.
+  value: SME category required
+  intake_field: turnoverBand
+  quote: kteří jsou řazeni v kategorii malých a středních podniků,
+  source:
+    file: https://www.pgrlf.cz/program-investicni-uvery-zemedelec/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g4-no-recent-loan
+  gate_family: G4_borrower_model
+  requirement: Applicants must not have had a loan agreement under this same programme with PGRLF within
+    the last 24 months.
+  value: No PGRLF loan under this programme in last 24 months
+  intake_field: bankRelationship
+  quote: kteří nemají uzavřenou smlouvu o úvěru v rámci tohoto programu s PGRLF za posledních 24 měsíců.
+  source:
+    file: https://www.pgrlf.cz/program-investicni-uvery-zemedelec/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

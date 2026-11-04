@@ -1,0 +1,50 @@
+id: satr_de_rnd__sa_101541__investitionsbank_berlin
+name: Bund-Länder-Gemeinschaftsaufgabe "Verbesserung der regionalen Wirtschaftsstruktur" –
+  gewerbliche Wirtschaft [BMWi]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Eligible are start-ups and existing commercial enterprises that generate
+    significant regional economic effects.
+  value: Start-ups or existing enterprises with significant regional economic effects
+  intake_field: none
+  quote: Existenzgründungen und bestehende Unternehmen der gewerblichen Wirtschaft, die
+    bedeutende regionalwirtschaftliche Effekte hervorbringen.
+  source:
+    file: https://www.ibb.de/de/foerderprogramme/gemeinschaftsaufgabe-verbesserung-der-regionalen-wirtschaftsstruktur-grw.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-seat-berlin
+  gate_family: G1_nexus
+  requirement: The applicant company must have its registered seat, or the establishment to
+    be funded, within the Berlin funding area.
+  value: Seat or funded establishment must be within Berlin funding area
+  intake_field: entityCountries
+  quote: Das Antrag stellende Unternehmen muss seinen Sitz bzw. seine zu fördernde
+    Betriebsstätte innerhalb des Berliner Fördergebietes haben.
+  source:
+    file: https://www.ibb.de/de/foerderprogramme/gemeinschaftsaufgabe-verbesserung-der-regionalen-wirtschaftsstruktur-grw.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-freelancer-exclusion
+  gate_family: G1_nexus
+  requirement: Freelancers are excluded, as are companies whose business purpose is on the
+    exclusion list (Negativliste).
+  value: Excludes freelancers and Negativliste business purposes
+  intake_field: none
+  quote: Freiberufler sind ausgeschlossen, ebenso Unternehmen deren Geschäftszweck auf der
+    Ausschlussliste (Negativliste) steht.
+  source:
+    file: https://www.ibb.de/de/foerderprogramme/gemeinschaftsaufgabe-verbesserung-der-regionalen-wirtschaftsstruktur-grw.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

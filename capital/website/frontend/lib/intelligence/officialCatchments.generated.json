@@ -1,0 +1,1647 @@
+{
+ "generatedAt": "2026-08-09T17:54:19.503Z",
+ "source": "funding_instruments.catchment_regions, restricted to rows whose catchment_source starts with \"ec_case_register\" — the region the scheme's own notification declares, never one inferred from award history. An id absent from `catchments` is one the register is silent about: UNKNOWN, never a removal.",
+ "instruments": 1088,
+ "official": 427,
+ "narrowerThanCountry": 141,
+ "catchments": {
+  "satr_at_equity__sa_101859__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_equity__sa_101861__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_equity__sa_112285__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_equity__sa_112286__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_equity__sa_117759__austria_wirtschaftsservice_gmbh_aws": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_101859__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_101860__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_101861__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_102782__austria_wirtschaftsservice_gmbh_aws": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_102793__kommunalkredit_public_consulting_gmbh_kpc": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_108465__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_110103__kommunalkredit_public_consulting_gmbh_kpc": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_110108__kommunalkredit_public_consulting_gmbh_kpc": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_110295__kommunalkredit_public_consulting_gmbh_kpc": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_110327__karntner_wirtschaftsforderungsfonds_kwf": [
+   "AT21"
+  ],
+  "satr_at_rnd__sa_111051__wirtschaftsagentur_wien": [
+   "AT13"
+  ],
+  "satr_at_rnd__sa_111094__osterreichische_hotel_und_tourismusbank_oht": [
+   "AT1",
+   "AT2",
+   "AT3"
+  ],
+  "satr_at_rnd__sa_112257__austria_wirtschaftsservice_gmbh_aws": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_112285__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_112286__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_112517__osterreichische_forschungsforderungsgesellschaft": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_113408__oemag_abwicklungsstelle_fur_okostrom_ag": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_114191__austria_wirtschaftsservice_gmbh_aws": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_115611__amt_der_niederosterreichischen_landesregierung_a": [
+   "AT12"
+  ],
+  "satr_at_rnd__sa_41223__kommunalkredit_public_consulting_gmbh_kpc": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_61447__kommunalkredit_public_consulting_gmbh_kpc": [
+   "AT"
+  ],
+  "satr_at_rnd__sa_63640__kommunalkredit_public_consulting_gmbh_kpc": [
+   "AT"
+  ],
+  "satr_be_equity__sa_101133__vlaio": [
+   "BE2"
+  ],
+  "satr_be_equity__sa_108205__vlaio": [
+   "BE2"
+  ],
+  "satr_be_equity__sa_52328__spw_dgo_economie_emploi_et_recherche": [
+   "BE3"
+  ],
+  "satr_be_equity__sa_60506__wallimage_sa": [
+   "BE32"
+  ],
+  "satr_be_rnd__sa_108196__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_108201__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_108203__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_108206__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_108207__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_108433__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_112959__spw_dgo_economie_emploi_et_recherche": [
+   "BE3"
+  ],
+  "satr_be_rnd__sa_114749__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_45867__energie": [
+   "BE"
+  ],
+  "satr_be_rnd__sa_48683__energie": [
+   "BE"
+  ],
+  "satr_be_rnd__sa_51306__energie": [
+   "BE"
+  ],
+  "satr_be_rnd__sa_52328__spw_dgo_economie_emploi_et_recherche": [
+   "BE3"
+  ],
+  "satr_be_rnd__sa_60033__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_61806__spw_dgo_economie_emploi_et_recherche": [
+   "BE3"
+  ],
+  "satr_be_rnd__sa_63753__vlaio": [
+   "BE2"
+  ],
+  "satr_be_rnd__sa_63756__vlaio": [
+   "BE2"
+  ],
+  "satr_cz_equity__sa_106249__statni_fond_podpory_investic": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_equity__sa_51154__podpurny_a_garancni_rolnicky_a_lesnicky_fond_a_s": [
+   "CZ"
+  ],
+  "satr_cz_rnd__sa_103288__technologicka_agentura_cr": [
+   "CZ01",
+   "CZ020",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_104221__ministerstvo_prumyslu_a_obchodu": [
+   "CZ01",
+   "CZ020",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_104222__ministerstvo_prumyslu_a_obchodu": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_104437__technologicka_agentura_cr": [
+   "CZ01",
+   "CZ020",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_107607__technologicka_agentura_cr": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ080"
+  ],
+  "satr_cz_rnd__sa_109050__ministerstvo_zivotniho_prostredi_odbor_fondu_eu": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ080"
+  ],
+  "satr_cz_rnd__sa_109051__ministerstvo_zivotniho_prostredi_odbor_fondu_eu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi": [
+   "CZ010",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_109785__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_109786__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_109956__ministerstvo_zemedelstvi": [
+   "CZ0"
+  ],
+  "satr_cz_rnd__sa_111730__ministerstvo_dopravy": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_111735__ministerstvo_zivotniho_prostredi": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_111780__ministerstvo_zivotniho_prostredi": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_111787__ministerstvo_zivotniho_prostredi": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_112169__ministerstvo_prumyslu_a_obchodu": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_112295__ministerstvo_zivotniho_prostredi": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_112630__statni_zemedelsky_intervencni_fond": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_113941__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_114427__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_114605__ministerstvo_prumyslu_a_obchodu_odbor_vyzkumu_vy": [
+   "CZ"
+  ],
+  "satr_cz_rnd__sa_116919__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_118043__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_118285__statni_zemedelsky_intervencni_fond": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_118838__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_119259__technologicka_agentura_cr": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_54297__technologicka_agentura_cr": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_55058__ministerstvo_prumyslu_a_obchodu_odbor_vyzkumu_vy": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ080"
+  ],
+  "satr_cz_rnd__sa_60437__ministerstvo_prumyslu_a_obchodu": [
+   "CZ020",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_60510__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_60519__ministerstvo_prumyslu_a_obchodu": [
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_62613__ministerstvo_zemedelstvi": [
+   "CZ"
+  ],
+  "satr_cz_rnd__sa_63670__ministerstvo_zivotniho_prostredi_cr_odbor_podpor": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_cz_rnd__sa_63671__ministerstvo_zivotniho_prostredi_cr_odbor_podpor": [
+   "CZ01",
+   "CZ02",
+   "CZ03",
+   "CZ04",
+   "CZ05",
+   "CZ06",
+   "CZ07",
+   "CZ08"
+  ],
+  "satr_de_equity__sa_101543__lfa_forderbank_bayern": [
+   "DE2"
+  ],
+  "satr_de_equity__sa_108142__landwirtschaftliche_rentenbank": [
+   "DE"
+  ],
+  "satr_de_equity__sa_108143__landwirtschaftliche_rentenbank": [
+   "DE"
+  ],
+  "satr_de_equity__sa_110928__burgschaftsbank_baden_wurttemberg_gmbh": [
+   "DE"
+  ],
+  "satr_de_equity__sa_111002__kreditanstalt_fur_wiederaufbau": [
+   "DE"
+  ],
+  "satr_de_equity__sa_111005__kreditanstalt_fur_wiederaufbau": [
+   "DE"
+  ],
+  "satr_de_equity__sa_111217__l_bank_baden_wurttemberg": [
+   "DE1"
+  ],
+  "satr_de_equity__sa_111218__l_bank_baden_wurttemberg": [
+   "DE1"
+  ],
+  "satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg": [
+   "DE3",
+   "DE4"
+  ],
+  "satr_de_equity__sa_113173__landwirtschaftliche_rentenbank": [
+   "DE"
+  ],
+  "satr_de_equity__sa_115322__landwirtschaftliche_rentenbank": [
+   "DE"
+  ],
+  "satr_de_equity__sa_118637__lfa_forderbank_bayern": [
+   "DE2"
+  ],
+  "satr_de_equity__sa_61341__kreditanstalt_fur_wiederaufbau": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_100248__bundesministerium_fur_verkehr_und_digitale_infra": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan": [
+   "DE2",
+   "DE3",
+   "DE4",
+   "DE5",
+   "DE7",
+   "DE8",
+   "DE9",
+   "DEA",
+   "DEB",
+   "DEC",
+   "DED",
+   "DEE",
+   "DEF",
+   "DEG"
+  ],
+  "satr_de_rnd__sa_101541__investitionsbank_berlin": [
+   "DE2",
+   "DE3",
+   "DE4",
+   "DE5",
+   "DE7",
+   "DE8",
+   "DE9",
+   "DEA",
+   "DEB",
+   "DEC",
+   "DED",
+   "DEE",
+   "DEF",
+   "DEG"
+  ],
+  "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_102344__ministerium_fur_wirtschaft_arbeit_und_tourismus": [
+   "DE1"
+  ],
+  "satr_de_rnd__sa_102510__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_103196__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_103212__bayerisches_staatsministerium_fur_wirtschaft_lan": [
+   "DE2"
+  ],
+  "satr_de_rnd__sa_103582__nbank": [
+   "DE9"
+  ],
+  "satr_de_rnd__sa_103809__projekttrager_im_dlr": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_105973__nrw_bank": [
+   "DE2",
+   "DE3",
+   "DE4",
+   "DE5",
+   "DE7",
+   "DE8",
+   "DE9",
+   "DEA",
+   "DEB",
+   "DEC",
+   "DED",
+   "DEE",
+   "DEF",
+   "DEG"
+  ],
+  "satr_de_rnd__sa_106032__sachsen_sab": [
+   "DED2"
+  ],
+  "satr_de_rnd__sa_106076__sachsen_sab": [
+   "DED2"
+  ],
+  "satr_de_rnd__sa_106102__dlr_raumfahrtagentur": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_107108__thuringer_aufbaubank": [
+   "DEG"
+  ],
+  "satr_de_rnd__sa_107516__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_109088__projekttrager_julich": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_109340__bundesministerium_fur_wirtschaft_und_energie": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_110061__vdi_vde_innovation_und_technik": [
+   "DE1"
+  ],
+  "satr_de_rnd__sa_110630__bundesanstalt_fur_landwirtschaft_und_ernahrung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_110716__bezirksregierung_arnsberg": [
+   "DEA"
+  ],
+  "satr_de_rnd__sa_111712__projekttrager_julich": [
+   "DEA"
+  ],
+  "satr_de_rnd__sa_111857__bundesministerium_fur_wirtschaft_und_energie": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_111957__l_bank_baden_wurttemberg": [
+   "DE1"
+  ],
+  "satr_de_rnd__sa_112005__wibank": [
+   "DE7"
+  ],
+  "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_112200__ministerium_fur_wirtschaft_arbeit_energie_und_ve": [
+   "DE2",
+   "DE3",
+   "DE4",
+   "DE5",
+   "DE7",
+   "DE8",
+   "DE9",
+   "DEA",
+   "DEB",
+   "DEC",
+   "DED",
+   "DEE",
+   "DEF",
+   "DEG"
+  ],
+  "satr_de_rnd__sa_112200__nbank": [
+   "DE2",
+   "DE3",
+   "DE4",
+   "DE5",
+   "DE7",
+   "DE8",
+   "DE9",
+   "DEA",
+   "DEB",
+   "DEC",
+   "DED",
+   "DEE",
+   "DEF",
+   "DEG"
+  ],
+  "satr_de_rnd__sa_112241__bayerisches_staatsministerium_fur_wirtschaft_lan": [
+   "DE2"
+  ],
+  "satr_de_rnd__sa_112392__nbank": [
+   "DE9"
+  ],
+  "satr_de_rnd__sa_112558__technologie_beratungs_institut_gmbh": [
+   "DE8"
+  ],
+  "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_112843__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_112915__bundesministerium_fur_verkehr_und_digitale_infra": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_112919__kreditanstalt_fur_wiederaufbau": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_113000__projekttrager_julich": [
+   "DEA"
+  ],
+  "satr_de_rnd__sa_113239__sachsen_sab": [
+   "DED"
+  ],
+  "satr_de_rnd__sa_113242__investitionsbank_des_landes_brandenburg": [
+   "DE4"
+  ],
+  "satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank": [
+   "DE6"
+  ],
+  "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_113708__bayern_innovativ_bayerische_gesellschaft_fur_inn": [
+   "DE2"
+  ],
+  "satr_de_rnd__sa_113709__thuringer_aufbaubank": [
+   "DEG"
+  ],
+  "satr_de_rnd__sa_113753__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_114510__nrw_bank": [
+   "DEA"
+  ],
+  "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_114724__fa_fur_korperschaften_iv": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_114724__finanzamt_munchen_abt_3": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_114738__tuv_rheinland_forschungs_und_innovationsmanageme": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan": [
+   "DE2"
+  ],
+  "satr_de_rnd__sa_114975__bayerisches_staatsministerium_fur_wirtschaft_lan": [
+   "DE2"
+  ],
+  "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_115170__sachsen_sab": [
+   "DED2",
+   "DED4",
+   "DED5"
+  ],
+  "satr_de_rnd__sa_115248__projekttrager_julich": [
+   "DEA"
+  ],
+  "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_118481__l_bank_baden_wurttemberg": [
+   "DE1"
+  ],
+  "satr_de_rnd__sa_118705__tuv_rheinland_forschungs_und_innovationsmanageme": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_119894__bayerisches_staatsministerium_fur_wirtschaft_lan": [
+   "DE2"
+  ],
+  "satr_de_rnd__sa_53084__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_53396__projekttrager_im_dlr": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_55785__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__fa_fur_korperschaften_ii": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__fa_fur_korperschaften_iv": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_aachen_stadt": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_aschaffenburg": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_darmstadt": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_erlangen": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_freiburg_stadt": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_furstenfeldbruck": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_gie_en": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_heidelberg": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_heilbronn": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_munchen_abt_3": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_offenburg": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_stuttgart_korperschaften": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzamt_wiesbaden": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__finanzverwaltung_niedersachsen": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__mfw_sl": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56245__zentralfinanzamt_nurnberg": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_56379__kreditanstalt_fur_wiederaufbau": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_61251__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_61980__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_62312__nrw_bank": [
+   "DE2",
+   "DE3",
+   "DE4",
+   "DE5",
+   "DE7",
+   "DE8",
+   "DE9",
+   "DEA",
+   "DEB",
+   "DEC",
+   "DED",
+   "DEE",
+   "DEF",
+   "DEG"
+  ],
+  "satr_de_rnd__sa_62747__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_62774__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_62780__deutsches_zentrum_fur_luft_und_raumfahrt_e_v_dlr": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_63144__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_63889__bundesministerium_fur_wirtschaft_und_energie": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_64509__projekttrager_julich": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_64551__bundesinstitut_fur_bau_stadt_und_raumforschung_i": [
+   "DE"
+  ],
+  "satr_de_rnd__sa_64558__investitionsbank_berlin": [
+   "DE3"
+  ],
+  "satr_de_rnd__sa_64601__ministerium_fur_wirtschaft_arbeit_und_tourismus": [
+   "DE1"
+  ],
+  "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus": [
+   "EE"
+  ],
+  "satr_ee_rnd__sa_109351__sa_keskkonnainvesteeringute_keskus": [
+   "EE"
+  ],
+  "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus": [
+   "EE00"
+  ],
+  "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus": [
+   "EE00"
+  ],
+  "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus": [
+   "EE00"
+  ],
+  "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus": [
+   "EE00"
+  ],
+  "satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland": [
+   "FI1"
+  ],
+  "satr_fi_equity__sa_53571__business_finland_venture_capital_oy": [
+   "FI"
+  ],
+  "satr_fi_equity__sa_58492__innovaatiorahoituskeskus_business_finland": [
+   "FI"
+  ],
+  "satr_fi_rnd__sa_101228__tyo_ja_elinkeinoministerio": [
+   "FI1"
+  ],
+  "satr_fi_rnd__sa_106794__innovaatiorahoituskeskus_business_finland": [
+   "FI1"
+  ],
+  "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus": [
+   "FI1"
+  ],
+  "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus": [
+   "FI1"
+  ],
+  "satr_fi_rnd__sa_112227__innovaatiorahoituskeskus_business_finland": [
+   "FI1"
+  ],
+  "satr_fi_rnd__sa_112229__innovaatiorahoituskeskus_business_finland": [
+   "FI1"
+  ],
+  "satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland": [
+   "FI1"
+  ],
+  "satr_fi_rnd__sa_58492__innovaatiorahoituskeskus_business_finland": [
+   "FI"
+  ],
+  "satr_fi_rnd__sa_58494__innovaatiorahoituskeskus_business_finland": [
+   "FI"
+  ],
+  "satr_fi_rnd__sa_61856__innovaatiorahoituskeskus_business_finland": [
+   "FI"
+  ],
+  "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_equity__sa_58995__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_equity__sa_58995__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_equity__sa_59357__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__caisse_des_depots": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__conseil_regional": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__conseil_regional_d_ile_de_france": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__conseil_regional_hauts_de_france": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__conseil_regional_nouvelle_aquitaine": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__conseil_regional_occitanie": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__ministere_des_armees": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__region_grand_est": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__region_normandie": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111723__region_pays_de_la_loire": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111726__agence_seine_normandie": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111726__conseil_regional_nouvelle_aquitaine": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111726__direction_generale_de_l_amenagement_du_logement_": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111728__conseil_regional": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111728__conseil_regional_d_ile_de_france": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111728__conseil_regional_nouvelle_aquitaine": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111728__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111728__region_grand_est": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_111938__cnc": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_46552__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_47205__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_47753__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_58973__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_58995__caisse_des_depots": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_58995__conseil_regional": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_58995__conseil_regional_nouvelle_aquitaine": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_58995__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_58995__ministere_des_armees": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_58995__region_grand_est": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_59357__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_fr_rnd__sa_59366__ministere_de_la_transition_ecologique_et_solidai": [
+   "FR"
+  ],
+  "satr_gb_rnd__sa_49923__hmrc": [
+   "UK"
+  ],
+  "satr_gr_equity__sa_102166__special_recovery_fund_coordination_service": [
+   "EL"
+  ],
+  "satr_gr_equity__sa_111393__special_recovery_fund_coordination_service": [
+   "EL"
+  ],
+  "satr_gr_equity__sa_114445__unknown": [
+   "EL"
+  ],
+  "satr_gr_equity__sa_119358__special_recovery_fund_coordination_service": [
+   "EL"
+  ],
+  "satr_gr_equity__sa_50649__managing_authority_of_the_operational_programme_": [
+   "EL"
+  ],
+  "satr_gr_rnd__sa_102124__unknown": [
+   "EL"
+  ],
+  "satr_gr_rnd__sa_103150__ministry_of_agricultural_development": [
+   "EL"
+  ],
+  "satr_gr_rnd__sa_103730__ministry_of_agricultural_development": [
+   "EL"
+  ],
+  "satr_gr_rnd__sa_111412__ministry_of_agricultural_development": [
+   "EL"
+  ],
+  "satr_gr_rnd__sa_111414__ministry_of_agricultural_development": [
+   "EL"
+  ],
+  "satr_gr_rnd__sa_113148__unknown": [
+   "EL"
+  ],
+  "satr_gr_rnd__sa_114852__unknown": [
+   "EL"
+  ],
+  "satr_gr_rnd__sa_52413__ministry_of_environment_energy": [
+   "EL"
+  ],
+  "satr_hu_equity__sa_57198__avhga": [
+   "HU"
+  ],
+  "satr_hu_rnd__sa_117786__nemzetgazdasagi_miniszterium": [
+   "HU"
+  ],
+  "satr_hu_rnd__sa_119085__nkfih": [
+   "HU"
+  ],
+  "satr_hu_rnd__sa_39874__penzugyminiszterium_gazdasagfejlesztesi_programo": [
+   "HU"
+  ],
+  "satr_hu_rnd__sa_63752__penzugyminiszterium_gazdasagfejlesztesi_programo": [
+   "HU"
+  ],
+  "satr_hu_rnd__sa_64049__nkfih": [
+   "HU"
+  ],
+  "satr_ie_equity__sa_61009__screen_ireland": [
+   "IE"
+  ],
+  "satr_ie_rnd__sa_111046__enterprise_ireland": [
+   "IE"
+  ],
+  "satr_ie_rnd__sa_111052__enterprise_ireland": [
+   "IE"
+  ],
+  "satr_ie_rnd__sa_111052__ida_ireland": [
+   "IE"
+  ],
+  "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland": [
+   "IE0"
+  ],
+  "satr_ie_rnd__sa_117696__sustainable_energy_authority_of_ireland": [
+   "IE"
+  ],
+  "satr_ie_rnd__sa_39318__enterprise_ireland": [
+   "IE"
+  ],
+  "satr_ie_rnd__sa_59867__enterprise_ireland": [
+   "IE"
+  ],
+  "satr_ie_rnd__sa_59867__ida_ireland": [
+   "IE"
+  ],
+  "satr_ie_rnd__sa_59868__enterprise_ireland": [
+   "IE"
+  ],
+  "satr_it_equity__sa_101250__invitalia_agenzia_nazionale_per_l_attrazione_deg": [
+   "IT"
+  ],
+  "satr_it_equity__sa_102955__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_equity__sa_103469__invitalia_agenzia_nazionale_per_l_attrazione_deg": [
+   "IT"
+  ],
+  "satr_it_equity__sa_104270__agenzia_nazionale_per_l_attrazione_degli_investi": [
+   "IT"
+  ],
+  "satr_it_equity__sa_109544__banca_del_mezzogiorno_mediocredito_centrale_s_p_": [
+   "IT"
+  ],
+  "satr_it_equity__sa_111746__puglia_sviluppo_s_p_a": [
+   "ITF4"
+  ],
+  "satr_it_equity__sa_57625__banca_del_mezzogiorno_mediocredito_centrale_s_p_": [
+   "IT"
+  ],
+  "satr_it_equity__sa_60788__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_equity__sa_60791__banca_del_mezzogiorno_mediocredito_centrale_s_p_": [
+   "IT"
+  ],
+  "satr_it_equity__sa_60795__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_equity__sa_60800__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_equity__sa_62814__invitalia_agenzia_nazionale_per_l_attrazione_deg": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_101250__invitalia_agenzia_nazionale_per_l_attrazione_deg": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_102218__ministero_dell_universita_e_della_ricerca_direzi": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_102227__ministero_dell_universita_e_della_ricerca_direzi": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_102452__direzione_generale_dell_internazionalizzazione_e": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_102526__ministero_dell_universita_e_della_ricerca_direzi": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_102644__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_102955__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_103131__ministero_della_transizione_ecologica_dipartimen": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_103132__ministero_della_transizione_ecologica_dipartimen": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_103136__ministero_della_transizione_ecologica_dipartimen": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_103972__ministero_della_transizione_ecologica_direzione_": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_106430__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_107368__bi_rex_big_data_innovation_research_excellence": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_108155__gestore_dei_servizi_energetici_gse_s_p_a": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_110598__politecnico_di_milano": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_111168__infratel_italia_s_p_a": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_111193__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_111590__ministero_dell_universita_e_della_ricerca_direzi": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_111746__puglia_sviluppo_s_p_a": [
+   "ITF4"
+  ],
+  "satr_it_rnd__sa_112452__asa_societa_di_consulenza_e_assistenza_alle_impr": [
+   "ITI1"
+  ],
+  "satr_it_rnd__sa_112453__asa_societa_di_consulenza_e_assistenza_alle_impr": [
+   "ITI1"
+  ],
+  "satr_it_rnd__sa_112939__regione_autonoma_friuli_venezia_giulia_direzione": [
+   "ITH4"
+  ],
+  "satr_it_rnd__sa_114209__regione_lombardia_dg_ricerca_innovazione_univers": [
+   "ITC4"
+  ],
+  "satr_it_rnd__sa_115378__finpiemonte_s_p_a": [
+   "ITC1"
+  ],
+  "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_118553__invitalia_agenzia_nazionale_per_l_attrazione_deg": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_118708__regione_autonoma_friuli_venezia_giulia_direzione": [
+   "ITH4"
+  ],
+  "satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_118856__regione_emilia_romagna_giunta_regionale_direzion": [
+   "ITH5"
+  ],
+  "satr_it_rnd__sa_119109__ministero_della_transizione_ecologica_direzione_": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori": [
+   "ITC4"
+  ],
+  "satr_it_rnd__sa_120000__asa_societa_di_consulenza_e_assistenza_alle_impr": [
+   "ITI1"
+  ],
+  "satr_it_rnd__sa_120576__ministero_della_transizione_ecologica_direzione_": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_47037__ministero_dell_istruzione_dell_universita_e_dell": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_47037__ministero_dell_universita_e_della_ricerca_direzi": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_48424__gse_gestore_servizi_energetici_s_p_a": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_48570__agenzie_delle_entrate": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_49781__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_53347__gse_gestore_servizi_energetici_s_p_a": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_53666__gse_gestore_servizi_energetici_s_p_a": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_53676__ministero_dello_sviluppo_economico_direzione_gen": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_60788__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_60793__invitalia_agenzia_nazionale_per_l_attrazione_deg": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_60795__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_60800__ministero_delle_imprese_e_del_made_in_italy_dire": [
+   "IT"
+  ],
+  "satr_it_rnd__sa_62814__invitalia_agenzia_nazionale_per_l_attrazione_deg": [
+   "IT"
+  ],
+  "satr_lu_rnd__sa_111794__ministere_de_l_economie": [
+   "LU"
+  ],
+  "satr_lu_rnd__sa_111797__ministere_de_l_economie": [
+   "LU"
+  ],
+  "satr_lu_rnd__sa_48476__ministere_de_l_economie": [
+   "LU"
+  ],
+  "satr_lu_rnd__sa_48601__ministere_de_l_energie_et_de_l_amenagement_du_te": [
+   "LU"
+  ],
+  "satr_lu_rnd__sa_61332__ministere_de_l_economie": [
+   "LU"
+  ],
+  "satr_lv_equity__sa_110432__as_attistibas_finansu_institucija_altum": [
+   "LV"
+  ],
+  "satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum": [
+   "LV"
+  ],
+  "satr_lv_rnd__sa_103894__centrala_finansu_un_ligumu_agentura": [
+   "LV"
+  ],
+  "satr_lv_rnd__sa_112272__centrala_finansu_un_ligumu_agentura": [
+   "LV"
+  ],
+  "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura": [
+   "LV"
+  ],
+  "satr_lv_rnd__sa_112274__centrala_finansu_un_ligumu_agentura": [
+   "LV"
+  ],
+  "satr_lv_rnd__sa_116749__centrala_finansu_un_ligumu_agentura": [
+   "LV"
+  ],
+  "satr_nl_equity__sa_62153__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_103112__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_103845__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_106413__kansen_voor_west": [
+   "NL11",
+   "NL112",
+   "NL114",
+   "NL115",
+   "NL323",
+   "NL341",
+   "NL411",
+   "NL423"
+  ],
+  "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_108830__provincie_noord_brabant": [
+   "NL34",
+   "NL41",
+   "NL42"
+  ],
+  "satr_nl_rnd__sa_109578__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_109861__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_110899__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_111231__provincie_noord_brabant": [
+   "NL41"
+  ],
+  "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland": [
+   "NL11",
+   "NL112",
+   "NL114",
+   "NL115",
+   "NL323",
+   "NL341",
+   "NL366",
+   "NL411",
+   "NL423"
+  ],
+  "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_114170__ministerie_van_volksgezondheid_welzijn_sport": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_116015__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_116945__provincie_gelderland": [
+   "NL2"
+  ],
+  "satr_nl_rnd__sa_117202__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_117203__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_117204__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_117393__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_117484__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_117531__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_44328__ministerie_van_financien": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat": [
+   "NL"
+  ],
+  "satr_nl_rnd__sa_61208__provincie_zuid_holland": [
+   "NL36"
+  ],
+  "satr_pt_rnd__sa_102714__compete_2030": [
+   "PT11",
+   "PT15",
+   "PT2",
+   "PT3"
+  ],
+  "satr_pt_rnd__sa_110394__tamprcentro": [
+   "PT11",
+   "PT15",
+   "PT170",
+   "PT19",
+   "PT1C"
+  ],
+  "satr_pt_rnd__sa_41942__centro_2030": [
+   "PT111",
+   "PT112",
+   "PT15"
+  ],
+  "satr_pt_rnd__sa_41942__compete_2030": [
+   "PT111",
+   "PT112",
+   "PT15"
+  ],
+  "satr_pt_rnd__sa_41942__lisboa_2020": [
+   "PT111",
+   "PT112",
+   "PT15"
+  ],
+  "satr_pt_rnd__sa_41942__norte_2030": [
+   "PT111",
+   "PT112",
+   "PT15"
+  ],
+  "satr_pt_rnd__sa_42136__compete_2030": [
+   "PT111",
+   "PT112",
+   "PT15"
+  ],
+  "satr_se_rnd__sa_101867__naturvardsverket": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_106543__naturvardsverket": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_106915__energimyndigheten": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_111803__naturvardsverket": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_112283__tillvaxtverket": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_112771__energimyndigheten": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_116003__energimyndigheten": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_119375__rymdstyrelsen": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_60496__vinnova_verket_for_innovationssystem": [
+   "SE"
+  ],
+  "satr_se_rnd__sa_61710__naturvardsverket": [
+   "SE"
+  ],
+  "satr_sk_equity__sa_56488__ministerstvo_skolstva_vedy_vyskumu_a_sportu_sr": [
+   "SK01",
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_101231__ministerstvo_prace_socialnych_veci_a_rodiny_sr": [
+   "SK01",
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_101715__ministerstvo_zivotneho_prostredia_sr": [
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_102295__ministerstvo_hospodarstva_sr": [
+   "SK01",
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_102912__okte_a_s": [
+   "SK01",
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_105002__ministerstvo_hospodarstva_sr": [
+   "SK01",
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_109957__ministerstvo_hospodarstva_sr": [
+   "SK010",
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura": [
+   "SK01",
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr": [
+   "SK01",
+   "SK02",
+   "SK03",
+   "SK04"
+  ],
+  "satr_sk_rnd__sa_117246__urad_podpredsedu_vlady_slovenskej_republiky_pre_": [
+   "SK01",
+   "SK02",
+   "SK03",
+   "SK04"
+  ]
+ }
+}

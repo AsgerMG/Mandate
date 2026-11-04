@@ -1,0 +1,48 @@
+id: satr_be_rnd__sa_108207__vlaio
+name: Besluit O&O Kennisintensief
+administering_body: see source document
+country: BE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-excl-legal-monopoly
+  gate_family: G1_nexus
+  requirement: Companies holding a statutory absolute monopoly within Flanders (or a substantial part
+    of it) are not eligible for support for their projects, unless the project falls outside the monopoly's
+    implementation area.
+  value: 'Excluded: statutory monopoly holders (unless project outside monopoly area)'
+  intake_field: borrowerModel
+  quote: Ondernemingen die op grond van een wettelijke bepaling beschikken over een absoluut monopolie
+    binnen het grondgebied van het Vlaamse Gewest of binnen een wezenlijk deel daarvan, komen niet in
+    aanmerking voor steun voor hun projecten, tenzij het project waarvoor zij steun aanvragen buiten het
+    implementatiegebied van dit monopolie valt.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/oo-bedrijfsproject
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-base-aid-rate
+  gate_family: G3_financial
+  requirement: Research projects (onderzoeksprojecten) receive a base aid percentage of 50%.
+  value: 'Base aid rate: 50% for research projects'
+  intake_field: none
+  quote: Aan onderzoeksprojecten wordt een basissteunpercentage van 50% toegekend.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/oo-bedrijfsproject
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-any-size-flanders
+  gate_family: G1_nexus
+  requirement: Both SMEs and large companies are eligible, from SME to multinational (including non-profits),
+    provided they are established in the Flemish Region.
+  value: Any size incl. non-profits, must be established in Flanders
+  intake_field: entityCountries
+  quote: Zowel kmo's als grote ondernemingen komen voor de subsidie in aanmerking, en elke onderneming
+    (ook vzw's), van kmo tot multinational kan hiervoor steun bekomen op voorwaarde dat ze gevestigd zijn
+    in het Vlaams Gewest.
+  source:
+    file: https://www.vlaio.be/nl/subsidies-financiering/oo-bedrijfsproject
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

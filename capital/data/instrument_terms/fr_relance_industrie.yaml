@@ -1,0 +1,222 @@
+id: fr_relance_industrie
+name: fr_relance_industrie
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Investments must be carried out in France and must not have started before
+    acknowledgment of receipt of the complete application file.
+  value: France; project not started before acknowledgement of receipt
+  intake_field: activityCountries
+  quote: Les investissements devront être réalisés en France et ne pas être engagés avant
+    l'accusé réception du dossier de demande complet.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_aides_territoires.html#chunk 1
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: The investment project must fall within one of the listed strategic sectors
+    (aeronautics, automotive, nuclear, agri-food, health, electronics, essential industrial
+    inputs, or 5G telecoms).
+  value: Aéronautique, Automobile, Nucléaire, Agro-alimentaire, Santé, Electronique, Intrants
+    essentiels de l'industrie, Télécommunications 5G
+  intake_field: none
+  quote: 'Les projet d''investissement doivent se situer dans un des secteurs stratégiques
+    suivants :'
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_aides_territoires.html#chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G3_financial
+  requirement: Expected projects must have a minimum size of €200,000 for the aeronautics
+    and automotive sectors, or €1,000,000 for other sectors (health, agri-food, electronics,
+    industrial inputs).
+  value: ≥€200,000 (aero/auto) or ≥€1,000,000 (other sectors)
+  intake_field: ticketBand
+  quote: Les projets attendus doivent être d'au moins 200 000€ pour les secteurs aéronautique
+    et automobile et d'au moins 1 000 000 € pour les autres secteurs (santé, agroalimentaire,
+    électronique, et intrants de l'industrie).
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_aides_territoires.html#chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G4_borrower_model
+  requirement: State financing under this territorial industry recovery scheme is provided
+    in the form of grants, within the framework of EU state aid regulation.
+  value: Subvention (grant)
+  intake_field: borrowerModel
+  quote: Le financement apporté par l'Etat est sous forme de subventions et s'inscrit dans
+    le cadre de la réglementation européenne des aides publiques aux entreprises.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_aides_territoires.html#chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G1_nexus
+  requirement: Under the territorial component, applications are submitted at regional level
+    and processed on a rolling basis until funds are exhausted.
+  value: Regional submission, rolling review until funds exhausted
+  intake_field: none
+  quote: S'agissant du volet territorial, les candidatures sont déposées au niveau régional,
+    et sont instruites au fil de l'eau jusqu'à épuisement des fonds.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_aides_territoires.html#chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G1_nexus
+  requirement: Rebond Industriel targets industrial investment projects located in territories
+    impacted by transport sector mutations (notably automotive), selected via a call for expressions
+    of interest led by Banque des Territoires.
+  value: Territories selected via AMI, impacted by automotive/transport mutations
+  intake_field: activityCountries
+  quote: cible le soutien de projets d'investissements industriels (en subventions et avances
+    récupérables) engagés dans des territoires impactés par les mutations des filières transports,
+    en particulier du secteur automobile.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 1
+  verified: llm_cited
+- id: g7
+  gate_family: G2_size_ownership
+  requirement: Supported projects can be carried by companies of all sizes and from all sectors
+    of activity, not limited to the automotive/transport sector.
+  value: All company sizes, all sectors
+  intake_field: turnoverBand
+  quote: Les projets soutenus peuvent être portés par des entreprises de toutes tailles et
+    relever de tous secteurs d’activité, et non uniquement de la filière automobile et du
+    transport
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 1
+  verified: llm_cited
+- id: g8
+  gate_family: G3_financial
+  requirement: Eligible investment projects must present a minimum expenditure base of €400,000,
+    incurred over a maximum period of 2 years.
+  value: Minimum €400,000 expenditure base, max 2 years duration
+  intake_field: ticketBand
+  quote: les projets d’investissement devront présenter une assiette minimale de dépenses
+    de 400 000€, réalisées sur une durée maximum de 2 ans
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 1
+  verified: llm_cited
+- id: g9
+  gate_family: G5_use_of_funds
+  requirement: Expenditure must consist of investment in tangible and intangible assets relating
+    to industrial development (infrastructure financing, intangible fixed assets, equipment
+    and machinery purchases, industrialization expenses, energy/environmental improvement
+    expenses for production tools, and associated consulting expenses).
+  value: Industrial tangible/intangible investment (infrastructure, equipment, industrialization,
+    energy/environmental improvement, related consulting)
+  intake_field: none
+  quote: 'Ces dépenses doivent consister en investissement dans des actifs corporels et incorporels
+    se rapportant à du développement industriel (ex. : financement d’infrastructures, d’immobilisations
+    incorporelles, achat d’équipements et de machines, dépenses d’industrialisation, dépenses
+    d’amélioration énergétique et environnementale des outils de production et dépenses de
+    prestation de conseil associées).'
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 1
+  verified: llm_cited
+- id: g10
+  gate_family: G6_conditionality
+  requirement: Aid granted must comply with Articles 107, 108 and 109 TFEU on State aid and
+    derived texts whenever the aid granted is qualified as State aid.
+  value: Compliance with TFEU Art. 107-109 State aid rules
+  intake_field: none
+  quote: Les interventions de soutien aux investissements se feront donc dans le respect des
+    articles 107, 108, et 109 du traité sur le fonctionnement de l’Union européenne relatifs
+    aux aides d’État et des textes dérivés relatifs dès lors que l’aide accordée est Interne
+    qualifiée d’aide d’État.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 1
+  verified: llm_cited
+- id: g11
+  gate_family: G6_conditionality
+  requirement: Projects causing significant harm to the environment are excluded under the
+    Do No Significant Harm (DNSH) principle per Article 17 of the EU Taxonomy Regulation.
+  value: DNSH exclusion applies
+  intake_field: none
+  quote: Les projets causant un préjudice important du point de vue de l’environnement seront
+    exclus (application du principe DNSH – Do No Significant Harm ou « absence de préjudice
+    important ») au sens de l’article 17 du règlement européen sur la taxonomie.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 1
+  verified: llm_cited
+- id: g12
+  gate_family: G4_borrower_model
+  requirement: Aid below €800,000 is paid entirely as grants; for aid above €800,000, the
+    marginal tranche beyond €800,000 is paid as recoverable advances, potentially convertible
+    to grant subject to job creation.
+  value: '<€800,000: full grant; >€800,000: marginal tranche as recoverable advance, convertible
+    on job creation condition'
+  intake_field: borrowerModel
+  quote: Les aides inférieures à 800 000€ seront versées entièrement sous forme de subventions.
+    Pour les aides supérieures à 800 000€, la tranche marginale au-delà de 800 000€ sera versée
+    sous forme d’avances remboursables.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Grants are paid in two tranches (50% upon signing the aid contract, 50% at
+    project completion) and may be subject to repayment (répétition) if the project is not
+    fully or partially carried out, per conditions in the signed subsidy contract.
+  quote: 'Les subventions seront versées en deux tranches : 50% à la signature du contrat
+    d’aide et 50% à la fin du projet. Celles-ci peuvent faire l’objet d’une répétition en
+    cas de non réalisation totale ou partielle du projet, selon des conditions qui seront
+    stipulées dans le contrat de subvention signé entre Bpifrance et l’entreprise lauréate.'
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 2
+  verified: llm_cited
+- requirement: Conversion of the recoverable advance tranche into a grant (abandon de créance)
+    is conditional on job creation, the number of which is determined with the company at
+    contract signature, measured as net FTE headcount increase per URSSAF calculations.
+  quote: Cette transformation sera conditionnée à la création d’emplois, dont le nombre sera
+    déterminé avec l’entreprise à la signature du contrat. La création d’emplois s’entend
+    comme l’augmentation nette de l’effectif de l’entreprise en ETP sur la base des calculs
+    de l’URSSAF.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/12 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: For a given project, the same expenditure base cannot be cumulated with aid from different
+    aid schemes; if multiple schemes must be mobilized, each must correspond to a distinct
+    expenditure base, and each aid amount must not exceed the ceiling or maximum intensity
+    authorized by its respective applicable scheme.
+  quote: Pour un projet donné, une même assiette de dépenses ne peut pas faire l’objet d’un
+    cumul d’aides de différents régimes. S’il est nécessaire de mobiliser différents régimes
+    d’aide, à chacun doit correspondre une assiette de dépenses distinctes ; auquel cas, le
+    montant de chaque aide ne doit pas excéder, sur leurs assiettes de dépenses, le plafond
+    ou l’intensité maximale autorisée par le régime d’aide qui leur est respectivement applicable.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 2
+  verified: llm_cited
+application:
+  channel: Applications submitted regionally to Bpifrance following the engineering mission
+    on the territory; forms selected by region of project execution.
+  typical_timeline: Open since September 2022; rolling review (au fil de l'eau) per territory
+    until the allocated envelope is exhausted.
+  quote: Le dispositif est ouvert de septembre 2022 et de la sélection des territoires lauréats
+    du dispositif. Sur chaque territoire, la sélection des dossiers se fait au fil de l'eau
+    et jusqu'à épuisement de l'enveloppe allouée au territoire.
+  source:
+    file: fr_relance_industrie_aides_territoires.html
+    locator: fr_relance_industrie_rebond_bpifrance_subdomain.html#chunk 2
+  verified: llm_cited

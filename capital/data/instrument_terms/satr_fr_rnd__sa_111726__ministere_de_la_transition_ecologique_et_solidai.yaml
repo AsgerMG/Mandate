@@ -1,0 +1,58 @@
+id: satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai
+name: Régime cadre exempté relatif aux aides en faveur de la protection de l'environnement pour la période
+  2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g1-any-size-renewable-energy
+  gate_family: G1_nexus
+  requirement: Companies of any size may receive investment aid for the promotion of energy produced from
+    renewable sources and renewable hydrogen (except electricity produced from renewable hydrogen), subject
+    to sectoral exclusions.
+  value: Any size, renewable energy/renewable hydrogen investment (excl. electricity from renewable H2)
+  intake_field: none
+  quote: Les entreprises quelle que soit leur taille peuvent bénéficier d’aides à l’investissement en
+    faveur de la promotion de l’énergie produite à partir de sources renouvelables et de l’hydrogène renouvelable
+    (à l’exception de l’électricité produite à partir d’hydrogène renouvelable)
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111726-regime-cadre-exempte-relatif-aux-aides-en-faveur-de-la
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-national-scope
+  gate_family: G1_nexus
+  requirement: The scheme applies across the entire national territory.
+  value: 'Scope: entire national territory'
+  intake_field: entityCountries
+  quote: Le présent régime cadre exempté s’applique sur l’ensemble du territoire national.
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111726-regime-cadre-exempte-relatif-aux-aides-en-faveur-de-la
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g5-excl-export-activities
+  gate_family: G5_use_of_funds
+  requirement: Aid in favour of export-related activities, directly linked to quantities exported, is
+    excluded.
+  value: 'Excluded: export-linked activities'
+  intake_field: none
+  quote: aux aides en faveur d’activités liées à l’exportation vers des pays tiers ou un Etat membre,
+    à savoir celles qui sont directement liées aux quantités exportées
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111726-regime-cadre-exempte-relatif-aux-aides-en-faveur-de-la
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-excl-domestic-preference
+  gate_family: G5_use_of_funds
+  requirement: Aid conditional on using domestic products in preference to imported products is excluded.
+  value: 'Excluded: aid conditioned on preference for domestic products'
+  intake_field: none
+  quote: aux aides subordonnées à l’utilisation de produits nationaux de préférence aux produits importés
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111726-regime-cadre-exempte-relatif-aux-aides-en-faveur-de-la
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

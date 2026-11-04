@@ -1,0 +1,59 @@
+id: satr_lu_rnd__sa_111794__ministere_de_l_economie
+name: <b>SA</b>.49971 Régime d'aides en faveur de la protection de l'environnement
+administering_body: see source document
+country: LU
+capital_type: unknown
+status: draft
+gates:
+- id: g1-luxembourg-establishment-permit
+  gate_family: G1_nexus
+  requirement: Eligible applicants are companies legally established in Luxembourg that hold a valid business
+    permit, investing in renewable energy, renewable hydrogen, or high-efficiency cogeneration.
+  value: Luxembourg-established company with valid business permit
+  intake_field: entityCountries
+  quote: All companies legally established in Luxembourg that hold a valid business permit
+  source:
+    file: https://luxinnovation.lu/fund/environmental-law-simple-application/production-renewable-energies
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-storage-must-be-combined
+  gate_family: G5_use_of_funds
+  requirement: Storage investments are only eligible when combined with a renewable energy production
+    installation.
+  value: Storage eligible only if combined with renewable production
+  intake_field: none
+  quote: Storage investments are only eligible when combined with a renewable energy production installation.
+  source:
+    file: https://luxinnovation.lu/fund/environmental-law-simple-application/production-renewable-energies
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-biogas-sustainability-criteria
+  gate_family: G5_use_of_funds
+  requirement: Biogas and biomass investments must comply with the sustainability criteria of EU Directive
+    2018/2001.
+  value: Biogas/biomass must meet RED II (2018/2001) sustainability criteria
+  intake_field: none
+  quote: Biogas and biomass must comply with the sustainability criteria of EU Directive 2018/2001.
+  source:
+    file: https://luxinnovation.lu/fund/environmental-law-simple-application/production-renewable-energies
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-apply-before-works-start
+  gate_family: G6_conditionality
+  requirement: The application must be submitted before the start of works or the first binding order
+    of equipment.
+  value: Apply before start of works / first binding equipment order
+  intake_field: none
+  quote: The application must be submitted before the start of works or the first binding order of equipment,
+  source:
+    file: https://luxinnovation.lu/fund/environmental-law-simple-application/production-renewable-energies
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (4/4 gates passed mechanical verbatim
+  check -> llm_cited).

@@ -1,0 +1,49 @@
+encoding 154 filter gates (claude-sonnet-5)
+  15/154  encoded=14 skipped=1
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151110: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151116: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151122: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151129: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151137: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151145: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES11 - GALICIA'] on gate 151153: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES11 - GALICIA'] on gate 151159: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151165: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES11 - GALICIA'] on gate 151173: a positive rule no founder answer can satisfy
+  30/154  encoded=16 skipped=14
+  45/154  encoded=29 skipped=16
+  60/154  encoded=41 skipped=19
+    dropped non-country activityCountries values ['ES61 - ANDALUCIA'] on gate 151310: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151317: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES62 - Región de Murcia'] on gate 151323: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151330: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES41 - Castilla y Leon'] on gate 151337: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151343: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES70 - CANARIAS'] on gate 151350: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES620 - Murcia'] on gate 151358: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES24 - ARAGON'] on gate 151364: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151371: a positive rule no founder answer can satisfy
+  75/154  encoded=45 skipped=30
+    dropped non-country activityCountries values ['ES521 - Alicante / Alacant'] on gate 151379: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES - ESPAÑA'] on gate 151385: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES432 - Cáceres'] on gate 151390: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES52 - COMUNIDAD VALENCIANA'] on gate 151396: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES - ESPAÑA'] on gate 151403: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES21 - PAIS VASCO'] on gate 151409: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES - ESPAÑA'] on gate 151416: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES - ESPAÑA'] on gate 151423: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES - ESPAÑA'] on gate 151430: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151437: a positive rule no founder answer can satisfy
+  90/154  encoded=50 skipped=40
+  105/154  encoded=59 skipped=46
+  120/154  encoded=70 skipped=50
+    dropped non-country activityCountries values ['ES523 - Valencia / València'] on gate 151544: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES11 - GALICIA'] on gate 151552: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES11 - GALICIA'] on gate 151558: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - Cataluña'] on gate 151565: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES51 - CATALUÑA'] on gate 151572: a positive rule no founder answer can satisfy
+    dropped non-country activityCountries values ['ES11 - GALICIA'] on gate 151578: a positive rule no founder answer can satisfy
+  135/154  encoded=77 skipped=58
+  150/154  encoded=87 skipped=63
+  154/154  encoded=88 skipped=66
+encode done: 88 encoded, 66 skipped as unencodable.

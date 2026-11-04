@@ -1,0 +1,47 @@
+id: satr_de_rnd__sa_109088__projekttrager_julich
+name: Förderrichtlinie Elektromobilität 2023 [BMDV]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-establishment-at-payout
+  gate_family: G1_nexus
+  requirement: The recipient must have an establishment in Germany at the time the grant is paid out.
+  value: Must have German establishment at time of payout
+  intake_field: entityCountries
+  quote: Zum Zeitpunkt der Auszahlung der Zuwendung muss der Zuwendungsempfänger eine Betriebsstätte oder
+    Niederlassung in Deutschland haben.
+  source:
+    file: https://www.bundesanzeiger.de/pub/publication/l5snuRMY9FBb8Ct53Be/content/l5snuRMY9FBb8Ct53Be/BAnz%20AT%2026.07.2023%20B2.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-measures-2-1-2-2
+  gate_family: G1_nexus
+  requirement: For measures under 2.1 (e-mobility concepts) and 2.2 (fleet programme), eligible applicants
+    are public- and private-law legal persons, and natural persons if they are economically active.
+  value: '2.1/2.2: public/private legal persons, natural persons if economically active'
+  intake_field: borrowerModel
+  quote: Antragsberechtigt für Maßnahmen nach Nummer 2.1 (Elektromobilitätskonzepte) und Nummer 2.2 (Flottenprogramm)
+    sind juristische Personen des öffentlichen Rechts und des Privatrechts sowie natürliche Personen,
+    soweit sie wirtschaftlich tätig sind.
+  source:
+    file: https://www.bundesanzeiger.de/pub/publication/l5snuRMY9FBb8Ct53Be/content/l5snuRMY9FBb8Ct53Be/BAnz%20AT%2026.07.2023%20B2.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-measures-2-3
+  gate_family: G1_nexus
+  requirement: For measures under 2.3 (research and development), eligible applicants are commercial enterprises,
+    universities, non-university research institutions, local authorities and non-profit organisations.
+  value: '2.3: commercial enterprises, universities, research institutions, public bodies, non-profits'
+  intake_field: borrowerModel
+  quote: Antragsberechtigt für Maßnahmen nach Nummer 2.3 (Forschung und Entwicklung) sind Unternehmen
+    der gewerblichen Wirtschaft, Hochschulen, außeruniversitäre Forschungseinrichtungen, Gebietskörperschaften
+    und gemeinnützige Organisationen.
+  source:
+    file: https://www.bundesanzeiger.de/pub/publication/l5snuRMY9FBb8Ct53Be/content/l5snuRMY9FBb8Ct53Be/BAnz%20AT%2026.07.2023%20B2.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

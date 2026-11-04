@@ -1,0 +1,307 @@
+id: innovationsfonden_innofounder
+name: innovationsfonden_innofounder
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-company-cvr
+  gate_family: G1_nexus
+  requirement: Applicant must have a company with a Danish company registration number (CVR
+    number) at the start of the Innofounder course.
+  value: Danish CVR number required at course start
+  intake_field: entityCountries
+  quote: you must have a company with a Danish company registration number (CVR number) at
+    the start of the Innofounder course.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.4
+  verified: llm_cited
+- id: g1-foreign-eu-eea
+  gate_family: G1_nexus
+  requirement: Foreign citizens from EU/EEA must provide proof of registration if admitted;
+    non-EU/EEA citizens must have a Start-up Denmark visa, a Danish degree, or one year's
+    employment in Denmark within past three years, and must apply for a Start-up Denmark visa
+    if admitted.
+  value: Non-EU/EEA citizens require Start-up Denmark visa, Danish degree, or 1 year DK employment
+  intake_field: entityCountries
+  quote: If you are a citizen of a country outside the EU/EEA, you must, in order to apply
+    for Innofounder, either have a Start-up Denmark visa (https://startupdenmark.info) or
+    a degree from a Danish educational institution or have been employed for a minimum of
+    one year by a company/public institution in Denmark within the past three years.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.6
+  verified: llm_cited
+- id: g2-company-age
+  gate_family: G2_size_ownership
+  requirement: At the time of application, the applicant company can be no more than three
+    years old.
+  value: Company max 3 years old at application
+  intake_field: foundedYear
+  quote: At the time of application, the company can be no more than three years old.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.4
+  verified: llm_cited
+- id: g2-parent-age
+  gate_family: G2_size_ownership
+  requirement: If a parent company has controlling influence (owning more than 50%), that
+    parent company must not be more than 5 years old at the time the grant is awarded.
+  value: Parent company max 5 years old if controlling >50%
+  intake_field: institutionalOwner
+  quote: If the company is part of an ownership structure in which an underlying parent company
+    has controlling influence (e.g. by owning more than 50.0%), that parent company must not
+    be more than 5 years old at the time the grant is awarded
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.4
+  verified: llm_cited
+- id: g2-founder-ownership
+  gate_family: G2_size_ownership
+  requirement: Each admitted founder must own a minimum of 12.5% of the company.
+  value: Minimum 12.5% ownership per founder
+  intake_field: ownerOver25
+  quote: You must own a minimum of 12.5% of the company.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.4
+  verified: llm_cited
+- id: g2-fte-balance-cap
+  gate_family: G2_size_ownership
+  requirement: The company must not have more than 49 employees and a total annual balance
+    of more than EUR 10 million.
+  value: Max 49 employees and EUR 10m balance
+  intake_field: fteBand
+  quote: Have more than 49 employees and a total annual balance of more than EUR 10 million.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.20
+  verified: llm_cited
+- id: g2-founder-fulltime
+  gate_family: G2_size_ownership
+  requirement: Founders must work full-time (no less than 37 hours a week) for the company
+    during the Innofounder course, with no more than 10 hours/week of unrelated outside employment
+    or education.
+  value: Full-time (≥37h/week); outside work/education capped at 10h/week
+  intake_field: none
+  quote: You must work full-time (no less than 37 hours a week) for the company during the
+    Innofounder course.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.4
+  verified: llm_cited
+- id: g2-education
+  gate_family: G2_size_ownership
+  requirement: Founders must have completed a public higher education programme, PhD programme,
+    or private higher education programme entitling participants to state education grant
+    (SU), by the start of the Innofounder course, typically corresponding to a minimum of
+    120 ECTS credits.
+  value: Completed higher education (≥120 ECTS) required at course start
+  intake_field: none
+  quote: Founders must at the start of the Innofounder course have completed a public higher
+    education programme, a PhD programme or a private higher education programme that entitles
+    the participants to a state education grant (SU).
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.5
+  verified: llm_cited
+- id: g2-not-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: The company must not be defined as an 'undertaking in difficulty'.
+  value: Cannot be an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: Be defined as an “undertaking in difficulty”.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.20
+  verified: llm_cited
+- id: g2-no-illegal-aid
+  gate_family: G2_size_ownership
+  requirement: The company must not have an unresolved repayment order for Danish state funds
+    declared illegal and incompatible with the Internal Market by the EU Commission.
+  value: No outstanding illegal aid repayment order
+  intake_field: none
+  quote: Have received a repayment order for funds given by the Danish state and declared
+    illegal and incompatible with the Internal Market by the EU Commission, which the applicant
+    has not yet complied with.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.20
+  verified: llm_cited
+- id: g2-once-only
+  gate_family: G2_size_ownership
+  requirement: A company can only be admitted to the Innofounder programme once.
+  value: One-time company eligibility
+  intake_field: none
+  quote: A company can only be admitted to the Innofounder programme once
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.6
+  verified: llm_cited
+- id: g4-early-stage-revenue
+  gate_family: G4_borrower_model
+  requirement: The company must not have achieved significant revenue or regular sales, nor
+    received major external funding, based on the idea; only limited test sales are permissible.
+  value: Pre-revenue/pre-major-funding early stage required
+  intake_field: developmentStage
+  quote: Therefore, the company must not have achieved a significant revenue or regular sales
+    based on the idea.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.7
+  verified: llm_cited
+- id: g4-idea-stage-development
+  gate_family: G4_borrower_model
+  requirement: The idea must be beyond the idea stage but still require extensive development
+    and commercialisation; companies ready to go to market facing only sales/marketing/scaling
+    challenges are excluded.
+  value: Idea must require extensive further development, not market-ready
+  intake_field: developmentStage
+  quote: Innofounder does not invest in companies that are ready to go to market and primarily
+    face challenges relating to sales, marketing or scaling.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.6
+  verified: llm_cited
+- id: g4-team-size
+  gate_family: G4_borrower_model
+  requirement: Applicant may apply for a course covering 1, 2, or 3 founders, each of whom
+    must be an owner-founder of the company.
+  value: 1, 2, or 3 founders eligible
+  intake_field: borrowerModel
+  quote: You can apply for either 1, 2 or 3 Innofounders.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.3
+  verified: llm_cited
+- id: g5-no-parallel-public-funding
+  gate_family: G5_use_of_funds
+  requirement: Founders cannot participate in other publicly funded projects (e.g. Innobooster)
+    during the Innofounder course, as the course covers their full-time work.
+  value: No parallel public project funding during course
+  intake_field: cofinancingBand
+  quote: The Innofounder course covers your full-time work as founders, and you therefore
+    cannot participate in other publicly funded projects during the course, e.g. an Innobooster
+    project.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.10
+  verified: llm_cited
+- id: g5-development-grant-scope
+  gate_family: G5_use_of_funds
+  requirement: The development grant may cover services and materials supporting development
+    of the business idea (e.g. equipment rental, specialised software/hardware, external consulting,
+    prototyping, market validation, travel) but as a rule cannot cover operational expenses
+    such as regular rent, office supplies, IT hardware for regular office work, catering,
+    salaries, or audit expenses.
+  value: Development grant limited to development-related costs, excludes operational expenses
+  intake_field: none
+  quote: 'As a rule, the development grant cannot cover operational expenses such as: Regular
+    operation, such as rent Regular office supplies (pens, postage, printer paper etc.) IT
+    hardware for regular office work, phones etc. Catering or company lunch programmes The
+    company’s salary for employees and the founders. Expenses for audit'
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.10
+  verified: false
+  verify_note: 'fragment not found verbatim: ''As a rule, the development grant cannot cover
+    oper'''
+obligations:
+- requirement: Founders must participate actively in the Innofounder accelerator and attend
+    sessions physically when required.
+  quote: You must participate actively in the Innofounder accelerator and attend the sessions
+    physically when required.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''You must participate actively in the Innofounder
+    a'''
+- requirement: Payment of the final 20% of the development grant is conditional on total development
+    expenses of DKK 100,000 having been incurred and paid within the project period.
+  quote: Payment of the last 20% is conditional on total development expenses of DKK 100,000
+    having been incurred and paid within the project period.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.17
+  verified: llm_cited
+- requirement: If incurred expenses are less than the 80% already paid, Innovation Fund Denmark
+    will generally request repayment of the difference.
+  quote: If the incurred and paid expenses amount to less than the 80% that was paid at the
+    start of the programme, Innovation Fund Denmark will, as a general rule, request repayment
+    of the difference.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.17
+  verified: llm_cited
+- requirement: Grant recipients must submit final accounts within three months after the end
+    of the course, accompanied by an auditor's statement.
+  quote: The final accounts must be submitted within three months after the end of the course.
+    An auditor’s statement must be pro- vided along with the final accounts.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.18
+  verified: llm_cited
+- requirement: Applicant must inform Innovation Fund Denmark immediately of any significant
+    changes affecting information submitted, including funding received from other sources.
+  quote: The applicant is under obligation to inform Innovation Fund Denmark immediately of
+    any significant changes affecting the information submitted, including funding for the
+    project or parts hereof received from other sources.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.20
+  verified: llm_cited
+- requirement: Accounting records relating to the grant must be retained in accordance with
+    the Danish Bookkeeping Act, including de minimis Regulation requirements where stricter.
+  quote: Accounting records relating to the grant must be retained in accordance with the
+    Danish Bookkeeping Act. Where other and more stringent requirements apply, these must
+    be complied with, including the de minimis Regulation.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.20
+  verified: llm_cited
+- requirement: If conditions of the EU state aid rules are not met or declarations are incorrect,
+    the applicant is not eligible for funding and should as a rule repay the full amount.
+  quote: If those conditions are not met or the declarations are incorrect, you will not be
+    eligible for funding and should as a rule repay the full amount of funding.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.20
+  verified: llm_cited
+- requirement: The applicant guarantees that receipt and use of the investment does not violate
+    national or international sanctions, including EU Council Regulation No 269/2014 regarding
+    Ukraine.
+  quote: the applicant shall guarantee that receipt and use of the investment from Innovation
+    Fund Denmark does not violate this regulation.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.22
+  verified: false
+  verify_note: 'fragment not found verbatim: ''the applicant shall guarantee that receipt
+    and use'''
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/16 gates, 6/8 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The same eligible costs may not be supported by Innovation Fund Denmark or other public
+    authorities if this results in exceeding the aid ceilings of the EU General Block Exemption
+    Regulation as per Article 22(3c and 4) and Article 8(5).
+  quote: You should also be aware that the same eligible costs may not be supported by Inno-
+    vation Fund Denmark or other public authorities if this results in the aid ceilings of
+    the EU General Block Exemption Regulation being exceeded as stated in Article 22, (3 c
+    and 4) and cf. Article 8, (5).
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.20
+  verified: llm_cited
+application:
+  channel: Online application via the electronic application system e-grant.dk
+  typical_timeline: Up to 14-16 weeks total from application deadline to final decision (9
+    weeks for rejection/pitch invitation decision, plus 5-7 weeks after pitch invitation).
+  quote: The total evaluation from application deadline until you receive a final decision
+    on your application may thus be up to 14 – 16 weeks.
+  source:
+    file: innovationsfonden_innofounder_guidelines_2026.pdf
+    locator: innovationsfonden_innofounder_guidelines_2026.pdf#p.16
+  verified: llm_cited

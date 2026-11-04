@@ -1,0 +1,57 @@
+id: cdti_idi
+name: CDTI (Spain)
+administering_body: see source document
+country: ES
+capital_type: unknown
+status: draft
+gates:
+- id: g1-consortium-structure
+  gate_family: G1_nexus
+  requirement: Projects may be individual (a single company) or national cooperation projects (consortia
+    of 2 to 6 mutually autonomous companies), or international technological cooperation projects.
+  value: Individual, or consortium of 2-6 autonomous companies, or international cooperation
+  intake_field: consortium
+  quote: Proyectos individuales presentados por una única empresa; también admite proyectos en cooperación
+    nacional (consorcios de 2 a 6 empresas autónomas entre sí) y proyectos de cooperación tecnológica
+    internacional.
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-i-d
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-firm-in-crisis
+  gate_family: G3_financial
+  requirement: Companies in crisis, as defined in applicable regulation, cannot be beneficiaries.
+  value: 'Excluded: undertaking in crisis'
+  intake_field: lossesOverHalfCapital
+  quote: No podrán ser beneficiarias las empresas en crisis, con arreglo a la definición establecida en
+    la normativa
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-i-d
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-recovery-order
+  gate_family: G3_financial
+  requirement: Companies subject to a pending recovery order following a prior European Commission decision
+    declaring aid illegal and incompatible with the common market cannot be beneficiaries.
+  value: 'Excluded: pending EC recovery order'
+  intake_field: none
+  quote: ni aquellas empresas que estén sujetas a una orden de recuperación pendiente tras una decisión
+    previa de la Comisión Europea que haya declarado una ayuda ilegal e incompatible con el mercado común
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-i-d
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-min-own-contribution
+  gate_family: G3_financial
+  requirement: The company must contribute at least 15% of the project budget from its own resources.
+  value: Min. 15% of project budget from own resources
+  intake_field: cofinancingBand
+  quote: La empresa deberá aportar, al menos, el 15% del presupuesto del proyecto con recursos propios.
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-i-d
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

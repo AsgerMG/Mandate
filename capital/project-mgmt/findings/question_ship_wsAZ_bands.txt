@@ -1,0 +1,36 @@
+corpus=postgres instruments=1088  multi-leaf regimes=52 leaves=780
+
+========================================================================
+CEILING FOR A PERFECT ANSWER, all multi-leaf leaves
+========================================================================
+question                   mean class   alone   CEILING@5
+nothing asked (today)            48.9      0%          8%
+money, shipped 5                 34.5      3%         17%
+money, wsAY 6                    27.1      5%         24%
+money, wsAZ 7                    27.1      5%         26%
+region                           27.7     16%         39%
+shipped 5 + region               20.5     20%         48%
+wsAY 6 + region                  15.1     23%         51%
+wsAZ 7 + region                  15.1     23%         53%
+
+leaves with award_p50 >= 15M, the only place the two schemes differ: 16
+  by shipped top band: {'b15m_50m': 8, 'gt50m': 8}
+
+========================================================================
+CEILING@5 PER COUNTRY (the strata this workstream must not average over)
+========================================================================
+country    leaves   today   ship5     AY6     AZ7   region  AZ7+reg
+FR            128      0%      6%      7%      7%      20%      30%
+DE            118      0%      0%      7%      7%      57%      63%
+ES             88      0%      0%      0%      0%       0%       0%
+IT             87      0%      7%     24%     24%      47%      62%
+SE             62      0%      6%     15%     15%       5%      18%
+??             52     21%     50%     37%     52%      21%      52%
+CZ             38      8%      8%      8%      8%      45%      74%
+NL             30      7%     10%     17%     17%      30%      40%
+AT             29      0%     17%     38%     38%      41%      59%
+BE             22     23%     50%     50%     50%     100%     100%
+FI             15     27%     53%     53%     53%     100%     100%
+GR             15      0%     53%    100%    100%      47%     100%
+EE             14     50%     50%    100%    100%     100%     100%
+SK             13     23%     31%    100%    100%      46%     100%

@@ -1,0 +1,37 @@
+id: satr_de_rnd__sa_105973__nrw_bank
+name: Bund-Länder-Gemeinschaftsaufgabe "Verbesserung der regionalen Wirtschaftsstruktur" (GRW) – gewerbliche
+  Wirtschaft [BMWK - I D 1]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Eligible applicants are commercial enterprises making operational investments where the
+    establishment to be funded is located in a designated assisted area of North Rhine-Westphalia.
+  value: Commercial enterprise, establishment in NRW assisted area
+  intake_field: activityCountries
+  quote: Antragsberechtigt sind gewerbliche Unternehmen, wenn sie betriebliche Investitionen vornehmen
+    und die zu fördernde Betriebsstätte in einem Fördergebiet des Landes Nordrhein-Westfalen liegt.
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/15354/-gemeinschaftsaufgabe-verbesserung-der-regionalen-wirtschaftsstruktur-grw---gewerblich.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-jobs-requirement
+  gate_family: G5_use_of_funds
+  requirement: Grants are available for investments that create or safeguard permanent jobs.
+  value: Investment must create/safeguard permanent jobs
+  intake_field: none
+  quote: Sie können einen Zuschuss für Investitionen erhalten, durch die Dauerarbeitsplätze neu geschaffen
+    oder gesichert werden.
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/15354/-gemeinschaftsaufgabe-verbesserung-der-regionalen-wirtschaftsstruktur-grw---gewerblich.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (2/2 gates passed mechanical verbatim-substring
+  check -> llm_cited).

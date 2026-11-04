@@ -1,0 +1,105 @@
+id: eit_climate_kic_asa
+name: eit_climate_kic_asa
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G4_borrower_model
+  requirement: Support is provided as an equity-free grant combined with cloud computing credits,
+    not a loan or equity investment.
+  value: £10,000 equity-free grant + US$25,000 AWS Activate Credits
+  intake_field: borrowerModel
+  quote: They will also get a financial boost with a £10,000 equity-free grant and US$25,000
+    worth of AWS Activate Credits, to help them access cloud computing services
+  source:
+    file: eit_climate_kic_asa_news_article.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Applicants must be early-stage start-ups selected through a competitive application
+    process for the Amazon Sustainability Accelerator, supported by EIT Climate-KIC.
+  value: Start-up applicants (UK and other European countries represented in cohort)
+  intake_field: entityCountries
+  quote: the 16 start-ups – eight of which are UK-based – joining the second edition of the
+    Amazon Sustainability Accelerator, following more than 1,500 applications
+  source:
+    file: eit_climate_kic_asa_news_article.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: Participants must be early-stage sustainability-focused start-ups (not established/large
+    companies) working on sustainable consumer products or recycling technology.
+  value: Early-stage start-ups in Consumer Products or Recycling Technologies cohorts
+  intake_field: developmentStage
+  quote: The two cohorts in the Accelerator include start-ups who are creating more sustainable
+    consumer products and, for the first time this year, start-ups developing the technology
+    to help businesses recycle products more effectively and efficiently.
+  source:
+    file: eit_climate_kic_asa_news_article.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4
+  gate_family: G5_use_of_funds
+  requirement: Support is directed to help start-ups measure and improve their climate/environmental
+    impact and scale their sustainable business, including access to cloud computing services
+    and office space.
+  value: Climate impact assessment, cloud computing, mentorship, office space, Amazon Launchpad
+    access
+  intake_field: none
+  quote: Amazon and EIT Climate-KIC will work in collaboration to guide Accelerator participants
+    through a climate impact assessment where they will measure their business’ climate impact,
+    and develop strategies to improve their environmental footprint.
+  source:
+    file: eit_climate_kic_asa_news_article.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5
+  gate_family: G1_nexus
+  requirement: The programme is a 12-week bespoke accelerator programme requiring participation
+    in workshops, mentorship, and curriculum activities.
+  value: 12-week programme
+  intake_field: none
+  quote: The Amazon Sustainability Accelerator is a 12-week bespoke programme designed to
+    help founders navigate the challenges of starting and scaling a sustainable business.
+  source:
+    file: eit_climate_kic_asa_news_article.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G5_use_of_funds
+  requirement: Consumer Products cohort participants additionally receive one year of free
+    access to Amazon Launchpad as part of the support package.
+  value: Free Amazon Launchpad access for one year (Consumer Products cohort only)
+  intake_field: none
+  quote: Participants in the Consumer Products cohort will also receive free access to Amazon
+    Launchpad for one year.
+  source:
+    file: eit_climate_kic_asa_news_article.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Following the accelerator, start-ups are expected to pitch their business to
+    investors to build connections and raise further funding.
+  quote: Following the Accelerator, all start-ups will have the opportunity to pitch their
+    business to an audience of seasoned investors to help them build connections and raise
+    further funding.
+  source:
+    file: eit_climate_kic_asa_news_article.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (6/6 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Competitive application process via the Amazon Sustainability Accelerator programme
+  typical_timeline: 12-week programme; selection following applications (previous round drew
+    more than 1,500 applications)
+  quote: following more than 1,500 applications
+  source:
+    file: eit_climate_kic_asa_news_article.html
+    locator: chunk 1
+  verified: llm_cited

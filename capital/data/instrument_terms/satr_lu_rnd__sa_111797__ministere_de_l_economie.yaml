@@ -1,0 +1,48 @@
+id: satr_lu_rnd__sa_111797__ministere_de_l_economie
+name: <b>SA</b>.48476 Loi du 17 mai 2017 ayant pour objet 1. le renouvellement des régimes d'aides à la
+  recherche, au développement et à l'innovation; 2. les missions de l'Agence nationale pour la promotion
+  de l'innovation et de la recherche;
+administering_body: see source document
+country: LU
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-luxembourg
+  gate_family: G2_size_ownership
+  requirement: The financial aid is intended for small and medium-sized enterprises established in Luxembourg.
+  value: SME established in Luxembourg
+  intake_field: entityCountries
+  quote: The financial aid is intended for small and medium-sized enterprises established in Luxembourg.
+  source:
+    file: https://guichet.public.lu/en/entreprises/financement-aides/aides-recherche-developpement/rdi/aide-innovation-pme.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-eligible-costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs cover acquisition/validation/defence of patents and intangible assets; hosting
+    of highly qualified personnel from a research organisation or large enterprise; and advisory/innovation
+    support services.
+  value: 'Eligible costs: patents/IP, hosted qualified personnel, advisory/innovation services'
+  intake_field: none
+  quote: 'Eligible costs cover: the acquisition, validation and defence of patents and other intangible
+    assets; the hosting of highly qualified personnel, coming from a research or knowledge dissemination
+    organisation, or from a large enterprise; advisory and innovation support services, including consultancy,
+    assistance or training in knowledge transfer, acquisition, protection and exploitation of intangible
+    assets.'
+  source:
+    file: https://guichet.public.lu/en/entreprises/financement-aides/aides-recherche-developpement/rdi/aide-innovation-pme.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g6-apply-before-work
+  gate_family: G6_conditionality
+  requirement: Applications must be submitted before the commencement of the work.
+  value: Application must precede start of work
+  intake_field: needBy
+  quote: Applications must be submitted before the commencement of the work.
+  source:
+    file: https://guichet.public.lu/en/entreprises/financement-aides/aides-recherche-developpement/rdi/aide-innovation-pme.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

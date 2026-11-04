@@ -1,0 +1,81 @@
+(node:25664) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T19:54:21.558Z
+ranker: all 245 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune seed=20260806 replayed 250
+
+EXACT@5 66/250 (26.4% +/-5.5)
+ceiling on this draw: 141/250 (56.4%)  <- pairs whose residual class fits five rows
+
+THE LOSS: 184 misses (73.6 points of the 250-pair draw)
+
+bucket                                     misses   % of loss   % of draw
+1  NEVER IN THE POOL   (a screen or a gate removed it)     6        3.3%        2.4%
+2  CUT BEFORE THE TABLE(leaf cap / collapse / dedupe)     9        4.9%        3.6%
+3  RANKED BELOW FIVE   (on the table, lost on score)    85       46.2%       34.0%
+4  UNWINNABLE          (residual class > 5)    84       45.7%       33.6%
+   ACTIONABLE (1+2+3)                        100       54.3%       40.0%
+
+BY RULE (what actually fired), winnable misses only
+  RANK                           85   
+  SEL-CAPITAL                     9   Instrument deprioritised because its capital type is not among those the founder asked for
+  SEL-CHANNEL-NOT-SELECTED        3   Channel left out of the pool although a slot was free, because a condition attached to the
+  SEL-CHANNEL-CAP                 2   Channel not added because the pool had already reached its channel cap.
+  SEL-COUNTRY                     1   Instrument removed because it is national to a country the founder cannot draw on.
+
+CROSS TAB — mechanism regardless of winnability (the precedence made visible)
+  mechanism              winnable  unwinnable
+  1 never in the pool          6           0
+  2 cut before the table       9           0
+  3 ranked below five         85          84
+
+INSIDE BUCKET 3 — the two failures a single label was hiding
+  overall candidate rank of the won leaf
+    rank 6 (just off)      2  2% of bucket 3
+    rank 7-10             11  13% of bucket 3
+    rank 11-20            19  22% of bucket 3
+    rank 21-50            39  46% of bucket 3
+    rank 51+              14  16% of bucket 3
+  lost to its OWN SIBLINGS (regime rank > 1)         37  44%   <- a within-regime rule could reach these
+  lost to OTHER PROGRAMMES (regime rank 1)           48  56%   <- only a better cross-regime score reaches these
+  a sibling of the won leaf IS on the published five 28  33%   <- right programme, wrong door
+  median candidate pool the ranker had to order:  90
+
+REGIME CONCENTRATION per bucket (a bucket that is one regime is not a finding)
+  bucket 1: 6 miss(es) across 4 regime(s), largest 50% -- innovation_fund:3 chips_ju:1 cdti_lic:1 edf:1
+  bucket 2: 9 miss(es) across 3 regime(s), largest 67% -- satr_de_rnd:6 eit_innoenergy:2 tesi_equity:1
+  bucket 3: 85 miss(es) across 53 regime(s), largest 8% -- satr_de_rnd:7 vinnova_grant:5 satr_fr_rnd:5 satr_it_rnd:4
+  bucket 4: 84 miss(es) across 8 regime(s), largest 27% -- bdns_es_ayudas:23 vinnova_grant:20 satr_de_rnd:12 ademe_aid:11
+
+WORKED EXAMPLES
+  [1] chips_ju_kdt  founder in DE  regime chips_ju  class 2  rank -
+      SEL-CHANNEL-CAP: channel pool already at its cap of 7
+  [2] satr_de_rnd__sa_56245__finanzamt_wiesbaden  founder in DE  regime satr_de_rnd  class 1  rank -
+      SEL-CAPITAL: capital type tax_credit not among those sought
+  [3] satr_de_equity__sa_118637__lfa_forderbank_bayern  founder in DE  regime satr_de_equity  class 2  rank 26
+      RANK: candidate rank 26 of 99
+  [4] bdns_es_ayudas__orden_de_21_de_julio_por_la_que_se_efectua_la_co_489ce4  founder in ES  regime bdns_es_ayudas  class 60  rank 52
+      class>5: residual class 60 among publishable siblings
+node:fs:2425
+    return binding.writeFileUtf8(
+                   ^
+
+Error: ENOENT: no such file or directory, open '/tmp/wsco2/tune_after.json'
+    at writeFileSync (node:fs:2425:20)
+    at main (/Users/asgermollergrimberg/Wincent/.claude/worktrees/wsCO2-window-write/website/frontend/scripts/_wsci_autopsy.ts:445:5)
+    at process.processTicksAndRejections (node:internal/process/task_queues:105:5) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: '/tmp/wsco2/tune_after.json'
+}
+
+Node.js v22.21.1

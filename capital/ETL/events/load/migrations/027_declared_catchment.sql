@@ -1,0 +1,44 @@
+-- The DECLARED catchment: which territory a delivery body is registered to serve.
+--
+-- Migration 024 added delivery_region, and it is worth being exact about why this
+-- is not that column. delivery_region is MEASURED: nuts_regions.staged_region_mix
+-- counts where a leaf's own awards actually landed, and delivery_region is the most
+-- specific NUTS prefix covering a supermajority of them. That is evidence about the
+-- past. It is honest and it is useful, and it is not the same claim as "this body
+-- serves this territory", which is a RULE and is what a founder is actually asking.
+--
+-- The two must stay apart in the schema, not merely in a comment, because they
+-- disagree in ways that matter. A national body that happens to have funded mostly
+-- one region measures as regional and is not. A regional body in its first year has
+-- too few awards to measure at all and is still regional. Collapsing them into one
+-- column would make both errors unreadable after the fact.
+--
+-- Source: the Commission's own case register (data/raw/state_aid_cases/cases.json),
+-- field caseRegions -- the regions a notified scheme is registered for. Reachable per
+-- LEAF rather than per regime because the SA number is nearly a leaf key: 453 of the
+-- 797 multi-leaf-regime leaves carry a scheme_code across 377 distinct SA numbers.
+--
+-- Country-level values are KEPT here, and that is the deliberate difference from
+-- delivery_region, where a country means "no regional claim" and is stored as NULL.
+-- Here "registered for the whole of Germany" IS the answer, and it is one a NULL
+-- cannot give: today a founder cannot tell "serves the whole country" from "nobody
+-- has looked yet". 290 leaves get that answer from this source.
+--
+-- Everything stored here is NUTS 2024, translated on the way in. The register writes
+-- the vintage that was current when the scheme was notified, so Regione Lombardia
+-- declares IT2 while its awards measure ITC4 -- one place, two vintages, and a string
+-- compare calls it a contradiction. Codes too old to appear in nuts_names.json
+-- (NUTS 2006/2010, e.g. IT2 and IT8) are skipped rather than guessed at.
+--
+-- These columns are NOT in BUILT_COLUMNS of populate_funding_instruments.py, which
+-- is what makes them survive its rebuild: that pass preserves by difference whatever
+-- it does not itself write.
+
+ALTER TABLE funding_instruments ADD COLUMN catchment_region TEXT;
+-- The full declared set, JSON array of NUTS 2024 ids, for a body registered for
+-- several regions. catchment_region above is the single most specific id that
+-- covers all of them, which is what a one-line row can honestly show.
+ALTER TABLE funding_instruments ADD COLUMN catchment_regions TEXT;
+-- Provenance, per row rather than per table, because a second declared source
+-- (a national call register, say) must be tellable apart from this one.
+ALTER TABLE funding_instruments ADD COLUMN catchment_source TEXT;

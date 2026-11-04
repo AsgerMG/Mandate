@@ -1,0 +1,58 @@
+id: satr_pt_rnd__sa_110394__tamprcentro
+name: Inserção de recursos humanos altamente qualificados
+administering_body: see source document
+country: PT
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-only
+  gate_family: G2_size_ownership
+  requirement: Only micro, small and medium-sized enterprises (SMEs) are eligible.
+  value: SME only
+  intake_field: turnoverBand
+  quote: Micro, pequenas e medias empresas (PME).
+  source:
+    file: https://centro2030.pt/2026/05/20/centro-2030-abre-concursos-para-contratacao-de-recursos-humanos-altamente-qualificados-por-empresas/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-region-centro
+  gate_family: G1_nexus
+  requirement: Applicants must be located in Portugal's Centro region, applying under one of two geographically
+    defined calls depending on whether their territory is classified as low-density.
+  value: Located in Regiao Centro (NUTS II), Portugal
+  intake_field: activityCountries
+  quote: Territorios de Baixa Densidade na Regiao CENTRO - NUTS II
+  source:
+    file: https://centro2030.pt/2026/05/20/centro-2030-abre-concursos-para-contratacao-de-recursos-humanos-altamente-qualificados-por-empresas/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-budget-low-density-call
+  gate_family: G3_financial
+  requirement: The call for low-density territories in the Centro region has a budget of EUR 4,000,000
+    from the European Social Fund Plus (FSE+).
+  value: EUR 4,000,000 budget (low-density call)
+  intake_field: none
+  quote: dotacao 4.000.000 EUR do Fundo Social Europeu Mais/FSE+
+  source:
+    file: https://centro2030.pt/2026/05/20/centro-2030-abre-concursos-para-contratacao-de-recursos-humanos-altamente-qualificados-por-empresas/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g3-budget-other-call
+  gate_family: G3_financial
+  requirement: The call for Centro region territories not classified as low-density has a budget of EUR
+    6,000,000 from the FSE+.
+  value: EUR 6,000,000 budget (non-low-density call)
+  intake_field: none
+  quote: dotacao 6.000.000 EUR do FSE+
+  source:
+    file: https://centro2030.pt/2026/05/20/centro-2030-abre-concursos-para-contratacao-de-recursos-humanos-altamente-qualificados-por-empresas/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (4/4 gates passed mechanical verbatim-substring
+  check -> llm_cited).

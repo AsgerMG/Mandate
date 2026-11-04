@@ -1,0 +1,22 @@
+id: satr_it_rnd__sa_51460__provincia_autonoma_di_bolzano_ripartizione_innov
+name: Approvazione dei criteri di attuazione in materia di promozione dell''innovazione - Legge provinciale
+  del 13.12.2006, n. 14 "Ricerca e innovazione"
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-bolzano-location
+  gate_family: G1_nexus
+  requirement: Beneficiaries must be enterprises, in any legal form, with a production unit in the Province
+    of Bolzano, duly registered in the register of enterprises of the Bolzano Chamber of Commerce.
+  value: Production unit in Province of Bolzano, registered in local Chamber of Commerce
+  intake_field: entityCountries
+  quote: Sono beneficiarie le imprese, in qualsiasi forma costituite, con unita' produttiva in provincia
+    di Bolzano, purche' regolarmente iscritte nel registro delle imprese della Camera di Commercio, Industria,
+    Artigianato e Agricoltura di Bolzano.
+  source:
+    file: https://mycivis.civis.bz.it/it/Services/ServiceDetail/?id=1499
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

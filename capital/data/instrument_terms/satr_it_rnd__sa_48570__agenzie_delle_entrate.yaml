@@ -1,0 +1,52 @@
+id: satr_it_rnd__sa_48570__agenzie_delle_entrate
+name: Fiscal incentives for investments in innovative start-ups and innovative SMEs
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-registered-innovative-entity
+  gate_family: G1_nexus
+  requirement: The incentive applies to investments in the share capital of innovative start-ups and innovative
+    SMEs registered in the special sections of the business register.
+  value: Target company must be registered as innovative start-up/SME
+  intake_field: none
+  quote: L'agevolazione riguarda gli investimenti nel capitale sociale di start-up innovative e PMI innovative
+    iscritte nelle apposite sezioni speciali del registro delle imprese.
+  source:
+    file: https://www.mimit.gov.it/it/impresa/competitivita-e-nuove-imprese/start-up-innovative
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-investment-cap-30pct
+  gate_family: G3_financial
+  requirement: IRPEF taxpayers may deduct 30% of amounts invested in the share capital of one or more
+    innovative start-ups, up to a maximum eligible investment of EUR 1,000,000 per tax period.
+  value: 30% deduction, up to EUR 1,000,000/year
+  intake_field: ticketBand
+  quote: I soggetti IRPEF possono detrarre dall'imposta lorda il 30% delle somme investite nel capitale
+    sociale di una o piu' start-up innovative, con investimento massimo agevolabile per ciascun periodo
+    d'imposta di 1.000.000 euro;
+  source:
+    file: https://www.mimit.gov.it/it/impresa/competitivita-e-nuove-imprese/start-up-innovative
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g3-de-minimis-65pct-2025
+  gate_family: G3_financial
+  requirement: From 1 January 2025, a de-minimis deduction of 65% applies to amounts invested in innovative
+    start-up share capital, whether directly or through collective investment undertakings.
+  value: 65% de-minimis deduction from 2025
+  intake_field: ticketBand
+  quote: dal 1 gennaio 2025 e' prevista una detrazione in regime 'de minimis' pari al 65 per cento della
+    somma investita nel capitale sociale di una o piu' start-up innovative, direttamente ovvero per il
+    tramite di organismi di investimento collettivo del risparmio.
+  source:
+    file: https://www.mimit.gov.it/it/impresa/competitivita-e-nuove-imprese/start-up-innovative
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

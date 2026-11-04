@@ -1,0 +1,69 @@
+id: satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung
+name: Richtlinie zur Förderung der „6G-Industrieprojekte zur Erforschung von ganzheitlichen Systemen und
+  Teiltechnologien für den Mobilfunk der 6. Generation“ im Forschungsprogramm für Kommunikationssysteme
+  „Souverän. Digital. Vernetzt.“ [BMBF]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Eligible applicants are state and non-state universities, non-university research institutions,
+    associations and federations, other R&D-interested organisations, and commercial enterprises.
+  value: University, research institution, association, or commercial enterprise
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind staatliche und nicht staatliche Hochschulen, außeruniversitäre Forschungseinrichtungen,
+    Verbände und Vereine sowie sonstige Organisationen mit Forschungs- und Entwicklungsinteresse sowie
+    Unternehmen der gewerblichen Wirtschaft.
+  source:
+    file: https://www.forschung-it-sicherheit-kommunikationssysteme.de/foerderung/bekanntmachungen/6g-industrie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-establishment-germany
+  gate_family: G1_nexus
+  requirement: At the time of payout, a business establishment/branch (for companies) or an equivalent
+    non-economic-activity facility (for universities, research bodies, associations) must exist in Germany.
+  value: DE establishment/branch required at payout
+  intake_field: entityCountries
+  quote: Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung wird das Vorhandensein einer Betriebsstätte
+    oder Niederlassung (Unternehmen) bzw. einer sonstigen Einrichtung, die der nichtwirtschaftlichen Tätigkeit
+    des Zuwendungsempfängers dient
+  source:
+    file: https://www.forschung-it-sicherheit-kommunikationssysteme.de/foerderung/bekanntmachungen/6g-industrie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-mittelstand-definition
+  gate_family: G2_size_ownership
+  requirement: Mid-sized companies (Mittelstand) are defined, including affiliated/partner companies,
+    as not exceeding 1,000 employees and EUR 100 million annual turnover at the time of application; their
+    participation is explicitly welcomed and weighed positively in project review.
+  value: 'Mittelstand definition: <=1,000 employees, <=EUR 100m turnover (incl. affiliates)'
+  intake_field: turnoverBand
+  quote: Die nationalen Vorgaben für mittelständische Unternehmen im Sinne dieser Förderrichtlinie sind
+    Unternehmen, die einschließlich verbundener oder Partnerunternehmen zum Zeitpunkt der Antragstellung
+    eine Größe von 1 000 Mitarbeitern und einen Jahresumsatz von 100 Millionen Euro nicht überschreiten.
+  source:
+    file: https://www.forschung-it-sicherheit-kommunikationssysteme.de/foerderung/bekanntmachungen/6g-industrie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-consortium-required
+  gate_family: G1_nexus
+  requirement: A necessary precondition for funding is collaboration between actors from business and
+    from science on shared research tasks (joint/consortium projects).
+  value: Business-science joint (consortium) project required
+  intake_field: consortium
+  quote: Notwendige Voraussetzung für die Förderung ist das Zusammenwirken von Beteiligten aus der Wirtschaft
+    mit der Wissenschaft zur Lösung von gemeinsamen Forschungsaufgaben (Verbundprojekte).
+  source:
+    file: https://www.forschung-it-sicherheit-kommunikationssysteme.de/foerderung/bekanntmachungen/6g-industrie
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (4/4 gates passed mechanical verbatim-substring
+  check -> llm_cited).

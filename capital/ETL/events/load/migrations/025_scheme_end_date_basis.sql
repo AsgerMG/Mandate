@@ -1,0 +1,31 @@
+-- What KIND of date `scheme_end_date` is holding.
+--
+-- 023 added the column and read it as "this scheme closed to new applicants".
+-- That is true of one of the two things now stored in it, and false of the
+-- other, and the difference cost the product 306 of 948 leaves on 2026-08-06 --
+-- pool recall 97% -> 81%, with `Fondo di garanzia per le PMI` (SA.57625,
+-- 13,892 awards, Italy's flagship SME guarantee fund) among the hidden.
+--
+--   notified_duration -- SATR `caseMeasureEndDate`. The expiry of a State-aid
+--     NOTIFICATION for a standing scheme. Prolongation is routine and our
+--     snapshot of the register lags it, so expiry alone is not closure. 94% of
+--     these land on 12-30 or 06-29, the statutory boundary days; a real closure
+--     date would be spread across the calendar.
+--   call_deadline -- the date THIS instrument stopped accepting applications:
+--     a convocatoria's plazo, an ADEME appel a projets' `date_cloture`. Past
+--     means closed and stays closed. A successor call is a new row, not a
+--     renewal of this one.
+--
+-- The tempting shortcut -- "it awarded money after its end date, so it is still
+-- open" -- was measured before adoption and does not separate them: 50 of
+-- Spain's 80 correctly-closed convocatorias award after their end date, because
+-- an award date is a GRANTING date and every call publishes its decisions after
+-- its deadline. Under a notified measure the same observation IS decisive, for
+-- a legal reason: aid may not lawfully be granted after the notified duration
+-- expires unless the measure was prolonged.
+--
+-- NULL means "not yet established". It is read as call_deadline, the safe
+-- direction, so an unlabelled date still closes its row rather than putting a
+-- dead call back in front of a founder.
+-- Backfilled by ETL/terms/backfill_end_date_basis.py from the case register.
+ALTER TABLE funding_instruments ADD COLUMN scheme_end_date_basis TEXT;

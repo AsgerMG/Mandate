@@ -1,0 +1,48 @@
+id: satr_de_rnd__sa_62774__bundesministerium_fur_wirtschaft_und_klimaschutz
+name: BMWi-Programm "Digitalisierung der Fahrzeughersteller und Zulieferindustrie"
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-recipients
+  gate_family: G1_nexus
+  requirement: Eligible recipients are commercial enterprises linked to the manufacturing sector with
+    a registered seat, branch or establishment in Germany, as well as public and private universities,
+    research institutions, public bodies, and other entities focused on the funding subject.
+  value: Manufacturing-linked commercial enterprises (German seat) plus universities/research institutions/public
+    bodies
+  intake_field: entityCountries
+  quote: Zuwendungsempfänger können Unternehmen der gewerblichen Wirtschaft mit Bezügen zum produzierenden
+    Gewerbe, mit Sitz, einer Niederlassung oder Betriebsstätte in Deutschland, sowie staatliche und nicht
+    staatliche Hochschulen, Forschungseinrichtungen, öffentliche Einrichtungen und sonstige Einrichtungen
+    mit Tätigkeitsschwerpunkten im Bereich des Fördergegenstands dieser Förderrichtlinie sein.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/KOPA35C/fahrzeugindustrie-der-zukunft.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-excl-gber-article-1
+  gate_family: G5_use_of_funds
+  requirement: Companies or sectors falling under Article 1(2)-(6) GBER are excluded from funding.
+  value: 'Excluded: GBER Art. 1(2)-(6) sectors/companies'
+  intake_field: none
+  quote: Von der Förderung ausgeschlossen sind Unternehmen bzw. Sektoren in den Fällen des Artikels 1
+    Absatz 2 bis 6 AGVO.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/KOPA35C/fahrzeugindustrie-der-zukunft.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-insolvency
+  gate_family: G3_financial
+  requirement: Companies subject to a filed or opened insolvency proceeding are not eligible to apply.
+  value: 'Excluded: filed/opened insolvency proceedings'
+  intake_field: lossesOverHalfCapital
+  quote: Nicht antragsberechtigt sind Unternehmen, über deren Vermögen ein Insolvenzverfahren beantragt
+    oder eröffnet worden ist.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/KOPA35C/fahrzeugindustrie-der-zukunft.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

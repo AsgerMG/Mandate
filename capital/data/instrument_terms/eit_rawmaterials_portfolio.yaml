@@ -1,0 +1,139 @@
+id: eit_rawmaterials_portfolio
+name: eit_rawmaterials_portfolio
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a start-up developing innovation in the raw materials value
+    chain (exploration, mining, processing, recycling, substitution, circular economy) aiming
+    to become a supplier to the EIT RawMaterials network.
+  value: raw materials value chain start-up
+  intake_field: borrowerModel
+  quote: EIT RawMaterials Accelerator aims to catch and mentor start-ups to rapidly become
+    suppliers to, and perhaps future partners of, the EIT RawMaterials network.
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_accelerator_eligibility_page.html#chunk 1
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Applications must be submitted by the published application deadline for the
+    relevant cohort.
+  value: deadline 08 April 2022, 17:00 CET
+  intake_field: needBy
+  quote: The first cohort is invited to submit applications by  8 April 2022, 17:00 CET .
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_accelerator_eligibility_page.html#chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G4_borrower_model
+  requirement: Programme is structured as a phased accelerator providing supply grant funding
+    across three sequential phases (Explore, Build, Grow).
+  value: grant-based, three-phase (Explore/Build/Grow)
+  intake_field: borrowerModel
+  quote: The programme comprises three phases – Explore, Build and Grow.
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_accelerator_eligibility_page.html#chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: Phase 1 (Explore) funding amount is fixed at EUR 10,000.
+  value: EUR 10,000 for Phase 1
+  intake_field: ticketBand
+  quote: the funding amount for Phase 1 is EUR 10 000, while for Phase 2 and Phase 3 will
+    be a combined amount of EUR 80 000
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_accelerator_eligibility_page.html#chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: Phase 2 and Phase 3 combined funding amount is fixed at EUR 80,000.
+  value: EUR 80,000 combined for Phase 2 and Phase 3
+  intake_field: ticketBand
+  quote: while for Phase 2 and Phase 3 will be a combined amount of EUR 80 000
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_accelerator_eligibility_page.html#chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G5_use_of_funds
+  requirement: 'Funding must be used to progress through defined phase objectives: building
+    proof of concept, validating customer needs/business assumptions, and preparing for market
+    launch.'
+  value: proof of concept, market validation, launch preparation
+  intake_field: developmentStage
+  quote: 'PHASE 1: EXPLORE build proof of concept and discover your market niche (3 months);
+    PHASE 2: BUILD validate customer needs and verify business assumptions while identifying
+    criteria for market entry (6 months); PHASE 3: GROW tailor your business for launch through
+    market entry, raising financing and expansion of your team (6 months).'
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_accelerator_eligibility_page.html#chunk 1
+  verified: llm_cited
+- id: g7
+  gate_family: G1_nexus
+  requirement: Selected start-ups must be part of, or connect to, EIT RawMaterials' local
+    and national ecosystems and the pan-European partner network.
+  value: local/national ecosystem anchoring plus pan-European network access
+  intake_field: entityCountries
+  quote: The support includes individual and group coaching, funding and anchoring start-ups
+    in their local and national ecosystems. At the same time, we open up introductions to
+    the  EIT RawMaterials community  partners on a pan-European level.
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_accelerator_eligibility_page.html#chunk 1
+  verified: llm_cited
+- id: g8
+  gate_family: G2_size_ownership
+  requirement: Instrument targets start-up stage companies (not established large enterprises)
+    operating in raw and advanced materials innovation.
+  value: start-up stage in raw/advanced materials
+  intake_field: developmentStage
+  quote: Explore Europe’s leading start-ups in raw and advanced materials innovation. Each
+    featured company has received funding and tailored support from EIT RawMaterials and forms
+    part of our active equity portfolio.
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_portfolio_startup_2025.pdf#p.4
+  verified: llm_cited
+- id: g9
+  gate_family: G4_borrower_model
+  requirement: Beyond the accelerator grant phases, EIT RawMaterials operates as an equity/impact
+    investor, often co-investing with other investors in portfolio companies.
+  value: equity investment / co-investment model
+  intake_field: borrowerModel
+  quote: We often co-invest with other investors, further strengthening the network and increasing
+    the potential for success.
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_portfolio_startup_2025.pdf#p.4
+  verified: llm_cited
+obligations:
+- requirement: Start-ups receiving support undergo rigorous vetting and assessment for feasibility,
+    safety, risk, and market potential before backing.
+  quote: These ventures undergo rigorous assessments to ensure they meet high standards in
+    sustainability, scalability, and innovation.
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_portfolio_startup_2025.pdf#p.4
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (9/9 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online application via the dedicated EIT RawMaterials Accelerator website by the
+    published deadline for each cohort
+  typical_timeline: 'Programme runs across three phases: Explore (3 months), Build (6 months),
+    Grow (6 months)'
+  quote: 'Application deadline: 08 April 2022 . For more details, please visit the dedicated
+    website.'
+  source:
+    file: eit_rawmaterials_portfolio_startup_2025.pdf
+    locator: eit_rawmaterials_accelerator_eligibility_page.html#chunk 1
+  verified: llm_cited

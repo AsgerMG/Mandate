@@ -1,0 +1,247 @@
+81:export const POOL_LEAVES_PER_CHANNEL = 90;
+=== cap=90 SEED=20260806 2026-08-07T16:02:22Z ===
+corpus=postgres instruments=1076 at 2026-08-07T16:02:24.107Z
+set=__recallSetComposed.json split=holdout seed=20260806  replayed 250
+  in pool                  239/250 (96% +/-2.5)
+  EXACT scheme in top 5    71/250 (28% +/-5.6)
+  same REGIME in top 5     208/250 (83% +/-4.6)   <- the operational number
+  same CHANNEL in top 5    217/250 (87% +/-4.2)
+    mode=profile               n= 196  pool 96%  exact5 27%  regime5 88%
+    mode=project               n=  54  pool 93%  exact5 35%  regime5 67%
+    original join              n= 134  pool 92%  exact5 28%  regime5 78%
+    traced:exact_attribution   n= 116  pool 100%  exact5 29%  regime5 90%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  13  pool 100%  exact5 46%  regime5 46%
+    regime 2-5                 n=  16  pool 88%  exact5 44%  regime5 56%
+    regime 6-20                n=  29  pool 93%  exact5 28%  regime5 41%
+    regime 21-50               n=  58  pool 100%  exact5 33%  regime5 84%
+    regime 51+                 n= 134  pool 95%  exact5 23%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  85  pool 98%  exact5 9%  regime5 80%
+    DE                         n=  54  pool 89%  exact5 30%  regime5 87%
+    SE                         n=  35  pool 97%  exact5 40%  regime5 86%
+    IT                         n=  25  pool 92%  exact5 24%  regime5 92%
+    NL                         n=  18  pool 100%  exact5 50%  regime5 100%
+    GB                         n=  13  pool 100%  exact5 46%  regime5 46%
+    ES                         n=  12  pool 100%  exact5 58%  regime5 92%
+    EE                         n=   4  pool 100%  exact5 25%  regime5 25%
+    DK                         n=   4  pool 100%  exact5 100%  regime5 100%
+=== cap=90 SEED=7 2026-08-07T16:05:15Z ===
+corpus=postgres instruments=1076 at 2026-08-07T16:05:17.516Z
+set=__recallSetComposed.json split=holdout seed=7  replayed 250
+  in pool                  241/250 (96% +/-2.3)
+  EXACT scheme in top 5    83/250 (33% +/-5.8)
+  same REGIME in top 5     212/250 (85% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    219/250 (88% +/-4.1)
+    mode=profile               n= 185  pool 98%  exact5 31%  regime5 89%
+    mode=project               n=  65  pool 92%  exact5 40%  regime5 74%
+    original join              n= 128  pool 93%  exact5 33%  regime5 82%
+    traced:exact_attribution   n= 122  pool 100%  exact5 34%  regime5 88%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  19  pool 100%  exact5 47%  regime5 47%
+    regime 2-5                 n=  14  pool 100%  exact5 50%  regime5 64%
+    regime 6-20                n=  21  pool 76%  exact5 33%  regime5 38%
+    regime 21-50               n=  71  pool 100%  exact5 34%  regime5 89%
+    regime 51+                 n= 125  pool 97%  exact5 29%  regime5 98%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  70  pool 100%  exact5 23%  regime5 81%
+    DE                         n=  51  pool 90%  exact5 31%  regime5 94%
+    SE                         n=  48  pool 100%  exact5 38%  regime5 96%
+    IT                         n=  28  pool 93%  exact5 21%  regime5 89%
+    GB                         n=  19  pool 100%  exact5 47%  regime5 47%
+    NL                         n=  15  pool 93%  exact5 47%  regime5 80%
+    ES                         n=  11  pool 91%  exact5 64%  regime5 91%
+    EE                         n=   4  pool 100%  exact5 0%  regime5 25%
+    DK                         n=   4  pool 100%  exact5 100%  regime5 100%
+=== cap=90 SEED=99 2026-08-07T16:08:02Z ===
+corpus=postgres instruments=1076 at 2026-08-07T16:08:03.942Z
+set=__recallSetComposed.json split=holdout seed=99  replayed 250
+  in pool                  242/250 (97% +/-2.2)
+  EXACT scheme in top 5    75/250 (30% +/-5.7)
+  same REGIME in top 5     212/250 (85% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    218/250 (87% +/-4.1)
+    mode=profile               n= 185  pool 99%  exact5 29%  regime5 90%
+    mode=project               n=  65  pool 91%  exact5 32%  regime5 69%
+    original join              n= 118  pool 93%  exact5 29%  regime5 81%
+    traced:exact_attribution   n= 132  pool 100%  exact5 31%  regime5 89%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  15  pool 100%  exact5 27%  regime5 27%
+    regime 2-5                 n=   9  pool 78%  exact5 33%  regime5 44%
+    regime 6-20                n=  31  pool 87%  exact5 29%  regime5 61%
+    regime 21-50               n=  71  pool 100%  exact5 39%  regime5 87%
+    regime 51+                 n= 124  pool 98%  exact5 25%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  89  pool 99%  exact5 22%  regime5 83%
+    SE                         n=  48  pool 100%  exact5 42%  regime5 94%
+    DE                         n=  46  pool 96%  exact5 35%  regime5 98%
+    IT                         n=  22  pool 95%  exact5 14%  regime5 95%
+    GB                         n=  15  pool 100%  exact5 27%  regime5 27%
+    ES                         n=  13  pool 69%  exact5 23%  regime5 69%
+    NL                         n=  11  pool 100%  exact5 55%  regime5 100%
+    DK                         n=   4  pool 100%  exact5 75%  regime5 75%
+    EE                         n=   2  pool 100%  exact5 0%  regime5 0%
+81:export const POOL_LEAVES_PER_CHANNEL = 250;
+=== cap=250 SEED=20260806 2026-08-07T16:10:47Z ===
+corpus=postgres instruments=1076 at 2026-08-07T16:10:49.134Z
+set=__recallSetComposed.json split=holdout seed=20260806  replayed 250
+  in pool                  239/250 (96% +/-2.5)
+  EXACT scheme in top 5    71/250 (28% +/-5.6)
+  same REGIME in top 5     208/250 (83% +/-4.6)   <- the operational number
+  same CHANNEL in top 5    217/250 (87% +/-4.2)
+    mode=profile               n= 196  pool 96%  exact5 27%  regime5 88%
+    mode=project               n=  54  pool 93%  exact5 35%  regime5 67%
+    original join              n= 134  pool 92%  exact5 28%  regime5 78%
+    traced:exact_attribution   n= 116  pool 100%  exact5 29%  regime5 90%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  13  pool 100%  exact5 46%  regime5 46%
+    regime 2-5                 n=  16  pool 88%  exact5 44%  regime5 56%
+    regime 6-20                n=  29  pool 93%  exact5 28%  regime5 41%
+    regime 21-50               n=  58  pool 100%  exact5 33%  regime5 84%
+    regime 51+                 n= 134  pool 95%  exact5 23%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  85  pool 98%  exact5 9%  regime5 80%
+    DE                         n=  54  pool 89%  exact5 30%  regime5 87%
+    SE                         n=  35  pool 97%  exact5 40%  regime5 86%
+    IT                         n=  25  pool 92%  exact5 24%  regime5 92%
+    NL                         n=  18  pool 100%  exact5 50%  regime5 100%
+    GB                         n=  13  pool 100%  exact5 46%  regime5 46%
+    ES                         n=  12  pool 100%  exact5 58%  regime5 92%
+    EE                         n=   4  pool 100%  exact5 25%  regime5 25%
+    DK                         n=   4  pool 100%  exact5 100%  regime5 100%
+=== cap=250 SEED=7 2026-08-07T16:13:31Z ===
+corpus=postgres instruments=1076 at 2026-08-07T16:13:32.440Z
+set=__recallSetComposed.json split=holdout seed=7  replayed 250
+  in pool                  241/250 (96% +/-2.3)
+  EXACT scheme in top 5    83/250 (33% +/-5.8)
+  same REGIME in top 5     212/250 (85% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    219/250 (88% +/-4.1)
+    mode=profile               n= 185  pool 98%  exact5 31%  regime5 89%
+    mode=project               n=  65  pool 92%  exact5 40%  regime5 74%
+    original join              n= 128  pool 93%  exact5 33%  regime5 82%
+    traced:exact_attribution   n= 122  pool 100%  exact5 34%  regime5 88%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  19  pool 100%  exact5 47%  regime5 47%
+    regime 2-5                 n=  14  pool 100%  exact5 50%  regime5 64%
+    regime 6-20                n=  21  pool 76%  exact5 33%  regime5 38%
+    regime 21-50               n=  71  pool 100%  exact5 34%  regime5 89%
+    regime 51+                 n= 125  pool 97%  exact5 29%  regime5 98%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  70  pool 100%  exact5 23%  regime5 81%
+    DE                         n=  51  pool 90%  exact5 31%  regime5 94%
+    SE                         n=  48  pool 100%  exact5 38%  regime5 96%
+    IT                         n=  28  pool 93%  exact5 21%  regime5 89%
+    GB                         n=  19  pool 100%  exact5 47%  regime5 47%
+    NL                         n=  15  pool 93%  exact5 47%  regime5 80%
+    ES                         n=  11  pool 91%  exact5 64%  regime5 91%
+    EE                         n=   4  pool 100%  exact5 0%  regime5 25%
+    DK                         n=   4  pool 100%  exact5 100%  regime5 100%
+=== cap=250 SEED=99 2026-08-07T16:16:17Z ===
+corpus=postgres instruments=1076 at 2026-08-07T16:16:18.606Z
+set=__recallSetComposed.json split=holdout seed=99  replayed 250
+  in pool                  242/250 (97% +/-2.2)
+  EXACT scheme in top 5    75/250 (30% +/-5.7)
+  same REGIME in top 5     212/250 (85% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    218/250 (87% +/-4.1)
+    mode=profile               n= 185  pool 99%  exact5 29%  regime5 90%
+    mode=project               n=  65  pool 91%  exact5 32%  regime5 69%
+    original join              n= 118  pool 93%  exact5 29%  regime5 81%
+    traced:exact_attribution   n= 132  pool 100%  exact5 31%  regime5 89%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  15  pool 100%  exact5 27%  regime5 27%
+    regime 2-5                 n=   9  pool 78%  exact5 33%  regime5 44%
+    regime 6-20                n=  31  pool 87%  exact5 29%  regime5 61%
+    regime 21-50               n=  71  pool 100%  exact5 39%  regime5 87%
+    regime 51+                 n= 124  pool 98%  exact5 25%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  89  pool 99%  exact5 22%  regime5 83%
+    SE                         n=  48  pool 100%  exact5 42%  regime5 94%
+    DE                         n=  46  pool 96%  exact5 35%  regime5 98%
+    IT                         n=  22  pool 95%  exact5 14%  regime5 95%
+    GB                         n=  15  pool 100%  exact5 27%  regime5 27%
+    ES                         n=  13  pool 69%  exact5 23%  regime5 69%
+    NL                         n=  11  pool 100%  exact5 55%  regime5 100%
+    DK                         n=   4  pool 100%  exact5 75%  regime5 75%
+    EE                         n=   2  pool 100%  exact5 0%  regime5 0%
+81:export const POOL_LEAVES_PER_CHANNEL = 103;
+=== cap=103 SEED=20260806 2026-08-07T16:19:04Z ===
+corpus=postgres instruments=1076 at 2026-08-07T16:19:06.834Z
+set=__recallSetComposed.json split=holdout seed=20260806  replayed 250
+  in pool                  239/250 (96% +/-2.5)
+  EXACT scheme in top 5    71/250 (28% +/-5.6)
+  same REGIME in top 5     208/250 (83% +/-4.6)   <- the operational number
+  same CHANNEL in top 5    217/250 (87% +/-4.2)
+    mode=profile               n= 196  pool 96%  exact5 27%  regime5 88%
+    mode=project               n=  54  pool 93%  exact5 35%  regime5 67%
+    original join              n= 134  pool 92%  exact5 28%  regime5 78%
+    traced:exact_attribution   n= 116  pool 100%  exact5 29%  regime5 90%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  13  pool 100%  exact5 46%  regime5 46%
+    regime 2-5                 n=  16  pool 88%  exact5 44%  regime5 56%
+    regime 6-20                n=  29  pool 93%  exact5 28%  regime5 41%
+    regime 21-50               n=  58  pool 100%  exact5 33%  regime5 84%
+    regime 51+                 n= 134  pool 95%  exact5 23%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  85  pool 98%  exact5 9%  regime5 80%
+    DE                         n=  54  pool 89%  exact5 30%  regime5 87%
+    SE                         n=  35  pool 97%  exact5 40%  regime5 86%
+    IT                         n=  25  pool 92%  exact5 24%  regime5 92%
+    NL                         n=  18  pool 100%  exact5 50%  regime5 100%
+    GB                         n=  13  pool 100%  exact5 46%  regime5 46%
+    ES                         n=  12  pool 100%  exact5 58%  regime5 92%
+    EE                         n=   4  pool 100%  exact5 25%  regime5 25%
+    DK                         n=   4  pool 100%  exact5 100%  regime5 100%
+=== cap=103 SEED=7 2026-08-07T16:21:47Z ===
+corpus=postgres instruments=1084 at 2026-08-07T16:21:49.131Z
+set=__recallSetComposed.json split=holdout seed=7  replayed 250
+  in pool                  241/250 (96% +/-2.3)
+  EXACT scheme in top 5    83/250 (33% +/-5.8)
+  same REGIME in top 5     212/250 (85% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    219/250 (88% +/-4.1)
+    mode=profile               n= 185  pool 98%  exact5 31%  regime5 89%
+    mode=project               n=  65  pool 92%  exact5 40%  regime5 74%
+    original join              n= 128  pool 93%  exact5 33%  regime5 82%
+    traced:exact_attribution   n= 122  pool 100%  exact5 34%  regime5 88%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  19  pool 100%  exact5 47%  regime5 47%
+    regime 2-5                 n=  14  pool 100%  exact5 50%  regime5 64%
+    regime 6-20                n=  21  pool 76%  exact5 33%  regime5 38%
+    regime 21-50               n=  71  pool 100%  exact5 34%  regime5 89%
+    regime 51+                 n= 125  pool 97%  exact5 29%  regime5 98%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  70  pool 100%  exact5 23%  regime5 81%
+    DE                         n=  51  pool 90%  exact5 31%  regime5 94%
+    SE                         n=  48  pool 100%  exact5 38%  regime5 96%
+    IT                         n=  28  pool 93%  exact5 21%  regime5 89%
+    GB                         n=  19  pool 100%  exact5 47%  regime5 47%
+    NL                         n=  15  pool 93%  exact5 47%  regime5 80%
+    ES                         n=  11  pool 91%  exact5 64%  regime5 91%
+    EE                         n=   4  pool 100%  exact5 0%  regime5 25%
+    DK                         n=   4  pool 100%  exact5 100%  regime5 100%
+=== cap=103 SEED=99 2026-08-07T16:24:33Z ===
+corpus=postgres instruments=1084 at 2026-08-07T16:24:34.785Z
+set=__recallSetComposed.json split=holdout seed=99  replayed 250
+  in pool                  242/250 (97% +/-2.2)
+  EXACT scheme in top 5    75/250 (30% +/-5.7)
+  same REGIME in top 5     212/250 (85% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    218/250 (87% +/-4.1)
+    mode=profile               n= 185  pool 99%  exact5 29%  regime5 90%
+    mode=project               n=  65  pool 91%  exact5 32%  regime5 69%
+    original join              n= 118  pool 93%  exact5 29%  regime5 81%
+    traced:exact_attribution   n= 132  pool 100%  exact5 31%  regime5 89%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  15  pool 100%  exact5 27%  regime5 27%
+    regime 2-5                 n=   9  pool 78%  exact5 33%  regime5 44%
+    regime 6-20                n=  31  pool 87%  exact5 29%  regime5 61%
+    regime 21-50               n=  71  pool 100%  exact5 39%  regime5 87%
+    regime 51+                 n= 124  pool 98%  exact5 25%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  89  pool 99%  exact5 22%  regime5 83%
+    SE                         n=  48  pool 100%  exact5 42%  regime5 94%
+    DE                         n=  46  pool 96%  exact5 35%  regime5 98%
+    IT                         n=  22  pool 95%  exact5 14%  regime5 95%
+    GB                         n=  15  pool 100%  exact5 27%  regime5 27%
+    ES                         n=  13  pool 69%  exact5 23%  regime5 69%
+    NL                         n=  11  pool 100%  exact5 55%  regime5 100%
+    DK                         n=   4  pool 100%  exact5 75%  regime5 75%
+    EE                         n=   2  pool 100%  exact5 0%  regime5 0%
+ALLDONE 2026-08-07T16:27:18Z

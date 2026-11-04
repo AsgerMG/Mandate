@@ -1,0 +1,52 @@
+(node:16515) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T21:43:32.908Z
+ranker: all 245 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 250
+published cap 6, writer cap 7, shipping arm ORDER_ARM=fit
+
+── MEMO@k, BOTH ORDERS OVER THE SAME POOL ──
+  k     fit                  pool                 verdict              
+  1     14/250 (5.6% +/-2.9) 16/250 (6.4% +/-3.0) 16/250 (6.4% +/-3.0) 
+  3     42/250 (16.8% +/-4.6)47/250 (18.8% +/-4.8)44/250 (17.6% +/-4.7)
+  5     55/250 (22.0% +/-5.1)66/250 (26.4% +/-5.5)63/250 (25.2% +/-5.4)
+  6     60/250 (24.0% +/-5.3)72/250 (28.8% +/-5.6)69/250 (27.6% +/-5.5)  <- PUBLISHED
+  7     65/250 (26.0% +/-5.4)79/250 (31.6% +/-5.8)76/250 (30.4% +/-5.7)
+
+  MEMO@6: pool - fit = +4.8 pts (12 pairs)
+    the fit re-sort moves the won leaf OUT of the first 6 25 times, INTO it 13 times, against pool
+
+  MEMO@6: verdict - fit = +3.6 pts (9 pairs)
+    the fit re-sort moves the won leaf OUT of the first 6 21 times, INTO it 12 times, against verdict
+
+── WHERE THE DIFFERENCE LANDS ──
+  21 pairs across 14 regimes and 11 countries
+    satr_de_rnd                                        4
+    vinnova_grant                                      3
+    ademe_aid                                          3
+    sudop_rd_centers                                   1
+    horizon_eu_pillar_ii                               1
+    eis_starditoetus                                   1
+    tacr_tl                                            1
+    altum_anm_elektroauto_garantij                     1
+  largest single regime holds 4 of 21
+
+── OFF-COUNTRY ROWS IN THE PUBLISHED 6 (lower is better) ──
+  fit    0 row(s) across 0/250 founders
+  pool   0 row(s) across 0/250 founders
+  verdict 0 row(s) across 0/250 founders
+
+── WHAT THE PUBLISHED 6 ARE MADE OF, by encoded verdict ──
+  fit    open 1500 (100.0%)
+  pool   open 1431 (95.4%)   one_blocker 47 (3.1%)   unknown 22 (1.5%)
+  verdict open 1500 (100.0%)
+
+wrote /tmp/wsct_order_tune.json

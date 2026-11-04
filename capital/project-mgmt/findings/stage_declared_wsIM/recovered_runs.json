@@ -1,0 +1,1086 @@
+[
+ {
+  "source": "website/frontend/memo-bench/results.json",
+  "sourceSha256": "18f6edf84c5bc0356b1b9df11178a607278d7c7bbb3fb71f003ff77ae9c9abf7",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Neura Robotics",
+  "country": "Germany",
+  "generatedAt": "2026-07-26T20:14:40.620Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "Wandelbots GmbH",
+   "WANDERCRAFT SAS"
+  ],
+  "publishedChannels": [
+   "ipcei",
+   "state_aid_satr",
+   "national_dev_banks",
+   "innovation_fund",
+   "innovation_fund"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/results.json",
+  "sourceSha256": "18f6edf84c5bc0356b1b9df11178a607278d7c7bbb3fb71f003ff77ae9c9abf7",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Silvr",
+  "country": "France",
+  "generatedAt": "2026-07-26T20:15:26.701Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "FLOWPAY s.r.o.",
+   "DEFACTO",
+   "KARMEN"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eic",
+   "national_dev_banks",
+   "eic",
+   "state_aid_satr"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/results.json",
+  "sourceSha256": "18f6edf84c5bc0356b1b9df11178a607278d7c7bbb3fb71f003ff77ae9c9abf7",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "SMART Photonics",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-26T20:15:30.576Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "chips_ju",
+   "horizon_eu_pillar_ii",
+   "eic"
+  ],
+  "comparableFirms": [
+   "EFFECT Photonics B.V."
+  ],
+  "publishedChannels": [
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii",
+   "chips_ju",
+   "state_aid_satr",
+   "eib"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/results.json",
+  "sourceSha256": "18f6edf84c5bc0356b1b9df11178a607278d7c7bbb3fb71f003ff77ae9c9abf7",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "bunq",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-26T20:15:37.946Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "innovation_fund",
+   "ipcei",
+   "ipcei",
+   "innovation_fund"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/results.json",
+  "sourceSha256": "18f6edf84c5bc0356b1b9df11178a607278d7c7bbb3fb71f003ff77ae9c9abf7",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Photoroom",
+  "country": "France",
+  "generatedAt": "2026-07-26T20:16:05.161Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "MISTRAL AI",
+   "FLEXAI",
+   "VEESION"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eic",
+   "eic",
+   "state_aid_satr"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785097722809.json",
+  "sourceSha256": "d5136d052143ac094c0e3ce3fc789add986a91bec101b0699f117b50df88c2ff",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Aleph Alpha",
+  "country": "Germany",
+  "generatedAt": "2026-07-26T20:28:06.521Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "MISTRAL AI",
+   "LIGHTON"
+  ],
+  "publishedChannels": [
+   "ipcei",
+   "state_aid_satr",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785098723643.json",
+  "sourceSha256": "dc212be8bd988bce7e50addd234521aaf7765a24dccc4b92215b357b7371f785",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Nortal",
+  "country": "Estonia",
+  "generatedAt": "2026-07-26T20:43:51.231Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [
+   "CYBERNETICA AS",
+   "SOPRA STERIA GROUP",
+   "GUARDTIME OU",
+   "ACTIA AUTOMOTIVE",
+   "AT S AUSTRIA TECHNOLOGIE SYSTEMTECHNIK AKTIENGESELLSCHAFT"
+  ],
+  "publishedChannels": [
+   "horizon_eu_pillar_ii",
+   "national_dev_banks",
+   "horizon_eu_partnership",
+   "chips_ju",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785098723643.json",
+  "sourceSha256": "dc212be8bd988bce7e50addd234521aaf7765a24dccc4b92215b357b7371f785",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "sennder",
+  "country": "Germany",
+  "generatedAt": "2026-07-26T20:45:23.642Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "national_dev_banks",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785098954690.json",
+  "sourceSha256": "554fc30ac47a081dc27b35355221a14845ffe0e6ea8702a0c2df103aca0de569",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Nebius",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-26T20:48:08.428Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "ipcei",
+   "ipcei"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785098954690.json",
+  "sourceSha256": "554fc30ac47a081dc27b35355221a14845ffe0e6ea8702a0c2df103aca0de569",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Corti",
+  "country": "Denmark",
+  "generatedAt": "2026-07-26T20:49:14.682Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "national_dev_banks"
+  ],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "eic",
+   "eic"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785100782896.json",
+  "sourceSha256": "b91a2937211a94cff69819505cb22a57336e9368b1388c09fcbe0b922a81966e",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "eAgronom",
+  "country": "Estonia",
+  "generatedAt": "2026-07-26T21:19:42.708Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "AGRICARBON UK LIMITED",
+   "Klim GmbH"
+  ],
+  "publishedChannels": [
+   "horizon_eu_pillar_ii",
+   "state_aid_satr",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785100782896.json",
+  "sourceSha256": "b91a2937211a94cff69819505cb22a57336e9368b1388c09fcbe0b922a81966e",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "BioNTech",
+  "country": "Germany",
+  "generatedAt": "2026-07-26T21:19:42.896Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "horizon_eu_partnership"
+  ],
+  "comparableFirms": [
+   "VALNEVA"
+  ],
+  "publishedChannels": [
+   "innovation_fund",
+   "ipcei",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785101028134.json",
+  "sourceSha256": "5c40cddb4e917e0e657ef3f740585ab9d45fb587a8e1db9af8f4105ecf69c4e5",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "BioNTech",
+  "country": "Germany",
+  "generatedAt": "2026-07-26T21:23:32.466Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "horizon_eu_partnership"
+  ],
+  "comparableFirms": [
+   "VALNEVA"
+  ],
+  "publishedChannels": [
+   "ipcei",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785101028134.json",
+  "sourceSha256": "5c40cddb4e917e0e657ef3f740585ab9d45fb587a8e1db9af8f4105ecf69c4e5",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "eAgronom",
+  "country": "Estonia",
+  "generatedAt": "2026-07-26T21:23:48.133Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "stenon GmbH",
+   "Carbone Farmers"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785101278109.json",
+  "sourceSha256": "579707c5460a82158aeed86502feab009118f580409c29caaa8df2cce9641911",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "BioNTech",
+  "country": "Germany",
+  "generatedAt": "2026-07-26T21:27:01.814Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "horizon_eu_partnership"
+  ],
+  "comparableFirms": [
+   "VALNEVA"
+  ],
+  "publishedChannels": [
+   "ipcei",
+   "innovation_fund",
+   "national_dev_banks",
+   "innovation_fund",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785101278109.json",
+  "sourceSha256": "579707c5460a82158aeed86502feab009118f580409c29caaa8df2cce9641911",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "eAgronom",
+  "country": "Estonia",
+  "generatedAt": "2026-07-26T21:27:58.108Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "Klim GmbH",
+   "CroBio",
+   "AGRICARBON UK LIMITED"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "national_dev_banks",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_partnership"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785102910745.json",
+  "sourceSha256": "a5ab24d4f5f7d52adb99ba72591c4d9d42f665e79374e01a05149ba604eb4f40",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "SMART Photonics",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-26T21:54:36.100Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "chips_ju",
+   "horizon_eu_pillar_ii",
+   "eic"
+  ],
+  "comparableFirms": [
+   "EFFECT Photonics B.V.",
+   "VLC PHOTONICS S.L.",
+   "LIONIX INTERNATIONAL BV"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "chips_ju",
+   "ipcei",
+   "horizon_eu_pillar_ii",
+   "innovation_fund"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785102910745.json",
+  "sourceSha256": "a5ab24d4f5f7d52adb99ba72591c4d9d42f665e79374e01a05149ba604eb4f40",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Neura Robotics",
+  "country": "Germany",
+  "generatedAt": "2026-07-26T21:55:10.745Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "WANDERCRAFT SAS"
+  ],
+  "publishedChannels": [
+   "national_dev_banks",
+   "horizon_eu_pillar_ii",
+   "innovation_fund",
+   "national_dev_banks",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785103345385.json",
+  "sourceSha256": "5dbadbcea163fedd3c8db7a1d6c65517e40383a4cff89de117519e944dc57b3c",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Silvr",
+  "country": "France",
+  "generatedAt": "2026-07-26T22:01:15.368Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "re:cap Technologies GmbH",
+   "KARMEN"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "national_dev_banks",
+   "eib",
+   "state_aid_satr",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785177723779.json",
+  "sourceSha256": "20b9e6bad46427657e3fe449d68e6ddc2a066a83a9024a3d338852936dc30bce",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "bunq",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-27T18:42:03.773Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785177937660.json",
+  "sourceSha256": "9c0e17b1bbaccc9a93e842a93b2e22ce014a7465b573b42f3b35655e4614eb00",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Aleph Alpha",
+  "country": "Germany",
+  "generatedAt": "2026-07-27T18:43:45.941Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "MISTRAL AI",
+   "LIGHTON"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eib",
+   "ipcei",
+   "ipcei"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785177937660.json",
+  "sourceSha256": "9c0e17b1bbaccc9a93e842a93b2e22ce014a7465b573b42f3b35655e4614eb00",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Photoroom",
+  "country": "France",
+  "generatedAt": "2026-07-27T18:45:37.656Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "state_aid_satr",
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "eic",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785178215904.json",
+  "sourceSha256": "18cfcda2fb3343a7bd5eae5ca79e61a582564f9b8cd3f87bc977875fea07f83c",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Nortal",
+  "country": "Estonia",
+  "generatedAt": "2026-07-27T18:49:27.149Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "eic",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_partnership"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785178215904.json",
+  "sourceSha256": "18cfcda2fb3343a7bd5eae5ca79e61a582564f9b8cd3f87bc977875fea07f83c",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "sennder",
+  "country": "Germany",
+  "generatedAt": "2026-07-27T18:50:15.904Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [
+   "SHIPPEO",
+   "SUR - TRANS ANNA SUROWSKA",
+   "TIMOCOM GmbH"
+  ],
+  "publishedChannels": [
+   "national_dev_banks",
+   "state_aid_satr",
+   "national_dev_banks",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785178828408.json",
+  "sourceSha256": "8f13fb42965f70462d3382656ee4bfa74fc3863042fd87cd71b37d83b2ea5b9f",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Nebius",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-27T18:59:52.753Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [
+   "MISTRAL AI"
+  ],
+  "publishedChannels": [
+   "ipcei",
+   "innovation_fund",
+   "national_dev_banks",
+   "ipcei"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785178828408.json",
+  "sourceSha256": "8f13fb42965f70462d3382656ee4bfa74fc3863042fd87cd71b37d83b2ea5b9f",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Corti",
+  "country": "Denmark",
+  "generatedAt": "2026-07-27T19:00:28.407Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "NABLA TECHNOLOGIES",
+   "Ada Health GmbH"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eic",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785179079365.json",
+  "sourceSha256": "8271a8691654946ead25f0200a55815a61220e576ba0f3238320254a468e4d2a",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Nebius",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-27T19:03:56.180Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "ipcei",
+   "innovation_fund",
+   "ipcei"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785179079365.json",
+  "sourceSha256": "8271a8691654946ead25f0200a55815a61220e576ba0f3238320254a468e4d2a",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Corti",
+  "country": "Denmark",
+  "generatedAt": "2026-07-27T19:04:39.365Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "NABLA TECHNOLOGIES",
+   "Ada Health GmbH"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eic",
+   "eic"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785179359653.json",
+  "sourceSha256": "245d44be05f42ec7504b5014f162443f6528f427e02770663b1494b88d681a6b",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Corti",
+  "country": "Denmark",
+  "generatedAt": "2026-07-27T19:08:35.676Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "NABLA TECHNOLOGIES",
+   "Ada Health GmbH"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eic",
+   "horizon_eu_partnership",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785179359653.json",
+  "sourceSha256": "245d44be05f42ec7504b5014f162443f6528f427e02770663b1494b88d681a6b",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Nebius",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-27T19:09:19.653Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "ipcei",
+   "innovation_fund",
+   "national_dev_banks",
+   "ipcei"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785180353024.json",
+  "sourceSha256": "5da9c48b27ba83ebe8a2d0fab2b3f726ae7ce0cd309bea03b52309728f514dbb",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Photoroom",
+  "country": "France",
+  "generatedAt": "2026-07-27T19:25:50.935Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "MISTRAL AI",
+   "Black Forest Medical GmbH"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eic",
+   "state_aid_satr"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785180353024.json",
+  "sourceSha256": "5da9c48b27ba83ebe8a2d0fab2b3f726ae7ce0cd309bea03b52309728f514dbb",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "sennder",
+  "country": "Germany",
+  "generatedAt": "2026-07-27T19:25:53.024Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [
+   "FRETLINK"
+  ],
+  "publishedChannels": [
+   "national_dev_banks",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785181147341.json",
+  "sourceSha256": "de5c36290f9d39854d49dadce708dd92e25ee9f953f9736cc374282fdde1ddd1",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "sennder",
+  "country": "Germany",
+  "generatedAt": "2026-07-27T19:39:02.105Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [
+   "FRETLINK"
+  ],
+  "publishedChannels": [
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785181147341.json",
+  "sourceSha256": "de5c36290f9d39854d49dadce708dd92e25ee9f953f9736cc374282fdde1ddd1",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Neura Robotics",
+  "country": "Germany",
+  "generatedAt": "2026-07-27T19:39:07.340Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "ipcei",
+   "innovation_fund",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785182551127.json",
+  "sourceSha256": "88aff3a561dbbc315d7f429b68035f9bdce01d667c1c235a615799bc50b75670",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "BioNTech",
+  "country": "Germany",
+  "generatedAt": "2026-07-27T20:02:05.373Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "horizon_eu_partnership"
+  ],
+  "comparableFirms": [
+   "VALNEVA"
+  ],
+  "publishedChannels": [
+   "ipcei",
+   "innovation_fund",
+   "innovation_fund",
+   "national_dev_banks",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785182551127.json",
+  "sourceSha256": "88aff3a561dbbc315d7f429b68035f9bdce01d667c1c235a615799bc50b75670",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "eAgronom",
+  "country": "Estonia",
+  "generatedAt": "2026-07-27T20:02:31.126Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "Klim GmbH"
+  ],
+  "publishedChannels": [
+   "national_dev_banks",
+   "state_aid_satr"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785184787453.json",
+  "sourceSha256": "9de97f87cf863590e4b1a88fc1917ccc02494ef0d86c70b1034bde28749ea6d5",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Silvr",
+  "country": "France",
+  "generatedAt": "2026-07-27T20:39:45.561Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "re:cap Technologies GmbH",
+   "DEFACTO",
+   "KARMEN"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "national_dev_banks",
+   "eic",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785184787453.json",
+  "sourceSha256": "9de97f87cf863590e4b1a88fc1917ccc02494ef0d86c70b1034bde28749ea6d5",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "eAgronom",
+  "country": "Estonia",
+  "generatedAt": "2026-07-27T20:39:47.453Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "AGRICARBON UK LIMITED"
+  ],
+  "publishedChannels": [
+   "national_dev_banks",
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785186957233.json",
+  "sourceSha256": "dd056ac35cf1a409da13e01c89005ef606d8533485333da594a95d100284e32f",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "SMART Photonics",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-27T21:15:54.045Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "chips_ju",
+   "horizon_eu_pillar_ii",
+   "eic"
+  ],
+  "comparableFirms": [
+   "LIONIX INTERNATIONAL BV"
+  ],
+  "publishedChannels": [
+   "chips_ju",
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_partnership",
+   "eib"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785186957233.json",
+  "sourceSha256": "dd056ac35cf1a409da13e01c89005ef606d8533485333da594a95d100284e32f",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "bunq",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-27T21:15:57.232Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii",
+   "ipcei"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785187684153.json",
+  "sourceSha256": "84dd2e085ef15aba423179b49be88a151ef87b6c5f7f96ce62f6ff8eb4c0db9a",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Nortal",
+  "country": "Estonia",
+  "generatedAt": "2026-07-27T21:28:02.492Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [
+   "CYBERNETICA AS",
+   "GUARDTIME OU"
+  ],
+  "publishedChannels": [
+   "national_dev_banks",
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_partnership"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785187684153.json",
+  "sourceSha256": "84dd2e085ef15aba423179b49be88a151ef87b6c5f7f96ce62f6ff8eb4c0db9a",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Aleph Alpha",
+  "country": "Germany",
+  "generatedAt": "2026-07-27T21:28:04.152Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "MISTRAL AI",
+   "LIGHTON"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eib",
+   "ipcei",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785187922188.json",
+  "sourceSha256": "7555abd7e0bec526fa72ccf47fe491af666f9369a7d7caaeae1ad85679ff3c89",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "eAgronom",
+  "country": "Estonia",
+  "generatedAt": "2026-07-27T21:32:02.184Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "AGRICARBON UK LIMITED"
+  ],
+  "publishedChannels": [
+   "national_dev_banks",
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785189774586.json",
+  "sourceSha256": "2e3baa83c0bcb8f14876c802a53ee15cb598838abd1016be2d4187912fe89147",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Nebius",
+  "country": "Netherlands",
+  "generatedAt": "2026-07-27T22:02:31.294Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "ipcei",
+   "innovation_fund",
+   "ipcei"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785189774586.json",
+  "sourceSha256": "2e3baa83c0bcb8f14876c802a53ee15cb598838abd1016be2d4187912fe89147",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Corti",
+  "country": "Denmark",
+  "generatedAt": "2026-07-27T22:02:54.583Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "national_dev_banks"
+  ],
+  "comparableFirms": [
+   "NABLA TECHNOLOGIES",
+   "Gosta Labs Oy",
+   "Ada Health GmbH"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eic",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785276953599.json",
+  "sourceSha256": "cf12e4ad4727607de0bb9d369d741f839f3b24ea906b721657f4835aa5642757",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Neura Robotics",
+  "country": "Germany",
+  "generatedAt": "2026-07-28T22:15:52.901Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "COMAU"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii",
+   "innovation_fund",
+   "ipcei"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785276953599.json",
+  "sourceSha256": "cf12e4ad4727607de0bb9d369d741f839f3b24ea906b721657f4835aa5642757",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "Photoroom",
+  "country": "France",
+  "generatedAt": "2026-07-28T22:15:53.598Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "ARTEFACT"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "eic",
+   "eic",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785354430744.json",
+  "sourceSha256": "c281d3c4ac5a0701abaf2fd971fa38435bd226dd5072a259ac68545ff0a4ee16",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "BioNTech",
+  "country": "Germany",
+  "generatedAt": "2026-07-29T19:45:51.254Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "state_aid_satr",
+   "horizon_eu_partnership"
+  ],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "innovation_fund",
+   "ipcei",
+   "innovation_fund",
+   "national_dev_banks"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785354430744.json",
+  "sourceSha256": "c281d3c4ac5a0701abaf2fd971fa38435bd226dd5072a259ac68545ff0a4ee16",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "sennder",
+  "country": "Germany",
+  "generatedAt": "2026-07-29T19:47:10.742Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [],
+  "publishedChannels": [
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii"
+  ]
+ },
+ {
+  "source": "website/frontend/memo-bench/run-1785429876822.json",
+  "sourceSha256": "51845601ffb59d30fe090fa261abc9a972a832e454c3f57f59e8906db0eec515",
+  "harness": "memo_bench (runIntelligence, live web search)",
+  "company": "sennder",
+  "country": "Germany",
+  "generatedAt": "2026-07-30T16:44:36.812Z",
+  "selfMatched": false,
+  "selfChannels": [],
+  "comparableFirms": [
+   "TIMOCOM GmbH",
+   "TRANSPOREON"
+  ],
+  "publishedChannels": [
+   "state_aid_satr",
+   "state_aid_satr",
+   "horizon_eu_pillar_ii",
+   "horizon_eu_pillar_ii",
+   "eic"
+  ]
+ },
+ {
+  "source": "git 85de7c2c^:project-mgmt/findings/first_test_wsDQ/cisteo_medical/run_off.json (deleted in 85de7c2c)",
+  "sourceSha256": "fce4d58cd3ca3a41b3b6f621c223a2d7acec5870f217b198aba052575d394c8c",
+  "harness": "_wsdq_run (runIntelligence, live web search)",
+  "company": "Cisteo MEDICAL",
+  "country": "FR",
+  "generatedAt": "2026-08-11T06:37:03.021Z",
+  "selfMatched": true,
+  "selfChannels": [
+   "eic",
+   "state_aid_satr"
+  ],
+  "comparableFirms": [
+   "FINEHEART",
+   "CORWAVE",
+   "WANDERCRAFT SAS",
+   "TISSIUM SA"
+  ],
+  "publishedChannels": [
+   "eic",
+   "eic",
+   "national_dev_banks",
+   "state_aid_satr",
+   "state_aid_satr",
+   "state_aid_satr",
+   "state_aid_satr"
+  ],
+  "statusEvents": [
+   {
+    "type": "status",
+    "step": "discovering",
+    "detail": "Searching the record and the open web for comparable companies"
+   },
+   {
+    "type": "status",
+    "step": "querying_db",
+    "detail": "Found 5 candidates; matching against the funding record"
+   },
+   {
+    "type": "status",
+    "step": "generating",
+    "detail": "Assembling evidence: institutions, comparables, current agenda"
+   },
+   {
+    "type": "partial"
+   },
+   {
+    "type": "status",
+    "step": "done"
+   }
+  ],
+  "costEur": 0.23900312,
+  "costCalls": 2
+ }
+]

@@ -1,0 +1,120 @@
+id: satr_lv_rnd__sa_116749__centrala_finansu_un_ligumu_agentura
+name: Eiropas Savienības kohēzijas politikas programmas 2021.–2027. gadam 1.2.1. specifiskā atbalsta mērķa
+  "Pētniecības un inovāciju kapacitātes stiprināšana un progresīvu tehnoloģiju ieviešana uzņēmumiem" 1.2.1.1.
+  pasākuma "Atbalsts jaunu produktu attīstībai un internacionalizācijai" trešās kārtas īstenošanas noteikumi
+administering_body: see source document
+country: LV
+capital_type: unknown
+status: draft
+gates:
+- id: g2-target-group
+  gate_family: G2_size_ownership
+  requirement: The eligible target group is micro/small/medium enterprises, small mid-cap companies, research
+    and knowledge-dissemination organisations, and mid-cap or large operators (the latter only if micro/small/medium
+    enterprises are engaged for the R&I activities).
+  value: MSME / small mid-cap / research org, or large operator with MSME engaged
+  intake_field: turnoverBand
+  quote: komersanti, kas atbilst sīkā (mikro), mazā un vidējā komersanta statusam, mazas vidējas kapitalizācijas
+    sabiedrības, pētniecības un zināšanu izplatīšanas organizācijas, kā arī vidējas kapitalizācijas sabiedrības
+    un lielie saimnieciskās darbības veicēji ar nosacījumu, ka pētniecības un inovāciju aktivitāšu īstenošanai
+    tiek piesaistīti sīkie (mikro), mazie un vidējie komersanti.
+  source:
+    file: https://www.cfla.gov.lv/lv/1-2-1-1-k-3
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-project-location
+  gate_family: G1_nexus
+  requirement: The project must be implemented in the Republic of Latvia.
+  value: 'Project location: Latvia'
+  intake_field: activityCountries
+  quote: Projekta īstenošanas vieta ir Latvijas Republika.
+  source:
+    file: https://www.cfla.gov.lv/lv/1-2-1-1-k-3
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-lv-commercial-register
+  gate_family: G1_nexus
+  requirement: The applicant must be a commercial entity registered in the Commercial Register of the
+    Republic of Latvia.
+  value: Registered in the Latvian Commercial Register
+  intake_field: entityCountries
+  quote: tas ir komersants, kas reģistrēts Latvijas Republikas Komercreģistrā
+  source:
+    file: https://www.cfla.gov.lv/lv/1-2-1-1-k-3
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-wage-floor
+  gate_family: G3_financial
+  requirement: The applicant's average monthly gross employee wage must not be lower than the national
+    average monthly gross wage in the previous year.
+  value: Average gross wage >= prior-year national average
+  intake_field: none
+  quote: tā mēneša vidējā bruto darba samaksa darbiniekiem nav mazāka par mēneša vidējās bruto darba samaksas
+    apmēru tautsaimniecībā iepriekšējā gadā
+  source:
+    file: https://www.cfla.gov.lv/lv/1-2-1-1-k-3
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-turnover-or-defence-contract
+  gate_family: G3_financial
+  requirement: In the last closed financial year, the applicant's turnover must be at least 30% of the
+    planned public funding, or it must hold a contract with the National Armed Forces worth at least 30%
+    of the planned public funding.
+  value: Turnover or NAF contract >= 30% of planned public funding
+  intake_field: turnoverBand
+  quote: tā apgrozījums pēdējā noslēgtajā finanšu gadā līdz projekta iesnieguma iesniegšanai Kohēzijas
+    politikas fondu vadības informācijas sistēmā (turpmāk – vadības informācijas sistēma) ir vismaz 30
+    procenti no plānotā publiskā finansējuma vai tam ir noslēgts līgums ar Nacionālajiem bruņotajiem spēkiem
+    vismaz 30 procentu apmērā no plānotā publiskā finansējuma
+  source:
+    file: https://www.cfla.gov.lv/lv/1-2-1-1-k-3
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-no-difficulty-status
+  gate_family: G1_nexus
+  requirement: The applicant must not have the status of an undertaking in difficulty, including at the
+    level of its group of related companies.
+  value: Not an undertaking in difficulty (incl. group level)
+  intake_field: none
+  quote: tam nav grūtībās nonākuša komersanta statusa (tai skaitā saistīto uzņēmumu grupas līmenī) saskaņā
+    ar Komisijas regulas Nr. 651/2014 2. panta 18. punktu
+  source:
+    file: https://www.cfla.gov.lv/lv/1-2-1-1-k-3
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-no-recovery-order
+  gate_family: G1_nexus
+  requirement: The applicant must not be subject to an outstanding EU State-aid recovery order, including
+    at the level of its group of related companies.
+  value: No outstanding recovery order (incl. group level)
+  intake_field: none
+  quote: uz to neattiecas līdzekļu atgūšanas rīkojums (tai skaitā saistīto uzņēmumu grupas līmenī), kas
+    minēts Komisijas regulas Nr. 651/2014 1. panta 4. punkta
+  source:
+    file: https://www.cfla.gov.lv/lv/1-2-1-1-k-3
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-russia-belarus-exclusion
+  gate_family: G1_nexus
+  requirement: The applicant must not cooperate with, or export products and technologies to, the Russian
+    Federation or the Republic of Belarus.
+  value: No cooperation/exports with Russia or Belarus
+  intake_field: activityCountries
+  quote: tas nesadarbojas un neeksportē produktus un tehnoloģijas uz Krievijas Federāciju un Baltkrievijas
+    Republiku.
+  source:
+    file: https://www.cfla.gov.lv/lv/1-2-1-1-k-3
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (8/8 gates passed mechanical verbatim-substring
+  check -> llm_cited).

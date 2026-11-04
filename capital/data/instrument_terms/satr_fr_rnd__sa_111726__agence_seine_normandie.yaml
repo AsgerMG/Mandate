@@ -1,0 +1,57 @@
+id: satr_fr_rnd__sa_111726__agence_seine_normandie
+name: Régime cadre exempté relatif aux aides en faveur de la protection de l'environnement
+  pour la période 2024-2026
+administering_body: see source document
+country: 'FR'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-territorial-scope
+  gate_family: G1_nexus
+  requirement: The scheme applies across the entire national territory, and for water
+    agencies specifically, across the territory covered by the river basin committees.
+  value: National territory (water-agency schemes cover river basin committee area)
+  intake_field: activityCountries
+  quote: Le présent régime cadre exempté s’applique sur l’ensemble du territoire national.
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111726-regime-cadre-exempte-relatif-aux-aides-en-faveur-de-la
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-eligible-beneficiaries
+  gate_family: G1_nexus
+  requirement: Enterprises of any size may benefit from investment aid for promoting
+    renewable-source energy and renewable hydrogen (except electricity produced from
+    renewable hydrogen), subject to the sectoral exclusions.
+  value: Any-size enterprises eligible for renewable energy/hydrogen investment aid
+  intake_field: none
+  quote: Les entreprises quelle que soit leur taille peuvent bénéficier d’aides à
+    l’investissement en faveur de la promotion de l’énergie produite à partir de sources
+    renouvelables et de l’hydrogène renouvelable (à l’exception de l’électricité produite à
+    partir d’hydrogène renouvelable) sous réserve des exclusions sectorielles précisées au
+    point 3.2.
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111726-regime-cadre-exempte-relatif-aux-aides-en-faveur-de-la
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-export-activity-exclusion
+  gate_family: G1_nexus
+  requirement: The scheme does not apply to aid for export-related activities to third
+    countries or another Member State - i.e. aid directly linked to quantities exported,
+    and aid financing the establishment or operation of a distribution network or other
+    current expenditure linked to export activity.
+  value: Excludes export-linked activity aid
+  intake_field: none
+  quote: aux aides en faveur d’activités liées à l’exportation vers des pays tiers ou un
+    Etat membre, à savoir celles qui sont directement liées aux quantités exportées, et aux
+    aides servant à financer la mise en place et le fonctionnement d'un réseau de
+    distribution ou d’autres dépenses courantes liées à l'activité d'exportation
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111726-regime-cadre-exempte-relatif-aux-aides-en-faveur-de-la
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

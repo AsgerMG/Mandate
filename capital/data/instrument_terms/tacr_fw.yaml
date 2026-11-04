@@ -1,0 +1,239 @@
+id: tacr_fw
+name: tacr_fw
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_applicant_type
+  gate_family: G1_nexus
+  requirement: Support may be provided to legal entities or natural persons acting as applicants
+    (uchazeč) who apply for support, including public research organisations and organisational
+    units of ministries dealing with research and development.
+  value: legal entity or natural person applying for support
+  intake_field: borrowerModel
+  quote: uchazečem organizační složka státu nebo organizační jednotka ministerstva, zabývající
+    se výzkumem a vývojem, a dále právnická osoba nebo fyzická osoba, která se uchází o poskytnutí
+    podpory
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 1
+  verified: llm_cited
+- id: g1_beneficiary
+  gate_family: G1_nexus
+  requirement: The beneficiary (příjemce) is the applicant in whose favour the provider has
+    decided to grant the support.
+  value: applicant selected by provider decision
+  intake_field: borrowerModel
+  quote: příjemcem uchazeč, v jehož prospěch bylo o poskytnutí podpory poskytovatelem rozhodnuto
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 1
+  verified: llm_cited
+- id: g1_project_realization
+  gate_family: G1_nexus
+  requirement: Applied research, development and innovation projects must be realised on the
+    basis of a contract for provision of support, or a decision on provision of support if
+    the recipient is a state organisational unit or ministry unit dealing with R&D.
+  value: contract-based or decision-based realisation
+  intake_field: borrowerModel
+  quote: realizována na základě smlouvy o poskytnutí podpory podle tohoto zákona, popřípadě
+    na základě rozhodnutí o poskytnutí podpory (§ 9 odst. 5 a 6), je-li příjemce organizační
+    složkou státu nebo organizační jednotkou ministerstva, zabývající se výzkumem a vývojem
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 2
+  verified: llm_cited
+- id: g4_purpose_support
+  gate_family: G4_borrower_model
+  requirement: Support may only be granted within the scope and under conditions set by this
+    Act, EU rules, and the Framework for state support of research, development and innovation,
+    provided as either purpose-tied (účelová) or institutional (institucionální) support.
+  value: purpose-tied or institutional support only, per Act and EU Framework
+  intake_field: borrowerModel
+  quote: Podporu lze poskytnout jen v rozsahu a za podmínek stanovených tímto zákonem, předpisy
+    Evropské unie 7a ) a v souladu s Rámcem pro státní podporu výzkumu, vývoje a inovací 45
+    ) , a to jako účelovou nebo institucionální podporu.
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 2
+  verified: llm_cited
+- id: g5_purpose_categories
+  gate_family: G5_use_of_funds
+  requirement: 'Purpose-tied support may be granted only for defined project types: grant
+    projects, programme projects, specific university research, large research infrastructure
+    projects, shared activities projects, or systemic innovation projects.'
+  value: grant, programme, university research, infrastructure, shared activities, or systemic
+    innovation projects
+  intake_field: none
+  quote: "Účelovou podporu lze poskytnout na \n a) grantový projekt, ve kterém příjemce cíle\
+    \ a způsoby řešení v základním výzkumu stanovuje sám ve skupině grantových projektů vyhlášené\
+    \ poskytovatelem"
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 2
+  verified: llm_cited
+- id: g5_eligible_costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs are limited to costs or expenditures in research, development
+    and innovation that may be incurred by the recipient for R&D&I activities, including personnel
+    costs, tangible/intangible asset acquisition, other operating costs, services, and supplementary
+    costs.
+  value: personnel, asset acquisition, operating, service, and supplementary costs for R&D&I
+    activities
+  intake_field: none
+  quote: způsobilými náklady takové náklady nebo výdaje ve výzkumu, vývoji a inovacích, které
+    mohou být příjemcem vynaloženy na činnosti ve výzkumu, vývoji a inovacích, nebo v souvislosti
+    s nimi
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 2
+  verified: llm_cited
+- id: g4_contract_research_definition
+  gate_family: G4_borrower_model
+  requirement: Contract research is defined as research performed on behalf of an enterprise
+    using a research organisation or infrastructure, where the enterprise owns the results,
+    bears the risk of failure, and pays reasonable remuneration for services received.
+  value: enterprise owns results, bears risk, pays remuneration
+  intake_field: none
+  quote: smluvním výzkumem 42 ) výzkum prováděný jménem podniku podle přímo použitelného předpisu
+    Evropské unie 43 ) , k jehož provádění je využívána výzkumná organizace 44 ) nebo výzkumná
+    infrastruktura 40 ) , přičemž podnik vlastní výsledky výzkumných činností, nese riziko
+    neúspěchu a za obdržené služby poskytne výzkumné organizaci nebo výzkumné infrastruktuře
+    přiměřenou odměnu
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 2
+  verified: llm_cited
+- id: g3_admin_cost_cap
+  gate_family: G3_financial
+  requirement: Administration and evaluation costs for public tenders, public contracts and
+    evaluation of research organisations may not exceed 2.5% of the provider's total annual
+    R&D&I expenditure in the given calendar year.
+  value: max 2.5% of provider's annual R&D&I budget
+  intake_field: none
+  quote: a to až do celkové výše 2,5 % prostředků poskytovatele na výzkum, vývoj a inovace
+    v daném kalendářním roce, s výjimkou nákladů orgánů hrazených podle písmene f)
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_act_130_2002_rd_support_law.html#chunk 3
+  verified: llm_cited
+- id: g3_cost_change_cap
+  gate_family: G3_financial
+  requirement: Total recognised project costs and the related amount of support may not be
+    increased or decreased by more than 50% of the values stated in the Contract, as decided
+    by the provider at the public tender evaluation, over the entire project duration.
+  value: max ±50% change in total recognised costs/support versus contracted amount
+  intake_field: none
+  quote: Celkové uznané náklady projektu a s tím související výše podpory projektu nemohou
+    být za celou dobu řešení navýšeny či poníženy o více než 50 % z hodnot uvedených ve Smlouvě,
+    jak o nich poskytovatel rozhodl při vyhodnocení veřejné soutěže ve výzkumu, vývoji a inovacích
+    / výzvě.
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.31
+  verified: llm_cited
+- id: g3_indirect_cost_flat_rate
+  gate_family: G3_financial
+  requirement: Indirect project costs may be claimed using a flat rate method up to 25% of
+    the sum of actually reported personal costs and other direct project costs of the recipient
+    in the relevant year, excluding subcontract costs from the base, and must be documented
+    by itemised lists and accounting records.
+  value: flat rate up to 25% of personal + other direct costs, excluding subcontracts
+  intake_field: none
+  quote: na základě paušální sazby, tzv. metodou „flat rate“, do výše 25 % ze součtu skutečně
+    vykázaných osobních nákladů a ostatních přímých nákladů projektu daného příjemce v příslušném
+    roce
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.31
+  verified: llm_cited
+- id: g6_ineligible_period_sanction
+  gate_family: G6_conditionality
+  requirement: If the recipient did not meet eligibility conditions during a period, 100%
+    of the support spent on costs incurred during that period must be repaid.
+  value: 100% repayment of support for costs incurred while ineligible
+  intake_field: none
+  quote: podle písmene j) se odvádí 100 % podpory vynaložené na náklady vzniklé v době, kdy
+    příjemce podmínky způsobilosti nesplňoval
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.13
+  verified: llm_cited
+- id: g6_exclusion_repeated_breach
+  gate_family: G6_conditionality
+  requirement: If the main recipient systematically breaches its obligations, or the provider
+    assesses the breach as serious, the provider may exclude project proposals submitted by
+    that recipient from public tenders, calls, or public contract offers for up to 3 years.
+  value: exclusion from tenders/calls for up to 3 years for serious or systematic breach
+  intake_field: none
+  quote: je poskytovatel oprávněn vyloučit návrhy projektů podané hlavním příjemcem (ať již
+    se bude hlásit do veřejné soutěže / výzvy v roli uchazeče či dalšího účastníka) do veřejných
+    soutěží, výzev nebo nabídky podané do veřejných zakázek ve výzkumu, vývoji a inovacích.
+    Toto vyloučení může trvat až 3 roky
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.14
+  verified: llm_cited
+obligations:
+- requirement: The main recipient must allow the provider or its authorised persons to carry
+    out comprehensive control/audit and must give access to its accounting records related
+    directly or indirectly to the project, at any time during project implementation or up
+    to two years after the Contract's termination, and provide necessary cooperation.
+  quote: Hlavní příjemce je povinen umožnit poskytovateli či jím pověřeným osobám provádět
+    komplexní kontrolu podle tohoto článku a zpřístupnit svou účetní evidenci související
+    přímo či nepřímo s projektem podle ustanovení § 8 odst. 1 ZPVV, a to kdykoliv v průběhu
+    řešení projektu nebo do dvou let od ukončení účinnosti Smlouvy, a poskytnout mu při ní
+    potřebnou součinnost.
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.32
+  verified: llm_cited
+- requirement: If the main recipient anticipates it will not be able to fulfil an obligation,
+    it must submit a change request or notify the provider in writing of the impossibility
+    of fulfilment due to force majeure or alleged breach by the provider, before the deadline
+    for fulfilment.
+  quote: Pokud hlavní příjemce předpokládá, že nebude schopen splnit některou z výše uvedených
+    povinností, je oprávněn nejpozději do lhůty jejího splnění podat žádost o změnu projektu
+    v souladu s čl. 22, anebo doručit poskytovateli písemné vyjádření o nemožnosti jejího
+    splnění v důsledku vyšší moci nebo domnělého porušení povinností poskytovatelem.
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.14
+  verified: llm_cited
+- requirement: Individual contractual penalties under this article are cumulative but capped
+    at the maximum amount corresponding to the maximum support for the project over the entire
+    contracted duration.
+  quote: Jednotlivé smluvní pokuty stanovené podle tohoto článku se sčítají, maximálně však
+    do výše odpovídající maximální výši podpory pro projekt na celou dobu řešení stanoveného
+    ve Smlouvě.
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.14
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/12 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Contractual penalties stipulated under this article do not include damages and apply
+    in addition to other sanctions arising from legal regulations or the rules of support
+    provision; individual penalties are cumulative up to the cap of the maximum project support.
+  quote: Stanovené smluvní pokuty nezahrnují náhradu škody a aplikují se nad rámec dalších
+    sankcí vyplývajících z právních předpisů nebo z pravidel poskytnutí podpory.
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.14
+  verified: llm_cited
+application:
+  channel: Public tender (veřejná soutěž) or call (výzva) announced by the provider (Technologická
+    agentura České republiky), with contract or decision on provision of support following
+    evaluation.
+  typical_timeline: Contract validity ends 5 years after project completion unless otherwise
+    agreed by the parties; changes must be requested via change proceedings (SME-07) before
+    relevant deadlines.
+  quote: Platnost Smlouvy je ukončena po 5 letech ode dne ukončení řešení projektu, pokud
+    se smluvní strany nedohodnou na změně této doby .
+  source:
+    file: cz_tacr_vseobecne_podminky_v8_2024.pdf
+    locator: cz_tacr_vseobecne_podminky_v8_2024.pdf#p.33
+  verified: llm_cited

@@ -1,0 +1,26 @@
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [check_winner_not_blocked]
+watching officialCatchments.generated.json — 427 of 1088 instruments carry an officially declared catchment, cut at 2026-08-09T17:54:19.503Z
+answer key __recallSetDoors.json: 7,095 pairs
+  no leak-free region, cannot be judged        6380
+  register silent on the fund, KEPT not blocked 133
+  testable: leak-free region + official catchment 582 (floor 550)
+  VERIFIED WINNERS THE SCREEN WOULD BLOCK      15 2.6% (ceiling 15)
+      BYLOGIX SOCIETA' A RESPONSABILITA' LIMITATA (IT, ITI) -> satr_it_rnd__sa_115378__finpiemonte_s_p_a
+      Siemens (DE, BE2) -> satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz
+      CULTIMATE FOODS (DE, DE3) -> satr_de_rnd__sa_103582__nbank
+      Siemens (DE, BE2) -> satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz
+      Siemens (DE, BE2) -> satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung
+      Global Climate Changer GmbH (DE, DE3) -> satr_de_rnd__sa_113239__sachsen_sab
+      V.M.C. S.P.A. (IT, ITH) -> satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori
+      The Makers Food GmbH (DE, DE3) -> satr_de_rnd__sa_114510__nrw_bank
+      ConstantinTelevision GmbH (DE, DE2) -> satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg
+      W&B Television GmbH (DE, DE3) -> satr_de_equity__sa_118637__lfa_forderbank_bayern
+      sus.raw GmbH (DE, DEA) -> satr_de_rnd__sa_110061__vdi_vde_innovation_und_technik
+      J & W S.R.L. (IT, ITH) -> satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori
+      Siemens Energy Global GmbH & Co. KG (DE, DE2) -> satr_de_rnd__sa_64558__investitionsbank_berlin
+      H2 MOBILITY Deutschland GmbH & Co. KG (DE, DE2) -> satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+      Mint Hydrogen Germany GmbH (DE, DE2) -> satr_de_rnd__sa_110716__bezirksregierung_arnsberg
+
+PASS — no verified winner is newly blocked; the standing debt of 15
+  has not risen. It is debt, not a target: it is why the territorial screen
+  is not shipped.

@@ -1,0 +1,174 @@
+id: innovasjon_norge_grant_startup
+name: innovasjon_norge_grant_startup
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-group
+  gate_family: G1_nexus
+  requirement: The scheme targets innovative startup companies with a demanding technology
+    development path ahead of them.
+  value: Innovative oppstartsbedrifter med krevende teknologiutviklingsløp
+  intake_field: developmentStage
+  quote: Tilskuddet retter seg mot innovative oppstartsbedrifter som har et krevende teknologiutviklingsløp
+    foran seg.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g1-growth-potential
+  gate_family: G1_nexus
+  requirement: The company must have significant growth potential, both nationally and internationally.
+  value: Betydelig vekstpotensial nasjonalt og internasjonalt
+  intake_field: activityCountries
+  quote: Bedriften har et betydelig vekstpotensial, både nasjonalt og internasjonalt.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g1-target-audience
+  gate_family: G1_nexus
+  requirement: The target group for this grant is startup companies (Oppstartsbedrifter).
+  value: Oppstartsbedrifter
+  intake_field: developmentStage
+  quote: Målgruppe Oppstartsbedrifter
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g3-ceiling
+  gate_family: G3_financial
+  requirement: The maximum grant amount is up to NOK 1 million.
+  value: Inntil 1 million kroner
+  intake_field: ticketBand
+  quote: Hvor mye Inntil 1 million kroner
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g4-application-type
+  gate_family: G4_borrower_model
+  requirement: The application type is classified as a Startup type application under a grant
+    instrument.
+  value: Tilskudd / Oppstart
+  intake_field: borrowerModel
+  quote: Type tjeneste Tilskudd Målgruppe Oppstartsbedrifter Søknadsfrist Løpende Hvor mye
+    Inntil 1 million kroner Søknadstype Oppstart
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g6-statsstotte
+  gate_family: G6_conditionality
+  requirement: Financing from Innovasjon Norge must comply with state aid rules (State Aid
+    regulations), including the five general conditions for state aid.
+  value: Statsstøtteregelverket må ivaretas
+  intake_field: conditionality
+  quote: Finansiering fra Innovasjon Norge må være i samsvar med statsstøtteregelverket. Det
+    er fem generelle vilkår for statsstøtte som må ivaretas .
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g6-gber
+  gate_family: G6_conditionality
+  requirement: The General Block Exemption Regulation (GBER) forms part of the state aid framework
+    and provides the legal bases (articles) under which support may be granted.
+  value: GBER som del av statsstøtteregelverket
+  intake_field: conditionality
+  quote: Gruppeunntaksregelverket (GBER) er en del av statsstøtteregelverket og er en samling
+    med artikler/støttehjemler som gir oss mulighet til å gi bedrifter støtte i ulike saker.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g6-esa-notification
+  gate_family: G6_conditionality
+  requirement: Innovasjon Norge's financing schemes are notified to the EFTA Surveillance
+    Authority (ESA), with the legal basis published on the National Legal Basis page.
+  value: Meldt til ESA
+  intake_field: conditionality
+  quote: Finansieringsordninger hos oss er meldt til EFTAs overvåkingsorgan, ESA.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g6-other-public-aid-disclosure
+  gate_family: G6_conditionality
+  requirement: The applicant must disclose in the application whether other public support
+    has been sought or will be sought for the project.
+  value: Opplysningsplikt om annen offentlig støtte
+  intake_field: cofinancingBand
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g6-cumulation-reduction
+  gate_family: G6_conditionality
+  requirement: If other public support (including SkatteFunn) is received after Innovasjon
+    Norge's offer covering the same costs, the grant may be reduced correspondingly or lapse.
+  value: Reduksjon eller bortfall ved annen offentlig støtte til samme kostnader
+  intake_field: cofinancingBand
+  quote: I tilfelle slik annen offentlig støtte, herunder SkatteFunn, likevel blir mottatt
+    etter at vårt tilbud er gitt, og til dekning av de samme kostnadene, vil tilskuddet fra
+    oss kunne bli redusert tilsvarende eller bortfalle.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- id: g6-sustainability-principles
+  gate_family: G6_conditionality
+  requirement: To receive services, the company must uphold principles of responsible business
+    conduct and have a conscious approach to its own sustainability risk.
+  value: Prinsipper for ansvarlig næringsliv og bærekraftsrisiko
+  intake_field: conditionality
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: The applicant must state in the application whether other public support has
+    been or will be applied for regarding the project.
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+- requirement: The company must uphold principles of responsible business conduct and maintain
+    a conscious relationship to its own sustainability risk to receive services.
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Innovasjon Norge bases its grant calculation on an assumption that no other public
+    support, including SkatteFunn, is received beyond what is stated in the application for
+    the same eligible project costs; if such other public support is received later covering
+    the same costs, the grant may be reduced or lapse. This does not prevent the company from
+    receiving other public support for other project costs not covered by Innovasjon Norge's
+    calculation.
+  quote: Ved fastsettelse av tilskuddsbeløpet legger derfor vi til grunn at det ikke mottas
+    annen offentlig støtte, herunder Skattefunn, enn det som er oppgitt i søknaden.
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Online application via Innovasjon Norge's 'Min side' portal
+  typical_timeline: Rolling deadline (Løpende)
+  quote: Søknadsfrist Løpende
+  source:
+    file: innovasjon_norge_grant_startup_oppstartstilskudd_1.html
+    locator: innovasjon_norge_grant_startup_oppstartstilskudd_2.html#chunk 1
+  verified: llm_cited

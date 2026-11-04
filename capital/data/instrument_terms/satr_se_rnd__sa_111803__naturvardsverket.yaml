@@ -1,0 +1,67 @@
+id: satr_se_rnd__sa_111803__naturvardsverket
+name: Stöd till lokala klimatinvesteringar - Klimatklivet
+administering_body: see source document
+country: SE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-recipients
+  gate_family: G1_nexus
+  requirement: Klimatklivet is aimed at municipalities, regions, companies and organisations across Sweden;
+    private individuals cannot apply.
+  value: Municipalities/regions/companies/organisations; not private individuals
+  intake_field: borrowerModel
+  quote: Klimatklivet är riktat till kommuner, regioner, företag och organisationer i hela Sverige. Privatpersoner
+    kan inte söka stöd.
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-not-already-started
+  gate_family: G5_use_of_funds
+  requirement: Aid may not be given to a measure that has already begun before the funding decision was
+    made.
+  value: Project must not have started before funding decision
+  intake_field: needBy
+  quote: har påbörjats innan beslut i frågan om stöd har fattats
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-excl-passenger-cars
+  gate_family: G5_use_of_funds
+  requirement: Aid is not given for the purchase of a passenger car, light truck, light bus, or class
+    I bus.
+  value: 'Excluded: passenger cars, light trucks, light/class-I buses'
+  intake_field: none
+  quote: avser köp av en personbil, lätt lastbil, lätt buss, eller buss i klass I
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-intensity-companies
+  gate_family: G3_financial
+  requirement: Aid to companies may amount to at most 70 percent of the company's investment cost.
+  value: Max 70% of investment cost for companies
+  intake_field: none
+  quote: Stödet får uppgå till högst 70 procent av företagets investeringskostnad.
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g3-intensity-others
+  gate_family: G3_financial
+  requirement: Aid to recipients other than companies may amount to at most 50 percent of the investment
+    cost.
+  value: Max 50% of investment cost for non-companies
+  intake_field: none
+  quote: dock högst med 50 procent av investeringskostnaden
+  source:
+    file: https://www.naturvardsverket.se/bidrag/klimatklivet/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

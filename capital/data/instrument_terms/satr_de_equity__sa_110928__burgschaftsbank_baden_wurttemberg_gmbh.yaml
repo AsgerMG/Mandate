@@ -1,0 +1,57 @@
+id: satr_de_equity__sa_110928__burgschaftsbank_baden_wurttemberg_gmbh
+name: Rückbürgschaften und Rückgarantien des Bundes und der Länder gegenüber den Bürgschaftsbanken und
+  Kreditgarantiegemeinschaften [BMWK, VIIC4]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g4-private-majority-ownership
+  gate_family: G4_borrower_model
+  requirement: Eligible recipients are commercial enterprises that are wholly or majority privately owned.
+  value: Wholly/majority privately owned commercial enterprise
+  intake_field: institutionalOwner
+  quote: Gefördert werden Unternehmen der gewerblichen Wirtschaft, die sich ganz oder mehrheitlich in
+    privater Hand befinden
+  source:
+    file: https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g4-viable-business-concept
+  gate_family: G4_borrower_model
+  requirement: The applicant must have an economically viable business concept.
+  value: Economically viable business concept required
+  intake_field: none
+  quote: mit einem wirtschaftlich tragfähigen Unternehmenskonzept
+  source:
+    file: https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g4-lack-of-collateral
+  gate_family: G4_borrower_model
+  requirement: The applicant must lack sufficient bank-standard collateral.
+  value: Insufficient bank-standard collateral
+  intake_field: bankRelationship
+  quote: denen ausreichende bankübliche Sicherheiten fehlen
+  source:
+    file: https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-no-alternative-financing
+  gate_family: G6_conditionality
+  requirement: Alternative financing must not be obtainable on reasonable terms.
+  value: No reasonable-terms alternative financing available
+  intake_field: bankRelationship
+  quote: eine anderweitige Finanzierung darf nicht zu vertretbaren Bedingungen erlangbar sein
+  source:
+    file: https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (4/4 gates passed mechanical verbatim-substring
+  check -> llm_cited).

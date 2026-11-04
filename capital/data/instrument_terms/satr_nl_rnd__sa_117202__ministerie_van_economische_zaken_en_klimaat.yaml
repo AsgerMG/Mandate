@@ -1,0 +1,32 @@
+id: satr_nl_rnd__sa_117202__ministerie_van_economische_zaken_en_klimaat
+name: NL/IenW/_Tijdelijke subsidieregeling zero-emissie mobiliteit - Paragraaf 2.3 Private laadinfrastructuur
+  elektrische voertuigen
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-entrepreneur-requirements
+  gate_family: G1_nexus
+  requirement: The scheme is for entrepreneurs who install charging infrastructure, are registered with
+    the Chamber of Commerce (KVK), and have their business established in the Netherlands.
+  value: Entrepreneur installing charging infra, KVK-registered, NL-established
+  intake_field: entityCountries
+  quote: 'Deze regeling is voor ondernemers die: laadinfrastructuur plaatsen; ingeschreven zijn bij de
+    Kamer van Koophandel (KVK) en; hun onderneming in Nederland gevestigd hebben.'
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/subsidieregeling-private-laadinfrastructuur-bij-bedrijven-sprila-aanschaf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-excl-government-applicant
+  gate_family: G1_nexus
+  requirement: Applicants are not eligible for the subsidy if applying on behalf of a government institution.
+  value: 'Excluded: applications on behalf of government institutions'
+  intake_field: none
+  quote: U komt niet in aanmerking voor subsidie als u aanvraagt namens een overheidsinstelling.
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/subsidieregeling-private-laadinfrastructuur-bij-bedrijven-sprila-aanschaf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

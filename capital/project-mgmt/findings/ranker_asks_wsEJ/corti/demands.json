@@ -1,0 +1,455 @@
+[
+  {
+    "ref": "ranker::consortium",
+    "field": "consortium",
+    "requirement": "An application must have at least two project participants, of which at least one is not a public university (with an exception for quantum technology calls).",
+    "instrumentId": "innovationsfonden_grand_solutions",
+    "instrumentName": "Grand Solutions",
+    "gateKey": "G1_nexus",
+    "locator": "innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.6",
+    "carriers": 14,
+    "alsoWorded": [
+      {
+        "instrumentName": "Erhvervsforsker",
+        "requirement": "An Industrial PhD project must be a collaboration between a company, a university, and an Industrial PhD student."
+      },
+      {
+        "instrumentName": "ERC POC",
+        "requirement": "Unless call conditions provide otherwise, the consortium must include at least three independent legal entities established in three different countries: one in a Member State and two others each in different Member States or Associated Countries."
+      }
+    ],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [
+          "chp"
+        ],
+        "closes": []
+      },
+      {
+        "value": "no",
+        "opens": [
+          "chp"
+        ],
+        "closes": [
+          "innovationsfonden_grand_solutions",
+          "innovationsfonden_erhvervsforsker",
+          "erc_poc",
+          "eic_transition",
+          "horizon_eu_cl1",
+          "horizon_eu_cl6",
+          "horizon_eu_miss",
+          "ihi",
+          "gh_edctp3",
+          "clean_aviation",
+          "horizon_eu_cl4",
+          "horizon_eu_cl5",
+          "horizon_eu_cbe"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "innovationsfonden_grand_solutions",
+        "name": "Grand Solutions",
+        "rank": 1
+      },
+      {
+        "instrumentId": "innovationsfonden_erhvervsforsker",
+        "name": "Erhvervsforsker",
+        "rank": 6
+      },
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 7
+      },
+      {
+        "instrumentId": "eic_transition",
+        "name": "EIC Transition",
+        "rank": 8
+      },
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 9
+      },
+      {
+        "instrumentId": "horizon_eu_cl6",
+        "name": "Horizon EU CL6",
+        "rank": 10
+      },
+      {
+        "instrumentId": "horizon_eu_miss",
+        "name": "Horizon EU Miss",
+        "rank": 11
+      },
+      {
+        "instrumentId": "ihi",
+        "name": "IHI",
+        "rank": 12
+      },
+      {
+        "instrumentId": "gh_edctp3",
+        "name": "Gh Edctp3",
+        "rank": 13
+      },
+      {
+        "instrumentId": "clean_aviation",
+        "name": "Clean Aviation",
+        "rank": 14
+      },
+      {
+        "instrumentId": "horizon_eu_cl4",
+        "name": "Horizon EU CL4",
+        "rank": 15
+      },
+      {
+        "instrumentId": "horizon_eu_cl5",
+        "name": "Horizon EU CL5",
+        "rank": 16
+      },
+      {
+        "instrumentId": "chp",
+        "name": "CHP",
+        "rank": 17
+      },
+      {
+        "instrumentId": "horizon_eu_cbe",
+        "name": "Horizon EU CBE",
+        "rank": 18
+      }
+    ],
+    "kind": "separating",
+    "score": 14
+  },
+  {
+    "ref": "ranker::exclusionFlags",
+    "field": "exclusionFlags",
+    "requirement": "An applicant that has previously received aid declared incompatible with the internal market and has not repaid it cannot receive an investment.",
+    "instrumentId": "innovationsfonden_grand_solutions",
+    "instrumentName": "Grand Solutions",
+    "gateKey": "G2_size_ownership",
+    "locator": "innovationsfonden_grand_solutions_guidelines_2026_phase1.pdf#p.7",
+    "carriers": 9,
+    "alsoWorded": [
+      {
+        "instrumentName": "Grand Solutions",
+        "requirement": "An investment must not contravene national or international sanctions, including asset freezes and prohibitions on provision of funds to listed persons/entities."
+      },
+      {
+        "instrumentName": "Innobooster",
+        "requirement": "Companies under compulsory dissolution, bankruptcy, voluntary liquidation, or suspension of payments cannot receive Innobooster investment."
+      }
+    ],
+    "splits": [
+      {
+        "value": "none",
+        "opens": [],
+        "closes": [
+          "innovationsfonden_grand_solutions"
+        ]
+      },
+      {
+        "value": "insolvency",
+        "opens": [],
+        "closes": [
+          "innovationsfonden_grand_solutions",
+          "innovationsfonden_innobooster__innobooster_dd6e0e",
+          "innovationsfonden_erhvervsforsker",
+          "erc_poc",
+          "horizon_eu_cl1",
+          "horizon_eu_cl6",
+          "horizon_eu_cl4",
+          "horizon_eu_cl5",
+          "horizon_eu_cbe"
+        ]
+      },
+      {
+        "value": "losses_over_half_capital",
+        "opens": [],
+        "closes": [
+          "innovationsfonden_grand_solutions"
+        ]
+      },
+      {
+        "value": "recovery_order",
+        "opens": [],
+        "closes": [
+          "innovationsfonden_erhvervsforsker"
+        ]
+      },
+      {
+        "value": "sanctions",
+        "opens": [],
+        "closes": [
+          "innovationsfonden_grand_solutions",
+          "erc_poc",
+          "horizon_eu_cl1",
+          "horizon_eu_cl6",
+          "horizon_eu_cbe"
+        ]
+      },
+      {
+        "value": "tax_arrears",
+        "opens": [],
+        "closes": [
+          "innovationsfonden_grand_solutions"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "innovationsfonden_grand_solutions",
+        "name": "Grand Solutions",
+        "rank": 1
+      },
+      {
+        "instrumentId": "innovationsfonden_innobooster__innobooster_dd6e0e",
+        "name": "Innobooster",
+        "rank": 5
+      },
+      {
+        "instrumentId": "innovationsfonden_erhvervsforsker",
+        "name": "Erhvervsforsker",
+        "rank": 6
+      },
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 7
+      },
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 9
+      },
+      {
+        "instrumentId": "horizon_eu_cl6",
+        "name": "Horizon EU CL6",
+        "rank": 10
+      },
+      {
+        "instrumentId": "horizon_eu_cl4",
+        "name": "Horizon EU CL4",
+        "rank": 15
+      },
+      {
+        "instrumentId": "horizon_eu_cl5",
+        "name": "Horizon EU CL5",
+        "rank": 16
+      },
+      {
+        "instrumentId": "horizon_eu_cbe",
+        "name": "Horizon EU CBE",
+        "rank": 18
+      }
+    ],
+    "kind": "separating",
+    "score": 9
+  },
+  {
+    "ref": "ranker::nonEuControl",
+    "field": "nonEuControl",
+    "requirement": "Legal entities established outside Russia that are more than 50% owned by a Russia-established person/entity are not eligible to participate in any capacity.",
+    "instrumentId": "erc_poc",
+    "instrumentName": "ERC POC",
+    "gateKey": "G1_nexus",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11",
+    "carriers": 5,
+    "alsoWorded": [
+      {
+        "instrumentName": "Horizon EU CL1",
+        "requirement": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are also not eligible to participate."
+      },
+      {
+        "instrumentName": "Horizon EU CL4",
+        "requirement": "Legal entities established outside Russia whose proprietary rights are more than 50% owned directly or indirectly by a Russian-established person, entity, or body are not eligible to participate in any capacity."
+      }
+    ],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [],
+        "closes": [
+          "erc_poc",
+          "horizon_eu_cl1",
+          "horizon_eu_cl4",
+          "horizon_eu_cl5",
+          "horizon_eu_cbe"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 7
+      },
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 9
+      },
+      {
+        "instrumentId": "horizon_eu_cl4",
+        "name": "Horizon EU CL4",
+        "rank": 15
+      },
+      {
+        "instrumentId": "horizon_eu_cl5",
+        "name": "Horizon EU CL5",
+        "rank": 16
+      },
+      {
+        "instrumentId": "horizon_eu_cbe",
+        "name": "Horizon EU CBE",
+        "rank": 18
+      }
+    ],
+    "kind": "separating",
+    "score": 1.25
+  },
+  {
+    "ref": "ranker::ownerOver25",
+    "field": "ownerOver25",
+    "requirement": "Companies where more than 50 per cent is owned by the state, regions or municipalities are excluded from investment.",
+    "instrumentId": "innovationsfonden_innobooster__innobooster_dd6e0e",
+    "instrumentName": "Innobooster",
+    "gateKey": "G2_size_ownership",
+    "locator": "p.5",
+    "carriers": 3,
+    "alsoWorded": [
+      {
+        "instrumentName": "Horizon EU CL6",
+        "requirement": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are not eligible to participate."
+      },
+      {
+        "instrumentName": "Horizon EU Miss",
+        "requirement": "Legal entities established outside Russia but more than 50% owned, directly or indirectly, by a Russian-established entity are not eligible to participate in any capacity."
+      }
+    ],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [],
+        "closes": [
+          "innovationsfonden_innobooster__innobooster_dd6e0e",
+          "horizon_eu_cl6",
+          "horizon_eu_miss"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "innovationsfonden_innobooster__innobooster_dd6e0e",
+        "name": "Innobooster",
+        "rank": 5
+      },
+      {
+        "instrumentId": "horizon_eu_cl6",
+        "name": "Horizon EU CL6",
+        "rank": 10
+      },
+      {
+        "instrumentId": "horizon_eu_miss",
+        "name": "Horizon EU Miss",
+        "rank": 11
+      }
+    ],
+    "kind": "separating",
+    "score": 1
+  },
+  {
+    "ref": "ranker::cofinancingBand",
+    "field": "cofinancingBand",
+    "requirement": "Innovation Fund Denmark co-finances a maximum of 35 per cent of the company's relevant project expenses.",
+    "instrumentId": "innovationsfonden_innobooster__innobooster_dd6e0e",
+    "instrumentName": "Innobooster",
+    "gateKey": "G3_financial",
+    "locator": "p.11",
+    "carriers": 2,
+    "alsoWorded": [
+      {
+        "instrumentName": "IHI",
+        "requirement": "Applicant consortia must ensure at least 45% of the action's eligible costs (and costs for related additional activities) are provided by industry contributions (IKOP, FC, IKAA) from private members/contributing partners; this is a strict eligibility criterion for evaluation."
+      }
+    ],
+    "splits": [
+      {
+        "value": ">50%",
+        "opens": [],
+        "closes": [
+          "innovationsfonden_innobooster__innobooster_dd6e0e"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "innovationsfonden_innobooster__innobooster_dd6e0e",
+        "name": "Innobooster",
+        "rank": 5
+      }
+    ],
+    "kind": "narrowing",
+    "score": 0.16666666666666666
+  },
+  {
+    "ref": "ranker::activities",
+    "field": "activities",
+    "requirement": "Projects must focus exclusively on civil applications and must not involve human cloning, heritable genetic modification, or creation of human embryos solely for research.",
+    "instrumentId": "horizon_eu_miss",
+    "instrumentName": "Horizon EU Miss",
+    "gateKey": "G5_use_of_funds",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.14",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "weapons",
+        "opens": [],
+        "closes": [
+          "horizon_eu_miss"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "horizon_eu_miss",
+        "name": "Horizon EU Miss",
+        "rank": 11
+      }
+    ],
+    "kind": "separating",
+    "score": 0.16666666666666666
+  },
+  {
+    "ref": "ranker::turnoverBand",
+    "field": "turnoverBand",
+    "requirement": "For-profit legal entities with an annual turnover of EUR 500 million or more, or entities controlling/controlled by such entities, participating in a two-stage call alongside a pre-identified entity, are not eligible for funding.",
+    "instrumentId": "ihi",
+    "instrumentName": "IHI",
+    "gateKey": "G2_size_ownership",
+    "locator": "ihi_call12_calltext.pdf#p.7",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": ">50M",
+        "opens": [],
+        "closes": [
+          "ihi"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "ihi",
+        "name": "IHI",
+        "rank": 12
+      }
+    ],
+    "kind": "separating",
+    "score": 0.15384615384615385
+  }
+]

@@ -1,0 +1,58 @@
+id: satr_hu_rnd__sa_117786__nemzetgazdasagi_miniszterium
+name: A Demján Sándor 1+1 Beruházás-élénkítő Támogatási Program alapján nyújtott, a 651/2014/EU bizottsági
+  rendelet szerinti támogatások
+administering_body: see source document
+country: HU
+capital_type: unknown
+status: draft
+gates:
+- id: g2-min-staff-and-accounts
+  gate_family: G2_size_ownership
+  requirement: The applicant company must employ at least 2 people, keep double-entry bookkeeping, and
+    have at least two full, closed business years.
+  value: Min. 2 employees, double-entry bookkeeping, 2+ closed business years
+  intake_field: fteBand
+  quote: legalább 2 főt foglalkoztató és kettős könyvvitelt vezető vállalkozás, amely legalább kettő teljes,
+    lezárt üzleti évvel rendelkezik
+  source:
+    file: https://palyazatmenedzser.hu/demjan-sandor-11-kkv-beruhazas-elenkito-tamogatasi-program/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-hungary-or-eea-seat
+  gate_family: G1_nexus
+  requirement: The applicant must have its registered seat in Hungary, or a registered seat in the European
+    Economic Area with a branch office in Hungary.
+  value: Registered seat in Hungary, or EEA seat with HU branch
+  intake_field: entityCountries
+  quote: Magyarország területén székhellyel, illetve az Európai Gazdasági Térség területén székhellyel
+    és Magyarország területén fiókteleppel
+  source:
+    file: https://palyazatmenedzser.hu/demjan-sandor-11-kkv-beruhazas-elenkito-tamogatasi-program/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-excl-agri-food
+  gate_family: G5_use_of_funds
+  requirement: Agricultural and food-industry development needs are not eligible for support.
+  value: 'Excluded: agricultural/food-industry development'
+  intake_field: none
+  quote: Mezőgazdasági és élelmiszeripari fejlesztési igény nem támogatható.
+  source:
+    file: https://palyazatmenedzser.hu/demjan-sandor-11-kkv-beruhazas-elenkito-tamogatasi-program/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-mandatory-tech-equipment
+  gate_family: G5_use_of_funds
+  requirement: The mandatory activity is the acquisition of new equipment resulting in technological development,
+    amounting to at least 40% of the total project cost.
+  value: 'Mandatory: new tech equipment >= 40% of total project cost'
+  intake_field: none
+  quote: 'Kötelező tevékenység: technológiai fejlesztést eredményező új eszközök beszerzése legalább a
+    projekt összköltségének 40%-a erejéig.'
+  source:
+    file: https://palyazatmenedzser.hu/demjan-sandor-11-kkv-beruhazas-elenkito-tamogatasi-program/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

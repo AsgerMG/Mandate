@@ -1,0 +1,458 @@
+id: ademe_aid
+name: ademe_aid
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-territory
+  gate_family: G1_nexus
+  requirement: Scheme applies to the whole national territory (France); aid is granted to
+    public or private, natural or legal persons who are project owners.
+  value: France, any legal form project owner
+  intake_field: entityCountries
+  quote: Le présent régime exempté s’applique sur l’ensemble du territoire national.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.2
+  verified: llm_cited
+- id: g1-nature-beneficiaires
+  gate_family: G1_nexus
+  requirement: ADEME aid is granted to public or private, natural or legal persons who are
+    project owners of the aided operation.
+  value: public/private, natural/legal persons, maîtres d'ouvrage
+  intake_field: borrowerModel
+  quote: les aides de l’ADEME sont accordées aux personnes publiques ou privées, aux personnes
+    physiques ou morales, maîtres d’ouvrage de l’opération aidée.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.9
+  verified: llm_cited
+- id: g1-exclusion-difficulte
+  gate_family: G1_nexus
+  requirement: Undertakings in difficulty are excluded from the scheme, with a derogation
+    for firms not in difficulty on 31 Dec 2019 but which became so between 1 Jan 2020 and
+    30 June 2021.
+  value: excluded unless derogation applies
+  intake_field: none
+  quote: Aux aides aux entreprises en difficulté. Toutefois, le présent régime s’applique
+    par dérogation, aux entreprises qui n’étaient pas en difficulté au 31 décembre 2019, mais
+    qui sont devenues des entreprises en difficulté au cours de la période comprise entre
+    le 1er janvier 2020 et le 30 juin 2021.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.2
+  verified: llm_cited
+- id: g1-exclusion-recovery
+  gate_family: G1_nexus
+  requirement: Undertakings subject to an outstanding recovery order following a Commission
+    decision declaring aid illegal and incompatible are excluded.
+  value: excluded
+  intake_field: none
+  quote: Aux aides en faveur d’une entreprise faisant l’objet d’une injonction de récupération
+    suivant une décision de la Commission déclarant des aides illégales et incompatibles avec
+    le marché intérieur;
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.2
+  verified: llm_cited
+- id: g1-exclusion-sectors
+  gate_family: G1_nexus
+  requirement: Certain sectors are excluded from the scheme, including agricultural product
+    processing/marketing under specified conditions, fisheries and aquaculture, and coal mine
+    closure aid.
+  value: agriculture (conditional), fisheries/aquaculture, coal mine closure excluded
+  intake_field: none
+  quote: 'Transformation et commercialisation de produits agricoles, dans les cas suivants:
+    a) lorsque le montant d’aide est fixé sur la base du prix ou de la quantité des produits
+    de ce type achetés à des producteurs primaires ou mis sur le marché par les entreprises
+    concernées, ou b) lorsque l’aide est conditionnée au fait d’être partiellement ou entièrement
+    cédée à des producteurs primaires.'
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.2
+  verified: llm_cited
+- id: g1-exclusion-export
+  gate_family: G1_nexus
+  requirement: Export-related aid and aid conditional on the use of domestic over imported
+    products are excluded, as are measures requiring beneficiary head office/establishment
+    in the state or use of national goods/services.
+  value: excluded
+  intake_field: none
+  quote: Aux aides en faveur d’activités liées à l’exportation vers des pays tiers ou un Etat
+    membre, à savoir celles qui sont directement liées aux quantités exportées, et aux aides
+    servant à financer la mise en place et le fonctionnement d'un réseau de distribution ou
+    d’autres dépenses courantes liées à l'activité d'exportation ;
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.2
+  verified: llm_cited
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: 'SMEs are defined per Annex I of Regulation 651/2014: fewer than 250 employees
+    and either annual turnover not exceeding EUR 50 million or annual balance sheet total
+    not exceeding EUR 43 million.'
+  value: <250 FTE and (turnover ≤50M or balance ≤43M)
+  intake_field: fteBand
+  quote: La catégorie des micro, petites et moyennes entreprises (PME) est constituée des
+    entreprises qui occupent moins de 250 personnes et dont le chiffre d'affaires annuel n'excède
+    pas 50 millions EUR ou dont le total du bilan annuel n'excède pas 43 millions EUR.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.19
+  verified: llm_cited
+- id: g2-small-enterprise
+  gate_family: G2_size_ownership
+  requirement: A small enterprise is defined as employing fewer than 50 persons with annual
+    turnover or balance sheet total not exceeding EUR 10 million.
+  value: <50 FTE and turnover/balance ≤10M
+  intake_field: fteBand
+  quote: Dans la catégorie des PME, une petite entreprise est définie comme une entreprise
+    qui occupe moins de 50 personnes et dont le chiffre d'affaires annuel ou le total du bilan
+    annuel n'excède pas 10 millions EUR.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.19
+  verified: llm_cited
+- id: g2-ownership-partner
+  gate_family: G2_size_ownership
+  requirement: Partner enterprises are defined by a relationship where an upstream enterprise
+    holds, alone or jointly with linked enterprises, 25% or more of the capital or voting
+    rights of another enterprise (subject to investor-category exceptions).
+  value: 25% threshold for partner enterprise status
+  intake_field: ownerOver25
+  quote: une entreprise (entreprise en amont) détient, seule ou conjointement avec une ou
+    plusieurs entreprises liées au sens du paragraphe 3, 25 % ou plus du capital ou des droits
+    de vote d'une autre entreprise (entreprise en aval).
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.19
+  verified: llm_cited
+- id: g3-notification-recyclage
+  gate_family: G3_financial
+  requirement: Individual notification is mandatory for waste recycling/re-use investment
+    aid exceeding EUR 15,000,000 per undertaking and per investment project.
+  value: EUR 15,000,000 per undertaking/project
+  intake_field: ticketBand
+  quote: Une notification individuelle est obligatoire pour les aides supérieures à 15 000
+    000 EUR par entreprise et par projet d'investissement.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.11
+  verified: llm_cited
+- id: g3-notification-sites-contamines
+  gate_family: G3_financial
+  requirement: Individual notification is mandatory for contaminated site remediation aid
+    exceeding EUR 20,000,000 per undertaking and per investment project.
+  value: EUR 20,000,000 per undertaking/project
+  intake_field: ticketBand
+  quote: Une notification individuelle est obligatoire pour les aides supérieures à 20 000
+    000 EUR par entreprise et par projet d'investissement.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.9
+  verified: llm_cited
+- id: g3-notification-environmental-investment
+  gate_family: G3_financial
+  requirement: Individual notification is mandatory for environmental protection investment
+    aid (beyond-standards) exceeding EUR 15,000,000 per undertaking and per project.
+  value: EUR 15,000,000 per undertaking/project
+  intake_field: ticketBand
+  quote: Une notification individuelle est obligatoire pour les aides supérieures à 15 000
+    000 EUR par entreprise et par projet.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.4
+  verified: llm_cited
+- id: g3-intensity-environmental
+  gate_family: G3_financial
+  requirement: Maximum aid intensity for environmental protection investment aid ranges from
+    35% (large firms, non-AFR zones) up to 70% (small firms, DOM-COM zones).
+  value: 35%-70% depending on size and zone
+  intake_field: turnoverBand
+  quote: Hors zones AFR 35% 45% 55%
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.5
+  verified: llm_cited
+- id: g3-intensity-remediation
+  gate_family: G3_financial
+  requirement: Maximum aid intensity for contaminated site remediation investment aid is 100%
+    regardless of enterprise size or zone.
+  value: 100%
+  intake_field: none
+  quote: Hors zones AFR 100% 100% 100%
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.8
+  verified: llm_cited
+- id: g3-threshold-decision-vs-convention
+  gate_family: G3_financial
+  requirement: A financing decision constitutes the legal commitment for aid amounts below
+    EUR 200,000, while a financing convention is required for aid amounts of EUR 200,000 or
+    more.
+  value: EUR 200,000 threshold
+  intake_field: ticketBand
+  quote: constitue l’engagement juridique des Parties pour tout montant d’aide inférieure
+    à 200 000 euros et pour toutes les opérations non soumises à convention de financement.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.8
+  verified: llm_cited
+- id: g3-publication-threshold
+  gate_family: G3_financial
+  requirement: Information on individual aid awards exceeding EUR 500,000 must be published
+    on a comprehensive state aid website.
+  value: EUR 500,000 publication threshold
+  intake_field: none
+  quote: les informations concernant chaque aide individuelle de plus de 500 000 EUR, en utilisant
+    le formulaire type établi à l’annexe II.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.12
+  verified: llm_cited
+- id: g4-forms-of-aid
+  gate_family: G4_borrower_model
+  requirement: ADEME aid takes the form of either grants (subventions) or recoverable advances
+    (avances récupérables).
+  value: grant or recoverable advance
+  intake_field: borrowerModel
+  quote: Les aides attribuées par l’ADEME prendront la forme soit de subventions soit d’avances
+    récupérables.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.3
+  verified: llm_cited
+- id: g4-transparency
+  gate_family: G4_borrower_model
+  requirement: Aid must be transparent, meaning the gross grant equivalent can be calculated
+    precisely in advance without risk assessment; recoverable advances are deemed transparent
+    only if within applicable thresholds/intensities or if GGE calculated via a Commission-approved
+    method.
+  value: transparent aid instruments only
+  intake_field: borrowerModel
+  quote: Une aide d’Etat est transparente lorsqu’il est possible de calculer précisément et
+    préalablement l’équivalent-subvention brut (ESB), sans qu’il soit nécessaire d’effectuer
+    une analyse du risque.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.3
+  verified: llm_cited
+- id: g5-use-recycling
+  gate_family: G5_use_of_funds
+  requirement: Aid may fund investments in recycling and re-use of waste generated by other
+    undertakings, provided the materials would otherwise be disposed of or treated less environmentally
+    soundly, and provided the investment goes beyond the state of the art.
+  value: investment in recycling/re-use of third-party waste, beyond state of the art
+  intake_field: none
+  quote: Les aides à l'investissement sont octroyées pour le recyclage et le réemploi des
+    déchets générés par d'autres entreprises.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.10
+  verified: llm_cited
+- id: g5-use-environmental-studies
+  gate_family: G5_use_of_funds
+  requirement: Aid may fund costs of environmental studies, including energy audits, directly
+    linked to investments covered by the scheme; large enterprises cannot receive aid for
+    energy audits mandated by Directive 2012/27/EU unless additional to the mandatory audit.
+  value: environmental study/energy audit costs
+  intake_field: none
+  quote: Elles peuvent recevoir une aide pour les coûts relatifs aux études, notamment aux
+    audits énergétiques, directement liées aux investissements visés dans le présent régime.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.11
+  verified: llm_cited
+- id: g5-use-remediation
+  gate_family: G5_use_of_funds
+  requirement: Aid may fund remediation of contaminated sites (soil and surface/groundwater
+    damage), but only where the polluter cannot be identified or held liable under the polluter-pays
+    principle.
+  value: site remediation costs, net of land value increase
+  intake_field: none
+  quote: Lorsqu'est identifiée la personne morale ou physique responsable du dommage environnemental
+    selon le droit applicable dans chaque État membre, sans préjudice des règles de l'Union
+    en la matière, cette personne est tenue de financer l'assainissement conformément au principe
+    du «pollueur-payeur» et aucune aide d'État n'est octroyée.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: "Lorsqu''est identifiée la personne morale ou
+    physiq"'
+- id: g5-use-renewable-new-installations
+  gate_family: G5_use_of_funds
+  requirement: Investment aid for renewable energy is granted only to new installations, and
+    no aid may be granted or paid once the installation has started operating; aid is independent
+    of production.
+  value: new installations only
+  intake_field: developmentStage
+  quote: Les aides à l'investissement sont octroyées uniquement aux nouvelles installations.
+    Aucune aide ne peut être octroyée ni versée une fois que l'installation a démarré ses
+    activités et les aides sont indépendantes de la production.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.7
+  verified: llm_cited
+- id: g5-precommencement
+  gate_family: G5_use_of_funds
+  requirement: Aid is deemed to have an incentive effect only if the beneficiary submitted
+    a written aid application to ADEME before starting work on the project or activity.
+  value: application before start of works required
+  intake_field: needBy
+  quote: Une aide est réputée avoir un effet incitatif si le bénéficiaire a présenté une demande
+    d'aide écrite à l’ADEME avant le début des travaux liés au projet ou à l'activité en question.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.3
+  verified: llm_cited
+- id: g6-cumulation-gbcer
+  gate_family: G6_conditionality
+  requirement: Aid under this scheme may be cumulated with other GBER aid on different identifiable
+    eligible costs, or on overlapping costs only if it does not exceed the highest applicable
+    intensity/amount.
+  value: cumulation allowed under conditions
+  intake_field: cofinancingBand
+  quote: toute autre aide d'État octroyée au titre du RGEC, dès lors qu'elle porte sur des
+    coûts admissibles identifiables différents;
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.12
+  verified: llm_cited
+- id: g6-no-cumul-deminimis
+  gate_family: G6_conditionality
+  requirement: Aid exempted under this scheme cannot be cumulated with de minimis aid on the
+    same eligible costs if this would exceed the intensities set in Chapter III of GBER.
+  value: no cumulation with de minimis if exceeding GBER intensity
+  intake_field: cofinancingBand
+  quote: Les aides d’État exemptées par le présent régime ne peuvent pas être cumulées avec
+    des aides de minimis prévues par le règlement (UE) n°1407/2013
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.12
+  verified: llm_cited
+- id: g6-no-cumul-tariff
+  gate_family: G6_conditionality
+  requirement: Beneficiary must not cumulate ADEME aid for its operation with renewable electricity
+    tariff/premium schemes or public procurement tender financing, except for exemplary operations
+    or methanisation installations.
+  value: no cumulation except exceptions
+  intake_field: cofinancingBand
+  quote: un tarif d'achat dans le cadre de l'obligation d'achat d'électricité renouvelable
+    ou une prime dans le cadre du complément de rémunération, hormis pour des opérations exemplaires
+    ou pour des installations de méthanisation.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.4
+  verified: llm_cited
+obligations:
+- requirement: Beneficiary must inform ADEME without delay of any difficulties, project modification/abandonment,
+    changes to legal form/capital/organization, and any other public aid sought or received
+    for the operation.
+  quote: 'Il doit en particulier communiquer à l’ADEME sans délai : les difficultés éventuellement
+    rencontrées, ainsi que tout projet de modification ou abandon de l’opération,'
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.2
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Il doit en particulier communiquer à l’ADEME
+    sans '''
+- requirement: Beneficiary must mention ADEME's financing in all related communication materials,
+    e.g., via a sign on-site or ADEME's logo.
+  quote: Le bénéficiaire s’engage en outre à mentionner le financement apporté par l’ADEME
+    dans tous ses actes et supports de communication y afférents, en particulier le cas échéant
+    par la pose d’un panneau sur le site de réalisation de l’opération ou en apposant le logo
+    de l’ADEME sur les supports de communication.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.2
+  verified: llm_cited
+- requirement: Beneficiary must not seek public aid cumulable with ADEME's aid that would
+    exceed the public aid ceiling applicable to its operation under national/EU rules.
+  quote: Il s’engage, une fois l’aide de l’ADEME notifiée, à ne pas solliciter d’aide publique
+    cumulable avec celle de l’ADEME ayant pour effet de dépasser le plafond des aides publiques
+    pouvant être attribué pour son opération en application de la réglementation nationale
+    et/ou communautaire.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.3
+  verified: llm_cited
+- requirement: Beneficiary must submit all supporting documents for technical/financial monitoring
+    and payment within deadlines set in the financing decision/convention, certified accurate
+    by the legal representative.
+  quote: transmettre à l’ADEME suivant les délais fixés dans la décision ou la convention
+    de financement tous les justificatifs permettant le suivi technique et financier de l’opération
+    et le versement de l’aide qui y sont exigés
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.3
+  verified: llm_cited
+- requirement: Beneficiary must exploit efficiently and maintain the aided equipment for at
+    least three years after the end of the operation and must not dispose of it to a third
+    party during that period.
+  quote: s’engage à exploiter efficacement suivant les performances prévues, pour son propre
+    compte ou dans le cadre d’une autre entité du même groupe, les équipements aidés et les
+    maintenir en bon état de fonctionnement pendant une période au moins égale à trois ans
+    à compter de la date de fin de l’opération,
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.4
+  verified: llm_cited
+- requirement: Beneficiary must provide accounting, financial and technical documents linked
+    to its operation within fifteen working days of any ADEME request.
+  quote: Le bénéficiaire s’engage à transmettre à l’ADEME dans les quinze jours ouvrés suivant
+    toute demande les documents de nature comptable, financière et technique liés directement
+    à son opération.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.4
+  verified: llm_cited
+- requirement: ADEME retains detailed records on individual aid awards for ten years from
+    the date of grant, including information on beneficiary status, incentive effect, and
+    eligible cost amounts.
+  quote: Les dossiers concernant les aides individuelles sont conservés pendant dix ans à
+    compter de la date d’octroi des aides.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.12
+  verified: llm_cited
+- requirement: The aid application to ADEME must be submitted before any commencement of the
+    aided operation, i.e., before any commitment making the operation irreversible.
+  quote: Elle doit être faite par le bénéficiaire avant tout commencement de réalisation de
+    l'opération aidée, c’est-à-dire avant tout engagement rendant l’opération irréversible
+    au sens du droit communautaire.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.8
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (25/26 gates, 7/8 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: To ensure notification thresholds and maximum aid intensities are respected, the total
+    amount of State aid granted for the activity/project must be taken into account regardless
+    of funding source (local, regional, national, EU); centrally-managed EU funding not controlled
+    by the Member State is excluded from this calculation provided total public funding does
+    not exceed the most favourable EU financing rate for the same eligible costs.
+  quote: Afin de s’assurer que les seuils de notification individuels et les intensités d’aide
+    maximales sont respectés, il convient de tenir compte du montant total d'aides d’Etat
+    accordées en faveur de l'activité ou du projet considéré, que ces aides proviennent de
+    sources locales, régionales, nationales ou européennes.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regime_exempte_sa59358.pdf#p.11
+  verified: llm_cited
+application:
+  channel: Written application (letter or electronic) or submission of a candidature dossier
+    to a call for projects/expressions of interest to ADEME, followed by a financing decision
+    or convention.
+  typical_timeline: Payment must occur within sixty days from receipt of the complete payment
+    request; beneficiary has six months after the contractual end of the operation to submit
+    financial elements for payment of balance.
+  quote: La demande d’aide financière à l’ADEME est formalisée par l’envoi d’un courrier (papier
+    ou électronique) ou par le dépôt d’un dossier de candidature.
+  source:
+    file: ademe_regime_exempte_sa59358.pdf
+    locator: ademe_regles_generales_attribution_aides_2014.pdf#p.8
+  verified: llm_cited

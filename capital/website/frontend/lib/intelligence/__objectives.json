@@ -1,0 +1,4761 @@
+{
+ "satr_at_equity__sa_101859__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_equity__sa_101861__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_equity__sa_112285__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_equity__sa_112286__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_equity__sa_117759__austria_wirtschaftsservice_gmbh_aws": {
+  "articles": [
+   "14",
+   "17",
+   "25(2)(c)",
+   "50"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_101859__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_rnd__sa_101860__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_at_rnd__sa_101861__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_rnd__sa_102782__austria_wirtschaftsservice_gmbh_aws": {
+  "articles": [
+   "17",
+   "22",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_at_rnd__sa_102793__kommunalkredit_public_consulting_gmbh_kpc": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_108465__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_110103__kommunalkredit_public_consulting_gmbh_kpc": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_110108__kommunalkredit_public_consulting_gmbh_kpc": {
+  "articles": [
+   "38"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_110295__kommunalkredit_public_consulting_gmbh_kpc": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_110327__karntner_wirtschaftsforderungsfonds_kwf": {
+  "articles": [
+   "17",
+   "25",
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_111051__wirtschaftsagentur_wien": {
+  "articles": [
+   "17",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_111094__osterreichische_hotel_und_tourismusbank_oht": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_112257__austria_wirtschaftsservice_gmbh_aws": {
+  "articles": [
+   "17",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_112285__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_rnd__sa_112286__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_rnd__sa_112517__osterreichische_forschungsforderungsgesellschaft": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_at_rnd__sa_113408__oemag_abwicklungsstelle_fur_okostrom_ag": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_114191__austria_wirtschaftsservice_gmbh_aws": {
+  "articles": [
+   "17",
+   "22",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_at_rnd__sa_115611__amt_der_niederosterreichischen_landesregierung_a": {
+  "articles": [
+   "17",
+   "25(2)(c)",
+   "26"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "production_capex",
+   "rd_facilities"
+  ]
+ },
+ "satr_at_rnd__sa_41223__kommunalkredit_public_consulting_gmbh_kpc": {
+  "articles": [
+   "36",
+   "38",
+   "40",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_61447__kommunalkredit_public_consulting_gmbh_kpc": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_at_rnd__sa_63640__kommunalkredit_public_consulting_gmbh_kpc": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_be_equity__sa_52328__spw_dgo_economie_emploi_et_recherche": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection"
+  ]
+ },
+ "satr_be_rnd__sa_108196__vlaio": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_be_rnd__sa_108201__vlaio": {
+  "articles": [
+   "36",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_be_rnd__sa_108203__vlaio": {
+  "articles": [
+   "22",
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research",
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_be_rnd__sa_108206__vlaio": {
+  "articles": [
+   "22",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_be_rnd__sa_108207__vlaio": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_be_rnd__sa_108433__vlaio": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "26",
+   "27",
+   "36",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex",
+   "rd_facilities"
+  ]
+ },
+ "satr_be_rnd__sa_112959__spw_dgo_economie_emploi_et_recherche": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_be_rnd__sa_114749__vlaio": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_be_rnd__sa_48683__energie": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(d)",
+   "26"
+  ],
+  "useOfFunds": [
+   "feasibility_study",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_be_rnd__sa_52328__spw_dgo_economie_emploi_et_recherche": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection"
+  ]
+ },
+ "satr_be_rnd__sa_60033__vlaio": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_be_rnd__sa_61806__spw_dgo_economie_emploi_et_recherche": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_be_rnd__sa_63753__vlaio": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_be_rnd__sa_63756__vlaio": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_cz_rnd__sa_103288__technologicka_agentura_cr": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_104221__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "38"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_104222__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_104437__technologicka_agentura_cr": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_107607__technologicka_agentura_cr": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_109050__ministerstvo_zivotniho_prostredi_odbor_fondu_eu": {
+  "articles": [
+   "36",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_109051__ministerstvo_zivotniho_prostredi_odbor_fondu_eu": {
+  "articles": [
+   "38"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_109448__ministerstvo_zivotniho_prostredi": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_109785__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_109786__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_109956__ministerstvo_zemedelstvi": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_111730__ministerstvo_dopravy": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_111735__ministerstvo_zivotniho_prostredi": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_111780__ministerstvo_zivotniho_prostredi": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_111787__ministerstvo_zivotniho_prostredi": {
+  "articles": [
+   "38"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_112169__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_112295__ministerstvo_zivotniho_prostredi": {
+  "articles": [
+   "36",
+   "38"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_112630__statni_zemedelsky_intervencni_fond": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_113941__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "25(2)(c)",
+   "25(2)(d)",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "ip_protection"
+  ]
+ },
+ "satr_cz_rnd__sa_114427__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_114605__ministerstvo_prumyslu_a_obchodu_odbor_vyzkumu_vy": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_116919__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_118043__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_cz_rnd__sa_118285__statni_zemedelsky_intervencni_fond": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_118838__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study"
+  ]
+ },
+ "satr_cz_rnd__sa_119259__technologicka_agentura_cr": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_54297__technologicka_agentura_cr": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_55058__ministerstvo_prumyslu_a_obchodu_odbor_vyzkumu_vy": {
+  "articles": [
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection"
+  ]
+ },
+ "satr_cz_rnd__sa_60437__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_60510__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "38",
+   "40",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_60519__ministerstvo_prumyslu_a_obchodu": {
+  "articles": [
+   "26"
+  ],
+  "useOfFunds": [
+   "rd_facilities"
+  ]
+ },
+ "satr_cz_rnd__sa_62613__ministerstvo_zemedelstvi": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_cz_rnd__sa_63670__ministerstvo_zivotniho_prostredi_cr_odbor_podpor": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_cz_rnd__sa_63671__ministerstvo_zivotniho_prostredi_cr_odbor_podpor": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_equity__sa_110928__burgschaftsbank_baden_wurttemberg_gmbh": {
+  "articles": [
+   "17",
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_de_equity__sa_111002__kreditanstalt_fur_wiederaufbau": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_equity__sa_111005__kreditanstalt_fur_wiederaufbau": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_equity__sa_111217__l_bank_baden_wurttemberg": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_equity__sa_111218__l_bank_baden_wurttemberg": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_equity__sa_61341__kreditanstalt_fur_wiederaufbau": {
+  "articles": [
+   "17",
+   "36",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_100248__bundesministerium_fur_verkehr_und_digitale_infra": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_101541__bayerisches_staatsministerium_fur_wirtschaft_lan": {
+  "articles": [
+   "17",
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_101541__investitionsbank_berlin": {
+  "articles": [
+   "17",
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_102144__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_102344__ministerium_fur_wirtschaft_arbeit_und_tourismus": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_de_rnd__sa_102510__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_103212__bayerisches_staatsministerium_fur_wirtschaft_lan": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_103582__nbank": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_103809__projekttrager_im_dlr": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_105184__tuv_rheinland_forschungs_und_innovationsmanageme": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_105973__nrw_bank": {
+  "articles": [
+   "17",
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_106032__sachsen_sab": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection"
+  ]
+ },
+ "satr_de_rnd__sa_106076__sachsen_sab": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_106102__dlr_raumfahrtagentur": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_107108__thuringer_aufbaubank": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_107516__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": {
+  "articles": [
+   "17",
+   "36",
+   "38",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_109088__projekttrager_julich": {
+  "articles": [
+   "25(2)(c)",
+   "36"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_de_rnd__sa_109340__bundesministerium_fur_wirtschaft_und_energie": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_110061__vdi_vde_innovation_und_technik": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_de_rnd__sa_110630__bundesanstalt_fur_landwirtschaft_und_ernahrung": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_110716__bezirksregierung_arnsberg": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_111712__projekttrager_julich": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_de_rnd__sa_111857__bundesministerium_fur_wirtschaft_und_energie": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_de_rnd__sa_111957__l_bank_baden_wurttemberg": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_112005__wibank": {
+  "articles": [
+   "17",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "29",
+   "36",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_112094__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_112200__ministerium_fur_wirtschaft_arbeit_energie_und_ve": {
+  "articles": [
+   "17",
+   "36",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_112200__nbank": {
+  "articles": [
+   "17",
+   "36",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_112241__bayerisches_staatsministerium_fur_wirtschaft_lan": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_112392__nbank": {
+  "articles": [
+   "17",
+   "36",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_112558__technologie_beratungs_institut_gmbh": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_112605__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_112843__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "26"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_de_rnd__sa_112879__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_de_rnd__sa_112915__bundesministerium_fur_verkehr_und_digitale_infra": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_112919__kreditanstalt_fur_wiederaufbau": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_113000__projekttrager_julich": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_113239__sachsen_sab": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_de_rnd__sa_113242__investitionsbank_des_landes_brandenburg": {
+  "articles": [
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_de_rnd__sa_113336__hamburgische_investitions_und_forderbank": {
+  "articles": [
+   "38"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_113475__tuv_rheinland_forschungs_und_innovationsmanageme": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_113487__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_113708__bayern_innovativ_bayerische_gesellschaft_fur_inn": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_113709__thuringer_aufbaubank": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_113753__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_114510__nrw_bank": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_de_rnd__sa_114563__bundesministerium_fur_wirtschaft_und_energie": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_114724__fa_fur_korperschaften_iv": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_114724__finanzamt_munchen_abt_3": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_114738__tuv_rheinland_forschungs_und_innovationsmanageme": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_114951__bayerisches_staatsministerium_fur_wirtschaft_lan": {
+  "articles": [
+   "17",
+   "38"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_114975__bayerisches_staatsministerium_fur_wirtschaft_lan": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_115144__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_de_rnd__sa_115170__sachsen_sab": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection"
+  ]
+ },
+ "satr_de_rnd__sa_115248__projekttrager_julich": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "26",
+   "27",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_de_rnd__sa_115465__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_de_rnd__sa_118481__l_bank_baden_wurttemberg": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_118705__tuv_rheinland_forschungs_und_innovationsmanageme": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_119894__bayerisches_staatsministerium_fur_wirtschaft_lan": {
+  "articles": [
+   "17",
+   "36",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_53084__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle": {
+  "articles": [
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_53396__projekttrager_im_dlr": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_55785__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_de_rnd__sa_56245__fa_fur_korperschaften_ii": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__fa_fur_korperschaften_iv": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_aachen_stadt": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_aschaffenburg": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_darmstadt": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_erlangen": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_freiburg_stadt": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_furstenfeldbruck": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_gie_en": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_heidelberg": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_heilbronn": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_munchen_abt_3": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_offenburg": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_stuttgart_korperschaften": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzamt_wiesbaden": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__finanzverwaltung_niedersachsen": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__mfw_sl": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56245__zentralfinanzamt_nurnberg": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_56379__kreditanstalt_fur_wiederaufbau": {
+  "articles": [
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_61251__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_61980__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_62312__nrw_bank": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_62747__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_62774__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_62780__deutsches_zentrum_fur_luft_und_raumfahrt_e_v_dlr": {
+  "articles": [
+   "25(2)(b)",
+   "36"
+  ],
+  "useOfFunds": [
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_63058__bundesministerium_fur_bildung_und_forschung": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_63144__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_63889__bundesministerium_fur_wirtschaft_und_energie": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "36",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_de_rnd__sa_63988__bundesministerium_fur_wirtschaft_und_klimaschutz": {
+  "articles": [
+   "25(2)(c)",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection"
+  ]
+ },
+ "satr_de_rnd__sa_64509__projekttrager_julich": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_de_rnd__sa_64551__bundesinstitut_fur_bau_stadt_und_raumforschung_i": {
+  "articles": [
+   "25(2)(a)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_64558__investitionsbank_berlin": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_de_rnd__sa_64601__ministerium_fur_wirtschaft_arbeit_und_tourismus": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_ee_rnd__sa_107952__ettevotluse_ja_innovatsiooni_sihtasutus": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_ee_rnd__sa_109351__sa_keskkonnainvesteeringute_keskus": {
+  "articles": [
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_ee_rnd__sa_111429__ettevotluse_ja_innovatsiooni_sihtasutus": {
+  "articles": [
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_ee_rnd__sa_113067__ettevotluse_ja_innovatsiooni_sihtasutus": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_ee_rnd__sa_113071__ettevotluse_ja_innovatsiooni_sihtasutus": {
+  "articles": [
+   "25(2)(c)",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection"
+  ]
+ },
+ "satr_ee_rnd__sa_119771__ettevotluse_ja_innovatsiooni_sihtasutus": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection"
+  ]
+ },
+ "satr_fi_equity__sa_112229__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_fi_equity__sa_53571__business_finland_venture_capital_oy": {
+  "articles": [
+   "21"
+  ],
+  "useOfFunds": [
+   "working_capital"
+  ]
+ },
+ "satr_fi_equity__sa_58492__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_fi_rnd__sa_101228__tyo_ja_elinkeinoministerio": {
+  "articles": [
+   "38",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fi_rnd__sa_106794__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "38",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fi_rnd__sa_111546__ita_suomen_elinvoimakeskus": {
+  "articles": [
+   "17",
+   "21",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_fi_rnd__sa_111546__keski_suomen_elinvoimakeskus": {
+  "articles": [
+   "17",
+   "21",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_fi_rnd__sa_112227__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_fi_rnd__sa_112229__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_fi_rnd__sa_112332__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "38",
+   "41",
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fi_rnd__sa_58492__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_fi_rnd__sa_58494__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_fi_rnd__sa_61856__innovaatiorahoituskeskus_business_finland": {
+  "articles": [
+   "36",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_equity__sa_111728__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "17",
+   "18",
+   "22",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_fr_equity__sa_111729__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "21",
+   "22",
+   "24"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_fr_equity__sa_40391__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_equity__sa_58995__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_equity__sa_58995__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_equity__sa_59357__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "36",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__caisse_des_depots": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__conseil_regional": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__conseil_regional_d_ile_de_france": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__conseil_regional_hauts_de_france": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__conseil_regional_nouvelle_aquitaine": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__conseil_regional_occitanie": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__ministere_des_armees": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__region_grand_est": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__region_normandie": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111723__region_pays_de_la_loire": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_111726__agence_seine_normandie": {
+  "articles": [
+   "36",
+   "38",
+   "39",
+   "41",
+   "46",
+   "47",
+   "48",
+   "49"
+  ],
+  "useOfFunds": [
+   "feasibility_study",
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_111726__conseil_regional_nouvelle_aquitaine": {
+  "articles": [
+   "36",
+   "38",
+   "39",
+   "41",
+   "46",
+   "47",
+   "48",
+   "49"
+  ],
+  "useOfFunds": [
+   "feasibility_study",
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_111726__direction_generale_de_l_amenagement_du_logement_": {
+  "articles": [
+   "36",
+   "38",
+   "39",
+   "41",
+   "46",
+   "47",
+   "48",
+   "49"
+  ],
+  "useOfFunds": [
+   "feasibility_study",
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "36",
+   "38",
+   "39",
+   "41",
+   "46",
+   "47",
+   "48",
+   "49"
+  ],
+  "useOfFunds": [
+   "feasibility_study",
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_111728__conseil_regional": {
+  "articles": [
+   "17",
+   "18",
+   "22",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_fr_rnd__sa_111728__conseil_regional_d_ile_de_france": {
+  "articles": [
+   "17",
+   "18",
+   "22",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_fr_rnd__sa_111728__conseil_regional_nouvelle_aquitaine": {
+  "articles": [
+   "17",
+   "18",
+   "22",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_fr_rnd__sa_111728__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "17",
+   "18",
+   "22",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_fr_rnd__sa_111728__region_grand_est": {
+  "articles": [
+   "17",
+   "18",
+   "22",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_fr_rnd__sa_111938__cnc": {
+  "articles": [
+   "17",
+   "25(2)(c)",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_112158__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_fr_rnd__sa_40391__ministere_de_l_agriculture_et_de_l_alimentation": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_40391__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_40405__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "36",
+   "38",
+   "40",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_40453__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_58973__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_58995__caisse_des_depots": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_58995__conseil_regional": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_58995__conseil_regional_nouvelle_aquitaine": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_58995__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_58995__ministere_des_armees": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_58995__region_grand_est": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_fr_rnd__sa_59108__conseil_regional_nouvelle_aquitaine": {
+  "articles": [
+   "36",
+   "38",
+   "39",
+   "40",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_59357__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "36",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_59358__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_fr_rnd__sa_59366__ministere_de_la_transition_ecologique_et_solidai": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_gb_equity__sa_39065__mhclg": {
+  "articles": [
+   "21"
+  ],
+  "useOfFunds": [
+   "working_capital"
+  ]
+ },
+ "satr_gr_equity__sa_102166__special_recovery_fund_coordination_service": {
+  "articles": [
+   "14",
+   "17",
+   "18",
+   "25(2)(c)",
+   "25(2)(d)",
+   "36",
+   "38",
+   "41",
+   "47",
+   "56"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "market_launch",
+   "production_capex"
+  ]
+ },
+ "satr_gr_equity__sa_111393__special_recovery_fund_coordination_service": {
+  "articles": [
+   "14",
+   "17",
+   "18",
+   "25(2)(b)",
+   "25(2)(c)",
+   "36",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "market_launch",
+   "production_capex"
+  ]
+ },
+ "satr_gr_equity__sa_114445__unknown": {
+  "articles": [
+   "21"
+  ],
+  "useOfFunds": [
+   "working_capital"
+  ]
+ },
+ "satr_gr_equity__sa_119358__special_recovery_fund_coordination_service": {
+  "articles": [
+   "14",
+   "17",
+   "18",
+   "25(2)(b)",
+   "25(2)(c)",
+   "36",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "market_launch",
+   "production_capex"
+  ]
+ },
+ "satr_gr_equity__sa_50649__managing_authority_of_the_operational_programme_": {
+  "articles": [
+   "21"
+  ],
+  "useOfFunds": [
+   "working_capital"
+  ]
+ },
+ "satr_gr_rnd__sa_102124__unknown": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_gr_rnd__sa_103150__ministry_of_agricultural_development": {
+  "articles": [
+   "28",
+   "36",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex"
+  ]
+ },
+ "satr_gr_rnd__sa_103730__ministry_of_agricultural_development": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_gr_rnd__sa_111412__ministry_of_agricultural_development": {
+  "articles": [
+   "28",
+   "36",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex"
+  ]
+ },
+ "satr_gr_rnd__sa_111414__ministry_of_agricultural_development": {
+  "articles": [
+   "28",
+   "36",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex"
+  ]
+ },
+ "satr_gr_rnd__sa_113148__unknown": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_gr_rnd__sa_114852__unknown": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_hu_rnd__sa_117786__nemzetgazdasagi_miniszterium": {
+  "articles": [
+   "17",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_hu_rnd__sa_119085__nkfih": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_hu_rnd__sa_39874__penzugyminiszterium_gazdasagfejlesztesi_programo": {
+  "articles": [
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_hu_rnd__sa_63752__penzugyminiszterium_gazdasagfejlesztesi_programo": {
+  "articles": [
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_hu_rnd__sa_64049__nkfih": {
+  "articles": [
+   "17",
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "26"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex",
+   "rd_facilities"
+  ]
+ },
+ "satr_ie_rnd__sa_111046__enterprise_ireland": {
+  "articles": [
+   "17",
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_ie_rnd__sa_111052__enterprise_ireland": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_ie_rnd__sa_111052__ida_ireland": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_ie_rnd__sa_112293__sustainable_energy_authority_of_ireland": {
+  "articles": [
+   "38"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_ie_rnd__sa_117696__sustainable_energy_authority_of_ireland": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_ie_rnd__sa_39318__enterprise_ireland": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_ie_rnd__sa_59867__enterprise_ireland": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_ie_rnd__sa_59867__ida_ireland": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_ie_rnd__sa_59868__enterprise_ireland": {
+  "articles": [
+   "17",
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_it_equity__sa_101250__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "14",
+   "17",
+   "25(2)(b)",
+   "25(2)(c)",
+   "29",
+   "36",
+   "38"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_it_equity__sa_101256__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "14"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_equity__sa_102955__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_equity__sa_103469__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "14",
+   "17",
+   "25(2)(b)",
+   "25(2)(c)",
+   "29",
+   "36",
+   "38",
+   "40",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_it_equity__sa_104270__agenzia_nazionale_per_l_attrazione_degli_investi": {
+  "articles": [
+   "14",
+   "17"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_equity__sa_104688__regione_lombardia_dg_ricerca_innovazione_univers": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_equity__sa_109440__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "14",
+   "18"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex"
+  ]
+ },
+ "satr_it_equity__sa_109544__banca_del_mezzogiorno_mediocredito_centrale_s_p_": {
+  "articles": [
+   "17",
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_it_equity__sa_111746__puglia_sviluppo_s_p_a": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_it_equity__sa_116269__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "14",
+   "18"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex"
+  ]
+ },
+ "satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "14",
+   "18"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex"
+  ]
+ },
+ "satr_it_equity__sa_60788__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_equity__sa_60791__banca_del_mezzogiorno_mediocredito_centrale_s_p_": {
+  "articles": [
+   "17",
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_it_equity__sa_60795__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_equity__sa_60797__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "14"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_equity__sa_60800__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_equity__sa_62814__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "17",
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_it_rnd__sa_101250__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "14",
+   "17",
+   "25(2)(b)",
+   "25(2)(c)",
+   "29",
+   "36",
+   "38"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_102218__ministero_dell_universita_e_della_ricerca_direzi": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_102227__ministero_dell_universita_e_della_ricerca_direzi": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_102393__autorita_di_gestione_fesr_campania": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_102452__direzione_generale_dell_internazionalizzazione_e": {
+  "articles": [
+   "26"
+  ],
+  "useOfFunds": [
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_102526__ministero_dell_universita_e_della_ricerca_direzi": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_102644__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_it_rnd__sa_102955__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_103131__ministero_della_transizione_ecologica_dipartimen": {
+  "articles": [
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_103132__ministero_della_transizione_ecologica_dipartimen": {
+  "articles": [
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_103136__ministero_della_transizione_ecologica_dipartimen": {
+  "articles": [
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_103972__ministero_della_transizione_ecologica_direzione_": {
+  "articles": [
+   "46"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_104374__invitalia": {
+  "articles": [
+   "17",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_104688__regione_lombardia_dg_ricerca_innovazione_univers": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_106168__agenzia_delle_entrate": {
+  "articles": [
+   "25(2)(a)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_106430__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_106978__finpiemonte_s_p_a": {
+  "articles": [
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_107368__bi_rex_big_data_innovation_research_excellence": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "27",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_107368__competence_industry_manufacturing_4_0": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "27",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_107454__lazio_innova_s_p_a": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_108155__gestore_dei_servizi_energetici_gse_s_p_a": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_108488__fi_l_s_e_s_p_a": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_108948__finpiemonte_s_p_a": {
+  "articles": [
+   "25(2)(c)",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection"
+  ]
+ },
+ "satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_110598__politecnico_di_milano": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_111168__infratel_italia_s_p_a": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_111193__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_111590__ministero_dell_universita_e_della_ricerca_direzi": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_111746__puglia_sviluppo_s_p_a": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_it_rnd__sa_112452__asa_societa_di_consulenza_e_assistenza_alle_impr": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_112453__asa_societa_di_consulenza_e_assistenza_alle_impr": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_112939__regione_autonoma_friuli_venezia_giulia_direzione": {
+  "articles": [
+   "17",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_114209__regione_lombardia_dg_ricerca_innovazione_univers": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_115378__finpiemonte_s_p_a": {
+  "articles": [
+   "25(2)(c)",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection"
+  ]
+ },
+ "satr_it_rnd__sa_117938__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "17",
+   "38",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_118553__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "14",
+   "17",
+   "25(2)(b)",
+   "25(2)(c)",
+   "29",
+   "36",
+   "38",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_118658__ministero_dell_universita_e_della_ricerca_direzi": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_118708__regione_autonoma_friuli_venezia_giulia_direzione": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_118856__regione_emilia_romagna_giunta_regionale_direzion": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "47"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_119109__ministero_della_transizione_ecologica_direzione_": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_119248__regione_lombardia_dg_turismo_marketing_territori": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_120000__asa_societa_di_consulenza_e_assistenza_alle_impr": {
+  "articles": [
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection"
+  ]
+ },
+ "satr_it_rnd__sa_120576__ministero_della_transizione_ecologica_direzione_": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_47037__ministero_dell_istruzione_dell_universita_e_dell": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_47037__ministero_dell_universita_e_della_ricerca_direzi": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_48482__regione_autonoma_friuli_venezia_giulia_direzione": {
+  "articles": [
+   "17",
+   "38",
+   "40",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_49781__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_51460__provincia_autonoma_di_bolzano_ripartizione_innov": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "market_launch",
+   "rd_facilities",
+   "working_capital"
+  ]
+ },
+ "satr_it_rnd__sa_53676__ministero_dello_sviluppo_economico_direzione_gen": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_55956__autorita_di_gestione_fesr_campania": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "26",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "ip_protection",
+   "rd_facilities"
+  ]
+ },
+ "satr_it_rnd__sa_58192__agenzia_delle_entrate": {
+  "articles": [
+   "25(2)(a)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_60776__regione_puglia_dipartimento_sviluppo_economico_i": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection"
+  ]
+ },
+ "satr_it_rnd__sa_60788__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_60790__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_60793__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_it_rnd__sa_60795__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_60800__ministero_delle_imprese_e_del_made_in_italy_dire": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_it_rnd__sa_61548__provincia_autonoma_di_trento": {
+  "articles": [
+   "17",
+   "25(2)(b)",
+   "25(2)(c)",
+   "38"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_it_rnd__sa_62814__invitalia_agenzia_nazionale_per_l_attrazione_deg": {
+  "articles": [
+   "17",
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_lu_rnd__sa_111794__ministere_de_l_economie": {
+  "articles": [
+   "36",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_lu_rnd__sa_111797__ministere_de_l_economie": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "28",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_lu_rnd__sa_48476__ministere_de_l_economie": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "market_launch",
+   "rd_facilities",
+   "working_capital"
+  ]
+ },
+ "satr_lu_rnd__sa_61332__ministere_de_l_economie": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)",
+   "26",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "market_launch",
+   "rd_facilities",
+   "working_capital"
+  ]
+ },
+ "satr_lv_equity__sa_110432__as_attistibas_finansu_institucija_altum": {
+  "articles": [
+   "14"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_lv_equity__sa_46397__as_attistibas_finansu_institucija_altum": {
+  "articles": [
+   "21"
+  ],
+  "useOfFunds": [
+   "working_capital"
+  ]
+ },
+ "satr_lv_rnd__sa_103894__centrala_finansu_un_ligumu_agentura": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_lv_rnd__sa_112272__centrala_finansu_un_ligumu_agentura": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_lv_rnd__sa_112273__centrala_finansu_un_ligumu_agentura": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_lv_rnd__sa_112274__centrala_finansu_un_ligumu_agentura": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_lv_rnd__sa_116749__centrala_finansu_un_ligumu_agentura": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_nl_equity__sa_62153__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_nl_rnd__sa_103112__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_103845__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_103892__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_106413__kansen_voor_west": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27",
+   "28",
+   "29",
+   "36",
+   "38",
+   "47",
+   "48"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "ip_protection",
+   "production_capex",
+   "rd_facilities"
+  ]
+ },
+ "satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "22",
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "market_launch",
+   "rd_facilities",
+   "working_capital"
+  ]
+ },
+ "satr_nl_rnd__sa_108830__provincie_noord_brabant": {
+  "articles": [
+   "25(2)(c)",
+   "25(2)(d)",
+   "42"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_109578__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_109782__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_nl_rnd__sa_109861__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_110899__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_111231__provincie_noord_brabant": {
+  "articles": [
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_nl_rnd__sa_112590__samenwerkingsverband_noord_nederland": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "26",
+   "27",
+   "47",
+   "48"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex",
+   "rd_facilities"
+  ]
+ },
+ "satr_nl_rnd__sa_113866__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "feasibility_study"
+  ]
+ },
+ "satr_nl_rnd__sa_114170__ministerie_van_volksgezondheid_welzijn_sport": {
+  "articles": [
+   "27",
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "rd_facilities"
+  ]
+ },
+ "satr_nl_rnd__sa_116015__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_116945__provincie_gelderland": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "36"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_117202__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_117203__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_117204__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_117393__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_117484__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_117531__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_44328__ministerie_van_financien": {
+  "articles": [
+   "36",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_53946__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "25(2)(c)",
+   "36",
+   "38",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_55349__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "38",
+   "41"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research",
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_60458__ministerie_van_economische_zaken_en_klimaat": {
+  "articles": [
+   "25(2)(c)",
+   "38",
+   "41",
+   "47"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "production_capex"
+  ]
+ },
+ "satr_nl_rnd__sa_61208__provincie_zuid_holland": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_pt_rnd__sa_102714__compete_2030": {
+  "articles": [
+   "14",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex"
+  ]
+ },
+ "satr_pt_rnd__sa_110394__tamprcentro": {
+  "articles": [
+   "29"
+  ],
+  "useOfFunds": [
+   "experimental_development"
+  ]
+ },
+ "satr_pt_rnd__sa_41942__centro_2030": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_pt_rnd__sa_41942__compete_2030": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_pt_rnd__sa_41942__lisboa_2020": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_pt_rnd__sa_41942__norte_2030": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "industrial_research"
+  ]
+ },
+ "satr_pt_rnd__sa_42136__compete_2030": {
+  "articles": [
+   "14",
+   "28"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "ip_protection",
+   "production_capex"
+  ]
+ },
+ "satr_se_rnd__sa_101867__naturvardsverket": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_se_rnd__sa_106543__naturvardsverket": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_se_rnd__sa_106915__energimyndigheten": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_se_rnd__sa_111803__naturvardsverket": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_se_rnd__sa_112076__vinnova_verket_for_innovationssystem": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "market_launch",
+   "rd_facilities",
+   "working_capital"
+  ]
+ },
+ "satr_se_rnd__sa_112283__tillvaxtverket": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27",
+   "38"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "market_launch",
+   "production_capex",
+   "rd_facilities",
+   "working_capital"
+  ]
+ },
+ "satr_se_rnd__sa_112771__energimyndigheten": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_se_rnd__sa_116003__energimyndigheten": {
+  "articles": [
+   "25(2)(a)",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "26",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "rd_facilities"
+  ]
+ },
+ "satr_se_rnd__sa_119375__rymdstyrelsen": {
+  "articles": [
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research"
+  ]
+ },
+ "satr_se_rnd__sa_60496__vinnova_verket_for_innovationssystem": {
+  "articles": [
+   "22",
+   "25(2)(b)",
+   "25(2)(c)",
+   "25(2)(d)",
+   "27"
+  ],
+  "useOfFunds": [
+   "experimental_development",
+   "feasibility_study",
+   "industrial_research",
+   "market_launch",
+   "rd_facilities",
+   "working_capital"
+  ]
+ },
+ "satr_se_rnd__sa_61710__naturvardsverket": {
+  "articles": [
+   "36",
+   "38",
+   "41",
+   "46",
+   "47"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_sk_equity__sa_56488__ministerstvo_skolstva_vedy_vyskumu_a_sportu_sr": {
+  "articles": [
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "working_capital"
+  ]
+ },
+ "satr_sk_rnd__sa_101231__ministerstvo_prace_socialnych_veci_a_rodiny_sr": {
+  "articles": [
+   "17",
+   "21",
+   "22"
+  ],
+  "useOfFunds": [
+   "market_launch",
+   "production_capex",
+   "working_capital"
+  ]
+ },
+ "satr_sk_rnd__sa_101715__ministerstvo_zivotneho_prostredia_sr": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_sk_rnd__sa_102295__ministerstvo_hospodarstva_sr": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_sk_rnd__sa_102912__okte_a_s": {
+  "articles": [
+   "42"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_sk_rnd__sa_105002__ministerstvo_hospodarstva_sr": {
+  "articles": [
+   "36"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_sk_rnd__sa_109957__ministerstvo_hospodarstva_sr": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura": {
+  "articles": [
+   "41"
+  ],
+  "useOfFunds": [
+   "production_capex"
+  ]
+ },
+ "satr_sk_rnd__sa_116471__ministerstvo_skolstva_vedy_vyskumu_a_mladeze_sr": {
+  "articles": [
+   "25(2)(b)"
+  ],
+  "useOfFunds": [
+   "industrial_research"
+  ]
+ },
+ "satr_sk_rnd__sa_117246__urad_podpredsedu_vlady_slovenskej_republiky_pre_": {
+  "articles": [
+   "25(2)(b)",
+   "26"
+  ],
+  "useOfFunds": [
+   "industrial_research",
+   "rd_facilities"
+  ]
+ }
+}

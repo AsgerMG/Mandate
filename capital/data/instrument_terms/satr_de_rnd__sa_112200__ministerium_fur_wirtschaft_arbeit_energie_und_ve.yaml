@@ -1,0 +1,60 @@
+id: satr_de_rnd__sa_112200__ministerium_fur_wirtschaft_arbeit_energie_und_ve
+name: Bund-Länder-Gemeinschaftsaufgabe "Verbesserung der regionalen Wirtschaftsstruktur" (GRW) - gewerbliche
+  Wirtschaft [BMWK - ID1]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Recipients are commercial enterprises.
+  value: Commercial enterprises
+  intake_field: borrowerModel
+  quote: Zuwendungsempfangende sind Unternehmen der gewerblichen Wirtschaft.
+  source:
+    file: https://bravors.brandenburg.de/verwaltungsvorschriften/grw_g_grosse_rili_2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-sector-exclusions
+  gate_family: G1_nexus
+  requirement: Excluded sectors include agriculture and forestry, fisheries and aquaculture, mining and
+    quarrying, slaughterhouses, fish processing, biodiesel and bioethanol production plants, the iron
+    and steel industry, manufacture of weapons, ammunition and military combat vehicles, and energy supply.
+  value: 'Excluded sectors: agri/fishing/mining/steel/weapons/energy etc.'
+  intake_field: none
+  quote: Land- und Forstwirtschaft, Fischerei und Aquakultur; Bergbau und Gewinnung von Steinen und Erden;
+    Schlachtereien; Fischverarbeitung; Anlagen zur Herstellung von Biodiesel und Bioethanol; Eisen- und
+    Stahlindustrie; Herstellung von Waffen, Munition und militärischen Kampffahrzeugen; Energieversorgung.
+  source:
+    file: https://bravors.brandenburg.de/verwaltungsvorschriften/grw_g_grosse_rili_2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-small-company-definition
+  gate_family: G2_size_ownership
+  requirement: A small company has fewer than 50 employees and annual turnover or balance sheet total
+    of at most EUR 10 million.
+  value: 'Small: <50 FTE, <=EUR10m turnover/balance sheet'
+  intake_field: fteBand
+  quote: Ein kleines Unternehmen hat weniger als 50 Mitarbeiter/Mitarbeiterinnen und einen Jahresumsatz
+    beziehungsweise eine Jahresbilanz von höchstens 10 Millionen Euro.
+  source:
+    file: https://bravors.brandenburg.de/verwaltungsvorschriften/grw_g_grosse_rili_2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g2-medium-company-definition
+  gate_family: G2_size_ownership
+  requirement: A medium-sized company has fewer than 250 employees and annual turnover of at most EUR
+    50 million.
+  value: 'Medium: <250 FTE, <=EUR50m turnover'
+  intake_field: fteBand
+  quote: Ein mittleres Unternehmen hat weniger als 250 Mitarbeiter/Mitarbeiterinnen und einen Jahresumsatz
+    von höchstens 50 Millionen Euro.
+  source:
+    file: https://bravors.brandenburg.de/verwaltungsvorschriften/grw_g_grosse_rili_2025
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

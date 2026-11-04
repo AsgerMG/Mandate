@@ -1,0 +1,25 @@
+# PROOF THE GUARD FAILS. The exact defect wsCP found, reintroduced at the gate's
+# own computeVerdict call site, then removed again.
+
+$ git diff --stat  (sabotage applied)
+ website/frontend/scripts/check_recall_floor.ts | 1 +
+ 1 file changed, 1 insertion(+)
+
+$ npx tsx scripts/check_harness_intake.ts
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [harness intake]
+  self-test: 10 detector cases and 7,095 resolver rows agree; 8 distinct fields actually supplied
+
+check_harness_intake: FAILED on 1 harness(es):
+  check_recall_floor.ts: inlines 2 intake key(s) (capitalSought, fteBand), allowed 0 — this harness's numbers are published
+
+A harness that writes its own intake is answering for the founder. Build it from `founderIntake(row, policy)`, which declares — field by field, with a leak argument — what a replayed founder may be told.
+
+$ SELFTEST=1 npx tsx scripts/check_harness_intake.ts   (sabotage removed)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [harness intake]
+  self-test: 10 detector cases and 7,095 resolver rows agree; 8 distinct fields actually supplied
+check_harness_intake: SELFTEST ok — the reintroduced literal is caught on 4 keys (capitalSought, consortium, sector, ticketBand).
+
+$ npx tsx scripts/check_harness_intake.ts   (clean tree)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions  [harness intake]
+  self-test: 10 detector cases and 7,095 resolver rows agree; 8 distinct fields actually supplied
+check_harness_intake: ok — 19 replay harness(es), 23 askable intake fields, 4 held to zero inlined keys, 15 ratcheted.

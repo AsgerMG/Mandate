@@ -1,0 +1,22 @@
+(node:42016) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+12 of 12 archetypes never tested
+
+running 2 companies, concurrency 3
+
+code 878a16cd
+
+[degraded] writer_timeout: Error: writer exceeded 90000ms { candidates: 8 }
+[degraded] writer_truncated: writer produced nothing usable; retrying with thinking off { candidates: 8, chars: 0, stop: 'timeout' }
+[degraded] writer_timeout: Error: writer exceeded 90000ms { candidates: 8 }
+[degraded] writer_truncated: writer produced nothing usable; retrying with thinking off { candidates: 8, chars: 0, stop: 'timeout' }
+[writer] thinking=disabled 31s stop=end_turn out=6035 chars
+[institutions] candidates=8 kept=7 rejected=0 omitted=1 | omitted: clean_aviation
+  Robotics                     Neura Robotics     145s ok
+[writer] thinking=disabled 35s stop=end_turn out=6079 chars
+[institutions] candidates=8 kept=8 rejected=0 omitted=0
+  Hardware                     SMART Photonics    154s ok
+
+wrote memo-bench/run-1786390474796.json
+still untested: FinTech (business lending), FinTech (consumer banking), AI B2C software, AI B2B software, GovTech, Platform, Cloud / NeoCloud, MedTech, Life sciences, AgriTech
+EXIT=0

@@ -1,0 +1,310 @@
+id: eit_urban_mobility
+name: eit_urban_mobility
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-1
+  gate_family: G1_nexus
+  requirement: Applicant must be a legal entity established in an EU Member State or a Third
+    Country associated with Horizon Europe.
+  value: EU Member State or Horizon Europe Associated Country
+  intake_field: entityCountries
+  quote: This Call for Proposals is open to all legal entities established in the Member States
+    of the European Union, and/or in Third countries associated with Horizon Europe.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.8
+  verified: llm_cited
+- id: G1-2
+  gate_family: G1_nexus
+  requirement: Applicant's proposed innovations must target the urban mobility market.
+  value: Urban mobility market focus required
+  intake_field: activityCountries
+  quote: Your proposed innovations target the Urban Mobility market.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.8
+  verified: llm_cited
+- id: G1-3
+  gate_family: G1_nexus
+  requirement: Applicant may not apply to three consecutive cut-offs; must skip a cut-off
+    after two consecutive applications.
+  value: Max 2 consecutive cut-off applications, then must skip one
+  intake_field: needBy
+  quote: You may not apply to three consecutive cut-offs. After submitting an application
+    to two consecutive cut-offs, you must skip at least the following cut-off before applying
+    again.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.8
+  verified: llm_cited
+- id: G4-1
+  gate_family: G4_borrower_model
+  requirement: Applicant must be a startup currently engaged in an active fundraising round
+    (pre-seed/seed or Series A round).
+  value: 'Active fundraising round: pre-seed/seed or Series A'
+  intake_field: developmentStage
+  quote: You are a startup currently engaged in an active fundraising round (pre-seed/seed
+    or series A round).
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.8
+  verified: llm_cited
+- id: G2-1
+  gate_family: G2_size_ownership
+  requirement: Applicant must not currently be part of EIT Urban Mobility's equity portfolio.
+  value: Not currently in EIT UM equity portfolio
+  intake_field: institutionalOwner
+  quote: You are not currently part of EIT Urban Mobility equity portfolio
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.8
+  verified: llm_cited
+- id: G2-2
+  gate_family: G2_size_ownership
+  requirement: Company's pre-money valuation must not exceed €50,000,000.
+  value: Pre-money valuation ≤ €50,000,000
+  intake_field: turnoverBand
+  quote: Your company pre-money valuation does not exceed €50,000,000.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.8
+  verified: llm_cited
+- id: G2-3
+  gate_family: G2_size_ownership
+  requirement: Individual founders or executive team members must jointly hold more than 40%
+    of the company's equity before the current fundraising round.
+  value: Founders/executives hold >40% equity pre-raise
+  intake_field: ownerOver25
+  quote: Your startup has individual founders or executive team members who jointly hold more
+    than 40% share of the company's equity before the current fund raising.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.8
+  verified: llm_cited
+- id: G4-2
+  gate_family: G4_borrower_model
+  requirement: Applicant must have a prototype, pilot, or Minimum Viable Product (MVP).
+  value: Prototype/pilot/MVP required
+  intake_field: developmentStage
+  quote: You have a prototype, pilot, or Minimum Viable Product (MVP).
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.8
+  verified: llm_cited
+- id: G1-4
+  gate_family: G1_nexus
+  requirement: Applicant must not submit through the same legal entity as another applicant
+    to circumvent grant recipient rules; grant may only be spent by the applying startup.
+  value: Applicant entity must be the grant recipient entity
+  intake_field: borrowerModel
+  quote: Do not submit the application through the same legal entity that will receive the
+    grant and incur the costs.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.10
+  verified: llm_cited
+- id: G6-1
+  gate_family: G6_conditionality
+  requirement: Applications may be excluded if the fundraising round does not qualify as a
+    bona fide primary equity or equity-linked raise, e.g. purely internal rounds, non-dilutive-only
+    raises, or secondary-only sales.
+  value: Must be qualifying bona fide primary equity/equity-linked fundraising
+  intake_field: borrowerModel
+  quote: no bona fide primary equity or equity-linked raise is occurring or reasonably imminent.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.10
+  verified: llm_cited
+- id: G6-2
+  gate_family: G6_conditionality
+  requirement: Applicants must accept the general principles and objectives of EIT Urban Mobility's
+    Financial Support strategy; grant award is subject to successful conclusion of contracting
+    phase.
+  value: Acceptance of FS strategy principles required for contracting
+  intake_field: conditionality
+  quote: The award of the grant is subject to the successful conclusion of the contracting
+    phase, including agreement on all applicable conditions foreseen under this Call.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.10
+  verified: llm_cited
+- id: G6-3
+  gate_family: G6_conditionality
+  requirement: Approval and financial support are conditional on satisfactory legal, tax and
+    compliance due diligence at EIT Urban Mobility's discretion.
+  value: Due diligence clearance required
+  intake_field: conditionality
+  quote: Any approval under this Open Call, and any resulting financial support by EIT Urban
+    Mobility, is subject to completion of satisfactory legal, tax and compliance due diligence
+    at EIT Urban Mobility's discretion.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.10
+  verified: llm_cited
+- id: G6-4
+  gate_family: G6_conditionality
+  requirement: Selected applicants may be required to become a member of the EIT Urban Mobility
+    community and pay a membership fee.
+  value: Membership and fee may be required
+  intake_field: conditionality
+  quote: applicants selected for funding under this Call may be required to become a member
+    of our community and where applicable pay the corresponding membership fee
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.11
+  verified: llm_cited
+- id: G3-1
+  gate_family: G3_financial
+  requirement: Maximum financial support (sub-grant) per company is up to €2.5 million.
+  value: Up to €2.5,000,000 per company
+  intake_field: ticketBand
+  quote: EIT Urban Mobility offers a financial support instrument for startups, which are
+    entitled to receive up to 2.5 million Euro of financial support (also known as "sub-grant")
+    per company to pursue activities which are in line with the overall EIT Urban Mobility
+    objectives.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.15
+  verified: llm_cited
+- id: G3-2
+  gate_family: G3_financial
+  requirement: Total indicative EIT funding allocated to this Call for 2026-2028 is €14 million,
+    including approximately €4.5 million earmarked for RIS countries.
+  value: €14M total call budget, €4.5M for RIS
+  intake_field: ticketBand
+  quote: The indicative EIT funding allocated to this Call for the period 2026-2028 is 14
+    million EUR. This includes approximately 4.5 million EUR specifically earmarked for proposals
+    developing new innovations in countries covered by the EIT Regional Innovation Scheme
+    (RIS).
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.15
+  verified: llm_cited
+- id: G3-3
+  gate_family: G3_financial
+  requirement: Applicants are encouraged to provide co-funding, details discussed during project
+    negotiation.
+  value: Co-funding encouraged, not mandatory rate specified
+  intake_field: cofinancingBand
+  quote: Applicants under this Call are encouraged to provide co-funding. The details will
+    be discussed during the project negotiation phase.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.16
+  verified: llm_cited
+- id: G5-1
+  gate_family: G5_use_of_funds
+  requirement: All expenditure must comply with Horizon Europe eligibility rules per the Annotated
+    Model Grant Agreement.
+  value: Horizon Europe cost eligibility rules apply
+  intake_field: none
+  quote: All expenditure must comply with the Horizon Europe rules (see the Annotated Model
+    Grant Agreement).
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.16
+  verified: llm_cited
+- id: G5-2
+  gate_family: G5_use_of_funds
+  requirement: Project duration must be between 2 and 36 months, justified by scope, complexity
+    and planned activities, and completed by 31 December 2028.
+  value: 2-36 months duration, completion by 31 Dec 2028
+  intake_field: none
+  quote: Project duration can be from a minimum of 2 months to a maximum of 36 months and
+    must be clearly justified based on the scope, complexity, and planned activities.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.15
+  verified: llm_cited
+- id: G2-4
+  gate_family: G2_size_ownership
+  requirement: Applicants from this Call fall under the SME partner category.
+  value: SME partner category
+  intake_field: fteBand
+  quote: Applicants from this Call will fall in the partner category of "Small and Medium-sized
+    Enterprise (SME)".
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.12
+  verified: llm_cited
+obligations:
+- requirement: Startups must submit final performance and cost reports within one month of
+    project completion.
+  quote: Once the project implementation has been completed, startups shall submit their final
+    performance and cost reports within one month from the end date of the project.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.18
+  verified: llm_cited
+- requirement: Only the applying and awarded legal entity may receive the grant and report
+    costs; costs from any other entity are ineligible.
+  quote: Only the applying and awarded legal entity will be recipient of the grant and shall
+    incur and report costs. Costs incurred or reported by any other legal entity shall not
+    be considered eligible.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.18
+  verified: llm_cited
+- requirement: Supported startups must comply with Horizon Europe Model Grant Agreement rules
+    and branding/communication/dissemination rules during implementation.
+  quote: All supported startups must comply with the rules and procedures established in the
+    Horizon Europe Model Grant Agreement during project implementation, as well as with the
+    branding, communication and dissemination rules outlined in the Project Implementation
+    Handbook.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.17
+  verified: llm_cited
+- requirement: Applicants must provide complete, accurate and timely information and cooperate
+    with due diligence.
+  quote: The applicant must provide complete, accurate, and timely information and cooperate
+    in the process.
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.11
+  verified: llm_cited
+- requirement: Proposals must address gender, diversity and inclusion considerations across
+    the project.
+  quote: Proposals must address how gender, diversity and inclusion are considered across
+    the project
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.13
+  verified: llm_cited
+- requirement: Applicants agree to respect IPR rules under Article 16 of the General Model
+    Grant Agreement and Article 10 of the Financial Support Agreement.
+  quote: Applicants agree to respect the IPR (Intellectual Property Rights) Rules Article
+    16 of the General Model Grant Agreement and Article 10 of the Financial Support Agreement
+    (Common Subgrant Agreement Model).
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.13
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (19/19 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Financial support may involve entities within a holding company structure for implementation
+    of the FS mechanism, though only the awarded legal entity is grant recipient.
+  quote: noting however that the implementation of the FS mechanism may involve, as appropriate,
+    any other entities within a holding company structure
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.10
+  verified: llm_cited
+application:
+  channel: EIT Urban Mobility NetSuite platform / Programmes Portal, via Call for Proposals
+    → Open Calls
+  typical_timeline: Eligibility check ~1 week post cut-off; evaluation and pitch invitations
+    ~4 weeks post cut-off; live pitch ~2-3 weeks post invitation; committee decision ~3-4
+    weeks post pitch; project start ~8 weeks post results communication.
+  quote: Eligibility and admissibility check Up to 1 week post deadline submission cut-off
+    Evaluation and invitations to live pitch session Up to 4 weeks post deadline submission
+    cut-off Live pitch session Approximately 2/3 weeks post invitation to pitch session
+  source:
+    file: eit_urban_mobility_startup_investment_page.html
+    locator: eit_urban_mobility_startups_call_manual.pdf#p.12
+  verified: false

@@ -1,0 +1,10 @@
+{
+  "note": "Menus RECOVERED from each run's own tape by scripts/_wshi_tokens.ts, for runs whose tally line predates `menu=`. Keyed by the file the tally line is in. Read by scripts/check_maxtok_headroom.ts. Never edit a paid run's own record; this sits beside it instead.",
+  "runs": {
+    "project-mgmt/findings/headtohead_wsGA/adviser_medium_n773_x2.md": {
+      "menuMin": 18,
+      "menuMax": 18,
+      "from": "project-mgmt/findings/headtohead_wsGA/adviser_medium_n773_x2.json, `menu` on 98 called founders"
+    }
+  }
+}

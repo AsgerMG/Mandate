@@ -1,0 +1,144 @@
+id: innovasjon_norge_grant_regional
+name: innovasjon_norge_grant_regional
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a business located in the districts (rural/regional areas)
+    of Norway.
+  value: Bedrifter i distriktene
+  intake_field: entityCountries
+  quote: Vi har derfor egne ordninger for selskaper i distriktene, og andre krav til selskapene
+    som kan kvalifisere seg.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2
+  gate_family: G3_financial
+  requirement: Financing from Innovasjon Norge must comply with state aid regulations (statsstøtteregelverket),
+    including five general state aid conditions.
+  value: Must comply with state aid rules
+  intake_field: none
+  quote: Finansiering fra Innovasjon Norge må være i samsvar med statsstøtteregelverket. Det
+    er fem generelle vilkår for statsstøtte som må ivaretas .
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G3_financial
+  requirement: The Group Block Exemption Regulation (GBER) forms part of the state aid rules
+    and provides legal bases (articles) that may be applied to grant support in individual
+    cases.
+  value: GBER applies
+  intake_field: none
+  quote: Gruppeunntaksregelverket (GBER) er en del av statsstøtteregelverket og er en samling
+    med artikler/støttehjemler som gir oss mulighet til å gi bedrifter støtte i ulike saker.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G6_conditionality
+  requirement: Innovasjon Norge's financing schemes are notified to the EFTA Surveillance
+    Authority (ESA), with the legal basis published on the National Legal Basis page.
+  value: Notified to ESA
+  intake_field: none
+  quote: Finansieringsordninger hos oss er meldt til EFTAs overvåkingsorgan, ESA.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G6_conditionality
+  requirement: The applicant must disclose in the application whether other public support
+    has been or will be sought for the project.
+  value: Disclosure of other public aid required
+  intake_field: none
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G3_financial
+  requirement: The grant amount calculation assumes no other public support, including SkatteFunn,
+    beyond what is stated in the application, for the same eligible project costs.
+  value: Aid calculation assumes no other overlapping public support
+  intake_field: cofinancingBand
+  quote: Ved fastsettelse av tilskuddsbeløpet legger derfor vi til grunn at det ikke mottas
+    annen offentlig støtte, herunder Skattefunn, enn det som er oppgitt i søknaden.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g7
+  gate_family: G6_conditionality
+  requirement: If other public support (including SkatteFunn) covering the same costs is received
+    after the offer is given, the grant may be reduced correspondingly or cancelled.
+  value: Grant reduction/cancellation on overlapping aid
+  intake_field: cofinancingBand
+  quote: I tilfelle slik annen offentlig støtte, herunder SkatteFunn, likevel blir mottatt
+    etter at vårt tilbud er gitt, og til dekning av de samme kostnadene, vil tilskuddet fra
+    oss kunne bli redusert tilsvarende eller bortfalle.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g8
+  gate_family: G6_conditionality
+  requirement: To receive services from Innovasjon Norge, the business must uphold principles
+    of responsible business conduct and be conscious of its own sustainability risk.
+  value: Responsible business conduct and sustainability risk awareness required
+  intake_field: none
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Applicant must disclose in the application whether other public aid has been
+    or will be sought for the project.
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: Business must uphold principles of responsible business conduct and maintain
+    awareness of its sustainability risk to receive services.
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (8/8 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The grant amount is calculated on the assumption that no other public support (including
+    SkatteFunn) is received beyond what is disclosed in the application for the same eligible
+    costs; if such other aid is later received, the grant may be reduced or withdrawn, though
+    aid for other project costs not covered by Innovasjon Norge's grant remains permitted.
+  quote: Dette er ikke til hinder for at bedriften kan motta annen offentlig støtte til andre
+    prosjektkostnader enn de vi har lagt til grunn.
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: Application submitted via Min side (online portal) on Innovasjon Norge's website,
+    rolling deadline.
+  typical_timeline: Løpende (rolling/continuous application deadline)
+  quote: Søknadsfrist Løpende
+  source:
+    file: innovasjon_norge_grant_regional_regionale_distriktsmidler.html
+    locator: chunk 1
+  verified: llm_cited

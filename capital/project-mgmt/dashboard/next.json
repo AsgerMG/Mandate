@@ -1,0 +1,57 @@
+{
+  "$why": [
+    "What to do next, in order, with what each is worth. Hand-written because a",
+    "plan is a judgement, not a figure. The RULE for this file: every item names",
+    "who does it and what it is worth in POINTS of the headline, and an item that",
+    "is worth nothing says so. A step that is finished is DELETED, never ticked.",
+    "Kept short on purpose -- the owner's words: artefacts get polluted, stop",
+    "being maintained, and make the progress unintelligible."
+  ],
+  "lede": "Two ways to lose a founder, and they are not the same size.",
+  "levers": [
+    {
+      "name": "Their fund never reaches the shortlist",
+      "worth": "4-5 points left",
+      "tone": "warn",
+      "why": "Twelve points are lost here and most of it is not a defect: five points are things with no application route at all, and one and a half are funds we withhold on purpose. This lever is nearly exhausted, and everything we do recover has to survive the ordering. We once doubled the shortlist and 163 more founders had their fund on it. Not one more saw it."
+    },
+    {
+      "name": "Their fund is on the shortlist and we bury it",
+      "worth": "47 points",
+      "tone": "good",
+      "why": "The right fund sits about 27th of 79. We show six. But this is not a ranking problem: order the six at random and we lose only 9.4 points, so that is the entire value of everything our ranking does. On every fact we hold, the funds we show look the same as the fund they won. We are not ranking badly. We have nothing to rank on."
+    }
+  ],
+  "steps": [
+    {
+      "who": "you",
+      "what": "Decide what else we ask a founder",
+      "worth": "47 pts",
+      "why": "The only lever with room in it. We ask seven things on the first screen and the ordering reads two of them; the other five only delete funds, never sort them. What a founder can reasonably be asked is a product decision."
+    },
+    {
+      "who": "me",
+      "what": "Make near-identical funds tell themselves apart",
+      "worth": "largest free one",
+      "why": "The typical miss is the wrong door of the right scheme. Something separates those doors on all 287 pairs we checked, and for the founder in front of them both come back 'you qualify' 92% of the time. We encode permission; they are choosing purpose."
+    },
+    {
+      "who": "me",
+      "what": "Stop the fund profile diluting the fund's name",
+      "worth": "real, unsized",
+      "why": "Matching on a fund's name alone picks the right door 51% of the time. Our full semantic profile manages 45%. We embed more text and get a worse answer."
+    },
+    {
+      "who": "money",
+      "what": "One run to judge the two AI changes",
+      "worth": "~5 pts, EUR 30",
+      "why": "Publishing the AI's order only where it disagrees with ours, and letting it ask for a project description. Both built, both switched off, both ride on the same run."
+    },
+    {
+      "who": "me",
+      "what": "The remaining corpus defects",
+      "worth": "~2 pts, and NOT progress",
+      "why": "Nine funding windows nobody has asked the funder about, eleven equity rows below the data floor, a tenth of the index never classified. Worth doing because they are wrong."
+    }
+  ]
+}

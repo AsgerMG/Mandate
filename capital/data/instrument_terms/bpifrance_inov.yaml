@@ -1,0 +1,283 @@
+id: bpifrance_inov
+name: bpifrance_inov
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-france-registration
+  gate_family: G1_nexus
+  requirement: Applicant must be a company registered in France in the commercial and companies
+    register (RCS) at the time of application submission.
+  value: Registered in France (RCS)
+  intake_field: entityCountries
+  quote: Être porté par une société immatriculée en France au registre du commerce et des
+    sociétés (RCS) à la date de dépôt du dossier
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.5
+  verified: llm_cited
+- id: g1-work-in-france
+  gate_family: G1_nexus
+  requirement: The project must involve innovative work carried out in France.
+  value: Work performed in France
+  intake_field: activityCountries
+  quote: Porter sur des travaux innovants réalisés en France
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.5
+  verified: llm_cited
+- id: g1-single-applicant
+  gate_family: G1_nexus
+  requirement: The project must be submitted by a single applicant and is non-collaborative.
+  value: Single, non-collaborative applicant
+  intake_field: consortium
+  quote: Les projets soutenus dans le cadre de ce Concours sont portés par une entreprise
+    unique et sont non collaboratifs.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.4
+  verified: llm_cited
+- id: g1-single-carrier-per-project
+  gate_family: G1_nexus
+  requirement: The project must be filed by a single project carrier.
+  value: Single carrier
+  intake_field: consortium
+  quote: Être déposé par un porteur unique
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.5
+  verified: llm_cited
+- id: g2-sme-status
+  gate_family: G2_size_ownership
+  requirement: The applicant must qualify as an SME under EU law (fewer than 250 employees
+    and either turnover ≤€50m or balance sheet total ≤€43m) both at application and at signature
+    of the funding agreement.
+  value: SME per EU definition (<250 FTE, ≤€50m turnover or ≤€43m balance sheet)
+  intake_field: fteBand
+  quote: considérée comme une PME au sens du droit européen à la date de dépôt du dossier
+    et, en cas de sélection, à la date de signature de la convention de financement
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.5
+  verified: llm_cited
+- id: g2-sme-definition-footnote
+  gate_family: G2_size_ownership
+  requirement: SME is defined per EU Recommendation 2003/361/EC as an unrelated enterprise
+    employing fewer than 250 persons with annual turnover not exceeding €50m or balance sheet
+    total not exceeding €43m.
+  value: EU SME threshold definition
+  intake_field: balanceBand
+  quote: la catégorie des micros, petites et moyennes entreprises (PME) est constituée des
+    entreprises non liées qui occupent moins de 250 personnes et dont le chiffre d'affaires
+    annuel n'excède pas 50 millions d'euros ou dont le total du bilan annuel n'excède pas
+    43 millions d'euros
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.4
+  verified: llm_cited
+- id: g2-not-firm-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: The applicant must not be an 'undertaking in difficulty' under EU law, otherwise
+    the project is ineligible.
+  value: Not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: Ne pas être porté par une « entreprise en difficulté » selon le droit européen, auquel
+    cas son projet ne serait pas éligible.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.5
+  verified: llm_cited
+- id: g2-up-to-date-obligations
+  gate_family: G2_size_ownership
+  requirement: The applicant must be up to date with its fiscal and social obligations.
+  value: Up to date on tax/social obligations
+  intake_field: none
+  quote: Être porté par une société à jour de ses obligations fiscales et sociales
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.5
+  verified: llm_cited
+- id: g3-total-cost-band
+  gate_family: G3_financial
+  requirement: The project must present a total cost of between €1 million and €5 million,
+    except in exceptional cases.
+  value: €1M–€5M total project cost
+  intake_field: ticketBand
+  quote: Présenter un coût total situé entre 1 M€ et 5 M€
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.4
+  verified: llm_cited
+- id: g3-aid-intensity
+  gate_family: G3_financial
+  requirement: Maximum aid intensity is capped at 45% of eligible costs for small enterprises
+    and 35% for medium enterprises, per EU state aid rules.
+  value: 45% (small) / 35% (medium) aid intensity ceiling
+  intake_field: turnoverBand
+  quote: Intensité d’aide 45 % 35 %
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.8
+  verified: llm_cited
+- id: g3-min-repayable-advance
+  gate_family: G3_financial
+  requirement: The repayable advance portion of the aid cannot be less than €100,000 per project.
+  value: Minimum €100,000 repayable advance
+  intake_field: ticketBand
+  quote: Le montant des avances remboursables ne pourra pas être inférieur à 100 000€ par
+    projet.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.8
+  verified: llm_cited
+- id: g3-subvention-cap
+  gate_family: G3_financial
+  requirement: In the general case, the grant (subsidy) portion of the aid is capped at 60%
+    maximum, with the remainder as repayable advance.
+  value: Grant portion capped at 60% of total aid
+  intake_field: none
+  quote: Dans le cas général, la part de subvention sera de 60% au maximum.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.8
+  verified: llm_cited
+- id: g4-grant-plus-repayable-advance
+  gate_family: G4_borrower_model
+  requirement: Aid is composed partly of a non-repayable grant and partly of a repayable advance.
+  value: Mixed grant + repayable advance
+  intake_field: borrowerModel
+  quote: L’aide apportée sera constituée d’une part de subvention et d’une part d’avance remboursable.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.8
+  verified: llm_cited
+- id: g4-repayment-schedule
+  gate_family: G4_borrower_model
+  requirement: Repayable advances must be repaid at 100% via a scheduled repayment plan over
+    several annual installments, including a discount rate based on the EU reference rate
+    plus 100 basis points.
+  value: 100% repayment of advances with reference-rate-based discount
+  intake_field: borrowerModel
+  quote: Le remboursement de 100 % des avances remboursables prend en règle générale la forme
+    d’un échéancier forfaitaire sur plusieurs annuités
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.9
+  verified: llm_cited
+- id: g5-thematic-scope
+  gate_family: G5_use_of_funds
+  requirement: The project must fall within one of the four thematic areas defined for this
+    wave (Digital, Health, Transport/Mobility/Cities/Buildings, Energy/Resources/Natural environments).
+  value: Must match one of 4 open themes
+  intake_field: developmentStage
+  quote: S’inscrire dans l’une des thématiques identifiées pour cette vague
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.4
+  verified: llm_cited
+- id: g5-non-engaged-expenses
+  gate_family: G5_use_of_funds
+  requirement: The project must relate to expenses not yet committed before the date of the
+    aid application filing.
+  value: Only non-committed expenses eligible
+  intake_field: needBy
+  quote: porter sur des dépenses non-engagées avant le dépôt de la demande d’aide
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.5
+  verified: llm_cited
+- id: g5-eligible-cost-categories
+  gate_family: G5_use_of_funds
+  requirement: 'Eligible costs are limited to specific categories: internal staff salaries,
+    flat-rate overhead, subcontracting (capped at 30% of total costs, or 40% for public research
+    bodies), depreciation contributions, mission expenses, and other purchases/consumables.'
+  value: Defined eligible cost categories with subcontracting caps
+  intake_field: none
+  quote: Coûts de sous-traitance, dans la limite de 30% des coûts totaux, sauf justification
+    spécifique à fournir par le porteur. Ce seuil est porté à 40% des coûts totaux en cas
+    de sous-traitance à un laboratoire ou un organisme de recherche public
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.7
+  verified: llm_cited
+- id: g6-dnsh
+  gate_family: G6_conditionality
+  requirement: The project must not cause significant harm to the environment, in application
+    of the Do No Significant Harm (DNSH) principle under Article 17 of the EU Taxonomy Regulation.
+  value: DNSH compliance required
+  intake_field: conditionality
+  quote: Ne pas causer un préjudice important du point de vue de l’environnement (application
+    du principe DNSH – Do No Significant Harm ou « absence de préjudice important ») au sens
+    de l’article 17 du règlement européen sur la taxonomie.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.5
+  verified: llm_cited
+- id: g6-single-instrument
+  gate_family: G6_conditionality
+  requirement: A given project may only be financed by one of the France 2030 instruments
+    (i-Nov or an equivalent thematic call), not both.
+  value: No double financing across France 2030 instruments
+  intake_field: cofinancingBand
+  quote: L’attention des porteurs est attirée sur le fait qu’un même projet ne peut être financé
+    que par un seul de ces dispositifs.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.4
+  verified: llm_cited
+obligations:
+- requirement: The beneficiary must regularly report progress information to Bpifrance and
+    the State for ex-ante and ex-post evaluation of the project's economic, social, societal,
+    environmental and digital impact.
+  quote: Le bénéficiaire est tenu de communiquer régulièrement à Bpifrance et à l’Etat les
+    éléments d’informations nécessaires à l’évaluation de l’avancement du projet (impact social,
+    économique, sociétal, environnemental et numérique) ainsi qu’à l’évaluation ex post donc
+    après réalisation du projet.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.10
+  verified: llm_cited
+- requirement: The beneficiary must comply with Bpifrance's instructions for the delivery,
+    presentation and dissemination of the final report, and reimburse aid in case of non-compliant
+    spending or project abandonment.
+  quote: Le bénéficiaire s’engage à respecter les indications qui lui sont données par Bpifrance,
+    pour la fourniture, la présentation et la diffusion du rapport final de l’opération. En
+    cas de non-conformité des dépenses exposées avec le projet présenté lors du dépôt du dossier,
+    ou en cas d’abandon du projet, un reversement total ou partiel de l’aide est exigé.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.9
+  verified: llm_cited
+- requirement: Once selected, beneficiaries must mention the France 2030 plan's support in
+    their communications and publications using the specified unique wording and logo.
+  quote: Une fois le projet sélectionné, les bénéficiaires sont tenus de mentionner le soutien
+    apporté par le Plan France 2030 dans leurs actions de communication et la publication
+    de leurs résultats avec la mention unique « Ce projet a été financé par l’Etat dans le
+    cadre de France 2030 » et le logo de France 2030.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.9
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (19/19 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: A single project may only be financed by one of the France 2030 devices (i-Nov or
+    another thematic call), preventing cumulation of France 2030 support for the same project.
+  quote: L’attention des porteurs est attirée sur le fait qu’un même projet ne peut être financé
+    que par un seul de ces dispositifs.
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.4
+  verified: llm_cited
+application:
+  channel: Online submission via Bpifrance's dedicated platform (Picxel)
+  typical_timeline: Submission until 01 October 2024, preselection November 2024, hearings
+    December 2024, notification of winners March 2025
+  quote: 'Les porteurs de projets sont invités à déposer leur dossier de candidature en ligne
+    sur la plateforme de Bpifrance : https://www.picxel.bpifrance.fr/accueil'
+  source:
+    file: bpifrance_inov_cahier_des_charges_vague14.pdf
+    locator: bpifrance_inov_cahier_des_charges_vague14.pdf#p.1
+  verified: llm_cited

@@ -1,0 +1,47 @@
+id: sudop_open_innov
+name: Sudop Open Innov
+administering_body: see source document
+country: PL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Support is directed at micro, small and medium enterprises, as well as organisational units
+    without legal personality, regardless of nationality/registered seat, including foreign entities from
+    both EU member states and third countries, holding rights to the Technology or entitled to dispose
+    of rights to the Technology (distributors).
+  value: Micro/small/medium enterprises or org units, any nationality, holding tech rights
+  intake_field: fteBand
+  quote: Wsparcie kierowane jest do mikroprzedsiębiorców, małych i średnich przedsiębiorców, a także do
+    jednostek organizacyjnych nieposiadających osobowości prawnej bez względu na obywatelstwo/siedzibę,
+    w tym do podmiotów zagranicznych zarówno z terytorium państw członkowskich Unii Europejskiej, jak
+    i spoza, dysponujących prawami do Technologii oraz podmiotów uprawnionych do rozporządzania prawami
+    do Technologii (dystrybutorów).
+  source:
+    file: https://bip.arp.pl/strona-glowna/zamowienia-publiczne/ocena-innowacyjnosci-wnioskow-o-powierzenie-grantu-na-transfer-technologii-w-projekcie-siec-otwartych-innowacji-realizowanym-w-ramach-dzialania-2.2.-otwarte-innowacje-wspieranie-transferu-technologii-poir
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-aid-basis
+  gate_family: G3_financial
+  requirement: The grant may be awarded under regional investment aid or de minimis aid.
+  value: 'Aid basis: regional investment aid or de minimis'
+  intake_field: none
+  quote: Grant może być udzielony w ramach regionalnej pomocy inwestycyjnej albo pomocy de minimis
+  source:
+    file: https://bip.arp.pl/strona-glowna/zamowienia-publiczne/ocena-innowacyjnosci-wnioskow-o-powierzenie-grantu-na-transfer-technologii-w-projekcie-siec-otwartych-innowacji-realizowanym-w-ramach-dzialania-2.2.-otwarte-innowacje-wspieranie-transferu-technologii-poir
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g3-min-funding
+  gate_family: G3_financial
+  requirement: The minimum project co-financing amount is PLN 150,000.
+  value: Min PLN 150,000 co-financing
+  intake_field: ticketBand
+  quote: minimalna wartość dofinansowania projektu wynosi 150 tys. PLN.
+  source:
+    file: https://bip.arp.pl/strona-glowna/zamowienia-publiczne/ocena-innowacyjnosci-wnioskow-o-powierzenie-grantu-na-transfer-technologii-w-projekcie-siec-otwartych-innowacji-realizowanym-w-ramach-dzialania-2.2.-otwarte-innowacje-wspieranie-transferu-technologii-poir
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

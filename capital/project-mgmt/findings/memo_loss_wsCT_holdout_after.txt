@@ -1,0 +1,54 @@
+(node:39158) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T22:10:27.026Z
+ranker: all 500 request(s) on EMBEDDING
+set=__recallSetDoors.json split=holdout replayed 250
+published cap under test: BRIEF_LIMITS.institutionsMax=6, writer cap 7
+
+── THE INSTANT SCREEN (what wsCM measured) ──
+  SCREEN@5  57/250 (22.8% +/-5.2)
+  SCREEN@6  65/250 (26.0% +/-5.4)
+  gain of the sixth row on the screen: +3.2 pts (8 pairs)
+
+── THE MEMO'S CANDIDATE ORDER (what the cut actually cuts) ──
+  MEMO@1   12/250 (4.8% +/-2.6)
+  MEMO@2   19/250 (7.6% +/-3.3)
+  MEMO@3   28/250 (11.2% +/-3.9)
+  MEMO@4   39/250 (15.6% +/-4.5)
+  MEMO@5   46/250 (18.4% +/-4.8)
+  MEMO@6   55/250 (22.0% +/-5.1)
+  MEMO@7   60/250 (24.0% +/-5.3)   <- writer cap
+  gain of the sixth row in the memo: +3.6 pts (9 pairs)
+
+  memo order depth: min 11 p25 17 median 18 max 18
+  founders whose memo order even HAS a sixth row: 250/250 (100.0%)
+
+── WHERE THE GAIN LANDS (memo rank exactly 6) ──
+  9 pairs across 7 distinct regimes and 6 countries
+    vinnova_grant                                      2
+    bdns_es_ayudas                                     2
+    ademe_aid                                          1
+    satr_it_rnd                                        1
+    satr_de_rnd                                        1
+    satr_fr_rnd                                        1
+    satr_nl_rnd                                        1
+  largest single regime holds 2 of 9 (22%)
+
+── WHERE THE MEMO LOSES A LEAF THE POOL HELD ──
+  won leaf inside the memo pool (top 18):        125/250 (50.0% +/-6.2)
+  ...and inside its first six BEFORE the re-sort: 65/250 (26.0% +/-5.4)
+  ...and inside the memo order after re-sort/drop: 55/250 (22.0% +/-5.1)
+  in the pool but absent from the memo order: 18
+    VER-BLOCKED                           17
+    SEL-DUPE-NAME                          1
+  the fit re-sort moves the won leaf OUT of the top six 14 times, INTO it 4 times
+
+  screen and memo agree on the won leaf's rank in 47/51 pairs where both contain it

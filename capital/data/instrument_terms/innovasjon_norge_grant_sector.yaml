@@ -1,0 +1,201 @@
+id: innovasjon_norge_grant_sector
+name: innovasjon_norge_grant_sector
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a business, enterprise network, cluster/ecosystem organisation,
+    or actor within agriculture, reindeer husbandry, or bio-based industries relevant to the
+    specific sub-scheme.
+  value: sector-specific business/cluster/agriculture actors
+  intake_field: borrowerModel
+  quote: Klynger, økosystem og andre innovasjonsselskaper kan, etter en utlysnings- og utvelgelsesprosess,
+    motta tilskudd fra oss for å tilby rådgivningstjenester til bedrifter.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Bedriftsnettverk (business network) grants require a commercial, strategic
+    and market-oriented collaboration between several enterprises.
+  value: multi-enterprise collaboration required
+  intake_field: consortium
+  quote: Et kommersielt, strategisk og markedsrettet samarbeid vil bidra til å styrke innovasjonsevnen
+    og konkurransekraften i bedriftene.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: Innovation support advisory services under the SMB scheme must be offered to
+    small and medium-sized enterprises.
+  value: SME (small and medium-sized enterprises)
+  intake_field: turnoverBand
+  quote: Tjenestene skal tilbys små og mellomstore bedrifter med et støtteelement, slik at
+    bedriftene får dem til reduserte priser.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: Minor investment grants for generational transfer in agriculture are limited
+    to persons under 35 years of age who have taken over the farm property.
+  value: applicant under 35 years old
+  intake_field: foundedYear
+  quote: Det kan gis tilskudd til personer under 35 år som skal gjøre mindre investeringer
+    på landbrukseiendommer de har overtatt.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5
+  gate_family: G1_nexus
+  requirement: Grants for reindeer-based business development are limited to reindeer owners
+    and processing companies connected to reindeer husbandry.
+  value: reindeer owners and affiliated processing businesses
+  intake_field: borrowerModel
+  quote: Reineiere og foredlingsbedrifter i tilknytning til reindrift kan søke om tilskudd.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6
+  gate_family: G1_nexus
+  requirement: Growth financing schemes 1 and 2 for other agriculture-based industries are
+    limited to smaller enterprises offering local food/drink, food experiences with local
+    identity, tourism experiences, Inn på Tunet, inland fishing, or reindeer industry.
+  value: smaller enterprises in specified agri-tourism/food/reindeer niches
+  intake_field: turnoverBand
+  quote: Vi tilbyr støtte til vekst for mindre bedrifter innenfor andre landbruksbaserte næringer.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g7
+  gate_family: G1_nexus
+  requirement: Congress planning grants are restricted to Norwegian professional communities
+    wishing to organise an international, rotating professional congress in Norway.
+  value: Norwegian professional community organising international congress in Norway
+  intake_field: entityCountries
+  quote: Tilskudd til kongressplanlegging er for norske fagmiljøer som ønsker å arrangere
+    en internasjonal, rullerende fagkongress i Norge.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g8
+  gate_family: G1_nexus
+  requirement: Grants to food industry businesses under Arctic 2030 are restricted to enterprises
+    in Troms and Finnmark that receive raw materials from primary production in agriculture
+    and reindeer husbandry.
+  value: located in Troms og Finnmark
+  intake_field: activityCountries
+  quote: Tilskuddet skal bidra til at jordbruket og reindrifta i Troms og Finnmark har næringsmiddelbedrifter
+    som kan ta i mot råvarer fra primærproduksjonen.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g9
+  gate_family: G1_nexus
+  requirement: Development grants for Finnmark can be awarded to businesses in all municipalities
+    in Finnmark except Alta and Hammerfest.
+  value: Finnmark municipalities excluding Alta and Hammerfest
+  intake_field: activityCountries
+  quote: Tilskuddet kan innvilges til bedrifter i alle kommuner i Finnmark, utenom Alta og
+    Hammerfest, og vil vurderes ut i fra prosjektenes betydning for lokalsamfunnene.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g10
+  gate_family: G1_nexus
+  requirement: Business development grants for Svalbard require the project to contribute
+    to business development on Svalbard.
+  value: project located on Svalbard
+  intake_field: activityCountries
+  quote: Har du et prosjekt som kan bidra til næringsutvikling på Svalbard?
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g11
+  gate_family: G5_use_of_funds
+  requirement: Resource clarification grants for farms must be used for a preliminary study
+    clarifying economic and resource conditions related to the loose housing requirement (løsdriftskravet),
+    based on a supplier quote attached to the application.
+  value: preliminary study on løsdriftskravet, sheep farms in Northern Norway from 2027
+  intake_field: none
+  quote: Tilskudd til forstudie for gårdsbruk som skal avklare økonomiske og ressursmessige
+    forutsetninger knyttet til løsdriftskravet.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g12
+  gate_family: G5_use_of_funds
+  requirement: Grants for farm heating plants must fund investments in renewable energy solutions
+    from bioenergy or heat recovery on farms.
+  value: renewable bioenergy/heat recovery investments on farms
+  intake_field: none
+  quote: Vi kan gi støtte til investeringer i fornybare energiløsninger fra bioenergi eller
+    varmegjenvinning på gårdsbruk.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g13
+  gate_family: G5_use_of_funds
+  requirement: Bio-economy project grants must fund development and testing of new products
+    and solutions based on bio-resources, targeting companies taking risk to develop new technology.
+  value: bio-resource product/technology development and testing
+  intake_field: none
+  quote: Bioøkonomiordningen gir tilskudd til utvikling og testing av nye produkter og løsninger
+    basert på bioressurser.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g14
+  gate_family: G6_conditionality
+  requirement: Heating sales plant projects that do not provide significant further processing
+    of own resources are recommended to apply to Enova instead.
+  value: projects lacking significant value-add should apply elsewhere (Enova)
+  intake_field: none
+  quote: Prosjekter som ikke gir betydelig videreforedling av egne ressurser anbefales å søke
+    Enova.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g15
+  gate_family: G4_borrower_model
+  requirement: For resource clarification grants, the grant amount is based on a supplier
+    quote which must be attached to the application.
+  value: quote-based grant amount, supplier offer required with application
+  intake_field: none
+  quote: Tilskuddet baserer seg på tilbud fra leverandør og må legges ved søknaden.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 2
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online questionnaire via Innovasjon Norge website with feedback from Innovasjon
+    Norge and other Norwegian actors
+  typical_timeline: 1-2 business days for initial feedback
+  quote: Svar på noen spørsmål og få tilbakemelding innen 1-2 arbeidsdager på hva vi og andre
+    aktører i Norge kan bidra med.
+  source:
+    file: innovasjon_norge_grant_sector_tilskudd_overview.html
+    locator: chunk 3
+  verified: llm_cited

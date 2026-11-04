@@ -1,0 +1,44 @@
+id: satr_de_equity__sa_108142__landwirtschaftliche_rentenbank
+name: LR-Nachhaltigkeit
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-sector
+  gate_family: G1_nexus
+  requirement: Aid targets agriculture-adjacent enterprises, regardless of legal form or tax classification.
+  value: Agriculture-adjacent enterprises, any legal form
+  intake_field: borrowerModel
+  quote: Gefördert werden agrarnahe Unternehmen, unabhängig von Rechtsform oder steuerlicher Einkunftsart.
+  source:
+    file: https://www.rentenbank.de/programmkredite/landwirtschaft/nachhaltigkeit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-thresholds
+  gate_family: G2_size_ownership
+  requirement: 'Borrowers must be SMEs per the EU Commission definition: at most 250 employees, at most
+    EUR 50 million annual turnover, or at most EUR 43 million annual balance sheet total.'
+  value: 'SME: max 250 employees, max EUR 50m turnover or EUR 43m balance sheet'
+  intake_field: fteBand
+  quote: Die Kreditnehmer müssen „kleine und mittlere Unternehmen“ (KMU) im Sinne der Definition der EU-Kommission
+    sein. Dabei handelt es sich um Unternehmen mit höchstens 250 Beschäftigten, höchstens 50 Mio. Euro
+    Jahresumsatz oder höchstens 43 Mio. Euro Jahresbilanzsumme.
+  source:
+    file: https://www.rentenbank.de/programmkredite/landwirtschaft/nachhaltigkeit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-non-sme-alt
+  gate_family: G3_financial
+  requirement: Enterprises that do not meet the SME criteria may still apply, but only on aid-free (non-subsidised)
+    terms.
+  value: Non-SMEs eligible only at aid-free conditions
+  intake_field: none
+  quote: Unternehmen, die die KMU-Kriterien nicht erfüllen, sind zu beihilfefreien Konditionen antragsberechtigt.
+  source:
+    file: https://www.rentenbank.de/programmkredite/landwirtschaft/nachhaltigkeit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

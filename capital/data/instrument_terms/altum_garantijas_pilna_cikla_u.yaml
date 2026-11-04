@@ -1,0 +1,113 @@
+id: altum_garantijas_pilna_cikla_u
+name: altum_garantijas_pilna_cikla_u
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G4_borrower_model
+  requirement: The guarantee covers up to 80% of the principal amount of financing.
+  value: up to 80%
+  intake_field: borrowerModel
+  quote: Up to 80% of the principal amount of financing
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g2
+  gate_family: G3_financial
+  requirement: Maximum guarantee amount is up to EUR 25 million.
+  value: EUR 25 million
+  intake_field: ticketBand
+  quote: Up to EUR 25 million
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g3
+  gate_family: G3_financial
+  requirement: Guarantee term is up to 10 years.
+  value: up to 10 years
+  intake_field: none
+  quote: Up to 10 years
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: Annual guarantee premium rate is 0%.
+  value: 0% per year
+  intake_field: none
+  quote: Annual interest of 0 %
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: The 0% premium rate applies to guarantees submitted until 30.06.2026, aimed
+    at increasing merchant access to financing.
+  value: 0% until 30.06.2026
+  intake_field: needBy
+  quote: for guarantees submitted until 30.06.2026.  the premium rate  is 0% per year.
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g6
+  gate_family: G3_financial
+  requirement: For guarantees of EUR 5,000,000, the premium rate follows the standard price
+    list rather than the 0% promotional rate.
+  value: EUR 5,000,000 threshold - price list rate applies
+  intake_field: ticketBand
+  quote: For   guarantees   of   EUR   5   000   000 ,   the   premium   rate   shall   be   applied   according   to   the   price   list
+    .
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g7
+  gate_family: G2_size_ownership
+  requirement: The guarantee is issued to companies with insufficient collateral to obtain
+    a loan or to obtain a loan of the required amount, but with a transparent financial history
+    and positive creditworthiness.
+  value: insufficient collateral, transparent financial history, positive creditworthiness
+  intake_field: borrowerModel
+  quote: The credit guarantee is issued to companies that have insufficient collateral to
+    obtain a loan or to obtain a loan of the required amount, but have a transparent financial
+    history and a positive creditworthiness.
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g8
+  gate_family: G4_borrower_model
+  requirement: The ALTUM guarantee is state support in the form of a financial instrument,
+    not a civil-code guarantee, used when collateral is insufficient for receipt of a financial
+    service.
+  value: state support financial instrument, not civil code guarantee
+  intake_field: borrowerModel
+  quote: ALTUM guarantee is not a guarantee within the meaning of the Civil Code of the Republic
+    of Latvia, but state support in the form of a financial instrument (guarantee) for the
+    receipt of a financial service in case of insufficient collateral
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+obligations:
+- requirement: The merchant (including guarantors) remains obligated to repay the full amount
+    of the Financial Service Agreement and incidental payments in full, despite ALTUM's guarantee
+    obligation to the financier.
+  quote: the obligation of ALTUM assumed by the ALTUM Guarantee to be liable to the Financier
+    for the unpaid principal amount of the Financial Service Agreement does not exempt the
+    Merchant (including the Guarantors) from the obligation to repay the full amount of the
+    Financial Service Agreement and incidental payments received in full
+  source:
+    file: altum_garantijas_pilna_cikla_u_credit_guarantees_en.html
+    locator: '#chunk 1'
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (8/8 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).

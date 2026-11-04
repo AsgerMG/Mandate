@@ -1,0 +1,57 @@
+id: satr_nl_rnd__sa_61208__provincie_zuid_holland
+name: NL_BZK_CSDO_ZH Verlenging Subsidieregeling MKB innovatiestimulering topsectoren Zuid-Holland
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g2-feasibility-sme
+  gate_family: G2_size_ownership
+  requirement: Subsidy for a feasibility project is granted to an SME enterprise with an establishment
+    in the province of Zuid-Holland.
+  value: SME with establishment in Zuid-Holland
+  intake_field: fteBand
+  quote: Subsidie voor een haalbaarheidsproject wordt verstrekt aan een MKB-onderneming met een vestiging
+    in de provincie Zuid-Holland.
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR621442
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-rd-cooperation
+  gate_family: G1_nexus
+  requirement: Subsidy is granted to a participant in an R&D cooperation partnership that carries out
+    an R&D cooperation project; the subsidy is applied for by the lead applicant (penvoerder).
+  value: R&D partnership participant; lead applicant files the request
+  intake_field: consortium
+  quote: Subsidie wordt verstrekt aan een deelnemer in een R&D-samenwerkingsverband dat een R&D-samenwerkingsproject
+    uitvoert. De subsidie wordt aangevraagd door de penvoerder.
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR621442
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-no-double-funding
+  gate_family: G6_conditionality
+  requirement: Subsidy is refused if the applicant wants to use the subsidy for an activity for which
+    a government body or the European Commission has already provided subsidy.
+  value: No double funding of the same activity
+  intake_field: none
+  quote: de aanvrager de subsidie wil aanwenden voor een activiteit waarvoor reeds door een bestuursorgaan
+    of de Europese Commissie subsidie is verstrekt
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR621442
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-undertaking-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: Subsidy is refused if the applicant is an undertaking in difficulty.
+  value: Undertaking in difficulty excluded
+  intake_field: lossesOverHalfCapital
+  quote: de aanvrager een onderneming in moeilijkheden is
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR621442
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

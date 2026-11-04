@@ -1,0 +1,28 @@
+id: satr_de_rnd__sa_111712__projekttrager_julich
+name: Richtlinie über die Gewährung von Zuwendungen für die Umweltwirtschaft des Landes Nordrhein-Westfalen
+  (Umweltwirtschaftsrichtlinie - UW-RL) [NW]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicant-types
+  gate_family: G1_nexus
+  requirement: Eligible recipients include municipal territorial authorities, corporate bodies and institutions
+    under public law (e.g. universities, chambers, associations, foundations), research and knowledge-dissemination
+    institutions, private-law legal entities (including associations and cooperatives), non-profit organisations
+    (including church-affiliated ones), and enterprises (including sole proprietors).
+  value: 'Broad applicant list: municipalities, public bodies, research orgs, companies, non-profits,
+    sole proprietors'
+  intake_field: borrowerModel
+  quote: 'Zuwendungsempfängerinnen und Zuwendungsempfänger können sein: a) kommunale Gebietskörperschaften,
+    Gemeinde- und Zweckverbände und rechtlich unselbständige Eigenbetriebe; b) Körperschaften und Anstalten
+    des öffentlichen Rechts, zum Beispiel Hochschulen, Kammern, Verbände oder Stiftungen; c) Einrichtungen
+    für Forschung und Wissensverbreitung; d) juristische Personen des Privatrechts, einschließlich Vereine
+    und Genossenschaften; e) gemeinnützige Organisationen, einschließlich solcher in kirchlicher Trägerschaft;
+    f) Unternehmen, einschließlich Einzelunternehmerinnen und Einzelunternehmer.'
+  source:
+    file: https://www.umweltwirtschaft.nrw.de/foerderung/foerdermittel/foerderrichtlinie/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

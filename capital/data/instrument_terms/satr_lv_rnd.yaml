@@ -1,0 +1,136 @@
+id: satr_lv_rnd
+name: satr_lv_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Support applies to R&D projects associated with economic activity that comply
+    with Article 25 of Commission Regulation (EU) No 651/2014.
+  value: Article 25 Regulation 651/2014 R&D aid
+  intake_field: borrowerModel
+  quote: atbalsts – atbalsts ar saimniecisko darbību saistītam pētniecības un attīstības projektam,
+    kurš atbilst Komisijas 2014. gada 17. jūnija Regulas (ES) Nr. 651/2014, ar ko noteiktas
+    atbalsta kategorijas atzīst par saderīgām ar iekšējo tirgu, piemērojot Līguma 107. un
+    108. pantu (turpmāk – Komisijas regula Nr. 651/2014), 25. panta nosacījumiem
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: false
+  verify_note: 'fragment not found verbatim: ''atbalsts – atbalsts ar saimniecisko darbību
+    saistī'''
+- id: g2
+  gate_family: G2_size_ownership
+  requirement: Applicant must be a micro, small, medium or large enterprise, including state
+    capital companies, or a research and knowledge dissemination organisation.
+  value: micro/small/medium/large enterprise or state capital company or R&D organisation
+  intake_field: fteBand
+  quote: Investīcijas mērķa grupa ir sīkie (mikro), mazie, vidējie un lielie komersanti, tai
+    skaitā valsts kapitālsabiedrības un pētniecības un zināšanu izplatīšanas organizācijas,
+    kas attīsta jaunus produktus, pakalpojumus un tehnoloģijas.
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: Micro, small and medium enterprise status is determined per Annex I of Commission
+    Regulation 651/2014.
+  value: SME definition per Annex I Reg 651/2014
+  intake_field: fteBand
+  quote: sīkais (mikro), mazais un vidējais komersants – komersants, kas atbilst Komisijas
+    regulas Nr. 651/2014 I pielikumam
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: Large enterprise status is determined per Article 2(24) of Commission Regulation
+    651/2014.
+  value: Large enterprise definition per Art 2(24) Reg 651/2014
+  intake_field: fteBand
+  quote: lielais komersants – komersants, kas atbilst Komisijas regulas Nr. 651/2014 2. panta
+    24. punkta nosacījumiem
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5
+  gate_family: G1_nexus
+  requirement: Applicant must be a project submitter that has received a favourable agency
+    decision on compliance with commercial support conditions.
+  value: favourable agency decision on state aid compliance required
+  intake_field: conditionality
+  quote: par kuru saņemts labvēlīgs aģentūras lēmums par projekta iesniedzēja atbilstību komercdarbības
+    atbalsta nosacījumiem
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6
+  gate_family: G1_nexus
+  requirement: A cooperation partner may be an enterprise or a research and knowledge dissemination
+    organisation with whom the applicant has concluded a cooperation agreement to jointly
+    implement the project.
+  value: cooperation partner allowed via signed cooperation agreement
+  intake_field: consortium
+  quote: sadarbības partneris – komersants vai pētniecības un zināšanu izplatīšanas organizācija,
+    ar kuru kopā projekta iesniedzējs plāno īstenot projektu un ar kuru projekta iesniedzējs
+    noslēdzis sadarbības līgumu
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g7
+  gate_family: G5_use_of_funds
+  requirement: The investment aims to increase private R&D expenditure through targeted state
+    investments promoting development of new products and technologies via participation in
+    Important Projects of Common European Interest.
+  value: R&D expenditure increase via IPCEI participation
+  intake_field: developmentStage
+  quote: Investīcijas mērķis ir palielināt privātos pētniecības un attīstības izdevumus, izmantojot
+    mērķtiecīgus valsts ieguldījumus, kas veicina jaunu produktu un tehnoloģiju attīstību,
+    iesaistoties Eiropai svarīgo kopīgo interešu projektos.
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g8
+  gate_family: G3_financial
+  requirement: Total available Recovery Fund financing for this investment measure is EUR
+    24,035,166.
+  value: EUR 24,035,166 total available financing
+  intake_field: ticketBand
+  quote: Investīcijas ietvaros kopējais pieejamais Atveseļošanas fonda finansējums ir 24 035
+    166  euro
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Support recipient is the project submitter with whom the agency has signed
+    a contract or agreement for project implementation and to whom Recovery Fund financing
+    has been allocated.
+  quote: atbalsta saņēmējs – projekta iesniedzējs, ar kuru Centrālā finanšu un līgumu aģentūra
+    (turpmāk – aģentūra) noslēgusi līgumu vai vienošanos par projekta īstenošanu un kam piešķirts
+    Atveseļošanas fonda finansējums projekta īstenošanai
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (7/8 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Applications submitted to and evaluated by the Central Finance and Contracting
+    Agency (CFLA).
+  typical_timeline: Not specified in extracted chunks.
+  quote: Centrālā finanšu un līgumu aģentūra (turpmāk – aģentūra) noslēgusi līgumu vai vienošanos
+    par projekta īstenošanu
+  source:
+    file: satr_lv_rnd_mk_noteikumi_350042.html
+    locator: chunk 1
+  verified: llm_cited

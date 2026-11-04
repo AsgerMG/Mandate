@@ -1,0 +1,429 @@
+id: innovationsfonden_innobooster
+name: innovationsfonden_innobooster
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-danish-registration
+  gate_family: G1_nexus
+  requirement: Applicant company must have a Danish company registration number at the time
+    of application.
+  value: Danish CVR registration required
+  intake_field: entityCountries
+  quote: In order to apply for an Innobooster investment, your company must have a Danish
+    company registration number at the time of application.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.4
+  verified: llm_cited
+- id: g1-legal-form
+  gate_family: G1_nexus
+  requirement: Applicant must be a public-limited or limited liability company or an owner-operated
+    business, constituting the legal entity responsible for the project.
+  value: Public-limited, limited liability, or owner-operated company
+  intake_field: borrowerModel
+  quote: It may take the form of a public-limited or limited liability company or an owner-operated
+    business.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.4
+  verified: llm_cited
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: 'Company must fall within the EU Commission''s SME definition: fewer than 250
+    staff, turnover no more than EUR 50 million, or balance sheet total no more than EUR 43
+    million.'
+  value: <250 FTE; <=EUR50m turnover or <=EUR43m balance sheet
+  intake_field: fteBand
+  quote: This means that the company must have a staff headcount of less than 250 and an annual
+    turnover of no more than EUR 50 million or an annual balance sheet total of no more than
+    EUR 43 million.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.4
+  verified: llm_cited
+- id: g2-group-aggregation
+  gate_family: G2_size_ownership
+  requirement: If the company is part of a group/affiliated to a larger company (>25% ownership),
+    the SME thresholds apply to the entire group, not just the applicant.
+  value: Group-level SME test; 25% ownership threshold triggers aggregation
+  intake_field: ownerOver25
+  quote: A company is part of a concern when a company owns more than 25 per cent of the capital
+    or voting rights of another company.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.4
+  verified: llm_cited
+- id: g2-takeover-termination
+  gate_family: G2_size_ownership
+  requirement: If the company is acquired during the project period and becomes part of a
+    group that fails the SME test, the grant will be terminated on the takeover date.
+  value: Grant terminated on takeover date if SME status lost
+  intake_field: institutionalOwner
+  quote: Should you receive funding and your company in the project period is being acquired
+    by and subsequently become part of a concern that fails to meet the SME conditions, the
+    grant will be terminated on the takeover date.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Should you receive funding and your company
+    in the'''
+- id: g2-economic-criteria
+  gate_family: G2_size_ownership
+  requirement: 'Company must meet at least one of two economic criteria: documented external
+    risk capital of at least DKK 100,000 in past three years, or documented gross profit of
+    at least DKK 250,000 in the last published annual accounts.'
+  value: DKK 100,000 risk capital OR DKK 250,000 gross profit
+  intake_field: institutionalBacking
+  quote: Attracted a documented supply of external risk capital of no less than DKK 100,000
+    within the past three years.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g2-public-ownership-exclusion
+  gate_family: G2_size_ownership
+  requirement: Companies where more than 50 per cent is owned by the state, regions or municipalities
+    are excluded from investment.
+  value: Max 50% public ownership
+  intake_field: institutionalOwner
+  quote: Companies where more than 50 per cent is owned by the state, regions or municipalities.2
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g2-operational-subsidy-exclusion
+  gate_family: G2_size_ownership
+  requirement: Companies where operational subsidies from public institutions amount to more
+    than half of turnover are excluded.
+  value: Public operational subsidies must be <=50% of turnover
+  intake_field: turnoverBand
+  quote: Companies where operational subsidies from public institutions amount to more than
+    half of the turnover.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g2-undertaking-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: Applicant must not be an 'undertaking in difficulty' as defined under EU Regulation
+    651/2014.
+  value: Not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: Must not be an 'undertaking in difficulty' as defined in Article 2 (1), No. 18 of
+    Commission Regula-tion (EU) No. 651/2014 of 17 June 2014 declaring certain categories
+    of aid compatible with the internal market pursuant to Articles 107 and 108 of the Treaty3
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: "Must not be an ''undertaking in difficulty''
+    as defi"'
+- id: g2-insolvency-exclusion
+  gate_family: G2_size_ownership
+  requirement: Companies under compulsory dissolution, bankruptcy, voluntary liquidation,
+    or suspension of payments cannot receive Innobooster investment.
+  value: 'Excluded: insolvency/dissolution/liquidation states'
+  intake_field: borrowerModel
+  quote: Companies under compulsory dissolution, bankruptcy, voluntary liquidation or in suspension
+    of payments.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.5
+  verified: llm_cited
+- id: g2-repayment-order-compliance
+  gate_family: G2_size_ownership
+  requirement: Company must have complied with any EU Commission repayment orders regarding
+    illegal Danish state aid.
+  value: No outstanding illegal state aid repayment orders
+  intake_field: none
+  quote: Have complied with any repayment orders issued by the European Commission in one
+    or more decisions where state aid granted by the Danish authorities has been found illegal
+    and incompati-ble with the internal market
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Have complied with any repayment orders issued
+    by '''
+- id: g3-ceiling-total
+  gate_family: G3_financial
+  requirement: Innobooster investments range from a minimum of DKK 50,000 to a maximum of
+    DKK 5 million per project.
+  value: DKK 50,000 - 5,000,000
+  intake_field: ticketBand
+  quote: Innobooster offers an investment of between DKK 50,000 and DKK 5 million.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.11
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Innobooster offers an investment of between
+    DKK 50'''
+- id: g3-cofinancing-rate
+  gate_family: G3_financial
+  requirement: Innovation Fund Denmark co-finances a maximum of 35 per cent of the company's
+    relevant project expenses.
+  value: Max 35% co-financing rate
+  intake_field: cofinancingBand
+  quote: Innovation Fund Denmark’s maximum co-financing rate (35 per cent) applies to each
+    budget item and to the total project.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.11
+  verified: llm_cited
+- id: g3-de-minimis-threshold
+  gate_family: G3_financial
+  requirement: Investments below approx. DKK 1.5 million (EUR 200,000) are treated as de minimis
+    state aid; total de minimis aid over 3 financial years must not exceed EUR 200,000.
+  value: EUR 200,000 de minimis ceiling over 3 years
+  intake_field: ticketBand
+  quote: The company can receive a maximum of EUR 200,000, corresponding to app. DKK 1.5 mill.6,
+    in de minimis aid over three financial years.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.21
+  verified: llm_cited
+- id: g3-agriculture-de-minimis
+  gate_family: G3_financial
+  requirement: Primary producers of agricultural products are limited to EUR 20,000 de minimis
+    aid over current and two previous financial years.
+  value: EUR 20,000 agri de minimis ceiling
+  intake_field: none
+  quote: A company that is a primary producer of agricultural products must declare in writing
+    that it has not re-ceived de minimis aid amounting to more than EUR 20,000 (about DKK
+    150,000) during the current and the previous two financial years.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.21
+  verified: false
+  verify_note: 'fragment not found verbatim: ''A company that is a primary producer of agricultur'''
+- id: g3-fishery-de-minimis
+  gate_family: G3_financial
+  requirement: Fishery and aquaculture companies are limited to EUR 30,000 de minimis aid
+    over current and two previous financial years.
+  value: EUR 30,000 fishery de minimis ceiling
+  intake_field: none
+  quote: A company in the fishery and aquaculture sector must declare in writing that it has
+    not received de mini-mis aid amounting to more than EUR 30,000 (about DKK 225,000) during
+    the current and the previous two financial years.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.22
+  verified: false
+  verify_note: 'fragment not found verbatim: ''A company in the fishery and aquaculture sector
+    mu'''
+- id: g4-block-exemption-category
+  gate_family: G4_borrower_model
+  requirement: Projects with investments above DKK 1.5 million must qualify as 'experimental
+    development' or 'industrial research' under the EU block exemption regulation.
+  value: Must qualify as experimental development or industrial research
+  intake_field: developmentStage
+  quote: Innobooster projects, in which Innovation Fund Denmark invests more than DKK 1.5
+    mill., must qualify as ‘experimental development’ or ‘industrial research’, as these investments
+    in terms of State aid are man-aged according to the EU block exemption regulation.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.10
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Innobooster projects, in which Innovation Fund
+    Den'''
+- id: g4-single-application
+  gate_family: G4_borrower_model
+  requirement: Only one Innobooster application is accepted for processing at the same time
+    per company and contact person.
+  value: One active application per company/contact at a time
+  intake_field: none
+  quote: Only one Innobooster application is accepted for processing at the same time. This
+    applies both to the company and the contact person in question.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.13
+  verified: llm_cited
+- id: g5-project-duration
+  gate_family: G5_use_of_funds
+  requirement: Project duration must not exceed 24 months.
+  value: Max 24-month project duration
+  intake_field: needBy
+  quote: An Innobooster project can last no more than 24 months, preferably less.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.12
+  verified: llm_cited
+- id: g5-development-stage-requirement
+  gate_family: G5_use_of_funds
+  requirement: Innobooster only funds projects requiring significant development, not projects
+    with a fully developed solution ready for market or involving only testing/verification.
+  value: Must involve significant development; not pure testing/verification or market-ready
+    solutions
+  intake_field: developmentStage
+  quote: Innobooster does not invest in projects with a fully developed solution ready for
+    market implementation, and where the remaining activities mainly deal with sales, marketing,
+    testing and documentation and commercial production.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.6
+  verified: llm_cited
+- id: g5-theme-alignment
+  gate_family: G5_use_of_funds
+  requirement: Projects must fall within at least one of three defined themes (green transition;
+    life science/health/welfare; strategic digitalisation and new technologies).
+  value: Must fall within one of three thematic areas
+  intake_field: none
+  quote: This means that Innobooster only invests in projects that fall within at least one
+    of the three themes.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.8
+  verified: llm_cited
+- id: g5-eligible-expenses
+  gate_family: G5_use_of_funds
+  requirement: Eligible expenses are limited to employee/founder hours on the innovation project,
+    knowledge provider costs, and materials/equipment (minimum DKK 10,000 per invoice); normal
+    operations and marketing expenses are excluded.
+  value: 'Eligible: staff hours, knowledge providers, equipment >=DKK10,000/invoice'
+  intake_field: none
+  quote: Please note that expenses relating to normal operation and development of the company,
+    including e.g. establishment, continuous operational optimisation, strategy development,
+    sales and marketing initia-tives, communication, initial market or customer clarification
+    etc., fall outside the scope of the Inno-booster programme.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.11
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Please note that expenses relating to normal
+    opera'''
+- id: g6-wage-subsidy-exclusion
+  gate_family: G6_conditionality
+  requirement: Budget may not include expenses for which other forms of subsidy, including
+    wage subsidies, are already received.
+  value: No double-funding of same expenses with other subsidies
+  intake_field: conditionality
+  quote: The budget and the financial accounts may not include ex-penses for which other forms
+    of subsidies are received, including wage subsidies.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.10
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The budget and the financial accounts may not
+    incl'''
+- id: g6-audit-requirement
+  gate_family: G6_conditionality
+  requirement: An auditor's statement certifying accounts and grant use in accordance with
+    approved basis must be prepared each project year.
+  value: Annual auditor's statement required
+  intake_field: conditionality
+  quote: For all projects receiving an Innovation Fund Denmark grant, an auditor’s statement
+    must be prepared each project year, where the auditor certifies that the submitted accounts
+    are correct and that the grant has been used in accordance with the approved grant basis
+    and the requirements listed in the grant letter and in these guidelines.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.19
+  verified: llm_cited
+- id: g6-accumulated-investment-assessment
+  gate_family: G6_conditionality
+  requirement: Innovation Fund Denmark always evaluates the accumulated investment across
+    prior and new grants to the same company as a total.
+  value: Accumulated investment assessed cumulatively
+  intake_field: cofinancingBand
+  quote: We always evaluate the accumulated investment. This means that if your company has
+    received an in-vestment of e.g. DKK 500,000 and subsequently applies for another investment
+    of e.g. DKK 1,100,000, the two will be assessed as a total investment of DKK 1,600,000.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.17
+  verified: false
+  verify_note: 'fragment not found verbatim: ''We always evaluate the accumulated investment.
+    Thi'''
+obligations:
+- requirement: Grant recipient must accept grant requirements electronically within three
+    months of the grant letter as a precondition for receiving funding.
+  quote: You will receive a grant letter via E-grant and, at the same time, be asked to accept
+    the grant require-ments electronically within three months.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.19
+  verified: false
+  verify_note: 'fragment not found verbatim: ''You will receive a grant letter via E-grant
+    and, a'''
+- requirement: Accounts must be submitted every three months throughout the project.
+  quote: Accounts must be submitted every three months.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.19
+  verified: llm_cited
+- requirement: Grant recipients must submit a mid-term progress report as a PowerPoint presentation
+    via E-grant halfway through the project.
+  quote: All grant receivers will halfway through the project period also be asked to submit
+    a progress report which in a structured and concise form accounts for the status of the
+    project, remaining activities and any changes or new perspectives vis-à-vis the project
+    goal at the time in question.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.19
+  verified: llm_cited
+- requirement: Applicant must inform Innovation Fund Denmark of any significant changes affecting
+    the project, and requests for changes must be approved before implementation.
+  quote: You must inform Innovation Fund Denmark of any significant changes affecting the
+    overall Innobooster project as soon as possible via e.g.Innobooster@innofond.dk or E-grant.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.20
+  verified: llm_cited
+- requirement: At project end, recipient must submit final accounts, an evaluation, and a
+    short final report within one month of project end.
+  quote: At the end of the project, you must – aside from the final accounts – complete an
+    evaluation of the pro-cess and produce a short final report. These documents must be submitted
+    no later than one month after the end of the project period.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.20
+  verified: false
+  verify_note: 'fragment not found verbatim: ''At the end of the project, you must – aside
+    from t'''
+- requirement: Innovation Fund Denmark retains 15 per cent of the grant until final documentation
+    is approved.
+  quote: We always retain 15 per cent of your grant until this stage regardless of your expenditure
+    level up until the last accounting period.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.20
+  verified: llm_cited
+- requirement: Applicant is responsible for the accuracy of all information and attachments
+    submitted in the application and must inform the Fund of significant changes including
+    funding received from other parties.
+  quote: The applicant is under obligation to inform Innovation Fund Denmark of any significant
+    changes to the submitted information, including if the company has received funding for
+    the project or parts hereof from other parties.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.23
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/25 gates, 5/7 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: De minimis aid received by the company from all sources over the current and prior
+    two financial years must be aggregated and must not exceed the EUR 200,000 ceiling (or
+    lower sector-specific ceilings for agriculture/fisheries); accumulated Innobooster investments
+    across grants are also assessed together for evaluation purposes.
+  quote: In addition, any other de minimis aid received by the company from other schemes
+    within a three-year period must be included in the maximum aid amount.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.9
+  verified: llm_cited
+application:
+  channel: Online application via the E-grant electronic application system, choosing between
+    the two Innobooster investment pools (DKK 50,000-1.5 mill. or DKK 1.5-5 mill.)
+  typical_timeline: Applications processed on a rolling/ongoing basis; possible application
+    pauses in December/January; processing time varies and is published on the Fund's website;
+    may include a clarification interview or panel pitch which extends processing time.
+  quote: You must complete and submit your application online via the electronic application
+    system E-grant.
+  source:
+    file: innovationsfonden_innobooster_guidelines_2021.pdf
+    locator: p.12
+  verified: llm_cited

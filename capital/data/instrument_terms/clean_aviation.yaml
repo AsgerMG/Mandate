@@ -1,0 +1,307 @@
+id: clean_aviation
+name: clean_aviation
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-countries
+  gate_family: G1_nexus
+  requirement: 'Applicants must be established in one of the eligible countries: EU Member
+    States (including outermost regions), Overseas Countries and Territories linked to Member
+    States, countries associated to Horizon Europe, or low- and middle-income countries.'
+  value: EU Member States, OCTs, HE Associated Countries, low- and middle-income countries
+  intake_field: entityCountries
+  quote: 'To be eligible for funding, applicants must be established in one of the eligible
+    countries, i.e.:
+
+    - the Member States of the European Union, including their outermost regions
+
+    - the Overseas Countries and Territories (OCTs) linked to the Member States
+
+    - countries associated to Horizon Europe26
+
+    - low- and middle-income countries27'
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.82
+  verified: llm_cited
+- id: g1-uk-non-eligible
+  gate_family: G1_nexus
+  requirement: Entities established in the UK are non-eligible for EU funding in award procedures
+    implementing the budgets 2021 to 2023, and carried-over appropriations may not be used
+    to fund UK beneficiaries.
+  value: UK entities excluded (2021-2023 budgets)
+  intake_field: entityCountries
+  quote: entities established in the UK in award procedures implementing budget 2021 to 2023
+    are non-eligible for EU funding, nor carried over appropriations should be used to fund
+    UK beneficiaries.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.120
+  verified: llm_cited
+- id: g1-associated-country-restriction
+  gate_family: G1_nexus
+  requirement: Legal entities established in countries without a concluded or legally effective
+    Horizon Europe Association Agreement may not be selected for CAJU membership.
+  value: Association Agreement to Horizon Europe required and in legal effect
+  intake_field: entityCountries
+  quote: 'legal entities established in countries with which an Association Agreement to the
+    Horizon Europe has not yet been concluded, or
+
+    - legal entities established in countries with which an Association Agreement has been
+    concluded but it has not yet started producing legal effects either through provisional
+    application or their entry into force'
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.81
+  verified: llm_cited
+- id: g1-consortium-composition
+  gate_family: G1_nexus
+  requirement: Consortia must include at least one independent legal entity established in
+    a Member State and at least two other independent legal entities each established in different
+    Member States or Associated Countries, unless otherwise provided.
+  value: Min. 3 independent legal entities from 3 different MS/Associated Countries
+  intake_field: consortium
+  quote: 'legal entities forming a consortium are eligible to participate in actions provided
+    that the consortium includes:
+
+    - at least one independent legal entity established in a Member State;
+
+    - at least two other independent legal entities, each established in different Member
+    States or Associated Countries.'
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.83
+  verified: llm_cited
+- id: g1-single-entity-derogation
+  gate_family: G1_nexus
+  requirement: Pursuant to Article 72 of the SBA Regulation, where duly justified in the topic
+    conditions, a single legal entity or a consortium not meeting the standard composition
+    condition may be eligible to participate in indirect actions.
+  value: Single-entity derogation possible if justified in call topic conditions
+  intake_field: consortium
+  quote: a single legal entity established in a Member State or Associated Country or consortia
+    not meeting the condition laid down in Article 22.2 of the Horizon Europe Regulation shall
+    be eligible to participate in indirect actions funded by the Clean Aviation Joint Undertaking.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.83
+  verified: llm_cited
+- id: g1-calls-open-to-all
+  gate_family: G1_nexus
+  requirement: The Clean Aviation Calls for Proposals are open to all, with members and non-members
+    of the CAJU equally invited to participate.
+  value: Open to members and non-members
+  intake_field: borrowerModel
+  quote: The Clean Aviation Calls for Proposals are open to all. Members as well as non-members
+    of the CAJU are equally invited to participate in these calls.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.77
+  verified: llm_cited
+- id: g4-eligible-action-types
+  gate_family: G4_borrower_model
+  requirement: Only Research and Innovation Actions (RIA), Innovation Actions (IA) and Coordination
+    and Support Actions (CSA) are eligible for grants under the Clean Aviation Programme.
+  value: RIA, IA, CSA only
+  intake_field: borrowerModel
+  quote: 'the following activities are the only eligible for grants under Horizon Europe Clean
+    Aviation Programme29:
+
+    • Research and innovation actions (RIA)
+
+    • Innovation actions (IA)
+
+    • Coordination and support actions (CSA)'
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.84
+  verified: llm_cited
+- id: g5-eligible-activities-topic
+  gate_family: G5_use_of_funds
+  requirement: Applications are only eligible if their content corresponds to the topic description
+    for which they are submitted.
+  value: Content must match published call/topic description
+  intake_field: none
+  quote: 'Applications are only considered eligible if their content corresponds to the topic
+    description for which it is submitted and fulfils the following additional eligibility
+    condition:'
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.83
+  verified: llm_cited
+- id: g5-lsp-sme-allocation
+  gate_family: G5_use_of_funds
+  requirement: For Large Scale Projects (LSP), a minimum percentage of the total EU funding
+    at proposal level must be allocated to beneficiaries with a specified legal status (e.g.
+    SMEs, RTOs, universities), as defined in call topic conditions.
+  value: Minimum % EU funding to SMEs/RTOs/universities per call topic conditions
+  intake_field: none
+  quote: a minimum percentage of the total EU funding at the proposal level must be allocated
+    to beneficiaries with the specified legal status, as defined in the call topic conditions.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.84
+  verified: llm_cited
+- id: g5-max-funding-per-topic
+  gate_family: G5_use_of_funds
+  requirement: For ACI Activities and Large-Scale Projects, an additional eligibility condition
+    applies consisting of a maximum available funding amount per topic and per project, as
+    specified in call topic conditions.
+  value: Maximum funding amount per topic/project per call conditions
+  intake_field: none
+  quote: an additional eligibility condition consisting of a maximum available funding amount
+    per topic and per project applies, as specified in the call topic conditions28.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.84
+  verified: llm_cited
+- id: g3-financial-capacity
+  gate_family: G3_financial
+  requirement: Grants may be awarded only to participants that can demonstrate sufficient
+    financial capacity to perform their activity throughout the duration of the action, checked
+    via Participant Register documents.
+  value: Sufficient financial capacity required, verified via P&L, balance sheet, business
+    plan, audit report
+  intake_field: turnoverBand
+  quote: Grants may be awarded only to participants that can demonstrate sufficient financial
+    capacity to perform their activity throughout the duration of the action. Organisations
+    participating in several projects must have sufficient capacity to implement all these
+    projects.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.84
+  verified: llm_cited
+- id: g3-page-limits-full
+  gate_family: G3_financial
+  requirement: Unless otherwise provided, full applications are limited to 120 pages (30 pages
+    for Coordination and Support Actions).
+  value: 120 pages max (30 pages for CSAs)
+  intake_field: none
+  quote: Unless provided otherwise in the specific call conditions, the limit for a full application
+    is 120 pages (except for ‘Coordination and support’ actions, where the limit is 30 pages)
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.82
+  verified: llm_cited
+- id: g3-page-limits-fta
+  gate_family: G3_financial
+  requirement: For Fast Track Activities, full applications are limited to 50 pages (30 pages
+    for Coordination and Support Actions).
+  value: 50 pages max for FTAs (30 pages for CSAs)
+  intake_field: none
+  quote: Unless provided otherwise in the specific call conditions, the limit for a full application
+    is 50 pages (except for ‘Coordination and support’ actions, where the limit is 30 pages).
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.82
+  verified: llm_cited
+- id: g4-in-kind-contribution
+  gate_family: G4_borrower_model
+  requirement: Founding Members and Associated Members must bring in-kind contributions (IKOP
+    and IKAA) sufficient to collectively ensure the minimum level of in-kind contribution
+    (IKC) of €2.4 billion set under Article 61 of the SBA.
+  value: €2.4 billion minimum in-kind contribution (incl. up to €39.2 million admin costs)
+  intake_field: institutionalBacking
+  quote: the Founding Members and Associated Members shall bring an amount of in-kind contribution
+    to operational activities ‘IKOP’ at the level of the indirect actions and an amount of
+    in-kind contribution to additional activities ‘IKAA’ both at the level of the indirect
+    actions and at the level of the Programme to be able to collectively ensure the minimum
+    level of in-kind contribution (IKC) (€2.4 billion, including up to €39.2 million for administrative
+    costs) set under Article 61 of the SBA.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.81
+  verified: llm_cited
+- id: g6-minimum-trl4-call4
+  gate_family: G6_conditionality
+  requirement: The content of Call 4 is contingent upon progress achieved in Phase 1, with
+    a requirement to reach a minimum TRL 4 by the project end.
+  value: Minimum TRL 4 by project end required
+  intake_field: developmentStage
+  quote: The content of Call 4 will be prepared between Q3 2025 an early 2026 and is contingent
+    upon progress achieved in Phase 1, with a requirement to reach a minimum TRL 4 by the
+    project end.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.77
+  verified: llm_cited
+obligations:
+- requirement: Beneficiaries must, up to 10 years after the end of the action, inform the
+    granting authority if results could reasonably be expected to contribute to European or
+    international standards.
+  quote: beneficiaries are required up to 10 years after the end of the action to inform the
+    granting authority if the results could reasonably be expected to contribute to European
+    or international standards
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.87
+  verified: llm_cited
+- requirement: If no exploitation of results takes place within one year after the period
+    set out in the MGA, beneficiaries must use the Horizon Results Platform and/or CAJU membership
+    to find interested parties to exploit those results, unless waived.
+  quote: If no exploitation takes place within one year after the period set out in Article
+    4 of the MGA, the beneficiary must use the Horizon Results Platform and/or the CAJU membership
+    to find interested parties to exploit those results. If justified on the basis of a request
+    of the beneficiary, this obligation may be waived.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.87
+  verified: llm_cited
+- requirement: Selected participants must accede to the Clean Aviation Cooperation Agreement
+    under the conditions set out in Annex 5 of the MGA.
+  quote: Participants in projects selected under the relevant call topics will be required
+    to accede to the Clean Aviation Cooperation Agreement - under the conditions set out in
+    Annex 5 of the MGA.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.92
+  verified: llm_cited
+- requirement: Founding and Associated Members must ensure compliance with the Membership
+    Agreement, including contributions from non-Members, via conclusion of a suitable Consortium
+    Agreement governing the project.
+  quote: Founding and Associated Members must also ensure compliance with the Membership Agreement
+    including contributions from non-Members, inter alia via the conclusion of a suitable
+    Consortium Agreement [CA] governing the project and its consortium.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.92
+  verified: llm_cited
+- requirement: If requested, beneficiaries must grant non-exclusive licenses to their results,
+    for a limited period specified in the request, on fair and reasonable conditions, to entities
+    addressing a public emergency, up to four years after the end of the action.
+  quote: If requested by the granting authority, beneficiaries must grant non-exclusive licenses
+    to their results – for a limited period of time specified in the request and based on
+    fair and reasonable conditions – to legal entities that need the results to address a
+    public emergency.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.92
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/15 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: CAJU complies with Article 29 of the SBA on multi-annual instalments, capping cumulative
+    budgetary commitments in instalments and requiring UK-ineligible allocation of carried-over
+    appropriations to specific calls.
+  quote: CAJU complies with the Article 29 of the Single Basic Act (SBA) establishing that
+    until 2024, the cumulative amount of budgetary commitments in instalments shall not exceed
+    50 % of the total budget for the programme period, and that from 2025 onwards, at least
+    20% of the cumulative budget of the residual years shall not be covered by annual instalments.
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.120
+  verified: llm_cited
+application:
+  channel: EU Funding & Tenders opportunities portal via published Calls for Proposals
+  typical_timeline: Two Calls for Proposals published in early 2026 (Call 4) and early 2027
+    (Call 5)
+  quote: As part of the Clean Aviation Work Programme 2026-2027, two Calls for Proposals will
+    be published in early 2026 and early 2027 to fund Innovation Actions (IAs),Research and
+    Innovation Actions (RIAs) and Coordination and Support Actions (CSAs).
+  source:
+    file: clean_aviation_amended_wpb_2026_2027.pdf
+    locator: clean_aviation_amended_wpb_2026_2027.pdf#p.77
+  verified: llm_cited

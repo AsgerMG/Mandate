@@ -1,0 +1,126 @@
+id: cdti_neotec
+name: cdti_neotec
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a legally constituted enterprise (SME) established in Spain,
+    engaged in R&D&I activities, seeking to develop and consolidate a technology-based business
+    project.
+  value: Spain-established SME with technology-based project
+  intake_field: entityCountries
+  quote: cumplimiento de lo declarado, determinará la imposibilidad de continuar con el procedimiento
+    dando lugar a la desestimación de la ayuda o en su caso su revocación
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-verif
+  gate_family: G6_conditionality
+  requirement: Competent bodies may carry out checks before or after grant award; detection
+    of non-compliance with any condition leads to rejection or full/partial reimbursement
+    (reintegro) of the aid.
+  value: Ex-ante and ex-post compliance verification with reimbursement risk
+  intake_field: conditionality
+  quote: Los órganos competentes podrán realizar las comprobaciones oportunas con anterioridad
+    o posterioridad a la concesión de la ayuda y en caso de detectarse el incumplimiento de
+    alguna condición procederá la desestimación de la ayuda o la exigencia de reintegro total
+    o parcial.
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-subsanacion
+  gate_family: G6_conditionality
+  requirement: If the application does not meet the requirements established in the call,
+    the applicant will be required to correct deficiencies within ten working days, or the
+    application will be deemed withdrawn.
+  value: 10 working days to correct application deficiencies
+  intake_field: none
+  quote: el órgano instructor requerirá al interesado para que subsane en el plazo de diez
+    días hábiles la falta o acompañe los documentos preceptivos, con advertencia de que, si
+    no lo hiciese, se le tendrá por desistido de la solicitud
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-preevaluacion
+  gate_family: G6_conditionality
+  requirement: The instructing body verifies compliance with beneficiary eligibility conditions
+    during pre-evaluation, based exclusively on information submitted during the application
+    admission phase or correction phase; this only covers requirements not requiring scientific/technical
+    assessment.
+  value: Pre-evaluation limited to submitted documentation; excludes technical merit assessment
+  intake_field: none
+  quote: En esta fase el órgano instructor verificará el cumplimiento de las condiciones impuestas
+    para adquirir la condición de beneficiario. Esta verificación se realizará exclusivamente
+    sobre la información y documentación aportada en la fase de admisión de solicitudes o
+    la que hubiera podido requerirse en fase de subsanación.
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-umbral
+  gate_family: G6_conditionality
+  requirement: Where scoring thresholds are established in the evaluation criteria, applicants
+    must reach them to be eligible for the aid.
+  value: Minimum scoring threshold required to qualify for aid
+  intake_field: none
+  quote: En los casos en los que se establezcan umbrales de puntuación, será necesario alcanzarlos
+    para poder optar a la ayuda.
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- id: g6-nomejora
+  gate_family: G6_conditionality
+  requirement: As these are competitive concurrence procedures initiated ex officio, no voluntary
+    changes or improvements to the application are permitted after submission.
+  value: No voluntary amendments allowed post-submission
+  intake_field: none
+  quote: Por tratarse de procedimientos de concesión en concurrencia competitiva y, como tales
+    iniciados de oficio, no se admitirán cambios ni mejoras voluntarias de la solicitud.
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+obligations:
+- requirement: Applicant must comply with declared conditions; failure to comply leads to
+    inability to continue the procedure, rejection of aid, or revocation, without prejudice
+    to criminal, civil or administrative liability.
+  quote: cumplimiento de lo declarado, determinará la imposibilidad de continuar con el procedimiento
+    dando lugar a la desestimación de la ayuda o en su caso su revocación, sin perjuicio de
+    las responsabilidades penales, civiles o administrativas a que hubiera lugar.
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+- requirement: Beneficiaries are subject to compliance checks by competent bodies before or
+    after aid award, with risk of reimbursement obligations if non-compliance is detected.
+  quote: Los órganos competentes podrán realizar las comprobaciones oportunas con anterioridad
+    o posterioridad a la concesión de la ayuda y en caso de detectarse el incumplimiento de
+    alguna condición procederá la desestimación de la ayuda o la exigencia de reintegro total
+    o parcial.
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (6/6 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Competitive grant procedure (concurrencia competitiva) managed via CDTI application
+    process, with instructing body handling admission, correction (subsanación), pre-evaluation
+    and evaluation phases.
+  typical_timeline: 10 working days allowed for correction of deficiencies (subsanación) after
+    admission; evaluation conducted by evaluation commissions comparing applications against
+    established criteria.
+  quote: el órgano instructor requerirá al interesado para que subsane en el plazo de diez
+    días hábiles la falta o acompañe los documentos preceptivos
+  source:
+    file: cdti_neotec_boe_convocatoria_2026_extracto.html
+    locator: cdti_bases_reguladoras_orden_cnu_161_2025.pdf#p.16
+  verified: llm_cited

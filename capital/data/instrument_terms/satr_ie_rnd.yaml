@@ -1,0 +1,449 @@
+id: satr_ie_rnd
+name: satr_ie_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-agency
+  gate_family: G1_nexus
+  requirement: Applicant must be a client (existing or potential) of Enterprise Ireland, Údarás
+    na Gaeltachta, or a Local Enterprise Office, and operate in manufacturing or internationally
+    traded services, trading internationally now or in the short term.
+  value: EI/Údarás na Gaeltachta/LEO client, manufacturing or internationally traded services
+  intake_field: institutionalBacking
+  quote: Eligible companies are limited to Enterprise Ireland 1, Údarás na Gaeltachta or any
+    of the Local Enterprise Offices subject to the prevailing policies of those agencies.
+    Companies must operate in the Manufacturing or internationally traded services areas of
+    business to be eligible for this support and be either currently trading internationally
+    or trading internationally within the short term.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.6
+  verified: llm_cited
+- id: g1-ireland-majority
+  gate_family: G1_nexus
+  requirement: The majority of the RD&I project must be carried out in Ireland.
+  value: majority of project work must be in Ireland
+  intake_field: activityCountries
+  quote: The majority of the project must be carried out in Ireland and the assessment criteria
+    will require an analysis of costs incurred in the State and costs incurred outside the
+    State.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.5
+  verified: llm_cited
+- id: g1-project-not-started
+  gate_family: G1_nexus
+  requirement: The project must not have commenced before the application is submitted to
+    Enterprise Ireland (incentive effect / State Aid rule).
+  value: no work before application submission
+  intake_field: developmentStage
+  quote: It is a requirement of the State Aid rules under which this initiative is approved,
+    that the project must not commence prior to the company submitting the application to
+    Enterprise Ireland.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.6
+  verified: llm_cited
+- id: g2-sme-size-definition
+  gate_family: G2_size_ownership
+  requirement: Company size (micro/small/medium/large) is determined using the EU SME definition
+    of Annex I of Commission Regulation (EU) No 651/2014, based on headcount, turnover and
+    balance sheet thresholds.
+  value: 'SME: <250 staff, turnover ≤€50m and/or balance sheet ≤€43m; small: <50 staff, turnover/balance
+    sheet ≤€10m'
+  intake_field: fteBand
+  quote: The category of micro, small and medium-sized enterprises (‘SMEs’) is made up of
+    enterprises which employ fewer than 250 persons and which have an annual turnover not
+    exceeding EUR 50 million, and/or an annual balance sheet total not exceeding EUR 43 million.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.15
+  verified: llm_cited
+- id: g2-hpsu-cooling-off
+  gate_family: G2_size_ownership
+  requirement: HPSU-funded start-up clients are generally not eligible for RD&I funding for
+    three years after investment, unless they meet minimum FTE, revenue, and EBITDA-positive
+    conditions and have not raised external equity finance recently.
+  value: 3-year exclusion unless min 5 FTE, €500K sustainable revenue, EBITDA positive
+  intake_field: foundedYear
+  quote: Enterprise Ireland start-up clients who have received HPSU investment funding are
+    typically not eligible for RD&I funding for a period of three years after the date of
+    investment. Eligible HPSU clients must employ a minimum of 5 Full Time Staff in Ireland,
+    have achieved sustainable revenues of €500K, and are EBITDA positive in the previous accounting
+    period, or for at least the previous nine months prior to application, and can demonstrate
+    sustainable future EBITDA, and in the previous 6 months and during the course of the business
+    plan the company has not raised external finance in the form of equity (Subject to no
+    double funding).
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- id: g2-leo-udaras-fte
+  gate_family: G2_size_ownership
+  requirement: Local Enterprise Office and Údarás na Gaeltachta client applicants must employ
+    a minimum of 5 full-time staff in Ireland.
+  value: minimum 5 FTE in Ireland
+  intake_field: fteBand
+  quote: Eligible Local Enterprise Office clients must employ a minimum of 5 Full Time Staff
+    in Ireland,
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- id: g2-ebitda-positive
+  gate_family: G2_size_ownership
+  requirement: All companies applying for RD&I support must be EBITDA positive in the previous
+    accounting period, or for at least the previous nine months, and demonstrate sustainable
+    future EBITDA-positivity.
+  value: EBITDA positive (prior period or 9 months) with sustainable outlook
+  intake_field: turnoverBand
+  quote: All companies submitting an application for RD&I support must be EBITDA positive
+    in the previous accounting period, or EBITDA positive for at least the previous nine months
+    prior to application and can demonstrate sustainable future EBITDA-positivity.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- id: g2-undertaking-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: The Undertaking in Difficulty (UID) test must be applied to all RD&I projects
+    seeking support under GBER, excluding firms in difficulty.
+  value: must not be an Undertaking in Difficulty
+  intake_field: lossesOverHalfCapital
+  quote: The Undertaking in Difficulty (UID) rule to be tested and applied to all RD&I projects
+    seeking support under GBER.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- id: g2-startup-eligibility
+  gate_family: G2_size_ownership
+  requirement: For the Start-up aid instrument, eligible undertakings must be unlisted small
+    enterprises up to five years following registration, meeting cumulative conditions on
+    takeovers, mergers and profit distribution.
+  value: unlisted small enterprise, ≤5 years registered, no profit distribution, limited takeover/merger
+    turnover share
+  intake_field: foundedYear
+  quote: 'Eligible undertakings shall be any unlisted small enterprise up to 5 years following
+    its registration, that fulfils the following cumulative conditions: (a) it has not taken
+    over the activity of another undertaking, unless the turnover of the overtaken activity
+    accounts for less than 10 % of the turnover of the eligible undertaking in the financial
+    year preceding the take-over; (b) it has not yet distributed profits; (c) it has not acquired
+    another undertaking or has not been formed through a merger, unless the turnover of the
+    acquired undertaking accounts for less than 10 %'
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.8
+  verified: llm_cited
+- id: g3-approval-threshold
+  gate_family: G3_financial
+  requirement: RD&I applications up to €150,000 total grant funding are approved under Delegated
+    Powers by the Management Approvals Committee; above this, the Investment Committee decides.
+  value: €150,000 MAC threshold
+  intake_field: ticketBand
+  quote: RD&I Applications (with one or more projects inclusive of all funding applied for)
+    up to total grant funding threshold of €150,000 will be considered under Delegated Powers
+    by the Management Approvals Committee (MAC).
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.13
+  verified: llm_cited
+- id: g3-grant-rates
+  gate_family: G3_financial
+  requirement: Grant rates for experimental development RD&I vary by company size (45% small,
+    35% medium, 25% large), rising to 60/50/40% with effective collaboration.
+  value: 45%/35%/25% (60%/50%/40% with collaboration)
+  intake_field: cofinancingBand
+  quote: Experimental development (RD&I) 45% 35% 25% 60% 50% 40%
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.12
+  verified: llm_cited
+- id: g3-regional-bonus
+  gate_family: G3_financial
+  requirement: A 5 percentage point regional aid bonus applies if the RD&I project is carried
+    out in an assisted region and the beneficiary is located there.
+  value: +5 percentage points in assisted regions
+  intake_field: cofinancingBand
+  quote: The RD&I project costs may by be increased by 5 percentage points if the research
+    and development project is carried out in an assisted region.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.12
+  verified: llm_cited
+- id: g3-built-to-innovate-cap
+  gate_family: G3_financial
+  requirement: Built To Innovate projects have a maximum project value of €500k, with amounts
+    above evaluated case-by-case by the Investment Committee.
+  value: €500k max project value (Built to Innovate)
+  intake_field: ticketBand
+  quote: Built To Innovate projects have a maximum project value of €500k. Companies with
+    projects seeking financial support in excess of this amount will be evaluated on a caseby-case
+    basis by the Enterprise Ireland Investment Committee.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.12
+  verified: llm_cited
+- id: g3-startup-max-amounts
+  gate_family: G3_financial
+  requirement: 'Start-up aid instruments have statutory maximum amounts: loans up to €1.1m
+    (or €1.65m/€2.2m in assisted areas), guarantees up to €1.65m guaranteed (or €2.48m/€3.3m),
+    grants/equity up to €0.5m gross grant equivalent (or €0.75m/€1m), potentially doubled
+    for small and innovative enterprises.'
+  value: loans ≤€1.1m; guarantees ≤€1.65m; grants ≤€0.5m GGE (higher in assisted areas, doubled
+    for innovative SMEs)
+  intake_field: ticketBand
+  quote: loans with interest rates which are not conform with market conditions, with a duration
+    of 10 years and up to a maximum nominal amount of €1.1 million, or € 1.65 million for
+    undertakings established in assisted areas fulfilling the conditions of Article 107(3),
+    point (c), of the Treaty, or €2.2 million for undertakings established in assisted areas
+    fulfilling the conditions of Article 107(3), point (a), of the Treaty.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.8
+  verified: llm_cited
+- id: g3-max-amounts-scheme
+  gate_family: G3_financial
+  requirement: 'Maximum aid amounts under the broader SME scheme are capped per undertaking
+    per project/investment: €8.25m for investment aid, €2.2m for consultancy aid, €2.2m per
+    year for fairs participation.'
+  value: €8.25m investment aid; €2.2m consultancy; €2.2m/year fairs
+  intake_field: ticketBand
+  quote: 'for investment aid to SMEs: €8.25 million per undertaking per investment project;
+    (b) for aid for consultancy in favour of SMEs: €2.2 million per undertaking, per project;
+    (c) for aid to SMEs for participation in fairs: € 2.2 million per undertaking, per year;'
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.3
+  verified: llm_cited
+- id: g4-form-of-aid
+  gate_family: G4_borrower_model
+  requirement: Funding will normally be in the form of an RD&I grant, but may be offered as
+    equity or a Convertible Loan Note at Enterprise Ireland's discretion depending on the
+    company's financial position.
+  value: grant, equity or CLN at EI discretion
+  intake_field: borrowerModel
+  quote: Funding will normally be in the form of an RD&I grant but may be offered in the form
+    of equity or a Convertible loan note (CLN), at the discretion of Enterprise Ireland, based
+    on the financial position of the company.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.12
+  verified: llm_cited
+- id: g4-startup-instrument-forms
+  gate_family: G4_borrower_model
+  requirement: Start-up aid may take the form of below-market-rate loans, below-market-rate
+    guarantees, or grants including equity/quasi-equity investment, with beneficiaries able
+    to receive a mix of instruments.
+  value: loans, guarantees, or grants/equity mix
+  intake_field: borrowerModel
+  quote: A beneficiary can receive support through a mix of the aid instruments referred to
+    in paragraph 3 of this Article, provided that the proportion of the amount granted through
+    one aid instrument, calculated on the basis of the maximum aid amount allowed for that
+    instrument, is taken into account in order to determine the residual proportion of the
+    maximum aid amount allowed for the other instruments forming part of such a mixed instrument.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.9
+  verified: llm_cited
+- id: g5-eligible-cost-categories
+  gate_family: G5_use_of_funds
+  requirement: Eligible cost categories for RD&I funding are salaries, technical consultancy,
+    contractual research, certification/clinical trials, patent costs, equipment rental, capital
+    equipment, and (under Defined Costing Method) materials.
+  value: salaries, consultancy, contractual research, certification, patents, equipment rental,
+    capital equipment, materials
+  intake_field: none
+  quote: Cost Categories Eligible for support • Salaries • Technical Consultancy • Contractual
+    research • Certification/Clinical trails • Patent costs • Equipment rental • Capital Equipment
+    (depreciated)
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.9
+  verified: llm_cited
+- id: g5-consultancy-cap
+  gate_family: G5_use_of_funds
+  requirement: If subcontracted/consultancy expenditure amounts to a majority of total project
+    costs, the project is deemed ineligible; a minimum 40% of RD&I project expenditure related
+    to salaries must be in-house.
+  value: consultancy must not exceed majority of costs; min 40% in-house salary spend
+  intake_field: none
+  quote: If the amount of eligible expenditure for subcontracted/consultancy work on the project,
+    amounts to a majority of the total costs, the project is deemed ineligible.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.10
+  verified: llm_cited
+- id: g5-patent-sme-only
+  gate_family: G5_use_of_funds
+  requirement: Patent costs are eligible only for small and medium enterprises; patent costs
+    for large companies cannot be supported.
+  value: patent costs eligible only for SMEs
+  intake_field: fteBand
+  quote: Patent costs for large companies cannot be supported.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.11
+  verified: llm_cited
+- id: g5-investment-aid-eligible-costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs for SME investment aid are tangible/intangible asset investment
+    costs, estimated wage costs of directly created employment, or a combination thereof.
+  value: tangible/intangible investment costs or wage costs of new jobs
+  intake_field: none
+  quote: the costs of investment in tangible and intangible assets, including one-off non-amortizable
+    costs linked directly to the investment and its initial installation;
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''the costs of investment in tangible and intangible'''
+- id: g6-cumulation-scheme
+  gate_family: G6_conditionality
+  requirement: Aid under this Scheme shall not be cumulated with de minimis aid for the same
+    eligible costs if this would exceed the aid intensity ceilings laid down in the Regulation.
+  value: no cumulation with de minimis exceeding GBER intensity ceilings
+  intake_field: conditionality
+  quote: Aid under this Scheme shall not be cumulated with any de minimis aid in respect of
+    the same eligible costs if such cumulation would result in an aid intensity exceeding
+    those laid down in the Regulation.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.5
+  verified: llm_cited
+- id: g6-contingent-grant-liability
+  gate_family: G6_conditionality
+  requirement: Contingent Grant Liability applies for 5 years; material breach of agreement
+    provisions requires repayment of all grants received, with parent/holding companies generally
+    required to underwrite this at approval.
+  value: 5-year CGL, repayment on material breach
+  intake_field: conditionality
+  quote: Contingent Grant Liability applies for a period of 5 years. Where grant assisted
+    companies are part of a group structure, the parent/holding company will generally be
+    required to underwrite the CGL at approval stage.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.14
+  verified: llm_cited
+- id: g6-procurement-obligation
+  gate_family: G6_conditionality
+  requirement: Where the grant rate exceeds 50%, public procurement guidelines must be followed
+    for project expenditures, verified by the grant inspection team.
+  value: public procurement compliance required above 50% grant rate
+  intake_field: conditionality
+  quote: Where the grant rate is greater than 50%, public procurement guidelines must be followed
+    for expenditures on the project. The grant inspection team will validate that this requirement
+    has been met.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.13
+  verified: llm_cited
+- id: g6-excluded-sectors
+  gate_family: G6_conditionality
+  requirement: The Scheme excludes aid to export-related activities, fishery/aquaculture (with
+    exceptions), primary agriculture (except consultancy), coal mine closure, undertakings
+    subject to an outstanding recovery order, and undertakings in difficulty.
+  value: excludes exporters, fishery, primary agri, coal, recovery-order firms, firms in difficulty
+  intake_field: conditionality
+  quote: Aid in favour of an undertaking which is subject to an outstanding recovery order
+    following a previous Commission decision declaring an aid illegal and incompatible with
+    the internal market;
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.3
+  verified: llm_cited
+- id: g6-incentive-effect
+  gate_family: G6_conditionality
+  requirement: 'Aid must have an incentive effect: the beneficiary must submit a written application
+    before work on the project starts, including undertaking name/size, project description,
+    location, costs, and aid type/amount.'
+  value: written application required before work starts
+  intake_field: conditionality
+  quote: Aid shall be considered to have an incentive effect if the beneficiary has submitted
+    a written application for the aid to the relevant development agency before work on the
+    project or activity starts.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.4
+  verified: llm_cited
+- id: g6-housing-for-all-exclusions
+  gate_family: G6_conditionality
+  requirement: Housing for All Offer excludes property developers without self-performed construction,
+    companies with under 10 FTE, low-homebuilding-revenue firms without a validated plan,
+    and firms in coal/steel, primary agriculture, financial services, gambling, adult entertainment,
+    tobacco, or unauthorised cannabis products.
+  value: exclusions for Housing for All appendix
+  intake_field: conditionality
+  quote: Property developers who do not self-perform any construction work. • Companies employing
+    less than 10 full time people. • Companies that currently derive less than 20% of annual
+    revenue from the homebuilding sector and do not have a validated plan to achieve this
+    objective, this plan being satisfactory to Enterprise Ireland.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.17
+  verified: llm_cited
+obligations:
+- requirement: Companies must complete the claims checklist for each claim and submit it with
+    all required documents; incomplete claims will be returned.
+  quote: Companies to complete the claims checklist for each claim and submit with all required
+    documents. If any of the required documents are missing, the claim will be returned.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.14
+  verified: llm_cited
+- requirement: Projects must begin within six months of formal approval or approval may be
+    withdrawn, and must be completed by the deadline stated in the grant agreement or any
+    approved extension.
+  quote: Projects should begin within six months of the formal approval, otherwise approval
+    may be withdrawn. Projects approved for aid must be completed by the deadline for completion
+    stated in the grant agreement or by the revised deadline where an extension has been given.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.7
+  verified: llm_cited
+- requirement: Where a company sources more than 50% of RD&I materials or subcontract work
+    outside Ireland, this breaches legal and policy requirements for building in-State RD&I
+    capability.
+  quote: where a company sources more than 50% of its materials for the RD&I project in another
+    State and/or more than 50% of the subcontract RD&I work is carried out in another State
+    then that would breach the legal and policy requirements in respect of building RD&I capability
+    and capacity in the State and in the applicant company.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.5
+  verified: llm_cited
+- requirement: Eligible costs must be supported by documentary evidence that is clear, specific
+    and contemporary.
+  quote: The eligible costs shall be supported by documentary evidence which shall be clear,
+    specific and contemporary.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.4
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (26/27 gates, 4/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid under the SME/start-up scheme may not be cumulated with de minimis aid for the
+    same eligible costs if it would exceed the GBER aid intensity ceilings.
+  quote: Aid under this Scheme shall not be cumulated with any de minimis aid in respect of
+    the same eligible costs if such cumulation would result in an aid intensity exceeding
+    those laid down in the Regulation.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: ie_smes_startups_aid_scheme.pdf#p.5
+  verified: llm_cited
+application:
+  channel: Application submitted directly to Enterprise Ireland (or Údarás na Gaeltachta/Local
+    Enterprise Office) via online application forms; project must not start before submission.
+  typical_timeline: Applications accepted anytime; approval expected within Delegated Powers
+    up to €150,000 (MAC) or Investment Committee above that threshold; project must begin
+    within six months of approval.
+  quote: Applications for funding can be submitted anytime. Application forms and company
+    guidelines are available on the Enterprise Ireland website.
+  source:
+    file: ie_smes_startups_aid_scheme.pdf
+    locator: enterprise_ireland_tor_rd_2024.pdf#p.13
+  verified: llm_cited

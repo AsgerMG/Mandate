@@ -1,0 +1,56 @@
+id: satr_de_rnd__sa_109254__bundesministerium_fur_wirtschaft_und_klimaschutz
+name: Förderrichtlinie „Digitalisierung der Fahrzeughersteller und Zulieferindustrie und
+  industrieller Lieferketten“ im Förderrahmen „Zukunftsinvestitionen Fahrzeughersteller und
+  Zulieferindustrie“ [BMWK, IVA3]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-recipients
+  gate_family: G1_nexus
+  requirement: Recipients can be commercial enterprises related to the manufacturing
+    industry with a registered seat, branch or permanent establishment in Germany, as well
+    as public and private universities, research institutions, public bodies and other
+    institutions active in the funding area.
+  value: Manufacturing-related enterprises or research institutions with a German presence
+  intake_field: entityCountries
+  quote: Zuwendungsempfänger können Unternehmen der gewerblichen Wirtschaft mit Bezügen zum
+    produzierenden Gewerbe, mit Sitz, einer Niederlassung oder Betriebsstätte in Deutschland,
+    sowie staatliche und nicht staatliche Hochschulen, Forschungseinrichtungen, öffentliche
+    Einrichtungen und sonstige Einrichtungen mit Tätigkeitsschwerpunkten im Bereich des
+    Fördergegenstands dieser Förderrichtlinie sein.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/KOPA35C/fahrzeugindustrie-der-zukunft.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-gber-exclusions
+  gate_family: G1_nexus
+  requirement: Companies or sectors excluded under Article 1(2)-(6) of the GBER (AGVO) are
+    not eligible for funding.
+  value: Excludes GBER Article 1(2)-(6) sectors/companies
+  intake_field: none
+  quote: Von der Förderung ausgeschlossen sind Unternehmen bzw. Sektoren in den Fällen des
+    Artikels 1 Absatz 2 bis 6 AGVO.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/KOPA35C/fahrzeugindustrie-der-zukunft.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-insolvency-exclusion
+  gate_family: G1_nexus
+  requirement: Companies for which insolvency proceedings have been filed for or opened are
+    not eligible to apply.
+  value: Excludes companies in filed/opened insolvency proceedings
+  intake_field: lossesOverHalfCapital
+  quote: Nicht antragsberechtigt sind Unternehmen, über deren Vermögen ein Insolvenzverfahren
+    beantragt oder eröffnet worden ist.
+  source:
+    file: https://www.bundeswirtschaftsministerium.de/KOPA35C/fahrzeugindustrie-der-zukunft.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

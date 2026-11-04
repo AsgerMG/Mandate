@@ -1,0 +1,208 @@
+---
+id: FUND
+stage: brief.funds
+schema_fields: [institutionNotes]
+evidence: [institutions, processes, eligibilityScreen, projectAnswers]
+---
+
+## Purpose
+
+The doors worth walking through, and the first step at each. The row cap is
+stated once, in FUND-2, and nowhere else in this contract. This section
+IS the eligibility statement: a fund appears here because the founder can go
+after it, so nothing else in the brief needs to argue that case separately.
+
+## What this section does not decide
+
+**Which funds appear is not the writer's decision.** They are selected by a
+deterministic fit score, ranked upstream, and handed over already cut. Write
+about the rows given: do not add one, do not argue against one, and do not
+describe them as ranked relative to each other.
+
+  **evidence:** while the writer held a disqualification flag, a fund whose own
+  eligibility screen showed its gates as met was deleted from a brief, and the
+  reader saw both facts on one page. A later run rejected five of seven
+  candidates and shipped a two-row brief. The flag needed roughly forty lines
+  of prompt guardrail, which is what a wrong mechanism looks like.
+
+**Nor is leaving a row out one.** A row you return no note for still
+publishes, at the same position, carrying a line built from its own facts and
+saying plainly that no assessment was written for it. Silence removes nothing
+and hides nothing; it only costs that row the sentences you would have given
+it. So there is nothing to be gained by omitting a row, and one note per row
+is the whole of the task.
+
+**There is no channel for telling us a row is wrong. Do not look for one.**
+Each row you return carries a channel, why the founder is eligible, a next
+step and a plain-English blocker, and not one of those can hold "this row
+should not be here". So a row you believe is wrong is still written straight:
+describe it in the terms the rules below require, and let it stand. The only
+route a complaint could take is the prose the founder reads, and that is
+exactly what FUND-6 forbids.
+
+The gap is ours, not yours. This stage is the only one that sees the founder's
+own description, the process briefs, the eligibility screen and every row at
+once, and it has no way to tell us that any of them is wrong. Until it has
+one, a wrong row is caught by a human reading the published page.
+
+## Rules
+
+- FUND-1 (hard) At least one row publishes. An empty table is never the answer
+  while any door is open.
+- FUND-2 (hard) At most seven rows.
+
+  This number is generated from `BRIEF_LIMITS.institutionsMax`, which is also
+  what the cut in the pipeline slices to and what the check enforces.
+  `scripts/check_contracts.ts` fails the build if this sentence and that
+  constant disagree, so it can never quietly become the writer's own number.
+- FUND-3 (hard) No two rows say the same thing. The test: **would the reader
+  learn anything from the second one they did not learn from the first?**
+
+  Applied to the row, not to two strings: take the facts the row publishes and
+  remove every one whose value an earlier row already carried. What is left is
+  why the row is worth its slot. Nothing left, and it is the same thing said
+  again, whatever its name and however differently the note is phrased. Two
+  rows resolving to one institution under one legal basis fail it, and so do
+  two differently-named rows carrying identical reasoning and the same move.
+
+  A row that fails this is a scoring or corpus finding, and there is no field
+  in which to raise it. It is never repaired by deleting the row: one scheme
+  delivered by several bodies is several real doors, and a withheld row is a
+  fund a founder never sees.
+
+  **evidence:** a brief published two Horizon clusters whose whyEligible and
+  Move were identical sentences, spending two of the table's slots to say one
+  thing.
+- FUND-14 (judged) Where consecutive rows are the same kind of door, the page
+  states what they share once, above them. Each note then turns on what
+  separates its own row, and never restates a shared fact.
+
+  The test: **strike from the note every fact the group heading already
+  states. Is there a sentence left, and is it about this row?** A note that
+  survives only as a restatement of the heading has spent a slot on something
+  the reader crossed a moment ago.
+
+  What separates rows inside a group is measured, not assumed: what the fund
+  has actually paid, where it operates, who takes the application, and the
+  conditions it sets itself. Every row that follows another of its own kind
+  carries at least one of them.
+
+  **evidence:** two briefs rendered at seven rows both read as a catalogue
+  from row four down, four rows under one legal basis carrying one sentence
+  and one action. The rows differed by a factor of five in what they typically
+  award, and none of that reached the writer.
+- FUND-4 (hard) `nextStep` is an action the founder can start.
+
+  The test: **could they begin it this week, and would they know they had
+  begun?** Anything resolving to waiting, watching or deciding later fails,
+  whatever it is called. Every row you are given has already been chosen and
+  will publish, so hedging is not a way to decline one: if the only honest move
+  is to wait, write the thing the founder does NOW that makes the waiting
+  productive, and say what they are waiting for.
+- FUND-5 (hard) `whyEligible` and `nextStep` are always written. The fallback
+  text the pipeline substitutes when they are missing is a defect, not a
+  default.
+- FUND-6 (hard) A row's own explanation may never argue against the row. If
+  the honest `whyEligible` would say the fund targets something this company
+  is not, that is a scoring failure, and nothing you return can carry it.
+  Write what is true of the fund for this founder and stop; the objection has
+  no home in the brief and the brief is all the founder reads.
+- FUND-7 (hard) The institution named must be a body a founder can approach. A
+  government department administers schemes; it is not itself a door, and
+  neither is the document a department issued.
+
+  The test: **could they contact this body about this money and get a reply?**
+  It holds wherever the name appears, prose included. A bullet telling a solo
+  founder to start with the federal ministry fails it exactly as a table row
+  would, and the ministry-run schemes carry the operators who actually
+  disburse for precisely this reason.
+
+  Two further tests, because the first one alone let the real case through.
+  **Position is not part of the property:** a department named at the end of a
+  string, or inside a compound word, is the same dead end as one named first.
+  **A register annotation is not a name:** where a title carries a bracketed
+  note of the unit that issued it, ask whether removing the bracket still
+  identifies the same thing. If it does, the bracket was about the document and
+  the row has named a document rather than a body.
+
+  Where a row names its door explicitly, the door is what this rule judges: a
+  scheme whose own statutory title mentions the ministry, published via the
+  agency that grants under it, sends the founder somewhere real.
+
+  **evidence:** a full-length brief rendered in a browser published four German
+  scheme titles ending in the notifying ministry's file reference. The check
+  was a regex anchored to the start of one field; it returned clean on every
+  one of them, and on the ministries themselves, whose names are compounds.
+- FUND-8 (judged) `whyEligible`, at most 25 words, is specific to this company
+  and grounded in the eligibility screen and its answers. Where a project
+  answer bears on this fund, use it: name the requirement and how this company
+  sits against it, rather than describing the fund generically.
+- FUND-9 (judged) `nextStep`, at most 15 words, is one concrete action drawn
+  from the process briefs.
+- FUND-10 (judged) Where a row carries a single obstacle, `blockerPlain`
+  restates that rule in one plain sentence naming the real threshold, with the
+  statute language dropped. Where there is no obstacle it is an empty string.
+  `nextStep` then becomes the action that clears the obstacle.
+- FUND-11 (judged) A row with no award recorded for over three years is dormant,
+  not closed — we cannot tell which. Never promise it an upcoming call. Say it
+  has been dormant since the year given, and make the next step confirming it
+  still runs.
+- FUND-15 (hard) Where the window a row holds has shut and its programme runs
+  in rounds, the row's prose names no date the corpus does not hold, and
+  promises no reopening.
+
+  The test: **take every calendar reference in the row's own copy. Is each one
+  a date this row carries?** The window that shut is on the row and may be
+  named. The next one is held by nobody here, which is exactly what puts the
+  row in this state, so any date offered as when to apply was invented. The
+  caveat the founder reads is built from the row's own record and publishes
+  whatever the note says; the note's job is the step that is real today.
+
+  A calendar reference is a numeral that fixes a point in time, which is a
+  property of the token and not of a language: a plausible year, or a full
+  date. Nothing here names a month, a funder or a country, so a row loaded next
+  month from a register nobody has read is judged by the same test.
+- FUND-12 (soft) Rows are not ranked in the brief and must not be described as
+  first, best or strongest relative to each other. The bottom line names the
+  first move; the table presents the open doors that were found.
+- FUND-13 (soft) Where a row carries `registeredPurpose`, say what that scheme
+  is registered to fund, in the terms its own registration uses, rather than
+  describing the body that runs it.
+
+  The test: **could the founder scope their project differently tomorrow
+  because of this sentence?** A registration is narrower than the body it sits
+  under, and its value to the founder is the boundary it draws: what the money
+  is for, and what it is not for. A sentence that would read the same for
+  every scheme that body runs has restated a label, not a purpose — and a
+  label is something any model could write without this corpus.
+
+  Give the boundary, never the provision that sets it. The founder structures
+  against what is fundable; a citation is an identifier they cannot act on.
+
+  Where the field is absent, say nothing. It is absent for whole classes of
+  scheme, and an absent purpose is never one to infer.
+
+## Banned
+
+- FUND-B1 Restating support type, ticket size or comparable firms in prose —
+  they already render in the table.
+- FUND-B2 Writing that the founder qualifies, or might not qualify, or should
+  check whether they are eligible. Every published row has been screened; the
+  defensible claim is that nothing documented rules them out.
+
+## Worked example
+
+### Pass
+
+> whyEligible: This scheme has paid a median €1.2M over 340 awards to R&D
+> projects like yours, and your national registration meets its establishment
+> rule.
+> nextStep: Open a dossier with the regional office for the next wave.
+
+### Fail — breaks FUND-6 and FUND-B2
+
+> whyEligible: This programme targets industrial value chains rather than
+> software companies like yours, so check carefully whether you qualify.
+
+A row arguing against itself, and asking the reader to do the screening the
+product exists to do.

@@ -1,0 +1,65 @@
+id: satr_at_rnd__sa_115611__amt_der_niederosterreichischen_landesregierung_a
+name: Allgemeine Richtlinie für NÖ Förderungen im Bereich Wirtschaft, Tourismus und Technologie
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-location-requirement
+  gate_family: G1_nexus
+  requirement: Recipients must each have an establishment, registered office, or location in Lower Austria.
+  value: Establishment/office/location in Lower Austria
+  intake_field: entityCountries
+  quote: jeweils mit Betriebsstätte, Sitz oder Lage in Niederösterreich.
+  source:
+    file: https://www.noe.gv.at/noe/Wirtschaft-Tourismus-Technologie/Allgemeine_Richtlinie_01.05.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-cross-border-exception
+  gate_family: G1_nexus
+  requirement: Funding is also permissible when the establishment, registered office or location is not
+    in Lower Austria, but it is a joint project with legal entities from other federal states or countries
+    and there is an economic, technological, or touristic benefit for one of the target groups in Lower
+    Austria.
+  value: Cross-border joint projects OK if benefit accrues to Lower Austria
+  intake_field: entityCountries
+  quote: ist eine Förderung auch dann zulässig, wenn Betriebsstätte, Sitz oder Lage in Niederösterreich
+    nicht vorliegen, aber es sich um ein gemeinsames Vorhaben mit Rechtsträgern aus anderen Bundesländern
+    oder Staaten handelt und ein wirtschaftlicher, technologischer oder touristischer Nutzen für eine
+    der genannten Zielgruppen in Niederösterreich gegeben ist.
+  source:
+    file: https://www.noe.gv.at/noe/Wirtschaft-Tourismus-Technologie/Allgemeine_Richtlinie_01.05.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-state-aid-exclusion
+  gate_family: G1_nexus
+  requirement: Companies excluded from funding under state aid law, or subject to special state-aid provisions,
+    are not covered by the target group.
+  value: State-aid-law exclusions apply
+  intake_field: conditionality
+  quote: Nicht von der Zielgruppe umfasst sind Unternehmen, die nach den beihilferechtlichen Grundlagen
+    von einer Förderung ausgeschlossen sind bzw. für die nach den beihilferechtlichen Vorgaben besondere
+    Vorschriften bestehen.
+  source:
+    file: https://www.noe.gv.at/noe/Wirtschaft-Tourismus-Technologie/Allgemeine_Richtlinie_01.05.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-institutional-exclusions
+  gate_family: G2_size_ownership
+  requirement: Credit institutions, insurance companies, and enterprises in majority direct ownership
+    of the Federal Government are excluded from the target group (the latter exclusion does not apply
+    to applied R&D institutions).
+  value: Credit/insurance institutions and majority federal-owned firms excluded
+  intake_field: institutionalOwner
+  quote: 'Aus wirtschaftspolitischen und budgetären Überlegungen sind folgende Unternehmen/Einrichtungen/Gesellschaften
+    nicht von der Zielgruppe umfasst: a. Kreditinstitute b. Versicherungsunternehmen c. Unternehmen im
+    überwiegenden direkten Eigentum des Bundes; dies gilt nicht hinsichtlich Träger und Einrichtungen
+    der angewandten Forschung und Entwicklung'
+  source:
+    file: https://www.noe.gv.at/noe/Wirtschaft-Tourismus-Technologie/Allgemeine_Richtlinie_01.05.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

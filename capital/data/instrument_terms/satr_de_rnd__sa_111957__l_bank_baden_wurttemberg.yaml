@@ -1,0 +1,31 @@
+id: satr_de_rnd__sa_111957__l_bank_baden_wurttemberg
+name: Entwicklungsprogramm Ländlicher Raum (ELR-Programm) für Unternehmen [BW/MLR]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: The applicant must be a freelance professional or run a commercial enterprise.
+  value: Freelancer or commercial enterprise
+  intake_field: borrowerModel
+  quote: Sie sind eine freiberuflich arbeitende Person oder führen ein gewerbliches Unternehmen.
+  source:
+    file: https://www.l-bank.de/produkte/wirtschaftsfoerderung/entwicklungsprogramm-landlicher-raum-elr-unternehmen.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-under-100
+  gate_family: G2_size_ownership
+  requirement: The company must qualify as an SME under the EU definition, but with fewer than 100 employees
+    (stricter than the standard 250-employee SME ceiling).
+  value: SME with fewer than 100 employees
+  intake_field: fteBand
+  quote: Ihr Unternehmen gilt als kleines und mittleres Unternehmen (KMU) im Sinne der EU-Definition,
+    allerdings mit weniger als 100 Beschäftigten.
+  source:
+    file: https://www.l-bank.de/produkte/wirtschaftsfoerderung/entwicklungsprogramm-landlicher-raum-elr-unternehmen.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

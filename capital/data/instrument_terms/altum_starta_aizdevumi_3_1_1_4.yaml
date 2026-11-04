@@ -1,0 +1,273 @@
+id: altum_starta_aizdevumi_3_1_1_4
+name: altum_starta_aizdevumi_3_1_1_4
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-sectors
+  gate_family: G1_nexus
+  requirement: Loan is provided in supported sectors per programme regulation; agriculture
+    and fisheries sectors are excluded and have separate support programmes; multilevel marketing
+    projects are not financed.
+  value: excludes agriculture/fisheries and MLM projects
+  intake_field: entityCountries
+  quote: Lauksaimniecības un zivsaimniecības nozarēm pieejamas citas atbalsta programmas.
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-nexus-registration
+  gate_family: G1_nexus
+  requirement: Applicant may apply before company establishment, provided there is a clear
+    business plan.
+  value: can apply pre-incorporation with clear business plan
+  intake_field: wouldOpenEntity
+  quote: Aizdevumam iespējams pieteikties jau pirms uzņēmuma dibināšanas kā arī bez iepriekšējas
+    uzņēmējdarbības pieredzes. Nosacījums - jābūt skaidram biznesa plānam.
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-founded-years
+  gate_family: G2_size_ownership
+  requirement: Available to self-employed persons, micro, small, medium and large enterprises
+    registered no earlier than 7 years ago.
+  value: registered ≤7 years
+  intake_field: foundedYear
+  quote: pieejams arī pašnodarbinātām personām, mikro, maziem, vidējiem kā arī lielajiem komersantiem**
+    , kas reģistrēti ne senāk kā pirms 7 gadiem
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-employee-cap
+  gate_family: G2_size_ownership
+  requirement: Eligible enterprises must have no more than 3,000 employees.
+  value: ≤3000 employees
+  intake_field: fteBand
+  quote: ar darbinieku skaitu līdz 3 000 cilvēku
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-loan-amount
+  gate_family: G3_financial
+  requirement: Loan amount up to EUR 250,000.
+  value: ≤ EUR 250,000
+  intake_field: ticketBand
+  quote: aizdevums līdz 250 000 EUR
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-interest-rate
+  gate_family: G3_financial
+  requirement: Fixed interest rate starting from 4.9%.
+  value: from 4.9% fixed
+  intake_field: none
+  quote: fiksēta procentu likme no 4,9%
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-cofinancing
+  gate_family: G3_financial
+  requirement: Minimum borrower participation (co-financing) in the investment project is
+    at least 10%.
+  value: ≥10% own contribution
+  intake_field: cofinancingBand
+  quote: projekta īstenošanai nepieciešamo līdzfinansējumu - minimālā aizņēmēja līdzdalība
+    investīciju projektā ir vismaz 10%*
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-equity-ratio
+  gate_family: G3_financial
+  requirement: Minimum adjusted equity ratio must be at least 10% (20% for real estate developer
+    projects).
+  value: ≥10% (20% for RE developers)
+  intake_field: balanceBand
+  quote: koriģētais pašu kapitāla īpatsvars ≥ 10% (20%**)
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-net-debt-ebitda
+  gate_family: G3_financial
+  requirement: Planned net liabilities to EBITDA ratio must not exceed 5 (7.5 for start-ups
+    in development stage).
+  value: ≤5 (7.5 for startups)
+  intake_field: turnoverBand
+  quote: plānotās Neto saistības EBITDA ≤ 5 (7.5***)
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-dscr
+  gate_family: G3_financial
+  requirement: Debt service coverage ratio (DSCR) must be at least 1.2 (1.4 for real estate
+    developer projects).
+  value: ≥1.2 (1.4 for RE developers)
+  intake_field: turnoverBand
+  quote: parāda apkalpošanas seguma attiecība (DSCR) ≥1.2 (1.4**)
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-collateral-threshold
+  gate_family: G3_financial
+  requirement: For loans totalling above EUR 100,000, collateral coverage of at least 135%
+    of the loan is required.
+  value: '>EUR100,000 requires ≥135% collateral'
+  intake_field: ticketBand
+  quote: aizdevumiem kopsummā virs 100 000 EUR tiek prasīts saistību nodrošinājums vismaz
+    135% apmērā (aizdevuma attiecība pret nodrošinājumu)
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4-loan-mechanism
+  gate_family: G4_borrower_model
+  requirement: Support is provided as a loan (Starta aizdevums), not a grant or equity instrument.
+  value: loan instrument
+  intake_field: borrowerModel
+  quote: Aizdevumi tiek sniegti kā de minimis atbalsts saskaņā ar 13.12.2023 Komisijas Regulu
+    (ES) Nr.2023/2831 .
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-use-working-capital
+  gate_family: G5_use_of_funds
+  requirement: Funds may be used for working capital such as purchase of raw materials, fuel
+    costs, lease payments, for up to 3 years.
+  value: working capital, up to 3 years
+  intake_field: none
+  quote: "izejmateriālu iegādei, degvielas izmaksām, nomas maksājumiem \n līdz 3 gadiem"
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-use-investment
+  gate_family: G5_use_of_funds
+  requirement: Funds may be used for investment purposes such as equipment, machinery, commercial
+    vehicle purchase, for up to 10 years.
+  value: equipment/vehicles, up to 10 years
+  intake_field: none
+  quote: "iekārtām, tehnikai, komerctransporta iegādei \n līdz 10 gadiem"
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-use-realestate
+  gate_family: G5_use_of_funds
+  requirement: Funds may be used for real estate acquisition, construction or reconstruction,
+    for up to 15 years.
+  value: real estate, up to 15 years
+  intake_field: none
+  quote: "iegādei, būvniecībai vai rekonstrukcijai \n līdz 15 gadiem"
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-tax-debt
+  gate_family: G6_conditionality
+  requirement: Altum verifies the company has no outstanding tax debt with the State Revenue
+    Service, or has a debt repayment agreement in force and being observed.
+  value: no unresolved tax debt
+  intake_field: none
+  quote: pārliecinās, vai uzņēmumam nav VID nodokļu parāda, vai ir noslēgta un tiek ievērota
+    vienošanās par parāda pakāpenisku nomaksu
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6-debtor-registers
+  gate_family: G6_conditionality
+  requirement: Company, its owners and beneficial owners must not be listed in the Bank of
+    Latvia or other debtor registers.
+  value: not in debtor registers
+  intake_field: ownerOver25
+  quote: pārliecinās, vai uzņēmums un tā īpašnieki, patiesā labuma guvēji nav iekļauti Latvijas
+    Bankas vai citos parādnieku reģistros
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6-financial-difficulty
+  gate_family: G6_conditionality
+  requirement: Altum analyses signs of financial distress, including material negative equity,
+    prolonged losses, and insolvency risks.
+  value: no signs of financial distress
+  intake_field: lossesOverHalfCapital
+  quote: analizē  finanšu grūtību pazīmes (piemēram, nav būtiski negatīvs pašu kapitāls, ilgstoši
+    zaudējumi, maksātnespējas riski)
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6-collateral-reduced
+  gate_family: G6_conditionality
+  requirement: For loans up to EUR 100,000, no active arrears in the Bank of Latvia Credit
+    Register or other debtor registers, and no negative record cleared in the Credit Register
+    within the last year, is required.
+  value: no recent credit register arrears
+  intake_field: none
+  quote: uzņēmumam, tā īpašniekiem, amatpersonām, patiesā labuma guvējiem nevar būt  aktuāls
+    kavējums Latvijas Bankas Kredītu reģistrā, citos parādnieku reģistros vai  pēdējā gada
+    laikā dzēsts negatīvs ieraksts Latvijas Bankas Kredītu reģistrā
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Recipients of support must comply with EU funds publicity requirements.
+  quote: "Atbalsta saņēmējiem ir jāievēro \n fondu publicitātes prasības"
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: Applicant must submit a declaration of SME status (not required if applying
+    as a natural person), operational balance sheet, profit and loss statement, fixed asset
+    breakdown, creditor/debtor breakdown not older than 3 months, de minimis aid information
+    via VID EDS, financial information, 6-month account statement, and proof of origin of
+    own participation funds.
+  quote: "Deklarāc ija par komercsabiedrības atbilstību mazajai vai vidējai komercsabiedrībai\
+    \ (nav jāiesniedz, ja piesakās fiziska persona) \n Operatīvā bilance, peļņas zaudējuma\
+    \ aprēķins, pamatlīdzekļu atšifrējums ar atlikumiem, kreditoru/debitoru atšifrējums (ne\
+    \ vecāki par 3 mēnešiem)"
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: For loans up to EUR 100,000, the borrower must pledge to Altum any real estate
+    or registered vehicle purchased with the loan funds, if such assets are acquired.
+  quote: par labu ALTUM jāieķīlā par aizdevuma līdzekļiem iegādājamais nekustamais īpašums
+    vai reģistrējamais transportlīdzeklis, ja tādi tiek iegādāti
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (19/19 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Loans are granted as de minimis aid under Commission Regulation (EU) 2023/2831 of
+    13 December 2023.
+  quote: Aizdevumi tiek sniegti kā de minimis atbalsts saskaņā ar 13.12.2023 Komisijas Regulu
+    (ES) Nr.2023/2831 .
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: 'Online via mans.altum.lv portal: register company, complete client questionnaire,
+    complete loan application.'
+  typical_timeline: Not specified
+  quote: Autentificē un reģistrē uzņēmu www.mans.altum.lv
+  source:
+    file: altum_starta_aizdevumi_3_1_1_4_starta_aizdevums_lv.html
+    locator: chunk 2
+  verified: llm_cited

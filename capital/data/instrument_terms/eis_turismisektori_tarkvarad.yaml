@@ -1,0 +1,218 @@
+id: eis_turismisektori_tarkvarad
+name: eis_turismisektori_tarkvarad
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-entity-type
+  gate_family: G1_nexus
+  requirement: Applicant must be a legal entity registered in Estonia, an Estonian public
+    authority, or a local government/its agency.
+  value: Estonian legal entity, public authority, or local government agency
+  intake_field: entityCountries
+  quote: 'a legal entity registered in Estonia (enterprises, NGOs, foundations)
+
+    &#8211; an Estonian public authority
+
+    &#8211; a local government and its agency.'
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-public-channel
+  gate_family: G1_nexus
+  requirement: The applicant must have a public online channel displaying its tourism service
+    offer and must be findable in the Estonian National Tourism Information System puhkaeestis.ee.
+  value: Public online channel + listed in puhkaeestis.ee
+  intake_field: activityCountries
+  quote: The support applicant must have a public online channel where the offer of the applicant’s
+    tourism services is displayed. It must be possible to find the applicant’s tourism service
+    in the Estonian National Tourism Information System puhkaeestis.ee
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-sales-revenue
+  gate_family: G2_size_ownership
+  requirement: Applicant's sales revenue in the financial year preceding the application must
+    be at least €30,000 according to its annual report (or accounting statement if no annual
+    report required).
+  value: '>= €30,000 prior-year sales revenue'
+  intake_field: turnoverBand
+  quote: The applicant’s sales revenue in the financial year preceding the submission of the
+    application according to its annual report must be at least €30,000.
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g2-tourism-provider
+  gate_family: G2_size_ownership
+  requirement: Applicant must be a tourism service provider as defined by the listed tourism
+    service categories.
+  value: Tourism service provider
+  intake_field: borrowerModel
+  quote: 'Tourism service providers may apply for the support if they are:'
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-max-grant
+  gate_family: G3_financial
+  requirement: The maximum grant per applicant is €20,000.
+  value: €20,000 maximum grant
+  intake_field: ticketBand
+  quote: "Maximum grant \n 20 000"
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-self-financing
+  gate_family: G3_financial
+  requirement: The applicant must provide self-financing of at least 30% of project costs.
+  value: Minimum 30% self-financing
+  intake_field: cofinancingBand
+  quote: "Self-financing \n at least 30%"
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-total-budget
+  gate_family: G3_financial
+  requirement: Total grant scheme amount available is €2,000,000.
+  value: €2,000,000 total scheme budget
+  intake_field: none
+  quote: "Total grant amount \n 2 000 000"
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-de-minimis-cap
+  gate_family: G3_financial
+  requirement: The applicant must not have received de minimis aid exceeding €300,000 in the
+    last three years.
+  value: De minimis cap €300,000 over 3 years
+  intake_field: cofinancingBand
+  quote: The applicant must not have received de minimis aid in excess of €300,000 in the
+    last three years
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g3-once-per-year
+  gate_family: G3_financial
+  requirement: This support can be obtained only once in a calendar year.
+  value: Once per calendar year
+  intake_field: none
+  quote: This support can be obtained once in a calendar year
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4-grant-mechanism
+  gate_family: G4_borrower_model
+  requirement: The instrument is a non-repayable grant covering integration/interfacing costs
+    with applicant co-financing.
+  value: Grant (non-repayable)
+  intake_field: borrowerModel
+  quote: We support the digitisation and automation of the work processes of tourism service
+    providers .
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-integration-costs
+  gate_family: G5_use_of_funds
+  requirement: Grant may be used for software licence purchase (once), one-off software integration
+    fee, and implementation costs of integrating software.
+  value: Software licence purchase, integration fee, implementation costs
+  intake_field: none
+  quote: "once for the purchase of software licence(s) \n the one-off fee for integrating\
+    \ software Integration means tourism service providers implementing software to digitise\
+    \ their work processes, including interfacing the new software to be implemented with\
+    \ existing software already in use in the company"
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5-interfacing-costs
+  gate_family: G5_use_of_funds
+  requirement: Grant may be used for interfacing costs between existing software, provided
+    at least one interfaced program is directly related to tourism service provision; if interfacing
+    accounting/financial software, the applicant must be able to issue e-invoices after completion.
+  value: Interfacing costs (conditional on tourism-service-relatedness and e-invoicing capability)
+  intake_field: none
+  quote: When interfacing software, at least one of the interfaced software programmes must
+    be directly related to the provision of the tourism service •If support is requested for
+    interfacing accounting and financial software, the project, the applicant must have the
+    capability to issue e-invoices after the completion of the project
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5-excluded-costs
+  gate_family: G5_use_of_funds
+  requirement: Grant cannot be used for connecting to MS Office/Google/marketing/e-commerce/website/accounting/cash-register
+    software, interfacing marketing platforms, website/app creation, audio guides/map apps,
+    new software development, version updates, staff wages/travel, hardware acquisition/lease,
+    items requiring interfacing (e.g. door locks), administrative expenses, or costs incurred
+    before application submission.
+  value: Excluded cost categories
+  intake_field: none
+  quote: connecting to MS Office and Google software, marketing and email marketing and e-commerce
+    platforms, website content management software, accounting and financial software, or
+    the software of cash register systems
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6-vat
+  gate_family: G6_conditionality
+  requirement: Value added tax may be covered by the grant only if it is not recoverable under
+    the Value Added Tax Act.
+  value: VAT eligible only if non-recoverable
+  intake_field: none
+  quote: value added tax if it is not recoverable under the Value Added Tax Act
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Costs incurred before submission of the application to the Estonian Business
+    and Innovation Agency are not eligible.
+  quote: costs incurred before the submission of the application to the Estonian Business
+    and Innovation Agency
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: If support is used for interfacing accounting and financial software, the applicant
+    must be capable of issuing e-invoices after project completion.
+  quote: the applicant must have the capability to issue e-invoices after the completion of
+    the project An e-invoice is a machine-readable invoice that is created, transmitted, validated,
+    recorded and stored in an electronic environment
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/14 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Applicant must not have received de minimis aid exceeding €300,000 in the preceding
+    three years, and this support may only be obtained once per calendar year.
+  quote: The applicant must not have received de minimis aid in excess of €300,000 in the
+    last three years
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited
+application:
+  channel: Online E-toetus environment, application in Estonian only
+  typical_timeline: Applications accepted on an ongoing basis from 7 January 2025
+  quote: It is possible to apply for the support from 7 January 2025. Grant applications can
+    be submitted on an ongoing basis .
+  source:
+    file: eis_turismisektori_tarkvarad_liitumis_liidestamistoetus_en.html
+    locator: chunk 1
+  verified: llm_cited

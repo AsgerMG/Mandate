@@ -1,0 +1,93 @@
+id: satr_at_rnd__sa_102782__austria_wirtschaftsservice_gmbh_aws
+name: Richtlinie für die Austria Wirtschaftsservice Gesellschaft mbH zur Förderung von Technologie und
+  Innovation (AWS T&I Richtlinie)
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Applicants must be natural or legal persons or partnerships standing outside the Austrian
+    federal administration.
+  value: Natural/legal person or partnership outside federal administration
+  intake_field: borrowerModel
+  quote: Förderungswerbende können nur außerhalb der österreichischen Bundesverwaltung stehende natürliche
+    oder juristische Personen bzw. Personengesellschaften sein.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-excluded-forms
+  gate_family: G1_nexus
+  requirement: Civil-law partnerships (GesbR) and associations (Vereine) are not eligible to apply.
+  value: GesbR and Vereine excluded
+  intake_field: none
+  quote: Nicht antragslegitimiert sind Gesellschaften bürgerlichen Rechts (GesbR) sowie Vereine.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-insolvency-exclusion
+  gate_family: G1_nexus
+  requirement: Companies subject to insolvency proceedings, or that meet the domestic-law conditions for
+    creditor-initiated insolvency proceedings, are excluded from funding.
+  value: No insolvency proceedings / grounds for creditor-initiated insolvency
+  intake_field: none
+  quote: Unternehmen, die Gegenstand eines Insolvenzverfahrens sind oder bei denen die im innerstaatlichen
+    Recht vorgesehenen Voraussetzungen für die Eröffnung eines Insolvenzverfahrens auf Antrag ihrer oder
+    seiner Gläubigerinnen und Gläubiger vorliegen, sind von einer Förderung ausgeschlossen.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-recovery-order-exclusion
+  gate_family: G1_nexus
+  requirement: An undertaking that has not complied with a recovery order under a prior European Commission
+    decision finding aid unlawful and incompatible is excluded from participation until it has repaid
+    the incompatible aid.
+  value: No outstanding EU State-aid recovery order
+  intake_field: none
+  quote: ist ein Unternehmen, das einer Rückforderungsanordnung aufgrund eines früheren Beschlusses der
+    Europäischen Kommission zur Feststellung der Unzulässigkeit einer Förderung und ihrer Unvereinbarkeit
+    nicht nachgekommen ist, solange von der Teilnahme ausgeschlossen, bis das Unternehmen die Rückabwicklung
+    der inkompatiblen Förderung vollzogen hat.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-establishment-austria
+  gate_family: G1_nexus
+  requirement: At the time the aid is paid out, recipients must have an establishment or branch in Austria
+    and generate the majority of their value added in Austria.
+  value: AT establishment + majority value-add in Austria at payout
+  intake_field: entityCountries
+  quote: die Förderungsnehmenden zum Zeitpunkt der Auszahlung der Beihilfe eine Betriebsstätte oder Niederlassung
+    in Österreich haben und den überwiegenden Anteil ihrer Wertschöpfung in Österreich erwirtschaften
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-exception
+  gate_family: G1_nexus
+  requirement: For consortium projects, applicants based outside Austria may also be funded, provided
+    at least one consortium partner has an establishment or branch in Austria.
+  value: Non-AT consortium members allowed if 1+ partner has AT establishment
+  intake_field: consortium
+  quote: Bei Konsortialvorhaben gemäß 4.1.4 können auch Förderungswerbende mit Sitz außerhalb Österreichs
+    gefördert werden, insofern zumindest ein Konsortialpartner eine Betriebsstätte oder Niederlassung
+    in Österreich hat.
+  source:
+    file: https://www.aws.at/fileadmin/user_upload/Downloads/Richtlinie/ab_20240101_Foerderung_von_Technologie_und_Innovation_RL.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (6/6 gates passed mechanical verbatim-substring
+  check -> llm_cited).

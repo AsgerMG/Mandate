@@ -1,0 +1,45 @@
+id: satr_gr_rnd__sa_52413__ministry_of_environment_energy
+name: Reduced RES and HECHP financing contribution for EIUs in Greece
+administering_body: see source document
+country: 'GR'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-categories
+  gate_family: G1_nexus
+  requirement: Applicants must be electricity consumers in specific high electricity-
+    intensity activity sectors, falling into one of the beneficiary categories - Category A
+    (industrial enterprises), Category B.5 (tourism enterprises, since 2021), Category B.4
+    (agricultural use, high/medium voltage), or Category B.6 (enterprises with a
+    grandfathered eligibility clause).
+  value: Must be in high electricity-intensity Category A/B.4/B.5/B.6
+  intake_field: none
+  quote: 'Δικαίωμα υποβολής αίτησης έχουν καταναλωτές που δραστηριοποιούνται σε
+    συγκεκριμένους κλάδους δραστηριότητας και έχουν υψηλή ένταση ηλεκτρικής ενέργειας. Οι
+    κατηγορίες δικαιούχων περιλαμβάνουν: Κατηγορία Α (βιομηχανικές επιχειρήσεις), Κατηγορία
+    Β.5 (τουριστικές επιχειρήσεις, από το 2021), Κατηγορία Β.4 (αγροτική χρήση, Υ.Τ./Μ.Τ.),
+    και Κατηγορία Β.6 (επιχειρήσεις με κεκτημένη ρήτρα επιλεξιμότητας).'
+  source:
+    file: https://www.dapeep.gr/perivallon/diarroi-anthraka/meiomenes-xreoseis-etmeap/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-application-platform
+  gate_family: G6_conditionality
+  requirement: Applications must be submitted through dedicated electronic platforms - the
+    general platform for standard categories and a separate platform for agricultural use
+    (Category B.4).
+  value: Apply via etmear.dapeep.gr (general) or the B.4 agricultural portal
+  intake_field: none
+  quote: 'Η αίτηση υποβάλλεται μέσω ειδικών ηλεκτρονικών πλατφορμών:
+    https://etmear.dapeep.gr/ (γενικές κατηγορίες) και
+    https://meiwmenes-xrewseis-agrotwn.dapeep.gr/ (αγροτική χρήση Β.4).'
+  source:
+    file: https://www.dapeep.gr/perivallon/diarroi-anthraka/meiomenes-xreoseis-etmeap/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text. Only 2 gates - source text is
+  short and does not support more without fabrication.

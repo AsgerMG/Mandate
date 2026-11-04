@@ -1,0 +1,47 @@
+id: satr_gr_equity__sa_114445__unknown
+name: Ταμείο Επιχειρηματικότητας ΙΙΙ - (Ταμείο εγγυήσεων)
+administering_body: see source document
+country: GR
+capital_type: unknown
+status: draft
+gates:
+- id: g2-micro-small-medium-only
+  gate_family: G2_size_ownership
+  requirement: Eligible applicants are very small, small and medium-sized enterprises as defined in Annex
+    I of the GBER, excluding foreign companies and their branches.
+  value: Micro/Small/Medium enterprises per GBER Annex I; foreign companies/branches excluded
+  intake_field: turnoverBand
+  quote: Πολύ Μικρές, Μικρές και Μεσαίες Επιχειρήσεις (ΜμΕ), όπως ορίζονται στο Παράρτημα Ι του Γενικού
+    Απαλλακτικού Κανονισμού (ΓΑΚ/GBER), εξαιρουμένων αλλοδαπών εταιρειών και υποκαταστημάτων τους.
+  source:
+    file: https://hdb.gr/en/tepix-iii-guarantee-fund/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-sector-exclusions
+  gate_family: G1_nexus
+  requirement: Not eligible are holding companies, companies in the financial sector, and public bodies.
+  value: Holding companies, financial-sector companies, and public bodies excluded
+  intake_field: none
+  quote: Δεν είναι επιλέξιμες εταιρίες συμμετοχών σε άλλες εταιρίες, επιχειρήσεις του χρηματοπιστωτικού
+    τομέα, και δημόσιοι φορείς.
+  source:
+    file: https://hdb.gr/en/tepix-iii-guarantee-fund/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-regional-interest-subsidy
+  gate_family: G3_financial
+  requirement: The interest subsidy is 2% for Attica and South Aegean, and 3% for other regions.
+  value: 'Interest subsidy: 2% Attica/S.Aegean, 3% elsewhere'
+  intake_field: none
+  quote: Επιδότηση επιτοκίου 2% για Αττική και Νότιο Αιγαίο, 3% για τις υπόλοιπες περιφέρειες.
+  source:
+    file: https://hdb.gr/en/tepix-iii-guarantee-fund/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

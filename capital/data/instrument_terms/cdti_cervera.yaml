@@ -1,0 +1,153 @@
+id: cdti_cervera
+name: Cervera - Proyectos de I+D de Transferencia Tecnologica
+administering_body: see source document
+country: ES
+capital_type: unknown
+status: draft
+gates:
+- id: g2-beneficiary-type
+  gate_family: G2_size_ownership
+  requirement: Beneficiaries must be SMEs or mid-cap companies (MIDCAPS).
+  value: PYME or MIDCAP
+  intake_field: turnoverBand
+  quote: 'Beneficiarios: PYMES y empresas de mediana capitalización (MIDCAPS).'
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-id-de-transferencia-tecnologica-cervera-0
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-payment-law-exclusion
+  gate_family: G1_nexus
+  requirement: Companies that breach the payment deadlines set by Spain's late-payment law (Ley 3/2004)
+    may not be beneficiaries.
+  value: Excluded if in breach of Ley 3/2004 payment deadlines
+  intake_field: none
+  quote: No podrán ser beneficiarias las empresas que incumplan los plazos de pago previstos en la Ley
+    3/2004 de lucha contra la morosidad en las operaciones comerciales.
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-id-de-transferencia-tecnologica-cervera-0
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-min-budget
+  gate_family: G3_financial
+  requirement: Minimum project budget is EUR 175,000.
+  value: Min budget EUR 175,000
+  intake_field: ticketBand
+  quote: Presupuesto mínimo de 175.000 euros.
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-id-de-transferencia-tecnologica-cervera-0
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-knowledge-center-participation
+  gate_family: G1_nexus
+  requirement: At least one knowledge-generating centre (research organisation) must participate in the
+    project, contributing a minimum of 10% of the approved budget.
+  value: '>=1 knowledge centre, min 10% of budget'
+  intake_field: consortium
+  quote: Debe participar en el proyecto al menos un centro generador de conocimiento (mínimo 10% del presupuesto
+    aprobado total).
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-id-de-transferencia-tecnologica-cervera-0
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-min-own-funding
+  gate_family: G3_financial
+  requirement: The company must finance a minimum of 10% of the project with its own resources.
+  value: Min 10% self-financed
+  intake_field: cofinancingBand
+  quote: La empresa debe financiar un mínimo del 10% del proyecto con recursos propios.
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-id-de-transferencia-tecnologica-cervera-0
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-duration
+  gate_family: G3_financial
+  requirement: Project duration must be between 12 and 36 months.
+  value: 12-36 months
+  intake_field: ticketBand
+  quote: 'Duración del proyecto: 12-36 meses.'
+  source:
+    file: https://www.cdti.es/ayudas/proyectos-de-id-de-transferencia-tecnologica-cervera-0
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+obligations:
+- requirement: Applicants must be able to demonstrate compliance with obligations; if certificates cannot
+    be obtained directly, applicant will be required to provide corresponding certificates during the
+    correction (subsanación) process.
+  quote: En caso de que no pueda obtenerse de forma directa la acreditación del cumplimiento de estas
+    obligaciones, se requerirá al solicitante que aporte los certificados correspondientes en el trámite
+    de subsanación.
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Submission of the application authorizes CDTI to consult official registries and other
+    public sources for financial and/or legal information on applicants relevant to the procedure.
+  quote: la presentación de la solicitud habilitará a CDTI a consultar en los registros oficiales y otras
+    fuentes de acceso público la información financiera y/o jurídica de los solicitantes o de las solicitudes
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Documentary proof of compliance with requirements may be substituted by a responsible declaration
+    (declaración responsable) by the applicant, per Ley 38/2003 art. 23.4.
+  quote: Se podrá admitir la sustitución de la presentación de la documentación acreditativa del cumplimiento
+    de los requisitos establecidos en el artículo 13 de la Ley 38/2003, de 17 de noviembre... por una
+    declaración responsable del solicitante
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Applicants included in the provisional grant proposal may be required to provide documentation
+    proving the accuracy of data in their declaration within a period not exceeding ten days.
+  quote: los solicitantes incluidos en la propuesta de resolución provisional de concesión de la ayuda
+    podrán ser requeridos al efecto de que aporten la documentación que acredite la realidad de los datos
+    contenidos en su declaración en un plazo no superior a diez días
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Inaccuracy, falsehood or omission of essential data in a responsible declaration, or failure
+    to submit required documentation, results in dismissal or revocation of the aid, without prejudice
+    to other liabilities.
+  quote: la inexactitud, falsedad u omisión, de carácter esencial, de cualquier dato o información que
+    se incorpore a una declaración responsable o a una comunicación, o la no presentación de la documentación
+    que sea en su caso requerida para acreditar el cumplimiento de lo declarado, determinará la imposibilidad
+    de continuar con el procedimiento dando lugar a la desestimación de la ayuda o en su caso su revocación
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: If an application does not meet the requirements set in the call, the applicant will be
+    required to correct the deficiency within ten working days, or be deemed to have withdrawn the application.
+  quote: el órgano instructor requerirá al interesado para que subsane en el plazo de diez días hábiles
+    la falta o acompañe los documentos preceptivos, con advertencia de que, si no lo hiciese, se le tendrá
+    por desistido de la solicitud
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: Where scoring thresholds are established in the evaluation criteria, applicants must reach
+    them to be eligible for the aid.
+  quote: En los casos en los que se establezcan umbrales de puntuación, será necesario alcanzarlos para
+    poder optar a la ayuda.
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+- requirement: No voluntary changes or improvements to the application are allowed after submission, as
+    this is a competitive procedure initiated ex officio.
+  quote: Por tratarse de procedimientos de concesión en concurrencia competitiva y, como tales iniciados
+    de oficio, no se admitirán cambios ni mejoras voluntarias de la solicitud.
+  source:
+    file: cdti_cervera_boe_bases_reguladoras_2025.html
+    locator: cdti_cervera_boe_bases_reguladoras_2025.html#chunk 10
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Gates (6/6 passed mechanical verbatim check -> llm_cited) extracted by hand from funding_instruments.eligibility_text.
+  Obligations (8/8) retained from the earlier ETL/terms/extract_terms_bulk.py pass over cdti_cervera_boe_bases_reguladoras_2025.html.

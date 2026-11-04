@@ -1,0 +1,14 @@
+    WITHHELD  ownerOver25                                               -  no ownership or shareholding data
+    WITHHELD  turnoverBand                                              -  no filed accounts anywhere in the corpus
+    WITHHELD  wouldOpenEntity                                           -  a stance about the future
+    WITHHELD  capitalSought                                             -  no leak-free derivation of INTENT exists; empty is the neutral value
+  __recallSetDoors.json  300 tune pairs
+    ok   pool     97% (floor 92%)
+    ok   exact5   27% (floor 15%)
+    ok   regime5  73% (floor 69%)
+         ^ REGIME@5 under __recallSetDoors.json is not comparable with any figure measured under __recallSetComposed.json: a childless family is its own regime, so the metric no longer pays sibling-group-size credit. Quote EXACT@5 across the switch. See recallSet.ts.
+    ok   regime5  86% (floor 78%)  original join, n=103
+    ok   regime5  38% (floor 21%)  traced:childless_family, n=87
+    ok   regime5  89% (floor 88%)  traced:exact_attribution, n=110
+  [verdict] recall_floor = ok published as #364, code 78b0ee8558e96a86
+check_recall_floor: ok — 300 tune pairs of __recallSetDoors.json at seed 20260806, all floors met.

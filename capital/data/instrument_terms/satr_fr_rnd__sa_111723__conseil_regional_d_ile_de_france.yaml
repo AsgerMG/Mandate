@@ -1,0 +1,55 @@
+id: satr_fr_rnd__sa_111723__conseil_regional_d_ile_de_france
+name: Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation
+  (RDI) pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-entities
+  gate_family: G1_nexus
+  requirement: Eligible applicants are start-ups, micro-enterprises, SMEs, mid-caps, and large Île-de-France
+    companies, as well as regional research organisations.
+  value: Start-up/TPE/PME/ETI/large companies + regional research orgs
+  intake_field: borrowerModel
+  quote: Start-up, TPE, PME, ETI, grandes entreprises franciliennes et organismes de recherche régionaux
+  source:
+    file: https://www.iledefrance.fr/aides-et-appels-a-projets/appel-projets-collaboratifs-innovation-de-rupture-et-resilience-industrielle-irri
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-location
+  gate_family: G1_nexus
+  requirement: Applicants must conduct their activity in Île-de-France.
+  value: Activity must be conducted in Île-de-France
+  intake_field: activityCountries
+  quote: devant conduire leur activité en Île-de-France
+  source:
+    file: https://www.iledefrance.fr/aides-et-appels-a-projets/appel-projets-collaboratifs-innovation-de-rupture-et-resilience-industrielle-irri
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-size
+  gate_family: G1_nexus
+  requirement: Consortiums require a minimum of 2 independent partners (including at least 1 SME) and
+    a maximum of 5 partners.
+  value: 2-5 independent partners, min 1 SME
+  intake_field: consortium
+  quote: Les consortiums nécessitent un minimum de 2 partenaires indépendants (dont au moins 1 PME), maximum
+    5 partenaires.
+  source:
+    file: https://www.iledefrance.fr/aides-et-appels-a-projets/appel-projets-collaboratifs-innovation-de-rupture-et-resilience-industrielle-irri
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-cost-share-cap
+  gate_family: G6_conditionality
+  requirement: No single partner may account for more than 70% of the eligible costs.
+  value: Max 70% of costs per partner
+  intake_field: consortium
+  quote: Aucun partenaire ne peut dépasser 70% des coûts éligibles.
+  source:
+    file: https://www.iledefrance.fr/aides-et-appels-a-projets/appel-projets-collaboratifs-innovation-de-rupture-et-resilience-industrielle-irri
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

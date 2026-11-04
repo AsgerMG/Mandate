@@ -1,0 +1,51 @@
+{
+ "_comment": "Does the applicant-identity classifier still separate the entity that APPLIES from the entity the money is FOR? Every string here is judged by ETL/terms/classify_applicant_identity.py alongside the live corpus, into the same digest-keyed cache, and website/frontend/scripts/check_applicant_identity.ts asserts the cached verdict equals `expect`. A prompt edit or a model change that stops catching the delivery-scheme case, or that starts flagging every text with an adviser in it, fails the build.",
+
+ "_why_not_a_word_list": "The instances that prompted this are French advisory and relay-body calls, so a checker built only from them would learn the words 'conseil' and 'structure relais'. Three controls break that. `adviser_is_the_applicant` is the SAME vocabulary -- advisory bodies, farms, diagnostics -- stating the adviser's own test, and must stay `applicant`. `applicant_named_with_final_audience` names the served population explicitly and must still be `applicant`, because naming who benefits is context, not the defect. `public_body_applies_in_own_right` is a collectivite applying for itself, which is an intermediary in no sense at all. The property is the MISMATCH between the population described and the population that may apply, not the presence of an intermediary in the sentence.",
+
+ "_known_limit": "This test reads the TEXT. It catches a two-tier scheme whose text is visibly about a downstream population. It cannot catch one whose text names a population that is genuinely ambiguous without knowing the scheme's delivery structure -- a page reading 'the programme supports SMEs' looks exactly like an ordinary SME scheme. That residue is not closed by a cleverer property; it is closed upstream, by taking the text from the body's own 'who may apply' block, which states the applicant rather than the audience. See project-mgmt/findings/workstream_aq_france.md.",
+
+ "cases": {
+  "adviser_is_the_applicant": {
+   "expect": "applicant",
+   "why": "CONTROL. Same vocabulary as the defect -- advisory bodies, farms, diagnostics -- but here the advisory body IS the applicant and this is its test. Must not be flagged.",
+   "text": "Les structures éligibles dans le cadre de cet appel à projets sont les organismes de conseil. Elles peuvent être publiques, associatives et/ou privées (ex : chambres d'agriculture, coopérative agricole, association de développement agricole, instituts techniques agricoles). Le candidat doit justifier d'une compétence avérée en accompagnement des exploitations agricoles et déposer un dossier unique pour l'ensemble des parcours proposés."
+  },
+
+  "beneficiary_described_not_applicant": {
+   "expect": "beneficiary_not_applicant",
+   "why": "The defect. The text's subject is the farms the money is FOR; the aid is paid to whoever runs the diagnostics. A farmer matching this description cannot apply.",
+   "text": "L'action vise l'accompagnement climat des agriculteurs via des parcours d'accompagnement à l'échelle de l'exploitation, comprenant un diagnostic individuel, un plan d'action et un suivi de l'exploitation. Les exploitations concernées sont les exploitations agricoles de toutes filières situées en France métropolitaine. Les prestations sont délivrées dans le cadre de conventions passées avec des organismes prestataires."
+  },
+
+  "relay_delivery_programme": {
+   "expect": "beneficiary_not_applicant",
+   "why": "Second form of the defect, in a different sector and register. The stated subject is the 40,000 SMEs served; the money goes to the conventioned relay structures that serve them.",
+   "text": "Le Programme vise l'accompagnement des entreprises du secteur du tertiaire privé ou de l'industrie. Les entreprises visées sont prioritairement les TPE-PME, et le Programme ambitionne d'en toucher 40 000 sur l'ensemble du territoire national. Les prestations de diagnostic, de conseil et de formation sont délivrées par des structures relais conventionnées, à raison d'au moins un guichet par région."
+  },
+
+  "applicant_named_with_final_audience": {
+   "expect": "applicant",
+   "why": "CONTROL. Names the served population AND the submitter. Naming who benefits is context; the population being tested is the applicant's.",
+   "text": "Cet appel à manifestation d'intérêt s'adresse à tout type de structures (personnes morales) en mesure de déployer une ou l'ensemble des missions exposées dans l'AMI, au bénéfice des TPE et PME de leur territoire. L'ADEME appréciera les dossiers coordonnés dans une logique de couverture régionale à départementale et d'efficience du service proposé."
+  },
+
+  "ordinary_company_condition": {
+   "expect": "applicant",
+   "why": "CONTROL. The ordinary case, which is the overwhelming majority of the corpus. No intermediary anywhere.",
+   "text": "Cet appel à projets s'adresse aux entreprises du secteur textile pour l'habillement : metteurs sur le marché d'articles d'habillement concernés par la réglementation d'affichage environnemental, et fournisseurs ou fabricants de produits pour l'habillement. L'AAP est ouvert à toutes les tailles d'entreprises (TPE-PME, ETI, grands groupes) et tous les niveaux de maturité en écoconception."
+  },
+
+  "public_body_applies_in_own_right": {
+   "expect": "applicant",
+   "why": "CONTROL. A collectivite applying for its own territory. Public bodies are not intermediaries by virtue of being public.",
+   "text": "Le présent appel à projets s'adresse aux territoires de moins de 250 000 habitants dont la ville centre fait moins de 100 000 habitants : communes, EPCI à fiscalité propre, départements, Pays, parcs naturels régionaux, pôles métropolitains et syndicats mixtes de mobilité. Les territoires bénéficiaires doivent être situés sur le territoire métropolitain ou dans les départements et régions d'outre-mer."
+  },
+
+  "theme_without_population": {
+   "expect": "indeterminate",
+   "why": "CONTROL for the third verdict. States a subject matter and no population at all, so there is nothing to place on either side.",
+   "text": "Le dispositif soutient l'optimisation des procédés de transformation, la valorisation de ressources issues de peuplements sous-exploités ou vulnérables au changement climatique, et le développement d'unités de transformation territoriales, avec une priorité donnée aux usages à longue durée de vie."
+  }
+ }
+}

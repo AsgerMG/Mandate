@@ -1,0 +1,294 @@
+id: innovationsfonden_other
+name: innovationsfonden_other
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Only registered legal Danish entities are eligible for investments from IFD
+    in an international project.
+  value: Danish legal entity required
+  intake_field: entityCountries
+  quote: Only registered legal Danish entities are eligible for investments from IFD in an
+    international project.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.4
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Foreign partners in the project can be subcontracted only after approval by
+    IFD.
+  value: Foreign partner subcontracting requires IFD approval
+  intake_field: entityCountries
+  quote: Foreign partners can be subcontracted after approval by IFD.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.4
+  verified: llm_cited
+- id: g3
+  gate_family: G1_nexus
+  requirement: Danish participants in a co-financed project using the common application form
+    must register individually on the e-grant portal, which is a pre-condition for possible
+    future investment from IFD.
+  value: E-grant registration mandatory
+  intake_field: none
+  quote: Registration on the e-grant portal is a pre-condition for possible future investment
+    from IFD.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.4
+  verified: llm_cited
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: IFD cannot provide subsidy to so-called 'undertakings in difficulty' under
+    EU state aid rules (GBER).
+  value: Undertaking in difficulty excluded
+  intake_field: lossesOverHalfCapital
+  quote: According to EU\u2019s state aid rules under the General Block Exemption Regulation
+    (GBER), IFD cannot provide subsidy to so-called \u2018undertakings in difficulty\u2019
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''According to EU\\u2019s state aid rules under
+    the G'''
+- id: g5
+  gate_family: G3_financial
+  requirement: The global maximum for IFD investment to cooperation projects is 75% of the
+    total project costs, with total costs calculated including the foreign partner's contribution
+    and IFD's funding rate calculated excluding possible EU co-funding.
+  value: 75% maximum investment rate
+  intake_field: cofinancingBand
+  quote: The global maximum for IFD investment to cooperation projects is 75% of the total
+    project costs.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.7
+  verified: llm_cited
+- id: g6
+  gate_family: G3_financial
+  requirement: If applying the de minimis regulation, the maximum investment for an SME in
+    a three-year period is 200,000 EUR (approx. DKK 1.5 million).
+  value: 'De minimis cap: EUR 200,000 per 3 years'
+  intake_field: ticketBand
+  quote: If the de minimis regulation is applied, the maximum investment for the SME in a
+    three year period is 200.000\u20ac (app. DKK 1.5 mil).
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: ''If the de minimis regulation is applied, the
+    maxim'''
+- id: g7
+  gate_family: G3_financial
+  requirement: Under de minimis, IFD's funding rate is 60% for SMEs for basic and industrial
+    research and 33% for SMEs for experimental research activities.
+  value: 'De minimis rates: 60% basic/industrial, 33% experimental'
+  intake_field: ticketBand
+  quote: IFD\u2019s funding rates for de minimis is 60% for SME\u2019s of the calculated cost
+    for basis and industrial research and 33% for SME\u2019s for experimental research activities.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: ''IFD\\u2019s funding rates for de minimis is
+    60% for'''
+- id: g8
+  gate_family: G3_financial
+  requirement: For Eurostars projects, the maximum investment is DKK 2.25 million (300,000
+    EUR) if only one Danish partner participates, and DKK 3.75 million (500,000 EUR) if more
+    than one Danish partner participates; a single Danish partner can receive up to 300,000
+    EUR in public investment.
+  value: 'Eurostars cap: EUR 300k (single partner) / EUR 500k (multiple partners)'
+  intake_field: ticketBand
+  quote: The maximum investment in Eurostars projects is DKK 2.25 mil. (300.000\u20ac) if
+    only one Danish partner participate and DKK 3.75 mil. (500.000\u20ac) if more than one
+    Danish partner participates in the project.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The maximum investment in Eurostars projects
+    is DK'''
+- id: g9
+  gate_family: G3_financial
+  requirement: In Eurostars, if a Danish public partner or large enterprise participates without
+    a Danish SME participating on an even basis, the investment rate is reduced by 50%.
+  value: 50% rate reduction without SME participation on even basis
+  intake_field: ownerOver25
+  quote: If a Danish public partner or a large enterprise participating without having a Danish
+    SME participating on an even basis, the investment rate is reduced by 50%.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.8
+  verified: llm_cited
+- id: g10
+  gate_family: G3_financial
+  requirement: State aid already received by the grant recipient, including EU co-finance,
+    must be included when assessing compliance with aid intensity and the maximum amount limit.
+  value: Prior state aid counted toward intensity/amount limits
+  intake_field: cofinancingBand
+  quote: State aid received by the grant recipient in the form of public grants, including
+    EU co-finance, must be included in the assessment of aid intensity and the maximum amount
+    limit.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.7
+  verified: llm_cited
+- id: g11
+  gate_family: G4_borrower_model
+  requirement: IFD's investments (grants) are reimbursed on a quarterly basis for SMEs and
+    semi-annually for other participants, unless otherwise agreed.
+  value: Reimbursement grant mechanism, quarterly/semi-annual
+  intake_field: borrowerModel
+  quote: IFD\u2019s investments can be reimbursed on a quarterly basis to SME\u2019s and a
+    semi-annual basis for other participants, unless otherwise agreed.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''IFD\\u2019s investments can be reimbursed on
+    a quar'''
+obligations:
+- requirement: A progress report must be submitted every six months unless otherwise agreed.
+  quote: The progress report must be submitted every six months unless otherwise agreed.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.5
+  verified: llm_cited
+- requirement: An auditor's statement must be submitted annually.
+  quote: The auditor's statement must be submitted annually.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.5
+  verified: llm_cited
+- requirement: Danish project partners must complete a final report upon completion or termination
+    of the project.
+  quote: Danish project partners must fill in a final report on completion or termination
+    of the project.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.5
+  verified: llm_cited
+- requirement: All reported costs must be net of any discounts, bonuses, etc.
+  quote: All costs shall be reported after deduction of possible discounts, bonuses, etc.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.5
+  verified: llm_cited
+- requirement: Periodical financial reports must be submitted to IFD no later than 60 days
+    following the end of each period and signed by the project manager listed in the grant.
+  quote: The financial report must be submitted to IFD no later than 60 days following the
+    end of each period.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.6
+  verified: llm_cited
+- requirement: Private enterprises, GTS-institutes, and private/public organisations not audited
+    by Rigsrevisionen must have costs claimed in financial reports annually controlled by
+    an independent certified auditor.
+  quote: Private enterprises, GTS-institutes, private organisations or public organisations
+    not audited by the National Court of Auditors (Rigsrevisionen) must annually have all
+    costs claimed in the financial reports controlled by an independent certified auditor.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.6
+  verified: llm_cited
+- requirement: A Final Report must be submitted to IFD by each Danish participant no later
+    than 60 days after completion of the project.
+  quote: At the end of the project a Final Report must be submitted to IFD from each of the
+    Danish participants no later than 60 days after completion of the project.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.6
+  verified: llm_cited
+- requirement: Danish project participants must, upon request, provide additional information
+    to verify use of funding and project progress.
+  quote: Danish project participants shall \u2013 upon request \u2013 provide additional information
+    as deemed necessary by IFD, Rigsrevisionen or other relevant authorities in order to verify
+    the use of the funding and the progress of the project.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Danish project participants shall \\u2013 upon
+    requ'''
+- requirement: A signed consortium agreement must be sent to IFD and the programme secretariats
+    prior to project start.
+  quote: A signed consortium agreement shall be sent to IFD and to the programme secretariats
+    prior to the start of the project.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.8
+  verified: llm_cited
+- requirement: When the project is mentioned in printed or electronic material, programme
+    and IFD logos must be used, and IFD/EU funding must be acknowledged.
+  quote: When the project is mentioned in printed or electronic material, the programmes and
+    IFD's logos must be used. A reference to the IFD investment and EU co-funding must be
+    highlighted in the text.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.8
+  verified: llm_cited
+- requirement: Legal or major organisational changes impacting project execution must be reported
+    to IFD and the programme secretariat.
+  quote: Legal or major organisational changes within the Danish participant\u00b4s organisation
+    impacting the planned execution of the project must be reported to IFD and the programme
+    secretariat.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Legal or major organisational changes within
+    the D'''
+- requirement: If the grant recipient has obtained or expects to obtain other public funding/guarantees
+    for the same activities, IFD must be notified immediately.
+  quote: If the grant recipient has obtained or expects to obtain funding and/or guarantees
+    from other public schemes, including EU schemes or municipal schemes for the same activities,
+    IFD must be notified immediately.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.9
+  verified: llm_cited
+- requirement: Non-compliance with reporting requirements, timelines, or grant provisions
+    can lead to renouncement of remaining funding and reimbursement demands.
+  quote: the grant recipient who fails to comply with IFD\u2019s or the programme rules and
+    procedures or the provisions of the grant, can have their remaining funding from IFD renounced.
+    IFD may further demand that funding which has already been paid is reimbursed.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.9
+  verified: false
+  verify_note: 'fragment not found verbatim: ''the grant recipient who fails to comply with
+    IFD\\u'''
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (6/11 gates, 10/13 obligations passed
+  mechanical check -> llm_cited).
+cumulation:
+  text: Other public funding or guarantees for the same activities must be notified to IFD
+    and may be offset against IFD's investment so that combined co-financing does not exceed
+    the maximum IFD could provide alone; violation may require reimbursement of entire IFD
+    and EU investment.
+  quote: Such funding/guarantees might be offset in the investment which IFD provides or has
+    provided, thus the maximal co-financing percentage/the guarantee coverage offered by IFD
+    and others is identical to the maximal co-financing IFD can provide without such alternative
+    cofounding.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.9
+  verified: llm_cited
+application:
+  channel: e-grant portal (Danish participants), following international portal application
+    for the international programme
+  typical_timeline: Progress reports every six months; financial reports within 60 days of
+    period end; final report within 60 days of project completion; annual audit report
+  quote: After applying for the international programme on the international portal, Danish
+    participants in an international project must register on e-grant and upload their international
+    application.
+  source:
+    file: innovationsfonden_other_general_terms_international_projects_2018.pdf
+    locator: p.3
+  verified: llm_cited

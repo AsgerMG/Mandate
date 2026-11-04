@@ -1,0 +1,260 @@
+id: nfr_energiforskning
+name: nfr_energiforskning
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: The project-responsible organisation must be registered in the Norwegian business
+    register and have economic activity in Norway.
+  value: Registered in Norwegian foretaksregisteret with economic activity in Norway
+  intake_field: entityCountries
+  quote: Prosjektansvarlig må være registrert i det norske foretaksregisteret og ha økonomisk
+    aktivitet i Norge.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 3'
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: The project-responsible entity must be a private company or a public enterprise
+    engaged in industrial or commercial activity; sole proprietorships cannot be project-responsible.
+  value: Private bedrift eller offentlig foretak av industriell/forretningsmessig karakter;
+    enkeltpersonforetak ikke tillatt som prosjektansvarlig
+  intake_field: borrowerModel
+  quote: Dette innebærer at prosjektansvarlig enten må være en privat bedrift, eller et offentlig
+    foretak som driver virksomhet av industriell eller forretningsmessig karakter. I resten
+    av utlysningen bruker vi fellesbetegnelsen "bedrift". Enkeltpersonforetak kan ikke være
+    prosjektansvarlige, men de kan være samarbeidspartnere.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 3'
+  verified: llm_cited
+- id: g3
+  gate_family: G1_nexus
+  requirement: The project-responsible party must carry out the project together with at least
+    one collaborating partner (Norwegian company) or purchase contract research from at least
+    one R&D provider.
+  value: At least one Norwegian collaborating partner or R&D provider required
+  intake_field: consortium
+  quote: Vi krever at prosjektansvarlig gjennomfører prosjektet sammen med minst én samarbeidspartner
+    (norsk bedrift) eller kjøper inn oppdragsforskning fra minst én FoU-leverandør.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 3'
+  verified: llm_cited
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: Project-responsible party and collaborating partners must be independent of
+    each other, meaning neither can exert controlling influence over the other.
+  value: No controlling influence between partners
+  intake_field: institutionalOwner
+  quote: Prosjektansvarlig og samarbeidspartnere må være uavhengige av hverandre. Med dette
+    mener vi at den ene ikke kan ha kontrollerende innflytelse over den andre.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 3'
+  verified: llm_cited
+- id: g5
+  gate_family: G6_conditionality
+  requirement: Support cannot be granted to enterprises that have not complied with a repayment
+    order following a prior European Commission/ESA decision declaring aid unlawful and incompatible
+    with the internal market.
+  value: No outstanding illegal state aid repayment obligations
+  intake_field: conditionality
+  quote: Støtte kan ikke gis til foretak som ikke har oppfylt krav om tilbakebetaling etter
+    en forutgående beslutning fra ESA/EU-kommisjonsbeslutning der støtten er erklært ulovlig
+    og uforenlig med det indre marked.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+- id: g6
+  gate_family: G6_conditionality
+  requirement: Support cannot be granted to undertakings in difficulty within the meaning
+    of EEA law.
+  value: Applicant must not be an undertaking in difficulty (EEA law)
+  intake_field: conditionality
+  quote: Støtte kan heller ikke gis til foretak i vanskeligheter i EØS-rettslig forstand.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+- id: g7
+  gate_family: G6_conditionality
+  requirement: Applicants must not have started any project activities before submitting the
+    application.
+  value: No activities started prior to application submission
+  intake_field: developmentStage
+  quote: Dere kan ikke ha startet noen av aktivitetene i prosjektet før dere sender inn søknaden.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+- id: g8
+  gate_family: G6_conditionality
+  requirement: The project must start no later than four months after notification of award,
+    otherwise the grant may be forfeited.
+  value: Project must start within 4 months of award notification
+  intake_field: needBy
+  quote: Seneste tidspunkt for oppstart av prosjektet vil være fire måneder etter at dere
+    får beskjed om tildelingen.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+- id: g9
+  gate_family: G6_conditionality
+  requirement: Applicants may only apply once per calendar year for the project regardless
+    of which Innovasjonsprosjekt-i-næringsliv call it concerns.
+  value: One application per project per calendar year across IPN calls
+  intake_field: conditionality
+  quote: Dere kan bare søke om støtte til prosjektet én gang hvert kalenderår uavhengig av
+    hvilken IPN-utlysning det gjelder.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 6'
+  verified: llm_cited
+- id: g10
+  gate_family: G6_conditionality
+  requirement: Applications receiving an average score below 3 or any sub-score of 2 or lower
+    are rejected.
+  value: Minimum average score ≥3 and no sub-score ≤2 required to proceed
+  intake_field: conditionality
+  quote: Vi anser søknader med gjennomsnittskarakter ≥3 og ingen delkarakter ≤2, som støtteverdige
+    og vil behandle disse videre. Alle andre søknader blir avslått.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 6'
+  verified: llm_cited
+- id: g11
+  gate_family: G6_conditionality
+  requirement: The Research Council may reject applications where the project-responsible
+    party or a partner has materially breached obligations in other Research Council-funded
+    projects within the last two years.
+  value: No material breach of obligations in prior RCN projects within 2 years
+  intake_field: conditionality
+  quote: Forskningsrådet kan avvise søknader der prosjektansvarlig eller samarbeidspartner
+    de siste to årene før innsendt søknad vesentlig har misligholdt sine forpliktelser i andre
+    prosjekter med støtte fra Forskningsrådet.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+- id: g12
+  gate_family: G6_conditionality
+  requirement: The application may be rejected if the project leader has been found guilty
+    of misconduct by the Norwegian misconduct/investigation committees within the last two
+    years.
+  value: Project leader must not have been sanctioned by research integrity bodies in last
+    2 years
+  intake_field: conditionality
+  quote: Søknaden kan bli avvist dersom prosjektleder er felt i Felles redelighetsutvalg eller
+    Granskningsutvalget de siste to årene før innsendt søknad.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+obligations:
+- requirement: All partners must have clearly defined tasks and roles in project implementation,
+    and must participate as described in the application.
+  quote: Alle partnerne skal ha definerte oppgaver og en tydelig rolle i gjennomføringen av
+    prosjektet.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 3'
+  verified: llm_cited
+- requirement: It is a condition of support that collaborating partners and R&D providers
+    actually participate in the project as described in the application; changing the project
+    composition before receiving the grant letter can lead to withdrawal of the award.
+  quote: Det er en betingelse for å få støtte at samarbeidspartnerne og FoU-leverandørene
+    kommer til å delta i prosjektet slik som beskrevet i søknaden. Dersom dere endrer prosjektsammensetningen
+    før dere får tilskuddsbrev fra oss, kan vi trekke tilbake tilsagnet om finansiering.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 3'
+  verified: llm_cited
+- requirement: Collaborating partners must engage in genuine collaboration with the project-responsible
+    party, sharing both risk and results of the project.
+  quote: Samarbeidspartnere skal inngå i faktisk samarbeid med prosjektansvarlig, noe som
+    blant annet innebærer at de deler både risikoen og resultatene som kommer ut av prosjektet.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 3'
+  verified: llm_cited
+- requirement: R&D providers shall not contribute to financing the project and are paid at
+    market price for commissioned work; if they are to share in rights to project results,
+    the price must be adjusted accordingly.
+  quote: FoU-leverandører skal ikke bidra til å finansiere prosjektet, og har derfor vanligvis
+    ikke rettigheter til prosjektresultatene. De leverer et arbeid på oppdrag, og får betalt
+    for dette arbeidet til markedspris.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 3'
+  verified: llm_cited
+- requirement: Applicants must bear all costs arising between application submission and receipt
+    of the grant letter.
+  quote: Dere må selv dekke alle kostnader som måtte oppstår fra dere sender inn søknaden
+    til dere får tildelingsbrevet fra oss.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Dere må selv dekke alle kostnader som måtte
+    oppstå'''
+- requirement: If awarded state aid of EUR 100,000 or more, this will be published in the
+    public aid register.
+  quote: Får dere statsstøtte fra oss som tilsvarer 100 000 euro eller mer, vil vi gjøre det
+    kjent i Registeret for offentlig støtte (lenken åpnes i nytt vindu).
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+- requirement: The project leader and project-responsible party must have assessed and addressed
+    research security considerations in the project.
+  quote: Prosjektleder og prosjektansvarlig skal ha vurdert og håndtert hensynet til forskningssikkerhet
+    i prosjektet.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+- requirement: Full and immediate open access is required for scientific articles resulting
+    from the project.
+  quote: Forskningsrådet stiller krav om full og umiddelbar åpen tilgang (open access) for
+    vitenskapelige artikler, se Plan S - åpen tilgang til publikasjoner .
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+- requirement: Projects handling data must prepare a data management plan in connection with
+    the revised application.
+  quote: For alle prosjekter som håndterer data, skal prosjektansvarlig utarbeide en datahåndteringsplan
+    i forbindelse med revidert søknad.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/12 gates, 8/9 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Support from other public actors for the project or its activities may affect the
+    scope of the Research Council's funding.
+  quote: Støtte fra andre offentlige aktører til prosjektet eller til aktiviteter som inngår
+    i prosjektet, vil kunne påvirke omfanget av Forskningsrådets støtte.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited
+application:
+  channel: Application submitted via the Research Council of Norway's application system (Forskningsrådets
+    søknadssystem)
+  typical_timeline: Rolling application receipt and processing from opening until funds are
+    exhausted
+  quote: Denne utlysningen har løpende søknadsmottak og -behandling fra utlysningen åpner.
+  source:
+    file: nfr_energiforskning_innovasjonsprosjekt_energi_transport_2026.html
+    locator: '#chunk 5'
+  verified: llm_cited

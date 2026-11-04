@@ -1,0 +1,83 @@
+(node:38220) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+same-name classes 10 over 26 offerable rows
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  answer key, 7,095 pairs:
+    GRADED          5416 (76.3%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1679 (23.7%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+founders=897 split=all pool=40
+arm B renames 26 rows in memory (no write)
+
+TABLE     founders whose served table holds an unnamed pair       432 (48.2%)
+MENU      founders shown an unnamed pair in the 40-row menu     0 (0.0%)   rows 0
+          ...three or more rows of ONE name                       0 (0.0%)
+SIX       founders shown an unnamed pair in the published six     0 (0.0%)   rows 0
+          ...three or more rows of ONE name                       0 (0.0%)
+
+RESOLVED  founders who stop seeing an unnamed pair in the menu    0 (0.0%)
+          ...in the published six                                 0 (0.0%)
+GAINED    founders whose menu gains a row the collapse demoted    387 (43.1%)   rows 848
+          ...and it is the fund they WON                          28 (3.1%)
+          founders whose SIX gains such a row                     155 (17.3%)   rows 211
+          ...and it is the fund they WON                          12 (1.3%)
+COST      arm B founders whose six holds >=2 rows of ONE class      59 (6.6%)
+          ...>=3 rows of one class                                12 (1.3%)
+CHECK     arm B founders still holding an unseparable pair        0 (must be 0 for the rename to be the repair)
+
+== menu rows by class ==
+     83  NO|innovasjon norge · grants
+     63  IT|avviso pubblico per il potenziamento di strutture di ricerca e creazione di “campioni nazionali” 
+     47  LV|aizdevumi sīko (mikro), mazo un vidējo saimnieciskās darbības veicēju un lauksaimniecības un mežs
+     46  FR|régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’in
+     42  ES|cdti (spain)
+     29  FR|régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’in
+     16  FR|régime cadre exempté relatif aux aides en faveur de la protection de l'environnement pour la péri
+      6  ES|financiación igape-pymes 2026, concurrencia no competitiva, mínimis agrícola
+      5  FR|bpifrance
+      3  ES|financiación igape-pymes 2026, concurrencia no competitiva, mínimis pesca
+
+  3G HOLDING (NO) — six gains 2:
+      A: nfr_iktpluss, innovasjon_norge_loan_risk, nfr_iktforskning, nfr_pes, nfr_pesordning, nfr_inno
+      B: nfr_iktpluss, innovasjon_norge_grant_innovation, innovasjon_norge_grant_startup, innovasjon_norge_loan_risk, nfr_iktforskning, nfr_pes
+
+  ALGINOR (NO) — six gains 3:
+      A: nfr_foformidling, innovasjon_norge_grant_sector, innovasjon_norge_loan_lowrisk, nfr_inno, nfr_rekruttering, innovasjon_norge_loan_risk
+      B: nfr_foformidling, innovasjon_norge_grant_international, innovasjon_norge_grant_sector, innovasjon_norge_grant_regional, innovasjon_norge_grant_cluster, innovasjon_norge_loan_lowrisk
+
+  FUNDACIO HOSPITAL UNIVERSITARI VALL D'HEBRON - INSTITUT DE RECERCA (ES) — six gains 1:
+      A: bdns_es_ayudas__orden_de_28_de_diciembre_de_2022_por_la_que_se_a_7039d6, bdns_es_ayudas__convocatoria_de_ayudas_para_la_realizacion_de_pr_41b43b, cdti_perte_aerosalud, eic_accelerator, bdns_es_ayudas__idi_proyectos_de_i_d_i_orientados_al_mercado_reg_e7b82d, eic_transition
+      B: bdns_es_ayudas__orden_de_28_de_diciembre_de_2022_por_la_que_se_a_7039d6, bdns_es_ayudas__convocatoria_de_ayudas_para_la_realizacion_de_pr_41b43b, cdti_perte_aerosalud, cdti_neotec, eic_accelerator, bdns_es_ayudas__idi_proyectos_de_i_d_i_orientados_al_mercado_reg_e7b82d
+
+  GFMS (NO) — six gains 1:
+      A: nfr_energiforskning, nfr_gr_nnplattform, nfr_pes, nfr_eurostars, nfr_pesordning, nfr_rekruttering
+      B: nfr_energiforskning, nfr_gr_nnplattform, nfr_pes, nfr_eurostars, innovasjon_norge_grant_cluster, nfr_pesordning
+
+  FUNDACION PRIVADA INSTITUTO DE SALUD GLOBAL BARCELONA (ES) — six gains 1:
+      A: gh_edctp3, cdti_perte_aerosalud, horizon_eu_cl1, bdns_es_ayudas__convocatoria_de_ayudas_para_la_realizacion_de_pr_41b43b, eic_accelerator, bdns_es_ayudas__idi_proyectos_de_i_d_i_orientados_al_mercado_reg_e7b82d
+      B: gh_edctp3, cdti_perte_aerosalud, horizon_eu_cl1, bdns_es_ayudas__convocatoria_de_ayudas_para_la_realizacion_de_pr_41b43b, cdti_neotec, eic_accelerator
+
+  ARCHING SISTEMAS Y SERVICIOS S.L. (ES) — six gains 1:
+      A: cdti_idi, cdti_cervera, cdti_misiones, sns_ju, horizon_eu_cl4, horizon_eu_cl3
+      B: cdti_idi, cdti_neotec, cdti_cervera, cdti_misiones, sns_ju, horizon_eu_cl4
+
+  LEONARDO -SOCIETA PER AZIONI (IT) — six gains 1:
+      A: horizon_eu_cl3, satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_, satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_, satr_it_rnd__sa_111590__ministero_dell_universita_e_della_ricerca_direzi, satr_it_rnd__sa_120576__ministero_della_transizione_ecologica_direzione_, horizon_eu_cl4
+      B: horizon_eu_cl3, satr_it_rnd__sa_118710__ministero_della_transizione_ecologica_direzione_, satr_it_rnd__sa_120577__ministero_della_transizione_ecologica_direzione_, satr_it_rnd__sa_111590__ministero_dell_universita_e_della_ricerca_direzi, satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc, satr_it_rnd__sa_120576__ministero_della_transizione_ecologica_direzione_
+
+  AMPHENOL FCI BESANCON (FR) — six gains 2:
+      A: eic_transition, satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances, fr_relance_industrie, satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances, chips_ju_kdt, ademe_aid__etudes_d_ecoconception_des_produits_et_des_servi_fa67e9
+      B: eic_transition, satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances, fr_relance_industrie, satr_fr_rnd__sa_58995__ministere_de_l_economie_et_des_finances, bpifrance_pmup_idf, chips_ju_kdt
+
+  ABVANCE BIOTECH SL (ES) — six gains 1:
+      A: eic_transition, cdti_perte_aerosalud, bdns_es_ayudas__idi_proyectos_de_i_d_i_orientados_al_mercado_reg_e7b82d, bdns_es_ayudas__convocatoria_de_ayudas_para_la_realizacion_de_pr_41b43b, eic_accelerator, cdti_cervera
+      B: eic_transition, cdti_perte_aerosalud, bdns_es_ayudas__idi_proyectos_de_i_d_i_orientados_al_mercado_reg_e7b82d, bdns_es_ayudas__convocatoria_de_ayudas_para_la_realizacion_de_pr_41b43b, cdti_neotec, eic_accelerator
+
+  SHIFT MATERIALS (NO) — six gains 1:
+      A: nfr_gr_nnplattform, nfr_energiforskning, nfr_pes, nfr_eurostars, nfr_pesordning, innovation_fund_plt
+      B: nfr_gr_nnplattform, nfr_energiforskning, nfr_pes, nfr_eurostars, innovasjon_norge_grant_cluster, nfr_pesordning
+

@@ -1,0 +1,235 @@
+{
+  "instruments": [
+    {
+      "id": "state_aid_satr",
+      "label": "National state aid (SATR)",
+      "family": "state_aid_satr",
+      "color": "#ca8a04",
+      "glyph": "\u25ae",
+      "stageMin": 0.15,
+      "stageMax": 0.9,
+      "stageLabel": "All stages (national aid)",
+      "companies": 87674,
+      "totalEur": 181390090240.54135,
+      "medianTicket": 288521.0,
+      "topSector": {
+        "name": "Other",
+        "companies": 18248
+      },
+      "topCountry": {
+        "iso": "DE",
+        "companies": 19841
+      }
+    },
+    {
+      "id": "ipcei",
+      "label": "IPCEI",
+      "family": "ipcei",
+      "color": "#b91c1c",
+      "glyph": "\u25a0",
+      "stageMin": 0.65,
+      "stageMax": 0.95,
+      "stageLabel": "Commercial demo \u2192 Scale-up",
+      "companies": 303,
+      "totalEur": 166046533155.58,
+      "medianTicket": 63000000.0,
+      "topSector": {
+        "name": "Energy & cleantech",
+        "companies": 99
+      },
+      "topCountry": {
+        "iso": "DE",
+        "companies": 81
+      }
+    },
+    {
+      "id": "national_dev_banks",
+      "label": "National development banks",
+      "family": "national_dev_banks",
+      "color": "#15803d",
+      "glyph": "\u25c9",
+      "stageMin": 0.25,
+      "stageMax": 0.8,
+      "stageLabel": "Seed \u2192 Growth",
+      "companies": 52426,
+      "totalEur": 23210756151.769882,
+      "medianTicket": 57641.5,
+      "topSector": {
+        "name": "Other",
+        "companies": 11436
+      },
+      "topCountry": {
+        "iso": "FR",
+        "companies": 21403
+      }
+    },
+    {
+      "id": "horizon_eu_pillar_ii",
+      "label": "Horizon Europe Pillar II",
+      "family": "horizon_eu_pillar_ii",
+      "color": "#003399",
+      "glyph": "\u03a0",
+      "stageMin": 0.05,
+      "stageMax": 0.55,
+      "stageLabel": "Research \u2192 Product dev",
+      "companies": 16153,
+      "totalEur": 21555644517.96995,
+      "medianTicket": 320312.5,
+      "topSector": {
+        "name": "Energy & cleantech",
+        "companies": 3360
+      },
+      "topCountry": {
+        "iso": "ES",
+        "companies": 2165
+      }
+    },
+    {
+      "id": "innovation_fund",
+      "label": "Innovation Fund",
+      "family": "innovation_fund",
+      "color": "#0891b2",
+      "glyph": "\u2731",
+      "stageMin": 0.6,
+      "stageMax": 0.9,
+      "stageLabel": "Demo \u2192 Commercial scale-up",
+      "companies": 227,
+      "totalEur": 13210298784.0,
+      "medianTicket": 31982730.0,
+      "topSector": {
+        "name": "Energy & cleantech",
+        "companies": 221
+      },
+      "topCountry": {
+        "iso": "FR",
+        "companies": 36
+      }
+    },
+    {
+      "id": "horizon_eu_partnership",
+      "label": "Horizon partnerships",
+      "family": "horizon_eu_partnership",
+      "color": "#1d4ed8",
+      "glyph": "\u03c0",
+      "stageMin": 0.2,
+      "stageMax": 0.6,
+      "stageLabel": "Applied research \u2192 Pilot",
+      "companies": 3209,
+      "totalEur": 6036254351.200028,
+      "medianTicket": 375303.75,
+      "topSector": {
+        "name": "Health & life sciences",
+        "companies": 703
+      },
+      "topCountry": {
+        "iso": "DE",
+        "companies": 434
+      }
+    },
+    {
+      "id": "edf",
+      "label": "European Defence Fund",
+      "family": "edf",
+      "color": "#78350f",
+      "glyph": "\u271a",
+      "stageMin": 0.35,
+      "stageMax": 0.75,
+      "stageLabel": "Applied research \u2192 Demo",
+      "companies": 181,
+      "totalEur": 4872151512.0,
+      "medianTicket": 9800000.0,
+      "topSector": {
+        "name": "Defence & security",
+        "companies": 167
+      },
+      "topCountry": {
+        "iso": "FR",
+        "companies": 37
+      }
+    },
+    {
+      "id": "eib",
+      "label": "EIB venture debt",
+      "family": "eib",
+      "color": "#d97706",
+      "glyph": "$",
+      "stageMin": 0.65,
+      "stageMax": 0.95,
+      "stageLabel": "Scale-up \u2192 Growth",
+      "companies": 147,
+      "totalEur": 3502000000.0,
+      "medianTicket": 20000000.0,
+      "topSector": {
+        "name": "Health & life sciences",
+        "companies": 55
+      },
+      "topCountry": {
+        "iso": "FR",
+        "companies": 23
+      }
+    },
+    {
+      "id": "eic",
+      "label": "European Innovation Council",
+      "family": "eic",
+      "color": "#0369a1",
+      "glyph": "\u25c6",
+      "stageMin": 0.25,
+      "stageMax": 0.65,
+      "stageLabel": "Prototype \u2192 Product dev",
+      "companies": 2115,
+      "totalEur": 3332889894.890002,
+      "medianTicket": 590625.0,
+      "topSector": {
+        "name": "Health & life sciences",
+        "companies": 720
+      },
+      "topCountry": {
+        "iso": "DE",
+        "companies": 335
+      }
+    },
+    {
+      "id": "chips_ju",
+      "label": "Chips JU",
+      "family": "chips_ju",
+      "color": "#374151",
+      "glyph": "\u25b2",
+      "stageMin": 0.45,
+      "stageMax": 0.75,
+      "stageLabel": "Pilot \u2192 Commercial demo",
+      "companies": 1154,
+      "totalEur": 2529851996.260017,
+      "medianTicket": 241500.0,
+      "topSector": {
+        "name": "Semiconductors & electronics",
+        "companies": 980
+      },
+      "topCountry": {
+        "iso": "DE",
+        "companies": 240
+      }
+    },
+    {
+      "id": "eit",
+      "label": "EIT KIC",
+      "family": "eit",
+      "color": "#7c3aed",
+      "glyph": "\u2726",
+      "stageMin": 0.1,
+      "stageMax": 0.5,
+      "stageLabel": "Research \u2192 Prototype",
+      "companies": 445,
+      "totalEur": 292500.0,
+      "medianTicket": 7500.0,
+      "topSector": {
+        "name": "Software, data & AI",
+        "companies": 94
+      },
+      "topCountry": {
+        "iso": "DE",
+        "companies": 86
+      }
+    }
+  ]
+}

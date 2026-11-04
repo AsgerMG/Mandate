@@ -1,0 +1,72 @@
+id: cdti_lic
+name: Linea Directa de Expansion
+administering_body: see source document
+country: ES
+capital_type: unknown
+status: draft
+gates:
+- id: g1-legal-constitution-spain
+  gate_family: G1_nexus
+  requirement: Beneficiaries must be enterprises legally constituted in Spain, regardless of size.
+  value: Legally constituted in Spain, any size
+  intake_field: entityCountries
+  quote: empresas legalmente constituidas en España, con independencia de su tamaño
+  source:
+    file: https://www.cdti.es/linea-directa-de-expansion
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-prior-rd-aid
+  gate_family: G1_nexus
+  requirement: Beneficiaries must have previously received public aid for the development of an R&D&I
+    project.
+  value: Must have received prior public R&D&I aid
+  intake_field: institutionalBacking
+  quote: Deben haber sido beneficiarias previamente de alguna ayuda pública para el desarrollo de un proyecto
+    de I+D+i.
+  source:
+    file: https://www.cdti.es/linea-directa-de-expansion
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-assisted-zones
+  gate_family: G5_use_of_funds
+  requirement: 'The investment project must be developed in the assisted zones: Andalucía, Asturias, Castilla
+    La Mancha, Extremadura and Galicia.'
+  value: Investment must be in named assisted zones
+  intake_field: activityCountries
+  quote: 'Deben desarrollar el proyecto de inversión en las zonas asistidas: Andalucía, Asturias, Castilla
+    La Mancha, Extremadura y Galicia.'
+  source:
+    file: https://www.cdti.es/linea-directa-de-expansion
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-large-enterprise-restriction
+  gate_family: G2_size_ownership
+  requirement: SMEs can access both "initial investment" and "initial investment in favour of a new economic
+    activity," while large enterprises can only access "initial investment in favour of a new economic
+    activity" (except in Extremadura, where both are allowed).
+  value: Large enterprises restricted to new-activity investment (except Extremadura)
+  intake_field: fteBand
+  quote: Las pymes pueden acceder tanto a 'inversión inicial' como a 'inversión inicial en favor de una
+    nueva actividad económica'; las grandes empresas solo pueden acceder a 'inversión inicial en favor
+    de una nueva actividad económica' (salvo en Extremadura, donde se permiten ambas).
+  source:
+    file: https://www.cdti.es/linea-directa-de-expansion
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-own-contribution
+  gate_family: G3_financial
+  requirement: The company must contribute 25% of the budget through own resources or third-party financing
+    free of any public aid.
+  value: 25% own/third-party contribution, aid-free
+  intake_field: cofinancingBand
+  quote: La empresa debe aportar el 25% del presupuesto mediante recursos propios o financiación ajena
+    exenta de cualquier ayuda pública.
+  source:
+    file: https://www.cdti.es/linea-directa-de-expansion
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

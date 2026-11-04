@@ -1,0 +1,102 @@
+id: eu_de_minimis
+name: De minimis ceiling (Reg. 2023/2831)
+administering_body: see source document
+country: EU
+capital_type: framework
+borrower_models:
+- operating_company
+status: draft
+gates:
+- id: g1_ceiling
+  gate_family: G3_financial
+  requirement: Total de minimis aid granted per Member State to a single undertaking must
+    not exceed the ceiling over any rolling 3-year period.
+  value: EUR 300 000 per single undertaking per Member State over any 3-year period
+  intake_field: none
+  quote: The total amount of de minimis aid granted per Member State to a single undertaking
+    shall not exceed EUR 300 000 over any period of 3 years.
+  source:
+    file: de_minimis_2023_2831.pdf
+    locator: p.8
+  verified: llm_2pass
+- id: g2_single_undertaking
+  gate_family: G2_size_ownership
+  requirement: All enterprises linked through majority voting rights, board appointment rights,
+    dominant-influence contracts, or controlling shareholder agreements (directly or via other
+    enterprises) must be aggregated and treated as a single undertaking for the ceiling calculation.
+  value: Aggregation of linked enterprises as one single undertaking
+  intake_field: ownerOver25
+  quote: '‘Single undertaking’ means, for the purposes of this Regulation, all enterprises
+    having at least one of the following relationships with each other: (a) one enterprise
+    has a majority of the shareholders’ or members’ voting rights in another enterprise;'
+  source:
+    file: de_minimis_2023_2831.pdf
+    locator: p.7
+  verified: false
+  verify_note: The quote only defines 'single undertaking' and lists one relationship criterion
+    (majority voting rights). It does not mention board appointment rights, dominant-influence
+    contracts, controlling shareholder agreements, or aggregation for a 'ceiling calculation'
+    - these additional elements are not established by this quote alone, though it needs the
+    full list (b), (c), (d) which are cut off here to fully support the claim.
+- id: g3_indirect_links
+  gate_family: G2_size_ownership
+  requirement: Enterprises linked through the qualifying relationships via one or more intermediary
+    enterprises are also considered part of the same single undertaking.
+  value: Indirect chains of control count toward single undertaking status
+  intake_field: ownerOver25
+  quote: Enterprises having any of the relationships referred to in points (a) to (d) through
+    one or more other enterprises shall also be considered to be a single undertaking.
+  source:
+    file: de_minimis_2023_2831.pdf
+    locator: p.8
+  verified: llm_2pass
+- id: g4_cumulation_block_exemption
+  gate_family: G6_conditionality
+  requirement: De minimis aid must not be cumulated with other State aid for the same eligible
+    costs or risk finance measure if doing so would exceed the maximum aid intensity or amount
+    fixed under a block exemption regulation or Commission decision.
+  value: No cumulation with other State aid beyond the highest permitted intensity/amount
+    for same eligible costs
+  intake_field: none
+  quote: De minimis aid granted in accordance with this Regulation shall not be cumulated
+    with State aid in relation to the same eligible costs or with State aid for the same risk
+    finance measure if such cumulation would exceed the highest relevant aid intensity or
+    aid amount fixed in the specific circumstances of each case by a block exemption regulation
+    or a decision adopted by the Commission.
+  source:
+    file: de_minimis_2023_2831.pdf
+    locator: p.10
+  verified: llm_2pass
+- id: g5_exceed_ceiling_excluded
+  gate_family: G6_conditionality
+  requirement: If granting new de minimis aid would cause the beneficiary's cumulative 3-year
+    total to exceed the ceiling, that new aid cannot benefit from the Regulation.
+  value: New aid exceeding the EUR 300 000 / 3-year ceiling is excluded from de minimis treatment
+  intake_field: none
+  quote: Where the ceiling laid down in paragraph 2 would be exceeded by the grant of new
+    de minimis aid, that new aid shall not benefit from this Regulation.
+  source:
+    file: de_minimis_2023_2831.pdf
+    locator: p.8
+  verified: false
+  verify_note: The quote states that if the ceiling in paragraph 2 would be exceeded by new
+    de minimis aid, that new aid does not benefit from the Regulation. However, the quote
+    does not specify the actual value of the ceiling (e.g., EUR 300,000) or the 3-year period;
+    that context is not present in this excerpt. Without paragraph 2's content shown, the
+    specific figures in the claimed value cannot be verified from the quote alone.
+- id: g6_declaration_duty
+  gate_family: G6_conditionality
+  requirement: Before granting the aid, the Member State must obtain a written or electronic
+    declaration from the undertaking about any other de minimis aid received under this or
+    other de minimis regulations over the preceding 3 years.
+  value: Mandatory self-declaration of prior de minimis aid received over past 3 years
+  intake_field: none
+  quote: Before granting the aid, the Member State shall obtain a declaration from the undertaking
+    concerned, in written or electronic form, about any other de minimis aid received to which
+    this Regulation or other de minimis regulations apply over any period of 3 years.
+  source:
+    file: de_minimis_2023_2831.pdf
+    locator: p.11
+  verified: llm_2pass
+verify_by: '2026-10-01'
+notes: Extracted 4/6 gates at llm_2pass by ETL/terms/extract_terms.py.

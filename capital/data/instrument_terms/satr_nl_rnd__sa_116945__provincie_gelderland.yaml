@@ -1,0 +1,60 @@
+id: satr_nl_rnd__sa_116945__provincie_gelderland
+name: NL_BZK_CSDO_GD_Vierde wijziging Beleidsregel Programma EFRO Oost-Nederland 2022 (wijziging november
+  2024)
+administering_body: see source document
+country: NL
+capital_type: unknown
+status: draft
+gates:
+- id: g1-consortium-3plus
+  gate_family: G1_nexus
+  requirement: For innovation projects, subsidy is only granted to three or more mutually independent
+    enterprises collaborating under one cooperation agreement, of which at least one must be an SME.
+  value: 'Innovation projects: >=3 independent enterprises incl. 1 SME'
+  intake_field: consortium
+  quote: Subsidie wordt slechts verstrekt aan drie of meer van elkaar onafhankelijke ondernemingen die
+    met elkaar samenwerken op basis van één samenwerkingsovereenkomst en waarvan ten minste één onderneming
+    een mkb-onderneming is.
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680902
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-2plus
+  gate_family: G1_nexus
+  requirement: For test and demonstration projects, subsidy is only granted to two or more mutually independent
+    enterprises collaborating under one cooperation agreement, of which at least one must be an SME.
+  value: 'Test/demo projects: >=2 independent enterprises incl. 1 SME'
+  intake_field: consortium
+  quote: Subsidie wordt slechts verstrekt aan twee of meer van elkaar onafhankelijke ondernemingen die
+    met elkaar samenwerken op basis van één samenwerkingsovereenkomst en waarvan ten minste één onderneming
+    een mkb-onderneming is.
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680902
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-art21-financing
+  gate_family: G1_nexus
+  requirement: For financing instruments, subsidy is only granted to an enterprise meeting the requirements
+    of Article 21 of Regulation 651/2014.
+  value: 'Financing instruments: must meet GBER Art. 21 requirements'
+  intake_field: none
+  quote: Subsidie wordt slechts verstrekt aan een onderneming die voldoet aan de eisen zoals vastgelegd
+    in artikel 21 van verordening 651/2014.
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680902
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-geographic-scope
+  gate_family: G1_nexus
+  requirement: Oost-Nederland comprises the provinces of Gelderland and Overijssel.
+  value: 'Geographic scope: Gelderland and Overijssel'
+  intake_field: entityCountries
+  quote: 'Oost-Nederland: de provincies Gelderland en Overijssel.'
+  source:
+    file: https://lokaleregelgeving.overheid.nl/CVDR680902
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

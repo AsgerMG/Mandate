@@ -1,0 +1,119 @@
+id: eu_ipcei
+name: IPCEI eligibility criteria (2021 Communication)
+administering_body: see source document
+country: EU
+capital_type: grant
+borrower_models:
+- operating_company
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: The project must ordinarily involve at least four Member States (or exceptionally
+    not less than two), with benefits extending beyond the financing Member States to the
+    wider Union.
+  value: ≥4 Member States (min. 2 in exceptional cases)
+  intake_field: consortium
+  quote: Unless a smaller number is justified by the nature of the project, the project must
+    ordinarily involve at least four Member States and its benefits must not be confined to
+    the financing Member States, but extend to a wider part of the Union.
+  source:
+    file: ipcei_communication_2021.pdf
+    locator: p.3
+  verified: false
+  verify_note: quote not found verbatim in document
+- id: g2
+  gate_family: G1_nexus
+  requirement: All Member States must be given a genuine opportunity to participate in the
+    emerging project, evidenced by notification/outreach efforts.
+  value: Genuine opportunity to participate demonstrated
+  intake_field: consortium
+  quote: All Member States must be given a genuine opportunity to participate in an emerging
+    project. Notifying Member States must demonstrate that all Member States were informed
+    of the possible emergence of a project, for example by way of contacts, alliances, meetings,
+    or match-making events, also involving SMEs and start-ups, and given opportunity to participate.
+  source:
+    file: ipcei_communication_2021.pdf
+    locator: p.3
+  verified: llm_2pass
+- id: g3
+  gate_family: G4_borrower_model
+  requirement: Projects comprising first industrial deployment must involve upscaling of pilot
+    facilities, demonstration plants, or first-in-kind equipment covering steps subsequent
+    to the pilot line, including testing and bringing batch production to scale, but excluding
+    mass production or commercial activities.
+  value: First industrial deployment stage (post-pilot, pre-mass-production)
+  intake_field: developmentStage
+  quote: first industrial deployment means the upscaling of pilot facilities, demonstration
+    plants or of the first-in-kind equipment and facilities covering the steps subsequent
+    to the pilot line including the testing phase and bringing batch production to scale,
+    but not mass production or commercial activities
+  source:
+    file: ipcei_communication_2021.pdf
+    locator: p.4
+  verified: llm_2pass
+- id: g4
+  gate_family: G4_borrower_model
+  requirement: First industrial deployment activities are only eligible if they follow on
+    from an R&D&I activity and themselves contain an important R&D&I component that is an
+    integral and necessary element of the project's successful implementation.
+  value: Must contain integral R&D&I component linked to prior R&D&I activity
+  intake_field: developmentStage
+  quote: First industrial deployment activities can be financed with State aid as long as
+    the first industrial deployment follows on from an R&D&I activity and itself contains
+    an important R&D&I component which constitutes an integral and necessary element for the
+    successful implementation of the project.
+  source:
+    file: ipcei_communication_2021.pdf
+    locator: p.4
+  verified: llm_2pass
+- id: g5
+  gate_family: G3_financial
+  requirement: The maximum permitted aid level is capped by the identified funding gap, defined
+    as the discounted difference between positive and negative cash flows over the project's
+    lifetime relative to eligible costs.
+  value: Aid capped at funding gap (may cover up to 100% of eligible costs if justified)
+  intake_field: ticketBand
+  quote: The maximum permitted aid level will be determined with regard to the identified
+    funding gap in relation to the eligible costs. If justified by the funding gap analysis,
+    the aid intensity could cover all of the eligible costs.
+  source:
+    file: ipcei_communication_2021.pdf
+    locator: p.5
+  verified: false
+  verify_note: The quote confirms that aid is capped by the funding gap and may cover up to
+    100% of eligible costs, matching the claimed value. However, the quote does not define
+    'funding gap' as the discounted difference between positive and negative cash flows over
+    the project's lifetime, which is part of the claimed requirement. That specific definition
+    is not present in the quote.
+- id: g6
+  gate_family: G1_nexus
+  requirement: The project's benefits must not be limited to the undertakings or sector concerned
+    but must produce positive spillover effects of wider relevance to the Union economy or
+    society, clearly and concretely defined.
+  value: Concrete, identifiable positive spillover effects required
+  intake_field: consortium
+  quote: The benefits of the project must not be limited to the undertakings or to the sector
+    concerned but must be of wider relevance and application to the economy or society in
+    the Union through positive spillover effects (such as having systemic effects on multiple
+    levels of the value chain, or up- or downstream markets, or having alternative uses in
+    other sectors or modal shift) which are clearly defined in a concrete and identifiable
+    manner.
+  source:
+    file: ipcei_communication_2021.pdf
+    locator: p.3
+  verified: llm_2pass
+- id: g7
+  gate_family: G6_conditionality
+  requirement: The project must involve important co-financing by the beneficiary, taking
+    into account sector and SME specificities.
+  value: Important co-financing by beneficiary required (with exceptions)
+  intake_field: cofinancingBand
+  quote: The project must involve important co-financing by the beneficiary.
+  source:
+    file: ipcei_communication_2021.pdf
+    locator: p.3
+  verified: false
+  verify_note: quote not found verbatim in document
+verify_by: '2026-10-01'
+notes: Extracted 4/7 gates at llm_2pass by ETL/terms/extract_terms.py.

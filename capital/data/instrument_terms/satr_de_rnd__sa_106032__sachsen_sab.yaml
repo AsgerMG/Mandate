@@ -1,0 +1,62 @@
+id: satr_de_rnd__sa_106032__sachsen_sab
+name: RL EFRE/JTF-Technologieförderung 2021 bis 2027 [SN]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-rd-funding-sme-saxony
+  gate_family: G2_size_ownership
+  requirement: R&D project funding is exclusively for SMEs of the commercial economy with an establishment
+    in the Free State of Saxony; for joint (Verbund) projects, SMEs, large enterprises and research institutions
+    headquartered in Saxony may also participate.
+  value: 'R&D funding: SME-only (Saxony establishment); joint projects also open to large firms/research
+    institutions'
+  intake_field: turnoverBand
+  quote: 'FuE-Projektförderung: ausschließlich KMU der gewerblichen Wirtschaft mit einer Betriebsstätte
+    im Freistaat Sachsen; bei Verbundprojekten können auch KMU, große Unternehmen und Forschungseinrichtungen
+    mit Sitz in Sachsen teilnehmen.'
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19834-FRL-EFRE-JTF-Technologiefoerderung-2021-bis-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-tech-transfer-sme-saxony
+  gate_family: G2_size_ownership
+  requirement: Technology transfer funding is exclusively for SMEs of the commercial economy with an establishment
+    in the Free State of Saxony.
+  value: 'Tech-transfer funding: SME-only (Saxony establishment)'
+  intake_field: turnoverBand
+  quote: 'Technologietransferförderung: ausschließlich KMU der gewerblichen Wirtschaft mit einer Betriebsstätte
+    im Freistaat Sachsen.'
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19834-FRL-EFRE-JTF-Technologiefoerderung-2021-bis-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-innopraemie-recipients
+  gate_family: G1_nexus
+  requirement: InnoPrämie is available to SMEs of the commercial economy, the cultural and creative economy,
+    and self-employed engineers.
+  value: 'InnoPrämie: SMEs incl. creative economy, self-employed engineers'
+  intake_field: borrowerModel
+  quote: 'InnoPrämie: KMU der gewerblichen Wirtschaft, der Kultur- und Kreativwirtschaft sowie freiberuflich
+    tätige Ingenieure.'
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19834-FRL-EFRE-JTF-Technologiefoerderung-2021-bis-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-difficulty-and-recovery
+  gate_family: G3_financial
+  requirement: Companies in difficulty and companies that have not complied with an EU recovery order
+    are excluded.
+  value: 'Excluded: undertaking in difficulty; unpaid EU recovery order'
+  intake_field: lossesOverHalfCapital
+  quote: Ausgeschlossen sind Unternehmen in Schwierigkeiten und Unternehmen, die einer Rückforderungsanordnung
+    der EU nicht nachgekommen sind.
+  source:
+    file: https://www.revosax.sachsen.de/vorschrift/19834-FRL-EFRE-JTF-Technologiefoerderung-2021-bis-2027
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

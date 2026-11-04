@@ -1,0 +1,379 @@
+id: innovate_uk
+name: innovate_uk
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Project work must be carried out entirely in the UK and results exploited from
+    or in the UK.
+  value: All project work in UK; exploitation from/in UK
+  intake_field: activityCountries
+  quote: "carry out all of its project work in the UK\n intend to exploit the results from\
+    \ or in the UK"
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Lead organisation must be UK registered (SME to work alone, or business of
+    any size/RTO if collaborative).
+  value: UK registered lead organisation
+  intake_field: entityCountries
+  quote: "be a UK registered SME if you wish to work alone \n be a UK registered business\
+    \ of any size, or a research and technology organisation (RTO) if your proposal is collaborative"
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Collaborating project team members must be UK registered organisations of specified
+    types.
+  value: UK registered collaborators only
+  intake_field: entityCountries
+  quote: 'To collaborate with the lead, your organisation must be one of the following UK
+    registered:'
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G1-04
+  gate_family: G1_nexus
+  requirement: Academic institutions cannot lead or work alone on a project.
+  value: Academic institutions excluded from lead/sole applicant role
+  intake_field: borrowerModel
+  quote: Academic institutions cannot lead or work alone.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G1-05
+  gate_family: G1_nexus
+  requirement: Subcontractors must be based in the UK for the project duration and the Channel
+    Islands/Isle of Man are not classed as part of the UK for this purpose.
+  value: UK-based subcontractors only
+  intake_field: entityCountries
+  quote: Subcontractors must be based in the UK for the duration of the project and their
+    portion of the project work must be carried out in the UK.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G1-06
+  gate_family: G1_nexus
+  requirement: No procurement, commercial, business development or supply chain activity with
+    any Russian or Belarusian entity as lead, partner or subcontractor.
+  value: Russian/Belarusian entities excluded
+  intake_field: entityCountries
+  quote: this competition will not fund any procurement, commercial, business development
+    or supply chain activity with any Russian or Belarusian entity as lead, partner or subcontractor
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: At least one micro, small or medium-sized enterprise (SME) must be the lead
+    or a collaborative grant claiming partner.
+  value: At least one SME as lead or claiming partner
+  intake_field: borrowerModel
+  quote: include at least one micro, small or medium-sized enterprise (SME) as the lead or
+    a collaborative grant claiming partner
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: If a large business or RTO leads collaboratively, at least one grant claiming
+    SME must be included.
+  value: Large/RTO lead requires SME grant-claiming partner
+  intake_field: fteBand
+  quote: include at least one grant claiming SME if you are a large business or research and
+    technology organisations and wish to collaborate with other UK registered businesses,
+    RTOs, academic organisations, public sector organisations or charities
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G2-03
+  gate_family: G2_size_ownership
+  requirement: If the lead organisation is an RTO, it must collaborate with at least two businesses
+    (one SME and one business of any size) with a credible route to market.
+  value: RTO lead must partner with SME + any-size business
+  intake_field: borrowerModel
+  quote: If the lead organisation is an RTO it must collaborate with at least two businesses
+    (one SME and one business of any size) and there must be a credible route to market for
+    the output of the project.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: Projects of 6 to 18 months must have total eligible project costs between £100,000
+    and £500,000.
+  value: £100,000–£500,000 for 6-18 month projects
+  intake_field: ticketBand
+  quote: have total eligible project costs between £100,000 and £500,000
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: Projects of 19 to 24 months must have total eligible project costs between
+    £100,000 and £1 million.
+  value: £100,000–£1,000,000 for 19-24 month projects
+  intake_field: ticketBand
+  quote: have total eligible project costs between £100,000 and £1 million
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: 'Funding intensity for feasibility and industrial research projects is capped
+    by organisation size: up to 70% micro/small, 60% medium, 50% large.'
+  value: 70%/60%/50% by size for feasibility & industrial research
+  intake_field: turnoverBand
+  quote: "up to 70% if you are a micro or small organisation \n up to 60% if you are a medium\
+    \ sized organisation \n up to 50% if you are a large organisation"
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G3-04
+  gate_family: G3_financial
+  requirement: 'Funding intensity for experimental development projects is capped by organisation
+    size: up to 45% micro/small, 35% medium, 25% large.'
+  value: 45%/35%/25% by size for experimental development
+  intake_field: turnoverBand
+  quote: "up to 45% if you are a micro or small organisation \n up to 35% if you are a medium\
+    \ sized organisation \n up to 25% if you are a large organisation"
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G3-05
+  gate_family: G3_financial
+  requirement: Research organisations undertaking non-economic activity can share up to 30%
+    of total eligible project costs, funded up to 80% FEC (Je-S institutions) or 100% (RTO/charity/not-for-profit/public
+    sector/research organisation).
+  value: 30% cap for research orgs; 80%/100% funding rates
+  intake_field: cofinancingBand
+  quote: The research organisations undertaking non-economic activity as part of the project
+    can share up to 30% of the total eligible project costs.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G3-06
+  gate_family: G3_financial
+  requirement: The balance between total project costs and grant awarded must be funded by
+    the organisation receiving the grant.
+  value: Applicant must fund the non-grant balance
+  intake_field: cofinancingBand
+  quote: The balance between your total project costs and the amount of grant awarded must
+    be funded by the organisation receiving the grant.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: Funding is provided in the form of a grant.
+  value: Grant funding mechanism
+  intake_field: borrowerModel
+  quote: Up to £25 million is available to fund innovation projects in this competition. Funding
+    will be in the form of a grant.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G4-02
+  gate_family: G4_borrower_model
+  requirement: Innovate UK is unable to award organisations considered to be in financial
+    difficulty and will conduct financial viability and eligibility tests.
+  value: Financial viability test post-application
+  intake_field: lossesOverHalfCapital
+  quote: Innovate UK is unable to award organisations that are considered to be in financial
+    difficulty. We will conduct financial viability and eligibility tests to confirm this
+    is not the case following the application stage.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Projects must be for ground-breaking, innovative ideas for brand new products,
+    processes or services set for rapid commercialisation.
+  value: Ground-breaking, world-leading R&D innovation focus
+  intake_field: developmentStage
+  quote: a ground-breaking and innovative idea for brand new products, processes or services
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: Innovate UK will not fund projects where the technology is already available,
+    that do not address market access/potential, or where other Innovate UK funding is more
+    appropriate; commercialisation activities such as marketing and sales are not funded.
+  value: 'Exclusions: existing tech, marketing/sales activities'
+  intake_field: developmentStage
+  quote: We will not fund commercialisation activities such as marketing and sales.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G5-03
+  gate_family: G5_use_of_funds
+  requirement: Cannot fund projects dependent on export performance or domestic input usage
+    conditions.
+  value: No export-contingent or local-content-contingent subsidies
+  intake_field: developmentStage
+  quote: dependent on export performance, for example, giving a subsidy to a baker on the
+    condition that it exports a certain quantity of bread to another country
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- id: G5-04
+  gate_family: G5_use_of_funds
+  requirement: Only eligible project costs may be included in the application.
+  value: Eligible costs only
+  intake_field: none
+  quote: You must only include eligible project costs in your application.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: Project must start by 1 January 2025 and end by 31 December 2026, always starting
+    on the first of the month, with no extensions to the contracted end date.
+  value: Start by 1 Jan 2025, end by 31 Dec 2026
+  intake_field: needBy
+  quote: "start by 1 January 2025 \n end by 31 December 2026"
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 1
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: A business or RTO can only lead one application but can be included as a collaborator
+    in two further applications; the same limit extends to owners, directors and persons of
+    significant control.
+  value: Max one lead application, two collaborations
+  intake_field: consortium
+  quote: A business or research and technology organisation (RTO) can only lead on one application
+    but can be included as a collaborator in two further applications.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: Applicants may make a maximum of two submissions with any given proposal to
+    Innovate UK.
+  value: Max two submissions per proposal
+  intake_field: none
+  quote: You can make a maximum of two submissions to Innovate UK with any given proposal.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- id: G6-04
+  gate_family: G6_conditionality
+  requirement: Funding will not be awarded to applicants who have failed to exploit a previously
+    funded project, have an overdue independent accountant's report, or failed to comply with
+    grant terms and conditions.
+  value: Exclusion for past non-compliance
+  intake_field: none
+  quote: "failed to exploit a previously funded project \n an overdue independent accountant’s\
+    \ report \n failed to comply with grant terms and conditions"
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Applicants must ensure proposed work involving animals complies with UKRI guidance
+    on the use of animals in research and innovation.
+  quote: Applicants must ensure that all of the proposed work within projects, both that in
+    the UK and internationally, will comply with the UKRI guidance on the use of animals in
+    research and innovation .
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Funded organisations must ensure funding complies with all current Subsidy
+    Control legislation applicable in the United Kingdom.
+  quote: You must always make sure that the funding awarded to you is compliant with all current
+    Subsidy Control legislation applicable in the United Kingdom.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 3
+  verified: llm_cited
+- requirement: Applicants must have the correct permits and licences in place by the project
+    start date, otherwise the project cannot be funded.
+  quote: We are unable to fund projects who do not have the correct permits or licences in
+    place by your project start date.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 4
+  verified: llm_cited
+- requirement: If successful, at least one project team member must attend a one-hour briefing
+    webinar within 10 days of receiving the successful notification.
+  quote: at least one member of your project team must attend a one hour briefing webinar
+    within 10 days of receiving your successful notification
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 7
+  verified: llm_cited
+- requirement: Grant recipients must have a valid UK business bank account meeting specified
+    criteria (same name as organisation, UK PRA-regulated bank, cheque and credit clearing
+    facility) into which the grant will be paid.
+  quote: "be a business account in the same name as the organisation listed in IFS \n be from\
+    \ a UK bank regulated by the Prudential Regulation Authority (PRA) \n have a cheque and\
+    \ credit clearing facility"
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 7
+  verified: llm_cited
+- requirement: Applicants must not start their project before the date stated on the confirmation
+    email and Grant Offer Letter; costs incurred before the agreed start date cannot be claimed.
+  quote: You must not start your project before the date stated on your email and GOL. Any
+    costs incurred before your agreed start date cannot be claimed as part of your grant.
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 8
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (25/25 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Funding is provided under the UK Subsidy Control Act 2022, with EU State aid rules
+    applying only in limited circumstances under the Windsor Framework; applicants must ensure
+    compliance with all applicable subsidy control legislation.
+  quote: This competition provides funding in line with the Subsidy Control Act 2022. Further
+    information about the Subsidy requirements can be found within the Subsidy Control Act
+    2022 (legislation.gov.uk) .
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 2
+  verified: llm_cited
+application:
+  channel: Innovation Funding Service (IFS) online portal
+  typical_timeline: Competition opens 25 April 2024, closes 24 July 2024 11:00am, applicants
+    notified 27 September 2024 11:14am.
+  quote: "Competition opens: Thursday 25 April 2024 \n\n Competition closes: \n Wednesday\
+    \ 24 July 2024 11:00am"
+  source:
+    file: innovate_uk_smart_grants_apr2024.html
+    locator: chunk 1
+  verified: llm_cited

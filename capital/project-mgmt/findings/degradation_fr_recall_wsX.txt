@@ -1,0 +1,167 @@
+=== seed=20260806 cond=baseline ===
+(node:79950) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1084 at 2026-08-07T16:36:41.156Z
+set=__recallSetComposed.json split=holdout seed=20260806  replayed 600
+  in pool                  589/600 (98% +/-1.1)
+  EXACT scheme in top 5    97/600 (16% +/-2.9)
+  same REGIME in top 5     465/600 (78% +/-3.3)   <- the operational number
+  same CHANNEL in top 5    497/600 (83% +/-3.0)
+    mode=profile               n= 567  pool 100%  exact5 16%  regime5 80%
+    mode=project               n=  33  pool 67%  exact5 24%  regime5 30%
+    traced:exact_attribution   n= 402  pool 100%  exact5 15%  regime5 95%
+    original join              n= 198  pool 94%  exact5 18%  regime5 41%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 27%  regime5 27%
+    regime 6-20                n=  43  pool 88%  exact5 23%  regime5 35%
+    regime 21-50               n= 140  pool 100%  exact5 16%  regime5 45%
+    regime 51+                 n= 402  pool 100%  exact5 15%  regime5 95%
+
+=== seed=20260806 cond=policy ===
+(node:85742) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 80 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+corpus=postgres instruments=1084 at 2026-08-07T16:42:15.227Z
+set=__recallSetComposed.json split=holdout seed=20260806  replayed 600
+  in pool                  187/600 (31% +/-3.7)
+  EXACT scheme in top 5    44/600 (7% +/-2.1)
+  same REGIME in top 5     148/600 (25% +/-3.4)   <- the operational number
+  same CHANNEL in top 5    163/600 (27% +/-3.6)
+    mode=profile               n= 567  pool 29%  exact5 6%  regime5 24%
+    mode=project               n=  33  pool 67%  exact5 27%  regime5 36%
+    traced:exact_attribution   n= 402  pool 0%  exact5 0%  regime5 0%
+    original join              n= 198  pool 94%  exact5 22%  regime5 75%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 27%  regime5 33%
+    regime 6-20                n=  43  pool 88%  exact5 28%  regime5 53%
+    regime 21-50               n= 140  pool 100%  exact5 20%  regime5 86%
+    regime 51+                 n= 402  pool 0%  exact5 0%  regime5 0%
+
+=== seed=7 cond=baseline ===
+(node:90611) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1084 at 2026-08-07T16:47:47.683Z
+set=__recallSetComposed.json split=holdout seed=7  replayed 600
+  in pool                  588/600 (98% +/-1.1)
+  EXACT scheme in top 5    97/600 (16% +/-2.9)
+  same REGIME in top 5     474/600 (79% +/-3.3)   <- the operational number
+  same CHANNEL in top 5    503/600 (84% +/-2.9)
+    mode=profile               n= 566  pool 100%  exact5 16%  regime5 82%
+    mode=project               n=  34  pool 65%  exact5 12%  regime5 26%
+    traced:exact_attribution   n= 396  pool 100%  exact5 16%  regime5 95%
+    original join              n= 204  pool 94%  exact5 16%  regime5 47%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 20%  regime5 27%
+    regime 6-20                n=  41  pool 85%  exact5 15%  regime5 32%
+    regime 21-50               n= 148  pool 100%  exact5 16%  regime5 53%
+    regime 51+                 n= 396  pool 100%  exact5 16%  regime5 95%
+
+=== seed=7 cond=policy ===
+(node:94568) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 80 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+corpus=postgres instruments=1084 at 2026-08-07T16:53:06.603Z
+set=__recallSetComposed.json split=holdout seed=7  replayed 600
+  in pool                  192/600 (32% +/-3.7)
+  EXACT scheme in top 5    41/600 (7% +/-2.0)
+  same REGIME in top 5     159/600 (27% +/-3.5)   <- the operational number
+  same CHANNEL in top 5    171/600 (29% +/-3.6)
+    mode=profile               n= 566  pool 30%  exact5 6%  regime5 26%
+    mode=project               n=  34  pool 65%  exact5 26%  regime5 41%
+    traced:exact_attribution   n= 396  pool 0%  exact5 0%  regime5 0%
+    original join              n= 204  pool 94%  exact5 20%  regime5 78%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 27%  regime5 33%
+    regime 6-20                n=  41  pool 85%  exact5 24%  regime5 56%
+    regime 21-50               n= 148  pool 100%  exact5 18%  regime5 89%
+    regime 51+                 n= 396  pool 0%  exact5 0%  regime5 0%
+
+=== seed=99 cond=baseline ===
+(node:99495) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1084 at 2026-08-07T16:58:36.719Z
+set=__recallSetComposed.json split=holdout seed=99  replayed 600
+  in pool                  589/600 (98% +/-1.1)
+  EXACT scheme in top 5    100/600 (17% +/-3.0)
+  same REGIME in top 5     474/600 (79% +/-3.3)   <- the operational number
+  same CHANNEL in top 5    503/600 (84% +/-2.9)
+    mode=profile               n= 566  pool 100%  exact5 17%  regime5 82%
+    mode=project               n=  34  pool 68%  exact5 18%  regime5 35%
+    traced:exact_attribution   n= 397  pool 100%  exact5 16%  regime5 95%
+    original join              n= 203  pool 95%  exact5 18%  regime5 48%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  12  pool 58%  exact5 25%  regime5 33%
+    regime 6-20                n=  47  pool 87%  exact5 23%  regime5 38%
+    regime 21-50               n= 144  pool 100%  exact5 15%  regime5 52%
+    regime 51+                 n= 397  pool 100%  exact5 16%  regime5 95%
+
+=== seed=99 cond=policy ===
+(node:4087) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3788 (79.0%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1008 (21.0%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+degradation policy applied: 80 row(s) withheld from the ranker, graded against the 732-row population the live register defines
+theme_index_stale: 8 instrument(s) missing from themeIndex.generated.ts — run `npx tsx scripts/emit_theme_index.ts`
+corpus=postgres instruments=1084 at 2026-08-07T17:04:05.024Z
+set=__recallSetComposed.json split=holdout seed=99  replayed 600
+  in pool                  190/600 (32% +/-3.7)
+  EXACT scheme in top 5    43/600 (7% +/-2.1)
+  same REGIME in top 5     156/600 (26% +/-3.5)   <- the operational number
+  same CHANNEL in top 5    169/600 (28% +/-3.6)
+    mode=profile               n= 566  pool 30%  exact5 6%  regime5 25%
+    mode=project               n=  34  pool 62%  exact5 29%  regime5 41%
+    traced:exact_attribution   n= 397  pool 0%  exact5 0%  regime5 0%
+    original join              n= 203  pool 94%  exact5 21%  regime5 77%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  12  pool 50%  exact5 25%  regime5 25%
+    regime 6-20                n=  47  pool 85%  exact5 28%  regime5 53%
+    regime 21-50               n= 144  pool 100%  exact5 19%  regime5 89%
+    regime 51+                 n= 397  pool 0%  exact5 0%  regime5 0%
+
+ALL RUNS COMPLETE

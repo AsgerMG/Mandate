@@ -1,0 +1,284 @@
+id: nfr_maritimforsk
+name: nfr_maritimforsk
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: The project-responsible organisation must be an approved Norwegian research
+    organisation.
+  value: Approved Norwegian research organisation required as project owner
+  intake_field: borrowerModel
+  quote: Prosjektansvarlig organisasjon må være en godkjent norsk forskningsorganisasjon.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Companies acting as collaboration partners must be registered in the Norwegian
+    business register and have economic activity in Norway.
+  value: Norwegian-registered company with economic activity in Norway
+  intake_field: entityCountries
+  quote: Bedrifter som skal være samarbeidspartnere må være registrert i det norske foretaksregisteret
+    og ha økonomisk aktivitet i Norge.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited
+- id: g3
+  gate_family: G1_nexus
+  requirement: Foreign organisations equivalent to Norwegian research organisations may participate
+    and receive funding; other foreign organisations may participate but cannot receive funding.
+  value: Foreign non-research-equivalent partners cannot receive funding
+  intake_field: entityCountries
+  quote: Utenlandske organisasjoner tilsvarende norske forskningsorganisasjoner kan være med
+    i prosjektet og motta støtte. Andre utenlandske organisasjoner kan være med i prosjektet,
+    men de kan ikke motta støtte.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+- id: g4
+  gate_family: G2_size_ownership
+  requirement: At least two Norwegian collaboration partners (user partners) that are not
+    research organisations are required, each with own costs in the project.
+  value: Minimum 2 Norwegian non-research collaboration partners with own costs
+  intake_field: consortium
+  quote: Dere må ha minst to norske samarbeidspartnere (heretter kalt brukerpartnere) som
+    ikke er forskningsorganisasjoner, og alle samarbeidspartnerne må ha egne kostnader i prosjektet.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+- id: g5
+  gate_family: G2_size_ownership
+  requirement: User partners must jointly contribute costs equal to at least 10.0% of the
+    amount applied for from the Research Council (the co-participation requirement).
+  value: Minimum 10.0% co-financing by user partners of requested grant amount
+  intake_field: cofinancingBand
+  quote: Brukerpartnerne må medvirke med kostnader som totalt tilsvarer minst 10,0 % av beløpet
+    som dere søker oss om til prosjektet (heretter kalt medvirkningskravet).
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+- id: g6
+  gate_family: G2_size_ownership
+  requirement: Project-responsible party and collaboration partners must be independent of
+    each other, i.e. neither can have controlling influence (e.g. majority ownership) over
+    the other.
+  value: No controlling influence/majority ownership between partners
+  intake_field: nonEuControl
+  quote: Prosjektansvarlig og samarbeidspartnere må være uavhengige av hverandre. Med dette
+    menes at den ene ikke kan ha kontrollerende innflytelse over den andre.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+- id: g7
+  gate_family: G2_size_ownership
+  requirement: Universities, university colleges and institutes whose main task is research
+    cannot act as the societal or industry actor role (i.e. cannot count as a user partner).
+  value: Research-focused institutions excluded from user-partner role
+  intake_field: borrowerModel
+  quote: Universiteter, høyskoler og institutter som har som hovedoppgave å drive med forskning,
+    kan ikke ha rollen som samfunns- eller næringsaktør.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+- id: g8
+  gate_family: G2_size_ownership
+  requirement: Technology transfer offices (TTOs) and Norwegian-registered foreign enterprises
+    (NUF) do not count as a required collaboration partner.
+  value: TTOs and NUF entities excluded from counting as required partner
+  intake_field: borrowerModel
+  quote: Teknologioverføringskontorer (TTO‑er) og norskregistrerte utenlandske foretak (NUF)
+    teller ikke som påkrevd samarbeidspartner.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+- id: g9
+  gate_family: G3_financial
+  requirement: Grant support ranges from NOK 4 million to NOK 20 million per project.
+  value: NOK 4,000,000 - 20,000,000 per project
+  intake_field: ticketBand
+  quote: Vi kan gi støtte på 4 – 20 millioner kroner per prosjekt i denne utlysningen.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited
+- id: g10
+  gate_family: G3_financial
+  requirement: Total available funds for this call are approximately NOK 110 million.
+  value: Estimated NOK 110,000,000 available in the call
+  intake_field: ticketBand
+  quote: Antatt tilgjengelige midler Kr 110 000 000
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 1
+  verified: llm_cited
+- id: g11
+  gate_family: G3_financial
+  requirement: Support cannot be granted to companies that have not fulfilled repayment obligations
+    following an ESA/EU Commission decision declaring aid unlawful and incompatible with the
+    internal market, nor to undertakings in difficulty under EEA law.
+  value: Excludes companies with unpaid illegal-aid recovery orders or undertakings in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: Støtte kan ikke gis til foretak som ikke har oppfylt krav om tilbakebetaling etter
+    en forutgående beslutning fra ESA/EU-kommisjonsbeslutning der støtten er erklært ulovlig
+    og uforenlig med det indre marked. Støtte kan heller ikke gis til foretak i vanskeligheter
+    i EØS-rettslig forstand.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited
+- id: g12
+  gate_family: G4_borrower_model
+  requirement: Support is granted as a project grant under the General Block Exemption Regulation
+    Article 25, notified to ESA under reference GBER XX/202X/R&D&I.
+  value: Grant funding under GBER Art. 25 (R&D&I aid), notified to ESA
+  intake_field: borrowerModel
+  quote: Utlysningen er meldt som støtteordning til EFTA Surveillance Authority (ESA) og har
+    referanse GBER XX/202X/R&D&I. Om et foretak skal få dekket deler av sine prosjektkostnader
+    som samarbeidspartner i prosjektet, må dette skje i henhold til Gruppeunntaksforordningens
+    art. 25 (Kommisjonsforordning (EU) nr. 651/2014).
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited
+- id: g13
+  gate_family: G5_use_of_funds
+  requirement: Funding may only be applied for research activities characterised as basic
+    research or industrial research; the call does not fund experimental development, operational
+    activities, or commercialisation/marketing measures.
+  value: Eligible only for basic/industrial research, excludes experimental development and
+    commercialisation
+  intake_field: developmentStage
+  quote: Dere kan kun søke om støtte til forskningsaktiviteter som kan karakteriseres som
+    grunnforskning eller industriell forskning (for sektorer uten næringsliv kan industriell
+    forskning forstås som anvendt forskning). Utlysningen gir ikke støtte til eksperimentell
+    utvikling, driftsaktiviteter eller tiltak for kommersialisering, markedsføring eller annen
+    utnyttelse av forskningsresultater.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited
+- id: g14
+  gate_family: G5_use_of_funds
+  requirement: Regarding logistics and intermodal transport, only projects where sea transport
+    is a main part are eligible.
+  value: Sea transport must be main part of logistics/intermodal projects
+  intake_field: activityCountries
+  quote: Når det gjelder logistikk og intermodal transport, kan dere kun søke om prosjekter
+    der sjøtransport er en hoveddel.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 1
+  verified: llm_cited
+- id: g15
+  gate_family: G5_use_of_funds
+  requirement: The project must not be contract research (oppdragsforskning).
+  value: Project cannot be contract research
+  intake_field: borrowerModel
+  quote: Prosjektet skal ikke være oppdragsforskning.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+- id: g16
+  gate_family: G6_conditionality
+  requirement: Applicants must not use R&D suppliers (FoU-leverandører) in the project.
+  value: Use of R&D suppliers is prohibited
+  intake_field: conditionality
+  quote: Dere skal ikke bruke FoU-leverandører i prosjektet.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Applicants must describe how research security considerations regarding unwanted
+    transfer of knowledge/technology have been assessed and handled.
+  quote: Prosjektleder og prosjektansvarlig skal ha vurdert og håndtert hensynet til forskningssikkerhet
+    i prosjektet.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 4
+  verified: llm_cited
+- requirement: Grant recipients in research organisations and public sector must have gender
+    equality action plans (GEP) publicly available on their websites; this requirement does
+    not apply to private industry, interest organisations or the voluntary sector.
+  quote: Tilskuddsmottakere i forskningsorganisasjoner og offentlig sektor (prosjektansvarlige
+    og samarbeidspartnere) ha handlingsplaner for likestilling (GEP) tilgjengelig på sine
+    nettsider. Kravet gjelder ikke for privat næringsliv, interesseorganisasjoner eller frivillig
+    sektor.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 4
+  verified: llm_cited
+- requirement: Full and immediate open access is required for scientific articles resulting
+    from the project.
+  quote: Forskningsrådet stiller krav om full og umiddelbar åpen tilgang (open access) for
+    vitenskapelige artikler, se Plan S - åpen tilgang til publikasjoner .
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 4
+  verified: llm_cited
+- requirement: For projects handling data, the project-responsible party must prepare a data
+    management plan in connection with the revised application.
+  quote: For alle prosjekter som håndterer data, skal prosjektansvarlig utarbeide en datahåndteringsplan
+    i forbindelse med revidert søknad.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 4
+  verified: llm_cited
+- requirement: The Research Council may reject applications where the applicant or partner
+    has materially breached obligations in other Research Council-funded projects within the
+    past two years.
+  quote: Forskningsrådet kan avvise søknader der prosjektansvarlig eller samarbeidspartner
+    de siste to årene før innsendt søknad vesentlig har misligholdt sine forpliktelser i andre
+    prosjekter med støtte fra Forskningsrådet.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited
+- requirement: Applications may be rejected if the project leader has been found guilty by
+    the Committee on Research Integrity or the Investigation Committee within the past two
+    years.
+  quote: Søknaden kan bli avvist dersom prosjektleder er felt i Felles redelighetsutvalg eller
+    Granskningsutvalget de siste to årene før innsendt søknad.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (16/16 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Support to research organisations goes to their non-economic activity as independent
+    research and therefore does not constitute state aid; a proper accounting separation between
+    economic and non-economic activity must be in place, and where a company as a partner
+    receives cost coverage, this must occur under GBER Article 25.
+  quote: Støtten til forskningsorganisasjonene går til deres ikke-økonomiske aktivitet i form
+    av uavhengig forskning. Den utgjør dermed ikke statsstøtte. Forskningsrådet forutsetter
+    at nødvendig regnskapsmessig skille mellom organisasjons økonomiske og ikke-økonomiske
+    aktivitet er på plass.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited
+application:
+  channel: Application submitted via the Research Council of Norway's (Forskningsrådet) online
+    application system
+  typical_timeline: Application deadline 10 June 2026; expected decision by the portfolio
+    board in December 2026; earliest project start 1 January 2027, latest project start 1
+    July 2027; project duration 24-48 months
+  quote: Søknaden skal opprettes og sendes inn via Forskningsrådets søknadssystem.
+  source:
+    file: nfr_maritimforsk_samarbeidsprosjekt_2026.html
+    locator: nfr_maritimforsk_samarbeidsprosjekt_2026.html#chunk 3
+  verified: llm_cited

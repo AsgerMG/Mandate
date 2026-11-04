@@ -1,0 +1,88 @@
+id: satr_de_rnd__sa_112919__kreditanstalt_fur_wiederaufbau
+name: Richtlinie für die Bundesförderung für Energie- und Ressourceneffizienz in der
+  Wirtschaft – Zuschuss und Kredit [BMWK, IIA6]
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-applicants
+  gate_family: G1_nexus
+  requirement: Eligible applicants with a permanent establishment or branch in Germany
+    include private, municipal and state-owned companies, freelancers (if the
+    establishment is predominantly used for the freelance activity), and contractors
+    carrying out eligible measures for an eligible company.
+  value: Private/municipal/state companies, qualifying freelancers, or contractors, with a
+    German establishment
+  intake_field: entityCountries
+  quote: |-
+    Antragsberechtigt mit einer Betriebsstätte oder Niederlassung in Deutschland sind:
+    - private Unternehmen,
+    - kommunale Unternehmen,
+    - Landesunternehmen,
+    - freiberuflich Tätige, wenn die Betriebsstätte überwiegend für die freiberufliche Tätigkeit genutzt wird,
+    - Contractoren, die in dieser Förderrichtlinie genannte Maßnahmen für ein antragsberechtigtes Unternehmen durchführen.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-federal-ownership-exclusion
+  gate_family: G2_size_ownership
+  requirement: Companies whose shares are held more than 50 percent by the Federal
+    Government (public federal enterprises) are not eligible to apply.
+  value: Excludes companies >50% federally owned
+  intake_field: institutionalOwner
+  quote: Unternehmen, deren Anteile überwiegend (> 50 Prozent) vom Bund gehalten werden
+    (öffentliche Unternehmen des Bundes),
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-fisheries-exclusion
+  gate_family: G1_nexus
+  requirement: Fisheries and aquaculture companies under Regulation (EU) No 1379/2013 are
+    excluded.
+  value: Excludes fisheries/aquaculture per Reg. (EU) 1379/2013
+  intake_field: none
+  quote: Unternehmen der Fischerei und Aquakultur im Sinne der Verordnung (EU) Nr. 1379/2013,
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-undertaking-in-difficulty
+  gate_family: G1_nexus
+  requirement: Undertakings in difficulty per Article 1(4)(c) in conjunction with Article
+    2(18) GBER are excluded, except companies that were not in difficulty on 31 December
+    2019 but became undertakings in difficulty between 1 January 2020 and 31 December 2021,
+    who remain eligible under the BAFA-administered grant variant.
+  value: Excludes undertakings in difficulty (GBER Art 1(4)(c)/2(18)), with a 2020-2021
+    COVID carve-out
+  intake_field: lossesOverHalfCapital
+  quote: Unternehmen in Schwierigkeiten im Sinne von Artikel 1 Absatz 4 Buchstabe c in
+    Verbindung mit Artikel 2 Nummer 18 AGVO. Abweichend davon sind Unternehmen, die am 31.
+    Dezember 2019 keine Unternehmen in Schwierigkeiten waren, aber während des Zeitraums
+    vom 1. Januar 2020 bis zum 31. Dezember 2021 zu Unternehmen in Schwierigkeiten wurden,
+    in der vom BAFA administrierten Zuschussvariante des Förderprogramms antragsberechtigt.
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-municipality-exclusion
+  gate_family: G1_nexus
+  requirement: Municipalities and their own-operator/utility entities (Regie- und
+    Eigenbetriebe) are not eligible to apply.
+  value: Excludes municipalities and their own-operator entities
+  intake_field: none
+  quote: Kommunen und deren Regie- und Eigenbetriebe,
+  source:
+    file: https://www.kfw.de/inlandsfoerderung/Unternehmen/Energie-Umwelt/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

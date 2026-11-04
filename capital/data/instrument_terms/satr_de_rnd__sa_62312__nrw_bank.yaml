@@ -1,0 +1,31 @@
+id: satr_de_rnd__sa_62312__nrw_bank
+name: Bund-Länder-Gemeinschaftsaufgabe "Verbesserung der regionalen Wirtschaftsstruktur" – gewerbliche
+  Wirtschaft [BMWi]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-commercial-enterprise
+  gate_family: G1_nexus
+  requirement: Applicants must be commercial enterprises making a business investment.
+  value: Commercial enterprise making a business investment
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind gewerbliche Unternehmen, wenn sie betriebliche Investitionen vornehmen
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/15354/-gemeinschaftsaufgabe-verbesserung-der-regionalen-wirtschaftsstruktur-grw---gewerblich.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-nrw-location
+  gate_family: G1_nexus
+  requirement: The establishment to be funded must be located in a designated funding area of the state
+    of North Rhine-Westphalia.
+  value: Establishment must be in an NRW designated funding area
+  intake_field: entityCountries
+  quote: die zu fördernde Betriebsstätte in einem Fördergebiet des Landes Nordrhein-Westfalen liegt
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/15354/-gemeinschaftsaufgabe-verbesserung-der-regionalen-wirtschaftsstruktur-grw---gewerblich.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

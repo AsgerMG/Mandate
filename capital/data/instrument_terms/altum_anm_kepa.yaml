@@ -1,0 +1,206 @@
+id: altum_anm_kepa
+name: altum_anm_kepa
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_registered_lv_commercial_registry
+  gate_family: G1_nexus
+  requirement: Applicant must be a merchant registered in the Commercial Register of the Republic
+    of Latvia.
+  value: Registered in LV Commercial Register
+  intake_field: entityCountries
+  quote: Latvijas Republikas Komercreģistrā reģistrētam komersantam (turpmāk – komersants)
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html#chunk 1
+  verified: llm_cited
+- id: g4_capital_discount_loan
+  gate_family: G4_borrower_model
+  requirement: Support is provided as an Altum loan or parallel loan with a capital discount
+    (partial or full principal reduction) upon meeting specified conditions.
+  value: Loan with capital discount (kapitāla atlaide)
+  intake_field: borrowerModel
+  quote: akciju sabiedrības "Attīstības finanšu institūcija Altum" (turpmāk – sabiedrība "Altum")
+    aizdevuma pamatsummas vai sabiedrības "Altum" paralēlā aizdevuma pamatsummas, vai, ja
+    atbalstu piešķir šo noteikumu V nodaļā minētajam atbalstam bezemisiju transportlīdzekļu
+    iegādei, cita finansētāja – līzinga pakalpojuma sniedzēja – līzinga maksājuma pamatsummas
+    pilnīgs vai daļējs samazinājums, kas tiek piemērots, ja tiek izpildīti konkrēti nosacījumi
+    vai kritēriju kopa
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html#chunk 1
+  verified: llm_cited
+- id: g4_guarantee_ev_leasing
+  gate_family: G4_borrower_model
+  requirement: For zero-emission vehicle acquisition support, Altum issues a guarantee letter
+    to the other financier (leasing provider) for receipt of leasing payments.
+  value: Guarantee for EV leasing payment
+  intake_field: borrowerModel
+  quote: iegādājoties šo noteikumu V nodaļā minēto bezemisijas transportlīdzekli, sabiedrība
+    "Altum" izsniegta vēstule cita finansētāja – līzinga pakalpojuma sniedzēja – līzinga maksājuma
+    saņemšanai
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html#chunk 1
+  verified: llm_cited
+- id: g6_capital_discount_conditional_on_results
+  gate_family: G6_conditionality
+  requirement: The capital discount is paid to the enterprise only after project completion
+    and achievement of the set energy efficiency targets.
+  value: Payable only after project completion and target achievement
+  intake_field: conditionality
+  quote: Kapitāla atlaide uzņēmumiem tiks izmaksāta pēc projekta pabeigšanas un izvirzīto
+    energoefektivitātes mērķu sasniegšanas.
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_altum_news_118_companies.html#chunk 1
+  verified: llm_cited
+- id: g6_pre_works_start_prohibition
+  gate_family: G6_conditionality
+  requirement: Project costs are only eligible if works have not started before the defined
+    'start of works' point (construction start, first legally binding equipment order, or
+    other irreversible commitment); land purchase and preparatory work such as permits and
+    feasibility studies do not count as start of works.
+  value: Start of works rule per Commission Regulation 651/2014 Art 2(23)
+  intake_field: conditionality
+  quote: ar ieguldījumu saistītu būvdarbu sākums vai pirmā juridiski saistošā apņemšanās pasūtīt
+    aprīkojumu, vai citas saistības, kas padara ieguldījumu neatgriezenisku, – atkarībā no
+    tā, kas notiek pirmais. Zemes pirkšanu un tādus sagatavošanās darbus kā atļauju saņemšana
+    un priekšizpētes veikšana neuzskata par darbu sākumu
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html#chunk 1
+  verified: llm_cited
+- id: g2_related_undertakings_definition
+  gate_family: G2_size_ownership
+  requirement: Related persons/undertakings are assessed according to the definition of linked
+    enterprises in Article 3(3) of Annex I to Commission Regulation 651/2014, relevant for
+    aggregating ownership and size for eligibility purposes.
+  value: Linked enterprises per Reg 651/2014 Annex I Art 3(3)
+  intake_field: ownerOver25
+  quote: saimnieciskās darbības veicēji, kas atbilst Komisijas regulas Nr. 651/2014 1. pielikuma
+    3. panta 3. punktā noteiktajai saistīto uzņēmumu definīcijai
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html#chunk 1
+  verified: llm_cited
+- id: g2_single_undertaking_definition
+  gate_family: G2_size_ownership
+  requirement: For purposes of granting aid, 'one single undertaking' is defined per the applicable
+    de minimis Commission Regulation (2023/13 December), relevant to aggregation of state
+    aid ceilings across related entities.
+  value: Single undertaking per de minimis Regulation definition
+  intake_field: ownerOver25
+  quote: viens vienots uzņēmums – sniedzot atbalstu saskaņā ar Komisijas 2023. gada 13. decembra
+    Regulu
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html#chunk 1
+  verified: llm_cited
+- id: g5_use_of_funds_categories
+  gate_family: G5_use_of_funds
+  requirement: Support may be used for enterprise energy efficiency improvement, introduction
+    of renewable energy technology for heating, and zero-emission vehicle acquisition.
+  value: Energy efficiency, RES heating technology, zero-emission vehicles
+  intake_field: none
+  quote: Energoefektivitātes paaugstināšana uzņēmējdarbībā (ietverot pāreju uz atjaunojamo
+    energoresursu tehnoloģiju izmantošanu siltumapgādē)
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html#chunk 1
+  verified: llm_cited
+- id: g3_capital_discount_cap_30pct
+  gate_family: G3_financial
+  requirement: The capital discount can write off up to 30% of the investment costs after
+    project realization.
+  value: Up to 30% of investment costs
+  intake_field: cofinancingBand
+  quote: pēc projekta realizācijas kapitāla atlaides veidā dzēst līdz pat 30% no investīciju
+    izmaksām
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_altum_news_118_companies.html#chunk 1
+  verified: llm_cited
+- id: g3_investment_range
+  gate_family: G3_financial
+  requirement: Planned investment amounts under the first selection round range from EUR 10,000
+    to EUR 5 million.
+  value: EUR 10,000 - 5,000,000 planned investment
+  intake_field: ticketBand
+  quote: Plānoto investīciju diapazons ir ļoti plašs, sākot no 10 tūkstošiem eiro līdz pat
+    5 miljoniem eiro.
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_altum_news_118_companies.html#chunk 1
+  verified: llm_cited
+- id: g6_four_month_application_deadline
+  gate_family: G6_conditionality
+  requirement: Selected applicants must prepare and submit to Altum an application for the
+    loan (or parallel loan, if co-financed by a commercial bank) within four months of being
+    invited to apply.
+  value: 4-month deadline to submit loan application after selection
+  intake_field: needBy
+  quote: Nākamais solis apstiprināto projektu pieteicējiem ir četru mēnešu laikā sagatavot
+    un iesniegt ALTUM pieteikumu aizdevumam vai paralēlajam aizdevumam, ja projektu plānots
+    finansēt ar komercbankas līdzfinansējumu.
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_altum_news_118_companies.html#chunk 1
+  verified: llm_cited
+- id: g6_viability_and_eligibility_assessment
+  gate_family: G6_conditionality
+  requirement: The decision to grant the loan with capital discount is conditional on assessment
+    of project viability and other financial and eligibility criteria.
+  value: Project viability and eligibility assessment required
+  intake_field: conditionality
+  quote: Pieņemot lēmumu par aizdevuma ar kapitāla atlaidi piešķiršanu, tiks izvērtēta projekta
+    dzīvotspēja un citi finanšu un atbilstības kritēriji.
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_altum_news_118_companies.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Applicants invited to apply must submit their loan application to Altum within
+    four months of invitation.
+  quote: Nākamais solis apstiprināto projektu pieteicējiem ir četru mēnešu laikā sagatavot
+    un iesniegt ALTUM pieteikumu aizdevumam vai paralēlajam aizdevumam, ja projektu plānots
+    finansēt ar komercbankas līdzfinansējumu.
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_altum_news_118_companies.html#chunk 1
+  verified: llm_cited
+- requirement: The capital discount is only paid out after the project is completed and the
+    stated energy efficiency targets are achieved.
+  quote: Kapitāla atlaide uzņēmumiem tiks izmaksāta pēc projekta pabeigšanas un izvirzīto
+    energoefektivitātes mērķu sasniegšanas.
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_altum_news_118_companies.html#chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/12 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Related/linked undertakings and the single undertaking concept (per Commission Regulation
+    651/2014 Annex I Art 3(3) and the applicable de minimis Regulation) are used to determine
+    aggregate eligibility and aid ceilings across affiliated companies.
+  quote: saistītās personas – saimnieciskās darbības veicēji, kas atbilst Komisijas regulas
+    Nr. 651/2014 1. pielikuma 3. panta 3. punktā noteiktajai saistīto uzņēmumu definīcijai
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Application submitted to Altum (loan or parallel loan application), following an
+    initial project proposal selection round
+  typical_timeline: First selection round closed 4 February; results announced 9 February
+    2023; selected applicants have four months to submit the full loan application
+  quote: Šī gada 4. februārī noslēdzās pirmā atlases kārta Attīstības finanšu institūcijas
+    ALTUM jaunajā Atveseļošanas fonda programmā uzņēmumu energoefektivitātei, atjaunojamo
+    energoresursu tehnoloģiju ieviešanai un elektroauto iegādei.
+  source:
+    file: altum_anm_kepa_CONFIRM_likumi_lv_mk594_regulation.html
+    locator: altum_anm_kepa_CONFIRM_altum_news_118_companies.html#chunk 1
+  verified: llm_cited

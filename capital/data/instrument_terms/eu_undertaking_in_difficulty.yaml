@@ -1,0 +1,91 @@
+id: eu_undertaking_in_difficulty
+name: Undertaking-in-difficulty exclusion (GBER Art. 1(4)(c) + 2(18))
+administering_body: see source document
+country: EU
+capital_type: framework
+borrower_models:
+- operating_company
+status: draft
+gates:
+- id: g1
+  gate_family: G6_conditionality
+  requirement: An undertaking is deemed 'in difficulty' if, being a limited liability company,
+    more than half of its subscribed share capital has disappeared as a result of accumulated
+    losses (with SME carve-outs for companies less than 3 years old or qualifying risk finance
+    SMEs).
+  value: Accumulated losses deduction exceeds half of subscribed share capital (limited liability
+    companies)
+  intake_field: lossesOverHalfCapital
+  quote: where more than half of its subscribed share capital has disap­peared as a result
+    of accumulated losses. This is the case when deduction of accumulated losses from reserves
+    (and all other elements generally considered as part of the own funds of the company)
+    leads to a negative cumulative amount that exceeds half of the subscribed share capital.
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.10
+  verified: false
+  verify_note: quote not found verbatim in document
+- id: g2
+  gate_family: G6_conditionality
+  requirement: An undertaking is deemed 'in difficulty' if, being a company where at least
+    some members have unlimited liability for its debts, more than half of its capital as
+    shown in the company accounts has disappeared as a result of accumulated losses (with
+    the same SME carve-outs).
+  value: Accumulated losses deduction exceeds half of capital as shown in company accounts
+    (unlimited-liability-member companies)
+  intake_field: lossesOverHalfCapital
+  quote: where more than half of its capital as shown in the company accounts has disappeared
+    as a result of accumulated losses.
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.10
+  verified: false
+  verify_note: The quote only states the general rule that more than half of a company's capital
+    has disappeared due to accumulated losses; it does not mention anything about companies
+    where at least some members have unlimited liability for its debts, nor any SME carve-outs.
+    That specific context is not present in the quote itself.
+- id: g3
+  gate_family: G6_conditionality
+  requirement: An undertaking is deemed 'in difficulty' if it is subject to collective insolvency
+    proceedings or meets the domestic-law criteria for being placed in collective insolvency
+    proceedings at creditors' request.
+  value: Subject to or eligible for collective insolvency proceedings
+  intake_field: conditionality
+  quote: Where the undertaking is subject to collective insolvency proceedings or fulfils
+    the criteria under its domestic law for being placed in collective insolvency proceedings
+    at the request of its creditors.
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.10
+  verified: false
+  verify_note: The quote lists a condition (subject to or eligible for collective insolvency
+    proceedings) but does not itself state that this condition means the undertaking is deemed
+    'in difficulty'. That characterization requires outside context not present in the quote.
+- id: g4
+  gate_family: G6_conditionality
+  requirement: An undertaking is deemed 'in difficulty' if it has received rescue aid not
+    yet reimbursed/terminated, or restructuring aid and remains subject to a restructuring
+    plan.
+  value: Unreimbursed rescue aid or ongoing restructuring plan
+  intake_field: conditionality
+  quote: Where the undertaking has received rescue aid and has not yet reimbursed the loan
+    or terminated the guarantee, or has received restructuring aid and is still subject to
+    a restructuring plan.
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.10
+  verified: llm_2pass
+- id: g5
+  gate_family: G6_conditionality
+  requirement: For non-SME undertakings, deemed 'in difficulty' if, for the past two years,
+    the book debt-to-equity ratio has exceeded 7.5.
+  value: Debt-to-equity ratio > 7.5 for past two years (non-SME)
+  intake_field: conditionality
+  quote: 'In the case of an undertaking that is not an SME, where, for the past two years:
+    (1) the undertaking''s book debt to equity ratio has been greater than 7,5 and'
+  source:
+    file: gber_651_2014_consolidated.pdf
+    locator: p.10
+  verified: llm_2pass
+verify_by: '2026-10-01'
+notes: Extracted 2/5 gates at llm_2pass by ETL/terms/extract_terms.py.

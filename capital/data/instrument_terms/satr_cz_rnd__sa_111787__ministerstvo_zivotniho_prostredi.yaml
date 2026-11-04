@@ -1,0 +1,34 @@
+id: satr_cz_rnd__sa_111787__ministerstvo_zivotniho_prostredi
+name: Nová zelená úsporám – renovace budov a ochrana ovzduší
+administering_body: see source document
+country: CZ
+capital_type: unknown
+status: draft
+gates:
+- id: g1-vulnerable-households
+  gate_family: G1_nexus
+  requirement: Vulnerable households may apply for a direct subsidy.
+  value: 'Vulnerable households: direct subsidy route'
+  intake_field: none
+  quote: Zranitelné domácnosti mohou žádat o přímou dotaci.
+  source:
+    file: https://mzp.gov.cz/cz/pro-media-a-verejnost/aktuality/archiv-tiskovych-zprav/program-nova-zelena-usporam-otevira-prijem-zadosti-renovace-domu-podpori-cileneji-a-efektivneji
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-other-applicant-categories
+  gate_family: G1_nexus
+  requirement: Other eligible applicant categories are owners of single-family homes, associations of
+    unit owners, and housing cooperatives; the exact circle of applicants is further specified per sub-programme.
+  value: Homeowners, unit-owner associations, housing co-ops
+  intake_field: none
+  quote: Ostatní subjekty zahrnují majitelé rodinných domů, společenství vlastníků jednotek a bytová družstva.
+  source:
+    file: https://mzp.gov.cz/cz/pro-media-a-verejnost/aktuality/archiv-tiskovych-zprav/program-nova-zelena-usporam-otevira-prijem-zadosti-renovace-domu-podpori-cileneji-a-efektivneji
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (2/2 gates passed mechanical verbatim
+  check -> llm_cited).

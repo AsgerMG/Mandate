@@ -1,0 +1,208 @@
+id: altum_mvu_ia_3_1_1_7_un_13_1_1
+name: altum_mvu_ia_3_1_1_7_un_13_1_1
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a Latvian business (komersants) obtaining an innovation assessment
+    and applying for the loan through ALTUM's mans.altum.lv portal.
+  value: Latvian commercial company registering via mans.altum.lv
+  intake_field: entityCountries
+  quote: Autentificē un reģistrē uzņēmu www.mans.altum.lv
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: The product must obtain an innovation assessment either from the Latvian Council
+    of Science (for general economy innovative products in RIS3 sectors) or from the Ministry
+    of Defence (for dual-use products in security and defence).
+  value: Innovation assessment from LZP or Aizsardzības Ministrija required
+  intake_field: developmentStage
+  quote: "Inovatīviem produktiem vispārējā tautsaimniecībā RIS3 nozarēs – Latvijas Zinātnes\
+    \ padomē \n Duālā pielietojuma produktiem drošības un aizsardzības jomā – Aizsardzības\
+    \ Ministrijā"
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3
+  gate_family: G2_size_ownership
+  requirement: Applicant must declare and qualify as a small or medium-sized enterprise (SME).
+  value: SME status declaration required
+  intake_field: fteBand
+  quote: Deklarācija par komercsabiedrības atbilstību mazajai vai vidējai komercsabiedrībai
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: Applicant must disclose de minimis state aid received by the company and related
+    persons via the VID EDS system as part of the application.
+  value: De minimis aid disclosure required
+  intake_field: cofinancingBand
+  quote: VID EDS sadaļā De minimis aizpildīta informācija par saņemto valsts atbalstu uzņēmumam
+    un saistītajām personām
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: Applicant must justify the origin of own co-financing funds used in the project.
+  value: Proof of origin of own contribution funds required
+  intake_field: cofinancingBand
+  quote: Līdzdalības līdzekļu izcelsmes pamatojums
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6
+  gate_family: G4_borrower_model
+  requirement: The instrument is a loan for implementing innovation in production with a capital
+    rebate (capital discount) mechanism.
+  value: Loan with capital rebate (kapitāla atlaide)
+  intake_field: borrowerModel
+  quote: Aizdevuma pieteikums inovāciju ieviešanai ražošanā ar kapitāla atlaidi
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g7
+  gate_family: G5_use_of_funds
+  requirement: Applicant must submit a project cost estimate as part of the application, defining
+    the eligible use of funds.
+  value: Project cost estimate required
+  intake_field: none
+  quote: Projekta izmaksu tāme
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g8
+  gate_family: G3_financial
+  requirement: Applicant must submit operating balance sheet, profit and loss statement, breakdown
+    of fixed assets with balances, and breakdown of creditors/debtors as part of the financial
+    assessment.
+  value: Financial statements required
+  intake_field: balanceBand
+  quote: Operatīvā bilance, peļņas zaudējuma aprēķins, pamatlīdzekļu atšifrējums ar atlikumiem,
+    kreditoru/debitoru atšifrējums
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g9
+  gate_family: G6_conditionality
+  requirement: Project implementation may only start after ALTUM has approved receipt of the
+    application.
+  value: Project may start only after ALTUM confirms application receipt
+  intake_field: needBy
+  quote: Projektu var sākt realizēt, kad ALTUM ir apstiprinājis pieteikuma saņemšanu
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g10
+  gate_family: G6_conditionality
+  requirement: No later than two years after project completion, the company must submit to
+    the Ministry of Economics an application for project completion and initiation of post-monitoring.
+  value: 'Post-completion submission deadline: within 2 years'
+  intake_field: none
+  quote: Ne vēlāk kā divu gadu laikā pēc projekta pabeigšanas uzņēmumam jāiesniedz Ekonomikas
+    ministrijā pieteikums par projekta pabeigšanu un pēcuzraudzības uzsākšanu.
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g11
+  gate_family: G6_conditionality
+  requirement: The Ministry of Economics implements a three-year post-monitoring period during
+    which the company must achieve all post-monitoring indicators each year, including minimum
+    annual R&D investment of EUR 50,000, doubling of turnover growth relative to eligible
+    project costs, and job creation/retention with wage growth thresholds.
+  value: 3-year post-monitoring period with annual performance indicators
+  intake_field: none
+  quote: Trīs secīgus gadus Ekonomika ministrija īsteno pēcuzraudzības periodu, kura laikā
+    komersantam ir jānodrošina visu pēcuzraudzības rādītāju sasniegšana katrā gadā.
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Company must ensure at least EUR 50,000 per year in R&D investment during the
+    post-monitoring period.
+  quote: ieguldījumu apjoms pētniecībā un attīstībā ir vismaz 50 000 euro gadā
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Turnover growth must be at least twice the amount of the eligible costs of
+    the investment project.
+  quote: apgrozījuma pieaugums vismaz divas reizes pārsniedz investīciju projekta attiecināmo
+    izmaksu apmēru
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: For every EUR 250,000 of granted capital rebate, one new job must be created,
+    with at least two new jobs created in total, or existing jobs retained with at least a
+    30% wage increase and average gross monthly wage at least 60% above the national average
+    for the previous year.
+  quote: uz katriem piešķirtās kapitāla atlaides 250 000 EUR radīta viena jauna darba vieta
+    un kopā radītas vismaz divas jaunas darba vietas VAI saglabātas esošās darba vietas, nodrošinot
+    saglabātajām darba vietām atalgojuma pieaugumu vismaz par 30%, kā arī mēneša vidējā bruto
+    darba samaksa saglabātajās darba vietās ir vismaz par 60% lielāka nekā mēneša vidējā bruto
+    darba samaksa tautsaimniecībā iepriekšējā gadā
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: New jobs must be maintained for at least two years with wages at least 60%
+    above the national average.
+  quote: jaunās darba vietas tiek saglabātas vismaz divus gadus, un tiek nodrošināta mēneša
+    vidējā bruto darba samaksa, kas ir vismaz par 60% lielāka nekā mēneša vidējā bruto darba
+    samaksa tautsaimniecībā iepriekšējā gadā
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: At the end of each post-monitoring year, the aid recipient must submit to the
+    Ministry of Economics documents substantiating the indicators, including auditor reports;
+    the Ministry decides on fulfilment and the decision must be submitted to ALTUM.
+  quote: Beidzoties katram pēcuzraudzības perioda gadam, atbalsta saņēmējam jāiesniedz Ekonomikas
+    ministrijā rādītājus pamatojošos dokumentus, tai skaitā revidenta pārskatus. Ekonomikas
+    ministrija pārbauda rādītāju sasniegšanu, un pieņem lēmumu par to izpildi vai neizpildi.
+    Lēmums par rādītāju izpildi komersantam jāiesniedz ALTUM.
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: ALTUM applies the capital rebate for the relevant year in the amount of one
+    third of the total granted capital rebate, based on the Ministry's decision, repeating
+    this in the following two years.
+  quote: ALTUM, pamatojoties tostarp uz Ekonomikas ministrijas pieņemto lēmumu, piemēro kapitāla
+    atlaidi par attiecīgo gadu vienas trešdaļas apmērā no kopējā piešķirtā kapitāla atlaides
+    apmēra
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: mans.altum.lv online portal
+  typical_timeline: Not specified in source; sequential steps from registration to project
+    start after ALTUM approval
+  quote: "Aizdevuma pieteikums pieejams sadaļā: \n Pieteikumi ➥ Jauns pieteikums ➥ Aizdevuma\
+    \ pieteikums inovāciju ieviešanai ražošanā ar kapitāla atlaidi"
+  source:
+    file: altum_mvu_ia_3_1_1_7_un_13_1_1_inovativu_produktu_izstradei.html
+    locator: chunk 2
+  verified: llm_cited

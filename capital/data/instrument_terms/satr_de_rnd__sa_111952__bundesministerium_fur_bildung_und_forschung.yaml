@@ -1,0 +1,108 @@
+id: satr_de_rnd__sa_111952__bundesministerium_fur_bildung_und_forschung
+name: Richtlinie zur Förderung von Projekten im Programm Eurostars 3 [BMBF]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-funded-large-not
+  gate_family: G2_size_ownership
+  requirement: SMEs per the EU definition may apply and be funded; large enterprises may participate at
+    their own cost but receive no funding.
+  value: SME funded; large enterprises self-funded only
+  intake_field: turnoverBand
+  quote: Der Antragsteller erklärt gegenüber der Bewilligungsbehörde seine Einstufung gemäß Anhang I der
+    AGVO im Rahmen des schriftlichen Antrags. Großunternehmen können sich auf eigene Kosten an einem Projekt
+    beteiligen, erhalten jedoch keine Förderung.
+  source:
+    file: https://www.eurostars.dlr.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-inst-needs-sme-partner
+  gate_family: G1_nexus
+  requirement: Universities and non-university research institutions are eligible only if they cooperate
+    with at least one SME in Germany within the Eurostars 3 project.
+  value: Research institutions need >=1 German SME partner
+  intake_field: consortium
+  quote: Hochschulen und außeruniversitäre Forschungseinrichtungen, sofern sie mit mindestens einem KMU
+    in Deutschland in einem Eurostars 3-Projekt kooperieren.
+  source:
+    file: https://www.eurostars.dlr.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-germany-establishment-at-payout
+  gate_family: G1_nexus
+  requirement: At the time the grant is paid out, the recipient must have an establishment or branch (for
+    companies) or an equivalent non-economic facility (for universities/research institutions) in Germany.
+  value: German establishment required at payout
+  intake_field: wouldOpenEntity
+  quote: Zum Zeitpunkt der Auszahlung einer gewährten Zuwendung wird das Vorhandensein einer Betriebsstätte
+    oder Niederlassung (Unternehmen) bzw. einer sonstigen Einrichtung, die der nichtwirtschaftlichen Tätigkeit
+    des Zuwendungsempfängers dient (Hochschule, Forschungseinrichtung), in Deutschland verlangt.
+  source:
+    file: https://www.eurostars.dlr.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-foreign-partners-not-funded-in-de
+  gate_family: G1_nexus
+  requirement: Foreign cooperation partners from other Eurostars 3 participating countries are not eligible
+    to apply for funding in Germany; they must finance their share via funding in their own country or
+    own resources.
+  value: Foreign partners must be funded in their home country, not via Germany
+  intake_field: entityCountries
+  quote: Ausländische Kooperationspartner aus den Eurostars 3-Teilnehmerländern sind in Deutschland nicht
+    antragsberechtigt; sie müssen ihre Aufwendungen über Förderung in ihrem Sitzland oder über Eigenmittel
+    finanzieren.
+  source:
+    file: https://www.eurostars.dlr.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-coordination
+  gate_family: G1_nexus
+  requirement: The consortium must be coordinated by an SME headquartered in an Eurostars 3 participating
+    country, consist of at least two mutually independent project partners, and include partners from
+    at least two different Eurostars 3 participating countries.
+  value: 'Consortium: SME-coordinated, >=2 independent partners, >=2 countries'
+  intake_field: consortium
+  quote: Verbundkoordination durch ein KMU mit Sitz in einem Eurostars 3-Teilnehmerland. Das Konsortium
+    besteht aus mindestens zwei voneinander unabhängigen Projektpartnern. Die beteiligten Projektpartner
+    kommen aus mindestens zwei verschiedenen Eurostars 3-Teilnehmerländern.
+  source:
+    file: https://www.eurostars.dlr.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-sme-cost-share
+  gate_family: G3_financial
+  requirement: At least 50% of the total R&D project costs (excluding subcontracts) must be incurred by
+    the participating SMEs, and no single partner or country may account for more than 70% of total project
+    costs.
+  value: '>=50% costs at SMEs; <=70% cost concentration per partner/country'
+  intake_field: cofinancingBand
+  quote: Mindestens 50 % der Forschungs- und Entwicklungsgesamtprojektkosten (ohne Unteraufträge) entstehen
+    bei den beteiligten KMU. Auf keinen der Projektpartner und auf keines der am Projekt beteiligten Länder
+    entfallen mehr als 70 % der Gesamtprojektkosten.
+  source:
+    file: https://www.eurostars.dlr.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-civil-purpose-only
+  gate_family: G5_use_of_funds
+  requirement: The project must serve exclusively civilian purposes.
+  value: Civil use only
+  intake_field: developmentStage
+  quote: Das Projekt dient ausschließlich zivilen Zwecken.
+  source:
+    file: https://www.eurostars.dlr.de/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (7/7 gates passed mechanical verbatim
+  check -> llm_cited).

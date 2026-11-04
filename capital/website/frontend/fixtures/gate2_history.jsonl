@@ -1,0 +1,5 @@
+{"at":"2026-08-05T21:44:18.581Z","model":"claude-haiku-4-5","variant":"default","split":"holdout","gate1Sha":"c37046c","n":20,"reach":15,"baseline":12,"exact":9,"regime":17,"bad":0}
+{"at":"2026-08-05T22:12:45.993Z","model":"claude-haiku-4-5","variant":"default","split":"holdout","gate1Sha":"32f28f2","n":20,"reach":19,"baseline":12,"exact":8,"regime":16,"bad":0}
+{"at":"2026-08-05T22:19:30.788Z","harness":"gate2_questions","model":"claude-haiku-4-5","split":"holdout","gate1Sha":"32f28f2","n":15,"reach":15,"baseline":12,"exact":2,"regime":6,"failed":0,"meanQuestions":7.933333333333334}
+{"at":"2026-08-05T22:24:01.547Z","harness":"gate2_questions","model":"claude-haiku-4-5","split":"holdout","gate1Sha":"32f28f2","n":15,"reach":15,"baseline":12,"exact":7,"regime":10,"failed":0,"meanQuestions":8}
+{"at":"2026-08-05T22:28:08.173Z","harness":"gate2_questions","model":"claude-haiku-4-5","split":"holdout","gate1Sha":"32f28f2","n":15,"reach":15,"baseline":12,"exact":8,"regime":9,"failed":0,"meanQuestions":7.866666666666666}

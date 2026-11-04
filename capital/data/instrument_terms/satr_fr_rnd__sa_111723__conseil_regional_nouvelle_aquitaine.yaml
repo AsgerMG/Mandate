@@ -1,0 +1,78 @@
+id: satr_fr_rnd__sa_111723__conseil_regional_nouvelle_aquitaine
+name: Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation
+  (RDI) pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g1-location-na
+  gate_family: G1_nexus
+  requirement: Enterprises of any size located in Nouvelle-Aquitaine are concerned by this call.
+  value: Located in Nouvelle-Aquitaine, any size
+  intake_field: entityCountries
+  quote: Sont concernées les entreprises de toutes tailles localisées en Nouvelle-Aquitaine.
+  source:
+    file: https://les-aides.fr/aide/RhFP/region-nouvelle-aquitaine/aide-aux-projets-de-recherche-collaboratifs-public-prive.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-rd-partnership
+  gate_family: G1_nexus
+  requirement: The company must have an R&D partnership project with a competence centre located inside
+    or outside the Nouvelle-Aquitaine territory.
+  value: R&D partnership with a competence centre required
+  intake_field: consortium
+  quote: avoir un projet de partenariat R&D avec un centre de compétences situé dans ou hors du territoire
+    de NA
+  source:
+    file: https://les-aides.fr/aide/RhFP/region-nouvelle-aquitaine/aide-aux-projets-de-recherche-collaboratifs-public-prive.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-fonds-propres
+  gate_family: G3_financial
+  requirement: The company must have a level of equity (fonds propres) adequate relative to its aid request.
+  value: Equity level must be adequate to aid request
+  intake_field: balanceBand
+  quote: avoir un niveau de fonds propres en adéquation avec sa demande d'aide
+  source:
+    file: https://les-aides.fr/aide/RhFP/region-nouvelle-aquitaine/aide-aux-projets-de-recherche-collaboratifs-public-prive.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-eco-socio-conditionality
+  gate_family: G6_conditionality
+  requirement: The company must respect the eco-socio conditionality rules set by the Region.
+  value: Must comply with Region's eco-socio conditionality rules
+  intake_field: conditionality
+  quote: respecter les règles d'éco-socio conditionnalités mises en place par la Région
+  source:
+    file: https://les-aides.fr/aide/RhFP/region-nouvelle-aquitaine/aide-aux-projets-de-recherche-collaboratifs-public-prive.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+- id: g6-no-dividends
+  gate_family: G6_conditionality
+  requirement: The company must not distribute dividends derived from the subsidy.
+  value: No dividend distribution from the subsidy
+  intake_field: conditionality
+  quote: ne pas distribuer de dividendes issues de la subvention
+  source:
+    file: https://les-aides.fr/aide/RhFP/region-nouvelle-aquitaine/aide-aux-projets-de-recherche-collaboratifs-public-prive.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation
+- id: g6-partnership-agreement
+  gate_family: G6_conditionality
+  requirement: The company must sign a partnership agreement defining confidentiality rules and the allocation/protection
+    of results.
+  value: Signed partnership agreement required (confidentiality, IP allocation)
+  intake_field: consortium
+  quote: signer un accord de partenariat définissant notamment les règles de confidentialité et de répartition/protection
+    des résultats
+  source:
+    file: https://les-aides.fr/aide/RhFP/region-nouvelle-aquitaine/aide-aux-projets-de-recherche-collaboratifs-public-prive.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation

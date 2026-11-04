@@ -1,0 +1,179 @@
+id: eit_manufacturing_boostup
+name: eit_manufacturing_boostup
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-geo
+  gate_family: G1_nexus
+  requirement: Applicant startups must be based in one of the specified North Region countries.
+  value: Sweden, Denmark, Norway, Finland, Iceland, Estonia, Lithuania, Latvia, or the UK
+  intake_field: entityCountries
+  quote: Attention startups from Sweden, Denmark, Norway, Finland, Iceland, Estonia, Lithuania,
+    Latvia, and the UK!
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-target
+  gate_family: G1_nexus
+  requirement: Applicant must be a startup seeking to internationalize and scale its business
+    in Europe.
+  value: startups aiming to expand and grow their business in Europe
+  intake_field: borrowerModel
+  quote: This competition provides a unique opportunity for startups aiming to expand and
+    grow their business in Europe.
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-sector
+  gate_family: G1_nexus
+  requirement: Applicant must offer a solution in the realm of manufacturing technologies.
+  value: solutions in the realm of manufacturing technologies
+  intake_field: borrowerModel
+  quote: BoostUp! North 2023 is open to startups with solutions in the realm of manufacturing
+    technologies.
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-focus
+  gate_family: G1_nexus
+  requirement: Submissions must fit one of EIT Manufacturing's focus areas.
+  value: one of EIT Manufacturing's focus areas
+  intake_field: borrowerModel
+  quote: 'submissions need to fit 1) one of EIT Manufacturing’s focus areas , 2) at least
+    one of the following market segments as well as 3) one of the following technology domains:'
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-market-segment
+  gate_family: G1_nexus
+  requirement: Submissions must fit at least one of the listed market segments.
+  value: Air & Spacecraft, Appliances, Automotive, Electronics, Industrial Machinery, Machine
+    Tools, Marine, Mobility, Packaging, Chemicals & Pharmaceuticals
+  intake_field: borrowerModel
+  quote: "•    Air & Spacecraft \n•    Appliances \n•    Automotive \n•    Electronics \n\
+    •    Industrial Machinery \n•    Machine Tools \n•    Marine \n•    Mobility \n•    Packaging\
+    \ \n•    Chemicals & Pharmaceuticals"
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1-tech-domain
+  gate_family: G1_nexus
+  requirement: Submissions must fit at least one of the listed technology domains.
+  value: Advanced Sensors, Battery/Hydrogen/Energy Storage, CO2 Capture Utilization & Storage,
+    Connectivity/IoT Infrastructure, AI vision for sustainable solutions, Recycling/Reuse/Remanufacturing,
+    Robotics
+  intake_field: borrowerModel
+  quote: "•    Advanced Sensors \n•    Battery/Hydrogen/Energy Storage \n•    CO2 Capture,\
+    \ Utilization & Storage \n•    Connectivity/IoT Infrastructure \n•    AI vision for sustainable\
+    \ solutions \n•    Recycling/Reuse/Remanufacturing \n•    Robotics"
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4-prize
+  gate_family: G4_borrower_model
+  requirement: Funding is provided as a non-repayable prize competition award, not a loan
+    or equity instrument.
+  value: prize competition
+  intake_field: borrowerModel
+  quote: A total of 22 proposals were submitted in response to the EIT Manufacturing BoostUp!
+    North Prize Competition.
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-award
+  gate_family: G3_financial
+  requirement: The top 3 winning startups from the 2nd phase each receive a prize award of
+    €5,000 to support their European expansion strategy.
+  value: €5,000 per winning startup (top 3)
+  intake_field: turnoverBand
+  quote: The top 3 winning startups selected from the 2nd phase, will receive prize awards
+    of €5.000 each to support their European expansion strategy.
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5-use-of-funds
+  gate_family: G5_use_of_funds
+  requirement: Prize funds must be used to support the winning startup's European expansion
+    strategy.
+  value: support their European expansion strategy
+  intake_field: none
+  quote: will receive prize awards of €5.000 each to support their European expansion strategy
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6-registration
+  gate_family: G6_conditionality
+  requirement: Applicants must submit a Company Registration Certificate as part of the application
+    documentation.
+  value: Company Registration Certificate required
+  intake_field: none
+  quote: (4) Company Registration Certificate
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6-declaration
+  gate_family: G6_conditionality
+  requirement: Legal entities must submit a Declaration of Honour on eligibility, exclusion
+    and selection.
+  value: Declaration of Honour on eligibility, exclusion and selection for legal entities
+  intake_field: none
+  quote: Declaration of Honour on eligibility, exclusion and selection for legal entities
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 2
+  verified: llm_cited
+obligations:
+- requirement: Applicants must submit the Application Form, Company Pitch Deck, Company logo,
+    and Company Registration Certificate through the submission platform before the deadline.
+  quote: "The following documentation must be submitted by the applicants through the submission\
+    \ platform no later than the call deadline 8 January 2024, 17:00 CET: \n(1) The Application\
+    \ Form, duly filled in \n(2) Company Pitch Deck in Microsoft PowerPoint format;"
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+- requirement: Only applications submitted through the official online link before the deadline
+    will be accepted and considered.
+  quote: Only applications submitted through the online link (please see below) before the
+    deadline will be accepted and considered.
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: If shortlisted for the 2nd phase, the pitch deck must be tailored to a 5 minute
+    presentation covering specified content areas.
+  quote: 'such file will be used as supporting presentation in case the startup is shortlisted
+    for the 2nd phase: the document must be tailored to a 5 minutes presentation and the following
+    details shall be clearly outlined:'
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online submission platform via the competition website
+  typical_timeline: Call opens 30 October 2023; closes 8 January 2024, 17:00 CET; eligibility
+    check until 9 January 2024; 1st phase evaluation until 17 January 2024; 2nd phase shortlist
+    announced 19 January 2024; live pitch event 8 February 2024.
+  quote: "Call opening: 30 October, 2023 \nCall closing updated:   8 January, 2024, 17:00\
+    \ CET. \nEligibility and admissibility check: until 9 January, 2024 \n1st phase – Evaluation\
+    \ of proposals: until 17 January, 2024 \nAnnouncement of 2nd phase shortlist: 19 January,\
+    \ 2024 \n2nd phase – Event Day/ live pitch session: 8 February, 2024"
+  source:
+    file: eit_manufacturing_boostup_north2023_call_wayback20260420.html
+    locator: chunk 2
+  verified: llm_cited

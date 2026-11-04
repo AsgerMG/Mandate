@@ -1,0 +1,30 @@
+
+=== ARM A: production
+    innovasjon_norge_grant_cluster         "Innovasjon Norge · Grants"              NO LINK
+    innovasjon_norge_grant_innovation      "Innovasjon Norge · Grants"              NO LINK
+    innovasjon_norge_grant_international   "Innovasjon Norge · Grants"              NO LINK
+    innovasjon_norge_grant_regional        "Innovasjon Norge · Grants"              NO LINK
+    innovasjon_norge_grant_sector          "Innovasjon Norge · Grants"              NO LINK
+    innovasjon_norge_grant_startup         "Innovasjon Norge · Grants"              NO LINK
+    innovasjon_norge_loan_lowrisk          "Innovasjon Norge · Loans"               Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_loan_risk             "Innovasjon Norge · Blended finance"     Institution page -> https://www.innovasjonnorge.no/
+
+=== ARM B: name only
+    innovasjon_norge_grant_cluster         "Klynger og nettverk"                    NO LINK
+    innovasjon_norge_grant_innovation      "Innovasjonstilskudd"                    NO LINK
+    innovasjon_norge_grant_international   "Internasjonale tilskuddsprogrammer"     NO LINK
+    innovasjon_norge_grant_regional        "Distriktsutviklingstilskudd"            NO LINK
+    innovasjon_norge_grant_sector          "Næringsspesifikke utviklingstiltak"     NO LINK
+    innovasjon_norge_grant_startup         "Oppstartstilskudd"                      NO LINK
+    innovasjon_norge_loan_lowrisk          "Lavrisikolån"                           Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_loan_risk             "Risikolån og garantier"                 Institution page -> https://www.innovasjonnorge.no/
+
+=== ARM C: name + administeringBody
+    innovasjon_norge_grant_cluster         "Klynger og nettverk"                    Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_grant_innovation      "Innovasjonstilskudd"                    Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_grant_international   "Internasjonale tilskuddsprogrammer"     Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_grant_regional        "Distriktsutviklingstilskudd"            Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_grant_sector          "Næringsspesifikke utviklingstiltak"     Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_grant_startup         "Oppstartstilskudd"                      Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_loan_lowrisk          "Lavrisikolån"                           Institution page -> https://www.innovasjonnorge.no/
+    innovasjon_norge_loan_risk             "Risikolån og garantier"                 Institution page -> https://www.innovasjonnorge.no/

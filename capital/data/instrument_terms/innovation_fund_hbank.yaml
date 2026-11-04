@@ -1,0 +1,362 @@
+id: innovation_fund_hbank
+name: innovation_fund_hbank
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-eligible-countries
+  gate_family: G1_nexus
+  requirement: Applicants must be legal entities (public or private bodies) established in
+    an eligible country, which for this call is any country in the world.
+  value: any country in the world
+  intake_field: entityCountries
+  quote: 'be established in one of the eligible countries: any country in the world.'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.15
+  verified: llm_cited
+- id: G1-project-location
+  gate_family: G1_nexus
+  requirement: The project itself (installation) must be physically located in an EU Member
+    State or EEA country (Norway, Iceland or Liechtenstein).
+  value: EU Member States or EEA countries
+  intake_field: activityCountries
+  quote: Projects must be located in EU Member States or EEA countries (i.e. Norway, Iceland
+    or Liechtenstein).
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.16
+  verified: llm_cited
+- id: G1-natural-persons
+  gate_family: G1_nexus
+  requirement: Natural persons are not eligible applicants, except self-employed persons/sole
+    traders without separate legal personality.
+  value: natural persons excluded except sole traders
+  intake_field: borrowerModel
+  quote: Natural persons are NOT eligible (with the exception of self-employed persons, i.e.
+    sole traders, where the company does not have legal personality separate from that of
+    the natural person).
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.15
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Natural persons are NOT eligible (with the
+    excepti'''
+- id: G2-min-electrolyser-capacity
+  gate_family: G2_size_ownership
+  requirement: Only projects with a minimum installed electrolyser capacity of at least 5
+    MWe are eligible, and this capacity must be at a single location (no virtual pooling).
+  value: minimum 5 MWe, single location
+  intake_field: developmentStage
+  quote: 'Minimum installed capacity: only projects with a minimum installed capacity of
+
+    the electrolyser of at least 5 MWe are eligible.'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.10
+  verified: llm_cited
+- id: G2-china-origin-limit
+  gate_family: G2_size_ownership
+  requirement: At least 75% of the electrolysers included in the project must originate in
+    a country other than China.
+  value: at least 75% non-China origin electrolysers
+  intake_field: none
+  quote: 'At least 75% of the electrolysers included in the project must originate in a
+
+    country different than China (see section 9).'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.10
+  verified: llm_cited
+- id: G2-start-of-works
+  gate_family: G2_size_ownership
+  requirement: The hydrogen production capacity must not have started works at the time of
+    the grant application (new, additional capacity only).
+  value: start of works must not have occurred before application
+  intake_field: developmentStage
+  quote: 'for the capacity to which the bid refers, the works must not have started by the
+
+    time of submission of this application (in line with the definitions in paragraph
+
+    82 of the Guidelines on State aid for climate, environmental protection and
+
+    energy52)'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.29
+  verified: llm_cited
+- id: G3-bid-price-ceiling
+  gate_family: G3_financial
+  requirement: The applicant bid price (fixed premium in EUR per kg) must not exceed the ceiling
+    price of EUR 4.00/kg of hydrogen produced; bids above this are rejected.
+  value: EUR 4.00/kg ceiling price
+  intake_field: cofinancingBand
+  quote: 'for all topics: EUR 4.00/kg of hydrogen produced (RFNBO and/or electrolytic
+
+    low-carbon hydrogen).'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.17
+  verified: llm_cited
+- id: G3-topic-budget-ceiling
+  gate_family: G3_financial
+  requirement: The calculated project budget (requested grant amount) must not exceed the
+    specific topic's available budget.
+  value: must not exceed topic budget
+  intake_field: ticketBand
+  quote: 'The project kgbudget must not exceed: for the INNOVFUND𝑦𝑦𝑝𝑝-𝑎𝑎2𝑝𝑝025-AUC-H2-
+
+    RFNBO-GENERAL topic: not exceed the topic budget (see section 3)'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.17
+  verified: llm_cited
+- id: G3-financial-capacity-threshold
+  gate_family: G3_financial
+  requirement: A financial capacity check applies to all beneficiaries except public bodies,
+    international organisations, or where the individual requested grant amount is not more
+    than EUR 60,000.
+  value: threshold EUR 60,000 for capacity check exemption
+  intake_field: turnoverBand
+  quote: if the individual requested grant amount is not more than EUR 60 000.
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.18
+  verified: llm_cited
+- id: G3-completion-guarantee
+  gate_family: G3_financial
+  requirement: A completion guarantee covering 8% of the requested maximum grant amount must
+    be provided, issued by an approved bank/financial institution with a minimum credit rating.
+  value: 8% of requested grant amount, minimum rating BBB-/Baa3/BBB(low)/A-
+  intake_field: balanceBand
+  quote: 'A completion guarantee covering 8% of the requested maximum grant amount will be
+
+    required to avoid speculative bids (mandatory template available on Portal Reference
+
+    Documents).'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.30
+  verified: llm_cited
+- id: G4-unit-grant-mechanism
+  gate_family: G4_borrower_model
+  requirement: The funding instrument is a unit grant reimbursing a fixed amount per unit
+    of hydrogen produced (fixed premium 'pay as bid'), not a loan or equity instrument.
+  value: unit grant, pay-as-bid
+  intake_field: borrowerModel
+  quote: 'The grant will be a unit grant. This means that it will reimburse a fixed amount
+    per unit,
+
+    based on unit contributions, corresponding to the fixed premium per unit of production
+
+    of the final product as stated in the bid (‘pay as bid’).'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.26
+  verified: llm_cited
+- id: G4-financial-support-third-parties
+  gate_family: G4_borrower_model
+  requirement: Financial support to third parties is not allowed under this call.
+  value: financial support to third parties not allowed
+  intake_field: borrowerModel
+  quote: Financial support to third parties is not allowed.
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.16
+  verified: llm_cited
+- id: G5-eligible-activity-scope
+  gate_family: G5_use_of_funds
+  requirement: Funds may only cover installation of new, additional RFNBO/electrolytic low-carbon
+    hydrogen production capacity and the verified certified production from those installations
+    for up to 10 years.
+  value: new hydrogen production capacity and certified production volumes, up to 10 years
+  intake_field: none
+  quote: 'Installation of new, additional, RFNBO and/or electrolytic low-carbon hydrogen
+
+    production capacity (i.e. hydrogen production capacity for which at the time of the grant
+
+    application the start of works did not yet take place) as well as the verified and certified
+
+    production of RFNBO and/or electrolytic low-carbon hydrogen29 from those installations
+
+    (in kg of produced volume) for a period of up to 10 years.'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.10
+  verified: llm_cited
+- id: G5-mar-avi-offtake-requirement
+  gate_family: G5_use_of_funds
+  requirement: For the maritime and aviation topic, at least 60% of expected hydrogen production
+    volumes must be supplied to off-takers in the maritime or aviation sector; the remainder
+    can go to any off-taker.
+  value: at least 60% supplied to maritime/aviation off-takers
+  intake_field: none
+  quote: 'The remainder 40% of their expected total volume of produced hydrogen can be sold
+
+    to any off-taker or self-consumed or stored.'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.12
+  verified: llm_cited
+- id: G5-dnsh-compliance
+  gate_family: G5_use_of_funds
+  requirement: Projects must comply with the Do No Significant Harm Technical Screening Criteria
+    for Manufacture of Hydrogen throughout the entire implementation period.
+  value: DNSH compliance required throughout implementation
+  intake_field: none
+  quote: 'Projects must be in compliance with the DNSH Technical Screening Criteria
+
+    (TSCs) set out in the Climate Delegated Act Regulation (EU) 2021/2139 for the
+
+    Manufacture of Hydrogen during the entire implementation period.'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.10
+  verified: llm_cited
+- id: G6-financial-close-deadline
+  gate_family: G6_conditionality
+  requirement: The project must reach financial close within 2.5 years after grant signature
+    and enter into operation within 5 years after grant signature.
+  value: financial close ≤2.5 years; entry into operation ≤5 years
+  intake_field: needBy
+  quote: 'reach financial close within 2.5 years after grant signature (maximum time to
+
+    reach financial close)'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.16
+  verified: llm_cited
+- id: G6-deggendorf-rule
+  gate_family: G6_conditionality
+  requirement: All partners in the project consortium must at all times comply with the Deggendorf
+    rule, excluding undertakings subject to an unfulfilled state aid recovery obligation.
+  value: Deggendorf rule compliance required
+  intake_field: conditionality
+  quote: 'all partners in the project consortium must at all times before and during the
+
+    project implementation be in compliance with the Deggendorf rule (Deggendorf
+
+    rule excludes undertakings that have received incompatible state aid and are
+
+    subject to a state aid recovery obligation).'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.29
+  verified: llm_cited
+- id: G6-exclusion-situations
+  gate_family: G6_conditionality
+  requirement: Applicants subject to an EU exclusion decision or in situations such as bankruptcy,
+    winding-up, or court-administered affairs cannot participate.
+  value: exclusion for bankruptcy/insolvency situations
+  intake_field: conditionality
+  quote: 'bankruptcy, winding up, affairs administered by the courts, arrangement with
+
+    creditors, suspended business activities or other similar procedures (including
+
+    procedures for persons with unlimited liability for the applicant’s debts)'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.18
+  verified: llm_cited
+obligations:
+- requirement: Projects must certify and verify RFNBO/electrolytic low-carbon hydrogen production
+    volumes; payments are made only against certified and verified production.
+  quote: 'payments will only be made against certified and verified RFNBO and/or
+
+    electrolytic low-carbon hydrogen production volumes in consistency with the objective
+
+    of the topic that the project applied to.'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.26
+  verified: llm_cited
+- requirement: Beneficiaries must certify that hydrogen produced achieves at least 70% GHG
+    savings on average during the disbursement period.
+  quote: 'The beneficiaries will need to provide certification that the total volume of hydrogen
+    produced by the supported electrolyser capacity achieves at
+
+    least 70% GHG savings according to the rules set out in the Delegated Act C(2023)1086
+
+    supplementing the Renewable Energy Directive 2018/2001'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.27
+  verified: llm_cited
+- requirement: If actual production falls on average below 30% of expected yearly average
+    volume over a rolling three-year period, the grant may be terminated and reduced.
+  quote: 'The volume produced must be verified and certified (required as deliverable for
+    WP
+
+    3-22; see above) and not fall on average below 30% of the total expected yearly
+
+    average volume as stated in the bid for three consecutive years.'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.27
+  verified: llm_cited
+- requirement: If financial close or entry into operation deadlines are missed, the grant
+    agreement may be terminated and the completion guarantee called.
+  quote: 'If this is not achieved within
+
+    the required time-limit, we may terminate the grant agreement and call the completion
+
+    guarantee (see art 32.3.1(j) and Annex 5).'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.27
+  verified: llm_cited
+- requirement: After entry into operation, the installation must operate for at least 10 years
+    unless the committed total volume is reached earlier.
+  quote: 'After entry into operation, the installation must operate for at least 10 years
+    (unless
+
+    the total volume committed to in Annex 1 of the Grant Agreement is reached earlier
+
+    due to the production flexibility rules; see above).'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.27
+  verified: llm_cited
+- requirement: The grant must not be combined with excluded types of public support and must
+    not lead to cross-subsidisation of other products.
+  quote: 'the auction grant must not be combined with any of the types of excluded public
+
+    support listed in in Annex 3'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.29
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (17/18 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: There is a strict prohibition of double funding from the EU budget; the grant must
+    also not be combined with excluded types of public support listed in Annex 3.
+  quote: 'No cumulation of funding — There is a strict prohibition of double funding from
+    the
+
+    EU budget (see Annex 3).'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.34
+  verified: llm_cited
+application:
+  channel: Funding & Tenders Portal Electronic Submission System
+  typical_timeline: Call opening 4 December 2025; deadline for submission 19 February 2026;
+    evaluation March-May 2026; results May-June 2026; GA signature September-November 2026
+  quote: 'Call opening: 4 December 2025
+
+    Deadline for submission: 19 February 2026 – 17:00:00 CET
+
+    (Brussels)
+
+    Evaluation: March-May 2026
+
+    Information on evaluation results: May-June 2026
+
+    GA signature: September 2026-November 2026'
+  source:
+    file: innovfund_2025_hydrogen_auction_call_document.pdf
+    locator: p.13
+  verified: llm_cited

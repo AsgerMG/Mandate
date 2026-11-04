@@ -1,0 +1,188 @@
+id: satr_it_equity
+name: satr_it_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-ambito-settoriale
+  gate_family: G1_nexus
+  requirement: Programmes must be aimed at manufacturing activities or business services activities
+    to be eligible; activities in sectors excluded under GBER Article 13 or under Article
+    7(1) of Regulation (EU) 1058/2021 are not eligible.
+  value: Manufacturing and business services activities only; excludes sectors under GBER
+    Art.13 and Reg. 1058/2021 Art.7(1)
+  intake_field: entityCountries
+  quote: Ai fini dell’ammissibilità alle agevolazioni i programmi devono essere finalizzati
+    allo svolgimento di attività manifatturiere e di attività di servizi alle imprese. In
+    particolare, non sono ammissibili alle agevolazioni i programmi che prevedono attività
+    nei settori indicati dall’articolo 13
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.2
+  verified: llm_cited
+- id: g5-progetti-ammissibili
+  gate_family: G5_use_of_funds
+  requirement: Eligible projects are investment programmes using Transition 4.0 enabling technologies
+    aimed at expanding production capacity, diversifying production, fundamentally changing
+    the production process, or establishing a new production unit.
+  value: Investment programmes with Transizione 4.0 technologies for capacity expansion, diversification,
+    process change, or new production unit
+  intake_field: none
+  quote: Le iniziative ammissibili alle agevolazioni sono rappresentate dai programmi di investimento
+    che prevedono l’utilizzo delle tecnologie abilitanti afferenti al piano Transizione 4.0
+    e che siano diretti all’ampliamento della capacità produttiva, alla diversificazione della
+    produzione, al cambiamento fondamentale del processo di produzione, ovvero alla realizzazione
+    di una nuova unità produttiva.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.2
+  verified: llm_cited
+- id: g6-dnsh
+  gate_family: G6_conditionality
+  requirement: Investment programmes that do not guarantee compliance with the Do No Significant
+    Harm (DNSH) principle are not eligible for the incentives.
+  value: Must comply with DNSH principle
+  intake_field: conditionality
+  quote: non sono ammissibili alle agevolazioni i programmi di investimento che non garantiscono
+    il rispetto del principio DNSH (“Do no Significant Harm”)
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.2
+  verified: llm_cited
+- id: g3-spese-minime-massime
+  gate_family: G3_financial
+  requirement: Eligible expenses must be not less than €750,000 and not more than €5 million,
+    and in any case no more than 70% of turnover from the last approved and filed financial
+    statement (or last tax return for sole proprietorships and partnerships).
+  value: Min €750,000 – Max €5,000,000, capped at 70% of last turnover
+  intake_field: ticketBand
+  quote: Le iniziative, infine, devono prevedere spese ammissibili di importo non inferiore
+    a 750 mila euro e non superiore a 5 milioni e, comunque, al 70% del fatturato dell’ultimo
+    bilancio approvato e depositato, ovvero, nel caso di imprese individuali e società di
+    persone, dell’ultima dichiarazione dei redditi.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.2
+  verified: llm_cited
+- id: g3-intensita-massima
+  gate_family: G3_financial
+  requirement: Aid is granted as a capital grant and subsidized financing covering a maximum
+    nominal percentage of eligible expenses of 75%, split as 35% capital grant and 40% subsidized
+    financing.
+  value: Max 75% total aid intensity (35% grant + 40% subsidized loan)
+  intake_field: cofinancingBand
+  quote: Le agevolazioni sono concesse nella forma del contributo in conto impianti e del
+    finanziamento agevolato a copertura di una percentuale nominale massima delle spese ammissibili
+    pari al 75 per cento, di cui il 35 per cento dell’ammontare complessivo delle spese ammissibili
+    in forma di contributo in conto impianti e il 40 per cento delle medesime spese in forma
+    di finanziamento agevolato.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.3
+  verified: llm_cited
+- id: g4-gber-basis
+  gate_family: G4_borrower_model
+  requirement: Aid is granted within the limits set by Articles 13 and 14 of the GBER Regulation,
+    with an exception for consultancy service expenses which fall under Article 18 GBER.
+  value: 'Aid basis: GBER Art.13/14 (regional aid), Art.18 for consultancy'
+  intake_field: borrowerModel
+  quote: Le agevolazioni sono concesse ai sensi e nei limiti di quanto previsto dagli articoli
+    13 e 14 del Regolamento GBER. Unica eccezione è prevista per le spese per i servizi di
+    consulenza, per le quali si applica l’articolo 18 del Regolamento GBER.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.3
+  verified: llm_cited
+- id: g3-cofinanziamento-minimo
+  gate_family: G3_financial
+  requirement: Beneficiary companies must guarantee financial coverage of the investment programme
+    through own resources or external financing free of any public support, amounting to at
+    least 25% of total eligible expenses.
+  value: Minimum 25% own/private co-financing required
+  intake_field: cofinancingBand
+  quote: Le imprese beneficiarie, inoltre, devono garantire la copertura finanziaria del programma
+    di investimento ammesso alle agevolazioni, attraverso risorse proprie ovvero mediante
+    finanziamento esterno in una forma priva di qualsiasi tipo di sostegno pubblico, in misura
+    almeno pari al 25 per cento delle spese ammissibili complessive.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.3
+  verified: llm_cited
+- id: g5-spese-ammissibili-tipologia
+  gate_family: G5_use_of_funds
+  requirement: Eligible expenses must be strictly functional to the realization of the investment
+    programmes, incurred for the purchase of new tangible and intangible fixed assets including
+    machinery, plants, equipment, masonry works, software and licenses, and environmental
+    certifications.
+  value: 'New tangible/intangible fixed assets: machinery, plant, equipment, masonry, software,
+    licenses, environmental certifications'
+  intake_field: none
+  quote: le spese devono riguardare macchinari, impianti e attrezzature, opere murarie, programmi
+    informatici e licenze correlati all’utilizzo dei predetti beni materiali e, infine, l’acquisizione
+    di certificazioni ambientali.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.3
+  verified: llm_cited
+- id: g5-consulenza
+  gate_family: G5_use_of_funds
+  requirement: Consultancy service expenses are also eligible, in accordance with and within
+    the limits of Article 18 of Regulation (EU) No 651/2014.
+  value: Consultancy expenses eligible under GBER Art.18
+  intake_field: none
+  quote: la misura ammette, inoltre, le spese per i servizi di consulenza ai sensi e nei limiti
+    dell’articolo 18 del regolamento (UE) n. 651/2014.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.3
+  verified: llm_cited
+- id: g1-canale-domanda
+  gate_family: G1_nexus
+  requirement: Applications may only be submitted through the dedicated online telematic procedure
+    on the Invitalia website, starting at 10:00 on 30 April 2025, with actual submission possible
+    starting at 10:00 on 20 May 2025.
+  value: Online application via Invitalia portal; pre-filing from 30 Apr 2025, submission
+    from 20 May 2025
+  intake_field: needBy
+  quote: Le domande di accesso alle agevolazioni potranno essere precompilate esclusivamente
+    in modalità telematica, attraverso la procedura informatica accessibile nell’apposita
+    sezione del sito web dell’Agenzia nazionale per l’attrazione degli investimenti e lo sviluppo
+    d’impresa S.p.A. – Invitalia (www.invitalia.it) a partire dalle ore 10.00 del 30 aprile
+    2025.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.3
+  verified: llm_cited
+obligations:
+- requirement: The Agency must return the financing to the Ministry of Economic Development
+    within 30 days from the liquidation of the Fund, in the amount resulting from the liquidation
+    based on the allocation of proceeds and net management results from the divestment of
+    investments.
+  quote: L’Agenzia, entro 30 giorni dalla data di liquidazione del Fondo, restituisce al Ministero
+    dello sviluppo economico il finanziamento di cui all’articolo 1, comma 1, in misura risultante
+    dalla liquidazione del medesimo Fondo in base alla ripartizione tra i partecipanti e la
+    SGR dei proventi e del risultato netto della gestione derivanti dallo smobilizzo degli
+    investimenti.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_dm_29gen2015_fondo_venture_capital.pdf#p.6
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (10/10 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online telematic procedure via the Invitalia website (www.invitalia.it), with a
+    valutativa a sportello (chronological, first-come first-served evaluation) procedure managed
+    by Invitalia as soggetto gestore.
+  typical_timeline: Pre-filing opens 30 April 2025 at 10:00; submission opens 20 May 2025
+    at 10:00; applications processed in chronological order subject to available resources.
+  quote: Ai fini dell’accesso alle agevolazioni è prevista una procedura valutativa con procedimento
+    a sportello. L’Agenzia Nazionale per l’attrazione degli investimenti e lo sviluppo d’impresa
+    – Invitalia Spa, in qualità di soggetto gestore, procede alle attività istruttorie secondo
+    l’ordine cronologico di presentazione delle domande di agevolazione, tenuto conto delle
+    risorse economiche disponibili.
+  source:
+    file: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf
+    locator: satr_it_equity_pnric_investimenti_sostenibili_40_scheda.pdf#p.3
+  verified: llm_cited

@@ -1,0 +1,46 @@
+id: satr_de_equity__sa_111761__investitionsbank_des_landes_brandenburg
+name: Förderrichtlinie der medienboard Berlin-Brandenburg GmbH [BB]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-location
+  gate_family: G1_nexus
+  requirement: Funding is to be granted to companies that, at the time of payment, have a registered office,
+    branch, or at least an establishment in Berlin-Brandenburg.
+  value: Office/branch/establishment in Berlin-Brandenburg at payout
+  intake_field: entityCountries
+  quote: Fördermittel sollen Unternehmen gewährt werden, die zum Zeitpunkt der Auszahlung der Förderung
+    einen Geschäftssitz, eine Niederlassung oder zumindest eine Betriebsstätte in Berlin-Brandenburg haben.
+  source:
+    file: https://www.medienboard.de/fileadmin/user_upload/Medienboard_Fo__rderrichtlinie.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-cultural-interest-exception
+  gate_family: G1_nexus
+  requirement: By way of exception, a project can also be funded if the funding is of particular media-cultural
+    or media-economic interest to Berlin-Brandenburg.
+  value: Exception for projects of special media interest to Berlin-Brandenburg
+  intake_field: none
+  quote: Davon abweichend kann ein Projekt auch dann gefördert werden, wenn die Förderung im besonderen
+    medienkulturellen oder medienwirtschaftlichen Interesse von Berlin-Brandenburg liegt.
+  source:
+    file: https://www.medienboard.de/fileadmin/user_upload/Medienboard_Fo__rderrichtlinie.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-broadcaster-exclusion
+  gate_family: G1_nexus
+  requirement: Public-law broadcasting corporations, private broadcasting providers or operators, and
+    platform operators are not eligible to apply.
+  value: Broadcasters and platform operators excluded
+  intake_field: borrowerModel
+  quote: Nicht antragsberechtigt sind öffentlich-rechtliche Rundfunkanstalten, private Rundfunkanbieter
+    oder -veranstalter sowie Plattformbetreiber.
+  source:
+    file: https://www.medienboard.de/fileadmin/user_upload/Medienboard_Fo__rderrichtlinie.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

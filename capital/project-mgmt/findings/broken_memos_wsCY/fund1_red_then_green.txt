@@ -1,0 +1,42 @@
+=== POOL=legacy (before the pool fix): the check goes RED ===
+company             ranked  accessible  rows  verdict
+------------------------------------------------------------------------------------------------
+Neura Robotics         115          22     0  FAIL
+                      FUND-1: empty table with no explanation: the brief says nothing at all
+                      no rows published while 22 accessible funds exist in the ranking
+SMART Photonics         50          38     6  ok
+Silvr                  106          47     6  ok
+bunq                    47          34     6  ok
+Photoroom              106          48     6  ok
+Aleph Alpha            115         105     6  ok
+Nortal                  80          67     6  ok
+sennder                107          18     2  ok
+Nebius                  57          44     6  ok
+Corti                   33          28     6  ok
+BioNTech               115          21     2  ok
+eAgronom                86          77     6  ok
+------------------------------------------------------------------------------------------------
+ranker: all 12 request(s) on EMBEDDING
+not evaluated at this stage (writer fields are empty): BL-1, BL-2, BRIEF-1, BRIEF-2, FUND-4, FUND-5, FUND-6, POS-1, SOP-1, SOP-2
+1 of 12 archetypes need attention
+exit=0
+
+=== current: GREEN ===
+company             ranked  accessible  rows  verdict
+------------------------------------------------------------------------------------------------
+Neura Robotics         115          22     6  ok
+SMART Photonics         50          38     6  ok
+Silvr                  106          47     6  ok
+bunq                    47          34     6  ok
+Photoroom              106          48     6  ok
+Aleph Alpha            115         105     6  ok
+Nortal                  80          67     6  ok
+sennder                107          18     6  ok
+Nebius                  57          44     6  ok
+Corti                   33          28     6  ok
+BioNTech               115          21     6  ok
+eAgronom                86          77     6  ok
+------------------------------------------------------------------------------------------------
+ranker: all 12 request(s) on EMBEDDING
+not evaluated at this stage (writer fields are empty): BL-1, BL-2, BRIEF-1, BRIEF-2, FUND-4, FUND-5, FUND-6, POS-1, SOP-1, SOP-2
+all 12 archetypes publish a table that holds up

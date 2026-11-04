@@ -1,0 +1,498 @@
+############ BASELINE SEED=20260806 REGION=off ############
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T18:18:52.676Z
+set=__recallSetComposed.json split=holdout seed=20260806 pop=region_known region=off  replayed 300
+  in pool                  285/300 (95% +/-2.5)
+  EXACT scheme in top 5    92/300 (31% +/-5.2)
+  same REGIME in top 5     252/300 (84% +/-4.1)   <- the operational number
+  same CHANNEL in top 5    264/300 (88% +/-3.7)
+    mode=project               n=  40  pool 78%  exact5 25%  regime5 50%
+    mode=profile               n= 260  pool 98%  exact5 32%  regime5 89%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  11  pool 55%  exact5 27%  regime5 45%
+    regime 6-20                n=  65  pool 94%  exact5 35%  regime5 58%
+    regime 21-50               n=  64  pool 100%  exact5 28%  regime5 77%
+    regime 51+                 n= 160  pool 96%  exact5 30%  regime5 100%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    DE                         n= 123  pool 93%  exact5 28%  regime5 93%
+    IT                         n=  71  pool 100%  exact5 35%  regime5 94%
+    FR                         n=  53  pool 92%  exact5 15%  regime5 51%
+    NL                         n=  42  pool 93%  exact5 48%  regime5 88%
+    SE                         n=  11  pool 100%  exact5 36%  regime5 55%
+############ BASELINE SEED=20260806 REGION=strict ############
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T18:22:21.817Z
+set=__recallSetComposed.json split=holdout seed=20260806 pop=region_known region=strict  replayed 300
+  founder-specific answers supplied: ticketBand 0/300 (0%)  capital 0/300 (0%)  region 300/300 (100%)
+  in pool                  285/300 (95% +/-2.5)
+  EXACT scheme in top 5    99/300 (33% +/-5.3)
+  same REGIME in top 5     250/300 (83% +/-4.2)   <- the operational number
+  same CHANNEL in top 5    264/300 (88% +/-3.7)
+    mode=project               n=  40  pool 78%  exact5 25%  regime5 50%
+    mode=profile               n= 260  pool 98%  exact5 34%  regime5 88%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  11  pool 55%  exact5 27%  regime5 45%
+    regime 6-20                n=  65  pool 94%  exact5 35%  regime5 58%
+    regime 21-50               n=  64  pool 100%  exact5 31%  regime5 73%
+    regime 51+                 n= 160  pool 96%  exact5 33%  regime5 100%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    DE                         n= 123  pool 93%  exact5 36%  regime5 93%
+    IT                         n=  71  pool 100%  exact5 30%  regime5 94%
+    FR                         n=  53  pool 92%  exact5 15%  regime5 47%
+    NL                         n=  42  pool 93%  exact5 52%  regime5 88%
+    SE                         n=  11  pool 100%  exact5 36%  regime5 55%
+############ BASELINE SEED=7 REGION=off ############
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T18:25:57.637Z
+set=__recallSetComposed.json split=holdout seed=7 pop=region_known region=off  replayed 300
+  in pool                  284/300 (95% +/-2.5)
+  EXACT scheme in top 5    85/300 (28% +/-5.1)
+  same REGIME in top 5     246/300 (82% +/-4.3)   <- the operational number
+  same CHANNEL in top 5    256/300 (85% +/-4.0)
+    mode=profile               n= 255  pool 98%  exact5 31%  regime5 89%
+    mode=project               n=  45  pool 76%  exact5 16%  regime5 40%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  18  pool 61%  exact5 11%  regime5 28%
+    regime 6-20                n=  56  pool 93%  exact5 32%  regime5 59%
+    regime 21-50               n=  70  pool 100%  exact5 29%  regime5 74%
+    regime 51+                 n= 156  pool 97%  exact5 29%  regime5 100%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    DE                         n= 119  pool 94%  exact5 26%  regime5 93%
+    IT                         n=  71  pool 99%  exact5 34%  regime5 93%
+    FR                         n=  55  pool 93%  exact5 16%  regime5 45%
+    NL                         n=  45  pool 91%  exact5 42%  regime5 87%
+    SE                         n=  10  pool 100%  exact5 20%  regime5 50%
+############ BASELINE SEED=7 REGION=strict ############
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing { stage: 'gates', error: 'timeout expired' }
+corpus=postgres instruments=1088 at 2026-08-08T18:29:16.494Z
+set=__recallSetComposed.json split=holdout seed=7 pop=region_known region=strict  replayed 300
+  founder-specific answers supplied: ticketBand 0/300 (0%)  capital 0/300 (0%)  region 300/300 (100%)
+  in pool                  284/300 (95% +/-2.5)
+  EXACT scheme in top 5    92/300 (31% +/-5.2)
+  same REGIME in top 5     244/300 (81% +/-4.4)   <- the operational number
+  same CHANNEL in top 5    256/300 (85% +/-4.0)
+    mode=profile               n= 255  pool 98%  exact5 33%  regime5 89%
+    mode=project               n=  45  pool 76%  exact5 16%  regime5 40%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  18  pool 61%  exact5 11%  regime5 28%
+    regime 6-20                n=  56  pool 93%  exact5 32%  regime5 59%
+    regime 21-50               n=  70  pool 100%  exact5 34%  regime5 71%
+    regime 51+                 n= 156  pool 97%  exact5 31%  regime5 100%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    DE                         n= 119  pool 94%  exact5 33%  regime5 93%
+    IT                         n=  71  pool 99%  exact5 27%  regime5 93%
+    FR                         n=  55  pool 93%  exact5 16%  regime5 42%
+    NL                         n=  45  pool 91%  exact5 51%  regime5 87%
+    SE                         n=  10  pool 100%  exact5 20%  regime5 50%
+############ BASELINE SEED=99 REGION=off ############
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing { stage: 'gates', error: 'timeout expired' }
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+corpus=postgres instruments=1088 at 2026-08-08T18:32:45.063Z
+set=__recallSetComposed.json split=holdout seed=99 pop=region_known region=off  replayed 300
+  in pool                  284/300 (95% +/-2.5)
+  EXACT scheme in top 5    75/300 (25% +/-4.9)
+  same REGIME in top 5     243/300 (81% +/-4.4)   <- the operational number
+  same CHANNEL in top 5    256/300 (85% +/-4.0)
+    mode=profile               n= 254  pool 98%  exact5 26%  regime5 88%
+    mode=project               n=  46  pool 78%  exact5 17%  regime5 43%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 60%  exact5 13%  regime5 33%
+    regime 6-20                n=  65  pool 94%  exact5 31%  regime5 54%
+    regime 21-50               n=  60  pool 100%  exact5 27%  regime5 72%
+    regime 51+                 n= 160  pool 96%  exact5 23%  regime5 100%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    DE                         n= 119  pool 92%  exact5 21%  regime5 92%
+    IT                         n=  72  pool 100%  exact5 29%  regime5 94%
+    FR                         n=  58  pool 93%  exact5 14%  regime5 47%
+    NL                         n=  37  pool 92%  exact5 46%  regime5 86%
+    SE                         n=  14  pool 100%  exact5 29%  regime5 43%
+############ BASELINE SEED=99 REGION=strict ############
+node:internal/modules/cjs/loader:1383
+  const err = new Error(message);
+              ^
+
+Error: Cannot find module 'standardwebhooks'
+Require stack:
+- /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/resources/beta/webhooks.js
+- /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/resources/beta/beta.js
+- /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/resources/index.js
+- /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/client.js
+- /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/index.js
+- /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/pipeline.ts
+- /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/scripts/measure_recall.ts
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1383:15)
+    at nextResolveSimple (/Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-CeSc3Ioe.cjs:10:1006)
+    at /Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-CeSc3Ioe.cjs:9:4959
+    at /Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-CeSc3Ioe.cjs:9:4261
+    at resolveTsPaths (/Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-CeSc3Ioe.cjs:10:759)
+    at /Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-CeSc3Ioe.cjs:10:1199
+    at j._resolveFilename (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:17957)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1025:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1030:22)
+    at Module._load (node:internal/modules/cjs/loader:1192:37) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/resources/beta/webhooks.js',
+    '/Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/resources/beta/beta.js',
+    '/Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/resources/index.js',
+    '/Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/client.js',
+    '/Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/node_modules/@anthropic-ai/sdk/index.js',
+    '/Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/pipeline.ts',
+    '/Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/scripts/measure_recall.ts'
+  ]
+}
+
+Node.js v22.21.1
+############ BASELINE SEED=99 REGION=strict ############
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+semantic fund match failed, falling back to lexical: Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/semantic.ts
+    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:314:9)
+    at packageResolve (node:internal/modules/esm/resolve:767:81)
+    at moduleResolve (node:internal/modules/esm/resolve:853:18)
+    at defaultResolve (node:internal/modules/esm/resolve:983:11)
+    at nextResolve (node:internal/modules/esm/hooks:748:28)
+    at resolveBase (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:10334)
+    at resolveDirectory (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:11421)
+    at resolveTsPaths (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:13062)
+    at resolve (file:///Users/asgermollergrimberg/.npm/_npx/fd45a72a545557e9/node_modules/tsx/dist/register-loq3nxmB.mjs:2:14748)
+    at nextResolve (node:internal/modules/esm/hooks:748:28) {
+  code: 'ERR_MODULE_NOT_FOUND'
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+[degraded] hydration_degraded: gate hydration failed; verdicts degrade to unknown rather than failing {
+  stage: 'gates',
+  error: "Cannot find package 'pg' imported from /Users/asgermollergrimberg/Wincent/.claude/worktrees/az-baseline/website/frontend/lib/intelligence/corpus.ts"
+}
+corpus=postgres instruments=1088 at 2026-08-08T18:36:57.703Z
+set=__recallSetComposed.json split=holdout seed=99 pop=region_known region=strict  replayed 300
+  founder-specific answers supplied: ticketBand 0/300 (0%)  capital 0/300 (0%)  region 300/300 (100%)
+  in pool                  285/300 (95% +/-2.5)
+  EXACT scheme in top 5    88/300 (29% +/-5.2)
+  same REGIME in top 5     242/300 (81% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    257/300 (86% +/-4.0)
+    mode=profile               n= 254  pool 98%  exact5 31%  regime5 87%
+    mode=project               n=  46  pool 80%  exact5 20%  regime5 46%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 2-5                 n=  15  pool 67%  exact5 20%  regime5 40%
+    regime 6-20                n=  65  pool 94%  exact5 31%  regime5 54%
+    regime 21-50               n=  60  pool 100%  exact5 33%  regime5 68%
+    regime 51+                 n= 160  pool 96%  exact5 28%  regime5 100%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    DE                         n= 119  pool 93%  exact5 29%  regime5 93%
+    IT                         n=  72  pool 100%  exact5 28%  regime5 94%
+    FR                         n=  58  pool 93%  exact5 14%  regime5 43%
+    NL                         n=  37  pool 92%  exact5 57%  regime5 86%
+    SE                         n=  14  pool 100%  exact5 29%  regime5 43%

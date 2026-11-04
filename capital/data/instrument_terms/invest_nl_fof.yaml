@@ -1,0 +1,92 @@
+id: invest_nl_fof
+name: invest_nl_fof
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-theme
+  gate_family: G1_nexus
+  requirement: 'The fund must have a clear investment policy focused on impact within Invest-NL''s
+    strategic themes: Agrifood, Bio-based & Circular economy, Deep tech, Energy, and Life
+    Sciences & Health.'
+  value: Agrifood, Bio-based & Circular economy, Deep tech, Energy, Life Sciences & Health
+  intake_field: none
+  quote: 'The fund has a clear investment policy focused on making an impact within our strategic
+    themes: Agrifood, Bio-based & Circular economy, Deep tech, Energy, and Life Sciences &
+    Health.'
+  source:
+    file: nl_invest_nl_fund_investments.html
+    locator: nl_invest_nl_fund_investments.html#chunk 1
+  verified: llm_cited
+- id: g1-netherlands-nexus
+  gate_family: G1_nexus
+  requirement: The fund must have a clear impact in the Netherlands, being willing to invest
+    at least twice the Invest-NL investment amount into Dutch companies.
+  value: At least 2x Invest-NL ticket invested in Dutch companies
+  intake_field: activityCountries
+  quote: 'The fund has a clear impact in the Netherlands: the fund is willing to invest at
+    least twice the investment from Invest-NL in Dutch companies.'
+  source:
+    file: nl_invest_nl_fund_investments.html
+    locator: nl_invest_nl_fund_investments.html#chunk 1
+  verified: llm_cited
+- id: g3-fund-size
+  gate_family: G3_financial
+  requirement: Invest-NL focuses on funds with an intended total size of at least €50 million.
+  value: Minimum €50 million total fund size
+  intake_field: turnoverBand
+  quote: Invest-NL focuses on funds with an intended total size of at least € 50 million.
+  source:
+    file: nl_invest_nl_fund_investments.html
+    locator: nl_invest_nl_fund_investments.html#chunk 1
+  verified: llm_cited
+- id: g3-ticket-size
+  gate_family: G3_financial
+  requirement: Invest-NL participates with investment tickets between €5 million and €25 million
+    per fund.
+  value: €5 million to €25 million per fund
+  intake_field: ticketBand
+  quote: We participate with tickets between € 5 million and € 25 million per fund.
+  source:
+    file: nl_invest_nl_fund_investments.html
+    locator: nl_invest_nl_fund_investments.html#chunk 1
+  verified: llm_cited
+- id: g6-additionality
+  gate_family: G6_conditionality
+  requirement: Invest-NL only invests in funds that do not initially raise sufficient financing
+    from private and institutional investors (additionality requirement).
+  value: Fund must show a financing gap / insufficient private-institutional capital raised
+  intake_field: institutionalBacking
+  quote: We invest in funds that initially do not raise sufficient financing from private
+    and institutional investors. By investing early, we add value.
+  source:
+    file: nl_invest_nl_fund_investments.html
+    locator: nl_invest_nl_fund_investments.html#chunk 1
+  verified: llm_cited
+- id: g4-track-record
+  gate_family: G4_borrower_model
+  requirement: The fund's management team, whether first-time or experienced, must have a
+    proven track record in investments within the scope of the fund.
+  value: Team with proven track record required
+  intake_field: borrowerModel
+  quote: It is important that the fund has a team with a proven track record in investments
+    within the scope of the fund.
+  source:
+    file: nl_invest_nl_fund_investments.html
+    locator: nl_invest_nl_fund_investments.html#chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (6/6 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online Financing Check followed by application process with additional conditions
+    discussed
+  typical_timeline: Not specified
+  quote: With a few brief, targeted questions, we assess whether your fund qualifies for funding.
+    Start the Financing Check!
+  source:
+    file: nl_invest_nl_fund_investments.html
+    locator: nl_invest_nl_fund_investments.html#chunk 1
+  verified: llm_cited

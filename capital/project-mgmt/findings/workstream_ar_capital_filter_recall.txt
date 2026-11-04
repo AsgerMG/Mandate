@@ -1,0 +1,229 @@
+########## SEED=20260806 ANSWERS=off SPLIT=holdout ##########
+(node:20807) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T15:20:05.354Z
+set=__recallSetComposed.json split=holdout seed=20260806  replayed 250
+  in pool                  235/250 (94% +/-2.9)
+  EXACT scheme in top 5    64/250 (26% +/-5.4)
+  same REGIME in top 5     206/250 (82% +/-4.7)   <- the operational number
+  same CHANNEL in top 5    219/250 (88% +/-4.1)
+    mode=profile               n= 185  pool 98%  exact5 26%  regime5 89%
+    mode=project               n=  65  pool 83%  exact5 25%  regime5 65%
+    traced:exact_attribution   n= 109  pool 100%  exact5 24%  regime5 87%
+    original join              n= 141  pool 89%  exact5 27%  regime5 79%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  15  pool 100%  exact5 33%  regime5 33%
+    regime 2-5                 n=   8  pool 75%  exact5 25%  regime5 50%
+    regime 6-20                n=  34  pool 74%  exact5 21%  regime5 47%
+    regime 21-50               n=  72  pool 100%  exact5 28%  regime5 86%
+    regime 51+                 n= 121  pool 97%  exact5 25%  regime5 98%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  74  pool 97%  exact5 18%  regime5 76%
+    DE                         n=  51  pool 88%  exact5 27%  regime5 94%
+    SE                         n=  42  pool 98%  exact5 26%  regime5 98%
+    IT                         n=  30  pool 93%  exact5 23%  regime5 93%
+    NL                         n=  18  pool 94%  exact5 44%  regime5 89%
+    ES                         n=  16  pool 81%  exact5 25%  regime5 63%
+    GB                         n=  15  pool 100%  exact5 33%  regime5 33%
+    EE                         n=   3  pool 100%  exact5 33%  regime5 33%
+    DK                         n=   1  pool 100%  exact5 100%  regime5 100%
+
+########## SEED=20260806 ANSWERS=real SPLIT=holdout ##########
+(node:22793) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T15:22:45.188Z
+set=__recallSetComposed.json split=holdout seed=20260806 answers=real  replayed 250
+  founder-specific answers supplied: ticketBand 130/250 (52%)  capital 0/250 (0%)  region 116/250 (46%)
+  in pool                  235/250 (94% +/-2.9)
+  EXACT scheme in top 5    73/250 (29% +/-5.6)
+  same REGIME in top 5     207/250 (83% +/-4.7)   <- the operational number
+  same CHANNEL in top 5    219/250 (88% +/-4.1)
+    mode=profile               n= 185  pool 98%  exact5 31%  regime5 89%
+    mode=project               n=  65  pool 83%  exact5 25%  regime5 65%
+    traced:exact_attribution   n= 109  pool 100%  exact5 24%  regime5 87%
+    original join              n= 141  pool 89%  exact5 33%  regime5 79%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  15  pool 100%  exact5 33%  regime5 33%
+    regime 2-5                 n=   8  pool 75%  exact5 25%  regime5 50%
+    regime 6-20                n=  34  pool 74%  exact5 21%  regime5 50%
+    regime 21-50               n=  72  pool 100%  exact5 32%  regime5 86%
+    regime 51+                 n= 121  pool 97%  exact5 30%  regime5 98%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  74  pool 97%  exact5 18%  regime5 77%
+    DE                         n=  51  pool 88%  exact5 41%  regime5 94%
+    SE                         n=  42  pool 98%  exact5 26%  regime5 98%
+    IT                         n=  30  pool 93%  exact5 20%  regime5 93%
+    NL                         n=  18  pool 94%  exact5 61%  regime5 89%
+    ES                         n=  16  pool 81%  exact5 25%  regime5 63%
+    GB                         n=  15  pool 100%  exact5 33%  regime5 33%
+    EE                         n=   3  pool 100%  exact5 33%  regime5 33%
+    DK                         n=   1  pool 100%  exact5 100%  regime5 100%
+
+########## SEED=7 ANSWERS=off SPLIT=holdout ##########
+(node:24821) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T15:25:34.886Z
+set=__recallSetComposed.json split=holdout seed=7  replayed 250
+  in pool                  237/250 (95% +/-2.8)
+  EXACT scheme in top 5    69/250 (28% +/-5.5)
+  same REGIME in top 5     209/250 (84% +/-4.6)   <- the operational number
+  same CHANNEL in top 5    218/250 (87% +/-4.1)
+    mode=profile               n= 189  pool 98%  exact5 30%  regime5 89%
+    mode=project               n=  61  pool 85%  exact5 21%  regime5 67%
+    original join              n= 150  pool 91%  exact5 30%  regime5 79%
+    traced:exact_attribution   n= 100  pool 100%  exact5 24%  regime5 91%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  13  pool 100%  exact5 38%  regime5 38%
+    regime 2-5                 n=   9  pool 67%  exact5 33%  regime5 67%
+    regime 6-20                n=  39  pool 85%  exact5 28%  regime5 56%
+    regime 21-50               n=  71  pool 100%  exact5 23%  regime5 83%
+    regime 51+                 n= 118  pool 97%  exact5 29%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  80  pool 98%  exact5 13%  regime5 75%
+    DE                         n=  64  pool 92%  exact5 31%  regime5 94%
+    SE                         n=  40  pool 98%  exact5 28%  regime5 95%
+    IT                         n=  24  pool 96%  exact5 38%  regime5 92%
+    NL                         n=  16  pool 94%  exact5 44%  regime5 94%
+    GB                         n=  13  pool 100%  exact5 38%  regime5 38%
+    ES                         n=  10  pool 70%  exact5 40%  regime5 60%
+    DK                         n=   3  pool 100%  exact5 100%  regime5 100%
+
+########## SEED=7 ANSWERS=real SPLIT=holdout ##########
+(node:26668) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T15:28:12.466Z
+set=__recallSetComposed.json split=holdout seed=7 answers=real  replayed 250
+  founder-specific answers supplied: ticketBand 144/250 (58%)  capital 0/250 (0%)  region 126/250 (50%)
+  in pool                  237/250 (95% +/-2.8)
+  EXACT scheme in top 5    73/250 (29% +/-5.6)
+  same REGIME in top 5     210/250 (84% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    218/250 (87% +/-4.1)
+    mode=profile               n= 189  pool 98%  exact5 32%  regime5 89%
+    mode=project               n=  61  pool 85%  exact5 21%  regime5 67%
+    original join              n= 150  pool 91%  exact5 33%  regime5 79%
+    traced:exact_attribution   n= 100  pool 100%  exact5 24%  regime5 91%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  13  pool 100%  exact5 38%  regime5 38%
+    regime 2-5                 n=   9  pool 67%  exact5 33%  regime5 67%
+    regime 6-20                n=  39  pool 85%  exact5 31%  regime5 59%
+    regime 21-50               n=  71  pool 100%  exact5 24%  regime5 83%
+    regime 51+                 n= 118  pool 97%  exact5 31%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  80  pool 98%  exact5 14%  regime5 76%
+    DE                         n=  64  pool 92%  exact5 38%  regime5 94%
+    SE                         n=  40  pool 98%  exact5 28%  regime5 95%
+    IT                         n=  24  pool 96%  exact5 29%  regime5 92%
+    NL                         n=  16  pool 94%  exact5 50%  regime5 94%
+    GB                         n=  13  pool 100%  exact5 38%  regime5 38%
+    ES                         n=  10  pool 70%  exact5 40%  regime5 60%
+    DK                         n=   3  pool 100%  exact5 100%  regime5 100%
+
+########## SEED=99 ANSWERS=off SPLIT=holdout ##########
+(node:28686) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T15:30:54.306Z
+set=__recallSetComposed.json split=holdout seed=99  replayed 250
+  in pool                  238/250 (95% +/-2.6)
+  EXACT scheme in top 5    78/250 (31% +/-5.7)
+  same REGIME in top 5     213/250 (85% +/-4.4)   <- the operational number
+  same CHANNEL in top 5    220/250 (88% +/-4.0)
+    mode=profile               n= 181  pool 98%  exact5 32%  regime5 91%
+    mode=project               n=  69  pool 88%  exact5 29%  regime5 70%
+    traced:exact_attribution   n= 121  pool 100%  exact5 27%  regime5 90%
+    original join              n= 129  pool 91%  exact5 35%  regime5 81%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  12  pool 100%  exact5 33%  regime5 33%
+    regime 2-5                 n=  12  pool 92%  exact5 17%  regime5 33%
+    regime 6-20                n=  33  pool 79%  exact5 36%  regime5 58%
+    regime 21-50               n=  70  pool 100%  exact5 39%  regime5 91%
+    regime 51+                 n= 123  pool 97%  exact5 27%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  85  pool 98%  exact5 18%  regime5 85%
+    SE                         n=  49  pool 100%  exact5 41%  regime5 98%
+    DE                         n=  42  pool 90%  exact5 36%  regime5 98%
+    IT                         n=  32  pool 91%  exact5 38%  regime5 91%
+    NL                         n=  14  pool 100%  exact5 57%  regime5 86%
+    GB                         n=  12  pool 100%  exact5 33%  regime5 33%
+    ES                         n=  10  pool 70%  exact5 20%  regime5 40%
+    DK                         n=   3  pool 100%  exact5 67%  regime5 67%
+    EE                         n=   3  pool 100%  exact5 0%  regime5 33%
+
+########## SEED=99 ANSWERS=real SPLIT=holdout ##########
+(node:30611) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetComposed.json  4,796 pairs, 406 instruments nameable, 1,155 leak-free descriptions
+  answer key, 4,796 pairs:
+    GRADED          3680 (76.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (4.0%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1116 (23.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-08T15:33:34.201Z
+set=__recallSetComposed.json split=holdout seed=99 answers=real  replayed 250
+  founder-specific answers supplied: ticketBand 121/250 (48%)  capital 0/250 (0%)  region 105/250 (42%)
+  in pool                  238/250 (95% +/-2.6)
+  EXACT scheme in top 5    81/250 (32% +/-5.8)
+  same REGIME in top 5     212/250 (85% +/-4.5)   <- the operational number
+  same CHANNEL in top 5    220/250 (88% +/-4.0)
+    mode=profile               n= 181  pool 98%  exact5 34%  regime5 91%
+    mode=project               n=  69  pool 88%  exact5 29%  regime5 70%
+    traced:exact_attribution   n= 121  pool 100%  exact5 27%  regime5 90%
+    original join              n= 129  pool 91%  exact5 37%  regime5 80%
+  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)
+    regime 1 (alone)           n=  12  pool 100%  exact5 33%  regime5 33%
+    regime 2-5                 n=  12  pool 92%  exact5 17%  regime5 33%
+    regime 6-20                n=  33  pool 79%  exact5 36%  regime5 58%
+    regime 21-50               n=  70  pool 100%  exact5 39%  regime5 90%
+    regime 51+                 n= 123  pool 97%  exact5 29%  regime5 99%
+  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)
+    FR                         n=  85  pool 98%  exact5 18%  regime5 84%
+    SE                         n=  49  pool 100%  exact5 41%  regime5 98%
+    DE                         n=  42  pool 90%  exact5 40%  regime5 98%
+    IT                         n=  32  pool 91%  exact5 41%  regime5 91%
+    NL                         n=  14  pool 100%  exact5 57%  regime5 86%
+    GB                         n=  12  pool 100%  exact5 33%  regime5 33%
+    ES                         n=  10  pool 70%  exact5 20%  regime5 40%
+    DK                         n=   3  pool 100%  exact5 67%  regime5 67%
+    EE                         n=   3  pool 100%  exact5 0%  regime5 33%
+

@@ -1,0 +1,144 @@
+id: innovasjon_norge_loan_lowrisk
+name: innovasjon_norge_loan_lowrisk
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-group
+  gate_family: G1_nexus
+  requirement: The offer targets all businesses (Norwegian enterprises) in need of long-term
+    capital financing.
+  value: Alle bedrifter
+  intake_field: entityCountries
+  quote: Målgruppe Alle bedrifter
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g3-financing-share
+  gate_family: G3_financial
+  requirement: The loan can cover up to 50% of the company's capital need.
+  value: Inntil 50 % av kapitalbehov
+  intake_field: ticketBand
+  quote: Hvor mye Inntil 50 % av kapitalbehov
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g4-borrower-model
+  gate_family: G4_borrower_model
+  requirement: The instrument is a loan (Lavrisikolån - low-risk loan) with competitive terms
+    and long repayment period, tailored to the company's needs.
+  value: Lån
+  intake_field: borrowerModel
+  quote: Type tjeneste Lån
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g6-state-aid-compliance
+  gate_family: G6_conditionality
+  requirement: Financing from Innovasjon Norge must comply with state aid rules, including
+    the five general conditions for state aid and the General Block Exemption Regulation (GBER).
+  value: Must comply with state aid regulations
+  intake_field: conditionality
+  quote: Finansiering fra Innovasjon Norge må være i samsvar med statsstøtteregelverket. Det
+    er fem generelle vilkår for statsstøtte som må ivaretas.
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Finansiering fra Innovasjon Norge må være i
+    samsva'''
+- id: g6-legal-basis
+  gate_family: G6_conditionality
+  requirement: Financing schemes are notified to the EFTA Surveillance Authority (ESA), with
+    the legal basis published under National Legal Basis.
+  value: Notified to ESA
+  intake_field: conditionality
+  quote: Finansieringsordninger hos oss er meldt til EFTAs overvåkingsorgan, ESA.
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g6-disclose-other-aid
+  gate_family: G6_conditionality
+  requirement: The applicant must disclose in the application whether other public aid has
+    been or will be applied for regarding the project.
+  value: Disclosure required in application
+  intake_field: conditionality
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g6-aid-basis-assumption
+  gate_family: G6_conditionality
+  requirement: The aid amount assessment assumes no other public support, including SkatteFunn,
+    is received beyond what is stated in the application, for the same eligible project costs.
+  value: Aid calculation assumes no undisclosed other public support
+  intake_field: cofinancingBand
+  quote: Ved fastsettelse av tilskuddsbeløpet legger derfor vi til grunn at det ikke mottas
+    annen offentlig støtte, herunder Skattefunn, enn det som er oppgitt i søknaden.
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g6-cumulation-reduction
+  gate_family: G6_conditionality
+  requirement: If other public support (including SkatteFunn) covering the same costs is received
+    after the offer is given, the grant/loan support may be reduced correspondingly or lapse.
+  value: Support reduced or lapses if cumulated with other aid for same costs
+  intake_field: cofinancingBand
+  quote: I tilfelle slik annen offentlig støtte, herunder SkatteFunn, likevel blir mottatt
+    etter at vårt tilbud er gitt, og til dekning av de samme kostnadene, vil tilskuddet fra
+    oss kunne bli redusert tilsvarende eller bortfalle.
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+- id: g6-responsible-business
+  gate_family: G6_conditionality
+  requirement: To receive services, the company must uphold principles of responsible business
+    conduct and have a conscious relationship to its own sustainability risk.
+  value: Must uphold responsible business conduct principles
+  intake_field: conditionality
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+obligations:
+- requirement: Applicants must apply for changes to loan terms or securities if changes are
+    needed for ongoing loans.
+  quote: Dersom det er behov for endringer i lånevilkår eller sikkerheter, må det sendes søknad
+    om dette.
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (8/9 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Other public support, including SkatteFunn, for the same eligible project costs is
+    netted against the aid calculation; if received after the offer, the aid may be reduced
+    or lapse, but aid for other project costs is not precluded.
+  quote: Dette er ikke til hinder for at bedriften kan motta annen offentlig støtte til andre
+    prosjektkostnader enn de vi har lagt til grunn.
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited
+application:
+  channel: Online application via Innovasjon Norge's Min side (log in to start or continue
+    application).
+  typical_timeline: Rolling deadline (continuous application).
+  quote: Søknadsfrist Løpende
+  source:
+    file: innovasjon_norge_loan_lowrisk_lavrisikolan.html
+    locator: '#chunk 1'
+  verified: llm_cited

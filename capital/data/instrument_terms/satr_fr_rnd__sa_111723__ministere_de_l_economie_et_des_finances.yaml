@@ -1,0 +1,74 @@
+id: satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances
+name: Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation
+  (RDI) pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g1-any-size-test-infra
+  gate_family: G1_nexus
+  requirement: Any 'entreprise', whatever its size, qualifying as a test/experimentation infrastructure
+    may receive investment aid under this scheme.
+  value: Entreprise of any size, must qualify as test/experimentation infrastructure
+  intake_field: borrowerModel
+  quote: Tout porteur pouvant être qualifié d’entreprise et répondant à la définition d’infrastructure
+    d’essai et d’expérimentation figurant en annexe I du présent régime d’aides, quelle que soit sa taille,
+    peut bénéficier d’aides à l’investissement en faveur des infrastructures d’essai et d’expérimentation
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111723-regime-cadre-exempte-notification-ndeg-sa-111723-relatif-aides
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-excl-unpaid-recovery-order
+  gate_family: G1_nexus
+  requirement: Companies subject to an unexecuted recovery order from a prior European Commission decision
+    finding French aid illegal and incompatible with the internal market are excluded.
+  value: 'Excluded: unpaid EC recovery order recipients'
+  intake_field: none
+  quote: aux aides en faveur d’une entreprise faisant l’objet d’une injonction de récupération non exécutée,
+    émise dans une décision antérieure de la Commission déclarant une aide octroyée par la France illégale
+    et incompatible avec le marché intérieur
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111723-regime-cadre-exempte-notification-ndeg-sa-111723-relatif-aides
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-firm-in-difficulty
+  gate_family: G3_financial
+  requirement: Companies meeting the EU 'undertaking in difficulty' criteria are excluded from aid under
+    this scheme.
+  value: 'Excluded: undertaking in difficulty'
+  intake_field: lossesOverHalfCapital
+  quote: aux aides aux entreprises en difficulté, lorsque les entreprises répondent à l’un des critères
+    suivants
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111723-regime-cadre-exempte-notification-ndeg-sa-111723-relatif-aides
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-excl-fisheries-aquaculture
+  gate_family: G5_use_of_funds
+  requirement: Aid granted in the fisheries and aquaculture sector is excluded, except for R&D aid and
+    SME innovation aid.
+  value: 'Excluded sector: fisheries/aquaculture (except R&D/SME-innovation aid)'
+  intake_field: none
+  quote: aux aides octroyées dans le secteur de la pêche et de l’aquaculture, lequel relève du règlement
+    (UE) n° 1379/2013 du Parlement européen et du Conseil, exception faite des aides à la recherche et
+    développement et des aides à l’innovation en faveur des PME
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111723-regime-cadre-exempte-notification-ndeg-sa-111723-relatif-aides
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-beneficiary-profile
+  gate_family: G2_size_ownership
+  requirement: The scheme's target beneficiaries include both large enterprises and SMEs.
+  value: 'Beneficiaries: large enterprises and SMEs'
+  intake_field: turnoverBand
+  quote: 'Bénéficiaires (fiche portail) : Grandes entreprises ; PME.'
+  source:
+    file: https://www.europe-en-france.gouv.fr/fr/aides-d-etat/regimes-d-aide/sa111723-regime-cadre-exempte-notification-ndeg-sa-111723-relatif-aides
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact

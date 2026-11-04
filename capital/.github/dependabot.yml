@@ -1,0 +1,16 @@
+# Keeps the 8 high-severity findings from the July 2026 audit from recurring
+# silently. Weekly, grouped, so review is one PR rather than a stream.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /website/frontend
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 5
+    groups:
+      production:
+        dependency-type: production
+      development:
+        dependency-type: development
+  - package-ecosystem: github-actions
+    directory: /
+    schedule: { interval: monthly }

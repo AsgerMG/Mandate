@@ -1,0 +1,393 @@
+[
+  {
+    "ref": "ranker::consortium",
+    "field": "consortium",
+    "requirement": "Consortia must include at least one independent legal entity established in a Member State and at least two other independent legal entities each established in different Member States or Associated Countries, unless otherwise provided.",
+    "instrumentId": "clean_aviation",
+    "instrumentName": "Clean Aviation",
+    "gateKey": "G1_nexus",
+    "locator": "clean_aviation_amended_wpb_2026_2027.pdf#p.83",
+    "carriers": 17,
+    "alsoWorded": [
+      {
+        "instrumentName": "Clean Aviation",
+        "requirement": "Must participate as part of a consortium aligned to the Clean Aviation partnership roadmap, not as a solo applicant"
+      },
+      {
+        "instrumentName": "Europes Rail",
+        "requirement": "Applicant must be a formal consortium (multiple legal entities) rather than a solo company"
+      }
+    ],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [
+          "europes_rail",
+          "chp",
+          "sns_ju",
+          "eurohpc",
+          "euspa"
+        ],
+        "closes": []
+      },
+      {
+        "value": "no",
+        "opens": [
+          "europes_rail",
+          "chp",
+          "sns_ju",
+          "eurohpc",
+          "euspa"
+        ],
+        "closes": [
+          "clean_aviation",
+          "sesar_ju",
+          "eic_transition",
+          "eic_pathfinder",
+          "ihi",
+          "horizon_eu_cl1",
+          "horizon_eu_cl4",
+          "gh_edctp3",
+          "horizon_eu_miss",
+          "horizon_eu_cl6",
+          "horizon_eu_cl3",
+          "erc_poc"
+        ]
+      },
+      {
+        "value": "unsure",
+        "opens": [],
+        "closes": [
+          "eic_pathfinder"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "clean_aviation",
+        "name": "Clean Aviation",
+        "rank": 1
+      },
+      {
+        "instrumentId": "europes_rail",
+        "name": "Europes Rail",
+        "rank": 2
+      },
+      {
+        "instrumentId": "sesar_ju",
+        "name": "Sesar JU",
+        "rank": 3
+      },
+      {
+        "instrumentId": "eic_transition",
+        "name": "EIC Transition",
+        "rank": 4
+      },
+      {
+        "instrumentId": "eic_pathfinder",
+        "name": "EIC Pathfinder",
+        "rank": 5
+      },
+      {
+        "instrumentId": "ihi",
+        "name": "IHI",
+        "rank": 6
+      },
+      {
+        "instrumentId": "chp",
+        "name": "CHP",
+        "rank": 7
+      },
+      {
+        "instrumentId": "sns_ju",
+        "name": "Sns JU",
+        "rank": 8
+      },
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 9
+      },
+      {
+        "instrumentId": "eurohpc",
+        "name": "Eurohpc",
+        "rank": 10
+      },
+      {
+        "instrumentId": "horizon_eu_cl4",
+        "name": "Horizon EU CL4",
+        "rank": 11
+      },
+      {
+        "instrumentId": "gh_edctp3",
+        "name": "Gh Edctp3",
+        "rank": 12
+      },
+      {
+        "instrumentId": "horizon_eu_miss",
+        "name": "Horizon EU Miss",
+        "rank": 13
+      },
+      {
+        "instrumentId": "horizon_eu_cl6",
+        "name": "Horizon EU CL6",
+        "rank": 14
+      },
+      {
+        "instrumentId": "horizon_eu_cl3",
+        "name": "Horizon EU CL3",
+        "rank": 15
+      },
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 16
+      },
+      {
+        "instrumentId": "euspa",
+        "name": "Euspa",
+        "rank": 17
+      }
+    ],
+    "kind": "separating",
+    "score": 17
+  },
+  {
+    "ref": "ranker::nonEuControl",
+    "field": "nonEuControl",
+    "requirement": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are also not eligible to participate.",
+    "instrumentId": "horizon_eu_cl1",
+    "instrumentName": "Horizon EU CL1",
+    "gateKey": "G1_nexus",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11",
+    "carriers": 5,
+    "alsoWorded": [
+      {
+        "instrumentName": "Horizon EU CL4",
+        "requirement": "Legal entities established outside Russia whose proprietary rights are more than 50% owned directly or indirectly by a Russian-established person, entity, or body are not eligible to participate in any capacity."
+      },
+      {
+        "instrumentName": "Horizon EU CL3",
+        "requirement": "Legal entities established outside Russia whose proprietary rights are more than 50% owned by a Russia-established entity are not eligible to participate."
+      }
+    ],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [],
+        "closes": [
+          "horizon_eu_cl1",
+          "horizon_eu_cl4",
+          "horizon_eu_cl3",
+          "erc_poc",
+          "euspa"
+        ]
+      },
+      {
+        "value": "no",
+        "opens": [
+          "euspa"
+        ],
+        "closes": []
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 9
+      },
+      {
+        "instrumentId": "horizon_eu_cl4",
+        "name": "Horizon EU CL4",
+        "rank": 11
+      },
+      {
+        "instrumentId": "horizon_eu_cl3",
+        "name": "Horizon EU CL3",
+        "rank": 15
+      },
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 16
+      },
+      {
+        "instrumentId": "euspa",
+        "name": "Euspa",
+        "rank": 17
+      }
+    ],
+    "kind": "separating",
+    "score": 1
+  },
+  {
+    "ref": "ranker::exclusionFlags",
+    "field": "exclusionFlags",
+    "requirement": "Applicants subject to EU administrative exclusion sanctions or in exclusion situations (e.g. bankruptcy) cannot participate.",
+    "instrumentId": "horizon_eu_cl1",
+    "instrumentName": "Horizon EU CL1",
+    "gateKey": "G2_size_ownership",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.22",
+    "carriers": 5,
+    "alsoWorded": [
+      {
+        "instrumentName": "Horizon EU CL4",
+        "requirement": "Applicants subject to EU administrative sanctions (exclusion) or in situations such as bankruptcy, winding up, court-administered affairs, arrangement with creditors, or suspended business activities cannot participate."
+      },
+      {
+        "instrumentName": "Horizon EU CL6",
+        "requirement": "Applicants subject to EU administrative sanctions or in exclusion situations (e.g. bankruptcy, winding up) cannot participate."
+      }
+    ],
+    "splits": [
+      {
+        "value": "insolvency",
+        "opens": [],
+        "closes": [
+          "horizon_eu_cl1",
+          "horizon_eu_cl4",
+          "horizon_eu_cl6",
+          "horizon_eu_cl3",
+          "erc_poc"
+        ]
+      },
+      {
+        "value": "sanctions",
+        "opens": [],
+        "closes": [
+          "horizon_eu_cl1",
+          "horizon_eu_cl6",
+          "erc_poc"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "horizon_eu_cl1",
+        "name": "Horizon EU CL1",
+        "rank": 9
+      },
+      {
+        "instrumentId": "horizon_eu_cl4",
+        "name": "Horizon EU CL4",
+        "rank": 11
+      },
+      {
+        "instrumentId": "horizon_eu_cl6",
+        "name": "Horizon EU CL6",
+        "rank": 14
+      },
+      {
+        "instrumentId": "horizon_eu_cl3",
+        "name": "Horizon EU CL3",
+        "rank": 15
+      },
+      {
+        "instrumentId": "erc_poc",
+        "name": "ERC POC",
+        "rank": 16
+      }
+    ],
+    "kind": "separating",
+    "score": 1
+  },
+  {
+    "ref": "ranker::turnoverBand",
+    "field": "turnoverBand",
+    "requirement": "For-profit legal entities with an annual turnover of EUR 500 million or more, or entities controlling/controlled by such entities, participating in a two-stage call alongside a pre-identified entity, are not eligible for funding.",
+    "instrumentId": "ihi",
+    "instrumentName": "IHI",
+    "gateKey": "G2_size_ownership",
+    "locator": "ihi_call12_calltext.pdf#p.7",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": ">50M",
+        "opens": [],
+        "closes": [
+          "ihi"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "ihi",
+        "name": "IHI",
+        "rank": 6
+      }
+    ],
+    "kind": "separating",
+    "score": 0.2857142857142857
+  },
+  {
+    "ref": "ranker::ownerOver25",
+    "field": "ownerOver25",
+    "requirement": "Legal entities established outside Russia but more than 50% owned, directly or indirectly, by a Russian-established entity are not eligible to participate in any capacity.",
+    "instrumentId": "horizon_eu_miss",
+    "instrumentName": "Horizon EU Miss",
+    "gateKey": "G1_nexus",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.11",
+    "carriers": 2,
+    "alsoWorded": [
+      {
+        "instrumentName": "Horizon EU CL6",
+        "requirement": "Legal entities established outside Russia but more than 50% owned by a Russia-established entity are not eligible to participate."
+      }
+    ],
+    "splits": [
+      {
+        "value": "yes",
+        "opens": [],
+        "closes": [
+          "horizon_eu_miss",
+          "horizon_eu_cl6"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "horizon_eu_miss",
+        "name": "Horizon EU Miss",
+        "rank": 13
+      },
+      {
+        "instrumentId": "horizon_eu_cl6",
+        "name": "Horizon EU CL6",
+        "rank": 14
+      }
+    ],
+    "kind": "separating",
+    "score": 0.2857142857142857
+  },
+  {
+    "ref": "ranker::activities",
+    "field": "activities",
+    "requirement": "Projects must focus exclusively on civil applications and must not involve human cloning, heritable genetic modification, or creation of human embryos solely for research.",
+    "instrumentId": "horizon_eu_miss",
+    "instrumentName": "Horizon EU Miss",
+    "gateKey": "G5_use_of_funds",
+    "locator": "horizon_eu_general_annexes_2026_2027.pdf#p.14",
+    "carriers": 1,
+    "alsoWorded": [],
+    "splits": [
+      {
+        "value": "weapons",
+        "opens": [],
+        "closes": [
+          "horizon_eu_miss"
+        ]
+      }
+    ],
+    "moves": [
+      {
+        "instrumentId": "horizon_eu_miss",
+        "name": "Horizon EU Miss",
+        "rank": 13
+      }
+    ],
+    "kind": "separating",
+    "score": 0.14285714285714285
+  }
+]

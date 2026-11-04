@@ -1,0 +1,50 @@
+id: satr_ee_rnd__sa_109351__sa_keskkonnainvesteeringute_keskus
+name: Kaugküttesüsteemide investeeringute toetus
+administering_body: see source document
+country: 'EE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Applicants are state agencies, local government units and their owned
+    companies, and heat undertakings.
+  value: State agencies, local governments/owned companies, or heat undertakings
+  intake_field: none
+  quote: 'Toetuse taotlejad: riigiasutustele, kohalikule omavalitsuse üksustele ja neile
+    kuuluvatele äriühingutele ning soojusettevõtjatele.'
+  source:
+    file: https://kik.ee/et/toetatavad-tegevused/kaugkutte-katlamajade-ja-soojustorustike-uuendamine
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g3-round2-capacity-cap
+  gate_family: G3_financial
+  requirement: In round II, the district-heating production equipment must have a capacity
+    of up to 1 MW, and the heating network area's 2024 production volume must be up to
+    3000 MWh.
+  value: 'Round II: capacity <=1 MW, 2024 output <=3000 MWh'
+  intake_field: ticketBand
+  quote: 'II voor: kaugkütte soojuse tootmise seadme võimsus kuni 1 MW võimsusega,
+    soojusvõrgu piirkonna 2024. aasta tootmismaht kuni 3000 MWh.'
+  source:
+    file: https://kik.ee/et/toetatavad-tegevused/kaugkutte-katlamajade-ja-soojustorustike-uuendamine
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g5-round3-scope
+  gate_family: G5_use_of_funds
+  requirement: Round III (planned) is targeted at heating pipeline construction; renovation
+    and construction of heat production equipment is not eligible in this round.
+  value: 'Round III: pipeline construction only, not heat equipment'
+  intake_field: none
+  quote: 'III voor (planeeritud): suunatud soojatorustiku rajamisele; soojuse tootmise
+    seadmete renoveerimine ja ehitus ei ole selles voorus abikõlblik.'
+  source:
+    file: https://kik.ee/et/toetatavad-tegevused/kaugkutte-katlamajade-ja-soojustorustike-uuendamine
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

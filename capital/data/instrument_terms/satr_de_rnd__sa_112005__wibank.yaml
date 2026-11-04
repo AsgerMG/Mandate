@@ -1,0 +1,38 @@
+id: satr_de_rnd__sa_112005__wibank
+name: Programm des Landes Hessen für den Europäischen Fonds für regionale Entwicklung im Förderzeitraum
+  2021 bis 2027 (EFRE-Programm) [HE]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-difficulty-and-natural-person-exclusion
+  gate_family: G1_nexus
+  requirement: Companies in difficulty cannot be beneficiaries (by way of derogation from Article 7(1)(d)
+    of Regulation (EU) 2021/1058), and natural persons are likewise excluded.
+  value: Undertakings in difficulty and natural persons excluded
+  intake_field: lossesOverHalfCapital
+  quote: Unternehmen in Schwierigkeiten können abweichend von Art. 7 Abs. 1 Buchst. d der Verordnung (EU)
+    2021/1058 keine Begünstigten sein, ebenso natürliche Personen.
+  source:
+    file: https://www.wibank.de/efre
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-rd-beneficiary-size
+  gate_family: G2_size_ownership
+  requirement: For R&D projects specifically, beneficiaries may be SMEs and small companies with mid-size
+    market capitalisation.
+  value: 'R&D track: SME or small mid-cap only'
+  intake_field: turnoverBand
+  quote: 'Für Forschungs- und Entwicklungsvorhaben in Unternehmen (Teil II Nr. 1): Begünstigte können
+    KMU sowie kleine Unternehmen mit mittlerer Marktkapitalisierung sein.'
+  source:
+    file: https://www.wibank.de/efre
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (2/2 gates passed mechanical verbatim
+  check -> llm_cited).

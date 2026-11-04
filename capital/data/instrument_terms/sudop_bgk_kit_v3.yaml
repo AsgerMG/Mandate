@@ -1,0 +1,33 @@
+id: sudop_bgk_kit_v3
+name: Sudop Bgk Kit V3
+administering_body: see source document
+country: PL
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-poland
+  gate_family: G2_size_ownership
+  requirement: Eligible applicants are micro, small and medium-sized enterprises conducting business activity
+    on the territory of Poland.
+  value: Micro/small/medium enterprise operating in Poland
+  intake_field: turnoverBand
+  quote: Mikro-, małe i średnie przedsiębiorstwa prowadzące działalność gospodarczą na terenie Rzeczypospolitej
+    Polskiej.
+  source:
+    file: https://www.bgk.pl/produkty/kredyt-technologiczny/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-technological-innovation-scope
+  gate_family: G5_use_of_funds
+  requirement: Projects must involve implementation of technological innovation - own or acquired R&D
+    results - and the launch of production of new or significantly improved products, processes or services.
+  value: Must implement own/acquired R&D results into new or improved production
+  intake_field: developmentStage
+  quote: Projekty dotyczą wdrożenia innowacji technologicznych - własnych lub nabytych wyników prac badawczo-rozwojowych
+    oraz uruchomienia produkcji nowych lub znacząco ulepszonych produktów, procesów lub usług.
+  source:
+    file: https://www.bgk.pl/produkty/kredyt-technologiczny/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

@@ -1,0 +1,277 @@
+id: ipcei_batteries
+name: ipcei_batteries
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: The project must involve companies established in and be co-financed by participating
+    Member States (Belgium, Finland, France, Germany, Italy, Poland, Sweden) that notify the
+    aid under Article 107(3)(b) TFEU.
+  value: Belgium, Finland, France, Germany, Italy, Poland, Sweden
+  intake_field: entityCountries
+  quote: The public support measures of Belgium, Finland, France, Germany, Italy Poland and
+    Sweden will be financed with funds stemming from the respective State budgets.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.46
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Only the specific companies listed as Direct Participants (selected via national
+    open and transparent calls) are eligible aid beneficiaries under the notified IPCEI Batteries
+    measures.
+  value: Listed Direct Participants only
+  intake_field: consortium
+  quote: The Member States only grant support to the beneficiaries listed section 2.2.6 and
+    the funding is not available to all undertakings in a comparable situation.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.47
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Selection of participating companies must occur through an open and non-discriminatory
+    national procedure (call for projects or open call/expression of interest) organised by
+    the Member State.
+  value: Open and transparent/non-discriminatory national selection required
+  intake_field: consortium
+  quote: Belgium has published an open and transparent call for projects on 20 February 2019.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.40
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: The project must qualify as an 'integrated project' i.e. a group of single
+    projects by different undertakings inserted in a common structure, roadmap or programme
+    aiming at the same objective.
+  value: Integrated project of multiple undertakings across value chain levels
+  intake_field: consortium
+  quote: the Commission may consider eligible an "integrated project", that is to say, a group
+    of single projects inserted in a common structure, roadmap or programme aiming at the
+    same objective and based on a coherent systemic approach.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.48
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: Individual components/projects of the integrated project must be complementary
+    and necessary for achievement of the important European objective, not merely standalone
+    commercial activity.
+  value: Necessity and complementarity required for each participant's project
+  intake_field: consortium
+  quote: The individual components of the integrated project may relate to separate levels
+    of the supply chain but must be complementary and necessary for the achievement of the
+    important European objective.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.48
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: Aid may cover up to 100% of eligible costs, provided the aid amount does not
+    exceed the identified funding gap of the individual project.
+  value: 'Max aid intensity: up to 100% of eligible costs, capped at funding gap'
+  intake_field: cofinancingBand
+  quote: The aid could reach up to 100% of the eligible costs, provided that the aid amount
+    does not exceed the funding gap.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.68
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: The claw-back mechanism applies at minimum to aid beneficiaries receiving a
+    notified aid amount, per Member State, above EUR 50 million.
+  value: EUR 50 million threshold per Member State per beneficiary
+  intake_field: ticketBand
+  quote: The claw-back mechanism will apply at minimum to aid beneficiaries having a notified
+    aid amount, per Member State, above EUR 50 million
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.46
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: Total IPCEI Batteries eligible costs across all participants are nearly EUR
+    4.3 billion, split between R&D&I (EUR 1.8 billion) and FID (EUR 2.4 billion), establishing
+    the overall financial scale/ceiling of the project.
+  value: Total eligible costs ~EUR 4.3bn (R&D&I EUR1.8bn / FID EUR2.4bn)
+  intake_field: turnoverBand
+  quote: the total IPCEI Batteries eligible costs are nearly EUR 4.3 billion, out of which
+    EUR 2.4 billion for FID and EUR 1.8 billion for R&D&I
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.41
+  verified: false
+  verify_note: 'fragment not found verbatim: ''the total IPCEI Batteries eligible costs are
+    nearl'''
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: Support is provided in the form of direct grants, and in the case of Nanocyl,
+    as repayable advances.
+  value: Direct grants (repayable advance for Nanocyl)
+  intake_field: borrowerModel
+  quote: the Commission considers that the public resources granted to the aid beneficiaries
+    in the form of direct grants (and repayable advances in the case of Nanocyl) for the R&D&I
+    and FID activities as described within the framework of this IPCEI Batteries project qualify
+    as State aid
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.47
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Funded costs must be limited to eligible costs of R&D&I and/or FID activities
+    as defined by the Annex to the IPCEI Communication; costs relating to mass production
+    or normal commercial activities are excluded.
+  value: Eligible costs limited to R&D&I/FID per IPCEI Communication Annex; excludes mass
+    production/commercial activity costs
+  intake_field: none
+  quote: Eligible costs are only those costs of the individual projects, which comply with
+    the requirements of the Annex to the IPCEI Communication.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.41
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: FID activities funded must concern development of a new product/service with
+    high R&D&I content and/or deployment of a fundamentally innovative production process,
+    and must not be a regular upgrade or newer version of an existing product.
+  value: FID must be highly innovative, not regular upgrades
+  intake_field: developmentStage
+  quote: Regular upgrades without an innovative dimension of existing facilities and the development
+    of newer versions of existing products do not qualify as IPCEI.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.58
+  verified: llm_cited
+- id: G5-03
+  gate_family: G5_use_of_funds
+  requirement: FID activities must follow on from an R&D&I activity and themselves contain
+    a very important R&D&I component that is an integral and necessary element for successful
+    implementation of the project.
+  value: FID must contain very important, integral R&D&I component following prior R&D&I
+  intake_field: developmentStage
+  quote: Follows on from an R&D&I activity and [themselves] contain a very important R&D&I
+    component which constitutes an integral and necessary element for the successful implementation
+    of the project
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.70
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: The aid application must precede the start of works (start of construction
+    works or first firm commitment to order equipment/other irreversible commitment), as a
+    formal incentive-effect requirement.
+  value: Aid application must precede start of works
+  intake_field: conditionality
+  quote: the aid application must precede the starts of the works, which is either the start
+    of construction works on the investment or the first firm commitment to order equipment
+    or other commitment that makes the investment irreversible, whichever is the first in
+    time.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.66
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: Aid must not subsidise costs the undertaking would anyhow incur and must not
+    compensate for normal business risk; without aid the project would be impossible or realised
+    in smaller scope.
+  value: Aid must be necessary/incremental, not covering normal business risk
+  intake_field: conditionality
+  quote: the aid must not subsidise the costs of a project that an undertaking would anyhow
+    incur and must not compensate for the normal business risk of an economic activity.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.66
+  verified: llm_cited
+obligations:
+- requirement: Aid beneficiaries above the EUR 50 million threshold are subject to a claw-back
+    mechanism based on ex post figures approved annually by an independent auditor, requiring
+    separate analytical accounting.
+  quote: The basis for the claw-back mechanism will be ex post figures, which have been subject
+    to annual approval by an independent auditor. For this purpose, separate analytical accounting
+    will be required from the aid beneficiaries in the relevant Member State.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.46
+  verified: llm_cited
+- requirement: A letter of credit from a reputable, investment-grade rated financial institution
+    must cover the repayment obligation at the End Date, from the first test-run.
+  quote: A letter of credit (by a reputable financial institution having investment grade
+    rating from a first-rank rating agency) should cover the repayment obligation at the End
+    Date by the aid beneficiary, from the first test-run (that is, mid-2026).
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.82
+  verified: llm_cited
+- requirement: Member States must report to the Commission the implementation/application
+    of the claw-back mechanism within one month after each test-run/application.
+  quote: The Member States are required to report to the Commission the implementation of
+    the claw-back mechanism one month after each application.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.46
+  verified: llm_cited
+- requirement: Member States must provide the Commission with an annual report on the progress
+    and results of the IPCEI Batteries, the work streams, and companies, including spillover
+    actions.
+  quote: The Member States must provide the Commission with an annual report, containing the
+    progress and results of the IPCEI Batteries, the WS and the companies.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.79
+  verified: llm_cited
+- requirement: Beneficiaries holding IP-protected results must license them to other European
+    actors at FRAND conditions and encourage dissemination of results.
+  quote: If SEEL will hold rights to IP-protected results, these will be licensed to other
+    European actors at FRAND conditions.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.39
+  verified: llm_cited
+- requirement: Products resulting from the FID phase that do not meet customer requirements
+    shall be returned, and customers may return products even if they meet ex ante requirements
+    but are unsuitable for their needs.
+  quote: Products resulted from the FID phase that will not meet the customers' requirement
+    shall be returned. In addition, customers also have the right to return those products
+    even if they satisfy ex ante requirements as long as they are not suitable for their needs.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.41
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (13/14 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The claw-back mechanism accounts for the actual State aid disbursements and NPV of
+    the project, with a Surplus split via an allocation Share between the State and the beneficiary,
+    ensuring aid amounts remain tied to project performance and are clawed back if returns
+    exceed WACC-based expectations.
+  quote: The Surplus, if it is positive, will be multiplied by an allocation ratio "Share
+    ", equal to the lesser between 60% or the net disbursed State aid from 2019 to year "i"
+    divided by the verified eligible costs from 2019 to year "i"
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.82
+  verified: false
+application:
+  channel: National funding authorities via Member State open calls for projects (e.g., Belgium,
+    Finland, France, Germany, Italy, Poland, Sweden), followed by joint notification to the
+    European Commission under Article 108(3) TFEU for State aid clearance.
+  typical_timeline: National calls launched in early-to-mid 2019 (e.g. 20 February, 9 January,
+    22 February, 16 April 2019) followed by Commission decision in the same year (2019 decision
+    date).
+  quote: Belgium has published an open and transparent call for projects on 20 February 2019.
+  source:
+    file: ipcei_batteries_first_sa54794_decision_2019.pdf
+    locator: ipcei_batteries_first_sa54794_decision_2019.pdf#p.40
+  verified: llm_cited

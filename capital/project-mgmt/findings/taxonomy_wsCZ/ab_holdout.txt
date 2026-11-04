@@ -1,0 +1,26 @@
+===== HOLDOUT — ARM A (before) =====
+corpus=snapshot instruments=1088 at 2026-08-10T19:48:41.969Z
+ranker: all 592 request(s) on EMBEDDING
+  SCREEN@5  81/300 (27.0% +/-5.0)
+  SCREEN@6  92/300 (30.7% +/-5.2)
+  MEMO@1   15/300 (5.0% +/-2.5)
+  MEMO@2   31/300 (10.3% +/-3.4)
+  MEMO@3   42/300 (14.0% +/-3.9)
+  MEMO@4   55/300 (18.3% +/-4.4)
+  MEMO@5   70/300 (23.3% +/-4.8)
+  MEMO@6   79/300 (26.3% +/-5.0)
+  MEMO@7   89/300 (29.7% +/-5.2)   <- writer cap
+  ██ MEMO@6 26.3% against SCREEN@6 30.7% — the memo keeps 86% of what the screen got right
+===== HOLDOUT — ARM B (after) =====
+corpus=snapshot instruments=1088 at 2026-08-10T19:51:21.921Z
+ranker: all 592 request(s) on EMBEDDING
+  SCREEN@5  81/300 (27.0% +/-5.0)
+  SCREEN@6  92/300 (30.7% +/-5.2)
+  MEMO@1   15/300 (5.0% +/-2.5)
+  MEMO@2   31/300 (10.3% +/-3.4)
+  MEMO@3   42/300 (14.0% +/-3.9)
+  MEMO@4   55/300 (18.3% +/-4.4)
+  MEMO@5   70/300 (23.3% +/-4.8)
+  MEMO@6   79/300 (26.3% +/-5.0)
+  MEMO@7   89/300 (29.7% +/-5.2)   <- writer cap
+  ██ MEMO@6 26.3% against SCREEN@6 30.7% — the memo keeps 86% of what the screen got right

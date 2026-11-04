@@ -1,0 +1,44 @@
+id: sudop_rnd_purpose
+name: Sudop Rnd Purpose
+administering_body: see source document
+country: PL
+capital_type: unknown
+status: draft
+gates:
+- id: g5-implements-rd-results
+  gate_family: G5_use_of_funds
+  requirement: The loan is intended to finance an investment implementing a new or significantly modified
+    product or process resulting from R&D work.
+  value: Investment must implement new/modified product or process from R&D
+  intake_field: developmentStage
+  quote: Pożyczka Rozwojowa jest przeznaczona na realizację inwestycji, która dotyczy wdrożenia nowego
+    lub znacznie zmodyfikowanego produktu lub procesu będących efektem prac badawczo-rozwojowych.
+  source:
+    file: https://www.bgk.pl/produkty/pozyczka-na-inwestycje-rozwojowe-z-umorzeniem/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-rd-documentation-required
+  gate_family: G6_conditionality
+  requirement: The applicant must supply a description of the R&D results achieved and documents confirming
+    the R&D work was carried out in-house or its results acquired.
+  value: Must supply R&D results description and supporting documents
+  intake_field: none
+  quote: Wymagane jest dostarczenie opisu wyników przeprowadzonych prac B+R, dokumentów potwierdzających
+    przeprowadzenie własnych prac B+R bądź zakup ich wyników
+  source:
+    file: https://www.bgk.pl/produkty/pozyczka-na-inwestycje-rozwojowe-z-umorzeniem/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-ip-rights-settled
+  gate_family: G6_conditionality
+  requirement: The applicant must have settled the intellectual property rights relating to the R&D results.
+  value: IP rights on the R&D results must be settled
+  intake_field: none
+  quote: oraz uregulowania kwestii praw własności intelektualnej
+  source:
+    file: https://www.bgk.pl/produkty/pozyczka-na-inwestycje-rozwojowe-z-umorzeniem/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: obligation

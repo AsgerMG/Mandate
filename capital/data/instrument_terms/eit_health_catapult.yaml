@@ -1,0 +1,102 @@
+id: eit_health_catapult
+name: eit_health_catapult
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G2_size_ownership
+  requirement: Applicant must be a micro or small enterprise with fewer than 50 employees
+    according to the EU SME definition.
+  value: <50 employees
+  intake_field: fteBand
+  quote: A micro or small enterprise (less than 50 employees) according to the EU SME definition
+  source:
+    file: eit_health_catapult_eligibility_page_wayback.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2
+  gate_family: G1_nexus
+  requirement: Applicant must be active in Life Sciences (drugs, biologics, gene therapies,
+    synthetic biology, drug discovery platforms) or HealthTech (digital health or Medtech).
+  value: Life Sciences or HealthTech
+  intake_field: none
+  quote: Active in Life Sciences (Drugs, biologics, gene therapies, synthetic biology, drug
+    discovery platforms) or HealthTech (Digital health or Medtech)
+  source:
+    file: eit_health_catapult_eligibility_page_wayback.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3
+  gate_family: G1_nexus
+  requirement: Applicant must already be incorporated and operating in an EU/Horizon Europe
+    or Horizon Europe associated country, evidenced by an incorporation certificate.
+  value: EU/Horizon Europe or associated country incorporation
+  intake_field: entityCountries
+  quote: Already incorporated and operating in an EU/ Horizon Europe or Horizon Europe associated
+    country (evidenced by an incorporation certificate)
+  source:
+    file: eit_health_catapult_eligibility_page_wayback.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4
+  gate_family: G3_financial
+  requirement: Applicant must have received private investment of at least EUR 500,000 (proven
+    by a signed investment agreement or official capital registry, with an exception if raised
+    as registered capital from private investors) or at least EUR 500,000 revenue last year
+    (proven by audited financial statements or official accounts).
+  value: '>= EUR 500,000 investment or revenue'
+  intake_field: turnoverBand
+  quote: Funded with private investment of at least EUR 500,000 (proven by a signed investment
+    agreement or an official capital registry; exception if raised registered capital from
+    private investors) or at least EUR 500,000 revenue last year (proven by audited financial
+    statements or official accounts)
+  source:
+    file: eit_health_catapult_eligibility_page_wayback.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5
+  gate_family: G3_financial
+  requirement: Applicant must be looking for funding of at least EUR 2 Million.
+  value: '>= EUR 2,000,000'
+  intake_field: ticketBand
+  quote: Looking for funding of at least EUR 2 Million
+  source:
+    file: eit_health_catapult_eligibility_page_wayback.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6
+  gate_family: G2_size_ownership
+  requirement: Applicant's year of incorporation must be not older than 10 years.
+  value: <=10 years since incorporation
+  intake_field: foundedYear
+  quote: 'Year of incorporation: not older than 10 years'
+  source:
+    file: eit_health_catapult_eligibility_page_wayback.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g7
+  gate_family: G6_conditionality
+  requirement: Proposals must be submitted in English; proposals in other languages will not
+    be accepted.
+  value: English only
+  intake_field: conditionality
+  quote: Submit proposals in English. Proposals in other languages will not be accepted
+  source:
+    file: eit_health_catapult_eligibility_page_wayback.html
+    locator: chunk 2
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (7/7 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online application via EIT Health website
+  typical_timeline: Application deadline extended to 27 April 16:00 CET; finalists pitch end
+    November at the EIT Health Flagship Event
+  quote: The applications deadline has been extended to 27 April 16:00 CET!
+  source:
+    file: eit_health_catapult_eligibility_page_wayback.html
+    locator: chunk 1
+  verified: llm_cited

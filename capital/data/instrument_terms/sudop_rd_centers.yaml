@@ -1,0 +1,46 @@
+id: sudop_rd_centers
+name: Sudop Rd Centers
+administering_body: see source document
+country: 'PL'
+capital_type: unknown
+status: draft
+gates:
+- id: g2-company-size
+  gate_family: G2_size_ownership
+  requirement: Support is available to micro, small, medium and large enterprises planning
+    to establish or develop a research and development centre.
+  value: Micro/small/medium/large enterprises eligible
+  intake_field: turnoverBand
+  quote: Wsparcie dostępne dla mikro, małych, średnich i dużych przedsiębiorstw planujących
+    utworzenie lub rozwój centrum badawczo-rozwojowego.
+  source:
+    file: https://www.funduszeeuropejskie.gov.pl/nabory/21-wsparcie-inwestycji-w-infrastrukture-br-przedsiebiorstw-16/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-team-qualification
+  gate_family: G1_nexus
+  requirement: The project team must have at least a higher education degree and experience
+    in R&D work.
+  value: Team requires higher education degree + R&D experience
+  intake_field: none
+  quote: Zespół musi posiadać co najmniej wykształcenie wyższe i doświadczenie w pracach B+R
+  source:
+    file: https://www.funduszeeuropejskie.gov.pl/nabory/21-wsparcie-inwestycji-w-infrastrukture-br-przedsiebiorstw-16/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-science-cooperation
+  gate_family: G1_nexus
+  requirement: Cooperation with a scientific unit is required.
+  value: Cooperation with a scientific unit required
+  intake_field: consortium
+  quote: wymagana jest współpraca z jednostką naukową.
+  source:
+    file: https://www.funduszeeuropejskie.gov.pl/nabory/21-wsparcie-inwestycji-w-infrastrukture-br-przedsiebiorstw-16/
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

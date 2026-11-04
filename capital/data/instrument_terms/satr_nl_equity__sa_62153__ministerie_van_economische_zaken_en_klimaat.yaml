@@ -1,0 +1,36 @@
+id: satr_nl_equity__sa_62153__ministerie_van_economische_zaken_en_klimaat
+name: NL-EZ-B&I-O Vroege Fase Financiering - Regionale vroegefasefinancieringsfaciliteit
+administering_body: see source document
+country: 'NL'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-target-groups
+  gate_family: G1_nexus
+  requirement: The scheme targets three groups - SME entrepreneurs (small and medium),
+    innovative starters (5 years old or less), and academic, higher-professional (hbo) and
+    TO2 starters.
+  value: 'Target groups: SME, innovative starters (<=5y), academic/hbo/TO2 starters'
+  intake_field: turnoverBand
+  quote: 'De regeling richt zich op 3 doelgroepen: Mkb-ondernemer (klein en middelgroot);
+    Innovatieve starters (≤ 5 jaar); Academische, hbo- en TO2-starters'
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/vff
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-starter-age
+  gate_family: G2_size_ownership
+  requirement: Innovative starters must be 5 years old or less.
+  value: Innovative starters must be <=5 years old
+  intake_field: foundedYear
+  quote: Innovatieve starters (≤ 5 jaar)
+  source:
+    file: https://www.rvo.nl/subsidies-financiering/vff
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text. Only 2 gates - source text is
+  short and does not support more without fabrication.

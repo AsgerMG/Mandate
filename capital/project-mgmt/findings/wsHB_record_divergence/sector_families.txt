@@ -1,0 +1,46 @@
+# _wsgz_record_families.py --methods  (local store, 2026-08-17)
+/Users/asgermollergrimberg/Wincent/data/db.sqlite: 11 families over 144,301 companies
+
+  provenance                 companies    families it alone can name
+  recovered_2026_07_23         113,016                             3
+  nace                          19,138                             0
+  nace_top                      10,838                             0
+  programme                      1,309                             0
+
+  A provenance with a non-zero right-hand column is a single point of
+  failure for the `sectors` KPI: a store that never received it can
+  name that many fewer families however complete the rest of it is.
+
+# _wsgz_record_families.py --without-method=recovered_2026_07_23
+/Users/asgermollergrimberg/Wincent/data/db.sqlite, with the labels from `recovered_2026_07_23` absent:
+  families it could name WITH them    : 11
+  families it can name WITHOUT them   : 8
+  families only that provenance names : ['materials_chemicals', 'mobility_transport', 'space']
+
+  This is what a store that never received that labelling pass reports
+  for `sectors`, derived rather than assumed — no family is named in
+  this file, so a store missing a different pass is described by the
+  same code.
+
+# _wsgz_record_families.py (plain, local store)
+corpus of record: /Users/asgermollergrimberg/Wincent/data/db.sqlite
+  families it can name from companies.sector_top : 11
+  families the label store can put back          : 11
+  restorable rows 0   not in the label store 18,799
+  provenance of the restorable labels: {}
+
+  family                               now  after restore
+  other                             30,922         30,922
+  energy_cleantech                  25,651         25,651
+  software_data_ai                  23,717         23,717
+  industrial_manufacturing          18,991         18,991
+  agrifood                          13,944         13,944
+  health_life_sciences              11,254         11,254
+  mobility_transport                 7,945          7,945
+  semiconductors_electronics         5,390          5,390
+  materials_chemicals                4,894          4,894
+  defense_security                     976            976
+  space                                617            617
+
+  VANISHED (labelled in the store, absent from the column): none
+  Every vanished family returns at its FULL count and no survivor loses rows, so nothing was merged: the column was nulled.

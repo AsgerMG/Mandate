@@ -1,0 +1,364 @@
+id: ihi
+name: ihi
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: Independent legal entities are eligible for EU funding if established in an
+    eligible country (EU Member States including outermost regions and OCTs, Horizon Europe
+    associated countries, or low- and middle-income countries).
+  value: EU/Horizon Europe associated/LMIC establishment required
+  intake_field: entityCountries
+  quote: 'Any independent legal entity is eligible for EU funding if established in one of
+    the eligible countries7, i.e.: • the Member States of the European Union, including their
+    outermost regions and the Overseas Countries and Territories (OCTs); • Horizon Europe
+    associated countries8; • low- and middle-income countries identified in the Horizon Europe
+    Programme.'
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_guide_for_applicants.pdf#p.20
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Legal entities established in the UK are not eligible to receive IHI JU funding
+    for topics where so specified.
+  value: UK entities excluded from funding
+  intake_field: entityCountries
+  quote: legal entities participating in this topic and established in the UK are not eligible
+    to receive funding.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.31
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Legal entities established in Canada are not eligible to receive IHI JU funding
+    for topics where so specified.
+  value: Canada entities excluded from funding
+  intake_field: entityCountries
+  quote: legal entities participating in this topic and established in Canada are not eligible
+    to receive funding.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.31
+  verified: llm_cited
+- id: G1-04
+  gate_family: G1_nexus
+  requirement: Legal entities established in the Republic of Korea are not eligible to receive
+    IHI JU funding for topics where so specified.
+  value: Republic of Korea entities excluded from funding
+  intake_field: entityCountries
+  quote: legal entities participating in this topic and established in the Republic of Korea
+    are not eligible to receive funding.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.31
+  verified: llm_cited
+- id: G1-05
+  gate_family: G1_nexus
+  requirement: Legal entities established in Switzerland are not eligible to receive IHI JU
+    funding for topics where so specified.
+  value: Switzerland entities excluded from funding
+  intake_field: entityCountries
+  quote: legal entities participating in this topic and established in Switzerland are not
+    eligible to receive funding.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.31
+  verified: llm_cited
+- id: G1-06
+  gate_family: G1_nexus
+  requirement: In two-stage calls, the pre-identified industry consortium (legal entities
+    identified by IHI JU as participating in a specific topic) is not eligible for funding
+    and cannot apply at the first stage; they must merge with the winning consortium at second
+    stage.
+  value: Pre-identified industry consortium excluded from first-stage application and funding
+  intake_field: consortium
+  quote: The applicants which are IHI JU members other than the Union, or their constituent
+    entities and affiliated entities, and contributing partners and that are pre-identified
+    in the topics – under the section ‘Industry consortium’ – of a call for proposals shall
+    not apply at the first stage of the call.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.7
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: For-profit legal entities with an annual turnover of EUR 500 million or more,
+    or entities controlling/controlled by such entities, participating in a two-stage call
+    alongside a pre-identified entity, are not eligible for funding.
+  value: Turnover threshold EUR 500,000,000; excludes large for-profit entities and their
+    controlled/controlling entities in two-stage calls
+  intake_field: turnoverBand
+  quote: a) they are for-profit legal entities with an annual turnover of EUR 500 million
+    or more; b) they are under the direct or indirect control of a legal entity described
+    in point (a), or under the same direct or indirect control as a legal entity described
+    in point (a); c) they are directly or indirectly controlling a legal entity referred to
+    in point (a).
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.7
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: EU funding primarily targets universities, research organisations, patient
+    organisations, SMEs, and mid-sized companies with turnover below EUR 500 million; larger
+    companies may be eligible depending on the call type.
+  value: Turnover below EUR 500,000,000 typical eligibility threshold
+  intake_field: turnoverBand
+  quote: In practice, EU funding primarily supports the participation in projects of organisations
+    like universities, research organisations, patient organisations, small and medium-sized
+    enterprises (SMEs), and mid-sized companies (companies with a turnover below EUR 500 million).
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_guide_for_applicants.pdf#p.20
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: The maximum IHI JU financial contribution for topic HORIZON-JU-IHI-2026-12-SINGLE-STAGE-05
+    is EUR 9,800,000, with an indicative minimum contribution of EUR 4,900,000 recommended
+    to appropriately address outcomes.
+  value: Max EUR 9,800,000; indicative min EUR 4,900,000
+  intake_field: ticketBand
+  quote: Applicant consortia will be competing for the maximum financial contribution from
+    IHI JU of up to EUR 9 800 000. IHI JU estimates that an IHI JU financial contribution
+    of at least EUR 4 900 000 would allow a proposal to address the outcomes appropriately
+    and achieve the expected impacts.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.35
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: The funding rate for all beneficiaries and all activities is 100% of eligible
+    costs, with indirect costs calculated at a flat rate of 25%.
+  value: Funding rate 100%; indirect cost flat rate 25%
+  intake_field: none
+  quote: 'The funding rates in IHI JU grants: For all beneficiaries and all activities, the
+    funding rate is 100 % of the eligible costs, while for indirect costs a flat rate of 25%
+    applies.'
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_guide_for_applicants.pdf#p.35
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: Applicant consortia must ensure at least 45% of the action's eligible costs
+    (and costs for related additional activities) are provided by industry contributions (IKOP,
+    FC, IKAA) from private members/contributing partners; this is a strict eligibility criterion
+    for evaluation.
+  value: Minimum 45% industry co-financing threshold
+  intake_field: cofinancingBand
+  quote: Applicant consortia must ensure that at least 45% of the action’s eligible costs
+    and costs for the action related additional activities are provided by in-kind contributions
+    to operational activities (‘IKOP’), financial contributions (‘FC’s), or in-kind contributions
+    to additional activities (‘IKAA’).
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.35
+  verified: llm_cited
+- id: G3-04
+  gate_family: G3_financial
+  requirement: At project level, the maximum share of non-EU IKOP counted toward the 45% threshold
+    is capped at 20% for IHI JU Call 12.
+  value: Non-EU IKOP capped at 20% at project level for Call 12
+  intake_field: cofinancingBand
+  quote: 'at project level, the maximum amount of non-EU IKOP is set to: o Twenty percent
+    (20%) for IHI JU Call 12.'
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.6
+  verified: llm_cited
+- id: G3-05
+  gate_family: G3_financial
+  requirement: IKAA contributed by constituent/affiliated entities of private members must
+    not exceed 40% of their total in-kind contribution (IKAA+IKOP) at overall IHI JU programme
+    level; recommended (not compulsory) cap for individual proposals.
+  value: IKAA capped at 40% at programme level
+  intake_field: cofinancingBand
+  quote: The total IKAA provided by the constituent and affiliated entities of the private
+    members should not exceed 40 % of the constituent and affiliated entities of the private
+    members’ total in-kind contribution (IKAA + IKOP) at overall IHI JU programme level.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_guide_for_applicants.pdf#p.49
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: IHI JU funding is provided as a grant (Research and Innovation Action), not
+    a loan or equity instrument.
+  value: Grant instrument (RIA)
+  intake_field: borrowerModel
+  quote: Applicant consortia will be competing for Research and Innovation Action (RIA)
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.4
+  verified: llm_cited
+- id: G4-02
+  gate_family: G4_borrower_model
+  requirement: IKOP and FCs may be contributed by constituent/affiliated entities of private
+    members and/or contributing partners; IKAA may only be contributed by constituent/affiliated
+    entities of private members, not by contributing partners.
+  value: Contribution-type restrictions by participant category
+  intake_field: borrowerModel
+  quote: IKOP and FCs may be contributed by the constituent and/or affiliated entities of
+    both the private members38 and/or the contributing partners, if relevant. IKAA may be
+    contributed by constituent and/or affiliated entities of the private members only. Contributing
+    partners and their affiliated entities cannot contribute IKAA.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.31
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Proposals must propose a project duration matching the proposed project's activities
+    and expected outcomes/impacts.
+  value: Indicative duration must match project scope
+  intake_field: none
+  quote: Applicants should propose a project duration that matches the proposed project’s
+    activities and expected outcomes and impacts.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.31
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: Costs for in-kind contributions and subcontracted or third-party costs must
+    comply with the cost-eligibility criteria in Article 6 of the Model Grant Agreement.
+  value: Eligible costs subject to MGA Article 6 criteria
+  intake_field: none
+  quote: The eligibility conditions for such costs are set out in Article 6 of the MGA.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_guide_for_applicants.pdf#p.32
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: Contacts/discussions about a given topic between potential applicant consortia
+    and the pre-identified industry consortium/contributing partners are prohibited until
+    first-stage evaluation results are communicated.
+  value: Confidentiality/no-contact obligation pre-first-stage results
+  intake_field: conditionality
+  quote: prohibited throughout the procedure until the results of the first-stage evaluation
+    are communicated to the applicants2.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.11
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: The applicant consortium must submit a self-declaration confirming the required
+    45% industry contribution will be provided; this requirement does not apply to the first
+    stage of a two-stage application.
+  value: Self-declaration of 45% contribution required
+  intake_field: conditionality
+  quote: further to the above, the applicant consortium must submit a self-declaration that
+    the required percentage of 45% contributions will be provided; the eligibility condition
+    above and the self-declaration requirement do not apply to the first stage of a two-stage
+    application;
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.6
+  verified: false
+  verify_note: 'fragment not found verbatim: ''further to the above, the applicant consortium
+    mus'''
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: Non-EU legal entities providing in-kind contributions that are not eligible
+    for funding or not established in a generally eligible country may exceptionally sign
+    the grant agreement only if their participation is deemed essential and they participate
+    without requesting funding.
+  value: Exceptional non-EU signatory conditional on essentiality and no funding request
+  intake_field: conditionality
+  quote: Their participation is considered essential for implementing the action by the granting
+    authority; and o They participate without requesting any funding.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.7
+  verified: llm_cited
+obligations:
+- requirement: Members of the applicant consortia must avoid any actions that could jeopardise
+    confidentiality of the IHI JU evaluation procedure.
+  quote: The members of the applicant consortia shall avoid taking any actions that could
+    jeopardise confidentiality.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.11
+  verified: llm_cited
+- requirement: Specific dissemination and exploitation obligations described under 'Specific
+    conditions on availability, accessibility and affordability' apply to selected actions.
+  quote: The specific obligations described in the conditions of the calls and call management
+    rules under ‘Specific conditions on availability, accessibility and affordability’ apply.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.31
+  verified: llm_cited
+- requirement: The coordinator of a full proposal must submit a Declaration confirming that
+    the required 45% industry contribution will be provided.
+  quote: 'The coordinator of a (full) proposal must submit a Declaration to confirm that the
+    required 45% contributions will be provided (see section 3.2.2.2 Annex: Declaration of
+    in-kind contribution commitment)'
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_guide_for_applicants.pdf#p.48
+  verified: llm_cited
+- requirement: Beneficiaries/designated beneficiaries must ensure that contractual obligations
+    regarding proper implementation, conflict of interest, confidentiality, ethics, visibility,
+    specific rules, information and record-keeping also apply to associated partners and subcontractors.
+  quote: The consortium/designated beneficiary must ensure that their contractual obligations
+    under Articles 11 (proper implementation), 12 (conflict of interests), 13 (confidentiality
+    and security), 14 (ethics), 17.2 (visibility), 18 (specific rules for carrying out action),
+    19 (information) and 20 (record keeping) also apply to the associated partners.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_guide_for_applicants.pdf#p.31
+  verified: llm_cited
+- requirement: In single-stage calls, a duly executed and signed contributing partner application
+    letter must be submitted to and received by the IHI JU Programme Office within the proposal
+    submission deadline for contributions to count towards the 45% threshold.
+  quote: In single-stage calls, so that contributions from contributing partners can be counted
+    towards the 45% threshold, a duly executed and signed contributing partner application
+    letter must be submitted to and received by the IHI JU Programme Office within the proposals’
+    submission deadline.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_guide_for_applicants.pdf#p.26
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (19/20 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: At the overall IHI JU programme level, non-EU IKOP contributed by private members
+    and contributing partners must not exceed 20% of in-kind operational contributions, and
+    IKAA must not exceed 40% of in-kind contributions from private members, across the whole
+    programme (not just per project).
+  quote: pursuant to Article 119(4) of Council Regulation (EU) 2021/2085, at the level of
+    the IHI JU programme, non-EU IKOP must not exceed 20% of in-kind contributions to operational
+    costs provided by private members which are IHI JU members, their constituent or affiliated
+    entities, and contributing partners. Furthermore, at the level of the IHI JU programme,
+    IKAA shall not constitute more than 40% of in-kind contributions provided by private members
+    which are IHI JU members.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.6
+  verified: llm_cited
+application:
+  channel: Electronic Submission System of the EU Funding & Tenders Portal (SEDIA), submitted
+    online by the coordinator via the relevant topic's Submission Service section before the
+    call deadline.
+  typical_timeline: 'Single-stage: max 5 months from submission deadline for evaluation outcome,
+    max 8 months from submission deadline for grant agreement signature. Two-stage: max 5
+    months from first-stage deadline for first-stage outcome, max 5 months from second-stage
+    deadline for second-stage outcome, max 8 months from second-stage deadline for grant agreement
+    signature.'
+  quote: Proposals in response to a topic of an IHI JU call for proposals must be submitted
+    online, before the call deadline, by the coordinator via the Submission Service section
+    of the relevant topic page available under Funding & Tender opportunities – Single Electronic
+    Data Interchange Area (SEDIA). No other means of submission will be accepted.
+  source:
+    file: ihi_call12_calltext.pdf
+    locator: ihi_call12_calltext.pdf#p.11
+  verified: llm_cited

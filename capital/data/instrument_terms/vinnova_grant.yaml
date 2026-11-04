@@ -1,0 +1,187 @@
+id: vinnova_grant
+name: vinnova_grant
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-economic-activity
+  gate_family: G1_nexus
+  requirement: State aid rules apply only to organisations that carry out economic activities;
+    funding to non-economic activities is not covered if accounts are kept separate.
+  value: economic activity required for state aid rules to apply
+  intake_field: borrowerModel
+  quote: The rules on state aid apply to organizations that carry out economic activities.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1-legal-basis
+  gate_family: G1_nexus
+  requirement: Funding to organisations carrying out economic activities is granted either
+    under the EU Commission General Block Exemption Regulation (GBER) or under the de minimis
+    regulation on minor support.
+  value: GBER or de minimis basis
+  intake_field: borrowerModel
+  quote: EU Commission Block Exemption Regulation (GBER) The government's regulation on support
+    of minor importance (de-minimis)
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-legal-form-presumption
+  gate_family: G2_size_ownership
+  requirement: Limited liability companies and economic associations are presumed to be engaged
+    in economic activity as a starting point.
+  value: limited liability companies and economic associations presumed economic
+  intake_field: borrowerModel
+  quote: As a starting point, limited liability companies and economic associations are considered
+    to be engaged in only economic activity. Occasional exceptions may occur.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-research-organisation-exception
+  gate_family: G2_size_ownership
+  requirement: Organisations meeting the GBER Article 2(83) definition of a research organisation
+    performing independent research under the R&D&I Framework are treated as carrying out
+    non-economic activities.
+  value: research organisation exemption per GBER Art.2(83)
+  intake_field: borrowerModel
+  quote: For organisations that fall within the definition of a research organisation in accordance
+    with the Commission's Block Exemption Regulation (EU) 651/2014, Article 2, paragraph 83,
+    there is special regulation.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: Aid intensity depends on the size of the organisation, determined using the
+    EU's SME definition.
+  value: EU SME definition applied to determine company size
+  intake_field: fteBand
+  quote: To calculate how big a company is, the EU's definition of small and medium-sized
+    companies is applied.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-aid-intensity
+  gate_family: G3_financial
+  requirement: The aid intensity (proportion of project costs financed) depends on the size
+    of the organisation and the type of project, expressed as a percentage, with smaller companies
+    generally eligible for higher support.
+  value: variable aid intensity by size/project type
+  intake_field: turnoverBand
+  quote: The aid intensity we can provide depends on the size of the organization and the
+    type of project it applies to. Smaller companies often have more opportunities to get
+    support.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-own-financing
+  gate_family: G3_financial
+  requirement: Vinnova usually requires an own financial contribution (co-financing) from
+    the funding recipient.
+  value: own co-financing generally required
+  intake_field: cofinancingBand
+  quote: We usually also require an own financial contribution from the person who receives
+    funding. It is sometimes called own funding or co-financing.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-public-cofinancing-effect
+  gate_family: G3_financial
+  requirement: If co-financing consists of other public funds, this may affect Vinnova's ability
+    to finance the project.
+  value: public co-financing may limit funding ability
+  intake_field: cofinancingBand
+  quote: If the co-financing consists of other public funds, it may affect our ability to
+    finance the project.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g3-deminimis-ceiling
+  gate_family: G3_financial
+  requirement: Maximum permitted de minimis (minor importance) support is EUR 300,000 per
+    recipient over a rolling three-year period, aggregated across the whole group excluding
+    GBER-based support.
+  value: EUR 300,000 per recipient per 3 years (de minimis)
+  intake_field: turnoverBand
+  quote: Maximum permitted support of minor importance is 300,000 euros per recipient during
+    the last three years.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g6-deminimis-group-aggregation
+  gate_family: G6_conditionality
+  requirement: When calculating the de minimis ceiling, all minor support granted to the group
+    (all group entities) must be aggregated; GBER-based support is excluded from this calculation.
+  value: group-wide aggregation of de minimis, excluding GBER aid
+  intake_field: institutionalOwner
+  quote: funding for other parts of the group must also be included in this calculation. However,
+    if you have received support according to GBER, you should not count on this.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g6-deminimis-declaration
+  gate_family: G6_conditionality
+  requirement: Applicants for minor (de minimis) support must submit a statement declaring
+    the amount of such support received in the previous three years.
+  value: declaration of prior de minimis aid required
+  intake_field: conditionality
+  quote: Anyone applying for minor support must submit a statement of how much support of
+    this type they have been granted in the three previous years.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 3
+  verified: llm_cited
+obligations:
+- requirement: Organisations with both economic and non-economic activities must keep separate
+    accounts for each to exclude the non-economic activity from state aid rules.
+  quote: If an organisation has both economic and non-economic activities, the aid granted
+    to the non-economic activity is not covered by the State aid rules, provided that the
+    accounts of the economic and non-economic activities are kept separate from each other.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: If an audit finds that accounts were not kept separate or that the grant benefited
+    economic activity, the recipient may be required to repay the entire grant plus interest.
+  quote: If an audit reveals that there is no separate accounting or that the grant has benefited
+    the economic activity, the recipient may be liable to repay the entire grant plus interest.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 2
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: All minor (de minimis) support granted under the minor support ordinance, including
+    to other parts of the recipient's group, must be aggregated over the rolling three-year
+    period; support already granted under GBER is not counted toward this de minimis ceiling.
+  quote: In order to calculate the maximum allowable support, all funding granted under the
+    Ordinance on minor support must be added together. funding for other parts of the group
+    must also be included in this calculation. However, if you have received support according
+    to GBER, you should not count on this.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 3
+  verified: llm_cited
+application:
+  channel: Applications are submitted in response to specific calls for proposals listed on
+    Vinnova's website; de minimis declarations are submitted as part of the application.
+  typical_timeline: Not specified
+  quote: If you have any questions, please contact the person who's responsible for the call.
+    The person responsible for the call is stated on the respective call page.
+  source:
+    file: vinnova_state_aid_rules.html
+    locator: chunk 3
+  verified: llm_cited

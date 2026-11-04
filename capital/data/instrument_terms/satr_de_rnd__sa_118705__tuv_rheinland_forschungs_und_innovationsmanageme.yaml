@@ -1,0 +1,63 @@
+id: satr_de_rnd__sa_118705__tuv_rheinland_forschungs_und_innovationsmanageme
+name: Richtlinie zur Förderung von Forschungs- und Entwicklungsprojekten im Förderprogramm „DNS der zukunftsfähigen
+  Mobilität. Digital – Nachhaltig – Systemfähig“ [BMWK IVA3]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-applicant-type
+  gate_family: G1_nexus
+  requirement: Applicants are commercial enterprises, in particular private-law legal entities and entrepreneurially
+    active partnerships, with special consideration given to SME participation.
+  value: Commercial enterprises (private-law entities/partnerships); SMEs favoured
+  intake_field: borrowerModel
+  quote: Antragsberechtigt sind Unternehmen der gewerblichen Wirtschaft, insbesondere juristische Personen
+    des Privatrechts und unternehmerisch tätige Personengesellschaften; besondere Berücksichtigung findet
+    dabei die Beteiligung kleiner und mittlerer Unternehmen (KMU).
+  source:
+    file: https://bundesanzeiger.de/pub/publication/IbduZLiUMG3k7XBzj0C/content/IbduZLiUMG3k7XBzj0C/BAnz%20AT%2003.12.2024%20B1.pdf?inline=
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-sme-definition
+  gate_family: G2_size_ownership
+  requirement: SMEs within the meaning of this funding guideline are enterprises meeting the EU SME definition.
+  value: SME per EU definition
+  intake_field: fteBand
+  quote: KMU im Sinne dieser Förderrichtlinie sind Unternehmen, die die Voraussetzungen der KMU-Definition
+    der Europäischen Union erfüllen.
+  source:
+    file: https://bundesanzeiger.de/pub/publication/IbduZLiUMG3k7XBzj0C/content/IbduZLiUMG3k7XBzj0C/BAnz%20AT%2003.12.2024%20B1.pdf?inline=
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-other-eligible-orgs
+  gate_family: G1_nexus
+  requirement: Universities, non-university research institutions, associations, clubs, foundations, municipal
+    business associations, education providers, regional authorities, municipal associations, and other
+    public-law bodies with recognised competence in the vehicle industry are also eligible to apply.
+  value: Universities/research bodies/associations w/ vehicle-industry competence also eligible
+  intake_field: borrowerModel
+  quote: Ferner sind Hochschulen, außeruniversitäre Forschungseinrichtungen, Verbände, Vereine, Stiftungen,
+    kommunale Wirtschaftsverbände, Bildungsträger, Gebietskörperschaften, Kommunalverbände und andere
+    Körperschaften öffentlichen Rechts, die jeweils über ausgewiesene Kompetenzen im Bereich der Fahrzeugindustrie
+    verfügen, antragsberechtigt.
+  source:
+    file: https://bundesanzeiger.de/pub/publication/IbduZLiUMG3k7XBzj0C/content/IbduZLiUMG3k7XBzj0C/BAnz%20AT%2003.12.2024%20B1.pdf?inline=
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-germany-establishment
+  gate_family: G1_nexus
+  requirement: At the time the grant is paid out, the recipient must have an establishment or branch in
+    Germany.
+  value: Establishment/branch in Germany required at payout
+  intake_field: entityCountries
+  quote: Zum Zeitpunkt der Auszahlung der gewährten Zuwendung wird das Vorhandensein einer Betriebsstätte
+    oder Niederlassung in Deutschland verlangt.
+  source:
+    file: https://bundesanzeiger.de/pub/publication/IbduZLiUMG3k7XBzj0C/content/IbduZLiUMG3k7XBzj0C/BAnz%20AT%2003.12.2024%20B1.pdf?inline=
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

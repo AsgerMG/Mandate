@@ -1,0 +1,52 @@
+id: eifo_coinvest
+name: eifo_coinvest
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Applicant must be a Danish company
+  value: Danish company
+  intake_field: entityCountries
+  quote: We offer co-financing to Danish companies from initial sale to scaling, to change
+    of ownership, and expansions abroad etc.
+  source:
+    file: eifo_matchloan_coinvest.html
+    locator: '#chunk 2'
+  verified: llm_cited
+- id: g2
+  gate_family: G4_borrower_model
+  requirement: Financing is offered as a mix of loans, guarantees and equity capital solutions
+    (co-financing/co-investment)
+  value: loans, guarantees, equity
+  intake_field: borrowerModel
+  quote: With a broad palette of both loans, guarantees and equity capital solutions we are
+    ready to help your company or someone you advise to move on to the next step of the growth
+    journey.
+  source:
+    file: eifo_matchloan_coinvest.html
+    locator: '#chunk 2'
+  verified: llm_cited
+obligations:
+- requirement: Application must be submitted via the Customer Portal and include relevant
+    supporting materials such as business plan, pitch deck and budget materials
+  quote: The application must include relevant materials such as business plan, pitch deck
+    and budget materials.
+  source:
+    file: eifo_matchloan_coinvest.html
+    locator: '#chunk 2'
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (2/2 gates, 1/1 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Customer Portal
+  typical_timeline: ''
+  quote: Once you have identified the type of financing that you require, you can submit your
+    application through the Customer Portal which is EIFO’s common portal for applications.
+  source:
+    file: eifo_matchloan_coinvest.html
+    locator: '#chunk 2'
+  verified: llm_cited

@@ -1,0 +1,248 @@
+id: eic_accelerator
+name: eic_accelerator
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_1
+  gate_family: G1_nexus
+  requirement: Applicant must be from an EU Member State or a country associated to the Horizon
+    Europe programme.
+  value: EU Member State or Horizon Europe associated country
+  intake_field: entityCountries
+  quote: Applicants from EU Member States and countries associated to the Horizon Europe programme
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, Who can apply?
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Applicants from EU Member States and countries
+    ass'''
+- id: g1_2
+  gate_family: G1_nexus
+  requirement: Applicants from third countries may relocate their company to become eligible,
+    and must do so before submitting the full application (Step 2).
+  value: Third-country applicants must relocate before full proposal submission
+  intake_field: wouldOpenEntity
+  quote: Applicants from third countries may relocate their company in order to become eligible.
+    This must be done before submitting the full application (Step 2).
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, Who can apply?
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Applicants from third countries may relocate
+    their'''
+- id: g1_3
+  gate_family: G1_nexus
+  requirement: Applicants from the United Kingdom can only apply for the grant only scheme.
+  value: UK applicants restricted to grant only scheme
+  intake_field: entityCountries
+  quote: Applicants from the United Kingdom can only apply for the "grant only" scheme
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, Who can apply?
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Applicants from the United Kingdom can only
+    apply '''
+- id: g1_4
+  gate_family: G1_nexus
+  requirement: Applicants may submit only one application to the EIC Accelerator at a time;
+    additional applications may be submitted only after receiving results of the original
+    submission.
+  value: One concurrent application only
+  intake_field: none
+  quote: Applicants may submit only one application to the EIC Accelerator. Additional applications
+    can be submitted after receiving the results of the original submission.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, Who can apply?
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Applicants may submit only one application
+    to the '''
+- id: g2_1
+  gate_family: G2_size_ownership
+  requirement: Eligible applicants are single start-ups or SMEs (including spin-outs).
+  value: SME or start-up (including spin-outs)
+  intake_field: borrowerModel
+  quote: Single start-up or SME (including spin-outs)
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, Who can apply?
+  verified: llm_cited
+- id: g2_2
+  gate_family: G2_size_ownership
+  requirement: Small mid-caps (up to 499 employees) in need of rapid scale up of TRL 9 activity
+    are eligible but may apply for investment only.
+  value: Small mid-caps up to 499 employees, investment only
+  intake_field: fteBand
+  quote: Small mid-caps (up to 499 employees) in need of rapid scale up of the TRL 9 activity.
+    Mid-caps can apply for investment only.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, Who can apply?
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Small mid-caps (up to 499 employees) in need
+    of ra'''
+- id: g2_3
+  gate_family: G2_size_ownership
+  requirement: Natural persons or legal entities intending to set up an SME or mid-cap are
+    eligible applicants.
+  value: Natural/legal persons willing to set up SME or mid-cap
+  intake_field: borrowerModel
+  quote: Natural persons or legal entities willing to set up an SMEs or a mid-cap.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, Who can apply?
+  verified: llm_cited
+- id: g2_4
+  gate_family: G2_size_ownership
+  requirement: Small mid-caps can apply for equity investment only, not the grant component.
+  value: 'Small mid-caps: equity only'
+  intake_field: borrowerModel
+  quote: individuals intending to launch a SME and small mid-caps (can apply for equity only)
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, What for/Who can apply
+  verified: llm_cited
+- id: g4_1
+  gate_family: G4_borrower_model
+  requirement: The grant component is a lump sum contribution below EUR 2.5 million for innovation
+    activities (TRL 6-8), to be completed within 24 months, and provided only once during
+    the 2021-2027 implementation period.
+  value: Grant lump sum < €2.5 million, TRL 6-8, 24 months, once only
+  intake_field: ticketBand
+  quote: Lump sum contribution below € 2.5 million , for innovation activities (TRL 6-8),
+    to be completed within 24 months. Grant only - for start-ups and SMEs with capacity to
+    scale-up. To be provided only once during the implementation period of the Horizon Europe
+    programme (2021-2027)
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, What is the EIC Accelerator?
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Lump sum contribution below € 2.5 million ,
+    for in'''
+- id: g4_2
+  gate_family: G4_borrower_model
+  requirement: The investment component ranges from €1-€10 million, delivered as blended finance
+    (grant plus direct equity or quasi-equity) or as investment-only for companies not needing
+    a grant.
+  value: Investment component €1-€10 million, blended or investment-only
+  intake_field: borrowerModel
+  quote: 'To fill the gap for high - risk innovation to a stage where they can be fully financed
+    by other investments. €1 - €10 million . Higher amounts available in STEP ScaleUP . Blended
+    finance:  a grant component & direct equity or quasi-equity such as convertible loans.
+    Investment only: for companies looking to scale-up rapidly and don’t need a grant'
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, What is the EIC Accelerator?
+  verified: false
+  verify_note: 'fragment not found verbatim: ''To fill the gap for high - risk innovation
+    to a st'''
+- id: g4_3
+  gate_family: G4_borrower_model
+  requirement: After Step 2 approval, blended finance applicants can negotiate a raise of
+    maximum €2 million in additional flexibility before due diligence.
+  value: Blended finance negotiation cap of €2 million additional flexibility
+  intake_field: ticketBand
+  quote: 'Blended finance:  you can use the additional flexibility of the investment component
+    and negotiate a raise of maximum € 2 million'
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 2, Step 4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Blended finance:  you can use the additional
+    flexi'''
+- id: g5_1
+  gate_family: G5_use_of_funds
+  requirement: Funding targets innovation activities at TRL 6-8 with potential to create or
+    disrupt markets, following the patient capital principle.
+  value: TRL 6-8 innovation activities
+  intake_field: developmentStage
+  quote: Develop and scaleup innovations with the potential to create or disrupt markets (TRL
+    6-8). Patient capital principle.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, What for
+  verified: llm_cited
+- id: g3_1
+  gate_family: G3_financial
+  requirement: Applicants may apply for grant funding below €2.5 million and/or investment
+    funding of €1-€10 million (higher in STEP ScaleUp).
+  value: Grant < €2.5M; investment €1-€10M
+  intake_field: ticketBand
+  quote: Grant component below EUR 2.5 million. Up to € 10 million of equity investments,
+    coaching & mentoring, networking.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, What you get
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Grant component below EUR 2.5 million. Up to
+    € 10 '''
+- id: g6_1
+  gate_family: G6_conditionality
+  requirement: Applications must pass through a three-step selection process (short proposal,
+    full proposal, EIC Jury interview), each step required to access the next.
+  value: 3-step sequential evaluation process
+  intake_field: conditionality
+  quote: 'EIC Accelerator selection process comprises 3 steps. Each step passed successfully
+    give access to the next step: Writing a short proposal Submission of a full proposal Face
+    to face interview with the EIC Jury'
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 1, Extensive support
+  verified: false
+  verify_note: 'fragment not found verbatim: ''EIC Accelerator selection process comprises
+    3 step'''
+- id: g6_2
+  gate_family: G6_conditionality
+  requirement: Applications scoring at least 13/15 at remote evaluation but not selected for
+    interview or funding receive a Seal of Excellence (and STEP seal if applying to Challenges)
+    to help secure funding elsewhere.
+  value: Seal of Excellence at 13/15 threshold
+  intake_field: conditionality
+  quote: Applications that reach the minimum threshold of 13/15 at the remote evaluation stage
+    but are not invited to interview as well as the proposals which are not recommended selected
+    for funding by the EIC jury will be awarded a  Seal of Excellence  (and STEP seal if applying
+    to the Challenges) to help them secure funding from other sources.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 2, after Step 4
+  verified: llm_cited
+obligations:
+- requirement: Fast Track proposals resulting from existing Horizon Europe or Horizon 2020
+    projects can submit directly to the full application stage, subject to a review of the
+    ongoing project.
+  quote: The Fast Track  scheme allows specific treatment of proposals that result from existing
+    Horizon Europe or Horizon 2020 projects. Such projects can submit projects directly to
+    the full application stage of the EIC Accelerator subject to a review of the ongoing project.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 2, Direct submissions
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The Fast Track  scheme allows specific treatment
+    o'''
+- requirement: Plug-In scheme applies to proposals resulting from certified national or regional
+    programmes (50 programmes certified so far).
+  quote: The Plug-In scheme is equivalent to the Fast Track, except that it applies to proposals
+    that result from existing national or regional programmes. So far, 50 programmes have
+    been certified  for the scheme.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 2, Direct submissions
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The Plug-In scheme is equivalent to the Fast
+    Track'''
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (5/15 gates, 0/2 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Funding and Tenders portal, via short proposal then full proposal then EIC Jury
+    interview
+  typical_timeline: Short proposal feedback in ~4-6 weeks; full proposal results within 8-9
+    weeks after batching; interview results within 2-3 weeks of interview week; investment
+    component decided within 2-6 months
+  quote: You will normally receive feedback within approximately 4-6 weeks.
+  source:
+    file: eic_accelerator_eligibility.html
+    locator: chunk 2, Step 1
+  verified: false

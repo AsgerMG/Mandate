@@ -1,0 +1,47 @@
+id: satr_sk_rnd__sa_114888__slovenska_inovacna_a_energeticka_agentura
+name: Schéma štátnej pomoci na podporu energie z obnoviteľných zdrojov energie, obnoviteľného vodíka a
+  vysokoúčinnej kogenerácie
+administering_body: see source document
+country: SK
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-only
+  gate_family: G2_size_ownership
+  requirement: Only micro, small and medium-sized enterprises are eligible.
+  value: SME only
+  intake_field: turnoverBand
+  quote: Mikro, malé a stredné podniky
+  source:
+    file: https://zelenapodnikom.sk/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-eligible-legal-forms
+  gate_family: G1_nexus
+  requirement: Eligible legal forms are legal entities, self-employed persons, tradespeople, and energy
+    cooperatives/energy communities.
+  value: Legal entity, self-employed, tradesperson, or energy cooperative/community
+  intake_field: borrowerModel
+  quote: právnické osoby, samostatne zárobkovo činné osoby, živnostníci, ako aj energetické družstvá a
+    energetické spoločenstvá
+  source:
+    file: https://zelenapodnikom.sk/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-agriculture-excluded
+  gate_family: G5_use_of_funds
+  requirement: Agriculture is excluded from support.
+  value: Agriculture sector excluded
+  intake_field: none
+  quote: Poľnohospodárstvo je z podpory vylúčené.
+  source:
+    file: https://zelenapodnikom.sk/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually by analyst read of eligibility_text (3/3 gates passed mechanical verbatim-substring
+  check -> llm_cited).

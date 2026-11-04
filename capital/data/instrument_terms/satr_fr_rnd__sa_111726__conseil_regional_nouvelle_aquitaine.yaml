@@ -1,0 +1,53 @@
+id: satr_fr_rnd__sa_111726__conseil_regional_nouvelle_aquitaine
+name: Régime cadre exempté relatif aux aides en faveur de la protection de l'environnement
+  pour la période 2024-2026
+administering_body: see source document
+country: 'FR'
+capital_type: unknown
+status: draft
+gates:
+- id: g2-size-location
+  gate_family: G2_size_ownership
+  requirement: The call is open as a priority to production TPE, PME and ETI located in the
+    Nouvelle-Aquitaine region.
+  value: Priority to production TPE/PME/ETI in Nouvelle-Aquitaine
+  intake_field: turnoverBand
+  quote: L'appel à projets est ouvert en priorité aux TPE, PME et ETI de production situées
+    en région Nouvelle-Aquitaine.
+  source:
+    file: https://les-aides.fr/aide/SShv3w/region-nouvelle-aquitaine/appel-a-projets-competitivite-energetique.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g5-project-scope
+  gate_family: G5_use_of_funds
+  requirement: Actions must concern measuring energy consumption, reducing energy needs, or
+    substituting fossil energy with renewable energy.
+  value: Scope limited to energy measurement/reduction/renewable substitution
+  intake_field: none
+  quote: Les actions doivent porter sur la mesure de la consommation énergétique, la
+    réduction des besoins énergétiques, ou la substitution des énergies fossiles par des
+    énergies renouvelables.
+  source:
+    file: https://les-aides.fr/aide/SShv3w/region-nouvelle-aquitaine/appel-a-projets-competitivite-energetique.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-min-reduction-threshold
+  gate_family: G6_conditionality
+  requirement: Projects must achieve at least a 10% reduction in energy consumption or a
+    substitution of fossil energy at the industrial site, and must include an energy audit
+    less than 2 years old.
+  value: 'Min 10% energy reduction/substitution + audit <2 years old required'
+  intake_field: none
+  quote: Les projets doivent permettre une réduction d'au moins 10% de la consommation
+    d'énergie ou une substitution des énergies fossiles au niveau du site industriel, et
+    inclure un audit énergétique de moins de 2 ans.
+  source:
+    file: https://les-aides.fr/aide/SShv3w/region-nouvelle-aquitaine/appel-a-projets-competitivite-energetique.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

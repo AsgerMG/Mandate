@@ -1,0 +1,65 @@
+(node:8052) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+recall set: __recallSetDoors.json  7,095 pairs, 661 instruments nameable, 1,366 leak-free descriptions
+  answer key, 7,095 pairs:
+    GRADED          6083 (85.7%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        1012 (14.3%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+corpus=postgres instruments=1088 at 2026-08-09T21:32:06.839Z
+ranker: all 245 request(s) on EMBEDDING
+set=__recallSetDoors.json split=tune replayed 250
+won leaf inside the memo pool (top 18): 123/250
+
+██ VER-BLOCKED on a fund the register says the company WON: 7 ██
+
+── SURVIVES REAL ANSWERS? (the confound, resolved per case) ──
+  YES — defect: rule, evidence or attribution      4  57.1%
+  NO  — artefact of an invented answer (-> open)   3  42.9%
+
+── HOW THE BLOCK WAS REACHED ──
+  one CITED STRUCTURAL failure (the documented rule)   4  57.1%
+  >=2 blockers of any tier (condemns uncited)      3  42.9%
+
+── DECIDING FIELD(S) ──
+  sector                                           4  57.1%
+  ticketBand                                       2  28.6%
+  consortium+ticketBand                            1  14.3%
+
+── EVIDENCE TIER OF THE DECIDING GATE(S) ──
+  llm_cited                                        4  57.1%
+  llm_2pass                                        3  42.9%
+
+── CONCENTRATION ──
+  7 blocks across 6 regimes and 6 countries
+    innovate_uk                                        2
+    eis_turismisektori_tarkvarad                       1
+    bpifrance_innovup_leader_idf                       1
+    eit_manufacturing                                  1
+    vinnova_grant                                      1
+    satr_it_equity                                     1
+
+── EVERY CASE (all 7, not a sample) ──
+  DEFECT  eis_turismisektori_tarkvarad       EE  pool#17  AS WASA
+        sector             structural CITED   llm_cited            *STANDS*  Applicant must be a tourism service provider as defined by the listed tourism 
+        useOfFunds         choice     CITED   llm_cited             Grant may be used for software licence purchase (once), one-off software integ
+  artefact innovate_uk                        GB  pool# 3  AILSEVAX
+        ticketBand         choice     CITED   llm_2pass             Projects of 6 to 18 months must have total eligible project costs between £100
+        ticketBand         choice     CITED   llm_2pass             Projects of 19 to 24 months must have total eligible project costs between £10
+  artefact bpifrance_innovup_leader_idf       FR  pool# 3  2SPARK- SYFADIS
+        consortium         choice     CITED   llm_2pass             Only individual projects carried by a single company are eligible (no consorti
+        ticketBand         choice     CITED   llm_2pass             The public support sought/granted must be between €75,000 and €500,000.
+  artefact innovate_uk                        GB  pool# 3  BOURNEMOUTH UNIVERSITY
+        ticketBand         choice     CITED   llm_2pass             Projects of 6 to 18 months must have total eligible project costs between £100
+        ticketBand         choice     CITED   llm_2pass             Projects of 19 to 24 months must have total eligible project costs between £10
+  DEFECT  eit_manufacturing_boostup          AT  pool# 8  Convergent Information Techn
+        sector             structural CITED   llm_cited            *STANDS*  Applicant must offer a solution in the realm of manufacturing technologies.
+  DEFECT  vinnova_grant__avancerad_digitalisering_eb7eab SE  pool#10  ASTAZERO AB
+        sector             structural CITED   llm_cited            *STANDS*  At least one consortium member must be an energy-intensive industrial company
+  DEFECT  satr_it_equity__sa_118758__invitalia_agenzia_nazionale_per_l_attrazione_deg IT  pool# 5  TERMINIO FRUTTA E ALIMENTARI
+        sector             structural CITED   llm_cited            *STANDS*  Programmes must be aimed at manufacturing activities or business services acti
+        useOfFunds         choice     CITED   llm_cited             Eligible projects are investment programmes using Transition 4.0 enabling tech
+
+wrote /tmp/wsct_blocks_after.json

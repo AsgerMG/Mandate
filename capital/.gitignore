@@ -1,0 +1,67 @@
+__pycache__/
+*.pyc
+*.pyo
+data/backups/
+.DS_Store
+
+# Claude Code config — per-user local state is ignored, but the agent harness
+# (agents, skills, slash commands, hooks) is shared project infrastructure and IS tracked.
+.claude/*
+!.claude/agents/
+!.claude/skills/
+!.claude/commands/
+!.claude/hooks/
+
+# SQLite database is a generated build artifact, never committed (330MB+,
+# exceeds GitHub's 100MB limit). Rebuilt by the ETL pipeline + backed up separately.
+# Covers the DB in data/ and its WAL/SHM sidecar files.
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+data/db.sqlite
+
+# Source data: raw API/HTML caches and derived intermediates are generated build
+# artifacts (600MB+), not version-controlled. They are reproducible by re-running
+# ETL/extract/extract_*.py and are backed up separately (see README, backup strategy).
+# The website never reads these; it only reads website/frontend/public/data/*.json.
+data/raw/
+data/processed/
+
+# Recorded model replies (scripts/rankerCache.ts). Local, and deliberately so:
+# it is a SPEED artefact, not a source of truth, and committing raw replies
+# would put megabytes of prompt text under review for no reader's benefit. It
+# lives in the PRIMARY checkout so every agent worktree shares one copy -- a
+# reply paid for once is free everywhere. Losing it costs a re-record, not a
+# result: the per-case tapes carry the findings.
+data/ranker_cache/
+
+# Playwright browser binary cache
+.playwright/
+
+# Local secrets (never commit)
+.env
+.env.local
+.env.*
+!.env.example
+
+# local debugging scratch
+website/frontend/.scratch/
+
+# wsN2: cached CC0 open-data pulls and derived id lists, reproducible in minutes
+.cache/
+publishable_ids.json
+harvest_candidates.json
+boilerplate_verdict.json
+
+# wsN2 worktree: gitignored shared state, symlinked to the main checkout
+data
+.env.local
+
+# Throwaway DB probes. Analysis, not product; the findings go to project-mgmt/.
+website/frontend/scratch/
+
+# wsCF: verified Postgres dumps from ETL/lib/backup_postgres.py. 123 MB today
+# and growing every time it runs. Never a commit, and -- because `railway up`
+# honours .gitignore -- never an upload either. See .dockerignore for the other
+# half: the image build must not bake a database backup into a layer.
+postgres-backup/

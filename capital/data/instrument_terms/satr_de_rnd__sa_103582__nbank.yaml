@@ -1,0 +1,50 @@
+id: satr_de_rnd__sa_103582__nbank
+name: Richtlinie über die Gewährung von Zuwendungen zur Förderung im Rahmen des Niedersächsischen Innovationsförderprogramms
+  für Forschung und Entwicklung in Unternehmen [NI]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-and-smallmidcap
+  gate_family: G2_size_ownership
+  requirement: Recipients are SMEs of the commercial economy and small companies with a mid-size market
+    capitalisation, together with cooperating research institutions.
+  value: SMEs and small mid-caps, plus cooperating research institutions
+  intake_field: turnoverBand
+  quote: Zuwendungsempfänger sind kleine und mittlere Unternehmen der gewerblichen Wirtschaft (KMU), kleine
+    Unternehmen mit mittelgroßer Marktkapitalisierung sowie mit diesen kooperierende Forschungseinrichtungen.
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Innovationsf%C3%B6rderprogramm-f%C3%BCr-Forschung-und-Entwicklung-in-Unternehmen-(IFP).html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-niedersachsen-establishment
+  gate_family: G1_nexus
+  requirement: Only applicants operating an establishment in Niedersachsen are entitled to apply.
+  value: Establishment in Niedersachsen required (applicant)
+  intake_field: entityCountries
+  quote: Antragsberechtigt sind ausschließlich Antragsteller, die eine Betriebsstätte in Niedersachsen
+    betreiben.
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Innovationsf%C3%B6rderprogramm-f%C3%BCr-Forschung-und-Entwicklung-in-Unternehmen-(IFP).html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-partner-establishment
+  gate_family: G1_nexus
+  requirement: Cooperating research institutions must generally have an establishment participating in
+    the project located in Niedersachsen.
+  value: Research partner also needs Niedersachsen establishment
+  intake_field: entityCountries
+  quote: Kooperierende Forschungseinrichtungen müssen grundsätzlich eine am Vorhaben beteiligte Betriebsstätte
+    in Niedersachsen haben.
+  source:
+    file: https://www.nbank.de/F%C3%B6rderprogramme/Aktuelle-F%C3%B6rderprogramme/Innovationsf%C3%B6rderprogramm-f%C3%BCr-Forschung-und-Entwicklung-in-Unternehmen-(IFP).html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

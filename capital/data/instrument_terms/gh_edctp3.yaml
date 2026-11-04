@@ -1,0 +1,344 @@
+id: gh_edctp3
+name: gh_edctp3
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-countries
+  gate_family: G1_nexus
+  requirement: Applicants must be established in an EU Member State (incl. outermost regions),
+    an OCT linked to a Member State, a country associated to Horizon Europe, a country in
+    transitional association arrangements, or a constituent state of the EDCTP Association
+    (sub-Saharan Africa).
+  value: EU/associated/OCT/EDCTP Association SSA member states
+  intake_field: entityCountries
+  quote: 'To be eligible for funding, applicants must be established in one of the following
+    countries:'
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.57
+  verified: llm_cited
+- id: g1-third-country-essential
+  gate_family: G1_nexus
+  requirement: Legal entities established in non-listed countries (incl. LMICs not EDCTP Association
+    members) may be eligible only if provided for in specific call conditions or if participation
+    is deemed essential by the granting authority.
+  value: Non-listed countries eligible only if essential/permitted
+  intake_field: entityCountries
+  quote: Legal entities which are established in countries not listed above (including in
+    low-and middle-income countries that are not members of the EDCTP Association) will be
+    eligible for funding if provided for in the specific call topic conditions, or if their
+    participation is considered essential for implementing the action by the granting authority.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.57-58
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Legal entities which are established in countries
+    '''
+- id: g1-coordinator-third-country-rule
+  gate_family: G1_nexus
+  requirement: Where entities from a third country without a financial-interest-protection
+    agreement participate with funding, the coordinator of the action must be established
+    in a Member State, an associated country, or South Africa.
+  value: Coordinator must be in MS/associated country/South Africa
+  intake_field: entityCountries
+  quote: the coordinator of the indirect action must be established in a Member State or associated
+    country, or South Africa.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.58
+  verified: llm_cited
+- id: g2-consortium-min-partners
+  gate_family: G2_size_ownership
+  requirement: Consortium must include at least three independent legal entities each established
+    in a different eligible country.
+  value: Minimum 3 independent legal entities, different countries
+  intake_field: consortium
+  quote: At least three legal entities independent from each other and each established in
+    a different country, where legal entities are eligible to receive funding;
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.58
+  verified: llm_cited
+- id: g2-consortium-eu-partner
+  gate_family: G2_size_ownership
+  requirement: Consortium must include at least one independent legal entity established in
+    an EU Member State or a Horizon Europe associated country that is a member of the EDCTP
+    Association.
+  value: At least 1 EU/associated-country EDCTP Association member
+  intake_field: consortium
+  quote: At least one independent legal entity established in a Member State, or in an associated
+    country to Horizon Europe that is a member of the EDCTP Association; and
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.58
+  verified: llm_cited
+- id: g2-consortium-ssa-partner
+  gate_family: G2_size_ownership
+  requirement: Consortium must include at least one independent legal entity established in
+    a sub-Saharan African country that is a member of the EDCTP Association.
+  value: At least 1 SSA EDCTP Association member
+  intake_field: consortium
+  quote: At least one independent legal entity established in a sub-Saharan African country
+    that is a member of the EDCTP Association.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.58
+  verified: llm_cited
+- id: g2-south-north-partner-obligation
+  gate_family: G2_size_ownership
+  requirement: All topics require at least one partner from EU/Horizon-Europe-associated countries
+    that is an EDCTP Association member and at least one partner from SSA countries that are
+    EDCTP Association members.
+  value: South-North networking partner obligation
+  intake_field: consortium
+  quote: the obligation to have at least one partner from EU member states or countries associated
+    to Horizon Europe that is a member of the EDCTP Association and at least one partner from
+    SSA countries that are members of the EDCTP Association.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.13
+  verified: llm_cited
+- id: g2-edctp-assoc-not-counted
+  gate_family: G2_size_ownership
+  requirement: Where the EDCTP Association is included as coordinator for certain CSA topics,
+    it must not be counted as one of the three independent legal entities required for consortium
+    eligibility.
+  value: EDCTP Association excluded from 3-entity minimum count
+  intake_field: consortium
+  quote: the EDCTP Association must not be counted as one of the three independent legal entities
+    necessary to ensure the eligibility of the consortium composition.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.58
+  verified: llm_cited
+- id: g4-action-type
+  gate_family: G4_borrower_model
+  requirement: Funding instrument is a Research and Innovation Action (RIA) or Coordination
+    and Support Action (CSA) grant, not a loan or equity instrument.
+  value: RIA / CSA grant
+  intake_field: borrowerModel
+  quote: Type of action Research and Innovation Action (RIA)
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.66
+  verified: llm_cited
+- id: g4-lump-sum-csa
+  gate_family: G4_borrower_model
+  requirement: For certain CSA topics, eligible costs take the form of a lump sum as defined
+    under the Horizon Europe simplified costs decision, rather than actual cost reimbursement.
+  value: Lump sum funding for specified CSA topics
+  intake_field: borrowerModel
+  quote: Eligible costs will take the form of a lump sum as defined in the Decision of 7 July
+    2021 authorising the use of lump sum contributions under the Horizon Europe Programme
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.91
+  verified: llm_cited
+- id: g3-ju-contribution-per-project
+  gate_family: G3_financial
+  requirement: Expected JU contribution per project is up to EUR 10 million, to be matched
+    by equal or greater contributing-partner co-financing.
+  value: Up to EUR 10 million per project, matched co-financing
+  intake_field: cofinancingBand
+  quote: Global Health EDCTP3 estimates that a JU contribution of up to EUR 10 million per
+    project to be matched by an equal or greater financial and/or in-kind contribution from
+    contributing partners, would allow the outcomes of this topic to be addressed appropriately.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.66
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Global Health EDCTP3 estimates that a JU contribut'''
+- id: g3-topic-indicative-budget
+  gate_family: G3_financial
+  requirement: Total indicative JU budget for the topic is EUR 30 million.
+  value: EUR 30 million total topic budget
+  intake_field: ticketBand
+  quote: The total indicative JU budget for the topic is EUR 30 million.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.66
+  verified: llm_cited
+- id: g3-third-party-support-cap
+  gate_family: G3_financial
+  requirement: Financial support to third parties is capped at EUR 60,000 per third party.
+  value: Max EUR 60,000 per third party
+  intake_field: ticketBand
+  quote: 'The maximum amount to be granted to each third party is EUR
+
+    60,000.'
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.91
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The maximum amount to be granted to each third
+    par'''
+- id: g5-clinical-trial-ssa-scope
+  gate_family: G5_use_of_funds
+  requirement: Proposals must include one or more clinical trials conducted in sub-Saharan
+    Africa, supported by regulatory approval/access strategy or policy uptake plans.
+  value: Clinical trial(s) must be conducted in SSA
+  intake_field: none
+  quote: Proposals should include one or more clinical trial(s) to be conducted in SSA. The
+    clinical trial(s) must be supported by an appropriate regulatory approval and access strategy
+    and/or include plans for uptake into policy and practice at national or international
+    level.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.52
+  verified: llm_cited
+- id: g5-preclinical-out-of-scope
+  gate_family: G5_use_of_funds
+  requirement: Preclinical studies are generally out of scope for these topics, though preparatory
+    activities enabling in-scope clinical studies are permitted.
+  value: Preclinical studies excluded; enabling prep activities allowed
+  intake_field: none
+  quote: Preclinical studies are considered out of scope of the topic.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.71
+  verified: llm_cited
+- id: g5-contributing-partner-leverage
+  gate_family: G5_use_of_funds
+  requirement: Proposals under Global Collaboration Actions are expected to leverage financial
+    and/or in-kind contributions from contributing partners, with project components clearly
+    split between JU funding and partner financing.
+  value: Must leverage co-funding from contributing partners
+  intake_field: cofinancingBand
+  quote: proposals submitted are expected to leverage financial and/or in-kind contribution
+    from contributing partners.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.65
+  verified: llm_cited
+- id: g6-scientific-project-leader
+  gate_family: G6_conditionality
+  requirement: If the coordinator is not established in an SSA country, designation of a scientific
+    project leader established in an SSA EDCTP Association member country is mandatory, with
+    a dedicated work package and budget.
+  value: Mandatory SSA scientific project leader if coordinator non-SSA
+  intake_field: conditionality
+  quote: If the coordinator is not established in a country in SSA (please see previous paragraph),
+    the designation of a scientific project leader established in a SSA country member of
+    the EDCTP Association with the roles as described below is mandatory.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.59
+  verified: llm_cited
+- id: g6-affordable-access-plan
+  gate_family: G6_conditionality
+  requirement: Grantees must include an appropriate and proportionate access plan in their
+    Plan for Exploitation and Dissemination of Results, ensuring products/services are affordable,
+    available and accessible at fair and reasonable conditions.
+  value: Mandatory affordable access plan deliverable
+  intake_field: conditionality
+  quote: Participants must include in their Plan for the exploitation and dissemination of
+    results105 an appropriate and proportionate access plan that demonstrates their strategies
+    to ensure that the products and services that they develop based or partly based on the
+    results of clinical studies undertaken by their project are affordable, available and
+    accessible to the public (market and end-users) at fair and reasonable conditions.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.102
+  verified: llm_cited
+obligations:
+- requirement: Participants must use best efforts for up to four years after action end to
+    ensure resulting health technologies/services are broadly available and accessible at
+    fair and reasonable conditions, and use the Horizon Results Platform if results unexploited
+    after one year.
+  quote: Participants must – up to four years after the end of the action (see Data Sheet,
+    Point 1) – use their best efforts to ensure that resulting health technologies and services
+    will be broadly available and accessible, as soon as possible and at fair and reasonable
+    conditions.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.102
+  verified: llm_cited
+- requirement: If participants cannot exploit results themselves, they must, if requested,
+    grant non-exclusive licences under fair and reasonable conditions to entities committing
+    to broad exploitation.
+  quote: the participants must (if requested by the granting authority) grant non-exclusive
+    licences - under fair and reasonable conditions - to their results to legal entities that
+    commit to rapidly and broadly exploiting the resulting health technologies and services
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.102-103
+  verified: llm_cited
+- requirement: Any transfer of ownership or licensing of results must pass on the additional
+    exploitation obligations to the receiving legal entities.
+  quote: In case of transfer of the ownership or licensing of results, participants must pass
+    on such additional exploitation obligations to the legal entities exploiting the results.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.103
+  verified: llm_cited
+- requirement: For up to four years after the action, the funding body must be informed annually
+    about product development and exploitation status via an annual report due on each grant
+    agreement anniversary.
+  quote: For up to four years after the action (see Data Sheet, Point 1), the funding body
+    must be informed every year about the status of the development of the product and any
+    other exploitation of the results through an annual report that is due on each anniversary
+    of the end of the grant agreement.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.103
+  verified: llm_cited
+- requirement: Studies must be registered in a WHO-registry-criteria-compliant registry before
+    enrolment of the first subject, and summary results must be posted in the applicable registry
+    regardless of study outcome.
+  quote: Studies must be registered in a registry meeting WHO Registry criteria37 before recruitment
+    of the first subject.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.52
+  verified: llm_cited
+- requirement: Proposals must comply with all ethics requirements and will undergo ethics
+    screening by independent experts if funded.
+  quote: Proposals must comply with all ethics requirements arising out of the research, in
+    line with Article 112 of the Council Regulation 2021/208556.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.56
+  verified: llm_cited
+- requirement: The JU retains the right to object to a transfer of ownership or exclusive
+    licensing of results for up to four years after the action ends.
+  quote: Global Health EDCTP3 may, up to four (4) years after the end of the action, object
+    to a transfer of ownership or to the exclusive licensing of results, as set out in the
+    specific provision of Annex 5
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.59
+  verified: llm_cited
+- requirement: Contributing partners' contributions must correspond to amounts committed in
+    a letter of endorsement submitted before the second-stage application deadline.
+  quote: The contributions from contributing partners should correspond to the amounts they
+    have committed in the letter of endorsement requesting to become a contributing partner
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.66
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (15/18 gates, 8/8 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Not explicitly addressed as a standalone cumulation-with-other-aid clause in the extracted
+    text; contributing partner financial/in-kind contributions are described as matched co-financing
+    rather than cumulation rules under State aid ceilings.
+  quote: Their contributions can consist of financial contributions and/or in-kind contributions.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.66
+  verified: llm_cited
+application:
+  channel: EU Funding & Tenders Portal via EC eGrants IT systems, following Horizon Europe
+    General Annexes procedures, with two-stage or single-stage calls depending on topic.
+  typical_timeline: 'Example: Call opening January 2026, submission deadline for proposals
+    March 2026 (topic-specific); two-stage calls require endorsement letters before second-stage
+    deadline.'
+  quote: For call management, Global Health EDCTP3 will utilise the EC eGrants IT systems
+    available under the EU Funding & Tenders Portal.
+  source:
+    file: gh_edctp3_work_programme_2026.pdf
+    locator: gh_edctp3_work_programme_2026.pdf#p.54
+  verified: llm_cited

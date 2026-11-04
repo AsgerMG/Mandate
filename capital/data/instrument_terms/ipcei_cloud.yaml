@@ -1,0 +1,298 @@
+id: ipcei_cloud
+name: ipcei_cloud
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: The project must involve at least four Member States, and its benefits must
+    extend beyond the financing Member States to a wider part of the Union.
+  value: ≥4 Member States; IPCEI CIS involves 7
+  intake_field: entityCountries
+  quote: at least four Member States must ordinarily be involved in an IPCEI and (ii) its
+    benefits must not be confined to the financing Member States but extend to a wider part
+    of the Union
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.80
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: All Member States must have had a genuine opportunity to participate in the
+    IPCEI initiative via an open procedure.
+  value: Open to all 27 Member States
+  intake_field: entityCountries
+  quote: all Member States were informed and had the opportunity to participate in this initiative
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.80
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Aid must not be granted subject to a condition that the beneficiary have its
+    headquarters in, or be predominantly established in, the granting Member State, nor restrict
+    use of R&D&I results in other Member States.
+  value: No headquarters/establishment or cross-border-use restriction allowed
+  intake_field: entityCountries
+  quote: granting of aid that is subject to the obligation for the beneficiary to have its
+    headquarters in the Member State concerned or to be predominantly established in that
+    Member State
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.67
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: Participating undertakings must not be undertakings in difficulty as defined
+    in the Rescuing and Restructuring Guidelines.
+  value: Not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: the participating undertakings are not undertakings in difficulty as defined in the
+    Guidelines on State aid for rescuing and restructuring non-financial undertakings in difficulty
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.67
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: For SME beneficiaries, receipt of State aid exceeding EUR 50 million (which
+    could exceed the SME turnover threshold of EUR 50 million) is treated as an exceptional
+    circumstance triggering claw-back applicability.
+  value: 'SME turnover ceiling reference: EUR 50 million'
+  intake_field: turnoverBand
+  quote: One of the conditions to qualify as an SME is that the undertaking's annual turnover
+    must not exceed EUR 50 million
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.107
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: The discounted nominal value of aid must not exceed the identified funding
+    gap, and the nominal aid amount must not exceed the eligible costs.
+  value: Aid ≤ min(funding gap NPV, eligible costs nominal)
+  intake_field: turnoverBand
+  quote: The discounted value of the notified aid amounts cannot exceed the funding gap and
+    their nominal value cannot exceed the eligible costs
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.100
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: Total IPCEI CIS eligible costs are approximately EUR 1.6 billion across all
+    participants.
+  value: ~EUR 1.6 billion total eligible costs
+  intake_field: turnoverBand
+  quote: the total IPCEI CIS eligible costs (34) are approximately EUR 1.6 billion
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.64
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: The claw-back mechanism applies only to projects/beneficiaries where the notified
+    nominal aid amount exceeds EUR 50 million per Member State.
+  value: 'Claw-back threshold: >EUR 50 million nominal aid per Member State'
+  intake_field: cofinancingBand
+  quote: The claw-back mechanism will apply to those aid beneficiaries for which the nominal
+    aid amount received, per Member State, is above EUR 50 million.
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.116
+  verified: llm_cited
+- id: G3-04
+  gate_family: G3_financial
+  requirement: Beneficiaries must provide important co-financing; total financing needs are
+    approx. EUR 2.6 billion with beneficiaries co-financing more than EUR 1.3 billion.
+  value: Co-financing >EUR 1.3 billion of EUR 2.6 billion total
+  intake_field: cofinancingBand
+  quote: the beneficiaries will together co-finance more than EUR 1.3 billion in total
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.84
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: The aid to be granted by all Member States will take the form of direct grants.
+  value: Direct grants
+  intake_field: borrowerModel
+  quote: The aid to be granted by all Member States will take the form of direct grants.
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.67
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs must fall within the categories (a) to (h) as set out in the
+    Annex to the IPCEI Communication, covering R&D&I and First Industrial Deployment (FID)
+    activities, excluding mass production or commercial activities.
+  value: Costs limited to R&D&I/FID categories (a)-(h), excluding mass production/commercial
+    activity
+  intake_field: developmentStage
+  quote: For all the individual projects, the eligible costs must fall within the categories
+    listed in points (a) to (h) as set out in the Annex to the IPCEI Communication.
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.101
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: FID phase must not cover mass production or commercial activities; costs after
+    mass-production-readiness KPIs are met are excluded from eligible costs.
+  value: Excludes mass production/commercial activity costs
+  intake_field: developmentStage
+  quote: The Member States demonstrated further that the FID phase does not cover mass production
+    or commercial activities.
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.103
+  verified: llm_cited
+- id: G5-03
+  gate_family: G5_use_of_funds
+  requirement: Aid must not subsidise costs the undertaking would have incurred anyway and
+    must not compensate for normal business risk.
+  value: No subsidy of business-as-usual costs or normal business risk
+  intake_field: developmentStage
+  quote: the aid must not subsidise the costs of a project that an undertaking would anyhow
+    incur and must not compensate for the normal business risk of an economic activity
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.100
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: The application for aid must precede the start of works on the individual project.
+  value: Application must precede start of works
+  intake_field: conditionality
+  quote: the application for aid must precede the start of the works
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.100
+  verified: llm_cited
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: Cumulation with other aid, de minimis aid or Union funding is allowed for the
+    same eligible costs only if total public funding does not exceed the most favourable funding
+    rate under applicable Union law.
+  value: Cumulation capped at most favourable applicable funding rate
+  intake_field: conditionality
+  quote: cumulation with other aid, de minimis aid (37) or Union funding will be allowed to
+    cover the same eligible costs, provided that the total amount of public funding granted
+    in relation to the same eligible costs does not exceed the most favourable funding rate
+    laid down in the applicable rules of Union law
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.68
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: Beneficiaries with outstanding unlawful and incompatible aid must reimburse
+    or place it in a blocked account before receiving new aid under this measure.
+  value: Suspension of aid until earlier unlawful aid is repaid
+  intake_field: conditionality
+  quote: the Member States have furthermore committed to suspend the granting of the notified
+    aid if the beneficiary still has at its disposal earlier unlawful aid that was declared
+    incompatible by a Commission Decision
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.67
+  verified: llm_cited
+- id: G6-04
+  gate_family: G6_conditionality
+  requirement: Aid must not entail a non-severable violation of Union law, including conditions
+    on national goods/services use or restricting cross-border use of results.
+  value: No non-severable breach of Union law
+  intake_field: conditionality
+  quote: aid under IPCEI CIS will not be granted to the participating undertakings if it constitutes
+    by itself, by virtue of the conditions attached to it or of its financing method, a non-severable
+    violation of Union law
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.67
+  verified: llm_cited
+obligations:
+- requirement: Individual projects with significant aid amounts are subject to a claw-back
+    mechanism enabling Member States to reclaim a share of profits if the project is more
+    profitable than forecasted.
+  quote: the Member States must ensure that the individual projects will be subject to a claw-back
+    mechanism, in light of the significant aid amounts involved
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.107
+  verified: llm_cited
+- requirement: The claw-back share is capped at 75% of extra profitability above the beneficiary's
+    cost of capital (WACC).
+  quote: By limiting the share of the extra profits that can be clawed back up to 75% of the
+    extra profitability (see Annex I), the claw-back mechanism notified by the Member States
+    ensures, as provided for by point 36 of the IPCEI Communication, a balanced distribution
+    of additional gains between the Member State and the beneficiaries when the project is
+    more profitable than forecasted
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.107
+  verified: llm_cited
+- requirement: Execution of the project must be subject to regular annual reporting by participating
+    undertakings and Member States on technological advancements, deliverables, spillovers,
+    uptake, and do-no-significant-harm compliance.
+  quote: the execution of IPCEI CIS will be subject to annual reporting by the participating
+    undertakings and the Member States
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.113
+  verified: llm_cited
+- requirement: Member States must report to the Commission on the implementation of the claw-back
+    mechanism within two months after each application of the mechanism.
+  quote: The Member States are required to report to the Commission on the implementation
+    of the claw-back mechanism within two months after each application of that mechanism.
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.69
+  verified: llm_cited
+- requirement: Member States must comply with transparency and publication requirements, publishing
+    the full text of individual aid granting decisions and related information.
+  quote: the Member States have committed to publish in the Commission's transparency award
+    module or on a comprehensive State aid website, at national or regional level, the full
+    text of the individual aid granting decision and its implementing provisions or a link
+    to it
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.69
+  verified: llm_cited
+- requirement: A letter of credit or account-based system must secure repayment obligations
+    under the claw-back mechanism, with the secured amount never negative.
+  quote: A letter of credit (by a reputable financial institution having investment grade
+    rating from a first-rank rating agency) should cover the repayment obligation at the end
+    of the project by the aid beneficiary, from the first year of positive surplus.
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.117
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (17/17 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation with other aid, de minimis aid, or other Union funding covering the same
+    eligible costs is permitted only up to the most favourable funding rate under applicable
+    Union law rules.
+  quote: cumulation with other aid, de minimis aid (37) or Union funding will be allowed to
+    cover the same eligible costs, provided that the total amount of public funding granted
+    in relation to the same eligible costs does not exceed the most favourable funding rate
+    laid down in the applicable rules of Union law, pursuant to point 35 of the IPCEI Communication
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.68
+  verified: llm_cited
+application:
+  channel: National funding agreements concluded following the Commission's approval decision,
+    with Member States as granting authorities (SA.102517 IPCEI decision)
+  typical_timeline: State aid may only be granted after Commission approval and conclusion
+    of national funding agreements; annual reporting thereafter until end of project
+  quote: The granting of State aid will be governed by national funding agreements that are
+    expected to be concluded following the Commission's decision
+  source:
+    file: ipcei_cloud_commission_decision_SA102517.pdf
+    locator: ipcei_cloud_commission_decision_SA102517.pdf#p.70
+  verified: llm_cited

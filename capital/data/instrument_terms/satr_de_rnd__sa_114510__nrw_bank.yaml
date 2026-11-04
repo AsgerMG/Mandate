@@ -1,0 +1,73 @@
+id: satr_de_rnd__sa_114510__nrw_bank
+name: NRW.SeedCon
+administering_body: see source document
+country: 'DE'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-company-type
+  gate_family: G1_nexus
+  requirement: Only non-listed, domestic or foreign small enterprises in the legal form
+    GmbH/UG or an equivalent foreign legal form are funded.
+  value: Non-listed small enterprise, GmbH/UG or equivalent
+  intake_field: turnoverBand
+  quote: Gefördert werden nicht börsennotierte, in- oder ausländische kleine Unternehmen in
+    der Rechtsform GmbH/UG bzw. einer äquivalenten ausländischen Rechtsform.
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/60140/nrwseedcon.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-seat-nrw
+  gate_family: G1_nexus
+  requirement: Registered seat, branch or permanent establishment must be located in North
+    Rhine-Westphalia.
+  value: Seat/branch/establishment must be in NRW
+  intake_field: entityCountries
+  quote: Sitz, Niederlassung oder Betriebsstätte muss in Nordrhein-Westfalen liegen.
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/60140/nrwseedcon.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g2-founding-age
+  gate_family: G2_size_ownership
+  requirement: The company must not have been founded more than 36 months before
+    application, dated from the notarial certification of the founding/partnership
+    agreement.
+  value: Max 36 months since notarised founding
+  intake_field: foundedYear
+  quote: Die Unternehmensgründung darf nicht länger als 36 Monate zurückliegen (Datum der
+    notariellen Beurkundung des Gründungs-/Gesellschaftsvertrags).
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/60140/nrwseedcon.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-no-takeovers
+  gate_family: G1_nexus
+  requirement: Company takeovers are excluded from funding, as are companies with prior
+    profit distributions.
+  value: Excludes takeovers and companies with prior profit distributions
+  intake_field: none
+  quote: Unternehmensübernahmen sind ausgeschlossen, ebenso frühere Gewinnausschüttungen.
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/60140/nrwseedcon.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g1-excluded-sectors
+  gate_family: G1_nexus
+  requirement: Sectors excluded under Article 1 GBER are not eligible, including export
+    activities and primary agriculture.
+  value: Excludes GBER Art. 1 sectors (export, primary agriculture, etc.)
+  intake_field: none
+  quote: Ausgeschlossene Sektoren gemäß Art. 1 AGVO (u.a. Ausfuhr, Primärlandwirtschaft).
+  source:
+    file: https://www.nrwbank.de/de/foerderung/foerderprodukte/60140/nrwseedcon.html
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

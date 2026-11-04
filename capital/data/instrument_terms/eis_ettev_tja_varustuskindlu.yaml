@@ -1,0 +1,214 @@
+id: eis_ettev_tja_varustuskindlu
+name: eis_ettev_tja_varustuskindlu
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1
+  gate_family: G1_nexus
+  requirement: Support cannot be given to undertakings whose main activity falls under specified
+    excluded EMTAK sectors (agriculture, food/beverage production unless previously unsupported,
+    tobacco, programming/consultancy, finance/insurance, legal/accounting, head office/management
+    consultancy, advertising, rental/leasing, labour rental, gambling), and fossil-fuel related
+    projects are excluded.
+  value: Excluded EMTAK sectors A, C10, C11, C120, K62, L, N69, N70, N73, O77, O782, S92;
+    fossil fuel projects excluded
+  intake_field: entityCountries
+  quote: 'Toetust ei saa anda ettevõtjatele, kelle põhitegevus vastab järgmisele EMTAKi jaole,
+    alajaole või grupile:'
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g2
+  gate_family: G2_size_ownership
+  requirement: 'Ownership/tenure duration requirements for the building/land differ by applicant
+    size: 5 years for small enterprises, 7 years for medium or large enterprises, counted
+    from application/decision date.'
+  value: 5 years (small enterprise) / 7 years (medium or large enterprise)
+  intake_field: fteBand
+  quote: peab ehitis ja selle alune maa olema taotleja omandis või peab taotleja kasuks olema
+    seatud hoonestusõigus, isiklik kasutusõigus või kasutusvaldus vähemalt viieks aastaks
+    arvates vahendusasutusele taotluse esitamise kuupäevast, kui taotleja on väikeettevõtja,
+    ning vähemalt seitsmeks aastaks, kui taotleja on keskmise suurusega ettevõtja või suurettevõtja
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g3
+  gate_family: G3_financial
+  requirement: For services or goods with an estimated value equal to or exceeding EUR 20,000
+    excluding VAT, at least two comparable price offers from independent providers must be
+    obtained.
+  value: EUR 20,000 excl. VAT threshold requiring 2 comparable offers
+  intake_field: turnoverBand
+  quote: Kui teenuse või asja eeldatav maksumus on käibemaksuta võrdne 20 000 euroga või sellest
+    suurem, tuleb võtta vähemalt kaks võrreldavat hinnapakkumist üksteisest sõltumatutelt
+    pakkujatelt.
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g4
+  gate_family: G4_borrower_model
+  requirement: Support is granted as a non-repayable grant administered via the structural
+    funds e-support environment (application, reporting, and payment claims all processed
+    through this platform).
+  value: Grant instrument
+  intake_field: borrowerModel
+  quote: Esita projektiga seonduv aruandlus ja väljamaksetaotlused struktuurifondide e-​​toetuse
+    keskkonna kaudu
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g5
+  gate_family: G5_use_of_funds
+  requirement: Funding may be used to purchase energy storage devices (battery banks, solar
+    panels, wind generators, etc.), their installation, setup, related training, and necessary
+    software/IT equipment, provided the storage device is located after the metering point.
+  value: Storage device purchase and installation eligible; must be located after metering
+    point
+  intake_field: none
+  quote: energia varustuskindluse tagamiseks vajaliku salvestusseadme ostmine
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g6
+  gate_family: G5_use_of_funds
+  requirement: Funding cannot be used for purchase of diesel generators or other fossil-fuel-powered
+    generators, direct personnel costs, project management remuneration/services, depreciation,
+    insurance premiums, leasing payments, or VAT.
+  value: 'Excluded costs: diesel/fossil generators, personnel, project management, depreciation,
+    insurance, leasing, VAT'
+  intake_field: none
+  quote: diiselgeneraatorite või muude fossiilset kütust kasutavate generaatorite ost
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g7
+  gate_family: G5_use_of_funds
+  requirement: Funding may be used for construction/installation of buildings and structures
+    needed for energy supply security, including preliminary design (if completed after 20.07.2022),
+    detailed design, erection, extension, reconstruction, and installation, subject to construction
+    permit/notice requirements.
+  value: Construction/structure activities eligible; preliminary design must postdate 20.07.2022
+  intake_field: none
+  quote: eelprojekti koostamise kuluks kui eelprojekt on valminud hiljem kui 20.07.2022
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g8
+  gate_family: G5_use_of_funds
+  requirement: Funding cannot be used for direct personnel costs, project management remuneration/services,
+    preparatory work costs for the application, acquisition of real estate, insurance premiums,
+    or VAT for construction-related activities.
+  value: 'Excluded costs for construction: personnel, project management, prep work, real
+    estate acquisition, insurance, VAT'
+  intake_field: none
+  quote: otsesteks personalikuludeks
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g9
+  gate_family: G5_use_of_funds
+  requirement: Support for connection to district heating is limited to efficient district
+    heating networks as defined under § 4(4) of the District Heating Act.
+  value: Only efficient district heating network connections supported
+  intake_field: none
+  quote: Toetatakse ainult tõhusa kaugküttevõrguga liitumist, vastab kaugkütteseaduse § 4
+    lõige 4 tähenduses tõhusa kaugkütte võrgupiirkonna tingimustele
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g10
+  gate_family: G5_use_of_funds
+  requirement: For district heating connection buildings, ownership or a superficies right
+    must be held for at least 5 years (small enterprise) or 7 years (medium/large enterprise)
+    from the date of the approval decision.
+  value: 5/7-year ownership or superficies right requirement for district heating connection
+  intake_field: fteBand
+  quote: ehitis ja selle alune maa on taotleja omandis või ehitisealusele maale on taotleja
+    kasuks seatud hoonestusõigus vähemalt viieks aastaks arvates vahendusasutuse taotluse
+    rahuldamise otsuse kuupäevast, kui taotleja on väikeettevõtja, ning vähemalt seitsmeks
+    aastaks arvates vahendusasutuse taotluse rahuldamise otsuse kuupäevast, kui taotleja on
+    keskmise suurusega ettevõtja või suurettevõtja
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g11
+  gate_family: G5_use_of_funds
+  requirement: Activities not directly related to the measure's objective or supported activities
+    (e.g. roof insulation or replacement unrelated to the measure) are ineligible, as are
+    activities under the EU ETS whose projected greenhouse gas emissions are not below relevant
+    benchmarks, and certain waste facility/landfill related activities.
+  value: 'Excluded activities: unrelated construction, non-compliant ETS activities, landfill/waste
+    facility activities (with limited exceptions)'
+  intake_field: none
+  quote: ehitustegevuseks, mis ei ole otseselt seotud meetme eesmärgiga ega toetatavate tegevustega,
+    näiteks katuse soojustamine või vahetamine
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 4
+  verified: llm_cited
+obligations:
+- requirement: Grant recipient must implement the project activities successfully according
+    to the project plan and achieve the stated objectives.
+  quote: Vii tegevused lähtuvalt projektiplaanis kirjeldatust edukalt ellu ja saavuta seatud
+    eesmärgid!
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Recipients of support from the EU Recovery and Resilience Facility (NextGenerationEU)
+    must inform the public about the use of the support.
+  quote: Olles saanud toetust Euroopa Liidu taasterahastu NextGenerationEU vahenditest, on
+    sul ka kohustus avalikkust toetuse kasutamisest teavitada.
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: The recipient must keep project-related costs separate from other costs, e.g.
+    via a separate project cost account or cost-code tagging.
+  quote: Toetuse saajal on kohustus eristada projektiga seotud kulud teistest kuludest.
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: Reporting and payment claims related to the project must be submitted via the
+    structural funds e-support environment.
+  quote: Esita projektiga seonduv aruandlus ja väljamaksetaotlused struktuurifondide e-​​toetuse
+    keskkonna kaudu
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 2
+  verified: llm_cited
+- requirement: A construction permit or construction notice must be submitted for the building
+    where required under the Building Code.
+  quote: Ehitise kohta on vajalik esitada ehitusluba või ehitusteatis, kui see on nõutav ehitusseadustiku
+    kohaselt
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Ehitise kohta on vajalik esitada ehitusluba
+    või eh'''
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 4/5 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Structural funds e-support environment (e-toetuse keskkond)
+  typical_timeline: Application period has closed (per site note)
+  quote: NB! Toetuse taotlemine on lõppenud . Taotlus täidetakse ja esitatakse struktuurifondide
+    e-​toetuse keskkonnas
+  source:
+    file: eis_ettev_tja_varustuskindlu_wayback_2025.html
+    locator: chunk 2
+  verified: llm_cited

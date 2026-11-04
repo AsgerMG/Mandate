@@ -1,0 +1,187 @@
+id: innovasjon_norge_grant_international
+name: innovasjon_norge_grant_international
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-nexus-norwegian-company
+  gate_family: G1_nexus
+  requirement: Applicant must be a Norwegian company participating as a partner in EEA Grants-funded
+    projects abroad.
+  value: Norwegian businesses only, as project partners
+  intake_field: entityCountries
+  quote: Norske bedrifter kan delta som partner i prosjekter støttet av EØS-midler (EEA Grants),
+    og bidra til sosial og økonomisk utvikling i Europa.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g1-nexus-target-countries
+  gate_family: G1_nexus
+  requirement: Partnership projects must take place in one of the beneficiary countries where
+    the EEA Grants programmes are administered (Bulgaria, Greece, Romania, Estonia, Croatia,
+    Latvia, Poland, Portugal).
+  value: Project country must be Bulgaria, Greece, Romania, Estonia, Croatia, Latvia, Poland,
+    or Portugal
+  intake_field: activityCountries
+  quote: 'Innovasjon Norge forvalter programmene gjennom våre kontor i: Bulgaria Hellas Romania
+    I tillegg er vi partner i programmene som forvaltes av lokale myndigheter i Estland ,
+    Kroatia , Latvia , Polen og Portugal .'
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_seksjon_eos.html#chunk 1
+  verified: llm_cited
+- id: g1-nexus-all-businesses
+  gate_family: G1_nexus
+  requirement: The target group for this service is all businesses (no sector restriction
+    stated).
+  value: Alle bedrifter (all businesses)
+  intake_field: borrowerModel
+  quote: Målgruppe Alle bedrifter
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g6-responsible-business-conduct
+  gate_family: G6_conditionality
+  requirement: To receive services, the business must uphold principles of responsible business
+    conduct and have a conscious approach to its own sustainability risk.
+  value: Must uphold responsible business conduct principles and sustainability risk awareness
+  intake_field: conditionality
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g6-state-aid-compliance
+  gate_family: G6_conditionality
+  requirement: Funding from Innovasjon Norge must comply with state aid rules, including the
+    five general conditions for state aid.
+  value: Must comply with state aid regulations (five general conditions)
+  intake_field: conditionality
+  quote: Finansiering fra Innovasjon Norge må være i samsvar med statsstøtteregelverket. Det
+    er fem generelle vilkår for statsstøtte som må ivaretas .
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g6-gber-basis
+  gate_family: G6_conditionality
+  requirement: The General Block Exemption Regulation (GBER) forms part of the state aid framework,
+    providing legal bases (articles) that may be applied to grant support in individual cases.
+  value: Support granted under GBER articles
+  intake_field: conditionality
+  quote: Gruppeunntaksregelverket (GBER) er en del av statsstøtteregelverket og er en samling
+    med artikler/støttehjemler som gir oss mulighet til å gi bedrifter støtte i ulike saker.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g6-esa-notification
+  gate_family: G6_conditionality
+  requirement: Funding schemes are notified to the EFTA Surveillance Authority (ESA) and the
+    legal basis is published under National Legal Basis.
+  value: Scheme notified to ESA under National Legal Basis
+  intake_field: conditionality
+  quote: Finansieringsordninger hos oss er meldt til EFTAs overvåkingsorgan, ESA.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g6-disclose-other-public-aid
+  gate_family: G6_conditionality
+  requirement: The applicant must disclose in the application whether other public support
+    has been or will be sought for the project.
+  value: Must disclose other public aid sought/received in application
+  intake_field: cofinancingBand
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g3-award-based-on-total-public-support
+  gate_family: G3_financial
+  requirement: The grant amount is determined based on an overall assessment of how much public
+    support is needed to trigger the project, assuming no other public support beyond what
+    is stated in the application.
+  value: Award calculated assuming no other public aid beyond disclosed amount
+  intake_field: cofinancingBand
+  quote: Ved fastsettelse av tilskuddsbeløpet legger derfor vi til grunn at det ikke mottas
+    annen offentlig støtte, herunder Skattefunn, enn det som er oppgitt i søknaden.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g6-clawback-on-other-aid
+  gate_family: G6_conditionality
+  requirement: If other public support (including SkatteFunn) covering the same costs is received
+    after the grant offer is made, the grant may be reduced correspondingly or lapse.
+  value: Grant may be reduced or lapse if other public aid received for same costs
+  intake_field: cofinancingBand
+  quote: I tilfelle slik annen offentlig støtte, herunder SkatteFunn, likevel blir mottatt
+    etter at vårt tilbud er gitt, og til dekning av de samme kostnadene, vil tilskuddet fra
+    oss kunne bli redusert tilsvarende eller bortfalle.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- id: g5-use-of-funds-development-testing
+  gate_family: G5_use_of_funds
+  requirement: Grants are directed toward joint development, testing and piloting of new technologies
+    and solutions, as well as knowledge/competence transfer.
+  value: Funds for joint development, testing, piloting of new tech/solutions, and competence
+    transfer
+  intake_field: developmentStage
+  quote: Tilskuddene går til felles utvikling, testing og pilotering av nye teknologier og
+    løsninger, samt kompetanseoverføring.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_seksjon_eos.html#chunk 1
+  verified: llm_cited
+obligations:
+- requirement: Applicant business must uphold principles of responsible business conduct and
+    demonstrate awareness of its own sustainability risk to receive services from Innovasjon
+    Norge.
+  quote: For å motta tjenester fra oss, må bedriften ivareta prinsipper for ansvarlig næringsliv
+    og ha et bevisst forhold til egen bærekraftsrisiko.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+- requirement: Applicant must disclose in the application whether other public aid has been
+    sought or will be sought for the same project.
+  quote: Det skal opplyses i søknaden hvorvidt det er søkt eller vil bli søkt annen offentlig
+    støtte til prosjektet.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (11/11 gates, 2/2 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: The grant is calculated on the assumption that no other public support beyond what
+    is disclosed in the application is received for the same eligible project costs; if additional
+    public support (including SkatteFunn) covering the same costs is received after the offer,
+    the grant will be reduced or lapse accordingly, though the business may still receive
+    other public support for different project costs not covered by Innovasjon Norge's grant.
+  quote: Dette er ikke til hinder for at bedriften kan motta annen offentlig støtte til andre
+    prosjektkostnader enn de vi har lagt til grunn.
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited
+application:
+  channel: Applications are made in response to open calls (utlysninger) published by the
+    beneficiary countries' programme administrators; Norwegian businesses apply to become
+    project partners.
+  typical_timeline: Varies (Varierer) depending on calls; deadlines are per individual call
+    (utlysninger).
+  quote: Søknadsfrist Utlysninger Hvor mye Varierer
+  source:
+    file: innovasjon_norge_grant_international_eos_midlene.html
+    locator: innovasjon_norge_grant_international_eos_midlene.html#chunk 1
+  verified: llm_cited

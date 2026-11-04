@@ -1,0 +1,482 @@
+id: satr_gb_equity
+name: satr_gb_equity
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-geo
+  gate_family: G1_nexus
+  requirement: Aid may only be awarded to undertakings located in specific English regions
+    covered by the Scheme.
+  value: East Midlands; Eastern; London; North East; North West; South East; South West; West
+    Midlands; Yorkshire and the Humber
+  intake_field: activityCountries
+  quote: 'East Midlands;
+
+    Eastern;
+
+    London;
+
+    North East;
+
+    North West;
+
+    South East;
+
+    South West;
+
+    West Midlands; and
+
+    Yorkshire and the Humber'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.1
+  verified: llm_cited
+- id: g1-legal-basis
+  gate_family: G1_nexus
+  requirement: Aid must be awarded in accordance with the General Block Exemption Regulation
+    2014-2020 and comply with the General and Specific Conditions of the Scheme.
+  value: GBER-compliant awards only
+  intake_field: none
+  quote: 'Aid under the Scheme may be awarded in accordance with the relevant terms and conditions
+    of
+
+    the General Block Exemption Regulation 2014-2020 ("GBER"). Each award must comply with
+    the
+
+    General Conditions of the Scheme and the relevant Specific Condition(s).'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.1
+  verified: llm_cited
+- id: g2-eligible-undertaking-risk-finance
+  gate_family: G2_size_ownership
+  requirement: Follow-on risk finance investments in eligible undertakings, including beyond
+    the 7-year period, require the total risk finance amount not to be exceeded, that follow-on
+    investment was foreseen in the original business plan, and that the undertaking has not
+    become linked with another undertaking (other than the intermediary/investor) unless it
+    still meets the SME definition.
+  value: Cumulative conditions for follow-on investment eligibility
+  intake_field: none
+  quote: '(a) The total amount of risk finance mentioned in point 9 is not exceeded;
+
+    (b) The possibility of follow-on investments was foreseen in the original business plan;
+
+    (c) The undertaking receiving follow-on investments has not become linked, within the
+    meaning
+
+    of Article 3(3) of Annex I with another undertaking other than the financial intermediary
+    or
+
+    the independent private investor providing risk finance under the measure, unless the
+    new
+
+    entity fulfils the conditions of the SME definition.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.3
+  verified: llm_cited
+- id: g2-startup-age
+  gate_family: G2_size_ownership
+  requirement: For aid for start-ups, eligible undertakings must be unlisted enterprises within
+    five years of registration (or from start of economic activity/tax liability if unregistered),
+    which have not distributed profits and have not been formed through a merger.
+  value: Unlisted, ≤5 years since registration, no profit distribution, not formed by merger
+  intake_field: foundedYear
+  quote: 'Eligible undertakings shall be unlisted enterprises up to five years following their
+    registration,
+
+    which have not yet distributed profits and have not been formed through a merger.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.7
+  verified: llm_cited
+- id: g2-excluded-undertakings
+  gate_family: G2_size_ownership
+  requirement: Certain undertakings are excluded from aid under each measure as per GBER Article
+    1.
+  value: See GBER Article 1 exclusions
+  intake_field: none
+  quote: See GBER Article 1.
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.3
+  verified: llm_cited
+- id: g3-budget-cap
+  gate_family: G3_financial
+  requirement: Annual cumulative awards under the Scheme must not exceed €125 million (around
+    £99m).
+  value: €125 million per calendar year (Scheme-wide budget cap)
+  intake_field: ticketBand
+  quote: 'In any calendar year the Scheme shall not be used to provide awards which cumulatively
+    exceed
+
+    €125 million (around £99m).'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.2
+  verified: llm_cited
+- id: g3-riskfinance-max-per-undertaking
+  gate_family: G3_financial
+  requirement: The total amount of risk finance under any risk finance measure must not exceed
+    EUR 15 million per eligible undertaking.
+  value: €15 million per eligible undertaking maximum
+  intake_field: ticketBand
+  quote: 'The total amount of risk finance referred to in point 4 shall not exceed EUR 15
+    million
+
+    per eligible undertaking under any risk finance measure.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The total amount of risk finance referred to
+    in po'''
+- id: g3-riskfinance-intensity
+  gate_family: G3_financial
+  requirement: Aid intensity for risk finance aid under GBER Article 21 is 40%-90% depending
+    on form of investment for SMEs, subject to a notification threshold of €15 million per
+    undertaking.
+  value: 40%-90% aid intensity; €15m notification threshold
+  intake_field: ticketBand
+  quote: '40% – 90%
+
+    subject to form
+
+    of investment
+
+    (see GBER
+
+    Article 21, point
+
+    10).'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''40% – 90%\nsubject to form\nof investment\n(see
+    GBER\n'''
+- id: g3-startup-intensity
+  gate_family: G3_financial
+  requirement: Aid for start-ups is capped at loans up to €1m (€1.5m/€2m in assisted areas),
+    guarantees up to €1.5m (€2.25m/€3m in assisted areas), or grants up to €0.4m (€0.6m/€0.8m
+    in assisted areas), with doubling for small and innovative enterprises.
+  value: Loans €1-2m; guarantees €1.5-3m; grants €0.4-0.8m; doubled for small innovative enterprises
+  intake_field: ticketBand
+  quote: 'Loans up to
+
+    €1m, or €1.5m
+
+    in Art 107(3)(c)
+
+    areas or €2m in
+
+    Art 107(3)(a)
+
+    areas;
+
+    guarantees up
+
+    to €1.5m or
+
+    €2.25m in Art
+
+    107(3)(c) areas
+
+    or €3m in Art
+
+    107(3)(a) areas;
+
+    grants up to
+
+    €0.4m, or €0.6m
+
+    in Art 107(3)(c)
+
+    areas or €0.8m
+
+    in Art 107(3)(a)
+
+    areas'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Loans up to\n€1m, or €1.5m\nin Art 107(3)(c)\nareas
+    o'''
+- id: g3-scouting-intensity
+  gate_family: G3_financial
+  requirement: Aid for scouting costs is capped at 50% of eligible costs for medium and small
+    enterprises, with no notification threshold.
+  value: 50% of eligible costs (medium/small enterprises)
+  intake_field: ticketBand
+  quote: '50% of the
+
+    eligible costs.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.9
+  verified: false
+  verify_note: 'fragment not found verbatim: ''50% of the\neligible costs.'''
+- id: g4-forms-of-aid
+  gate_family: G4_borrower_model
+  requirement: Awards under the Scheme may take the form of grants, loans below the reference
+    rate, and repayable advances.
+  value: Grants; loans below reference rate; repayable advances
+  intake_field: borrowerModel
+  quote: 'Grants;
+
+    2013 (v.5 8 July 2013 1Al exander Rose
+
+    Alexander Rose / Hann'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.1
+  verified: llm_cited
+- id: g4-riskfinance-forms
+  gate_family: G4_borrower_model
+  requirement: At the level of eligible undertakings, risk finance aid may take the form of
+    equity, quasi-equity investments, loans, guarantees, or a mix thereof.
+  value: Equity, quasi-equity, loans, guarantees or mix
+  intake_field: borrowerModel
+  quote: 'At the level of eligible undertakings, risk finance aid may take the form of equity,
+
+    quasi-equity investments, loans, guarantees, or a mix thereof.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''At the level of eligible undertakings, risk
+    financ'''
+- id: g4-replacement-capital
+  gate_family: G4_borrower_model
+  requirement: Support for replacement capital in equity/quasi-equity investments is only
+    permitted if combined with new capital representing at least 50% of each investment round.
+  value: Replacement capital ≤50% unless matched with new capital
+  intake_field: borrowerModel
+  quote: 'For equity and quasi-equity investments in eligible undertakings, a risk finance
+
+    measure may provide support for replacement capital only if the latter is combined
+
+    with new capital representing at least 50 % of each investment round into the eligible
+
+    undertakings.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''For equity and quasi-equity investments in
+    eligibl'''
+- id: g4-liquidity-cap
+  gate_family: G4_borrower_model
+  requirement: No more than 30% of the financial intermediary's aggregate capital contributions
+    and uncalled committed capital may be used for liquidity management purposes for equity/quasi-equity
+    investments.
+  value: Max 30% for liquidity management
+  intake_field: borrowerModel
+  quote: 'For equity and quasi-equity investments as referred to in point 2(a), no more than
+    30
+
+    % of the financial intermediary''s aggregate capital contributions and uncalled
+
+    committed capital may be used for liquidity management purposes.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''For equity and quasi-equity investments as
+    referre'''
+- id: g4-guarantee-rate-cap
+  gate_family: G4_borrower_model
+  requirement: For guarantees, the guarantee rate is limited to 80% and total losses assumed
+    by a Member State are capped at 25% of the underlying guaranteed portfolio; first loss
+    assumed by the public investor in asymmetric loss-sharing is capped at 25% of total investment.
+  value: Guarantee rate ≤80%; public first-loss cap 25%
+  intake_field: borrowerModel
+  quote: 'in the case of asymmetric loss-sharing between public and private investors, the
+
+    first loss assumed by the public investor shall be capped at 25 % of the total
+
+    investment;
+
+    (d) in the case of guarantees falling under point 2(c), the guarantee rate shall be
+
+    limited to 80 % and total losses assumed by a Member State shall be capped at a
+
+    maximum of 25 % of the underlying guaranteed portfolio.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.4
+  verified: llm_cited
+- id: g4-private-participation-derogation
+  gate_family: G4_borrower_model
+  requirement: For SMEs not fulfilling point 5 conditions, risk finance measures providing
+    equity, quasi-equity or loan investments must leverage private financing achieving an
+    aggregate private participation rate of at least 60%.
+  value: Minimum 60% aggregate private participation rate
+  intake_field: borrowerModel
+  quote: 'for risk finance measures providing equity, quasi-equity or loan investments to
+
+    eligible undertakings, the measure shall leverage additional financing from
+
+    independent private investors at the level of the financial intermediaries or the SMEs,
+
+    so as to achieve an aggregate private participation rate reaching at least 60 % of the
+
+    risk finance provided to the SMEs.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.6
+  verified: llm_cited
+- id: g5-scouting-costs
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs for scouting aid are the costs for initial screening and formal
+    due diligence undertaken by managers of financial intermediaries or investors to identify
+    eligible undertakings.
+  value: Initial screening and due diligence costs only
+  intake_field: none
+  quote: 'The eligible costs shall be the costs for initial screening and formal due diligence
+    undertaken by
+
+    managers of financial intermediaries or investors to identify eligible undertakings pursuant
+    to
+
+    GBER Articles 20 and 21.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.9
+  verified: llm_cited
+- id: g5-mixed-instrument
+  gate_family: G5_use_of_funds
+  requirement: A beneficiary receiving support through a mix of start-up aid instruments must
+    have the proportion of aid granted through one instrument counted against the maximum
+    aid amount allowed for that instrument, reducing the residual amount available under other
+    instruments.
+  value: Mixed instrument proportional cap allocation
+  intake_field: none
+  quote: 'A beneficiary can receive support through a mix of the aid instruments referred
+    to in
+
+    point 3 of GBER Article 23, provided that the proportion of the amount granted
+
+    through one aid instrument, calculated on the basis of the maximum aid amount
+
+    allowed for that instrument, is taken into account in order to determine the residual
+
+    proportion of the maximum aid amount allowed for the other instruments forming part
+
+    of such a mixed instrument.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.7
+  verified: false
+  verify_note: 'fragment not found verbatim: ''A beneficiary can receive support through a
+    mix of'''
+- id: g6-incentive-effect
+  gate_family: G6_conditionality
+  requirement: All awards must demonstrate the 'incentive effect' in accordance with GBER
+    requirements, which may involve submission of documents prior to award.
+  value: Incentive effect demonstration required
+  intake_field: conditionality
+  quote: 'All awards under the Scheme must demonstrate the ''incentive effect'' in accordance
+    with the
+
+    requirements of the GBER.
+
+    This may involve the submission of documents to the funder prior to the award of funding.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.2
+  verified: llm_cited
+- id: g6-viable-business-plan-exit
+  gate_family: G6_conditionality
+  requirement: Risk finance provided must be based on a viable business plan establishing
+    ex-ante financial viability, and a clear and realistic exit strategy must exist for each
+    equity and quasi-equity investment.
+  value: Viable business plan and exit strategy required
+  intake_field: conditionality
+  quote: 'risk finance provided to the eligible undertakings shall be based on a viable
+
+    business plan, containing details of product, sales and profitability development,
+
+    establishing ex-ante financial viability;
+
+    (d) a clear and realistic exit strategy shall exist for each equity and quasi-equity
+
+    investment.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.5
+  verified: llm_cited
+- id: g6-non-discrimination-intermediary
+  gate_family: G6_conditionality
+  requirement: A risk finance measure shall not discriminate between financial intermediaries
+    on the basis of their place of establishment or incorporation in any Member State.
+  value: No discrimination by place of establishment
+  intake_field: conditionality
+  quote: 'A risk finance measure shall not discriminate between financial intermediaries on
+    the
+
+    basis of their place of establishment or incorporation in any Member State.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''A risk finance measure shall not discriminate
+    betw'''
+obligations:
+- requirement: Awards are conditional on the recipient providing suitable information to meet
+    GBER reporting requirements.
+  quote: 'All awards are conditional upon the recipient providing suitable information to
+    meet GBER
+
+    reporting requirements set out in the GBER.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.2
+  verified: llm_cited
+- requirement: All awards of funding must identify the relevant regulation used to award funding.
+  quote: 'All awards of funding must identify the relevant regulation used to award funding,
+    these are listed
+
+    under specific conditions.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.2
+  verified: llm_cited
+- requirement: Financial intermediaries and fund managers must be managed on a commercial
+    basis, obliged by law or contract to act with the diligence of a professional manager
+    in good faith, avoiding conflicts of interest.
+  quote: 'they shall be obliged by law or contract to act with the diligence of a professional
+
+    manager in good faith and avoiding conflicts of interest; best practices and regulatory
+
+    supervision shall apply;'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.5
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (12/21 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Aid awarded under the Scheme may only be cumulated with other State Aid awards where
+    they relate to different eligible costs.
+  quote: 'Aid awarded under the Scheme may only be cumulated with other awards of State Aid
+    where
+
+    these relate to different eligible costs.'
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.2
+  verified: llm_cited
+application:
+  channel: Not specified in extracted text; scheme administered by the Department for Communities
+    and Local Government.
+  typical_timeline: Scheme duration 1.7.2014 to 31.12.2020; not otherwise specified.
+  quote: From 1.7.2014 to 31.12.2020
+  source:
+    file: satr_gb_equity_english_aid_access_finance_smes.pdf
+    locator: satr_gb_equity_english_aid_access_finance_smes.pdf#p.1
+  verified: llm_cited

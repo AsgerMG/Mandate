@@ -1,0 +1,81 @@
+id: satr_lv_equity__sa_110432__as_attistibas_finansu_institucija_altum
+name: "Eiropas Savienības Atveseļošanas un noturības mehānisma plāna 2.2. reformu un
+  investīciju virziena \"Uzņēmumu digitālā transformācija un inovācijas\" 2.2.1.4.i.
+  investīcijas \"Finanšu instrumenti komersantu digitālās transformācijas veicināšanai\"
+  īstenošanas noteikumi"
+administering_body: see source document
+country: 'LV'
+capital_type: unknown
+status: draft
+gates:
+- id: g1-territory
+  gate_family: G1_nexus
+  requirement: Support is granted only for projects implemented in the territory of the
+    Republic of Latvia.
+  value: Project must be implemented in Latvia
+  intake_field: activityCountries
+  quote: Atbalstu sniedz projektu īstenošanai Latvijas Republikas teritorijā.
+  source:
+    file: https://likumi.lv/ta/id/333889
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g6-digital-maturity-test
+  gate_family: G6_conditionality
+  requirement: To apply for support, the economic operator must first have completed a
+    digital maturity test and received a digital development roadmap, on the basis of which
+    further digital-transformation investments may be made.
+  value: Prior digital maturity test and roadmap required before applying
+  intake_field: none
+  quote: Lai pieteiktos atbalsta saņemšanai, saimnieciskās darbības veicējs ir veicis
+    sākotnējo digitālā brieduma testu un saņēmis digitālās attīstības ceļa karti, saskaņā ar
+    kuru var tikt veikti tālāki ieguldījumi saimnieciskās darbības veicēja digitālās
+    transformācijas attīstībā šo noteikumu ietvaros.
+  source:
+    file: https://likumi.lv/ta/id/333889
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: filter
+- id: g4-borrower-model
+  gate_family: G4_borrower_model
+  requirement: Financing is provided as loans, parallel loans, and capital rebates issued
+    by Altum under a civil-law loan agreement concluded with the economic operator.
+  value: Loans / parallel loans / capital rebate via Altum civil-law agreement
+  intake_field: borrowerModel
+  quote: Aizdevumus un paralēlos aizdevumus izsniedz un kapitāla atlaidi piešķir un piemēro
+    sabiedrība "Altum", noslēdzot ar saimnieciskās darbības veicēju civiltiesisku līgumu
+  source:
+    file: https://likumi.lv/ta/id/333889
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g6-breach-clawback
+  gate_family: G6_conditionality
+  requirement: If the loan agreement is not implemented according to its terms, Altum has
+    the right to unilaterally terminate it and recover the disbursed funding.
+  value: Altum may terminate and claw back funds on breach of loan terms
+  intake_field: none
+  quote: Ja aizdevuma līgums netiek īstenots atbilstoši tajā ietvertajiem nosacījumiem,
+    sabiedrībai "Altum" ir tiesības to vienpusēji lauzt un atgūt neatbilstoši izmaksāto
+    finansējumu.
+  source:
+    file: https://likumi.lv/ta/id/333889
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: obligation
+- id: g3-budget
+  gate_family: G3_financial
+  requirement: EUR 48,658,154 of Recovery and Resilience Mechanism funding is available for
+    this investment.
+  value: 'Budget: EUR 48,658,154 (RRM)'
+  intake_field: none
+  quote: Investīcijai pieejamais Eiropas Savienības Atveseļošanas un noturības mehānisma
+    finansējums ir 48 658 154 euro
+  source:
+    file: https://likumi.lv/ta/id/333889
+    locator: "eligibility_text"
+  verified: llm_cited
+  gate_role: programme_fact
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted manually from fetched eligibility_text.

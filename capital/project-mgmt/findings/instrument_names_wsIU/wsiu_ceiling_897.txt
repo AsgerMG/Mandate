@@ -1,0 +1,37 @@
+recall set: __recallSetDescribed.json  7,095 pairs, 661 instruments nameable, 1,898 leak-free descriptions
+  descriptions: 1,898 (27%) with one, median 125 chars; 887 (13%) recovered from another regime; 5,197 (73%) STILL BLANK — those founders query with one of eleven canned sector sentences
+  answer key, 7,095 pairs:
+    GRADED          4996 (70.4%)  answer is a fund the product may offer
+      of which RE-ATTRIBUTED  192 (2.7%)  named an instrument that was never a fund;
+        scored against the rollup the award actually belongs to
+    WITHHELD        2099 (29.6%)  closed with no successor — correctly unofferable
+    ABSENT             0 (0.0%)  names an instrument the corpus no longer holds
+                            and whose ancestor is not offerable either
+
+population drawn: 897
+  founders in country NO                       109
+  founders whose WON fund is an Innovasjon Norge leaf   13   -> CEILING 1.45 points on EXACT@6
+      innovasjon_norge_grant_cluster           3
+      innovasjon_norge_grant_innovation        1
+      innovasjon_norge_grant_international     2
+      innovasjon_norge_grant_regional          1
+      innovasjon_norge_grant_sector            1
+      innovasjon_norge_grant_startup           1
+      innovasjon_norge_loan_lowrisk            3
+      innovasjon_norge_loan_risk               1
+
+  founders whose won fund is in one of the OTHER nine same-name classes: 50
+      altum_aue                                                                   4
+      altum_aui                                                                   3
+      bpifrance_innovup_leader_idf                                                1
+      bpifrance_inov                                                              3
+      bpifrance_pmup_idf                                                          1
+      cdti_idi                                                                    4
+      cdti_neotec                                                                 1
+      satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances          3
+      satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai 2
+      satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances             18
+      satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai    1
+      satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai    3
+      satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi    5
+      satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc    1

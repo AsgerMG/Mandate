@@ -1,0 +1,63 @@
+id: satr_de_rnd__sa_117839__bundesministerium_fur_wirtschaft_und_klimaschutz
+name: Zentrales Innovationsprogramm Mittelstand [BMWK VIB4]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-tier-a
+  gate_family: G2_size_ownership
+  requirement: SMEs with an establishment in Germany at the time (or during the period) of the aid payout
+    are eligible for R&D project funding.
+  value: 'Tier A: SME with German establishment'
+  intake_field: fteBand
+  quote: Kleine und mittlere Unternehmen (KMU), die zum Zeitpunkt beziehungsweise im Zeitraum der Auszahlung
+    der Beihilfe eine Betriebsstätte oder Niederlassung in Deutschland haben.
+  source:
+    file: https://www.zim.de/ZIM/Redaktion/DE/Publikationen/Richtlinien/zim-richtlinie-ab-2025.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-tier-b-under-500
+  gate_family: G2_size_ownership
+  requirement: Other mid-sized companies are eligible if, including affiliated or partner companies, they
+    employ fewer than 500 people at the time of application.
+  value: 'Tier B: <500 employees incl. affiliated/partner companies'
+  intake_field: fteBand
+  quote: wenn sie einschließlich verbundener oder Partnerunternehmen zum Zeitpunkt der Antragstellung
+    weniger als 500 Personen beschäftigen
+  source:
+    file: https://www.zim.de/ZIM/Redaktion/DE/Publikationen/Richtlinien/zim-richtlinie-ab-2025.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-tier-c-under-1000-cooperation
+  gate_family: G2_size_ownership
+  requirement: Other mid-sized companies are eligible if they employ fewer than 1,000 people (including
+    affiliated/partner companies) and cooperate with at least one tier-A SME whose R&D project is being
+    funded.
+  value: 'Tier C: <1000 employees AND cooperating with a funded tier-A SME'
+  intake_field: fteBand
+  quote: wenn sie einschließlich verbundener oder Partnerunternehmen zum Zeitpunkt der Antragstellung
+    weniger als 1 000 Personen beschäftigen und mit mindestens einem Unternehmen gemäß Nummer 3.1.1 Buchstabe
+    a kooperieren, dessen FuE-Projekt gefördert wird
+  source:
+    file: https://www.zim.de/ZIM/Redaktion/DE/Publikationen/Richtlinien/zim-richtlinie-ab-2025.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-institutions-cooperation
+  gate_family: G1_nexus
+  requirement: Research and knowledge-dissemination institutions are also eligible for cooperation projects
+    with companies, when acting as a cooperation partner within their non-economic activity, and the partner
+    company's R&D project is funded.
+  value: Research institutions eligible as cooperation partners (non-economic activity)
+  intake_field: consortium
+  quote: Antragsberechtigt für Kooperationsprojekte mit Unternehmen sind auch Einrichtungen für Forschung
+    und Wissensverbreitung (Forschungseinrichtungen), wenn sie im Rahmen ihrer nichtwirtschaftlichen Tätigkeit
+    Kooperationspartner eines antragstellenden Unternehmens sind und dessen FuE-Projekt gefördert wird.
+  source:
+    file: https://www.zim.de/ZIM/Redaktion/DE/Publikationen/Richtlinien/zim-richtlinie-ab-2025.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

@@ -1,0 +1,50 @@
+id: satr_at_equity__sa_112286__osterreichische_forschungsforderungsgesellschaft
+name: FFG-Industrie-Richtlinie 2024-2026
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g2-large-enterprise
+  gate_family: G2_size_ownership
+  requirement: Applicants must be large enterprises as defined by the European Commission's 2003 SME Recommendation
+    (i.e., not SMEs).
+  value: Applicant must be a large enterprise (non-SME)
+  intake_field: turnoverBand
+  quote: die als große Unternehmen im Sinne der Empfehlung der Kommission vom 6. Mai 2003 betreffend die
+    Definition der Kleinstunternehmen sowie der kleinen und mittleren Unternehmen gelten.
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-Industrie-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-recovery-order-exclusion
+  gate_family: G1_nexus
+  requirement: A company that has not complied with a recovery order from a prior European Commission
+    decision finding aid unlawful and incompatible is excluded from participation until repayment is completed.
+  value: Excluded if non-compliant with EU recovery order
+  intake_field: none
+  quote: ist ein Unternehmen, das einer Rückforderungsanordnung aufgrund eines früheren Beschlusses der
+    Europäischen Kommission zur Feststellung der Unzulässigkeit einer Förderung und ihrer Unvereinbarkeit
+    nicht nachgekommen ist, solange von der Teilnahme ausgeschlossen, bis das Unternehmen die Rückabwicklung
+    der inkompatiblen Förderung vollzogen hat.
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-Industrie-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-undertaking-in-difficulty
+  gate_family: G3_financial
+  requirement: Aid may not be granted to undertakings in difficulty, except for specific natural-disaster,
+    start-up, or regional operating aid schemes that do not favour them over other companies.
+  value: Undertakings in difficulty excluded
+  intake_field: lossesOverHalfCapital
+  quote: dürfen keine Beihilfen an Unternehmen in Schwierigkeiten, ausgenommen Beihilferegelungen zur
+    Bewältigung der Folgen bestimmter Naturkatastrophen, Beihilferegelungen für Unternehmensneugründungen
+    und regionale Betriebsbeihilferegelungen, sofern diese Regelungen Unternehmen in Schwierigkeiten nicht
+    gegenüber anderen Unternehmen begünstigen, vergeben werden.
+  source:
+    file: https://www.ffg.at/sites/default/files/guidlines/FFG-Industrie-RL+2024-2026.pdf
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

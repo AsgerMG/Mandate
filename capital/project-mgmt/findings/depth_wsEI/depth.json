@@ -1,0 +1,4652 @@
+[
+ {
+  "company": "+ATLANTIC ASSOCIACAO PARA UM LABORATORIO COLABORATIVO DO ATLANTICO",
+  "country": "DK",
+  "pool": 34,
+  "wonRank": 2,
+  "describedAt": {
+   "0": {
+    "rows": 34,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 9
+   },
+   "40": {
+    "rows": 34,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 26275,
+   "6": 7762,
+   "18": 15948,
+   "40": 26275
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "1. ZAKŁAD PRACY CHRONIONEJ - PRZEDSIĘBIORSTWO PRODUKCYJNO HANDLOWO USŁUGOWE \"LESTER\" ADAM STOSIK 2. AUTOAQUA S.C. ADAM STOSIK",
+  "country": "PL",
+  "pool": 30,
+  "wonRank": 3,
+  "describedAt": {
+   "0": {
+    "rows": 30,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 30,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 22359,
+   "6": 7454,
+   "18": 14711,
+   "40": 22359
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "120FT FACTORY AB",
+  "country": "SE",
+  "pool": 81,
+  "wonRank": 7,
+  "describedAt": {
+   "0": {
+    "rows": 81,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 2
+   },
+   "40": {
+    "rows": 40,
+    "described": 5
+   }
+  },
+  "promptChars": {
+   "0": 42434,
+   "6": 5962,
+   "18": 10783,
+   "40": 18702
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "1749 LTD",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 21,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18098,
+   "6": 9635,
+   "18": 16610,
+   "40": 18098
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "17CICADA",
+  "country": "GB",
+  "pool": 23,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 23,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 23,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 19156,
+   "6": 8934,
+   "18": 16902,
+   "40": 19156
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "1A KONSULT AB",
+  "country": "SE",
+  "pool": 78,
+  "wonRank": 24,
+  "describedAt": {
+   "0": {
+    "rows": 78,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 8
+   }
+  },
+  "promptChars": {
+   "0": 41157,
+   "6": 7000,
+   "18": 11732,
+   "40": 21303
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "1Health Gut Inn Balance APS",
+  "country": "DK",
+  "pool": 36,
+  "wonRank": 7,
+  "describedAt": {
+   "0": {
+    "rows": 36,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 8
+   },
+   "40": {
+    "rows": 36,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 26364,
+   "6": 7099,
+   "18": 15301,
+   "40": 26364
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "1M Track Sp. z o. o.",
+  "country": "PL",
+  "pool": 31,
+  "wonRank": 6,
+  "describedAt": {
+   "0": {
+    "rows": 31,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 31,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 22938,
+   "6": 7459,
+   "18": 14199,
+   "40": 22938
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "1SPATIAL GROUP",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 17745,
+   "6": 8287,
+   "18": 15399,
+   "40": 17745
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "1TO1DESIGN S.R.O.",
+  "country": "CZ",
+  "pool": 70,
+  "wonRank": 2,
+  "describedAt": {
+   "0": {
+    "rows": 70,
+    "described": 17
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 10
+   }
+  },
+  "promptChars": {
+   "0": 35070,
+   "6": 6808,
+   "18": 10779,
+   "40": 20536
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "2 DTECH",
+  "country": "GB",
+  "pool": 28,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 28,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 28,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23981,
+   "6": 8180,
+   "18": 16104,
+   "40": 23981
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "2030-SEKRETARIATET AB",
+  "country": "SE",
+  "pool": 72,
+  "wonRank": 15,
+  "describedAt": {
+   "0": {
+    "rows": 72,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 2
+   },
+   "40": {
+    "rows": 40,
+    "described": 10
+   }
+  },
+  "promptChars": {
+   "0": 36395,
+   "6": 6247,
+   "18": 10153,
+   "40": 21847
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "21st.bio Laboratory",
+  "country": "DK",
+  "pool": 37,
+  "wonRank": 1,
+  "describedAt": {
+   "0": {
+    "rows": 37,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 37,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 26888,
+   "6": 7057,
+   "18": 14873,
+   "40": 26888
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "2D ApS",
+  "country": "DK",
+  "pool": 26,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 26,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 26,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 21139,
+   "6": 7391,
+   "18": 15792,
+   "40": 21139
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "2D FAB AB",
+  "country": "SE",
+  "pool": 72,
+  "wonRank": 17,
+  "describedAt": {
+   "0": {
+    "rows": 72,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 1
+   },
+   "40": {
+    "rows": 40,
+    "described": 4
+   }
+  },
+  "promptChars": {
+   "0": 35943,
+   "6": 5432,
+   "18": 10555,
+   "40": 18856
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "2H OFFSHORE ENGINEERING",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 22,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20421,
+   "6": 9054,
+   "18": 17861,
+   "40": 20421
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "2NDMED AB",
+  "country": "SE",
+  "pool": 80,
+  "wonRank": 4,
+  "describedAt": {
+   "0": {
+    "rows": 80,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 9
+   }
+  },
+  "promptChars": {
+   "0": 42035,
+   "6": 6445,
+   "18": 13071,
+   "40": 21027
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "2PD Ltd",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 21,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 17199,
+   "6": 8059,
+   "18": 15561,
+   "40": 17199
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "3 MINUTES WEST",
+  "country": "GB",
+  "pool": 23,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 23,
+    "described": 15
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 23,
+    "described": 15
+   }
+  },
+  "promptChars": {
+   "0": 20178,
+   "6": 9573,
+   "18": 17316,
+   "40": 20178
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "3 SCI",
+  "country": "GB",
+  "pool": 27,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 27,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 27,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23439,
+   "6": 8609,
+   "18": 16510,
+   "40": 23439
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "300K SOLUTIONS SL",
+  "country": "ES",
+  "pool": 148,
+  "wonRank": 12,
+  "describedAt": {
+   "0": {
+    "rows": 148,
+    "described": 79
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 14
+   }
+  },
+  "promptChars": {
+   "0": 79251,
+   "6": 6567,
+   "18": 12573,
+   "40": 21871
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "365Talents",
+  "country": "FR",
+  "pool": 109,
+  "wonRank": 4,
+  "describedAt": {
+   "0": {
+    "rows": 109,
+    "described": 79
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 40,
+    "described": 25
+   }
+  },
+  "promptChars": {
+   "0": 82622,
+   "6": 8985,
+   "18": 17347,
+   "40": 31597
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "3AI",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 19107,
+   "6": 8851,
+   "18": 16575,
+   "40": 19107
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "3D BISTRO Sp. z o. o.",
+  "country": "PL",
+  "pool": 32,
+  "wonRank": 3,
+  "describedAt": {
+   "0": {
+    "rows": 32,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 32,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23405,
+   "6": 7585,
+   "18": 16221,
+   "40": 23405
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "3D MEDICAL",
+  "country": "FR",
+  "pool": 100,
+  "wonRank": 14,
+  "describedAt": {
+   "0": {
+    "rows": 100,
+    "described": 79
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 40,
+    "described": 33
+   }
+  },
+  "promptChars": {
+   "0": 77419,
+   "6": 9408,
+   "18": 18765,
+   "40": 34509
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "3D REPO",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 17695,
+   "6": 7617,
+   "18": 15318,
+   "40": 17695
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "3FINERY",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18640,
+   "6": 8776,
+   "18": 16293,
+   "40": 18640
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "3P TECHNOLOGY ApS",
+  "country": "DK",
+  "pool": 34,
+  "wonRank": 2,
+  "describedAt": {
+   "0": {
+    "rows": 34,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 34,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 25802,
+   "6": 7637,
+   "18": 15560,
+   "40": 25802
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "3PAQ ENGINEERING AB",
+  "country": "SE",
+  "pool": 74,
+  "wonRank": 6,
+  "describedAt": {
+   "0": {
+    "rows": 74,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 2
+   },
+   "40": {
+    "rows": 40,
+    "described": 7
+   }
+  },
+  "promptChars": {
+   "0": 38389,
+   "6": 5952,
+   "18": 10762,
+   "40": 20110
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "3SHAPE A/S",
+  "country": "DK",
+  "pool": 22,
+  "wonRank": 1,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 12
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 22,
+    "described": 12
+   }
+  },
+  "promptChars": {
+   "0": 17196,
+   "6": 7046,
+   "18": 15608,
+   "40": 17196
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "3SHAPE TRIOS A/S",
+  "country": "DK",
+  "pool": 31,
+  "wonRank": 6,
+  "describedAt": {
+   "0": {
+    "rows": 31,
+    "described": 12
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 9
+   },
+   "40": {
+    "rows": 31,
+    "described": 12
+   }
+  },
+  "promptChars": {
+   "0": 21823,
+   "6": 7206,
+   "18": 15038,
+   "40": 21823
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "3SIX HEALTH",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18639,
+   "6": 9449,
+   "18": 17500,
+   "40": 18639
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "3T ADDITIVE MANUFACTURING",
+  "country": "GB",
+  "pool": 28,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 28,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 28,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 24067,
+   "6": 8755,
+   "18": 17191,
+   "40": 24067
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "4COLORS",
+  "country": "GB",
+  "pool": 27,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 27,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 27,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23647,
+   "6": 9634,
+   "18": 16532,
+   "40": 23647
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "4D Knight sp. z o.o.",
+  "country": "PL",
+  "pool": 31,
+  "wonRank": 6,
+  "describedAt": {
+   "0": {
+    "rows": 31,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 31,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 22934,
+   "6": 7455,
+   "18": 14924,
+   "40": 22934
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "4EI",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18618,
+   "6": 9216,
+   "18": 16510,
+   "40": 18618
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "4i4 ApS",
+  "country": "DK",
+  "pool": 27,
+  "wonRank": 2,
+  "describedAt": {
+   "0": {
+    "rows": 27,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 27,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 22277,
+   "6": 7339,
+   "18": 15524,
+   "40": 22277
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "4JTECH S.R.O.",
+  "country": "CZ",
+  "pool": 67,
+  "wonRank": 3,
+  "describedAt": {
+   "0": {
+    "rows": 67,
+    "described": 23
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 4
+   },
+   "40": {
+    "rows": 40,
+    "described": 9
+   }
+  },
+  "promptChars": {
+   "0": 34959,
+   "6": 6971,
+   "18": 11389,
+   "40": 20205
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "4M SYSTEMS A.S.",
+  "country": "CZ",
+  "pool": 63,
+  "wonRank": 7,
+  "describedAt": {
+   "0": {
+    "rows": 63,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 2
+   },
+   "40": {
+    "rows": 40,
+    "described": 5
+   }
+  },
+  "promptChars": {
+   "0": 31357,
+   "6": 6123,
+   "18": 10100,
+   "40": 18707
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "4Mvideo",
+  "country": "DK",
+  "pool": 31,
+  "wonRank": 6,
+  "describedAt": {
+   "0": {
+    "rows": 31,
+    "described": 12
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 31,
+    "described": 12
+   }
+  },
+  "promptChars": {
+   "0": 22007,
+   "6": 7232,
+   "18": 15142,
+   "40": 22007
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "50 WAYS TO COOK",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 19118,
+   "6": 9273,
+   "18": 16601,
+   "40": 19118
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "540 WORLD",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 17
+   },
+   "40": {
+    "rows": 21,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20088,
+   "6": 9587,
+   "18": 18376,
+   "40": 20088
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "5G COMMUNICATIONS FOR FUTURE INDUSTRY VERTICALS",
+  "country": "ES",
+  "pool": 152,
+  "wonRank": 12,
+  "describedAt": {
+   "0": {
+    "rows": 152,
+    "described": 73
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 16
+   }
+  },
+  "promptChars": {
+   "0": 79740,
+   "6": 7794,
+   "18": 13566,
+   "40": 24117
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "5lines.ai Sp. z o.o.",
+  "country": "PL",
+  "pool": 23,
+  "wonRank": 6,
+  "describedAt": {
+   "0": {
+    "rows": 23,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 23,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 18398,
+   "6": 7511,
+   "18": 15997,
+   "40": 18398
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "6D DEMENTIA LTD",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 21,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18098,
+   "6": 9301,
+   "18": 17018,
+   "40": 18098
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "77 FOODS",
+  "country": "FR",
+  "pool": 104,
+  "wonRank": 42,
+  "describedAt": {
+   "0": {
+    "rows": 104,
+    "described": 75
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 40,
+    "described": 27
+   }
+  },
+  "promptChars": {
+   "0": 79549,
+   "6": 7763,
+   "18": 16719,
+   "40": 33440
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "7bulls.com sp. z o.o.",
+  "country": "PL",
+  "pool": 31,
+  "wonRank": 5,
+  "describedAt": {
+   "0": {
+    "rows": 31,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 31,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 22465,
+   "6": 7480,
+   "18": 15012,
+   "40": 22465
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "7SENSE AGRITECH",
+  "country": "NO",
+  "pool": 92,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 92,
+    "described": 14
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 0
+   },
+   "40": {
+    "rows": 40,
+    "described": 1
+   }
+  },
+  "promptChars": {
+   "0": 37933,
+   "6": 5270,
+   "18": 9271,
+   "40": 15500
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "7Sprints Sp. z o.o.",
+  "country": "PL",
+  "pool": 31,
+  "wonRank": 5,
+  "describedAt": {
+   "0": {
+    "rows": 31,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 31,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 22480,
+   "6": 7495,
+   "18": 15027,
+   "40": 22480
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "A N TECHNOLOGY",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 22,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20496,
+   "6": 9245,
+   "18": 17936,
+   "40": 20496
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "A.M.L. MICROTECHNIQUE LORRAINE",
+  "country": "FR",
+  "pool": 105,
+  "wonRank": 10,
+  "describedAt": {
+   "0": {
+    "rows": 105,
+    "described": 85
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 15
+   },
+   "40": {
+    "rows": 40,
+    "described": 36
+   }
+  },
+  "promptChars": {
+   "0": 81815,
+   "6": 9006,
+   "18": 18012,
+   "40": 35002
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "A.V. SIMULATION",
+  "country": "FR",
+  "pool": 109,
+  "wonRank": 12,
+  "describedAt": {
+   "0": {
+    "rows": 109,
+    "described": 81
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 40,
+    "described": 35
+   }
+  },
+  "promptChars": {
+   "0": 83454,
+   "6": 9120,
+   "18": 18673,
+   "40": 35526
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "A&G KOPERTY GOŁDAPSKA FABRYKA KOPERT SPÓŁKA Z OGRANICZONĄ ODPOWIEDZIALNOŚCIĄ",
+  "country": "PL",
+  "pool": 31,
+  "wonRank": 2,
+  "describedAt": {
+   "0": {
+    "rows": 31,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 31,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 22973,
+   "6": 7494,
+   "18": 14986,
+   "40": 22973
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "AALBORG KOMMUNE",
+  "country": "DK",
+  "pool": 33,
+  "wonRank": 4,
+  "describedAt": {
+   "0": {
+    "rows": 33,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 8
+   },
+   "40": {
+    "rows": 33,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 26268,
+   "6": 8479,
+   "18": 16154,
+   "40": 26268
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AALTO KORKEAKOULUSAATIO SR",
+  "country": "FI",
+  "pool": 36,
+  "wonRank": 13,
+  "describedAt": {
+   "0": {
+    "rows": 36,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 14
+   },
+   "40": {
+    "rows": 36,
+    "described": 24
+   }
+  },
+  "promptChars": {
+   "0": 29352,
+   "6": 9234,
+   "18": 17683,
+   "40": 29352
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "AARHUS UNIVERSITETSHOSPITAL",
+  "country": "DK",
+  "pool": 27,
+  "wonRank": 4,
+  "describedAt": {
+   "0": {
+    "rows": 27,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 27,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 22675,
+   "6": 8271,
+   "18": 16547,
+   "40": 22675
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AB GLADTJÄRNEN",
+  "country": "SE",
+  "pool": 73,
+  "wonRank": 17,
+  "describedAt": {
+   "0": {
+    "rows": 73,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 2
+   },
+   "40": {
+    "rows": 40,
+    "described": 6
+   }
+  },
+  "promptChars": {
+   "0": 37891,
+   "6": 5974,
+   "18": 10772,
+   "40": 19568
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AB MARELD TECHNOLOGIES",
+  "country": "SE",
+  "pool": 79,
+  "wonRank": 5,
+  "describedAt": {
+   "0": {
+    "rows": 79,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 7
+   }
+  },
+  "promptChars": {
+   "0": 41344,
+   "6": 6570,
+   "18": 11564,
+   "40": 20389
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AB SVENSKA BOSTÄDER",
+  "country": "SE",
+  "pool": 72,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 72,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 7
+   }
+  },
+  "promptChars": {
+   "0": 36367,
+   "6": 5790,
+   "18": 10379,
+   "40": 19568
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AB TASTY",
+  "country": "FR",
+  "pool": 101,
+  "wonRank": 6,
+  "describedAt": {
+   "0": {
+    "rows": 101,
+    "described": 78
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 40,
+    "described": 37
+   }
+  },
+  "promptChars": {
+   "0": 77994,
+   "6": 8544,
+   "18": 18202,
+   "40": 35430
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AB VOLVO",
+  "country": "SE",
+  "pool": 77,
+  "wonRank": 1,
+  "describedAt": {
+   "0": {
+    "rows": 77,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 9
+   }
+  },
+  "promptChars": {
+   "0": 40943,
+   "6": 6416,
+   "18": 11575,
+   "40": 21319
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AB7 Industries",
+  "country": "FR",
+  "pool": 115,
+  "wonRank": 15,
+  "describedAt": {
+   "0": {
+    "rows": 115,
+    "described": 87
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 40,
+    "described": 30
+   }
+  },
+  "promptChars": {
+   "0": 88856,
+   "6": 8811,
+   "18": 17132,
+   "40": 33861
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ABALONEUK",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 22,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20421,
+   "6": 8354,
+   "18": 17861,
+   "40": 20421
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABB",
+  "country": "GB",
+  "pool": 27,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 27,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 27,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23625,
+   "6": 9140,
+   "18": 16523,
+   "40": 23625
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABB ELECTRIFICATION NORWAY",
+  "country": "NO",
+  "pool": 95,
+  "wonRank": 19,
+  "describedAt": {
+   "0": {
+    "rows": 95,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 1
+   },
+   "40": {
+    "rows": 40,
+    "described": 1
+   }
+  },
+  "promptChars": {
+   "0": 40676,
+   "6": 5869,
+   "18": 11018,
+   "40": 16550
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ABBELIGHT",
+  "country": "FR",
+  "pool": 101,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 101,
+    "described": 79
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 40,
+    "described": 30
+   }
+  },
+  "promptChars": {
+   "0": 77753,
+   "6": 8399,
+   "18": 16956,
+   "40": 32458
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABBEY GROUP INDUSTRIAL SERVICES",
+  "country": "GB",
+  "pool": 24,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 24,
+    "described": 15
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 24,
+    "described": 15
+   }
+  },
+  "promptChars": {
+   "0": 20598,
+   "6": 8841,
+   "18": 16753,
+   "40": 20598
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABERA BIOSCIENCE AB",
+  "country": "GB",
+  "pool": 27,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 27,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 27,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23154,
+   "6": 8810,
+   "18": 17074,
+   "40": 23154
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABERDEEN HARBOUR BOARD",
+  "country": "GB",
+  "pool": 29,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 29,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 9
+   },
+   "40": {
+    "rows": 29,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 24022,
+   "6": 8108,
+   "18": 15980,
+   "40": 24022
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABERTAY UNIVERSITY",
+  "country": "GB",
+  "pool": 26,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 26,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 26,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 22439,
+   "6": 8254,
+   "18": 15774,
+   "40": 22439
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABERYSTWYTH UNIVERSITY",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 17
+   },
+   "40": {
+    "rows": 21,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20220,
+   "6": 9535,
+   "18": 18508,
+   "40": 20220
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABILION MEDICAL SYSTEMS AB",
+  "country": "SE",
+  "pool": 73,
+  "wonRank": 10,
+  "describedAt": {
+   "0": {
+    "rows": 73,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 9
+   }
+  },
+  "promptChars": {
+   "0": 36910,
+   "6": 6612,
+   "18": 13035,
+   "40": 20974
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ABIONICA SOLUTIONS SLP",
+  "country": "ES",
+  "pool": 161,
+  "wonRank": 11,
+  "describedAt": {
+   "0": {
+    "rows": 161,
+    "described": 84
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 10
+   }
+  },
+  "promptChars": {
+   "0": 86318,
+   "6": 6238,
+   "18": 12593,
+   "40": 20621
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ABLE2B COMMUNITY INTEREST COMPANY",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18648,
+   "6": 8990,
+   "18": 16207,
+   "40": 18648
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABOVE THE CLOUD",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18640,
+   "6": 8916,
+   "18": 16575,
+   "40": 18640
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ABSOLICON SOLAR COLLECTOR AB",
+  "country": "SE",
+  "pool": 77,
+  "wonRank": 16,
+  "describedAt": {
+   "0": {
+    "rows": 77,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 11
+   }
+  },
+  "promptChars": {
+   "0": 40912,
+   "6": 6983,
+   "18": 10441,
+   "40": 21422
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ABT BOLAGEN AB",
+  "country": "SE",
+  "pool": 72,
+  "wonRank": 9,
+  "describedAt": {
+   "0": {
+    "rows": 72,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 4
+   },
+   "40": {
+    "rows": 40,
+    "described": 7
+   }
+  },
+  "promptChars": {
+   "0": 35926,
+   "6": 6304,
+   "18": 10748,
+   "40": 19942
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ABUNDANCE INVESTMENT",
+  "country": "GB",
+  "pool": 28,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 28,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 28,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23981,
+   "6": 8504,
+   "18": 16409,
+   "40": 23981
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACADEMISCH ZIEKENHUIS GRONINGEN",
+  "country": "NL",
+  "pool": 45,
+  "wonRank": 17,
+  "describedAt": {
+   "0": {
+    "rows": 45,
+    "described": 40
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 40,
+    "described": 36
+   }
+  },
+  "promptChars": {
+   "0": 34015,
+   "6": 8559,
+   "18": 16572,
+   "40": 30511
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ACC INNOVATION AB",
+  "country": "SE",
+  "pool": 77,
+  "wonRank": 9,
+  "describedAt": {
+   "0": {
+    "rows": 77,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 6
+   }
+  },
+  "promptChars": {
+   "0": 40975,
+   "6": 6594,
+   "18": 11677,
+   "40": 19615
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACCADEMIA EUROPEA DI BOLZANO",
+  "country": "IT",
+  "pool": 95,
+  "wonRank": 38,
+  "describedAt": {
+   "0": {
+    "rows": 95,
+    "described": 65
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 40,
+    "described": 27
+   }
+  },
+  "promptChars": {
+   "0": 64681,
+   "6": 8997,
+   "18": 15636,
+   "40": 29664
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "Accelink",
+  "country": "DK",
+  "pool": 26,
+  "wonRank": 3,
+  "describedAt": {
+   "0": {
+    "rows": 26,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 26,
+    "described": 18
+   }
+  },
+  "promptChars": {
+   "0": 22051,
+   "6": 7636,
+   "18": 15964,
+   "40": 22051
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACCEPTABLE CORPORATE(S)",
+  "country": "BE",
+  "pool": 40,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 40,
+    "described": 23
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 40,
+    "described": 23
+   }
+  },
+  "promptChars": {
+   "0": 29815,
+   "6": 7784,
+   "18": 14484,
+   "40": 29815
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACCIAI SPECIALI TERNI",
+  "country": "IT",
+  "pool": 84,
+  "wonRank": 41,
+  "describedAt": {
+   "0": {
+    "rows": 84,
+    "described": 56
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 40,
+    "described": 29
+   }
+  },
+  "promptChars": {
+   "0": 56348,
+   "6": 8269,
+   "18": 15808,
+   "40": 29912
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACCIDENTAL THEATRE",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18640,
+   "6": 9498,
+   "18": 17200,
+   "40": 18640
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACCIONA CONSTRUCCION",
+  "country": "ES",
+  "pool": 166,
+  "wonRank": 4,
+  "describedAt": {
+   "0": {
+    "rows": 166,
+    "described": 83
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 9
+   },
+   "40": {
+    "rows": 40,
+    "described": 11
+   }
+  },
+  "promptChars": {
+   "0": 88571,
+   "6": 7406,
+   "18": 13899,
+   "40": 21784
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ACCONEER AB",
+  "country": "SE",
+  "pool": 66,
+  "wonRank": 5,
+  "describedAt": {
+   "0": {
+    "rows": 66,
+    "described": 20
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 8
+   }
+  },
+  "promptChars": {
+   "0": 33466,
+   "6": 6536,
+   "18": 11687,
+   "40": 20944
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACCURATE SAFETY MANUFACTURING",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 22,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20422,
+   "6": 8386,
+   "18": 17862,
+   "40": 20422
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACD PHARMACEUTICALS",
+  "country": "NO",
+  "pool": 90,
+  "wonRank": 6,
+  "describedAt": {
+   "0": {
+    "rows": 90,
+    "described": 12
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 10
+   }
+  },
+  "promptChars": {
+   "0": 35619,
+   "6": 6781,
+   "18": 11074,
+   "40": 20865
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACELLZ",
+  "country": "GB",
+  "pool": 23,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 23,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 23,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 19156,
+   "6": 8934,
+   "18": 17130,
+   "40": 19156
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACHELOUS ENERGY",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 22,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20422,
+   "6": 8981,
+   "18": 17862,
+   "40": 20422
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACHESON ACHESON LIMITED T A THG LABS",
+  "country": "GB",
+  "pool": 27,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 27,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 27,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23151,
+   "6": 9309,
+   "18": 17562,
+   "40": 23151
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACOME",
+  "country": "FR",
+  "pool": 114,
+  "wonRank": 11,
+  "describedAt": {
+   "0": {
+    "rows": 114,
+    "described": 85
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 14
+   },
+   "40": {
+    "rows": 40,
+    "described": 35
+   }
+  },
+  "promptChars": {
+   "0": 87237,
+   "6": 8912,
+   "18": 17583,
+   "40": 34885
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ACONDICIONAMIENTO TARRASENSE ASSOCIACION",
+  "country": "ES",
+  "pool": 157,
+  "wonRank": 30,
+  "describedAt": {
+   "0": {
+    "rows": 157,
+    "described": 80
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 40,
+    "described": 14
+   }
+  },
+  "promptChars": {
+   "0": 83817,
+   "6": 8035,
+   "18": 13006,
+   "40": 22208
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACORAI AB",
+  "country": "SE",
+  "pool": 71,
+  "wonRank": 28,
+  "describedAt": {
+   "0": {
+    "rows": 71,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 9
+   }
+  },
+  "promptChars": {
+   "0": 37917,
+   "6": 6953,
+   "18": 12642,
+   "40": 20643
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACOSENSE AB",
+  "country": "SE",
+  "pool": 72,
+  "wonRank": 19,
+  "describedAt": {
+   "0": {
+    "rows": 72,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 5
+   }
+  },
+  "promptChars": {
+   "0": 36436,
+   "6": 5870,
+   "18": 11613,
+   "40": 19410
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACOUBATT",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 22,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20507,
+   "6": 9195,
+   "18": 17947,
+   "40": 20507
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACS SOLUTIONS",
+  "country": "DE",
+  "pool": 129,
+  "wonRank": 124,
+  "describedAt": {
+   "0": {
+    "rows": 129,
+    "described": 107
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 15
+   },
+   "40": {
+    "rows": 40,
+    "described": 34
+   }
+  },
+  "promptChars": {
+   "0": 103129,
+   "6": 9715,
+   "18": 19643,
+   "40": 35407
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ACTA MOBILIER",
+  "country": "FR",
+  "pool": 106,
+  "wonRank": 20,
+  "describedAt": {
+   "0": {
+    "rows": 106,
+    "described": 85
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 15
+   },
+   "40": {
+    "rows": 40,
+    "described": 34
+   }
+  },
+  "promptChars": {
+   "0": 82450,
+   "6": 8410,
+   "18": 18070,
+   "40": 35072
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ACTIA AUTOMOTIVE",
+  "country": "FR",
+  "pool": 114,
+  "wonRank": 21,
+  "describedAt": {
+   "0": {
+    "rows": 114,
+    "described": 85
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 14
+   },
+   "40": {
+    "rows": 40,
+    "described": 30
+   }
+  },
+  "promptChars": {
+   "0": 87675,
+   "6": 9114,
+   "18": 17875,
+   "40": 33272
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ACTICOR BIOTECH",
+  "country": "FR",
+  "pool": 115,
+  "wonRank": 22,
+  "describedAt": {
+   "0": {
+    "rows": 115,
+    "described": 85
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 15
+   },
+   "40": {
+    "rows": 40,
+    "described": 32
+   }
+  },
+  "promptChars": {
+   "0": 87790,
+   "6": 8821,
+   "18": 18569,
+   "40": 34265
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ACTIONSENSE LTD",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 15
+   },
+   "6": {
+    "rows": 6,
+    "described": 3
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 22,
+    "described": 15
+   }
+  },
+  "promptChars": {
+   "0": 19644,
+   "6": 8810,
+   "18": 17064,
+   "40": 19644
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ACTYX",
+  "country": "DE",
+  "pool": 127,
+  "wonRank": 124,
+  "describedAt": {
+   "0": {
+    "rows": 127,
+    "described": 107
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 40,
+    "described": 37
+   }
+  },
+  "promptChars": {
+   "0": 102199,
+   "6": 9600,
+   "18": 19610,
+   "40": 37380
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ACUA OCEAN",
+  "country": "GB",
+  "pool": 29,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 29,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 9
+   },
+   "40": {
+    "rows": 29,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 24022,
+   "6": 7801,
+   "18": 15980,
+   "40": 24022
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AD HOC MARINE DESIGNS",
+  "country": "GB",
+  "pool": 26,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 26,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 26,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23109,
+   "6": 8309,
+   "18": 16547,
+   "40": 23109
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AD SCIENTIAM",
+  "country": "FR",
+  "pool": 101,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 101,
+    "described": 78
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 40,
+    "described": 33
+   }
+  },
+  "promptChars": {
+   "0": 77745,
+   "6": 8580,
+   "18": 18173,
+   "40": 34050
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADAMUS SPÓŁKA AKCYJNA",
+  "country": "PL",
+  "pool": 24,
+  "wonRank": 3,
+  "describedAt": {
+   "0": {
+    "rows": 24,
+    "described": 21
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 24,
+    "described": 21
+   }
+  },
+  "promptChars": {
+   "0": 19906,
+   "6": 7481,
+   "18": 15958,
+   "40": 19906
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ADAPTAM THERAPEUTICS",
+  "country": "ES",
+  "pool": 153,
+  "wonRank": 30,
+  "describedAt": {
+   "0": {
+    "rows": 153,
+    "described": 75
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 40,
+    "described": 16
+   }
+  },
+  "promptChars": {
+   "0": 80793,
+   "6": 8266,
+   "18": 16225,
+   "40": 24129
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ADAPTIVITY AB",
+  "country": "SE",
+  "pool": 74,
+  "wonRank": 20,
+  "describedAt": {
+   "0": {
+    "rows": 74,
+    "described": 20
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 4
+   },
+   "40": {
+    "rows": 40,
+    "described": 6
+   }
+  },
+  "promptChars": {
+   "0": 37760,
+   "6": 6542,
+   "18": 12153,
+   "40": 20443
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ADD GENDER AB",
+  "country": "SE",
+  "pool": 79,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 79,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 4
+   }
+  },
+  "promptChars": {
+   "0": 41716,
+   "6": 6145,
+   "18": 11642,
+   "40": 19219
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADD NORTH 3D AB",
+  "country": "SE",
+  "pool": 75,
+  "wonRank": 11,
+  "describedAt": {
+   "0": {
+    "rows": 75,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 1
+   },
+   "40": {
+    "rows": 40,
+    "described": 5
+   }
+  },
+  "promptChars": {
+   "0": 37371,
+   "6": 5836,
+   "18": 10322,
+   "40": 18978
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ADDEV MATERIALS AEROSPACE SAS",
+  "country": "FR",
+  "pool": 107,
+  "wonRank": 49,
+  "describedAt": {
+   "0": {
+    "rows": 107,
+    "described": 85
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 40,
+    "described": 33
+   }
+  },
+  "promptChars": {
+   "0": 83945,
+   "6": 8912,
+   "18": 17651,
+   "40": 35656
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ADDHERE TECHNOLOGIES",
+  "country": "GB",
+  "pool": 16,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 16,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 16,
+    "described": 13
+   },
+   "40": {
+    "rows": 16,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 15583,
+   "6": 9084,
+   "18": 15583,
+   "40": 15583
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADDI MEDICAL AB",
+  "country": "SE",
+  "pool": 72,
+  "wonRank": 26,
+  "describedAt": {
+   "0": {
+    "rows": 72,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 8
+   }
+  },
+  "promptChars": {
+   "0": 35947,
+   "6": 6186,
+   "18": 13016,
+   "40": 20693
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ADDITIVE INNOVATION & MANUFACTURING SWEDEN AB",
+  "country": "SE",
+  "pool": 73,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 73,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 1
+   },
+   "40": {
+    "rows": 40,
+    "described": 7
+   }
+  },
+  "promptChars": {
+   "0": 37872,
+   "6": 6157,
+   "18": 10531,
+   "40": 19820
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADDITIVE INSTRUMENTS",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18648,
+   "6": 8912,
+   "18": 16461,
+   "40": 18648
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADDITIVE MANUFACTURING SOLUTIONS LTD",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 17
+   },
+   "40": {
+    "rows": 21,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20119,
+   "6": 9361,
+   "18": 18407,
+   "40": 20119
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADDRESSCLOUD",
+  "country": "GB",
+  "pool": 27,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 27,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 27,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23647,
+   "6": 9165,
+   "18": 16330,
+   "40": 23647
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADHEX TECHNOLOGIES",
+  "country": "FR",
+  "pool": 105,
+  "wonRank": 32,
+  "describedAt": {
+   "0": {
+    "rows": 105,
+    "described": 85
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 17
+   },
+   "40": {
+    "rows": 40,
+    "described": 33
+   }
+  },
+  "promptChars": {
+   "0": 82246,
+   "6": 9301,
+   "18": 19102,
+   "40": 35981
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ADIONICS",
+  "country": "FR",
+  "pool": 114,
+  "wonRank": 100,
+  "describedAt": {
+   "0": {
+    "rows": 114,
+    "described": 85
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 15
+   },
+   "40": {
+    "rows": 40,
+    "described": 26
+   }
+  },
+  "promptChars": {
+   "0": 87360,
+   "6": 8884,
+   "18": 18292,
+   "40": 32388
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ADRENALINE AND ENDORPHIN PRODUCTIONS",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 17
+   },
+   "40": {
+    "rows": 21,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 19679,
+   "6": 8303,
+   "18": 17967,
+   "40": 19679
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADSORBI AB",
+  "country": "SE",
+  "pool": 77,
+  "wonRank": 5,
+  "describedAt": {
+   "0": {
+    "rows": 77,
+    "described": 24
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 1
+   },
+   "40": {
+    "rows": 40,
+    "described": 4
+   }
+  },
+  "promptChars": {
+   "0": 40938,
+   "6": 5999,
+   "18": 10938,
+   "40": 18697
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ADVANCE TRAINING AND CONSULTING",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 19107,
+   "6": 9603,
+   "18": 16954,
+   "40": 19107
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADVANCED AIR MOBILITY AAM AB",
+  "country": "SE",
+  "pool": 73,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 73,
+    "described": 20
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 5
+   }
+  },
+  "promptChars": {
+   "0": 37469,
+   "6": 6215,
+   "18": 11570,
+   "40": 19262
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADVANCED ANALYTICS LABS",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 17
+   },
+   "40": {
+    "rows": 21,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20088,
+   "6": 9092,
+   "18": 18376,
+   "40": 20088
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADVANCED ELECTRIC MACHINES",
+  "country": "GB",
+  "pool": 21,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 21,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 17
+   },
+   "40": {
+    "rows": 21,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20033,
+   "6": 9170,
+   "18": 18321,
+   "40": 20033
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADVANCED MANUFACTURING SHEFFIELD",
+  "country": "GB",
+  "pool": 28,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 28,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 28,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 24067,
+   "6": 8681,
+   "18": 16340,
+   "40": 24067
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "ADVANCED MARKER DISCOVERY SL",
+  "country": "ES",
+  "pool": 151,
+  "wonRank": 60,
+  "describedAt": {
+   "0": {
+    "rows": 151,
+    "described": 73
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 40,
+    "described": 14
+   }
+  },
+  "promptChars": {
+   "0": 79756,
+   "6": 8516,
+   "18": 16499,
+   "40": 23108
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "ADVANCED WIRELESS SOLUTIONS AND SERVICES",
+  "country": "FR",
+  "pool": 108,
+  "wonRank": 11,
+  "describedAt": {
+   "0": {
+    "rows": 108,
+    "described": 79
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 40,
+    "described": 33
+   }
+  },
+  "promptChars": {
+   "0": 81980,
+   "6": 9430,
+   "18": 18061,
+   "40": 35197
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "ADVANSCI RESEARCH SOLUTIONS AB",
+  "country": "SE",
+  "pool": 74,
+  "wonRank": 5,
+  "describedAt": {
+   "0": {
+    "rows": 74,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 3
+   },
+   "40": {
+    "rows": 40,
+    "described": 6
+   }
+  },
+  "promptChars": {
+   "0": 36674,
+   "6": 6238,
+   "18": 11713,
+   "40": 19715
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AEGIS IT RESEARCH GMBH",
+  "country": "DE",
+  "pool": 122,
+  "wonRank": 1,
+  "describedAt": {
+   "0": {
+    "rows": 122,
+    "described": 101
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 17
+   },
+   "40": {
+    "rows": 40,
+    "described": 37
+   }
+  },
+  "promptChars": {
+   "0": 96280,
+   "6": 8711,
+   "18": 18503,
+   "40": 35964
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "AENITIS TECHNOLOGIES",
+  "country": "FR",
+  "pool": 108,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 108,
+    "described": 87
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 40,
+    "described": 33
+   }
+  },
+  "promptChars": {
+   "0": 84081,
+   "6": 9410,
+   "18": 18792,
+   "40": 34536
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AERIAL ICON",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 13
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 22,
+    "described": 13
+   }
+  },
+  "promptChars": {
+   "0": 18640,
+   "6": 9010,
+   "18": 16771,
+   "40": 18640
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AERNNOVA COMPOSITES ILLESCAS SA",
+  "country": "ES",
+  "pool": 162,
+  "wonRank": 3,
+  "describedAt": {
+   "0": {
+    "rows": 162,
+    "described": 86
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 8
+   }
+  },
+  "promptChars": {
+   "0": 88657,
+   "6": 8255,
+   "18": 13673,
+   "40": 21584
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "AEROSPACE CUTTING TOOL",
+  "country": "GB",
+  "pool": 22,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 22,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 22,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 20508,
+   "6": 8698,
+   "18": 17948,
+   "40": 20508
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AEROSPACE VALLEY",
+  "country": "FR",
+  "pool": 109,
+  "wonRank": 29,
+  "describedAt": {
+   "0": {
+    "rows": 109,
+    "described": 81
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 40,
+    "described": 26
+   }
+  },
+  "promptChars": {
+   "0": 83478,
+   "6": 9129,
+   "18": 17226,
+   "40": 31653
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AEROSPACEHV",
+  "country": "GB",
+  "pool": 28,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 28,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 28,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23692,
+   "6": 8042,
+   "18": 16898,
+   "40": 23692
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AEROSPACELAB",
+  "country": "BE",
+  "pool": 45,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 45,
+    "described": 29
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 40,
+    "described": 26
+   }
+  },
+  "promptChars": {
+   "0": 34726,
+   "6": 8357,
+   "18": 15612,
+   "40": 31607
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AEROTEX",
+  "country": "GB",
+  "pool": 28,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 28,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 28,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 22758,
+   "6": 8245,
+   "18": 15964,
+   "40": 22758
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AETHA DESIGN STUDIO",
+  "country": "GB",
+  "pool": 28,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 28,
+    "described": 19
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 9
+   },
+   "40": {
+    "rows": 28,
+    "described": 19
+   }
+  },
+  "promptChars": {
+   "0": 23729,
+   "6": 8033,
+   "18": 15718,
+   "40": 23729
+  },
+  "wonDescribed": null
+ },
+ {
+  "company": "AF OFFSHORE DECOM",
+  "country": "NO",
+  "pool": 97,
+  "wonRank": 4,
+  "describedAt": {
+   "0": {
+    "rows": 97,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 1
+   },
+   "18": {
+    "rows": 18,
+    "described": 5
+   },
+   "40": {
+    "rows": 40,
+    "described": 9
+   }
+  },
+  "promptChars": {
+   "0": 41249,
+   "6": 6613,
+   "18": 12942,
+   "40": 20706
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AFFIBODY MEDICAL AB",
+  "country": "SE",
+  "pool": 73,
+  "wonRank": 59,
+  "describedAt": {
+   "0": {
+    "rows": 73,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 9
+   }
+  },
+  "promptChars": {
+   "0": 36560,
+   "6": 6585,
+   "18": 13022,
+   "40": 21346
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AFFINISEP",
+  "country": "FR",
+  "pool": 109,
+  "wonRank": 89,
+  "describedAt": {
+   "0": {
+    "rows": 109,
+    "described": 79
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 13
+   },
+   "40": {
+    "rows": 40,
+    "described": 28
+   }
+  },
+  "promptChars": {
+   "0": 81843,
+   "6": 8618,
+   "18": 17083,
+   "40": 32183
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "AFIYET AB",
+  "country": "SE",
+  "pool": 73,
+  "wonRank": 18,
+  "describedAt": {
+   "0": {
+    "rows": 73,
+    "described": 18
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 7
+   },
+   "40": {
+    "rows": 40,
+    "described": 9
+   }
+  },
+  "promptChars": {
+   "0": 36464,
+   "6": 6864,
+   "18": 13056,
+   "40": 21198
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AFM RÅDGIVENDE INGENIØRER A/S",
+  "country": "DK",
+  "pool": 23,
+  "wonRank": 5,
+  "describedAt": {
+   "0": {
+    "rows": 23,
+    "described": 14
+   },
+   "6": {
+    "rows": 6,
+    "described": 0
+   },
+   "18": {
+    "rows": 18,
+    "described": 11
+   },
+   "40": {
+    "rows": 23,
+    "described": 14
+   }
+  },
+  "promptChars": {
+   "0": 18611,
+   "6": 6750,
+   "18": 15997,
+   "40": 18611
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AGCO A/S",
+  "country": "DK",
+  "pool": 30,
+  "wonRank": 12,
+  "describedAt": {
+   "0": {
+    "rows": 30,
+    "described": 14
+   },
+   "6": {
+    "rows": 6,
+    "described": 2
+   },
+   "18": {
+    "rows": 18,
+    "described": 10
+   },
+   "40": {
+    "rows": 30,
+    "described": 14
+   }
+  },
+  "promptChars": {
+   "0": 22212,
+   "6": 7054,
+   "18": 15442,
+   "40": 22212
+  },
+  "wonDescribed": false
+ },
+ {
+  "company": "AGENCE LOCALE DE L ENERGIE ET DU CLIMAT",
+  "country": "FR",
+  "pool": 104,
+  "wonRank": 30,
+  "describedAt": {
+   "0": {
+    "rows": 104,
+    "described": 83
+   },
+   "6": {
+    "rows": 6,
+    "described": 4
+   },
+   "18": {
+    "rows": 18,
+    "described": 14
+   },
+   "40": {
+    "rows": 40,
+    "described": 34
+   }
+  },
+  "promptChars": {
+   "0": 81284,
+   "6": 8173,
+   "18": 18307,
+   "40": 34712
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "AGENCIA ESTATAL CONSEJO SUPERIOR DE INVESTIGACIONES CIENTIFICAS",
+  "country": "ES",
+  "pool": 135,
+  "wonRank": 35,
+  "describedAt": {
+   "0": {
+    "rows": 135,
+    "described": 63
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 12
+   },
+   "40": {
+    "rows": 40,
+    "described": 16
+   }
+  },
+  "promptChars": {
+   "0": 73023,
+   "6": 7587,
+   "18": 13837,
+   "40": 22991
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "AGENIUMSPACE",
+  "country": "FR",
+  "pool": 109,
+  "wonRank": 4,
+  "describedAt": {
+   "0": {
+    "rows": 109,
+    "described": 81
+   },
+   "6": {
+    "rows": 6,
+    "described": 6
+   },
+   "18": {
+    "rows": 18,
+    "described": 14
+   },
+   "40": {
+    "rows": 40,
+    "described": 27
+   }
+  },
+  "promptChars": {
+   "0": 82439,
+   "6": 8543,
+   "18": 16965,
+   "40": 31550
+  },
+  "wonDescribed": true
+ },
+ {
+  "company": "AGENT",
+  "country": "FR",
+  "pool": 109,
+  "wonRank": null,
+  "describedAt": {
+   "0": {
+    "rows": 109,
+    "described": 79
+   },
+   "6": {
+    "rows": 6,
+    "described": 5
+   },
+   "18": {
+    "rows": 18,
+    "described": 16
+   },
+   "40": {
+    "rows": 40,
+    "described": 32
+   }
+  },
+  "promptChars": {
+   "0": 81629,
+   "6": 8951,
+   "18": 18333,
+   "40": 33938
+  },
+  "wonDescribed": null
+ }
+]

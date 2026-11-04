@@ -1,0 +1,79 @@
+id: satr_at_rnd__sa_111094__osterreichische_hotel_und_tourismusbank_oht
+name: Regelung für KMU-Investitionsbeihilfen im Rahmen der gewerblichen Tourismusförderung 2023 - 2027
+administering_body: see source document
+country: AT
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-tourism
+  gate_family: G2_size_ownership
+  requirement: Applicants must be small and medium-sized enterprises of the tourism and leisure industry.
+  value: SME in tourism/leisure sector
+  intake_field: turnoverBand
+  quote: Antragsberechtigt sind kleine und mittlere Unternehmen der Tourismus- und Freizeitwirtschaft.
+  source:
+    file: https://www.oeht.at/produkte/oeht-investitionskredit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-wko-membership
+  gate_family: G1_nexus
+  requirement: Applicants must be, or intend to become, a member of the Austrian Federal Economic Chamber
+    (WKO) in the tourism and leisure trade division.
+  value: WKO membership in tourism division required
+  intake_field: none
+  quote: Diese müssen Mitglieder der Wirtschaftskammer Österreich in der Bundessparte Tourismus und Freizeitwirtschaft
+    sein oder beabsichtigen, eine solche Mitgliedschaft einzugehen.
+  source:
+    file: https://www.oeht.at/produkte/oeht-investitionskredit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-location-austria
+  gate_family: G1_nexus
+  requirement: The company location must be in Austria.
+  value: 'Company location: Austria'
+  intake_field: entityCountries
+  quote: Unternehmensstandort in Österreich
+  source:
+    file: https://www.oeht.at/produkte/oeht-investitionskredit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-energy-certificate
+  gate_family: G6_conditionality
+  requirement: Applicants must submit an energy certificate no older than three years (ten years for new
+    applications from 31 March 2026).
+  value: Energy certificate required (max 3 years old, 10 years from 2026-03-31)
+  intake_field: none
+  quote: 'Vorlage eines Energieausweises (nicht älter als drei Jahre; für alle Neuanträge ab 31.03.2026
+    gilt: nicht älter als 10 Jahre)'
+  source:
+    file: https://www.oeht.at/produkte/oeht-investitionskredit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-soil-sealing-cap
+  gate_family: G5_use_of_funds
+  requirement: Maximum additional soil sealing is 25% relative to the existing footprint.
+  value: Max 25% additional soil sealing
+  intake_field: none
+  quote: Maximale zusätzliche Bodenversiegelung von 25% bezogen auf den Bestand
+  source:
+    file: https://www.oeht.at/produkte/oeht-investitionskredit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-undertaking-in-difficulty
+  gate_family: G3_financial
+  requirement: The company must not be an undertaking in difficulty within the meaning of Article 2(18)
+    of Regulation (EU) No 651/2014.
+  value: Undertakings in difficulty excluded
+  intake_field: lossesOverHalfCapital
+  quote: Das Unternehmen darf sich im Sinne von Artikel 2 Z 18 der Verordnung (EU) Nr. 651/2014 nicht
+    in Schwierigkeiten befinden (UiS).
+  source:
+    file: https://www.oeht.at/produkte/oeht-investitionskredit/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

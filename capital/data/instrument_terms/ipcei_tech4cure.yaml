@@ -1,0 +1,317 @@
+id: ipcei_tech4cure
+name: ipcei_tech4cure
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-01
+  gate_family: G1_nexus
+  requirement: The IPCEI must involve a genuine cross-border project with at least four Member
+    States ordinarily participating, and its benefits must extend beyond the financing Member
+    States to the wider Union.
+  value: ≥4 Member States required; 5 involved (France, Hungary, Italy, Slovakia, Slovenia)
+  intake_field: entityCountries
+  quote: Point 16 of the IPCEI Communication requires that at least four Member States must
+    ordinarily be involved in an IPCEI, and its benefits must not be confined to the financing
+    Member States but extend to a wider part of the Union.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.52
+  verified: llm_cited
+- id: G1-02
+  gate_family: G1_nexus
+  requirement: Direct participants must have applied for aid before the start of works on
+    their respective projects.
+  value: Application before start of works required
+  intake_field: needBy
+  quote: all direct participants submitted their respective applications for aid before the
+    start of works of their projects
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.42
+  verified: llm_cited
+- id: G1-03
+  gate_family: G1_nexus
+  requirement: Member States must ensure an open procedure allowing all interested Member
+    States a genuine opportunity to participate in the IPCEI.
+  value: Open, transparent national call procedure required
+  intake_field: consortium
+  quote: several Member States launched national calls for interest to pre-select potential
+    projects to participate in the IPCEI Tech4Cure, on the basis of an open and transparent
+    procedure
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.52
+  verified: llm_cited
+- id: G2-01
+  gate_family: G2_size_ownership
+  requirement: Participants may be SMEs or large enterprises, but startup companies presenting
+    projects, even if legally qualifying as large enterprises due to ownership, typically
+    face the same resource constraints as SMEs.
+  value: SMEs and Large Enterprises eligible as direct participants
+  intake_field: fteBand
+  quote: the majority of the IPCEI Tech4Cure projects are presented by SMEs or by startup
+    companies (even if these typically qualify as large enterprises)
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.16
+  verified: llm_cited
+- id: G2-02
+  gate_family: G2_size_ownership
+  requirement: Direct participants must not be undertakings in difficulty as defined under
+    the Rescue and Restructuring Guidelines.
+  value: Not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: the participating Member States have further confirmed that the direct participants
+    are not undertakings in difficulty as defined in the Guidelines on State aid for rescuing
+    and restructuring non-financial undertakings in difficulty
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.42
+  verified: llm_cited
+- id: G2-03
+  gate_family: G2_size_ownership
+  requirement: For SME claw-back exemption purposes, SME status is assessed against the EUR
+    50 million annual turnover threshold under the GBER SME definition.
+  value: 'SME turnover threshold: EUR 50 million (Annex I GBER)'
+  intake_field: turnoverBand
+  quote: One of the conditions to qualify as an SME is that the undertaking’s annual turnover
+    must not exceed EUR 50 million, in line with the Annex I to the Commission Regulation
+    (EU) No 651/2014
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.74
+  verified: llm_cited
+- id: G3-01
+  gate_family: G3_financial
+  requirement: Total eligible costs across the IPCEI Tech4Cure amount to EUR 677.7 million.
+  value: EUR 677.7 million total eligible costs
+  intake_field: ticketBand
+  quote: the total eligible costs (46) in the IPCEI Tech4Cure are EUR 677.7 million
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.40
+  verified: llm_cited
+- id: G3-02
+  gate_family: G3_financial
+  requirement: The maximum permitted aid level is determined by the individual project's funding
+    gap; aid may cover up to all eligible costs but the nominal aid amount must not exceed
+    eligible costs.
+  value: Aid capped at funding gap (NPV) and nominal eligible costs
+  intake_field: ticketBand
+  quote: the maximum permitted aid level is determined with regard to the identified funding
+    gap in relation to the eligible costs. That implies that if justified by the funding gap
+    analysis, the aid could cover all of the eligible costs. However, the nominal amount of
+    the aid shall not exceed the eligible costs.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.40
+  verified: llm_cited
+- id: G3-03
+  gate_family: G3_financial
+  requirement: The project must involve important co-financing by the beneficiaries, calculated
+    as the portion of financing need not covered by State aid.
+  value: Co-financing of 67.2% of financing need (EUR 825.96 million of EUR 1.23 billion)
+  intake_field: cofinancingBand
+  quote: this co-financing corresponds to 67.2% (58) of the financing need of the projects
+    notified by the participating Member States for Tech4Cure, to which each of the beneficiaries
+    needs to contribute in a meaningful way
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.55
+  verified: llm_cited
+- id: G3-04
+  gate_family: G3_financial
+  requirement: Total nominal State aid to be granted across all beneficiaries amounts to EUR
+    403.27 million.
+  value: EUR 403.27 million total nominal aid
+  intake_field: ticketBand
+  quote: the total nominal aid that can be granted to the beneficiaries amounts to EUR 403.27
+    million
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.54
+  verified: llm_cited
+- id: G4-01
+  gate_family: G4_borrower_model
+  requirement: Aid to direct participants will be provided in the form of direct grants and
+    repayable advances.
+  value: Direct grants and repayable advances
+  intake_field: borrowerModel
+  quote: The aid to be granted by the participating Member States will take the form of direct
+    grants and repayable advances.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.42
+  verified: llm_cited
+- id: G4-02
+  gate_family: G4_borrower_model
+  requirement: Where aid is disbursed in instalments, future aid must be discounted to 2025
+    using the WACC, and the discounted sum of instalments must not exceed the notified funding
+    gap.
+  value: Discounting via WACC to 2025 required for instalment aid
+  intake_field: borrowerModel
+  quote: aid payable in the future shall be discounted to the year 2025 using the weighted
+    average cost of capital (“WACC”) as a discount rate. The participating Member States will
+    ensure that the sum of the discounted value of all the aid instalments does not exceed
+    the notified funding gap
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.40
+  verified: llm_cited
+- id: G5-01
+  gate_family: G5_use_of_funds
+  requirement: Funds may only cover eligible costs of R&D&I and First Industrial Deployment
+    (FID) activities complying with the Annex to the IPCEI Communication; FID must not cover
+    mass production or commercial activities.
+  value: Eligible costs limited to R&D&I and FID (excluding mass production/commercial activities)
+  intake_field: developmentStage
+  quote: Eligible costs are only those costs of the individual projects that comply with the
+    requirements of the Annex to the IPCEI Communication.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.40
+  verified: llm_cited
+- id: G5-02
+  gate_family: G5_use_of_funds
+  requirement: FID activities are only eligible for aid where the first industrial deployment
+    follows on from an R&D&I activity and itself contains an important R&D&I component integral
+    to the project's successful implementation.
+  value: FID eligibility requires embedded important R&D&I component
+  intake_field: developmentStage
+  quote: FID activities can be financed with State aid if the first industrial deployment
+    follows on from an R&D&I activity and itself contains an important R&D&I component, which
+    constitutes an integral and necessary element for the successful implementation of the
+    project.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.60
+  verified: llm_cited
+- id: G5-03
+  gate_family: G5_use_of_funds
+  requirement: Regular upgrades without an innovative dimension of existing facilities and
+    development of newer versions of existing products do not qualify as eligible FID.
+  value: Non-innovative upgrades excluded from FID eligibility
+  intake_field: developmentStage
+  quote: Regular upgrades without an innovative dimension of existing facilities and the development
+    of newer versions of existing products do not qualify as FID.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.60
+  verified: llm_cited
+- id: G6-01
+  gate_family: G6_conditionality
+  requirement: Aid must not be granted if it constitutes, by itself or by its conditions/financing
+    method, a non-severable violation of Union law, such as headquarters/localisation requirements,
+    national goods/services use obligations, or restrictions on using R&D&I results in other
+    Member States.
+  value: No headquarters, buy-national, or cross-border use restrictions permitted
+  intake_field: conditionality
+  quote: granting of aid that is subject to the obligation for the beneficiary to use nationally
+    produced goods or national services; or aid restricting the possibility for the beneficiary
+    to use the obtained R&D&I results in other Member States
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.42
+  verified: false
+  verify_note: 'fragment not found verbatim: ''granting of aid that is subject to the obligation
+    '''
+- id: G6-02
+  gate_family: G6_conditionality
+  requirement: Granting of notified aid must be suspended if the beneficiary still holds earlier
+    unlawful aid declared incompatible by a Commission Decision, until repayment or deposit
+    into a blocked account.
+  value: Suspension pending repayment of prior unlawful/incompatible aid
+  intake_field: conditionality
+  quote: The participating Member States have furthermore committed to suspend the granting
+    of the notified aid if the beneficiary still has at its disposal earlier unlawful aid
+    that was declared incompatible by a Commission Decision
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.42
+  verified: llm_cited
+- id: G6-03
+  gate_family: G6_conditionality
+  requirement: A claw-back mechanism must apply at minimum to direct participants receiving
+    a notified aid amount, per Member State, equal to or above EUR 50 million, including SMEs
+    in exceptional circumstances.
+  value: 'Claw-back threshold: EUR 50 million notified aid per Member State per participant'
+  intake_field: conditionality
+  quote: The claw-back mechanism will apply as a minimum to direct participants having a notified
+    aid amount, per Member State, equal to or above EUR 50 million.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.43
+  verified: llm_cited
+obligations:
+- requirement: Direct participants must submit annual reports on execution of their individual
+    projects, covering progress, dissemination/spillover effects, financial implementation,
+    KPIs and partnership status.
+  quote: Annual reports will be prepared by the direct participants on the execution of their
+    individual projects. The reports will notably include information on the progress of the
+    projects, the dissemination and spillover effects, financial implementation, KPIs achieved
+    and status of partnerships.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.79
+  verified: llm_cited
+- requirement: Participating Member States must report annually to the Commission on the implementation
+    of the claw-back mechanism by the end of September, from the beginning of the claw-back
+    period until the end of the project's lifetime.
+  quote: The participating Member States are required to report to the Commission on the implementation
+    of the claw-back mechanism each year by the end of September, from the beginning of the
+    claw-back period, until the end of a project’s lifetime, as part of the annual IPCEI reporting
+    requirements.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.43
+  verified: llm_cited
+- requirement: Participating Member States must publish the non-confidential text of the individual
+    aid granting decision and related information on the Commission's transparency award module
+    or a comprehensive State aid website.
+  quote: the participating Member States have committed to publish in the Commission’s transparency
+    award module or on a comprehensive State aid website, at national or regional level, the
+    non-confidential text of the individual aid granting decision and its implementing provisions
+    or a link to it
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.44
+  verified: false
+  verify_note: 'fragment not found verbatim: ''the participating Member States have committed
+    to '''
+- requirement: Direct participants must disseminate IP-protected results through non-exclusive
+    licensing based on FRAND terms.
+  quote: all direct participants will disseminate IP-protected results of their individual
+    projects through non-exclusive licensing based on FRAND terms
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.54
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (17/18 gates, 3/4 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Except for Italy, cumulation of the notified aid with other aid, de minimis aid, or
+    Union funding covering the same eligible costs is allowed, provided total public funding
+    does not exceed the most favourable funding rate under applicable Union law.
+  quote: participating Member States have indicated that cumulation with other aid, de minimis
+    aid (51) or Union funding will be allowed to cover the same eligible costs, provided that
+    the total amount of public funding granted in relation to the same eligible costs does
+    not exceed the most favourable funding rate laid down in the applicable rules of Union
+    law
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.43
+  verified: llm_cited
+application:
+  channel: National funding agreements concluded following Commission approval, via national
+    calls for interest organized by participating Member States (France, Hungary, Italy, Slovakia,
+    Slovenia).
+  typical_timeline: Works planned to start in 2025; FID phase planned to end in 2033.
+  quote: The granting of State aid will be governed by national funding agreements that are
+    expected to be concluded following the Commission’s decision.
+  source:
+    file: ipcei_tech4cure_sa113212_decision_2025.pdf
+    locator: ipcei_tech4cure_sa113212_decision_2025.pdf#p.45
+  verified: llm_cited

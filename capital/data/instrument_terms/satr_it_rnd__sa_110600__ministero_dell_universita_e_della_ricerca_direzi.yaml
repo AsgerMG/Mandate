@@ -1,0 +1,34 @@
+id: satr_it_rnd__sa_110600__ministero_dell_universita_e_della_ricerca_direzi
+name: Decreto MUR-MISE n. 327 del 29 marzo 2022 recante criteri e modalità di assegnazione delle risorse
+  del "Fondo Italiano per le Scienze Applicate” (FISA)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-pi-applicant
+  gate_family: G1_nexus
+  requirement: Proposals for industrial research and experimental development must be presented by individual
+    researchers (Principal Investigator) belonging to the national public or private research sector.
+  value: Individual researcher (PI) from public or private national research sector
+  intake_field: borrowerModel
+  quote: proposte di ricerca industriale e sviluppo sperimentale presentate da singoli ricercatori (Principal
+    Investigator), appartenenti al settore di ricerca pubblico o privato nazionale
+  source:
+    file: https://www.mur.gov.it/it/atti-e-normativa/decreto-interministeriale-n-327-del-29-03-2022
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-quality-criteria
+  gate_family: G5_use_of_funds
+  requirement: Proposals must present notable characteristics of originality and innovativeness and the
+    capacity to generate socio-economic and industrial impact.
+  value: Must show originality/innovativeness and socio-economic impact potential
+  intake_field: developmentStage
+  quote: che presentino notevoli caratteristiche di originalita' e innovativita' e capacita' di generare
+    ricadute socio-economiche e industriali
+  source:
+    file: https://www.mur.gov.it/it/atti-e-normativa/decreto-interministeriale-n-327-del-29-03-2022
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

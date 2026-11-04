@@ -1,0 +1,59 @@
+id: eit_climate_kic_cdr
+name: eit_climate_kic_cdr
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_location
+  gate_family: G1_nexus
+  requirement: Applicant must be an early-stage CDR start-up located in Europe.
+  value: Located in Europe
+  intake_field: entityCountries
+  quote: The call is open for early-stage CDR start-ups located in Europe.
+  source:
+    file: eit_climate_kic_cdr_climaccelerator_page.html
+    locator: eit_climate_kic_cdr_climaccelerator_page.html#chunk 1
+  verified: llm_cited
+- id: g2_stage
+  gate_family: G2_size_ownership
+  requirement: Applicant must be an early-stage start-up.
+  value: Early-stage start-up
+  intake_field: developmentStage
+  quote: The call is open for early-stage CDR start-ups located in Europe.
+  source:
+    file: eit_climate_kic_cdr_climaccelerator_page.html
+    locator: eit_climate_kic_cdr_climaccelerator_page.html#chunk 1
+  verified: llm_cited
+- id: g5_sector
+  gate_family: G5_use_of_funds
+  requirement: Applicant's solution must be in the field of carbon dioxide removal (CDR).
+  value: CDR solutions
+  intake_field: borrowerModel
+  quote: dedicated to lifting CDR solutions off the ground
+  source:
+    file: eit_climate_kic_cdr_climaccelerator_page.html
+    locator: eit_climate_kic_cdr_climaccelerator_page.html#chunk 1
+  verified: llm_cited
+- id: g3_funding_amount
+  gate_family: G3_financial
+  requirement: Programme provides funding of up to €25,000 during the whole programme.
+  value: up to €25,000
+  intake_field: ticketBand
+  quote: up to 25.000€ in funding
+  source:
+    file: eit_climate_kic_cdr_climaccelerator_page.html
+    locator: eit_climate_kic_cdr_climaccelerator_page.html#chunk 1
+  verified: llm_cited
+obligations: []
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (4/4 gates, 0/0 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online application via 'Apply here' link
+  typical_timeline: Deadline 2022-09-05 12:00 CEST
+  quote: "DEADLINE \n 2022-09-05 12:00: CEST"
+  source:
+    file: eit_climate_kic_cdr_climaccelerator_page.html
+    locator: eit_climate_kic_cdr_climaccelerator_page.html#chunk 1
+  verified: llm_cited

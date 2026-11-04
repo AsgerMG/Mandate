@@ -1,0 +1,32 @@
+id: satr_it_rnd__sa_118553__invitalia_agenzia_nazionale_per_l_attrazione_deg
+name: Contratti di sviluppo di cui all'articolo 43 del decreto-legge 25 giugno 2008, n.112, convertito
+  dalla legge 6 agosto 2008, n. 133 (adeguamento STEP)
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g1-sector-scope
+  gate_family: G1_nexus
+  requirement: Enterprises of any size intending to carry out large-scale investments in the industrial,
+    agro-industrial, or environmental-protection sectors may apply.
+  value: Any size; industrial/agro-industrial/environmental protection sectors
+  intake_field: borrowerModel
+  quote: Imprese di qualsiasi dimensione che intendono realizzare investimenti di grandi dimensioni nel
+    settore industriale, agroindustriale e di tutela ambientale.
+  source:
+    file: https://www.incentivi.gov.it/it/catalogo/contratti-di-sviluppo-programmi-di-sviluppo-industriale-e-programmi-di-sviluppo-la-tutela
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-large-investment
+  gate_family: G3_financial
+  requirement: The investment must be large-scale.
+  value: Large-scale investment required
+  intake_field: ticketBand
+  quote: investimenti di grandi dimensioni
+  source:
+    file: https://www.incentivi.gov.it/it/catalogo/contratti-di-sviluppo-programmi-di-sviluppo-industriale-e-programmi-di-sviluppo-la-tutela
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

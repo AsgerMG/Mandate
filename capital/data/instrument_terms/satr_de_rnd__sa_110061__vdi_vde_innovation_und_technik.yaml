@@ -1,0 +1,71 @@
+id: satr_de_rnd__sa_110061__vdi_vde_innovation_und_technik
+name: Invest BW Innovationsförderung [BW/WM]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-bw-location
+  gate_family: G1_nexus
+  requirement: Applicants must have a registered office, branch, or establishment in Baden-Württemberg,
+    or intend to establish one there.
+  value: Registered office/branch/establishment in Baden-Württemberg (existing or planned)
+  intake_field: entityCountries
+  quote: die ihren Sitz, eine Niederlassung oder eine Betriebsstätte in Baden-Württemberg haben oder einen
+    Sitz, eine Niederlassung oder Betriebsstätte in Baden-Württemberg errichten wollen
+  source:
+    file: https://invest-bw.de/innovation/foerdervoraussetzungen
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-consortium-research-orgs
+  gate_family: G1_nexus
+  requirement: In joint (consortium) projects, non-profit non-university research institutions and universities
+    based in Baden-Württemberg may also be applicants.
+  value: Consortium partners may include BW-based research institutions/universities
+  intake_field: consortium
+  quote: sowie gemeinnützige außeruniversitäre Forschungseinrichtungen sowie Hochschulen und Hochschuleinrichtungen
+    mit Sitz in Baden-Württemberg
+  source:
+    file: https://invest-bw.de/innovation/foerdervoraussetzungen
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-undertaking-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: Undertakings in difficulty under Art. 1(4)(c) in conjunction with Art. 2(18) GBER are not
+    eligible for aid exempted under Art. 25 GBER.
+  value: Undertakings in difficulty excluded (Art. 25 GBER aid)
+  intake_field: lossesOverHalfCapital
+  quote: Sogenannte Unternehmen in Schwierigkeiten gemäß Art. 1 Abs. 4 Buchst. c in Verbindung mit Art.
+    2 Nr. 18 AGVO sind für auf Grundlage des Art. 25 AGVO freigestellte Beihilfen nicht förderfähig.
+  source:
+    file: https://invest-bw.de/innovation/foerdervoraussetzungen
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-cooldown-period
+  gate_family: G6_conditionality
+  requirement: Companies that received Invest BW innovation funding within the past twelve months are
+    not eligible to apply.
+  value: 12-month cooldown after prior Invest BW innovation funding
+  intake_field: none
+  quote: Nicht antragsberechtigt sind Unternehmen, die in den vergangenen zwölf Monaten bereits eine Innovationsförderung
+    im Rahmen von Invest BW erhalten haben.
+  source:
+    file: https://invest-bw.de/innovation/foerdervoraussetzungen
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-public-ownership-cap
+  gate_family: G2_size_ownership
+  requirement: Companies in which public-law legal entities hold 25% or more are not eligible.
+  value: Public-law ownership must be below 25%
+  intake_field: institutionalOwner
+  quote: Nicht antragsberechtigt sind Unternehmen an denen juristische Personen des öffentlichen Rechts
+    zu 25 Prozent oder mehr beteiligt sind.
+  source:
+    file: https://invest-bw.de/innovation/foerdervoraussetzungen
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

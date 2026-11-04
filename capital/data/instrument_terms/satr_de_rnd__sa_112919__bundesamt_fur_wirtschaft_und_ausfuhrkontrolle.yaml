@@ -1,0 +1,83 @@
+id: satr_de_rnd__sa_112919__bundesamt_fur_wirtschaft_und_ausfuhrkontrolle
+name: Richtlinie für die Bundesförderung für Energie- und Ressourceneffizienz in der Wirtschaft – Zuschuss
+  und Kredit [BMWK, IIA6]
+administering_body: see source document
+country: DE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-establishment
+  gate_family: G1_nexus
+  requirement: Applicants must have an establishment in Germany; eligible types are private, municipal
+    and state (Land) companies, freelancers (if the establishment is predominantly used for the freelance
+    activity), and contractors.
+  value: Must have German establishment; private/municipal/Land companies, freelancers, contractors
+  intake_field: entityCountries
+  quote: 'Antragsberechtigt mit einer Betriebsstätte oder Niederlassung in Deutschland sind:
+
+    - private Unternehmen,
+
+    - kommunale Unternehmen,
+
+    - Landesunternehmen,
+
+    - freiberuflich Tätige, wenn die Betriebsstätte überwiegend für die freiberufliche Tätigkeit genutzt
+    wird,
+
+    - Contractoren, die in dieser Förderrichtlinie genannte Maßnahmen für ein antragsberechtigtes Unternehmen
+    durchführen.'
+  source:
+    file: https://www.bafa.de/DE/Energie/Energieeffizienz/Energieeffizienz_und_Prozesswaerme/energieeffizienz_und_prozesswaerme_node.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-excl-federal-majority-owned
+  gate_family: G2_size_ownership
+  requirement: Companies more than 50% owned by the federal government (public enterprises of the federal
+    government) are not eligible to apply.
+  value: 'Excluded: >50% federally-owned companies'
+  intake_field: institutionalOwner
+  quote: Unternehmen, deren Anteile überwiegend (> 50 Prozent) vom Bund gehalten werden (öffentliche Unternehmen
+    des Bundes)
+  source:
+    file: https://www.bafa.de/DE/Energie/Energieeffizienz/Energieeffizienz_und_Prozesswaerme/energieeffizienz_und_prozesswaerme_node.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-excl-fisheries
+  gate_family: G5_use_of_funds
+  requirement: Fisheries and aquaculture companies within the meaning of Regulation (EU) No 1379/2013
+    are excluded.
+  value: 'Excluded sector: fisheries and aquaculture'
+  intake_field: none
+  quote: Unternehmen der Fischerei und Aquakultur im Sinne der Verordnung (EU) Nr. 1379/2013
+  source:
+    file: https://www.bafa.de/DE/Energie/Energieeffizienz/Energieeffizienz_und_Prozesswaerme/energieeffizienz_und_prozesswaerme_node.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-excl-firm-in-difficulty
+  gate_family: G3_financial
+  requirement: Companies in difficulty within the meaning of Article 1(4)(c) in conjunction with Article
+    2(18) GBER are excluded.
+  value: 'Excluded: undertaking in difficulty (GBER Art. 1(4)(c)/2(18))'
+  intake_field: lossesOverHalfCapital
+  quote: Unternehmen in Schwierigkeiten im Sinne von Artikel 1 Absatz 4 Buchstabe c in Verbindung mit
+    Artikel 2 Nummer 18 AGVO
+  source:
+    file: https://www.bafa.de/DE/Energie/Energieeffizienz/Energieeffizienz_und_Prozesswaerme/energieeffizienz_und_prozesswaerme_node.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-module1-sme-only
+  gate_family: G2_size_ownership
+  requirement: In Module 1 (cross-cutting technologies) and the basic funding of Module 4, only small
+    and medium-sized enterprises may apply.
+  value: 'Module 1 and Module 4 basic funding: SME-only'
+  intake_field: turnoverBand
+  quote: Antragsberechtigt sind ausschließlich kleine und mittlere Unternehmen.
+  source:
+    file: https://www.bafa.de/DE/Energie/Energieeffizienz/Energieeffizienz_und_Prozesswaerme/energieeffizienz_und_prozesswaerme_node.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

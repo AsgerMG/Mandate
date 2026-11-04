@@ -1,0 +1,29 @@
+{
+  "what": "What is stopping us, in plain words. Hand-written because a machine cannot say who is waiting on whom. A blocker that clears is DELETED, not marked done.",
+  "blockers": [
+    {
+      "who": "you",
+      "what": "Two of our funding rules need a person, not a machine",
+      "why": "A German development bank says SMEs qualify and larger mid-sized firms also qualify. We hold that as a single test, so the second half of the sentence quietly narrows the first and blocks companies the bank would lend to. Fixing it opens roughly eight thousand of our own assessments. The trouble is that nothing we ask a founder tells us which half of the rule they are in, so the honest repair is to stop asserting a machine verdict there and keep the rule visible as text.",
+      "ask": "Say go and I withdraw both machine verdicts. Nobody loses a fund; some stop being wrongly blocked."
+    },
+    {
+      "who": "you",
+      "what": "Six Norwegian entries are categories, not funds",
+      "why": "Innovasjon Norge publishes its money under broad category headings, and underneath those the actual programmes a founder applies to. We took the headings. So a Norwegian founder is offered one row standing for six things, and which of the six they get is decided by an accident of how well each is encoded — the two largest funds in the country are among the ones hidden. Naming them properly gains a seat in the published six for 155 founders, and for twelve it is the fund they actually won.",
+      "ask": "Three ways to go: name the categories honestly, re-split onto the real programmes, or collapse to a single row. I lean toward re-splitting. It is your call because it changes what a whole country is offered."
+    },
+    {
+      "who": "you",
+      "what": "A tenth of our companies were never classified at all",
+      "why": "Our pipeline sorts companies into a sector and then a sub-sector. The second step was left as a queue for a language model to finish, and it never ran — the comment in the code still says 'pending'. So 14,604 companies, a tenth of everything we ship, have a top-level sector and nothing beneath it. That is not the same as us judging them unclassifiable, and until today our own code could not tell those two apart. It affects 113 of the companies we grade ourselves against.",
+      "ask": "About five dollars and forty cents of model time to finish the queue. Say go."
+    },
+    {
+      "who": "us",
+      "what": "We were grading the AI with a ruler too blunt to see it",
+      "why": "We scored the AI's ordering as a yes-or-no: is the right fund in the six. On that measure it looked like a coin flip and I told you twice it did nothing. Scored by WHERE the fund lands, both paid runs are positive and stay positive when you drop any one country's funds. Two things follow. Three points of accuracy cannot be bought on the yes-or-no measure at any price, so a full run priced in that currency was never going to answer anything. And there is now one real candidate: publish the AI's order only when its own first pick differs from ours, worth about five points, confirmable for free alongside whatever we buy next.",
+      "ask": "Nothing. This was ours to get wrong and ours to fix."
+    }
+  ]
+}

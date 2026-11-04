@@ -1,0 +1,319 @@
+id: satr_be_rnd
+name: satr_be_rnd
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-siege-wallonie
+  gate_family: G1_nexus
+  requirement: Applicant must be a legal person with at least one place of activity in Wallonia
+    (for popularisation of science projects).
+  value: legal person with establishment in Wallonia
+  intake_field: entityCountries
+  quote: il est déposé par une personne morale ayant au moins un siège d'activité en Wallonie
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html / be_wallonie_agw_rdi_application.html#chunk
+      8, Art. 67
+  verified: llm_cited
+- id: g2-taille-pe-me
+  gate_family: G2_size_ownership
+  requirement: Aid for technical feasibility studies is restricted to small enterprises, medium
+    enterprises, or small non-autonomous enterprises.
+  value: small/medium enterprise or small non-autonomous enterprise
+  intake_field: fteBand
+  quote: introduite par une petite entreprise, par une moyenne entreprise ou par une entreprise
+    non autonome de taille restreinte pour faire réaliser une étude de faisabilité technique
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 6, Art. 32
+  verified: llm_cited
+- id: g2-jei-definition
+  gate_family: G2_size_ownership
+  requirement: Young innovative company subsidy requires the beneficiary to qualify as a 'jeune
+    entreprise innovante' at the time of grant, verified by independent experts or external
+    accountants.
+  value: jeune entreprise innovante status required
+  intake_field: foundedYear
+  quote: Le Gouvernement peut accorder une subvention à une entreprise qui est une jeune entreprise
+    innovante à la date de l'octroi de cette subvention
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 7, Art. 40
+  verified: llm_cited
+- id: g2-once-only-jei
+  gate_family: G2_size_ownership
+  requirement: A young innovative company may benefit from this type of subsidy only once.
+  value: one-time only per company
+  intake_field: none
+  quote: Une jeune entreprise innovante ne peut bénéficier qu'une seule fois d'une subvention
+    que vise la présente section.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 7, Art. 44
+  verified: llm_cited
+- id: g2-difficulty-exclusion
+  gate_family: G2_size_ownership
+  requirement: No aid under the decree may be granted to a firm in difficulty within the meaning
+    of EU State aid rescue and restructuring guidelines.
+  value: firm in difficulty excluded
+  intake_field: lossesOverHalfCapital
+  quote: Aucune des aides que vise le présent décret ne peut être accordée à une entreprise
+    en difficulté au sens des lignes directrices de l'Union européenne relatives aux aides
+    d'État au sauvetage et à la restructuration d'entreprises en difficulté.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 15, Art. 116
+  verified: llm_cited
+- id: g3-intensite-jei
+  gate_family: G3_financial
+  requirement: Subsidy intensity for young innovative companies can reach up to 100% of eligible
+    expenses.
+  value: up to 100%
+  intake_field: turnoverBand
+  quote: L'intensité de la subvention, exprimée en pourcentage des dépenses admissibles avant
+    impôts ou autres prélèvements, peut atteindre 100.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 7, Art. 42
+  verified: llm_cited
+- id: g3-plafond-jei
+  gate_family: G3_financial
+  requirement: The maximum amount of the young innovative company subsidy is EUR 500,000.
+  value: EUR 500,000 max
+  intake_field: ticketBand
+  quote: Son montant s'élève au maximum à 500.000 euros.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 7, Art. 43
+  verified: llm_cited
+- id: g3-plafond-de-minimis-effet-incitatif
+  gate_family: G3_financial
+  requirement: Automatic incentive effect applies for aids under EUR 7.5 million per project
+    and per promoter for SMEs in industrial research/experimental development/feasibility
+    subsidies.
+  value: < EUR 7.5 million per project per promoter
+  intake_field: ticketBand
+  quote: lorsque le montant de l'aide est inférieur à 7, 5 millions d'euros par projet et
+    par promoteur
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_agw_rdi_application.html#chunk 6, Art. 44
+  verified: llm_cited
+- id: g3-intensite-recherche-industrielle-centres
+  gate_family: G3_financial
+  requirement: Subsidy intensity for industrial research/experimental development projects
+    by approved research centres or public research bodies can reach up to 75%.
+  value: up to 75%
+  intake_field: cofinancingBand
+  quote: L'intensité de la subvention, exprimée en pourcentage des dépenses admissibles avant
+    impôts ou autres prélèvements, peut atteindre 75.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 11, Art. 80
+  verified: llm_cited
+- id: g3-intensite-brevets
+  gate_family: G3_financial
+  requirement: Subsidy intensity for patent-related expenses can reach up to 100% for universities/high
+    schools and approved research centres.
+  value: up to 100%
+  intake_field: cofinancingBand
+  quote: L'intensité de la subvention, exprimée en pourcentage des dépenses admissibles avant
+    impôts ou autres prélèvements, peut atteindre 100.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 10, Art. 68
+  verified: llm_cited
+- id: g3-intensite-etude-faisabilite
+  gate_family: G3_financial
+  requirement: Feasibility study subsidy intensity varies from 40% to 75% depending on enterprise
+    size and type of prior research.
+  value: 40%-75% depending on category
+  intake_field: cofinancingBand
+  quote: 75 pour une petite entreprise ou une moyenne entreprise, si l'étude est préalable
+    à des activités de recherche industrielle
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 6, Art. 34
+  verified: llm_cited
+- id: g3-plafond-conseil-innovation
+  gate_family: G3_financial
+  requirement: Innovation advisory service subsidies for a given SME are capped at EUR 200,000
+    over a 36-month period.
+  value: EUR 200,000 per 36 months
+  intake_field: ticketBand
+  quote: Sur une période de 36 mois, une même petite entreprise ou moyenne entreprise peut
+    bénéficier de subventions que vise la présente section dans la limite d'un montant global
+    de 200.000 euros.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 9, Art. 57
+  verified: llm_cited
+- id: g4-avance-recuperable
+  gate_family: G4_borrower_model
+  requirement: For industrial research/experimental development aid to enterprises, funding
+    may take the form of a recoverable advance repaid based on commercial success against
+    a defined favourable outcome, with reference-rate interest.
+  value: recoverable advance (avance récupérable) with success-based repayment
+  intake_field: borrowerModel
+  quote: Le montant global à rembourser est fonction de la réussite du projet par rapport
+    à l'issue favorable définie, notamment en termes d'objectifs commerciaux, dans les dispositions
+    contractuelles relatives au projet qui lient la Région wallonne et l'entreprise.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 6, Art. 28
+  verified: llm_cited
+- id: g4-dispense-remboursement
+  gate_family: G4_borrower_model
+  requirement: Full waiver of repayment of the recoverable advance is possible if the enterprise
+    justifies project failure in writing and transfers real rights on project results to the
+    Region.
+  value: waiver conditional on written justification and rights transfer
+  intake_field: borrowerModel
+  quote: elle motive sa renonciation, dans un écrit adressé au Gouvernement, en exposant l'échec
+    du projet au regard des objectifs techniques et commerciaux définis dans les dispositions
+    contractuelles, relatives au projet, qui la lient à la Région wallonne
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 6, Art. 27
+  verified: llm_cited
+- id: g4-no-real-rights
+  gate_family: G4_borrower_model
+  requirement: Grant of the subsidy does not, except in rights-transfer cases, confer real
+    rights on the project results to the Walloon Region.
+  value: no IP rights transfer to Region by default
+  intake_field: borrowerModel
+  quote: l'octroi d'une aide que vise la présente section n'a pas pour effet de conférer à
+    la Région wallonne des droits réels sur les résultats du projet.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 6, Art. 31
+  verified: llm_cited
+- id: g5-effet-incitatif
+  gate_family: G5_use_of_funds
+  requirement: Aid may only be granted for projects that have not started before the aid application
+    was submitted, to ensure incentive effect.
+  value: project must not have started before application
+  intake_field: developmentStage
+  quote: Si le projet pour lequel une aide est sollicitée n'a pas commencé avant l'introduction
+    de la demande, l'effet incitatif est automatiquement présent pour les mesures d'aides
+    suivantes
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_agw_rdi_application.html#chunk 6, Art. 44
+  verified: llm_cited
+- id: g5-depenses-jei
+  gate_family: G5_use_of_funds
+  requirement: The young innovative company subsidy may cover expenses of any nature.
+  value: any type of expense eligible
+  intake_field: none
+  quote: La subvention peut couvrir des dépenses de toute nature.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 7, Art. 43
+  verified: llm_cited
+- id: g5-depenses-recherche-industrielle
+  gate_family: G5_use_of_funds
+  requirement: Eligible expenses for industrial research/experimental development subsidies
+    cover personnel, instruments/materials, contract research, and overheads directly linked
+    to project realisation.
+  value: personnel, equipment, contract research, overheads
+  intake_field: none
+  quote: les dépenses de personnel relatives aux chercheurs, techniciens et autres personnels
+    d'appui, dans la mesure où ils sont affectés à la réalisation du projet
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 9, Art. 62
+  verified: llm_cited
+- id: g6-cumul-interdit
+  gate_family: G6_conditionality
+  requirement: No eligible expense under the decree may be covered by more than one aid under
+    the decree.
+  value: no double funding of same expense within decree
+  intake_field: conditionality
+  quote: Aucune dépense admissible que vise le présent décret ne peut être couverte par plus
+    d'une aide que vise le présent décret.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 14, Art. 112
+  verified: llm_cited
+- id: g6-cumul-autre-aide-regionale
+  gate_family: G6_conditionality
+  requirement: Except for popularisation subsidies, no eligible expense can be covered simultaneously
+    by decree aid and another Walloon Region aid or another Belgian public entity's aid.
+  value: no cumulation with other Belgian public aid on same expense
+  intake_field: conditionality
+  quote: aucune dépense admissible que vise le présent décret ne peut être couverte à la fois
+    par une aide que vise le présent décret et par une aide de la Région wallonne autre que
+    celles que vise le présent décret
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 15, Art. 113
+  verified: llm_cited
+- id: g6-post-jei-restrictions
+  gate_family: G6_conditionality
+  requirement: For three years after receiving a young innovative company subsidy, the Government
+    may only grant that company other decree aids, EU-approved/exempted R&D aids, or capital-investment
+    aid.
+  value: restricted follow-on aid types for 3 years post-JEI subsidy
+  intake_field: conditionality
+  quote: Pendant les trois années qui suivent la date d'octroi à une jeune entreprise innovante
+    d'une subvention que vise la présente section, le Gouvernement peut seulement lui accorder
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 7, Art. 45
+  verified: llm_cited
+obligations:
+- requirement: The beneficiary must submit activity reports, expenditure statements, and scientific/technical
+    reports during project implementation.
+  quote: des rapports d'activités, accompagnées du relevé des dépenses afférentes à la période
+    à laquelle ils se rapportent
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_agw_rdi_application.html#chunk 9, Art. 71
+  verified: llm_cited
+- requirement: The convention governing aid must cover repayment terms, eligible expenses,
+    confidentiality obligations, IP arrangements, and control modalities.
+  quote: les obligations de secret et de confidentialité
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_agw_rdi_application.html#chunk 7, Art. 54
+  verified: llm_cited
+- requirement: An enterprise exploiting project results must make periodic repayments to the
+    Walloon Region with interest at the EU reference rate.
+  quote: Dans tous les cas, les remboursements sont augmentés d'un intérêt dont le taux est
+    égal au taux de référence fixé par la Commission européenne.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 6, Art. 28
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (21/21 gates, 3/3 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation with aid from foreign, international or supranational public entities is
+    permitted, but the total aid is taken into account for respecting the maximum intensity
+    ceiling set by the decree.
+  quote: Toute dépense admissible que vise le présent décret peut être couverte à la fois
+    par une aide que vise le présent décret et par une ou plusieurs autres aides accordées
+    par une entité publique étrangère, internationale ou supranationale. Dans ce cas, l'ensemble
+    des aides sont prises en considération pour le respect de l'intensité maximale que vise
+    le présent décret
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_decret_rdi_2008_wallex.html#chunk 15, Art. 115
+  verified: llm_cited
+application:
+  channel: Applications submitted to the Walloon Administration either via calls for projects
+    (appels à projets) or directly outside calls, with a working language of French or German.
+  typical_timeline: Total time from acknowledgment of receipt to notification of the reasoned
+    proposal to the Minister may not exceed five months (or three months for the standard
+    procedure); jury must convene within six months after the project deadline for calls.
+  quote: Le délai total entre la date de l'accusé de réception du projet et l'information
+    au promoteur de la proposition motivée qui est adressée au Ministre ne peut dépasser trois
+    mois.
+  source:
+    file: be_wallonie_decret_rdi_2008_wallex.html
+    locator: be_wallonie_agw_rdi_application.html#chunk 8, Art. 57
+  verified: llm_cited

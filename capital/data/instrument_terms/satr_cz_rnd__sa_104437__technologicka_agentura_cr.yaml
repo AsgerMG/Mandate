@@ -1,0 +1,49 @@
+id: satr_cz_rnd__sa_104437__technologicka_agentura_cr
+name: Program na podporu aplikovaného výzkumu a inovací v oblasti dopravy – DOPRAVA 2030
+administering_body: see source document
+country: CZ
+capital_type: unknown
+status: draft
+gates:
+- id: g1-enterprise-cofinancing
+  gate_family: G3_financial
+  requirement: Enterprise applicants must be legal or natural persons carrying out an economic activity
+    per Annex 1 of the Commission Regulation, and must demonstrate the ability to co-finance the project
+    from non-public funds.
+  value: Enterprises must show ability to co-finance from non-public funds
+  intake_field: cofinancingBand
+  quote: podniky – právnické i fyzické osoby, které podle Přílohy 1 nařízení Komise vykonávají hospodářskou
+    činnost a které řeší projekt samostatně nebo ve spolupráci s dalšími účastníky a prokáží schopnost
+    projekt spolufinancovat z neveřejných prostředků,
+  source:
+    file: https://tacr.gov.cz/program/doprava-2030/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-research-org
+  gate_family: G1_nexus
+  requirement: Research and knowledge-dissemination organisations meeting the Commission Regulation's
+    definition of a research organisation are also eligible applicants.
+  value: Qualifying research organisations are eligible applicants
+  intake_field: borrowerModel
+  quote: organizace pro výzkum a šíření znalostí – právnické osoby, které splňují definici výzkumné organizace
+    podle čl. 2 odst. 83 nařízení Komise, dle bodu 1.3 písm. ee) Rámce a dle Zákona, a které řeší projekt
+    samostatně nebo ve spolupráci s dalšími účastníky,
+  source:
+    file: https://tacr.gov.cz/program/doprava-2030/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-public-bodies
+  gate_family: G1_nexus
+  requirement: State organisational units and their subsidiary contributory organisations are also eligible
+    applicants.
+  value: State organisational units and their contributory organisations eligible
+  intake_field: borrowerModel
+  quote: organizační složky státu - dle § 3 odst. 1 zákona č. 219/2000 Sb., o majetku České republiky
+    a jejím vystupování v právních vztazích a jimi zřízené příspěvkové organizace dle § 54 téhož zákona,
+  source:
+    file: https://tacr.gov.cz/program/doprava-2030/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

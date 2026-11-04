@@ -1,0 +1,683 @@
+// Does retrieval return the fund a company ACTUALLY won?
+//
+// Ground truth we own: real companies, real awards, replayed as if the company
+// were a founder filling in the intake. Row count is not correctness; this is.
+//
+// TWO MODES, because the corpus supports two different questions and mixing them
+// hid both. Measured: state_aid_satr and national_dev_banks have ZERO distinct
+// per-project titles per leaf, while horizon_eu_pillar_ii has 534 and eic 438.
+//
+//   project  a real per-project title as the founder's description. Only EU
+//            programmes can be tested this way. Pairs whose title is one of the
+//            instrument's own sample_project_titles are excluded at build time:
+//            for SATR the "title" IS the scheme's description repeated on every
+//            award, which makes the replay circular, and that circularity was
+//            reading as 90% recall until it was checked.
+//   profile  no project text at all, which is what a national-scheme applicant
+//            actually has. Retrieval must work from country and sector alone.
+//
+// SPLIT ON PURPOSE. `tune` is what a change may be measured against while it is
+// being made; `holdout` is not looked at until it is finished. Split by a hash
+// of the COMPANY so one company can never appear on both sides.
+//
+// WHICH SET. The default is the one active set (`scripts/recallSet.ts`), and
+// the banner naming it prints on every run. `SET=` still loads a retired set,
+// loudly, so a published number stays reproducible -- never quietly.
+//
+//   npx tsx scripts/measure_recall.ts                       # holdout, both modes
+//   SPLIT=tune MODE=profile npx tsx scripts/measure_recall.ts
+//   DESCRIBED=1 npx tsx scripts/measure_recall.ts
+//   REGION=any npx tsx scripts/measure_recall.ts
+//   SET=__recallSet.json npx tsx scripts/measure_recall.ts  # retired, says so
+//
+// ── THE DEBUG LOOP (wsDN) ──────────────────────────────────────────────────
+// This file used to write NOTHING per case and had no way to re-run a CHOSEN
+// founder, so a miss cost a full re-run to investigate and still came back as a
+// percentage. Three knobs fix that, and all three are free:
+//
+//   OUT=/tmp/recall.json  write the per-case tape: the candidates as the model
+//                         saw them, the picks, the won fund's rank at every
+//                         stage, the founder context that built the prompt, and
+//                         a failure CLASS per miss. Also turns on the "WHY IT
+//                         MISSED" table. Without it, nothing is written.
+//   CASE=<caseId>         re-run ONE founder. `caseId` is `company::instrument`
+//                         and is printed on every miss line, so a miss you can
+//                         see is a miss you can re-run. `N=1` is NOT this: it
+//                         gives the first row of the shuffle.
+//   COMPANY=<prefix>      every case for one company.
+//
+// Every run now prints its ARM -- which of the four levers (retrieval, founder
+// answers, fund evidence, instructions) is off default and at what value -- and
+// its cache hit rate, so no figure can be quoted without the conditions that
+// produced it. See `scripts/rankerTape.ts` and `scripts/rankerCache.ts`.
+//
+//   POP=region_known REGION=off    npx tsx scripts/measure_recall.ts  # A
+//   POP=region_known REGION=strict npx tsx scripts/measure_recall.ts  # B
+//
+// REGION answers the intake's region question, which no other run does. A real
+// founder always knows where they are; the harness has to recover it from the
+// register (ETL/terms/repair_recall_attribution.py). Two settings, because the
+// provenance changes what the number means:
+//
+//   REGION=strict  supply only a region derived from an award under a DIFFERENT
+//                  notified scheme. Cannot be circular, covers ~37% of pairs.
+//   REGION=any     also supply a region derived from the pair's own award. The
+//                  two agree at NUTS-1 92.1% of the time and rank siblings
+//                  identically, which is what licenses the wider population.
+//   REGION=off     supply nothing. Same as unset, and sayable out loud, which
+//                  matters when it is one arm of a pair of runs.
+//
+// POP= AND REGION= ARE TWO DIFFERENT KNOBS, AND THEY USED TO BE ONE.
+// `REGION=strict` also restricted the population to pairs holding a leak-free
+// region, so comparing it against a bare run compared two different draws AND
+// two different answer sets, and no arithmetic separates those. wsAX measured
+// EXACT@5 26% -> 33% that way and said plainly in its own findings that the
+// direction was unambiguous and the number was not.
+//
+//   POP=region_known  keep only pairs holding a leak-free region -- the pairs on
+//                     which the question "what does answering region buy?" is
+//                     even askable. It restricts the DRAW and supplies nothing.
+//
+// So the clean A/B is one POP with two REGIONs: the denominator is identical,
+// the sampler sees the same rows in the same order under the same seed, and the
+// only difference between the arms is whether the founder answered. This is the
+// same discipline `ANSWERS=` already follows ("Neither restricts the
+// POPULATION"), applied to the knob that predates it.
+//
+// That same script also repairs the ANSWER KEY, and without it region cannot be
+// measured at all: `scheme_code = call_id` credits an award to every body
+// delivering that notified scheme, so for the 24% of holdout pairs whose answer
+// sits in a same-name group the shipped label is close to a uniform draw over
+// the siblings. Region ranks the won leaf first 24.9% of the time against that
+// key and 66.2% against the repaired one -- same rows, same scorer.
+//
+// DESCRIBED=1 keeps only rows carrying a leak-free real description, which is
+// the population the product is actually trying to serve. The active set
+// recovers those descriptions from an award under a DIFFERENT regime and
+// re-verifies them against `instrument_profiles.profile_text` in Postgres; a
+// row whose description sits inside the won fund's own profile is excluded
+// rather than counted, because it would grade retrieval on a query copied out
+// of the answer. That defect covered 46% of the old set's holdout `project`
+// rows and is what `check_recall_leaks.ts` now keeps out of CI.
+// One loader, shared, and one DECLARED contract. Without credentials an
+// unexported shell measures the LEXICAL fallback while production ranks on
+// embeddings -- the harness would be grading a different system from the one
+// that ships. This script's own copy read only ./.env.local, which meant a
+// worktree with credentials at the repo root measured the wrong system and
+// said nothing; `requireLiveCorpus` catches the corpus half of that, not the
+// ranking half, and catches neither when DATABASE_URL was never set at all
+// (hydration then records source="snapshot", degraded=FALSE, and the guard
+// passes). `requireCredentials` is the half that was missing.
+import { readFileSync } from "fs";
+
+import { loadEnvLocal, requireCredentials } from "./loadEnv";
+
+loadEnvLocal();
+// Also the one definition of "deliberately offline": it deletes DATABASE_URL
+// under NO_PG, which used to be this file's own next line.
+requireCredentials("measure_recall", ["DATABASE_URL", "VOYAGE_KEY"]);
+
+import {
+  corpusProvenance, hydrateDbInstruments, loadDbInstruments, publishableInstruments,
+  requireLiveCorpus, resetGateHydration, __forceSuppressedForParity,
+} from "../lib/intelligence/corpus";
+import { computeVerdict } from "../lib/intelligence/pipeline";
+import { DISPLAY_CAP } from "../lib/intelligence/shortlist";
+import { doorKey } from "../lib/intelligence/rowIdentity";
+// ── WHICH RANKER produced these numbers, counted rather than assumed ───────
+// `check_recall_floor.ts` has printed this since fd27cec0 and THIS FILE, the
+// harness it floors and the one every published EXACT@5 comes out of, did not.
+// `semanticFundMatch` has a 3s connect and a 3s statement timeout and returns
+// an empty map on any failure, at which point every `rankerUsed` call site
+// drops to the lexical index -- so a run can average two ranking systems and
+// print one number. wsCP retracted three figures on exactly that, including
+// wsCK's own control, which printed `ranker: nothing ranked` and was never
+// read. A number from this script without the attestation is not evidence.
+import { rankerTallyLine, resetRankerTally } from "../lib/intelligence/semantic";
+import {
+  founderIntake, founderPolicyFromEnv, IntakeTally, type FounderPolicy,
+} from "./founderIntake";
+import { cacheTallyLine } from "./rankerCache";
+import { DEFAULT_SEED, halfWidth, sampleRecall } from "./recallSample";
+import {
+  answersFor, assertAncestorConvention, assertGradablePopulation, isDescribed, loadRecallSet,
+  partitionByOfferable, reattributeMissingAnswers, REGIME_AT_5_NOT_COMPARABLE,
+  type AnswerMode,
+} from "./recallSet";
+// ── THE THREE THINGS A SCALAR CANNOT CARRY ────────────────────────────────
+// This file wrote NOTHING per case: every counter was a scalar, there was no
+// `OUT=`, and no way to select one founder. So a miss could only be
+// investigated by re-running the whole sample and paying again -- and the
+// re-run still reported a percentage, which is not a diagnosis. `rankerTape.ts`
+// adds the three: a per-case tape, an arm that names which lever was moved, and
+// a failure taxonomy that says whether the won fund was never retrieved, lost
+// to a sibling, ranked low, or in the wrong family. See its header.
+import {
+  armId, armLine, classify, leversFromEnv, LEVER_FOR, taxonomyLine, taxonomyTable,
+  writeTape, type TapeCase,
+} from "./rankerTape";
+import { readTrace, traceOn, traceReset } from "../lib/intelligence/tableTrace";
+
+async function main() {
+  await hydrateDbInstruments();
+  // A run that asked for Postgres and silently got the committed snapshot grades a
+  // corpus where nothing is closed -- which is exactly how pool read 97% one
+  // minute and 77% the next. Exit rather than report.
+  requireLiveCorpus("measure_recall");
+  const byId = new Map(loadDbInstruments().map((i) => [i.id, i]));
+  const { file: setFile, rows: all } = loadRecallSet();
+  const split = process.env.SPLIT ?? "holdout";
+  const mode = process.env.MODE;
+  // A row whose description leaks into the won fund's profile is excluded from
+  // the DESCRIBED population rather than counted as described: it would grade
+  // retrieval on a query copied out of the answer. `isDescribed` is shared, so
+  // no two harnesses can disagree about which rows that is.
+  const described = isDescribed;
+  // The only region a replay may honestly supply: one derived from an award
+  // under a DIFFERENT notified scheme, so the answer cannot be read out of the
+  // fund it is being asked to predict.
+  const leakFreeRegion = (r: any): string | undefined =>
+    r.regionSource === "other_scheme" ? (r.region || undefined) : undefined;
+  // ANSWER SUPPLY ONLY. This used to also restrict the population (see header):
+  // the reasoning was that a pair with no leak-free region is one we cannot
+  // honestly supply rather than one whose region we withhold — which is true,
+  // and is a reason to restrict the DRAW, not to fuse the two into one flag.
+  // POP=region_known now does that half, so both arms can share one draw.
+  const regionMode = process.env.REGION;
+  const regionOf = (r: any): string | undefined =>
+    !regionMode || regionMode === "off" ? undefined
+      : regionMode === "strict" ? leakFreeRegion(r)
+        : r.region || undefined;
+  // Restricts the DRAW and supplies nothing, so REGION=off and REGION=strict
+  // over the same POP are the same rows in the same order under the same seed.
+  const popMode = process.env.POP;
+  if (popMode && popMode !== "region_known") {
+    throw new Error(`unknown POP=${popMode} (expected: region_known)`);
+  }
+  if (regionMode && !["off", "strict", "any"].includes(regionMode)) {
+    throw new Error(`unknown REGION=${regionMode} (expected: off, strict, any)`);
+  }
+  // ── ANSWERS: stop describing every founder identically ────────────────────
+  // Until this existed the replay handed EVERY founder the same ticketBand,
+  // capitalSought, consortium, borrowerModel and useOfFunds. Only country,
+  // sector and the description varied. That is adequate for measuring
+  // retrieval and disqualifying for measuring any DISCRIMINATOR: a signal
+  // whose job is to tell two founders apart cannot register on a population
+  // described identically.
+  //
+  // Two shipped conclusions rest on that flaw. "Gates do not rank" (won fund
+  // 62% pass vs pool 63%) was measured with every founder answering the same
+  // questions the same way, so the gates were being asked to separate rows
+  // that had nothing to separate. "Ticket fit changes nothing" has the same
+  // shape and the row sort's own comment says so.
+  //
+  //   ANSWERS=real    per-founder ticketBand, capitalSought and region from
+  //                   either provenance
+  //   ANSWERS=strict  only values derived from an award under a DIFFERENT
+  //                   notified scheme, which cannot be circular
+  //
+  // Neither restricts the POPULATION: a founder we cannot derive an answer for
+  // keeps the constant. The denominator is therefore identical to the baseline
+  // run and the difference is an effect, not a change of sample.
+  const answerMode = (process.env.ANSWERS ?? "off") as AnswerMode;
+  // The SAME repair the gate applies, from the same helper: answers naming an
+  // instrument that was never a fund are re-attributed to the rollup the award
+  // belongs to; answers naming a correctly-closed fund are excluded. A floor
+  // calibrated on one population and verified on another is not a floor.
+  const corpus = loadDbInstruments();
+  assertAncestorConvention(corpus);
+  const inCorpus = new Set(corpus.map((i) => i.id));
+  const offerable = new Set(publishableInstruments().map((i) => i.id));
+  const fixed = reattributeMissingAnswers(
+    all, (id) => inCorpus.has(id), (id) => offerable.has(id));
+  const pop = partitionByOfferable(fixed.rows, (id) => offerable.has(id));
+  assertGradablePopulation(pop, (id) => inCorpus.has(id), fixed.reattributed.length, setFile);
+  // COUNTRY= restricts the POPULATION to founders in one market, which is the
+  // only way to get power on a change that can only bind one market at a time.
+  // The degradation policy is the sharpest case: it withholds rows unevenly by
+  // register, so an aggregate over 22 countries reports it as noise.
+  // Selection filters and POOL_LEAVES_PER_CHANNEL are applied per (channel,
+  // country), so a constant that cuts three Spanish candidates moves twelve of
+  // the 250 sampled rows and disappears into the aggregate's +/-2.5. It is a
+  // filter, not a weighting: the headline run stays exactly what it was.
+  const country = process.env.COUNTRY;
+  const set = pop.graded.filter((r) => (split === "all" || r.split === split)
+                             && (!mode || r.mode === mode)
+                             && (!country || r.country === country)
+                             && (!process.env.DESCRIBED || described(r))
+                             && (popMode !== "region_known" || Boolean(leakFreeRegion(r))));
+  if (!set.length) {
+    throw new Error(
+      `no rows match split=${split} mode=${mode ?? "any"} country=${country ?? "any"}`);
+  }
+  // ── ONE FOUNDER, CHOSEN. The debug loop's smallest unit ───────────────────
+  // There was no way to re-run a CHOSEN case. The smallest unit was `N=1`,
+  // which gives the first row of the SHUFFLE -- a different founder under a
+  // different seed, and never the one whose miss you are trying to explain. So
+  // the loop was: see a miss in aggregate, have no way to reach it, re-run
+  // everything. `scripts/_wscz_aleph.ts:16` and `scripts/_wsde_prompt.ts:41`
+  // already had the pattern; this is it, on the harness that needs it.
+  //
+  //   CASE=<caseId>     the exact id the tape writes (`company::instrument`)
+  //   COMPANY=<prefix>  every case for one company, matched case-insensitively
+  //
+  // The selector runs BEFORE the sampler, so a chosen case can never be
+  // shuffled out from under you, and it applies on top of every other filter
+  // rather than replacing them -- a case outside the split you asked for is a
+  // case you did not mean to grade.
+  const caseId = (r: { name: string; instrument: string }) => `${r.name}::${r.instrument}`;
+  const onlyCase = process.env.CASE;
+  const onlyCompany = process.env.COMPANY;
+  const selected = set.filter((r) =>
+    (!onlyCase || caseId(r) === onlyCase)
+    && (!onlyCompany || r.name.toLowerCase().startsWith(onlyCompany.toLowerCase())));
+  if (!selected.length) {
+    // Never a silent empty run. A selector that matches nothing and reports a
+    // clean sweep of zero cases is worse than an error, so this names the
+    // nearest rows it could see -- which is usually enough to spot the typo.
+    const near = set.filter((r) => r.name.toLowerCase()
+      .includes((onlyCompany ?? onlyCase ?? "").toLowerCase().slice(0, 6)))
+      .slice(0, 8).map(caseId);
+    throw new Error(
+      `CASE/COMPANY selected 0 of ${set.length} rows in split=${split}` +
+      `${mode ? ` mode=${mode}` : ""}.` +
+      `${near.length ? `\n  nearest: ${near.join("\n           ")}` : ""}` +
+      `\n  A selector that matches nothing must not report a clean run of zero cases.`);
+  }
+  if (onlyCase || onlyCompany) {
+    console.log(`selector: ${onlyCase ? `CASE=${onlyCase}` : `COMPANY=${onlyCompany}`}` +
+      ` -> ${selected.length} of ${set.length} row(s)`);
+  }
+  // The sampler lives in `recallSample.ts` and is shared with
+  // check_recall_floor.ts. It used to be inline here, and the gate that fails
+  // the build kept its own STRIDE version -- so the floor and the measurement
+  // it floors were drawing different samples. SEED= varies the draw on
+  // purpose: a result that does not survive a change of seed was never there.
+  const N = Math.min(Number(process.env.N ?? 250), selected.length);
+  const seed = Number(process.env.SEED ?? DEFAULT_SEED);
+  const sample = sampleRecall(selected, N, seed);
+  // "none" means the founder has not been asked yet, which is every founder on
+  // the instant path. Anything else must be a real answer, so a typo cannot
+  // quietly become "unanswered" and read as a result.
+  const consortiumEnv = process.env.CONSORTIUM ?? "yes";
+  if (!["yes", "no", "unsure", "none"].includes(consortiumEnv)) {
+    throw new Error(`CONSORTIUM must be yes|no|unsure|none, got "${consortiumEnv}"`);
+  }
+  const consortiumAnswer =
+    consortiumEnv === "none" ? undefined : consortiumEnv as "yes" | "no" | "unsure";
+
+  // ── What the degradation policy COSTS, measured on the live register ──────
+  // SUPPRESS_IDS_FILE names the rows a fallback request withholds, so the
+  // ranker is handicapped exactly as the degraded path handicaps it while
+  // every number still comes out of Postgres. Measuring on the snapshot itself
+  // would trip requireLiveCorpus, and rightly: a corpus where nothing is
+  // closed grades differently for reasons that have nothing to do with this.
+  //
+  // THE ORDER HERE IS THE WHOLE MEASUREMENT. The population above is built
+  // from the UNSUPPRESSED offerable set and is now fixed. Suppressing first
+  // would drop every pair whose answer is one of the withheld funds --
+  // excluded by `reattributeMissingAnswers` as un-offerable -- and the policy
+  // would score as an IMPROVEMENT by deleting the questions it gets wrong.
+  // Those pairs stay in, unanswerable, and the miss is the cost.
+  if (process.env.SUPPRESS_IDS_FILE) {
+    const ids = JSON.parse(readFileSync(process.env.SUPPRESS_IDS_FILE, "utf8")) as string[];
+    __forceSuppressedForParity(ids);
+    console.log(`degradation policy applied: ${ids.length} row(s) withheld from the ranker, ` +
+      `graded against the ${set.length}-row population the live register defines`);
+  }
+
+  const stat = {
+    pool: 0, exact5: 0, regime5: 0, chan5: 0, door5: 0, doorable: 0, done: 0,
+    // ── What the FOUNDER sees, measured beside what the floors grade ─────────
+    // `exact5` grades five rows. `computeVerdict` publishes `DISPLAY_CAP` of
+    // them and the memo publishes `institutionsMax`. Reporting only the five
+    // understated the shipped product by at least one row in every figure this
+    // repo has ever quoted. This counts the same hit at the cap the instant
+    // screen actually renders, so the gap between them is visible rather than
+    // discovered later.
+    exactPublished: 0,
+  };
+  // ── DOOR@5: the metric for "a row is a scheme VIA A BODY" ─────────────────
+  //
+  // EXACT@5 asks whether the exact leaf is on the page. REGIME@5 asks only
+  // whether SOMETHING from the right programme is, which is why it reads 87%
+  // and means little to a founder facing 76 siblings. DOOR@5 sits between them,
+  // and unlike REGIME@5 it is a claim a founder can act on: the page shows this
+  // scheme, reached through the body that granted the money.
+  //
+  // Credit is NEVER free. `doorKey` returns the leaf's own id whenever the
+  // register does not support naming a body, so a pair whose won fund has no
+  // nameable body scores DOOR@5 exactly when it scores EXACT@5. `doorable`
+  // counts the pairs on which the two questions can differ at all -- without it
+  // a reader cannot tell a real gain from a shift in the denominator.
+  const doorOf = (id: string) => {
+    const i = byId.get(id);
+    return i ? doorKey(i.id, (i as any).parentId ?? null, i as any) : `leaf::${id}`;
+  };
+  // Where the gain lands, by regime. A body-level row that buys three points
+  // out of one programme is fitted to that programme, and this is the line that
+  // says so before anyone quotes the headline.
+  const doorGainByRegime = new Map<string, number>();
+  const byMode = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
+  // The set a row came from, reported separately, because a change can move
+  // one population and not the other and the headline hides that. The
+  // corrected peer-prior join is the case in point: it costs the rows the
+  // ORIGINAL joins could trace and wins far more on the rows they could not.
+  const byPop = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
+  // ── The anti-overfitting axis ──────────────────────────────────────────────
+  // The aggregate is dominated by one shape of company: the won fund sits in a
+  // regime of median 76 siblings (p10 12, p90 103, and only 3% of won funds sit
+  // in a regime of five or fewer -- `project-mgmt/research/target_arithmetic.md`).
+  // A change tuned to that shape can gain three points overall while destroying
+  // the founder whose fund stands nearly alone, and the headline will applaud.
+  //
+  // So report by the size of the group the ranker actually had to order. A
+  // signal that only works on crowds is a signal fitted to this corpus's
+  // distribution, not to what makes a fund the right one -- and it will break
+  // on the next country we load, whose regimes are shaped differently.
+  const byRegime = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
+  // ── The other axis a national corpus can hide a trade behind ───────────────
+  // Every filter and every cap in selection is applied per (channel, COUNTRY):
+  // `instrumentServesCountry` runs before `POOL_LEAVES_PER_CHANNEL`, so a
+  // constant that binds does so in one market at a time. DE held 103 leaves in
+  // `state_aid_satr` against a cap of 90 while ES held 87 and every other
+  // country was far below — one market losing 13 candidates before ranking,
+  // and an aggregate over 22 countries that cannot show it.
+  //
+  // So report by the founder's country as well. A change that lifts the country
+  // it was aimed at and costs another is a trade, and it has to be visible as
+  // one rather than netted out into a single percentage.
+  const byCountry = new Map<string, { n: number; pool: number; e5: number; r5: number }>();
+  const regimeSize = new Map<string, number>();
+  for (const i of loadDbInstruments()) {
+    const p = (i as any).parentId ?? i.id;
+    regimeSize.set(p, (regimeSize.get(p) ?? 0) + 1);
+  }
+  const sizeBucket = (n: number) =>
+    n <= 1 ? "regime 1 (alone)" : n <= 5 ? "regime 2-5" : n <= 20 ? "regime 6-20"
+      : n <= 50 ? "regime 21-50" : "regime 51+";
+  // Every pair graded from a COLD corpus, because that is what a founder
+  // gets: one request, one fresh invocation. Without this the module's
+  // lazily-hydrated gates accumulate across the run and recall decays along
+  // it -- 26% falling to 9% on the same 300 pairs depending only on where in
+  // the run they sat. See resetGateHydration.
+  resetGateHydration();
+  const derived = { ticket: 0, capital: 0, region: 0 };
+  // ── WHO is replayed, resolved in ONE place shared with the gate ──────────
+  // This call site used to build its own intake literal, and so did
+  // `check_recall_floor.ts`, and the two had already drifted: the gate pinned
+  // `ticketBand: "b500k_2m5"` where this one passed `a.ticketBand`, so
+  // `ANSWERS=` could not reach the floor at all. `founderIntake` is now the
+  // only thing that decides what a replayed founder said, which is what makes
+  // the floor and the measurement it floors describe the same population.
+  const policy: FounderPolicy = {
+    ...founderPolicyFromEnv(),
+    answers: answerMode,
+    consortium: consortiumAnswer,
+    // REGION= is a knob older than `answersFor` and it supplies a region
+    // outside it. Threaded in rather than duplicated, so the disclosure counts
+    // what the founder was ACTUALLY handed from either source.
+    regionOverride: (r) => regionOf(r),
+  };
+  const tally = new IntakeTally();
+  resetRankerTally();
+  // ── THE ARM: which lever, at which value ──────────────────────────────────
+  // Computed once and carried onto every case, so "which lever moved it" is
+  // answerable from the record rather than remembered.
+  const levers = leversFromEnv();
+  const arm = armId(levers);
+  const tape: TapeCase[] = [];
+  // Stage ranks come from `tableTrace`, which records and decides nothing (see
+  // its header). Enabled ONLY when a tape is being written, so the default path
+  // is byte-identical to what it was before this file learned to write one --
+  // a harness must not change the thing it measures in order to measure it.
+  const wantTape = Boolean(process.env.OUT);
+  if (wantTape) traceOn();
+  for (const t of sample) {
+    resetGateHydration();
+    if (wantTape) traceReset();
+    const a = answersFor(t, answerMode);
+    if (a.derived.ticket) derived.ticket++;
+    if (a.derived.capital) derived.capital++;
+    // Counts what the founder was ACTUALLY handed, from EITHER source. Counting
+    // only `answersFor` would report `region 0%` on a REGION=strict run that
+    // supplied one to every pair, and the arm that reports its own treatment as
+    // absent is the arm nobody can check.
+    if (regionOf(t) ?? a.region) derived.region++;
+    const f = founderIntake(t, policy);
+    tally.add(f);
+    const v = await computeVerdict(f.company, f.country, f.eligibility as never, {
+      ...f.opts,
+      // A `profile` pair has no PROJECT text -- national schemes carry none --
+      // but a real founder still describes themselves on screen one. Passing
+      // nothing modelled a founder who typed nothing, which no founder does,
+      // and made the mode untestable: semantic matching never ran, so profile
+      // richness could not affect it either way.
+    } as never);
+    const pool: string[] = v.candidateInstrumentIds ?? [];
+    // ── The five is a MEASUREMENT window, not the page ────────────────────────
+    //
+    // `instrumentTable` is already cut to `DISPLAY_CAP`, which is 6, and the
+    // memo publishes `institutionsMax`, which is 7. Slicing to 5 here graded a
+    // narrower table than either surface a founder sees, so every `@5` figure
+    // in this repo understates the shipped product by at least one row.
+    //
+    // The window is NOT widened to 6 or 7, deliberately. Every floor in
+    // `check_recall_floor.ts` is calibrated on this window, and widening it can
+    // only raise the number -- a loosening dressed as a correction, which this
+    // repo has done once and reversed. So `@5` stays exactly as it was, and the
+    // published-cap figure is reported BESIDE it under its own name.
+    //
+    // `checkGradedWindow` below fails the run if the two ever stop being
+    // comparable, so this cannot silently drift again.
+    const ranked = (v.instrumentTable ?? [])
+      .map((r: any) => r.instrumentId).filter(Boolean) as string[];
+    const top5 = ranked.slice(0, 5);
+    const topPublished = ranked.slice(0, DISPLAY_CAP);
+    const want = byId.get(t.instrument);
+    const wantRegime = want?.parentId ?? t.instrument;
+    const inPool = pool.includes(t.instrument);
+    const e5 = top5.includes(t.instrument);
+    const r5 = top5.some((id) => (byId.get(id)?.parentId ?? id) === wantRegime);
+    const c5 = top5.some((id) => byId.get(id)?.sourceFamilyBucket === want?.sourceFamilyBucket);
+    const wantDoor = doorOf(t.instrument);
+    const doorable = wantDoor.startsWith("door::");
+    const d5 = top5.some((id) => doorOf(id) === wantDoor);
+
+    stat.done++;
+    if (inPool) stat.pool++;
+    if (e5) stat.exact5++;
+    if (topPublished.includes(t.instrument)) stat.exactPublished++;
+    if (r5) stat.regime5++;
+    if (c5) stat.chan5++;
+    if (doorable) stat.doorable++;
+    if (d5) stat.door5++;
+    if (d5 && !e5) {
+      doorGainByRegime.set(wantRegime, (doorGainByRegime.get(wantRegime) ?? 0) + 1);
+    }
+    const m = byMode.get(t.mode) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
+    m.n++; if (inPool) m.pool++; if (e5) m.e5++; if (r5) m.r5++;
+    byMode.set(t.mode, m);
+    const popKey = t.traced ? `traced:${t.traced}` : "original join";
+    const p = byPop.get(popKey) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
+    p.n++; if (inPool) p.pool++; if (e5) p.e5++; if (r5) p.r5++;
+    byPop.set(popKey, p);
+    const ck = t.country || "(none)";
+    const cc = byCountry.get(ck) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
+    cc.n++; if (inPool) cc.pool++; if (e5) cc.e5++; if (r5) cc.r5++;
+    byCountry.set(ck, cc);
+    const rk = sizeBucket(regimeSize.get(wantRegime) ?? 1);
+    const g = byRegime.get(rk) ?? { n: 0, pool: 0, e5: 0, r5: 0 };
+    g.n++; if (inPool) g.pool++; if (e5) g.e5++; if (r5) g.r5++;
+    byRegime.set(rk, g);
+
+    // ── THE TAPE ────────────────────────────────────────────────────────────
+    // Everything the debug loop needs so a miss is diagnosable WITHOUT paying
+    // to re-run it: the candidate ids as the model saw them, the picks, the
+    // stated uncertainty, what was retrieved, the won fund's rank at each
+    // stage, and the founder context that built the prompt.
+    if (wantTape) {
+      const { stages } = readTrace();
+      const rankIn = (name: string): number | null => {
+        const s = stages.find((x) => x.name === name);
+        if (!s) return null;
+        const i = s.ids.indexOf(t.instrument);
+        return i < 0 ? null : i + 1;
+      };
+      const at = (xs: readonly string[]) => {
+        const i = xs.indexOf(t.instrument);
+        return i < 0 ? null : i + 1;
+      };
+      const regimeOf = (id: string) => String(byId.get(id)?.parentId ?? id);
+      const channelOf = (id: string) =>
+        String((byId.get(id) as { sourceFamilyBucket?: string } | undefined)
+          ?.sourceFamilyBucket ?? "");
+      // Classified on the GRADED WINDOW, so the taxonomy and EXACT@5 always
+      // answer the same question. A taxonomy computed over a wider table than
+      // the headline grades would report misses the headline calls hits.
+      const outcome = classify({
+        want: t.instrument, wantRegime, wantChannel: channelOf(t.instrument),
+        candidates: pool, published: top5, regimeOf, channelOf,
+      });
+      tape.push({
+        caseId: caseId(t), company: t.name, arm, levers,
+        founder: {
+          country: t.country, sector: t.sector ?? null, mode: t.mode,
+          description: f.opts.description ?? null,
+          descriptionSource: t.descriptionSource ?? null,
+          supplied: f.eligibility as unknown as Record<string, unknown>,
+        },
+        candidates: pool,
+        published: ranked,
+        publishedRegime: ranked.map(regimeOf),
+        publishedChannel: ranked.map(channelOf),
+        // No ranker on this path states one yet -- wsDL owns the selector call
+        // site. Recorded as null rather than omitted, so a tape written before
+        // that day is distinguishable from one written after it by a model that
+        // said nothing.
+        uncertainty: null,
+        // Same: the retrieval payload is wsDL's to thread through. The field
+        // exists now so a tape written today joins with one written then.
+        retrieved: null,
+        want: t.instrument, wantRegime, wantChannel: channelOf(t.instrument),
+        ranks: {
+          pool: at(pool), sorted: rankIn("sorted"),
+          collapsed: rankIn("collapsed"), published: at(ranked),
+        },
+        outcome, lever: LEVER_FOR[outcome],
+        // No model call on this path today, so neither "cached" nor "fresh" is
+        // true and `null` is the honest value. A `false` here would read as
+        // "this case was billed", which is the exact confusion the cache line
+        // exists to prevent.
+        cached: null,
+      });
+    }
+  }
+  // The corpus travels with the number, for the same reason the set name does:
+  // a figure pasted out of a terminal has to carry what it was measured on.
+  const prov = corpusProvenance();
+  console.log(`corpus=${prov.source} instruments=${prov.instruments} at ${prov.hydratedAt}`);
+  const pc = (n: number, d = stat.done) =>
+    `${n}/${d} (${(100 * n / d).toFixed(0)}% +/-${halfWidth(n, d).toFixed(1)})`;
+  console.log(`set=${setFile} split=${split}${mode ? ` mode=${mode}` : ""}` +
+              `${country ? ` country=${country}` : ""}` +
+              ` seed=${seed}` +
+              `${process.env.DESCRIBED ? " described-only" : ""}` +
+              `${popMode ? ` pop=${popMode}` : ""}` +
+              `${regionMode ? ` region=${regionMode}` : ""}` +
+              `${answerMode !== "off" ? ` answers=${answerMode}` : ""}` +
+              // On the banner because it changes what the number MEANS, and a
+              // run that replayed unanswered founders must not be mistaken for
+              // one that replayed consortium-ready ones.
+              `${consortiumEnv !== "yes" ? ` consortium=${consortiumEnv}` : ""}` +
+              `  replayed ${stat.done}`);
+  // How many founders actually got their own answers. A run that says
+  // `answers=strict` and derived three of them is reporting the constants with
+  // a different label on, and the reader has to be able to see that.
+  if (answerMode !== "off" || derived.region) {
+    const pcOf = (n: number) => `${n}/${stat.done} (${(100 * n / stat.done).toFixed(0)}%)`;
+    console.log(`  founder-specific answers supplied: ticketBand ${pcOf(derived.ticket)}` +
+                `  capital ${pcOf(derived.capital)}  region ${pcOf(derived.region)}`);
+  }
+  // The whole intake, supplied AND withheld, on the same screen as the number.
+  for (const line of tally.lines(policy)) console.log(line);
+  console.log(`  ${rankerTallyLine()}`);
+  // ── THE ARM AND THE CACHE, on every run without exception ────────────────
+  // Attribution: which lever was moved and to what. A number without its arm
+  // cannot be compared against another number, and a run whose treatment does
+  // not appear in its own banner is how a treatment reports the control's
+  // figure -- which has happened here twice.
+  console.log(`  ${armLine(levers)}`);
+  // The hit rate goes beside it for the same reason: a cached reply must never
+  // be mistaken for a fresh one. This path makes no model calls today, so the
+  // line reads 0/0 and says so rather than being omitted -- an absent line is
+  // indistinguishable from a line nobody looked at.
+  console.log(`  ${cacheTallyLine(arm)}`);
+  console.log(`  in pool                  ${pc(stat.pool)}`);
+  console.log(`  EXACT scheme in top 5    ${pc(stat.exact5)}`);
+  console.log(`  EXACT scheme in top ${DISPLAY_CAP}    ${pc(stat.exactPublished)}   ` +
+    `<- what the instant screen PUBLISHES; the line above grades five of them`);
+  console.log(`  same REGIME in top 5     ${pc(stat.regime5)}   <- the operational number`);
+  // The caveat travels WITH the number, on the same screen, because that is the
+  // only place it can be read at the moment somebody copies the figure. A
+  // REGIME@5 measured under Doors and one measured under Composed are answers
+  // to different questions -- see `REGIME_AT_5_NOT_COMPARABLE` in recallSet.ts.
+  // The per-regime-size breakdown below is the same fact in numbers: `regime 1
+  // (alone)` reads exact5 == regime5 exactly, because a standalone fund is its
+  // own regime and there is no sibling credit to be had.
+  console.log(`    ^ ${REGIME_AT_5_NOT_COMPARABLE}`);
+  console.log(`  same DOOR in top 5       ${pc(stat.door5)}   <- scheme VIA the granting body`);
+  console.log(`    of which could differ from EXACT at all: ${stat.doorable}/${stat.done}` +
+    ` (${(100 * stat.doorable / stat.done).toFixed(0)}% of pairs have a nameable body);` +
+    ` DOOR - EXACT = ${stat.door5 - stat.exact5} pairs`);
+  {
+    // Concentration, printed WITH the gain and never separately. A gain of n
+    // points is a different fact depending on whether it came from twenty
+    // programmes or from one, and only this line can tell them apart.
+    const gains = [...doorGainByRegime.entries()].sort((a, b) => b[1] - a[1]);
+    const total = gains.reduce((a, [, n]) => a + n, 0);
+    const topShare = total ? (100 * (gains[0]?.[1] ?? 0) / total).toFixed(0) : "0";
+    console.log(`    gain concentration: ${total} pair(s) across ${gains.length} regime(s),` +
+      ` largest ${topShare}% -- ${gains.slice(0, 5).map(([k, n]) => `${k}:${n}`).join(" ") || "(none)"}`);
+  }
+  console.log(`  same CHANNEL in top 5    ${pc(stat.chan5)}`);
+  const line = (label: string, m: { n: number; pool: number; e5: number; r5: number }) =>
+    console.log(`    ${label.padEnd(26)} n=${String(m.n).padStart(4)}  pool ${(100*m.pool/m.n).toFixed(0)}%` +
+                `  exact5 ${(100*m.e5/m.n).toFixed(0)}%  regime5 ${(100*m.r5/m.n).toFixed(0)}%`);
+  for (const [k, m] of byMode) line(`mode=${k}`, m);
+  if (byPop.size > 1) for (const [k, m] of byPop) line(k, m);
+  // Ordered smallest group first: the top rows are the founders an
+  // overfitted change abandons, and they are the ones to read first.
+  const order = ["regime 1 (alone)", "regime 2-5", "regime 6-20", "regime 21-50", "regime 51+"];
+  console.log(`  by SIZE OF THE GROUP THE RANKER HAD TO ORDER (overfitting shows here, not above)`);
+  for (const k of order) { const m = byRegime.get(k); if (m) line(k, m); }
+  // Largest market first, and every country printed rather than a top-N: the
+  // market a change QUIETLY COSTS is usually a small one, and truncating the
+  // tail is how it would be missed. The n is on every line so a two-row country
+  // is not read as a trend.
+  console.log(`  by FOUNDER COUNTRY (a per-country cap can only bind one market at a time)`);
+  for (const [k, m] of [...byCountry].sort((a, b) => b[1].n - a[1].n)) line(k, m);
+
+  // ── WHY IT MISSED, not how often ─────────────────────────────────────────
+  // A percentage is not a diagnosis. These four classes take four different
+  // medicines, and `not-retrieved` heads the list because no amount of prompt
+  // work reaches those cases -- a run that spends its effort on instructions
+  // while a third of its misses were never retrieved was aimed at the wrong
+  // lever, and only this table can say so.
+  if (wantTape) {
+    console.log(`\nWHY IT MISSED (from the recorded ranks, not a heuristic)`);
+    for (const l of taxonomyTable(tape)) console.log(l);
+    const misses = tape.filter((c) => c.outcome !== "hit");
+    if (misses.length) {
+      const show = Number(process.env.SHOW_MISSES ?? 10);
+      console.log(`\n  first ${Math.min(show, misses.length)} of ${misses.length} miss(es)` +
+        ` -- re-run any one of them with CASE=<caseId>`);
+      for (const c of misses.slice(0, show)) console.log(taxonomyLine(c));
+    }
+    writeTape(tape);
+  } else {
+    console.log(`\nno OUT= given: no per-case tape, and no miss taxonomy. Every number ` +
+      `above is a scalar you would have to re-run to explain. Add OUT=/tmp/recall.json.`);
+  }
+}
+main();

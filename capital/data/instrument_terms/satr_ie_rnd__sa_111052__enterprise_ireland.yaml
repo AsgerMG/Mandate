@@ -1,0 +1,20 @@
+id: satr_ie_rnd__sa_111052__enterprise_ireland
+name: Research Development and Innovation Scheme
+administering_body: see source document
+country: IE
+capital_type: unknown
+status: draft
+gates:
+- id: g5-technical-challenge
+  gate_family: G5_use_of_funds
+  requirement: The project must involve resolution of a technical challenge, be non-routine, or represent
+    a 'step-up' for the company in RD&I capability.
+  value: Project must resolve a non-routine technical challenge / capability step-up
+  intake_field: developmentStage
+  quote: The project must involve the resolution of some technical challenge, be non-routine or represent
+    a 'step-up' for the company in terms of the level of RD&I capability.
+  source:
+    file: https://www.enterprise-ireland.com/en/supports/research-development-innovation-fund
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

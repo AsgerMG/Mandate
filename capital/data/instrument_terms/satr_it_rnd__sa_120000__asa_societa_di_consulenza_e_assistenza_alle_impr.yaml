@@ -1,0 +1,38 @@
+id: satr_it_rnd__sa_120000__asa_societa_di_consulenza_e_assistenza_alle_impr
+name: Innovazione strategica di processo e organizzativa per le PMI del settore moda - PR FESR 21/27 -
+  Azione 1.1.3. Innovazione strategica di processo e organizzativa Azione 1.3.2.1 Sostegno alle MPMI –
+  investimenti produttivi
+administering_body: see source document
+country: IT
+capital_type: unknown
+status: draft
+gates:
+- id: g2-mpmi-solo-or-aggregated
+  gate_family: G2_size_ownership
+  requirement: Eligible recipients are micro, small and medium enterprises (MPMI), either individually
+    or in aggregated form through associative structures with legal personality, such as consortia and
+    network contracts (Reti-soggetto).
+  value: MPMI, solo or aggregated (consortia/network contracts)
+  intake_field: turnoverBand
+  quote: Soggetti destinatari sono le MPMI (micro, piccole e medie imprese) in forma singola o aggregata
+    (forme associative con personalita' giuridica - Consorzi e Reti-soggetto)
+  source:
+    file: https://www.sviluppo.toscana.it/bando/innovazione_moda/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-fashion-sector-only
+  gate_family: G1_nexus
+  requirement: Eligible companies must operate in the fashion sector.
+  value: Fashion sector only
+  intake_field: none
+  quote: operanti nel settore Moda.
+  source:
+    file: https://www.sviluppo.toscana.it/bando/innovazione_moda/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (2/2 gates passed mechanical verbatim
+  check -> llm_cited).

@@ -1,0 +1,339 @@
+id: innovationsfonden_innoexplorer
+name: innovationsfonden_innoexplorer
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-1
+  gate_family: G1_nexus
+  requirement: The main applicant must be employed by a public Danish research and educational
+    institution or a public Danish hospital and conduct research as part of their employment.
+  value: Main applicant employed by public Danish research/educational institution or hospital,
+    conducting research
+  intake_field: borrowerModel
+  quote: It is a precondition for receiving funding via the Innoexplorer programme that the
+    main applicant is employed by a public Danish research and educational institution or
+    a public Danish hospital and conducts research as part of their employment.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.4
+  verified: llm_cited
+- id: G1-2
+  gate_family: G1_nexus
+  requirement: The applicant or team members must have played a key role in generating the
+    knowledge and results underlying the project.
+  value: Applicant/team must be behind the knowledge and research results
+  intake_field: borrowerModel
+  quote: It is a precondition for receiving funding via the Innoexplorer programme that the
+    applicant or members of the team have played a key role in generating the knowledge and
+    the results on which the project is based.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.4
+  verified: llm_cited
+- id: G1-3
+  gate_family: G1_nexus
+  requirement: The application must, as a rule, include a statement of support signed by the
+    person responsible for Innoexplorer projects at the main applicant's institution.
+  value: Institutional statement of support required
+  intake_field: institutionalBacking
+  quote: The application must, as a rule, include a statement of support signed by the person
+    responsible for Innoexplorer projects at the main applicant\u2019s institution.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.4
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The application must, as a rule, include a
+    stateme'''
+- id: G1-4
+  gate_family: G1_nexus
+  requirement: A precondition for applying is that the institution has been involved in the
+    application process and has quality assured the entrepreneurship idea.
+  value: Institution must be involved and have quality-assured the idea
+  intake_field: institutionalBacking
+  quote: The funding is paid to the institution with which the main applicant is employed,
+    and a precondi-tion for applying for an Innoexplorer project is therefore, as a rule,
+    that the institution has been involved in the application process and has quality assured
+    the entrepreneurship idea.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The funding is paid to the institution with
+    which '''
+- id: G4-1
+  gate_family: G4_borrower_model
+  requirement: Innoexplorer must not fund activities where an already established company/collaborative
+    partner is intended to take over the entrepreneurial idea; the main objective must be
+    starting a new business.
+  value: Objective must be to start a new business, not transfer to existing company
+  intake_field: developmentStage
+  quote: This also means that the main goal of the investment must not be for an already established
+    company/collaborative partner to take over the entrepreneurial idea.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.5
+  verified: llm_cited
+- id: G4-2
+  gate_family: G4_borrower_model
+  requirement: The entrepreneurial idea must be at a pre-commercial stage; projects that have
+    already started commercial activities, turnover or profit, or an established business,
+    are too mature for funding.
+  value: Idea must be pre-commercial, no turnover/profit yet, no business already started
+  intake_field: developmentStage
+  quote: No turnover or profit must thus already be made which can be related to the entrepreneurial
+    idea. This also means that if you have already started a business or are in the process
+    of doing so, your entrepreneurial idea is most likely too mature for an Innoexplorer investment.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.5
+  verified: false
+  verify_note: 'fragment not found verbatim: ''No turnover or profit must thus already be
+    made wh'''
+- id: G4-3
+  gate_family: G4_borrower_model
+  requirement: The idea must be innovative, offering new solutions distinguishable from other
+    solutions addressing the same need.
+  value: Idea must be innovative and offer new solutions
+  intake_field: developmentStage
+  quote: However, the idea must be innovative, i.e. offer new solutions in the form of new
+    behaviour and/or new products, services, processes or technologies, and once mar-keted,
+    the expected solution should distinguish itself from other solutions addressing the same
+    need.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''However, the idea must be innovative, i.e.
+    offer n'''
+- id: G3-1
+  gate_family: G3_financial
+  requirement: Innoexplorer invests between DKK 500,000 and DKK 1.5 million per project, including
+    overhead.
+  value: DKK 500,000 - 1,500,000 per project incl. overhead
+  intake_field: ticketBand
+  quote: Innoexplorer invests between DKK 500,000 and 1.5 million in each project (incl. overhead),
+    and projects may last up to 12 months.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.3
+  verified: llm_cited
+- id: G3-2
+  gate_family: G3_financial
+  requirement: Projects may last up to 12 months from start to finish.
+  value: Max project duration 12 months
+  intake_field: needBy
+  quote: Innoexplorer projects can last up to 12 months from start to finish.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.9
+  verified: llm_cited
+- id: G3-3
+  gate_family: G3_financial
+  requirement: An Innoexplorer investment can cover up to 100% of project-relevant expenses,
+    including overhead; the institution may choose to co-fund part of the budget.
+  value: Up to 100% funding intensity incl. overhead; optional co-funding
+  intake_field: cofinancingBand
+  quote: An Innoexplorer investment can cover up to 100 % of the project-relevant expenses,
+    incl. over-head. The institution can choose to co-fund a part of the budget of their own
+    choice with a view to boosting the economic efficiency of the Innoexplorer investment.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.9
+  verified: false
+  verify_note: 'fragment not found verbatim: ''An Innoexplorer investment can cover up to
+    100 % o'''
+- id: G3-4
+  gate_family: G3_financial
+  requirement: 'Overhead is calculated as a fixed percentage of total project expenses: 44%
+    for Danish institutions subject to Ministry of Finance grant-funded research rules, 3.1%
+    for public Danish hospitals.'
+  value: Overhead 44% (institutions) / 3.1% (hospitals)
+  intake_field: none
+  quote: 'Danish institutions (including universities, university colleges and governmental
+    research institutions) which are subject to the rules governing grant-funded research
+    activities in the Ministry of Finance\u2019s budget guidelines: 44 % \u2022 Public Danish
+    hospitals: 3.1 %'
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.9
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Danish institutions (including universities,
+    unive'''
+- id: G5-1
+  gate_family: G5_use_of_funds
+  requirement: Funding can cover payroll costs, fees for external actors and services, and
+    expenses for materials and equipment necessary for the project, but not commercial activities,
+    patent expenses, research projects, contract research, staff retention, publication expenses,
+    or business development/entrepreneurship training by the institution.
+  value: 'Eligible: salary, external fees, materials/equipment, overhead; Ineligible: commercial
+    activities, patents, research, contract research, staff retention, publications, training'
+  intake_field: none
+  quote: 'The Innoexplorer investment does, among others, not cover: \u2022 Commercial activities,
+    e.g. test sale, sales or marketing activities. \u2022 Expenses for patent application
+    or for maintaining a patent. \u2022 Actual research projects. \u2022 Contract research.
+    \u2022 Retention of scientific staff. \u2022 Publication expenses.'
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.9
+  verified: false
+  verify_note: 'fragment not found verbatim: ''The Innoexplorer investment does, among others,
+    no'''
+- id: G5-2
+  gate_family: G5_use_of_funds
+  requirement: An Innoexplorer project cannot finance further basic research or commercialisation
+    activities such as test sale, sales or marketing activities.
+  value: No basic research or commercialisation activities financed
+  intake_field: none
+  quote: Thus, an Innoexplorer project cannot finance further basic research or commercialisation
+    ac-tivities such as test sale or sales or marketing activities.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Thus, an Innoexplorer project cannot finance
+    furth'''
+- id: G2-1
+  gate_family: G2_size_ownership
+  requirement: An application for a new Innoexplorer subproject cannot be submitted until
+    six months before the end date of the ongoing project, and the new subproject cannot begin
+    until the first subproject has ended.
+  value: Subproject sequencing restriction
+  intake_field: none
+  quote: An application for a new Innoexplorer subproject cannot be submitted until six months
+    before the end date of the ongoing project. The new Innoexplorer subproject cannot begin
+    until the first sub-project has ended.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.8
+  verified: false
+  verify_note: 'fragment not found verbatim: ''An application for a new Innoexplorer subproject
+    c'''
+- id: G6-1
+  gate_family: G6_conditionality
+  requirement: Project activities must be of a non-economic nature as described in the EU
+    Framework for State aid for research and development and innovation.
+  value: Project must be non-economic activity under EU state aid framework
+  intake_field: conditionality
+  quote: It is a precondition for participating in the programme that the project activities
+    are of a non-economic nature, as described in Communication from the Commission \u2014
+    Framework for State aid for research and development and innovation.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.19
+  verified: false
+  verify_note: 'fragment not found verbatim: ''It is a precondition for participating in the
+    prog'''
+- id: G6-2
+  gate_family: G6_conditionality
+  requirement: The applicant guarantees that receipt and use of the investment does not violate
+    existing national or international sanctions, including EU Council Regulation No 269/2014
+    concerning restrictive measures related to Ukraine.
+  value: Sanctions compliance guarantee required
+  intake_field: nonEuControl
+  quote: The applicant guarantees that receipt and use of the investment from Innovation Fund
+    Denmark does not violate existing national or international sanctions, including sanctions
+    on freezing funds or bans on direct or indirect control.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.22
+  verified: llm_cited
+obligations:
+- requirement: The applicant and institution must immediately inform Innovation Fund Denmark
+    of significant changes to the basis for the investment or if the project does not progress
+    as planned.
+  quote: In order to get the Fund\u2019s approval of the continued process, you must immediately
+    inform the Fund if there are changes to the basis for the investment or if the project
+    does not progress as planned.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.17
+  verified: false
+  verify_note: 'fragment not found verbatim: ''In order to get the Fund\\u2019s approval of
+    the co'''
+- requirement: Upon request, the grant recipient must provide documentation that the project
+    meets EU state aid rules for research, development and innovation.
+  quote: Upon request from Innovation Fund Denmark, you are also obliged to provide any information
+    that affects the pay-out of funding, including documentation that the project meets the
+    EU rules for state aid for research and development and innovation.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.17
+  verified: llm_cited
+- requirement: Requests for changes to the project must be approved by Innovation Fund Denmark
+    prior to implementation.
+  quote: Requests for changes must be approved by Innovation Fund Denmark prior to their implementa-tion.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.18
+  verified: false
+  verify_note: 'fragment not found verbatim: ''Requests for changes must be approved by Innovatio'''
+- requirement: At the end of the project, the grant holder must complete an evaluation questionnaire,
+    produce a technical/scientific final report, and submit final accounts, no later than
+    one month after the project end date.
+  quote: These documents must be submitted no later than one month after the end of the project
+    period.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.17
+  verified: llm_cited
+- requirement: The final accounts must be audited according to institution type.
+  quote: The final accounts must be audited.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.19
+  verified: llm_cited
+- requirement: If results have commercial value and are transferred to the research team or
+    others, the institution must ensure this is done on market terms, and gains must be reinvested
+    in non-economic activities.
+  quote: If the results of the Innoexplorer project have commercial value and there is a wish
+    to transfer these to the research team or others, the institution is obliged to ensure
+    that this is done on market terms.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.19
+  verified: llm_cited
+- requirement: Project results must be published or communicated to a broad audience.
+  quote: The project results must be published or communicated to a broad audience.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.21
+  verified: llm_cited
+- requirement: The grant letter must be signed and accepted within four weeks of receipt.
+  quote: The letter must be signed and accepted within four weeks.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.16
+  verified: llm_cited
+- requirement: The project must begin on the stated start date and no later than four months
+    after receipt of the grant letter.
+  quote: The project must begin on the project start date provided in the application and
+    no later than four months after you have received the grant letter.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.16
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (6/16 gates, 7/9 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Applicant must inform the Fund of funding for the project received from other sources;
+    the Fund reserves the right to collect information about whether other funding applied
+    for has been granted.
+  quote: The applicant is under obligation to immediately inform Innovation Fund Denmark of
+    any signifi-cant changes affecting the information submitted, including funding for the
+    project or parts hereof received from other sources.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.20
+  verified: false
+application:
+  channel: Online electronic application system e-grant.dk
+  typical_timeline: Innovation Fund Denmark aims to answer applications within 9-10 weeks;
+    Innoexplorer typically has three calls per year.
+  quote: Innovation Fund Denmark aims to answer applications within 9-10 weeks.
+  source:
+    file: innovationsfonden_innoexplorer_guidelines_2026.pdf
+    locator: p.16
+  verified: llm_cited

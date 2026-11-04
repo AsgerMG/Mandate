@@ -1,0 +1,49 @@
+id: satr_fr_rnd__sa_111723__region_grand_est
+name: Régime cadre exempté de notification relatif aux aides à la recherche, au développement et à l’innovation
+  (RDI) pour la période 2024-2026
+administering_body: see source document
+country: FR
+capital_type: unknown
+status: draft
+gates:
+- id: g2-sme-eti-size-cap
+  gate_family: G2_size_ownership
+  requirement: Applicants must be SMEs or mid-sized companies (ETI) with fewer than 2,000 employees.
+  value: SME or ETI, <2000 employees
+  intake_field: fteBand
+  quote: Peuvent demander l'aide les petites et moyennes entreprises PME et les entreprises de taille
+    intermédiaire (ETI) de moins de 2000 personnes.
+  source:
+    file: https://les-aides.fr/aide/UAI_IDwgwXwz4y8/region-grand-est/aide-aux-projets-collaboratifs-de-recherche-et-de-developpement-et-d-innovation.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-eligible-entity-types
+  gate_family: G1_nexus
+  requirement: Also eligible are start-ups, CRITT and CRT technology-transfer centres, university laboratories,
+    and research structures located in the Grand Est region.
+  value: Start-ups, CRITT/CRT, university labs, research structures in Grand Est
+  intake_field: borrowerModel
+  quote: 'Également éligibles : start-ups, CRITT, CRT, laboratoires universitaires et structures de recherche
+    en région Grand Est.'
+  source:
+    file: https://les-aides.fr/aide/UAI_IDwgwXwz4y8/region-grand-est/aide-aux-projets-collaboratifs-de-recherche-et-de-developpement-et-d-innovation.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-not-in-difficulty
+  gate_family: G1_nexus
+  requirement: The applicant company must not be an undertaking in difficulty as defined by the European
+    Commission.
+  value: Undertaking in difficulty excluded
+  intake_field: lossesOverHalfCapital
+  quote: L'entreprise ne doit pas être en difficulté selon la Commission Européenne.
+  source:
+    file: https://les-aides.fr/aide/UAI_IDwgwXwz4y8/region-grand-est/aide-aux-projets-collaboratifs-de-recherche-et-de-developpement-et-d-innovation.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+obligations: []
+verify_by: '2027-08-05'
+notes: Extracted by hand from funding_instruments.eligibility_text (3/3 gates passed mechanical verbatim
+  check -> llm_cited).

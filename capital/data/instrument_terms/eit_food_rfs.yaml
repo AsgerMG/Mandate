@@ -1,0 +1,230 @@
+id: eit_food_rfs
+name: eit_food_rfs
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: G1-1
+  gate_family: G1_nexus
+  requirement: Applicant must come from one of the eligible EIT RIS (Regional Innovation Scheme)
+    countries or regions.
+  value: EIT RIS countries/regions only
+  intake_field: entityCountries
+  quote: We are looking for candidates who come from one of the EIT RIS countries or regions
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- id: G1-2
+  gate_family: G1_nexus
+  requirement: Eligible RIS countries and regions for 2025 participation are published on
+    a linked list; only those are eligible.
+  value: 2025 eligible RIS countries/regions list
+  intake_field: entityCountries
+  quote: In 2025, countries and regions eligible to take part in the RIS Fellowships are available
+    here .
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 1
+  verified: llm_cited
+- id: G2-1
+  gate_family: G2_size_ownership
+  requirement: For RIS Fellowships, candidate must be a BSc graduate (minimum completed Bachelor),
+    MSc student, or MSc graduate (up to 2 years after graduation).
+  value: BSc graduate / MSc student or graduate (≤2 years post-graduation)
+  intake_field: developmentStage
+  quote: RIS Fellowships – Candidate is a BSc graduate (min. completed Bachelor), MSc student
+    or graduated of Master of Science (up to 2 years after graduation)
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- id: G2-2
+  gate_family: G2_size_ownership
+  requirement: For RIS Talents, candidate must be a PhD student or postdoc (up to 2 years
+    after graduation).
+  value: PhD student or postdoc (≤2 years post-graduation)
+  intake_field: developmentStage
+  quote: RIS Talents – Candidate, is Ph.D. student or postdoc (up to 2 years after graduation)
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- id: G2-3
+  gate_family: G2_size_ownership
+  requirement: Candidate must demonstrate a minimum English proficiency of B2 CEFR level to
+    be able to work in English.
+  value: Min. B2 CEFR English
+  intake_field: none
+  quote: The candidate is able to work in the English language (min. B2 in CEFR level of English
+    is required)
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- id: G2-4
+  gate_family: G2_size_ownership
+  requirement: Candidate must be available for a minimum of 3 months starting from July 2025.
+  value: Min. 3 months from July 2025
+  intake_field: needBy
+  quote: Is available min. 3 months from July 2025
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- id: G4-1
+  gate_family: G4_borrower_model
+  requirement: Support is provided as a monthly scholarship/grant (not a loan or equity),
+    amount depending on programme and internship mode.
+  value: Scholarship/grant, 800-2000 EUR/month depending on track and mode
+  intake_field: borrowerModel
+  quote: RIS Fellowships interns will be provided with 800-1500 € scholarship/per month (depends
+    on a mode).
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 1
+  verified: llm_cited
+- id: G4-2
+  gate_family: G4_borrower_model
+  requirement: RIS Talents interns receive a higher monthly scholarship than RIS Fellowships,
+    depending on the internship mode.
+  value: 950-2000 EUR/month for RIS Talents
+  intake_field: borrowerModel
+  quote: RIS Talents interns will be provided with a 950-2000 € scholarship/per month (depends
+    on a mode).
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 1
+  verified: llm_cited
+- id: G3-1
+  gate_family: G3_financial
+  requirement: 'Financial support amounts differ by internship mode: stationary mode pays
+    1500 EUR/month for Fellowships and 2000 EUR/month for Talents; online mode pays 800 EUR/month
+    for Fellowships and 950 EUR/month for Talents.'
+  value: 'Fellowships: 800-1500 EUR/month; Talents: 950-2000 EUR/month'
+  intake_field: ticketBand
+  quote: "Fellowships (master/bachelor students): \n 1.Stationary mode – 1500,00 EUR per month\
+    \ \n 2. On-line – 800,00 EUR per month"
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 3
+  verified: llm_cited
+- id: G3-2
+  gate_family: G3_financial
+  requirement: Failure to submit a Tax Residency Certificate by the time of first payment
+    results in a 20% reduction in payment for Polish tax purposes.
+  value: 20% reduction in payment absent TRC
+  intake_field: none
+  quote: failing to submit the scan of the document by that time will result in a 20% reduction
+    in the payment for tax purposes in Poland
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 3
+  verified: llm_cited
+- id: G5-1
+  gate_family: G5_use_of_funds
+  requirement: For on-line internship mode, financial support must be used to set up the home
+    internship workplace (equipment, connectivity, ergonomics), not general expenses.
+  value: Restricted to home workplace setup costs for online mode
+  intake_field: none
+  quote: In case of on-line internship – to customise the internship workplace at their homes
+    using all that is needed to use electronic means of communication during remote work,
+    i.e. quality computer equipment
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 3
+  verified: llm_cited
+- id: G5-2
+  gate_family: G5_use_of_funds
+  requirement: For stationary internship mode, financial support must be used to cover travel
+    and accommodation expenses.
+  value: Restricted to travel and accommodation for stationary mode
+  intake_field: none
+  quote: In case of the stationary mode of internship – to cover travel and accommodation
+    expenses
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 3
+  verified: llm_cited
+- id: G6-1
+  gate_family: G6_conditionality
+  requirement: Candidate must actively be pursuing or have completed studies with an interest
+    in the agri-food sector and willingness to work in it.
+  value: Agri-food sector interest/willingness required
+  intake_field: none
+  quote: The candidate is willing to work in the agri-food sector
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- id: G6-2
+  gate_family: G6_conditionality
+  requirement: Applicant must complete the full online application form and submit a 1-minute
+    self-recorded video with voice as part of eligibility for consideration.
+  value: Completed application form + 1-min voice video required
+  intake_field: none
+  quote: The candidate has filled out the on-line application form; The candidate added a
+    1-minute self-video (only videos with voice recorded are acceptable)
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+obligations:
+- requirement: During the internship, the Mentor must send monthly reports confirming the
+    internship is proceeding according to the Internship Agenda plan.
+  quote: During the internship, YOUR MENTOR will send us MONTHLY REPORTS as a confirmation
+    that the internship goes according to a plan (Internship Agenda).
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- requirement: At the end of the internship, intern and mentor must jointly prepare an Internship
+    Feedback document summarizing tasks and activities.
+  quote: "At the end of the internship, we will ask you and your Mentor to prepare an Internship\
+    \ Feedback as\n a document that will sum up all tasks and activities that you were \n\
+    responsible for."
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- requirement: Intern must issue and submit a Tax Residency Certificate (scan by email and
+    hard copy by post/courier) to avoid double taxation, though not strictly mandatory to
+    start.
+  quote: You will also be asked to issue the Tax Residency Certificate from your Tax Office.
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 3
+  verified: false
+  verify_note: 'fragment not found verbatim: ''You will also be asked to issue the Tax Residency
+    '''
+- requirement: Both the Consent Form and Tax Residency Certificate must be sent by email (scan)
+    and hard copy by post/courier.
+  quote: Both documents you have to send by email (scan) and a hard copy by post/courier.
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited
+- requirement: Financial support is paid monthly in arrears, only after the host company representative
+    confirms the internship is proceeding according to plan.
+  quote: The financial support will be paid in monthly instalments after the host company
+    representative will confirm that the internship goes according to plan.
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 4
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/14 gates, 4/5 obligations passed mechanical
+  check -> llm_cited).
+application:
+  channel: Online application form plus 1-minute self-video submitted via link (Wetransfer,
+    Dropbox or YouTube); separate forms for RIS Fellowships (MSc) and RIS Talents (PhD).
+  typical_timeline: Stage 1 online application (1 Feb - 16 March 2025), Stage 2 online workshop
+    (May 2025), Stage 3 online interviews with host companies (June/July 2025).
+  quote: "Stage 1 – on-line self-application  APPLY HERE \n Stage 2 – group on-line Assessment\
+    \ Center (only for candidates who met the selection criteria) \n Stage 3 – individual\
+    \ on-line interviews (only with candidates chosen by Host Companies representatives)"
+  source:
+    file: eit_food_rfs_info_page.html
+    locator: eit_food_rfs_faq_page.html#chunk 2
+  verified: llm_cited

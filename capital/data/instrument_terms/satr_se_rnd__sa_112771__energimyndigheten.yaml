@@ -1,0 +1,57 @@
+id: satr_se_rnd__sa_112771__energimyndigheten
+name: Förordning (2020:750) om statligt stöd till vissa miljöfordon
+administering_body: see source document
+country: SE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-eligible-recipients
+  gate_family: G1_nexus
+  requirement: Aid may be given to companies, municipalities and regions for the purchase of an environmental
+    work machine, zero-emission heavy truck, light electric truck or gas-vehicle truck.
+  value: Companies/municipalities/regions buying qualifying environmental/zero-emission vehicles
+  intake_field: borrowerModel
+  quote: Stöd får lämnas till företag, kommuner och regioner för köp av en miljöarbetsmaskin, utsläppsfri
+    tung lastbil, lätt ellastbil eller fordonsgaslastbil som
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-2020750-om-statligt-stod-till-vissa_sfs-2020-750/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g5-vehicle-must-be-new
+  gate_family: G5_use_of_funds
+  requirement: The vehicle or machine must not previously have been put into use in Sweden or elsewhere
+    for its intended purpose.
+  value: Vehicle/machine must be unused prior to purchase
+  intake_field: none
+  quote: inte tidigare har tagits i bruk i Sverige eller någon annanstans genom att användas för sitt
+    ändamål
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-2020750-om-statligt-stod-till-vissa_sfs-2020-750/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g1-leasing-allowed
+  gate_family: G1_nexus
+  requirement: Aid may also be given to a company, municipality or region that leases a zero-emission
+    heavy truck or gas-vehicle truck.
+  value: Leasing of qualifying trucks also eligible
+  intake_field: none
+  quote: Stöd får även lämnas till ett företag, en kommun eller en region som leasar en utsläppsfri tung
+    lastbil eller en fordonsgaslastbil.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-2020750-om-statligt-stod-till-vissa_sfs-2020-750/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-no-double-funding
+  gate_family: G3_financial
+  requirement: A cost that has already received other public support is not eligible for this aid.
+  value: No double public funding of the same cost
+  intake_field: none
+  quote: En kostnad som annat offentligt stöd har beviljats för är inte stödberättigande.
+  source:
+    file: https://www.riksdagen.se/sv/dokument-och-lagar/dokument/svensk-forfattningssamling/forordning-2020750-om-statligt-stod-till-vissa_sfs-2020-750/
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

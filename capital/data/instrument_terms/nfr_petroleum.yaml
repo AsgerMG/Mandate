@@ -1,0 +1,364 @@
+id: nfr_petroleum
+name: nfr_petroleum
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1_applicant_type
+  gate_family: G1_nexus
+  requirement: The project-responsible applicant must be registered in the Norwegian business
+    register and have economic activity in Norway (a private company or a public enterprise
+    conducting industrial/commercial activity).
+  value: Registered Norwegian company with economic activity in Norway
+  intake_field: entityCountries
+  quote: Prosjektansvarlig må være registrert i det norske foretaksregisteret og ha økonomisk
+    aktivitet i Norge. Dette innebærer at prosjektansvarlig enten må være en privat bedrift,
+    eller et offentlig foretak som driver virksomhet av industriell eller forretningsmessig
+    karakter.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g1_sole_proprietor_excluded
+  gate_family: G1_nexus
+  requirement: Sole proprietorships (enkeltpersonforetak) cannot be the project-responsible
+    entity, though they may participate as collaboration partners.
+  value: Sole proprietorships excluded as lead applicant
+  intake_field: borrowerModel
+  quote: Enkeltpersonforetak kan ikke være prosjektansvarlige, men de kan være samarbeidspartnere.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g1_thematic_scope
+  gate_family: G1_nexus
+  requirement: The application area of the innovation must fall within environmentally friendly
+    energy, petroleum, maritime, transport, or CCS.
+  value: Energy/transport/petroleum/maritime/CCS sector focus
+  intake_field: activityCountries
+  quote: Denne utlysningen gjelder for søknader der anvendelsesområdet for innovasjonen er
+    innenfor miljøvennlig energi, petroleum, maritim og transport.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g1_petroleum_topic_fit
+  gate_family: G1_nexus
+  requirement: Applications under the petroleum theme must clearly target the petroleum industry
+    and fall under at least one of the listed thematic areas (emissions reduction, subsurface
+    understanding, drilling/P&A, production/processing/transport, major accidents/HSE).
+  value: Must fall under listed petroleum sub-areas
+  intake_field: activityCountries
+  quote: 'Søknader til dette tema må falle inn under minst ett av følgende områder: Reduksjon
+    av klimagasser, energieffektivisering og miljø Undergrunnsforståelse Boring, komplettering,
+    intervensjon og permanent avstengning av brønner (P&A) Produksjon, prosessering og transport
+    Storulykker og arbeidsmiljø'
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1_operator_not_lead
+  gate_family: G1_nexus
+  requirement: Operators and rights holders are desired as collaboration partners in petroleum
+    projects but cannot be the project-responsible entity.
+  value: Operators/rights holders cannot be project-responsible
+  intake_field: borrowerModel
+  quote: Operatører og rettighetshavere er ønsket som samarbeidspartnere, men kan ikke være
+    prosjektansvarlige.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g1_partner_requirement
+  gate_family: G1_nexus
+  requirement: The project-responsible must carry out the project with at least one Norwegian
+    company collaboration partner or purchase R&D services from at least one R&D provider.
+  value: At least one Norwegian collaboration partner or R&D provider required
+  intake_field: consortium
+  quote: Vi krever at prosjektansvarlig gjennomfører prosjektet sammen med minst én samarbeidspartner
+    (norsk bedrift) eller kjøper inn oppdragsforskning fra minst én FoU-leverandør.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g1_independence
+  gate_family: G1_nexus
+  requirement: The project-responsible entity and its collaboration partners must be independent
+    of each other, meaning neither can have controlling influence over the other.
+  value: No controlling influence between partners
+  intake_field: consortium
+  quote: Prosjektansvarlig og samarbeidspartnere må være uavhengige av hverandre. Med dette
+    mener vi at den ene ikke kan ha kontrollerende innflytelse over den andre.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 3
+  verified: llm_cited
+- id: g1_foreign_org_no_funding
+  gate_family: G1_nexus
+  requirement: Foreign organizations that are not R&D providers in the project may participate
+    but cannot receive funding and must cover their own costs fully.
+  value: Foreign non-R&D-provider organizations self-fund
+  intake_field: entityCountries
+  quote: Utenlandske organisasjoner som ikke er FoU-leverandør i prosjektet kan delta, men
+    de kan ikke få støtte fra oss. De må i stedet dekke egne kostnader fullt og helt.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g3_ceiling_petroleum
+  gate_family: G3_financial
+  requirement: Total funding available for the petroleum theme is up to NOK 112.4 million,
+    with a per-project ceiling of NOK 20 million.
+  value: Up to NOK 20 million per project (petroleum)
+  intake_field: ticketBand
+  quote: 'For petroleum: Det er utlyst inntil 112,4 mill. kroner totalt til petroleum og dere
+    kan søke om inntil 20 millioner kroner per prosjekt.'
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g3_aid_intensity_table
+  gate_family: G3_financial
+  requirement: 'Aid intensity depends on company size and R&D activity type, capped at 50%
+    for all categories regardless of GBER maxima (small: 50%/45%, medium: 50%/35%, large:
+    50%/25% for industrial research/experimental development).'
+  value: Max 50% aid intensity, varying by size and activity
+  intake_field: turnoverBand
+  quote: Type bedrift/type aktivitet Industriell forskning (IF) Eksperimentell utvikling (EU)
+    Små bedrifter 50% 45% Mellomstore bedrifter 50% 35% Store bedrifter 50% 25%
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g3_max_coverage
+  gate_family: G3_financial
+  requirement: Applicants may apply for support to cover up to 50 percent of each company's
+    costs in the project.
+  value: Up to 50% of costs covered
+  intake_field: cofinancingBand
+  quote: Dere kan søke om støtte til å dekke inntil 50 prosent av kostnadene til hver enkelt
+    av bedriftene i prosjektet.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g2_undertaking_in_difficulty
+  gate_family: G2_size_ownership
+  requirement: Support cannot be granted to undertakings in difficulty as defined under EEA
+    state aid law.
+  value: Excludes undertakings in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: Støtte kan heller ikke gis til foretak i vanskeligheter i EØS-rettslig forstand.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g2_unlawful_aid_recovery
+  gate_family: G2_size_ownership
+  requirement: Support cannot be granted to undertakings that have not complied with a recovery
+    order following a prior EFTA Surveillance Authority/EU Commission decision declaring aid
+    unlawful and incompatible with the internal market.
+  value: Excludes non-compliant recipients of unlawful aid recovery orders
+  intake_field: institutionalOwner
+  quote: Støtte kan ikke gis til foretak som ikke har oppfylt krav om tilbakebetaling etter
+    en forutgående beslutning fra ESA/EU-kommisjonsbeslutning der støtten er erklært ulovlig
+    og uforenlig med det indre marked.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited
+- id: g4_grant_incentive_effect
+  gate_family: G4_borrower_model
+  requirement: Funding is a grant intended to trigger R&D activities that would not otherwise
+    be carried out; activities and the project may not have started before the application
+    is submitted.
+  value: Grant with incentive effect requirement; no activities started before application
+  intake_field: developmentStage
+  quote: Det vil si at støtten vår må være utløsende for å iverksette FoU-aktivitetene. Dere
+    kan altså ikke søke om midler til aktiviteter som dere allerede har startet.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g4_no_funding_before_signed
+  gate_family: G4_borrower_model
+  requirement: Activities started before the grant letter is signed will not be financed and
+    must be self-funded by the applicant.
+  value: No financing of activities started before signed grant letter
+  intake_field: needBy
+  quote: Vi finansierer heller ikke aktiviteter som dere har startet på før tilskuddsbrevet
+    fra oss er signert. Disse aktivitetene må dere finansiere selv.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g5_eligible_cost_types
+  gate_family: G5_use_of_funds
+  requirement: Support may cover actual necessary project costs categorized as personnel and
+    indirect costs, procurement of R&D, equipment, and other project costs.
+  value: 'Eligible cost categories: personnel/indirect, R&D procurement, equipment, other
+    project costs'
+  intake_field: none
+  quote: 'Følgende kostnadstyper skal brukes: personal- og indirekte kostnader innkjøp av
+    FoU utstyr andre prosjektkostnader'
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g5_excluded_activities
+  gate_family: G5_use_of_funds
+  requirement: Funds may not be used for activities not directly linked to project implementation
+    or to exploitation of R&D results, such as IP protection, market research, marketing,
+    and product finalization (except experimental development).
+  value: Excludes IP protection, market research, marketing, product finalization costs
+  intake_field: none
+  quote: Vi gir ikke støtte til aktiviteter som ikke er direkte knyttet til gjennomføringen
+    av prosjektet eller til tiltak for å utnytte FoU-resultatene, slik som beskyttelse av
+    immaterielle rettigheter, markedsundersøkelser og markedsføring samt uttesting (med unntak
+    av det som faller inn under definisjonen av eksperimentell utvikling) og ferdigstilling
+    av nye produkter og tjenester.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g5_no_unbooked_costs
+  gate_family: G5_use_of_funds
+  requirement: Costs not booked in the official accounts of the project-responsible entity
+    or partners, such as unpaid labor, are not eligible.
+  value: Excludes unbooked costs like unpaid work
+  intake_field: none
+  quote: Vi gir ikke støtte til kostnader som ikke vil bli bokført i prosjektansvarliges eller
+    samarbeidspartneres offisielle regnskaper, som for eksempel ulønnet arbeidsinnsats.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 4
+  verified: llm_cited
+- id: g5_petroleum_exclusion_removed
+  gate_family: G5_use_of_funds
+  requirement: As of the June 2026 update, the prior exclusion barring petroleum-theme applications
+    for CO2 capture, transport and storage projects has been removed.
+  value: CO2 capture/transport/storage now permitted under petroleum theme
+  intake_field: none
+  quote: Vi har fjernet avgrensningen under Miljøvennlig energi om at dere ikke kan søke om
+    midler til prosjekter innenfor CO2-fangst, -transport og -lagring.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 1
+  verified: llm_cited
+- id: g6_ccs_exclusion
+  gate_family: G6_conditionality
+  requirement: CCS-theme applications may not be for projects where the CO2 returns to the
+    atmosphere in a short time (i.e., Carbon Capture and Utilization, CCU, is excluded).
+  value: CCU projects excluded from CCS theme
+  intake_field: none
+  quote: Dere kan ikke søke om støtte til prosjekter hvor CO2 i løpet av kort tid er tilbake
+    i atmosfæren. Det kan altså ikke søkes om støtte til prosjekter innen det som kalles Carbon
+    Capture and Utilization (CCU).
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 2
+  verified: llm_cited
+- id: g6_one_application_per_year
+  gate_family: G6_conditionality
+  requirement: Applicants may only apply for project funding once per calendar year regardless
+    of which IPN call is used; repeated applications will be rejected without further assessment.
+  value: One application per calendar year across IPN calls
+  intake_field: conditionality
+  quote: Dere kan bare søke om støtte til prosjektet én gang hvert kalenderår uavhengig av
+    hvilken IPN-utlysning det gjelder. Søknader som sendes flere ganger, vil bli avslått uten
+    videre vurdering.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 6
+  verified: llm_cited
+- id: g6_misconduct_exclusion
+  gate_family: G6_conditionality
+  requirement: The Research Council may reject applications where the project-responsible
+    or partner has materially breached obligations in other Research Council-funded projects
+    within the last two years, or where the project leader has been found guilty of misconduct
+    by relevant committees.
+  value: Excludes applicants with recent material breach or misconduct findings
+  intake_field: conditionality
+  quote: Forskningsrådet kan avvise søknader der prosjektansvarlig eller samarbeidspartner
+    de siste to årene før innsendt søknad vesentlig har misligholdt sine forpliktelser i andre
+    prosjekter med støtte fra Forskningsrådet.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited
+obligations:
+- requirement: Projects must start no later than four months after notification of award,
+    or the award may be withdrawn.
+  quote: Seneste tidspunkt for oppstart av prosjektet vil være fire måneder etter at dere
+    får beskjed om tildelingen. Prosjekter som ikke har startet innen dette tidspunktet, kan
+    miste tildelingen.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited
+- requirement: State aid of EUR 100,000 or more will be published in the public aid register.
+  quote: Får dere statsstøtte fra oss som tilsvarer 100 000 euro eller mer, vil vi gjøre det
+    kjent i Registeret for offentlig støtte
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited
+- requirement: Recipients must have assessed and addressed research security considerations
+    in the project.
+  quote: Prosjektleder og prosjektansvarlig skal ha vurdert og håndtert hensynet til forskningssikkerhet
+    i prosjektet.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited
+- requirement: Recipients must provide full and immediate open access for scientific articles
+    resulting from the project.
+  quote: Forskningsrådet stiller krav om full og umiddelbar åpen tilgang (open access) for
+    vitenskapelige artikler
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited
+- requirement: Project-responsible entities handling data must prepare a data management plan
+    in connection with the revised application.
+  quote: For alle prosjekter som håndterer data, skal prosjektansvarlig utarbeide en datahåndteringsplan
+    i forbindelse med revidert søknad.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited
+- requirement: If the project composition changes before the grant letter is issued, the Research
+    Council may withdraw the funding offer.
+  quote: Dersom dere endrer prosjektsammensetningen før dere får tilskuddsbrev fra oss, kan
+    vi trekke tilbake tilsagnet om finansiering.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 3
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (22/22 gates, 6/6 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Because the Research Council only funds up to 50% for industrial research even though
+    GBER would allow up to 70%, applicants may seek additional support from other public schemes
+    such as Innovation Norway and SkatteFUNN; combined support may affect the scope of Research
+    Council funding.
+  quote: Siden Forskningsrådet kun tildeler inntil 50 prosent til industriell forskning selv
+    om bedriften kunne fått dekket inntil 70 prosent, kan dere søke om ytterligere støtte
+    fra andre offentlige ordninger, slik som Innovasjon Norge og SkatteFUNN.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 4
+  verified: llm_cited
+application:
+  channel: Application submitted via the Research Council's (Forskningsrådet) online application
+    system
+  typical_timeline: Rolling/continuous submission and processing until funds are exhausted;
+    earliest project start 21 April 2026, latest project start 21 April 2027, project duration
+    12-48 months
+  quote: Denne utlysningen har løpende søknadsmottak og -behandling fra utlysningen åpner.
+  source:
+    file: nfr_petroleum_innovasjonsprosjekt_energi_transport_2026.html
+    locator: chunk 5
+  verified: llm_cited

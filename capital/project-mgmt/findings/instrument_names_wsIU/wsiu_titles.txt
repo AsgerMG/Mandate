@@ -1,0 +1,53 @@
+ARM A (production)      26 rows share a full name, 10 classes, 0 merged by the cut
+ARM B (category names)  20 rows share a full name, 9 classes, 0 merged by the cut
+
+RATCHET 26 -> 20
+
+WHAT THE FOUNDER READS ON THE EIGHT, ARM B — the SHIPPED renderer:
+  innovasjon_norge_grant_startup         "Innovasjon Norge · Grants"
+                                         -> "Oppstartstilskudd"
+  innovasjon_norge_grant_innovation      "Innovasjon Norge · Grants"
+                                         -> "Innovasjonstilskudd"
+  innovasjon_norge_grant_regional        "Innovasjon Norge · Grants"
+                                         -> "Distriktsutviklingstilskudd"
+  innovasjon_norge_grant_cluster         "Innovasjon Norge · Grants"
+                                         -> "Klynger og nettverk"
+  innovasjon_norge_grant_international   "Innovasjon Norge · Grants"
+                                         -> "Internasjonale tilskuddsprogrammer"
+  innovasjon_norge_grant_sector          "Innovasjon Norge · Grants"
+                                         -> "Næringsspesifikke utviklingstiltak"
+  innovasjon_norge_loan_lowrisk          "Innovasjon Norge · Loans"
+                                         -> "Lavrisikolån"
+  innovasjon_norge_loan_risk             "Innovasjon Norge · Blended finance"
+                                         -> "Risikolån og garantier"
+
+CLASSES REMAINING IN ARM B:
+  ES  x2  "financiación igape-pymes 2026, concurrencia no competitiva, mínimis pesca"
+           bdns_conv_880456
+           bdns_conv_880548
+  ES  x2  "financiación igape-pymes 2026, concurrencia no competitiva, mínimis agrícola"
+           bdns_conv_880457
+           bdns_conv_880579
+  ES  x2  "cdti (spain)"
+           cdti_idi
+           cdti_neotec
+  FR  x3  "bpifrance"
+           bpifrance_innovup_leader_idf
+           bpifrance_inov
+           bpifrance_pmup_idf
+  FR  x2  "régime cadre exempté de notification relatif aux aides à la recherche, au dévelo"
+           satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances
+           satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai
+  FR  x3  "régime cadre exempté de notification relatif aux aides à la recherche, au dévelo"
+           satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances
+           satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai
+           satr_fr_rnd__sa_111723__ministere_des_armees
+  FR  x2  "régime cadre exempté relatif aux aides en faveur de la protection de l'environne"
+           satr_fr_rnd__sa_111726__direction_generale_de_l_amenagement_du_logement_
+           satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai
+  IT  x2  "avviso pubblico per il potenziamento di strutture di ricerca e creazione di “cam"
+           satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi
+           satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc
+  LV  x2  "aizdevumi sīko (mikro), mazo un vidējo saimnieciskās darbības veicēju un lauksai"
+           altum_aue
+           altum_aui

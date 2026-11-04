@@ -1,0 +1,81 @@
+id: satr_se_rnd__sa_112283__tillvaxtverket
+name: Statligt stöd till regionala investeringar och främjandeinsatser
+administering_body: see source document
+country: SE
+capital_type: unknown
+status: draft
+gates:
+- id: g1-support-area
+  gate_family: G1_nexus
+  requirement: The investment must be located within support area 1, 2 or 3.
+  value: Investment must be in support area 1/2/3
+  intake_field: activityCountries
+  quote: För att du ska kunna söka regionalt investeringsstöd ska din investering finnas inom stödområde
+    1, 2 eller 3 enligt kartan.
+  source:
+    file: https://tillvaxtverket.se/tillvaxtverket/sokfinansiering/utlysningar/fastautlysningar/regionaltinvesteringsstod.3519.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g2-large-company-restriction
+  gate_family: G2_size_ownership
+  requirement: Support can only be granted to large companies if the investment is a new establishment
+    of an activity, or a new activity not similar to one previously carried out at an existing facility.
+  value: 'Large companies: only new establishment/dissimilar new activity'
+  intake_field: fteBand
+  quote: Vi kan bara bevilja stöd till stora företag om investeringen är en nyetablering av en verksamhet
+    - eller en ny verksamhet som inte liknar den som har utförts tidigare vid en befintlig anläggning.
+  source:
+    file: https://tillvaxtverket.se/tillvaxtverket/sokfinansiering/utlysningar/fastautlysningar/regionaltinvesteringsstod.3519.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-application-before-start
+  gate_family: G6_conditionality
+  requirement: The application for support must be submitted before the measure has begun.
+  value: Apply before starting the measure
+  intake_field: needBy
+  quote: ansökan om stöd har lämnats in innan åtgärden har påbörjats
+  source:
+    file: https://tillvaxtverket.se/tillvaxtverket/sokfinansiering/utlysningar/fastautlysningar/regionaltinvesteringsstod.3519.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g6-collective-agreement-wages
+  gate_family: G6_conditionality
+  requirement: Wages and other employment benefits at the company must follow a collective agreement or
+    be equivalent to wages and benefits under a collective agreement within the industry.
+  value: Wages must match/equal collective agreement terms
+  intake_field: conditionality
+  quote: löner och andra anställningsförmåner hos företaget följer av kollektivavtal eller är likvärdiga
+    med löner och andra anställningsförmåner enligt kollektivavtal inom branschen
+  source:
+    file: https://tillvaxtverket.se/tillvaxtverket/sokfinansiering/utlysningar/fastautlysningar/regionaltinvesteringsstod.3519.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter
+- id: g3-aid-intensity
+  gate_family: G3_financial
+  requirement: In support area 1, maximum aid intensities are 40% for small companies, 30% for medium
+    companies, and 20% for large companies.
+  value: 'Support area 1: 40%/30%/20% by size'
+  intake_field: none
+  quote: I stödområde 1 får regionalt investeringsstöd lämnas med högst 40 procent för små företag, med
+    högst 30 procent för medelstora företag och med högst 20 procent för stora företag.
+  source:
+    file: https://tillvaxtverket.se/tillvaxtverket/sokfinansiering/utlysningar/fastautlysningar/regionaltinvesteringsstod.3519.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: programme_fact
+- id: g1-startup-condition
+  gate_family: G1_nexus
+  requirement: Support for start-up companies may only be granted to small companies that are innovative
+    companies.
+  value: Start-up support limited to small, innovative companies
+  intake_field: developmentStage
+  quote: Stöd till nystartade företag får endast lämnas till små företag som är innovativa företag.
+  source:
+    file: https://tillvaxtverket.se/tillvaxtverket/sokfinansiering/utlysningar/fastautlysningar/regionaltinvesteringsstod.3519.html
+    locator: eligibility_text
+  verified: llm_cited
+  gate_role: filter

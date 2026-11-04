@@ -1,0 +1,292 @@
+id: ipcei_mect
+name: ipcei_mect
+administering_body: see source document
+country: ''
+capital_type: unknown
+status: draft
+gates:
+- id: g1-project-nexus
+  gate_family: G1_nexus
+  requirement: Aid is only compatible under Article 107(3)(b) TFEU if the notified measures
+    involve a project that is part of an Important Project of Common European Interest (IPCEI),
+    constituting an integrated project of common European interest and importance.
+  value: Must be part of a notified IPCEI (integrated project of common European interest
+    and importance)
+  intake_field: borrowerModel
+  quote: In order to be eligible for aid under Article 107(3)(b) TFEU, the notified measures
+    must involve a project. That project must be of common European interest, and it must
+    be important.
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.101
+  verified: llm_cited
+- id: g1-participating-member-states
+  gate_family: G1_nexus
+  requirement: Aid is granted by the Member States participating in IPCEI ME/CT to undertakings
+    established in and applying via those Member States, governed by national funding agreements.
+  value: Applicant must be an undertaking supported through one of the participating Member
+    States' national funding agreements
+  intake_field: entityCountries
+  quote: The granting of State aid will be governed by national funding agreements that are
+    expected to be concluded following the Commission’s decision
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.101
+  verified: llm_cited
+- id: g1-pre-notification-timing
+  gate_family: G1_nexus
+  requirement: State aid may not be granted to any participating undertaking before notification
+    of and Commission approval for the IPCEI ME/CT decision.
+  value: No aid before Commission approval decision
+  intake_field: needBy
+  quote: The Member States submit that they shall not grant State aid to any of the participating
+    undertakings before notification of the Commission’s decision approving aid for the execution
+    of IPCEI ME/CT.
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.101
+  verified: llm_cited
+- id: g2-not-undertaking-in-difficulty
+  gate_family: G2_size_ownership
+  requirement: Participating undertakings must not be undertakings in difficulty as defined
+    in the Rescue and Restructuring Guidelines.
+  value: Not an undertaking in difficulty
+  intake_field: lossesOverHalfCapital
+  quote: the participating undertakings are not undertakings in difficulty as defined in the
+    Guidelines on State aid for rescuing and restructuring non-financial undertakings in difficulty
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.98
+  verified: llm_cited
+- id: g2-sme-access-priority
+  gate_family: G2_size_ownership
+  requirement: The IPCEI aims to provide access to industrial capacities especially to innovative
+    SMEs, though both large undertakings and SMEs participate as beneficiaries across the
+    workstreams.
+  value: Both large undertakings and SMEs eligible; SME involvement highlighted as objective
+  intake_field: fteBand
+  quote: IPCEI ME/CT is expected to contribute to providing access to industrial capacities
+    to innovative companies, especially SMEs
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.139
+  verified: llm_cited
+- id: g4-outstanding-unlawful-aid
+  gate_family: G4_borrower_model
+  requirement: Aid under IPCEI ME/CT must be suspended for any beneficiary that still has
+    earlier unlawful and incompatible aid outstanding, until that aid plus recovery interest
+    is reimbursed.
+  value: No outstanding unlawful/incompatible aid at disposal of beneficiary
+  intake_field: institutionalBacking
+  quote: The Member States have furthermore committed to suspend the granting of the notified
+    aid if the beneficiary still has at its disposal earlier unlawful aid that was declared
+    incompatible by a Commission Decision
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.98
+  verified: llm_cited
+- id: g4-no-nonseverable-violation
+  gate_family: G4_borrower_model
+  requirement: Aid must not constitute a non-severable violation of Union law, e.g. via headquarters/establishment
+    conditions, requirements to use national goods/services, or restrictions on using R&D&I
+    results in other Member States.
+  value: No conditions requiring HQ in Member State, use of national goods/services, or restriction
+    on cross-border use of results
+  intake_field: nonEuControl
+  quote: granting of aid that is subject to the obligation for the beneficiary to have its
+    headquarters in the Member State concerned or to be predominantly established in that
+    Member State
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.98
+  verified: llm_cited
+- id: g4-application-before-works
+  gate_family: G4_borrower_model
+  requirement: The formal incentive effect criterion requires that the application for aid
+    precede the start of works on the individual project.
+  value: Application for aid must be submitted before start of works
+  intake_field: needBy
+  quote: the application for aid must precede the starts of the works
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.139
+  verified: llm_cited
+- id: g5-rdi-fid-only
+  gate_family: G5_use_of_funds
+  requirement: Eligible activities must be R&D&I of major innovative nature or First Industrial
+    Deployment (FID) involving high research/innovation content or fundamentally innovative
+    production processes; regular upgrades, mass production and commercial activities are
+    excluded.
+  value: Funds may only cover R&D&I and FID (not mass production or commercial activities)
+  intake_field: developmentStage
+  quote: Regular upgrades without an innovative dimension of existing facilities and the development
+    of newer versions of existing products do not qualify as FID.
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.118
+  verified: llm_cited
+- id: g5-fid-scope-limit
+  gate_family: G5_use_of_funds
+  requirement: FID is limited to upscaling of pilot facilities, demonstration plants or first-in-kind
+    equipment, covering steps subsequent to pilot line including testing phase and bringing
+    batch production to scale, excluding mass production or commercial activities.
+  value: FID funding excludes mass production/commercial activities
+  intake_field: developmentStage
+  quote: the upscaling of pilot facilities, demonstration plants or of the first-in-kind equipment
+    and facilities covering the steps subsequent to the pilot line including the testing phase
+    and bringing batch production to scale, but no mass production or commercial activities
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.118
+  verified: llm_cited
+- id: g5-eligible-cost-categories
+  gate_family: G5_use_of_funds
+  requirement: Eligible costs must fall within the categories (a) to (h) set out in the Annex
+    to the IPCEI Communication, including only depreciation costs corresponding to the R&D&I
+    and FID phases for instruments/equipment/buildings not used for their full useful life.
+  value: Only costs within Annex categories (a)-(h) of IPCEI Communication are eligible
+  intake_field: none
+  quote: these costs fall within the categories listed in points (a) to (h) as set out in
+    the Annex to the IPCEI Communication
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.142
+  verified: false
+  verify_note: 'fragment not found verbatim: ''these costs fall within the categories listed
+    in p'''
+- id: g3-max-aid-funding-gap
+  gate_family: G3_financial
+  requirement: The maximum permitted aid level is capped at the lower of eligible costs (nominal
+    terms) or the identified funding gap (in discounted NPV terms).
+  value: Aid amount ≤ min(eligible costs, funding gap)
+  intake_field: cofinancingBand
+  quote: The permitted aid level is expressed in the Tables 7 to 20 as the lower of either
+    the eligible costs (in nominal terms) or the funding gap (in discounted NPV terms).
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.92
+  verified: llm_cited
+- id: g3-total-eligible-costs
+  gate_family: G3_financial
+  requirement: The total IPCEI ME/CT eligible costs across all participating undertakings
+    amount to approximately EUR 18.6 billion.
+  value: Total programme eligible costs ~EUR 18.6 billion
+  intake_field: ticketBand
+  quote: the total IPCEI ME/CT eligible costs (18) are approximately EUR 18.6 billion
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.92
+  verified: llm_cited
+- id: g3-clawback-threshold
+  gate_family: G3_financial
+  requirement: The claw-back mechanism applies at minimum to participating undertakings with
+    a notified aid amount, per Member State, above EUR 50 million.
+  value: 'Claw-back mechanism threshold: notified aid > EUR 50 million per Member State'
+  intake_field: ticketBand
+  quote: the claw-back mechanism will apply at a minimum to participating undertakings having
+    a notified aid amount, per Member State, above EUR 50 million
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.99
+  verified: llm_cited
+- id: g4-grant-instrument
+  gate_family: G4_borrower_model
+  requirement: The aid instrument used by all Member States for IPCEI ME/CT is direct grants.
+  value: 'Aid instrument: direct grants'
+  intake_field: borrowerModel
+  quote: The aid to be granted by all the Member States will take the form of direct grants.
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.98
+  verified: llm_cited
+- id: g6-cost-eligibility-period
+  gate_family: G6_conditionality
+  requirement: 'Each workstream has a defined cost eligibility period: activities may start
+    no earlier than 2022 and the last eligible year during the FID phase varies by workstream
+    (2029-2032).'
+  value: 'Cost eligibility window: from 2022 to workstream-specific end year (2029-2032)'
+  intake_field: needBy
+  quote: This WS starts at the earliest in 2022. The last eligible year during the FID phase
+    is planned at the latest 2032.
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.98
+  verified: false
+  verify_note: 'fragment not found verbatim: ''This WS starts at the earliest in 2022. The
+    last e'''
+obligations:
+- requirement: Member States must report to the Commission on the implementation of the claw-back
+    mechanism within two months after each application of that mechanism.
+  quote: The application of the claw-back mechanism will be reported by the relevant Member
+    State to the Commission within two months following completion of each test-run and after
+    the End date.
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.158
+  verified: llm_cited
+- requirement: Beneficiaries above the claw-back threshold must secure repayment obligations
+    via a letter of credit from a reputable, investment-grade rated financial institution,
+    or an alternative account-based system meeting specified conditions.
+  quote: A letter of credit (by a reputable financial institution having investment grade
+    rating from a first-rank rating agency) should cover the repayment obligation at the End
+    date by the aid beneficiary, from the first test-run.
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.158
+  verified: llm_cited
+- requirement: Member States must comply with transparency and publication requirements, publishing
+    the full text of individual aid granting decisions on the Commission's transparency award
+    module or a comprehensive State aid website.
+  quote: the Member States have committed to publish in the Commission’s transparency award
+    module or on a comprehensive State aid website, at national or regional level, the full
+    text of the individual aid granting decision
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.99
+  verified: llm_cited
+- requirement: Participating undertakings must maintain separate analytical accounting to
+    support ex post claw-back calculations, subject to annual approval by an independent auditor.
+  quote: separate analytical accounting will be required from the participating undertakings
+    in the relevant Member State
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.99
+  verified: llm_cited
+- requirement: Undertakings receiving aid are expected to disseminate results widely, including
+    via scientific publications, MPW access, training and knowledge-sharing with SMEs, ROs
+    and universities, to ensure broad spillovers.
+  quote: AT&S will grant universities, ROs and SMEs access to the FID site and provide hands-on
+    training for its newly developed technologies.
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.85
+  verified: llm_cited
+verify_by: '2027-07-21'
+notes: Extracted by ETL/terms/extract_terms_bulk.py (14/16 gates, 5/5 obligations passed mechanical
+  check -> llm_cited).
+cumulation:
+  text: Cumulation with other aid, de minimis aid, or Union funding covering the same eligible
+    costs is allowed provided total public funding does not exceed the most favourable funding
+    rate under applicable Union law rules.
+  quote: cumulation with other aid, de minimis aid (23) or Union funding will be allowed to
+    cover the same eligible costs, provided that the total amount of public funding granted
+    in relation to the same eligible costs does not exceed the most favourable funding rate
+    laid down in the applicable rules of Union law
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.99
+  verified: llm_cited
+application:
+  channel: National funding agreements concluded by participating Member States following
+    Commission approval of the IPCEI decision; undertakings apply to the relevant Member State
+    prior to the start of works on their individual projects.
+  typical_timeline: Applications must precede start of works; cost eligibility periods run
+    from 2022 through workstream-specific end dates (2029-2032); aid may only be granted following
+    Commission's approval decision.
+  quote: The Commission has verified that all undertakings have submitted their applications
+    for aid to the relevant Member States before the start of the works on their individual
+    projects included in IPCEI ME/CT
+  source:
+    file: ipcei_mect_commission_decision_SA101129.pdf
+    locator: ipcei_mect_commission_decision_SA101129.pdf#p.139
+  verified: llm_cited

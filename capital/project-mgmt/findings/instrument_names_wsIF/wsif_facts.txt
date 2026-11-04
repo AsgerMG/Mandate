@@ -1,0 +1,586 @@
+== funding_instruments columns ==
+id:text  parent_id:text  name:text  name_source:text  country:text  administering_body:text  ndb_id:text  source_family_bucket:text  capital_type:text  capital_type_basis:text  event_count:integer  company_count:integer  total_eur:double precision  first_year:integer  last_year:integer  is_framework:boolean  sample_project_titles:text  created_at:timestamp with time zone  updated_at:timestamp with time zone  administering_body_share:real  scheme_code:text  application_url:text  sector_mix:text  scheme_operators:text  award_p25:double precision  award_p50:double precision  award_p75:double precision  award_n:integer  intensity_p50:double precision  intensity_n:integer  tier:text  root_id:text  depth:integer  path:text  scheme_end_date:text  successor_scheme:text  successor_title:text  delivery_region:text  delivery_region_share:double precision  recipient_region_mix:text  description:text  eligibility_text:text  eligibility_source_url:text  eligibility_confidence:text  eligibility_fetched_at:text  catchment_region:text  catchment_regions:text  catchment_source:text  scheme_end_date_basis:text  route_status:text  route_status_source:text  route_status_note:text  name_basis:text  source_window_policy:text
+
+== NO Innovasjon Norge grants ==
+  DIFFERS  id
+      innovasjon_norge_grant_cluster               "innovasjon_norge_grant_cluster"
+      innovasjon_norge_grant_innovation            "innovasjon_norge_grant_innovation"
+      innovasjon_norge_grant_international         "innovasjon_norge_grant_international"
+      innovasjon_norge_grant_regional              "innovasjon_norge_grant_regional"
+      innovasjon_norge_grant_sector                "innovasjon_norge_grant_sector"
+      innovasjon_norge_grant_startup               "innovasjon_norge_grant_startup"
+  DIFFERS  capital_type_basis
+      innovasjon_norge_grant_cluster               "majority row vote (656/656)"
+      innovasjon_norge_grant_innovation            "majority row vote (4045/4045)"
+      innovasjon_norge_grant_international         "majority row vote (639/639)"
+      innovasjon_norge_grant_regional              "majority row vote (2335/2335)"
+      innovasjon_norge_grant_sector                "majority row vote (228/228)"
+      innovasjon_norge_grant_startup               "majority row vote (3145/3145)"
+  DIFFERS  event_count
+      innovasjon_norge_grant_cluster               656
+      innovasjon_norge_grant_innovation            4045
+      innovasjon_norge_grant_international         639
+      innovasjon_norge_grant_regional              2335
+      innovasjon_norge_grant_sector                228
+      innovasjon_norge_grant_startup               3145
+  DIFFERS  company_count
+      innovasjon_norge_grant_cluster               324
+      innovasjon_norge_grant_innovation            2716
+      innovasjon_norge_grant_international         481
+      innovasjon_norge_grant_regional              1518
+      innovasjon_norge_grant_sector                163
+      innovasjon_norge_grant_startup               2536
+  DIFFERS  total_eur
+      innovasjon_norge_grant_cluster               89216566.78
+      innovasjon_norge_grant_innovation            686963645.8
+      innovasjon_norge_grant_international         55741424.69
+      innovasjon_norge_grant_regional              253315289.42
+      innovasjon_norge_grant_sector                38415618.08
+      innovasjon_norge_grant_startup               115907626.64
+  DIFFERS  last_year
+      innovasjon_norge_grant_cluster               2026
+      innovasjon_norge_grant_innovation            2026
+      innovasjon_norge_grant_international         2025
+      innovasjon_norge_grant_regional              2026
+      innovasjon_norge_grant_sector                2026
+      innovasjon_norge_grant_startup               2026
+  DIFFERS  sector_mix
+      innovasjon_norge_grant_cluster               "{\"other\": 188, \"energy_cleantech\": 145, \"software_data_ai\": 102, \"industrial_manufacturing\": 77, \"agrifood\": 63, \"health_life_sciences\": 34, \"mobility_transport\": 29, \"materials_chemicals\": 6}"
+      innovasjon_norge_grant_innovation            "{\"software_data_ai\": 1085, \"industrial_manufacturing\": 609, \"other\": 585, \"energy_cleantech\": 479, \"agrifood\": 372, \"health_life_sciences\": 264, \"mobility_transport\": 203, \"materials_chemicals\": 135}"
+      innovasjon_norge_grant_international         "{\"other\": 213, \"software_data_ai\": 114, \"industrial_manufacturing\": 89, \"energy_cleantech\": 60, \"health_life_sciences\": 30, \"materials_chemicals\": 27, \"mobility_transport\": 23, \"agrifood\": 22}"
+      innovasjon_norge_grant_regional              "{\"other\": 862, \"industrial_manufacturing\": 428, \"agrifood\": 350, \"software_data_ai\": 278, \"energy_cleantech\": 114, \"mobility_transport\": 92, \"health_life_sciences\": 71, \"materials_chemicals\": 60}"
+      innovasjon_norge_grant_sector                "{\"other\": 121, \"software_data_ai\": 53, \"mobility_transport\": 17, \"energy_cleantech\": 11, \"industrial_manufacturing\": 7, \"agrifood\": 6, \"semiconductors_electronics\": 3, \"materials_chemicals\": 3}"
+      innovasjon_norge_grant_startup               "{\"software_data_ai\": 1350, \"other\": 383, \"industrial_manufacturing\": 327, \"energy_cleantech\": 269, \"health_life_sciences\": 230, \"agrifood\": 178, \"mobility_transport\": 136, \"materials_chemicals\": 65}"
+  DIFFERS  award_p25
+      innovasjon_norge_grant_cluster               59390.65
+      innovasjon_norge_grant_innovation            3439.68
+      innovasjon_norge_grant_international         7973.2
+      innovasjon_norge_grant_regional              21646.51
+      innovasjon_norge_grant_sector                17137.96
+      innovasjon_norge_grant_startup               9839.32
+  DIFFERS  award_p50
+      innovasjon_norge_grant_cluster               74238.31
+      innovasjon_norge_grant_innovation            6019.43
+      innovasjon_norge_grant_international         17494.14
+      innovasjon_norge_grant_regional              47295.55
+      innovasjon_norge_grant_sector                39849.26
+      innovasjon_norge_grant_startup               17198.38
+  DIFFERS  award_p75
+      innovasjon_norge_grant_cluster               171379.61
+      innovasjon_norge_grant_innovation            148476.63
+      innovasjon_norge_grant_international         47274.96
+      innovasjon_norge_grant_regional              105772.73
+      innovasjon_norge_grant_sector                103190.3
+      innovasjon_norge_grant_startup               59035.94
+  DIFFERS  award_n
+      innovasjon_norge_grant_cluster               656
+      innovasjon_norge_grant_innovation            4045
+      innovasjon_norge_grant_international         639
+      innovasjon_norge_grant_regional              2335
+      innovasjon_norge_grant_sector                228
+      innovasjon_norge_grant_startup               3145
+  DIFFERS  root_id
+      innovasjon_norge_grant_cluster               "innovasjon_norge_grant_cluster"
+      innovasjon_norge_grant_innovation            "innovasjon_norge_grant_innovation"
+      innovasjon_norge_grant_international         "innovasjon_norge_grant_international"
+      innovasjon_norge_grant_regional              "innovasjon_norge_grant_regional"
+      innovasjon_norge_grant_sector                "innovasjon_norge_grant_sector"
+      innovasjon_norge_grant_startup               "innovasjon_norge_grant_startup"
+  DIFFERS  path
+      innovasjon_norge_grant_cluster               "innovasjon_norge_grant_cluster"
+      innovasjon_norge_grant_innovation            "innovasjon_norge_grant_innovation"
+      innovasjon_norge_grant_international         "innovasjon_norge_grant_international"
+      innovasjon_norge_grant_regional              "innovasjon_norge_grant_regional"
+      innovasjon_norge_grant_sector                "innovasjon_norge_grant_sector"
+      innovasjon_norge_grant_startup               "innovasjon_norge_grant_startup"
+  DIFFERS  eligibility_text
+      innovasjon_norge_grant_cluster               "Bedriftsnettverk. Har bedriften din vekstambisjoner og ønsker å realisere disse i samarbeid med andre bedrifter? Vi kan tilby faglig veiledning, og finansiering til etablering og utvikling av bedriftsnettverk-prosjekter
+      innovasjon_norge_grant_innovation            "Ordningen gir tilskudd til leverandørbedrifter som utvikler nye produkter eller løsninger i forpliktende samarbeid med en eller flere pilotkunder. Målgruppe Bedrifter som utvikler miljøteknologi Målgruppe Små og melloms
+      innovasjon_norge_grant_international         "Målgruppe Alle bedrifter Norske bedrifter kan delta som partner i prosjekter støttet av EØS-midler (EEA Grants), og bidra til sosial og økonomisk utvikling i Europa. Innovasjon Norge forvalter programmene gjennom våre k
+      innovasjon_norge_grant_regional              null
+      innovasjon_norge_grant_sector                "Klynger, økosystem og andre innovasjonsselskaper kan, etter en utlysnings- og utvelgelsesprosess, motta tilskudd fra oss for å tilby rådgivningstjenester til bedrifter. Har du et prosjekt som kan bidra til næringsutvikl
+      innovasjon_norge_grant_startup               "Bedriften har et betydelig vekstpotensial, både nasjonalt og internasjonalt. Målgruppe Oppstartsbedrifter Tilskuddet retter seg mot innovative oppstartsbedrifter som har et krevende teknologiutviklingsløp foran seg. Hvo
+  DIFFERS  eligibility_source_url
+      innovasjon_norge_grant_cluster               "https://www.innovasjonnorge.no/tjeneste/bedriftsnettverk"
+      innovasjon_norge_grant_innovation            null
+      innovasjon_norge_grant_international         null
+      innovasjon_norge_grant_regional              null
+      innovasjon_norge_grant_sector                null
+      innovasjon_norge_grant_startup               null
+  DIFFERS  eligibility_confidence
+      innovasjon_norge_grant_cluster               "high"
+      innovasjon_norge_grant_innovation            "high"
+      innovasjon_norge_grant_international         "high"
+      innovasjon_norge_grant_regional              null
+      innovasjon_norge_grant_sector                "high"
+      innovasjon_norge_grant_startup               "high"
+
+== NO Innovasjon Norge loans ==
+  DIFFERS  id
+      innovasjon_norge_loan_lowrisk                "innovasjon_norge_loan_lowrisk"
+      innovasjon_norge_loan_risk                   "innovasjon_norge_loan_risk"
+  DIFFERS  capital_type
+      innovasjon_norge_loan_lowrisk                "loan"
+      innovasjon_norge_loan_risk                   "blended"
+  DIFFERS  capital_type_basis
+      innovasjon_norge_loan_lowrisk                "majority row vote (763/763)"
+      innovasjon_norge_loan_risk                   "split vote {'loan': 1451, 'guarantee': 1526}"
+  DIFFERS  event_count
+      innovasjon_norge_loan_lowrisk                763
+      innovasjon_norge_loan_risk                   2977
+  DIFFERS  company_count
+      innovasjon_norge_loan_lowrisk                546
+      innovasjon_norge_loan_risk                   2103
+  DIFFERS  total_eur
+      innovasjon_norge_loan_lowrisk                1126939738.77
+      innovasjon_norge_loan_risk                   1055387067.39
+  DIFFERS  sector_mix
+      innovasjon_norge_loan_lowrisk                "{\"agrifood\": 316, \"other\": 239, \"industrial_manufacturing\": 82, \"mobility_transport\": 48, \"software_data_ai\": 35, \"energy_cleantech\": 19, \"materials_chemicals\": 8, \"health_life_sciences\": 7}"
+      innovasjon_norge_loan_risk                   "{\"software_data_ai\": 1026, \"industrial_manufacturing\": 409, \"agrifood\": 347, \"other\": 345, \"energy_cleantech\": 235, \"health_life_sciences\": 226, \"mobility_transport\": 155, \"semiconductors_electronics\": 8
+  DIFFERS  award_p25
+      innovasjon_norge_loan_lowrisk                137750.53
+      innovasjon_norge_loan_risk                   128987.88
+  DIFFERS  award_p50
+      innovasjon_norge_loan_lowrisk                342759.21
+      innovasjon_norge_loan_risk                   210069.32
+  DIFFERS  award_p75
+      innovasjon_norge_loan_lowrisk                890859.78
+      innovasjon_norge_loan_risk                   296953.26
+  DIFFERS  award_n
+      innovasjon_norge_loan_lowrisk                763
+      innovasjon_norge_loan_risk                   2977
+  DIFFERS  root_id
+      innovasjon_norge_loan_lowrisk                "innovasjon_norge_loan_lowrisk"
+      innovasjon_norge_loan_risk                   "innovasjon_norge_loan_risk"
+  DIFFERS  path
+      innovasjon_norge_loan_lowrisk                "innovasjon_norge_loan_lowrisk"
+      innovasjon_norge_loan_risk                   "innovasjon_norge_loan_risk"
+  DIFFERS  description
+      innovasjon_norge_loan_lowrisk                "Lavrisikolån er et tilbud til bedrifter med behov for finansiering av et langsiktig kapitalbehov."
+      innovasjon_norge_loan_risk                   "Risikolån dekker deler av kapitalbehovet for investeringsprosjekter innen etableringer, nyskaping, internasjonalisering, kapitalstyrking, vekst og omstilling."
+  DIFFERS  eligibility_text
+      innovasjon_norge_loan_lowrisk                "Målgruppe Alle bedrifter Hvor mye Inntil 50 % av kapitalbehov Ved fastsettelse av tilskuddsbeløpet legger derfor vi til grunn at det ikke mottas annen offentlig støtte, herunder Skattefunn, enn det som er oppgitt i søkn
+      innovasjon_norge_loan_risk                   "Grønt risikolån retter seg mot klima- og miljøvennlige investeringer i norske bedrifter. Målgruppe Alle bedrifter Hvor mye Inntil 35 millioner kroner Vi har inngått avtale med Det Europeiske Investeringsfondet (EIF), so
+  DIFFERS  eligibility_source_url
+      innovasjon_norge_loan_lowrisk                "https://www.innovasjonnorge.no/tjeneste/lavrisikolan"
+      innovasjon_norge_loan_risk                   "https://www.innovasjonnorge.no/seksjon/lan"
+
+== FR Bpifrance ==
+  DIFFERS  id
+      bpifrance_innovup_leader_idf                 "bpifrance_innovup_leader_idf"
+      bpifrance_inov                               "bpifrance_inov"
+      bpifrance_pmup_idf                           "bpifrance_pmup_idf"
+  DIFFERS  administering_body
+      bpifrance_innovup_leader_idf                 "Bpifrance"
+      bpifrance_inov                               "Bpifrance"
+      bpifrance_pmup_idf                           "Région Île-de-France"
+  DIFFERS  capital_type_basis
+      bpifrance_innovup_leader_idf                 "majority row vote (144/144)"
+      bpifrance_inov                               "majority row vote (753/753)"
+      bpifrance_pmup_idf                           "majority row vote (96/96)"
+  DIFFERS  event_count
+      bpifrance_innovup_leader_idf                 144
+      bpifrance_inov                               753
+      bpifrance_pmup_idf                           96
+  DIFFERS  company_count
+      bpifrance_innovup_leader_idf                 144
+      bpifrance_inov                               729
+      bpifrance_pmup_idf                           96
+  DIFFERS  total_eur
+      bpifrance_innovup_leader_idf                 50881500
+      bpifrance_inov                               517691111
+      bpifrance_pmup_idf                           50348000
+  DIFFERS  first_year
+      bpifrance_innovup_leader_idf                 null
+      bpifrance_inov                               2018
+      bpifrance_pmup_idf                           null
+  DIFFERS  last_year
+      bpifrance_innovup_leader_idf                 null
+      bpifrance_inov                               2025
+      bpifrance_pmup_idf                           null
+  DIFFERS  sample_project_titles
+      bpifrance_innovup_leader_idf                 "[\"D\\u00e9veloppement du premier instrument de nanoscopie intelligent, automatis\\u00e9 et permettant un traitement acc\\u00e9l\\u00e9r\\u00e9 des images.\", \"Le projet A2TB-S vise \\u00e0 relever un enjeu majeur de l
+      bpifrance_inov                               "[\"ECOSTRAUV\", \"LIGNOROC V2\", \"ACTIVITY LAB\", \"ALI-S\", \"CLOUDCAT\"]"
+      bpifrance_pmup_idf                           "[\"Modernisation de la cha\\u00eene de production.\", \"Modernisation de la cha\\u00eene de production\", \"Modernisation de la cha\\u00eene de production, diversification de l\\u2019activit\\u00e9.\", \"Installation du
+  DIFFERS  sector_mix
+      bpifrance_innovup_leader_idf                 "{\"software_data_ai\": 52, \"health_life_sciences\": 37, \"semiconductors_electronics\": 12, \"industrial_manufacturing\": 11, \"energy_cleantech\": 9, \"mobility_transport\": 8, \"defense_security\": 5, \"agrifood\": 3
+      bpifrance_inov                               "{\"software_data_ai\": 285, \"health_life_sciences\": 116, \"energy_cleantech\": 95, \"agrifood\": 55, \"industrial_manufacturing\": 44, \"semiconductors_electronics\": 43, \"mobility_transport\": 36, \"other\": 21}"
+      bpifrance_pmup_idf                           "{\"industrial_manufacturing\": 44, \"health_life_sciences\": 11, \"agrifood\": 10, \"semiconductors_electronics\": 8, \"materials_chemicals\": 6, \"energy_cleantech\": 6, \"other\": 5, \"mobility_transport\": 5}"
+  DIFFERS  award_p25
+      bpifrance_innovup_leader_idf                 282000
+      bpifrance_inov                               356243
+      bpifrance_pmup_idf                           400000
+  DIFFERS  award_p50
+      bpifrance_innovup_leader_idf                 385500
+      bpifrance_inov                               449356
+      bpifrance_pmup_idf                           500000
+  DIFFERS  award_p75
+      bpifrance_innovup_leader_idf                 444000
+      bpifrance_inov                               942633
+      bpifrance_pmup_idf                           700000
+  DIFFERS  award_n
+      bpifrance_innovup_leader_idf                 141
+      bpifrance_inov                               705
+      bpifrance_pmup_idf                           95
+  DIFFERS  intensity_p50
+      bpifrance_innovup_leader_idf                 0.4403
+      bpifrance_inov                               0.45
+      bpifrance_pmup_idf                           0.3638
+  DIFFERS  intensity_n
+      bpifrance_innovup_leader_idf                 138
+      bpifrance_inov                               703
+      bpifrance_pmup_idf                           75
+  DIFFERS  root_id
+      bpifrance_innovup_leader_idf                 "bpifrance_innovup_leader_idf"
+      bpifrance_inov                               "bpifrance_inov"
+      bpifrance_pmup_idf                           "bpifrance_pmup_idf"
+  DIFFERS  path
+      bpifrance_innovup_leader_idf                 "bpifrance_innovup_leader_idf"
+      bpifrance_inov                               "bpifrance_inov"
+      bpifrance_pmup_idf                           "bpifrance_pmup_idf"
+  DIFFERS  description
+      bpifrance_innovup_leader_idf                 "Le présent appel à projets vise à accélérer l’émergence de futurs leaders sur leur marché, pouvant prétendre à une envergure nationale voire internationale et porteurs de projet d’innovation de rupture. Pour cela, l’act
+      bpifrance_inov                               "Le volet i-Nov cofinance des projets de recherche, développement et innovation dont les coûts totaux se situent entre 1 M€ et 5 M€, et dont la durée est comprise entre 12 et 36 mois."
+      bpifrance_pmup_idf                           "Dans un contexte de nécessaire adaptation des entreprises aux enjeux écologiques, la Région est aux côtés des PME pour les accompagner dans la transformation écologique et énergétique et soutenir leurs projets de croiss
+  DIFFERS  eligibility_text
+      bpifrance_innovup_leader_idf                 "Pour être éligibles au dispositif, les entreprises doivent respecter les critères cumulatifs suivants : Être une PME ou une ETI créée au moment du dépôt du dossier de candidature (avoir un numéro SIRET et être en mesure
+      bpifrance_inov                               "Il soutient des projets innovants portés par des start-up et des PME et favorise l’émergence d’entreprises leaders dans leur domaine, pouvant prétendre à une envergure mondiale."
+      bpifrance_pmup_idf                           "Les petites et moyennes entreprises (PME) : Quelle que soit leur forme juridique, y compris les associations ayant une activité économique, Employant entre 5 et 250 salariés, Dont le chiffre d'affaires n'excède pas 50 M
+  DIFFERS  eligibility_source_url
+      bpifrance_innovup_leader_idf                 "https://leaderpia.iledefrance.fr/"
+      bpifrance_inov                               "https://www.bpifrance.fr/nos-appels-a-projets-concours/appel-a-projets-concours-dinnovation-i-nov"
+      bpifrance_pmup_idf                           "https://www.iledefrance.fr/aides-et-appels-a-projets/pmup"
+  DIFFERS  eligibility_confidence
+      bpifrance_innovup_leader_idf                 "high"
+      bpifrance_inov                               "medium"
+      bpifrance_pmup_idf                           "medium"
+
+== LV Altum ==
+  DIFFERS  id
+      altum_aue                                    "altum_aue"
+      altum_aui                                    "altum_aui"
+  DIFFERS  capital_type_basis
+      altum_aue                                    "majority row vote (33/33)"
+      altum_aui                                    "majority row vote (57/57)"
+  DIFFERS  event_count
+      altum_aue                                    33
+      altum_aui                                    57
+  DIFFERS  company_count
+      altum_aue                                    22
+      altum_aui                                    47
+  DIFFERS  total_eur
+      altum_aue                                    14238086.14
+      altum_aui                                    51867372.12
+  DIFFERS  first_year
+      altum_aue                                    2021
+      altum_aui                                    2022
+  DIFFERS  last_year
+      altum_aue                                    2024
+      altum_aui                                    2026
+  DIFFERS  sector_mix
+      altum_aue                                    "{\"other\": 13, \"energy_cleantech\": 11, \"agrifood\": 6, \"software_data_ai\": 1, \"industrial_manufacturing\": 1}"
+      altum_aui                                    "{\"energy_cleantech\": 21, \"other\": 17, \"agrifood\": 11, \"mobility_transport\": 6, \"software_data_ai\": 1}"
+  DIFFERS  award_p25
+      altum_aue                                    106761.96
+      altum_aui                                    200000
+  DIFFERS  award_p50
+      altum_aue                                    185000
+      altum_aui                                    600000
+  DIFFERS  award_p75
+      altum_aue                                    499000
+      altum_aui                                    1674446
+  DIFFERS  award_n
+      altum_aue                                    33
+      altum_aui                                    57
+  DIFFERS  root_id
+      altum_aue                                    "altum_aue"
+      altum_aui                                    "altum_aui"
+  DIFFERS  path
+      altum_aue                                    "altum_aue"
+      altum_aui                                    "altum_aui"
+
+== ES CDTI ==
+  DIFFERS  id
+      cdti_idi                                     "cdti_idi"
+      cdti_neotec                                  "cdti_neotec"
+  DIFFERS  capital_type_basis
+      cdti_idi                                     "majority row vote (962/1028)"
+      cdti_neotec                                  "majority row vote (576/576)"
+  DIFFERS  event_count
+      cdti_idi                                     1028
+      cdti_neotec                                  576
+  DIFFERS  company_count
+      cdti_idi                                     845
+      cdti_neotec                                  576
+  DIFFERS  total_eur
+      cdti_idi                                     462577365.97
+      cdti_neotec                                  173949186.9
+  DIFFERS  last_year
+      cdti_idi                                     2026
+      cdti_neotec                                  2025
+  DIFFERS  sample_project_titles
+      cdti_idi                                     "[\"Resoluci\\u00f3n de 4 de abril de 2025 de la Presidencia del CDTI E.P.E. por la que se aprueba la convocatoria para el a\\u00f1o 2025 del procedimiento de concesi\\u00f3n de ayudas destinadas a las actuaciones Consor
+      cdti_neotec                                  "[\"Resoluci\\u00f3n de 21 de febrero de 2023 de la Presidencia del Centro para el Desarrollo Tecnol\\u00f3gico y la Innovaci\\u00f3n E.P.E. (CDTI), por la que se aprueba la convocatoria para el a\\u00f1o 2023 del Progra
+  DIFFERS  sector_mix
+      cdti_idi                                     "{\"software_data_ai\": 190, \"health_life_sciences\": 110, \"energy_cleantech\": 81, \"industrial_manufacturing\": 78, \"agrifood\": 70, \"semiconductors_electronics\": 52, \"materials_chemicals\": 38, \"mobility_transp
+      cdti_neotec                                  "{\"software_data_ai\": 267, \"health_life_sciences\": 92, \"energy_cleantech\": 44, \"semiconductors_electronics\": 25, \"industrial_manufacturing\": 25, \"materials_chemicals\": 22, \"agrifood\": 20, \"mobility_transpo
+  DIFFERS  award_p25
+      cdti_idi                                     179496
+      cdti_neotec                                  260000
+  DIFFERS  award_p50
+      cdti_idi                                     285041
+      cdti_neotec                                  325000
+  DIFFERS  award_p75
+      cdti_idi                                     413238
+      cdti_neotec                                  325000
+  DIFFERS  award_n
+      cdti_idi                                     1028
+      cdti_neotec                                  576
+  DIFFERS  root_id
+      cdti_idi                                     "cdti_idi"
+      cdti_neotec                                  "cdti_neotec"
+  DIFFERS  path
+      cdti_idi                                     "cdti_idi"
+      cdti_neotec                                  "cdti_neotec"
+  DIFFERS  description
+      cdti_idi                                     "Ayudas a proyectos de I+D desarrollados por empresas y destinados a la creación y mejora significativa de procesos productivos, productos o servicios. Pueden comprender tanto actividades de investigación industrial como
+      cdti_neotec                                  "El objetivo del Programa NEOTEC es el apoyo a la creación y consolidación de empresas de base tecnológica, en las que el desarrollo de tecnología propia constituya el factor competitivo de diferenciación. Presupuesto mí
+  DIFFERS  eligibility_text
+      cdti_idi                                     "Beneficiarios: Empresas. Proyectos individuales presentados por una única empresa; también admite proyectos en cooperación nacional (consorcios de 2 a 6 empresas autónomas entre sí) y proyectos de cooperación tecnológic
+      cdti_neotec                                  "Beneficiarios: Pequeñas empresas innovadoras. Tres años de antigüedad máximo. Capital social mínimo: 20.000 euros."
+  DIFFERS  eligibility_source_url
+      cdti_idi                                     "https://www.cdti.es/ayudas/proyectos-de-i-d"
+      cdti_neotec                                  "https://www.cdti.es/ayudas/ayudas-neotec-2026"
+  DIFFERS  eligibility_confidence
+      cdti_idi                                     "medium"
+      cdti_neotec                                  "high"
+  DIFFERS  eligibility_fetched_at
+      cdti_idi                                     "2026-08-05 18:30:22"
+      cdti_neotec                                  "2026-08-06 18:51:42"
+
+== ES IGAPE pesca ==
+  DIFFERS  id
+      bdns_conv_880456                             "bdns_conv_880456"
+      bdns_conv_880548                             "bdns_conv_880548"
+  DIFFERS  application_url
+      bdns_conv_880456                             "https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria/880456"
+      bdns_conv_880548                             "https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria/880548"
+  DIFFERS  root_id
+      bdns_conv_880456                             "bdns_conv_880456"
+      bdns_conv_880548                             "bdns_conv_880548"
+  DIFFERS  path
+      bdns_conv_880456                             "bdns_conv_880456"
+      bdns_conv_880548                             "bdns_conv_880548"
+  DIFFERS  eligibility_text
+      bdns_conv_880456                             "Beneficiarios: PYME Y PERSONAS FÍSICAS QUE DESARROLLAN ACTIVIDAD ECONÓMICA. Ámbito regional: ES11 - GALICIA. Finalidad: Industria y Energía. Sectores elegibles: 22 sectores (sin restricción sectorial efectiva). Tipo de 
+      bdns_conv_880548                             "Beneficiarios: PYME Y PERSONAS FÍSICAS QUE DESARROLLAN ACTIVIDAD ECONÓMICA. Ámbito regional: ES11 - GALICIA. Finalidad: Industria y Energía. Sectores elegibles: 22 sectores (sin restricción sectorial efectiva). Tipo de 
+  DIFFERS  name_basis
+      bdns_conv_880456                             "register_object_clause; fields=descripcion, CURRENT NAME"
+      bdns_conv_880548                             "register_object_clause; fields=descripcion, reglamento"
+
+== ES IGAPE agricola ==
+  DIFFERS  id
+      bdns_conv_880457                             "bdns_conv_880457"
+      bdns_conv_880579                             "bdns_conv_880579"
+  DIFFERS  application_url
+      bdns_conv_880457                             "https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria/880457"
+      bdns_conv_880579                             "https://www.infosubvenciones.es/bdnstrans/GE/es/convocatoria/880579"
+  DIFFERS  root_id
+      bdns_conv_880457                             "bdns_conv_880457"
+      bdns_conv_880579                             "bdns_conv_880579"
+  DIFFERS  path
+      bdns_conv_880457                             "bdns_conv_880457"
+      bdns_conv_880579                             "bdns_conv_880579"
+  DIFFERS  eligibility_text
+      bdns_conv_880457                             "Beneficiarios: PYME Y PERSONAS FÍSICAS QUE DESARROLLAN ACTIVIDAD ECONÓMICA. Ámbito regional: ES11 - GALICIA. Finalidad: Industria y Energía. Sectores elegibles: 22 sectores (sin restricción sectorial efectiva). Tipo de 
+      bdns_conv_880579                             "Beneficiarios: PYME Y PERSONAS FÍSICAS QUE DESARROLLAN ACTIVIDAD ECONÓMICA. Ámbito regional: ES11 - GALICIA. Finalidad: Industria y Energía. Sectores elegibles: 22 sectores (sin restricción sectorial efectiva). Tipo de 
+  DIFFERS  name_basis
+      bdns_conv_880457                             "register_object_clause; fields=descripcion, reglamento"
+      bdns_conv_880579                             "register_object_clause; fields=descripcion, descripcionBasesReguladoras, reglamento"
+
+== FR SA.111723 rnd ==
+  DIFFERS  id
+      3__ministere_de_l_economie_et_des_finances   "satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances"
+      ere_de_la_transition_ecologique_et_solidai   "satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai"
+      tr_fr_rnd__sa_111723__ministere_des_armees   "satr_fr_rnd__sa_111723__ministere_des_armees"
+  DIFFERS  administering_body
+      3__ministere_de_l_economie_et_des_finances   "Ministère de l'économie et des finances"
+      ere_de_la_transition_ecologique_et_solidai   "Ministère de la Transition écologique et solidaire"
+      tr_fr_rnd__sa_111723__ministere_des_armees   "Ministère des Armées"
+  DIFFERS  capital_type_basis
+      3__ministere_de_l_economie_et_des_finances   "majority row vote (1681/1681)"
+      ere_de_la_transition_ecologique_et_solidai   "majority row vote (610/610)"
+      tr_fr_rnd__sa_111723__ministere_des_armees   "majority row vote (193/193)"
+  DIFFERS  event_count
+      3__ministere_de_l_economie_et_des_finances   1681
+      ere_de_la_transition_ecologique_et_solidai   610
+      tr_fr_rnd__sa_111723__ministere_des_armees   193
+  DIFFERS  company_count
+      3__ministere_de_l_economie_et_des_finances   1287
+      ere_de_la_transition_ecologique_et_solidai   408
+      tr_fr_rnd__sa_111723__ministere_des_armees   134
+  DIFFERS  total_eur
+      3__ministere_de_l_economie_et_des_finances   1856157733
+      ere_de_la_transition_ecologique_et_solidai   269572343
+      tr_fr_rnd__sa_111723__ministere_des_armees   136953917
+  DIFFERS  sector_mix
+      3__ministere_de_l_economie_et_des_finances   "{\"software_data_ai\": 481, \"health_life_sciences\": 227, \"other\": 187, \"semiconductors_electronics\": 160, \"industrial_manufacturing\": 116, \"energy_cleantech\": 100, \"mobility_transport\": 70, \"agrifood\": 66}
+      ere_de_la_transition_ecologique_et_solidai   "{\"energy_cleantech\": 160, \"industrial_manufacturing\": 88, \"other\": 74, \"mobility_transport\": 60, \"materials_chemicals\": 54, \"software_data_ai\": 36, \"semiconductors_electronics\": 24, \"agrifood\": 10}"
+      tr_fr_rnd__sa_111723__ministere_des_armees   "{\"software_data_ai\": 42, \"defense_security\": 38, \"semiconductors_electronics\": 31, \"industrial_manufacturing\": 10, \"energy_cleantech\": 9, \"other\": 9, \"mobility_transport\": 6, \"space\": 4}"
+  DIFFERS  award_p25
+      3__ministere_de_l_economie_et_des_finances   200000
+      ere_de_la_transition_ecologique_et_solidai   152000
+      tr_fr_rnd__sa_111723__ministere_des_armees   99703
+  DIFFERS  award_p50
+      3__ministere_de_l_economie_et_des_finances   375000
+      ere_de_la_transition_ecologique_et_solidai   242595
+      tr_fr_rnd__sa_111723__ministere_des_armees   275940
+  DIFFERS  award_p75
+      3__ministere_de_l_economie_et_des_finances   893234
+      ere_de_la_transition_ecologique_et_solidai   485500
+      tr_fr_rnd__sa_111723__ministere_des_armees   610732
+  DIFFERS  award_n
+      3__ministere_de_l_economie_et_des_finances   1681
+      ere_de_la_transition_ecologique_et_solidai   610
+      tr_fr_rnd__sa_111723__ministere_des_armees   193
+  DIFFERS  path
+      3__ministere_de_l_economie_et_des_finances   "satr_fr_rnd/satr_fr_rnd__sa_111723__ministere_de_l_economie_et_des_finances"
+      ere_de_la_transition_ecologique_et_solidai   "satr_fr_rnd/satr_fr_rnd__sa_111723__ministere_de_la_transition_ecologique_et_solidai"
+      tr_fr_rnd__sa_111723__ministere_des_armees   "satr_fr_rnd/satr_fr_rnd__sa_111723__ministere_des_armees"
+  DIFFERS  recipient_region_mix
+      3__ministere_de_l_economie_et_des_finances   "{\"FR10\": 1540, \"FRK2\": 577, \"FRL0\": 349, \"FRH0\": 218, \"FRJ2\": 189, \"FRG0\": 175, \"FRE1\": 169, \"FRI1\": 160, \"FRJ1\": 158, \"FRB0\": 139, \"FRF1\": 94, \"FRC1\": 78, \"FRC2\": 78, \"FRD2\": 68, \"FRK1\": 6
+      ere_de_la_transition_ecologique_et_solidai   "{\"FR10\": 169, \"FRK\": 123, \"FRE\": 80, \"FRJ\": 74, \"FRG0\": 52, \"FRF\": 52, \"FR\": 47, \"FRL0\": 43, \"FRI\": 38, \"FRC\": 28, \"FRH0\": 21, \"FRB0\": 20, \"FRD\": 19, \"FRM0\": 2}"
+      tr_fr_rnd__sa_111723__ministere_des_armees   "{\"FR103\": 23, \"FR105\": 18, \"FRJ23\": 18, \"FR101\": 17, \"FR104\": 16, \"FR10\": 8, \"FRI12\": 6, \"FRF12\": 6, \"FRH02\": 5, \"FRH04\": 4, \"FRL04\": 4, \"FRK\": 4, \"FRK2\": 4, \"FRJ13\": 3, \"FRK24\": 3, \"FR107
+
+== FR SA.111723 equity ==
+  DIFFERS  id
+      3__ministere_de_l_economie_et_des_finances   "satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances"
+      ere_de_la_transition_ecologique_et_solidai   "satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai"
+  DIFFERS  administering_body
+      3__ministere_de_l_economie_et_des_finances   "Ministère de l'économie et des finances"
+      ere_de_la_transition_ecologique_et_solidai   "Ministère de la Transition écologique et solidaire"
+  DIFFERS  capital_type_basis
+      3__ministere_de_l_economie_et_des_finances   "majority row vote (3053/3053)"
+      ere_de_la_transition_ecologique_et_solidai   "majority row vote (261/261)"
+  DIFFERS  event_count
+      3__ministere_de_l_economie_et_des_finances   3053
+      ere_de_la_transition_ecologique_et_solidai   261
+  DIFFERS  company_count
+      3__ministere_de_l_economie_et_des_finances   2573
+      ere_de_la_transition_ecologique_et_solidai   169
+  DIFFERS  total_eur
+      3__ministere_de_l_economie_et_des_finances   1002833675
+      ere_de_la_transition_ecologique_et_solidai   84569054
+  DIFFERS  sector_mix
+      3__ministere_de_l_economie_et_des_finances   "{\"software_data_ai\": 1446, \"other\": 323, \"health_life_sciences\": 300, \"industrial_manufacturing\": 214, \"energy_cleantech\": 157, \"semiconductors_electronics\": 137, \"agrifood\": 103, \"mobility_transport\": 8
+      ere_de_la_transition_ecologique_et_solidai   "{\"energy_cleantech\": 76, \"industrial_manufacturing\": 41, \"other\": 30, \"materials_chemicals\": 27, \"mobility_transport\": 21, \"semiconductors_electronics\": 10, \"software_data_ai\": 8, \"health_life_sciences\":
+  DIFFERS  award_p25
+      3__ministere_de_l_economie_et_des_finances   60554
+      ere_de_la_transition_ecologique_et_solidai   124983
+  DIFFERS  award_p50
+      3__ministere_de_l_economie_et_des_finances   130429
+      ere_de_la_transition_ecologique_et_solidai   217935
+  DIFFERS  award_p75
+      3__ministere_de_l_economie_et_des_finances   306184
+      ere_de_la_transition_ecologique_et_solidai   349088
+  DIFFERS  award_n
+      3__ministere_de_l_economie_et_des_finances   3053
+      ere_de_la_transition_ecologique_et_solidai   261
+  DIFFERS  path
+      3__ministere_de_l_economie_et_des_finances   "satr_fr_equity/satr_fr_equity__sa_111723__ministere_de_l_economie_et_des_finances"
+      ere_de_la_transition_ecologique_et_solidai   "satr_fr_equity/satr_fr_equity__sa_111723__ministere_de_la_transition_ecologique_et_solidai"
+  DIFFERS  recipient_region_mix
+      3__ministere_de_l_economie_et_des_finances   "{\"FR10\": 1540, \"FRK2\": 577, \"FRL0\": 349, \"FRH0\": 218, \"FRJ2\": 189, \"FRG0\": 175, \"FRE1\": 169, \"FRI1\": 160, \"FRJ1\": 158, \"FRB0\": 139, \"FRF1\": 94, \"FRC1\": 78, \"FRC2\": 78, \"FRD2\": 68, \"FRK1\": 6
+      ere_de_la_transition_ecologique_et_solidai   "{\"FR10\": 169, \"FRK\": 123, \"FRE\": 80, \"FRJ\": 74, \"FRG0\": 52, \"FRF\": 52, \"FR\": 47, \"FRL0\": 43, \"FRI\": 38, \"FRC\": 28, \"FRH0\": 21, \"FRB0\": 20, \"FRD\": 19, \"FRM0\": 2}"
+
+== FR SA.111726 ==
+  DIFFERS  id
+      ion_generale_de_l_amenagement_du_logement_   "satr_fr_rnd__sa_111726__direction_generale_de_l_amenagement_du_logement_"
+      ere_de_la_transition_ecologique_et_solidai   "satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+  DIFFERS  administering_body
+      ion_generale_de_l_amenagement_du_logement_   "Direction Générale de l'Aménagement, du Logement et de la Nature"
+      ere_de_la_transition_ecologique_et_solidai   "Ministère de la Transition écologique et solidaire"
+  DIFFERS  capital_type_basis
+      ion_generale_de_l_amenagement_du_logement_   "majority row vote (109/109)"
+      ere_de_la_transition_ecologique_et_solidai   "majority row vote (1458/1458)"
+  DIFFERS  event_count
+      ion_generale_de_l_amenagement_du_logement_   109
+      ere_de_la_transition_ecologique_et_solidai   1458
+  DIFFERS  company_count
+      ion_generale_de_l_amenagement_du_logement_   102
+      ere_de_la_transition_ecologique_et_solidai   1056
+  DIFFERS  total_eur
+      ion_generale_de_l_amenagement_du_logement_   39645372
+      ere_de_la_transition_ecologique_et_solidai   1991512184
+  DIFFERS  first_year
+      ion_generale_de_l_amenagement_du_logement_   2024
+      ere_de_la_transition_ecologique_et_solidai   2023
+  DIFFERS  sector_mix
+      ion_generale_de_l_amenagement_du_logement_   "{\"industrial_manufacturing\": 25, \"other\": 23, \"agrifood\": 19, \"energy_cleantech\": 12, \"materials_chemicals\": 10, \"health_life_sciences\": 3, \"mobility_transport\": 2, \"semiconductors_electronics\": 1}"
+      ere_de_la_transition_ecologique_et_solidai   "{\"energy_cleantech\": 622, \"other\": 233, \"mobility_transport\": 200, \"agrifood\": 83, \"industrial_manufacturing\": 60, \"materials_chemicals\": 48, \"health_life_sciences\": 25, \"semiconductors_electronics\": 5}"
+  DIFFERS  award_p25
+      ion_generale_de_l_amenagement_du_logement_   133146
+      ere_de_la_transition_ecologique_et_solidai   200625
+  DIFFERS  award_p50
+      ion_generale_de_l_amenagement_du_logement_   193032
+      ere_de_la_transition_ecologique_et_solidai   432000
+  DIFFERS  award_p75
+      ion_generale_de_l_amenagement_du_logement_   339965
+      ere_de_la_transition_ecologique_et_solidai   1296750
+  DIFFERS  award_n
+      ion_generale_de_l_amenagement_du_logement_   109
+      ere_de_la_transition_ecologique_et_solidai   1458
+  DIFFERS  path
+      ion_generale_de_l_amenagement_du_logement_   "satr_fr_rnd/satr_fr_rnd__sa_111726__direction_generale_de_l_amenagement_du_logement_"
+      ere_de_la_transition_ecologique_et_solidai   "satr_fr_rnd/satr_fr_rnd__sa_111726__ministere_de_la_transition_ecologique_et_solidai"
+  DIFFERS  recipient_region_mix
+      ion_generale_de_l_amenagement_du_logement_   "{\"FRF3\": 14, \"FRF1\": 12, \"FR105\": 10, \"FR101\": 9, \"FR103\": 7, \"FRD22\": 6, \"FRF23\": 5, \"FRD12\": 4, \"FR102\": 4, \"FR107\": 3, \"FRF22\": 3, \"FRE21\": 3, \"FR108\": 3, \"FR106\": 2, \"FRD21\": 2, \"FRF2\
+      ere_de_la_transition_ecologique_et_solidai   "{\"FRK\": 188, \"FRF\": 141, \"FRI\": 113, \"FRJ\": 103, \"FR\": 95, \"FR10\": 92, \"FRC\": 83, \"FRE\": 78, \"FRH0\": 77, \"FRG0\": 77, \"FRL0\": 64, \"FRD\": 62, \"FRB0\": 58, \"FRH03\": 6, \"FRK14\": 5, \"FRB06\": 4,
+
+== IT SA.110595 ==
+  DIFFERS  id
+      ero_dell_universita_e_della_ricerca_direzi   "satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi"
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   "satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc"
+  DIFFERS  administering_body
+      ero_dell_universita_e_della_ricerca_direzi   "MINISTERO DELL'UNIVERSITA' E DELLA RICERCA - DIREZIONE GENERALE DELLA RICERCA"
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   "Ufficio Coordinamento PNRR e Dipartimenti di Eccellenza"
+  DIFFERS  capital_type_basis
+      ero_dell_universita_e_della_ricerca_direzi   "majority row vote (78/78)"
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   "majority row vote (47/47)"
+  DIFFERS  event_count
+      ero_dell_universita_e_della_ricerca_direzi   78
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   47
+  DIFFERS  company_count
+      ero_dell_universita_e_della_ricerca_direzi   34
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   31
+  DIFFERS  total_eur
+      ero_dell_universita_e_della_ricerca_direzi   30903180
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   8157510
+  DIFFERS  last_year
+      ero_dell_universita_e_della_ricerca_direzi   2025
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   2024
+  DIFFERS  sector_mix
+      ero_dell_universita_e_della_ricerca_direzi   "{\"mobility_transport\": 21, \"software_data_ai\": 7, \"health_life_sciences\": 6, \"energy_cleantech\": 5, \"semiconductors_electronics\": 3, \"industrial_manufacturing\": 3}"
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   "{\"software_data_ai\": 10, \"agrifood\": 5, \"other\": 3, \"space\": 3, \"materials_chemicals\": 3, \"semiconductors_electronics\": 3, \"mobility_transport\": 2, \"health_life_sciences\": 1}"
+  DIFFERS  award_p25
+      ero_dell_universita_e_della_ricerca_direzi   67275
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   80712
+  DIFFERS  award_p50
+      ero_dell_universita_e_della_ricerca_direzi   157908
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   142800
+  DIFFERS  award_p75
+      ero_dell_universita_e_della_ricerca_direzi   325000
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   192013
+  DIFFERS  award_n
+      ero_dell_universita_e_della_ricerca_direzi   78
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   47
+  DIFFERS  path
+      ero_dell_universita_e_della_ricerca_direzi   "satr_it_rnd/satr_it_rnd__sa_110595__ministero_dell_universita_e_della_ricerca_direzi"
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   "satr_it_rnd/satr_it_rnd__sa_110595__ufficio_coordinamento_pnrr_e_dipartimenti_di_ecc"
+  DIFFERS  recipient_region_mix
+      ero_dell_universita_e_della_ricerca_direzi   "{\"ITC4\": 19, \"ITI4\": 14, \"ITC1\": 7, \"ITF4\": 5, \"ITH5\": 1, \"ITC3\": 1, \"ITF5\": 1, \"ITF3\": 1}"
+      o_coordinamento_pnrr_e_dipartimenti_di_ecc   "{\"ITF3\": 17, \"ITC4\": 4, \"ITG2\": 4, \"ITF4\": 1, \"ITI4\": 1, \"ITH5\": 1, \"ITH3\": 1}"
+
+== funding_events columns ==
+
+

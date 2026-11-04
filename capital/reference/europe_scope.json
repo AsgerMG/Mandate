@@ -1,0 +1,61 @@
+{
+  "_meta": {
+    "definition": "EU27 + EFTA + UK + Western Balkans (EU candidates/aspirants) + Eastern Partnership in study scope (Ukraine, Moldova).",
+    "rationale": "Pragmatic 'EU/Europe' scope for this study. Excludes Horizon-Europe associated countries that lie geographically outside Europe (Israel, Turkey, the Caucasus). Excludes countries currently suspended from Horizon (Russia, Belarus). See docs/europe_scope.md for the full rationale.",
+    "decidedOn": "2026-05-29",
+    "totalCountries": 40
+  },
+  "countries": [
+    {"iso2": "AT", "name": "Austria",                "numeric": "040", "group": "EU27"},
+    {"iso2": "BE", "name": "Belgium",                "numeric": "056", "group": "EU27"},
+    {"iso2": "BG", "name": "Bulgaria",               "numeric": "100", "group": "EU27"},
+    {"iso2": "HR", "name": "Croatia",                "numeric": "191", "group": "EU27"},
+    {"iso2": "CY", "name": "Cyprus",                 "numeric": "196", "group": "EU27"},
+    {"iso2": "CZ", "name": "Czechia",                "numeric": "203", "group": "EU27"},
+    {"iso2": "DK", "name": "Denmark",                "numeric": "208", "group": "EU27"},
+    {"iso2": "EE", "name": "Estonia",                "numeric": "233", "group": "EU27"},
+    {"iso2": "FI", "name": "Finland",                "numeric": "246", "group": "EU27"},
+    {"iso2": "FR", "name": "France",                 "numeric": "250", "group": "EU27"},
+    {"iso2": "DE", "name": "Germany",                "numeric": "276", "group": "EU27"},
+    {"iso2": "GR", "name": "Greece",                 "numeric": "300", "group": "EU27"},
+    {"iso2": "HU", "name": "Hungary",                "numeric": "348", "group": "EU27"},
+    {"iso2": "IE", "name": "Ireland",                "numeric": "372", "group": "EU27"},
+    {"iso2": "IT", "name": "Italy",                  "numeric": "380", "group": "EU27"},
+    {"iso2": "LV", "name": "Latvia",                 "numeric": "428", "group": "EU27"},
+    {"iso2": "LT", "name": "Lithuania",              "numeric": "440", "group": "EU27"},
+    {"iso2": "LU", "name": "Luxembourg",             "numeric": "442", "group": "EU27"},
+    {"iso2": "MT", "name": "Malta",                  "numeric": "470", "group": "EU27", "rendererFallback": "marker", "marker": {"x": 580, "y": 470}},
+    {"iso2": "NL", "name": "Netherlands",            "numeric": "528", "group": "EU27"},
+    {"iso2": "PL", "name": "Poland",                 "numeric": "616", "group": "EU27"},
+    {"iso2": "PT", "name": "Portugal",               "numeric": "620", "group": "EU27"},
+    {"iso2": "RO", "name": "Romania",                "numeric": "642", "group": "EU27"},
+    {"iso2": "SK", "name": "Slovakia",               "numeric": "703", "group": "EU27"},
+    {"iso2": "SI", "name": "Slovenia",               "numeric": "705", "group": "EU27"},
+    {"iso2": "ES", "name": "Spain",                  "numeric": "724", "group": "EU27"},
+    {"iso2": "SE", "name": "Sweden",                 "numeric": "752", "group": "EU27"},
+
+    {"iso2": "NO", "name": "Norway",                 "numeric": "578", "group": "EFTA"},
+    {"iso2": "CH", "name": "Switzerland",            "numeric": "756", "group": "EFTA"},
+    {"iso2": "IS", "name": "Iceland",                "numeric": "352", "group": "EFTA"},
+    {"iso2": "LI", "name": "Liechtenstein",          "numeric": "438", "group": "EFTA", "rendererFallback": "marker", "marker": {"x": 416, "y": 240}},
+
+    {"iso2": "GB", "name": "United Kingdom",         "numeric": "826", "group": "UK"},
+
+    {"iso2": "AL", "name": "Albania",                "numeric": "008", "group": "Western Balkans"},
+    {"iso2": "BA", "name": "Bosnia and Herzegovina", "numeric": "070", "group": "Western Balkans"},
+    {"iso2": "ME", "name": "Montenegro",             "numeric": "499", "group": "Western Balkans"},
+    {"iso2": "MK", "name": "North Macedonia",        "numeric": "807", "group": "Western Balkans"},
+    {"iso2": "RS", "name": "Serbia",                 "numeric": "688", "group": "Western Balkans"},
+    {"iso2": "XK", "name": "Kosovo",                 "numeric": "383", "group": "Western Balkans", "rendererFallback": "marker", "marker": {"x": 530, "y": 305}},
+
+    {"iso2": "UA", "name": "Ukraine",                "numeric": "804", "group": "Eastern Partnership"},
+    {"iso2": "MD", "name": "Moldova",                "numeric": "498", "group": "Eastern Partnership"}
+  ],
+  "aliases": {
+    "EL": "GR",
+    "UK": "GB",
+    "PO": "PL",
+    "SW": "SE",
+    "GL": "DK"
+  }
+}

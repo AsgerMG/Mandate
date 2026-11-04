@@ -1,0 +1,256 @@
+{
+ "source": "railway postgres",
+ "asOf": "2026-08-12",
+ "totals": {
+  "n": 1021,
+  "d": 697,
+  "e": 687,
+  "k": 858,
+  "a": 851,
+  "rt": 242,
+  "mute": 80
+ },
+ "note": "Measured before the 12 Aug extraction pass. Rows that say nothing to the chooser then fell 11.9% to 4.4% on the real prompt: Estonia 61% to zero, Netherlands and Italy to zero. Every one of the eleven still silent turned out to be a row that should not be offered at all -- 36 that are not funds, 23 retired, 31 closed, across six countries, with Norway's entire set in that bucket.",
+ "countries": [
+  {
+   "cc": "ES",
+   "n": 181,
+   "d": 102,
+   "e": 99,
+   "k": 180,
+   "a": 93,
+   "rt": 6,
+   "mute": 0
+  },
+  {
+   "cc": "FR",
+   "n": 130,
+   "d": 112,
+   "e": 102,
+   "k": 117,
+   "a": 128,
+   "rt": 4,
+   "mute": 1
+  },
+  {
+   "cc": "DE",
+   "n": 119,
+   "d": 106,
+   "e": 97,
+   "k": 117,
+   "a": 116,
+   "rt": 0,
+   "mute": 2
+  },
+  {
+   "cc": "IT",
+   "n": 86,
+   "d": 73,
+   "e": 62,
+   "k": 86,
+   "a": 85,
+   "rt": 1,
+   "mute": 0
+  },
+  {
+   "cc": "NO",
+   "n": 74,
+   "d": 18,
+   "e": 19,
+   "k": 17,
+   "a": 47,
+   "rt": 72,
+   "mute": 47
+  },
+  {
+   "cc": "SE",
+   "n": 61,
+   "d": 58,
+   "e": 59,
+   "k": 54,
+   "a": 60,
+   "rt": 1,
+   "mute": 1
+  },
+  {
+   "cc": "EU",
+   "n": 58,
+   "d": 40,
+   "e": 44,
+   "k": 56,
+   "a": 43,
+   "rt": 57,
+   "mute": 1
+  },
+  {
+   "cc": "EE",
+   "n": 57,
+   "d": 47,
+   "e": 55,
+   "k": 13,
+   "a": 44,
+   "rt": 46,
+   "mute": 1
+  },
+  {
+   "cc": "CZ",
+   "n": 51,
+   "d": 35,
+   "e": 35,
+   "k": 36,
+   "a": 48,
+   "rt": 15,
+   "mute": 10
+  },
+  {
+   "cc": "LV",
+   "n": 32,
+   "d": 7,
+   "e": 17,
+   "k": 18,
+   "a": 28,
+   "rt": 25,
+   "mute": 14
+  },
+  {
+   "cc": "NL",
+   "n": 30,
+   "d": 27,
+   "e": 28,
+   "k": 30,
+   "a": 28,
+   "rt": 2,
+   "mute": 0
+  },
+  {
+   "cc": "AT",
+   "n": 27,
+   "d": 22,
+   "e": 22,
+   "k": 27,
+   "a": 27,
+   "rt": 0,
+   "mute": 0
+  },
+  {
+   "cc": "BE",
+   "n": 20,
+   "d": 11,
+   "e": 7,
+   "k": 20,
+   "a": 20,
+   "rt": 0,
+   "mute": 0
+  },
+  {
+   "cc": "IE",
+   "n": 16,
+   "d": 4,
+   "e": 5,
+   "k": 14,
+   "a": 10,
+   "rt": 4,
+   "mute": 2
+  },
+  {
+   "cc": "FI",
+   "n": 16,
+   "d": 6,
+   "e": 8,
+   "k": 15,
+   "a": 14,
+   "rt": 2,
+   "mute": 1
+  },
+  {
+   "cc": "GR",
+   "n": 13,
+   "d": 2,
+   "e": 2,
+   "k": 13,
+   "a": 13,
+   "rt": 0,
+   "mute": 0
+  },
+  {
+   "cc": "SK",
+   "n": 11,
+   "d": 2,
+   "e": 1,
+   "k": 11,
+   "a": 11,
+   "rt": 0,
+   "mute": 0
+  },
+  {
+   "cc": "DK",
+   "n": 8,
+   "d": 4,
+   "e": 8,
+   "k": 3,
+   "a": 7,
+   "rt": 4,
+   "mute": 0
+  },
+  {
+   "cc": "PT",
+   "n": 8,
+   "d": 1,
+   "e": 2,
+   "k": 8,
+   "a": 8,
+   "rt": 1,
+   "mute": 0
+  },
+  {
+   "cc": "PL",
+   "n": 8,
+   "d": 7,
+   "e": 6,
+   "k": 8,
+   "a": 6,
+   "rt": 1,
+   "mute": 0
+  },
+  {
+   "cc": "HU",
+   "n": 6,
+   "d": 5,
+   "e": 2,
+   "k": 6,
+   "a": 6,
+   "rt": 0,
+   "mute": 0
+  },
+  {
+   "cc": "LU",
+   "n": 5,
+   "d": 5,
+   "e": 5,
+   "k": 5,
+   "a": 5,
+   "rt": 0,
+   "mute": 0
+  },
+  {
+   "cc": "GB",
+   "n": 3,
+   "d": 3,
+   "e": 2,
+   "k": 3,
+   "a": 3,
+   "rt": 1,
+   "mute": 0
+  },
+  {
+   "cc": "LT",
+   "n": 1,
+   "d": 0,
+   "e": 0,
+   "k": 1,
+   "a": 1,
+   "rt": 0,
+   "mute": 0
+  }
+ ]
+}

@@ -1,0 +1,60 @@
+
+================================================================================================
+tune  N=250   base EXACT@5 26.4%   CEILING OF ANY QUESTION WHATEVER 96.4%  <- the won leaf is not in the pool for the rest
+================================================================================================
+  question                  tier   present   PARTITION (shippable)   FILTER (blocks)   gain concentration
+  TOPIC 8 options             1      100%           40.4% (+14.0)         40.4% (+14.0)   20 regime(s), max 14%
+  TOPIC 16 options            1      100%           48.4% (+22.0)         48.4% (+22.0)   29 regime(s), max 22%
+  TOPIC 24 options            1      100%           51.6% (+25.2)         51.6% (+25.2)   27 regime(s), max 19%
+  TOPIC 16x4 nested           1      100%           68.8% (+42.4)         68.8% (+42.4)   35 regime(s), max 16%
+  WINDOW closing date         2       27%           40.4% (+14.0)         40.4% (+14.0)   12 regime(s), max 26%
+  WINDOW quarter needed       1       27%           40.4% (+14.0)         40.4% (+14.0)   12 regime(s), max 26%
+  WINDOW source policy        2      100%           28.4% (+2.0)         28.4% (+2.0)   3 regime(s), max 40%
+  MONEY capital type          1      100%           34.0% (+7.6)         34.0% (+7.6)   12 regime(s), max 26%
+  MONEY award magnitude       1       98%           46.4% (+20.0)         46.4% (+20.0)   27 regime(s), max 14%
+  MONEY co-financing band     2        0%           26.4% (+0.0)         26.4% (+0.0)   -
+  SHAPE framework flag        -      100%           26.4% (+0.0)         26.4% (+0.0)   -
+  BODY administering body     -       58%           47.6% (+21.2)         47.6% (+21.2)   18 regime(s), max 19%
+  CONTROL perfect programme   -      100%           53.2% (+26.8)         53.2% (+26.8)   50 regime(s), max 6%
+  CONTROL perfect leaf        -      100%           96.4% (+70.0)         96.4% (+70.0)   51 regime(s), max 18%
+
+  identity holds: a perfect leaf answer scores exactly the pool ceiling (241/250)
+  award magnitude, split by how many awards set the median (the answer key's award is one of them):
+    award_n < 20  CIRCULAR   n=  15  base 13.3%  ->  40.0%  (+26.7)
+    award_n >= 20 clean      n= 235  base 27.2%  ->  46.8%  (+19.6)
+
+  THE DESIGNED SET, added one at a time (PARTITION, perfect answers throughout)
+    +TOPIC 16 options           48.4%   marginal +22.0   cumulative +22.0
+    +MONEY award magnitude      68.4%   marginal +20.0   cumulative +42.0
+    +WINDOW quarter needed      76.4%   marginal +8.0   cumulative +50.0
+    +MONEY capital type         79.6%   marginal +3.2   cumulative +53.2
+
+================================================================================================
+holdout  N=250   base EXACT@5 24.0%   CEILING OF ANY QUESTION WHATEVER 91.6%  <- the won leaf is not in the pool for the rest
+================================================================================================
+  question                  tier   present   PARTITION (shippable)   FILTER (blocks)   gain concentration
+  TOPIC 8 options             1      100%           42.4% (+18.4)         42.4% (+18.4)   23 regime(s), max 20%
+  TOPIC 16 options            1      100%           48.4% (+24.4)         48.4% (+24.4)   28 regime(s), max 20%
+  TOPIC 24 options            1      100%           51.6% (+27.6)         51.6% (+27.6)   31 regime(s), max 20%
+  TOPIC 16x4 nested           1      100%           64.0% (+40.0)         64.0% (+40.0)   40 regime(s), max 26%
+  WINDOW closing date         2       30%           38.8% (+14.8)         38.8% (+14.8)   10 regime(s), max 35%
+  WINDOW quarter needed       1       30%           38.8% (+14.8)         38.8% (+14.8)   10 regime(s), max 35%
+  WINDOW source policy        2      100%           28.4% (+4.4)         28.4% (+4.4)   5 regime(s), max 36%
+  MONEY capital type          1      100%           32.8% (+8.8)         32.8% (+8.8)   10 regime(s), max 23%
+  MONEY award magnitude       1       97%           45.6% (+21.6)         45.6% (+21.6)   31 regime(s), max 17%
+  MONEY co-financing band     2        2%           26.0% (+2.0)         26.0% (+2.0)   4 regime(s), max 40%
+  SHAPE framework flag        -      100%           24.0% (+0.0)         24.0% (+0.0)   -
+  BODY administering body     -       56%           47.6% (+23.6)         47.6% (+23.6)   15 regime(s), max 29%
+  CONTROL perfect programme   -      100%           52.4% (+28.4)         52.4% (+28.4)   50 regime(s), max 7%
+  CONTROL perfect leaf        -      100%           91.6% (+67.6)         91.6% (+67.6)   50 regime(s), max 20%
+
+  identity holds: a perfect leaf answer scores exactly the pool ceiling (229/250)
+  award magnitude, split by how many awards set the median (the answer key's award is one of them):
+    award_n < 20  CIRCULAR   n=  20  base 5.0%  ->  25.0%  (+20.0)
+    award_n >= 20 clean      n= 230  base 25.7%  ->  47.4%  (+21.7)
+
+  THE DESIGNED SET, added one at a time (PARTITION, perfect answers throughout)
+    +TOPIC 16 options           48.4%   marginal +24.4   cumulative +24.4
+    +MONEY award magnitude      62.4%   marginal +14.0   cumulative +38.4
+    +WINDOW quarter needed      70.4%   marginal +8.0   cumulative +46.4
+    +MONEY capital type         73.2%   marginal +2.8   cumulative +49.2
