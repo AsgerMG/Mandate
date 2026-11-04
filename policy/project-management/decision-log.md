@@ -1,0 +1,966 @@
+# Decision Log
+
+Chronological record of scoping and architecture decisions. Newest at the top.
+Each entry: what was decided, the options considered, and why.
+
+---
+
+## 2026-08-07 — Full audit: the weekly refresh has never once completed
+
+**Decision:** Run a full audit of the live system against its own documentation,
+correct every doc the audit proved wrong, and fix the defects in code separately.
+This entry records what was found. Docs corrected in the same pass: `DEPLOYMENT.md`
+(the verification runbook and the missing `refresh-cron` service), `README.md`
+(two overstated guarantees), `backlog.md` (a false premise plus four stale
+figures), `weekly-audit-pending.md`, `.env.example`.
+
+**Options considered:** fix code first and document after (rejected — the docs
+were actively misleading a debugger *today*, and three of the findings were only
+visible because someone read the docs and the system side by side); file the
+findings as backlog items only (rejected — a wrong runbook is worse than no
+runbook, and two of these would have sent someone debugging a live incident in
+the wrong direction).
+
+**Why it matters that this was found by hand:** every check the project already
+had was green.
+
+### The headline
+
+**`regina refresh` has never completed successfully in production.**
+`GET /api/refresh` reads
+`{"running":false,"last_result":null,"last_finished":"2026-08-02T06:45:12+00:00"}` —
+a `last_finished` with a `null` `last_result` means the run reached the `finally`
+block without ever reaching the last line of the `try`.
+
+The mechanism: `classify_pending` selects documents with no policy areas, and the
+tool schema it uses declared an `enum` **without `"strict": true`**. Without
+`strict` the enum is advisory — the model may return an out-of-vocabulary slug,
+`parse_classify_response` drops it, the document ends up with zero policy areas,
+and it re-matches the `~policy_areas.any()` filter on the very next iteration.
+On document **id=4437** ("War and Grease") the model returned `energy`, which is
+not in `POLICY_AREAS`, and the loop re-attempted that one document **~3,197 times
+over 45 minutes on 2026-08-02** until Anthropic returned 403 and the run died
+mid-enrichment. One unclassifiable newsletter took down the entire ETL.
+
+### Everything else the audit found
+
+1. **46 of 102 sources ran clean and ingested nothing** on the 2026-08-02 cron —
+   `errors: 0` every one. Cursor starvation, as `pipeline._since` has described
+   for weeks. The shape of the data says how long it has been happening: of those
+   46, **28 last ingested on a date somebody ran a backfill by hand** (07-03: 9
+   sources, 07-17: 8, 07-22: 6, 07-13: 3, plus 07-06 and 07-27), **16 last
+   ingested on 2026-07-26** — the *previous* cron, so they have now missed a full
+   cycle — and **2 have never ingested anything at all** (`t` and `adlc_avis`,
+   both `sources` rows with no adapter class behind them). Nearly half the
+   corpus's inputs are stranded, and every one of them reports success.
+2. **Binding legislation has stopped arriving.** The 2026-08-02 cron ingested 429
+   documents and **not one** REGULATION, DIRECTIVE or DECISION — it was 159 PRESS,
+   158 OTHER, 106 OEIL proposals (all from `oeil`), 6 assorted. Worse when you
+   trace it to the source: **`eurlex` has contributed no act since 2026-07-13 and
+   `eurlex_key_acts` none since 2026-07-17**, both hand-run dates. The only acts
+   to arrive since are 1 French competition decision and 2 Ombudsman decisions on
+   07-26. A regulatory-intelligence corpus whose automated path collects news and
+   procedure files but no legislation is failing at the one thing it is for.
+   *(The original audit note put this as "8 acts in 30 days, EUR-Lex contributing
+   one"; that figure could not be reproduced under any denominator tried —
+   `created_at` gives 250 acts in 30 days, `date_document` gives 0 — so it is not
+   relied on here. The per-source statement above is the reproducible one.)*
+3. **23 documents carry their CELEX in the title and `NULL` in the column.** Every
+   document in `eurlex_oj_l` (15) and `eurlex_ep_council_legislation` (8) is typed
+   `OTHER` with `celex IS NULL`, while **21 of the 23 have a title that literally
+   begins `CELEX:32026...`**. The identifier is sitting in the string; nothing
+   parses it out. Those two feeds are therefore invisible to every CELEX-keyed
+   pass — dating, lifecycle, deduplication.
+4. **16 canon acts are stored twice, byte-identical.** AI Act, DSA, GDPR, DMA,
+   NIS2, CRA, Cybersecurity Act, Gigabit Infrastructure Act, EECC, the Digital
+   Omnibus, CADA and others each exist once from `eurlex` and once from
+   `eurlex_key_acts` with the same current-version `content_hash`. **3,290
+   redundant passages, all 3,290 embedded** and indexed. Identical text yields an
+   identical vector, so the two copies necessarily score identically against any
+   query and land at adjacent ranks — the brief spends two of its slots on one
+   instrument, and no diversity heuristic that works on document ids can tell.
+5. **`OVERLAP_CHARS = 200` has never overlapped anything.** The next chunk's start
+   was computed as `max(cur_end - overlap, start)` where `start` is the *next*
+   span's start — always ≥ `cur_end`, so `max()` always picked `start` and the
+   overlap was dead code. Verified across the whole corpus: of 105,342 passage
+   boundaries, 86,594 have a 2-character gap and 18,746 have a 0-character gap.
+   **Not one passage in 112,588 overlaps its neighbour.** A sentence straddling a
+   boundary is whole in neither.
+6. **The cron does not enrich, and never has** — see backlog.md. Types, actors,
+   lifecycle and summaries run only from the CLI. 60.6% of documents sit at
+   `lifecycle_stage = UNKNOWN`, and that is the dashboard's primary axis.
+7. **The weekly audit routine has never been read** (see
+   `weekly-audit-pending.md`), and reads a field that goes stale on failure.
+
+### The pattern, which is the actual lesson
+
+**Every one of these is a silent failure that reported success.** Not one
+produced an error anywhere:
+
+- the **cron goes green** because `curl -fsS -X POST /api/refresh` returns
+  `{"started":true}` immediately — the refresh is a background task, so
+  `curl-exit=0` means "request accepted", never "refresh succeeded";
+- **starved sources report `discovered: N, errors: 0`** — a source stranded on a
+  three-week-old cursor is indistinguishable from a source with nothing new;
+- **the depth metrics cannot see the duplicates** — `documents_per_passage` and
+  `substantive_documents_per_passage` both count *documents*, and two
+  byte-identical copies of the AI Act are two documents, so a brief whose real
+  breadth has halved scores exactly like one whose breadth is intact;
+- **the test suite is green** because it tests `enrich_corpus` — which production
+  does not call;
+- **the register renders `0 live`** for a blocked API exactly as it would for a
+  quiet week.
+
+This is the same lesson as 2026-07-30 ("a path that is never exercised end to end
+is not tested"), reached from several new directions at once. The generalisation:
+this system's failure mode is not crashing, it is **reporting success**. Every
+check it has answers "did the call return?" and none answers "did the work
+happen?".
+
+**And a habit worth naming, because it is ours.** The recurring response to a
+discovered defect here has been *documentation plus a manual recovery command*
+rather than a code-level guard. `pipeline._since` is the cleanest example: a
+**23-line docstring** that names the cursor trap precisely, reproduces it live
+("`regina run eurlex_case_law --limit 200` … the very next unlimited run
+discovered 0"), lists the sources it has already damaged, and prescribes the
+recovery — above a **four-line body that does nothing to prevent any of it**.
+The prose was right, was read, and was useless: the same mechanism then stranded
+46 sources. Worse, the docstring promised `full=True` would "ignore the cursor"
+when the code only ever overrode the date, so `regina run <key> --full` was a
+silent no-op for `oeil`, `an_verbatim`, `de_verbatim`, `ep_verbatim` and the
+newsletter adapters — the documented recovery for cursor starvation could not
+recover from cursor starvation.
+
+**Standing rule from this audit:** when a defect is understood well enough to
+write a paragraph about it, that is the moment to write the guard, not the
+paragraph. If a guard genuinely cannot be written, the doc must say *that* — an
+explanation with no enforcement behind it should be labelled as such, because
+otherwise it reads as a solved problem.
+
+**Deliberately not done in this pass:** no Railway or Vercel configuration was
+touched, and no code was changed. Four items are left as open, dated entries
+where they belong rather than fixed silently — `regina-intel.vercel.app` missing
+from `CORS_ALLOW_ORIGINS` (`DEPLOYMENT.md`), the placeholder
+`contact: you@example.com` in production's `HTTP_USER_AGENT` (`.env.example`,
+`DEPLOYMENT.md`), the leftover `TEST_PING=hello123` on the `Regina` service
+(`DEPLOYMENT.md`), and the `t` test-fixture source still enabled in the
+production registry (`backlog.md`).
+
+**One thing that could not be corrected from here:** the local, gitignored `.env`
+still carries a comment claiming "Local fastembed model (BAAI/bge-small-en-v1.5,
+384-dim) is the only embedder actually implemented right now — leave these
+commented out … a hosted Voyage embedder is on the backlog". That has been false
+since 2026-07-21: `VoyageEmbedder` exists, and **every stored vector is Voyage
+1024-dim**. `.env.example` already says so correctly. Anyone reading their own
+`.env` for guidance should update that block by hand — it advises the exact
+opposite of what production does.
+
+---
+
+## 2026-07-30 — The wait becomes a designed surface, and `/api/brief` turns out to have been broken
+
+**Decision:** With ~3 minutes accepted as fixed, the brief now streams its text,
+names the instruments it is reading, estimates its own remaining time from
+measured output rate, and carries progress in the tab title and favicon. Full
+design and rationale: [brief-ux-plan.md](brief-ux-plan.md).
+
+**The governing constraint, stated by the user:** *adaptive, not preset.* Applied
+literally, which required measuring where adaptivity is even possible. Nothing
+available at retrieval time predicts a run's size (facets +0.15, passages −0.25,
+context chars −0.19), so the estimate deliberately does **not** "refine" when
+retrieval completes — the obvious place to show intelligence, and it would be
+theatre. Adaptation begins with the first streamed characters, where latency
+correlates with output at r=+1.00.
+
+**It also reversed an earlier decision.** `ProgressRail.tsx` rendered a preset
+9-step backbone including scoping groups a given company would never be asked.
+The original argument was stability over per-run precision; the conclusion was
+wrong, because a step shown, never done, then silently marked complete teaches the
+user the rail is decorative — and the ETA borrows its credibility. The list is now
+computed from real per-run data, which was available before the wizard rendered
+all along.
+
+**What building it found — none of it by review:**
+
+1. **`/api/brief` had been failing for every real brief.** `passages=len(...)`
+   collided with the same key inside `**retrieval_stats`, raising *after* the full
+   generation was paid for. Pre-existing at `HEAD`. Invisible to the test suite and
+   to `brief-check`, because neither imports `api.py` — the CLI looked healthy
+   while the product was broken. The lesson is the one this project keeps
+   relearning: a path that is never exercised end to end is not tested.
+2. **My ETA was calibrated 5× too high** — visible text is only ~19% of
+   `output_tokens × 4`, since tokens include thinking and both passes.
+3. **The ETA rose**, breaking the plan's own rule, until clamped monotonically.
+4. **A transient 529 lost a whole brief.** The retry policy for exactly that
+   failure existed only on the eval path (`cost.py`); production streamed with
+   none. Now retried, but only while no text has been forwarded — after that a
+   retry would contradict what the user already read.
+
+**Deferred, with a trip-wire:** `BriefJob` persistence (see the plan's Phase D).
+Backgrounding a tab is already safe; only closing it loses work, so the copy says
+"switch tabs", not "leave". A ~5-line `brief_abandoned` counter ships instead,
+because without it "revisit if abandonment is a problem" is a condition we are
+structurally blind to.
+
+**The dead zone, closed properly on the second attempt.** The first pass shipped a
+*label* for the ~90–100s before any report text exists and recorded the real fix as
+not done. That was settling too early. Adaptive thinking defaults to
+`display: "omitted"` — empty thinking blocks, and the documented consequence is
+that it "looks like a long pause before output". Setting `display: "summarized"`
+streams the model's own reasoning, at identical cost (display controls visibility,
+not whether thinking happens). First content on screen moved from **~90–100s to
+~20s**, and the remaining 20s is covered by the reading list. Streaming real
+reasoning rather than invented progress narration is the same line the brief prompt
+already draws about stakeholders: real signal or none.
+
+## 2026-07-29 — Haiku vs Sonnet, measured: keep Sonnet, and treat 3 minutes as a fixed constraint
+
+**Decision:** The brief stays on `claude-sonnet-5`. The ~3-minute generation time
+is now accepted as a property of the product, and the effort moves to the UX of
+waiting — see [brief-ux-plan.md](brief-ux-plan.md).
+
+**The measurement** (10 profiles, same frozen corpus, judged by the pinned Sonnet
+judge; `exports/ab-baseline-sonnet.json`, `exports/ab-challenger-haiku.json`):
+
+| | Sonnet 5 | Haiku 4.5 |
+|---|---|---|
+| Cost / brief | $0.720 | **$0.218 (−70%)** |
+| Latency median | **184s** | 245s (+33%) |
+| Latency mean / worst | 228s / 558s | 242s / **284s** |
+| Judged overall | **3.93** | 3.43 (−0.50) |
+| Unresolved canon acts | **0** | **30**, in 6 of 10 profiles |
+
+Every judged dimension fell; the two worst were `citation_quality` (−0.90) and
+`stakeholder_specificity` (−0.80) — precisely the two the product sells. Nine of
+ten profiles scored lower.
+
+**Why the premise failed.** The test was motivated by latency, and Haiku is
+*slower* here: 86.9 tok/s versus Sonnet's 93.7, while also generating more tokens.
+A double penalty, which also disposes of the obvious confound — the slowdown is not
+an artifact of the `budget_tokens: 4000` I chose as the pre-4.6 translation of
+`effort: "medium"`, because the per-token rate is worse independent of volume.
+Haiku's one real advantage is a shorter tail (284s worst vs 558s), because Sonnet's
+tail comes from correction rounds Haiku happened to trigger less often on that
+profile.
+
+**The strongest evidence needed no judge.** 30 foundational acts left in neither
+the compliance table nor the out-of-scope appendix, *after* the correction loop had
+run, versus zero for Sonnet. That is the deterministic canon check — no model
+opinion involved — and it is the finding I would keep if I could keep only one.
+
+**Where the latency lever actually is.** 96% of a brief is model time, and the tail
+is entirely the correction loop: eight profiles ran two calls in 138–234s; one ran
+five calls, 53,901 output tokens, 558s, $1.57. Reducing how often the canon check
+fires would cut cost *and* worst-case latency without touching the model — a better
+lever than the swap was.
+
+**Two measurement bugs this surfaced**, both of the "silently wrong" kind:
+1. The judge's `max_tokens` was sized for a 5-profile panel. On the first
+   10-profile run its structured output truncated mid-string and surfaced as
+   `JSONDecodeError: Unterminated string` far from the cause. Now scales with panel
+   size and checks `stop_reason` to name the real problem.
+2. The judge's `canon_issues` dimension was **structurally always 0**: it
+   recomputes from `result["passages"]`, which reports don't store, so it read
+   "clean" because the evidence was absent rather than because the briefs were.
+   The history table showed 0.0 for a run with 30 failures recorded three fields
+   away. It now reads generation-time `canon_notes`.
+
+**Also built:** `regina brief-check --history`, a dated ledger derived from the
+report files themselves (not a second store that could disagree with them), and
+per-run absolute scoring via `judge_report` — one batched call, so quality can be
+a trend and not only a pairwise delta.
+
+## 2026-07-29 — The model choice becomes a parameter, and the judge stops being one
+
+**Decision:** Which model writes a brief is now a config value that can be
+swapped safely (`llm_model`, or `brief-check --model` for one run), and which
+model *judges* one is a separate, pinned value (`eval_model`). Cost, latency, and
+the served model are recorded per brief and reported per side by `brief-compare`.
+
+**Why:** Haiku 4.5 is a third of Sonnet 5's list price and the fastest model
+available, and a brief is output-bound (2–3 sequential calls, 12–21K output
+tokens), so it is exactly the workload a faster model improves. Deciding whether
+it is good enough needs a measurement, and the harness could not produce a
+trustworthy one.
+
+**Four things were wrong, two of them silently:**
+
+1. All three brief call sites sent `thinking: {"type": "adaptive"}` and
+   `output_config.effort` — 4.6-generation parameters that Haiku 4.5 rejects. A
+   model swap was three 400s. `reasoning_params(effort)` now owns the translation,
+   so call sites keep saying "medium" and "low" and the shape follows the model.
+2. `cost.py` priced everything at Sonnet's rates behind a comment saying to
+   revisit if the model changed. It was about to: every Haiku call would have been
+   reported at 3× its real cost, corrupting exactly the comparison being run.
+3. Nothing measured wall clock — the primary reason to want a faster model.
+4. **The judge read `llm_model`.** Testing a cheaper model would have swapped the
+   measuring instrument along with the subject, making the result incomparable
+   with every score recorded before. Split to `eval_model`, default
+   `claude-sonnet-5`.
+
+**Rejected:** tuning the prompt for Haiku in the same run. The prompt was tuned on
+Sonnet and an older model generally needs more prescriptive instruction, but
+changing prompt and model together attributes the result to neither. That is a
+second round, and `brief-improve` already searches for prompt candidates.
+
+**Measured while building, at no cost:** `brief-check --dry-run --repeat 3`
+reports retrieval's run-to-run spread. Relevance is stable (`score_median`
+±0.007); composition is not (`passages` ±5 of ~110, `context_chars` ±5,521). So
+`brief-compare`'s ±0.3 noise floor was never just judge variance — the input
+itself differs between identical runs.
+
+**A bug the measurement found, and the lesson:** the first variance numbers showed
+run 1 consistently higher, monotonically — not noise's shape. `press_passages` sets
+`enable_indexscan = off` with `SET LOCAL`, which lasts for the **transaction**, so
+repeats sharing a session ran run 1 on HNSW and runs 2+ on full exact scans (1.03s
+vs 0.43s per query). Production is unaffected today only because that call happens
+to run last in `generate_briefing` — call ordering, not a guarantee. Both fixed:
+settings restored in a `finally`, one transaction per repeat. The lesson worth
+keeping: a measurement tool must be checked for its own harness's artifacts before
+its number is trusted, because this one erred toward "trust smaller deltas".
+
+## 2026-07-27 — Retrieval depth split, corpus legibility, case law, Alembic
+**Decision:** Six structural changes, in the order they were forced.
+
+1. **Breadth/depth retrieval split** (`etl/intelligence/briefing.py`,
+`etl/intelligence/profile.py`). `CompanyProfile.retrieval_queries()` decomposes a
+profile into obligation facets (AI, data-protection, sensitive-data, per-sector,
+consumer, platform, national, enforcement) retrieved separately; a depth pass
+(`document_passages()`) then re-retrieves *within* the instruments breadth
+nominated; canon acts not retrieved on merit enter as 350-char scope-check stubs;
+Voyage `rerank-2.5` cross-encoder over an over-fetched pool per facet; a 0.40
+cosine floor on the legal path.
+2. **`DocumentType` 9 → 17 members** and a rewritten CELEX classifier.
+3. **`documents.date_application`** plus Cellar date/lifecycle enrichment.
+4. **EU case law** (`eurlex_case_law`, CELEX sector 6) — 1,440 documents.
+5. **Alembic** owns schema changes; `init_db()` stays the fresh-install path.
+6. **Per-document enrichment** (`etl/enrichment/summarize.py`) — 874 instruments.
+
+**Why:** Briefs read as surface-level and the suspicion was that the brief path
+wasn't using pgvector. It was, correctly (76,478/76,478 passages embedded on
+voyage-4-large). The cause was retrieval *shape*: 66 passages across 65 distinct
+documents — one ~1,300-char window of each of 65 laws — with 55 of the 66 forced
+by the canon sweep, so 83% of context went to breadth nothing chose. A brief built
+on that can name instruments and explain none.
+
+**Options considered and rejected:**
+- *A legal-domain embedder (`voyage-law-2`).* Tested on a real 3-law/3-commentary
+  mix: it ranked commentary first exactly as `voyage-4-large` did, with less than
+  half the score separation (0.047 vs 0.105). The skew is a query-document
+  mismatch, not an embedder weakness. No re-embed.
+- *Replacing the EUR-Lex adapter with `eurlex-builder`* (MIT, v0.1.1). It owns its
+  own DuckDB/Parquet store, does corpus-by-date-range rather than topical
+  discovery, is days old with one author, and adopting it would discard earned
+  fixes (Cellar-over-WAF, `cellar_content_url()` percent-encoding, manifestation
+  negotiation). Kept as an offline structure supplier for Phase 4 instead.
+- *presscorner-builder's 130k press documents.* Reversed an earlier
+  recommendation once the corpus was measured at 77% press. Only the institutional
+  slice (Council/CJEU/Eurostat) has value; the volume does not.
+
+**What the work itself surfaced** (none of it predicted):
+- **`pipeline._since()` traps a bad first run.** Only a source's first run sees the
+  full `backfill_days` window; a truncated or crashed first run leaves the missed
+  history permanently unreachable while the source still looks healthy. Reproduced
+  deliberately: `--limit 200` then an unlimited run discovering 0. Fixed with
+  `--full` on `run`/`refresh` — recovery is now a supported operation rather than a
+  manual `last_run_at` edit, which is why it had recurred.
+- **Virtuoso requires typed literals.** Cellar does not match plain
+  `"32024R1689"` against the stored `"..."^^xsd:string`, and returns zero rows
+  rather than an error. `eurlex_key_acts._lookup_dates()` had this bug, so all 55
+  foundational acts sat undated. Fixed in code; **the re-run is still pending**.
+- **In force ≠ applicable.** `entry-into-force` is multi-valued (the AI Act carries
+  8 staged dates) and `end-of-validity` uses 9999-12-31 as a "no end" sentinel.
+  Hence `date_application` and `extra.application_stages`.
+- **CELEX descriptors are two characters in sectors 5 and 6.** Reading one left
+  staff working documents, institutional opinions and judgments all in `OTHER` —
+  which the depth quota sorts as *commentary*.
+- **Ingesting a source does not integrate it.** Case law changed retrieval by
+  nothing until an `enforcement` facet phrased the way rulings are phrased was
+  added: a ruling reads "Case C-123/24, X v Y" and has no resemblance to a company
+  profile.
+- **Authority ≠ relevance.** Judgments were first put in the binding depth tier,
+  then moved to their own small tier, then hard-capped at 6 passages — because
+  neither of the first two bound (a fintech profile still reached 32% case law,
+  since rulings arrive through every facet). User steer: only if super relevant.
+- **The depth metric couldn't detect depth collapse.** `documents_per_passage`
+  counts ~50 single-passage canon stubs, flooring it near 0.5 whatever retrieval
+  does. Replaced by `substantive_documents_per_passage` +
+  `max_passages_per_document`.
+
+**Measured result:** documents 4,781 → 6,366; passages embedded 76,478 → 108,885
+(100%); binding law + case law 135 (2.8%) → 1,548 (24%); press/newsletter share
+77% → 47%; `OTHER` 2,774 → 141; `date_in_force` 0 → 294 (regulations 96/98);
+REPEALED 1 → 55; `oeil` 3 → 148; substantive depth ratio 0.34-0.54 with up to 5-6
+passages per instrument; tests 263 → 322.
+
+**Also corrected, three claims of mine that were wrong:** the sector-tag "gap"
+(the classifier deliberately assigns zero sectors to horizontal law), the
+enrichment scope ("populate" implied a command existed; there was no generator),
+and a breadth-cap rationale citing a measurement that was a title-prefix
+collapse in a diagnostic script, not real.
+
+---
+
+## 2026-07-22 — 21 new press/newsletter sources for political-currency coverage
+**Decision:** Added 7 plain RSS `FeedSpec` entries and two new custom
+`SourceAdapter`s (14 concrete sources total) targeting the low
+`political_currency`/`stakeholder_specificity` eval dimensions with named-
+individual, live-contested-fight content: TechPolicy.Press, DG COMP news, DG
+GROW news, Politico's general RSS feed, Le Monde Politique/Europe,
+Handelsblatt Politik (Tier 1/2, `etl/adapters/feeds.py`); a Politico
+newsletter-archive adapter covering 9 EU-relevant newsletters (Brussels/
+Berlin/London Playbook, Playbook Paris, Sunday Crunch, EU Influence, London
+Influence, Forecast, Digital Bridge — `etl/adapters/politico_newsletters.py`);
+and an EU Commission DG newsletter-archive adapter covering 5 DGs (CNECT/DAE,
+COMP, GROW, Trade, JUST — `etl/adapters/ec_newsroom_newsletters.py`). All 21
+source keys added to `_PRESS_SOURCE_KEYS` in `etl/intelligence/briefing.py`.
+**Why:** Traced in the prior HNSW-fix entry — even with retrieval fixed,
+`political_currency`/`stakeholder_specificity` need a corpus that actually
+contains current political/stakeholder content, which the corpus was thin
+on. Politico and the EU DGs both publish full, unpaywalled newsletter issues
+as ordinary web pages with a stable archive URL — a pattern the initial
+RSS/API-only research pass missed entirely; user feedback ("check if you can
+access full newsletter issues... typically it is available") corrected the
+methodology mid-research and surfaced both clusters.
+**Verified live (2026-07-22), not assumed:**
+- Every Politico slug was individually spot-checked against the site's own
+  "SUBSCRIBE to the POLITICO newsletter family" footer list, not guessed —
+  two differ from the obvious slug (`politico-eu-influence`, not
+  `eu-influence`; `politico-london-influence`, not `london-influence`), and
+  "London Playbook PM" turned out to redirect into the plain `london-playbook`
+  archive rather than being a separate one.
+- DG GROW's feed URL from the original research (`node/2046/rss_en`) 404s;
+  the real News feed is `node/2/rss_en` — found via the site's own News page,
+  not assumed from the pattern of the other language-variant links.
+- Les Echos (both feeds) returned HTTP 403 under both our production
+  User-Agent and a generic browser one — genuinely bot-walled, not a UA
+  issue — dropped from this batch entirely (not added anywhere).
+- DG Trade has no plain RSS feed (`policy.trade.ec.europa.eu` 404s /
+  serves an empty SPA shell) — its newsletter-archive (Tier 3b) is its only
+  route into the corpus.
+- The subagent research tool's WebFetch reported politico.eu as unreachable
+  on every attempt; direct `curl` from Bash got HTTP 200 on every URL tried.
+  A tool-level fetch failure is not evidence a site is actually blocked —
+  worth re-testing with a different client before concluding infeasibility.
+- Both archive adapters' pagination was confirmed to terminate cleanly on a
+  genuinely empty page (zero issue rows), not a 404 or an error — safety-
+  capped at `MAX_PAGES = 60` per adapter run regardless.
+**Scope decisions:** Politico Pro (paid), Reuters (no EU/tech feed since
+2020), Table.Media/Tagesspiegel (site-wide bot wall blocking even their free
+verticals), and Handelsblatt/Pioneer's written newsletters (genuine content
+paywalls) all confirmed infeasible with a specific reason — no adapter work
+attempted for any of them.
+**Verification:** all 21 sources live-smoke-tested individually via
+`regina run <key> --limit 3` (zero errors, real dated documents landed); 14
+new automated tests added (`tests/test_politico_newsletters.py`,
+`tests/test_ec_newsroom_newsletters.py`); full suite green (207 passed).
+
+## 2026-07-21 — SYSTEM_PROMPT fixes from a manual review
+**Decision:** A close manual review of the full SYSTEM_PROMPT (not an
+automated eval finding) surfaced 7 substantive gaps plus 4 smaller items;
+all fixed and confirmed under the real production path (`sharpen=True`)
+against the pre-edit prompt: **+0.4 aggregate, zero dimension regressions,
+$5.91**.
+1. Injected today's date into the per-call instruction — `TRANSITIONAL
+   APPLICABILITY`'s "has the successor's application date arrived yet"
+   check had no anchor at all; the model's only fallback was its training
+   cutoff, always wrong (always too early) for every brief run after that
+   cutoff.
+2. `ACTION` bullets now name a concrete owned action when the sources
+   support one, not just verdict-and-reason — the eval panel itself
+   includes a 2-person pre-revenue company with no compliance function to
+   translate a diagnosis into a step itself.
+3. Added a `DIRECTIVE TRANSPOSITION` paragraph, distinct from the existing
+   predecessor/successor-timing rule: covers a Directive (e.g. NIS2, which
+   is in canon) whose retrieved text has no retrieved national
+   transposition act.
+4. Exempted accurately-reported statutory discretion ("the authority may
+   impose a fine...") from the blanket "may" hedge ban, which previously
+   forced a choice between breaking the rule or misreporting real legal
+   discretion as automatic.
+5. Resolved a real Monitor/Out-of-Scope collision: an instrument the
+   company is itself settled out of scope for can still carry a
+   Monitor+Prio-1 row tracking a named third party's dynamic under that
+   same instrument — both rows (the company's own Appendix row and the
+   third party's Compliance-table row) are now explicitly permitted
+   side by side, distinguished by Why/Trigger wording.
+6. Added a thin-footprint exception to the 700-1000 word target so a
+   genuinely small-footprint company isn't pushed to pad sentences to
+   hit the range.
+7. Four smaller items: a hard bold-verdict-cell rule, a defined
+   all-Out-of-Scope empty-table case, a recency-preference rule between
+   two conflicting same-type sources, and extending the officeholder-name
+   hedge to track-record/enforcement-posture claims.
+**Options considered:** routing this through the automated candidate-search
+loop instead of hand-editing — rejected for a 7-item bundle from a manual
+review (the loop is built to test one small AI-proposed edit at a time, not
+a bundle); confirmed directly under `sharpen=True` instead, skipping the
+cheap `sharpen=False` exploration pass since these weren't AI-discovered
+candidates needing a first cheap screen.
+**Why:** every item was checked against the actual code before being
+accepted as real (e.g. grepped for date-injection and confirmed it never
+existed) rather than taken on faith from the review. `political_currency`
+and `stakeholder_specificity` stayed flat rather than improving — expected,
+since none of these 7 fixes targeted them; they remain the next weak spot
+to address, per the diagnosis in the entry below.
+
+## 2026-07-21 — Brief-eval tooling: 7-dimension judge, structured reporting, uncapped budget
+**Decision:** Extended `regina brief-improve`'s judge from 3 to 7 scored
+dimensions (added `prioritization`, `political_currency`,
+`stakeholder_specificity`, `tone_and_structure`) — the prompt already asked
+for all of these, but nothing had ever measured whether it delivered them.
+Diagnosed the two weakest baseline dimensions as `political_currency` (2.4/5)
+and `stakeholder_specificity` (2.2/5). Also overhauled how a run's output is
+consumed, after finding it genuinely hard to work with:
+- `project-management/brief-improve-log.md` — a persistent, accumulating log
+  (mirrors this file's own "newest at top" convention) instead of one-off
+  files per run; every entry includes a dimension-by-dimension table (not
+  just the blended score), wall-clock timing per round, and a real
+  before/after text diff of the actual generated brief — for every round
+  that produced output, accepted or rejected, not only the winner, since the
+  automated accept/reject bar is a heuristic a human should be able to
+  check, not a verdict to trust blindly.
+- Budget is uncapped by default. A single run's cost is already bounded by
+  the fixed 5-profile panel and `--rounds`; a cap's only real effect, found
+  live, was stopping mid-confirmation and discarding already-completed,
+  already-paid-for work for no actual savings.
+- Fixed that discarding bug independent of cap size: confirmation now
+  preserves whichever side (baseline/candidate) actually finished, instead
+  of throwing away a fully successful side because the other one failed.
+- Added retry-on-transient-error (429/5xx, matching the policy already used
+  by `HttpClient`/`VoyageEmbedder`) to the Anthropic client wrapper — a live
+  `529 Overloaded` had crashed a whole $2+ run with nothing saved, because
+  this was the one network client in the codebase without retry logic.
+**Options considered:** for the output-diff granularity, diffing whole
+paragraphs vs. named Markdown sections — sections won, since four of the
+seven judge dimensions map almost 1:1 onto specific sections (`## Bottom
+line`, `## Compliance exposure`, `## Political landscape & strategic play`),
+making a section-scoped diff both shorter and self-explanatory.
+**Why:** found and fixed via direct use of the tool itself today — the
+7-dimension upgrade immediately surfaced two real, previously-invisible
+weaknesses; the reporting overhaul was a direct response to "I don't have
+any structured way of engaging with this stuff"; the budget/retry fixes
+were found live, mid-session, when a real run hit both failure modes.
+
+## 2026-07-21 — Embedding provider: local BGE-small → Voyage (voyage-4-large)
+**Decision:** Swapped the default embedder from local `BAAI/bge-small-en-v1.5`
+(384-dim, free, English-only) to hosted Voyage `voyage-4-large` (1024-dim,
+multilingual). Migrated the full corpus (55,797 current-version passages) —
+required a `pgvector` column-dimension migration and a full re-embed backfill
+on the live database.
+**Options considered:** OpenAI `text-embedding-3-large` — rejected in favor
+of Voyage: Voyage's own published cross-domain benchmarks (including law)
+beat OpenAI's equivalent, Voyage's 200M free-token tier covers this corpus's
+entire backfill at $0 (OpenAI has no free tier), and Anthropic's own docs
+recommend Voyage as their embeddings partner, keeping one fewer vendor
+relationship for a project already all-in on Claude for generation. Also
+considered `voyage-law-2` (domain-tuned for legal text) — rejected because
+its multilingual support is undocumented/likely absent, while the corpus's
+real gap is specifically the French/German press and verbatim-debate content,
+not the EU legal text (which is already retrieved in English by design).
+**Why:** the local model's English-only training was a real, live gap — this
+corpus has genuine French/German content (an_verbatim/de_verbatim, FR/DE
+press) that an English-only embedder cannot meaningfully cross-match against
+an English query. Live-verified before committing to the migration: the
+same English sentence and its French translation scored 0.69 cosine
+similarity under Voyage vs. an unrelated topic at 0.21-0.23 — confirming
+real cross-lingual retrieval, which the prior model could not do at all.
+Hit two real operational snags during the migration, both fixed: Voyage's
+free-trial tier caps at 3 RPM/10K TPM until a payment method is added, and a
+handful of legacy passages (chunked before a same-day chunking-size fix)
+blew past Voyage's 120K-tokens-per-request cap, requiring token-aware
+sub-batching in `VoyageEmbedder` rather than fixed row-count batching.
+
+## 2026-07-21 — Retrieval-pipeline audit fixes + sector/policy-area classification
+**Decision:** A full audit of both retrieval pipelines (legal-text and
+press/political-narrative) surfaced eight operational/data-quality flaws;
+all fixed except three explicitly excluded at the time (embedding-model
+swap, jurisdiction expansion, new English-language press sources — each its
+own future initiative, not a retrieval-logic fix). The embedding-model
+exclusion was later revisited the same day — see the Voyage migration entry
+above.
+1. Removed the dead `techcrunch_eu` feed from `_PRESS_SOURCE_KEYS` (its own
+   `<lastBuildDate>` verified frozen since Feb 2026, server-side staleness).
+2. Added observability counters to `an_verbatim`'s `discover()` — no
+   confirmed bug, but closes a blind spot a live re-fetch had to resolve
+   manually.
+3. Fixed a cap→truncate breadth bug in `generate_briefing()`: capping
+   per-document crowding, then slicing to `k` by raw score, could silently
+   re-introduce the crowding the cap was built to prevent. New
+   `_select_breadth_first()` round-robins across documents instead.
+4. Added a hard ceiling (`MAX_CHARS`) + sentence-boundary sub-splitting to
+   `chunking.py` — an unbroken single paragraph (a run-on recital, an annex
+   with no blank lines) previously produced one unboundedly large chunk.
+5. Added a permanent regression test asserting every `_PRESS_SOURCE_KEYS`
+   entry maps to a registered adapter — catches the kind of drift #1 fixed.
+6. Added an optional `min_score` floor to `semantic_search()`/
+   `press_passages()` (deliberately not `canon_passages()` — canon acts
+   always get a guaranteed seat); wired a `0.3` floor into the press-
+   retrieval call only, where a weak match reads as narrative color, not
+   just an off-target citation.
+7. Fixed canon-act `date_document` gaps: `eurlex_key_acts.py`'s `discover()`
+   hardcoded `hint={"date": None, ...}` for all 55 curated acts (GDPR
+   included), bypassing the SPARQL-based date lookup the sibling `eurlex.py`
+   adapter uses. Added a batched `VALUES`-clause SPARQL query (one round
+   trip for the whole list) to populate real `work_date_document` values.
+8. Populated the previously-dead sector/policy-area tagging pipe:
+   `etl/pipeline.py`'s `_attach_vocab()` write-path already existed but was
+   never fed by any adapter. New `etl/enrichment/classification.py` —
+   `classify_pending()`, mirroring `embed_pending()`'s loop-while-untagged
+   pattern — uses a forced tool-call (`questions.py`'s pattern) on Haiku
+   4.5 to tag each untagged document against the small `POLICY_AREAS`/
+   `SECTORS` vocab from `data/seeds.py`. Wired into `regina refresh` and
+   `/api/refresh`, right after `embed_pending()`, gated on `has_api_key()`.
+**Options considered:** for #7, hand-backfilling the well-known publication
+dates (rejected in favor of the SPARQL fix — automatic and correct for all
+55 acts going forward, not just the ones checked today). For #8, Sonnet 5
+(the project default) instead of Haiku — rejected: simple category-picking,
+not legal reasoning, and cost matters at corpus scale (~$2 for a full
+~2,687-document backfill at Haiku's rates vs. several times that on Sonnet).
+**Why:** everything above was verified against real code and, where
+possible, live data (the dead feed was fetched live; `an_verbatim`'s parsing
+was confirmed structurally intact against a real sitting page) — this was a
+fix list grounded in evidence, not speculation, scoped explicitly to exclude
+anything requiring a new embedding-API decision or new data-source vetting.
+
+## 2026-07-20 — Brief self-improvement tool (`regina brief-improve`)
+**Decision:** Built an on-demand CLI tool (`etl/brief_eval/`) that tests
+candidate edits to `briefing.py`'s `SYSTEM_PROMPT` against a fixed 5-profile
+company panel, scores them (batched LLM judge + the existing deterministic
+canon check), and reports what helped — never applies anything automatically.
+Deliberately **not scheduled**: no Railway cron, no API endpoint, run
+manually whenever wanted. A hard `$` budget guard (`BudgetGuard`/
+`MeteredClient`) stops the run before exceeding its cap, and every run
+persists the full generated brief text (not just scores) to a JSON sidecar
+so nothing from a billed run is ever unverifiable after the fact.
+**Options considered:** a scheduled weekly Railway cron + HTTP endpoint
+exposing a prompt-override parameter (rejected — a network-reachable
+"override the system prompt" surface is a materially worse attack surface
+than a no-argument trigger like `/api/refresh`; the in-process
+monkeypatch-and-restore approach used instead needs no such endpoint at
+all). A broad diagnostic-sweep mode was also discussed as a complementary future
+mode — generate a much larger, diverse batch of briefs under the real
+production prompt, batch-judge them, then run one meta-analysis pass over
+just the critiques to surface systematic patterns rather than one-off
+findings — but not built today; the narrow hill-climbing loop shipped
+instead.
+**Why:** Real cost surprised us by ~10x on the first raw run ($6.01 for a
+partial baseline) — root causes found and fixed: no system-prompt caching
+across panel profiles within a round, and (once `sharpen=False` was adopted
+for cheap exploration) a wasted 1.25x cache-write premium on retrieved
+passages with zero matching reads. A separate real bug was found in the
+judge's own canon-issue penalty (`min(2.0, 0.5 * count)`, saturating
+instantly against real single-pass counts of 7-32) — masking whether any
+candidate fix actually helped; rescaled to `0.05 * count`.
+**Real finding from the tool**: four independent critique rounds, across
+two full runs, converged on the same defect — see the entry below.
+**Total spend across all test runs today: ~$29.75.**
+
+## 2026-07-20 — Fixed verdict/hinge-consistency bug + press retrieval gap
+**Decision:** Two related fixes to `briefing.py`, found via the tool above:
+1. **Verdict consistency** — a brief's Compliance table could commit a
+   definitive verdict (observed: AI Act high-risk/Annex III) while other
+   prose elsewhere in the same brief still treated that classification as
+   open/unresolved. New `SYSTEM_PROMPT` paragraph + new `REVISE_INSTRUCTION`
+   checklist item (9) VERDICT CONSISTENCY CHECK, with explicit remedy
+   ordering (fix the prose by default; only downgrade to Monitor if the
+   hinge genuinely was never established) to avoid a Monitor-as-hedge
+   escape valve. New regression tests lock in that ordering.
+2. **Press/political-narrative retrieval** — the corpus holds 701+
+   press/news documents, properly ingested and embedded, but retrieval
+   never surfaced a single one (0 of 40 slots across the test panel),
+   regardless of recency. Root cause: `semantic_search`/`canon_passages`
+   are deliberately relevance-ranked and recency-agnostic (correct for
+   legal text — GDPR from 2016 is as valid as anything new), but press
+   coverage needs the opposite: relevance *and* recency. Added a third
+   retrieval pass, `press_passages()`, filtered by a curated `Source.key`
+   allowlist (not `document_type` — confirmed unreliable: `heise_news`/
+   `golem_news` are typed `OTHER`, not `PRESS`) and a 90-day recency
+   window, merged into the same passage set via the existing
+   `_merge_passages()`/`_cap_per_document()` (both worked unchanged).
+   Includes parliamentary floor-debate transcripts (`ep_verbatim`/
+   `an_verbatim`/`de_verbatim`) in the same allowlist — same recency
+   concern, same "Political landscape" destination per the existing
+   `SYSTEM_PROMPT` paragraph.
+**Options considered:** a deterministic code-level check for the
+verdict-consistency bug, mirroring `_canon_issues()` (rejected — unlike
+instrument-name matching, a clean bounded string/number comparison,
+"does this prose contradict that table verdict" is an inherently semantic
+judgment with real false-positive risk from a keyword/regex approach, since
+the prompt already trains the model to use words like "unresolved" near
+instruments with genuinely-open Monitor hinges elsewhere in the same brief).
+**Why:** No prompt changes were needed for the press-retrieval fix —
+`SYSTEM_PROMPT` already told the model exactly how to treat Press sources
+("evidence of enforcement reality... never a substitute for the binding
+text"); the system was designed correctly, it just never retrieved the
+content that existed.
+**Related, not fixed today:** `etl/brief_eval/recency.py`'s own coverage
+metric was checking `Document.created_at` (DB row-insertion time) instead
+of `Document.date_document` (real-world publication date) — a one-time
+bulk reingest event (2026-07-13, ~1,300 docs in a single day) had polluted
+it, counting decades-old acts like GDPR as "recent." Fixed alongside this
+work since it's the same underlying investigation.
+**Also fixed same day, same method:** audited every `KEY_ACTS` canon act's
+short name against `TECH_KEYWORDS` (the vocabulary that filters broad
+institutional feeds) and added keywords for genuinely tech-policy-scoped
+gaps (Machinery Regulation, Data Governance Act, MiCA, critical
+infrastructure/entities, accessibility, health data space, and others) —
+see the dated comment in `etl/adapters/feeds.py` for the full list and the
+ones deliberately left uncovered (DORA's bare acronym — collision risk;
+Copyright DSM Directive — bare "copyright" too generic; several
+consumer/sustainability acts that are canon for tech-adjacent hinges but
+aren't tech-policy news topics).
+
+## 2026-07-20 — Weekly self-improving data loop + review workflow
+**Decision:** Two-part weekly loop: (1) a Railway cron service (`refresh-cron`)
+hits production `POST /api/refresh` every Sunday 05:00 UTC — no code involved,
+just the existing trigger on a schedule; (2) a Claude cloud routine ("Regina
+weekly data audit", Sunday 06:30 UTC) audits refresh health, lists what got
+newly embedded that week, and web-researches EU/DE/FR regulatory developments
+against the current corpus to flag coverage gaps. The routine is **report
+only**: no repo access, no commits, no autonomous changes to KEY_ACTS or
+adapters — findings get pasted into `weekly-audit-pending.md` for review in
+the next working session, and whatever we decide to act on gets its own dated
+entry here, after which the pending file is cleared.
+**Options considered:** auto-commit verified additions (rejected — a research
+agent auto-writing legal-citation data unreviewed is exactly the failure mode
+report-only exists to prevent); PR-per-week (rejected as unnecessary process
+for something this low-volume); Slack/email/Asana delivery (rejected — the
+user wants the artifact to live in the repo, reviewed together, not scattered
+across another tool).
+**Why:** Data-quality risk (a wrong CELEX number or mislabeled act flowing into
+citation-backed briefs) is the real risk here, not cost or infrastructure —
+so a human stays in the loop for anything that touches what the corpus
+contains, while the mechanical parts (refresh, research, drafting the report)
+are fully automated.
+**Caveat:** the routine has no GitHub App connection yet (private repo), so it
+audits from the public API plus a hardcoded coverage snapshot rather than
+live-reading `eurlex_key_acts.py` — connect the GitHub App to upgrade this.
+It also can't reliably push a notification from a detached cloud sandbox, so
+in practice the trigger for review is the next conversation, not a ping.
+
+## 2026-07-17 — Rebrand: EuroPolTracker → Regina
+**Decision:** Full end-to-end rename of the product to **Regina** (a backronym
+for **REG**ulatory **IN**telligence **A**nalyst): display name, site title and
+copy, PDF wordmark, FastAPI title, Python package (`europoltracker` →
+`regina`), CLI console script (`ept` → `regina`), HTTP user agent, local
+docker-compose Postgres names, docs, plus the external GitHub repo, Railway
+service, and Vercel project (with their generated domains).
+**Why:** "EuroPolTracker" reads as security/law-enforcement (Europol) — wrong
+associations for a regulatory-intelligence product. "Regina" matches the
+"analyst desk, run as software" positioning and the terminology shift to
+"regulatory intelligence" already made across the site.
+**Implementation notes:** the infra cutover is order-sensitive — the Railway
+generated domain is baked into Vercel's `NEXT_PUBLIC_API_URL` at build time,
+and the Vercel URL sits in Railway's `CORS_ALLOW_ORIGINS` (see DEPLOYMENT.md
+history for the incident this coupling caused). Old identifiers survive only
+in historical log entries, annotated with the rename. Python package
+directories (`data/`, `etl/`) are unchanged — no imports were renamed.
+
+## 2026-07-09 — Retrieval must filter on `DocumentVersion.is_current`
+**Decision:** `semantic_search()`, `canon_passages()`, and `embed_pending()`
+in `etl/enrichment/embeddings.py` now all filter/join on
+`DocumentVersion.is_current.is_(True)`.
+**Why:** Found live while testing whether the new verbatim-transcript
+sources actually improved briefing output: re-rendering `ep_verbatim` to fix
+an unrelated speaker-attribution bug created new `DocumentVersion` rows for
+58 of 73 documents (the pipeline's existing hash-based versioning working
+exactly as designed), but the *old* versions' passages — stale text,
+"Unknown speaker" bug and all — kept winning top-k slots right alongside the
+corrected ones. Retrieval had never filtered on version currency at all.
+**Why this matters beyond this session:** the bug is not specific to the
+verbatim adapters — it affects every document in the corpus that has ever
+been re-versioned (any amendment, correction, or re-fetch that changes
+content hash), which is the entire point `DocumentVersion.is_current`
+exists for. It was invisible until something forced a document through a
+second version and someone actually compared retrieval results before and
+after.
+**Implementation:** filter added to both retrieval queries and to
+`embed_pending()` itself (a superseded version's passages will never be
+retrievable, so embedding them going forward is pure waste). Two regression
+tests seed a document with an old and a current version, each scored to
+otherwise win on similarity, and prove the stale one never surfaces.
+
+## 2026-07-09 — Re-verify blockers by rendering the actual page, not the note
+**Decision:** Before building `de_verbatim.py`, re-checked the Bundestag DIP
+API's own help page live (headless-rendered, since it's a JS app) instead of
+trusting the existing backlog note that it "needs a registered key." Found an
+official public demo API key published directly on the page
+(`R2BZaee.DjdCyihKZMf8AOjtScubP2EVydegzjmBIQ`, valid through 2027-05) —
+distinct from a since-revoked community-maintained fallback key that WAS
+correctly confirmed dead the same session. No registration needed after all.
+**Why:** The earlier "needs a key" conclusion was reasonable given what was
+checked at the time (a dead fallback key, a JS-shell help page not rendered),
+but it was a conclusion about a *specific key*, not proof no usable key
+exists. A stale "confirmed blocked" note is exactly as risky as a stale
+"confirmed working" one — both should be re-checked live before being acted
+on, especially once new tooling (headless rendering, added this session for
+`ep_verbatim`) makes the re-check cheap.
+**Implementation impact:** `de_verbatim.py` uses the public key directly (no
+`.env` config needed) and turned out to be the easiest of the three verbatim
+adapters — real semantic XML, no bot wall, plain `httpx`. Also unblocks the
+separate, not-yet-built "Bundestag DIP procedure API for `bundestag_hib`"
+backlog item, which shares the same key.
+
+## 2026-07-09 — Headless-browser exception for EP plenary verbatim reports (CRE)
+**Decision:** Added `etl/adapters/ep_verbatim.py`, ingesting the actual text of
+European Parliament plenary debates — named speaker, role/political-group cue,
+full speech text, linked OEIL procedure reference — via headless Chromium
+(Playwright), the one adapter in the codebase that renders a real browser
+instead of a plain `httpx` request.
+**Why:** The stated goal was a much better read on live EU tech-policy
+conversations: who's actually saying what, not just which files exist. The
+EP's own verbatim-report pages (`doceo/document/CRE-*.html`) sit behind an AWS
+WAF JS challenge — confirmed live on every content type (HTML/PDF/XML), with
+full browser headers, with no Cellar-equivalent machine endpoint (checked and
+404s) and no working captions API either. Council of Europe PACE verbatim
+records were checked too and are blocked the same way by Cloudflare, with no
+open-data fallback (403 on every path tried) — not pursued further since PACE
+is also a different jurisdiction than this tracker's EU/FR/DE scope. This
+project has consistently accepted this class of block elsewhere (Council of
+the EU press, CJEU, EDPS — see source-map.md) rather than fight it. The
+difference here: a real headless browser demonstrably solves the EP's
+challenge (verified live — 614KB of correct, real page content back where
+`curl`/`httpx` get an empty 202), and the resulting content — named MEPs,
+rapporteurs, Commissioners, on record, on a specific dossier — was judged
+worth the one-time cost of a new heavy dependency.
+**Options considered:** (1) Stop at structural stakeholder metadata only (who
+attended/voted, no words) — rejected as insufficient once the browser route
+proved to work live; (2) roll-call vote data (`howtheyvote.eu`, MIT-licensed,
+itself scrapes the EP's RCV XML past this same wall) as a lighter-weight
+proxy for "who stands where" — a good complementary future source, not yet
+integrated, tracked in backlog.md; (3) headless-browser rendering — chosen.
+**Trade-offs accepted:** `playwright` + a ~260MB Chromium binary is now a real
+project dependency (`uv run playwright install chromium`, one-time, see
+README); each new plenary sitting day costs a several-second browser render
+(mitigated by a `processed_days` cursor entry so a day is only ever rendered
+once, never per-refresh). Relevance filtering judges title *and* the first
+few speakers' actual words, not title alone — a real gap found live (e.g.
+"The 28th Regime: a new legal framework for innovative companies" carries no
+literal tech keyword despite being a digital-economy debate).
+**Findings baked in:** discovery deliberately mirrors `oeil.py`'s hardcoded
+current+previous-year window rather than the generic 20-year `backfill_days`
+(rendering a decade of sittings on first run would be prohibitive); a
+day-processed cursor is necessary and separate from the item-level off-topic
+cursor, because `since` (which collapses to "today" after the first run)
+would otherwise silently stop discovering every past day forever — caught by
+running the adapter live twice, not just by unit tests.
+
+## 2026-06-26 — Strictly four top-level folders; web = FastAPI + Next.js
+**Decision:** The repo keeps exactly four architecture folders — **ETL, Data,
+Website, Project-management** — and every module maps into them. The Python
+backend (ingestion, enrichment, embeddings, the RAG **intelligence** layer, and
+the **API**) all live under `etl/` (`etl/intelligence/`, `etl/api.py`). `website/`
+is the Next.js front-end only; it talks to the API over HTTP (CORS-enabled),
+holding no business logic. Earlier top-level `intelligence/` and `api/` folders
+were folded back in to honor this.
+**Why:** The user fixed the four-folder structure ("all ops linked to these").
+Decoupling the Next.js client from the Python backend via HTTP (not imports)
+keeps the split clean and lets either side be deployed/replaced independently.
+**Implementation:** `regina serve` runs the API (`uvicorn etl.api:app`); the site
+is `cd website && npm run dev`. Verified end-to-end: site serves 200, API feeds
+real corpus data, briefing dry-run returns ranked sources.
+
+## 2026-06-26 — Intelligence layer uses Claude's native Citations feature
+**Decision:** The company-facing briefing is generated by Claude (`claude-opus-4-8`,
+adaptive thinking) with each retrieved passage passed as a **Citations-enabled
+`document` block**. Claude returns text whose cited spans carry a `citations`
+array (`cited_text` + `document_index`); we map the index back to the passage's
+provenance (CELEX, URL, char offsets). Lives in a new `intelligence/` package
+(the layer the methodology places between data and website).
+**Why:** This enforces grounding structurally — the model returns the exact
+source span for each claim, rather than us trusting a "please cite" instruction.
+Directly delivers the "very realistic, no hallucinated obligations" requirement.
+**Findings baked in:** built key-free — retrieval, request assembly, and citation
+parsing are pure/testable; `regina brief --dry-run` runs with no API key; the live
+run needs only `ANTHROPIC_API_KEY`. Verified retrieval end-to-end (a fintech/AI
+profile surfaces the AI Act/liability/ethics instruments).
+
+## 2026-06-26 — Local-first by default: storage and embeddings
+**Decision:** Default to fully local, zero-infra operation. (1) `DATABASE_URL=local`
+runs a **persistent** embedded Postgres+pgvector under `.localdb/` (no Docker,
+no accounts; survives restarts — verified across separate processes). (2) The
+default embedder is a **local** model (BGE `bge-small-en-v1.5` via fastembed,
+384-dim, no API key, runs offline). Both are pluggable: set `DATABASE_URL` to
+Neon for a shared corpus; set `embedding_model`/`embedding_dim` for a hosted
+embedder (Voyage/OpenAI).
+**Why:** The user wanted to "just store locally for now" and keep the system
+self-driving. Local-first removes all setup friction while preserving the exact
+same schema/capability — including citations — as the hosted path.
+**Findings baked in:** embedding dimension is config-driven (column rebuilt on
+change); HNSW cosine index added; `regina embed` + `regina search` verified on the
+live corpus (semantic discrimination confirmed). Citation capability is a
+property of the schema (full text + passage char-offsets + version + URL), so
+it is identical whether storage is local or hosted.
+
+## 2026-06-26 — EUR-Lex content via Cellar, not the eur-lex.europa.eu site
+**Decision:** Fetch document content from the Publications Office **Cellar**
+endpoint (`publications.europa.eu/resource/celex/{CELEX}`) using content
+negotiation with `Accept-Language: eng` and a prioritized Accept list
+(`text/html`, then `application/xhtml+xml`), taking the first that exists.
+**Why:** Verified against live endpoints during the foundation build — the
+human-facing `eur-lex.europa.eu/legal-content` host sits behind an **AWS WAF**
+that bot-challenges programmatic clients (first requests succeed, then a JS/
+CAPTCHA challenge page is returned instead of the document). Cellar is the
+official machine-access path and does not challenge.
+**Findings baked in:** (1) discovery via the SPARQL host works and is filtered
+to CELEX sectors 3 (legislation) + 5 (preparatory acts/proposals), dropping
+case-law/treaty title-matches; (2) manifestation availability varies by doc
+type, hence the Accept fallback; (3) PDF-only acts have no HTML manifestation
+and are skipped pending a PDF-text fallback (backlog); (4) HTTP retry now fires
+only on transient errors (network/429/5xx), never on 404.
+
+## 2026-06-26 — Fully automated, single-trigger data collection
+**Decision:** All corpus data is collected programmatically. A refresh is one
+trigger — `regina refresh` — that runs every registered source adapter end-to-end
+(discover → fetch → parse → version → chunk). No manual data entry, ever. The
+same orchestrator will later be exposed as an API endpoint and a scheduled job.
+**Why:** The product promise is current, trustworthy policy intelligence; that
+requires the corpus to refresh on demand and on a schedule without human steps.
+**Implementation:** `etl/adapters/__init__.py` registry + `etl/pipeline.py`
+orchestrator + `regina refresh` CLI. Adding a source = one subclass + one registry
+line; the trigger picks it up automatically.
+
+## 2026-06-26 — Repository structure mirrors the architecture
+**Decision:** Top-level folders map to architecture layers:
+`data/` (schema + config + session), `etl/` (adapters + pipeline + enrichment),
+`website/` (Next.js, later), `project-management/` (this folder).
+**Options:** conventional `backend/` + `frontend/` split (rejected — hides the
+pipeline/data/web separation that defines the system).
+**Why:** Makes the ETL → Data → Website flow legible from the directory tree.
+
+## 2026-06-26 — Intelligence layer = RAG with mandatory citations
+**Decision:** The company-facing answers are generated via retrieval-augmented
+generation where every claim links back to a specific passage of a specific
+document version.
+**Why:** The product must be "very realistic" — no hallucinated obligations.
+**Implementation impact (now):** schema chunks text into `passages` with char
+offsets + embeddings, and `enrichments.citations` records backing passage ids,
+even though the RAG/UI layer is a later milestone.
+
+## 2026-06-26 — Stack: Python ETL + Next.js web, Postgres + pgvector
+**Decision:** Python (ETL/enrichment/LLM orchestration), Next.js + React (web),
+Postgres + pgvector (storage + vector search). Toolchain: `uv` + Python 3.12.
+**Why:** Strongest data/LLM ecosystem in Python; React for composable UI; one DB
+for relational + vector avoids a separate vector store.
+**Env note:** No Docker/Homebrew/Postgres on the dev machine, so all DB access is
+via `DATABASE_URL` — runs identically on managed Postgres (Neon recommended) or
+local Docker.
+
+## 2026-06-26 — Coverage: EU first, then FR + DE
+**Decision:** MVP covers the EU level; France (Légifrance) and Germany
+(Bundesgesetzblatt/BMWK) follow once the EU pipeline is proven.
+**Why:** Cleanest structured data (CELEX/ELI, English-first), broadest reach.
+
+## 2026-06-26 — EU source set: full circle
+**Decision:** Ingest EUR-Lex (legal acts), OEIL (procedure/lifecycle), Have Your
+Say (consultations/forward signal), and Commission press (context). EUR-Lex is
+the reference adapter; the other three are scaffolded skeletons.
+**Why:** Together they cover the full lifecycle: what's coming → in procedure →
+adopted → in force, plus the narrative of what changed and why.
+
+## 2026-06-26 — First milestone: ETL + DB foundation
+**Decision:** Build robust ingestion + the canonical schema first; LLM/company
+UI comes after the corpus exists.
+**Why:** The moat is enrichment quality + freshness + grounded citations, which
+all depend on a well-modelled corpus.

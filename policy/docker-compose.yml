@@ -1,0 +1,21 @@
+# Optional local Postgres + pgvector for when Docker is available.
+# Not required if you point DATABASE_URL at a managed Postgres (e.g. Neon).
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: regina
+      POSTGRES_PASSWORD: regina
+      POSTGRES_DB: regina
+    ports:
+      - "5432:5432"
+    volumes:
+      - regina_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U regina -d regina"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  regina_pgdata:
