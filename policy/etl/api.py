@@ -262,6 +262,96 @@ def document_detail(doc_id: int) -> dict:
         }
 
 
+# ── THE ONE ANSWER THAT IS AN ACTION ────────────────────────────────────────
+#
+# Everything else this service returns is a reading: here is a rule, here is what
+# it means for you. A consultation with an open window is the one thing a company
+# can actually DO something about — it is where a startup with no lobbying budget
+# gets to be heard, and it expires.
+#
+# Every field below was already being stored and none of it was reachable.
+# `have_your_say` has written `date_end_validity` from the portal's own
+# `feedbackEndDate` since the adapter was written; `_doc_summary` returns `date`
+# and `date_in_force` and not that, so nothing in the system could sort
+# consultations by "closes soonest". This endpoint is a few dozen lines over data
+# that was already there.
+#
+# THREE HONEST LIMITS, returned in the payload rather than written in a docstring
+# nobody reads:
+#
+#   1. `as_of` — window state is only as fresh as the last discovery sweep, and
+#      that is a WEEKLY heartbeat. A short window can open and close between
+#      crawls. The caller is told when we last looked so it can say so.
+#   2. `closes_in_days` can be negative-adjacent: a window that closed since the
+#      last sweep still reads open here. We filter on today, which is the best we
+#      can do, and `as_of` is how a reader judges the risk.
+#   3. The body is thin by the adapter's own admission — the portal serves only a
+#      short title through its API, so `title` is reliable and excerpt is not.
+#      That is why this returns a link and a deadline rather than a summary.
+
+
+@app.get("/api/consultations")
+def consultations(
+    open_only: bool = Query(True, alias="open"),
+    jurisdiction: str | None = None,
+    closing_within_days: int | None = Query(None, ge=1, le=365),
+    limit: int = Query(50, le=200),
+) -> dict:
+    """Consultations a company could still respond to, soonest deadline first."""
+    today = dt.date.today()
+    with session_scope() as s:
+        stmt = (
+            select(Document)
+            .join(Source, Document.source_id == Source.id)
+            .where(Document.lifecycle_stage == LifecycleStage.CONSULTATION)
+        )
+        if open_only:
+            # A window with no recorded end date is NOT assumed open. Guessing
+            # would manufacture a deadline, and a wrong deadline on something a
+            # founder plans around is worse than omitting it.
+            stmt = stmt.where(Document.date_end_validity.is_not(None))
+            stmt = stmt.where(Document.date_end_validity >= today)
+        if jurisdiction:
+            stmt = stmt.where(Document.jurisdiction == Jurisdiction(jurisdiction))
+        if closing_within_days is not None:
+            stmt = stmt.where(
+                Document.date_end_validity
+                <= today + dt.timedelta(days=closing_within_days)
+            )
+        stmt = stmt.order_by(Document.date_end_validity.asc().nullslast()).limit(limit)
+        rows = list(s.scalars(stmt))
+
+        # When we last looked, which is what makes the list judgeable.
+        last_seen = s.scalar(
+            select(func.max(Document.updated_at)).where(
+                Document.lifecycle_stage == LifecycleStage.CONSULTATION
+            )
+        )
+
+        items = []
+        for d in rows:
+            end = d.date_end_validity
+            items.append(
+                {
+                    **_doc_summary(d),
+                    "closes_on": end.isoformat() if end else None,
+                    "closes_in_days": (end - today).days if end else None,
+                    "opened_on": d.date_in_force.isoformat() if d.date_in_force else None,
+                }
+            )
+
+    return {
+        "consultations": items,
+        "count": len(items),
+        "as_of": last_seen.isoformat() if last_seen else None,
+        "caveat": (
+            "Windows are checked once a week. A consultation that closed since "
+            "the last check can still appear here, and one that opened since "
+            "will not."
+        ),
+    }
+
+
 @app.get("/api/search")
 def search(q: str, k: int = Query(8, le=30)) -> dict:
     with session_scope() as s:
