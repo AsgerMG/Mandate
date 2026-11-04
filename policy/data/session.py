@@ -59,6 +59,21 @@ HNSW_EF_SEARCH = 200
 HNSW_ITERATIVE_SCAN = "strict_order"
 
 
+# --- WHICH SCHEMA THIS BRAIN OWNS ------------------------------------------
+# Mandate runs ONE database with one schema per brain: `policy` here, `capital`
+# for the funding brain, `mandate` for accounts and the shared company profile.
+# Two separate Postgres instances is what let a correction sit applied in one
+# store and reverted in the other for six days without anything noticing.
+#
+# `public` stays on the path and second, because the pgvector EXTENSION lives
+# there — its `vector` type and `vector_cosine_ops` operator class are owned by
+# the extension, not by either brain, and moving them would break both.
+#
+# Set in the startup packet alongside the HNSW settings for the same reason
+# given below: in force before the first query, and not losable to a rollback.
+SCHEMA = "policy"
+
+
 def hnsw_connect_options() -> str:
     """libpq ``options`` string applying the HNSW settings above to a connection.
 
@@ -68,7 +83,10 @@ def hnsw_connect_options() -> str:
     accepts as placeholders here even though the extension's module has not been
     loaded yet — it validates them when pgvector first loads in the session.
     """
-    return f"-c hnsw.ef_search={HNSW_EF_SEARCH} -c hnsw.iterative_scan={HNSW_ITERATIVE_SCAN}"
+    return (
+        f"-c search_path={SCHEMA},public "
+        f"-c hnsw.ef_search={HNSW_EF_SEARCH} -c hnsw.iterative_scan={HNSW_ITERATIVE_SCAN}"
+    )
 
 
 def _resolve_url() -> str:
@@ -84,6 +102,20 @@ def _resolve_url() -> str:
         from .local_db import ensure_local_db
 
         return ensure_local_db()
+    # Railway hands out `postgres://`, which SQLAlchemy refuses outright --
+    # "Can't load plugin: sqlalchemy.dialects:postgres". The scheme is a libpq
+    # alias, not a different protocol, so normalising it is lossless. Same class
+    # of defect as the newline above: the value is correct and the platform's
+    # formatting of it is not, and the fix belongs here rather than in every
+    # place a URL is pasted.
+    # ...and the driver has to be named: a bare `postgresql://` sends SQLAlchemy
+    # to psycopg2, which this project does not install (it is on psycopg 3), so
+    # the next failure is ModuleNotFoundError rather than NoSuchModule. The test
+    # harness in tests/conftest.py already does this same rewrite by hand.
+    for alias in ("postgres://", "postgresql://"):
+        if url.startswith(alias):
+            url = "postgresql+psycopg://" + url[len(alias):]
+            break
     return url
 
 
