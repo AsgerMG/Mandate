@@ -22,7 +22,11 @@ dependencies = [
     # setup). Production can ignore it by setting DATABASE_URL to a managed
     # Postgres (e.g. Neon).
     "pgserver>=0.1.4",
-    "fastembed>=0.8.0",
+    # The shared grounding store and the one embedding module (mandate/).
+    # A path dependency, so the image must be built from the monorepo root:
+    # see policy/Dockerfile. fastembed went with the local BGE embedder it
+    # existed for (mandate.embedding owns the model now).
+    "mandate-platform",
     "anthropic>=0.112.0",
     "fastapi>=0.115",
     "uvicorn[standard]>=0.30",
@@ -41,6 +45,9 @@ dev = [
     "ruff>=0.5",
     "mypy>=1.10",
 ]
+
+[tool.uv.sources]
+mandate-platform = { path = "../mandate", editable = true }
 
 [project.scripts]
 # The single automated-collection trigger.

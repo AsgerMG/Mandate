@@ -12,6 +12,8 @@ from dotenv import load_dotenv
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from mandate.embedding import DIM
+
 # pydantic-settings only parses .env for the fields declared below — it never
 # touches the real process environment. ANTHROPIC_API_KEY (read directly via
 # os.environ by etl/intelligence/llm.py and the Anthropic SDK itself) needs to
@@ -37,12 +39,10 @@ class Settings(BaseSettings):
     )
 
     # --- Embeddings ---------------------------------------------------------
-    # The passages.embedding column is fixed at this dimension, so changing it
-    # requires re-creating the column + re-embedding. Default is a small, free,
-    # local model (BGE via fastembed, 384-dim) — no API key, runs offline.
-    # Swap to a hosted model (e.g. voyage-3-large, 1024) by setting both fields.
-    embedding_dim: int = 384
-    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    # Not configurable here any more. The model and dimension are
+    # mandate/embedding's (MODEL, DIM): one definition for every brain, so the
+    # passages column, the vectors in it and the queries against it cannot
+    # disagree. EMBEDDING_MODEL / EMBEDDING_DIM in an environment are ignored.
 
     # --- Reranking ----------------------------------------------------------
     # A cross-encoder second pass over the passages a bi-encoder embedding
@@ -133,5 +133,5 @@ def get_settings() -> Settings:
     return Settings()
 
 
-# Convenience constant for SQLAlchemy column definitions (evaluated at import).
-EMBEDDING_DIM = get_settings().embedding_dim
+# The passages column dimension: mandate.embedding's, never a local choice.
+EMBEDDING_DIM = DIM

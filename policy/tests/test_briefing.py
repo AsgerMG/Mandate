@@ -48,7 +48,9 @@ from etl.intelligence.briefing import (
     prio_verdict_issues,
 )
 
-DIM = get_settings().embedding_dim
+from data.config import EMBEDDING_DIM  # noqa: E402
+
+DIM = EMBEDDING_DIM
 
 
 class FakeEmbedder:

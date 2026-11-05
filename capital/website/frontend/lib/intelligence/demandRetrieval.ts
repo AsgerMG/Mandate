@@ -75,12 +75,8 @@
 //                   tier 1 of the shipped sort and is not rendered.
 import type { Client } from "pg";
 import { openPg } from "@/lib/db";
+import { embedQuery as embedFor, vectorLiteral } from "@/lib/embedding";
 
-const VOYAGE_URL = "https://api.voyageai.com/v1/embeddings";
-/** The same model the profiles and the gates were embedded with. A query
- *  embedded by a different model is not in the same space and retrieves
- *  noise that looks like a result. */
-const MODEL = "voyage-3.5";
 const TIMEOUT_MS = 6000;
 
 export interface DemandChunk {
@@ -97,25 +93,10 @@ export interface DemandChunk {
  * into plausible-looking nonsense.
  */
 async function embedQuery(text: string): Promise<number[] | null> {
-  const key = process.env.VOYAGE_KEY;
-  if (!key) return null;
-  const ctl = new AbortController();
-  const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
-  try {
-    const res = await fetch(VOYAGE_URL, {
-      method: "POST",
-      headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
-      body: JSON.stringify({ input: [text.slice(0, 8000)], model: MODEL, input_type: "query" }),
-      signal: ctl.signal,
-    });
-    if (!res.ok) return null;
-    const j = await res.json() as { data?: { embedding?: number[] }[] };
-    return j.data?.[0]?.embedding ?? null;
-  } catch {
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
+  // Embedded in whatever space eligibility_embeddings is stored in: a query from
+  // a different model is not in the same space and retrieves noise that looks
+  // like a result. lib/embedding.ts owns that mapping.
+  return embedFor(text, "capital.eligibility_embeddings", { timeoutMs: TIMEOUT_MS, maxChars: 8000 });
 }
 
 /**
@@ -137,7 +118,7 @@ export async function retrieveDemands(
   if (!url || !instrumentIds.length || !founderText.trim()) return [];
   const vec = await embedQuery(founderText);
   if (!vec) return [];
-  const literal = `[${vec.join(",")}]`;
+  const literal = vectorLiteral(vec);
 
   let client: Client | undefined;
   try {

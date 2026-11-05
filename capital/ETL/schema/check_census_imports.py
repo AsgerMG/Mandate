@@ -79,7 +79,7 @@ IMPORT_TO_DIST = {
     "dotenv": "python-dotenv",
     "yaml": "PyYAML",
     "psycopg": "psycopg",
-    "voyageai": "voyageai",
+    "httpx": "httpx",
     "anthropic": "anthropic",
     "openai": "openai",
     "pdfplumber": "pdfplumber",

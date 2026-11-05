@@ -1,0 +1,51 @@
+# The build context of EVERY image in this monorepo (Railway root directory `/`).
+#
+# WHY THE ROOT. Both deployables import mandate/ (the shared grounding store and
+# the one embedding module), and a Docker build can only COPY what is inside its
+# context. Until 2026-11 each service's context was its brain's directory, and
+# each brain kept its own .dockerignore; those rules are merged here, prefixed by
+# brain, and the per-brain files are gone (one context, one ignore file).
+#
+# Each Dockerfile COPYs only its own brain and mandate/, so what this file must
+# do is keep the UPLOAD small and keep secrets and data out of every layer.
+
+# ── never in any image ─────────────────────────────────────────────────────
+.git
+.git/
+.claude/
+**/.env
+**/.env.*
+!policy/.env.example
+**/__pycache__/
+**/*.pyc
+**/.DS_Store
+**/.pytest_cache/
+**/.venv/
+**/node_modules/
+**/.next/
+
+# ── websites ship to Vercel, not Railway ──────────────────────────────────
+web/
+policy/website/
+capital/website/frontend/out/
+
+# ── capital ────────────────────────────────────────────────────────────────
+# data/ is carried minus what a run GENERATES: what git tracks there
+# (data/guard_registry.json above all) is input the cron reads.
+capital/data/*.sqlite
+capital/data/*.sqlite-*
+capital/data/raw/
+capital/data/processed/
+capital/data/backups/
+capital/data/ranker_cache/
+# a database backup must no more enter an image than a credential does
+capital/postgres-backup/
+# the committed text copy of the authored corpus; restore is a checkout, not a run
+capital/corpus-ledger/
+
+# ── policy ─────────────────────────────────────────────────────────────────
+# policy/data/ is the SQLAlchemy package, not a data directory: it stays.
+policy/**/*.log
+policy/tests/
+policy/project-management/
+policy/docker-compose.yml

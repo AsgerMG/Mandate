@@ -12,8 +12,10 @@ Architecture (see project-mgmt plan for the full rationale):
     no real quote (a bare model guess off metadata) -- embedding it would
     surface ungrounded guesses in retrieval results, which is exactly the
     failure mode this whole research push was about eliminating.
-  * Model: Voyage voyage-3.5 (1024-dim, multilingual -- this corpus spans
-    ~20 languages of source quotes). Requires VOYAGE_KEY in .env.local.
+  * Model: whatever mandate/embedding/spaces.json says this table is stored in
+    (`for_table(TABLE)`): new rows must share the space of the rows already
+    there, so a write uses the table's space, never a model chosen here.
+    Requires VOYAGE_KEY (or VOYAGE_API_KEY) in .env.local.
   * Storage: pgvector, same Railway Postgres as the rest of the eligibility
     subsystem (not a separate vector DB, not a local flat file) -- this
     corpus tops out around 5,000 chunks, well within a single Postgres
@@ -46,10 +48,13 @@ import argparse
 import json
 import os
 
-import voyageai
+from mandate.embedding import Embedder, EmbeddingError, for_table, space_for_table
 
-MODEL = "voyage-3.5"
-DIM = 1024
+#: The registered name of this table in mandate/embedding/spaces.json.
+TABLE = "capital.eligibility_embeddings"
+#: What the `model` column records: the table's space, by definition.
+MODEL = space_for_table(TABLE).name
+DIM = space_for_table(TABLE).dim
 BATCH = 128
 # Read, not restated. This used to be a hand-written tuple beside a TypeScript
 # Set holding the same policy, and they diverged the day `register_derived` was
@@ -62,11 +67,11 @@ ASSERTABLE_OR_CITED = tuple(json.loads(
      "evidenceTiers.json").read_text())["attributable"]["tiers"])
 
 
-def voyage_client() -> voyageai.Client:
-    key = os.environ.get("VOYAGE_KEY")
-    if not key:
-        _sys.exit("VOYAGE_KEY not set (add to .env.local)")
-    return voyageai.Client(api_key=key)
+def voyage_client() -> Embedder:
+    try:
+        return for_table(TABLE)
+    except EmbeddingError as e:
+        _sys.exit(f"{e} (add it to .env.local)")
 
 
 def gate_chunk_text(requirement: str, value: str | None) -> str:
@@ -211,11 +216,11 @@ def cmd_run(args) -> None:
         for i in range(0, len(todo), BATCH):
             batch = todo[i : i + BATCH]
             texts = [t[3] for t in batch]
-            result = client.embed(texts, model=MODEL, input_type="document")
+            vectors = client.embed_documents(texts)
             rows = [
                 (source_type, source_key, instrument_id, chunk_text, vec, MODEL)
                 for (source_type, source_key, instrument_id, chunk_text), vec in zip(
-                    batch, result.embeddings
+                    batch, vectors, strict=True
                 )
             ]
             with conn.cursor() as cur:
@@ -229,14 +234,13 @@ def cmd_run(args) -> None:
             conn.commit()  # per-batch commit -- kill-safe
             done += len(batch)
             print(f"  {done:,}/{len(todo):,}")
-        print(f"done: {done:,} embeddings written.")
+        print(f"done: {done:,} embeddings written. {client.usage.line()}")
 
 
 def cmd_query(args) -> None:
     with connect(readonly=True) as conn:
         client = voyage_client()
-        result = client.embed([args.text], model=MODEL, input_type="query")
-        vec = result.embeddings[0]
+        vec = client.embed_query(args.text)
         rows = conn.execute(
             """SELECT e.instrument_id, fi.name, e.source_type, e.chunk_text,
                       1 - (e.embedding <=> %s::vector) AS similarity

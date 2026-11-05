@@ -17,9 +17,8 @@
 
 import { MIN_MATCHABLE_DESCRIPTION_CHARS } from "./types";
 import { openPg } from "@/lib/db";
+import { embedQuery as embedFor, vectorLiteral } from "@/lib/embedding";
 
-const VOYAGE_URL = "https://api.voyageai.com/v1/embeddings";
-const MODEL = "voyage-3.5";
 /** Keep the whole path bounded: this runs inside the memo pipeline, which is
  *  already slow, but must not hang it. */
 const TIMEOUT_MS = 6000;
@@ -290,32 +289,8 @@ function loadSemanticCache(): Record<string, CachedMatch> {
 }
 
 async function embedQuery(text: string): Promise<number[] | null> {
-  const key = process.env.VOYAGE_KEY;
-  if (!key) return null;
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
-  try {
-    const res = await fetch(VOYAGE_URL, {
-      method: "POST",
-      headers: { authorization: `Bearer ${key}`, "content-type": "application/json" },
-      // input_type "query" is not cosmetic: Voyage embeds queries and documents
-      // into deliberately different positions, and the profiles were written
-      // with input_type "document".
-      body: JSON.stringify({ input: [text], model: MODEL, input_type: "query" }),
-      signal: ctrl.signal,
-    });
-    if (!res.ok) {
-      console.error("voyage embed failed:", res.status, (await res.text()).slice(0, 200));
-      return null;
-    }
-    const json = (await res.json()) as { data?: { embedding: number[] }[] };
-    return json.data?.[0]?.embedding ?? null;
-  } catch (err) {
-    console.error("voyage embed error:", err);
-    return null;
-  } finally {
-    clearTimeout(timer);
-  }
+  // The model is whatever instrument_profiles is stored in (lib/embedding.ts).
+  return embedFor(text, "capital.instrument_profiles", { timeoutMs: TIMEOUT_MS, log: true });
 }
 
 /**
@@ -367,7 +342,7 @@ export async function semanticFundMatch(
     const client = await openPg(url, { connectMs: 3000, statementMs: 3000 });
     try {
       // pgvector wants the literal '[a,b,c]' form, not a JS array.
-      const literal = `[${vec.join(",")}]`;
+      const literal = vectorLiteral(vec);
       // Score EVERY profile, not a top-K slice. instrument_profiles holds one
       // row per instrument (322 of them), so a LIMIT here was truncating a
       // table small enough to rank whole — and an instrument left out scores

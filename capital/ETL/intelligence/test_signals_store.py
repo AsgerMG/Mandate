@@ -60,7 +60,7 @@ def check(cond: bool, what: str) -> None:
 class FakeEmbedder:
     """Deterministic: a text's vector is one-hot on a word's hash bucket, so
     'alpha' is nearest to the chunk that says 'alpha'."""
-    model_name = "test/fake"
+    model = "test/fake"
     dim = DIM
 
     def embed(self, texts):
@@ -128,7 +128,7 @@ def test_embed_and_retrieve() -> None:
     check(one("SELECT count(*) FROM signals_chunk_embeddings") == want, "re-run embeds nothing new")
 
     class Other(FakeEmbedder):
-        model_name = "test/other"
+        model = "test/other"
     try:
         with connect(dict_rows=True) as con:
             embed_articles.ensure_model(con, Other())
