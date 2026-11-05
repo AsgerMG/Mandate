@@ -68,13 +68,12 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 _sys.path.insert(0, str(_Path(__file__).resolve().parent))
-from etl_env import DB  # noqa: E402
+from store import connect  # noqa: E402
 
 import ast  # noqa: E402
 import collections  # noqa: E402
 import json  # noqa: E402
 import re  # noqa: E402
-import sqlite3  # noqa: E402
 
 from enrich_recall_answers import capital_kind  # noqa: E402
 
@@ -115,8 +114,12 @@ def read_vote(basis: str | None) -> dict:
 
 def main() -> None:
     pairs = json.load(_sys.stdin)
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
+    with connect(readonly=True, dict_rows=True) as conn:
+        out = facts(conn, pairs)
+    json.dump(out, _sys.stdout)
+
+
+def facts(conn, pairs: list[dict]) -> dict:
 
     inst = {r["id"]: r for r in conn.execute(
         "SELECT id, scheme_code, capital_type, capital_type_basis, administering_body "
@@ -129,7 +132,9 @@ def main() -> None:
         if key[0] and key[1]:
             siblings[key].add(r["capital_type"])
     company: dict[str, int] = {}
-    for r in conn.execute("SELECT id, canonical_name FROM companies"):
+    # First id wins for a duplicated name: ORDER BY id is the rowid order
+    # SQLite scanned in, stated.
+    for r in conn.execute("SELECT id, canonical_name FROM companies ORDER BY id"):
         company.setdefault(r["canonical_name"], r["id"])
 
     own: dict[tuple, set] = collections.defaultdict(set)
@@ -173,7 +178,7 @@ def main() -> None:
             "siblingKinds": sorted(siblings.get(key, set()) - {row["capital_type"] if row else None}),
             "elsewhereKinds": sorted(elsewhere),
         }
-    json.dump(out, _sys.stdout)
+    return out
 
 
 if __name__ == "__main__":

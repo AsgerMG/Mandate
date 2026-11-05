@@ -34,19 +34,19 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import SIGNALS_DB  # noqa: E402
+from etl_env import DATA  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
 import os
-import sqlite3
 
 MODEL = "claude-haiku-4-5"
 MAX_TOKENS = 120           # verdict + one short reason
 TEXT_CAP = 4000            # chars of article body the gate sees — enough to judge
 CHUNK = 5_000              # requests per Message Batch
-STATE_FILE = SIGNALS_DB.parent / ".signals_relevance_batches.json"
+STATE_FILE = DATA / ".signals_relevance_batches.json"
 
 SYSTEM = """You screen press articles for a database of public funding to European tech companies.
 
@@ -80,9 +80,9 @@ def _params(title: str, text: str, source_name: str) -> dict:
             "messages": [{"role": "user", "content": user}]}
 
 
-def _pending(con: sqlite3.Connection, limit: int | None) -> list[sqlite3.Row]:
+def _pending(con, limit: int | None) -> list[dict]:
     sql = """SELECT a.id, a.title, a.raw_text, s.name AS source_name
-             FROM articles a JOIN sources s ON s.id = a.source_id
+             FROM signals_articles a JOIN signals_sources s ON s.id = a.source_id
              WHERE a.is_relevant IS NULL ORDER BY a.id"""
     if limit:
         sql += f" LIMIT {int(limit)}"
@@ -107,15 +107,13 @@ def _state_save(st: dict) -> None:
 
 
 def cmd_status(_args) -> None:
-    con = sqlite3.connect(SIGNALS_DB)
-    try:
+    with connect(readonly=True) as con:
         pending = con.execute(
-            "SELECT COUNT(*) FROM articles WHERE is_relevant IS NULL").fetchone()[0]
+            "SELECT COUNT(*) FROM signals_articles WHERE is_relevant IS NULL").fetchone()[0]
         done = con.execute(
-            "SELECT is_relevant, COUNT(*) FROM articles "
-            "WHERE is_relevant IS NOT NULL GROUP BY is_relevant").fetchall()
-    finally:
-        con.close()
+            "SELECT is_relevant, COUNT(*) FROM signals_articles "
+            "WHERE is_relevant IS NOT NULL GROUP BY is_relevant ORDER BY is_relevant"
+        ).fetchall()
     st = _state_load()
     uncollected = [b for b in st["batches"] if b not in st["collected"]]
     print(f"pending relevance verdicts: {pending:,}")
@@ -126,10 +124,8 @@ def cmd_status(_args) -> None:
 
 
 def cmd_submit(args) -> None:
-    con = sqlite3.connect(SIGNALS_DB)
-    con.row_factory = sqlite3.Row
-    rows = _pending(con, args.limit)
-    con.close()
+    with connect(readonly=True, dict_rows=True) as con:
+        rows = _pending(con, args.limit)
     if not rows:
         print("nothing pending — no articles awaiting a relevance verdict.")
         return
@@ -170,7 +166,12 @@ def cmd_collect(_args) -> None:
     if not pending_ids:
         print("no uncollected batches recorded.")
         return
-    con = sqlite3.connect(SIGNALS_DB)
+    with connect() as con:
+        written, errored, still = _collect(client, st, pending_ids, con)
+    print(f"\ncollected {written} verdicts ({errored} errored, {still} still processing).")
+
+
+def _collect(client, st: dict, pending_ids: list[str], con) -> tuple[int, int, int]:
     written = errored = still = 0
     for bid in pending_ids:
         b = client.messages.batches.retrieve(bid)
@@ -193,15 +194,14 @@ def cmd_collect(_args) -> None:
             updates.append((1 if data["relevant"] else 0,
                             (data.get("reason") or "")[:300], aid))
             written += 1
-        con.executemany(
-            "UPDATE articles SET is_relevant = ?, relevance_reason = ? WHERE id = ?",
-            updates)
+        con.cursor().executemany(
+            "UPDATE signals_articles SET is_relevant = %s, relevance_reason = %s "
+            "WHERE id = %s", updates)
         con.commit()
         st["collected"].append(bid)
         _state_save(st)
         print(f"  {bid}: wrote {len(updates)} verdicts")
-    con.close()
-    print(f"\ncollected {written} verdicts ({errored} errored, {still} still processing).")
+    return written, errored, still
 
 
 def main() -> None:

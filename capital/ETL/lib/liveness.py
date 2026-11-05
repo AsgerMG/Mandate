@@ -121,7 +121,7 @@ def is_closed(row, as_of: str | None = None) -> bool:
         return False
     # An unlabelled date is read as a call deadline -- the safe direction, and
     # the historical one: it keeps dead calls closed rather than re-proposing
-    # them. Backfilled by ETL/terms/backfill_end_date_basis.py.
+    # them. Backfilled by ETL/archive/terms/backfill_end_date_basis.py.
     if (get("scheme_end_date_basis") or "") != NOTIFIED_DURATION:
         return True
     # Aid granted after a notified duration expires is only lawful under a

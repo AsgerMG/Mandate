@@ -71,6 +71,17 @@
 
   "not_postgres_budget": 11,
 
+  "$sqlite_import_budget_why": [
+    "How many modules under capital/ import sqlite3, outside ETL/archive/.",
+    "Since 2026-11-05 there is no SQLite store: the corpus is schema `capital`",
+    "of the Mandate Postgres, reached through ETL/lib/store.py. Every module",
+    "counted here is unported code or a reach for a store that is gone. It may",
+    "only go DOWN, and the checker fails if it is left above the real count.",
+    "Set on branch port-signals-pg to what that branch leaves; the other two",
+    "port branches lower it further at merge, and it ends at 0."
+  ],
+  "sqlite_import_budget": 165,
+
   "tables": {
     "brief_records":              {"store": "postgres", "why": "written by the product at request time; never existed in SQLite"},
     "corpus_census":              {"store": "postgres", "why": "the weekly cron's record of what its corpus held; publish_corpus_census.py reads SQLite and writes here, which is a REPORT about a store rather than a copy of one"},

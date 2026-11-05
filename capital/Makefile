@@ -36,7 +36,7 @@ help:
 	@echo "  make data        Rebuild EVERY site JSON from Postgres (website/build/build_site_data.py)"
 	@echo "  make eligibility Sync YAML -> DB, export instrument_terms.json, publish to Railway Postgres"
 	@echo "                   then rebuild both vector indexes (needs VOYAGE_KEY)"
-	@echo "  make signals     Ensure signals.sqlite schema + status + QA (ETL/intelligence/load/load_signals.py)"
+	@echo "  make signals     Check the signals_* tables + status + QA (ETL/intelligence/load/load_signals.py)"
 	@echo "  make news        Full news/signals automation cycle (local only, cost-gated at \$$20)"
 	@echo "  make site-build  Static build of the Next.js site (website/frontend/out/)"
 	@echo "  make site-dev    Run the site dev server at localhost:3000"
@@ -297,7 +297,8 @@ eligibility:
 	# check_pool_recall_curve.ts fails the build when this has not been re-run.
 	cd website/frontend && npx tsx scripts/_wsdr_curve.ts
 
-# News/signals layer (data/signals.sqlite): schema install + stage counts + QA.
+# News/signals layer (the signals_* tables of schema capital): table check +
+# stage counts + QA. Read-only.
 # The per-stage transforms (classify_relevance, entity_link_articles,
 # classify_signals, embed_articles) run individually — they submit/collect
 # Anthropic batches on their own cadence. Extractors are pending the curated
@@ -306,7 +307,7 @@ signals:
 	python3 ETL/intelligence/load/load_signals.py
 
 # Export the intelligence digest the /for-companies brief reads (topics +
-# per-sector passages from signals.sqlite). Run after ingest/hydrate/embed.
+# per-sector passages from the signals_* tables). Run after ingest/hydrate/embed.
 signals-digest:
 	python3 website/build/signals_digest.py
 
