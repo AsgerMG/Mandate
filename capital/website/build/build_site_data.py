@@ -1,60 +1,74 @@
-"""Single entry point that regenerates EVERY website/frontend/public/data/*.json
-file from the current db.sqlite, in dependency order.
+"""Single entry point that regenerates EVERY generated website/frontend/public/data
+file from the corpus (schema `capital` of the Mandate Postgres), in order.
 
 WHY THIS EXISTS: the site is fed by several JSON files written by separate
-builders, and some of them read SQL views (v_events) that must be reinstalled
-first. After any DB change — a new source load, a reclassify, a dedup pass —
-forgetting one generator leaves the site silently stale (e.g. a new national
+builders. After any corpus change -- a new source load, a reclassify, a dedup
+pass -- forgetting one generator leaves the site silently stale (a new national
 funder shows in the leaderboard but not the map). Run this one command instead
 of remembering the list.
 
-Order matters:
-  1. data/views.sql        — reinstall (a new source_family CASE here is
-                             invisible until the views are recreated)
-  2. coverage_indicator    — coverage_ratings.json + country_coverage.json
+WHERE THE DATA COMES FROM. Postgres, read as capital_ro through
+`store.connect(readonly=True)` (ETL/lib/store.py), which uses
+CAPITAL_RO_DATABASE_URL. Nothing here can write the corpus: the role refuses,
+and the session is read-only besides.
+
+Order:
+  0. the views            -- ETL/schema/install_views.py --check. A build cannot
+                             reinstall them (capital_ro creates nothing), so it
+                             refuses views that are not the committed file
+  1. coverage_indicator   -- coverage_ratings.json + country_coverage.json
                              + data/processed/coverage_indicator.json
-  3. country_map           — country_map.json (per-country map bubbles)
-  4. home_visuals          — instrument_leaderboard.json (reads v_events)
-  5. synthesis             — synthesis.json (corpus KPIs; reads v_events)
-  6. investor_insights     — investor_insights.json (the /for-companies charts)
+  2. taxonomy             -- taxonomy.json
+  3. country_map          -- country_map.json
+  4. home_visuals         -- instrument_leaderboard.json
+  5. synthesis            -- synthesis.json (corpus KPIs)
+  6. investor_insights    -- investor_insights.json
+  7. companies_index      -- companies_index.json  (gitignored: generated only)
+  8. eligibility_export   -- instrument_terms.json (gitignored: generated only)
+then the cross-file consistency guard.
 
 Usage:
-  python3 website/build/build_site_data.py          # regenerate everything
-  python3 website/build/build_site_data.py --check   # verify freshness, exit 1 if stale
+  python3 website/build/build_site_data.py             regenerate everything
+  python3 website/build/build_site_data.py --check     views current + figures
+                                                       consistent; exit 1 if not
+  python3 website/build/build_site_data.py --prebuild  what `npm run build` runs:
+        regenerate when CAPITAL_RO_DATABASE_URL is set, otherwise use what is
+        on disk and say what is missing
 
-After this, rebuild the static site:  (cd website/frontend && npx next build)
+After this, rebuild the site:  (cd website/frontend && npx next build)
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
-import sqlite3
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from web_env import ROOT, BUILD, DB, SITE_DATA, VIEWS_SQL  # noqa: E402
-from synthesis import compute_kpis  # the one canonical corpus-figure definition  # noqa: E402
+from web_env import ROOT, BUILD, SITE_DATA  # noqa: E402
 
-# Every generated file (excludes the static world-110m.json geo asset) → the
-# builder that writes it. Used by --check to flag any file older than the DB.
+READONLY_ENV = "CAPITAL_RO_DATABASE_URL"   # the same name store.py reads
+
+# Every generated file -> the builder that writes it, and whether it is
+# committed. A committed artefact is a reviewed copy the site can build from
+# without a database; a gitignored one exists only where it was generated
+# (both of those are large and change with every corpus run: 25 MB and 11 MB).
 GENERATED = {
-    "coverage_ratings.json":      "coverage_indicator.py",
-    "country_coverage.json":      "coverage_indicator.py",
-    "taxonomy.json":              "taxonomy.py",
-    "country_map.json":           "country_map.py",
-    "instrument_leaderboard.json": "home_visuals.py",
-    "synthesis.json":             "synthesis.py",
-    "investor_insights.json":     "investor_insights.py",
-    "companies_index.json":       "companies_index.py",
+    "coverage_ratings.json":       ("coverage_indicator.py", "committed"),
+    "country_coverage.json":       ("coverage_indicator.py", "committed"),
+    "taxonomy.json":               ("taxonomy.py", "committed"),
+    "country_map.json":            ("country_map.py", "committed"),
+    "instrument_leaderboard.json": ("home_visuals.py", "committed"),
+    "synthesis.json":              ("synthesis.py", "committed"),
+    "investor_insights.json":      ("investor_insights.py", "committed"),
+    "companies_index.json":        ("companies_index.py", "generated"),
+    "instrument_terms.json":       ("eligibility_export.py", "generated"),
 }
 
-# (label, builder filename) in dependency order. All live under website/build/.
 STEPS = [
-    ("reinstall SQL views", None),  # handled specially
     ("coverage indicator", "coverage_indicator.py"),
     ("sector taxonomy",    "taxonomy.py"),
     ("country map",        "country_map.py"),
@@ -62,50 +76,35 @@ STEPS = [
     ("synthesis KPIs",     "synthesis.py"),
     ("investor insights",  "investor_insights.py"),
     ("agent index",        "companies_index.py"),
+    ("instrument terms",   "eligibility_export.py"),
 ]
 
-
-def reinstall_views() -> None:
-    sql = VIEWS_SQL.read_text()
-    con = sqlite3.connect(DB)
-    try:
-        con.executescript(sql)
-        con.commit()
-    finally:
-        con.close()
+INSTALL_VIEWS = ROOT / "ETL" / "schema" / "install_views.py"
 
 
-def check_fresh() -> int:
-    """Exit 1 if any generated file is missing or older than the DB.
+def check_views() -> int:
+    return subprocess.run([sys.executable, str(INSTALL_VIEWS), "--check"], cwd=ROOT).returncode
 
-    The DB is a gitignored build artifact, so it is absent in CI / on Vercel,
-    where the committed website/frontend/public/data/*.json is the source of
-    truth and there is nothing to compare against. Skip the freshness check there
-    rather than crashing the build with FileNotFoundError.
-    """
-    if not DB.exists():
-        print("db.sqlite not present (CI/deploy) — skipping freshness check.")
-        return 0
-    db_mtime = DB.stat().st_mtime
-    stale = []
-    for fname in GENERATED:
-        p = SITE_DATA / fname
-        if not p.exists():
-            stale.append((fname, "MISSING"))
-        elif p.stat().st_mtime < db_mtime:
-            stale.append((fname, "older than db.sqlite"))
-    if stale:
-        print("STALE site data — run `python3 website/build/build_site_data.py`:")
-        for fname, why in stale:
-            print(f"  {fname:<30} {why}  (writer: {GENERATED[fname]})")
+
+def check_present() -> int:
+    """Exit 1 if an artefact the build reads is missing."""
+    missing = [f for f in GENERATED if not (SITE_DATA / f).exists()]
+    if missing:
+        print("MISSING site data (generated from Postgres, never committed for the "
+              "gitignored ones):")
+        for f in missing:
+            writer, kind = GENERATED[f]
+            print(f"  {f:<30} writer: {writer} ({kind})")
+        print(f"Set {READONLY_ENV} (the capital_ro URL) and run "
+              f"`python3 website/build/build_site_data.py`.")
         return 1
-    print("All site data files are fresh.")
+    print("All site data files are present.")
     return 0
 
 
 # Generated files that publish a corpus-wide companies/events figure, and the
 # JSON path to it. The guardrail asserts each equals the canonical synthesis
-# number. Add any new file that surfaces a headline count here — that is the
+# number. Add any new file that surfaces a headline count here -- that is the
 # whole point: one source of truth, enforced.
 CORPUS_COUNT_CLAIMS = {
     "synthesis.json":         {"companies": ("companies",), "events": ("events",)},
@@ -122,19 +121,15 @@ def _dig(obj, path):
 def check_consistency() -> int:
     """Fail (exit 1) if any generated file disagrees with the canonical KPIs.
 
-    The single source of truth is synthesis.compute_kpis(DB). This re-derives it
-    and asserts (a) synthesis.json matches the live DB and (b) every other file
-    that publishes a corpus-wide count matches synthesis. A drift that used to
-    ship silently (148k vs 152k vs 155k across pages) now blocks the build.
+    The single source of truth is corpus_kpis.compute_kpis on the corpus. This
+    re-derives it and asserts that every file publishing a corpus-wide count
+    matches it. A drift that used to ship silently (148k vs 152k vs 155k across
+    pages) blocks the build.
     """
-    if not DB.exists():
-        print("db.sqlite not present (CI/deploy) — skipping consistency check.")
-        return 0
-    con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
-    try:
+    from corpus_kpis import compute_kpis  # noqa: PLC0415
+    from store import connect  # noqa: PLC0415
+    with connect(readonly=True) as con:
         canon = compute_kpis(con)
-    finally:
-        con.close()
     canonical = {"companies": canon["companies"], "events": canon["events"]}
 
     problems: list[str] = []
@@ -157,7 +152,7 @@ def check_consistency() -> int:
 
     if problems:
         print("✗ STATS CONSISTENCY FAILED — corpus figures disagree with the "
-              "single source of truth (synthesis.compute_kpis):")
+              "single source of truth (corpus_kpis.compute_kpis):")
         for x in problems:
             print(f"    {x}")
         return 1
@@ -167,33 +162,52 @@ def check_consistency() -> int:
 
 
 def run() -> int:
+    print("\n▶ views")
+    rc = check_views()
+    if rc:
+        return rc
     for label, script in STEPS:
         print(f"\n▶ {label}")
-        if script is None:
-            reinstall_views()
-            print("  views reinstalled")
-            continue
         result = subprocess.run([sys.executable, str(BUILD / script)], cwd=ROOT)
         if result.returncode != 0:
             print(f"\n✗ FAILED at: {label} (exit {result.returncode})")
             return result.returncode
-    # Verify outputs are now fresh AND internally consistent.
     print()
-    rc = check_fresh()
-    if rc == 0:
-        rc = check_consistency()
+    rc = check_present() or check_consistency()
     if rc == 0:
         print("\n✓ All site data regenerated. Now: (cd website/frontend && npx next build)")
     return rc
 
 
+def prebuild() -> int:
+    """`npm run build`'s first step. With the read-only credential, the data is
+    regenerated from the corpus, so a build can never ship artefacts older than
+    the store. Without it (a build that was given no credential), nothing can be
+    regenerated and the files already on disk are used -- the behaviour before
+    the corpus moved, kept until each deploy target is given the credential.
+    What is missing is SAID, but does not fail here: whether a build without
+    the generated-only artefacts may ship is the deploy's decision, not this
+    script's."""
+    import etl_env  # noqa: F401,PLC0415  (loads capital/.env.local, never overriding the shell)
+    if os.environ.get(READONLY_ENV, "").strip():
+        return run()
+    print(f"{READONLY_ENV} is not set: using the site data already on disk.")
+    check_present()
+    return 0
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--check", action="store_true",
-                        help="verify freshness + cross-file consistency; exit 1 if stale or divergent")
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--check", action="store_true",
+                      help="views current + cross-file consistency; exit 1 if not")
+    mode.add_argument("--prebuild", action="store_true",
+                      help="regenerate if the read-only credential is set, else verify presence")
     args = parser.parse_args()
     if args.check:
-        sys.exit(check_fresh() or check_consistency())
+        sys.exit(check_views() or check_present() or check_consistency())
+    if args.prebuild:
+        sys.exit(prebuild())
     sys.exit(run())
 
 

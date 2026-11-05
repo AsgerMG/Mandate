@@ -59,10 +59,15 @@
     "check. `proves_superset` says whether it establishes that the replacement",
     "loses nothing BEFORE writing. Two of them do not, and are the reason a",
     "single mistyped command on 2026-08-07 could have destroyed either 1,457",
-    "events or 766 instruments."
+    "events or 766 instruments.",
+    "",
+    "2026-11-05: every table was loaded into Postgres and verified row for row,",
+    "and corpus_stores.py now names one store, `postgres`. `sqlite_lives_on`",
+    "follows it, as the cross-check below requires; the per-table `sqlite`",
+    "entries are moved to `postgres` as each write path is ported."
   ],
 
-  "sqlite_lives_on": "railway-volume",
+  "sqlite_lives_on": "postgres",
 
   "not_postgres_budget": 11,
 

@@ -57,7 +57,6 @@ from __future__ import annotations
 
 import json
 import re
-import sqlite3
 import unicodedata
 from collections import Counter, defaultdict
 from datetime import date
@@ -65,13 +64,13 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import ROOT, DB, SITE_DATA  # noqa: E402
+from web_env import ROOT, SITE_DATA  # noqa: E402
+from store import connect  # noqa: E402
 
 # The register's region NAMES resolve to NUTS ids through Eurostat's own name
 # register, never through a rule with an error rate. Same module the corpus's
 # delivery regions come from, so a company and the funds it applies to are
 # placed by one lookup rather than two that could disagree.
-sys.path.insert(0, str(ROOT / "ETL" / "lib"))
 from nuts_regions import (  # noqa: E402
     ISO2_TO_NUTS, MAX_ROUTING_LEVEL_CHARS, MIN_ROUTING_LEVEL_CHARS,
     load_reference, resolve)
@@ -86,8 +85,18 @@ def normalize(name: str) -> str:
 
 
 def main():
-    con = sqlite3.connect(DB)
-    con.row_factory = sqlite3.Row
+    with connect(readonly=True, dict_rows=True) as con:
+        _main(con)
+
+
+def _main(con):
+    # EVERY QUERY HERE STATES ITS ORDER, because the order reaches the output:
+    # euro figures are float sums accumulated in fetch order, a group's
+    # representative is the first of equally-funded members, the region is
+    # Counter.most_common's first of equal counts, and the final sort is stable
+    # on rounded euros. Each order is the one the SQLite store produced (events
+    # by company country, company, event; companies and groups by id; region
+    # keys in byte order, NULL first), so the move changed no byte of the file.
 
     # Per company: total EUR (grant, else debt), per-channel EUR, year span.
     totals: dict[int, float] = defaultdict(float)
@@ -96,7 +105,8 @@ def main():
     for r in con.execute("""
         SELECT v.company_id, v.source_family,
                v.grant_amount_eur, v.debt_amount_eur, v.event_year
-        FROM v_events v
+        FROM v_events v JOIN companies c ON c.id = v.company_id
+        ORDER BY c.country COLLATE "C", v.company_id, v.id
     """):
         amount = r["grant_amount_eur"]
         if amount is None and r["debt_amount_eur"]:
@@ -118,12 +128,18 @@ def main():
     index = load_reference()["index"]
     seen: dict[tuple[str, str], str] = {}
     regions: dict[int, Counter] = defaultdict(Counter)
-    for cid, gcc, bcc, region, n in con.execute("""
+    for r in con.execute("""
             SELECT company_id, granting_country_iso2, beneficiary_country_iso2,
                    region, COUNT(*)
               FROM satr_staging
              WHERE company_id IS NOT NULL
-             GROUP BY 1, 2, 3, 4"""):
+             GROUP BY 1, 2, 3, 4
+             ORDER BY company_id,
+                      granting_country_iso2 COLLATE "C" NULLS FIRST,
+                      beneficiary_country_iso2 COLLATE "C" NULLS FIRST,
+                      region COLLATE "C" NULLS FIRST"""):
+        cid, gcc, bcc, region, n = (r["company_id"], r["granting_country_iso2"],
+                                    r["beneficiary_country_iso2"], r["region"], r["count"])
         iso = bcc or gcc or ""
         key = (region or "", iso)
         if key not in seen:
@@ -139,14 +155,13 @@ def main():
         if seen[key]:
             regions[cid][seen[key]] += n
 
-    meta: dict[int, sqlite3.Row] = {}
+    meta: dict[int, dict] = {}
     members: dict[str, list[int]] = defaultdict(list)
     for r in con.execute(
             "SELECT id, canonical_name, country, sector_inferred, parent_group, "
-            "sector_top, subsector, entity_type FROM companies"):
+            "sector_top, subsector, entity_type FROM companies ORDER BY id"):
         meta[r["id"]] = r
         members[r["parent_group"] or f"id{r['id']}"].append(r["id"])
-    con.close()
 
     rows: list[list] = []
     for gk, ids in members.items():

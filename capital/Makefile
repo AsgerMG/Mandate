@@ -32,7 +32,8 @@ help:
 	@echo "  make vault-status What the vault holds, how old it is, and whether iCloud has it"
 	@echo "  make analyze     Rebuild corpus KPIs (website/build/synthesis.py)"
 	@echo "  make visuals     Rebuild home-page visuals (taxonomy, map, coverage)"
-	@echo "  make data        Rebuild EVERY site JSON from db.sqlite (website/build/build_site_data.py)"
+	@echo "  make views       Install the read-side views in Postgres (ETL/schema/install_views.py)"
+	@echo "  make data        Rebuild EVERY site JSON from Postgres (website/build/build_site_data.py)"
 	@echo "  make eligibility Sync YAML -> DB, export instrument_terms.json, publish to Railway Postgres"
 	@echo "                   then rebuild both vector indexes (needs VOYAGE_KEY)"
 	@echo "  make signals     Ensure signals.sqlite schema + status + QA (ETL/intelligence/load/load_signals.py)"
@@ -128,8 +129,10 @@ transform: classify sanity
 analyze:
 	python3 website/build/synthesis.py
 
+# The read-side views (v_events ...) in Postgres, as capital_app. A build checks
+# them (install_views.py --check) and cannot install them: it reads as capital_ro.
 views:
-	sqlite3 data/db.sqlite < data/views.sql
+	python3 ETL/schema/install_views.py
 
 visuals:
 	python3 website/build/home_visuals.py
