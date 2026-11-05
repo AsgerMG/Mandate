@@ -1,3 +1,7 @@
 
 # Python envs, per brain
 policy/.venv/
+
+# caches, every brain
+__pycache__/
+node_modules
