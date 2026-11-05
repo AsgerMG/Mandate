@@ -23,8 +23,9 @@ Order:
   4. home_visuals         -- instrument_leaderboard.json
   5. synthesis            -- synthesis.json (corpus KPIs)
   6. investor_insights    -- investor_insights.json
-  7. companies_index      -- companies_index.json  (gitignored: generated only)
-  8. eligibility_export   -- instrument_terms.json (gitignored: generated only)
+  7. companies_index      -- companies_index.json
+  8. eligibility_export   -- instrument_terms.json
+(every output is generated, never committed)
 then the cross-file consistency guard.
 
 Usage:
@@ -52,18 +53,18 @@ from web_env import ROOT, BUILD, SITE_DATA  # noqa: E402
 
 READONLY_ENV = "CAPITAL_RO_DATABASE_URL"   # the same name store.py reads
 
-# Every generated file -> the builder that writes it, and whether it is
-# committed. A committed artefact is a reviewed copy the site can build from
-# without a database; a gitignored one exists only where it was generated
-# (both of those are large and change with every corpus run: 25 MB and 11 MB).
+# Every generated file -> the builder that writes it. NONE is committed (owner's
+# rule, 2026-11-05: data lives in Railway, artefacts are built from it). A build
+# with CAPITAL_RO_DATABASE_URL regenerates all of them; one without it uses
+# whatever is on disk and says what is missing.
 GENERATED = {
-    "coverage_ratings.json":       ("coverage_indicator.py", "committed"),
-    "country_coverage.json":       ("coverage_indicator.py", "committed"),
-    "taxonomy.json":               ("taxonomy.py", "committed"),
-    "country_map.json":            ("country_map.py", "committed"),
-    "instrument_leaderboard.json": ("home_visuals.py", "committed"),
-    "synthesis.json":              ("synthesis.py", "committed"),
-    "investor_insights.json":      ("investor_insights.py", "committed"),
+    "coverage_ratings.json":       ("coverage_indicator.py", "generated"),
+    "country_coverage.json":       ("coverage_indicator.py", "generated"),
+    "taxonomy.json":               ("taxonomy.py", "generated"),
+    "country_map.json":            ("country_map.py", "generated"),
+    "instrument_leaderboard.json": ("home_visuals.py", "generated"),
+    "synthesis.json":              ("synthesis.py", "generated"),
+    "investor_insights.json":      ("investor_insights.py", "generated"),
     "companies_index.json":        ("companies_index.py", "generated"),
     "instrument_terms.json":       ("eligibility_export.py", "generated"),
 }
@@ -90,11 +91,10 @@ def check_present() -> int:
     """Exit 1 if an artefact the build reads is missing."""
     missing = [f for f in GENERATED if not (SITE_DATA / f).exists()]
     if missing:
-        print("MISSING site data (generated from Postgres, never committed for the "
-              "gitignored ones):")
+        print("MISSING site data (generated from Postgres, never committed):")
         for f in missing:
-            writer, kind = GENERATED[f]
-            print(f"  {f:<30} writer: {writer} ({kind})")
+            writer, _ = GENERATED[f]
+            print(f"  {f:<30} writer: {writer}")
         print(f"Set {READONLY_ENV} (the capital_ro URL) and run "
               f"`python3 website/build/build_site_data.py`.")
         return 1

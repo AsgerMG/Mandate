@@ -63,8 +63,8 @@ make site-dev                               # cd frontend && npm run dev     -> 
 | `synthesis.py` | `synthesis.json` | home KPI grid + layout footer |
 | `investor_insights.py` | `investor_insights.json` | the `/for-companies` charts |
 | `company_search.py` | `companies/*.json` shards | `/companies` client-side lookup |
-| `companies_index.py` | `companies_index.json` (generated only, gitignored) | the server-side intelligence agent |
-| `eligibility_export.py` | `instrument_terms.json` (generated only, gitignored) | the request path's fallback corpus, the theme index, most checks |
+| `companies_index.py` | `companies_index.json` | the server-side intelligence agent |
+| `eligibility_export.py` | `instrument_terms.json` | the request path's fallback corpus, the theme index, most checks |
 
 ## Notes
 
@@ -76,8 +76,7 @@ make site-dev                               # cd frontend && npm run dev     -> 
 - The views live in `ETL/schema/views.sql`. A build cannot install them (it reads as
   `capital_ro`); it refuses to run when the installed views are not that file
   (`install_views.py --check`). A new `source_family` CASE reaches the site after `make views`.
-- **Committed vs generated.** The seven small JSON files above are committed: they are the
-  fallback a build without the read-only credential uses. `companies_index.json` and
-  `instrument_terms.json` are generated only (25 MB and 11 MB, and they change with every
-  corpus run). `world-110m.json` is a static asset; `signals_digest.json` is written by
+- **Nothing here is committed.** Every JSON a builder writes is generated from Postgres
+  (`build_site_data.py`, run by the frontend's prebuild and by CI with the read-only
+  credential). `world-110m.json` is a static asset; `signals_digest.json` is written by
   `signals_digest.py` (the signals layer).
