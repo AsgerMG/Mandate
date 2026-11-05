@@ -97,11 +97,9 @@ MIN_COUNTABLE = 20
 
 
 def pg():
-    import psycopg
-    url = os.environ.get("DATABASE_URL")
-    if not url:
-        raise SystemExit("DATABASE_URL not set (repo-root .env.local)")
-    return psycopg.connect(url)
+    """The store, read-only: this guard measures and never writes."""
+    from store import connect  # noqa: PLC0415
+    return connect(readonly=True)
 
 
 def measure() -> dict:

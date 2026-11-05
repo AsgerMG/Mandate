@@ -1,40 +1,23 @@
-# Keep the ETL service's build context small — this image only needs to run
-# Python extractors, not the frontend or local data (data/ lives on a Railway
-# volume, never baked into the image; see Dockerfile).
+# Keep the ETL service's build context small -- this image only needs to run
+# the Python pipeline, not the frontend.
 .git/
-data/
-# ...and NOTHING under data/ can be re-included, whatever this file says.
-#
-# `railway up` uploads the build context AFTER applying .gitignore, and
-# .gitignore:57 is a bare `data` -- which, having no slash, matches a directory
-# of that name at any depth. So every path under `data/` is stripped before
-# Docker ever reads this file, and a `!data/...` negation here cannot put it
-# back. `!data/guard_registry.json` was added on 2026-08-17 on the belief that
-# it could; it is inert, and the registry is still absent from the image.
-# Verify in one line: `git check-ignore -v data/guard_registry.json`.
-#
-# The rule that follows from that, and the reason `reference/` sits at the repo
-# root rather than under `data/`:
-#
-#     data/ is the CORPUS -- generated, gitignored, and mounted from a Railway
-#     volume at /app/data. reference/ is committed INPUT that code reads, and it
-#     is carried by the image like the code that reads it.
-#
-# A committed input placed under data/ reaches the container only if a human
-# copies it onto the volume, which nothing in this repo does and nothing
-# records. That is how the weekly ETL died on 2026-08-16: wsCZ added
-# `data/reference/activity_codebook.json` on 2026-08-10, `classify_taxonomy.py`
-# reads it at module level, and the first cron run on the image built from that
-# commit raised FileNotFoundError before its first statement -- rc=1, six later
-# steps and all four guards skipped. See project-mgmt/findings/wsHU_etl_stopped/.
-#
-# `ETL/schema/check_cron_image_inputs.py` now fails the build on the next one.
-#
-# The registry is the last committed input still under data/, and the line below
-# is kept only so it starts working the day .gitignore:57 stops matching it. The
-# real fix is the same one applied to reference/: move it out. Not done here --
-# 60-odd readers across the check suite, and none of them is the ETL.
-!data/guard_registry.json
+
+# ── data/ ───────────────────────────────────────────────────────────────────
+# Until 2026-11-05 all of data/ was excluded, because /app/data was a mounted
+# Railway volume holding db.sqlite. There is no volume now and no SQLite: the
+# corpus is in Postgres. What remains under data/ that git tracks is committed
+# INPUT the cron reads -- data/guard_registry.json above all, which
+# ETL/lib/guard_verdicts.py needs to run any guard, and which the old blanket
+# exclusion kept out of every image (its `!data/guard_registry.json` was inert,
+# see git history). So data/ is now carried, minus everything a pipeline run
+# GENERATES there, which must never be baked into an image.
+data/*.sqlite
+data/*.sqlite-*
+data/raw/
+data/processed/
+data/backups/
+data/ranker_cache/
+
 website/frontend/node_modules/
 website/frontend/.next/
 website/frontend/out/

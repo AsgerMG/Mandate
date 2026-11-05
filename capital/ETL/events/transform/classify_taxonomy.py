@@ -28,18 +28,18 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from etl_env import DATA as _ETL_DATA, ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
 import os
-import sqlite3
 from collections import Counter, defaultdict
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 ROOT = _ETL_ROOT
-DB = _ETL_DB
+
+from store import connect  # noqa: E402
 
 from classify import _classify_by_nace  # noqa: E402
 
@@ -498,15 +498,15 @@ SYSTEM_RESIDUAL = SYSTEM + "\n\n" + (
     + nace_cheatsheet())
 
 
-def gold_set(conn: sqlite3.Connection, n: int) -> list[dict]:
+def gold_set(conn: "psycopg.Connection", n: int) -> list[dict]:
     """Companies whose NACE confirms exactly one new Tier 1. Balanced across
     sectors. NACE/tags are carried for selection only — withheld at test time."""
     rows = conn.execute("""
         SELECT c.id, c.canonical_name, c.country,
-               GROUP_CONCAT(e.sector_tags_raw, '||') tags,
-               GROUP_CONCAT(COALESCE(e.project_title,''), '||') titles,
-               GROUP_CONCAT(COALESCE(e.project_summary,''), '||') summaries,
-               GROUP_CONCAT(e.source, '||') sources
+               string_agg(e.sector_tags_raw, '||' ORDER BY e.id) tags,
+               string_agg(COALESCE(e.project_title,''), '||' ORDER BY e.id) titles,
+               string_agg(COALESCE(e.project_summary,''), '||' ORDER BY e.id) summaries,
+               string_agg(e.source, '||' ORDER BY e.id) sources
         FROM companies c JOIN public_funding_events e ON e.company_id = c.id
         WHERE e.sector_tags_raw IS NOT NULL AND TRIM(e.sector_tags_raw) != ''
         GROUP BY c.id
@@ -534,15 +534,15 @@ def gold_set(conn: sqlite3.Connection, n: int) -> list[dict]:
     return sample[:n]
 
 
-def gold_sample(conn: sqlite3.Connection, n: int) -> list[dict]:
+def gold_sample(conn: "psycopg.Connection", n: int) -> list[dict]:
     """NACE-grounded companies (NACE/tags WITHHELD from the model), but we DO hand
     the model the project titles AND summaries it would have in the real run."""
     rows = conn.execute("""
         SELECT c.id, c.canonical_name, c.country, c.sector_inferred,
-               GROUP_CONCAT(e.sector_tags_raw, '||') tags,
-               GROUP_CONCAT(COALESCE(e.project_title,''), '||') titles,
-               GROUP_CONCAT(COALESCE(e.project_summary,''), '||') summaries,
-               GROUP_CONCAT(e.source, '||') sources
+               string_agg(e.sector_tags_raw, '||' ORDER BY e.id) tags,
+               string_agg(COALESCE(e.project_title,''), '||' ORDER BY e.id) titles,
+               string_agg(COALESCE(e.project_summary,''), '||' ORDER BY e.id) summaries,
+               string_agg(e.source, '||' ORDER BY e.id) sources
         FROM companies c JOIN public_funding_events e ON e.company_id = c.id
         WHERE c.sector_inferred IN ('life_sciences','cleantech','deeptech_hardware',
                                     'digital','space','defense')
@@ -706,15 +706,15 @@ def classify_company(client, model, item):
     return top, sub, "llm", it, ot
 
 
-def random_sample(conn: sqlite3.Connection, n: int) -> list[dict]:
+def random_sample(conn: "psycopg.Connection", n: int) -> list[dict]:
     rows = conn.execute("""
         SELECT c.id, c.canonical_name, c.country,
-               GROUP_CONCAT(e.sector_tags_raw, '||'),
-               GROUP_CONCAT(COALESCE(e.project_title,''), '||'),
-               GROUP_CONCAT(COALESCE(e.project_summary,''), '||'),
-               GROUP_CONCAT(e.source, '||')
+               string_agg(e.sector_tags_raw, '||' ORDER BY e.id),
+               string_agg(COALESCE(e.project_title,''), '||' ORDER BY e.id),
+               string_agg(COALESCE(e.project_summary,''), '||' ORDER BY e.id),
+               string_agg(e.source, '||' ORDER BY e.id)
         FROM companies c JOIN public_funding_events e ON e.company_id = c.id
-        GROUP BY c.id ORDER BY RANDOM() LIMIT ?""", (n,)).fetchall()
+        GROUP BY c.id ORDER BY random() LIMIT %s""", (n,)).fetchall()
     out = []
     for cid, name, country, tags_s, titles_s, sums_s, sources_s in rows:
         out.append({"id": cid, "name": name, "country": country,
@@ -732,9 +732,8 @@ def cmd_sample(args) -> None:
     import anthropic
     client = anthropic.Anthropic()
 
-    con = sqlite3.connect(DB)
-    sample = random_sample(con, args.n)
-    con.close()
+    with connect(readonly=True) as con:
+        sample = random_sample(con, args.n)
     print(f"production pipeline on {len(sample)} random companies, residual model="
           f"{args.model}\n")
 
@@ -786,51 +785,128 @@ def cmd_sample(args) -> None:
               f"(no cache) — only the {100*(n-no_llm)/n:.0f}% residual hits the model.")
 
 
+# ── Who may change a sector label ────────────────────────────────────────────
+#
+# THE PROPERTY. A label only ever gains information. No step in this file may
+# blank a sector_top or subsector, or replace a curated label with a derived
+# one -- whether it is writing `companies` or the `company_sector_labels` vault.
+#
+# WHY IT IS STATED HERE. On 2026-10-18 the weekly cron ran restore -> apply-nace
+# -> run -> persist on the Railway volume and regressed 164 curated labels in
+# the vault: 65 subsectors blanked, and 98 labels whose method was
+# `recovered_2026_07_23` replaced by a NACE guess (an audio-engineering company
+# became health). `restore` was not the culprit -- it already filled only empty
+# rows. The two writers that did it:
+#
+#   apply-nace  recomputed EVERY company from its tags and overwrote all three
+#               columns unconditionally, so a curated label became whatever the
+#               NACE backbone said, a `nace_top` row lost the subsector an LLM
+#               had filled, and a row NACE could not resolve was set to NULL.
+#   persist     then upserted `companies` into the vault with
+#               ON CONFLICT DO UPDATE, so the guess overwrote the only copy of
+#               the curated label. That is what made the loss permanent: the
+#               vault exists to survive exactly this, and it was the vault that
+#               was written over. (It also bumped labelled_at on every row it
+#               touched, which is the 31,810 timestamp-only differences.)
+#
+# THE RULE, one function both directions use (`merge_label`):
+#   * an empty label is filled by anything;
+#   * a DERIVED label -- one of the methods `cmd_apply_nace` itself writes -- is
+#     replaced only by a CURATED one (any other method: an LLM pass, a
+#     recovery, a human). Curated outranks derived, never the reverse;
+#   * otherwise the only change allowed is filling a NULL subsector under the
+#     SAME sector_top. Nothing is ever blanked and no sector_top ever moves.
+# Two curated labels never displace each other: the first one stays.
+#
+# A deliberate re-label from new evidence (a better codebook, corrected tags)
+# is therefore not something a routine run can do. That is the point: it must
+# be its own reviewed change, not a side effect of a weekly refresh.
+APPLY_NACE_METHODS = ("nace", "nace_top", "programme")
+DERIVED_METHODS = frozenset(APPLY_NACE_METHODS)
+
+
+def is_curated(method: str | None) -> bool:
+    return bool(method) and method not in DERIVED_METHODS
+
+
+def merge_label(have: tuple, new: tuple) -> tuple | None:
+    """The label to store when `new` meets `have`, or None to leave `have` alone.
+
+    Both are (sector_top, subsector, method). See the block above for the rule.
+    """
+    h_top, h_sub, h_method = have
+    n_top, n_sub, n_method = new
+    if not n_top:
+        return None                                   # nothing to give
+    if not h_top:
+        return (n_top, n_sub or None, n_method)       # fill an empty label
+    if is_curated(n_method) and not is_curated(h_method):
+        # Curated outranks derived. Never lose a subsector doing it: a curated
+        # label without one keeps the derived one's only if the sector agrees.
+        sub = n_sub or (h_sub if h_top == n_top else None)
+        merged = (n_top, sub, n_method)
+        return merged if merged != (h_top, h_sub, h_method) else None
+    if h_top == n_top and not h_sub and n_sub:
+        return (h_top, n_sub, h_method)               # fill the missing tier
+    return None
+
+
+def nace_label(tags: list[str], sources: list[str]) -> tuple:
+    """What the deterministic backbone says about one company: (top, sub, method),
+    all None when it says nothing. Pure, so the rule above can be tested on it."""
+    top, sub = resolve_nace(tags)
+    if top and sub:
+        return top, sub, "nace"
+    if top:
+        return top, None, "nace_top"          # Tier-1 fixed; Tier-2 pending LLM
+    ov = source_override(sources)
+    if ov:
+        return ov, None, "programme"
+    return None, None, None                   # fully pending LLM
+
+
 def cmd_apply_nace(args) -> None:
     """Write the deterministic NACE-backbone labels to companies (no LLM).
-    Idempotent: recomputes from current tags. Leaves the LLM residual pending."""
+
+    Fills what is empty and never displaces a label (see merge_label): on a
+    corpus that is already labelled this writes nothing, which is what makes it
+    safe to run every week. Leaves the LLM residual pending."""
     from datetime import datetime, timezone
-    con = sqlite3.connect(DB)
-    con.row_factory = sqlite3.Row
-    rows = con.execute("""
-        SELECT c.id,
-               GROUP_CONCAT(e.sector_tags_raw, '||') tags,
-               GROUP_CONCAT(e.source, '||') sources
-        FROM companies c LEFT JOIN public_funding_events e ON e.company_id = c.id
-        GROUP BY c.id
-    """).fetchall()
-
     now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-    updates = []          # (sector_top, subsector, method, updated_at, id)
-    method_ct = Counter()
-    top_ct = Counter()
-    for r in rows:
-        tags = [t.strip() for t in (r["tags"] or "").split("||") if t.strip()]
-        sources = [s for s in (r["sources"] or "").split("||") if s]
-        top, sub = resolve_nace(tags)
-        if top and sub:
-            method = "nace"
-        elif top:
-            method = "nace_top"           # Tier-1 fixed; Tier-2 pending LLM
-        else:
-            ov = source_override(sources)
-            if ov:
-                top, sub, method = ov, None, "programme"
-            else:
-                top, sub, method = None, None, None   # fully pending LLM
-        method_ct[method or "pending"] += 1
-        if top:
-            top_ct[top] += 1
-        updates.append((top, sub, method, now if method else None, r["id"]))
+    with connect() as con:
+        rows = con.execute("""
+            SELECT c.id, c.sector_top, c.subsector, c.sector_taxonomy_method,
+                   string_agg(e.sector_tags_raw, '||' ORDER BY e.id) tags,
+                   string_agg(e.source, '||' ORDER BY e.id) sources
+            FROM companies c LEFT JOIN public_funding_events e ON e.company_id = c.id
+            GROUP BY c.id
+        """).fetchall()
 
-    con.executemany(
-        "UPDATE companies SET sector_top=?, subsector=?, sector_taxonomy_method=?, "
-        "sector_taxonomy_updated_at=? WHERE id=?", updates)
-    con.commit()
-    con.close()
+        updates = []          # (sector_top, subsector, method, updated_at, id)
+        method_ct = Counter()
+        top_ct = Counter()
+        kept = 0
+        for cid, h_top, h_sub, h_method, tags_s, sources_s in rows:
+            tags = [t.strip() for t in (tags_s or "").split("||") if t.strip()]
+            sources = [s for s in (sources_s or "").split("||") if s]
+            top, sub, method = nace_label(tags, sources)
+            method_ct[method or "pending"] += 1
+            if top:
+                top_ct[top] += 1
+            merged = merge_label((h_top, h_sub, h_method), (top, sub, method))
+            if merged:
+                updates.append((*merged, now, cid))
+            elif top and (h_top, h_sub, h_method) != (top, sub, method):
+                kept += 1     # the backbone disagrees with a label it may not move
+
+        with con.cursor() as cur:
+            cur.executemany(
+                "UPDATE companies SET sector_top=%s, subsector=%s, "
+                "sector_taxonomy_method=%s, sector_taxonomy_updated_at=%s WHERE id=%s",
+                updates)
 
     total = len(rows)
-    print(f"applied NACE backbone to {total:,} companies:")
+    print(f"NACE backbone over {total:,} companies:")
     for m in ("nace", "nace_top", "programme", "pending"):
         if method_ct[m]:
             print(f"  {m:<10} {method_ct[m]:>7} ({100*method_ct[m]/total:.1f}%)")
@@ -840,10 +916,11 @@ def cmd_apply_nace(args) -> None:
     print(f"Both tiers deterministic (nace): {det:,} ({100*det/total:.1f}%)")
     print(f"Awaiting LLM (Tier-2 and/or Tier-1): "
           f"{total - det:,} ({100*(total-det)/total:.1f}%)")
+    print(f"\nwritten {len(updates):,} (empty labels filled or a tier completed); "
+          f"{kept:,} existing labels the backbone disagrees with were left as they are")
     print("\nDeterministic Tier-1 distribution:")
     for k, v in top_ct.most_common():
         print(f"  {k:<28} {v:>7}")
-
 
 SONNET = "claude-sonnet-5"       # full Tier-1+Tier-2 on the no-NACE residual
 HAIKU = "claude-haiku-4-5"       # Tier-2-only on the NACE-fixed-sector rows
@@ -885,9 +962,9 @@ def _load_work(con):
     def rows(where):
         return con.execute(f"""
             SELECT c.id, c.canonical_name, c.country, c.sector_top,
-                   GROUP_CONCAT(COALESCE(e.project_title,''), '||'),
-                   GROUP_CONCAT(COALESCE(e.project_summary,''), '||'),
-                   GROUP_CONCAT(e.source, '||')
+                   string_agg(COALESCE(e.project_title,''), '||' ORDER BY e.id),
+                   string_agg(COALESCE(e.project_summary,''), '||' ORDER BY e.id),
+                   string_agg(e.source, '||' ORDER BY e.id)
             FROM companies c JOIN public_funding_events e ON e.company_id = c.id
             WHERE {where} GROUP BY c.id""").fetchall()
 
@@ -907,10 +984,13 @@ def _load_work(con):
 
 def cmd_run(args) -> None:
     """Split-model batch run: Sonnet (full) on no-NACE residual, Haiku (sub-only) on
-    NACE-fixed-sector rows. Submits Message Batches, polls, writes labels back."""
-    con = sqlite3.connect(DB)
-    con.row_factory = sqlite3.Row
-    full, sub, entity_only = _load_work(con)
+    NACE-fixed-sector rows. Submits Message Batches, polls, writes labels back.
+
+    The work list is read in one short transaction and each batch's results are
+    written in their own: a batch can take hours, and a Postgres transaction held
+    open across that would sit idle on a proxy that drops quiet sockets."""
+    with connect(readonly=True) as con:
+        full, sub, entity_only = _load_work(con)
     if args.limit:
         full = full[:args.limit]
         sub = sub[:max(0, args.limit // 4)]
@@ -928,13 +1008,11 @@ def cmd_run(args) -> None:
     print(f"estimated batch cost (cached): ~${est:.0f}")
     if args.dry_run:
         print("dry-run: not submitting.")
-        con.close()
         return
     if args.max_cost is not None and est > args.max_cost:
         print(f"SKIPPED: estimated ~${est:.0f} exceeds --max-cost ${args.max_cost:.0f} "
               f"-- needs manual approval (run without --max-cost, or raise it, "
               f"once you've reviewed the backlog). Not submitting.")
-        con.close()
         return
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
@@ -955,7 +1033,8 @@ def cmd_run(args) -> None:
                 break
             time.sleep(20)
         now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        updates = []  # (top, subsec, method, tax_updated_at, entity_type, entity_updated_at, id)
+        labels: dict[int, tuple] = {}   # id -> (top, subsec, method); None = keep
+        entities: list[tuple] = []      # (entity_type, entity_updated_at, id)
         for res in client.messages.batches.results(batch.id):
             cid = res.custom_id
             cid_num = int(cid[1:])
@@ -969,33 +1048,52 @@ def cmd_run(args) -> None:
             if cid.startswith("f"):
                 top, subsec = validate(data.get("sector_top", "other"),
                                        data.get("subsector", ""))
-                updates.append((top, subsec, "llm", now, entity, now, cid_num))
+                labels[cid_num] = (top, subsec, "llm")
             elif cid.startswith("s"):                # sub-only; Tier-1 already set
                 top = top_of.get(cid, "other")
                 s = data.get("subsector", "")
                 subsec = s if s in TAXONOMY.get(top, []) else GENERAL.get(top, "other")
-                updates.append((None, subsec, None, now, entity, now, cid_num))  # keep top+method
-            else:                                     # entity-only; sector untouched
-                updates.append((None, None, None, None, entity, now, cid_num))
+                labels[cid_num] = (top, subsec, None)    # method: keep what is there
+            entities.append((entity, now, cid_num))
             written += 1
-        # COALESCE per-column so each branch only touches the fields it computed.
-        con.executemany(
-            "UPDATE companies SET "
-            "sector_top = COALESCE(?, sector_top), "
-            "subsector = COALESCE(?, subsector), "
-            "sector_taxonomy_method = COALESCE(?, sector_taxonomy_method), "
-            "sector_taxonomy_updated_at = COALESCE(?, sector_taxonomy_updated_at), "
-            "entity_type = COALESCE(?, entity_type), "
-            "entity_type_updated_at = COALESCE(?, entity_type_updated_at) "
-            "WHERE id = ?", updates)
-        con.commit()
-        print(f"    written {len(updates)} (cumulative {written}, errored {errored})")
+        with connect() as con:
+            n = _write_labels(con, labels, now)
+            with con.cursor() as cur:
+                cur.executemany(
+                    "UPDATE companies SET entity_type = COALESCE(%s, entity_type), "
+                    "entity_type_updated_at = %s WHERE id = %s", entities)
+        print(f"    written {n} sector labels, {len(entities)} entity types "
+              f"(cumulative {written}, errored {errored})")
 
-    con.close()
     print(f"\ndone: {written} labels written, {errored} errored.")
 
 
-STATE_FILE = _Path(DB).parent / ".taxonomy_batches.json"
+def _write_labels(con, labels: dict[int, tuple], now: str) -> int:
+    """Write model-produced sector labels through merge_label, so a batch that
+    lands after somebody else labelled the row cannot displace that label.
+    A None method means "keep the row's own" (the sub-only path)."""
+    if not labels:
+        return 0
+    have = {r[0]: r[1:] for r in con.execute(
+        "SELECT id, sector_top, subsector, sector_taxonomy_method FROM companies "
+        "WHERE id = ANY(%s)", (list(labels),))}
+    updates = []
+    for cid, (top, sub, method) in labels.items():
+        if cid not in have:
+            continue
+        h = have[cid]
+        merged = merge_label(h, (top, sub, method if method is not None else h[2]))
+        if merged:
+            updates.append((*merged, now, cid))
+    with con.cursor() as cur:
+        cur.executemany(
+            "UPDATE companies SET sector_top=%s, subsector=%s, "
+            "sector_taxonomy_method=%s, sector_taxonomy_updated_at=%s WHERE id=%s",
+            updates)
+    return len(updates)
+
+
+STATE_FILE = _ETL_DATA / ".taxonomy_batches.json"
 
 
 def _state_load() -> dict:
@@ -1011,10 +1109,8 @@ def _state_save(st: dict) -> None:
 def cmd_submit(args) -> None:
     """Fire-and-forget: submit all pending companies as batches, record IDs, and
     return immediately (no polling). Decoupled from the laptop — collect later."""
-    con = sqlite3.connect(DB)
-    con.row_factory = sqlite3.Row
-    full, sub = _load_work(con)
-    con.close()
+    with connect(readonly=True) as con:
+        full, sub, _entity_only = _load_work(con)
     requests = [{"custom_id": f"f{it['id']}", "params": _full_params(it)} for it in full]
     requests += [{"custom_id": f"s{it['id']}", "params": _sub_params(it, it["top"])} for it in sub]
     print(f"submitting {len(full):,} full (Sonnet) + {len(sub):,} sub (Haiku) "
@@ -1042,59 +1138,109 @@ def _name_key(name: str, country: str | None) -> str:
     return f"{(name or '').strip().lower()}|{(country or '').strip().upper()}"
 
 
-def cmd_persist(_args) -> None:
-    """Copy today's sector labels into company_sector_labels.
+def _utc_stamp() -> str:
+    """The text form the corpus's own timestamp defaults write (corpus_schema.sql)."""
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
-    companies is destructively reloaded and its surrogate id re-issued, so a
-    label written only there is temporary. An entire paid LLM pass was lost
-    that way: 8 batches submitted, 8 recorded collected, and no row carries
-    sector_taxonomy_method='llm' today. The results expired before anyone
-    noticed, because nothing measured the loss.
 
-    Run after any labelling; restore runs after any load.
+def plan_persist(vault: dict[str, tuple], companies: list[tuple]) -> dict[str, tuple]:
+    """The vault rows to write: key -> (top, sub, method). Pure.
+
+    `vault` is name_key -> (top, sub, method); `companies` is
+    (canonical_name, country, top, sub, method) in id order. Every change goes
+    through merge_label, so the vault only ever gains information: a key it has
+    never seen is added, a derived row may be upgraded by a curated one, a
+    missing subsector may be filled -- and nothing else. Companies sharing a key
+    are merged in id order, so the outcome does not depend on which came last.
     """
-    con = sqlite3.connect(DB)
-    rows = con.execute(
-        "SELECT canonical_name, country, sector_top, subsector, sector_taxonomy_method "
-        "FROM companies WHERE sector_top IS NOT NULL AND sector_top != ''").fetchall()
-    con.executemany(
-        "INSERT INTO company_sector_labels (name_key, sector_top, subsector, method) "
-        "VALUES (?,?,?,?) ON CONFLICT(name_key) DO UPDATE SET "
-        "sector_top=excluded.sector_top, subsector=excluded.subsector, "
-        "method=excluded.method, labelled_at=CURRENT_TIMESTAMP",
-        [(_name_key(r[0], r[1]), r[2], r[3], r[4]) for r in rows])
-    con.commit()
-    n = con.execute("SELECT COUNT(*) FROM company_sector_labels").fetchone()[0]
-    con.close()
-    print(f"persisted {len(rows):,} labels; store now holds {n:,}")
+    state = dict(vault)
+    changed: dict[str, tuple] = {}
+    for name, country, top, sub, method in companies:
+        key = _name_key(name, country)
+        merged = merge_label(state.get(key, (None, None, None)), (top, sub, method))
+        if merged:
+            state[key] = merged
+            changed[key] = merged
+    return changed
+
+
+def plan_restore(vault: dict[str, tuple], companies: list[tuple]) -> list[tuple]:
+    """The companies rows to write: (top, sub, method, id). Pure.
+
+    `companies` is (id, canonical_name, country, top, sub, method). The vault
+    label is offered to every row through merge_label: an unlabelled row is
+    filled (all `restore` ever did), a derived row is upgraded by a curated
+    vault label, a missing subsector is completed -- and a curated label is
+    never touched."""
+    out = []
+    for cid, name, country, top, sub, method in companies:
+        lab = vault.get(_name_key(name, country))
+        if not lab:
+            continue
+        merged = merge_label((top, sub, method), lab)
+        if merged:
+            out.append((*merged, cid))
+    return out
+
+
+def cmd_persist(_args) -> None:
+    """Copy today's sector labels into company_sector_labels, the vault.
+
+    The vault is the copy of every label that must survive anything done to
+    `companies`. An entire paid LLM pass was once lost because a label lived
+    only there: 8 batches submitted, 8 recorded collected, and no row carried
+    sector_taxonomy_method='llm' afterwards. So this runs after any labelling.
+
+    It may only ADD to the vault (plan_persist / merge_label). It used to upsert
+    with ON CONFLICT DO UPDATE, which is how a week's NACE guesses overwrote 164
+    curated labels on 2026-10-18; see the block above merge_label.
+    """
+    with connect() as con:
+        vault = {r[0]: r[1:] for r in con.execute(
+            "SELECT name_key, sector_top, subsector, method FROM company_sector_labels")}
+        rows = con.execute(
+            "SELECT canonical_name, country, sector_top, subsector, sector_taxonomy_method "
+            "FROM companies WHERE sector_top IS NOT NULL AND sector_top != '' "
+            "ORDER BY id").fetchall()
+        changed = plan_persist(vault, rows)
+        stamp = _utc_stamp()
+        with con.cursor() as cur:
+            cur.executemany(
+                "INSERT INTO company_sector_labels (name_key, sector_top, subsector, "
+                "method, labelled_at) VALUES (%s, %s, %s, %s, %s) "
+                "ON CONFLICT (name_key) DO UPDATE SET sector_top = EXCLUDED.sector_top, "
+                "subsector = EXCLUDED.subsector, method = EXCLUDED.method, "
+                "labelled_at = EXCLUDED.labelled_at",
+                [(k, *v, stamp) for k, v in changed.items()])
+        n = con.execute("SELECT COUNT(*) FROM company_sector_labels").fetchone()[0]
+    added = sum(1 for k in changed if k not in vault)
+    print(f"persisted from {len(rows):,} labelled companies: {added:,} new, "
+          f"{len(changed) - added:,} completed or upgraded; store now holds {n:,}")
 
 
 def cmd_restore(_args) -> None:
-    """Re-apply persisted labels to companies after a reload.
+    """Re-apply vault labels to companies.
 
-    Only fills rows that have no label, so a fresh classification is never
-    overwritten by an older one.
-    """
-    con = sqlite3.connect(DB)
-    con.execute("CREATE INDEX IF NOT EXISTS idx_companies_namekey "
-                "ON companies (canonical_name, country)")
-    labels = {r[0]: r for r in con.execute(
-        "SELECT name_key, sector_top, subsector, method FROM company_sector_labels")}
-    todo = con.execute(
-        "SELECT id, canonical_name, country FROM companies "
-        "WHERE sector_top IS NULL OR sector_top = ''").fetchall()
-    updates = []
-    for cid, name, country in todo:
-        lab = labels.get(_name_key(name, country))
-        if lab:
-            updates.append((lab[1], lab[2], lab[3], cid))
-    con.executemany(
-        "UPDATE companies SET sector_top=?, subsector=?, sector_taxonomy_method=?, "
-        "sector_taxonomy_updated_at=CURRENT_TIMESTAMP WHERE id=?", updates)
-    con.commit()
-    con.close()
-    print(f"restored {len(updates):,} labels onto reloaded companies "
-          f"({len(todo):,} were unlabelled, {len(labels):,} in the store)")
+    Fills rows that have no label and completes or upgrades derived ones; never
+    touches a curated label, so a fresh classification is never overwritten by
+    an older one (plan_restore / merge_label)."""
+    with connect() as con:
+        vault = {r[0]: r[1:] for r in con.execute(
+            "SELECT name_key, sector_top, subsector, method FROM company_sector_labels")}
+        rows = con.execute(
+            "SELECT id, canonical_name, country, sector_top, subsector, "
+            "sector_taxonomy_method FROM companies ORDER BY id").fetchall()
+        updates = plan_restore(vault, rows)
+        stamp = _utc_stamp()
+        with con.cursor() as cur:
+            cur.executemany(
+                "UPDATE companies SET sector_top=%s, subsector=%s, "
+                "sector_taxonomy_method=%s, sector_taxonomy_updated_at=%s WHERE id=%s",
+                [(t, s, m, stamp, cid) for t, s, m, cid in updates])
+    unlabelled = sum(1 for r in rows if not r[3])
+    print(f"restored {len(updates):,} labels onto companies "
+          f"({unlabelled:,} were unlabelled, {len(vault):,} in the store)")
 
 
 def cmd_collect(args) -> None:
@@ -1109,7 +1255,6 @@ def cmd_collect(args) -> None:
     pending_ids = [b for b in st["batches"] if b not in st["collected"]]
     if not pending_ids:
         print("no uncollected batches recorded.")
-    con = sqlite3.connect(DB)
     written = errored = still = 0
     for bid in pending_ids:
         b = client.messages.batches.retrieve(bid)
@@ -1118,38 +1263,35 @@ def cmd_collect(args) -> None:
             print(f"  {bid}: {b.processing_status} — leaving for later")
             continue
         now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        # For sub rows we need each company's already-set Tier-1 from the DB.
-        sub_tops = dict(con.execute(
-            "SELECT id, sector_top FROM companies WHERE sector_top IS NOT NULL"))
-        updates = []
-        for res in client.messages.batches.results(bid):
-            cid = res.custom_id
-            cid_num = int(cid[1:])
-            if res.result.type != "succeeded":
-                errored += 1
-                continue
-            text = next((bl.text for bl in res.result.message.content
-                         if bl.type == "text"), "{}")
-            data = _parse_json(text)
-            if cid.startswith("f"):
-                top, subsec = validate(data.get("sector_top", "other"),
-                                       data.get("subsector", ""))
-                updates.append((top, subsec, "llm", now, cid_num))
-            else:
-                top = sub_tops.get(cid_num, "other")
-                s = data.get("subsector", "")
-                subsec = s if s in TAXONOMY.get(top, []) else GENERAL.get(top, "other")
-                updates.append((None, subsec, None, now, cid_num))
-            written += 1
-        con.executemany(
-            "UPDATE companies SET sector_top = COALESCE(?, sector_top), subsector = ?, "
-            "sector_taxonomy_method = COALESCE(?, sector_taxonomy_method), "
-            "sector_taxonomy_updated_at = ? WHERE id = ?", updates)
-        con.commit()
+        with connect() as con:
+            # For sub rows we need each company's already-set Tier-1 from the DB.
+            sub_tops = dict(con.execute(
+                "SELECT id, sector_top FROM companies WHERE sector_top IS NOT NULL"
+            ).fetchall())
+            labels: dict[int, tuple] = {}
+            for res in client.messages.batches.results(bid):
+                cid = res.custom_id
+                cid_num = int(cid[1:])
+                if res.result.type != "succeeded":
+                    errored += 1
+                    continue
+                text = next((bl.text for bl in res.result.message.content
+                             if bl.type == "text"), "{}")
+                data = _parse_json(text)
+                if cid.startswith("f"):
+                    top, subsec = validate(data.get("sector_top", "other"),
+                                           data.get("subsector", ""))
+                    labels[cid_num] = (top, subsec, "llm")
+                else:
+                    top = sub_tops.get(cid_num, "other")
+                    s = data.get("subsector", "")
+                    subsec = s if s in TAXONOMY.get(top, []) else GENERAL.get(top, "other")
+                    labels[cid_num] = (top, subsec, None)
+                written += 1
+            n = _write_labels(con, labels, now)
         st["collected"].append(bid)
         _state_save(st)
-        print(f"  {bid}: collected {len(updates)} labels")
-    con.close()
+        print(f"  {bid}: collected {len(labels)} labels, {n} written")
     print(f"\ncollected {written} labels ({errored} errored, {still} batch(es) still "
           f"processing). Re-run 'collect' later for any still processing.")
 
@@ -1161,16 +1303,15 @@ def cmd_residual(args) -> None:
     import anthropic
     client = anthropic.Anthropic()
 
-    con = sqlite3.connect(DB)
-    rows = con.execute("""
-        SELECT c.id, c.canonical_name, c.country,
-               GROUP_CONCAT(COALESCE(e.project_title,''), '||'),
-               GROUP_CONCAT(COALESCE(e.project_summary,''), '||'),
-               GROUP_CONCAT(e.source, '||')
-        FROM companies c JOIN public_funding_events e ON e.company_id = c.id
-        WHERE c.sector_taxonomy_method IS NULL
-        GROUP BY c.id ORDER BY RANDOM() LIMIT ?""", (args.n,)).fetchall()
-    con.close()
+    with connect(readonly=True) as con:
+        rows = con.execute("""
+            SELECT c.id, c.canonical_name, c.country,
+                   string_agg(COALESCE(e.project_title,''), '||' ORDER BY e.id),
+                   string_agg(COALESCE(e.project_summary,''), '||' ORDER BY e.id),
+                   string_agg(e.source, '||' ORDER BY e.id)
+            FROM companies c JOIN public_funding_events e ON e.company_id = c.id
+            WHERE c.sector_taxonomy_method IS NULL
+            GROUP BY c.id ORDER BY random() LIMIT %s""", (args.n,)).fetchall()
     items = [{"name": r[1], "country": r[2],
               "titles": [t.strip() for t in (r[3] or "").split("||") if t.strip()],
               "summaries": [s.strip() for s in (r[4] or "").split("||") if s.strip()],
@@ -1199,9 +1340,8 @@ def cmd_bakeoff(args) -> None:
     import anthropic
     client = anthropic.Anthropic()
 
-    con = sqlite3.connect(DB)
-    sample = gold_sample(con, args.n)
-    con.close()
+    with connect(readonly=True) as con:
+        sample = gold_sample(con, args.n)
     print(f"bake-off: {len(sample)} NACE-grounded companies, model={args.model}\n")
 
     agree = 0
@@ -1273,15 +1413,15 @@ def cmd_bakeoff(args) -> None:
               f"(no cache) — system-prompt caching brings this materially lower.")
 
 
-def subgold_set(conn: sqlite3.Connection, n: int) -> list[dict]:
+def subgold_set(conn: "psycopg.Connection", n: int) -> list[dict]:
     """Companies whose NACE confirms a SPECIFIC (Tier-1, Tier-2). Balanced across
     sub-sectors. NACE withheld at test time; the Tier-1 is given to the model."""
     rows = conn.execute("""
         SELECT c.id, c.canonical_name, c.country,
-               GROUP_CONCAT(e.sector_tags_raw, '||') tags,
-               GROUP_CONCAT(COALESCE(e.project_title,''), '||') titles,
-               GROUP_CONCAT(COALESCE(e.project_summary,''), '||') summaries,
-               GROUP_CONCAT(e.source, '||') sources
+               string_agg(e.sector_tags_raw, '||' ORDER BY e.id) tags,
+               string_agg(COALESCE(e.project_title,''), '||' ORDER BY e.id) titles,
+               string_agg(COALESCE(e.project_summary,''), '||' ORDER BY e.id) summaries,
+               string_agg(e.source, '||' ORDER BY e.id) sources
         FROM companies c JOIN public_funding_events e ON e.company_id = c.id
         WHERE e.sector_tags_raw IS NOT NULL AND TRIM(e.sector_tags_raw) != ''
         GROUP BY c.id
@@ -1317,9 +1457,8 @@ def cmd_subtest(args) -> None:
     import anthropic
     client = anthropic.Anthropic()
 
-    con = sqlite3.connect(DB)
-    gold = subgold_set(con, args.n)
-    con.close()
+    with connect(readonly=True) as con:
+        gold = subgold_set(con, args.n)
     dist = Counter(g["csub"] for g in gold)
     print(f"Sub-sector test: {len(gold)} companies, NACE-confirmed (Tier-1 given to "
           f"model, NACE withheld). model={args.model}")
@@ -1372,9 +1511,8 @@ def cmd_test(args) -> None:
     import anthropic
     client = anthropic.Anthropic()
 
-    con = sqlite3.connect(DB)
-    gold = gold_set(con, args.n)
-    con.close()
+    with connect(readonly=True) as con:
+        gold = gold_set(con, args.n)
     dist = Counter(g["confirmed"] for g in gold)
     print(f"Confirmed gold: {len(gold)} companies, NACE-derived Tier-1 (withheld "
           f"from model). model={args.model}")

@@ -178,9 +178,10 @@ def main() -> None:
         # partial-ok: a stale join costs a revival, a missing one costs the week.
         ("refresh-existing", [py, str(TERMS / "match_bdns_open_calls.py"),
                               "--refresh-existing"], True),
+        # `load` writes the record directly. The `publish` stage that followed
+        # it copied the same rows from a SQLite authoring file into Postgres;
+        # with one store there is nothing to copy.
         ("load", [py, str(TERMS / "load_bdns_open_calls.py"), "--write"], False),
-        ("publish", [py, str(TERMS / "publish_new_instruments_scoped.py"),
-                     "--source", SOURCE_TAG], False),
     ]
     if not a.skip_naming:
         stages.append(("name", [py, str(TERMS / "name_applicable_object.py"),

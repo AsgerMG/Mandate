@@ -62,6 +62,9 @@ SEARCH = [
     # "which migrations does this store have". It is in the image (COPY . .) and
     # imports only the standard library and etl_env.
     ROOT / "ETL/events/load/migrations",
+    # ...which inserts this one, for the DDL parser check_store_schema.py owns:
+    # "is every declared column in the store" has one definition.
+    ROOT / "ETL/schema",
     ROOT / "ETL/lib", ROOT / "ETL/terms",
     ROOT / "ETL/events/extract", ROOT / "ETL/events/transform",
     ROOT / "ETL/events/load", ROOT / "ETL/events/load/qa",

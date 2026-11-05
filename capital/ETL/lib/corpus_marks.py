@@ -39,7 +39,7 @@ Two things follow from stating it that way rather than as a list:
 ── Why an open mark and a failed mark mean the same thing ─────────────────
 Deliberately. A mark is written and COMMITTED before the step runs, so a
 container killed by an OOM, a Railway deploy, or a timeout leaves it open. That
-is not a transaction — five subprocesses each committing their own SQLite
+is not a transaction — five subprocesses each committing their own
 writes cannot share one, and claiming a boundary that is not enforced is the
 shape this repo keeps paying for. What it gives instead is durable intent: the
 store always knows that something began writing to it and never said it was
@@ -53,9 +53,10 @@ the honest version of the same guarantee.
 An absent table is NOT an empty one, and neither is a pass. This repo has
 already deleted 141 correct filters by reading an absent register as empty.
 
-  table absent   the store has not applied migration 031. That is a SCHEMA
-                 fact, already carried by the census's `schema_state` and
-                 checked by check_store_schema.py, so it is reported here as
+  table absent   the store's schema predates the marks (corpus_schema.sql
+                 declares the table). That is a SCHEMA fact, already carried by
+                 the census's `schema_state` and checked by
+                 check_store_schema.py, so it is reported here as
                  UNKNOWN rather than counted as clean or double-reported as a
                  failure.
   table empty    no marked run has ever touched this store. Reported as
@@ -78,10 +79,9 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent))
 import contextlib  # noqa: E402
 import datetime as _dt  # noqa: E402
 import os  # noqa: E402
-import sqlite3  # noqa: E402
 import uuid  # noqa: E402
 
-from etl_env import DB  # noqa: E402
+from store import connect, table_exists  # noqa: E402
 
 TABLE = "corpus_run_marks"
 
@@ -109,75 +109,53 @@ def _now() -> str:
     return _dt.datetime.now(_dt.timezone.utc).isoformat(timespec="seconds")
 
 
-def _connect(db: str | _Path | None = None) -> sqlite3.Connection:
-    return sqlite3.connect(str(db or DB), timeout=30)
+@contextlib.contextmanager
+def _session(con=None, readonly: bool = False):
+    """The caller's connection when given (the self-test's, holding a TEMP
+    table), otherwise a fresh one of our own that commits on exit -- which is
+    the point for open_mark: the mark must be durable before the step runs."""
+    if con is not None:
+        yield con
+        return
+    with connect(readonly=readonly) as own:
+        yield own
 
 
-def ensure(conn: sqlite3.Connection) -> None:
-    """Create the table if this store predates migration 031.
-
-    The migration is the real definition; this is here because the runners must
-    be able to mark a store on the very run that migrates it, and because
-    `refresh.py` is not always preceded by `apply.py all`. `IF NOT EXISTS` and
-    the same DDL, so the two cannot disagree about the shape.
-    """
-    conn.execute(
-        f"CREATE TABLE IF NOT EXISTS {TABLE} ("
-        " step TEXT PRIMARY KEY,"
-        " run_id TEXT NOT NULL,"
-        " runner TEXT,"
-        " opened_at TEXT NOT NULL,"
-        " closed_at TEXT,"
-        " outcome TEXT,"
-        " detail TEXT)")
+def exists(con) -> bool:
+    return table_exists(con, TABLE)
 
 
-def exists(conn: sqlite3.Connection) -> bool:
-    return bool(conn.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?",
-        (TABLE,)).fetchone())
-
-
-def open_mark(step: str, runner: str, db: str | _Path | None = None) -> None:
+def open_mark(step: str, runner: str, con=None) -> None:
     """Say that `step` has begun writing to this store, and COMMIT it.
 
     Committed before the step runs, which is the entire point: a process that
-    dies between here and `close_mark` leaves the store saying so.
+    dies between here and `close_mark` leaves the store saying so. The table is
+    created by the schema (ETL/schema/corpus_schema.sql), not here: a missing
+    table is a schema fact the cron's first step already fails on.
     """
-    con = _connect(db)
-    try:
-        ensure(con)
-        con.execute(
+    with _session(con) as c:
+        c.execute(
             f"INSERT INTO {TABLE} (step, run_id, runner, opened_at, closed_at, "
-            f"outcome, detail) VALUES (?,?,?,?,NULL,NULL,NULL) "
-            f"ON CONFLICT(step) DO UPDATE SET run_id=excluded.run_id, "
-            f"runner=excluded.runner, opened_at=excluded.opened_at, "
-            f"closed_at=NULL, outcome=NULL, detail=NULL",
+            f"outcome, detail) VALUES (%s, %s, %s, %s, NULL, NULL, NULL) "
+            f"ON CONFLICT (step) DO UPDATE SET run_id = EXCLUDED.run_id, "
+            f"runner = EXCLUDED.runner, opened_at = EXCLUDED.opened_at, "
+            f"closed_at = NULL, outcome = NULL, detail = NULL",
             (step, run_id(), runner, _now()))
-        con.commit()
-    finally:
-        con.close()
 
 
-def close_mark(step: str, outcome: str, detail: str = "",
-               db: str | _Path | None = None) -> None:
+def close_mark(step: str, outcome: str, detail: str = "", con=None) -> None:
     """Say how `step` ended. Only ('ok', closed) resolves it."""
     if outcome not in (OK, PARTIAL, FAILED):
         raise ValueError(f"outcome must be one of ok/partial/failed, not {outcome!r}")
-    con = _connect(db)
-    try:
-        ensure(con)
-        con.execute(
-            f"UPDATE {TABLE} SET closed_at=?, outcome=?, detail=? "
-            f"WHERE step=? AND run_id=?",
+    with _session(con) as c:
+        c.execute(
+            f"UPDATE {TABLE} SET closed_at = %s, outcome = %s, detail = %s "
+            f"WHERE step = %s AND run_id = %s",
             (_now(), outcome, detail[:500], step, run_id()))
-        con.commit()
-    finally:
-        con.close()
 
 
 @contextlib.contextmanager
-def mark(step: str, runner: str, db: str | _Path | None = None):
+def mark(step: str, runner: str, con=None):
     """Wrap a step. The caller reports the outcome; an escaping exception — or a
     process that never gets here at all — leaves the mark open, which reads as
     unresolved by design.
@@ -186,7 +164,7 @@ def mark(step: str, runner: str, db: str | _Path | None = None):
             rc = subprocess.run(...).returncode
             m(OK if rc == 0 else PARTIAL if rc in tolerated else FAILED, f"rc={rc}")
     """
-    open_mark(step, runner, db)
+    open_mark(step, runner, con)
     state: dict[str, tuple[str, str]] = {}
 
     def report(outcome: str, detail: str = "") -> None:
@@ -196,33 +174,26 @@ def mark(step: str, runner: str, db: str | _Path | None = None):
         yield report
     finally:
         if "v" in state:
-            close_mark(step, state["v"][0], state["v"][1], db)
+            close_mark(step, state["v"][0], state["v"][1], con)
 
 
-def read(db: str | _Path | None = None) -> tuple[list[dict], str | None]:
-    """Every mark in a store.
+def read(con=None) -> tuple[list[dict], str | None]:
+    """Every mark in the store.
 
     Returns (marks, unknown_reason). `unknown_reason` is set — and `marks` is
     empty — when the store cannot answer the question at all, which is a
     different fact from answering "nothing is wrong". See the module docstring.
     """
-    path = _Path(str(db or DB))
-    if not path.exists():
-        return [], f"no store at {path}"
-    con = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
-    try:
-        if not exists(con):
-            return [], (f"{path.name} has no {TABLE} table — it has not applied "
-                        f"migration 031, so it cannot say how its last run went")
-        con.row_factory = sqlite3.Row
-        rows = [dict(r) for r in con.execute(
-            f"SELECT step, run_id, runner, opened_at, closed_at, outcome, detail "
-            f"FROM {TABLE} ORDER BY opened_at")]
-    finally:
-        con.close()
+    with _session(con, readonly=True) as c:
+        if not exists(c):
+            return [], (f"the store has no {TABLE} table — its schema predates "
+                        f"the run marks, so it cannot say how its last run went")
+        cols = ("step", "run_id", "runner", "opened_at", "closed_at", "outcome", "detail")
+        rows = [dict(zip(cols, r)) for r in c.execute(
+            f"SELECT {', '.join(cols)} FROM {TABLE} ORDER BY opened_at").fetchall()]
     if not rows:
-        return [], (f"{path.name} has an empty {TABLE} — no marked run has "
-                    f"touched this store yet")
+        return [], (f"the store has an empty {TABLE} — no marked run has "
+                    f"touched it yet")
     return rows, None
 
 
@@ -231,7 +202,7 @@ def is_unresolved(m: dict) -> bool:
     return not m.get("closed_at") or m.get("outcome") != OK
 
 
-def unresolved(db: str | _Path | None = None,
+def unresolved(con=None,
                ignore_run: str | None = None) -> tuple[list[dict], str | None]:
     """The marks that say this store is not whole.
 
@@ -240,7 +211,7 @@ def unresolved(db: str | _Path | None = None,
     its own open mark. It is an id, never a name: dropping by runner name would
     let a second concurrent run of the same script hide a real finding.
     """
-    marks, unknown = read(db)
+    marks, unknown = read(con)
     bad = [m for m in marks
            if is_unresolved(m) and not (ignore_run and m["run_id"] == ignore_run)]
     return bad, unknown

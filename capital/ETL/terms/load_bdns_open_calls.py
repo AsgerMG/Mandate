@@ -1,11 +1,10 @@
-"""Turn Spain's qualifying OPEN convocatorias into instruments, in SQLite.
+"""Turn Spain's qualifying OPEN convocatorias into instruments, in the store.
 
-── Order of writes, learned the hard way ──────────────────────────────────
-SQLite is the authoring source of truth and `migrate_to_postgres.py` is a full
-TRUNCATE + reinsert from it. So this writes SQLite, and a scoped publisher
-(`publish_new_instruments_scoped.py`) carries only these ids to Postgres --
-a full publish would clobber every other workstream writing Postgres tonight,
-which is the same reason `publish_scheme_text_scoped.py` exists.
+── Where it writes ────────────────────────────────────────────────────────
+Into funding_instruments in schema `capital`, the record the product serves,
+scoped to the ids this loader creates and to the columns it sets (COLUMNS).
+Until 2026-11-05 it wrote a SQLite authoring copy and a second script carried
+the rows across; there is one store now and no copy.
 
 ── What each row claims, and what it does not ─────────────────────────────
 Composed from register fields verbatim. Nothing is inferred, translated or
@@ -67,14 +66,13 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 _sys.path.insert(0, str(_Path(__file__).resolve().parent))
 
 import argparse  # noqa: E402
 import datetime as dt  # noqa: E402
 import json  # noqa: E402
-import sqlite3  # noqa: E402
 
 from harvest_bdns_open_calls import (  # noqa: E402
     load_details, clauses, discriminators, admissible_policies, budget_floor,
@@ -238,17 +236,18 @@ COLUMNS = ("id", "parent_id", "name", "name_source", "country", "administering_b
 
 
 def write(rows: list[dict]) -> None:
-    conn = sqlite3.connect(DB)
-    conn.execute("PRAGMA foreign_keys=ON")
-    n_ins = n_upd = 0
-    for r in rows:
+    with connect() as conn:
+      for r in rows:
         rec = dict(r)
         rec.update(parent_id=None, root_id=r["id"], path=r["id"],
                    event_count=0, company_count=0, total_eur=0.0)
+        # is_framework is BOOLEAN in the store; the builder speaks 0/1.
+        if rec.get("is_framework") is not None:
+            rec["is_framework"] = bool(rec["is_framework"])
         vals = [rec.get(c) for c in COLUMNS]
-        cur = conn.execute(
+        conn.execute(
             f"INSERT INTO funding_instruments ({','.join(COLUMNS)}) "
-            f"VALUES ({','.join('?' * len(COLUMNS))}) "
+            f"VALUES ({','.join(['%s'] * len(COLUMNS))}) "
             # Re-runnable: a second harvest of the same call must refresh its
             # window and text, not fail or duplicate. `updated_at` is bumped so
             # a row that stopped being refreshed is visible as stale.
@@ -268,19 +267,21 @@ def write(rows: list[dict]) -> None:
             # for this row, so it is the precise condition: the register may
             # still correct a title it has never had improved, and a derived name
             # is never clobbered by the raw citation it was derived FROM.
-            f"ON CONFLICT(id) DO UPDATE SET "
+            f"ON CONFLICT (id) DO UPDATE SET "
             + ", ".join(
                 "name=CASE WHEN funding_instruments.name_basis IS NULL "
-                "THEN excluded.name ELSE funding_instruments.name END"
-                if c == "name" else f"{c}=excluded.{c}"
+                "THEN EXCLUDED.name ELSE funding_instruments.name END"
+                if c == "name" else f"{c}=EXCLUDED.{c}"
                 for c in COLUMNS if c != "id")
-            + ", updated_at=CURRENT_TIMESTAMP", vals)
-        n_ins += cur.rowcount
-        conn.execute("INSERT OR IGNORE INTO funding_instrument_sources "
-                     "(instrument_id, source) VALUES (?,?)", (r["id"], SOURCE_TAG))
-    conn.commit()
-    print(f"SQLite: {len(rows)} rows written ({SOURCE_TAG})")
-    conn.close()
+            + ", updated_at=now()", vals)
+        conn.execute("INSERT INTO funding_instrument_sources (instrument_id, source) "
+                     "VALUES (%s, %s) ON CONFLICT DO NOTHING", (r["id"], SOURCE_TAG))
+    # Straight into the record. There used to be a second step,
+    # publish_new_instruments_scoped.py, copying these rows from SQLite into
+    # Postgres -- every column, so it also overwrote whatever the record held
+    # in columns this loader never sets. With one store the copy is gone, and
+    # this upsert touches exactly COLUMNS.
+    print(f"store: {len(rows)} rows written ({SOURCE_TAG})")
 
 
 def write_revivals(revivals: dict[str, list[dict]]) -> None:
@@ -302,27 +303,24 @@ def write_revivals(revivals: dict[str, list[dict]]) -> None:
     carries the new window, and re-running this pass clears a successor whose
     call has since shut, so a leaf cannot silently outlive its revival.
     """
-    conn = sqlite3.connect(DB)
     n = 0
-    for iid, calls in revivals.items():
+    with connect() as conn:
+      for iid, calls in revivals.items():
         best = max(calls, key=lambda d: (d.get("fechaFinSolicitud") or ""))
         conn.execute(
-            "UPDATE funding_instruments SET successor_scheme=?, successor_title=?, "
-            "updated_at=CURRENT_TIMESTAMP WHERE id=?",
+            "UPDATE funding_instruments SET successor_scheme=%s, successor_title=%s, "
+            "updated_at=now() WHERE id=%s",
             (str(best.get("codigoBDNS")), (best.get("descripcion") or "").strip()[:400], iid))
         n += 1
     # Retract a revival whose call has since closed and that this run did not
     # re-find. Without this the corpus would keep a dead call in front of a
     # founder under a successor title, which is the failure the whole workstream
     # exists to undo, wearing the fix's clothes.
-    conn.execute(
+      conn.execute(
         "UPDATE funding_instruments SET successor_scheme=NULL, successor_title=NULL "
-        "WHERE country=? AND successor_scheme IS NOT NULL AND id NOT IN (%s)"
-        % (",".join("?" * len(revivals)) or "''"),
-        (COUNTRY, *revivals.keys()))
-    conn.commit()
-    conn.close()
-    print(f"SQLite: {n} leaves revived through the successor redirect")
+        "WHERE country=%s AND successor_scheme IS NOT NULL AND id <> ALL(%s)",
+        (COUNTRY, list(revivals.keys())))
+    print(f"store: {n} leaves revived through the successor redirect")
 
 
 def main() -> None:

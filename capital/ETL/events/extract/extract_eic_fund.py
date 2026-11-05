@@ -27,13 +27,13 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import csv
 import html as htmllib
 import re
-import sqlite3
 import sys
 import time
 from pathlib import Path
@@ -113,55 +113,54 @@ def fetch_rows() -> list[dict]:
 
 
 def load_db(rows: list[dict]) -> None:
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
-    matcher = CompanyMatcher(con)  # cross-country: portfolio spans the scope
+    with connect() as con:
+        cur = con.cursor()
+        matcher = CompanyMatcher(con)  # cross-country: portfolio spans the scope
 
-    counts = {"matched": 0, "new": 0, "out_of_scope": 0,
-              "skipped_dup": 0, "inserted_events": 0}
-    methods: dict[str, int] = {}
+        counts = {"matched": 0, "new": 0, "out_of_scope": 0,
+                  "skipped_dup": 0, "inserted_events": 0}
+        methods: dict[str, int] = {}
 
-    for r in rows:
-        country = canonicalise_country(r["country"]) if r["country"] else None
-        if r["country"] and country is None:
-            counts["out_of_scope"] += 1
-            continue
+        for r in rows:
+            country = canonicalise_country(r["country"]) if r["country"] else None
+            if r["country"] and country is None:
+                counts["out_of_scope"] += 1
+                continue
 
-        cid, method = matcher.match(r["company_name"])
-        methods[method] = methods.get(method, 0) + 1
-        if cid is None:
-            norm = normalize_name(r["company_name"])
+            cid, method = matcher.match(r["company_name"])
+            methods[method] = methods.get(method, 0) + 1
+            if cid is None:
+                norm = normalize_name(r["company_name"])
+                cur.execute(
+                    """INSERT INTO companies (canonical_name, raw_name, country,
+                       entity_type, match_method, match_confidence)
+                       VALUES (%s, %s, %s, 'company', 'eic_fund', 'medium') RETURNING id""",
+                    (norm, r["company_name"], country),
+                )
+                cid = cur.fetchone()[0]
+                matcher.register(cid, r["company_name"])
+                counts["new"] += 1
+            else:
+                counts["matched"] += 1
+
+            cur.execute("SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
+                        ("eic_fund", r["call_id"]))
+            if cur.fetchone():
+                counts["skipped_dup"] += 1
+                continue
             cur.execute(
-                """INSERT INTO companies (canonical_name, raw_name, country,
-                   entity_type, match_method, match_confidence)
-                   VALUES (?, ?, ?, 'company', 'eic_fund', 'medium')""",
-                (norm, r["company_name"], country),
+                """INSERT INTO public_funding_events
+                   (company_id, source, call_id, role, project_summary,
+                    equity_amount_eur, sector_tags_raw, grant_amount_basis,
+                    raw_source_url)
+                   VALUES (%s, 'eic_fund', %s, 'portfolio_company', %s, NULL, %s,
+                           'eic_fund_equity_unpublished', %s)""",
+                (cid, r["call_id"], r["description"], r["sector_label"],
+                 r["detail_url"]),
             )
-            cid = cur.lastrowid
-            matcher.register(cid, r["company_name"])
-            counts["new"] += 1
-        else:
-            counts["matched"] += 1
+            counts["inserted_events"] += 1
 
-        cur.execute("SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
-                    ("eic_fund", r["call_id"]))
-        if cur.fetchone():
-            counts["skipped_dup"] += 1
-            continue
-        cur.execute(
-            """INSERT INTO public_funding_events
-               (company_id, source, call_id, role, project_summary,
-                equity_amount_eur, sector_tags_raw, grant_amount_basis,
-                raw_source_url)
-               VALUES (?, 'eic_fund', ?, 'portfolio_company', ?, NULL, ?,
-                       'eic_fund_equity_unpublished', ?)""",
-            (cid, r["call_id"], r["description"], r["sector_label"],
-             r["detail_url"]),
-        )
-        counts["inserted_events"] += 1
-
-    con.commit()
-    con.close()
+        con.commit()
     print(f"Match/load: {counts}")
     print(f"Match methods: {methods}")
 

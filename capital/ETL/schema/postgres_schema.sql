@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS brief_records (
   country                    TEXT,
   description                TEXT,
   eligibility                JSONB,
-  capital_sought             ARRAY,
+  capital_sought             TEXT[],
   institutions               JSONB NOT NULL,
   dropped_blocked            INTEGER,
   dropped_watch_only         INTEGER,
@@ -45,12 +45,6 @@ CREATE TABLE IF NOT EXISTS corpus_census (
   gate                       JSONB,
   errors                     JSONB NOT NULL DEFAULT '[]'::jsonb,
   run_outcome                TEXT NOT NULL DEFAULT 'unknown'::text,
-  -- WHICH STORE this census read, and what it could reach of the committed
-  -- migrations. Written by publish_corpus_census.py, which also self-heals them
-  -- with ADD COLUMN IF NOT EXISTS -- so until the next weekly run they existed
-  -- only in that script, and check_corpus_census.ts failed outright reading a
-  -- column no committed DDL declared. Declared here so the committed-DDL half
-  -- of check_store_schema.py accounts for them.
   store                      TEXT NOT NULL DEFAULT 'unknown'::text,
   schema_state               JSONB
 );
@@ -86,7 +80,7 @@ CREATE TABLE IF NOT EXISTS eligibility_embeddings (
   instrument_id              TEXT NOT NULL,
   source_key                 TEXT NOT NULL,
   chunk_text                 TEXT NOT NULL,
-  embedding                  VECTOR NOT NULL,
+  embedding                  vector(1024) NOT NULL,
   model                      TEXT NOT NULL,
   created_at                 TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
@@ -197,7 +191,6 @@ CREATE TABLE IF NOT EXISTS funding_instruments (
   catchment_regions          TEXT,
   catchment_source           TEXT,
   scheme_end_date_basis      TEXT,
-  source_window_policy       TEXT,
   route_status               TEXT,
   route_status_source        TEXT,
   route_status_note          TEXT,
@@ -242,7 +235,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS instrument_application_pkey ON instrument_appl
 CREATE TABLE IF NOT EXISTS instrument_profiles (
   instrument_id              TEXT NOT NULL,
   profile_text               TEXT NOT NULL,
-  embedding                  VECTOR NOT NULL,
+  embedding                  vector(1024) NOT NULL,
   model                      TEXT NOT NULL,
   n_titles                   INTEGER NOT NULL DEFAULT 0,
   built_at                   TIMESTAMP WITH TIME ZONE DEFAULT now()

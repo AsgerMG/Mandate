@@ -35,6 +35,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import columns, connect  # noqa: E402
 from ndb_helpers import normalise_ticket  # noqa: E402
 # --- end ETL path bootstrap ---
 
@@ -42,7 +43,6 @@ import argparse
 import csv
 import json
 import re
-import sqlite3
 import subprocess
 import sys
 from pathlib import Path
@@ -183,12 +183,14 @@ def _parse_record(rec: dict) -> list[dict]:
     }]
 
 
-def _satr_dedup_set(con: sqlite3.Connection) -> set[tuple[str, int]]:
+def _satr_dedup_set(con) -> set[tuple[str, int]]:
     """Return (canonical_name_upper, year) pairs already in SATR for SE."""
     cur = con.cursor()
     cur.execute(
-        """SELECT UPPER(c.canonical_name),
-                  CAST(strftime('%Y', pfe.project_started) AS INTEGER)
+        """SELECT translate(c.canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'),
+                  -- strftime('%Y', x) in SQLite: NULL unless x is a date
+                  CASE WHEN pfe.project_started ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+                       THEN substr(pfe.project_started, 1, 4)::int END
            FROM public_funding_events pfe
            JOIN companies c ON c.id = pfe.company_id
            WHERE pfe.source LIKE 'satr_%'
@@ -197,74 +199,75 @@ def _satr_dedup_set(con: sqlite3.Connection) -> set[tuple[str, int]]:
 
 
 def _load_to_db(rows: list[dict]) -> dict:
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
-    satr_pairs = _satr_dedup_set(con)
-    print(f"  SATR dedup set: {len(satr_pairs)} (vinnova, SE) pairs")
+    with connect() as con:
+        cur = con.cursor()
+        satr_pairs = _satr_dedup_set(con)
+        print(f"  SATR dedup set: {len(satr_pairs)} (vinnova, SE) pairs")
 
-    cur.execute("PRAGMA table_info(companies)")
-    col_names = {r[1] for r in cur.fetchall()}
-    has_national_id = "national_id" in col_names
+        col_names = set(columns(con, "companies"))
+        has_national_id = "national_id" in col_names
 
-    counts = {"inserted": 0, "satr_deduped": 0, "skipped_dup": 0, "errors": 0}
-    for r in rows:
-        norm = r["company_name_norm"]
-        year = r["year"]
-        # SATR dedup: skip if already present in SATR for this company+year (±1)
-        if any((norm, y) in satr_pairs for y in range(year - 1, year + 2)):
-            counts["satr_deduped"] += 1
-            continue
-        try:
-            if has_national_id and r.get("org_nr"):
-                cur.execute(
-                    "SELECT id FROM companies WHERE national_id=? AND country='SE'",
-                    (r["org_nr"],))
-                row = cur.fetchone()
-                cid = row[0] if row else None
-            else:
-                cid = None
-            if cid is None:
-                cur.execute(
-                    "SELECT id FROM companies WHERE canonical_name=? AND country='SE'", (norm,))
-                row = cur.fetchone()
-                cid = row[0] if row else None
-            if cid is None:
-                if has_national_id:
-                    cur.execute(
-                        """INSERT INTO companies (canonical_name, raw_name, country, national_id,
-                           entity_type, match_method, match_confidence)
-                           VALUES (?, ?, 'SE', ?, 'unknown', 'vinnova', 'medium')""",
-                        (norm, r["company_name"], r.get("org_nr") or None))
-                else:
-                    cur.execute(
-                        """INSERT INTO companies (canonical_name, raw_name, country,
-                           entity_type, match_method, match_confidence)
-                           VALUES (?, ?, 'SE', 'unknown', 'vinnova', 'medium')""",
-                        (norm, r["company_name"]))
-                cid = cur.lastrowid
-            cur.execute(
-                "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
-                (r["source"], r["call_id"]))
-            if cur.fetchone():
-                counts["skipped_dup"] += 1
+        counts = {"inserted": 0, "satr_deduped": 0, "skipped_dup": 0, "errors": 0}
+        for r in rows:
+            norm = r["company_name_norm"]
+            year = r["year"]
+            # SATR dedup: skip if already present in SATR for this company+year (±1)
+            if any((norm, y) in satr_pairs for y in range(year - 1, year + 2)):
+                counts["satr_deduped"] += 1
                 continue
-            cur.execute(
-                """INSERT INTO public_funding_events
-                   (company_id, source, call_id, role, coordinator_only,
-                    project_number, project_title, project_started,
-                    grant_amount_eur, grant_amount_basis, deployment_country, ndb_distributor)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'ndb_grant', ?, ?)""",
-                (cid, r["source"], r["call_id"], r["role"], r["coordinator_only"],
-                 r.get("project_id") or None, r.get("project_title") or None,
-                 f"{year}-01-01", r["grant_amount_eur"],
-                 r["deployment_country"], r["ndb_distributor"]))
-            counts["inserted"] += 1
-        except Exception as e:
-            counts["errors"] += 1
-            if counts["errors"] <= 3:
-                print(f"  ERROR {r.get('company_name','?')}: {e}", file=sys.stderr)
-    con.commit()
-    con.close()
+            try:
+                # A savepoint per row: a failed statement must not abort the rest
+                # of the load, which is what SQLite's per-row except allowed.
+                with con.transaction():
+                    if has_national_id and r.get("org_nr"):
+                        cur.execute(
+                            "SELECT id FROM companies WHERE national_id=%s AND country='SE' ORDER BY id",
+                            (r["org_nr"],))
+                        row = cur.fetchone()
+                        cid = row[0] if row else None
+                    else:
+                        cid = None
+                    if cid is None:
+                        cur.execute(
+                            "SELECT id FROM companies WHERE canonical_name=%s AND country='SE' ORDER BY id", (norm,))
+                        row = cur.fetchone()
+                        cid = row[0] if row else None
+                    if cid is None:
+                        if has_national_id:
+                            cur.execute(
+                                """INSERT INTO companies (canonical_name, raw_name, country, national_id,
+                                   entity_type, match_method, match_confidence)
+                                   VALUES (%s, %s, 'SE', %s, 'unknown', 'vinnova', 'medium') RETURNING id""",
+                                (norm, r["company_name"], r.get("org_nr") or None))
+                        else:
+                            cur.execute(
+                                """INSERT INTO companies (canonical_name, raw_name, country,
+                                   entity_type, match_method, match_confidence)
+                                   VALUES (%s, %s, 'SE', 'unknown', 'vinnova', 'medium') RETURNING id""",
+                                (norm, r["company_name"]))
+                        cid = cur.fetchone()[0]
+                    cur.execute(
+                        "SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
+                        (r["source"], r["call_id"]))
+                    if cur.fetchone():
+                        counts["skipped_dup"] += 1
+                        continue
+                    cur.execute(
+                        """INSERT INTO public_funding_events
+                           (company_id, source, call_id, role, coordinator_only,
+                            project_number, project_title, project_started,
+                            grant_amount_eur, grant_amount_basis, deployment_country, ndb_distributor)
+                           VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, 'ndb_grant', %s, %s)""",
+                        (cid, r["source"], r["call_id"], r["role"], r["coordinator_only"],
+                         r.get("project_id") or None, r.get("project_title") or None,
+                         f"{year}-01-01", r["grant_amount_eur"],
+                         r["deployment_country"], r["ndb_distributor"]))
+                    counts["inserted"] += 1
+            except Exception as e:
+                counts["errors"] += 1
+                if counts["errors"] <= 3:
+                    print(f"  ERROR {r.get('company_name','?')}: {e}", file=sys.stderr)
+        con.commit()
     return counts
 
 

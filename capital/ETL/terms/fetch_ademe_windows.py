@@ -97,11 +97,9 @@ offering it. That is the same failure Spain needed `refresh_open_calls.py` for.
 This script is idempotent, re-reads both catalogues from scratch, and runs as a
 step in `railway_cron.py` beside it.
 
-Both stores are written, in that order: Postgres because it IS the corpus, and
-then the SQLite cache from what Postgres now holds -- `website/build/
-eligibility_export.py` builds the committed snapshot the site serves out of
-SQLITE, so a window that reaches only Postgres is a fund the corpus calls closed
-and the product goes on offering.
+It writes the one store (schema `capital`). Until 2026-11-05 it also copied
+the windows into a SQLite cache the site snapshot was built from; that cache is
+gone, and the snapshot builders read the store.
 
 Exit codes match `renew.py`, which the cron runner already reads:
   0  every target resolved
@@ -122,7 +120,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
@@ -130,13 +128,13 @@ import datetime as dt  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import re  # noqa: E402
-import sqlite3  # noqa: E402
 import time  # noqa: E402
 import urllib.parse  # noqa: E402
 
 from liveness import (  # noqa: E402
     CALL_DEADLINE, PUBLISHES_WINDOW, closed_sql, is_closed)
 from ndb_ssl import fetch_text  # noqa: E402
+from store import connect  # noqa: E402
 
 #: The root whose leaves this reader speaks for. An input to a fetch job, not a
 #: branch in any rule: the catalogues below are ADEME's, so the job is ADEME's.
@@ -326,17 +324,6 @@ def plan(rows: list[dict], readings: dict[str, dict]) -> tuple[list[dict], list[
 
 # ── Stores ─────────────────────────────────────────────────────────────────
 
-def pg():
-    url = os.environ.get("DATABASE_URL")
-    if not url:
-        raise SystemExit(
-            "DATABASE_URL is not set. SQLite alone is not the corpus -- the "
-            "product reads Postgres, and a window written to one store only is "
-            "a fund that is closed in one place and open in the other.")
-    import psycopg2  # noqa: PLC0415 -- optional dep; only the DB path needs it
-    return psycopg2.connect(url)
-
-
 def targets(conn) -> list[dict]:
     with conn.cursor() as cur:
         cur.execute(
@@ -361,8 +348,11 @@ def main() -> int:
     if args.write == args.dry_run:
         raise SystemExit("choose exactly one of --write / --dry-run")
 
-    conn = pg()
-    rows = targets(conn)
+    # Short connections only: the read phase below can run for an hour against
+    # a public archive, and a Postgres session held idle across it is one the
+    # proxy drops.
+    with connect(readonly=True) as conn:
+        rows = targets(conn)
     if args.limit:
         rows = rows[:args.limit]
     print(f"{len(rows)} {ROOT_ID} leaves in Postgres\n")
@@ -460,8 +450,8 @@ def main() -> int:
         print("\ndry run: nothing written")
         return 0
 
-    # ── Postgres first: it IS the corpus. ───────────────────────────────────
-    with conn, conn.cursor() as cur:
+    # ── The store: one transaction, every confirmation and every window. ────
+    with connect() as conn, conn.cursor() as cur:
         # Every row this run CONFIRMED against its source, not only the ones
         # whose date moved. `check_offerable_decay.py` limb 1 reads
         # MAX(updated_at) per clock-decaying source as the freshness of the JOB
@@ -489,35 +479,11 @@ def main() -> int:
         # capture date -- is in data/raw/ademe_windows/readings.json and is
         # re-derived by every run.
 
-    # ── Then SQLite, from what Postgres now holds ──────────────────────────
-    # Every row of this root, not just the ones this run changed. The delta was
-    # the obvious thing to copy and it is the wrong thing: `eligibility_export.
-    # py` builds the committed snapshot the site serves FROM SQLITE, so a
-    # window that reached Postgres and missed the cache is a fund the corpus
-    # calls closed and the product still offers. Measured on 2026-08-08, before
-    # this loop was widened: Postgres held 65 ADEME windows and the cache held
-    # 0 -- including the 46 that predate this workstream entirely. Copying the
-    # state rather than the change is also what makes a re-run repair a store
-    # that drifted for some other reason.
-    if DB.exists():
-        with conn.cursor() as cur:
-            cur.execute("SELECT id, scheme_end_date, scheme_end_date_basis "
-                        "FROM funding_instruments WHERE root_id = %s", (ROOT_ID,))
-            current = [(str(e)[:10] if e else None, b, i)
-                       for i, e, b in cur.fetchall()]
-        lite = sqlite3.connect(DB)
-        lite.executemany("UPDATE funding_instruments SET scheme_end_date = ?, "
-                         "scheme_end_date_basis = ? WHERE id = ?", current)
-        lite.commit()
-        print(f"sqlite cache: {lite.total_changes} row(s) brought in line "
-              f"with Postgres")
-        lite.close()
-
     # ── Read back OUT of Postgres, so the run reports the product's view ────
     # Closed is `closed_sql()`, generated from the one definition in
     # lib/intelligence/liveness.ts. A count this script computed its own way
     # would be a report about this script rather than about the corpus.
-    with conn.cursor() as cur:
+    with connect(readonly=True) as conn, conn.cursor() as cur:
         cur.execute(
             f"""SELECT count(*),
                        count(*) FILTER (WHERE scheme_end_date IS NOT NULL),
@@ -528,7 +494,6 @@ def main() -> int:
     print(f"\npostgres, read back: {total} leaves, {dated} dated, "
           f"{closed} closed, {total - closed} offerable, "
           f"{total - dated} with no window")
-    conn.close()
 
     if not readings:
         print("nothing could be read from either catalogue")

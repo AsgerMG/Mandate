@@ -24,42 +24,46 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from etl_env import ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
-import sqlite3
+from contextlib import contextmanager
 from pathlib import Path
 
-DB_PATH = _ETL_DB
+from store import connect
+
+
+@contextmanager
+def _use(conn):
+    """The caller's connection, or a fresh one that commits on exit."""
+    if conn is not None:
+        yield conn
+    else:
+        with connect() as own:
+            yield own
 
 
 # ---------------------------------------------------------------------------
 # 1. IPCEI linkage
 # ---------------------------------------------------------------------------
 
-def match_ipcei_linked(company_id: int, *, conn: sqlite3.Connection | None = None) -> int:
+def match_ipcei_linked(company_id: int, *, conn=None) -> int:
     """Return 1 if `company_id` has any existing ipcei_* event, else 0.
 
     Used at NDB-extractor load time to populate `public_funding_events.ipcei_linked`.
     Cheap because IPCEI is small (~280 events total) and indexed by source.
     Callers may pass an existing connection to avoid open/close churn in bulk loops.
     """
-    own_conn = conn is None
-    if own_conn:
-        conn = sqlite3.connect(DB_PATH)
-    try:
-        row = conn.execute(
+    with _use(conn) as c:
+        row = c.execute(
             "SELECT 1 FROM public_funding_events "
-            "WHERE company_id = ? AND source LIKE 'ipcei_%' LIMIT 1",
+            "WHERE company_id = %s AND source LIKE 'ipcei_%%' LIMIT 1",
             (company_id,),
         ).fetchone()
         return 1 if row else 0
-    finally:
-        if own_conn:
-            conn.close()
 
 
-def backfill_ipcei_linked(*, conn: sqlite3.Connection | None = None,
+def backfill_ipcei_linked(*, conn=None,
                          source_prefixes: tuple[str, ...] | None = None) -> int:
     """Bulk update `ipcei_linked=1` on all rows whose company has an ipcei_* sibling.
 
@@ -68,39 +72,36 @@ def backfill_ipcei_linked(*, conn: sqlite3.Connection | None = None,
 
     Use this after a load instead of per-row lookup when scaling.
     """
-    own_conn = conn is None
-    if own_conn:
-        conn = sqlite3.connect(DB_PATH)
-    try:
+    with _use(conn) as c:
         params: list = []
         where_extra = ""
         if source_prefixes:
-            clauses = " OR ".join(["pfe.source LIKE ?"] * len(source_prefixes))
+            clauses = " OR ".join(["pfe.source LIKE %s"] * len(source_prefixes))
             where_extra = f" AND ({clauses})"
             params.extend(f"{p}%" for p in source_prefixes)
-        cur = conn.execute(
+        # `%%` because the statement carries parameters (psycopg reads a bare
+        # `%` as a placeholder); the pattern is still SQLite's `'ipcei_%'`.
+        cur = c.execute(
             f"""
             UPDATE public_funding_events
             SET ipcei_linked = 1
             WHERE ipcei_linked = 0
-              AND source NOT LIKE 'ipcei_%'
+              AND source NOT LIKE 'ipcei_%%'
               AND company_id IN (
                   SELECT DISTINCT pfe.company_id
                   FROM public_funding_events pfe
                   JOIN public_funding_events ipcei
                     ON ipcei.company_id = pfe.company_id
-                  WHERE ipcei.source LIKE 'ipcei_%'
-                    AND pfe.source NOT LIKE 'ipcei_%'
+                  WHERE ipcei.source LIKE 'ipcei_%%'
+                    AND pfe.source NOT LIKE 'ipcei_%%'
                     {where_extra}
               )
             """,
             params,
         )
-        conn.commit()
+        if conn is not None:
+            conn.commit()       # the old contract: the caller's work is committed too
         return cur.rowcount
-    finally:
-        if own_conn:
-            conn.close()
 
 
 # ---------------------------------------------------------------------------

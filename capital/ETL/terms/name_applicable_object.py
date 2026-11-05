@@ -101,7 +101,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
@@ -109,7 +109,6 @@ import concurrent.futures as _cf  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import re  # noqa: E402
-import sqlite3  # noqa: E402
 import unicodedata  # noqa: E402
 
 from ndb_ssl import fetch_json  # noqa: E402
@@ -376,12 +375,10 @@ def compose(sourced: dict[str, str]) -> tuple[str, str]:
 
 # ── Selection ──────────────────────────────────────────────────────────────
 
-def pg_conn():
-    import psycopg
-    url = os.environ.get("DATABASE_URL")
-    if not url:
-        raise SystemExit("DATABASE_URL not set (repo-root .env.local)")
-    return psycopg.connect(url)
+def pg_conn(readonly: bool = False):
+    """The store (schema `capital`). Commits on clean exit of the `with`."""
+    from store import connect  # noqa: PLC0415
+    return connect(readonly=readonly)
 
 
 def candidates(country: str) -> list[dict]:
@@ -391,7 +388,7 @@ def candidates(country: str) -> list[dict]:
     code is what makes the official record reachable; a row without one cannot
     be re-sourced and is reported rather than guessed at.
     """
-    with pg_conn() as c:
+    with pg_conn(readonly=True) as c:
         rows = c.execute(
             "SELECT id, name, name_source, scheme_end_date, scheme_end_date_basis, "
             "       successor_scheme "
@@ -571,32 +568,18 @@ def from_jsonl(path: _Path) -> list[dict]:
              "outcome": "sourced_file"} for r in rows]
 
 
-def held_names(ids: list[str], postgres: bool) -> dict[str, dict[str, str | None]]:
-    """What each store holds for these rows TODAY, and the body that grants them.
-
-    Both stores are asked the same question rather than one being asked and the
-    other assumed: SQLite and Postgres have diverged under three workstreams
-    this month, and a precondition verified on the authoring store alone is a
-    precondition not verified on the store the founder reads.
-    """
-    q = ",".join("?" * len(ids))
-    conn = sqlite3.connect(DB)
-    out = {i: {"sqlite": None, "sqlite_body": None, "pg": None} for i in ids}
-    for iid, name, body in conn.execute(
-            f"SELECT id, name, administering_body FROM funding_instruments "
-            f"WHERE id IN ({q})", ids):
-        out[iid]["sqlite"], out[iid]["sqlite_body"] = name, body
-    conn.close()
-    if postgres:
-        with pg_conn() as c:
-            for iid, name in c.execute(
-                    "SELECT id, name FROM funding_instruments WHERE id = ANY(%s)",
-                    (ids,)).fetchall():
-                out[iid]["pg"] = name
+def held_names(ids: list[str]) -> dict[str, dict[str, str | None]]:
+    """What the store holds for these rows TODAY, and the body that grants them."""
+    out = {i: {"name": None, "body": None} for i in ids}
+    with pg_conn(readonly=True) as c:
+        for iid, name, body in c.execute(
+                "SELECT id, name, administering_body FROM funding_instruments "
+                "WHERE id = ANY(%s)", (ids,)).fetchall():
+            out[iid]["name"], out[iid]["body"] = name, body
     return out
 
 
-def check_preconditions(results: list[dict], postgres: bool) -> bool:
+def check_preconditions(results: list[dict]) -> bool:
     """Refuse the file if the corpus has moved under any line of it.
 
     ALREADY IS NOT DRIFT, for the reason `apply_gate_encoding_corrections.py`
@@ -605,109 +588,73 @@ def check_preconditions(results: list[dict], postgres: bool) -> bool:
 
     A partial write is refused outright rather than applied to the rows that
     still match, because a half-applied set leaves nothing recording which half
-    is which -- and here the halves are in two different stores.
+    is which.
     """
     ids = [r["id"] for r in results]
-    held = held_names(ids, postgres)
+    held = held_names(ids)
     drift, already, absent = [], [], []
     for r in results:
         h = held[r["id"]]
-        if h["sqlite"] is None:
-            absent.append(f"{r['id']}: not in SQLite")
+        if h["name"] is None:
+            absent.append(f"{r['id']}: not in the store")
             continue
-        if h["sqlite_body"] and _fold(r["new_name"]) == _fold(h["sqlite_body"]):
+        if h["body"] and _fold(r["new_name"]) == _fold(h["body"]):
             drift.append(f"{r['id']}: proposed name is exactly its administering_body "
-                         f"({h['sqlite_body']!r}) — see check_body_named_rows")
+                         f"({h['body']!r}) — see check_body_named_rows")
             continue
-        for store in ("sqlite", "pg") if postgres else ("sqlite",):
-            if h[store] is None:
-                absent.append(f"{r['id']}: not in {store}")
-            elif _fold(h[store]) == _fold(r["new_name"]):
-                already.append(f"{r['id']} [{store}]")
-            elif _fold(h[store]) != _fold(r["name"]):
-                drift.append(f"{r['id']} [{store}]: now holds {h[store]!r}, the decision "
-                             f"was written against {r['name']!r}")
+        if _fold(h["name"]) == _fold(r["new_name"]):
+            already.append(r["id"])
+        elif _fold(h["name"]) != _fold(r["name"]):
+            drift.append(f"{r['id']}: now holds {h['name']!r}, the decision "
+                         f"was written against {r['name']!r}")
     print(f"\npreconditions: {len(results)} decisions, {len(drift)} drifted, "
-          f"{len(already)} already applied, {len(absent)} absent"
-          + ("" if postgres else "   [SQLITE ONLY — Postgres not checked]"))
+          f"{len(already)} already applied, {len(absent)} absent")
     for a in already:
         print(f"  ALREADY  {a}")
     for a in absent:
         print(f"  ABSENT   {a}")
     if drift or absent:
-        print("\nREFUSED — nothing written to either store. Re-derive the decisions "
-              "against\n  the current corpus rather than applying a partial set.")
+        print("\nREFUSED — nothing written. Re-derive the decisions against\n"
+              "  the current corpus rather than applying a partial set.")
         return False
     return True
 
 
 # ── Writes ─────────────────────────────────────────────────────────────────
-
-def ensure_columns() -> None:
-    """`name_basis` in both stores. A plain ADD COLUMN in each -- deliberately
-    NOT a `name_source` vocabulary change, which SQLite can only do by
-    rebuilding the table, and rebuilding a table several agents are writing is
-    a bigger risk than this column solves. The two existing values already say
-    the true thing: `programme_feed` is what the feed carries, `deterministic`
-    is composed by us. `name_basis` says which fields and by what method."""
-    conn = sqlite3.connect(DB)
-    cols = {r[1] for r in conn.execute("PRAGMA table_info(funding_instruments)")}
-    if "name_basis" not in cols:
-        conn.execute("ALTER TABLE funding_instruments ADD COLUMN name_basis TEXT")
-        conn.commit()
-        print("SQLite: added funding_instruments.name_basis")
-    conn.close()
-    with pg_conn() as c:
-        c.execute("ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS name_basis TEXT")
-        c.commit()
-    print("Postgres: name_basis present")
-
+# `name_basis` is in the schema (postgres_schema.sql); this file no longer adds
+# it on its way past.
 
 def write(results: list[dict]) -> int:
     rows = [r for r in results if r.get("new_name")]
-    conn = sqlite3.connect(DB)
-    for r in rows:
-        conn.execute(
-            "UPDATE funding_instruments SET name=?, name_source=?, name_basis=?, "
-            "updated_at=CURRENT_TIMESTAMP WHERE id=?",
-            (r["new_name"], r["new_name_source"], r["name_basis"], r["id"]))
-    conn.commit()
-    conn.close()
-    print(f"SQLite: {len(rows)} names updated")
-
     with pg_conn() as c:
         for r in rows:
             c.execute("UPDATE funding_instruments SET name=%s, name_source=%s, "
                       "name_basis=%s, updated_at=NOW() WHERE id=%s",
                       (r["new_name"], r["new_name_source"], r["name_basis"], r["id"]))
-        c.commit()
-    print(f"Postgres: {len(rows)} names updated")
+    print(f"store: {len(rows)} names updated")
     return len(rows)
 
 
 def reconcile(results: list[dict]) -> None:
-    """Read every changed name back OUT of Postgres and compare to SQLite.
+    """Read every changed name back OUT of the store and compare to the decision.
 
-    The SQLite/Postgres split has half-destroyed three pieces of work this week;
-    a run that reports success without checking the store the product reads is
-    the exact shape of that failure.
+    A run that reports success without reading back what the product reads is
+    the shape of the failure this repo kept paying for while there were two
+    stores; the read-back stays.
     """
     rows = [r for r in results if r.get("new_name")]
     if not rows:
         print("nothing to reconcile")
         return
     ids = [r["id"] for r in rows]
-    with pg_conn() as c:
-        pg = dict(c.execute("SELECT id, name FROM funding_instruments WHERE id = ANY(%s)",
-                            (ids,)).fetchall())
-    conn = sqlite3.connect(DB)
-    q = ",".join("?" * len(ids))
-    lite = dict(conn.execute(f"SELECT id, name FROM funding_instruments WHERE id IN ({q})", ids))
-    conn.close()
-    bad = [i for i in ids if pg.get(i) != lite.get(i) or pg.get(i) is None]
+    with pg_conn(readonly=True) as c:
+        held = dict(c.execute("SELECT id, name FROM funding_instruments WHERE id = ANY(%s)",
+                              (ids,)).fetchall())
+    bad = [r["id"] for r in rows if held.get(r["id"]) != r["new_name"]]
     if bad:
-        raise SystemExit(f"RECONCILE FAILED: {len(bad)} rows differ between stores, e.g. {bad[:5]}")
-    print(f"reconciled: {len(ids)}/{len(ids)} names identical in SQLite and Postgres")
+        raise SystemExit(f"RECONCILE FAILED: {len(bad)} rows do not hold the name "
+                         f"just written, e.g. {bad[:5]}")
+    print(f"reconciled: {len(ids)}/{len(ids)} names read back as written")
 
 
 def main() -> None:
@@ -717,11 +664,6 @@ def main() -> None:
                     help="take the decisions from a sourced JSONL instead of "
                          "running the BDNS pass. One file per workstream, so a "
                          "name keeps the evidence it was derived with.")
-    ap.add_argument("--sqlite-only", action="store_true",
-                    help="report against the authoring store alone, for a dry "
-                         "run with no DATABASE_URL. Refused with --write: a "
-                         "name in one store is a name the founder may or may "
-                         "not see.")
     ap.add_argument("--verify-source", action="store_true")
     ap.add_argument("--report", action="store_true")
     ap.add_argument("--write", action="store_true")
@@ -734,10 +676,6 @@ def main() -> None:
         verify_source(a.country, a.limit or 10_000)
         return
     if a.from_jsonl:
-        if a.sqlite_only and a.write:
-            raise SystemExit("--sqlite-only cannot be combined with --write: a name "
-                             "that lives in only one store is a name the founder may "
-                             "or may not see.")
         path = _Path(a.from_jsonl)
         if not path.is_absolute():
             path = ROOT / path
@@ -745,7 +683,7 @@ def main() -> None:
         print(f"decisions: {path}")
         drop_collisions(results)
         report(results)
-        if not check_preconditions(results, postgres=not a.sqlite_only):
+        if not check_preconditions(results):
             raise SystemExit(1)
     else:
         results = build(a.country, a.limit, a.workers)
@@ -754,7 +692,6 @@ def main() -> None:
         _Path(a.out).write_text(json.dumps(results, ensure_ascii=False, indent=1))
         print(f"\ndecisions -> {a.out}")
     if a.write:
-        ensure_columns()
         write(results)
         reconcile(results)
     else:

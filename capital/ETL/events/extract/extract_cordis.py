@@ -26,11 +26,11 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
 import re
-import sqlite3
 import sys
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -196,22 +196,26 @@ def _match_company(con, name: str, country: str) -> tuple[int | None, str]:
 
     # exact
     cur.execute(
-        "SELECT id FROM companies WHERE UPPER(canonical_name)=? AND country=?",
-        (norm, country),
+        # UPPER() for the index, translate() for SQLite's ASCII-only fold, which
+        # is what this lookup always meant (see lib/matching.py: sqlite_upper).
+        "SELECT id FROM companies WHERE UPPER(canonical_name)=%s AND translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')=%s "
+        "AND country=%s ORDER BY id",
+        (norm, norm, country),
     )
     r = cur.fetchone()
     if r:
         return r[0], "exact"
 
     # exact name only
-    cur.execute("SELECT id FROM companies WHERE UPPER(canonical_name)=?", (norm,))
+    cur.execute("SELECT id FROM companies WHERE UPPER(canonical_name)=%s "
+                f"AND translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')=%s ORDER BY id", (norm, norm))
     r = cur.fetchone()
     if r:
         return r[0], "exact_name_only"
 
     # forward prefix: existing name is whole-word prefix of new (≥4 chars)
-    cur.execute("SELECT id, UPPER(canonical_name), country FROM companies "
-                "WHERE country=? AND LENGTH(canonical_name)>=4", (country,))
+    cur.execute("SELECT id, translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), country FROM companies "
+                "WHERE country=%s AND LENGTH(canonical_name)>=4 ORDER BY id", (country,))
     for cid, cname, _ in cur.fetchall():
         if norm.startswith(cname + " "):
             return cid, "prefix"
@@ -219,7 +223,7 @@ def _match_company(con, name: str, country: str) -> tuple[int | None, str]:
             return cid, "reverse_prefix"
 
     # fuzzy
-    cur.execute("SELECT id, UPPER(canonical_name) FROM companies WHERE country=?",
+    cur.execute("SELECT id, translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') FROM companies WHERE country=%s ORDER BY id",
                 (country,))
     best = (0.0, None)
     for cid, cname in cur.fetchall():
@@ -233,55 +237,54 @@ def _match_company(con, name: str, country: str) -> tuple[int | None, str]:
 
 
 def _load_to_db(rows: list[dict], family_key: str) -> dict:
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
+    with connect() as con:
+        cur = con.cursor()
 
-    counts: dict[str, int] = {"exact": 0, "exact_name_only": 0, "prefix": 0,
-                              "reverse_prefix": 0, "fuzzy": 0, "none": 0,
-                              "skipped_dup": 0, "inserted_events": 0}
+        counts: dict[str, int] = {"exact": 0, "exact_name_only": 0, "prefix": 0,
+                                  "reverse_prefix": 0, "fuzzy": 0, "none": 0,
+                                  "skipped_dup": 0, "inserted_events": 0}
 
-    for r in rows:
-        # Match company
-        cid, method = _match_company(con, r["company_name"], r["country"])
-        if cid is None:
-            # Insert new company
-            norm = _normalize_name(r["company_name"])
+        for r in rows:
+            # Match company
+            cid, method = _match_company(con, r["company_name"], r["country"])
+            if cid is None:
+                # Insert new company
+                norm = _normalize_name(r["company_name"])
+                cur.execute(
+                    """INSERT INTO companies (canonical_name, country, sector_inferred,
+                       entity_type, match_method)
+                       VALUES (%s, %s, NULL, 'unknown', %s) RETURNING id""",
+                    (norm, r["country"], f"{family_key}"),
+                )
+                cid = cur.fetchone()[0]
+                counts["none"] += 1
+            else:
+                counts[method] += 1
+
+            # Insert event (idempotent on (source, call_id))
             cur.execute(
-                """INSERT INTO companies (canonical_name, country, sector_inferred,
-                   entity_type, match_method)
-                   VALUES (?, ?, NULL, 'unknown', ?)""",
-                (norm, r["country"], f"{family_key}"),
+                "SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
+                (r["source"], r["call_id"]),
             )
-            cid = cur.lastrowid
-            counts["none"] += 1
-        else:
-            counts[method] += 1
+            if cur.fetchone():
+                counts["skipped_dup"] += 1
+                continue
 
-        # Insert event (idempotent on (source, call_id))
-        cur.execute(
-            "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
-            (r["source"], r["call_id"]),
-        )
-        if cur.fetchone():
-            counts["skipped_dup"] += 1
-            continue
+            cur.execute(
+                """INSERT INTO public_funding_events
+                   (company_id, source, call_id, role, coordinator_only,
+                    project_number, project_title, project_summary, project_started,
+                    grant_amount_eur, debt_amount_eur, equity_amount_eur,
+                    sector_tags_raw, grant_amount_basis, raw_source_url)
+                   VALUES (%s, %s, %s, %s, 1, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (cid, r["source"], r["call_id"], r["role"], r["project_number"],
+                 r["project_title"], r["project_summary"], r["project_started"],
+                 r["grant_amount_eur"], r["debt_amount_eur"], r["equity_amount_eur"],
+                 r["sector_tags_raw"], r["grant_amount_basis"], r["raw_source_url"]),
+            )
+            counts["inserted_events"] += 1
 
-        cur.execute(
-            """INSERT INTO public_funding_events
-               (company_id, source, call_id, role, coordinator_only,
-                project_number, project_title, project_summary, project_started,
-                grant_amount_eur, debt_amount_eur, equity_amount_eur,
-                sector_tags_raw, grant_amount_basis, raw_source_url)
-               VALUES (?, ?, ?, ?, 1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (cid, r["source"], r["call_id"], r["role"], r["project_number"],
-             r["project_title"], r["project_summary"], r["project_started"],
-             r["grant_amount_eur"], r["debt_amount_eur"], r["equity_amount_eur"],
-             r["sector_tags_raw"], r["grant_amount_basis"], r["raw_source_url"]),
-        )
-        counts["inserted_events"] += 1
-
-    con.commit()
-    con.close()
+        con.commit()
     return counts
 
 

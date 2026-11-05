@@ -1,4 +1,8 @@
-"""Railway cron entry point for the broad ETL pipeline.
+"""Railway cron entry point for the broad ETL pipeline (service capital-etl).
+
+Runs against schema `capital` of the Mandate Postgres (DATABASE_URL, role
+capital_app) and nothing else: no volume, no SQLite. The container filesystem
+is scratch, so extractor download caches start empty on every run.
 
 Runs renew --auto -> apply-nace -> classify_taxonomy (cost-gated) ->
 sanity_check as explicit subprocess steps with checked return codes, rather
@@ -32,9 +36,11 @@ _sys.path.insert(0, str(ROOT / "ETL" / "lib"))
 import corpus_marks  # noqa: E402
 
 STEPS = [
-    # FIRST, and fatal if it fails.
+    # FIRST, and fatal if it fails. Applies the forward Postgres migrations
+    # (ETL/schema/migrations/) and then fails if any table or column the
+    # committed DDL declares is missing from the store -- see apply.py.
     #
-    # Nothing here ever applied migrations, so they reached whichever store a
+    # History. Nothing here ever applied migrations, so they reached whichever store a
     # human happened to be pointed at -- the laptop, every time, and this volume
     # never. The corpus the weekly cron actually writes ran 9 of the 23
     # committed migrations. Its funding_instruments had no `tier` column, the
@@ -52,7 +58,23 @@ STEPS = [
     # See ETL/events/load/migrations/apply.py::apply_all.
     [sys.executable, str(ROOT / "ETL/events/load/migrations/apply.py"), "all"],
     [sys.executable, str(ROOT / "ETL/events/extract/renew.py"), "--auto"],
-    # ── The step this loop has never had, and the whole reason `sectors` is 8 ──
+    # ── restore -> apply-nace -> run -> persist ─────────────────────────────
+    #
+    # ALL FOUR write sector labels, and all four go through ONE rule,
+    # classify_taxonomy.merge_label: a label only ever gains information --
+    # an empty one is filled, a derived one (nace / nace_top / programme) may
+    # be replaced by a curated one, a missing subsector may be completed, and
+    # nothing is ever blanked or moved. On 2026-10-18 this sequence regressed
+    # 164 curated labels in the vault, because apply-nace overwrote every
+    # company from its NACE tags and persist upserted the result over the
+    # vault. See the block above merge_label, and
+    # ETL/events/transform/test_sector_label_precedence.py.
+    #
+    # What follows is the original case for the pair; its premise -- that
+    # `renew.py --auto` reloads `companies` destructively -- was no longer true
+    # when the port was made (no AUTO extractor deletes a company; they reuse
+    # or insert). restore is kept because it also repairs: it puts a curated
+    # vault label back over a derived guess.
     #
     # `renew.py --auto` reloads `companies` destructively and re-issues the
     # surrogate id, so every sector label written into that table is gone by the
@@ -103,10 +125,9 @@ STEPS = [
 ]
 
 # ── The guards that can only run here ──────────────────────────────────────
-# These need `data/db.sqlite`, which is gitignored and lives on the volume this
-# container mounts. No CI job may read it, and giving GitHub Actions credentials
-# to reach it would widen a compromised workflow from "can read our code" to
-# "can read and write every award, company and fund we hold". So they run where
+# These read the store, which no CI job holds credentials for, and giving GitHub
+# Actions credentials to reach it would widen a compromised workflow from "can
+# read our code" to "can read and write every award, company and fund we hold". So they run where
 # the data already is, and publish a verdict anything can read
 # (ETL/lib/guard_verdicts.py; website/frontend/scripts/check_verdicts.ts).
 #

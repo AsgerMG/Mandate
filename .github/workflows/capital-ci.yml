@@ -393,11 +393,33 @@ jobs:
     defaults:
       run:
         working-directory: capital
+    # A THROWAWAY Postgres in the production image, for the checks that must run
+    # on the real engine (PLATFORM.md: tests never run against SQLite). It holds
+    # no corpus and no credentials of ours; every check that uses it builds what
+    # it reads and refuses to run against a configured DATABASE_URL.
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18
+        env:
+          POSTGRES_PASSWORD: ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s
+          --health-timeout 5s --health-retries 10
+    env:
+      CAPITAL_TEST_DATABASE_URL: postgres://postgres:ci@localhost:5432/postgres
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+      # The ETL's own requirements, because the store checks below import the
+      # code they check (store.py needs psycopg; the classifier's import chain
+      # needs pdfplumber). The checks that read committed files only still need
+      # none of it.
+      - name: Install the ETL's requirements
+        run: pip install -q -r requirements.txt
 
       # Compile-checks every ETL module. Cheap, and it catches the class of
       # error that otherwise only surfaces mid-pipeline on a long run.
@@ -576,27 +598,35 @@ jobs:
       - name: Every migration id is reachable
         run: python3 ETL/events/load/migrations/apply.py --ids
 
-      # Fifteen columns of the live corpus were created by no committed
-      # statement -- four of them by somebody typing ALTER at a prompt -- so
-      # replaying schema.sql plus every migration into an empty database did not
-      # produce this project's schema, it produced `no such column: scheme_code`.
-      # Needs no corpus and no credentials: it builds the store it checks.
+      # The store must be rebuildable from committed DDL alone: corpus_schema.sql,
+      # postgres_schema.sql and every forward migration, replayed into an empty
+      # schema of the throwaway Postgres. On the day it was first replayed,
+      # postgres_schema.sql could not rebuild a single table (`ARRAY`, a vector
+      # with no type, a column declared twice) after three months committed.
       - name: The schema can be rebuilt from its own migrations
         run: python3 ETL/schema/check_schema_replay.py
 
       - name: One store of record per table
         run: python3 ETL/schema/check_store_of_record.py
 
-      # The corpus-marks guard itself cannot run here -- data/db.sqlite is
-      # gitignored and lives on a Railway volume, so it runs in ETL/refresh.py
-      # and on the weekly cron and publishes a verdict. But its SELF-TEST can:
-      # it builds three throwaway stores (clean, opened-and-never-closed, closed
-      # as partial) in a temp dir and asserts the guard fails on the last two and
-      # on neither of the first. Credential-free, milliseconds, no corpus.
-      # Without this the only proof that the publishing guard can go red is that
-      # somebody once typed the flag.
+      # The corpus-marks guard itself cannot run here -- CI holds no credentials
+      # for the store -- so it runs in ETL/refresh.py and on the weekly cron and
+      # publishes a verdict. But its SELF-TEST can: on the throwaway Postgres,
+      # with its search path narrowed to pg_temp, it walks a TEMP marks table
+      # through absent, empty, clean, opened-and-never-closed, partial and failed
+      # and asserts the guard fails on exactly the unresolved ones. Without this
+      # the only proof that the publishing guard can go red is that somebody
+      # once typed the flag.
       - name: The unfinished-run guard can still fail
         run: python3 ETL/schema/check_corpus_marks.py --self-test
+        env:
+          DATABASE_URL: ${{ env.CAPITAL_TEST_DATABASE_URL }}
+
+      # On 2026-10-18 the weekly cron's classify steps overwrote 164 curated
+      # sector labels in the vault. This runs those steps twice on a seeded
+      # store and fails if any curated label moves.
+      - name: No re-run can displace a curated sector label
+        run: python3 ETL/events/transform/test_sector_label_precedence.py
 
       # Committed DDL must account for every column in every store. The
       # BETWEEN-STORES half needs the corpus and DATABASE_URL, which CI has

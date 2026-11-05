@@ -2,8 +2,7 @@
 
 ── The problem ────────────────────────────────────────────────────────────
 Several of this repo's checks cannot run in CI, because what they check is a
-corpus CI is not allowed to see: `data/db.sqlite` is gitignored and lives on a
-Railway volume, and the eligibility Postgres holds the funds themselves. The
+corpus CI is not allowed to see: schema `capital` of the Mandate Postgres. The
 obvious fix — a DATABASE_URL secret in GitHub Actions — widens the blast radius
 of one compromised workflow from "can read our code" to "can read and write
 every award, company and fund we hold". That is not a trade worth making for a
@@ -59,7 +58,6 @@ import os  # noqa: E402
 import subprocess  # noqa: E402
 
 REGISTRY = ROOT / "data" / "guard_registry.json"
-SCHEMA_SQL = ROOT / "ETL" / "schema" / "guard_verdicts.sql"
 
 # What counts as source when a registry entry names a directory. Fixed, because
 # a fingerprint whose INPUT SET varies is not a fingerprint: the same tree would
@@ -138,26 +136,23 @@ def publish(guard_id: str, status: str, summary: str, metrics: dict,
     written is worse than no channel at all: the reader downstream finds the
     previous week's row, and reports a stale answer as a current one.
     """
-    url = os.environ.get("DATABASE_URL")
-    if not url:
+    if not os.environ.get("DATABASE_URL"):
         print("guard_verdicts: FAILED to publish — no DATABASE_URL. The verdict is "
               "the only channel between a guard that needs credentials and anything "
               "that does not have them.")
         return 1
-    import psycopg
+    from store import connect  # noqa: PLC0415  (CI imports this module with no driver)
 
     produced_by = produced_by or os.environ.get("RAILWAY_SERVICE_NAME", "local")
-    with psycopg.connect(url) as conn:
-        with conn.cursor() as cur:
-            cur.execute(SCHEMA_SQL.read_text())
-            cur.execute(
-                "INSERT INTO guard_verdicts (guard, status, produced_by, "
-                "code_fingerprint, summary, metrics, detail) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id, taken_at",
-                (guard_id, status, produced_by, code_fp, summary[:SUMMARY_MAX],
-                 json.dumps(metrics), detail[-DETAIL_TAIL:]))
-            vid, taken = cur.fetchone()
-        conn.commit()
+    # The table is the schema's (ETL/schema/postgres_schema.sql, applied before
+    # anything runs), not something each publish re-creates on its way past.
+    with connect() as conn:
+        vid, taken = conn.execute(
+            "INSERT INTO guard_verdicts (guard, status, produced_by, "
+            "code_fingerprint, summary, metrics, detail) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s) RETURNING id, taken_at",
+            (guard_id, status, produced_by, code_fp, summary[:SUMMARY_MAX],
+             json.dumps(metrics), detail[-DETAIL_TAIL:])).fetchone()
     print(f"guard_verdicts: {guard_id} = {status} (verdict #{vid}, "
           f"{taken:%Y-%m-%d %H:%M} UTC, code {code_fp})")
     return 0
