@@ -102,7 +102,7 @@ republish:
 .PHONY: check-stores
 check-stores:
 	python3 ETL/schema/check_store_of_record.py
-	python3 ETL/schema/check_store_schema.py --sqlite data/db.sqlite --postgres
+	python3 ETL/schema/check_store_schema.py --postgres
 
 verify-cron:
 	python3 ETL/lib/verify_cron.py
