@@ -80,7 +80,7 @@
     "Set on branch port-signals-pg to what that branch leaves; the other two",
     "port branches lower it further at merge, and it ends at 0."
   ],
-  "sqlite_import_budget": 165,
+  "sqlite_import_budget": 107,
 
   "tables": {
     "brief_records":              {"store": "postgres", "why": "written by the product at request time; never existed in SQLite"},
