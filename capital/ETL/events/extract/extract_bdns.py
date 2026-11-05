@@ -58,12 +58,12 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import columns, connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
 import re
-import sqlite3
 import sys
 import time
 from pathlib import Path
@@ -339,87 +339,88 @@ def _fetch_objective(obj_id: int) -> list[dict]:
 
 
 def _load_to_db(rows: list[dict]) -> dict:
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
-    cur.execute("PRAGMA table_info(companies)")
-    cols = {r[1] for r in cur.fetchall()}
-    has_natid = "national_id" in cols
-    cur.execute("PRAGMA table_info(public_funding_events)")
-    pfe_cols = {r[1] for r in cur.fetchall()}
-    # The real column is `satr_tm_id` (see the note in _parse_record). This used
-    # to check for a column named "satr_sa_number", which does not exist, so
-    # the SA number was silently discarded on every load.
-    has_sa = "satr_tm_id" in pfe_cols
-    has_prog = "programme_name" in pfe_cols
+    with connect() as con:
+        cur = con.cursor()
+        cols = set(columns(con, "companies"))
+        has_natid = "national_id" in cols
+        pfe_cols = set(columns(con, "public_funding_events"))
+        # The real column is `satr_tm_id` (see the note in _parse_record). This used
+        # to check for a column named "satr_sa_number", which does not exist, so
+        # the SA number was silently discarded on every load.
+        has_sa = "satr_tm_id" in pfe_cols
+        has_prog = "programme_name" in pfe_cols
 
-    counts = {"inserted": 0, "skipped_dup": 0, "errors": 0,
-              "grant": 0, "debt": 0, "equity": 0}
-    for r in rows:
-        try:
-            norm = r["company_name_norm"]
-            cid = None
-            if has_natid and r.get("nif"):
-                cur.execute("SELECT id FROM companies WHERE national_id=? AND country='ES'",
-                            (r["nif"],))
-                row = cur.fetchone()
-                cid = row[0] if row else None
-            if cid is None:
-                cur.execute("SELECT id FROM companies WHERE canonical_name=? AND country='ES'",
-                            (norm,))
-                row = cur.fetchone()
-                cid = row[0] if row else None
-            if cid is None:
-                if has_natid:
-                    cur.execute(
-                        """INSERT INTO companies (canonical_name, raw_name, country, national_id,
-                           entity_type, match_method, match_confidence)
-                           VALUES (?, ?, 'ES', ?, 'unknown', 'bdns', 'medium')""",
-                        (norm, r["company_name"], r.get("nif")))
+        counts = {"inserted": 0, "skipped_dup": 0, "errors": 0,
+                  "grant": 0, "debt": 0, "equity": 0}
+        for r in rows:
+            try:
+              # A savepoint per row. The except below skips a bad row and goes on,
+              # which SQLite allowed; in Postgres a failed statement aborts the
+              # whole transaction, so without this every later row would fail too.
+              with con.transaction():
+                norm = r["company_name_norm"]
+                cid = None
+                if has_natid and r.get("nif"):
+                    cur.execute("SELECT id FROM companies WHERE national_id=%s AND country='ES' ORDER BY id",
+                                (r["nif"],))
+                    row = cur.fetchone()
+                    cid = row[0] if row else None
+                if cid is None:
+                    cur.execute("SELECT id FROM companies WHERE canonical_name=%s AND country='ES' ORDER BY id",
+                                (norm,))
+                    row = cur.fetchone()
+                    cid = row[0] if row else None
+                if cid is None:
+                    if has_natid:
+                        cur.execute(
+                            """INSERT INTO companies (canonical_name, raw_name, country, national_id,
+                               entity_type, match_method, match_confidence)
+                               VALUES (%s, %s, 'ES', %s, 'unknown', 'bdns', 'medium') RETURNING id""",
+                            (norm, r["company_name"], r.get("nif")))
+                    else:
+                        cur.execute(
+                            """INSERT INTO companies (canonical_name, raw_name, country,
+                               entity_type, match_method, match_confidence)
+                               VALUES (%s, %s, 'ES', 'unknown', 'bdns', 'medium') RETURNING id""",
+                            (norm, r["company_name"]))
+                    cid = cur.fetchone()[0]
+
+                cur.execute("SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
+                            (r["source"], r["call_id"]))
+                if cur.fetchone():
+                    counts["skipped_dup"] += 1
+                    continue
+
+                cols_sql = ["company_id", "source", "call_id", "role", "coordinator_only",
+                            "project_title", "project_started", "grant_amount_eur",
+                            "debt_amount_eur", "equity_amount_eur", "sector_tags_raw",
+                            "grant_amount_basis", "deployment_country", "ndb_distributor"]
+                vals = [cid, r["source"], r["call_id"], "direct", 0,
+                        r.get("project_title"), f"{r['year']}-01-01",
+                        r.get("grant_amount_eur"), r.get("debt_amount_eur"),
+                        r.get("equity_amount_eur"), r.get("sector_tags_raw"),
+                        r["grant_amount_basis"], r["deployment_country"], r.get("ndb_distributor")]
+                if has_sa:
+                    cols_sql.append("satr_tm_id")
+                    vals.append(r.get("satr_tm_id"))
+                if has_prog:
+                    cols_sql.append("programme_name")
+                    vals.append(r.get("programme_name"))
+                placeholders = ", ".join(["%s"] * len(cols_sql))
+                cur.execute(f"INSERT INTO public_funding_events ({', '.join(cols_sql)}) "
+                            f"VALUES ({placeholders})", vals)
+                counts["inserted"] += 1
+                if r.get("equity_amount_eur"):
+                    counts["equity"] += 1
+                elif r.get("debt_amount_eur"):
+                    counts["debt"] += 1
                 else:
-                    cur.execute(
-                        """INSERT INTO companies (canonical_name, raw_name, country,
-                           entity_type, match_method, match_confidence)
-                           VALUES (?, ?, 'ES', 'unknown', 'bdns', 'medium')""",
-                        (norm, r["company_name"]))
-                cid = cur.lastrowid
-
-            cur.execute("SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
-                        (r["source"], r["call_id"]))
-            if cur.fetchone():
-                counts["skipped_dup"] += 1
-                continue
-
-            cols_sql = ["company_id", "source", "call_id", "role", "coordinator_only",
-                        "project_title", "project_started", "grant_amount_eur",
-                        "debt_amount_eur", "equity_amount_eur", "sector_tags_raw",
-                        "grant_amount_basis", "deployment_country", "ndb_distributor"]
-            vals = [cid, r["source"], r["call_id"], "direct", 0,
-                    r.get("project_title"), f"{r['year']}-01-01",
-                    r.get("grant_amount_eur"), r.get("debt_amount_eur"),
-                    r.get("equity_amount_eur"), r.get("sector_tags_raw"),
-                    r["grant_amount_basis"], r["deployment_country"], r.get("ndb_distributor")]
-            if has_sa:
-                cols_sql.append("satr_tm_id")
-                vals.append(r.get("satr_tm_id"))
-            if has_prog:
-                cols_sql.append("programme_name")
-                vals.append(r.get("programme_name"))
-            placeholders = ", ".join("?" * len(cols_sql))
-            cur.execute(f"INSERT INTO public_funding_events ({', '.join(cols_sql)}) "
-                        f"VALUES ({placeholders})", vals)
-            counts["inserted"] += 1
-            if r.get("equity_amount_eur"):
-                counts["equity"] += 1
-            elif r.get("debt_amount_eur"):
-                counts["debt"] += 1
-            else:
-                counts["grant"] += 1
-        except Exception as e:
-            counts["errors"] += 1
-            if counts["errors"] <= 5:
-                print(f"  ERROR {r.get('company_name','?')}: {e}", file=sys.stderr)
-    con.commit()
-    con.close()
+                    counts["grant"] += 1
+            except Exception as e:
+                counts["errors"] += 1
+                if counts["errors"] <= 5:
+                    print(f"  ERROR {r.get('company_name','?')}: {e}", file=sys.stderr)
+        con.commit()
     return counts
 
 

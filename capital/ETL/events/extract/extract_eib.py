@@ -24,11 +24,11 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
 import re
-import sqlite3
 import sys
 import time
 from datetime import datetime
@@ -359,11 +359,11 @@ MATCH_FIELDNAMES = [
 
 def match_companies(
     rows: list[dict],
-    conn: sqlite3.Connection,
+    conn,
 ) -> tuple[list[dict], list[dict]]:
     cur = conn.cursor()
 
-    cur.execute("SELECT id, canonical_name, country FROM companies")
+    cur.execute("SELECT id, canonical_name, country FROM companies ORDER BY canonical_name COLLATE \"C\", country COLLATE \"C\" NULLS FIRST, id")
     existing: dict[tuple[str, str], tuple[int, str]] = {}
     existing_list: list[tuple[str, str, int, str]] = []
     for row_id, cname, country in cur.fetchall():
@@ -415,10 +415,10 @@ def match_companies(
                 """INSERT INTO companies
                    (canonical_name, raw_name, country, entity_type, sector_inferred,
                     match_confidence, match_method)
-                   VALUES (?, ?, ?, 'unknown', NULL, 'unmatched', 'none')""",
+                   VALUES (%s, %s, %s, 'unknown', NULL, 'unmatched', 'none') RETURNING id""",
                 (r["borrower_name"], r["borrower_name"], country or None),
             )
-            company_id = cur.lastrowid
+            company_id = cur.fetchone()[0]
             matched_canonical = r["borrower_name"]
             match_method = "none"
             match_confidence = "unmatched"
@@ -445,7 +445,7 @@ def match_companies(
 # Event loading
 # ---------------------------------------------------------------------------
 
-def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
+def load_events(rows: list[dict], conn) -> int:
     cur = conn.cursor()
     inserted = 0
     for r in rows:
@@ -455,7 +455,7 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
 
         # Skip duplicate (source, call_id) pairs
         cur.execute(
-            "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
+            "SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
             (r["source"], r["eib_project_id"]),
         )
         if cur.fetchone():
@@ -470,7 +470,7 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
                 sector_tags_raw,
                 raw_source_url,
                 coordinator_only, grant_amount_basis)
-               VALUES (?, ?, 'borrower', ?, ?, ?, ?, ?, ?, ?, 0, 'eib_debt_commitment')""",
+               VALUES (%s, %s, 'borrower', %s, %s, %s, %s, %s, %s, %s, 0, 'eib_debt_commitment')""",
             (
                 company_id,
                 r["source"],
@@ -514,25 +514,24 @@ def main() -> None:
         print(f"!! DB not found: {DB_PATH}")
         sys.exit(1)
 
-    conn = sqlite3.connect(DB_PATH)
-    print(f"\nMatching {len(rows)} rows against {DB_PATH.name} …")
-    enriched, summary = match_companies(rows, conn)
+    with connect() as conn:
+        print(f"\nMatching {len(rows)} rows against {DB_PATH.name} …")
+        enriched, summary = match_companies(rows, conn)
 
-    with open(MATCH_CSV_PATH, "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=MATCH_FIELDNAMES)
-        w.writeheader()
-        w.writerows(summary)
+        with open(MATCH_CSV_PATH, "w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=MATCH_FIELDNAMES)
+            w.writeheader()
+            w.writerows(summary)
 
-    method_counts: dict[str, int] = {}
-    for s in summary:
-        method_counts[s["match_method"]] = method_counts.get(s["match_method"], 0) + 1
-    print("Match results:")
-    for method, count in sorted(method_counts.items()):
-        print(f"  {method:<12}  {count:>4}")
-    print(f"  Match summary → {MATCH_CSV_PATH}")
+        method_counts: dict[str, int] = {}
+        for s in summary:
+            method_counts[s["match_method"]] = method_counts.get(s["match_method"], 0) + 1
+        print("Match results:")
+        for method, count in sorted(method_counts.items()):
+            print(f"  {method:<12}  {count:>4}")
+        print(f"  Match summary → {MATCH_CSV_PATH}")
 
-    inserted = load_events(enriched, conn)
-    conn.close()
+        inserted = load_events(enriched, conn)
     print(f"\nInserted {inserted} events into public_funding_events")
 
     total_debt = sum(

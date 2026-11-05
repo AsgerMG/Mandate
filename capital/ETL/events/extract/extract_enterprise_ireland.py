@@ -38,10 +38,10 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
-import sqlite3
 import sys
 from pathlib import Path
 
@@ -118,45 +118,44 @@ def main() -> None:
     if not load_db:
         return
 
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
-    inserted = 0
-    for r in rows:
-        # Idempotent company lookup — reuse existing placeholder row if present
-        existing = cur.execute(
-            "SELECT id FROM companies WHERE canonical_name = ? AND country = 'IE'",
-            (r["programme_name"],),
-        ).fetchone()
-        if existing:
-            cid = existing[0]
-        else:
+    with connect() as conn:
+        cur = conn.cursor()
+        inserted = 0
+        for r in rows:
+            # Idempotent company lookup — reuse existing placeholder row if present
+            existing = cur.execute(
+                "SELECT id FROM companies WHERE canonical_name = %s AND country = 'IE' ORDER BY id",
+                (r["programme_name"],),
+            ).fetchone()
+            if existing:
+                cid = existing[0]
+            else:
+                cur.execute(
+                    """INSERT INTO companies (canonical_name, raw_name, country, entity_type,
+                                               sector_inferred, match_confidence, match_method)
+                       VALUES (%s, %s, 'IE', 'other', %s, 'unmatched', 'none') RETURNING id""",
+                    (r["programme_name"], r["programme_name"], r["sector_v1"]),
+                )
+                cid = cur.fetchone()[0]
             cur.execute(
-                """INSERT INTO companies (canonical_name, raw_name, country, entity_type,
-                                           sector_inferred, match_confidence, match_method)
-                   VALUES (?, ?, 'IE', 'other', ?, 'unmatched', 'none')""",
-                (r["programme_name"], r["programme_name"], r["sector_v1"]),
+                "SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
+                (r["source"], r["call_id"]),
             )
-            cid = cur.lastrowid
-        cur.execute(
-            "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
-            (r["source"], r["call_id"]),
-        )
-        if cur.fetchone():
-            continue
-        cur.execute(
-            """INSERT INTO public_funding_events
-               (company_id, source, role, call_id, project_title,
-                sector_tags_raw, raw_source_url, coordinator_only,
-                grant_amount_basis, deployment_country, eif_lp_backed)
-               VALUES (?, ?, 'direct', ?, ?, ?, ?, 1, ?, 'IE', 0)""",
-            (cid, r["source"], r["call_id"], r["programme_name"],
-             "Enterprise Ireland", r["doc_url"], r["grant_amount_basis"]),
-        )
-        inserted += 1
-    conn.commit()
-    flagged = backfill_ipcei_linked(conn=conn, source_prefixes=("enterprise_ireland_",))
-    print(f"Inserted {inserted} programme-level events; flagged {flagged} as ipcei_linked")
-    conn.close()
+            if cur.fetchone():
+                continue
+            cur.execute(
+                """INSERT INTO public_funding_events
+                   (company_id, source, role, call_id, project_title,
+                    sector_tags_raw, raw_source_url, coordinator_only,
+                    grant_amount_basis, deployment_country, eif_lp_backed)
+                   VALUES (%s, %s, 'direct', %s, %s, %s, %s, 1, %s, 'IE', 0)""",
+                (cid, r["source"], r["call_id"], r["programme_name"],
+                 "Enterprise Ireland", r["doc_url"], r["grant_amount_basis"]),
+            )
+            inserted += 1
+        conn.commit()
+        flagged = backfill_ipcei_linked(conn=conn, source_prefixes=("enterprise_ireland_",))
+        print(f"Inserted {inserted} programme-level events; flagged {flagged} as ipcei_linked")
 
 
 if __name__ == "__main__":

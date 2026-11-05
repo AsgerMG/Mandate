@@ -33,12 +33,12 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
 import html as html_mod
 import re
-import sqlite3
 import subprocess
 import sys
 from collections import defaultdict
@@ -135,9 +135,9 @@ MATCH_FIELDNAMES = [
 ]
 
 
-def match_companies(rows: list[dict], conn: sqlite3.Connection):
+def match_companies(rows: list[dict], conn):
     cur = conn.cursor()
-    cur.execute("SELECT id, canonical_name, country FROM companies")
+    cur.execute("SELECT id, canonical_name, country FROM companies ORDER BY canonical_name COLLATE \"C\", country COLLATE \"C\" NULLS FIRST, id")
     existing: dict[tuple[str, str], tuple[int, str]] = {}
     existing_list: list[tuple[str, str, int, str]] = []
     for row_id, cname, cntry in cur.fetchall():
@@ -178,10 +178,10 @@ def match_companies(rows: list[dict], conn: sqlite3.Connection):
                 """INSERT INTO companies
                    (canonical_name, raw_name, country, website, entity_type,
                     sector_inferred, match_confidence, match_method)
-                   VALUES (?, ?, ?, ?, 'company', 'deeptech_hardware', 'unmatched', 'none')""",
+                   VALUES (%s, %s, %s, %s, 'company', 'deeptech_hardware', 'unmatched', 'none') RETURNING id""",
                 (raw_name, raw_name, country, r["website"] or None),
             )
-            cid = cur.lastrowid
+            cid = cur.fetchone()[0]
             matched_canonical = raw_name
             existing[(norm, country)] = (cid, raw_name)
             existing_list.append((norm, country, cid, raw_name))
@@ -199,12 +199,12 @@ def match_companies(rows: list[dict], conn: sqlite3.Connection):
     return enriched, summary
 
 
-def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
+def load_events(rows: list[dict], conn) -> int:
     cur = conn.cursor()
     inserted, skipped = 0, 0
     for r in rows:
         cur.execute(
-            "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
+            "SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
             (r["source"], r["call_id"]),
         )
         if cur.fetchone():
@@ -215,7 +215,7 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
                (company_id, source, role, call_id, project_title,
                 raw_source_url, coordinator_only, grant_amount_basis,
                 deployment_country, eif_lp_backed)
-               VALUES (?, ?, 'direct', ?, ?, ?, 1, 'coparion_equity', ?, 0)""",
+               VALUES (%s, %s, 'direct', %s, %s, %s, 1, 'coparion_equity', %s, 0)""",
             (r["company_id"], r["source"], r["call_id"], r["raw_name"],
              r["doc_url"], DEPLOYMENT_COUNTRY),
         )
@@ -252,22 +252,21 @@ def main() -> None:
         print("(CSV only — pass --load-db to match and load into db.sqlite)")
         return
 
-    conn = sqlite3.connect(DB_PATH)
-    enriched, summary = match_companies(rows, conn)
-    with MATCH_CSV_PATH.open("w", newline="", encoding="utf-8") as f:
-        w2 = csv.DictWriter(f, fieldnames=MATCH_FIELDNAMES)
-        w2.writeheader()
-        w2.writerows(summary)
-    method_counts = defaultdict(int)
-    for s in summary:
-        method_counts[s["match_method"]] += 1
-    print("Match results:")
-    for m, n in sorted(method_counts.items()):
-        print(f"  {m:<20}  {n}")
-    inserted = load_events(enriched, conn)
-    flagged = backfill_ipcei_linked(conn=conn, source_prefixes=("coparion_",))
-    print(f"Inserted {inserted} events; flagged {flagged} as ipcei_linked")
-    conn.close()
+    with connect() as conn:
+        enriched, summary = match_companies(rows, conn)
+        with MATCH_CSV_PATH.open("w", newline="", encoding="utf-8") as f:
+            w2 = csv.DictWriter(f, fieldnames=MATCH_FIELDNAMES)
+            w2.writeheader()
+            w2.writerows(summary)
+        method_counts = defaultdict(int)
+        for s in summary:
+            method_counts[s["match_method"]] += 1
+        print("Match results:")
+        for m, n in sorted(method_counts.items()):
+            print(f"  {m:<20}  {n}")
+        inserted = load_events(enriched, conn)
+        flagged = backfill_ipcei_linked(conn=conn, source_prefixes=("coparion_",))
+        print(f"Inserted {inserted} events; flagged {flagged} as ipcei_linked")
     print("next: run python3 classify.py")
 
 

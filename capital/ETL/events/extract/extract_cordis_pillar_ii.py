@@ -35,12 +35,12 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import csv
 import re
-import sqlite3
 import sys
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -336,7 +336,7 @@ def discover_cluster_rows(cluster: str, projects_by_id: dict,
     return rows
 
 
-def _match_company(con: sqlite3.Connection, name: str, country: str,
+def _match_company(con, name: str, country: str,
                    pic: str, fuzzy_index: dict | None = None) -> tuple[int | None, str]:
     """PIC-first, then 5-tier fallback (exact name+country → exact name → forward
     prefix → reverse prefix → fuzzy ≥0.92). `fuzzy_index` is an optional cache of
@@ -344,7 +344,7 @@ def _match_company(con: sqlite3.Connection, name: str, country: str,
     cur = con.cursor()
 
     if pic:
-        cur.execute("SELECT id FROM companies WHERE pic=?", (pic,))
+        cur.execute("SELECT id FROM companies WHERE pic=%s ORDER BY id", (pic,))
         r = cur.fetchone()
         if r:
             return r[0], "pic"
@@ -354,20 +354,24 @@ def _match_company(con: sqlite3.Connection, name: str, country: str,
         return None, "none"
 
     cur.execute(
-        "SELECT id FROM companies WHERE UPPER(canonical_name)=? AND country=?",
-        (norm, country),
+        # UPPER() for the index, translate() for SQLite's ASCII-only fold, which
+        # is what this lookup always meant (see lib/matching.py: sqlite_upper).
+        "SELECT id FROM companies WHERE UPPER(canonical_name)=%s AND translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')=%s "
+        "AND country=%s ORDER BY id",
+        (norm, norm, country),
     )
     r = cur.fetchone()
     if r:
         return r[0], "exact"
 
-    cur.execute("SELECT id FROM companies WHERE UPPER(canonical_name)=?", (norm,))
+    cur.execute("SELECT id FROM companies WHERE UPPER(canonical_name)=%s "
+                f"AND translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')=%s ORDER BY id", (norm, norm))
     r = cur.fetchone()
     if r:
         return r[0], "exact_name_only"
 
     if fuzzy_index is None:
-        cur.execute("SELECT id, UPPER(canonical_name), country FROM companies")
+        cur.execute("SELECT id, translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), country FROM companies ORDER BY canonical_name COLLATE \"C\", country COLLATE \"C\" NULLS FIRST, id")
         fuzzy_index = {}
         for cid, cname, cctry in cur.fetchall():
             fuzzy_index.setdefault(cctry or "", []).append((cid, cname or ""))
@@ -394,9 +398,9 @@ def _match_company(con: sqlite3.Connection, name: str, country: str,
     return None, "none"
 
 
-def _build_fuzzy_index(con: sqlite3.Connection) -> dict:
+def _build_fuzzy_index(con) -> dict:
     cur = con.cursor()
-    cur.execute("SELECT id, UPPER(canonical_name), country FROM companies")
+    cur.execute("SELECT id, translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'), country FROM companies ORDER BY canonical_name COLLATE \"C\", country COLLATE \"C\" NULLS FIRST, id")
     idx: dict[str, list[tuple[int, str]]] = {}
     for cid, cname, cctry in cur.fetchall():
         idx.setdefault(cctry or "", []).append((cid, cname or ""))
@@ -404,95 +408,94 @@ def _build_fuzzy_index(con: sqlite3.Connection) -> dict:
 
 
 def _load_to_db(rows: list[dict], cluster: str) -> dict:
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
-    fuzzy_idx = _build_fuzzy_index(con)
+    with connect() as con:
+        cur = con.cursor()
+        fuzzy_idx = _build_fuzzy_index(con)
 
-    counts = {"pic": 0, "exact": 0, "exact_name_only": 0, "prefix": 0,
-              "reverse_prefix": 0, "fuzzy": 0, "none": 0,
-              "skipped_dup": 0, "inserted_events": 0, "updated_pic": 0}
+        counts = {"pic": 0, "exact": 0, "exact_name_only": 0, "prefix": 0,
+                  "reverse_prefix": 0, "fuzzy": 0, "none": 0,
+                  "skipped_dup": 0, "inserted_events": 0, "updated_pic": 0}
 
-    new_companies_by_pic: dict[str, int] = {}
-    new_companies_by_norm: dict[tuple, int] = {}
+        new_companies_by_pic: dict[str, int] = {}
+        new_companies_by_norm: dict[tuple, int] = {}
 
-    for r in rows:
-        # Sprint 17: enforce 40-country scope — skip out-of-scope orgs (TR, IL, etc.);
-        # null out empty-string countries so they don't violate the scope check.
-        raw_country = r.get("country") or None
-        canon_country = _canonicalise_country(raw_country or "") if raw_country else None
-        if raw_country and canon_country is None:
-            # Out-of-scope country (e.g. TR, IL) — skip entirely
-            counts["none"] += 1
-            continue
-        # canon_country is either a valid ISO2 or None (no country info)
-        r = dict(r, country=canon_country)
+        for r in rows:
+            # Sprint 17: enforce 40-country scope — skip out-of-scope orgs (TR, IL, etc.);
+            # null out empty-string countries so they don't violate the scope check.
+            raw_country = r.get("country") or None
+            canon_country = _canonicalise_country(raw_country or "") if raw_country else None
+            if raw_country and canon_country is None:
+                # Out-of-scope country (e.g. TR, IL) — skip entirely
+                counts["none"] += 1
+                continue
+            # canon_country is either a valid ISO2 or None (no country info)
+            r = dict(r, country=canon_country)
 
-        norm = _normalize_name(r["company_name"])
-        pic = r.get("pic") or ""
+            norm = _normalize_name(r["company_name"])
+            pic = r.get("pic") or ""
 
-        # Match: PIC-first (including PICs we inserted this run).
-        cid = None
-        if pic and pic in new_companies_by_pic:
-            cid = new_companies_by_pic[pic]
-            method = "pic"
-        else:
-            cid, method = _match_company(con, r["company_name"], r["country"],
-                                          pic, fuzzy_idx)
-            if cid is None and (norm, r["country"]) in new_companies_by_norm:
-                cid = new_companies_by_norm[(norm, r["country"])]
-                method = "exact"
+            # Match: PIC-first (including PICs we inserted this run).
+            cid = None
+            if pic and pic in new_companies_by_pic:
+                cid = new_companies_by_pic[pic]
+                method = "pic"
+            else:
+                cid, method = _match_company(con, r["company_name"], r["country"],
+                                              pic, fuzzy_idx)
+                if cid is None and (norm, r["country"]) in new_companies_by_norm:
+                    cid = new_companies_by_norm[(norm, r["country"])]
+                    method = "exact"
 
-        if cid is None:
+            if cid is None:
+                cur.execute(
+                    """INSERT INTO companies (canonical_name, raw_name, country, city, pic,
+                       entity_type, match_method, match_confidence)
+                       VALUES (%s, %s, %s, %s, %s, 'unknown', %s, %s) RETURNING id""",
+                    (norm, r["company_name"], r["country"], r.get("city") or None,
+                     pic or None, f"cordis_{cluster.lower()}",
+                     "high" if pic else "medium"),
+                )
+                cid = cur.fetchone()[0]
+                if pic:
+                    new_companies_by_pic[pic] = cid
+                new_companies_by_norm[(norm, r["country"])] = cid
+                fuzzy_idx.setdefault(r["country"], []).append((cid, norm))
+                counts["none"] += 1
+            else:
+                counts[method] += 1
+                # Backfill PIC where missing (PIC is the canonical id).
+                if pic:
+                    cur.execute("SELECT pic FROM companies WHERE id=%s ORDER BY id", (cid,))
+                    cur_row = cur.fetchone()
+                    if cur_row and not cur_row[0]:
+                        cur.execute("UPDATE companies SET pic=%s WHERE id=%s", (pic, cid))
+                        counts["updated_pic"] += 1
+
             cur.execute(
-                """INSERT INTO companies (canonical_name, raw_name, country, city, pic,
-                   entity_type, match_method, match_confidence)
-                   VALUES (?, ?, ?, ?, ?, 'unknown', ?, ?)""",
-                (norm, r["company_name"], r["country"], r.get("city") or None,
-                 pic or None, f"cordis_{cluster.lower()}",
-                 "high" if pic else "medium"),
+                "SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
+                (r["source"], r["call_id"]),
             )
-            cid = cur.lastrowid
-            if pic:
-                new_companies_by_pic[pic] = cid
-            new_companies_by_norm[(norm, r["country"])] = cid
-            fuzzy_idx.setdefault(r["country"], []).append((cid, norm))
-            counts["none"] += 1
-        else:
-            counts[method] += 1
-            # Backfill PIC where missing (PIC is the canonical id).
-            if pic:
-                cur.execute("SELECT pic FROM companies WHERE id=?", (cid,))
-                cur_row = cur.fetchone()
-                if cur_row and not cur_row[0]:
-                    cur.execute("UPDATE companies SET pic=? WHERE id=?", (pic, cid))
-                    counts["updated_pic"] += 1
+            if cur.fetchone():
+                counts["skipped_dup"] += 1
+                continue
 
-        cur.execute(
-            "SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
-            (r["source"], r["call_id"]),
-        )
-        if cur.fetchone():
-            counts["skipped_dup"] += 1
-            continue
+            cur.execute(
+                """INSERT INTO public_funding_events
+                   (company_id, source, call_id, role, coordinator_only,
+                    project_number, project_acronym, project_title, project_summary,
+                    project_started, project_ended,
+                    grant_amount_eur, total_project_cost_eur,
+                    sector_tags_raw, grant_amount_basis, raw_source_url)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (cid, r["source"], r["call_id"], r["role"], r["coordinator_only"],
+                 r["project_number"], r["project_acronym"], r["project_title"],
+                 r["project_summary"], r["project_started"], r["project_ended"],
+                 r["grant_amount_eur"], r["total_project_cost_eur"],
+                 r["sector_tags_raw"], r["grant_amount_basis"], r["raw_source_url"]),
+            )
+            counts["inserted_events"] += 1
 
-        cur.execute(
-            """INSERT INTO public_funding_events
-               (company_id, source, call_id, role, coordinator_only,
-                project_number, project_acronym, project_title, project_summary,
-                project_started, project_ended,
-                grant_amount_eur, total_project_cost_eur,
-                sector_tags_raw, grant_amount_basis, raw_source_url)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (cid, r["source"], r["call_id"], r["role"], r["coordinator_only"],
-             r["project_number"], r["project_acronym"], r["project_title"],
-             r["project_summary"], r["project_started"], r["project_ended"],
-             r["grant_amount_eur"], r["total_project_cost_eur"],
-             r["sector_tags_raw"], r["grant_amount_basis"], r["raw_source_url"]),
-        )
-        counts["inserted_events"] += 1
-
-    con.commit()
-    con.close()
+        con.commit()
     return counts
 
 

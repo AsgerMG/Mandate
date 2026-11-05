@@ -24,7 +24,6 @@ Usage:
 from __future__ import annotations
 
 import re
-import sqlite3
 from difflib import SequenceMatcher
 
 # Superset of the suffix lists found in the field (extract_cordis,
@@ -53,6 +52,18 @@ _LEGAL_SUFFIXES = sorted(
 )
 
 _PUNCT_RE = re.compile(r"[^A-Z0-9]+")
+
+# SQLite's UPPER() folds ASCII a-z and nothing else ("Société" -> "SOCIéTé");
+# Postgres's folds every letter. The candidate keys were always built with
+# SQLite's, so on 2026-11-05 the port reproduces it exactly here rather than
+# moving which company an award attaches to as a side effect of changing
+# databases. Making the match Unicode-correct is a real improvement and a
+# separate, measured change -- not something a store migration does silently.
+_ASCII_UPPER = str.maketrans("abcdefghijklmnopqrstuvwxyz", "ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+
+
+def sqlite_upper(s: str | None) -> str | None:
+    return None if s is None else s.translate(_ASCII_UPPER)
 _WS_RE = re.compile(r"\s+")
 
 
@@ -78,20 +89,22 @@ class CompanyMatcher:
     LENGTH_GATE = 0.85
     MIN_PREFIX_LEN = 4
 
-    def __init__(self, con: sqlite3.Connection, country: str | None = None):
-        cur = con.cursor()
+    def __init__(self, con, country: str | None = None):
+        # ORDER BY id: the prefix scan returns the FIRST hit and setdefault keeps
+        # the first id, so candidate order is part of the answer. SQLite gave
+        # rowid order implicitly; it is stated here.
         if country:
-            cur.execute(
-                "SELECT id, UPPER(canonical_name), pic FROM companies WHERE country=?",
-                (country,),
-            )
+            rows = con.execute(
+                "SELECT id, canonical_name, pic FROM companies WHERE country = %s "
+                "ORDER BY id", (country,)).fetchall()
         else:
-            cur.execute("SELECT id, UPPER(canonical_name), pic FROM companies")
+            rows = con.execute(
+                "SELECT id, canonical_name, pic FROM companies ORDER BY id").fetchall()
         self._candidates: list[tuple[int, str]] = []
         self._exact: dict[str, int] = {}
         self._by_pic: dict[str, int] = {}
-        for cid, cname, pic in cur.fetchall():
-            cname = cname or ""
+        for cid, cname, pic in rows:
+            cname = sqlite_upper(cname) or ""
             self._candidates.append((cid, cname))
             if cname:
                 self._exact.setdefault(cname, cid)

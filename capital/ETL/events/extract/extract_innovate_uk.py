@@ -39,13 +39,13 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import csv
 import json
 import re
-import sqlite3
 import sys
 import time
 from datetime import datetime, timezone
@@ -284,64 +284,63 @@ def _match_company(norm: str, exact_gb: dict[str, int],
 
 def load_db(rows: list[dict]) -> None:
     assert canonicalise_country("GB") == "GB"
-    con = sqlite3.connect(DB_PATH)
-    cur = con.cursor()
-    cur.execute("SELECT id, UPPER(canonical_name) FROM companies WHERE country='GB'")
-    fuzzy_gb = [(cid, cname or "") for cid, cname in cur.fetchall()]
-    exact_gb = {cname: cid for cid, cname in fuzzy_gb if cname}
+    with connect() as con:
+        cur = con.cursor()
+        cur.execute("SELECT id, translate(canonical_name, 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ') FROM companies WHERE country='GB' ORDER BY id")
+        fuzzy_gb = [(cid, cname or "") for cid, cname in cur.fetchall()]
+        exact_gb = {cname: cid for cid, cname in fuzzy_gb if cname}
 
-    counts = {"exact": 0, "prefix": 0, "reverse_prefix": 0, "fuzzy": 0,
-              "new": 0, "skipped_dup": 0, "inserted_events": 0}
-    new_by_norm: dict[str, int] = {}
+        counts = {"exact": 0, "prefix": 0, "reverse_prefix": 0, "fuzzy": 0,
+                  "new": 0, "skipped_dup": 0, "inserted_events": 0}
+        new_by_norm: dict[str, int] = {}
 
-    for i, r in enumerate(rows):
-        if i and i % 2500 == 0:
-            print(f"  ... {i}/{len(rows)} rows")
-        norm = _normalize_name(r["company_name"])
-        if norm in new_by_norm:
-            cid, method = new_by_norm[norm], "exact"
-        else:
-            cid, method = _match_company(norm, exact_gb, fuzzy_gb)
-        if cid is None:
+        for i, r in enumerate(rows):
+            if i and i % 2500 == 0:
+                print(f"  ... {i}/{len(rows)} rows")
+            norm = _normalize_name(r["company_name"])
+            if norm in new_by_norm:
+                cid, method = new_by_norm[norm], "exact"
+            else:
+                cid, method = _match_company(norm, exact_gb, fuzzy_gb)
+            if cid is None:
+                cur.execute(
+                    """INSERT INTO companies (canonical_name, raw_name, country,
+                       entity_type, match_method, match_confidence)
+                       VALUES (%s, %s, 'GB', 'unknown', 'innovate_uk', 'medium') RETURNING id""",
+                    (norm, r["company_name"]),
+                )
+                cid = cur.fetchone()[0]
+                new_by_norm[norm] = cid
+                fuzzy_gb.append((cid, norm))
+                exact_gb[norm] = cid
+                counts["new"] += 1
+            else:
+                counts[method] = counts.get(method, 0) + 1
+
+            cur.execute("SELECT 1 FROM public_funding_events WHERE source=%s AND call_id=%s",
+                        (r["source"], r["call_id"]))
+            if cur.fetchone():
+                counts["skipped_dup"] += 1
+                continue
             cur.execute(
-                """INSERT INTO companies (canonical_name, raw_name, country,
-                   entity_type, match_method, match_confidence)
-                   VALUES (?, ?, 'GB', 'unknown', 'innovate_uk', 'medium')""",
-                (norm, r["company_name"]),
+                """INSERT INTO public_funding_events
+                   (company_id, source, call_id, role, coordinator_only,
+                    project_number, project_title, project_summary,
+                    project_started, project_ended,
+                    grant_amount_eur, total_project_cost_eur,
+                    sector_tags_raw, grant_amount_basis, raw_source_url,
+                    programme_name)
+                   VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""",
+                (cid, r["source"], r["call_id"], r["role"], r["coordinator_only"],
+                 r["project_number"], r["project_title"], r["project_summary"],
+                 r["project_started"], r["project_ended"],
+                 r["grant_amount_eur"], r["total_project_cost_eur"],
+                 r["sector_tags_raw"], r["grant_amount_basis"], r["raw_source_url"],
+                 r.get("programme_name")),
             )
-            cid = cur.lastrowid
-            new_by_norm[norm] = cid
-            fuzzy_gb.append((cid, norm))
-            exact_gb[norm] = cid
-            counts["new"] += 1
-        else:
-            counts[method] = counts.get(method, 0) + 1
+            counts["inserted_events"] += 1
 
-        cur.execute("SELECT 1 FROM public_funding_events WHERE source=? AND call_id=?",
-                    (r["source"], r["call_id"]))
-        if cur.fetchone():
-            counts["skipped_dup"] += 1
-            continue
-        cur.execute(
-            """INSERT INTO public_funding_events
-               (company_id, source, call_id, role, coordinator_only,
-                project_number, project_title, project_summary,
-                project_started, project_ended,
-                grant_amount_eur, total_project_cost_eur,
-                sector_tags_raw, grant_amount_basis, raw_source_url,
-                programme_name)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
-            (cid, r["source"], r["call_id"], r["role"], r["coordinator_only"],
-             r["project_number"], r["project_title"], r["project_summary"],
-             r["project_started"], r["project_ended"],
-             r["grant_amount_eur"], r["total_project_cost_eur"],
-             r["sector_tags_raw"], r["grant_amount_basis"], r["raw_source_url"],
-             r.get("programme_name")),
-        )
-        counts["inserted_events"] += 1
-
-    con.commit()
-    con.close()
+        con.commit()
     print(f"Match/load: {counts}")
 
 

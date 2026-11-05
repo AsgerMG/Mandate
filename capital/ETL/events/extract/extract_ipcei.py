@@ -25,11 +25,11 @@ for _anc in _Path(__file__).resolve().parents:
         break
 from europe_scope import COUNTRY_NAME_TO_ISO2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
 import re
-import sqlite3
 import sys
 from difflib import SequenceMatcher
 from pathlib import Path
@@ -808,7 +808,7 @@ def _fuzzy_ratio(a: str, b: str) -> float:
 
 def match_companies(
     rows: list[dict],
-    conn: sqlite3.Connection,
+    conn,
 ) -> tuple[list[dict], list[dict]]:
     """Match each IPCEI row to an existing company or insert a new one.
 
@@ -818,7 +818,7 @@ def match_companies(
     cur = conn.cursor()
 
     # Load existing companies indexed by (normalized_name, country)
-    cur.execute("SELECT id, canonical_name, country FROM companies")
+    cur.execute("SELECT id, canonical_name, country FROM companies ORDER BY canonical_name COLLATE \"C\", country COLLATE \"C\" NULLS FIRST, id")
     existing: dict[tuple[str, str], tuple[int, str]] = {}
     existing_list: list[tuple[str, str, int, str]] = []
     for row_id, cname, country in cur.fetchall():
@@ -878,10 +878,10 @@ def match_companies(
                 """INSERT INTO companies
                    (canonical_name, raw_name, country, entity_type, sector_inferred,
                     match_confidence, match_method)
-                   VALUES (?, ?, ?, 'unknown', ?, 'unmatched', 'none')""",
+                   VALUES (%s, %s, %s, 'unknown', %s, 'unmatched', 'none') RETURNING id""",
                 (r["name"], r["name"], country or None, sector),
             )
-            company_id = cur.lastrowid
+            company_id = cur.fetchone()[0]
             matched_canonical = r["name"]
             match_method = "none"
             match_confidence = "unmatched"
@@ -911,7 +911,7 @@ def match_companies(
 # Event loading
 # ---------------------------------------------------------------------------
 
-def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
+def load_events(rows: list[dict], conn) -> int:
     """Insert IPCEI funding events into public_funding_events.
 
     Returns the number of rows inserted.
@@ -936,7 +936,7 @@ def load_events(rows: list[dict], conn: sqlite3.Connection) -> int:
                (company_id, source, role, call_id, grant_amount_eur,
                 sector_tags_raw, raw_source_url, project_started,
                 coordinator_only, grant_amount_basis)
-               VALUES (?, ?, 'direct', ?, ?, '', ?, ?, 0, 'ipcei_state_aid')""",
+               VALUES (%s, %s, 'direct', %s, %s, '', %s, %s, 0, 'ipcei_state_aid')""",
             (company_id, source, r.get("sa_case"), aid_eur, raw_url, decision_date),
         )
         inserted += 1
@@ -995,26 +995,25 @@ def main() -> None:
         print(f"!! DB not found: {DB_PATH}")
         sys.exit(1)
 
-    conn = sqlite3.connect(DB_PATH)
-    print(f"\nMatching {len(all_rows)} rows against {DB_PATH.name} …")
-    enriched, summary = match_companies(all_rows, conn)
+    with connect() as conn:
+        print(f"\nMatching {len(all_rows)} rows against {DB_PATH.name} …")
+        enriched, summary = match_companies(all_rows, conn)
 
-    # Write match summary CSV
-    with _MATCH_CSV_PATH.open("w", newline="", encoding="utf-8") as f:
-        w2 = csv.DictWriter(f, fieldnames=MATCH_FIELDNAMES)
-        w2.writeheader()
-        w2.writerows(summary)
+        # Write match summary CSV
+        with _MATCH_CSV_PATH.open("w", newline="", encoding="utf-8") as f:
+            w2 = csv.DictWriter(f, fieldnames=MATCH_FIELDNAMES)
+            w2.writeheader()
+            w2.writerows(summary)
 
-    method_counts: dict[str, int] = {}
-    for s in summary:
-        method_counts[s["match_method"]] = method_counts.get(s["match_method"], 0) + 1
-    print("Match results:")
-    for method, count in sorted(method_counts.items()):
-        print(f"  {method:<12}  {count:>4}")
-    print(f"  Match summary → {_MATCH_CSV_PATH}")
+        method_counts: dict[str, int] = {}
+        for s in summary:
+            method_counts[s["match_method"]] = method_counts.get(s["match_method"], 0) + 1
+        print("Match results:")
+        for method, count in sorted(method_counts.items()):
+            print(f"  {method:<12}  {count:>4}")
+        print(f"  Match summary → {_MATCH_CSV_PATH}")
 
-    inserted = load_events(enriched, conn)
-    conn.close()
+        inserted = load_events(enriched, conn)
     print(f"\nInserted {inserted} events into public_funding_events")
 
     # Per-IPCEI aid sums for validation
