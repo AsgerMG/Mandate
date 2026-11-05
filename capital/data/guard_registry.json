@@ -116,8 +116,7 @@
       "id": "census",
       "cadence": "weekly",
       "needs": [
-        "etl corpus (data/db.sqlite)",
-        "DATABASE_URL"
+        "capital store (DATABASE_URL)"
       ],
       "code": [
         "ETL",
@@ -136,15 +135,15 @@
       "id": "store_schema",
       "cadence": "weekly",
       "needs": [
-        "etl corpus (data/db.sqlite)",
-        "DATABASE_URL"
+        "capital store (DATABASE_URL)"
       ],
       "code": [
         "ETL/schema/check_store_schema.py",
         "ETL/schema/schema_debt.json",
-        "ETL/events/load/schema.sql",
-        "ETL/events/load/migrations",
-        "ETL/schema/postgres_schema.sql"
+        "ETL/schema/corpus_schema.sql",
+        "ETL/schema/postgres_schema.sql",
+        "ETL/schema/guard_verdicts.sql",
+        "ETL/schema/migrations"
       ],
       "code_suffixes": [
         ".py",
@@ -154,18 +153,16 @@
       "command": [
         "python3",
         "ETL/schema/check_store_schema.py",
-        "--sqlite",
-        "data/db.sqlite",
         "--postgres"
       ],
       "refresh": "python3 ETL/lib/guard_verdicts.py run store_schema",
-      "why": "Two stores of the same table must have the same columns. The volume's funding_instruments had no `tier` while the laptop's did -- the volume had run 9 of the 23 committed migrations -- and because the census reads `tier`, a missing COLUMN was reported for half a day as a coverage LOSS. It runs here rather than in CI because it is a question about LIVE stores, and it runs inside the container so the corpus it reads is the one the cron actually writes."
+      "why": "Every table and column in the store must be creatable from committed DDL, and present. When there were two stores, the volume's funding_instruments had no `tier` while the laptop's did, and because the census reads `tier` a missing COLUMN was reported for half a day as a coverage LOSS. Since 2026-11-05 there is one store (schema capital); it runs on the cron because it is a question about the LIVE store, which CI holds no credentials for."
     },
     {
       "id": "aggregate_independence",
       "cadence": "weekly",
       "needs": [
-        "etl corpus (data/db.sqlite)"
+        "capital store (DATABASE_URL)"
       ],
       "code": [
         "ETL/schema/check_aggregate_independence.py",
@@ -176,13 +173,13 @@
         "ETL/schema/check_aggregate_independence.py"
       ],
       "refresh": "python3 ETL/lib/guard_verdicts.py run aggregate_independence",
-      "why": "Liveness must not reach the headline figures, and must move the offerable set. It was in CI, where data/db.sqlite is gitignored, so it printed 'skipping' and returned 0 on every run it has ever had."
+      "why": "Liveness must not reach the headline figures, and must move the offerable set. It was in CI, which cannot see the corpus, so it printed 'skipping' and returned 0 on every run it has ever had."
     },
     {
       "id": "offerable_decay",
       "cadence": "weekly",
       "needs": [
-        "etl corpus (data/db.sqlite)"
+        "capital store (DATABASE_URL)"
       ],
       "code": [
         "ETL/terms/check_offerable_decay.py",
@@ -203,12 +200,12 @@
       "id": "corpus_marks",
       "cadence": "weekly",
       "needs": [
-        "etl corpus (data/db.sqlite)"
+        "capital store (DATABASE_URL)"
       ],
       "code": [
         "ETL/schema/check_corpus_marks.py",
         "ETL/lib/corpus_marks.py",
-        "ETL/events/load/migrations/031_corpus_run_marks.sql"
+        "ETL/schema/corpus_schema.sql"
       ],
       "code_suffixes": [
         ".py",
@@ -219,7 +216,7 @@
         "ETL/schema/check_corpus_marks.py"
       ],
       "refresh": "python3 ETL/lib/guard_verdicts.py run corpus_marks",
-      "why": "Did the run that built this corpus finish every step it started. The other guards ask what the corpus CONTAINS and whether its schema is right; a half-refreshed corpus answers both perfectly well, and the coverage gate passed three censuses in a row that describe runs which failed. The outcome of a run is a property of the corpus that run produced, and it was being kept in a different store from the corpus -- so it did not survive `make pull-db`, and a partial volume became a publishable-looking laptop corpus with nothing left to say otherwise. The mark now lives in db.sqlite and travels with the file."
+      "why": "Did the run that built this corpus finish every step it started. The other guards ask what the corpus CONTAINS and whether its schema is right; a half-refreshed corpus answers both perfectly well, and the coverage gate passed three censuses in a row that describe runs which failed. The outcome of a run is a property of the corpus that run produced, and it was being kept in a different store from the corpus -- so it did not survive `make pull-db`, and a partial volume became a publishable-looking laptop corpus with nothing left to say otherwise. The mark lives in the store itself, beside the rows it describes."
     },
     {
       "id": "corpus_currency",

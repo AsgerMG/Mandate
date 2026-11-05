@@ -25,9 +25,12 @@ import os
 import sys
 from pathlib import Path
 
+import re
+
 import psycopg
 
 ROOT = Path(__file__).resolve().parents[2]
+CORPUS_DDL = Path(__file__).resolve().parent / "corpus_schema.sql"
 OUT = ROOT / "ETL" / "schema" / "postgres_schema.sql"
 
 HEADER = """-- Postgres schema for the live product database (Railway).
@@ -56,31 +59,38 @@ def load_env() -> None:
 
 def build() -> str:
     out = [HEADER]
+    # The corpus tables have their own authority (corpus_schema.sql, written by
+    # the 2026-11-05 load and edited by migration since). This file covers the
+    # rest of the schema, so the two can never declare one table twice.
+    owned_elsewhere = set(re.findall(r'CREATE TABLE "(\w+)"', CORPUS_DDL.read_text()))
     with psycopg.connect(os.environ["DATABASE_URL"]) as conn:
         tables = [r[0] for r in conn.execute(
-            "SELECT tablename FROM pg_tables WHERE schemaname=current_schema() ORDER BY tablename")]
+            "SELECT tablename FROM pg_tables WHERE schemaname=current_schema() ORDER BY tablename")
+            if r[0] not in owned_elsewhere and not r[0].startswith("_")]
         for t in tables:
+            # format_type, not information_schema.data_type: the latter spells an
+            # array `ARRAY` and a pgvector column `USER-DEFINED`, neither of which
+            # replays -- this file could not rebuild the tables it describes.
             cols = list(conn.execute(
-                """SELECT column_name, data_type, is_nullable, column_default,
-                          character_maximum_length
-                     FROM information_schema.columns
-                    WHERE table_schema = current_schema() AND table_name = %s
-                    ORDER BY ordinal_position""", (t,)))
+                """SELECT a.attname, format_type(a.atttypid, a.atttypmod),
+                          NOT a.attnotnull, pg_get_expr(d.adbin, d.adrelid)
+                     FROM pg_attribute a
+                     LEFT JOIN pg_attrdef d ON d.adrelid = a.attrelid AND d.adnum = a.attnum
+                    WHERE a.attrelid = to_regclass(%s) AND a.attnum > 0
+                      AND NOT a.attisdropped
+                    ORDER BY a.attnum""", (t,)))
             out.append(f"\n-- {'─' * 3} {t} " + "─" * max(0, 58 - len(t)))
             out.append(f"CREATE TABLE IF NOT EXISTS {t} (")
             lines = []
-            for name, dtype, nullable, default, maxlen in cols:
-                ty = dtype.upper()
-                if dtype == "character varying" and maxlen:
-                    ty = f"VARCHAR({maxlen})"
-                if dtype == "USER-DEFINED":
-                    ty = "VECTOR"  # pgvector
+            for name, ty, nullable, default in cols:
+                ty = ty.upper() if not ty.startswith(("vector", "public.vector")) \
+                    else ty.replace("public.", "")
                 suffix = ""
                 if default and "nextval" in str(default):
-                    ty = "BIGSERIAL" if "big" in dtype else "SERIAL"
+                    ty = "BIGSERIAL" if ty.upper() == "BIGINT" else "SERIAL"
                 elif default:
                     suffix = f" DEFAULT {default}"
-                null = "" if nullable == "YES" else " NOT NULL"
+                null = "" if nullable else " NOT NULL"
                 lines.append(f"  {name:26} {ty}{null}{suffix}")
             out.append(",\n".join(lines))
             out.append(");")

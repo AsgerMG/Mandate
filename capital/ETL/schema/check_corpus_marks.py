@@ -12,12 +12,13 @@ it, and a step somebody forgets to wrap is caught by the census's own
 `run_outcome` instead. There is no register here to fall out of date.
 
 ── Where it runs, and why not in CI ───────────────────────────────────────
-`data/db.sqlite` is gitignored and lives on a Railway volume. A check that reads
-it from CI reads nothing and returns 0, which is the failure this repo found in
-`check_aggregate_independence.py` — green on every run it ever had. So it runs
-where the data is: as a step of `ETL/refresh.py` before the coverage gate, and
-as a published guard from `railway_cron.py` (data/guard_registry.json), whose
-verdict `check_verdicts.ts` asserts without needing credentials.
+It reads the corpus (schema `capital` of the Mandate Postgres), and CI holds no
+credentials for it. A check that reads nothing from CI returns 0, which is the
+failure this repo found in `check_aggregate_independence.py` — green on every
+run it ever had. So it runs where the credentials are: as a step of
+`ETL/refresh.py` before the coverage gate, and as a published guard from
+`railway_cron.py` (data/guard_registry.json), whose verdict `check_verdicts.ts`
+asserts without needing credentials.
 
 ── Why it is in front of the gate rather than behind it ───────────────────
 `coverage_gate.py` answers "does this corpus know less than it did". That is a
@@ -28,7 +29,6 @@ own answer. `coverage_gate` names this step in `needs`, so a red mark stops
 the snapshot, the Postgres publish and the embeddings — and only those.
 
     python3 ETL/schema/check_corpus_marks.py
-    python3 ETL/schema/check_corpus_marks.py --sqlite /tmp/volume-db.sqlite
     python3 ETL/schema/check_corpus_marks.py --self-test   # prove it can fail
 """
 from __future__ import annotations
@@ -44,13 +44,14 @@ for _anc in _Path(__file__).resolve().parents:
 import argparse  # noqa: E402
 import os  # noqa: E402
 
-from etl_env import DB  # noqa: E402
 import corpus_marks  # noqa: E402
+from store import connect  # noqa: E402
 
 
-def check(db: str, ignore_run: str | None) -> int:
-    bad, unknown = corpus_marks.unresolved(db, ignore_run=ignore_run)
-    marks, _ = corpus_marks.read(db)
+def check(ignore_run: str | None) -> int:
+    with connect(readonly=True) as con:
+        bad, unknown = corpus_marks.unresolved(con, ignore_run=ignore_run)
+        marks, _ = corpus_marks.read(con)
 
     if unknown:
         # NOT a pass. It is reported, and it ends by itself: the next marked run
@@ -62,7 +63,7 @@ def check(db: str, ignore_run: str | None) -> int:
               "first marks; from then on this is a real answer.")
         return 0
 
-    print(f"check_corpus_marks: {len(marks)} step(s) marked in {_Path(db).name}")
+    print(f"check_corpus_marks: {len(marks)} step(s) marked in the store")
     for m in marks:
         state = ("OPEN " if not m["closed_at"] else
                  "ok   " if m["outcome"] == corpus_marks.OK else
@@ -103,21 +104,35 @@ def self_test() -> int:
     only ever passes here would be caught by the assertion, not by a person
     noticing months later.
     """
-    import tempfile
-
     failures = []
-    with tempfile.TemporaryDirectory() as tmp:
-        db = str(_Path(tmp) / "probe.sqlite")
+    # On a real connection, with the search path narrowed to pg_temp: the real
+    # corpus_run_marks is unreachable from this session, the probe table is a
+    # TEMP table that dies with it, and the session is rolled back regardless.
+    # The same SQL the guard runs, on the same engine, touching nothing.
+    with connect() as con:
+        con.execute("SET search_path = pg_temp")
         os.environ[corpus_marks.RUN_ID_ENV] = "selftest-run"
 
-        corpus_marks.open_mark("a finished step", "self_test", db)
-        corpus_marks.close_mark("a finished step", corpus_marks.OK, "", db)
-        bad, unknown = corpus_marks.unresolved(db)
+        # A store with no marks table must be UNKNOWN and never a silent pass —
+        # the shape that deleted 141 filters.
+        _, unknown = corpus_marks.unresolved(con)
+        if not unknown:
+            failures.append("a store with no marks table answered as if it were clean")
+        con.execute("CREATE TEMP TABLE corpus_run_marks (step TEXT PRIMARY KEY, "
+                    "run_id TEXT NOT NULL, runner TEXT, opened_at TEXT NOT NULL, "
+                    "closed_at TEXT, outcome TEXT, detail TEXT)")
+        _, unknown = corpus_marks.unresolved(con)
+        if not unknown:
+            failures.append("an empty marks table answered as if it were clean")
+
+        corpus_marks.open_mark("a finished step", "self_test", con)
+        corpus_marks.close_mark("a finished step", corpus_marks.OK, "", con)
+        bad, unknown = corpus_marks.unresolved(con)
         if bad or unknown:
             failures.append(f"a clean store was not clean: {bad} {unknown}")
 
-        corpus_marks.open_mark("a step that never returned", "self_test", db)
-        bad, _ = corpus_marks.unresolved(db)
+        corpus_marks.open_mark("a step that never returned", "self_test", con)
+        bad, _ = corpus_marks.unresolved(con)
         if len(bad) != 1:
             failures.append(f"an open mark did not fail the guard: {bad}")
         if not corpus_marks.summarise(bad).startswith("partial"):
@@ -125,32 +140,21 @@ def self_test() -> int:
                             f"{corpus_marks.summarise(bad)}")
         # ...and it must be ignorable by the run that owns it, or a runner
         # cannot ask this question about itself without always failing.
-        bad_other, _ = corpus_marks.unresolved(db, ignore_run="selftest-run")
+        bad_other, _ = corpus_marks.unresolved(con, ignore_run="selftest-run")
         if bad_other:
             failures.append(f"ignore_run did not drop the in-flight mark: {bad_other}")
 
         corpus_marks.close_mark("a step that never returned",
-                                corpus_marks.PARTIAL, "cap reached", db)
-        bad, _ = corpus_marks.unresolved(db)
+                                corpus_marks.PARTIAL, "cap reached", con)
+        bad, _ = corpus_marks.unresolved(con)
         if len(bad) != 1:
             failures.append(f"a partial mark did not fail the guard: {bad}")
 
         corpus_marks.close_mark("a step that never returned",
-                                corpus_marks.FAILED, "boom", db)
-        if not corpus_marks.summarise(corpus_marks.unresolved(db)[0]).startswith("failed"):
+                                corpus_marks.FAILED, "boom", con)
+        if not corpus_marks.summarise(corpus_marks.unresolved(con)[0]).startswith("failed"):
             failures.append("a failed mark did not summarise as failed")
-
-        # An absent store, and a store with no table, must both be UNKNOWN and
-        # never a silent pass — the shape that deleted 141 filters.
-        _, unknown = corpus_marks.unresolved(str(_Path(tmp) / "nothing-here.sqlite"))
-        if not unknown:
-            failures.append("an absent store answered as if it were clean")
-        import sqlite3
-        empty = str(_Path(tmp) / "empty.sqlite")
-        sqlite3.connect(empty).close()
-        _, unknown = corpus_marks.unresolved(empty)
-        if not unknown:
-            failures.append("a store with no marks table answered as if it were clean")
+        con.rollback()
 
         # worse_of must never let a runner's optimism beat the store's memory.
         for claimed, stored, want in (
@@ -173,8 +177,6 @@ def self_test() -> int:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--sqlite", default=str(DB),
-                    help="the store to ask; defaults to this checkout's corpus")
     ap.add_argument("--ignore-run", default=None,
                     help="drop marks belonging to this run id — for a runner "
                          "asking about the state the store ARRIVED in")
@@ -183,7 +185,7 @@ def main() -> int:
     a = ap.parse_args()
     if a.self_test:
         return self_test()
-    return check(a.sqlite, a.ignore_run)
+    return check(a.ignore_run)
 
 
 if __name__ == "__main__":

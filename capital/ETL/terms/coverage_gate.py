@@ -65,9 +65,9 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parents[1] / "lib"))
 import argparse  # noqa: E402
 import datetime as _dt  # noqa: E402
 import json  # noqa: E402
-import sqlite3  # noqa: E402
 
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 from coverage_report import AXES, build  # noqa: E402
 
 _sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
@@ -133,7 +133,7 @@ def kpi_tolerance(mark: float) -> float:
     return max(1.0, KPI_TOLERANCE_SHARE * abs(mark))
 
 
-def snapshot(conn: sqlite3.Connection) -> dict:
+def snapshot(conn) -> dict:
     s = build(conn)["summary"]
     n = s["instruments"]
     return {
@@ -303,11 +303,8 @@ def main() -> None:
                     help="check and report; never write the baseline")
     args = ap.parse_args()
 
-    conn = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
-    try:
+    with connect(readonly=True) as conn:
         cur = snapshot(conn)
-    finally:
-        conn.close()
 
     if args.accept or not BASELINE.exists():
         BASELINE.write_text(json.dumps(accept(cur), indent=1) + "\n")

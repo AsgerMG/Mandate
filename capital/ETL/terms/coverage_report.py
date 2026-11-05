@@ -20,10 +20,10 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parents[1] / "lib"))
 import argparse  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
-import sqlite3  # noqa: E402
 from collections import defaultdict  # noqa: E402
 
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 
 EVALUABLE = ("value_spec IS NOT NULL AND value_spec != '' "
              "AND (gate_role IS NULL OR gate_role = 'filter')")
@@ -36,16 +36,19 @@ STALE_YEARS = 3
 AXES = ("eligibility", "funds", "where", "amount", "route", "live")
 
 
-def build(conn: sqlite3.Connection) -> dict:
-    conn.row_factory = sqlite3.Row
+def build(conn) -> dict:
+    """`conn` is a store connection (tuple rows); named access is a local cursor,
+    so a caller can hand the same connection to compute_kpis afterwards."""
+    from psycopg.rows import dict_row  # noqa: PLC0415
+    named = conn.cursor(row_factory=dict_row)
 
-    insts = list(conn.execute("""
+    insts = list(named.execute("""
         SELECT id, parent_id, name, country, source_family_bucket, capital_type,
                tier, root_id, depth, path,
                event_count, company_count, total_eur, first_year, last_year,
                sample_project_titles, sector_mix, scheme_code,
                award_p25, award_p50, award_p75, award_n
-          FROM funding_instruments
+          FROM funding_instruments ORDER BY id
     """))
 
     row = conn.execute("""
@@ -71,11 +74,11 @@ def build(conn: sqlite3.Connection) -> dict:
     fields: dict[str, set[str]] = defaultdict(set)
     region_eval: set[str] = set()
 
-    for r in conn.execute(f"""
+    for r in named.execute(f"""
         SELECT instrument_id, gate_key, value_spec, verification_level,
                COALESCE(intake_field_resolved, intake_field) AS f,
                CASE WHEN {EVALUABLE} THEN 1 ELSE 0 END AS ev
-          FROM eligibility_gates
+          FROM eligibility_gates ORDER BY id
     """):
         iid = r["instrument_id"]
         own_keys[iid].add(r["gate_key"])
@@ -106,7 +109,7 @@ def build(conn: sqlite3.Connection) -> dict:
     # publishableInstruments() applies in the read path.
     has_children = {p for p in parent_of.values() if p}
     frameworks = {r[0] for r in conn.execute(
-        "SELECT id FROM funding_instruments WHERE is_framework = 1")}
+        "SELECT id FROM funding_instruments WHERE is_framework")}
 
     apply_direct = {r[0] for r in conn.execute(
         "SELECT DISTINCT instrument_id FROM instrument_application")}
@@ -340,9 +343,8 @@ def main() -> None:
     ap.add_argument("--json")
     ap.add_argument("--md")
     args = ap.parse_args()
-    conn = sqlite3.connect(DB)
-    data = build(conn)
-    conn.close()
+    with connect(readonly=True) as conn:
+        data = build(conn)
     s = data["summary"]
     print(f"coverage: {s['instruments']} instruments, {s['complete']} complete on all six axes")
     for a in AXES:

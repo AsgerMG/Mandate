@@ -49,48 +49,17 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
 import hashlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
-import sqlite3  # noqa: E402
 
 _sys.path.insert(0, str(ROOT / "ETL" / "terms"))
 _sys.path.insert(0, str(ROOT / "website" / "build"))
 _sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
-
-SCHEMA = """
-CREATE TABLE IF NOT EXISTS corpus_census (
-  id                BIGSERIAL PRIMARY KEY,
-  taken_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
-  produced_by       TEXT NOT NULL,
-  code_fingerprint  TEXT NOT NULL,
-  kpis              JSONB,
-  instruments       JSONB,
-  coverage          JSONB,
-  gate              JSONB,
-  run_outcome       TEXT NOT NULL DEFAULT 'unknown',
-  errors            JSONB NOT NULL DEFAULT '[]'::jsonb,
-  store             TEXT NOT NULL DEFAULT 'unknown',
-  schema_state      JSONB
-);
-ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS run_outcome TEXT NOT NULL DEFAULT 'unknown';
--- WHICH STORE this census describes. produced_by says who RAN it, which is a
--- different question and was being asked in its place: three of the first five
--- censuses were taken against the same laptop file under three different
--- produced_by labels, and the guard's test for "the scheduled ETL" was
--- `produced_by != 'local'`. See website/build/lib/corpus_stores.py.
-ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS store TEXT NOT NULL DEFAULT 'unknown';
--- The migrations this store has, so schema drift travels on the SAME channel as
--- everything else rather than surfacing as `no such column: tier` inside an
--- unrelated block, three weeks late.
-ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS schema_state JSONB;
-CREATE INDEX IF NOT EXISTS corpus_census_taken_idx
-  ON corpus_census USING btree (taken_at DESC);
-"""
 
 # The trees that are copied into the ETL image (data/, .git/ and the frontend's
 # build output are excluded by .dockerignore, so they cannot be part of a
@@ -158,8 +127,9 @@ def code_fingerprint(root: _Path = ROOT) -> str:
     return h.hexdigest()[:16]
 
 
-def _connect_ro() -> sqlite3.Connection:
-    return sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+def _connect_ro():
+    from store import connect  # noqa: PLC0415  (--fingerprint needs no driver)
+    return connect(readonly=True)
 
 
 def collect() -> tuple[dict, list[str]]:
@@ -176,19 +146,14 @@ def collect() -> tuple[dict, list[str]]:
         # recorded per store so the guard can see WHICH store is behind rather
         # than only that something is.
         _sys.path.insert(0, str(ROOT / "ETL" / "events" / "load" / "migrations"))
-        from apply import status as _mig_status  # noqa: PLC0415
-        con = sqlite3.connect(DB)  # needs write access: status() creates the table
-        try:
+        from apply import applied_ids, status as _mig_status  # noqa: PLC0415
+        with _connect_ro() as con:
             pending, unknown = _mig_status(con)
-            con.commit()
             out["schema_state"] = {
-                "applied": sorted(r[0] for r in con.execute(
-                    "SELECT id FROM schema_migrations")),
+                "applied": sorted(applied_ids(con)),
                 "pending": pending,
                 "unknown": unknown,
             }
-        finally:
-            con.close()
         # Deliberately NOT appended to `errors`. A pending migration is recorded,
         # and the guard has a SCHEMA class for it; putting it in `errors` too
         # would additionally raise DEGRADED, which means "this corpus is not fit
@@ -203,39 +168,30 @@ def collect() -> tuple[dict, list[str]]:
         # has neither. That is not hypothetical: this block's first real run
         # inside the container recorded exactly that ModuleNotFoundError.
         from corpus_kpis import compute_kpis
-        con = _connect_ro()
-        try:
+        with _connect_ro() as con:
             out["kpis"] = compute_kpis(con)
-        finally:
-            con.close()
     except Exception as exc:  # noqa: BLE001 - recorded, not swallowed
         errors.append(f"kpis: {type(exc).__name__}: {exc}")
 
     try:
-        con = _connect_ro()
-        try:
+        with _connect_ro() as con:
             row = con.execute(
                 "SELECT COUNT(*),"
-                "       SUM(CASE WHEN is_framework = 1 THEN 1 ELSE 0 END),"
+                "       SUM(CASE WHEN is_framework THEN 1 ELSE 0 END),"
                 "       SUM(CASE WHEN parent_id IS NULL THEN 1 ELSE 0 END)"
                 "  FROM funding_instruments").fetchone()
             gates = con.execute("SELECT COUNT(*) FROM eligibility_gates").fetchone()[0]
             out["instruments"] = {
-                "total": row[0], "frameworks": row[1] or 0, "roots": row[2] or 0,
-                "gates": gates,
+                "total": row[0], "frameworks": int(row[1] or 0),
+                "roots": int(row[2] or 0), "gates": gates,
             }
-        finally:
-            con.close()
     except Exception as exc:  # noqa: BLE001
         errors.append(f"instruments: {type(exc).__name__}: {exc}")
 
     try:
         from coverage_gate import BASELINE, evaluate, snapshot
-        con = _connect_ro()
-        try:
+        with _connect_ro() as con:
             cur = snapshot(con)
-        finally:
-            con.close()
         out["coverage"] = cur
         if BASELINE.exists():
             ok, failures, notes = evaluate(cur, json.loads(BASELINE.read_text()))
@@ -336,24 +292,21 @@ def main() -> int:
               "it; without it the drift is unobservable again.")
         return 1
 
-    import psycopg
+    from store import connect  # noqa: PLC0415
 
-    with psycopg.connect(url) as conn:
-        with conn.cursor() as cur:
-            cur.execute(SCHEMA)
-            cur.execute(
-                "INSERT INTO corpus_census (produced_by, code_fingerprint, kpis, "
-                "instruments, coverage, gate, run_outcome, errors, store, "
-                "schema_state) "
-                "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
-                "RETURNING id, taken_at",
-                (args.produced_by, fingerprint,
-                 json.dumps(payload["kpis"]), json.dumps(payload["instruments"]),
-                 json.dumps(payload["coverage"]), json.dumps(payload["gate"]),
-                 args.run_outcome, json.dumps(errors), store,
-                 json.dumps(payload["schema_state"])))
-            cid, taken = cur.fetchone()
-        conn.commit()
+    # corpus_census is the schema's (postgres_schema.sql), not re-created here.
+    with connect() as conn:
+        cid, taken = conn.execute(
+            "INSERT INTO corpus_census (produced_by, code_fingerprint, kpis, "
+            "instruments, coverage, gate, run_outcome, errors, store, "
+            "schema_state) "
+            "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) "
+            "RETURNING id, taken_at",
+            (args.produced_by, fingerprint,
+             json.dumps(payload["kpis"]), json.dumps(payload["instruments"]),
+             json.dumps(payload["coverage"]), json.dumps(payload["gate"]),
+             args.run_outcome, json.dumps(errors), store,
+             json.dumps(payload["schema_state"]))).fetchone()
     print(f"\nrecorded census #{cid} at {taken:%Y-%m-%d %H:%M} UTC"
           + (f" WITH {len(errors)} error(s)" if errors else ""))
 
