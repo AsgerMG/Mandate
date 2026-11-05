@@ -12,14 +12,15 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
 from web_env import SITE_DATA  # noqa: E402
-from helpers import db, to_json, fmt_eur  # noqa: E402
+from helpers import to_json, fmt_eur  # noqa: E402
+from store import connect  # noqa: E402
 
 SITE_DATA.mkdir(parents=True, exist_ok=True)
 
 
 # ── The single canonical definition of every corpus-wide figure ───────────────
 # It lives in lib/corpus_kpis.py and is re-exported here, because this module
-# cannot be imported without pandas (helpers.py, above) and the ETL image has
+# was once importable only with pandas (helpers.py, above) and the ETL image has
 # no pandas. The corpus census runs in that image and needs these numbers; a
 # second copy of the SQL would have been the third place this repo learned that
 # "keep in sync" is not a mechanism. See lib/corpus_kpis.py for the definitions
@@ -29,11 +30,8 @@ from corpus_kpis import CANONICAL_KPI_SQL, compute_kpis  # noqa: E402,F401
 # ── Corpus KPIs ───────────────────────────────────────────────────────────────
 def run_synthesis():
     """Write the corpus-wide KPI grid the home page and layout footer read."""
-    con = db()
-    try:
+    with connect(readonly=True) as con:
         k = compute_kpis(con)
-    finally:
-        con.close()
 
     payload = {
         # WHEN this reading of the corpus was taken. The site now reads the

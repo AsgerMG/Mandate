@@ -257,13 +257,22 @@ STEPS: list[Step] = [
                 "gate_roles", "retract_text", "applicant_identity",
                 "corpus_marks"),
          why="THE decision to publish. Everything that publishes names it in `needs`, "
-             "so a red gate still stops the snapshot, the Postgres publish and the "
+             "so a red gate still stops the snapshot, the derived artifacts and the "
              "embeddings -- and only those."),
+    # ── WHAT THE GATE CAN NO LONGER STOP (2026-11-05) ─────────────────────
+    # While the corpus was SQLite the steps above wrote a working copy, and
+    # this gate stood between it and Postgres, the store founders read. With
+    # one store the steps above write the served tables directly, so a corpus
+    # that fails this gate has ALREADY been served by the time it fails. What
+    # the gate still stops is everything derived from the corpus (the snapshot,
+    # the embeddings, the priors, the census-facing artefacts). Restoring
+    # "a worse corpus is never served" needs the build steps to write in one
+    # transaction the gate commits, or into a staging schema it promotes --
+    # an owner's decision, recorded rather than silently assumed.
     Step("snapshot", "export snapshot",
          ["python3", "website/build/eligibility_export.py"],
          role="build", needs=("coverage_gate",),
-         why="instrument_terms.json: the fallback corpus, the theme index's input, "
-             "and what migrate_to_postgres.py reads."),
+         why="instrument_terms.json: the fallback corpus and the theme index's input."),
     Step("companies_index", "companies index",
          ["python3", "website/build/companies_index.py"],
          role="build", needs=("coverage_gate",),
@@ -280,11 +289,11 @@ STEPS: list[Step] = [
          role="build", needs=("snapshot",),
          why="Derived from the snapshot; stale means an instrument the lexical "
              "ranker cannot see."),
-    Step("postgres", "publish to Postgres",
-         ["python3", "ETL/terms/migrate_to_postgres.py"],
-         role="build", needs=("coverage_gate", "snapshot"),
-         why="The live register. It reads the snapshot, so a failed export must "
-             "not be published from."),
+    # "publish to Postgres" (migrate_to_postgres.py) WAS HERE. It truncated the
+    # five served tables and reloaded them from SQLite. Since 2026-11-05 there
+    # is one store and every step above writes it directly, so there is nothing
+    # to copy; the steps that depended on the publish now depend on the gate
+    # that used to guard it. See the note at `coverage_gate`.
     # Immediately after the publish and BEFORE anything expensive: it is the
     # only check that can see the Postgres path (every other one runs NO_PG=1
     # against the JSON fallback), and it needs both stores in step, which is
@@ -301,29 +310,29 @@ STEPS: list[Step] = [
     # makes this run exit non-zero.
     Step("parity", "check both stores agree",
          ["npx", "tsx", "scripts/check_hydration_parity.ts"],
-         role="report", needs=("snapshot", "postgres"),
+         role="report", needs=("snapshot", "coverage_gate"),
          why="Diffs the two stores it has just seen written. Reads only."),
     # The offline cut of the regions each scheme's OWN notification declares.
     # `catchment_regions` reaches no export -- instrument_terms.json has never
     # carried it -- so without this step the one guard that can prove a
     # territorial screen does not remove a fund from a company that WON it
     # would need DATABASE_URL, and a guard that needs a credential is a guard
-    # that skips on CI and in every pull request. `needs=("postgres",)` because
+    # that skips on CI and in every pull request. `needs=("coverage_gate",)` because
     # it reads the column from the store that publish has just filled.
     Step("official_catchments", "cut declared catchments offline",
          ["npx", "tsx", "scripts/emit_official_catchments.ts"],
-         role="build", needs=("postgres",),
+         role="build", needs=("coverage_gate",),
          why="What check_winner_not_blocked.ts reads, with no credentials. "
              "Stale means the blocked-winner ratchet is judging a corpus that "
              "has moved."),
     Step("embed_profiles", "embed instrument profiles",
          ["python3", "ETL/terms/build_instrument_profiles.py", "run"],
-         role="build", needs=("postgres",), paid=True,
+         role="build", needs=("coverage_gate",), paid=True,
          why="What each fund FUNDS. Incremental, so a skipped run drifts silently -- "
              "which is why the freshness check below does not depend on it."),
     Step("embed_gates", "embed eligibility",
          ["python3", "ETL/terms/embed_eligibility.py", "run"],
-         role="build", needs=("postgres",), paid=True,
+         role="build", needs=("coverage_gate",), paid=True,
          why="What each fund DEMANDS. Same shape as the line above."),
     # Immediately after the two embed steps: they only process what is missing,
     # so they drift silently, and the failure is invisible -- the advisor can
@@ -356,19 +365,19 @@ STEPS: list[Step] = [
     # of them is the emitters' own report/persist switch, not a new flag.
     Step("peer_prior", "rebuild peer prior",
          ["python3", "ETL/terms/emit_peer_prior.py", "--write"],
-         role="build", needs=("postgres",),
+         role="build", needs=("coverage_gate",),
          why="Read on the founder's path. Stale means peer precedence off, not degraded."),
     Step("region_prior", "rebuild region prior",
          ["python3", "ETL/terms/emit_region_prior.py", "--write"],
-         role="build", needs=("postgres",),
+         role="build", needs=("coverage_gate",),
          why="As above."),
     Step("channel_prior", "rebuild channel prior",
          ["python3", "ETL/terms/emit_channel_prior.py"],
-         role="build", needs=("postgres",),
+         role="build", needs=("coverage_gate",),
          why="As above."),
     Step("instrument_objectives", "rebuild instrument objectives",
          ["python3", "ETL/terms/emit_instrument_objectives.py", "--write"],
-         role="build", needs=("postgres",),
+         role="build", needs=("coverage_gate",),
          why="As above."),
     # The offline mirrors of the Postgres profile index. Both are committed,
     # both were found ~70 instruments behind the live index on 2026-08-07, and

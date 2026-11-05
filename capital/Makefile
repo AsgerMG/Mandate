@@ -32,7 +32,8 @@ help:
 	@echo "  make vault-status What the vault holds, how old it is, and whether iCloud has it"
 	@echo "  make analyze     Rebuild corpus KPIs (website/build/synthesis.py)"
 	@echo "  make visuals     Rebuild home-page visuals (taxonomy, map, coverage)"
-	@echo "  make data        Rebuild EVERY site JSON from db.sqlite (website/build/build_site_data.py)"
+	@echo "  make views       Install the read-side views in Postgres (ETL/schema/install_views.py)"
+	@echo "  make data        Rebuild EVERY site JSON from Postgres (website/build/build_site_data.py)"
 	@echo "  make eligibility Sync YAML -> DB, export instrument_terms.json, publish to Railway Postgres"
 	@echo "                   then rebuild both vector indexes (needs VOYAGE_KEY)"
 	@echo "  make signals     Check the signals_* tables + status + QA (ETL/intelligence/load/load_signals.py)"
@@ -128,8 +129,10 @@ transform: classify sanity
 analyze:
 	python3 website/build/synthesis.py
 
+# The read-side views (v_events ...) in Postgres, as capital_app. A build checks
+# them (install_views.py --check) and cannot install them: it reads as capital_ro.
 views:
-	sqlite3 data/db.sqlite < data/views.sql
+	python3 ETL/schema/install_views.py
 
 visuals:
 	python3 website/build/home_visuals.py
@@ -142,9 +145,8 @@ data:
 	python3 website/build/build_site_data.py
 
 # Eligibility subsystem (funding_instruments/eligibility_gates/eligibility_clauses):
-# sync hand-authored YAML into db.sqlite, export the JSON fallback the
-# frontend reads, then publish to Railway Postgres (the live read path once
-# DATABASE_URL is set — see the Railway migration plan). Not part of `make
+# sync hand-authored YAML into the served tables in Postgres (schema capital)
+# and export the JSON fallback the frontend reads. Not part of `make
 # data` since it has its own DATABASE_URL dependency and publish cadence.
 # Order matters: triage/encode must run BEFORE eligibility_export.py and
 # migrate_to_postgres.py, or both would publish the corpus without the curated
@@ -227,7 +229,7 @@ eligibility:
 	# data/vocabularies.json, and names no gate. It reads POSTGRES as well,
 	# because check_comparator_admits.ts deliberately reads only the snapshot and
 	# that leaves the store this pass just wrote to unchecked. FAILS the target.
-	python3 ETL/terms/check_comparator_storable.py --postgres
+	python3 ETL/terms/check_comparator_storable.py
 	# THE SECOND PATH TO PRODUCTION. encode_gates.py triage rewrites gate_role
 	# from a paid model pass, so every curated demotion above is reverted by the
 	# two lines above it -- and this target then exports and publishes. refresh.py
@@ -278,12 +280,10 @@ eligibility:
 	# output. It is what lets relevance.ts stop loading the whole corpus's
 	# gates on every request; check_theme_index.ts fails the build if stale.
 	cd website/frontend && npx tsx scripts/emit_theme_index.ts
-	python3 ETL/terms/migrate_to_postgres.py
-	# The same assertion against the store the brief actually reads, now that it
-	# has been written. Asked of BOTH stores rather than of one and assumed of
-	# the other, for the reason apply_gate_encoding_corrections.py already
-	# gives: they do not hold the same gate table.
-	python3 ETL/terms/check_corrections_applied.py --postgres
+	# (migrate_to_postgres.py, the SQLite -> Postgres truncate-and-reload, was
+	# here. Since 2026-11-05 every step above writes the served tables directly.)
+	# (A second check_corrections_applied.py, against Postgres after the
+	# publish, was here; with one store the run above already asked it.)
 	python3 ETL/terms/embed_eligibility.py run
 	python3 ETL/terms/build_instrument_profiles.py classify-titles
 	python3 ETL/terms/build_instrument_profiles.py run --rebuild

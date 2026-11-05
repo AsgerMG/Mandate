@@ -25,7 +25,8 @@ So the registry, the cron, and the scripts are checked against each other:
      the guard leaves its old verdict looking current
   6. `npm run check` still ends in check_verdicts, which is what closes the
      loop on the machine that has the credentials
-  7. no workflow holds a secret of ours
+  7. no workflow holds a secret of ours -- except the read-only corpus
+     credential, and only where its read-only-ness is proved first
 
 ── On (7), which is the reason for the other six ──────────────────────────
 This whole channel exists so that GitHub Actions never needs a connection
@@ -37,11 +38,29 @@ PROPERTY rather than a list of forbidden variable names:
     every workflow must be able to run every step it has with an empty
     secret store.
 
-The single exception is `secrets.GITHUB_TOKEN`, which Actions provides
-intrinsically and which the `permissions:` block scopes; it is not a credential
-we hold or could leak from here. Anything else fails, including a name nobody
-has thought of yet — which is the point, since the next one will not be called
+The exception is `secrets.GITHUB_TOKEN`, which Actions provides intrinsically
+and which the `permissions:` block scopes; it is not a credential we hold or
+could leak from here. Anything else fails, including a name nobody has thought
+of yet — which is the point, since the next one will not be called
 DATABASE_URL.
+
+── The one credential CI may hold (2026-11-05) ────────────────────────────
+The corpus moved into Postgres and the site's data is now generated from it
+rather than committed, so the owner approved giving CI ONE credential: the
+capital_ro URL, as `secrets.CAPITAL_RO_DATABASE_URL`. What was bought above was
+"CI cannot change production", and a role that cannot write keeps that. It is
+admitted under three conditions, all checked here, because a secret's NAME says
+nothing about its contents:
+
+  a. it is bound to an env var of the same name, CAPITAL_RO_DATABASE_URL, and
+     nothing else. ETL/lib/store.py reads that name only for read-only
+     connections; bound to DATABASE_URL it would be what a WRITING script uses.
+  b. in every job that references it, the FIRST step that does runs
+     ETL/schema/check_readonly_credential.py, which asks the database what the
+     role may do and fails the job if it can write, create or grant anything.
+     So a read-write URL pasted under the read-only name stops the job before
+     any other step has received it.
+  c. no other data credential: everything else still fails, as before.
 
 Usage: python3 ETL/schema/check_guard_registry.py
 """
@@ -67,9 +86,37 @@ WORKFLOWS = ROOT.parent / ".github" / "workflows"
 # Not a credential this repository holds, so not one a workflow can leak.
 INTRINSIC_SECRETS = {"GITHUB_TOKEN"}
 
+# The read-only corpus credential: admitted on conditions (a)-(b) above.
+READONLY_SECRET = "CAPITAL_RO_DATABASE_URL"
+READONLY_PROOF = "ETL/schema/check_readonly_credential.py"
+
+
+def _jobs(live: str) -> dict[str, str]:
+    """job id -> its text. Jobs are the 2-space keys under the top-level `jobs:`."""
+    m = re.search(r"^jobs:\s*$", live, re.M)
+    if not m:
+        return {}
+    body = live[m.end():]
+    heads = list(re.finditer(r"^  ([A-Za-z0-9_-]+):\s*$", body, re.M))
+    return {h.group(1): body[h.end(): heads[i + 1].start() if i + 1 < len(heads) else len(body)]
+            for i, h in enumerate(heads)}
+
+
+def _steps(job: str) -> list[str]:
+    """A job's steps, each as its text. A step starts at a `- ` list item
+    under `steps:`."""
+    m = re.search(r"^(\s*)steps:\s*$", job, re.M)
+    if not m:
+        return []
+    body = job[m.end():]
+    starts = [s.start() for s in re.finditer(r"^\s*- ", body, re.M)]
+    return [body[a: starts[i + 1] if i + 1 < len(starts) else len(body)]
+            for i, a in enumerate(starts)]
+
 
 def workflow_secrets() -> list[str]:
-    """Every `secrets.X` reference in every workflow, except the intrinsic one."""
+    """Every `secrets.X` a workflow holds that it may not: any non-intrinsic
+    secret, except the read-only corpus credential used on conditions (a)-(b)."""
     out = []
     for wf in sorted(WORKFLOWS.glob("*.y*ml")):
         # Comment lines are dropped: a workflow's prose explains why it no
@@ -77,9 +124,44 @@ def workflow_secrets() -> list[str]:
         # holding one would make writing the explanation impossible.
         live = "\n".join(ln for ln in wf.read_text().splitlines()
                          if not ln.lstrip().startswith("#"))
+        rel = wf.relative_to(ROOT.parent)
         for name in re.findall(r"secrets\.([A-Za-z_][A-Za-z0-9_]*)", live):
-            if name not in INTRINSIC_SECRETS:
-                out.append(f"{wf.relative_to(ROOT)} reads secrets.{name}")
+            if name not in INTRINSIC_SECRETS and name != READONLY_SECRET:
+                out.append(f"{rel} reads secrets.{name}")
+        if f"secrets.{READONLY_SECRET}" not in live:
+            continue
+        # (a) bound only under its own name.
+        for var in re.findall(
+                r"^\s*([A-Za-z_][A-Za-z0-9_]*)\s*:\s*\$\{\{\s*secrets\." + READONLY_SECRET,
+                live, re.M):
+            if var != READONLY_SECRET:
+                out.append(f"{rel} binds secrets.{READONLY_SECRET} to {var}; it may be "
+                           f"bound only to {READONLY_SECRET}, the name store.py reads for "
+                           f"read-only connections")
+        if re.search(r"secrets\." + READONLY_SECRET + r"[^\n]*\}\}[^\n]*\S|"
+                     r"\$\{\{[^}]*\S\s*secrets\." + READONLY_SECRET, live):
+            out.append(f"{rel} uses secrets.{READONLY_SECRET} inside an expression; it may "
+                       f"only be bound as an env value on its own")
+        # (b) proved first, per job.
+        top_level = live.split("\njobs:", 1)[0]
+        if f"secrets.{READONLY_SECRET}" in top_level:
+            out.append(f"{rel} binds secrets.{READONLY_SECRET} at workflow level, which "
+                       f"hands it to every step of every job before any proof runs")
+        for job_id, job in _jobs(live).items():
+            if f"secrets.{READONLY_SECRET}" not in job:
+                continue
+            steps = _steps(job)
+            pre_steps = job.split("steps:", 1)[0]
+            if f"secrets.{READONLY_SECRET}" in pre_steps:
+                out.append(f"{rel} job `{job_id}` binds secrets.{READONLY_SECRET} at job "
+                           f"level, which hands it to every step before any proof runs")
+                continue
+            first = next((s for s in steps if f"secrets.{READONLY_SECRET}" in s), None)
+            if first is not None and READONLY_PROOF.split("/")[-1] not in first:
+                out.append(f"{rel} job `{job_id}`: the first step given "
+                           f"secrets.{READONLY_SECRET} does not run {READONLY_PROOF}. "
+                           f"A read-write URL stored under the read-only name would "
+                           f"reach that step unproved")
     return sorted(set(out))
 
 
@@ -240,9 +322,11 @@ def main() -> int:
         problems.append(
             f"{held}. The verdict channel exists so that no workflow needs a "
             f"credential of ours; a guard that only passes because one was added "
-            f"back has not been made to run, it has been made to be trusted. If "
-            f"this secret is genuinely not a data credential, say why here and "
-            f"add it to INTRINSIC_SECRETS deliberately.")
+            f"back has not been made to run, it has been made to be trusted. The "
+            f"one exception is the read-only corpus credential, on the conditions "
+            f"in this file's header. If this secret is genuinely not a data "
+            f"credential, say why here and add it to INTRINSIC_SECRETS "
+            f"deliberately.")
 
     print(f"guard registry: {len(guards)} guard(s) — "
           f"{len(from_cron)} run by the cron, {len(from_scripts)} by frontend scripts")

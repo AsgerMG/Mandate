@@ -7,13 +7,13 @@ Outputs:
       top country), which the taxonomy diagram links its chips to.
 """
 import json
-import sqlite3
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import DB, SITE_DATA  # noqa: E402
+from web_env import SITE_DATA  # noqa: E402
 from sector_labels import label as sector_label  # noqa: E402
+from store import connect  # noqa: E402
 
 OUT_DIR = SITE_DATA
 
@@ -55,21 +55,28 @@ def per_instrument_stats(conn, family: str) -> dict:
     top sector, top country for a single source_family."""
     companies = conn.execute(
         "SELECT COUNT(DISTINCT company_id) FROM v_events "
-        "WHERE source_family = ? AND company_id IS NOT NULL",
+        "WHERE source_family = %s AND company_id IS NOT NULL",
         (family,),
     ).fetchone()[0]
 
+    # The order of the addition is stated, because float addition is not
+    # associative and an unordered SUM moves in its last digits with the plan;
+    # this figure is published at full precision. (country, company, event) is
+    # the order the SQLite store summed in, so the move to Postgres changed no
+    # byte of it.
     total_eur = conn.execute(
-        "SELECT COALESCE(SUM(COALESCE(grant_amount_eur,0) "
-        " + COALESCE(debt_amount_eur,0) + COALESCE(equity_amount_eur,0)), 0) "
-        "FROM v_events WHERE source_family = ?",
+        "SELECT COALESCE(SUM(COALESCE(v.grant_amount_eur,0) "
+        " + COALESCE(v.debt_amount_eur,0) + COALESCE(v.equity_amount_eur,0)"
+        ' ORDER BY c.country COLLATE "C", v.company_id, v.id), 0) '
+        "FROM v_events v JOIN companies c ON c.id = v.company_id "
+        "WHERE v.source_family = %s",
         (family,),
     ).fetchone()[0]
 
     ticket_rows = conn.execute(
         "SELECT COALESCE(grant_amount_eur,0) + COALESCE(debt_amount_eur,0) "
         "      + COALESCE(equity_amount_eur,0) AS amt "
-        "FROM v_events WHERE source_family = ? AND ("
+        "FROM v_events WHERE source_family = %s AND ("
         "  COALESCE(grant_amount_eur,0) + COALESCE(debt_amount_eur,0) "
         "  + COALESCE(equity_amount_eur,0)) > 0 ORDER BY amt",
         (family,),
@@ -77,12 +84,13 @@ def per_instrument_stats(conn, family: str) -> dict:
     tickets = [r[0] for r in ticket_rows]
     median = percentile(tickets, 0.50)
 
+    # A tie in the count breaks on the slug, byte order, rather than on the plan.
     top_sector = conn.execute(
         "SELECT c.sector_top AS s, COUNT(DISTINCT c.id) AS n "
         "FROM v_events v JOIN companies c ON c.id = v.company_id "
-        "WHERE v.source_family = ? AND c.sector_top IS NOT NULL "
+        "WHERE v.source_family = %s AND c.sector_top IS NOT NULL "
         "  AND c.sector_top != '' "
-        "GROUP BY s ORDER BY n DESC LIMIT 1",
+        'GROUP BY c.sector_top ORDER BY n DESC, c.sector_top COLLATE "C" LIMIT 1',
         (family,),
     ).fetchone()
     sector_name = sector_label(top_sector[0]) if top_sector else "—"
@@ -91,8 +99,8 @@ def per_instrument_stats(conn, family: str) -> dict:
     top_country = conn.execute(
         "SELECT c.country, COUNT(DISTINCT c.id) AS n "
         "FROM v_events v JOIN companies c ON c.id = v.company_id "
-        "WHERE v.source_family = ? AND c.country IS NOT NULL "
-        "GROUP BY c.country ORDER BY n DESC LIMIT 1",
+        "WHERE v.source_family = %s AND c.country IS NOT NULL "
+        'GROUP BY c.country ORDER BY n DESC, c.country COLLATE "C" LIMIT 1',
         (family,),
     ).fetchone()
 
@@ -128,8 +136,8 @@ def build_instruments(conn):
 
 
 def main():
-    conn = sqlite3.connect(DB)
-    instruments = build_instruments(conn)
+    with connect(readonly=True) as conn:
+        instruments = build_instruments(conn)
 
     leaderboard = {
         "instruments": sorted(instruments, key=lambda x: -x["totalEur"]),

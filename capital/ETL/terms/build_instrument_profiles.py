@@ -87,7 +87,8 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB  # noqa: E402
+from etl_env import DATA  # noqa: E402
+from store import connect  # noqa: E402
 from recall_holdout import Holdout, add_holdout_flags, resolve_holdout  # noqa: E402
 # --- end ETL path bootstrap ---
 
@@ -96,10 +97,8 @@ import json
 import math
 import os
 import re
-import sqlite3
 from collections import Counter, defaultdict
 
-import psycopg
 import voyageai
 
 MODEL = "voyage-3.5"
@@ -127,13 +126,6 @@ ADMIN_NOISE = re.compile(
 THEMATIC_FAMILIES = ("G5_use_of_funds",)
 
 
-def connect_pg():
-    url = os.environ.get("DATABASE_URL")
-    if not url:
-        _sys.exit("DATABASE_URL not set (add to .env.local)")
-    return psycopg.connect(url)
-
-
 def voyage_client() -> voyageai.Client:
     key = os.environ.get("VOYAGE_KEY")
     if not key:
@@ -152,11 +144,11 @@ def norm_title(t: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"<[^>]{1,20}>", "", t or "")).strip()
 
 
-TITLE_KIND_CACHE = DB.parent / "instrument_title_kind.json"
+TITLE_KIND_CACHE = DATA / "instrument_title_kind.json"
 CLASSIFY_MODEL = "claude-haiku-4-5"
 
 
-def load_title_kinds(sq: sqlite3.Connection | None = None) -> dict[str, str]:
+def load_title_kinds(sq=None) -> dict[str, str]:
     """instrument_id -> 'project' | 'scheme'. Absent = assume 'project'.
 
     The classification is paid for once per FAMILY, because that is the level
@@ -205,19 +197,22 @@ def cmd_classify_titles(args) -> None:
     # definition, so the top of this ordering is where scheme-ness is visible;
     # an alphabetical sample missed it on satr_de_rnd (27,423 events, the
     # largest instrument in the corpus) and misclassified it as 'project'.
-    sq = sqlite3.connect(DB)
+    # A group's representative spelling is its byte-smallest (SQLite returned
+    # an arbitrary member; Postgres requires the choice to be stated).
+    with connect(readonly=True) as sq:
+        fetched = sq.execute(
+            """SELECT fis.instrument_id, MIN(e.project_title COLLATE "C"),
+                      COUNT(DISTINCT e.company_id) firms
+               FROM public_funding_events e
+               JOIN funding_instrument_sources fis ON fis.source = e.source
+               WHERE e.is_duplicate = 0 AND length(trim(coalesce(e.project_title,''))) > 8
+               GROUP BY fis.instrument_id, lower(trim(e.project_title))
+               ORDER BY fis.instrument_id COLLATE "C", firms DESC,
+                        lower(trim(e.project_title)) COLLATE "C" """
+        ).fetchall()
     rows: dict[str, list[str]] = {}
-    for iid, title, _firms in sq.execute(
-        """SELECT fis.instrument_id, e.project_title,
-                  COUNT(DISTINCT e.company_id) firms
-           FROM public_funding_events e
-           JOIN funding_instrument_sources fis ON fis.source = e.source
-           WHERE e.is_duplicate = 0 AND length(trim(coalesce(e.project_title,''))) > 8
-           GROUP BY fis.instrument_id, lower(trim(e.project_title))
-           ORDER BY fis.instrument_id, firms DESC"""
-    ).fetchall():
+    for iid, title, _firms in fetched:
         rows.setdefault(iid, []).append(norm_title(title)[:160])
-    sq.close()
 
     # Sample from BOTH ends of the recurrence distribution. Sampling only the
     # most-shared titles is diagnostic for schemes but biases project-heavy
@@ -245,18 +240,17 @@ def cmd_classify_titles(args) -> None:
     # false positives impossible, and requiring agreement protects the
     # low-diversity consortium programmes.
     diversity: dict[str, float] = {}
-    sq = sqlite3.connect(DB)
-    for iid, firms, n_titles in sq.execute(
-        """SELECT fis.instrument_id,
-                  COUNT(DISTINCT e.company_id),
-                  COUNT(DISTINCT lower(trim(e.project_title)))
-           FROM public_funding_events e
-           JOIN funding_instrument_sources fis ON fis.source = e.source
-           WHERE e.is_duplicate = 0 AND length(trim(coalesce(e.project_title,''))) > 8
-           GROUP BY fis.instrument_id"""
-    ).fetchall():
-        diversity[iid] = n_titles / firms if firms else 1.0
-    sq.close()
+    with connect(readonly=True) as sq:
+        for iid, firms, n_titles in sq.execute(
+            """SELECT fis.instrument_id,
+                      COUNT(DISTINCT e.company_id),
+                      COUNT(DISTINCT lower(trim(e.project_title)))
+               FROM public_funding_events e
+               JOIN funding_instrument_sources fis ON fis.source = e.source
+               WHERE e.is_duplicate = 0 AND length(trim(coalesce(e.project_title,''))) > 8
+               GROUP BY fis.instrument_id"""
+        ).fetchall():
+            diversity[iid] = n_titles / firms if firms else 1.0
 
     cached = load_title_kinds()
     todo = {k: v for k, v in samples.items() if args.rebuild or k not in cached}
@@ -322,8 +316,7 @@ def cmd_classify_titles(args) -> None:
           f"{len(out) - n_scheme} project")
 
 
-def build_profiles(sq: sqlite3.Connection,
-                   holdout: Holdout | None = None) -> list[tuple[str, str, int]]:
+def build_profiles(sq, holdout: Holdout | None = None) -> list[tuple[str, str, int]]:
     """Assemble (instrument_id, profile_text, n_titles) for every instrument.
 
     `holdout` defaults to an EMPTY exclusion rather than to the resolved one,
@@ -337,16 +330,18 @@ def build_profiles(sq: sqlite3.Connection,
                   source_family_bucket, sample_project_titles, sector_mix,
                   award_p50, award_n, description, eligibility_text,
                   scheme_code, delivery_region, delivery_region_share
-           FROM funding_instruments ORDER BY id"""
+           FROM funding_instruments ORDER BY id COLLATE "C" """
     ).fetchall()
 
     # Stated scope, per instrument.
     scope: dict[str, list[str]] = {}
     for iid, req in sq.execute(
-        f"""SELECT instrument_id, requirement FROM eligibility_gates
-            WHERE gate_family IN ({','.join('?' * len(THEMATIC_FAMILIES))})
-              AND requirement IS NOT NULL AND length(trim(requirement)) > 25"""
-    , THEMATIC_FAMILIES).fetchall():
+        """SELECT instrument_id, requirement FROM eligibility_gates
+            WHERE gate_family = ANY(%s)
+              AND requirement IS NOT NULL AND length(trim(requirement)) > 25
+            -- the first six are published, so the order is part of the text
+            ORDER BY id"""
+    , (list(THEMATIC_FAMILIES),)).fetchall():
         if ADMIN_NOISE.search(req):
             continue
         scope.setdefault(iid, []).append(norm_title(req))
@@ -408,7 +403,13 @@ def build_profiles(sq: sqlite3.Connection,
            FROM public_funding_events e
            JOIN funding_instrument_sources fis ON fis.source = e.source
            WHERE e.is_duplicate = 0
-             AND e.project_title IS NOT NULL AND length(trim(e.project_title)) > 8"""
+             AND e.project_title IS NOT NULL AND length(trim(e.project_title)) > 8
+           -- The first spelling of a title is the one published, so the order
+           -- is part of the text. This is the order the SQLite store read in
+           -- (source row, then programme, then event), kept so the move to
+           -- Postgres changed no profile.
+           ORDER BY fis.instrument_id COLLATE "C", fis.source COLLATE "C",
+                    e.programme_name COLLATE "C" NULLS FIRST, e.id"""
     ).fetchall():
         if kinds.get(iid) == "scheme":
             continue
@@ -441,7 +442,7 @@ def build_profiles(sq: sqlite3.Connection,
     # title repeats across a scheme's awards, so any is representative.
     satr: dict[str, tuple[str, str]] = {}
     for r in sq.execute("""
-            SELECT i.id, MAX(s.aid_measure_title), MAX(s.objectives_text)
+            SELECT i.id, MAX(s.aid_measure_title COLLATE "C"), MAX(s.objectives_text COLLATE "C")
               FROM funding_instruments i
               JOIN satr_staging s ON s.sa_number = i.scheme_code
              WHERE i.scheme_code IS NOT NULL AND TRIM(i.scheme_code) <> ''
@@ -541,7 +542,8 @@ def build_profiles(sq: sqlite3.Connection,
     for pid, nm, _n in sq.execute(
         """SELECT parent_id, name, SUM(event_count) n FROM funding_instruments
             WHERE parent_id IS NOT NULL AND COALESCE(name,'') <> ''
-            GROUP BY parent_id, name ORDER BY parent_id, n DESC"""
+            GROUP BY parent_id, name
+            ORDER BY parent_id COLLATE "C", n DESC, name COLLATE "C" DESC"""
     ).fetchall():
         lst = children.setdefault(pid, [])
         if len(lst) < MAX_TITLES and sum(len(x) + 2 for x in lst) < MAX_CHILDREN_CHARS:
@@ -695,23 +697,20 @@ def build_profiles(sq: sqlite3.Connection,
 
 
 def cmd_status(args) -> None:
-    sq = sqlite3.connect(DB)
-    # Reports the build that SHIPS. Reporting the include-everything build here
-    # would describe a document nobody embeds, and "which rows this was
-    # computed over" is the hidden variable this workstream exists to close.
-    holdout = resolve_holdout(args, sq)
-    holdout.report()
-    profiles = build_profiles(sq, holdout)
-    sq.close()
+    with connect(readonly=True) as sq:
+        # Reports the build that SHIPS. Reporting the include-everything build
+        # here would describe a document nobody embeds, and "which rows this was
+        # computed over" is the hidden variable this workstream exists to close.
+        holdout = resolve_holdout(args, sq)
+        holdout.report()
+        profiles = build_profiles(sq, holdout)
+        embedded = sq.execute("SELECT COUNT(*) FROM instrument_profiles").fetchone()[0]
+        stale = sq.execute(
+            """SELECT COUNT(*) FROM instrument_profiles p
+               WHERE NOT EXISTS (SELECT 1 FROM funding_instruments fi WHERE fi.id = p.instrument_id)"""
+        ).fetchone()[0]
     with_titles = sum(1 for _, _, n in profiles if n)
     avg = sum(len(t) for _, t, _ in profiles) / max(len(profiles), 1)
-    pg = connect_pg()
-    embedded = pg.execute("SELECT COUNT(*) FROM instrument_profiles").fetchone()[0]
-    stale = pg.execute(
-        """SELECT COUNT(*) FROM instrument_profiles p
-           WHERE NOT EXISTS (SELECT 1 FROM funding_instruments fi WHERE fi.id = p.instrument_id)"""
-    ).fetchone()[0]
-    pg.close()
     print(f"instruments:                {len(profiles):,}")
     print(f"  with funded-project text: {with_titles:,}")
     print(f"  mean profile length:      {avg:,.0f} chars")
@@ -720,23 +719,43 @@ def cmd_status(args) -> None:
 
 
 def cmd_show(args) -> None:
-    sq = sqlite3.connect(DB)
-    for iid, text, n in build_profiles(sq, resolve_holdout(args, sq)):
+    with connect(readonly=True) as sq:
+        profiles = build_profiles(sq, resolve_holdout(args, sq))
+    if args.instrument_id == "--all":
+        # Every profile, in order: the whole document set an embed would see.
+        for iid, text, n in profiles:
+            print(f"--- {iid} ({n} titles, {len(text)} chars) ---\n{text}")
+        return
+    for iid, text, n in profiles:
         if iid == args.instrument_id:
             print(f"--- {iid} ({n} titles, {len(text)} chars) ---\n{text}")
             break
     else:
         print(f"no such instrument: {args.instrument_id}")
-    sq.close()
 
 
 def cmd_run(args) -> None:
-    sq = sqlite3.connect(DB)
-    holdout = resolve_holdout(args, sq)
-    holdout.report()
-    profiles = build_profiles(sq, holdout)
-    sq.close()
-    pg = connect_pg()
+    with connect(readonly=True) as sq:
+        holdout = resolve_holdout(args, sq)
+        holdout.report()
+        profiles = build_profiles(sq, holdout)
+    if args.dry_run:
+        with connect(readonly=True) as pg:
+            done_ids = {r[0] for r in pg.execute(
+                "SELECT instrument_id FROM instrument_profiles").fetchall()}
+            stored = dict(pg.execute(
+                "SELECT instrument_id, profile_text FROM instrument_profiles").fetchall())
+        todo = [p for p in profiles if (args.rebuild or p[0] not in done_ids) and p[1].strip()]
+        changed = sum(1 for iid, text, _ in profiles if iid in stored and stored[iid] != text)
+        print(f"dry run: {len(profiles):,} profiles built; would embed {len(todo):,}"
+              f"{' (--rebuild: all)' if args.rebuild else ''}; {changed:,} stored "
+              f"profile texts differ from what would be built. Nothing called, nothing written.")
+        return
+    with connect() as pg:
+        _embed(args, pg, profiles)
+
+
+def _embed(args, pg, profiles) -> None:
     client = voyage_client()
 
     if args.rebuild:
@@ -792,28 +811,30 @@ def cmd_run(args) -> None:
         pg.commit()  # per-batch commit — kill-safe
         done += len(batch)
         print(f"  {done:,}/{len(todo):,}")
-    pg.close()
     print(f"done: {done:,} profiles embedded.")
 
 
 def cmd_query(args) -> None:
-    pg = connect_pg()
     client = voyage_client()
     vec = client.embed([args.text], model=MODEL, input_type="query").embeddings[0]
-    rows = pg.execute(
+    with connect(readonly=True) as pg:
+        rows = _nearest(pg, vec, args.k)
+    if not rows:
+        print("no results — is the index built? (run `status`)")
+    for iid, name, country, n_titles, sim in rows:
+        print(f"[{sim:.3f}] {iid:34} {name} ({country}) · {n_titles} titles")
+
+
+def _nearest(pg, vec, k):
+    return pg.execute(
         """SELECT p.instrument_id, fi.name, fi.country, p.n_titles,
                   1 - (p.embedding <=> %s::vector) AS similarity
            FROM instrument_profiles p
            JOIN funding_instruments fi ON fi.id = p.instrument_id
            ORDER BY p.embedding <=> %s::vector
            LIMIT %s""",
-        (vec, vec, args.k),
+        (vec, vec, k),
     ).fetchall()
-    if not rows:
-        print("no results — is the index built? (run `status`)")
-    for iid, name, country, n_titles, sim in rows:
-        print(f"[{sim:.3f}] {iid:34} {name} ({country}) · {n_titles} titles")
-    pg.close()
 
 
 def main() -> None:
@@ -831,6 +852,9 @@ def main() -> None:
     r.add_argument("--limit", type=int, default=0)
     r.add_argument("--rebuild", action="store_true",
                    help="delete and rebuild every profile (use after corpus changes)")
+    r.add_argument("--dry-run", action="store_true",
+                   help="build every profile and report what would be embedded; "
+                        "no Voyage call, no write")
     add_holdout_flags(r)
     r.set_defaults(func=cmd_run)
     s = sub.add_parser("show")

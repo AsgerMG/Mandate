@@ -13,13 +13,14 @@ it exists, classify_gates_bulk.py).
 from __future__ import annotations
 
 import json
-import sqlite3
+import struct
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import DB, SITE_DATA  # noqa: E402
+from web_env import SITE_DATA  # noqa: E402
+from store import connect  # noqa: E402
 
 OUT = SITE_DATA / "instrument_terms.json"
 
@@ -29,10 +30,32 @@ OUT = SITE_DATA / "instrument_terms.json"
 ASSERTABLE_LEVELS = {"llm_2pass", "human_verified"}
 
 
-def main() -> None:
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
+def _float4(x: float | None) -> float | None:
+    """A REAL (float4) column as the shortest decimal that round-trips it.
 
+    psycopg hands a float4 over as the double nearest its binary value, so
+    0.85 arrives as 0.8500000238418579. Postgres's own text form is the
+    shortest decimal that reads back to the same float4 -- "0.85" -- and that
+    is what node-postgres gives corpus.ts. Publishing the long form would make
+    the fallback disagree with the live path on a field check_store_columns
+    compares, so this produces the text form's value.
+    """
+    if x is None:
+        return None
+    want = struct.pack("f", x)
+    for digits in range(1, 10):
+        v = float(f"{x:.{digits}g}")
+        if struct.pack("f", v) == want:
+            return v
+    return x
+
+
+def main() -> None:
+    with connect(readonly=True, dict_rows=True) as conn:
+        _main(conn)
+
+
+def _main(conn) -> None:
     instruments = conn.execute("""
         SELECT id, parent_id, name, name_source, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
@@ -47,9 +70,9 @@ def main() -> None:
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n, delivery_region, delivery_region_share
         FROM funding_instruments
-        -- Deterministic, and byte-ordered to match the Postgres path: row
-        -- selection breaks ties on array order.
-        ORDER BY id
+        -- Deterministic, and byte-ordered (COLLATE "C") to match corpus.ts:
+        -- row selection breaks ties on array order.
+        ORDER BY id COLLATE "C"
     """).fetchall()
     gates = conn.execute("""
         SELECT instrument_id, gate_key, gate_family, requirement, value,
@@ -58,7 +81,7 @@ def main() -> None:
         FROM eligibility_gates
         -- Deterministic, because the consumers take the FIRST N: a row's
         -- published criteria must not depend on storage order.
-        ORDER BY instrument_id, gate_key
+        ORDER BY instrument_id COLLATE "C", gate_key COLLATE "C"
     """).fetchall()
 
     # Curated "how you apply", from each scheme's own document (see
@@ -135,7 +158,7 @@ def main() -> None:
         # Share of this instrument's awards actually made by that body. The
         # frontend only shows the name when the share is high enough to be
         # honest -- see displayInstitutionName and migration 014.
-        "administeringBodyShare": inst["administering_body_share"],
+        "administeringBodyShare": _float4(inst["administering_body_share"]),
         # The last year this instrument is recorded as having awarded anything.
         # 102 of 322 instruments have no award since 2022 or none at all, and
         # nothing used to stop them reaching a brief -- so a founder could be

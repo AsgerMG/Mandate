@@ -65,8 +65,7 @@ one pair -- and `agentSelect.ts` spent seven days telling the model that such a
 row publishes below the open ones whatever place it gives it. Nothing in the
 repo reported a number that could move.
 
-    python3 ETL/terms/check_gate_branches.py            # SQLite, the authoring store
-    python3 ETL/terms/check_gate_branches.py --postgres # the store the brief reads
+    python3 ETL/terms/check_gate_branches.py   # the one store (Postgres)
 """
 from __future__ import annotations
 
@@ -77,14 +76,13 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
 import json  # noqa: E402
-import os  # noqa: E402
 import re  # noqa: E402
-import sqlite3  # noqa: E402
 
 # WHICH FIELDS ARE ORDERED IS THE VOCABULARY'S ANSWER, NOT THIS FILE'S. A band
 # scale added or retired tomorrow is covered here with no edit, which is the
@@ -182,34 +180,12 @@ def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--postgres", action="store_true",
-                    help="ask the store the brief actually reads. The two do "
-                         "not hold the same gate table (wsHC), so each is "
-                         "asked its own question with the same rule.")
-    args = ap.parse_args()
+                    help="accepted and ignored: there is one store, and it is Postgres")
+    ap.parse_args()
 
-    conn = sqlite3.connect(DB, timeout=60)
-    conn.row_factory = sqlite3.Row
-    rc = report("sqlite", violations([dict(r) for r in conn.execute(SQL)]))
-    conn.close()
-
-    if args.postgres:
-        dsn = os.environ.get("DATABASE_URL")
-        if not dsn:
-            for line in (ROOT / ".env.local").read_text().splitlines():
-                if line.startswith("DATABASE_URL="):
-                    dsn = line.split("=", 1)[1].strip().strip('"')
-        if not dsn:
-            raise SystemExit("DATABASE_URL not set (expected in the repo-root .env.local)")
-        import psycopg2
-        pg = psycopg2.connect(dsn)
-        with pg, pg.cursor() as cur:
-            cur.execute(SQL)
-            cols = [d[0] for d in cur.description]
-            rows = [dict(zip(cols, r)) for r in cur.fetchall()]
-        pg.close()
-        rc = report("postgres", violations(rows)) or rc
-
-    raise SystemExit(rc)
+    with connect(readonly=True, dict_rows=True) as conn:
+        rows = conn.execute(SQL).fetchall()
+    raise SystemExit(report("postgres", violations(rows)))
 
 
 if __name__ == "__main__":

@@ -58,13 +58,33 @@ jobs:
         with: { python-version: '3.11' }
       - run: npm ci
 
-      # No DATABASE_URL in CI by design, and now by more than convention. The
-      # checks that need the corpus run where the corpus already is and publish
-      # a verdict; the ones below read committed artifacts, or read those
-      # verdicts over plain HTTPS. Handing this workflow a connection string
-      # would widen the blast radius of one compromised job from "can read our
-      # code" to "can read and write every award, company and fund we hold" —
-      # and ETL/schema/check_guard_registry.py fails the build if one comes back.
+      # ── ONE credential, and it cannot write ────────────────────────────
+      # No read-WRITE database URL in CI, by design and by check: handing this
+      # workflow one would widen the blast radius of one compromised job from
+      # "can read our code" to "can rewrite every award, company and fund we
+      # hold". Since 2026-11-05 the corpus lives only in Postgres and the
+      # site's data is generated from it rather than committed, so CI holds the
+      # capital_ro URL, and only in the two steps below that need it. The first
+      # asks the DATABASE what the role may do and fails if it can write,
+      # create or grant anything, so a read-write URL pasted under this name
+      # stops here. ETL/schema/check_guard_registry.py fails the build if the
+      # secret is bound under another name, at job level, or first reaches a
+      # step that is not that proof.
+      - name: The corpus credential is read-only
+        working-directory: capital
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: |
+          pip install --quiet 'psycopg[binary]==3.3.4'
+          python3 ETL/schema/check_readonly_credential.py
+      # The artefacts every check below reads (instrument_terms.json,
+      # companies_index.json, ...) generated from the corpus. Without the secret
+      # (a pull request from a fork) this uses what is on disk and says what is
+      # missing; the checks that need a missing file then fail by name.
+      - name: Site data from the corpus
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ../build/build_site_data.py --prebuild
       # ── Is this tree's own build state known, and is every red one owned? ──
       # First, because it is the cheapest and the most likely to explain
       # anything below it. It reads project-mgmt/check_status.json — what `npm run
