@@ -18,21 +18,19 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import re
-import sqlite3
 from collections import Counter
 
 
 def main() -> None:
-    con = sqlite3.connect(DB)
-    rows = con.execute("""
-        SELECT DISTINCT source FROM public_funding_events
-        WHERE source NOT IN (SELECT source FROM funding_instrument_sources)
-    """).fetchall()
-    con.close()
+    with connect(readonly=True) as con:
+        rows = con.execute("""
+            SELECT DISTINCT source FROM public_funding_events
+            WHERE source NOT IN (SELECT source FROM funding_instrument_sources)
+        """).fetchall()
 
     families: Counter = Counter()
     for (source,) in rows:
