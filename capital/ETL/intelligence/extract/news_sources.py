@@ -1,7 +1,7 @@
 """Curated source registry for the news/signals layer — v1 (2026-07-09).
 
 THE RULE: extractors (news_*.py, to be built) read THIS registry and sync it
-into signals.sqlite `sources`; nobody hardcodes an outlet in an extractor.
+into `signals_sources`; nobody hardcodes an outlet in an extractor.
 Adding a source = adding an entry here.
 
 Curation base: the user-supplied 77-source tech-policy list (EU 32 / FR 24 /
@@ -20,7 +20,7 @@ not be missed:
     Startup & Scaleup Hubs pilot calls, 28th-regime debate.
   * STEP, IPCEIs, Competitiveness Compass / Draghi follow-ups.
 
-Tier mapping (must match signals_schema.sql CHECK):
+Tier mapping (must match the CHECK on signals_sources.tier in ETL/schema/corpus_schema.sql):
   funder_press  — official/institutional: funders, ministries, EU bodies,
                   legislative pipeline trackers. Highest signal-to-noise.
   trade_press   — specialist outlets on EU funding / startup policy.

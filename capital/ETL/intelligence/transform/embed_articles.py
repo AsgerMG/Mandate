@@ -8,10 +8,10 @@ Architecture (ported from a proven prior design):
     model (Voyage, OpenAI) is a documented drop-in — implement the Embedder
     protocol (embed(texts) -> list[list[float]], expose .dim) and swap it in
     get_embedder(). Override via SIGNALS_EMBED_MODEL env var.
-  * Storage: sqlite-vec vec0 virtual table in data/signals.sqlite. The
-    dimension is config-driven (embedding_meta table records model+dim);
-    changing models means DROP chunk_embeddings + re-embed everything —
-    vectors from different models are not comparable, enforced at startup.
+  * Storage: signals_chunk_embeddings.embedding, a pgvector vector(384) in
+    schema `capital`. signals_embedding_meta records model + dim; changing
+    models means a new column dimension and a full re-embed -- vectors from
+    different models are not comparable, enforced at startup.
   * Chunking (before embedding): ~1,500-character passages with ~200-character
     overlap, paragraph-aware, each carrying exact char_start/char_end offsets
     back into articles.raw_text — that's what lets a generated claim later
@@ -38,13 +38,13 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import SIGNALS_DB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import os
-import sqlite3
-import struct
+
+from store import connect  # noqa: E402
+from signals_retrieval import vector_literal  # noqa: E402
 
 DEFAULT_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
 EMBED_MODEL = os.environ.get("SIGNALS_EMBED_MODEL", DEFAULT_MODEL)
@@ -82,38 +82,25 @@ def get_embedder():
     return FastembedEmbedder(EMBED_MODEL)
 
 
-def vec_blob(v: list[float]) -> bytes:
-    return struct.pack(f"{len(v)}f", *v)
-
-
-# ── DB / vec0 ────────────────────────────────────────────────────────────────
-def connect_vec(embedder=None) -> sqlite3.Connection:
-    """Open signals.sqlite; ensure the (plain) embeddings table exists and the
-    configured model matches what the index was built with. No SQLite extension:
-    macOS framework Python can't load them, and numpy brute-force cosine is
-    faster than an ANN index needs to be at this corpus scale."""
-    con = sqlite3.connect(SIGNALS_DB, timeout=30)
-    con.row_factory = sqlite3.Row
-    con.execute("PRAGMA busy_timeout=15000")
-    if embedder is not None:
-        con.execute("""CREATE TABLE IF NOT EXISTS chunk_embeddings (
-            chunk_id INTEGER PRIMARY KEY REFERENCES article_chunks(id),
-            embedding BLOB NOT NULL)""")
-        meta = con.execute("SELECT model, dim FROM embedding_meta WHERE id = 1").fetchone()
-        if meta is None:
-            con.execute("INSERT INTO embedding_meta (id, model, dim) VALUES (1, ?, ?)",
-                        (embedder.model_name, embedder.dim))
-            con.commit()
-        elif meta["model"] != embedder.model_name or meta["dim"] != embedder.dim:
-            raise SystemExit(
-                f"embedding_meta says the index was built with {meta['model']} "
-                f"(dim {meta['dim']}) but the configured model is "
-                f"{embedder.model_name} (dim {embedder.dim}).\n"
-                "Vectors from different models are not comparable. To switch:\n"
-                "  sqlite3 data/signals.sqlite \"DROP TABLE chunk_embeddings; "
-                "DELETE FROM embedding_meta; DELETE FROM article_chunks;\"\n"
-                "then re-run this step (full re-chunk + re-embed).")
-    return con
+# ── Model guard ──────────────────────────────────────────────────────────────
+def ensure_model(con, embedder) -> None:
+    """The configured model must be the one the index was built with. Records
+    it on first use. The table and its vector(384) column are DDL in
+    ETL/schema/corpus_schema.sql, not created here."""
+    meta = con.execute(
+        "SELECT model, dim FROM signals_embedding_meta WHERE id = 1").fetchone()
+    if meta is None:
+        con.execute("INSERT INTO signals_embedding_meta (id, model, dim) VALUES (1, %s, %s)",
+                    (embedder.model_name, embedder.dim))
+        con.commit()
+    elif meta["model"] != embedder.model_name or meta["dim"] != embedder.dim:
+        raise SystemExit(
+            f"signals_embedding_meta says the index was built with {meta['model']} "
+            f"(dim {meta['dim']}) but the configured model is "
+            f"{embedder.model_name} (dim {embedder.dim}).\n"
+            "Vectors from different models are not comparable. Switching models is "
+            "a migration (new vector dimension, full re-embed), not a flag: write "
+            "it as one rather than emptying the table from here.")
 
 
 # ── Chunking with exact source offsets ───────────────────────────────────────
@@ -167,44 +154,41 @@ def chunk_with_offsets(text: str) -> list[tuple[str, int, int]]:
 
 # ── Commands ─────────────────────────────────────────────────────────────────
 def cmd_status(_args) -> None:
-    con = sqlite3.connect(SIGNALS_DB)
-    try:
+    with connect(readonly=True) as con:
         pending_chunk = con.execute(
-            """SELECT COUNT(*) FROM articles a WHERE a.full_text_fetched = 1
-               AND NOT EXISTS (SELECT 1 FROM article_chunks c
+            """SELECT COUNT(*) FROM signals_articles a WHERE a.full_text_fetched = 1
+               AND NOT EXISTS (SELECT 1 FROM signals_article_chunks c
                                WHERE c.article_id = a.id)""").fetchone()[0]
-        chunks = con.execute("SELECT COUNT(*) FROM article_chunks").fetchone()[0]
+        chunks = con.execute("SELECT COUNT(*) FROM signals_article_chunks").fetchone()[0]
         meta = con.execute(
-            "SELECT model, dim FROM embedding_meta WHERE id = 1").fetchone()
-        embedded = 0
-        if meta:
-            try:
-                embedded = con.execute(
-                    "SELECT COUNT(*) FROM chunk_embeddings").fetchone()[0]
-            except sqlite3.OperationalError:
-                embedded = -1
-    finally:
-        con.close()
+            "SELECT model, dim FROM signals_embedding_meta WHERE id = 1").fetchone()
+        embedded = con.execute(
+            "SELECT COUNT(*) FROM signals_chunk_embeddings").fetchone()[0]
     print(f"hydrated articles awaiting chunking: {pending_chunk:,}")
     print(f"chunks stored: {chunks:,}")
     if meta:
-        print(f"index: {meta[0]} (dim {meta[1]}) · embeddings: "
-              f"{'needs sqlite-vec to count' if embedded == -1 else f'{embedded:,}'}")
+        print(f"index: {meta[0]} (dim {meta[1]}) · embeddings: {embedded:,}")
     else:
         print("index: not yet created (first `run` creates it)")
 
 
 def cmd_run(args) -> None:
     embedder = get_embedder()
-    con = connect_vec(embedder)
+    with connect(dict_rows=True) as con:
+        ensure_model(con, embedder)
+        _run(con, embedder, args.limit)
+
+
+def _run(con, embedder, limit: int | None) -> None:
+    """Chunk, then embed. Commits per article and per batch, so it is kill-safe."""
 
     # Phase 1 — chunk hydrated articles that have no chunks yet.
-    sql = """SELECT a.id, a.title, a.raw_text FROM articles a
+    sql = """SELECT a.id, a.title, a.raw_text FROM signals_articles a
              WHERE a.full_text_fetched = 1
-             AND NOT EXISTS (SELECT 1 FROM article_chunks c WHERE c.article_id = a.id)
+             AND NOT EXISTS (SELECT 1 FROM signals_article_chunks c WHERE c.article_id = a.id)
              ORDER BY a.id"""
-    if args.limit:
-        sql += f" LIMIT {int(args.limit)}"
+    if limit:
+        sql += f" LIMIT {int(limit)}"
     new_chunks = 0
     for r in con.execute(sql).fetchall():
         pieces = chunk_with_offsets(r["raw_text"])
@@ -217,17 +201,18 @@ def cmd_run(args) -> None:
                      for idx, (t, cs, ce) in enumerate(pieces[1:])]
         else:
             rows = [(r["id"], 0, r["title"], 0, 0)]
-        con.executemany(
-            "INSERT OR IGNORE INTO article_chunks "
+        con.cursor().executemany(
+            "INSERT INTO signals_article_chunks "
             "(article_id, chunk_index, chunk_text, char_start, char_end) "
-            "VALUES (?,?,?,?,?)", rows)
+            "VALUES (%s,%s,%s,%s,%s) ON CONFLICT (article_id, chunk_index) DO NOTHING",
+            rows)
         con.commit()
         new_chunks += len(rows)
 
     # Phase 2 — embed every chunk lacking a vector (anti-join = resumable).
     todo = con.execute("""
-        SELECT c.id, c.chunk_text FROM article_chunks c
-        WHERE c.id NOT IN (SELECT chunk_id FROM chunk_embeddings)
+        SELECT c.id, c.chunk_text FROM signals_article_chunks c
+        WHERE NOT EXISTS (SELECT 1 FROM signals_chunk_embeddings e WHERE e.chunk_id = c.id)
         ORDER BY c.id""").fetchall()
     print(f"chunked {new_chunks:,} new; embedding {len(todo):,} chunks "
           f"({embedder.model_name}, batches of {BATCH})")
@@ -235,14 +220,14 @@ def cmd_run(args) -> None:
     for i in range(0, len(todo), BATCH):
         batch = todo[i:i + BATCH]
         vecs = embedder.embed([b["chunk_text"] for b in batch])
-        con.executemany(
-            "INSERT INTO chunk_embeddings (chunk_id, embedding) VALUES (?,?)",
-            [(b["id"], vec_blob(v)) for b, v in zip(batch, vecs)])
+        con.cursor().executemany(
+            "INSERT INTO signals_chunk_embeddings (chunk_id, embedding) "
+            "VALUES (%s, %s::vector)",
+            [(b["id"], vector_literal(v)) for b, v in zip(batch, vecs)])
         con.commit()                      # per-batch commit — kill-safe
         done += len(batch)
         if done % (BATCH * 8) == 0:
             print(f"  {done:,}/{len(todo):,}")
-    con.close()
     print(f"done: {done:,} embeddings written.")
 
 
