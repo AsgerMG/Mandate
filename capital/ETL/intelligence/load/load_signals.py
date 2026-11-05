@@ -1,7 +1,7 @@
-"""Orchestrator for the news/signals layer (data/signals.sqlite).
+"""Orchestrator for the news/signals layer (the signals_* tables of schema `capital`).
 
 The signals pipeline is the SECOND data pipeline next to the events ETL, with a
-deliberately different purpose. The events DB (db.sqlite) answers "what have
+deliberately different purpose. The events corpus (companies, public_funding_events, ...) answers "what have
 comparable entities received from public institutions, through which vehicles";
 this layer answers "what is happening now and what to anticipate — programme
 changes, people to monitor, decisions coming up". Public-awards-intelligence
@@ -14,18 +14,22 @@ Flow (mirrors extract -> transform -> load, see ETL/README.md):
                                   Nothing here scrapes; extractors will write
                                   sources + articles rows when they exist.
   ETL/intelligence/transform/classify_relevance.py   gate BEFORE anything else (Haiku batch)
-  ETL/intelligence/transform/entity_link_articles.py NER + lib/matching against db.sqlite
+  ETL/intelligence/transform/entity_link_articles.py NER + lib/matching against companies
   ETL/intelligence/transform/classify_signals.py     6-type signal taxonomy + impact text
-  ETL/intelligence/transform/embed_articles.py       chunk + bge-m3 -> sqlite-vec
+  ETL/intelligence/transform/embed_articles.py       chunk + MiniLM -> pgvector
 
 Usage:
-  python3 ETL/intelligence/load/load_signals.py            # ensure schema + run QA (no-op on empty DB)
+  python3 ETL/intelligence/load/load_signals.py            # check tables + status + QA
   python3 ETL/intelligence/load/load_signals.py --status   # pipeline stage counts
   python3 ETL/intelligence/load/load_signals.py --qa       # QA checks only
 
 The transform stages are run individually (they submit/collect Anthropic
-batches on their own cadence); this loader owns schema install + QA so `make
-signals` always has a safe entry point.
+batches on their own cadence); this loader owns the presence check + QA so
+`make signals` always has a safe, read-only entry point.
+
+The DDL is ETL/schema/corpus_schema.sql. Until 2026-11-05 this file executed its
+own signals_schema.sql against data/signals.sqlite; that schema is kept, as the
+record of the retired store, in ETL/archive/intelligence/load/.
 """
 from __future__ import annotations
 
@@ -36,48 +40,42 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, SIGNALS_DB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
-import sqlite3
 
-SCHEMA = _Path(__file__).resolve().parent / "signals_schema.sql"
+from store import connect, table_exists  # noqa: E402
 
-
-def connect(readonly: bool = False) -> sqlite3.Connection:
-    if readonly:
-        return sqlite3.connect(f"file:{SIGNALS_DB}?mode=ro", uri=True)
-    return sqlite3.connect(SIGNALS_DB)
+TABLES = ("signals_sources", "signals_articles", "signals_article_chunks",
+          "signals_article_entities", "signals_article_signals",
+          "signals_embedding_meta", "signals_chunk_embeddings",
+          "signals_article_instrument_links")
 
 
 def ensure_schema() -> None:
-    con = connect()
-    try:
-        con.executescript(SCHEMA.read_text())
-        con.commit()
-    finally:
-        con.close()
-    print(f"schema ensured → {SIGNALS_DB}")
+    """Fail loudly if a table is missing. Creating it is the DDL's job."""
+    with connect(readonly=True) as con:
+        missing = [t for t in TABLES if not table_exists(con, t)]
+    if missing:
+        raise SystemExit(f"missing from schema capital: {', '.join(missing)}. "
+                         f"Apply ETL/schema/corpus_schema.sql.")
+    print(f"schema present: {len(TABLES)} signals_* tables in schema capital")
 
 
 def status() -> None:
-    con = connect(readonly=True)
-    try:
+    with connect(readonly=True) as con:
         def one(sql: str) -> int:
             return con.execute(sql).fetchone()[0]
-        n_sources = one("SELECT COUNT(*) FROM sources WHERE active = 1")
-        n_articles = one("SELECT COUNT(*) FROM articles")
-        pending = one("SELECT COUNT(*) FROM articles WHERE is_relevant IS NULL")
-        relevant = one("SELECT COUNT(*) FROM articles WHERE is_relevant = 1")
-        linked = one("SELECT COUNT(*) FROM articles "
+        n_sources = one("SELECT COUNT(*) FROM signals_sources WHERE active = 1")
+        n_articles = one("SELECT COUNT(*) FROM signals_articles")
+        pending = one("SELECT COUNT(*) FROM signals_articles WHERE is_relevant IS NULL")
+        relevant = one("SELECT COUNT(*) FROM signals_articles WHERE is_relevant = 1")
+        linked = one("SELECT COUNT(*) FROM signals_articles "
                      "WHERE is_relevant = 1 AND entities_extracted_at IS NOT NULL")
-        signalled = one("SELECT COUNT(*) FROM articles "
+        signalled = one("SELECT COUNT(*) FROM signals_articles "
                         "WHERE is_relevant = 1 AND signals_extracted_at IS NOT NULL")
-        hydrated = one("SELECT COUNT(*) FROM articles WHERE full_text_fetched = 1")
-        chunked = one("SELECT COUNT(DISTINCT article_id) FROM article_chunks")
-    finally:
-        con.close()
+        hydrated = one("SELECT COUNT(*) FROM signals_articles WHERE full_text_fetched = 1")
+        chunked = one("SELECT COUNT(DISTINCT article_id) FROM signals_article_chunks")
     print(f"sources (active):        {n_sources:>7,}")
     print(f"articles ingested:       {n_articles:>7,}")
     print(f"  awaiting relevance:    {pending:>7,}   (classify_relevance.py)")
@@ -95,9 +93,8 @@ def status() -> None:
 def qa() -> int:
     """Integrity checks (invariants, not progress — pending work is shown by
     --status and is normal, not a failure). Returns count of problems."""
-    con = connect()
     problems: list[str] = []
-    try:
+    with connect(readonly=True) as con:
         def one(sql: str) -> int:
             return con.execute(sql).fetchone()[0]
 
@@ -105,26 +102,23 @@ def qa() -> int:
         # downstream rows of any kind.
         # embed-all reorder (2026-07-09): chunks/embeddings exist for ANY
         # hydrated article; only the model-written stages stay gate-bound.
-        for table, what in (("article_entities", "entity links"),
-                            ("article_signals", "signals")):
+        for table, what in (("signals_article_entities", "entity links"),
+                            ("signals_article_signals", "signals")):
             n = one(f"""SELECT COUNT(*) FROM {table} t
-                        JOIN articles a ON a.id = t.article_id
-                        WHERE a.is_relevant IS NOT 1""")
+                        JOIN signals_articles a ON a.id = t.article_id
+                        WHERE a.is_relevant IS DISTINCT FROM 1""")
             if n:
                 problems.append(
                     f"{n} {what} attached to articles the gate rejected or has not passed")
 
-        # Cross-DB entity links must resolve to real companies in db.sqlite.
-        if DB.exists():
-            con.execute("ATTACH DATABASE ? AS events", (str(DB),))
-            n = one("""SELECT COUNT(*) FROM article_entities ae
-                       WHERE ae.company_id IS NOT NULL
-                       AND NOT EXISTS (SELECT 1 FROM events.companies c WHERE c.id = ae.company_id)""")
-            if n:
-                problems.append(f"{n} entity links point at company ids missing from db.sqlite")
-            con.execute("DETACH DATABASE events")
-    finally:
-        con.close()
+        # Entity links must resolve to real companies. One schema now, so this
+        # is a plain anti-join (it was an ATTACH of db.sqlite). The DDL declares
+        # no FK for company_id, so this check is the only thing holding it.
+        n = one("""SELECT COUNT(*) FROM signals_article_entities ae
+                   WHERE ae.company_id IS NOT NULL
+                   AND NOT EXISTS (SELECT 1 FROM companies c WHERE c.id = ae.company_id)""")
+        if n:
+            problems.append(f"{n} entity links point at company ids missing from companies")
 
     if problems:
         print("✗ signals QA problems:")

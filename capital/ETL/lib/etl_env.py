@@ -51,11 +51,8 @@ DB = DATA / "db.sqlite"
 DATA_RAW = DATA / "raw"
 DATA_PROCESSED = DATA / "processed"
 
-# News/signals layer: qualitative, forward-looking corpus (articles, entity
-# links, signals, embeddings) lives in its OWN file so its rebuild cadence
-# never touches the events DB the site build depends on. Joined at query time
-# via ATTACH DATABASE (see ETL/intelligence/load/load_signals.py).
-SIGNALS_DB = DATA / "signals.sqlite"
+# The news/signals layer is the signals_* tables of schema `capital` (until
+# 2026-11-05, data/signals.sqlite). Reach it through store.py.
 
 # Backup destinations (mirrors the historical Makefile `backup` target).
 BACKUP_LOCAL = Path.home() / "Wincent-backups"
@@ -74,7 +71,7 @@ BACKUP_ICLOUD_CORPUS = _ICLOUD / "Wincent-corpus-backup"
 # Put every stage directory of BOTH tracks on the import path so cross-stage
 # flat imports work. Track 1 `events/` = investment events (grants, tax
 # credits, equity stakes → db.sqlite). Track 2 `intelligence/` = public
-# capital intelligence (news/signals → signals.sqlite). `events/load/qa` is
+# capital intelligence (news/signals → the signals_* tables). `events/load/qa` is
 # the one nested stage dir whose scripts import each other.
 for _rel in (
     "events/extract", "events/transform", "events/load", "events/load/qa",
@@ -135,7 +132,6 @@ __all__ = [
     "DATA",
     "DATA_RAW",
     "DATA_PROCESSED",
-    "SIGNALS_DB",
     "BACKUP_LOCAL",
     "BACKUP_ICLOUD",
     "BACKUP_ICLOUD_CORPUS",

@@ -25,16 +25,28 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
-import sqlite3
 
 import anthropic
 
 MODEL = "claude-sonnet-5"
+
+
+def undecidable_filters() -> list[tuple]:
+    """Filters no current intake question decides, largest funds first.
+    NULLS LAST and the id tie-break: SQLite sorted a NULL total last under
+    DESC and broke ties by scan order; Postgres sorts NULL first."""
+    with connect(readonly=True) as conn:
+        return conn.execute(
+            """SELECT g.instrument_id, g.gate_family, g.requirement, fi.total_eur
+               FROM eligibility_gates g JOIN funding_instruments fi ON fi.id = g.instrument_id
+               WHERE g.gate_role = 'filter' AND g.intake_field_resolved = 'none'
+               ORDER BY fi.total_eur DESC NULLS LAST, g.id"""
+        ).fetchall()
 
 
 def main() -> None:
@@ -43,14 +55,7 @@ def main() -> None:
     ap.add_argument("--max-fields", type=int, default=8)
     args = ap.parse_args()
 
-    conn = sqlite3.connect(DB)
-    rows = conn.execute(
-        """SELECT g.instrument_id, g.gate_family, g.requirement, fi.total_eur
-           FROM eligibility_gates g JOIN funding_instruments fi ON fi.id = g.instrument_id
-           WHERE g.gate_role = 'filter' AND g.intake_field_resolved = 'none'
-           ORDER BY fi.total_eur DESC"""
-    ).fetchall()
-    conn.close()
+    rows = undecidable_filters()
     print(f"reading {len(rows):,} undecidable filters across "
           f"{len({r[0] for r in rows}):,} instruments\n")
 

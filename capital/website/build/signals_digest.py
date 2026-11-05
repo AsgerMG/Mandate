@@ -1,10 +1,9 @@
 """Export the public-capital-intelligence digest the /for-companies brief reads.
 
-Bridges the two tracks at BUILD time (per the hosting direction: local test rig
-now, Railway service later): semantic retrieval over data/signals.sqlite runs
-here, on the machine that has the corpus + the local embedding model, and the
-brief's serverless pipeline only ever reads the exported JSON — same discipline
-as every other public/data/*.json artifact.
+Bridges the two tracks at BUILD time: semantic retrieval over the signals_*
+tables of schema `capital` runs here, on a machine that has the local embedding
+model, and the brief's serverless pipeline only ever reads the exported JSON --
+same discipline as every other public/data/*.json artifact.
 
 Two retrieval surfaces per run:
   * topics    — the must-cover files (European Competitiveness Fund, Startup &
@@ -15,13 +14,19 @@ Two retrieval surfaces per run:
 
 Output: website/frontend/public/data/signals_digest.json
 Run:    python3 website/build/signals_digest.py     (or `make signals-digest`)
-Not registered in build_site_data's freshness check on purpose — its input is
-signals.sqlite (news cadence), not db.sqlite (corpus cadence).
+Not registered in build_site_data's freshness check on purpose -- its input is
+the signals_* tables (news cadence), not the events corpus (corpus cadence).
+
+ORDERING. Postgres sorts NULL first under DESC and compares text under the
+database's en_US collation; SQLite, where this ran until 2026-11-05, sorted NULL
+last and compared bytes. Every ORDER BY here says NULLS LAST and COLLATE "C" so
+the digest is the same document it was. Ties on date break on (signal type,
+signal id, entity id): the order SQLite's plan produced (the signal-type index,
+then rowid), now stated rather than inherited.
 """
 from __future__ import annotations
 
 import json
-import sqlite3
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -31,7 +36,7 @@ from web_env import ROOT, SITE_DATA  # noqa: E402
 
 sys.path.insert(0, str(ROOT / "ETL" / "lib"))
 import etl_env  # noqa: E402,F401  (sys.path side effects for the retriever)
-from etl_env import SIGNALS_DB  # noqa: E402
+from store import connect  # noqa: E402
 from signals_retrieval import SignalsRetriever  # noqa: E402
 
 OUT = SITE_DATA / "signals_digest.json"
@@ -125,21 +130,21 @@ PEOPLE_SQL = """
     SELECT a.id AS article_id, a.title, a.published_at, a.resolved_url, a.url,
            s.key AS source_key, s.tier, sig.signal_type, sig.summary,
            e.mention_text AS person
-    FROM articles a
-    JOIN article_signals sig ON sig.article_id = a.id
-    JOIN article_entities e ON e.article_id = a.id AND e.entity_type = 'person'
-    JOIN sources s ON s.id = a.source_id
+    FROM signals_articles a
+    JOIN signals_article_signals sig ON sig.article_id = a.id
+    JOIN signals_article_entities e ON e.article_id = a.id AND e.entity_type = 'person'
+    JOIN signals_sources s ON s.id = a.source_id
     WHERE sig.signal_type IN ('stakeholder_appointment', 'programme_policy_change')
-    ORDER BY a.published_at DESC
+    ORDER BY a.published_at COLLATE "C" DESC NULLS LAST,
+             sig.signal_type COLLATE "C", sig.id, e.id
     LIMIT 40
 """
 PEOPLE_KEEP = 25
 
 
-def _people(con: sqlite3.Connection) -> list[dict]:
+def _people(con) -> list[dict]:
     """Recency-ordered, deduped by article (an article can name >1 person;
     keep the first mention only, so the digest stays one line per article)."""
-    con.row_factory = sqlite3.Row
     seen: set[int] = set()
     out = []
     for r in con.execute(PEOPLE_SQL):
@@ -158,7 +163,6 @@ def _people(con: sqlite3.Connection) -> list[dict]:
         })
         if len(out) >= PEOPLE_KEEP:
             break
-    con.row_factory = None
     return out
 
 
@@ -196,7 +200,7 @@ DIRECTIONAL_TYPES = (
     "programme_policy_change", "funding_pipeline_signal", "regulatory_development")
 
 
-def _instrument_signals(con: sqlite3.Connection) -> dict[str, list[dict]]:
+def _instrument_signals(con) -> dict[str, list[dict]]:
     """Signals attached to a SPECIFIC fund, via article_instrument_links.
 
     The topic and sector slices above answer "what is moving in this part of the
@@ -208,25 +212,23 @@ def _instrument_signals(con: sqlite3.Connection) -> dict[str, list[dict]]:
     Dated and sourced per item: a policy claim without a date is unusable, and
     freshness is this corpus's whole value.
     """
-    if not con.execute(
-        "SELECT 1 FROM sqlite_master WHERE type='table' AND name='article_instrument_links'"
-    ).fetchone():
-        return {}
-    rows = con.execute(f"""
+    rows = con.execute("""
         SELECT l.instrument_id, s.signal_type, s.summary, s.anticipated_impact,
                s.confidence, a.published_at, a.title,
                COALESCE(NULLIF(a.resolved_url,''), a.url) AS url
-        FROM article_instrument_links l
-        JOIN article_signals s ON s.article_id = l.article_id
-        JOIN articles a ON a.id = l.article_id
-        WHERE s.signal_type IN ({",".join("?" * len(DIRECTIONAL_TYPES))})
+        FROM signals_article_instrument_links l
+        JOIN signals_article_signals s ON s.article_id = l.article_id
+        JOIN signals_articles a ON a.id = l.article_id
+        WHERE s.signal_type = ANY(%s)
           AND a.published_at IS NOT NULL
-        ORDER BY l.instrument_id, a.published_at DESC
-    """, DIRECTIONAL_TYPES).fetchall()
+        ORDER BY l.instrument_id COLLATE "C", a.published_at COLLATE "C" DESC,
+                 s.signal_type COLLATE "C", s.id
+    """, (list(DIRECTIONAL_TYPES),)).fetchall()
 
     out: dict[str, list[dict]] = {}
     seen: set[tuple[str, str]] = set()
-    for iid, stype, summary, impact, conf, pub, title, url in rows:
+    for r in rows:
+        iid, stype, summary, impact, conf, pub, title, url = r.values()
         bucket = out.setdefault(iid, [])
         if len(bucket) >= SIGNALS_PER_INSTRUMENT:
             continue
@@ -254,13 +256,12 @@ def main() -> None:
     topics = {name: _items(r.search(q, k=K_PER_QUERY)) for name, q in TOPIC_QUERIES.items()}
     sectors = {name: _items(r.search(q, k=K_PER_QUERY)) for name, q in SECTOR_QUERIES.items()}
 
-    con = sqlite3.connect(SIGNALS_DB)
-    n_articles = con.execute("SELECT COUNT(*) FROM articles").fetchone()[0]
-    n_embedded = con.execute(
-        "SELECT COUNT(DISTINCT article_id) FROM article_chunks").fetchone()[0]
-    people = _people(con)
-    instruments = _instrument_signals(con)
-    con.close()
+    with connect(readonly=True, dict_rows=True) as con:
+        n_articles = con.execute("SELECT COUNT(*) AS n FROM signals_articles").fetchone()["n"]
+        n_embedded = con.execute(
+            "SELECT COUNT(DISTINCT article_id) AS n FROM signals_article_chunks").fetchone()["n"]
+        people = _people(con)
+        instruments = _instrument_signals(con)
 
     payload = {
         "generatedAt": datetime.now(timezone.utc).isoformat(timespec="seconds"),

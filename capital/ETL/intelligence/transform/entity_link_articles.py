@@ -3,8 +3,8 @@
 Two halves, deliberately split:
   * NER (model, batched)  — extract candidate mentions (company / investor /
     person / program) from relevant articles. Haiku, structured output.
-  * Resolution (local)    — match company/investor mentions against db.sqlite
-    `companies` with the canonical 5-tier matcher (ETL/lib/matching.py — the
+  * Resolution (local)    — match company/investor mentions against
+    `companies` (same schema, same connection) with the canonical 5-tier matcher (ETL/lib/matching.py — the
     same one every extractor uses, so a company named in the press resolves to
     the same id its funding events sit under). person/program mentions stay
     unresolved (company_id NULL) by design — they are retrieval hooks, not rows
@@ -27,13 +27,13 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, SIGNALS_DB  # noqa: E402
+from etl_env import DATA  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
 import os
-import sqlite3
 from datetime import datetime, timezone
 
 from matching import CompanyMatcher  # noqa: E402
@@ -42,7 +42,7 @@ MODEL = "claude-haiku-4-5"
 MAX_TOKENS = 700           # up to ~25 mention objects
 TEXT_CAP = 6000
 CHUNK = 5_000
-STATE_FILE = SIGNALS_DB.parent / ".signals_entities_batches.json"
+STATE_FILE = DATA / ".signals_entities_batches.json"
 
 # Match-method → confidence, mirroring the tiers in lib/matching.py. Fuzzy is
 # real but reviewable; below that we keep the mention unresolved.
@@ -106,38 +106,34 @@ def _state_save(st: dict) -> None:
 
 
 def cmd_status(_args) -> None:
-    con = sqlite3.connect(SIGNALS_DB)
-    try:
+    with connect(readonly=True) as con:
         pending = con.execute(
-            "SELECT COUNT(*) FROM articles WHERE is_relevant = 1 "
+            "SELECT COUNT(*) FROM signals_articles WHERE is_relevant = 1 "
             "AND full_text_fetched = 1 AND entities_extracted_at IS NULL").fetchone()[0]
         done = con.execute(
-            "SELECT COUNT(*) FROM articles WHERE entities_extracted_at IS NOT NULL"
+            "SELECT COUNT(*) FROM signals_articles WHERE entities_extracted_at IS NOT NULL"
         ).fetchone()[0]
         by_type = con.execute(
-            "SELECT entity_type, COUNT(*), SUM(company_id IS NOT NULL) "
-            "FROM article_entities GROUP BY entity_type").fetchall()
-    finally:
-        con.close()
+            "SELECT entity_type, COUNT(*), COUNT(company_id) "
+            "FROM signals_article_entities GROUP BY entity_type "
+            "ORDER BY entity_type COLLATE \"C\"").fetchall()
     st = _state_load()
     uncollected = [b for b in st["batches"] if b not in st["collected"]]
     print(f"awaiting NER: {pending:,}   extracted: {done:,}")
     for etype, n, resolved in by_type:
-        print(f"  {etype:<9} {n:>6,} mentions, {resolved or 0:>6,} resolved to db.sqlite")
+        print(f"  {etype:<9} {n:>6,} mentions, {resolved or 0:>6,} resolved to companies")
     if uncollected:
         print(f"uncollected batches: {len(uncollected)} — run `collect`")
 
 
 def cmd_submit(args) -> None:
-    con = sqlite3.connect(SIGNALS_DB)
-    con.row_factory = sqlite3.Row
-    sql = ("SELECT id, title, raw_text FROM articles "
+    sql = ("SELECT id, title, raw_text FROM signals_articles "
            "WHERE is_relevant = 1 AND full_text_fetched = 1 "
            "AND entities_extracted_at IS NULL ORDER BY id")
     if args.limit:
         sql += f" LIMIT {int(args.limit)}"
-    rows = con.execute(sql).fetchall()
-    con.close()
+    with connect(readonly=True, dict_rows=True) as con:
+        rows = con.execute(sql).fetchall()
     if not rows:
         print("nothing pending — no relevant articles awaiting NER.")
         return
@@ -178,12 +174,46 @@ def cmd_collect(_args) -> None:
         print("no uncollected batches recorded.")
         return
 
-    # Resolution runs against the events DB with the canonical matcher.
-    # country=None: press mentions carry no reliable HQ country.
-    events_con = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
-    matcher = CompanyMatcher(events_con, country=None)
+    with connect() as sig:
+        # Resolution runs against `companies` with the canonical matcher.
+        # country=None: press mentions carry no reliable HQ country (and it
+        # issues one parameterless SELECT, which runs unchanged on psycopg).
+        matcher = CompanyMatcher(sig, country=None)
+        written, resolved, errored, still = _collect(client, st, pending_ids, sig, matcher)
+    print(f"\n{written} articles entity-linked, {resolved} mentions resolved "
+          f"({errored} errored, {still} batch(es) still processing).")
 
-    sig = sqlite3.connect(SIGNALS_DB)
+
+def write_entities(sig, matcher, aid: int, entities: list[dict], now: str) -> int:
+    """Idempotent per article: replace any earlier extraction wholesale,
+    resolving company/investor mentions. Returns how many resolved."""
+    rows = []
+    resolved = 0
+    for ent in entities:
+        etype, mention = ent.get("type"), (ent.get("mention") or "").strip()
+        if not mention or etype not in ("company", "investor", "person", "program"):
+            continue
+        cid = method = conf = None
+        if etype in ("company", "investor"):
+            cid, method = matcher.match(mention)
+            if method == "none":
+                cid = method = None
+            else:
+                conf = METHOD_CONFIDENCE.get(method)
+                resolved += 1
+        rows.append((aid, etype, mention[:300], cid, method, conf))
+    sig.execute("DELETE FROM signals_article_entities WHERE article_id = %s", (aid,))
+    sig.cursor().executemany(
+        "INSERT INTO signals_article_entities (article_id, entity_type, mention_text,"
+        " company_id, match_method, match_confidence) VALUES (%s,%s,%s,%s,%s,%s)",
+        rows)
+    sig.execute(
+        "UPDATE signals_articles SET entities_extracted_at = %s WHERE id = %s", (now, aid))
+    return resolved
+
+
+def _collect(client, st: dict, pending_ids: list[str], sig, matcher
+             ) -> tuple[int, int, int, int]:
     written = resolved = errored = still = 0
     for bid in pending_ids:
         b = client.messages.batches.retrieve(bid)
@@ -200,39 +230,13 @@ def cmd_collect(_args) -> None:
             text = next((bl.text for bl in res.result.message.content
                          if bl.type == "text"), "{}")
             entities = _parse_json(text).get("entities", [])
-            rows = []
-            for ent in entities:
-                etype, mention = ent.get("type"), (ent.get("mention") or "").strip()
-                if not mention or etype not in (
-                        "company", "investor", "person", "program"):
-                    continue
-                cid = method = conf = None
-                if etype in ("company", "investor"):
-                    cid, method = matcher.match(mention)
-                    if method == "none":
-                        cid = method = None
-                    else:
-                        conf = METHOD_CONFIDENCE.get(method)
-                        resolved += 1
-                rows.append((aid, etype, mention[:300], cid, method, conf))
-            # Idempotent per article: replace any earlier extraction wholesale.
-            sig.execute("DELETE FROM article_entities WHERE article_id = ?", (aid,))
-            sig.executemany(
-                "INSERT INTO article_entities (article_id, entity_type, mention_text,"
-                " company_id, match_method, match_confidence) VALUES (?,?,?,?,?,?)",
-                rows)
-            sig.execute(
-                "UPDATE articles SET entities_extracted_at = ? WHERE id = ?",
-                (now, aid))
+            resolved += write_entities(sig, matcher, aid, entities, now)
             written += 1
         sig.commit()
         st["collected"].append(bid)
         _state_save(st)
         print(f"  {bid}: collected")
-    sig.close()
-    events_con.close()
-    print(f"\n{written} articles entity-linked, {resolved} mentions resolved "
-          f"({errored} errored, {still} batch(es) still processing).")
+    return written, resolved, errored, still
 
 
 def main() -> None:
