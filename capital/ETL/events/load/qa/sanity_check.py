@@ -18,9 +18,11 @@ from store import connect  # noqa: E402
 # same question rather than a different one:
 #   * GROUP_CONCAT(DISTINCT x) -> string_agg(DISTINCT x, ',' ORDER BY x): the list
 #     is now sorted (SQLite gave first-seen order, which no query asked for).
-#   * ROUND(x[, n]) on a double -> ROUND(x::numeric[, n]): Postgres has no
+#   * ROUND(x[, n]) on a double -> ROUND(x::text::numeric[, n]): Postgres has no
 #     ROUND(double, n), and its ROUND(double) rounds half to EVEN; numeric
 #     rounding is SQLite's half-away-from-zero rule (29991488.5 -> 29991489).
+#     Through TEXT because a direct double->numeric cast keeps 15 digits and
+#     turns 1827299.4999999998 into 1827299.5, which then rounds the wrong way.
 #   * an alias in HAVING -> the expression; Postgres does not resolve aliases there.
 #   * text sort keys carry COLLATE "C", which is SQLite's BINARY order, so a
 #     LIMIT keeps the same rows rather than whatever the database locale sorts first.
@@ -65,10 +67,12 @@ q("""
 q("""
     SELECT
         source,
-        ROUND((AVG(grant_amount_eur))::numeric) AS mean_grant,
-        ROUND((MIN(grant_amount_eur))::numeric) AS min_grant,
-        ROUND((MAX(grant_amount_eur))::numeric) AS max_grant,
-        ROUND((SUM(grant_amount_eur ORDER BY id))::numeric) AS total_grant
+        ROUND((AVG(grant_amount_eur))::text::numeric) AS mean_grant,
+        ROUND((MIN(grant_amount_eur))::text::numeric) AS min_grant,
+        ROUND((MAX(grant_amount_eur))::text::numeric) AS max_grant,
+        -- summed in the order SQLite's plan read it (idx_pfe_programme)
+        ROUND((SUM(grant_amount_eur ORDER BY programme_name COLLATE "C" NULLS FIRST, id)
+              )::text::numeric) AS total_grant
     FROM public_funding_events
     WHERE grant_amount_eur IS NOT NULL
     GROUP BY source
@@ -151,7 +155,7 @@ q("""
 q("""
     SELECT
         e.source,
-        ROUND((SUM(e.grant_amount_eur ORDER BY e.id) / 1e9)::numeric, 3) AS total_grant_bn_eur,
+        ROUND((SUM(e.grant_amount_eur ORDER BY e.id) / 1e9)::text::numeric, 3) AS total_grant_bn_eur,
         SUM(CASE WHEN e.grant_amount_eur IS NULL THEN 1 ELSE 0 END) AS rows_no_amount
     FROM public_funding_events e
     WHERE e.source LIKE 'ipcei_%'
@@ -222,11 +226,11 @@ q("""
 
 q("""
     SELECT
-        ROUND((SUM(e.debt_amount_eur ORDER BY e.id) / 1e6)::numeric, 1) AS total_debt_m_eur,
+        ROUND((SUM(e.debt_amount_eur ORDER BY e.id) / 1e6)::text::numeric, 1) AS total_debt_m_eur,
         COUNT(*) AS events,
-        ROUND((AVG(e.debt_amount_eur) / 1e6)::numeric, 1) AS avg_loan_m_eur,
-        ROUND((MIN(e.debt_amount_eur) / 1e6)::numeric, 1) AS min_loan_m_eur,
-        ROUND((MAX(e.debt_amount_eur) / 1e6)::numeric, 1) AS max_loan_m_eur
+        ROUND((AVG(e.debt_amount_eur) / 1e6)::text::numeric, 1) AS avg_loan_m_eur,
+        ROUND((MIN(e.debt_amount_eur) / 1e6)::text::numeric, 1) AS min_loan_m_eur,
+        ROUND((MAX(e.debt_amount_eur) / 1e6)::text::numeric, 1) AS max_loan_m_eur
     FROM public_funding_events e
     WHERE e.source LIKE 'eib%' AND e.debt_amount_eur IS NOT NULL
 """, "EIB: debt portfolio stats (EUR)")
@@ -277,7 +281,7 @@ q("""
 
 q("""
     SELECT source, COUNT(*) AS events, COUNT(DISTINCT company_id) AS unique_companies,
-           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::numeric, 1) AS total_grant_m_eur
+           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::text::numeric, 1) AS total_grant_m_eur
     FROM public_funding_events
     WHERE source LIKE 'innovation_fund%'
     GROUP BY source
@@ -335,7 +339,7 @@ q("""
 
 q("""
     SELECT source, COUNT(*) AS events, COUNT(DISTINCT company_id) AS unique_companies,
-           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::numeric, 1) AS total_grant_m_eur
+           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::text::numeric, 1) AS total_grant_m_eur
     FROM public_funding_events
     WHERE source LIKE 'chips_ju%'
     GROUP BY source
@@ -406,7 +410,7 @@ q("""
 
 q("""
     SELECT source, COUNT(*) AS events, COUNT(DISTINCT company_id) AS unique_companies,
-           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::numeric, 1) AS total_eu_contribution_m_eur
+           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::text::numeric, 1) AS total_eu_contribution_m_eur
     FROM public_funding_events
     WHERE source LIKE 'edf%'
     GROUP BY source
@@ -570,7 +574,7 @@ q("""
                 SELECT DISTINCT company_id FROM public_funding_events
                 WHERE source LIKE 'eic_%'
             ) THEN 1 ELSE 0 END)
-            / COUNT(DISTINCT e_eit.company_id))::numeric, 1) AS pct_overlap
+            / COUNT(DISTINCT e_eit.company_id))::text::numeric, 1) AS pct_overlap
     FROM public_funding_events e_eit
     WHERE e_eit.source LIKE 'eit_digital_%'
 """, "EIT KIC: EIT Digital × EIC overlap (target ≥20% per sprint plan gate)")
@@ -673,8 +677,8 @@ q("""
 q("""
     SELECT grant_amount_basis,
            COUNT(*) AS events,
-           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e9)::numeric, 3) AS total_grant_field_bn_eur,
-           ROUND((SUM(debt_amount_eur ORDER BY id) / 1e9)::numeric, 3) AS total_debt_field_bn_eur,
+           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e9)::text::numeric, 3) AS total_grant_field_bn_eur,
+           ROUND((SUM(debt_amount_eur ORDER BY id) / 1e9)::text::numeric, 3) AS total_debt_field_bn_eur,
            SUM(CASE WHEN grant_amount_eur IS NULL AND debt_amount_eur IS NULL THEN 1 ELSE 0 END) AS rows_no_amount
     FROM public_funding_events
     GROUP BY grant_amount_basis
@@ -687,7 +691,7 @@ q("""
     SELECT
         SUM(CASE WHEN coordinator_only = 1 THEN 1 ELSE 0 END) AS coord_only_events,
         SUM(CASE WHEN coordinator_only = 0 THEN 1 ELSE 0 END) AS full_partner_events,
-        ROUND((100.0 * SUM(CASE WHEN coordinator_only = 1 THEN 1 ELSE 0 END) / COUNT(*))::numeric, 1) AS pct_coord_only
+        ROUND((100.0 * SUM(CASE WHEN coordinator_only = 1 THEN 1 ELSE 0 END) / COUNT(*))::text::numeric, 1) AS pct_coord_only
     FROM public_funding_events
 """, "DQ: coordinator-only coverage (events from coordinator-only sources undercount consortium partners 5-40x)")
 
