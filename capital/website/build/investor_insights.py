@@ -14,9 +14,17 @@ Outputs:
     - countryMix      per country: events by funding layer (EU direct / NDB /
                       national state aid)
 
-Reads the v_events / v_company_breadth_companies views, so run
-website/build/build_site_data.py (which reinstalls data/views.sql first)
-rather than calling this directly after a schema change.
+Reads the v_events / v_company_breadth_companies views (ETL/schema/views.sql,
+installed in Postgres; build_site_data.py refuses to run on views that are not
+the committed file).
+
+Ported from SQLite on 2026-11-05 and proved byte-identical on the archived
+corpus. Where SQLite's semantics differ from Postgres's the SQLite meaning is
+spelled out rather than assumed: LIKE was ASCII-case-insensitive (ILIKE here),
+`SUM(a = b)` summed booleans, julianday() differences are date subtraction,
+CAST(x AS INT) truncated, and ROUND(double, n) is numeric round() cast back to
+a double. Every ORDER BY that feeds a LIMIT or a stable Python sort names its
+tie-break, because a tie otherwise resolves however the plan happens to run.
 
 Amount discipline: every euro aggregate here is computed within a single
 grant_amount_basis per instrument family (the family's dominant basis).
@@ -24,13 +32,13 @@ Champion totals are the one exception and are labelled indicative in the UI.
 """
 import json
 import re
-import sqlite3
 from datetime import date
 from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import ROOT, DB, SITE_DATA  # noqa: E402
+from web_env import ROOT, SITE_DATA  # noqa: E402
+from store import connect  # noqa: E402
 from synthesis import compute_kpis  # the one canonical corpus-figure definition  # noqa: E402
 from sector_labels import TIER1_LABELS  # noqa: E402
 
@@ -145,8 +153,15 @@ def percentile(sorted_vals, q):
 # Rows that are state interventions, not innovation/industrial policy: the
 # 2022 energy-crisis recapitalisations and one scheme-level renewables total
 # misattributed to a single company. Excluded from every euro analysis here.
-SATR_OUTLIER_SQL = ("project_title NOT LIKE '%Recapitalisation%' "
-                    "AND project_title NOT LIKE '%Support to electricity from renewable sources%'")
+# ILIKE, because SQLite's LIKE (what this was written against) ignores ASCII
+# case. `%%` because every query that embeds this passes parameters.
+SATR_OUTLIER_SQL = ("project_title NOT ILIKE '%%Recapitalisation%%' "
+                    "AND project_title NOT ILIKE '%%Support to electricity from renewable sources%%'")
+
+# A float rounded the way SQLite's ROUND(x, n) did: half away from zero on the
+# decimal value. Postgres has round(numeric, n) only.
+def _round(expr: str, n: int) -> str:
+    return f"round(({expr})::numeric, {n})::double precision"
 
 
 def build_money_rotation(con):
@@ -155,14 +170,14 @@ def build_money_rotation(con):
     where the money actually is."""
     rows = con.execute(f"""
         SELECT substr(COALESCE(v.project_started, v.call_deadline),1,4) AS yr,
-               c.sector_top, SUM(v.grant_amount_eur)
+               c.sector_top, SUM(v.grant_amount_eur ORDER BY c.country COLLATE "C", c.id, v.id)
         FROM v_events v JOIN companies c ON c.id = v.company_id
         WHERE v.grant_amount_basis = 'satr_aid_element' AND v.grant_amount_eur > 0
           AND {SATR_OUTLIER_SQL}
-          AND yr BETWEEN '2021' AND '2025'
-          AND c.sector_top IN ({",".join("?" * len(SECTORS))})
+          AND substr(COALESCE(v.project_started, v.call_deadline),1,4) BETWEEN '2021' AND '2025'
+          AND c.sector_top = ANY(%s)
         GROUP BY 1, 2
-    """, SECTORS).fetchall()
+    """, (SECTORS,)).fetchall()
     data = {s: {y: 0.0 for y in YEARS} for s in SECTORS}
     for yr, sector, eur in rows:
         data[sector][yr] = round(eur / 1e9, 2)
@@ -198,41 +213,43 @@ def build_stats(con):
     """).fetchone()
     conc = con.execute(f"""
         WITH per_co AS (
-          SELECT company_id, SUM(grant_amount_eur) t FROM v_events
+          SELECT company_id, SUM(grant_amount_eur ORDER BY id) t FROM v_events
           WHERE grant_amount_basis = 'satr_aid_element' AND grant_amount_eur > 0
             AND {SATR_OUTLIER_SQL}
           GROUP BY 1
         ), ranked AS (SELECT t, NTILE(100) OVER (ORDER BY t DESC) pct FROM per_co)
-        SELECT COUNT(*), ROUND(SUM(CASE WHEN pct = 1 THEN t ELSE 0 END) / SUM(t) * 100, 1),
-               ROUND(SUM(CASE WHEN pct <= 10 THEN t ELSE 0 END) / SUM(t) * 100, 1),
-               ROUND(SUM(t) / 1e9, 1)
+        SELECT COUNT(*), {_round("SUM(CASE WHEN pct = 1 THEN t ELSE 0 END) / SUM(t) * 100", 1)},
+               {_round("SUM(CASE WHEN pct <= 10 THEN t ELSE 0 END) / SUM(t) * 100", 1)},
+               {_round("SUM(t) / 1e9", 1)}
         FROM ranked
-    """).fetchone()
-    edf = con.execute("""
+    """, ()).fetchone()
+    edf = con.execute(f"""
         SELECT substr(COALESCE(project_started, call_deadline),1,4) yr,
-               ROUND(SUM(grant_amount_eur)/1e9, 2)
-        FROM v_events WHERE source_family = 'edf' GROUP BY 1 ORDER BY 1
+               {_round("SUM(grant_amount_eur ORDER BY id)/1e9", 2)}
+        FROM v_events WHERE source_family = 'edf' GROUP BY 1 ORDER BY 1 NULLS FIRST
     """).fetchall()
     # The momentum law: P(at least n+1 awards | n awards), companies only.
-    momentum = con.execute("""
+    # float8 arithmetic, as SQLite's 100.0 was a double: a numeric division
+    # would round its ties differently.
+    momentum = con.execute(f"""
         WITH ev AS (
           SELECT v.company_id, COUNT(*) n FROM v_events v
           JOIN companies c ON c.id = v.company_id
           WHERE c.entity_type = 'company' GROUP BY 1
         )
-        SELECT ROUND(100.0*SUM(n>=2)/COUNT(*),1),
-               ROUND(100.0*SUM(n>=3)/SUM(n>=2),1),
-               ROUND(100.0*SUM(n>=5)/SUM(n>=4),1),
-               ROUND(100.0*SUM(n>=10)/SUM(n>=9),1)
+        SELECT {_round("100.0::float8*SUM((n>=2)::int)/COUNT(*)", 1)},
+               {_round("100.0::float8*SUM((n>=3)::int)/SUM((n>=2)::int)", 1)},
+               {_round("100.0::float8*SUM((n>=5)::int)/SUM((n>=4)::int)", 1)},
+               {_round("100.0::float8*SUM((n>=10)::int)/SUM((n>=9)::int)", 1)}
         FROM ev
     """).fetchone()
     # Bosch as the archetypal subsidy multinational (tight name filter,
     # excludes unrelated Bosch family businesses and the Bosch i Gimpera
     # university foundation).
-    bosch = con.execute("""
+    bosch = con.execute(f"""
         SELECT COUNT(DISTINCT c.id), COUNT(DISTINCT c.country),
                COUNT(DISTINCT v.source_family), COUNT(*),
-               ROUND(SUM(COALESCE(v.grant_amount_eur,0))/1e9, 1)
+               {_round("SUM(COALESCE(v.grant_amount_eur,0) ORDER BY v.id)/1e9", 1)}
         FROM v_events v JOIN companies c ON c.id = v.company_id
         WHERE (UPPER(c.canonical_name) LIKE 'ROBERT BOSCH%'
            OR UPPER(c.canonical_name) LIKE 'BOSCH %'
@@ -244,17 +261,24 @@ def build_stats(con):
     # UK Future Fund mortality across quarterly snapshots (exited flags are
     # overwhelmingly insolvencies in this register).
     ff = con.execute("""
-        SELECT as_of, COUNT(*), SUM(exited) FROM public_equity_stakes
-        WHERE holder = 'uk_future_fund' GROUP BY as_of ORDER BY as_of
+        SELECT as_of, COUNT(*), SUM(exited)::bigint FROM public_equity_stakes
+        WHERE holder = 'uk_future_fund' GROUP BY as_of ORDER BY as_of COLLATE "C" NULLS FIRST
     """).fetchall()
     # How slow is public money: EIC is the only family carrying both call
     # deadline and project start at scale.
+    # julianday(x) was NULL for a non-date, so such rows dropped out; the
+    # regex keeps that (and keeps the cast from failing on one). Whole days
+    # either way; CAST(... AS INT) truncated, hence trunc().
     eic_speed = con.execute("""
-        SELECT CAST(AVG(julianday(project_started)-julianday(call_deadline)) AS INT)
-        FROM v_events WHERE source_family='eic'
-          AND project_started IS NOT NULL AND call_deadline IS NOT NULL
-          AND julianday(project_started) > julianday(call_deadline)
-          AND julianday(project_started) - julianday(call_deadline) < 1200
+        WITH d AS (
+          SELECT CASE WHEN project_started ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+                      THEN project_started::date END AS ps,
+                 CASE WHEN call_deadline ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+                      THEN call_deadline::date END AS cd
+          FROM v_events WHERE source_family='eic'
+        )
+        SELECT trunc(AVG(ps - cd))::int FROM d
+        WHERE ps > cd AND ps - cd < 1200
     """).fetchone()
     return {
         "momentum": {"p2": momentum[0], "p3given2": momentum[1],
@@ -304,7 +328,7 @@ def build_stack(con):
                     ELSE CAST(n_source_families AS TEXT) END AS bucket,
                COUNT(*) AS companies
         FROM v_company_breadth_companies
-        GROUP BY bucket ORDER BY MIN(n_source_families)
+        GROUP BY bucket ORDER BY MIN(n_source_families), bucket
     """).fetchall()
     return [{"families": b, "companies": n} for b, n in rows]
 
@@ -316,19 +340,26 @@ def build_champions(con, limit=200):
                b.total_grant_eur + b.total_debt_eur AS total_eur
         FROM v_company_breadth_companies b
         WHERE b.n_source_families >= 3
-        ORDER BY b.n_source_families DESC, total_eur DESC
-        LIMIT ?
+        ORDER BY b.n_source_families DESC, total_eur DESC, b.id
+        LIMIT %s
     """, (limit,)).fetchall()
+    # per-channel breakdown for the drill-down: events + indicative euros by
+    # family. One query for all champions rather than one each: every read of
+    # v_events re-derives the corpus-country set, so 200 reads cost 200 of
+    # those. Each list is re-sorted below, so fetch order does not reach it.
+    by_company: dict[int, list] = {}
+    for cid, fam, ev, eur in con.execute("""
+            SELECT company_id, source_family,
+                   COUNT(*) AS events,
+                   COALESCE(SUM(COALESCE(grant_amount_eur,0)+COALESCE(debt_amount_eur,0)
+                                ORDER BY id),0) AS eur
+            FROM v_events WHERE company_id = ANY(%s)
+            GROUP BY company_id, source_family
+        """, ([r[0] for r in rows],)):
+        by_company.setdefault(cid, []).append((fam, ev, eur))
     champions = []
     for cid, name, country, sector, n_fam, n_ev, total in rows:
-        # per-channel breakdown for the drill-down: events + indicative euros by family
-        brk = con.execute("""
-            SELECT source_family,
-                   COUNT(*) AS events,
-                   COALESCE(SUM(COALESCE(grant_amount_eur,0)+COALESCE(debt_amount_eur,0)),0) AS eur
-            FROM v_events WHERE company_id = ?
-            GROUP BY source_family
-        """, (cid,)).fetchall()
+        brk = by_company.get(cid, [])
         fam_order = lambda f: list(FAMILY_LABELS).index(f) if f in FAMILY_LABELS else 99
         breakdown = sorted(
             [{"family": f, "events": ev, "eur": round(e or 0)} for f, ev, e in brk],
@@ -354,9 +385,9 @@ def build_rotation(con):
         SELECT v.event_year, c.sector_top, COUNT(*)
         FROM v_events v JOIN companies c ON c.id = v.company_id
         WHERE v.event_year BETWEEN '2021' AND '2025'
-          AND c.sector_top IN ({})
+          AND c.sector_top = ANY(%s)
         GROUP BY 1, 2
-    """.format(",".join("?" * len(SECTORS))), SECTORS).fetchall()
+    """, (SECTORS,)).fetchall()
     for year, sector, n in rows:
         counts[sector][year] = n
         year_totals[year] += n
@@ -379,23 +410,23 @@ def build_concentration(con):
     for family, label in FAMILY_LABELS.items():
         dom = con.execute("""
             SELECT grant_amount_basis, COUNT(*) FROM v_events
-            WHERE source_family = ? AND grant_amount_eur > 0
+            WHERE source_family = %s AND grant_amount_eur > 0
               AND grant_amount_basis IS NOT NULL
-            GROUP BY 1 ORDER BY 2 DESC LIMIT 1
+            GROUP BY 1 ORDER BY 2 DESC, grant_amount_basis COLLATE "C" LIMIT 1
         """, (family,)).fetchone()
         if not dom or dom[1] < 100:
             continue  # too thin for distribution claims (drops EIB: debt ceilings, no grants)
         basis = dom[0]
         tickets = [r[0] for r in con.execute("""
             SELECT grant_amount_eur FROM v_events
-            WHERE source_family = ? AND grant_amount_basis = ?
+            WHERE source_family = %s AND grant_amount_basis = %s
               AND grant_amount_eur > 0 ORDER BY grant_amount_eur
         """, (family, basis))]
         per_company = [r[0] for r in con.execute("""
-            SELECT SUM(grant_amount_eur) AS s FROM v_events
-            WHERE source_family = ? AND grant_amount_basis = ?
+            SELECT SUM(grant_amount_eur ORDER BY id) AS s FROM v_events
+            WHERE source_family = %s AND grant_amount_basis = %s
               AND grant_amount_eur > 0
-            GROUP BY company_id ORDER BY s DESC
+            GROUP BY company_id ORDER BY s DESC, company_id
         """, (family, basis))]
         total = sum(per_company)
         out.append({
@@ -416,10 +447,11 @@ def build_concentration(con):
 def build_equity(con):
     holder_rows = con.execute("""
         SELECT holder, holder_type, COUNT(*),
-               SUM(disclosure_level = 'name_only'),
-               SUM(disclosure_level IN ('pct_range', 'pct_exact')),
-               SUM(disclosure_level = 'amount')
-        FROM public_equity_stakes GROUP BY 1, 2 ORDER BY 3 DESC
+               SUM((disclosure_level = 'name_only')::int)::bigint,
+               SUM((disclosure_level IN ('pct_range', 'pct_exact'))::int)::bigint,
+               SUM((disclosure_level = 'amount')::int)::bigint
+        FROM public_equity_stakes GROUP BY 1, 2
+        ORDER BY 3 DESC, holder COLLATE "C", holder_type COLLATE "C" NULLS FIRST
     """).fetchall()
     holders = []
     for holder, htype, n, name_only, pct, amount in holder_rows:
@@ -433,6 +465,7 @@ def build_equity(con):
         {"level": lvl, "label": DISCLOSURE_LABELS[lvl], "positions": n}
         for lvl, n in con.execute("""
             SELECT disclosure_level, COUNT(*) FROM public_equity_stakes GROUP BY 1
+            ORDER BY disclosure_level COLLATE "C" NULLS FIRST
         """)
     ]
     disclosure.sort(key=lambda d: list(DISCLOSURE_LABELS).index(d["level"]))
@@ -442,7 +475,7 @@ def build_equity(con):
         FROM public_equity_stakes s JOIN companies c ON c.id = s.company_id
         WHERE s.disclosure_level = 'pct_exact' AND s.exited = 0
           AND s.stake_pct_max IS NOT NULL
-        ORDER BY s.stake_pct_max DESC
+        ORDER BY s.stake_pct_max DESC, s.id
     """).fetchall()
     # Cap each holder at four rows so the table shows the breadth of the
     # disclosure landscape (Tesi alone would otherwise fill it), and skip
@@ -480,7 +513,7 @@ def build_country_mix(con, top_n=12):
                COUNT(*) AS total
         FROM v_events v JOIN companies c ON c.id = v.company_id
         WHERE c.country != ''
-        GROUP BY 1 ORDER BY total DESC LIMIT ?
+        GROUP BY 1 ORDER BY total DESC, c.country COLLATE "C" LIMIT %s
     """.format(eu=",".join(f"'{f}'" for f in EU_DIRECT_FAMILIES)), (top_n,)).fetchall()
     return [
         {
@@ -493,8 +526,7 @@ def build_country_mix(con, top_n=12):
 
 
 def main():
-    con = sqlite3.connect(DB)
-    try:
+    with connect(readonly=True) as con:
         payload = {
             "generatedAt": date.today().isoformat(),
             "kpis": build_kpis(con),
@@ -507,8 +539,6 @@ def main():
             "equity": build_equity(con),
             "countryMix": build_country_mix(con),
         }
-    finally:
-        con.close()
     OUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
     print(f"wrote {OUT.relative_to(ROOT)}")
     print(f"  champions: {len(payload['champions'])}, "

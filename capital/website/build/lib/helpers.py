@@ -1,16 +1,10 @@
-"""Shared helpers for the website build layer. Read-only DB access, palette,
-formatters, JSON export. (Originally the Sprint 9 EDA helpers.)"""
+"""Shared helpers for the website build layer: palette, formatters, JSON export.
+(Originally the Sprint 9 EDA helpers.) Database access is ETL/lib/store.py's,
+never this file's."""
 import decimal
 import json
 import math
-import sqlite3
-import sys
 from pathlib import Path
-
-import pandas as pd
-
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from web_env import ROOT, DB as DB_PATH  # noqa: E402,F401
 
 # ── Sector palette (7 labels → hex) ────────────────────────────────────────
 SECTOR_PALETTE = {
@@ -60,20 +54,6 @@ COUNTRY_POPULATION_M = {
     "EE": 1.4,  "CY": 1.3,  "LU": 0.7,  "MT": 0.5,  "IS": 0.4,
     "GR": 10.4, "EL": 10.4, "GB": 67.7, "UK": 67.7,
 }
-
-
-# ── DB helpers ──────────────────────────────────────────────────────────────
-def db():
-    """Open DB in read-only mode, return connection with row_factory=dict."""
-    conn = sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-
-def df(query: str, params=None) -> pd.DataFrame:
-    """Execute SQL, return pandas DataFrame."""
-    with db() as conn:
-        return pd.read_sql_query(query, conn, params=params)
 
 
 # ── Formatters ──────────────────────────────────────────────────────────────
@@ -161,20 +141,10 @@ def _camel_keys(obj):
 
 
 def to_json(data, path: Path):
-    """Write data (DataFrame or dict/list) to JSON with camelCase keys."""
+    """Write data (dict/list) to JSON with camelCase keys."""
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
-    if isinstance(data, pd.DataFrame):
-        records = data.where(pd.notnull(data), None).to_dict(orient="records")
-    else:
-        records = data
-    payload = _camel_keys(records)
+    payload = _camel_keys(data)
     with open(path, "w") as f:
         json.dump(payload, f, cls=_Encoder, indent=2, ensure_ascii=False)
 
-
-def save_table(data: pd.DataFrame, path: Path):
-    """Write DataFrame as CSV to project-mgmt/findings/_data/ for debug inspection."""
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    data.to_csv(path, index=False)

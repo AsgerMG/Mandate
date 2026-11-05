@@ -33,7 +33,7 @@ Definitions are deliberate, not incidental:
 
 2026-07-08 country-scope reduction: countries below €1B cumulative public
 support are outside the corpus (soft-exclude — rows stay in the DB, the read
-layer filters). The view v_country_public_support (data/views.sql) is the one
+layer filters). The view v_country_public_support (ETL/schema/views.sql) is the one
 definition of the threshold; these fragments apply it to the raw-table KPIs
 that don't go through v_events. NULL/blank-country companies keep counting
 (they are a data-quality bucket, not an excluded country), so the guard is
@@ -64,7 +64,13 @@ CANONICAL_KPI_SQL = {
         "SELECT COUNT(*) FROM companies WHERE step_flagged = 1"
         " AND" + _CO_IN_SCOPE,
     "total_capital_eur_raw":
-        "SELECT COALESCE(SUM(COALESCE(grant_amount_eur,0)+COALESCE(debt_amount_eur,0)),0)"
+        # Summed in id order, stated: float addition is not associative, and
+        # an unordered SUM moves in its last digits with the query plan, so the
+        # same corpus would publish a different figure from one build to the
+        # next. Id order is also the order SQLite summed in, which is what made
+        # the 2026-11-05 port byte-identical (ETL/schema/views.sql says more).
+        "SELECT COALESCE(SUM(COALESCE(grant_amount_eur,0)+COALESCE(debt_amount_eur,0)"
+        " ORDER BY id),0)"
         " FROM public_funding_events WHERE ipcei_linked = 0 AND is_duplicate = 0"
         " AND" + _EV_IN_SCOPE,
     "countries":
@@ -79,7 +85,8 @@ CANONICAL_KPI_SQL = {
 
 
 def compute_kpis(con) -> dict:
-    """Compute every canonical corpus-wide figure from `con`. The one definition;
+    """Compute every canonical corpus-wide figure from `con`, a connection from
+    ETL/lib/store.py (Postgres, schema capital). The one definition;
     imported by the synthesis writer, the build guardrail and the corpus census.
 
     Do not recompute a corpus count anywhere else: the guardrail in

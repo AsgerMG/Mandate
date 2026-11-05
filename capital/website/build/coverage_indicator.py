@@ -30,13 +30,13 @@ Run: python coverage_indicator.py
 from __future__ import annotations
 
 import json
-import sqlite3
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import DB_PATH, DATA_PROCESSED, SITE_DATA  # noqa: E402
+from web_env import DATA_PROCESSED, SITE_DATA  # noqa: E402
+from store import connect  # noqa: E402
 
 OUT_PATH = DATA_PROCESSED / "coverage_indicator.json"
 OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -163,15 +163,17 @@ EU_EQUITY_PERFORMANCE = ("The EIC Fund publishes no portfolio performance — no
                          "The EIT KICs disclose no investment results.")
 
 
-def _equity_by_country(con: sqlite3.Connection) -> tuple[dict, dict]:
+def _equity_by_country(con) -> tuple[dict, dict]:
     """Aggregate public_equity_stakes per holder country (current view:
     latest as_of per (holder, company) so quarterly register snapshots
     don't double-count). Returns (per_country, eu_layer)."""
     from collections import defaultdict
     latest: dict[tuple[str, int], tuple[str, int, str]] = {}
+    # In id order, stated: two rows of one (holder, company) on the same as_of
+    # are resolved by which comes first, so the order is part of the answer.
     for holder, cid, as_of, exited, level in con.execute(
         "SELECT holder, company_id, COALESCE(as_of,''), exited, "
-        "disclosure_level FROM public_equity_stakes"
+        "disclosure_level FROM public_equity_stakes ORDER BY id"
     ):
         key = (holder, cid)
         if key not in latest or as_of > latest[key][0]:
@@ -287,27 +289,21 @@ def _refined_tier(reg_events: int, eu_events: int, ndb_events: int) -> str:
 
 
 def main() -> None:
-    con = sqlite3.connect(DB_PATH)
+    with connect(readonly=True) as con:
+        return _main(con)
+
+
+def _main(con) -> None:
     cur = con.cursor()
 
     # 2026-07-08 country-scope reduction: only corpus countries (≥€1B cumulative
-    # public support, see v_country_public_support in data/views.sql) get a
+    # public support, see v_country_public_support in ETL/schema/views.sql) get a
     # coverage rating — excluded countries would otherwise reappear here after
     # being filtered from every other surface.
     in_corpus = {
         row[0] for row in cur.execute(
             "SELECT country FROM v_country_public_support WHERE in_corpus = 1")
     }
-
-    # Get all sources per country from companies + events join
-    cur.execute("""
-        SELECT c.country, pfe.source, COUNT(*) as n
-        FROM public_funding_events pfe
-        JOIN companies c ON c.id = pfe.company_id
-        WHERE c.country IS NOT NULL AND c.country != ''
-        GROUP BY c.country, pfe.source
-    """)
-    rows = cur.fetchall()
 
     from collections import defaultdict
     country_sources: dict[str, set[str]] = defaultdict(set)
@@ -346,7 +342,6 @@ def main() -> None:
             direct_ndb_events[country] += 1
 
     equity_by_country, eu_equity_layer = _equity_by_country(con)
-    con.close()
 
     result = {"generated": datetime.now(timezone.utc).isoformat(), "countries": {}}
     result["eu_equity_layer"] = {

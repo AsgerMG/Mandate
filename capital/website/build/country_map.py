@@ -23,27 +23,27 @@ Schema:
     }
   }
 """
-import sqlite3
 import json
 import os
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import DB_PATH, SITE_DATA, DATA, ROOT  # noqa: E402
+from web_env import SITE_DATA, REFERENCE  # noqa: E402
 from sector_labels import label as sector_label  # noqa: E402
-
-sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from store import connect  # noqa: E402
 from ndb_taxonomy import (  # noqa: E402
     NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_source,
 )
 ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
 OUT_PATH = str(SITE_DATA / "country_map.json")
-SCOPE_PATH = str(DATA / "europe_scope.json")
+SCOPE_PATH = str(REFERENCE / "europe_scope.json")
 
-# Single source of truth for the corpus's Europe scope. See docs/europe_scope.md
-# for the rationale. Edit reference/europe_scope.json — not this file — to change.
+# Single source of truth for the corpus's Europe scope. See
+# project-mgmt/europe_scope.md for the rationale. Edit reference/europe_scope.json
+# — not this file — to change. (This read data/europe_scope.json until
+# 2026-11-05, a path the file left in e34db36d, so the builder could not run.)
 with open(SCOPE_PATH) as _f:
     _SCOPE = json.load(_f)
 
@@ -91,11 +91,21 @@ def canonical(code: str | None) -> str | None:
 
 
 def main():
-    conn = sqlite3.connect(DB_PATH)
-    cur = conn.cursor()
+    with connect(readonly=True) as conn:
+        _main(conn.cursor())
+
+
+def _main(cur):
+    # ORDER IS PART OF THE ANSWER HERE, so every query below states it. The
+    # rows are folded into Python dicts and then sorted on a count or a euro
+    # figure, and a tie in that sort keeps fetch order; each euro SUM is a
+    # float addition whose last digits depend on the order it adds in. Group
+    # keys sort in byte order with NULL first (COLLATE "C" ... NULLS FIRST),
+    # and sums add in company, then event, order: both what the SQLite store
+    # did, so the move to Postgres changed no byte of country_map.json.
 
     # 2026-07-08 country-scope reduction: v_country_public_support (installed
-    # from data/views.sql) is the single €1B-threshold definition. Countries
+    # from ETL/schema/views.sql) is the single €1B-threshold definition. Countries
     # with in_corpus = 0 are excluded from every stat, rank and chart here,
     # but still emitted as {"excluded": true} stubs so the map can render them
     # with the standing "not in the corpus" hover instead of a dead area.
@@ -109,11 +119,12 @@ def main():
         SELECT
             c.country,
             COUNT(DISTINCT c.id) AS companies,
-            COALESCE(SUM(e.grant_amount_eur), 0) AS total_eur
+            COALESCE(SUM(e.grant_amount_eur ORDER BY c.id, e.id), 0) AS total_eur
         FROM companies c
         LEFT JOIN public_funding_events e ON e.company_id = c.id
         WHERE c.country IS NOT NULL AND c.country != ''
         GROUP BY c.country
+        ORDER BY c.country COLLATE "C"
     """)
     raw_country_rows = cur.fetchall()
 
@@ -141,11 +152,14 @@ def main():
     cur.execute("""
         SELECT c.country, e.source, e.granting_authority, e.ndb_distributor,
                COUNT(DISTINCT e.company_id) AS companies,
-               COALESCE(SUM(e.grant_amount_eur), 0) AS eur
+               COALESCE(SUM(e.grant_amount_eur ORDER BY c.id, e.id), 0) AS eur
         FROM public_funding_events e
         JOIN companies c ON c.id = e.company_id
         WHERE c.country IS NOT NULL AND c.country != ''
         GROUP BY c.country, e.source, e.granting_authority, e.ndb_distributor
+        ORDER BY c.country COLLATE "C", e.source COLLATE "C",
+                 e.granting_authority COLLATE "C" NULLS FIRST,
+                 e.ndb_distributor COLLATE "C" NULLS FIRST
     """)
     source_rows = cur.fetchall()
 
@@ -157,6 +171,7 @@ def main():
         FROM companies c
         WHERE c.country IS NOT NULL AND c.country != ''
         GROUP BY c.country, sector
+        ORDER BY c.country COLLATE "C", COALESCE(NULLIF(c.sector_top,''), 'unclassified') COLLATE "C"
     """)
     sector_rows = cur.fetchall()
     by_country_sector: dict[str, dict[str, int]] = {}
@@ -286,7 +301,6 @@ def main():
 
     print(f"Written {len(result) - len(excluded)} corpus countries "
           f"+ {len(excluded)} excluded stubs to {OUT_PATH}")
-    conn.close()
 
 
 if __name__ == "__main__":

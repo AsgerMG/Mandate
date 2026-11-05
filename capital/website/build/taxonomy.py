@@ -13,35 +13,39 @@ the whole site follows. No taxonomy is hardcoded in the frontend.
 from __future__ import annotations
 
 import json
-import sqlite3
 from datetime import date
 from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import ROOT, DB, SITE_DATA  # noqa: E402
+from web_env import ROOT, SITE_DATA  # noqa: E402
 from sector_labels import label  # noqa: E402
+from store import connect  # noqa: E402
 
 OUT = SITE_DATA / "taxonomy.json"
 
 
 def main() -> None:
-    con = sqlite3.connect(DB)
-    sectors = [
-        {"id": s, "label": label(s), "count": n}
-        for s, n in con.execute(
-            "SELECT sector_top, COUNT(*) FROM companies "
-            "WHERE sector_top IS NOT NULL AND sector_top != '' "
-            "GROUP BY sector_top ORDER BY COUNT(*) DESC")
-    ]
-    subs: dict[str, list[dict]] = {}
-    for s, sub, n in con.execute(
-            "SELECT sector_top, subsector, COUNT(*) FROM companies "
-            "WHERE sector_top IS NOT NULL AND subsector IS NOT NULL "
-            "AND subsector != '' GROUP BY sector_top, subsector "
-            "ORDER BY sector_top, COUNT(*) DESC"):
-        subs.setdefault(s, []).append({"id": sub, "label": label(sub), "count": n})
-    con.close()
+    # Ties in a count break on the slug, stated, so a dropdown's order cannot
+    # depend on the plan. DESCENDING byte order because that is what the SQLite
+    # store emitted (its sorter returned equal keys in reverse input order), so
+    # the move to Postgres changed no byte of this file; there is one such tie
+    # today (three software_data_ai sub-sectors of one company each).
+    with connect(readonly=True) as con:
+        sectors = [
+            {"id": s, "label": label(s), "count": n}
+            for s, n in con.execute(
+                "SELECT sector_top, COUNT(*) FROM companies "
+                "WHERE sector_top IS NOT NULL AND sector_top != '' "
+                'GROUP BY sector_top ORDER BY COUNT(*) DESC, sector_top COLLATE "C" DESC')
+        ]
+        subs: dict[str, list[dict]] = {}
+        for s, sub, n in con.execute(
+                "SELECT sector_top, subsector, COUNT(*) FROM companies "
+                "WHERE sector_top IS NOT NULL AND subsector IS NOT NULL "
+                "AND subsector != '' GROUP BY sector_top, subsector "
+                'ORDER BY sector_top COLLATE "C", COUNT(*) DESC, subsector COLLATE "C" DESC'):
+            subs.setdefault(s, []).append({"id": sub, "label": label(sub), "count": n})
 
     OUT.write_text(json.dumps(
         {"generatedAt": date.today().isoformat(), "sectors": sectors,

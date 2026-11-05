@@ -13,13 +13,13 @@ it exists, classify_gates_bulk.py).
 from __future__ import annotations
 
 import json
-import sqlite3
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import DB, SITE_DATA  # noqa: E402
+from web_env import SITE_DATA  # noqa: E402
+from store import connect  # noqa: E402
 
 OUT = SITE_DATA / "instrument_terms.json"
 
@@ -30,13 +30,22 @@ ASSERTABLE_LEVELS = {"llm_2pass", "human_verified"}
 
 
 def main() -> None:
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
+    with connect(readonly=True, dict_rows=True) as conn:
+        _main(conn)
 
+
+def _main(conn) -> None:
     instruments = conn.execute("""
         SELECT id, parent_id, name, name_source, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
-               administering_body, administering_body_share,
+               administering_body,
+               -- REAL (float4) in the served table. Read through its text form,
+               -- the shortest decimal that round-trips the float4, which is
+               -- exactly what node-postgres hands corpus.ts; reading the binary
+               -- float4 would publish 0.8500000238418579 where the live path
+               -- says 0.85, and the two stores would disagree on a field
+               -- check_store_columns compares.
+               administering_body_share::text::double precision AS administering_body_share,
                last_year, scheme_code, scheme_end_date,
                scheme_end_date_basis, source_window_policy,
                route_status, route_status_source,
@@ -47,9 +56,9 @@ def main() -> None:
                award_p25, award_p50, award_p75, award_n,
                intensity_p50, intensity_n, delivery_region, delivery_region_share
         FROM funding_instruments
-        -- Deterministic, and byte-ordered to match the Postgres path: row
-        -- selection breaks ties on array order.
-        ORDER BY id
+        -- Deterministic, and byte-ordered (COLLATE "C") to match corpus.ts:
+        -- row selection breaks ties on array order.
+        ORDER BY id COLLATE "C"
     """).fetchall()
     gates = conn.execute("""
         SELECT instrument_id, gate_key, gate_family, requirement, value,
@@ -58,7 +67,7 @@ def main() -> None:
         FROM eligibility_gates
         -- Deterministic, because the consumers take the FIRST N: a row's
         -- published criteria must not depend on storage order.
-        ORDER BY instrument_id, gate_key
+        ORDER BY instrument_id COLLATE "C", gate_key COLLATE "C"
     """).fetchall()
 
     # Curated "how you apply", from each scheme's own document (see

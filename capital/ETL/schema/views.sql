@@ -12,6 +12,11 @@
 --   * event_year: strftime('%Y', x) has no Postgres spelling; see the regex.
 --   * ROUND(double, n) does not exist in Postgres; numeric round() is the same
 --     half-away-from-zero rule SQLite applies.
+--   * `e.is_duplicate = 0`, not SQLite's `COALESCE(e.is_duplicate, 0) = 0`: the
+--     column is NOT NULL DEFAULT 0 here (corpus_schema.sql), so the two are the
+--     same rows, and the planner can estimate the bare column (~99% of rows)
+--     where it guessed 0.5% for the COALESCE and chose nested loops that took
+--     investor_insights.py from seconds to a dropped connection.
 --   * every SUM over a euro column NAMES ITS ORDER (`SUM(x ORDER BY c.id, e.id)`).
 --     Floating-point addition is not associative, so an unordered sum moves in
 --     its last digits with the plan -- a parallel scan, a hash join, a new
@@ -61,7 +66,7 @@ SELECT
        THEN 1 ELSE 0 END                                       AS in_corpus
 FROM companies c
 JOIN public_funding_events e ON e.company_id = c.id
-WHERE COALESCE(e.is_duplicate, 0) = 0
+WHERE e.is_duplicate = 0
   AND c.country IS NOT NULL AND c.country != ''
 GROUP BY c.country;
 
@@ -166,7 +171,7 @@ INNER JOIN v_european_companies c ON c.id = e.company_id
 -- Migration 009: exclude rows flagged as cross-source duplicates (e.g. an ADEME
 -- grant that is also published in SATR-FR). Netting here means every downstream
 -- total, count and per-country/per-family rollup is duplicate-free at one point.
-WHERE COALESCE(e.is_duplicate, 0) = 0;
+WHERE e.is_duplicate = 0;
 
 -- One row per company with breadth / depth metrics (all entity types — research orgs,
 -- companies, public bodies). Use this for total-corpus rollups.

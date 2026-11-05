@@ -9,9 +9,9 @@
       "stageMin": 0.15,
       "stageMax": 0.9,
       "stageLabel": "All stages (national aid)",
-      "companies": 87674,
-      "totalEur": 181390090240.54135,
-      "medianTicket": 288521.0,
+      "companies": 87770,
+      "totalEur": 181486815258.49133,
+      "medianTicket": 287853.0,
       "topSector": {
         "name": "Other",
         "companies": 18248
@@ -51,16 +51,16 @@
       "stageMin": 0.25,
       "stageMax": 0.8,
       "stageLabel": "Seed \u2192 Growth",
-      "companies": 52426,
-      "totalEur": 23210756151.769882,
-      "medianTicket": 57641.5,
+      "companies": 52843,
+      "totalEur": 24122665563.30992,
+      "medianTicket": 57484.48,
       "topSector": {
         "name": "Other",
-        "companies": 11436
+        "companies": 11437
       },
       "topCountry": {
         "iso": "FR",
-        "companies": 21403
+        "companies": 21663
       }
     },
     {
