@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-08-07",
+  "generatedAt": "2026-11-05",
   "kpis": {
-    "companies": 151426,
-    "events": 299384,
+    "companies": 152453,
+    "events": 300648,
     "families": 11,
     "countries": 23,
-    "multiInstrument": 5455,
-    "deepStack": 1074,
-    "veryDeepStack": 221,
+    "multiInstrument": 5471,
+    "deepStack": 1080,
+    "veryDeepStack": 222,
     "equityPositions": 5570,
     "equityHolders": 24
   },
@@ -15,8 +15,8 @@
     "momentum": {
       "p2": 30.6,
       "p3given2": 43.8,
-      "p5given4": 62.6,
-      "p10given9": 79.0
+      "p5given4": 62.7,
+      "p10given9": 78.7
     },
     "bosch": {
       "entities": 42,
@@ -191,19 +191,19 @@
   "stack": [
     {
       "families": "1",
-      "companies": 90678
+      "companies": 90958
     },
     {
       "families": "2",
-      "companies": 4381
+      "companies": 4391
     },
     {
       "families": "3",
-      "companies": 853
+      "companies": 858
     },
     {
       "families": "4+",
-      "companies": 221
+      "companies": 222
     }
   ],
   "champions": [
@@ -362,11 +362,11 @@
         },
         {
           "family": "national_dev_banks",
-          "events": 2,
-          "eur": 50000
+          "events": 3,
+          "eur": 345227
         }
       ],
-      "nEvents": 58,
+      "nEvents": 59,
       "totalEur": 149400000
     },
     {
@@ -1088,12 +1088,12 @@
         },
         {
           "family": "national_dev_banks",
-          "events": 1,
-          "eur": 2414411
+          "events": 2,
+          "eur": 2627411
         }
       ],
-      "nEvents": 37,
-      "totalEur": 78805823
+      "nEvents": 38,
+      "totalEur": 79018823
     },
     {
       "name": "Thales Las France SAS",
@@ -3520,6 +3520,42 @@
       "totalEur": 37236308
     },
     {
+      "name": "Specialty Operations France",
+      "country": "FR",
+      "sector": "materials_chemicals",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "horizon_eu_partnership",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 30598943
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 7,
+          "eur": 3647290
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 4,
+          "eur": 2041514
+        },
+        {
+          "family": "horizon_eu_partnership",
+          "events": 6,
+          "eur": 365440
+        }
+      ],
+      "nEvents": 19,
+      "totalEur": 36653187
+    },
+    {
       "name": "Reverion GmbH",
       "country": "DE",
       "sector": "energy_cleantech",
@@ -4238,6 +4274,42 @@
       ],
       "nEvents": 5,
       "totalEur": 22659078
+    },
+    {
+      "name": "Aisti Corporation Oy",
+      "country": "FI",
+      "sector": "materials_chemicals",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eib",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "eib",
+          "events": 1,
+          "eur": 20000000
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 1,
+          "eur": 589500
+        },
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 1,
+          "eur": 363469
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 1,
+          "eur": 0
+        }
+      ],
+      "nEvents": 4,
+      "totalEur": 20952969
     },
     {
       "name": "Axelera Ai",
@@ -5248,6 +5320,42 @@
       "totalEur": 8395874
     },
     {
+      "name": "Pal Robotics Slu",
+      "country": "ES",
+      "sector": "industrial_manufacturing",
+      "nFamilies": 4,
+      "families": [
+        "horizon_eu_pillar_ii",
+        "eic",
+        "national_dev_banks",
+        "state_aid_satr"
+      ],
+      "breakdown": [
+        {
+          "family": "horizon_eu_pillar_ii",
+          "events": 11,
+          "eur": 5785982
+        },
+        {
+          "family": "national_dev_banks",
+          "events": 2,
+          "eur": 1098685
+        },
+        {
+          "family": "state_aid_satr",
+          "events": 2,
+          "eur": 711944
+        },
+        {
+          "family": "eic",
+          "events": 1,
+          "eur": 451250
+        }
+      ],
+      "nEvents": 16,
+      "totalEur": 8047861
+    },
+    {
       "name": "Avl Deutschland",
       "country": "DE",
       "sector": "semiconductors_electronics",
@@ -5462,42 +5570,6 @@
       ],
       "nEvents": 7,
       "totalEur": 7626698
-    },
-    {
-      "name": "Pal Robotics Slu",
-      "country": "ES",
-      "sector": "industrial_manufacturing",
-      "nFamilies": 4,
-      "families": [
-        "horizon_eu_pillar_ii",
-        "eic",
-        "national_dev_banks",
-        "state_aid_satr"
-      ],
-      "breakdown": [
-        {
-          "family": "horizon_eu_pillar_ii",
-          "events": 11,
-          "eur": 5785982
-        },
-        {
-          "family": "national_dev_banks",
-          "events": 2,
-          "eur": 1098685
-        },
-        {
-          "family": "eic",
-          "events": 1,
-          "eur": 451250
-        },
-        {
-          "family": "state_aid_satr",
-          "events": 1,
-          "eur": 276559
-        }
-      ],
-      "nEvents": 15,
-      "totalEur": 7612476
     },
     {
       "name": "Umicore",
@@ -5894,42 +5966,6 @@
       ],
       "nEvents": 18,
       "totalEur": 6125730
-    },
-    {
-      "name": "Specialty Operations France",
-      "country": "FR",
-      "sector": "materials_chemicals",
-      "nFamilies": 4,
-      "families": [
-        "horizon_eu_pillar_ii",
-        "horizon_eu_partnership",
-        "national_dev_banks",
-        "state_aid_satr"
-      ],
-      "breakdown": [
-        {
-          "family": "horizon_eu_pillar_ii",
-          "events": 7,
-          "eur": 3647290
-        },
-        {
-          "family": "state_aid_satr",
-          "events": 4,
-          "eur": 2041514
-        },
-        {
-          "family": "horizon_eu_partnership",
-          "events": 6,
-          "eur": 365440
-        },
-        {
-          "family": "national_dev_banks",
-          "events": 1,
-          "eur": 70000
-        }
-      ],
-      "nEvents": 18,
-      "totalEur": 6124244
     },
     {
       "name": "Humanitas Mirasole SpA",
@@ -7694,42 +7730,6 @@
       ],
       "nEvents": 7,
       "totalEur": 2181358
-    },
-    {
-      "name": "Variolytics GmbH",
-      "country": "DE",
-      "sector": "semiconductors_electronics",
-      "nFamilies": 4,
-      "families": [
-        "eic",
-        "chips_ju",
-        "national_dev_banks",
-        "state_aid_satr"
-      ],
-      "breakdown": [
-        {
-          "family": "eic",
-          "events": 1,
-          "eur": 1724625
-        },
-        {
-          "family": "chips_ju",
-          "events": 1,
-          "eur": 261406
-        },
-        {
-          "family": "state_aid_satr",
-          "events": 1,
-          "eur": 193112
-        },
-        {
-          "family": "national_dev_banks",
-          "events": 1,
-          "eur": 0
-        }
-      ],
-      "nEvents": 4,
-      "totalEur": 2179143
     }
   ],
   "rotation": {
@@ -7748,7 +7748,7 @@
           4449,
           5944,
           6216,
-          5193
+          5194
         ],
         "shares": [
           0.0843,
@@ -7765,7 +7765,7 @@
           7576,
           10392,
           13209,
-          9278
+          9280
         ],
         "shares": [
           0.2066,
@@ -7799,7 +7799,7 @@
           3326,
           4869,
           6879,
-          6271
+          6273
         ],
         "shares": [
           0.2289,
@@ -7816,7 +7816,7 @@
           4100,
           6158,
           5988,
-          4586
+          4587
         ],
         "shares": [
           0.0572,
@@ -7831,16 +7831,16 @@
         "counts": [
           5154,
           5692,
-          7993,
+          7994,
           10354,
-          9366
+          9368
         ],
         "shares": [
           0.1555,
           0.1673,
           0.1724,
           0.1851,
-          0.207
+          0.2071
         ]
       },
       {
@@ -7881,14 +7881,14 @@
         "id": "agrifood",
         "counts": [
           4259,
-          3898,
+          3899,
           3804,
           5175,
           4117
         ],
         "shares": [
           0.1285,
-          0.1145,
+          0.1146,
           0.0821,
           0.0925,
           0.091
@@ -7962,12 +7962,12 @@
       "id": "national_dev_banks",
       "label": "National development banks",
       "basis": "ademe_grant",
-      "events": 26773,
-      "companies": 18394,
-      "totalEur": 6424174222,
-      "top10Share": 0.2272,
+      "events": 27320,
+      "companies": 18668,
+      "totalEur": 7292010696,
+      "top10Share": 0.2807,
       "medianTicket": 20000,
-      "p90Ticket": 200000
+      "p90Ticket": 202964
     },
     {
       "id": "edf",
@@ -8367,17 +8367,17 @@
       "iso2": "FR",
       "name": "France",
       "euDirect": 7134,
-      "ndb": 30593,
+      "ndb": 31140,
       "stateAid": 17773,
-      "total": 55500
+      "total": 56047
     },
     {
       "iso2": "DE",
       "name": "Germany",
       "euDirect": 9102,
-      "ndb": 1083,
+      "ndb": 1100,
       "stateAid": 29931,
-      "total": 40116
+      "total": 40133
     },
     {
       "iso2": "IT",
@@ -8392,8 +8392,8 @@
       "name": "Spain",
       "euDirect": 9336,
       "ndb": 2316,
-      "stateAid": 14473,
-      "total": 26125
+      "stateAid": 14710,
+      "total": 26362
     },
     {
       "iso2": "GB",
@@ -8415,17 +8415,17 @@
       "iso2": "SE",
       "name": "Sweden",
       "euDirect": 2147,
-      "ndb": 6679,
+      "ndb": 7003,
       "stateAid": 3595,
-      "total": 12421
+      "total": 12745
     },
     {
       "iso2": "NL",
       "name": "Netherlands",
       "euDirect": 4852,
-      "ndb": 22,
+      "ndb": 25,
       "stateAid": 6772,
-      "total": 11646
+      "total": 11649
     },
     {
       "iso2": "BE",
@@ -8444,20 +8444,20 @@
       "total": 7819
     },
     {
+      "iso2": "FI",
+      "name": "Finland",
+      "euDirect": 2032,
+      "ndb": 1793,
+      "stateAid": 2679,
+      "total": 6504
+    },
+    {
       "iso2": "HU",
       "name": "Hungary",
       "euDirect": 621,
       "ndb": 0,
       "stateAid": 5883,
       "total": 6504
-    },
-    {
-      "iso2": "FI",
-      "name": "Finland",
-      "euDirect": 2032,
-      "ndb": 1763,
-      "stateAid": 2679,
-      "total": 6474
     }
   ]
 }
