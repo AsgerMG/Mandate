@@ -29,7 +29,8 @@ policy signal attached to the wrong fund is worse still, because it will be
 quoted to a founder as a reason to act. Ambiguity is counted and reported, not
 resolved by picking the largest.
 
-Reads both databases, writes only to signals.sqlite.
+Reads funding_instruments and the signals_* tables; writes only
+signals_article_instrument_links.
 
 Usage:
   python3 ETL/intelligence/transform/link_programme_mentions.py            # report
@@ -44,12 +45,11 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, SIGNALS_DB  # noqa: E402
+from store import connect  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
 import re  # noqa: E402
-import sqlite3  # noqa: E402
 import unicodedata  # noqa: E402
 
 # A mention shorter than this is an initialism that collides with everything
@@ -110,15 +110,16 @@ def norm(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", s.lower()).strip()
 
 
-def load_targets() -> tuple[dict, dict, dict]:
-    """(channel -> [ids], normalised name -> [ids], normalised body -> [ids])."""
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
-    rows = conn.execute("""
+def load_targets(con) -> tuple[dict, dict, dict]:
+    """(channel -> [ids], normalised name -> [ids], normalised body -> [ids]).
+
+    Ordered by id, so the link rows (and which mention_text survives the ON
+    CONFLICT) are a function of the data rather than of a scan order."""
+    rows = con.execute("""
         SELECT id, name, source_family_bucket, administering_body
-        FROM funding_instruments WHERE is_framework = 0
+        FROM funding_instruments WHERE is_framework = false
+        ORDER BY id COLLATE "C"
     """).fetchall()
-    conn.close()
 
     by_channel: dict[str, list[str]] = collections.defaultdict(list)
     by_name: dict[str, list[str]] = collections.defaultdict(list)
@@ -171,14 +172,18 @@ def main() -> None:
     ap.add_argument("--sample", type=int, default=0)
     args = ap.parse_args()
 
-    by_channel, by_name, by_body = load_targets()
-    sig = sqlite3.connect(SIGNALS_DB)
-    sig.row_factory = sqlite3.Row
-    mentions = sig.execute("""
+    with connect(readonly=not args.write, dict_rows=True) as con:
+        _main(con, args)
+
+
+def _main(con, args) -> None:
+    by_channel, by_name, by_body = load_targets(con)
+    mentions = con.execute("""
         SELECT e.id, e.article_id, e.mention_text
-        FROM article_entities e
-        JOIN articles a ON a.id = e.article_id
+        FROM signals_article_entities e
+        JOIN signals_articles a ON a.id = e.article_id
         WHERE e.entity_type = 'program' AND a.is_relevant = 1
+        ORDER BY e.id
     """).fetchall()
 
     links: list[tuple] = []
@@ -213,25 +218,16 @@ def main() -> None:
         print("\n[report only] --write to persist")
         return
 
-    sig.execute("""
-        CREATE TABLE IF NOT EXISTS article_instrument_links (
-          article_id     INTEGER NOT NULL,
-          instrument_id  TEXT NOT NULL,
-          mention_text   TEXT,
-          match_method   TEXT NOT NULL,
-          created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          UNIQUE (article_id, instrument_id, match_method)
-        )""")
-    sig.execute("CREATE INDEX IF NOT EXISTS idx_ail_instrument "
-                "ON article_instrument_links(instrument_id)")
-    sig.execute("DELETE FROM article_instrument_links")
-    sig.executemany(
-        """INSERT OR IGNORE INTO article_instrument_links
+    # A deterministic recomputation from the two tables above, so it is
+    # rebuilt whole -- in ONE transaction: a reader sees the old set or the new
+    # one, never an empty table. (The DDL lives in ETL/schema/corpus_schema.sql.)
+    con.execute("DELETE FROM signals_article_instrument_links")
+    con.cursor().executemany(
+        """INSERT INTO signals_article_instrument_links
              (article_id, instrument_id, mention_text, match_method)
-           VALUES (?, ?, ?, ?)""", links)
-    sig.commit()
+           VALUES (%s, %s, %s, %s)
+           ON CONFLICT (article_id, instrument_id, match_method) DO NOTHING""", links)
     print(f"\nwrote {len(links)} links")
-    sig.close()
 
 
 if __name__ == "__main__":

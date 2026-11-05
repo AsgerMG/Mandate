@@ -1,7 +1,7 @@
 """News ingestion engine for the public-capital-intelligence track (stage 0).
 
 Registry-driven (news_sources.py — never hardcode an outlet here) and fully
-re-triggerable: every insert is `INSERT OR IGNORE` on the article URL, so
+re-triggerable: every insert is `ON CONFLICT (url) DO NOTHING`, so
 `ingest` can run on any cadence (cron, make, by hand) and only NEW articles
 enter the pipeline. The transform stages pick work up by state columns, so the
 whole chain is incremental end-to-end:
@@ -28,6 +28,9 @@ Usage:
   python3 ETL/intelligence/extract/news_ingest.py backfill --months 24 [--priority 2]
   python3 ETL/intelligence/extract/news_ingest.py hydrate [--limit N]
   python3 ETL/intelligence/extract/news_ingest.py status
+
+Writes the signals_* tables of schema `capital` (until 2026-11-05,
+data/signals.sqlite).
 """
 from __future__ import annotations
 
@@ -38,13 +41,12 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import SIGNALS_DB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import html as html_mod
+import functools
 import re
-import sqlite3
 import ssl
 import time
 import urllib.error
@@ -54,6 +56,7 @@ import xml.etree.ElementTree as ET
 from datetime import date, datetime, timedelta
 
 from news_sources import SOURCES, HTML_ADAPTERS  # noqa: E402
+from store import connect  # noqa: E402
 
 # macOS Python ships without the system root CA bundle — same fix as the NDB
 # extractors (ETL/lib/ndb_ssl.py): use certifi's bundle when available.
@@ -186,22 +189,35 @@ def gnews_url(query: str, language: str) -> str:
 
 
 # ── DB helpers ────────────────────────────────────────────────────────────────
-def connect() -> sqlite3.Connection:
-    con = sqlite3.connect(SIGNALS_DB, timeout=30)
-    con.row_factory = sqlite3.Row
-    # WAL: harvest + hydrate legitimately run concurrently (different hosts,
-    # both writing articles) — readers never block the writer and vice versa.
-    con.execute("PRAGMA journal_mode=WAL")
-    con.execute("PRAGMA busy_timeout=15000")
-    return con
+def _with_db(readonly: bool = False):
+    """Run a command with one connection (dict rows). Commands commit per unit
+    of work themselves -- harvest and hydrate hold the connection across slow
+    fetches and must never hold a write transaction across one."""
+    def wrap(fn):
+        @functools.wraps(fn)
+        def run(args):
+            with connect(readonly=readonly, dict_rows=True) as con:
+                return fn(con, args)
+        return run
+    return wrap
 
 
-def sync_registry(con: sqlite3.Connection) -> dict[str, int]:
+def _drop_chunks(con, article_id: int) -> None:
+    """An article whose text changed is re-chunked: its chunks go, and their
+    vectors with them (they embed text that no longer exists). SQLite never
+    enforced the FK, so it left those vectors orphaned; Postgres refuses."""
+    con.execute("""DELETE FROM signals_chunk_embeddings WHERE chunk_id IN
+                   (SELECT id FROM signals_article_chunks WHERE article_id = %s)""",
+                (article_id,))
+    con.execute("DELETE FROM signals_article_chunks WHERE article_id = %s", (article_id,))
+
+
+def sync_registry(con) -> dict[str, int]:
     """Upsert news_sources.SOURCES into `sources`; returns key → id."""
     for key, s in SOURCES.items():
         con.execute("""
-            INSERT INTO sources (key, name, tier, country, language, kind, feed_url, topics, active)
-            VALUES (?,?,?,?,?,?,?,?,1)
+            INSERT INTO signals_sources (key, name, tier, country, language, kind, feed_url, topics, active)
+            VALUES (%s,%s,%s,%s,%s,%s,%s,%s,1)
             ON CONFLICT(key) DO UPDATE SET
               name=excluded.name, tier=excluded.tier, country=excluded.country,
               language=excluded.language, kind=excluded.kind,
@@ -211,22 +227,21 @@ def sync_registry(con: sqlite3.Connection) -> dict[str, int]:
     # Registry removals deactivate (articles keep their source row).
     keys = tuple(SOURCES)
     con.execute(
-        f"UPDATE sources SET active = 0 WHERE key NOT IN ({','.join('?' * len(keys))})",
-        keys)
+        "UPDATE signals_sources SET active = 0 WHERE NOT (key = ANY(%s))", (list(keys),))
     con.commit()
-    return {r["key"]: r["id"] for r in con.execute("SELECT key, id FROM sources")}
+    return {r["key"]: r["id"] for r in con.execute("SELECT key, id FROM signals_sources")}
 
 
-def store(con: sqlite3.Connection, source_id: int, language: str,
-          items: list[dict]) -> int:
-    """INSERT OR IGNORE on url — THE idempotence point of the whole pipeline."""
+def store(con, source_id: int, language: str, items: list[dict]) -> int:
+    """ON CONFLICT (url) DO NOTHING — THE idempotence point of the whole pipeline."""
     new = 0
     for it in items:
         stub = f"{it['title']}\n\n{it['summary']}".strip()
         cur = con.execute("""
-            INSERT OR IGNORE INTO articles
+            INSERT INTO signals_articles
               (source_id, url, title, published_at, language, raw_text)
-            VALUES (?,?,?,?,?,?)
+            VALUES (%s,%s,%s,%s,%s,%s)
+            ON CONFLICT (url) DO NOTHING
         """, (source_id, it["url"], it["title"], it["published"], language, stub))
         new += cur.rowcount
     con.commit()
@@ -234,16 +249,15 @@ def store(con: sqlite3.Connection, source_id: int, language: str,
 
 
 # ── Commands ─────────────────────────────────────────────────────────────────
-def cmd_sync(_args) -> None:
-    con = connect()
+@_with_db()
+def cmd_sync(con, _args) -> None:
     ids = sync_registry(con)
-    con.close()
-    print(f"registry synced: {len(ids)} sources in signals.sqlite")
+    print(f"registry synced: {len(ids)} sources in signals_sources")
 
 
-def cmd_ingest(args) -> None:
+@_with_db()
+def cmd_ingest(con, args) -> None:
     """Live pull: native RSS feeds + live gnews queries. Re-run any time."""
-    con = connect()
     ids = sync_registry(con)
     total = skipped_html = 0
     for key, s in SOURCES.items():
@@ -273,7 +287,6 @@ def cmd_ingest(args) -> None:
         new = store(con, ids[key], s["language"], items)
         total += new
         print(f"  {key}: {len(items)} items, {new} new{via}")
-    con.close()
     print(f"\ningest done: {total} new articles"
           + (f" ({skipped_html} html sources pending per-site adapters)" if skipped_html else ""))
 
@@ -297,10 +310,10 @@ def _windows(months: int) -> list[tuple[str, str]]:
     return out
 
 
-def cmd_backfill(args) -> None:
+@_with_db()
+def cmd_backfill(con, args) -> None:
     """Reconstruct the last N months via windowed gnews queries. Idempotent —
     re-running fills gaps and picks up anything new since the last run."""
-    con = connect()
     ids = sync_registry(con)
     windows = _windows(args.months)
 
@@ -331,7 +344,6 @@ def cmd_backfill(args) -> None:
             src_new += store(con, ids[key], lang, parse_feed(raw))
         total += src_new
         print(f"  {key}: +{src_new}")
-    con.close()
     print(f"\nbackfill done: {total} new articles")
 
 
@@ -371,9 +383,9 @@ def _resolve_gnews(raw: bytes, final_url: str) -> tuple[bytes | None, str]:
     return fetch_final(target)
 
 
-def cmd_hydrate(args) -> None:
+@_with_db()
+def cmd_hydrate(con, args) -> None:
     """Fetch full text for RELEVANT articles only (the gate ran on stubs)."""
-    con = connect()
     # 2026-07-09 reorder: hydration no longer waits for the relevance gate —
     # the vector index is built from full text of EVERYTHING, and relevance is
     # a query-time property of retrieval (plus a cheap cost-filter before the
@@ -381,24 +393,25 @@ def cmd_hydrate(args) -> None:
     #
     # --since-days scopes to recent articles only -- without it, ORDER BY
     # published_at DESC still ends up mixing in old backlog: a stub with a
-    # NULL/malformed published_at sorts however SQLite treats NULL in DESC
-    # (implementation-defined, not reliably "last"), so relying on sort order
+    # NULL/malformed published_at sorts however the engine treats NULL in DESC
+    # (Postgres: first; SQLite: last), so relying on sort order
     # alone to keep old backlog out was found to NOT actually work in
     # practice. An explicit WHERE filter is unambiguous.
     since_clause = ""
     if args.since_days:
-        since_clause = f" AND a.published_at >= date('now', '-{int(args.since_days)} days')"
-    sql = f"""SELECT a.id, a.url FROM articles a JOIN sources s ON s.id = a.source_id
+        # Text comparison of ISO dates, byte-wise as SQLite compared them.
+        since_clause = (f" AND a.published_at COLLATE \"C\" >= "
+                        f"to_char(current_date - {int(args.since_days)}, 'YYYY-MM-DD')")
+    sql = f"""SELECT a.id, a.url FROM signals_articles a JOIN signals_sources s ON s.id = a.source_id
              WHERE a.full_text_fetched = 0{since_clause}
              ORDER BY CASE COALESCE(a.is_relevant, -1) WHEN 1 THEN 0
                            WHEN -1 THEN 1 ELSE 2 END,
                       CASE s.tier WHEN 'funder_press' THEN 0
                                   WHEN 'trade_press' THEN 1 ELSE 2 END,
-                      a.published_at DESC"""
+                      a.published_at COLLATE "C" DESC NULLS LAST, a.id"""
     rows = con.execute(sql + (f" LIMIT {int(args.limit)}" if args.limit else "")).fetchall()
     if not rows:
         print("nothing to hydrate — every article has full text.")
-        con.close()
         return
     ok = failed = 0
     for r in rows:
@@ -419,17 +432,18 @@ def cmd_hydrate(args) -> None:
             # Paywalled / JS-rendered / consent-walled: keep the stub, mark
             # hydrated so downstream runs on what we legitimately have.
             con.execute(
-                "UPDATE articles SET full_text_fetched = 1, resolved_url = ? WHERE id = ?",
+                "UPDATE signals_articles SET full_text_fetched = 1, resolved_url = %s "
+                "WHERE id = %s",
                 (final_url if final_url != r["url"] else None, r["id"]))
         else:
             con.execute("""
-                UPDATE articles SET raw_text = ?, full_text_fetched = 1, resolved_url = ?
-                WHERE id = ?""",
+                UPDATE signals_articles SET raw_text = %s, full_text_fetched = 1,
+                       resolved_url = %s
+                WHERE id = %s""",
                 (text[:60000], final_url if final_url != r["url"] else None, r["id"]))
-            con.execute("DELETE FROM article_chunks WHERE article_id = ?", (r["id"],))
+            _drop_chunks(con, r["id"])
         ok += 1
         con.commit()
-    con.close()
     print(f"hydrated {ok} articles ({failed} fetch failures — retriable, they stay queued).")
 
 
@@ -475,13 +489,13 @@ def _article_page(raw: bytes, url: str) -> dict | None:
             "summary": "", "text": text[:60000]}
 
 
-def cmd_harvest(args) -> None:
+@_with_db()
+def cmd_harvest(con, args) -> None:
     """Crawl kind=html funder newsrooms per HTML_ADAPTERS. Stores FULL TEXT at
     ingest (full_text_fetched=1) — these are the substance backbone. Idempotent:
     known URLs are skipped before fetching, so re-runs only pull new posts."""
-    con = connect()
     ids = sync_registry(con)
-    known = {r[0] for r in con.execute("SELECT url FROM articles")}
+    known = {r["url"] for r in con.execute("SELECT url FROM signals_articles")}
     total = 0
     for key, s in SOURCES.items():
         if s["kind"] != "html" or s["priority"] > args.priority:
@@ -503,23 +517,24 @@ def cmd_harvest(args) -> None:
                 print(f"  {key}: page too thin (likely JS-rendered) — skipped")
                 continue
             row = con.execute(
-                "SELECT id, raw_text FROM articles WHERE url = ?", (s["url"],)).fetchone()
+                "SELECT id, raw_text FROM signals_articles WHERE url = %s",
+                (s["url"],)).fetchone()
             if row is None:
                 con.execute("""
-                    INSERT INTO articles (source_id, url, title, published_at, language,
-                                          raw_text, full_text_fetched)
-                    VALUES (?,?,?,?,?,?,1)""",
+                    INSERT INTO signals_articles (source_id, url, title, published_at,
+                                                  language, raw_text, full_text_fetched)
+                    VALUES (%s,%s,%s,%s,%s,%s,1)""",
                     (ids[key], s["url"], s["name"], date.today().isoformat(),
                      s["language"], text[:60000]))
                 total += 1
                 print(f"  {key}: page captured")
             elif row["raw_text"] != text[:60000]:
                 con.execute("""
-                    UPDATE articles SET raw_text = ?, published_at = ?,
+                    UPDATE signals_articles SET raw_text = %s, published_at = %s,
                            entities_extracted_at = NULL, signals_extracted_at = NULL,
                            is_relevant = NULL
-                    WHERE id = ?""", (text[:60000], date.today().isoformat(), row["id"]))
-                con.execute("DELETE FROM article_chunks WHERE article_id = ?", (row["id"],))
+                    WHERE id = %s""", (text[:60000], date.today().isoformat(), row["id"]))
+                _drop_chunks(con, row["id"])
                 total += 1
                 print(f"  {key}: page changed — recaptured")
             else:
@@ -555,9 +570,10 @@ def cmd_harvest(args) -> None:
             if item is None:
                 continue
             cur = con.execute("""
-                INSERT OR IGNORE INTO articles (source_id, url, title, published_at,
-                                                language, raw_text, full_text_fetched)
-                VALUES (?,?,?,?,?,?,1)""",
+                INSERT INTO signals_articles (source_id, url, title, published_at,
+                                              language, raw_text, full_text_fetched)
+                VALUES (%s,%s,%s,%s,%s,%s,1)
+                ON CONFLICT (url) DO NOTHING""",
                 (ids[key], item["url"], item["title"], item["published"],
                  s["language"], item["text"]))
             src_new += cur.rowcount
@@ -565,31 +581,31 @@ def cmd_harvest(args) -> None:
             con.commit()          # commit per article — never hold a write txn across fetches
         total += src_new
         print(f"  {key}: {len(new_links)} new links found, {src_new} articles stored")
-    con.close()
     print(f"\nharvest done: {total} new full-text documents")
 
 
-def cmd_status(_args) -> None:
-    con = connect()
-    n = con.execute("SELECT COUNT(*) FROM articles").fetchone()[0]
+@_with_db(readonly=True)
+def cmd_status(con, _args) -> None:
+    n = con.execute("SELECT COUNT(*) AS n FROM signals_articles").fetchone()["n"]
     by_tier = con.execute("""
-        SELECT s.tier, COUNT(*) FROM articles a JOIN sources s ON s.id = a.source_id
-        GROUP BY s.tier""").fetchall()
+        SELECT s.tier, COUNT(*) AS c FROM signals_articles a
+        JOIN signals_sources s ON s.id = a.source_id
+        GROUP BY s.tier ORDER BY s.tier COLLATE "C" """).fetchall()
     span = con.execute(
-        "SELECT MIN(published_at), MAX(published_at) FROM articles "
-        "WHERE published_at IS NOT NULL").fetchone()
+        'SELECT MIN(published_at COLLATE "C") AS lo, MAX(published_at COLLATE "C") AS hi '
+        "FROM signals_articles WHERE published_at IS NOT NULL").fetchone()
     gate = con.execute("""
-        SELECT COALESCE(is_relevant, -1), COUNT(*) FROM articles GROUP BY 1""").fetchall()
+        SELECT COALESCE(is_relevant, -1) AS flag, COUNT(*) AS c
+        FROM signals_articles GROUP BY 1 ORDER BY 1""").fetchall()
     hyd = con.execute(
-        "SELECT COUNT(*) FROM articles WHERE is_relevant = 1 AND full_text_fetched = 0"
-    ).fetchone()[0]
-    con.close()
-    print(f"articles: {n:,}   span: {span[0]} → {span[1]}")
-    for tier, c in by_tier:
-        print(f"  {tier:<14} {c:>7,}")
+        "SELECT COUNT(*) AS n FROM signals_articles "
+        "WHERE is_relevant = 1 AND full_text_fetched = 0").fetchone()["n"]
+    print(f"articles: {n:,}   span: {span['lo']} → {span['hi']}")
+    for r in by_tier:
+        print(f"  {r['tier']:<14} {r['c']:>7,}")
     labels = {-1: "awaiting gate", 0: "rejected", 1: "relevant"}
-    for flag, c in gate:
-        print(f"  {labels[flag]:<14} {c:>7,}")
+    for r in gate:
+        print(f"  {labels[r['flag']]:<14} {r['c']:>7,}")
     print(f"  awaiting hydration: {hyd:,}")
 
 

@@ -39,20 +39,20 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import SIGNALS_DB  # noqa: E402
+from etl_env import DATA  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
 import os
-import sqlite3
 from datetime import datetime, timezone
 
 MODEL = "claude-sonnet-5"
 MAX_TOKENS = 900           # a handful of signal objects with impact text
 TEXT_CAP = 6000
 CHUNK = 2_000
-STATE_FILE = SIGNALS_DB.parent / ".signals_signals_batches.json"
+STATE_FILE = DATA / ".signals_signals_batches.json"
 
 SIGNAL_TYPES = [
     "funding_award", "funding_pipeline_signal", "programme_policy_change",
@@ -128,16 +128,13 @@ def _state_save(st: dict) -> None:
 
 
 def cmd_status(_args) -> None:
-    con = sqlite3.connect(SIGNALS_DB)
-    try:
+    with connect(readonly=True) as con:
         pending = con.execute(
-            "SELECT COUNT(*) FROM articles WHERE is_relevant = 1 "
+            "SELECT COUNT(*) FROM signals_articles WHERE is_relevant = 1 "
             "AND full_text_fetched = 1 AND signals_extracted_at IS NULL").fetchone()[0]
         by_type = con.execute(
-            "SELECT signal_type, COUNT(*) FROM article_signals "
+            "SELECT signal_type, COUNT(*) FROM signals_article_signals "
             "GROUP BY signal_type ORDER BY 2 DESC").fetchall()
-    finally:
-        con.close()
     st = _state_load()
     uncollected = [b for b in st["batches"] if b not in st["collected"]]
     print(f"awaiting signal tagging: {pending:,}")
@@ -148,16 +145,14 @@ def cmd_status(_args) -> None:
 
 
 def cmd_submit(args) -> None:
-    con = sqlite3.connect(SIGNALS_DB)
-    con.row_factory = sqlite3.Row
     sql = ("SELECT a.id, a.title, a.raw_text, s.name AS source_name "
-           "FROM articles a JOIN sources s ON s.id = a.source_id "
+           "FROM signals_articles a JOIN signals_sources s ON s.id = a.source_id "
            "WHERE a.is_relevant = 1 AND a.full_text_fetched = 1 "
            "AND a.signals_extracted_at IS NULL ORDER BY a.id")
     if args.limit:
         sql += f" LIMIT {int(args.limit)}"
-    rows = con.execute(sql).fetchall()
-    con.close()
+    with connect(readonly=True, dict_rows=True) as con:
+        rows = con.execute(sql).fetchall()
     if not rows:
         print("nothing pending — no relevant articles awaiting signal tagging.")
         return
@@ -198,7 +193,37 @@ def cmd_collect(_args) -> None:
     if not pending_ids:
         print("no uncollected batches recorded.")
         return
-    con = sqlite3.connect(SIGNALS_DB)
+    with connect() as con:
+        written, tagged, errored, still = _collect(client, st, pending_ids, con)
+    print(f"\n{written} articles processed, {tagged} signals written "
+          f"({errored} errored, {still} batch(es) still processing).")
+
+
+def write_signals(con, aid: int, signals: list[dict], now: str) -> int:
+    """Idempotent per article: replace any earlier tagging wholesale with the
+    model's latest answer, and stamp the article. Returns how many were written."""
+    rows = []
+    for s in signals:
+        stype = s.get("signal_type")
+        summary = (s.get("summary") or "").strip()
+        if stype not in SIGNAL_TYPES or not summary:
+            continue
+        try:
+            conf = min(1.0, max(0.0, float(s.get("confidence", 0.0))))
+        except (TypeError, ValueError):
+            conf = 0.0
+        impact = (s.get("anticipated_impact") or "").strip() or None
+        rows.append((aid, stype, conf, summary, impact))
+    con.execute("DELETE FROM signals_article_signals WHERE article_id = %s", (aid,))
+    con.cursor().executemany(
+        "INSERT INTO signals_article_signals (article_id, signal_type, confidence,"
+        " summary, anticipated_impact) VALUES (%s,%s,%s,%s,%s)", rows)
+    con.execute(
+        "UPDATE signals_articles SET signals_extracted_at = %s WHERE id = %s", (now, aid))
+    return len(rows)
+
+
+def _collect(client, st: dict, pending_ids: list[str], con) -> tuple[int, int, int, int]:
     written = tagged = errored = still = 0
     for bid in pending_ids:
         b = client.messages.batches.retrieve(bid)
@@ -215,35 +240,13 @@ def cmd_collect(_args) -> None:
             text = next((bl.text for bl in res.result.message.content
                          if bl.type == "text"), "{}")
             signals = _parse_json(text).get("signals", [])
-            rows = []
-            for s in signals:
-                stype = s.get("signal_type")
-                summary = (s.get("summary") or "").strip()
-                if stype not in SIGNAL_TYPES or not summary:
-                    continue
-                try:
-                    conf = min(1.0, max(0.0, float(s.get("confidence", 0.0))))
-                except (TypeError, ValueError):
-                    conf = 0.0
-                impact = (s.get("anticipated_impact") or "").strip() or None
-                rows.append((aid, stype, conf, summary, impact))
-            # Idempotent per article: replace any earlier tagging wholesale.
-            con.execute("DELETE FROM article_signals WHERE article_id = ?", (aid,))
-            con.executemany(
-                "INSERT INTO article_signals (article_id, signal_type, confidence,"
-                " summary, anticipated_impact) VALUES (?,?,?,?,?)", rows)
-            con.execute(
-                "UPDATE articles SET signals_extracted_at = ? WHERE id = ?",
-                (now, aid))
+            tagged += write_signals(con, aid, signals, now)
             written += 1
-            tagged += len(rows)
         con.commit()
         st["collected"].append(bid)
         _state_save(st)
         print(f"  {bid}: collected")
-    con.close()
-    print(f"\n{written} articles processed, {tagged} signals written "
-          f"({errored} errored, {still} batch(es) still processing).")
+    return written, tagged, errored, still
 
 
 def main() -> None:

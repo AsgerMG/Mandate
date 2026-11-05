@@ -36,6 +36,14 @@ mean something.
              code quietly contradicts -- which is what "Postgres is the source
              of truth" was before this file existed.
 
+  NO SQLITE  Since 2026-11-05 the corpus is in Postgres only, so `import sqlite3`
+             anywhere under capital/ is either code that has not been ported
+             or code reaching for a store that no longer exists. The count of
+             modules that import it may only go DOWN (`sqlite_import_budget`),
+             and is headed for 0. ETL/archive/ is exempt and is the only
+             exemption: it holds the records of work done against the retired
+             store, kept and not run.
+
   And separately: replacing a whole store is a capability, not a convenience.
              Any module that can overwrite a corpus store wholesale -- an
              `--overwrite` volume transfer, a TRUNCATE of a declared table --
@@ -65,6 +73,14 @@ POSTGRES_DDL = [ROOT / "ETL/schema/postgres_schema.sql",
 
 SCANNED = [ROOT / "ETL", ROOT / "website" / "build"]
 
+#: Records of the retired SQLite store (see its README). Not scanned for
+#: anything: they are not run, and holding them to live rules would mean
+#: rewriting a record.
+ARCHIVE = ROOT / "ETL" / "archive"
+
+#: Directories that are not capital's code: dependencies and caches.
+NOT_CODE = {"node_modules", ".venv", "venv", "__pycache__", ".next"}
+
 # Tables that are engine bookkeeping or a scratch copy made mid-migration, not
 # corpus data anybody can be the store of record for.
 NOT_CORPUS = re.compile(r"^(sqlite_|schema_migrations$)|_new$")
@@ -88,7 +104,36 @@ def declared_tables() -> set[str]:
 
 
 def python_sources() -> list[Path]:
-    return sorted(p for d in SCANNED for p in d.rglob("*.py"))
+    return sorted(p for d in SCANNED for p in d.rglob("*.py")
+                  if ARCHIVE not in p.parents)
+
+
+def imports_sqlite3(text: str) -> bool:
+    """A real import, read from the syntax tree: a docstring that says
+    "sqlite3" is not a dependency on it (store.py's says it several times)."""
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return "import sqlite3" in text
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import) and any(
+                a.name == "sqlite3" or a.name.startswith("sqlite3.") for a in node.names):
+            return True
+        if isinstance(node, ast.ImportFrom) and (node.module or "").split(".")[0] == "sqlite3":
+            return True
+    return False
+
+
+def sqlite_importers() -> list[str]:
+    """Every module under capital/ outside ETL/archive/ that imports sqlite3."""
+    out = []
+    for p in ROOT.rglob("*.py"):
+        rel = p.relative_to(ROOT)
+        if NOT_CODE & set(rel.parts) or ARCHIVE in p.parents:
+            continue
+        if imports_sqlite3(p.read_text(errors="ignore")):
+            out.append(str(rel))
+    return sorted(out)
 
 
 def code_only(text: str) -> str:
@@ -219,6 +264,23 @@ def main() -> int:
             f"only {len(elsewhere)} tables are still owned by a store other "
             f"than Postgres. Lower 'not_postgres_budget' to {len(elsewhere)} so "
             f"the ratchet holds at the new position.")
+
+    # ── NO SQLITE ───────────────────────────────────────────────────────────
+    importers = sqlite_importers()
+    sq_budget = decl["sqlite_import_budget"]
+    print(f"{len(importers)} modules under capital/ import sqlite3 outside "
+          f"ETL/archive/ (budget {sq_budget})")
+    if len(importers) > sq_budget:
+        problems.append(
+            f"{len(importers)} modules import sqlite3, over the budget of "
+            f"{sq_budget}. The corpus is in Postgres only: use ETL/lib/store.py. "
+            f"A one-off that ran against the retired store belongs in "
+            f"ETL/archive/. Importers:\n      " + "\n      ".join(importers))
+    elif len(importers) < sq_budget:
+        problems.append(
+            f"only {len(importers)} modules still import sqlite3. Lower "
+            f"'sqlite_import_budget' to {len(importers)} so the ratchet holds at "
+            f"the new position.")
 
     # ── ENFORCED ────────────────────────────────────────────────────────────
     # `postgres-derived` is deliberately NOT enforced against: those tables are
