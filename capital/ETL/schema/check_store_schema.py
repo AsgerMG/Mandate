@@ -160,7 +160,7 @@ def postgres_schema() -> dict[str, set[str]]:
     with psycopg.connect(os.environ["DATABASE_URL"]) as con:
         for table, col in con.execute(
                 "SELECT table_name, column_name FROM information_schema.columns "
-                "WHERE table_schema = 'public'").fetchall():
+                "WHERE table_schema = current_schema()").fetchall():
             if table in IGNORED_TABLES:
                 continue
             out.setdefault(table, set()).add(col)

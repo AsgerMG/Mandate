@@ -15,6 +15,7 @@
 // So this records DEGRADATION as a first-class event alongside errors, and
 // scripts/health_report.ts turns both into a digest.
 import type { Client } from "pg";
+import { openPg } from "@/lib/db";
 
 /** What went wrong, in the vocabulary of this pipeline's known failure modes. */
 export type EventKind =
@@ -121,10 +122,7 @@ export function recordEvent(
     if (!url) return;
     let client: Client | undefined;
     try {
-      const { Client: PgClient } = await import("pg");
-      client = new PgClient({ connectionString: url, connectionTimeoutMillis: 2000 });
-      await client.connect();
-      await client.query("SET statement_timeout = 2000");
+      client = await openPg(url, { connectMs: 2000, statementMs: 2000 });
       await ensureTable(client);
       await client.query(
         "INSERT INTO event_log (kind, severity, route, detail, meta) VALUES ($1,$2,$3,$4,$5)",

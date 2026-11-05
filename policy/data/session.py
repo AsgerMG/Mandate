@@ -154,6 +154,28 @@ def session_scope() -> Iterator[Session]:
         session.close()
 
 
+def ensure_schema(conn) -> None:
+    """Make sure this brain's schema and pgvector exist, creating only what is missing.
+
+    Without it a FRESH database had no `policy` schema, and Postgres silently
+    skips a schema on the search_path that does not exist -- so `create_all` put
+    every table in `public` while the comment above SCHEMA said otherwise. The
+    production database never showed it, because its tables were moved there by
+    hand.
+
+    Both creates are guarded by a catalog lookup rather than `IF NOT EXISTS`,
+    because in production this runs as `policy_app`, which owns its schema but
+    may not create schemas or extensions -- and `CREATE SCHEMA IF NOT EXISTS`
+    checks the privilege before it checks existence. The extension goes in
+    `public` explicitly: it is shared by every brain, so it must not land in
+    whichever schema happens to be first on the path.
+    """
+    if conn.execute(text("select 1 from pg_namespace where nspname = :s"), {"s": SCHEMA}).first() is None:
+        conn.execute(text(f'CREATE SCHEMA "{SCHEMA}"'))
+    if conn.execute(text("select 1 from pg_extension where extname = 'vector'")).first() is None:
+        conn.execute(text("CREATE EXTENSION vector SCHEMA public"))
+
+
 def init_db() -> None:
     """Create the pgvector extension and all tables.
 
@@ -182,7 +204,7 @@ def init_db() -> None:
     """
     engine = get_engine()
     with engine.begin() as conn:
-        conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+        ensure_schema(conn)
     # Includes ix_passages_embedding_hnsw, which is declared on the Passage model
     # (see data/models.py). It used to be created by a separate imperative
     # CREATE INDEX here instead — which meant the index existed in every database
@@ -203,7 +225,10 @@ def _stamp_alembic_head(engine) -> None:
     """
     from sqlalchemy import inspect as sa_inspect
 
-    if sa_inspect(engine).has_table("alembic_version"):
+    # Schema named explicitly: Alembic keeps its version table in SCHEMA (see
+    # data/migrations/env.py), and asking the inspector's default schema would
+    # make this check depend on whatever the connection's search_path was.
+    if sa_inspect(engine).has_table("alembic_version", schema=SCHEMA):
         return
     try:
         from alembic import command

@@ -16,6 +16,7 @@
 // Built by ETL/terms/build_instrument_profiles.py.
 
 import { MIN_MATCHABLE_DESCRIPTION_CHARS } from "./types";
+import { openPg } from "@/lib/db";
 
 const VOYAGE_URL = "https://api.voyageai.com/v1/embeddings";
 const MODEL = "voyage-3.5";
@@ -363,11 +364,8 @@ export async function semanticFundMatch(
   try {
     const vec = await embedQuery(desc);
     if (!vec) { tally.lexical += 1; return out; }
-    const { Client } = await import("pg");
-    const client = new Client({ connectionString: url, connectionTimeoutMillis: 3000 });
-    await client.connect();
+    const client = await openPg(url, { connectMs: 3000, statementMs: 3000 });
     try {
-      await client.query("SET statement_timeout = 3000");
       // pgvector wants the literal '[a,b,c]' form, not a JS array.
       const literal = `[${vec.join(",")}]`;
       // Score EVERY profile, not a top-K slice. instrument_profiles holds one

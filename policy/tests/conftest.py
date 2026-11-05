@@ -16,6 +16,7 @@ from sqlalchemy.orm import Session, sessionmaker
 
 from data import models  # noqa: F401  (register tables on Base.metadata)
 from data.base import Base
+from data.session import ensure_schema, hnsw_connect_options
 
 
 @pytest.fixture(scope="session")
@@ -26,9 +27,13 @@ def pg_engine():
     server = pgserver.get_server(data_dir)
     # pgserver hands back a libpq URI; adapt it to SQLAlchemy's psycopg driver.
     url = server.get_uri().replace("postgresql://", "postgresql+psycopg://", 1)
-    engine = create_engine(url, future=True)
+    # The production layout, not a convenient one: tables in `policy`, pgvector
+    # in `public`, reached through the same connection options the app uses.
+    # Tests used to run everything in `public`, so they could not see a defect
+    # that only exists when the schema is not the default one.
+    engine = create_engine(url, future=True, connect_args={"options": hnsw_connect_options()})
     with engine.begin() as conn:
-        conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
+        ensure_schema(conn)
     Base.metadata.create_all(engine)
     try:
         yield engine

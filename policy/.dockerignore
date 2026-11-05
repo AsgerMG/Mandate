@@ -1,0 +1,17 @@
+# The API image needs the Python package (etl/, data/, scripts/), its lockfile
+# and Alembic. Everything else is either a secret, a local environment, or a
+# different deployable: the website ships to Vercel on its own.
+#
+# NOTE: `data/` here is the SQLAlchemy package (session, models, migrations),
+# not a data directory. It must stay in the image.
+.env
+.env.*
+!.env.example
+.venv/
+.pytest_cache/
+**/__pycache__/
+*.log
+website/
+tests/
+project-management/
+docker-compose.yml

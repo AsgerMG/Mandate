@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS brief_records (
   outcome_note               TEXT,
   exclusions                 JSONB
 );
-CREATE INDEX IF NOT EXISTS brief_records_created_idx ON public.brief_records USING btree (created_at DESC);
-CREATE UNIQUE INDEX IF NOT EXISTS brief_records_pkey ON public.brief_records USING btree (id);
+CREATE INDEX IF NOT EXISTS brief_records_created_idx ON brief_records USING btree (created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS brief_records_pkey ON brief_records USING btree (id);
 
 -- ─── corpus_census ─────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS corpus_census (
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS corpus_census (
   store                      TEXT NOT NULL DEFAULT 'unknown'::text,
   schema_state               JSONB
 );
-CREATE UNIQUE INDEX IF NOT EXISTS corpus_census_pkey ON public.corpus_census USING btree (id);
-CREATE INDEX IF NOT EXISTS corpus_census_taken_idx ON public.corpus_census USING btree (taken_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS corpus_census_pkey ON corpus_census USING btree (id);
+CREATE INDEX IF NOT EXISTS corpus_census_taken_idx ON corpus_census USING btree (taken_at DESC);
 
 -- ─── eligibility_clauses ───────────────────────────────────────
 CREATE TABLE IF NOT EXISTS eligibility_clauses (
@@ -73,11 +73,11 @@ CREATE TABLE IF NOT EXISTS eligibility_clauses (
   created_at                 TIMESTAMP WITH TIME ZONE DEFAULT now(),
   updated_at                 TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-CREATE UNIQUE INDEX IF NOT EXISTS eligibility_clauses_instrument_id_clause_type_clause_key_key ON public.eligibility_clauses USING btree (instrument_id, clause_type, clause_key);
-CREATE UNIQUE INDEX IF NOT EXISTS eligibility_clauses_pkey ON public.eligibility_clauses USING btree (id);
-CREATE INDEX IF NOT EXISTS idx_ec_instrument ON public.eligibility_clauses USING btree (instrument_id);
-CREATE INDEX IF NOT EXISTS idx_ec_type ON public.eligibility_clauses USING btree (clause_type);
-CREATE INDEX IF NOT EXISTS idx_ec_verification ON public.eligibility_clauses USING btree (verification_level);
+CREATE UNIQUE INDEX IF NOT EXISTS eligibility_clauses_instrument_id_clause_type_clause_key_key ON eligibility_clauses USING btree (instrument_id, clause_type, clause_key);
+CREATE UNIQUE INDEX IF NOT EXISTS eligibility_clauses_pkey ON eligibility_clauses USING btree (id);
+CREATE INDEX IF NOT EXISTS idx_ec_instrument ON eligibility_clauses USING btree (instrument_id);
+CREATE INDEX IF NOT EXISTS idx_ec_type ON eligibility_clauses USING btree (clause_type);
+CREATE INDEX IF NOT EXISTS idx_ec_verification ON eligibility_clauses USING btree (verification_level);
 
 -- ─── eligibility_embeddings ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS eligibility_embeddings (
@@ -90,10 +90,10 @@ CREATE TABLE IF NOT EXISTS eligibility_embeddings (
   model                      TEXT NOT NULL,
   created_at                 TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-CREATE UNIQUE INDEX IF NOT EXISTS eligibility_embeddings_pkey ON public.eligibility_embeddings USING btree (id);
-CREATE UNIQUE INDEX IF NOT EXISTS eligibility_embeddings_source_type_instrument_id_source_key_key ON public.eligibility_embeddings USING btree (source_type, instrument_id, source_key);
-CREATE INDEX IF NOT EXISTS idx_ee_embedding_hnsw ON public.eligibility_embeddings USING hnsw (embedding vector_cosine_ops);
-CREATE INDEX IF NOT EXISTS idx_ee_instrument ON public.eligibility_embeddings USING btree (instrument_id);
+CREATE UNIQUE INDEX IF NOT EXISTS eligibility_embeddings_pkey ON eligibility_embeddings USING btree (id);
+CREATE UNIQUE INDEX IF NOT EXISTS eligibility_embeddings_source_type_instrument_id_source_key_key ON eligibility_embeddings USING btree (source_type, instrument_id, source_key);
+CREATE INDEX IF NOT EXISTS idx_ee_embedding_hnsw ON eligibility_embeddings USING hnsw (embedding vector_cosine_ops);
+CREATE INDEX IF NOT EXISTS idx_ee_instrument ON eligibility_embeddings USING btree (instrument_id);
 
 -- ─── eligibility_gates ─────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS eligibility_gates (
@@ -117,12 +117,12 @@ CREATE TABLE IF NOT EXISTS eligibility_gates (
   intake_field_resolved      TEXT,
   encoding_method            TEXT
 );
-CREATE UNIQUE INDEX IF NOT EXISTS eligibility_gates_instrument_id_gate_key_key ON public.eligibility_gates USING btree (instrument_id, gate_key);
-CREATE UNIQUE INDEX IF NOT EXISTS eligibility_gates_pkey ON public.eligibility_gates USING btree (id);
-CREATE INDEX IF NOT EXISTS idx_eg_instrument ON public.eligibility_gates USING btree (instrument_id);
-CREATE INDEX IF NOT EXISTS idx_eg_intake_field ON public.eligibility_gates USING btree (intake_field) WHERE (intake_field <> 'none'::text);
-CREATE INDEX IF NOT EXISTS idx_eg_verification ON public.eligibility_gates USING btree (verification_level);
-CREATE INDEX IF NOT EXISTS idx_gates_role ON public.eligibility_gates USING btree (gate_role);
+CREATE UNIQUE INDEX IF NOT EXISTS eligibility_gates_instrument_id_gate_key_key ON eligibility_gates USING btree (instrument_id, gate_key);
+CREATE UNIQUE INDEX IF NOT EXISTS eligibility_gates_pkey ON eligibility_gates USING btree (id);
+CREATE INDEX IF NOT EXISTS idx_eg_instrument ON eligibility_gates USING btree (instrument_id);
+CREATE INDEX IF NOT EXISTS idx_eg_intake_field ON eligibility_gates USING btree (intake_field) WHERE (intake_field <> 'none'::text);
+CREATE INDEX IF NOT EXISTS idx_eg_verification ON eligibility_gates USING btree (verification_level);
+CREATE INDEX IF NOT EXISTS idx_gates_role ON eligibility_gates USING btree (gate_role);
 
 -- ─── event_log ─────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS event_log (
@@ -134,17 +134,17 @@ CREATE TABLE IF NOT EXISTS event_log (
   detail                     TEXT,
   meta                       JSONB
 );
-CREATE INDEX IF NOT EXISTS event_log_created_idx ON public.event_log USING btree (created_at DESC);
-CREATE INDEX IF NOT EXISTS event_log_kind_idx ON public.event_log USING btree (kind, created_at DESC);
-CREATE UNIQUE INDEX IF NOT EXISTS event_log_pkey ON public.event_log USING btree (id);
+CREATE INDEX IF NOT EXISTS event_log_created_idx ON event_log USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS event_log_kind_idx ON event_log USING btree (kind, created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS event_log_pkey ON event_log USING btree (id);
 
 -- ─── funding_instrument_sources ────────────────────────────────
 CREATE TABLE IF NOT EXISTS funding_instrument_sources (
   instrument_id              TEXT NOT NULL,
   source                     TEXT NOT NULL
 );
-CREATE UNIQUE INDEX IF NOT EXISTS funding_instrument_sources_pkey ON public.funding_instrument_sources USING btree (instrument_id, source);
-CREATE INDEX IF NOT EXISTS idx_fis_source ON public.funding_instrument_sources USING btree (source);
+CREATE UNIQUE INDEX IF NOT EXISTS funding_instrument_sources_pkey ON funding_instrument_sources USING btree (instrument_id, source);
+CREATE INDEX IF NOT EXISTS idx_fis_source ON funding_instrument_sources USING btree (source);
 
 -- ─── funding_instruments ───────────────────────────────────────
 CREATE TABLE IF NOT EXISTS funding_instruments (
@@ -204,11 +204,11 @@ CREATE TABLE IF NOT EXISTS funding_instruments (
   name_basis                 TEXT,
   source_window_policy       TEXT
 );
-CREATE UNIQUE INDEX IF NOT EXISTS funding_instruments_pkey ON public.funding_instruments USING btree (id);
-CREATE INDEX IF NOT EXISTS idx_fi_capital ON public.funding_instruments USING btree (capital_type);
-CREATE INDEX IF NOT EXISTS idx_fi_country ON public.funding_instruments USING btree (country);
-CREATE INDEX IF NOT EXISTS idx_fi_events ON public.funding_instruments USING btree (event_count DESC);
-CREATE INDEX IF NOT EXISTS idx_fi_parent ON public.funding_instruments USING btree (parent_id) WHERE (parent_id IS NOT NULL);
+CREATE UNIQUE INDEX IF NOT EXISTS funding_instruments_pkey ON funding_instruments USING btree (id);
+CREATE INDEX IF NOT EXISTS idx_fi_capital ON funding_instruments USING btree (capital_type);
+CREATE INDEX IF NOT EXISTS idx_fi_country ON funding_instruments USING btree (country);
+CREATE INDEX IF NOT EXISTS idx_fi_events ON funding_instruments USING btree (event_count DESC);
+CREATE INDEX IF NOT EXISTS idx_fi_parent ON funding_instruments USING btree (parent_id) WHERE (parent_id IS NOT NULL);
 
 -- ─── guard_verdicts ────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS guard_verdicts (
@@ -222,8 +222,8 @@ CREATE TABLE IF NOT EXISTS guard_verdicts (
   metrics                    JSONB NOT NULL DEFAULT '{}'::jsonb,
   detail                     TEXT NOT NULL DEFAULT ''::text
 );
-CREATE INDEX IF NOT EXISTS guard_verdicts_guard_taken_idx ON public.guard_verdicts USING btree (guard, taken_at DESC);
-CREATE UNIQUE INDEX IF NOT EXISTS guard_verdicts_pkey ON public.guard_verdicts USING btree (id);
+CREATE INDEX IF NOT EXISTS guard_verdicts_guard_taken_idx ON guard_verdicts USING btree (guard, taken_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS guard_verdicts_pkey ON guard_verdicts USING btree (id);
 
 -- ─── instrument_application ────────────────────────────────────
 CREATE TABLE IF NOT EXISTS instrument_application (
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS instrument_application (
   source_file                TEXT,
   updated_at                 TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-CREATE UNIQUE INDEX IF NOT EXISTS instrument_application_pkey ON public.instrument_application USING btree (id);
+CREATE UNIQUE INDEX IF NOT EXISTS instrument_application_pkey ON instrument_application USING btree (id);
 
 -- ─── instrument_profiles ───────────────────────────────────────
 CREATE TABLE IF NOT EXISTS instrument_profiles (
@@ -247,8 +247,8 @@ CREATE TABLE IF NOT EXISTS instrument_profiles (
   n_titles                   INTEGER NOT NULL DEFAULT 0,
   built_at                   TIMESTAMP WITH TIME ZONE DEFAULT now()
 );
-CREATE INDEX IF NOT EXISTS idx_ip_embedding_hnsw ON public.instrument_profiles USING hnsw (embedding vector_cosine_ops);
-CREATE UNIQUE INDEX IF NOT EXISTS instrument_profiles_pkey ON public.instrument_profiles USING btree (instrument_id);
+CREATE INDEX IF NOT EXISTS idx_ip_embedding_hnsw ON instrument_profiles USING hnsw (embedding vector_cosine_ops);
+CREATE UNIQUE INDEX IF NOT EXISTS instrument_profiles_pkey ON instrument_profiles USING btree (instrument_id);
 
 -- ─── request_log ───────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS request_log (
@@ -258,6 +258,6 @@ CREATE TABLE IF NOT EXISTS request_log (
   route                      TEXT NOT NULL,
   cost_eur                   DOUBLE PRECISION
 );
-CREATE INDEX IF NOT EXISTS request_log_created_idx ON public.request_log USING btree (created_at DESC);
-CREATE INDEX IF NOT EXISTS request_log_ip_idx ON public.request_log USING btree (ip_hash, created_at DESC);
-CREATE UNIQUE INDEX IF NOT EXISTS request_log_pkey ON public.request_log USING btree (id);
+CREATE INDEX IF NOT EXISTS request_log_created_idx ON request_log USING btree (created_at DESC);
+CREATE INDEX IF NOT EXISTS request_log_ip_idx ON request_log USING btree (ip_hash, created_at DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS request_log_pkey ON request_log USING btree (id);

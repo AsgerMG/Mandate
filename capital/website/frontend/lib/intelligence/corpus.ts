@@ -22,6 +22,7 @@ import path from "path";
 import type { CompetitorRecord, FundSnapshot } from "./types";
 // Re-exported so existing callers (shortlist, pipeline, scripts) are unchanged.
 import { toIso2 } from "./countryCodes";
+import { openPg } from "@/lib/db";
 export { toIso2 };
 
 // Index row layout (positional, written by website/build/companies_index.py):
@@ -783,18 +784,8 @@ async function hydrateOnce(): Promise<void> {
   // unreachable database be retried on every single request.
   lastPostgresAttempt = Date.now();
   try {
-    const { Client } = await import("pg");
-    // statement_timeout can't be set at connection time here: neither the
-    // plain Client() constructor key (sent as a raw wire-protocol startup
-    // parameter, rejected outright) nor libpq's `options: "-c ..."` syntax
-    // (also rejected — Railway's Postgres proxy doesn't forward startup
-    // options at all) work through Railway's connection path. A plain `SET`
-    // query immediately after connect() is the one approach that's just a
-    // normal runtime command, not part of the connection handshake, so nothing
-    // in the proxy path has grounds to reject it.
-    const client = new Client({ connectionString: url, connectionTimeoutMillis: 2000 });
-    await client.connect();
-    await client.query(`SET statement_timeout = ${HYDRATION_STATEMENT_TIMEOUT_MS}`);
+    // Why the timeout is a SET and not a connection option: lib/db.ts.
+    const client = await openPg(url, { connectMs: 2000, statementMs: HYDRATION_STATEMENT_TIMEOUT_MS });
     try {
       const [instRes, gateRes, appRes] = await Promise.all([
         client.query(
@@ -1088,11 +1079,8 @@ export async function hydrateGatesFor(instrumentIds: string[]): Promise<void> {
 
   try {
     if (toFetch.length) {
-      const { Client } = await import("pg");
-      const client = new Client({ connectionString: url, connectionTimeoutMillis: 2000 });
-      await client.connect();
+      const client = await openPg(url, { connectMs: 2000, statementMs: 2000 });
       try {
-        await client.query("SET statement_timeout = 2000");
         const res = await client.query(
           `SELECT instrument_id, gate_key, gate_family, requirement, value,
                   value_spec, intake_field, gate_role, intake_field_resolved,

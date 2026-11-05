@@ -45,6 +45,7 @@ import {
   type CensusChoice,
   type CensusRow,
 } from "@/lib/corpusCensus";
+import { openPg } from "@/lib/db";
 
 /** The corpus-wide KPIs the home page, the nav, the footer and
  *  /about-public-capital all state. Shape unchanged from the artifact's, so
@@ -199,17 +200,8 @@ export async function readCorpusFigures(): Promise<CorpusFigures> {
 
   let rows: CensusRow[];
   try {
-    const { Client } = await import("pg");
-    const client = new Client({
-      connectionString: url,
-      connectionTimeoutMillis: CONNECT_TIMEOUT_MS,
-    });
-    await client.connect();
+    const client = await openPg(url, { connectMs: CONNECT_TIMEOUT_MS, statementMs: STATEMENT_TIMEOUT_MS });
     try {
-      // A plain SET after connect(), not a connection parameter: Railway's
-      // Postgres proxy rejects both the startup-packet form and libpq's
-      // `options: "-c ..."`. Same finding as corpus.ts; same workaround.
-      await client.query(`SET statement_timeout = ${STATEMENT_TIMEOUT_MS}`);
       // The ONE query this module issues. `corpus_census` only. Ordering is the
       // database's, so chooseCensus() never forms a second opinion about which
       // reading is newer.

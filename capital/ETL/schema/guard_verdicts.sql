@@ -42,4 +42,4 @@ CREATE TABLE IF NOT EXISTS guard_verdicts (
 );
 
 CREATE INDEX IF NOT EXISTS guard_verdicts_guard_taken_idx
-  ON public.guard_verdicts USING btree (guard, taken_at DESC);
+  ON guard_verdicts USING btree (guard, taken_at DESC);

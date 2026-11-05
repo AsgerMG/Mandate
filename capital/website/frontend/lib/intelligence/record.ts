@@ -18,6 +18,7 @@
 //     recorded shortlist cannot be interpreted; nothing else is collected, and
 //     there is no identifier tying two briefs to one person.
 import type { EligibilityAnswers, InstitutionEntry } from "./types";
+import { openPg } from "@/lib/db";
 
 export interface BriefRecord {
   company: string;
@@ -151,10 +152,7 @@ export function recordBrief(rec: BriefRecord): void {
     if (!url) return;
     let client: import("pg").Client | undefined;
     try {
-      const { Client } = await import("pg");
-      client = new Client({ connectionString: url, connectionTimeoutMillis: 3000 });
-      await client.connect();
-      await client.query("SET statement_timeout = 3000");
+      client = await openPg(url, { connectMs: 3000, statementMs: 3000 });
       await ensureTable(client);
       await client.query(
         `INSERT INTO brief_records

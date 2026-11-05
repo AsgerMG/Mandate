@@ -74,6 +74,7 @@
 //                   (ownHistory: "withheld"), and `usedInField`, which is
 //                   tier 1 of the shipped sort and is not rendered.
 import type { Client } from "pg";
+import { openPg } from "@/lib/db";
 
 const VOYAGE_URL = "https://api.voyageai.com/v1/embeddings";
 /** The same model the profiles and the gates were embedded with. A query
@@ -140,10 +141,7 @@ export async function retrieveDemands(
 
   let client: Client | undefined;
   try {
-    const { Client: PgClient } = await import("pg");
-    client = new PgClient({ connectionString: url, connectionTimeoutMillis: 3000 });
-    await client.connect();
-    await client.query("SET statement_timeout = 5000");
+    client = await openPg(url, { connectMs: 3000, statementMs: 5000 });
     // Ranked WITHIN each instrument, not globally: a global top-N would return
     // ten chunks from the most verbose fund and none from the other four,
     // which answers a different question from the one the selector asked.

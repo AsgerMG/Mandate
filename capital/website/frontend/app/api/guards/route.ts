@@ -28,6 +28,8 @@
 // GET /api/guards            newest verdict per guard, plus recent history
 // GET /api/guards?guard=census&limit=12
 import { NextRequest } from "next/server";
+import type { Client } from "pg";
+import { openPg } from "@/lib/db";
 
 // Reads Postgres per request; there is no build-time answer, and a cached one
 // would report the freshness of the cache rather than of the verdicts.
@@ -56,12 +58,11 @@ export async function GET(request: NextRequest) {
   const limit = Math.min(MAX_LIMIT,
     Math.max(1, Number(params.get("limit")) || DEFAULT_LIMIT));
 
-  const { Client } = await import("pg");
-  const client = new Client({ connectionString: url, connectionTimeoutMillis: 5000 });
+  let client: Client | undefined;
   try {
-    await client.connect();
+    client = await openPg(url, { connectMs: 5000 });
     const exists = (await client.query(
-      "SELECT to_regclass('public.guard_verdicts') IS NOT NULL AS ok")).rows[0].ok;
+      "SELECT to_regclass('guard_verdicts') IS NOT NULL AS ok")).rows[0].ok;
     if (!exists) {
       // Distinguished from "empty" for the same reason as above: no table means
       // nothing has ever published, which is a different and worse fact than a
@@ -95,6 +96,6 @@ export async function GET(request: NextRequest) {
     console.error("guards feed failed:", err);
     return Response.json({ error: "could not read the verdicts" }, { status: 503 });
   } finally {
-    await client.end().catch(() => {});
+    await client?.end().catch(() => {});
   }
 }

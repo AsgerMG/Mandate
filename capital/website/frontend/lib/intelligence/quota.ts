@@ -18,6 +18,7 @@
 // silently serving a cheaper, worse brief would hide the problem behind
 // exactly the failure mode this codebase is worst at detecting.
 import type { Client } from "pg";
+import { openPg } from "@/lib/db";
 
 /** Per IP, per hour. */
 export const MAX_PER_IP_HOUR = 5;
@@ -81,10 +82,7 @@ export async function checkQuota(ip: string, route: string): Promise<QuotaVerdic
   if (!url) return { allowed: true };
   let client: Client | undefined;
   try {
-    const { Client: PgClient } = await import("pg");
-    client = new PgClient({ connectionString: url, connectionTimeoutMillis: 2000 });
-    await client.connect();
-    await client.query("SET statement_timeout = 2000");
+    client = await openPg(url, { connectMs: 2000, statementMs: 2000 });
     await ensureTable(client);
 
     const { createHash } = await import("node:crypto");
@@ -155,9 +153,7 @@ export function recordCost(requestId: number | undefined, eur: number): void {
     if (!url) return;
     let client: Client | undefined;
     try {
-      const { Client: PgClient } = await import("pg");
-      client = new PgClient({ connectionString: url, connectionTimeoutMillis: 2000 });
-      await client.connect();
+      client = await openPg(url, { connectMs: 2000 });
       await client.query("UPDATE request_log SET cost_eur = $1 WHERE id = $2", [eur, requestId]);
     } catch (err) {
       console.error("[quota] cost report failed (ignored):", String(err));

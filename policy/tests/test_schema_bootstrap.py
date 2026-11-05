@@ -162,3 +162,52 @@ def test_create_all_builds_the_hnsw_index(pg_engine):
         ).scalar()
     assert "USING hnsw" in definition
     assert "vector_cosine_ops" in definition
+
+
+def test_every_table_lands_in_the_brains_schema_not_public(pg_engine):
+    """One database, one schema per brain. Postgres silently skips a search_path
+    entry that does not exist, so before ``ensure_schema`` a fresh install put
+    every table in ``public`` while the code said ``policy``. Nothing failed: the
+    defect only shows when the brain shares a database with another one."""
+    from data.base import Base
+    from data.session import SCHEMA
+
+    with pg_engine.begin() as conn:
+        placed = dict(conn.execute(text(
+            "select c.relname, n.nspname from pg_class c join pg_namespace n on n.oid = c.relnamespace "
+            "where c.relkind = 'r' and c.relname = any(:names)"
+        ), {"names": [t.name for t in Base.metadata.sorted_tables]}).all())
+        vector_home = conn.execute(text(
+            "select n.nspname from pg_extension e join pg_namespace n on n.oid = e.extnamespace "
+            "where e.extname = 'vector'")).scalar()
+    assert placed and set(placed.values()) == {SCHEMA}, placed
+    assert vector_home == "public", "pgvector is shared by every brain; it lives in public"
+
+
+def test_alembic_keeps_its_version_in_the_brains_schema(pg_engine, monkeypatch):
+    """Alembic built its own engine without the app's connection options, so a
+    real ``alembic`` run would have written ``alembic_version`` (and any new
+    table) to ``public`` while the app read ``policy``. Exercised through
+    Alembic itself, not by inspecting env.py."""
+    from pathlib import Path
+
+    from alembic import command
+    from alembic.config import Config
+
+    from data.session import SCHEMA
+
+    root = Path(__file__).resolve().parents[1]
+    monkeypatch.chdir(root)
+    config = Config(str(root / "alembic.ini"))
+    # configparser treats % as interpolation; pgserver's socket path is URL-encoded.
+    url = pg_engine.url.render_as_string(hide_password=False).replace("%", "%%")
+    config.set_main_option("sqlalchemy.url", url)
+    command.stamp(config, "head")
+    try:
+        with pg_engine.begin() as conn:
+            homes = [r[0] for r in conn.execute(text(
+                "select table_schema from information_schema.tables where table_name = 'alembic_version'"))]
+        assert homes == [SCHEMA], homes
+    finally:
+        with pg_engine.begin() as conn:
+            conn.execute(text(f'DROP TABLE IF EXISTS "{SCHEMA}".alembic_version'))

@@ -262,7 +262,7 @@ async function main() {
   let pgInstruments = 0, pgGates = 0;
   try {
     const exists = (await client.query(
-      "SELECT to_regclass('public.corpus_census') IS NOT NULL AS ok")).rows[0].ok;
+      "SELECT to_regclass('corpus_census') IS NOT NULL AS ok")).rows[0].ok;
     if (!exists) {
       console.error("check_corpus_census: FAILED — there is no corpus_census table.");
       console.error("  The ETL has never recorded what its corpus contains, so nothing");
@@ -281,7 +281,7 @@ async function main() {
     // from -- not a reason to refuse to look at the corpus at all.
     const cols = new Set((await client.query(
       `SELECT column_name FROM information_schema.columns
-        WHERE table_schema = 'public' AND table_name = 'corpus_census'`
+        WHERE table_schema = current_schema() AND table_name = 'corpus_census'`
     )).rows.map((r: { column_name: string }) => r.column_name));
     const storeCol = cols.has("store")
       ? "COALESCE(store, 'unknown') AS store" : "'unknown' AS store";

@@ -58,13 +58,14 @@ def build() -> str:
     out = [HEADER]
     with psycopg.connect(os.environ["DATABASE_URL"]) as conn:
         tables = [r[0] for r in conn.execute(
-            "SELECT tablename FROM pg_tables WHERE schemaname='public' ORDER BY tablename")]
+            "SELECT tablename FROM pg_tables WHERE schemaname=current_schema() ORDER BY tablename")]
         for t in tables:
             cols = list(conn.execute(
                 """SELECT column_name, data_type, is_nullable, column_default,
                           character_maximum_length
                      FROM information_schema.columns
-                    WHERE table_name = %s ORDER BY ordinal_position""", (t,)))
+                    WHERE table_schema = current_schema() AND table_name = %s
+                    ORDER BY ordinal_position""", (t,)))
             out.append(f"\n-- {'─' * 3} {t} " + "─" * max(0, 58 - len(t)))
             out.append(f"CREATE TABLE IF NOT EXISTS {t} (")
             lines = []
@@ -83,8 +84,14 @@ def build() -> str:
                 lines.append(f"  {name:26} {ty}{null}{suffix}")
             out.append(",\n".join(lines))
             out.append(");")
-            for (idx,) in conn.execute(
-                    "SELECT indexdef FROM pg_indexes WHERE tablename=%s ORDER BY indexname", (t,)):
+            for idx in conn.execute(
+                    "SELECT schemaname, indexdef FROM pg_indexes WHERE schemaname=current_schema() "
+                    "AND tablename=%s ORDER BY indexname", (t,)):
+                # pg_indexes always schema-qualifies the table. The committed DDL
+                # must not: it is applied by whichever role owns the brain, and the
+                # role's search_path is what says where the brain lives.
+                schema, idx = idx
+                idx = idx.replace(f" ON {schema}.", " ON ")
                 out.append(idx.replace("CREATE INDEX", "CREATE INDEX IF NOT EXISTS")
                               .replace("CREATE UNIQUE INDEX", "CREATE UNIQUE INDEX IF NOT EXISTS") + ";")
     return "\n".join(out) + "\n"

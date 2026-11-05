@@ -20,6 +20,7 @@ from sqlalchemy import engine_from_config, pool
 
 from data import models  # noqa: F401  (import registers every table on Base.metadata)
 from data.base import Base
+from data.session import SCHEMA, hnsw_connect_options
 
 config = context.config
 
@@ -70,6 +71,7 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        version_table_schema=SCHEMA,
         # Without this, autogenerate ignores server-side type changes on
         # existing columns — exactly the class of change this project will make
         # most often as the document vocabulary grows.
@@ -82,13 +84,23 @@ def run_migrations_offline() -> None:
 def run_migrations_online() -> None:
     section = config.get_section(config.config_ini_section, {})
     section["sqlalchemy.url"] = _database_url()
-    connectable = engine_from_config(section, prefix="sqlalchemy.", poolclass=pool.NullPool)
+    # The SAME connection options as the app's engine. This engine used to be
+    # built without them, so a migration ran on Postgres's default search_path:
+    # new tables and `alembic_version` would have gone to `public` while the app
+    # reads `policy`, and the enum migrations would not have found their types.
+    connectable = engine_from_config(
+        section,
+        prefix="sqlalchemy.",
+        poolclass=pool.NullPool,
+        connect_args={"options": hnsw_connect_options()},
+    )
 
     with connectable.connect() as connection:
         context.configure(
             connection=connection,
             target_metadata=target_metadata,
             compare_type=True,
+            version_table_schema=SCHEMA,
         )
         with context.begin_transaction():
             context.run_migrations()

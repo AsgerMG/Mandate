@@ -9,7 +9,7 @@ import { Pool } from "pg";
 async function main() {
   const pool = new Pool({ connectionString: process.env.DATABASE_URL });
   const t = await pool.query(
-    "select table_name from information_schema.tables where table_schema='public' order by 1");
+    "select table_name from information_schema.tables where table_schema=current_schema() order by 1");
   console.log("== tables ==");
   console.log(t.rows.map((r) => r.table_name).join("  "));
   console.log("");

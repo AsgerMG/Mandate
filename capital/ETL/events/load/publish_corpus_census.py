@@ -89,7 +89,7 @@ ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS store TEXT NOT NULL DEFAULT '
 -- unrelated block, three weeks late.
 ALTER TABLE corpus_census ADD COLUMN IF NOT EXISTS schema_state JSONB;
 CREATE INDEX IF NOT EXISTS corpus_census_taken_idx
-  ON public.corpus_census USING btree (taken_at DESC);
+  ON corpus_census USING btree (taken_at DESC);
 """
 
 # The trees that are copied into the ETL image (data/, .git/ and the frontend's
