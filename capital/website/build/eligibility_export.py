@@ -13,6 +13,7 @@ it exists, classify_gates_bulk.py).
 from __future__ import annotations
 
 import json
+import struct
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
@@ -29,6 +30,26 @@ OUT = SITE_DATA / "instrument_terms.json"
 ASSERTABLE_LEVELS = {"llm_2pass", "human_verified"}
 
 
+def _float4(x: float | None) -> float | None:
+    """A REAL (float4) column as the shortest decimal that round-trips it.
+
+    psycopg hands a float4 over as the double nearest its binary value, so
+    0.85 arrives as 0.8500000238418579. Postgres's own text form is the
+    shortest decimal that reads back to the same float4 -- "0.85" -- and that
+    is what node-postgres gives corpus.ts. Publishing the long form would make
+    the fallback disagree with the live path on a field check_store_columns
+    compares, so this produces the text form's value.
+    """
+    if x is None:
+        return None
+    want = struct.pack("f", x)
+    for digits in range(1, 10):
+        v = float(f"{x:.{digits}g}")
+        if struct.pack("f", v) == want:
+            return v
+    return x
+
+
 def main() -> None:
     with connect(readonly=True, dict_rows=True) as conn:
         _main(conn)
@@ -38,14 +59,7 @@ def _main(conn) -> None:
     instruments = conn.execute("""
         SELECT id, parent_id, name, name_source, country, capital_type, is_framework,
                event_count, company_count, total_eur, source_family_bucket,
-               administering_body,
-               -- REAL (float4) in the served table. Read through its text form,
-               -- the shortest decimal that round-trips the float4, which is
-               -- exactly what node-postgres hands corpus.ts; reading the binary
-               -- float4 would publish 0.8500000238418579 where the live path
-               -- says 0.85, and the two stores would disagree on a field
-               -- check_store_columns compares.
-               administering_body_share::text::double precision AS administering_body_share,
+               administering_body, administering_body_share,
                last_year, scheme_code, scheme_end_date,
                scheme_end_date_basis, source_window_policy,
                route_status, route_status_source,
@@ -144,7 +158,7 @@ def _main(conn) -> None:
         # Share of this instrument's awards actually made by that body. The
         # frontend only shows the name when the share is high enough to be
         # honest -- see displayInstitutionName and migration 014.
-        "administeringBodyShare": inst["administering_body_share"],
+        "administeringBodyShare": _float4(inst["administering_body_share"]),
         # The last year this instrument is recorded as having awarded anything.
         # 102 of 322 instruments have no award since 2022 or none at all, and
         # nothing used to stop them reaching a brief -- so a founder could be

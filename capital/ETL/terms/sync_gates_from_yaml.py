@@ -10,7 +10,13 @@ unverified/draft gate stays out of the DB entirely rather than being synced
 at some invented lower tier, since it hasn't cleared even the mechanical
 verbatim-quote check.
 
-Usage: python3 ETL/terms/sync_gates_from_yaml.py
+Writes the served tables in schema `capital` of the Mandate Postgres directly,
+through ETL/lib/store.py. Until 2026-11-05 it wrote a SQLite copy that
+migrate_to_postgres.py then truncated-and-reloaded into Postgres; with one
+store there is no second hop, so what this writes is what the product reads
+the moment it commits. `--dry-run` runs every statement and rolls back.
+
+Usage: python3 ETL/terms/sync_gates_from_yaml.py [--dry-run]
 """
 from __future__ import annotations
 
@@ -21,11 +27,12 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
+import argparse
 import re
-import sqlite3
 
 import yaml  # noqa: E402
 
@@ -80,7 +87,7 @@ def _upsert_clause(conn, rec_id, clause_type, clause_key, text, quote, source, l
         INSERT INTO eligibility_clauses
           (instrument_id, clause_type, clause_key, text, quote, source_file,
            source_locator, verification_level, verify_note, verify_by, updated_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
         ON CONFLICT (instrument_id, clause_type, clause_key) DO UPDATE SET
           text=excluded.text, quote=excluded.quote, source_file=excluded.source_file,
           source_locator=excluded.source_locator, verification_level=excluded.verification_level,
@@ -142,8 +149,25 @@ def sync_clauses(conn, rec_id: str, rec: dict) -> tuple[int, int]:
     return n_synced, n_skipped
 
 
+class _DryRun(Exception):
+    """Raised at the end of a dry run so store.connect() rolls everything back."""
+
+
 def main() -> None:
-    conn = sqlite3.connect(DB)
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dry-run", action="store_true",
+                    help="run every statement, report, then roll back")
+    dry = ap.parse_args().dry_run
+    try:
+        with connect() as conn:
+            _sync(conn)
+            if dry:
+                raise _DryRun
+    except _DryRun:
+        print("dry run: rolled back, nothing written")
+
+
+def _sync(conn) -> None:
     known_ids = {r[0] for r in conn.execute("SELECT id FROM funding_instruments")}
 
     n_synced, n_skipped, n_no_instrument = 0, 0, 0
@@ -177,7 +201,7 @@ def main() -> None:
                 conn.execute("""
                     INSERT INTO instrument_application
                       (id, instrument_id, channel, timeline, url, quote, source_file, updated_at)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                    VALUES (%s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
                     ON CONFLICT (id) DO UPDATE SET
                       channel=excluded.channel, timeline=excluded.timeline,
                       url=excluded.url, quote=excluded.quote,
@@ -203,20 +227,30 @@ def main() -> None:
             # batch each correctly assigned filter/programme_fact/obligation
             # per gate, and 790 of those calls were thrown away on sync.
             # COALESCE on conflict, matching the never-downgrade spirit below:
-            # a value here should never be blanked by a YAML that lacks one,
-            # but a real value should always be written.
+            # a value here is never blanked by a YAML that lacks one, and since
+            # the move to one store it never replaces a role already set either
+            # (see the SET clause).
             conn.execute("""
                 INSERT INTO eligibility_gates
                   (instrument_id, gate_key, gate_family, requirement, value,
                    intake_field, quote, source_file, source_locator,
                    verification_level, verify_note, verify_by, gate_role, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, CURRENT_TIMESTAMP)
                 ON CONFLICT (instrument_id, gate_key) DO UPDATE SET
                   gate_family=excluded.gate_family, requirement=excluded.requirement,
                   value=excluded.value, intake_field=excluded.intake_field,
                   quote=excluded.quote, source_file=excluded.source_file,
                   source_locator=excluded.source_locator,
-                  gate_role=COALESCE(excluded.gate_role, eligibility_gates.gate_role),
+                  -- FILL, NEVER REPLACE (2026-11-05). This write now lands in the
+                  -- served table the moment it commits. A gate_role already
+                  -- there may be a curated demotion (apply_gate_role_overrides,
+                  -- the IPCEI selectivity findings), and the YAML's own role is
+                  -- older than it: replacing it re-armed 5 demoted gates as
+                  -- filters when this was first run against the served store,
+                  -- in the window before the overrides step ran again -- or for
+                  -- good, had the chain stopped in between. The YAML's role is
+                  -- still written wherever the table has none.
+                  gate_role=COALESCE(eligibility_gates.gate_role, excluded.gate_role),
                   -- NEVER DOWNGRADE. YAML is the authoring surface, but it is not the
                   -- only writer: a later, more expensive verification pass
                   -- promotes gates in the DB and does not write back here. An
@@ -250,12 +284,10 @@ def main() -> None:
         n_clauses_synced += c_synced
         n_clauses_skipped += c_skipped
 
-    conn.commit()
     print(f"synced {n_synced} gates ({n_skipped} draft/unverified gates skipped, "
           f"{n_no_instrument} gates orphaned — no matching instrument row)")
     print(f"synced {n_clauses_synced} clauses ({n_clauses_skipped} draft/unverified skipped)")
     print(f"synced {n_app_synced} application routes ({n_app_skipped} unquoted, skipped)")
-    conn.close()
 
 
 if __name__ == "__main__":
