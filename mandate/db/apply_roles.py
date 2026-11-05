@@ -27,6 +27,7 @@ from pathlib import Path
 from urllib.parse import quote, urlsplit
 
 import psycopg
+from psycopg import sql
 
 HERE = Path(__file__).resolve().parent
 PROJECT_ID = "6a8743db-3dc3-4a1c-94a5-78ac0a1e1bd9"
@@ -76,8 +77,8 @@ def verify(url: str, role: str) -> list[str]:
             c.execute(f"create table {foreign}._isolation_probe(x int)")
             c.execute(f"drop table {foreign}._isolation_probe")
             problems.append(f"{role}: CAN create tables in {foreign}")
-        except psycopg.errors.InsufficientPrivilege:
-            pass
+        except (psycopg.errors.InsufficientPrivilege, psycopg.errors.ReadOnlySqlTransaction):
+            pass  # refused: the isolation holds
         if role != "capital_ro":
             c.execute("create temp table _probe(v public.vector(3))")  # pgvector reachable
     return problems
@@ -98,7 +99,9 @@ def main() -> int:
         with psycopg.connect(a.admin_url, autocommit=True) as c:
             for role in ROLES:
                 pw = secrets.token_urlsafe(32)
-                c.execute(f'ALTER ROLE "{role}" PASSWORD %s', (pw,))
+                # Utility statements take no bind parameters; quote as a literal.
+                c.execute(sql.SQL("ALTER ROLE {} PASSWORD {}").format(
+                    sql.Identifier(role), sql.Literal(pw)))
                 prefix = role.upper().replace("_APP", "")
                 cred = f"{role}:{quote(pw, safe='')}"
                 urls[f"{prefix}_DATABASE_URL"] = f"postgresql://{cred}@{a.private_host}/{db}"
