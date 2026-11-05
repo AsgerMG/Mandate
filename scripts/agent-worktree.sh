@@ -10,7 +10,7 @@
 # cache of a corpus that lives in Railway Postgres. So both are symlinked to the
 # primary checkout. A worktree made this way costs ~67 MB instead of ~1.3 GB.
 #
-#   scripts/agent-worktree.sh wsBD-my-workstream [base-branch]
+#   scripts/agent-worktree.sh wsBD-my-workstream [base-branch]     (from the monorepo root)
 #
 # Remove YOUR OWN worktree when YOUR branch merges -- and only your own:
 #   git worktree remove --force .claude/worktrees/wsBD-my-workstream
@@ -38,29 +38,30 @@ git -C "$ROOT" worktree add -b "$NAME" "$DEST" "$BASE"
 
 # node_modules: derived from a lockfile both trees share. A per-worktree copy is
 # 659 MB of the same bytes, and `npm ci` takes 25 seconds to produce them.
-ln -s "$ROOT/website/frontend/node_modules" "$DEST/website/frontend/node_modules"
+# Per brain. Each line is skipped when the primary checkout has no such path.
+link() { [ -e "$ROOT/$1" ] && mkdir -p "$(dirname "$DEST/$1")" && ln -s "$ROOT/$1" "$DEST/$1"; true; }
 
-# .env.local is gitignored, so a fresh worktree has no credentials and every
+# node_modules / .venv: derived from lockfiles both trees share. A per-worktree
+# copy is hundreds of MB of the same bytes.
+link capital/website/frontend/node_modules
+link policy/website/node_modules
+link policy/.venv
+
+# Env files are gitignored, so a fresh worktree has no credentials and every
 # harness in it fails or -- worse -- silently skips. Symlinked rather than
 # copied so a rotated key reaches every worktree at once, and so no secret is
 # ever duplicated onto disk.
-[ -f "$ROOT/.env.local" ] && ln -s "$ROOT/.env.local" "$DEST/.env.local"
-[ -f "$ROOT/website/frontend/.env.local" ] && \
-  ln -s "$ROOT/website/frontend/.env.local" "$DEST/website/frontend/.env.local"
+link capital/.env.local
+link capital/website/frontend/.env.local
+link policy/.env
 
-# The local SQLite corpus is a CACHE of Railway Postgres, not a source of truth.
-# Symlinked, so an agent reads the same 615 MB everyone else does.
-#
-# The trade is real and worth stating: a worktree that WRITES to it writes to
-# everyone's. That is correct for reads and for publishing runs, and wrong for
-# an experiment that mutates the corpus -- such an agent should copy it
-# deliberately and delete the copy, rather than every agent paying 615 MB in
-# case one of them needs it.
-mkdir -p "$DEST/data"
-[ -f "$ROOT/data/db.sqlite" ] && ln -s "$ROOT/data/db.sqlite" "$DEST/data/db.sqlite"
+# There is NO local corpus to link any more. Since 2026-11-05 every brain's data
+# lives only in the Mandate Postgres, one schema per brain, and the env files
+# above already point at it. A worktree that writes, writes to the real store:
+# an experiment that mutates the corpus must say so in its brief.
 
 echo "worktree ready: $DEST"
-echo "  node_modules, .env.local and data/db.sqlite are SYMLINKS to $ROOT"
+echo "  node_modules, .venv and env files are SYMLINKS to $ROOT"
 echo "  size: $(du -sh "$DEST" 2>/dev/null | cut -f1) (a copied one is ~1.3G)"
 echo "  remove with: git worktree remove --force $DEST"
 echo
