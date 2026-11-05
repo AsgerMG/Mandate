@@ -337,7 +337,7 @@ export function isClosed(row: LivenessFacts, asOf: string = today()): boolean {
   // An UNLABELLED end date is treated as a call deadline, i.e. it closes the
   // row. That is the safe direction and it is also the historical one: every
   // date written before the basis column existed either came from SATR (and is
-  // backfilled to notified_duration by ETL/terms/backfill_end_date_basis.py) or
+  // backfilled to notified_duration by ETL/archive/terms/backfill_end_date_basis.py) or
   // came from a call catalogue. Leaving it open would put closed calls back in
   // front of founders, which is the failure the ADEME pass fixed.
   if (row.schemeEndBasis !== SCHEME_END_BASIS.notifiedDuration) return true;

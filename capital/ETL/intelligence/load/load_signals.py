@@ -29,7 +29,7 @@ batches on their own cadence); this loader owns the presence check + QA so
 
 The DDL is ETL/schema/corpus_schema.sql. Until 2026-11-05 this file executed its
 own signals_schema.sql against data/signals.sqlite; that schema is kept, as the
-record of the retired store, in ETL/archive/.
+record of the retired store, in ETL/archive/intelligence/load/.
 """
 from __future__ import annotations
 
