@@ -2,7 +2,7 @@
 
 Reads a JSON list of {"name", "instrument"} on stdin and writes a JSON object
 keyed "<name> <instrument>" on stdout. Consumed by
-website/frontend/scripts/diagnose_capital_pool.ts, which uses it to decide
+web/scripts/diagnose_capital_pool.ts, which uses it to decide
 whether a fund the capital filter removed would in fact have served the
 founder.
 

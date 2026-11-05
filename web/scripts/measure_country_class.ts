@@ -17,8 +17,8 @@
 // Every number printed comes out of Postgres, the store the product reads.
 //
 // Usage:
-//   npx tsx website/frontend/scripts/measure_country_class.ts
-//   npx tsx website/frontend/scripts/measure_country_class.ts FR
+//   npx tsx web/scripts/measure_country_class.ts
+//   npx tsx web/scripts/measure_country_class.ts FR
 import { Client } from "pg";
 import { isClosed, today } from "../lib/intelligence/liveness";
 import { hasOfferRoute } from "../lib/intelligence/offerRoute";

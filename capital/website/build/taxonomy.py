@@ -5,13 +5,14 @@ subsector, so the site's labels, ordering, dropdown options and colours stay in
 sync with the classification automatically — rebuild after a reclassification and
 the whole site follows. No taxonomy is hardcoded in the frontend.
 
-  website/frontend/public/data/taxonomy.json
+  web/public/data/taxonomy.json
     {"generatedAt": ...,
      "sectors": [{"id","label","count"}, ...],            # Tier-1, by count desc
      "subsectors": {sector_top: [{"id","label","count"}, ...]}}  # Tier-2 within
 """
 from __future__ import annotations
 
+import os
 import json
 from datetime import date
 from pathlib import Path
@@ -50,7 +51,7 @@ def main() -> None:
     OUT.write_text(json.dumps(
         {"generatedAt": date.today().isoformat(), "sectors": sectors,
          "subsectors": subs}, ensure_ascii=False, separators=(",", ":")))
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(sectors)} sectors, "
+    print(f"wrote {Path(os.path.relpath(OUT, ROOT))}: {len(sectors)} sectors, "
           f"{sum(len(v) for v in subs.values())} sub-sectors")
 
 

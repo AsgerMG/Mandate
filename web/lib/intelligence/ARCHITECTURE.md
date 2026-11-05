@@ -244,7 +244,7 @@ consumes.
 ## 7. Free things to run before you spend anything
 
 ```bash
-cd website/frontend
+cd web
 npm run check    # types, tests, every contract. No API calls, no spend.
 npm run trace    # the real candidate pool for a profile
 npm run board    # the 12-archetype scoreboard

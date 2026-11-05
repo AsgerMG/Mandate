@@ -66,7 +66,7 @@ import { code } from "../_import_graph";
 
 /** The frontend is `website/frontend`; the tree is two levels up. */
 const FRONTEND = process.cwd();
-const REPO = path.resolve(FRONTEND, "..", "..");
+const REPO = path.resolve(FRONTEND, "..", "capital");
 const DOCS = path.join(FRONTEND, "lib", "intelligence");
 
 /** Where a name could legitimately live. Extensions rather than directories,

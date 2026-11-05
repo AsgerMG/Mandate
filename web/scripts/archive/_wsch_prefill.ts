@@ -44,7 +44,7 @@ import { execFileSync } from "child_process";
 import { readFileSync } from "fs";
 import path from "path";
 
-const ROOT = path.resolve(process.cwd(), "../..");
+const ROOT = path.resolve(process.cwd(), "../capital");
 
 /** Pull a named python set literal out of the shared designator register. */
 function readSet(name: string): Set<string> {

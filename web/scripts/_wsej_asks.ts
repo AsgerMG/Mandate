@@ -46,7 +46,7 @@ import { FIELD_ENUM_HINTS } from "../lib/intelligence/types";
 import { SELECT_DEPTH } from "../lib/intelligence/caps";
 import type { InstrumentRow } from "../lib/intelligence/types";
 
-const OUT = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "ranker_asks_wsEJ");
+const OUT = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "ranker_asks_wsEJ");
 const STATE = (process.env.STATE ?? "screen1").toLowerCase();
 const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
 

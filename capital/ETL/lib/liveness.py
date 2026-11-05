@@ -1,6 +1,6 @@
 """Is this fund still open? The Python view of the ONE definition.
 
-The rule itself lives in website/frontend/lib/intelligence/liveness.ts and is
+The rule itself lives in web/lib/intelligence/liveness.ts and is
 projected to reference/liveness.json by `npx tsx scripts/emit_liveness.ts`. This
 module reads that projection. It deliberately does not restate the rule: five
 independent restatements of it are what hid 306 leaves on 2026-08-06, including
@@ -35,7 +35,7 @@ def _spec() -> dict:
     if not _SPEC_PATH.exists():
         raise SystemExit(
             f"{_SPEC_PATH} is missing -- the liveness rule has not been "
-            "projected. Run: cd website/frontend && npx tsx scripts/emit_liveness.ts"
+            "projected. Run: cd ../web && npx tsx scripts/emit_liveness.ts"
         )
     return json.loads(_SPEC_PATH.read_text())
 
@@ -79,7 +79,7 @@ SOURCE_WINDOW_POLICIES: frozenset[str] = frozenset(
 #: year Y establishes a prolongation THROUGH Y and nothing after it, and a
 #: hand-copied horizon is how this module and ``isClosed()`` would come to
 #: disagree about which schemes are dead. See RENEWAL_EVIDENCE_HORIZON_YEARS in
-#: website/frontend/lib/intelligence/liveness.ts for the measurement behind the
+#: web/lib/intelligence/liveness.ts for the measurement behind the
 #: value.
 RENEWAL_EVIDENCE_HORIZON_YEARS: int = int(_S["renewalEvidenceHorizonYears"])
 

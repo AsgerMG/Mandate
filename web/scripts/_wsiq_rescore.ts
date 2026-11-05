@@ -34,7 +34,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const FIND = join(__dirname, "..", "..", "..", "project-mgmt", "findings");
+const FIND = join(__dirname, "..", "..", "capital", "project-mgmt", "findings");
 const rule = (t: string) => console.log("\n" + t + "\n" + "=".repeat(t.length));
 const mean = (x: number[]) => x.reduce((a, b) => a + b, 0) / x.length;
 const f4 = (x: number) => (x >= 0 ? "+" : "") + x.toFixed(4);

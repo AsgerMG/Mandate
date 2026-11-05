@@ -65,27 +65,27 @@ jobs:
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: capital/website/frontend/package-lock.json
+          cache-dependency-path: web/package-lock.json
       # For the one implementation of the code fingerprint a verdict is bound
       # to (ETL/lib/guard_verdicts.py). Not for database access; there is none.
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
       - run: npm ci
-        working-directory: capital/website/frontend
+        working-directory: web
 
       # Every registered guard: has it published, is it green, was it judged on
       # this code, and — the part only a scheduled run can ask — did it publish
       # THIS week.
       - name: Every guard has a fresh, green verdict
-        working-directory: capital/website/frontend
+        working-directory: web
         run: npx tsx scripts/check_verdicts.ts --full
 
       # The site's committed headline figures against the census the ETL
       # published. Reads the same feed; no credential.
       - name: Site vs the ETL's census
         if: always()
-        working-directory: capital/website/frontend
+        working-directory: web
         run: npx tsx scripts/check_corpus_census.ts
 
       # A failed scheduled run emails whoever owns the repo and is then never

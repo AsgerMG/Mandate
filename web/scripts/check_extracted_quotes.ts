@@ -38,7 +38,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { join, resolve } from "node:path";
 
-const REPO = resolve(process.cwd(), "../..");
+const REPO = resolve(process.cwd(), "../capital");
 const FINDINGS = join(REPO, "project-mgmt", "findings");
 const PROBE = join(REPO, "project-mgmt", "probe_verify_extracted.py");
 const DOCS = join(REPO, "data", "raw", "instrument_docs");

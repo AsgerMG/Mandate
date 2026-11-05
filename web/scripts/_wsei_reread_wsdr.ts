@@ -27,7 +27,7 @@ interface Row {
   offPublishedIds: string[]; offWonRank: number | null; offWonInPool: boolean | null;
 }
 
-const FILE = path.join(process.cwd(), "..", "..", "project-mgmt", "findings",
+const FILE = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings",
   "seam_wsDR", "recall.json");
 const rows: Row[] = JSON.parse(readFileSync(FILE, "utf8"));
 const n = rows.length;

@@ -1,4 +1,4 @@
-"""Single entry point that regenerates EVERY generated website/frontend/public/data
+"""Single entry point that regenerates EVERY generated web/public/data
 file from the corpus (schema `capital` of the Mandate Postgres), in order.
 
 WHY THIS EXISTS: the site is fed by several JSON files written by separate
@@ -36,7 +36,7 @@ Usage:
         regenerate when CAPITAL_RO_DATABASE_URL is set, otherwise use what is
         on disk and say what is missing
 
-After this, rebuild the site:  (cd website/frontend && npx next build)
+After this, rebuild the site:  (cd ../web && npx next build)
 """
 
 from __future__ import annotations
@@ -175,7 +175,7 @@ def run() -> int:
     print()
     rc = check_present() or check_consistency()
     if rc == 0:
-        print("\n✓ All site data regenerated. Now: (cd website/frontend && npx next build)")
+        print("\n✓ All site data regenerated. Now: (cd ../web && npx next build)")
     return rc
 
 

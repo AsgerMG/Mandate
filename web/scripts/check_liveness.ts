@@ -205,7 +205,7 @@ async function main() {
     resolve(process.cwd(), "lib"),
     resolve(process.cwd(), "scripts"),
     resolve(process.cwd(), "app"),
-    resolve(process.cwd(), "../../ETL"),
+    resolve(process.cwd(), "../capital/ETL"),
   ];
   for (const root of roots) {
     let files: string[] = [];

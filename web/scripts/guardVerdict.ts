@@ -20,8 +20,8 @@ import { execFileSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import path from "node:path";
 
-/** Repo root from website/frontend, where every guard is run. */
-const ROOT = path.join(__dirname, "..", "..", "..");
+/** Repo root from web, where every guard is run. */
+const ROOT = path.join(__dirname, "..", "..", "capital");
 const REGISTRY = path.join(ROOT, "data", "guard_registry.json");
 const SCHEMA = path.join(ROOT, "ETL", "schema", "guard_verdicts.sql");
 const RUNNER = path.join(ROOT, "ETL", "lib", "guard_verdicts.py");

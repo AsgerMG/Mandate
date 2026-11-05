@@ -115,7 +115,7 @@ import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "./found
 import { isDescribed, loadRecallSet, partitionByOfferable, reattributeMissingAnswers } from "./recallSet";
 
 const PUBLISH_CAP = BRIEF_LIMITS.institutionsMax;
-const OUT = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "depth_wsEI");
+const OUT = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "depth_wsEI");
 
 /** The arms. `0` reads as the whole accessible pool. `VERDICT_POOL` is the
  *  control and is derived, never typed, so a pool cap that moves moves the

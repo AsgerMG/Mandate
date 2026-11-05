@@ -33,7 +33,7 @@
 // publish that fills the column) so it is re-derived by the weekly refresh
 // rather than when somebody remembers. Manually:
 //
-//   cd website/frontend && npx tsx scripts/emit_official_catchments.ts
+//   cd web && npx tsx scripts/emit_official_catchments.ts
 import { writeFileSync } from "fs";
 import path from "path";
 

@@ -162,7 +162,7 @@ import {
   partitionByOfferable, reattributeMissingAnswers, type RecallRow,
 } from "./recallSet";
 
-const OUT_DIR = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "headtohead_wsGA");
+const OUT_DIR = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "headtohead_wsGA");
 const PUBLISH_CAP = BRIEF_LIMITS.institutionsMax;
 
 const num = (v: string | undefined, d: number) =>

@@ -100,7 +100,7 @@ function registerFacts(pairs: { name: string; instrument: string }[]): Map<strin
   const out = new Map<string, AwardFacts>();
   const payload = JSON.stringify(pairs);
   const raw = execFileSync("python3",
-    ["../../ETL/terms/recall_capital_facts.py"],
+    ["../capital/ETL/terms/recall_capital_facts.py"],
     { input: payload, maxBuffer: 256 * 1024 * 1024, encoding: "utf8" });
   for (const [k, v] of Object.entries(JSON.parse(raw) as Record<string, AwardFacts>)) {
     out.set(k, v);

@@ -11,7 +11,7 @@
  * The population is reproduced by the same three calls `_wsif_reach.ts` makes,
  * in the same order, with the same defaults, so it is the same 897 founders.
  *
- * Run from website/frontend:  SPLIT=all N=897 npx tsx scripts/_wsiu_ceiling.ts
+ * Run from web:  SPLIT=all N=897 npx tsx scripts/_wsiu_ceiling.ts
  */
 delete process.env.DATABASE_URL;
 

@@ -298,7 +298,7 @@ function main(): void {
 
   // Repo root from this file, not from cwd: a check that passes because it was
   // invoked from the wrong directory is not a check.
-  const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..", "..", "..");
+  const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), "..", "..", "capital");
   const docPath = path.join(root, WATCHES);
   if (!existsSync(docPath)) {
     console.error(`check_published_figures: ${WATCHES} is missing. `

@@ -130,7 +130,7 @@ export function cacheDir(): string {
     const abs = path.resolve(process.cwd(), common);
     if (path.basename(abs) === ".git") return path.join(path.dirname(abs), "data", "ranker_cache");
   } catch { /* not a git checkout; fall through */ }
-  return path.resolve(process.cwd(), "..", "..", "data", "ranker_cache");
+  return path.resolve(process.cwd(), "..", "capital", "data", "ranker_cache");
 }
 
 export function cacheMode(): CacheMode {

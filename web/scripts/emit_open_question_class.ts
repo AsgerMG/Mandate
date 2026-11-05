@@ -52,7 +52,7 @@
 // is NOT asked about — a corpus that grows adds no questions until this is
 // re-run, which is the safe direction.
 //
-// Run from website/frontend:
+// Run from web:
 //   npx tsx scripts/dump_publishable_ids.ts /tmp/pub.json
 //   PUBLISHABLE=/tmp/pub.json npx tsx scripts/emit_open_question_class.ts
 import { readFileSync, writeFileSync } from "node:fs";

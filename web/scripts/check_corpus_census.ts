@@ -167,7 +167,7 @@ interface StoreMap {
 function storeMap(): StoreMap | null {
   try {
     return JSON.parse(execFileSync("python3",
-      ["../../website/build/lib/corpus_stores.py"],
+      ["../capital/website/build/lib/corpus_stores.py"],
       { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }));
   } catch {
     return null;
@@ -186,7 +186,7 @@ function fingerprintOfCheckout(): string | null {
   // two different things the first time either changes.
   try {
     return execFileSync("python3",
-      ["../../ETL/events/load/publish_corpus_census.py", "--fingerprint"],
+      ["../capital/ETL/events/load/publish_corpus_census.py", "--fingerprint"],
       { encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
   } catch {
     return null;
@@ -200,7 +200,7 @@ function fingerprintOfCheckout(): string | null {
  *  second measurement of the corpus that could disagree with the first. */
 async function rowsFromFeed(): Promise<CensusRow[]> {
   const reg = JSON.parse(readFileSync(
-    path.join(__dirname, "..", "..", "..", "data", "guard_registry.json"), "utf8"),
+    path.join(__dirname, "..", "..", "capital", "data", "guard_registry.json"), "utf8"),
   ) as { feed: { url: string } };
   const url = `${process.env.GUARD_FEED_URL || reg.feed.url}?guard=census&limit=12`;
   let res: Response;

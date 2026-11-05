@@ -24,7 +24,7 @@ schema. `public` holds the pgvector extension and nothing else.
 | policy API (`Regina` service) | Railway project Mandate | `AsgerMG/Mandate`, root `policy/` | role `policy_app` |
 | policy refresh (`refresh-cron`) | Railway project Mandate | curl image, Sundays 05:00 UTC | calls the policy API |
 | policy site | Vercel `regina` (regina-ai.eu) | root `policy/website` | reads the policy API |
-| capital site | Vercel `wincent` (wincent-ai.eu) | root `capital/website/frontend` | role `capital_app` |
+| capital site | Vercel `wincent` (wincent-ai.eu) | root `web` | role `capital_app` |
 | capital ETL | Railway, weekly cron | root `capital/` | role `capital_app` |
 | CI | GitHub Actions, root `.github/workflows/` | one workflow per brain, path-scoped | `capital_ro` where a check reads the corpus |
 
@@ -67,7 +67,7 @@ A brain is a schema, a role, a deployable and a workflow. In order:
    `link` lines in `scripts/agent-worktree.sh`.
 6. **This file.** A row in the table above.
 
-The company profile every brain reads (`capital/website/frontend/lib/profile/
+The company profile every brain reads (`web/lib/profile/
 companyProfile.ts` today) moves into schema `mandate`, which is reserved for the
 things no single brain owns: accounts, the shared company profile, and the
 register of who decides.

@@ -158,7 +158,7 @@ import {
 // `OUT_ROOT` names the folder, `OUT_TAG` names the file inside it, and the paid
 // tape of the first run is therefore unreachable from the second.
 const OUT_DIR = path.join(
-  process.cwd(), "..", "..", "project-mgmt", "findings",
+  process.cwd(), "..", "capital", "project-mgmt", "findings",
   process.env.OUT_ROOT ?? "indicative_wsHO");
 
 const num = (v: string | undefined, d: number) =>

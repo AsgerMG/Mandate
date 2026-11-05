@@ -12,7 +12,7 @@
 // corpus that lags is the one thing this script must not do: every downstream
 // probe then measures a set the founder was never shown.
 //
-// Run from website/frontend:  npx tsx scripts/dump_publishable_ids.ts [out.json]
+// Run from web:  npx tsx scripts/dump_publishable_ids.ts [out.json]
 import { writeFileSync } from "fs";
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 

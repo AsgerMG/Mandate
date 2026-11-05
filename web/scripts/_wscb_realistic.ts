@@ -25,7 +25,7 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 requireCredentials("wscb_realistic", ["DATABASE_URL"]);
 const PUB = process.env.PUBLISHABLE;
-const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../../data/vocabularies.json", "utf8"));
+const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../capital/data/vocabularies.json", "utf8"));
 const REACH: Record<string, string> = VOCAB.fieldReach;
 const NUTS_ID = /\b([A-Z]{2}[0-9A-Z]{1,3})\b/;
 const h = (s: any) => (s ? String(s).trim().toLowerCase().slice(0, 400) : "");

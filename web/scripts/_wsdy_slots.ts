@@ -55,7 +55,7 @@ import { SECTOR_WORD } from "../lib/intelligence/shortlist";
 import { awardMedian, awardMismatch, menuRows, themeMismatch } from "./_ruler";
 
 const DIR = process.argv[2] ?? path.join(
-  process.cwd(), "..", "..", "project-mgmt", "findings", "first_test_wsDQ");
+  process.cwd(), "..", "capital", "project-mgmt", "findings", "first_test_wsDQ");
 
 /** THE SECTOR MAP THAT WAS HERE HELD SIX ENTRIES WHERE `shortlist.ts` HOLDS
  *  TEN. A founder in `energy & cleantech` or `materials & chemicals` therefore

@@ -24,7 +24,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT, WEB  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
@@ -38,7 +38,7 @@ from classify_taxonomy import technology_veto  # noqa: E402
 ROOT = _ETL_ROOT
 DB = _ETL_DB
 
-SNAPSHOT = ROOT / "website" / "frontend" / "public" / "data" / "instrument_terms.json"
+SNAPSHOT = WEB / "public" / "data" / "instrument_terms.json"
 
 # `populate_funding_instruments.py` keeps the eight commonest recipient sectors
 # per instrument. The corrected mix must be built the same way or the two are

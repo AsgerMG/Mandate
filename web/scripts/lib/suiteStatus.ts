@@ -66,14 +66,15 @@ import {
   type Accepted, type RedClass,
 } from "./acceptance";
 
-/** The repository root. Four levels, because this module lives one deeper than
- *  the checks do (scripts/lib -> scripts -> frontend -> website -> root). */
-export const ROOT = path.join(__dirname, "..", "..", "..", "..");
+/** The capital brain's root, whose project-mgmt/ and data/ hold the suite's
+ *  record and registry. The web app is its sibling (scripts/lib -> scripts ->
+ *  web -> monorepo root -> capital); until 2026-11-06 it sat inside it. */
+export const ROOT = path.join(__dirname, "..", "..", "..", "capital");
 /** project-mgmt/, not data/: `data` is gitignored, and a record CI cannot
  *  read is the defect this file exists to remove, one level down. */
 export const RECORD = path.join(ROOT, "project-mgmt", "check_status.json");
 export const REGISTRY = path.join(ROOT, "data", "guard_registry.json");
-export const RUNNER = path.join(ROOT, "website", "frontend", "scripts", "run_checks.mjs");
+export const RUNNER = path.join(__dirname, "..", "run_checks.mjs");
 
 /** Measured, not chosen. See the header. */
 export const MAX_OBSERVATION_AGE_DAYS = 7;
@@ -207,7 +208,7 @@ export function judgeSuite(
       label: "(the record)",
       why: `${path.relative(ROOT, RECORD)} does not exist. Nothing in this tree says what `
         + `the check suite last found, which is the state this file exists to remove.\n`
-        + `      Run: cd website/frontend && npm run check`,
+        + `      Run: cd web && npm run check`,
     });
     return { problems, held, reported, green, ages };
   }
@@ -246,7 +247,7 @@ export function judgeSuite(
         label,
         why: `never observed. ${path.relative(ROOT, RECORD)} carries no result for it, so `
           + `nothing in this tree knows whether it passes.\n`
-          + `      Run: cd website/frontend && npm run check --only=${JSON.stringify(label)}`,
+          + `      Run: cd web && npm run check --only=${JSON.stringify(label)}`,
       });
       continue;
     }
@@ -261,7 +262,7 @@ export function judgeSuite(
         label,
         why: `last observed ${age.toFixed(1)} days ago, past the ${maxAgeDays}-day cap. `
           + `Nobody has looked at it since.\n`
-          + `      Run: cd website/frontend && npm run check --only=${JSON.stringify(label)}`,
+          + `      Run: cd web && npm run check --only=${JSON.stringify(label)}`,
       });
       continue;
     }

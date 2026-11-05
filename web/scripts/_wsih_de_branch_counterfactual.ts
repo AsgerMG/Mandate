@@ -37,7 +37,7 @@
  * ERP-Digitalisierungskredit and ZIM are two of Germany's largest SME
  * programmes. The (founder x instrument x answer) sweep is what can see them.
  *
- *   cd website/frontend && npx tsx scripts/_wsih_de_branch_counterfactual.ts
+ *   cd web && npx tsx scripts/_wsih_de_branch_counterfactual.ts
  */
 delete process.env.DATABASE_URL;
 
@@ -50,9 +50,9 @@ import { assessInstrument } from "../lib/intelligence/verdict";
 import { applyCorrections, loadCorrections, type Correction } from "./gateCorrections";
 
 const SNAPSHOT = path.join("public", "data", "instrument_terms.json");
-const PROPOSAL = path.join("..", "..", "project-mgmt", "evidence",
+const PROPOSAL = path.join("..", "capital", "project-mgmt", "evidence",
   "wsih_de_branch_corrections_2026-08-19.jsonl");
-const TAPE = path.join("..", "..", "project-mgmt", "findings",
+const TAPE = path.join("..", "capital", "project-mgmt", "findings",
   "indicative_wsHW", "free.json");
 
 const EQ = "satr_de_equity__sa_111002__kreditanstalt_fur_wiederaufbau";

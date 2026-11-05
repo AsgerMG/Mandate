@@ -43,7 +43,7 @@
  * turnover. Arm 2 prices what writing it anyway would have cost, because "I
  * decided not to" is worth less than "here is the number I decided against".
  *
- *   cd website/frontend && npx tsx scripts/_wsig_inert_counterfactual.ts
+ *   cd web && npx tsx scripts/_wsig_inert_counterfactual.ts
  */
 delete process.env.DATABASE_URL;
 
@@ -56,9 +56,9 @@ import { assessInstrument } from "../lib/intelligence/verdict";
 import { applyCorrections, loadCorrections, type Correction } from "./gateCorrections";
 
 const SNAPSHOT = path.join("public", "data", "instrument_terms.json");
-const CORRECTIONS = path.join("..", "..", "project-mgmt", "evidence",
+const CORRECTIONS = path.join("..", "capital", "project-mgmt", "evidence",
   "wsig_inert_comparator_corrections_2026-08-19.jsonl");
-const TAPE = path.join("..", "..", "project-mgmt", "findings",
+const TAPE = path.join("..", "capital", "project-mgmt", "findings",
   "indicative_wsHW", "free.json");
 
 interface TapeRow {

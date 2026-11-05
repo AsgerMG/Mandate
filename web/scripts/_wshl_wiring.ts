@@ -60,7 +60,7 @@ import { founderIntake, founderPolicyFromEnv } from "./founderIntake";
 import { loadRecallSet, reattributeMissingAnswers, type RecallRow } from "./recallSet";
 
 const PAIRS = process.env.PAIRS ?? path.join(
-  process.cwd(), "..", "..", "project-mgmt", "evidence", "wsha_door_pairs_2026-08-17.jsonl");
+  process.cwd(), "..", "capital", "project-mgmt", "evidence", "wsha_door_pairs_2026-08-17.jsonl");
 const OPTS = USE_OF_FUNDS_OPTIONS.map((o) => o.value as string);
 const PIN = ["industrial_research", "experimental_development"];
 

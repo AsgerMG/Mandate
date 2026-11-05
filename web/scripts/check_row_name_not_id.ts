@@ -70,7 +70,7 @@ async function main() {
     console.error(
       "check_row_name_not_id: FAILED — 0 publishable instruments.\n"
       + "  Every label is vacuously clean in an empty corpus. Run from\n"
-      + `  website/frontend: the snapshot resolves from cwd. cwd was ${process.cwd()}`);
+      + `  web: the snapshot resolves from cwd. cwd was ${process.cwd()}`);
     process.exit(1);
   }
 

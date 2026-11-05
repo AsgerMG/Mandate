@@ -67,7 +67,7 @@ requireCredentials("check_applicant_identity", ["DATABASE_URL"]);
 const GUARD = "applicant_identity";
 const tape = startTape();
 
-const ROOT = join(__dirname, "..", "..", "..");
+const ROOT = join(__dirname, "..", "..", "capital");
 const CACHE = join(ROOT, "data", "applicant_identity.json");
 const CALIBRATION = join(ROOT, "reference", "applicant_identity_calibration.json");
 

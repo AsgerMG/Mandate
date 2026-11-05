@@ -39,7 +39,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 const CORPUS = path.join("lib", "intelligence", "corpus.ts");
-const EXPORT = path.join("..", "build", "eligibility_export.py");
+const EXPORT = path.join("..", "capital", "website", "build", "eligibility_export.py");
 
 /** The column list of the one SELECT ... FROM funding_instruments in a file.
  *

@@ -61,7 +61,7 @@ const COUNTRY_FIELDS = new Set(["entityCountries", "activityCountries"]);
 
 /** The canon, read from the file ETL reads. Never restated here. */
 function corpusCountryNames(): Set<string> {
-  const p = path.resolve(__dirname, "../../../reference/europe_scope.json");
+  const p = path.resolve(__dirname, "../../capital/reference/europe_scope.json");
   const scope = JSON.parse(readFileSync(p, "utf8")) as {
     countries: { iso2: string; name: string }[];
   };

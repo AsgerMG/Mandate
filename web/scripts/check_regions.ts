@@ -21,7 +21,7 @@ import { toIso2 } from "../lib/intelligence/corpus";
 
 delete process.env.DATABASE_URL;
 
-const ROOT = join(__dirname, "..", "..", "..");
+const ROOT = join(__dirname, "..", "..", "capital");
 const ref = JSON.parse(
   readFileSync(join(ROOT, "reference", "nuts_regions.json"), "utf8"),
 ) as { regions: Record<string, { id: string; level: number; name: string }[]> };

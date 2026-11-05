@@ -72,7 +72,7 @@ import path from "path";
 
 /** The frontend is `website/frontend`; the tree is two levels up. */
 const FRONTEND = process.cwd();
-const REPO = path.resolve(FRONTEND, "..", "..");
+const REPO = path.resolve(FRONTEND, "..", "capital");
 const SCRIPTS = path.join(FRONTEND, "scripts");
 
 /** Scratch lives directly in `scripts/`. `scripts/archive/` is where it goes

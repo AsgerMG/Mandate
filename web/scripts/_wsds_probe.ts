@@ -35,7 +35,7 @@ const MODEL = process.env.AGENT_SELECT_MODEL ?? "claude-sonnet-5";
 // was actually billed (`output_tokens` 339, `thinking_tokens` 310, reply 37
 // chars), so its bytes are the reproduction and anything else is a guess.
 const WSDQ = path.join(
-  __dirname, "..", "..", "..",
+  __dirname, "..", "..", "capital",
   "project-mgmt", "findings", "first_test_wsDQ", "nortal", "prompt_r1.txt");
 
 function nortalPrompt(): { system: string; user: string } {

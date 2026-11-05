@@ -28,7 +28,7 @@ import { loadEnvLocal, requireCredentials } from "../loadEnv";
 loadEnvLocal();
 requireCredentials("wsce_ceiling", ["DATABASE_URL"]);
 
-const ROOT = process.cwd() + "/../..";
+const ROOT = process.cwd() + "/../capital";
 const VOCAB = JSON.parse(readFileSync(`${ROOT}/data/vocabularies.json`, "utf8"));
 const REACH: Record<string, string> = VOCAB.fieldReach;
 const PUB = process.env.PUBLISHABLE!;

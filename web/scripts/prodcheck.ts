@@ -78,7 +78,7 @@ import { isDescribed, loadRecallSet, type RecallRow } from "./recallSet";
 // `data/guard_registry.json` already names where a reader without credentials
 // reaches this product; typing the host here would be a second copy of it that
 // nothing keeps honest. Same override convention as `GUARD_FEED_URL`.
-const REPO_ROOT = path.join(process.cwd(), "..", "..");
+const REPO_ROOT = path.join(process.cwd(), "..", "capital");
 const FEED = (JSON.parse(readFileSync(
   path.join(REPO_ROOT, "data", "guard_registry.json"), "utf8")) as
   { feed: { url: string } }).feed.url;

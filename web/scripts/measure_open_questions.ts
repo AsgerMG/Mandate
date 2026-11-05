@@ -63,7 +63,7 @@
 // 120 briefs. Do not rebuild it; the guard is the one-sided-split test in
 // `openQuestions.test.ts`.
 //
-//   cd website/frontend
+//   cd web
 //   npx tsx scripts/measure_open_questions.ts                 # tune, N=120
 //   SPLIT=holdout N=200 npx tsx scripts/measure_open_questions.ts
 //   DRY=1 npx tsx scripts/measure_open_questions.ts           # selection only, no model calls

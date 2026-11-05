@@ -40,7 +40,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const FIND = join(__dirname, "..", "..", "..", "project-mgmt", "findings");
+const FIND = join(__dirname, "..", "..", "capital", "project-mgmt", "findings");
 const Z95 = 1.96, Z80 = 2.802;
 const EUR_PER_FOUNDER = 0.0432;                 // wsHW measured, EUR 3.3681 / 78
 

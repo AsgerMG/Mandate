@@ -58,7 +58,7 @@ const MAX_DEPTH = 8;
  *
  * Not a fixed `["../../.env.local", ".env.local"]` pair, because that pair is
  * relative to the working directory and several harnesses document themselves
- * as being run from the repo root (`npx tsx website/frontend/scripts/...`).
+ * as being run from the repo root (`npx tsx web/scripts/...`).
  * Those two spellings of the same intent are how the drift started. The
  * property is "the nearest env file wins, and every one above it still
  * counts", and it holds from any directory inside the repo.
@@ -75,7 +75,18 @@ function envDirs(): string[] {
     if (up === dir) break;
     dir = up;
   }
-  return dirs.reverse();
+  dirs.reverse();
+  // The capital brain's env file. Until 2026-11-06 this app lived inside
+  // capital/ (at capital/website/frontend), so capital/.env.local was one of
+  // its ancestors and the walk above found it. The app is now <root>/web, a
+  // sibling, so it is named here: directly below the repository root and
+  // above everything nearer the working directory, exactly where the walk used
+  // to put it.
+  const capital = path.join(dirs[0], "capital");
+  if (existsSync(path.join(dirs[0], ".git")) && existsSync(capital) && !dirs.includes(capital)) {
+    dirs.splice(1, 0, capital);
+  }
+  return dirs;
 }
 
 /** The env files this process would consult, root-most first, each marked with

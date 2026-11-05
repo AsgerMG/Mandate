@@ -7,7 +7,7 @@ import { loadEnvLocal, requireCredentials } from "../loadEnv";
 loadEnvLocal();
 requireCredentials("wscb_samples", ["DATABASE_URL"]);
 const PUB = process.env.PUBLISHABLE;
-const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../../data/vocabularies.json", "utf8"));
+const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../capital/data/vocabularies.json", "utf8"));
 const REACH: Record<string, string> = VOCAB.fieldReach;
 const FIELD = process.env.FIELD;
 const N = Number(process.env.N ?? 14);

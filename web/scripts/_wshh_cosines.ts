@@ -69,7 +69,7 @@ import { isDescribed, loadRecallSet, reattributeMissingAnswers, type RecallRow }
 /** wsHA's committed working set. Read, never re-derived: this workstream's
  *  claim is about the SAME 287 pairs that finding published, and re-deriving
  *  them would silently re-draw the population under a citation. */
-const PAIRS = path.resolve(process.cwd(), "..", "..",
+const PAIRS = path.resolve(process.cwd(), "..", "capital",
   "project-mgmt", "evidence", "wsha_door_pairs_2026-08-17.jsonl");
 
 const VOYAGE_URL = "https://api.voyageai.com/v1/embeddings";

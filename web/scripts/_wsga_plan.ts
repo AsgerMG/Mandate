@@ -83,7 +83,7 @@ function measuredDiscordance(): {
   n: number; inPool: number;
   at: Record<number, { off: number; on: number; b: number; c: number }>;
 } {
-  const p = path.join(process.cwd(), "..", "..", "project-mgmt", "findings",
+  const p = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings",
     "seam_wsDR", "recall.json");
   const rows = JSON.parse(readFileSync(p, "utf8")) as {
     offWonInPool: boolean | null; offWonRank: number | null;
@@ -240,7 +240,7 @@ function main() {
   // Read from the FREE control run if it has been made. Everything above is
   // priced on wsDR's 45 founders; this section is priced on the whole eligible
   // population, measured today, at no cost.
-  const ceilingFile = path.join(process.cwd(), "..", "..", "project-mgmt", "findings",
+  const ceilingFile = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings",
     "headtohead_wsGA", "off_low_n324.json");
   let today: {
     n: number; inPool: number; c5: number; c6: number;

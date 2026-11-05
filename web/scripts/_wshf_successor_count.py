@@ -1,7 +1,7 @@
 """How many successor redirects does the FORWARD-ONLY read of `caseLinks` miss?
 
 FREE. Reads the fetched register on disk and Postgres. No model, no network.
-Run from the worktree root: python3 website/frontend/scripts/_wshf_successor_count.py
+Run from the worktree root: python3 web/scripts/_wshf_successor_count.py
 
 wsHF, 2026-08-17. See project-mgmt/findings/body_named_rows_wsHF.md.
 `caseLinks` is DIRECTIONAL -- the Commission files the edge on whichever side it

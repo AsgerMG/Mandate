@@ -60,7 +60,7 @@
 // on CI and on every fresh worktree, which is the failure `loadEnv.ts` records
 // as a green build with the floors never evaluated.
 //
-//   cd website/frontend && npx tsx scripts/check_winner_not_blocked.ts
+//   cd web && npx tsx scripts/check_winner_not_blocked.ts
 import { readFileSync } from "node:fs";
 import path from "node:path";
 

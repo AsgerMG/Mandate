@@ -16,7 +16,7 @@ requireCredentials("_wsfx_cost", ["DATABASE_URL"]);
 
 import { hydrateDbInstruments, publishableInstruments } from "../lib/intelligence/corpus";
 
-const EVIDENCE = join(__dirname, "..", "..", "..", "project-mgmt", "evidence",
+const EVIDENCE = join(__dirname, "..", "..", "capital", "project-mgmt", "evidence",
   "funder_evidence_2026-08-12.jsonl");
 
 type Ev = { instrument_id: string; country: string; verdict: string; action: string };

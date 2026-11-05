@@ -129,7 +129,7 @@ STEPS = [
 # Actions credentials to reach it would widen a compromised workflow from "can
 # read our code" to "can read and write every award, company and fund we hold". So they run where
 # the data already is, and publish a verdict anything can read
-# (ETL/lib/guard_verdicts.py; website/frontend/scripts/check_verdicts.ts).
+# (ETL/lib/guard_verdicts.py; web/scripts/check_verdicts.ts).
 #
 # `check_offerable_decay.py` was already a step above. It has moved here rather
 # than being duplicated: same command, same tolerated exit code (declared once,

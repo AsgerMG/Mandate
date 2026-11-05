@@ -29,7 +29,7 @@ lib/            shared by both tracks: etl_env.py (paths + import wiring),
 ```
 
 The publish layer that reads `data/db.sqlite` and turns it into the site is a separate
-block under `website/` (`website/build/` builders → `website/frontend/`). The read-side
+block under `website/` (`website/build/` builders → `web/`). The read-side
 SQL it relies on (`data/views.sql`) lives in `data/`.
 
 ## How paths and imports work (`lib/etl_env.py`)

@@ -81,8 +81,8 @@
  * Runs on the committed snapshot under `NO_PG=1` (which is how CI runs it) and
  * makes no model call of any kind. ~700 pool builds, a couple of minutes.
  *
- *   cd website/frontend && NO_PG=1 npx tsx scripts/check_asking_cannot_shrink.ts
- *   cd website/frontend && NO_PG=1 PROVE=1 npx tsx scripts/check_asking_cannot_shrink.ts
+ *   cd web && NO_PG=1 npx tsx scripts/check_asking_cannot_shrink.ts
+ *   cd web && NO_PG=1 PROVE=1 npx tsx scripts/check_asking_cannot_shrink.ts
  */
 import { loadEnvLocal, requireCredentials } from "./loadEnv";
 

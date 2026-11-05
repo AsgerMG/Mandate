@@ -34,13 +34,14 @@ Usage:
 """
 from __future__ import annotations
 
+import os
 import sys as _sys
 from pathlib import Path as _Path
 for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT as REPO_ROOT  # noqa: E402
+from etl_env import DB, ROOT as REPO_ROOT, WEB  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
@@ -48,7 +49,7 @@ import json  # noqa: E402
 import re  # noqa: E402
 import sqlite3  # noqa: E402
 
-OUT = REPO_ROOT / "website" / "frontend" / "lib" / "intelligence" / "__objectives.json"
+OUT = WEB / "lib" / "intelligence" / "__objectives.json"
 
 # GBER (Reg. 651/2014) article -> the `useOfFunds` options it funds.
 #
@@ -143,7 +144,7 @@ def main() -> None:
         print("\n[report only] --write to persist")
         return
     OUT.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
-    print(f"\nwrote {OUT.relative_to(REPO_ROOT)}  ({len(out)} instruments)")
+    print(f"\nwrote {Path(os.path.relpath(OUT, REPO_ROOT))}  ({len(out)} instruments)")
 
 
 if __name__ == "__main__":

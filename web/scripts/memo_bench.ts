@@ -135,7 +135,7 @@ async function main() {
   let code = "unknown";
   try {
     const sha = execSync("git rev-parse --short HEAD", { encoding: "utf8" }).trim();
-    const dirty = execSync("git status --porcelain -- ../../website ../../ETL", { encoding: "utf8" }).trim();
+    const dirty = execSync("git status --porcelain -- . ../capital/website ../capital/ETL", { encoding: "utf8" }).trim();
     code = dirty ? `${sha}+dirty` : sha;
   } catch { /* not a git checkout — leave it unknown */ }
   console.log(`code ${code}\n`);

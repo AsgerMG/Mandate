@@ -15,8 +15,8 @@
  * construction — no won-fund id leaves that process — so the attribution lives
  * here, where the population is the answer key and nothing is published.
  *
- *   cd website/frontend && npx tsx scripts/_wshd_pg_drift.ts
- *   cd website/frontend && npx tsx scripts/_wshd_pg_drift.ts --winners
+ *   cd web && npx tsx scripts/_wshd_pg_drift.ts
+ *   cd web && npx tsx scripts/_wshd_pg_drift.ts --winners
  */
 import { readFileSync } from "fs";
 import path from "path";
@@ -31,7 +31,7 @@ delete process.env.ANTHROPIC_API_KEY;
 // answered a question about the store it exists to distinguish itself from.
 requireCredentials("wshd_pg_drift", ["DATABASE_URL"]);
 
-const CORRECTIONS = path.join("..", "..", "project-mgmt", "evidence",
+const CORRECTIONS = path.join("..", "capital", "project-mgmt", "evidence",
   "wsgu_gate_encoding_corrections_2026-08-13.jsonl");
 
 interface Correction {

@@ -34,7 +34,7 @@ interface Rec { id: string; name?: string | null; description?: string | null }
 const CAPS = [180, 240, 300, 400, 600, 900];
 
 const ROWS = process.argv[2] ?? path.join(
-  process.cwd(), "..", "..", "project-mgmt", "findings", "nine_wsDV", "rows.json");
+  process.cwd(), "..", "capital", "project-mgmt", "findings", "nine_wsDV", "rows.json");
 const cases = JSON.parse(readFileSync(ROWS, "utf8")) as Case[];
 const records = (JSON.parse(readFileSync(
   path.join(process.cwd(), "public", "data", "instrument_terms.json"), "utf8"),

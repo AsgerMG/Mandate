@@ -415,7 +415,7 @@ async function main() {
         `  regression. Do not chase it in shortlist.ts. Re-cut both mirrors of the\n` +
         `  index and run this again:\n` +
         `    DATABASE_URL=... python3 ETL/terms/emit_profile_leak_index.py\n` +
-        `    cd website/frontend && npx tsx scripts/emit_semantic_cache.ts\n` +
+        `    cd web && npx tsx scripts/emit_semantic_cache.ts\n` +
         `\n  check_corpus_currency names the same cause one step earlier, by comparing\n` +
         `  the mirror's profile TEXT against the live index rather than its id set.`);
     }

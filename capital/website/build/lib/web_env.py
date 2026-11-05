@@ -32,15 +32,17 @@ DATA = ROOT / "data"
 DATA_PROCESSED = DATA / "processed"
 REFERENCE = ROOT / "reference"
 
-# Where every generated *.json lands — read by the Next.js app at build time.
-FRONTEND = WEBSITE / "frontend"
-SITE_DATA = FRONTEND / "public" / "data"
-
 # Put the build dir + lib on the import path so `from helpers import ...` and
 # `from investor_insights import ...` resolve from any builder.
 for _p in (str(BUILD), str(BUILD / "lib"), str(ROOT / "ETL" / "lib")):
     if _p not in sys.path:
         sys.path.insert(0, _p)
+
+# Where every generated *.json lands — read by the Next.js app at build time.
+# The app is <monorepo>/web (was web); the path is defined once,
+# in ETL/lib/web_path.py, and re-exported here under its old name.
+from web_path import WEB as FRONTEND  # noqa: E402
+SITE_DATA = FRONTEND / "public" / "data"
 
 __all__ = [
     "ROOT",

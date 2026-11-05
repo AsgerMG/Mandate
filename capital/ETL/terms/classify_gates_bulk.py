@@ -5,7 +5,7 @@ ETL/events/transform/classify_taxonomy.py's submit/collect).
 
 Grounded, not blind: each instrument's `source_family_bucket` (the existing
 11-channel v_events.source_family grain) points at a real, human/Opus-authored
-fund-process brief (website/frontend/fund-processes/<bucket>.md) — the model
+fund-process brief (web/fund-processes/<bucket>.md) — the model
 reads that real text plus the instrument's own corpus facts (name, country,
 capital_type, scale, sample SATR scheme titles where available) and proposes
 gates *tailored to this specific instrument* within that family, rather than
@@ -27,7 +27,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
@@ -47,7 +47,7 @@ GATE_FAMILIES = ["G1_nexus", "G2_size_ownership", "G3_financial",
 from encode_gates import ENCODABLE_FIELDS as INTAKE_FIELDS  # noqa: E402
 
 MODEL = "claude-sonnet-5"
-BRIEFS = ROOT / "website" / "frontend" / "fund-processes"
+BRIEFS = WEB / "fund-processes"
 
 SCHEMA = {
     "type": "object", "additionalProperties": False,

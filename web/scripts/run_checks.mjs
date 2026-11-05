@@ -28,7 +28,7 @@
 // so a typo surfaces in seconds rather than after the corpus-reading ones.
 //
 // ── Working directory ──────────────────────────────────────────────────────
-// Always website/frontend, whatever the caller's cwd. Several checks resolve
+// Always web, whatever the caller's cwd. Several checks resolve
 // the corpus from `process.cwd()/public/data`, and from the repo root they load
 // ZERO instruments and pass — check_capital_reach reported "ok — every value
 // carried by the 0 publishable instruments is reachable" when run from one
@@ -40,7 +40,7 @@ import { fileURLToPath } from "url";
 import path from "path";
 
 const FRONTEND = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const ROOT = path.resolve(FRONTEND, "..", "..");
+const ROOT = path.resolve(FRONTEND, "..", "capital");
 
 // ── The findings go into the tree, because nowhere else reaches anybody ─────
 //
@@ -277,7 +277,7 @@ const CHECKS = [
   // DG (Direct grant) were transposed, and the corpus held zero guarantees from
   // a feed publishing 17,023 guarantee awards.
   ["capital kinds match the register",
-   ["python3", "../../ETL/schema/check_register_instrument_kinds.py"]],
+   ["python3", "../capital/ETL/schema/check_register_instrument_kinds.py"]],
   // The two ETL-side guards that watch whether guards and artifacts are
   // REACHABLE. They live in the CI python job, and on 2026-08-18 both were red
   // on main — outside the thirteen everyone counted, because `npm run check`
@@ -286,15 +286,15 @@ const CHECKS = [
   // the one place their result now lands in the tree. Hermetic, under a second
   // each.
   ["every guard runs somewhere, or says why not",
-   ["python3", "../../ETL/schema/check_guard_reachability.py"]],
+   ["python3", "../capital/ETL/schema/check_guard_reachability.py"]],
   ["every committed artifact can be rebuilt",
-   ["python3", "../../ETL/schema/check_artifact_reachability.py"]],
+   ["python3", "../capital/ETL/schema/check_artifact_reachability.py"]],
   // The weekly ETL died on 2026-08-16 reading a committed file that has never
   // existed where it runs, and stayed dead for three days: the corpus of record
   // stopped being refreshed and nothing in this suite could tell. It imports
   // every script the cron names, with every tracked data/ path made unreadable.
   ["the cron can read what it imports",
-   ["python3", "../../ETL/schema/check_cron_image_inputs.py"]],
+   ["python3", "../capital/ETL/schema/check_cron_image_inputs.py"]],
   ["regions match NUTS", ["npx", "tsx", "scripts/check_regions.ts"]],
   ["theme index is not stale", ["npx", "tsx", "scripts/check_theme_index.ts"]],
   // The base rate the SELECTOR IS TOLD. A stale curve here does not degrade a
@@ -446,8 +446,8 @@ if (!process.argv.includes("--no-record")) {
   writeFileSync(RECORD, JSON.stringify({
     $why: [
       "What the check suite last found, one row per check, each with its own",
-      "timestamp. Written by website/frontend/scripts/run_checks.mjs and read by",
-      "website/frontend/scripts/check_red_debt.ts, which runs inside `npx vitest",
+      "timestamp. Written by web/scripts/run_checks.mjs and read by",
+      "web/scripts/check_red_debt.ts, which runs inside `npx vitest",
       "run` -- the four-second command every agent in this repo types -- and fails",
       "on a row that is stale, or red and unowned, or held under an expired",
       "acceptance.",

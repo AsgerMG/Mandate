@@ -34,7 +34,7 @@
  * leaves it, so a comparator on an unasked field reads `unknown` and never as a
  * failure.
  *
- *   cd website/frontend && npx tsx scripts/_wsic_band_counterfactual.ts
+ *   cd web && npx tsx scripts/_wsic_band_counterfactual.ts
  */
 delete process.env.DATABASE_URL;
 
@@ -47,9 +47,9 @@ import { assessInstrument } from "../lib/intelligence/verdict";
 import { applyCorrections, loadCorrections } from "./gateCorrections";
 
 const SNAPSHOT = path.join("public", "data", "instrument_terms.json");
-const CORRECTIONS = path.join("..", "..", "project-mgmt", "evidence",
+const CORRECTIONS = path.join("..", "capital", "project-mgmt", "evidence",
   "wsic_gate_branch_corrections_2026-08-19.jsonl");
-const TAPE = path.join("..", "..", "project-mgmt", "findings",
+const TAPE = path.join("..", "capital", "project-mgmt", "findings",
   "indicative_wsHW", "free.json");
 
 interface TapeRow {

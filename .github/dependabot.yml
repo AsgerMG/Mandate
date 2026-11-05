@@ -3,7 +3,7 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: /capital/website/frontend
+    directory: /web
     schedule: { interval: weekly }
     open-pull-requests-limit: 5
     groups:

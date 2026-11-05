@@ -33,7 +33,7 @@ const die = (): never => {
 (globalThis as unknown as Record<string, unknown>).XMLHttpRequest = die;
 (globalThis as unknown as Record<string, unknown>).WebSocket = die;
 
-const ROOT = path.resolve(process.cwd(), "..", "..");
+const ROOT = path.resolve(process.cwd(), "..", "capital");
 const FIND = path.join(ROOT, "project-mgmt", "findings");
 
 // ── 1. the menu the paid run actually showed ──────────────────────────────

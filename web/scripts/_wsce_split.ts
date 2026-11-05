@@ -44,7 +44,7 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 requireCredentials("wsce_split", ["DATABASE_URL"]);
 
-const ROOT = process.cwd() + "/../..";
+const ROOT = process.cwd() + "/../capital";
 const VOCAB = JSON.parse(readFileSync(`${ROOT}/data/vocabularies.json`, "utf8"));
 const REACH: Record<string, string> = VOCAB.fieldReach;
 const BAND_ORDERS: Record<string, string[]> = VOCAB.bandOrders;
@@ -76,7 +76,7 @@ const NUTS_NAME_TOKENS = new Set<string>();
 // Country names, read from the same generated source the product resolves with.
 const COUNTRY_TOKENS = new Set<string>();
 (function harvestCountries() {
-  const src = readFileSync(`${ROOT}/website/frontend/lib/intelligence/regions.generated.ts`, "utf8");
+  const src = readFileSync(`${ROOT}/web/lib/intelligence/regions.generated.ts`, "utf8");
   for (const m of src.matchAll(/"([A-Za-zÀ-ÿ][A-Za-zÀ-ÿ' .-]{3,40})"/g)) {
     const t = m[1].toLowerCase().trim();
     if (t.length > 3) COUNTRY_TOKENS.add(t);

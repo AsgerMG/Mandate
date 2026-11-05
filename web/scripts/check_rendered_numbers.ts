@@ -325,7 +325,7 @@ function assertNotVacuous(o: {
   const missing = ENTRY_POINTS.filter((p) => !existsSync(path.join(CWD, p)));
   if (missing.length) {
     fail(`the site's pages are not where this check looks: ${missing.join(", ")} missing. ` +
-         `Run from website/frontend. A check that cannot find the site passes it.`);
+         `Run from web. A check that cannot find the site passes it.`);
   }
   if (!existsSync(APP)) fail(`no app/ directory under ${CWD}`);
   if (o.files < 15) {

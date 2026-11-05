@@ -41,7 +41,7 @@ async function main() {
   const { publishableInstruments } = await import("../lib/intelligence/corpus");
   const { distinguishRowNames, nameRowsAsDoors } = await import("../lib/intelligence/shortlist");
   const pool = publishableInstruments();
-  if (!pool.length) throw new Error("empty pool — run from website/frontend");
+  if (!pool.length) throw new Error("empty pool — run from web");
 
   const measure = (rename: boolean) => {
     const byCountry = new Map<string, InstrumentRow[]>();

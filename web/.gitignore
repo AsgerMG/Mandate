@@ -42,7 +42,7 @@ next-env.d.ts
 memo-bench/
 
 # ── Inherited from capital/.gitignore ──────────────────────────────────────
-# This app lived at capital/website/frontend until 2026-11-06 and these rules
+# This app lived at web until 2026-11-06 and these rules
 # reached it from capital/.gitignore. They are stated here now that it sits at
 # the monorepo root, so nothing that was ignored starts showing up.
 # Generated site data (website/build/build_site_data.py writes public/data/*;

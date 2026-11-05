@@ -89,7 +89,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 
 import argparse  # noqa: E402
 import json  # noqa: E402
@@ -99,7 +99,7 @@ import sqlite3  # noqa: E402
 from recall_guards import GRAM, _grams, squash  # noqa: E402
 
 SRC = ROOT / "data" / "raw" / "scheme_enrichment"
-RECALL_DIR = ROOT / "website" / "frontend" / "lib" / "intelligence"
+RECALL_DIR = WEB / "lib" / "intelligence"
 #: Below this a shared run is a coincidence of administrative boilerplate, not a
 #: quotation. Same floor the recall guards use for "is this prose at all".
 MIN_QUERY = 80

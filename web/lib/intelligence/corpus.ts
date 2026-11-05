@@ -722,7 +722,7 @@ function loadDbInstrumentsFromJson(): DbInstrument[] | null {
   } catch (e) {
     // Loud, because the commonest cause is not "there is no snapshot" but "I
     // looked in the wrong place": snapshotPath() resolves from process.cwd(),
-    // so a harness invoked from the repo root instead of website/frontend gets
+    // so a harness invoked from the repo root instead of web gets
     // null here, then an empty corpus, and then a green pass over nothing.
     // check_capital_reach reported "ok — every value carried by the 0
     // publishable instruments is reachable" that way on 2026-08-08.

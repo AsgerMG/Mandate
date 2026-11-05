@@ -49,7 +49,7 @@ import {
 } from "./recallSet";
 
 const num = (v: string | undefined, d: number) => (v && Number.isFinite(Number(v)) ? Number(v) : d);
-const ROOT = path.resolve(process.cwd(), "..", "..");
+const ROOT = path.resolve(process.cwd(), "..", "capital");
 
 interface Codebook {
   licenses_technology: string[]; nontech: string[]; unspecific: string[];

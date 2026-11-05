@@ -71,7 +71,7 @@ import {
  *  inventing answers. */
 const BASELINE_UNVERIFIED = Number(process.env.WINDOW_BASELINE ?? 89);
 
-const EVIDENCE = resolve(__dirname, "../../../project-mgmt/findings/wsCO_window_register.json");
+const EVIDENCE = resolve(__dirname, "../../capital/project-mgmt/findings/wsCO_window_register.json");
 
 interface Verdict { id: string; register: string; verdict: string; detail: string; name: string }
 

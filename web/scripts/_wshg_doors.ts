@@ -33,7 +33,7 @@ import path from "path";
 import { USE_OF_FUNDS_OPTIONS } from "../lib/intelligence/types";
 
 const PAIRS = process.env.PAIRS ?? path.join(
-  process.cwd(), "..", "..", "project-mgmt", "evidence", "wsha_door_pairs_2026-08-17.jsonl");
+  process.cwd(), "..", "capital", "project-mgmt", "evidence", "wsha_door_pairs_2026-08-17.jsonl");
 const OBJECTIVES = path.join(process.cwd(), "lib", "intelligence", "__objectives.json");
 const UOF = process.env.UOF ?? "/tmp/wshg_uof.json";
 

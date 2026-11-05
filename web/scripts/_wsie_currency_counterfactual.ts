@@ -30,7 +30,7 @@
  * so a flat blocked count is not evidence that nothing changed. Both counts are
  * printed and the transitions are printed by name.
  *
- *   cd website/frontend && npx tsx scripts/_wsie_currency_counterfactual.ts
+ *   cd web && npx tsx scripts/_wsie_currency_counterfactual.ts
  */
 delete process.env.DATABASE_URL;
 
@@ -43,9 +43,9 @@ import { assessInstrument } from "../lib/intelligence/verdict";
 import { applyCorrections, loadCorrections } from "./gateCorrections";
 
 const SNAPSHOT = path.join("public", "data", "instrument_terms.json");
-const CORRECTIONS = path.join("..", "..", "project-mgmt", "evidence",
+const CORRECTIONS = path.join("..", "capital", "project-mgmt", "evidence",
   "wsie_currency_band_corrections_2026-08-19.jsonl");
-const TAPE = path.join("..", "..", "project-mgmt", "findings",
+const TAPE = path.join("..", "capital", "project-mgmt", "findings",
   "indicative_wsHW", "free.json");
 
 interface TapeRow {

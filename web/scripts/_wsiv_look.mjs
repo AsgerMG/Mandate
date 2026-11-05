@@ -10,7 +10,7 @@
 //
 //   node scripts/_wsiv_look.mjs   (dev server on :3210 must already be up)
 const BASE = process.env.BASE ?? "http://localhost:3210";
-const OUT = process.env.OUT ?? "../../project-mgmt/findings/project_question_wsIV";
+const OUT = process.env.OUT ?? "../capital/project-mgmt/findings/project_question_wsIV";
 const CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
 import { spawn } from "node:child_process";

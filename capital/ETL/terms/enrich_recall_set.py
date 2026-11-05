@@ -74,7 +74,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DATA, DB, ROOT  # noqa: E402
+from etl_env import DATA, DB, ROOT, WEB  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
@@ -83,7 +83,7 @@ import sqlite3  # noqa: E402
 
 from recall_guards import LeakIndex, squash  # noqa: E402
 
-FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
+FRONTEND = WEB / "lib" / "intelligence"
 RECALL_SET = FRONTEND / "__recallSet.json"
 OUT = FRONTEND / "__recallSetEnriched.json"
 TITLE_KINDS = DATA / "instrument_title_kind.json"

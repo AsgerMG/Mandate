@@ -241,7 +241,7 @@ async function main() {
   console.log(`    M = A + B   = ${A + B}   also counting answers that name something with no door`);
 
   const stages = JSON.parse(readFileSync(
-    join(process.cwd(), "..", "..", "project-mgmt", "findings", "one_funnel",
+    join(process.cwd(), "..", "capital", "project-mgmt", "findings", "one_funnel",
       "latest.json"), "utf8")).stages as
     Array<{ id: string; remaining: number | null; sharePct: number | null }>;
   // ██ THE NUMERATOR MOVES TOO, AND ONLY ABOVE `publishable`. ██

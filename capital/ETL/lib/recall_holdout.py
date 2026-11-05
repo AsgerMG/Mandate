@@ -64,12 +64,12 @@ import json
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from etl_env import ROOT
+from etl_env import ROOT, WEB
 
 # Where the graded answer keys live. One directory, one glob: the frontend's
 # intelligence lib is where every recall set has ever been written, and a set
 # stored anywhere else would not be loadable by the harnesses either.
-INTEL_DIR = ROOT / "website" / "frontend" / "lib" / "intelligence"
+INTEL_DIR = WEB / "lib" / "intelligence"
 RECALL_GLOB = "__recallSet*.json"
 
 
@@ -86,7 +86,7 @@ RECALL_GLOB = "__recallSet*.json"
 #
 # So it is READ, not copied. A regex over one exported constant is a small price
 # for there being exactly one answer to "which key ships".
-ACTIVE_SET_DECL = ROOT / "website" / "frontend" / "scripts" / "recallSet.ts"
+ACTIVE_SET_DECL = WEB / "scripts" / "recallSet.ts"
 
 
 def active_recall_set(decl: Path | None = None) -> str:

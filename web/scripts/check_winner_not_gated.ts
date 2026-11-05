@@ -98,7 +98,7 @@
  * network. A guard that needs a credential is a guard that skips on CI and on
  * every fresh worktree.
  *
- *   cd website/frontend && npx tsx scripts/check_winner_not_gated.ts
+ *   cd web && npx tsx scripts/check_winner_not_gated.ts
  */
 // PINNED OFFLINE, on purpose and not as a formality. This check imports the
 // product's own inheritance rule and its own verdict engine rather than

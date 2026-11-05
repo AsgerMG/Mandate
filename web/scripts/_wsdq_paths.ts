@@ -15,7 +15,7 @@ import path from "path";
  *  itself. Re-running a harness must never be able to delete the thing that
  *  makes the re-run interpretable. */
 export const OUT_ROOT = path.join(
-  process.cwd(), "..", "..", "project-mgmt", "findings",
+  process.cwd(), "..", "capital", "project-mgmt", "findings",
   process.env.WSDQ_OUT ?? "first_test_wsDQ");
 
 /** A directory name a human can read and a shell can type. */

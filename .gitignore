@@ -6,7 +6,7 @@ policy/.venv
 __pycache__/
 node_modules
 # worktree symlinks (scripts/agent-worktree.sh): a trailing slash would match only a real directory
-capital/website/frontend/node_modules
+web/node_modules
 policy/website/node_modules
 # agent worktrees (scripts/agent-worktree.sh)
 .claude/worktrees/

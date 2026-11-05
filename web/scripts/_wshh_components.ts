@@ -48,7 +48,7 @@ import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "./found
 import { isDescribed, loadRecallSet, reattributeMissingAnswers, type RecallRow }
   from "./recallSet";
 
-const PAIRS = path.resolve(process.cwd(), "..", "..",
+const PAIRS = path.resolve(process.cwd(), "..", "capital",
   "project-mgmt", "evidence", "wsha_door_pairs_2026-08-17.jsonl");
 const VOYAGE_URL = "https://api.voyageai.com/v1/embeddings";
 const MODEL = "voyage-3.5";

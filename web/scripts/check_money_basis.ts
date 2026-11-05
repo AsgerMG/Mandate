@@ -66,7 +66,7 @@ import { IDENTITY_AXES, WRITER_AXES } from "../lib/intelligence/rowNovelty";
 import { ratesIn } from "./promptRates";
 
 const FRONTEND = process.cwd();
-const REPO = path.resolve(FRONTEND, "..", "..");
+const REPO = path.resolve(FRONTEND, "..", "capital");
 
 /** States in which this would pass while seeing nothing. */
 const MIN_ROWS = 25;

@@ -101,7 +101,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { MIN_DERIVED_CADENCE_DAYS, isScheduledProducer } from "./guardVerdict";
 
-const ROOT = path.join(__dirname, "..", "..", "..");
+const ROOT = path.join(__dirname, "..", "..", "capital");
 const REGISTRY = path.join(ROOT, "data", "guard_registry.json");
 const RUNNER = path.join(ROOT, "ETL", "lib", "guard_verdicts.py");
 

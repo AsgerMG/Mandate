@@ -93,7 +93,7 @@ delete process.env.VOYAGE_KEY;
 
 
 const TAPE = process.argv[2] ?? path.join(
-  process.cwd(), "..", "..", "project-mgmt", "findings", "indicative_wsHO", "main_tape.jsonl");
+  process.cwd(), "..", "capital", "project-mgmt", "findings", "indicative_wsHO", "main_tape.jsonl");
 
 
 interface Turn { round: number; prompt: string; reply: string; thinking: string }

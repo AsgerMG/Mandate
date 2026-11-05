@@ -120,7 +120,7 @@ interface Recovered {
   generatedAt?: string; selfMatched: boolean; selfChannels: string[];
   comparableFirms: string[]; publishedChannels: string[];
 }
-const tapeFile = path.join(process.cwd(), "..", "..", "project-mgmt", "findings",
+const tapeFile = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings",
   "stage_declared_wsIM", "recovered_runs.json");
 const tape = JSON.parse(readFileSync(tapeFile, "utf8")) as Recovered[];
 

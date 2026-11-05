@@ -31,7 +31,7 @@ requireCredentials("wscc_demand", ["DATABASE_URL"]);
 const PUB = process.env.PUBLISHABLE;
 const TAU = Number(process.env.TAU ?? 0.72);
 const OUT = process.env.CLUSTERS_OUT;
-const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../../data/vocabularies.json", "utf8"));
+const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../capital/data/vocabularies.json", "utf8"));
 const REACH: Record<string, string> = VOCAB.fieldReach;
 
 export type GateRow = {

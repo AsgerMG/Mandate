@@ -62,8 +62,8 @@ delete process.env.VOYAGE_KEY;
 const SHOWN = 6;
 
 const TAPES = process.argv.slice(2).length ? process.argv.slice(2) : [
-  path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "indicative_wsHO", "main_tape.jsonl"),
-  path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "indicative_wsHW", "main_tape.jsonl"),
+  path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "indicative_wsHO", "main_tape.jsonl"),
+  path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "indicative_wsHW", "main_tape.jsonl"),
 ];
 
 

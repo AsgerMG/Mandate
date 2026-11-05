@@ -25,7 +25,7 @@ import { loadEnvLocal, requireCredentials } from "./loadEnv";
 loadEnvLocal();
 requireCredentials("wscb_tranche", ["DATABASE_URL"]);
 const PUB = process.env.PUBLISHABLE;
-const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../../data/vocabularies.json", "utf8"));
+const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../capital/data/vocabularies.json", "utf8"));
 const REACH: Record<string, string> = VOCAB.fieldReach;
 
 const h = (s: any) => (s ? String(s).trim().toLowerCase().slice(0, 400) : "");

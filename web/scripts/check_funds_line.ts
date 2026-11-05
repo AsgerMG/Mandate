@@ -115,7 +115,7 @@ for (const { label, cap, source, render } of LINES) {
 
 if (!anySource) {
   console.error("\nFAIL — no scheme prose was read, so this check proved nothing. " +
-    "Run it from website/frontend, where public/data/instrument_terms.json is.");
+    "Run it from web, where public/data/instrument_terms.json is.");
   process.exitCode = 1;
 } else if (bad.length) {
   console.error(`\nFAIL — ${bad.length} line(s) are not a statement:\n`);

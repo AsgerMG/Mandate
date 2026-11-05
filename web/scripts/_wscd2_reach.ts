@@ -57,7 +57,7 @@
 //
 // Read-only. Postgres and disk. NO model calls.
 //
-//   cd website/frontend
+//   cd web
 //   OPEN_QUESTION_ARM=on npx tsx scripts/_wscd2_reach.ts
 //   OPEN_QUESTION_ARM=on N=200 npx tsx scripts/_wscd2_reach.ts
 import { loadEnvLocal, requireCredentials } from "./loadEnv";

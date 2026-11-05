@@ -66,7 +66,7 @@ const THETA = Number(process.env.THETA ?? 0.7);
   console.log(`  ... of which EVERY later edition is itself closed: ${alsoClosed}`);
 
   // against wsGL's funder-page ground truth
-  const ev = readFileSync("../../project-mgmt/evidence/wsgl_closed_calls_2026-08-13.jsonl", "utf8")
+  const ev = readFileSync("../capital/project-mgmt/evidence/wsgl_closed_calls_2026-08-13.jsonl", "utf8")
     .trim().split("\n").map((l) => JSON.parse(l));
   console.log(`\nwsGL's 15 audited rows — funder verdict vs corpus falsifier:`);
   for (const e of ev) {

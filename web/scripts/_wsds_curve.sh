@@ -23,7 +23,7 @@ set -uo pipefail
 
 N="${N:-36}"
 SPLIT="${SPLIT:-tune}"
-OUTDIR="$(cd "$(dirname "$0")/../../.." && pwd)/project-mgmt/findings/dark_levers_wsDS"
+OUTDIR="$(cd "$(dirname "$0")/../../capital" && pwd)/project-mgmt/findings/dark_levers_wsDS"
 mkdir -p "$OUTDIR/curve"
 
 for EFFORT in off low medium high; do

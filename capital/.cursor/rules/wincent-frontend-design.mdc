@@ -1,6 +1,6 @@
 ---
 description: Wincent frontend design, copy, spacing, imagery, and intake principles
-globs: website/frontend/**/*.{tsx,ts,css}
+globs: web/**/*.{tsx,ts,css}
 alwaysApply: false
 ---
 

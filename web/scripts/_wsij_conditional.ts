@@ -38,7 +38,7 @@
 import { readFileSync } from "fs";
 import { join } from "path";
 
-const FIND = join(__dirname, "..", "..", "..", "project-mgmt", "findings");
+const FIND = join(__dirname, "..", "..", "capital", "project-mgmt", "findings");
 const Z95 = 1.96;
 
 type Line = {

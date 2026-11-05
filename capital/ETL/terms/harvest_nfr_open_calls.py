@@ -341,7 +341,7 @@ def window(props: dict) -> tuple[str | None, str, str]:
     new could join anyway.
 
     Basis values match SCHEME_END_BASIS / SOURCE_WINDOW_POLICY in
-    website/frontend/lib/intelligence/liveness.ts.
+    web/lib/intelligence/liveness.ts.
     """
     ds = deadlines(props)
     if not ds:

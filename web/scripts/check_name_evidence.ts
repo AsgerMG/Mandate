@@ -58,7 +58,7 @@ async function main() {
     console.error(
       "check_name_evidence: FAILED — 0 publishable instruments.\n" +
       "  Every row is vacuously well-named in an empty corpus, so this would\n" +
-      "  otherwise pass having checked nothing. Run from website/frontend: the\n" +
+      "  otherwise pass having checked nothing. Run from web: the\n" +
       `  snapshot resolves from process.cwd()/public/data. cwd was ${process.cwd()}`);
     process.exit(1);
   }

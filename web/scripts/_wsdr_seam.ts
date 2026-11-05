@@ -84,7 +84,7 @@ import { founderIntake, founderPolicyFromEnv, type FounderPolicy } from "./found
 import { isDescribed, loadRecallSet, partitionByOfferable, reattributeMissingAnswers } from "./recallSet";
 
 const PUBLISH_CAP = BRIEF_LIMITS.institutionsMax;
-const OUT = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "seam_wsDR");
+const OUT = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "seam_wsDR");
 
 /** One founder as this harness needs it, whichever population it came from. */
 interface Case {

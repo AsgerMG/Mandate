@@ -53,7 +53,7 @@
 //
 // FREE. Reads Postgres and the corpus's own gate embeddings; no model calls.
 //
-// Run from website/frontend:
+// Run from web:
 //   PUBLISHABLE=/tmp/pub.json npx tsx scripts/_wsch_derive.ts
 import { Client } from "pg";
 import { writeFileSync } from "fs";

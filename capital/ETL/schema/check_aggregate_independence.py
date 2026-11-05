@@ -32,7 +32,7 @@ had, it printed "skipping" and returned 0: a green tick from a check that had
 not executed a single one of its assertions. It now runs in the weekly Railway
 cron, against the store (schema `capital`), and publishes a verdict that CI
 reads without needing credentials
-(ETL/lib/guard_verdicts.py -> website/frontend/scripts/check_verdicts.ts).
+(ETL/lib/guard_verdicts.py -> web/scripts/check_verdicts.ts).
 
 The manipulation is an UPDATE of every funding_instruments row, made in a
 transaction that is ALWAYS rolled back. Other sessions never see it (MVCC);

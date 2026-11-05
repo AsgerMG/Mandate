@@ -22,7 +22,7 @@
  *      it is zero the funnel cannot move and no two-hour run is needed to say
  *      so.
  *
- *   cd website/frontend && npx tsx scripts/_wshn_successor_reach.ts
+ *   cd web && npx tsx scripts/_wshn_successor_reach.ts
  *
  * Named by project-mgmt/findings/reach_wsHN.md.
  */

@@ -61,7 +61,7 @@ import { isDescribed, loadRecallSet, partitionByOfferable, reattributeMissingAns
 /** The depths a menu could be. 18 is what ships, 40 is what wsDR's early arm
  *  actually showed, and `all` is what its own header claimed it showed. */
 const DEPTHS = [6, 18, 40, 0] as const; // 0 reads as "the whole accessible pool"
-const OUT = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "depth_wsEI");
+const OUT = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "depth_wsEI");
 
 /** Anthropic bills input by token and this script may not call Anthropic to
  *  count them, so characters are what it reports and the ratio is stated rather

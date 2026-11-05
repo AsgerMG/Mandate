@@ -15,7 +15,7 @@ import path from "path";
 
 import type { PairMeasurement } from "./_wshh_cosines";
 
-const EV = path.resolve(process.cwd(), "..", "..", "project-mgmt", "evidence");
+const EV = path.resolve(process.cwd(), "..", "capital", "project-mgmt", "evidence");
 const COS = path.join(EV, "wshh_door_cosines_2026-08-17.json");
 const CMP = path.join(EV, "wshh_profile_components_2026-08-17.json");
 

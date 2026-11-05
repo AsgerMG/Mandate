@@ -227,7 +227,7 @@ const DERIVATION: Record<string, { class: Derivation; why: string }> = {
 
 /** The ETL pass that derives instrument columns from the events corpus. */
 const ETL_PASS = path.resolve(
-  ROOT, "..", "..", "ETL", "events", "load", "populate_funding_instruments.py");
+  ROOT, "..", "capital", "ETL", "events", "load", "populate_funding_instruments.py");
 
 const camelOf = (col: string) => col.replace(/_([a-z0-9])/g, (_, c: string) => c.toUpperCase());
 

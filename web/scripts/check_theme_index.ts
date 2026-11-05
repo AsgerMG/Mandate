@@ -45,7 +45,7 @@ async function main() {
       ? "check_theme_index: themeIndex.generated.ts is STALE."
       : "check_theme_index: themeIndex.generated.ts is MISSING.",
   );
-  console.error("  run: cd website/frontend && npx tsx scripts/emit_theme_index.ts");
+  console.error("  run: cd web && npx tsx scripts/emit_theme_index.ts");
 
   // Name what moved, so the cause is obvious: a corpus publish adds or removes
   // instruments, whereas a change to THEMATIC_FAMILIES/ADMIN_NOISE/STOP/tokens

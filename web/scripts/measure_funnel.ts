@@ -1415,7 +1415,7 @@ async function main() {
       + `${uofControl.length} control founder(s) byte-identical across both arms`);
   }
 
-  const dir = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "one_funnel");
+  const dir = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "one_funnel");
   mkdirSync(dir, { recursive: true });
   // ── A COUNTERFACTUAL RUN DOES NOT BECOME `latest.md` ─────────────────────
   // `latest.md` is the file that gets quoted, planned from and committed, and
@@ -2127,7 +2127,7 @@ function sweepReport(
  *  Returns undefined if no tape carries the rank, and the report then says the
  *  band table is unavailable rather than showing a remembered one. */
 function bandConversions(): { label: string; n: number; control: number; ranker: number }[] | undefined {
-  const dir = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "headtohead_wsGA");
+  const dir = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "headtohead_wsGA");
   interface TapeRow {
     called?: boolean; reachable?: boolean; poolRankControl?: number | null;
     publishedControl?: string[]; publishedRanker?: string[]; won?: string; menu?: number;
@@ -2165,10 +2165,10 @@ function bandConversions(): { label: string; n: number; control: number; ranker:
   return out;
 }
 
-/** The working tree. `process.cwd()` is `website/frontend` for every harness
+/** The working tree. `process.cwd()` is `web` for every harness
  *  here, and the repo is two levels up — the same derivation `latest.md`'s own
  *  output path uses, so the two cannot disagree about where the tree is. */
-const REPO_ROOT = path.resolve(process.cwd(), "..", "..");
+const REPO_ROOT = path.resolve(process.cwd(), "..", "capital");
 
 /** ── THE PER-FOUNDER TRACE, AND WHY IT DOES NOT LIVE IN THE REPO ───────────
  *
@@ -2355,7 +2355,7 @@ async function lastRecallFloor(): Promise<{
   interface Row { takenAt?: string; metrics?: Record<string, unknown> }
   try {
     const reg = JSON.parse(readFileSync(
-      path.join(process.cwd(), "..", "..", "data", "guard_registry.json"), "utf8"),
+      path.join(process.cwd(), "..", "capital", "data", "guard_registry.json"), "utf8"),
     ) as { feed?: { url?: string } };
     const url = process.env.GUARD_FEED_URL || reg.feed?.url;
     if (!url) return undefined;
@@ -2393,7 +2393,7 @@ function estimateModelStage(): {
   file: string; fingerprint: string; n: number;
   controlHits: number; rankerHits: number; controlRate: number; rankerRate: number;
 } | undefined {
-  const dir = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "headtohead_wsGA");
+  const dir = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "headtohead_wsGA");
   let files: string[];
   try {
     files = readdirSync(dir).filter((f) => f.endsWith(".json"));

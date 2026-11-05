@@ -73,7 +73,7 @@ import { canopy, loadGates, readPub, type GateRow } from "./_wscc_demand";
 
 loadEnvLocal();
 requireCredentials("wscc_ceiling", ["DATABASE_URL"]);
-const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../../data/vocabularies.json", "utf8"));
+const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../capital/data/vocabularies.json", "utf8"));
 const ENUMS: Set<string> = new Set(Object.keys(VOCAB.enumValues));
 /** Geographic fields carry a derived option list rather than a literal one, so
  *  they are enumerable in the same sense: the founder picks from a set. */

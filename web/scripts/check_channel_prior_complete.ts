@@ -84,7 +84,7 @@ function main(): void {
     // in the wrong place", never "the corpus has no channels". A check that
     // passes over nothing is the failure this repo has shipped before.
     console.error("check_channel_prior_complete: FAILED — the selector's channel "
-      + `vocabulary is EMPTY (cwd ${process.cwd()}). Run from website/frontend.`);
+      + `vocabulary is EMPTY (cwd ${process.cwd()}). Run from web.`);
     process.exit(1);
   }
 

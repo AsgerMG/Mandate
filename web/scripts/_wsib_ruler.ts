@@ -223,7 +223,7 @@ function main() {
     + `${nb.base.size} sector keys, neighbourhood derived from co-funding lift`);
 
   const args = process.argv.slice(2);
-  const root = path.join(process.cwd(), "..", "..", "project-mgmt", "findings");
+  const root = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings");
   if (args[0] === "--slots") {
     slots(args[1] ?? path.join(root, "first_test_wsDQ"), nb, byName, mixOf);
     return;

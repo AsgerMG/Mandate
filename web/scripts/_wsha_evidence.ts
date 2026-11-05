@@ -27,7 +27,7 @@
 //
 // FREE AND OFFLINE. Reads `_wsha_doors.ts`'s dump. No credentials, no network.
 //
-//   IN=/tmp/wsha_doors.json OUT=../../project-mgmt/evidence/wsha_door_pairs_2026-08-17.jsonl \
+//   IN=/tmp/wsha_doors.json OUT=../capital/project-mgmt/evidence/wsha_door_pairs_2026-08-17.jsonl \
 //     npx tsx scripts/_wsha_evidence.ts
 import { writeFileSync, readFileSync } from "fs";
 

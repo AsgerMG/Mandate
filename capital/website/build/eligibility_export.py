@@ -188,7 +188,7 @@ def _main(conn) -> None:
         # it the snapshot path would propose rows the Postgres path withholds,
         # and the twelve loader-constructed bucket labels -- `SATR Pt Equity`,
         # the eight `Sudop *` rows that were Poland's entire pool -- are exactly
-        # such rows. See website/frontend/lib/intelligence/nameEvidence.ts.
+        # such rows. See web/lib/intelligence/nameEvidence.ts.
         "nameSource": inst["name_source"],
         # Whether an application route is known to exist -- a SEPARATE axis from
         # liveness. Carried here for the same reason the basis is: without it

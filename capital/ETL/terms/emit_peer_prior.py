@@ -76,7 +76,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 from liveness import closed_sql  # noqa: E402
 
 import argparse  # noqa: E402
@@ -88,7 +88,7 @@ import sqlite3  # noqa: E402
 from attribution import Split  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 
-OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "peerPrior.generated.json"
+OUT = WEB / "lib" / "intelligence" / "peerPrior.generated.json"
 
 # Companies per instrument that may feed the prior. See the header: this is
 # what separates "recurs for this kind of company" from "is simply enormous".
@@ -136,7 +136,7 @@ KEEP = 30
 # them produces the same shape here, which is exactly what the regenerate-on-
 # refresh cycle needs and what a single blended count could never give.
 #
-# MEASURED, by `website/frontend/scripts/check_peer_prior_canary.ts` over two
+# MEASURED, by `web/scripts/check_peer_prior_canary.ts` over two
 # committed JSONs -- the share of answer-key pairs whose REGIME appears in the
 # first five entries of their own `country|sector` cell, tune split, n=1,161
 # and n=818, no sampling and no credentials:

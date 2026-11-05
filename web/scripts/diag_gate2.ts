@@ -10,7 +10,7 @@ loadEnvLocal();
 requireCredentials("diag_gate2", ["DATABASE_URL", "VOYAGE_KEY", "ANTHROPIC_API_KEY"]);
 
 const MODEL = process.env.MODEL ?? "claude-haiku-4-5";
-const ROOT = "/Users/asgermollergrimberg/Wincent/website/frontend";
+const ROOT = "/Users/asgermollergrimberg/Wincent/web";
 const OUT = process.env.OUT ?? "/private/tmp/claude-501/-Users-asgermollergrimberg-Wincent/1f599910-047b-4d24-8947-cb1c67ef6560/scratchpad/diag_out.json";
 
 const text = (r: any) => (r.content ?? []).filter((b: any) => b?.type === "text")

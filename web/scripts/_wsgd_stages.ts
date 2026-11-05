@@ -68,7 +68,7 @@ import { isDescribed, loadRecallSet, partitionByOfferable, reattributeMissingAns
  *  `VERDICT_POOL`, 40 is `SELECT_DEPTH`, 0 reads as the whole pool. The rest
  *  fill in the curve either side of the two constants that could move. */
 const KS = [6, 12, 18, 25, 30, 40, 50, 60, 80, 0] as const;
-const OUT = path.join(process.cwd(), "..", "..", "project-mgmt", "findings", "stages_wsGD");
+const OUT = path.join(process.cwd(), "..", "capital", "project-mgmt", "findings", "stages_wsGD");
 
 /** Anthropic bills input by token and this script may not call Anthropic to
  *  count them, so characters are what it reports and the ratio is stated rather

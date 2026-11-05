@@ -56,7 +56,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 
 const FRONTEND = process.cwd();
-const ROOT = path.resolve(FRONTEND, "..", "..");
+const ROOT = path.resolve(FRONTEND, "..", "capital");
 
 interface Codebook {
   licenses_technology: string[];

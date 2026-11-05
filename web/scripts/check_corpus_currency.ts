@@ -53,7 +53,7 @@ import path from "path";
 // Repo root AND frontend, from the one shared loader. Reading only
 // ./.env.local was a way for this check to skip itself and report that as a
 // pass: a checkout that carries DATABASE_URL at the repo root -- where it is
-// documented to live -- and not under website/frontend produced "skipped,
+// documented to live -- and not under web produced "skipped,
 // nothing to compare against" on a machine that had the credentials all along.
 // The block that used to sit here had been copy-pasted into seven harnesses
 // while thirty-three others still carried the single-path version; see
@@ -628,7 +628,7 @@ async function main() {
         `          including the ones whose own text did not change.\n` +
         `      Re-cut BOTH mirrors of the index, in this order:\n` +
         `        DATABASE_URL=... python3 ETL/terms/emit_profile_leak_index.py\n` +
-        `        cd website/frontend && npx tsx scripts/emit_semantic_cache.ts\n` +
+        `        cd web && npx tsx scripts/emit_semantic_cache.ts\n` +
         `      e.g. ${rewritten.slice(0, 3).join(", ")}`);
     }
   }

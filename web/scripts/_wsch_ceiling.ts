@@ -16,7 +16,7 @@
 //
 // FREE. No model calls.
 //
-// Run from website/frontend:
+// Run from web:
 //   PUBLISHABLE=/tmp/pub.json npx tsx scripts/_wsch_ceiling.ts
 import { readFileSync } from "fs";
 import { Client } from "pg";

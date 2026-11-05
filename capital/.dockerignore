@@ -18,9 +18,6 @@ data/processed/
 data/backups/
 data/ranker_cache/
 
-website/frontend/node_modules/
-website/frontend/.next/
-website/frontend/out/
 __pycache__/
 *.pyc
 .DS_Store

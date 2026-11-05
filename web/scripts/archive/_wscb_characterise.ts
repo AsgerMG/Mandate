@@ -11,7 +11,7 @@ loadEnvLocal();
 requireCredentials("wscb_characterise", ["DATABASE_URL"]);
 const PUB = process.env.PUBLISHABLE;
 
-const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../../data/vocabularies.json", "utf8"));
+const VOCAB = JSON.parse(readFileSync(process.cwd() + "/../capital/data/vocabularies.json", "utf8"));
 const REACH: Record<string, string> = VOCAB.fieldReach;
 
 (async () => {

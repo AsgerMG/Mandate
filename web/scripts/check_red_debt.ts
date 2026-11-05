@@ -62,8 +62,8 @@ function main(): void {
     console.error(
       `\ncheck_red_debt: FAILED — ${j.problems.length} problem(s) above.\n`
       + `  ${path.relative(ROOT, RECORD)} is what this tree knows about its own build.\n`
-      + `  Refresh one row:   cd website/frontend && npm run check --only="<label>"\n`
-      + `  Refresh all:       cd website/frontend && npm run check\n`
+      + `  Refresh one row:   cd web && npm run check --only="<label>"\n`
+      + `  Refresh all:       cd web && npm run check\n`
       + `  Own a red:         data/guard_registry.json -> suite_accepted`);
     process.exit(1);
   }

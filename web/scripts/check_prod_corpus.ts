@@ -54,7 +54,7 @@ import path from "node:path";
 /** Same source as prodcheck: where a reader without credentials reaches this
  *  product is already written down once, and typing a host here would be a
  *  second copy of it that nothing keeps honest. */
-const REPO_ROOT = path.join(process.cwd(), "..", "..");
+const REPO_ROOT = path.join(process.cwd(), "..", "capital");
 const FEED = (JSON.parse(readFileSync(
   path.join(REPO_ROOT, "data", "guard_registry.json"), "utf8")) as
   { feed: { url: string } }).feed.url;

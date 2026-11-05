@@ -60,7 +60,7 @@ const forbid = (what: string) => () => {
 (globalThis as Record<string, unknown>).WebSocket = forbid("WebSocket");
 
 const TAPE = process.env.TAPE ?? path.join(
-  __dirname, "..", "..", "..",
+  __dirname, "..", "..", "capital",
   "project-mgmt", "findings", "headtohead_wsGA", "adviser_medium_n773_x2.json");
 
 interface TapeRow {

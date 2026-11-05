@@ -136,7 +136,7 @@ loadEnvLocal();
 const CREDENTIALS = requireCredentials(
   "check_gate_pertinence", [], { optional: ["DATABASE_URL"] });
 
-const REPO = path.resolve(process.cwd(), "../..");
+const REPO = path.resolve(process.cwd(), "../capital");
 const CACHE = path.join(REPO, "data", "eligibility_pertinence.json");
 const CALIBRATION = path.join(REPO, "reference", "pertinence_calibration.json");
 const SNAPSHOT = path.join(process.cwd(), "public", "data", "instrument_terms.json");

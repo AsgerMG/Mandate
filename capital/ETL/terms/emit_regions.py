@@ -13,6 +13,7 @@ Usage: python3 ETL/terms/emit_regions.py
 """
 from __future__ import annotations
 
+import os
 import sys as _sys
 from pathlib import Path as _Path
 
@@ -20,12 +21,12 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import ROOT  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 
 import json  # noqa: E402
 
 SRC = ROOT / "reference" / "nuts_regions.json"
-OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "regions.generated.ts"
+OUT = WEB / "lib" / "intelligence" / "regions.generated.ts"
 
 HEADER = '''// GENERATED from reference/nuts_regions.json — do not edit by hand.
 // Source: Eurostat GISCO, NUTS 2024. Regenerate with
@@ -130,7 +131,7 @@ def main() -> None:
     text = build()
     OUT.write_text(text)
     n = sum(len(v) for v in json.loads(SRC.read_text())["regions"].values())
-    print(f"emit_regions -> {OUT.relative_to(ROOT)}  ({n} source regions)")
+    print(f"emit_regions -> {Path(os.path.relpath(OUT, ROOT))}  ({n} source regions)")
 
 
 if __name__ == "__main__":

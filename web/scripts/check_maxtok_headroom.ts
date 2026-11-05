@@ -102,17 +102,17 @@ import {
   VERDICT_POOL, type ThinkEffort,
 } from "../lib/intelligence/caps";
 
-const ROOT = path.resolve(process.cwd(), "..", "..");
+const ROOT = path.resolve(process.cwd(), "..", "capital");
 /** Where a run's own words are kept. Named literally so the tie between the
  *  guard and the tree it reads is visible from the source. */
 const WATCHES = "project-mgmt";
 /** The file that declares how long the whole request may take. The selector is
  *  one stage inside it and the writer runs after. */
-const ROUTE = "website/frontend/app/api/intelligence/route.ts";
+const ROUTE = "../web/app/api/intelligence/route.ts";
 /** The file that MAKES the call the ceilings bound. Read to find out whether it
  *  streams, because that single fact decides whether the transport will carry a
  *  large `max_tokens` at all. */
-const SEAM = "website/frontend/lib/intelligence/agentSelect.ts";
+const SEAM = "../web/lib/intelligence/agentSelect.ts";
 
 /** Non-vacuity. Each is a state in which this check would pass while seeing
  *  nothing, and each has a real cause: a moved tree, a renamed counter, a

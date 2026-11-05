@@ -30,7 +30,7 @@
  * product — and the gap between the two pairs is the part of this defect that
  * no guard in the repo currently watches.
  *
- *   cd website/frontend && npx tsx scripts/_wsgu_counterfactual.ts
+ *   cd web && npx tsx scripts/_wsgu_counterfactual.ts
  */
 delete process.env.DATABASE_URL;
 
@@ -44,7 +44,7 @@ import { applyCorrections, loadCorrections, type Correction } from "./gateCorrec
 import { loadRecallSet, type RecallRow } from "./recallSet";
 
 const SNAPSHOT = path.join("public", "data", "instrument_terms.json");
-const CORRECTIONS = path.join("..", "..", "project-mgmt", "evidence",
+const CORRECTIONS = path.join("..", "capital", "project-mgmt", "evidence",
   "wsgu_gate_encoding_corrections_2026-08-13.jsonl");
 
 function load(): { records: any[]; corrections: Correction[] } {

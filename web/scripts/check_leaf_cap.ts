@@ -95,7 +95,7 @@ async function main() {
   if (!pub.length) {
     console.error(
       `check_leaf_cap: FAILED — 0 publishable instruments, so every group is\n`
-      + `  under the cap by having no members. Run from website/frontend: the\n`
+      + `  under the cap by having no members. Run from web: the\n`
       + `  snapshot resolves from process.cwd()/public/data.\n`
       + `  cwd was ${process.cwd()}`);
     process.exit(1);
