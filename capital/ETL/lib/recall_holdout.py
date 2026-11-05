@@ -137,15 +137,10 @@ def recall_company_ids(conn, names: set[str] | None = None) -> set[int]:
     names = recall_company_names() if names is None else names
     if not names:
         return set()
-    out: set[int] = set()
-    todo = sorted(names)
-    # SQLite's variable limit is 999 on older builds; chunk rather than assume.
-    for i in range(0, len(todo), 500):
-        chunk = todo[i:i + 500]
-        out |= {r[0] for r in conn.execute(
-            "SELECT id FROM companies WHERE canonical_name IN (%s)"
-            % ",".join("?" * len(chunk)), chunk)}
-    return out
+    # `conn` is a store.connect() connection (Postgres, schema capital). One
+    # array parameter, so no chunking: SQLite's 999-variable limit is gone.
+    return {r[0] for r in conn.execute(
+        "SELECT id FROM companies WHERE canonical_name = ANY(%s)", (sorted(names),))}
 
 
 @dataclass
