@@ -5,12 +5,17 @@ isolation holds, and store the per-role URLs where every service reads them.
     python3 mandate/db/apply_roles.py --admin-url "$ADMIN_URL" --apply    # create/rotate + store
 
 THE STORE OF RECORD FOR CREDENTIALS IS RAILWAY, not a file. Each role's URL is
-written as two variables on the `postgres` service of the Mandate project:
+written as two variables on the database service (`pgvector`) of the Mandate project:
 
     CAPITAL_DATABASE_URL          private network, for Railway services
     CAPITAL_DATABASE_PUBLIC_URL   TCP proxy, for Vercel, CI and a laptop
 
-so a service declares `DATABASE_URL=${{postgres.CAPITAL_DATABASE_URL}}` and a
+The scheme is `postgres://`, the one spelling every client in the stack reads:
+libpq, psycopg, node-pg, and SQLAlchemy after data.session's rewrite. A bare
+`postgresql://` sends SQLAlchemy to psycopg2, which no brain installs; found
+when the live policy API 500'd on its first connection as policy_app.
+
+So a service declares `DATABASE_URL=${{pgvector.CAPITAL_DATABASE_URL}}` and a
 rotation is one re-run of this script. Passwords never touch git or stdout.
 
 --apply ROTATES every password. Anything still holding an old one will fail
@@ -104,8 +109,8 @@ def main() -> int:
                     sql.Identifier(role), sql.Literal(pw)))
                 prefix = role.upper().replace("_APP", "")
                 cred = f"{role}:{quote(pw, safe='')}"
-                urls[f"{prefix}_DATABASE_URL"] = f"postgresql://{cred}@{a.private_host}/{db}"
-                urls[f"{prefix}_DATABASE_PUBLIC_URL"] = f"postgresql://{cred}@{a.public_host}/{db}"
+                urls[f"{prefix}_DATABASE_URL"] = f"postgres://{cred}@{a.private_host}/{db}"
+                urls[f"{prefix}_DATABASE_PUBLIC_URL"] = f"postgres://{cred}@{a.public_host}/{db}"
         railway_set(urls)
         print(f"stored {len(urls)} variables on the postgres service: {', '.join(sorted(urls))}")
     else:
