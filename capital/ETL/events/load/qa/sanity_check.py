@@ -7,20 +7,46 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
+from etl_env import ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
-import sqlite3
-from pathlib import Path
+from decimal import Decimal  # noqa: E402
 
-conn = sqlite3.connect(_ETL_DB)
-conn.row_factory = sqlite3.Row
-cur = conn.cursor()
+from store import connect  # noqa: E402
+
+# Ported from SQLite on 2026-11-05. What changed in the SQL, and why each is the
+# same question rather than a different one:
+#   * GROUP_CONCAT(DISTINCT x) -> string_agg(DISTINCT x, ',' ORDER BY x): the list
+#     is now sorted (SQLite gave first-seen order, which no query asked for).
+#   * ROUND(x[, n]) on a double -> ROUND(x::numeric[, n]): Postgres has no
+#     ROUND(double, n), and its ROUND(double) rounds half to EVEN; numeric
+#     rounding is SQLite's half-away-from-zero rule (29991488.5 -> 29991489).
+#   * an alias in HAVING -> the expression; Postgres does not resolve aliases there.
+#   * text sort keys carry COLLATE "C", which is SQLite's BINARY order, so a
+#     LIMIT keeps the same rows rather than whatever the database locale sorts first.
+#   * every SUM over a euro column names its order (id), as ETL/schema/views.sql
+#     does: float addition is not associative, and id order is SQLite's.
+#   * a top-N whose cut falls inside a tie names the tie-break SQLite applied
+#     implicitly (country ascending; newest id first in the audit log).
+#   * the Europe-scope trigger is ONE Postgres trigger on INSERT OR UPDATE OF
+#     country, where SQLite needed two.
+# LIKE stays LIKE: it is case-sensitive in Postgres and not in SQLite, and no
+# `source` in the corpus has an upper-case letter, so every pattern here matches
+# the same rows.
+
+_con_cm = connect(readonly=True, dict_rows=True)
+conn = _con_cm.__enter__()
+
+
+def _v(v):
+    # numeric -> float, so a figure prints as it always has (12.3, not 12.30)
+    return float(v) if isinstance(v, Decimal) else v
+
 
 def q(sql, label):
     print(f"\n--- {label} ---")
-    for row in cur.execute(sql):
-        print("  " + " | ".join(f"{k}={v}" for k, v in dict(row).items()))
+    for row in conn.execute(sql).fetchall():
+        print("  " + " | ".join(f"{k}={_v(v)}" for k, v in row.items()))
 
 q("""
     SELECT source, COUNT(*) AS events, COUNT(DISTINCT company_id) AS unique_companies
@@ -33,16 +59,16 @@ q("""
     SELECT source, role, COUNT(*) AS n
     FROM public_funding_events
     GROUP BY source, role
-    ORDER BY source, n DESC
+    ORDER BY source COLLATE "C", n DESC
 """, "Events by source × role")
 
 q("""
     SELECT
         source,
-        ROUND(AVG(grant_amount_eur)) AS mean_grant,
-        ROUND(MIN(grant_amount_eur)) AS min_grant,
-        ROUND(MAX(grant_amount_eur)) AS max_grant,
-        ROUND(SUM(grant_amount_eur)) AS total_grant
+        ROUND((AVG(grant_amount_eur))::numeric) AS mean_grant,
+        ROUND((MIN(grant_amount_eur))::numeric) AS min_grant,
+        ROUND((MAX(grant_amount_eur))::numeric) AS max_grant,
+        ROUND((SUM(grant_amount_eur ORDER BY id))::numeric) AS total_grant
     FROM public_funding_events
     WHERE grant_amount_eur IS NOT NULL
     GROUP BY source
@@ -65,7 +91,7 @@ q("""
     JOIN public_funding_events e ON e.company_id = c.id
     WHERE e.source = 'eic_accelerator' AND e.role = 'coordinator'
     GROUP BY c.country
-    ORDER BY companies DESC
+    ORDER BY companies DESC, c.country COLLATE "C"
     LIMIT 15
 """, "EIC Accelerator coordinator companies by country (top 15)")
 
@@ -88,12 +114,12 @@ q("""
 q("""
     SELECT c.canonical_name, c.country,
            COUNT(DISTINCT e.source) AS n_programmes,
-           GROUP_CONCAT(DISTINCT e.source) AS programmes
+           string_agg(DISTINCT e.source, ',' ORDER BY e.source) AS programmes
     FROM companies c
     JOIN public_funding_events e ON e.company_id = c.id
     GROUP BY c.id
-    HAVING n_programmes >= 2
-    ORDER BY n_programmes DESC, c.canonical_name
+    HAVING COUNT(DISTINCT e.source) >= 2
+    ORDER BY n_programmes DESC, c.canonical_name COLLATE "C"
     LIMIT 10
 """, "Companies winning across multiple EIC programmes (top 10)")
 
@@ -106,31 +132,31 @@ q("""
     FROM public_funding_events e
     WHERE e.source LIKE 'ipcei_%'
     GROUP BY e.source
-    ORDER BY e.source
+    ORDER BY e.source COLLATE "C"
 """, "IPCEI: events and companies by source")
 
 q("""
     SELECT c.canonical_name, c.country,
-           GROUP_CONCAT(DISTINCT e.source) AS programmes,
+           string_agg(DISTINCT e.source, ',' ORDER BY e.source) AS programmes,
            COUNT(DISTINCT e.source) AS n_programmes
     FROM companies c
     JOIN public_funding_events e ON e.company_id = c.id
     GROUP BY c.id
     HAVING SUM(CASE WHEN e.source LIKE 'ipcei_%' THEN 1 ELSE 0 END) > 0
        AND SUM(CASE WHEN e.source NOT LIKE 'ipcei_%' THEN 1 ELSE 0 END) > 0
-    ORDER BY n_programmes DESC, c.canonical_name
+    ORDER BY n_programmes DESC, c.canonical_name COLLATE "C"
     LIMIT 20
 """, "IPCEI + EIC multi-instrument winners (companies in both)")
 
 q("""
     SELECT
         e.source,
-        ROUND(SUM(e.grant_amount_eur) / 1e9, 3) AS total_grant_bn_eur,
+        ROUND((SUM(e.grant_amount_eur ORDER BY e.id) / 1e9)::numeric, 3) AS total_grant_bn_eur,
         SUM(CASE WHEN e.grant_amount_eur IS NULL THEN 1 ELSE 0 END) AS rows_no_amount
     FROM public_funding_events e
     WHERE e.source LIKE 'ipcei_%'
     GROUP BY e.source
-    ORDER BY e.source
+    ORDER BY e.source COLLATE "C"
 """, "IPCEI: per-source nominal aid sum vs. redacted rows")
 
 q("""
@@ -139,7 +165,7 @@ q("""
     JOIN public_funding_events e ON e.company_id = c.id
     WHERE e.source LIKE 'ipcei_%'
     GROUP BY c.country
-    ORDER BY ipcei_companies DESC
+    ORDER BY ipcei_companies DESC, c.country COLLATE "C"
 """, "IPCEI: partner country distribution")
 
 q("""
@@ -173,7 +199,7 @@ q("""
     FROM public_funding_events e
     WHERE e.source LIKE 'eib%'
     GROUP BY e.source
-    ORDER BY e.source
+    ORDER BY e.source COLLATE "C"
 """, "EIB: events and distinct borrowers by source")
 
 q("""
@@ -182,7 +208,7 @@ q("""
     JOIN public_funding_events e ON e.company_id = c.id
     WHERE e.source LIKE 'eib%'
     GROUP BY c.country
-    ORDER BY borrowers DESC
+    ORDER BY borrowers DESC, c.country COLLATE "C"
 """, "EIB: borrower country distribution")
 
 q("""
@@ -196,11 +222,11 @@ q("""
 
 q("""
     SELECT
-        ROUND(SUM(e.debt_amount_eur) / 1e6, 1) AS total_debt_m_eur,
+        ROUND((SUM(e.debt_amount_eur ORDER BY e.id) / 1e6)::numeric, 1) AS total_debt_m_eur,
         COUNT(*) AS events,
-        ROUND(AVG(e.debt_amount_eur) / 1e6, 1) AS avg_loan_m_eur,
-        ROUND(MIN(e.debt_amount_eur) / 1e6, 1) AS min_loan_m_eur,
-        ROUND(MAX(e.debt_amount_eur) / 1e6, 1) AS max_loan_m_eur
+        ROUND((AVG(e.debt_amount_eur) / 1e6)::numeric, 1) AS avg_loan_m_eur,
+        ROUND((MIN(e.debt_amount_eur) / 1e6)::numeric, 1) AS min_loan_m_eur,
+        ROUND((MAX(e.debt_amount_eur) / 1e6)::numeric, 1) AS max_loan_m_eur
     FROM public_funding_events e
     WHERE e.source LIKE 'eib%' AND e.debt_amount_eur IS NOT NULL
 """, "EIB: debt portfolio stats (EUR)")
@@ -236,13 +262,13 @@ q("""
 
 q("""
     SELECT c.canonical_name, c.country,
-           GROUP_CONCAT(DISTINCT pfe.source) AS sources
+           string_agg(DISTINCT pfe.source, ',' ORDER BY pfe.source) AS sources
     FROM companies c
     JOIN public_funding_events pfe ON pfe.company_id = c.id
     GROUP BY c.id
     HAVING COUNT(DISTINCT pfe.source) >= 2
        AND SUM(CASE WHEN pfe.source LIKE 'eib%' THEN 1 ELSE 0 END) > 0
-    ORDER BY c.canonical_name
+    ORDER BY c.canonical_name COLLATE "C"
 """, "EIB: multi-instrument winners (EIB + at least one other source)")
 
 # ---------------------------------------------------------------------------
@@ -251,11 +277,11 @@ q("""
 
 q("""
     SELECT source, COUNT(*) AS events, COUNT(DISTINCT company_id) AS unique_companies,
-           ROUND(SUM(grant_amount_eur) / 1e6, 1) AS total_grant_m_eur
+           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::numeric, 1) AS total_grant_m_eur
     FROM public_funding_events
     WHERE source LIKE 'innovation_fund%'
     GROUP BY source
-    ORDER BY source
+    ORDER BY source COLLATE "C"
 """, "IF: events, companies and grant sums by sub-call")
 
 q("""
@@ -263,7 +289,7 @@ q("""
     FROM public_funding_events e
     JOIN companies c ON c.id = e.company_id
     WHERE e.source LIKE 'innovation_fund%'
-    GROUP BY c.country ORDER BY events DESC LIMIT 20
+    GROUP BY c.country ORDER BY events DESC, c.country COLLATE "C" LIMIT 20
 """, "IF: country distribution (top 20)")
 
 q("""
@@ -294,13 +320,13 @@ q("""
 
 q("""
     SELECT c.canonical_name, c.country,
-           GROUP_CONCAT(DISTINCT e.source) AS sources
+           string_agg(DISTINCT e.source, ',' ORDER BY e.source) AS sources
     FROM companies c
     JOIN public_funding_events e ON e.company_id = c.id
     GROUP BY c.id
     HAVING COUNT(DISTINCT e.source) >= 2
        AND SUM(CASE WHEN e.source LIKE 'innovation_fund%' THEN 1 ELSE 0 END) > 0
-    ORDER BY c.canonical_name
+    ORDER BY c.canonical_name COLLATE "C"
 """, "IF: multi-instrument winners (IF + at least one other source)")
 
 # ---------------------------------------------------------------------------
@@ -309,11 +335,11 @@ q("""
 
 q("""
     SELECT source, COUNT(*) AS events, COUNT(DISTINCT company_id) AS unique_companies,
-           ROUND(SUM(grant_amount_eur) / 1e6, 1) AS total_grant_m_eur
+           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::numeric, 1) AS total_grant_m_eur
     FROM public_funding_events
     WHERE source LIKE 'chips_ju%'
     GROUP BY source
-    ORDER BY source
+    ORDER BY source COLLATE "C"
 """, "Chips JU: events, companies and grant sums by call year")
 
 q("""
@@ -321,7 +347,7 @@ q("""
     FROM public_funding_events e
     JOIN companies c ON c.id = e.company_id
     WHERE e.source LIKE 'chips_ju%'
-    GROUP BY c.country ORDER BY events DESC LIMIT 15
+    GROUP BY c.country ORDER BY events DESC, c.country COLLATE "C" LIMIT 15
 """, "Chips JU: coordinator country distribution (top 15)")
 
 q("""
@@ -365,13 +391,13 @@ q("""
 
 q("""
     SELECT c.canonical_name, c.country,
-           GROUP_CONCAT(DISTINCT e.source) AS sources
+           string_agg(DISTINCT e.source, ',' ORDER BY e.source) AS sources
     FROM companies c
     JOIN public_funding_events e ON e.company_id = c.id
     GROUP BY c.id
     HAVING COUNT(DISTINCT e.source) >= 2
        AND SUM(CASE WHEN e.source LIKE 'chips_ju%' THEN 1 ELSE 0 END) > 0
-    ORDER BY c.canonical_name
+    ORDER BY c.canonical_name COLLATE "C"
 """, "Chips JU: multi-instrument winners (Chips JU + at least one other source)")
 
 # ---------------------------------------------------------------------------
@@ -380,11 +406,11 @@ q("""
 
 q("""
     SELECT source, COUNT(*) AS events, COUNT(DISTINCT company_id) AS unique_companies,
-           ROUND(SUM(grant_amount_eur) / 1e6, 1) AS total_eu_contribution_m_eur
+           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e6)::numeric, 1) AS total_eu_contribution_m_eur
     FROM public_funding_events
     WHERE source LIKE 'edf%'
     GROUP BY source
-    ORDER BY source
+    ORDER BY source COLLATE "C"
 """, "EDF: events, companies and EU contribution by call/strand")
 
 q("""
@@ -392,7 +418,7 @@ q("""
     FROM public_funding_events e
     JOIN companies c ON c.id = e.company_id
     WHERE e.source LIKE 'edf%'
-    GROUP BY c.country ORDER BY events DESC LIMIT 15
+    GROUP BY c.country ORDER BY events DESC, c.country COLLATE "C" LIMIT 15
 """, "EDF: coordinator country distribution (top 15)")
 
 q("""
@@ -440,13 +466,13 @@ q("""
 
 q("""
     SELECT c.canonical_name, c.country,
-           GROUP_CONCAT(DISTINCT e.source) AS sources
+           string_agg(DISTINCT e.source, ',' ORDER BY e.source) AS sources
     FROM companies c
     JOIN public_funding_events e ON e.company_id = c.id
     GROUP BY c.id
     HAVING COUNT(DISTINCT e.source) >= 2
        AND SUM(CASE WHEN e.source LIKE 'edf%' THEN 1 ELSE 0 END) > 0
-    ORDER BY c.canonical_name
+    ORDER BY c.canonical_name COLLATE "C"
 """, "EDF: multi-instrument winners (EDF + at least one other source)")
 
 # ---------------------------------------------------------------------------
@@ -458,7 +484,7 @@ q("""
     FROM public_funding_events
     WHERE source LIKE 'eit_%'
     GROUP BY source
-    ORDER BY source
+    ORDER BY source COLLATE "C"
 """, "EIT KIC: events and companies by source")
 
 q("""
@@ -466,7 +492,7 @@ q("""
     FROM public_funding_events e
     JOIN companies c ON c.id = e.company_id
     WHERE e.source LIKE 'eit_%'
-    GROUP BY c.country ORDER BY events DESC LIMIT 20
+    GROUP BY c.country ORDER BY events DESC, c.country COLLATE "C" LIMIT 20
 """, "EIT KIC: country distribution (top 20)")
 
 q("""
@@ -512,24 +538,24 @@ q("""
 
 q("""
     SELECT c.canonical_name, c.country,
-           GROUP_CONCAT(DISTINCT e.source) AS sources
+           string_agg(DISTINCT e.source, ',' ORDER BY e.source) AS sources
     FROM companies c
     JOIN public_funding_events e ON e.company_id = c.id
     GROUP BY c.id
     HAVING COUNT(DISTINCT e.source) >= 2
        AND SUM(CASE WHEN e.source LIKE 'eit_%' THEN 1 ELSE 0 END) > 0
-    ORDER BY c.canonical_name
+    ORDER BY c.canonical_name COLLATE "C"
 """, "EIT KIC: multi-instrument winners (EIT + at least one other source)")
 
 q("""
     SELECT c.canonical_name, c.country,
-           GROUP_CONCAT(DISTINCT e.source) AS sources
+           string_agg(DISTINCT e.source, ',' ORDER BY e.source) AS sources
     FROM companies c
     JOIN public_funding_events e ON e.company_id = c.id
     WHERE e.source LIKE 'eit_%'
     GROUP BY c.id
     HAVING COUNT(DISTINCT e.source) >= 2
-    ORDER BY COUNT(DISTINCT e.source) DESC, c.canonical_name
+    ORDER BY COUNT(DISTINCT e.source) DESC, c.canonical_name COLLATE "C"
 """, "EIT KIC: companies winning in multiple EIT programmes (investments + BoostUp overlap)")
 
 # EIC × EIT overlap check (validation gate #6 in sprint plan)
@@ -540,11 +566,11 @@ q("""
                 SELECT DISTINCT company_id FROM public_funding_events
                 WHERE source LIKE 'eic_%'
             ) THEN 1 ELSE 0 END) AS also_in_eic,
-        ROUND(100.0 * SUM(CASE WHEN e_eit.company_id IN (
+        ROUND((100.0 * SUM(CASE WHEN e_eit.company_id IN (
                 SELECT DISTINCT company_id FROM public_funding_events
                 WHERE source LIKE 'eic_%'
             ) THEN 1 ELSE 0 END)
-            / COUNT(DISTINCT e_eit.company_id), 1) AS pct_overlap
+            / COUNT(DISTINCT e_eit.company_id))::numeric, 1) AS pct_overlap
     FROM public_funding_events e_eit
     WHERE e_eit.source LIKE 'eit_digital_%'
 """, "EIT KIC: EIT Digital × EIC overlap (target ≥20% per sprint plan gate)")
@@ -595,7 +621,7 @@ q("""
         'NOMAGIC INC','STARK FUTURE SL','IN OVO HOLDING BV','CROWDFARMING SL',
         'INTERUNIVERSITAIR MICRO-ELECTRONICA CENTRUM','STICHTING IMEC NEDERLAND'
     )
-    ORDER BY canonical_name
+    ORDER BY canonical_name COLLATE "C"
 """, "DQ: MANUAL_SECTOR_OVERRIDES applied correctly")
 
 # ---------------------------------------------------------------------------
@@ -609,7 +635,7 @@ q("""
            SUM(CASE WHEN debt_amount_eur  IS NULL THEN 1 ELSE 0 END) AS null_debt
     FROM public_funding_events
     GROUP BY source, grant_amount_basis, coordinator_only
-    ORDER BY source
+    ORDER BY source COLLATE "C"
 """, "DQ: per-source basis / coordinator_only / NULL coverage")
 
 # These two should be 0 after the B5/B6 backfill — any non-zero row means a
@@ -635,7 +661,8 @@ q("""
                      AND debt_amount_eur IS NULL THEN 1 ELSE 0 END) AS rows_no_amount
     FROM public_funding_events
     GROUP BY grant_amount_basis
-    HAVING rows_no_amount > 0
+    HAVING SUM(CASE WHEN grant_amount_eur IS NULL AND equity_amount_eur IS NULL
+                     AND debt_amount_eur IS NULL THEN 1 ELSE 0 END) > 0
     ORDER BY rows_no_amount DESC
 """, "DQ: amount-less rows per basis — these get their capital type from "
      "CAPITAL_BY_BASIS alone, so an undeclared basis here is an invisible fund")
@@ -646,12 +673,12 @@ q("""
 q("""
     SELECT grant_amount_basis,
            COUNT(*) AS events,
-           ROUND(SUM(grant_amount_eur) / 1e9, 3) AS total_grant_field_bn_eur,
-           ROUND(SUM(debt_amount_eur) / 1e9, 3) AS total_debt_field_bn_eur,
+           ROUND((SUM(grant_amount_eur ORDER BY id) / 1e9)::numeric, 3) AS total_grant_field_bn_eur,
+           ROUND((SUM(debt_amount_eur ORDER BY id) / 1e9)::numeric, 3) AS total_debt_field_bn_eur,
            SUM(CASE WHEN grant_amount_eur IS NULL AND debt_amount_eur IS NULL THEN 1 ELSE 0 END) AS rows_no_amount
     FROM public_funding_events
     GROUP BY grant_amount_basis
-    ORDER BY grant_amount_basis
+    ORDER BY grant_amount_basis COLLATE "C"
 """, "DQ: STRATIFIED totals — DO NOT sum across rows (semantics differ per basis)")
 
 # Coordinator-only undercount banner: surfaces that for these sources, the
@@ -660,7 +687,7 @@ q("""
     SELECT
         SUM(CASE WHEN coordinator_only = 1 THEN 1 ELSE 0 END) AS coord_only_events,
         SUM(CASE WHEN coordinator_only = 0 THEN 1 ELSE 0 END) AS full_partner_events,
-        ROUND(100.0 * SUM(CASE WHEN coordinator_only = 1 THEN 1 ELSE 0 END) / COUNT(*), 1) AS pct_coord_only
+        ROUND((100.0 * SUM(CASE WHEN coordinator_only = 1 THEN 1 ELSE 0 END) / COUNT(*))::numeric, 1) AS pct_coord_only
     FROM public_funding_events
 """, "DQ: coordinator-only coverage (events from coordinator-only sources undercount consortium partners 5-40x)")
 
@@ -685,7 +712,7 @@ q("""
     LEFT JOIN companies c ON c.id = a.company_id
     WHERE a.field IN ('sector_inferred', 'entity_type')
       AND a.old_value IS NOT NULL
-    ORDER BY a.changed_at DESC
+    ORDER BY a.changed_at COLLATE "C" DESC, a.id DESC
     LIMIT 50
 """, "DQ: recent sector/entity flips (last 50 with prior value)")
 
@@ -729,9 +756,10 @@ q("""
     WHERE UPPER(TRIM(COALESCE(country,''))) IN ('EL','UK','PO','SW','GL')
     UNION ALL
     SELECT 'scope enforcement triggers installed',
-           CASE WHEN COUNT(*) = 2 THEN 0 ELSE 99 END
-    FROM sqlite_master
-    WHERE type = 'trigger' AND name LIKE 'trg_companies_country_scope%'
-""", "DQ: Europe scope integrity — all values must be 0 (last row = 0 means both triggers present)")
+           CASE WHEN COUNT(*) = 1 THEN 0 ELSE 99 END
+    FROM pg_trigger
+    WHERE tgrelid = to_regclass('companies') AND NOT tgisinternal
+      AND tgname LIKE 'trg_companies_country_scope%'
+""", "DQ: Europe scope integrity — all values must be 0 (last row = 0 means the trigger is present)")
 
-conn.close()
+_con_cm.__exit__(None, None, None)
