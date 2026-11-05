@@ -1,6 +1,4 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "nextjs",
-  "buildCommand": "next build",
-  "installCommand": "npm ci"
+  "buildCommand": "python3 -m pip install --quiet --user 'psycopg[binary]==3.3.4' && npm run build"
 }
