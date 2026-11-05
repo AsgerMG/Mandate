@@ -25,7 +25,7 @@ schema. `public` holds the pgvector extension and nothing else.
 | policy refresh (`refresh-cron`) | Railway project Mandate | curl image, Sundays 05:00 UTC | calls the policy API |
 | policy site | Vercel `regina` (regina-ai.eu) | root `policy/website` | reads the policy API |
 | capital site | Vercel `wincent` (wincent-ai.eu) | root `capital/website/frontend` | role `capital_app` |
-| capital ETL | Railway, weekly cron | root `capital/` | role `capital_app` |
+| capital ETL (`capital-etl` service) | Railway project Mandate, Sundays 03:00 UTC | `AsgerMG/Mandate`, root `capital/` | role `capital_app`; Anthropic key referenced from the policy service, not copied |
 | CI | GitHub Actions, root `.github/workflows/` | one workflow per brain, path-scoped | `capital_ro` where a check reads the corpus |
 
 ## Credentials
