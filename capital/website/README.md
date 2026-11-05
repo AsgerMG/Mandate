@@ -1,13 +1,14 @@
 # website — the publish layer
 
-Everything that turns the built `data/db.sqlite` into the live site lives here, split into the
-two halves of a publish pipeline. Data flows one direction:
+Everything that turns the corpus -- schema `capital` of the Mandate Postgres, read as
+`capital_ro` through `ETL/lib/store.py` -- into the live site lives here, split into the two
+halves of a publish pipeline. Data flows one direction:
 
 ```
 build/      one builder per JSON file  ──►  frontend/public/data/*.json
-  build_site_data.py  orchestrator: reinstall SQL views, run every builder, verify freshness
-  lib/web_env.py      single source of truth for paths (ROOT, DB, SITE_DATA, VIEWS_SQL)
-  lib/helpers.py      read-only DB access + formatters (df / to_json / fmt_eur)
+  build_site_data.py  orchestrator: check the views, run every builder, check consistency
+  lib/web_env.py      single source of truth for paths (ROOT, SITE_DATA, DATA, REFERENCE)
+  lib/helpers.py      formatters + JSON export (to_json / fmt_eur); no database access
 
 frontend/   the Next.js app — reads only frontend/public/data/*.json
   app/                routes: / · for-companies · companies · methodology · limitations
@@ -24,27 +25,30 @@ Every builder starts with a 2-line bootstrap (mirrors `ETL/lib/etl_env.py`):
 ```python
 import sys; from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent / "lib"))
-from web_env import ROOT, DB, SITE_DATA   # + VIEWS_SQL / DATA_PROCESSED as needed
+from web_env import ROOT, SITE_DATA      # + DATA / DATA_PROCESSED / REFERENCE as needed
+from store import connect                # with connect(readonly=True) as con: ...
 ```
 
-`web_env` exposes the canonical locations — `ROOT`, `DB`, `SITE_DATA`
-(`= frontend/public/data`), `VIEWS_SQL` (`data/views.sql`, shared with ETL),
-`DATA_PROCESSED` — so **no builder recomputes `db.sqlite` or the data dir by counting
-`.parent` hops**. Change a location once, in `web_env.py`. A builder runs from anywhere
-(`python3 website/build/synthesis.py`), no `cd`, no `PYTHONPATH`.
+`web_env` exposes the canonical locations — `ROOT`, `SITE_DATA` (`= frontend/public/data`),
+`DATA`, `DATA_PROCESSED`, `REFERENCE` — and puts `ETL/lib` on the path, so **no builder
+recomputes a location by counting `.parent` hops** and every builder reaches the corpus the
+same way. A builder runs from anywhere (`python3 website/build/synthesis.py`), no `cd`, no
+`PYTHONPATH`. The read-only URL is `CAPITAL_RO_DATABASE_URL` (in `capital/.env.local`).
 
 ## Running the publish layer
 
 ```bash
-# Rebuild EVERYTHING the site reads (views + every builder, in dependency order):
+# Rebuild EVERYTHING the site reads (every builder, in dependency order):
 make data                                   # = python3 website/build/build_site_data.py
-python3 website/build/build_site_data.py --check   # verify JSON is fresh vs data/db.sqlite
+python3 website/build/build_site_data.py --check   # views current + figures consistent
+make views                                  # (re)install ETL/schema/views.sql, as capital_app
 
 # Run a single builder:
 python3 website/build/synthesis.py          # corpus KPIs -> synthesis.json
 python3 website/build/company_search.py     # the /companies lookup shards
 
-# Build / serve the site (frontend's `prebuild` re-runs the freshness check):
+# Build / serve the site (frontend's `prebuild` regenerates the data when
+# CAPITAL_RO_DATABASE_URL is set, and otherwise uses what is on disk):
 make site-build                             # cd frontend && npm run build  -> frontend/out/
 make site-dev                               # cd frontend && npm run dev     -> localhost:3000
 ```
@@ -59,7 +63,8 @@ make site-dev                               # cd frontend && npm run dev     -> 
 | `synthesis.py` | `synthesis.json` | home KPI grid + layout footer |
 | `investor_insights.py` | `investor_insights.json` | the `/for-companies` charts |
 | `company_search.py` | `companies/*.json` shards | `/companies` client-side lookup |
-| `companies_index.py` | `companies_index.json` | the server-side intelligence agent |
+| `companies_index.py` | `companies_index.json` (generated only, gitignored) | the server-side intelligence agent |
+| `eligibility_export.py` | `instrument_terms.json` (generated only, gitignored) | the request path's fallback corpus, the theme index, most checks |
 
 ## Notes
 
@@ -68,5 +73,11 @@ make site-dev                               # cd frontend && npm run dev     -> 
   `frontend/next.config.ts` `outputFileTracingIncludes` and `lib/intelligence/corpus.ts`).
 - **No barrel** re-exports the `"use client"` panel together with the server-only
   `corpus.ts` (fs reads) — that breaks under Turbopack. Import intelligence files directly.
-- `data/views.sql` is reinstalled by `build_site_data.py` before the builders run; a new
-  `source_family` CASE there is invisible to the site until the views are recreated.
+- The views live in `ETL/schema/views.sql`. A build cannot install them (it reads as
+  `capital_ro`); it refuses to run when the installed views are not that file
+  (`install_views.py --check`). A new `source_family` CASE reaches the site after `make views`.
+- **Committed vs generated.** The seven small JSON files above are committed: they are the
+  fallback a build without the read-only credential uses. `companies_index.json` and
+  `instrument_terms.json` are generated only (25 MB and 11 MB, and they change with every
+  corpus run). `world-110m.json` is a static asset; `signals_digest.json` is written by
+  `signals_digest.py` (the signals layer).
