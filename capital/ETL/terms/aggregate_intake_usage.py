@@ -28,12 +28,11 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
-import sqlite3
 
 
 def main() -> None:
@@ -42,10 +41,14 @@ def main() -> None:
     ap.add_argument("--json", type=str, default=None, help="also write the ranked table to this path")
     args = ap.parse_args()
 
-    conn = sqlite3.connect(DB)
+    with connect(readonly=True) as conn:
+        _report(conn, args)
+
+
+def _report(conn, args) -> None:
     totals = conn.execute("""
         SELECT SUM(event_count), SUM(company_count) FROM funding_instruments
-        WHERE is_framework = 0
+        WHERE is_framework = false
     """).fetchone()
     total_events, total_companies = totals
 
@@ -60,7 +63,8 @@ def main() -> None:
         SELECT eg.intake_field, eg.instrument_id, eg.value_spec IS NOT NULL
         FROM eligibility_gates eg
         JOIN funding_instruments fi ON fi.id = eg.instrument_id
-        WHERE eg.intake_field != 'none' AND fi.is_framework = 0
+        WHERE eg.intake_field != 'none' AND fi.is_framework = false
+        ORDER BY eg.id
     """):
         field_instruments.setdefault(intake_field, set()).add(instrument_id)
         field_gate_count[intake_field] = field_gate_count.get(intake_field, 0) + 1
@@ -68,9 +72,9 @@ def main() -> None:
             field_value_spec_count[intake_field] = field_value_spec_count.get(intake_field, 0) + 1
 
     inst_stats = dict(conn.execute(
-        "SELECT id, event_count FROM funding_instruments WHERE is_framework = 0"))
+        "SELECT id, event_count FROM funding_instruments WHERE is_framework = false"))
     inst_companies = dict(conn.execute(
-        "SELECT id, company_count FROM funding_instruments WHERE is_framework = 0"))
+        "SELECT id, company_count FROM funding_instruments WHERE is_framework = false"))
 
     ranked = []
     for field, inst_ids in field_instruments.items():
@@ -102,8 +106,6 @@ def main() -> None:
     if args.json:
         _Path(args.json).write_text(json.dumps(ranked, indent=1))
         print(f"\nwrote {args.json}")
-
-    conn.close()
 
 
 if __name__ == "__main__":
