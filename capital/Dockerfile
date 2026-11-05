@@ -1,11 +1,15 @@
-# ETL service image (broad companies/events pipeline — 24 AUTO-tier extractors
-# + classify + sanity_check). Runs on a Railway Cron Job against a persistent
-# volume mounted at /app/data (etl_env.py's DATA = ROOT / "data" resolves to
-# this path since ROOT is the repo root = WORKDIR here).
+# capital-etl: the weekly ETL cron (railway.json; service root capital/).
 #
-# Scope: NOT the eligibility subsystem (that's Postgres, already live) and NOT
-# the 9 NETWORK-tier extractors (excluded — see project-mgmt plan, cloud-IP
-# block risk) or 8 MANUAL-tier extractors (need a human-fetched file).
+# Runs ETL/events/extract/railway_cron.py against schema `capital` of the
+# Mandate Postgres, as capital_app (DATABASE_URL=${{pgvector.CAPITAL_DATABASE_URL}}
+# on the service). There is NO volume and no SQLite file: since 2026-11-05 the
+# corpus lives only in Postgres, and this container's filesystem is scratch --
+# the extractors' download caches under data/raw/ start empty on every run.
+#
+# Scope: the AUTO-tier extractors (ETL/events/extract/manifest.py), classify,
+# the sanity check, the open-call and ADEME window refreshes, the corpus-side
+# guards and the census. Not the NETWORK tier (cloud-IP block risk) or the
+# MANUAL tier (needs a human-fetched file).
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -25,6 +29,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-# No image-level CMD: the Railway Cron Job specifies the actual command
-# (renew.py --auto && classify.py && sanity_check.py) so this image is just
-# the runtime the cron job executes against.
+# Python output unbuffered, so a step's progress reaches Railway's log as it
+# happens rather than when the step exits.
+ENV PYTHONUNBUFFERED=1
+
+# The command is railway.json's startCommand, which Railway's cron runs.
+CMD ["python3", "ETL/events/extract/railway_cron.py"]
