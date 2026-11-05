@@ -229,7 +229,7 @@ eligibility:
 	# data/vocabularies.json, and names no gate. It reads POSTGRES as well,
 	# because check_comparator_admits.ts deliberately reads only the snapshot and
 	# that leaves the store this pass just wrote to unchecked. FAILS the target.
-	python3 ETL/terms/check_comparator_storable.py --postgres
+	python3 ETL/terms/check_comparator_storable.py
 	# THE SECOND PATH TO PRODUCTION. encode_gates.py triage rewrites gate_role
 	# from a paid model pass, so every curated demotion above is reverted by the
 	# two lines above it -- and this target then exports and publishes. refresh.py
@@ -282,11 +282,8 @@ eligibility:
 	cd website/frontend && npx tsx scripts/emit_theme_index.ts
 	# (migrate_to_postgres.py, the SQLite -> Postgres truncate-and-reload, was
 	# here. Since 2026-11-05 every step above writes the served tables directly.)
-	# The same assertion against the store the brief actually reads, now that it
-	# has been written. Asked of BOTH stores rather than of one and assumed of
-	# the other, for the reason apply_gate_encoding_corrections.py already
-	# gives: they do not hold the same gate table.
-	python3 ETL/terms/check_corrections_applied.py --postgres
+	# (A second check_corrections_applied.py, against Postgres after the
+	# publish, was here; with one store the run above already asked it.)
 	python3 ETL/terms/embed_eligibility.py run
 	python3 ETL/terms/build_instrument_profiles.py classify-titles
 	python3 ETL/terms/build_instrument_profiles.py run --rebuild

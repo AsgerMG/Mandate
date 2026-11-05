@@ -52,8 +52,7 @@ a real conflict between two decisions and belongs in front of a person, not
 resolved by whichever ran last. So this check reports it and fails; it never
 edits an evidence file, and the fix is never to widen the check.
 
-  python3 ETL/terms/check_corrections_applied.py             # SQLite
-  python3 ETL/terms/check_corrections_applied.py --postgres  # the store the brief reads
+  python3 ETL/terms/check_corrections_applied.py   # the one store (Postgres)
 """
 from __future__ import annotations
 
@@ -64,13 +63,11 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
 import json  # noqa: E402
-import os  # noqa: E402
-import sqlite3  # noqa: E402
 
 ROOT = _Path(__file__).resolve().parents[2]
 EVIDENCE = ROOT / "project-mgmt" / "evidence"
@@ -164,11 +161,8 @@ def audit(store: str, fetch, rows) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--postgres", action="store_true",
-                    help="check Postgres as well, which is the store the brief "
-                         "reads. Before migrate_to_postgres.py has run, SQLite "
-                         "is the store that is about to become production; "
-                         "after it, Postgres is the only one that matters.")
-    args = ap.parse_args()
+                    help="accepted and ignored: there is one store, and it is Postgres")
+    ap.parse_args()
 
     rows, pending = corrections()
     files = sorted({f for f, _ in rows})
@@ -195,33 +189,12 @@ def main() -> int:
             print(f"  {c}")
         return 1
 
-    conn = sqlite3.connect(DB, timeout=60)
-    conn.row_factory = sqlite3.Row
-    bad = audit("sqlite", lambda i, k: [
-        (r["value_spec"], r["encoding_method"]) for r in conn.execute(
-            "SELECT value_spec, encoding_method FROM eligibility_gates "
-            "WHERE instrument_id = ? AND gate_key = ?", (i, k))], rows)
-
-    if args.postgres:
-        dsn = os.environ.get("DATABASE_URL")
-        if not dsn:
-            for line in (ROOT / ".env.local").read_text().splitlines():
-                if line.startswith("DATABASE_URL="):
-                    dsn = line.split("=", 1)[1].strip().strip('"')
-        if not dsn:
-            return _sys.exit("DATABASE_URL not set (expected in the repo-root "
-                             ".env.local).")
-        import psycopg2
-        pg = psycopg2.connect(dsn)
-        cur = pg.cursor()
-
-        def pg_fetch(i, k):
-            cur.execute("SELECT value_spec, encoding_method FROM eligibility_gates "
-                        "WHERE instrument_id = %s AND gate_key = %s", (i, k))
-            return cur.fetchall()
-
-        bad += audit("postgres", pg_fetch, rows)
-        pg.close()
+    with connect(readonly=True) as conn:
+        def fetch(i, k):
+            return conn.execute(
+                "SELECT value_spec, encoding_method FROM eligibility_gates "
+                "WHERE instrument_id = %s AND gate_key = %s", (i, k)).fetchall()
+        bad = audit("postgres", fetch, rows)
     return 1 if bad else 0
 
 

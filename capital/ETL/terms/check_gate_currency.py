@@ -42,13 +42,12 @@ from __future__ import annotations
 
 import argparse
 import json
-import os
-import sqlite3
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "lib"))
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 from euro_money import euro_denominated, euro_scales, fx  # noqa: E402
 
 # The provenance an encoding written THROUGH the conversion carries. A gate in
@@ -94,35 +93,18 @@ def violations(rows) -> list[dict]:
     return out
 
 
-def rows_sqlite():
-    con = sqlite3.connect(DB)
-    try:
+def fetch_rows():
+    """The encoded filters, from the one store (schema capital in Postgres).
+    There used to be two readers here, one per store, and the check reported
+    the worse; with one store there is one reader."""
+    with connect(readonly=True) as con:
         return con.execute(QUERY).fetchall()
-    finally:
-        con.close()
-
-
-def rows_postgres():
-    dsn = os.environ.get("DATABASE_URL")
-    if not dsn:
-        for line in (ROOT / ".env.local").read_text().splitlines():
-            if line.startswith("DATABASE_URL="):
-                dsn = line.split("=", 1)[1].strip().strip('"').strip("'")
-    if not dsn:
-        raise SystemExit("DATABASE_URL not set (expected in the repo-root .env.local)")
-    import psycopg2
-    pg = psycopg2.connect(dsn)
-    try:
-        cur = pg.cursor()
-        cur.execute(QUERY.replace("%", "%%"))
-        return cur.fetchall()
-    finally:
-        pg.close()
 
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--postgres", action="store_true", help="check both stores")
+    ap.add_argument("--postgres", action="store_true",
+                    help="accepted and ignored: there is one store, and it is Postgres")
     ap.add_argument("--verbose", action="store_true")
     a = ap.parse_args()
 
@@ -131,7 +113,7 @@ def main() -> int:
     print(f"ECB reference rates as of {rates['as_of']}, "
           f"envelope from {rates['window_start']} ({rates['window_years']}y)")
 
-    stores = [("sqlite", rows_sqlite)] + ([("postgres", rows_postgres)] if a.postgres else [])
+    stores = [("postgres", fetch_rows)]
     worst = 0
     for name, get in stores:
         rows = get()
