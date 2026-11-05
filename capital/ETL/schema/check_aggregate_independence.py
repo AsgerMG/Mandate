@@ -27,12 +27,17 @@ So the contract is asserted rather than assumed, from both sides:
      the test would be measuring its own irrelevance.
 
 ── Where this runs, and why that moved ────────────────────────────────────
-It used to sit in CI, where `data/db.sqlite` is gitignored and therefore never
-present. So on every run it has ever had, it printed "skipping" and returned 0:
-a green tick from a check that had not executed a single one of its assertions.
-It now runs in the weekly Railway cron, against the volume-resident corpus, and
-publishes a verdict that CI reads without needing credentials
+It used to sit in CI, which cannot see the corpus. So on every run it has ever
+had, it printed "skipping" and returned 0: a green tick from a check that had
+not executed a single one of its assertions. It now runs in the weekly Railway
+cron, against the store (schema `capital`), and publishes a verdict that CI
+reads without needing credentials
 (ETL/lib/guard_verdicts.py -> website/frontend/scripts/check_verdicts.ts).
+
+The manipulation is an UPDATE of every funding_instruments row, made in a
+transaction that is ALWAYS rolled back. Other sessions never see it (MVCC);
+the rows are locked for the seconds compute_kpis takes, and a lock_timeout
+means the guard fails rather than queues behind a writer.
 
 Which makes the absent corpus a FAILURE here rather than a skip. There is no
 longer any legitimate place this runs without one, and "the data was missing"
@@ -43,44 +48,45 @@ Run:  python3 ETL/schema/check_aggregate_independence.py
 """
 from __future__ import annotations
 
-import sqlite3
+import os
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "website" / "build" / "lib"))
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
 
+import etl_env  # noqa: E402,F401  (loads .env.local)
 from corpus_kpis import compute_kpis  # noqa: E402
+
+# Every scheme_end_date in the store is NULL or YYYY-MM-DD (checked 2026-11-05),
+# so this is the same predicate SQLite's date() comparison was.
+OFFERABLE = ("SELECT count(*) FROM funding_instruments WHERE scheme_end_date IS NULL "
+             "OR scheme_end_date::date >= (now() AT TIME ZONE 'UTC')::date")
 
 
 def main() -> int:
-    db = ROOT / "data" / "db.sqlite"
-    if not db.exists():
-        print(f"check_aggregate_independence: FAILED — no {db}.")
-        print("  This runs against the ETL corpus, on the volume the weekly cron")
-        print("  mounts. Nothing here can be asserted without it, and reporting")
-        print("  that as a pass is what this check spent its whole life doing.")
+    if not os.environ.get("DATABASE_URL"):
+        print("check_aggregate_independence: FAILED — no DATABASE_URL.")
+        print("  This runs against the store. Nothing here can be asserted without")
+        print("  it, and reporting that as a pass is what this check spent its")
+        print("  whole life doing.")
         return 2
+    from store import connect  # noqa: PLC0415
 
-    con = sqlite3.connect(f"file:{db}?mode=ro", uri=True)
-    before = compute_kpis(con)
-    con.close()
+    with connect(readonly=True) as con:
+        before = compute_kpis(con)
 
     # Force-close everything, in a transaction we never commit.
-    con = sqlite3.connect(db)
-    try:
-        con.execute("BEGIN")
-        offerable_before = con.execute(
-            "SELECT count(*) FROM funding_instruments WHERE scheme_end_date IS NULL "
-            "OR date(scheme_end_date) >= date('now')").fetchone()[0]
-        con.execute("UPDATE funding_instruments SET scheme_end_date = '2000-01-01'")
-        offerable_after = con.execute(
-            "SELECT count(*) FROM funding_instruments WHERE scheme_end_date IS NULL "
-            "OR date(scheme_end_date) >= date('now')").fetchone()[0]
-        after = compute_kpis(con)
-    finally:
-        con.rollback()
-        con.close()
+    with connect() as con:
+        try:
+            con.execute("SET LOCAL lock_timeout = '5s'")
+            offerable_before = con.execute(OFFERABLE).fetchone()[0]
+            con.execute("UPDATE funding_instruments SET scheme_end_date = '2000-01-01'")
+            offerable_after = con.execute(OFFERABLE).fetchone()[0]
+            after = compute_kpis(con)
+        finally:
+            con.rollback()
 
     problems = []
     for key in sorted(set(before) | set(after)):
