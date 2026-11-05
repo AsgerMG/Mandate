@@ -145,9 +145,8 @@ data:
 	python3 website/build/build_site_data.py
 
 # Eligibility subsystem (funding_instruments/eligibility_gates/eligibility_clauses):
-# sync hand-authored YAML into db.sqlite, export the JSON fallback the
-# frontend reads, then publish to Railway Postgres (the live read path once
-# DATABASE_URL is set — see the Railway migration plan). Not part of `make
+# sync hand-authored YAML into the served tables in Postgres (schema capital)
+# and export the JSON fallback the frontend reads. Not part of `make
 # data` since it has its own DATABASE_URL dependency and publish cadence.
 # Order matters: triage/encode must run BEFORE eligibility_export.py and
 # migrate_to_postgres.py, or both would publish the corpus without the curated
@@ -281,7 +280,8 @@ eligibility:
 	# output. It is what lets relevance.ts stop loading the whole corpus's
 	# gates on every request; check_theme_index.ts fails the build if stale.
 	cd website/frontend && npx tsx scripts/emit_theme_index.ts
-	python3 ETL/terms/migrate_to_postgres.py
+	# (migrate_to_postgres.py, the SQLite -> Postgres truncate-and-reload, was
+	# here. Since 2026-11-05 every step above writes the served tables directly.)
 	# The same assertion against the store the brief actually reads, now that it
 	# has been written. Asked of BOTH stores rather than of one and assumed of
 	# the other, for the reason apply_gate_encoding_corrections.py already

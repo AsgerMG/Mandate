@@ -110,10 +110,6 @@
     "ETL/events/extract/push_local.py": {
       "proves_superset": false,
       "why": "ends in a bare upload --overwrite of the laptop corpus onto the volume. Superseded by push_db_verified.py, which does the same transfer with the proof in front of it."
-    },
-    "ETL/terms/migrate_to_postgres.py": {
-      "proves_superset": false,
-      "why": "TRUNCATEs the five product tables and reloads them from SQLite. This is the publish path that makes the laptop authoritative for them; it is not a bug to be fixed in place but the thing stages 2-3 of the migration remove."
     }
   }
 }
