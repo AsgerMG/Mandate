@@ -26,17 +26,14 @@ const fragmentMono = Fragment_Mono({ subsets: ["latin"], weight: "400", variable
 // check_revalidate_literal.ts rather than by anybody remembering.
 export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
 
-// `generateMetadata` rather than a `metadata` const: the description quotes the
-// company count, and a const is evaluated at module load, where nothing can be
-// awaited. Next dedupes this against the render below through React's cache(),
-// so the page still costs one census read, not two.
-export async function generateMetadata(): Promise<Metadata> {
-  const { companies } = await corpusStats();
-  return {
-    title: "Wincent",
-    description: `Wincent helps European companies map a public-capital raise to comparable awards, screened institutions and the priorities shaping grants, loans and public equity. Built on the funding record of ${companies.toLocaleString()} companies.`,
-  };
-}
+// The site is Mandate; each agent's pages set their own title. Wincent's
+// landing page, which used to be `/` and inherited this, now carries its own
+// metadata (app/wincent/page.tsx), including the company count.
+export const metadata: Metadata = {
+  title: "Mandate",
+  description:
+    "Mandate is a bench of domain experts that watch the public sphere for European startups. Wincent covers public capital; Regina covers EU rules.",
+};
 
 export default async function RootLayout({
   children,
@@ -55,9 +52,9 @@ export default async function RootLayout({
         <main className="flex-1">{children}</main>
         <footer className="border-t border-[var(--border)] bg-[var(--background)] py-10">
           <div className="wrap">
-            <p className="font-serif text-lg font-semibold text-[var(--foreground)]">Wincent</p>
+            <p className="font-serif text-lg font-semibold text-[var(--foreground)]">Mandate</p>
             <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
-              {companyCount} companies in the European public-capital record
+              Wincent: {companyCount} companies in the European public-capital record
             </p>
             {/* The dateline. Every figure on the site describes a corpus as it
                 stood on one day, and until now the site never said which day —

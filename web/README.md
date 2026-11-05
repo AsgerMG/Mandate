@@ -1,7 +1,26 @@
-# frontend — the Wincent website (Next.js)
+# web: the Mandate website (Next.js)
 
-The published site. Part of the `website/` block; see [../README.md](../README.md) for how
-`build/` (the Python JSON builders) feeds this app.
+The one site where a founder meets the bench. Until 2026-11-06 this was
+`capital/website/frontend`, Wincent's site; it is now the monorepo's `web/`, and
+it serves every agent:
+
+| route | agent | data |
+|---|---|---|
+| `/` | Mandate home: the bench and its agents | none |
+| `/wincent`, `/brief`, `/about-public-capital`, `/privacy` | Wincent (capital) | schema `capital`, `public/data/*.json` |
+| `/regina`, `/regina/about`, `/regina/brief`, `/regina/documents[/id]` | Regina (policy) | the policy API, server-side |
+
+Regina's pages were ported from `policy/website` (regina-ai.eu). They reach the
+policy API only from the server: the browser calls `/api/regina/...` on this
+origin and `app/api/regina/[...path]/route.ts` forwards to `POLICY_API_URL`
+(falling back to the production API, `lib/regina/apiBase.ts`). Their styles are
+`app/regina/regina.css`, scoped under `.regina` and reading the shared tokens in
+`app/globals.css`. `redirects.regina.json` maps every old regina-ai.eu path to
+its new home here.
+
+Wincent's half is fed by `../capital/website/build/` (the Python JSON builders);
+see [../capital/website/README.md](../capital/website/README.md). Python reaches
+this directory through one constant, `capital/ETL/lib/web_path.py::WEB`.
 
 Where its data comes from, in the order the app prefers it:
 

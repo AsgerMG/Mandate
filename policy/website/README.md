@@ -1,3 +1,9 @@
+> **DEPRECATED (2026-11-06).** Regina's pages now live in the one Mandate site,
+> `web/` at the monorepo root, under `/regina` (served on wincent-ai.eu). This
+> directory stays only until the Vercel project `regina` (regina-ai.eu) is
+> retired; `web/redirects.regina.json` maps every path here to its new home.
+> Make changes in `web/app/regina/` and `web/lib/regina/`, not here.
+
 # website/
 
 The Next.js front-end. It is a pure client of the Python backend API

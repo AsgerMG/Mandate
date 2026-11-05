@@ -1,0 +1,87 @@
+{
+  "$comment": [
+    "Every public path regina-ai.eu served (policy/website/app) and where it now lives on the one Mandate site.",
+    "Shaped as Vercel/Next `redirects` entries, so the array can be pasted into vercel.json `redirects` (or returned from next.config redirects()) once regina-ai.eu is added as a domain of the Mandate project.",
+    "`has` scopes each rule to the old host, so none of them can fire on wincent-ai.eu, where / is the Mandate home. Destinations are absolute for the same reason.",
+    "Not redirected: regina-ai.eu never served an API of its own (its pages called the policy API directly), and Next's own /_next assets are per build."
+  ],
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina/about",
+      "permanent": true
+    },
+    {
+      "source": "/brief",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina/brief",
+      "permanent": true
+    },
+    {
+      "source": "/documents",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina/documents",
+      "permanent": true
+    },
+    {
+      "source": "/documents/:id",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina/documents/:id",
+      "permanent": true
+    },
+    {
+      "source": "/images/hero-building.png",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/images/regina/hero-building.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/parliament.png",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/images/regina/parliament.png",
+      "permanent": true
+    }
+  ]
+}

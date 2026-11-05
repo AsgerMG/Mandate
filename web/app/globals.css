@@ -24,6 +24,14 @@
   --accent-soft: #f1e3c4;
   --radius: 2px;
 
+  /* Regina's tokens that the palette above had no name for. Every other value
+   * she used is one of the tokens above (her --ink is --foreground, her
+   * --accent-deep is --accent, ...): see app/regina/regina.css. */
+  --accent-bright: #a6752e;
+  --navy: #0d1b38;
+  --line: #e2dbc4;
+  --line-soft: #ece5d2;
+
   /* Single-row masthead: 4.5rem brand row + 1px rule. */
   --nav-h: 4.5625rem;
 

@@ -1,8 +1,8 @@
 // No number a visitor reads may be a literal the corpus does not also produce.
 //
 // ── The property ───────────────────────────────────────────────────────────
-// Every quantity in visitor-facing text on `/`, `/about-public-capital` and
-// `/brief` must be one of:
+// Every quantity in visitor-facing text on the pages in ENTRY_POINTS (`/`,
+// `/wincent`, `/about-public-capital`, `/brief` and Regina's) must be one of:
 //
 //   DERIVED    an expression — it came from the census, from a committed
 //              corpus artifact, or from a prop that did. These are invisible
@@ -73,12 +73,21 @@ import {
 const CWD = process.cwd();
 const APP = path.join(CWD, "app");
 
-/** The site is exactly three pages, plus the shell that wraps them. */
+/** The visitor-facing pages, plus the shells that wrap them. Since 2026-11-06
+ *  the site is Mandate: its home, Wincent's three pages (his landing moved from
+ *  `/` to `/wincent`) and Regina's, ported from regina-ai.eu. */
 const ENTRY_POINTS = [
   "app/page.tsx",
+  "app/wincent/page.tsx",
   "app/about-public-capital/page.tsx",
   "app/brief/page.tsx",
   "app/layout.tsx",
+  "app/regina/layout.tsx",
+  "app/regina/page.tsx",
+  "app/regina/about/page.tsx",
+  "app/regina/brief/page.tsx",
+  "app/regina/documents/page.tsx",
+  "app/regina/documents/[id]/page.tsx",
 ];
 
 /** Committed artifacts the corpus-noun vocabulary is derived from. Both are

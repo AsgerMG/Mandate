@@ -1,206 +1,102 @@
-import { EuropeMap, type CountryData } from "@/components/europe-map";
-import { ChannelsGraph } from "@/components/channels-graph";
-import { EuroJourney, Chapter } from "@/components/euro-journey";
-import { Reveal, CountUp } from "@/components/immersive";
-import { ImageSlot } from "@/components/image-slot";
+import type { Metadata } from "next";
 import Link from "next/link";
-import type { ReactNode } from "react";
-import countryMapRaw from "@/public/data/country_map.json";
-import coverageRatingsRaw from "@/public/data/coverage_ratings.json";
-import { corpusStats, type Synthesis } from "@/lib/data";
-import { corpusProse } from "@/lib/corpusProse";
 
-// Headline counts come from the single corpus-wide source (lib/data.corpusStats),
-// which also drives the nav, the layout footer and /about-public-capital, so
-// every page shows the same number — and now the same number as the ETL's own
-// record of its corpus, rather than whatever was last committed.
-// Literal, not the imported constant: Next reads segment config statically and
-// fails the whole build on anything it cannot evaluate. check_revalidate_literal.ts
-// keeps this in step with CORPUS_REVALIDATE_SECONDS.
-export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
+// The Mandate home: the bench, and the two agents a founder can work with
+// today. Deliberately minimal (the shell, not the product); each agent's own
+// landing page carries its case. No figures on this page: what each agent
+// covers is stated on that agent's pages, where it is read from its corpus.
 
-const serif = { fontFamily: "var(--font-newsreader), Georgia, serif" };
+export const metadata: Metadata = {
+  title: "Mandate",
+  description:
+    "Mandate is a bench of domain experts that watch the public sphere for European startups. Wincent covers public capital; Regina covers EU rules.",
+};
 
-/** Parse "€296.9B" into a number + suffix so the headline figure can count up.
- *  Derived per render rather than at module load: the figure is no longer a
- *  constant, and a module-level parse would have frozen the first value the
- *  process ever saw for the life of the serverless instance. */
-function capitalParts(synth: Synthesis) {
-  const capMatch = synth.totalCapitalEur.match(/([\d.]+)\s*([^\d.\s]*)/);
-  const capValue = capMatch ? parseFloat(capMatch[1]) : 0;
-  return {
-    capValue,
-    capSuffix: capMatch ? capMatch[2] : "",
-    capDecimals: capValue % 1 !== 0 ? 1 : 0,
-  };
-}
+type AgentCard = {
+  name: string;
+  brain: string;
+  question: string;
+  body: string;
+  start: { href: string; label: string };
+  about: { href: string; label: string };
+};
 
-/** One cell of a side KPI matrix. */
-function MatrixCell({ value, label }: { value: ReactNode; label: string }) {
+const AGENTS: AgentCard[] = [
+  {
+    name: "Wincent",
+    brain: "Public capital",
+    question:
+      "What can the state put into this company, on what terms, through which instrument, by when, and who administers it?",
+    body: "Wincent maps your company to comparable raises, screened institutions and the priorities shaping grants, loans and public equity.",
+    start: { href: "/brief", label: "Get your brief" },
+    about: { href: "/wincent", label: "Meet Wincent" },
+  },
+  {
+    name: "Regina",
+    brain: "EU rules",
+    question: "What rules land on this company, when do they bite, and what has to change?",
+    body: "Regina reads the official EU, French and German record and writes a source-cited report for your company.",
+    start: { href: "/regina/brief", label: "Get a report" },
+    about: { href: "/regina", label: "Meet Regina" },
+  },
+];
+
+export default function MandateHome() {
   return (
-    <div className="border-t-2 border-[var(--primary)] py-5">
-      <div className="text-2xl font-bold tabular-nums text-[var(--foreground)] sm:text-3xl" style={serif}>
-        {value}
-      </div>
-      <div className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">{label}</div>
-    </div>
-  );
-}
-
-/** A 2-column KPI matrix that rides alongside the narrative. */
-function StatMatrix({ children }: { children: ReactNode }) {
-  return (
-    <Reveal delay={120}>
-      <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-2 lg:grid-cols-4">
-        {children}
-      </div>
-    </Reveal>
-  );
-}
-
-const coverageRatings = coverageRatingsRaw as Record<string, { rating: string; note: string }>;
-
-// Countries below the €1B corpus threshold arrive as {name, excluded: true}
-// stubs (see website/build/country_map.py) — kept so the map can explain the
-// exclusion on hover instead of rendering a silent gap.
-//
-// Typed against europe-map.tsx's own CountryData (not a re-declared local
-// shape): a second, hand-maintained copy of this type drifted from the real
-// one twice already (missing `eur`, then missing `byVehicle`), silently
-// passing `as` casts each time. One shared type can't drift from itself.
-const countryData = Object.fromEntries(
-  Object.entries((countryMapRaw as { countries: Record<string, CountryData> }).countries)
-    .map(([iso2, d]) => [iso2, { ...d, coverageRating: coverageRatings[iso2] }])
-);
-
-export default async function Home() {
-  const synth = await corpusStats();
-  // The sentences, from the corpus too. Until now the prose on this page said
-  // "2020 to 2025" while /about-public-capital said "2021 to 2025" about the
-  // same corpus, and "two dozen national authorities" when the register carries
-  // 22 — three literals nobody could have noticed going wrong.
-  const prose = corpusProse();
-  const { capValue, capSuffix, capDecimals } = capitalParts(synth);
-  return (
-    <div>
-      {/* ── Cold open: headline left, Brussels right — the editorial split. ── */}
-      {/* Page-head offset is shared with /about-public-capital and /brief
-          (pt-16 sm:pt-20) so the eyebrow lands at the same y on every page. */}
-      <section className="relative overflow-hidden bg-[var(--background)] py-12 sm:py-16 lg:flex lg:min-h-[calc(100svh-var(--nav-h))] lg:items-center">
-        <div className="relative wrap grid items-start gap-10 lg:grid-cols-2 lg:gap-12 xl:gap-16">
-          <div className="flex flex-col justify-center lg:aspect-[3/2]">
-            <h1 className="text-4xl font-semibold leading-[1.04] tracking-tight sm:text-5xl xl:text-[3.4rem]" style={serif}>
-              Raise where Europe is putting money next
-            </h1>
-            <div className="mt-8">
-              <p className="max-w-xl text-[17px] leading-relaxed text-[var(--foreground-soft)]">
-                Wincent maps your company to comparable raises, screened institutions and the EU,
-                national and regional priorities shaping public capital. Get the doors to target,
-                the case to make and what to do next.
-              </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/brief"
-                  className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 text-[15px] font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-                >
-                  Get your brief
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <ImageSlot
-            imageClassName="lg:scale-[1.06]"
-            src="/images/editorial/founder-funding-constellation.png"
-            alt="A founder tracing connected regional, national and European public funding instruments"
-            priority
-          />
-        </div>
-
+    <div className="wrap py-12 sm:py-16 lg:py-20">
+      <section className="max-w-3xl">
+        <p className="eyebrow text-[11px]">Mandate</p>
+        <h1 className="mt-4 font-serif text-4xl font-semibold leading-[1.06] tracking-tight sm:text-5xl">
+          Public affairs for European startups, from a bench of experts
+        </h1>
+        <p className="mt-6 max-w-2xl text-[17px] leading-relaxed text-[var(--foreground-soft)]">
+          Public affairs is an investment almost no startup has the capacity to make. Mandate is a
+          bench of domain experts. Each one watches part of the public sphere on your behalf and
+          tells you what moved, and why it matters to your company specifically.
+        </p>
       </section>
 
-      {/* ── The trip: Follow the Euro ───────────────────────────── */}
-      <div className="relative bg-[var(--background)] text-[var(--foreground)]">
-        <EuroJourney>
-            {/* Chapter 2 — The channels graph: the pinned, camera-driven anchor */}
-            {/* The graph states the national/EU split in words. It is a
-                "use client" module, so the figure is handed down rather than
-                imported — the artifacts corpusProse() reads are ~700 KB and
-                have no business in a browser bundle. */}
-            <ChannelsGraph nationalAwardPct={prose.nationalAwardPct} />
+      <section aria-labelledby="bench" className="mt-12 sm:mt-16">
+        <p id="bench" className="font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+          On the bench today
+        </p>
+        <div className="mt-4 grid gap-6 md:grid-cols-2">
+          {AGENTS.map((a) => (
+            <article
+              key={a.name}
+              className="flex flex-col border-t-2 border-[var(--primary)] bg-[var(--paper)] p-6 sm:p-8"
+            >
+              <p className="eyebrow text-[11px]">{a.brain}</p>
+              <h3 className="mt-3 font-serif text-3xl font-semibold text-[var(--primary)]">{a.name}</h3>
+              <p className="mt-4 font-serif text-lg italic leading-snug text-[var(--foreground)]">
+                {a.question}
+              </p>
+              <p className="mt-4 text-[15px] leading-relaxed text-[var(--foreground-soft)]">{a.body}</p>
+              <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3 pt-8">
+                <Link
+                  href={a.start.href}
+                  className="rounded-[var(--radius)] border border-[var(--primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
+                >
+                  {a.start.label}
+                </Link>
+                <Link
+                  href={a.about.href}
+                  className="text-[15px] font-medium text-[var(--foreground-soft)] underline underline-offset-4 decoration-[var(--border)] hover:text-[var(--foreground)] hover:decoration-current"
+                >
+                  {a.about.label}
+                </Link>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
 
-            {/* Chapter 3 — We tried to track it: the KPIs */}
-            <Chapter className="pb-10 pt-14 sm:pb-12 sm:pt-16">
-              <Reveal>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">The record</p>
-                <h3 className="mt-4 text-3xl font-semibold text-[var(--foreground)] sm:text-4xl" style={serif}>
-                  Public capital, at a glance.
-                </h3>
-              </Reveal>
-              <StatMatrix>
-                <MatrixCell
-                  label="Total committed"
-                  value={
-                    <CountUp value={capValue} prefix="€" suffix={capSuffix} decimals={capDecimals} />
-                  }
-                />
-                <MatrixCell label="Companies reached" value={<CountUp value={Number(synth.companies)} />} />
-                <MatrixCell label="Public awards" value={<CountUp value={Number(synth.events)} />} />
-                <MatrixCell label="Countries" value={<CountUp value={Number(synth.countries)} />} />
-              </StatMatrix>
-            </Chapter>
-
-            {/* Chapter 5 — Where it lands: the map */}
-            <Chapter className="py-10 sm:py-14">
-              <Reveal>
-                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--accent)]">Where it lands</p>
-              </Reveal>
-              <Reveal delay={150}>
-                <figure className="mt-6">
-                  <div className="border-y border-[var(--border)] py-3 sm:py-5">
-                    <EuropeMap countryData={countryData} />
-                  </div>
-                </figure>
-              </Reveal>
-              <Reveal>
-                <details className="mt-5 rounded-[var(--radius)] border border-[var(--border)] bg-[var(--paper)]/70 text-sm text-[var(--foreground-soft)]">
-                  <summary className="cursor-pointer px-5 py-4 font-medium text-[var(--foreground)]">
-                    How to read the map and coverage
-                  </summary>
-                  <div className="space-y-3 border-t border-[var(--border)] px-5 py-4 leading-relaxed">
-                    <p>
-                      Countries are shaded by companies reached, not award value. Hover to split each
-                      total across EU funds, development banks and state aid.
-                    </p>
-                    <p>
-                      Coverage varies. Consortium participants can be undercounted, some figures are
-                      commitments or ceilings rather than cash paid, and reporting channels overlap.
-                    </p>
-                  </div>
-                </details>
-              </Reveal>
-            </Chapter>
-
-            {/* Chapter 6 — The handoff / CTA */}
-            <Chapter className="pb-16 pt-8 text-center sm:pb-20 sm:pt-10">
-              <Reveal delay={100}>
-                <h3 className="text-3xl font-semibold text-[var(--foreground)] sm:text-5xl" style={serif}>
-                  Map your raise.
-                </h3>
-              </Reveal>
-              <Reveal delay={220}>
-                <div className="mt-9 flex flex-wrap justify-center gap-3">
-                  <Link
-                    href="/brief"
-                    className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-                  >
-                    Get your brief
-                  </Link>
-                </div>
-              </Reveal>
-            </Chapter>
-        </EuroJourney>
-      </div>
+      <section className="mt-12 max-w-2xl text-[15px] leading-relaxed text-[var(--muted-foreground)]">
+        <p>
+          They watch and tell: they notice and explain, and they do not draft or file. Nothing they
+          say ships without a source and a date. More experts will join the bench.
+        </p>
+      </section>
     </div>
   );
 }
