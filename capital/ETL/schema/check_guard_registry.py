@@ -58,7 +58,10 @@ CRON = ROOT / "ETL" / "events" / "extract" / "railway_cron.py"
 SCRIPTS = ROOT / "website" / "frontend" / "scripts"
 PACKAGE = ROOT / "website" / "frontend" / "package.json"
 CENSUS = ROOT / "ETL" / "events" / "load" / "publish_corpus_census.py"
-WORKFLOWS = ROOT / ".github" / "workflows"
+# The monorepo root, not this brain's: GitHub runs workflows only from the
+# repository's top-level .github/, and every workflow there is in scope, because
+# a credential in ANY of them is reachable from this brain's checkout.
+WORKFLOWS = ROOT.parent / ".github" / "workflows"
 
 # Provided by Actions itself and scoped by each workflow's `permissions:` block.
 # Not a credential this repository holds, so not one a workflow can leak.

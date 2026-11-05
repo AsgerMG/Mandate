@@ -80,8 +80,9 @@ REGISTRY = ROOT / "data" / "guard_registry.json"
 # reachable; a guard named anywhere else is not, however often somebody means
 # to type the command.
 AUTOMATIC = {
-    "ci.yml": ROOT / ".github" / "workflows" / "ci.yml",
-    "corpus-currency.yml": ROOT / ".github" / "workflows" / "corpus-currency.yml",
+    # Repo root: GitHub runs workflows only from the monorepo's top-level .github/.
+    "ci.yml": ROOT.parent / ".github" / "workflows" / "capital-ci.yml",
+    "corpus-currency.yml": ROOT.parent / ".github" / "workflows" / "capital-corpus-currency.yml",
     "railway_cron.py": ROOT / "ETL" / "events" / "extract" / "railway_cron.py",
     "guard_registry.json": REGISTRY,
 }

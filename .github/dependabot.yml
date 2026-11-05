@@ -3,7 +3,7 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: /website/frontend
+    directory: /capital/website/frontend
     schedule: { interval: weekly }
     open-pull-requests-limit: 5
     groups:
@@ -14,3 +14,11 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: monthly }
+  - package-ecosystem: npm
+    directory: /policy/website
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 5
+  - package-ecosystem: uv
+    directory: /policy
+    schedule: { interval: weekly }
+    open-pull-requests-limit: 5

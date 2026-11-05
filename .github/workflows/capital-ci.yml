@@ -2,29 +2,37 @@
 # hand; during the audit a broken build reached main because a commit ran on a
 # separate line from a failing typecheck. Verification nobody is forced to run
 # is verification that eventually does not happen.
-name: CI
+name: capital CI
 
 on:
+  # Scoped to this brain. In the monorepo a push to policy/ or mandate/ must not
+  # spend this matrix, and a push here must not wait on theirs.
   pull_request:
+    paths:
+      - 'capital/**'
+      - '!capital/project-mgmt/**'
+      - '!capital/**/*.md'
+      # the one file under a skipped path that checks DO read
+      - 'capital/data/guard_registry.json'
+      - '.github/workflows/capital-ci.yml'
   push:
     branches: [main]
-    # ── WHY THESE PATHS DO NOT RUN CI ──────────────────────────────────────
+    # ── WHY project-mgmt AND MARKDOWN DO NOT RUN CI ────────────────────────
     # On 2026-08-19 fifteen merges landed on main and every one spent the full
-    # matrix, on an account with 2,000 Actions minutes a month. A large share of
-    # those pushes touched nothing but the dashboard, a findings write-up or a
-    # planning note -- files no check in this workflow reads.
-    #
-    # Scoped by what the checks READ, not by what looks unimportant:
-    # `project-mgmt/` is written BY the checks (check_status.json) and read only
-    # by check_red_debt, which runs inside vitest and is therefore covered by the
-    # next code push. `data/guard_registry.json` is the one file under a skipped
-    # path that checks DO read, so it is excluded from the skip below.
-    paths-ignore:
-      - 'project-mgmt/**'
-      - '**/*.md'
+    # matrix, on an account with 2,000 Actions minutes a month. Scoped by what
+    # the checks READ: `project-mgmt/` is written BY the checks
+    # (check_status.json) and read only by check_red_debt, which runs inside
+    # vitest and is therefore covered by the next code push.
+    paths:
+      - 'capital/**'
+      - '!capital/project-mgmt/**'
+      - '!capital/**/*.md'
+      # the one file under a skipped path that checks DO read
+      - 'capital/data/guard_registry.json'
+      - '.github/workflows/capital-ci.yml'
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: capital-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -33,14 +41,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: website/frontend
+        working-directory: capital/website/frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: website/frontend/package-lock.json
+          cache-dependency-path: capital/website/frontend/package-lock.json
       # The code fingerprint a verdict is bound to has exactly one
       # implementation, in ETL/lib/guard_verdicts.py, and the checks below shell
       # out to it rather than carrying a second one. A second implementation of
@@ -362,6 +370,9 @@ jobs:
   etl:
     name: python syntax + schema drift
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: capital
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -611,11 +622,11 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: website/frontend
+        working-directory: capital/website/frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '22', cache: npm, cache-dependency-path: website/frontend/package-lock.json }
+        with: { node-version: '22', cache: npm, cache-dependency-path: capital/website/frontend/package-lock.json }
       - run: npm ci
       # Wraps npm audit with a reviewed exceptions register: fails on anything
       # high or critical that is NOT documented, and fails when an exception

@@ -1,0 +1,68 @@
+# The policy brain had no CI at all: its 520 tests ran when someone remembered.
+# Scoped to policy/ so a capital push never spends this, and vice versa.
+name: policy CI
+
+on:
+  pull_request:
+    paths:
+      - 'policy/**'
+      - '!policy/**/*.md'
+      - '!policy/project-management/**'
+      - '.github/workflows/policy-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'policy/**'
+      - '!policy/**/*.md'
+      - '!policy/project-management/**'
+      - '.github/workflows/policy-ci.yml'
+
+concurrency:
+  group: policy-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  api:
+    name: tests on a real Postgres, in the production schema layout
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: policy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: policy/uv.lock
+      # 3.12 exactly: pgserver, the ephemeral Postgres the tests run against,
+      # ships cp312 wheels only, and uv would otherwise pick the newest Python.
+      - run: uv python install 3.12
+      - run: uv sync --frozen --extra dev --python 3.12
+      # No DATABASE_URL: tests/conftest.py stands up its own pgserver with
+      # pgvector, in schema `policy`, exactly as production lays it out.
+      - name: Tests
+        run: uv run --frozen pytest -q
+
+  website:
+    name: lint + build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: policy/website
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: policy/website/package-lock.json
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: '1'
+          # Baked in at build time; the build must not depend on the API being up.
+          NEXT_PUBLIC_API_URL: https://regina-production.up.railway.app
