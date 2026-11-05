@@ -57,7 +57,7 @@ reason" is one honest sentence away from "orphaned, with an excuse", and the
 difference is invisible six weeks later when the reason has stopped being
 true. So a manual entry carries a `review` date and this check FAILS once it
 passes -- the same shape as the reviewed exceptions register in
-website/frontend/scripts/check_dependencies.ts, and for the same reason: a
+web/scripts/check_dependencies.ts, and for the same reason: a
 suppression nobody is forced to revisit is a suppression that outlives its
 justification.
 
@@ -68,12 +68,15 @@ Usage: python3 ETL/schema/check_guard_reachability.py
 """
 from __future__ import annotations
 
+import os
 import json
 import sys
 from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
 REGISTRY = ROOT / "data" / "guard_registry.json"
 
 # Paths that run without a human choosing to. A guard named in one of these is
@@ -92,7 +95,7 @@ AUTOMATIC = {
 GUARD_DIRS = [
     ROOT / "ETL" / "schema",
     ROOT / "ETL" / "terms",
-    ROOT / "website" / "frontend" / "scripts",
+    WEB / "scripts",
 ]
 
 
@@ -155,7 +158,7 @@ def main() -> int:
 
     for mod in guard_modules():
         stem = mod.stem
-        rel = mod.relative_to(ROOT)
+        rel = Path(os.path.relpath(mod, ROOT))
         hits = [n for n, text in sources.items() if stem in text]
         if hits:
             reachable += 1

@@ -16,8 +16,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
 DB = ROOT / "data" / "db.sqlite"
-SITE_DATA = ROOT / "website" / "frontend" / "public" / "data"
+SITE_DATA = WEB / "public" / "data"
 METHODOLOGY = ROOT / "project-mgmt" / "methodology.md"
 BUILDER = ROOT / "website" / "build" / "build_site_data.py"
 

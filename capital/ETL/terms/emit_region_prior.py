@@ -71,13 +71,14 @@ Usage:
 """
 from __future__ import annotations
 
+import os
 import sys as _sys
 from pathlib import Path as _Path
 for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 from nuts_regions import staged_region_mix  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 
@@ -86,7 +87,7 @@ import collections  # noqa: E402
 import json  # noqa: E402
 import sqlite3  # noqa: E402
 
-OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "regionPrior.generated.json"
+OUT = WEB / "lib" / "intelligence" / "regionPrior.generated.json"
 
 # A leaf whose whole footprint is a handful of awards describes nothing. Below
 # this the entry is dropped rather than shipped weak: the scorer treats an
@@ -147,7 +148,7 @@ def main() -> None:
         print("\n[report only] --write to persist")
         return
     OUT.write_text(json.dumps(out, indent=0, sort_keys=True) + "\n")
-    print(f"\nwrote {OUT.relative_to(ROOT)}")
+    print(f"\nwrote {Path(os.path.relpath(OUT, ROOT))}")
 
 
 if __name__ == "__main__":

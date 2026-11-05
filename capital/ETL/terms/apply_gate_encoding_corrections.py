@@ -270,7 +270,7 @@ def main() -> int:
         print(f"POSTGRES: applied {len(pg_plan)} corrections")
 
     print("\nre-run:")
-    print("  cd website/frontend && npx tsx scripts/check_winner_not_gated.ts")
+    print("  cd ../web && npx tsx scripts/check_winner_not_gated.ts")
     print("  python3 ETL/terms/check_gate_subject.py")
     return 0
 

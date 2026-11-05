@@ -38,6 +38,13 @@ except ModuleNotFoundError:  # pragma: no cover - exercised only where deps are 
 ETL = Path(__file__).resolve().parents[1]          # <repo>/ETL
 ROOT = ETL.parent                                  # <repo> (repo root)
 
+# The Mandate web app, <monorepo>/web (was web). Defined once, in
+# web_path.py beside this file. lib/ goes on sys.path here rather than waiting
+# for the loop below, so the import resolves however this module was reached.
+if str(ETL / "lib") not in sys.path:
+    sys.path.insert(0, str(ETL / "lib"))
+from web_path import WEB  # noqa: E402
+
 # Load .env.local as an import-time side effect so every script that already
 # does `from etl_env import DB, ROOT` gets ANTHROPIC_API_KEY/OPENAI_API_KEY/
 # DATABASE_URL/etc. for free, instead of each script hand-rolling its own

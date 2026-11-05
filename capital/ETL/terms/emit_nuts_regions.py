@@ -11,7 +11,7 @@ no way to produce it again. It has four readers:
                                       resolve fund text onto, AND the validator
                                       that accepts or rejects what it emitted
     ETL/terms/emit_regions.py         generates the site's regions.generated.ts
-    website/frontend/scripts/check_regions.ts  holds that module to it
+    web/scripts/check_regions.ts  holds that module to it
 
 Two of those decide what a founder is shown. Region is now the most
 load-bearing signal in the product, so 449 rows nobody can regenerate is the

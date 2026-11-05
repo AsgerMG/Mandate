@@ -23,7 +23,8 @@ data/db.sqlite
 # Source data: raw API/HTML caches and derived intermediates are generated build
 # artifacts (600MB+), not version-controlled. They are reproducible by re-running
 # ETL/extract/extract_*.py and are backed up separately (see README, backup strategy).
-# The website never reads these; it only reads website/frontend/public/data/*.json.
+# The website never reads these; it only reads web/public/data/*.json (the web
+# app is <monorepo>/web, outside this tree; its own ignores are in web/.gitignore).
 data/raw/
 data/processed/
 
@@ -44,9 +45,6 @@ data/ranker_cache/
 .env.*
 !.env.example
 
-# local debugging scratch
-website/frontend/.scratch/
-
 # wsN2: cached CC0 open-data pulls and derived id lists, reproducible in minutes
 .cache/
 publishable_ids.json
@@ -56,9 +54,6 @@ boilerplate_verdict.json
 # wsN2 worktree: gitignored shared state, symlinked to the main checkout
 data
 .env.local
-
-# Throwaway DB probes. Analysis, not product; the findings go to project-mgmt/.
-website/frontend/scratch/
 
 # wsCF: verified Postgres dumps from ETL/lib/backup_postgres.py. 123 MB today
 # and growing every time it runs. Never a commit, and -- because `railway up`

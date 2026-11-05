@@ -1,6 +1,6 @@
 """Can a founder APPLY to this row? The Python view of the ONE definition.
 
-The rule lives in website/frontend/lib/intelligence/offerRoute.ts and is
+The rule lives in web/lib/intelligence/offerRoute.ts and is
 projected to data/offer_route.json by `npx tsx scripts/emit_offer_route.ts`.
 This module reads that projection and deliberately does not restate it.
 
@@ -37,7 +37,7 @@ def _spec() -> dict:
     if not _SPEC_PATH.exists():
         raise SystemExit(
             f"{_SPEC_PATH} is missing -- the offer-route rule has not been "
-            "projected. Run: cd website/frontend && "
+            "projected. Run: cd ../web && "
             "npx tsx scripts/emit_offer_route.ts"
         )
     return json.loads(_SPEC_PATH.read_text())

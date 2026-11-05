@@ -30,6 +30,7 @@ Amount discipline: every euro aggregate here is computed within a single
 grant_amount_basis per instrument family (the family's dominant basis).
 Champion totals are the one exception and are labelled indicative in the UI.
 """
+import os
 import json
 import re
 from datetime import date
@@ -540,7 +541,7 @@ def main():
             "countryMix": build_country_mix(con),
         }
     OUT.write_text(json.dumps(payload, indent=2, ensure_ascii=False))
-    print(f"wrote {OUT.relative_to(ROOT)}")
+    print(f"wrote {Path(os.path.relpath(OUT, ROOT))}")
     print(f"  champions: {len(payload['champions'])}, "
           f"concentration families: {len(payload['concentration'])}, "
           f"notable stakes: {len(payload['equity']['notableStakes'])}")

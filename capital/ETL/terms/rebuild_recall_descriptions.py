@@ -75,7 +75,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DATA, DB, ROOT  # noqa: E402
+from etl_env import DATA, DB, ROOT, WEB  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
@@ -85,12 +85,12 @@ import statistics  # noqa: E402
 
 from recall_guards import LeakIndex, squash  # noqa: E402
 
-FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
+FRONTEND = WEB / "lib" / "intelligence"
 DEFAULT_BASE = "__recallSetDoors.json"
 DEFAULT_OUT = "__recallSetDescribed.json"
 TITLE_KINDS = DATA / "instrument_title_kind.json"
 
-# Mirrors website/frontend/lib/intelligence/types.ts. Duplicated across a
+# Mirrors web/lib/intelligence/types.ts. Duplicated across a
 # language boundary and therefore ASSERTED rather than trusted: see
 # `check_description_bounds` in scripts/check_recall_leaks.ts, which fails the
 # build if the TypeScript constants and these two ever disagree.

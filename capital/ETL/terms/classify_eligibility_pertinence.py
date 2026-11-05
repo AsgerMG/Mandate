@@ -29,7 +29,7 @@ appearing as prose in `funding_instruments.eligibility_text` and as a
 requirement in `eligibility_gates.requirement` is the same judgement, is paid
 for once, and can never be answered two different ways in the two places. That
 is the shape this repo has been bitten by three times; see
-`website/frontend/lib/intelligence/evidenceTiers.json`.
+`web/lib/intelligence/evidenceTiers.json`.
 
 ── The property ───────────────────────────────────────────────────────────
     A published eligibility string must state something an applicant could act
@@ -105,7 +105,7 @@ what a model is for. What makes it a TEST rather than an opinion is that the
 verdict is cached against a hash of the text: the build fails on any published
 string whose current text has no verdict, so a new or edited row cannot ship
 until it has been judged. Nothing is graded twice, and nothing sneaks past.
-The test is `website/frontend/scripts/check_gate_pertinence.ts`.
+The test is `web/scripts/check_gate_pertinence.ts`.
 
 ── Its own blind spot, stated ─────────────────────────────────────────────
 This checks the KIND of statement, not its truth, its currency, or whether it
@@ -270,7 +270,7 @@ def save_cache(cache: dict) -> None:
             "Pertinence verdicts, keyed by a digest of the text itself so the same "
             "sentence is judged once wherever it appears. Written by "
             "ETL/terms/classify_eligibility_pertinence.py; read by "
-            "website/frontend/scripts/check_gate_pertinence.ts, which FAILS THE BUILD "
+            "web/scripts/check_gate_pertinence.ts, which FAILS THE BUILD "
             "on a filter gate whose current text has no verdict here. Do not hand-edit "
             "a verdict: correct the text, or record the case in "
             "reference/gate_role_overrides.json where the reasoning lives."),

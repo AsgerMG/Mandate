@@ -2,7 +2,7 @@
   "$schema_note": [
     "ONE definition of which guards must have a published verdict, read by both",
     "languages. Python publishes from ETL/lib/guard_verdicts.py; TypeScript reads",
-    "it in website/frontend/scripts/check_verdicts.ts. A second copy of this list",
+    "it in web/scripts/check_verdicts.ts. A second copy of this list",
     "would drift the first time either side gained a guard, which is the defect",
     "this repo keeps finding (see ETL/schema/check_cross_language_constants.py).",
     "",
@@ -225,12 +225,12 @@
         "DATABASE_URL"
       ],
       "code": [
-        "website/frontend/scripts/check_corpus_currency.ts",
-        "website/frontend/lib/intelligence/liveness.ts",
-        "website/frontend/public/data/instrument_terms.json",
-        "website/frontend/lib/intelligence/semanticCache.generated.json"
+        "../web/scripts/check_corpus_currency.ts",
+        "../web/lib/intelligence/liveness.ts",
+        "../web/public/data/instrument_terms.json",
+        "../web/lib/intelligence/semanticCache.generated.json"
       ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_corpus_currency.ts",
+      "refresh": "cd ../web && npx tsx scripts/check_corpus_currency.ts",
       "why": "The committed fund snapshot against live Postgres: liveness agreement, profile coverage, and whether the semantic cache every NO_PG check ranks on is the real index."
     },
     {
@@ -240,11 +240,11 @@
         "DATABASE_URL"
       ],
       "code": [
-        "website/frontend/scripts/check_hydration_parity.ts",
-        "website/frontend/lib/intelligence",
-        "website/frontend/public/data/instrument_terms.json"
+        "../web/scripts/check_hydration_parity.ts",
+        "../web/lib/intelligence",
+        "../web/public/data/instrument_terms.json"
       ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_hydration_parity.ts",
+      "refresh": "cd ../web && npx tsx scripts/check_hydration_parity.ts",
       "why": "The two stores must produce the same brief. Every other check runs NO_PG=1, so the whole suite is green regardless of what Postgres holds."
     },
     {
@@ -254,11 +254,11 @@
         "DATABASE_URL"
       ],
       "code": [
-        "website/frontend/scripts/check_degradation.ts",
-        "website/frontend/lib/intelligence",
-        "website/frontend/public/data/instrument_terms.json"
+        "../web/scripts/check_degradation.ts",
+        "../web/lib/intelligence",
+        "../web/public/data/instrument_terms.json"
       ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_degradation.ts",
+      "refresh": "cd ../web && npx tsx scripts/check_degradation.ts",
       "why": "No fund a founder is shown on the fallback corpus may be one the live register says has closed. Measured at 26% of founders before the policy landed."
     },
     {
@@ -269,12 +269,12 @@
         "VOYAGE_KEY"
       ],
       "code": [
-        "website/frontend/scripts/check_recall_floor.ts",
-        "website/frontend/scripts/recallSet.ts",
-        "website/frontend/scripts/recallSample.ts",
-        "website/frontend/lib/intelligence"
+        "../web/scripts/check_recall_floor.ts",
+        "../web/scripts/recallSet.ts",
+        "../web/scripts/recallSample.ts",
+        "../web/lib/intelligence"
       ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_recall_floor.ts",
+      "refresh": "cd ../web && npx tsx scripts/check_recall_floor.ts",
       "why": "Does retrieval still find the fund a company actually won. Skips itself without credentials and exits 0, so a ranking change has always been able to merge with the floors never evaluated. The fingerprint above is what closes that."
     },
     {
@@ -284,13 +284,13 @@
         "DATABASE_URL"
       ],
       "code": [
-        "website/frontend/scripts/check_applicant_identity.ts",
+        "../web/scripts/check_applicant_identity.ts",
         "data/applicant_identity.json",
         "reference/applicant_identity_calibration.json",
         "reference/applicant_identity_repairs.json",
         "ETL/terms/repair_applicant_identity.py"
       ],
-      "refresh": "cd website/frontend && npx tsx scripts/check_applicant_identity.ts",
+      "refresh": "cd ../web && npx tsx scripts/check_applicant_identity.ts",
       "why": "No published `who may apply` block may state a population that cannot apply. Five did when this guard was found on 2026-08-08: two Latvian guarantee schemes the borrower's bank submits, an Innovasjon Norge row whose text was a cluster-programme paragraph its own recorded source never asserted, a closed English risk-finance scheme delivered through financial intermediaries, and an Irish community scheme applied for by registered project coordinators. A founder matched on any of them spends the effort and is rejected at the end, which is worse than never being shown the fund. It says FAILS THE BUILD in its own header and had been wired into nothing since the day it was written."
     },
     {
@@ -303,7 +303,7 @@
         "ETL/terms/check_index_freshness.py",
         "ETL/terms/embed_eligibility.py",
         "ETL/terms/build_instrument_profiles.py",
-        "website/frontend/lib/intelligence/evidenceTiers.json"
+        "../web/lib/intelligence/evidenceTiers.json"
       ],
       "command": [
         "python3",
@@ -315,7 +315,7 @@
   ],
   "manual_artifacts": {
     "$why": [
-      "Committed artifacts under website/frontend/lib/intelligence/ that decline one of",
+      "Committed artifacts under web/lib/intelligence/ that decline one of",
       "the four properties ETL/schema/check_artifact_reachability.py asserts, each with",
       "the reason and a date by which the reason must be re-examined. Same arrangement,",
       "and the same argument, as the `manual` block above: an escape hatch with no clock",
@@ -396,7 +396,7 @@
     }
   },
   "suite_accepted": {
-    "$why": "The same arrangement as `accepted` above, one layer out: that block covers the eleven guards that need credentials and publish verdicts, this one covers the sixty checks `npm run check` runs. It exists because on 2026-08-18 thirteen of them were red on main and seven had been red since 2026-08-12 -- 139 consecutive commits -- and not one of the thirteen was distinguishable from the others. A defect, a guard grading the wrong subject, and a corpus-state fact that only a republish can fix take OPPOSITE work, and an undifferentiated red block is why three separate agents read past all thirteen in one day. \n\nAn entry says which of the three it is (`class`), who it belongs to (`owner`), the day it went red (`since`), the failure it covers (`failure`, a regex the check's own last line must match) and when the decision expires (`review`). The bindings are enforced in website/frontend/scripts/lib/acceptance.ts, which check_verdicts.ts reads too -- one definition of what 'already decided' means, not two. On top of the four that block already enforces, a suite acceptance is capped: `review` may be at most MAX_HELD_DAYS after `since`, because a hold that outlives the silence it is holding is the silence with a date on it. \n\nIt is not a mute button and it is not a place to put today's inconvenience. It fails the build when the check goes green (an acceptance that outlives what it accepted is pre-authorisation for the next regression), when the check starts failing a different way, when the review date passes, and when it names a check the suite does not run. Held failures are PRINTED IN FULL on every run of `npx vitest run`.",
+    "$why": "The same arrangement as `accepted` above, one layer out: that block covers the eleven guards that need credentials and publish verdicts, this one covers the sixty checks `npm run check` runs. It exists because on 2026-08-18 thirteen of them were red on main and seven had been red since 2026-08-12 -- 139 consecutive commits -- and not one of the thirteen was distinguishable from the others. A defect, a guard grading the wrong subject, and a corpus-state fact that only a republish can fix take OPPOSITE work, and an undifferentiated red block is why three separate agents read past all thirteen in one day. \n\nAn entry says which of the three it is (`class`), who it belongs to (`owner`), the day it went red (`since`), the failure it covers (`failure`, a regex the check's own last line must match) and when the decision expires (`review`). The bindings are enforced in web/scripts/lib/acceptance.ts, which check_verdicts.ts reads too -- one definition of what 'already decided' means, not two. On top of the four that block already enforces, a suite acceptance is capped: `review` may be at most MAX_HELD_DAYS after `since`, because a hold that outlives the silence it is holding is the silence with a date on it. \n\nIt is not a mute button and it is not a place to put today's inconvenience. It fails the build when the check goes green (an acceptance that outlives what it accepted is pre-authorisation for the next regression), when the check starts failing a different way, when the review date passes, and when it names a check the suite does not run. Held failures are PRINTED IN FULL on every run of `npx vitest run`.",
     "a comparator asks the rule's question": {
       "class": "defect",
       "owner": "gate encoding — needs the owner's approval to write",

@@ -1,7 +1,7 @@
 # Wincent — common entry points.
 # Run `make help` for the list. The data pipeline flows:
 #   ETL/extract/* -> data/db.sqlite -> ETL/transform/* -> ETL/load/* (+ QA + backup)
-#                 -> make data -> website/frontend/public/data -> website/frontend
+#                 -> make data -> web/public/data -> web
 #
 # The ETL block (extract -> transform -> load) lives under ETL/. Extractors are
 # per-source and hit external APIs; run them individually (see ETL/README.md).
@@ -38,7 +38,7 @@ help:
 	@echo "                   then rebuild both vector indexes (needs VOYAGE_KEY)"
 	@echo "  make signals     Check the signals_* tables + status + QA (ETL/intelligence/load/load_signals.py)"
 	@echo "  make news        Full news/signals automation cycle (local only, cost-gated at \$$20)"
-	@echo "  make site-build  Static build of the Next.js site (website/frontend/out/)"
+	@echo "  make site-build  Static build of the Next.js site (web/out/)"
 	@echo "  make site-dev    Run the site dev server at localhost:3000"
 
 sources:
@@ -87,10 +87,10 @@ republish:
 	# 3. Say what actually moved, so the commit is a decision and not a reflex.
 	@echo ""
 	@echo "── what changed ────────────────────────────────────────────────"
-	@git --no-pager diff --stat -- website/frontend/public/data project-mgmt/coverage_baseline.json
+	@git --no-pager diff --stat -- ../web/public/data project-mgmt/coverage_baseline.json
 	@echo ""
 	@echo "Review, then commit and push — Vercel deploys on push:"
-	@echo "  git add website/frontend/public/data project-mgmt"
+	@echo "  git add ../web/public/data project-mgmt"
 	@echo "  git commit -m 'Republish the corpus the ETL produced'"
 
 # Is the weekly refresh going to happen, and will it run this code? Reads the
@@ -164,7 +164,7 @@ eligibility:
 	# vocabulary, so it is regenerated first -- an encoder working from a stale
 	# vocabulary emits values the product cannot match, and the rule silently
 	# stops gating rather than failing.
-	cd website/frontend && npx tsx scripts/emit_vocabulary.ts
+	cd ../web && npx tsx scripts/emit_vocabulary.ts
 	# Region vocabulary comes from the NUTS reference data for the same reason:
 	# a hand-copied list drifts silently and the rule stops gating.
 	python3 ETL/terms/emit_regions.py
@@ -279,7 +279,7 @@ eligibility:
 	# feeds the encoder and must run first, this one consumes the encoder's
 	# output. It is what lets relevance.ts stop loading the whole corpus's
 	# gates on every request; check_theme_index.ts fails the build if stale.
-	cd website/frontend && npx tsx scripts/emit_theme_index.ts
+	cd ../web && npx tsx scripts/emit_theme_index.ts
 	# (migrate_to_postgres.py, the SQLite -> Postgres truncate-and-reload, was
 	# here. Since 2026-11-05 every step above writes the served tables directly.)
 	# (A second check_corrections_applied.py, against Postgres after the
@@ -295,7 +295,7 @@ eligibility:
 	# the model. That is exactly what shipped for four workstreams. Last, and
 	# after Postgres, because it reads the published corpus.
 	# check_pool_recall_curve.ts fails the build when this has not been re-run.
-	cd website/frontend && npx tsx scripts/_wsdr_curve.ts
+	cd ../web && npx tsx scripts/_wsdr_curve.ts
 
 # News/signals layer (the signals_* tables of schema capital): table check +
 # stage counts + QA. Read-only.
@@ -321,10 +321,10 @@ news:
 	python3 ETL/intelligence/news_cron.py
 
 site-build:
-	cd website/frontend && npm run build
+	cd ../web && npm run build
 
 site-dev:
-	cd website/frontend && npm run dev
+	cd ../web && npm run dev
 
 backup:
 	python3 ETL/events/load/backup.py

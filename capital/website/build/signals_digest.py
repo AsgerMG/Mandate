@@ -12,7 +12,7 @@ Two retrieval surfaces per run:
   * sectors   — one canonical query per sector_top of the two-tier taxonomy:
                 current programmes/policy/funder moves relevant to that sector.
 
-Output: website/frontend/public/data/signals_digest.json
+Output: web/public/data/signals_digest.json
 Run:    python3 website/build/signals_digest.py     (or `make signals-digest`)
 Not registered in build_site_data's freshness check on purpose -- its input is
 the signals_* tables (news cadence), not the events corpus (corpus cadence).

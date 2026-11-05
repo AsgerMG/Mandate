@@ -12,6 +12,9 @@ on:
       - 'capital/**'
       - '!capital/project-mgmt/**'
       - '!capital/**/*.md'
+      # the Mandate web app (was capital/website/frontend), which this CI builds
+      - 'web/**'
+      - '!web/**/*.md'
       # the one file under a skipped path that checks DO read
       - 'capital/data/guard_registry.json'
       - '.github/workflows/capital-ci.yml'
@@ -27,6 +30,9 @@ on:
       - 'capital/**'
       - '!capital/project-mgmt/**'
       - '!capital/**/*.md'
+      # the Mandate web app (was capital/website/frontend), which this CI builds
+      - 'web/**'
+      - '!web/**/*.md'
       # the one file under a skipped path that checks DO read
       - 'capital/data/guard_registry.json'
       - '.github/workflows/capital-ci.yml'
@@ -41,14 +47,14 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: capital/website/frontend
+        working-directory: web
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
           cache: npm
-          cache-dependency-path: capital/website/frontend/package-lock.json
+          cache-dependency-path: web/package-lock.json
       # The code fingerprint a verdict is bound to has exactly one
       # implementation, in ETL/lib/guard_verdicts.py, and the checks below shell
       # out to it rather than carrying a second one. A second implementation of
@@ -84,13 +90,13 @@ jobs:
       - name: Site data from the corpus
         env:
           CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ../build/build_site_data.py --prebuild
+        run: python3 ../capital/website/build/build_site_data.py --prebuild
       # ── Is this tree's own build state known, and is every red one owned? ──
       # First, because it is the cheapest and the most likely to explain
       # anything below it. It reads project-mgmt/check_status.json — what `npm run
       # check` last found, one row per check — and fails on a row that is
       # stale, or red with nobody's name on it, or held under an expired
-      # acceptance. See website/frontend/scripts/lib/suiteStatus.ts.
+      # acceptance. See web/scripts/lib/suiteStatus.ts.
       - name: A red check is owned, and a green one is not accepted
         run: npx tsx scripts/check_red_debt.ts
 
@@ -672,11 +678,11 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: capital/website/frontend
+        working-directory: web
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
-        with: { node-version: '22', cache: npm, cache-dependency-path: capital/website/frontend/package-lock.json }
+        with: { node-version: '22', cache: npm, cache-dependency-path: web/package-lock.json }
       - run: npm ci
       # Wraps npm audit with a reviewed exceptions register: fails on anything
       # high or critical that is NOT documented, and fails when an exception

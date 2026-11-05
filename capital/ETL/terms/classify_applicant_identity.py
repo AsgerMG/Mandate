@@ -183,7 +183,7 @@ def save_cache(cache: dict) -> None:
             "Applicant-identity verdicts, keyed by a digest of the text itself so the "
             "same sentence is judged once wherever it appears. Written by "
             "ETL/terms/classify_applicant_identity.py; read by "
-            "website/frontend/scripts/check_applicant_identity.ts, which FAILS THE "
+            "web/scripts/check_applicant_identity.ts, which FAILS THE "
             "BUILD on a published eligibility_text judged `beneficiary_not_applicant`. "
             "Do not hand-edit a verdict: fix the TEXT so it states the applicant's own "
             "test, or withdraw it."),

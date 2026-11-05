@@ -46,7 +46,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 
 import datetime  # noqa: E402
 import json  # noqa: E402
@@ -55,7 +55,7 @@ import sqlite3  # noqa: E402
 
 from recall_guards import digest, squash  # noqa: E402
 
-FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
+FRONTEND = WEB / "lib" / "intelligence"
 OUT = FRONTEND / "profileLeakIndex.generated.json"
 # Every recall set on disk, not just the active one: a retired set is still
 # loadable with `SET=`, and the check must be able to test whatever it is

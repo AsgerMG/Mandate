@@ -1,7 +1,7 @@
 """Which ticket band an amount falls in — one definition, read from the app's.
 
 The intake's ticket bands are declared once, in
-`website/frontend/lib/intelligence/types.ts`, and projected into
+`web/lib/intelligence/types.ts`, and projected into
 `data/vocabularies.json` by `emit_vocabulary.ts` as `bandBounds`. This module is
 the Python half of that contract, so the ETL never restates the edges.
 
@@ -41,7 +41,7 @@ BAND_ORDER: list[str] = _VOCAB["bandOrders"]["ticketBand"]
 assert set(BAND_BOUNDS) == set(BAND_ORDER), (
     "data/vocabularies.json disagrees with itself about the ticket bands: "
     f"bandBounds={sorted(BAND_BOUNDS)} bandOrders={sorted(BAND_ORDER)} — "
-    "regenerate with `npm run vocab` in website/frontend")
+    "regenerate with `npm run vocab` in web")
 
 
 def band_floor_eur(band: str) -> float:

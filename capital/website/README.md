@@ -5,18 +5,23 @@ Everything that turns the corpus -- schema `capital` of the Mandate Postgres, re
 halves of a publish pipeline. Data flows one direction:
 
 ```
-build/      one builder per JSON file  ──►  frontend/public/data/*.json
+build/      one builder per JSON file  ──►  ../../web/public/data/*.json
   build_site_data.py  orchestrator: check the views, run every builder, check consistency
   lib/web_env.py      single source of truth for paths (ROOT, SITE_DATA, DATA, REFERENCE)
   lib/helpers.py      formatters + JSON export (to_json / fmt_eur); no database access
 
-frontend/   the Next.js app — reads only frontend/public/data/*.json
+../../web/   the Next.js app (moved out of here) — reads only web/public/data/*.json
   app/                routes: / · for-companies · companies · methodology · limitations
                       + api/intelligence/route.ts (the server-side LLM report)
   lib/intelligence/   the LLM analysis/report feature: pipeline · corpus · types · panel
   fund-processes/     per-instrument briefs the intelligence route reads at runtime
   components/  lib/  public/data/
 ```
+
+> **The Next.js app moved.** Until 2026-11-06 it was `website/frontend/`. It is now the
+> Mandate web app at the monorepo root, `web/` (it serves every brain, not only this one).
+> Where this file says `frontend/`, read `../../web/`. The path is defined once, in
+> `ETL/lib/web_path.py` (`WEB`), and re-exported as `web_env.FRONTEND` and `etl_env.WEB`.
 
 ## How paths work in `build/` (`lib/web_env.py`)
 
@@ -49,8 +54,8 @@ python3 website/build/company_search.py     # the /companies lookup shards
 
 # Build / serve the site (frontend's `prebuild` regenerates the data when
 # CAPITAL_RO_DATABASE_URL is set, and otherwise uses what is on disk):
-make site-build                             # cd frontend && npm run build  -> frontend/out/
-make site-dev                               # cd frontend && npm run dev     -> localhost:3000
+make site-build                             # cd ../web && npm run build
+make site-dev                               # cd ../web && npm run dev     -> localhost:3000
 ```
 
 ## The builders

@@ -21,7 +21,7 @@ time triage runs. This puts the corrections back, from TWO sources:
      digest of the requirement TEXT. Any deciding gate whose text was judged a
      REPORT rather than a CONDITION is demoted here. See
      ETL/terms/classify_eligibility_pertinence.py for the property, and
-     website/frontend/scripts/check_gate_pertinence.ts for the test that fails
+     web/scripts/check_gate_pertinence.ts for the test that fails
      the build when this has not been run.
 
 Both sources demote the same way and for the same reason, so they are applied

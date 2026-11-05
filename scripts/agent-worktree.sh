@@ -43,7 +43,12 @@ link() { [ -e "$ROOT/$1" ] && mkdir -p "$(dirname "$DEST/$1")" && ln -s "$ROOT/$
 
 # node_modules / .venv: derived from lockfiles both trees share. A per-worktree
 # copy is hundreds of MB of the same bytes.
-link capital/website/frontend/node_modules
+link web/node_modules
+# Transitional: a primary checkout that predates the move (2026-11-06) still
+# has its installed node_modules and .env.local at the web app's old home.
+# Link those until it is moved (mv capital/website/frontend/{node_modules,.env.local} web/).
+link_from() { [ ! -e "$DEST/$2" ] && [ -e "$ROOT/$1" ] && mkdir -p "$(dirname "$DEST/$2")" && ln -s "$ROOT/$1" "$DEST/$2"; true; }
+link_from capital/website/frontend/node_modules web/node_modules
 link policy/website/node_modules
 link policy/.venv
 
@@ -52,7 +57,8 @@ link policy/.venv
 # copied so a rotated key reaches every worktree at once, and so no secret is
 # ever duplicated onto disk.
 link capital/.env.local
-link capital/website/frontend/.env.local
+link web/.env.local
+link_from capital/website/frontend/.env.local web/.env.local
 link policy/.env
 
 # There is NO local corpus to link any more. Since 2026-11-05 every brain's data

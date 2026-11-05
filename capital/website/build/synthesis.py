@@ -4,7 +4,7 @@ The Sprint 9 exploratory deep dives (q01–q08 + the synthesis page) have been
 retired; this orchestrator now only produces the corpus-wide counts that the
 home page KPI grid and the layout footer depend on.
 
-  website/frontend/public/data/synthesis.json
+  web/public/data/synthesis.json
 """
 import datetime as _dt
 import sys
@@ -62,4 +62,4 @@ def run_synthesis():
 if __name__ == "__main__":
     print("Building corpus KPIs...")
     run_synthesis()
-    print("\nDone. synthesis.json written to website/frontend/public/data/")
+    print("\nDone. synthesis.json written to web/public/data/")

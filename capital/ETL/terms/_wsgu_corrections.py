@@ -5,7 +5,7 @@ WHY THIS IS A GENERATOR AND NOT A HAND-WRITTEN FILE
 Every correction has to quote the spec it replaces, and a spec typed out by
 hand is a spec that can be typed wrong -- which is the whole failure this
 workstream is about. So the DECISION is authored here, one line per gate, and
-the CURRENT state is read from `website/frontend/public/data/instrument_terms.json`
+the CURRENT state is read from `web/public/data/instrument_terms.json`
 and joined in. A gate that has moved, or whose key no longer exists, fails this
 script rather than producing a correction against a row that is not there.
 
@@ -22,7 +22,10 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SNAPSHOT = ROOT / "website" / "frontend" / "public" / "data" / "instrument_terms.json"
+import sys  # noqa: E402
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
+SNAPSHOT = WEB / "public" / "data" / "instrument_terms.json"
 OUT = (ROOT / "project-mgmt" / "evidence"
        / "wsgu_gate_encoding_corrections_2026-08-13.jsonl")
 # NOT `data/`. The whole of `data/` is gitignored in an agent worktree (it is a

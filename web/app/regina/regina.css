@@ -1,0 +1,787 @@
+/* Regina's pages, scoped under `.regina` (app/regina/layout.tsx).
+
+   Ported from policy/website/app/globals.css when the two sites became one.
+   What the shared shell already owns was left out rather than copied: the
+   tokens (they live once, in app/globals.css :root, and every var() below
+   reads them), the reset, html/body, the page container (`.wrap`), the
+   masthead and the footer. Every selector is prefixed with `.regina` so none of
+   these class names (.hero, .card, .badge, .eyebrow, .btn ...) can reach a
+   Wincent page, and keyframes are namespaced for the same reason. */
+
+/* Regina's reading scale, from its old body rule. */
+.regina { font-size: clamp(15.5px, 12.09px + 0.2664vw, 18.91px); line-height: 1.6; }
+
+/* Regina was written against the browser's own defaults; the shared shell runs
+   Tailwind's preflight, which zeroes them. Restore them here, at zero added
+   specificity (:where), so every rule below still wins as it did. */
+.regina :where(p, h1, h2, h3, h4, ul, ol, blockquote, figure, dl, dd, details) { margin: revert; }
+.regina :where(h1, h2, h3, h4) { font-size: revert; font-weight: revert; }
+.regina :where(ul, ol) { padding: revert; list-style: revert; }
+.regina :where(input[type="checkbox"], input[type="radio"]) { margin: revert; }
+
+.regina a { color: var(--accent); text-decoration: none; }
+.regina a:hover { text-decoration: underline; }
+/* The four headings below manage their own mobile-shrink via clamp(min,
+   Nvw, max) — necessary so long titles don't overflow a phone — but that
+   same vw coefficient makes them plateau at their max well before 1600px
+   (.masthead-brand as early as ~500px) and then stay perfectly flat all the
+   way to a 2560px+ monitor. Every other font-size on the site now scales
+   fluidly up to 2560px (see the font-size clamp()s throughout this file);
+   leaving these four flat while everything around them keeps growing is
+   what made the page feel static/tiny on a big monitor. Layer a second ramp
+   on top, active only above 1600px, continuous with each element's existing
+   plateau value, growing to roughly +22% by 2560px — matching the scale
+   applied everywhere else. */
+@media (min-width: 1600px) {
+  .regina .hero h1 { font-size: clamp(46px, 29.13px + 1.054vw, 56px); }
+  .regina .cta-band h2, .regina .report h1 { font-size: clamp(28px, 17.73px + 0.6417vw, 34.16px); }
+}
+/* Regina's edition line, under the shared masthead (which draws the rule above
+   it, so its own border-top is dropped below). */
+.regina .masthead-dateline {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px;
+  padding-top: 7px; padding-bottom: 7px; font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--muted-foreground);
+}
+/* Eyebrow / kicker */
+.regina .eyebrow {
+  display: flex; align-items: center;
+  font-size: clamp(11.5px, 8.97px + 0.1977vw, 14.03px); font-weight: 700; text-transform: uppercase;
+  letter-spacing: 0.16em; color: var(--accent); margin: 0 0 10px;
+  font-family: var(--font-sans);
+}
+/* Live indicator */
+.regina .live-dot {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+  background: #3d6136; margin-right: 7px; flex-shrink: 0;
+  animation: regina-live-pulse 2.2s ease-in-out infinite;
+}
+@keyframes regina-live-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+/* Hero */
+.regina .hero { padding: 32px 0 6px; }
+.regina .hero h1 {
+  font-family: var(--font-serif); font-weight: 600; font-size: clamp(30px, 4.2vw, 46px);
+  line-height: 1.12; letter-spacing: -0.01em; margin: 0 0 12px; color: var(--foreground); max-width: 800px;
+}
+.regina .hero p { color: var(--foreground-soft); margin: 0 0 18px; max-width: 640px; font-size: clamp(16px, 12.48px + 0.275vw, 19.52px); line-height: 1.6; }
+.regina .hero-actions { display: flex; align-items: center; gap: 22px; margin-top: 2px; flex-wrap: wrap; }
+/* Home: hero text beside a supporting image, text vertically centered
+   against it (align-items: center) rather than pinned to the top — so it
+   doesn't read as floating awkwardly high or low next to a taller/shorter
+   image. About reuses this same .hero-row (see .about-page .hero-row) rather
+   than having its own variant — an earlier `.lede-row` that this comment used
+   to reference no longer exists. Includes resetting flex-basis when the
+   direction flips to column below 900px (flex-basis sizes *width* in row
+   mode but the same numbers become a *height* once stacked — see
+   design-ux-guidelines.md item 9 — leaving it unset here would force the
+   text block into a tall box regardless of its actual content height). */
+.regina .hero-row { display: flex; align-items: center; gap: 48px; }
+.regina .hero-row .hero-text { flex: 1 1 480px; padding: 0; }
+.regina .hero-image { flex: 1 1 420px; min-width: 0; }
+.regina .hero-image img {
+  width: 100%; height: auto; display: block;
+  border: 1px solid var(--border); border-radius: var(--radius);
+}
+@media (max-width: 900px) {
+  .regina .hero-row { flex-direction: column; gap: 28px; }
+  .regina .hero-row .hero-text, .regina .hero-image { flex: none; }
+}
+/* Compact page header for tool/form pages (brief), as opposed to .hero's
+   marketing-landing treatment. The brief flow's actual job is the form below
+   it, not the headline — a full .hero (large clamp'd h1, generous padding)
+   was pushing nearly 400px of decorative space above the form, so on a
+   typical laptop viewport almost none of the form was visible on load. The
+   original 2px bottom padding pushed this too far the other way though —
+   the last line of the paragraph nearly touched the form's border-top,
+   reading as cramped rather than compact. */
+.regina .page-head { padding: 18px 0 18px; }
+.regina .page-head h1 {
+  font-family: var(--font-serif); font-weight: 600; font-size: clamp(22px, 16px + 1.2vw, 30px);
+  line-height: 1.2; letter-spacing: -0.01em; margin: 0 0 6px; color: var(--foreground); max-width: 720px;
+}
+.regina .page-head p { color: var(--foreground-soft); margin: 0; max-width: 640px; font-size: clamp(14px, 12px + 0.3vw, 16px); line-height: 1.5; }
+.regina .link-arrow {
+  font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); font-weight: 600; color: var(--foreground);
+  text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--border);
+}
+.regina .link-arrow:hover { color: var(--accent); text-decoration-color: currentColor; }
+/* Flow (numbered process, roman numerals) — used by About's "How it's
+   built"; the landing page's own copy of this section was removed. */
+.regina .flow {
+  display: flex; border-top: 1px solid var(--foreground); border-bottom: 1px solid var(--foreground);
+}
+.regina .flow-step { flex: 1; padding: 18px 18px 18px 0; }
+.regina .flow-step + .flow-step { padding-left: 18px; border-left: 1px solid var(--border); }
+.regina .flow-num {
+  font-family: var(--font-serif); font-style: italic; font-size: clamp(25px, 19.5px + 0.4297vw, 30.5px); font-weight: 600;
+  color: var(--accent); display: block; margin-bottom: 8px;
+}
+.regina .flow-step h3 { font-family: var(--font-serif); font-size: clamp(17px, 13.26px + 0.2922vw, 20.74px); font-weight: 600; margin: 0 0 6px; }
+.regina .flow-step p { color: var(--muted-foreground); font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); line-height: 1.6; margin: 0; }
+@media (max-width: 760px) {
+  .regina .flow { flex-direction: column; }
+  .regina .flow-step + .flow-step { border-left: none; border-top: 1px solid var(--border); padding-left: 0; padding-top: 18px; }
+}
+/* Small screens: the site otherwise had a single 760px breakpoint, so every
+   fixed desktop padding value (form panels, the report sheet, the CTA band)
+   just got squeezed rather than actually resized — this is what read as
+   "hyper compressed" on a phone. */
+@media (max-width: 640px) {
+  .regina .hero { padding: 22px 0 4px; }
+  /* The rightmost dateline item is decorative reinforcement of the brand,
+     not information — on a narrow screen it just eats a whole extra line
+     above the fold, so drop it rather than let it wrap. */
+  .regina .masthead-dateline span:last-child { display: none; }
+  .regina .form { padding: 20px; }
+  .regina .report-sheet { padding: 24px 20px; }
+  .regina .excerpt { padding: 16px 18px; }
+  .regina .cta-band {
+    flex-direction: column; align-items: flex-start;
+    padding: 26px 22px; margin: 40px 0 30px;
+  }
+  .regina .cta-band .btn { width: 100%; justify-content: center; }
+  /* Thumb-sized tap targets: chips and option-rows are tapped repeatedly
+     while scoping a report, and at their desktop padding several sit under
+     the ~44px minimum comfortable touch target. */
+  .regina .chip { padding: 10px 15px; }
+  .regina .option-row { padding: 13px 14px; }
+  /* Make the primary action full-width and thumb-reachable rather than a
+     compact inline button competing with a secondary text link. */
+  .regina .hero-actions .btn { width: 100%; justify-content: center; }
+  .regina .hero-actions .link-arrow { width: 100%; text-align: center; }
+}
+/* Shared by any page whose first section is short relative to the viewport
+   (About's hero + why-this-exists, Home's hero) — centers it within the
+   first screen instead of pinning it to the top. Without this, the sticky
+   footer (main { flex: 1 0 auto }) pushes all of a short page's leftover
+   height into one dead gap between the content and the footer, which on a
+   tall/wide monitor reads as "the page ran out of content" rather than a
+   deliberate design. Centering redistributes that same slack above and
+   below instead. Whatever comes after this wrapper continues in normal flow
+   and can peek in a little, which reads as a natural "keep scrolling" cue.
+   Kept generic (not `.about-intro`) since Home uses the identical pattern. */
+.regina .viewport-intro {
+  min-height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+@media (max-width: 640px) {
+  /* Centering a min-height section only reads as intentional whitespace when
+     the viewport is taller than the content; on a short phone screen the
+     text is often taller than 100vh, so centering instead clips the top of
+     the hero above the fold. Fall back to normal top-aligned flow. */
+  .regina .viewport-intro { min-height: 0; display: block; }
+}
+/* Coverage: expandable per-category source list, styled like .show-more
+   rather than the boxed .coverage disclosure (a second bordered box nested
+   inside a .card would be visually heavy). */
+.regina .source-disclosure summary {
+  cursor: pointer; list-style: none; margin-top: 8px;
+  font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); font-weight: 600; color: var(--foreground-soft);
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--border);
+}
+.regina .source-disclosure summary::-webkit-details-marker, .regina .source-disclosure summary::marker { display: none; content: ""; }
+.regina .source-disclosure summary:hover { color: var(--accent); text-decoration-color: currentColor; }
+.regina .source-disclosure[open] summary { margin-bottom: 6px; }
+.regina .source-name-list {
+  margin: 0; padding-left: 0; list-style: none;
+  font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); color: var(--muted-foreground);
+}
+.regina .source-name-list li {
+  display: flex; align-items: center; gap: 7px; padding: 4px 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.regina .source-name-list li:last-child { border-bottom: none; }
+/* Coverage card: badges sit on their own row below the title, always — a
+   flex row combining a variable-length title with a badge wrapped
+   inconsistently depending on how long that particular category's name was. */
+.regina .coverage-badges { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 2px; }
+/* The document search box, jurisdiction filter chips and the paginated register
+   of rows were removed from /documents on 2026-07-30 (the page is now Coverage +
+   Hot right now only), and their styles went with them: .filters, .register,
+   .register-row/-title/-meta, .show-more and the 640px row-wrapping override
+   that existed to stop .register-row overflowing on phones. `.chip` stays — the
+   brief wizard still uses it. Nothing else referenced any of them; checked
+   across every component including /documents/[id]. */
+/* Closing CTA band */
+.regina .cta-band {
+  display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  background: var(--navy); color: #fff; border-radius: var(--radius);
+  padding: 36px 40px; margin: 56px 0 40px;
+}
+.regina .cta-band .eyebrow { color: var(--accent-bright); margin-bottom: 10px; }
+.regina .cta-band h2 {
+  font-family: var(--font-serif); font-size: clamp(20px, 2.6vw, 28px); font-weight: 600;
+  letter-spacing: -0.01em; margin: 0; color: #fff; max-width: 520px;
+}
+.regina .cta-band .btn { background: var(--accent-bright); border-color: var(--accent-bright); color: var(--navy); }
+.regina .cta-band .btn:hover { background: #bb8a45; border-color: #bb8a45; }
+/* Layout helpers */
+.regina .section { margin: 34px 0; }
+.regina .section h2 {
+  font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin: 0 0 14px; letter-spacing: 0.1em; text-transform: uppercase;
+  font-weight: 700; color: var(--foreground-soft); display: flex; align-items: center; gap: 10px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+}
+.regina .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 14px; }
+/* Hot-topic tiles used a narrower auto-fill minimum (190px) so more fit per
+   row. At every common desktop width that produced FIVE columns for a curated
+   list of six topics — one orphan tile alone on row 2 — and squeezed the
+   longer labels onto two and three lines.
+   Fixed column counts instead, all of which divide six evenly, so there is no
+   orphan at any width and every label fits on one line. Measured at 1440px:
+   211px tiles / 5+1 rows / two-line titles → 361px tiles / 3+3 / one line.
+   The counts are tied to HOT_TOPICS being a hand-curated six (documents/
+   page.tsx) — revisit them if that list changes length. Breakpoints match
+   where .grid's own auto-fill drops a column, so the two sections stay in
+   step. */
+.regina .topic-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 960px) {
+  .regina .topic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .regina .topic-grid { grid-template-columns: minmax(0, 1fr); }
+}
+/* Card (used for the register's Coverage section) */
+.regina .card {
+  background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 18px 20px; display: flex; flex-direction: column; gap: 9px;
+  transition: border-color 0.15s ease;
+}
+.regina .card:hover { border-color: var(--foreground); }
+/* The click-affordance styles that went with Coverage cards doubling as the
+   register's category filter (.card[role="button"], .card.on, .card-clear and
+   .card.on h3) are gone: the handlers were deleted on 2026-07-30 when the
+   register list they filtered was removed, so they styled a state nothing
+   could ever enter. See the note at the top of documents/page.tsx. */
+.regina .card h3 { font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); margin: 0; line-height: 1.35; font-weight: 600; overflow-wrap: break-word; }
+.regina .card h3 a { color: var(--foreground); }
+.regina .card .meta { color: var(--muted-foreground); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); display: flex; gap: 10px; flex-wrap: wrap; }
+/* Not scoped to .card — brief/page.tsx and Report.tsx also render a bare
+   `.row` inside .source-item, which needs the same space-between layout. */
+.regina .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+/* Badge — bracket/stamp style, not a filled pill */
+.regina .badge {
+  display: inline-flex; align-items: center; font-size: clamp(10.5px, 8.19px + 0.1805vw, 12.81px); font-weight: 600;
+  padding: 3px 8px; border-radius: var(--radius); border: 1px solid currentColor;
+  white-space: nowrap; text-transform: uppercase; letter-spacing: 0.05em; background: transparent;
+}
+.regina .badge.planned { color: var(--accent); }
+.regina .badge.consultation { color: #2f5f5c; }
+.regina .badge.proposed { color: #2c3e6b; }
+.regina .badge.in_force { color: #3d6136; }
+.regina .badge.adopted { color: #3d6136; }
+.regina .badge.repealed { color: #92402a; }
+.regina .badge.amended { color: #5f4577; }
+.regina .badge.unknown { color: #6a6252; }
+.regina .badge.juris { background: var(--foreground); color: var(--paper); border-color: var(--foreground); }
+/* Buttons */
+.regina .btn {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+  background: var(--foreground); color: var(--paper); border: 1px solid var(--foreground); border-radius: var(--radius);
+  padding: 12px 22px; font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); font-weight: 600; font-family: var(--font-sans);
+  text-transform: uppercase; letter-spacing: 0.06em;
+}
+.regina .btn:hover { background: var(--foreground-soft); border-color: var(--foreground-soft); text-decoration: none; }
+.regina .btn.secondary { background: transparent; color: var(--foreground); border: 1px solid var(--foreground); }
+.regina .btn.secondary:hover { background: var(--foreground); color: var(--paper); }
+.regina .btn:disabled { opacity: 0.5; cursor: default; }
+/* Forms */
+.regina .form {
+  background: var(--paper); border: 1px solid var(--border); border-top: 3px solid var(--foreground);
+  border-radius: var(--radius); padding: 32px; max-width: 720px;
+}
+.regina .field { margin-bottom: 20px; }
+/* `.field-label` is the same treatment on a non-<label> element, used wherever
+   the thing being named is a GROUP of controls (the Sectors/Markets chip
+   groups, a scoping question with preset chips) rather than one input. A
+   <label> there would associate with nothing — which is exactly the defect
+   this replaces — so those groups carry role="group" + aria-labelledby
+   pointing at this element instead. */
+.regina .field label, .regina .field .field-label { display: block; font-weight: 700; font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin-bottom: 7px;
+  text-transform: uppercase; letter-spacing: 0.04em; color: var(--foreground-soft); }
+.regina .field .hint { color: var(--muted-foreground); font-weight: 400; font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); text-transform: none; letter-spacing: 0; }
+.regina input[type="text"], .regina textarea {
+  width: 100%; padding: 11px 13px; border: 1px solid var(--line); border-radius: var(--radius);
+  font-family: var(--font-sans); font-size: clamp(16px, 12.48px + 0.275vw, 19.52px); background: #fff; color: var(--foreground);
+  /* iOS Safari zooms the whole page in on focus if a text input renders
+     below 16px — 16px is the smallest size that avoids it, so this isn't a
+     stylistic choice, it's the floor for a usable mobile form. */
+}
+.regina textarea { min-height: 90px; resize: vertical; }
+.regina input:focus, .regina textarea:focus { outline: none; border-color: var(--foreground); box-shadow: 0 0 0 3px rgba(16, 32, 63, 0.08); }
+.regina .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+/* Chips are real <button type="button" aria-pressed> elements (they were
+   <span onClick> until 2026-08-07, which made the whole intake flow
+   impossible to complete without a mouse). The extra declarations are the UA
+   button reset needed to keep the previous geometry exactly: a <button> does
+   not inherit font-family or the body's 1.6 line-height, and carries its own
+   margin and centred text. */
+.regina .chip {
+  border: 1px solid var(--border); background: #fff; border-radius: var(--radius); padding: 7px 14px;
+  font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); cursor: pointer; user-select: none; font-weight: 500; color: var(--foreground-soft);
+  font-family: var(--font-sans); line-height: 1.6; margin: 0; text-align: left;
+}
+.regina .chip:hover { border-color: var(--foreground); }
+.regina .chip.on { background: var(--foreground); border-color: var(--foreground); color: #fff; font-weight: 600; }
+/* Keyboard focus, specified rather than left to the UA default: these are the
+   controls a keyboard user drives the brief with, and the ring has to stay
+   visible on a filled `.on` chip too — hence outline-offset, which draws it on
+   the panel behind the control instead of on the control's own dark fill.
+   --ink on --paper is ~16:1, well past the 3:1 non-text contrast minimum. */
+.regina .chip:focus-visible, .regina .btn:focus-visible, .regina .ghost-button:focus-visible, .regina .option-row:has(input:focus-visible) {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+/* Same ring would be invisible against the navy band. */
+.regina .cta-band .btn:focus-visible { outline-color: var(--accent-bright); }
+/* Suggested answers for open (text) scoping questions: multi-select preset
+   chips above an optional free-text box, so picking one is as fast as a
+   choice question while custom detail is still possible. Dashed border
+   distinguishes these "add a preset" chips from the exclusive-pick .chip
+   used for sectors/markets, without a from-scratch visual language. */
+.regina .text-with-suggestions { display: flex; flex-direction: column; gap: 10px; }
+.regina .chip.suggestion { border-style: dashed; }
+.regina .chip.suggestion.on { border-style: solid; }
+.regina textarea.detail { min-height: 56px; }
+.regina .checks { display: flex; gap: 18px; flex-wrap: wrap; }
+.regina .check { display: flex; align-items: center; gap: 8px; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); }
+/* Stepper track/label — the old top-level 3-step bar for the brief wizard
+   was replaced by the vertical ProgressRail (brief/ProgressRail.tsx), but
+   the scoping sub-stepper below still reuses this track/label styling for
+   its own "group X of Y" progress within step 2. */
+.regina .stepper-label {
+  font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted-foreground);
+}
+.regina .stepper-track { display: flex; gap: 6px; height: 3px; background: var(--line-soft); }
+.regina .stepper-track span { flex: 1; background: transparent; transition: background 0.2s ease; }
+.regina .stepper-track span.done { background: var(--foreground); }
+.regina .stepper-track span.current { background: var(--accent-bright); }
+/* Scoping questions — full-sentence questions, not short field names, so
+   they get their own label treatment instead of .field label's uppercase/
+   tracked style (built for two-word labels like "Company name" and shouty
+   stretched over a sentence). Sentence case, still weighted, full ink since
+   the question is the primary thing being asked. */
+.regina .question label, .regina .question .field-label {
+  font-weight: 600; font-size: clamp(15px, 12.6px + 0.1146vw, 16.3px);
+  text-transform: none; letter-spacing: 0; color: var(--foreground); margin-bottom: 4px;
+}
+.regina .question .why { color: var(--muted-foreground); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); margin: 4px 0 10px; }
+/* Vertical option rows (scoping choice/multi questions) */
+.regina .option-list { display: flex; flex-direction: column; gap: 8px; }
+.regina .option-row {
+  display: flex; align-items: center; gap: 11px; border: 1px solid var(--border); background: #fff;
+  border-radius: var(--radius); padding: 11px 14px; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); font-weight: 500;
+  color: var(--foreground-soft); cursor: pointer;
+}
+.regina .option-row:hover { border-color: var(--foreground); }
+.regina .option-row.on { border-color: var(--foreground); background: var(--accent-soft); color: var(--foreground); font-weight: 600; }
+.regina .option-row input { width: 16px; height: 16px; flex-shrink: 0; accent-color: var(--foreground); cursor: pointer; }
+/* Sub-stepper (scoping groups, nested under the main 3-step stepper) */
+.regina .substepper { margin: 0 0 22px; }
+.regina .substepper-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; flex-wrap: wrap; row-gap: 4px; }
+.regina .substepper-name { font-family: var(--font-serif); font-size: clamp(15px, 11.7px + 0.2578vw, 18.3px); font-weight: 600; color: var(--foreground); }
+.regina .substepper-track { height: 3px; }
+/* Report generation — live progress panel. The stage-by-stage list used to
+   live here; it's now in the vertical ProgressRail beside this panel (see
+   .brief-layout below) so this box just sets the scene. */
+.regina .generating-head { margin-bottom: 14px; }
+.regina .generating-head h2 {
+  font-family: var(--font-serif); font-size: clamp(19px, 14.82px + 0.3266vw, 23.18px); font-weight: 600; margin: 0; color: var(--foreground);
+}
+.regina .generating-note { font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin: 0; }
+/* Brief wizard layout: main form/panel beside the vertical ProgressRail,
+   set tight together (not a generous section-gap) — the rail reads as a
+   companion strip attached to the box beside it, not an independent block.
+   align-items: stretch makes the rail match whichever box is currently on
+   the left (data-entry form, scoping form, or the generating panel) at its
+   natural height. Dropped once the finished report renders (see page.tsx) —
+   a multi-page report stretching a short rail to match its height would
+   leave the rail mostly empty air. */
+.regina .brief-layout { display: flex; align-items: stretch; gap: 24px; }
+/* max-width matches .form's own 720px cap — .brief-main is a flex item that
+   otherwise keeps growing to fill the row even once its .form child has
+   already hit its own max-width, leaving invisible empty space between the
+   visible end of the form and the rail sitting right after brief-main. */
+.regina .brief-main { flex: 1 1 480px; min-width: 0; max-width: 720px; }
+@media (max-width: 900px) {
+  .regina .brief-layout { flex-direction: column; gap: 20px; }
+  .regina .brief-main, .regina .rail { flex: none; }
+}
+/* ProgressRail (brief/ProgressRail.tsx) — one flat vertical list, every
+   step visible from the start (idle → current → done), not a list that
+   grows as the user progresses. No frame — it reads as an extension of the
+   box beside it, not a separate card. display: flex column + justify-
+   content: space-between spreads the fixed 9-step list across the rail's
+   full stretched height so it reaches the bottom of the box beside it. */
+.regina .rail {
+  flex: 0 0 240px; background: transparent; padding: 4px 0 4px 6px;
+  display: flex; flex-direction: column;
+}
+.regina .rail-steps {
+  list-style: none; margin: 0; padding: 0; position: relative; flex: 1;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
+}
+/* One continuous connecting line for the whole list (not per-row segments)
+   so it stays correct regardless of how much space-between spreads rows
+   apart — each icon's opaque background punches through it as it passes. */
+.regina .rail-steps::before {
+  content: ""; position: absolute; left: 8px; top: 10px; bottom: 10px; width: 1px; background: var(--border);
+  z-index: 0;
+}
+.regina .rail-step { display: flex; align-items: center; gap: 11px; transition: opacity 0.2s ease; }
+.regina .rail-icon {
+  position: relative; z-index: 1; width: 17px; height: 17px; display: flex; align-items: center;
+  justify-content: center; border-radius: 50%; flex-shrink: 0; color: var(--muted-foreground);
+  /* background matches the page (not .rail, which is transparent) so the
+     circle cleanly "punches through" the connecting line behind it. */
+  background: var(--background);
+}
+.regina .rail-step.current .rail-icon { color: var(--accent); }
+/* Idle: faint, waiting its turn. Current: the one thing happening right
+   now — full-strength ink, accent icon. Done: greyed out — it mattered a
+   moment ago, not anymore. */
+.regina .rail-step.upcoming { opacity: 0.55; }
+.regina .rail-step.done { opacity: 0.45; }
+.regina .rail-step-label {
+  font-family: var(--font-sans); font-weight: 500; font-size: clamp(14px, 12.28px + 0.1146vw, 15.3px);
+  color: var(--muted-foreground);
+}
+.regina .rail-step.done .rail-step-label { color: var(--foreground-soft); }
+.regina .rail-step.current .rail-step-label { color: var(--foreground); font-weight: 600; }
+.regina .rail-elapsed {
+  margin-left: auto; font-variant-numeric: tabular-nums; font-size: clamp(11.5px, 10.06px + 0.0938vw, 12.6px);
+  color: var(--muted-foreground); flex-shrink: 0; padding-left: 8px;
+}
+/* Briefing output */
+.regina .notice {
+  background: var(--accent-soft); border: 1px solid #e2cd9a; border-left: 3px solid var(--accent-bright);
+  border-radius: var(--radius); padding: 13px 16px; font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); margin-bottom: 18px;
+  color: var(--accent);
+}
+/* A failure has to be distinguishable from the amber .notice, which is used for
+   ordinary informational states (dry-run mode, "no sources enabled"). Same box,
+   red-brown ink — borrowed from .badge.repealed so the palette stays the site's. */
+.regina .notice-error {
+  background: #fbf0ec; border-color: #e6c4b8; border-left-color: #92402a; color: #7a3623;
+}
+/* The raw API error, kept on screen rather than only in the console: the
+   2026-07-13 outage was invisible for weeks because nothing user-facing said
+   what had gone wrong. Set quieter than the sentence above it — it's for
+   whoever is debugging, not the reader. */
+.regina .failure-reason {
+  display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.85em; color: var(--muted-foreground); overflow-wrap: anywhere;
+}
+.regina .sources { margin-top: 26px; }
+.regina .source-item {
+  background: var(--paper); border: 1px solid var(--border); border-left: 3px solid var(--navy);
+  border-radius: var(--radius); padding: 13px 15px; margin-bottom: 10px;
+}
+.regina .source-item .cited { color: var(--muted-foreground); font-style: italic; font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); margin-top: 4px; }
+.regina .source-item .used-for { margin: 4px 0 0 0; padding-left: 18px; }
+.regina .source-item .used-for li { margin-bottom: 3px; }
+.regina .coverage { margin-top: 26px; }
+.regina .coverage > summary {
+  cursor: pointer; font-weight: 600; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px); color: var(--accent);
+  padding: 11px 15px; background: var(--paper); border: 1px solid var(--border);
+  border-radius: var(--radius); user-select: none;
+}
+.regina .coverage[open] > summary { margin-bottom: 14px; }
+.regina .score { font-variant-numeric: tabular-nums; color: var(--muted-foreground); font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); }
+.regina .muted { color: var(--muted-foreground); }
+.regina .excerpt {
+  background: var(--paper); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 22px 24px; white-space: pre-wrap; line-height: 1.65; font-size: clamp(14px, 10.92px + 0.2406vw, 17.08px);
+  max-height: 480px; overflow: auto; overflow-wrap: break-word;
+  /* Body text, not tabular data — cap the measure so a line doesn't run
+     the full 1160px container width on a large monitor, which is well past
+     the ~75-character line length that stays comfortable to read. */
+  max-width: 760px;
+}
+.regina .spinner { color: var(--muted-foreground); padding: 20px 0; }
+.regina .back { font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); font-weight: 600; }
+/* Shared action row — Next/Back on the questions step, download/restart on
+   the report step. One rule instead of each step re-declaring flex+gap. */
+.regina .wizard-actions { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; }
+/* Report sheet */
+.regina .report-sheet {
+  background: var(--paper); border: 1px solid var(--border); border-top: 3px solid var(--accent-bright);
+  border-radius: var(--radius); padding: 42px 46px;
+}
+.regina .report h1 {
+  font-family: var(--font-serif); font-weight: 600; font-size: clamp(22px, 4.5vw, 28px);
+  letter-spacing: -0.01em; line-height: 1.15; margin: 0 0 6px; padding-bottom: 14px;
+  border-bottom: 1px solid var(--border); max-width: 760px; overflow-wrap: break-word;
+}
+.regina .report h2 {
+  font-size: clamp(13px, 10.14px + 0.2234vw, 15.86px); text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent);
+  margin: 30px 0 12px; display: flex; align-items: center; gap: 10px; max-width: 760px;
+}
+.regina .report h2::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+.regina .report h3 { font-family: var(--font-serif); font-weight: 600; font-size: clamp(16.5px, 12.87px + 0.2836vw, 20.13px); margin: 20px 0 8px; max-width: 760px; }
+/* Body copy, not tabular data — capped to a readable measure (see .excerpt);
+   .report-table is deliberately excluded so data columns can still use the
+   full sheet width. */
+.regina .report p, .regina .report ul { max-width: 760px; overflow-wrap: break-word; }
+.regina .report p { margin: 0 0 12px; line-height: 1.7; }
+.regina .report ul { margin: 0 0 14px; padding-left: 22px; }
+.regina .report li { margin-bottom: 5px; line-height: 1.6; }
+.regina .report .footref { color: var(--accent); font-weight: 600; font-size: clamp(10px, 7.8px + 0.1719vw, 12.2px); margin-left: 1px; }
+.regina .report-table-wrap { overflow-x: auto; margin: 0 0 16px; }
+.regina .report-table { border-collapse: collapse; width: 100%; font-size: clamp(13.5px, 10.53px + 0.232vw, 16.47px); }
+.regina .report-table th {
+  text-align: left; font-size: clamp(11px, 8.58px + 0.1891vw, 13.42px); text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--foreground-soft); padding: 8px 12px 8px 0; border-bottom: 2px solid var(--foreground);
+}
+.regina .report-table td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+/* --- The wait (see project-management/brief-ux-plan.md) -------------------
+   A brief takes ~3 minutes (median 184s, measured 2026-07-29) and that is a
+   property of the product, not a bug. Everything below exists to make those
+   minutes legible rather than to decorate them, so each rule is tied to a
+   measurement or to an honesty constraint. */
+/* The estimate. Tabular numerals so a changing figure doesn't jitter the
+   layout. Dimmer until it is a real measurement of THIS run — before text
+   starts streaming we only have the population median, and the styling should
+   not present a fallback with the same confidence as a measurement. */
+/* flex-wrap is not optional here: design-ux-guidelines.md records unwrapped flex
+   rows as the #1 cause of mobile horizontal-scroll bugs in this codebase, and a
+   serif h2 beside an ETA is exactly the pair that overflows at 320px. */
+.regina .generating-head {
+  display: flex; align-items: baseline; gap: 12px; justify-content: space-between;
+  flex-wrap: wrap;
+}
+.regina .eta {
+  font-family: var(--font-sans); font-size: clamp(12.5px, 11.3px + 0.09vw, 13.5px);
+  font-variant-numeric: tabular-nums; color: var(--muted-foreground); opacity: 0.75; flex-shrink: 0;
+}
+.regina .eta-measured { color: var(--accent); opacity: 1; }
+/* Progress. Determinate ONLY while text is streaming: latency is ~entirely a
+   function of output tokens (r=+1.00), so streamed characters are a real
+   fraction of the work. Nothing available during retrieval predicts a run's
+   size (|r| <= 0.39, measured), so that phase travels instead of filling —
+   the two states must be visually distinguishable or we'd be presenting a
+   guess with the authority of a measurement. */
+.regina .progress-track {
+  position: relative; height: 2px; background: var(--line); margin: 14px 0 16px; overflow: hidden;
+}
+.regina .progress-fill { height: 100%; background: var(--accent-bright); }
+.regina .progress-track.determinate .progress-fill { transition: width 0.6s ease-out; }
+.regina .progress-track.indeterminate .progress-fill {
+  width: 28%; animation: regina-rail-sweep 1.9s ease-in-out infinite;
+}
+@keyframes regina-rail-sweep {
+  0% { transform: translateX(-100%); } 100% { transform: translateX(460%); }
+}
+.regina .notice-inline { margin: 0 0 14px; font-size: clamp(13px, 11.5px + 0.11vw, 14px); }
+/* What is actually being read. Naming real instruments is the clearest signal
+   that this isn't a chatbot guessing — and it uses data retrieval already had
+   and previously discarded at the UI layer. */
+.regina .reading-list { list-style: none; margin: 0 0 16px; padding: 0; display: grid; gap: 5px; }
+.regina .reading-list li {
+  font-family: var(--font-sans); font-size: clamp(13px, 11.9px + 0.086vw, 14px);
+  color: var(--foreground-soft); animation: regina-reading-in 0.35s ease-out both;
+}
+.regina .reading-verb { color: var(--muted-foreground); }
+@keyframes regina-reading-in { from { opacity: 0; transform: translateY(2px); } to { opacity: 1; } }
+/* The first-reading text, appearing as it is written. Marked provisional
+   because the sharpen pass will amend it — and export stays disabled until
+   then, so the marker is a promise rather than a hedge. Capped at the site's
+   reading measure like all body copy. */
+.regina .live-draft {
+  border-left: 2px solid var(--line); padding: 2px 0 2px 14px; margin-top: 4px;
+  max-height: 240px; overflow: hidden; position: relative;
+}
+.regina .live-draft.provisional { border-left-color: var(--accent-soft); }
+.regina .live-draft-label {
+  display: block; font-family: var(--font-sans); font-size: 11.5px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+}
+.regina .live-draft-body {
+  font-family: var(--font-serif); font-size: clamp(13.5px, 12.4px + 0.086vw, 14.5px);
+  line-height: 1.62; color: var(--foreground-soft); white-space: pre-wrap; max-width: 760px;
+  opacity: 0.9;
+}
+/* Fade the bottom edge rather than clipping mid-line: the text is still being
+   written, and a hard cut reads as a rendering fault. */
+.regina .live-draft::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 54px;
+  background: linear-gradient(to bottom, transparent, var(--paper)); pointer-events: none;
+}
+.regina .ghost-button {
+  background: none; border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 7px 12px; font-family: var(--font-sans); font-size: 13px; color: var(--foreground-soft);
+  cursor: pointer; margin-top: 14px;
+}
+.regina .ghost-button:hover { border-color: var(--border); color: var(--foreground); }
+/* Stage motion (Phase E). Each animation depicts the actual work rather than
+   signalling "busy": pages flex while reading, the nib traces its own stroke
+   while writing, the loop turns once per revision. Motion appears ONLY on the
+   step currently running, and only in the AI phase — during the wizard the user
+   is the slow part, and animating then would imply we're busy when we're idle. */
+.regina .rail-step.current .rail-icon svg { animation: none; }
+.regina .rail-step.current.stage-retrieving .rail-icon svg { animation: regina-page-flex 2s ease-in-out infinite; }
+.regina .rail-step.current.stage-drafting .rail-icon svg { animation: regina-nib-trace 1.5s ease-in-out infinite; }
+.regina .rail-step.current.stage-sharpening .rail-icon svg { animation: regina-loop-turn 2.4s linear infinite; }
+@keyframes regina-page-flex {
+  0%, 100% { transform: scaleX(1); } 50% { transform: scaleX(0.92); }
+}
+@keyframes regina-nib-trace {
+  0%, 100% { transform: translate(0, 0); } 50% { transform: translate(-1.2px, 1.2px); }
+}
+@keyframes regina-loop-turn { to { transform: rotate(360deg); } }
+/* Anyone who has asked not to see motion gets the static current state — the
+   step is still identifiable by colour and weight, so no information is lost. */
+@media (prefers-reduced-motion: reduce) {
+  .regina .rail-step.current .rail-icon svg, .regina .progress-track.indeterminate .progress-fill, .regina .reading-list li { animation: none; }
+  .regina .progress-track.indeterminate .progress-fill { width: 100%; opacity: 0.35; }
+}
+/* Names the pre-writing stretch. Measured: ~90s of a 180s brief produces no text
+   at all (adaptive thinking runs first), and labelling that "drafting" beside a
+   travelling bar is the one genuinely misleading moment in the flow. */
+.regina .stage-hint { font-size: clamp(12.5px, 11.4px + 0.086vw, 13.5px); margin: 0 0 14px; }
+/* Closes the loop on the wait, from values already computed. */
+.regina .completion-summary {
+  font-size: clamp(12.5px, 11.4px + 0.086vw, 13.5px); margin: 0 0 14px;
+  font-variant-numeric: tabular-nums;
+}
+/* The model's summarised reasoning during the pre-writing stretch (~90-100s of a
+   ~180s brief). Set below the draft's weight and above the hint's: it is real
+   content, but it is thinking rather than the report. Bottom-anchored and clipped
+   so new reasoning appears at a stable position instead of pushing the panel
+   around, and fades at the top edge where it is cut. */
+.regina .deliberation {
+  position: relative; border-left: 2px solid var(--line-soft); padding: 2px 0 2px 14px;
+  margin: 0 0 16px; max-height: 92px; overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.regina .deliberation-label {
+  font-family: var(--font-sans); font-size: 11px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--muted-foreground); margin-bottom: 4px;
+}
+.regina .deliberation-body {
+  font-family: var(--font-sans); font-size: clamp(12.5px, 11.4px + 0.086vw, 13.5px);
+  line-height: 1.55; color: var(--muted-foreground); margin: 0; max-width: 760px;
+}
+.regina .deliberation::before {
+  content: ""; position: absolute; left: 0; right: 0; top: 0; height: 26px;
+  background: linear-gradient(to bottom, var(--paper), transparent); pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .regina .deliberation { max-height: 92px; }
+}
+/* /about: one screen, composed rather than squeezed ----------------------
+   First attempt at this got the page-height number down and wrecked the
+   composition, which is worth recording because the mistake was in the method.
+   It widened .hero-text to "get fewer lines" — but `.hero p` is capped at a
+   640px reading measure, so the extra width became 116px of dead space that
+   shoved the illustration into the far corner as a 320px thumbnail floating in
+   an empty column. And removing the slack-distributing wrapper left a large void
+   under the CTA on tall screens. Page height fell; the page looked broken.
+
+   The rebuild works the other way round: fix the columns to the content's real
+   dimensions, and make the VERTICAL RHYTHM scale with viewport height so the
+   page composes itself instead of being compressed by hand. */
+/* The page is a vertical flex container that owns the space between its three
+   blocks. Slack is distributed by `justify-content` (which is what
+   .viewport-intro used to do for the hero alone) so a tall screen centres the
+   content rather than pooling a void above the footer, and the gaps breathe with
+   the viewport instead of being pinned to pixels I picked by trial. */
+/* On regina-ai.eu `main.container` was the flex item that absorbed leftover
+   page height. In the Mandate shell the page area is `.regina-main` inside the
+   shared <main>, so it is given the first screen below the masthead instead. */
+.regina .regina-main:has(> .about-page),
+.regina .regina-main:has(> .register-page) {
+  display: flex; flex-direction: column; min-height: calc(100svh - var(--nav-h) - 4rem);
+}
+.regina .about-page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(14px, 2.4vh, 44px);
+}
+.regina .about-page > * { margin: 0; }
+.regina .about-page .hero { padding: 0; }
+/* `.about-page .hero { padding: 0 }` zeroed .hero's own 32px top padding, and
+   `gap` only spaces siblings — so the eyebrow ended up flush under the
+   masthead's double rule (measured 0px at 1440x900, against 32px on
+   /documents), which read as cramped. Restore a leading space using the page's
+   OWN vertical rhythm token rather than a fixed 32px: this page's whole point
+   is fitting one screen, and a viewport-relative value can't be the thing that
+   pushes it over on a short window. */
+.regina .about-page .about-top { padding-top: clamp(14px, 2.4vh, 44px); }
+.regina .about-page .hero-row { gap: clamp(24px, 3vw, 56px); align-items: center; }
+/* Basis equals the paragraph's own max-width, so the column is exactly as wide
+   as the text can be — no dead space to push the image away. */
+.regina .about-page .hero-row .hero-text { flex: 0 1 640px; }
+/* The illustration takes whatever is left and actually fills it, scaling with
+   the viewport instead of sitting at a fixed 320px. `max-width: 100%` alongside
+   the height cap is not optional: with only max-height set, the image computes
+   its width from the aspect ratio and can exceed the flex container — that is
+   how a horizontal scrollbar appeared at 1280/1366 mid-way through this work. */
+.regina .about-page .hero-image { flex: 1 1 380px; min-width: 0; }
+.regina .about-page .hero-image img {
+  width: 100%; height: auto; max-width: 100%;
+  max-height: clamp(190px, 30vh, 330px); object-fit: contain; display: block;
+}
+.regina .about-page .section h2 { margin-bottom: 12px; padding-bottom: 6px; }
+.regina .about-page .flow-step { padding-top: 8px; padding-bottom: 8px; }
+.regina .about-page .flow-step p { margin-bottom: 0; line-height: 1.55; }
+/* Two of the four titles wrap to a second line, which left the bodies on ragged
+   baselines. Balancing splits them evenly instead of leaving one orphan word. */
+.regina .about-page .flow-step h3 { margin-bottom: 5px; text-wrap: balance; }
+/* 520px forced "report" onto a line of its own, which read as a broken headline
+   rather than a deliberate break. */
+.regina .about-page .cta-band { padding: clamp(14px, 2vh, 26px) 26px; }
+.regina .about-page .cta-band h2 { max-width: 46ch; text-wrap: balance; }
+@media (max-width: 900px) {
+  /* Below this the principles stack and one screen stops being reachable. Don't
+     fight it — restore normal rhythm rather than ship a cramped page that still
+     scrolls. */
+  .regina .about-page { min-height: 0; gap: 26px; justify-content: flex-start; }
+  .regina .about-page .hero-image img { max-height: none; }
+}
+/* /documents: same short-page problem, same fix -------------------------------
+   Reducing this page to Coverage + Hot right now (2026-07-30) made it short, and
+   a short page on a tall monitor pools ALL its leftover height into one dead gap
+   above the footer — the exact failure design-ux-guidelines.md documents and that
+   .viewport-intro exists to prevent. Removing the register list reintroduced it
+   and I didn't notice until it was pointed out on a 2560px screen.
+
+   Distributed the same way as /about: the page owns the space between its blocks
+   and centres itself in whatever main gives it, so slack is shared instead of
+   dumped at the bottom. */
+.regina .register-page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: clamp(16px, 2.6vh, 46px);
+}
+.regina .register-page > * { margin: 0; }
+/* The cards are equal height (grid 1fr stretches them) but their CONTENTS were
+   not: "Show sources" sat immediately after each description, so a shorter
+   description left the link floating mid-card while its neighbours' sat lower.
+   Pinning it to the bottom aligns the three links across the row. */
+.regina .source-disclosure { margin-top: auto; }
+/* Same for the topic tiles: a two-line title pushed its count badge down while
+   one-line neighbours kept theirs high. */
+.regina .topic-grid .coverage-badges { margin-top: auto; }
+.regina .topic-grid .card h3 { text-wrap: balance; }
+@media (max-width: 900px) {
+  .regina .register-page { justify-content: flex-start; gap: 26px; }
+}
+
+/* Regina's coverage note, which was her footer on regina-ai.eu. The count in it
+   is read from the policy API (app/regina/layout.tsx). */
+.regina .regina-coverage {
+  margin-top: 56px; padding-top: 16px; padding-bottom: 16px;
+  border-top: 3px double var(--foreground);
+  font-size: clamp(12.5px, 9.75px + 0.2148vw, 15.25px); color: var(--muted-foreground);
+}
+.regina p.regina-coverage { margin-bottom: 0; }

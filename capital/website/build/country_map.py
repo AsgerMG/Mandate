@@ -1,7 +1,7 @@
 """
 Generate per-country map data for the landing page Europe map.
 
-Output: website/frontend/public/data/country_map.json
+Output: web/public/data/country_map.json
 Schema:
   {
     "countries": {

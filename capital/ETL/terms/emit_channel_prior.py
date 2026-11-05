@@ -86,7 +86,7 @@ the order of the BACKFILL -- which channels take the free slots up to
 
 And `national_dev_banks` is the FIRST entry of `DEFAULT_INSTRUMENTS`, so it is
 already in the pool before the backfill reads this file at all. Measured on the
-funnel's 897, offline and free (`website/frontend/scripts/_wsio_prior.ts`): the
+funnel's 897, offline and free (`web/scripts/_wsio_prior.ts`): the
 corrected prior changes the channel set for 14 founders, the won fund's rank for
 5, EXACT@6 by 0 founders and mean reciprocal rank by -0.000005. An arm asserting
 `national_dev_banks` is the ONLY channel that exists -- probability 1.0 in every
@@ -119,16 +119,17 @@ Usage:
   python3 ETL/terms/emit_channel_prior.py --out /tmp/x.json   # do not publish
 """
 from __future__ import annotations
+import os
 import sys as _sys
 from pathlib import Path as _Path
 for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib")); break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 import argparse, collections, json, sqlite3  # noqa: E402
 
-OUT = ROOT / "website" / "frontend" / "lib" / "intelligence" / "channelPrior.generated.json"
+OUT = WEB / "lib" / "intelligence" / "channelPrior.generated.json"
 MIN_OBS = 40   # below this a cell is noise; back off rather than memorise it
 
 
@@ -279,7 +280,7 @@ def main() -> None:
     }
     dest = _Path(args.out) if args.out else OUT
     dest.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
-    print(f"channel prior -> {dest if args.out else dest.relative_to(ROOT)}")
+    print(f"channel prior -> {dest if args.out else Path(os.path.relpath(dest, ROOT))}")
     print(f"  channels: {len(vocab)} in the corpus, {len(g)} observed, "
           f"unobserved {payload['unobserved'] or 'none'}")
     holdout.report()

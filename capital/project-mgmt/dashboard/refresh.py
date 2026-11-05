@@ -48,6 +48,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
 PAGE = Path(__file__).resolve().parent / "precision.html"
 AGENTS = Path(__file__).resolve().parent / "agents.json"
 BLOCKERS = Path(__file__).resolve().parent / "blockers.json"
@@ -139,7 +141,7 @@ def load_database_url() -> str:
     """The repo-root `.env.local` is the one that carries credentials."""
     if os.environ.get("DATABASE_URL"):
         return os.environ["DATABASE_URL"]
-    for candidate in (ROOT / ".env.local", ROOT / "website/frontend/.env.local"):
+    for candidate in (ROOT / ".env.local", WEB / ".env.local"):
         if not candidate.exists():
             continue
         for line in candidate.read_text().splitlines():
@@ -185,8 +187,8 @@ def series() -> list[list]:
     return out
 
 
-CAPS = ROOT / "website/frontend/lib/intelligence/caps.ts"
-SELECT = ROOT / "website/frontend/lib/intelligence/agentSelect.ts"
+CAPS = WEB / "lib/intelligence/caps.ts"
+SELECT = WEB / "lib/intelligence/agentSelect.ts"
 
 
 def live_ranker() -> str:

@@ -2,7 +2,7 @@
 --
 -- ONE definition of the table, read as text by both writers: Python
 -- (ETL/lib/guard_verdicts.py, inside the Railway container) and TypeScript
--- (website/frontend/scripts/guardVerdict.ts, on a machine with credentials).
+-- (web/scripts/guardVerdict.ts, on a machine with credentials).
 -- Two hand-kept CREATE TABLEs is how the columns diverge; this file is the
 -- schema, and neither writer carries its own copy.
 --

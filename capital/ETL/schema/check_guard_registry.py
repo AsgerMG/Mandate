@@ -72,10 +72,12 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
 REGISTRY = ROOT / "data" / "guard_registry.json"
 CRON = ROOT / "ETL" / "events" / "extract" / "railway_cron.py"
-SCRIPTS = ROOT / "website" / "frontend" / "scripts"
-PACKAGE = ROOT / "website" / "frontend" / "package.json"
+SCRIPTS = WEB / "scripts"
+PACKAGE = WEB / "package.json"
 CENSUS = ROOT / "ETL" / "events" / "load" / "publish_corpus_census.py"
 # The monorepo root, not this brain's: GitHub runs workflows only from the
 # repository's top-level .github/, and every workflow there is in scope, because
@@ -247,7 +249,7 @@ def main() -> int:
             if not owners:
                 problems.append(
                     f"{gid}: cadence 'on_change', but nothing publishes it -- no script in "
-                    f"website/frontend/scripts declares `const GUARD = \"{gid}\"`, and it "
+                    f"web/scripts declares `const GUARD = \"{gid}\"`, and it "
                     f"declares no `command` for ETL/lib/guard_verdicts.py to run")
             elif len(owners) > 1:
                 problems.append(
@@ -288,7 +290,7 @@ def main() -> int:
     # verdicts every credential-free path then depends on, so a check that ran
     # before it read the previous run's answers.
     check = json.loads(PACKAGE.read_text())["scripts"].get("check", "")
-    runner = ROOT / "website" / "frontend" / "scripts" / "run_checks.mjs"
+    runner = WEB / "scripts" / "run_checks.mjs"
     if "run_checks" not in check:
         problems.append("`npm run check` no longer runs scripts/run_checks.mjs, which "
                         "is where the list of checks lives. If the list moved again, "
@@ -302,7 +304,7 @@ def main() -> int:
         # every byte of run_checks.mjs, so a `check_*.ts` named in a COMMENT or
         # in a printed sentence after the array counted as the last check --
         # which it is not, and which made the header prose a load-bearing part
-        # of the ordering. website/frontend/scripts/lib/suiteStatus.ts reads
+        # of the ordering. web/scripts/lib/suiteStatus.ts reads
         # the same array with the same narrowing, for the same reason.
         src = runner.read_text()
         start = src.index("const CHECKS = [")

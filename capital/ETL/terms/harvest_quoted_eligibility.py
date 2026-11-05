@@ -62,7 +62,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
@@ -82,7 +82,7 @@ _sys.path.insert(0, str(_Path(__file__).resolve().parent))
 from load_scheme_text import live_ids  # noqa: E402
 
 TIERS = json.loads(
-    (_Path(ROOT) / "website/frontend/lib/intelligence/evidenceTiers.json").read_text())
+    (WEB / "lib/intelligence/evidenceTiers.json").read_text())
 CITED = set(TIERS["cited"]["tiers"])
 
 MIN_TEXT = 40          # below this the column is not worth writing

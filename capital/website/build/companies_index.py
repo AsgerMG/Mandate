@@ -5,7 +5,7 @@ The intelligence agent runs server-side and needs the opposite shape: one file
 it can load once per warm serverless invocation and fuzzy-match competitor names
 against. This script writes that file.
 
-  website/frontend/public/data/companies_index.json
+  web/public/data/companies_index.json
     {"generatedAt": ..., "companies": N,
      "rows": [[n, q, c, s, eur, [[ch,eur],...], y0, y1], ...]}
 
@@ -55,6 +55,7 @@ figure and are not useful competitor signal here).
 """
 from __future__ import annotations
 
+import os
 import json
 import re
 import unicodedata
@@ -220,7 +221,7 @@ def _main(con):
          "rows": rows},
         ensure_ascii=False, separators=(",", ":")))
     mb = OUT.stat().st_size / 1e6
-    print(f"wrote {OUT.relative_to(ROOT)}: {len(rows)} companies, {mb:.1f} MB")
+    print(f"wrote {Path(os.path.relpath(OUT, ROOT))}: {len(rows)} companies, {mb:.1f} MB")
 
 
 if __name__ == "__main__":
