@@ -22,7 +22,7 @@ dependencies = [
     # setup). Production can ignore it by setting DATABASE_URL to a managed
     # Postgres (e.g. Neon).
     "pgserver>=0.1.4",
-    "fastembed>=0.8.0",
+    "fastembed>=0.9.1",
     "anthropic>=0.112.0",
     "fastapi>=0.115",
     "uvicorn[standard]>=0.30",
