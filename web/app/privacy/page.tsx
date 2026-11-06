@@ -4,9 +4,9 @@ import { RETENTION_DAYS } from "@/lib/intelligence/record";
 import { MAX_DESCRIPTION_CHARS } from "@/lib/intelligence/sanitize";
 
 export const metadata: Metadata = {
-  title: "Privacy | Wincent",
+  title: "Privacy",
   description:
-    "What Wincent stores when you generate a funding brief, why, for how long, and how to have it removed.",
+    "What Mandate stores when you generate a brief, why, for how long, and how to have it removed.",
 };
 
 /**
@@ -29,7 +29,7 @@ export default function PrivacyPage() {
 
       <div className="max-w-2xl space-y-6 text-[17px] leading-relaxed">
         <p className="text-[19px] text-[var(--foreground-soft)]">
-          Wincent is a research tool. You can generate a funding brief without an
+          Mandate is a research tool. You can generate a funding brief without an
           account, and we do not ask for your name, email or any personal contact
           detail at any point.
         </p>

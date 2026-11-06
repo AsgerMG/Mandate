@@ -5,7 +5,7 @@ import { corpusStats } from "@/lib/data";
 import { corpusProse } from "@/lib/corpusProse";
 
 export const metadata: Metadata = {
-  title: "Get your public capital brief | Wincent",
+  title: "Your public capital brief, with Wincent",
   description:
     "Map your company to comparable raises, screened European institutions, current policy priorities and clear next steps.",
 };

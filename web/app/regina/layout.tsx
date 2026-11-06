@@ -10,7 +10,7 @@ import { getStats } from "@/lib/regina/api";
 // written down (see policy/website/CLAUDE.md, rule 1).
 
 export const metadata: Metadata = {
-  title: { default: "Regina", template: "%s · Regina" },
+  title: { default: "Regina | Mandate", template: "%s · Regina | Mandate" },
   description:
     "Regina turns the official EU, French and German regulatory record into realistic, citation-backed briefings for your company.",
 };

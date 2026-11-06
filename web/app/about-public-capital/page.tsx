@@ -13,7 +13,7 @@ import { VERIFIED_AWARDS } from "@/lib/verifiedAwards";
 import insightsRaw from "@/public/data/investor_insights.json";
 
 export const metadata: Metadata = {
-  title: "Raise public capital with Europe's priorities | Wincent",
+  title: "Raise public capital with Europe's priorities",
   description:
     "A practical playbook for aligning grants, state aid and public equity with European industrial priorities, then sequencing them into a private raise.",
 };

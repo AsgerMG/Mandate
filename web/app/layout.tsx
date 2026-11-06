@@ -30,7 +30,9 @@ export const revalidate = 3600;  // = CORPUS_REVALIDATE_SECONDS
 // landing page, which used to be `/` and inherited this, now carries its own
 // metadata (app/wincent/page.tsx), including the company count.
 export const metadata: Metadata = {
-  title: "Mandate",
+  title: { default: "Mandate", template: "%s | Mandate" },
+  applicationName: "Mandate",
+  openGraph: { siteName: "Mandate", type: "website" },
   description:
     "Mandate is a bench of domain experts that watch the public sphere for European startups. Wincent covers public capital; Regina covers EU rules.",
 };
