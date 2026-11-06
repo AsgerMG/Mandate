@@ -58,6 +58,13 @@ GROUPS: dict[str, dict] = {
     "edf": {"extractors": ["extract_edf"], "files": ["edf/*.pdf"]},
     "cordis": {"extractors": ["extract_cordis", "extract_cordis_pillar_ii"],
                "files": ["cordis/project.csv", "cordis/organization.csv", "cordis/topics.csv"]},
+    # Not an extractor's input but the instrument build's: the Commission's case
+    # record per SA number (titles, notified durations, successor links), fetched
+    # by ETL/terms/fetch_state_aid_cases.py. Without it the weekly rebuild names
+    # 452 schemes after their granting body. See populate_funding_instruments.py.
+    "state_aid_cases": {"extractors": ["populate_funding_instruments", "encode_article_intensity",
+                                       "encode_registered_regions"],
+                        "files": ["state_aid_cases/cases.json"]},
 }
 
 

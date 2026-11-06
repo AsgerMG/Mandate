@@ -3294,6 +3294,21 @@
      "url": "urn:mandate:capital:raw/cordis/topics.csv"
     }
    ]
+  },
+  "state_aid_cases": {
+   "extractors": [
+    "populate_funding_instruments",
+    "encode_article_intensity",
+    "encode_registered_regions"
+   ],
+   "files": [
+    {
+     "path": "state_aid_cases/cases.json",
+     "sha256": "74ddf4a8b6ab7762b7d20b422d36cd23af72808dcfad0dba5a3779a42ac3e4ad",
+     "bytes": 833450,
+     "url": "urn:mandate:capital:raw/state_aid_cases/cases.json"
+    }
+   ]
   }
  }
 }
