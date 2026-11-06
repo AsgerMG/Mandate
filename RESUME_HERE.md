@@ -77,6 +77,14 @@ grounding.
 - After the cutover (policy_on_grounding.sh + merge policy-on-grounding):
   archive (pg_dump) and drop policy's old duplicate text/vectors (~1.5 GB
   freed). Brief the owner first: it is a deletion.
+- Storage optimisation (owner, 6 Nov), in the batched migration and right
+  after: (1) drop policy's old float32 vectors once the halfvec copy is
+  verified (~0.5 GB); (2) replace the old HNSW (~970 MB) with the halfvec one
+  (~540 MB), trying leaner m/ef_construction measured on fixed queries;
+  (3) measure exact-duplicate boilerplate passages across documents and
+  embed each once; (4) superseded versions: keep their text, move or drop
+  their vectors (search uses only current versions). Target: the DB well
+  under the 5 GB Hobby volume with headroom. Deletions are briefed first.
 - Steps 4-6 of go_live_sunday (cron inputs, cases.json, refresh-cron
   retirement, Vercel BUCKET_*, capital-etl redeploy) did NOT run. Sunday's
   cron WILL still run the new orchestrator (start command is set), but without
