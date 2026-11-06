@@ -11,6 +11,7 @@ import {
   withIncorporationCountry,
   sanitizeProfileSignal,
   sanitizeProjectAnswers,
+  sanitizeCapitalSought,
 } from "@/lib/intelligence/sanitize";
 import type { IntelligenceRequest, ProgressEvent } from "@/lib/intelligence/types";
 
@@ -117,9 +118,9 @@ export async function POST(request: NextRequest) {
             company: body.company.trim(),
             country: body.country?.trim() || undefined,
             description: sanitizeFreeText(body.description),
-            capitalSought: Array.isArray(body.capitalSought)
-              ? body.capitalSought.filter((v) => typeof v === "string")
-              : undefined,
+            // Whitelisted against CAPITAL_OPTIONS, exactly as the verdict and
+            // intake routes do: one field, one sanitiser, three routes.
+            capitalSought: sanitizeCapitalSought(body.capitalSought),
             // `clarifications` was reconstructed here and is gone (wsFT): it was
             // the first implementation of the follow-up round, nothing in the
             // tree ever set it non-empty, and the two live carriers are

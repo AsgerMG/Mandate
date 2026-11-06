@@ -105,19 +105,12 @@ const OPEN_DEFECTS: Record<string, OpenDefect> = {
   // whether the id names a fund, which is the question, and the three
   // assertions below are left in place unregistered so a regression is a
   // failure rather than a new entry.
-  "the profile signal the intake route inferred reaches the ranker": {
-    detail:
-      "panel.tsx `fetchRound` calls `setProfileSignal(data.profileSignal)` and " +
-      "then, when the round comes back empty, calls `runMemo` IN THE SAME TICK. " +
-      "`basePayload()` re-reads the render-time `profileSignal`, which is still " +
-      "null. This is the identical hazard `projectOverride` and `eligOverride` " +
-      "were threaded to fix, at the fourth call site the comment above " +
-      "`eligBeforeRound` predicted. Cost: `applyProfileSignal` is a no-op and " +
-      "`companyType` stays undefined for every founder whose first round is " +
-      "empty, so the memo's channel ordering loses the one signal the intake " +
-      "call was made to produce.",
-    review: "2026-09-30",
-  },
+  // "the profile signal the intake route inferred reaches the ranker" was
+  // here, and it is FIXED (E2, 2026-11-06). `fetchRound` set the signal and,
+  // on an empty round, called `runMemo` in the same tick, so `basePayload()`
+  // read a null signal and `companyType` stayed undefined for every founder
+  // whose first round was empty. panel.tsx now keeps it in a ref that
+  // `basePayload()` reads. The assertion stays, unregistered.
   // "a commercial answer survives the route" was here, and it is FIXED (wsFT).
   // `sanitizeProjectAnswers` required a real instrument id on every entry and
   // the commercial half of the screen is grounded in no fund by construction,
@@ -140,16 +133,10 @@ const OPEN_DEFECTS: Record<string, OpenDefect> = {
   // route and left unregistered, so a regression is a failure rather than a new
   // entry — and `scripts/check_request_surface.ts` is the same property in the
   // build, where it also judges the harnesses.
-  "one field is reconstructed the same way by every route": {
-    detail:
-      "`capitalSought` is whitelisted against CAPITAL_OPTIONS by " +
-      "verdict/route.ts and intake/route.ts (`sanitizeCapitalSought`) and by " +
-      "route.ts with a hand-rolled `filter((v) => typeof v === 'string')`. Three " +
-      "routes, one field, two sanitisers — and the memo, the one a founder acts " +
-      "on, is the permissive one. `sanitizeCapitalSought` exists and route.ts " +
-      "does not import it.",
-    review: "2026-09-30",
-  },
+  // "one field is reconstructed the same way by every route" was here, and it
+  // is FIXED (E2, 2026-11-06): the memo route hand-filtered `capitalSought`
+  // to strings while the verdict and intake routes whitelisted it against
+  // CAPITAL_OPTIONS. It now calls `sanitizeCapitalSought` like the other two.
 };
 
 function property(id: string, assertion: () => void): void {

@@ -116,19 +116,45 @@ function countryVocabulary(): string[] {
 
 /** Countries a text names.
  *
- *  Anchored at the start of a word and NOT at the end, so the demonym a
- *  statute actually writes is the same mention as the noun: "Russian-
- *  established", "Belarusian entity" and "a Russia-established body" are one
- *  country between them. The trailing looseness is why the match must be
- *  anchored at the front — an unanchored "chad" or "oman" would hit ordinary
- *  words. */
+ *  Anchored at the start of a word, and at the end only loosely: the name may
+ *  carry an English demonym or possessive ending, so the demonym a statute
+ *  actually writes is the same mention as the noun: "Russian-established",
+ *  "Belarusian entity" and "a Russia-established body" are one country between
+ *  them. The ending is a closed set of English suffixes, not "anything": an
+ *  unbounded tail made "peru" a prefix of the Finnish "perustuva" (based on)
+ *  and failed three Business Finland gates on a country no rule names
+ *  (2026-11-06). A text in another language names a country by its English
+ *  name or not at all, as far as this matcher can tell. */
+const COUNTRY_TAIL = "(?:n|an|ian|i|ns|ans|ians|is|s|'s|’s)?\\b";
 function countriesNamed(text: string, vocab: string[]): Set<string> {
   const t = (text || "").toLowerCase();
   const out = new Set<string>();
   for (const c of vocab) {
-    if (new RegExp(`\\b${c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}`).test(t)) out.add(c);
+    const esc = c.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (new RegExp(`\\b${esc}${COUNTRY_TAIL}`).test(t)) out.add(c);
   }
   return out;
+}
+
+// The matcher's own cases, run before it judges the corpus: it must still see
+// the demonym and the possessive, and must not see a country inside a word.
+{
+  const v = ["russia", "belarus", "peru", "oman", "norway"];
+  const must = (text: string, want: string[]) => {
+    const got = [...countriesNamed(text, v)].sort();
+    if (got.join() !== [...want].sort().join()) {
+      console.error(`check_field_matches_demand: self-test FAILED on ${JSON.stringify(text)}: ` +
+        `found [${got}], expected [${want}]`);
+      process.exit(2);
+    }
+  };
+  must("a Russian-established entity", ["russia"]);
+  must("Belarusian entity", ["belarus"]);
+  must("a Russia-established body", ["russia"]);
+  must("Norway's partners", ["norway"]);
+  must("an Omani firm", ["oman"]);
+  must("perintämääräys perustuva päätökseen", []);
+  must("a romantic notion", []);
 }
 
 type Gate = {

@@ -260,6 +260,12 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // (see fetchRound's wantProfileSignal) and passed straight through to the
   // memo — never re-derived.
   const [profileSignal, setProfileSignal] = useState<ProfileSignal | null>(null);
+  // The same value as a REF, for the same reason as `eligBeforeRound` below:
+  // `fetchRound` writes the signal and, when the round comes back empty, calls
+  // `runMemo` in the SAME tick, so the render-time `profileSignal` is still
+  // null there. `basePayload()` reads this, so the memo request carries the
+  // signal the intake route inferred on every path, not only the happy one.
+  const profileSignalRef = useRef<ProfileSignal | null>(null);
 
   const [running, setRunning] = useState(false);
   const [step, setStep] = useState<PipelineStep | null>(null);
@@ -385,7 +391,7 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
     description: descriptionOverride ?? description,
     capitalSought,
     eligibility: eligOverride ?? elig,
-    profileSignal,
+    profileSignal: profileSignalRef.current ?? profileSignal,
     projectAnswers,
   });
 
@@ -488,7 +494,10 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
         round?: GroundedRound | null;
         profileSignal?: ProfileSignal | null;
       };
-      if (data.profileSignal) setProfileSignal(data.profileSignal);
+      if (data.profileSignal) {
+        profileSignalRef.current = data.profileSignal;
+        setProfileSignal(data.profileSignal);
+      }
       // Either half can carry the screen: a founder with no generic gates left
       // still gets the project questions, which is the whole point of 2b.
       const nGeneric = Array.isArray(data.round?.questions) ? data.round.questions.length : 0;
