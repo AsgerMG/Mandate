@@ -90,6 +90,7 @@
     "request_log":                {"store": "postgres", "why": "product telemetry"},
     "eligibility_embeddings":     {"store": "postgres-derived", "derived_from": ["eligibility_gates"], "why": "pgvector index of what a fund DEMANDS. Recomputed wholesale in Postgres; no SQLite representation. Never conflated with instrument_profiles."},
     "instrument_profiles":        {"store": "postgres-derived", "derived_from": ["funding_instruments"], "why": "pgvector index of what a fund FUNDS. Recomputed wholesale, so its store question is really funding_instruments' -- which is still sqlite, and is why this is not simply `postgres`."},
+    "eligibility_grounding":      {"store": "postgres", "why": "which grounding.document_versions row each gate/clause cites, and where the quote sits in it. Written once by mandate/grounding/migrations/capital_sources_to_grounding.py, then appended to; insert-only. Migration 034."},
 
     "funding_instruments":        {"store": "sqlite", "blocked_by": "migrate_to_postgres.py TRUNCATEs and reloads it from data/db.sqlite on every publish, so the laptop is authoritative in fact. Stage 3 of the migration."},
     "funding_instrument_sources": {"store": "sqlite", "blocked_by": "same publish path as funding_instruments"},

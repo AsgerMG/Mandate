@@ -1,0 +1,3299 @@
+{
+ "_doc": "Pinned extractor inputs, by sha256. Written by `grounded_inputs.py build`; read by materialise(). A change here is a change of input edition.",
+ "groups": {
+  "innovation_fund": {
+   "extractors": [
+    "extract_innovation_fund"
+   ],
+   "files": [
+    {
+     "path": "innovation_fund/projects_index.json",
+     "sha256": "9e9226ede606d1d732c15b907b3b8113e82238c2dd6b6d566dccb8880480fb92",
+     "bytes": 115396,
+     "url": "urn:mandate:capital:raw/innovation_fund/projects_index.json"
+    },
+    {
+     "path": "innovation_fund/fiches/001_ANTHEMIS.pdf",
+     "sha256": "371a1631238f7f76948370487e39a378b61f7448b9328df45981848cc0c0e38e",
+     "bytes": 317661,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250817.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/002_AirvaultGoCO2.pdf",
+     "sha256": "2f98ce9d330779a4502939c13a187500035d12ddae94c4baca82862080a9be6f",
+     "bytes": 322414,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252047.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/003_APOLLOCO2-LT.pdf",
+     "sha256": "939229e2d754356b160e2fcee6a67b0863989d162777ebd29dabdb6de14cf28b",
+     "bytes": 314010,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251771.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/004_CARBON_HUB_CPT01.pdf",
+     "sha256": "2bde4a43326c32166065fde153cc607bbc0edb6c1f12bbe5e9e5710e3c18f658",
+     "bytes": 313683,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250955.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/005_DEZiR.pdf",
+     "sha256": "dff9a8a2d84ab03fdd1666e70c9e45ce1fdf56fb47a30015c94d10a455e19ca9",
+     "bytes": 321545,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252101.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/006_DREAM.pdf",
+     "sha256": "5ffcaabb30d8e153ec694c3fd0225e0afccc7cf419fd348dc5ae4b4bc584e5d6",
+     "bytes": 313795,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250849.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/007_ENDOR.pdf",
+     "sha256": "08567b721ca53941e8ceee6c6819062143318b2521dae512986c6c364027d8fa",
+     "bytes": 319079,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251576.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/008_LUXIA.pdf",
+     "sha256": "5af02950c5409e437a5414673e607dc1504c2c689dcd5a5021f9ce0aa46e7d34",
+     "bytes": 300344,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251893.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/009_ReSTart.pdf",
+     "sha256": "6685a97ef96c5288e2bf2064125823446093c7c076e9cb9e1291a917845c7e4a",
+     "bytes": 320872,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251275.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/010_VAIA.pdf",
+     "sha256": "07335912c3950b9e09c36f62edc059ab335a9afb5a97213d39c3b2e6f27bbf4b",
+     "bytes": 307586,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251785.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/011_Alpha_One.pdf",
+     "sha256": "6413663405634bbf4ff4358729601a9fe38f370cfaa0ad9be66859968c2f8358",
+     "bytes": 327937,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251333.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/012_BIOVIND.pdf",
+     "sha256": "f9b1b11b23d9ebba19e14774648b67ebba2832027b0eb73a05d2b1e72287713e",
+     "bytes": 328838,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251868.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/013_BMS.pdf",
+     "sha256": "1788c0b33978ec4aad3cc059c479daa4984012c8d169084748cd0bea577762e6",
+     "bytes": 312587,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251659.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/014_COnet2_Sea.pdf",
+     "sha256": "9d80069833947bc5574df2b86ffc21b368e8be7c21fd6857bf6982305ba059c1",
+     "bytes": 304150,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251762.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/015_eSeaRiverBarge.pdf",
+     "sha256": "426193059a82e7fdac399ce58fc946e67d9127360feebcf2b746a4e304dcbdbf",
+     "bytes": 312252,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251720.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/016_GREENFIELD_BIOGAZ.pdf",
+     "sha256": "aaab1bfa7ef28f2c9adf9c2d31ff93c3ff752cb2466b74d12f29dcd248772e9c",
+     "bytes": 326506,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250951.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/017_Leopard.pdf",
+     "sha256": "359c6d50ca6d59596538127e76e91c667b10ada097d7690846cef011cd9cd4f3",
+     "bytes": 312577,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251756.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/018_MECACLAY.pdf",
+     "sha256": "1344a0d2a08b493d58c704acc5859c4acd3c0638838e32dcb761c6c444eacae5",
+     "bytes": 311551,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250933.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/019_NotNukeOne.pdf",
+     "sha256": "7c86afd85515791f4da26bc123e933d3be1d9bcce29fe36240971e7a55681841",
+     "bytes": 305874,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252096.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/020_OTO.pdf",
+     "sha256": "0324c7a168c36e95074c5419caa666310deeff59e4f24575b7484f484a66c493",
+     "bytes": 318743,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250741.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/021_PP2XH.pdf",
+     "sha256": "201b524cf223f2ca68cab05f76b7cc1f6956878843d9e7d65dd4318e841b6a62",
+     "bytes": 330295,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251834.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/022_RECLAIM.pdf",
+     "sha256": "c32ad710212ec23c4e7a78ae448e65da63900d30a083f30cf54ada5b9a5af64f",
+     "bytes": 351746,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251462.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/024_SCOOP.pdf",
+     "sha256": "d3b7d60e1f4c6751c358d9252d902b32d8e03e61980b62b4d1235caed0a445e2",
+     "bytes": 321548,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250861.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/025_Thermolysis.pdf",
+     "sha256": "0214113c32071b1c68bb70db761e6e983ce87407eca63ee5d186ca539e597079",
+     "bytes": 307768,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250821.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/026_VIPER.pdf",
+     "sha256": "e10261e393f0a0cdf5b991081a736113b13458cdca9bd806ca46105cb8e490d1",
+     "bytes": 319154,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252030.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/027_W2BIOFUEL.pdf",
+     "sha256": "c24c0bd8ff9e3ce66b6cf4ce2fe69fec0968fe771e9329b6151bebb81ddc5f4a",
+     "bytes": 332603,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251805.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/028_Absorption_Heat_Pump.pdf",
+     "sha256": "828a578d75e63e4aad98b24b7f3e36d97a4bde12da4a1e3dbcf05e7d06214dac",
+     "bytes": 308802,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252252.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/029_ENGINEUS_PULL.pdf",
+     "sha256": "65cc3c4e4033a7e53828ff481646622b30927ea12327ab27aa256eafd77a4d6d",
+     "bytes": 294186,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251645.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/030_GREEN_HEAT_ASTURIAS.pdf",
+     "sha256": "c741c37a0bb479e5cf442beca59f84e9424d6457b52304a205e53730d736ae7a",
+     "bytes": 312922,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101234790.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/031_INSPIRE-PV.pdf",
+     "sha256": "357d8edeba8aad3a37c3a663d98f5393a5214d0deaedcb4e91cc408e861efd11",
+     "bytes": 333780,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251892.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/032_LCSCM.pdf",
+     "sha256": "e5a7d2f0ca39a2c18311b1cd50a192be0696bf85f4b5aaa129849c1d5e393c02",
+     "bytes": 311047,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251600.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/033_LEYMEL.pdf",
+     "sha256": "42027cb8ea02a059fa4f955d370e86a5105c7492a760cb8182f5a6d74cbdfe42",
+     "bytes": 304255,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252235.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/034_Reprocover5.0.pdf",
+     "sha256": "9866d995a73ab1aeae3663d54ae16c1dc63a52752379a2dce721efd329eedf45",
+     "bytes": 319817,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252268.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/035_WasteLessDHS.pdf",
+     "sha256": "a44acaf93ddb4c3270cbc073960924dbb9a42b91e304dce4de9059d4c8b4c552",
+     "bytes": 308168,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252183.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/036_WATTRAXIS.pdf",
+     "sha256": "352f36ac8e718474d9e2768bbec93e185a0868abc40adba7a6337429adda8f9a",
+     "bytes": 320220,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251848.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/037_BIO-MEMBRANE.pdf",
+     "sha256": "b083d341c02025e92e2638b90f7a9adf194a76ef80002e537b016481293b3789",
+     "bytes": 317989,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251258.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/038_Fos3F.pdf",
+     "sha256": "0b8e95bd5ee78a1478e146d410deb1b7bd8178ca6ac6ef572b9899d31a47add6",
+     "bytes": 330135,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250966.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/039_GRIP.pdf",
+     "sha256": "fec8d50e5995ecb8ffc7972b92fc0e9308608a1f5b7406e2e7434496780a10d9",
+     "bytes": 311118,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251812.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/040_MEADOW.pdf",
+     "sha256": "59cc11dad5c1d3ac92ec930897e55836721813da81c1ffcde64c4641cdfbd2aa",
+     "bytes": 315204,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251070.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/041_NEXTGEN_CAM.pdf",
+     "sha256": "bc74542b7e334b6d0fb5560e41e0157473e4c5f8630baa0c6c206cf3810feac6",
+     "bytes": 317987,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251668.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/043_REC2pCAM.pdf",
+     "sha256": "2129e2cceb39b8c74b4736908bc4d4ae38cb6b31b325ccf88b1bf2a288779f44",
+     "bytes": 314898,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250980.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/044_SB-VARKAUS.pdf",
+     "sha256": "62c0304988466804e027b8465d2c92160e6be9417ff1638d52a6ec5023309a1b",
+     "bytes": 309745,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251828.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/045_Higher_Ground.pdf",
+     "sha256": "db59226a3d605ce111a5d8c8be1ebdc4465daeeedd3e9889d2ad8e9f13423a5a",
+     "bytes": 309093,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252280.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/046_VB1F.pdf",
+     "sha256": "59bfa2cac6676d6f98828cc0922044e0f45afbb6eeb12d3aad43b91eaadf8a94",
+     "bytes": 314802,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252033.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/047_ASTRA_PP.pdf",
+     "sha256": "59daec45da50d67bdf0e3b234d853fdaca8add293cef94ed31977a85d4198d41",
+     "bytes": 308263,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250797.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/048_GESIIS.pdf",
+     "sha256": "57c39ae1965552789d66a5fb6a2c29de8e20bdd100320244b369afba349145b6",
+     "bytes": 311122,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251852.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/049_HuCCSar.pdf",
+     "sha256": "e9cd2207b85905b58c38c304abbd130f2f6d8f967d3fbb320d415b63e2d09114",
+     "bytes": 307171,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251312.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/050_NEXT_HYDROMET.pdf",
+     "sha256": "ffcbf2801be414f2f9331ca5b2a147b41365bb51fb8f7bd95f4abdb5c1e5f53b",
+     "bytes": 312470,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251784.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/051_ODIN.pdf",
+     "sha256": "fa9d182c082a298c8a3aad9bbfec086a41a97fc59a2b7d6fea9d5d9516dd4444",
+     "bytes": 293389,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251825.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/052_RjukanLH2.pdf",
+     "sha256": "2a44c1d40985e902a8d0cb4fe2cd41e7d177d097f9507bd83e58bafa63441a40",
+     "bytes": 328645,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252290.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/053_SLALOM_2.0.pdf",
+     "sha256": "9106583bf2153ebb1cfb11b8fb03b19e51bbe405190a12e1c64472a4e541c174",
+     "bytes": 335723,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250913.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/054_TAKE_KAIR.pdf",
+     "sha256": "27fda3d5911c553f40aa1c959a5ce082f3f6a2c28f8337339c05c2d6826fee8c",
+     "bytes": 326188,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251007.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/055_46inEU_Powering_the_Future_4.pdf",
+     "sha256": "5858076991b57b0494a459d6466d3897d1ab1ff614193773d3330a80aacd967b",
+     "bytes": 367774,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251513.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/056_ACCEPT_Automotive_Cells_Compa.pdf",
+     "sha256": "9d6197bb9dc4ff7eaf46472bc22b2b9de101e9923adc0bc6b6280cda823d7e64",
+     "bytes": 365886,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101250958.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/057_AGATHE_Advanced_Gigafactory_A.pdf",
+     "sha256": "21dbcec7a3889f52c29166cb1d87a0c0c2045fb95aacba96ef2ef15267b507d8",
+     "bytes": 354030,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251807.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/058_NOVO_One_NOVO_One_Gigafactory.pdf",
+     "sha256": "ee73c5dda8e36bf206e39c2fd467cc682abf9f175cf36521cfac6afc741c8204",
+     "bytes": 354420,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101251644.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/059_WGF2G_Willstatt_GigaFactory_2.pdf",
+     "sha256": "1f4f555aea029c1600c1ed043d99c59d539d5bd297b706c272eecece637439ea",
+     "bytes": 357251,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101252246.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/064_RjukanH2.pdf",
+     "sha256": "740dd5c3ab07108cae3090bb6af8941b0ddeb5f2e22136cbcd4691b660e39eb7",
+     "bytes": 360181,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101241595.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/065_HammerfestH2.pdf",
+     "sha256": "05f0dfa921763f0a98b408a42122a62165a4d431d771a5f001e9f936e967678e",
+     "bytes": 347486,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101241449.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/066_eNRG_Lahti.pdf",
+     "sha256": "f54a4e67cca8a451ae5482c1550ee6291114a4d4df5dd4fcf25bff17ddb3e328",
+     "bytes": 357188,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101179143.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/067_Grey2Green-II.pdf",
+     "sha256": "ee41f013cd737d54b579a6a1d9a9b7cd6c694682e1811fbb765864892fefe035",
+     "bytes": 362175,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101179149.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/068_HYSENCIA.pdf",
+     "sha256": "9ae2af6ecf2e8ef46c0e50a3b9d7c0cc6af3e895d888c0cc3b308f3462a2036b",
+     "bytes": 367281,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101179578.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/069_SKIGA.pdf",
+     "sha256": "e58d19f1f0c29ee55ff2e9a9be170736e8be819ffbf8dfac1d12234ea6eede61",
+     "bytes": 349153,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101179540.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/070_MP2X.pdf",
+     "sha256": "afcb5cd4f880eef5bd8e5bf277ac6c3e5b5b9c336d803930665fa82460aef799",
+     "bytes": 353380,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101179616.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/071_CO2LLECTInnovation_in_Carbon_C.pdf",
+     "sha256": "95d755e58f229de6c9100c91107c5a9f11648baff324d1e02391dff34ecb3277",
+     "bytes": 312179,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191027.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/072_StarFishSequestration_Technolo.pdf",
+     "sha256": "b5bb38d75136436e888f684f8aeb036d315d035e637a978a0362e337309095b0",
+     "bytes": 305807,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191516.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/073_TarraCO2-StorageTarraCO2,_the_.pdf",
+     "sha256": "8af4cfaa7f1ca172fd5b8b1855896d96589dee982acb6b029686b47e820fd939",
+     "bytes": 306272,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191313.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/074_CarboClearTechCarboClearTech.pdf",
+     "sha256": "3f7740e24d8305d89bd9532fdd0ef6bc830a6db217a864b5e4ac5be34252a832",
+     "bytes": 309453,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191263.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/075_ZESTAZero_Emission_Steelmaking.pdf",
+     "sha256": "4a145eb614456f4b0912acee5ebcc2888da103f6d171596876e0447914d9286e",
+     "bytes": 317191,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191086.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/076_HERMESHybrid_Electric_Regional.pdf",
+     "sha256": "5a721075267776ac727fe9ade22dc975b53e47bcd3a9e3d4e5ce2789b21939d9",
+     "bytes": 292150,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191083.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/077_ReOil_25000ReOil_25000.pdf",
+     "sha256": "4f21d1795b7323e05411f9dfec7b5f3bdff4c5582faf3186569feb31eba00bc7",
+     "bytes": 301684,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101190955.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/078_3D_FibreFunctional,_safe,_and_.pdf",
+     "sha256": "711d816e08bc9475fe4d7dd2e029a1404735b3a3a9874137a126803baa65c48b",
+     "bytes": 304920,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191069.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/079_GAIAGAIA_Green_Ammonia_In_Ast.pdf",
+     "sha256": "1c4d2b7b54e010904c02d05518d4ffef54b7c07ec3f9d84206a902192f27388a",
+     "bytes": 301307,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191325.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/080_eNRG_KotkaeNRG_Kotka_spearhead.pdf",
+     "sha256": "028e096175668d18ddf7495e9d6031e98e7256925753fdeea99ffb6e3b5c9313",
+     "bytes": 325654,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191260.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/081_H2BEH2BE_the_first_1GW_low-ca.pdf",
+     "sha256": "758ebd505486b9534961c334d8e654e0d0b47d8508bd49ed707e1372cbab9aff",
+     "bytes": 319851,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191016.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/082_LaunchStoresLaunchStores4Arami.pdf",
+     "sha256": "4fc93f6c5bd3c16f8630a837f9f72d075d4af71236ea25adc9dbf9a291d5d41a",
+     "bytes": 304605,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191298.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/083_bicEPSBoosting_Implementation_.pdf",
+     "sha256": "589360f9ffefbfc88eb141b64b2913df80a8351bc6097639ad4d7cc66fd90440",
+     "bytes": 315635,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191130.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/084_ENHANCEEuropean_Network_for_Hy.pdf",
+     "sha256": "8310a40b95bce9076c0b7d0cd8402b8e8bb31bf0388726fe8bb17377a7958386",
+     "bytes": 315339,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191199.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/085_GreenWaveReplicative_Approach_.pdf",
+     "sha256": "0d0eaeb74995fde4a5b18ace379ae425209fd69fcd82a7d9c223d871feb82a21",
+     "bytes": 327111,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191316.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/086_MODUSMicrOwave_Depolymerizatio.pdf",
+     "sha256": "57ed1a5a5f46baf07a43351281e674acb2f7293b20e2de8b9bd3f42d2f0e579d",
+     "bytes": 308227,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191270.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/087_INNOZHEROInnovation_for_Zero_E.pdf",
+     "sha256": "0fd3208416e0bf719b9ad39afbf0fc297332b390f4bf43ca3bdb567e1bbb0cb4",
+     "bytes": 307709,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191008.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/088_ACCSIONACCSION_-_Aalborg_Portl.pdf",
+     "sha256": "7f1d65f8f02f3237e9b3c738099259d0797c28057ff705342d5bce2080fa7901",
+     "bytes": 323182,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191049.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/089_H2M_Eemshaven_Kick_starting_t.pdf",
+     "sha256": "1859ef48ee4057acb43a5d8ccd4dbfc94db5d6d663058ef92cc8d68f950e545a",
+     "bytes": 314748,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191122.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/090_GRHENA_Green_heat_generation_.pdf",
+     "sha256": "84b8999b3cf5b7edf31ac3e89361edcc475a38ad6fd5589860693db8e19a462e",
+     "bytes": 304522,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191266.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/091_ARCaDe_Antwerp_Refinery_Carbo.pdf",
+     "sha256": "a0f3cf835dd37e916a98dac20817e2020424a2a151ef7de5cea720306493e648",
+     "bytes": 329271,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191044.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/092_LARS_First_European_large-sca.pdf",
+     "sha256": "d9ec74bdb1107284117d336d3859410312e1faacdbc371cfbf6c85de21c73123",
+     "bytes": 315648,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191215.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/093_Greensand_FutureGreensand_Futu.pdf",
+     "sha256": "0e1630211f48f982616282ef32fffdaf613c1057826232b8b9bfaa1f41c96908",
+     "bytes": 312220,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191033.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/094_CapturEsteCapturEste_-_Carbon_.pdf",
+     "sha256": "b3b9444d06febc3c2702164c6322bd049496d731ff60f474b942ae73326a2af5",
+     "bytes": 321378,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191951.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/095_Danube_RemovalsDanube_Onshore_.pdf",
+     "sha256": "17d28dfa7e7f7f9bf8d921a8a5043f69b6c963a21a9dff7187fbcaece777d176",
+     "bytes": 304500,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191237.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/096_CT_QuarryCircular_Technology_Q.pdf",
+     "sha256": "6a576e0884e09204ef8bb55d20997d518a05fe9911167a5e7f94b9984f39b586",
+     "bytes": 316680,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191307.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/097_AdriatiCO2Marcegaglia_AdriatiC.pdf",
+     "sha256": "68278d0505dacf4661c7e156b10d73bf5d3877f72719dce625931f92428b9e29",
+     "bytes": 313108,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191172.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/098_RAD4ALInstalling_A_Radiation_C.pdf",
+     "sha256": "87ed931081fc9cd57b8f041cd28744e49551ca73f1a9e1df26ae693b61e0a87c",
+     "bytes": 335550,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191019.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/099_BigBATTLarge-scale_Battery_Dep.pdf",
+     "sha256": "59cb71e445ec9ed6e62e292c935ba1a193a7677069967e89de4c3ead283822d5",
+     "bytes": 318671,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101190972.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/100_INDIGOFirst_of_a_kind_hybrid_d.pdf",
+     "sha256": "46003519966d78b8a0c85f261d1ff738378c3904c444fa054f0aed86bd037b93",
+     "bytes": 305129,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191181.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/101_AMBASSADORAMBASSADOR_closed-l.pdf",
+     "sha256": "f709160680d00c1d53f840661919813fd91d3e17db6ffefe82880624cd255440",
+     "bytes": 312221,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191568.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/102_REACHREACH_REMOTE.pdf",
+     "sha256": "c832f339d19c5bdda862815bbce81c2a62062116aabbb0ab6d6c4801c71cbd44",
+     "bytes": 301172,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191431.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/103_H2ydroShuttleFirst_of_a_kind_h.pdf",
+     "sha256": "68d163c8cca9352b373e6c9934c6fa9775811ec43771d16d3d08777de2596432",
+     "bytes": 310950,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191247.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/104_SOVALISSOlar_farm_and_VAnadium.pdf",
+     "sha256": "c2c26a104064ccd8c7fa50676dc8e44a571fc593b6b791bdc9fa83910e1e7e7a",
+     "bytes": 317925,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191329.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/105_SPACECarbonSmart_Factory_Sko\u0308v.pdf",
+     "sha256": "0356572acf9e2afa123dfba5944d332d77adb306b0e89b1e8588e846cc25c5bc",
+     "bytes": 320112,
+     "url": "urn:mandate:capital:raw/innovation_fund/fiches/105_SPACECarbonSmart_Factory_Sko\u0308v.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/106_BACCOBiofiller_Agro-industrial.pdf",
+     "sha256": "daea43eb0b5e0e264f02b4f5da8da6e5833ef9f41539e280e4df8428350b8f04",
+     "bytes": 303222,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191531.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/107_BESS4HYDROBattery_Energy_Stora.pdf",
+     "sha256": "9d4b008f6c56b678ff7ce695e8ed6be5646a9490e34225017bae438cb4b10ef4",
+     "bytes": 321008,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191220.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/108_LocaCloud_BresciaQARNOT_Innova.pdf",
+     "sha256": "8fce6b638f096cde5330839450eb08b026299b5136a386d6ba8664587bae684f",
+     "bytes": 306945,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191294.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/109_FELIXFirst_total_ELectrificati.pdf",
+     "sha256": "9a124f5185f9b779035dc053cc9fb742000b71ca95018f51797504c91c733935",
+     "bytes": 313131,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191512.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/110_Floating_SkyFloating_Sky_FUSI.pdf",
+     "sha256": "9677c75a6f6dbc386212204842847eb4b7bc6238e8f5b1229e72d63bfc5e94b9",
+     "bytes": 313172,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191212.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/111_DMC2Combined_renewable_heat_pl.pdf",
+     "sha256": "1fdeec5b4cdd32edd5e9690663a89cbcc64458ca0608cce5969f10ee94768f32",
+     "bytes": 314524,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191098.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/112_LowCO2barsDecarbonizing_the_ma.pdf",
+     "sha256": "ebfd7a0f686e9948583547d6d78f97279fbc7be7f9922419617afac826391b0b",
+     "bytes": 323290,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191414.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/113_GRAND_PIANOGeneRating_and_Upsc.pdf",
+     "sha256": "2f40124ce2a04422667c8ee7f182e2be75c2b2b8cee4551fc768d19ebd632035",
+     "bytes": 318320,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191354.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/114_HSS-Gen2Voith_Plug&Drive_Hydro.pdf",
+     "sha256": "c3e347ca29899fd8fb65baab3f2f9b7d1415b0741c6aacfda81863dd6419f04b",
+     "bytes": 301218,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191087.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/115_Next.Gen.WindNext_Generation_W.pdf",
+     "sha256": "abd4fde25b057c5be342686b659ba73a4095be98f781daeca82db8ef28dec444",
+     "bytes": 308725,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191121.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/116_NEMONext-Generation_European_U.pdf",
+     "sha256": "f593447403779c709b678003516db074e9e70e4e52aa211e586fd0275df8d539",
+     "bytes": 315566,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191079.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/117_Project_SagittaProject_Sagitta.pdf",
+     "sha256": "f0572760f8e19e146fc7767b94dab0a5b52ff49da97a42f99815c08e6b1e6902",
+     "bytes": 298962,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191013.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/118_MOD4PVGigawatt_scale_assembly_.pdf",
+     "sha256": "b853552e6d2b0929b1df6d99cfa9859aefab965197e33343cb69ab526045b012",
+     "bytes": 313469,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191296.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/119_CALLUNAAutomized_manufacturing.pdf",
+     "sha256": "ad65ad923ba726f91379925a72a96c81875d7d9efe352f6662f7dcaf328e0dac",
+     "bytes": 305083,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191245.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/120_GALLICAMGALLICAM.pdf",
+     "sha256": "d50b219522e7962d5da867166a848fa993f354e8b5f46706c1a55636cddb1c7f",
+     "bytes": 300728,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191091.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/121_RESILIENCERevolutionizing_Ener.pdf",
+     "sha256": "9545bd89484bbec52dc179cb93516e5c038bc05c4a8c54dd2bf3fa149ca3c254",
+     "bytes": 312777,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101190968.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/122_ELCOIELCO_I_Solid_Oxide_Cell_.pdf",
+     "sha256": "66632e63a3e887b3f09001b5b2cca2a30f4c063df7fef0cf8ee97af98ef6d847",
+     "bytes": 302706,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191349.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/123_FENICEFuturasun_advancEd_itali.pdf",
+     "sha256": "286ddc6f375305d3a8a82dd9456295395e05cfc51afffc9f5a9eccae1cd28470",
+     "bytes": 317066,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191341.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/124_FicH2telBallard_Power_System's.pdf",
+     "sha256": "ee79f68ebd0f3594ccc43d25e28659a1ca041813c1861573984b963cd79471d3",
+     "bytes": 303675,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191024.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/125_RHynoADVENT_RHyno_-_Renewable_.pdf",
+     "sha256": "c6dd3735d29767bb2e9d16f04f8dc0e4860a9c45858c17da44c483173861c099",
+     "bytes": 303821,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191126.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/126_TalnodeONEEstablishing_Europe'.pdf",
+     "sha256": "6265f62114b1b4b522f48c65bff57e8afa55cd4db4c35777697b7535a91ed38f",
+     "bytes": 306399,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191036.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/127_Battolyser_Factory_1A_first-of.pdf",
+     "sha256": "fd2e66e6eee1d832bc72ca0a81d4c4771b95430dff0d390a88c96fbf55387eb2",
+     "bytes": 311481,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191037.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/128_HTEM300High_Temperature_Electr.pdf",
+     "sha256": "2f1fb4424e7d12bf318512d7e4377381957f3345ad83e55d4b2ab7126230c951",
+     "bytes": 314430,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191015.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/129_NEFONorvento_Enerxi\u0301a_Factory_Z.pdf",
+     "sha256": "f0476a53bd79c054b270688b8e08bff04d3b1f79fe07e0c01bad0e664acb0612",
+     "bytes": 305765,
+     "url": "urn:mandate:capital:raw/innovation_fund/fiches/129_NEFONorvento_Enerxi\u0301a_Factory_Z.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/130_H2-GIGALarge_scale_production_.pdf",
+     "sha256": "8147be7d82a8877af903f6bb38cced70c750bdc52f463fabe16978b127efbd4e",
+     "bytes": 301510,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191110.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/131_WINDPLSustainable_manufacturin.pdf",
+     "sha256": "cbfadba6b647c39ca6e206dff8b7c49852ba0f1f5dbd6eafb85b1216a5be99f0",
+     "bytes": 315236,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191062.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/132_CircularSteamDemonstration_of_.pdf",
+     "sha256": "59f23380b28b0956d99bd33bc3800be1d50d1ffc98d71c1fd2559b7fa1ce200d",
+     "bytes": 309937,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191208.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/133_HYODEHYdrogen_Offshore_Dunkerq.pdf",
+     "sha256": "a80e609912cb00ae26acf29b0a9aed6376a9e5331dcfbbf55f85a954c78d6ac0",
+     "bytes": 307794,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191293.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/134_PIVOTPIloting_and_Validating_t.pdf",
+     "sha256": "6adffe4d695d5c1546e7cc24b55a4940dd9a4e4b3f50d9335de988975ad97908",
+     "bytes": 315872,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191066.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/135_L1XUnlocking_a_bio-based_futur.pdf",
+     "sha256": "78f51ff24441dcacac8ab6344c4f7576994b6958faeb3244002a096d4a6bbdc3",
+     "bytes": 305050,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101190975.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/136_eReformIndustrialising_eSMR_fo.pdf",
+     "sha256": "8b321ac05ff6d25546c816dcdf57dcb2ea8e00387d05ec9209b1763b05d3b182",
+     "bytes": 299291,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191370.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/137_GCPGa\u0308vle_Circular_Park.pdf",
+     "sha256": "b2b6e9bd090771a3c7bc0db1d3c85085261b1960a6bf6711ddc3bdf35ff5fbe9",
+     "bytes": 309442,
+     "url": "urn:mandate:capital:raw/innovation_fund/fiches/137_GCPGa\u0308vle_Circular_Park.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/138_ScaleUpLarge-Scale_Underground.pdf",
+     "sha256": "30707cc4fcc93880c8652cc369b3584986bd477127e042145a4c6ae785e47c9a",
+     "bytes": 298047,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101190982.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/139_MetZeroBiocarbon_reductants_fo.pdf",
+     "sha256": "3421bfb9fda6f6a7e4ab52a2025e0a189325629a6917046d45d7fea7df7bd8d7",
+     "bytes": 298524,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191543.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/140_FloWattThe_world\u2019s_most_powerf.pdf",
+     "sha256": "4bf64c23b144c26660ff4914dcb575798632849af3cf4a474b00175d7a96647d",
+     "bytes": 309672,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191281.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/141_FUTUREFood_waste_Upcycling_for.pdf",
+     "sha256": "61ca1d1963337c2c0508be8ec9f75d29d8b9ae9de8a2ad20fe2083a69098ef64",
+     "bytes": 301933,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191207.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/142_ELECTRADemonstration_of_the_wo.pdf",
+     "sha256": "1d1f3dcefe080574550a1d9df0d27f2d92633921241d14d7a5881a165b2d0998",
+     "bytes": 304311,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191165.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/143_EO2Energy_Observer_2_-_The_wor.pdf",
+     "sha256": "a166e7e0dc6115bfa5434270972f49eebdd56b32ef59e688e808ae41f9fe1475",
+     "bytes": 308834,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191276.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/144_N2TRNextGen_Thermal_Tire_Re-us.pdf",
+     "sha256": "2f177598ebcbdb13fbf4a0c3cd3c7bd120704160966effddb3351cf334719964",
+     "bytes": 303228,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101190991.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/145_NH1_Raz-BlanchardRaz-Blanchard.pdf",
+     "sha256": "83b3bc84ad40b5c2889ee2f6cc16798a3a228ea5185c3214fc61d27a13444e42",
+     "bytes": 310785,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191445.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/146_Swap2ZeroSwap2Zero.pdf",
+     "sha256": "9873f3ba616203479dc29ae9585084a0a5c697fdf1ac6d779ba3a8f280cd5a53",
+     "bytes": 306713,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191050.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/147_RGEN4Developpment_of_an_innova.pdf",
+     "sha256": "54fad336f7ca9a49b3967322dc2b03bd0c474e4eed9188ee59f62ef5b1826cd1",
+     "bytes": 332323,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191228.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/148_CASTROThe_project_will_design,.pdf",
+     "sha256": "3a03ac45b86bbe69c06947bcc5539cabd22f5528821902a75d5d00531eca2ac8",
+     "bytes": 296427,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101190562.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/149_Norberg_Mine_StoragePumped_Sto.pdf",
+     "sha256": "7b19444b9ebbf34bedc0c367a7081ebb2f7e6e04635fb4f6eab4a2988257ec91",
+     "bytes": 319565,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191150.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/150_VianaWave_Accelerating_the_tr.pdf",
+     "sha256": "88bc4941cb1e8e486f8ee267568b3bbd7129f35cbbb68bcd66b96386622838c6",
+     "bytes": 304727,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191202.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/151_ECHO-WAVE_Energy_Community_fo.pdf",
+     "sha256": "2746fedfd71157985bf0f044d8c2a000961dd877dc936f8ad7360aa5ce1a8385",
+     "bytes": 320506,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101191541.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/152_BOOST_Back-to-MonOmer_recycli.pdf",
+     "sha256": "83a012c032bb82ffbea9e23bd14759222d73d8714dd185bf6dd6d5ff01d52640",
+     "bytes": 305680,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101155979.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/153_CUSTARD\u200b_carbon_Capture_and_U.pdf",
+     "sha256": "7cc146150ed363b59483ee2dc6bc55a6eaf3bde9bc7e83c3f50b3c35d0aaa645",
+     "bytes": 331815,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101156745.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/154_EMETHANOLxWSolution_Next_Gene.pdf",
+     "sha256": "f863f267a9d373c6a4a6a9cee25f98ded19037a62a8cb1a98760cdf9fd2f7a0f",
+     "bytes": 306209,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101156433.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/155_ERACLITUS\u200b_Expanding_the_Rang.pdf",
+     "sha256": "f4dc2f91f8848f39ef4f131bd287e5535bc731772f6fdf0515dc376ead2404c3",
+     "bytes": 311467,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101157262.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/156_GEN2HU_GENERON_2.0_Integrated.pdf",
+     "sha256": "a675b49e81394f3efc4ccc0fd239a9bcd019f8952406445e37bd3d4cf99255c5",
+     "bytes": 313932,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101156968.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/157_HITeUP_Heat_up_Isover_Transit.pdf",
+     "sha256": "912665186456c7501894a84106d8e892bcb9c4b00352c7275cb639cf4dce9f0b",
+     "bytes": 326112,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101150823.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/158_LuGaZ_Local_manUre_and_agri-f.pdf",
+     "sha256": "a6cc835c790a6f6f68472f41383f1094cdda5acb5d8fc36099236dfeba2067f7",
+     "bytes": 335249,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101157027.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/159_MAGNUS_Manufacturing_of_Glass.pdf",
+     "sha256": "124be1d5dacb3d167bef098ef933a89fe39d77f0df5c4d693ac389b0ad8b629c",
+     "bytes": 314884,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101143493.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/160_MITIGAT\u200b_MakIng_susTaInable_e.pdf",
+     "sha256": "d84b11cb1bab4e973e1c1d74c9721def39cb1edfbcb08664d8387c8968cf4750",
+     "bytes": 295831,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101157252.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/161_RoboticRepair\u200b_Robotic_Wind_T.pdf",
+     "sha256": "882f9a15740bad20a3891cbefc92d453f5ca215beddc82c4c9ff722dc326bd54",
+     "bytes": 307863,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101156360.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/162_RockStore_accessible_and_cost.pdf",
+     "sha256": "047172ba3b3063eb7ec3d1bf142140baa4e569895234733f084dbb23b55ff5f9",
+     "bytes": 300343,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101157079.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/163_S2H2\u200b_Sludge-to-Hydrogen_for_.pdf",
+     "sha256": "816c019314f46ebb7d20d2bfba4bf9bd86d82237e6f0b0d9bf5876aa4d873634",
+     "bytes": 312700,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101155866.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/164_SHEEFT\u200b_Solar_HEliup_Energy_f.pdf",
+     "sha256": "a3f2782b0f9f4a473b1c7a942a143bb4eb74dd581c6eae8b0ae817ac5bf09d8b",
+     "bytes": 308069,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101156515.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/165_Solvent2Energ.pdf",
+     "sha256": "08815bf6a1758b5f8d7be34114c9173f263821f8de2a8e6c5fcafcbd16d9292e",
+     "bytes": 317039,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101157077.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/166_SUNAGRI_Carbon_Farm_Dynamic_A.pdf",
+     "sha256": "8b5305f3d29ebd6e087ebf50728ed84b2483dd505a60f11d349fbc50847c766d",
+     "bytes": 312634,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101156750.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/167_SUNBREWED_Solar_eNergy_for_th.pdf",
+     "sha256": "187feba7e0bb9cec9638e342f17a1091e5d5fad870e345c96049030fc9934508",
+     "bytes": 310945,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101156599.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/168_GeZero_First_German_inland_ce.pdf",
+     "sha256": "2370abd8cb6e006cce5b8dd93d7396a7089b77176d1511c30d497ed54ebc63b4",
+     "bytes": 314441,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133005.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/169_IFESTOS_one_of_the_largest_ca.pdf",
+     "sha256": "2c1ee2b9671efaa9170627e2334264f375739a3a8763bb35bbce8e6a95e6d7a4",
+     "bytes": 315026,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133204.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/170_IRIS_Innovative_low_caRbon_hy.pdf",
+     "sha256": "c71cc3d6450304bd77eb04928786c7cc71474b2577d21d194d3cb970c6419c72",
+     "bytes": 330505,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133015.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/171_KOdeCO_net_zero.pdf",
+     "sha256": "1dc3d4ec8f64ab9638226ab9ea06889bd2a69c05b20edbc6df31f9de5b7683de",
+     "bytes": 312640,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133120.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/172_EVEREST_Improved_calcination_.pdf",
+     "sha256": "c15b2c8733e3772d42d1404557176ed6d285712f2c9d8e7e3bdd514982fda725",
+     "bytes": 323732,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101132835.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/173_GO4ZERO_Towards_a_carbon_nega.pdf",
+     "sha256": "fa086e2614caf94eac79e080864f4a28e6488ba5cf2a6f55731606d2f6e8c34e",
+     "bytes": 318052,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101132807.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/174_STEGRA.pdf",
+     "sha256": "99eca0b825f8b2871806d34552a6e16a3a00f4d8692fe53c9554c7d4dcbef13c",
+     "bytes": 311683,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133206.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/175_GH2AGREENH2ATLANTIC.pdf",
+     "sha256": "0449312efee54baa12d40822b1ec8eac5d1d06b4299d22cd8629fd946275c075",
+     "bytes": 307251,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133265.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/176_eM-Rhone_electroMethanol-Rho\u0302n.pdf",
+     "sha256": "a76a1571ae9954c9bd9df88985c125ffd27d552683873ad2ab8618911737b6cc",
+     "bytes": 304233,
+     "url": "urn:mandate:capital:raw/innovation_fund/fiches/176_eM-Rhone_electroMethanol-Rho\u0302n.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/177_GREEN_MEIGA_Green_Methanol_in.pdf",
+     "sha256": "7701cfbfe78ecd429530d18538a98b428a3509539d54241ea1afa2acc3216864",
+     "bytes": 306231,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133150.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/178_ASTURIAS_H2_VALLEY.pdf",
+     "sha256": "960a0b02abff3bb2a1a61e054ab9b207d7eeddd63062699a0f28f7185440f6f6",
+     "bytes": 308868,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133054.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/179_EnergHys.pdf",
+     "sha256": "8c0042ab5082278f68adce19c5cee754b475881107c9bb0696ac249432301d1e",
+     "bytes": 309627,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133052.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/180_TRISKELION_Green_Methanol_man.pdf",
+     "sha256": "2752b583786c7023b602effb4a34357d4775f44e89f846271bd563682f8d3a2a",
+     "bytes": 328556,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133213.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/181_HydrOxy_HydrOxy_Hub_Walsum.pdf",
+     "sha256": "9e094d672105e188baadfb167d696606b6cc1917463608a2275354f9b2d0ce89",
+     "bytes": 310627,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133035.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/182_GAP_FFI_Holmaneset_-Green_Amm.pdf",
+     "sha256": "ba4a85a55c0b4046b63de3d2ab128f35ccfbbc8f704716651c4b0a050e7693fd",
+     "bytes": 310312,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101132475.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/183_TopSOEC_Topsoe_SOEC_Stack_Mod.pdf",
+     "sha256": "7da9a0121e369e34a695f4250c51f41b72792ee600ea6e54c427de8a2c03309c",
+     "bytes": 305196,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101129002.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/184_ELAN_Upscaling_Vianode_innova.pdf",
+     "sha256": "390a739e621db44feae5c718affff8664dc44f69d299c1565b1eeed7d2602e60",
+     "bytes": 314217,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133231.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/185_ELYAS_Smart_ELectrolYsis_Modu.pdf",
+     "sha256": "a4d83c9ef8fcd0ddd56dec36ba0c2cf65fdb49b82de887fc8c62e8c3d9621a12",
+     "bytes": 312339,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101132856.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/186_GIGA-SCALES_GIGA-watt_SCaling.pdf",
+     "sha256": "3bd1bd1a8bc5eb7a4bf93214ec625fe13dcfce42ef6e037400f6427416d00947",
+     "bytes": 308558,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133022.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/187_Giga_ArcticBuilding_a_Europea.pdf",
+     "sha256": "7a1460ec8514cfa581d97e08f9d44b4e78868a50c2c0b64033bb407ab2227016",
+     "bytes": 313526,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133106.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/188_DAWN_200MW_Production_of_thin.pdf",
+     "sha256": "1275dd77009d8e5632de1f85fd0b83cfce4545612bf644977edcb93b005a0c7a",
+     "bytes": 317452,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133214.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/189_E-fuel_Pilot_Innovative_and_c.pdf",
+     "sha256": "2fa9ada30c2d95f3d79313291f4482bb9a57dcbac9f13ffa138f7580ed9148ba",
+     "bytes": 329087,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101132987.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/190_NEXTFLOAT_PLUS_Next_Generatio.pdf",
+     "sha256": "660089fbe504b6074a03fa889cffbdac15ff01053f482a787c272376ef958785",
+     "bytes": 298743,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133197.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/191_HIPPOW_Highly_Innovative_Prot.pdf",
+     "sha256": "20c823ff8654b4f24ab33814ad65d72c5811c3115a60958f88b46e3bc2703efd",
+     "bytes": 293630,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101132817.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/192_SEAWORTHY_Sustainable_dispatc.pdf",
+     "sha256": "43274e13ab02c314afff4ed4b85ef30dbf1951b1abb7cb619a36cc18c5a116ae",
+     "bytes": 302454,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133097.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/193_Volta_Project_Hybrid_mid-size.pdf",
+     "sha256": "9e3fc094b4bd30a2b13d2f57761b3d45aa1c6f08b6bd1dee683b5fbec05e539a",
+     "bytes": 314540,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133064.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/194_MoReTec-1_Fully_electrified_c.pdf",
+     "sha256": "b74b1ac9f9af9752afed74b64a01ad9deebac74bcaf5fb49a2d107db485f193f",
+     "bytes": 310371,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101132766.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/195_CFCPILOT4CCS_CFC_Pilot_for_CC.pdf",
+     "sha256": "ebd52511c02fa63ded9ce2f527776579f186e4823e20a46693a67525904d4c53",
+     "bytes": 303617,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101132998.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/196_SC-HOOP_Sustainable_Chemical_.pdf",
+     "sha256": "d9d5e5d5f462388100b5697bdc3b1b05d4ddc91425c387d07b7a159d7dfc1d65",
+     "bytes": 301663,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133158.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/197_SAO_The_Saoirse_Wave_Energy_P.pdf",
+     "sha256": "9f7f0f7d91512bacfa7e00db475c8935c739fcfb699c9930bc87e7d3873bc0c7",
+     "bytes": 297562,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101133237.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/199_CO2ncrEAT_Integrated_low_carb.pdf",
+     "sha256": "dda36ecaff0d0b75274063a6dd0c5a4ba9dfebfe404180981095b979daba4660",
+     "bytes": 315187,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103194.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/200_BEAR_A_first_of_a_kind_HyBrid.pdf",
+     "sha256": "a77dcbeb11eb354c7d697c06b708f3bc79addb86f05cc1075330076b7885f3e6",
+     "bytes": 315693,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103445.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/201_InnoSolveGreen_Demonstrating_.pdf",
+     "sha256": "d6a3efcf5d0937814a2e4466958e3c0f7333f63f2612860981f69415f81ed275",
+     "bytes": 300351,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103011.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/202_Listlawelbattcool_An_energy_a.pdf",
+     "sha256": "426da4e476bd08cb15644c190ed677a2d017ea3be33f7c34e8aa5383b9937980",
+     "bytes": 317899,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103438.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/203_VOZARTEK_Initiating_the_Produ.pdf",
+     "sha256": "19a988f7f736ae587601ddf739b87ac557a3fff842425b832ef59d11329db01f",
+     "bytes": 313100,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103370.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/204_HFP_A_first_of_a_kind_Hybrid_.pdf",
+     "sha256": "00d1118d8e222442f7624a0f166d900b32edd40df71b67472f3b7cafdca17c37",
+     "bytes": 310523,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103063.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/205_CLYNGAS_first_of_a_kind_techn.pdf",
+     "sha256": "d78e08d5157d4994d24c4e2ce5330dcc6cb86e0b438eb3e8585008db19bdfb9c",
+     "bytes": 314910,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103371.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/206_PRIMUS_Prime_Manufacturing_of.pdf",
+     "sha256": "9f5b1425fddb79bb629b6ea2c1c074c1f3425a2ce053985b04be4c7f7ebc7b78",
+     "bytes": 311806,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103457.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/207_AGRIVOLTAIC_CANOPY_The_Brouch.pdf",
+     "sha256": "cebc589ee84da82eddefad87905574103561fc2cfbbb09d040e702b5d5e29c57",
+     "bytes": 308542,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103027.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/208_SUSTAIN-SEA_Reducing_maritime.pdf",
+     "sha256": "398552fafd7df1301aab71a91400b10376dab616f6cb1f415ff414bb81e0a0ea",
+     "bytes": 312049,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103465.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/209_GreenH2CY_Green_Hydrogen_Proj.pdf",
+     "sha256": "8d560bdb845c12c3ba449c6aafb92e57af56e56fccad99181003e4dd39f6a580",
+     "bytes": 316171,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101103240.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/210_VITRUM_Virtuous_Innovative_Tr.pdf",
+     "sha256": "24cd2b3629e60e71ba5d5110f730e15c8c7658aa9a781f25fae3e327e2564b91",
+     "bytes": 310167,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101102450.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/211_GreenH2_Small-scale_green_hyd.pdf",
+     "sha256": "d9d75c26fd9bed5851cfc95c4343db7545c8158211babc0752234cb3c62bf76f",
+     "bytes": 312997,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101102990.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/212_HH_Holland_Hydrogen.pdf",
+     "sha256": "d78a4712e4f70575b5ff78214f433abea4aed36842160efca75a02c34509fdf7",
+     "bytes": 2461446,
+     "url": "https://climate.ec.europa.eu/document/download/8a110149-25d6-4aad-86f5-c8250d16b7e9_en?filename=if_pf_2022_hh_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/213_N2OWF_Nordseecluster_A_Offsho.pdf",
+     "sha256": "5acb30e64f00370c9a0904ffed707376149cf39c3117dac46ee887dbda33817b",
+     "bytes": 300341,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101085995.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/214_FUREC_Fuse,_Reuse,_Recycle.pdf",
+     "sha256": "3babf224c9b8f401946f4f1c1b367104929afb9235a187e15e187784da03183f",
+     "bytes": 3356380,
+     "url": "https://climate.ec.europa.eu/document/download/56f84d0e-488e-4c87-8feb-95b0ef6a2027_en?filename=if_pf_2022_furec_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/215_C2B_Carbon2Business.pdf",
+     "sha256": "74e4fb40adf26d0371c03170afda6eec58ff336f89347199f5ad8f5ea7f5b1c4",
+     "bytes": 3789779,
+     "url": "https://climate.ec.europa.eu/document/download/f276ac1a-706d-45b4-9fbc-e082c97b495c_en?filename=if_pf_2022_c2b_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/216_Coda_Terminal_Coda_by_Carbfix.pdf",
+     "sha256": "dd7c4faba47e651c0e14f567c6776ffc5e118d394999527d67e43a6c8d5ad73c",
+     "bytes": 1298852,
+     "url": "https://climate.ec.europa.eu/document/download/127cb46b-3974-4145-8960-53031599d4df_en?filename=if_pf_2022_coda_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/217_ELYgator_Kick-starting_a_rene.pdf",
+     "sha256": "913b0f59d5f7b18fc29dc56e9dd1c2c80f40eaa2df04d331e077e5ddcc320ce9",
+     "bytes": 2711064,
+     "url": "https://climate.ec.europa.eu/document/download/6e678d3f-700d-4f1f-82c5-9f374f05805b_en?filename=if_pf_2022_elygator_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/218_NorthSTOR_PLUS_Industrialisin.pdf",
+     "sha256": "243988de7745368fa42a654d71652cd70ec243f2fa5f3b8e9f42bfffcbd91cef",
+     "bytes": 1922121,
+     "url": "https://climate.ec.europa.eu/document/download/a2ce3982-a604-40aa-a3a9-185741aaa7d4_en?filename=if_pf_2022_northstor_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/219_GO4ECOPLANET_KUJAWY_GO4ECOPLA.pdf",
+     "sha256": "3d84761c056bba8a60e4457eb28578d7bb0521911050235f8f009d69322aca17",
+     "bytes": 3039629,
+     "url": "https://climate.ec.europa.eu/document/download/5c3a41d2-5c3b-40f6-92c4-712a04cdffc4_en?filename=if_pf_2022_go4_en_0.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/220_CalCC_First_industrial-scale_.pdf",
+     "sha256": "d5e6e4bda272a46124667ae3d5b625a14459bda9dfe92e3f54a0bb648ad9f0c1",
+     "bytes": 2480672,
+     "url": "https://climate.ec.europa.eu/document/download/bd0ab5e5-bc37-4bff-b3b7-1a179c2e2529_en?filename=if_pf_2022_calcc_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/221_EAVOR_LOOP.pdf",
+     "sha256": "b8af7831efa807d4c72a0c705bc8a988464496c69142eaad7a4b40a7d573ddaf",
+     "bytes": 3476853,
+     "url": "https://climate.ec.europa.eu/document/download/5f15a3a9-351c-40b1-aa86-00d7d7c82c87_en?filename=if_pf_2023_eavorloop_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/222_OLYMPUS.pdf",
+     "sha256": "ad87497472717a61764bb5e6a1b1e9faccda07896c4e060bd810ba5fcf813e1c",
+     "bytes": 320088,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101086023.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/223_TANGO_ITaliAN_PV_Giga_FactOry.pdf",
+     "sha256": "042f68325ffe365a43d33baf27728fc9916b78d479ab2e3940a83d178c3402fa",
+     "bytes": 2069768,
+     "url": "https://climate.ec.europa.eu/document/download/04f1ef88-9b30-4849-9118-647d0f04fefe_en?filename=if_pf_2022_tango_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/224_K6_Program.pdf",
+     "sha256": "f66fd5a0f4ca6dc40506afb0a1ebfe6a19d2de301f4956ee1bc0aefe6b7fe4f2",
+     "bytes": 823503,
+     "url": "https://climate.ec.europa.eu/document/download/ab1d0b6c-6dbd-4786-b05b-fe6faf35b45e_en?filename=if_pf_2022_k6_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/225_Beccs_Stockholm_Bio_Energy_Ca.pdf",
+     "sha256": "bea0545af180553dad6b8f9d7688ef09d6be2a33e61e3e1d27620c1af725d4ca",
+     "bytes": 1979963,
+     "url": "https://climate.ec.europa.eu/document/download/89ce45e2-2078-4808-95d8-1a27f0a71918_en?filename=if_pf_2022_beccs_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/226_ECOPLANTA_Reduction_of_CO2_Em.pdf",
+     "sha256": "2df7507e9d8ae31dd31df89f30b14dcf69a9fde35837fb000f650338f935df5a",
+     "bytes": 732611,
+     "url": "https://climate.ec.europa.eu/document/download/a04fab6d-502c-4dfb-9ade-60729ef787e3_en?filename=if_pf_2022_ecoplanta_en_0.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/227_HYBRIT_demonstration_Swedish_.pdf",
+     "sha256": "e06e479b9c70947859655306e4bdc7b773a996c8e938e33da1a8d63a0b3361e6",
+     "bytes": 1449662,
+     "url": "https://climate.ec.europa.eu/document/download/6361be48-c451-4e46-b64d-c8a5d069bc8b_en?filename=if_pf_2022_hybrit_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/228_Kairos@C_Building_strong_mome.pdf",
+     "sha256": "039c60e8fcc4ad0b8de072a973251f97216ee54129c85c1071165114a16e65a5",
+     "bytes": 2378511,
+     "url": "https://climate.ec.europa.eu/document/download/c99241e9-797d-469b-9df3-a1da041159c6_en?filename=if_pf_2022_kairos_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/229_AGGREGACO2_Fabrication_of_CO2.pdf",
+     "sha256": "144db8a43cb06f6a6b865b52711aee6ac8d9b4d219daa35e1729a6173e752715",
+     "bytes": 2433187,
+     "url": "https://climate.ec.europa.eu/document/download/f3b1a7f6-fc9d-44bb-b3ee-e6391a0bbef2_en?filename=if_pf_2021_aggregaco2_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/230_EB_UV_EB_UV_curing_without_Ga.pdf",
+     "sha256": "faebe93c69613a2a7edf0975d0097482138a94d344dff436516e4bfa0eb3ec8c",
+     "bytes": 1261621,
+     "url": "https://climate.ec.europa.eu/document/download/f24d0277-2108-42c5-bbb3-c94ce1846c47_en?filename=if_pf_2021_eb_uv_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/231_FirstBio2Shipping_First_Bio-L.pdf",
+     "sha256": "ad5d1463d251111cc713aa3e997969033c7e6011263ba862ae564c053a55d1a2",
+     "bytes": 332852,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101038946.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/232_W4W_Waga_4_World.pdf",
+     "sha256": "fe2bf2b7d36242b2c530e575ec80df3e5791ad3c907c76f19c330275809036fa",
+     "bytes": 1373760,
+     "url": "https://climate.ec.europa.eu/document/download/4d94fc84-4ea2-4404-bee2-01d7a27d4c3c_en?filename=if_pf_2021_w4w_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/233_ZE_PAK_green_H2_Investment_in.pdf",
+     "sha256": "8e0c7b5cc46727d0552fc7fcba3f126ee41cfdfac89f1f19e2322c2e3b8b8946",
+     "bytes": 2553082,
+     "url": "https://climate.ec.europa.eu/document/download/59533d18-bffc-495e-9778-9d10d5be6537_en?filename=if_pf_2021_zepak_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/234_LK2BM_Conversion_of_a_pulp_mi.pdf",
+     "sha256": "249f5af00af5214ce8e9a77a1dcae1dc6c6de005647439a8620805ba4f007b15",
+     "bytes": 2863069,
+     "url": "https://climate.ec.europa.eu/document/download/d448e0c8-6dc7-4eab-9b68-e71ed9ac3b47_en?filename=if_pf_2021_lk2bm_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/235_SKFOAAS_SKF_Recondoil_as_a_Se.pdf",
+     "sha256": "a95ec6f80d3e3db42c48e5eadb914996c36edb66e55f315ad62ff870c315b89b",
+     "bytes": 1312041,
+     "url": "https://climate.ec.europa.eu/document/download/b5463d0f-36fa-4f11-9b84-82c2c76a8d6d_en?filename=if_pf_2021_skfoaas_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/236_NAWEP@_Norse_Airborne_Wind_Ene.pdf",
+     "sha256": "104c95a9d62712a092602965ee92bb5433b5ee2d54e9cff85eebb98d25013301",
+     "bytes": 2852550,
+     "url": "https://climate.ec.europa.eu/document/download/ab64e269-a012-4cd9-8e8c-7a9c407e4880_en?filename=if_pf_2021_nawep_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/237_WH_Water_Horizon_Renewable_En.pdf",
+     "sha256": "80ab60d3501612961e3a47f8ba11e136edf189c27d4346d25bfb5c07bd06c87a",
+     "bytes": 2211148,
+     "url": "https://climate.ec.europa.eu/document/download/89025375-edce-4697-9d9e-fae95bcc5ce1_en?filename=if_pf_2021_wh_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/238_CO2-FrAMed_CO2-Free_Agricultu.pdf",
+     "sha256": "c1ed07c03c44b3fedad08f1b65bd01235a776bec43780e8d27291e38416e1f77",
+     "bytes": 991960,
+     "url": "https://climate.ec.europa.eu/document/download/3febd4ca-c527-4276-8985-6f086655cd9d_en?filename=if_pf_2021_co2-framed_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/239_HELEXIO_line_Demonstrating_ma.pdf",
+     "sha256": "2722e1827f872b396d125458f33a6f49cc0553d9711adab2ae711207aa2de5b1",
+     "bytes": 318540,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101038919.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/240_CarBatteryReFactory_Assembly_.pdf",
+     "sha256": "4c78cb2c17d27b531c44238c77a1c5c4604b2a452aa5b6d86cf72e335b1e3644",
+     "bytes": 1115152,
+     "url": "https://climate.ec.europa.eu/document/download/cd3d67fb-c01c-4aa1-8fb5-57c2d49740a8_en?filename=if_pf_2021_carbatteryrefactory_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/241_Green_Foil_project_Low_CO2_fo.pdf",
+     "sha256": "c3d9b1c428973d7854616c84d4557f82c1882aa5486a747c22a098b8351d8a1a",
+     "bytes": 1909559,
+     "url": "https://climate.ec.europa.eu/document/download/ff530da5-854b-434a-9f41-471ca8dfff79_en?filename=if_pf_2021_greenfoil_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/242_GREENMOTRIL_Development_and_o.pdf",
+     "sha256": "9826065b9f14e80931b33f535ac0a52d0ac9979b0e7d25ce64137f4767630269",
+     "bytes": 295515,
+     "url": "https://ec.europa.eu/assets/cinea/project_fiches/innovation_fund/101038908.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/243_EVVE_First_European_Large-Sca.pdf",
+     "sha256": "70f836e572161f3218776993a143b3f16cb9c18d208441cedc420c0f79a55dd3",
+     "bytes": 2600768,
+     "url": "https://climate.ec.europa.eu/document/download/5f2dc326-0a0b-4c3c-a5c3-84d10e04e896_en?filename=if_pf_2021_evve_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/244_GtF_Green_the_Flex_Achieving.pdf",
+     "sha256": "200c5562f7c01488c0a8fda1bd522d7c455be64708cdf1d15d44918e4a0d8410",
+     "bytes": 2102883,
+     "url": "https://climate.ec.europa.eu/document/download/40ee50d1-54bc-49d6-a72b-a2391181cf1e_en?filename=if_pf_2021_gff_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/245_PIONEER_airPort_sustaInabilit.pdf",
+     "sha256": "0789954e13e213fd3789908eb601f96b234002d8074b2cdd1db06cef79ea9023",
+     "bytes": 2314266,
+     "url": "https://climate.ec.europa.eu/document/download/c1635fbe-5840-4738-8bdc-bbd12fb16c06_en?filename=if_pf_2021_pioneer_en.pdf"
+    },
+    {
+     "path": "innovation_fund/fiches/246_Silverstone_Full-scale_CO2_ca.pdf",
+     "sha256": "b03ccc19108af9aebd59e04c1e2b051f033fafb5ebe0ead31a70d85ba209d747",
+     "bytes": 3648452,
+     "url": "https://climate.ec.europa.eu/document/download/c3aaff60-6d1a-44d6-b873-a8ff9dd6da74_en?filename=if_pf_2021_silverstone_en.pdf"
+    }
+   ]
+  },
+  "ipcei": {
+   "extractors": [
+    "extract_ipcei"
+   ],
+   "files": [
+    {
+     "path": "ipcei/ipcei_batteries_2019.pdf",
+     "sha256": "44e20df5fcddbd1f75f2fc1703b48151f39a06a7732de982b60144d19e57cc00",
+     "bytes": 1196111,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/272698/272698_2157525_551_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_cloud_2023.pdf",
+     "sha256": "d784030b357ec6530294e9bf12f772ae45dcd35bf528ebebf59aa78a869af417",
+     "bytes": 1646254,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/302040/302040_2626931_806_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_eubatin_2021.pdf",
+     "sha256": "52a66ed6796095212e2171600ebe6f447bb0b7e991c786a31610e689ff5df5f3",
+     "bytes": 2844691,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/280426/280426_2315534_648_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_hy2infra_2024.pdf",
+     "sha256": "5d506ff452c44a7c9848c7c458e1ffa7993bf35cb6ec98fa75984e88cce88687",
+     "bytes": 2310446,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/307461/307461_2767044_844_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_hy2move_2024.pdf",
+     "sha256": "a4d9ba9427460f71cf788491b1ce4d9d7bf582b7dbede73e145cab3856c1349f",
+     "bytes": 2148019,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/308248/308248_2782154_853_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_hy2tech_2022.pdf",
+     "sha256": "39d8638bf1b54c36359b9b01735058393130775194d1e7acc762e294a69f123c",
+     "bytes": 3138245,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/288365/288365_2453714_719_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_hy2use_2022.pdf",
+     "sha256": "cc6c145eeb5c8faa8ba3ea821e23312689adb5fe6e94267da3ff6bdf7ecb2f5c",
+     "bytes": 1846914,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/288366/288366_2453802_728_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_mect_2023.pdf",
+     "sha256": "fa05ae3c8bef663f934221d01bed8545bf505dfae6b4331fbede2c1e5c3a002e",
+     "bytes": 2765156,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/301440/301440_2626920_783_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_med4cure_2024.pdf",
+     "sha256": "ec6783bbdc6a4ec2a345907f670ea728b23f3235942e6af0e7e12db4cd354c8b",
+     "bytes": 1509966,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/308249/308249_2782163_862_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_micro_2018.pdf",
+     "sha256": "71f109b66f04dd0e4324164848ca37639996dfc2e4433e69fb6a155e7aafbca1",
+     "bytes": 1801683,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/269681/269681_2025986_423_2.pdf"
+    },
+    {
+     "path": "ipcei/ipcei_tech4cure_2025.pdf",
+     "sha256": "f14de33a3e557824c0b6129481734e6a70c98a808cedbff307c6efe7404ae145",
+     "bytes": 1782241,
+     "url": "https://ec.europa.eu/competition/state_aid/cases/319038/319038_2945821_912_2.pdf"
+    }
+   ]
+  },
+  "eib": {
+   "extractors": [
+    "extract_eib"
+   ],
+   "files": [
+    {
+     "path": "eib/eib_projects_signed_20260520.csv",
+     "sha256": "7e39e117a101959ecea14ef0f40b7c3fa49fee55e51301f59d4c52b5d0368256",
+     "bytes": 63307,
+     "url": "urn:mandate:capital:raw/eib/eib_projects_signed_20260520.csv"
+    },
+    {
+     "path": "eib/eib_project_ids.json",
+     "sha256": "89b20f093c199cfd122828301aedf1f490e5656268318bd18cdf27852a312c12",
+     "bytes": 85764,
+     "url": "urn:mandate:capital:raw/eib/eib_project_ids.json"
+    }
+   ]
+  },
+  "edf": {
+   "extractors": [
+    "extract_edf"
+   ],
+   "files": [
+    {
+     "path": "edf/01872011-1fdc-4a2c-9227-e4636790851e_en.pdf",
+     "sha256": "6b256bb353ebe421b7fc8322536aae0d77d43893e4a48be49eb6830be42a67fc",
+     "bytes": 352981,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/01872011-1fdc-4a2c-9227-e4636790851e_en?filename=FACTSHEET_EDF_2024_DA_GROUND_BLOS_101224170_AktarEUs.pdf"
+    },
+    {
+     "path": "edf/02ca40f5-e0c1-40c5-8bd0-198e0b4ed06e_en.pdf",
+     "sha256": "66c50dc98d59388b7bdde9c65782b246ce3561f43ca167bed1dbfa2b84418775",
+     "bytes": 299182,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/02ca40f5-e0c1-40c5-8bd0-198e0b4ed06e_en?filename=FACTSHEET_EDF_2024_DA_GROUND_UGS_STEP_101223988_iMUGS2.pdf"
+    },
+    {
+     "path": "edf/03e32b31-8fd5-47a1-9f6f-43b01b39d38f_en.pdf",
+     "sha256": "a133139443a15da70190fe6bd5e5166f9341cc9940e0e3dcb7926b747db4a0f0",
+     "bytes": 283324,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/03e32b31-8fd5-47a1-9f6f-43b01b39d38f_en?filename=Factsheet_EDF21_NAUCRATES.pdf"
+    },
+    {
+     "path": "edf/047f5f44-e73d-425b-a0cf-56fd866f596c_en.pdf",
+     "sha256": "3d7351d2a2d71e3bec5ac10e56a92b2e8b8236366bc590236dfe875a1ab00263",
+     "bytes": 556564,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/047f5f44-e73d-425b-a0cf-56fd866f596c_en?filename=EDF-2023-LS-RA-CHALLENGE-DIGIT-HLTP_LINGUARISE-DC.pdf"
+    },
+    {
+     "path": "edf/04ead0c7-bfca-49fe-9800-bfdd565242df_en.pdf",
+     "sha256": "6b2ad53c025b8ad6cab07e84b3441ab95861bf13ec535438557b05547553d6eb",
+     "bytes": 530911,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/04ead0c7-bfca-49fe-9800-bfdd565242df_en?filename=Factsheet_EDF21_iFURTHER_1.pdf"
+    },
+    {
+     "path": "edf/0706cd20-9916-4b2d-b81d-c9f26af21677_en.pdf",
+     "sha256": "292437c4adf77aaf2725bf1b49322b0bf5253a87e91fd989a91aa26da6349772",
+     "bytes": 371003,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/0706cd20-9916-4b2d-b81d-c9f26af21677_en?filename=REACTS-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/08cc3dee-a4a1-48de-80d4-cd97f122babe_en.pdf",
+     "sha256": "31abd950245fd621646569546d252e326cb067ce00a0288800d0d43070edd64f",
+     "bytes": 351422,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/08cc3dee-a4a1-48de-80d4-cd97f122babe_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_NT_101224494_NEUROQUAD.pdf"
+    },
+    {
+     "path": "edf/097a6a49-7604-453d-a674-1fcd13f1d90e_en.pdf",
+     "sha256": "08bebda83a8cbee33b1445c33fd4fc79a6bd057ff45da4c8373e58cfbd32012e",
+     "bytes": 362279,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/097a6a49-7604-453d-a674-1fcd13f1d90e_en?filename=iMEDCAP-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/097e186d-2511-4abe-8d1d-fd3799fcf301_en.pdf",
+     "sha256": "d010ea1aa6cb95ef9cca136488a5caf3fac6d89362ac527f133d2482b6f4a038",
+     "bytes": 348588,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/097e186d-2511-4abe-8d1d-fd3799fcf301_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224140_SENTINEL.pdf"
+    },
+    {
+     "path": "edf/09cedfb0-8beb-432a-aa80-a35f66fe06fd_en.pdf",
+     "sha256": "d2bfce9744a3ce84d6ed94fa60ef39610be524a752f113926f0ebe3dda2bb362",
+     "bytes": 309479,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/09cedfb0-8beb-432a-aa80-a35f66fe06fd_en?filename=FACTSHEET_EDF_2024_DA_AIR_NGRT_101224727_ENGRT_II.pdf"
+    },
+    {
+     "path": "edf/0b7d71d9-a4bb-4148-991a-2d15db0db957_en.pdf",
+     "sha256": "2ec3d65c474c1f5edbe2f121476f706586932586a906aa629de0d59f45aed0c1",
+     "bytes": 362479,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/0b7d71d9-a4bb-4148-991a-2d15db0db957_en?filename=STORE-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/0cd01460-b893-4d7f-8fe6-98580d94e46f_en.pdf",
+     "sha256": "18446a05ca4591eb24ec666f332ab63617eaffa19ebbe0279d22a7b8db0c5b9e",
+     "bytes": 685931,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/0cd01460-b893-4d7f-8fe6-98580d94e46f_en?filename=Factsheet_EDF21_Facelift.pdf"
+    },
+    {
+     "path": "edf/0e5917eb-3e04-421e-a010-bfb0b2d4c5bf_en.pdf",
+     "sha256": "52b2512a0aa3ca513b5569b88d6d582a4b42a2fa9fba216b626980e4e1246294",
+     "bytes": 333773,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/0e5917eb-3e04-421e-a010-bfb0b2d4c5bf_en?filename=FACTSHEET_EDF_2024_DA_C4ISR_AIMA_STEP_101224193_AI_WASP.pdf"
+    },
+    {
+     "path": "edf/0eb14cfb-6ae1-4b32-b069-7aa21a091872_en.pdf",
+     "sha256": "5c5c61249d70fc9caced07444db1d938cd75efa7b8dac1637ba10608fafc8ea5",
+     "bytes": 350276,
+     "url": "urn:mandate:capital:raw/edf/0eb14cfb-6ae1-4b32-b069-7aa21a091872_en.pdf"
+    },
+    {
+     "path": "edf/0f13f14d-89c5-427a-8b08-81295bb54d1e_en.pdf",
+     "sha256": "200c7686120d1311f933c2db82b0ec8239f2dae412783852af685ba5fd35b05c",
+     "bytes": 364570,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/0f13f14d-89c5-427a-8b08-81295bb54d1e_en?filename=EDF-2023-LS-RA-SMERO-NT%20CATHERINA.pdf"
+    },
+    {
+     "path": "edf/0fa499b2-c07f-484b-ad0c-d41c58c73826_en.pdf",
+     "sha256": "91464e7e694ef4f69d85eab2102175f3d71888769275f7238fafcccb73d20fcd",
+     "bytes": 447287,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/0fa499b2-c07f-484b-ad0c-d41c58c73826_en?filename=Factsheet_EDF21_ABITS.pdf"
+    },
+    {
+     "path": "edf/103a9c46-7f31-4e73-932c-a91559dea436_en.pdf",
+     "sha256": "1f517633b9c1aa9dfc110f9206827f6207890652b7a21e777f67b2e40dfdbf2c",
+     "bytes": 760843,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/103a9c46-7f31-4e73-932c-a91559dea436_en?filename=Factsheet_EDF21_dTHOR.pdf"
+    },
+    {
+     "path": "edf/15e0400c-8cb6-47b5-9924-f67e0ed4fce8_en.pdf",
+     "sha256": "270be3dc3bc26781888310e06429cfefa8832527b299a347b4b5d52b9779fe39",
+     "bytes": 278039,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/15e0400c-8cb6-47b5-9924-f67e0ed4fce8_en?filename=Factsheet_EDF21_HEROIC.pdf"
+    },
+    {
+     "path": "edf/174a2e88-f09d-4183-ad79-27bf1c3940c0_en.pdf",
+     "sha256": "a06065ab9c3032cf172fbc37d1a7e0091af16e6be2b2d0b9a7495f0c1b1abf73",
+     "bytes": 414027,
+     "url": "urn:mandate:capital:raw/edf/174a2e88-f09d-4183-ad79-27bf1c3940c0_en.pdf"
+    },
+    {
+     "path": "edf/178862ee-14e0-4707-a140-690c4cf3ae54_en.pdf",
+     "sha256": "45dee7529deb875b46d1bb4d6ab12100d67273e7e3d85871cfdddbe3b5acbe2b",
+     "bytes": 523147,
+     "url": "urn:mandate:capital:raw/edf/178862ee-14e0-4707-a140-690c4cf3ae54_en.pdf"
+    },
+    {
+     "path": "edf/1823f318-d667-41a3-9b59-0c3117ecc198_en.pdf",
+     "sha256": "2b8b78b43aa569822ac1a2541fe48b118183101dfe81e88fe7d0a8c59a3f65b4",
+     "bytes": 350449,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/1823f318-d667-41a3-9b59-0c3117ecc198_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_NT_101224711_INNOSWAMP.pdf"
+    },
+    {
+     "path": "edf/1a7f7e58-4e44-442a-804f-5f40f416631d_en.pdf",
+     "sha256": "c12fe24e6f1b161a659eb0e43b9fc1481cadddcf567836e1066164c8bb8ce0aa",
+     "bytes": 613951,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/1a7f7e58-4e44-442a-804f-5f40f416631d_en?filename=Factsheet_EDF21_AMLTD.pdf"
+    },
+    {
+     "path": "edf/1c937b0b-82e1-4177-9e92-81e54ba70286_en.pdf",
+     "sha256": "bd689728d8da94d68f934402ad25c8976fe16d4fa04434a76ca27e569fcec19f",
+     "bytes": 508669,
+     "url": "urn:mandate:capital:raw/edf/1c937b0b-82e1-4177-9e92-81e54ba70286_en.pdf"
+    },
+    {
+     "path": "edf/1d94605e-73c7-415e-9d19-bb77bd4327c2_en.pdf",
+     "sha256": "c6afb039c0db6613379c02c5b2ace3326e4580f25e6142ad002b95d9f335fce1",
+     "bytes": 508771,
+     "url": "urn:mandate:capital:raw/edf/1d94605e-73c7-415e-9d19-bb77bd4327c2_en.pdf"
+    },
+    {
+     "path": "edf/1de67ba4-237d-4638-b204-a86d59e6d213_en.pdf",
+     "sha256": "4b79b2e39af1b93ea68376dfdcb2db741ae9c02d9296e9e325cf05ab760c87d5",
+     "bytes": 448471,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/1de67ba4-237d-4638-b204-a86d59e6d213_en?filename=Factsheet_EDF21_MOSAIC_updated.pdf"
+    },
+    {
+     "path": "edf/1fe636e3-b83c-477c-bf04-63d1feb3749b_en.pdf",
+     "sha256": "e1d7a05a760dd4fd20899e62f1bd821eea0bd026399ee6b298697e9ccf571991",
+     "bytes": 363843,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/1fe636e3-b83c-477c-bf04-63d1feb3749b_en?filename=EDF-2023-LS-RA-SMERO-NT%20DEMETHRA.pdf"
+    },
+    {
+     "path": "edf/20650702-8a82-4322-bdbc-73de4e3641d8_en.pdf",
+     "sha256": "748baed21c6c8e71c254cb34d36cd639e88ccf54a45dbdbaf69f60fb7d22c71c",
+     "bytes": 363351,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/20650702-8a82-4322-bdbc-73de4e3641d8_en?filename=FACTSHEET_EDF-2023-LS-RA-DIS-NT_101168008_ACTOR%20v2.pdf"
+    },
+    {
+     "path": "edf/20a428ff-f91b-4984-81c3-c5c0aba97b12_en.pdf",
+     "sha256": "db45872d069f5a68edfe0d14eaff00baf9f704636110772c5f23e54db6916de0",
+     "bytes": 405373,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/20a428ff-f91b-4984-81c3-c5c0aba97b12_en?filename=FACTSHEET_EDF_2024_DA_SPACE_EPW_STEP_101224684_EDF2024_EPW_Phase2.pdf"
+    },
+    {
+     "path": "edf/21d5a469-c47f-4684-8ece-eaff846e2d25_en.pdf",
+     "sha256": "14e336191d1fe66c4b8e46c9d80bb18ba74a827779ae0004a554acd5ce089986",
+     "bytes": 351749,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/21d5a469-c47f-4684-8ece-eaff846e2d25_en?filename=FACTSHEET_EDF_2024_DA_C4ISR_SEEU_STEP_101224328_Small_UAS.pdf"
+    },
+    {
+     "path": "edf/220ebc37-cbd0-466f-98c4-744f1f44172f_en.pdf",
+     "sha256": "c064e28736392ce6904a7c7f7c4cbc5e928d1dec95e7ba46525c1f671e5d8564",
+     "bytes": 360191,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/220ebc37-cbd0-466f-98c4-744f1f44172f_en?filename=EPICURE%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/22b8a545-6c55-4e01-b109-f285c85245dc_en.pdf",
+     "sha256": "47634af406ac20fd2eeb8544f33a3979028d4822f643b93b1d00b1e643c0a392",
+     "bytes": 349279,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/22b8a545-6c55-4e01-b109-f285c85245dc_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SENS_RADNP_101224078_SWARMER.pdf"
+    },
+    {
+     "path": "edf/2323e186-afd1-43e8-860a-4c910563a680_en.pdf",
+     "sha256": "f1b2c61080a53b1e21b4be501b2d38839e9a3242d149885cdf7789bccb0f97a6",
+     "bytes": 368288,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2323e186-afd1-43e8-860a-4c910563a680_en?filename=FEDERATES%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/23947d22-222b-4749-a82b-604858338a9c_en.pdf",
+     "sha256": "ab4454d1e18792c86b187cee835fb9dd584ce24bd14471d06a87571e019245c8",
+     "bytes": 389308,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/23947d22-222b-4749-a82b-604858338a9c_en?filename=EDF-2023-RA-SI-ENERENV-IPS%20CALIPSO.pdf"
+    },
+    {
+     "path": "edf/23f7f764-56c3-4ef5-a17c-575a2b84eef5_en.pdf",
+     "sha256": "4d2b8e73571202e5976907559f1fc6acc92d9082a4deeb5e5e44c50da9803828",
+     "bytes": 354594,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/23f7f764-56c3-4ef5-a17c-575a2b84eef5_en?filename=SILENT-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/23f871ca-2033-48e0-bce8-4f3fe21ac42a_en.pdf",
+     "sha256": "a79261dea470b6d57d0e708a25336a2f8d1aa7526daa551245d6eb6dfadbb281",
+     "bytes": 380619,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/23f871ca-2033-48e0-bce8-4f3fe21ac42a_en?filename=THEMA%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/26791634-5eeb-478e-8bbc-f28622b582f0_en.pdf",
+     "sha256": "7b1b9ee2eab884bfce14b0c223de766f9489ee4112cd6f1c5bc7d500b92f3d04",
+     "bytes": 402978,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/26791634-5eeb-478e-8bbc-f28622b582f0_en?filename=FACTSHEET_EDF_2024_DA_C4ISR_COMS_STEP_101218568_5G_COMPAD_2_0.pdf"
+    },
+    {
+     "path": "edf/26ce99f9-f8b7-449f-ae3d-d9dd0e120cb5_en.pdf",
+     "sha256": "3942bef4c0395b1bf47d9ccfffc8eb7502ab3a78ca2bdc4be2fb2b3bc67fbea4",
+     "bytes": 349826,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/26ce99f9-f8b7-449f-ae3d-d9dd0e120cb5_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_NT_101223974_METASTEALTH.pdf"
+    },
+    {
+     "path": "edf/278a9820-d0a9-4303-89f2-293b633300e9_en.pdf",
+     "sha256": "c8e83f510fe00fe56ffa654a43a7c700c9055bf1e13a4488fdf7e550cd0b2e17",
+     "bytes": 508696,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/278a9820-d0a9-4303-89f2-293b633300e9_en?filename=Factsheet_EDF21_HEGAPS.pdf"
+    },
+    {
+     "path": "edf/279dc793-3104-4bf1-8b12-3376c7a8e1b0_en.pdf",
+     "sha256": "572e6b286af6bbb877e5d81cebe944947ef81be1d3b10bcecc6fcc76cd4f1418",
+     "bytes": 459718,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/279dc793-3104-4bf1-8b12-3376c7a8e1b0_en?filename=Factsheet_EDF21_COUNTERACT.pdf"
+    },
+    {
+     "path": "edf/28823c44-775d-4b67-a25d-cbd48013ec26_en.pdf",
+     "sha256": "5de0f2fadc1316f69433503fe229c908e59c626177a4133b8bd3933f96c9062c",
+     "bytes": 394373,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/28823c44-775d-4b67-a25d-cbd48013ec26_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_NT_101224587_ABBOT.pdf"
+    },
+    {
+     "path": "edf/2a10a36d-5e42-432e-bb06-ebc690797abe_en.pdf",
+     "sha256": "66447b28739a53d317d73bc7976705bac9e0e9449329946dd03788568e9803d7",
+     "bytes": 361087,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2a10a36d-5e42-432e-bb06-ebc690797abe_en?filename=FACT%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/2b093e47-fcdc-4682-bd86-00ad843eb3ff_en.pdf",
+     "sha256": "50f2aab5ff298a74df555e3096278add5ed39f5f88e8605164549b43702fa14a",
+     "bytes": 361805,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2b093e47-fcdc-4682-bd86-00ad843eb3ff_en?filename=NEWSROOM-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/2b8899d9-ee74-41a0-becb-bbe00c39f0bc_en.pdf",
+     "sha256": "9c9e22fb73c918c0ab0c80ab0374f51298ee69df7ab930d949d953352f5a62df",
+     "bytes": 415319,
+     "url": "urn:mandate:capital:raw/edf/2b8899d9-ee74-41a0-becb-bbe00c39f0bc_en.pdf"
+    },
+    {
+     "path": "edf/2bc14163-d21d-4032-8a3f-03cabe10cdc9_en.pdf",
+     "sha256": "710653510dcbc03c83787103da73a045245e03337d0f50f7cbe26f8d31a49d96",
+     "bytes": 752722,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2bc14163-d21d-4032-8a3f-03cabe10cdc9_en?filename=Factsheet_EDF21_Navguard.pdf"
+    },
+    {
+     "path": "edf/2bef50c6-7ba9-4f18-938d-074897105f0d_en.pdf",
+     "sha256": "6eef7ea07f64800aa773a6e57e14ede41fc5301554bcc08345fd073d785c3eb9",
+     "bytes": 389691,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2bef50c6-7ba9-4f18-938d-074897105f0d_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224292_LUCID.pdf"
+    },
+    {
+     "path": "edf/2d480392-f067-4f83-b3dc-1870d3b78488_en.pdf",
+     "sha256": "6f3466f283370c0cd57d9e7c9c7024b04a841244235d3e971fa113fea7add7f4",
+     "bytes": 351741,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2d480392-f067-4f83-b3dc-1870d3b78488_en?filename=HARTROID-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/2d7c0e41-1e37-49c4-b28d-96a4808141fa_en.pdf",
+     "sha256": "05615759d3d50a6d72a922a46572d9d286d97a6ac01cc0979cb4395c59d6647f",
+     "bytes": 456402,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2d7c0e41-1e37-49c4-b28d-96a4808141fa_en?filename=EDF-2023-LS-RA-CHALLENGE-DIGIT-HLTP_AtLaS.pdf"
+    },
+    {
+     "path": "edf/2d7e501e-39c3-4473-88f8-f292153f04ec_en.pdf",
+     "sha256": "db32aa30e071d0b5cb9249d99bbae4af3424e593fbe33267336aef2deef0878e",
+     "bytes": 411934,
+     "url": "urn:mandate:capital:raw/edf/2d7e501e-39c3-4473-88f8-f292153f04ec_en.pdf"
+    },
+    {
+     "path": "edf/2d989e09-4948-4adc-a3a2-ec74810f693a_en.pdf",
+     "sha256": "f837e39903e8dd582da4ce8eccfdec70b409ae2d28e55531ed85bf895689e13b",
+     "bytes": 423437,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2d989e09-4948-4adc-a3a2-ec74810f693a_en?filename=EDF-2023-LS-DA-SME-NT%20BATTLEPAD.pdf"
+    },
+    {
+     "path": "edf/2e44dd94-c5a4-488e-b667-ca0bbdcfd110_en.pdf",
+     "sha256": "be301b7b917ab8dcaa074c91cb9f0cc07bfb3a486781f1ecc0dbd794efd0e403",
+     "bytes": 419928,
+     "url": "urn:mandate:capital:raw/edf/2e44dd94-c5a4-488e-b667-ca0bbdcfd110_en.pdf"
+    },
+    {
+     "path": "edf/2f9fe454-324a-4c29-a3df-0864d73b7c45_en.pdf",
+     "sha256": "1362e14bfe5b3488bec7c613a1b6cbfc697f054c1b13ce9c38dec701bfdf70e8",
+     "bytes": 363559,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/2f9fe454-324a-4c29-a3df-0864d73b7c45_en?filename=SWAT-SHOAL-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/300a3ad2-dd03-4f4d-9639-187fbee10850_en.pdf",
+     "sha256": "d36cda432b35f27624d5314564cd347ded85698f5187603a335bbaec44326596",
+     "bytes": 412952,
+     "url": "urn:mandate:capital:raw/edf/300a3ad2-dd03-4f4d-9639-187fbee10850_en.pdf"
+    },
+    {
+     "path": "edf/31923d3d-7ec7-4389-bc76-97d35e459f5c_en.pdf",
+     "sha256": "b8a3fac6d96fa86af4493cc4fea1c8ff611429d4ccdea557f257697fdc821776",
+     "bytes": 353459,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/31923d3d-7ec7-4389-bc76-97d35e459f5c_en?filename=TDRIC-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/319ceeab-2851-4419-b491-b42c7a9a64d8_en.pdf",
+     "sha256": "531233713b2243d54302fa64c2c1aeb6e0d0271b885324761ba5e73c54c0cd41",
+     "bytes": 357283,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/319ceeab-2851-4419-b491-b42c7a9a64d8_en?filename=PROTEAS-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/3211576e-184f-421b-ab2a-c11cbde0a092_en.pdf",
+     "sha256": "a5d5978188bba2c9f50863be3b6510681d8748a0cf367a189f62fed6af6c27ff",
+     "bytes": 354273,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3211576e-184f-421b-ab2a-c11cbde0a092_en?filename=UTILE%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/32604a9c-bffa-48ce-905e-86b320b81446_en.pdf",
+     "sha256": "5794938b7f7a69d9801edcd4c95445c212d5965d274172d4716f90b5cf01df14",
+     "bytes": 470908,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/32604a9c-bffa-48ce-905e-86b320b81446_en?filename=EDF-2023-DA-UWW-ASW%20SEACURE.pdf"
+    },
+    {
+     "path": "edf/32c7c73a-d6f6-4209-ae69-c19d23a53def_en.pdf",
+     "sha256": "e44d0a7d755f2390c18dd26ba5d72edf0d5266177aa3d424f09ff11b0f6b7904",
+     "bytes": 326674,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/32c7c73a-d6f6-4209-ae69-c19d23a53def_en?filename=Factsheet_EDF21_HIDRA.pdf"
+    },
+    {
+     "path": "edf/335b8017-1887-4dd8-91de-72d629964094_en.pdf",
+     "sha256": "0e7f0b9b984335bba0e89e3d9dd423c3cbb8d96f206644dd2f0e567ecb13e531",
+     "bytes": 513801,
+     "url": "urn:mandate:capital:raw/edf/335b8017-1887-4dd8-91de-72d629964094_en.pdf"
+    },
+    {
+     "path": "edf/3450637f-33bd-40a9-acdf-4734e338db44_en.pdf",
+     "sha256": "38feb897197f7d19966a99a1948d93ab826d7c4fe47cdab199cb7d65fdcbdd87",
+     "bytes": 364775,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3450637f-33bd-40a9-acdf-4734e338db44_en?filename=EDF-2023-LS-RA-SMERO-NT%20OPERANT.pdf"
+    },
+    {
+     "path": "edf/34f76263-5d2f-4389-b565-1090573ae6f8_en.pdf",
+     "sha256": "993238c90a548ef632320b6ee4a5132874f81c52b6a69c06ccb68661c8b5d9b4",
+     "bytes": 422463,
+     "url": "urn:mandate:capital:raw/edf/34f76263-5d2f-4389-b565-1090573ae6f8_en.pdf"
+    },
+    {
+     "path": "edf/35e43911-a53b-4284-b52d-1fb810a010dc_en.pdf",
+     "sha256": "64a8ddc15e05400ded89dae5f1ae63dff7a452a125edc30a3279c785d659e0e0",
+     "bytes": 482730,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/35e43911-a53b-4284-b52d-1fb810a010dc_en?filename=Factsheet_EDF21_EuroHAPS.pdf"
+    },
+    {
+     "path": "edf/35ffd338-b7b8-4f74-acfb-fad9383d4271_en.pdf",
+     "sha256": "b7c9eba66c990819178052fc48da0ecf64f23c971172fd8fde7cc047930dac0e",
+     "bytes": 359222,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/35ffd338-b7b8-4f74-acfb-fad9383d4271_en?filename=FACTSHEET_EDF_2024_RA_AIR_AAM_101224302_BEAST.pdf"
+    },
+    {
+     "path": "edf/37439eaf-8092-4e5b-ba7d-216ec4fa891b_en.pdf",
+     "sha256": "73b65c0ffd2cf73714b34cb4f572c16c9c7a92134cf507956eaa92e1cd7eb44c",
+     "bytes": 424897,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/37439eaf-8092-4e5b-ba7d-216ec4fa891b_en?filename=EDF-2023-DA-GROUND-MBT%20FMBTech.pdf"
+    },
+    {
+     "path": "edf/37bfe3da-4f35-450f-bdff-229bdedc3d7b_en.pdf",
+     "sha256": "b251c1b7e25c19725237ba88a1a00c0eab401922dc22f6a002acecadf5861c7e",
+     "bytes": 421111,
+     "url": "urn:mandate:capital:raw/edf/37bfe3da-4f35-450f-bdff-229bdedc3d7b_en.pdf"
+    },
+    {
+     "path": "edf/38a4b892-16da-4c6f-909e-6cc544ebb180_en.pdf",
+     "sha256": "52faaab2b22af1805aff2666dc47173bf5ebb37c40fcdbc763015b2cb8304e5d",
+     "bytes": 348717,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/38a4b892-16da-4c6f-909e-6cc544ebb180_en?filename=FACTSHEET_EDF_2024_LS_DA_SME_NT_101224266_COP_GPT.pdf"
+    },
+    {
+     "path": "edf/3948c891-f16f-428e-a4c0-f4c7763d2c88_en.pdf",
+     "sha256": "470eec866dee159994432459d07549a0d1e86027ed7378c9d939d323c028eb63",
+     "bytes": 420601,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3948c891-f16f-428e-a4c0-f4c7763d2c88_en?filename=EDF-2023-DA-NAVAL-MMPC%20EPC2.pdf"
+    },
+    {
+     "path": "edf/3a04b04c-5e3f-4fef-a122-7060599ba884_en.pdf",
+     "sha256": "180be445400e9c92291cb4d0ddf311b5391317856a7ddbfb7ab7a5c01b5f762f",
+     "bytes": 424611,
+     "url": "urn:mandate:capital:raw/edf/3a04b04c-5e3f-4fef-a122-7060599ba884_en.pdf"
+    },
+    {
+     "path": "edf/3a7173aa-b1b4-42dc-804e-a5bea98e9daf_en.pdf",
+     "sha256": "62bb637b12d3faecfdaf7a01711a1c69435eac5abf99ac5a18320027a5a7477f",
+     "bytes": 348558,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3a7173aa-b1b4-42dc-804e-a5bea98e9daf_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224513_IRONPLAN.pdf"
+    },
+    {
+     "path": "edf/3b14368d-4e96-46cf-ad22-dbfd1d74560e_en.pdf",
+     "sha256": "2537cc22aa4ba19fd32e63323bb8ab6ffce31fef871adcdf7855d00b4c34243f",
+     "bytes": 413702,
+     "url": "urn:mandate:capital:raw/edf/3b14368d-4e96-46cf-ad22-dbfd1d74560e_en.pdf"
+    },
+    {
+     "path": "edf/3b181182-25f5-43bc-9190-f68ddfb769a1_en.pdf",
+     "sha256": "7f350ee2d7a14d2a376e0815266c6dc4b55d7ea4a99ea88fd106252623a6049a",
+     "bytes": 404817,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3b181182-25f5-43bc-9190-f68ddfb769a1_en?filename=EDF-2023-LS-RA-SMERO-NT%20RAPTOR.pdf"
+    },
+    {
+     "path": "edf/3b6fc33a-f902-4f98-9ae3-02b0018d2ffc_en.pdf",
+     "sha256": "b56de25750df431dbafed947c2fb7ea13ae63502ef118631e783b3060e99998e",
+     "bytes": 239213,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3b6fc33a-f902-4f98-9ae3-02b0018d2ffc_en?filename=Factsheet_EDF21_RFSHIELD.pdf"
+    },
+    {
+     "path": "edf/3bb03680-d415-47a7-a470-3e0a781a298a_en.pdf",
+     "sha256": "2af7423cae54f27885a958baad9adf0a4fe59a7eba04e68d72f2781f6e37c38d",
+     "bytes": 370834,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3bb03680-d415-47a7-a470-3e0a781a298a_en?filename=FACTSHEET_EDF_2024_DA_ENERENV_EEMC_STEP_101224400_SENTINEL.pdf"
+    },
+    {
+     "path": "edf/3cea0490-a702-4c8f-81fd-a7ec3256b55a_en.pdf",
+     "sha256": "55e626241c4f07cded2549c1bbb3f850bf6693c3c2d822938cd533665725aa7f",
+     "bytes": 352005,
+     "url": "urn:mandate:capital:raw/edf/3cea0490-a702-4c8f-81fd-a7ec3256b55a_en.pdf"
+    },
+    {
+     "path": "edf/3d68b47d-ec70-4258-bfb8-9198cbfa1c14_en.pdf",
+     "sha256": "6a621f5ca44313989436cd7f07bcd2191992d4bffc9d78ab94d6e79bdcc8b4fd",
+     "bytes": 240061,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3d68b47d-ec70-4258-bfb8-9198cbfa1c14_en?filename=Factsheet_EDF21_P2P-FSO.pdf"
+    },
+    {
+     "path": "edf/3d798e87-bdc4-4c89-9992-dc6db5d38d89_en.pdf",
+     "sha256": "5511201904bd816516c5faac48cd6d371c261e1a9cf3e93623b403a602d7560f",
+     "bytes": 457059,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3d798e87-bdc4-4c89-9992-dc6db5d38d89_en?filename=EDF-2023-LS-RA-DIS-NT%20LACE.pdf"
+    },
+    {
+     "path": "edf/3d80aee3-404c-4207-b8fa-5df7310668e1_en.pdf",
+     "sha256": "8b80fd2d3d81dcfb2a32f210fb3e682499d8d32b8b512ac1f581212171385200",
+     "bytes": 370518,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3d80aee3-404c-4207-b8fa-5df7310668e1_en?filename=ODINS%27EYE%20II-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/3e931535-0850-42dd-89d6-320df5f1b597_en.pdf",
+     "sha256": "d8f3bda13f1d7b059cca73befb64f6714d8f227fd340326940ed0fb2446b55af",
+     "bytes": 411102,
+     "url": "urn:mandate:capital:raw/edf/3e931535-0850-42dd-89d6-320df5f1b597_en.pdf"
+    },
+    {
+     "path": "edf/3fa31a57-b327-483c-a660-f96190170a7a_en.pdf",
+     "sha256": "8c07b23cc2b4e1f36536119c517925c3ed87bab984a3cf6b47fe96e6af4e86e6",
+     "bytes": 355087,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/3fa31a57-b327-483c-a660-f96190170a7a_en?filename=CONVOY%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/40839282-e025-4822-890a-712a5d77681c_en.pdf",
+     "sha256": "0b2a0fe253defb6c89298bfd5e138ebdd4ea7707e35cda7eee62942736bcc5dd",
+     "bytes": 274195,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/40839282-e025-4822-890a-712a5d77681c_en?filename=Factsheet_EDF21_SMiEQ.pdf"
+    },
+    {
+     "path": "edf/4099245e-8d77-4d12-95fb-271cb907f681_en.pdf",
+     "sha256": "ed273a506f3ed4bff2be6afee6ea54bef66e0ff71ef2b5dfa7d824478cb411a1",
+     "bytes": 496528,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4099245e-8d77-4d12-95fb-271cb907f681_en?filename=Factsheet_EDF21_ALADAN_0.pdf"
+    },
+    {
+     "path": "edf/4292fe70-0b0f-4376-81fd-21509b6ea641_en.pdf",
+     "sha256": "e13fdb35c4f2a25135a1837b83289f3eabc0a8ef7a70edb9de3465507eac058f",
+     "bytes": 459198,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4292fe70-0b0f-4376-81fd-21509b6ea641_en?filename=Factsheet_EDF21_EDINAF.pdf"
+    },
+    {
+     "path": "edf/42c6fa4f-1235-42c0-abc5-359ac0cf560c_en.pdf",
+     "sha256": "b3a90cb59d148664f97d4e42f2845b57d6dd8a2008d1657b24c6edadd97e89d5",
+     "bytes": 509571,
+     "url": "urn:mandate:capital:raw/edf/42c6fa4f-1235-42c0-abc5-359ac0cf560c_en.pdf"
+    },
+    {
+     "path": "edf/443418e0-eaa1-4f39-863b-64d35bd2ba48_en.pdf",
+     "sha256": "98e51e2936d5d36fc080adba4ea26ba6bd70d8024e295bad1bf2fba6f21ba7d4",
+     "bytes": 365267,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/443418e0-eaa1-4f39-863b-64d35bd2ba48_en?filename=FACTSHEET_EDF-2023-LS-RA-SMERO-NT_101168119_ZEROWASTE%20v2_0.pdf"
+    },
+    {
+     "path": "edf/44b52bbc-353a-4b29-bac7-3ffa3e9489fc_en.pdf",
+     "sha256": "5222d816bff913e2ca4b090890d8be46aa1d45ce212c97c6dcaa32a10981bf67",
+     "bytes": 397949,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/44b52bbc-353a-4b29-bac7-3ffa3e9489fc_en?filename=RESILIENCE%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/46d901f0-5011-4157-b235-3be62519f735_en.pdf",
+     "sha256": "d7aed2c4454e3624cb7256d351c0abfbaed9315e6e7622c1a4f3031a36ea710a",
+     "bytes": 419623,
+     "url": "urn:mandate:capital:raw/edf/46d901f0-5011-4157-b235-3be62519f735_en.pdf"
+    },
+    {
+     "path": "edf/4750730e-a4bb-4bc2-b31e-16c62a75aa1a_en.pdf",
+     "sha256": "74726d4d8800e26c8da6c8b5e01757769098b955cca14ede92a87f7d60ad2479",
+     "bytes": 469200,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4750730e-a4bb-4bc2-b31e-16c62a75aa1a_en?filename=EDF-2023-_DA-MCBRN-FCS%20CBRN%20SoS.pdf"
+    },
+    {
+     "path": "edf/4883304e-4d42-4c69-8ecc-388159cb1b1d_en.pdf",
+     "sha256": "7d4db8754cbeb92d76f38c5fa0ee5d40eeaf749f2a66ab0e8485298045222ebe",
+     "bytes": 361943,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4883304e-4d42-4c69-8ecc-388159cb1b1d_en?filename=FACTSHEET_EDF-2023-LS-DA-SME-NT_101168111_MPortISTAR.pdf"
+    },
+    {
+     "path": "edf/4944cccc-e783-45c5-8300-9dd9d2798c7b_en.pdf",
+     "sha256": "2e69637fe7c39e16e2d9a311b18fd588b1a5083306b7b38c1a107a2aca53a4bf",
+     "bytes": 413608,
+     "url": "urn:mandate:capital:raw/edf/4944cccc-e783-45c5-8300-9dd9d2798c7b_en.pdf"
+    },
+    {
+     "path": "edf/49c57e3c-e1ca-475c-8012-760cc8ab8ee9_en.pdf",
+     "sha256": "ed30e963081501805d4d745d2c0e9429a3d06990f4abfe1a736532db2018d1a3",
+     "bytes": 374907,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/49c57e3c-e1ca-475c-8012-760cc8ab8ee9_en?filename=EDF-2023-LS-RA-SMERO-NT%20AVALON.pdf"
+    },
+    {
+     "path": "edf/4ad05af1-5bee-4412-84bc-7e616f7777f8_en.pdf",
+     "sha256": "cf9ed3ef991fe18280328e116c57164a644b1498da9d17033e416b2557ba8394",
+     "bytes": 2186824,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4ad05af1-5bee-4412-84bc-7e616f7777f8_en?filename=EDF-2023-DA-C4ISR-DAA%20EUDAAS2.pdf"
+    },
+    {
+     "path": "edf/4c5b6405-d0fa-4f9d-8d10-8f939b29c298_en.pdf",
+     "sha256": "96f3da207acee1ebc8b155d4f0d2aec8512c3aa53e1bdad381338298bc92bdf0",
+     "bytes": 415949,
+     "url": "urn:mandate:capital:raw/edf/4c5b6405-d0fa-4f9d-8d10-8f939b29c298_en.pdf"
+    },
+    {
+     "path": "edf/4ce1a6be-64db-4361-9010-8b7860bbd996_en.pdf",
+     "sha256": "157484790f084acfe6eaea9f1118e733ece973bd0d015231435051a12ce6bfba",
+     "bytes": 453560,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4ce1a6be-64db-4361-9010-8b7860bbd996_en?filename=Factsheet_EDF21_EU%20HYDEF.pdf"
+    },
+    {
+     "path": "edf/4d259b13-17b4-4cea-a08c-c9749f9fa0a4_en.pdf",
+     "sha256": "9b4f6566e3d0e194aa71146e6ffd5f1feba95d424e5b7fd624fbc0d36fdf06c9",
+     "bytes": 520717,
+     "url": "urn:mandate:capital:raw/edf/4d259b13-17b4-4cea-a08c-c9749f9fa0a4_en.pdf"
+    },
+    {
+     "path": "edf/4ec0808c-6771-4f17-a2ed-71968674e92f_en.pdf",
+     "sha256": "dd4f8afdbfee594649a9d76d05ec375335c9c0261795e09f97d3ca703ecb9477",
+     "bytes": 362326,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4ec0808c-6771-4f17-a2ed-71968674e92f_en?filename=EC2%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/4ec0d9ca-69d0-4a9b-9203-9aef4e1a049f_en.pdf",
+     "sha256": "bba88762df9a94007fb508478504df57769fd72d39ae7b71707e3e54a9b2fe69",
+     "bytes": 354384,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4ec0d9ca-69d0-4a9b-9203-9aef4e1a049f_en?filename=PASITHEA-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/4eea87e8-b5a2-4cc2-8f3a-4050ea7dd196_en.pdf",
+     "sha256": "875187da7773a867666bc0a9fdc828048878790ea8571e003ce2da1fbb094f28",
+     "bytes": 553705,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4eea87e8-b5a2-4cc2-8f3a-4050ea7dd196_en?filename=Factsheet_EDF21_Nano-SHIELD.pdf"
+    },
+    {
+     "path": "edf/4f5d31b7-5387-4713-9af4-399861f1fd7c_en.pdf",
+     "sha256": "50cfc7559d775947a1fdfaa7014bf9588f6c4865e1c31ae084e31f1b0812ae50",
+     "bytes": 278399,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/4f5d31b7-5387-4713-9af4-399861f1fd7c_en?filename=Factsheet_EDF21_POWERFLEX.pdf"
+    },
+    {
+     "path": "edf/51d4ed6c-1b82-4252-8cd7-f156800e6b4f_en.pdf",
+     "sha256": "dfd5deceb7b0691cb43cf799c5e4e906bfd0760fc8f0124580eb85e37e812732",
+     "bytes": 471754,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/51d4ed6c-1b82-4252-8cd7-f156800e6b4f_en?filename=Factsheet_EDF21_IntSen2_updated.pdf"
+    },
+    {
+     "path": "edf/52dffe47-79f8-453f-b234-6dca72ac1b11_en.pdf",
+     "sha256": "862d117420a4ccbb11fc568c55662106ff5e941272d2a92ad0c476d282102457",
+     "bytes": 387159,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/52dffe47-79f8-453f-b234-6dca72ac1b11_en?filename=ARMETISS%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/547e34eb-6926-4a72-86bd-1eace24b894c_en.pdf",
+     "sha256": "382061228109746957bd35d8ae692520b4309dc37e61d676fd8cebdc6f3946e6",
+     "bytes": 457614,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/547e34eb-6926-4a72-86bd-1eace24b894c_en?filename=Factsheet_EDF21_EPW.pdf"
+    },
+    {
+     "path": "edf/554d5147-63ed-4ed8-b851-1952710df2a1_en.pdf",
+     "sha256": "fa8e1b654edb6704820bd5d805a0b0acf540b738ffc582f21e3a9973e4e6367a",
+     "bytes": 506928,
+     "url": "urn:mandate:capital:raw/edf/554d5147-63ed-4ed8-b851-1952710df2a1_en.pdf"
+    },
+    {
+     "path": "edf/575cdef2-f951-4550-b303-16c0c5645c40_en.pdf",
+     "sha256": "26c50a0bec5ddb232f73ab15a691392b79faa35ccf2bfa3442d90dd0f55512bd",
+     "bytes": 411960,
+     "url": "urn:mandate:capital:raw/edf/575cdef2-f951-4550-b303-16c0c5645c40_en.pdf"
+    },
+    {
+     "path": "edf/58c80d0f-2ef1-4ee0-b710-f48600c067a4_en.pdf",
+     "sha256": "c7aab2c3a6e006efde4fdad741e0e3916f3bd4ddfd3cd13d4b49a8d015a41868",
+     "bytes": 448163,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/58c80d0f-2ef1-4ee0-b710-f48600c067a4_en?filename=Factsheet_EDF21_ENLIGHTEN.pdf"
+    },
+    {
+     "path": "edf/597dd769-cb0c-4227-aa64-f49473328c59_en.pdf",
+     "sha256": "9ab10aef83ccd7bb46fa5c64b4bbf05c64206e6c24e7bf224cdb2cdfff822775",
+     "bytes": 326270,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/597dd769-cb0c-4227-aa64-f49473328c59_en?filename=Factsheet_EDF21_Mini-BOT.pdf"
+    },
+    {
+     "path": "edf/5a308169-efa7-498f-a090-78fbb26e3adc_en.pdf",
+     "sha256": "399dcfb9826f1e723265bed57b30b142564a62c396d72be421a38a26180ea864",
+     "bytes": 359231,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/5a308169-efa7-498f-a090-78fbb26e3adc_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_QUANT_STEP_101224573_ORQESTRA.pdf"
+    },
+    {
+     "path": "edf/5b53c2c1-a65c-44d9-b359-47c6c411e22a_en.pdf",
+     "sha256": "34eb7a3f5e9aa724b0c88dc470b19f0674355836d6b4763eccabbd53aa1c7384",
+     "bytes": 366595,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/5b53c2c1-a65c-44d9-b359-47c6c411e22a_en?filename=EDF-2023-RA-SI-MATCOMP-HPM%20IMMUNE.pdf"
+    },
+    {
+     "path": "edf/5bc89c29-9c68-4350-9893-d6c9e27401c3_en.pdf",
+     "sha256": "83f7a3a608f545d42c668d04ba7f35391cea8aa3fec856cca8dcbe8984155520",
+     "bytes": 358055,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/5bc89c29-9c68-4350-9893-d6c9e27401c3_en?filename=FACTSHEET_EDF_2024_RA_SGA_MCBRN_MCM_STEP_101201953_RESILIENCE_R_2024.pdf"
+    },
+    {
+     "path": "edf/5bdea977-521a-4923-9e65-5a7dc9440170_en.pdf",
+     "sha256": "aca2a74471d797b753c62e944e411991f0eb9cc869fede5d4d4b9bb44d941eb2",
+     "bytes": 360493,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/5bdea977-521a-4923-9e65-5a7dc9440170_en?filename=FACTSHEET_EDF_2024_RA_PROTMOB_FMTC_101224375_FASETT2.pdf"
+    },
+    {
+     "path": "edf/5c22ea8f-8079-42eb-bd49-b1a85d0dfd75_en.pdf",
+     "sha256": "8319211d3f086f3776ef232dee60ea5f8bf2a9d4cef4f2f64ef66885f0bee6d2",
+     "bytes": 464034,
+     "url": "urn:mandate:capital:raw/edf/5c22ea8f-8079-42eb-bd49-b1a85d0dfd75_en.pdf"
+    },
+    {
+     "path": "edf/5ca041ce-d864-4f2e-a2d4-7a21c34ee637_en.pdf",
+     "sha256": "92e9a7a4e35b557a7616c2bd6337cf782f1bf642c6b3f2c8b81a91ac8bd51b1b",
+     "bytes": 361396,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/5ca041ce-d864-4f2e-a2d4-7a21c34ee637_en?filename=EOA%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/5ded1d0f-1073-4735-bdee-5a0810e01a95_en.pdf",
+     "sha256": "64674248695f62e91f3e13ffd0e45b0478a24d45ccaff4d8c17ece83c3e0fa76",
+     "bytes": 451017,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/5ded1d0f-1073-4735-bdee-5a0810e01a95_en?filename=EDF-2023-LS-DA-SME-NT%20ARROW.pdf"
+    },
+    {
+     "path": "edf/5e4a3b1e-ac90-436d-9a88-69128fc6fbd8_en.pdf",
+     "sha256": "69116cdb05fd133474e75493081fe4e667f327de3f719dded2e5907b8ae526e2",
+     "bytes": 269271,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/5e4a3b1e-ac90-436d-9a88-69128fc6fbd8_en?filename=Factsheet_EDF21_TeChBioT.pdf"
+    },
+    {
+     "path": "edf/5edc52a6-e5cd-4db9-bbc4-7546e2bd31f5_en.pdf",
+     "sha256": "47966258e9450529f04779cfb9831eee65ddd569d3f30702757f45d938e6a097",
+     "bytes": 364916,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/5edc52a6-e5cd-4db9-bbc4-7546e2bd31f5_en?filename=EDF-2023-LS-RA-DIS-NT%20SWARM-C3.pdf"
+    },
+    {
+     "path": "edf/603b1be5-68aa-4342-993e-0f6cb12bbc3e_en.pdf",
+     "sha256": "31c8103ab56c38f6477aed41b4cab4922a7789352f3dd59c2943a5b15d5f7eb1",
+     "bytes": 462842,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/603b1be5-68aa-4342-993e-0f6cb12bbc3e_en?filename=Factsheet_EDF21_ADEQUADE.pdf"
+    },
+    {
+     "path": "edf/61107a24-8b80-4c9a-8319-02ffead62d93_en.pdf",
+     "sha256": "60503ee2d93314375d6e0c07a9fa9890ab0355f606ec0c3627f1656051c60455",
+     "bytes": 365641,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/61107a24-8b80-4c9a-8319-02ffead62d93_en?filename=EDF-2023-DA-AIR-SPS%20CARMENTA%20PF.pdf"
+    },
+    {
+     "path": "edf/61b1ad3e-825c-4807-867d-fcdd6ddc7738_en.pdf",
+     "sha256": "6f4923b215b927e16af918f31ed4861c66f794dc6c057648ea949e90730c50d2",
+     "bytes": 358043,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/61b1ad3e-825c-4807-867d-fcdd6ddc7738_en?filename=FACTSHEET_EDF_2024_RA_GROUND_IWAS_101224095_NINJA2.pdf"
+    },
+    {
+     "path": "edf/65d46aa9-6767-4aff-9591-3dacdfd6df64_en.pdf",
+     "sha256": "f7420a49041342f5f86f35201bbcf9aca43503ea56921736f8eac67a53d3ea1a",
+     "bytes": 375881,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/65d46aa9-6767-4aff-9591-3dacdfd6df64_en?filename=EDF-2023-RA-SENS-OPTD_ECOSYSTEM.pdf"
+    },
+    {
+     "path": "edf/65eba4e7-ffa0-4416-bba3-a79a07859dca_en.pdf",
+     "sha256": "267895830f237d66513d38b974ffc298f7759d1da5995c0932824dd971bfa678",
+     "bytes": 354407,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/65eba4e7-ffa0-4416-bba3-a79a07859dca_en?filename=DeterMine%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/662f7204-c551-41ba-a1a0-680d7dc65c6e_en.pdf",
+     "sha256": "c658929d3b94b787db190e5ba4dca997aa5d930cd0a1b13136a75e033774a27d",
+     "bytes": 553044,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/662f7204-c551-41ba-a1a0-680d7dc65c6e_en?filename=EDF-2023-DA-DS-AIRDEF-EATMI_HYDIS%C2%B2.pdf"
+    },
+    {
+     "path": "edf/685989cd-658d-48e1-a6ef-a945554b248e_en.pdf",
+     "sha256": "4b3ce5ea6456b0fbf34ba1f0ba7c4b611144968b9728a91f588235b35d7c0776",
+     "bytes": 351946,
+     "url": "urn:mandate:capital:raw/edf/685989cd-658d-48e1-a6ef-a945554b248e_en.pdf"
+    },
+    {
+     "path": "edf/6abd0f72-808a-4c1d-8b2e-b271abdb1db7_en.pdf",
+     "sha256": "371ec88ae732dca969e9f404362add3b783bd115de240e8c821336df255043aa",
+     "bytes": 364245,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/6abd0f72-808a-4c1d-8b2e-b271abdb1db7_en?filename=EDF-2023-LS-RA-SMERO-NT%20STEALTH.pdf"
+    },
+    {
+     "path": "edf/6d8f2b23-b9b1-4d28-8ccf-0312551e6c0b_en.pdf",
+     "sha256": "24a9dbfca922ae1366eb3dd16a2666f078a3262bb413b958dce33606d25c8675",
+     "bytes": 464591,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/6d8f2b23-b9b1-4d28-8ccf-0312551e6c0b_en?filename=Factsheet_EDF21_FaRADAI_0.pdf"
+    },
+    {
+     "path": "edf/712cd5bf-beb5-4ced-8386-fa84b68f8b3d_en.pdf",
+     "sha256": "73de911af0d71c98589f08da09335e46251eb7597681a5ff86de683c212e593f",
+     "bytes": 529371,
+     "url": "urn:mandate:capital:raw/edf/712cd5bf-beb5-4ced-8386-fa84b68f8b3d_en.pdf"
+    },
+    {
+     "path": "edf/71484380-7544-4ef6-9619-46fa89047f91_en.pdf",
+     "sha256": "eb91f3e780db29eb496d135d087f3e2bccf04b55eb99ebdaedf69bed3dc458cd",
+     "bytes": 368232,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/71484380-7544-4ef6-9619-46fa89047f91_en?filename=EDF-2023-LS-RA-DIS-NT%20S.W.I.F.T.pdf"
+    },
+    {
+     "path": "edf/71744893-d23c-4466-99b0-0eb18bb29c3c_en.pdf",
+     "sha256": "adf6f2b591d6abff11d88fb7013ab396cee73850f4f392215bcaa8b6f80611ed",
+     "bytes": 413924,
+     "url": "urn:mandate:capital:raw/edf/71744893-d23c-4466-99b0-0eb18bb29c3c_en.pdf"
+    },
+    {
+     "path": "edf/72819edb-5440-42bf-8bd0-c5da9df1094c_en.pdf",
+     "sha256": "f93358d23007771198107ac68e79994aa15c362e553220aeba9a932b5eb725ae",
+     "bytes": 432679,
+     "url": "urn:mandate:capital:raw/edf/72819edb-5440-42bf-8bd0-c5da9df1094c_en.pdf"
+    },
+    {
+     "path": "edf/7592fe97-dc34-40fb-9fc7-0ae51a5c3096_en.pdf",
+     "sha256": "1edaff420af50b6f05a12cd8c9fe6e5af3bf6b582b4e52329bcc7d030a010247",
+     "bytes": 412409,
+     "url": "urn:mandate:capital:raw/edf/7592fe97-dc34-40fb-9fc7-0ae51a5c3096_en.pdf"
+    },
+    {
+     "path": "edf/75e43754-64f3-4b6c-88c7-9886fc18e469_en.pdf",
+     "sha256": "561f43e891e44c05bb1f6fa6dabfb905596965a855c39af752e5752a6d6a452e",
+     "bytes": 419575,
+     "url": "urn:mandate:capital:raw/edf/75e43754-64f3-4b6c-88c7-9886fc18e469_en.pdf"
+    },
+    {
+     "path": "edf/7755c8f1-4117-4c5c-b6cc-24be9022d12c_en.pdf",
+     "sha256": "37e7f298de23d165f54ad35383e2dc538978da3126553fd90b9b5abac0abc85e",
+     "bytes": 361727,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/7755c8f1-4117-4c5c-b6cc-24be9022d12c_en?filename=E-NACSOS%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/7a019694-28a6-4170-8faa-63e3b397347f_en.pdf",
+     "sha256": "4f02b5599ba094949b8007e6537ec6fa5ed2d9346672e259550cc31f22bc1e94",
+     "bytes": 352726,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/7a019694-28a6-4170-8faa-63e3b397347f_en?filename=EAGLES%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/7b2dec2b-6a52-4d9e-be5b-0c1b0ccdf133_en.pdf",
+     "sha256": "3367498d026c3373e05c613e43539778b7f6b1600f519a9f4929e6483e71ede2",
+     "bytes": 365566,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/7b2dec2b-6a52-4d9e-be5b-0c1b0ccdf133_en?filename=LATACC-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/7d9a1223-9214-42ce-806e-b2200ca39b14_en.pdf",
+     "sha256": "69f172c5c1d4c4605fa767a35da23759538097b4695e0429b989bb277679d4de",
+     "bytes": 348785,
+     "url": "urn:mandate:capital:raw/edf/7d9a1223-9214-42ce-806e-b2200ca39b14_en.pdf"
+    },
+    {
+     "path": "edf/7db1e691-ee1a-48e8-9f9a-4b0e61e179ee_en.pdf",
+     "sha256": "7ec87eea0a0f01145970e74ca35df24e59df789655e35203d021d1d3cfab1417",
+     "bytes": 281069,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/7db1e691-ee1a-48e8-9f9a-4b0e61e179ee_en?filename=Factsheet_EDF21_POWERPACK.pdf"
+    },
+    {
+     "path": "edf/7e22b1b5-0326-45cd-81b3-2f2b6429cefa_en.pdf",
+     "sha256": "917329c24df399ce920e0a90f7df345ccd8db36a4b01f052ec83223e294646b9",
+     "bytes": 381630,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/7e22b1b5-0326-45cd-81b3-2f2b6429cefa_en?filename=Factsheet_EDF21_SDMMS.pdf"
+    },
+    {
+     "path": "edf/7e924a3a-ea4b-4827-befa-707eec2c8a30_en.pdf",
+     "sha256": "d4c14a5db12b31df1693ae22a73b222f426457a098462af15d03e2f9291ce42e",
+     "bytes": 456889,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/7e924a3a-ea4b-4827-befa-707eec2c8a30_en?filename=Factsheet_EDF21_ARTURO.pdf"
+    },
+    {
+     "path": "edf/8034608c-a5b7-4402-8953-8bdd0bef9562_en.pdf",
+     "sha256": "7ff21a77735d9c7e384bbaa51ca61d377854e1c23395f8606841af6f5a6ccdd1",
+     "bytes": 347171,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/8034608c-a5b7-4402-8953-8bdd0bef9562_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SENS_RADNP_101224367_SNADE.pdf"
+    },
+    {
+     "path": "edf/811ed42c-5a82-4a59-b708-fe346f29252a_en.pdf",
+     "sha256": "b8783ec7bee2dd46bf61d76633fcb0c4f1f69e7833a67c9e580fcaa0856527fc",
+     "bytes": 368271,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/811ed42c-5a82-4a59-b708-fe346f29252a_en?filename=EDF-2023-LS-RA-SMERO-NT%205G-MILNET.pdf"
+    },
+    {
+     "path": "edf/8376595a-e80e-4d26-82cc-ad0702146ba6_en.pdf",
+     "sha256": "0000d2c66ec10e84aa2a733c8e2deb7ad0fe28c909919b57a8f69ae87e6eaf79",
+     "bytes": 431750,
+     "url": "urn:mandate:capital:raw/edf/8376595a-e80e-4d26-82cc-ad0702146ba6_en.pdf"
+    },
+    {
+     "path": "edf/856d35b9-f71d-4985-83c6-bb9f798eedfb_en.pdf",
+     "sha256": "5a214cfbf7a43e0aa8ea0074a67521c70f95bc8e31111ed5dfb9f80af1188ce9",
+     "bytes": 360429,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/856d35b9-f71d-4985-83c6-bb9f798eedfb_en?filename=FACTSHEET_EDF_2024_DA_NAVAL_FNP_101224749_NEREUS.pdf"
+    },
+    {
+     "path": "edf/86cb1256-9941-4af1-98c6-f691d532bf63_en.pdf",
+     "sha256": "1011e6fd2c2a339a996e44109905b66ecda13de37f5be9e595902c48b5a14ef0",
+     "bytes": 353064,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/86cb1256-9941-4af1-98c6-f691d532bf63_en?filename=HiTDOC-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/87c8ac65-78ce-4434-9b20-314f1ca3e087_en.pdf",
+     "sha256": "83b9ae5c3fd13e1ffa5b36474ea954b80ad570421051efbb21b095e9a34b08c3",
+     "bytes": 515003,
+     "url": "urn:mandate:capital:raw/edf/87c8ac65-78ce-4434-9b20-314f1ca3e087_en.pdf"
+    },
+    {
+     "path": "edf/87e7f6e6-d61e-4291-a900-bb28285f1bd4_en.pdf",
+     "sha256": "be4726e53706dfe662770a766510123ade69f35b8f4749fe5cfc8cd58682f976",
+     "bytes": 394355,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/87e7f6e6-d61e-4291-a900-bb28285f1bd4_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_QUANT_STEP_101224744_SQORPION.pdf"
+    },
+    {
+     "path": "edf/8817c0c4-dedb-46e2-9d02-30be8da42b24_en.pdf",
+     "sha256": "a73e0ab4d11a9b670658268e7d9545cdb1a6ac42b6bd9a9e0ce64025502d61cd",
+     "bytes": 2343144,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/8817c0c4-dedb-46e2-9d02-30be8da42b24_en?filename=EDF-2023-DA-C4ISR-TRPAS%20ACTUS.pdf"
+    },
+    {
+     "path": "edf/88c9e683-680c-4b88-b44b-d99802ec99e0_en.pdf",
+     "sha256": "4eb9f8ce31eda3d648c9e31f3689eae7a226785363a310bb0b77a6cdaf6279e1",
+     "bytes": 1092214,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/88c9e683-680c-4b88-b44b-d99802ec99e0_en?filename=Factsheet_EDF21_NEUMANN_0.pdf"
+    },
+    {
+     "path": "edf/8914eb59-3a75-438a-bb73-7b6a7616a656_en.pdf",
+     "sha256": "effb53cd86afe1c8e2cd3ec37560de18ac40a3171ab9202590ed831627c6d2cf",
+     "bytes": 281469,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/8914eb59-3a75-438a-bb73-7b6a7616a656_en?filename=Factsheet_EDF21_KOIOS.pdf"
+    },
+    {
+     "path": "edf/898292f3-dd5f-4128-adcb-a5eb2c222d44_en.pdf",
+     "sha256": "aa30d1a2b02a80cfd1522cc1a6adc813a4fcdf384537b974ff0fc90793ccb44d",
+     "bytes": 423185,
+     "url": "urn:mandate:capital:raw/edf/898292f3-dd5f-4128-adcb-a5eb2c222d44_en.pdf"
+    },
+    {
+     "path": "edf/8a7b47f0-b755-4754-b1e1-4c52225d4c7e_en.pdf",
+     "sha256": "5972082833202a85afe357ad4fa97072e45a226aad4d5683045a796e1262bbd3",
+     "bytes": 350238,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/8a7b47f0-b755-4754-b1e1-4c52225d4c7e_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SPACE_MSIAP_101224467_MYRIAD.pdf"
+    },
+    {
+     "path": "edf/8b127340-eacf-4855-874f-d1e56bb0497d_en.pdf",
+     "sha256": "96242f225368809c70f05683c94048cbb837d5eaf8549122adf311e474f8856e",
+     "bytes": 369065,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/8b127340-eacf-4855-874f-d1e56bb0497d_en?filename=FASETT%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/8baa8e6d-4401-4c53-b32c-843cff99afad_en.pdf",
+     "sha256": "8f4f9f52921652d24d3339eed4560bd7409312462503dbdde7822505e1342535",
+     "bytes": 413876,
+     "url": "urn:mandate:capital:raw/edf/8baa8e6d-4401-4c53-b32c-843cff99afad_en.pdf"
+    },
+    {
+     "path": "edf/8c23dd25-b959-408d-8d1f-a9c3cdb6765c_en.pdf",
+     "sha256": "d5d8c49710d515f14b5dbbdf0d67ade3a5f91810dd1b207cf45c0f0ecde8863d",
+     "bytes": 408317,
+     "url": "urn:mandate:capital:raw/edf/8c23dd25-b959-408d-8d1f-a9c3cdb6765c_en.pdf"
+    },
+    {
+     "path": "edf/8caf6084-533b-4b92-8c06-ff87ba414788_en.pdf",
+     "sha256": "eedc0b80e7da3ca44bd0b9c8bae073f0a177222189a6979d677aa5c1431d8aa2",
+     "bytes": 421959,
+     "url": "urn:mandate:capital:raw/edf/8caf6084-533b-4b92-8c06-ff87ba414788_en.pdf"
+    },
+    {
+     "path": "edf/8cdd3f5c-a8c7-4762-9b8d-8405a6c1e62f_en.pdf",
+     "sha256": "a090ffadab097e2a9a29626605f1251e72e9dc4ee7ad31abe12ca15372738828",
+     "bytes": 472659,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/8cdd3f5c-a8c7-4762-9b8d-8405a6c1e62f_en?filename=Factsheet_EDF21_EPIIC.pdf"
+    },
+    {
+     "path": "edf/8e47a86f-f4a8-440a-a96b-054c101616c9_en.pdf",
+     "sha256": "bb6de424c876513fe4df53bd82aeb79743260b270f8a27f52f2ab1825138de67",
+     "bytes": 429941,
+     "url": "urn:mandate:capital:raw/edf/8e47a86f-f4a8-440a-a96b-054c101616c9_en.pdf"
+    },
+    {
+     "path": "edf/8f63d530-98c0-4d30-839d-19727b15c5e4_en.pdf",
+     "sha256": "851cde82508d0068cab163d485c188fd97b0a5b8c6055c62d7d0b0a07aa94e63",
+     "bytes": 347556,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/8f63d530-98c0-4d30-839d-19727b15c5e4_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224636_ARRAYS.pdf"
+    },
+    {
+     "path": "edf/90601d01-9fc9-4141-865b-741a80692baa_en.pdf",
+     "sha256": "a6aa8eb5f837602e65d68a2ffaede48bcc56023e1638d7a37e7be87d45b3d7b9",
+     "bytes": 423218,
+     "url": "urn:mandate:capital:raw/edf/90601d01-9fc9-4141-865b-741a80692baa_en.pdf"
+    },
+    {
+     "path": "edf/9078d9af-b7b5-4fc1-807c-c1f5c25df76e_en.pdf",
+     "sha256": "6393e4de07ff882ed2eccdecad3cfdf630699413f24e4505092ca8e6942fc4cd",
+     "bytes": 486792,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/9078d9af-b7b5-4fc1-807c-c1f5c25df76e_en?filename=Factsheet_EDF21_ECOBALLIFE.pdf"
+    },
+    {
+     "path": "edf/91c6baad-a511-47e9-9b2f-6809ee3de053_en.pdf",
+     "sha256": "da92cd13a85ed577f9d73235856ab67e0bbabd7d054740c832e407573b576364",
+     "bytes": 449862,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/91c6baad-a511-47e9-9b2f-6809ee3de053_en?filename=EDF-2023-LS-DA-SME-NT%20SRB2.pdf"
+    },
+    {
+     "path": "edf/91e78490-25fc-4f61-94a8-fa6e3be7459f_en.pdf",
+     "sha256": "6c299f266ef52d3124bdabd38e339f47d4fc87e34af809c14585ecad9d4b4e88",
+     "bytes": 348029,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/91e78490-25fc-4f61-94a8-fa6e3be7459f_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SPACE_MSIAP_101224710_ARGUS.pdf"
+    },
+    {
+     "path": "edf/924dae8c-dc04-4216-a4b3-ab3ad4fbdc30_en.pdf",
+     "sha256": "0dea87e7ea70554f36ce20f6e04a5f8f3121ad0696aac7e16a6e41bda13893d8",
+     "bytes": 409182,
+     "url": "urn:mandate:capital:raw/edf/924dae8c-dc04-4216-a4b3-ab3ad4fbdc30_en.pdf"
+    },
+    {
+     "path": "edf/92d2b328-c040-41a2-9f8a-f6acf3da5a7e_en.pdf",
+     "sha256": "e7e4839e200f0827ca0b6b321e9b66a12ca2cf2ef8aa6dbf75aa12e92be4ca50",
+     "bytes": 424836,
+     "url": "urn:mandate:capital:raw/edf/92d2b328-c040-41a2-9f8a-f6acf3da5a7e_en.pdf"
+    },
+    {
+     "path": "edf/92e597fe-b960-4860-983a-9136a1087ad1_en.pdf",
+     "sha256": "bcc47d51975e6fd6cfb25d717a4b351a9859513a5b6501ad53454b93ebf46ebe",
+     "bytes": 417003,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/92e597fe-b960-4860-983a-9136a1087ad1_en?filename=EDF-2023-DA-AIR-STFS%20NG-MIMA.pdf"
+    },
+    {
+     "path": "edf/93467064-474d-4551-bd44-303a134fba38_en.pdf",
+     "sha256": "3f230b51f32e63d28e606ce91e41ec29a66f50e370943177e7a26f4813b84ec9",
+     "bytes": 658274,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/93467064-474d-4551-bd44-303a134fba38_en?filename=Factsheet_EDF21_FIBERSENSE.pdf"
+    },
+    {
+     "path": "edf/9385b84d-c98c-4263-878f-283e28000cba_en.pdf",
+     "sha256": "401c92053c8022826aff9711d0a361ccb9f57e9059ac3602243db35e86aa8c8f",
+     "bytes": 449076,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/9385b84d-c98c-4263-878f-283e28000cba_en?filename=EDF-2023-LS-DA-SME-NT%20BadB.pdf"
+    },
+    {
+     "path": "edf/9584f2f6-d1fd-413c-a0fb-38ae6c2a1f15_en.pdf",
+     "sha256": "e340570d4283a75e6b2a19e7d28f14ce47c19d56ea579e53b50cd7103694f2d0",
+     "bytes": 273026,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/9584f2f6-d1fd-413c-a0fb-38ae6c2a1f15_en?filename=Factsheet_EDF21_ROLIAC.pdf"
+    },
+    {
+     "path": "edf/95f10fe1-05d4-4504-945e-b4f303c0e5bb_en.pdf",
+     "sha256": "dd03557e177fd4e0297d05908106fa5f1c303ed0f1c171a82c6af2757ffe85e2",
+     "bytes": 350620,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/95f10fe1-05d4-4504-945e-b4f303c0e5bb_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101223931_SPADER.pdf"
+    },
+    {
+     "path": "edf/96d634d1-27bc-4843-80b9-83dfd9d22d18_en.pdf",
+     "sha256": "f52dcda453a59150df6850effc36bc5b5306ac450909116d0fe53aeba20f94bc",
+     "bytes": 366153,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/96d634d1-27bc-4843-80b9-83dfd9d22d18_en?filename=EDF-2023-LS-DA-SME-NT%20STAALION.pdf"
+    },
+    {
+     "path": "edf/982f8375-314d-463b-846f-892e55475df5_en.pdf",
+     "sha256": "25026be01e77856a64d0c313c26ec6b6a1bdf931e2617ac46bf2de859518c451",
+     "bytes": 301708,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/982f8375-314d-463b-846f-892e55475df5_en?filename=Factsheet_EDF21_NEWHEAT.pdf"
+    },
+    {
+     "path": "edf/98c8f459-407d-4b88-8f26-2ffd4e9b2a93_en.pdf",
+     "sha256": "d59eb11b1c2f2973e8fa4ae847cd2bce4208ecb2ddd0eb46463071f3748c7aa0",
+     "bytes": 481745,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/98c8f459-407d-4b88-8f26-2ffd4e9b2a93_en?filename=Factsheet_EDF21_FAMOUS2.pdf"
+    },
+    {
+     "path": "edf/98cf7727-5df7-437f-bf91-cb036efebdb4_en.pdf",
+     "sha256": "0d430d9036eb0cfa89326e962f62093ac52366b11a8a5868a8501e29af2778e5",
+     "bytes": 361842,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/98cf7727-5df7-437f-bf91-cb036efebdb4_en?filename=FACTSHEET_EDF_2024_RA_SIMTRAIN_BRG_STEP_101224034_BATTLEVERSE.pdf"
+    },
+    {
+     "path": "edf/99d9e746-9a4f-487a-b888-6aeb0350ffe6_en.pdf",
+     "sha256": "5e0fc8b8b87741fafd218ce7f5185b68d1221718a2ce43a78a64efa5581122f4",
+     "bytes": 365265,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/99d9e746-9a4f-487a-b888-6aeb0350ffe6_en?filename=EDF-2023-RA-SI-MATCOMP-HPM_101168222_ADMIRABLE.pdf"
+    },
+    {
+     "path": "edf/9aa350af-a6cc-40bf-990a-ae5344a8832d_en.pdf",
+     "sha256": "1c9b0c6209534b82589994d6e44c945b9a56f64faa74eff5a738ceecf8c07961",
+     "bytes": 350250,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/9aa350af-a6cc-40bf-990a-ae5344a8832d_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224047_PLEIADES.pdf"
+    },
+    {
+     "path": "edf/9cf8bbb9-850c-4d1d-b17a-fd4700b64972_en.pdf",
+     "sha256": "5add1c371b7bf295d5e7591b65c67aab441d65899ff4d0132ab516fb456375ed",
+     "bytes": 409325,
+     "url": "urn:mandate:capital:raw/edf/9cf8bbb9-850c-4d1d-b17a-fd4700b64972_en.pdf"
+    },
+    {
+     "path": "edf/9e8afaee-4f48-4f43-bcf1-095d5259c8d7_en.pdf",
+     "sha256": "47994223ed7e0ee0840c7083cbd6c20e8c24f169bf77af72069b3769d0a745cc",
+     "bytes": 410197,
+     "url": "urn:mandate:capital:raw/edf/9e8afaee-4f48-4f43-bcf1-095d5259c8d7_en.pdf"
+    },
+    {
+     "path": "edf/9ea71b6f-afea-4cd9-bc2d-210d83e18220_en.pdf",
+     "sha256": "2eaec2130860894afd102f5aa2c7996c95f1352e8ff8f57188e88362958bbf76",
+     "bytes": 377647,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/9ea71b6f-afea-4cd9-bc2d-210d83e18220_en?filename=EDF-2023-RA-DIGIT-HAAI%20ARCHYTAS.pdf"
+    },
+    {
+     "path": "edf/9eb19d57-818b-4f50-a07b-715291444fcd_en.pdf",
+     "sha256": "62709b13111e7ad81738dd064670528df71357f5326ac42cd3c4d79237696cef",
+     "bytes": 353719,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/9eb19d57-818b-4f50-a07b-715291444fcd_en?filename=WEMOR%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/9f00fdbd-9c0b-4e7e-bda1-0078d8ccbb2e_en.pdf",
+     "sha256": "c15f6fc882aab0201dd4bff8b04c1c45a7c749f1ac66c8486b3135c303ea3b78",
+     "bytes": 370879,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/9f00fdbd-9c0b-4e7e-bda1-0078d8ccbb2e_en?filename=SPIDER-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/9f85d2fe-30b0-4b8f-a3eb-abd6319d0648_en.pdf",
+     "sha256": "5579b46301594f08a62c091b698e707c05d0b454c185ba1b6001ada6bccae6e9",
+     "bytes": 412436,
+     "url": "urn:mandate:capital:raw/edf/9f85d2fe-30b0-4b8f-a3eb-abd6319d0648_en.pdf"
+    },
+    {
+     "path": "edf/a05a12f3-55bc-4f3f-9ed3-46552417a11b_en.pdf",
+     "sha256": "1c3ba257e2dcc6f8c641305d5a9e22427f7890c253743017af1bed9cb10c028c",
+     "bytes": 470311,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a05a12f3-55bc-4f3f-9ed3-46552417a11b_en?filename=Factsheet_EDF21_ALTISS.pdf"
+    },
+    {
+     "path": "edf/a09dc0b5-04e2-4571-8757-08774c5c0b8f_en.pdf",
+     "sha256": "706a2efc84447c69356d3db81d7c3493a9e2a63813b2779027a3d8af0a6f1ba1",
+     "bytes": 355864,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a09dc0b5-04e2-4571-8757-08774c5c0b8f_en?filename=TICHE%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/a3be8835-2c70-4b1f-8681-6c5aa22f3ebd_en.pdf",
+     "sha256": "eddba7cb15925a3503257e9422b8ea0e2492c2ea010fef99836142df73e5f2b8",
+     "bytes": 348096,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a3be8835-2c70-4b1f-8681-6c5aa22f3ebd_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_NT_101224241_HARVEST.pdf"
+    },
+    {
+     "path": "edf/a4a03791-1afc-4ca5-ae95-157e1abb282a_en.pdf",
+     "sha256": "8c2582f7ec0da071f3030d3c4e7367f87b20381c5b68562047ec0b2ca8e4be4b",
+     "bytes": 522506,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a4a03791-1afc-4ca5-ae95-157e1abb282a_en?filename=Factsheet_EDF21_MARSEUS.pdf"
+    },
+    {
+     "path": "edf/a50a4c59-b306-45a3-b71b-1282c8ff44db_en.pdf",
+     "sha256": "0a428308878ae101c3c9c95f2929f4291f4868a517874acf8fb7954b56f32919",
+     "bytes": 458810,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a50a4c59-b306-45a3-b71b-1282c8ff44db_en?filename=EDF-2023-LS-RA-CHALLENGE-DIGIT-HLTP_NEMO.pdf"
+    },
+    {
+     "path": "edf/a52424bb-2d29-46a5-bbb7-28df1545443c_en.pdf",
+     "sha256": "5fb9755cac5ee459e0ae832e5bf615a5443207bbdcfc58e1684ecc5247c702b7",
+     "bytes": 436000,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a52424bb-2d29-46a5-bbb7-28df1545443c_en?filename=EDF-2023-RA-SI-CYBER-ASPT%20TRITON.pdf"
+    },
+    {
+     "path": "edf/a609a2d5-4f7a-4382-97a9-4092b9d6d59e_en.pdf",
+     "sha256": "3f687337ab86d6304eb306cc8364f142131a2d241241f30e03fd8108f271a675",
+     "bytes": 365812,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a609a2d5-4f7a-4382-97a9-4092b9d6d59e_en?filename=FACTSHEET_EDF-2023-LS-RA-DIS-NT_101167898_VICTORIOUS.pdf"
+    },
+    {
+     "path": "edf/a6212405-673a-4303-add1-1be662c381ba_en.pdf",
+     "sha256": "31b7e9a1407eca102d6454b96c13007e71fe2f6e4be5afc3ddd9d1a52ba6f70a",
+     "bytes": 1104344,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a6212405-673a-4303-add1-1be662c381ba_en?filename=Factsheet_EDF21_EICACS.pdf"
+    },
+    {
+     "path": "edf/a6df9e17-ca76-4f3f-ae2b-a912dd4367e6_en.pdf",
+     "sha256": "4ffd6ceab1db3b6cbd8749941b5b9fe4fdd4610c3669a6ae74f65512621f54ca",
+     "bytes": 362822,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a6df9e17-ca76-4f3f-ae2b-a912dd4367e6_en?filename=SESIOP-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/a703a2e6-09a8-451c-a944-31b2897e9012_en.pdf",
+     "sha256": "8f4ad53e1a1c64d9948be89fdc404d204393febae7abe2e8a017bfb83acdafd7",
+     "bytes": 349831,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a703a2e6-09a8-451c-a944-31b2897e9012_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224517_INNCH2PROP.pdf"
+    },
+    {
+     "path": "edf/a7ad745b-662b-4d6c-bb0d-80740fe62527_en.pdf",
+     "sha256": "59d4899c0f89c640d51aa6c0af20f2675f5e94f42b94f4ee56ed06c74523d40d",
+     "bytes": 414761,
+     "url": "urn:mandate:capital:raw/edf/a7ad745b-662b-4d6c-bb0d-80740fe62527_en.pdf"
+    },
+    {
+     "path": "edf/a93960c3-129f-4200-ad8c-047f105f1a71_en.pdf",
+     "sha256": "a0aa2faab6e36bd457f738842f93092c78edbab0be952538c020ab91a9316c9a",
+     "bytes": 348852,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/a93960c3-129f-4200-ad8c-047f105f1a71_en?filename=FACTSHEET_EDF_2024_LS_DA_SME_NT_101224172_HARPIA_Defence.pdf"
+    },
+    {
+     "path": "edf/abca2b84-bbba-409c-958d-a0767637b76a_en.pdf",
+     "sha256": "42ef4c59a93fc774b2420d6f162ccc2a1feb77845c42c57e0b077ab6a49c9135",
+     "bytes": 360653,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/abca2b84-bbba-409c-958d-a0767637b76a_en?filename=EUCINF%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/abd78542-ad56-41f4-8e35-0de59062fbb2_en.pdf",
+     "sha256": "9d8cb156a78f7bd0518498b1e8cfac38c1888a344e3bf21b9a3e0fff53a88d25",
+     "bytes": 409545,
+     "url": "urn:mandate:capital:raw/edf/abd78542-ad56-41f4-8e35-0de59062fbb2_en.pdf"
+    },
+    {
+     "path": "edf/ac9a4ba9-2c38-4e53-b3af-9792f3f9d709_en.pdf",
+     "sha256": "56c43ae1488fd712c6dda4faadbfa319dfa669f81f953af231adf1dd25c37047",
+     "bytes": 345532,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ac9a4ba9-2c38-4e53-b3af-9792f3f9d709_en?filename=FACTSHEET_EDF_2024_LS_DA_SME_NT_101224060_SVDC.pdf"
+    },
+    {
+     "path": "edf/ac9bb144-91c9-4fd7-9e2e-0eda8715f2e3_en.pdf",
+     "sha256": "0e1c098ee332eed09353b1ace5b7e790ecc2154b23e82463a1bd046d74d68316",
+     "bytes": 548777,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ac9bb144-91c9-4fd7-9e2e-0eda8715f2e3_en?filename=EDF-2023-LS-RA-CHALLENGE-DIGIT-HLTO_ARCHER.pdf"
+    },
+    {
+     "path": "edf/ad1f8c7c-f83b-4a4b-b76e-2cbc291fefc4_en.pdf",
+     "sha256": "e9e26e5385e21e1fd0c63c924f8cdf12e99ab0d8725d6263d44dd897784ebcec",
+     "bytes": 402280,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ad1f8c7c-f83b-4a4b-b76e-2cbc291fefc4_en?filename=FACTSHEET_EDF-2023-LS-RA-SMERO-NT_101168102_CAPSARII%20v2.pdf"
+    },
+    {
+     "path": "edf/ade27d7c-f9b6-49a0-b2fb-f621d6abe897_en.pdf",
+     "sha256": "2d3e90b2329477068728edffa5235892be851bfc81523c4ab3f391341ec32a9a",
+     "bytes": 817177,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ade27d7c-f9b6-49a0-b2fb-f621d6abe897_en?filename=Factsheet_EDF21_EDOCC.pdf"
+    },
+    {
+     "path": "edf/ae407ddb-2ad9-4b98-a66a-1732d11e9f95_en.pdf",
+     "sha256": "f9b7353847c0a8aa62823e98bc9c3c4545c767d99981c650b380ede1604e3998",
+     "bytes": 783312,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ae407ddb-2ad9-4b98-a66a-1732d11e9f95_en?filename=Factsheet_EDF21_NOMAD.pdf"
+    },
+    {
+     "path": "edf/ae8bc3c6-cdbc-4eb2-a9aa-dca6ab8c140f_en.pdf",
+     "sha256": "bf6987dadd63f6c6749c9964af6037fe38d2d5cbffff85c682d7ccf2139600d9",
+     "bytes": 479762,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ae8bc3c6-cdbc-4eb2-a9aa-dca6ab8c140f_en?filename=Factsheet_EDF21_EU-GUARDIAN.pdf"
+    },
+    {
+     "path": "edf/af2178b2-0d61-4c77-9e31-20cbb196aa10_en.pdf",
+     "sha256": "3540d4951f02a6e985457d8b37441c5b5945d569522df842560a92feec04b231",
+     "bytes": 422415,
+     "url": "urn:mandate:capital:raw/edf/af2178b2-0d61-4c77-9e31-20cbb196aa10_en.pdf"
+    },
+    {
+     "path": "edf/af559dc4-6f04-493d-862d-8c5a4f33ab35_en.pdf",
+     "sha256": "0716d24fcb86a80d8872678094d9fcf6bd6aa1462868948dad22f885d8ffb326",
+     "bytes": 397276,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/af559dc4-6f04-493d-862d-8c5a4f33ab35_en?filename=FACTSHEET_EDF_2024_DA_SGA_MCBRN_MCM_STEP_101201939_RESILIENCE_D_2024.pdf"
+    },
+    {
+     "path": "edf/af747e51-8205-448f-b748-f49446834dd3_en.pdf",
+     "sha256": "65233684fe34db654a6d0a19af3ebe8fc0149b67f41ec205817856cd76328538",
+     "bytes": 521579,
+     "url": "urn:mandate:capital:raw/edf/af747e51-8205-448f-b748-f49446834dd3_en.pdf"
+    },
+    {
+     "path": "edf/b0a96ff5-09c1-4d47-981f-eb2fceed1ab5_en.pdf",
+     "sha256": "fa4acd19ea2dc50cc55c1984abd4823a5dad16beee267bab91ca2d33a844c43b",
+     "bytes": 364863,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/b0a96ff5-09c1-4d47-981f-eb2fceed1ab5_en?filename=EDF-2023-LS-RA-SMERO-NT_MINEFIELD.pdf"
+    },
+    {
+     "path": "edf/b3a86a0f-78a5-4271-b9c1-8fbda52d3005_en.pdf",
+     "sha256": "088cc648edee6393177d5ba13f69f1f53c70f44f0de2ea8fafcd8b5675ec4292",
+     "bytes": 349062,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/b3a86a0f-78a5-4271-b9c1-8fbda52d3005_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224541_DAMAGER.pdf"
+    },
+    {
+     "path": "edf/b5e205b2-3b6f-46e8-8457-50f91686bf97_en.pdf",
+     "sha256": "b15022125fcdd0062d5408e2448c13867bf811d37771b4f181dd3b0fca5a5c5e",
+     "bytes": 373902,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/b5e205b2-3b6f-46e8-8457-50f91686bf97_en?filename=SCUALE-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/b61eff60-1ffa-49a9-87d0-d05fdb9b9df7_en.pdf",
+     "sha256": "279a2e68f16d943679fe19864528f03ea89a0386cdd19275473491cfc407682f",
+     "bytes": 358179,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/b61eff60-1ffa-49a9-87d0-d05fdb9b9df7_en?filename=FACTSHEET_EDF_2024_RA_UWW_SACOM_STEP_101223924_ASTERION.pdf"
+    },
+    {
+     "path": "edf/b73afd99-27a9-4bf3-a73a-679747880c75_en.pdf",
+     "sha256": "1b64d49aa60be730d509058f208c8a2e7e4fd56c29aa30d820bcf140c258b20c",
+     "bytes": 349630,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/b73afd99-27a9-4bf3-a73a-679747880c75_en?filename=FACTSHEET_EDF_2024_RA_DIGIT_ASMEP_101224145_PRECISE.pdf"
+    },
+    {
+     "path": "edf/b816bef0-0a9f-439d-9f30-2dfc97373b55_en.pdf",
+     "sha256": "c17753cce0f1c9d9ec40563b4b230b2464632315fc83afffc4372f6a72865d4d",
+     "bytes": 592726,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/b816bef0-0a9f-439d-9f30-2dfc97373b55_en?filename=EDF-2023-DA-GROUND-MBT%20MARTE.pdf"
+    },
+    {
+     "path": "edf/bc8bb6b1-fa24-4d44-b683-9f82b9321f25_en.pdf",
+     "sha256": "5173ca84d200b34eb1fae78616f55939131150e40a82c4799d5c4601713ad5a9",
+     "bytes": 349457,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/bc8bb6b1-fa24-4d44-b683-9f82b9321f25_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_NT_101224092_Silfrared.pdf"
+    },
+    {
+     "path": "edf/bd6f7779-a51b-4150-aefe-d5a2ae15e148_en.pdf",
+     "sha256": "f252b9acc84402c3b896f290fb834c5df9ba8072a5cc4033ed1481e2f566ce70",
+     "bytes": 367862,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/bd6f7779-a51b-4150-aefe-d5a2ae15e148_en?filename=FACTSHEET_EDF_2024_HYROGLIVE.pdf"
+    },
+    {
+     "path": "edf/bdca1491-b549-4265-9e9d-7a1b08d6c8c3_en.pdf",
+     "sha256": "cc1a9df680a59af121a1bc7af8a3ca079275c2c929a487972434e233eba1efeb",
+     "bytes": 347880,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/bdca1491-b549-4265-9e9d-7a1b08d6c8c3_en?filename=DISCMAM%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/beae3862-98a4-48c5-80db-0b189f6c695a_en.pdf",
+     "sha256": "4c5706cb0d73924b2aca873acaaf2e9b350e11beb95eae7f199cdc19a43e6d67",
+     "bytes": 349214,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/beae3862-98a4-48c5-80db-0b189f6c695a_en?filename=FACTSHEET_EDF_2024_RA_AIR_UCCAS_STEP_101224274_GARUDA.pdf"
+    },
+    {
+     "path": "edf/c0720b05-0e50-44e6-9139-b499c5810af8_en.pdf",
+     "sha256": "f78fa7b8001d16b539152e10e194a2d4975909787d55e47a10caefe4bd5065d0",
+     "bytes": 350199,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c0720b05-0e50-44e6-9139-b499c5810af8_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SPACE_MSIAP_101223957_ARGOS.pdf"
+    },
+    {
+     "path": "edf/c11494cb-e44a-4c63-91f7-605dad82cf75_en.pdf",
+     "sha256": "3e1877cca1f7e47d5d05d3658718d5ac7bd3057fe3a06771bc00a1129029ab7a",
+     "bytes": 346399,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c11494cb-e44a-4c63-91f7-605dad82cf75_en?filename=FACTSHEET_EDF_2024_LS_DA_SME_NT_101224398_CAMO_V2.pdf"
+    },
+    {
+     "path": "edf/c1fc3354-cfc4-4a45-be6b-7db1a4225bd1_en.pdf",
+     "sha256": "7cde3598a1461b620c515415ce30a425029e54b7cb096fd69c2e3e002f530f0e",
+     "bytes": 485455,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c1fc3354-cfc4-4a45-be6b-7db1a4225bd1_en?filename=Factsheet_EDF21_5G%20COMPAD.pdf"
+    },
+    {
+     "path": "edf/c205c93a-9c7f-4914-8161-a5b57a31df76_en.pdf",
+     "sha256": "b057262faba8180f802a80a91fd325f934fc9866ada041b19e62367e3ed76920",
+     "bytes": 464175,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c205c93a-9c7f-4914-8161-a5b57a31df76_en?filename=EDF-2023-DA-CYBER-CSA%20ECYSAP%20EYE.pdf"
+    },
+    {
+     "path": "edf/c2d3522a-25fc-45c4-b158-5050df34bfbe_en.pdf",
+     "sha256": "60036f2ee289deb5ba300ff0467bda8076dac62779b792e14cdd2c8e3dae2e8f",
+     "bytes": 469102,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c2d3522a-25fc-45c4-b158-5050df34bfbe_en?filename=EDF-2023-DA-SENS-GRID_EISNET.pdf"
+    },
+    {
+     "path": "edf/c362f598-87c0-4a8e-8b52-875fc7262dc8_en.pdf",
+     "sha256": "0a4d1822967e34785008267cf5120b2dcdbaa0c2c4969d11bd1bfcd8fd14b5b9",
+     "bytes": 239768,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c362f598-87c0-4a8e-8b52-875fc7262dc8_en?filename=Factsheet_EDF21_HYBRID.pdf"
+    },
+    {
+     "path": "edf/c421855b-0df4-4a57-abd2-4598a842ff80_en.pdf",
+     "sha256": "c94859a68e563748b46436f320077da9daf83343075f765fd9dcb9382965d950",
+     "bytes": 353762,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c421855b-0df4-4a57-abd2-4598a842ff80_en?filename=FACTSHEET_EDF_2024_LS_RA_DIS_QUANT_STEP_101224135_Q_ARM.pdf"
+    },
+    {
+     "path": "edf/c52dfcbc-3d6f-4aee-9d8c-31562ca241f7_en.pdf",
+     "sha256": "716dd475c72b07c852a784d8587478c701a11222404af1348643fcb13053d87d",
+     "bytes": 348300,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c52dfcbc-3d6f-4aee-9d8c-31562ca241f7_en?filename=FACTSHEET_EDF_2024_LS_DA_SME_NT_101223983_AQUILA.pdf"
+    },
+    {
+     "path": "edf/c65bd04d-9892-4a42-a996-5df7cca748e7_en.pdf",
+     "sha256": "6150c6d7d702ed976f197ab381d372bf8e97c173e1750b073ba58b27d7e02a0a",
+     "bytes": 412661,
+     "url": "urn:mandate:capital:raw/edf/c65bd04d-9892-4a42-a996-5df7cca748e7_en.pdf"
+    },
+    {
+     "path": "edf/c6838cc9-dc6b-4b66-a028-69ef453e278f_en.pdf",
+     "sha256": "17c1c4af9c2223ff7ad139eb6f6c9b3242a9ca1e4c50b87f15ef0b84b705b5b6",
+     "bytes": 442590,
+     "url": "urn:mandate:capital:raw/edf/c6838cc9-dc6b-4b66-a028-69ef453e278f_en.pdf"
+    },
+    {
+     "path": "edf/c8434c9f-1a4e-4ed7-b5dd-1b35184a858e_en.pdf",
+     "sha256": "2c4ebab4fb319a2b65fecbc052783c06d2b44ecf5cd743ae61793572b862544b",
+     "bytes": 928530,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c8434c9f-1a4e-4ed7-b5dd-1b35184a858e_en?filename=Factsheet_EDF21_ACTING.pdf"
+    },
+    {
+     "path": "edf/c988dd3c-3b62-4606-8647-82f3d711151d_en.pdf",
+     "sha256": "6a5dd1c3943b2bf49bb72b05bf682042c622652580b182145a0e3c50566e24f1",
+     "bytes": 349988,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c988dd3c-3b62-4606-8647-82f3d711151d_en?filename=FACTSHEET_EDF_2024_DA_SIMTRAIN_STME_STEP_101224363_READYMED_EUROPE.pdf"
+    },
+    {
+     "path": "edf/c9b28e12-9ee5-4770-9c8d-996be325ef3c_en.pdf",
+     "sha256": "e727f6d342c2b3d71a04d02b3f99aa932d1fce50dd090b62da6cb640652fd798",
+     "bytes": 393255,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/c9b28e12-9ee5-4770-9c8d-996be325ef3c_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224229_QANCOMFIN.pdf"
+    },
+    {
+     "path": "edf/ca96e999-c07c-473e-a23f-8bb42da28e78_en.pdf",
+     "sha256": "83d092e907fa180a04d350075a75082ba47b9ee49ccbfddbce04052ce26cb2fc",
+     "bytes": 348836,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ca96e999-c07c-473e-a23f-8bb42da28e78_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SENS_RADNP_101224702_NAVISENSE_X.pdf"
+    },
+    {
+     "path": "edf/cadd89ef-7224-448e-ab55-2a590a5de4e0_en.pdf",
+     "sha256": "7ae56e959b868d45cda0e277d023fe404c9391a4a88b8a244534c93be134f598",
+     "bytes": 362286,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/cadd89ef-7224-448e-ab55-2a590a5de4e0_en?filename=REACTII-Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/cae8b297-58e8-4a70-8964-9b4a098c0342_en.pdf",
+     "sha256": "9ad5eed3f7f93d8b86b31ebb8f31fd1e634921e97d45c6600f6e67566a0451b9",
+     "bytes": 376726,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/cae8b297-58e8-4a70-8964-9b4a098c0342_en?filename=EDF-2023-RA-PROTMOB-DEXPLO%20GENIUS.pdf"
+    },
+    {
+     "path": "edf/caea2590-7d8b-4d72-9c0c-bb8051e7232e_en.pdf",
+     "sha256": "41bc36b617bc53f9acb8f026a62074a8e1576327512e9692e873e5e4b9131486",
+     "bytes": 520491,
+     "url": "urn:mandate:capital:raw/edf/caea2590-7d8b-4d72-9c0c-bb8051e7232e_en.pdf"
+    },
+    {
+     "path": "edf/cbf2b95c-9327-421c-80af-4ad1f3c95688_en.pdf",
+     "sha256": "2c8fbd62ac1db79ca21dc7db4cd0e932dc3977db3dfb973923e7229d135b1d47",
+     "bytes": 486979,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/cbf2b95c-9327-421c-80af-4ad1f3c95688_en?filename=Factsheet_EDF21_Ainception.pdf"
+    },
+    {
+     "path": "edf/cc98a1de-a7d4-481c-b6e8-0e565d491d1c_en.pdf",
+     "sha256": "d44a3003330ab5b3ae9f213327de567cc2f0ebba6cf976a23b7f2511e0e8650d",
+     "bytes": 418477,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/cc98a1de-a7d4-481c-b6e8-0e565d491d1c_en?filename=EDF-2023-RA-PROTMOB-SATOC%20ESOCA.pdf"
+    },
+    {
+     "path": "edf/cf407fd3-a689-4322-9114-c554085c3024_en.pdf",
+     "sha256": "ec89455413ce079eeec49738d0f4ba78804b6b599d199cfc4e31c7116206861b",
+     "bytes": 450469,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/cf407fd3-a689-4322-9114-c554085c3024_en?filename=EDF-2023-RA-SGA-MCBRN-MCM%20RESILIENCE-R-2023.pdf"
+    },
+    {
+     "path": "edf/cfc1f493-47cf-4940-a371-af4c8850c81e_en.pdf",
+     "sha256": "dd5cdbf496360cb302abe76ad86916fd074a491c45ebdefdc043eaebb6a7f6c3",
+     "bytes": 416231,
+     "url": "urn:mandate:capital:raw/edf/cfc1f493-47cf-4940-a371-af4c8850c81e_en.pdf"
+    },
+    {
+     "path": "edf/d16fdacb-b613-40ee-ab30-0d684c70c09b_en.pdf",
+     "sha256": "01be72bb87f68824ec6c5b95b97efc76e99a79e7b63c0fbe457b23e9fb2893ff",
+     "bytes": 491133,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/d16fdacb-b613-40ee-ab30-0d684c70c09b_en?filename=Factsheet_EDF21_%20ACHILE_0.pdf"
+    },
+    {
+     "path": "edf/d22322ff-8660-4f0e-a7fc-a75a5cbd0d8a_en.pdf",
+     "sha256": "25a0e01aa9243902ec4c426a8d7188d8ac874c03595cf23587b3c340ce555a46",
+     "bytes": 351658,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/d22322ff-8660-4f0e-a7fc-a75a5cbd0d8a_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SENS_RADNO_101224389_ORDEAL.pdf"
+    },
+    {
+     "path": "edf/d2276601-5e9d-4efe-818d-192f23313ef6_en.pdf",
+     "sha256": "310b56d8ddcf0f93159efdcdc3e557679cd7564f64e12c0472a23214131a0bd0",
+     "bytes": 449150,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/d2276601-5e9d-4efe-818d-192f23313ef6_en?filename=Factsheet_EDF21_EPC.pdf"
+    },
+    {
+     "path": "edf/d2719294-4288-43b4-9093-a2bc6134ace4_en.pdf",
+     "sha256": "f1c6c936b777ce89c652a7968198dc4f079840ad088b13e8ecb28d73722ccdce",
+     "bytes": 377718,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/d2719294-4288-43b4-9093-a2bc6134ace4_en?filename=EDF-2023-DA-AIRDEF-CUAS%20E-CUAS.pdf"
+    },
+    {
+     "path": "edf/d2815315-ce1a-41ec-92f3-09d383bcf402_en.pdf",
+     "sha256": "0a94d3e8493869ce601cee3e035af58b726e20e063ac8f1e60b688106a15509e",
+     "bytes": 411297,
+     "url": "urn:mandate:capital:raw/edf/d2815315-ce1a-41ec-92f3-09d383bcf402_en.pdf"
+    },
+    {
+     "path": "edf/d372aa7e-8ff3-4582-a639-6cce3bf4445f_en.pdf",
+     "sha256": "c56e350c507f82d815c010612b516306b1aaacfa9080327dbaeac3224cc8331c",
+     "bytes": 369710,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/d372aa7e-8ff3-4582-a639-6cce3bf4445f_en?filename=FACTSHEET_EDF_2024_DA_CYBER_NGCR_STEP_101224382_CITADEL_Range.pdf"
+    },
+    {
+     "path": "edf/d83a2a81-0589-4042-ab80-36035a5d3e0b_en.pdf",
+     "sha256": "9f8cfae4a1fdc2050cfa9d4ed6a7f0cfa634060c962c31e6d08e124e8d406ee3",
+     "bytes": 348449,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/d83a2a81-0589-4042-ab80-36035a5d3e0b_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224105_SABER.pdf"
+    },
+    {
+     "path": "edf/d9811083-e6ba-4562-acad-a2f47c43f8c0_en.pdf",
+     "sha256": "19b46b766a4de0dcaa1aaebb282486d94ba026728450360ba483ec6f3c674690",
+     "bytes": 364955,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/d9811083-e6ba-4562-acad-a2f47c43f8c0_en?filename=CASSATA%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/da2c0bb8-45a2-4f78-a855-c20ed0d1d675_en.pdf",
+     "sha256": "698e04bcd01107e72df0a95b92643e238fb9107f064b6654c71e7973fb5b19a9",
+     "bytes": 351453,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/da2c0bb8-45a2-4f78-a855-c20ed0d1d675_en?filename=AIDEDex%20-%20Factsheet_EDF22_0.pdf"
+    },
+    {
+     "path": "edf/da39faf6-d33e-48c7-8c35-2426497a2725_en.pdf",
+     "sha256": "83aa7334fb5a5d4c0bf49e1080c3ee7701ad3f800365f1badb967f1a424171f2",
+     "bytes": 360481,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/da39faf6-d33e-48c7-8c35-2426497a2725_en?filename=ACROSS%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/da70df57-418c-41b5-a331-a409b119ed5c_en.pdf",
+     "sha256": "3e6e324d06b444f885d754f5755ac6396658406e407426702744cfe406d911c4",
+     "bytes": 349595,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/da70df57-418c-41b5-a331-a409b119ed5c_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SENS_RADNP_101223904_ORIGAMI.pdf"
+    },
+    {
+     "path": "edf/dbcc3c8e-a982-45be-a3cd-ffc60c8382a9_en.pdf",
+     "sha256": "35bcba616e1fec50b3356d3941bfad8049db9767ddd2e3a326805670bbb62e8f",
+     "bytes": 448084,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/dbcc3c8e-a982-45be-a3cd-ffc60c8382a9_en?filename=EDF-2023-DA-MATCOMP-MJR-CBDIN%20MaJoR.pdf"
+    },
+    {
+     "path": "edf/ddac55e0-a366-4c3b-867c-a589e3edef9c_en.pdf",
+     "sha256": "72cca4e9a41f6173ca78b168fb787fd60eb4603c19eb8adebb97d4aaa75a0c94",
+     "bytes": 471631,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ddac55e0-a366-4c3b-867c-a589e3edef9c_en?filename=Factsheet_EDF21_AGAMI_EURIGAMI.pdf"
+    },
+    {
+     "path": "edf/de830426-7142-4a72-961b-f7abcaa739b6_en.pdf",
+     "sha256": "3f50717304a7ff7f7d0e85377e1837887a604e58204e7043916a1dc499e27308",
+     "bytes": 562200,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/de830426-7142-4a72-961b-f7abcaa739b6_en?filename=EDF-2023-LS-RA-DIS-LDEW%20TALOS-TWO.pdf"
+    },
+    {
+     "path": "edf/dfcec3d7-df67-4fc4-a7ea-0e5362ce204c_en.pdf",
+     "sha256": "6630f066ffa54f208d890dabbc07743ce0d78da1d649088486f365874129aa85",
+     "bytes": 412814,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/dfcec3d7-df67-4fc4-a7ea-0e5362ce204c_en?filename=EDF-2023-RA-SPACE-PSA%20BODYGUARD.pdf"
+    },
+    {
+     "path": "edf/e361419d-7f53-4d64-9ff8-36acc654297a_en.pdf",
+     "sha256": "80418c6221ff60fb4b116827429b9bcf0597fc59b637b981af5aa0322e103893",
+     "bytes": 412998,
+     "url": "urn:mandate:capital:raw/edf/e361419d-7f53-4d64-9ff8-36acc654297a_en.pdf"
+    },
+    {
+     "path": "edf/e3680cf7-de3f-48a5-aa7c-6e04c3999814_en.pdf",
+     "sha256": "2f2e8098ae3e4f5a56a981ca63445ae73f0d6b6218e1d2a3fb67947df7855da2",
+     "bytes": 791149,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/e3680cf7-de3f-48a5-aa7c-6e04c3999814_en?filename=Factsheet_EDF21_COMMANDS.pdf"
+    },
+    {
+     "path": "edf/e3f4ae90-84cc-49c5-a368-0d9a4841db40_en.pdf",
+     "sha256": "bafc520f0a5b6d4cb5046f0c0921d271a26d7c74f82b62e8bd4af474689d9f27",
+     "bytes": 352656,
+     "url": "urn:mandate:capital:raw/edf/e3f4ae90-84cc-49c5-a368-0d9a4841db40_en.pdf"
+    },
+    {
+     "path": "edf/e5f74276-dcf6-409e-b99b-5b49ffa4101b_en.pdf",
+     "sha256": "ea77d9f0d94dc78ed172dec1f009abab320d55e0be97fb919658aa864530d1a9",
+     "bytes": 511447,
+     "url": "urn:mandate:capital:raw/edf/e5f74276-dcf6-409e-b99b-5b49ffa4101b_en.pdf"
+    },
+    {
+     "path": "edf/e97930f9-db47-4d05-b6a8-7ff639efef98_en.pdf",
+     "sha256": "18eeb4c8578be05fad2e24116c1fa37ae83ff8cc518ff775c06e0b46d2434745",
+     "bytes": 433538,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/e97930f9-db47-4d05-b6a8-7ff639efef98_en?filename=Factsheet_EDF21_Q-SiNG.pdf"
+    },
+    {
+     "path": "edf/ea321c83-69d0-4a1c-8e1d-f154ef9884ea_en.pdf",
+     "sha256": "710d1bc96ae9255d06c104ef398db7f262c5a48c4d004ddfeedd28977d98eb45",
+     "bytes": 350015,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ea321c83-69d0-4a1c-8e1d-f154ef9884ea_en?filename=FACTSHEET_EDF_2024_LS_DA_SME_NT_101223905_LODESTAR_II.pdf"
+    },
+    {
+     "path": "edf/ea552399-ceb2-4a20-a8df-3f354231f420_en.pdf",
+     "sha256": "403c778ed3aa0058b9322444e4be996b840dbcdd15774f24f45cd01a7ff3230c",
+     "bytes": 348308,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ea552399-ceb2-4a20-a8df-3f354231f420_en?filename=FACTSHEET_EDF_2024_DA_C4ISR_SEEU_STEP_101224352_VANTAGE.pdf"
+    },
+    {
+     "path": "edf/eabefa01-73ef-4ed1-a3ad-1036c42711d1_en.pdf",
+     "sha256": "a31bb2bab20b5e9466d04a6735f5a10544366fc149dedfb2f6c568a35ac0d727",
+     "bytes": 481911,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/eabefa01-73ef-4ed1-a3ad-1036c42711d1_en?filename=Factsheet_EDF21_ENGRT.pdf"
+    },
+    {
+     "path": "edf/eb5bb5b2-4ebd-4ce2-a773-7aabfa498786_en.pdf",
+     "sha256": "446eafac53337fdbddd7eada6e5ad6010d0c967bcb00de65ace01d814aa0f41b",
+     "bytes": 396441,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/eb5bb5b2-4ebd-4ce2-a773-7aabfa498786_en?filename=FACTSHEET_EDF_2024_LS_RA_SMERO_NT_101224064_POINTER.pdf"
+    },
+    {
+     "path": "edf/ecb0cfdb-ca41-4d13-a6f2-62539c0ca982_en.pdf",
+     "sha256": "09849cc2e9836f67417bfa6f71f7d69adb6328ac9b4edc27ae95e968b1a1060a",
+     "bytes": 380750,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ecb0cfdb-ca41-4d13-a6f2-62539c0ca982_en?filename=EDF-2023-RA-SENS-EMSP_FESPAN.pdf"
+    },
+    {
+     "path": "edf/ecc503f3-a23d-41d2-b427-ba684e01218c_en.pdf",
+     "sha256": "73861604e6f31bc3452bffb0f7ba2c77e29acb535ba7570cbac2fed9e0fb3f6c",
+     "bytes": 363112,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ecc503f3-a23d-41d2-b427-ba684e01218c_en?filename=EDF-2023-LS-RA-SMERO-NT%20HSM4COM.pdf"
+    },
+    {
+     "path": "edf/edf2021_summary.pdf",
+     "sha256": "282b75e75382abfbc82719171e6c40d5fcfcd19b0f679f82fb74cb86842bfe9a",
+     "bytes": 6288669,
+     "url": "urn:mandate:capital:raw/edf/edf2021_summary.pdf"
+    },
+    {
+     "path": "edf/ee618007-4257-4e76-bcc7-b5c0f53154a0_en.pdf",
+     "sha256": "7087dbcf545dece0086deffaba47c9e90ac0040c88caa6e208ed8e2b7a4ca205",
+     "bytes": 425839,
+     "url": "urn:mandate:capital:raw/edf/ee618007-4257-4e76-bcc7-b5c0f53154a0_en.pdf"
+    },
+    {
+     "path": "edf/eff53f47-1c5d-449b-b8b3-9aa2e548dcb2_en.pdf",
+     "sha256": "400b2e8728e9fced5214f4feadf3a56f0a08e0660355b9539f7a5e8c8ec6a680",
+     "bytes": 362958,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/eff53f47-1c5d-449b-b8b3-9aa2e548dcb2_en?filename=EDF-2023-LS-RA-SMERO-NT%20DAEDALUS.pdf"
+    },
+    {
+     "path": "edf/f0343f27-b5d1-4ce9-9127-35f8a25e5fce_en.pdf",
+     "sha256": "0921f45ac76926e2fa006525c6a87cbd6df00797cb38dcca133033ba5d7e2a45",
+     "bytes": 355096,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f0343f27-b5d1-4ce9-9127-35f8a25e5fce_en?filename=FACTSHEET_EDF_2024_LS_RA_CHALLENGE_SPACE_MSIAO_101224267_MARTINA.pdf"
+    },
+    {
+     "path": "edf/f1aa1eeb-a368-41ab-be91-54728c24ccba_en.pdf",
+     "sha256": "9886e971c925b2279863f30f31f9e1159c5b89255f2edee2fba4091fd85bfd44",
+     "bytes": 432586,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f1aa1eeb-a368-41ab-be91-54728c24ccba_en?filename=EDF-2023-DA-CYBER-DAAI%20AIDA.pdf"
+    },
+    {
+     "path": "edf/f1c9a2df-5000-48dc-bd28-1e9832fb2a22_en.pdf",
+     "sha256": "21c08843b0f808ac64fb9cabf013ab550e84e4096586801ec4a5d0775adba91e",
+     "bytes": 422225,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f1c9a2df-5000-48dc-bd28-1e9832fb2a22_en?filename=FACTSHEET_EDF_2024_DA_GROUND_AIFV_101224662_AURIGA.pdf"
+    },
+    {
+     "path": "edf/f2b33646-76ce-42a1-b872-e5cab4c1b0a3_en.pdf",
+     "sha256": "b582e5e9b4714ec8dda82e29a97b4090a5da9f242a71e7a17415927e011cbf32",
+     "bytes": 364052,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f2b33646-76ce-42a1-b872-e5cab4c1b0a3_en?filename=EUROGUARD%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/f2fefde8-bdef-4c76-914b-b7b040a2a988_en.pdf",
+     "sha256": "d1b1176f45df66db8a9754509957b551186728ac5ff1245cd74f70bd4650e679",
+     "bytes": 751364,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f2fefde8-bdef-4c76-914b-b7b040a2a988_en?filename=Factsheet_EDF21_INDY.pdf"
+    },
+    {
+     "path": "edf/f30135fc-ac07-4718-b74b-86274d87f838_en.pdf",
+     "sha256": "84d9a91178f1959e1f2e11661b3503ab81955f6bc9c784e5beccdf0cf9a2c413",
+     "bytes": 420194,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f30135fc-ac07-4718-b74b-86274d87f838_en?filename=EDF-2023-DA-UWW-MCMC%20EequalMCM_V2.1.pdf"
+    },
+    {
+     "path": "edf/f465b570-7902-400b-a93f-124abd030b11_en.pdf",
+     "sha256": "2bc7c767013e235d026144eef8a832008a06ad11ef512e424cec75d8904dd858",
+     "bytes": 347256,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f465b570-7902-400b-a93f-124abd030b11_en?filename=FACTSHEET_EDF_2024_LS_DA_SME_NT_101224518_VEODDA.pdf"
+    },
+    {
+     "path": "edf/f47f2439-8d0e-47b5-841d-e8476a9c744c_en.pdf",
+     "sha256": "b1fa835ebab0c0bb388873025d3e840c3e12579ef6966ce8567eeb403ccd9bd1",
+     "bytes": 268218,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f47f2439-8d0e-47b5-841d-e8476a9c744c_en?filename=Factsheet_EDF21_SHOLFEA.pdf"
+    },
+    {
+     "path": "edf/f576be61-1dfa-4f06-8324-7ecd3c61a5f2_en.pdf",
+     "sha256": "9a1a5e27ac2f9cd4c635fbe032ded57e0eb029f00fc11e6bc2a8adff9fee263b",
+     "bytes": 270209,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f576be61-1dfa-4f06-8324-7ecd3c61a5f2_en?filename=Factsheet_EDF21_SPRING.pdf"
+    },
+    {
+     "path": "edf/f5d0f500-ff14-4bd9-9321-403f111054bb_en.pdf",
+     "sha256": "1b5ba69b5a73b4c339a7cce989fdc011025ca6b5d39408b0dcdbbfd2bc9e17fd",
+     "bytes": 332171,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f5d0f500-ff14-4bd9-9321-403f111054bb_en?filename=Factsheet_EDF21_LODESTAR.pdf"
+    },
+    {
+     "path": "edf/f623b510-5c78-489b-a5dd-e3db717e3e54_en.pdf",
+     "sha256": "8065d9ba735e7ac5d7ccce90928f941171d158cc0e08b819291216105eae1828",
+     "bytes": 288546,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f623b510-5c78-489b-a5dd-e3db717e3e54_en?filename=FACTSHEET_EDF_2024_RA_SI_MATCOMP_EC_STEP_101224231_ePERFECT.pdf"
+    },
+    {
+     "path": "edf/f69c20ea-cc20-4bd3-b965-8fae5ae47cdd_en.pdf",
+     "sha256": "0143e2d5c3cf988ffc9ee649e6a237c97cf8d4c49d8dbaab602f785d5cc9b360",
+     "bytes": 412326,
+     "url": "urn:mandate:capital:raw/edf/f69c20ea-cc20-4bd3-b965-8fae5ae47cdd_en.pdf"
+    },
+    {
+     "path": "edf/f7d2b036-4d0e-4eda-838a-109383f667d8_en.pdf",
+     "sha256": "f59e83e89168db7ae35d9dda3c3da654f28f1537234b8b553f807fe672900f55",
+     "bytes": 367264,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f7d2b036-4d0e-4eda-838a-109383f667d8_en?filename=EDF-2023-LS-RA-SMERO-NT%20SEQURED.pdf"
+    },
+    {
+     "path": "edf/f83bdabd-5007-49dc-a51d-c5f6920e9f12_en.pdf",
+     "sha256": "fd4407016fd34acbc6547ac06bbf3217c41bfc26aa53731d88f1b3e35589491f",
+     "bytes": 356398,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f83bdabd-5007-49dc-a51d-c5f6920e9f12_en?filename=FACTSHEET_EDF_2024_DA_UWW_AHMS_101223978_EUROSWEEP.pdf"
+    },
+    {
+     "path": "edf/f8ef7c08-a906-4537-b94b-13be2689483d_en.pdf",
+     "sha256": "2af40e37df554554e985ca1bdac832709d6cffe6c15c18c906a6208774e45061",
+     "bytes": 290373,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f8ef7c08-a906-4537-b94b-13be2689483d_en?filename=FACTSHEET_EDF_2024_RA_SENS_ART_101224281_SCEPTER.pdf"
+    },
+    {
+     "path": "edf/f90f0035-bd4a-4bfe-aa64-a891d4c609d3_en.pdf",
+     "sha256": "044aefeb9df549f7d067c8cf49cac8e60b9138b954e706cac8906f17720f8bbd",
+     "bytes": 492173,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f90f0035-bd4a-4bfe-aa64-a891d4c609d3_en?filename=EDF-2023-DA-SPACE-SSA_EMISSARY.pdf"
+    },
+    {
+     "path": "edf/f9c0d019-eace-48c1-a926-220688cb560f_en.pdf",
+     "sha256": "4468135c975b2a42040815e4fb2a6e07a9485fc130b285e02d93b9b0d8dcc0a8",
+     "bytes": 564631,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f9c0d019-eace-48c1-a926-220688cb560f_en?filename=EDF-2023-DA-GROUND-IFS%20FIRES%202.pdf"
+    },
+    {
+     "path": "edf/f9f1d4e9-2240-4339-aa07-341824dcb5e7_en.pdf",
+     "sha256": "743c646ca97653173941f0134972bd36f76c6b5ccfe3b56d0a9116bca09f4fff",
+     "bytes": 344996,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/f9f1d4e9-2240-4339-aa07-341824dcb5e7_en?filename=FACTSHEET_EDF_2024_LS_DA_SME_NT_101224544_SIGMA.pdf"
+    },
+    {
+     "path": "edf/fa98a69e-a4ff-4ed9-a84f-f5d34492b17b_en.pdf",
+     "sha256": "2e8a1afa5a530c9d47e83cf6666a30033d11ee9e18649cd3812cc4b4e6689003",
+     "bytes": 546293,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/fa98a69e-a4ff-4ed9-a84f-f5d34492b17b_en?filename=EDF-2023-LS-DA-SME-NT%20SDAM4PRD.pdf"
+    },
+    {
+     "path": "edf/fbfa0865-aba3-46f6-9a19-2fcc4771eb0d_en.pdf",
+     "sha256": "de6413c034b0124f83432d7e532ef403981c81ff85b5863fdbfd370d7ade0b55",
+     "bytes": 353073,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/fbfa0865-aba3-46f6-9a19-2fcc4771eb0d_en?filename=TRAVISMOS%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/fc48fa97-8669-4268-8234-ded485c3c8a1_en.pdf",
+     "sha256": "842e4e3cc3310e8db04f4ba31ba5f11ed72a8436ff4fa1363e24fe9450292c23",
+     "bytes": 362867,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/fc48fa97-8669-4268-8234-ded485c3c8a1_en?filename=TIRESYAS%20-%20Factsheet_EDF22.pdf"
+    },
+    {
+     "path": "edf/fc612e3e-fb75-4af5-9b19-6d22c2e03fdd_en.pdf",
+     "sha256": "2afc9346c0a05cbde5954737e4e832562f78932729b72b139484f357d4b4e58b",
+     "bytes": 330529,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/fc612e3e-fb75-4af5-9b19-6d22c2e03fdd_en?filename=Factsheet_EDF21_SEAWINGS.pdf"
+    },
+    {
+     "path": "edf/fe8fd417-9c33-4197-ac63-93e4fddd222c_en.pdf",
+     "sha256": "611fe1ba0859a0a718ecf203abab6f4563f7433d4faa2c469f916bce40ed676f",
+     "bytes": 413010,
+     "url": "urn:mandate:capital:raw/edf/fe8fd417-9c33-4197-ac63-93e4fddd222c_en.pdf"
+    },
+    {
+     "path": "edf/ff04dc72-223c-4818-b79b-d50f7fec898e_en.pdf",
+     "sha256": "1401bac2222f20e56c2fd54cb7876e230d56a33d2fd4e497f134108afb27bbd4",
+     "bytes": 449983,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ff04dc72-223c-4818-b79b-d50f7fec898e_en?filename=EDF-2023-LS-RA-DIS-NT%20DEMAROCK.pdf"
+    },
+    {
+     "path": "edf/ffafa5ba-3412-482a-aa1f-7a21fec7e7af_en.pdf",
+     "sha256": "0c76d6471832f7ac7031cb630e882e2c4d65fa7948238cffefaa6a9d9cc14539",
+     "bytes": 2185529,
+     "url": "https://defence-industry-space.ec.europa.eu/document/download/ffafa5ba-3412-482a-aa1f-7a21fec7e7af_en?filename=EDF-2023-DA-C4ISR-LCOM%20OPTIMAS.pdf"
+    },
+    {
+     "path": "edf/sample_edf21_edocc.pdf",
+     "sha256": "2d3e90b2329477068728edffa5235892be851bfc81523c4ab3f391341ec32a9a",
+     "bytes": 817177,
+     "url": "urn:mandate:capital:raw/edf/sample_edf21_edocc.pdf"
+    },
+    {
+     "path": "edf/sample_edf22_reactii.pdf",
+     "sha256": "7ae56e959b868d45cda0e277d023fe404c9391a4a88b8a244534c93be134f598",
+     "bytes": 362286,
+     "url": "urn:mandate:capital:raw/edf/sample_edf22_reactii.pdf"
+    }
+   ]
+  },
+  "cordis": {
+   "extractors": [
+    "extract_cordis",
+    "extract_cordis_pillar_ii"
+   ],
+   "files": [
+    {
+     "path": "cordis/project.csv",
+     "sha256": "78a2ced33cabb56d378a8bd16d0de091e8354f29e4b45b6f333af1dbac635faf",
+     "bytes": 48601076,
+     "url": "urn:mandate:capital:raw/cordis/project.csv"
+    },
+    {
+     "path": "cordis/organization.csv",
+     "sha256": "217764b2d1213c2516fd2f69f9956b49d2da0aa04c05b62acfc2008674d1c5ae",
+     "bytes": 51590177,
+     "url": "urn:mandate:capital:raw/cordis/organization.csv"
+    },
+    {
+     "path": "cordis/topics.csv",
+     "sha256": "890a7a008e61b88e7c66fe14e61d960de160f03abdded4e10dc4bb138696d91e",
+     "bytes": 1775916,
+     "url": "urn:mandate:capital:raw/cordis/topics.csv"
+    }
+   ]
+  }
+ }
+}

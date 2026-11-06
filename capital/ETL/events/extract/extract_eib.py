@@ -510,9 +510,6 @@ def main() -> None:
         print("(CSV only — pass --load-db to match and load into db.sqlite)")
         return
 
-    if not DB_PATH.exists():
-        print(f"!! DB not found: {DB_PATH}")
-        sys.exit(1)
 
     with connect() as conn:
         print(f"\nMatching {len(rows)} rows against {DB_PATH.name} …")

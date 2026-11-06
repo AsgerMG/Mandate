@@ -69,7 +69,10 @@ DECL = Path(__file__).resolve().parent / "store_of_record.json"
 SQLITE_DDL = [ROOT / "ETL/events/load/schema.sql"] + sorted(
     (ROOT / "ETL/events/load/migrations").glob("*.sql"))
 POSTGRES_DDL = [ROOT / "ETL/schema/postgres_schema.sql",
-                ROOT / "ETL/schema/guard_verdicts.sql"]
+                ROOT / "ETL/schema/guard_verdicts.sql"] + sorted(
+    # the forward Postgres migrations (033 on): a table one of them creates is
+    # as committed as one in the baseline, and needs an owner just the same
+    (ROOT / "ETL/schema/migrations").glob("*.sql"))
 
 SCANNED = [ROOT / "ETL", ROOT / "website" / "build"]
 

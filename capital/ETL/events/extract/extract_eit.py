@@ -2995,9 +2995,6 @@ def main() -> None:
         print("Reminder: run python3 classify.py after --load-db")
         return
 
-    if not DB_PATH.exists():
-        print(f"!! DB not found: {DB_PATH}")
-        sys.exit(1)
 
     with connect() as conn:
         print(f"\nMatching {len(all_rows)} rows against {DB_PATH.name} ...")
