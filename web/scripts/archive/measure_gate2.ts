@@ -29,7 +29,7 @@ requireCredentials("measure_gate2", ["ANTHROPIC_API_KEY"]);
 const MODEL = process.env.MODEL ?? "claude-sonnet-5";
 const SPLIT = process.env.SPLIT ?? "holdout";
 const VARIANT = process.env.VARIANT ?? "default";
-const LOG = "fixtures/gate2_history.jsonl";
+const LOG = "archive/fixtures/gate2_history.jsonl";
 
 /** The rules the contract states, rendered for the model. Kept in sync by
  *  reading the contract file itself, so the measured prompt and the reviewed
@@ -67,7 +67,7 @@ Reply with ONLY the five index numbers, comma-separated, best first. Example: 3,
 }
 
 async function main() {
-  const fx = JSON.parse(readFileSync(`fixtures/gate1_${SPLIT}.json`, "utf8"));
+  const fx = JSON.parse(readFileSync(`archive/fixtures/gate1_${SPLIT}.json`, "utf8"));
   const violations: string[] = [];
   const N = Math.min(Number(process.env.N ?? fx.cases.length), fx.cases.length);
   const cases = fx.cases.slice(0, N);

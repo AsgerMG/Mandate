@@ -101,7 +101,7 @@ function pickIdxRobust(out: string, n: number): number[] {
 }
 
 async function main() {
-  const fx = JSON.parse(readFileSync(`${ROOT}/fixtures/gate1_holdout.json`, "utf8"));
+  const fx = JSON.parse(readFileSync(`${ROOT}/archive/fixtures/gate1_holdout.json`, "utf8"));
   const N = Number(process.env.N ?? 40);
   const step = Math.max(1, Math.floor(fx.cases.length / N));
   const cases = fx.cases.map((c: any, i: number) => ({ c, i })).filter((_: any, i: number) => i % step === 0).slice(0, N);

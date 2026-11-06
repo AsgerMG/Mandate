@@ -95,7 +95,7 @@
 // become unreproducible. They are NOT deleted and they are NOT silent: pass
 // `SET=` and the banner says the set is retired and why, so a figure taken from
 // one cannot be mistaken for a figure taken from the ground truth we trust.
-import { readFileSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import path from "path";
 
 /** ── HELD, not chosen: this is still `Composed`, and `Doors` is on disk ────
@@ -673,8 +673,13 @@ export function assertGradablePopulation(
  */
 export function loadRecallSet(note = ""): { file: string; rows: RecallRow[] } {
   const file = process.env.SET ?? ACTIVE_RECALL_SET;
+  // Only ACTIVE and STAGED live beside the code. The retired sets, and
+  // Composed, were archived on 2026-11-06 (web/archive/recall-sets/README.md);
+  // `SET=` still loads one from there, and announceRecallSet still says so.
+  const live = path.join(process.cwd(), "lib", "intelligence", file);
+  const archived = path.join(process.cwd(), "archive", "recall-sets", file);
   const rows = JSON.parse(readFileSync(
-    path.join(process.cwd(), "lib", "intelligence", file), "utf8")) as RecallRow[];
+    existsSync(live) ? live : archived, "utf8")) as RecallRow[];
   announceRecallSet(file, rows, note);
   return { file, rows };
 }

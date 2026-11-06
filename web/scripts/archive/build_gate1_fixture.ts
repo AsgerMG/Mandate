@@ -22,19 +22,19 @@ import { writeFileSync, mkdirSync } from "fs";
 import { execSync } from "child_process";
 import path from "path";
 
-import { loadEnvLocal, requireCredentials } from "./loadEnv";
+import { loadEnvLocal, requireCredentials } from "../loadEnv";
 
 loadEnvLocal();
 requireCredentials("build_gate1_fixture", ["DATABASE_URL", "VOYAGE_KEY"]);
 
-import { hydrateDbInstruments, loadDbInstruments, hydrateGatesFor } from "../lib/intelligence/corpus";
-import { computeVerdict } from "../lib/intelligence/pipeline";
-import { fundsSentence } from "../lib/intelligence/schemeText";
-import { loadRecallSet } from "./recallSet";
+import { hydrateDbInstruments, loadDbInstruments, hydrateGatesFor } from "../../lib/intelligence/corpus";
+import { computeVerdict } from "../../lib/intelligence/pipeline";
+import { fundsSentence } from "../../lib/intelligence/schemeText";
+import { loadRecallSet } from "../recallSet";
 import { Client } from "pg";
 
 const SUBSET = Number(process.env.SUBSET ?? 40);
-const OUT_DIR = "fixtures";
+const OUT_DIR = "archive/fixtures";
 
 async function main() {
   await hydrateDbInstruments();
