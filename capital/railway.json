@@ -6,7 +6,7 @@
     "watchPatterns": ["/capital/ETL/**", "/capital/reference/**", "/capital/data/guard_registry.json", "/capital/project-mgmt/coverage_baseline.json", "/capital/website/build/**", "/capital/Dockerfile", "/capital/requirements.txt", "/capital/railway.json", "/mandate/**", "/.dockerignore"]
   },
   "deploy": {
-    "startCommand": "python3 ETL/events/extract/railway_cron.py",
+    "startCommand": "python3 /app/mandate/refresh/run.py",
     "cronSchedule": "0 3 * * 0",
     "restartPolicyType": "NEVER"
   }

@@ -28,12 +28,19 @@ from etl_env import ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import collections
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 _sys.path.insert(0, str(ROOT / "ETL" / "lib"))
 import corpus_marks  # noqa: E402
+_sys.path.insert(0, str(ROOT.parent))
+from mandate.runs import from_env as _run_log  # noqa: E402
+
+# Every step is also a row in mandate.run_steps: on the orchestrator's run when
+# mandate/refresh/run.py started us (MANDATE_RUN_ID), else on a run of our own.
+RUN, OWN_RUN = _run_log(brain="capital", kind="capital_etl")
 
 STEPS = [
     # FIRST, and fatal if it fails. Applies the forward Postgres migrations
@@ -106,6 +113,13 @@ STEPS = [
     # cmd_persist: eight batches submitted, eight collected, no row carrying
     # sector_taxonomy_method='llm' today.
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "persist"],
+    # ── What founders are offered, rebuilt from this week's events ─────────
+    # Nothing rebuilt funding_instruments until 2026-11-06: refresh.py named the
+    # step, but refresh.py never ran anywhere and the step was SQLite-only. It
+    # runs here, after persist (sector_mix counts this week's labels), and it
+    # deletes nothing and blanks nothing a later step wrote (see its header).
+    # Fatal like every build step: what follows reads the table it writes.
+    [sys.executable, str(ROOT / "ETL/events/load/populate_funding_instruments.py")],
     [sys.executable, str(ROOT / "ETL/events/load/qa/sanity_check.py")],
     [sys.executable, str(ROOT / "ETL/terms/detect_eligibility_gaps.py")],
     # Sources that decay on a CALENDAR rather than on a release. renew.py above
@@ -122,7 +136,48 @@ STEPS = [
     # corpus offers a French founder appels a projets that shut in 2024.
     # See ETL/terms/fetch_ademe_windows.py.
     [sys.executable, str(ROOT / "ETL/terms/fetch_ademe_windows.py"), "--write"],
+    # ── The derived layer, in refresh.py's order (that file is now a laptop
+    # tool; THIS is the chain that runs). Each was SQLite-only until 2026-11-06.
+    [sys.executable, str(ROOT / "ETL/terms/encode_article_intensity.py"), "run"],
+    [sys.executable, str(ROOT / "ETL/terms/encode_registered_regions.py"), "run"],
+    [sys.executable, str(ROOT / "ETL/terms/apply_gate_role_overrides.py")],
+    [sys.executable, str(ROOT / "ETL/terms/retract_unpertinent_text.py"), "--write"],
+    [sys.executable, str(ROOT / "ETL/terms/repair_applicant_identity.py"), "--write"],
+    # THE decision to publish. Everything in GATED below is skipped when it is
+    # red; nothing else is.
+    [sys.executable, str(ROOT / "ETL/terms/coverage_gate.py")],
+    # Embeddings (paid, cents): incremental, so 100% embedded is the target the
+    # health check holds them to (mandate/health/targets.json).
+    [sys.executable, str(ROOT / "ETL/terms/build_instrument_profiles.py"), "run"],
+    [sys.executable, str(ROOT / "ETL/terms/embed_eligibility.py"), "run"],
+    # The runtime priors the site reads at request time (web/lib/intelligence/
+    # *.generated.json). Written into this container's /app/web; the
+    # orchestrator (mandate/refresh/run.py) publishes them as artefacts.
+    [sys.executable, str(ROOT / "ETL/terms/emit_peer_prior.py"), "--write"],
+    [sys.executable, str(ROOT / "ETL/terms/emit_region_prior.py"), "--write"],
+    [sys.executable, str(ROOT / "ETL/terms/emit_channel_prior.py")],
+    [sys.executable, str(ROOT / "ETL/terms/emit_instrument_objectives.py"), "--write"],
+    [sys.executable, str(ROOT / "ETL/terms/emit_profile_leak_index.py")],
+    # News, weekly (owner decision 2026-11-06). news_cron.py --wait collects this
+    # run's batches before the digest is cut; ids outlive the container
+    # (batch_state, migration 035). Then link news to funds, then the digest.
+    [sys.executable, str(ROOT / "ETL/intelligence/news_cron.py"), "--wait-minutes", "90",
+     "--no-digest"],
+    [sys.executable, str(ROOT / "ETL/intelligence/transform/link_programme_mentions.py"), "--write"],
+    [sys.executable, str(ROOT / "website/build/signals_digest.py")],
 ]
+
+# A failure in one of these is RECORDED and the run goes on (exit 3 at the end):
+# each writes an artefact or a report nothing later in this chain reads, so
+# stopping would only take the census and the guards down with it.
+SOFT = {"build_instrument_profiles.py", "embed_eligibility.py", "emit_peer_prior.py",
+        "emit_region_prior.py", "emit_channel_prior.py", "emit_instrument_objectives.py",
+        "emit_profile_leak_index.py", "news_cron.py", "link_programme_mentions.py",
+        "signals_digest.py", "coverage_gate.py"}
+# Skipped when coverage_gate.py is red: they publish what the gate refused.
+GATED = {"build_instrument_profiles.py", "embed_eligibility.py", "emit_peer_prior.py",
+         "emit_region_prior.py", "emit_channel_prior.py", "emit_instrument_objectives.py",
+         "emit_profile_leak_index.py"}
 
 # ── The guards that can only run here ──────────────────────────────────────
 # These read the store, which no CI job holds credentials for, and giving GitHub
@@ -261,8 +316,16 @@ def run_step(step: list[str]) -> tuple[int, str]:
 
 
 partial = []
+soft_failed: list[str] = []
+gate_red = False
 for step in STEPS:
+    script = Path(step[1]).name
+    if gate_red and script in GATED:
+        print(f"=== SKIPPED: {script} -- the coverage gate is red ===", flush=True)
+        RUN.skip_step(script, "coverage gate red")
+        continue
     print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
+    step_id = RUN.open_step(" ".join([script] + [a for a in step[2:] if not a.startswith("-")][:1]))
     # The step's own name plus its subcommand, because three of these steps are
     # the same script with different arguments and one mark for all three would
     # say nothing. `Path(step[1]).name` alone reported "python3" once already,
@@ -281,7 +344,14 @@ for step in STEPS:
         report(corpus_marks.OK if returncode == 0 else
                corpus_marks.PARTIAL if tolerated else corpus_marks.FAILED,
                f"rc={returncode}" + (f": {why}" if why and returncode else ""))
+    RUN.close_step(step_id, "ok" if returncode == 0 else "partial" if tolerated else "failed",
+                   summary=why if returncode else "", exit_code=returncode)
     if returncode == 0:
+        continue
+    if script in SOFT:
+        print(f"=== FAILED (recorded, continuing): {script} (rc={returncode}) ===", flush=True)
+        soft_failed.append(script)
+        gate_red = gate_red or script == "coverage_gate.py"
         continue
     if tolerated:
         print(f"=== PARTIAL: {' '.join(step)} (rc={returncode}) — "
@@ -302,6 +372,8 @@ for step in STEPS:
     # three at once. Plus what it said, for the reason run_step explains.
     census(f"failed at {label} (rc={returncode})"
            + (f": {why}" if why else ""))
+    if OWN_RUN:
+        RUN.finish("failed", f"failed at {label} (rc={returncode})")
     sys.exit(returncode)
 
 # Guards BEFORE the census, so the census stays the last thing written and keeps
@@ -316,6 +388,10 @@ failed_guards = guards()
 # guard's own verdict already carries that claim, on its own channel.
 census(f"partial: {', '.join(Path(p).name for p in partial)}" if partial else "ok")
 
+partial += soft_failed
+if OWN_RUN:
+    RUN.finish("partial" if (partial or failed_guards) else "ok",
+               f"{len(partial)} partial/failed-soft, guards failed: {', '.join(failed_guards) or 'none'}")
 if partial or failed_guards:
     # Loud, and non-zero, so a scheduled run that half-worked or that ended with
     # a red guard is never read as a clean one -- but only AFTER every

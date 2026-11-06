@@ -189,6 +189,21 @@ def prebuild() -> int:
     the generated-only artefacts may ship is the deploy's decision, not this
     script's."""
     import etl_env  # noqa: F401,PLC0415  (loads capital/.env.local, never overriding the shell)
+    # FIRST: the release the weekly run published (mandate/artefacts.py) --
+    # seconds, no corpus queries, and built after every brain refreshed. Only
+    # when there is none, or the bucket is not configured or unreadable, does a
+    # deploy fall back to building from the database as before.
+    if os.environ.get(READONLY_ENV, "").strip() and os.environ.get("BUCKET_NAME", "").strip():
+        try:
+            sys.path.insert(0, str(ROOT.parent))
+            from mandate.artefacts import fetch  # noqa: PLC0415
+            fetch(SITE_DATA.parents[1], os.environ[READONLY_ENV].strip())
+            if check_present() == 0:
+                return 0
+            print("the release lacks a file this build reads; building from the database")
+        except Exception as exc:  # noqa: BLE001 -- any failure means: build it here
+            print(f"artefact release unavailable ({type(exc).__name__}: {exc}); "
+                  f"building site data from the database instead")
     if os.environ.get(READONLY_ENV, "").strip():
         return run()
     print(f"{READONLY_ENV} is not set: using the site data already on disk.")

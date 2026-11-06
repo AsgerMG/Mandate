@@ -1,7 +1,7 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
-  "buildCommand": "python3 -m venv /tmp/prebuild && /tmp/prebuild/bin/pip install --quiet 'psycopg[binary]==3.3.4' && PATH=/tmp/prebuild/bin:$PATH npm run build",
+  "buildCommand": "python3 -m venv /tmp/prebuild && /tmp/prebuild/bin/pip install --quiet 'psycopg[binary]==3.3.4' 'httpx==0.28.1' && PATH=/tmp/prebuild/bin:$PATH npm run build",
   "installCommand": "npm ci",
   "redirects": [
     {
