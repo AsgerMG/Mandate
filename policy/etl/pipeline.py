@@ -5,6 +5,13 @@ Responsibilities the adapters deliberately don't carry:
   * upsert of the Document row keyed by (source, external_id)
   * (re)chunking a new version into passages
   * cursor + last_run bookkeeping on the Source row
+
+WHERE IT WRITES. The source record -- the text, its version (sha256), every
+fetch date, the passages -- goes to schema `grounding` through
+mandate.grounding, in the same transaction as policy's own rows. Policy writes
+only what is its own: the Document row and a VersionRef (which grounding version
+the document is at, and whether it is current). policy.document_versions and
+policy.passages are deprecated and refuse writes (data/grounding_bridge.py).
 """
 
 from __future__ import annotations
@@ -17,13 +24,15 @@ import structlog
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from data import grounding_bridge as gb
 from data.models import (
     Document,
-    DocumentVersion,
+    GroundingDocumentLink,
     LifecycleStage,
-    Passage,
     Source,
+    VersionRef,
 )
+from mandate import grounding
 
 from .adapters.base import ParsedDocument, SourceAdapter
 from .chunking import chunk_text
@@ -100,11 +109,16 @@ def run_adapter(
             if parsed is None:  # adapter judged it out of scope after full fetch
                 stats["skipped"] += 1
                 continue
-            created_doc, created_ver = _persist(session, source, parsed, raw.fetched_at)
+            # A savepoint per document: one document's SQL error (a grounding
+            # refusal, a constraint) rolls back that document only. Without it
+            # the error aborted the whole transaction and every later document
+            # in the run failed with "current transaction is aborted".
+            with session.begin_nested():
+                created_doc, created_ver = _persist(session, source, parsed, raw.fetched_at)
+                session.flush()
             stats["new_docs"] += int(created_doc)
             stats["new_versions"] += int(created_ver)
             stats["unchanged"] += int(not created_ver)
-            session.flush()
         except Exception:  # one bad document must not abort the whole run
             stats["errors"] += 1
             log.exception("ingest_failed", source=adapter.key, external_id=ref.external_id)
@@ -257,41 +271,110 @@ def _persist(
 
     content = _norm(parsed.text)
     content_hash = _hash(content)
-    existing = session.scalar(
-        select(DocumentVersion).where(
-            DocumentVersion.document_id == doc.id,
-            DocumentVersion.content_hash == content_hash,
+    gversion_id = _store_in_grounding(
+        session, source, doc, parsed, content, content_hash, fetched_at
+    )
+    ref = session.scalar(
+        select(VersionRef).where(
+            VersionRef.document_id == doc.id, VersionRef.grounding_version_id == gversion_id
         )
     )
-    if existing is not None:
-        return created_doc, False  # unchanged
+    if ref is not None:
+        if not ref.is_current:
+            # The document went back to content it served before: that version
+            # is current again (previously it stayed superseded, so readers were
+            # served text the source no longer published).
+            _make_current(session, doc.id, ref.id)
+        return created_doc, False  # unchanged (the fetch is still recorded in grounding)
 
-    # New content: supersede prior current version, add this one + its passages.
-    for v in doc.versions:
-        v.is_current = False
-    version = DocumentVersion(
+    ref = VersionRef(
         document_id=doc.id,
-        content_hash=content_hash,
+        grounding_version_id=gversion_id,
         raw_format=parsed.raw_format,
-        text=content,
-        char_count=len(content),
         fetched_at=fetched_at,
         is_current=True,
     )
-    session.add(version)
+    session.add(ref)
+    session.flush()
+    _make_current(session, doc.id, ref.id)
+    return created_doc, True
+
+
+def _make_current(session: Session, document_id: int, ref_id: int) -> None:
+    for r in session.scalars(select(VersionRef).where(VersionRef.document_id == document_id)):
+        r.is_current = r.id == ref_id
     session.flush()
 
-    for chunk in chunk_text(content):
-        session.add(
-            Passage(
-                version_id=version.id,
-                ordinal=chunk.ordinal,
-                text=chunk.text,
-                char_start=chunk.char_start,
-                char_end=chunk.char_end,
-            )
+
+def _store_in_grounding(
+    session: Session,
+    source: Source,
+    doc: Document,
+    parsed: ParsedDocument,
+    content: str,
+    content_hash: str,
+    fetched_at: dt.datetime,
+) -> int:
+    """Record this fetch in grounding: the version (once per distinct text, any
+    document, any brain), a fetch row (every time), and the passages (once per
+    version). The stored bytes are the normalised text policy versions on, so
+    the sha256 IS policy's content hash and an unchanged re-fetch is one fetch
+    row -- storing the raw HTML instead would make every re-fetch of a page with
+    a timestamp or token in it a new, permanent, append-only version."""
+    con = gb.driver(session)
+    if fetched_at.tzinfo is None:
+        fetched_at = fetched_at.replace(tzinfo=dt.UTC)
+    url = gb.grounding_url(source.key, parsed.url, parsed.external_id)
+    meta = {
+        "title": parsed.title,
+        "publisher": source.name,
+        "kind": str(parsed.document_type.name),
+        "source_id": grounding.ensure_source(
+            con, gb.SOURCE_PREFIX + source.key, source.name, base_url=source.base_url
+        ),
+    }
+    v = grounding.record_fetch(con, url, content_hash, fetched_at, **meta)
+    if v is None:
+        v = grounding.store_original(
+            con,
+            content.encode("utf-8"),
+            url,
+            gb.TEXT_MIME,
+            fetched_at,
+            text=content,
+            extractor=f"policy:{parsed.raw_format}->normalised text",
+            **meta,
         )
-    return created_doc, True
+    if v.sha256 != content_hash:  # cannot happen; a wrong citation would be worse than a crash
+        raise RuntimeError(f"grounding stored {v.sha256} for content {content_hash}")
+    if session.get(GroundingDocumentLink, doc.id) is None:
+        # first sight of this policy document; the link is insert-only (a later
+        # URL change is recorded by grounding's fetches, not by moving the link)
+        session.add(GroundingDocumentLink(policy_document_id=doc.id, grounding_document_id=v.document_id))
+    has = con.execute(
+        "SELECT 1 FROM grounding.passages WHERE version_id = %s AND chunker = %s LIMIT 1",
+        (v.id, gb.CHUNKER),
+    ).fetchone()
+    if has is None and content.strip():
+        grounding.add_passages(con, v.id, gb.CHUNKER, _exact_spans(content))
+    return v.id
+
+
+def _exact_spans(content: str) -> list[tuple[int, int, str | None]]:
+    """The chunker's spans, made exact: in grounding a passage's text IS
+    version.text[start:end]. chunk_text strips a chunk's edges after recording
+    its span (the migration found 28,816 spans one past their text), so the span
+    is re-anchored on where the chunk's text actually sits."""
+    spans = []
+    for c in chunk_text(content):
+        start = c.char_start
+        if content[start : start + len(c.text)] != c.text:
+            found = content.find(c.text, max(0, start - 256))
+            start = found if found >= 0 else content.find(c.text)
+            if start < 0:
+                raise ValueError(f"chunk {c.ordinal} is not in its own text")
+        spans.append((start, start + len(c.text), None))
+    return spans
 
 
 #: Keys inside ``Document.extra`` that the enrichment layer writes and owns.

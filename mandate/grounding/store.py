@@ -175,6 +175,27 @@ def store_original(con, data: bytes, url: str, mime: str, fetched_at: dt.datetim
     return Version(**{**v.__dict__, "created": created})
 
 
+def record_fetch(con, url: str, sha256: str, fetched_at: dt.datetime, *,
+                 http_status: int | None = None, title: str | None = None,
+                 publisher: str | None = None, kind: str | None = None,
+                 source_id: int | None = None) -> Version | None:
+    """Record that `url` served bytes ALREADY stored (by sha256) at `fetched_at`:
+    one grounding.fetches row, no bucket round trip. None when the bytes are not
+    stored yet, so the caller must store_original() them (which uploads first).
+    What a weekly re-fetch of an unchanged source costs: one row, not one upload."""
+    try:
+        v = version_by_sha(con, sha256)
+    except LookupError:
+        return None
+    doc_id = ensure_document(con, url, title=title, publisher=publisher, kind=kind,
+                             source_id=source_id)
+    con.execute(
+        "INSERT INTO grounding.fetches (document_id, version_id, fetched_at, http_status) "
+        "VALUES (%s, %s, %s, %s) ON CONFLICT (document_id, version_id, fetched_at) DO NOTHING",
+        (doc_id, v.id, _utc(fetched_at), http_status))
+    return v
+
+
 _VERSION_SQL = ("SELECT v.id, v.document_id, d.canonical_url, v.sha256, v.bucket_key, v.mime, "
                 "       v.byte_size, v.fetched_at, v.text "
                 "  FROM grounding.document_versions v JOIN grounding.documents d ON d.id = v.document_id ")

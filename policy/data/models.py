@@ -18,6 +18,8 @@ import enum
 
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import (
+    Boolean,
+    MetaData,
     BigInteger,
     Column,
     Date,
@@ -205,9 +207,11 @@ class Document(Base, TimestampMixin):
     extra: Mapped[dict | None] = mapped_column(JSONB)  # source-specific metadata
 
     source: Mapped[Source] = relationship(back_populates="documents")
+    # Read through the grounded view (text from schema grounding); written only
+    # as VersionRef rows by etl/pipeline.py.
     versions: Mapped[list[DocumentVersion]] = relationship(
-        back_populates="document",
-        cascade="all, delete-orphan",
+        primaryjoin="Document.id == foreign(DocumentVersion.document_id)",
+        viewonly=True,
         order_by="DocumentVersion.fetched_at",
     )
     enrichment: Mapped[Enrichment | None] = relationship(
@@ -217,8 +221,15 @@ class Document(Base, TimestampMixin):
     sectors: Mapped[list[Sector]] = relationship(secondary=document_sector)
 
 
-class DocumentVersion(Base, TimestampMixin):
-    """A content-hashed snapshot of a document's text. New hash => new version."""
+class LegacyDocumentVersion(Base, TimestampMixin):
+    """DEPRECATED, READ-ONLY: policy's pre-grounding version table.
+
+    Superseded on the move to schema `grounding` (see the bridge section at the
+    end of this file). Kept, never dropped and never deleted from: it is the
+    record the migration copied from, and its retirement is an owner decision.
+    Nothing writes it: a trigger refuses every INSERT/UPDATE/DELETE
+    (data/grounding_bridge.py) and tests/test_grounding_bridge.py fails the
+    build on any code path that names it outside the migration tooling."""
 
     __tablename__ = "document_versions"
     __table_args__ = (
@@ -235,14 +246,13 @@ class DocumentVersion(Base, TimestampMixin):
     fetched_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True))
     is_current: Mapped[bool] = mapped_column(default=True, index=True)
 
-    document: Mapped[Document] = relationship(back_populates="versions")
-    passages: Mapped[list[Passage]] = relationship(
-        back_populates="version", cascade="all, delete-orphan", order_by="Passage.ordinal"
-    )
 
 
-class Passage(Base):
-    """A retrievable chunk of a document version — the unit of citation in RAG."""
+class LegacyPassage(Base):
+    """DEPRECATED, READ-ONLY: policy's pre-grounding passages (and their vectors).
+
+    Same status as LegacyDocumentVersion: superseded by grounding.passages and
+    grounding.passage_embeddings, kept in place, refused writes by a trigger."""
 
     __tablename__ = "passages"
     __table_args__ = (
@@ -279,8 +289,6 @@ class Passage(Base):
     heading: Mapped[str | None] = mapped_column(Text)  # nearest article/section heading
     token_count: Mapped[int | None] = mapped_column(Integer)
     embedding: Mapped[list[float] | None] = mapped_column(Vector(EMBEDDING_DIM))
-
-    version: Mapped[DocumentVersion] = relationship(back_populates="passages")
 
 
 class ActorRole(enum.StrEnum):
@@ -364,10 +372,13 @@ class DocumentActor(Base):
         Enum(ActorRole, name="actor_role"), default=ActorRole.OTHER
     )
     # The passage this link was derived from, so a named stakeholder in a brief
-    # traces to stored text exactly like every other generated claim.
-    passage_id: Mapped[int | None] = mapped_column(
-        ForeignKey("passages.id", ondelete="SET NULL"), index=True
-    )
+    # traces to stored text exactly like every other generated claim. A
+    # grounding.passages id (ids were preserved by the migration; an id from a
+    # folded duplicate resolves through grounding_passage_link, see
+    # data/grounding_bridge.resolve_passage_ids). No foreign key: the FK to the
+    # legacy table was dropped in revision 5c2f9e1a7b30, and grounding is
+    # append-only, so a cited passage cannot disappear.
+    passage_id: Mapped[int | None] = mapped_column(BigInteger, index=True)
 
     actor: Mapped[Actor] = relationship(back_populates="documents")
 
@@ -473,3 +484,103 @@ class GroundingPassageLink(Base):
 
     policy_passage_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     grounding_passage_id: Mapped[int] = mapped_column(BigInteger, index=True)
+
+
+# --- Policy ON grounding (revision 5c2f9e1a7b30) -------------------------------
+#
+# From the cutover on, schema `grounding` is policy's ONLY store of source text,
+# versions, fetches, passages and embeddings. Policy keeps what is its own:
+#
+#   VersionRef   which grounding version a policy document is at, when policy
+#                saw it, in what raw format, and whether it is current. One row
+#                per (document, grounding version). The migrated rows keep their
+#                policy.document_versions id, so a policy version id means the
+#                same thing before and after.
+#
+# and READS the source through two views (data/grounding_bridge.py), mapped
+# below, so every reader keeps asking for "a document version" and "a passage"
+# while the text, spans and vectors come from grounding:
+#
+#   grounded_versions  VersionRef + the grounding version's text and sha256
+#   grounded_passages  the grounding passages of each VersionRef, with their
+#                      vector in mandate.embedding's model (halfvec in prod)
+#
+# The views are NOT in Base.metadata (create_all would make them tables, and
+# Alembic would diff them): they live in VIEWS and are created by
+# grounding_bridge.install(). Writes to them fail in Postgres, which is the
+# point: the write path is etl/pipeline.py through mandate.grounding.
+
+VIEWS = MetaData()
+
+
+class VersionRef(Base, TimestampMixin):
+    __tablename__ = "version_refs"
+    __table_args__ = (
+        UniqueConstraint("document_id", "grounding_version_id", name="uq_version_ref_document_gversion"),
+    )
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    document_id: Mapped[int] = mapped_column(
+        ForeignKey("documents.id", ondelete="CASCADE"), index=True
+    )
+    # grounding.document_versions.id. No FK in the ORM for the reason given above
+    # GroundingDocumentLink; grounding is append-only, so it cannot dangle.
+    grounding_version_id: Mapped[int] = mapped_column(BigInteger, index=True)
+    raw_format: Mapped[str] = mapped_column(String(32), default="html")
+    fetched_at: Mapped[dt.datetime] = mapped_column(DateTime(timezone=True))
+    is_current: Mapped[bool] = mapped_column(default=True, index=True)
+
+
+class DocumentVersion(Base):
+    """A document's version as policy reads it: VersionRef + grounding's text.
+    Read-only (a view)."""
+
+    __table__ = Table(
+        "grounded_versions",
+        VIEWS,
+        Column("id", Integer, primary_key=True),
+        Column("document_id", Integer),
+        Column("grounding_version_id", BigInteger),
+        Column("content_hash", String(64)),
+        Column("raw_format", String(32)),
+        Column("text", Text),
+        Column("char_count", Integer),
+        Column("fetched_at", DateTime(timezone=True)),
+        Column("is_current", Boolean),
+        Column("created_at", DateTime(timezone=True)),
+        Column("updated_at", DateTime(timezone=True)),
+    )
+
+    document: Mapped[Document] = relationship(
+        primaryjoin="foreign(DocumentVersion.document_id) == Document.id", viewonly=True
+    )
+    passages: Mapped[list[Passage]] = relationship(
+        primaryjoin="DocumentVersion.id == foreign(Passage.version_id)",
+        viewonly=True,
+        order_by="Passage.ordinal",
+    )
+
+
+class Passage(Base):
+    """A retrievable chunk — the unit of citation in RAG. ``id`` is the
+    grounding.passages id; ``version_id`` the policy version (VersionRef) it is
+    read under. Read-only (a view)."""
+
+    __table__ = Table(
+        "grounded_passages",
+        VIEWS,
+        Column("id", BigInteger, primary_key=True),
+        Column("version_id", Integer, primary_key=True),
+        Column("grounding_version_id", BigInteger),
+        Column("ordinal", Integer),
+        Column("text", Text),
+        Column("char_start", Integer),
+        Column("char_end", Integer),
+        Column("heading", Text),
+        Column("token_count", Integer),
+        Column("embedding", Vector(EMBEDDING_DIM)),
+    )
+
+    version: Mapped[DocumentVersion] = relationship(
+        primaryjoin="foreign(Passage.version_id) == DocumentVersion.id", viewonly=True
+    )

@@ -17,6 +17,7 @@ from .store import (
     latest,
     locate,
     read_original,
+    record_fetch,
     set_bucket,
     store_original,
     version,
@@ -26,6 +27,6 @@ from .store import (
 __all__ = [
     "Bucket", "FilesystemBucket", "S3Bucket", "bucket_from_env", "key_for",
     "Citation", "Version", "add_passages", "canonical_url", "cite", "ensure_document",
-    "ensure_source", "fetch", "latest", "locate", "read_original", "set_bucket",
+    "ensure_source", "fetch", "latest", "locate", "read_original", "record_fetch", "set_bucket",
     "store_original", "version", "version_by_sha",
 ]

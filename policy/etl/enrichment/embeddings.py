@@ -2,7 +2,9 @@
 
 The embedder itself is ``mandate.embedding`` -- the one module in the monorepo
 that names an embedding model or calls an embeddings API. ``get_embedder``
-returns the embedder for the space ``policy.passages`` is stored in, so a query
+returns the embedder for the space policy's passage vectors are stored in
+(``grounding.passage_embeddings``, read through the ``grounded_passages`` view
+that ``Passage`` is mapped on), so a query
 and the vectors it is compared with cannot come from different models. The
 local BGE fallback that lived here is gone: it was 384-dim against a 1024-dim
 column, so it could only ever run against a different database than production.
@@ -25,14 +27,15 @@ from sqlalchemy import true as sa_true
 from sqlalchemy.orm import Session
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
 
+from data import grounding_bridge as gb
 from data.config import Settings
-from mandate.embedding import for_table
+from mandate.embedding import for_table, vector_literal
 from data.models import Document, DocumentType, DocumentVersion, Passage, Source
 
 log = structlog.get_logger(__name__)
 
-#: This table's registered name in mandate/embedding/spaces.json.
-PASSAGES_TABLE = "policy.passages"
+#: Where policy's passage vectors live, as registered in mandate/embedding/spaces.json.
+PASSAGES_TABLE = gb.EMBEDDINGS_TABLE
 
 
 class Embedder(Protocol):
@@ -53,7 +56,7 @@ def _is_retryable_voyage(exc: BaseException) -> bool:
 
 
 def get_embedder(settings: Settings | None = None) -> Embedder:
-    """The embedder for policy.passages' stored space (mandate.embedding).
+    """The embedder for policy's passages' stored space (mandate.embedding).
 
     Raises RuntimeError (EmbeddingError) when no Voyage key is set, as the old
     Voyage path did. ``settings`` is accepted and unused: the model is not a
@@ -63,32 +66,59 @@ def get_embedder(settings: Settings | None = None) -> Embedder:
 
 
 def embed_pending(session: Session, embedder: Embedder, *, batch_size: int = 128) -> int:
-    """Embed every passage whose vector is still NULL, in batches. Returns the
-    number embedded.
+    """Embed every current passage that has no vector yet, in batches. Returns
+    the number embedded.
 
-    Restricted to current-version passages: a superseded version's passages
-    (kept around for the schema's own change-tracking/audit purpose — see
-    models.py) are never retrievable once ``semantic_search``/
-    ``canon_passages`` filter on ``is_current`` (see below), so embedding
-    them would just burn CPU on vectors nothing will ever read."""
+    Writes grounding.passage_embeddings (one row per passage and model,
+    append-only: a passage already embedded in this model is never re-embedded),
+    in ``gb.MODEL`` -- the model the grounded_passages view reads, so a vector
+    written here is a vector the search can see.
+
+    Restricted to current-version passages: a superseded version's passages are
+    never retrievable once ``semantic_search``/``canon_passages`` filter on
+    ``is_current``, so embedding them would only spend money."""
+    if getattr(embedder, "model", gb.MODEL) != gb.MODEL:
+        raise RuntimeError(
+            f"embedder is {embedder.model!r} but grounded_passages reads {gb.MODEL!r}: "
+            "a vector in another space would be invisible to every search")
+    cast = _embedding_type(session)
     total = 0
     while True:
-        passages = session.scalars(
-            select(Passage)
+        rows = session.execute(
+            select(Passage.id, Passage.text)
             .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
             .where(Passage.embedding.is_(None), DocumentVersion.is_current.is_(True))
+            .distinct()
             .order_by(Passage.id)
             .limit(batch_size)
         ).all()
-        if not passages:
+        if not rows:
             break
-        vectors = embedder.embed([p.text for p in passages])
-        for passage, vector in zip(passages, vectors, strict=True):
-            passage.embedding = vector
+        vectors = embedder.embed([r.text for r in rows])
+        for row, vector in zip(rows, vectors, strict=True):
+            session.execute(
+                text(
+                    "INSERT INTO grounding.passage_embeddings (passage_id, model, embedding) "
+                    f"VALUES (:pid, :model, CAST(:vec AS {cast})) ON CONFLICT DO NOTHING"
+                ),
+                {"pid": row.id, "model": gb.MODEL, "vec": vector_literal(vector)},
+            )
         session.commit()
-        total += len(passages)
-        log.info("embedded_batch", count=len(passages), total=total)
+        total += len(rows)
+        log.info("embedded_batch", count=len(rows), total=total)
     return total
+
+
+def _embedding_type(session: Session) -> str:
+    """The SQL type of grounding.passage_embeddings.embedding as installed:
+    halfvec(1024) in production, vector(1024) on a test server whose pgvector
+    predates halfvec (mandate/grounding/testing.py)."""
+    return session.execute(
+        text(
+            "SELECT 'public.' || format_type(atttypid, atttypmod) FROM pg_attribute "
+            "WHERE attrelid = 'grounding.passage_embeddings'::regclass AND attname = 'embedding'"
+        )
+    ).scalar_one()
 
 
 def _row_to_passage(row) -> dict:

@@ -211,6 +211,12 @@ def init_db() -> None:
     # but in no metadata, so `alembic revision --autogenerate` would propose
     # dropping it. One definition, in the place Alembic actually compares against.
     Base.metadata.create_all(engine)
+    # The views DocumentVersion/Passage are mapped on, and the legacy-write
+    # guard: not tables, so create_all cannot make them (data/grounding_bridge.py).
+    from . import grounding_bridge
+
+    with engine.begin() as conn:
+        grounding_bridge.install(conn)
     _stamp_alembic_head(engine)
 
 
