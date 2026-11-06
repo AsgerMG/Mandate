@@ -207,7 +207,6 @@
       "code": [
         "../web/scripts/check_corpus_currency.ts",
         "../web/lib/intelligence/liveness.ts",
-        "../web/public/data/instrument_terms.json",
         "../web/lib/intelligence/semanticCache.generated.json"
       ],
       "refresh": "cd ../web && npx tsx scripts/check_corpus_currency.ts",
@@ -221,8 +220,7 @@
       ],
       "code": [
         "../web/scripts/check_hydration_parity.ts",
-        "../web/lib/intelligence",
-        "../web/public/data/instrument_terms.json"
+        "../web/lib/intelligence"
       ],
       "refresh": "cd ../web && npx tsx scripts/check_hydration_parity.ts",
       "why": "The two stores must produce the same brief. Every other check runs NO_PG=1, so the whole suite is green regardless of what Postgres holds."
@@ -235,8 +233,7 @@
       ],
       "code": [
         "../web/scripts/check_degradation.ts",
-        "../web/lib/intelligence",
-        "../web/public/data/instrument_terms.json"
+        "../web/lib/intelligence"
       ],
       "refresh": "cd ../web && npx tsx scripts/check_degradation.ts",
       "why": "No fund a founder is shown on the fallback corpus may be one the live register says has closed. Measured at 26% of founders before the policy landed."
