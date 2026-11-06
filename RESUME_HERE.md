@@ -74,8 +74,11 @@ grounding.
   finished -> owner runs `bash mandate/ops/policy_on_grounding.sh` (not during
   Sun 03:00 UTC) -> merge IMMEDIATELY (Regina redeploys onto the grounding
   views).
-- `mandate-profile` is IN FLIGHT (one company profile + one vocabulary). Resume
-  the agent or review its branch.
+- `mandate-profile` MERGED. mandate/vocabulary (one sector list, size derived
+  from the EU SME bands, D1-D20) and mandate/profile. Tables accounts /
+  workspaces / company_profiles(+versions, append-only) are LIVE. Regina's
+  B2C consumer-law bug (D19) is fixed on main. Open: policy's eval panel uses
+  free-text sectors (6 of 10 refused).
 - After those: one command for the re-embed (~$0.25), the 171 missing pages and
   the pertinence classification (<$20), then re-measure stages.
 
