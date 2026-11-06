@@ -151,6 +151,18 @@ class FeedSpec:
     deep_fetch: bool = True
 
 
+# Four channels that are no longer ingested (archived 2026-11-06, E2). Each was
+# already excluded from brief generation by briefing._PRESS_EXCLUDED_SOURCES
+# (the three Google News sweeps since 2026-07-23 for SEO-explainer glut,
+# techcrunch_eu since 2026-07-21 because its feed froze server-side), so
+# collecting them every Sunday bought nothing a founder or a brief reads. Their
+# specs are kept verbatim in policy/archive/feeds_not_ingested.py; the
+# documents already collected stay in the database, and stay excluded from
+# briefs by that same set, which is why these keys are still named here.
+ARCHIVED_FEED_KEYS: frozenset[str] = frozenset(
+    {"gnews_eu_tech", "gnews_de_tech", "gnews_fr_tech", "techcrunch_eu"}
+)
+
 FEED_SPECS: list[FeedSpec] = [
     # --- EU: institutions & regulators ---------------------------------------
     FeedSpec(
@@ -173,18 +185,6 @@ FEED_SPECS: list[FeedSpec] = [
         url="https://www.berec.europa.eu/en/rss.xml",
         jurisdiction=Jurisdiction.EU,
         document_type=DocumentType.GUIDELINE,
-    ),
-    # Google News query feeds: the workaround for bot-blocked/paywalled outlets
-    # (Euractiv, Politico, MLex…) — their coverage surfaces through the query.
-    FeedSpec(
-        key="gnews_eu_tech",
-        name="News monitor — EU tech regulation (Google News)",
-        url=(
-            "https://news.google.com/rss/search?q=%22AI+Act%22+OR+%22Digital+Services+Act%22"
-            "+OR+%22Digital+Markets+Act%22+OR+%22Data+Act%22+EU+regulation&hl=en&gl=BE&ceid=BE:en"
-        ),
-        jurisdiction=Jurisdiction.EU,
-        deep_fetch=False,
     ),
     FeedSpec(
         key="ec_press",
@@ -289,12 +289,6 @@ FEED_SPECS: list[FeedSpec] = [
         key="sifted",
         name="Sifted (EU tech/startup policy)",
         url="https://sifted.eu/feed",
-        jurisdiction=Jurisdiction.EU,
-    ),
-    FeedSpec(
-        key="techcrunch_eu",
-        name="TechCrunch — European Union tag",
-        url="https://techcrunch.com/tag/european-union/feed/",
         jurisdiction=Jurisdiction.EU,
     ),
     FeedSpec(
@@ -438,17 +432,6 @@ FEED_SPECS: list[FeedSpec] = [
         url="https://www.laquadrature.net/feed/",
         jurisdiction=Jurisdiction.FR,
         language="fr",
-    ),
-    FeedSpec(
-        key="gnews_fr_tech",
-        name="News monitor — régulation numérique France (Google News)",
-        url=(
-            "https://news.google.com/rss/search?q=r%C3%A9gulation+num%C3%A9rique+France+loi"
-            "&hl=fr&gl=FR&ceid=FR:fr"
-        ),
-        jurisdiction=Jurisdiction.FR,
-        language="fr",
-        deep_fetch=False,
     ),
     # --- France: additional channels (verified live 2026-07-03) ---------------
     FeedSpec(
@@ -596,17 +579,6 @@ FEED_SPECS: list[FeedSpec] = [
         jurisdiction=Jurisdiction.DE,
         language="de",
         filter_tech=True,
-    ),
-    FeedSpec(
-        key="gnews_de_tech",
-        name="News monitor — Digitalregulierung Deutschland (Google News)",
-        url=(
-            "https://news.google.com/rss/search?q=Digitalgesetz+OR+KI-Verordnung"
-            "+OR+Plattformregulierung+Deutschland&hl=de&gl=DE&ceid=DE:de"
-        ),
-        jurisdiction=Jurisdiction.DE,
-        language="de",
-        deep_fetch=False,
     ),
     # --- Germany: additional channels (verified live 2026-07-03) --------------
     FeedSpec(
