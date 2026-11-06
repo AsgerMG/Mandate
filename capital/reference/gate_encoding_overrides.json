@@ -246,6 +246,87 @@
       "was": "institutionalOwner numeric_lte 25",
       "requirement": "The directly refinancing credit institution may hold at most 25% direct or indirect participation in the applicant company over the entire credit term; for the other product, no credit institution/insurance/comparable financial institution may hold more than 25%.",
       "why": "The party is the bank that refinances the loan, not any institutional investor, and the field is a yes/no so the numeric comparator is inert. Both wrong, neither visible while the comparator returns null for everyone."
+    },
+    {
+      "instrument_id": "chips_ju_kdt_unknown",
+      "gate_key": "G1-05",
+      "field": "none",
+      "spec": null,
+      "was": "consortium in [yes]",
+      "requirement": "Norway requires at least one Norwegian company partner and a minimum share of Norwegian partner effort to come from business partners.",
+      "why": "A national-partner composition rule (which country's companies must be in the consortium). `consortium=yes` says only that the founder works in one; it cannot decide this rule, so the machine verdict stops and the text stays visible. E2 founder-data fix, applied to production 2026-11-06 (project-mgmt/e2_data_fixes/fixes.sql); recorded here so a rebuild cannot undo it"
+    },
+    {
+      "instrument_id": "chips_ju_kdt_unknown",
+      "gate_key": "G1-06",
+      "field": "none",
+      "spec": null,
+      "was": "consortium in [yes]",
+      "requirement": "Denmark requires at least one Danish company partner and a minimum share of Danish partner effort to come from Danish business partners.",
+      "why": "A national-partner composition rule (which country's companies must be in the consortium). `consortium=yes` says only that the founder works in one; it cannot decide this rule, so the machine verdict stops and the text stays visible. E2 founder-data fix, applied to production 2026-11-06 (project-mgmt/e2_data_fixes/fixes.sql); recorded here so a rebuild cannot undo it"
+    },
+    {
+      "instrument_id": "chips_ju_kdt_unknown",
+      "gate_key": "G1-07",
+      "field": "none",
+      "spec": null,
+      "was": "consortium in [yes]",
+      "requirement": "Czech Republic requires the Czech fraction of the consortium to include at least one enterprise and at least one research organisation (Public-Private-Partnership principle).",
+      "why": "A national-partner composition rule (which country's companies must be in the consortium). `consortium=yes` says only that the founder works in one; it cannot decide this rule, so the machine verdict stops and the text stays visible. E2 founder-data fix, applied to production 2026-11-06 (project-mgmt/e2_data_fixes/fixes.sql); recorded here so a rebuild cannot undo it"
+    },
+    {
+      "instrument_id": "chips_ju_kdt_unknown",
+      "gate_key": "G1-08",
+      "field": "none",
+      "spec": null,
+      "was": "consortium in [yes]",
+      "requirement": "Spain (AEI) requires Spanish non-profit research organizations to participate in consortia with at least one Spanish profit organization partner funded by MINAETD.",
+      "why": "A national-partner composition rule (which country's companies must be in the consortium). `consortium=yes` says only that the founder works in one; it cannot decide this rule, so the machine verdict stops and the text stays visible. E2 founder-data fix, applied to production 2026-11-06 (project-mgmt/e2_data_fixes/fixes.sql); recorded here so a rebuild cannot undo it"
+    },
+    {
+      "instrument_id": "eit_digital_vap",
+      "gate_key": "g1_vip_location",
+      "field": "entityCountries",
+      "spec": {
+        "allowed": [
+          "Austria",
+          "Belgium",
+          "Bulgaria",
+          "Croatia",
+          "Cyprus",
+          "Czechia",
+          "Denmark",
+          "Estonia",
+          "Finland",
+          "France",
+          "Germany",
+          "Greece",
+          "Hungary",
+          "Ireland",
+          "Italy",
+          "Latvia",
+          "Lithuania",
+          "Luxembourg",
+          "Malta",
+          "Netherlands",
+          "Poland",
+          "Portugal",
+          "Romania",
+          "Slovakia",
+          "Slovenia",
+          "Spain",
+          "Sweden",
+          "Montenegro",
+          "North Macedonia",
+          "Serbia",
+          "Ukraine"
+        ],
+        "field": "entityCountries",
+        "op": "in"
+      },
+      "was": "same list incl. 'Turkey'",
+      "requirement": "Applicants must reside in or be established in an eligible EU Member State or a listed Horizon Europe Associated Country.",
+      "why": "'Turkey' is not a value any intake answer can take, so it could never match; dropped from the allowed list. E2 founder-data fix, applied to production 2026-11-06 (project-mgmt/e2_data_fixes/fixes.sql); recorded here so a rebuild cannot undo it"
     }
   ]
 }

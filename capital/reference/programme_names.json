@@ -207,5 +207,17 @@
   "tacr_ts": {
     "name": "THETA 2",
     "source": "https://www.isvavai.cz/cea (code TS)"
+  },
+  "innovasjon_norge_loan_lowrisk": {
+    "name": "Lavrisikolån",
+    "source": "https://www.innovasjonnorge.no/tjeneste/lavrisikolan (funder's own page, read 2026-11-06). E2 founder-data fix, applied to production 2026-11-06 (project-mgmt/e2_data_fixes/fixes.sql); recorded here so a rebuild cannot undo it"
+  },
+  "innovasjon_norge_loan_risk": {
+    "name": "Risikolån",
+    "source": "https://www.innovasjonnorge.no/seksjon/lan (funder's own page, read 2026-11-06). E2 founder-data fix, applied to production 2026-11-06 (project-mgmt/e2_data_fixes/fixes.sql); recorded here so a rebuild cannot undo it"
+  },
+  "bpifrance_inov": {
+    "name": "Concours d'innovation i-Nov",
+    "source": "https://www.bpifrance.fr/nos-appels-a-projets-concours/appel-a-projets-concours-dinnovation-i-nov (funder's own page, read 2026-11-06). E2 founder-data fix, applied to production 2026-11-06 (project-mgmt/e2_data_fixes/fixes.sql); recorded here so a rebuild cannot undo it"
   }
 }
