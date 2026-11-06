@@ -71,7 +71,7 @@ import {
 import { assessAll } from "../../lib/intelligence/verdict";
 import { COMPANIES } from "../../lib/intelligence/__benchCompanies";
 import type { InstrumentRow } from "../../lib/intelligence/types";
-import { OUT_ROOT, slugOf } from "../_wsdq_paths";
+import { OUT_ROOT, slugOf } from "./_wsdq_paths";
 
 const PUBLISH_CAP = BRIEF_LIMITS.institutionsMax;
 const eur = (n?: number | null) =>

@@ -12,7 +12,7 @@
 // Not one free instrument in this repo runs it. `measure_funnel.ts` -- what
 // `npm run stages` runs, and where the funnel number comes from -- builds
 // `fieldChannels` from `dbPeers` alone and passes `records: []`. So does
-// `_wsdr_curve.ts`, which generated the committed pool-recall curve the
+// `emit_pool_recall_curve.ts`, which generated the committed pool-recall curve the
 // selector's own prompt quotes its base rate from. So does every harness in
 // `scripts/`. Measured on the fifty-one recovered production runs in
 // `project-mgmt/findings/stage_declared_wsIM/`, that stage added at least one

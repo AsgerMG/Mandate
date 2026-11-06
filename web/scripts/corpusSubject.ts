@@ -47,7 +47,7 @@
 // -- a filter, a clock, a field -- cannot be omitted from it. A count can. That
 // is the whole of the durable answer, and it is one line at each call site
 // provided the two sides compute it the same way, which is what this module is
-// for: `_wsdr_curve.ts` stamps it and `check_pool_recall_curve.ts` compares it,
+// for: `emit_pool_recall_curve.ts` stamps it and `check_pool_recall_curve.ts` compares it,
 // through ONE function. A second implementation would drift the first time
 // either side learned about a new filter -- the defect one level up.
 import { createHash } from "crypto";

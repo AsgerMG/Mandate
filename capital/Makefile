@@ -295,7 +295,7 @@ eligibility:
 	# the model. That is exactly what shipped for four workstreams. Last, and
 	# after Postgres, because it reads the published corpus.
 	# check_pool_recall_curve.ts fails the build when this has not been re-run.
-	cd ../web && npx tsx scripts/_wsdr_curve.ts
+	cd ../web && npx tsx scripts/emit_pool_recall_curve.ts
 
 # News/signals layer (the signals_* tables of schema capital): table check +
 # stage counts + QA. Read-only.

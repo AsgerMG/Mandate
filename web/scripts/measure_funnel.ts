@@ -39,7 +39,7 @@
 //
 // ── FREE, BUT NOT OFFLINE. THE TWO ARE NOT THE SAME THING ──────────────────
 // ANTHROPIC_API_KEY is deleted before anything that could reach it is imported,
-// the same guarantee `_wsdr_curve.ts` makes and for the same reason: a
+// the same guarantee `emit_pool_recall_curve.ts` makes and for the same reason: a
 // measurement that must run on every change cannot be one somebody has to
 // decide to afford. What remains is the Voyage embedding behind
 // `semanticFundMatch`, which IS the shipped ranker -- measuring the lexical
@@ -798,7 +798,7 @@ async function main() {
   const split = process.env.SPLIT ?? "holdout";
   const seed = num(process.env.SEED, DEFAULT_SEED);
   // Held out AND described, and ONE FOUNDER PER COMPANY. The same three
-  // restrictions `_wsdr_curve.ts` applies, so this instrument's pool rows are
+  // restrictions `emit_pool_recall_curve.ts` applies, so this instrument's pool rows are
   // comparable with the committed curve to the founder rather than to the
   // rounding. A founder with no description cannot be read by the ranker at
   // all, and a company with many awards would otherwise carry the funnel.

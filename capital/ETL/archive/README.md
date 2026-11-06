@@ -35,3 +35,26 @@ What is here, by kind:
   `sanity_check_merge.py`, `splink_dedupe.py`.
 * The news layer's SQLite schema: `intelligence/load/signals_schema.sql`
   (now `ETL/schema/corpus_schema.sql`, the `signals_*` tables).
+
+## E2 archive, 2026-11-06: ETL/terms workstream one-offs
+
+Moved by E2 (archive and CI). No kept file imports any of them and nothing
+invokes them; the filename appears only in prose. Their `sys.path` and file paths still assume `ETL/terms/`: to run one,
+`git mv` it back first.
+`ETL/terms/_wsgu_corrections.py` stays: `apply_gate_encoding_corrections.py`
+tells the operator to run its `--check`.
+
+| script | evidence it is unreached |
+|---|---|
+| `_wsay_axes.py` | named by no kept file |
+| `_wsay_ceilings.py` | named by no kept file; otherwise used only by other archived scripts (_wsaz_bands.py, _wsba_relabel_check.py, _wsba_tech_answerable.py) |
+| `_wsay_label_axes.py` | named by no kept file; otherwise used only by other archived scripts (_wsay_ceilings.py, _wsba_relabel_check.py, _wsba_tech_answerable.py) |
+| `_wsay_own_gates.py` | named by no kept file |
+| `_wsaz_bands.py` | named by no kept file |
+| `_wsba_relabel_check.py` | named by no kept file |
+| `_wsba_tech_answerable.py` | named by no kept file |
+| `_wsce_adjudicate.py` | named by no kept file |
+| `_wsig_corrections.py` | named by no kept file |
+| `_wsit_arms.py` | named by no kept file |
+| `_wsit_content.py` | named by no kept file |
+| `_wsiu_source_check.py` | named by no kept file |
