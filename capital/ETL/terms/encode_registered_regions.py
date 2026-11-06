@@ -42,15 +42,23 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT, require_reference, WEB  # noqa: E402
+from etl_env import ROOT, require_reference, WEB  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
 import re
-import sqlite3
 
 CASES = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
+
+
+def _cases_on_disk(path) -> None:
+    """The register comes from grounding (pinned sha256) when it is not on disk:
+    the cron's filesystem starts empty. See ETL/lib/grounded_inputs.py."""
+    if not path.exists():
+        from grounded_inputs import materialise  # noqa: PLC0415
+        materialise("state_aid_cases")
 GATE_KEY = "registered_region"
 
 # The register writes a region in TWO syntaxes, and reading only one was a real
@@ -144,19 +152,24 @@ def main() -> None:
     # whenever the register does not name a sub-national restriction, so an
     # absent register reads as "no scheme restricts anything" and wipes the
     # layer. It did, on 2026-08-09: 141 correct filters, exit code 0.
+    _cases_on_disk(CASES)
     require_reference(
         CASES, "This pass removes a scheme's region filter when the register "
                "does not restrict it, so an empty register deletes every filter.")
     cases = json.loads(CASES.read_text())
     offered = offered_codes()
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
+    with connect(rows=True) as conn:
+        _run(conn, args, cases, offered)
+
+
+def _run(conn, args, cases, offered) -> None:
     rows = conn.execute("""
         SELECT i.id, i.name, i.country, i.scheme_code, i.total_eur
         FROM funding_instruments i
         JOIN funding_instruments p ON p.id = i.parent_id
         WHERE p.source_family_bucket = 'state_aid_satr'
           AND i.scheme_code IS NOT NULL AND TRIM(i.scheme_code) <> ''
+        ORDER BY i.id
     """).fetchall()
 
     encoded = skipped = 0
@@ -174,7 +187,7 @@ def main() -> None:
             # has to be removed, not merely not rewritten.
             if args.cmd == "run" and not args.dry_run:
                 conn.execute(
-                    "DELETE FROM eligibility_gates WHERE instrument_id=? AND gate_key=?",
+                    "DELETE FROM eligibility_gates WHERE instrument_id=%s AND gate_key=%s",
                     (r["id"], GATE_KEY))
             continue
         encoded += 1
@@ -186,8 +199,8 @@ def main() -> None:
               (instrument_id, gate_key, gate_family, requirement, value, value_spec,
                intake_field, gate_role, intake_field_resolved,
                verification_level, verify_note, updated_at)
-            VALUES (?, ?, 'G1_nexus', ?, ?, ?, 'entityCountries', 'filter', 'region',
-                    'register_derived', ?, CURRENT_TIMESTAMP)
+            VALUES (%s, %s, 'G1_nexus', %s, %s, %s, 'entityCountries', 'filter', 'region',
+                    'register_derived', %s, CURRENT_TIMESTAMP)
             ON CONFLICT (instrument_id, gate_key) DO UPDATE SET
               requirement=excluded.requirement, value=excluded.value,
               value_spec=excluded.value_spec, gate_role=excluded.gate_role,
@@ -205,14 +218,13 @@ def main() -> None:
             f"caseRegions on {r['scheme_code']}: {len(regions)} NUTS region(s)",
         ))
 
-    if args.cmd == "run" and not args.dry_run:
-        conn.commit()
+    if args.cmd != "run" or args.dry_run:
+        conn.rollback()
     print(f"SATR children with a notified scheme:        {len(rows)}")
     print(f"  registered NUTS regions encoded as a filter: {encoded}")
     print(f"  no sub-national restriction registered:      {skipped}")
     if args.dry_run:
         print("[dry-run] nothing written.")
-    conn.close()
 
 
 if __name__ == "__main__":

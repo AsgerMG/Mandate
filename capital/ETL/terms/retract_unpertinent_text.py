@@ -84,7 +84,8 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
@@ -93,7 +94,6 @@ import hashlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import re  # noqa: E402
-import sqlite3  # noqa: E402
 
 CACHE = ROOT / "data" / "eligibility_pertinence.json"
 LEDGER = ROOT / "data" / "retracted_eligibility_text.json"
@@ -139,10 +139,14 @@ def main() -> None:
     cache = cache_file["verdicts"]
     version = cache_file["_property_version"]
 
-    conn = sqlite3.connect(DB)
+    with connect() as conn:
+        _run(conn, args, cache, version)
+
+
+def _run(conn, args, cache, version) -> None:
     rows = conn.execute(
         f"SELECT id, country, eligibility_text FROM funding_instruments "
-        f"WHERE length(COALESCE(eligibility_text,'')) > {MIN_LEN}").fetchall()
+        f"WHERE length(COALESCE(eligibility_text,'')) > {MIN_LEN} ORDER BY id").fetchall()
 
     doomed, stale, unjudged = [], 0, 0
     for iid, cc, text in rows:
@@ -199,34 +203,19 @@ def main() -> None:
 
     sets = ", ".join(f"{c} = NULL" for c in TEXT_COLUMNS)
     ids = [(i,) for i, _, _, _ in doomed]
-    conn.executemany(f"UPDATE funding_instruments SET {sets} WHERE id = ?", ids)
-    conn.commit()
-    conn.close()
-    print(f"retracted {len(doomed)} rows in SQLite")
-
-    dsn = os.environ.get("DATABASE_URL")
-    if not dsn:
-        raise SystemExit("DATABASE_URL not set (expected in the repo-root "
-                         ".env.local). SQLite is retracted; Postgres is NOT -- "
-                         "re-run with it set, or the read path still serves the text.")
-    import psycopg2  # lazy: a report-only run needs no driver
-    pg = psycopg2.connect(dsn)
-    with pg, pg.cursor() as cur:
+    with conn.cursor() as cur:
         cur.executemany(f"UPDATE funding_instruments SET {sets} WHERE id = %s", ids)
         # Invalidate the DERIVED index entry, or the retraction is cosmetic.
         # `instrument_profiles` embeds this column under "Who may apply, from
-        # the scheme's own page", and it is the primary ranking signal. Both
-        # pipelines that rebuild it -- `make eligibility` with --rebuild and
-        # ETL/refresh.py WITHOUT it -- are anti-joins on instrument_id, so the
-        # incremental one would skip every id it already holds and go on
-        # ranking founders against the sentence just withdrawn from them.
-        # Deleting the row is what makes the next embed, of either kind,
-        # recompute it.
+        # the scheme's own page", and it is the primary ranking signal. The
+        # incremental rebuild is an anti-join on instrument_id, so it would skip
+        # every id it already holds and go on ranking founders against the
+        # sentence just withdrawn from them. Deleting the row is what makes the
+        # next embed recompute it.
         cur.execute("DELETE FROM instrument_profiles WHERE instrument_id = ANY(%s)",
                     ([i for i, _, _, _ in doomed],))
         dropped = cur.rowcount or 0
-    pg.close()
-    print(f"retracted {len(doomed)} rows in Postgres")
+    print(f"retracted {len(doomed)} rows")
     print(f"invalidated {dropped} instrument_profiles row(s) -- re-embed with "
           f"`python3 ETL/terms/build_instrument_profiles.py run`")
 

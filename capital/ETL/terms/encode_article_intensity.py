@@ -61,16 +61,24 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
 import json
 import re
-import sqlite3
 
 CEILINGS_JSON = ROOT / "reference" / "gber_aid_intensity.json"
 CASES_JSON = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
+
+
+def _cases_on_disk(path) -> None:
+    """The register comes from grounding (pinned sha256) when it is not on disk:
+    the cron's filesystem starts empty. See ETL/lib/grounded_inputs.py."""
+    if not path.exists():
+        from grounded_inputs import materialise  # noqa: PLC0415
+        materialise("state_aid_cases")
 
 # Art. 25(5) sets a different ceiling per RESEARCH CATEGORY, and the category is
 # a property of the project rather than the scheme -- so this file used to
@@ -161,13 +169,14 @@ def max_with_uplifts(entry: dict, low_high: tuple[float, float]) -> float:
     return min(low_high[1] + total_uplift, float(entry["cap"]))
 
 
-def rows(conn: sqlite3.Connection) -> list[sqlite3.Row]:
+def rows(conn) -> list:
     return conn.execute("""
         SELECT g.instrument_id, g.value AS article, g.verify_note, i.name,
                i.scheme_code, i.intensity_p50, i.intensity_n, i.award_p50, i.award_n
         FROM eligibility_gates g
         JOIN funding_instruments i ON i.id = g.instrument_id
         WHERE g.gate_key = 'gber_article_inferred'
+        ORDER BY g.instrument_id
     """).fetchall()
 
 
@@ -201,7 +210,7 @@ def requirement_text(entry: dict, lo: float, hi: float, share: tuple[int, int] |
     return out
 
 
-def spec(entry: dict, lo: float, hi: float, r: sqlite3.Row,
+def spec(entry: dict, lo: float, hi: float, r,
          share: tuple[int, int] | None) -> str:
     return json.dumps({
         "op": "aid_intensity",
@@ -255,9 +264,12 @@ def main() -> None:
     args = ap.parse_args()
 
     ceilings = load_ceilings()
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
+    _cases_on_disk(CASES_JSON)
+    with connect(rows=True) as conn:
+        _run(conn, args, ceilings)
 
+
+def _run(conn, args, ceilings) -> None:
     encoded = refuted = no_ceiling = corroborated = registered = 0
     cases = json.loads(CASES_JSON.read_text()) if CASES_JSON.exists() else {}
     weak: list[str] = []
@@ -289,7 +301,7 @@ def main() -> None:
                 f"EUR {cap_eur/1e6:.1f}M, median award EUR {r['award_p50']/1e6:.2f}M "
                 f"(n={r['award_n']})")
             if args.cmd == "run" and not args.dry_run:
-                conn.execute("DELETE FROM eligibility_gates WHERE instrument_id=? "
+                conn.execute("DELETE FROM eligibility_gates WHERE instrument_id=%s "
                              "AND gate_key='gber_article_inferred'", (r["instrument_id"],))
             continue
 
@@ -314,14 +326,14 @@ def main() -> None:
         if args.cmd == "run" and not args.dry_run:
             conn.execute(
                 """UPDATE eligibility_gates
-                   SET value_spec = ?, requirement = ?, updated_at = CURRENT_TIMESTAMP
-                   WHERE instrument_id = ? AND gate_key = 'gber_article_inferred'""",
+                   SET value_spec = %s, requirement = %s, updated_at = CURRENT_TIMESTAMP
+                   WHERE instrument_id = %s AND gate_key = 'gber_article_inferred'""",
                 (spec(entry, lo, hi, r, share),
                  reg[0] if reg else requirement_text(entry, lo, hi, share),
                  r["instrument_id"]))
 
-    if args.cmd == "run" and not args.dry_run:
-        conn.commit()
+    if args.cmd != "run" or args.dry_run:
+        conn.rollback()
 
     print(f"article gates given a statutory ceiling:        {encoded}")
     print(f"  grounded in the Commission's registration:    {registered}")
@@ -335,7 +347,6 @@ def main() -> None:
         print(line)
     if args.dry_run:
         print("[dry-run] nothing written.")
-    conn.close()
 
 
 if __name__ == "__main__":
