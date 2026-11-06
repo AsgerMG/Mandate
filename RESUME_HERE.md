@@ -64,6 +64,26 @@ grounding.
 - Disk: agents' rehearsal DBs filled the disk (21 GB in the scratchpad). Agents
   must delete their own rehearsal DBs on finishing.
 
+## FIRST THING NEXT SESSION (6 Nov, late)
+- go_live_sunday.sh FAILED with DiskFull on the Railway DB VOLUME (5 GB, Hobby
+  plan: it can't grow without Pro at ~$20/mo; the owner said NO upgrade). The
+  rollback was clean: grounding is empty, the DB is 2.8 GB, services are up.
+- Fix = option B (owner-approved): make policy_to_grounding.py migrate in
+  committed, resumable batches (per document chunk), insert embeddings in
+  batches, and build the HNSW index LAST (serial, maintenance_work_mem 256MB).
+  If still tight, temporarily drop policy's old HNSW index (~1 GB, an index,
+  not data; Regina's search is slower during the window). Measure free volume
+  space first (Railway API volumeInstances currentSizeMB).
+- After the cutover (policy_on_grounding.sh + merge policy-on-grounding):
+  archive (pg_dump) and drop policy's old duplicate text/vectors (~1.5 GB
+  freed). Brief the owner first: it is a deletion.
+- Steps 4-6 of go_live_sunday (cron inputs, cases.json, refresh-cron
+  retirement, Vercel BUCKET_*, capital-etl redeploy) did NOT run. Sunday's
+  cron WILL still run the new orchestrator (start command is set), but without
+  bucket inputs the instrument rebuild refuses (cases.json pinned) and the run
+  ends partial. refresh-cron is still active, so policy is refreshed twice on
+  Sunday: harmless.
+
 ## 6 Nov night: pick up here
 - go_live_sunday.sh was RE-RUN with the HNSW fix (serial build: Railway's
   /dev/shm is too small for a parallel build). Log: ~/Mandate-backups/
