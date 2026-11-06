@@ -58,3 +58,105 @@ tells the operator to run its `--check`.
 | `_wsit_arms.py` | named by no kept file |
 | `_wsit_content.py` | named by no kept file |
 | `_wsiu_source_check.py` | named by no kept file |
+
+## E2 archive, 2026-11-06: the two-store sync tooling
+
+Until 2026-11-05 the corpus had two copies, the laptop's `data/db.sqlite` and
+the Railway volume's, and this tooling moved it between them. There is one
+store now (PLATFORM.md), so the tooling, its tests and the artefacts that
+protected the SQLite copy are archived. What each did, and why it is unreached:
+
+| archived | was | evidence it is unreached |
+|---|---|---|
+| `events/extract/pull_db.py`, `pull_db_side.py` | download the volume's db.sqlite (overwrite / to a side file) | called only by `make pull-db`/`republish` (targets removed) and by each other |
+| `events/extract/push_local.py`, `push_db_verified.py` | upload the laptop corpus to the volume | `make push` / `make push-db` only (removed) |
+| `lib/merge_volume_into_local.py`, `lib/diff_stores.py` | union / diff the two stores | `make pull-db` and `schema/consolidate/union_stores.py` only |
+| `events/load/reconcile_stores.py`, `promote_to_record.py` | reconcile / promote between stores | imported only by the files above; `promote_to_record` was also the "unlisted replacer" `check_store_of_record.py` failed on |
+| `events/load/instrument_ledger.py` | export/verify `corpus-ledger/` | its `checksums` was a CI step (removed) |
+| `events/load/corpus_vault.py` | snapshot two SQLite tables with a shrink guard | `make vault` (removed), a CI `selftest` step (removed), and a launchd job that runs the copy in the OLD `~/Wincent` checkout, not this one |
+| `events/load/backup.py` | copy db.sqlite + data/ to local and iCloud | `make backup`, now `ETL/lib/backup_postgres.py` |
+| `events/load/test_overwrite_guard.py`, `test_overwrite_refusal.py`, `test_promotion_is_inserts_only.py` | tests of the sync's refusals | test archived code only; two were CI steps (removed) |
+| `lib/test_wake_rolls_back.py` | test of `railway_service.wake()` | tests archived code only |
+| `lib/railway_service_wake_restore.py` | `wake()`, `restore()` and `_instance_status()`, cut from `ETL/lib/railway_service.py` | called only by the sync scripts above; what `verify_cron.py` and `trigger_etl_now.py` use stays in `railway_service.py` |
+| `schema/consolidate/` | the one-time SQLite -> Postgres load (`load_into_postgres.py`) and union (`union_stores.py`) | done on 2026-11-05; nothing invokes either. Cited by PLATFORM.md and store.py as the record of the last reconciliation |
+
+Moved alongside, outside ETL: `capital/archive/corpus-ledger/` (see its README).
+
+`store_of_record.json` listed the four transfer scripts under `replacers`; the
+block as it stood:
+
+```json
+"replacers": {
+    "ETL/events/extract/push_db_verified.py": {
+      "proves_superset": true,
+      "why": "proves the local corpus is a superset of the volume, table by table and key by key, from both files at the moment it runs, and reads the volume back afterwards"
+    },
+    "ETL/events/extract/pull_db_side.py": {
+      "proves_superset": false,
+      "why": "downloads to a path the caller names and REFUSES when that path is the local corpus, so it cannot replace a store of record even though it holds the flag"
+    },
+    "ETL/events/extract/pull_db.py": {
+      "proves_superset": false,
+      "why": "downloads the volume straight over data/db.sqlite with --overwrite. Correct only while the volume is ahead of the laptop, which is not a property anything checks. Superseded for the pull direction by pull_db_side.py + merge_volume_into_local.py."
+    },
+    "ETL/events/extract/push_local.py": {
+      "proves_superset": false,
+      "why": "ends in a bare upload --overwrite of the laptop corpus onto the volume. Superseded by push_db_verified.py, which does the same transfer with the proof in front of it."
+    }
+  }
+}
+```
+
+The Makefile targets removed (kept verbatim):
+
+```make
+# The broad ETL pipeline (43 funder/registry extractors, classify, sanity)
+# runs on a weekly Railway cron against a Railway-resident volume, not locally.
+# This brings that corpus down for local interactive work (eligibility research,
+# ad-hoc analysis). Run before any session that needs fresh data.
+#
+# It is a UNION, not an overwrite. It used to be `pull_db.py`, which downloads
+# straight over data/db.sqlite -- correct only while the volume is ahead of the
+# laptop, which is a property nothing established. On 2026-08-07 it was false in
+# the other direction and one `make pull-db` would have replaced 1,088
+# instruments with 322, silently and with no undo. So: fetch to a side file the
+# local corpus is not, then INSERT OR IGNORE the rows the laptop lacks. Rows the
+# laptop already has are left exactly as they are.
+#
+# `pull_db.py` is still there for the case where you genuinely mean to discard
+# local state. Read its header first.
+# ── WHY THIS IS SCOPED ─────────────────────────────────────────────────────
+# The unscoped merge REFUSES, every time, and correctly: keying on `id` across
+# these two stores finds 4 collisions and 188 aliases -- four EU joint
+# undertakings whose ids mean a different administering body on each side, and
+# 174 eligibility gates that are the same rule under two ids. A blind union
+# would silently duplicate the gates and take the SHORTER of the two fund names.
+#
+# `companies` and `public_funding_events` are the two tables the weekly cron
+# actually adds to, and both audit clean: 0 collisions, 0 aliases. So the pull
+# takes exactly those, and anything else that diverges is a decision somebody
+# has to make with the audit in front of them rather than a transfer.
+#
+# 2026-08-19: an unscoped `make pull-db` inside a script was read as a fatal
+# error and stopped the promotion it was the first step of. The refusal is the
+# guard working; scoping it is what makes the target usable.
+pull-db:
+	python3 ETL/events/extract/pull_db_side.py /tmp/volume-db.sqlite
+	python3 ETL/lib/merge_volume_into_local.py /tmp/volume-db.sqlite \
+	    --only companies,public_funding_events --write
+
+# The other half of the automation split: everything that can't run on
+# Railway (cloud-blocked NETWORK sources + MANUAL sources with a file
+# dropped in data/manual_inbox/). Pulls fresh, runs what it can locally,
+# classifies + sanity-checks, pushes the result back. See
+# ETL/events/extract/push_local.py for exactly what runs and what's excluded.
+push:
+	python3 ETL/events/extract/push_local.py
+
+# The safe half of `push`, on its own: no sources, no LLM spend, just the
+# corpus onto the volume with the superset proof in front of it and a readback
+# behind it. This is the one to reach for after local instrument work.
+.PHONY: push-db
+push-db:
+	python3 ETL/events/extract/push_db_verified.py --write
+```

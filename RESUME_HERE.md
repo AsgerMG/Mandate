@@ -11,7 +11,7 @@ never deleted. Decisions go to the owner as a 30-second what/why/cost brief.
 ## Done (on main)
 - **Database.** One Railway Postgres, a schema and role per brain, isolation
   proven (`mandate/db/`). Capital's SQLite corpus is loaded and verified row for
-  row (`capital/ETL/schema/consolidate/`). The old Capina DB is frozen
+  row (`capital/ETL/archive/schema/consolidate/`). The old Capina DB is frozen
   read-only, and its cron is suspended.
 - **Repo and deploys.** Vercel `wincent` and `regina` both deploy from
   AsgerMG/Mandate. The policy API and `capital-etl` (Sundays 03:00 UTC, first

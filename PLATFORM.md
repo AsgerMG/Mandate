@@ -10,7 +10,7 @@ same commit.
 lives in the Mandate Postgres on Railway and nowhere else: no SQLite files, no
 local copies, no second instance. Two stores is what let an approved correction
 sit applied in one and reverted in the other for six days, and what let the
-capital corpus fork for three months (`capital/ETL/schema/consolidate/`).
+capital corpus fork for three months (`capital/ETL/archive/schema/consolidate/`).
 
 A role carries `search_path = <schema>, public` as a role default, so a brain's
 code never says where its tables are, and no brain can write into another's

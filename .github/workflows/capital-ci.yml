@@ -499,47 +499,10 @@ jobs:
       - name: A rebuild deletes only the instrument rows it authored
         run: python3 ETL/events/load/test_external_instrument_ownership.py
 
-      # Both channels between the corpus of record and a working copy move the
-      # whole 645 MB file with --overwrite, so each is a deletion of whatever
-      # the losing side holds alone. The guard against that skipped every table
-      # whose identity it could not use -- and an omitted table is byte-for-byte
-      # the same result as a table with nothing at risk. public_funding_events,
-      # 311,399 rows from registers that keep no history, had an identity naming
-      # four columns that do not exist and was therefore never once compared.
-      - name: An uncomparable table never reports itself as safe to overwrite
-        run: python3 ETL/events/load/test_overwrite_guard.py
-
-      # The other half: the measurement being honest is not the same as the
-      # sync acting on it. Both refusals had a hole, and both were in the
-      # override -- --force-overwrite skipped the comparison entirely, and
-      # --discard-local printed its total after the swap. The flag whose whole
-      # purpose is to delete rows knowingly must name them first.
-      - name: A sync refuses while the store it replaces is the sole holder of a row
-        run: python3 ETL/events/load/test_overwrite_refusal.py
-
-      # corpus-ledger/ is the only committed copy of the authored instrument
-      # corpus -- 7,471 encoded gates that no extractor can regenerate. A
-      # truncated or half-committed ledger is WORSE than none, because it reads
-      # as protection and is not. Hermetic by construction: it checks the
-      # artefact against its own manifest, with no database anywhere near it,
-      # which is the whole reason the artefact exists.
-      - name: The committed corpus ledger is whole
-        run: python3 ETL/events/load/instrument_ledger.py checksums
-
-      # The ledger's counterpart, for the two tables it deliberately does not
-      # hold: company_sector_labels (a paid LLM classification, past retention)
-      # and public_funding_events (registers that keep no history). Their vault
-      # lives in iCloud, so CI cannot check its contents -- but it CAN check the
-      # property that keeps the vault worth having: a snapshot with fewer rows,
-      # or fewer columns, than the last good one must be REFUSED rather than
-      # take its place. `db.sqlite.20260722.gz` was trusted as a backup of both
-      # tables and contains neither 144,493 labels nor 8,313 of the events; the
-      # counts were never compared. This drill deletes rows and drops a table
-      # from a throwaway store and requires the refusal, then requires that an
-      # acknowledged shrink is allowed AND recorded. It builds its own fixture
-      # when no corpus is present, which is the case here.
-      - name: A smaller backup cannot replace a good one
-        run: python3 ETL/events/load/corpus_vault.py selftest
+      # Four steps that guarded the laptop<->volume db.sqlite sync (the overwrite
+      # guard and its refusal, the corpus ledger's checksums, the vault's shrink
+      # drill) were removed on 2026-11-06 with the tooling they guarded: there
+      # is one store now. The tooling and its record are in ETL/archive/.
 
       # The same class again, one column over and far more expensive: the split
       # keyed a child on `name` while the ETL renamed 430 of 453 children to the

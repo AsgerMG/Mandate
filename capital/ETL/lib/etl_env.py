@@ -72,7 +72,7 @@ BACKUP_ICLOUD = _ICLOUD / "Wincent-backups"
 # BACKUP_ICLOUD because that one holds dated whole-database snapshots, which
 # are a copy, not a history: you can return to the 8th, but you cannot see what
 # changed between the 8th and the 9th, or restore one table without restoring
-# everything. See ETL/events/load/corpus_vault.py.
+# everything. See ETL/archive/events/load/corpus_vault.py (archived 2026-11-06).
 BACKUP_ICLOUD_CORPUS = _ICLOUD / "Wincent-corpus-backup"
 
 # Put every stage directory of BOTH tracks on the import path so cross-stage

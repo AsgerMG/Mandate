@@ -11,7 +11,7 @@
 WHY THIS FILE EXISTS. Until 2026-11-05 the corpus lived in two SQLite files, the
 laptop's and the Railway volume's, and ~200 scripts opened one of them with
 `sqlite3.connect(DB)`. The two forked on 2026-08-08 and were reconciled by hand
-for three months; the last reconciliation is ETL/schema/consolidate/. There is
+for three months; the last reconciliation is ETL/archive/schema/consolidate/. There is
 now one store, and this is the only way into it from Python. A script that
 opens its own connection, or keeps a local copy, recreates the defect this
 replaced.
