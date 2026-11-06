@@ -41,6 +41,8 @@ from mandate.runs import from_env as _run_log  # noqa: E402
 # Every step is also a row in mandate.run_steps: on the orchestrator's run when
 # mandate/refresh/run.py started us (MANDATE_RUN_ID), else on a run of our own.
 RUN, OWN_RUN = _run_log(brain="capital", kind="capital_etl")
+RENEW_RESULTS = "/tmp/mandate_renew_results.json"
+os.environ["RENEW_RESULTS"] = RENEW_RESULTS
 
 STEPS = [
     # FIRST, and fatal if it fails. Applies the forward Postgres migrations
@@ -344,8 +346,12 @@ for step in STEPS:
         report(corpus_marks.OK if returncode == 0 else
                corpus_marks.PARTIAL if tolerated else corpus_marks.FAILED,
                f"rc={returncode}" + (f": {why}" if why and returncode else ""))
+    detail = {}
+    if script == "renew.py" and Path(RENEW_RESULTS).exists():
+        import json  # noqa: PLC0415
+        detail = {"sources": json.loads(Path(RENEW_RESULTS).read_text())}
     RUN.close_step(step_id, "ok" if returncode == 0 else "partial" if tolerated else "failed",
-                   summary=why if returncode else "", exit_code=returncode)
+                   summary=why if returncode else "", exit_code=returncode, detail=detail)
     if returncode == 0:
         continue
     if script in SOFT:

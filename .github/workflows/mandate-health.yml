@@ -1,0 +1,44 @@
+# Mandate health: is every brain on current intel?
+#
+# Daily, read-only: mandate/health/check.py compares reality (mandate.runs,
+# run_steps, artefact_releases, the capital corpus, grounding) with the targets
+# in mandate/health/targets.json, and keeps exactly ONE issue titled
+# "Mandate health": opened or updated on a breach with what / where / since
+# when, closed when every target is met.
+#
+# Credential: CAPITAL_RO_DATABASE_URL, the capital_ro role. It can read and
+# never write (role grants plus default_transaction_read_only), so this job
+# holds no write path to any store. Policy is checked through the runs policy
+# records in mandate.runs, so no policy credential is needed.
+name: mandate-health
+
+on:
+  schedule:
+    - cron: "17 7 * * *"     # daily; the weekly run is Sunday 03:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: mandate-health
+  cancel-in-progress: false
+
+jobs:
+  health:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install --quiet 'psycopg[binary]==3.3.4' 'httpx==0.28.1'
+      - name: Check targets and keep the one issue
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+          GH_TOKEN: ${{ github.token }}
+        # Exit 1 on a breach is reported by the issue, not by a red job: the
+        # job fails only if the check itself could not run.
+        run: python3 mandate/health/check.py --github || [ $? -eq 1 ]

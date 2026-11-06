@@ -1230,9 +1230,9 @@ let digestCache: SignalsDigest | null | undefined;
  *  weekly refreshes failed to rebuild it: past that, "the state of play" would
  *  describe a moment that has moved on while reading as current. Owner decision
  *  2026-11-06: show the date, and hide the news sections past the limit rather
- *  than present them as current. The same limit is the health target
- *  `signals_digest_max_age_days` in mandate/health/targets.json, so the alarm
- *  fires on the day founders stop seeing the sections (check_news_limit.ts). */
+ *  than present them as current. The health alarm on the digest
+ *  (`signals_digest_max_age_days` in mandate/health/targets.json) is set well
+ *  inside this, so the issue opens before founders lose the sections. */
 export const NEWS_MAX_AGE_DAYS = 21;
 
 export interface NewsFreshness {
