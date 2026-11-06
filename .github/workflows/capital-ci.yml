@@ -367,9 +367,11 @@ jobs:
         run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_gate_pertinence.ts
 
       - name: Lint
+        if: always()
         run: npx eslint .
 
       - name: Build
+        if: always()
         run: npx next build
         env: { NEXT_TELEMETRY_DISABLED: '1' }
 
