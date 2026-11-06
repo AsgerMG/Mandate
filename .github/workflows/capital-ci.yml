@@ -319,6 +319,12 @@ jobs:
         if: always()
         working-directory: capital
         run: python3 ETL/schema/check_register_instrument_kinds.py
+      # A spec can be syntactically valid, pass the vocabulary check, and still
+      # mean the opposite of its source document. Reads the site data above.
+      - name: Encoded rule sanity
+        if: always()
+        working-directory: capital
+        run: python3 ETL/schema/check_spec_sanity.py
 
       # ── Founder-tier checks that read the live corpus ─────────────────────
       # Declared `manual` until 2026-11-06 because CI held no credential. It now
@@ -462,8 +468,9 @@ jobs:
 
       # A spec can be syntactically valid, pass the vocabulary check, and still
       # mean the opposite of its source document.
-      - name: Encoded rule sanity
-        run: python3 ETL/schema/check_spec_sanity.py
+      # "Encoded rule sanity" (check_spec_sanity.py) moved to the frontend job:
+      # it reads web/public/data/instrument_terms.json, which only that job
+      # generates from the corpus.
 
       # The gate that refuses to publish a corpus that got worse. It failed a
       # run in which every axis GAINED instruments, and it could not see a loss
