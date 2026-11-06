@@ -54,6 +54,16 @@ class EphemeralMandate:
         self.halfvec = False
 
     def __enter__(self) -> "EphemeralMandate":
+        try:
+            return self._build()
+        except BaseException:
+            # a failed setup must not leave a running server and its data
+            # directory behind (rehearsal databases filled the disk once)
+            if self._server is not None:
+                self.__exit__(None, None, None)
+            raise
+
+    def _build(self) -> "EphemeralMandate":
         server_url = os.environ.get("MANDATE_TEST_DATABASE_URL", "").strip()
         if not server_url:
             import pgserver  # noqa: PLC0415
