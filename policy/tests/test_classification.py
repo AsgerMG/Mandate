@@ -3,12 +3,12 @@ and the classify_pending() bulk pass against real Postgres."""
 
 from __future__ import annotations
 
+from tests.grounded import seed_version
 import datetime as dt
 
 from data.models import (
     Document,
     DocumentType,
-    DocumentVersion,
     Jurisdiction,
     LifecycleStage,
     Source,
@@ -99,16 +99,7 @@ def _seed_doc(session, source_id, external_id, title, text) -> Document:
     )
     session.add(doc)
     session.flush()
-    session.add(
-        DocumentVersion(
-            document_id=doc.id,
-            content_hash=f"h-{external_id}",
-            text=text,
-            char_count=len(text),
-            fetched_at=dt.datetime.now(dt.UTC),
-            is_current=True,
-        )
-    )
+    seed_version(session, doc.id, text=text)
     session.commit()
     return doc
 
@@ -167,26 +158,8 @@ def test_classify_pending_only_reads_current_version_text(db_session):
     )
     db_session.add(doc)
     db_session.flush()
-    db_session.add_all(
-        [
-            DocumentVersion(
-                document_id=doc.id,
-                content_hash="old",
-                text="STALE TEXT",
-                char_count=10,
-                fetched_at=dt.datetime.now(dt.UTC),
-                is_current=False,
-            ),
-            DocumentVersion(
-                document_id=doc.id,
-                content_hash="new",
-                text="CURRENT TEXT",
-                char_count=12,
-                fetched_at=dt.datetime.now(dt.UTC),
-                is_current=True,
-            ),
-        ]
-    )
+    seed_version(db_session, doc.id, text="STALE TEXT", is_current=False)
+    seed_version(db_session, doc.id, text="CURRENT TEXT", is_current=True)
     db_session.commit()
 
     client = _FakeClient([_Resp([_tool_use_block(["ai"], [])])])

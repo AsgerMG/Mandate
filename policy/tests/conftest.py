@@ -21,8 +21,9 @@ import tempfile
 from collections.abc import Iterator
 
 import psycopg
+from psycopg.conninfo import conninfo_to_dict
 import pytest
-from sqlalchemy import create_engine, text
+from sqlalchemy import URL, create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 from data import grounding_bridge
@@ -43,12 +44,18 @@ def mandate_db() -> Iterator[EphemeralMandate]:
 
 @pytest.fixture(scope="session")
 def pg_engine(mandate_db):
-    url = mandate_db.url("policy_app")
-    engine = create_engine(
-        "postgresql+psycopg://",
-        creator=lambda: psycopg.connect(url, options=hnsw_connect_options()),
-        future=True,
+    info = conninfo_to_dict(mandate_db.url("policy_app"))
+    host = info.get("host") or "localhost"
+    url = URL.create(
+        "postgresql+psycopg",
+        username=info["user"],
+        password=info.get("password"),
+        host=None if host.startswith("/") else host,
+        port=int(info["port"]) if info.get("port") else None,
+        database=info["dbname"],
+        query={"host": host} if host.startswith("/") else {},
     )
+    engine = create_engine(url, future=True, connect_args={"options": hnsw_connect_options()})
     with engine.begin() as conn:
         ensure_schema(conn)
     Base.metadata.create_all(engine)

@@ -8,6 +8,7 @@ quality one.
 
 from __future__ import annotations
 
+from tests.grounded import seed_version
 import datetime as dt
 
 from sqlalchemy import select
@@ -15,11 +16,9 @@ from sqlalchemy import select
 from data.models import (
     Document,
     DocumentType,
-    DocumentVersion,
     Enrichment,
     Jurisdiction,
     LifecycleStage,
-    Passage,
     Source,
 )
 from etl.enrichment.summarize import (
@@ -77,25 +76,7 @@ def _doc(session, *, doc_type, external_id, passages=("operative text",), source
     )
     session.add(doc)
     session.flush()
-    ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash=f"h-{external_id}",
-        text="t",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-    )
-    session.add(ver)
-    session.flush()
-    for ordinal, text in enumerate(passages):
-        session.add(
-            Passage(
-                version_id=ver.id,
-                ordinal=ordinal,
-                text=text,
-                char_start=ordinal * 100,
-                char_end=ordinal * 100 + len(text),
-            )
-        )
+    seed_version(session, doc.id, passages=list(passages))
     session.commit()
     return doc
 

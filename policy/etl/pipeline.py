@@ -356,8 +356,27 @@ def _store_in_grounding(
         (v.id, gb.CHUNKER),
     ).fetchone()
     if has is None and content.strip():
-        grounding.add_passages(con, v.id, gb.CHUNKER, _exact_spans(content))
+        new_ids = grounding.add_passages(con, v.id, gb.CHUNKER, _exact_spans(content))
+        _refuse_id_collision(con, new_ids)
     return v.id
+
+
+def _refuse_id_collision(con, new_ids: list[int]) -> None:
+    """A new grounding passage must not reuse the id of a folded duplicate policy
+    passage: stored citations (enrichments.citations, document_actor.passage_id)
+    resolve such an id through grounding_passage_link, so a reused id would make
+    an old citation point at new, unrelated text. The cutover sets grounding's
+    passage sequence above every policy passage id (mandate/ops/
+    policy_on_grounding.sh, step 1); this refuses the write if that step was skipped."""
+    clash = con.execute(
+        "SELECT policy_passage_id FROM grounding_passage_link "
+        "WHERE policy_passage_id = ANY(%s) AND grounding_passage_id <> policy_passage_id LIMIT 1",
+        (new_ids,),
+    ).fetchone()
+    if clash:
+        raise RuntimeError(
+            f"grounding passage id {clash[0]} is also a folded policy passage id: run "
+            "mandate/ops/policy_on_grounding.sh step 1 (sets the passage sequence) before ingesting")
 
 
 def _exact_spans(content: str) -> list[tuple[int, int, str | None]]:

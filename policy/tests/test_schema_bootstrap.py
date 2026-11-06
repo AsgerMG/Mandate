@@ -139,7 +139,7 @@ def test_the_hnsw_index_is_declared_on_the_model():
     """It used to exist in every database and in no metadata, so
     `alembic revision --autogenerate` proposed DROPPING it — one line in a
     migration nobody reads closely. `alembic check` failed on exactly that."""
-    from data.models import Passage
+    from data.models import LegacyPassage as Passage
 
     index = next(
         (i for i in Passage.__table__.indexes if i.name == "ix_passages_embedding_hnsw"), None

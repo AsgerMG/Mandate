@@ -15,13 +15,12 @@ from data.config import get_settings
 from data.models import (
     Document,
     DocumentType,
-    DocumentVersion,
     Jurisdiction,
     LifecycleStage,
-    Passage,
     Source,
 )
 from etl.enrichment import embed_pending
+from tests.grounded import seed_version
 from etl.intelligence import CompanyProfile, build_documents, build_request, generate_briefing
 from etl.intelligence.briefing import (
     _CANON_STUB_CHARS,
@@ -849,24 +848,7 @@ def _seed(session):
     )
     session.add(doc)
     session.flush()
-    ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash="h",
-        text="t",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-    )
-    session.add(ver)
-    session.flush()
-    session.add(
-        Passage(
-            version_id=ver.id,
-            ordinal=0,
-            text="ai obligations and intelligence",
-            char_start=0,
-            char_end=31,
-        )
-    )
+    seed_version(session, doc.id, passages=["ai obligations and intelligence"])
     session.commit()
 
 
@@ -910,16 +892,7 @@ def _seed_second_canon_doc(session, celex: str, text: str) -> None:
     )
     session.add(doc)
     session.flush()
-    ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash="h2",
-        text="t",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-    )
-    session.add(ver)
-    session.flush()
-    session.add(Passage(version_id=ver.id, ordinal=0, text=text, char_start=0, char_end=len(text)))
+    seed_version(session, doc.id, passages=[text])
     session.commit()
 
 
@@ -1069,24 +1042,7 @@ def _seed_press_doc(session) -> None:
     )
     session.add(doc)
     session.flush()
-    ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash="press-h",
-        text="t",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-    )
-    session.add(ver)
-    session.flush()
-    session.add(
-        Passage(
-            version_id=ver.id,
-            ordinal=0,
-            text="ai policy stakeholders debate enforcement",
-            char_start=0,
-            char_end=42,
-        )
-    )
+    seed_version(session, doc.id, passages=["ai policy stakeholders debate enforcement"])
     session.commit()
 
 
@@ -1257,25 +1213,7 @@ def _seed_deep_doc(session, *, celex: str, key: str, passages: list[str]) -> Non
     )
     session.add(doc)
     session.flush()
-    ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash=f"h-{celex}",
-        text="t",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-    )
-    session.add(ver)
-    session.flush()
-    for ordinal, text in enumerate(passages):
-        session.add(
-            Passage(
-                version_id=ver.id,
-                ordinal=ordinal,
-                text=text,
-                char_start=ordinal * 100,
-                char_end=ordinal * 100 + len(text),
-            )
-        )
+    seed_version(session, doc.id, passages=list(passages))
     session.commit()
 
 

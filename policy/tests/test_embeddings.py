@@ -16,11 +16,10 @@ from data.config import Settings, get_settings
 from data.models import (
     Document,
     DocumentType,
-    DocumentVersion,
     Jurisdiction,
     LifecycleStage,
-    Passage,
 )
+from tests.grounded import seed_version
 from etl.enrichment.embeddings import (
     VoyageReranker,
     _cosine_sim,
@@ -69,33 +68,7 @@ def _seed(session) -> None:
     )
     session.add(doc)
     session.flush()
-    ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash="h1",
-        text="x",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-    )
-    session.add(ver)
-    session.flush()
-    session.add_all(
-        [
-            Passage(
-                version_id=ver.id,
-                ordinal=0,
-                text="ai rules and ai duties",
-                char_start=0,
-                char_end=22,
-            ),
-            Passage(
-                version_id=ver.id,
-                ordinal=1,
-                text="fish quota limits",
-                char_start=23,
-                char_end=40,
-            ),
-        ]
-    )
+    seed_version(session, doc.id, passages=["ai rules and ai duties", "fish quota limits"])
     session.commit()
 
 
@@ -149,25 +122,7 @@ def _seed_canon_docs(session) -> None:
         )
         session.add(doc)
         session.flush()
-        ver = DocumentVersion(
-            document_id=doc.id,
-            content_hash=celex,
-            text="x",
-            char_count=1,
-            fetched_at=dt.datetime.now(dt.UTC),
-        )
-        session.add(ver)
-        session.flush()
-        session.add_all(
-            [
-                Passage(
-                    version_id=ver.id, ordinal=0, text=text_a, char_start=0, char_end=len(text_a)
-                ),
-                Passage(
-                    version_id=ver.id, ordinal=1, text=text_b, char_start=0, char_end=len(text_b)
-                ),
-            ]
-        )
+        seed_version(session, doc.id, passages=[text_a, text_b])
     session.commit()
 
 
@@ -212,38 +167,8 @@ def _seed_superseded_version(session) -> None:
     )
     session.add(doc)
     session.flush()
-    old_ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash="old",
-        text="x",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-        is_current=False,
-    )
-    new_ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash="new",
-        text="y",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-        is_current=True,
-    )
-    session.add_all([old_ver, new_ver])
-    session.flush()
-    session.add_all(
-        [
-            Passage(
-                version_id=old_ver.id, ordinal=0, text="ai ai ai stale", char_start=0, char_end=14
-            ),
-            Passage(
-                version_id=new_ver.id,
-                ordinal=0,
-                text="fish quota fresh",
-                char_start=0,
-                char_end=16,
-            ),
-        ]
-    )
+    seed_version(session, doc.id, passages=["ai ai ai stale"], is_current=False)
+    seed_version(session, doc.id, passages=["fish quota fresh"], is_current=True)
     session.commit()
 
 
@@ -301,16 +226,7 @@ def _press_doc(
     )
     session.add(doc)
     session.flush()
-    ver = DocumentVersion(
-        document_id=doc.id,
-        content_hash=external_id,
-        text="x",
-        char_count=1,
-        fetched_at=dt.datetime.now(dt.UTC),
-    )
-    session.add(ver)
-    session.flush()
-    session.add(Passage(version_id=ver.id, ordinal=0, text=text, char_start=0, char_end=len(text)))
+    seed_version(session, doc.id, passages=[text])
     session.commit()
 
 
@@ -689,25 +605,7 @@ def _seed_multi_passage_docs(session) -> dict[str, int]:
         )
         session.add(doc)
         session.flush()
-        ver = DocumentVersion(
-            document_id=doc.id,
-            content_hash=celex,
-            text="x",
-            char_count=1,
-            fetched_at=dt.datetime.now(dt.UTC),
-        )
-        session.add(ver)
-        session.flush()
-        for ordinal, text in enumerate(texts):
-            session.add(
-                Passage(
-                    version_id=ver.id,
-                    ordinal=ordinal,
-                    text=text,
-                    char_start=ordinal * 100,
-                    char_end=ordinal * 100 + len(text),
-                )
-            )
+        seed_version(session, doc.id, passages=list(texts))
         ids[celex] = doc.id
     session.commit()
     return ids

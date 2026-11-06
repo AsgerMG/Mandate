@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
+from tests.grounded import seed_version
 import datetime as dt
 
 from data.config import get_settings
 from data.models import (
     Document,
     DocumentType,
-    DocumentVersion,
     Jurisdiction,
     LifecycleStage,
-    Passage,
     Source,
 )
 from etl.enrichment import embed_pending
@@ -300,18 +299,7 @@ def test_generate_questions_extras_get_canon_guaranteed_retrieval(db_session):
         (ai_doc, "ai obligations and intelligence"),
         (nis2_doc, "fish quota reporting duties"),
     ]:
-        ver = DocumentVersion(
-            document_id=doc.id,
-            content_hash=f"h{doc.id}",
-            text="t",
-            char_count=1,
-            fetched_at=dt.datetime.now(dt.UTC),
-        )
-        db_session.add(ver)
-        db_session.flush()
-        db_session.add(
-            Passage(version_id=ver.id, ordinal=0, text=text, char_start=0, char_end=len(text))
-        )
+        seed_version(db_session, doc.id, passages=[text])
     db_session.commit()
     embed_pending(db_session, _FakeEmbedder())
 

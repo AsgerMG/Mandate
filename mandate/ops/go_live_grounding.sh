@@ -36,7 +36,9 @@ if [ ! -d "$G/archive/raw" ]; then
 fi
 
 echo "== 2. policy: link tables (Alembic)"
-(cd policy && DATABASE_URL="$POLICY" uv run --frozen alembic upgrade head)
+# pinned: head is now 5c2f9e1a7b30 (the cutover), which must run AFTER step 4;
+# mandate/ops/policy_on_grounding.sh runs it.
+(cd policy && DATABASE_URL="$POLICY" uv run --frozen alembic upgrade e41c0a7b9d10)
 
 echo "== 3. policy documents/versions/passages into grounding, then their originals"
 $PY "$M/policy_to_grounding.py" --admin-url "$ADMIN" --apply --manifest "$G/grounding_manifest_policy.jsonl"
