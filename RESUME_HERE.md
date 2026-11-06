@@ -64,6 +64,25 @@ grounding.
 - Disk: agents' rehearsal DBs filled the disk (21 GB in the scratchpad). Agents
   must delete their own rehearsal DBs on finishing.
 
+## 6 Nov evening: state for Sunday's first combined run (8 Nov 03:00 UTC)
+- E1 + E2 MERGED. The sqlite3 ratchet is at 83. innovate_uk's name is declared
+  (official_publication). Today's fixes are durable in programme_names +
+  gate_encoding_overrides. applicant_identity_repairs is deliberately unchanged
+  (curated August repairs win; the run's repair step applies them).
+- DONE in production: mandate.runs/run_steps/artefact_releases;
+  capital-etl start = `python3 mandate/refresh/run.py`, with POLICY_API_URL,
+  REFRESH_SECRET and VOYAGE_KEY as references.
+- OWNER RUNS: `bash mandate/ops/go_live_sunday.sh`. It re-runs the grounding
+  go-live (it had NOT completed: the store was empty), uploads cases.json,
+  retires refresh-cron, sets BUCKET_* on Vercel, and redeploys capital-etl.
+- Monday: check `python3 mandate/health/check.py`, the "Mandate health" issue
+  and `mandate.runs`. Then: re-embed on one model (~$0.25, re-measure stages);
+  the pertinence classification (owner-APPROVED if it improves eligibility
+  grounding; it does: it decides which requirements bear on a founder, which a
+  conversational agent needs; run it after Sunday so it classifies current
+  gates); wire the 6 VOYAGE checks into CI; 25 lint errors; Railway IaC
+  (.railway/railway.ts); port the policy API to read grounding.
+
 ## 6 Nov afternoon
 - E2 MERGED (archive + CI split). E2's 10 founder-data fixes were APPLIED to
   production (capital/project-mgmt/e2_data_fixes/fixes.sql, 10 rows). TODO
