@@ -30,7 +30,7 @@ dependencies = [
     "anthropic>=0.112.0",
     "fastapi>=0.115",
     "uvicorn[standard]>=0.30",
-    "fpdf2>=2.7",
+    "fpdf2>=2.9.0",
     "python-dotenv>=1.2.2",
     # Real-browser rendering for the one source behind a JS bot-challenge
     # with no machine-readable fallback (EP plenary verbatim reports —
