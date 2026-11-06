@@ -22,16 +22,35 @@ never deleted. Decisions go to the owner as a 30-second what/why/cost brief.
 - **CI.** Workflows run from the root `.github/`. Policy is green; capital is
   red (see the audit).
 
-## In flight (agent branches, pushed; review, then merge)
-- `mandate-web`: the ONE Mandate site at `web/` (git mv of
-  capital/website/frontend). Regina's pages are ported under `/regina`, with a
-  shell offering two agent personas. After merge: Vercel root -> `web`,
-  regina-ai.eu 301 -> wincent-ai.eu/regina, retire the Vercel project `regina`.
-- `mandate-grounding`: shared append-only `grounding` schema, the
-  `mandate/grounding` package (bucket `mandate-grounding`, EU, still empty) and
-  `mandate/embedding` (one Voyage 4 model, halfvec). The migrations are
-  rehearsed only. Production runs and the ~$1-2 re-embed need an owner brief
-  first.
+## Merged 6 Nov
+- `mandate-web`: ONE Mandate site at `web/`, live on wincent-ai.eu (Vercel root
+  `web`) and branded Mandate. Wincent is at /wincent and /brief, Regina at
+  /regina. regina-ai.eu redirects are in web/vercel.json; the DOMAIN MOVE is the
+  owner's command: `bash mandate/ops/move_regina_domain.sh`. Retire the Vercel
+  project `regina` after that.
+- `mandate-grounding`: the `grounding` schema (append-only), the
+  `mandate/grounding` package, and ONE embedding model (`mandate/embedding/
+  spaces.json`, voyage-4-large). Both Railway services now build from the repo
+  ROOT (RAILWAY_DOCKERFILE_PATH; done, builds green).
+
+## Grounding: production steps NOT yet run (brief the owner first)
+Order (from the agent's report):
+1. Apply mandate/db/grounding.sql plus the roles.sql grants with psql as admin.
+   Do NOT use `apply_roles.py --apply`: it rotates every password, which breaks
+   Vercel's sensitive env values.
+2. `alembic upgrade head` in policy (link tables, e41c0a7b9d10).
+3. Bucket credentials: `railway bucket credentials --bucket mandate-grounding`
+   -> BUCKET_* variables on capital-etl (and policy).
+4. policy_to_grounding.py --apply, then upload_manifest.py (11,599 objects,
+   159 MB).
+5. Upload the cron inputs (grounding_manifest_cron_inputs.jsonl, 386 MB), from
+   the archive extracted under the session scratchpad.
+6. Capital migration 034, then capital_sources_to_grounding.py --apply (6,694
+   gate-to-document links).
+7. Re-embed capital's 3 tables on voyage-4-large (~$0.23 total), cast policy to
+   halfvec (about -500 MB), flip spaces.json, then re-measure `npm run stages`.
+Open: the policy API still reads policy.passages until it is ported to
+grounding.
 
 ## Next (owner-approved 6 Nov)
 - **E1: refresh and health.** Port `populate_funding_instruments` and the
