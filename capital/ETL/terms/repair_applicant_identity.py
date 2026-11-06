@@ -79,7 +79,8 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
@@ -88,7 +89,6 @@ import hashlib  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 import re  # noqa: E402
-import sqlite3  # noqa: E402
 
 CACHE = ROOT / "data" / "applicant_identity.json"
 REPAIRS = ROOT / "reference" / "applicant_identity_repairs.json"
@@ -142,10 +142,14 @@ def main() -> None:
     version = cache_file["_property_version"]
     repairs = json.loads(REPAIRS.read_text())["repairs"]
 
-    conn = sqlite3.connect(DB)
+    with connect() as conn:
+        _run(conn, args, cache, version, repairs)
+
+
+def _run(conn, args, cache, version, repairs) -> None:
     rows = conn.execute(
         f"SELECT id, country, eligibility_text FROM funding_instruments "
-        f"WHERE length(COALESCE(eligibility_text,'')) > {MIN_LEN}").fetchall()
+        f"WHERE length(COALESCE(eligibility_text,'')) > {MIN_LEN} ORDER BY id").fetchall()
 
     condemned, stale, unjudged = [], 0, 0
     for iid, cc, text in rows:
@@ -262,21 +266,7 @@ def main() -> None:
            f"eligibility_source_url = {{p}}, eligibility_confidence = {{p}} "
            f"WHERE id = {{p}}")
 
-    conn.executemany(f"UPDATE funding_instruments SET {sets} WHERE id = ?", clears)
-    conn.executemany(upd.format(p="?"), writes)
-    conn.commit()
-    conn.close()
-    print(f"SQLite: {len(writes)} replaced, {len(clears)} retracted")
-
-    dsn = os.environ.get("DATABASE_URL")
-    if not dsn:
-        raise SystemExit("DATABASE_URL not set (expected in the repo-root "
-                         ".env.local). SQLite is repaired; Postgres is NOT -- "
-                         "re-run with it set, or the read path still serves the "
-                         "old text.")
-    import psycopg2  # lazy: a report-only run needs no driver
-    pg = psycopg2.connect(dsn)
-    with pg, pg.cursor() as cur:
+    with conn.cursor() as cur:
         cur.executemany(f"UPDATE funding_instruments SET {sets} WHERE id = %s", clears)
         cur.executemany(upd.format(p="%s"), writes)
         # See the module header: the derived index would otherwise go on
@@ -284,8 +274,7 @@ def main() -> None:
         cur.execute("DELETE FROM instrument_profiles WHERE instrument_id = ANY(%s)",
                     ([i for i, _c, _t, _e, _r in plan],))
         dropped = cur.rowcount or 0
-    pg.close()
-    print(f"Postgres: {len(writes)} replaced, {len(clears)} retracted")
+    print(f"{len(writes)} replaced, {len(clears)} retracted")
     print(f"invalidated {dropped} instrument_profiles row(s) -- re-embed with "
           f"`python3 ETL/terms/build_instrument_profiles.py run`")
     print("\nA replaced text is a text nobody has judged. Next:\n"

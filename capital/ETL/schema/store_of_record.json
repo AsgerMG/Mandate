@@ -80,9 +80,10 @@
     "Set on branch port-signals-pg to what that branch leaves; the other two",
     "port branches lower it further at merge, and it ends at 0."
   ],
-  "sqlite_import_budget": 94,
+  "sqlite_import_budget": 84,
 
   "tables": {
+    "batch_state":                {"store": "postgres", "why": "pending LLM batch ids between cron runs (migration 035); the file it replaced lived on a scratch disk"},
     "brief_records":              {"store": "postgres", "why": "written by the product at request time; never existed in SQLite"},
     "corpus_census":              {"store": "postgres", "why": "the weekly cron's record of what its corpus held; publish_corpus_census.py reads SQLite and writes here, which is a REPORT about a store rather than a copy of one"},
     "event_log":                  {"store": "postgres", "why": "product telemetry"},

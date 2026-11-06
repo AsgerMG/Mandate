@@ -677,6 +677,19 @@ function operatorsOtherThan(r: InstitutionEntry): string[] {
   return (r.schemeOperators ?? []).filter((o) => o.trim().toLowerCase() !== self);
 }
 
+/** "News as of 2 Nov 2026": the date of the digest a news section is grounded
+ *  in, so a founder can judge how current "the current moment" is. */
+function NewsDate({ asOf }: { asOf: string }) {
+  const d = new Date(`${asOf}T00:00:00Z`);
+  const label = Number.isNaN(d.getTime()) ? asOf
+    : d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+  return (
+    <p className="-mt-2 mb-2 text-[11px] uppercase tracking-[0.14em] text-[var(--muted-foreground)] print:text-[8px]">
+      News as of {label}
+    </p>
+  );
+}
+
 export function SectionTitle({ children, n }: { children: React.ReactNode; n?: string }) {
   return (
     <h3
@@ -967,12 +980,22 @@ export function Memo({ report, corpusWindow }: {
           noDoors={report.noDoors} />
 
         {/* ── 3. Positioning: fitting the current political moment ─────── */}
-        <SectionTitle n="03">Positioning</SectionTitle>
-        <p>{report.positioning}</p>
+        {/* Both sections are grounded only in the news digest. They carry its
+            date, and are not rendered when it is past NEWS_MAX_AGE_DAYS
+            (report.news.current false): stale news presented as the current
+            moment is worse than no section. Owner decision, 2026-11-06. */}
+        {report.positioning && (<>
+          <SectionTitle n="03">Positioning</SectionTitle>
+          {report.news?.asOf && <NewsDate asOf={report.news.asOf} />}
+          <p>{report.positioning}</p>
+        </>)}
 
         {/* ── 4. State of play, then the standing offer as its own block ── */}
-        <SectionTitle n="04">State of play</SectionTitle>
-        <p>{report.stateOfPlay}</p>
+        {report.stateOfPlay && (<>
+          <SectionTitle n="04">State of play</SectionTitle>
+          {report.news?.asOf && <NewsDate asOf={report.news.asOf} />}
+          <p>{report.stateOfPlay}</p>
+        </>)}
         {/* Rendered separately, never concatenated into the paragraph above:
             welded on, the analysis ended mid-thought in a sales line
             (contract rule SOP-2). */}

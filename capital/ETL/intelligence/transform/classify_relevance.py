@@ -97,13 +97,16 @@ def _parse_json(text: str) -> dict:
 
 
 def _state_load() -> dict:
-    if STATE_FILE.exists():
-        return json.loads(STATE_FILE.read_text())
-    return {"batches": [], "collected": []}
+    # In the store, not in STATE_FILE: the weekly container's disk is scratch,
+    # and a batch id lost there is a batch paid for and never collected.
+    # STATE_FILE is read once, as the seed (ETL/lib/batch_state.py).
+    import batch_state  # noqa: PLC0415
+    return batch_state.load("signals_relevance")
 
 
 def _state_save(st: dict) -> None:
-    STATE_FILE.write_text(json.dumps(st, indent=1))
+    import batch_state  # noqa: PLC0415
+    batch_state.save("signals_relevance", st)
 
 
 def cmd_status(_args) -> None:

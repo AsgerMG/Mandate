@@ -205,7 +205,10 @@ def staged_region_mix(conn, exclude_company_ids: set[int] | None = None,
                    granting_country_iso2, region, COUNT(*)
               FROM satr_staging
              WHERE sa_number IS NOT NULL AND TRIM(sa_number) <> ''
-             GROUP BY 1, 2, 3, 4, 5"""):
+             GROUP BY 1, 2, 3, 4, 5
+             -- ordered, so tie order in the Counter (and the JSON written from
+             -- it) does not depend on the planner
+             ORDER BY 1, 2, 3, 4, 5"""):
         if cid in skip:
             continue
         key = (region or "", cc or "")

@@ -41,13 +41,13 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT as REPO_ROOT, WEB  # noqa: E402
+from etl_env import ROOT as REPO_ROOT, WEB  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
 import json  # noqa: E402
 import re  # noqa: E402
-import sqlite3  # noqa: E402
+from store import reader  # noqa: E402
 
 OUT = WEB / "lib" / "intelligence" / "__objectives.json"
 
@@ -110,12 +110,12 @@ def main() -> None:
     ap.add_argument("--write", action="store_true")
     args = ap.parse_args()
 
-    c = sqlite3.connect(DB)
+    c = reader()
     rows = c.execute("""
-        SELECT i.id, GROUP_CONCAT(DISTINCT s.objectives_text)
+        SELECT i.id, string_agg(DISTINCT s.objectives_text, ',')
           FROM funding_instruments i
           JOIN satr_staging s ON s.sa_number = i.scheme_code
-         WHERE i.is_framework = 0 AND COALESCE(s.objectives_text,'') <> ''
+         WHERE NOT i.is_framework AND COALESCE(s.objectives_text,'') <> ''
          GROUP BY i.id""").fetchall()
 
     out: dict[str, dict] = {}
@@ -129,7 +129,7 @@ def main() -> None:
             out[iid] = {"useOfFunds": sorted(uses), "articles": sorted(set(arts))}
 
     total = c.execute(
-        "SELECT COUNT(*) FROM funding_instruments WHERE is_framework=0").fetchone()[0]
+        "SELECT COUNT(*) FROM funding_instruments WHERE NOT is_framework").fetchone()[0]
     print(f"instruments with a registered objective: {len(rows)} of {total}")
     print(f"  classified to a useOfFunds tag:        {len(out)}")
     spread = collections.Counter(u for v in out.values() for u in v["useOfFunds"])
@@ -144,7 +144,7 @@ def main() -> None:
         print("\n[report only] --write to persist")
         return
     OUT.write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
-    print(f"\nwrote {Path(os.path.relpath(OUT, REPO_ROOT))}  ({len(out)} instruments)")
+    print(f"\nwrote {_Path(os.path.relpath(OUT, REPO_ROOT))}  ({len(out)} instruments)")
 
 
 if __name__ == "__main__":

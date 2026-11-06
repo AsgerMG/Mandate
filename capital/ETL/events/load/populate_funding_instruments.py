@@ -7,18 +7,14 @@ project-mgmt/plans/ for the full rationale.
 
 Usage: python3 ETL/events/load/populate_funding_instruments.py
 
-** DANGER — DO NOT RE-RUN once real Phase 5 research exists (2026-07-21+) **
-main() does DELETE FROM funding_instruments (full rebuild) and, crucially,
-DELETE FROM eligibility_gates WHERE instrument_id NOT IN (...is_framework=1
-rows...) — i.e. it wipes every gate on every NON-framework instrument. That
-was safe when this script was the only thing writing funding_instruments
-(early Phase 2, before any llm_cited/llm_2pass research existed). It is now
-destructive: as of 2026-07-21 there are 60+ real, cited, hand-researched
-instruments (ADEME, EIC, CDTI, Innovate UK, Innovasjon Norge, Bpifrance,
-Innovationsfonden, NFR, Altum, EIS, ...) whose eligibility_gates rows would
-be silently deleted by a re-run. To add a new instrument row, INSERT it
-directly and additively (see FRAMEWORK_INSTRUMENTS below for the pattern) —
-do not call main().
+Writes schema `capital` of the Mandate Postgres (store.py), in one transaction,
+and is safe to re-run: it is a step of the weekly refresh (mandate/refresh).
+It UPSERTS the columns it derives (BUILT_COLUMNS) and DELETES NOTHING -- no
+instrument, no gate, no clause. Columns it does not derive are never in its
+statements, so curated text and routes cannot be displaced. An instrument it no
+longer derives from any event is kept with its gates and reported. (Until
+2026-11 this file truncated and reloaded the table and reconciled the gate layer
+by deletion; see the write section of build() for why that is gone.)
 """
 from __future__ import annotations
 
@@ -29,7 +25,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import ROOT  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
@@ -37,7 +33,6 @@ import hashlib
 import json
 import re
 import unicodedata
-import sqlite3
 from datetime import date
 from collections import Counter, defaultdict
 
@@ -50,6 +45,7 @@ from ndb_taxonomy import NDB_LABELS, NDB_LABELS_SUPPLEMENTAL, classify_ndb_from_
 from nuts_regions import delivery_region, staged_region_mix  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 from scheme_title import link_map, live_successor, repair_body_named_rows  # noqa: E402
+from store import columns, connect  # noqa: E402
 
 ALL_NDB_LABELS = {**NDB_LABELS, **NDB_LABELS_SUPPLEMENTAL}
 
@@ -232,12 +228,6 @@ CAPITAL_BY_BASIS: dict[str, str | None] = {
 
 # (2) SATR's own aid_instrument codes (GBER-derived, government-assigned —
 # more authoritative than the basis label when present).
-# Derived tables keyed on instrument_id, besides eligibility_gates. Every one
-# must be reconciled when instruments change, or its rows outlive the
-# instrument and the next Postgres publish dies on a foreign key. Add new
-# derived tables here when they are created.
-DERIVED_INSTRUMENT_TABLES = ("eligibility_clauses", "instrument_application",)
-
 # Every key here must have an entry in reference/register_instruments.json
 # carrying the register's OWN words for the code, and the value must be the kind
 # those words name. `ETL/schema/check_register_instrument_kinds.py` fails the
@@ -552,6 +542,22 @@ BUILT_COLUMNS = (
     "tier", "root_id", "depth", "path",
 )
 
+# ── Columns this pass writes but may not BLANK ───────────────────────────────
+# column -> the column whose NULL means "this pass has nothing to say". Measured
+# on 2026-11-06 against the production table: a rebuild from the same events set
+# 127 scheme_end_date (basis `call_deadline`, written by fetch_ademe_windows.py and
+# load_bdns_open_calls.py AFTER this step) and 118 administering_body (the
+# convocatoria's own body) to NULL, because those facts come from a later step
+# and not from events. The SQLite pipeline put them back minutes later; between
+# the two, founders were served the blanks, and a run that died in between kept
+# them. A value this pass cannot derive never displaces one somebody else wrote.
+# A value it CAN derive still replaces the old one (a new deadline is news).
+FILL_ONLY: dict[str, str] = {
+    "administering_body": "administering_body",
+    "scheme_end_date": "scheme_end_date",
+    "scheme_end_date_basis": "scheme_end_date",   # the pair moves together
+}
+
 MIN_CHILD_EVENTS = 40
 
 # Below this many priced awards a "typical" award is one or two events wearing
@@ -799,7 +805,7 @@ FRAMEWORK_RULES = (
 )
 
 
-def seed_framework_gates(conn: sqlite3.Connection, instruments: list[dict]) -> int:
+def seed_framework_gates(conn, instruments: list[dict]) -> int:
     """Seed every framework rule across the state-aid channel."""
     targets = [r["id"] for r in instruments
                if r.get("source_family_bucket") == STATE_AID_BUCKET]
@@ -812,7 +818,7 @@ def seed_framework_gates(conn: sqlite3.Connection, instruments: list[dict]) -> i
                   (instrument_id, gate_key, gate_family, requirement, value_spec,
                    intake_field, intake_field_resolved, gate_role,
                    verification_level, verify_note, updated_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'filter', 'human_verified', ?,
+                VALUES (%s, %s, %s, %s, %s, %s, %s, 'filter', 'human_verified', %s,
                         CURRENT_TIMESTAMP)
                 ON CONFLICT (instrument_id, gate_key) DO UPDATE SET
                   requirement=excluded.requirement, value_spec=excluded.value_spec,
@@ -827,7 +833,7 @@ def seed_framework_gates(conn: sqlite3.Connection, instruments: list[dict]) -> i
     return n
 
 
-def seed_inventory_gates(conn: sqlite3.Connection, fam_aid_objective_votes: dict[str, Counter]) -> int:
+def seed_inventory_gates(conn, fam_aid_objective_votes: dict[str, Counter]) -> int:
     """Tier 0.5: seed eligibility_gates rows purely from GBER article codes
     already loaded per-event (aid_objective) — zero API cost. Only fires for
     an instrument whose dominant aid_objective maps to a known GBER article.
@@ -869,10 +875,18 @@ def seed_inventory_gates(conn: sqlite3.Connection, fam_aid_objective_votes: dict
               (instrument_id, gate_key, gate_family, requirement, value,
                intake_field, gate_role, intake_field_resolved,
                verification_level, verify_note, updated_at)
-            VALUES (?, 'gber_article_inferred', ?, ?, ?, ?, 'programme_fact', 'none',
-                    'register_derived', ?, CURRENT_TIMESTAMP)
+            VALUES (%s, 'gber_article_inferred', %s, %s, %s, %s, 'programme_fact', 'none',
+                    'register_derived', %s, CURRENT_TIMESTAMP)
             ON CONFLICT (instrument_id, gate_key) DO UPDATE SET
-              gate_family=excluded.gate_family, requirement=excluded.requirement,
+              gate_family=excluded.gate_family,
+              -- encode_article_intensity.py rewrites `requirement` with the
+              -- article's statutory ceiling and sets value_spec. Re-seeding the
+              -- bare article text over it blanked 270 encoded ceilings until
+              -- that step ran again. Same article + an encoding = keep its text.
+              requirement=CASE WHEN eligibility_gates.value_spec IS NOT NULL
+                                AND eligibility_gates.value IS NOT DISTINCT FROM excluded.value
+                               THEN eligibility_gates.requirement
+                               ELSE excluded.requirement END,
               value=excluded.value, intake_field=excluded.intake_field,
               gate_role=excluded.gate_role,
               intake_field_resolved=excluded.intake_field_resolved,
@@ -888,7 +902,7 @@ def seed_inventory_gates(conn: sqlite3.Connection, fam_aid_objective_votes: dict
     return n
 
 
-def externally_owned(conn: sqlite3.Connection, produced: set[str]) -> set[str]:
+def externally_owned(conn, produced: set[str]) -> set[str]:
     """Instrument rows this pass did not derive and therefore may not delete.
 
     THE FAILURE THIS ENCODES. `funding_instruments` has two provenances. This
@@ -943,8 +957,8 @@ FRAMEWORK_INSTRUMENTS = [
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--force", action="store_true",
-                    help="proceed even if the rebuild would orphan a large share "
-                         "of the curated eligibility layer")
+                    help="no-op, kept for old command lines: the rebuild no longer "
+                         "deletes anything, so there is nothing to force")
     ap.add_argument("--signals-only", action="store_true",
                     help="update only the columns the ranker scores on "
                          "(sector_mix, recipient_region_mix, delivery_region*) "
@@ -952,8 +966,15 @@ def main() -> None:
     add_holdout_flags(ap)
     args = ap.parse_args()
 
-    conn = sqlite3.connect(DB)
-    conn.row_factory = sqlite3.Row
+    # ONE transaction: the whole rebuild lands, or none of it does. The SQLite
+    # version committed once at the end too, but a crash between its DELETE
+    # and its INSERT left a half-empty table on disk; here it cannot.
+    with connect(rows=True) as conn:
+        build(conn, args)
+
+
+def build(conn, args: argparse.Namespace) -> None:
+    """Everything main() used to do with its connection. See main()."""
     # Before anything is written: does every source in the events table say
     # what kind of capital it hands out? A basis nobody has declared builds an
     # instrument carrying `unknown`, which no intake option can reach, which
@@ -1037,7 +1058,7 @@ def main() -> None:
         SELECT source FROM public_funding_events
          WHERE programme_name IS NOT NULL AND programme_name != ''
          GROUP BY source
-        HAVING COUNT(*) >= ? AND COUNT(DISTINCT programme_name) > 1
+        HAVING COUNT(*) >= %s AND COUNT(DISTINCT programme_name) > 1
     """, (MIN_CHILD_EVENTS,))}
     if programme_split:
         print(f"  programme-level split available for {len(programme_split)} sources")
@@ -1510,9 +1531,9 @@ def main() -> None:
             SELECT TRIM(e.programme_name) p, COUNT(*) n
             FROM public_funding_events e
             JOIN funding_instrument_sources s ON s.source = e.source
-            WHERE s.instrument_id = ? AND e.programme_name IS NOT NULL
+            WHERE s.instrument_id = %s AND e.programme_name IS NOT NULL
               AND TRIM(e.programme_name) <> ''
-            GROUP BY 1 ORDER BY n DESC""", (row["id"],)).fetchall()
+            GROUP BY 1 ORDER BY n DESC, 1""", (row["id"],)).fetchall()
         total = sum(v[1] for v in votes)
         if not votes or not total or votes[0][1] / total < FEED_NAME_DOMINANCE:
             continue
@@ -1541,7 +1562,15 @@ def main() -> None:
     # Applied before the curated file, so a hand-curated name still wins: the
     # register is authoritative about a scheme's registered identity, a human is
     # authoritative about what to call it.
+    # REQUIRED, not optional. Without it this pass names 452 SATR schemes after
+    # the body that granted them, drops 448 notified durations and 55 successors
+    # -- and does so silently, because the file is gitignored and the cron's
+    # filesystem starts empty. Measured 2026-11-06. It now comes from grounding
+    # by pinned sha256 when it is not on disk, and its absence stops the build.
     _cases_path = ROOT / "data" / "raw" / "state_aid_cases" / "cases.json"
+    if not _cases_path.exists():
+        from grounded_inputs import materialise  # noqa: PLC0415
+        materialise("state_aid_cases")
     # Four cases whose registered title describes an EVALUATION PLAN rather than
     # an aid scheme ("Germany - Evaluation plan for the block exempted R&D...").
     # The SATR filing points at the evaluation-plan case, so the scheme's own
@@ -1748,127 +1777,64 @@ def main() -> None:
         changed = sum(1 for r in touched
                       if before.get(r["id"]) != tuple(r[c] for c in cols))
         conn.executemany(
-            f"UPDATE funding_instruments SET {', '.join(f'{c} = :{c}' for c in cols)}, "
-            f"updated_at = CURRENT_TIMESTAMP WHERE id = :id", touched)
+            f"UPDATE funding_instruments SET {', '.join(f'{c} = %({c})s' for c in cols)}, "
+            f"updated_at = CURRENT_TIMESTAMP WHERE id = %(id)s", touched)
         # A row this pass produces that the table does not hold means the two
         # have diverged for reasons that have nothing to do with the holdout,
         # and a targeted refresh is the wrong tool for that. Say so; do not
         # quietly write a partial corpus.
         absent = [r["id"] for r in now if r["id"] not in live]
-        conn.commit()
         print(f"signals-only: {changed:,} of {len(touched):,} instruments changed "
               f"on ({', '.join(cols)})")
         if absent:
             print(f"  NOTE: {len(absent):,} rows this pass produces are not in the "
                   f"table at all; a full rebuild is owed. e.g. {absent[:3]}")
-        conn.close()
         return
 
-    # ── Reconcile, do not wipe ───────────────────────────────────────────────
-    # This used to DELETE every non-framework eligibility gate on every run.
-    # Gates are the EXPENSIVE derived layer -- extracted, triaged, encoded and
-    # audited, at real cost -- and instrument rows are cheap facts recomputed
-    # from events. Coupling them meant a routine rebuild destroyed the
-    # eligibility engine, and fixing one derived column (capital_type) needed a
-    # separate script written specifically to avoid running this. The same
-    # coupling once cost 3,327 Voyage embeddings through an FK cascade.
+    # ── Write: UPSERT what this pass derives, and delete NOTHING ─────────────
     #
-    # Instrument ids are source_to_family() outputs, which are stable across
-    # runs, so a wipe was never necessary: gates whose instrument survives are
-    # still correctly attached. Only genuinely orphaned gates -- instrument no
-    # longer produced by this pass -- are removed.
+    # The SQLite version deleted every row it authored and re-inserted it, then
+    # restored the columns it does not own from a snapshot. In Postgres that
+    # cannot run at all -- eligibility_gates, eligibility_clauses,
+    # funding_instrument_sources and parent_id all hold foreign keys into this
+    # table (no cascade), so the DELETE is refused the moment one curated gate
+    # exists -- and it should not run: a delete-and-reinsert is a moment when
+    # every served row is gone, and the snapshot-and-restore is a second copy of
+    # "which columns are ours" that a new column could fall through.
+    #
+    # So each produced row is UPSERTED, writing BUILT_COLUMNS and nothing else.
+    # Every other column (description, eligibility_text, catchments,
+    # route_status, ... and anything added tomorrow) is never in the statement,
+    # so it cannot be displaced: that is the same protection the snapshot gave,
+    # now by construction instead of by restore. The end state is the one the
+    # SQLite pass reached, proven against it in
+    # ETL/schema/consolidate/prove_refresh_port.py.
+    #
+    # ── What is NOT deleted, deliberately ─────────────────────────────────────
+    # The SQLite pass deleted an instrument it no longer derived ("vanished"),
+    # together with every gate, clause and application row on it, and it would
+    # do that to up to 20% of the curated gate layer without --force. The
+    # owner's rule (2026-08-19) is union and insert-only for encodings: a gate
+    # is the expensive layer, an instrument row is a cheap fact. A vanished
+    # instrument therefore STAYS, with its gates, and is reported by id so a
+    # human decides; it carries its last event_count, so externally_owned()
+    # still never mistakes it for somebody else's row. On the 2026-11-05 corpus
+    # there are none. `--force` is kept as an accepted no-op for old command lines.
     produced = {r["id"] for r in now}
-    # Union, never overwrite. `produced` is what this pass authored; `external`
-    # is what somebody else did (see `externally_owned`). Survival is the union,
-    # so a rebuild refreshes its own rows and leaves everyone else's alone.
+    existing = {r[0] for r in conn.execute("SELECT id FROM funding_instruments")}
     external = externally_owned(conn, produced)
-    surviving = produced | external
+    vanished = sorted(existing - produced - external)
     if external:
         print(f"  external: {len(external):,} instrument rows this pass does not "
               f"derive (zero events) are kept, not reconciled")
-    # Read gates WITHOUT joining funding_instruments. An inner join only sees
-    # gates whose instrument still exists, so anything orphaned by an earlier
-    # run stays invisible and survives every subsequent reconcile -- which is
-    # exactly what happened: 33 gates for fondo_di_garanzia and
-    # invitalia_smart_start persisted until a Postgres FK violation exposed
-    # them. `surviving` is the full set this pass produces, frameworks
-    # included, so membership in it is the whole test.
-    orphaned = [
-        (gid, iid) for gid, iid in conn.execute(
-            "SELECT id, instrument_id FROM eligibility_gates")
-        if iid not in surviving
-    ]
-    # Every derived table keyed on instrument_id, not just gates. Reconciling
-    # only one left eligibility_clauses orphaned, which surfaced as a second
-    # Postgres FK violation immediately after the first was fixed -- the same
-    # bug twice because the fix was written for one table instead of the class.
-    for table in DERIVED_INSTRUMENT_TABLES:
-        dead = [row[0] for row in
-                conn.execute(f"SELECT id, instrument_id FROM {table}").fetchall()
-                if row[1] not in surviving]
-        if dead:
-            conn.executemany(f"DELETE FROM {table} WHERE id = ?", [(d,) for d in dead])
-            print(f"  reconciled: removed {len(dead):,} orphaned rows from {table}")
+    if vanished:
+        print(f"  VANISHED: {len(vanished):,} instruments are no longer derived from "
+              f"any event. KEPT with their gates (never deleted); review: "
+              f"{', '.join(vanished[:10])}{' ...' if len(vanished) > 10 else ''}")
     curated = conn.execute(
         """SELECT COUNT(*) FROM eligibility_gates
             WHERE value_spec IS NOT NULL OR gate_role IS NOT NULL""").fetchone()[0]
-    if orphaned:
-        at_risk = conn.execute(
-            f"""SELECT COUNT(*) FROM eligibility_gates
-                 WHERE id IN ({",".join("?" * len(orphaned))})
-                   AND (value_spec IS NOT NULL OR gate_role IS NOT NULL)""",
-            [g for g, _ in orphaned]).fetchone()[0]
-        # A rebuild that would discard a large share of the curated layer is a
-        # bug in this pass, not an instruction. Fail loudly rather than delete.
-        if curated and at_risk / curated > 0.2 and not args.force:
-            raise SystemExit(
-                f"refusing to run: this rebuild would orphan {at_risk:,} of {curated:,} "
-                f"curated gates ({at_risk / curated:.0%}). That means instrument ids "
-                f"moved. Investigate source_to_family() before re-running with --force."
-            )
-        conn.executemany("DELETE FROM eligibility_gates WHERE id = ?",
-                         [(g,) for g, _ in orphaned])
-        print(f"  reconciled: removed {len(orphaned):,} orphaned gates "
-              f"({at_risk:,} of them curated); {curated - at_risk:,} curated gates kept")
-    else:
-        print(f"  reconciled: no orphaned gates; {curated:,} curated gates kept")
-
-    # ── Columns this pass does not compute belong to somebody else ───────────
-    # The rebuild below deletes every row, and the INSERT names only the columns
-    # derived from events. Anything else on the table is written by another step
-    # -- `description`, `eligibility_text` and `eligibility_source_url` are the
-    # fetched per-scheme pages that load_scheme_text.py puts there, 285 and 241
-    # rows of the single most discriminating text the SATR channel has -- and a
-    # routine instrument rebuild was silently erasing all of it.
-    #
-    # Snapshotted by DIFFERENCE rather than by name: whatever this pass does not
-    # write, it does not own. A column added later by a new enrichment step is
-    # then protected the day it appears, instead of on the day somebody notices
-    # it went missing.
-    table_columns = [r[1] for r in conn.execute("PRAGMA table_info(funding_instruments)")]
-    foreign = [c for c in table_columns
-               if c not in BUILT_COLUMNS and c not in ("id", "created_at", "updated_at")]
-    preserved: dict[str, tuple] = {}
-    if foreign:
-        preserved = {
-            r[0]: r[1:] for r in conn.execute(
-                f"SELECT id, {', '.join(foreign)} FROM funding_instruments")
-            if any(v is not None for v in r[1:])
-        }
-
-    # Scoped to the rows this pass authors. An unscoped DELETE here was the
-    # other half of the same fault as the reconcile above: even with its gates
-    # spared, an externally owned instrument was still deleted and the gates
-    # went with it on the next FK cascade. A temp table rather than an inlined
-    # `NOT IN (...)` so the statement does not grow with the importer.
-    conn.execute("CREATE TEMP TABLE IF NOT EXISTS _external (id TEXT PRIMARY KEY)")
-    conn.execute("DELETE FROM _external")
-    conn.executemany("INSERT INTO _external (id) VALUES (?)",
-                     [(i,) for i in sorted(external)])
-    conn.execute("DELETE FROM funding_instrument_sources "
-                 " WHERE instrument_id NOT IN (SELECT id FROM _external)")
-    conn.execute("DELETE FROM funding_instruments "
-                 " WHERE id NOT IN (SELECT id FROM _external)")
+    print(f"  reconciled: nothing deleted; {curated:,} curated gates kept")
 
     # Defaulted here rather than at each construction site: `now` is built in
     # three places (families, children, frameworks), so a key added to one is
@@ -1883,44 +1849,76 @@ def main() -> None:
         _row.setdefault("delivery_region_share", None)
         _row.setdefault("recipient_region_mix", None)
 
-    insert_sql = (
-        f"INSERT INTO funding_instruments "
-        f"({', '.join(('id',) + BUILT_COLUMNS)}, updated_at) VALUES "
-        f"({', '.join(':' + c for c in ('id',) + BUILT_COLUMNS)}, CURRENT_TIMESTAMP)"
-    )
-    for r in now:
-        conn.execute(insert_sql, r)
+    # Postgres types the columns SQLite did not: is_framework is BOOLEAN.
+    types = dict(conn.execute(
+        "SELECT column_name, data_type FROM information_schema.columns "
+        "WHERE table_schema = current_schema() AND table_name = 'funding_instruments'"
+    ).fetchall())
+    missing = [c for c in ("id",) + BUILT_COLUMNS if c not in types]
+    if missing:
+        raise SystemExit(f"funding_instruments lacks {missing}: apply the migrations "
+                         f"(ETL/events/load/migrations/apply.py all) first")
+    booleans = {c for c in BUILT_COLUMNS if types[c] == "boolean"}
 
-    if preserved:
-        assignment = ", ".join(f"{c} = ?" for c in foreign)
-        restored = conn.executemany(
-            f"UPDATE funding_instruments SET {assignment} WHERE id = ?",
-            # `produced`, not `surviving`: an externally owned row was never
-            # deleted, so its text was never at risk and rewriting it would
-            # only overstate what this restore did.
-            [(*vals, iid) for iid, vals in preserved.items() if iid in produced],
-        ).rowcount
-        print(f"  preserved {restored:,} rows of text this pass does not own "
-              f"({', '.join(foreign)})")
+    def bind(r: dict) -> dict:
+        return {c: (None if r[c] is None else bool(r[c])) if c in booleans else r[c]
+                for c in ("id",) + BUILT_COLUMNS}
 
-    for fam, srcs in fam_sources.items():
-        for src in srcs:
-            conn.execute(
-                "INSERT OR IGNORE INTO funding_instrument_sources (instrument_id, source) VALUES (?, ?)",
-                (fam, src),
-            )
+    cols = ("id",) + BUILT_COLUMNS
+
+    def assign(c: str) -> str:
+        guard = FILL_ONLY.get(c)
+        if guard is None:
+            return f"{c} = excluded.{c}"
+        return (f"{c} = CASE WHEN excluded.{guard} IS NULL "
+                f"THEN funding_instruments.{c} ELSE excluded.{c} END")
+    upsert = (
+        f"INSERT INTO funding_instruments ({', '.join(cols)}, updated_at) VALUES "
+        f"({', '.join(f'%({c})s' for c in cols)}, CURRENT_TIMESTAMP) "
+        f"ON CONFLICT (id) DO UPDATE SET "
+        + ", ".join(assign(c) for c in BUILT_COLUMNS)
+        + ", updated_at = CURRENT_TIMESTAMP")
+    kept = conn.execute(
+        "SELECT " + ", ".join(
+            f"COUNT(*) FILTER (WHERE {c} IS NOT NULL)" for c in FILL_ONLY)
+        + " FROM funding_instruments WHERE id = ANY(%s)",
+        ([r["id"] for r in now if any(r.get(g) is None for g in FILL_ONLY.values())],)
+    ).fetchone()
+    # Parents before children: parent_id is a foreign key into this table.
+    by_id = {r["id"]: r for r in now}
+
+    def depth_of(r: dict, seen: int = 0) -> int:
+        p = r.get("parent_id")
+        return 0 if not p or p not in by_id or seen > 20 else 1 + depth_of(by_id[p], seen + 1)
+    ordered = sorted(now, key=lambda r: (depth_of(r), r["id"]))
+    with conn.cursor() as cur:
+        cur.executemany(upsert, [bind(r) for r in ordered])
+    if any(kept):
+        print("  fill-only: kept values this pass could not derive -- "
+              + ", ".join(f"{c} on <= {n}" for c, n in zip(FILL_ONLY, kept) if n))
+
+    # funding_instrument_sources: a derived link table, rewritten for the rows
+    # this pass authors only. External and vanished rows keep their links.
+    want = {(fam, src) for fam, srcs in fam_sources.items() for src in srcs}
+    have = {(i, s) for i, s in conn.execute(
+        "SELECT instrument_id, source FROM funding_instrument_sources")}
+    stale = sorted(p for p in have if p[0] in produced and p not in want)
+    with conn.cursor() as cur:
+        cur.executemany("DELETE FROM funding_instrument_sources "
+                        "WHERE instrument_id = %s AND source = %s", stale)
+        cur.executemany(
+            "INSERT INTO funding_instrument_sources (instrument_id, source) "
+            "VALUES (%s, %s) ON CONFLICT DO NOTHING", sorted(want - have))
 
     # Families AND their scheme children. The child's own votes win where an id
     # appears in both, because a scheme's article is the more specific claim.
     n_gates = seed_inventory_gates(
         conn, {**fam_aid_objective_votes, **child_aid_objective_votes})
     n_excl = seed_framework_gates(conn, now)
-    conn.commit()
     print(f"funding_instruments: {len(now)} rows")
     print(f"funding_instrument_sources: {sum(len(s) for s in fam_sources.values())} rows")
     print(f"eligibility_gates (Tier 0.5, inventory_inferred): {n_gates} rows")
     print(f"eligibility_gates (framework rules): {n_excl} rows")
-    conn.close()
 
 
 if __name__ == "__main__":

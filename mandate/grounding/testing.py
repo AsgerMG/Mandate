@@ -6,8 +6,8 @@
         db.admin_url             # the superuser, for setup and for SET ROLE grounding_owner
 
 What it builds: a NEW database (never an existing one) with pgvector in
-`public`, empty schemas capital/policy/mandate, then mandate/db/roles.sql and
-mandate/db/grounding.sql exactly as production runs them (the database name in
+`public`, empty schemas capital/policy/mandate, then mandate/db/roles.sql,
+mandate/db/grounding.sql and mandate/db/runs.sql exactly as production runs them (the database name in
 roles.sql's two DATABASE statements is the one substitution). So a test sees the
 real grants: if a brain role could UPDATE grounding here, it could there.
 
@@ -81,6 +81,8 @@ class EphemeralMandate:
                 ddl = ddl.replace("public.halfvec_cosine_ops", "public.vector_cosine_ops") \
                          .replace("public.halfvec(", "public.vector(")
             c.execute(ddl)
+            # the run log and the artefact manifest (mandate/db/runs.sql)
+            c.execute(sql_file("runs.sql", self.dbname))
             # a throwaway server may not trust local connections (CI's does
             # not): give the brain roles a test password. Cluster-wide, which
             # is why only a throwaway server is accepted.

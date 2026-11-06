@@ -42,5 +42,9 @@ COPY capital/ ./
 # happens rather than when the step exits.
 ENV PYTHONUNBUFFERED=1
 
-# The command is railway.json's startCommand, which Railway's cron runs.
-CMD ["python3", "ETL/events/extract/railway_cron.py"]
+# The command is railway.json's startCommand, which Railway's cron runs: the ONE
+# weekly Mandate refresh (mandate/refresh/run.py), whose first phase is
+# ETL/events/extract/railway_cron.py. Service env, beyond DATABASE_URL and the
+# Anthropic key: POLICY_API_URL, REFRESH_SECRET (referenced from the policy
+# service), VOYAGE_KEY, and BUCKET_* for the artefacts and grounded inputs.
+CMD ["python3", "/app/mandate/refresh/run.py"]

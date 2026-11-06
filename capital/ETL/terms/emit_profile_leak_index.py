@@ -46,12 +46,13 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT, WEB  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 
 import datetime  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
-import sqlite3  # noqa: E402
+
+from store import reader  # noqa: E402
 
 from recall_guards import digest, squash  # noqa: E402
 
@@ -64,23 +65,14 @@ PROBE_SOURCES = sorted(FRONTEND.glob("__recallSet*.json"))
 
 
 def main() -> None:
-    dsn = os.environ.get("DATABASE_URL")
-    if not dsn:
-        raise SystemExit(
-            "DATABASE_URL is not set. This artifact IS the Postgres profile "
-            "text; emitting it from anything else would rebuild the exact gap "
-            "it exists to close.")
-
-    import psycopg2
-    pg = psycopg2.connect(dsn)
-    with pg.cursor() as cur:
-        cur.execute("SELECT instrument_id, profile_text FROM instrument_profiles")
-        raw = {i: (t or "") for i, t in cur.fetchall()}
-    pg.close()
+    # One store now: the profile text and the corpus it is checked against are
+    # read through the same connection, so they cannot describe two corpora.
+    conn = reader()
+    raw = {i: (t or "") for i, t in conn.execute(
+        "SELECT instrument_id, profile_text FROM instrument_profiles")}
 
     profiles = {i: squash(t) for i, t in raw.items() if squash(t)}
 
-    conn = sqlite3.connect(DB)
     parent = {r[0]: r[1] for r in conn.execute(
         "SELECT id, parent_id FROM funding_instruments")}
 

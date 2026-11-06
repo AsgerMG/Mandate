@@ -1,6 +1,7 @@
 """Local automation entry point for the news/signals intelligence track.
 
-Runs LOCALLY, not on Railway -- embed_articles.py needs fastembed (a real,
+Runs in the weekly cron (railway_cron.py: --wait-minutes 90 --no-digest) and
+locally. HISTORY: it used to run LOCALLY only -- embed_articles.py needed fastembed (a real,
 un-pinned dependency not in requirements.txt or the Railway image; adding
 ONNX-model weights to that image was judged not worth the risk/verification
 cost tonight), and the LLM stages here are async batch (submit now, collect
@@ -60,13 +61,57 @@ STEPS = [
     [sys.executable, str(ROOT / "website/build/signals_digest.py")],
 ]
 
-for step in STEPS:
+COLLECT = STEPS[1:4]
+EMBED, DIGEST = STEPS[-2], STEPS[-1]
+
+
+def _run(step, fatal: bool = True) -> int:
     print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
     result = subprocess.run(step)
     if result.returncode != 0:
         print(f"=== FAILED: {' '.join(step)} (rc={result.returncode}) ===", flush=True)
-        sys.exit(result.returncode)
+        if fatal:
+            sys.exit(result.returncode)
+    return result.returncode
 
-print("=== ALL STEPS COMPLETE ===", flush=True)
-print("Note: this run's relevance/entity/signal batches were SUBMITTED, not "
-      "collected -- their results land on the NEXT run of this script.")
+
+def _pending() -> int:
+    import batch_state  # noqa: PLC0415
+    return sum(len(batch_state.pending(k)) for k in batch_state.LEGACY)
+
+
+def main() -> None:
+    import argparse  # noqa: PLC0415
+    import time  # noqa: PLC0415
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--wait-minutes", type=int, default=0,
+                    help="after submitting, poll and collect THIS run's batches for up to N "
+                         "minutes, so the digest below includes them (the weekly cron: 90)")
+    ap.add_argument("--no-digest", action="store_true",
+                    help="stop before the digest (the cron cuts it after linking)")
+    args = ap.parse_args()
+    for step in STEPS[:-2]:
+        _run(step)
+    deadline = time.monotonic() + 60 * args.wait_minutes
+    while args.wait_minutes and _pending() and time.monotonic() < deadline:
+        print(f"=== WAITING: {_pending()} batch(es) still pending ===", flush=True)
+        time.sleep(300)
+        for step in COLLECT:
+            _run(step)
+    # Not fatal: signals_chunk_embeddings is still in the legacy local space
+    # (fastembed, not in the cron image) until the Phase C re-embed moves it to
+    # the one model. Until then the digest is cut from the passages already
+    # embedded, and this run still says it failed (exit 3).
+    embed_rc = _run(EMBED, fatal=False)
+    if not args.no_digest:
+        _run(DIGEST)
+    print("=== ALL STEPS COMPLETE ===", flush=True)
+    if _pending():
+        print("Note: some batches are still processing -- their ids are in the store "
+              "(batch_state) and the NEXT run collects them.")
+    if embed_rc:
+        sys.exit(3)
+
+
+if __name__ == "__main__":
+    main()

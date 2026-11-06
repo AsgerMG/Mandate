@@ -70,17 +70,48 @@ def _url(readonly: bool) -> str:
     return url
 
 
+class Row(tuple):
+    """A row readable by position AND by column name: what sqlite3.Row was.
+
+    For a port whose code does both (`r[0]` here, `r["source"]` there, `dict(r)`
+    somewhere else). A tuple, so unpacking, equality and hashing behave exactly
+    as with the default rows.
+    """
+    __slots__ = ()
+    _index: dict[str, int] = {}
+
+    def __getitem__(self, key):  # type: ignore[override]
+        if isinstance(key, str):
+            return tuple.__getitem__(self, self._index[key])
+        return tuple.__getitem__(self, key)
+
+    def keys(self) -> list[str]:
+        return list(self._index)
+
+    def get(self, key: str, default=None):
+        i = self._index.get(key)
+        return default if i is None else tuple.__getitem__(self, i)
+
+
+def _row_factory(cursor):
+    names = [c.name for c in cursor.description] if cursor.description else []
+    cls = type("Row", (Row,), {"__slots__": (), "_index": {n: i for i, n in enumerate(names)}})
+    return cls
+
+
 @contextmanager
-def connect(*, readonly: bool = False, dict_rows: bool = False,
+def connect(*, readonly: bool = False, dict_rows: bool = False, rows: bool = False,
             statement_timeout_ms: int | None = None) -> Iterator[psycopg.Connection]:
     """A connection to schema `capital`. Commits on clean exit, rolls back on error.
 
     `readonly` uses capital_ro when its URL is configured, and in any case marks
     the session read-only, so a build or a check cannot write even by mistake.
+    `rows=True` yields `Row`s (by position and by name), the sqlite3.Row stand-in.
     """
     con = psycopg.connect(
         _url(readonly),
-        row_factory=dict_row if dict_rows else psycopg.rows.tuple_row,
+        row_factory=(_row_factory if rows else dict_row if dict_rows
+                     else psycopg.rows.tuple_row),
         # Railway's TCP proxy drops quiet sockets; long ETL steps are quiet.
         keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=6,
     )
@@ -96,6 +127,21 @@ def connect(*, readonly: bool = False, dict_rows: bool = False,
         raise
     finally:
         con.close()
+
+
+def reader(*, rows: bool = True) -> psycopg.Connection:
+    """A read-only connection for a script that only reads, held for its run.
+
+    The port of `conn = sqlite3.connect(DB)` in an emitter: same lifetime, no
+    re-indentation of a 200-line main(). Read-only at the session level (and as
+    capital_ro where configured), so a forgotten write fails instead of landing.
+    `rows=True` gives Row (by position and by name), as sqlite3.Row did.
+    """
+    con = psycopg.connect(
+        _url(True), row_factory=_row_factory if rows else psycopg.rows.tuple_row,
+        keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=6)
+    con.execute("SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY")
+    return con
 
 
 def columns(con: psycopg.Connection, table: str) -> list[str]:

@@ -1,0 +1,22 @@
+{
+  "_doc": "Mandate's freshness targets: the ONE place they are written. Read by mandate/health/check.py (daily, .github/workflows/mandate-health.yml), which opens, updates or closes the single GitHub issue 'Mandate health'. A target changes here, in a reviewed commit, never in the check.",
+  "brain_refreshed_within_days": {"capital": 8, "policy": 8},
+  "_brain_doc": "The weekly run is Sunday 03:00 UTC; 8 days is one run plus a day's grace. A run counts when it finished ok or partial.",
+  "run_stuck_after_hours": 12,
+  "_stuck_doc": "A run still 'running' whose heartbeat is older than this died without finishing (a redeploy, an OOM): the same 12 h policy's API uses for its own stale lock.",
+  "embedded_share_min": {
+    "instrument_eligibility_embeddings": 1.0,
+    "instrument_profiles": 1.0,
+    "grounding_passages": 1.0
+  },
+  "_embedded_doc": "Share of publishable instruments (not frameworks, not parents) with at least one eligibility embedding / a profile vector, and share of grounding passages with a vector in the current model (mandate/embedding/spaces.json).",
+  "source_cadence_days": {
+    "capital_default": 8,
+    "policy_default": 8,
+    "overrides": {}
+  },
+  "_source_doc": "Every capital AUTO source (capital/ETL/events/extract/manifest.py) and every policy source the last policy run attempted must have succeeded within its cadence. `overrides` maps 'capital:<key>' or 'policy:<key>' to days, for a source that publishes less often than weekly.",
+  "signals_digest_max_age_days": 8,
+  "_signals_doc": "The digest is rebuilt weekly. The brief hides its news sections at 21 days (NEWS_MAX_AGE_DAYS, web/lib/intelligence/corpus.ts); this alarm fires two weeks before founders lose them.",
+  "artefact_release_max_age_days": 8
+}

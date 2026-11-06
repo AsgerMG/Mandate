@@ -592,6 +592,30 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
 # only one that has stopped making progress entirely.
 REFRESH_STALE_AFTER = dt.timedelta(hours=12)
 
+# ── The DURABLE record: mandate.runs ────────────────────────────────────────
+# Everything above is memory, and memory is what a redeploy erases: on
+# 2026-11-06 policy's data was found 12 days stale with nothing anywhere saying
+# a refresh had failed or never run. Each refresh is now also a row in
+# mandate.runs (mandate/runs.py), written as policy_app: started, heartbeat per
+# source, finished with a per-source outcome. The weekly orchestrator waits on
+# that row and the daily health check reads it. Recording never fails a refresh.
+def _durable_url() -> str | None:
+    url = (get_settings().database_url or "").strip()
+    if not url or url == "local":
+        return None
+    for alias in ("postgresql+psycopg://", "postgres+psycopg://"):
+        if url.startswith(alias):
+            return "postgresql://" + url[len(alias):]
+    return url
+
+
+def _run_log():
+    from mandate.runs import RunLog  # noqa: PLC0415  (the platform package; in the image)
+    return RunLog
+
+
+_refresh_run = None   # the mandate.runs handle of the refresh in progress
+
 _refresh_lock = threading.Lock()
 _refresh_state: dict = {
     "running": False,
@@ -613,6 +637,8 @@ _refresh_state: dict = {
 def _note_progress() -> None:
     with _refresh_lock:
         _refresh_state["progress_at"] = dt.datetime.now(dt.UTC)
+    if _refresh_run is not None:
+        _refresh_run.heartbeat()
 
 
 def _try_start_refresh() -> tuple[bool, str | None]:
@@ -638,10 +664,41 @@ def _try_start_refresh() -> tuple[bool, str | None]:
             error=None,
             last_result=None,
         )
+    global _refresh_run
+    try:
+        _refresh_run = _run_log().start(_durable_url(), brain="policy", kind="policy_refresh",
+                                        trigger="api")
+    except Exception:  # noqa: BLE001 -- never the reason a refresh does not start
+        log.exception("refresh_record_start_failed")
+        _refresh_run = None
     return True, None
 
 
+def _source_outcomes(result: dict) -> dict:
+    """Per source: ok or crashed, small enough for mandate.runs.detail. The
+    health check holds every enabled source to its cadence from this."""
+    out = {}
+    for key, v in (result or {}).items():
+        if key.startswith("_"):
+            continue
+        out[key] = {"ok": not (isinstance(v, dict) and v.get("crashed")),
+                    **({"error": str(v.get("error"))[:200]} if isinstance(v, dict) and v.get("crashed") else {})}
+    return out
+
+
 def _finish_refresh(*, ok: bool, result: dict, error: str | None) -> None:
+    global _refresh_run
+    if _refresh_run is not None:
+        try:
+            sources = _source_outcomes(result)
+            crashed = [k for k, v in sources.items() if not v["ok"]]
+            status = "failed" if not ok else "partial" if crashed else "ok"
+            _refresh_run.finish(status, error or (f"{len(crashed)} source(s) crashed: "
+                                                  f"{', '.join(crashed)}" if crashed else "ok"),
+                                {"sources": sources})
+        except Exception:  # noqa: BLE001
+            log.exception("refresh_record_finish_failed")
+        _refresh_run = None
     with _refresh_lock:
         _refresh_state.update(
             running=False,
@@ -731,6 +788,16 @@ def refresh_status() -> dict:
     """
     with _refresh_lock:
         state = dict(_refresh_state)
+    # After a restart memory says "never run". The durable record says what
+    # actually happened last, so that is what is reported alongside.
+    try:
+        from mandate.runs import latest  # noqa: PLC0415
+        url = _durable_url()
+        last = latest(url, brain="policy", kind="policy_refresh") if url else None
+        state["durable"] = ({k: (v.isoformat() if hasattr(v, "isoformat") else v)
+                             for k, v in last.items() if k != "detail"} if last else None)
+    except Exception:  # noqa: BLE001
+        state["durable"] = None
     return {
         **state,
         "last_started": _iso(state["last_started"]),

@@ -98,11 +98,20 @@ def main() -> None:
 
     extra = args.extra if len(targets) == 1 else []
     failures = []
+    outcomes: dict[str, int] = {}
     for s in targets:
         rc = run_source(s, extra, args.dry_run)
+        outcomes[s.key] = rc
         if rc != 0:
             failures.append((s.key, rc))
         print()
+    # Per-source outcome for the run log (railway_cron.py attaches it to this
+    # step in mandate.run_steps); the health check holds each AUTO source to
+    # its cadence from it. Written only when asked for.
+    import os  # noqa: PLC0415
+    if os.environ.get("RENEW_RESULTS") and not args.dry_run:
+        import json  # noqa: PLC0415
+        _Path(os.environ["RENEW_RESULTS"]).write_text(json.dumps(outcomes))
 
     if failures:
         print("FAILED:", ", ".join(f"{k}(rc={rc})" for k, rc in failures))

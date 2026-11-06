@@ -22,9 +22,10 @@ schema. `public` holds the pgvector extension and nothing else.
 |---|---|---|---|
 | Postgres (`pgvector` service) | Railway project **Mandate** | image `pgvector/pgvector:pg18` | schemas `capital`, `policy`, `mandate` |
 | policy API (`Regina` service) | Railway project Mandate | `AsgerMG/Mandate`, root `policy/` | role `policy_app` |
-| policy refresh (`refresh-cron`) | Railway project Mandate | curl image, Sundays 05:00 UTC | calls the policy API |
+| ~~policy refresh (`refresh-cron`)~~ | retired by the one weekly run (below) | | |
 | Mandate site | Vercel `wincent` (wincent-ai.eu) | root `web` (Wincent at `/wincent`, `/brief`; Regina at `/regina`) | role `capital_app`; the policy API, server-side (`POLICY_API_URL`) |
-| capital ETL (`capital-etl` service) | Railway project Mandate, Sundays 03:00 UTC | `AsgerMG/Mandate`, root `capital/` | role `capital_app`; Anthropic key referenced from the policy service, not copied |
+| THE weekly refresh (`capital-etl` service) | Railway project Mandate, Sundays 03:00 UTC | `AsgerMG/Mandate`, start `mandate/refresh/run.py` | role `capital_app`: capital's chain (`railway_cron.py`), then policy's refresh via its API (waited on in `mandate.runs`), then site data, then the artefact release to the bucket |
+| health | GitHub Actions `mandate-health.yml`, daily | `mandate/health/check.py` vs `targets.json` | `capital_ro`; keeps ONE issue "Mandate health" |
 | CI | GitHub Actions, root `.github/workflows/` | one workflow per brain, path-scoped | `capital_ro` where a check reads the corpus |
 
 ## Grounding and embeddings: shared by every brain
@@ -45,6 +46,14 @@ embeddings call anywhere else.
 
 Both are imported from the monorepo, so **every Railway service builds from the
 repo root** (root directory `/`, config file `/<brain>/railway.json`).
+
+## Runs, artefacts, health
+
+Every refresh and every step is a row in `mandate.runs` / `mandate.run_steps`
+(`mandate/db/runs.sql`, client `mandate/runs.py`); policy records its own. The
+site's data and runtime priors are built once by the weekly run and published
+as a release (`mandate.artefact_releases` + sha256 objects in the bucket,
+`mandate/artefacts.py`); the prebuild downloads it and falls back to Postgres.
 
 ## Credentials
 

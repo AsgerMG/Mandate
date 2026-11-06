@@ -58,6 +58,8 @@ import {
   loadFundProcess,
   loadSignalsDigest,
   matchCompany,
+  newsFreshness,
+  NEWS_MAX_AGE_DAYS,
   toIso2,
   withheldNotice,
   type DigestItem,
@@ -784,7 +786,12 @@ async function synthesize(
   // capital sought, sector, and the channels actually used in the field pick
   // which slices the writer sees. "positioning" and "stateOfPlay" may ONLY be
   // grounded in these lines — no invention.
-  const digest = loadSignalsDigest();
+  // Only CURRENT news grounds anything (NEWS_MAX_AGE_DAYS): a digest past the
+  // limit is treated as no digest, and the two sections it grounds are not
+  // published at all (see `news` on the report below).
+  const digestLoaded = loadSignalsDigest();
+  const news = newsFreshness(digestLoaded);
+  const digest = news?.current ? digestLoaded : null;
   const fieldChannels = new Set(
     instrumentTable.filter((r) => r.usedInField).map((r) => r.channel));
   const topics = new Set<string>(["competitiveness_fund", "startup_scaleup"]);
@@ -1534,8 +1541,13 @@ async function synthesize(
     // the screen had already built.
     bottomLine: narrative.bottomLine.slice(0, BRIEF_LIMITS.bulletMax).map((b) => deDash(b)),
     institutions: finalInstitutions,
-    positioning: deDash(narrative.positioning),
-    stateOfPlay: deDash(narrative.stateOfPlay),
+    // Both are grounded ONLY in the news digest. Past NEWS_MAX_AGE_DAYS they
+    // are withheld, not shown with stale grounding: the panel hides an empty
+    // section and states the news date it would have used.
+    positioning: news?.current ? deDash(narrative.positioning) : "",
+    stateOfPlay: news?.current ? deDash(narrative.stateOfPlay) : "",
+    news: news ? { asOf: news.asOf, current: news.current, maxAgeDays: NEWS_MAX_AGE_DAYS }
+               : undefined,
     // The caveat is what stops committed-amount figures reading as a promise
     // of disbursed cash, so it is not optional even though the model sometimes
     // returns it empty (Corti's thinking-off run did). Schema `required` gets
