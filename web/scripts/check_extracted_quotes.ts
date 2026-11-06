@@ -78,10 +78,15 @@ function main() {
   }
 
   let candidates: string[] = [];
-  try {
-    candidates = readdirSync(FINDINGS).filter((f) => f.endsWith(".json"))
-      .map((f) => join(FINDINGS, f)).sort();
-  } catch { /* no findings directory */ }
+  // findings/ and, since 2026-11-06, the archived workstream outputs that
+  // left it under the same names (project-mgmt/archive/findings/).
+  for (const dir of [FINDINGS, join(REPO, "project-mgmt", "archive", "findings")]) {
+    try {
+      candidates.push(...readdirSync(dir).filter((f) => f.endsWith(".json"))
+        .map((f) => join(dir, f)));
+    } catch { /* no such directory */ }
+  }
+  candidates.sort();
 
   const files: string[] = [];
   const unverifiable: string[] = [];

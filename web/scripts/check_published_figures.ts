@@ -224,6 +224,10 @@ function loadArtifacts(root: string): Map<string, string> {
     }
   };
   walk(dir, "");
+  // The workstream run outputs were archived on 2026-11-06 under the same
+  // names (project-mgmt/findings/README.md); a tag naming one still resolves.
+  const archived = path.join(root, "project-mgmt", "archive", "findings");
+  if (existsSync(archived)) walk(archived, "");
   return out;
 }
 
