@@ -639,9 +639,6 @@ def main() -> None:
         return
 
     # --- Step 2: Match + Load ---
-    if not DB_PATH.exists():
-        print(f"!! DB not found: {DB_PATH}")
-        sys.exit(1)
 
     conn = sqlite3.connect(DB_PATH)
     print(f"\nMatching {len(all_rows)} rows against {DB_PATH.name} ...")

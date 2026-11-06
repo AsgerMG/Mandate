@@ -83,10 +83,10 @@ class SignalsRetriever:
                 "SELECT model, dim FROM signals_embedding_meta WHERE id = 1").fetchone()
         if meta is None:
             raise SystemExit("no embeddings yet -- run embed_articles.py first")
-        if meta[0] != self.embedder.model_name:
+        if meta[0] != self.embedder.model:
             raise SystemExit(
                 f"index built with {meta[0]}, configured model is "
-                f"{self.embedder.model_name} -- re-embed or set SIGNALS_EMBED_MODEL")
+                f"{self.embedder.model} -- re-embed (mandate/grounding/migrations/reembed_plan.py)")
 
     def _qvec(self, query: str) -> str:
         return vector_literal(self.embedder.embed([query])[0])

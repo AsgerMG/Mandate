@@ -28,6 +28,25 @@ schema. `public` holds the pgvector extension and nothing else.
 | capital ETL (`capital-etl` service) | Railway project Mandate, Sundays 03:00 UTC | `AsgerMG/Mandate`, root `capital/` | role `capital_app`; Anthropic key referenced from the policy service, not copied |
 | CI | GitHub Actions, root `.github/workflows/` | one workflow per brain, path-scoped | `capital_ro` where a check reads the corpus |
 
+## Grounding and embeddings: shared by every brain
+
+**Schema `grounding`** (`mandate/db/grounding.sql`) is the one store of what any
+brain cites: documents by canonical URL, versions by sha256 (UNIQUE, so a
+duplicate cannot exist), every fetch date, passages, and their vectors as
+`halfvec(1024)`. The original bytes are in the Railway bucket `mandate-grounding`
+under `sha256/<2>/<sha256>`. Owned by `grounding_owner` (NOLOGIN); every brain
+role may SELECT and INSERT, nobody may UPDATE or DELETE (grants, and a trigger
+that stops the owner too). Code: `mandate/grounding` (`store_original`, `fetch`,
+`cite`). Bucket config: `BUCKET_ENDPOINT`, `BUCKET_ACCESS_KEY_ID`,
+`BUCKET_SECRET_ACCESS_KEY`, `BUCKET_NAME`.
+
+**One embedding model**: `mandate/embedding` (`spaces.json`), mirrored into
+`web/lib/embedding.ts`. `check_boundary.py` fails on a model name or an
+embeddings call anywhere else.
+
+Both are imported from the monorepo, so **every Railway service builds from the
+repo root** (root directory `/`, config file `/<brain>/railway.json`).
+
 ## Credentials
 
 Each role's URL is stored on the Railway database service as two variables:

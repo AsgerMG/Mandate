@@ -429,3 +429,47 @@ class Sector(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     slug: Mapped[str] = mapped_column(String(64), unique=True, index=True)
     name: Mapped[str] = mapped_column(String(255))
+
+
+# --- The bridge to schema `grounding` ----------------------------------------
+#
+# Policy's documents, versions and passages are being moved into the shared,
+# append-only schema `grounding` (mandate/db/grounding.sql), where every brain's
+# sources live once, deduplicated by content hash. These three tables say, for
+# each policy row, which grounding row now holds it. They are written once, by
+# mandate/grounding/migrations/policy_to_grounding.py, and only ever appended to.
+#
+# Ids are PRESERVED for every row that was not a duplicate (grounding version id
+# = policy version id, grounding passage id = policy passage id), so
+# enrichments.citations and document_actor.passage_id stay valid unchanged. The
+# rows that differ are exactly the duplicates: 73 versions whose bytes another
+# policy version already holds, and their passages, which map onto the
+# surviving version's passages ordinal for ordinal (their texts are identical:
+# verified before the write).
+#
+# NO FOREIGN KEY to grounding in the ORM, deliberately: declaring one would make
+# Base.metadata.create_all (every test) try to create grounding's tables, and
+# Alembic autogenerate compare a schema it does not own. Integrity is checked by
+# the migration before it commits, and grounding is append-only, so a referenced
+# row cannot later disappear.
+
+
+class GroundingDocumentLink(Base):
+    __tablename__ = "grounding_document_link"
+
+    policy_document_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    grounding_document_id: Mapped[int] = mapped_column(BigInteger, index=True)
+
+
+class GroundingVersionLink(Base):
+    __tablename__ = "grounding_version_link"
+
+    policy_version_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    grounding_version_id: Mapped[int] = mapped_column(BigInteger, index=True)
+
+
+class GroundingPassageLink(Base):
+    __tablename__ = "grounding_passage_link"
+
+    policy_passage_id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+    grounding_passage_id: Mapped[int] = mapped_column(BigInteger, index=True)

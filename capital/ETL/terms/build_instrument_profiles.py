@@ -99,9 +99,12 @@ import os
 import re
 from collections import Counter, defaultdict
 
-import voyageai
+from mandate.embedding import Embedder, EmbeddingError, for_table, space_for_table
 
-MODEL = "voyage-3.5"
+#: The registered name of this table in mandate/embedding/spaces.json. Writes
+#: use the table's stored space so new rows stay comparable with existing ones.
+TABLE = "capital.instrument_profiles"
+MODEL = space_for_table(TABLE).name
 BATCH = 64
 # Titles are the strongest signal, but a fund with 27,000 events must not
 # produce a 27,000-title document: past a few dozen distinct titles the marginal
@@ -126,11 +129,11 @@ ADMIN_NOISE = re.compile(
 THEMATIC_FAMILIES = ("G5_use_of_funds",)
 
 
-def voyage_client() -> voyageai.Client:
-    key = os.environ.get("VOYAGE_KEY")
-    if not key:
-        _sys.exit("VOYAGE_KEY not set (add to the repo-root .env.local)")
-    return voyageai.Client(api_key=key)
+def voyage_client() -> Embedder:
+    try:
+        return for_table(TABLE)
+    except EmbeddingError as e:
+        _sys.exit(f"{e} (add it to capital/.env.local)")
 
 
 def readable(slug: str) -> str:
@@ -790,10 +793,10 @@ def _embed(args, pg, profiles) -> None:
     done = 0
     for i in range(0, len(todo), BATCH):
         batch = todo[i : i + BATCH]
-        result = client.embed([t[1] for t in batch], model=MODEL, input_type="document")
+        vectors = client.embed_documents([t[1] for t in batch])
         rows = [
             (iid, text, vec, MODEL, n_titles)
-            for (iid, text, n_titles), vec in zip(batch, result.embeddings)
+            for (iid, text, n_titles), vec in zip(batch, vectors, strict=True)
         ]
         with pg.cursor() as cur:
             cur.executemany(
@@ -811,12 +814,12 @@ def _embed(args, pg, profiles) -> None:
         pg.commit()  # per-batch commit — kill-safe
         done += len(batch)
         print(f"  {done:,}/{len(todo):,}")
-    print(f"done: {done:,} profiles embedded.")
+    print(f"done: {done:,} profiles embedded. {client.usage.line()}")
 
 
 def cmd_query(args) -> None:
     client = voyage_client()
-    vec = client.embed([args.text], model=MODEL, input_type="query").embeddings[0]
+    vec = client.embed_query(args.text)
     with connect(readonly=True) as pg:
         rows = _nearest(pg, vec, args.k)
     if not rows:

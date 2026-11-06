@@ -51,7 +51,10 @@ RAILWAY = ["npx", "--yes", "@railway/cli"]
 
 def run_sql_file(admin_url: str) -> None:
     psql = "/opt/homebrew/opt/postgresql@18/bin/psql"
-    subprocess.run([psql, admin_url, "-X", "-q", "-f", str(HERE / "roles.sql")], check=True)
+    # roles.sql first: it creates grounding_owner and the default privileges the
+    # grounding tables inherit; grounding.sql then creates those tables.
+    for f in ("roles.sql", "grounding.sql"):
+        subprocess.run([psql, admin_url, "-X", "-q", "-f", str(HERE / f)], check=True)
 
 
 def railway_set(variables: dict[str, str]) -> None:
@@ -86,6 +89,17 @@ def verify(url: str, role: str) -> list[str]:
             pass  # refused: the isolation holds
         if role != "capital_ro":
             c.execute("create temp table _probe(v public.vector(3))")  # pgvector reachable
+        # grounding: readable by all, and append-only for all -- an UPDATE must be
+        # refused by the GRANTS (before any row or trigger is consulted).
+        try:
+            c.execute("select count(*) from grounding.documents")
+        except psycopg.Error as e:
+            problems.append(f"{role}: cannot read grounding: {e}")
+        try:
+            c.execute("update grounding.documents set title = title where false")
+            problems.append(f"{role}: CAN update grounding.documents")
+        except (psycopg.errors.InsufficientPrivilege, psycopg.errors.ReadOnlySqlTransaction):
+            pass
     return problems
 
 

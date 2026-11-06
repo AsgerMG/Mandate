@@ -90,6 +90,15 @@ for _rel in (
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
+# The platform code every brain shares (mandate/grounding, mandate/embedding)
+# lives at <monorepo>/mandate. Appended, not prepended: a brain's own flat
+# modules win any name clash, and `import mandate.x` is unambiguous anyway.
+# Capital's image is built from the monorepo root for exactly this reason
+# (capital/Dockerfile).
+MONOREPO = ROOT.parent
+if (MONOREPO / "mandate" / "__init__.py").exists() and str(MONOREPO) not in sys.path:
+    sys.path.append(str(MONOREPO))
+
 def require_reference(path, why: str):
     """A reference file that is absent must stop the run, not read as empty.
 

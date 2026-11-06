@@ -1,0 +1,34 @@
+# mandate-platform: the code every brain shares (mandate/grounding, mandate/embedding).
+#
+# The import name is `mandate`, and the source tree IS this directory, so the
+# wheel maps it explicitly: hatch cannot ship a package whose root is the
+# project root by name. An editable install (what policy's uv source asks for)
+# instead puts the REPO ROOT on sys.path (dev-mode-dirs), which makes `mandate`
+# resolve to this very directory -- the same resolution capital gets from
+# etl_env.py's sys.path line.
+[project]
+name = "mandate-platform"
+version = "0.1.0"
+description = "Mandate's shared grounding store and embedding module."
+requires-python = ">=3.11"
+dependencies = [
+    "psycopg[binary]>=3.2",
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+# Only the legacy local signals space (MiniLM) needs it; see embedding/spaces.py.
+local = ["fastembed>=0.8.0"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+bypass-selection = true
+dev-mode-dirs = [".."]
+
+[tool.hatch.build.targets.wheel.force-include]
+"__init__.py" = "mandate/__init__.py"
+"grounding" = "mandate/grounding"
+"embedding" = "mandate/embedding"

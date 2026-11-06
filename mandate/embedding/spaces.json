@@ -1,0 +1,41 @@
+{
+  "_doc": "THE one definition of Mandate's embedding models. Read by mandate/embedding/__init__.py and generated into capital/website/frontend/lib/embedding.ts (check_boundary.py --write). Edit here and nowhere else. `model` is the target: every new vector is written in it. A legacy space exists only while a stored table is still in it; reembed_plan.py is its exit, and the entry is deleted the day `stored` stops naming it.",
+  "model": "voyage-4-large",
+  "dim": 1024,
+  "query_model": "voyage-4-large",
+  "_query_model_doc": "Voyage: 'All embeddings created with the 4 series are compatible with each other', so voyage-4-lite ($0.02/M) could embed queries against voyage-4-large documents. Kept at voyage-4-large: a query is ~50 tokens ($0.000006), so the saving is nil and the asymmetric pair is a quality risk nobody has measured.",
+  "spaces": {
+    "voyage-4-large": {
+      "provider": "voyage",
+      "dim": 1024,
+      "input_type": false,
+      "price_per_mtok_usd": 0.12,
+      "max_request_tokens": 120000,
+      "status": "target",
+      "_input_type_doc": "false: policy's 123k stored vectors were embedded without input_type, and a space is one convention. Revisit only with a re-embed and an eval."
+    },
+    "voyage-3.5": {
+      "provider": "voyage",
+      "dim": 1024,
+      "input_type": true,
+      "price_per_mtok_usd": 0.06,
+      "max_request_tokens": 320000,
+      "status": "legacy"
+    },
+    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2": {
+      "provider": "local",
+      "dim": 384,
+      "input_type": false,
+      "price_per_mtok_usd": 0.0,
+      "max_request_tokens": 0,
+      "status": "legacy"
+    }
+  },
+  "stored": {
+    "grounding.passage_embeddings": "voyage-4-large",
+    "policy.passages": "voyage-4-large",
+    "capital.eligibility_embeddings": "voyage-3.5",
+    "capital.instrument_profiles": "voyage-3.5",
+    "capital.signals_chunk_embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  }
+}

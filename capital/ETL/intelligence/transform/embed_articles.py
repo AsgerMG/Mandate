@@ -1,13 +1,13 @@
 """Chunk + embed hydrated articles for local vector retrieval (embed step).
 
 Architecture (ported from a proven prior design):
-  * Model: small multilingual sentence-embedding model via fastembed — ONNX on
-    CPU, entirely local, no API key, no network call after the one-time model
-    download (~220MB). Default: paraphrase-multilingual-MiniLM-L12-v2 (384-dim;
-    the corpus mixes EN/DE/FR so an English-only bge-small won't do). A hosted
-    model (Voyage, OpenAI) is a documented drop-in — implement the Embedder
-    protocol (embed(texts) -> list[list[float]], expose .dim) and swap it in
-    get_embedder(). Override via SIGNALS_EMBED_MODEL env var.
+  * Model: the space mandate/embedding/spaces.json records for
+    capital.signals_chunk_embeddings -- today the LEGACY local space
+    (multilingual MiniLM via fastembed, 384-dim, CPU, no key). It is not chosen
+    here: a write must land in the table's space, and moving the table to the
+    one Mandate model is a re-embed (mandate/grounding/migrations/reembed_plan.py),
+    not a flag. SIGNALS_EMBED_MODEL, which used to override it, is gone: an env
+    var that changes the space of new rows is how a table ends up holding two.
   * Storage: signals_chunk_embeddings.embedding, a pgvector vector(384) in
     schema `capital`. signals_embedding_meta records model + dim; changing
     models means a new column dimension and a full re-embed -- vectors from
@@ -46,40 +46,21 @@ import os
 from store import connect  # noqa: E402
 from signals_retrieval import vector_literal  # noqa: E402
 
-DEFAULT_MODEL = "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
-EMBED_MODEL = os.environ.get("SIGNALS_EMBED_MODEL", DEFAULT_MODEL)
+from mandate.embedding import for_table, space_for_table  # noqa: E402
+
+#: The registered name of this table in mandate/embedding/spaces.json.
+TABLE = "capital.signals_chunk_embeddings"
+EMBED_MODEL = space_for_table(TABLE).name
 CHUNK_CHARS = 1500
 CHUNK_OVERLAP = 200
 BATCH = 128
 
 
-# ── Embedder protocol ─────────────────────────────────────────────────────────
-class FastembedEmbedder:
-    """Local ONNX/CPU embedder. The default; no key, no network after download."""
-
-    def __init__(self, model_name: str):
-        try:
-            from fastembed import TextEmbedding
-        except ImportError:
-            raise SystemExit("fastembed not installed:  pip3 install fastembed")
-        info = {m["model"]: m for m in TextEmbedding.list_supported_models()}
-        if model_name not in info:
-            raise SystemExit(
-                f"model '{model_name}' not in fastembed's supported list; "
-                f"multilingual options: "
-                + ", ".join(m for m in info if "multilingual" in m.lower()))
-        self.model_name = model_name
-        self.dim = info[model_name]["dim"]
-        self._model = TextEmbedding(model_name)
-
-    def embed(self, texts: list[str]) -> list[list[float]]:
-        return [v.tolist() for v in self._model.embed(texts, batch_size=BATCH)]
-
-
+# ── Embedder ─────────────────────────────────────────────────────────────────
 def get_embedder():
-    """Swap point for a hosted embedder (Voyage/OpenAI): return any object with
-    .embed(texts)->list[list[float]], .dim, .model_name."""
-    return FastembedEmbedder(EMBED_MODEL)
+    """The table's embedder (mandate.embedding). Any object with
+    .embed(texts) -> list[list[float]], .dim and .model also works (tests)."""
+    return for_table(TABLE)
 
 
 # ── Model guard ──────────────────────────────────────────────────────────────
@@ -91,13 +72,13 @@ def ensure_model(con, embedder) -> None:
         "SELECT model, dim FROM signals_embedding_meta WHERE id = 1").fetchone()
     if meta is None:
         con.execute("INSERT INTO signals_embedding_meta (id, model, dim) VALUES (1, %s, %s)",
-                    (embedder.model_name, embedder.dim))
+                    (embedder.model, embedder.dim))
         con.commit()
-    elif meta["model"] != embedder.model_name or meta["dim"] != embedder.dim:
+    elif meta["model"] != embedder.model or meta["dim"] != embedder.dim:
         raise SystemExit(
             f"signals_embedding_meta says the index was built with {meta['model']} "
             f"(dim {meta['dim']}) but the configured model is "
-            f"{embedder.model_name} (dim {embedder.dim}).\n"
+            f"{embedder.model} (dim {embedder.dim}).\n"
             "Vectors from different models are not comparable. Switching models is "
             "a migration (new vector dimension, full re-embed), not a flag: write "
             "it as one rather than emptying the table from here.")
@@ -215,7 +196,7 @@ def _run(con, embedder, limit: int | None) -> None:
         WHERE NOT EXISTS (SELECT 1 FROM signals_chunk_embeddings e WHERE e.chunk_id = c.id)
         ORDER BY c.id""").fetchall()
     print(f"chunked {new_chunks:,} new; embedding {len(todo):,} chunks "
-          f"({embedder.model_name}, batches of {BATCH})")
+          f"({embedder.model}, batches of {BATCH})")
     done = 0
     for i in range(0, len(todo), BATCH):
         batch = todo[i:i + BATCH]

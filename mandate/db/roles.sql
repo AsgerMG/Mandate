@@ -90,4 +90,43 @@ ALTER DEFAULT PRIVILEGES FOR ROLE capital_app IN SCHEMA capital GRANT SELECT ON 
 ALTER ROLE capital_ro SET search_path = capital, public;
 ALTER ROLE capital_ro SET default_transaction_read_only = on;
 
+-- ── grounding: the one shared, append-only schema (mandate/db/grounding.sql) ──
+--
+-- WHY A SEPARATE OWNER. Every other schema is owned by the brain that writes it.
+-- grounding is written by every brain and owned by none of them, so that no
+-- brain's own role can ALTER, DROP or rewrite it. grounding_owner cannot log in:
+-- a migration is the admin saying `SET ROLE grounding_owner`, deliberately.
+--
+-- WHY SELECT + INSERT ONLY. What a brain cited must still be there, unchanged,
+-- when someone checks the citation. A correction is a new row. REFERENCES lets a
+-- brain's own tables point here by foreign key. Even the owner is stopped from
+-- rewriting by the triggers in grounding.sql.
+--
+-- WHY CODE QUALIFIES `grounding.` WHEN IT NEVER QUALIFIES ITS OWN TABLES. A
+-- role's search_path is its own schema plus public, and stays so: grounding is
+-- not any brain's own, and a query that reaches it should say so.
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'grounding_owner') THEN
+    CREATE ROLE grounding_owner NOLOGIN;
+  END IF;
+END $$;
+CREATE SCHEMA IF NOT EXISTS grounding AUTHORIZATION grounding_owner;
+ALTER SCHEMA grounding OWNER TO grounding_owner;
+GRANT USAGE ON SCHEMA public TO grounding_owner;
+REVOKE ALL ON SCHEMA grounding FROM PUBLIC;
+GRANT USAGE ON SCHEMA grounding TO capital_app, policy_app, mandate_app, capital_ro;
+-- tables that exist now (a re-run) and every table grounding_owner creates later
+GRANT SELECT, INSERT, REFERENCES ON ALL TABLES IN SCHEMA grounding TO capital_app, policy_app, mandate_app;
+GRANT SELECT ON ALL TABLES IN SCHEMA grounding TO capital_ro;
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA grounding TO capital_app, policy_app, mandate_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE grounding_owner IN SCHEMA grounding
+  GRANT SELECT, INSERT, REFERENCES ON TABLES TO capital_app, policy_app, mandate_app;
+ALTER DEFAULT PRIVILEGES FOR ROLE grounding_owner IN SCHEMA grounding
+  GRANT SELECT ON TABLES TO capital_ro;
+ALTER DEFAULT PRIVILEGES FOR ROLE grounding_owner IN SCHEMA grounding
+  GRANT USAGE ON SEQUENCES TO capital_app, policy_app, mandate_app;
+-- and explicitly NOT: UPDATE, DELETE, TRUNCATE, to anyone.
+REVOKE UPDATE, DELETE, TRUNCATE ON ALL TABLES IN SCHEMA grounding FROM capital_app, policy_app, mandate_app, capital_ro;
+
 COMMIT;
