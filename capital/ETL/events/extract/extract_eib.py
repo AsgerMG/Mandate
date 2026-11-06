@@ -25,6 +25,7 @@ for _anc in _Path(__file__).resolve().parents:
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 from store import connect  # noqa: E402
+from grounded_inputs import materialise  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
@@ -498,6 +499,8 @@ def main() -> None:
     load_db = "--load-db" in args
     skip_scrape = "--skip-scrape" in args
 
+    # inputs come from the grounding store, not a laptop (ETL/lib/grounded_inputs.py)
+    materialise("eib")
     projects = _discover_projects()
     print(f"Discovered {len(projects)} EIB VD projects (2021+, signed/approved)")
 

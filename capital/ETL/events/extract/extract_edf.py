@@ -51,6 +51,7 @@ for _anc in _Path(__file__).resolve().parents:
 from europe_scope import COUNTRY_NAME_TO_ISO2, name_to_iso2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 from store import connect  # noqa: E402
+from grounded_inputs import materialise  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
@@ -1163,6 +1164,8 @@ def main() -> None:
             except ValueError:
                 pass
 
+    # inputs come from the grounding store, not a laptop (ETL/lib/grounded_inputs.py)
+    materialise("edf")
     print(f"Fetching EDF factsheet PDFs (refresh={refresh}, sleep={sleep_seconds}s) ...")
     all_rows = extract_all(force_refresh=refresh, sleep_seconds=sleep_seconds)
 

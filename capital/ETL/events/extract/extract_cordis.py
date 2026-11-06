@@ -27,6 +27,7 @@ for _anc in _Path(__file__).resolve().parents:
         break
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 from store import connect  # noqa: E402
+from grounded_inputs import materialise  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
@@ -292,6 +293,8 @@ def main() -> None:
     args = sys.argv[1:]
     load_db = "--load-db" in args
 
+    # inputs come from the grounding store, not a laptop (ETL/lib/grounded_inputs.py)
+    materialise("cordis")
     print(f"Loading CORDIS dataset from {DATA_DIR} ...")
     projects = _load_csv(DATA_DIR / "project.csv")
     orgs = _load_csv(DATA_DIR / "organization.csv")

@@ -26,6 +26,7 @@ from europe_scope import COUNTRY_NAME_TO_ISO2  # noqa: E402
 from etl_env import DB as _ETL_DB, ROOT as _ETL_ROOT  # noqa: E402,F401
 from store import connect  # noqa: E402
 from europe_scope import canonicalise_country  # noqa: E402
+from grounded_inputs import materialise  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import csv
@@ -506,6 +507,8 @@ def main() -> None:
     download = "--download" in args
 
     # --- Step 1: Extract ---
+    # inputs come from the grounding store, not a laptop (ETL/lib/grounded_inputs.py)
+    materialise("innovation_fund")
     print("Parsing project index and fiche PDFs...")
     all_rows = extract_all(download_missing=download)
 
