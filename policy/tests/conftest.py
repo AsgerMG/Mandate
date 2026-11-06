@@ -16,6 +16,7 @@ suite on halfvec too.
 
 from __future__ import annotations
 
+import os
 import shutil
 import tempfile
 from collections.abc import Iterator
@@ -63,10 +64,14 @@ def pg_engine(mandate_db):
         grounding_bridge.install(conn)
     bucket_dir = tempfile.mkdtemp(prefix="policy_grounding_bucket_")
     set_bucket(FilesystemBucket(bucket_dir))
+    # and for a fresh import of mandate.grounding (test_refresh_durable purges
+    # sys.modules), which reads the backend from the environment
+    os.environ["GROUNDING_BUCKET_DIR"] = bucket_dir
     try:
         yield engine
     finally:
         set_bucket(None)
+        os.environ.pop("GROUNDING_BUCKET_DIR", None)
         shutil.rmtree(bucket_dir, ignore_errors=True)
         engine.dispose()
 

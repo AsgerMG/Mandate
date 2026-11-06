@@ -175,7 +175,7 @@ def test_every_table_lands_in_the_brains_schema_not_public(pg_engine):
     with pg_engine.begin() as conn:
         placed = dict(conn.execute(text(
             "select c.relname, n.nspname from pg_class c join pg_namespace n on n.oid = c.relnamespace "
-            "where c.relkind = 'r' and c.relname = any(:names)"
+            "where c.relkind = 'r' and c.relname = any(:names) and n.nspname <> 'grounding'"
         ), {"names": [t.name for t in Base.metadata.sorted_tables]}).all())
         vector_home = conn.execute(text(
             "select n.nspname from pg_extension e join pg_namespace n on n.oid = e.extnamespace "
