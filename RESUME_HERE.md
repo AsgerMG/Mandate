@@ -64,6 +64,21 @@ grounding.
 - Disk: agents' rehearsal DBs filled the disk (21 GB in the scratchpad). Agents
   must delete their own rehearsal DBs on finishing.
 
+## 6 Nov night: pick up here
+- go_live_sunday.sh was RE-RUN with the HNSW fix (serial build: Railway's
+  /dev/shm is too small for a parallel build). Log: ~/Mandate-backups/
+  go_live_sunday.log. Verify: grounding counts (~10,771 docs / 11,599 versions
+  / 125,745 passages), eligibility_grounding, BUCKET_* on capital-etl and
+  Vercel, refresh-cron unscheduled.
+- `policy-on-grounding` (13b960c5) is DONE and NOT merged. Order: go-live
+  finished -> owner runs `bash mandate/ops/policy_on_grounding.sh` (not during
+  Sun 03:00 UTC) -> merge IMMEDIATELY (Regina redeploys onto the grounding
+  views).
+- `mandate-profile` is IN FLIGHT (one company profile + one vocabulary). Resume
+  the agent or review its branch.
+- After those: one command for the re-embed (~$0.25), the 171 missing pages and
+  the pertinence classification (<$20), then re-measure stages.
+
 ## 6 Nov evening: state for Sunday's first combined run (8 Nov 03:00 UTC)
 - E1 + E2 MERGED. The sqlite3 ratchet is at 83. innovate_uk's name is declared
   (official_publication). Today's fixes are durable in programme_names +
