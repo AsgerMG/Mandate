@@ -259,6 +259,14 @@ def apply(admin, *, half: str = "halfvec", log=print) -> dict:
            WHERE p.embedding IS NOT NULL
            ORDER BY pl.grounding_passage_id, (p.id = pl.grounding_passage_id) DESC, p.id
           ON CONFLICT DO NOTHING""", (MODEL,))
+    # Railway's Postgres container has a small /dev/shm. A PARALLEL HNSW build
+    # over 123k vectors asks for a ~1 GB dynamic shared memory segment and fails
+    # with DiskFull ("could not resize shared memory segment"), rolling the whole
+    # migration back (observed 2026-11-06, three times). Serial, with a bounded
+    # maintenance_work_mem, uses ordinary backend memory and spills to disk
+    # instead. Slower to build; identical index. SET LOCAL: this transaction only.
+    x("SET LOCAL max_parallel_maintenance_workers = 0")
+    x("SET LOCAL maintenance_work_mem = '256MB'")
     x(f"""CREATE INDEX {idx} ON grounding.passage_embeddings
           USING hnsw (embedding public.{half}_cosine_ops) WHERE model = '{MODEL}'""")
     for t in ("sources", "documents", "document_versions", "fetches", "passages"):
