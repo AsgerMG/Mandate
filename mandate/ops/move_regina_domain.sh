@@ -4,6 +4,8 @@
 # path to wincent-ai.eu/regina/... Expect a minute of certificate re-issue.
 #   bash mandate/ops/move_regina_domain.sh
 set -euo pipefail
+# The CLI stores a short-lived token and refreshes it when it runs; refresh first.
+vercel whoami >/dev/null
 T=$(python3 -c "import json,os;print(json.load(open(os.path.expanduser('~/Library/Application Support/com.vercel.cli/auth.json')))['token'])")
 TEAM=team_wcDvoHf2pd11bNbxhabfs5aO; A="Authorization: Bearer $T"
 D=$(curl -s -H "$A" "https://api.vercel.com/v9/projects/regina/domains?teamId=$TEAM" |
