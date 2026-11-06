@@ -64,6 +64,25 @@ grounding.
 - Disk: agents' rehearsal DBs filled the disk (21 GB in the scratchpad). Agents
   must delete their own rehearsal DBs on finishing.
 
+## 6 Nov afternoon
+- E2 MERGED (archive + CI split). E2's 10 founder-data fixes were APPLIED to
+  production (capital/project-mgmt/e2_data_fixes/fixes.sql, 10 rows). TODO
+  before E1's weekly rebuild runs: add the same entries to the reference files
+  (see that README), or a rebuild can undo them. Still to decide:
+  bpifrance_innovup_leader_idf's name.
+- VOYAGE_KEY GitHub secret added (owner-approved); wire the 6 checks into CI.
+- E1 DONE, NOT MERGED (branch e1-refresh-health @57700085). Blockers before
+  merging: the `innovate_uk` entry in reference/family_name_evidence.json (the
+  rebuild refuses to guess), mandate/db/runs.sql (psql as admin), the
+  cases.json upload, BUCKET_*/POLICY_API_URL/REFRESH_SECRET/VOYAGE_KEY on
+  capital-etl, BUCKET_* on Vercel, capital-etl's start command ->
+  `python3 mandate/refresh/run.py`, and retiring refresh-cron in the same
+  change. First run is Sun 8 Nov 03:00 UTC.
+- Pertinence classification (~<$20) DEFERRED: the owner is moving from the
+  brief to a conversational product; run it when the conversation design needs
+  it.
+- mandate-ci is red: reembed_plan.py names a model outside mandate/embedding.
+
 ## Next (owner-approved 6 Nov)
 - **E1: refresh and health.** Port `populate_funding_instruments` and the
   refresh.py emitters. The instrument table is NOT rebuilt by anything today,
