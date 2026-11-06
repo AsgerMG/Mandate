@@ -86,6 +86,9 @@ AUTOMATIC = {
     # Repo root: GitHub runs workflows only from the monorepo's top-level .github/.
     "ci.yml": ROOT.parent / ".github" / "workflows" / "capital-ci.yml",
     "corpus-currency.yml": ROOT.parent / ".github" / "workflows" / "capital-corpus-currency.yml",
+    # The report tier (suite_tiers `report`), nightly and non-blocking. A
+    # report-tier guard runs here, unattended, which is what this check asks.
+    "nightly.yml": ROOT.parent / ".github" / "workflows" / "capital-nightly.yml",
     "railway_cron.py": ROOT / "ETL" / "events" / "extract" / "railway_cron.py",
     "guard_registry.json": REGISTRY,
 }
