@@ -95,7 +95,18 @@ A brain is a schema, a role, a deployable and a workflow. In order:
    `link` lines in `scripts/agent-worktree.sh`.
 6. **This file.** A row in the table above.
 
-The company profile every brain reads (`web/lib/profile/
-companyProfile.ts` today) moves into schema `mandate`, which is reserved for the
-things no single brain owns: accounts, the shared company profile, and the
-register of who decides.
+## The company profile and vocabulary: shared by every brain
+
+**One vocabulary**: `mandate/vocabulary/vocabulary.json` (sectors, size bands,
+countries, stage, customer type, AI and data exposure), every mapping decision
+stated in it. `emit.py` generates `mandate/vocabulary/generated.py` and
+`web/lib/mandate/vocabulary.generated.ts`; `check.py` (mandate-ci) fails when
+either is stale or a brain's own copy drifts.
+
+**One profile**: `mandate/profile` (Python) and `web/lib/mandate/profile.ts`, the
+same shape, held equal by `mandate/profile/fixtures.json`. Company size is
+derived from the EU SME bands, never asked. Each brain's input is DERIVED from
+it: capital's routes and policy's `/api/brief` and `/api/questions` accept an
+optional `profile` (absent, nothing changes; tests prove identical input either
+way). Stored in schema `mandate` (`mandate/db/profiles.sql`, NOT YET APPLIED):
+accounts, workspaces, and append-only `company_profile_versions`.

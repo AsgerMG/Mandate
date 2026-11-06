@@ -19,7 +19,7 @@ import structlog
 from fastapi import BackgroundTasks, FastAPI, Header, HTTPException, Query, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator, model_validator
 from sqlalchemy import func, select
 
 from data import get_settings, session_scope
@@ -90,7 +90,8 @@ def _check_rate_limit(request, *, max_per_hour: int) -> None:
 
 
 class BriefRequest(BaseModel):
-    name: str
+    # `name` is required unless `profile` is sent: the shared profile carries it.
+    name: str = ""
     description: str = ""
     sectors: list[str] = Field(default_factory=list)
     markets: list[str] = Field(default_factory=lambda: ["EU"])
@@ -104,10 +105,38 @@ class BriefRequest(BaseModel):
     ai_use_cases: list[str] = Field(default_factory=list)
     customer_type: str | None = None
     answers: dict[str, str] = Field(default_factory=dict)
+    # THE SHARED MANDATE PROFILE (mandate/profile). When present it is the whole
+    # description of the company and the flat fields above are ignored: policy's
+    # CompanyProfile is DERIVED from it (etl/intelligence/shared_profile.py).
+    # Absent, the request behaves exactly as before.
+    profile: dict | None = None
     k: int = 12
+
+    @field_validator("profile")
+    @classmethod
+    def _valid_profile(cls, v: dict | None) -> dict | None:
+        if v is None:
+            return None
+        from mandate.profile import ProfileError, validate  # noqa: PLC0415
+
+        try:
+            return validate(v)
+        except ProfileError as e:
+            raise ValueError(str(e)) from e
+
+    @model_validator(mode="after")
+    def _named(self) -> "BriefRequest":
+        # "name" absent (not merely empty: "" was always accepted) and no profile
+        if self.profile is None and "name" not in self.model_fields_set:
+            raise ValueError("name is required (or send a shared `profile`)")
+        return self
 
 
 def _profile(req: BriefRequest) -> CompanyProfile:
+    if req.profile is not None:
+        from .intelligence.shared_profile import from_shared_profile  # noqa: PLC0415
+
+        return from_shared_profile(req.profile)
     markets = [Jurisdiction(m) for m in req.markets] or [Jurisdiction.EU]
     return CompanyProfile(
         name=req.name,

@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { resolveProfileBody } from "@/lib/mandate/profileRequest";
 import { corpusProvenance, hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { computeVerdict } from "@/lib/intelligence/pipeline";
 import { sanitizeCapitalSought, sanitizeEligibility, sanitizeFreeText,
@@ -25,6 +26,14 @@ export async function POST(request: NextRequest) {
   } catch {
     return Response.json({ error: "Invalid JSON body." }, { status: 400 });
   }
+
+  // The shared Mandate profile, when sent, is the company: capital's own body
+  // fields are derived from it (lib/mandate/profileRequest.ts). Absent, no-op.
+  const resolved = resolveProfileBody(body);
+  if ("error" in resolved) {
+    return Response.json({ error: resolved.error }, { status: 400 });
+  }
+  body = resolved.body;
 
   if (!body.company || !body.company.trim()) {
     return Response.json({ error: "A company name is required." }, { status: 400 });

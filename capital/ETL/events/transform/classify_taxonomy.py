@@ -57,52 +57,15 @@ TECH_OLD = {"life_sciences", "cleantech", "deeptech_hardware", "digital",
 
 # ── The controlled taxonomy ───────────────────────────────────────────────────
 # Tier 1 -> ordered Tier 2 controlled vocab (last entry is the *_general escape).
-TAXONOMY: dict[str, list[str]] = {
-    "health_life_sciences": [
-        "pharma_drug_discovery", "biotech_therapeutics", "medical_devices",
-        "diagnostics_imaging", "digital_health", "genomics",
-        "cell_gene_therapy", "medtech_surgical", "health_general"],
-    "energy_cleantech": [
-        "batteries_storage", "hydrogen_fuel_cells", "solar_pv", "wind",
-        "grid_smart_grid", "ev_charging_infrastructure", "e_fuels_synthetic",
-        "carbon_capture_storage", "heat_pumps_hvac",
-        "green_steel_industrial_decarb", "biofuels_bioenergy", "nuclear_fusion",
-        "energy_efficiency", "water_wastewater", "circular_economy_recycling",
-        "energy_general"],
-    "mobility_transport": [
-        "electric_vehicles", "automotive_components", "civil_aerospace",
-        "drones_uav", "rail", "maritime_shipping", "logistics_supply_chain",
-        "autonomous_driving", "micromobility", "mobility_general"],
-    "industrial_manufacturing": [
-        "robotics_automation", "advanced_manufacturing_3d_printing",
-        "industrial_machinery", "industrial_iot", "process_engineering",
-        "quality_inspection", "construction_tech", "mining_extraction",
-        "industrial_general"],
-    "semiconductors_electronics": [
-        "chip_design", "semiconductor_manufacturing", "photonics_optoelectronics",
-        "power_electronics", "sensors", "quantum_hardware", "pcb_components",
-        "electronics_general"],
-    "software_data_ai": [
-        "ai_ml_platforms", "saas_business_software", "cybersecurity", "fintech",
-        "data_analytics", "cloud_infrastructure", "developer_tools",
-        "gaming_media", "edtech", "govtech", "telecom_networking",
-        "blockchain_web3", "software_general"],
-    "space": [
-        "launch_vehicles", "satellites", "earth_observation",
-        "space_situational_awareness", "satellite_comms", "in_space_services",
-        "ground_systems", "space_general"],
-    "defense_security": [
-        "defense_systems", "dual_use_technology", "cyber_defense",
-        "surveillance_reconnaissance", "munitions_protection", "defense_general"],
-    "agrifood": [
-        "agtech_precision_farming", "alternative_proteins", "food_processing",
-        "aquaculture", "biotech_agri", "food_supply_chain", "agrifood_general"],
-    "materials_chemicals": [
-        "advanced_materials", "specialty_chemicals", "nanomaterials",
-        "polymers_composites", "coatings_surfaces", "biomaterials",
-        "materials_general"],
-    "other": ["other"],
-}
+# The controlled taxonomy now lives in the ONE Mandate vocabulary
+# (mandate/vocabulary/vocabulary.json, `sectors`), which both brains read.
+# CAPITAL_TAXONOMY is exactly the dict that stood here: the subsectors capital
+# originated, in capital's order (values added for another brain carry
+# origin "mandate" and are excluded, so no corpus label moves).
+# mandate/vocabulary/check.py fails if the two ever differ.
+from mandate.vocabulary import CAPITAL_TAXONOMY  # noqa: E402
+
+TAXONOMY: dict[str, list[str]] = {k: list(v) for k, v in CAPITAL_TAXONOMY.items()}
 
 SECTOR_TOPS = list(TAXONOMY)
 ALL_SUBSECTORS = [s for subs in TAXONOMY.values() for s in subs]

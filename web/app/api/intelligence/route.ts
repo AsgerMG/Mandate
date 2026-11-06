@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { resolveProfileBody } from "@/lib/mandate/profileRequest";
 import { hydrateDbInstruments } from "@/lib/intelligence/corpus";
 import { checkQuota, recordCost } from "@/lib/intelligence/quota";
 import { recordEvent } from "@/lib/intelligence/telemetry";
@@ -81,6 +82,14 @@ export async function POST(request: NextRequest) {
       headers: { "content-type": "application/json" },
     });
   }
+
+  // The shared Mandate profile, when sent, is the company: capital's own body
+  // fields are derived from it (lib/mandate/profileRequest.ts). Absent, no-op.
+  const resolved = resolveProfileBody(body);
+  if ("error" in resolved) {
+    return Response.json({ error: resolved.error }, { status: 400 });
+  }
+  body = resolved.body;
 
   if (!body.company || !body.company.trim()) {
     return new Response(JSON.stringify({ error: "A company name is required." }), {
