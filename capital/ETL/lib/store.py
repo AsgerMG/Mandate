@@ -129,6 +129,21 @@ def connect(*, readonly: bool = False, dict_rows: bool = False, rows: bool = Fal
         con.close()
 
 
+def reader(*, rows: bool = True) -> psycopg.Connection:
+    """A read-only connection for a script that only reads, held for its run.
+
+    The port of `conn = sqlite3.connect(DB)` in an emitter: same lifetime, no
+    re-indentation of a 200-line main(). Read-only at the session level (and as
+    capital_ro where configured), so a forgotten write fails instead of landing.
+    `rows=True` gives Row (by position and by name), as sqlite3.Row did.
+    """
+    con = psycopg.connect(
+        _url(True), row_factory=_row_factory if rows else psycopg.rows.tuple_row,
+        keepalives=1, keepalives_idle=30, keepalives_interval=10, keepalives_count=6)
+    con.execute("SET SESSION CHARACTERISTICS AS TRANSACTION READ ONLY")
+    return con
+
+
 def columns(con: psycopg.Connection, table: str) -> list[str]:
     """Column names in order. The replacement for PRAGMA table_info."""
     return [r[0] if isinstance(r, tuple) else r["column_name"] for r in con.execute(

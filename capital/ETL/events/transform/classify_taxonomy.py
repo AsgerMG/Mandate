@@ -1134,8 +1134,7 @@ def cmd_submit(args) -> None:
     print("Cloud processes them (usually <1h, max 24h). Run 'collect' when ready.")
 
 
-def _name_key(name: str, country: str | None) -> str:
-    return f"{(name or '').strip().lower()}|{(country or '').strip().upper()}"
+from sector_label_key import name_key as _name_key  # noqa: E402  (the ONE definition)
 
 
 def _utc_stamp() -> str:

@@ -51,9 +51,11 @@ class Split:
     """The ETL's split, as lookups. Build once, call `leaf_for` per award."""
 
     def __init__(self, conn) -> None:
+        # Every read below is ORDERED: list order decides which instrument wins
+        # a tie, and only SQLite's rowid scan ever made that order repeatable.
         self.src2fam: dict[str, list[str]] = collections.defaultdict(list)
         for source, iid in conn.execute(
-                "SELECT source, instrument_id FROM funding_instrument_sources"):
+                "SELECT source, instrument_id FROM funding_instrument_sources ORDER BY 1, 2"):
             self.src2fam[source].append(iid)
 
         # ── Key on the id the ETL built, never on the name it displays ──────
@@ -98,7 +100,7 @@ class Split:
         # `publishableInstruments()` uses to decide what may be shown.
         self.has_children: set[str] = set()
         for iid, parent, name, code in conn.execute(
-                "SELECT id, parent_id, name, scheme_code FROM funding_instruments"):
+                "SELECT id, parent_id, name, scheme_code FROM funding_instruments ORDER BY id"):
             if not parent:
                 continue
             self.child_ids.add(iid)
@@ -114,12 +116,12 @@ class Split:
         # programme name -- the same test the ETL applies, for the same reason.
         # A split on a constant is not a split; it produces one child named
         # after its own parent and halves that programme's award history.
-        self.programme_split = {r[0] for r in conn.execute("""
+        self.programme_split = {r[0] for r in conn.execute(f"""
             SELECT source FROM public_funding_events
              WHERE programme_name IS NOT NULL AND programme_name != ''
              GROUP BY source
-            HAVING COUNT(*) >= ? AND COUNT(DISTINCT programme_name) > 1
-        """, (MIN_CHILD_EVENTS,))}
+            HAVING COUNT(*) >= {int(MIN_CHILD_EVENTS)} AND COUNT(DISTINCT programme_name) > 1
+        """)}  # inlined, not bound: this class reads SQLite (tests) and Postgres alike
 
         # The notified scheme, for the fallback below. A scheme code is shared
         # by more than one instrument in 34 cases (SA.56245 by 18) -- one
@@ -128,7 +130,7 @@ class Split:
         self.code2inst: dict[str, list[str]] = collections.defaultdict(list)
         self.inst_scheme_code: dict[str, str] = {}
         for iid, code in conn.execute(
-                "SELECT id, scheme_code FROM funding_instruments"):
+                "SELECT id, scheme_code FROM funding_instruments ORDER BY id"):
             code = (code or "").strip()
             self.inst_scheme_code[iid] = code
             if code:

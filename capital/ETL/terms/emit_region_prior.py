@@ -78,14 +78,14 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT, WEB  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 from nuts_regions import staged_region_mix  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
 import json  # noqa: E402
-import sqlite3  # noqa: E402
+from store import reader  # noqa: E402
 
 OUT = WEB / "lib" / "intelligence" / "regionPrior.generated.json"
 
@@ -102,7 +102,7 @@ def main() -> None:
     add_holdout_flags(ap)
     args = ap.parse_args()
 
-    conn = sqlite3.connect(DB)
+    conn = reader()
     holdout = resolve_holdout(args, conn)
 
     staged = staged_region_mix(conn, holdout.ids)
@@ -113,14 +113,14 @@ def main() -> None:
     # the same reasons emit_peer_prior.py removes them.
     unproposable = {r[0] for r in conn.execute(
         "SELECT id FROM funding_instruments "
-        " WHERE is_framework = 1"
+        " WHERE is_framework"
         "    OR id IN (SELECT parent_id FROM funding_instruments "
         "               WHERE parent_id IS NOT NULL)")}
 
     out: dict[str, dict] = {}
     thin = 0
     for iid, sa, body in conn.execute(
-            "SELECT id, scheme_code, administering_body FROM funding_instruments"):
+            "SELECT id, scheme_code, administering_body FROM funding_instruments ORDER BY id"):
         if iid in unproposable or not sa or not body:
             continue
         mix = staged.get((sa.strip(), body[:200]))
@@ -148,7 +148,7 @@ def main() -> None:
         print("\n[report only] --write to persist")
         return
     OUT.write_text(json.dumps(out, indent=0, sort_keys=True) + "\n")
-    print(f"\nwrote {Path(os.path.relpath(OUT, ROOT))}")
+    print(f"\nwrote {_Path(os.path.relpath(OUT, ROOT))}")
 
 
 if __name__ == "__main__":

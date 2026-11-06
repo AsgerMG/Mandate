@@ -76,14 +76,14 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT, WEB  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 from liveness import closed_sql  # noqa: E402
 
 import argparse  # noqa: E402
 import collections  # noqa: E402
 import itertools  # noqa: E402
 import json  # noqa: E402
-import sqlite3  # noqa: E402
+from store import reader  # noqa: E402
 
 from attribution import Split  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
@@ -210,7 +210,11 @@ QUERY = """
       FROM public_funding_events e
       JOIN companies co ON co.id = e.company_id
      WHERE e.is_duplicate = 0 AND co.country IS NOT NULL
+     ORDER BY e.id
 """
+# ORDER BY e.id: CAP truncates at the first pairs the scan returns (see above),
+# so the scan order IS part of the output. SQLite scanned events in rowid (= id)
+# order; Postgres promises no order at all without this line.
 
 
 def main() -> None:
@@ -251,7 +255,7 @@ def main() -> None:
     add_holdout_flags(ap)
     args = ap.parse_args()
 
-    conn = sqlite3.connect(DB)
+    conn = reader()
     veto: set[str] = set()
     if args.evidence_veto:
         _sys.path.insert(0, str(ROOT / "ETL" / "events" / "transform"))
@@ -339,8 +343,8 @@ def main() -> None:
     # attribution they are only what the split could not place.
     unproposable = {r[0] for r in conn.execute(
         "SELECT id FROM funding_instruments "
-        f" WHERE {closed_sql()}"
-        "    OR is_framework = 1"
+        f" WHERE {closed_sql('postgres')}"
+        "    OR is_framework"
         "    OR id IN (SELECT parent_id FROM funding_instruments "
         "               WHERE parent_id IS NOT NULL)")}
 

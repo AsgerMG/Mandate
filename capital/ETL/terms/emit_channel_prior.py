@@ -125,9 +125,11 @@ from pathlib import Path as _Path
 for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib")); break
-from etl_env import DB, ROOT, WEB  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 from recall_holdout import add_holdout_flags, resolve_holdout  # noqa: E402
-import argparse, collections, json, sqlite3  # noqa: E402
+import argparse, collections, json  # noqa: E402
+from store import reader  # noqa: E402
+from sector_label_key import name_key  # noqa: E402
 
 OUT = WEB / "lib" / "intelligence" / "channelPrior.generated.json"
 MIN_OBS = 40   # below this a cell is noise; back off rather than memorise it
@@ -208,10 +210,8 @@ def main() -> None:
     ap.add_argument("--out", default=None, help="write elsewhere; for measuring an "
                     "arm without publishing it")
     args = ap.parse_args()
-    # READ-ONLY. This emitter has never written to the corpus and the local
-    # SQLite is a symlink shared by every agent worktree, so a write handle here
-    # is a lock other people wait on for nothing.
-    c = sqlite3.connect(f"file:{DB}?mode=ro", uri=True); c.row_factory = sqlite3.Row
+    # READ-ONLY: this emitter has never written to the corpus.
+    c = reader()
     holdout = resolve_holdout(args, c)
     vocab = channel_vocabulary(c)
     funded = funded_companies_per_channel(c)
@@ -220,37 +220,48 @@ def main() -> None:
     # exactly the blind spot this artifact exists to correct. And neither arm
     # filters on `parent_id` any more; see the header for the three facts that
     # had to hold before that clause could come out.
+    #
+    # The sector label is joined HERE, in Python, through sector_label_key: the
+    # vault's key is Python's lowering, and neither SQLite's LOWER (ASCII only)
+    # nor Postgres's (no final sigma) reproduces it. The SQL join this replaced
+    # lost 8,725 companies' labels on SQLite and 757 pairs on Postgres.
     q = """
-      SELECT co.country cc, l.sector_top st, i.source_family_bucket ch, co.id cid
+      SELECT co.country, co.canonical_name, i.source_family_bucket, co.id
         FROM public_funding_events e
         JOIN companies co ON co.id = e.company_id
-        JOIN company_sector_labels l ON l.name_key = LOWER(co.canonical_name)||'|'||co.country
         JOIN funding_instruments i ON i.scheme_code = e.call_id
        WHERE e.is_duplicate = 0 AND e.source LIKE 'satr%'
-         AND l.sector_top IS NOT NULL AND i.source_family_bucket IS NOT NULL
+         AND i.source_family_bucket IS NOT NULL
       UNION
-      SELECT co.country, l.sector_top, i.source_family_bucket, co.id
+      SELECT co.country, co.canonical_name, i.source_family_bucket, co.id
         FROM public_funding_events e
         JOIN companies co ON co.id = e.company_id
-        JOIN company_sector_labels l ON l.name_key = LOWER(co.canonical_name)||'|'||co.country
         JOIN funding_instrument_sources s ON s.source = e.source
         JOIN funding_instruments i ON i.id = s.instrument_id
        WHERE e.is_duplicate = 0
-         AND l.sector_top IS NOT NULL AND i.source_family_bucket IS NOT NULL"""
+         AND i.source_family_bucket IS NOT NULL"""
+    label = {k: st for k, st in c.execute(
+        "SELECT name_key, sector_top FROM company_sector_labels "
+        "WHERE sector_top IS NOT NULL")}
+    observed = set()
+    for cc, name, ch, cid in c.execute(q):
+        st = label.get(name_key(name, cc))
+        if st is not None:
+            observed.add((cc, st, ch, cid))
     bysec: dict = collections.defaultdict(collections.Counter)
     bycountry: dict = collections.defaultdict(collections.Counter)
     glob = collections.Counter()
     dropped = 0
-    for r in c.execute(q):
-        # The company is the unit here -- the query UNIONs to distinct
-        # (company, channel) rows -- so excluding by company id removes the
-        # whole of a test company's vote, not one of its awards.
-        if r["cid"] in holdout.ids:
+    for cc, st, ch, cid in sorted(observed, key=repr):
+        # The company is the unit here -- distinct (company, sector, channel)
+        # rows -- so excluding by company id removes the whole of a test
+        # company's vote, not one of its awards.
+        if cid in holdout.ids:
             dropped += 1
             continue
-        bysec[(r["cc"], r["st"])][r["ch"]] += 1
-        bycountry[r["cc"]][r["ch"]] += 1
-        glob[r["ch"]] += 1
+        bysec[(cc, st)][ch] += 1
+        bycountry[cc][ch] += 1
+        glob[ch] += 1
     c.close()
 
     def norm(counter):
@@ -280,7 +291,7 @@ def main() -> None:
     }
     dest = _Path(args.out) if args.out else OUT
     dest.write_text(json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
-    print(f"channel prior -> {dest if args.out else Path(os.path.relpath(dest, ROOT))}")
+    print(f"channel prior -> {dest if args.out else _Path(os.path.relpath(dest, ROOT))}")
     print(f"  channels: {len(vocab)} in the corpus, {len(g)} observed, "
           f"unobserved {payload['unobserved'] or 'none'}")
     holdout.report()
