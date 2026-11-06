@@ -535,13 +535,13 @@ async function judge(rows: CensusRow[], pg: { instruments: number; gates: number
       problems.push(
         `DIVERGED — ${measured.length} measure(s) where a DERIVED store is AHEAD of the\n` +
         `      corpus of record (${ofRecord}). Each is a row that exists in exactly one\n` +
-        `      place, and both sync paths (pull_db.py, push_local.py) move the whole\n` +
-        `      file with --overwrite, so the next sync in either direction destroys it.\n` +
+        `      place. (The old sync paths that moved a whole file with --overwrite are\n` +
+        `      archived; nothing here may ever overwrite the store of record.)\n` +
         measured.map(([where, m, a, b]) =>
           `        ${where}.${m}: derived ${a.toLocaleString()}, record ${b.toLocaleString()} ` +
           `(+${(a - b).toLocaleString()} held only by the derived store)`).join("\n") +
-        `\n      Reconcile by union, never by overwrite:\n` +
-        `        python3 ETL/events/load/reconcile_stores.py --help`);
+        `\n      Reconcile by union into Postgres, never by overwrite (the last\n` +
+        `      reconciliation is ETL/archive/schema/consolidate/).`);
     }
   }
 
@@ -725,9 +725,8 @@ async function judge(rows: CensusRow[], pg: { instruments: number; gates: number
       `      is missing is a census over the current corpus, so the LIVE path has\n` +
       `      something admissible to serve and the site stops depending on the\n` +
       `      committed fallback.\n` +
-      `      Do NOT run \`make republish\` for this: step 1 pulls the ETL's db and\n` +
-      `      would overwrite the newer corpus with the older one. Let the weekly\n` +
-      `      pipeline run and record its own census.`);
+      `      Let the weekly pipeline run and record its own census, or run\n` +
+      `      \`python3 ETL/events/load/publish_corpus_census.py\` over the corpus.`);
   }
 
   // Every store, side by side, whether or not anything failed. The divergence

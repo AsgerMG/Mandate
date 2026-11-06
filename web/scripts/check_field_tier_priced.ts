@@ -78,8 +78,10 @@ import {
 const N = Number(process.env.N ?? 200);
 
 /** Share of sampled founders on which the tier separates NOTHING.
- *  Measured 2026-08-19 at N=200, seed DEFAULT_SEED. COMES DOWN, NEVER UP. */
-const MAX_INERT_SHARE = 0.475;
+ *  Measured 2026-08-19 at N=200, seed DEFAULT_SEED (47.5%); lowered to the
+ *  measured 45.0% on 2026-11-06 (90/200), as the check itself asks. COMES
+ *  DOWN, NEVER UP. */
+const MAX_INERT_SHARE = 0.45;
 
 function founders(): RecallRow[] {
   const { rows: all } = loadRecallSet();

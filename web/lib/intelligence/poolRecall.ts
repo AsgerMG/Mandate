@@ -19,7 +19,7 @@
 // sentence when they edit a cap. (Which is why no number appears in this
 // paragraph: a value written here is the same defect wearing a comment.)
 //
-// So the whole curve is measured and committed by `scripts/_wsdr_curve.ts`, on
+// So the whole curve is measured and committed by `scripts/emit_pool_recall_curve.ts`, on
 // the HOLDOUT split (the prompt says "held-out companies", so it had better be
 // held out), and the prompt reads the point matching its own menu length.
 //

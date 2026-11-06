@@ -1,5 +1,5 @@
 -- Schema authority for the capital corpus tables in schema `capital`.
--- Generated once by ETL/schema/consolidate/load_into_postgres.py from the
+-- Generated once by ETL/archive/schema/consolidate/load_into_postgres.py from the
 -- SQLite DDL on 2026-11-05; edited by migration from here on, not regenerated.
 -- Applied by capital_app, whose search_path is `capital, public`.
 CREATE TABLE "companies" (

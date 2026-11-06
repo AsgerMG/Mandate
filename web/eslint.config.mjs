@@ -12,6 +12,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Archived one-offs: kept for the record, never run, out of lint and build.
+    "scripts/archive/**",
+    "archive/**",
   ]),
 
   // ── `any` in the diagnostic harnesses ──────────────────────────────────────

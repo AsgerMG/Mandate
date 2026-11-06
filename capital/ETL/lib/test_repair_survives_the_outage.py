@@ -86,8 +86,10 @@ def run_isolated(fn, *, break_write, break_deploy, break_check):
 
 
 def main() -> None:
+    # railway_service.restore() was archived on 2026-11-06 with the two-store
+    # sync that called it (ETL/archive/lib/railway_service_wake_restore.py);
+    # the repair path that remains is verify_cron's.
     paths = [
-        ("railway_service.restore", lambda: RS.restore(attempts=2)),
         ("verify_cron.restore_and_verify",
          lambda: VC.restore_and_verify("deploy", attempts=2, settle_s=0)),
     ]
@@ -158,9 +160,9 @@ def main() -> None:
         for f in FAILURES:
             print(f"  - {f}\n")
         sys.exit(1)
-    print("ok: both repair paths survive a failure in the config write, the deploy "
-          "and the\n    read-back, keep retrying, report rather than raise, and "
-          "still succeed when\n    Railway answers")
+    print("ok: the repair path survives a failure in the config write, the deploy "
+          "and the\n    read-back, keeps retrying, reports rather than raises, and "
+          "still succeeds when\n    Railway answers")
 
 
 if __name__ == "__main__":

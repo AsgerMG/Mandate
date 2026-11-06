@@ -149,7 +149,7 @@ async function main() {
       + `currently making NO claim about how often the answer is in its list.`);
   } else if (n < MIN_N) {
     bad.push(`the curve was measured on ${n} founders, below the floor of ${MIN_N}. `
-      + `Re-run scripts/_wsdr_curve.ts on the full holdout split.`);
+      + `Re-run scripts/emit_pool_recall_curve.ts on the full holdout split.`);
   }
 
   // 2. IT IS MONOTONE.
@@ -198,7 +198,7 @@ async function main() {
     // That is the same defect as the corrected constant this whole module
     // exists to replace, one level down: a number in the prompt with no
     // measurement behind it. The fix for an uncovered depth is to MEASURE it —
-    // add it to `POOL_RECALL_KS` and re-run `_wsdr_curve.ts` — never to widen
+    // add it to `POOL_RECALL_KS` and re-run `emit_pool_recall_curve.ts` — never to widen
     // this test.
     //
     // The property, for any depth this or any future seam takes: the figure the
@@ -210,7 +210,7 @@ async function main() {
         + `measured points are K=${below} and K=${above}. \`poolRecallAt\` interpolates `
         + `LINEARLY between them, so the selector would be told a base rate nobody has `
         + `measured, about the exact list it is being shown. Add ${k} to POOL_RECALL_KS `
-        + `and re-run scripts/_wsdr_curve.ts; do not relax this.`);
+        + `and re-run scripts/emit_pool_recall_curve.ts; do not relax this.`);
     }
   }
 
@@ -241,7 +241,7 @@ async function main() {
   //
   // Strict identity, and NOT a tolerance band on the count. Three reasons, in
   // order of weight: this artifact's whole job is to make a sentence to a model
-  // TRUE, and true is not a band; `_wsdr_curve.ts` is free by construction, so
+  // TRUE, and true is not a band; `emit_pool_recall_curve.ts` is free by construction, so
   // the red is cleared by one command rather than by a judgement; and a band
   // would be a number nobody has derived, chosen here to keep a build green,
   // which is the act this repo forbids everywhere else.
@@ -272,14 +272,14 @@ async function main() {
         + `only the row count "${doc.corpus ?? ""}". That count cannot see a closure `
         + `pass: 53 calls closed on 2026-08-12, the offerable set moved 837 -> 784 and `
         + `the count did not move at all. Re-cut the curve so it records the set it was `
-        + `measured over: npx tsx scripts/_wsdr_curve.ts`);
+        + `measured over: npx tsx scripts/emit_pool_recall_curve.ts`);
     } else {
       const drift = subjectDrift(recorded, live);
       if (drift) {
         bad.push(`the curve was measured over a DIFFERENT set of offerable funds than `
           + `this corpus holds: ${drift}.\n      Every accessible pool is drawn from that `
           + `set, so every point on the curve is, and the selector is being told a base `
-          + `rate about funds it is not ranking. Re-run scripts/_wsdr_curve.ts (free by `
+          + `rate about funds it is not ranking. Re-run scripts/emit_pool_recall_curve.ts (free by `
           + `construction — it deletes ANTHROPIC_API_KEY before importing anything).`);
       }
     }

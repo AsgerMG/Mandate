@@ -739,7 +739,11 @@ def test_press_source_keys_are_all_registered_adapters():
     assert not missing, f"_PRESS_SOURCE_KEYS references unregistered adapter keys: {missing}"
     # The editorial blocklist must also name real adapters, or an exclusion
     # silently stops excluding anything when a key is renamed.
-    stale = _PRESS_EXCLUDED_SOURCES - set(ADAPTERS_BY_KEY)
+    # A key may also name a channel that is no longer ingested: its documents
+    # are still in the database and must stay out of briefs.
+    from etl.adapters.feeds import ARCHIVED_FEED_KEYS
+
+    stale = _PRESS_EXCLUDED_SOURCES - set(ADAPTERS_BY_KEY) - ARCHIVED_FEED_KEYS
     assert not stale, f"_PRESS_EXCLUDED_SOURCES references unregistered keys: {stale}"
 
 

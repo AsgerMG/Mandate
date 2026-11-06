@@ -1,0 +1,30 @@
+== 1. body-named rows -> the funder's own product name
+  innovasjon_norge_loan_lowrisk: name 'Innovasjon Norge' -> 'Lavrisikolån'; name_source 'deterministic' -> 'curated'  [MATCHES]
+      basis: https://www.innovasjonnorge.no/tjeneste/lavrisikolan (H1 'Lavrisikolån', read 2026-11-06)
+  innovasjon_norge_loan_risk: name 'Innovasjon Norge' -> 'Risikolån'; name_source 'deterministic' -> 'curated'  [MATCHES]
+      basis: https://www.innovasjonnorge.no/seksjon/lan (product 'Risikolån', read 2026-11-06)
+  bpifrance_inov: name 'Bpifrance' -> "Concours d'innovation i-Nov"; name_source 'deterministic' -> 'curated'  [MATCHES]
+      basis: https://www.bpifrance.fr/nos-appels-a-projets-concours/appel-a-projets-concours-dinnovation-i-nov (the eligibility_source_url of this row; page title 'Appel à projets Concours d'innovation i-Nov'; the page answered 403 to an automated read on 2026-11-06, so CONFIRM BY EYE before committing)
+  bpifrance_innovup_leader_idf: NOT CHANGED (owner decision; see prepare.py)
+
+== 2. comparators that cannot be decided by the answer -> quarantined
+  chips_ju_kdt_unknown/G1-05: field 'consortium' -> 'none', value_spec {"op": "in", "field": "consortium", "allowed": ["yes"]} -> NULL [MATCHES]
+      Norway requires at least one Norwegian company partner and a minimum share of Norwegian partner effort to come from business partners.
+  chips_ju_kdt_unknown/G1-06: field 'consortium' -> 'none', value_spec {"op": "in", "field": "consortium", "allowed": ["yes"]} -> NULL [MATCHES]
+      Denmark requires at least one Danish company partner and a minimum share of Danish partner effort to come from Danish business partners.
+  chips_ju_kdt_unknown/G1-07: field 'consortium' -> 'none', value_spec {"op": "in", "field": "consortium", "allowed": ["yes"]} -> NULL [MATCHES]
+      Czech Republic requires the Czech fraction of the consortium to include at least one enterprise and at least one research organisation (Publ
+  chips_ju_kdt_unknown/G1-08: field 'consortium' -> 'none', value_spec {"op": "in", "field": "consortium", "allowed": ["yes"]} -> NULL [MATCHES]
+      Spain (AEI) requires Spanish non-profit research organizations to participate in consortia with at least one Spanish profit organization par
+
+== 3. a country value no founder can give -> dropped from the list
+  eit_digital_vap/g1_vip_location: allowed 32 -> 31 (drops 'Turkey') [MATCHES]
+      before: {"allowed": ["Austria", "Belgium", "Bulgaria", "Croatia", "Cyprus", "Czechia", "Denmark", "Estonia", "Finland", "France", "Germany", "Greece", "Hungary", "Ireland", "Italy", "Latvia", "Lithuania", "Luxembourg", "Malta", "Netherlands", "Poland", "Portugal", "Romania", "Slovakia", "Slovenia", "Spain", "Sweden", "Montenegro", "North Macedonia", "Serbia", "Turkey", "Ukraine"], "field": "entityCountries", "op": "in"}
+
+== 4. 'who may apply' text -> the submitter leads (same words, reordered)
+  satr_it_equity__sa_57625__banca_del_mezzogiorno_mediocredito_centrale_s_p_ (https://www.mimit.gov.it/it/incentivi/fondo-di-garanzia-per-le-pmi)
+    BEFORE: Si rivolge alle micro, piccole e medie imprese iscritte al Registro delle imprese e ai professionisti titolari di partita IVA, su tutto il territorio nazionale e in tutti i settori economici con la sola esclusione delle attività finanziarie e assicurative. La domanda non si presenta direttamente al Fondo: va richiesta alla banca, all'intermediario finanziario o al confidi che concede il finanziamento, il quale inoltra la richiesta di garanzia al Fondo.
+    AFTER:  Chi presenta la domanda: la domanda non si presenta direttamente al Fondo; va richiesta alla banca, all'intermediario finanziario o al confidi che concede il finanziamento, il quale inoltra la richiesta di garanzia al Fondo. Imprese che possono beneficiare della garanzia: micro, piccole e medie imprese iscritte al Registro delle imprese e professionisti titolari di partita IVA, su tutto il territorio nazionale e in tutti i settori economici con la sola esclusione delle attività finanziarie e assicurative.
+  satr_nl_rnd__sa_107606__ministerie_van_economische_zaken_en_klimaat (https://www.nationaalgroeifonds.nl/overzicht-lopende-projecten/thema-sleuteltechnologieen-en-valorisatie/nxtgen-hightech)
+    BEFORE: Deelname loopt via consortia: bedrijven (van start-ups en mkb tot grote ondernemingen) en kennisinstellingen sluiten zich aan bij een NXTGEN Hightech-project, waarna de subsidie via stichting NXTGEN Hightech en RVO wordt verstrekt onder de Subsidieregeling Nationaal Groeifonds (referentie NGFNH2201). Voorwaarden zijn onder meer dat elke deelnemer in het samenwerkingsverband minimaal 125.000 euro subsidie ontvangt, dat de activiteiten zonder subsidie niet of veel later zouden plaatsvinden, en dat ondertekende, onvoorwaardelijke cofinancieringsverklaringen worden meegeleverd. Voor het kennisdeel schrijft NWO aparte open calls uit waarop kennisinstellingen samen met bedrijfspartners kunnen indienen.
+    AFTER:  Wie dient in: deelname loopt via consortia binnen een NXTGEN Hightech-project; de subsidie wordt via stichting NXTGEN Hightech en RVO verstrekt onder de Subsidieregeling Nationaal Groeifonds (referentie NGFNH2201). Deelnemers: bedrijven (van start-ups en mkb tot grote ondernemingen) en kennisinstellingen. Voorwaarden zijn onder meer dat elke deelnemer in het samenwerkingsverband minimaal 125.000 euro subsidie ontvangt, dat de activiteiten zonder subsidie niet of veel later zouden plaatsvinden, en dat ondertekende, onvoorwaardelijke cofinancieringsverklaringen worden meegeleverd. Voor het kennisdeel schrijft NWO aparte open calls uit waarop kennisinstellingen samen met bedrijfspartners kunnen indienen.

@@ -5,7 +5,7 @@
 // What it returns unions into `fieldChannels`, which decides which channels
 // enter the pool at all and sets `usedInField` — tier 1 of the row sort, above
 // the entire score. `npm run stages` does not make that call. Neither does
-// `npm run trace`. Neither did `_wsdr_curve.ts`, which generated the committed
+// `npm run trace`. Neither did `emit_pool_recall_curve.ts`, which generated the committed
 // pool-recall curve the selector's own prompt quotes its base rate from.
 //
 // Every one of those numbers was read as end-to-end for weeks, and none of the

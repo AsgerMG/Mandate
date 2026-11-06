@@ -80,7 +80,7 @@
     "Set on branch port-signals-pg to what that branch leaves; the other two",
     "port branches lower it further at merge, and it ends at 0."
   ],
-  "sqlite_import_budget": 107,
+  "sqlite_import_budget": 94,
 
   "tables": {
     "brief_records":              {"store": "postgres", "why": "written by the product at request time; never existed in SQLite"},
@@ -91,6 +91,7 @@
     "eligibility_embeddings":     {"store": "postgres-derived", "derived_from": ["eligibility_gates"], "why": "pgvector index of what a fund DEMANDS. Recomputed wholesale in Postgres; no SQLite representation. Never conflated with instrument_profiles."},
     "instrument_profiles":        {"store": "postgres-derived", "derived_from": ["funding_instruments"], "why": "pgvector index of what a fund FUNDS. Recomputed wholesale, so its store question is really funding_instruments' -- which is still sqlite, and is why this is not simply `postgres`."},
     "eligibility_grounding":      {"store": "postgres", "why": "which grounding.document_versions row each gate/clause cites, and where the quote sits in it. Written once by mandate/grounding/migrations/capital_sources_to_grounding.py, then appended to; insert-only. Migration 034."},
+    "corpus_run_marks":           {"store": "postgres", "why": "what each run that built the corpus recorded about itself (ETL/lib/corpus_marks.py, through store.py into schema capital). Declared 2026-11-06: committed DDL created it with no declared store."},
 
     "funding_instruments":        {"store": "sqlite", "blocked_by": "migrate_to_postgres.py TRUNCATEs and reloads it from data/db.sqlite on every publish, so the laptop is authoritative in fact. Stage 3 of the migration."},
     "funding_instrument_sources": {"store": "sqlite", "blocked_by": "same publish path as funding_instruments"},
@@ -106,22 +107,6 @@
     "company_sector_labels":      {"store": "sqlite", "blocked_by": "no Postgres representation"}
   },
 
-  "replacers": {
-    "ETL/events/extract/push_db_verified.py": {
-      "proves_superset": true,
-      "why": "proves the local corpus is a superset of the volume, table by table and key by key, from both files at the moment it runs, and reads the volume back afterwards"
-    },
-    "ETL/events/extract/pull_db_side.py": {
-      "proves_superset": false,
-      "why": "downloads to a path the caller names and REFUSES when that path is the local corpus, so it cannot replace a store of record even though it holds the flag"
-    },
-    "ETL/events/extract/pull_db.py": {
-      "proves_superset": false,
-      "why": "downloads the volume straight over data/db.sqlite with --overwrite. Correct only while the volume is ahead of the laptop, which is not a property anything checks. Superseded for the pull direction by pull_db_side.py + merge_volume_into_local.py."
-    },
-    "ETL/events/extract/push_local.py": {
-      "proves_superset": false,
-      "why": "ends in a bare upload --overwrite of the laptop corpus onto the volume. Superseded by push_db_verified.py, which does the same transfer with the proof in front of it."
-    }
-  }
+  "$replacers_why": "Modules that replace a store wholesale. The four that did (pull_db, pull_db_side, push_local, push_db_verified: the laptop<->volume db.sqlite sync) were archived on 2026-11-06 with the two-store concept; their entries are kept verbatim in ETL/archive/README.md.",
+  "replacers": {}
 }

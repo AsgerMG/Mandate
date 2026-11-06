@@ -7,7 +7,7 @@ pull into `db.sqlite`. After any renewal, re-derive and snapshot:
     python3 ETL/events/transform/classify_taxonomy.py apply-nace
     python3 ETL/events/transform/classify_taxonomy.py run --max-cost 20
     python3 ETL/events/load/qa/sanity_check.py
-    python3 ETL/events/load/backup.py
+    make backup                     # ETL/lib/backup_postgres.py
 
 Usage:
   python3 ETL/events/extract/renew.py --list                 # registry, grouped by tier
@@ -146,7 +146,7 @@ def main() -> None:
     if not args.dry_run:
         print("Done. Next: python3 ETL/events/transform/classify_taxonomy.py apply-nace "
               "&& python3 ETL/events/transform/classify_taxonomy.py run --max-cost 20 "
-              "&& python3 ETL/events/load/qa/sanity_check.py && python3 ETL/events/load/backup.py")
+              "&& python3 ETL/events/load/qa/sanity_check.py && make backup")
 
 
 if __name__ == "__main__":

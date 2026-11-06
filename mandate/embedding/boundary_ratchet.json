@@ -1,10 +1,10 @@
 {
   "_doc": "Scratch measurement scripts that call Voyage directly and predate mandate/embedding. Frozen, not allowed: the list may only shrink (check_boundary.py fails when a listed file stops offending). Paths are relative to the frontend root (capital/website/frontend today, web/ after the move). Port one by replacing its fetch with embedQuery() from lib/embedding.ts, then delete its line here.",
   "frozen": [
-    "<frontend>/scripts/_wsck_real.ts",
-    "<frontend>/scripts/_wsck_topic.ts",
-    "<frontend>/scripts/_wshh_components.ts",
-    "<frontend>/scripts/_wshh_cosines.ts",
-    "<frontend>/scripts/diag_gate2.ts"
+    "<frontend>/scripts/archive/_wsck_real.ts",
+    "<frontend>/scripts/archive/_wsck_topic.ts",
+    "<frontend>/scripts/archive/_wshh_components.ts",
+    "<frontend>/scripts/archive/_wshh_cosines.ts",
+    "<frontend>/scripts/archive/diag_gate2.ts"
   ]
 }

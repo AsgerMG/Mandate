@@ -242,6 +242,9 @@ export async function driveFounderPath(
   });
   // `eligBeforeRound` is a ref in the panel, deliberately, so it is a ref here.
   const eligBeforeRound: { current: EligibilityAnswers | null } = { current: null };
+  // So is `profileSignalRef` (E2): the panel keeps the intake route's signal in
+  // a ref because an empty round runs the memo in the same tick that set it.
+  const profileSignalRef: { current: ProfileSignal | null } = { current: null };
 
   // ── The founder fills in screen one. Every keystroke is a render. ────────
   S.set("company", f.company);
@@ -267,7 +270,7 @@ export async function driveFounderPath(
     description: descriptionOverride ?? S.read("description"),
     capitalSought: S.read("capitalSought"),
     eligibility: eligOverride ?? S.read("elig"),
-    profileSignal: S.read("profileSignal"),
+    profileSignal: profileSignalRef.current ?? S.read("profileSignal"),
     projectAnswers: S.read("projectAnswers"),
   });
 
@@ -302,7 +305,10 @@ export async function driveFounderPath(
     profileSignal?: ProfileSignal | null;
   };
   const profileSignalFromIntake = roundData.profileSignal ?? null;
-  if (roundData.profileSignal) S.set("profileSignal", roundData.profileSignal);
+  if (roundData.profileSignal) {
+    profileSignalRef.current = roundData.profileSignal;
+    S.set("profileSignal", roundData.profileSignal);
+  }
 
   const questions = roundData.round?.questions ?? [];
   const projectQuestions = roundData.round?.projectQuestions ?? [];

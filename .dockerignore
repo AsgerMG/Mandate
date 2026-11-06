@@ -42,8 +42,11 @@ capital/data/backups/
 capital/data/ranker_cache/
 # a database backup must no more enter an image than a credential does
 capital/postgres-backup/
-# the committed text copy of the authored corpus; restore is a checkout, not a run
-capital/corpus-ledger/
+# archived records (the sqlite-era corpus ledger, workstream run outputs, the
+# two-store tooling): nothing the cron runs reads them; restore is a checkout
+capital/archive/
+capital/ETL/archive/
+capital/project-mgmt/archive/
 
 # ── policy ─────────────────────────────────────────────────────────────────
 # policy/data/ is the SQLAlchemy package, not a data directory: it stays.

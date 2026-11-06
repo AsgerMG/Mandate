@@ -35,28 +35,12 @@ interface Exception {
  * Accepted, time-boxed. Every entry needs a reason a reviewer can check and a
  * date by which someone must look again.
  */
-const EXCEPTIONS: Exception[] = [
-  {
-    name: "next",
-    reason:
-      "Advisory range covers all releases up to 16.3.0-preview.7; there is no fixed " +
-      "version to move to. npm proposes downgrading to 9.3.3 (four majors back), which " +
-      "would break the product. Upgrade as soon as a patched 16.x ships.",
-    reviewBy: "2026-09-30",
-  },
-  {
-    name: "postcss",
-    reason: "Transitive through next. Resolves when next ships a patched release.",
-    reviewBy: "2026-09-30",
-  },
-  {
-    name: "sharp",
-    reason:
-      "Transitive through next (libvips CVEs). Only reachable via image optimisation, " +
-      "which this site does not use on untrusted input — every image is a build-time asset.",
-    reviewBy: "2026-09-30",
-  },
-];
+// Empty since 2026-11-06. next, postcss and sharp were accepted until
+// 2026-09-30 for want of a patched release; next 16.4.5 is one, and postcss
+// (8.5.32), sharp (0.35.5) and source-map-js (1.2.2) are pinned to fixed
+// releases through `overrides` in package.json. `npm audit --omit=dev` then
+// reports no high or critical advisory.
+const EXCEPTIONS: Exception[] = [];
 
 interface AuditVuln { severity: string; via: unknown[] }
 

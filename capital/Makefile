@@ -12,24 +12,19 @@ DATE    := $(shell date +%Y%m%d)
 BACKUP  := $(HOME)/Wincent-backups
 ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/Wincent-backups
 
-.PHONY: help analyze visuals data site-dev site-build backup vault vault-status classify sanity transform sources renew signals signals-digest eligibility pull-db push news republish verify-cron refresh refresh-check
+.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility news republish verify-cron refresh refresh-check
 
 help:
 	@echo "Wincent make targets:"
-	@echo "  make republish   Make the site serve the corpus the ETL produced (pull -> gate -> regenerate)"
+	@echo "  make republish   Make the site serve the corpus the ETL produced (gate -> regenerate)"
 	@echo "  make verify-cron Is the weekly Railway ETL scheduled, deployed, and running this code?"
 	@echo "  make check-stores One store of record per table, and no schema drift between stores"
-	@echo "  make push-db     Push the local corpus to the volume, having PROVED it loses nothing"
-	@echo "  make pull-db     Pull the latest db.sqlite from the Railway ETL volume (run before local work)"
-	@echo "  make push        Run cloud-blocked/manual sources locally, then push db.sqlite back to Railway"
 	@echo "  make sources     List every source + how to renew it (ETL/events/extract/renew.py --list)"
 	@echo "  make renew       Pull fresh data for every AUTO source (then run 'make transform backup')"
 	@echo "  make classify    LLM sector_top/subsector/entity_type classification (cost-gated at \$$20, ETL/events/transform/classify_taxonomy.py)"
 	@echo "  make sanity      Post-load corpus integrity checks (ETL/events/load/qa/sanity_check.py)"
 	@echo "  make transform   classify + sanity (re-derive everything from loaded rows)"
-	@echo "  make backup      Back up db.sqlite + data/ to local + iCloud (ETL/events/load/backup.py)"
-	@echo "  make vault       Snapshot the two IRRECOVERABLE tables with history + a shrink guard (ETL/events/load/corpus_vault.py)"
-	@echo "  make vault-status What the vault holds, how old it is, and whether iCloud has it"
+	@echo "  make backup      Back up every Postgres table to ~/Wincent-backups/postgres-DATE (ETL/lib/backup_postgres.py)"
 	@echo "  make analyze     Rebuild corpus KPIs (website/build/synthesis.py)"
 	@echo "  make visuals     Rebuild home-page visuals (taxonomy, map, coverage)"
 	@echo "  make views       Install the read-side views in Postgres (ETL/schema/install_views.py)"
@@ -74,15 +69,14 @@ refresh:
 # is not a thing to change unattended. So this leaves the diff staged in your
 # working tree and tells you what moved.
 republish:
-	# 1. The ETL's corpus, not last week's copy of it. Wakes the cron service,
-	#    downloads, and confirms the schedule was restored afterwards. Via
-	#    pull-db so this shares its union semantics: republishing must not be a
-	#    way to quietly discard local instrument work on the way past.
-	$(MAKE) pull-db
+	# 1. There is nothing to pull: since 2026-11-05 the corpus the ETL writes IS
+	#    the one the site reads (schema capital in the Mandate Postgres). The old
+	#    step woke the Railway volume and unioned its db.sqlite into the laptop's;
+	#    that sync is archived (ETL/archive/README.md).
 	# 2. Regenerate everything downstream, THROUGH the coverage gate, which
 	#    stops the chain rather than publishing a corpus that got worse.
-	#    --force because a pull changes db.sqlite, not the raw source files
-	#    refresh.py hashes, so nothing would otherwise look changed.
+	#    --force because nothing in the raw source files refresh.py hashes need
+	#    have changed for the corpus to have moved.
 	python3 ETL/refresh.py --force
 	# 3. Say what actually moved, so the commit is a decision and not a reflex.
 	@echo ""
@@ -295,7 +289,7 @@ eligibility:
 	# the model. That is exactly what shipped for four workstreams. Last, and
 	# after Postgres, because it reads the published corpus.
 	# check_pool_recall_curve.ts fails the build when this has not been re-run.
-	cd ../web && npx tsx scripts/_wsdr_curve.ts
+	cd ../web && npx tsx scripts/emit_pool_recall_curve.ts
 
 # News/signals layer (the signals_* tables of schema capital): table check +
 # stage counts + QA. Read-only.
@@ -326,67 +320,12 @@ site-build:
 site-dev:
 	cd ../web && npm run dev
 
+# Every table in the Mandate Postgres, as JSON lines plus the schema, re-read and
+# counted after writing. backup.py (db.sqlite + data/ to local and iCloud) and
+# the vault (corpus_vault.py) protected the SQLite store and are archived with it.
 backup:
-	python3 ETL/events/load/backup.py
+	python3 ETL/lib/backup_postgres.py $(BACKUP)/postgres-$(DATE)
 
-# `backup` writes dated whole-database copies. A dated copy is not a history:
-# you can return to the 8th, but you cannot see what changed between the 8th
-# and the 9th, or restore ONE table without restoring everything. `vault`
-# covers the two tables that cannot be rebuilt from any source we still have,
-# with a guard that refuses to replace a good snapshot with a smaller one. It
-# also runs daily under launchd -- these targets are for running it by hand.
-vault:
-	python3 ETL/events/load/corpus_vault.py snapshot
-
-vault-status:
-	python3 ETL/events/load/corpus_vault.py status --brctl
-
-# The broad ETL pipeline (43 funder/registry extractors, classify, sanity)
-# runs on a weekly Railway cron against a Railway-resident volume, not locally.
-# This brings that corpus down for local interactive work (eligibility research,
-# ad-hoc analysis). Run before any session that needs fresh data.
-#
-# It is a UNION, not an overwrite. It used to be `pull_db.py`, which downloads
-# straight over data/db.sqlite -- correct only while the volume is ahead of the
-# laptop, which is a property nothing established. On 2026-08-07 it was false in
-# the other direction and one `make pull-db` would have replaced 1,088
-# instruments with 322, silently and with no undo. So: fetch to a side file the
-# local corpus is not, then INSERT OR IGNORE the rows the laptop lacks. Rows the
-# laptop already has are left exactly as they are.
-#
-# `pull_db.py` is still there for the case where you genuinely mean to discard
-# local state. Read its header first.
-# ── WHY THIS IS SCOPED ─────────────────────────────────────────────────────
-# The unscoped merge REFUSES, every time, and correctly: keying on `id` across
-# these two stores finds 4 collisions and 188 aliases -- four EU joint
-# undertakings whose ids mean a different administering body on each side, and
-# 174 eligibility gates that are the same rule under two ids. A blind union
-# would silently duplicate the gates and take the SHORTER of the two fund names.
-#
-# `companies` and `public_funding_events` are the two tables the weekly cron
-# actually adds to, and both audit clean: 0 collisions, 0 aliases. So the pull
-# takes exactly those, and anything else that diverges is a decision somebody
-# has to make with the audit in front of them rather than a transfer.
-#
-# 2026-08-19: an unscoped `make pull-db` inside a script was read as a fatal
-# error and stopped the promotion it was the first step of. The refusal is the
-# guard working; scoping it is what makes the target usable.
-pull-db:
-	python3 ETL/events/extract/pull_db_side.py /tmp/volume-db.sqlite
-	python3 ETL/lib/merge_volume_into_local.py /tmp/volume-db.sqlite \
-	    --only companies,public_funding_events --write
-
-# The other half of the automation split: everything that can't run on
-# Railway (cloud-blocked NETWORK sources + MANUAL sources with a file
-# dropped in data/manual_inbox/). Pulls fresh, runs what it can locally,
-# classifies + sanity-checks, pushes the result back. See
-# ETL/events/extract/push_local.py for exactly what runs and what's excluded.
-push:
-	python3 ETL/events/extract/push_local.py
-
-# The safe half of `push`, on its own: no sources, no LLM spend, just the
-# corpus onto the volume with the superset proof in front of it and a readback
-# behind it. This is the one to reach for after local instrument work.
-.PHONY: push-db
-push-db:
-	python3 ETL/events/extract/push_db_verified.py --write
+# pull-db, push and push-db moved the corpus between the laptop's db.sqlite and
+# the Railway volume. There is one store now (PLATFORM.md), so they are archived
+# with their scripts: ETL/archive/README.md.

@@ -4,7 +4,7 @@
 ONE store: schema `capital` of the Mandate Postgres. There is nothing else to
 rank it against. Every table of the corpus -- the events half and the
 instruments half -- was loaded there and verified row for row
-(ETL/schema/consolidate/load_into_postgres.py), every reader and writer reaches
+(ETL/archive/schema/consolidate/load_into_postgres.py), every reader and writer reaches
 it through ETL/lib/store.py, and the two SQLite files that used to compete for
 the title are archived, read-only, under ~/Mandate-backups/2026-11-05/.
 

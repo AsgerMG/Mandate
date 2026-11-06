@@ -91,15 +91,6 @@ jobs:
         env:
           CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
         run: python3 ../capital/website/build/build_site_data.py --prebuild
-      # ── Is this tree's own build state known, and is every red one owned? ──
-      # First, because it is the cheapest and the most likely to explain
-      # anything below it. It reads project-mgmt/check_status.json — what `npm run
-      # check` last found, one row per check — and fails on a row that is
-      # stale, or red with nobody's name on it, or held under an expired
-      # acceptance. See web/scripts/lib/suiteStatus.ts.
-      - name: A red check is owned, and a green one is not accepted
-        run: npx tsx scripts/check_red_debt.ts
-
       - name: Typecheck
         run: npx tsc --noEmit
 
@@ -107,8 +98,13 @@ jobs:
       # the eligibility evaluator, the request sanitiser, watch-only detection
       # and cost accounting. Coverage has a floor so tests cannot be deleted
       # to make a build pass.
+      # check_red_debt.test.ts is excluded HERE and only here: it judges
+      # project-mgmt/check_status.json, the record `npm run check` writes, so it
+      # is the report-tier "a red check is owned" and runs in the nightly
+      # report (capital-nightly.yml). It still runs in every local `npx vitest
+      # run`, which is where it was put to be read.
       - name: Unit tests
-        run: npx vitest run --coverage
+        run: npx vitest run --coverage --exclude scripts/check_red_debt.test.ts
 
       # The output contracts must still describe the report we actually build.
       # The job is already named "contracts" for the vocabulary one; this is
@@ -124,38 +120,12 @@ jobs:
       - name: Output contracts
         run: npx tsx scripts/check_contracts.ts
 
-      # The other half of the sentence above. `check_contracts` counts a rule
-      # enforced because an array literal names it; this asks whether the check
-      # that decides it can run on a request at all. Both `checkSelection` and
-      # `checkQuestions` were reachable from no entry point while the selector's
-      # own system prompt told the model its rules were "checked mechanically
-      # after you reply". Hermetic: it reads the import graph, nothing else.
-      - name: A rule is enforced only if its check can run
-        run: npx tsx scripts/check_check_reachability.ts
-
       # No number a visitor reads is a literal the corpus does not produce.
       # Hermetic: TypeScript source plus two COMMITTED artifacts, no database
       # and no credentials, so it cannot pass by finding nothing to read — and
       # it self-tests its own detector on every run before it judges the site.
       - name: Rendered numbers come from the corpus
         run: npx tsx scripts/check_rendered_numbers.ts
-
-      # The same property for the numbers the owner plans on rather than the
-      # ones a visitor reads. Three headline figures were retracted in one day
-      # and two had been reported twice before anyone caught them; all three
-      # were written into a planning document with the run that produced them
-      # kept nowhere. Hermetic, self-testing, and it fails when a published
-      # figure and its committed recomputation disagree.
-      - name: Published figures name where they came from
-        run: npx tsx scripts/check_published_figures.ts
-
-      # Credentials load in one place, and a harness that needs them says so.
-      # Free and hermetic — it reads source and runs nothing — and it belongs
-      # in CI rather than only in `npm run check`, because the thing it stops
-      # is somebody pasting the old env preamble back into a NEW script, which
-      # arrives by pull request.
-      - name: One env loader
-        run: npx tsx scripts/check_env_loader.ts
 
       - name: Vocabulary contract
         run: npx tsx scripts/check_vocabularies.ts
@@ -221,29 +191,6 @@ jobs:
       - name: The recall set does not leak its answers
         if: always()
         run: npx tsx scripts/check_recall_leaks.ts
-      # Both of the next two describe themselves as hermetic and are: the
-      # committed corpus snapshot plus, for the second, a committed artifact.
-      # No database, no credentials, sub-second, and neither can pass by having
-      # nothing to read -- each fails outright on an empty scope. They were in
-      # `npm run check` and in NO automatic path, which is what
-      # ETL/schema/check_guard_reachability.py was red about.
-      #
-      # A filter that can REJECT an answer must be able to ACCEPT one. A
-      # structural, cited comparator that admits nobody makes assessInstrument
-      # return `blocked`, and blocked never reaches the founder -- the fund is
-      # hidden from exactly the applicants it admits, with nothing on screen to
-      # say so. That arrives by pull request, so it belongs here.
-      - name: A filter that can reject someone can admit someone
-        if: always()
-        run: npx tsx scripts/check_comparator_admits.ts
-      # The coverage ratchet on the open-question classification. An
-      # unclassified requirement is never offered as a question and reads
-      # exactly like "there was nothing worth asking", so a corpus that grows
-      # past its artifact stops being askable in silence. The ceiling may fall,
-      # never rise.
-      - name: Open questions still cover the corpus
-        if: always()
-        run: npx tsx scripts/check_open_question_class.ts
       # The same ratchet shape one artifact over. That one counts requirements
       # with no judgement; this counts CHANNELS with no probability.
       # channelPrior.generated.json shipped holding 9 of the corpus's 11, and the
@@ -276,26 +223,6 @@ jobs:
       - name: The stand-in for missing data is still neutral
         if: always()
         run: npx tsx scripts/check_missing_data_neutral.ts
-      # The one ranking signal CI can actually see. `check_recall_floor` needs
-      # DATABASE_URL and VOYAGE_KEY, so it has never run here and never will;
-      # a regenerated peer prior cost ten graded cases and stayed green through
-      # roughly fifteen merges because compile and typecheck were the only
-      # things watching. This grades the committed prior against the committed
-      # answer key in under a second, with no credential.
-      - name: The peer prior still carries the funds companies won
-        if: always()
-        run: npx tsx scripts/check_peer_prior_canary.ts
-      # The other thing the committed answer key can prove without a credential,
-      # and the worst defect class this product has: a fund hidden from someone
-      # who qualifies. A territorial screen removes an instrument whose own
-      # notification declares a region the applicant is not in -- and a remit
-      # attaches to the establishment doing the work, not to the registered
-      # seat, so 15 companies the register says WON a fund are excluded from it
-      # by our own screen. That number is a RATCHET here: it may fall, never
-      # rise, and raising the ceiling is not a fix.
-      - name: A company is never screened out of a fund it won
-        if: always()
-        run: npx tsx scripts/check_winner_not_blocked.ts
       # The same defect class from the founder's own side: not a fund hidden
       # from someone who qualifies, but a fund hidden BECAUSE they answered a
       # question we asked them. The owner's binding decision is that a
@@ -308,14 +235,6 @@ jobs:
         if: always()
         run: npx tsx scripts/check_asking_cannot_shrink.ts
         env: { NO_PG: '1' }
-      # Skips honestly: data/raw/instrument_docs is gitignored, so there is
-      # nothing here to verify a quotation against. Kept in CI anyway — the skip
-      # is one line of output that says so, and its absence from any automatic
-      # path is what let it be forgotten.
-      - name: Quotations match their documents
-        if: always()
-        run: npx tsx scripts/check_extracted_quotes.ts
-
       # ── The published verdicts ─────────────────────────────────────────────
       # The guards that cannot run here, asserted without a credential. Reads
       # the site's /api/guards over HTTPS: has each corpus-side guard published,
@@ -364,9 +283,6 @@ jobs:
       - name: "A funds: line states a scope"
         if: always()
         run: npx tsx scripts/check_funds_line.ts
-      - name: Both stores select the same columns
-        if: always()
-        run: npx tsx scripts/check_store_columns.ts
       - name: A displayed name is not an id
         if: always()
         run: npx tsx scripts/check_row_name_not_id.ts
@@ -376,9 +292,6 @@ jobs:
       - name: A winner is never gated out of the memo
         if: always()
         run: npx tsx scripts/check_winner_not_gated.ts
-      - name: The harness does not answer as the founder
-        if: always()
-        run: npx tsx scripts/check_harness_intake.ts
       - name: The request path cannot reach the answer key
         if: always()
         run: npx tsx scripts/check_answer_not_reachable.ts
@@ -386,10 +299,79 @@ jobs:
         if: always()
         run: npx tsx scripts/check_answer_in_prompt.ts
 
+      # Founder-tier checks that were in `npm run check` and nowhere automatic
+      # (check_guard_reachability named them). Hermetic: committed snapshot and
+      # source, no credential.
+      - name: A cut title still tells two funds apart
+        if: always()
+        run: npx tsx scripts/check_row_titles_distinct.ts
+      - name: A route reads only what a founder can send
+        if: always()
+        run: npx tsx scripts/check_request_surface.ts
+
+      # What kind of capital an instrument is must agree with the register that
+      # published it, and no kind a register publishes may vanish from the
+      # corpus. G (Guarantee) and DG (Direct grant) were transposed on the day
+      # the map was written: the corpus held ZERO guarantees against a feed
+      # publishing 17,023 guarantee awards, and Italy's largest guarantee scheme
+      # was rendered to founders as a grant.
+      - name: Capital kinds match the register
+        if: always()
+        working-directory: capital
+        run: python3 ETL/schema/check_register_instrument_kinds.py
+      # A spec can be syntactically valid, pass the vocabulary check, and still
+      # mean the opposite of its source document. Reads the site data above.
+      - name: Encoded rule sanity
+        if: always()
+        working-directory: capital
+        run: python3 ETL/schema/check_spec_sanity.py
+
+      # ── Founder-tier checks that read the live corpus ─────────────────────
+      # Declared `manual` until 2026-11-06 because CI held no credential. It now
+      # holds one, proved read-only by the first step of this job, so these run
+      # here on every push instead of when somebody remembers. They read
+      # Postgres through DATABASE_URL, the one name the web code reads; it is
+      # set from the read-only credential INSIDE the step, so no writing script
+      # can be handed a connection that writes (the role refuses: a guard that
+      # tries to publish its verdict from here is told "read-only transaction"
+      # and says so). check_guard_registry rule 7 holds: the secret is bound
+      # only to CAPITAL_RO_DATABASE_URL, per step, after the proof.
+      #
+      # Not here, and why: check_memo_table, check_answer_reach,
+      # check_degradation, check_hydration_parity, check_recall_floor and
+      # check_pool_recall_curve also need VOYAGE_KEY, which CI does not hold.
+      - name: A published row's openness rests on a deadline we hold
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_window_evidence.ts
+      - name: No door is offered on an expired fact
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_dead_doors.ts
+      - name: Every encoded rule is keyed to a field an answer reaches
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_gate_field_reach.ts
+      - name: A positive country rule can be satisfied by some founder
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_country_gates.ts
+      - name: A gate that decides a verdict has been judged a condition
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_gate_pertinence.ts
+
       - name: Lint
+        if: always()
         run: npx eslint .
 
       - name: Build
+        if: always()
         run: npx next build
         env: { NEXT_TELEMETRY_DISABLED: '1' }
 
@@ -427,6 +409,34 @@ jobs:
       - name: Install the ETL's requirements
         run: pip install -q -r requirements.txt
 
+      # Four eligibility guards that read the live corpus and were in no
+      # automatic path (check_guard_reachability). The first step to hold the
+      # read-only credential proves it cannot write (rule 7 b).
+      - name: The corpus credential is read-only
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/schema/check_readonly_credential.py
+      - name: Every comparator is storable
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/terms/check_comparator_storable.py
+      - name: Every curated correction is in effect
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/terms/check_corrections_applied.py
+      - name: No ordered comparator claims two thresholds
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/terms/check_gate_branches.py
+      - name: A euro band is derived only from euro numerals
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/terms/check_gate_currency.py
+
       # Compile-checks every ETL module. Cheap, and it catches the class of
       # error that otherwise only surfaces mid-pipeline on a long run.
       - name: Byte-compile the ETL
@@ -442,16 +452,6 @@ jobs:
       # raising, so the drift is silent.
       - name: One country map
         run: python3 ETL/schema/check_single_country_map.py
-
-      # What kind of capital an instrument is must agree with the register that
-      # published it, and no kind a register publishes may vanish from the
-      # corpus. G (Guarantee) and DG (Direct grant) were transposed on the day
-      # the map was written: the corpus held ZERO guarantees against a feed
-      # publishing 17,023 guarantee awards, and Italy's largest guarantee scheme
-      # was rendered to founders as a grant.
-      - name: Capital kinds match the register
-        if: always()
-        run: python3 ETL/schema/check_register_instrument_kinds.py
 
       # Every family whose row name is a mechanical re-casing of its own id has
       # been answered for, and an unanswered one raises rather than guessing.
@@ -470,8 +470,9 @@ jobs:
 
       # A spec can be syntactically valid, pass the vocabulary check, and still
       # mean the opposite of its source document.
-      - name: Encoded rule sanity
-        run: python3 ETL/schema/check_spec_sanity.py
+      # "Encoded rule sanity" (check_spec_sanity.py) moved to the frontend job:
+      # it reads web/public/data/instrument_terms.json, which only that job
+      # generates from the corpus.
 
       # The gate that refuses to publish a corpus that got worse. It failed a
       # run in which every axis GAINED instruments, and it could not see a loss
@@ -499,47 +500,10 @@ jobs:
       - name: A rebuild deletes only the instrument rows it authored
         run: python3 ETL/events/load/test_external_instrument_ownership.py
 
-      # Both channels between the corpus of record and a working copy move the
-      # whole 645 MB file with --overwrite, so each is a deletion of whatever
-      # the losing side holds alone. The guard against that skipped every table
-      # whose identity it could not use -- and an omitted table is byte-for-byte
-      # the same result as a table with nothing at risk. public_funding_events,
-      # 311,399 rows from registers that keep no history, had an identity naming
-      # four columns that do not exist and was therefore never once compared.
-      - name: An uncomparable table never reports itself as safe to overwrite
-        run: python3 ETL/events/load/test_overwrite_guard.py
-
-      # The other half: the measurement being honest is not the same as the
-      # sync acting on it. Both refusals had a hole, and both were in the
-      # override -- --force-overwrite skipped the comparison entirely, and
-      # --discard-local printed its total after the swap. The flag whose whole
-      # purpose is to delete rows knowingly must name them first.
-      - name: A sync refuses while the store it replaces is the sole holder of a row
-        run: python3 ETL/events/load/test_overwrite_refusal.py
-
-      # corpus-ledger/ is the only committed copy of the authored instrument
-      # corpus -- 7,471 encoded gates that no extractor can regenerate. A
-      # truncated or half-committed ledger is WORSE than none, because it reads
-      # as protection and is not. Hermetic by construction: it checks the
-      # artefact against its own manifest, with no database anywhere near it,
-      # which is the whole reason the artefact exists.
-      - name: The committed corpus ledger is whole
-        run: python3 ETL/events/load/instrument_ledger.py checksums
-
-      # The ledger's counterpart, for the two tables it deliberately does not
-      # hold: company_sector_labels (a paid LLM classification, past retention)
-      # and public_funding_events (registers that keep no history). Their vault
-      # lives in iCloud, so CI cannot check its contents -- but it CAN check the
-      # property that keeps the vault worth having: a snapshot with fewer rows,
-      # or fewer columns, than the last good one must be REFUSED rather than
-      # take its place. `db.sqlite.20260722.gz` was trusted as a backup of both
-      # tables and contains neither 144,493 labels nor 8,313 of the events; the
-      # counts were never compared. This drill deletes rows and drops a table
-      # from a throwaway store and requires the refusal, then requires that an
-      # acknowledged shrink is allowed AND recorded. It builds its own fixture
-      # when no corpus is present, which is the case here.
-      - name: A smaller backup cannot replace a good one
-        run: python3 ETL/events/load/corpus_vault.py selftest
+      # Four steps that guarded the laptop<->volume db.sqlite sync (the overwrite
+      # guard and its refusal, the corpus ledger's checksums, the vault's shrink
+      # drill) were removed on 2026-11-06 with the tooling they guarded: there
+      # is one store now. The tooling and its record are in ETL/archive/.
 
       # The same class again, one column over and far more expensive: the split
       # keyed a child on `name` while the ETL renamed 430 of 453 children to the
@@ -664,14 +628,6 @@ jobs:
       # red at the moment they were found. Reads committed source only.
       - name: Every guard runs somewhere, or says why it does not
         run: python3 ETL/schema/check_guard_reachability.py
-
-      # The same question one layer down, about the DATA. Four artifacts read at
-      # request time on the production ranking path were produced by commands no
-      # pipeline ran and compared against nothing -- peerPrior, the signal worth
-      # 19 points of exact-scheme recall, was measured naming 16 funds the corpus
-      # no longer contained. Credential-free: committed source only.
-      - name: Every committed artifact can be rebuilt, and something watches it
-        run: python3 ETL/schema/check_artifact_reachability.py
 
   security:
     name: dependency audit
