@@ -5,8 +5,8 @@ A ROW MAY NOT BE OFFERED UNDER THE NAME OF THE BODY THAT GRANTS IT, UNLESS AN
 OFFICIAL SOURCE SAYS THAT IS THE OBJECT'S OWN NAME.
 
 The product half of that rule, with its test for an unseen row, is
-website/frontend/lib/intelligence/bodyNamedRow.ts; the build guard is
-website/frontend/scripts/check_body_named_rows.ts. This file is the ETL half:
+web/lib/intelligence/bodyNamedRow.ts; the build guard is
+web/scripts/check_body_named_rows.ts. This file is the ETL half:
 where the corpus violates the property, what does the register say instead.
 
 ── The defect this closes, and why it was NOT a missing feature ───────────

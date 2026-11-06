@@ -24,10 +24,12 @@
 **/node_modules/
 **/.next/
 
-# ── websites ship to Vercel, not Railway ──────────────────────────────────
-web/
-policy/website/
-capital/website/frontend/out/
+# ── the site ships to Vercel, not Railway, but capital's ETL READS web/ ───
+# (evidenceTiers.json, vocabularies, the guard registry's TS paths: see
+# capital/ETL/lib/web_path.py), so its source is in the context. Never its
+# dependencies or build output (node_modules/.next above).
+web/out/
+web/public/data/
 
 # ── capital ────────────────────────────────────────────────────────────────
 # data/ is carried minus what a run GENERATES: what git tracks there

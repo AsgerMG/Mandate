@@ -42,7 +42,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT, require_reference  # noqa: E402
+from etl_env import DB, ROOT, require_reference, WEB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse
@@ -74,7 +74,7 @@ REGION_TAG = re.compile(r"^(?:RegionNuts\d*\.|NutsRegion)([A-Z]{2}[A-Z0-9]+)$")
 # NUTS 2024 successor, so it never reaches the intake -- and reading the source
 # instead left a UK scheme demanding UKC..UKK that no founder can ever select.
 # The authority for "can a founder answer this" is what the founder is shown.
-REGIONS_TS = (ROOT / "website" / "frontend" / "lib" / "intelligence"
+REGIONS_TS = (WEB / "lib" / "intelligence"
               / "regions.generated.ts")
 
 

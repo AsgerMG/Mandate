@@ -97,7 +97,7 @@ try:
 except FileNotFoundError:  # pragma: no cover
     raise SystemExit(
         f"missing {_VOCAB_PATH}. Generate it with:\n"
-        f"  cd website/frontend && npx tsx scripts/emit_vocabulary.ts")
+        f"  cd ../web && npx tsx scripts/emit_vocabulary.ts")
 
 ENUM_VALUES: dict[str, list[str]] = _VOCAB["enumValues"]
 BAND_ORDERS: dict[str, list[str]] = _VOCAB["bandOrders"]

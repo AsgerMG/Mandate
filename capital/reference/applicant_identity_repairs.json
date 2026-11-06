@@ -5,7 +5,7 @@
   "scheme is FOR while somebody else is the entity that submits and signs.",
   "",
   "This file is DATA, not the rule. The rule is the property in the classifier and",
-  "the test is website/frontend/scripts/check_applicant_identity.ts, both derived",
+  "the test is web/scripts/check_applicant_identity.ts, both derived",
   "per text. A row lands here only after the property has already condemned it, and",
   "ETL/terms/repair_applicant_identity.py FAILS if a condemned row has no entry --",
   "so this cannot become the place a defect goes quiet. It is the repair log, not",

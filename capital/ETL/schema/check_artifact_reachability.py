@@ -6,7 +6,7 @@ notices when it goes stale.
 asks the same question one layer down, about the DATA those guards and the
 product read:
 
-    a file is committed under website/frontend/lib/intelligence/, is read at
+    a file is committed under web/lib/intelligence/, is read at
     request time on the production ranking path, and is produced by a command
     that no pipeline runs and no check compares against anything.
 
@@ -72,6 +72,7 @@ Usage: python3 ETL/schema/check_artifact_reachability.py
 """
 from __future__ import annotations
 
+import os
 import json
 import re
 import sys
@@ -79,8 +80,10 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
 REGISTRY = ROOT / "data" / "guard_registry.json"
-ARTIFACTS = ROOT / "website" / "frontend" / "lib" / "intelligence"
+ARTIFACTS = WEB / "lib" / "intelligence"
 LOADER = "generatedArtifact.ts"
 
 # Paths that RE-DERIVE a committed artifact from the corpus. Each is a single
@@ -95,7 +98,7 @@ REBUILD = {
 # Where a producer or a check may live.
 SOURCE_DIRS = [
     ROOT / "ETL",
-    ROOT / "website" / "frontend" / "scripts",
+    WEB / "scripts",
     ROOT / "website" / "build",
 ]
 
@@ -199,8 +202,8 @@ def source_files() -> list[Path]:
 
 
 def production_modules() -> list[Path]:
-    """Non-test modules under website/frontend/lib — the request path."""
-    lib = ROOT / "website" / "frontend" / "lib"
+    """Non-test modules under web/lib — the request path."""
+    lib = WEB / "lib"
     if not lib.is_dir():
         return []
     return sorted(p for p in lib.rglob("*.ts")
@@ -221,7 +224,7 @@ def main() -> int:
         # wrong path turned "not where I looked" into "nothing there", and the
         # most reassuring line this can print is the least true one.
         print(f"check_artifact_reachability: FAILED — no committed artifact "
-              f"found under {ARTIFACTS.relative_to(ROOT)}.\n"
+              f"found under {Path(os.path.relpath(ARTIFACTS, ROOT))}.\n"
               f"  There are supposed to be several. Either the path above is "
               f"wrong or the ranking artifacts are gone; both are worse than "
               f"anything this check was written to catch.")
@@ -300,7 +303,7 @@ def main() -> int:
                         if not p.name.startswith("check_") and name in text]
             art_problems.append(
                 f"has NO PROVABLE producer: nothing under "
-                f"{', '.join(str(d.relative_to(ROOT)) for d in SOURCE_DIRS)} binds a\n"
+                f"{', '.join(str(Path(os.path.relpath(d, ROOT))) for d in SOURCE_DIRS)} binds a\n"
                 f"      path to this filename and then writes that path. It is committed "
                 f"and it\n"
                 f"      cannot be rebuilt, which is the shape the schema replay check "
@@ -365,7 +368,7 @@ def main() -> int:
             if direct:
                 art_problems.append(
                     f"is read directly by "
-                    f"{', '.join(str(p.relative_to(ROOT)) for p in direct)},\n"
+                    f"{', '.join(str(Path(os.path.relpath(p, ROOT))) for p in direct)},\n"
                     f"      not through lib/intelligence/{LOADER}. Every such reader this "
                     f"repo has had\n"
                     f"      wrapped the read in `catch {{ cache = {{}} }}`, which does not "

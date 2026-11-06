@@ -50,7 +50,7 @@ def load_database_url() -> str:
         return url
     # Documented to live at the REPO ROOT. Thirty-four copies of this block
     # once looked only beside themselves and reported "no credentials" on a
-    # checkout that had them; see website/frontend/scripts/loadEnv.ts.
+    # checkout that had them; see web/scripts/loadEnv.ts.
     env = ROOT / ".env.local"
     if env.exists():
         for line in env.read_text().splitlines():

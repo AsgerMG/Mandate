@@ -14,7 +14,7 @@ Its sibling, `in ['none']`, is not inverted but is over-strict: it demands a
 clean sheet on every flag, so an unrelated tax arrear blocks a rule that was
 only ever about insolvency. A rule about insolvency must name insolvency.
 
-Reads the COMMITTED snapshot (website/frontend/public/data/instrument_terms.json)
+Reads the COMMITTED snapshot (web/public/data/instrument_terms.json)
 rather than data/db.sqlite. Two reasons, and the first only became obvious when
 CI went red: the database is gitignored, so a check that needs it cannot run in
 CI at all — it fails on a missing file and teaches everyone to ignore the job.
@@ -33,7 +33,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SNAPSHOT = ROOT / "website" / "frontend" / "public" / "data" / "instrument_terms.json"
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
+SNAPSHOT = WEB / "public" / "data" / "instrument_terms.json"
 
 SENTINEL_AXES = ("exclusionFlags", "activities")
 

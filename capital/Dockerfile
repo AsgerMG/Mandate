@@ -34,6 +34,8 @@ COPY capital/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY mandate/ /app/mandate/
+# the ETL reads the site's committed contracts (ETL/lib/web_path.py: <monorepo>/web)
+COPY web/ /app/web/
 COPY capital/ ./
 
 # Python output unbuffered, so a step's progress reaches Railway's log as it

@@ -40,7 +40,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import ROOT  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
@@ -63,7 +63,7 @@ BATCH = 128
 # retrieve. contracts/evidence_tiers.json is the one definition; verdict.ts
 # imports the same file.
 ASSERTABLE_OR_CITED = tuple(json.loads(
-    (ROOT / "website" / "frontend" / "lib" / "intelligence" /
+    (WEB / "lib" / "intelligence" /
      "evidenceTiers.json").read_text())["attributable"]["tiers"])
 
 

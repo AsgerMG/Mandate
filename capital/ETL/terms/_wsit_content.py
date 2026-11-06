@@ -37,10 +37,10 @@ for _anc in Path(__file__).resolve().parents:
         sys.path.insert(0, str(_anc / "ETL" / "lib"))
         sys.path.insert(0, str(_anc / "ETL" / "terms"))
         break
-from etl_env import ROOT  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 from recall_guards import squash  # noqa: E402
 
-FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
+FRONTEND = WEB / "lib" / "intelligence"
 TRACE = ROOT / "project-mgmt" / "findings" / "pool_blend_wsIR" / "traces" / "trace_off.jsonl"
 OWN = ("own_award_text", "own_project_title")
 

@@ -74,7 +74,7 @@ def squash(s: str) -> str:
 
 # Eight words is the unit: long enough that two independent texts do not share
 # one by chance, short enough to catch a text quoted into a profile with a word
-# changed. MUST match GRAM in website/frontend/lib/intelligence/recallLeaks.ts.
+# changed. MUST match GRAM in web/lib/intelligence/recallLeaks.ts.
 GRAM = 8
 
 

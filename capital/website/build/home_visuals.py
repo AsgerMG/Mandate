@@ -2,7 +2,7 @@
 
 Outputs:
 
-  website/frontend/public/data/instrument_leaderboard.json
+  web/public/data/instrument_leaderboard.json
     - rows for each source family (companies, €, median ticket, top sector,
       top country), which the taxonomy diagram links its chips to.
 """

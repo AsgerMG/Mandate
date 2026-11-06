@@ -18,7 +18,7 @@ against the published verdicts and needs no credentials at all.
 A verdict is a claim about a MOMENT. It goes stale, and the whole mechanism is
 worthless if a stale verdict reads the same as a fresh one. So every verdict
 carries the time it was taken and a hash of the code it judges, and the reader
-(website/frontend/scripts/check_verdicts.ts) fails on:
+(web/scripts/check_verdicts.ts) fails on:
 
   SILENT    no verdict at all, or none within the cadence the verdicts
             themselves establish. The publisher has stopped.

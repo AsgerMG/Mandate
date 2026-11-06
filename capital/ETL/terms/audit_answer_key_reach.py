@@ -50,7 +50,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 
 
 import argparse  # noqa: E402
@@ -65,7 +65,7 @@ from attribution import Split  # noqa: E402
 # set, and it went stale on 2026-08-09 when the constant moved to Doors.
 from recall_holdout import active_recall_set  # noqa: E402
 
-FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
+FRONTEND = WEB / "lib" / "intelligence"
 
 
 def offerable_ids(path: _Path) -> set[str]:
@@ -87,7 +87,7 @@ def offerable_ids(path: _Path) -> set[str]:
         raise SystemExit(
             f"{path} is missing. This census must measure the population the "
             "PRODUCT offers, not a restatement of it. Run:\n"
-            "  cd website/frontend && npx tsx scripts/dump_publishable_ids.ts "
+            "  cd ../web && npx tsx scripts/dump_publishable_ids.ts "
             f"{path}")
     return set(json.loads(path.read_text()))
 

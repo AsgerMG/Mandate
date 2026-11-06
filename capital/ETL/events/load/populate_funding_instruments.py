@@ -200,7 +200,7 @@ CAPITAL_BY_BASIS: dict[str, str | None] = {
     # membership and no money. Real objects, correctly described, and not
     # something this product may offer under a capital heading -- withheld at
     # the corpus boundary, by declaration, in
-    # website/frontend/lib/intelligence/offerableAxes.ts.
+    # web/lib/intelligence/offerableAxes.ts.
     "eit_kic_nonfinancial": "non_financial",
 
     # ── Consulted the official source; it does not say ────────────────────
@@ -310,7 +310,7 @@ def row_capital_type(basis: str | None, aid_instrument: str | None,
     # kind (or none at all), and no amounts. That is a genuine collection gap
     # and `unknown` is the honest word for it. It is not reachable by any
     # intake option and the product withholds such a row deliberately -- see
-    # website/frontend/lib/intelligence/offerableAxes.ts.
+    # web/lib/intelligence/offerableAxes.ts.
     return "unknown"
 
 

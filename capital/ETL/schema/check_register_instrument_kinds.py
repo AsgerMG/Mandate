@@ -5,7 +5,7 @@ HERMETIC: three committed files -- the register's own words
 (reference/register_instruments.json), our decision
 (SATR_INSTRUMENT_MAP in ETL/events/load/populate_funding_instruments.py) and
 the shipped corpus snapshot
-(website/frontend/public/data/instrument_terms.json). No database, no network,
+(web/public/data/instrument_terms.json). No database, no network,
 no credentials.
 
 ── The defect this exists for ────────────────────────────────────────────
@@ -60,9 +60,11 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
 REFERENCE = ROOT / "reference/register_instruments.json"
 POPULATE = ROOT / "ETL/events/load/populate_funding_instruments.py"
-SNAPSHOT = ROOT / "website/frontend/public/data/instrument_terms.json"
+SNAPSHOT = WEB / "public/data/instrument_terms.json"
 
 
 def satr_instrument_map() -> dict[str, str]:

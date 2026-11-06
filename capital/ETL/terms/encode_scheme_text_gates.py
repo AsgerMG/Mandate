@@ -184,7 +184,7 @@ try:
     _VOCAB = json.loads(_VOCAB_PATH.read_text())
 except FileNotFoundError:  # pragma: no cover
     raise SystemExit(f"missing {_VOCAB_PATH}. Generate it with:\n"
-                     f"  cd website/frontend && npx tsx scripts/emit_vocabulary.ts")
+                     f"  cd ../web && npx tsx scripts/emit_vocabulary.ts")
 
 def intake_fields() -> list[str]:
     """The founder attributes a gate may resolve to.

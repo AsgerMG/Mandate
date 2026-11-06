@@ -89,7 +89,7 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 from liveness import closed_sql  # noqa: E402
 
 import argparse  # noqa: E402
@@ -101,7 +101,7 @@ import sqlite3  # noqa: E402
 from attribution import Split  # noqa: E402
 from recall_guards import LeakIndex, squash  # noqa: E402
 
-FRONTEND = ROOT / "website" / "frontend" / "lib" / "intelligence"
+FRONTEND = WEB / "lib" / "intelligence"
 # The enriched set, not the shipped one: it carries the same 1,988 pairs plus
 # the leak-free descriptions and the `own_project_title_leaks` marks.
 DEFAULT_BASE = "__recallSetEnriched.json"

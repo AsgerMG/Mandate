@@ -31,7 +31,7 @@ at exactly the moment there was something to see. 954 gates sat unembedded and
 nothing said so.
 
 `npm run check` fixed the same shape by running everything and reporting all
-failures (website/frontend/scripts/run_checks.mjs). A data pipeline cannot copy
+failures (web/scripts/run_checks.mjs). A data pipeline cannot copy
 that wholesale: publishing a corpus that failed its coverage gate is worse than
 not publishing, so "run everything regardless" would be a different bug. The
 distinction is not per-step temperament, it is DEPENDENCY, and it is declared:
@@ -101,7 +101,7 @@ import argparse  # noqa: E402
 import subprocess  # noqa: E402
 from dataclasses import dataclass, field  # noqa: E402
 
-from etl_env import ROOT  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 import corpus_marks  # noqa: E402
 import source_state  # noqa: E402
 
@@ -448,7 +448,7 @@ CENSUS = ["python3", "ETL/events/load/publish_corpus_census.py"]
 def _cwd_for(argv: list[str]) -> _Path:
     # The Node checks resolve their corpus path from cwd (corpus.ts reads
     # process.cwd()/public/data), so they run from the frontend.
-    return ROOT / "website" / "frontend" if argv[0] == "npx" else ROOT
+    return WEB if argv[0] == "npx" else ROOT
 
 
 @dataclass

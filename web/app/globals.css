@@ -1,0 +1,268 @@
+@import "tailwindcss";
+
+/* Force light mode only. The `dark:` Tailwind variant will never apply because
+   the selector matches a class that is never present in our markup. */
+@custom-variant dark (&:where(.dark-disabled, .dark-disabled *));
+
+:root {
+  /* Design system mirrored from regina-intel.vercel.app: warm cream body,
+   * navy ink for structure/primary text, ochre for kickers/labels/links.
+   * Variable NAMES kept stable (dozens of call sites read them) — only the
+   * values changed, plus a few genuinely new roles added below. */
+  --background: #f6f1e6;
+  --paper: #fffdf9;
+  --foreground: #10203f;
+  --foreground-soft: #2b3c5e;
+  --muted: #eee7d5;
+  --muted-foreground: #656d82;
+  --border: #c9bf9c;
+  --card: #fffdf9;
+  --card-foreground: #10203f;
+  --primary: #10203f;
+  --primary-hover: #16294d;
+  --accent: #7f5820;
+  --accent-soft: #f1e3c4;
+  --radius: 2px;
+
+  /* Regina's tokens that the palette above had no name for. Every other value
+   * she used is one of the tokens above (her --ink is --foreground, her
+   * --accent-deep is --accent, ...): see app/regina/regina.css. */
+  --accent-bright: #a6752e;
+  --navy: #0d1b38;
+  --line: #e2dbc4;
+  --line-soft: #ece5d2;
+
+  /* Single-row masthead: 4.5rem brand row + 1px rule. */
+  --nav-h: 4.5625rem;
+
+  /* Sector colours */
+  --color-sector-life-sciences: #7B3F61;
+  --color-sector-cleantech: #2D6A4F;
+  --color-sector-deeptech: #1F3A93;
+  --color-sector-defense: #5C2A2A;
+  --color-sector-digital: #D97706;
+  --color-sector-space: #1B263B;
+  --color-sector-other: #6B7280;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-paper: var(--paper);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-card: var(--card);
+  --color-primary: var(--primary);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --radius-DEFAULT: var(--radius);
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-poppins), -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-fragment), ui-monospace, monospace;
+}
+
+html { color-scheme: light; }
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  font-feature-settings: "lnum" 1, "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* The one page container, as on the reference, which runs everything through a
+   single `.container`. Before this the site had six competing variants
+   (max-w-6xl+px-4, max-w-6xl+px-6, max-w-5xl+px-4 …) so the masthead, the home
+   hero and the study chapters each began at a different x — 160, 144 and 208px
+   at 1440. One rule means one gutter on every page and every band. Inner text
+   still sets its own max-w-* for reading measure. */
+.wrap {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+@media (min-width: 640px) {
+  .wrap { padding-inline: 1.5rem; }
+}
+@media (min-width: 1024px) {
+  .wrap { padding-inline: 2rem; }
+}
+
+h1, h2 { color: var(--primary); }
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-serif);
+  letter-spacing: -0.01em;
+}
+
+/* Numerals always render with old-style table figures in the Economist tradition.
+   Where alignment is needed (tables, KPI grids), the `.tabular-nums` utility flips to lining figures. */
+.tabular-nums {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+/* Prose styles for findings markdown */
+.prose {
+  color: var(--foreground);
+  max-width: 65ch;
+  font-family: var(--font-sans);
+}
+.prose h1, .prose h2, .prose h3 {
+  color: var(--primary);
+  font-weight: 600;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+  letter-spacing: -0.005em;
+}
+.prose h1 { font-size: 1.5rem; }
+.prose h2 { font-size: 1.25rem; }
+.prose h3 { font-size: 1.125rem; }
+.prose p { margin-bottom: 1em; line-height: 1.7; }
+.prose ul, .prose ol { margin-bottom: 1em; padding-left: 1.5em; }
+.prose li { margin-bottom: 0.25em; line-height: 1.7; }
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+.prose a { color: var(--primary); text-decoration: underline; }
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  background: var(--muted);
+  padding: 0.05em 0.25em;
+  border-radius: 0.25rem;
+}
+
+/* Small uppercase eyebrow/kicker labels, ochre-accented per the Regina mirror. */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ── Print: export only the intelligence report as a clean PDF ──────────────
+   When the user hits "Export PDF" we call window.print(). This hides the whole
+   page and surfaces only #print-report (the three report sections), positioned
+   at the top of the page. The visibility trick preserves the report's internal
+   layout while blanking everything else (nav, form, the manual below it). */
+@media print {
+  /* `visibility: hidden` blanks pixels but keeps layout, so the nav, hero and
+     footer still reserved their full height and pushed the absolutely
+     positioned report around — which is how an export ended up carrying the
+     whole marketing page. `display: none` on everything that is not an
+     ancestor of the report removes the boxes outright, so the report can lay
+     out in normal flow with no absolute positioning at all.
+
+     Gated on the PAGE containing a report, not on a class the export button
+     sets. It was gated on `html.printing` — which only printReport() applies —
+     so anyone who hit Cmd+P instead of the button printed the entire marketing
+     page, nav and footer included. Found by rendering the page with headless
+     Chrome, which prints exactly the way a keyboard shortcut does.
+     `body:has(#print-report)` keeps every other page untouched. */
+  /* Hide everything that is not the report, an ancestor of it, or inside it —
+     at ANY depth. Scoping to direct siblings only left anything nested deeper
+     untouched, which is how a "why this matters" call-to-action from the page
+     below printed on page two of a private memorandum. */
+  body:has(#print-report) *:not(:has(#print-report)):not(#print-report):not(#print-report *) {
+    display: none !important;
+  }
+
+  /* Ink on white paper. The site's cream background and inset panel printed as
+     a tinted band with the document floating inside it, which reads as a
+     screenshot of a web page rather than as a document. */
+  html, body { background: #fff !important; }
+  #print-report {
+    background: #fff !important;
+    border: 0 !important;
+    box-shadow: none !important;
+  }
+  /* Every tinted panel, cell and callout inside the report goes flat. The
+     site's cream surfaces are what made an export read as a screenshot of a
+     web page rather than as a document; colour still carries meaning through
+     text and rules, which print fine.
+     Deliberately plain selectors: a descendant :has() here was silently
+     dropped by the stylesheet compiler, so the rule was in the source, absent
+     from the served CSS, and the background survived every re-render. */
+  #print-report * { background-color: transparent !important; }
+
+  /* The brief fades its body in ~550ms after mount. On paper that transition
+     is either mid-flight or irrelevant, and a half-faded export is a document
+     with two blank pages in it — which is exactly what the first headless
+     render produced. */
+  #print-report [data-reveal] { opacity: 1 !important; transition: none !important; }
+  #print-report { width: 100%; padding: 0; }
+  @page { margin: 0.6in; }
+
+  /* ── Page furniture ───────────────────────────────────────────────────
+     No running header or footer. Chromium repeats a position:fixed element on
+     every printed page, which looks like the mechanism for one, but it
+     positions that element against the page viewport while normal-flow content
+     runs through the same box — so no space is reserved for it and it prints
+     ON TOP of whatever falls there. Measured: at a 0.75in margin it landed
+     across the repeated table header on page 2; pushed up into a deeper
+     margin, it landed across the middle of the table instead.
+     A header that collides is worse than no header. The masthead identifies
+     page one and the table header repeats itself, which is enough. */
+  @page { margin: 0.7in; }
+
+  /* ── Type ─────────────────────────────────────────────────────────────
+     Screen sizes are set for a single scrolling column; on paper the same
+     values run oversized and burn pages. One scale down, tighter leading,
+     serif throughout for the body. */
+  #print-report { font-size: 11px; line-height: 1.5; }
+  #print-report p { margin: 0 0 7px; orphans: 3; widows: 3; }
+  #print-report h3 { break-after: avoid; page-break-after: avoid; }
+
+  /* Keep a section heading with the content it introduces, and never leave a
+     table header stranded at the foot of a page. */
+  #print-report h3 + table, #print-report h3 + p { break-before: avoid; }
+
+  /* ── Tables ───────────────────────────────────────────────────────────
+     The export had no table rules at all, so the browser sized columns from
+     content: the institution column crushed to a word per line, the
+     comparables header split across two lines, and rows broke across a page
+     with the header left behind. Fixed widths, a repeating header and
+     unbreakable rows make a five-row table read the same on paper as on
+     screen. */
+  #print-report table { table-layout: fixed; width: 100%; font-size: 9.5px; border-collapse: collapse; }
+  #print-report thead { display: table-header-group; }
+  #print-report tr { break-inside: avoid; page-break-inside: avoid; }
+  #print-report thead th {
+    font-size: 8px; text-transform: uppercase; letter-spacing: 0.12em;
+    font-weight: 600; padding: 0 8px 5px 0; vertical-align: bottom;
+  }
+  #print-report tbody td { padding: 7px 8px 7px 0; line-height: 1.4; vertical-align: top; }
+  /* The institution cell carries sub-labels set at a fixed 12px for screen,
+     which printed LARGER than the 9.5px table body and made column one look
+     like the headline. Everything in the table scales together. */
+  #print-report table span { font-size: 9px; line-height: 1.35; }
+  #print-report table td > span:first-child { font-size: 9.5px; }
+  /* Institution / support / why you qualify / comparables. The third column
+     carries all the prose, so it takes the slack. */
+  #print-report table th:nth-child(1), #print-report table td:nth-child(1) { width: 24%; }
+  #print-report table th:nth-child(2), #print-report table td:nth-child(2) { width: 12%; }
+  #print-report table th:nth-child(3), #print-report table td:nth-child(3) { width: 46%; }
+  #print-report table th:nth-child(4), #print-report table td:nth-child(4) { width: 18%; }
+  /* Long scheme names and URLs wrap rather than widening their column. */
+  #print-report td { overflow-wrap: anywhere; }
+
+  /* ── Links ────────────────────────────────────────────────────────────
+     A link is still a link on paper; underlining every institution name turns
+     the first column into a ruled block. The colour carries it instead. */
+  #print-report a { text-decoration: none; color: var(--primary); font-weight: 600; }
+  /* The link-kind chips ("SCHEME RECORD", "PROGRAMME PAGE") earn their place on
+     screen, where the reader is deciding whether to click. On paper they break
+     the fund name across two lines and add a second voice to the column. The
+     link still works in the PDF; the label does not need to shout. */
+  #print-report [data-linkkind] { display: none !important; }
+
+  /* The trace panel and the export button never print. */
+  #print-report .print\:hidden { display: none !important; }
+
+  /* Force backgrounds/colours to render in the PDF. */
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

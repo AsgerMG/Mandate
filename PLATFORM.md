@@ -23,9 +23,9 @@ schema. `public` holds the pgvector extension and nothing else.
 | Postgres (`pgvector` service) | Railway project **Mandate** | image `pgvector/pgvector:pg18` | schemas `capital`, `policy`, `mandate` |
 | policy API (`Regina` service) | Railway project Mandate | `AsgerMG/Mandate`, root `policy/` | role `policy_app` |
 | policy refresh (`refresh-cron`) | Railway project Mandate | curl image, Sundays 05:00 UTC | calls the policy API |
-| policy site | Vercel `regina` (regina-ai.eu) | root `policy/website` | reads the policy API |
-| capital site | Vercel `wincent` (wincent-ai.eu) | root `capital/website/frontend` | role `capital_app` |
-| capital ETL | Railway, weekly cron | root `capital/` | role `capital_app` |
+| Mandate site | Vercel `wincent` (wincent-ai.eu) | root `web` (Wincent at `/wincent`, `/brief`; Regina at `/regina`) | role `capital_app`; the policy API, server-side (`POLICY_API_URL`) |
+| policy site (deprecated) | Vercel `regina` (regina-ai.eu) | root `policy/website` | reads the policy API; retire once regina-ai.eu redirects per `web/redirects.regina.json` |
+| capital ETL (`capital-etl` service) | Railway project Mandate, Sundays 03:00 UTC | `AsgerMG/Mandate`, root `capital/` | role `capital_app`; Anthropic key referenced from the policy service, not copied |
 | CI | GitHub Actions, root `.github/workflows/` | one workflow per brain, path-scoped | `capital_ro` where a check reads the corpus |
 
 ## Credentials
@@ -58,16 +58,17 @@ A brain is a schema, a role, a deployable and a workflow. In order:
    Its schema authority is a migration tool owned by the brain (policy uses
    Alembic, with `version_table_schema` set to its schema).
 3. **Deploy.** A Railway service with root `<brain>/` and watch path
-   `/<brain>/**`, `DATABASE_URL=${{pgvector.<BRAIN>_DATABASE_URL}}`. A site is
-   a Vercel project with root `<brain>/website` and an ignored-build step scoped
-   to that directory.
+   `/<brain>/**`, `DATABASE_URL=${{pgvector.<BRAIN>_DATABASE_URL}}`. There is
+   no per-brain site: the brain's agent gets routes under `web/app/<agent>/` in
+   the one Mandate site, a bench entry in `web/components/nav-bar.tsx` (AGENTS)
+   and a card on the home page.
 4. **CI.** `.github/workflows/<brain>-ci.yml`, path-scoped to `<brain>/**`. Tests
    run against a real Postgres in the production schema layout, never SQLite.
 5. **Worktrees.** Add the brain's `node_modules`, `.venv` and env file to the
    `link` lines in `scripts/agent-worktree.sh`.
 6. **This file.** A row in the table above.
 
-The company profile every brain reads (`capital/website/frontend/lib/profile/
+The company profile every brain reads (`web/lib/profile/
 companyProfile.ts` today) moves into schema `mandate`, which is reserved for the
 things no single brain owns: accounts, the shared company profile, and the
 register of who decides.

@@ -19,10 +19,10 @@ data/db.sqlite       the built database (gitignored, backed up — not in versio
    │  ETL/load/*.py + load/qa/    loaders, migrations, schema, post-load QA, backup
    │  make data      (website/build/build_site_data.py: views + every builder)
    ▼
-website/frontend/public/data/*.json   the only data the website reads
+web/public/data/*.json   the only data the website reads
    │  make site-build
    ▼
-website/frontend/    Next.js static site (the published findings)
+web/    Next.js static site (the published findings)
 ```
 
 ## Directory map
@@ -32,7 +32,7 @@ Five top-level folders, each owning one concern:
 | Folder | What's in it |
 |---|---|
 | `ETL/` | The data pipeline. `extract/` (one `extract_*.py` per source), `transform/` (`classify.py`, `merge_companies.py`, the `build_*_groups.py` parent-group rollups, dedup, backfills, entity resolution), `load/` (`load_*.py`, `schema.sql`, `migrations/`, `backup.py`, and `load/qa/` post-load checks), and `lib/` (shared modules + `etl_env.py`, the single source of truth for paths). See [ETL/README.md](ETL/README.md). |
-| `website/` | The publish layer. `build/` (the Python builders that turn `data/db.sqlite` into the site JSON, + `lib/web_env.py` path bootstrap) and `frontend/` (the Next.js app). See [website/README.md](website/README.md). **Working on `/brief`? Read [website/frontend/lib/intelligence/ARCHITECTURE.md](website/frontend/lib/intelligence/ARCHITECTURE.md) first** — it states which stage is ours, which is the LLM's, and lists the ranking routes already measured dead. |
+| `website/` | The publish layer. `build/` (the Python builders that turn `data/db.sqlite` into the site JSON, + `lib/web_env.py` path bootstrap) The Next.js app that serves them is the Mandate web app at the monorepo root, [`../web`](../web) (until 2026-11-06 it was `website/frontend/`). See [website/README.md](website/README.md). **Working on `/brief`? Read [web/lib/intelligence/ARCHITECTURE.md](../web/lib/intelligence/ARCHITECTURE.md) first** — it states which stage is ours, which is the LLM's, and lists the ranking routes already measured dead. |
 | `data/` | The database (`db.sqlite` + `backups/`, both under data/), the read-side SQL (`views.sql`, `queries/`), the source caches (`raw/`, `processed/`), and `europe_scope.json`. See [data/README.md](data/README.md). |
 | `project-mgmt/` | `methodology.md` (canonical, rendered by the site), `decision_log.md`, `technical_dd_2026-07.md` (the engineering audit and its remediation record), `design-guidelines.md`, `europe_scope.md`, the dev journal (`notes.md`), the state documents (`RESUME_HERE.md`, `CONTINUE_HERE.md`, `WORKSTREAMS.md`), `plans/` (active plans + `backlog/`, which is deferred work with a revival trigger per entry), `findings/` and `research/` (the numbered record of what was measured), and `archive/` (superseded plans and closed workstreams — [its README indexes what each one proved](project-mgmt/archive/README.md), so start there rather than opening them). |
 | `.claude/` | Harness config: `settings.json` and `hooks/` (the stop-gate + generated-edit guards). |
@@ -43,7 +43,7 @@ Five top-level folders, each owning one concern:
 make data          # rebuild EVERY site JSON from data/db.sqlite (views + all builders)
 make analyze       # corpus KPIs only (website/build/synthesis.py)
 make visuals       # home-page visuals only (taxonomy, map, coverage)
-make site-build    # static build of the site -> website/frontend/out/
+make site-build    # static build of the site -> web/out/
 make site-dev      # run the site locally at localhost:3000
 make backup        # snapshot data/ (db.sqlite + caches) to ~/Wincent-backups and iCloud
 ```
@@ -61,11 +61,11 @@ Every push runs [.github/workflows/ci.yml](.github/workflows/ci.yml) — three j
 (types, tests with a coverage floor, the contract checks below, lint, build), the ETL (byte-compile,
 schema file present, one country map, country resolution, encoded-spec sanity, cross-language
 constants), and a security pass. **No CI step may depend on data that is not committed** — the
-checks read `website/frontend/public/data/*.json`, never `data/db.sqlite`, which is gitignored. Test
+checks read `web/public/data/*.json`, never `data/db.sqlite`, which is gitignored. Test
 that property by moving the database aside and re-running.
 
 ```bash
-cd website/frontend
+cd ../web
 npm run check       # types + 96 tests + vocabulary, archetype, payload and dependency contracts
 npm run vocab       # regenerate data/vocabularies.json — run after editing intake options
 npm run trace       # print the real candidate pool for a profile (free, no model calls)
@@ -85,7 +85,7 @@ Model-calling scripts (`npm run bench`) cost real money — run them on a batch 
 The database and the `data/` caches are **generated build artifacts**, not version-controlled
 (they are large and reproducible). They live on disk and are backed up by `make backup`, which
 writes dated archives to `~/Wincent-backups/` and copies them to iCloud Drive. The code,
-the SQL, and the small derived JSON in `website/frontend/public/data/` are the version-controlled record of
+the SQL, and the small derived JSON in `web/public/data/` are the version-controlled record of
 results. To rebuild the database from scratch, re-run the extractors against `data/raw/`.
 
 ## Method, in one line

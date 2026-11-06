@@ -61,13 +61,14 @@ Usage:
 """
 from __future__ import annotations
 
+import os
 import sys as _sys
 from pathlib import Path as _Path
 for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB, ROOT  # noqa: E402
+from etl_env import DB, ROOT, WEB  # noqa: E402
 from nuts_regions import ISO2_TO_NUTS, load_reference, resolve  # noqa: E402
 
 import argparse  # noqa: E402
@@ -75,7 +76,7 @@ import collections  # noqa: E402
 import json  # noqa: E402
 import sqlite3  # noqa: E402
 
-INTEL = ROOT / "website" / "frontend" / "lib" / "intelligence"
+INTEL = WEB / "lib" / "intelligence"
 DEFAULT_FROM = "__recallSetEnriched.json"
 OUT = INTEL / "__recallSetRepaired.json"
 
@@ -212,7 +213,7 @@ def main() -> None:
         print("\n[report only] --write to persist")
         return
     OUT.write_text(json.dumps(rows, ensure_ascii=False, indent=0) + "\n")
-    print(f"wrote {OUT.relative_to(ROOT)}")
+    print(f"wrote {Path(os.path.relpath(OUT, ROOT))}")
 
 
 if __name__ == "__main__":

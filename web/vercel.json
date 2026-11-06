@@ -1,0 +1,85 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "python3 -m venv /tmp/prebuild && /tmp/prebuild/bin/pip install --quiet 'psycopg[binary]==3.3.4' && PATH=/tmp/prebuild/bin:$PATH npm run build",
+  "installCommand": "npm ci",
+  "redirects": [
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina",
+      "permanent": true
+    },
+    {
+      "source": "/about",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina/about",
+      "permanent": true
+    },
+    {
+      "source": "/brief",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina/brief",
+      "permanent": true
+    },
+    {
+      "source": "/documents",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina/documents",
+      "permanent": true
+    },
+    {
+      "source": "/documents/:id",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/regina/documents/:id",
+      "permanent": true
+    },
+    {
+      "source": "/images/hero-building.png",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/images/regina/hero-building.png",
+      "permanent": true
+    },
+    {
+      "source": "/images/parliament.png",
+      "has": [
+        {
+          "type": "host",
+          "value": "(www\\.)?regina-ai\\.eu"
+        }
+      ],
+      "destination": "https://wincent-ai.eu/images/regina/parliament.png",
+      "permanent": true
+    }
+  ]
+}

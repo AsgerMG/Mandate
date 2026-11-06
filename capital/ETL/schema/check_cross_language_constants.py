@@ -23,6 +23,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT / "ETL" / "lib"))
+from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
 
 
 def gber_articles() -> list[str]:
@@ -35,7 +37,7 @@ def gber_articles() -> list[str]:
     that reads as coverage we do not have.
     """
     py = (ROOT / "ETL/events/load/populate_funding_instruments.py").read_text()
-    ts = (ROOT / "website/frontend/lib/intelligence/shortlist.ts").read_text()
+    ts = (WEB / "lib/intelligence/shortlist.ts").read_text()
     seeded = set(re.findall(r"StateAidObjectiveGberArt(\w+)", py))
     labelled = set(re.findall(r"StateAidObjectiveGberArt(\w+)", ts))
     problems = []
@@ -82,7 +84,7 @@ def census_kpi_keys() -> list[str]:
       database. The live read would look exactly like it does when it works.
     """
     py = (ROOT / "website/build/lib/corpus_kpis.py").read_text()
-    ts = (ROOT / "website/frontend/lib/corpusCensus.ts").read_text()
+    ts = (WEB / "lib/corpusCensus.ts").read_text()
     gate = (ROOT / "ETL/terms/coverage_gate.py").read_text()
 
     def block(text: str, opener: str, closer: str) -> set[str]:
@@ -159,7 +161,7 @@ def eur_formatting() -> list[str]:
         ["npx", "tsx", "-e",
          "import {fmtEur} from './lib/format';"
          f"console.log(JSON.stringify({json.dumps(probes)}.map(fmtEur)))"],
-        cwd=ROOT / "website" / "frontend",
+        cwd=WEB,
         capture_output=True, text=True)
     if node.returncode != 0:
         return [f"  could not run the TypeScript half: {node.stderr.strip()[-400:]}"]
@@ -206,7 +208,7 @@ def scheduled_run_identity() -> list[str]:
       shape of wrong, because it reads as measured.
     """
     py = (ROOT / "ETL/lib/railway_service.py").read_text()
-    ts = (ROOT / "website/frontend/scripts/check_corpus_census.ts").read_text()
+    ts = (WEB / "scripts/check_corpus_census.ts").read_text()
 
     def const(text: str, pattern: str) -> str | None:
         # MULTILINE, because both constants are top-level assignments and the
@@ -264,7 +266,7 @@ def loss_tolerance() -> list[str]:
     check a person happened to run, which is worse than either answer.
     """
     py = (ROOT / "ETL/terms/coverage_gate.py").read_text()
-    ts = (ROOT / "website/frontend/lib/corpusCensus.ts").read_text()
+    ts = (WEB / "lib/corpusCensus.ts").read_text()
     m_py = re.search(r'^KPI_TOLERANCE_SHARE\s*=\s*([0-9.]+)', py, re.MULTILINE)
     m_ts = re.search(r'^export const LOSS_TOLERANCE_SHARE\s*=\s*([0-9.]+)', ts, re.MULTILINE)
     if m_py is None or m_ts is None:

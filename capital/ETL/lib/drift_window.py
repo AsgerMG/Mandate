@@ -40,7 +40,9 @@ CRON_HOUR = 3     # 03:00 UTC — "0 3 * * 0"
 
 # The committed build artifacts that carry the corpus to a founder. A commit
 # that touches none of these did not close the drift, however many other files
-# it changed.
+# it changed. Paths as they were while these files were committed (git pathspecs,
+# relative to capital/): the app moved to <monorepo>/web on 2026-11-06, by which
+# time the artifacts were generated at build time and no longer committed.
 PUBLISHED_ARTIFACTS = [
     "website/frontend/public/data/synthesis.json",
     "website/frontend/public/data/instrument_terms.json",

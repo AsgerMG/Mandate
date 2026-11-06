@@ -11,7 +11,7 @@ The invariant is simple and worth stating as a rule rather than a habit:
     retrievable == showable
 
 Anything at an attributable evidence tier (see
-website/frontend/lib/intelligence/evidenceTiers.json, the one definition both
+web/lib/intelligence/evidenceTiers.json, the one definition both
 languages read) must have an embedding, and every publishable instrument must
 have a profile.
 
@@ -28,12 +28,12 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import ROOT  # noqa: E402
+from etl_env import ROOT, WEB  # noqa: E402
 
 import json  # noqa: E402
 import os  # noqa: E402
 
-TIERS = (ROOT / "website" / "frontend" / "lib" / "intelligence" / "evidenceTiers.json")
+TIERS = (WEB / "lib" / "intelligence" / "evidenceTiers.json")
 
 
 def main() -> None:

@@ -359,7 +359,7 @@ def cmd_run(args) -> None:
             print(f"{job_id}: SKIPPED — proposes new intake field(s) "
                   f"{', '.join(new_fields)} not yet in INTAKE_FIELDS. "
                   f"Add them to INTAKE_FIELDS (this file), EligibilityAnswers "
-                  f"(website/frontend/lib/intelligence/types.ts) and the "
+                  f"(web/lib/intelligence/types.ts) and the "
                   f"relevant wizard screen (panel.tsx) first, then clear "
                   f"new_fields on this job to run it.")
             continue
