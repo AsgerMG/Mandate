@@ -20,16 +20,6 @@ updates:
   - package-ecosystem: github-actions
     directory: /
     schedule: { interval: monthly }
-  - package-ecosystem: npm
-    directory: /policy/website
-    schedule: { interval: weekly }
-    open-pull-requests-limit: 5
-    # Major versions are migrations, not maintenance: each is its own change,
-    # made on purpose. Dependabot opened ten of them the morning the repos
-    # merged, nearly all red, while the foundation underneath was moving.
-    ignore:
-      - dependency-name: "*"
-        update-types: ["version-update:semver-major"]
   - package-ecosystem: uv
     directory: /policy
     schedule: { interval: weekly }

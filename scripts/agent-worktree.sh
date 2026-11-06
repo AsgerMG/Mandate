@@ -49,7 +49,6 @@ link web/node_modules
 # Link those until it is moved (mv capital/website/frontend/{node_modules,.env.local} web/).
 link_from() { [ ! -e "$DEST/$2" ] && [ -e "$ROOT/$1" ] && mkdir -p "$(dirname "$DEST/$2")" && ln -s "$ROOT/$1" "$DEST/$2"; true; }
 link_from capital/website/frontend/node_modules web/node_modules
-link policy/website/node_modules
 link policy/.venv
 
 # Env files are gitignored, so a fresh worktree has no credentials and every
