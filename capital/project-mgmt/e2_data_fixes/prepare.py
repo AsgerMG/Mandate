@@ -98,8 +98,7 @@ IDENTITY = [
      "https://www.nationaalgroeifonds.nl/overzicht-lopende-projecten/thema-sleuteltechnologieen-en-valorisatie/nxtgen-hightech",
      "Wie dient in: deelname loopt via consortia binnen een NXTGEN Hightech-project; "
      "de subsidie wordt via stichting NXTGEN Hightech en RVO verstrekt onder de "
-     "Subsidieregeling Nationaal Groeifonds (referentie NGFNH2201). Een bedrijf dient "
-     "dus niet zelfstandig een aanvraag in, maar sluit zich aan bij een project. "
+     "Subsidieregeling Nationaal Groeifonds (referentie NGFNH2201). "
      "Deelnemers: bedrijven (van start-ups en mkb tot grote ondernemingen) en "
      "kennisinstellingen. Voorwaarden zijn onder meer dat elke deelnemer in het "
      "samenwerkingsverband minimaal 125.000 euro subsidie ontvangt, dat de activiteiten "
@@ -134,7 +133,7 @@ def main() -> None:
             cur.execute("SELECT intake_field_resolved, value_spec, encoding_method, left(requirement,140) "
                         "FROM eligibility_gates WHERE instrument_id=%s AND gate_key=%s", (iid, gk))
             r = cur.fetchone()
-            spec = json.dumps(r[1], ensure_ascii=False) if r and r[1] is not None else None
+            spec = (r[1] if isinstance(r[1], str) else json.dumps(r[1], ensure_ascii=False)) if r and r[1] is not None else None
             state = "MATCHES" if r and r[0] == field else f"CHANGED SINCE ({r!r})"
             diff.append(f"  {iid}/{gk}: field {r[0] if r else None!r} -> 'none', value_spec {spec} -> NULL "
                         f"[{state}]\n      {r[3] if r else ''}")
@@ -147,16 +146,17 @@ def main() -> None:
         for iid, gk, val in COUNTRY_DROP:
             cur.execute("SELECT value_spec FROM eligibility_gates WHERE instrument_id=%s AND gate_key=%s", (iid, gk))
             r = cur.fetchone()
-            spec = r[0] if r else None
+            raw = r[0] if r else None
+            spec = json.loads(raw) if isinstance(raw, str) else raw
             new = dict(spec or {})
             new["allowed"] = [v for v in (spec or {}).get("allowed", []) if v != val]
             state = "MATCHES" if spec and val in spec.get("allowed", []) else "CHANGED SINCE"
             diff.append(f"  {iid}/{gk}: allowed {len((spec or {}).get('allowed', []))} -> {len(new['allowed'])} "
                         f"(drops {val!r}) [{state}]\n      before: {json.dumps(spec, ensure_ascii=False)}")
             note = f" | E2 2026-11-06: dropped {val!r} (not in the intake country canon, so it can match no answer); was {json.dumps(spec, ensure_ascii=False)}"
-            sql.append(f"UPDATE eligibility_gates SET value_spec = {q(json.dumps(new, ensure_ascii=False))}::jsonb,\n"
+            sql.append(f"UPDATE eligibility_gates SET value_spec = {q(json.dumps(new, ensure_ascii=False))},\n"
                        f"       verify_note = COALESCE(verify_note,'') || {q(note)}\n"
-                       f" WHERE instrument_id = {q(iid)} AND gate_key = {q(gk)} AND value_spec = {q(json.dumps(spec, ensure_ascii=False))}::jsonb;")
+                       f" WHERE instrument_id = {q(iid)} AND gate_key = {q(gk)} AND value_spec = {q(raw)};")
 
         diff.append("\n== 4. 'who may apply' text -> the submitter leads (same words, reordered)")
         for iid, url, text in IDENTITY:
