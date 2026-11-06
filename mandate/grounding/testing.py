@@ -33,6 +33,7 @@ from pathlib import Path
 import psycopg
 from psycopg.conninfo import conninfo_to_dict, make_conninfo
 
+TEST_PASSWORD = "mandate-test"
 DB_DIR = Path(__file__).resolve().parents[1] / "db"
 
 
@@ -80,11 +81,16 @@ class EphemeralMandate:
                 ddl = ddl.replace("public.halfvec_cosine_ops", "public.vector_cosine_ops") \
                          .replace("public.halfvec(", "public.vector(")
             c.execute(ddl)
+            # a throwaway server may not trust local connections (CI's does
+            # not): give the brain roles a test password. Cluster-wide, which
+            # is why only a throwaway server is accepted.
+            for r in ("capital_app", "policy_app", "mandate_app", "capital_ro"):
+                c.execute(f"ALTER ROLE {r} PASSWORD '{TEST_PASSWORD}'")
         return self
 
     def url(self, role: str) -> str:
         """A connection URL as `role` (no password: the test server trusts local)."""
-        return make_conninfo(self.admin_url, user=role, password="")
+        return make_conninfo(self.admin_url, user=role, password=TEST_PASSWORD)
 
     def __exit__(self, *exc) -> None:
         if self._server is not None:

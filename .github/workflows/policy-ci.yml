@@ -9,6 +9,7 @@ on:
       - '!policy/**/*.md'
       - '!policy/project-management/**'
       - '.github/workflows/policy-ci.yml'
+      - 'mandate/**'
   push:
     branches: [main]
     paths:
@@ -16,6 +17,7 @@ on:
       - '!policy/**/*.md'
       - '!policy/project-management/**'
       - '.github/workflows/policy-ci.yml'
+      - 'mandate/**'
 
 concurrency:
   group: policy-ci-${{ github.ref }}
