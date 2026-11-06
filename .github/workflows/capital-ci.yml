@@ -17,6 +17,9 @@ on:
       - '!web/**/*.md'
       # the one file under a skipped path that checks DO read
       - 'capital/data/guard_registry.json'
+      # the shared vocabulary and profile fixtures web/lib/mandate tests read
+      - 'mandate/vocabulary/**'
+      - 'mandate/profile/**'
       - '.github/workflows/capital-ci.yml'
   push:
     branches: [main]
@@ -35,6 +38,9 @@ on:
       - '!web/**/*.md'
       # the one file under a skipped path that checks DO read
       - 'capital/data/guard_registry.json'
+      # the shared vocabulary and profile fixtures web/lib/mandate tests read
+      - 'mandate/vocabulary/**'
+      - 'mandate/profile/**'
       - '.github/workflows/capital-ci.yml'
 
 concurrency:

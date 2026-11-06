@@ -4,12 +4,12 @@
 name: mandate-ci
 on:
   pull_request:
-    paths: ['mandate/**', 'capital/ETL/lib/grounded_inputs.py', 'web/lib/embedding.ts',
-            '**/*.py', '**/*.ts', '.github/workflows/mandate-ci.yml']
+    paths: ['mandate/**', 'capital/ETL/lib/grounded_inputs.py', 'web/lib/embedding.ts', 'web/lib/mandate/**',
+            'capital/data/vocabularies.json', '**/*.py', '**/*.ts', '.github/workflows/mandate-ci.yml']
   push:
     branches: [main]
-    paths: ['mandate/**', 'capital/ETL/lib/grounded_inputs.py', 'web/lib/embedding.ts',
-            '**/*.py', '**/*.ts', '.github/workflows/mandate-ci.yml']
+    paths: ['mandate/**', 'capital/ETL/lib/grounded_inputs.py', 'web/lib/embedding.ts', 'web/lib/mandate/**',
+            'capital/data/vocabularies.json', '**/*.py', '**/*.ts', '.github/workflows/mandate-ci.yml']
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -33,4 +33,9 @@ jobs:
       # no model named, no embeddings API called, outside mandate/embedding;
       # web/lib/embedding.ts's generated block equals spaces.json
       - run: python3 mandate/embedding/check_boundary.py
+      # ONE company vocabulary: projections current, and no brain's own copy
+      # (capital TAXONOMY/vocabularies.json/country picker, policy seeds and
+      # question options) has drifted from mandate/vocabulary/vocabulary.json
+      - run: python3 mandate/vocabulary/check.py
+      - run: python3 mandate/profile/fixtures.py --check
       - run: PYTHONPATH=. python3 -m pytest mandate/tests -q

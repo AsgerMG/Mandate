@@ -20,6 +20,7 @@ import {
   sanitizeCapitalSought, sanitizeEligibility, sanitizeFreeText, withIncorporationCountry,
 } from "../intelligence/sanitize";
 import { deriveSmeStatus } from "../profile/companyProfile";
+
 import {
   FIELDS, fromCapitalRequest, fromPolicyRequest, sizeClass, smeStatus,
   toCapitalRequest, toPolicyProfile, type CapitalProfileRequest,

@@ -6,6 +6,7 @@ Kept deliberately small and tech-policy-focused for the EU MVP.
 
 from __future__ import annotations
 
+from mandate.vocabulary import POLICY_SECTORS
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -24,18 +25,11 @@ POLICY_AREAS: list[tuple[str, str]] = [
     ("sustainability", "Digital Sustainability"),
 ]
 
-SECTORS: list[tuple[str, str]] = [
-    ("software-saas", "Software & SaaS"),
-    ("fintech", "Financial Services & Fintech"),
-    ("ecommerce", "E-commerce & Retail"),
-    ("healthtech", "Health & Medtech"),
-    ("adtech", "Advertising & Media"),
-    ("manufacturing", "Manufacturing & IoT"),
-    ("telecom", "Telecommunications"),
-    ("public-sector", "Public Sector"),
-    ("mobility", "Mobility & Automotive"),
-    ("energy", "Energy & Utilities"),
-]
+# Policy's sector slugs are a PROJECTION of the one Mandate vocabulary
+# (mandate/vocabulary/vocabulary.json `policySectors`, decisions D2-D11): each
+# slug lifts to a shared sector family/subsector and is derived back from it.
+# Same ten (slug, name) pairs, same order, as stood here.
+SECTORS: list[tuple[str, str]] = list(POLICY_SECTORS)
 
 
 def seed_vocabularies(session: Session) -> None:

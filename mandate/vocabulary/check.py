@@ -48,8 +48,14 @@ def fail(msg: str) -> None:
     problems.append(msg)
 
 
+SOURCED = object()  # the brain's definition is computed from mandate.vocabulary
+
+
 def _literal(path: Path, name: str):
-    tree = ast.parse(path.read_text())
+    """The literal value `name` is assigned in `path`, or SOURCED when the file
+    takes it from mandate.vocabulary (then the import IS the agreement)."""
+    text = path.read_text()
+    tree = ast.parse(text)
     for node in ast.walk(tree):
         target = None
         if isinstance(node, ast.Assign) and len(node.targets) == 1:
@@ -57,7 +63,12 @@ def _literal(path: Path, name: str):
         elif isinstance(node, ast.AnnAssign):
             target = node.target
         if isinstance(target, ast.Name) and target.id == name:
-            return ast.literal_eval(node.value)
+            try:
+                return ast.literal_eval(node.value)
+            except ValueError:
+                if "from mandate.vocabulary import" in text:
+                    return SOURCED
+                raise
     raise KeyError(f"{name} not found in {path}")
 
 
@@ -116,7 +127,7 @@ def check_internal() -> None:
 
 def check_capital() -> None:
     tax = _literal(ROOT / "capital/ETL/events/transform/classify_taxonomy.py", "TAXONOMY")
-    if tax != CAPITAL_TAXONOMY:
+    if tax is not SOURCED and tax != CAPITAL_TAXONOMY:
         fail("capital classify_taxonomy.TAXONOMY differs from the shared sectors "
              "(origin=capital subsectors, in order)")
     vj = json.loads((ROOT / "capital/data/vocabularies.json").read_text())
@@ -146,7 +157,7 @@ def check_capital() -> None:
 
 def check_policy() -> None:
     seeds = _literal(ROOT / "policy/data/seeds.py", "SECTORS")
-    if [tuple(x) for x in seeds] != list(POLICY_SECTORS):
+    if seeds is not SOURCED and [tuple(x) for x in seeds] != list(POLICY_SECTORS):
         fail("policy data/seeds.py SECTORS differs from the shared policySectors")
     q = ROOT / "policy/etl/intelligence/questions.py"
     pairs = {
@@ -159,8 +170,9 @@ def check_policy() -> None:
         "AI_ROLE_QUESTION": [e["policyValue"] for e in ENUMS["aiRole"] if e["id"] != "provider"],
     }
     for name, values in pairs.items():
-        got = _literal(q, name)["options"]
-        if got != values:
+        got = _literal(q, name)
+        got = got if got is SOURCED else got["options"]
+        if got is not SOURCED and got != values:
             fail(f"policy questions.py {name} options {got} != shared {values}")
 
 
