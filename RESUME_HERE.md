@@ -52,6 +52,18 @@ Order (from the agent's report):
 Open: the policy API still reads policy.passages until it is ported to
 grounding.
 
+## In flight (6 Nov, pushed; review, then merge)
+- `e1-refresh-health` (4+ commits): one weekly refresh run, instrument rebuild,
+  priors, weekly signals, mandate.runs log, the "Mandate health" issue.
+- `e2-archive-ci` (9+ commits): archive the unreached code, CI down to the 49
+  founder checks, data-defect fixes prepared as dry-run SQL (not run).
+- Grounding go-live: schema + grants are LIVE. The owner was running
+  `bash mandate/ops/go_live_grounding.sh` (idempotent; re-run if it failed: the
+  disk filled during it, now freed). Verify the counts: ~10,771 documents,
+  11,599 versions, 125,745 passages.
+- Disk: agents' rehearsal DBs filled the disk (21 GB in the scratchpad). Agents
+  must delete their own rehearsal DBs on finishing.
+
 ## Next (owner-approved 6 Nov)
 - **E1: refresh and health.** Port `populate_funding_instruments` and the
   refresh.py emitters. The instrument table is NOT rebuilt by anything today,
