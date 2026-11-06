@@ -16,7 +16,14 @@ suite on halfvec too.
 
 from __future__ import annotations
 
-import os
+import sys
+from pathlib import Path
+
+# The repo's mandate/ ahead of any installed copy, before anything imports it: a
+# worktree shares one venv, whose copy may be another branch's.
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+
+import os  # noqa: E402
 import shutil
 import tempfile
 from collections.abc import Iterator

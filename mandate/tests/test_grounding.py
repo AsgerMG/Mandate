@@ -9,7 +9,7 @@ import pytest
 
 from mandate.grounding import (
     canonical_url, cite, latest, locate, read_original, store_original, add_passages,
-    fetch,
+    fetch, record_fetch,
 )
 
 T0 = dt.datetime(2026, 11, 1, 9, 0, tzinfo=dt.timezone.utc)
@@ -39,6 +39,17 @@ def test_same_bytes_twice_is_one_version_and_two_fetches(con):
     # the first sighting is kept, and the latest fetch of each URL resolves
     assert a.fetched_at == T0
     assert latest(con, "https://mirror.example.org/call.pdf").id == a.id
+
+
+def test_record_fetch_of_stored_bytes_is_one_fetch_row_and_no_upload(con, bucket):
+    sha = hashlib.sha256(PDF).hexdigest()
+    assert record_fetch(con, "https://ec.europa.eu/call.pdf", sha, T0) is None  # not stored yet
+    a = store_original(con, PDF, "https://ec.europa.eu/call.pdf", "application/pdf", T0, text=TEXT)
+    b = record_fetch(con, "https://ec.europa.eu/call.pdf", sha, T1, http_status=200)
+    assert b.id == a.id
+    assert con.execute("SELECT array_agg(fetched_at ORDER BY fetched_at) FROM grounding.fetches "
+                       "WHERE version_id = %s", (a.id,)).fetchone()[0] == [T0, T1]
+    assert latest(con, "https://ec.europa.eu/call.pdf").id == a.id
 
 
 def test_new_bytes_at_same_url_is_a_new_version_and_latest_follows(con):

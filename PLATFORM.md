@@ -37,7 +37,12 @@ duplicate cannot exist), every fetch date, passages, and their vectors as
 under `sha256/<2>/<sha256>`. Owned by `grounding_owner` (NOLOGIN); every brain
 role may SELECT and INSERT, nobody may UPDATE or DELETE (grants, and a trigger
 that stops the owner too). Code: `mandate/grounding` (`store_original`, `fetch`,
-`cite`). Bucket config: `BUCKET_ENDPOINT`, `BUCKET_ACCESS_KEY_ID`,
+`cite`). **Policy is on it** (Alembic 5c2f9e1a7b30): its ingestion writes
+versions, fetches, passages and vectors here, and reads them through the views
+`policy.grounded_versions` / `policy.grounded_passages`; policy keeps only its own
+state (`version_refs`: which grounding version a document is at, is_current).
+`policy.document_versions` / `policy.passages` are deprecated and read-only by
+trigger, kept until the owner retires them. Bucket config: `BUCKET_ENDPOINT`, `BUCKET_ACCESS_KEY_ID`,
 `BUCKET_SECRET_ACCESS_KEY`, `BUCKET_NAME`.
 
 **One embedding model**: `mandate/embedding` (`spaces.json`), mirrored into

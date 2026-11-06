@@ -39,8 +39,12 @@ WHY THE ORIGINAL BYTES ARE TEXT. Policy never kept the HTML/XML it fetched,
 only the normalised text, and its content_hash is sha256 of that text's UTF-8
 (verified on all 11,544 versions). So the object uploaded for each version is
 exactly those bytes, its sha256 is policy's content_hash, and `extractor` says
-plainly that the original markup was not retained. From the cutover on, policy
-stores the fetched bytes themselves through mandate.grounding.fetch().
+plainly that the original markup was not retained. From the cutover on
+(policy Alembic 5c2f9e1a7b30, policy/etl/pipeline.py) policy goes on storing
+exactly that: the normalised text, so a version's sha256 stays policy's content
+hash and an unchanged weekly re-fetch is one fetches row, not a new version.
+Storing the raw HTML instead would make every page carrying a timestamp or a
+token a new, permanent version on every fetch.
 """
 from __future__ import annotations
 
