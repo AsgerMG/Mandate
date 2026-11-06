@@ -68,6 +68,13 @@ SELECT gp.id, r.id AS version_id, gp.version_id AS grounding_version_id,
 # caller, a test that builds a pre-migration corpus to migrate; production code
 # never sets it.
 LEGACY_TABLES = ("document_versions", "passages")
+#: Also declared on the models (data/models.py), so Alembic autogenerate does
+#: not propose removing it.
+LEGACY_COMMENT = (
+    "DEPRECATED 2026-11 (revision 5c2f9e1a7b30): read-only copy of policy's "
+    "pre-grounding sources. Superseded by schema grounding; writes refused by trigger "
+    "deprecated_read_only. Kept until the owner decides its retirement."
+)
 LEGACY_GUARD_SQL = """
 CREATE OR REPLACE FUNCTION refuse_legacy_write() RETURNS trigger
 LANGUAGE plpgsql AS $$
@@ -85,9 +92,7 @@ END $$;
 DROP TRIGGER IF EXISTS deprecated_read_only ON {t};
 CREATE TRIGGER deprecated_read_only BEFORE INSERT OR UPDATE OR DELETE ON {t}
   FOR EACH ROW EXECUTE FUNCTION refuse_legacy_write();
-COMMENT ON TABLE {t} IS 'DEPRECATED 2026-11 (revision 5c2f9e1a7b30): read-only copy of '
-  'policy''s pre-grounding sources. Superseded by schema grounding; writes refused by '
-  'trigger deprecated_read_only. Kept until the owner decides its retirement.';
+COMMENT ON TABLE {t} IS {_q(LEGACY_COMMENT)};
 """
     for t in LEGACY_TABLES
 )

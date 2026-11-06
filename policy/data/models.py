@@ -38,6 +38,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base, TimestampMixin
 from .config import EMBEDDING_DIM
+from .grounding_bridge import LEGACY_COMMENT
 
 
 class Jurisdiction(enum.StrEnum):
@@ -234,6 +235,7 @@ class LegacyDocumentVersion(Base, TimestampMixin):
     __tablename__ = "document_versions"
     __table_args__ = (
         UniqueConstraint("document_id", "content_hash", name="uq_version_document_hash"),
+        {"comment": LEGACY_COMMENT},
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -276,6 +278,7 @@ class LegacyPassage(Base):
             postgresql_using="hnsw",
             postgresql_ops={"embedding": "vector_cosine_ops"},
         ),
+        {"comment": LEGACY_COMMENT},
     )
 
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
