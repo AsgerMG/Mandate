@@ -967,12 +967,22 @@ export function Memo({ report, corpusWindow }: {
           noDoors={report.noDoors} />
 
         {/* ── 3. Positioning: fitting the current political moment ─────── */}
-        <SectionTitle n="03">Positioning</SectionTitle>
-        <p>{report.positioning}</p>
+        {/* Both sections are grounded only in the news digest. They carry its
+            date, and are not rendered when it is past NEWS_MAX_AGE_DAYS
+            (report.news.current false): stale news presented as the current
+            moment is worse than no section. Owner decision, 2026-11-06. */}
+        {report.positioning && (<>
+          <SectionTitle n="03">Positioning</SectionTitle>
+          {report.news?.asOf && <NewsDate asOf={report.news.asOf} />}
+          <p>{report.positioning}</p>
+        </>)}
 
         {/* ── 4. State of play, then the standing offer as its own block ── */}
-        <SectionTitle n="04">State of play</SectionTitle>
-        <p>{report.stateOfPlay}</p>
+        {report.stateOfPlay && (<>
+          <SectionTitle n="04">State of play</SectionTitle>
+          {report.news?.asOf && <NewsDate asOf={report.news.asOf} />}
+          <p>{report.stateOfPlay}</p>
+        </>)}
         {/* Rendered separately, never concatenated into the paragraph above:
             welded on, the analysis ended mid-thought in a sales line
             (contract rule SOP-2). */}

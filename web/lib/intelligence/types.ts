@@ -537,6 +537,11 @@ export interface IntelligenceReport {
   /** One paragraph: the most relevant recent news/upcoming funds, plus a
    *  fixed, code-authored Wincent plug appended (never modeled). */
   stateOfPlay: string;
+  /** The date of the news that grounds positioning and stateOfPlay, and
+   *  whether it was current enough to publish them (NEWS_MAX_AGE_DAYS in
+   *  corpus.ts). Absent when no digest exists. When `current` is false both
+   *  sections are "" and the panel does not render them. */
+  news?: { asOf: string; current: boolean; maxAgeDays: number };
   caveats: string;
   /** Funds withheld because their open/closed status could not be confirmed.
    *  Absent when nothing was withheld, which is the normal state. See

@@ -1223,6 +1223,37 @@ interface SignalsDigest {
 
 let digestCache: SignalsDigest | null | undefined;
 
+/** News older than this is not shown to a founder as news.
+ *
+ *  The digest is rebuilt by the weekly refresh (mandate/refresh/run.py), so in
+ *  normal weather it is at most 7 days old. 21 days means TWO consecutive
+ *  weekly refreshes failed to rebuild it: past that, "the state of play" would
+ *  describe a moment that has moved on while reading as current. Owner decision
+ *  2026-11-06: show the date, and hide the news sections past the limit rather
+ *  than present them as current. The same limit is the health target
+ *  `signals_digest_max_age_days` in mandate/health/targets.json, so the alarm
+ *  fires on the day founders stop seeing the sections (check_news_limit.ts). */
+export const NEWS_MAX_AGE_DAYS = 21;
+
+export interface NewsFreshness {
+  /** The digest's own build date, YYYY-MM-DD. */
+  asOf: string;
+  ageDays: number;
+  /** False: older than NEWS_MAX_AGE_DAYS (or undated), so not shown. */
+  current: boolean;
+}
+
+/** How old the digest's news is. null when there is no digest at all. */
+export function newsFreshness(digest: { generatedAt?: string } | null,
+                              now: Date = new Date()): NewsFreshness | null {
+  if (!digest) return null;
+  const t = Date.parse(digest.generatedAt ?? "");
+  if (Number.isNaN(t)) return { asOf: "", ageDays: Infinity, current: false };
+  const ageDays = Math.floor((now.getTime() - t) / 86_400_000);
+  return { asOf: new Date(t).toISOString().slice(0, 10), ageDays,
+           current: ageDays <= NEWS_MAX_AGE_DAYS };
+}
+
 /** The build-time export of the public-capital-intelligence corpus
  *  (website/build/signals_digest.py). null = not generated yet — the brief
  *  then simply omits the landscape grounding rather than failing. */
