@@ -34,9 +34,9 @@
   "stored": {
     "grounding.passage_embeddings": "voyage-4-large",
     "policy.passages": "voyage-4-large",
-    "capital.eligibility_embeddings": "voyage-3.5",
-    "capital.instrument_profiles": "voyage-3.5",
-    "capital.signals_chunk_embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    "capital.eligibility_embeddings": "voyage-4-large",
+    "capital.instrument_profiles": "voyage-4-large",
+    "capital.signals_chunk_embeddings": "voyage-4-large"
   },
   "_vector_columns_doc": "Where each table keeps the vectors of each space it holds: column and pgvector type. A table being re-embedded holds TWO spaces side by side (the stored one and MODEL), and a reader asks vector_column(table) / vectorColumn(table) for the STORED space's column: flipping `stored` moves every reader, Python and the generated TS mirror, to the other column in one commit. Nothing is renamed: the legacy column is dropped by mandate/ops/one_model_drop_old.sh and its entry deleted here. mandate/ops/one_model.sh fills MODEL's column.",
   "vector_columns": {
