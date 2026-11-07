@@ -8,6 +8,27 @@ One repo, one database, one website, one refresh run, and one embedding model,
 with every brain on current intel. Nothing is lost: unused things are archived,
 never deleted. Decisions go to the owner as a 30-second what/why/cost brief.
 
+## 7 Nov: `final-foundation` (PR #30, NOT merged): the last foundation steps
+Owner-runnable, each dry-run first, idempotent. Order:
+1. `bash mandate/ops/one_model.sh` -> `--apply` (capital migration 036 adds
+   `embedding_v4 halfvec(1024)` beside each legacy vector; backfill ~$0.23,
+   21,375 rows; verify) -> `--flip` on a branch (spaces.json `stored` + TS
+   mirror + semantic cache; merging it IS the deploy) -> later, briefed,
+   `bash mandate/ops/one_model_drop_old.sh` (archive + drop the old columns).
+   Acceptance: `npm run stages` before/after (`one_model.sh --measure`).
+   99 instruments (84 publishable) have no eligibility embedding BY DESIGN:
+   only llm_classified (unquoted) requirements, which are not indexed.
+2. `bash mandate/ops/citation_gaps.sh` (171 URLs, 790 rows; refuses until the
+   grounding store has rows and migration 034 has run; $0).
+3. `bash mandate/ops/pertinence.sh` -> `--apply` (1,345 gates, ~$7.3 est,
+   capped at $20; commit capital/data/eligibility_pertinence.json after).
+Data reds left in capital CI (need a production write or the owner): one
+gate-encoding correction reverted (eit_digital_vap g1_vip_location; restore
+with apply_gate_encoding_corrections.py), check_answer_reach (ownerOver25 is
+asked and read by nothing: wire it or stop asking), the corpus-feed checks,
+and app/page.tsx's "EUR 7.5m" (main's in-flight home page, which also imports
+the untracked components/mandate/companions).
+
 ## Done (on main)
 - **Database.** One Railway Postgres, a schema and role per brain, isolation
   proven (`mandate/db/`). Capital's SQLite corpus is loaded and verified row for
