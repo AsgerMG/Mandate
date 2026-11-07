@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bash mandate/ops/*)",
+      "Bash(bash ~/Mandate/mandate/ops/*)",
+      "Bash(bash /Users/asgermollergrimberg/Mandate/mandate/ops/*)"
+    ]
+  }
+}

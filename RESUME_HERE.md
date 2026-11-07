@@ -8,6 +8,27 @@ One repo, one database, one website, one refresh run, and one embedding model,
 with every brain on current intel. Nothing is lost: unused things are archived,
 never deleted. Decisions go to the owner as a 30-second what/why/cost brief.
 
+## 7 Nov: `final-foundation` (PR #30, NOT merged): the last foundation steps
+Owner-runnable, each dry-run first, idempotent. Order:
+1. `bash mandate/ops/one_model.sh` -> `--apply` (capital migration 036 adds
+   `embedding_v4 halfvec(1024)` beside each legacy vector; backfill ~$0.23,
+   21,375 rows; verify) -> `--flip` on a branch (spaces.json `stored` + TS
+   mirror + semantic cache; merging it IS the deploy) -> later, briefed,
+   `bash mandate/ops/one_model_drop_old.sh` (archive + drop the old columns).
+   Acceptance: `npm run stages` before/after (`one_model.sh --measure`).
+   99 instruments (84 publishable) have no eligibility embedding BY DESIGN:
+   only llm_classified (unquoted) requirements, which are not indexed.
+2. `bash mandate/ops/citation_gaps.sh` (171 URLs, 790 rows; refuses until the
+   grounding store has rows and migration 034 has run; $0).
+3. `bash mandate/ops/pertinence.sh` -> `--apply` (1,345 gates, ~$7.3 est,
+   capped at $20; commit capital/data/eligibility_pertinence.json after).
+Data reds left in capital CI (need a production write or the owner): one
+gate-encoding correction reverted (eit_digital_vap g1_vip_location; restore
+with apply_gate_encoding_corrections.py), check_answer_reach (ownerOver25 is
+asked and read by nothing: wire it or stop asking), the corpus-feed checks,
+and app/page.tsx's "EUR 7.5m" (main's in-flight home page, which also imports
+the untracked components/mandate/companions).
+
 ## Done (on main)
 - **Database.** One Railway Postgres, a schema and role per brain, isolation
   proven (`mandate/db/`). Capital's SQLite corpus is loaded and verified row for
@@ -63,6 +84,52 @@ grounding.
   11,599 versions, 125,745 passages.
 - Disk: agents' rehearsal DBs filled the disk (21 GB in the scratchpad). Agents
   must delete their own rehearsal DBs on finishing.
+
+## FIRST THING NEXT SESSION (6 Nov, late)
+- go_live_sunday.sh FAILED with DiskFull on the Railway DB VOLUME (5 GB, Hobby
+  plan: it can't grow without Pro at ~$20/mo; the owner said NO upgrade). The
+  rollback was clean: grounding is empty, the DB is 2.8 GB, services are up.
+- Fix = option B (owner-approved): make policy_to_grounding.py migrate in
+  committed, resumable batches (per document chunk), insert embeddings in
+  batches, and build the HNSW index LAST (serial, maintenance_work_mem 256MB).
+  If still tight, temporarily drop policy's old HNSW index (~1 GB, an index,
+  not data; Regina's search is slower during the window). Measure free volume
+  space first (Railway API volumeInstances currentSizeMB).
+- After the cutover (policy_on_grounding.sh + merge policy-on-grounding):
+  archive (pg_dump) and drop policy's old duplicate text/vectors (~1.5 GB
+  freed). Brief the owner first: it is a deletion.
+- Storage optimisation (owner, 6 Nov), in the batched migration and right
+  after: (1) drop policy's old float32 vectors once the halfvec copy is
+  verified (~0.5 GB); (2) replace the old HNSW (~970 MB) with the halfvec one
+  (~540 MB), trying leaner m/ef_construction measured on fixed queries;
+  (3) measure exact-duplicate boilerplate passages across documents and
+  embed each once; (4) superseded versions: keep their text, move or drop
+  their vectors (search uses only current versions). Target: the DB well
+  under the 5 GB Hobby volume with headroom. Deletions are briefed first.
+- Steps 4-6 of go_live_sunday (cron inputs, cases.json, refresh-cron
+  retirement, Vercel BUCKET_*, capital-etl redeploy) did NOT run. Sunday's
+  cron WILL still run the new orchestrator (start command is set), but without
+  bucket inputs the instrument rebuild refuses (cases.json pinned) and the run
+  ends partial. refresh-cron is still active, so policy is refreshed twice on
+  Sunday: harmless.
+
+## 6 Nov night: pick up here
+- go_live_sunday.sh was RE-RUN with the HNSW fix (serial build: Railway's
+  /dev/shm is too small for a parallel build). Log: ~/Mandate-backups/
+  go_live_sunday.log. Verify: grounding counts (~10,771 docs / 11,599 versions
+  / 125,745 passages), eligibility_grounding, BUCKET_* on capital-etl and
+  Vercel, refresh-cron unscheduled.
+- `policy-on-grounding` (13b960c5) is DONE and NOT merged. Order: go-live
+  finished -> owner runs `bash mandate/ops/policy_on_grounding.sh` (not during
+  Sun 03:00 UTC) -> merge IMMEDIATELY (Regina redeploys onto the grounding
+  views).
+- `mandate-profile` MERGED. mandate/vocabulary (one sector list, size derived
+  from the EU SME bands, D1-D20) and mandate/profile. Tables accounts /
+  workspaces / company_profiles(+versions, append-only) are LIVE. Regina's
+  B2C consumer-law bug (D19) is fixed on main. Open: policy's eval panel uses
+  free-text sectors (6 of 10 refused).
+- After those: one command for the re-embed (~$0.25), the 171 missing pages and
+  the pertinence classification (<$20), then re-measure stages.
 
 ## 6 Nov evening: state for Sunday's first combined run (8 Nov 03:00 UTC)
 - E1 + E2 MERGED. The sqlite3 ratchet is at 83. innovate_uk's name is declared

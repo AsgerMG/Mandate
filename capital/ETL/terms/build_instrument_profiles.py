@@ -99,12 +99,17 @@ import os
 import re
 from collections import Counter, defaultdict
 
-from mandate.embedding import Embedder, EmbeddingError, for_table, space_for_table
+from mandate.embedding import (Embedder, EmbeddingError, column_dim, for_table,  # noqa: E402
+                               space_for_table, target_column, vector_column, vector_literal)
 
 #: The registered name of this table in mandate/embedding/spaces.json. Writes
 #: use the table's stored space so new rows stay comparable with existing ones.
 TABLE = "capital.instrument_profiles"
 MODEL = space_for_table(TABLE).name
+#: The stored space's column (what readers query) and, during the one-model
+#: move, MODEL's column written beside it (mandate/ops/one_model.sh).
+COL = vector_column(TABLE)
+TARGET = target_column(TABLE)
 BATCH = 64
 # Titles are the strongest signal, but a fund with 27,000 events must not
 # produce a 27,000-title document: past a few dozen distinct titles the marginal
@@ -785,36 +790,51 @@ def _embed(args, pg, profiles) -> None:
     done_ids = {
         r[0] for r in pg.execute("SELECT instrument_id FROM instrument_profiles").fetchall()
     }
-    todo = [p for p in profiles if p[0] not in done_ids and p[1].strip()]
+    # A row with no vector in the STORED column (written by older code after
+    # the one-model flip) is re-embedded too: it would otherwise sit unranked.
+    missing = {r[0] for r in pg.execute(
+        f"SELECT instrument_id FROM instrument_profiles WHERE {COL.column} IS NULL").fetchall()}
+    todo = [p for p in profiles if (p[0] not in done_ids or p[0] in missing) and p[1].strip()]
     if args.limit:
         todo = todo[: args.limit]
-    print(f"embedding {len(todo):,} instrument profiles ({MODEL}, batches of {BATCH})")
+    # The one-model move: once migration 036 has added MODEL's column, a new
+    # profile is written in both spaces, so the flip finds every row complete.
+    dual = TARGET if TARGET and column_dim(pg, TARGET) else None
+    target_client = Embedder(TARGET.space) if dual else None
+    print(f"embedding {len(todo):,} instrument profiles ({MODEL}"
+          f"{f' + {dual.space}' if dual else ''}, batches of {BATCH})")
 
+    extra_col = f", {dual.column}" if dual else ""
+    extra_val = f", %s{dual.cast}" if dual else ""
+    extra_set = f", {dual.column} = EXCLUDED.{dual.column}" if dual else ""
     done = 0
     for i in range(0, len(todo), BATCH):
         batch = todo[i : i + BATCH]
-        vectors = client.embed_documents([t[1] for t in batch])
+        texts = [t[1] for t in batch]
+        vectors = client.embed_documents(texts)
+        extra = target_client.embed_documents(texts) if target_client else [None] * len(batch)
         rows = [
-            (iid, text, vec, MODEL, n_titles)
-            for (iid, text, n_titles), vec in zip(batch, vectors, strict=True)
+            (iid, text, vector_literal(vec), MODEL, n_titles) + ((vector_literal(x),) if dual else ())
+            for (iid, text, n_titles), vec, x in zip(batch, vectors, extra, strict=True)
         ]
         with pg.cursor() as cur:
             cur.executemany(
-                """INSERT INTO instrument_profiles
-                     (instrument_id, profile_text, embedding, model, n_titles)
-                   VALUES (%s, %s, %s, %s, %s)
+                f"""INSERT INTO instrument_profiles
+                     (instrument_id, profile_text, {COL.column}, model, n_titles{extra_col})
+                   VALUES (%s, %s, %s{COL.cast}, %s, %s{extra_val})
                    ON CONFLICT (instrument_id) DO UPDATE
                      SET profile_text = EXCLUDED.profile_text,
-                         embedding = EXCLUDED.embedding,
+                         {COL.column} = EXCLUDED.{COL.column},
                          model = EXCLUDED.model,
                          n_titles = EXCLUDED.n_titles,
-                         built_at = now()""",
+                         built_at = now(){extra_set}""",
                 rows,
             )
         pg.commit()  # per-batch commit — kill-safe
         done += len(batch)
         print(f"  {done:,}/{len(todo):,}")
-    print(f"done: {done:,} profiles embedded. {client.usage.line()}")
+    print(f"done: {done:,} profiles embedded. {client.usage.line()}"
+          + (f" {target_client.usage.line()}" if target_client else ""))
 
 
 def cmd_query(args) -> None:
@@ -829,14 +849,16 @@ def cmd_query(args) -> None:
 
 
 def _nearest(pg, vec, k):
+    q = vector_literal(vec)
     return pg.execute(
-        """SELECT p.instrument_id, fi.name, fi.country, p.n_titles,
-                  1 - (p.embedding <=> %s::vector) AS similarity
+        f"""SELECT p.instrument_id, fi.name, fi.country, p.n_titles,
+                  1 - (p.{COL.column} <=> %s{COL.cast}) AS similarity
            FROM instrument_profiles p
            JOIN funding_instruments fi ON fi.id = p.instrument_id
-           ORDER BY p.embedding <=> %s::vector
+           WHERE p.{COL.column} IS NOT NULL
+           ORDER BY p.{COL.column} <=> %s{COL.cast}
            LIMIT %s""",
-        (vec, vec, k),
+        (q, q, k),
     ).fetchall()
 
 

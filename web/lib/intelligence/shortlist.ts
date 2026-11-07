@@ -35,14 +35,14 @@ import type { FounderFit, InstrumentRow, ProfileSignal } from "./types";
 import type { ExclusionLog } from "./exclusions";
 import { EXCLUSION_RULES } from "./rules";
 import { accessMode, passesCapitalPreference } from "./accessMode";
-import { sectorFit, sectorFitScorer } from "./fit";
+import { sectorFitScorer } from "./fit";
 import { blendPoolScores, homeFirstScores, POOL_BLEND, POOL_BLEND_SEED, ROW_PROXIMITY, shuffleScores } from "./poolBlend";
 import { resolveRoute } from "./applicationRoute";
 import { namesAnApplyableBody, stripIssuerAnnotation, withDoor } from "./applyableBody";
 import { resolveNameCollisions } from "./nameCollision";
 import { openFitScorer, type OpenJudgement } from "./openQuestions";
 import {
-  beyondTitle, DEMANDS_SENTENCE_CHARS, fundsSentence, oneLine, ROW_TITLE_CHARS,
+  beyondTitle, DEMANDS_SENTENCE_CHARS, fundsSentence, ROW_TITLE_CHARS,
 } from "./schemeText";
 import { recordFacts, recordPeerBranch, recordScoreSeats, recordStage } from "./tableTrace";
 

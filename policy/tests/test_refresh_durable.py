@@ -1,13 +1,10 @@
 """A policy refresh leaves a row in mandate.runs that outlives the process."""
 from __future__ import annotations
 
-
 import psycopg
 import pytest
 
-# the repo's mandate/ is put ahead of any installed copy by conftest.py, once
-# for the session (purging sys.modules here made two copies of every mandate
-# class, and an isinstance check in another test fail depending on order)
+# The repo's mandate/ is put first by tests/conftest.py, before collection.
 from etl import api  # noqa: E402
 
 

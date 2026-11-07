@@ -32,3 +32,5 @@ dev-mode-dirs = [".."]
 "__init__.py" = "mandate/__init__.py"
 "grounding" = "mandate/grounding"
 "embedding" = "mandate/embedding"
+"vocabulary" = "mandate/vocabulary"
+"profile" = "mandate/profile"

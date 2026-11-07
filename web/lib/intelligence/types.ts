@@ -1,4 +1,5 @@
 // Shared types for the competitive EU-funding intelligence agent.
+import { SECTOR_FAMILY_OPTIONS } from "../mandate/vocabulary";
 import { regionOptions } from "./regions.generated";
 // From the leaf, NOT from corpus: this module is reachable from a client
 // component, so it must not pull in fs or pg. See countryCodes.ts.
@@ -818,39 +819,33 @@ export const ORGANISATION_TYPE_OPTIONS = [
 ] as const;
 export type OrganisationTypeValue = (typeof ORGANISATION_TYPE_OPTIONS)[number]["value"];
 
-export const SECTOR_OPTIONS = [
-  { value: "software_data_ai", label: "Software, AI, data or cloud" },
-  { value: "health_life_sciences", label: "Health, medtech, pharma or biotech" },
-  { value: "energy_cleantech", label: "Energy, cleantech or environment" },
-  { value: "industrial_manufacturing", label: "Industrial manufacturing, robotics or machinery" },
-  { value: "semiconductors_electronics", label: "Semiconductors, electronics or photonics" },
-  { value: "mobility_transport", label: "Mobility, transport or logistics" },
-  { value: "agrifood", label: "Agritech, food or forestry" },
-  { value: "materials_chemicals", label: "Materials or chemicals" },
-  { value: "space", label: "Space" },
-  { value: "defense_security", label: "Defence or security" },
-  // ── AN UNNAMED RESIDUAL, AND WHAT MAY NOT BE DONE WITH IT ────────────────
-  // This value does not name an industry. It means "a real industry that the
-  // ten above do not name" — the founder is telling us about the gaps in OUR
-  // list, not about themselves.
-  //
-  // A comparator may therefore never REQUIRE it. `sector equals "other"` says
-  // the fund admits exactly those applicants our vocabulary failed to place,
-  // which is a claim about this file and not about the fund. Five gates say
-  // it today: two ADEME forestry schemes, an Estonian tourism-software
-  // scheme, and two Estonian creative-economy schemes. Between them they
-  // deleted 26 companies from funds the award register says those companies
-  // won — including four agrifood companies cut from a forestry scheme whose
-  // nearest true value, `agrifood`, has the word "forestry" in its own label.
-  //
-  // `unnamedResidual` is the declaration the checks and the encoder read, so
-  // the rule holds for a residual added to any future enumeration without an
-  // edit anywhere else. It is NOT the same as an exclusion checklist's "none
-  // of these": `activities in ["none"]` asserts the ABSENCE of a named
-  // property and is a perfectly good requirement. This one asserts the
-  // PRESENCE of an unnamed one, and cannot be tested.
-  { value: "other", label: "Something else", unnamedResidual: true },
-] as const;
+// ── ONE SOURCE (mandate/vocabulary) ────────────────────────────────────
+// The eleven families are the shared Mandate vocabulary's `sectors`, which
+// policy's sector slugs are projected from too (decision D2). Same values,
+// labels and order as the literal that stood here; capital/data/
+// vocabularies.json regenerates byte-identical, and mandate/vocabulary/
+// check.py fails if they part. The note on the last one, "other", stands:
+// ── AN UNNAMED RESIDUAL, AND WHAT MAY NOT BE DONE WITH IT ────────────────
+// This value does not name an industry. It means "a real industry that the
+// ten above do not name" — the founder is telling us about the gaps in OUR
+// list, not about themselves.
+//
+// A comparator may therefore never REQUIRE it. `sector equals "other"` says
+// the fund admits exactly those applicants our vocabulary failed to place,
+// which is a claim about this file and not about the fund. Five gates say
+// it today: two ADEME forestry schemes, an Estonian tourism-software
+// scheme, and two Estonian creative-economy schemes. Between them they
+// deleted 26 companies from funds the award register says those companies
+// won — including four agrifood companies cut from a forestry scheme whose
+// nearest true value, `agrifood`, has the word "forestry" in its own label.
+//
+// `unnamedResidual` is the declaration the checks and the encoder read, so
+// the rule holds for a residual added to any future enumeration without an
+// edit anywhere else. It is NOT the same as an exclusion checklist's "none
+// of these": `activities in ["none"]` asserts the ABSENCE of a named
+// property and is a perfectly good requirement. This one asserts the
+// PRESENCE of an unnamed one, and cannot be tested.
+export const SECTOR_OPTIONS = SECTOR_FAMILY_OPTIONS;
 export type SectorValue = (typeof SECTOR_OPTIONS)[number]["value"];
 
 /**

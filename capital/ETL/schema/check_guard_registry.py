@@ -62,6 +62,22 @@ nothing about its contents:
      any other step has received it.
   c. no other data credential: everything else still fails, as before.
 
+── The one spend credential CI may hold (2026-11-07) ──────────────────────
+Six founder-tier guards (memo table, answer reach, degradation, hydration
+parity, recall floor, pool curve) grade the SHIPPED ranker, which embeds the
+founder's description; without a Voyage key they would grade the lexical
+fallback, the wrong ranker. The owner approved a repository secret VOYAGE_KEY
+on 2026-11-06. It cannot change production -- it can only buy query
+embeddings, measured at ~10,600 tokens (~$0.001) for all six on 2026-11-07 --
+so it is admitted on conditions of its own, checked here:
+
+  d. bound to an env var of the same name, VOYAGE_KEY, and nothing else, and
+     never inside an expression;
+  e. per STEP: never at workflow or job level, so only the steps that grade
+     the ranker receive it;
+  f. every step given it also sets GUARD_NO_PUBLISH, so a run from a branch
+     cannot stamp the shared verdict feed (scripts/guardVerdict.ts).
+
 Usage: python3 ETL/schema/check_guard_registry.py
 """
 from __future__ import annotations
@@ -91,6 +107,37 @@ INTRINSIC_SECRETS = {"GITHUB_TOKEN"}
 # The read-only corpus credential: admitted on conditions (a)-(b) above.
 READONLY_SECRET = "CAPITAL_RO_DATABASE_URL"
 READONLY_PROOF = "ETL/schema/check_readonly_credential.py"
+# The query-embedding key: admitted on conditions (d)-(f) above.
+SPEND_SECRET = "VOYAGE_KEY"
+
+
+def spend_secret_problems(rel, live: str) -> list[str]:
+    """Conditions (d)-(f) for SPEND_SECRET in one workflow's uncommented text."""
+    out: list[str] = []
+    ref = f"secrets.{SPEND_SECRET}"
+    if ref not in live:
+        return out
+    for var in re.findall(r"^\s*([A-Za-z_][A-Za-z0-9_]*)\s*:\s*\$\{\{\s*secrets\." + SPEND_SECRET + r"\b",
+                          live, re.M):
+        if var != SPEND_SECRET:
+            out.append(f"{rel} binds {ref} to {var}; it may be bound only to {SPEND_SECRET}")
+    if re.search(r"secrets\." + SPEND_SECRET + r"\b[^\n]*\}\}[^\n]*\S|"
+                 r"\$\{\{[^}]*\S\s*secrets\." + SPEND_SECRET + r"\b", live):
+        out.append(f"{rel} uses {ref} inside an expression; it may only be bound as an env value")
+    if ref in live.split("\njobs:", 1)[0]:
+        out.append(f"{rel} binds {ref} at workflow level; it may be given to a step only")
+    for job_id, job in _jobs(live).items():
+        if ref not in job:
+            continue
+        if ref in job.split("steps:", 1)[0]:
+            out.append(f"{rel} job `{job_id}` binds {ref} at job level; it may be given to a step only")
+            continue
+        for step in _steps(job):
+            if ref in step and "GUARD_NO_PUBLISH" not in step:
+                name = re.search(r"name:\s*(.+)", step)
+                out.append(f"{rel} job `{job_id}` step {name.group(1).strip() if name else '?'!r} "
+                           f"holds {ref} without GUARD_NO_PUBLISH")
+    return out
 
 
 def _jobs(live: str) -> dict[str, str]:
@@ -128,8 +175,9 @@ def workflow_secrets() -> list[str]:
                          if not ln.lstrip().startswith("#"))
         rel = wf.relative_to(ROOT.parent)
         for name in re.findall(r"secrets\.([A-Za-z_][A-Za-z0-9_]*)", live):
-            if name not in INTRINSIC_SECRETS and name != READONLY_SECRET:
+            if name not in INTRINSIC_SECRETS and name not in (READONLY_SECRET, SPEND_SECRET):
                 out.append(f"{rel} reads secrets.{name}")
+        out.extend(spend_secret_problems(rel, live))
         if f"secrets.{READONLY_SECRET}" not in live:
             continue
         # (a) bound only under its own name.

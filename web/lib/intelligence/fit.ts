@@ -18,8 +18,7 @@
 // (verdict.ts `blocked`), and a national scheme in a country the founder cannot
 // draw on. Neither is decided here.
 
-import { BAND_INDEX, INDEFINITE_CAPITAL, TICKET_MIDPOINT, typicalAward } from "./shortlist";
-import { hasThinEvidence } from "./accessMode";
+import { BAND_INDEX, TICKET_MIDPOINT, typicalAward } from "./shortlist";
 import type { DbInstrument } from "./corpus";
 import type { InstrumentAssessment } from "./verdict";
 

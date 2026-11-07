@@ -7,10 +7,9 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { fmtEur } from "@/lib/format";
 import { evaluateEligibility } from "./eligibility";
-import { scoreEase, whyEasyLine } from "./ease";
+import { whyEasyLine } from "./ease";
 import { betweenCallsCaveat } from "./callRecurrence";
 import { instrumentLink } from "./instrumentLink";
-import { assessAll } from "./verdict";
 import { recordBrief } from "./record";
 import {
   agentSelectEnabled, agentSelectMemoPool, AGENT_SELECT_SEAM,
@@ -44,7 +43,6 @@ import { redactInternalIds } from "./rowIdentity";
 import { mapReaderText } from "./readerSurface";
 import {
   accessiblePool, assembleBriefRows, explainNoDoors, orderMemoCandidates,
-  WRITER_CANDIDATE_CAP,
 } from "./memoCandidates";
 import { ExclusionLog } from "./exclusions";
 import { assembleInstructions, assembleWriterInstructions } from "./contracts";
@@ -60,14 +58,12 @@ import {
   matchCompany,
   newsFreshness,
   NEWS_MAX_AGE_DAYS,
-  toIso2,
   withheldNotice,
   type DigestItem,
 } from "./corpus";
 import {
   applyProfileSignal,
   opensLargeScaleLane,
-  CAPITAL_SOUGHT_TO_DB,
   instById,
   channelLabel,
   buildInstrumentTableHydrated,

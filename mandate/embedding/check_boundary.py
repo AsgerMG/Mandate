@@ -18,7 +18,7 @@ Comments and docstrings may name a model: they explain history. Code may not.
 The test for an unseen case is the property, not a list of files: a new script
 that pastes the Voyage URL fails here the day it is committed.
 
-THE TS MIRROR. capital/website/frontend/lib/embedding.ts carries a generated
+THE TS MIRROR. web/lib/embedding.ts carries a generated
 block holding spaces.json. This check fails if the block is not byte-identical
 to what --write would produce, which is how "the TS constant matches the Python
 one" is enforced rather than hoped.
@@ -178,6 +178,7 @@ def ts_block() -> str:
         "spaces": {k: {kk: vv for kk, vv in v.items() if not kk.startswith("_")}
                    for k, v in spec["spaces"].items()},
         "stored": spec["stored"],
+        "vectorColumns": spec["vector_columns"],
     }
     body = json.dumps(clean, indent=2)
     return f"{BEGIN}\nexport const SPEC = {body} as const;\n{END}"

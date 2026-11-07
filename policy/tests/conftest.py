@@ -17,16 +17,22 @@ suite on halfvec too.
 from __future__ import annotations
 
 import sys
-from pathlib import Path
-
-# The repo's mandate/ ahead of any installed copy, before anything imports it: a
-# worktree shares one venv, whose copy may be another branch's.
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-
-import os  # noqa: E402
+import os
 import shutil
 import tempfile
 from collections.abc import Iterator
+from pathlib import Path
+
+# THIS repo's mandate/, ahead of any installed copy: a worktree shares the
+# primary checkout's venv, whose editable install points at the primary's
+# mandate/. It has to happen here, before any test module is collected: a test
+# module that purged sys.modules itself left modules collected earlier holding
+# the other copy's classes, so `isinstance(e, mandate.embedding.Embedder)`
+# failed across the two (policy CI, Nov 2026).
+_REPO = Path(__file__).resolve().parents[2]
+sys.path[:] = [str(_REPO)] + [p for p in sys.path if p != str(_REPO)]
+for _m in [m for m in sys.modules if m == "mandate" or m.startswith("mandate.")]:
+    del sys.modules[_m]
 
 import psycopg
 from psycopg.conninfo import conninfo_to_dict

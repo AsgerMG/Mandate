@@ -394,13 +394,15 @@ def test_the_cutover_keeps_ids_and_retrieval(tmp_path, monkeypatch):
                 s.execute(text("DELETE FROM passages"))
             s.rollback()
 
-            # a new fetch before the sequence step is refused (it could reuse a
-            # folded id that a stored citation names), and accepted after it
-            src = s.scalars(select(Source)).one()
+            # The migration raises grounding's id counters above every legacy
+            # policy id itself (policy_to_grounding.py, 2026-11-07), so a new
+            # fetch can never reuse an id a stored citation names, even before
+            # policy_on_grounding.sh's own (now idempotent) setval step.
             assert legacy_max_pid > s.execute(text("SELECT max(id) FROM grounding.passages")).scalar_one()
-            with pytest.raises(RuntimeError, match="folded policy passage id"):
-                _persist(s, src, _parsed("EARLY", "Article 1\nToo early."), T0)
-            s.rollback()
+            seq_next = s.execute(text(
+                "SELECT last_value FROM pg_sequences WHERE schemaname || '.' || sequencename "
+                "= pg_get_serial_sequence('grounding.passages', 'id')")).scalar_one()
+            assert seq_next >= legacy_max_pid
         with psycopg.connect(db.admin_url) as admin:
             ops = (REPO / "mandate" / "ops" / "policy_on_grounding.sh").read_text()
             setval = ops[ops.index("SELECT setval"):ops.index('"', ops.index("SELECT setval"))]

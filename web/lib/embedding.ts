@@ -10,7 +10,7 @@
 // build if this block drifts from that file or if any other file in the repo
 // names a model or the endpoint.
 //
-// When a table is re-embedded (mandate/grounding/migrations/reembed_plan.py),
+// When a table is re-embedded (mandate/ops/one_model.sh),
 // spaces.json's `stored` flips, --write regenerates this block, and every query
 // here follows with no code change.
 //
@@ -55,6 +55,50 @@ export const SPEC = {
     "capital.eligibility_embeddings": "voyage-3.5",
     "capital.instrument_profiles": "voyage-3.5",
     "capital.signals_chunk_embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  },
+  "vectorColumns": {
+    "grounding.passage_embeddings": {
+      "voyage-4-large": {
+        "column": "embedding",
+        "type": "halfvec"
+      }
+    },
+    "policy.passages": {
+      "voyage-4-large": {
+        "column": "embedding",
+        "type": "vector"
+      }
+    },
+    "capital.eligibility_embeddings": {
+      "voyage-3.5": {
+        "column": "embedding",
+        "type": "vector"
+      },
+      "voyage-4-large": {
+        "column": "embedding_v4",
+        "type": "halfvec"
+      }
+    },
+    "capital.instrument_profiles": {
+      "voyage-3.5": {
+        "column": "embedding",
+        "type": "vector"
+      },
+      "voyage-4-large": {
+        "column": "embedding_v4",
+        "type": "halfvec"
+      }
+    },
+    "capital.signals_chunk_embeddings": {
+      "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2": {
+        "column": "embedding",
+        "type": "vector"
+      },
+      "voyage-4-large": {
+        "column": "embedding_v4",
+        "type": "halfvec"
+      }
+    }
   }
 } as const;
 // END GENERATED
@@ -69,6 +113,20 @@ const ENDPOINT = "https://api.voyageai.com/v1/embeddings";
 /** The space a stored table's vectors are in. */
 export function spaceFor(table: StoredTable): SpaceName {
   return SPEC.stored[table] as SpaceName;
+}
+
+/**
+ * Where `table` keeps its STORED space's vectors: the column a query must read
+ * and the cast its literal must carry. During a re-embed a table holds two
+ * spaces side by side (mandate/ops/one_model.sh); flipping spaces.json `stored`
+ * moves the query model AND this column in the same generated block, so a
+ * query can never be embedded in one space and compared against the other.
+ */
+export function vectorColumn(table: StoredTable): { column: string; cast: string } {
+  const byspace = SPEC.vectorColumns[table] as Record<string, { column: string; type: string }>;
+  const c = byspace[spaceFor(table)];
+  if (!c) throw new Error(`embedding: ${table} has no column for ${spaceFor(table)} in spaces.json`);
+  return { column: c.column, cast: `::${c.type}` };
 }
 
 /** '[a,b,c]': what `$1::vector` and `$1::halfvec` both parse. */

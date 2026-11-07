@@ -135,33 +135,23 @@ def test_postgres_accepts_the_hnsw_options_string(pg_engine):
 # --- the HNSW index is part of the schema, not a side effect ----------------
 
 
-def test_the_hnsw_index_is_declared_on_the_model():
-    """It used to exist in every database and in no metadata, so
-    `alembic revision --autogenerate` proposed DROPPING it — one line in a
-    migration nobody reads closely. `alembic check` failed on exactly that."""
+def test_the_legacy_passages_declare_no_search_index():
+    """Since the cutover (2026-11-07) search rides grounding's halfvec HNSW, and the
+    legacy float32 HNSW (967 MB) was dropped to fit the 5 GB volume. Declaring it
+    on the model again would make `alembic --autogenerate` propose re-creating it."""
     from data.models import LegacyPassage as Passage
 
-    index = next(
-        (i for i in Passage.__table__.indexes if i.name == "ix_passages_embedding_hnsw"), None
-    )
-    assert index is not None, "autogenerate will propose dropping this index"
-    assert index.dialect_options["postgresql"]["using"] == "hnsw"
-    assert index.dialect_options["postgresql"]["ops"] == {"embedding": "vector_cosine_ops"}
-    assert [c.name for c in index.columns] == ["embedding"]
+    assert not [i for i in Passage.__table__.indexes if i.name == "ix_passages_embedding_hnsw"]
 
 
-def test_create_all_builds_the_hnsw_index(pg_engine):
-    """The declaration has to be what actually builds the index on a fresh
-    install — init_db no longer creates it imperatively."""
-    indexes = inspect(pg_engine).get_indexes("passages")
-    hnsw = next((i for i in indexes if i["name"] == "ix_passages_embedding_hnsw"), None)
-    assert hnsw is not None, "fresh-install schema has no HNSW index"
-    with pg_engine.connect() as conn:
-        definition = conn.execute(
-            text("select indexdef from pg_indexes where indexname='ix_passages_embedding_hnsw'")
-        ).scalar()
-    assert "USING hnsw" in definition
-    assert "vector_cosine_ops" in definition
+def test_the_search_index_lives_in_grounding():
+    """The index every semantic search rides is grounding's, defined once in
+    mandate/db/grounding.sql and built by the migration from that statement."""
+    from pathlib import Path
+
+    sql = (Path(__file__).resolve().parents[2] / "mandate" / "db" / "grounding.sql").read_text()
+    assert "ix_gpe_hnsw_voyage_4_large" in sql
+    assert "USING hnsw (embedding public.halfvec_cosine_ops)" in sql
 
 
 def test_every_table_lands_in_the_brains_schema_not_public(pg_engine):

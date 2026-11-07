@@ -144,9 +144,17 @@ CREATE TABLE IF NOT EXISTS grounding.passage_embeddings (
 -- One HNSW index per model in use, partial, so a query names its model and can
 -- never rank a vector from another space. mandate.embedding.MODEL is the only
 -- model new rows are written in; a second index appears only during a planned
--- re-embed (see mandate/grounding/migrations/reembed_plan.py).
+-- re-embed (see mandate/ops/one_model.sh).
+-- m / ef_construction MEASURED, not defaulted by omission
+-- (mandate/grounding/migrations/hnsw_params.py, 2026-11-07, 122,033 production
+-- vectors, 20 held-out queries): m=12 and ef_construction=48 build an index of
+-- the SAME size (2,728 bytes a vector: a halfvec(1024) element is ~2.1 kB, so
+-- three fit a page whatever m is) and m=12 loses recall (0.99 vs 1.00 at
+-- ef_search 40). Leaner parameters buy nothing here; pgvector's defaults stay,
+-- written out. policy_to_grounding.py builds the index from THIS statement.
 CREATE INDEX IF NOT EXISTS ix_gpe_hnsw_voyage_4_large
     ON grounding.passage_embeddings USING hnsw (embedding public.halfvec_cosine_ops)
+    WITH (m = 16, ef_construction = 64)
     WHERE model = 'voyage-4-large';
 
 -- ── append-only, for every role ────────────────────────────────────────────

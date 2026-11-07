@@ -7,7 +7,7 @@
 
 What it builds: a NEW database (never an existing one) with pgvector in
 `public`, empty schemas capital/policy/mandate, then mandate/db/roles.sql,
-mandate/db/grounding.sql and mandate/db/runs.sql exactly as production runs them (the database name in
+mandate/db/grounding.sql, runs.sql and profiles.sql exactly as production runs them (the database name in
 roles.sql's two DATABASE statements is the one substitution). So a test sees the
 real grants: if a brain role could UPDATE grounding here, it could there.
 
@@ -93,6 +93,8 @@ class EphemeralMandate:
             c.execute(ddl)
             # the run log and the artefact manifest (mandate/db/runs.sql)
             c.execute(sql_file("runs.sql", self.dbname))
+            # accounts, workspaces and the shared company profile (mandate/db/profiles.sql)
+            c.execute(sql_file("profiles.sql", self.dbname))
             # a throwaway server may not trust local connections (CI's does
             # not): give the brain roles a test password. Cluster-wide, which
             # is why only a throwaway server is accepted.

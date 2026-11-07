@@ -11,7 +11,10 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."; ROOT=$PWD
 source mandate/ops/_railway.sh
 
-echo "######## 1. grounding go-live (re-run: the first attempt died when the disk filled)"
+echo "######## 1. grounding go-live (batched: the single-transaction attempts filled the 5 GB volume)"
+# Drops policy.ix_passages_embedding_hnsw (an index) by default; see that script.
+# If it stops, fix what it says and re-run THIS script: every step is idempotent
+# and the migration resumes from its last committed batch.
 bash mandate/ops/go_live_grounding.sh
 
 echo "######## 2. the state-aid case register, a pinned input of the instrument rebuild"
@@ -33,7 +36,7 @@ railway_api "mutation{ serviceInstanceDeployV2(serviceId:\"$RC\", environmentId:
 echo "refresh-cron has no schedule"
 
 echo "######## 4. the site downloads its data from the bucket (fast deploys)"
-SITE=~/Wincent/website/frontend   # the directory linked to the Vercel project (wincent)
+SITE="$(cd "$(dirname "$0")/../.." && pwd)/web"   # linked to the Vercel project `wincent` (web/.vercel, gitignored)
 for k in BUCKET_ENDPOINT BUCKET_NAME BUCKET_REGION BUCKET_ACCESS_KEY_ID BUCKET_SECRET_ACCESS_KEY BUCKET_ADDRESSING; do
   for env in production preview; do
     vercel env rm "$k" "$env" --yes --cwd "$SITE" >/dev/null 2>&1 || true

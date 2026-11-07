@@ -4,7 +4,7 @@
 import { readFileSync } from "fs";
 import { meetsDataFloor } from "./accessMode";
 import {
-  isClosed, isShut, today, unconfirmedOpen,
+  isShut, today, unconfirmedOpen,
   type LivenessObservation,
 } from "./liveness";
 // A leaf, like ./evidenceTier and ./nameEvidence: it carries the funder-page
@@ -1684,7 +1684,7 @@ export function publishabilityFailures(
 export function publishableInstruments(): DbInstrument[] {
   const all = loadDbInstruments();
   const ctx = publishabilityContext(all);
-  const { hasChildren, liveCodes, asOf } = ctx;
+  const { liveCodes, asOf } = ctx;
   // The redirect exists to save rows the closure clause would otherwise drop,
   // so it has to fire on exactly the rows that clause drops — `isShut`. A
   // between-calls row is not dropped and must NOT be redirected: the redirect

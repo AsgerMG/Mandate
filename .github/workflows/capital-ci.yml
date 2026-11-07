@@ -17,6 +17,9 @@ on:
       - '!web/**/*.md'
       # the one file under a skipped path that checks DO read
       - 'capital/data/guard_registry.json'
+      # the shared vocabulary and profile fixtures web/lib/mandate tests read
+      - 'mandate/vocabulary/**'
+      - 'mandate/profile/**'
       - '.github/workflows/capital-ci.yml'
   push:
     branches: [main]
@@ -35,6 +38,9 @@ on:
       - '!web/**/*.md'
       # the one file under a skipped path that checks DO read
       - 'capital/data/guard_registry.json'
+      # the shared vocabulary and profile fixtures web/lib/mandate tests read
+      - 'mandate/vocabulary/**'
+      - 'mandate/profile/**'
       - '.github/workflows/capital-ci.yml'
 
 concurrency:
@@ -337,9 +343,8 @@ jobs:
       # and says so). check_guard_registry rule 7 holds: the secret is bound
       # only to CAPITAL_RO_DATABASE_URL, per step, after the proof.
       #
-      # Not here, and why: check_memo_table, check_answer_reach,
-      # check_degradation, check_hydration_parity, check_recall_floor and
-      # check_pool_recall_curve also need VOYAGE_KEY, which CI does not hold.
+      # The six that also need VOYAGE_KEY follow the five below, in their own
+      # block: they grade the SHIPPED ranker, which embeds the founder's text.
       - name: A published row's openness rests on a deadline we hold
         if: always()
         env:
@@ -365,6 +370,58 @@ jobs:
         env:
           CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
         run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_gate_pertinence.ts
+
+      # ── Founder-tier checks that grade the shipped (embedding) ranker ─────
+      # Each embeds query text with the Voyage key (owner-approved repository
+      # secret, 6 Nov 2026), so without it they would grade the lexical
+      # fallback, which is not what ships. Read-only: DATABASE_URL is the
+      # capital_ro credential proved read-only above, and GUARD_NO_PUBLISH
+      # stops a branch from stamping the shared verdict feed. Measured
+      # 2026-11-07: all six together ~10,600 billed Voyage tokens (~$0.001)
+      # and ~3.5 minutes, recall_floor ~2.5 of them. check_guard_registry
+      # conditions (d)-(f) hold the key to exactly these steps.
+      - name: A memo table is handed to every archetype
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
+          GUARD_NO_PUBLISH: '1'
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_memo_table.ts
+      - name: Every answer a founder gives reaches the rows or the screen
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
+          GUARD_NO_PUBLISH: '1'
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_answer_reach.ts
+      - name: The fallback corpus never offers a fund the register has closed
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
+          GUARD_NO_PUBLISH: '1'
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_degradation.ts
+      - name: Postgres and the snapshot produce the same brief
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
+          GUARD_NO_PUBLISH: '1'
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_hydration_parity.ts
+      - name: Retrieval still finds the fund a company won
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
+          GUARD_NO_PUBLISH: '1'
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_recall_floor.ts
+      - name: The base rate the selector is told is current
+        if: always()
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
+          GUARD_NO_PUBLISH: '1'
+        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_pool_recall_curve.ts
 
       - name: Lint
         if: always()

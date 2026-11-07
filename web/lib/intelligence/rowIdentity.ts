@@ -47,7 +47,7 @@
 // taken because it sits in the flat, and because it is strictly above the 0.60
 // that `displayInstitutionName` uses for the much stronger claim that a body IS
 // the whole instrument.
-import { namesAnApplyableBody, splitDoor, VIA, withDoor } from "./applyableBody";
+import { namesAnApplyableBody, splitDoor } from "./applyableBody";
 
 // ── THE LABEL SHIPS. DOOR-LEVEL *RANKING* DOES NOT ────────────────────────
 //

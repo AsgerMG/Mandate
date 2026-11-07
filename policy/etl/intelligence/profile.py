@@ -223,7 +223,11 @@ class CompanyProfile(BaseModel):
             terms = _SECTOR_FACETS.get(slug)
             if terms:
                 facets.append((f"sector:{slug}", terms))
-        if self.customer_type in {"b2c", "both"}:
+        # The web form sends "consumers (B2C)", not "b2c": a consumer-only
+        # company never got the consumer-law angle (found by the shared-profile
+        # equivalence tests, 2026-11-06). Match the meaning, not one spelling.
+        _ct = (self.customer_type or "").lower()
+        if "b2c" in _ct or "consumer" in _ct or _ct == "both":
             facets.append(
                 (
                     "consumer",

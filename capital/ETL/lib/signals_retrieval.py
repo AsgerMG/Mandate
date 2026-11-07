@@ -55,17 +55,17 @@ _HITS_SQL = """
     SELECT c.id AS chunk_id, a.id AS article_id, a.title, a.url, a.resolved_url,
            a.published_at, s.key AS source_key, s.tier, s.country, s.topics,
            c.chunk_text, c.char_start, c.char_end,
-           1 - (e.embedding <=> %(q)s::vector) AS similarity
+           1 - (e.{col} <=> %(q)s{cast}) AS similarity
     FROM signals_chunk_embeddings e
     JOIN signals_article_chunks c ON c.id = e.chunk_id
     JOIN signals_articles a ON a.id = c.article_id
     JOIN signals_sources s ON s.id = a.source_id
-    {where}
-    ORDER BY e.embedding <=> %(q)s::vector, c.id
+    WHERE e.{col} IS NOT NULL {where}
+    ORDER BY e.{col} <=> %(q)s{cast}, c.id
     LIMIT %(k)s
 """
 
-_TOPIC_WHERE = "WHERE (',' || s.topics || ',') LIKE '%%,' || %(topic)s || ',%%'"
+_TOPIC_WHERE = "AND (',' || s.topics || ',') LIKE '%%,' || %(topic)s || ',%%'"
 
 
 def vector_literal(v) -> str:
@@ -76,23 +76,35 @@ def vector_literal(v) -> str:
 
 class SignalsRetriever:
     def __init__(self, embedder=None):
-        from embed_articles import get_embedder
+        from embed_articles import COL, META_COLUMN, get_embedder
+        from mandate.embedding import column_dim
         self.embedder = embedder or get_embedder()
         with connect(readonly=True) as con:
             meta = con.execute(
                 "SELECT model, dim FROM signals_embedding_meta WHERE id = 1").fetchone()
+            dim = column_dim(con, COL)
+        # The meta row describes the original `embedding` column only; once
+        # spaces.json stores the table in another column, that column's declared
+        # dimension and spaces.json's space for it are the guard.
+        if COL.column != META_COLUMN:
+            if dim != self.embedder.dim or self.embedder.model != COL.space:
+                raise SystemExit(
+                    f"{COL.table}.{COL.column} is {dim}-d in {COL.space}; configured "
+                    f"embedder is {self.embedder.model} ({self.embedder.dim}-d)")
+            return
         if meta is None:
             raise SystemExit("no embeddings yet -- run embed_articles.py first")
         if meta[0] != self.embedder.model:
             raise SystemExit(
                 f"index built with {meta[0]}, configured model is "
-                f"{self.embedder.model} -- re-embed (mandate/grounding/migrations/reembed_plan.py)")
+                f"{self.embedder.model} -- re-embed (mandate/ops/one_model.sh)")
 
     def _qvec(self, query: str) -> str:
         return vector_literal(self.embedder.embed([query])[0])
 
     def _hits(self, q: str, k: int, topic: str | None = None) -> list[dict]:
-        sql = _HITS_SQL.format(where=_TOPIC_WHERE if topic else "")
+        from embed_articles import COL  # the STORED space's column (spaces.json)
+        sql = _HITS_SQL.format(where=_TOPIC_WHERE if topic else "", col=COL.column, cast=COL.cast)
         with connect(readonly=True, dict_rows=True) as con:
             rows = con.execute(sql, {"q": q, "k": k, "topic": topic}).fetchall()
         for r in rows:

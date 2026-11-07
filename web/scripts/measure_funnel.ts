@@ -1200,7 +1200,7 @@ async function main() {
   const counterfactual = proposal
     ? counterfactualReport(traces, tracesB, proposal, overlayEverApplied, overlayDriftSeen)
     : uof
-      ? useOfFundsReport(traces, tracesB, uof, uofChanged, uofControl)
+      ? reportUseOfFunds(traces, tracesB, uof, uofChanged, uofControl)
       : undefined;
   if (counterfactual) { for (const line of counterfactual.lines) p(line); p(); }
 
@@ -1783,7 +1783,7 @@ function counterfactualReport(
  *
  *  A gain at `gates_pass` that is given back at six rows is a real result and
  *  the table shows it as one. */
-function useOfFundsReport(
+function reportUseOfFunds(
   a: Trace[], b: Trace[], uof: UseOfFundsArm, changed: string[], control: number[],
 ): { lines: string[]; record: Record<string, unknown> } {
   const L: string[] = [];
