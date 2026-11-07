@@ -130,6 +130,7 @@ for _anc in _Path(__file__).resolve().parents:
         _sys.path.insert(0, str(_anc / "lib"))
         break
 from etl_env import ROOT  # noqa: E402
+from store import connect  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
@@ -156,6 +157,29 @@ MAX_CHARS = 1800
 #: afterwards from a dashboard.
 PRICE_IN, PRICE_OUT = 5.0, 25.0
 SPEND = {"in": 0, "out": 0}
+#: The estimate's assumptions, stated so a reader can check them against a run's
+#: own SPEND line. Input: the PROPERTY system prompt once per call plus the
+#: listing (chars/4). Output: adaptive thinking at effort medium plus ~40 tokens
+#: of JSON per verdict; OUT_PER_CALL is deliberately generous (thinking is
+#: billed as output and is the bulk of the bill).
+CHARS_PER_TOKEN = 4
+OUT_PER_CALL = 4000
+OUT_PER_VERDICT = 40
+#: --max-usd: a run stops BEFORE the call that would take it past this.
+MAX_USD_DEFAULT = 20.0
+
+
+def spent_usd() -> float:
+    return SPEND["in"] / 1e6 * PRICE_IN + SPEND["out"] / 1e6 * PRICE_OUT
+
+
+def estimate(texts: list[str], chunk: int) -> tuple[int, int, int, float]:
+    """(calls, input tokens, output tokens, USD) to judge `texts` in `chunk`s."""
+    calls = -(-len(texts) // chunk) if texts else 0
+    sys_tok = len(PROPERTY) // CHARS_PER_TOKEN + 60
+    tin = calls * sys_tok + sum(min(len(t), MAX_CHARS) + 24 for t in texts) // CHARS_PER_TOKEN
+    tout = calls * OUT_PER_CALL + len(texts) * OUT_PER_VERDICT
+    return calls, tin, tout, tin / 1e6 * PRICE_IN + tout / 1e6 * PRICE_OUT
 
 #: Bumped when PROPERTY changes in a way that could move a verdict. The cache
 #: key is a digest of the TEXT, so without this a reworded question would keep
@@ -288,25 +312,20 @@ def save_cache(cache: dict) -> None:
     }, indent=1, sort_keys=True) + "\n")
 
 
-def _connect():
-    import psycopg2
-    url = os.environ.get("DATABASE_URL")
-    if not url:
-        raise SystemExit("DATABASE_URL is not set; this reads the PUBLISHED columns.")
-    return psycopg2.connect(url)
-
-
 def rows_text() -> list[dict]:
-    """Every published eligibility_text long enough to make a claim."""
-    import psycopg2.extras
-    with _connect() as c:
-        with c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute(
-                """SELECT id AS ref, country, eligibility_text AS body
-                     FROM funding_instruments
-                    WHERE length(coalesce(eligibility_text,'')) > 40
-                    ORDER BY id""")
-            return [dict(r, column="eligibility_text") for r in cur.fetchall()]
+    """Every published eligibility_text long enough to make a claim.
+
+    Read through store.connect(readonly=True): capital_ro where configured, and
+    a read-only session in any case. This script WRITES only its cache file;
+    it had a psycopg2 connection on DATABASE_URL (the read-write role) for a
+    read, which is one forgotten statement from a write it never needed."""
+    with connect(readonly=True, dict_rows=True) as c:
+        rows = c.execute(
+            """SELECT id AS ref, country, eligibility_text AS body
+                 FROM funding_instruments
+                WHERE length(coalesce(eligibility_text,'')) > 40
+                ORDER BY id""").fetchall()
+    return [dict(r, column="eligibility_text") for r in rows]
 
 
 def rows_gates() -> list[dict]:
@@ -314,17 +333,15 @@ def rows_gates() -> list[dict]:
     `isFilter()` honours as a filter so the system degrades safely while
     encoding coverage grows. A gate already triaged to any other role is inert
     and is not this test's business."""
-    import psycopg2.extras
-    with _connect() as c:
-        with c.cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
-            cur.execute(
-                """SELECT instrument_id || '/' || gate_key AS ref,
-                          instrument_id, gate_key, gate_role, verification_level,
-                          value_spec, requirement AS body
-                     FROM eligibility_gates
-                    WHERE gate_role IS NULL OR gate_role = 'filter'
-                    ORDER BY instrument_id, gate_key""")
-            return [dict(r, column="requirement") for r in cur.fetchall()]
+    with connect(readonly=True, dict_rows=True) as c:
+        rows = c.execute(
+            """SELECT instrument_id || '/' || gate_key AS ref,
+                      instrument_id, gate_key, gate_role, verification_level,
+                      value_spec, requirement AS body
+                 FROM eligibility_gates
+                WHERE gate_role IS NULL OR gate_role = 'filter'
+                ORDER BY instrument_id, gate_key""").fetchall()
+    return [dict(r, column="requirement") for r in rows]
 
 
 def classify(batch: list[str]) -> dict[str, dict]:
@@ -380,7 +397,8 @@ def classify(batch: list[str]) -> dict[str, dict]:
             for r in json.loads(text)["results"]}
 
 
-def run(rows: list[dict], cache: dict, chunk: int, limit: int, do_classify: bool) -> None:
+def run(rows: list[dict], cache: dict, chunk: int, limit: int, do_classify: bool,
+        max_usd: float = MAX_USD_DEFAULT, plan: list | None = None) -> None:
     """Judge every DISTINCT text in `rows` that has no cached verdict."""
     todo: dict[str, str] = {}
     stale = 0
@@ -406,13 +424,27 @@ def run(rows: list[dict], cache: dict, chunk: int, limit: int, do_classify: bool
     print(f"  {len(rows)} rows, {len(set(digest(r['body']) for r in rows))} distinct texts, "
           f"{len(todo)} to judge ({len(todo) - stale} never judged, "
           f"{stale} judged under a superseded property)")
+    batch_all = list(todo.values())[:limit] if limit else list(todo.values())
+    calls, tin, tout, usd = estimate(batch_all, chunk)
+    print(f"  estimate: {calls} calls, ~{tin:,} in / ~{tout:,} out tokens, ~${usd:.2f} on {MODEL}")
+    if plan is not None:
+        plan.append((len(batch_all), calls, tin, tout, usd))
     if do_classify:
         save_cache(cache)  # persist the re-stamps even if nothing needs judging
     if not (do_classify and todo):
         return
-    batch_all = list(todo.values())[:limit] if limit else list(todo.values())
-    for i in range(0, len(batch_all), chunk):
+    spent_before = spent_usd()
+    for n_call, i in enumerate(range(0, len(batch_all), chunk)):
         batch = batch_all[i: i + chunk]
+        _, _, _, next_usd = estimate(batch, chunk)
+        # The estimate is an assumption; once calls have been paid for, the
+        # observed mean per call is evidence, and the larger of the two guards.
+        if n_call:
+            next_usd = max(next_usd, (spent_usd() - spent_before) / n_call)
+        if spent_usd() + next_usd > max_usd:
+            raise SystemExit(f"STOPPED before a call that could take spend past --max-usd "
+                             f"${max_usd:.2f} (spent ${spent_usd():.2f}). Every verdict paid "
+                             f"for so far is saved; re-run to continue.")
         got = classify(batch)
         for body in batch:
             d = digest(body)
@@ -426,7 +458,7 @@ def run(rows: list[dict], cache: dict, chunk: int, limit: int, do_classify: bool
         # Persist per chunk: a run cut off mid-way must not discard
         # classifications already paid for.
         save_cache(cache)
-        cost = SPEND["in"] / 1e6 * PRICE_IN + SPEND["out"] / 1e6 * PRICE_OUT
+        cost = spent_usd()
         print(f"  {min(i + chunk, len(batch_all))}/{len(batch_all)}"
               f"  (${cost:.2f} so far: {SPEND['in']:,} in / {SPEND['out']:,} out)")
 
@@ -438,7 +470,10 @@ def main() -> None:
     ap.add_argument("--report", action="store_true", help="read the cache, call nothing")
     ap.add_argument("--only", choices=["text", "gates"], default=None)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--max-usd", type=float, default=MAX_USD_DEFAULT,
+                    help="stop before any call that could take this run's spend past it")
     args = ap.parse_args()
+    plan: list = []
     _load_env()
 
     cache = load_cache()
@@ -449,7 +484,7 @@ def main() -> None:
     print("calibration:")
     cal = [{"ref": c["id"], "body": c["text"], "expect": c["expect"]}
            for c in json.loads(CALIBRATION.read_text())["cases"]]
-    run(cal, cache, CHUNK_GATES, 0, args.classify)
+    run(cal, cache, CHUNK_GATES, 0, args.classify, args.max_usd, plan)
     wrong = [c for c in cal
              if cache.get(digest(c["body"]), {}).get("verdict") not in (None, c["expect"])]
     for c in wrong:
@@ -464,7 +499,13 @@ def main() -> None:
         print("filter gates:")
         populations.append(("requirement", rows_gates(), CHUNK_GATES))
     for _, rows, chunk in populations:
-        run(rows, cache, chunk, args.limit, args.classify)
+        run(rows, cache, chunk, args.limit, args.classify, args.max_usd, plan)
+    n_t = sum(p[0] for p in plan); usd_t = sum(p[4] for p in plan)
+    print(f"\nPLAN: {n_t} distinct texts to judge, {sum(p[1] for p in plan)} calls, "
+          f"estimated ${usd_t:.2f} (cap --max-usd ${args.max_usd:.2f})"
+          + ("" if args.classify else "; nothing was called (--report)"))
+    if args.classify:
+        print(f"SPENT: ${spent_usd():.2f} ({SPEND['in']:,} in / {SPEND['out']:,} out tokens)")
 
     print()
     for name, rows, _ in populations:
