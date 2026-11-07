@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Poppins, Newsreader, Fragment_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
 import "./globals.css";
+import { corpusStats, corpusAsOf } from "@/lib/data";
 
 // Type system mirrored from regina-intel.vercel.app: Poppins for UI and body,
 // Newsreader for the big editorial headlines, Fragment Mono kept for small
@@ -33,14 +34,16 @@ export const metadata: Metadata = {
   applicationName: "Mandate",
   openGraph: { siteName: "Mandate", type: "website" },
   description:
-    "Your public-affairs operating system. Mandate watches policy and public capital, then tells your company what to do next.",
+    "Mandate is a bench of domain experts that watch the public sphere for European startups. Wincent covers public capital; Regina covers EU rules.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const stats = await corpusStats();
+  const companyCount = stats.companies.toLocaleString();
   return (
     <html
       lang="en"
@@ -50,21 +53,36 @@ export default function RootLayout({
         <NavBar />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-[var(--border)] bg-[var(--background)] py-10">
-          <div className="wrap flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <p className="font-serif text-xl font-semibold text-[var(--foreground)]">Mandate</p>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-[var(--muted-foreground)]">
-                Public-affairs intelligence for European companies.
-              </p>
-            </div>
-            <div className="flex gap-5 font-mono text-[10px] uppercase tracking-[0.12em]">
-              <Link href="/privacy" className="text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
+          <div className="wrap">
+            <p className="font-serif text-lg font-semibold text-[var(--foreground)]">Mandate</p>
+            <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+              Wincent: {companyCount} companies in the European public-capital record
+            </p>
+            {/* The dateline. Every figure on the site describes a corpus as it
+                stood on one day, and until now the site never said which day —
+                which is how it once served figures 205 instruments out of date
+                without contradicting itself. It is the same sentence whether
+                the numbers came from the live census or from the committed
+                fallback, because the honest thing to publish is the date the
+                corpus was READ, not which pipe carried it. */}
+            <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]/80">
+              {corpusAsOf(stats.provenance)}
+            </p>
+            {/* The privacy notice, which until now NOTHING linked to (wsEW).
+                The page existed and was production-reachable; the nav carries
+                two links and this footer carried none, so the only way to a
+                retention notice was to already know its URL. A notice nobody
+                can reach is not a notice. The footer is the right home for it:
+                it is on every page, including the two the form actually lives
+                behind, and it does not compete with the product CTA. */}
+            <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.12em]">
+              <Link
+                href="/privacy"
+                className="text-[var(--muted-foreground)] underline underline-offset-[3px] transition-colors hover:text-[var(--foreground)]"
+              >
                 Privacy
               </Link>
-              <Link href="/workspace" className="text-[var(--muted-foreground)] hover:text-[var(--foreground)]">
-                Workspace
-              </Link>
-            </div>
+            </p>
           </div>
         </footer>
       </body>
