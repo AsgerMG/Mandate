@@ -20,6 +20,17 @@ import sys
 import os
 import shutil
 import tempfile
+
+# NO TEST MAY REACH PRODUCTION. policy/.env holds the production DATABASE_URL
+# (a developer checkout needs it), and anything that reads Settings, such as the
+# refresh's durable run record (etl/api.py _durable_url), used it: 112 fake
+# "policy_refresh" runs were written to production mandate.runs by test runs on
+# 2026-11-06/07. An environment variable outranks .env, and "local" means
+# "no remote database" everywhere in this codebase. Tests that need a database
+# build their own (EphemeralMandate / pgserver) and pass its URL explicitly.
+os.environ["DATABASE_URL"] = "local"
+for _k in ("CAPITAL_RO_DATABASE_URL", "MANDATE_DATABASE_URL", "POLICY_DATABASE_URL"):
+    os.environ.pop(_k, None)
 from collections.abc import Iterator
 from pathlib import Path
 
