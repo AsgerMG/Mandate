@@ -94,7 +94,7 @@ jobs:
       # both visible without anybody checking a workflow list.
       - name: Open or update the drift issue
         if: failure()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const title = 'Corpus currency: a guard is silent, stale or red';
@@ -137,7 +137,7 @@ jobs:
 
       - name: Close the drift issue
         if: success()
-        uses: actions/github-script@v7
+        uses: actions/github-script@v9
         with:
           script: |
             const { data: open } = await github.rest.issues.listForRepo({
