@@ -3,7 +3,11 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "policy/Dockerfile",
-    "watchPatterns": ["/policy/**", "/mandate/**", "/.dockerignore"]
+    "watchPatterns": [
+      "/policy/**",
+      "/mandate/**",
+      "/.dockerignore"
+    ]
   },
   "deploy": {
     "restartPolicyType": "ON_FAILURE",
