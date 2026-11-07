@@ -11,7 +11,10 @@ set -euo pipefail
 cd "$(dirname "$0")/../.."; ROOT=$PWD
 source mandate/ops/_railway.sh
 
-echo "######## 1. grounding go-live (re-run: the first attempt died when the disk filled)"
+echo "######## 1. grounding go-live (batched: the single-transaction attempts filled the 5 GB volume)"
+# Drops policy.ix_passages_embedding_hnsw (an index) by default; see that script.
+# If it stops, fix what it says and re-run THIS script: every step is idempotent
+# and the migration resumes from its last committed batch.
 bash mandate/ops/go_live_grounding.sh
 
 echo "######## 2. the state-aid case register, a pinned input of the instrument rebuild"

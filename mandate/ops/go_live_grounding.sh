@@ -8,8 +8,14 @@
 # Writes: grounding.* rows, policy link tables (Alembic e41c0a7b9d10), capital
 # migration 034 + eligibility_grounding, ~700 MB of originals to the bucket
 # `mandate-grounding`, and BUCKET_* variables on the capital-etl service.
+# DROPS ONE INDEX by default: policy.ix_passages_embedding_hnsw (~1 GB), without
+# which the migration does not fit the 5 GB volume. An index, not data; Regina's
+# search is an exact scan (same results, slower) until policy_on_grounding.sh
+# moves her onto grounding's halfvec index. KEEP_OLD_INDEX=1 keeps it (the
+# migration then refuses unless the space projection fits without the drop).
 # Does NOT re-embed (that is a separate, paid step) and does NOT rotate any
-# password.
+# password. If step 3 stops (space, or a crash), re-run this script: the
+# migration resumes from its last committed batch.
 set -euo pipefail
 cd "$(dirname "$0")/../.."; ROOT=$PWD
 source mandate/ops/_railway.sh
@@ -36,10 +42,26 @@ if [ ! -d "$G/archive/raw" ]; then
 fi
 
 echo "== 2. policy: link tables (Alembic)"
-(cd policy && DATABASE_URL="$POLICY" uv run --frozen alembic upgrade head)
+# pinned: on the policy-on-grounding branch head is 5c2f9e1a7b30 (the cutover),
+# which must run AFTER this script; mandate/ops/policy_on_grounding.sh runs it.
+(cd policy && DATABASE_URL="$POLICY" uv run --frozen alembic upgrade e41c0a7b9d10)
 
-echo "== 3. policy documents/versions/passages into grounding, then their originals"
-$PY "$M/policy_to_grounding.py" --admin-url "$ADMIN" --apply --manifest "$G/grounding_manifest_policy.jsonl"
+echo "== 3. policy documents/versions/passages into grounding (batched, resumable), then their originals"
+# the volume, as Railway measures it: the migration's space check needs both
+read -r VOLUME_MB USED_MB < <(railway_api 'query{ project(id:"'"$MANDATE_PROJECT"'"){ volumes{ edges{ node{ volumeInstances{ edges{ node{ serviceId sizeMB currentSizeMB } } } } } } } }' 2>/dev/null |
+  python3 -c "import json,sys;r=sys.stdin.read();d=json.loads(r[:r.rfind('}')+1])
+v=[n['node'] for e in d['data']['project']['volumes']['edges'] for n in e['node']['volumeInstances']['edges'] if n['node']['serviceId']=='$MANDATE_DB_SERVICE'][0]
+print(v['sizeMB'], v['currentSizeMB'])")
+echo "   database volume: ${USED_MB} MB used of ${VOLUME_MB} MB (Railway)"
+DROP=(--drop-old-index)
+if [ "${KEEP_OLD_INDEX:-0}" = 1 ]; then
+  DROP=(); echo "   KEEP_OLD_INDEX=1: policy.ix_passages_embedding_hnsw is kept"
+else
+  echo "   >>> policy.ix_passages_embedding_hnsw (~1 GB, an INDEX, not data) WILL BE DROPPED to make room."
+  echo "   >>> Until policy_on_grounding.sh runs, Regina's semantic search is an exact scan: same results, slower."
+fi
+$PY "$M/policy_to_grounding.py" --admin-url "$ADMIN" --apply --volume-mb "$VOLUME_MB" --used-mb "$USED_MB" \
+    "${DROP[@]}" --manifest "$G/grounding_manifest_policy.jsonl"
 $PY "$M/upload_manifest.py" "$G/grounding_manifest_policy.jsonl" --db-url "$POLICY" --apply
 
 echo "== 4. the seven cron sources' inputs"
