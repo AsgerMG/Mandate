@@ -97,10 +97,12 @@ BATCH = {"versions": 500, "passages": 500, "passage_links": 25_000, "embeddings"
 #: at the parameters grounding.sql declares (three elements a page, at m=16 and
 #: at m=12 alike). Rounded up.
 HNSW_BYTES_PER_VECTOR = 2_750
-#: halfvec(1024) is 2,056 bytes, over the 2 kB TOAST threshold and stored
-#: uncompressed out of line: two toast chunks (~2,140 bytes with their headers)
-#: plus a ~100-byte heap row (passage_id, model, toast pointer, created_at).
-EMBEDDING_ROW_BYTES = 2_250
+#: Bytes a grounding.passage_embeddings row weighs, its primary key included.
+#: halfvec(1024) is 2,056 bytes, over the 2 kB TOAST threshold, stored out of
+#: line uncompressed (storage 'external'). MEASURED on 20,000 rows of the
+#: byte-identical vector(512) stand-in (2026-11-07): 2,780 toast + 85 heap +
+#: 41 primary key = 2,906. Rounded up.
+EMBEDDING_ROW_BYTES = 2_950
 #: Everything on the volume that is neither a database nor WAL (server logs,
 #: pg_xact, the cluster's other files): 4,115 MB used - 2,779 MB database -
 #: 960 MB WAL, measured 2026-11-07. Used only when --used-mb is not given.
