@@ -4,142 +4,53 @@ import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-// One masthead for the whole Mandate site. The brand and the bench (one link
-// per agent) are always there; the links on the right belong to whichever
-// agent the founder is with, so Wincent's pages keep the masthead they had and
-// Regina's get the one regina-ai.eu had, inside one component instead of two.
-//
-// The agent a path belongs to is decided by `agentFor` and nothing else. A new
-// agent is a new entry in AGENTS.
-
-type NavLink = { href: string; label: string };
-type Agent = {
-  name: string;
-  /** Where the bench link goes: the agent's own landing page. */
-  home: string;
-  /** Paths that belong to this agent, by prefix. */
-  owns: string[];
-  links: NavLink[];
-  cta: NavLink;
-};
-
-// The former /for-companies page is now two: the narrative case
-// (/about-public-capital) as a plain text link, and the interactive tool
-// (/brief) as the CTA (Legora pattern).
-const AGENTS: Agent[] = [
-  {
-    name: "Wincent",
-    home: "/wincent",
-    owns: ["/wincent", "/brief", "/about-public-capital"],
-    links: [{ href: "/about-public-capital", label: "How to raise" }],
-    cta: { href: "/brief", label: "Get your brief" },
-  },
-  {
-    name: "Regina",
-    home: "/regina",
-    owns: ["/regina"],
-    links: [
-      { href: "/regina/documents", label: "Live register" },
-      { href: "/regina/about", label: "About" },
-    ],
-    cta: { href: "/regina/brief", label: "Get a report" },
-  },
+const NAV_LINKS = [
+  { href: "/#companions", label: "Your team" },
+  { href: "/regina/documents", label: "Intelligence" },
+  { href: "/about-public-capital", label: "Why Mandate" },
 ];
-
-const under = (pathname: string, href: string) =>
-  pathname === href || pathname.startsWith(`${href}/`);
-
-function agentFor(pathname: string): Agent | null {
-  return AGENTS.find((a) => a.owns.some((p) => under(pathname, p))) ?? null;
-}
 
 export function NavBar() {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const current = agentFor(pathname);
-  // A link is active when the current path is, or sits beneath, its href. An
-  // agent's landing page is exact-match only, or every page of the agent would
-  // light it up alongside its own link.
-  const isActive = (href: string) =>
-    href === "/" || AGENTS.some((a) => a.home === href) ? pathname === href : under(pathname, href);
-
   const close = () => setOpen(false);
-  const mobileLinks: (NavLink & { current?: boolean })[] = [
-    ...AGENTS.map((a) => ({ href: a.home, label: a.name, current: a === current })),
-    ...(current ? [...current.links, current.cta] : []),
-  ];
+  const workspace = pathname.startsWith("/workspace");
 
   return (
-    // Static, not sticky — the masthead scrolls away, as on the reference.
-    // A sticky masthead is what buried the euro rail and the pinned scrolly
-    // stages underneath it; letting it scroll removes that whole class of
-    // overlap and gives the pinned graphics the full viewport back.
-    <nav className="border-b border-[var(--primary)] bg-[var(--paper)]">
-      <div className="wrap flex items-center justify-between gap-6 h-[4.5rem]">
-        <div className="flex items-center gap-6 min-w-0">
-          <Link
-            href="/"
-            aria-current={pathname === "/" ? "page" : undefined}
-            className={`font-serif flex items-center gap-2 text-lg font-semibold tracking-tight text-[var(--primary)] transition-colors ${
-              pathname === "/" ? "underline decoration-2 underline-offset-4" : ""
-            }`}
-            onClick={close}
-          >
-            Mandate
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/eu-flag.svg" alt="EU flag" width={20} height={20} className="rounded-sm" />
-          </Link>
+    <nav className={`relative z-50 border-b ${workspace ? "border-white/10 bg-[#0d1730] text-white" : "border-[var(--border)] bg-[var(--paper)]"}`}>
+      <div className="wrap flex h-[4.5rem] items-center justify-between gap-6">
+        <Link href="/" onClick={close} className="flex items-center gap-3">
+          <span className={`grid h-8 w-8 place-items-center rounded-full border ${workspace ? "border-[#d5b46a]/45" : "border-[#10203f]/25"}`}>
+            <span className="h-2.5 w-2.5 rotate-45 border border-[#b48a42]" />
+          </span>
+          <span className="font-serif text-xl font-semibold tracking-[-.02em]">Mandate</span>
+        </Link>
 
-          {/* The bench: one link per agent, the current one marked. */}
-          <div className="hidden md:flex items-center gap-5 border-l border-[var(--border)] pl-6 text-base">
-            {AGENTS.map((a) => (
-              <Link
-                key={a.name}
-                href={a.home}
-                aria-current={isActive(a.home) ? "page" : undefined}
-                className={`font-serif transition-colors ${
-                  current === a
-                    ? "font-semibold text-[var(--primary)] underline decoration-2 underline-offset-4"
-                    : "text-[var(--foreground-soft)] hover:text-[var(--foreground)] hover:underline hover:underline-offset-[3px]"
-                }`}
-              >
-                {a.name}
-              </Link>
-            ))}
-          </div>
+        <div className="hidden items-center gap-7 md:flex">
+          {!workspace && NAV_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              prefetch={false}
+              className="text-sm text-[var(--foreground-soft)] transition-colors hover:text-[var(--foreground)]"
+            >
+              {link.label}
+            </Link>
+          ))}
+          <Link
+            href={workspace ? "/" : "/workspace"}
+            className={`rounded-sm px-5 py-2.5 text-xs font-semibold uppercase tracking-[.08em] transition ${
+              workspace
+                ? "border border-white/20 text-white hover:border-white/40"
+                : "bg-[var(--primary)] text-[var(--paper)] hover:bg-[var(--primary-hover)]"
+            }`}
+          >
+            {workspace ? "Exit preview" : "Open workspace"}
+          </Link>
         </div>
 
-        {/* The current agent's own links and its product CTA. */}
-        {current && (
-          <div className="hidden md:flex items-center gap-7 text-base">
-            {current.links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={isActive(link.href) ? "page" : undefined}
-                className={`transition-colors ${
-                  isActive(link.href)
-                    ? "font-semibold text-[var(--primary)] underline decoration-2 underline-offset-4"
-                    : "text-[var(--foreground-soft)] hover:text-[var(--foreground)] hover:underline hover:underline-offset-[3px]"
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-
-            {/* The product CTA: outlined, fills on hover — no rounded pill. */}
-            <Link
-              href={current.cta.href}
-              className="rounded-[var(--radius)] border border-[var(--primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-            >
-              {current.cta.label}
-            </Link>
-          </div>
-        )}
-
-        {/* Mobile hamburger button */}
         <button
-          className="md:hidden p-3 -mr-3 text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition-colors"
+          className={`-mr-3 p-3 transition-colors md:hidden ${workspace ? "text-white/70 hover:text-white" : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"}`}
           onClick={() => setOpen((v) => !v)}
           aria-label={open ? "Close navigation" : "Open navigation"}
         >
@@ -155,24 +66,28 @@ export function NavBar() {
         </button>
       </div>
 
-      {/* Mobile dropdown */}
       {open && (
-        <div className="md:hidden border-t border-[var(--border)] bg-[var(--paper)] px-4 pb-2">
-          {mobileLinks.map((link) => (
+        <div className={`border-t px-4 pb-3 md:hidden ${workspace ? "border-white/10 bg-[#0d1730]" : "border-[var(--border)] bg-[var(--paper)]"}`}>
+          {!workspace && NAV_LINKS.map((link) => (
             <Link
               key={link.href}
               href={link.href}
+              prefetch={false}
               onClick={close}
-              aria-current={isActive(link.href) ? "page" : undefined}
-              className={`block py-3 text-base border-b border-[var(--border)] last:border-0 transition-colors ${
-                isActive(link.href) || link.current
-                  ? "font-semibold text-[var(--primary)]"
-                  : "text-[var(--muted-foreground)] hover:text-[var(--foreground)]"
-              }`}
+              className="block border-b border-[var(--border)] py-3 text-sm text-[var(--foreground-soft)]"
             >
               {link.label}
             </Link>
           ))}
+          <Link
+            href={workspace ? "/" : "/workspace"}
+            onClick={close}
+            className={`mt-3 block rounded-sm px-4 py-3 text-center text-xs font-semibold uppercase tracking-[.08em] ${
+              workspace ? "border border-white/20 text-white" : "bg-[var(--primary)] text-[var(--paper)]"
+            }`}
+          >
+            {workspace ? "Exit preview" : "Open workspace"}
+          </Link>
         </div>
       )}
     </nav>

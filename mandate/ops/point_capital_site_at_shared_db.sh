@@ -5,7 +5,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"; source _railway.sh
 URL=$(db_var CAPITAL_DATABASE_PUBLIC_URL)
-SITE=~/Wincent/website/frontend   # the directory linked to the Vercel project today
+SITE="$(cd "$(dirname "$0")/../.." && pwd)/web"   # linked to the Vercel project `wincent` (web/.vercel, gitignored)
 for env in production preview; do
   vercel env rm DATABASE_URL "$env" --yes --cwd "$SITE" >/dev/null 2>&1 || true
   printf %s "$URL" | vercel env add DATABASE_URL "$env" --sensitive --cwd "$SITE"

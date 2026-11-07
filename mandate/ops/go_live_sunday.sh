@@ -33,7 +33,7 @@ railway_api "mutation{ serviceInstanceDeployV2(serviceId:\"$RC\", environmentId:
 echo "refresh-cron has no schedule"
 
 echo "######## 4. the site downloads its data from the bucket (fast deploys)"
-SITE=~/Wincent/website/frontend   # the directory linked to the Vercel project (wincent)
+SITE="$(cd "$(dirname "$0")/../.." && pwd)/web"   # linked to the Vercel project `wincent` (web/.vercel, gitignored)
 for k in BUCKET_ENDPOINT BUCKET_NAME BUCKET_REGION BUCKET_ACCESS_KEY_ID BUCKET_SECRET_ACCESS_KEY BUCKET_ADDRESSING; do
   for env in production preview; do
     vercel env rm "$k" "$env" --yes --cwd "$SITE" >/dev/null 2>&1 || true
