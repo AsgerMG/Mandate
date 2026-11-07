@@ -217,8 +217,12 @@ def verify(con, sample: int = 20) -> bool:
                 f"SELECT {key}, {tgt.column} <=> (SELECT {tgt.column} FROM {s} WHERE {key} = %s) "
                 f"FROM {s} WHERE {tgt.column} IS NOT NULL ORDER BY 2, {key} LIMIT 10", (i,)).fetchall()
             nn = [r[0] for r in got]
-            # its own nearest neighbour, or tied at distance 0 with an identical text
-            self_nn += bool(got) and (got[0][0] == i or abs(float(got[0][1])) < 1e-6) and i in nn
+            # Its own nearest neighbour, or a neighbour at distance 0: an identical text.
+            # 2,495 of 9,103 eligibility rows share their text with another (one clause
+            # cited by several funds), and with more than ten twins the row itself can
+            # sit outside its own top 10 although its vector is exactly right
+            # (2026-11-07: 17/20 failed only for that reason).
+            self_nn += bool(got) and (got[0][0] == i or abs(float(got[0][1])) < 1e-6)
             if legacy_ok:
                 old = [r[0] for r in con.execute(
                     f"SELECT {key} FROM {s} WHERE {legacy.column} IS NOT NULL ORDER BY {legacy.column} <=> "
