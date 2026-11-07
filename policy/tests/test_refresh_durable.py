@@ -1,17 +1,10 @@
 """A policy refresh leaves a row in mandate.runs that outlives the process."""
 from __future__ import annotations
 
-import sys
-from pathlib import Path
-
 import psycopg
 import pytest
 
-# the repo's mandate/, ahead of any installed copy (a worktree shares one venv)
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
-for _m in [m for m in sys.modules if m == "mandate" or m.startswith("mandate.")]:
-    del sys.modules[_m]
-
+# The repo's mandate/ is put first by tests/conftest.py, before collection.
 from etl import api  # noqa: E402
 
 

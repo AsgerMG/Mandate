@@ -51,7 +51,7 @@ TABLES = {
         "SELECT coalesce(sum(length(c.chunk_text)), 0) FROM signals_chunk_embeddings e "
         "JOIN signals_article_chunks c ON c.id = e.chunk_id"),
     "policy.passages": ("policy",
-        "SELECT count(embedding), 'voyage-4-large (per spaces.json; no model column)' FROM policy.passages",
+        f"SELECT count(embedding), '{STORED['policy.passages']} (per spaces.json; no model column)' FROM policy.passages",
         "SELECT coalesce(sum(length(text)) FILTER (WHERE embedding IS NOT NULL), 0) FROM policy.passages"),
 }
 
