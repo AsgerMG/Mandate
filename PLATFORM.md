@@ -44,6 +44,22 @@ that stops the owner too). Code: `mandate/grounding` (`store_original`, `fetch`,
 `web/lib/embedding.ts`. `check_boundary.py` fails on a model name or an
 embeddings call anywhere else.
 
+**Moving a table to the model, with no mismatch window.** `spaces.json` says,
+per table, which space its vectors are `stored` in and, in `vector_columns`,
+which column (and pgvector type) holds each space. Every reader asks
+`vector_column(table)` (Python) or `vectorColumn(table)` (TS, generated) for
+the STORED space's column, and embeds its query in that same space. So a
+re-embed is: write the new vectors in a NEW column beside the old (capital
+migration 036, `embedding_v4 halfvec(1024)`; the writers dual-write new rows),
+backfill and verify every row, then flip `stored` in ONE commit. The query
+model and the column flip together in Python and TypeScript, and during the
+Vercel rollout the old build reads old vectors with the old model while the
+new build reads new vectors with the new model: both columns are complete, so
+no live version mixes spaces. The old column is dropped later, archived first.
+Owner commands, in order: `bash mandate/ops/one_model.sh` (dry run),
+`--apply` (036 + backfill, ~$0.23), `--flip` (on a branch; merge = the
+deploy), then, briefed, `bash mandate/ops/one_model_drop_old.sh`.
+
 Both are imported from the monorepo, so **every Railway service builds from the
 repo root** (root directory `/`, config file `/<brain>/railway.json`).
 
