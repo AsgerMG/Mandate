@@ -67,10 +67,6 @@
       "`npm run check` is not an automatic path. It is the command whose serial",
       "chain stopped at link 14 of 27 all week."
     ],
-    "check_answer_reach": {
-      "reason": "Third of the same shape as check_country_gates and check_gate_field_reach: DATABASE_URL is `optional` and its absence yields a vacuous pass, so a CI step would buy a green tick over a run that graded nothing. It is worse than the other two if wired, because it also refuses to report a verdict about a table the LEXICAL index ordered -- so in CI, where there is no VOYAGE_KEY, the one thing it exists to observe is the one thing it cannot see. Runs in `npm run check` against the corpus, which is where it is meaningful. Declared manual rather than wired on 2026-08-09; ETL/schema/check_guard_reachability.py was RED on main naming it, alongside three genuinely hermetic checks that were wired the same day. UPDATED 2026-11-06 (E2): CI now holds the read-only corpus credential, so the five guards that were manual for want of DATABASE_URL alone (country_gates, dead_doors, gate_field_reach, gate_pertinence, window_evidence) are wired into capital-ci.yml and their entries are gone. What keeps this one out is unchanged and is stated here: it also needs VOYAGE_KEY (without it the loader refuses to run rather than grade the lexical index), and GitHub holds no VOYAGE_KEY. Adding one is an owner decision (a repository secret).",
-      "review": "2026-12-31"
-    },
     "check_gate_subject": {
       "reason": "Needs DATABASE_URL and runs inside `make eligibility`, the publish target it guards; there is no automatic publish for it to attach to. Its layer-1 assertions are free, so it is a candidate for the weekly cron rather than a permanent manual. UPDATED 2026-11-06 (E2): it still opens SQLite (`no such table: eligibility_gates` against the empty data/db.sqlite), so since the corpus moved to Postgres it cannot run anywhere, manual or not. It needs porting to store.py; then it runs in CI on the read-only credential like the four ETL/terms guards wired today. Owner of the port: whoever ports the remaining 94 sqlite3 importers (store_of_record.json's ratchet).",
       "review": "2026-12-31"
@@ -78,14 +74,6 @@
     "check_fetched_text_leaks": {
       "reason": "Reads data/raw/scheme_enrichment/found_*.json, which is gitignored, and no CI step in this repo may depend on gitignored data; the weekly Railway cron does not have the fetch files either. So unlike the five above this one is not manual for want of a credential -- there is no automatic runner that can see its input at all. It is not left to a human remembering: load_scheme_text.py calls scan() on exactly the files it is about to load and REFUSES TO WRITE on an active-set hit, so the check runs at the one moment fetched text becomes corpus. Skipping needs --skip-leak-check, typed. Review is for whether that in-loader call is still the only entry point once a fetch pipeline exists that CI can see.",
       "review": "2026-11-30"
-    },
-    "check_memo_table": {
-      "reason": "Needs DATABASE_URL: it builds twelve real memo pools against live Postgres and asserts each archetype is handed a table. The pool it grades is not the corpus, so a snapshot run answers a different question -- an archetype was receiving ZERO ROWS while check_archetypes reported it passing. Found in no automatic path on 2026-08-18. Same destination as check_dead_doors: an `on_change` registry guard. UPDATED 2026-11-06 (E2): CI now holds the read-only corpus credential, so the five guards that were manual for want of DATABASE_URL alone (country_gates, dead_doors, gate_field_reach, gate_pertinence, window_evidence) are wired into capital-ci.yml and their entries are gone. What keeps this one out is unchanged and is stated here: it builds memo pools through the shipped embedding ranker, so it needs VOYAGE_KEY as well as the corpus, and GitHub holds no VOYAGE_KEY. Adding one is an owner decision (a repository secret); with it this joins the CI block beside check_dead_doors.",
-      "review": "2026-12-31"
-    },
-    "check_pool_recall_curve": {
-      "reason": "Needs DATABASE_URL and VOYAGE_KEY: it re-derives the base rate the SELECTOR IS TOLD over 821 held-out founders, and without the embedding index it would measure the lexical fallback and publish that curve into the prompt. Found in no automatic path on 2026-08-18. Wiring it into CI would buy a green step over the wrong ranker, which is the defect the verdict channel exists to remove. UPDATED 2026-11-06 (E2): CI now holds the read-only corpus credential, so the five guards that were manual for want of DATABASE_URL alone (country_gates, dead_doors, gate_field_reach, gate_pertinence, window_evidence) are wired into capital-ci.yml and their entries are gone. What keeps this one out is unchanged and is stated here: it needs VOYAGE_KEY, which GitHub does not hold (owner decision: a repository secret). The curve itself was re-measured on 2026-11-06 against the corpus as it stands (704 offerable funds), read-only, so the base rate the selector is told is current.",
-      "review": "2026-12-31"
     }
   },
   "accepted": {

@@ -130,23 +130,32 @@ _TAGS = re.compile(r"<(script|style)\b.*?</\1>|<[^>]+>", re.S | re.I)
 
 
 def extract(path: Path, mime: str) -> tuple[str | None, str]:
+    return extract_bytes(path.read_bytes(), mime)
+
+
+def extract_bytes(data: bytes, mime: str) -> tuple[str | None, str]:
+    """(text, extractor name) for bytes of a MIME type. The ONE extractor for
+    capital's sources, archived (above) and fetched (capital_url_citations.py),
+    so a quote is located the same way whichever route its page came by."""
     if mime == "application/pdf":
         try:
+            import io  # noqa: PLC0415
+
             import pdfplumber  # noqa: PLC0415
         except ImportError:
             return None, "none (pdfplumber not installed)"
         try:
-            with pdfplumber.open(path) as pdf:
+            with pdfplumber.open(io.BytesIO(data)) as pdf:
                 return "\n".join((pg.extract_text() or "") for pg in pdf.pages), \
                     f"pdfplumber/{pdfplumber.__version__}"
         except Exception as e:  # noqa: BLE001 -- a broken PDF is a counted outcome, not a crash
             return None, f"none (pdfplumber failed: {type(e).__name__})"
-    if mime == "text/html":
-        raw = path.read_bytes().decode("utf-8", errors="replace")
+    if mime in ("text/html", "application/xhtml+xml"):
+        raw = data.decode("utf-8", errors="replace")
         text = html.unescape(_TAGS.sub(" ", raw))
         return "\n".join(" ".join(l.split()) for l in text.splitlines() if l.strip()), "html-strip.v1"
     if mime.startswith("text/") or mime == "application/json":
-        return path.read_bytes().decode("utf-8", errors="replace"), "utf8"
+        return data.decode("utf-8", errors="replace"), "utf8"
     return None, "none (binary)"
 
 

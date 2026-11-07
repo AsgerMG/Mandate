@@ -35,6 +35,13 @@ jobs:
         with:
           python-version: "3.11"
       - run: pip install --quiet 'psycopg[binary]==3.3.4' 'httpx==0.28.1'
+      # capital/ETL/schema/check_guard_registry.py rule (b): the first step given
+      # the read-only credential proves it is read-only, so a read-write URL
+      # pasted under that name stops here.
+      - name: The corpus credential is read-only
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 capital/ETL/schema/check_readonly_credential.py
       - name: Check targets and keep the one issue
         env:
           CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}

@@ -67,6 +67,11 @@ def build_ts(v: dict) -> str:
     return (f"// {HEADER}\n"
             "// The prose behind every mapping is in the JSON's `decisions`; these are ids.\n\n"
             f"export const VOCABULARY_VERSION = {json.dumps(v['version'])};\n\n"
+            # A figure here (a band's "1,000+ staff or EUR 450M+ turnover") is a
+            # DEFINITION, not a corpus count, and check_rendered_numbers reads
+            # the comment attached to the statement as its attribution.
+            "// contract: every threshold below is a definition in mandate/vocabulary/vocabulary.json\n"
+            "// (the EU SME bands, Recommendation 2003/361/EC, and each brain's own bands), not a corpus figure.\n"
             f"export const VOCABULARY = {body} as const;\n")
 
 

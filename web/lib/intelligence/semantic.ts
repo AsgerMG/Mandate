@@ -17,7 +17,7 @@
 
 import { MIN_MATCHABLE_DESCRIPTION_CHARS } from "./types";
 import { openPg } from "@/lib/db";
-import { embedQuery as embedFor, vectorLiteral } from "@/lib/embedding";
+import { embedQuery as embedFor, vectorColumn, vectorLiteral } from "@/lib/embedding";
 
 /** Keep the whole path bounded: this runs inside the memo pipeline, which is
  *  already slow, but must not hang it. */
@@ -367,10 +367,16 @@ export async function semanticFundMatch(
       // is STABILITY, not meaning. What matters is that it is total — ids are
       // unique in this table, so no pair of rows can remain unordered, and a
       // fund added next week is covered without anyone revisiting this.
+      // The column and cast come from the same generated block as the query
+      // model (lib/embedding.ts), so the two flip together. `IS NOT NULL`
+      // drops a row with no vector in the stored space rather than ranking
+      // it: during a re-embed the other column may be the only one filled.
+      const { column, cast } = vectorColumn("capital.instrument_profiles");
       const res = await client.query(
-        `SELECT instrument_id, 1 - (embedding <=> $1::vector) AS similarity
+        `SELECT instrument_id, 1 - (${column} <=> $1${cast}) AS similarity
            FROM instrument_profiles
-          ORDER BY embedding <=> $1::vector, instrument_id`,
+          WHERE ${column} IS NOT NULL
+          ORDER BY ${column} <=> $1${cast}, instrument_id`,
         [literal],
       );
       const rows = res.rows as { instrument_id: string; similarity: string | number }[];

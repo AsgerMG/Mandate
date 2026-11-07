@@ -25,7 +25,7 @@
 // So the vocabulary is deliberately asymmetric: we say a door is OPEN (nothing
 // disqualifies you), never that you are approved. Overclaiming here is the one
 // failure that would cost a founder months.
-import { loadDbInstruments, type DbGate, type DbInstrument } from "./corpus";
+import { loadDbInstruments, type DbInstrument } from "./corpus";
 import { evaluateSpec, type ValueSpec } from "./comparator";
 import { type EligibilityAnswers } from "./types";
 // The two predicates that decide whether one rule may end the conversation —

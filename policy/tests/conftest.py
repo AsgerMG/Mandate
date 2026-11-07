@@ -7,8 +7,21 @@ exercised against the same database engine production uses, not a SQLite stand-i
 
 from __future__ import annotations
 
+import sys
 import tempfile
 from collections.abc import Iterator
+from pathlib import Path
+
+# THIS repo's mandate/, ahead of any installed copy: a worktree shares the
+# primary checkout's venv, whose editable install points at the primary's
+# mandate/. It has to happen here, before any test module is collected: a test
+# module that purged sys.modules itself left modules collected earlier holding
+# the other copy's classes, so `isinstance(e, mandate.embedding.Embedder)`
+# failed across the two (policy CI, Nov 2026).
+_REPO = Path(__file__).resolve().parents[2]
+sys.path[:] = [str(_REPO)] + [p for p in sys.path if p != str(_REPO)]
+for _m in [m for m in sys.modules if m == "mandate" or m.startswith("mandate.")]:
+    del sys.modules[_m]
 
 import pytest
 from sqlalchemy import create_engine, text

@@ -35,10 +35,33 @@ def test_one_model_and_it_is_the_target():
     assert E.MODEL == "voyage-4-large" and E.DIM == 1024
     assert E.SPACES[E.MODEL].status == "target"
     assert [s for s in E.SPACES.values() if s.status == "target"] == [E.SPACES[E.MODEL]]
-    # every legacy space is still stored somewhere, or it should have been deleted
+    # every legacy space is still held somewhere (stored, or a column a table
+    # still has during a re-embed), or it should have been deleted
+    held = set(E.STORED.values()) | {sp for by in E.VECTOR_COLUMNS.values() for sp in by}
     for name, s in E.SPACES.items():
         if s.status == "legacy":
-            assert name in E.STORED.values(), f"{name} is legacy and no table is in it: delete it"
+            assert name in held, f"{name} is legacy and no table holds it: delete it"
+
+
+def test_every_stored_table_says_where_its_vectors_are():
+    for table, space in E.STORED.items():
+        vc = E.vector_column(table)
+        assert vc.space == space and vc.type in ("vector", "halfvec") and vc.column
+        assert E.SPACES[space].dim  # a column without a space is a column nobody can query
+    for table, by in E.VECTOR_COLUMNS.items():
+        assert table in E.STORED, f"{table} has columns but is not a registered table"
+        assert set(by) <= set(E.SPACES)
+        # two spaces never share a column: that is the mismatch this map exists to prevent
+        assert len({c["column"] for c in by.values()}) == len(by)
+
+
+def test_target_column_only_while_a_table_is_legacy():
+    for table in E.STORED:
+        t = E.target_column(table)
+        if E.space_for_table(table).name == E.MODEL:
+            assert t is None
+        elif t is not None:
+            assert t.space == E.MODEL and t.column != E.vector_column(table).column
 
 
 def test_body_matches_what_policy_has_always_sent(monkeypatch):
@@ -49,12 +72,15 @@ def test_body_matches_what_policy_has_always_sent(monkeypatch):
 
 
 def test_legacy_space_sends_input_type_as_capital_did():
+    legacy = [n for n, s in E.SPACES.items() if s.provider == "voyage" and s.input_type]
+    if not legacy:
+        pytest.skip("no Voyage space with input_type is left")
     calls = []
-    e = E.for_table("capital.instrument_profiles", key="k", client=_client([ok([V]), ok([V])], calls))
+    e = E.Embedder(legacy[0], key="k", client=_client([ok([V]), ok([V])], calls))
     e.embed_documents(["fund profile"])
     e.embed_query("a rail company")
     assert [c["input_type"] for c in calls] == ["document", "query"]
-    assert {c["model"] for c in calls} == {"voyage-3.5"}
+    assert {c["model"] for c in calls} == {legacy[0]}
 
 
 def test_unregistered_table_is_an_error_not_a_default():

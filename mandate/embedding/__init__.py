@@ -8,7 +8,7 @@
     e.usage                                          # tokens and dollars this process spent
 
 THE RULE. No code outside this package (and its generated TypeScript mirror,
-capital/website/frontend/lib/embedding.ts) names an embedding model or calls an
+web/lib/embedding.ts) names an embedding model or calls an
 embeddings API. check_boundary.py fails the build when one does. Three setups
 (policy voyage-4-large, capital voyage-3.5, capital signals MiniLM) existed
 because each call site chose its own model; a query embedded by a model other
@@ -19,7 +19,7 @@ ONE MODEL, AND WHY THERE ARE STILL THREE SPACES. `MODEL` is what every new vecto
 is written in. A vector already stored is in whatever space it was made in, and a
 query against it must use that space -- so `for_table(table)` answers from
 spaces.json's `stored` map, not from MODEL. Each legacy space is an IOU with a
-written exit (grounding/migrations/reembed_plan.py); when its table is
+written exit (mandate/ops/one_model.sh); when its table is
 re-embedded, `stored` flips to MODEL and the legacy entry is deleted.
 
 STORAGE. Vectors are written as pgvector halfvec(1024): 2 bytes a dimension.
@@ -49,6 +49,9 @@ DIM: int = _SPEC["dim"]
 QUERY_MODEL: str = _SPEC["query_model"]
 #: Which space each stored vector table is in today.
 STORED: dict[str, str] = dict(_SPEC["stored"])
+#: table -> space -> {"column", "type"}: where a table keeps each space's vectors.
+VECTOR_COLUMNS: dict[str, dict[str, dict[str, str]]] = {
+    t: {sp: dict(c) for sp, c in by.items()} for t, by in _SPEC["vector_columns"].items()}
 
 ENDPOINT = "https://api.voyageai.com/v1/embeddings"
 MAX_LIST = 1000                 # Voyage: "The maximum length of the list is 1,000."
@@ -80,6 +83,56 @@ def space_for_table(table: str) -> Space:
         raise KeyError(f"{table!r} is not a registered vector table; add it to "
                        f"mandate/embedding/spaces.json 'stored'")
     return SPACES[STORED[table]]
+
+
+@dataclass(frozen=True)
+class VectorColumn:
+    """Where `table` keeps one space's vectors. `cast` is the literal's cast,
+    so a query reads `{column} <=> %s::{type}` and the two cannot disagree."""
+    table: str
+    space: str
+    column: str
+    type: str            # "vector" | "halfvec"
+
+    @property
+    def cast(self) -> str:
+        return f"::{self.type}"
+
+
+def vector_column(table: str, space: str | None = None) -> VectorColumn:
+    """The column holding `table`'s vectors in `space` (default: the STORED
+    space, i.e. what every reader must query). During a re-embed a table holds
+    two spaces side by side; flipping spaces.json `stored` moves every reader."""
+    space = space or space_for_table(table).name
+    try:
+        c = VECTOR_COLUMNS[table][space]
+    except KeyError:
+        raise KeyError(f"{table!r} has no column for space {space!r} in "
+                       f"mandate/embedding/spaces.json 'vector_columns'") from None
+    return VectorColumn(table, space, c["column"], c["type"])
+
+
+def target_column(table: str) -> VectorColumn | None:
+    """MODEL's column for `table` while the table is still stored in a legacy
+    space, else None (nothing to migrate). Writers fill it alongside the stored
+    column, so the re-embed has no gap to close at the flip."""
+    if space_for_table(table).name == MODEL or MODEL not in VECTOR_COLUMNS.get(table, {}):
+        return None
+    return vector_column(table, MODEL)
+
+
+def column_dim(conn, vc: VectorColumn) -> int | None:
+    """The declared dimension of `vc`'s column in the database `conn` reaches
+    (pgvector stores it as the type modifier), or None if the column does not
+    exist there. Unqualified, so it resolves through the role's search_path:
+    a writer asks whether migration 036 has run before it dual-writes."""
+    row = conn.execute(
+        "SELECT atttypmod FROM pg_attribute WHERE attrelid = to_regclass(%s) "
+        "AND attname = %s AND NOT attisdropped", (vc.table.split(".")[-1], vc.column)).fetchone()
+    if row is None:
+        return None
+    v = row[0] if not isinstance(row, dict) else row["atttypmod"]
+    return int(v) if v is not None and int(v) > 0 else None
 
 
 def estimate_tokens(texts: Sequence[str]) -> int:
@@ -241,6 +294,7 @@ def for_table(table: str, **kw) -> Embedder:
     return Embedder(space_for_table(table).name, **kw)
 
 
-__all__ = ["MODEL", "DIM", "QUERY_MODEL", "STORED", "SPACES", "Space", "Embedder",
-           "EmbeddingError", "Usage", "USAGE", "api_key", "estimate_cost_usd",
-           "estimate_tokens", "for_table", "space_for_table", "vector_literal"]
+__all__ = ["MODEL", "DIM", "QUERY_MODEL", "STORED", "SPACES", "VECTOR_COLUMNS", "Space",
+           "VectorColumn", "column_dim", "Embedder", "EmbeddingError", "Usage", "USAGE", "api_key",
+           "estimate_cost_usd", "estimate_tokens", "for_table", "space_for_table",
+           "target_column", "vector_column", "vector_literal"]

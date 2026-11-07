@@ -8,7 +8,6 @@ import {
   namesAnApplyableBody,
   splitDoor,
   stripIssuerAnnotation,
-  whyNotApplyable,
   withDoor,
 } from "./applyableBody";
 import { checkBrief } from "./briefChecks";
