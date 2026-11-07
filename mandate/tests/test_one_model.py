@@ -131,7 +131,16 @@ def test_backfill_verify_flip_and_rerun_is_free(db, tmp_path):
         assert one_model.verify(con)
 
     spec_copy = tmp_path / "spaces.json"
-    spec_copy.write_text((REPO / "mandate" / "embedding" / "spaces.json").read_text())
+    # The PRE-flip spec, whatever the live file says: once the flip is merged the
+    # live spaces.json already stores voyage-4-large, and copying it left this test
+    # nothing to flip (2026-11-07). The legacy models are the ones 036 replaced.
+    spec = json.loads((REPO / "mandate" / "embedding" / "spaces.json").read_text())
+    spec["stored"].update({
+        "capital.eligibility_embeddings": "voyage-3.5",
+        "capital.instrument_profiles": "voyage-3.5",
+        "capital.signals_chunk_embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
+    })
+    spec_copy.write_text(json.dumps(spec, indent=2))
     assert set(one_model.flip(spec_copy)) == set(TABLES)
     flipped = json.loads(spec_copy.read_text())
     assert all(flipped["stored"][t] == E.MODEL for t in TABLES)

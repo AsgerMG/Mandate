@@ -69,9 +69,14 @@ $PY "$M/upload_manifest.py" "$G/grounding_manifest_cron_inputs.jsonl" --archive 
 
 echo "== 5. capital: migration 034, then gate -> document links, then originals"
 (cd capital && DATABASE_URL="$CAPITAL" python3 ETL/events/load/migrations/apply.py all)
+# The dry run writes the manifest and the links that --apply then reads.
+CAPITAL_RO=$(db_var CAPITAL_RO_DATABASE_PUBLIC_URL)
+$PY "$M/capital_sources_to_grounding.py" --archive "$G/archive/raw" --out "$G/capital" \
+    --source-url "$CAPITAL_RO"
 $PY "$M/capital_sources_to_grounding.py" --archive "$G/archive/raw" --out "$G/capital" \
     --apply --database-url "$CAPITAL"
-$PY "$M/upload_manifest.py" "$G/capital/grounding_manifest_capital.jsonl" --archive "$G/archive/raw" --apply
+$PY "$M/upload_manifest.py" "$G/capital/grounding_manifest_capital.jsonl" --archive "$G/archive/raw" \
+    --db-url "$CAPITAL_RO" --apply
 
 echo "== 6. the cron reads its inputs from the bucket: BUCKET_* on capital-etl"
 SID=$(railway_api 'query{ project(id:"'"$MANDATE_PROJECT"'"){ services{ edges{ node{ id name } } } } }' 2>/dev/null |

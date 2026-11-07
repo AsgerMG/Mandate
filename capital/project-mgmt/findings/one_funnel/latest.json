@@ -1,5 +1,5 @@
 {
- "startedAt": "2026-08-19T16:14:25.298Z",
+ "startedAt": "2026-11-07T12:43:17.274Z",
  "set": "__recallSetDescribed.json",
  "split": "holdout",
  "seed": 20260806,
@@ -7,7 +7,7 @@
  "drawFingerprint": "13cb71cf3a1d1847",
  "onProductStores": true,
  "store": "postgres",
- "corpusObservedAt": "2026-08-19T16:14:25.878Z",
+ "corpusObservedAt": "2026-11-07T12:43:17.606Z",
  "corpus": "postgres instruments=1088",
  "rankerTally": {
   "embedding": 819,
@@ -27,6 +27,7 @@
    5
   ],
   "rowOrder": "off",
+  "description": "full",
   "arms": {
    "POOL_BLEND": "off",
    "AWARD_TERM": "oneside"
@@ -39,8 +40,8 @@
   "rows": 8,
   "share": 0.15789473684210525
  },
- "meanTableRows": 86.3,
- "meanAccessibleRows": 81.8,
+ "meanTableRows": 82.6,
+ "meanAccessibleRows": 79,
  "stages": [
   {
    "id": "answer_key",
@@ -81,36 +82,36 @@
   {
    "id": "founder_screen",
    "question": "... and this founder's screen keeps it (country, capital, channel + leaf caps)",
-   "remaining": 798,
-   "sharePct": 88.96,
-   "lost": 21,
+   "remaining": 801,
+   "sharePct": 89.3,
+   "lost": 18,
    "unmeasured": false,
-   "halfWidthPts": 2.05
+   "halfWidthPts": 2.02
   },
   {
    "id": "gates_pass",
    "question": "... and its encoded eligibility gates do not conclusively fail (accessiblePool)",
-   "remaining": 787,
-   "sharePct": 87.74,
+   "remaining": 790,
+   "sharePct": 88.07,
    "lost": 11,
    "unmeasured": false,
-   "halfWidthPts": 2.15
+   "halfWidthPts": 2.12
   },
   {
    "id": "pool_cut",
    "question": "... and it survives the cut to VERDICT_POOL (40 rows)",
-   "remaining": 672,
-   "sharePct": 74.92,
-   "lost": 115,
+   "remaining": 686,
+   "sharePct": 76.48,
+   "lost": 104,
    "unmeasured": false,
-   "halfWidthPts": 2.84
+   "halfWidthPts": 2.78
   },
   {
    "id": "writer_cap",
    "question": "... and it survives the cut to the writer's candidates (7)",
-   "remaining": 374,
-   "sharePct": 41.69,
-   "lost": 298,
+   "remaining": 376,
+   "sharePct": 41.92,
+   "lost": 310,
    "unmeasured": false,
    "halfWidthPts": 3.23
   },
@@ -126,8 +127,8 @@
   {
    "id": "published",
    "question": "... and it is one of the 7 rows the brief publishes",
-   "remaining": 374,
-   "sharePct": 41.69,
+   "remaining": 376,
+   "sharePct": 41.92,
    "lost": 0,
    "unmeasured": false,
    "halfWidthPts": 3.23
@@ -135,20 +136,20 @@
   {
    "id": "top_6",
    "question": "... and it is in the first 6 of them",
-   "remaining": 349,
-   "sharePct": 38.91,
-   "lost": 25,
+   "remaining": 354,
+   "sharePct": 39.46,
+   "lost": 22,
    "unmeasured": false,
-   "halfWidthPts": 3.19
+   "halfWidthPts": 3.2
   },
   {
    "id": "top_5",
    "question": "... and it is in the first 5 of them",
-   "remaining": 324,
-   "sharePct": 36.12,
-   "lost": 25,
+   "remaining": 330,
+   "sharePct": 36.79,
+   "lost": 24,
    "unmeasured": false,
-   "halfWidthPts": 3.14
+   "halfWidthPts": 3.16
   },
   {
    "id": "model",
@@ -169,14 +170,7 @@
  },
  "corpusLossUnattributed": 0,
  "modelStage": {
-  "estimated": true,
-  "file": "adviser_medium_n773_x2.json",
-  "fingerprint": "37e0879c895d4d6a",
-  "n": 98,
-  "controlHits": 45,
-  "rankerHits": 50,
-  "controlRate": 0.45918367346938777,
-  "rankerRate": 0.5102040816326531
+  "estimated": false
  },
  "counterfactual": null
 }

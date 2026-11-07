@@ -52,9 +52,9 @@ export const SPEC = {
   "stored": {
     "grounding.passage_embeddings": "voyage-4-large",
     "policy.passages": "voyage-4-large",
-    "capital.eligibility_embeddings": "voyage-3.5",
-    "capital.instrument_profiles": "voyage-3.5",
-    "capital.signals_chunk_embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+    "capital.eligibility_embeddings": "voyage-4-large",
+    "capital.instrument_profiles": "voyage-4-large",
+    "capital.signals_chunk_embeddings": "voyage-4-large"
   },
   "vectorColumns": {
     "grounding.passage_embeddings": {

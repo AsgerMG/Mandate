@@ -60,14 +60,21 @@ _CONSTRAINT = re.compile(
 # ------------------------------------------------------------ the reference
 
 def _split_top_level(body: str) -> list[str]:
-    """Split a CREATE TABLE body on commas that are not inside parentheses."""
-    out, depth, cur = [], 0, []
+    """Split a CREATE TABLE body on commas outside parentheses AND string literals.
+
+    A comma inside a quoted default (035's `DEFAULT '{"batches": [], "collected":
+    []}'`) used to split the column in two, so the store looked like it lacked a
+    column named `"collected":` and the cron's first step failed (2026-11-07).
+    """
+    out, depth, cur, quoted = [], 0, [], False
     for ch in body:
-        if ch == "(":
+        if ch == "'":
+            quoted = not quoted          # '' (an escaped quote) toggles twice: net no-op
+        elif not quoted and ch == "(":
             depth += 1
-        elif ch == ")":
+        elif not quoted and ch == ")":
             depth -= 1
-        if ch == "," and depth == 0:
+        if ch == "," and depth == 0 and not quoted:
             out.append("".join(cur))
             cur = []
             continue
