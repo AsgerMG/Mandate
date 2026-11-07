@@ -66,7 +66,7 @@ jobs:
       # out to it rather than carrying a second one. A second implementation of
       # a fingerprint is a fingerprint of two different things the first time
       # either changes.
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with: { python-version: '3.11' }
       - run: npm ci
 
@@ -455,7 +455,7 @@ jobs:
       CAPITAL_TEST_DATABASE_URL: postgres://postgres:ci@localhost:5432/postgres
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
 

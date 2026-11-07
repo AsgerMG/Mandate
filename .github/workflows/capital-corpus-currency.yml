@@ -68,7 +68,7 @@ jobs:
           cache-dependency-path: web/package-lock.json
       # For the one implementation of the code fingerprint a verdict is bound
       # to (ETL/lib/guard_verdicts.py). Not for database access; there is none.
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.11'
       - run: npm ci
