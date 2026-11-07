@@ -6,6 +6,9 @@ from pathlib import Path
 
 import httpx
 import psycopg
+import pytest
+
+from mandate.grounding.testing import EphemeralMandate
 
 REPO = Path(__file__).resolve().parents[2]
 _spec = importlib.util.spec_from_file_location(
@@ -15,6 +18,14 @@ _spec.loader.exec_module(M)
 
 MIG_034 = (REPO / "capital/ETL/schema/migrations/034_eligibility_grounding.sql").read_text()
 PAGE = b"<html><body><p>Applicants must be SMEs   established in Latvia.</p></body></html>"
+
+
+@pytest.fixture()
+def own_db():
+    """Its own database: this run COMMITS grounding rows, which must not leak
+    into the session database other tests count in."""
+    with EphemeralMandate() as m:
+        yield m
 
 
 def _capital(mdb):
@@ -62,7 +73,8 @@ def _polite(clock, seen):
     return M.Polite(5.0, client=client, sleep=clock.sleep, clock=clock.now)
 
 
-def test_links_only_found_quotes_reports_the_rest_and_is_polite(mdb, bucket, tmp_path):
+def test_links_only_found_quotes_reports_the_rest_and_is_polite(own_db, bucket, tmp_path):
+    mdb = own_db
     _capital(mdb)
     urls = {"https://example.lv/call": 2, "https://gone.example/page": 1,
             "https://example.lv/private/doc": 1}
@@ -88,7 +100,8 @@ def test_links_only_found_quotes_reports_the_rest_and_is_polite(mdb, bucket, tmp
     assert not any(u.endswith("/call") for u in seen2)
 
 
-def test_apply_refuses_while_the_store_is_empty(mdb, bucket, tmp_path, monkeypatch, capsys):
+def test_apply_refuses_while_the_store_is_empty(own_db, bucket, tmp_path, monkeypatch, capsys):
+    mdb = own_db
     _capital(mdb)
     monkeypatch.setattr(M, "store_live", lambda con: (0, True))
     monkeypatch.setattr("sys.argv", ["x", "--apply", "--database-url", mdb.url("capital_app"),
