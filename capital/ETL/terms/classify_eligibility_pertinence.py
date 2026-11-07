@@ -114,9 +114,17 @@ quotation is faithful. The two together are still not a guarantee that the
 column is CORRECT -- they are a guarantee that it is a faithful quotation of
 the right kind of thing.
 
+── How it runs: a Message Batch (2026-11-07) ──────────────────────────────
+--classify submits the unjudged texts as ONE Message Batch through
+mandate/llm/batch.py (half price; usually done inside the hour), waits up to
+--wait-minutes, and writes what has come back. A batch still processing is
+recorded in mandate.llm_batches with each request's {digest: sample}, so the
+NEXT --classify collects it first and never resubmits a text that is in flight.
+The cache file below is written exactly as it always was.
+
 Usage:
   python3 ETL/terms/classify_eligibility_pertinence.py --report
-  python3 ETL/terms/classify_eligibility_pertinence.py --classify
+  python3 ETL/terms/classify_eligibility_pertinence.py --classify [--max-usd 20] [--wait-minutes 60]
   python3 ETL/terms/classify_eligibility_pertinence.py --classify --limit 40
   python3 ETL/terms/classify_eligibility_pertinence.py --classify --only gates
 """
@@ -153,33 +161,36 @@ CHUNK_GATES = 25
 #: How much of a text the judgement needs. The KIND of statement is settled in
 #: the first paragraph; the rest is more of the same and costs tokens.
 MAX_CHARS = 1800
-#: $/MTok for MODEL, so a run reports its own cost rather than being audited
-#: afterwards from a dashboard.
-PRICE_IN, PRICE_OUT = 5.0, 25.0
-SPEND = {"in": 0, "out": 0}
+#: $/MTok for MODEL lives in ONE table, mandate/llm/batch.py PRICES, and every
+#: figure this script prints is at BATCH prices (half the standard rate): the
+#: judging runs as a Message Batch (see run()).
 #: The estimate's assumptions, stated so a reader can check them against a run's
-#: own SPEND line. Input: the PROPERTY system prompt once per call plus the
+#: own SPENT line. Input: the PROPERTY system prompt once per request plus the
 #: listing (chars/4). Output: adaptive thinking at effort medium plus ~40 tokens
 #: of JSON per verdict; OUT_PER_CALL is deliberately generous (thinking is
 #: billed as output and is the bulk of the bill).
 CHARS_PER_TOKEN = 4
 OUT_PER_CALL = 4000
 OUT_PER_VERDICT = 40
-#: --max-usd: a run stops BEFORE the call that would take it past this.
+#: --max-usd: a run submits only what its estimate says fits under this.
 MAX_USD_DEFAULT = 20.0
-
-
-def spent_usd() -> float:
-    return SPEND["in"] / 1e6 * PRICE_IN + SPEND["out"] / 1e6 * PRICE_OUT
+#: --wait-minutes: how long a --classify run polls for its batch before leaving
+#: the rest for the next run to collect (the batch id is in mandate.llm_batches).
+WAIT_MINUTES_DEFAULT = 60
+#: The batch store's name for this job (mandate.llm_batches.kind).
+BATCH_KIND = "capital.pertinence"
 
 
 def estimate(texts: list[str], chunk: int) -> tuple[int, int, int, float]:
-    """(calls, input tokens, output tokens, USD) to judge `texts` in `chunk`s."""
+    """(requests, input tokens, output tokens, USD at batch prices) to judge
+    `texts` in `chunk`s."""
+    from mandate.llm.batch import BATCH_DISCOUNT, PRICES  # noqa: PLC0415
+    p_in, p_out, _ = PRICES[MODEL]
     calls = -(-len(texts) // chunk) if texts else 0
     sys_tok = len(PROPERTY) // CHARS_PER_TOKEN + 60
     tin = calls * sys_tok + sum(min(len(t), MAX_CHARS) + 24 for t in texts) // CHARS_PER_TOKEN
     tout = calls * OUT_PER_CALL + len(texts) * OUT_PER_VERDICT
-    return calls, tin, tout, tin / 1e6 * PRICE_IN + tout / 1e6 * PRICE_OUT
+    return calls, tin, tout, BATCH_DISCOUNT * (tin / 1e6 * p_in + tout / 1e6 * p_out)
 
 #: Bumped when PROPERTY changes in a way that could move a verdict. The cache
 #: key is a digest of the TEXT, so without this a reworded question would keep
@@ -344,168 +355,225 @@ def rows_gates() -> list[dict]:
     return [dict(r, column="requirement") for r in rows]
 
 
-def classify(batch: list[str]) -> dict[str, dict]:
-    """One model call over a handful of distinct texts. Keyed by digest, so a
-    text that appears on 40 gates is judged once and paid for once."""
-    import anthropic
-    client = anthropic.Anthropic()
-    listing = "\n\n".join(f"### {digest(t)}\n{t[:MAX_CHARS]}" for t in batch)
-    schema = {
-        "type": "object",
-        "properties": {
-            "results": {
-                "type": "array",
-                "items": {
-                    "type": "object",
-                    "properties": {
-                        "id": {"type": "string"},
-                        "verdict": {"type": "string",
-                                    "enum": ["condition", "demand_match", "report"]},
-                        "reason": {"type": "string"},
-                    },
-                    "required": ["id", "verdict", "reason"],
-                    "additionalProperties": False,
+SCHEMA = {
+    "type": "object",
+    "properties": {
+        "results": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "string"},
+                    "verdict": {"type": "string",
+                                "enum": ["condition", "demand_match", "report"]},
+                    "reason": {"type": "string"},
                 },
+                "required": ["id", "verdict", "reason"],
+                "additionalProperties": False,
             },
         },
-        "required": ["results"],
-        "additionalProperties": False,
-    }
-    res = client.messages.create(
+    },
+    "required": ["results"],
+    "additionalProperties": False,
+}
+
+
+def request(batch: list[str]) -> dict:
+    """The Messages params for one request over a handful of distinct texts.
+    Keyed by digest, so a text that appears on 40 gates is judged once and paid
+    for once. PROPERTY is the first, cached block: it is identical on every
+    request of a run."""
+    from mandate.llm.batch import cached_system  # noqa: PLC0415
+    listing = "\n\n".join(f"### {digest(t)}\n{t[:MAX_CHARS]}" for t in batch)
+    return dict(
         model=MODEL,
         max_tokens=16000,
-        system=PROPERTY,
+        system=cached_system(PROPERTY),
         # Adaptive thinking is ON by default on this model and max_tokens caps
         # thinking AND text together, so the budget is sized for both. `effort`
         # is medium because this is a two-way judgement over a short string,
-        # not a research task, and the run is ~100 calls wide.
-        output_config={"format": {"type": "json_schema", "schema": schema},
+        # not a research task, and the run is ~100 requests wide.
+        output_config={"format": {"type": "json_schema", "schema": SCHEMA},
                        "effort": "medium"},
         messages=[{"role": "user", "content":
                    "Judge each text below. Return one result per id, with a "
                    "reason of at most 20 words that names what in the text "
                    "decided it.\n\n" + listing}],
     )
-    if res.stop_reason == "refusal":
-        raise SystemExit("classifier refused; re-run or reduce the batch")
-    # Printed, not accumulated silently: a run this wide should say what it
-    # cost while it is still cheap to stop it.
-    SPEND["in"] += res.usage.input_tokens
-    SPEND["out"] += res.usage.output_tokens
-    text = next(b.text for b in res.content if b.type == "text")
-    return {r["id"]: {"verdict": r["verdict"], "reason": r["reason"]}
-            for r in json.loads(text)["results"]}
+
+
+def parse(text: str | None) -> dict[str, dict]:
+    """digest -> {verdict, reason} from one response's JSON."""
+    try:
+        return {r["id"]: {"verdict": r["verdict"], "reason": r["reason"]}
+                for r in json.loads(text or "")["results"]}
+    except (ValueError, KeyError, TypeError):
+        return {}
+
+
+def handler(cache: dict):
+    """Write one collected batch's verdicts into the cache, and save it.
+
+    Each request's stored meta is {digest: sample}, so this needs nothing from
+    the run that submitted it: a batch collected a week later writes exactly
+    what it would have written the same night."""
+    def handle(results) -> None:
+        for res in results:
+            meta = res.meta or {}
+            got = parse(res.text) if res.ok else {}
+            if not res.ok:
+                print(f"  !! request {res.custom_id} failed ({res.error}); its "
+                      f"{len(meta)} text(s) stay unjudged -- re-run to retry")
+                continue
+            for d, sample in meta.items():
+                v = got.get(d)
+                if not v:
+                    print(f"  !! no verdict returned for {d}: {sample[:60]!r}")
+                    continue
+                cache[d] = {"verdict": v["verdict"], "reason": v["reason"],
+                            "v": PROPERTY_VERSION, "sample": sample}
+        # Persist per batch: a run cut off mid-way must not discard
+        # classifications already paid for.
+        save_cache(cache)
+    return handle
 
 
 def run(rows: list[dict], cache: dict, chunk: int, limit: int, do_classify: bool,
-        max_usd: float = MAX_USD_DEFAULT, plan: list | None = None) -> None:
-    """Judge every DISTINCT text in `rows` that has no cached verdict."""
+        plan: list | None = None, in_flight: set[str] | None = None,
+        claimed: set[str] | None = None) -> list:
+    """The requests that judge every DISTINCT text in `rows` that has no cached
+    verdict and is not already in a submitted batch. Returns mandate Items.
+
+    `claimed` is shared across the populations of one run and gains every
+    digest this call asks about, so a text that is both a calibration case and a
+    gate (or prose and a gate) is asked about once."""
+    from mandate.llm.batch import Item  # noqa: PLC0415
     todo: dict[str, str] = {}
     stale = 0
+    flying = 0
     for r in rows:
         d = digest(r["body"])
         if d in todo:
             continue
         entry = cache.get(d)
-        if entry is None:
-            todo[d] = r["body"]
-        elif is_stale(entry):
+        if entry is not None and not is_stale(entry):
+            if do_classify:
+                # Carried forward: REJUDGE says the current property cannot move
+                # this answer, so it is re-stamped rather than re-paid for. The
+                # stamp is what lets check_gate_pertinence.ts test staleness with a
+                # plain `v == _property_version` and hold no copy of the policy --
+                # one table, in one language, decides re-pay vs re-stamp. Only a
+                # --classify run may stamp: a --report run that laundered the
+                # version without paying would be a green build over stale answers.
+                entry["v"] = PROPERTY_VERSION
+            continue
+        if in_flight and d in in_flight:
+            flying += 1
+            continue
+        if claimed is not None and d in claimed:
+            continue
+        if entry is not None:
             stale += 1
-            todo[d] = r["body"]
-        elif do_classify:
-            # Carried forward: REJUDGE says the current property cannot move
-            # this answer, so it is re-stamped rather than re-paid for. The
-            # stamp is what lets check_gate_pertinence.ts test staleness with a
-            # plain `v == _property_version` and hold no copy of the policy --
-            # one table, in one language, decides re-pay vs re-stamp. Only a
-            # --classify run may stamp: a --report run that laundered the
-            # version without paying would be a green build over stale answers.
-            entry["v"] = PROPERTY_VERSION
+        todo[d] = r["body"]
     print(f"  {len(rows)} rows, {len(set(digest(r['body']) for r in rows))} distinct texts, "
           f"{len(todo)} to judge ({len(todo) - stale} never judged, "
-          f"{stale} judged under a superseded property)")
+          f"{stale} judged under a superseded property"
+          + (f"; {flying} more already in a submitted batch" if flying else "") + ")")
     batch_all = list(todo.values())[:limit] if limit else list(todo.values())
+    if claimed is not None:
+        claimed.update(digest(t) for t in batch_all)
     calls, tin, tout, usd = estimate(batch_all, chunk)
-    print(f"  estimate: {calls} calls, ~{tin:,} in / ~{tout:,} out tokens, ~${usd:.2f} on {MODEL}")
+    print(f"  estimate: {calls} batch requests, ~{tin:,} in / ~{tout:,} out tokens, "
+          f"~${usd:.2f} on {MODEL} at batch prices (50%)")
     if plan is not None:
         plan.append((len(batch_all), calls, tin, tout, usd))
     if do_classify:
         save_cache(cache)  # persist the re-stamps even if nothing needs judging
-    if not (do_classify and todo):
-        return
-    spent_before = spent_usd()
-    for n_call, i in enumerate(range(0, len(batch_all), chunk)):
-        batch = batch_all[i: i + chunk]
-        _, _, _, next_usd = estimate(batch, chunk)
-        # The estimate is an assumption; once calls have been paid for, the
-        # observed mean per call is evidence, and the larger of the two guards.
-        if n_call:
-            next_usd = max(next_usd, (spent_usd() - spent_before) / n_call)
-        if spent_usd() + next_usd > max_usd:
-            raise SystemExit(f"STOPPED before a call that could take spend past --max-usd "
-                             f"${max_usd:.2f} (spent ${spent_usd():.2f}). Every verdict paid "
-                             f"for so far is saved; re-run to continue.")
-        got = classify(batch)
-        for body in batch:
-            d = digest(body)
-            v = got.get(d)
-            if not v:
-                print(f"  !! no verdict returned for {d}: {body[:60]!r}")
-                continue
-            cache[d] = {"verdict": v["verdict"], "reason": v["reason"],
-                        "v": PROPERTY_VERSION,
-                        "sample": re.sub(r"\s+", " ", body).strip()[:220]}
-        # Persist per chunk: a run cut off mid-way must not discard
-        # classifications already paid for.
-        save_cache(cache)
-        cost = spent_usd()
-        print(f"  {min(i + chunk, len(batch_all))}/{len(batch_all)}"
-              f"  (${cost:.2f} so far: {SPEND['in']:,} in / {SPEND['out']:,} out)")
+    items = []
+    for i in range(0, len(batch_all), chunk):
+        part = batch_all[i: i + chunk]
+        ds = [digest(t) for t in part]
+        items.append(Item(
+            custom_id="p" + hashlib.sha256("".join(ds).encode()).hexdigest()[:40],
+            params=request(part),
+            meta={d: re.sub(r"\s+", " ", t).strip()[:220] for d, t in zip(ds, part)},
+            est_usd=estimate(part, chunk)[3]))
+    return items
 
 
-def main() -> None:
+def main(argv: list[str] | None = None, batcher=None) -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--classify", action="store_true",
-                    help="judge every published text whose hash is not cached")
+                    help="judge every published text whose hash is not cached, as a "
+                         "Message Batch (collects any earlier batch first)")
     ap.add_argument("--report", action="store_true", help="read the cache, call nothing")
     ap.add_argument("--only", choices=["text", "gates"], default=None)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-usd", type=float, default=MAX_USD_DEFAULT,
-                    help="stop before any call that could take this run's spend past it")
-    args = ap.parse_args()
+                    help="submit only what the batch-price estimate says fits under this")
+    ap.add_argument("--wait-minutes", type=float, default=WAIT_MINUTES_DEFAULT,
+                    help="poll for the batch this long; what has not ended is "
+                         "collected by the next --classify run")
+    args = ap.parse_args(argv)
     plan: list = []
     _load_env()
+    from mandate.llm.batch import Batcher, PgStore  # noqa: PLC0415  (etl_env puts mandate/ on the path)
 
     cache = load_cache()
+    if batcher is None:
+        batcher = Batcher(BATCH_KIND, store=PgStore.from_env(), brain="capital")
+    try:
+        in_flight = {d for meta in batcher.in_flight().values() for d in (meta or {})}
+    except Exception as exc:  # noqa: BLE001
+        if args.classify:
+            raise SystemExit(f"the batch store (mandate.llm_batches) is unreachable: "
+                             f"{str(exc).splitlines()[0]}. "
+                             "Nothing was submitted: a batch nobody can find is money "
+                             "spent for nothing.")
+        print(f"(batch store unreachable, so in-flight texts are not netted out: "
+              f"{str(exc).splitlines()[0]})")
+        in_flight = set()
     populations = []
+    items = []
+    claimed: set[str] = set()
     # Calibration first, unconditionally and on every run: a run that judged
     # 2,500 live strings and never exercised the known answers would report
     # success without having shown the classifier still works.
     print("calibration:")
     cal = [{"ref": c["id"], "body": c["text"], "expect": c["expect"]}
            for c in json.loads(CALIBRATION.read_text())["cases"]]
-    run(cal, cache, CHUNK_GATES, 0, args.classify, args.max_usd, plan)
+    items += run(cal, cache, CHUNK_GATES, 0, args.classify, plan, in_flight, claimed)
+
+    if args.only in (None, "text"):
+        print("eligibility_text:")
+        populations.append(("eligibility_text", rows_text(), CHUNK_TEXT))
+        items += run(populations[-1][1], cache, CHUNK_TEXT, args.limit, args.classify,
+                     plan, in_flight, claimed)
+    if args.only in (None, "gates"):
+        print("filter gates:")
+        populations.append(("requirement", rows_gates(), CHUNK_GATES))
+        items += run(populations[-1][1], cache, CHUNK_GATES, args.limit, args.classify,
+                     plan, in_flight, claimed)
+    n_t = sum(p[0] for p in plan); usd_t = sum(p[4] for p in plan)
+    print(f"\nPLAN: {n_t} distinct texts to judge, {sum(p[1] for p in plan)} batch requests, "
+          f"estimated ${usd_t:.2f} at batch prices (cap --max-usd ${args.max_usd:.2f})"
+          + ("" if args.classify else "; nothing was called (--report)"))
+    if args.classify:
+        out = batcher.run(items, handler(cache), max_usd=args.max_usd,
+                          wait_minutes=args.wait_minutes, over_cap="truncate")
+        print(f"BATCH: {out.line()}")
+        print(f"SPENT: ${out.cost_usd:.2f} measured at batch prices over the batches "
+              f"collected this run")
+        if out.pending:
+            print(f"PENDING: {out.pending} batch(es) still processing; re-run --classify "
+                  f"to collect them (their ids are in mandate.llm_batches)")
+
     wrong = [c for c in cal
              if cache.get(digest(c["body"]), {}).get("verdict") not in (None, c["expect"])]
     for c in wrong:
         print(f"  !! MISCALIBRATED {c['ref']}: expected {c['expect']}, "
               f"got {cache[digest(c['body'])]['verdict']} "
               f"-- {cache[digest(c['body'])]['reason']}")
-
-    if args.only in (None, "text"):
-        print("eligibility_text:")
-        populations.append(("eligibility_text", rows_text(), CHUNK_TEXT))
-    if args.only in (None, "gates"):
-        print("filter gates:")
-        populations.append(("requirement", rows_gates(), CHUNK_GATES))
-    for _, rows, chunk in populations:
-        run(rows, cache, chunk, args.limit, args.classify, args.max_usd, plan)
-    n_t = sum(p[0] for p in plan); usd_t = sum(p[4] for p in plan)
-    print(f"\nPLAN: {n_t} distinct texts to judge, {sum(p[1] for p in plan)} calls, "
-          f"estimated ${usd_t:.2f} (cap --max-usd ${args.max_usd:.2f})"
-          + ("" if args.classify else "; nothing was called (--report)"))
-    if args.classify:
-        print(f"SPENT: ${spent_usd():.2f} ({SPEND['in']:,} in / {SPEND['out']:,} out tokens)")
 
     print()
     for name, rows, _ in populations:
