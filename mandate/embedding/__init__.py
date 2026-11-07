@@ -19,7 +19,7 @@ ONE MODEL, AND WHY THERE ARE STILL THREE SPACES. `MODEL` is what every new vecto
 is written in. A vector already stored is in whatever space it was made in, and a
 query against it must use that space -- so `for_table(table)` answers from
 spaces.json's `stored` map, not from MODEL. Each legacy space is an IOU with a
-written exit (grounding/migrations/reembed_plan.py); when its table is
+written exit (mandate/ops/one_model.sh); when its table is
 re-embedded, `stored` flips to MODEL and the legacy entry is deleted.
 
 STORAGE. Vectors are written as pgvector halfvec(1024): 2 bytes a dimension.

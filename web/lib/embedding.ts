@@ -10,7 +10,7 @@
 // build if this block drifts from that file or if any other file in the repo
 // names a model or the endpoint.
 //
-// When a table is re-embedded (mandate/grounding/migrations/reembed_plan.py),
+// When a table is re-embedded (mandate/ops/one_model.sh),
 // spaces.json's `stored` flips, --write regenerates this block, and every query
 // here follows with no code change.
 //

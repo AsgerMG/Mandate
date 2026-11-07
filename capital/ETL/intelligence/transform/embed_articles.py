@@ -5,7 +5,7 @@ Architecture (ported from a proven prior design):
     capital.signals_chunk_embeddings -- today the LEGACY local space
     (multilingual MiniLM via fastembed, 384-dim, CPU, no key). It is not chosen
     here: a write must land in the table's space, and moving the table to the
-    one Mandate model is a re-embed (mandate/grounding/migrations/reembed_plan.py),
+    one Mandate model is a re-embed (mandate/ops/one_model.sh),
     not a flag. SIGNALS_EMBED_MODEL, which used to override it, is gone: an env
     var that changes the space of new rows is how a table ends up holding two.
   * Storage: signals_chunk_embeddings.embedding, a pgvector vector(384) in

@@ -144,7 +144,7 @@ CREATE TABLE IF NOT EXISTS grounding.passage_embeddings (
 -- One HNSW index per model in use, partial, so a query names its model and can
 -- never rank a vector from another space. mandate.embedding.MODEL is the only
 -- model new rows are written in; a second index appears only during a planned
--- re-embed (see mandate/grounding/migrations/reembed_plan.py).
+-- re-embed (see mandate/ops/one_model.sh).
 CREATE INDEX IF NOT EXISTS ix_gpe_hnsw_voyage_4_large
     ON grounding.passage_embeddings USING hnsw (embedding public.halfvec_cosine_ops)
     WHERE model = 'voyage-4-large';

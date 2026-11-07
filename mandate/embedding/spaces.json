@@ -1,5 +1,5 @@
 {
-  "_doc": "THE one definition of Mandate's embedding models. Read by mandate/embedding/__init__.py and generated into web/lib/embedding.ts (check_boundary.py --write). Edit here and nowhere else. `model` is the target: every new vector is written in it. A legacy space exists only while a stored table is still in it; reembed_plan.py is its exit, and the entry is deleted the day `stored` stops naming it.",
+  "_doc": "THE one definition of Mandate's embedding models. Read by mandate/embedding/__init__.py and generated into web/lib/embedding.ts (check_boundary.py --write). Edit here and nowhere else. `model` is the target: every new vector is written in it. A legacy space exists only while a stored table is still in it; mandate/ops/one_model.sh is its exit, and the entry is deleted the day `stored` stops naming it.",
   "model": "voyage-4-large",
   "dim": 1024,
   "query_model": "voyage-4-large",

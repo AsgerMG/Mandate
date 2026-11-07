@@ -97,7 +97,7 @@ class SignalsRetriever:
         if meta[0] != self.embedder.model:
             raise SystemExit(
                 f"index built with {meta[0]}, configured model is "
-                f"{self.embedder.model} -- re-embed (mandate/grounding/migrations/reembed_plan.py)")
+                f"{self.embedder.model} -- re-embed (mandate/ops/one_model.sh)")
 
     def _qvec(self, query: str) -> str:
         return vector_literal(self.embedder.embed([query])[0])
