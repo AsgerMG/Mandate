@@ -51,14 +51,10 @@
 // The signal is not thrown away — `watchOnly` still names every match for the
 // exclusion log, FUND-4 still raises it, and the sentence that matched is the
 // row's own next step, which the founder reads.
-import { readFileSync } from "node:fs";
-
 import { describe, expect, it } from "vitest";
 
 import { assembleBriefRows, type WriterRowNote } from "./memoCandidates";
-import { UNWRITTEN_ROW_LEAD, unwrittenRowCopy } from "./unwrittenRow";
 import { WATCH_ONLY_COPY } from "./watchOnly";
-import { BRIEF_LIMITS, checkBrief } from "./briefChecks";
 import type { InstitutionEntry } from "./types";
 
 const clean = (s: string) => s.replace(/\s*—\s*/g, ", ").trim();

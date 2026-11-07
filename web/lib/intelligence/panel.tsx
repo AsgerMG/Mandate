@@ -29,7 +29,7 @@ import { CapitalSelect, CompactMultiSelect, InfoDot } from "./panelControls";
 import { regionOptions } from "./regions.generated";
 import { ORGANISATION_TYPE_ARM, prefillOrganisationType } from "./organisationType";
 import { toIso2 } from "./countryCodes";
-import { InstitutionsTable, Memo, StepHeader } from "./panelReport";
+import { InstitutionsTable, Memo } from "./panelReport";
 
 /** A chip-row single select for band/enum answers. */
 /** Who the handover on screen 2 comes from. One string, because "who is
@@ -301,10 +301,18 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // stale in-flight response cannot land after an edit either — `cancelled`
   // closes that race, which otherwise reappears exactly when someone corrects a
   // wrong pre-fill quickly, i.e. when being wrong matters most.
+  //
+  // With no name or no country there is nothing to look up, so the pre-fill
+  // is cleared. That is done while rendering, not in the effect: a synchronous
+  // setState in an effect is a second render React has to schedule. It is the
+  // same rule: the only non-null writer is the fetch below, and its `cancelled`
+  // flag stops it landing once the name or country has changed.
+  const regionLookupEmpty = !regionTouched && (!company.trim() || !country);
+  if (regionLookupEmpty && regionPrefill !== null) setRegionPrefill(null);
   useEffect(() => {
     if (regionTouched) return;
     const name = company.trim();
-    if (!name || !country) { setRegionPrefill(null); return; }
+    if (!name || !country) return;
     let cancelled = false;
     const t = setTimeout(() => {
       fetch("/api/intelligence/region", {
@@ -333,14 +341,24 @@ export function IntelligencePanel({ corpusCompanies, corpusWindow }: Intelligenc
   // legal form is IN the name the founder is typing, because company law
   // requires it to be. Synchronous, so the answer appears as they type rather
   // than a moment later, and it stops writing the instant they pick anything.
-  useEffect(() => {
-    if (ORGANISATION_TYPE_ARM !== "on" || orgTypeTouched) return;
-    const guess = prefillOrganisationType(company);
-    setOrgTypePrefill(guess);
-    // A name with no designator is the common, legitimate case — a sole trader
-    // declares none. Clear rather than keep a stale guess from an older name.
-    setElig((p) => (p.organisationType === guess ? p : { ...p, organisationType: guess ?? undefined }));
-  }, [company, orgTypeTouched]);
+  //
+  // Done while rendering, when its inputs change (React's "adjusting state when
+  // a prop changes"), not in an effect: it is derived state, and an effect
+  // that only sets state costs a second render. `orgPrefillFor` records what
+  // it last ran for, null while the founder owns the field, so it runs exactly
+  // when the old effect did (a change of company or of orgTypeTouched).
+  const orgPrefillKey = ORGANISATION_TYPE_ARM === "on" && !orgTypeTouched ? company : null;
+  const [orgPrefillFor, setOrgPrefillFor] = useState<string | null>(null);
+  if (orgPrefillKey !== orgPrefillFor) {
+    setOrgPrefillFor(orgPrefillKey);
+    if (orgPrefillKey !== null) {
+      const guess = prefillOrganisationType(company);
+      setOrgTypePrefill(guess);
+      // A name with no designator is the common, legitimate case — a sole trader
+      // declares none. Clear rather than keep a stale guess from an older name.
+      setElig((p) => (p.organisationType === guess ? p : { ...p, organisationType: guess ?? undefined }));
+    }
+  }
 
   // The founder's own country decides which regions exist. `toIso2` is what
   // bridges the country select's full English names to the NUTS table's ISO2
