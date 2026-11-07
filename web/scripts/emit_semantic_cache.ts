@@ -8,6 +8,7 @@
 // Run with DATABASE_URL and VOYAGE_KEY set, commit the result:
 //     npx tsx scripts/emit_semantic_cache.ts
 import { writeFileSync } from "fs";
+import { vectorColumn } from "../lib/embedding";
 import path from "path";
 
 // Load .env.local like every other script here -- from the repo root as well as
@@ -50,7 +51,7 @@ async function liveProfileIds(): Promise<Set<string>> {
   await client.connect();
   try {
     const res = await client.query(
-      "SELECT instrument_id FROM instrument_profiles WHERE embedding IS NOT NULL");
+      `SELECT instrument_id FROM instrument_profiles WHERE ${vectorColumn("capital.instrument_profiles").column} IS NOT NULL`);
     return new Set(res.rows.map((r: { instrument_id: string }) => r.instrument_id));
   } finally {
     await client.end();

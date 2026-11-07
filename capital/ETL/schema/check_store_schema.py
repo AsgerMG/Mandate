@@ -109,6 +109,13 @@ def declared_schema(files: list[_Path]) -> dict[str, set[str]]:
                 r"(?:COLUMN\s+)?(?:IF\s+NOT\s+EXISTS\s+)?(?!CONSTRAINT\b)[\"`]?(\w+)[\"`]?",
                 sql, re.I):
             cols.setdefault(m.group(1), set()).add(m.group(2))
+        # A column a later migration drops is no longer declared (the one-model
+        # move drops each legacy vector column once its replacement is complete).
+        for m in re.finditer(
+                r"ALTER\s+TABLE\s+(?:IF\s+EXISTS\s+)?[\"`]?(\w+)[\"`]?\s+DROP\s+"
+                r"(?:COLUMN\s+)?(?:IF\s+EXISTS\s+)?(?!CONSTRAINT\b)[\"`]?(\w+)[\"`]?",
+                sql, re.I):
+            cols.get(m.group(1), set()).discard(m.group(2))
         for m in re.finditer(
                 r"ALTER\s+TABLE\s+[\"`]?(\w+)[\"`]?\s+RENAME\s+TO\s+[\"`]?(\w+)[\"`]?",
                 sql, re.I):

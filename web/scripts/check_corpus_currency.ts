@@ -48,6 +48,7 @@
 // there is no claim to test. It never passes quietly on a comparison it could
 // have made.
 import { readFileSync } from "fs";
+import { vectorColumn } from "../lib/embedding";
 import path from "path";
 
 // Repo root AND frontend, from the one shared loader. Reading only
@@ -271,7 +272,7 @@ async function main() {
         WHERE NOT EXISTS (SELECT 1 FROM funding_instruments i WHERE i.id = p.instrument_id)`
     )).rows[0].n);
     profileIds = new Set((await client.query(
-      "SELECT instrument_id FROM instrument_profiles WHERE embedding IS NOT NULL"
+      `SELECT instrument_id FROM instrument_profiles WHERE ${vectorColumn("capital.instrument_profiles").column} IS NOT NULL`
     )).rows.map((r: { instrument_id: string }) => r.instrument_id));
     profiles = profileIds.size;
     liveProfileText = new Map((await client.query(

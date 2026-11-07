@@ -1,5 +1,5 @@
 {
-  "_doc": "THE one definition of Mandate's embedding models. Read by mandate/embedding/__init__.py and generated into capital/website/frontend/lib/embedding.ts (check_boundary.py --write). Edit here and nowhere else. `model` is the target: every new vector is written in it. A legacy space exists only while a stored table is still in it; reembed_plan.py is its exit, and the entry is deleted the day `stored` stops naming it.",
+  "_doc": "THE one definition of Mandate's embedding models. Read by mandate/embedding/__init__.py and generated into web/lib/embedding.ts (check_boundary.py --write). Edit here and nowhere else. `model` is the target: every new vector is written in it. A legacy space exists only while a stored table is still in it; reembed_plan.py is its exit, and the entry is deleted the day `stored` stops naming it.",
   "model": "voyage-4-large",
   "dim": 1024,
   "query_model": "voyage-4-large",
@@ -37,5 +37,50 @@
     "capital.eligibility_embeddings": "voyage-3.5",
     "capital.instrument_profiles": "voyage-3.5",
     "capital.signals_chunk_embeddings": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  },
+  "_vector_columns_doc": "Where each table keeps the vectors of each space it holds: column and pgvector type. A table being re-embedded holds TWO spaces side by side (the stored one and MODEL), and a reader asks vector_column(table) / vectorColumn(table) for the STORED space's column: flipping `stored` moves every reader, Python and the generated TS mirror, to the other column in one commit. Nothing is renamed: the legacy column is dropped by mandate/ops/one_model_drop_old.sh and its entry deleted here. mandate/ops/one_model.sh fills MODEL's column.",
+  "vector_columns": {
+    "grounding.passage_embeddings": {
+      "voyage-4-large": {
+        "column": "embedding",
+        "type": "halfvec"
+      }
+    },
+    "policy.passages": {
+      "voyage-4-large": {
+        "column": "embedding",
+        "type": "vector"
+      }
+    },
+    "capital.eligibility_embeddings": {
+      "voyage-3.5": {
+        "column": "embedding",
+        "type": "vector"
+      },
+      "voyage-4-large": {
+        "column": "embedding_v4",
+        "type": "halfvec"
+      }
+    },
+    "capital.instrument_profiles": {
+      "voyage-3.5": {
+        "column": "embedding",
+        "type": "vector"
+      },
+      "voyage-4-large": {
+        "column": "embedding_v4",
+        "type": "halfvec"
+      }
+    },
+    "capital.signals_chunk_embeddings": {
+      "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2": {
+        "column": "embedding",
+        "type": "vector"
+      },
+      "voyage-4-large": {
+        "column": "embedding_v4",
+        "type": "halfvec"
+      }
+    }
   }
 }

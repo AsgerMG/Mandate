@@ -48,13 +48,18 @@ import argparse
 import json
 import os
 
-from mandate.embedding import Embedder, EmbeddingError, for_table, space_for_table
+from mandate.embedding import (Embedder, EmbeddingError, column_dim, for_table,  # noqa: E402
+                               space_for_table, target_column, vector_column, vector_literal)
 
 #: The registered name of this table in mandate/embedding/spaces.json.
 TABLE = "capital.eligibility_embeddings"
 #: What the `model` column records: the table's space, by definition.
 MODEL = space_for_table(TABLE).name
 DIM = space_for_table(TABLE).dim
+#: Where the stored space's vectors live (what readers query), and, while the
+#: table is being moved onto the one model, the target column written beside it.
+COL = vector_column(TABLE)
+TARGET = target_column(TABLE)
 BATCH = 128
 # Read, not restated. This used to be a hand-written tuple beside a TypeScript
 # Set holding the same policy, and they diverged the day `register_derived` was
@@ -208,47 +213,78 @@ def cmd_run(args) -> None:
         if args.limit:
             todo = todo[: args.limit]
 
+        # The one-model move (mandate/ops/one_model.sh): while the table is
+        # stored in a legacy space and migration 036 has added MODEL's column,
+        # a new row is written in BOTH, so the backfill never has a gap to
+        # chase and the flip finds every row complete. And rows with no vector
+        # in the STORED column (written by older code after a flip) are healed.
+        dual = TARGET if TARGET and column_dim(conn, TARGET) else None
+        heal = conn.execute(
+            f"SELECT id, chunk_text FROM eligibility_embeddings WHERE {COL.column} IS NULL "
+            f"ORDER BY id").fetchall() if column_dim(conn, COL) else []
+
         if args.dry_run:
-            print(f"dry run: would embed {len(todo):,} chunks ({MODEL}); nothing called, nothing written")
+            print(f"dry run: would embed {len(todo):,} chunks ({MODEL}"
+                  f"{f' + {TARGET.space} beside it' if dual else ''}) and heal {len(heal):,} rows "
+                  f"missing a {COL.column}; nothing called, nothing written")
             return
-        print(f"embedding {len(todo):,} chunks ({MODEL}, batches of {BATCH})")
+        target_client = Embedder(TARGET.space) if dual else None
+        print(f"embedding {len(todo):,} chunks ({MODEL}{f' + {dual.space}' if dual else ''}, "
+              f"batches of {BATCH})")
         done = 0
         for i in range(0, len(todo), BATCH):
             batch = todo[i : i + BATCH]
             texts = [t[3] for t in batch]
             vectors = client.embed_documents(texts)
+            extra = target_client.embed_documents(texts) if target_client else [None] * len(batch)
             rows = [
-                (source_type, source_key, instrument_id, chunk_text, vec, MODEL)
-                for (source_type, source_key, instrument_id, chunk_text), vec in zip(
-                    batch, vectors, strict=True
+                (source_type, source_key, instrument_id, chunk_text, vector_literal(vec), MODEL)
+                + ((vector_literal(x),) if dual else ())
+                for (source_type, source_key, instrument_id, chunk_text), vec, x in zip(
+                    batch, vectors, extra, strict=True
                 )
             ]
             with conn.cursor() as cur:
                 cur.executemany(
-                    """INSERT INTO eligibility_embeddings
-                         (source_type, source_key, instrument_id, chunk_text, embedding, model)
-                       VALUES (%s, %s, %s, %s, %s, %s)
+                    f"""INSERT INTO eligibility_embeddings
+                         (source_type, source_key, instrument_id, chunk_text, {COL.column}, model
+                          {f', {dual.column}' if dual else ''})
+                       VALUES (%s, %s, %s, %s, %s{COL.cast}, %s{f', %s{dual.cast}' if dual else ''})
                        ON CONFLICT (source_type, instrument_id, source_key) DO NOTHING""",
                     rows,
                 )
             conn.commit()  # per-batch commit -- kill-safe
             done += len(batch)
             print(f"  {done:,}/{len(todo):,}")
-        print(f"done: {done:,} embeddings written. {client.usage.line()}")
+        for i in range(0, len(heal), BATCH):
+            batch = heal[i : i + BATCH]
+            vectors = client.embed_documents([t[1] for t in batch])
+            with conn.cursor() as cur:
+                cur.executemany(
+                    f"UPDATE eligibility_embeddings SET {COL.column} = %s{COL.cast}, model = %s "
+                    f"WHERE id = %s AND {COL.column} IS NULL",
+                    [(vector_literal(v), MODEL, r[0]) for r, v in zip(batch, vectors, strict=True)])
+            conn.commit()
+        if heal:
+            print(f"healed {len(heal):,} rows that had no {COL.column}")
+        print(f"done: {done:,} embeddings written. {client.usage.line()}"
+              + (f" {target_client.usage.line()}" if target_client else ""))
 
 
 def cmd_query(args) -> None:
     with connect(readonly=True) as conn:
         client = voyage_client()
         vec = client.embed_query(args.text)
+        q = vector_literal(vec)
         rows = conn.execute(
-            """SELECT e.instrument_id, fi.name, e.source_type, e.chunk_text,
-                      1 - (e.embedding <=> %s::vector) AS similarity
+            f"""SELECT e.instrument_id, fi.name, e.source_type, e.chunk_text,
+                      1 - (e.{COL.column} <=> %s{COL.cast}) AS similarity
                FROM eligibility_embeddings e
                JOIN funding_instruments fi ON fi.id = e.instrument_id
-               ORDER BY e.embedding <=> %s::vector
+               WHERE e.{COL.column} IS NOT NULL
+               ORDER BY e.{COL.column} <=> %s{COL.cast}
                LIMIT %s""",
-            (vec, vec, args.k),
+            (q, q, args.k),
         ).fetchall()
         if not rows:
             print("no results — is the index populated? (run `status`)")

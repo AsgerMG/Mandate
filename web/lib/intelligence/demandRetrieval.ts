@@ -75,7 +75,7 @@
 //                   tier 1 of the shipped sort and is not rendered.
 import type { Client } from "pg";
 import { openPg } from "@/lib/db";
-import { embedQuery as embedFor, vectorLiteral } from "@/lib/embedding";
+import { embedQuery as embedFor, vectorColumn, vectorLiteral } from "@/lib/embedding";
 
 const TIMEOUT_MS = 6000;
 
@@ -119,6 +119,8 @@ export async function retrieveDemands(
   const vec = await embedQuery(founderText);
   if (!vec) return [];
   const literal = vectorLiteral(vec);
+  // Column and cast flip with the query model (lib/embedding.ts).
+  const { column, cast } = vectorColumn("capital.eligibility_embeddings");
 
   let client: Client | undefined;
   try {
@@ -150,10 +152,11 @@ export async function retrieveDemands(
                 -- stops mattering.
                 ROW_NUMBER() OVER (
                   PARTITION BY instrument_id
-                      ORDER BY embedding <=> $1::vector, chunk_text) AS rn
+                      ORDER BY ${column} <=> $1${cast}, chunk_text) AS rn
            FROM eligibility_embeddings
           WHERE instrument_id = ANY($2)
             AND source_type = 'gate'
+            AND ${column} IS NOT NULL
        ) t WHERE rn <= $3`,
       [literal, instrumentIds, perInstrument]);
     return res.rows.map((r: { instrument_id: string; chunk_text: string }) => ({

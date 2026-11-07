@@ -46,11 +46,19 @@ import os
 from store import connect  # noqa: E402
 from signals_retrieval import vector_literal  # noqa: E402
 
-from mandate.embedding import for_table, space_for_table  # noqa: E402
+from mandate.embedding import (Embedder, column_dim, for_table, space_for_table,  # noqa: E402
+                               target_column, vector_column)
 
 #: The registered name of this table in mandate/embedding/spaces.json.
 TABLE = "capital.signals_chunk_embeddings"
 EMBED_MODEL = space_for_table(TABLE).name
+#: The stored space's column (what retrieval reads), and during the one-model
+#: move MODEL's column beside it (mandate/ops/one_model.sh).
+COL = vector_column(TABLE)
+TARGET = target_column(TABLE)
+#: signals_embedding_meta describes this column, the original vector(384) one,
+#: and nothing else. A column added since is described by spaces.json.
+META_COLUMN = "embedding"
 CHUNK_CHARS = 1500
 CHUNK_OVERLAP = 200
 BATCH = 128
@@ -67,7 +75,19 @@ def get_embedder():
 def ensure_model(con, embedder) -> None:
     """The configured model must be the one the index was built with. Records
     it on first use. The table and its vector(384) column are DDL in
-    ETL/schema/corpus_schema.sql, not created here."""
+    ETL/schema/corpus_schema.sql, not created here.
+
+    signals_embedding_meta speaks for the original `embedding` column only. Once
+    spaces.json stores the table in another column (the one-model flip), the
+    guard is that column's declared dimension and spaces.json's space for it."""
+    if COL.column != META_COLUMN:
+        dim = column_dim(con, COL)
+        if dim != embedder.dim or embedder.model != COL.space:
+            raise SystemExit(
+                f"{TABLE}.{COL.column} is declared {dim}-d in space {COL.space}, but the "
+                f"configured embedder is {embedder.model} ({embedder.dim}-d). Run "
+                f"migration 036 / mandate/ops/one_model.sh first.")
+        return
     meta = con.execute(
         "SELECT model, dim FROM signals_embedding_meta WHERE id = 1").fetchone()
     if meta is None:
@@ -157,11 +177,15 @@ def cmd_run(args) -> None:
     embedder = get_embedder()
     with connect(dict_rows=True) as con:
         ensure_model(con, embedder)
-        _run(con, embedder, args.limit)
+        # The one-model move: once migration 036 has added MODEL's column, new
+        # chunks are embedded in both spaces, so the flip finds every row complete.
+        target = Embedder(TARGET.space) if TARGET and column_dim(con, TARGET) else None
+        _run(con, embedder, args.limit, target)
 
 
-def _run(con, embedder, limit: int | None) -> None:
-    """Chunk, then embed. Commits per article and per batch, so it is kill-safe."""
+def _run(con, embedder, limit: int | None, target=None) -> None:
+    """Chunk, then embed. Commits per article and per batch, so it is kill-safe.
+    `target`, when given, also writes TARGET's column for each new chunk."""
 
     # Phase 1 — chunk hydrated articles that have no chunks yet.
     sql = """SELECT a.id, a.title, a.raw_text FROM signals_articles a
@@ -195,20 +219,45 @@ def _run(con, embedder, limit: int | None) -> None:
         SELECT c.id, c.chunk_text FROM signals_article_chunks c
         WHERE NOT EXISTS (SELECT 1 FROM signals_chunk_embeddings e WHERE e.chunk_id = c.id)
         ORDER BY c.id""").fetchall()
+    # ...and every row with no vector in the STORED column (written by older
+    # code after the one-model flip): healed in place.
+    heal = con.execute(f"""
+        SELECT c.id, c.chunk_text FROM signals_chunk_embeddings e
+        JOIN signals_article_chunks c ON c.id = e.chunk_id
+        WHERE e.{COL.column} IS NULL ORDER BY c.id""").fetchall()
     print(f"chunked {new_chunks:,} new; embedding {len(todo):,} chunks "
           f"({embedder.model}, batches of {BATCH})")
     done = 0
     for i in range(0, len(todo), BATCH):
         batch = todo[i:i + BATCH]
-        vecs = embedder.embed([b["chunk_text"] for b in batch])
-        con.cursor().executemany(
-            "INSERT INTO signals_chunk_embeddings (chunk_id, embedding) "
-            "VALUES (%s, %s::vector)",
-            [(b["id"], vector_literal(v)) for b, v in zip(batch, vecs)])
+        texts = [b["chunk_text"] for b in batch]
+        vecs = embedder.embed(texts)
+        if target is not None:
+            extra = target.embed(texts)
+            con.cursor().executemany(
+                f"INSERT INTO signals_chunk_embeddings (chunk_id, {COL.column}, {TARGET.column}) "
+                f"VALUES (%s, %s{COL.cast}, %s{TARGET.cast})",
+                [(b["id"], vector_literal(v), vector_literal(x))
+                 for b, v, x in zip(batch, vecs, extra, strict=True)])
+        else:
+            con.cursor().executemany(
+                f"INSERT INTO signals_chunk_embeddings (chunk_id, {COL.column}) "
+                f"VALUES (%s, %s{COL.cast})",
+                [(b["id"], vector_literal(v)) for b, v in zip(batch, vecs)])
         con.commit()                      # per-batch commit — kill-safe
         done += len(batch)
         if done % (BATCH * 8) == 0:
             print(f"  {done:,}/{len(todo):,}")
+    for i in range(0, len(heal), BATCH):
+        batch = heal[i:i + BATCH]
+        vecs = embedder.embed([b["chunk_text"] for b in batch])
+        con.cursor().executemany(
+            f"UPDATE signals_chunk_embeddings SET {COL.column} = %s{COL.cast} "
+            f"WHERE chunk_id = %s AND {COL.column} IS NULL",
+            [(vector_literal(v), b["id"]) for b, v in zip(batch, vecs, strict=True)])
+        con.commit()
+    if heal:
+        print(f"healed {len(heal):,} rows that had no {COL.column}")
     print(f"done: {done:,} embeddings written.")
 
 
