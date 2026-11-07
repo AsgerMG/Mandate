@@ -3,6 +3,8 @@
 
 export const VOCABULARY_VERSION = "2026-11-06.1";
 
+// contract: every threshold below is a definition in mandate/vocabulary/vocabulary.json
+// (the EU SME bands, Recommendation 2003/361/EC, and each brain's own bands), not a corpus figure.
 export const VOCABULARY = {
   "version": "2026-11-06.1",
   "decisions": [
