@@ -416,6 +416,7 @@ def apply(admin, *, half: str = "halfvec", log=print, volume_mb: float | None = 
                 log("  (no CHECKPOINT privilege: WAL recycles at max_wal_size instead)")
         admin.commit()
         msg = f"  {phase} batch {i}/{n}: +{rows:,} rows, {time.time() - t0:,.0f}s"
+        quiet = rows == 0 and i not in (1, n)   # a resume skips done batches; say so once
         if volume_mb is not None:
             s = space(admin)
             admin.commit()
@@ -426,7 +427,8 @@ def apply(admin, *, half: str = "halfvec", log=print, volume_mb: float | None = 
                 log(msg)
                 raise Stop(f"stopped after {phase} batch {i}: free space {free / MIB:,.0f} MB is below the "
                            f"{margin_mb:,.0f} MB margin. Everything committed is kept; re-run resumes.")
-        log(msg)
+        if not quiet:
+            log(msg)
 
     def step(phase: str, sql: str, params=()) -> None:
         rows = x(sql, params).rowcount
@@ -590,8 +592,13 @@ def apply(admin, *, half: str = "halfvec", log=print, volume_mb: float | None = 
     admin.commit()
     checks = verify(admin, p)
     checks["seconds"] = round(time.time() - t0, 1)
-    checks["grounding_bytes_measured"] = space(admin)["grounding_bytes"]
+    checks["grounding_bytes_measured"] = space(admin)["grounding_rows_bytes"]
     checks["grounding_bytes_projected"] = pr["grounding_total_bytes"]
+    checks["table_bytes_measured"] = dict(admin.execute(
+        "SELECT c.oid::regclass::text, pg_total_relation_size(c.oid) FROM pg_class c "
+        "JOIN pg_namespace n ON n.oid = c.relnamespace WHERE c.relkind = 'r' AND (n.nspname = 'grounding' "
+        "OR c.relname LIKE 'grounding\\_%%\\_link') ORDER BY 1").fetchall())
+    checks["table_bytes_projected"] = pr["estimate_bytes"]
     admin.commit()
     bad = {k: v for k, v in checks.items() if k.startswith("violations_") and v}
     if bad:
