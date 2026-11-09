@@ -13,8 +13,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"; source _railway.sh
 SID=4b6ee9af-6855-4c51-8058-a1d364cbfb12
-RUNNING=$(psql "$(db_var CAPITAL_RO_DATABASE_PUBLIC_URL)" -XAtc "SELECT string_agg(id::text, ',') FROM mandate.runs WHERE status = 'running'")
-[ -z "$RUNNING" ] || { echo "STOP: run(s) $RUNNING still running; a deploy now would kill them. Try again when they finish."; exit 1; }
+no_live_run_or_stop
 git -C ../.. fetch -q origin main
 SHA=$(git -C ../.. rev-parse origin/main)
 read M H D MO <<< "$(date -u -v+10M +'%M %H %d %m')"

@@ -9,6 +9,8 @@ merged, deployed (Railway: explicit commitSha deploy) and verified. Anything
 that cannot close now is listed here with its trigger and owner; remove the
 line in the commit that closes it. Sections below this one are history.
 
+OWNER: `bash ~/Mandate/mandate/ops/next.sh` prints what is done and the one command to run next (read-only).
+
 | # | Loop | Trigger | Who |
 |---|---|---|---|
 | 1 | Merge `llm-batches` (apply `mandate/db/llm_batches.sql` first) | run 113 finished | Claude |
