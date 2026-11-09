@@ -359,3 +359,13 @@ def test_the_deliverable_holds_its_claims_to_the_same_rule(client, page):
     got = client.get(f"/missions/{m['id']}", headers=H).json()
     d = got["messages"][-1]["payload"]["deliverable"]
     assert d["sections"][0]["claims"][0]["citation_ids"] == ["c1"]
+
+
+def test_public_address_check_reads_the_ipv4_inside_nat64_and_mapped_addresses():
+    from mandate.api.app import is_public_address
+    assert is_public_address("104.151.29.97")
+    assert is_public_address("64:ff9b::6897:1d61")          # NAT64 of 104.151.29.97
+    assert not is_public_address("64:ff9b::a00:1")          # NAT64 of 10.0.0.1
+    assert not is_public_address("::ffff:127.0.0.1")
+    assert not is_public_address("169.254.169.254")         # cloud metadata
+    assert not is_public_address("::1") and not is_public_address("fd00::1")

@@ -123,6 +123,17 @@ describe("CitationLedger", () => {
   });
 });
 
+describe("find_instruments", () => {
+  it("keeps its name matches when the screen fails", async () => {
+    const { capital } = fakeServices();
+    const { findInstruments } = await import("./capital");
+    const r = await findInstruments({ ...capital, verdict: async () => { throw new Error("ENOENT companies_index.json"); } },
+      { name: "x" }, { objective: "guarantee", name_query: "Ausfallbuergschaft" });
+    expect(r.instruments.map((i) => i.instrument_id)).toEqual(["kfw_buergschaft"]);
+    expect(r.screen_unavailable).toBeTruthy();
+  });
+});
+
 // ── precedents ───────────────────────────────────────────────────────────
 
 describe("find_precedents", () => {

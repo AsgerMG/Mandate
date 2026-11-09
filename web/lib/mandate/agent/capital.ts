@@ -175,8 +175,17 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
       }
     }
   }
-  const verdict = await port.verdict(profile, input.objective, input.instrument_types ?? []);
-  for (const row of verdict.instrumentTable) {
+  // The screen is the richer half, but name matches already found must not be
+  // lost if it fails (a missing generated index, a database timeout).
+  let verdict: Awaited<ReturnType<CapitalPort["verdict"]>> | undefined;
+  let screenError: string | undefined;
+  try {
+    verdict = await port.verdict(profile, input.objective, input.instrument_types ?? []);
+  } catch (e) {
+    screenError = e instanceof Error ? e.message.slice(0, 160) : String(e);
+    console.error("[mandate/capital] the screen failed; returning name matches only:", screenError);
+  }
+  for (const row of verdict?.instrumentTable ?? []) {
     if (out.length >= limit * 2) break;
     if (!row.instrumentId || seen.has(row.instrumentId) || !inJuris(row.country)) continue;
     seen.add(row.instrumentId);
@@ -190,7 +199,8 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
   return {
     instruments: out,
     note: "Corpus rows, uncited. Use assess_instrument for cited gates before relying on any.",
-    withheld: verdict.withheld?.note,
+    withheld: verdict?.withheld?.note,
+    ...(screenError ? { screen_unavailable: "The eligibility screen did not run; only name matches are listed. Use name_query to look up instruments by name." } : {}),
   };
 }
 
