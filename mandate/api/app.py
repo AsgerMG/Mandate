@@ -161,6 +161,13 @@ class WatchIn(BaseModel):
     status: Literal["watching", "stopped"] = "watching"
     supersedes: str | None = None
 
+class DeliverableIn(BaseModel):
+    title: str
+    summary: str = ""
+    sections: list[dict]
+    questions: list[dict] = Field(default_factory=list)
+    citations: dict[str, dict] = Field(default_factory=dict)
+
 class OrgIn(BaseModel):
     name: str
     kind: str
@@ -429,6 +436,11 @@ def create_app(config: Config | None = None) -> FastAPI:
     def watch_add(mission_id: str, body: WatchIn) -> dict:
         with stores() as s:
             return guarded(ws.add_watch, s.primary, s, mission_id, **body.model_dump())
+
+    @app.post("/missions/{mission_id}/deliverable", dependencies=[Depends(auth)])
+    def deliverable_add(mission_id: str, body: DeliverableIn) -> dict:
+        with stores() as s:
+            return guarded(ws.add_deliverable, s.primary, s, mission_id, **body.model_dump())
 
     @app.get("/workspaces/{workspace_id}/snapshot", dependencies=[Depends(auth)])
     def workspace_snapshot(workspace_id: str) -> dict:

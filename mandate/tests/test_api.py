@@ -340,3 +340,22 @@ def test_pattern_derivation():
 
 def test_sha_is_the_key():
     assert len(hashlib.sha256(PAGE).hexdigest()) == 64
+
+
+def test_the_deliverable_holds_its_claims_to_the_same_rule(client, page):
+    w = _workspace(client)
+    m = client.post("/missions", headers=H, json={"workspace_id": w["workspace_id"], "objective": "x"}).json()
+    c1 = _cite(client, page, "ueber die Hausbank")
+    ok = client.post(f"/missions/{m['id']}/deliverable", headers=H, json={
+        "title": "Guarantee routes", "summary": "Two routes.", "citations": {"c1": c1},
+        "sections": [{"heading": "Germany", "claims": [
+            {"text": "Applied for through the Hausbank.", "basis": "cited", "citation_ids": ["c1"]},
+            {"text": "Start with one partner bank.", "basis": "judgement"}]}],
+        "questions": [{"question": "Do you hold a licence?", "why": "decides IT"}]})
+    assert ok.status_code == 200, ok.text
+    bad = client.post(f"/missions/{m['id']}/deliverable", headers=H, json={
+        "title": "x", "sections": [{"heading": "Germany", "claims": [{"text": "Bare."}]}]})
+    assert bad.status_code == 422
+    got = client.get(f"/missions/{m['id']}", headers=H).json()
+    d = got["messages"][-1]["payload"]["deliverable"]
+    assert d["sections"][0]["claims"][0]["citation_ids"] == ["c1"]

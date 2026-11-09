@@ -150,6 +150,25 @@ def add_watch(con, stores: Stores, mission_id: str, *, kind: str, subject: str, 
          status, supersedes, created_by))
 
 
+def add_deliverable(con, stores: Stores, mission_id: str, *, title: str, summary: str,
+                    sections: list, questions: list, citations: dict, created_by: str = "mandate") -> dict:
+    """The written deliverable, as a message: every section's claims held to the
+    same rule as a decision's, and its citations re-resolved from grounding."""
+    if not isinstance(sections, list) or not sections:
+        raise ClaimError("a deliverable has at least one section")
+    out, used = [], {}
+    for i, sec in enumerate(sections):
+        if not isinstance(sec, dict) or not str(sec.get("heading", "")).strip():
+            raise ClaimError(f"section {i}: needs a heading")
+        claims = validate_claims(sec.get("claims") or [], citations or {})
+        used.update(_used(claims, citations or {}))
+        out.append({"heading": str(sec["heading"]).strip(), "claims": claims})
+    resolved = check_citations(stores, used)
+    payload = {"deliverable": {"title": title, "summary": summary, "sections": out,
+                               "questions": questions or []}, "citations": resolved}
+    return add_message(con, mission_id, created_by=created_by, content=summary, payload=payload)
+
+
 def mission(con, mission_id: str) -> dict | None:
     m = _one(con, "SELECT * FROM mandate.missions WHERE id = %s", (mission_id,))
     if m is None:
