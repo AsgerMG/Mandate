@@ -11,21 +11,38 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
 /**
- * USD per million tokens, by model.
+ * USD per million tokens, by model: input, output, and the two cache rates.
  *
- * NOTE FOR WHOEVER READS THIS NEXT: these are list prices as of July 2026 and
- * they change. Sonnet 5 is on introductory pricing that ENDS 2026-08-31, after
- * which input goes 2 -> 3 and output 10 -> 15. A wrong price here does not
- * break anything visibly; it quietly makes the spend ceiling mean the wrong
+ * NOTE FOR WHOEVER READS THIS NEXT: list prices from Anthropic's model table as
+ * cached 2026-10-06 (the claude-api skill); they change. A wrong price here does
+ * not break anything visibly; it quietly makes the spend ceiling mean the wrong
  * number, which is the failure mode this codebase is worst at noticing.
+ *
+ * Cache rates are their own column now (Nov 2026). They used to be charged at
+ * the full input rate "to stay conservative", which was harmless while every
+ * call here was a one-shot brief. The advisor's agent loop re-sends a cached
+ * prefix on every turn, and at the full rate a mission's measured cost read
+ * several times what was billed: a ceiling that refuses missions it could
+ * afford, and a reported cost per mission nobody could reconcile with the
+ * invoice. Cache WRITES are billed above input (1.25x for the 5-minute TTL),
+ * so they now count MORE than before, not less.
  */
-const PRICES: Record<string, { in: number; out: number }> = {
-  "claude-sonnet-5": { in: 2, out: 10 },
-  "claude-haiku-4-5-20251001": { in: 1, out: 5 },
+interface Price { in: number; out: number; cacheRead: number; cacheWrite: number }
+const price = (input: number, output: number, cacheRead = input * 0.1): Price =>
+  ({ in: input, out: output, cacheRead, cacheWrite: input * 1.25 });
+const PRICES: Record<string, Price> = {
+  // the advisor: orchestrator and specialists (web/lib/mandate/agent/models.ts)
+  "claude-opus-5-5": price(4, 20, 0.2),
+  "claude-sonnet-5-5": price(2, 10, 0.2),
+  "claude-haiku-5-5": price(0.1, 0.5, 0.01),
+  // the brief pipeline
+  "claude-sonnet-5": price(2, 10),
+  "claude-haiku-4-5-20251001": price(1, 5),
+  "claude-haiku-4-5": price(1, 5),
 };
-/** Fallback for an unrecognised model: assume the expensive one. A ceiling
+/** Fallback for an unrecognised model: assume an expensive one. A ceiling
  *  that under-counts is worse than one that over-counts. */
-const DEFAULT_PRICE = { in: 3, out: 15 };
+const DEFAULT_PRICE = price(5, 25);
 
 /** USD per server-side web search. Each research pass allows up to 4. */
 const WEB_SEARCH_USD = 0.01;
@@ -49,15 +66,12 @@ export interface Usage {
 export function costOf(model: string, usage: Usage | undefined | null): number {
   if (!usage) return 0;
   const p = PRICES[model] ?? DEFAULT_PRICE;
-  // Cache reads bill at a fraction of input, but counting them at full rate
-  // only makes the ceiling more conservative, and the alternative is tracking
-  // a discount that changes independently of the base price.
-  const inTok = (usage.input_tokens ?? 0)
-    + (usage.cache_read_input_tokens ?? 0)
-    + (usage.cache_creation_input_tokens ?? 0);
-  const outTok = usage.output_tokens ?? 0;
   const searches = usage.server_tool_use?.web_search_requests ?? 0;
-  const usd = (inTok / 1e6) * p.in + (outTok / 1e6) * p.out + searches * WEB_SEARCH_USD;
+  const usd = ((usage.input_tokens ?? 0) / 1e6) * p.in
+    + ((usage.cache_read_input_tokens ?? 0) / 1e6) * p.cacheRead
+    + ((usage.cache_creation_input_tokens ?? 0) / 1e6) * p.cacheWrite
+    + ((usage.output_tokens ?? 0) / 1e6) * p.out
+    + searches * WEB_SEARCH_USD;
   return usd * USD_TO_EUR;
 }
 

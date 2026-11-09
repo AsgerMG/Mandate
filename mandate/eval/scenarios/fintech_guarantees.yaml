@@ -1,0 +1,47 @@
+# Eval case 1 (owner's example 1, plan Context). Funding & finance routes:
+# a lender without a banking licence wants its loan portfolio guaranteed.
+# Same format as edtech_ai_kids.yaml (the owner's): must / must_not.
+id: fintech_guarantees
+job: funding-routes
+founder_says: >
+  We are a fintech lender. We have raised EUR 40M. We want our SME loan
+  portfolio guaranteed by public guarantee schemes in Germany, France and Italy,
+  and at EU level. We do not have a banking licence. What are our routes?
+profile_hint:
+  name: Example Lending (eval case 1)
+  description: >
+    Fintech platform originating SME loans, funded by equity (EUR 40M raised)
+    and institutional credit lines. No banking licence. Wants public guarantee
+    cover on its loan portfolio in Germany, France, Italy and at EU level.
+  sector: software_data_ai
+  subsectors: [fintech]
+  customerType: b2b
+  markets: [EU, DE, FR, IT]
+  developmentStage: scaling_revenue
+# Used by the runner ONLY if Mandate asks the founder first (ask_founder).
+# These are the eval's assumed answers, NOT the owner's; replace them with the
+# owner's when the model answer is written.
+founder_followup: >
+  We are a German GmbH with no branches yet in France or Italy. We hold no
+  banking, payment or investment-firm licence. We originate SME loans through
+  our platform and fund them from a EUR 150M warehouse facility; the book is
+  EUR 120M today and we want to reach EUR 500M in three years. We are not
+  raising equity right now.
+must:
+  - Establishes structure before instruments - legal form, establishment per country, licences held - and asks only what the profile lacks.
+  - Treats the missing banking licence as the deal-breaker it is and works it per jurisdiction (applicant type is formal; goodwill does not move it).
+  - "Germany: explains the Hausbank principle (KfW and the Buergschaftsbanken guarantee through the borrower's house bank), so the route runs through a partner bank, cited."
+  - "Italy: names authorised financial-intermediary status under Art. 106 TUB as what opens the Fondo di Garanzia per le PMI, cited."
+  - "France: researches and cites the Bpifrance guarantee mechanics (guarantees to banks / credit institutions; Code monetaire et financier), never asserts them from instinct."
+  - "EU: InvestEU / EIF guarantees open to alternative lenders as financial intermediaries, cited; flags the move of InvestEU under the European Competitiveness Fund as something to watch."
+  - States where the company stands on each front, and the flags to fix (licence, establishment, sequencing).
+  - Uses precedents - the same fund or institution backing a comparable lender or deal - or says explicitly there is none.
+  - Maps the institutions (regional, national, EU) and names P1/P2 stakeholders per route (head of guarantees / alternative lending), political and public-capital sides.
+  - Prioritises a few routes to run in parallel, with sequencing; parks rather than drops the rest; every recommended or parked route goes on the watchlist.
+  - Saves prioritised next steps and at least one short, formal, strategic outreach draft (the paper-stack test, no AI voice).
+must_not:
+  - Lists instruments before establishing the structure.
+  - Asserts France guarantee mechanics, or any country-specific programme fact, without a citation.
+  - Recommends applying for a banking licence as the default first step without weighing a partnership or intermediary route.
+  - Generalises one country's rule to another.
+  - Walks away from a route without an explicit hard no.

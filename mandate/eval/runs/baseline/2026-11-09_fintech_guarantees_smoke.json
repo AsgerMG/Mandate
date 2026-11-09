@@ -1,0 +1,1218 @@
+{
+ "scenario": "fintech_guarantees",
+ "scenario_sha256": "30d1e9378e705ab9ce1af9c669d57673006db63cc22deee0f72c83528bb4e70a",
+ "endpoint": "http://localhost:3005/api/mandate/mission",
+ "mission_id": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+ "git_commit": "4a36dc92fc41cc272623cad93fcd332872536336",
+ "profile": {
+  "name": "Example Lending (eval case 1)",
+  "description": "Fintech platform originating SME loans, funded by equity (EUR 40M raised) and institutional credit lines. No banking licence. Wants public guarantee cover on its loan portfolio in Germany, France, Italy and at EU level.\n",
+  "sector": "software_data_ai",
+  "subsectors": [
+   "fintech"
+  ],
+  "markets": [
+   "EU",
+   "DE",
+   "FR",
+   "IT"
+  ],
+  "developmentStage": "scaling_revenue",
+  "customerType": "b2b"
+ },
+ "profile_dropped": [],
+ "asked_first": false,
+ "transcript": [
+  {
+   "type": "mission_started",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "objective": "We are a fintech lender. We have raised EUR 40M. We want our SME loan portfolio guaranteed by public guarantee schemes in Germany, France and Italy, and at EU level. We do not have a banking licence. What are our routes?"
+  },
+  {
+   "type": "specialist_started",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "scope": "Context: fintech platform originating SME loans (B2B), funded by EUR 40M equity plus institutional credit lines. No banking licence. Scal..."
+  },
+  {
+   "type": "specialist_started",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "scope": "Context: fintech platform originating SME loans (B2B), funded by EUR 40M equity plus institutional credit lines. No banking licence. Mark..."
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "profile_get",
+   "summary": "{}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "find_instruments",
+   "summary": "{\"objective\":\"portfolio guarantee on SME loans originated by non-bank fintech lender\",\"instrument_types\":[\"loan\"],\"jurisdictions\":[\"EU\",\"DE\",\"FR\",\"IT\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "find_precedents",
+   "summary": "{\"move\":\"guarantee\",\"situation\":{\"stage\":\"scaling_revenue\",\"sector\":\"fintech\",\"subsector\":\"SME lending platform\",\"country\":\"EU\"},\"k\":8}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"InvestEU financial intermediaries eligibility guarantee non-bank lenders European Competitiveness Fund\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"Kreditgeschäft Erlaubnis § 1 KWG BaFin gewerbsmäßig Kredite\",\"jurisdictions\":[\"DE\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"Code monétaire et financier L.511-5 monopole bancaire société de financement octroi de crédit\",\"jurisdictions\":[\"FR\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"Art. 106 TUB intermediari finanziari concessione di finanziamenti Banca d'Italia albo\",\"jurisdictions\":[\"IT\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"Regulation 2020/1503 crowdfunding service providers loan facilitation own account\",\"jurisdictions\":[\"EU\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "find_instruments",
+   "summary": "{\"objective\":\"SME loan portfolio guarantee\",\"jurisdictions\":[\"EU\"],\"name_query\":\"InvestEU\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "find_precedents",
+   "summary": "{\"institution\":\"EIF\",\"move\":\"guarantee\",\"k\":8}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "research",
+   "summary": "{\"question\":\"Are non-bank / alternative / fintech lenders eligible financial intermediaries for EIF InvestEU SME guarantee (portfolio guarantee, counter-guarantee)? How to apply, and what is proposed "
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "research",
+   "summary": "{\"question\":\"Fondo di Garanzia PMI MCC: which lenders are eligible (banks, Art. 106 TUB intermediaries, others) and rules for portfolio guarantees (garanzia su portafogli)?\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "research",
+   "summary": "{\"question\":\"Bpifrance guarantee products for SME loans: eligibility of financing intermediaries, non-bank lenders, crowdlending platforms, sociétés de financement; Code monétaire et financier\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "research",
+   "summary": "{\"question\":\"KfW and Bürgschaftsbanken guarantees: Hausbank principle, can a non-bank lender without banking licence access them? Any German fintech lender with EIF guarantee?\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "research",
+   "summary": "{\"question\":\"EIF guarantee agreements with alternative SME lenders: October, Iwoca, Funding Circle, Younited, Fintecture, Credit Ninja; amounts and dates\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"Germany: is granting loans to SMEs on own account without KWG licence possible (§1 para 1 sentence 2 no. 2 KWG Kreditgeschäft, §32 KWG Erlaubnis, BaFin), fronting bank models; and what st"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"France: monopole bancaire Code monétaire et financier L.511-5, L.511-6 exceptions, société de financement status L.511-1, ACPR; Bpifrance guarantee eligibility (garantie des prêts) requir"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"Italy: Art. 106 TUB intermediari finanziari authorisation Banca d'Italia requirements, timeline, passporting limits, foreign lenders lending in Italy without 106 (Art. 18 TUB EU banks), F"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"InvestEU Regulation 2021/523 eligible financial intermediaries implementing partners; proposed European Competitiveness Fund regulation (July 2025) InvestEU successor, non-bank lenders el"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "tool": "actors_register_find",
+   "summary": "{\"q\":\"guarantees\",\"kind\":\"promotional_bank\"}"
+  },
+  {
+   "type": "message",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "text": "# Public guarantee cover for an SME loan portfolio: report\n\nOnly the EU route is evidenced. Germany, France and Italy are unverified or open gaps, because research quota ran out. The corpus lookups failed (a file error on `find_instruments`). The award records returned no EIF guarantee precedents, and the register holds no named contacts.\n\n**Structure gap.** The profile does not give the country of incorporation, and it decides the national routes. Ask the founder for it, plus whether the platform is a licensed payment or other regulated entity, and whether it has an Art. 106 TUB or French société de financement status. Don't pick an instrument for Germany, France or Italy until these are known.\n\n## 1. EU: InvestEU via EIF (priority 1, probe now)\n- EIF lists alternative lenders among eligible intermediaries for InvestEU guarantees, and the list is non-exhaustive [c15]. Counter-guarantees are aimed at guarantee schemes, institutions, and credit or financial institutions [c15].\n- **Process:** meet the Call's formal criteria, apply, be selected by EIF, then sign the agreement [c16]. You apply by email with the documents from each product page, after standard EIF due diligence [c17].\n- **Window:** the deadline is 30 June 2027, and EIF may close it earlier if the budget runs out [c18]. So there is real urgency.\n- **Not established:** I did not read the product-specific Call documents, so the detailed criteria for a non-bank are unconfirmed. Those are the minimum portfolio size, regulatory status and track record. I could not distinguish the SME guarantee product from the capped portfolio guarantee either.\n- **ECF transition (unverified):** the Commission proposed the European Competitiveness Fund on 16 July 2025 for the 2028–34 MFF, and says it builds on InvestEU. The tool could not fetch that page, so this is unverified. I did not read the regulation text (52025PC0555), so I can't say whether alternative lenders stay eligible. The ECF is only a proposal, due 1 January 2028. A successor Call after June 2027 is unchecked. Put this route on the watchlist.\n\n## 2. Germany (unverified)\n- The one source I retrieved was a secondary blog. It says KfW and Landesförderinstitut loans follow the Hausbank principle: the bank assesses the project and carries the repayment liability. It was not KfW itself and I could not verify it.\n- My judgement, matching the playbook, is that an unlicensed lender is not the direct channel. It would reach KfW only through a partner bank.\n- Bürgschaftsbanken eligibility is unchecked.\n- **Practical path (judgement):** use the EIF route above, or have a licensed partner bank originate or co-lend.\n\n## 3. France (not established)\n- Research returned nothing usable. I can't say whether Bpifrance guarantees reach sociétés de financement, crowdlending platforms or other non-banks. Nor can I say how Code monétaire et financier L.511-1 maps to eligibility.\n- Do not assert any mechanics yet. The next step is to research Bpifrance's guarantee conventions and the CMF text, and to check whether Bpifrance counter-guarantees use InvestEU.\n\n## 4. Italy (unverified)\n- A 2012 version of the Fondo di Garanzia portfolio rules lists eligible lenders as banks, Art. 106 TUB intermediaries, insurers and asset managers. It also has a separate category of guarantors (confidi and guarantee-issuing intermediaries). This is unverified, and it is superseded in part.\n- **Not established:** the current tranches, caps, coverage, minimum portfolio size and fees. Check MCC's current Disposizioni operative.\n- Judgement: Art. 106 status is the likely gate. If the company has it, Italy is the most direct national route. If not, check whether it can act through a licensed partner.\n\n## 5. Precedents\n- The award records show no EIF guarantee precedent, so there is nothing to cite. The web research did not verify any deal.\n- **October, Iwoca, Funding Circle, Younited:** amounts and dates are not established. A Wikipedia mention of an Iwoca EIF COSME agreement (about £40m) is unverified and I have excluded it.\n- **Next step:** check eif.org press releases and its signatures pages, plus each lender's own announcements. Quote the deal EIF already did in the outreach.\n- **Named heads of guarantees:** I have no evidence for EIF, Bpifrance, MCC or KfW, and I won't guess names. Identify them from the institutions' published organisation pages, then write to the head of the specific guarantee or alternative-lending line (priority 1).\n\n## Sequence\n1. Confirm incorporation country and regulatory status.\n2. Send a short email to EIF with the application pack before the 30 June 2027 cut-off.\n3. In parallel, probe MCC if Art. 106 status exists. Ask Bpifrance an open question about non-bank partnership.\n4. For Germany, use a partner-bank route.\n5. Watch the ECF text for carve-outs.\n\n**Regina:** the regulatory half is for her. It covers whether the platform needs a licence (lending, payment or crowdfunding under EU rules). That licensing decides eligibility in Italy and France, and it affects EIF."
+  },
+  {
+   "type": "specialist_completed",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "wincent",
+   "summary": "# Public guarantee cover for an SME loan portfolio: report"
+  },
+  {
+   "type": "message",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "text": "# Report: public guarantee routes for a non-bank SME lender (DE, FR, IT, EU)\n\n**Evidence status.** Research tools hit their limits. Only three French passages are verified: [c19], [c20], [c21]. Everything else below is **unverified** (general knowledge or secondary reading) and must be checked against primary text before anyone relies on it. The corpus gave nothing usable on KWG, TUB, InvestEU or the Competitiveness Fund. The EU passages it returned are a 2011 Commission Communication [c2] and ECSP delegated acts [c1, c3]. They don't answer these questions.\n\n## Rules that decide the question\n\n**Germany (unverified).**\n- Lending on own account is a banking business under §1(1) sentence 2 no. 2 KWG when done commercially or at a scale needing a commercial operation. §32 KWG requires a BaFin licence, and §54 KWG makes unlicensed activity an offence. This is general knowledge, not quoted text.\n- The usual workaround is a fronting or partner bank that originates the loan. Circumvention and \"true lender\" risk is unassessed.\n- KfW and the Bürgschaftsbanken work through the borrower's Hausbank, which carries credit risk. A non-bank is therefore generally not the channel. This matches the playbook deal-breaker, but I have no primary source.\n\n**France.**\n- Per the research summary, L.511-5 CMF reserves habitual credit operations to établissements de crédit and sociétés de financement. The text of this monopoly article was **not** verified. A société de financement is a legal person other than a credit institution that lends professionally and on its own account [c21]. That is the 2014 consolidated version only.\n- Exception L.511-6 3 bis [c19]: companies with auditor-certified accounts may lend, ancillary to their main activity, for under three years to micro-enterprises, SMEs and ETIs with which they have economic links. A lending platform's core business is unlikely to fit this exception (judgement).\n- A non-profit exception exists for preferential social loans [c20]. It is not relevant here.\n- Bpifrance guarantees reportedly benefit only the lending financial institution, which keeps part of the risk. This is unverified, and eligibility of non-bank lenders is not established. Product terms must be read.\n- The crowdfunding regime (IFP status, ECSP authorisation by the AMF) was not verified.\n\n**Italy (unverified).**\n- Art. 106 TUB reserves lending to the public to intermediaries authorised by Banca d'Italia and entered on its register (albo).\n- Conditions under Art. 107 TUB: Italian legal form, registered and head office in Italy, minimum capital of about EUR 2m (EUR 3m if guarantees are issued), and fit and proper shareholders and officers. I could not establish the timeline.\n- EU banks can lend into Italy under mutual recognition (Art. 16 TUB) without a 106 licence. The Art. 18 TUB wording for financial companies may be outdated. Your claim that 106 intermediaries cannot passport is not confirmed.\n- Fondo di Garanzia PMI: snippets suggest registered 106 intermediaries are eligible requesting parties. This is unconfirmed.\n\n**EU (unverified).**\n- ECSP (Reg. 2020/1503) covers facilitating the granting of loans. I did not confirm that it permits own-account lending, and the wording suggests it does not (judgement).\n- InvestEU (Reg. 2021/523): the guarantee goes to implementing partners with a Commission agreement. These are financial institutions, such as the EIF, that on-lend through intermediaries.\n- European Competitiveness Fund proposal (COM(2025) 555, 16 July 2025): it keeps the implementing-partner model. I found **no text** admitting or excluding non-bank lenders. This needs a full read of the articles and recital 70. Add it to the watchlist.\n- State aid (de minimis / GBER pass-through): not researched. This is a gap.\n- Transparency Register: register before engaging EU officials. Since 1 January 2025 the requirement covers Commission staff in management functions. The legal basis was not confirmed.\n\n## What this means for the company (judgement)\n1. Without a banking licence the national routes are formally closed or hard to reach. These are the three deal-breakers:\n   - Germany: via a Hausbank only.\n   - France: needs société de financement status (ACPR) or a partner bank.\n   - Italy: needs Art. 106 status.\n2. The realistic path is a **fronting or partner bank** that carries the guarantee, plus the EU route through an EIF-type intermediary. The EU route is the more open one, but I couldn't confirm that.\n3. First facts needed: country of incorporation, existing credit-line lenders, and whether any lender is a bank.\n4. Precedents (guarantees given to non-bank lenders) were not searched. Say so in any outreach.\n\n## Bodies and people\nI have no verified names. The bodies are BaFin; KfW, the Bürgschaftsbanken and the VDB; ACPR, AMF and Bpifrance; Banca d'Italia and the Fondo di Garanzia PMI manager (Mediocredito Centrale); and the EIF and the Commission (DG ECFIN and the ECF file). Per the playbook, priority 1 is the head of guarantees or portfolio-guarantee instrument at each. Rapporteurs and unit heads still need to be identified.\n\n## Next steps\n- Read the primary texts: KWG §§1, 32; CMF L.511-5; TUB 106, 107, 16, 18; Reg. 2021/523 Art. 2 and 13; and the ECF proposal.\n- Retrieve the Bpifrance general terms, the Fondo di Garanzia PMI operating provisions and the EIF intermediary criteria.\n- Register in the Transparency Register before any EU contact.\n- Put the ECF carve-out question on the watchlist."
+  },
+  {
+   "type": "specialist_completed",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "regina",
+   "summary": "# Report: public guarantee routes for a non-bank SME lender (DE, FR, IT, EU)"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_flag",
+   "summary": "No lending status recognised by national guarantee schemes (DE, FR, IT)"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_flag",
+   "summary": "Entity structure and current origination model unknown"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_flag",
+   "summary": "No precedent yet for a public guarantee to an alternative lender"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_flag",
+   "summary": "EU Transparency Register entry before engaging Commission officials"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_decision",
+   "summary": "Which guarantee route to lead with"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_decision",
+   "summary": "Whether to seek Art. 106 TUB (Italy) or société de financement (France) status"
+  },
+  {
+   "type": "flag",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "flag": {
+    "id": "986fd118-8c06-416d-9816-83f325528e8b",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "title": "EU Transparency Register entry before engaging Commission officials",
+    "severity": "minor",
+    "fix": "Register in the EU Transparency Register before any meeting with Commission staff on the ECF file. Talks with the EIF on an InvestEU application are operational, but register anyway.",
+    "claims": [
+     {
+      "text": "Since 1 January 2025, Commission staff in management functions should only meet registered interest representatives.",
+      "basis": "unverified",
+      "citationIds": []
+     }
+    ],
+    "evidence": [],
+    "createdBy": "regina",
+    "createdAt": "2026-11-09T16:04:55.929012+01:00"
+   }
+  },
+  {
+   "type": "flag",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "flag": {
+    "id": "68d3d156-079a-440b-a75c-f304bdef6e19",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "title": "No lending status recognised by national guarantee schemes (DE, FR, IT)",
+    "severity": "blocker",
+    "fix": "Pick one per market. Germany: a partner/fronting bank that originates or co-lends and carries the KfW/Bürgschaftsbank cover. France: either a partner bank or a société de financement authorisation from the ACPR. Italy: Art. 106 TUB authorisation from Banca d'Italia, through an Italian entity, or a partner that already holds it. First confirm against the primary texts (KWG §§1, 32; CMF L.511-5; TUB 106-107) with local counsel.",
+    "claims": [
+     {
+      "text": "In France, a société de financement is a legal person, other than a credit institution, that lends professionally and on its own account.",
+      "basis": "cited",
+      "citationIds": [
+       "c21"
+      ]
+     },
+     {
+      "text": "The French exception in L.511-6 3 bis lets companies with auditor-certified accounts lend, as an ancillary activity, for under three years to SMEs and ETIs they have economic links with.",
+      "basis": "cited",
+      "citationIds": [
+       "c19"
+      ]
+     },
+     {
+      "text": "A lending platform's core business is unlikely to fit the L.511-6 3 bis exception.",
+      "basis": "judgement",
+      "citationIds": []
+     },
+     {
+      "text": "In Germany, commercial own-account lending is banking business that needs a BaFin licence. KfW and Bürgschaftsbank cover runs through the borrower's Hausbank.",
+      "basis": "unverified",
+      "citationIds": []
+     },
+     {
+      "text": "In Italy, lending to the public is reserved to banks and to intermediaries authorised under Art. 106 TUB. Art. 106 status needs an Italian entity and about EUR 2m minimum capital.",
+      "basis": "unverified",
+      "citationIds": []
+     },
+     {
+      "text": "Without a licence, direct access to the three national schemes is formally closed or very hard. No amount of goodwill changes that.",
+      "basis": "judgement",
+      "citationIds": []
+     }
+    ],
+    "evidence": [
+     {
+      "id": "c21:92957cbf0e33",
+      "specialist": "regina",
+      "title": "Titre Ier : Prestataires de services bancaire (Articles L511-1 à L519-6) - Légifrance",
+      "publisher": "www.legifrance.gouv.fr",
+      "canonicalUrl": "https://www.legifrance.gouv.fr/codes/id/LEGISCTA000027643757/2014-01-01",
+      "retrievedAt": "2026-11-09T15:04:11.409752+00:00",
+      "locator": "chars 1564-1813, sha256 92957cbf0e33",
+      "excerpt": "II.-Les sociétés de financement sont des personnes morales, autres que des établissements de crédit, qui effectuent à titre de profession habituelle et pour leur propre compte des opérations de crédit dans les conditions et limites définies par leur"
+     },
+     {
+      "id": "c19:71ff4488c7bb",
+      "specialist": "regina",
+      "title": "Article L511-6 - Code monétaire et financier - Légifrance",
+      "publisher": "www.legifrance.gouv.fr",
+      "canonicalUrl": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000049423674",
+      "retrievedAt": "2026-11-09T15:04:08.677928+00:00",
+      "locator": "chars 7088-7559, sha256 71ff4488c7bb",
+      "excerpt": "Aux sociétés commerciales dont les comptes du dernier exercice clos ont fait l'objet d'une certification par un commissaire aux comptes ou qui ont désigné volontairement un commissaire aux comptes et qui consentent, à titre accessoire à leur activité principale, des prêts à moins de trois ans à des microentreprises, des petites et moyennes entreprises ou à des entreprises de taille intermédiair..."
+     }
+    ],
+    "createdBy": "regina",
+    "createdAt": "2026-11-09T16:04:55.931058+01:00"
+   }
+  },
+  {
+   "type": "decision",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "decision": {
+    "id": "6684e7fa-185a-4653-bc44-5b2864f30151",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "title": "Whether to seek Art. 106 TUB (Italy) or société de financement (France) status",
+    "recommendation": "Not yet. Get counsel's cost and timeline for both statuses and compare them with partner-bank economics. Revisit once the EIF answer and the Italian and French volumes are known.",
+    "rationale": "A société de financement lends professionally on its own account and is a status distinct from a credit institution. [c21] Art. 106 TUB authorisation needs an Italian legal entity, about EUR 2m minimum capital and fit-and-proper owners and managers. The timeline is unknown. (unverified) A licence is a multi-month, capital-heavy commitment. It is only worth it if the guaranteed volume in that market is large. (judgement)",
+    "confidence": "low",
+    "createdAt": "2026-11-09T16:04:55.944965+01:00",
+    "evidence": [
+     {
+      "id": "c21:92957cbf0e33",
+      "specialist": "regina",
+      "title": "Titre Ier : Prestataires de services bancaire (Articles L511-1 à L519-6) - Légifrance",
+      "publisher": "www.legifrance.gouv.fr",
+      "canonicalUrl": "https://www.legifrance.gouv.fr/codes/id/LEGISCTA000027643757/2014-01-01",
+      "retrievedAt": "2026-11-09T15:04:11.409752+00:00",
+      "locator": "chars 1564-1813, sha256 92957cbf0e33",
+      "excerpt": "II.-Les sociétés de financement sont des personnes morales, autres que des établissements de crédit, qui effectuent à titre de profession habituelle et pour leur propre compte des opérations de crédit dans les conditions et limites définies par leur"
+     }
+    ],
+    "claims": [
+     {
+      "text": "A société de financement lends professionally on its own account and is a status distinct from a credit institution.",
+      "basis": "cited",
+      "citationIds": [
+       "c21"
+      ]
+     },
+     {
+      "text": "Art. 106 TUB authorisation needs an Italian legal entity, about EUR 2m minimum capital and fit-and-proper owners and managers. The timeline is unknown.",
+      "basis": "unverified",
+      "citationIds": []
+     },
+     {
+      "text": "A licence is a multi-month, capital-heavy commitment. It is only worth it if the guaranteed volume in that market is large.",
+      "basis": "judgement",
+      "citationIds": []
+     }
+    ],
+    "createdBy": "regina"
+   }
+  },
+  {
+   "type": "flag",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "flag": {
+    "id": "46490b3f-33f7-473c-a497-4e656715eec6",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "title": "No precedent yet for a public guarantee to an alternative lender",
+    "severity": "major",
+    "fix": "Before the EIF and Bpifrance probes go out, check the eif.org press releases and signature lists, plus the announcements of non-bank SME lenders, for InvestEU, COSME or EFSI guarantees to non-banks. Quote the closest deal in the outreach.",
+    "claims": [
+     {
+      "text": "The award records returned no EIF guarantee precedent for an alternative lender.",
+      "basis": "judgement",
+      "citationIds": []
+     },
+     {
+      "text": "A reported EIF COSME agreement with Iwoca of about GBP 40m could not be verified in this mission.",
+      "basis": "unverified",
+      "citationIds": []
+     }
+    ],
+    "evidence": [],
+    "createdBy": "wincent",
+    "createdAt": "2026-11-09T16:04:55.930506+01:00"
+   }
+  },
+  {
+   "type": "flag",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "flag": {
+    "id": "4728fa9c-3fad-4717-aa77-f23cb57c1954",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "title": "Entity structure and current origination model unknown",
+    "severity": "major",
+    "fix": "The founder confirms four things: country of incorporation; subsidiaries or branches in DE, FR and IT; how loans are originated legally today (fronting bank, an exemption, a licence in another country); and whether any credit-line provider is a bank. Everything else depends on these answers.",
+    "claims": [
+     {
+      "text": "The company profile does not state the country of incorporation or the legal basis on which the company lends today.",
+      "basis": "judgement",
+      "citationIds": []
+     },
+     {
+      "text": "Eligibility for every national route turns on legal entity and licence, so no national instrument can be committed to until these facts are known.",
+      "basis": "judgement",
+      "citationIds": []
+     }
+    ],
+    "evidence": [],
+    "createdBy": "mandate",
+    "createdAt": "2026-11-09T16:04:55.944887+01:00"
+   }
+  },
+  {
+   "type": "decision",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "decision": {
+    "id": "1fadcbb4-1dfa-4c79-a61e-894c08493b0c",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "title": "Which guarantee route to lead with",
+    "recommendation": "Lead with InvestEU guarantees through the EIF and probe this month. In parallel, set up a partner-bank model for Germany and France. Decide on Art. 106 status for Italy only once the volumes the Fondo would cover justify an Italian entity and the authorisation process. Do not apply for licences just to reach guarantees until the EIF answer is in.",
+    "rationale": "The EIF lists alternative lenders among eligible intermediaries for InvestEU guarantees, and the list is non-exhaustive. [c15] The InvestEU call deadline is 30 June 2027, and the EIF may close it earlier if the budget runs out. [c18] The process is: meet the call's formal criteria, apply by email with the documents listed on the product page, pass EIF due diligence, be selected, sign. [c16, c17] The product-specific criteria for a non-bank (minimum portfolio, regulatory status, track record) were not read and remain open. (judgement) The EU route is the only one where an unlicensed lender is named as eligible. The national routes need a licence or a partner bank. (judgement)",
+    "confidence": "medium",
+    "createdAt": "2026-11-09T16:04:55.930421+01:00",
+    "evidence": [
+     {
+      "id": "c15:0936aa99dca7",
+      "specialist": "wincent",
+      "title": "InvestEU Guarantee products | EU debt financing for SMEs",
+      "publisher": "www.eif.org",
+      "canonicalUrl": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "retrievedAt": "2026-11-09T15:03:43.933305+00:00",
+      "locator": "chars 1859-1948, sha256 0936aa99dca7",
+      "excerpt": "For guarantees: credit or financial institutions, alternative lenders, leasing companies."
+     },
+     {
+      "id": "c18:0936aa99dca7",
+      "specialist": "wincent",
+      "title": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "publisher": "www.eif.org",
+      "canonicalUrl": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "retrievedAt": "2026-11-09T15:03:43.933305+00:00",
+      "locator": "chars 3227-3266, sha256 0936aa99dca7",
+      "excerpt": "Deadline for applications: 30 June 2027"
+     },
+     {
+      "id": "c16:0936aa99dca7",
+      "specialist": "wincent",
+      "title": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "publisher": "www.eif.org",
+      "canonicalUrl": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "retrievedAt": "2026-11-09T15:03:43.933305+00:00",
+      "locator": "chars 2515-2712, sha256 0936aa99dca7",
+      "excerpt": "it is selected by the EIF as a potential financial intermediary under InvestEU to implement one or more InvestEU Portfolio Guarantee Products pursuant to the selection process outlined in the Call;"
+     },
+     {
+      "id": "c17:0936aa99dca7",
+      "specialist": "wincent",
+      "title": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "publisher": "www.eif.org",
+      "canonicalUrl": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "retrievedAt": "2026-11-09T15:03:43.933305+00:00",
+      "locator": "chars 2946-3031, sha256 0936aa99dca7",
+      "excerpt": "If you are eligible, you can apply by downloading and submitting via email to the EIF"
+     }
+    ],
+    "claims": [
+     {
+      "text": "The EIF lists alternative lenders among eligible intermediaries for InvestEU guarantees, and the list is non-exhaustive.",
+      "basis": "cited",
+      "citationIds": [
+       "c15"
+      ]
+     },
+     {
+      "text": "The InvestEU call deadline is 30 June 2027, and the EIF may close it earlier if the budget runs out.",
+      "basis": "cited",
+      "citationIds": [
+       "c18"
+      ]
+     },
+     {
+      "text": "The process is: meet the call's formal criteria, apply by email with the documents listed on the product page, pass EIF due diligence, be selected, sign.",
+      "basis": "cited",
+      "citationIds": [
+       "c16",
+       "c17"
+      ]
+     },
+     {
+      "text": "The product-specific criteria for a non-bank (minimum portfolio, regulatory status, track record) were not read and remain open.",
+      "basis": "judgement",
+      "citationIds": []
+     },
+     {
+      "text": "The EU route is the only one where an unlicensed lender is named as eligible. The national routes need a licence or a partner bank.",
+      "basis": "judgement",
+      "citationIds": []
+     }
+    ],
+    "createdBy": "mandate"
+   }
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_action",
+   "summary": "Probe the EIF on InvestEU guarantee cover"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_action",
+   "summary": "Open question to Bpifrance on guarantees for non-bank lenders"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_action",
+   "summary": "Brief counsel on licensing in DE, FR, IT"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_action",
+   "summary": "Shortlist German partner banks for a Hausbank / fronting model"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_action",
+   "summary": "Register in the EU Transparency Register"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_action",
+   "summary": "Find precedents: public guarantees to non-bank SME lenders"
+  },
+  {
+   "type": "action",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "action": {
+    "id": "3bda17f2-ef68-49a2-8f9a-e59bbb324816",
+    "title": "Find precedents: public guarantees to non-bank SME lenders",
+    "status": "open",
+    "dueAt": "2026-11-20",
+    "createdAt": "2026-11-09T16:05:15.813947+01:00",
+    "detail": "Search eif.org press releases and signature lists, plus the news pages of alternative SME lenders active in DE, FR, IT and the UK, for InvestEU, COSME and EFSI guarantees. Record the institution, amount and date of each deal. Use the closest one in the EIF email."
+   }
+  },
+  {
+   "type": "action",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "action": {
+    "id": "341230e4-5de0-4bfa-aa47-638032fc89ca",
+    "title": "Open question to Bpifrance on guarantees for non-bank lenders",
+    "status": "open",
+    "dueAt": "2026-12-15",
+    "createdAt": "2026-11-09T16:05:15.815358+01:00",
+    "detail": "Send a low-effort probe to the head of guarantees at Bpifrance; find the name on the Bpifrance organisation page. Ask whether a non-bank lender can benefit directly, whether it would need société de financement status, or whether cover must go through a partner bank. Send it in French.",
+    "draft": "Objet : Garantie Bpifrance et prêteur non bancaire aux PME\n\nMadame, Monsieur,\n\n[Société] finance des PME en France, en Allemagne et en Italie. Elle est financée par 40 M EUR de fonds propres et par des lignes de crédit institutionnelles. Nous comblons un besoin de financement que les banques servent mal.\n\nNous souhaitons savoir dans quelles conditions nos prêts aux PME françaises pourraient bénéficier de la garantie Bpifrance : en direct, sous statut de société de financement, ou en partenariat avec un établissement bancaire.\n\nSeriez-vous disponible pour un court échange ?\n\nVeuillez agréer, Madame, Monsieur, l'expression de nos salutations distinguées.\n[Nom], Président",
+    "stakeholder": {
+     "name": "Directeur/Directrice de la Garantie (to identify)",
+     "organisation": "Bpifrance",
+     "role": "Priority 1: head of guarantees",
+     "channel": "email",
+     "contact": "to identify",
+     "contactVerified": false
+    }
+   }
+  },
+  {
+   "type": "action",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "action": {
+    "id": "16e56050-d425-42da-bd7c-dcdd328e0640",
+    "decisionId": "6684e7fa-185a-4653-bc44-5b2864f30151",
+    "title": "Brief counsel on licensing in DE, FR, IT",
+    "status": "open",
+    "dueAt": "2026-12-15",
+    "createdAt": "2026-11-09T16:05:15.783887+01:00",
+    "detail": "Ask local counsel for a two-page note per country. Germany: KWG §§1, 32, the fronting-bank model and true-lender risk. France: CMF L.511-5 and L.511-6, the société de financement process at the ACPR, and whether Bpifrance cover is open to non-banks. Italy: TUB Art. 106-107, cost and timeline, the eligibility rules in the current Fondo di Garanzia PMI operating provisions, and whether lending into Italy is possible without 106 status. Add state-aid pass-through (de minimis / GBER) for the borrowers."
+   }
+  },
+  {
+   "type": "action",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "action": {
+    "id": "fbd1c501-70d8-406b-b496-245e68e3628d",
+    "title": "Shortlist German partner banks for a Hausbank / fronting model",
+    "status": "open",
+    "dueAt": "2026-12-31",
+    "createdAt": "2026-11-09T16:05:15.815698+01:00",
+    "detail": "Identify two or three German banks that already front fintech lenders or would co-lend, and that pass KfW and Bürgschaftsbank cover through. Start with any bank among the current credit-line providers."
+   }
+  },
+  {
+   "type": "action",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "action": {
+    "id": "12dd291f-b9e1-4a20-af58-0a9d3240d94a",
+    "decisionId": "1fadcbb4-1dfa-4c79-a61e-894c08493b0c",
+    "title": "Probe the EIF on InvestEU guarantee cover",
+    "status": "open",
+    "dueAt": "2026-11-30",
+    "createdAt": "2026-11-09T16:05:15.784647+01:00",
+    "detail": "Send a short probe to the EIF InvestEU guarantees team, using the contact on the product page (not verified here). First find the head of the guarantee or alternative-lending line on the EIF organisation page and address it to them. Before sending, add a precedent line if one is found. Ask which product fits (SME competitiveness guarantee vs capped portfolio guarantee) and what the minimum requirements are for a non-bank.",
+    "draft": "Subject: InvestEU portfolio guarantee for a non-bank SME lender in DE, FR, IT\n\nDear [Name],\n\n[Company] is a non-bank SME lender active in Germany, France and Italy, backed by EUR 40m of equity and institutional credit lines. We finance small businesses that banks underserve.\n\nInvestEU names alternative lenders among eligible intermediaries. We would like to understand which guarantee product fits our portfolio and what the EIF expects from a non-bank intermediary before we apply under the current call.\n\nCould we have a 30-minute call in the coming weeks?\n\nKind regards,\n[Name], CEO",
+    "stakeholder": {
+     "name": "Head of InvestEU guarantees / alternative lending (to identify)",
+     "organisation": "European Investment Fund",
+     "role": "Priority 1: head of the guarantee instrument",
+     "channel": "email",
+     "contact": "per eif.org InvestEU guarantees product page",
+     "contactVerified": false
+    }
+   }
+  },
+  {
+   "type": "action",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "action": {
+    "id": "b6570e17-a540-4788-98da-a5c9de779b7f",
+    "title": "Register in the EU Transparency Register",
+    "status": "open",
+    "dueAt": "2026-11-20",
+    "createdAt": "2026-11-09T16:05:15.815317+01:00",
+    "detail": "Create the entry before any contact with Commission staff (DG ECFIN, ECF file)."
+   }
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_plan_step",
+   "summary": "Confirm structure and the legal basis of lending today"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_plan_step",
+   "summary": "Send the EIF probe and the Bpifrance probe; brief counsel"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_plan_step",
+   "summary": "Build the EIF application pack; shortlist partner banks"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_plan_step",
+   "summary": "File with the EIF well before the 30 June 2027 cut-off"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_watch",
+   "summary": "EIF InvestEU guarantee for the SME portfolio"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_watch",
+   "summary": "European Competitiveness Fund proposal (COM(2025) 555) replacing InvestEU from 2028"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_watch",
+   "summary": "KfW / Bürgschaftsbanken cover via partner bank"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_watch",
+   "summary": "Bpifrance guarantee for loans to French SMEs"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "save_watch",
+   "summary": "Fondo di Garanzia per le PMI (MCC), portfolio guarantee"
+  },
+  {
+   "type": "plan_step",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "step": {
+    "id": "0872fc69-c499-409e-b55e-dc9edfffdc7c",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "ordinal": 1,
+    "title": "File with the EIF well before the 30 June 2027 cut-off",
+    "detail": "The EIF can close the call early when the budget runs out, so aim to file in Q1 2027. Track the European Competitiveness Fund text for alternative-lender eligibility after 2027.",
+    "horizon": "later",
+    "createdAt": "2026-11-09T16:05:30.543693+01:00"
+   }
+  },
+  {
+   "type": "plan_step",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "step": {
+    "id": "6bfbd004-3e89-4c58-9b7e-3061305df68f",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "ordinal": 1,
+    "title": "Send the EIF probe and the Bpifrance probe; brief counsel",
+    "detail": "Send the EIF InvestEU probe with a precedent line, plus the Bpifrance open question in French. Commission the counsel notes on DE, FR and IT licensing and the Fondo di Garanzia eligibility rules.",
+    "horizon": "this_month",
+    "createdAt": "2026-11-09T16:05:30.536935+01:00"
+   }
+  },
+  {
+   "type": "plan_step",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "step": {
+    "id": "a248125b-635f-497b-9473-8b1c4f39904c",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "ordinal": 1,
+    "title": "Confirm structure and the legal basis of lending today",
+    "detail": "Confirm the incorporation country, establishments in DE, FR and IT, the current origination model, and which credit-line lenders are banks. Register in the EU Transparency Register. Run the precedent search.",
+    "horizon": "this_week",
+    "createdAt": "2026-11-09T16:05:30.539577+01:00"
+   }
+  },
+  {
+   "type": "watch",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "watch": {
+    "id": "afc83e32-3fb5-4dfb-a3ce-56f90b68a401",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "kind": "rule",
+    "subject": "European Competitiveness Fund proposal (COM(2025) 555) replacing InvestEU from 2028",
+    "trigger": "Text that admits or excludes non-bank or alternative lenders as financial intermediaries; carve-outs added or removed in trilogue",
+    "jurisdiction": "EU",
+    "createdAt": "2026-11-09T16:05:30.540665+01:00"
+   }
+  },
+  {
+   "type": "watch",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "watch": {
+    "id": "8f5ab56f-d7e3-4582-9308-163556833d73",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "kind": "route",
+    "subject": "KfW / Bürgschaftsbanken cover via partner bank",
+    "routeStatus": "parked",
+    "trigger": "A KfW or Bürgschaftsbank programme opening to non-bank or fintech lenders, or a partner bank agreeing to front",
+    "jurisdiction": "DE",
+    "createdAt": "2026-11-09T16:05:30.543654+01:00"
+   }
+  },
+  {
+   "type": "watch",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "watch": {
+    "id": "0bcadf31-c761-49fb-aa82-faac81b2269f",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "kind": "route",
+    "subject": "Fondo di Garanzia per le PMI (MCC), portfolio guarantee",
+    "routeStatus": "probe",
+    "trigger": "New operating provisions changing lender eligibility; the company obtains Art. 106 TUB status or finds an eligible partner",
+    "jurisdiction": "IT",
+    "createdAt": "2026-11-09T16:05:30.536901+01:00"
+   }
+  },
+  {
+   "type": "plan_step",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "step": {
+    "id": "4ea2b335-8270-4fcf-aac4-72c3c6db3518",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "ordinal": 1,
+    "title": "Build the EIF application pack; shortlist partner banks",
+    "detail": "Prepare the documents listed on the EIF product page: portfolio data, loss history, underwriting policy, financials. Start talks with German partner banks. Based on counsel's note, decide on Italy: Art. 106, a partner, or park.",
+    "horizon": "this_quarter",
+    "createdAt": "2026-11-09T16:05:30.534868+01:00"
+   }
+  },
+  {
+   "type": "watch",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "watch": {
+    "id": "88cc45c0-c453-4673-8c22-aa768e4fd24e",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "kind": "route",
+    "subject": "Bpifrance guarantee for loans to French SMEs",
+    "routeStatus": "probe",
+    "trigger": "Bpifrance's answer on non-bank eligibility; any change to CMF L.511-5/L.511-6 or société de financement rules",
+    "jurisdiction": "FR",
+    "createdAt": "2026-11-09T16:05:30.536238+01:00"
+   }
+  },
+  {
+   "type": "watch",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "watch": {
+    "id": "33983edb-3557-4654-ad16-5b6608dd8201",
+    "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+    "kind": "route",
+    "subject": "EIF InvestEU guarantee for the SME portfolio",
+    "routeStatus": "pursue",
+    "trigger": "Call closed early for lack of budget, change to intermediary criteria, or a successor call after 30 June 2027",
+    "jurisdiction": "EU",
+    "createdAt": "2026-11-09T16:05:30.574586+01:00"
+   }
+  },
+  {
+   "type": "tool_used",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "specialist": "mandate",
+   "tool": "finish_mission",
+   "summary": "Public guarantee cover for a non-bank SME lender: DE, FR, IT and EU routes"
+  },
+  {
+   "type": "deliverable",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "deliverable": {
+    "title": "Public guarantee cover for a non-bank SME lender: DE, FR, IT and EU routes",
+    "summary": "Your most open route is the EU one: the EIF names alternative lenders among eligible intermediaries for InvestEU guarantees, and the current call closes on 30 June 2027 or earlier if the budget runs out. The national schemes in Germany, France and Italy are built for licensed lenders. Without a banking licence you reach them through a partner bank, or by getting a national status: a société de financement in France, Art. 106 TUB authorisation in Italy. Lead with the EIF now and set up partner banks for Germany and France. Decide on licences only once the EIF answer and the counsel notes are in. Evidence was thin this mission: most national rules below are labelled unverified and need checking against primary texts.",
+    "sections": [
+     {
+      "heading": "Situation",
+      "claims": [
+       {
+        "text": "You want public guarantee cover on an SME loan portfolio in DE, FR, IT and at EU level, without a banking licence. Eligibility in each market is decided by your legal entity and licence status first.",
+        "basis": "judgement",
+        "citationIds": []
+       },
+       {
+        "text": "Your country of incorporation and the legal basis on which you lend today are not in the profile. Both decide the national routes.",
+        "basis": "judgement",
+        "citationIds": []
+       }
+      ]
+     },
+     {
+      "heading": "EU: InvestEU via EIF (pursue)",
+      "claims": [
+       {
+        "text": "The EIF lists alternative lenders among eligible intermediaries for InvestEU guarantees, and the list is non-exhaustive.",
+        "basis": "cited",
+        "citationIds": [
+         "c15"
+        ]
+       },
+       {
+        "text": "To apply: meet the call's formal criteria, apply by email with the documents listed on the product page, pass EIF due diligence, be selected, sign.",
+        "basis": "cited",
+        "citationIds": [
+         "c16",
+         "c17"
+        ]
+       },
+       {
+        "text": "The call closes on 30 June 2027, and the EIF may close it earlier if the budget runs out.",
+        "basis": "cited",
+        "citationIds": [
+         "c18"
+        ]
+       },
+       {
+        "text": "The product-specific criteria for a non-bank (minimum portfolio, regulatory status, track record) were not read. The EIF probe should establish them.",
+        "basis": "judgement",
+        "citationIds": []
+       },
+       {
+        "text": "InvestEU is due to be replaced by the European Competitiveness Fund from 2028. Whether alternative lenders stay eligible is not established, so it is on the watchlist.",
+        "basis": "unverified",
+        "citationIds": []
+       }
+      ]
+     },
+     {
+      "heading": "Germany (parked as direct route; partner bank)",
+      "claims": [
+       {
+        "text": "Commercial own-account lending is banking business that needs a BaFin licence under the KWG. KfW and Bürgschaftsbank cover runs through the borrower's Hausbank.",
+        "basis": "unverified",
+        "citationIds": []
+       },
+       {
+        "text": "The realistic German route is a partner or fronting bank that originates or co-lends and carries the public cover.",
+        "basis": "judgement",
+        "citationIds": []
+       }
+      ]
+     },
+     {
+      "heading": "France (probe)",
+      "claims": [
+       {
+        "text": "A société de financement is a legal person, other than a credit institution, that lends professionally and on its own account.",
+        "basis": "cited",
+        "citationIds": [
+         "c21"
+        ]
+       },
+       {
+        "text": "The L.511-6 3 bis exception covers only ancillary lending, for under three years, by companies with certified accounts to SMEs and ETIs they have economic links with.",
+        "basis": "cited",
+        "citationIds": [
+         "c19"
+        ]
+       },
+       {
+        "text": "A lending platform is unlikely to fit that exception. Whether Bpifrance guarantees reach non-bank lenders is not established, so ask Bpifrance directly.",
+        "basis": "judgement",
+        "citationIds": []
+       }
+      ]
+     },
+     {
+      "heading": "Italy (probe)",
+      "claims": [
+       {
+        "text": "The Fondo di Garanzia per le PMI is open to banks and Art. 106 TUB intermediaries. Art. 106 status needs an Italian entity and about EUR 2m of capital.",
+        "basis": "unverified",
+        "citationIds": []
+       },
+       {
+        "text": "Italy is a strong national route only if you hold, obtain or partner with Art. 106 status. Check the current operating provisions with counsel.",
+        "basis": "judgement",
+        "citationIds": []
+       }
+      ]
+     },
+     {
+      "heading": "Precedents",
+      "claims": [
+       {
+        "text": "No verified precedent was found for a public guarantee to a non-bank SME lender. Find one before outreach. If there is none, the case must be argued as first-of-a-kind.",
+        "basis": "judgement",
+        "citationIds": []
+       }
+      ]
+     },
+     {
+      "heading": "Who to engage and how to position",
+      "claims": [
+       {
+        "text": "Priority 1 at each institution is the head of the guarantee or alternative-lending line at the EIF, Bpifrance, MCC (Fondo di Garanzia) and KfW. No names were verified. Find them on the organisation pages.",
+        "basis": "judgement",
+        "citationIds": []
+       },
+       {
+        "text": "The angle: you close the SME financing gap that banks underserve, across three core economies. That speaks to each institution's SME-access mandate. Eligibility through structure comes later in the conversation.",
+        "basis": "judgement",
+        "citationIds": []
+       },
+       {
+        "text": "Register in the EU Transparency Register before meeting Commission staff on the ECF file.",
+        "basis": "judgement",
+        "citationIds": []
+       }
+      ]
+     }
+    ],
+    "questions": [
+     {
+      "question": "Where is the company incorporated, and do you have subsidiaries or branches in Germany, France or Italy?",
+      "why": "This decides which national schemes you can enter at all, and whether Art. 106 or société de financement status is realistic."
+     },
+     {
+      "question": "On what legal basis do you originate loans today in each country (fronting bank, an exemption, a licence held elsewhere)?",
+      "why": "If a bank already fronts your loans, it can be the channel for KfW, Bpifrance or Fondo cover tomorrow."
+     },
+     {
+      "question": "Are any of your credit-line providers banks?",
+      "why": "An existing bank partner is the fastest way to carry national guarantees."
+     },
+     {
+      "question": "What is your portfolio size, and what is your loan volume and default history per country?",
+      "why": "These set the EIF product, the guarantee amount, and whether a licence in Italy or France pays off."
+     }
+    ],
+    "evidence": [
+     {
+      "id": "c15:0936aa99dca7",
+      "specialist": "wincent",
+      "title": "InvestEU Guarantee products | EU debt financing for SMEs",
+      "publisher": "www.eif.org",
+      "canonicalUrl": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "retrievedAt": "2026-11-09T15:03:43.933305+00:00",
+      "locator": "chars 1859-1948, sha256 0936aa99dca7",
+      "excerpt": "For guarantees: credit or financial institutions, alternative lenders, leasing companies."
+     },
+     {
+      "id": "c16:0936aa99dca7",
+      "specialist": "wincent",
+      "title": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "publisher": "www.eif.org",
+      "canonicalUrl": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "retrievedAt": "2026-11-09T15:03:43.933305+00:00",
+      "locator": "chars 2515-2712, sha256 0936aa99dca7",
+      "excerpt": "it is selected by the EIF as a potential financial intermediary under InvestEU to implement one or more InvestEU Portfolio Guarantee Products pursuant to the selection process outlined in the Call;"
+     },
+     {
+      "id": "c17:0936aa99dca7",
+      "specialist": "wincent",
+      "title": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "publisher": "www.eif.org",
+      "canonicalUrl": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "retrievedAt": "2026-11-09T15:03:43.933305+00:00",
+      "locator": "chars 2946-3031, sha256 0936aa99dca7",
+      "excerpt": "If you are eligible, you can apply by downloading and submitting via email to the EIF"
+     },
+     {
+      "id": "c18:0936aa99dca7",
+      "specialist": "wincent",
+      "title": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "publisher": "www.eif.org",
+      "canonicalUrl": "https://www.eif.org/flagship-initiatives/investeu/guarantees",
+      "retrievedAt": "2026-11-09T15:03:43.933305+00:00",
+      "locator": "chars 3227-3266, sha256 0936aa99dca7",
+      "excerpt": "Deadline for applications: 30 June 2027"
+     },
+     {
+      "id": "c21:92957cbf0e33",
+      "specialist": "regina",
+      "title": "Titre Ier : Prestataires de services bancaire (Articles L511-1 à L519-6) - Légifrance",
+      "publisher": "www.legifrance.gouv.fr",
+      "canonicalUrl": "https://www.legifrance.gouv.fr/codes/id/LEGISCTA000027643757/2014-01-01",
+      "retrievedAt": "2026-11-09T15:04:11.409752+00:00",
+      "locator": "chars 1564-1813, sha256 92957cbf0e33",
+      "excerpt": "II.-Les sociétés de financement sont des personnes morales, autres que des établissements de crédit, qui effectuent à titre de profession habituelle et pour leur propre compte des opérations de crédit dans les conditions et limites définies par leur"
+     },
+     {
+      "id": "c19:71ff4488c7bb",
+      "specialist": "regina",
+      "title": "Article L511-6 - Code monétaire et financier - Légifrance",
+      "publisher": "www.legifrance.gouv.fr",
+      "canonicalUrl": "https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000049423674",
+      "retrievedAt": "2026-11-09T15:04:08.677928+00:00",
+      "locator": "chars 7088-7559, sha256 71ff4488c7bb",
+      "excerpt": "Aux sociétés commerciales dont les comptes du dernier exercice clos ont fait l'objet d'une certification par un commissaire aux comptes ou qui ont désigné volontairement un commissaire aux comptes et qui consentent, à titre accessoire à leur activité principale, des prêts à moins de trois ans à des microentreprises, des petites et moyennes entreprises ou à des entreprises de taille intermédiair..."
+     }
+    ]
+   }
+  },
+  {
+   "type": "mission_completed",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6"
+  },
+  {
+   "type": "cost",
+   "missionId": "609f775e-a724-4b9c-86e3-6223d346c5e6",
+   "eur": 2.1,
+   "calls": 21
+  }
+ ],
+ "record": "\n[FOUNDER]\nWe are a fintech lender. We have raised EUR 40M. We want our SME loan portfolio guaranteed by public guarantee schemes in Germany, France and Italy, and at EU level. We do not have a banking licence. What are our routes?\n\n[WINCENT]\n# Public guarantee cover for an SME loan portfolio: report\n\nOnly the EU route is evidenced. Germany, France and Italy are unverified or open gaps, because research quota ran out. The corpus lookups failed (a file error on `find_instruments`). The award records returned no EIF guarantee precedents, and the register holds no named contacts.\n\n**Structure gap.** The profile does not give the country of incorporation, and it decides the national routes. Ask the founder for it, plus whether the platform is a licensed payment or other regulated entity, and whether it has an Art. 106 TUB or French société de financement status. Don't pick an instrument for Germany, France or Italy until these are known.\n\n## 1. EU: InvestEU via EIF (priority 1, probe now)\n- EIF lists alternative lenders among eligible intermediaries for InvestEU guarantees, and the list is non-exhaustive [c15]. Counter-guarantees are aimed at guarantee schemes, institutions, and credit or financial institutions [c15].\n- **Process:** meet the Call's formal criteria, apply, be selected by EIF, then sign the agreement [c16]. You apply by email with the documents from each product page, after standard EIF due diligence [c17].\n- **Window:** the deadline is 30 June 2027, and EIF may close it earlier if the budget runs out [c18]. So there is real urgency.\n- **Not established:** I did not read the product-specific Call documents, so the detailed criteria for a non-bank are unconfirmed. Those are the minimum portfolio size, regulatory status and track record. I could not distinguish the SME guarantee product from the capped portfolio guarantee either.\n- **ECF transition (unverified):** the Commission proposed the European Competitiveness Fund on 16 July 2025 for the 2028–34 MFF, and says it builds on InvestEU. The tool could not fetch that page, so this is unverified. I did not read the regulation text (52025PC0555), so I can't say whether alternative lenders stay eligible. The ECF is only a proposal, due 1 January 2028. A successor Call after June 2027 is unchecked. Put this route on the watchlist.\n\n## 2. Germany (unverified)\n- The one source I retrieved was a secondary blog. It says KfW and Landesförderinstitut loans follow the Hausbank principle: the bank assesses the project and carries the repayment liability. It was not KfW itself and I could not verify it.\n- My judgement, matching the playbook, is that an unlicensed lender is not the direct channel. It would reach KfW only through a partner bank.\n- Bürgschaftsbanken eligibility is unchecked.\n- **Practical path (judgement):** use the EIF route above, or have a licensed partner bank originate or co-lend.\n\n## 3. France (not established)\n- Research returned nothing usable. I can't say whether Bpifrance guarantees reach sociétés de financement, crowdlending platforms or other non-banks. Nor can I say how Code monétaire et financier L.511-1 maps to eligibility.\n- Do not assert any mechanics yet. The next step is to research Bpifrance's guarantee conventions and the CMF text, and to check whether Bpifrance counter-guarantees use InvestEU.\n\n## 4. Italy (unverified)\n- A 2012 version of the Fondo di Garanzia portfolio rules lists eligible lenders as banks, Art. 106 TUB intermediaries, insurers and asset managers. It also has a separate category of guarantors (confidi and guarantee-issuing intermediaries). This is unverified, and it is superseded in part.\n- **Not established:** the current tranches, caps, coverage, minimum portfolio size and fees. Check MCC's current Disposizioni operative.\n- Judgement: Art. 106 status is the likely gate. If the company has it, Italy is the most direct national route. If not, check whether it can act through a licensed partner.\n\n## 5. Precedents\n- The award records show no EIF guarantee precedent, so there is nothing to cite. The web research did not verify any deal.\n- **October, Iwoca, Funding Circle, Younited:** amounts and dates are not established. A Wikipedia mention of an Iwoca EIF COSME agreement (about £40m) is unverified and I have excluded it.\n- **Next step:** check eif.org press releases and its signatures pages, plus each lender's own announcements. Quote the deal EIF already did in the outreach.\n- **Named heads of guarantees:** I have no evidence for EIF, Bpifrance, MCC or KfW, and I won't guess names. Identify them from the institutions' published organisation pages, then write to the head of the specific guarantee or alternative-lending line (priority 1).\n\n## Sequence\n1. Confirm incorporation country and regulatory status.\n2. Send a short email to EIF with the application pack before the 30 June 2027 cut-off.\n3. In parallel, probe MCC if Art. 106 status exists. Ask Bpifrance an open question about non-bank partnership.\n4. For Germany, use a partner-bank route.\n5. Watch the ECF text for carve-outs.\n\n**Regina:** the regulatory half is for her. It covers whether the platform needs a licence (lending, payment or crowdfunding under EU rules). That licensing decides eligibility in Italy and France, and it affects EIF.\n\n[REGINA]\n# Report: public guarantee routes for a non-bank SME lender (DE, FR, IT, EU)\n\n**Evidence status.** Research tools hit their limits. Only three French passages are verified: [c19], [c20], [c21]. Everything else below is **unverified** (general knowledge or secondary reading) and must be checked against primary text before anyone relies on it. The corpus gave nothing usable on KWG, TUB, InvestEU or the Competitiveness Fund. The EU passages it returned are a 2011 Commission Communication [c2] and ECSP delegated acts [c1, c3]. They don't answer these questions.\n\n## Rules that decide the question\n\n**Germany (unverified).**\n- Lending on own account is a banking business under §1(1) sentence 2 no. 2 KWG when done commercially or at a scale needing a commercial operation. §32 KWG requires a BaFin licence, and §54 KWG makes unlicensed activity an offence. This is general knowledge, not quoted text.\n- The usual workaround is a fronting or partner bank that originates the loan. Circumvention and \"true lender\" risk is unassessed.\n- KfW and the Bürgschaftsbanken work through the borrower's Hausbank, which carries credit risk. A non-bank is therefore generally not the channel. This matches the playbook deal-breaker, but I have no primary source.\n\n**France.**\n- Per the research summary, L.511-5 CMF reserves habitual credit operations to établissements de crédit and sociétés de financement. The text of this monopoly article was **not** verified. A société de financement is a legal person other than a credit institution that lends professionally and on its own account [c21]. That is the 2014 consolidated version only.\n- Exception L.511-6 3 bis [c19]: companies with auditor-certified accounts may lend, ancillary to their main activity, for under three years to micro-enterprises, SMEs and ETIs with which they have economic links. A lending platform's core business is unlikely to fit this exception (judgement).\n- A non-profit exception exists for preferential social loans [c20]. It is not relevant here.\n- Bpifrance guarantees reportedly benefit only the lending financial institution, which keeps part of the risk. This is unverified, and eligibility of non-bank lenders is not established. Product terms must be read.\n- The crowdfunding regime (IFP status, ECSP authorisation by the AMF) was not verified.\n\n**Italy (unverified).**\n- Art. 106 TUB reserves lending to the public to intermediaries authorised by Banca d'Italia and entered on its register (albo).\n- Conditions under Art. 107 TUB: Italian legal form, registered and head office in Italy, minimum capital of about EUR 2m (EUR 3m if guarantees are issued), and fit and proper shareholders and officers. I could not establish the timeline.\n- EU banks can lend into Italy under mutual recognition (Art. 16 TUB) without a 106 licence. The Art. 18 TUB wording for financial companies may be outdated. Your claim that 106 intermediaries cannot passport is not confirmed.\n- Fondo di Garanzia PMI: snippets suggest registered 106 intermediaries are eligible requesting parties. This is unconfirmed.\n\n**EU (unverified).**\n- ECSP (Reg. 2020/1503) covers facilitating the granting of loans. I did not confirm that it permits own-account lending, and the wording suggests it does not (judgement).\n- InvestEU (Reg. 2021/523): the guarantee goes to implementing partners with a Commission agreement. These are financial institutions, such as the EIF, that on-lend through intermediaries.\n- European Competitiveness Fund proposal (COM(2025) 555, 16 July 2025): it keeps the implementing-partner model. I found **no text** admitting or excluding non-bank lenders. This needs a full read of the articles and recital 70. Add it to the watchlist.\n- State aid (de minimis / GBER pass-through): not researched. This is a gap.\n- Transparency Register: register before engaging EU officials. Since 1 January 2025 the requirement covers Commission staff in management functions. The legal basis was not confirmed.\n\n## What this means for the company (judgement)\n1. Without a banking licence the national routes are formally closed or hard to reach. These are the three deal-breakers:\n   - Germany: via a Hausbank only.\n   - France: needs société de financement status (ACPR) or a partner bank.\n   - Italy: needs Art. 106 status.\n2. The realistic path is a **fronting or partner bank** that carries the guarantee, plus the EU route through an EIF-type intermediary. The EU route is the more open one, but I couldn't confirm that.\n3. First facts needed: country of incorporation, existing credit-line lenders, and whether any lender is a bank.\n4. Precedents (guarantees given to non-bank lenders) were not searched. Say so in any outreach.\n\n## Bodies and people\nI have no verified names. The bodies are BaFin; KfW, the Bürgschaftsbanken and the VDB; ACPR, AMF and Bpifrance; Banca d'Italia and the Fondo di Garanzia PMI manager (Mediocredito Centrale); and the EIF and the Commission (DG ECFIN and the ECF file). Per the playbook, priority 1 is the head of guarantees or portfolio-guarantee instrument at each. Rapporteurs and unit heads still need to be identified.\n\n## Next steps\n- Read the primary texts: KWG §§1, 32; CMF L.511-5; TUB 106, 107, 16, 18; Reg. 2021/523 Art. 2 and 13; and the ECF proposal.\n- Retrieve the Bpifrance general terms, the Fondo di Garanzia PMI operating provisions and the EIF intermediary criteria.\n- Register in the Transparency Register before any EU contact.\n- Put the ECF carve-out question on the watchlist.\n\nFLAG [minor] EU Transparency Register entry before engaging Commission officials -> fix: Register in the EU Transparency Register before any meeting with Commission staff on the ECF file. Talks with the EIF on an InvestEU application are operational, but register anyway.\n  - Since 1 January 2025, Commission staff in management functions should only meet registered interest representatives. (unverified)\n\nFLAG [major] No precedent yet for a public guarantee to an alternative lender -> fix: Before the EIF and Bpifrance probes go out, check the eif.org press releases and signature lists, plus the announcements of non-bank SME lenders, for InvestEU, COSME or EFSI guarantees to non-banks. Quote the closest deal in the outreach.\n  - The award records returned no EIF guarantee precedent for an alternative lender. (judgement)\n  - A reported EIF COSME agreement with Iwoca of about GBP 40m could not be verified in this mission. (unverified)\n\nFLAG [blocker] No lending status recognised by national guarantee schemes (DE, FR, IT) -> fix: Pick one per market. Germany: a partner/fronting bank that originates or co-lends and carries the KfW/Bürgschaftsbank cover. France: either a partner bank or a société de financement authorisation from the ACPR. Italy: Art. 106 TUB authorisation from Banca d'Italia, through an Italian entity, or a partner that already holds it. First confirm against the primary texts (KWG §§1, 32; CMF L.511-5; TUB 106-107) with local counsel.\n  - In France, a société de financement is a legal person, other than a credit institution, that lends professionally and on its own account. (cited: [c21] https://www.legifrance.gouv.fr/codes/id/LEGISCTA000027643757/2014-01-01)\n  - The French exception in L.511-6 3 bis lets companies with auditor-certified accounts lend, as an ancillary activity, for under three years to SMEs and ETIs they have economic links with. (cited: [c19] https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000049423674)\n  - A lending platform's core business is unlikely to fit the L.511-6 3 bis exception. (judgement)\n  - In Germany, commercial own-account lending is banking business that needs a BaFin licence. KfW and Bürgschaftsbank cover runs through the borrower's Hausbank. (unverified)\n  - In Italy, lending to the public is reserved to banks and to intermediaries authorised under Art. 106 TUB. Art. 106 status needs an Italian entity and about EUR 2m minimum capital. (unverified)\n  - Without a licence, direct access to the three national schemes is formally closed or very hard. No amount of goodwill changes that. (judgement)\n\nFLAG [major] Entity structure and current origination model unknown -> fix: The founder confirms four things: country of incorporation; subsidiaries or branches in DE, FR and IT; how loans are originated legally today (fronting bank, an exemption, a licence in another country); and whether any credit-line provider is a bank. Everything else depends on these answers.\n  - The company profile does not state the country of incorporation or the legal basis on which the company lends today. (judgement)\n  - Eligibility for every national route turns on legal entity and licence, so no national instrument can be committed to until these facts are known. (judgement)\n\nDECISION Which guarantee route to lead with (medium): Lead with InvestEU guarantees through the EIF and probe this month. In parallel, set up a partner-bank model for Germany and France. Decide on Art. 106 status for Italy only once the volumes the Fondo would cover justify an Italian entity and the authorisation process. Do not apply for licences just to reach guarantees until the EIF answer is in.\n  - The EIF lists alternative lenders among eligible intermediaries for InvestEU guarantees, and the list is non-exhaustive. (cited: [c15] https://www.eif.org/flagship-initiatives/investeu/guarantees)\n  - The InvestEU call deadline is 30 June 2027, and the EIF may close it earlier if the budget runs out. (cited: [c18] https://www.eif.org/flagship-initiatives/investeu/guarantees)\n  - The process is: meet the call's formal criteria, apply by email with the documents listed on the product page, pass EIF due diligence, be selected, sign. (cited: [c16] https://www.eif.org/flagship-initiatives/investeu/guarantees; [c17] https://www.eif.org/flagship-initiatives/investeu/guarantees)\n  - The product-specific criteria for a non-bank (minimum portfolio, regulatory status, track record) were not read and remain open. (judgement)\n  - The EU route is the only one where an unlicensed lender is named as eligible. The national routes need a licence or a partner bank. (judgement)\n\nDECISION Whether to seek Art. 106 TUB (Italy) or société de financement (France) status (low): Not yet. Get counsel's cost and timeline for both statuses and compare them with partner-bank economics. Revisit once the EIF answer and the Italian and French volumes are known.\n  - A société de financement lends professionally on its own account and is a status distinct from a credit institution. (cited: [c21] https://www.legifrance.gouv.fr/codes/id/LEGISCTA000027643757/2014-01-01)\n  - Art. 106 TUB authorisation needs an Italian legal entity, about EUR 2m minimum capital and fit-and-proper owners and managers. The timeline is unknown. (unverified)\n  - A licence is a multi-month, capital-heavy commitment. It is only worth it if the guaranteed volume in that market is large. (judgement)\n\nACTION Brief counsel on licensing in DE, FR, IT: Ask local counsel for a two-page note per country. Germany: KWG §§1, 32, the fronting-bank model and true-lender risk. France: CMF L.511-5 and L.511-6, the société de financement process at the ACPR, and whether Bpifrance cover is open to non-banks. Italy: TUB Art. 106-107, cost and timeline, the eligibility rules in the current Fondo di Garanzia PMI operating provisions, and whether lending into Italy is possible without 106 status. Add state-aid pass-through (de minimis / GBER) for the borrowers.\n\nACTION Probe the EIF on InvestEU guarantee cover: Send a short probe to the EIF InvestEU guarantees team, using the contact on the product page (not verified here). First find the head of the guarantee or alternative-lending line on the EIF organisation page and address it to them. Before sending, add a precedent line if one is found. Ask which product fits (SME competitiveness guarantee vs capped portfolio guarantee) and what the minimum requirements are for a non-bank.\n  to: {\"name\": \"Head of InvestEU guarantees / alternative lending (to identify)\", \"role\": \"Priority 1: head of the guarantee instrument\", \"channel\": \"email\", \"contact\": \"per eif.org InvestEU guarantees product page\", \"organisation\": \"European Investment Fund\", \"contactVerified\": false}\n  DRAFT:\nSubject: InvestEU portfolio guarantee for a non-bank SME lender in DE, FR, IT\n\nDear [Name],\n\n[Company] is a non-bank SME lender active in Germany, France and Italy, backed by EUR 40m of equity and institutional credit lines. We finance small businesses that banks underserve.\n\nInvestEU names alternative lenders among eligible intermediaries. We would like to understand which guarantee product fits our portfolio and what the EIF expects from a non-bank intermediary before we apply under the current call.\n\nCould we have a 30-minute call in the coming weeks?\n\nKind regards,\n[Name], CEO\n\nACTION Find precedents: public guarantees to non-bank SME lenders: Search eif.org press releases and signature lists, plus the news pages of alternative SME lenders active in DE, FR, IT and the UK, for InvestEU, COSME and EFSI guarantees. Record the institution, amount and date of each deal. Use the closest one in the EIF email.\n\nACTION Register in the EU Transparency Register: Create the entry before any contact with Commission staff (DG ECFIN, ECF file).\n\nACTION Open question to Bpifrance on guarantees for non-bank lenders: Send a low-effort probe to the head of guarantees at Bpifrance; find the name on the Bpifrance organisation page. Ask whether a non-bank lender can benefit directly, whether it would need société de financement status, or whether cover must go through a partner bank. Send it in French.\n  to: {\"name\": \"Directeur/Directrice de la Garantie (to identify)\", \"role\": \"Priority 1: head of guarantees\", \"channel\": \"email\", \"contact\": \"to identify\", \"organisation\": \"Bpifrance\", \"contactVerified\": false}\n  DRAFT:\nObjet : Garantie Bpifrance et prêteur non bancaire aux PME\n\nMadame, Monsieur,\n\n[Société] finance des PME en France, en Allemagne et en Italie. Elle est financée par 40 M EUR de fonds propres et par des lignes de crédit institutionnelles. Nous comblons un besoin de financement que les banques servent mal.\n\nNous souhaitons savoir dans quelles conditions nos prêts aux PME françaises pourraient bénéficier de la garantie Bpifrance : en direct, sous statut de société de financement, ou en partenariat avec un établissement bancaire.\n\nSeriez-vous disponible pour un court échange ?\n\nVeuillez agréer, Madame, Monsieur, l'expression de nos salutations distinguées.\n[Nom], Président\n\nACTION Shortlist German partner banks for a Hausbank / fronting model: Identify two or three German banks that already front fintech lenders or would co-lend, and that pass KfW and Bürgschaftsbank cover through. Start with any bank among the current credit-line providers.\n\nPLAN 1. [this_quarter] Build the EIF application pack; shortlist partner banks: Prepare the documents listed on the EIF product page: portfolio data, loss history, underwriting policy, financials. Start talks with German partner banks. Based on counsel's note, decide on Italy: Art. 106, a partner, or park.\n\nPLAN 1. [this_month] Send the EIF probe and the Bpifrance probe; brief counsel: Send the EIF InvestEU probe with a precedent line, plus the Bpifrance open question in French. Commission the counsel notes on DE, FR and IT licensing and the Fondo di Garanzia eligibility rules.\n\nPLAN 1. [this_week] Confirm structure and the legal basis of lending today: Confirm the incorporation country, establishments in DE, FR and IT, the current origination model, and which credit-line lenders are banks. Register in the EU Transparency Register. Run the precedent search.\n\nPLAN 1. [later] File with the EIF well before the 30 June 2027 cut-off: The EIF can close the call early when the budget runs out, so aim to file in Q1 2027. Track the European Competitiveness Fund text for alternative-lender eligibility after 2027.\n\nWATCH (route, probe) Bpifrance guarantee for loans to French SMEs: Bpifrance's answer on non-bank eligibility; any change to CMF L.511-5/L.511-6 or société de financement rules\n\nWATCH (route, probe) Fondo di Garanzia per le PMI (MCC), portfolio guarantee: New operating provisions changing lender eligibility; the company obtains Art. 106 TUB status or finds an eligible partner\n\nWATCH (rule, None) European Competitiveness Fund proposal (COM(2025) 555) replacing InvestEU from 2028: Text that admits or excludes non-bank or alternative lenders as financial intermediaries; carve-outs added or removed in trilogue\n\nWATCH (route, parked) KfW / Bürgschaftsbanken cover via partner bank: A KfW or Bürgschaftsbank programme opening to non-bank or fintech lenders, or a partner bank agreeing to front\n\nWATCH (route, pursue) EIF InvestEU guarantee for the SME portfolio: Call closed early for lack of budget, change to intermediary criteria, or a successor call after 30 June 2027\n\nDELIVERABLE: Public guarantee cover for a non-bank SME lender: DE, FR, IT and EU routes\nYour most open route is the EU one: the EIF names alternative lenders among eligible intermediaries for InvestEU guarantees, and the current call closes on 30 June 2027 or earlier if the budget runs out. The national schemes in Germany, France and Italy are built for licensed lenders. Without a banking licence you reach them through a partner bank, or by getting a national status: a société de financement in France, Art. 106 TUB authorisation in Italy. Lead with the EIF now and set up partner banks for Germany and France. Decide on licences only once the EIF answer and the counsel notes are in. Evidence was thin this mission: most national rules below are labelled unverified and need checking against primary texts.\n\n## Situation\n  - You want public guarantee cover on an SME loan portfolio in DE, FR, IT and at EU level, without a banking licence. Eligibility in each market is decided by your legal entity and licence status first. (judgement)\n  - Your country of incorporation and the legal basis on which you lend today are not in the profile. Both decide the national routes. (judgement)\n\n## EU: InvestEU via EIF (pursue)\n  - The EIF lists alternative lenders among eligible intermediaries for InvestEU guarantees, and the list is non-exhaustive. (cited: [c15] https://www.eif.org/flagship-initiatives/investeu/guarantees)\n  - To apply: meet the call's formal criteria, apply by email with the documents listed on the product page, pass EIF due diligence, be selected, sign. (cited: [c16] https://www.eif.org/flagship-initiatives/investeu/guarantees; [c17] https://www.eif.org/flagship-initiatives/investeu/guarantees)\n  - The call closes on 30 June 2027, and the EIF may close it earlier if the budget runs out. (cited: [c18] https://www.eif.org/flagship-initiatives/investeu/guarantees)\n  - The product-specific criteria for a non-bank (minimum portfolio, regulatory status, track record) were not read. The EIF probe should establish them. (judgement)\n  - InvestEU is due to be replaced by the European Competitiveness Fund from 2028. Whether alternative lenders stay eligible is not established, so it is on the watchlist. (unverified)\n\n## Germany (parked as direct route; partner bank)\n  - Commercial own-account lending is banking business that needs a BaFin licence under the KWG. KfW and Bürgschaftsbank cover runs through the borrower's Hausbank. (unverified)\n  - The realistic German route is a partner or fronting bank that originates or co-lends and carries the public cover. (judgement)\n\n## France (probe)\n  - A société de financement is a legal person, other than a credit institution, that lends professionally and on its own account. (cited: [c21] https://www.legifrance.gouv.fr/codes/id/LEGISCTA000027643757/2014-01-01)\n  - The L.511-6 3 bis exception covers only ancillary lending, for under three years, by companies with certified accounts to SMEs and ETIs they have economic links with. (cited: [c19] https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000049423674)\n  - A lending platform is unlikely to fit that exception. Whether Bpifrance guarantees reach non-bank lenders is not established, so ask Bpifrance directly. (judgement)\n\n## Italy (probe)\n  - The Fondo di Garanzia per le PMI is open to banks and Art. 106 TUB intermediaries. Art. 106 status needs an Italian entity and about EUR 2m of capital. (unverified)\n  - Italy is a strong national route only if you hold, obtain or partner with Art. 106 status. Check the current operating provisions with counsel. (judgement)\n\n## Precedents\n  - No verified precedent was found for a public guarantee to a non-bank SME lender. Find one before outreach. If there is none, the case must be argued as first-of-a-kind. (judgement)\n\n## Who to engage and how to position\n  - Priority 1 at each institution is the head of the guarantee or alternative-lending line at the EIF, Bpifrance, MCC (Fondo di Garanzia) and KfW. No names were verified. Find them on the organisation pages. (judgement)\n  - The angle: you close the SME financing gap that banks underserve, across three core economies. That speaks to each institution's SME-access mandate. Eligibility through structure comes later in the conversation. (judgement)\n  - Register in the EU Transparency Register before meeting Commission staff on the ECF file. (judgement)\nQUESTION FOR FOUNDER: Where is the company incorporated, and do you have subsidiaries or branches in Germany, France or Italy? (This decides which national schemes you can enter at all, and whether Art. 106 or société de financement status is realistic.)\nQUESTION FOR FOUNDER: On what legal basis do you originate loans today in each country (fronting bank, an exemption, a licence held elsewhere)? (If a bank already fronts your loans, it can be the channel for KfW, Bpifrance or Fondo cover tomorrow.)\nQUESTION FOR FOUNDER: Are any of your credit-line providers banks? (An existing bank partner is the fastest way to carry national guarantees.)\nQUESTION FOR FOUNDER: What is your portfolio size, and what is your loan volume and default history per country? (These set the EIF product, the guarantee amount, and whether a licence in Italy or France pays off.)",
+ "rubric": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "text": "Establishes structure before instruments - legal form, establishment per country, licences held - and asks only what the profile lacks.",
+   "met": null
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "text": "Treats the missing banking licence as the deal-breaker it is and works it per jurisdiction (applicant type is formal; goodwill does not move it).",
+   "met": null
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "text": "Germany: explains the Hausbank principle (KfW and the Buergschaftsbanken guarantee through the borrower's house bank), so the route runs through a partner bank, cited.",
+   "met": null
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "text": "Italy: names authorised financial-intermediary status under Art. 106 TUB as what opens the Fondo di Garanzia per le PMI, cited.",
+   "met": null
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "text": "France: researches and cites the Bpifrance guarantee mechanics (guarantees to banks / credit institutions; Code monetaire et financier), never asserts them from instinct.",
+   "met": null
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "text": "EU: InvestEU / EIF guarantees open to alternative lenders as financial intermediaries, cited; flags the move of InvestEU under the European Competitiveness Fund as something to watch.",
+   "met": null
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "text": "States where the company stands on each front, and the flags to fix (licence, establishment, sequencing).",
+   "met": null
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "text": "Uses precedents - the same fund or institution backing a comparable lender or deal - or says explicitly there is none.",
+   "met": null
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "text": "Maps the institutions (regional, national, EU) and names P1/P2 stakeholders per route (head of guarantees / alternative lending), political and public-capital sides.",
+   "met": null
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "text": "Prioritises a few routes to run in parallel, with sequencing; parks rather than drops the rest; every recommended or parked route goes on the watchlist.",
+   "met": null
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "text": "Saves prioritised next steps and at least one short, formal, strategic outreach draft (the paper-stack test, no AI voice).",
+   "met": null
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "text": "Lists instruments before establishing the structure.",
+   "met": null
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "text": "Asserts France guarantee mechanics, or any country-specific programme fact, without a citation.",
+   "met": null
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "text": "Recommends applying for a banking licence as the default first step without weighing a partnership or intermediary route.",
+   "met": null
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "text": "Generalises one country's rule to another.",
+   "met": null
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "text": "Walks away from a route without an explicit hard no.",
+   "met": null
+  }
+ ],
+ "rubric_score": null,
+ "judge": "none",
+ "judge_overall": null,
+ "citations": {
+  "total": 53,
+  "resolved": 53,
+  "quote_matched": 53,
+  "failures": [],
+  "score": 1.0,
+  "claims": {
+   "cited": 11,
+   "judgement": 18,
+   "unverified": 8,
+   "unlabelled": 0,
+   "cited_to_missing_id": 0
+  },
+  "cited_share": 0.2972972972972973
+ },
+ "citation_score": 1.0,
+ "claims": {
+  "cited": 11,
+  "judgement": 18,
+  "unverified": 8,
+  "unlabelled": 0,
+  "cited_to_missing_id": 0
+ },
+ "cost_eur": 2.1,
+ "duration_s": 184.9,
+ "created_at": "2026-11-09T15:05:50.422825+00:00"
+}

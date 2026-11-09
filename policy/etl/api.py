@@ -388,6 +388,90 @@ def search(q: str, k: int = Query(8, le=30)) -> dict:
     return {"results": hits}
 
 
+# ── For the advisor's agents (web/lib/mandate/agent) ────────────────────────
+#
+# Two narrow reads the agents' tools need and nothing else exposed: the passages
+# of ONE document closest to a question (document_passages, the "go deeper"
+# half of retrieval), and the named actors on a file (briefing._stakeholders,
+# the same block the brief uses). Each passage carries its grounding identity
+# (grounding_sha256 + char span), so an agent cites it through mandate-api
+# without a re-fetch.
+
+
+@app.get("/api/documents/{doc_id}/passages")
+def document_passages_endpoint(
+    doc_id: int, q: str | None = None, k: int = Query(6, ge=1, le=20)
+) -> dict:
+    """The k passages of document `doc_id` closest in meaning to `q`, or, with no
+    q, its first k passages in reading order."""
+    from .enrichment.embeddings import document_passages  # noqa: PLC0415
+
+    with session_scope() as s:
+        doc = s.get(Document, doc_id)
+        if doc is None:
+            raise HTTPException(404, "Document not found")
+        if q and q.strip():
+            hits = document_passages(s, _embedder(), q, [doc_id], k_per_doc=k)
+        else:
+            rows = s.execute(
+                select(Passage.id, Passage.text, Passage.char_start, Passage.char_end,
+                       Passage.heading, DocumentVersion.content_hash)
+                .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
+                .where(DocumentVersion.document_id == doc_id, DocumentVersion.is_current.is_(True))
+                .order_by(Passage.ordinal)
+                .limit(k)
+            ).all()
+            hits = [
+                {"passage_id": r.id, "text": r.text, "char_start": r.char_start,
+                 "char_end": r.char_end, "heading": r.heading, "grounding_sha256": r.content_hash,
+                 "document_id": doc_id, "title": doc.title, "url": doc.url, "celex": doc.celex}
+                for r in rows
+            ]
+        return {"document": _doc_summary(doc), "passages": hits}
+
+
+@app.get("/api/actors")
+def actors_endpoint(
+    document_id: int | None = None, q: str | None = None, limit: int = Query(20, ge=1, le=50)
+) -> dict:
+    """Named actors on a file (`document_id`), or on the files whose title
+    matches `q`, plus actors whose own name or institution matches `q`.
+    Rapporteurs first (briefing._stakeholders' order)."""
+    from data.models import Actor  # noqa: PLC0415
+
+    from .intelligence.briefing import _stakeholders  # noqa: PLC0415
+
+    if document_id is None and not (q and q.strip()):
+        raise HTTPException(422, "give document_id or q")
+    with session_scope() as s:
+        doc_ids: list[int] = []
+        if document_id is not None:
+            doc_ids.append(document_id)
+        if q and q.strip():
+            doc_ids += list(s.scalars(
+                select(Document.id).where(Document.title.ilike(f"%{q.strip()}%"))
+                .order_by(Document.date_document.desc().nullslast()).limit(25)))
+        on_files = _stakeholders(s, [{"document_id": d} for d in doc_ids])
+        named = []
+        if q and q.strip():
+            pat = f"%{q.strip()}%"
+            named = [
+                {"name": a.name, "institution": a.institution, "political_group": a.political_group,
+                 "role": a.role_text, "documents": None}
+                for a in s.scalars(
+                    select(Actor).where((Actor.name.ilike(pat)) | (Actor.institution.ilike(pat)))
+                    .order_by(Actor.name).limit(limit))
+            ]
+        seen, out = set(), []
+        for a in on_files + named:
+            key = (a["name"], a["institution"])
+            if key not in seen:
+                seen.add(key)
+                out.append(a)
+        return {"actors": out[:limit], "document_ids": doc_ids,
+                "source": "parliamentary debates and file records in Regina's corpus"}
+
+
 @app.post("/api/questions")
 def questions(req: BriefRequest, request: Request) -> dict:
     """The scoping step: which follow-up questions to ask before the report."""

@@ -34,6 +34,18 @@ describe("cost of one response", () => {
     expect(searched).toBeGreaterThan(base);
   });
 
+  it("prices the advisor's models, cache reads at their own rate", () => {
+    // Opus 5.5 at 4/20, Sonnet 5.5 at 2/10, cache reads 0.20 USD/Mtok for both.
+    expect(costOf("claude-opus-5-5", { input_tokens: 1e6, output_tokens: 1e6 }))
+      .toBeCloseTo(24 * 0.92, 5);
+    expect(costOf("claude-sonnet-5-5", { input_tokens: 1e6, output_tokens: 1e6 }))
+      .toBeCloseTo(12 * 0.92, 5);
+    expect(costOf("claude-opus-5-5", { cache_read_input_tokens: 1e6 })).toBeCloseTo(0.2 * 0.92, 5);
+    // a cache WRITE is billed above input (1.25x), so it counts more, not less
+    expect(costOf("claude-sonnet-5-5", { cache_creation_input_tokens: 1e6 }))
+      .toBeCloseTo(2.5 * 0.92, 5);
+  });
+
   it("is zero for missing usage rather than throwing", () => {
     expect(costOf("claude-sonnet-5", undefined)).toBe(0);
     expect(costOf("claude-sonnet-5", null)).toBe(0);
