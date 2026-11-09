@@ -44,6 +44,8 @@ export interface MissionInput {
   profileVersion: number;
   objective: string;
   job?: string;
+  /** Continue a mission paused on the founder (ask_founder). */
+  missionId?: string;
 }
 
 type Emit = (e: MissionEvent) => void;
@@ -304,7 +306,7 @@ async function consult(ctx: Ctx, who: Sp, question: string): Promise<string> {
 
 // ── the orchestrator's tools ─────────────────────────────────────────────
 
-function orchestratorTools(ctx: Ctx, done: { finished: boolean }) {
+function orchestratorTools(ctx: Ctx, done: { finished: boolean; awaiting: boolean }) {
   const m = ctx.deps.mandate;
   const now = () => (ctx.deps.now?.() ?? new Date()).toISOString();
   const jobIndex = Object.entries(PLAYBOOKS.jobs).map(([k, v]) => `${k}: ${v.title}`).join("; ");
@@ -332,6 +334,11 @@ function orchestratorTools(ctx: Ctx, done: { finished: boolean }) {
       route_status: { type: "string", enum: ["pursue", "probe", "parked", "closed"] }, trigger: str("what change would alter the advice"),
       jurisdiction: str("ISO2 or EU"), citation_ids: strs("optional evidence ids"),
     }, ["kind", "subject", "trigger"]),
+    tool("ask_founder", "Ask the founder the diagnostic questions you need BEFORE advising, when the ask is too vague to advise on. The mission pauses until they answer. Do not use it to defer work you can do.", {
+      questions: { type: "array", items: { type: "object", additionalProperties: false, required: ["question", "why"],
+        properties: { question: str("plain words"), why: str("what the answer changes") } } },
+      preamble: str("one or two sentences to the founder: what you understood and why you ask"),
+    }, ["questions", "preamble"]),
     tool("finish_mission", "Once, last: the written deliverable. Every claim labelled.", {
       title: str("title"), summary: str("3-5 sentences: the answer"),
       sections: { type: "array", items: { type: "object", additionalProperties: false, required: ["heading", "claims"],
@@ -398,6 +405,15 @@ function orchestratorTools(ctx: Ctx, done: { finished: boolean }) {
         ...(i.jurisdiction ? { jurisdiction: String(i.jurisdiction) } : {}), createdAt: String(row.created_at ?? now()) } });
       return { saved: row.id };
     } },
+    ask_founder: { required: ["questions", "preamble"], run: async (i) => {
+      const questions = (i.questions as { question: string; why: string }[]) ?? [];
+      await m.addMessage(ctx.missionId, { created_by: "mandate", content: String(i.preamble),
+        payload: { questions, awaiting_founder: true } });
+      ctx.emit({ type: "message", missionId: ctx.missionId, specialist: "mandate", text: String(i.preamble) });
+      ctx.emit({ type: "questions", missionId: ctx.missionId, questions });
+      done.awaiting = true;
+      return { asked: questions.length, note: "The mission pauses for the founder's answers. Stop now." };
+    } },
     finish_mission: { required: ["title", "summary", "sections", "questions"], run: async (i) => {
       const sections = (i.sections as { heading: string; claims: unknown }[]) ?? [];
       const ids = sections.flatMap((s) => idsOf(s.claims));
@@ -425,17 +441,22 @@ function orchestratorSystem(ctx: Ctx): Anthropic.TextBlockParam[] {
 
 /** Run one mission to completion, emitting events. Never throws: a failure is
  *  an `error` event. */
-export async function runMission(input: MissionInput, deps: MissionDeps, emit: Emit): Promise<{ missionId?: string; finished: boolean }> {
+export async function runMission(input: MissionInput, deps: MissionDeps, emit: Emit): Promise<{ missionId?: string; finished: boolean; awaiting?: boolean }> {
   let missionId: string | undefined;
   try {
+    const prior = input.missionId ? await deps.mandate.getMission(input.missionId) : undefined;
+    if (prior && (prior.workspace_id !== input.workspaceId || prior.profile_id !== input.profileId)) {
+      throw new Error("that mission belongs to another workspace or profile");
+    }
     const prof = await deps.mandate.profile(input.profileId);
     if (prof.version !== input.profileVersion) {
       throw new Error(`profile ${input.profileId} is at version ${prof.version}, the mission pinned ${input.profileVersion}`);
     }
-    const job = input.job && PLAYBOOKS.jobs[input.job] ? input.job : undefined;
-    const mission = await deps.mandate.createMission({ workspace_id: input.workspaceId, objective: input.objective,
-      profile_id: input.profileId, profile_version: input.profileVersion, job, created_by: "founder" });
-    missionId = mission.id;
+    const wanted = input.job ?? prior?.job ?? undefined;
+    const job = wanted && PLAYBOOKS.jobs[wanted] ? wanted : undefined;
+    missionId = prior ? prior.id : (await deps.mandate.createMission({ workspace_id: input.workspaceId,
+      objective: input.objective, profile_id: input.profileId, profile_version: input.profileVersion, job,
+      created_by: "founder" })).id;
     emit({ type: "mission_started", missionId, objective: input.objective });
     await deps.mandate.addMessage(missionId, { created_by: "founder", content: input.objective }).catch(() => {});
     const budget = deps.budgetEur ?? (Number(process.env.MANDATE_MISSION_BUDGET_EUR) || MISSION_BUDGET_EUR);
@@ -446,10 +467,13 @@ export async function runMission(input: MissionInput, deps: MissionDeps, emit: E
       budget: { wrapUpAt: budget * WRAP_UP_SHARE, stopAt: budget,
         note: "[runtime] The mission budget is nearly spent. Consult no one else: save what you have and call finish_mission now." },
     };
-    const done = { finished: false };
+    const done = { finished: false, awaiting: false };
     const t = orchestratorTools(ctx, done);
+    const history = (prior?.messages ?? []).filter((x) => x.content?.trim())
+      .map((x) => `${x.created_by.toUpperCase()}: ${x.content}${x.payload?.questions ? `\n(questions asked: ${JSON.stringify(x.payload.questions)})` : ""}`);
     const opening = [
-      `The founder's question:\n${input.objective}`,
+      history.length ? `THE MISSION SO FAR (earlier turns; the evidence ids from them are not carried over, consult again to cite):\n${history.join("\n\n")}\n\nThe founder now replies:\n${input.objective}`
+        : `The founder's question:\n${input.objective}`,
       job ? `The ${job} playbook is already loaded:\n\n${ctx.playbook}` : "Load the matching job playbook first if one fits.",
       "Work the method. End with finish_mission.",
     ].join("\n\n");
@@ -460,9 +484,14 @@ export async function runMission(input: MissionInput, deps: MissionDeps, emit: E
       onToolCall: (name, i) => { if (!name.startsWith("consult_")) emit({ type: "tool_used", missionId: ctx.missionId,
         specialist: "mandate", tool: name, summary: String(i.title ?? i.subject ?? i.job ?? "").slice(0, 160) }); },
       onText: (text) => emit({ type: "message", missionId: ctx.missionId, specialist: "mandate", text }),
+      stopWhen: () => done.finished || done.awaiting,
     });
     await deps.mandate.addMessage(missionId, { created_by: "mandate", content: r.text,
       payload: { stop: r.stop, turns: r.turns, citations: ctx.ledger.all().length, eur: currentCost() } }).catch(() => {});
+    if (done.awaiting) {
+      emit({ type: "mission_completed", missionId });
+      return { missionId, finished: false, awaiting: true };
+    }
     if (!done.finished) {
       emit({ type: "error", missionId, recoverable: true,
         message: `The mission ended without a deliverable (${r.stop}${r.error ? `: ${r.error}` : ""}). What was saved stands.` });

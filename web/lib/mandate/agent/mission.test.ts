@@ -143,6 +143,9 @@ function fakeServices() {
     profile: async () => ({ version: 1, payload: { name: "Lendo", subsectors: ["fintech"], incorporationCountry: "DE" } }),
     appendProfile: async () => ({ version: 2 }),
     createMission: async () => ({ id: "mission-1" }),
+    getMission: async (id) => ({ id, workspace_id: "w", profile_id: "p", profile_version: 1, job: "funding-routes",
+      messages: messages.map((x) => ({ created_by: String(x.created_by), content: String(x.content ?? ""),
+        payload: x.payload as Record<string, unknown> })) }),
     addMessage: async (_id, body) => { messages.push(body); return {}; },
     save: async (_id, kind, body) => {
       // the double of mandate-api's claim rule: enough to prove a refusal reaches the model
@@ -201,7 +204,6 @@ describe("runMission", () => {
               questions: [{ question: "Which banks do you work with?", why: "the Hausbank is the channel" }] }),
           ], "tool_use", "claude-opus-5-5");
         },
-        () => message([say("Done.")], "end_turn", "claude-opus-5-5"),
       ],
       wincent: [
         () => message([use("assess_instrument", { instrument_id: "kfw_buergschaft" })], "tool_use"),
@@ -230,9 +232,38 @@ describe("runMission", () => {
     expect(svc.saved.watchlist[0].subject).toBe("Buergschaftsbank guarantee");
     expect(svc.saved.deliverable).toHaveLength(1);
     // the specialist ran on Sonnet, the orchestrator on Opus, both adaptive
-    expect(calls.filter((c) => c.model === "claude-opus-5-5")).toHaveLength(4);
+    expect(calls.filter((c) => c.model === "claude-opus-5-5")).toHaveLength(3);
     expect(calls.filter((c) => c.model === "claude-sonnet-5-5")).toHaveLength(2);
     expect(calls.every((c) => (c.thinking as { type: string }).type === "adaptive")).toBe(true);
+  });
+
+  it("asks the founder first when the ask is vague, then resumes with their answers", async () => {
+    const svc = fakeServices();
+    const first = scripted({ mandate: [
+      () => message([use("ask_founder", { preamble: "Before routes, I need your situation.",
+        questions: [{ question: "Are you raising now?", why: "co-investment loans match a round" }] })], "tool_use", "claude-opus-5-5"),
+    ] });
+    const events: MissionEvent[] = [];
+    const r1 = await runMission({ workspaceId: "w", profileId: "p", profileVersion: 1, objective: "How can public money help us?",
+      job: "funding-routes" }, { client: first.client, mandate: svc.mandate, policy: svc.policy, capital: svc.capital }, (e) => events.push(e));
+    expect(r1).toMatchObject({ awaiting: true, finished: false });
+    expect(first.calls).toHaveLength(1);
+    expect(events.find((e) => e.type === "questions")).toBeTruthy();
+    expect(JSON.stringify(first.calls[0].messages[0])).toContain("Hausbank"); // the job playbook is loaded up front
+
+    const second = scripted({ mandate: [
+      (p) => {
+        const opening = JSON.stringify(p.messages[0]);
+        expect(opening).toContain("Are you raising now?");
+        expect(opening).toContain("We close a seed round in March");
+        return message([use("finish_mission", { title: "t", summary: "s", questions: [],
+          sections: [{ heading: "Raising", claims: [{ text: "Lead with co-investment.", basis: "judgement", citation_ids: [] }] }] })],
+          "tool_use", "claude-opus-5-5");
+      },
+    ] });
+    const r2 = await runMission({ workspaceId: "w", profileId: "p", profileVersion: 1, objective: "We close a seed round in March.",
+      missionId: r1.missionId }, { client: second.client, mandate: svc.mandate, policy: svc.policy, capital: svc.capital }, () => {});
+    expect(r2.finished).toBe(true);
   });
 
   it("refuses a mission on a profile version that has moved on", async () => {

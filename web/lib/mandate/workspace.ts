@@ -123,6 +123,9 @@ export interface MissionRequest {
   mode?: "live" | "demo";
   /** ADDITIVE: a job playbook to load up front (mandate/playbooks/<job>.md). */
   job?: string;
+  /** ADDITIVE: continue this mission (the founder answering Mandate's
+   *  questions). `objective` is then the founder's reply. */
+  missionId?: string;
 }
 
 export type MissionEvent =
@@ -145,6 +148,9 @@ export type MissionEvent =
   | { type: "watch"; missionId: string; watch: WorkspaceWatch }
   /** The written deliverable, once, before mission_completed. */
   | { type: "deliverable"; missionId: string; deliverable: MissionDeliverable }
+  /** Mandate needs the founder before it can advise: the mission pauses here.
+   *  The founder's reply is a new POST with `missionId` set. */
+  | { type: "questions"; missionId: string; questions: { question: string; why: string }[] }
   /** Measured spend so far, in euros (lib/intelligence/cost.ts). */
   | { type: "cost"; missionId: string; eur: number; calls: number };
 
@@ -164,6 +170,9 @@ export function assertMissionRequest(value: unknown): MissionRequest {
   if (body.mode !== undefined && body.mode !== "live" && body.mode !== "demo") {
     throw new Error("mode must be live or demo");
   }
+  if (body.missionId !== undefined && (typeof body.missionId !== "string" || !/^[0-9a-f-]{36}$/.test(body.missionId))) {
+    throw new Error("missionId must be a mission id");
+  }
   if (body.job !== undefined && (typeof body.job !== "string" || !/^[a-z0-9-]+$/.test(body.job))) {
     throw new Error("job must be a playbook name");
   }
@@ -174,6 +183,7 @@ export function assertMissionRequest(value: unknown): MissionRequest {
     objective: String(body.objective).trim(),
     mode: body.mode as MissionRequest["mode"],
     ...(body.job ? { job: String(body.job) } : {}),
+    ...(body.missionId ? { missionId: String(body.missionId) } : {}),
   };
 }
 

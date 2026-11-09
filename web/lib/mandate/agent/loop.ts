@@ -49,12 +49,15 @@ export interface LoopOptions {
   budget?: { wrapUpAt: number; stopAt: number; note: string };
   onToolCall?: (name: string, input: Record<string, unknown>) => void;
   onText?: (text: string) => void;
+  /** Checked after each turn's tools ran: true ends the loop there (a tool
+   *  that hands the turn to the founder, or the one that finishes). */
+  stopWhen?: () => boolean;
 }
 
 export interface LoopResult {
   text: string;
   messages: Anthropic.MessageParam[];
-  stop: "end_turn" | "refusal" | "max_turns" | "budget" | "error";
+  stop: "end_turn" | "refusal" | "max_turns" | "budget" | "error" | "yielded";
   turns: number;
   error?: string;
 }
@@ -133,6 +136,7 @@ export async function runLoop(o: LoopOptions): Promise<LoopResult> {
       content.push({ type: "text", text: o.budget.note });
     }
     messages.push({ role: "user", content });
+    if (o.stopWhen?.()) return { text: lastText, messages, stop: "yielded", turns: turn };
   }
   return { text: lastText, messages, stop: "max_turns", turns: maxTurns };
 }

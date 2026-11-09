@@ -28,6 +28,8 @@ export interface MandateApi {
   profile(profileId: string): Promise<{ version: number; payload: Record<string, unknown> }>;
   appendProfile(profileId: string, body: { payload: Record<string, unknown>; source: string; expected: number; note: string }): Promise<{ version: number }>;
   createMission(body: Record<string, unknown>): Promise<{ id: string }>;
+  getMission(id: string): Promise<{ id: string; workspace_id: string; profile_id?: string; profile_version?: number; job?: string | null;
+    messages: { created_by: string; content: string; payload?: Record<string, unknown> }[] }>;
   addMessage(missionId: string, body: Record<string, unknown>): Promise<unknown>;
   save(missionId: string, kind: "decisions" | "actions" | "flags" | "plan_steps" | "watchlist" | "deliverable", body: Record<string, unknown>): Promise<Record<string, unknown> & { id: string }>;
   findActors(params: { q?: string; kind?: string; jurisdiction?: string }): Promise<{ actors: Record<string, unknown>[] }>;
@@ -88,6 +90,7 @@ export function httpMandateApi(base: string, token: string, f: typeof fetch = fe
     profile: (id) => call("GET", `/profiles/${encodeURIComponent(id)}`),
     appendProfile: (id, body) => call("POST", `/profiles/${encodeURIComponent(id)}/versions`, body),
     createMission: (body) => call("POST", "/missions", body),
+    getMission: (id) => call("GET", `/missions/${encodeURIComponent(id)}`),
     addMessage: (id, body) => call("POST", `/missions/${id}/messages`, body),
     save: (id, kind, body) => call("POST", `/missions/${id}/${kind}`, body),
     findActors: (p) => call("GET", `/actors${qs(p)}`),
