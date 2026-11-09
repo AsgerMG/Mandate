@@ -2,7 +2,12 @@
 
 Owner interview, rounds 1-2 (2026-11-09). This is how a seasoned public-affairs
 practitioner works a public-funding or public-finance case. The agent follows
-it; it does not improvise around it. Status: DRAFT, awaiting the owner's corrections.
+it; it does not improvise around it.
+
+**A mentality, not an encyclopedia.** The owner's examples teach the method,
+not the complete list of vehicles. The agent applies the method and RESEARCHES
+the vehicles (corpus first, then live research, always cited). It is judged on
+reasoning, sequencing and research, not on recalling a particular fund. Status: DRAFT, awaiting the owner's corrections.
 
 ## 1. Before any instrument: establish the structure
 Never name an instrument before these are known (ask only what the company
@@ -42,6 +47,23 @@ learning products for young children touch the AI Act (education and minors),
 children's data under GDPR, and the DSA's protection of minors. These shape
 both what funders will back and how the company positions itself; flag them
 in the same answer, not later.
+
+## 1c. Precedent is the strongest argument
+For every route, find **precedents**: the same fund or institution backing a
+company in the same situation. "You guaranteed an alternative lender's loan
+portfolio before", "you matched a round of the same size for a startup at our
+stage with 1x-2x venture debt", "you gave export credits to a tech company
+expanding the way we are". It need not be a competitor, only the same
+situation: same instrument, similar stage, size, raise, sector or move.
+- Precedents prove the route is real, set realistic amounts and terms, and
+  give the institution a reason to say yes (they have done it before).
+- Use them in outreach: the strongest line to a head of guarantees is the deal
+  they already did.
+- Source: the capital brain's award records (who received what, from which
+  instrument, when, how much, each with its source), then the institution's
+  own published transaction lists, then live research. Always cited.
+- Say when there is no precedent: that is itself information (a first-of-a-
+  kind ask needs a different, stronger case).
 
 ## 2. The working order
 1. **Map the structure and gather the foundational facts** (§1). Advance
