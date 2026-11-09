@@ -27,6 +27,7 @@ for _anc in _Path(__file__).resolve().parents:
 from etl_env import ROOT as _ETL_ROOT  # noqa: E402,F401
 # --- end ETL path bootstrap ---
 
+import datetime as _dt
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -247,6 +248,9 @@ _EUR_PER_UNIT: dict[str, dict[int, float]] = {
 }
 
 
+_CURRENT_YEAR = _dt.date.today().year
+
+
 def normalise_ticket(amount: float | None, currency: str, year: int) -> float | None:
     """Convert `amount` in `currency` (ISO 4217 code) to EUR using the ECB annual
     reference rate for `year`.
@@ -264,6 +268,12 @@ def normalise_ticket(amount: float | None, currency: str, year: int) -> float | 
     if series is None:
         raise KeyError(f"FX series not available for currency={currency!r}")
     rate = series.get(year)
+    if rate is None and series and year > max(series) and max(series) >= _CURRENT_YEAR - 1:
+        # A year after the latest published rate is a future-dated award (a
+        # project starting next year, decided now): the latest rate is the best
+        # estimate there is. Only for a series still being kept up to date, so a
+        # retired currency (HRK) still raises instead of inventing a rate.
+        rate = series[max(series)]
     if rate is None:
         raise KeyError(f"FX rate not available for {currency} in year={year}")
     return round(float(amount) * rate, 2)
