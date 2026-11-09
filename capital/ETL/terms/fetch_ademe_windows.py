@@ -102,9 +102,10 @@ the windows into a SQLite cache the site snapshot was built from; that cache is
 gone, and the snapshot builders read the store.
 
 Exit codes match `renew.py`, which the cron runner already reads:
-  0  every target resolved
-  3  some targets failed to fetch, the rest were written (partial is normal
-     weather when scraping other people's websites)
+  0  every target resolved, or the only failures were rows still holding the
+     window an earlier run read (see outcome())
+  3  a target that holds no window failed to fetch, or more fetches failed
+     than succeeded; the rest were written
   1  nothing could be read, or the corpus could not be written
 
 Usage:
@@ -498,9 +499,44 @@ def main() -> int:
     if not readings:
         print("nothing could be read from either catalogue")
         return 1
-    if failed:
-        print(f"{len(failed)} target(s) failed to fetch; the next run picks "
-              f"them up")
+    return outcome(failed, len(readings))
+
+
+def outcome(failed: list[dict], n_read: int) -> int:
+    """0 or 3, from the fetches that failed. Pure, so it is testable.
+
+    ── A failed fetch is only a shortfall if it cost the corpus something ──
+    Until 2026-11-09 any failed fetch was exit 3, and exit 3 is a PARTIAL that
+    keeps the census from reading `ok` (railway_cron.py). Run 114 lost one
+    web.archive.org page to a refused connection and the week was recorded as
+    partial, though the row that page speaks for still held the window an
+    earlier run read off it: populate_funding_instruments.py keeps
+    `scheme_end_date` FILL_ONLY, so a load no longer erases it (this file's
+    header predates that and says otherwise).
+
+    So a failure is COVERED when the row already holds a window of basis
+    CALL_DEADLINE -- this job's own earlier reading, still the best evidence
+    there is -- and UNCOVERED when it holds none, which is a fund the corpus
+    cannot date this week. Only uncovered failures are a partial.
+
+    What stops that hiding a real outage: when failures outnumber reads, the
+    catalogue is down, not flaky, and that is a partial however well covered,
+    because next week's run would be leaning on the same old readings again.
+    """
+    covered = [r for r in failed if r.get("scheme_end_date")
+               and r.get("scheme_end_date_basis") == CALL_DEADLINE]
+    uncovered = [r for r in failed if r not in covered]
+    if covered:
+        print(f"{len(covered)} target(s) failed to fetch and keep the window an "
+              f"earlier run read: {', '.join(r['id'] for r in covered[:5])}"
+              f"{' ...' if len(covered) > 5 else ''}")
+    if uncovered:
+        print(f"PARTIAL: {len(uncovered)} target(s) failed to fetch and hold no "
+              f"window; the next run picks them up")
+        return 3
+    if len(failed) > n_read:
+        print(f"PARTIAL: {len(failed)} fetches failed against {n_read} read -- the "
+              f"catalogue is down, not flaky")
         return 3
     return 0
 
