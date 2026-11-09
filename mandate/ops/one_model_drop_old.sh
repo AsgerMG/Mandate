@@ -83,7 +83,8 @@ CAPITAL=$(db_var CAPITAL_DATABASE_PUBLIC_URL)
 TS=$(date -u +%Y%m%dT%H%M%SZ); B=~/Mandate-backups/one_model/$TS; mkdir -p "$B"
 echo "== 4. archive: pg_dump of the three tables -> $B"
 args=(); for t in $TABLES; do args+=(-t "capital.$t"); done
-pg_dump "$RO" -Fc --no-owner "${args[@]}" -f "$B/legacy_vectors.dump"
+# as the tables' owner: the read-only role cannot read their id sequences
+pg_dump "$CAPITAL" -Fc --no-owner "${args[@]}" -f "$B/legacy_vectors.dump"
 listed=$(pg_restore --list "$B/legacy_vectors.dump" | /usr/bin/grep -c "TABLE DATA capital" || true)
 [ "$listed" = 3 ] || { echo "REFUSED: the archive lists $listed of 3 tables" >&2; exit 1; }
 shasum -a 256 "$B/legacy_vectors.dump" > "$B/legacy_vectors.dump.sha256"
