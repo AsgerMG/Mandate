@@ -19,6 +19,8 @@ dependencies = [
 [project.optional-dependencies]
 # Only the legacy local signals space (MiniLM) needs it; see embedding/spaces.py.
 local = ["fastembed>=0.8.0"]
+# mandate-api (mandate/api, mandate/Dockerfile).
+api = ["fastapi>=0.115", "uvicorn[standard]>=0.30", "pypdf>=5.0"]
 
 [build-system]
 requires = ["hatchling"]
@@ -34,3 +36,4 @@ dev-mode-dirs = [".."]
 "embedding" = "mandate/embedding"
 "vocabulary" = "mandate/vocabulary"
 "profile" = "mandate/profile"
+"api" = "mandate/api"

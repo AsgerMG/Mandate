@@ -95,6 +95,10 @@ class EphemeralMandate:
             c.execute(sql_file("runs.sql", self.dbname))
             # accounts, workspaces and the shared company profile (mandate/db/profiles.sql)
             c.execute(sql_file("profiles.sql", self.dbname))
+            # the advisor platform: profile source 'mandate', the workspace
+            # record, the actors register and the eval log (mandate/api)
+            for name in ("profile_sources.sql", "workspace.sql", "actors.sql", "eval_runs.sql"):
+                c.execute(sql_file(name, self.dbname))
             # a throwaway server may not trust local connections (CI's does
             # not): give the brain roles a test password. Cluster-wide, which
             # is why only a throwaway server is accepted.
