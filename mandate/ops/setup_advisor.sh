@@ -24,9 +24,13 @@ if [ -z "$SID" ]; then
   SID=$(railway_api 'mutation{ serviceCreate(input:{projectId:"'"$MANDATE_PROJECT"'", name:"mandate-api", source:{repo:"AsgerMG/Mandate"}, branch:"main"}){ id } }' 2>/dev/null | J "d['data']['serviceCreate']['id']")
   echo "  created mandate-api ($SID)"
 else echo "  exists ($SID)"; fi
-railway_api 'mutation{ serviceInstanceUpdate(serviceId:"'"$SID"'", environmentId:"'"$MANDATE_ENV"'", input:{railwayConfigFile:"/mandate/railway.json", rootDirectory:"/"}) }' >/dev/null 2>&1
+# Railway refuses railway.json on NEW services (Config as Code is deprecated;
+# existing ones keep it until 2026-12-01), so the settings mandate/railway.json
+# states are set on the service itself, and the Dockerfile through
+# RAILWAY_DOCKERFILE_PATH, as the other services already do.
+railway_api 'mutation{ serviceInstanceUpdate(serviceId:"'"$SID"'", environmentId:"'"$MANDATE_ENV"'", input:{rootDirectory:"/", healthcheckPath:"/health", restartPolicyType:ON_FAILURE, restartPolicyMaxRetries:3}) }' >/dev/null
 bucket_env
-VARS=$(python3 -c 'import json,os;print(json.dumps({"DATABASE_URL":"${{pgvector.MANDATE_DATABASE_URL}}","MANDATE_SERVICE_TOKEN":os.environ["MANDATE_SERVICE_TOKEN"],**{k:os.environ[k] for k in ["BUCKET_ENDPOINT","BUCKET_NAME","BUCKET_REGION","BUCKET_ACCESS_KEY_ID","BUCKET_SECRET_ACCESS_KEY","BUCKET_ADDRESSING"]}}))')
+VARS=$(python3 -c 'import json,os;print(json.dumps({"DATABASE_URL":"${{pgvector.MANDATE_DATABASE_URL}}","RAILWAY_DOCKERFILE_PATH":"mandate/Dockerfile","MANDATE_SERVICE_TOKEN":os.environ["MANDATE_SERVICE_TOKEN"],**{k:os.environ[k] for k in ["BUCKET_ENDPOINT","BUCKET_NAME","BUCKET_REGION","BUCKET_ACCESS_KEY_ID","BUCKET_SECRET_ACCESS_KEY","BUCKET_ADDRESSING"]}}))')
 railway_api 'mutation($i: VariableCollectionUpsertInput!){ variableCollectionUpsert(input:$i) }' \
   --variables "{\"i\":{\"projectId\":\"$MANDATE_PROJECT\",\"environmentId\":\"$MANDATE_ENV\",\"serviceId\":\"$SID\",\"skipDeploys\":true,\"variables\":$VARS}}" >/dev/null
 echo "  variables set (database as mandate_app, service token, bucket)"
