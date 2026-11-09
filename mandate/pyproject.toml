@@ -25,12 +25,17 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
-bypass-selection = true
+# The WHOLE package ships, mapped under `mandate/`. It used to force-include a
+# hand-kept list of subpackages (grounding, embedding, vocabulary, profile);
+# runs.py, health/, refresh/, llm/ were added later and never listed, so the
+# policy image had no `mandate.runs` and every Regina refresh since 7 Nov ran
+# unrecorded (refresh_record_start_failed: No module named 'mandate.runs'),
+# which left the weekly run waiting 8 h for a record that never came.
+# Editable installs (laptops, tests) never saw it: they import the directory.
+# test_wheel_ships_every_module.py now builds the wheel and fails on any gap.
 dev-mode-dirs = [".."]
+include = ["/**"]
+exclude = ["tests", "eval/runs", "ops", "**/__pycache__", ".venv", "*.egg-info"]
 
-[tool.hatch.build.targets.wheel.force-include]
-"__init__.py" = "mandate/__init__.py"
-"grounding" = "mandate/grounding"
-"embedding" = "mandate/embedding"
-"vocabulary" = "mandate/vocabulary"
-"profile" = "mandate/profile"
+[tool.hatch.build.targets.wheel.sources]
+"" = "mandate"
