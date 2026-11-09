@@ -1,0 +1,15 @@
+-- 037: what a fund has funded, for a PERSON to read, beside the mix the ranker scores on.
+--
+-- `sector_mix` is computed on the recall holdout (ETL/lib/recall_holdout.py):
+-- the ranker and the selector prompt read it, and the recall harness replays
+-- the companies it is counted from. On 2026-11-09 the first container rebuild
+-- of funding_instruments left 29 funds with NO mix (22 EIS, 6 Altum, IPCEI
+-- Tech4cure) because every one of their recipients is a recall-set company,
+-- and the coverage gate read that as knowledge lost.
+--
+-- `sector_mix_display` is the same count over every recipient. It feeds the
+-- coverage axes, the focus column and the audits; nothing graded reads it, and
+-- web/scripts/check_answer_not_reachable.ts fails the build if a row-building
+-- module ever does. Written by populate_funding_instruments.py (BUILT_COLUMNS),
+-- NULL until its next run. Additive: no row is rewritten here.
+ALTER TABLE funding_instruments ADD COLUMN IF NOT EXISTS sector_mix_display TEXT;

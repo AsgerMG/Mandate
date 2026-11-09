@@ -533,6 +533,7 @@ BUILT_COLUMNS = (
     "source_family_bucket", "capital_type", "capital_type_basis", "event_count",
     "company_count", "total_eur", "first_year", "last_year", "is_framework",
     "sample_project_titles", "scheme_code", "application_url", "sector_mix",
+    "sector_mix_display",
     "scheme_operators",
     "award_p25", "award_p50", "award_p75", "award_n",
     "intensity_p50", "intensity_n",
@@ -1112,6 +1113,9 @@ def build(conn, args: argparse.Namespace) -> None:
     # ranks highly for any software company. What it has actually funded does
     # not travel. See sectorFit in the frontend's fit score.
     fam_sector_votes: dict[str, Counter] = defaultdict(Counter)
+    # The same count over EVERY recipient, test companies included: what the
+    # fund has funded, for a human to read (sector_mix_display; see the row).
+    fam_sector_all: dict[str, Counter] = defaultdict(Counter)
     # scheme code -> who actually disburses under it, by award volume.
     scheme_operators: dict[str, Counter] = defaultdict(Counter)
     # Per-authority, per-scheme detail under the state-aid rollups. See
@@ -1179,6 +1183,8 @@ def build(conn, args: argparse.Namespace) -> None:
         leaked_company = r["company_id"] in holdout.ids
         if r["sector_top"] and not leaked_company:
             fam_sector_votes[fam][r["sector_top"]] += 1
+        if r["sector_top"]:
+            fam_sector_all[fam][r["sector_top"]] += 1
         if r["call_id"] and r["granting_authority"] \
                 and not NOT_AN_APPLYABLE_BODY.match(r["granting_authority"]):
             scheme_operators[r["call_id"]][r["granting_authority"][:200]] += 1
@@ -1200,7 +1206,7 @@ def build(conn, args: argparse.Namespace) -> None:
             c = child_rows.setdefault(key, dict(
                 events=0, eur=0.0, companies=set(), years=[],
                 capital=Counter(), objectives=Counter(), titles=Counter(),
-                sectors=Counter(), awards=[], intensity=[],
+                sectors=Counter(), sectors_all=Counter(), awards=[], intensity=[],
                 authorities=Counter(), distributors=Counter()))
             c["events"] += 1
             if r["granting_authority"]:
@@ -1227,6 +1233,8 @@ def build(conn, args: argparse.Namespace) -> None:
             # answer, not a silent zero.
             if r["sector_top"] and not leaked_company:
                 c["sectors"][r["sector_top"]] += 1
+            if r["sector_top"]:
+                c["sectors_all"][r["sector_top"]] += 1
 
     families = set(fam_events)
     all_ids = families | SYNTHETIC_PARENTS | {fid for fid, _ in FRAMEWORK_INSTRUMENTS}
@@ -1346,6 +1354,20 @@ def build(conn, args: argparse.Namespace) -> None:
             is_framework=is_framework, sample_project_titles=sample_titles,
             sector_mix=json.dumps(dict(fam_sector_votes.get(fam, Counter()).most_common(8)))
                        if fam_sector_votes.get(fam) else None,
+            # ── Two mixes, because two different questions read them ────────
+            # `sector_mix` is a SCORE input: the ranker and the selector prompt
+            # read it, and the recall harness replays the very companies it is
+            # counted from, so it is computed on the recall holdout.
+            # `sector_mix_display` answers "what has this fund funded" for a
+            # PERSON -- the coverage axes, the focus column, the audits -- and
+            # nothing is graded on it, so it counts every recipient. Without it
+            # a fund whose every recipient is a test company (22 Estonian EIS
+            # schemes, 6 Altum lines, IPCEI Tech4cure: 2026-11-09) read as if
+            # the corpus did not know what it funds, which it does.
+            # web/scripts/check_answer_not_reachable.ts keeps it off the row:
+            # a BUILT column read there with no declared derivation is red.
+            sector_mix_display=json.dumps(dict(fam_sector_all[fam].most_common(8)))
+                               if fam_sector_all.get(fam) else None,
         ))
 
     # Before anything is written. A family nobody has answered for is a row the
@@ -1439,6 +1461,8 @@ def build(conn, args: argparse.Namespace) -> None:
             # Each child awards to its own recipients; that is the signal.
             sector_mix=json.dumps(dict(c["sectors"].most_common(8)))
                        if c["sectors"] else parent.get("sector_mix"),
+            sector_mix_display=json.dumps(dict(c["sectors_all"].most_common(8)))
+                               if c["sectors_all"] else parent.get("sector_mix_display"),
             # Who a founder can actually approach under this scheme. Empty when
             # only departments ever awarded on it, which is itself worth
             # knowing: it means the row has no front door we can name.
@@ -1735,6 +1759,7 @@ def build(conn, args: argparse.Namespace) -> None:
         row.setdefault("scheme_code", None)
         row.setdefault("application_url", None)
         row.setdefault("sector_mix", None)
+        row.setdefault("sector_mix_display", None)
         row.setdefault("scheme_operators", None)
         for k in ("award_p25", "award_p50", "award_p75"):
             row.setdefault(k, None)
