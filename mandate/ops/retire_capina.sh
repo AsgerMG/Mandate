@@ -63,14 +63,31 @@ from pathlib import Path
 sys.path.insert(0, str(Path(sys.argv[2]).parents[2]))
 from mandate.grounding.bucket import bucket_from_env, key_for
 b, idx = sys.argv[1], Path(sys.argv[2])
+import gzip, httpx, shutil
 bk = bucket_from_env()
+# Archives are hundreds of MB in one PUT: the store's 120 s per-write timeout
+# (right for documents) timed out on the 653 MB SQLite copy on 2026-11-09.
+bk._client = httpx.Client(timeout=httpx.Timeout(600.0))
 files = json.load(open(f"{b}/MANIFEST.json"))["files"]
 out = json.loads(idx.read_text()) if idx.exists() else {"$why": "Archives kept OFF the laptop: content-addressed objects in the mandate-grounding bucket. Restore: fetch key, check sha256."}
 for name in ("capina_postgres.dump", "railway_volume_db.sqlite"):
-    data = open(f"{b}/{name}", "rb").read(); sha = hashlib.sha256(data).hexdigest(); key = key_for(sha)
+    raw = open(f"{b}/{name}", "rb").read(); raw_sha = hashlib.sha256(raw).hexdigest()
+    # The dump is already compressed; the SQLite file is not, and shrinks ~4x.
+    if name.endswith(".sqlite"):
+        gz = Path(f"{b}/{name}.gz")
+        if not gz.exists():
+            with open(f"{b}/{name}", "rb") as src, gzip.open(gz, "wb", compresslevel=6) as dst:
+                shutil.copyfileobj(src, dst, 1 << 20)
+        data = gz.read_bytes()
+        assert hashlib.sha256(gzip.decompress(data)).hexdigest() == raw_sha, f"{gz} does not decompress to {name}"
+        print(f"  compressed {name}: {len(raw) / 1e6:.0f} MB -> {len(data) / 1e6:.0f} MB")
+    else:
+        data = raw
+    sha = hashlib.sha256(data).hexdigest(); key = key_for(sha)
     bk.put_if_absent(key, data, "application/octet-stream")
     assert hashlib.sha256(bk.get(key)).hexdigest() == sha, f"read-back of {name} does not match"
     out[f"capina/2026-11-05/{name}"] = {"key": key, "sha256": sha, "bytes": len(data),
+        "gzip": name.endswith(".sqlite"), "original_sha256": raw_sha,
         "what": "pre-Mandate Capina Railway project, archived 2026-11-05, unchanged when the project was deleted",
         "recorded": dt.date.today().isoformat()}
     print(f"  ok: {name} -> {key} (read back, sha256 matches)")
