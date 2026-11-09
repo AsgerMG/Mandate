@@ -107,6 +107,21 @@ API_BASE = "https://www.infosubvenciones.es/bdnstrans/api"
 OUTDIR = ROOT / "data" / "raw" / "bdns_open"
 CANDIDATES = OUTDIR / "candidates.jsonl"
 DETAILS = OUTDIR / "details.jsonl"
+# The stored fetch records for Spain's EXISTING leaves: the input the budget
+# floor, the admissible policies and the overlap join are derived from. A pinned
+# grounded input (group `bdns_open_calls` in reference/grounded_inputs.json), not
+# a cache: nothing here re-creates it, and the cron's data/raw/ starts empty, so
+# reading the path directly failed every week once the corpus left the laptop
+# (run 114, 2026-11-09: FileNotFoundError before `enumerate` fetched anything).
+FETCH_RECORDS = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.json"
+
+
+def fetch_records() -> list[dict]:
+    """The existing leaves' fetch records, from disk or, absent, from grounding."""
+    if not FETCH_RECORDS.exists():
+        from grounded_inputs import materialise  # noqa: PLC0415
+        materialise("bdns_open_calls")
+    return json.loads(FETCH_RECORDS.read_text())
 
 DELAY_S = 0.35
 PAGE_SIZE = 200
@@ -146,9 +161,8 @@ def budget_floor() -> float:
     and the floor moves on its own if the corpus's existing floor moves.
     """
     import re
-    p = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.json"
     buds = [float(m.group(1).replace(",", ""))
-            for r in json.loads(p.read_text())
+            for r in fetch_records()
             for m in [re.search(r"Presupuesto total: ([\d,]+) EUR",
                                 r.get("eligibility_text") or "")] if m]
     if not buds:
@@ -165,9 +179,8 @@ def admissible_policies() -> frozenset[str]:
     floor in load_bdns_open_calls.py, for the same reason.
     """
     import re
-    p = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.json"
     out = set()
-    for r in json.loads(p.read_text()):
+    for r in fetch_records():
         m = re.search(r"Finalidad: ([^.]+)\.", r.get("eligibility_text") or "")
         if m:
             out.add(m.group(1).strip())

@@ -2954,7 +2954,7 @@ def load_events(rows: list[dict], conn) -> int:
     for src_id, basis in COHORT_CAPITAL_BASIS.items():
         cur.execute(
             "UPDATE public_funding_events SET grant_amount_basis = %s "
-            "WHERE source = %s AND grant_amount_basis IS NOT %s",
+            "WHERE source = %s AND grant_amount_basis IS DISTINCT FROM %s",
             (basis, src_id, basis))
         corrected += cur.rowcount
     conn.commit()

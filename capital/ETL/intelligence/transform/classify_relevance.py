@@ -182,6 +182,13 @@ def _collect(client, st: dict, pending_ids: list[str], con) -> tuple[int, int, i
             still += 1
             print(f"  {bid}: {b.processing_status} — leaving for later")
             continue
+        import batch_state  # noqa: PLC0415
+        why = batch_state.unrecoverable(b)
+        if why:
+            # Results purged or never produced: nothing to write, and asking
+            # raises. Retired with the reason; the articles go out again.
+            batch_state.retire("signals_relevance", st, bid, why)
+            continue
         updates = []
         for res in client.messages.batches.results(bid):
             aid = int(res.custom_id[1:])
