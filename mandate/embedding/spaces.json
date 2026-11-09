@@ -13,22 +13,6 @@
       "max_request_tokens": 120000,
       "status": "target",
       "_input_type_doc": "false: policy's 123k stored vectors were embedded without input_type, and a space is one convention. Revisit only with a re-embed and an eval."
-    },
-    "voyage-3.5": {
-      "provider": "voyage",
-      "dim": 1024,
-      "input_type": true,
-      "price_per_mtok_usd": 0.06,
-      "max_request_tokens": 320000,
-      "status": "legacy"
-    },
-    "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2": {
-      "provider": "local",
-      "dim": 384,
-      "input_type": false,
-      "price_per_mtok_usd": 0.0,
-      "max_request_tokens": 0,
-      "status": "legacy"
     }
   },
   "stored": {
@@ -53,30 +37,18 @@
       }
     },
     "capital.eligibility_embeddings": {
-      "voyage-3.5": {
-        "column": "embedding",
-        "type": "vector"
-      },
       "voyage-4-large": {
         "column": "embedding_v4",
         "type": "halfvec"
       }
     },
     "capital.instrument_profiles": {
-      "voyage-3.5": {
-        "column": "embedding",
-        "type": "vector"
-      },
       "voyage-4-large": {
         "column": "embedding_v4",
         "type": "halfvec"
       }
     },
     "capital.signals_chunk_embeddings": {
-      "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2": {
-        "column": "embedding",
-        "type": "vector"
-      },
       "voyage-4-large": {
         "column": "embedding_v4",
         "type": "halfvec"
