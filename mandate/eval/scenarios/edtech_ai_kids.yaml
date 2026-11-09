@@ -1,0 +1,25 @@
+# Eval case 2 (owner, 2026-11-09). Funding & finance routes: diagnose intent first.
+id: edtech_ai_kids
+job: funding-routes
+founder_says: >
+  We're an AI-native startup building learning tech that engages young children.
+  We already have private investors. How can public money help us?
+profile_hint:
+  sector: software_data_ai
+  subsectors: [edtech]
+  developmentStage: early
+  customerType: consumers (B2C)
+  usesAi: true
+  handlesPersonalData: true
+must:
+  - Diagnoses intent BEFORE listing instruments - asks whether they are raising, doing real R&D, using R&D tax credits, entering new markets, and what their ambitions are.
+  - If raising, leads with matchmaking / co-investment loans (state matches private money, often venture debt on favourable terms) and explains WHY a round is the moment (private due diligence already done).
+  - Names R&D grants and R&D tax credits relevant to the company's country, researched and cited, not asserted.
+  - Mentions export-credit / market-entry support for new markets with the sequencing rule (apply before entering).
+  - States the sequencing - what must happen first for the other routes to stay open.
+  - Converges with Regina - flags the AI Act (education, minors), children's data under GDPR, and DSA protection of minors as shaping fundability and positioning.
+  - Ends with prioritised next steps saved to the workspace, not an undifferentiated list.
+must_not:
+  - Lists instruments without first asking about intent and situation.
+  - Asserts country-specific programme facts without a citation.
+  - Treats the regulatory side as out of scope.

@@ -21,6 +21,28 @@ profile lacks):
 - **Documents:** what each vehicle's process will demand. Preparing them is part
   of the advice, not an afterthought.
 
+## 1b. When the founder does not know what to ask for: diagnose intent
+Often the founder only knows "help us with public money". Then the first job
+is a short diagnostic, not a list of instruments. Ask, in plain words:
+- **Are you raising, now or soon?** If yes, **matchmaking / co-investment
+  loans** are the classic first route: the state matches or doubles private
+  money (often venture debt on favourable terms) because the private
+  investors' due diligence is already done, so the state backs the startup
+  without doing that work itself. A round in progress is the moment.
+- **Do you do real R&D?** Then R&D grants and subsidised R&D programmes.
+- **Have you looked at R&D tax credits?** (country-specific; research and cite).
+- **Are you entering a new market?** Then export-credit and market-entry
+  support, with the sequencing rule (apply before you enter).
+- **What are your ambitions and constraints?** Hiring, plants, partnerships,
+  public customers.
+Then sequence: what has to happen first for the others to stay possible.
+
+**Converge with Regina when the activity is regulated.** Example: AI-native
+learning products for young children touch the AI Act (education and minors),
+children's data under GDPR, and the DSA's protection of minors. These shape
+both what funders will back and how the company positions itself; flag them
+in the same answer, not later.
+
 ## 2. The working order
 1. **Map the structure and gather the foundational facts** (§1). Advance
    informed or not at all.
