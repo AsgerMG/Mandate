@@ -36,6 +36,13 @@ CAP=$(railway_api 'query{ project(id:"2a61c923-3a29-476e-b725-0f47b3c4ec0e"){ id
 say $d "Delete the old Capina Railway project (archives copied to the cloud first). Dry run, then add --apply" \
     "bash $OPS/retire_capina.sh   then   bash $OPS/retire_capina.sh --apply"
 
+# 1c. Vercel projects that serve nothing (regina, the-memory-studio-web)
+VLEFT=0; for P in regina the-memory-studio-web; do
+  curl -fsS -o /dev/null -H "Authorization: Bearer $TOKEN" "https://api.vercel.com/v9/projects/$P" 2>/dev/null && VLEFT=$((VLEFT + 1)); done
+[ "$VLEFT" = 0 ] && d=1 || d=0
+say $d "Delete the unused Vercel projects regina + memory studio (env vars saved first). Dry run, then add --apply" \
+    "bash $OPS/delete_vercel_projects.sh   then   bash $OPS/delete_vercel_projects.sh --apply"
+
 # 2-3. the refresh: is one running, is the census fresh, is the cron weekly
 LIVE=$(q "SELECT string_agg(id::text, ',') FROM mandate.runs WHERE status='running' AND heartbeat_at > now() - interval '30 minutes'")
 LAST=$(q "SELECT id || ' ' || status FROM mandate.runs WHERE brain='mandate' AND status <> 'running' ORDER BY started_at DESC LIMIT 1")
