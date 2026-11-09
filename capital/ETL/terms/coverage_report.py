@@ -46,7 +46,7 @@ def build(conn) -> dict:
         SELECT id, parent_id, name, country, source_family_bucket, capital_type,
                tier, root_id, depth, path,
                event_count, company_count, total_eur, first_year, last_year,
-               sample_project_titles, sector_mix, scheme_code,
+               sample_project_titles, sector_mix_display, scheme_code,
                award_p25, award_p50, award_p75, award_n
           FROM funding_instruments ORDER BY id
     """))
@@ -151,7 +151,11 @@ def build(conn) -> dict:
         stale = bool(i["last_year"]) and latest - i["last_year"] >= STALE_YEARS
         axes = {
             "eligibility": n_eval[iid] >= 2,
-            "funds": bool(titles) or bool(i["sector_mix"]),
+            # The DISPLAY mix (every recipient), not the ranker's held-out one:
+            # this asks whether the corpus knows what the fund funds, and a fund
+            # whose recipients all sit in a recall set still told us that.
+            # See populate_funding_instruments.py, sector_mix_display.
+            "funds": bool(titles) or bool(i["sector_mix_display"]),
             # Country is the floor; a region is only owed where a rule needs one.
             "where": bool(i["country"]),
             "amount": i["award_p50"] is not None,
@@ -193,8 +197,8 @@ def build(conn) -> dict:
             "cited": n_cited[iid],
             "fields": len(fields[iid]),
             "titles": len(titles),
-            "sectorMix": bool(i["sector_mix"]),
-            "focus": focus_of(i["sector_mix"]),
+            "sectorMix": bool(i["sector_mix_display"]),
+            "focus": focus_of(i["sector_mix_display"]),
             "regionEval": iid in region_eval,
             "awardP25": i["award_p25"],
             "awardP50": i["award_p50"],
