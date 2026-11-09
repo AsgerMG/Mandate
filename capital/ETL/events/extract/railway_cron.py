@@ -31,6 +31,7 @@ import collections
 import os
 import subprocess
 import sys
+import threading
 from pathlib import Path
 
 _sys.path.insert(0, str(ROOT / "ETL" / "lib"))
@@ -284,8 +285,28 @@ def guards() -> list[str]:
     return failed
 
 
-def run_step(step: list[str]) -> tuple[int, str]:
-    """Run one step, streaming it, and keep the last line it said on stderr.
+#: How much of a failed step's output its run_steps row keeps. Enough for the
+#: FAIL block a check prints or the bottom of a traceback; run_steps.summary is
+#: capped at 2000 characters by mandate.runs anyway.
+TAIL_LINES = 15
+TAIL_CHARS = 1800
+
+
+def run_step(step: list[str]) -> tuple[int, str, str]:
+    """Run one step, streaming both its streams, and keep what it said last.
+
+    Returns (returncode, why, tail). `why` is the last line it said on stderr,
+    or failing that on stdout: one line, for the census and the corpus mark.
+    `tail` is the last TAIL_LINES lines of BOTH streams in the order they
+    arrived: the summary a failed step's row in mandate.run_steps carries.
+
+    ── Why stdout too (2026-11-09) ────────────────────────────────────────
+    Run 114's coverage_gate.py failed with an EMPTY summary: the gate prints its
+    verdict -- which axes it lost, by how much -- on stdout, and only stderr was
+    kept, so the one record of the run said `failed` and nothing else. Every
+    check in this chain reports on stdout; an exception reports on stderr. Both
+    are kept now, and the live log is unchanged: each stream is echoed to its
+    own stream as it arrives.
 
     ── Why the tail travels ───────────────────────────────────────────────
     On 2026-08-16 `classify_taxonomy.py` exited 1 and the census recorded
@@ -302,19 +323,35 @@ def run_step(step: list[str]) -> tuple[int, str]:
     change is that a run that dies at 03:00 on a Sunday now says what killed
     it somewhere that outlives the container.
     """
-    proc = subprocess.Popen(step, stderr=subprocess.PIPE, text=True, bufsize=1)
-    tail: collections.deque[str] = collections.deque(maxlen=4)
-    assert proc.stderr is not None
-    for line in proc.stderr:
-        sys.stderr.write(line)
-        if line.strip():
-            tail.append(line.rstrip())
-    sys.stderr.flush()
+    proc = subprocess.Popen(step, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            text=True, bufsize=1, errors="replace")
+    both: collections.deque[str] = collections.deque(maxlen=TAIL_LINES)
+    last = {"out": "", "err": ""}
+    lock = threading.Lock()
+
+    def pump(src, dest, which: str) -> None:
+        for line in src:
+            dest.write(line)
+            dest.flush()
+            if line.strip():
+                with lock:
+                    both.append(line.rstrip())
+                    last[which] = line.rstrip()
+
+    assert proc.stdout is not None and proc.stderr is not None
+    pumps = [threading.Thread(target=pump, args=(proc.stdout, sys.stdout, "out"), daemon=True),
+             threading.Thread(target=pump, args=(proc.stderr, sys.stderr, "err"), daemon=True)]
+    for t in pumps:
+        t.start()
     proc.wait()
-    # The last non-empty line, which for an uncaught exception is the exception
-    # itself. Bounded, because run_outcome is read by a human in a guard's
-    # output and a 200-line traceback there helps nobody.
-    return proc.returncode, (tail[-1][:300] if tail else "")
+    for t in pumps:
+        t.join()
+    # The last non-empty stderr line, which for an uncaught exception is the
+    # exception itself; stdout's when stderr said nothing. Bounded, because
+    # run_outcome is read by a human in a guard's output and a 200-line
+    # traceback there helps nobody.
+    why = (last["err"] or last["out"])[:300]
+    return proc.returncode, why, "\n".join(both)[-TAIL_CHARS:]
 
 
 partial = []
@@ -339,7 +376,7 @@ for step in STEPS:
     # it and never finished. That is the fact that used to exist only as an exit
     # code in a log Railway deletes with the container.
     with corpus_marks.mark(label, "railway_cron.py") as report:
-        returncode, why = run_step(step)
+        returncode, why, tail = run_step(step)
         matched = next(((name, rc) for name, rc in PARTIAL_OK.items()
                         if any(name in part for part in step)), None)
         tolerated = bool(matched) and returncode == matched[1]
@@ -351,7 +388,8 @@ for step in STEPS:
         import json  # noqa: PLC0415
         detail = {"sources": json.loads(Path(RENEW_RESULTS).read_text())}
     RUN.close_step(step_id, "ok" if returncode == 0 else "partial" if tolerated else "failed",
-                   summary=why if returncode else "", exit_code=returncode, detail=detail)
+                   summary=(tail or why) if returncode else "", exit_code=returncode,
+                   detail=detail)
     if returncode == 0:
         continue
     if script in SOFT:
