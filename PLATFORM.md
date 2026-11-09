@@ -116,6 +116,39 @@ A brain is a schema, a role, a deployable and a workflow. In order:
    `link` lines in `scripts/agent-worktree.sh`.
 6. **This file.** A row in the table above.
 
+## The advisor: mandate-api and the agent runtime (WRITTEN, NOT DEPLOYED)
+
+Branch `agent-runtime`, phase 1 of the advisor plan. Nothing here runs in
+production yet; the steps to make it run are below, in order.
+
+- **mandate-api** (`mandate/api`, `mandate/Dockerfile`, `mandate/railway.json`):
+  FastAPI over grounding (fetch a source into the store, cite a span, verify a
+  citation), profiles (read, append a version), the workspace record
+  (`mandate/db/workspace.sql`: missions, messages, decisions, actions +
+  action_events, flags, plan_steps, watchlist_items; append-only) and the
+  actors register (`mandate/db/actors.sql`: the personal-data line is in its
+  header). Runs as `mandate_app`. Auth: `Authorization: Bearer
+  $MANDATE_SERVICE_TOKEN`, fail-closed, no public writes. Citations are keyed
+  by sha256, so `GROUNDING_REFERENCE_URL` (rehearsals only, read-only) can point
+  at production grounding without id collisions.
+- **The agent runtime** (`web/lib/mandate/agent`, route
+  `web/app/api/mandate/mission`): Mandate (claude-opus-5-5) orchestrates,
+  Wincent and Regina (claude-sonnet-5-5) are sub-agents with their own tools.
+  Persona, method and job playbooks are `mandate/playbooks/*.md`, shipped as a
+  generated module (`npx tsx scripts/emit_playbooks.ts`). The `?demo=1` path is
+  unchanged; a live mission needs `MANDATE_API_URL` + `MANDATE_SERVICE_TOKEN`,
+  and in production `x-mandate-key` = `MANDATE_MISSION_KEY`.
+- **Eval** (`mandate/eval`): scenarios in the owner's must/must_not format, a
+  runner, a citation validator, a Claude judge; results in `mandate.eval_runs`.
+
+To go live, as the admin, in order: `mandate/db/profile_sources.sql`,
+`workspace.sql`, `actors.sql`, `eval_runs.sql` (psql, each idempotent); a
+Railway service `mandate-api` (root `/`, config `/mandate/railway.json`,
+`DATABASE_URL=${{pgvector.MANDATE_DATABASE_URL}}`, `MANDATE_SERVICE_TOKEN`,
+`BUCKET_*`); on Vercel `MANDATE_API_URL`, `MANDATE_SERVICE_TOKEN`,
+`MANDATE_MISSION_KEY`; redeploy policy for `/api/documents/{id}/passages` and
+`/api/actors`.
+
 ## The company profile and vocabulary: shared by every brain
 
 **One vocabulary**: `mandate/vocabulary/vocabulary.json` (sectors, size bands,

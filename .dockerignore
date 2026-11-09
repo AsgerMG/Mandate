@@ -54,3 +54,4 @@ policy/**/*.log
 policy/tests/
 policy/project-management/
 policy/docker-compose.yml
+mandate/eval/runs/
