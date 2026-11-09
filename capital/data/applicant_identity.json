@@ -1144,6 +1144,12 @@
    "v": 1,
    "verdict": "applicant"
   },
+  "4ecb946430f978a4": {
+   "reason": "Describes companies and knowledge institutions participating in consortia who each receive subsidy; they are the applying parties.",
+   "sample": "Wie dient in: deelname loopt via consortia binnen een NXTGEN Hightech-project; de subsidie wordt via stichting NXTGEN Hightech en RVO verstrekt onder de Subsidieregeling Nationaal Groeifonds (referentie NGFNH2201). Deeln",
+   "v": 1,
+   "verdict": "applicant"
+  },
   "4ed076858ce647dc": {
    "reason": "Companies, academia, institutes, public sector with international project; they apply themselves.",
    "sample": "F\u00f6retag, akademi, forskningsinstitut och offentlig sektor som har ett internationellt samarbetsprojekt med minst ett annat Eurostarsland. F\u00f6retagets nettooms\u00e4ttning eller egna kapital ska motsvara minst h\u00e4lften av den s\u00f6",
@@ -3139,6 +3145,12 @@
   "dd59b8d7c2cb1f06": {
    "reason": "Antragsberechtigt firms, freelancers, contractors applying in their own right.",
    "sample": "6 F\u00f6rdernehmer Antragsberechtigt mit einer Betriebsst\u00e4tte oder Niederlassung in Deutschland sind: - private Unternehmen, - kommunale Unternehmen, - Landesunternehmen, - freiberuflich T\u00e4tige, wenn die Betriebsst\u00e4tte \u00fcberw",
+   "v": 1,
+   "verdict": "applicant"
+  },
+  "dda41615e4a61309": {
+   "reason": "Describes SMEs/professionals seeking the guaranteed loan, stating submission routes via the bank; SME is the tested, contracting party.",
+   "sample": "Chi presenta la domanda: la domanda non si presenta direttamente al Fondo; va richiesta alla banca, all'intermediario finanziario o al confidi che concede il finanziamento, il quale inoltra la richiesta di garanzia al Fo",
    "v": 1,
    "verdict": "applicant"
   },
