@@ -36,5 +36,25 @@ no_live_run_or_stop() {
     RETURNING 'marked dead run ' || id || ' abandoned (last heartbeat ' || heartbeat_at || ')'"
   local live; live=$(psql "$url" -XAtc "SELECT string_agg(id || ' (heartbeat ' || to_char(heartbeat_at, 'HH24:MI') || ' UTC)', ', ')
                                           FROM mandate.runs WHERE status = 'running'")
-  [ -z "$live" ] || { echo "NOT YET: run $live is still running; a deploy now would kill it. Run this again when it has finished."; exit 1; }
+  if [ -n "$live" ]; then
+    # The one live state a deploy may end: the run's only open step is waiting
+    # on Regina, and Regina says no refresh is running. That wait cannot end
+    # (9 Nov: her record never reached mandate.runs), so it is closed, saying why.
+    local stuck regina
+    stuck=$(psql "$url" -XAtc "SELECT r.id FROM mandate.runs r WHERE r.status = 'running'
+              AND (SELECT array_agg(name) FROM mandate.run_steps s WHERE s.run_id = r.id AND s.status = 'running') = ARRAY['policy refresh']")
+    regina=$(curl -fsS https://regina-production.up.railway.app/api/refresh 2>/dev/null | python3 -c "import json,sys;print(json.load(sys.stdin).get('running'))" 2>/dev/null)
+    if [ -n "$stuck" ] && [ "$stuck" = "$(echo "$live" | cut -d' ' -f1)" ] && [ "$regina" = False ]; then
+      psql "$url" -XAtq -v ON_ERROR_STOP=1 -c "
+        UPDATE mandate.run_steps SET status = 'failed', finished_at = now(),
+               summary = 'waited on a policy record that could not be written (mandate.runs missing from the policy image); Regina is idle'
+         WHERE run_id = $stuck AND status = 'running';
+        UPDATE mandate.runs SET status = 'abandoned', finished_at = now(),
+               summary = 'closed by ops script: only open step was the policy wait, and Regina was idle'
+         WHERE id = $stuck"
+      echo "closed run $stuck: it was only waiting on Regina, who is idle (her record could not be written)"
+    else
+      echo "NOT YET: run $live is still running; a deploy now would kill it. Run this again when it has finished."; exit 1
+    fi
+  fi
 }
