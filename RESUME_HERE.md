@@ -3,22 +3,13 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
-## NEXT SESSION (from 9 Nov night): the owner's build order
-Owner 9 Nov 23:30: (1) data + grounding sound, (2) build the brains, (3) brains wired
-to the data, (4) exposure LAST. Stop polishing legacy /brief guards.
-Done 9 Nov: every foundation step (Capina + Vercel retired, Batches, sector fix,
-cron fixes, Regina recording + 10 sources fixed, duplicates dropped, old vectors
-dropped (038), advisor live at mandate-api-production-5203.up.railway.app,
-census ok, run 116 ok).
-FIRST, 2 minutes: when Regina's refresh (run 117) has finished,
-`bash mandate/ops/restore_weekly_cron.sh` (MUST happen before Sun 03:00 UTC; the
-cron is on a one-off schedule). Then check run 117's sources.
-THEN, step 1 (data + grounding audit): one table per brain of what it holds,
-what is grounded (citations resolve, quotes match), what is stale, what is
-missing for the owner's four cases. Then step 2: Wincent missions on the
-owner's cases, owner grades; Regina interview.
-Legacy guards still DRIFTED (hydration_parity, degradation, recall_floor protect
-the old /brief ranker): propose archiving them out of CI in one change.
+## NEXT SESSION: follow mandate/plans/master_plan.md
+The end-to-end plan (10 Nov): the brain factory loop, phases 0-6, JEV, pass bars,
+decisions. Phase 0 first: owner tops up Anthropic credit; archive the retired one-pager
+product (simplification_review.md 3a); split web CI from capital CI; one health
+monitor; Railway config migration before 1 Dec; per-workspace spend ledger.
+Weekly cron restored 10 Nov (full run, Sundays 03:00 UTC). Politico (5) still 429 and
+EDPB 503 in Regina's run 117: Phase 0 follow-up.
 
 ## OPEN LOOPS (read first; close before starting anything new)
 Principle (owner, 9 Nov): finish before moving on. A change is done when it is
