@@ -29,12 +29,22 @@ each was already re-runnable:
              running safe rather than merely harmless.
   publish    scoped to this source's tag, insert-or-update, never deletes.
 
-── The enumeration window overlaps on purpose ─────────────────────────────
-`--since` looks back further than the cadence (default 60 days for a weekly
-job). A window that exactly matched the cadence would lose every convocatoria
-registered while a run was in flight, and a missed record is invisible: it is
-not a failure, it is simply a fund the founder never sees. The overlap costs a
-few hundred already-seen ids and buys a boundary that cannot drop anything.
+── The enumeration window covers how long a call stays OPEN ───────────────
+`--since` is NOT sized to the cadence. The container starts with an empty
+data/raw/, so each run sees only what this window enumerates; a call registered
+before it is offered only if some earlier run happened to catch it. Sized to
+the cadence (it was 60 days), any outage longer than the window loses every
+call registered in the gap, permanently -- and that is what happened: no run
+between 2026-08-08 and 2026-11-09 (guard: "refreshed 93d ago"), so the calls
+registered 2026-08-08..09-10 were never seen, and ES offerable fell 102 -> 68
+with every stage reporting ok.
+
+So the window is the life of a call, measured: over the calls the August
+harvest admitted, registration -> fechaFinSolicitud was p50 73, p90 129, p95
+145 days. 180 days covers that with a margin, and the harvest narrows the
+search server-side to the admissible finalidades (lossless: `in_scope` would
+reject every other one), so the longer window costs ~1,700 candidates a run,
+against 1,349 for the old 60-day unnarrowed one.
 
 ── Partial is not failure ─────────────────────────────────────────────────
 Exit codes match `renew.py`, which `railway_cron.py` already knows how to read:
@@ -111,15 +121,16 @@ def _load_inputs_ready() -> bool:
 SOURCE_TAG = "bdns_es_convocatorias_abiertas"
 COUNTRY = "ES"
 
-# Cap on detail fetches per run. The register registers roughly 130 qualifying
-# convocatorias a week, so this is ~15x headroom; it exists so a first run after
-# a long outage cannot sit in a Railway container for four hours. Hitting it is
-# a PARTIAL, not a failure -- the next run resumes from the same cache.
-DETAIL_CAP = 2000
+# Cap on detail fetches per run. The container keeps no cache, so every run
+# fetches the whole window: ~1,700 candidates for 180 days narrowed (measured
+# 2026-11-09), so this is ~2x headroom for a busy season. It exists so a run
+# cannot sit in a Railway container for hours. Hitting it is a PARTIAL, not a
+# failure: the oldest registrations are the ones left, newest-first.
+DETAIL_CAP = 4000
 
-# How far back to enumerate. Deliberately longer than the weekly cadence; see
-# the module docstring.
-LOOKBACK_DAYS = 60
+# How far back to enumerate: the life of a call (p95 145 days), not the
+# cadence. See the module docstring.
+LOOKBACK_DAYS = 180
 
 
 def _state() -> dict:
