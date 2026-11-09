@@ -66,6 +66,11 @@ $PY "$M/upload_manifest.py" "$G/grounding_manifest_policy.jsonl" --db-url "$POLI
 
 echo "== 4. the seven cron sources' inputs"
 $PY "$M/upload_manifest.py" "$G/grounding_manifest_cron_inputs.jsonl" --archive "$G/archive/raw" --apply
+# The cron finds inputs by their grounding VERSION, not by bucket key: record them.
+for m in grounding_manifest_cron_inputs.jsonl grounding_manifest_cron_inputs_state_aid_cases.jsonl; do
+  [ -f "$G/$m" ] && $PY "$M/register_manifest.py" "$G/$m" --archive "$G/archive/raw" \
+      --database-url "$CAPITAL" --apply
+done
 
 echo "== 5. capital: migration 034, then gate -> document links, then originals"
 (cd capital && DATABASE_URL="$CAPITAL" python3 ETL/events/load/migrations/apply.py all)
