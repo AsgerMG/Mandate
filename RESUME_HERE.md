@@ -3,20 +3,22 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
-## TONIGHT 9 Nov, 21:00 Copenhagen: the parallel plan (owner: "done before bed")
-Run in PARALLEL, not in sequence. On "continue", Claude immediately:
-- spawns ONE agent: agent-runtime (661a060c) reconcile with the owner's untracked workspace files -> mergeable;
-- itself: confirm Capina + Vercel deleted (tidy CAPINA_* refs, archives.json), merge llm-batches (SQL first),
-  verify sector-display a50e0bff (populate on a local copy -> coverage_gate --dry-run funds >= 930), merge, clear holds.txt.
-| CET | Step | Who |
-|---|---|---|
-| 21:30 | `rerun_capital.sh` (60 min on Railway) | owner |
-| 21:35 | `drop_policy_duplicates.sh` then `--apply` (policy tables: safe DURING the capital-only run) | owner |
-| 21:45 | Phase 1 merged + 4 SQL files; owner creates mandate-api service + 3 Vercel vars (exact clicks from Claude) | Claude + owner |
-| 22:30 | run done -> `restore_weekly_cron.sh`, then `one_model_drop_old.sh` + `--apply` (after the run: VACUUM FULL on tables it writes) | owner |
-| 22:45 | verify: census ok, check_verdicts green, advisor answers a live mission | Claude |
-| 22:50 | FOUNDATION DONE -> first live Wincent mission with the owner grading | both |
-Deferred, non-blocking: laptop backups to bucket (loop 10), pruning this file.
+## NEXT SESSION (from 9 Nov night): the owner's build order
+Owner 9 Nov 23:30: (1) data + grounding sound, (2) build the brains, (3) brains wired
+to the data, (4) exposure LAST. Stop polishing legacy /brief guards.
+Done 9 Nov: every foundation step (Capina + Vercel retired, Batches, sector fix,
+cron fixes, Regina recording + 10 sources fixed, duplicates dropped, old vectors
+dropped (038), advisor live at mandate-api-production-5203.up.railway.app,
+census ok, run 116 ok).
+FIRST, 2 minutes: when Regina's refresh (run 117) has finished,
+`bash mandate/ops/restore_weekly_cron.sh` (MUST happen before Sun 03:00 UTC; the
+cron is on a one-off schedule). Then check run 117's sources.
+THEN, step 1 (data + grounding audit): one table per brain of what it holds,
+what is grounded (citations resolve, quotes match), what is stale, what is
+missing for the owner's four cases. Then step 2: Wincent missions on the
+owner's cases, owner grades; Regina interview.
+Legacy guards still DRIFTED (hydration_parity, degradation, recall_floor protect
+the old /brief ranker): propose archiving them out of CI in one change.
 
 ## OPEN LOOPS (read first; close before starting anything new)
 Principle (owner, 9 Nov): finish before moving on. A change is done when it is
