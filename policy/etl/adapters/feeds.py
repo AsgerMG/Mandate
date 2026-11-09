@@ -174,7 +174,11 @@ FEED_SPECS: list[FeedSpec] = [
     FeedSpec(
         key="eprs_blog",
         name="EPRS — European Parliamentary Research Service",
-        url="https://epthinktank.eu/feed/",
+        # The epthinktank.eu WordPress blog was retired: /feed/ now 301s to
+        # eprs.europarl.europa.eu/feed/, a 404 (run 115). EPRS publications
+        # (briefings, At a Glance, studies) are carried by the EP Think Tank
+        # document feed, verified live 2026-11-09 (25 items, EPRS_* ids).
+        url="https://www.europarl.europa.eu/thinktank/en/research/advanced-search/rss",
         jurisdiction=Jurisdiction.EU,
         document_type=DocumentType.OTHER,
         filter_tech=True,
