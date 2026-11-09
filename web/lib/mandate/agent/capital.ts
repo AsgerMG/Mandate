@@ -23,6 +23,24 @@ import { isCited, isFilter } from "@/lib/intelligence/evidenceTier";
 import { assessInstrument } from "@/lib/intelligence/verdict";
 import { toCapitalRequest, validateProfile, type CompanyProfile } from "../profile";
 
+/** One award record that is a precedent. */
+export interface PrecedentRow {
+  company: string; company_country: string | null; subsector: string | null; sector_top: string | null;
+  amount_eur: number | null; kind: string; started: string | null; programme: string | null;
+  granting_authority: string | null; source: string; raw_source_url: string | null;
+}
+
+export interface PrecedentQuery {
+  /** Scope by instrument: its own sources, and for a scheme child its parent's
+   *  sources narrowed to the child's notified scheme and granting body. */
+  instrument?: { sources: string[]; schemeCode?: string | null; body?: string | null };
+  /** Or by institution + instrument type. */
+  institution?: string;
+  move?: string;
+  country?: string;
+  limit: number;
+}
+
 export interface GateGrounding { gateKey: string; instrumentId: string; sha256: string }
 
 /** Everything the capital tools read, behind one seam so tests can fake it. */
@@ -33,6 +51,34 @@ export interface CapitalPort {
   verdict(profile: CompanyProfile, objective: string, capitalSought: string[]): ReturnType<typeof computeVerdict>;
   demands(id: string, focus: string, k: number): ReturnType<typeof retrieveDemands>;
   gateGrounding(instrumentIds: string[]): Promise<GateGrounding[]>;
+  /** The source families an instrument's awards are loaded under. */
+  instrumentSources(id: string): Promise<string[]>;
+  precedents(q: PrecedentQuery): Promise<PrecedentRow[]>;
+}
+
+// What each move looks like in the award records. SATR encodes the aid
+// instrument (StateAidInstrumentG = guarantee, SL = soft loan, Lradv = loan or
+// repayable advance, DG = direct grant, PRVRISKFIN = private risk finance,
+// Taote = tax advantage); Norway's register writes Garanti / Lån / Tilskudd.
+const MOVE_SQL: Record<string, string> = {
+  guarantee: "(e.aid_instrument IN ('StateAidInstrumentG', 'Garanti') OR e.aid_instrument ~* '(guarant|garanz|bürgsch)' OR e.source ~* '(guarant|garanz)')",
+  loan: "(e.debt_amount_eur > 0 OR e.aid_instrument IN ('StateAidInstrumentSL', 'StateAidInstrumentLradv', 'Lån', 'StateAidInstrumentG', 'Garanti'))",
+  raise: "(e.equity_amount_eur > 0 OR e.instrument_class IN ('equity', 'quasi_equity', 'risk_finance') OR e.aid_instrument = 'StateAidInstrumentPRVRISKFIN')",
+  equity: "(e.equity_amount_eur > 0 OR e.instrument_class IN ('equity', 'quasi_equity', 'risk_finance'))",
+  grant: "(e.grant_amount_eur > 0 OR e.aid_instrument IN ('StateAidInstrumentDG', 'Tilskudd'))",
+  export: "(e.aid_objective ~* '(export|internationali)' OR e.programme_name ~* '(export|internationali)' OR e.source ~* 'export')",
+  rnd: "(e.aid_objective ~* '(research|innovation|R&D)' OR e.source ~* '(horizon|eic|cdti|innovate|_rnd)')",
+};
+
+async function pgQuery<T>(sql: string, params: unknown[]): Promise<T[]> {
+  const url = process.env.DATABASE_URL;
+  if (!url) return [];
+  const client = await openPg(url, { connectMs: 3000, statementMs: 15000 });
+  try {
+    return (await client.query(sql, params)).rows as T[];
+  } finally {
+    await client.end().catch(() => {});
+  }
 }
 
 export const realCapital: CapitalPort = {
@@ -47,6 +93,35 @@ export const realCapital: CapitalPort = {
     });
   },
   demands: (id, focus, k) => retrieveDemands([id], focus, k),
+  instrumentSources: async (id) => (await pgQuery<{ source: string }>(
+    `SELECT source FROM funding_instrument_sources WHERE instrument_id = $1 ORDER BY 1`, [id])).map((r) => r.source),
+  precedents: async (q) => {
+    const where = ["e.is_duplicate = 0", "c.canonical_name IS NOT NULL"];
+    const params: unknown[] = [];
+    const p = (v: unknown) => { params.push(v); return `$${params.length}`; };
+    if (q.instrument) {
+      if (!q.instrument.sources.length) return [];
+      where.push(`e.source = ANY(${p(q.instrument.sources)})`);
+      if (q.instrument.schemeCode) where.push(`(e.call_id = ${p(q.instrument.schemeCode)} OR e.satr_tm_id = $${params.length})`);
+      if (q.instrument.body) where.push(`e.granting_authority = ${p(q.instrument.body)}`);
+    } else if (q.institution) {
+      const pat = p(`%${q.institution}%`);
+      where.push(`(e.granting_authority ILIKE ${pat} OR e.entrusted_entity ILIKE ${pat} OR e.financial_intermediaries ILIKE ${pat} OR e.programme_name ILIKE ${pat})`);
+    } else return [];
+    if (q.move && MOVE_SQL[q.move]) where.push(MOVE_SQL[q.move]);
+    if (q.country) where.push(`(c.country = ${p(q.country)} OR e.deployment_country = $${params.length} OR e.granting_authority_country = $${params.length})`);
+    return pgQuery<PrecedentRow>(
+      `SELECT c.canonical_name AS company, c.country AS company_country, c.subsector, c.sector_top,
+              COALESCE(e.debt_amount_eur, e.equity_amount_eur, e.grant_amount_eur) AS amount_eur,
+              CASE WHEN e.debt_amount_eur > 0 THEN 'debt/guarantee' WHEN e.equity_amount_eur > 0 THEN 'equity'
+                   WHEN e.grant_amount_eur > 0 THEN 'grant' ELSE coalesce(e.instrument_class, e.aid_instrument, 'unknown') END AS kind,
+              e.project_started AS started, coalesce(e.programme_name, e.aid_instrument, e.project_title) AS programme,
+              e.granting_authority, e.source, e.raw_source_url
+         FROM public_funding_events e JOIN companies c ON c.id = e.company_id
+        WHERE ${where.join(" AND ")}
+        ORDER BY e.project_started DESC NULLS LAST
+        LIMIT ${Math.min(Math.max(q.limit, 1), 400)}`, params);
+  },
   gateGrounding: async (ids) => {
     const url = process.env.DATABASE_URL;
     if (!url || !ids.length) return [];
@@ -193,4 +268,76 @@ export async function route(port: CapitalPort, id: string) {
     url: r.url, provenance: r.provenance, recorded_for: r.recordedFor, withheld_because: r.withheldBecause,
     note: "Curated route, uncited. Research the url to cite the current process.",
   };
+}
+
+
+/** Precedents (owner's playbook 1c): companies the same instrument, or the
+ *  same kind of instrument at the same institution, backed in a similar
+ *  situation. Ranked by how close the situation is, never by name. Each row's
+ *  register link is its source; the top few are cited through grounding when
+ *  the register page names the company. */
+export async function precedents(port: CapitalPort, input0: {
+  instrument_id?: string; institution?: string; move?: string;
+  situation?: { stage?: string; sector?: string; subsector?: string; country?: string; raise_size_eur?: number };
+  k?: number;
+}, cite: (url: string, quote: string, label: string) => Promise<string | null>) {
+  let input = { ...input0 };
+  const k = Math.min(Math.max(input.k ?? 5, 1), 10);
+  const sit = input.situation ?? {};
+  let scope: PrecedentQuery["instrument"];
+  let scopeLabel = "";
+  if (input.instrument_id) {
+    await port.hydrate();
+    const all = port.instruments();
+    const inst = all.find((i) => i.id === input.instrument_id);
+    if (!inst) return { error: `no instrument ${input.instrument_id} in the corpus` };
+    const own = await port.instrumentSources(inst.id);
+    const sources = own.length ? own : inst.parentId ? await port.instrumentSources(inst.parentId) : [];
+    if (sources.length) {
+      scope = { sources, schemeCode: own.length ? null : inst.schemeCode, body: own.length ? null : inst.administeringBody };
+      scopeLabel = `awards under ${inst.name}${own.length ? "" : " (the parent programme's records, narrowed to this scheme and body)"}`;
+    } else if (inst.administeringBody) {
+      // No award source is loaded for this instrument itself: fall back to its
+      // administering body, said so, so the agent does not read it as this fund's own record.
+      input = { ...input, institution: inst.administeringBody.split("/")[0].trim() };
+      scopeLabel = `no award records are loaded for ${inst.name} itself; showing awards by its administering body, ${input.institution}${input.move ? ` (${input.move})` : ""}`;
+    } else {
+      return { scope: `awards under ${inst.name}`, precedents: [], none_found: true,
+        note: "NO award records are loaded for this instrument. Research the institution's own published transaction lists." };
+    }
+  } else if (input.institution) {
+    scopeLabel = `awards by ${input.institution}${input.move ? ` (${input.move})` : ""}`;
+  } else {
+    throw new Error("give instrument_id, or institution (with a move)");
+  }
+  // Pull widely within scope, then rank by situation: a precedent need not be
+  // a competitor, only the same situation (playbook 1c).
+  const rows = await port.precedents({ instrument: scope, institution: scope ? undefined : input.institution,
+    move: input.move, limit: 300 });
+  const score = (r: PrecedentRow) => {
+    let s = 0;
+    if (sit.subsector && r.subsector === sit.subsector) s += 3;
+    if (sit.sector && r.sector_top === sit.sector) s += 2;
+    if (sit.country && r.company_country === sit.country.toUpperCase()) s += 2;
+    if (sit.raise_size_eur && r.amount_eur) {
+      const ratio = r.amount_eur / sit.raise_size_eur;
+      if (ratio >= 0.25 && ratio <= 4) s += 1.5;
+    }
+    const year = Number(String(r.started ?? "").slice(0, 4));
+    if (year >= 2021) s += 0.5;
+    return s;
+  };
+  const ranked = rows.map((r) => ({ r, s: score(r) })).sort((a, b) => b.s - a.s).slice(0, k);
+  if (!ranked.length) {
+    return { scope: scopeLabel, precedents: [], none_found: true,
+      note: "NO PRECEDENT in Wincent's award records for this scope. That is itself information: a first-of-a-kind ask needs a stronger case. Research the institution's own published transaction lists before concluding there is none." };
+  }
+  const out = [];
+  for (const [i, { r, s }] of ranked.entries()) {
+    const citation = i < 3 && r.raw_source_url ? await cite(r.raw_source_url, r.company, `${r.company}: ${r.programme ?? r.source}`) : null;
+    out.push({ ...r, similarity: Number(s.toFixed(1)), citation,
+      evidence: citation ? "cited (register page names the company)" : "register record (raw_source_url), not grounded" });
+  }
+  return { scope: scopeLabel, precedents: out, none_found: false,
+    note: "Award records from Wincent's corpus. Cite [cN] where given; otherwise say 'register record' with the source URL, and do not present it as cited." };
 }

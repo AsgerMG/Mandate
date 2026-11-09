@@ -18,7 +18,7 @@ import type { CompanyProfile } from "../profile";
 import type {
   Claim, EvidenceRef, MissionEvent, Specialist, WorkspaceAction, WorkspaceDecision,
 } from "../workspace";
-import { assess, findInstruments, requirements, route, type CapitalPort } from "./capital";
+import { assess, findInstruments, precedents, requirements, route, type CapitalPort } from "./capital";
 import { CitationLedger, type Specialist as Sp } from "./ledger";
 import { runLoop, type ModelClient, type ToolHandler } from "./loop";
 import {
@@ -204,6 +204,12 @@ function wincentTools(ctx: Ctx) {
       }, ["objective"]),
       tool("assess_instrument", "One instrument against the company profile: status, blockers, gates with cited quotes, the deciding question.",
         { instrument_id: str("from find_instruments") }, ["instrument_id"]),
+      tool("find_precedents", "Precedents (playbook 1c): companies this instrument, or this institution for this kind of move, already backed in a similar situation. Use them for every main route and in outreach drafts. Says explicitly when none is found.", {
+        instrument_id: str("scope by instrument"), institution: str("or scope by institution name (e.g. 'Bpifrance', 'Mediocredito Centrale')"),
+        move: { type: "string", enum: ["guarantee", "loan", "raise", "equity", "grant", "export", "rnd"] },
+        situation: { type: "object", description: "{stage, sector, subsector, country (ISO2), raise_size_eur}" },
+        k: { type: "integer", description: "how many, default 5" },
+      }, []),
       tool("fund_requirements", "The instrument's requirement texts that bear most on a focus.",
         { instrument_id: str("id"), focus: str("e.g. 'financial intermediary', 'banking licence', 'SME'") }, ["instrument_id", "focus"]),
       tool("application_route", "How a founder actually applies: channel, window, link, and whose route it is.",
@@ -214,6 +220,14 @@ function wincentTools(ctx: Ctx) {
       find_instruments: { required: ["objective"], run: (i: Record<string, unknown>) => findInstruments(c, p(), i as never) },
       assess_instrument: { required: ["instrument_id"], run: (i: Record<string, unknown>) =>
         assess(c, p(), String(i.instrument_id), (sha, url, quote, label) => cite(ctx, "wincent", "assess_instrument")(sha, url, quote, label)) },
+      find_precedents: { run: (i: Record<string, unknown>) => precedents(c, i as never,
+        async (url, quote, label) => {
+          try {
+            const v = await ctx.deps.mandate.fetch(url, { title: label });
+            if (!v.citable) return null;
+            return ctx.ledger.add(await ctx.deps.mandate.cite({ sha256: v.sha256, quote }), "wincent", "find_precedents", label);
+          } catch { return null; }
+        }) },
       fund_requirements: { required: ["instrument_id", "focus"], run: (i: Record<string, unknown>) => requirements(c, String(i.instrument_id), String(i.focus)) },
       application_route: { required: ["instrument_id"], run: (i: Record<string, unknown>) => route(c, String(i.instrument_id)) },
       ...s.handlers,

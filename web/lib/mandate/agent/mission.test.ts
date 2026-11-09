@@ -123,6 +123,24 @@ describe("CitationLedger", () => {
   });
 });
 
+// ── precedents ───────────────────────────────────────────────────────────
+
+describe("find_precedents", () => {
+  it("ranks by situation, cites the top register page, and says when there is none", async () => {
+    const { capital } = fakeServices();
+    const { precedents } = await import("./capital");
+    const cited: string[] = [];
+    const r = await precedents(capital, { instrument_id: "kfw_buergschaft", move: "guarantee",
+      situation: { subsector: "fintech", country: "DE", raise_size_eur: 4e6 } },
+      async (url) => { cited.push(url); return "c7"; }) as { precedents: { company: string; citation: string | null }[] };
+    expect(r.precedents.map((p) => p.company)).toEqual(["Lendwerk GmbH", "Agrar AG"]);
+    expect(r.precedents[0].citation).toBe("c7");
+    expect(cited).toEqual(["https://register.example/lendwerk"]);
+    const none = await precedents(capital, { institution: "Nobody Bank", move: "guarantee" }, async () => null);
+    expect(none).toMatchObject({ none_found: true });
+  });
+});
+
 // ── a whole mission ──────────────────────────────────────────────────────
 
 const SHA = "b".repeat(64);
@@ -174,7 +192,15 @@ function fakeServices() {
   const capital: CapitalPort = {
     hydrate: async () => {}, instruments: () => [inst as never], hydrateGates: async () => {},
     verdict: async () => ({ eligibilityScreen: [], instrumentTable: [], selfMatched: false, candidateInstrumentIds: [] }),
-    demands: async () => [], gateGrounding: async () => [{ instrumentId: "kfw_buergschaft", gateKey: "g1", sha256: SHA }],
+    demands: async () => [], instrumentSources: async () => ["kfw_src"],
+    precedents: async (q) => q.instrument?.sources.includes("kfw_src") ? [
+      { company: "Lendwerk GmbH", company_country: "DE", subsector: "fintech", sector_top: "software_data_ai", amount_eur: 2e6,
+        kind: "debt/guarantee", started: "2024-03-01", programme: "Ausfallbuergschaft", granting_authority: "Buergschaftsbank",
+        source: "kfw_src", raw_source_url: "https://register.example/lendwerk" },
+      { company: "Agrar AG", company_country: "FR", subsector: "agritech", sector_top: "agrifood", amount_eur: 9e5,
+        kind: "debt/guarantee", started: "2019-01-01", programme: "x", granting_authority: "Buergschaftsbank",
+        source: "kfw_src", raw_source_url: null }] : [],
+    gateGrounding: async () => [{ instrumentId: "kfw_buergschaft", gateKey: "g1", sha256: SHA }],
   };
   return { mandate, policy, capital, saved, messages };
 }

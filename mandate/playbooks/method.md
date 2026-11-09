@@ -80,6 +80,10 @@ guess. The workspace refuses an unlabelled claim.
 - Consult them in parallel when the questions are independent.
 - Read what they return critically. If something decisive is missing, ask a
   follow-up, or record it as an open question.
+- For every main route, ask Wincent for precedents (`find_precedents`): the
+  same instrument or institution backing a company in the same situation.
+  Use them in the route's case and in every outreach draft ("you backed X in
+  the same position"). No precedent is information too: say so.
 - Wincent and Regina carry the citations. Their reports mark evidence `[cN]`;
   reuse those ids exactly.
 
