@@ -3,6 +3,23 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
+## OPEN LOOPS (read first; close before starting anything new)
+Principle (owner, 9 Nov): finish before moving on. A change is done when it is
+merged, deployed (Railway: explicit commitSha deploy) and verified. Anything
+that cannot close now is listed here with its trigger and owner; remove the
+line in the commit that closes it. Sections below this one are history.
+
+| # | Loop | Trigger | Who |
+|---|---|---|---|
+| 1 | Merge `llm-batches` (apply `mandate/db/llm_batches.sql` first) | run 113 finished | Claude |
+| 2 | Redeploy capital-etl at main's commitSha (carries the Vinnova FX fix efc0caf3 + batches) | after 1 | Claude |
+| 3 | Restore the weekly cron: `bash mandate/ops/restore_weekly_cron.sh` (still one-off `34 10 9 11 *`) | run 113 finished | owner |
+| 4 | Verify run 113: every step ok, health issue green; fix any failed step | run 113 finished | Claude |
+| 5 | Old vectors: `one_model_drop_old.sh` then `--apply`; merge the migration it writes | after 4, before Sun 03:00 UTC | owner runs, Claude merges |
+| 6 | Policy duplicates: `drop_policy_duplicates.sh` then `--apply`; remove LegacyPassage/LegacyDocumentVersion from `policy/data/models.py` in the same change | after 4 | owner runs, Claude commits |
+| 7 | Build agent `agent-runtime`: review its report, merge or archive the branch | agent finishes | Claude |
+| 8 | Prune this file: collapse the dated history sections below into a short "how we got here" | after 1-7 | Claude |
+
 ## The goal (owner, 5-6 Nov 2026)
 One repo, one database, one website, one refresh run, and one embedding model,
 with every brain on current intel. Nothing is lost: unused things are archived,
