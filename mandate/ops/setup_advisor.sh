@@ -15,7 +15,7 @@ J() { python3 -c "import json,sys;r=sys.stdin.read();d=json.loads(r[:r.rfind('}'
 SECRETS=~/Mandate-backups/advisor.env
 [ -f "$SECRETS" ] || { umask 077; printf 'MANDATE_SERVICE_TOKEN=%s\nMANDATE_MISSION_KEY=%s\n' \
   "$(openssl rand -hex 32)" "$(openssl rand -hex 24)" > "$SECRETS"; }
-source "$SECRETS"
+set -a; source "$SECRETS"; set +a
 
 echo "== 1. the Railway service"
 SID=$(railway_api 'query{ project(id:"'"$MANDATE_PROJECT"'"){ services{ edges{ node{ id name } } } } }' 2>/dev/null |
