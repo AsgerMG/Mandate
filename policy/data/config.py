@@ -96,9 +96,17 @@ class Settings(BaseSettings):
     questions_rate_limit_per_hour: int = 20
 
     # --- HTTP / ingestion (used by the ETL layer) ---------------------------
-    http_user_agent: str = "Regina/0.1 (+regulatory-intelligence; contact: ops@example.com)"
+    # The europarl.europa.eu WAF 403s any User-Agent that does not begin with a
+    # product token it recognises: "Regina/0.1 (...)" and "python-httpx/x" both
+    # 403 from a laptop as well as from Railway (verified 2026-11-09), while the
+    # standard crawler form "Mozilla/5.0 (compatible; <bot>; +<url>)" returns
+    # 200. That form still names us honestly; it does not impersonate a browser.
+    http_user_agent: str = "Mozilla/5.0 (compatible; Regina/0.1; +https://regina-ai.eu)"
     http_timeout_seconds: float = 30.0
     request_delay_seconds: float = 1.0  # politeness delay between source requests
+    # A 429 (or 503) carrying Retry-After is honoured up to this many seconds;
+    # longer asks are capped so one source cannot stall the whole weekly run.
+    retry_after_max_seconds: float = 120.0
 
     # How far back the "active/recent" backfill reaches, in days. This is a
     # ceiling, not a target: RSS/Atom feeds are naturally capped by their own
