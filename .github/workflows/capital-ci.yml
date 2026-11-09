@@ -655,6 +655,14 @@ jobs:
       - name: No re-run can displace a curated sector label
         run: python3 ETL/events/transform/test_sector_label_precedence.py
 
+      # The LLM jobs run as Message Batches (mandate/llm/batch.py): a batch
+      # collected a week late writes exactly what the live loop wrote, through
+      # the same precedence rule, and nothing in flight is paid for twice.
+      - name: Batched sector labels write what the live loop wrote, late or not
+        run: python3 ETL/events/transform/test_taxonomy_batch.py
+      - name: Batched pertinence keeps the cache's shape and never pays twice
+        run: python3 ETL/terms/test_pertinence_batch.py
+
       # Committed DDL must account for every column in every store. The
       # BETWEEN-STORES half needs the corpus and DATABASE_URL, which CI has
       # neither of by design, so it runs on the weekly cron and publishes a

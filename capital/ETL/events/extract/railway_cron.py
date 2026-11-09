@@ -108,8 +108,13 @@ STEPS = [
     # funding_instruments and cannot touch a company's sector.
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "restore"],
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "apply-nace"],
+    # A Message Batch through mandate/llm/batch.py: it first collects any
+    # batch an earlier run left processing (ids in mandate.llm_batches, never on
+    # this scratch disk), submits only what is not in flight, waits at most 60
+    # minutes, and leaves the rest for next week. Exit 3 = the batch store is
+    # missing, so nothing was submitted: recorded PARTIAL (PARTIAL_OK below).
     [sys.executable, str(ROOT / "ETL/events/transform/classify_taxonomy.py"), "run",
-     "--max-cost", "20"],
+     "--max-cost", "20", "--wait-minutes", "60"],
     # ...and the other half. Without it this container pays for LLM labels every
     # week and throws them away on the next load, which is the loss recorded in
     # cmd_persist: eight batches submitted, eight collected, no row carrying
@@ -236,7 +241,9 @@ CENSUS = str(ROOT / "ETL/events/load/publish_corpus_census.py")
 # through a public archive, and a handful of 503s from that archive is ordinary
 # weather. The windows it did read are written; the next run takes the rest.
 PARTIAL_OK = {"renew.py": 3, "refresh_open_calls.py": 3,
-              "fetch_ademe_windows.py": 3}
+              "fetch_ademe_windows.py": 3,
+              # `run` only: no batch store, nothing submitted (RC_NO_STORE)
+              "classify_taxonomy.py": 3}
 
 def census(outcome: str) -> None:
     """Record what this run left behind, and how the run itself went.
