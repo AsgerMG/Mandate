@@ -81,5 +81,12 @@
       "destination": "https://wincent-ai.eu/images/regina/parliament.png",
       "permanent": true
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "*": false
+    }
+  },
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- . ../capital/website/build ../capital/ETL/lib ../capital/reference ../mandate/embedding ../mandate/vocabulary ../mandate/profile"
 }
