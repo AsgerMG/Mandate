@@ -142,6 +142,13 @@ def _row_to_passage(row) -> dict:
         "kind": (row.extra or {}).get("kind"),
         "char_start": row.char_start,
         "char_end": row.char_end,
+        # The grounding identity of the passage: the sha256 of the version's
+        # bytes (grounding.document_versions.sha256) and the passage id. With
+        # char_start/char_end, that IS a grounding citation (mandate/grounding
+        # cite), so an agent can cite a retrieved passage without re-fetching
+        # it. Selected by semantic_search and document_passages; None elsewhere.
+        "grounding_sha256": getattr(row, "grounding_sha256", None),
+        "passage_id": getattr(row, "passage_id", None),
         "score": round(1.0 - float(row.distance), 3),  # cosine similarity
         "text": row.text,
         # Only populated by press_passages() below (semantic_search and
@@ -182,6 +189,8 @@ def semantic_search(
             Document.document_type,
             Document.extra,
             Passage.embedding.cosine_distance(qvec).label("distance"),
+            DocumentVersion.content_hash.label("grounding_sha256"),
+            Passage.id.label("passage_id"),
         )
         .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
         .join(Document, DocumentVersion.document_id == Document.id)
@@ -289,6 +298,8 @@ def document_passages(
             Document.document_type,
             Document.extra,
             distance,
+            DocumentVersion.content_hash.label("grounding_sha256"),
+            Passage.id.label("passage_id"),
             func.row_number()
             .over(partition_by=DocumentVersion.document_id, order_by=distance)
             .label("rank_in_doc"),
