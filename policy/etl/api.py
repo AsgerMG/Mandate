@@ -794,8 +794,10 @@ def _source_outcomes(result: dict) -> dict:
     for key, v in (result or {}).items():
         if key.startswith("_"):
             continue
-        out[key] = {"ok": not (isinstance(v, dict) and v.get("crashed")),
-                    **({"error": str(v.get("error"))[:200]} if isinstance(v, dict) and v.get("crashed") else {})}
+        crashed = isinstance(v, dict) and bool(v.get("crashed"))
+        out[key] = {"ok": not crashed,
+                    **({"error": str(v.get("error"))[:200],
+                        "transient": bool(v.get("transient"))} if crashed else {})}
     return out
 
 

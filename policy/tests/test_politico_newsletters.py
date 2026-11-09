@@ -150,6 +150,30 @@ def test_discover_skips_known_ids():
     assert [r.external_id for r in refs] == ["POLITICO-brussels-playbook-shadow-over-gdansk"]
 
 
+class RecordingHttp(FakeHttp):
+    def __init__(self, *a):
+        super().__init__(*a)
+        self.urls: list[str] = []
+
+    def get(self, url, **kw):
+        self.urls.append(url)
+        return super().get(url, **kw)
+
+
+def test_discover_does_not_fetch_page_2_once_page_1_reaches_the_cursor():
+    """Run 115: walking already-known listing pages, nine newsletters back to
+    back, drew 429s from politico.eu. Newest-first means a known issue on page
+    1 makes every later page known too."""
+    page1 = pn._listing_url("brussels-playbook", 1)
+    http = RecordingHttp({page1: LISTING_PAGE_1}, ISSUE_HTML)
+    cursor = {"known_ids": ["POLITICO-brussels-playbook-shadow-over-gdansk"]}
+
+    refs = list(_adapter(http).discover(None, cursor))
+
+    assert [r.external_id for r in refs] == ["POLITICO-brussels-playbook-athens-holds-out-on-lng-sanctions"]
+    assert http.urls == [page1]
+
+
 def test_fetch_and_parse_round_trip():
     pages = {pn._listing_url("brussels-playbook", 1): LISTING_PAGE_1}
     adapter = _adapter(FakeHttp(pages, ISSUE_HTML))

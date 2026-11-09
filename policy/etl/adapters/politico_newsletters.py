@@ -134,6 +134,12 @@ class PoliticoNewsletterAdapter(SourceAdapter):
             issues = _parse_listing(resp.text, self.spec.slug)
             if not issues:
                 break
+            # The listing is newest-first, so a page that reaches an issue the
+            # cursor already holds has reached everything older too: stop
+            # there. Without this every weekly run walked up to MAX_PAGES of
+            # already-known listings per newsletter, nine newsletters back to
+            # back on one host, and politico.eu answered 429 (run 115, five
+            # newsletters crashed, one on /page/2/).
             hit_cutoff = False
             for issue in issues:
                 ext_id = f"POLITICO-{self.spec.slug}-{issue['slug']}"
@@ -141,6 +147,7 @@ class PoliticoNewsletterAdapter(SourceAdapter):
                     hit_cutoff = True
                     continue
                 if ext_id in known_ids:
+                    hit_cutoff = True
                     continue
                 yield DocRef(
                     external_id=ext_id,

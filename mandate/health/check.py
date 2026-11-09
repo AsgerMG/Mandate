@@ -153,23 +153,50 @@ def check(c, t: dict) -> list[Finding]:
     guard("source:capital", "mandate.run_steps", capital_sources)
 
     def policy_sources():
+        """A source is held to the sources the LAST run attempted (a disabled
+        or archived source stops alarming). It is flagged when:
+          - its latest attempt crashed with a permanent error (403, 404, a
+            parse failure): at once, with the streak and the error, so a block
+            or a moved feed cannot sit silent for weeks again;
+          - it has not succeeded within its cadence, where a streak made only
+            of transient failures (network, 429, 5xx, which the next run
+            retries) gets one extra cadence of grace, so one 503 does not page.
+        """
         rows = _q(c, "SELECT finished_at, detail FROM mandate.runs WHERE brain = 'policy' "
                      "AND finished_at IS NOT NULL ORDER BY finished_at")
         last_ok: dict[str, dt.datetime] = {}
-        seen: set[str] = set()
+        streak: dict[str, list[dict]] = {}      # failures since the last success
+        latest: set[str] = set()
         for fin, detail in rows:
-            for key, v in (detail or {}).get("sources", {}).items():
-                seen.add(key)
+            sources = (detail or {}).get("sources", {})
+            if sources:
+                latest = set(sources)
+            for key, v in sources.items():
                 if v.get("ok"):
                     last_ok[key] = fin
-        for key in sorted(seen):
+                    streak[key] = []
+                else:
+                    streak.setdefault(key, []).append(v)
+        for key in sorted(latest):
             days = cad["overrides"].get(f"policy:{key}", cad["policy_default"])
             last = last_ok.get(key)
-            if last is None or NOW - last > dt.timedelta(days=days):
-                out.append(Finding(f"source:policy:{key}",
-                                   f"policy source {key} has not refreshed successfully within {days} days "
-                                   f"(last success: {_iso(last) or 'never'})",
-                                   f"policy, source {key}", _iso(last + dt.timedelta(days=days)) if last else None))
+            fails = streak.get(key, [])
+            transient_only = bool(fails) and all(v.get("transient") for v in fails)
+            grace = days * 2 if transient_only else days
+            stale = last is None or NOW - last > dt.timedelta(days=grace)
+            permanent = bool(fails) and not fails[-1].get("transient")
+            if transient_only and last is None and len(fails) < 2:
+                stale = False   # first sighting, one transient failure: retry first
+            if not (stale or permanent):
+                continue
+            why = (f"crashed {len(fails)} run(s) in a row"
+                   + (" (transient only)" if transient_only else "")
+                   + (f", last error: {fails[-1].get('error')}" if fails and fails[-1].get("error") else "")
+                   if fails else "no successful refresh")
+            out.append(Finding(f"source:policy:{key}",
+                               f"policy source {key}: {why} (last success: {_iso(last) or 'never'}; "
+                               f"cadence {days} days)",
+                               f"policy, source {key}", _iso(last + dt.timedelta(days=days)) if last else None))
     guard("source:policy", "mandate.runs", policy_sources)
 
     # ── signals digest and the artefact release ────────────────────────────
