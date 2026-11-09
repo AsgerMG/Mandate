@@ -12,7 +12,10 @@ OPS=~/Mandate/mandate/ops
 RO=$(db_var CAPITAL_RO_DATABASE_PUBLIC_URL)
 q() { psql "$RO" -XAtc "$1" 2>/dev/null; }
 NEXT_GIVEN=0
+hold_for() { /usr/bin/grep -v '^#' "$OPS/holds.txt" 2>/dev/null | awk -F' [|] ' -v s="$1" '$1==s{print $2; exit}'; }
 say() {  # say <done 0|1> <title> <command> [why-later]
+  local script; script=$(basename "$(echo "$3" | awk '{print $2}')")
+  if [ "$1" != 1 ] && [ -z "${4:-}" ]; then set -- "$1" "$2" "$3" "$(hold_for "$script")"; fi
   if [ "$1" = 1 ]; then printf '  DONE   %s\n' "$2"
   elif [ "$NEXT_GIVEN" = 0 ] && [ -z "${4:-}" ]; then printf '  NEXT   %s\n         %s\n' "$2" "$3"; NEXT_GIVEN=1
   else printf '  LATER  %s%s\n' "$2" "${4:+  ($4)}"; fi
