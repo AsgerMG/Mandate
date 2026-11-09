@@ -68,6 +68,12 @@ asked and read by nothing: wire it or stop asking), the corpus-feed checks,
 and app/page.tsx's "EUR 7.5m" (main's in-flight home page, which also imports
 the untracked components/mandate/companions).
 
+## Branch `llm-batches` (9 Nov, pushed, NOT merged)
+Bulk LLM jobs on Message Batches via `mandate/llm/batch.py`; state in
+`mandate.llm_batches`. BEFORE MERGING: `psql "$ADMIN_URL" -f
+mandate/db/llm_batches.sql` (idempotent). Without it the weekly taxonomy step
+submits nothing and is recorded PARTIAL (exit 3); pertinence refuses to submit.
+
 ## Done (on main)
 - **Database.** One Railway Postgres, a schema and role per brain, isolation
   proven (`mandate/db/`). Capital's SQLite corpus is loaded and verified row for

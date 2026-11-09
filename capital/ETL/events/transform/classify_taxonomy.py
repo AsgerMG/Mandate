@@ -945,90 +945,147 @@ def _load_work(con):
     return full, sub, entity_only
 
 
-def cmd_run(args) -> None:
-    """Split-model batch run: Sonnet (full) on no-NACE residual, Haiku (sub-only) on
-    NACE-fixed-sector rows. Submits Message Batches, polls, writes labels back.
+#: The batch store's name for this job (mandate.llm_batches.kind).
+BATCH_KIND = "capital.taxonomy"
+#: Per-request estimates at STANDARD price (measured on past runs, cached
+#: system prompt); the batch halves them. The cap compares their sum.
+EST_FULL, EST_SUB, EST_ENTITY = 0.0021, 0.0004, 0.0002
+#: How long `run` polls for its batches before leaving them to the next run.
+WAIT_MINUTES_DEFAULT = 60
+#: Exit code when nothing could be submitted because the batch store is not
+#: there: railway_cron.py records the step PARTIAL and carries on.
+RC_NO_STORE = 3
 
-    The work list is read in one short transaction and each batch's results are
-    written in their own: a batch can take hours, and a Postgres transaction held
-    open across that would sit idle on a proxy that drops quiet sockets."""
+
+def _items(full, sub, entity_only) -> list:
+    """One mandate Item per request. custom_id encodes kind+id; a sub-only item
+    carries the Tier-1 it was asked under, so its answer is validated against
+    THAT sector even if it is collected a week later."""
+    from mandate.llm.batch import BATCH_DISCOUNT, Item  # noqa: PLC0415
+    out = [Item(f"f{it['id']}", _full_params(it), est_usd=EST_FULL * BATCH_DISCOUNT)
+           for it in full]
+    out += [Item(f"s{it['id']}", _sub_params(it, it["top"]), meta={"top": it["top"]},
+                 est_usd=EST_SUB * BATCH_DISCOUNT) for it in sub]
+    out += [Item(f"e{it['id']}", _entity_params(it), est_usd=EST_ENTITY * BATCH_DISCOUNT)
+            for it in entity_only]
+    return out
+
+
+def labels_from_results(results, db_top=None) -> tuple[dict[int, tuple], list[tuple], int]:
+    """(labels, entities, errored) from one collected batch. Pure but for
+    `db_top(id)`, the fallback Tier-1 for a sub-only result that carries none.
+
+    labels: id -> (top, subsec, method); method None = keep the row's own.
+    entities: (entity_type or None, id). Written through _write_labels and
+    COALESCE, so neither can displace a label or blank an entity type."""
+    labels: dict[int, tuple] = {}
+    entities: list[tuple] = []
+    errored = 0
+    for res in results:
+        cid = res.custom_id
+        cid_num = int(cid[1:])
+        if not res.ok:
+            errored += 1
+            continue
+        data = _parse_json(res.text or "{}")
+        entity = data.get("entity_type") if data.get("entity_type") in ENTITY_TYPES else None
+        if cid.startswith("f"):
+            top, subsec = validate(data.get("sector_top", "other"),
+                                   data.get("subsector", ""))
+            labels[cid_num] = (top, subsec, "llm")
+        elif cid.startswith("s"):                # sub-only; Tier-1 already set
+            top = (res.meta or {}).get("top") or (db_top(cid_num) if db_top else None) or "other"
+            sv = data.get("subsector", "")
+            subsec = sv if sv in TAXONOMY.get(top, []) else GENERAL.get(top, "other")
+            labels[cid_num] = (top, subsec, None)    # method: keep what is there
+        entities.append((entity, cid_num))
+    return labels, entities, errored
+
+
+def _handler(totals: dict):
+    """Write one collected batch back, in its own short transaction."""
+    from datetime import datetime, timezone
+
+    def handle(results) -> None:
+        now = datetime.now(timezone.utc).isoformat(timespec="seconds")
+        with connect() as con:
+            need = [int(r.custom_id[1:]) for r in results
+                    if r.ok and r.custom_id.startswith("s") and not (r.meta or {}).get("top")]
+            tops = dict(con.execute("SELECT id, sector_top FROM companies WHERE id = ANY(%s)",
+                                    (need,)).fetchall()) if need else {}
+            labels, entities, errored = labels_from_results(results, tops.get)
+            n = _write_labels(con, labels, now)
+            with con.cursor() as cur:
+                cur.executemany(
+                    "UPDATE companies SET entity_type = COALESCE(%s, entity_type), "
+                    "entity_type_updated_at = %s WHERE id = %s",
+                    [(e, now, cid) for e, cid in entities])
+        totals["written"] += len(entities)
+        totals["errored"] += errored
+        print(f"    written {n} sector labels, {len(entities)} entity types "
+              f"(cumulative {totals['written']}, errored {totals['errored']})")
+    return handle
+
+
+def _batcher():
+    from mandate.llm.batch import Batcher, PgStore  # noqa: PLC0415
+    return Batcher(BATCH_KIND, store=PgStore.from_env(), brain="capital")
+
+
+def cmd_run(args, batcher=None) -> None:
+    """Split-model batch run: Sonnet (full) on no-NACE residual, Haiku (sub-only)
+    on NACE-fixed-sector rows, Haiku (entity-only) on the rest. Through ONE
+    helper, mandate/llm/batch.py:
+
+      1. collect every earlier batch that has ended (its ids are in
+         mandate.llm_batches, never on this container's scratch disk);
+      2. submit what is unlabelled and NOT already in flight, if the estimate
+         is under --max-cost (else skip: a backlog spike waits for a human);
+      3. wait up to --wait-minutes, writing each batch back as it ends, and
+         leave the rest for the next run. It never blocks past that.
+
+    Every label goes through _write_labels -> merge_label, so a batch that lands
+    a week late cannot displace a label somebody else wrote in between. The work
+    list is read in one short transaction and each batch is written in its own:
+    no Postgres transaction is held open across a batch."""
     with connect(readonly=True) as con:
         full, sub, entity_only = _load_work(con)
     if args.limit:
         full = full[:args.limit]
         sub = sub[:max(0, args.limit // 4)]
         entity_only = entity_only[:max(0, args.limit // 4)]
-
-    # custom_id encodes kind+id; keep an id->top map for sub write-back.
-    requests = [{"custom_id": f"f{it['id']}", "params": _full_params(it)} for it in full]
-    requests += [{"custom_id": f"s{it['id']}", "params": _sub_params(it, it["top"])} for it in sub]
-    requests += [{"custom_id": f"e{it['id']}", "params": _entity_params(it)} for it in entity_only]
-    top_of = {f"s{it['id']}": it["top"] for it in sub}
-
-    est = (len(full) * 0.0021 + len(sub) * 0.0004 + len(entity_only) * 0.0002) * 0.5
+    items = _items(full, sub, entity_only)
+    est = sum(it.est_usd for it in items)
     print(f"work: {len(full):,} full (Sonnet) + {len(sub):,} sub-only (Haiku) "
-          f"+ {len(entity_only):,} entity-only (Haiku) = {len(requests):,} requests")
+          f"+ {len(entity_only):,} entity-only (Haiku) = {len(items):,} requests")
     print(f"estimated batch cost (cached): ~${est:.0f}")
     if args.dry_run:
         print("dry-run: not submitting.")
         return
-    if args.max_cost is not None and est > args.max_cost:
-        print(f"SKIPPED: estimated ~${est:.0f} exceeds --max-cost ${args.max_cost:.0f} "
-              f"-- needs manual approval (run without --max-cost, or raise it, "
-              f"once you've reviewed the backlog). Not submitting.")
-        return
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
-    import time
-    import anthropic
-    client = anthropic.Anthropic()
-
-    from datetime import datetime, timezone
-    chunk = args.chunk
-    written = errored = 0
-    for start in range(0, len(requests), chunk):
-        part = requests[start:start + chunk]
-        batch = client.messages.batches.create(requests=part)
-        print(f"  batch {start//chunk+1}: {batch.id} ({len(part)} requests) submitted")
-        while True:
-            b = client.messages.batches.retrieve(batch.id)
-            if b.processing_status == "ended":
-                break
-            time.sleep(20)
-        now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        labels: dict[int, tuple] = {}   # id -> (top, subsec, method); None = keep
-        entities: list[tuple] = []      # (entity_type, entity_updated_at, id)
-        for res in client.messages.batches.results(batch.id):
-            cid = res.custom_id
-            cid_num = int(cid[1:])
-            if res.result.type != "succeeded":
-                errored += 1
-                continue
-            text = next((bl.text for bl in res.result.message.content
-                         if bl.type == "text"), "{}")
-            data = _parse_json(text)
-            entity = data.get("entity_type") if data.get("entity_type") in ENTITY_TYPES else None
-            if cid.startswith("f"):
-                top, subsec = validate(data.get("sector_top", "other"),
-                                       data.get("subsector", ""))
-                labels[cid_num] = (top, subsec, "llm")
-            elif cid.startswith("s"):                # sub-only; Tier-1 already set
-                top = top_of.get(cid, "other")
-                s = data.get("subsector", "")
-                subsec = s if s in TAXONOMY.get(top, []) else GENERAL.get(top, "other")
-                labels[cid_num] = (top, subsec, None)    # method: keep what is there
-            entities.append((entity, now, cid_num))
-            written += 1
-        with connect() as con:
-            n = _write_labels(con, labels, now)
-            with con.cursor() as cur:
-                cur.executemany(
-                    "UPDATE companies SET entity_type = COALESCE(%s, entity_type), "
-                    "entity_type_updated_at = %s WHERE id = %s", entities)
-        print(f"    written {n} sector labels, {len(entities)} entity types "
-              f"(cumulative {written}, errored {errored})")
-
-    print(f"\ndone: {written} labels written, {errored} errored.")
+    from mandate.llm.batch import StoreUnavailable  # noqa: PLC0415
+    batcher = batcher or _batcher()
+    try:
+        batcher.store.probe()
+    except StoreUnavailable as exc:
+        print(f"NOT SUBMITTED: the batch store is not available ({exc}). Apply "
+              f"mandate/db/llm_batches.sql; nothing was paid for.", file=_sys.stderr)
+        raise SystemExit(RC_NO_STORE)
+    totals = {"written": 0, "errored": 0}
+    cap = float("inf") if args.max_cost is None else args.max_cost
+    out = batcher.run(items, _handler(totals), max_usd=cap, over_cap="skip",
+                      wait_minutes=getattr(args, "wait_minutes", WAIT_MINUTES_DEFAULT),
+                      chunk=args.chunk, submit=not getattr(args, "collect_only", False))
+    if out.skipped:
+        print(f"SKIPPED: estimated ~${out.estimate_usd:.0f} exceeds --max-cost ${cap:.0f} "
+              f"-- needs manual approval (run without --max-cost, or raise it, "
+              f"once you've reviewed the backlog). Not submitting.")
+    print(f"\ndone: {totals['written']} labels written, {totals['errored']} errored.")
+    print(f"batch: {out.line()}")
+    if out.pending:
+        print(f"{out.pending} batch(es) still processing: recorded in mandate.llm_batches, "
+              f"and the next run collects them.")
 
 
 def _write_labels(con, labels: dict[int, tuple], now: str) -> int:
@@ -1056,45 +1113,13 @@ def _write_labels(con, labels: dict[int, tuple], now: str) -> int:
     return len(updates)
 
 
-STATE_FILE = _ETL_DATA / ".taxonomy_batches.json"
-
-
-def _state_load() -> dict:
-    if STATE_FILE.exists():
-        return json.loads(STATE_FILE.read_text())
-    return {"batches": [], "collected": []}
-
-
-def _state_save(st: dict) -> None:
-    STATE_FILE.write_text(json.dumps(st, indent=1))
-
-
 def cmd_submit(args) -> None:
-    """Fire-and-forget: submit all pending companies as batches, record IDs, and
-    return immediately (no polling). Decoupled from the laptop — collect later."""
-    with connect(readonly=True) as con:
-        full, sub, _entity_only = _load_work(con)
-    requests = [{"custom_id": f"f{it['id']}", "params": _full_params(it)} for it in full]
-    requests += [{"custom_id": f"s{it['id']}", "params": _sub_params(it, it["top"])} for it in sub]
-    print(f"submitting {len(full):,} full (Sonnet) + {len(sub):,} sub (Haiku) "
-          f"= {len(requests):,} requests, ~${len(full)*0.0021*0.5 + len(sub)*0.0004*0.5:.0f}")
-    if args.dry_run or not requests:
-        print("dry-run / nothing to submit.")
-        return
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise SystemExit("ANTHROPIC_API_KEY not set")
-    import anthropic
-    client = anthropic.Anthropic()
-    st = _state_load()
-    chunk = args.chunk
-    for start in range(0, len(requests), chunk):
-        part = requests[start:start + chunk]
-        batch = client.messages.batches.create(requests=part)
-        st["batches"].append(batch.id)
-        _state_save(st)
-        print(f"  submitted {batch.id} ({len(part)} requests)")
-    print(f"\nall submitted. {len(st['batches'])} batch(es) recorded in {STATE_FILE.name}.")
-    print("Cloud processes them (usually <1h, max 24h). Run 'collect' when ready.")
+    """Submit-and-return: `run` with no wait (and no cap unless given). The
+    batches are recorded in mandate.llm_batches; `collect` or the next `run`
+    writes them back."""
+    args.wait_minutes = 0
+    args.limit = getattr(args, "limit", 0)
+    cmd_run(args)
 
 
 from sector_label_key import name_key as _name_key  # noqa: E402  (the ONE definition)
@@ -1206,56 +1231,16 @@ def cmd_restore(_args) -> None:
 
 
 def cmd_collect(args) -> None:
-    """Retrieve any ended batches recorded by 'submit' and write labels to the DB.
-    Safe to re-run: collected batches are skipped, unfinished ones are left."""
-    if not os.environ.get("ANTHROPIC_API_KEY"):
-        raise SystemExit("ANTHROPIC_API_KEY not set")
-    import anthropic
-    from datetime import datetime, timezone
-    client = anthropic.Anthropic()
-    st = _state_load()
-    pending_ids = [b for b in st["batches"] if b not in st["collected"]]
-    if not pending_ids:
-        print("no uncollected batches recorded.")
-    written = errored = still = 0
-    for bid in pending_ids:
-        b = client.messages.batches.retrieve(bid)
-        if b.processing_status != "ended":
-            still += 1
-            print(f"  {bid}: {b.processing_status} — leaving for later")
-            continue
-        now = datetime.now(timezone.utc).isoformat(timespec="seconds")
-        with connect() as con:
-            # For sub rows we need each company's already-set Tier-1 from the DB.
-            sub_tops = dict(con.execute(
-                "SELECT id, sector_top FROM companies WHERE sector_top IS NOT NULL"
-            ).fetchall())
-            labels: dict[int, tuple] = {}
-            for res in client.messages.batches.results(bid):
-                cid = res.custom_id
-                cid_num = int(cid[1:])
-                if res.result.type != "succeeded":
-                    errored += 1
-                    continue
-                text = next((bl.text for bl in res.result.message.content
-                             if bl.type == "text"), "{}")
-                data = _parse_json(text)
-                if cid.startswith("f"):
-                    top, subsec = validate(data.get("sector_top", "other"),
-                                           data.get("subsector", ""))
-                    labels[cid_num] = (top, subsec, "llm")
-                else:
-                    top = sub_tops.get(cid_num, "other")
-                    s = data.get("subsector", "")
-                    subsec = s if s in TAXONOMY.get(top, []) else GENERAL.get(top, "other")
-                    labels[cid_num] = (top, subsec, None)
-                written += 1
-            n = _write_labels(con, labels, now)
-        st["collected"].append(bid)
-        _state_save(st)
-        print(f"  {bid}: collected {len(labels)} labels, {n} written")
-    print(f"\ncollected {written} labels ({errored} errored, {still} batch(es) still "
-          f"processing). Re-run 'collect' later for any still processing.")
+    """Write back every ended batch recorded in mandate.llm_batches; submit
+    nothing. Safe to re-run: collected batches are skipped, unfinished ones are
+    left."""
+    args.dry_run = False
+    args.limit = 0
+    args.max_cost = None
+    args.chunk = 18000
+    args.collect_only = True
+    args.wait_minutes = getattr(args, "wait_minutes", 0)
+    cmd_run(args)
 
 
 def cmd_residual(args) -> None:
@@ -1550,7 +1535,7 @@ def main() -> None:
     rd.add_argument("--n", type=int, default=12)
     rd.add_argument("--model", default=DEFAULT_MODEL)
     rd.set_defaults(fn=cmd_residual)
-    rn = sub.add_parser("run", help="split-model batch run + DB write-back (polls)")
+    rn = sub.add_parser("run", help="collect, submit (capped), wait up to --wait-minutes, write back")
     rn.add_argument("--dry-run", action="store_true")
     rn.add_argument("--limit", type=int, default=0, help="cap requests (validation)")
     rn.add_argument("--chunk", type=int, default=18000,
@@ -1560,13 +1545,18 @@ def main() -> None:
                          "this many dollars -- for unattended/cron use, so a "
                          "backlog spike never spends without a human looking "
                          "first. Omit for interactive use (no cap).")
+    rn.add_argument("--wait-minutes", type=float, default=WAIT_MINUTES_DEFAULT,
+                    help="poll this long for the batches, then leave what is still "
+                         "processing for the next run (never blocks past it)")
     rn.set_defaults(fn=cmd_run)
-    sb = sub.add_parser("submit", help="fire-and-forget: submit all batches, no poll")
+    sb = sub.add_parser("submit", help="submit and return: batches recorded, no wait")
     sb.add_argument("--dry-run", action="store_true")
     sb.add_argument("--chunk", type=int, default=18000)
+    sb.add_argument("--max-cost", type=float, default=None)
     sb.set_defaults(fn=cmd_submit)
-    sub.add_parser("collect", help="write back any ended batches from 'submit'")\
-        .set_defaults(fn=cmd_collect)
+    cl = sub.add_parser("collect", help="write back any ended batches; submit nothing")
+    cl.add_argument("--wait-minutes", type=float, default=0)
+    cl.set_defaults(fn=cmd_collect)
     t = sub.add_parser("test", help="score a model vs NACE-confirmed Tier-1 badges")
     t.add_argument("--n", type=int, default=200)
     t.add_argument("--model", default=DEFAULT_MODEL)
