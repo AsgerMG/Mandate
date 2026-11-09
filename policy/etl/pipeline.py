@@ -36,6 +36,7 @@ from mandate import grounding
 
 from .adapters.base import ParsedDocument, SourceAdapter
 from .chunking import chunk_text
+from .http import _is_retryable
 
 log = structlog.get_logger(__name__)
 
@@ -205,7 +206,15 @@ def run_all_sources(
         except Exception as exc:
             session.rollback()
             log.exception("source_run_crashed", source=adapter.key)
-            totals[adapter.key] = {"crashed": True, "error": str(exc)}
+            # transient: the failure is one the HTTP layer retries (network,
+            # 429, 5xx) and still lost; the next run retries it. The health
+            # check gives such a source one extra run of grace, while a 403 or
+            # 404 (a block, a moved feed) alarms at the normal cadence.
+            totals[adapter.key] = {
+                "crashed": True,
+                "transient": _is_retryable(exc),
+                "error": str(exc),
+            }
         if on_source:
             on_source(adapter.key, totals[adapter.key])
     return totals
