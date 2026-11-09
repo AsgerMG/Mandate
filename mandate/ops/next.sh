@@ -11,14 +11,14 @@ cd "$(dirname "$0")"; source _railway.sh
 OPS=~/Mandate/mandate/ops
 RO=$(db_var CAPITAL_RO_DATABASE_PUBLIC_URL)
 q() { psql "$RO" -XAtc "$1" 2>/dev/null; }
-NEXT_GIVEN=0
+NEXT_GIVEN=0; LATER_N=0
 hold_for() { /usr/bin/grep -v '^#' "$OPS/holds.txt" 2>/dev/null | awk -F' [|] ' -v s="$1" '$1==s{print $2; exit}'; }
 say() {  # say <done 0|1> <title> <command> [why-later]
   local script; script=$(basename "$(echo "$3" | awk '{print $2}')")
   if [ "$1" != 1 ] && [ -z "${4:-}" ]; then set -- "$1" "$2" "$3" "$(hold_for "$script")"; fi
   if [ "$1" = 1 ]; then printf '  DONE   %s\n' "$2"
   elif [ "$NEXT_GIVEN" = 0 ] && [ -z "${4:-}" ]; then printf '  NEXT   %s\n         %s\n' "$2" "$3"; NEXT_GIVEN=1
-  else printf '  LATER  %s%s\n' "$2" "${4:+  ($4)}"; fi
+  else printf '  LATER  %s%s\n' "$2" "${4:+  ($4)}"; LATER_N=$((LATER_N + 1)); fi
 }
 
 echo "== Mandate: what is left for you ($(date -u +'%a %H:%M') UTC)"
@@ -57,5 +57,9 @@ DUP=$(q "SELECT (to_regclass('policy.passages') IS NOT NULL)::int + (to_regclass
 say $d "Drop Regina's duplicate copies (~1 GB; archived first). Dry run, then add --apply" \
     "bash $OPS/drop_policy_duplicates.sh   then   bash $OPS/drop_policy_duplicates.sh --apply" "$W3"
 
-[ "$NEXT_GIVEN" = 0 ] && echo "   Nothing left for you here. Paste me the output of the last command you ran."
+if [ "$NEXT_GIVEN" = 0 ] && [ "$LATER_N" -gt 0 ]; then
+  echo "   NOTHING TO RUN RIGHT NOW. $LATER_N item(s) are waiting (reason in brackets); Claude messages you when the first unlocks."
+elif [ "$NEXT_GIVEN" = 0 ]; then
+  echo "   ALL DONE. Nothing left for you."
+fi
 echo "   After each command: paste me its last lines (I commit/merge whatever it asks for), then run next.sh again."
