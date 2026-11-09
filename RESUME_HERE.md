@@ -14,7 +14,7 @@ OWNER: `bash ~/Mandate/mandate/ops/next.sh` prints what is done and the one comm
 | # | Loop | Trigger | Who |
 |---|---|---|---|
 | 0 | Owner left 9 Nov ~17:45 UTC. On resume: `bash mandate/ops/next.sh`, check run 114 (`mandate.runs`), check the sector-display agent's branch `sector-display` (may be incomplete: laptop closed mid-work; resume or redo, then merge) | resume | Claude |
-| 1 | Capina: `retire_capina.sh --apply` (gzip fix d6fba558; dump already uploaded). Commit `mandate/ops/archives.json` it writes, then remove CAPINA_* from `_railway.sh` and `suspend_capina_cron.sh` | now | owner runs, Claude commits |
+| 1 | Capina: owner deletes the project in the Railway dashboard (9 Nov). Its Postgres dump IS in the bucket (key sha256/a2/a29f6c9db47204cced7fb88a5bac0ce47e16513eb8b47e92b957e2f656870a11, sha matches MANIFEST): write that into a new `mandate/ops/archives.json`. The 653 MB railway_volume_db.sqlite is NOT uploaded yet (PUT timed out): do it in loop 10. Then remove CAPINA_* from `_railway.sh`, `suspend_capina_cron.sh`, `retire_capina.sh`'s delete step, and the Capina line in next.sh | owner deleted? check | Claude |
 | 2 | Vercel: `delete_vercel_projects.sh --apply` (env vars already saved to ~/Mandate-backups/vercel/); then drop the stale regina rows from policy/DEPLOYMENT.md | now | owner |
 | 3 | Merge `llm-batches` (apply `mandate/db/llm_batches.sql` first) | run 114 finished | Claude |
 | 4 | Merge `sector-display` (29 funds keep sector focus for display; recall set stays out of ranking; owner decision 9 Nov); clear the hold in `mandate/ops/holds.txt` | agent done | Claude |
