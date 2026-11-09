@@ -68,7 +68,9 @@ GROUPS: dict[str, dict] = {
     # The stored fetch records for Spain's existing BDNS leaves: the open-call
     # refresh derives its budget floor, its admissible policies and its overlap
     # join from them (ETL/terms/harvest_bdns_open_calls.py fetch_records). One
-    # file, hand-curated on 2026-08-06; nothing re-creates it.
+    # file, hand-curated on 2026-08-06; nothing re-creates it. It is the SCOPE,
+    # not the discovery list: which open calls exist is asked of the register
+    # every week (harvest --enumerate). It does not go stale as calls close.
     "bdns_open_calls": {"extractors": ["harvest_bdns_open_calls", "match_bdns_open_calls",
                                        "load_bdns_open_calls"],
                         "files": ["scheme_enrichment/found_ES_bdns.json"]},

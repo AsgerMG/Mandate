@@ -544,6 +544,12 @@ jobs:
       - name: A covered fetch failure does not make the week partial
         run: python3 ETL/terms/test_ademe_windows_outcome.py
 
+      # Spain's open calls are discovered from the register over a window as
+      # long as a call stays open, not the cadence: run 116 lost a third of ES
+      # offerable because a 60-day window could not see across a 93-day gap.
+      - name: BDNS discovery covers the life of a call
+        run: python3 ETL/terms/test_bdns_discovery.py
+
       # A membership test between two disjoint vocabularies is dead code, and
       # dead code in the middle of the split is invisible: it does not fail, it
       # just stops splitting. `split_families()` returned channel labels while

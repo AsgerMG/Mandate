@@ -301,13 +301,74 @@ def qualifies(d: dict, asof: str, min_budget: float,
 
 # ── Stage 1: enumerate ─────────────────────────────────────────────────────
 
-def enumerate_candidates(since: str, until: str | None, levels: list[str]) -> None:
-    """Page the search endpoint, one administrative level at a time.
+def register_finalidades() -> list[dict]:
+    """The register's own spending-policy lookup: [{id, descripcion}, ...]."""
+    r = fetch_json(f"{API_BASE}/finalidades?vpd=GE", timeout=60)
+    return r if isinstance(r, list) else []
+
+
+def finalidad_ids(policies: frozenset[str], lookup: list[dict]) -> tuple[list[int], list[str]]:
+    """Resolve the corpus's admissible policies to the register's finalidad ids.
+
+    Returns (ids, unresolved). The lookup speaks upper case ("INDUSTRIA Y
+    ENERGÍA") and the detail payload title case; both are the same register
+    vocabulary, so the join is on the normalised string and nothing is typed.
+    """
+    by_desc = {_norm(x.get("descripcion")): int(x["id"]) for x in lookup
+               if x.get("id") is not None and (x.get("descripcion") or "").strip()}
+    ids, unresolved = [], []
+    for p in sorted(policies):
+        if _norm(p) in by_desc:
+            ids.append(by_desc[_norm(p)])
+        else:
+            unresolved.append(p)
+    return sorted(set(ids)), unresolved
+
+
+def search_streams(levels: list[str], fin_ids: list[int] | None) -> list[tuple[str, list[str]]]:
+    """One search stream per (level, finalidad), or per level when unnarrowed.
+
+    Narrowing by `finalidad` server-side is LOSSLESS by construction: `in_scope`
+    admits a call only if its `descripcionFinalidad` is one of the admissible
+    policies, so a call under any other finalidad could never qualify. What it
+    buys is a discovery window long enough to cover how long calls stay OPEN
+    (see LOOKBACK_DAYS in refresh_open_calls.py) at fewer requests than the old
+    60-day unnarrowed window: measured 2026-11-09, 180 days narrowed = 1,686
+    candidates vs 60 days unnarrowed = 1,349.
+
+    `finalidad` takes ONE id per request (a comma list answers HTTP 400), the
+    same as `tipoAdministracion`, so the streams are the product of the two.
+    """
+    if fin_ids is None:
+        return [(lvl, [f"tipoAdministracion={lvl}"]) for lvl in levels]
+    return [(f"{lvl}/f{f}", [f"tipoAdministracion={lvl}", f"finalidad={f}"])
+            for lvl in levels for f in fin_ids]
+
+
+def enumerate_candidates(since: str, until: str | None, levels: list[str],
+                         narrow: bool = True) -> list[str]:
+    """Page the search endpoint, one administrative level (and finalidad) at a time.
 
     Levels are queried separately because `tipoAdministracion` accepts only one
     value per request (verified: C&A returns the C count), unlike
     `tiposBeneficiario`, which does accept a comma list.
+
+    This IS Spain's discovery. The pinned `found_ES_bdns.json` is not a list of
+    calls to look for; it is the corpus's existing leaves, read for the scope
+    (policies, budget floor) and for the overlap join. Every call the weekly run
+    can offer is found here, from the register, or not at all.
     """
+    fin_ids: list[int] | None = None
+    if narrow:
+        ids, unresolved = finalidad_ids(admissible_policies(), register_finalidades())
+        if ids and not unresolved:
+            fin_ids = ids
+            print(f"narrowed to finalidad ids {fin_ids} (the corpus's admissible policies)")
+        else:
+            # Never narrow on a partial mapping: a policy the lookup no longer
+            # names would silently drop every call under it.
+            print(f"NOT narrowing: unresolved policies {unresolved or 'lookup empty'}; "
+                  f"enumerating every finalidad", flush=True)
     OUTDIR.mkdir(parents=True, exist_ok=True)
     seen: set[str] = set()
     if CANDIDATES.exists():
@@ -319,24 +380,28 @@ def enumerate_candidates(since: str, until: str | None, levels: list[str]) -> No
     d0 = dt.date.fromisoformat(since).strftime("%d/%m/%Y")
     d1 = dt.date.fromisoformat(until).strftime("%d/%m/%Y") if until else None
     added = 0
+    failed: list[str] = []
     with CANDIDATES.open("a") as fh:
-        for lvl in levels:
+        for stream, extra in search_streams(levels, fin_ids):
+            lvl = stream.split("/")[0]
             page, total = 0, None
+            time.sleep(DELAY_S)  # spacing holds across streams, not only within one
             while True:
                 q = [f"page={page}", f"pageSize={PAGE_SIZE}",
                      f"fechaDesde={urllib.parse.quote(d0, safe='')}",
                      f"tiposBeneficiario={urllib.parse.quote(BENEFICIARY_FILTER_IDS)}",
-                     f"tipoAdministracion={lvl}",
+                     *extra,
                      "order=fechaRecepcion", "direccion=desc"]
                 if d1:
                     q.append(f"fechaHasta={urllib.parse.quote(d1, safe='')}")
                 r = fetch_json(f"{API_BASE}/convocatorias/busqueda?" + "&".join(q), timeout=120)
                 if r is None:
-                    print(f"  [{lvl}] page {page} FAILED; stopping this level")
+                    print(f"  [{stream}] page {page} FAILED; stopping this stream")
+                    failed.append(stream)
                     break
                 if total is None:
                     total = r.get("totalElements")
-                    print(f"  [{lvl}] {total} candidates")
+                    print(f"  [{stream}] {total} candidates")
                 rows = r.get("content") or []
                 if not rows:
                     break
@@ -358,8 +423,13 @@ def enumerate_candidates(since: str, until: str | None, levels: list[str]) -> No
                 if r.get("last") or page >= (r.get("totalPages") or 0):
                     break
                 time.sleep(DELAY_S)
-            print(f"  [{lvl}] done, {added} new so far")
+            print(f"  [{stream}] done, {added} new so far")
     print(f"{CANDIDATES}  +{added} new, {len(seen)} total")
+    if failed:
+        # A stream that stopped early is calls never seen, not an empty week.
+        # Exit 3 is what refresh_open_calls.py records as PARTIAL.
+        print(f"PARTIAL: {len(failed)} search stream(s) failed: {', '.join(failed)}")
+    return failed
 
 
 # ── Stage 2: detail ────────────────────────────────────────────────────────
@@ -544,6 +614,8 @@ def main() -> None:
     ap.add_argument("--until")
     ap.add_argument("--levels", default="C,A,L",
                     help="administrative levels to enumerate (C central, A regional, L local)")
+    ap.add_argument("--no-narrow", action="store_true",
+                    help="enumerate every finalidad, not only the corpus's admissible ones")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--order", default="newest", choices=["newest", "oldest"])
     ap.add_argument("--shard", help="i/n -- run several workers over disjoint shares")
@@ -554,7 +626,9 @@ def main() -> None:
     floor = args.min_budget if args.min_budget is not None else budget_floor()
 
     if args.enumerate:
-        enumerate_candidates(args.since, args.until, args.levels.split(","))
+        if enumerate_candidates(args.since, args.until, args.levels.split(","),
+                                narrow=not args.no_narrow):
+            raise SystemExit(3)
     elif args.detail:
         fetch_details(args.limit, args.order, args.shard)
     elif args.report:
