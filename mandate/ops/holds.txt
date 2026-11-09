@@ -1,4 +1,4 @@
 # Holds on the owner's commands, read by next.sh. One line per hold:
 #   <script name> | <why it must wait>
 # Claude removes the line in the commit that clears the hold.
-rerun_capital.sh | waits for the weekly-job fixes (coverage gate, open calls, news batch, signals digest) to merge; a re-run before them fails the same way
+rerun_capital.sh | waits for the sector-focus fix (29 funds keep their data; owner decision 9 Nov) to merge; everything else is merged and the Spanish open-calls input is uploaded
