@@ -2,8 +2,8 @@ import { EuropeMap, type CountryData } from "@/components/europe-map";
 import { ChannelsGraph } from "@/components/channels-graph";
 import { EuroJourney, Chapter } from "@/components/euro-journey";
 import { Reveal, CountUp } from "@/components/immersive";
-import { ImageSlot } from "@/components/image-slot";
-import Link from "next/link";
+import { ExpertPresence } from "@/components/mandate/expert-presence";
+import { BrainModel } from "@/components/mandate/brain-model";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import countryMapRaw from "@/public/data/country_map.json";
@@ -108,30 +108,63 @@ export default async function Home() {
             </h1>
             <div className="mt-8">
               <p className="max-w-xl text-[17px] leading-relaxed text-[var(--foreground-soft)]">
-                Wincent maps your company to comparable raises, screened institutions and the EU,
-                national and regional priorities shaping public capital. Get the doors to target,
-                the case to make and what to do next.
+                Give Wincent your company, the project you need to finance and where you can deploy.
+                Wincent screens the public-capital record and returns the institutions, instruments,
+                conditions and timing worth a founder decision.
               </p>
-              <div className="mt-6 flex flex-wrap gap-3">
-                <Link
-                  href="/brief"
-                  className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 text-[15px] font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-                >
-                  Get your brief
-                </Link>
-              </div>
             </div>
           </div>
 
-          <ImageSlot
-            imageClassName="lg:scale-[1.06]"
-            src="/images/editorial/founder-funding-constellation.png"
-            alt="A founder tracing connected regional, national and European public funding instruments"
-            priority
-          />
+          <ExpertPresence name="wincent" className="expert-presence--profile" priority />
         </div>
 
       </section>
+
+      <BrainModel
+        name="Wincent"
+        title="A map of public capital, built around your company."
+        description="Wincent is not a funding database or a grant search box. Wincent combines the public-capital record with the constraints of your company and resolves a small number of routes that can survive scrutiny."
+        stages={[
+          {
+            label: "What Wincent knows",
+            title: "The public-capital record",
+            items: [
+              `${Number(synth.companies).toLocaleString("en-GB")} companies reached by public capital`,
+              "Grants, loans, guarantees and public equity",
+              "Administrators, programme priorities and comparable raises",
+            ],
+          },
+          {
+            label: "What you provide",
+            title: "The company lens",
+            items: [
+              "Sector, maturity and registered geography",
+              "The project or deployment you need to finance",
+              "Timing, ticket size and markets you can credibly enter",
+            ],
+          },
+          {
+            label: "What Wincent resolves",
+            title: "Fit, route and leverage",
+            items: [
+              "Which instruments structurally fit—and which do not",
+              "Why the institution might care now",
+              "The trade-off between capital, conditions and time to market",
+            ],
+          },
+          {
+            label: "What comes back",
+            title: "A founder decision",
+            items: [
+              "Named institutions and instruments to screen",
+              "Comparable raises and evidence behind the fit",
+              "Terms, timing, open questions and the next move",
+            ],
+          },
+        ]}
+        speaks="When a route is supported by the record, materially fits the company and changes what the founder should do next."
+        quiet="When eligibility, fit or timing cannot be evidenced. Wincent does not promise funding, broker capital or manufacture certainty."
+      />
 
       {/* ── The trip: Follow the Euro ───────────────────────────── */}
       <div className="relative bg-[var(--background)] text-[var(--foreground)]">
@@ -195,24 +228,6 @@ export default async function Home() {
               </Reveal>
             </Chapter>
 
-            {/* Chapter 6 — The handoff / CTA */}
-            <Chapter className="pb-16 pt-8 text-center sm:pb-20 sm:pt-10">
-              <Reveal delay={100}>
-                <h3 className="text-3xl font-semibold text-[var(--foreground)] sm:text-5xl" style={serif}>
-                  Map your raise.
-                </h3>
-              </Reveal>
-              <Reveal delay={220}>
-                <div className="mt-9 flex flex-wrap justify-center gap-3">
-                  <Link
-                    href="/brief"
-                    className="rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-                  >
-                    Get your brief
-                  </Link>
-                </div>
-              </Reveal>
-            </Chapter>
         </EuroJourney>
       </div>
     </div>

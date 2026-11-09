@@ -20,19 +20,16 @@ type Agent = {
   /** Paths that belong to this agent, by prefix. */
   owns: string[];
   links: NavLink[];
-  cta: NavLink;
 };
 
-// The former /for-companies page is now two: the narrative case
-// (/about-public-capital) as a plain text link, and the interactive tool
-// (/brief) as the CTA (Legora pattern).
+// Brief and report routes remain available for later product work, but are
+// deliberately absent from the public masthead for now.
 const AGENTS: Agent[] = [
   {
     name: "Wincent",
     home: "/wincent",
     owns: ["/wincent", "/brief", "/about-public-capital"],
     links: [{ href: "/about-public-capital", label: "How to raise" }],
-    cta: { href: "/brief", label: "Get your brief" },
   },
   {
     name: "Regina",
@@ -42,7 +39,6 @@ const AGENTS: Agent[] = [
       { href: "/regina/documents", label: "Live register" },
       { href: "/regina/about", label: "About" },
     ],
-    cta: { href: "/regina/brief", label: "Get a report" },
   },
 ];
 
@@ -66,7 +62,7 @@ export function NavBar() {
   const close = () => setOpen(false);
   const mobileLinks: (NavLink & { current?: boolean })[] = [
     ...AGENTS.map((a) => ({ href: a.home, label: a.name, current: a === current })),
-    ...(current ? [...current.links, current.cta] : []),
+    ...(current ? current.links : []),
   ];
 
   return (
@@ -109,7 +105,7 @@ export function NavBar() {
           </div>
         </div>
 
-        {/* The current agent's own links and its product CTA. */}
+        {/* The current agent's informational links. */}
         {current && (
           <div className="hidden md:flex items-center gap-7 text-base">
             {current.links.map((link) => (
@@ -126,14 +122,6 @@ export function NavBar() {
                 {link.label}
               </Link>
             ))}
-
-            {/* The product CTA: outlined, fills on hover — no rounded pill. */}
-            <Link
-              href={current.cta.href}
-              className="rounded-[var(--radius)] border border-[var(--primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-            >
-              {current.cta.label}
-            </Link>
           </div>
         )}
 

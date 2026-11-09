@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 const PRINCIPLES = [
   {
@@ -78,16 +77,6 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-      </section>
-
-      <section className="cta-band">
-        <div>
-          <div className="eyebrow">See it work</div>
-          <h2>Describe your company, get a source-cited report</h2>
-        </div>
-        <Link className="btn" href="/regina/brief">
-          Get your report →
-        </Link>
       </section>
     </div>
   );

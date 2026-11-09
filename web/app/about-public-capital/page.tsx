@@ -427,24 +427,6 @@ export default function AboutPublicCapitalPage() {
             </R>
           </Chapter>
 
-          {/* ── Get your brief ─────────────────────────────────────── */}
-          <Chapter className="pb-16 pt-8 sm:pb-20 sm:pt-10">
-            <ChapterHead kicker="Put this to work" title="Fit your raise to today&apos;s priorities." />
-            <R>
-              <p className="max-w-2xl text-lg leading-relaxed text-[var(--foreground)]">
-                Enter your company. Get comparable raises, screened institutions and next steps
-                shaped by your country, sector and the priorities public investors are funding now.
-              </p>
-            </R>
-            <R delay={120}>
-              <Link
-                href="/brief"
-                className="mt-6 inline-block rounded-[var(--radius)] border border-[var(--primary)] px-6 py-3 font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-              >
-                Get your brief
-              </Link>
-            </R>
-          </Chapter>
         </EuroJourney>
       </div>
     </div>

@@ -100,8 +100,8 @@ export default function PrivacyPage() {
           Last updated 28 July 2026. If this notice and the software ever disagree,
           the software is the bug — the retention window above is read directly from
           the code that enforces it.{" "}
-          <Link className="underline" href="/brief">
-            Back to the brief
+          <Link className="underline" href="/">
+            Back to Mandate
           </Link>
           .
         </p>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ExpertPresence } from "@/components/mandate/expert-presence";
 
 // The Mandate home: the bench, and the two agents a founder can work with
 // today. Deliberately minimal (the shell, not the product); each agent's own
@@ -13,11 +14,12 @@ export const metadata: Metadata = {
 };
 
 type AgentCard = {
-  name: string;
+  name: "Wincent" | "Regina";
   brain: string;
   question: string;
   body: string;
-  start: { href: string; label: string };
+  knows: string;
+  engages: string;
   about: { href: string; label: string };
 };
 
@@ -28,7 +30,8 @@ const AGENTS: AgentCard[] = [
     question:
       "What can the state put into this company, on what terms, through which instrument, by when, and who administers it?",
     body: "Wincent maps your company to comparable raises, screened institutions and the priorities shaping grants, loans and public equity.",
-    start: { href: "/brief", label: "Get your brief" },
+    knows: "Awards, instruments, administrators, public priorities and comparable raises.",
+    engages: "Give Wincent the company and project. Wincent returns viable routes, evidence, conditions and timing.",
     about: { href: "/wincent", label: "Meet Wincent" },
   },
   {
@@ -36,7 +39,8 @@ const AGENTS: AgentCard[] = [
     brain: "EU rules",
     question: "What rules land on this company, when do they bite, and what has to change?",
     body: "Regina reads the official EU, French and German record and writes a source-cited report for your company.",
-    start: { href: "/regina/brief", label: "Get a report" },
+    knows: "Law, legislative pipelines, regulators, consultations and implementation timelines.",
+    engages: "Give Regina the product and markets. Regina returns what moved, when it bites and why it matters.",
     about: { href: "/regina", label: "Meet Regina" },
   },
 ];
@@ -64,28 +68,35 @@ export default function MandateHome() {
           {AGENTS.map((a) => (
             <article
               key={a.name}
-              className="flex flex-col border-t-2 border-[var(--primary)] bg-[var(--paper)] p-6 sm:p-8"
+              className="grid grid-cols-[minmax(0,1fr)_36%] overflow-hidden border-t-2 border-[var(--primary)] bg-[var(--paper)]"
             >
-              <p className="eyebrow text-[11px]">{a.brain}</p>
-              <h3 className="mt-3 font-serif text-3xl font-semibold text-[var(--primary)]">{a.name}</h3>
-              <p className="mt-4 font-serif text-lg italic leading-snug text-[var(--foreground)]">
-                {a.question}
-              </p>
-              <p className="mt-4 text-[15px] leading-relaxed text-[var(--foreground-soft)]">{a.body}</p>
-              <div className="mt-auto flex flex-wrap items-center gap-x-6 gap-y-3 pt-8">
-                <Link
-                  href={a.start.href}
-                  className="rounded-[var(--radius)] border border-[var(--primary)] px-5 py-2.5 text-sm font-semibold uppercase tracking-[0.06em] text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
-                >
-                  {a.start.label}
-                </Link>
-                <Link
-                  href={a.about.href}
-                  className="text-[15px] font-medium text-[var(--foreground-soft)] underline underline-offset-4 decoration-[var(--border)] hover:text-[var(--foreground)] hover:decoration-current"
-                >
-                  {a.about.label}
-                </Link>
+              <div className="flex flex-col p-6 sm:p-7">
+                <p className="eyebrow text-[11px]">{a.brain}</p>
+                <h3 className="mt-3 font-serif text-3xl font-semibold text-[var(--primary)]">{a.name}</h3>
+                <p className="mt-4 font-serif text-lg italic leading-snug text-[var(--foreground)]">
+                  {a.question}
+                </p>
+                <p className="mt-4 text-[15px] leading-relaxed text-[var(--foreground-soft)]">{a.body}</p>
+                <dl className="mt-6 border-t border-[var(--border)] text-[13px] leading-relaxed">
+                  <div className="grid grid-cols-[4.5rem_1fr] gap-3 border-b border-[var(--line)] py-3">
+                    <dt className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--accent)]">Knows</dt>
+                    <dd className="text-[var(--foreground-soft)]">{a.knows}</dd>
+                  </div>
+                  <div className="grid grid-cols-[4.5rem_1fr] gap-3 py-3">
+                    <dt className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-[var(--accent)]">Engages</dt>
+                    <dd className="text-[var(--foreground-soft)]">{a.engages}</dd>
+                  </div>
+                </dl>
+                <div className="mt-auto pt-8">
+                  <Link
+                    href={a.about.href}
+                    className="text-[15px] font-medium text-[var(--primary)] underline underline-offset-4 decoration-[var(--border)] hover:decoration-current"
+                  >
+                    {a.about.label}
+                  </Link>
+                </div>
               </div>
+              <ExpertPresence name={a.name === "Regina" ? "regina" : "wincent"} />
             </article>
           ))}
         </div>

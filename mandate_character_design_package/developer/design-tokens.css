@@ -1,0 +1,60 @@
+/*
+ * Mandate character layer — semantic tokens only.
+ *
+ * IMPORTANT:
+ * Resolve the --mandate-* variables against the EXISTING website design
+ * system during implementation. Do not use these fallback values to
+ * overwrite the site's brand palette.
+ */
+
+:root {
+  /* Bind these to the existing site tokens after inspecting the codebase. */
+  --character-brand-background: var(--mandate-background, transparent);
+  --character-brand-foreground: var(--mandate-foreground, currentColor);
+  --character-brand-accent: var(--mandate-accent, currentColor);
+  --character-brand-muted: var(--mandate-muted, currentColor);
+  --character-brand-border: var(--mandate-border, currentColor);
+
+  /* Character-specific material roles, not fixed brand colours. */
+  --regina-material-primary: var(--mandate-surface, #d8d5d0);
+  --regina-material-secondary: var(--mandate-muted, #777b80);
+  --regina-light-accent: var(--mandate-accent, currentColor);
+
+  --wincent-material-primary: var(--mandate-foreground, #39434d);
+  --wincent-material-secondary: var(--mandate-muted, #8b969f);
+  --wincent-light-accent: var(--mandate-accent, currentColor);
+
+  /* Layout tokens should defer to the site's existing spacing system. */
+  --character-image-radius: var(--mandate-radius-card, 1rem);
+  --character-section-gap: var(--mandate-section-gap, 3rem);
+}
+
+/* Keep character media responsive and prevent layout shift. */
+.character-visual {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: contain;
+  border-radius: var(--character-image-radius);
+}
+
+.character-pair-visual {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: var(--character-image-radius);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .character-visual--subtle-motion {
+    animation: character-arrive 700ms ease-out both;
+  }
+
+  @keyframes character-arrive {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}

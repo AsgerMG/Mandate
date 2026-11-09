@@ -10,3 +10,7 @@ web/node_modules
 policy/website/node_modules
 # agent worktrees (scripts/agent-worktree.sh)
 .claude/worktrees/
+
+# editor settings and TypeScript build caches: local only
+.cursor/
+*.tsbuildinfo

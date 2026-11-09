@@ -1,0 +1,55 @@
+{
+  "system": "Mandate character layer",
+  "status": "semantic mapping; resolve against existing website tokens",
+  "brandSourceOfTruth": "Existing Mandate website and repository",
+  "characters": {
+    "regina": {
+      "role": "EU Rules intelligence",
+      "form": "layered, folded, ordered architectural structure",
+      "materials": [
+        "matte ceramic",
+        "mineral composite",
+        "translucent glass"
+      ],
+      "motion": [
+        "align",
+        "separate",
+        "reveal",
+        "resolve"
+      ],
+      "semanticTraits": [
+        "clarity",
+        "precision",
+        "regulatory structure"
+      ]
+    },
+    "wincent": {
+      "role": "Public Capital intelligence",
+      "form": "interwoven, connected, flowing architectural structure",
+      "materials": [
+        "brushed metal",
+        "structural glass",
+        "ribbed translucent glass"
+      ],
+      "motion": [
+        "connect",
+        "trace",
+        "map",
+        "resolve"
+      ],
+      "semanticTraits": [
+        "discovery",
+        "capital pathways",
+        "institutional connections"
+      ]
+    }
+  },
+  "shared": {
+    "faceless": true,
+    "humanAnatomy": false,
+    "politicalSymbols": false,
+    "equalProminence": true,
+    "rendering": "premium architectural 3D, restrained cinematic lighting",
+    "palettePolicy": "Reuse verified existing Mandate website tokens; do not invent a new brand palette."
+  }
+}
