@@ -41,7 +41,6 @@ OWNER: `bash ~/Mandate/mandate/ops/next.sh` prints what is done and the one comm
 | 10 | Laptop backups (~5 GB in ~/Mandate-backups): copy what is not yet in the bucket, verify, then free the laptop copies (check-then-delete script) | after 1-9 | Claude writes, owner runs |
 | 11 | Agent platform phase 1 (`agent-runtime` 661a060c): reconcile with the owner's untracked workspace files, merge; 4 SQL files; mandate-api Railway service; 3 Vercel env vars (PLATFORM.md) | after 1-10 | Claude, owner for env |
 | 11b | DEADLINE 2026-12-01: Railway stops reading railway.json (Config as Code deprecated; warning printed 9 Nov). Migrate capital/, policy/, mandate/ railway.json to `.railway/railway.ts` (`railway config migrate`), check the start commands survive (the service-level overrides bit us twice) | before 1 Dec | Claude |
-| 11c | Regina's 10 failing sources (EP 403 x3, Politico 429 x5, EPRS 404, EDPB 503), first visible in run 115: agent on branch `regina-sources` | agent done | Claude |
 | 12 | Prune this file's dated history below | after 1-11 | Claude |
 
 ## The goal (owner, 5-6 Nov 2026)
