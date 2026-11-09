@@ -65,11 +65,10 @@ from ndb_ssl import fetch_json  # noqa: E402
 _sys.path.insert(0, str(_Path(__file__).resolve().parent))
 
 API_BASE = "https://www.infosubvenciones.es/bdnstrans/api"
-FETCH_RECORDS = ROOT / "data" / "raw" / "scheme_enrichment" / "found_ES_bdns.json"
 EXISTING = ROOT / "data" / "raw" / "bdns_open" / "existing_leaf_details.json"
 
 from harvest_bdns_open_calls import (  # noqa: E402
-    load_details, qualifies, admissible_policies, budget_floor,
+    load_details, qualifies, admissible_policies, budget_floor, fetch_records,
 )
 
 
@@ -101,7 +100,7 @@ def refresh_existing() -> None:
     join must be exact, so the register is asked again rather than parsed out
     of a sentence. 87 requests.
     """
-    recs = json.loads(FETCH_RECORDS.read_text())
+    recs = fetch_records()
     out = []
     for i, r in enumerate(recs, 1):
         m = re.search(r"codigoBDNS=(\d+)", r.get("match_basis") or "")
