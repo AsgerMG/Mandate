@@ -326,8 +326,8 @@ function orchestratorTools(ctx: Ctx, done: { finished: boolean; awaiting: boolea
   const jobIndex = Object.entries(PLAYBOOKS.jobs).map(([k, v]) => `${k}: ${v.title}`).join("; ");
   const tools: Anthropic.Tool[] = [
     tool("load_playbook", `Load a job playbook. Available: ${jobIndex}`, { job: str("playbook name") }, ["job"]),
-    tool("consult_wincent", "Ask Wincent (public capital) a precise question. Returns his report and the evidence ids.", { question: str("the question, with the context he needs") }, ["question"]),
-    tool("consult_regina", "Ask Regina (policy, law, regulators, files and people) a precise question. Returns her report and the evidence ids.", { question: str("the question, with the context she needs") }, ["question"]),
+    tool("consult_wincent", "Ask Wincent (public capital) a precise question. Returns Wincent's report and the evidence ids.", { question: str("the question, with the context Wincent needs") }, ["question"]),
+    tool("consult_regina", "Ask Regina (policy, law, regulators, files and people) a precise question. Returns Regina's report and the evidence ids.", { question: str("the question, with the context Regina needs") }, ["question"]),
     tool("save_flag", "Save a gap in the company's position that blocks or weakens a route.", {
       title: str("short"), severity: { type: "string", enum: ["blocker", "major", "minor"] }, fix: str("the concrete fix"), claims: CLAIMS, on_behalf_of: BY,
     }, ["title", "severity", "fix", "claims"]),

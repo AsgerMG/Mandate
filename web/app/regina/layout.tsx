@@ -5,8 +5,8 @@ import { getStats } from "@/lib/regina/api";
 // Regina, the policy brain, inside the one Mandate site. Ported from
 // policy/website (regina-ai.eu) on 2026-11-06. The masthead and footer are the
 // shared ones (components/nav-bar.tsx, app/layout.tsx); this layout adds only
-// what is Regina's: the scope class her stylesheet hangs off, her edition line,
-// and her coverage note, whose count is read from the policy API and never
+// what is Regina's: the scope class Regina's stylesheet hangs off, the edition line,
+// and the coverage note, whose count is read from the policy API and never
 // written down (see policy/website/CLAUDE.md, rule 1).
 
 export const metadata: Metadata = {

@@ -777,7 +777,7 @@
   .regina .register-page { justify-content: flex-start; gap: 26px; }
 }
 
-/* Regina's coverage note, which was her footer on regina-ai.eu. The count in it
+/* Regina's coverage note, which was the footer on regina-ai.eu. The count in it
    is read from the policy API (app/regina/layout.tsx). */
 .regina .regina-coverage {
   margin-top: 56px; padding-top: 16px; padding-bottom: 16px;
