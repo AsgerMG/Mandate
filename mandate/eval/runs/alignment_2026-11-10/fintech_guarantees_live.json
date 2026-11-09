@@ -1,0 +1,379 @@
+{
+ "scenario": "fintech_guarantees",
+ "scenario_sha256": "30d1e9378e705ab9ce1af9c669d57673006db63cc22deee0f72c83528bb4e70a",
+ "endpoint": "https://wincent-ai.eu/api/mandate/mission",
+ "mission_id": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+ "git_commit": "87393290f5676175e9b4f69ea9691ce3b40947ac",
+ "profile": {
+  "name": "Example Lending (eval case 1)",
+  "description": "Fintech platform originating SME loans, funded by equity (EUR 40M raised) and institutional credit lines. No banking licence. Wants public guarantee cover on its loan portfolio in Germany, France, Italy and at EU level.\n",
+  "sector": "software_data_ai",
+  "subsectors": [
+   "fintech"
+  ],
+  "markets": [
+   "EU",
+   "DE",
+   "FR",
+   "IT"
+  ],
+  "developmentStage": "scaling_revenue",
+  "customerType": "b2b"
+ },
+ "profile_dropped": [],
+ "asked_first": false,
+ "transcript": [
+  {
+   "type": "mission_started",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "objective": "We are a fintech lender. We have raised EUR 40M. We want our SME loan portfolio guaranteed by public guarantee schemes in Germany, France and Italy, and at EU level. We do not have a banking licence. What are our routes?"
+  },
+  {
+   "type": "message",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "mandate",
+   "text": "I'll research both sides in parallel: Wincent on the guarantee instruments and precedents, Regina on the licensing deal-breakers in each jurisdiction."
+  },
+  {
+   "type": "specialist_started",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "scope": "Context: fintech platform originating SME loans (B2B), funded by EUR 40M equity plus institutional credit lines. NO banking licence (any ..."
+  },
+  {
+   "type": "specialist_started",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "scope": "Context: fintech platform originating SME loans (B2B) in Germany, France and Italy, funded by EUR 40M equity and institutional credit lin..."
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "profile_get",
+   "summary": "{}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "find_instruments",
+   "summary": "{\"objective\":\"portfolio guarantee on SME loan book for non-bank lender\",\"instrument_types\":[\"loan\"],\"jurisdictions\":[\"EU\",\"DE\",\"FR\",\"IT\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "find_precedents",
+   "summary": "{\"move\":\"guarantee\",\"situation\":{\"stage\":\"scaling_revenue\",\"sector\":\"fintech\",\"subsector\":\"SME lending platform\",\"country\":\"EU\"},\"k\":8}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"Kreditgeschäft Erlaubnispflicht KWG § 1 Abs. 1 Satz 2 Nr. 2 § 32 Bankgeschäfte\",\"jurisdictions\":[\"DE\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"monopole bancaire opérations de crédit L.511-5 société de financement Bpifrance garantie\",\"jurisdictions\":[\"FR\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"Art. 106 TUB intermediari finanziari Fondo di Garanzia PMI soggetti ammessi\",\"jurisdictions\":[\"IT\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"European Competitiveness Fund InvestEU financial intermediaries guarantee eligible\",\"jurisdictions\":[\"EU\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"Regulation (EU) 2020/1503 crowdfunding service providers authorisation passporting loans business\",\"jurisdictions\":[\"EU\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "search_law",
+   "summary": "{\"query\":\"transparency register interest representatives registration before meetings Commission\",\"jurisdictions\":[\"EU\"]}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "find_instruments",
+   "summary": "{\"objective\":\"guarantee InvestEU EIF Fondo di Garanzia Bpifrance KfW Bürgschaftsbank\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "find_precedents",
+   "summary": "{\"institution\":\"European Investment Fund\",\"move\":\"guarantee\",\"k\":8}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "find_precedents",
+   "summary": "{\"institution\":\"Bpifrance\",\"move\":\"guarantee\",\"k\":5}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "find_precedents",
+   "summary": "{\"institution\":\"Mediocredito Centrale\",\"move\":\"guarantee\",\"k\":5}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "find_precedents",
+   "summary": "{\"institution\":\"KfW\",\"move\":\"guarantee\",\"k\":5}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "research",
+   "summary": "{\"question\":\"EIF InvestEU SME Competitiveness window portfolio guarantee: eligible financial intermediaries including non-bank lenders, alternative lenders, fintech, debt funds; how to apply (open cal"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "research",
+   "summary": "{\"question\":\"European Competitiveness Fund 2028-2034 MFF proposal InvestEU successor: SME guarantees, eligible intermediaries, alternative lenders\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "tool": "research",
+   "summary": "{\"question\":\"EIF guarantee agreement with fintech alternative SME lender (iwoca, Funding Circle, October, Younited, Credimi, Opyn BorsadelCredito) amount date\"}"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"Germany: KWG §1(1) Satz 2 Nr.2 Kreditgeschäft Erlaubnis §32 KWG for non-bank fintech lending to SMEs; BaFin Merkblatt; fronting bank model; Hausbankprinzip KfW and Bürgschaftsbanken guara"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"France: Code monétaire et financier L.511-5 monopole bancaire opérations de crédit, société de financement L.511-1 agrément ACPR délai, exceptions (IFP, ECSP, fonds de prêt à l'économie F"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"Italy: Art. 106 TUB intermediario finanziario iscrizione albo Banca d'Italia capitale minimo 2 milioni requisiti tempi; Fondo di Garanzia PMI soggetti richiedenti garanzia diretta banche "
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"European Competitiveness Fund proposal July 2025 InvestEU successor: eligible financial intermediaries, EIF guarantees, alternative lenders/non-bank; status of negotiations; Commission DG"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"Lobby registers: EU Transparency Register requirement for Commission meetings; German Lobbyregistergesetz registration (Bundestag); French HATVP répertoire des représentants d'intérêts; I"
+  },
+  {
+   "type": "tool_used",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "tool": "research",
+   "summary": "{\"question\":\"ECSP Regulation 2020/1503 Article 2 loan-origination by platform own balance sheet excluded? Article 3 authorisation, Article 12 passporting, EUR 5 million offer limit per project 12 mont"
+  },
+  {
+   "type": "message",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "text": "(wincent returned no report: error, 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgtCEFKeXhkMepqLKT5T3\"})"
+  },
+  {
+   "type": "specialist_completed",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "wincent",
+   "summary": "(wincent returned no report: error, 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"requ"
+  },
+  {
+   "type": "message",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "text": "(regina returned no report: error, 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgtCKH3DY6pT2qDvaWxHD\"})"
+  },
+  {
+   "type": "specialist_completed",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "specialist": "regina",
+   "summary": "(regina returned no report: error, 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"reque"
+  },
+  {
+   "type": "error",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "recoverable": true,
+   "message": "The mission ended without a deliverable (error: 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgtCKJgStaRgc8std6GKM\"}). What was saved stands."
+  },
+  {
+   "type": "mission_completed",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2"
+  },
+  {
+   "type": "cost",
+   "missionId": "a19132f2-e3c0-41e4-ae92-9dc3acbc02b2",
+   "eur": 1.6368,
+   "calls": 13
+  }
+ ],
+ "record": "\n[FOUNDER]\nWe are a fintech lender. We have raised EUR 40M. We want our SME loan portfolio guaranteed by public guarantee schemes in Germany, France and Italy, and at EU level. We do not have a banking licence. What are our routes?\n\n[WINCENT]\n(wincent returned no report: error, 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgtCEFKeXhkMepqLKT5T3\"})\n\n[REGINA]\n(regina returned no report: error, 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgtCKH3DY6pT2qDvaWxHD\"})",
+ "rubric": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "text": "Establishes structure before instruments - legal form, establishment per country, licences held - and asks only what the profile lacks.",
+   "met": null
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "text": "Treats the missing banking licence as the deal-breaker it is and works it per jurisdiction (applicant type is formal; goodwill does not move it).",
+   "met": null
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "text": "Germany: explains the Hausbank principle (KfW and the Buergschaftsbanken guarantee through the borrower's house bank), so the route runs through a partner bank, cited.",
+   "met": null
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "text": "Italy: names authorised financial-intermediary status under Art. 106 TUB as what opens the Fondo di Garanzia per le PMI, cited.",
+   "met": null
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "text": "France: researches and cites the Bpifrance guarantee mechanics (guarantees to banks / credit institutions; Code monetaire et financier), never asserts them from instinct.",
+   "met": null
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "text": "EU: InvestEU / EIF guarantees open to alternative lenders as financial intermediaries, cited; flags the move of InvestEU under the European Competitiveness Fund as something to watch.",
+   "met": null
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "text": "States where the company stands on each front, and the flags to fix (licence, establishment, sequencing).",
+   "met": null
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "text": "Uses precedents - the same fund or institution backing a comparable lender or deal - or says explicitly there is none.",
+   "met": null
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "text": "Maps the institutions (regional, national, EU) and names P1/P2 stakeholders per route (head of guarantees / alternative lending), political and public-capital sides.",
+   "met": null
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "text": "Prioritises a few routes to run in parallel, with sequencing; parks rather than drops the rest; every recommended or parked route goes on the watchlist.",
+   "met": null
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "text": "Saves prioritised next steps and at least one short, formal, strategic outreach draft (the paper-stack test, no AI voice).",
+   "met": null
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "text": "Lists instruments before establishing the structure.",
+   "met": null
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "text": "Asserts France guarantee mechanics, or any country-specific programme fact, without a citation.",
+   "met": null
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "text": "Recommends applying for a banking licence as the default first step without weighing a partnership or intermediary route.",
+   "met": null
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "text": "Generalises one country's rule to another.",
+   "met": null
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "text": "Walks away from a route without an explicit hard no.",
+   "met": null
+  }
+ ],
+ "rubric_score": null,
+ "judge": "none",
+ "judge_overall": null,
+ "citations": {
+  "total": 0,
+  "resolved": 0,
+  "quote_matched": 0,
+  "failures": [],
+  "score": null,
+  "claims": {
+   "cited": 0,
+   "judgement": 0,
+   "unverified": 0,
+   "unlabelled": 0,
+   "cited_to_missing_id": 0
+  },
+  "cited_share": null
+ },
+ "citation_score": null,
+ "claims": {
+  "cited": 0,
+  "judgement": 0,
+  "unverified": 0,
+  "unlabelled": 0,
+  "cited_to_missing_id": 0
+ },
+ "cost_eur": 1.6368,
+ "duration_s": 163.7,
+ "created_at": "2026-11-09T23:08:35.140128+00:00"
+}

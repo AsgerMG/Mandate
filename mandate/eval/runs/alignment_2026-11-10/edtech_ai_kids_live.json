@@ -1,0 +1,142 @@
+{
+ "scenario": "edtech_ai_kids",
+ "scenario_sha256": "4291dc0623d1c03d08bd3cf3ba969869c0ef8159a461cb052703ba58657f906f",
+ "endpoint": "https://wincent-ai.eu/api/mandate/mission",
+ "mission_id": "cb52499d-dbd1-4f77-aed2-c38f8147b3eb",
+ "git_commit": "87393290f5676175e9b4f69ea9691ce3b40947ac",
+ "profile": {
+  "name": "edtech_ai_kids (eval)",
+  "sector": "software_data_ai",
+  "subsectors": [
+   "edtech"
+  ],
+  "usesAi": true,
+  "handlesPersonalData": true
+ },
+ "profile_dropped": [
+  "developmentStage='early': developmentStage: 'early' is not in the vocabulary",
+  "customerType='consumers (B2C)': customerType: 'consumers (B2C)' is not in the vocabulary"
+ ],
+ "asked_first": false,
+ "transcript": [
+  {
+   "type": "mission_started",
+   "missionId": "cb52499d-dbd1-4f77-aed2-c38f8147b3eb",
+   "objective": "We're an AI-native startup building learning tech that engages young children. We already have private investors. How can public money help us?"
+  },
+  {
+   "type": "error",
+   "missionId": "cb52499d-dbd1-4f77-aed2-c38f8147b3eb",
+   "recoverable": true,
+   "message": "The mission ended without a deliverable (error: 400: 400 {\"type\":\"error\",\"error\":{\"type\":\"invalid_request_error\",\"message\":\"Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.\"},\"request_id\":\"req_011CgtCKXnjwxWQYJZFFN8kz\"}). What was saved stands."
+  },
+  {
+   "type": "mission_completed",
+   "missionId": "cb52499d-dbd1-4f77-aed2-c38f8147b3eb"
+  },
+  {
+   "type": "cost",
+   "missionId": "cb52499d-dbd1-4f77-aed2-c38f8147b3eb",
+   "eur": 0,
+   "calls": 0
+  }
+ ],
+ "record": "\n[FOUNDER]\nWe're an AI-native startup building learning tech that engages young children. We already have private investors. How can public money help us?",
+ "rubric": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "text": "Diagnoses intent BEFORE listing instruments - asks whether they are raising, doing real R&D, using R&D tax credits, entering new markets, and what their ambitions are.",
+   "met": null
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "text": "If raising, leads with matchmaking / co-investment loans (state matches private money, often venture debt on favourable terms) and explains WHY a round is the moment (private due diligence already done).",
+   "met": null
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "text": "Names R&D grants and R&D tax credits relevant to the company's country, researched and cited, not asserted.",
+   "met": null
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "text": "Mentions export-credit / market-entry support for new markets with the sequencing rule (apply before entering).",
+   "met": null
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "text": "States the sequencing - what must happen first for the other routes to stay open.",
+   "met": null
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "text": "Converges with Regina - flags the AI Act (education, minors), children's data under GDPR, and DSA protection of minors as shaping fundability and positioning.",
+   "met": null
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "text": "Gives PRECEDENTS for its main routes - companies in a similar situation (stage, raise, sector, move) that the same instrument backed, with amounts and dates, cited - or says plainly that none was found.",
+   "met": null
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "text": "Ends with prioritised next steps saved to the workspace, not an undifferentiated list.",
+   "met": null
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "text": "Lists instruments without first asking about intent and situation.",
+   "met": null
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "text": "Asserts country-specific programme facts without a citation.",
+   "met": null
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "text": "Treats the regulatory side as out of scope.",
+   "met": null
+  }
+ ],
+ "rubric_score": null,
+ "judge": "none",
+ "judge_overall": null,
+ "citations": {
+  "total": 0,
+  "resolved": 0,
+  "quote_matched": 0,
+  "failures": [],
+  "score": null,
+  "claims": {
+   "cited": 0,
+   "judgement": 0,
+   "unverified": 0,
+   "unlabelled": 0,
+   "cited_to_missing_id": 0
+  },
+  "cited_share": null
+ },
+ "citation_score": null,
+ "claims": {
+  "cited": 0,
+  "judgement": 0,
+  "unverified": 0,
+  "unlabelled": 0,
+  "cited_to_missing_id": 0
+ },
+ "cost_eur": 0,
+ "duration_s": 2.0,
+ "created_at": "2026-11-09T23:08:38.174334+00:00"
+}
