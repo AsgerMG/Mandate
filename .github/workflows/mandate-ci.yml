@@ -29,7 +29,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install 'psycopg[binary]>=3.2' 'httpx>=0.27' pytest python-dotenv 'fastapi>=0.115' pyyaml
+      # the package's own declaration (mandate/pyproject.toml [test]), so CI and a
+      # laptop install the same thing; scripts/preflight.sh runs these same steps
+      - run: pip install './mandate[test]'
       # no model named, no embeddings API called, outside mandate/embedding;
       # web/lib/embedding.ts's generated block equals spaces.json
       - run: python3 mandate/embedding/check_boundary.py

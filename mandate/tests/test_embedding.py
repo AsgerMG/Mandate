@@ -125,7 +125,8 @@ def test_cost_is_counted_from_billed_tokens():
     e = E.Embedder(key="k", client=_client([ok([V], tokens=1_000_000)], []))
     e.embed(["x"])
     assert e.usage.tokens == 1_000_000 and e.usage.cost_usd == pytest.approx(0.12)
-    assert E.estimate_cost_usd(2_000_000, "voyage-3.5") == pytest.approx(0.12)
+    # the one model's price (spaces.json), not a retired model's: voyage-3.5 left on 9 Nov
+    assert E.estimate_cost_usd(2_000_000) == pytest.approx(2 * E.SPACES[E.MODEL].price_per_mtok_usd)
 
 
 def test_no_key_is_an_error_and_empty_input_calls_nothing(monkeypatch):
