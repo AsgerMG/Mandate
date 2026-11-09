@@ -36,8 +36,10 @@ before it is offered only if some earlier run happened to catch it. Sized to
 the cadence (it was 60 days), any outage longer than the window loses every
 call registered in the gap, permanently -- and that is what happened: no run
 between 2026-08-08 and 2026-11-09 (guard: "refreshed 93d ago"), so the calls
-registered 2026-08-08..09-10 were never seen, and ES offerable fell 102 -> 68
-with every stage reporting ok.
+registered 2026-08-08..09-10 were never seen. Measured with a dry run on
+2026-11-09, that gap cost 6 open calls (68 -> 74 with this window). The rest of
+the fall from the 102 baseline is real: calls closing on their deadlines, with
+only 34 calls registered in the last 180 days passing all five clauses today.
 
 So the window is the life of a call, measured: over the calls the August
 harvest admitted, registration -> fechaFinSolicitud was p50 73, p90 129, p95
