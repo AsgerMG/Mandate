@@ -65,6 +65,13 @@ GROUPS: dict[str, dict] = {
     "state_aid_cases": {"extractors": ["populate_funding_instruments", "encode_article_intensity",
                                        "encode_registered_regions"],
                         "files": ["state_aid_cases/cases.json"]},
+    # The stored fetch records for Spain's existing BDNS leaves: the open-call
+    # refresh derives its budget floor, its admissible policies and its overlap
+    # join from them (ETL/terms/harvest_bdns_open_calls.py fetch_records). One
+    # file, hand-curated on 2026-08-06; nothing re-creates it.
+    "bdns_open_calls": {"extractors": ["harvest_bdns_open_calls", "match_bdns_open_calls",
+                                       "load_bdns_open_calls"],
+                        "files": ["scheme_enrichment/found_ES_bdns.json"]},
 }
 
 

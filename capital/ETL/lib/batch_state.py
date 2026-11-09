@@ -48,6 +48,11 @@ def save(kind: str, st: dict) -> None:
         old = row[0] if row else EMPTY
         merged = {k: list(dict.fromkeys(list(old.get(k, [])) + list(st.get(k, []))))
                   for k in ("batches", "collected")}
+        # Why a batch was retired without results (see unrecoverable()). Union
+        # too: a reason, once written, is the record and is never dropped.
+        lost = {**old.get("unrecoverable", {}), **st.get("unrecoverable", {})}
+        if lost:
+            merged["unrecoverable"] = lost
         con.execute("INSERT INTO batch_state (kind, state, updated_at) VALUES (%s, %s::jsonb, now()) "
                     "ON CONFLICT (kind) DO UPDATE SET state = excluded.state, updated_at = now()",
                     (kind, json.dumps(merged)))
@@ -56,3 +61,36 @@ def save(kind: str, st: dict) -> None:
 def pending(kind: str) -> list[str]:
     st = load(kind)
     return [b for b in st["batches"] if b not in st["collected"]]
+
+
+def unrecoverable(batch) -> str | None:
+    """Why an ENDED batch has no results to collect, or None if it has some.
+
+    The Batches API keeps a batch's results for 29 days after it is created;
+    after that, and when every request expired, was canceled or errored, the
+    batch reports `ended` with no `results_url`, and asking for its results
+    raises ("No `results_url` for the given batch"). Run 114 (2026-11-09) died
+    on exactly that: a relevance batch submitted 2026-07-24, six requests
+    succeeded, never collected, results purged. Retrying it forever would fail
+    the news step every week for a batch nothing can bring back.
+    """
+    if batch.processing_status != "ended" or batch.results_url:
+        return None
+    c = batch.request_counts
+    return (f"ended {batch.ended_at:%Y-%m-%d} with no results file "
+            f"(succeeded {c.succeeded}, errored {c.errored}, expired {c.expired}, "
+            f"canceled {c.canceled}; results are kept 29 days from "
+            f"{batch.created_at:%Y-%m-%d})")
+
+
+def retire(kind: str, st: dict, batch_id: str, why: str) -> None:
+    """Mark a batch collected WITHOUT results, and record why.
+
+    Nothing is lost by this that was not already lost: the collectors write a
+    verdict per article only from a result, so every article the batch carried
+    is still unlabelled and the next `submit` sends it again.
+    """
+    print(f"  {batch_id}: {why} -- retired; its articles are re-submitted", flush=True)
+    st.setdefault("unrecoverable", {})[batch_id] = why
+    st["collected"].append(batch_id)
+    save(kind, st)

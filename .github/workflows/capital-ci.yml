@@ -538,6 +538,12 @@ jobs:
       - name: Coverage gate separates loss from dilution
         run: python3 ETL/terms/test_coverage_gate.py
 
+      # A failed ADEME fetch is a partial only when the row holds no window an
+      # earlier run read; a catalogue that is down is a partial regardless.
+      # Run 114 recorded a whole week partial over one refused connection.
+      - name: A covered fetch failure does not make the week partial
+        run: python3 ETL/terms/test_ademe_windows_outcome.py
+
       # A membership test between two disjoint vocabularies is dead code, and
       # dead code in the middle of the split is invisible: it does not fail, it
       # just stops splitting. `split_families()` returned channel labels while

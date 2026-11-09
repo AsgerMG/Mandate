@@ -126,9 +126,9 @@ const FIELD_NOTES: Record<string, { why: string; review: string }> = {
   },
   application: {
     why: "not a column — `instrument_application`, the curated route table, "
-      + "joined at hydration. Its own comparison is not built yet; it decides "
-      + "the channel and timeline a founder is told, so it is worth one.",
-    review: "2026-10-31",
+      + "joined at hydration. Compared in section 4b on its own terms: channel, "
+      + "timeline and url per fund, which decide what a founder is told to do.",
+    review: "2026-12-31",
   },
   schemeEndBasis: {
     why: "the column is `scheme_end_date_basis`, so the derived name misses it. "
@@ -306,14 +306,32 @@ async function main() {
   let liveRows: Record<string, unknown>[];
   let gateRows: { instrument_id: string; gate_key: string; gate_role: string | null;
     value_spec: unknown; intake_field_resolved: string | null }[];
+  let appRows: { instrument_id: string; channel: string | null; timeline: string | null;
+    url: string | null }[];
   try {
     liveColumns = new Set((await client2.query<{ column_name: string }>(
-      `SELECT column_name FROM information_schema.columns
-        WHERE table_schema = 'public' AND table_name = 'funding_instruments'`))
+      // The table as the other queries here resolve it (the role's search_path),
+      // not a hardcoded schema: it moved from public to capital in the
+      // consolidation, and a hardcoded 'public' found no columns at all, so
+      // every field read as compared against nothing.
+      `SELECT attname AS column_name FROM pg_attribute
+        WHERE attrelid = 'funding_instruments'::regclass AND attnum > 0 AND NOT attisdropped`))
       .rows.map((r) => r.column_name));
     gateRows = (await client2.query(
       `SELECT instrument_id, gate_key, gate_role, value_spec, intake_field_resolved
          FROM eligibility_gates`)).rows;
+    appRows = (await client2.query(
+      // A child fund inherits its parent's route until one is curated for it
+      // (eligibility_export.py and corpus.ts hydration both do this), so the
+      // live side applies the same rule: own row, else the parent's.
+      `SELECT f.id AS instrument_id,
+              CASE WHEN a.instrument_id IS NOT NULL THEN a.channel  ELSE p.channel  END AS channel,
+              CASE WHEN a.instrument_id IS NOT NULL THEN a.timeline ELSE p.timeline END AS timeline,
+              CASE WHEN a.instrument_id IS NOT NULL THEN a.url      ELSE p.url      END AS url
+         FROM funding_instruments f
+         LEFT JOIN instrument_application a ON a.instrument_id = f.id
+         LEFT JOIN instrument_application p ON p.instrument_id = f.parent_id
+        WHERE a.instrument_id IS NOT NULL OR p.instrument_id IS NOT NULL`)).rows;
     const snapshotFields = [...new Set(snapshot.records.flatMap((r) => Object.keys(r)))].sort();
     const compared = snapshotFields.filter((f) => liveColumns.has(columnFor(f)));
     const unclassified = snapshotFields.filter(
@@ -477,6 +495,35 @@ async function main() {
         `      accessiblePool is built from these, so a degraded request does not merely\n` +
         `      rank differently — it admits and refuses different funds.\n` +
         [...missing.slice(0, 3), ...changed.slice(0, 3)].map((k) => `      e.g. ${show(k)}`).join("\n"));
+    }
+  }
+
+  // ── 4b. ...AND ABOUT HOW TO APPLY ─────────────────────────────────────────
+  // The route a founder is told (channel, timeline, url) comes from
+  // `instrument_application`, joined at hydration, so a degraded request that
+  // reads the snapshot tells them whatever the snapshot last held. Same three
+  // questions as the rules: missing, extra, and present-but-different.
+  {
+    const live = new Map(appRows.map((a) =>
+      [a.instrument_id, normaliseValue([a.channel, a.timeline, a.url])]));
+    const snap = new Map<string, string>();
+    for (const r of snapshot.records as unknown as
+      { id: string; application?: { channel?: unknown; timeline?: unknown; url?: unknown } | null }[]) {
+      if (r.application) {
+        snap.set(r.id, normaliseValue([r.application.channel ?? null,
+          r.application.timeline ?? null, r.application.url ?? null]));
+      }
+    }
+    const missing = [...live.keys()].filter((k) => !snap.has(k));
+    const extra = [...snap.keys()].filter((k) => !live.has(k));
+    const changed = [...live.keys()].filter((k) => snap.has(k) && snap.get(k) !== live.get(k));
+    console.log(`  application routes: ${snap.size} in the snapshot, ${live.size} in Postgres`);
+    if (missing.length || extra.length || changed.length) {
+      problems.push(
+        `the two corpora tell a founder DIFFERENT WAYS TO APPLY.\n` +
+        `      ${missing.length} live route(s) the snapshot lacks, ${extra.length} snapshot ` +
+        `route(s) no longer in Postgres, ${changed.length} that differ\n` +
+        [...missing.slice(0, 3), ...changed.slice(0, 3)].map((k) => `      e.g. ${k}`).join("\n"));
     }
   }
 

@@ -273,6 +273,13 @@ def main() -> None:
         # this founder's table rather than tailoring by topic alone.
         "instruments": instruments,
     }
+    # public/data is build OUTPUT: never committed, dockerignored, so in the
+    # weekly container it does not exist until a writer makes it -- and this
+    # step runs before the site build that would (run 114 died here on
+    # FileNotFoundError). The file stays where the site reads it
+    # (loadSignalsDigest, web/lib/intelligence/corpus.ts) and where the
+    # publish step collects it (mandate/artefacts.py PATTERNS: public/data/*.json).
+    OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(payload, indent=1, ensure_ascii=False))
     n_top = sum(len(v) for v in topics.values())
     n_sec = sum(len(v) for v in sectors.values())

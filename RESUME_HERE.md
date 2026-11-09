@@ -3,6 +3,45 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
+## TONIGHT 9 Nov, 21:00 Copenhagen: the parallel plan (owner: "done before bed")
+Run in PARALLEL, not in sequence. On "continue", Claude immediately:
+- spawns ONE agent: agent-runtime (661a060c) reconcile with the owner's untracked workspace files -> mergeable;
+- itself: confirm Capina + Vercel deleted (tidy CAPINA_* refs, archives.json), merge llm-batches (SQL first),
+  verify sector-display a50e0bff (populate on a local copy -> coverage_gate --dry-run funds >= 930), merge, clear holds.txt.
+| CET | Step | Who |
+|---|---|---|
+| 21:30 | `rerun_capital.sh` (60 min on Railway) | owner |
+| 21:35 | `drop_policy_duplicates.sh` then `--apply` (policy tables: safe DURING the capital-only run) | owner |
+| 21:45 | Phase 1 merged + 4 SQL files; owner creates mandate-api service + 3 Vercel vars (exact clicks from Claude) | Claude + owner |
+| 22:30 | run done -> `restore_weekly_cron.sh`, then `one_model_drop_old.sh` + `--apply` (after the run: VACUUM FULL on tables it writes) | owner |
+| 22:45 | verify: census ok, check_verdicts green, advisor answers a live mission | Claude |
+| 22:50 | FOUNDATION DONE -> first live Wincent mission with the owner grading | both |
+Deferred, non-blocking: laptop backups to bucket (loop 10), pruning this file.
+
+## OPEN LOOPS (read first; close before starting anything new)
+Principle (owner, 9 Nov): finish before moving on. A change is done when it is
+merged, deployed (Railway: explicit commitSha deploy) and verified. Anything
+that cannot close now is listed here with its trigger and owner; remove the
+line in the commit that closes it. Sections below this one are history.
+
+OWNER: `bash ~/Mandate/mandate/ops/next.sh` prints what is done and the one command to run next (read-only).
+
+| # | Loop | Trigger | Who |
+|---|---|---|---|
+| 0 | Owner left 9 Nov ~17:45 UTC. On resume: `bash mandate/ops/next.sh`, check run 114 (`mandate.runs`), check the sector-display agent's branch `sector-display` (may be incomplete: laptop closed mid-work; resume or redo, then merge) | resume | Claude |
+| 1 | Capina: owner deletes the project in the Railway dashboard (9 Nov). Its Postgres dump IS in the bucket (key sha256/a2/a29f6c9db47204cced7fb88a5bac0ce47e16513eb8b47e92b957e2f656870a11, sha matches MANIFEST): write that into a new `mandate/ops/archives.json`. The 653 MB railway_volume_db.sqlite is NOT uploaded yet (PUT timed out): do it in loop 10. Then remove CAPINA_* from `_railway.sh`, `suspend_capina_cron.sh`, `retire_capina.sh`'s delete step, and the Capina line in next.sh | owner deleted? check | Claude |
+| 2 | Vercel: `delete_vercel_projects.sh --apply` (env vars already saved to ~/Mandate-backups/vercel/); then drop the stale regina rows from policy/DEPLOYMENT.md | now | owner |
+| 3 | Merge `llm-batches` (apply `mandate/db/llm_batches.sql` first) | run 114 finished | Claude |
+| 4 | Merge `sector-display` (29 funds keep sector focus for display; recall set stays out of ranking; owner decision 9 Nov); clear the hold in `mandate/ops/holds.txt` | agent done | Claude |
+| 5 | `rerun_capital.sh` (deploys main: FX, cron-fixes, batches, sector fix; publishes the census -> GitHub green) | 3 + 4 | owner |
+| 6 | `restore_weekly_cron.sh` | 5's run finished | owner |
+| 7 | Verify the loop-5 run: every step ok, census ok, check_verdicts green | after 5 | Claude |
+| 8 | `one_model_drop_old.sh` then `--apply`; merge the migration it writes BEFORE Sun 03:00 UTC | after 7 | owner runs, Claude merges |
+| 9 | `drop_policy_duplicates.sh` then `--apply`; remove LegacyPassage/LegacyDocumentVersion from policy/data/models.py in the same change | after 7 | owner runs, Claude commits |
+| 10 | Laptop backups (~5 GB in ~/Mandate-backups): copy what is not yet in the bucket, verify, then free the laptop copies (check-then-delete script) | after 1-9 | Claude writes, owner runs |
+| 11 | Agent platform phase 1 (`agent-runtime` 661a060c): reconcile with the owner's untracked workspace files, merge; 4 SQL files; mandate-api Railway service; 3 Vercel env vars (PLATFORM.md) | after 1-10 | Claude, owner for env |
+| 12 | Prune this file's dated history below | after 1-11 | Claude |
+
 ## The goal (owner, 5-6 Nov 2026)
 One repo, one database, one website, one refresh run, and one embedding model,
 with every brain on current intel. Nothing is lost: unused things are archived,

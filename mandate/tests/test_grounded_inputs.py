@@ -35,3 +35,15 @@ def test_materialise_reads_pinned_bytes_and_refuses_a_different_edition(mdb, buc
         with pytest.raises(gi.InputError, match="adopt"):
             gi.materialise("cordis", raw=raw, con=c, bucket=bucket)
         c.rollback()
+
+
+def test_every_declared_group_is_pinned():
+    """A group declared in GROUPS but absent from the pins raises KeyError in the
+    cron, at the step that needed it: the same invisible failure as the missing
+    file it replaced. Both directions, so a pin with no declaration is caught too."""
+    pinned = gi.pins()["groups"]
+    assert set(pinned) == set(gi.GROUPS)
+    for group, g in pinned.items():
+        assert g["files"], group
+        for f in g["files"]:
+            assert len(f["sha256"]) == 64 and f["bytes"] > 0, (group, f["path"])

@@ -37,6 +37,8 @@ import etl_env  # noqa: E402,F401  (stage dirs onto sys.path)
 from store import connect  # noqa: E402
 
 sys.path.insert(0, str(HERE.parents[1] / "website" / "build"))
+import batch_state  # noqa: E402
+import classify_relevance  # noqa: E402
 import classify_signals  # noqa: E402
 import embed_articles  # noqa: E402
 import entity_link_articles  # noqa: E402
@@ -261,6 +263,59 @@ def test_qa_and_digest() -> None:
           "people: a named person on a policy-change article")
 
 
+def test_batch_without_results_is_retired() -> None:
+    """Run 114: a batch ended with its results purged (29-day retention), and
+    asking for them raised and failed the news step. It is retired with the
+    reason, its article stays unlabelled for the next submit, and a batch
+    that still has results is collected as before."""
+    print("batches without results")
+    import datetime as _dt  # noqa: PLC0415
+    from types import SimpleNamespace as NS  # noqa: PLC0415
+    ddl = (HERE.parent / "schema" / "migrations" / "035_batch_state.sql").read_text()
+    with connect() as con:
+        con.execute(ddl)
+        aid = con.execute("SELECT id FROM signals_articles ORDER BY id LIMIT 1").fetchone()[0]
+        con.execute("UPDATE signals_articles SET is_relevant = NULL WHERE id = %s", (aid,))
+    t = _dt.datetime(2026, 7, 24, tzinfo=_dt.timezone.utc)
+    counts = NS(succeeded=6, errored=0, expired=0, canceled=0, processing=0)
+    batches = {"gone": NS(processing_status="ended", results_url=None, request_counts=counts,
+                          created_at=t, ended_at=t),
+               "here": NS(processing_status="ended", results_url="https://x", request_counts=counts,
+                          created_at=t, ended_at=t)}
+
+    class Client:
+        class messages:  # noqa: N801
+            class batches:  # noqa: N801
+                retrieve = staticmethod(lambda bid: batches[bid])
+
+                @staticmethod
+                def results(bid):
+                    if bid == "gone":
+                        raise RuntimeError("No `results_url` for the given batch")
+                    msg = NS(content=[NS(type="text", text='{"relevant": true, "reason": "r"}')])
+                    return [NS(custom_id=f"a{aid}", result=NS(type="succeeded", message=msg))]
+
+    st = batch_state.load("signals_relevance")
+    st["batches"] += ["gone"]
+    batch_state.save("signals_relevance", st)
+    with connect() as con:
+        classify_relevance._collect(Client, st, ["gone"], con)
+    st = batch_state.load("signals_relevance")
+    check("gone" in st["collected"] and "29 days" in st["unrecoverable"]["gone"],
+          "a purged batch is retired, with its reason recorded")
+    check("gone" not in batch_state.pending("signals_relevance"), "and is never asked for again")
+    check(one("SELECT is_relevant FROM signals_articles WHERE id = %s", (aid,)) is None,
+          "its article stays unlabelled, so the next submit sends it again")
+    st["batches"] += ["here"]
+    batch_state.save("signals_relevance", st)
+    with connect() as con:
+        written, *_ = classify_relevance._collect(Client, st, ["here"], con)
+    check(written == 1 and one("SELECT is_relevant FROM signals_articles WHERE id = %s", (aid,)) == 1,
+          "a batch with results is still collected")
+    check("gone" in batch_state.load("signals_relevance")["unrecoverable"],
+          "a later save keeps the recorded reason")
+
+
 def main() -> int:
     test_ingest()
     test_embed_and_retrieve()
@@ -268,6 +323,7 @@ def main() -> int:
     test_classify_writes()
     test_links()
     test_qa_and_digest()
+    test_batch_without_results_is_retired()
     if FAILURES:
         print(f"\nFAILED: {len(FAILURES)}")
         return 1

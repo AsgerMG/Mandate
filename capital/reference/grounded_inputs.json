@@ -3309,6 +3309,21 @@
      "url": "urn:mandate:capital:raw/state_aid_cases/cases.json"
     }
    ]
+  },
+  "bdns_open_calls": {
+   "extractors": [
+    "harvest_bdns_open_calls",
+    "match_bdns_open_calls",
+    "load_bdns_open_calls"
+   ],
+   "files": [
+    {
+     "path": "scheme_enrichment/found_ES_bdns.json",
+     "sha256": "72a63b2e9d801cff338280502e336c1e5909d0da7380c40ac31e3d29a2d9a8fd",
+     "bytes": 150141,
+     "url": "urn:mandate:capital:raw/scheme_enrichment/found_ES_bdns.json"
+    }
+   ]
   }
  }
 }
