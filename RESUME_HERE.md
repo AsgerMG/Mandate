@@ -12,12 +12,13 @@ line in the commit that closes it. Sections below this one are history.
 | # | Loop | Trigger | Who |
 |---|---|---|---|
 | 1 | Merge `llm-batches` (apply `mandate/db/llm_batches.sql` first) | run 113 finished | Claude |
-| 2 | Redeploy capital-etl at main's commitSha (carries the Vinnova FX fix efc0caf3 + batches) | after 1 | Claude |
-| 3 | Restore the weekly cron: `bash mandate/ops/restore_weekly_cron.sh` (still one-off `34 10 9 11 *`) | run 113 finished | owner |
-| 4 | Verify run 113: every step ok, health issue green; fix any failed step | run 113 finished | Claude |
+| 2 | Re-run the capital phase on main (FX fix + batches + republishes the census, which turns GitHub's capital checks green): `bash mandate/ops/rerun_capital.sh` | after 1 | owner |
+| 3 | Restore the weekly cron AND the full start command: `bash mandate/ops/restore_weekly_cron.sh` | the loop-2 run finished | owner |
+| 4 | Verify run 113 and the loop-2 run: every step ok, census fresh, check_verdicts green | after 2 | Claude |
 | 5 | Old vectors: `one_model_drop_old.sh` then `--apply`; merge the migration it writes | after 4, before Sun 03:00 UTC | owner runs, Claude merges |
 | 6 | Policy duplicates: `drop_policy_duplicates.sh` then `--apply`; remove LegacyPassage/LegacyDocumentVersion from `policy/data/models.py` in the same change | after 4 | owner runs, Claude commits |
-| 7 | Build agent `agent-runtime`: review its report, merge or archive the branch | agent finishes | Claude |
+| 7 | Agent platform phase 1 (`agent-runtime` 661a060c, done, tests green): review, reconcile with the owner's untracked workspace files, merge; then 4 SQL files + mandate-api service + Vercel env (PLATFORM.md) | after 1-6 | Claude, owner for env |
+| 7b | Dead `regina` Vercel project fails every push (emails): `bash mandate/ops/retire_regina_vercel.sh` | now | owner |
 | 8 | Prune this file: collapse the dated history sections below into a short "how we got here" | after 1-7 | Claude |
 
 ## The goal (owner, 5-6 Nov 2026)
