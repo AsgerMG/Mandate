@@ -76,6 +76,18 @@ site's data and runtime priors are built once by the weekly run and published
 as a release (`mandate.artefact_releases` + sha256 objects in the bucket,
 `mandate/artefacts.py`); the prebuild downloads it and falls back to Postgres.
 
+## Bulk LLM jobs: Message Batches, one helper
+
+Every bulk labelling job sends its requests through `mandate/llm/batch.py`
+(half price, async, usually under an hour, at most 24 h). A batch is a row in
+`mandate.llm_batches` (`mandate/db/llm_batches.sql`) from submission to
+collection, carrying its custom_ids and the per-item metadata needed to write
+results back, so a run may submit and a LATER run collect, and nothing in flight
+is paid for twice. The estimate is capped before submitting; measured cost is
+recorded at collection. On it: `classify_taxonomy.py run` (weekly, waits 60 min)
+and `classify_eligibility_pertinence.py --classify` (`mandate/ops/pertinence.sh`).
+Interactive calls (a brief, a Regina answer) stay live.
+
 ## Credentials
 
 Each role's URL is stored on the Railway database service as two variables:

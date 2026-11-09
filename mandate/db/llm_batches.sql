@@ -36,8 +36,8 @@ CREATE TABLE IF NOT EXISTS mandate.llm_batches (
     items         jsonb NOT NULL DEFAULT '{}'::jsonb,
     request_count integer NOT NULL DEFAULT 0,
     models        text[] NOT NULL DEFAULT '{}',
-    estimate_usd  numeric(12, 4),                  -- at batch prices, before submitting
-    cost_usd      numeric(12, 4),                  -- measured from usage, at collection
+    estimate_usd  numeric(14, 6),                  -- at batch prices, before submitting
+    cost_usd      numeric(14, 6),                  -- measured from usage, at collection
     usage         jsonb NOT NULL DEFAULT '{}'::jsonb,   -- token totals by kind
     counts        jsonb NOT NULL DEFAULT '{}'::jsonb,   -- succeeded / errored / expired / ...
     submitted_at  timestamptz NOT NULL DEFAULT now(),

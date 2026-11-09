@@ -34,3 +34,4 @@ dev-mode-dirs = [".."]
 "embedding" = "mandate/embedding"
 "vocabulary" = "mandate/vocabulary"
 "profile" = "mandate/profile"
+"llm" = "mandate/llm"

@@ -277,7 +277,7 @@ class PgStore:
             c.execute(
                 "UPDATE mandate.llm_batches SET status = %s, cost_usd = %s, usage = %s::jsonb, "
                 "counts = %s::jsonb, collected_at = now() WHERE batch_id = %s",
-                (status, round(cost_usd, 4), json.dumps(usage), json.dumps(counts), batch_id))
+                (status, round(cost_usd, 6), json.dumps(usage), json.dumps(counts), batch_id))
 
 
 # ── the runner ───────────────────────────────────────────────────────────────
@@ -421,7 +421,7 @@ class Batcher:
                    "items": {it.custom_id: it.meta for it in part},
                    "request_count": len(part),
                    "models": sorted({it.params["model"] for it in part}),
-                   "estimate_usd": round(sum(it.estimate() for it in part), 4)}
+                   "estimate_usd": round(sum(it.estimate() for it in part), 6)}
             try:
                 self._record(row)
             except Exception as exc:  # noqa: BLE001
