@@ -133,6 +133,18 @@ function shared(ctx: Ctx, me: Sp): { tools: Anthropic.Tool[]; handlers: Record<s
       { question: str("a precise research question"), domains: strs("optional: restrict to these domains (e.g. bpifrance.fr)") }, ["question"]),
     tool("actors_register_find", "Search Mandate's register of institutions, coalitions, media and public-role people, with their PUBLISHED contact points and address formats.",
       { q: str("name or topic"), kind: str("optional kind, e.g. promotional_bank, trade_association, media_outlet"), jurisdiction: str("optional ISO2 or EU") }, ["q"]),
+    tool("actors_register_add", "Add an institution, a public role, or a PUBLISHED contact point to the register. Needs a citation id whose quote shows it (for a contact point, the quote must contain the value). Never a guessed address.", {
+      entity: { type: "string", enum: ["organisation", "role", "contact_point"] },
+      citation_id: str("the [cN] id (without brackets) of the passage that publishes it"),
+      name: str("organisation name, or the person's name for a role"),
+      kind: str("organisation kind (e.g. promotional_bank, regulator, trade_association, media_outlet) or contact kind (press_office, desk, switchboard, institutional_email, masthead_email, contact_form, phone, postal)"),
+      jurisdiction: str("ISO2 or EU"), organisation_id: str("for a role or contact point"), title: str("for a role: the title"),
+      beat: str("for a role: beat or portfolio"), channel: { type: "string", enum: ["email", "phone", "url", "postal"] }, value: str("for a contact point"),
+      topics: strs("for an organisation: what it works on"),
+    }, ["entity", "citation_id"]),
+    tool("suggest_email", "For a person whose address is NOT published: apply the organisation's registered address format. The result is UNVERIFIED ADVICE for this conversation only; it is never stored and must be presented as such.", {
+      format_id: str("an email_formats id from actors_register_find"), first: str("first name"), last: str("last name"),
+    }, ["format_id", "first", "last"]),
     tool("profile_get", "The company profile the mission runs on.", {}, []),
     tool("profile_append", "Record facts about the company that the founder stated or that you established with evidence. Never a guess.",
       { changes: { type: "object", description: "profile fields to set (the shared CompanyProfile vocabulary)" }, note: str("where the fact came from") }, ["changes", "note"]),
@@ -148,6 +160,23 @@ function shared(ctx: Ctx, me: Sp): { tools: Anthropic.Tool[]; handlers: Record<s
         return { ...a, citation: id };
       });
     } },
+    actors_register_add: { required: ["entity", "citation_id"], run: async (i) => {
+      const e = ctx.ledger.get(String(i.citation_id));
+      if (!e) throw new Error(`unknown citation ${i.citation_id}: register only what a cited passage publishes`);
+      const citation = e.citation;
+      if (i.entity === "organisation") {
+        return ctx.deps.mandate.addActor("organisations", { name: i.name, kind: i.kind, jurisdiction: i.jurisdiction,
+          topics: i.topics ?? [], citation, created_by: me });
+      }
+      if (i.entity === "role") {
+        return ctx.deps.mandate.addActor("roles", { person_name: i.name, organisation_id: i.organisation_id, title: i.title,
+          beat: i.beat ?? "", citation, created_by: me });
+      }
+      return ctx.deps.mandate.addActor("contact_points", { organisation_id: i.organisation_id, kind: i.kind, channel: i.channel,
+        value: i.value, citation, created_by: me });
+    } },
+    suggest_email: { required: ["format_id", "first", "last"], run: (i) =>
+      ctx.deps.mandate.applyEmailFormat(String(i.format_id), String(i.first), String(i.last)) },
     profile_get: { run: async () => ctx.profile },
     profile_append: { required: ["changes", "note"], run: async (i) => {
       const payload = { ...ctx.profile.payload, ...(i.changes as Record<string, unknown>) };
