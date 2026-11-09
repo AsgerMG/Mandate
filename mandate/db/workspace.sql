@@ -1,5 +1,5 @@
 -- mandate.missions, messages, decisions, actions, action_events, flags,
--- plan_steps: what the advisor did in a founder's workspace, and why.
+-- plan_steps, watchlist_items: what the advisor did in a founder's workspace, and why.
 --
 --   psql "$ADMIN_URL" -f mandate/db/workspace.sql    (after roles.sql and profiles.sql; idempotent)
 --
@@ -165,6 +165,30 @@ CREATE TABLE IF NOT EXISTS mandate.plan_steps (
 );
 CREATE INDEX IF NOT EXISTS plan_steps_mission_idx ON mandate.plan_steps (mission_id, ordinal);
 
+-- What the radar watches for this workspace: every route the advisor
+-- recommended, parked or probed, and every rule that could reopen or close one
+-- (owner's funding-routes playbook, 4b). `subject` is the thing watched (an
+-- instrument id, a document, a programme name); `trigger` is what would change
+-- the advice. A watch that is no longer wanted gets a new row, status 'stopped',
+-- superseding it.
+CREATE TABLE IF NOT EXISTS mandate.watchlist_items (
+    id           uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    mission_id   uuid NOT NULL REFERENCES mandate.missions(id),
+    kind         text NOT NULL CHECK (kind IN ('route', 'rule', 'institution', 'consultation', 'case', 'agenda')),
+    subject      text NOT NULL CHECK (length(btrim(subject)) > 0),
+    route_status text CHECK (route_status IS NULL OR route_status IN ('pursue', 'probe', 'parked', 'closed')),
+    trigger      text NOT NULL DEFAULT '',
+    jurisdiction text CHECK (jurisdiction IS NULL OR jurisdiction ~ '^([A-Z]{2}|EU)$'),
+    citations    jsonb NOT NULL DEFAULT '{}'::jsonb CHECK (jsonb_typeof(citations) = 'object'),
+    status       text NOT NULL DEFAULT 'watching' CHECK (status IN ('watching', 'stopped')),
+    supersedes   uuid REFERENCES mandate.watchlist_items(id),
+    created_by   text NOT NULL CHECK (created_by IN ('founder', 'mandate', 'wincent', 'regina')),
+    author_account_id uuid REFERENCES mandate.accounts(id),
+    created_at   timestamptz NOT NULL DEFAULT now(),
+    db_role      text NOT NULL DEFAULT current_user
+);
+CREATE INDEX IF NOT EXISTS watchlist_items_mission_idx ON mandate.watchlist_items (mission_id);
+
 -- ── "As it stands" views ──────────────────────────────────────────────────
 CREATE OR REPLACE VIEW mandate.decisions_current AS
   SELECT d.* FROM mandate.decisions d
@@ -180,6 +204,11 @@ CREATE OR REPLACE VIEW mandate.flags_current AS
   SELECT f.* FROM mandate.flags f
    WHERE NOT EXISTS (SELECT 1 FROM mandate.flags n WHERE n.supersedes = f.id);
 
+CREATE OR REPLACE VIEW mandate.watchlist_current AS
+  SELECT w.* FROM mandate.watchlist_items w
+   WHERE w.status = 'watching'
+     AND NOT EXISTS (SELECT 1 FROM mandate.watchlist_items n WHERE n.supersedes = w.id);
+
 CREATE OR REPLACE VIEW mandate.plan_steps_current AS
   SELECT p.* FROM mandate.plan_steps p
    WHERE NOT EXISTS (SELECT 1 FROM mandate.plan_steps n WHERE n.supersedes = p.id);
@@ -194,7 +223,7 @@ END $$;
 DO $$
 DECLARE t text;
 BEGIN
-  FOREACH t IN ARRAY ARRAY['missions','messages','decisions','actions','action_events','flags','plan_steps'] LOOP
+  FOREACH t IN ARRAY ARRAY['missions','messages','decisions','actions','action_events','flags','plan_steps','watchlist_items'] LOOP
     EXECUTE format('DROP TRIGGER IF EXISTS %I ON mandate.%I', t || '_append_only', t);
     EXECUTE format('CREATE TRIGGER %I BEFORE UPDATE OR DELETE ON mandate.%I '
                    'FOR EACH ROW EXECUTE FUNCTION mandate.workspace_append_only()', t || '_append_only', t);
@@ -210,7 +239,7 @@ RESET ROLE;
 -- mandate_app owns and writes. The site (capital_app) and policy read nothing
 -- here directly: they go through mandate-api. capital_ro reads no founder data.
 REVOKE UPDATE, DELETE, TRUNCATE ON mandate.missions, mandate.messages, mandate.decisions,
-  mandate.actions, mandate.action_events, mandate.flags, mandate.plan_steps
-  FROM capital_app, policy_app, capital_ro;
+  mandate.actions, mandate.action_events, mandate.flags, mandate.plan_steps,
+  mandate.watchlist_items FROM capital_app, policy_app, capital_ro;
 
 COMMIT;

@@ -150,6 +150,17 @@ class PlanStepIn(BaseModel):
     supersedes: str | None = None
 
 
+class WatchIn(BaseModel):
+    kind: Literal["route", "rule", "institution", "consultation", "case", "agenda"]
+    subject: str
+    created_by: Writer
+    route_status: Literal["pursue", "probe", "parked", "closed"] | None = None
+    trigger: str = ""
+    jurisdiction: str | None = None
+    citations: dict[str, dict] = Field(default_factory=dict)
+    status: Literal["watching", "stopped"] = "watching"
+    supersedes: str | None = None
+
 class OrgIn(BaseModel):
     name: str
     kind: str
@@ -413,6 +424,11 @@ def create_app(config: Config | None = None) -> FastAPI:
     def plan_step_add(mission_id: str, body: PlanStepIn) -> dict:
         with stores() as s:
             return guarded(ws.add_plan_step, s.primary, mission_id, **body.model_dump())
+
+    @app.post("/missions/{mission_id}/watchlist", dependencies=[Depends(auth)])
+    def watch_add(mission_id: str, body: WatchIn) -> dict:
+        with stores() as s:
+            return guarded(ws.add_watch, s.primary, s, mission_id, **body.model_dump())
 
     @app.get("/workspaces/{workspace_id}/snapshot", dependencies=[Depends(auth)])
     def workspace_snapshot(workspace_id: str) -> dict:

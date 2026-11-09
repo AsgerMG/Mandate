@@ -137,6 +137,19 @@ def add_plan_step(con, mission_id: str, *, title: str, created_by: str, detail: 
         (mission_id, decision_id, ordinal, title, detail, horizon, supersedes, created_by))
 
 
+def add_watch(con, stores: Stores, mission_id: str, *, kind: str, subject: str, created_by: str,
+              route_status: str | None = None, trigger: str = "", jurisdiction: str | None = None,
+              citations: dict | None = None, status: str = "watching",
+              supersedes: str | None = None) -> dict:
+    resolved = check_citations(stores, citations or {})
+    return _one(con,
+        "INSERT INTO mandate.watchlist_items (mission_id, kind, subject, route_status, trigger, "
+        "jurisdiction, citations, status, supersedes, created_by) "
+        "VALUES (%s, %s, %s, %s, %s, %s, %s::jsonb, %s, %s, %s) RETURNING *",
+        (mission_id, kind, subject, route_status, trigger, jurisdiction, json.dumps(resolved),
+         status, supersedes, created_by))
+
+
 def mission(con, mission_id: str) -> dict | None:
     m = _one(con, "SELECT * FROM mandate.missions WHERE id = %s", (mission_id,))
     if m is None:
@@ -150,6 +163,7 @@ def mission(con, mission_id: str) -> dict | None:
         "flags": _all(con, q.format("flags_current"), (mission_id,)),
         "plan_steps": _all(con, "SELECT * FROM mandate.plan_steps_current WHERE mission_id = %s "
                                 "ORDER BY ordinal, created_at", (mission_id,)),
+        "watchlist": _all(con, q.format("watchlist_current"), (mission_id,)),
     }
 
 
@@ -165,4 +179,5 @@ def snapshot(con, workspace_id: str) -> dict:
         "actions": _all(con, q.format("actions_current"), (workspace_id,)),
         "flags": _all(con, q.format("flags_current"), (workspace_id,)),
         "plan_steps": _all(con, q.format("plan_steps_current"), (workspace_id,)),
+        "watchlist": _all(con, q.format("watchlist_current"), (workspace_id,)),
     }

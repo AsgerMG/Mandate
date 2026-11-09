@@ -223,7 +223,13 @@ def test_actions_flags_plan_and_snapshot_are_append_only(client, mdb):
     s2 = client.post(f"/missions/{m['id']}/plan_steps", headers=H, json={"title": "Apply",
                                                                          "created_by": "mandate"}).json()
     assert s2["ordinal"] == 2
+    wl = client.post(f"/missions/{m['id']}/watchlist", headers=H, json={
+        "kind": "rule", "subject": "InvestEU moving under the European Competitiveness Fund",
+        "trigger": "alternative lenders lose or keep intermediary eligibility", "jurisdiction": "EU",
+        "created_by": "mandate"})
+    assert wl.status_code == 200, wl.text
     snap = client.get(f"/workspaces/{w['workspace_id']}/snapshot", headers=H).json()
+    assert [x["subject"] for x in snap["watchlist"]] == ["InvestEU moving under the European Competitiveness Fund"]
     assert [x["status"] for x in snap["actions"]] == ["done"]
     assert [x["status"] for x in snap["flags"]] == ["resolved"]
     assert len(snap["plan_steps"]) == 2
