@@ -15,6 +15,7 @@ from fastapi.testclient import TestClient
 
 from mandate.api.app import Config, create_app
 from mandate.grounding import store_original
+from mandate.grounding.testing import EphemeralMandate
 
 TOKEN = "test-token"
 H = {"Authorization": f"Bearer {TOKEN}"}
@@ -33,6 +34,14 @@ def _transport(request: httpx.Request) -> httpx.Response:
     if request.url.host == "buergschaftsbank.example":
         return httpx.Response(200, content=PAGE, headers={"content-type": "text/html; charset=utf-8"})
     return httpx.Response(404)
+
+
+@pytest.fixture(scope="module")
+def mdb():
+    """Its OWN database: the service commits, and other modules count rows in the
+    session database (test_grounding asserts global counts)."""
+    with EphemeralMandate() as db:
+        yield db
 
 
 @pytest.fixture
@@ -133,7 +142,6 @@ class EphemeralPair:
         self.mdb = mdb
 
     def __enter__(self):
-        from mandate.grounding.testing import EphemeralMandate
         con = psycopg.connect(self.mdb.url("capital_app"))
         text = "TUB Article 106: lending to the public is reserved to authorised intermediaries."
         v = store_original(con, text.encode(), "https://www.bancaditalia.example/tub", "text/plain",
