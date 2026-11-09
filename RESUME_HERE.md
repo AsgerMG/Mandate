@@ -13,15 +13,19 @@ OWNER: `bash ~/Mandate/mandate/ops/next.sh` prints what is done and the one comm
 
 | # | Loop | Trigger | Who |
 |---|---|---|---|
-| 1 | Merge `llm-batches` (apply `mandate/db/llm_batches.sql` first) | run 113 finished | Claude |
-| 2 | Re-run the capital phase on main (FX fix + batches + republishes the census, which turns GitHub's capital checks green): `bash mandate/ops/rerun_capital.sh` | after 1 | owner |
-| 3 | Restore the weekly cron AND the full start command: `bash mandate/ops/restore_weekly_cron.sh` | the loop-2 run finished | owner |
-| 4 | Verify run 113 and the loop-2 run: every step ok, census fresh, check_verdicts green | after 2 | Claude |
-| 5 | Old vectors: `one_model_drop_old.sh` then `--apply`; merge the migration it writes | after 4, before Sun 03:00 UTC | owner runs, Claude merges |
-| 6 | Policy duplicates: `drop_policy_duplicates.sh` then `--apply`; remove LegacyPassage/LegacyDocumentVersion from `policy/data/models.py` in the same change | after 4 | owner runs, Claude commits |
-| 7 | Agent platform phase 1 (`agent-runtime` 661a060c, done, tests green): review, reconcile with the owner's untracked workspace files, merge; then 4 SQL files + mandate-api service + Vercel env (PLATFORM.md) | after 1-6 | Claude, owner for env |
-| 7b | Dead `regina` Vercel project fails every push (emails): `bash mandate/ops/retire_regina_vercel.sh` | now | owner |
-| 8 | Prune this file: collapse the dated history sections below into a short "how we got here" | after 1-7 | Claude |
+| 0 | Owner left 9 Nov ~17:45 UTC. On resume: `bash mandate/ops/next.sh`, check run 114 (`mandate.runs`), check the sector-display agent's branch `sector-display` (may be incomplete: laptop closed mid-work; resume or redo, then merge) | resume | Claude |
+| 1 | Capina: `retire_capina.sh --apply` (gzip fix d6fba558; dump already uploaded). Commit `mandate/ops/archives.json` it writes, then remove CAPINA_* from `_railway.sh` and `suspend_capina_cron.sh` | now | owner runs, Claude commits |
+| 2 | Vercel: `delete_vercel_projects.sh --apply` (env vars already saved to ~/Mandate-backups/vercel/); then drop the stale regina rows from policy/DEPLOYMENT.md | now | owner |
+| 3 | Merge `llm-batches` (apply `mandate/db/llm_batches.sql` first) | run 114 finished | Claude |
+| 4 | Merge `sector-display` (29 funds keep sector focus for display; recall set stays out of ranking; owner decision 9 Nov); clear the hold in `mandate/ops/holds.txt` | agent done | Claude |
+| 5 | `rerun_capital.sh` (deploys main: FX, cron-fixes, batches, sector fix; publishes the census -> GitHub green) | 3 + 4 | owner |
+| 6 | `restore_weekly_cron.sh` | 5's run finished | owner |
+| 7 | Verify the loop-5 run: every step ok, census ok, check_verdicts green | after 5 | Claude |
+| 8 | `one_model_drop_old.sh` then `--apply`; merge the migration it writes BEFORE Sun 03:00 UTC | after 7 | owner runs, Claude merges |
+| 9 | `drop_policy_duplicates.sh` then `--apply`; remove LegacyPassage/LegacyDocumentVersion from policy/data/models.py in the same change | after 7 | owner runs, Claude commits |
+| 10 | Laptop backups (~5 GB in ~/Mandate-backups): copy what is not yet in the bucket, verify, then free the laptop copies (check-then-delete script) | after 1-9 | Claude writes, owner runs |
+| 11 | Agent platform phase 1 (`agent-runtime` 661a060c): reconcile with the owner's untracked workspace files, merge; 4 SQL files; mandate-api Railway service; 3 Vercel env vars (PLATFORM.md) | after 1-10 | Claude, owner for env |
+| 12 | Prune this file's dated history below | after 1-11 | Claude |
 
 ## The goal (owner, 5-6 Nov 2026)
 One repo, one database, one website, one refresh run, and one embedding model,
