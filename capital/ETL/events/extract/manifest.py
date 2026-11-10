@@ -169,3 +169,53 @@ SOURCES: list[Source] = [
 
 BY_KEY: dict[str, Source] = {s.key: s for s in SOURCES}
 TIERS = ("AUTO", "NETWORK", "MANUAL", "REJECTED")
+
+
+# ── Market tier per source (owner, 2026-11-10; mandate/plans/data_audit.md) ──
+# The renewal tier above says HOW a source is pulled; the market tier says
+# WHETHER it is pulled at all. Each source's market is the tier of the country
+# it publishes for, read from reference/europe_scope.json (europe_scope.tier_of),
+# never written here: change a country's tier there and every source follows.
+#   core / hub  -> refreshed (renew.py --auto, the weekly cron)
+#   out         -> frozen context: stored rows stay, nothing re-pulls them.
+# Spain is a HUB, so bdns and cdti keep their refresh.
+# A multi-country source is listed under the country it is mostly for; the
+# EU-level registers (SATR, CORDIS, EIC...) are "EU", which is core.
+SOURCE_COUNTRY: dict[str, str] = {
+    "eic_fund": "EU", "innovation_fund": "EU", "ipcei": "EU", "eib": "EU", "edf": "EU",
+    "eit": "EU", "chips_ju": "EU", "cordis": "EU", "cordis_pillar_ii": "EU", "satr": "EU",
+    "bdns": "ES", "cdti": "ES",
+    "ademe": "FR", "fr_innov_grants": "FR", "bpifrance": "FR", "fr_regions": "FR",
+    "bpifrance_urd_stakes": "FR",
+    "innovate_uk": "GB", "future_fund": "GB",
+    "innovationsfonden": "DK", "eifo": "DK", "eifo_note12": "DK",
+    "business_finland": "FI", "tesi": "FI", "tesi_directs": "FI",
+    "vinnova": "SE", "almi_invest": "SE",
+    "enterprise_ireland": "IE", "isif_direct": "IE",
+    "sprind": "DE", "htgf": "DE", "coparion": "DE",
+    "cdp_vc": "IT",
+    "invest_nl": "NL",
+    "innovasjon_norge": "NO", "nfr": "NO", "investinor_portfolio": "NO",
+    "innosuisse": "CH",
+    "tacr": "CZ",
+    "baltic_ndbs": "LV",          # ALTUM (LV) + EIS (EE): both OUT
+    "ee_register_stakes": "EE",
+    "sudop": "PL", "pfr_ventures": "PL",
+}
+MARKETS = ("core", "hub", "out")
+
+
+def market_of(s: Source) -> str:
+    """core | hub | out for a source, from its country's tier."""
+    import sys  # noqa: PLC0415
+    from pathlib import Path  # noqa: PLC0415
+    lib = str(Path(__file__).resolve().parents[2] / "lib")
+    if lib not in sys.path:
+        sys.path.insert(0, lib)
+    from europe_scope import tier_of  # noqa: PLC0415
+    return tier_of(SOURCE_COUNTRY[s.key])
+
+
+def refreshed(s: Source) -> bool:
+    """Whether the routine refresh pulls this source: AUTO and not OUT."""
+    return s.tier == "AUTO" and market_of(s) != "out"

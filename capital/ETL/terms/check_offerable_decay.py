@@ -41,6 +41,14 @@ LIMB 2 -- LEVEL, the confirming indicator.
 Limb 1 without limb 2 misses decay from a job that runs and returns nothing.
 Limb 2 without limb 1 only speaks after founders have already been underserved.
 
+── Frozen countries (market tiers, 2026-11-10) ────────────────────────────
+An OUT-tier country (reference/europe_scope.json `tier`) is frozen context:
+its sources are deliberately not refreshed, so its inventory decaying on the
+calendar is the decision working, not neglect. Both limbs report it and
+neither fails or warns on it: a clock source whose rows are all in OUT
+countries is not held to the grace window, and an OUT country's fall is
+printed as frozen. CORE and HUB countries (Spain is a hub) are held as before.
+
 ── Baseline ───────────────────────────────────────────────────────────────
 `reference/offerable_baseline.json`, committed, written by `--baseline`.
 It records the counts AND the date, so a stale baseline is visible rather than
@@ -74,6 +82,7 @@ import datetime as dt  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
 
+from europe_scope import tier_of  # noqa: E402
 from liveness import CALL_DEADLINE, closed_sql  # noqa: E402
 
 BASELINE = ROOT / "reference" / "offerable_baseline.json"
@@ -130,7 +139,8 @@ def measure() -> dict:
         # under the regime, which is the unit a refresh job runs on anyway.
         fresh = c.execute(
             "SELECT COALESCE(s.source, i.root_id, i.id) AS source, COUNT(*), "
-            "       MAX(i.updated_at) "
+            "       MAX(i.updated_at), "
+            "       array_agg(DISTINCT COALESCE(i.country, '')) "
             "FROM funding_instruments i "
             "LEFT JOIN funding_instrument_sources s ON s.instrument_id = i.id "
             "WHERE COALESCE(i.scheme_end_date_basis,'') = %s "
@@ -139,7 +149,8 @@ def measure() -> dict:
         "as_of": dt.date.today().isoformat(),
         "countries": {r[0]: {"offerable": r[1], "total": r[2]} for r in counts},
         "clock_sources": {r[0]: {"rows": r[1],
-                                 "last_refreshed": r[2].date().isoformat() if r[2] else None}
+                                 "last_refreshed": r[2].date().isoformat() if r[2] else None,
+                                 "countries": sorted(x for x in (r[3] or []) if x)}
                           for r in fresh},
     }
 
@@ -152,6 +163,13 @@ def write_baseline(m: dict) -> None:
           f"{sum(v['offerable'] for v in m['countries'].values())} offerable rows")
     for s, v in m["clock_sources"].items():
         print(f"  clock source {s}: {v['rows']} rows, last refreshed {v['last_refreshed']}")
+
+
+def frozen(countries) -> bool:
+    """True when every country given is OUT tier: frozen context, not refreshed
+    by decision. An empty list (rows with no country) is NOT frozen."""
+    cs = [c for c in countries if c]
+    return bool(cs) and all(tier_of(c) == "out" for c in cs)
 
 
 def check(m: dict, tolerance: float, grace: int) -> int:
@@ -187,6 +205,9 @@ def check(m: dict, tolerance: float, grace: int) -> int:
         age = (today - dt.date.fromisoformat(last)).days if last else None
         state = "never refreshed" if age is None else f"{age}d ago"
         flag = ""
+        if frozen(v.get("countries", [])):
+            print(f"  {src:38} {v['rows']:5} rows   refreshed {state}   (frozen: OUT tier, not refreshed by decision)")
+            continue
         if age is None or age > grace:
             flag = "  <- PAST GRACE"
             fail.append(f"{src}: last refreshed {state}, grace is {grace}d. "
@@ -206,6 +227,10 @@ def check(m: dict, tolerance: float, grace: int) -> int:
         if drop <= 0:
             continue
         share = unexplained / max(was["offerable"], 1)
+        if frozen([cc]):
+            print(f"  {cc}  offerable {was['offerable']:4} -> {now['offerable']:4}"
+                  f"   (frozen: OUT tier, not refreshed by decision)")
+            continue
         line = (f"  {cc}  offerable {was['offerable']:4} -> {now['offerable']:4}"
                 f"   (-{drop}, {explained} explained by rows leaving the corpus,"
                 f" {unexplained} unexplained = {100 * share:.0f}%)")

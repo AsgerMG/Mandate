@@ -58,6 +58,37 @@ EUROPE_ISO2: frozenset[str] = frozenset(c["iso2"] for c in _SCOPE["countries"])
 COUNTRY_ALIASES: dict[str, str] = dict(_SCOPE["aliases"])
 COUNTRY_NAMES: dict[str, str] = {c["iso2"]: c["name"] for c in _SCOPE["countries"]}
 
+# ── Market tiers (owner, 2026-11-10; mandate/plans/data_audit.md) ──────────
+# core: built out and refreshed. hub: refreshed, thinner. out: frozen context
+# (stored, never refreshed, not offered unless the client is established
+# there). The 40-country trigger is NOT a tier: an OUT country stays in scope.
+# "EU" is not a country row; the EU level is core.
+TIERS = ("core", "hub", "out")
+COUNTRY_TIER: dict[str, str] = {c["iso2"]: c["tier"] for c in _SCOPE["countries"]}
+COUNTRY_TIER["EU"] = _SCOPE["_meta"]["tiers"]["eu"]
+assert set(COUNTRY_TIER.values()) <= set(TIERS), "europe_scope.json: unknown tier"
+
+
+def tier_of(code: str | None) -> str:
+    """The market tier of a country code (aliases resolved), or of the EU level.
+    Anything outside the 40-country scope is 'out'.
+
+    >>> tier_of('de'), tier_of('UK'), tier_of('ES'), tier_of('EU'), tier_of('PL'), tier_of('IL')
+    ('core', 'core', 'hub', 'core', 'out', 'out')
+    """
+    if not code:
+        return "out"
+    c = code.strip().upper()
+    if c == "EU":
+        return COUNTRY_TIER["EU"]
+    iso = canonicalise_country(c)
+    return COUNTRY_TIER.get(iso, "out") if iso else "out"
+
+
+def countries_in_tier(*tiers: str) -> frozenset[str]:
+    """ISO-2 codes (and "EU" when its tier is asked) in the given tiers."""
+    return frozenset(c for c, t in COUNTRY_TIER.items() if t in tiers)
+
 
 def canonicalise_country(code: str | None) -> str | None:
     """Return the canonical Europe-scope ISO-2 code, or None if out of scope.
