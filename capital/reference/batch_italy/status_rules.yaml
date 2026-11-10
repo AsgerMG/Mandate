@@ -1,0 +1,308 @@
+# Batch 1, Italy: which STATUS opens which public-money door, at which level, in which ROLE.
+#
+# The senior's habit this encodes (mandate/playbooks/funding-routes.md §4d.2, §4e.1): once a
+# company holds (or can obtain) a status, list the products that status opens, at each level,
+# and lead with those. Status is MATCHED, not guessed. Loaded into capital.status_keys and
+# capital.status_rules by capital/ETL/terms/load_batch_italy.py; every quote below must be
+# found verbatim (whitespace-insensitive) in the pinned text of its document (sources.json),
+# or the load refuses. A rule whose evidence we cannot locate is not loaded as cited.
+#
+# Vocabulary of `role` (whose status is tested):
+#   applicant     the company that receives the money or the guarantee
+#   intermediary  the lender or guarantor that brings the deal to the scheme
+#   investee      the company invested in, when the benefit goes to its investors
+# Vocabulary of `effect`:
+#   required      without it the door is shut
+#   one_of        any one status of the same `any_of` group suffices (all are listed)
+#   priority      the status speeds up or ranks the request; it does not open the door
+#   excludes      holding it shuts the door
+#
+# Insert-only. A correction is a NEW key with `supersedes: <old key>`, never an edit.
+
+status_keys:
+  - key: lic.it.tub106
+    label: Financial intermediary authorised under Art. 106 TUB (albo unico, Banca d'Italia)
+    kind: licence
+    how_obtained: >-
+      Authorisation by Banca d'Italia under Art. 107 TUB, then entry in the albo kept by Banca
+      d'Italia. Conditions include an Italian registered office and head office, minimum paid-up
+      capital set by Banca d'Italia, a programme of initial activity, and an object limited to
+      Art. 106 activities. A foreign lender therefore needs an Italian company to hold it: a plan
+      step with a timeline, not a reason to park Italy.
+    citations:
+      - {doc: tub_art106, quote: "1. L'esercizio nei confronti del pubblico dell'attività di concessione di finanziamenti sotto qualsiasi forma è riservato agli intermediari finanziari autorizzati, iscritti in un apposito albo tenuto dalla Banca d'Italia."}
+      - {doc: tub_art107, quote: "b) la sede legale e la direzione generale siano situate nel territorio della Repubblica;"}
+      - {doc: tub_art107, quote: "c) il capitale versato sia di ammontare non inferiore a quello determinato dalla Banca d'Italia anche in relazione al tipo di operatività;"}
+      - {doc: tub_art107, quote: "g) l'oggetto sociale sia limitato alle sole attività di cui ai commi 1 e 2 dell'articolo 106."}
+  - key: lic.it.bank_tub13
+    label: Bank entered in the register under Art. 13 TUB
+    kind: licence
+    how_obtained: A banking licence (ECB/Banca d'Italia). Out of reach for most scale-ups; listed so the matcher can say who already holds the door.
+    citations:
+      - {doc: fdg_do_2023, quote: "“Banche”: le banche iscritte all’albo di cui all’articolo 13 del TUB;"}
+  - key: lic.it.confidi
+    label: Confidi (mutual guarantee body) in the Art. 106 albo or the Art. 112 list
+    kind: licence
+    how_obtained: Registration as a confidi under Art. 106 or Art. 112 TUB.
+    citations:
+      - {doc: fdg_do_2023, quote: "all’albo degli intermediari finanziari di cui all’articolo 106 del TUB o"}
+  - key: lic.it.leasing_intermediary
+    label: Intermediary authorised for financial leasing
+    kind: licence
+    how_obtained: Authorisation as a financial intermediary for leasing (Art. 106 TUB).
+    citations:
+      - {doc: dl69_2013_art2, quote: "dalle banche e dagli intermediari finanziari autorizzati all'esercizio dell'attività di leasing finanziario"}
+  - key: status.it.startup_innovativa
+    label: Start-up innovativa (DL 179/2012 art. 25), entered in the special section of the Registro delle imprese
+    kind: registration
+    how_obtained: >-
+      Self-certification by the legal representative, filed with the Registro delle imprese, for
+      a non-listed company of capital that meets the art. 25 c.2 requirements (SME; at most 60
+      months old; resident in Italy or in the EU/EEA with a production site or branch in Italy;
+      innovation tests). Staying beyond year 3, up to 5 years, needs one of the c.2-bis
+      conditions (L. 193/2024).
+    citations:
+      - {doc: dl179_art25, quote: "2. Ai fini del presente decreto, l'impresa start-up innovativa, di seguito «start-up innovativa», è la società di capitali, costituita anche in forma cooperativa, le cui azioni o quote rappresentative del capitale sociale non sono quotate su un mercato regolamentato o su un sistema multilaterale di negoziazione, che possiede i seguenti requisiti:"}
+      - {doc: dl179_art25, quote: "b) è costituita da non più di sessanta mesi;"}
+      - {doc: dl179_art25, quote: "c) è residente in Italia ai sensi dell'articolo 73 del decreto del Presidente della Repubblica 22 dicembre 1986, n. 917, o in uno degli Stati membri dell'Unione europea o in Stati aderenti all'Accordo sullo spazio economico europeo, purché abbia una sede produttiva o una filiale in Italia;"}
+      - {doc: dl179_art25, quote: "2-bis. La permanenza nella sezione speciale del registro delle imprese di cui al comma 8, dopo la conclusione del terzo anno, è consentita fino a complessivi cinque anni dalla data di iscrizione nella medesima sezione speciale, in presenza di almeno uno dei seguenti requisiti:"}
+      - {doc: dl179_art25, quote: "8. Per le start-up innovative di cui ai commi 2 e 3 e per gli incubatori certificati di cui al comma 5, le Camere di commercio, industria, artigianato e agricoltura istituiscono una apposita sezione speciale del registro delle imprese di cui all'articolo 2188 del codice civile, a cui la start-up innovativa e l'incubatore certificato devono essere iscritti al fine di poter beneficiare della disciplina della presente sezione."}
+  - key: status.it.pmi_innovativa
+    label: PMI innovativa (DL 3/2015 art. 4), entered in its special section of the Registro delle imprese
+    kind: registration
+    how_obtained: Registration in the special section for PMI innovative; for an SME company of capital meeting the art. 4 c.1 requirements. The usual next status after start-up innovativa.
+    citations:
+      - {doc: dl3_2015_art4, quote: "1. Per \"piccole e medie imprese innovative\", di seguito \"PMI innovative\", si intendono le PMI, come definite dalla raccomandazione 2003/361/CE, società di capitali, costituite anche in forma cooperativa, che possiedono i seguenti requisiti:"}
+      - {doc: dl3_2015_art4, quote: "a cui le PMI innovative devono essere iscritte"}
+  - key: status.eu.sme_annex_i
+    label: SME under Commission Recommendation 2003/361/EC
+    kind: size
+    how_obtained: A fact about the company (headcount, turnover, balance sheet, linked and partner enterprises).
+    citations:
+      - {doc: dl69_2013_art2, quote: "le micro, piccole e medie imprese, come individuate dalla Raccomandazione 2003/361/CE della Commissione del 6 maggio 2003"}
+  - key: estab.it
+    label: Registered office or operating site in Italy
+    kind: establishment
+    how_obtained: Incorporating an Italian company, or opening a sede operativa (local unit) registered in Italy.
+    citations:
+      - {doc: fdg_do_2023, quote: "“Soggetti beneficiari finali”: le PMI e i Professionisti ubicati (aventi sede legale ovvero sede operativa) sul territorio italiano;"}
+
+status_rules:
+  # ── Fondo di Garanzia per le PMI: who may bring a loan to the Fund ───────────────────────
+  - key: it.fdg.direct.intermediary.tub106
+    product_family: it.fdg.direct_guarantee
+    instrument_ids: [fondo_di_garanzia, satr_it_equity__sa_57625__banca_del_mezzogiorno_mediocredito_centrale_s_p_, satr_it_equity__sa_109544__banca_del_mezzogiorno_mediocredito_centrale_s_p_]
+    level: national
+    role: intermediary
+    status_key: lic.it.tub106
+    effect: one_of
+    any_of: it.fdg.direct.lender
+    activity_tags: [lending, guarantee, sme_finance]
+    statement: >-
+      The Fund's direct guarantee is requested by the lender ('soggetto finanziatore'); an Art. 106
+      financial intermediary is a soggetto finanziatore. With 106 status a non-bank lender can put
+      its own SME loans under the State guarantee.
+    citations:
+      - {doc: fdg_do_2023, quote: "“Soggetti finanziatori” : le banche, gli intermediari, le imprese di assicurazione , gli operatori di microcredito, i gestori e le SFIS;"}
+      - {doc: fdg_do_2023, quote: "“Intermediari”: gli intermediari finanziari iscritti nell’albo di cui all’articolo 106 del TUB;"}
+      - {doc: fdg_do_2023, quote: "“Garanzia diretta”: la garanzia concessa dal Fondo direttamente ai soggetti finanziatori."}
+  - key: it.fdg.direct.intermediary.bank
+    product_family: it.fdg.direct_guarantee
+    instrument_ids: [fondo_di_garanzia]
+    level: national
+    role: intermediary
+    status_key: lic.it.bank_tub13
+    effect: one_of
+    any_of: it.fdg.direct.lender
+    activity_tags: [lending, guarantee, sme_finance]
+    statement: Banks are soggetti finanziatori and may request the Fund's direct guarantee.
+    citations:
+      - {doc: fdg_do_2023, quote: "“Soggetti finanziatori” : le banche, gli intermediari, le imprese di assicurazione , gli operatori di microcredito, i gestori e le SFIS;"}
+  - key: it.fdg.counter.intermediary.confidi
+    product_family: it.fdg.counter_guarantee
+    instrument_ids: [fondo_di_garanzia]
+    level: national
+    role: intermediary
+    status_key: lic.it.confidi
+    effect: one_of
+    any_of: it.fdg.counter.guarantor
+    activity_tags: [guarantee, sme_finance]
+    statement: Confidi and guaranteeing intermediaries ('soggetti garanti') obtain the Fund's counter-guarantee on the guarantees they give.
+    citations:
+      - {doc: fdg_do_2023, quote: "“Soggetti garanti”: i confidi e gli intermediari che effettuano attività di rilascio di garanzie alle PMI sia a valere su risorse proprie sia a valere su fondi di garanzia per i soggetti beneficiari finali gestiti per conto di soggetti terzi, pubblici o privati;"}
+  - key: it.fdg.counter.intermediary.tub106
+    product_family: it.fdg.counter_guarantee
+    instrument_ids: [fondo_di_garanzia]
+    level: national
+    role: intermediary
+    status_key: lic.it.tub106
+    effect: one_of
+    any_of: it.fdg.counter.guarantor
+    activity_tags: [guarantee, sme_finance]
+    statement: An Art. 106 intermediary that issues guarantees to SMEs is a soggetto garante.
+    citations:
+      - {doc: fdg_do_2023, quote: "“Soggetti garanti”: i confidi e gli intermediari che effettuano attività di rilascio di garanzie alle PMI sia a valere su risorse proprie sia a valere su fondi di garanzia per i soggetti beneficiari finali gestiti per conto di soggetti terzi, pubblici o privati;"}
+  - key: it.fdg.portfolio.intermediary.tub106
+    product_family: it.fdg.portfolio_guarantee
+    instrument_ids: [fondo_di_garanzia]
+    level: national
+    role: intermediary
+    status_key: lic.it.tub106
+    effect: one_of
+    any_of: it.fdg.portfolio.lender
+    activity_tags: [lending, guarantee, portfolio, sme_finance]
+    statement: >-
+      The guarantee on PORTFOLIOS of loans is requested, after accreditation, by the soggetti
+      finanziatori, which include Art. 106 intermediaries: the route for a lender's loan book.
+    verify_note: >-
+      Text of the portfolio operating rules (circ. 6/2018), listed as in force on the Fund's
+      'Modalità operative' page on 2026-11-10. Check the 2027 reform decree (risk-class cover)
+      before quoting cover percentages.
+    citations:
+      - {doc: fdg_portafogli_2018, quote: "i. gli intermediari finanziari, iscritti nell'albo di cui all'articolo 106 del decreto legislativo n. 385 del 1993;"}
+      - {doc: fdg_portafogli_2018, quote: "1. Possono richiedere la garanzia del Fondo, previo accreditamento: a) i soggetti finanziatori, in caso di garanzia diretta; b) i confidi, in caso di controgaranzia."}
+  - key: it.fdg.portfolio.intermediary.bank
+    product_family: it.fdg.portfolio_guarantee
+    instrument_ids: [fondo_di_garanzia]
+    level: national
+    role: intermediary
+    status_key: lic.it.bank_tub13
+    effect: one_of
+    any_of: it.fdg.portfolio.lender
+    activity_tags: [lending, guarantee, portfolio, sme_finance]
+    statement: Banks may request the portfolio guarantee.
+    citations:
+      - {doc: fdg_portafogli_2018, quote: "n) “Soggetti finanziatori”: le banche iscritte all'albo di cui all'articolo 13 del decreto legislativo 1° settembre 1993, n. 385"}
+  # ── Fondo di Garanzia: the borrower side ─────────────────────────────────────────────────
+  - key: it.fdg.applicant.estab_it
+    product_family: it.fdg.direct_guarantee
+    instrument_ids: [fondo_di_garanzia]
+    level: national
+    role: applicant
+    status_key: estab.it
+    effect: required
+    activity_tags: [sme_finance]
+    statement: The final beneficiary must be an SME or professional with its registered office or an operating site in Italy.
+    citations:
+      - {doc: fdg_do_2023, quote: "“Soggetti beneficiari finali”: le PMI e i Professionisti ubicati (aventi sede legale ovvero sede operativa) sul territorio italiano;"}
+  - key: it.fdg.applicant.startup_innovativa.priority
+    product_family: it.fdg.direct_guarantee
+    instrument_ids: [fondo_di_garanzia]
+    level: national
+    role: applicant
+    status_key: status.it.startup_innovativa
+    effect: priority
+    activity_tags: [sme_finance, startup]
+    statement: >-
+      Requests for start-up innovative (and for Nuova Sabatini operations) get priority in the
+      Fund's review and decision.
+    citations:
+      - {doc: fdg_do_2023, quote: "“Start-up innovative”: le imprese, di piccola e media dimensione, di cui all’art icolo 25, comma 2, del decreto -legge n. 179/2012, iscritte nella sezione speciale del Registro delle imprese di cui all’articolo 25, comma 8, del medesimo decreto-legge n. 179/2012;"}
+      - {doc: fdg_do_2023, quote: "Alle richieste relative ad operazioni Nuova Sabatini e ad operazioni finanziarie concesse a favore delle imprese femminili e delle start-up innovative e incubatori certificati aventi i requisiti di cui alla Parte II, paragrafo B.2.2, lettera b), e negli altri casi di cui all’Appendice alle presenti Disposizioni Operative in deroga al criterio di cui al precedente paragrafo B.9, è riconosciuta priorità nell’istruttoria e nella delibera del Consiglio di gestione."}
+  # ── Nuova Sabatini: machinery, robots, digital tech on credit ────────────────────────────
+  - key: it.sabatini.applicant.sme
+    product_family: it.nuova_sabatini
+    instrument_ids: []
+    level: national
+    role: applicant
+    status_key: status.eu.sme_annex_i
+    effect: required
+    activity_tags: [machinery, robotics, automation, digital_technology, capex, leasing]
+    statement: >-
+      Micro, small and medium enterprises may get loans and subsidised-rate contributions,
+      including through financial leasing, for new productive machinery, plant and equipment and
+      for hardware, software and digital technologies. For a robot-deployment company this is the
+      instrument its CUSTOMERS use to buy or lease the robots.
+    citations:
+      - {doc: dl69_2013_art2, quote: "le micro, piccole e medie imprese, come individuate dalla Raccomandazione 2003/361/CE della Commissione del 6 maggio 2003, possono accedere a finanziamenti e ai contributi a tasso agevolato per gli investimenti, anche mediante operazioni di leasing finanziario, in macchinari, impianti, beni strumentali di impresa e attrezzature nuovi di fabbrica ad uso produttivo, nonché per gli investimenti in hardware, in software ed in tecnologie digitali."}
+  - key: it.sabatini.intermediary.bank
+    product_family: it.nuova_sabatini
+    instrument_ids: []
+    level: national
+    role: intermediary
+    status_key: lic.it.bank_tub13
+    effect: one_of
+    any_of: it.sabatini.lender
+    activity_tags: [machinery, robotics, leasing, lending]
+    statement: Banks grant the Sabatini loans.
+    verify_note: The statute text still reads 'entro il 31 dicembre 2016' (later laws refinanced the measure, most recently L. 199/2025). Confirm the lender rules in the current MIMIT circolare (410823/2022 as amended); mimit.gov.it timed out from this network on 2026-11-10.
+    citations:
+      - {doc: dl69_2013_art2, quote: "2. I finanziamenti di cui al comma 1 sono concessi, entro il 31 dicembre 2016, dalle banche e dagli intermediari finanziari autorizzati all'esercizio dell'attività di leasing finanziario"}
+  - key: it.sabatini.intermediary.leasing
+    product_family: it.nuova_sabatini
+    instrument_ids: []
+    level: national
+    role: intermediary
+    status_key: lic.it.leasing_intermediary
+    effect: one_of
+    any_of: it.sabatini.lender
+    activity_tags: [machinery, robotics, leasing, robots_as_a_service]
+    statement: "Intermediaries authorised for financial leasing grant Sabatini operations, which is the door for a robot maker's own leasing arm or partner."
+    verify_note: As for the bank rule; confirm in the current MIMIT circolare.
+    citations:
+      - {doc: dl69_2013_art2, quote: "2. I finanziamenti di cui al comma 1 sono concessi, entro il 31 dicembre 2016, dalle banche e dagli intermediari finanziari autorizzati all'esercizio dell'attività di leasing finanziario"}
+  - key: it.sabatini.intermediary.tub106
+    product_family: it.nuova_sabatini
+    instrument_ids: []
+    level: national
+    role: intermediary
+    status_key: lic.it.tub106
+    effect: one_of
+    any_of: it.sabatini.lender
+    activity_tags: [machinery, robotics, lending]
+    statement: >-
+      Other Art. 106 intermediaries that by statute lend to SMEs may grant Sabatini loans, but
+      only if the loans are guaranteed by a bank that has signed the convention.
+    verify_note: As for the bank rule; the bank-guarantee condition is in the statute; confirm it survives in the current circolare.
+    citations:
+      - {doc: dl69_2013_art2, quote: "nonché dagli altri intermediari finanziari iscritti all'albo previsto dall'articolo 106, comma 1, del testo unico delle leggi in materia bancaria e creditizia, di cui al decreto legislativo 1° settembre 1993, n. 385, che statutariamente operano nei confronti delle piccole e medie imprese, purché garantiti da banche aderenti alla convenzione di cui al comma 7"}
+  # ── Start-up innovativa / PMI innovativa ─────────────────────────────────────────────────
+  - key: it.startup.registry.required
+    product_family: it.startup_innovativa_regime
+    instrument_ids: []
+    level: national
+    role: applicant
+    status_key: status.it.startup_innovativa
+    effect: required
+    activity_tags: [startup]
+    statement: Every benefit of the start-up innovativa section (DL 179/2012 arts. 25-32) requires entry in the special section of the Registro delle imprese.
+    citations:
+      - {doc: dl179_art25, quote: "a cui la start-up innovativa e l'incubatore certificato devono essere iscritti al fine di poter beneficiare della disciplina della presente sezione."}
+  - key: it.startup.investor_relief.investee
+    product_family: it.startup_investor_tax_relief
+    instrument_ids: [satr_it_rnd__sa_48570__agenzie_delle_entrate]
+    level: national
+    role: investee
+    status_key: status.it.startup_innovativa
+    effect: required
+    activity_tags: [equity_raise, startup]
+    statement: >-
+      Investors in a start-up innovativa get a 30% income-tax relief on the amount invested, for
+      up to five years from the company's registration; not for stakes over 25% or for investors
+      who are also suppliers above 25% of the investment. A raise argument for Italian angels.
+    citations:
+      - {doc: dl179_art29, quote: "7-bis. A decorrere dall'anno 2017, le aliquote di cui ai commi 1, 4 e 7 sono aumentate al 30 per cento."}
+      - {doc: dl179_art29, quote: "Le agevolazioni sono concesse per la durata massima di cinque anni dalla data di iscrizione nella sezione speciale del registro delle imprese di cui all'articolo 25, comma 8."}
+  - key: it.pmi_innovativa.investor_relief.investee
+    product_family: it.startup_investor_tax_relief
+    instrument_ids: [satr_it_rnd__sa_48570__agenzie_delle_entrate]
+    level: national
+    role: investee
+    status_key: status.it.pmi_innovativa
+    effect: required
+    activity_tags: [equity_raise, scaleup]
+    statement: The art. 29 investor relief also applies to PMI innovative, within the EU risk-finance guidelines.
+    citations:
+      - {doc: dl3_2015_art4, quote: "l'articolo 29 del citato decreto-legge n. 179 del 2012, si applica alle PMI innovative nel rispetto delle condizioni e dei limiti previsti dagli Orientamenti sugli aiuti di Stato destinati a promuovere gli investimenti per il finanziamento del rischio"}
+  - key: it.smartstart.applicant.startup_innovativa
+    product_family: it.smart_start
+    instrument_ids: [invitalia_smart_start]
+    level: national
+    role: applicant
+    status_key: status.it.startup_innovativa
+    effect: required
+    activity_tags: [startup, capex, rnd]
+    statement: Smart&Start Italia (Invitalia's zero-interest loan) is for start-up innovative registered in the special section, with a site in Italy.
+    verify_note: Quote from the corpus gate on the 2014 regolamento; that grounded PDF has no extracted text, so this rule is returned as UNCITED until the current DM is grounded.
+    citations:
+      - {sha256: 9095ba41daba5201a8f40acc46941c2c7292b7cdff6983a20f919ea6f403256b, url: "urn:mandate:capital:raw/instrument_docs/invitalia_smart_start_regolamento_dm2014.pdf", quote: "essere regolarmente costituite e iscritte nell’apposita sezione speciale del Registro delle imprese di cui all’articolo 25, comma 8, del decreto-legge n. 179/2012", located: false}
