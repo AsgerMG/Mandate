@@ -21,12 +21,17 @@
  * session's own WebSearch/WebFetch). fund_requirements embeds the focus with
  * Voyage (cents).
  *
+ * USAGE LOG. Every call is logged as one mandate.tool_calls row (caller
+ * 'bench'), by the same toolCallRow the agent loop uses: through mandate-api
+ * when MANDATE_API_URL and MANDATE_SERVICE_TOKEN are set, otherwise appended to
+ * web/.bench/tool_calls.jsonl (gitignored) for a later upload. --no-log skips it.
+ *
  * CITATION IDS. Each call starts a fresh ledger unless --run names a ledger
  * file: then ids continue across calls ([c1], [c2]...) exactly as in one
  * production mission, and every citation is kept in that file.
  */
 import { spawn, spawnSync } from "child_process";
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { createInterface } from "readline";
 import { loadEnvLocal } from "./loadEnv";
@@ -39,7 +44,8 @@ function usage(msg?: string): never {
   console.error(`usage: npx tsx web/scripts/brain_tool.ts <tool> '<json args>' [--profile <file|json>] [--run <ledger.json>]
   wincent: ${WINCENT.join(", ")}
   regina:  ${REGINA.join(", ")}
-  --list   print each tool's description and input schema`);
+  --list   print each tool's description and input schema
+  --no-log do not record the call in the usage log`);
   process.exit(2);
 }
 
@@ -48,6 +54,7 @@ function parseArgs(argv: string[]) {
   const pos: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--list") flags.list = "1";
+    else if (argv[i] === "--no-log") flags.nolog = "1";
     else if (argv[i].startsWith("--")) flags[argv[i].slice(2)] = argv[++i] ?? "";
     else pos.push(argv[i]);
   }
@@ -99,10 +106,20 @@ async function main() {
   // Read-only, before any corpus module reads the env.
   process.env.DATABASE_URL = ro;
 
-  const [{ wincentTools, reginaTools }, { realCapital }, { CitationLedger }, { httpPolicyApi }] = await Promise.all([
+  const [{ wincentTools, reginaTools }, { realCapital }, { CitationLedger }, { httpPolicyApi, mandateApiFromEnv }, { toolCallRow, logRow }] = await Promise.all([
     import("../lib/mandate/agent/mission"), import("../lib/mandate/agent/capital"),
     import("../lib/mandate/agent/ledger"), import("../lib/mandate/agent/services"),
+    import("../lib/mandate/agent/usage"),
   ]);
+  type Row = Parameters<typeof logRow>[1];
+  const api = mandateApiFromEnv();
+  const usageSink = flags.nolog ? undefined : api?.logToolCalls
+    ? (rows: Row[]) => api.logToolCalls!(rows)
+    : async (rows: Row[]) => {
+      const dir = path.resolve(__dirname, "..", ".bench");
+      mkdirSync(dir, { recursive: true });
+      appendFileSync(path.join(dir, "tool_calls.jsonl"), rows.map((r) => JSON.stringify({ ...r, at: new Date().toISOString() })).join("\n") + "\n");
+    };
   type Ctx = Parameters<typeof wincentTools>[0];
 
   const bridge = groundingBridge(ro);
@@ -166,11 +183,14 @@ async function main() {
 
   let result: unknown;
   let error: string | undefined;
+  const t0 = Date.now();
   try {
     result = await o.handler.run(input);
   } catch (e) {
     error = e instanceof Error ? e.message : String(e);
   }
+  await logRow(usageSink, toolCallRow({ brain: o.who as "wincent" | "regina", tool: name, input, result, error,
+    ms: Date.now() - t0, missionId: flags.run ? `bench:${path.basename(flags.run)}` : null, caller: "bench" }));
   bridge.close();
   const fresh = ledger.all().slice(before);
   if (flags.run) writeFileSync(flags.run, JSON.stringify(ledger.all(), null, 1));

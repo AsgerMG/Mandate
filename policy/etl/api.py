@@ -382,10 +382,38 @@ def consultations(
 
 
 @app.get("/api/search")
-def search(q: str, k: int = Query(8, le=30)) -> dict:
+def search(q: str, k: int = Query(8, le=30), hot: bool = True, mission_id: str | None = None) -> dict:
+    """The k passages closest to `q`. `hot` (default on) leaves news and press
+    older than HOT_DAYS out (Regina's hot index; nothing is deleted). Every call
+    is one row in the usage log (mandate.tool_calls)."""
+    from .enrichment.embeddings import HOT_DAYS  # noqa: PLC0415
+
+    t0 = time.monotonic()
     with session_scope() as s:
-        hits = semantic_search(s, _embedder(), q, k=k)
+        hits = semantic_search(s, _embedder(), q, k=k, hot_days=HOT_DAYS if hot else None)
+    _log_search(q, k, hot, hits, mission_id, int((time.monotonic() - t0) * 1000))
     return {"results": hits}
+
+
+def _log_search(q: str, k: int, hot: bool, hits: list[dict], mission_id: str | None, ms: int) -> None:
+    """One usage-log row for a search. Best-effort: a search never fails
+    because it could not be logged. The query is stored hashed, and only its
+    first words in the summary (a query can carry a company's own words)."""
+    from data import grounding_bridge as gb  # noqa: PLC0415
+    from mandate import usage  # noqa: PLC0415
+
+    try:
+        with session_scope() as s, s.begin_nested():
+            usage.record(gb.driver(s), [{
+                "brain": "regina", "tool": "search", "caller": "search", "mission_id": mission_id,
+                "args": {"q": q, "k": k, "hot": hot}, "args_summary": f"k={k}; hot={hot}; q={q[:60]}",
+                "result_count": len(hits),
+                "tables": ["grounding.passage_embeddings", "grounding.passages", "policy.documents"],
+                "sources": sorted({h.get("document_type") or "other" for h in hits}),
+                "ms": ms,
+            }])
+    except Exception as e:  # noqa: BLE001
+        log.warning("search_usage_not_logged", error=str(e)[:200])
 
 
 # ── For the advisor's agents (web/lib/mandate/agent) ────────────────────────

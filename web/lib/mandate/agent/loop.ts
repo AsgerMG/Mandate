@@ -48,6 +48,8 @@ export interface LoopOptions {
   /** Euros: past `wrapUpAt` a note asks the model to finish; at `stopAt` the loop ends. */
   budget?: { wrapUpAt: number; stopAt: number; note: string };
   onToolCall?: (name: string, input: Record<string, unknown>) => void;
+  /** After each tool ran (or threw): the usage log's one hook (usage.ts loggedLoop). Awaited, never fatal. */
+  onToolResult?: (r: { name: string; input: Record<string, unknown>; result?: unknown; error?: string; ms: number }) => Promise<void> | void;
   onText?: (text: string) => void;
   /** Checked after each turn's tools ran: true ends the loop there (a tool
    *  that hands the turn to the founder, or the one that finishes). */
@@ -123,12 +125,18 @@ export async function runLoop(o: LoopOptions): Promise<LoopResult> {
           content: `missing required input: ${missing.join(", ")}` };
       }
       o.onToolCall?.(call.name, input);
+      const t0 = Date.now();
+      let result: unknown;
+      let error: string | undefined;
       try {
-        return { type: "tool_result", tool_use_id: call.id, content: render(await h.run(input)) };
+        result = await h.run(input);
       } catch (e) {
-        return { type: "tool_result", tool_use_id: call.id, is_error: true,
-          content: e instanceof Error ? e.message : String(e) };
+        error = e instanceof Error ? e.message : String(e);
       }
+      try { await o.onToolResult?.({ name: call.name, input, result, error, ms: Date.now() - t0 }); } catch { /* logging never fails a call */ }
+      return error !== undefined
+        ? { type: "tool_result", tool_use_id: call.id, is_error: true, content: error }
+        : { type: "tool_result", tool_use_id: call.id, content: render(result) };
     }));
     const content: (Anthropic.ToolResultBlockParam | Anthropic.TextBlockParam)[] = results;
     if (o.budget && !wrapped && currentCost() >= o.budget.wrapUpAt) {

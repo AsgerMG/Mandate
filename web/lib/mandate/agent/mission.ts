@@ -27,6 +27,7 @@ import {
 } from "./models";
 import { PLAYBOOKS } from "./playbooks.generated";
 import { research } from "./research";
+import { loggedLoop } from "./usage";
 import type { MandateApi, PolicyApi, PolicyHit } from "./services";
 
 export interface MissionDeps {
@@ -306,6 +307,7 @@ async function consult(ctx: Ctx, who: Sp, question: string): Promise<string> {
     tools: t.tools, handlers: t.handlers, maxTurns: 10, maxTokens: 16000,
     messages: [{ role: "user", content: `Question from Mandate:\n${question}` }],
     budget: { ...ctx.budget, note: "[runtime] The mission budget is nearly spent. Stop researching and write your report now with what you have." },
+    onToolResult: loggedLoop(ctx.deps.mandate.logToolCalls?.bind(ctx.deps.mandate), who, ctx.missionId),
     onToolCall: (name, input) => ctx.emit({ type: "tool_used", missionId: ctx.missionId, specialist: who, tool: name,
       summary: JSON.stringify(input).slice(0, 200) }),
   });
@@ -496,6 +498,7 @@ export async function runMission(input: MissionInput, deps: MissionDeps, emit: E
       client: deps.client, model: ORCHESTRATOR_MODEL, effort: ORCHESTRATOR_EFFORT, system: orchestratorSystem(ctx),
       tools: t.tools, handlers: t.handlers, maxTurns: 16, maxTokens: 32000, budget: ctx.budget,
       messages: [{ role: "user", content: opening }],
+      onToolResult: loggedLoop(deps.mandate.logToolCalls?.bind(deps.mandate), "mandate", missionId),
       onToolCall: (name, i) => { if (!name.startsWith("consult_")) emit({ type: "tool_used", missionId: ctx.missionId,
         specialist: "mandate", tool: name, summary: String(i.title ?? i.subject ?? i.job ?? "").slice(0, 160) }); },
       onText: (text) => emit({ type: "message", missionId: ctx.missionId, specialist: "mandate", text }),

@@ -9,6 +9,7 @@
  */
 import { policyApiUrl } from "@/lib/regina/apiBase";
 import type { Citation } from "./ledger";
+import type { ToolCallRow } from "./usage";
 
 export class ServiceError extends Error {
   constructor(message: string, readonly status: number) {
@@ -35,6 +36,8 @@ export interface MandateApi {
   findActors(params: { q?: string; kind?: string; jurisdiction?: string }): Promise<{ actors: Record<string, unknown>[] }>;
   addActor(kind: "organisations" | "roles" | "contact_points" | "email_formats" | "memberships", body: Record<string, unknown>): Promise<Record<string, unknown>>;
   applyEmailFormat(formatId: string, first: string, last: string): Promise<Record<string, unknown>>;
+  /** The usage log (mandate.tool_calls). Optional: a fake without it logs nothing. */
+  logToolCalls?(calls: ToolCallRow[]): Promise<{ recorded: number }>;
 }
 
 export interface PolicyHit {
@@ -96,6 +99,7 @@ export function httpMandateApi(base: string, token: string, f: typeof fetch = fe
     findActors: (p) => call("GET", `/actors${qs(p)}`),
     addActor: (kind, body) => call("POST", `/actors/${kind}`, body),
     applyEmailFormat: (id, first, last) => call("POST", `/actors/email_formats/${id}/apply`, { first, last }),
+    logToolCalls: (calls) => call("POST", "/usage/tool_calls", { calls }),
   };
 }
 

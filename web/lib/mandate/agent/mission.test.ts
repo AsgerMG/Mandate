@@ -16,6 +16,7 @@ import { CitationLedger, type Citation } from "./ledger";
 import { runLoop, type ModelClient } from "./loop";
 import { runMission } from "./mission";
 import { ServiceError, type MandateApi, type PolicyApi } from "./services";
+import type { ToolCallRow } from "./usage";
 
 // ── a scripted model ─────────────────────────────────────────────────────
 
@@ -250,6 +251,8 @@ describe("runMission", () => {
         },
       ],
     });
+    const logged: ToolCallRow[] = [];
+    svc.mandate.logToolCalls = async (rows) => { logged.push(...rows); return { recorded: rows.length }; };
     const events: MissionEvent[] = [];
     const { result } = await withCostTracking(() => runMission(
       { workspaceId: "w", profileId: "p", profileVersion: 1, objective: "Guarantee our loan book in Germany" },
@@ -272,6 +275,15 @@ describe("runMission", () => {
     expect(calls.filter((c) => c.model === "claude-opus-5-5")).toHaveLength(3);
     expect(calls.filter((c) => c.model === "claude-sonnet-5-5")).toHaveLength(2);
     expect(calls.every((c) => (c.thinking as { type: string }).type === "adaptive")).toBe(true);
+    // the usage log: every tool call, by whom, on which mission, with what it cited
+    expect(logged.map((r) => `${r.brain}:${r.tool}:${r.ok}`)).toEqual([
+      "wincent:assess_instrument:true", "mandate:consult_wincent:true", "mandate:save_decision:false",
+      "mandate:save_decision:true", "mandate:save_watch:true", "mandate:finish_mission:true"]);
+    expect(logged.every((r) => r.mission_id === "mission-1" && r.caller === "agent")).toBe(true);
+    const a = logged[0];
+    expect(a.citations).toBe(1);
+    expect(a.tables).toContain("capital.eligibility_gates");
+    expect(a.args_sha256).toMatch(/^[0-9a-f]{64}$/);
   });
 
   it("asks the founder first when the ask is vague, then resumes with their answers", async () => {

@@ -60,3 +60,4 @@ scratch/
 publishable_ids.json
 harvest_candidates.json
 boilerplate_verdict.json
+.bench/
