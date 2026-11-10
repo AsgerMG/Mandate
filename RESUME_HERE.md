@@ -21,6 +21,17 @@ Three agents were stopped mid-work with WIP commits on their branches (not merge
 3. `data-tiers`: tiers in europe_scope.json + manifest (OUT refresh stops; Spain stays),
    equity stakes into find_precedents, read_agenda tool, usage log (mandate.tool_calls),
    archive_dead_weight.sh (~170 MB to bucket archive/2026-11/), old news down-ranked.
+Findings saved by the stopped agents (10 Nov):
+- agent-on-railway (cff29ffe, design only, no code): chose to keep Wincent's capital tools
+  in TypeScript behind an internal site endpoint, called by the new Python loop (porting
+  would duplicate ~5k lines of eligibility logic). SPAR on this first: with "narrow
+  first" (Italy + EU), a plain Python SQL search may now be small enough, and it retires
+  the old ranker. Next: Python loop + mission-events table (POST /missions is taken).
+- data-tiers (cdfe829e, findings only, no code): capital.request_log (mission quota) and
+  capital.event_log (agent tool logging) are STILL WRITTEN: do not archive them; only
+  brief_records is safe. Next: item 3 first (usage log: a hook in
+  web/lib/mandate/agent/loop.ts + mandate.tool_calls).
+- batch-italy: see its last WIP commit.
 Resume each: read its last WIP commit message (git log -1 origin/<branch>), finish, review,
 merge in this order: data-tiers, batch-italy, agent-on-railway (largest last).
 Then: owner runs the load/archive commands; Wincent bench re-runs the fintech + Italian
