@@ -312,7 +312,7 @@ def load(db_url: str, prep: Prepared, *, apply: bool, embed: bool) -> dict:
                         "VALUES (%s, %s, %s::halfvec) ON CONFLICT DO NOTHING",
                         [(pid, MODEL, vector_literal(v)) for (pid, _), v in zip(batch, vecs)])
             counts["embedded"] = len(todo)
-            counts["embedding_usd"] = round(getattr(e.usage, "usd", 0.0) or 0.0, 4)
+            counts["embedding"] = e.usage.line()
         if not apply:
             con.rollback()
             counts["bucket_puts_skipped"] = bucket.puts
