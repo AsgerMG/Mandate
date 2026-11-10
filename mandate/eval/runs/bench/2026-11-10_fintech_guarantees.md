@@ -214,8 +214,15 @@ people (actors register empty); political side not mapped.
 ## Grade (owner)
 
 ```
-grade:
-must/must_not:
+grade: not given as a number (owner, 10 Nov): "Right now, we have none of that."
+must/must_not: EU right (EIF first). Italy WRONG (parked; should recommend 106 TUB).
+  Germany WRONG (partner-bank workaround; there is no route without a licence,
+  the route is the reform via the BMWE).
 edits: |
+  The owner's model answer is now in mandate/eval/scenarios/fintech_guarantees.yaml.
 playbook: |
+  Round 3 applied to funding-routes.md: §4 Germany/Italy/EU corrected; new §4d,
+  three habits: pick the level with the open door; when a status unlocks a
+  market, recommend the status; when the formal door is shut but the rules are
+  moving, the route is the reform.
 ```

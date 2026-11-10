@@ -7,7 +7,7 @@ it; it does not improvise around it.
 **A mentality, not an encyclopedia.** The owner's examples teach the method,
 not the complete list of vehicles. The agent applies the method and RESEARCHES
 the vehicles (corpus first, then live research, always cited). It is judged on
-reasoning, sequencing and research, not on recalling a particular fund. Status: DRAFT, awaiting the owner's corrections.
+reasoning, sequencing and research, not on recalling a particular fund. Status: DRAFT; round 3 (owner's grading of the fintech case, 10 Nov) applied.
 
 ## 1. Before any instrument: establish the structure
 Never name an instrument before these are known (ask only what the company
@@ -134,17 +134,28 @@ goodwill moves them.
 - **Formal eligibility of the applicant type.** Example, guarantees for a
   lender's loan portfolio:
   - **Germany:** the state guarantees SME lending through the normal banks
-    (the **Hausbank** principle, KfW and the Bürgschaftsbanken). An
-    alternative lender without a banking licence is generally not the
-    channel; the route runs through a house bank.
-  - **Italy:** authorised financial-intermediary status under **Art. 106 TUB**
-    is what opens national guarantee schemes (Fondo di Garanzia per le PMI)
-    more easily.
+    (the **Hausbank** principle, KfW and the Bürgschaftsbanken). **Without a
+    banking licence there is no route today** (owner, round 3): do not dress
+    up a partner-bank workaround as the answer. The route is POLITICAL: a
+    reform is moving in parliament, so the move is to get in the room with the
+    federal economy ministry (BMWE) heads of department who host that
+    conversation, and help it accelerate (§4d). Research and cite the reform's
+    current state before advising.
+  - **Italy:** more open: it will guarantee portfolios. Authorised
+    financial-intermediary status under **Art. 106 TUB** is the unlock; with
+    it, the national schemes (Fondo di Garanzia per le PMI) are straightforward.
+    **Recommend getting it** (sequenced), do not park the market for want of
+    it. A fund-only structure (e.g. a Luxembourg RAIF) does not give
+    streamlined access on its own.
   - **France:** different mechanics. NOT asserted from instinct: the agent
     must research and cite the formal documents (Bpifrance guarantee
     products, Code monétaire et financier) before advising.
   - **EU / InvestEU (EIF):** more open to alternative lenders as financial
-    intermediaries. **Watch:** InvestEU is moving under the European
+    intermediaries, and for a lender operating across several member states
+    **the quickest route of all** (owner, round 3): skip the regional and
+    federal agencies and go to the EU. Match the product to the activity:
+    the InvestEU **digitalisation** or **SME competitiveness** guarantee
+    products (robot deployment fits digitalisation). **Watch:** InvestEU is moving under the European
     Competitiveness Fund; check whether alternative lenders stay eligible
     (carve-outs) as the rules are rewritten.
 - **Sequencing.** A mentality, not a list: *before every move, ask what must
@@ -172,6 +183,22 @@ rule change that reopens or closes it is flagged.
   head of guarantees or investments at a public institution, asking what the
   options are, costs little. If they cannot accommodate the need: park it,
   monitor, move on.
+
+## 4d. Choosing the route: three habits of a senior (owner, round 3)
+Facts change; these do not. Apply them to every case, every country.
+1. **Pick the level with the open door.** EU, national, regional: the same
+   need is often open at one level and shut at another for this applicant
+   type. Name the level that is open for THIS applicant and lead with it;
+   do not work every level in parallel out of thoroughness.
+2. **When a status unlocks a market, recommend getting the status.** A
+   licence, registration or authorisation that opens the door (Art. 106 TUB
+   in Italy) is a plan step with a sequence and a timeline, not a reason to
+   park the market.
+3. **When the formal door is shut but the rules are moving, the route is the
+   reform.** Find the bill or reform, the ministry that hosts it, and the
+   heads of department who can raise it to the political level; the advice
+   is to engage them and accelerate the reform, with the company's case as
+   the argument. Say plainly that there is no route today.
 
 ## 5. Where juniors go wrong
 - The **preparatory steps**: not asking the right questions up front, so the
