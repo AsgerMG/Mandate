@@ -1,46 +1,30 @@
-# The gate that was missing. Every check here already existed and was run by
-# hand; during the audit a broken build reached main because a commit ran on a
-# separate line from a failing typecheck. Verification nobody is forced to run
-# is verification that eventually does not happen.
+# The capital brain's ETL (capital/): its unit tests and schema checks.
+#
+# Slimmed on 2026-11-10 (Phase 0). The web app it used to build has its own
+# gate (web-ci.yml), the retired one-pager brief's checks are archived (tag
+# archive/2026-11-pre-pivot), and the checks that judge the LIVE corpus rather
+# than the code in a push moved to the nightly (capital-nightly.yml): a push
+# cannot fix a corpus value, so a red there blocked every branch for a reason no
+# branch could address. This job holds no credential of ours: a throwaway
+# Postgres and the repository, nothing else.
 name: capital CI
 
 on:
-  # Scoped to this brain. In the monorepo a push to policy/ or mandate/ must not
-  # spend this matrix, and a push here must not wait on theirs.
   pull_request:
     paths:
       - 'capital/**'
       - '!capital/project-mgmt/**'
       - '!capital/**/*.md'
-      # the Mandate web app (was capital/website/frontend), which this CI builds
-      - 'web/**'
-      - '!web/**/*.md'
-      # the one file under a skipped path that checks DO read
-      - 'capital/data/guard_registry.json'
-      # the shared vocabulary and profile fixtures web/lib/mandate tests read
       - 'mandate/vocabulary/**'
-      - 'mandate/profile/**'
       - '.github/workflows/capital-ci.yml'
   push:
     branches: [main]
-    # ── WHY project-mgmt AND MARKDOWN DO NOT RUN CI ────────────────────────
-    # On 2026-08-19 fifteen merges landed on main and every one spent the full
-    # matrix, on an account with 2,000 Actions minutes a month. Scoped by what
-    # the checks READ: `project-mgmt/` is written BY the checks
-    # (check_status.json) and read only by check_red_debt, which runs inside
-    # vitest and is therefore covered by the next code push.
+    # project-mgmt/ and markdown do not run CI: no check here reads them.
     paths:
       - 'capital/**'
       - '!capital/project-mgmt/**'
       - '!capital/**/*.md'
-      # the Mandate web app (was capital/website/frontend), which this CI builds
-      - 'web/**'
-      - '!web/**/*.md'
-      # the one file under a skipped path that checks DO read
-      - 'capital/data/guard_registry.json'
-      # the shared vocabulary and profile fixtures web/lib/mandate tests read
       - 'mandate/vocabulary/**'
-      - 'mandate/profile/**'
       - '.github/workflows/capital-ci.yml'
 
 concurrency:
@@ -48,118 +32,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  frontend:
-    name: types, contracts, build
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      # The code fingerprint a verdict is bound to has exactly one
-      # implementation, in ETL/lib/guard_verdicts.py, and the checks below shell
-      # out to it rather than carrying a second one. A second implementation of
-      # a fingerprint is a fingerprint of two different things the first time
-      # either changes.
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
-      - run: npm ci
-
-      # ── ONE credential, and it cannot write ────────────────────────────
-      # No read-WRITE database URL in CI, by design and by check: handing this
-      # workflow one would widen the blast radius of one compromised job from
-      # "can read our code" to "can rewrite every award, company and fund we
-      # hold". Since 2026-11-05 the corpus lives only in Postgres and the
-      # site's data is generated from it rather than committed, so CI holds the
-      # capital_ro URL, and only in the two steps below that need it. The first
-      # asks the DATABASE what the role may do and fails if it can write,
-      # create or grant anything, so a read-write URL pasted under this name
-      # stops here. ETL/schema/check_guard_registry.py fails the build if the
-      # secret is bound under another name, at job level, or first reaches a
-      # step that is not that proof.
-      - name: The corpus credential is read-only
-        working-directory: capital
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: |
-          pip install --quiet 'psycopg[binary]==3.3.4'
-          python3 ETL/schema/check_readonly_credential.py
-      # The artefacts every check below reads (instrument_terms.json,
-      # companies_index.json, ...) generated from the corpus. Without the secret
-      # (a pull request from a fork) this uses what is on disk and says what is
-      # missing; the checks that need a missing file then fail by name.
-      - name: Site data from the corpus
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ../capital/website/build/build_site_data.py --prebuild
-      - name: Typecheck
-        run: npx tsc --noEmit
-      - name: Unit tests
-        run: npx vitest run --coverage
-
-      # A Next segment config must be a literal. `export const revalidate =
-      # SOME_CONSTANT` fails the whole production build with a message naming
-      # no file -- three pages carried it, so fixing two changed nothing, and
-      # every Vercel deploy failed until someone read the logs.
-      - name: Segment config is a literal
-        run: npx tsx scripts/check_revalidate_literal.ts
-
-
-      # No number a visitor reads is a literal the corpus does not produce.
-      # Hermetic: TypeScript source plus two COMMITTED artifacts, no database
-      # and no credentials, so it cannot pass by finding nothing to read — and
-      # it self-tests its own detector on every run before it judges the site.
-      - name: Rendered numbers come from the corpus
-        run: npx tsx scripts/check_rendered_numbers.ts
-
-      - name: Vocabulary contract
-        run: npx tsx scripts/check_vocabularies.ts
-        env: { NO_PG: '1' }
-
-
-
-      - name: Client modules reach no server-only import
-        if: always()
-        run: npx tsx scripts/check_client_boundary.ts
-
-
-
-
-      # What kind of capital an instrument is must agree with the register that
-      # published it, and no kind a register publishes may vanish from the
-      # corpus. G (Guarantee) and DG (Direct grant) were transposed on the day
-      # the map was written: the corpus held ZERO guarantees against a feed
-      # publishing 17,023 guarantee awards, and Italy's largest guarantee scheme
-      # was rendered to founders as a grant.
-      - name: Capital kinds match the register
-        if: always()
-        working-directory: capital
-        run: python3 ETL/schema/check_register_instrument_kinds.py
-      # A spec can be syntactically valid, pass the vocabulary check, and still
-      # mean the opposite of its source document. Reads the site data above.
-      - name: Encoded rule sanity
-        if: always()
-        working-directory: capital
-        run: python3 ETL/schema/check_spec_sanity.py
-
-
-
-      - name: Lint
-        if: always()
-        run: npx eslint .
-
-      - name: Build
-        if: always()
-        run: npx next build
-        env: { NEXT_TELEMETRY_DISABLED: '1' }
-
   etl:
-    name: python syntax + schema drift
+    name: ETL tests + schema drift
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -192,48 +67,23 @@ jobs:
       - name: Install the ETL's requirements
         run: pip install -q -r requirements.txt
 
-      # Four eligibility guards that read the live corpus and were in no
-      # automatic path (check_guard_reachability). The first step to hold the
-      # read-only credential proves it cannot write (rule 7 b).
-      - name: The corpus credential is read-only
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/schema/check_readonly_credential.py
-      - name: Every comparator is storable
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/terms/check_comparator_storable.py
-      - name: Every curated correction is in effect
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/terms/check_corrections_applied.py
-      - name: No ordered comparator claims two thresholds
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/terms/check_gate_branches.py
-      - name: A euro band is derived only from euro numerals
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/terms/check_gate_currency.py
-
       # Compile-checks every ETL module. Cheap, and it catches the class of
       # error that otherwise only surfaces mid-pipeline on a long run.
       - name: Byte-compile the ETL
+        if: always()
         run: python3 -m compileall -q ETL website/build
 
       # The SQL schema must match what the code expects. A drifted schema file
       # is worse than none: it reads as authoritative while being wrong.
       - name: Postgres schema is committed
+        if: always()
         run: test -f ETL/schema/postgres_schema.sql
 
       # Country name resolution lives in exactly one place. Copies drift in
       # coverage and an unresolvable name writes a NULL country rather than
       # raising, so the drift is silent.
       - name: One country map
+        if: always()
         run: python3 ETL/schema/check_single_country_map.py
 
       # Every family whose row name is a mechanical re-casing of its own id has
@@ -243,12 +93,14 @@ jobs:
         run: python3 ETL/events/load/test_name_evidence_declarations.py
 
       - name: Country resolution
+        if: always()
         run: python3 ETL/lib/test_europe_scope.py
 
       # Which fund an award is credited to decides what the answer key can
       # name, and a wrong credit reads as recall rather than as an error. Runs
       # on an in-memory corpus, so it needs no database.
       - name: Award attribution
+        if: always()
         run: python3 ETL/terms/test_attribution.py
 
       # A spec can be syntactically valid, pass the vocabulary check, and still
@@ -262,18 +114,21 @@ jobs:
       # that came with a shrinking corpus at all. Both are asserted from the
       # committed baselines, so neither can come back.
       - name: Coverage gate separates loss from dilution
+        if: always()
         run: python3 ETL/terms/test_coverage_gate.py
 
       # A failed ADEME fetch is a partial only when the row holds no window an
       # earlier run read; a catalogue that is down is a partial regardless.
       # Run 114 recorded a whole week partial over one refused connection.
       - name: A covered fetch failure does not make the week partial
+        if: always()
         run: python3 ETL/terms/test_ademe_windows_outcome.py
 
       # Spain's open calls are discovered from the register over a window as
       # long as a call stays open, not the cadence: run 116 lost a third of ES
       # offerable because a 60-day window could not see across a 93-day gap.
       - name: BDNS discovery covers the life of a call
+        if: always()
         run: python3 ETL/terms/test_bdns_discovery.py
 
       # A membership test between two disjoint vocabularies is dead code, and
@@ -284,6 +139,7 @@ jobs:
       # another module. Credential-free fixture, milliseconds, so it runs here
       # where the corpus cannot.
       - name: The split's target set is in the caller's value space
+        if: always()
         run: python3 ETL/events/load/test_split_value_space.py
 
       # `funding_instruments` has two provenances: rows aggregated from events,
@@ -293,6 +149,7 @@ jobs:
       # plus 629 gates encoded from their own published eligibility text. The
       # 20%-of-curated guard did not fire; 629 of 7,471 is 8%.
       - name: A rebuild deletes only the instrument rows it authored
+        if: always()
         run: python3 ETL/events/load/test_external_instrument_ownership.py
 
       # Four steps that guarded the laptop<->volume db.sqlite sync (the overwrite
@@ -306,6 +163,7 @@ jobs:
       # 41.9% and seven countries instead of 22, and it looked like decay rather
       # than a dead join for a week.
       - name: The split's key is not a name something else rewrites
+        if: always()
         run: python3 ETL/terms/test_split_key_is_not_a_name.py
 
       # An AI company was published a Bavarian film and television scheme at row
@@ -315,6 +173,7 @@ jobs:
       # software_data_ai. A grant is evidence about the PROGRAMME, never about
       # its recipient. Credential-free, instant, no corpus.
       - name: A technology sector is claimed only where evidence licenses it
+        if: always()
         run: python3 ETL/events/transform/test_sector_evidence.py
 
       # The corpus census runs inside the ETL image, which has requirements.txt
@@ -322,6 +181,7 @@ jobs:
       # down and recorded a ModuleNotFoundError instead of the corpus figures --
       # invisibly, because it records a failed block rather than crashing.
       - name: The census can run in the ETL image
+        if: always()
         run: python3 ETL/schema/check_census_imports.py
 
       # ...and so must every other step the weekly cron runs. wsCZ committed
@@ -332,6 +192,7 @@ jobs:
       # exited, skipping six steps and all four guards. Three days of no refresh,
       # and nothing said so. Hermetic: imports under an audit hook.
       - name: The cron can read, in the image, what it reads at import
+        if: always()
         run: python3 ETL/schema/check_cron_image_inputs.py
 
       # A verdict must be inseparable from the bar it was computed against.
@@ -345,6 +206,7 @@ jobs:
         run: python3 ETL/schema/test_verdict_bar_fingerprinted.py
 
       - name: Cross-language constants
+        if: always()
         run: python3 ETL/schema/check_cross_language_constants.py
 
       # Every table has ONE declared authoritative store, the count still owned
@@ -361,6 +223,7 @@ jobs:
       # fixes were being merged. `--ids` reads committed source only, so it
       # needs no corpus and no credentials, which is what CI has.
       - name: Every migration id is reachable
+        if: always()
         run: python3 ETL/events/load/migrations/apply.py --ids
 
       # The store must be rebuildable from committed DDL alone: corpus_schema.sql,
@@ -369,9 +232,11 @@ jobs:
       # postgres_schema.sql could not rebuild a single table (`ARRAY`, a vector
       # with no type, a column declared twice) after three months committed.
       - name: The schema can be rebuilt from its own migrations
+        if: always()
         run: python3 ETL/schema/check_schema_replay.py
 
       - name: One store of record per table
+        if: always()
         run: python3 ETL/schema/check_store_of_record.py
 
       # The corpus-marks guard itself cannot run here -- CI holds no credentials
@@ -383,6 +248,7 @@ jobs:
       # the only proof that the publishing guard can go red is that somebody
       # once typed the flag.
       - name: The unfinished-run guard can still fail
+        if: always()
         run: python3 ETL/schema/check_corpus_marks.py --self-test
         env:
           DATABASE_URL: ${{ env.CAPITAL_TEST_DATABASE_URL }}
@@ -391,14 +257,17 @@ jobs:
       # sector labels in the vault. This runs those steps twice on a seeded
       # store and fails if any curated label moves.
       - name: No re-run can displace a curated sector label
+        if: always()
         run: python3 ETL/events/transform/test_sector_label_precedence.py
 
       # The LLM jobs run as Message Batches (mandate/llm/batch.py): a batch
       # collected a week late writes exactly what the live loop wrote, through
       # the same precedence rule, and nothing in flight is paid for twice.
       - name: Batched sector labels write what the live loop wrote, late or not
+        if: always()
         run: python3 ETL/events/transform/test_taxonomy_batch.py
       - name: Batched pertinence keeps the cache's shape and never pays twice
+        if: always()
         run: python3 ETL/terms/test_pertinence_batch.py
 
       # Committed DDL must account for every column in every store. The
@@ -408,6 +277,7 @@ jobs:
       # git conflict marker sitting inside ETL/schema/postgres_schema.sql --
       # the file the step above asserts the EXISTENCE of.
       - name: Committed DDL accounts for every column
+        if: always()
         run: python3 ETL/schema/check_store_schema.py
 
       # What we TRACK and what we OFFER are two populations. That check has
@@ -422,6 +292,7 @@ jobs:
       # bound to its own implementation — and no workflow holds a credential of
       # ours, which is the reason the arrangement exists at all.
       - name: Every guard has a publisher, and no workflow has a secret
+        if: always()
         run: python3 ETL/schema/check_guard_registry.py
 
       # The other direction, and the one nothing could see. The check above
@@ -430,22 +301,5 @@ jobs:
       # never added to the cron -- which on 2026-08-08 was eight of them, two
       # red at the moment they were found. Reads committed source only.
       - name: Every guard runs somewhere, or says why it does not
+        if: always()
         run: python3 ETL/schema/check_guard_reachability.py
-
-  security:
-    name: dependency audit
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '22', cache: npm, cache-dependency-path: web/package-lock.json }
-      - run: npm ci
-      # Wraps npm audit with a reviewed exceptions register: fails on anything
-      # high or critical that is NOT documented, and fails when an exception
-      # passes its review date. A check that cannot pass is a check people
-      # learn to skip.
-      - name: Dependency audit
-        run: npx tsx scripts/check_dependencies.ts

@@ -1,12 +1,17 @@
-# The report tier, nightly. Non-blocking: it never fails a branch and never
-# stops a merge. data/guard_registry.json `suite_tiers` is the source of truth
-# for which checks are here: every check whose tier is `report` (the failure is
-# real but no founder experiences it: it grades a measurement, the suite's own
-# bookkeeping, or an encoder-health ratchet). The `founder` tier runs in
-# capital-ci.yml on every push, where a red stops the build.
+# The checks that judge the LIVE corpus or the deployment, nightly.
+# Non-blocking: it never fails a branch and never stops a merge.
 #
-# Each step may fail; the job does not. The last step writes one table of
-# what was red to the run summary, which is where the owner reads it.
+# Why these are on a clock and not in a push's CI: each one's verdict depends
+# on what production holds, not on the code in the push, so a push can neither
+# break nor fix it. In capital CI they made every branch red for a corpus value
+# no branch could change (2026-11-09: one reverted gate correction blocked every
+# capital push). Here a red is reported, read in the run summary, and fixed by
+# the run that owns the data.
+#
+# Each step may fail; the job does not. The last step writes one table of what
+# was red to the run summary. The weekly-refresh guards (census, store_schema,
+# corpus_marks, offerable_decay, applicant_identity) are read by
+# mandate-health.yml, the one health monitor, and are not repeated here.
 name: capital nightly report
 
 on:
@@ -23,8 +28,9 @@ concurrency:
 
 jobs:
   report:
-    name: report-tier checks
+    name: corpus and deployment checks
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     defaults:
       run:
         working-directory: web
@@ -38,42 +44,81 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: '3.11' }
       - run: npm ci
+      - name: Install the ETL's requirements
+        working-directory: capital
+        run: pip install -q -r requirements.txt
 
       # The one credential, proved read-only before any other step holds it
-      # (ETL/schema/check_guard_registry.py rule 7), then the site data every
-      # check below reads, generated from the corpus as the CI job does.
+      # (capital/ETL/schema/check_guard_registry.py rule 7), then the site data
+      # the snapshot checks below read, generated from the corpus.
       - name: The corpus credential is read-only
         working-directory: capital
         env:
           CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: |
-          pip install --quiet 'psycopg[binary]==3.3.4'
-          python3 ETL/schema/check_readonly_credential.py
+        run: python3 ETL/schema/check_readonly_credential.py
       - name: Site data from the corpus
         env:
           CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
         run: python3 ../capital/website/build/build_site_data.py --prebuild
 
-      - id: env_loader
-        name: one env loader
-        continue-on-error: true
-        run: npx tsx scripts/check_env_loader.ts
-      - id: store_columns
-        name: both stores select the same columns
-        continue-on-error: true
-        run: npx tsx scripts/check_store_columns.ts
+      # ── the corpus ───────────────────────────────────────────────────────
       - id: extracted_quotes
         name: quotations match documents
         continue-on-error: true
         run: npx tsx scripts/check_extracted_quotes.ts
-      - id: artifact_reachability
-        name: every committed artifact can be rebuilt
+      - id: store_columns
+        name: both stores select the same columns
+        continue-on-error: true
+        run: npx tsx scripts/check_store_columns.ts
+      - id: register_kinds
+        name: capital kinds match the register
         continue-on-error: true
         working-directory: capital
-        run: python3 ETL/schema/check_artifact_reachability.py
-      # Not tiered: it asks the DEPLOYMENT (its code-only verdict route, no
-      # model call) which corpus it is ranking on. A property of production,
-      # not of a branch, so it belongs on a clock.
+        run: python3 ETL/schema/check_register_instrument_kinds.py
+      - id: spec_sanity
+        name: encoded rule sanity
+        continue-on-error: true
+        working-directory: capital
+        run: python3 ETL/schema/check_spec_sanity.py
+      - id: comparator_storable
+        name: every comparator is storable
+        continue-on-error: true
+        working-directory: capital
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/terms/check_comparator_storable.py
+      - id: corrections_applied
+        name: every curated correction is in effect
+        continue-on-error: true
+        working-directory: capital
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/terms/check_corrections_applied.py
+      - id: gate_branches
+        name: no ordered comparator claims two thresholds
+        continue-on-error: true
+        working-directory: capital
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/terms/check_gate_branches.py
+      - id: gate_currency
+        name: a euro band is derived only from euro numerals
+        continue-on-error: true
+        working-directory: capital
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ETL/terms/check_gate_currency.py
+
+      # ── the code that reads credentials ──────────────────────────────────
+      - id: env_loader
+        name: one env loader
+        continue-on-error: true
+        run: npx tsx scripts/check_env_loader.ts
+
+      # ── the deployment ───────────────────────────────────────────────────
+      # Asks production's code-only verdict route (/api/intelligence/verdict,
+      # no model call) which corpus it is ranking on: a property of the
+      # deployment, not of a branch.
       - id: prod_corpus
         name: the deployment ranks on the corpus of record
         continue-on-error: true
@@ -90,7 +135,7 @@ jobs:
           rows = [(k, v.get("outcome")) for k, v in steps.items()]
           red = [k for k, o in rows if o == "failure"]
           print("## capital nightly report\n")
-          print(f"{len(rows) - len(red)} of {len(rows)} report-tier checks green; red: {', '.join(red) or 'none'}\n")
+          print(f"{len(rows) - len(red)} of {len(rows)} checks green; red: {', '.join(red) or 'none'}\n")
           print("| check | outcome |\n|---|---|")
           for k, o in rows:
               print(f"| {k} | {o} |")

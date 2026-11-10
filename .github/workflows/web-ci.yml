@@ -1,0 +1,124 @@
+# The Mandate web app (web/): what a push to the site must not break.
+#
+# Split from capital CI on 2026-11-10 (Phase 0): capital CI built the web app,
+# ran 41 checks of the retired one-pager brief, used ~80% of all Actions minutes
+# and had not passed in 40 runs. This job is the site's own gate: types, tests,
+# lint, the build, and the four hermetic contracts the live pages rely on.
+# capital-ci.yml keeps the ETL's own tests; capital-nightly.yml the checks that
+# judge the corpus rather than the code.
+name: web CI
+
+on:
+  pull_request:
+    paths:
+      - 'web/**'
+      - '!web/**/*.md'
+      # what the prebuild runs and what web/lib/mandate tests read
+      - 'capital/website/build/**'
+      - 'mandate/vocabulary/**'
+      - 'mandate/profile/**'
+      - '.github/workflows/web-ci.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'web/**'
+      - '!web/**/*.md'
+      - 'capital/website/build/**'
+      - 'mandate/vocabulary/**'
+      - 'mandate/profile/**'
+      - '.github/workflows/web-ci.yml'
+
+concurrency:
+  group: web-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: types, tests, lint, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.11' }
+      - run: npm ci
+
+      # ── ONE credential, and it cannot write ────────────────────────────
+      # The site's data (public/data/*.json) is generated from the corpus, not
+      # committed, and typecheck and build both import it. CI holds the
+      # capital_ro URL, only in the two steps below. The first asks the
+      # DATABASE what the role may do and fails if it can write, create or
+      # grant anything (capital/ETL/schema/check_guard_registry.py rule 7).
+      #
+      # The weekly artefact release (mandate/artefacts.py fetch) would supply
+      # the same files in seconds, but fetching it needs the bucket's keys, a
+      # second credential this workflow deliberately does not hold. So the
+      # prebuild regenerates from the corpus (~4.5 min).
+      - name: The corpus credential is read-only
+        working-directory: capital
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: |
+          pip install --quiet 'psycopg[binary]==3.3.4'
+          python3 ETL/schema/check_readonly_credential.py
+      - name: Site data from the corpus
+        env:
+          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
+        run: python3 ../capital/website/build/build_site_data.py --prebuild
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+      # Includes lib/mandate/** and the mission route's tests. Coverage has a
+      # floor so tests cannot be deleted to make a build pass.
+      - name: Unit tests
+        if: always()
+        run: npx vitest run --coverage
+      # A non-literal `export const revalidate` fails the whole production build
+      # with a message naming no file; every Vercel deploy failed on it once.
+      - name: Segment config is a literal
+        if: always()
+        run: npx tsx scripts/check_revalidate_literal.ts
+      # No number a visitor reads is a literal the corpus does not produce.
+      - name: Rendered numbers come from the corpus
+        if: always()
+        run: npx tsx scripts/check_rendered_numbers.ts
+      - name: Vocabulary contract
+        if: always()
+        run: npx tsx scripts/check_vocabularies.ts
+        env: { NO_PG: '1' }
+      # A client module reaching pg or fs is a page that throws in the browser.
+      - name: Client modules reach no server-only import
+        if: always()
+        run: npx tsx scripts/check_client_boundary.ts
+      - name: Lint
+        if: always()
+        run: npx eslint .
+      - name: Build
+        if: always()
+        run: npx next build
+        env: { NEXT_TELEMETRY_DISABLED: '1' }
+
+  security:
+    name: dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22', cache: npm, cache-dependency-path: web/package-lock.json }
+      - run: npm ci
+      # Fails on a high or critical advisory that is NOT in the reviewed
+      # exceptions register, and on an exception past its review date.
+      - name: Dependency audit
+        run: npx tsx scripts/check_dependencies.ts
