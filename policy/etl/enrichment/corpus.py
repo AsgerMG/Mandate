@@ -165,12 +165,23 @@ def enrich_corpus(
     if unknown:
         raise ValueError(f"unknown enrichment step(s): {sorted(unknown)}")
 
+    # The model budget (mandate/llm/budget.py) is the same case as no key: the
+    # paid steps are skipped with a recorded reason and everything free runs.
+    # A credit-exhausted 400 mid-pass is the same outcome found later: it ends
+    # the paid steps for this pass, never the free ones.
+    from mandate.llm import budget  # noqa: PLC0415
+
+    no_budget = None if budget.llm_enabled() else budget.OFF
     results: dict[str, dict] = {}
     for step in STEPS:
         if step.name not in selected:
             continue
         if step.needs_http and http is None:
             results[step.name] = {"skipped": "no HTTP client provided"}
+            continue
+        if step.needs_llm and no_budget:
+            results[step.name] = {"skipped": budget.skip_reason(f"enrichment {step.name}",
+                                                                no_budget)}
             continue
         if step.needs_llm and client is None:
             results[step.name] = {"skipped": "no ANTHROPIC_API_KEY"}
@@ -186,6 +197,14 @@ def enrich_corpus(
             if on_progress:
                 on_progress(f"  {step.name:11} {step.summary(results[step.name])}")
         except Exception as exc:
+            if step.needs_llm and budget.is_budget_exhausted(exc):
+                no_budget = budget.EXHAUSTED
+                results[step.name] = {"skipped": budget.skip_reason(
+                    f"enrichment {step.name}", no_budget)}
+                log.warning("enrichment_budget_exhausted", step=step.name)
+                if on_progress:
+                    on_progress(f"  {step.name:11} {results[step.name]['skipped']}")
+                continue
             # One failing pass must not abandon the rest: they are independent
             # and each one that completes leaves the corpus better than before.
             log.exception("enrichment_step_failed", step=step.name)
@@ -193,3 +212,12 @@ def enrich_corpus(
             if on_progress:
                 on_progress(f"  {step.name:11} FAILED — {exc}")
     return results
+
+
+def budget_paused(results: dict[str, dict]) -> dict[str, str]:
+    """The enrichment steps a missing model budget skipped: name -> reason.
+    What the refresh records in mandate.runs.detail, for the health check."""
+    from mandate.llm import budget  # noqa: PLC0415
+
+    return {name: r["skipped"] for name, r in (results or {}).items()
+            if isinstance(r, dict) and budget.is_skip_reason(r.get("skipped"))}

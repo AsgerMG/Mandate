@@ -215,6 +215,14 @@ def main() -> None:
         print("=== SKIPPING name: ANTHROPIC_API_KEY not set. New rows will carry "
               "the register's legal citation until the next run with a key.", flush=True)
         stages = [s for s in stages if s[0] != "name"]
+    # The budget switch is the same case as no key (mandate/llm/budget.py), and
+    # says so in the same words every skipped paid step uses.
+    from mandate.llm import budget  # noqa: PLC0415
+    if any(s[0] == "name" for s in stages) and not budget.llm_enabled():
+        print(f"=== SKIPPING {budget.skip_reason('name (name_applicable_object.py)')}. "
+              f"New rows carry the register's legal citation until a run with budget.",
+              flush=True)
+        stages = [s for s in stages if s[0] != "name"]
 
     partial: list[str] = []
 
@@ -255,9 +263,15 @@ def main() -> None:
         # outside the container, to learn which of the five stages that meant.
         with corpus_marks.mark(MARK + label, "refresh_open_calls.py") as report:
             rc = run(step, label)
-            report(corpus_marks.OK if rc == 0 else
+            # A paid stage that found no budget (EXIT_SKIPPED) wrote nothing
+            # and left nothing half-done: the store is whole, so the mark is ok.
+            skipped = rc == budget.EXIT_SKIPPED
+            report(corpus_marks.OK if rc == 0 or skipped else
                    corpus_marks.PARTIAL if partial_ok else corpus_marks.FAILED,
-                   f"rc={rc}")
+                   budget.skip_reason(label, budget.EXHAUSTED) if skipped else f"rc={rc}")
+        if skipped:
+            print(f"=== SKIPPED {budget.skip_reason(label, budget.EXHAUSTED)}", flush=True)
+            continue
         if rc == 0:
             if label == "detail":
                 left = detail_backlog()

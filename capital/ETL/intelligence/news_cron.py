@@ -63,11 +63,37 @@ STEPS = [
 
 COLLECT = STEPS[1:4]
 EMBED, DIGEST = STEPS[-2], STEPS[-1]
+#: The steps that call the API (collect and submit, relevance/entity/signals).
+#: Everything else here is free (fetching, hydrating, embedding via Voyage).
+PAID = {"classify_relevance.py", "entity_link_articles.py", "classify_signals.py"}
+
+sys.path.insert(0, str(ROOT.parent))
+from mandate.llm import budget  # noqa: E402
+
+#: Set when a paid step was skipped: budget.OFF / budget.EXHAUSTED, or "".
+paused = ""
+
+
+def _label(step) -> str:
+    return " ".join([_Path(step[1]).name] + [a for a in step[2:] if not a.startswith("-")][:1])
 
 
 def _run(step, fatal: bool = True) -> int:
+    global paused
+    if _Path(step[1]).name in PAID:
+        # One switch (mandate/llm/budget.py). Off: never started. Exhausted
+        # (a paid step exited EXIT_SKIPPED): the rest of the paid steps are
+        # skipped too, since none of them can be paid for either.
+        if paused or not budget.llm_enabled():
+            paused = paused or budget.OFF
+            print(f"=== SKIPPED: {budget.skip_reason(_label(step), paused)} ===", flush=True)
+            return 0
     print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
     result = subprocess.run(step)
+    if result.returncode == budget.EXIT_SKIPPED and _Path(step[1]).name in PAID:
+        paused = budget.EXHAUSTED
+        print(f"=== SKIPPED: {budget.skip_reason(_label(step), paused)} ===", flush=True)
+        return 0
     if result.returncode != 0:
         print(f"=== FAILED: {' '.join(step)} (rc={result.returncode}) ===", flush=True)
         if fatal:
@@ -93,7 +119,7 @@ def main() -> None:
     for step in STEPS[:-2]:
         _run(step)
     deadline = time.monotonic() + 60 * args.wait_minutes
-    while args.wait_minutes and _pending() and time.monotonic() < deadline:
+    while args.wait_minutes and not paused and _pending() and time.monotonic() < deadline:
         print(f"=== WAITING: {_pending()} batch(es) still pending ===", flush=True)
         time.sleep(300)
         for step in COLLECT:
@@ -111,6 +137,12 @@ def main() -> None:
               "(batch_state) and the NEXT run collects them.")
     if embed_rc:
         sys.exit(3)
+    if paused:
+        # The free stages ran; the paid ones did not. The last line is the
+        # reason railway_cron records against this step (status `skipped`).
+        budget.exit_skipped(budget.skip_reason(
+            "news_cron.py paid stages (relevance, entity links, signals)", paused)
+            .replace("data unchanged", "free stages ran, labels unchanged"))
 
 
 if __name__ == "__main__":

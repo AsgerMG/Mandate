@@ -1048,6 +1048,12 @@ def cmd_run(args, batcher=None) -> None:
     a week late cannot displace a label somebody else wrote in between. The work
     list is read in one short transaction and each batch is written in its own:
     no Postgres transaction is held open across a batch."""
+    # LLM_BUDGET=off (mandate/llm/budget.py): skipped before anything is read,
+    # exit EXIT_SKIPPED, which railway_cron records `skipped`. --dry-run is free
+    # and still runs. (A credit-exhausted 400 is caught by the Batcher below.)
+    from mandate.llm import budget  # noqa: PLC0415
+    if not args.dry_run:
+        budget.exit_if_off("classify_taxonomy run")
     with connect(readonly=True) as con:
         full, sub, entity_only = _load_work(con)
     if args.limit:
@@ -1077,6 +1083,11 @@ def cmd_run(args, batcher=None) -> None:
     out = batcher.run(items, _handler(totals), max_usd=cap, over_cap="skip",
                       wait_minutes=getattr(args, "wait_minutes", WAIT_MINUTES_DEFAULT),
                       chunk=args.chunk, submit=not getattr(args, "collect_only", False))
+    if out.budget:
+        # The credit ran out mid-run: labels already written stay written, the
+        # batches recorded stay recorded, and the run says so.
+        print(f"\ndone: {totals['written']} labels written, {totals['errored']} errored.")
+        budget.exit_skipped(out.skipped)
     if out.skipped:
         print(f"SKIPPED: estimated ~${out.estimate_usd:.0f} exceeds --max-cost ${cap:.0f} "
               f"-- needs manual approval (run without --max-cost, or raise it, "

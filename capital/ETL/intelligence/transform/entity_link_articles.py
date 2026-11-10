@@ -262,7 +262,15 @@ def main() -> None:
     p.set_defaults(fn=cmd_submit)
     sub.add_parser("collect").set_defaults(fn=cmd_collect)
     args = ap.parse_args()
-    args.fn(args)
+    if args.cmd == "status" or getattr(args, "dry_run", False):
+        args.fn(args)
+        return
+    # submit and collect call the API: LLM_BUDGET=off, or the credit-exhausted
+    # 400, skips cleanly with EXIT_SKIPPED (mandate/llm/budget.py). Batches
+    # already recorded stay recorded and are collected once the budget is back.
+    from mandate.llm import budget  # noqa: PLC0415
+    with budget.paid_step(f"{_Path(__file__).name} {args.cmd}"):
+        args.fn(args)
 
 
 if __name__ == "__main__":

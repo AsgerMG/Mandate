@@ -454,6 +454,11 @@ def build(country: str, limit: int | None, workers: int) -> list[dict]:
         try:
             v = judge(client, r["name"] or "", s)
         except Exception as e:  # noqa: BLE001 - recorded, never silently dropped
+            from mandate.llm import budget  # noqa: PLC0415
+            if budget.is_budget_exhausted(e):
+                # Not a row's failure: no row can be judged. Stops the pass.
+                raise budget.BudgetUnavailable("name_applicable_object.py",
+                                               budget.EXHAUSTED) from e
             return {**r, "outcome": "judge_failed", "note": str(e)[:200]}
         if not v.get("names_the_legal_act"):
             return {**r, "outcome": "already_names_object", "note": v.get("note", "")}
@@ -686,7 +691,13 @@ def main() -> None:
         if not check_preconditions(results):
             raise SystemExit(1)
     else:
-        results = build(a.country, a.limit, a.workers)
+        # The paid pass. LLM_BUDGET=off, or the credit-exhausted 400 on any
+        # row, skips the whole pass before anything is written (EXIT_SKIPPED,
+        # mandate/llm/budget.py): rows keep the register's citation as their
+        # name until a run with budget.
+        from mandate.llm import budget  # noqa: PLC0415
+        with budget.paid_step("name_applicable_object.py"):
+            results = build(a.country, a.limit, a.workers)
         report(results)
     if a.out:
         _Path(a.out).write_text(json.dumps(results, ensure_ascii=False, indent=1))
