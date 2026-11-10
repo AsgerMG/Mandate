@@ -200,6 +200,21 @@ Facts change; these do not. Apply them to every case, every country.
    is to engage them and accelerate the reform, with the company's case as
    the argument. Say plainly that there is no route today.
 
+## 4e. Go below the national level, with a local read (owner, round 3b)
+"National" is three levels: national/federal, regional, local. A senior works
+all three, and narrows them twice:
+1. **By status.** Once the company holds a status (Art. 106 TUB, startup
+   innovativa, JEI, an establishment in a Land), list the products that status
+   opens, at each level, and lead with those. Status is matched, not guessed.
+2. **By economic geography.** The activity decides which regions matter, and
+   their priorities make the case. Example: robot deployment in Italy points to
+   the industrial north (Lombardia, Veneto, Piemonte, Emilia-Romagna, Toscana)
+   and to Lazio (defence, the capital). Ground the read in the regions' own
+   strategies (Smart Specialisation, ERDF programme priorities) and cite them.
+3. **Keep the political read current.** Regional councils and giunte, ministry
+   decrees, budget laws and reforms change what is open; the watchlist follows
+   the regions and ministries the plan relies on.
+
 ## 5. Where juniors go wrong
 - The **preparatory steps**: not asking the right questions up front, so the
   real blockers surface late.
