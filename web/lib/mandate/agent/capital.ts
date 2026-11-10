@@ -155,6 +155,25 @@ function summarise(i: DbInstrument) {
   };
 }
 
+/** The corpus's guarantee capital types. The screen's vocabulary folds them
+ *  into "loan" (CAPITAL_SOUGHT_TO_DB), where the far more numerous loans crowd
+ *  them out of its pool: asked as "loan", a guarantee question saw none of the
+ *  corpus's guarantee instruments (alignment run, 2026-11-10). */
+const GUARANTEE_TYPES = new Set(["guarantee", "counter_guarantee"]);
+const GUARANTEE_ASK = /(guarant|b(ü|ue|u)rgsch|garanz|garanti)/i;
+
+/** What the question asks for. A guarantee question is a guarantee question
+ *  whether the caller typed "guarantee" or, as the screen's vocabulary taught
+ *  it, "loan": "loan" alone with a guarantee objective reads as guarantee. */
+export function interpretTypes(objective: string, types: string[]): { types: string[]; guarantee: boolean; inferred: boolean } {
+  const t = types.map((x) => x.toLowerCase());
+  if (t.some((x) => GUARANTEE_TYPES.has(x))) return { types: t, guarantee: true, inferred: false };
+  if (GUARANTEE_ASK.test(objective) && (!t.length || t.every((x) => x === "loan"))) {
+    return { types: ["guarantee"], guarantee: true, inferred: true };
+  }
+  return { types: t, guarantee: false, inferred: false };
+}
+
 export async function findInstruments(port: CapitalPort, profile: CompanyProfile, input: {
   objective: string; instrument_types?: string[]; jurisdictions?: string[]; name_query?: string; limit?: number;
 }) {
@@ -164,6 +183,21 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
   const inJuris = (c?: string) => !juris.length || (c ? juris.includes(c.toUpperCase()) : false);
   const out: Record<string, unknown>[] = [];
   const seen = new Set<string>();
+  const asked = interpretTypes(input.objective, input.instrument_types ?? []);
+  // The screen knows no guarantee type: it is asked for "loan" and its rows are
+  // then kept to guarantees unless loans were asked for too.
+  const screenTypes = [...new Set(asked.types.map((t) => (GUARANTEE_TYPES.has(t) ? "loan" : t)))];
+  const loansToo = asked.types.includes("loan");
+  if (asked.guarantee) {
+    const g = port.instruments()
+      .filter((i) => GUARANTEE_TYPES.has(String(i.capitalType)) && inJuris(i.country))
+      .sort((a, b) => (b.eventCount ?? 0) - (a.eventCount ?? 0));
+    for (const i of g) {
+      if (out.length >= limit) break;
+      seen.add(i.id);
+      out.push({ ...summarise(i), matched: "guarantee" });
+    }
+  }
   if (input.name_query?.trim()) {
     const terms = norm(input.name_query).split(/\s+/).filter((t) => t.length > 2);
     for (const i of port.instruments()) {
@@ -180,7 +214,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
   let verdict: Awaited<ReturnType<CapitalPort["verdict"]>> | undefined;
   let screenError: string | undefined;
   try {
-    verdict = await port.verdict(profile, input.objective, input.instrument_types ?? []);
+    verdict = await port.verdict(profile, input.objective, screenTypes);
   } catch (e) {
     screenError = e instanceof Error ? e.message.slice(0, 160) : String(e);
     console.error("[mandate/capital] the screen failed; returning name matches only:", screenError);
@@ -188,6 +222,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
   for (const row of verdict?.instrumentTable ?? []) {
     if (out.length >= limit * 2) break;
     if (!row.instrumentId || seen.has(row.instrumentId) || !inJuris(row.country)) continue;
+    if (asked.guarantee && !loansToo && !GUARANTEE_TYPES.has(String(row.capitalType))) continue;
     seen.add(row.instrumentId);
     out.push({
       instrument_id: row.instrumentId, name: row.instrument, country: row.country,
@@ -198,6 +233,8 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
   }
   return {
     instruments: out,
+    ...(asked.guarantee ? { interpreted_as: asked.inferred
+      ? "guarantee (the objective asks for a guarantee; 'loan' alone was read as guarantee)" : "guarantee" } : {}),
     note: "Corpus rows, uncited. Use assess_instrument for cited gates before relying on any.",
     withheld: verdict?.withheld?.note,
     ...(screenError ? { screen_unavailable: "The eligibility screen did not run; only name matches are listed. Use name_query to look up instruments by name." } : {}),
