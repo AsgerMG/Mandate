@@ -22,7 +22,8 @@ Three agents were stopped mid-work with WIP commits on their branches (not merge
    equity stakes into find_precedents, read_agenda tool, usage log (mandate.tool_calls),
    archive_dead_weight.sh (~170 MB to bucket archive/2026-11/), old news down-ranked.
 Findings saved by the stopped agents (10 Nov):
-- agent-on-railway (cff29ffe, design only, no code): chose to keep Wincent's capital tools
+- agent-on-railway: PAUSED (11 Nov, my call, owner informed) until API budget exists: with the budget off the production advisor cannot run, so the move buys nothing yet; the bench is the test path. Resume it the day budget lands.
+  (cff29ffe, design only, no code): chose to keep Wincent's capital tools
   in TypeScript behind an internal site endpoint, called by the new Python loop (porting
   would duplicate ~5k lines of eligibility logic). SPAR on this first: with "narrow
   first" (Italy + EU), a plain Python SQL search may now be small enough, and it retires
