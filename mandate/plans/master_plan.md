@@ -21,9 +21,19 @@ send its output with light edits. That is the only test that counts, so every pi
 tested as real PA work, graded by the owner.
 
 **Market scope (owner, 10 Nov):** CORE: Germany, Italy, France, the EU level, the UK.
-HUBS (second tier): Sweden, Denmark, Norway, the Netherlands, Belgium. Everything else
+HUBS (second tier): Sweden, Denmark, Norway, the Netherlands, Belgium, Spain. Everything else
 is out: not built out, refreshed only if it serves core/hub cases as precedent;
 what is stored for it is reviewed by the data audit (archive, never delete).
+
+**Decided 10 Nov (owner, after sparring):**
+- **Narrow first:** one workflow (W6 funding route plan) on Italy + EU, until it grades
+  >= 4/5 on five different cases. Nothing widens before that.
+- **The agent loop moves to mandate-api on Railway now**; the website becomes a thin screen.
+- **Our own app, as a management tool**: graphs of workflows and processes across
+  mandates, not delivery into email/Slack first. Screens still arrive as each
+  workflow proves out (phase 4 order).
+- **Data:** wire what we hold (equity stakes, news), log every tool call and
+  retrieval, stop refreshing OUT sources, archive the dead weight (data_audit.md).
 
 ## 1. Where we are (10 Nov 2026)
 
