@@ -1,0 +1,11 @@
+{
+  "name": "Example Lending (eval case 1)",
+  "description": "Fintech platform originating SME loans, funded by equity (EUR 40M raised) and a EUR 150M warehouse facility. German GmbH, no branches in France or Italy. No banking, payment or investment-firm licence. SME loan book EUR 120M today, target EUR 500M in three years. Wants public guarantee cover on its loan portfolio in Germany, France, Italy and at EU level. Not raising equity now.",
+  "sector": "software_data_ai",
+  "subsectors": ["fintech"],
+  "customerType": "b2b",
+  "incorporationCountry": "DE",
+  "entityCountries": ["DE"],
+  "markets": ["EU", "DE", "FR", "IT"],
+  "developmentStage": "scaling_revenue"
+}
