@@ -229,6 +229,12 @@ conversation the team will use.
 3. **One of everything:** one database, one source library, one model, one weekly
    refresh, one daily worker, one health monitor, one record keeper.
 4. **Grounded or labelled:** every factual claim is cited or marked as judgement.
+4b. **A brain, not an encyclopedia** (owner, 10 Nov). Knowledge = a little
+   history + the current context + current data, acted upon. Keep a small,
+   strong, current core (the deciding rules, precedents, people); get the rest
+   by live research, cited and cached; keep the brains current through the
+   weekly refresh and the radar. Stored data earns its place by being used by a
+   brain and moving a graded case; what is never read gets archived.
 5. **Advise and draft; humans send.** Nothing leaves Mandate on its own.
 6. **Archive, never delete.** Retired code goes to a tag; data to the bucket.
 7. **Instinct over neatness:** rebuild only where the foundation is wrong (CI that is
