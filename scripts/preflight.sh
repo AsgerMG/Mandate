@@ -8,8 +8,9 @@
 #
 # Covered: Vercel config (what failed every deploy on 9 Nov), mandate-ci (clean
 # env from mandate/pyproject.toml [test]: what failed on anthropic), policy CI
-# (uv sync --frozen, exactly as CI). NOT covered: capital CI (24 min; its own
-# checks run there). Skip once, deliberately: SKIP_PREFLIGHT=1 git push
+# (uv sync --frozen, exactly as CI), web CI without the build. NOT covered:
+# capital CI (its ETL tests need a throwaway Postgres; they run there). Skip
+# once, deliberately: SKIP_PREFLIGHT=1 git push
 set -uo pipefail
 [ "${SKIP_PREFLIGHT:-0}" = 1 ] && { echo "preflight: skipped (SKIP_PREFLIGHT=1)"; exit 0; }
 cd "$(git rev-parse --show-toplevel)"
@@ -34,6 +35,16 @@ if touched '^mandate/|\.py$|^\.github/workflows/mandate-ci'; then
       python mandate/profile/fixtures.py --check && python -m pytest mandate/tests -q -x'
   }
   step "mandate-ci (clean env)" run_mandate
+fi
+if touched '^web/|^mandate/vocabulary/|^mandate/profile/|^\.github/workflows/web-ci'; then
+  # web-ci.yml minus the build and the corpus prebuild (it uses the site data
+  # already on disk). Needs web/node_modules.
+  run_web() {
+    (cd web && npx tsc --noEmit && npx vitest run && npx eslint . &&
+      npx tsx scripts/check_revalidate_literal.ts && npx tsx scripts/check_rendered_numbers.ts &&
+      NO_PG=1 npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_client_boundary.ts)
+  }
+  step "web CI (no build)" run_web
 fi
 if touched '^policy/|^mandate/'; then
   run_policy() { (cd policy && uv sync -q --frozen --extra dev --python 3.12 && uv run --frozen pytest -q -x); }

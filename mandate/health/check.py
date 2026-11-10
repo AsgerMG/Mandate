@@ -216,6 +216,34 @@ def check(c, t: dict) -> list[Finding]:
                                f"(last: {_iso(last) or 'never'}); deploys build from the database",
                                "mandate.artefact_releases", _iso(last + dt.timedelta(days=days)) if last else None))
     guard("digest", "mandate.run_steps / artefact_releases", digest_and_release)
+
+    # ── the corpus guards' published verdicts ──────────────────────────────
+    # The guard list is capital/data/guard_registry.json (read, never copied):
+    # census, store_schema, corpus_marks, offerable_decay (the weekly run
+    # publishes them) and applicant_identity (published when its inputs
+    # change, so it has no clock). Red, errored, never published or, for a
+    # weekly one, late: each is a breach in this one issue.
+    def guard_verdicts():
+        reg = json.loads((ROOT / "capital" / "data" / "guard_registry.json").read_text())
+        days = t["guard_verdict_max_age_days"]
+        newest = {g: (s, at, summ) for g, s, at, summ in _q(c, """
+            SELECT DISTINCT ON (guard) guard, status, taken_at, summary
+              FROM capital.guard_verdicts ORDER BY guard, taken_at DESC""")}
+        for g in reg["guards"]:
+            gid, weekly = g["id"], g["cadence"] == "weekly"
+            where = f"capital guard {gid}, capital.guard_verdicts"
+            if gid not in newest:
+                out.append(Finding(f"guard:{gid}", f"guard {gid} has never published a verdict",
+                                   where, None))
+                continue
+            status, at, summary = newest[gid]
+            if status != "ok":
+                out.append(Finding(f"guard:{gid}", f"guard {gid} is {status}: {summary[:200]}",
+                                   where, _iso(at)))
+            elif weekly and NOW - at > dt.timedelta(days=days):
+                out.append(Finding(f"guard:{gid}", f"guard {gid} has not published within {days} days "
+                                   f"(last: {_iso(at)})", where, _iso(at + dt.timedelta(days=days))))
+    guard("guards", "capital.guard_verdicts", guard_verdicts)
     return out
 
 

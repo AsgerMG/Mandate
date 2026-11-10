@@ -46,16 +46,10 @@ fi
 
 measure_cmd() {
   cat <<EOF
-  The owner's acceptance test, the one end-to-end funnel (baseline 36.1%, last
-  35.9% with timeouts). Read-only; a few cents of query embeddings. Run it on
-  main BEFORE merging the flip (legacy space) and on the flip branch / after
-  the merge (one model), and compare the six-row line:
-
-    cd web && DATABASE_URL="\$(cd .. && source mandate/ops/_railway.sh && db_var CAPITAL_RO_DATABASE_PUBLIC_URL)" \\
-      VOYAGE_KEY="\$VOYAGE_KEY" npm run stages
-
-  NO_PG must be UNSET: it silently substitutes the snapshot and the lexical
-  ranker (it cost 5.3 points once).
+  The end-to-end funnel (npm run stages, web/scripts/measure_funnel.ts) was the
+  brief ranker's acceptance measurement. It is archived with the one-pager
+  product at the tag archive/2026-11-pre-pivot; restore it from there to
+  compare the legacy space against one model.
 EOF
 }
 
@@ -106,7 +100,7 @@ echo "== the committed caches the offline checks rank on, regenerated in the new
 (cd web && DATABASE_URL="$RO" npx tsx scripts/emit_semantic_cache.ts)
 echo "== tests"
 PYTHONPATH=. policy/.venv/bin/python -m pytest mandate/tests -q
-(cd web && env -u DATABASE_URL -u VOYAGE_KEY npx vitest run --exclude scripts/check_red_debt.test.ts)
+(cd web && env -u DATABASE_URL -u VOYAGE_KEY npx vitest run)
 cat <<EOF
 
 FLIPPED in this checkout. Commit and merge it as ONE change; the merge deploys
@@ -114,7 +108,7 @@ Vercel (web/) and capital-etl from the same commit:
 
   git add mandate/embedding/spaces.json web/lib/embedding.ts web/lib/intelligence/semanticCache.generated.json
   git commit -m "One model: capital's vector tables read voyage-4-large"
-  git push -u origin HEAD     # open the PR; CI runs the six ranker checks on the new space
+  git push -u origin HEAD     # open the PR
 
 Rollback before step 5 is a revert of that commit: the old vectors are still there.
 EOF

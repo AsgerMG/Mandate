@@ -2,7 +2,7 @@
 //
 // ── The property ───────────────────────────────────────────────────────────
 // Every quantity in visitor-facing text on the pages in ENTRY_POINTS (`/`,
-// `/wincent`, `/about-public-capital`, `/brief` and Regina's) must be one of:
+// `/wincent`, `/about-public-capital` and Regina's) must be one of:
 //
 //   DERIVED    an expression — it came from the census, from a committed
 //              corpus artifact, or from a prop that did. These are invisible
@@ -75,17 +75,16 @@ const APP = path.join(CWD, "app");
 
 /** The visitor-facing pages, plus the shells that wrap them. Since 2026-11-06
  *  the site is Mandate: its home, Wincent's three pages (his landing moved from
- *  `/` to `/wincent`) and Regina's, ported from regina-ai.eu. */
+ *  `/` to `/wincent`) and Regina's, ported from regina-ai.eu. The one-pager
+ *  briefs (/brief, /regina/brief) were retired on 2026-11-10. */
 const ENTRY_POINTS = [
   "app/page.tsx",
   "app/wincent/page.tsx",
   "app/about-public-capital/page.tsx",
-  "app/brief/page.tsx",
   "app/layout.tsx",
   "app/regina/layout.tsx",
   "app/regina/page.tsx",
   "app/regina/about/page.tsx",
-  "app/regina/brief/page.tsx",
   "app/regina/documents/page.tsx",
   "app/regina/documents/[id]/page.tsx",
 ];
@@ -353,7 +352,8 @@ function assertNotVacuous(o: {
     fail(`the corpus vocabulary derived from ${ARTIFACTS.join(", ")} has only ` +
          `${o.nouns} words. The artifacts did not load.`);
   }
-  if (o.expected < 200) {
+  // 150, not 200: the site lost its two brief pages on 2026-11-10 (195 lines remain).
+  if (o.expected < 150) {
     fail(`the coverage ground truth found only ${o.expected} line(s) of visitor text ` +
          `across the whole site. It is not measuring anything, so the coverage figure ` +
          `below would be a number with no denominator.`);

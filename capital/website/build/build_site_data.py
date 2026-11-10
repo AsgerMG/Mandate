@@ -16,15 +16,14 @@ Order:
   0. the views            -- ETL/schema/install_views.py --check. A build cannot
                              reinstall them (capital_ro creates nothing), so it
                              refuses views that are not the committed file
-  1. coverage_indicator   -- coverage_ratings.json + country_coverage.json
+  1. coverage_indicator   -- coverage_ratings.json
                              + data/processed/coverage_indicator.json
   2. taxonomy             -- taxonomy.json
   3. country_map          -- country_map.json
-  4. home_visuals         -- instrument_leaderboard.json
-  5. synthesis            -- synthesis.json (corpus KPIs)
-  6. investor_insights    -- investor_insights.json
-  7. companies_index      -- companies_index.json
-  8. eligibility_export   -- instrument_terms.json
+  4. synthesis            -- synthesis.json (corpus KPIs)
+  5. investor_insights    -- investor_insights.json
+  6. companies_index      -- companies_index.json
+  7. eligibility_export   -- instrument_terms.json
 (every output is generated, never committed)
 then the cross-file consistency guard.
 
@@ -59,10 +58,8 @@ READONLY_ENV = "CAPITAL_RO_DATABASE_URL"   # the same name store.py reads
 # whatever is on disk and says what is missing.
 GENERATED = {
     "coverage_ratings.json":       ("coverage_indicator.py", "generated"),
-    "country_coverage.json":       ("coverage_indicator.py", "generated"),
     "taxonomy.json":               ("taxonomy.py", "generated"),
     "country_map.json":            ("country_map.py", "generated"),
-    "instrument_leaderboard.json": ("home_visuals.py", "generated"),
     "synthesis.json":              ("synthesis.py", "generated"),
     "investor_insights.json":      ("investor_insights.py", "generated"),
     "companies_index.json":        ("companies_index.py", "generated"),
@@ -73,7 +70,6 @@ STEPS = [
     ("coverage indicator", "coverage_indicator.py"),
     ("sector taxonomy",    "taxonomy.py"),
     ("country map",        "country_map.py"),
-    ("home visuals",       "home_visuals.py"),
     ("synthesis KPIs",     "synthesis.py"),
     ("investor insights",  "investor_insights.py"),
     ("agent index",        "companies_index.py"),

@@ -166,7 +166,6 @@ STEPS = [
     [sys.executable, str(ROOT / "ETL/terms/emit_region_prior.py"), "--write"],
     [sys.executable, str(ROOT / "ETL/terms/emit_channel_prior.py")],
     [sys.executable, str(ROOT / "ETL/terms/emit_instrument_objectives.py"), "--write"],
-    [sys.executable, str(ROOT / "ETL/terms/emit_profile_leak_index.py")],
     # News, weekly (owner decision 2026-11-06). news_cron.py --wait collects this
     # run's batches before the digest is cut; ids outlive the container
     # (batch_state, migration 035). Then link news to funds, then the digest.
@@ -181,19 +180,18 @@ STEPS = [
 # stopping would only take the census and the guards down with it.
 SOFT = {"build_instrument_profiles.py", "embed_eligibility.py", "emit_peer_prior.py",
         "emit_region_prior.py", "emit_channel_prior.py", "emit_instrument_objectives.py",
-        "emit_profile_leak_index.py", "news_cron.py", "link_programme_mentions.py",
+        "news_cron.py", "link_programme_mentions.py",
         "signals_digest.py", "coverage_gate.py"}
 # Skipped when coverage_gate.py is red: they publish what the gate refused.
 GATED = {"build_instrument_profiles.py", "embed_eligibility.py", "emit_peer_prior.py",
-         "emit_region_prior.py", "emit_channel_prior.py", "emit_instrument_objectives.py",
-         "emit_profile_leak_index.py"}
+         "emit_region_prior.py", "emit_channel_prior.py", "emit_instrument_objectives.py"}
 
 # ── The guards that can only run here ──────────────────────────────────────
 # These read the store, which no CI job holds credentials for, and giving GitHub
 # Actions credentials to reach it would widen a compromised workflow from "can
 # read our code" to "can read and write every award, company and fund we hold". So they run where
 # the data already is, and publish a verdict anything can read
-# (ETL/lib/guard_verdicts.py; web/scripts/check_verdicts.ts).
+# (ETL/lib/guard_verdicts.py); mandate/health/check.py reads them daily.
 #
 # `check_offerable_decay.py` was already a step above. It has moved here rather
 # than being duplicated: same command, same tolerated exit code (declared once,
@@ -204,7 +202,7 @@ GATED = {"build_instrument_profiles.py", "embed_eligibility.py", "emit_peer_prio
 # Deliberate, and the opposite of what the steps above do. A guard is a REPORT.
 # Aborting here would skip the census — which is the only record of what this
 # week's corpus contains — in order to signal a problem that the guard has
-# already recorded and that check_verdicts.ts will fail on within hours. The run
+# already recorded and that mandate/health will report within a day. The run
 # would go dark precisely when there was something to see. So every guard runs,
 # every verdict is published, the run's exit code reflects that a guard failed,
 # and nothing downstream is denied the evidence.
@@ -218,8 +216,10 @@ GATED = {"build_instrument_profiles.py", "embed_eligibility.py", "emit_peer_prio
 # did this run finish what it started. It is deliberately run AFTER the steps
 # and without excluding this run's own id, because by then every step above has
 # closed its mark and an unclosed or non-ok one is the finding.
-GUARDS = ["store_schema", "aggregate_independence", "offerable_decay",
-          "corpus_marks"]
+# The census publishes itself (CENSUS below); applicant_identity is TypeScript
+# and published on change. aggregate_independence was a fifth cron guard until
+# 2026-11-10, when the guard set was collapsed to the five mandate/health reads.
+GUARDS = ["store_schema", "offerable_decay", "corpus_marks"]
 RUNNER = str(ROOT / "ETL/lib/guard_verdicts.py")
 
 # Recorded after everything above, WHATEVER happened above — see below.

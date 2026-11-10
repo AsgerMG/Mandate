@@ -62,9 +62,8 @@ make site-dev                               # cd ../web && npm run dev     -> lo
 
 | Builder | Writes | Read by |
 |---|---|---|
-| `coverage_indicator.py` | `coverage_ratings.json`, `country_coverage.json`, `data/processed/coverage_indicator.json` | home page coverage table |
+| `coverage_indicator.py` | `coverage_ratings.json`, `data/processed/coverage_indicator.json` | home page coverage table |
 | `country_map.py` | `country_map.json` | home Europe map |
-| `home_visuals.py` | `instrument_leaderboard.json` | home taxonomy diagram |
 | `synthesis.py` | `synthesis.json` | home KPI grid + layout footer |
 | `investor_insights.py` | `investor_insights.json` | the `/for-companies` charts |
 | `company_search.py` | `companies/*.json` shards | `/companies` client-side lookup |

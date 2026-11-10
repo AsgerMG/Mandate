@@ -130,3 +130,28 @@ def test_policy_budget_pause_comes_from_its_run_detail(mdb):
     r2 = RunLog.start(url, brain="policy", kind="policy_refresh", strict=True)
     r2.finish("ok", detail={"sources": {}})
     assert not any(n.startswith("policy:") for n in _notes(mdb))
+
+
+def test_the_corpus_guards_are_read_from_their_verdicts(mdb):
+    """One health path (2026-11-10): every guard in capital/data/guard_registry.json
+    is read from capital.guard_verdicts. Red, never published, or a weekly guard
+    gone quiet is a breach; an on_change guard has no clock."""
+    assert "could not be checked" in _ids(mdb)["guards"].what   # no table yet: a breach
+    ddl = (H.ROOT / "capital/ETL/schema/guard_verdicts.sql").read_text()
+    with psycopg.connect(mdb.admin_url, autocommit=True) as c:
+        c.execute("CREATE SCHEMA IF NOT EXISTS capital")
+        c.execute("SET search_path = capital")
+        c.execute(ddl)
+        c.execute("GRANT USAGE ON SCHEMA capital TO capital_ro")
+        c.execute("GRANT SELECT ON capital.guard_verdicts TO capital_ro")
+        for guard, status, age in [("census", "ok", 1), ("store_schema", "failed", 1),
+                                   ("corpus_marks", "ok", 10), ("applicant_identity", "ok", 40)]:
+            c.execute("INSERT INTO capital.guard_verdicts (guard, status, taken_at, produced_by, "
+                      "code_fingerprint, summary) VALUES (%s, %s, now() - make_interval(days => %s), "
+                      "'test', 'x', %s)", (guard, status, age, f"{guard} said so"))
+    f = _ids(mdb)
+    assert "guards" not in f
+    assert "guard:census" not in f and "guard:applicant_identity" not in f
+    assert "failed" in f["guard:store_schema"].what
+    assert "within 8 days" in f["guard:corpus_marks"].what
+    assert "never published" in f["guard:offerable_decay"].what

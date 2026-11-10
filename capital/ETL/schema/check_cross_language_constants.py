@@ -178,74 +178,6 @@ def eur_formatting() -> list[str]:
     return problems
 
 
-def scheduled_run_identity() -> list[str]:
-    """Who the scheduled ETL run is, and how often it runs.
-
-    `check_corpus_census.ts` asks one question the rest of the repo cannot ask
-    for it: has the weekly refresh stopped? To answer it the check has to
-    recognise a census the CRON wrote -- `publish_corpus_census.py` stamps
-    `produced_by` from `$RAILWAY_SERVICE_NAME`, so that name is the evidence --
-    and it has to know how long a gap is too long.
-
-    Both facts already exist, once, in `ETL/lib/railway_service.py`, where
-    `verify_cron.py` reads them to enforce the schedule on Railway itself.
-    TypeScript cannot import them, so they are spelled a second time, and this
-    is what stops the second spelling from rotting.
-
-    Both drift directions are silent, and neither is theoretical -- the service
-    has been renamed once already and the schedule is written over by every
-    trigger run:
-
-      THE NAME.  Rename the Railway service and no census matches
-      SCHEDULED_PRODUCER any more. The check reports that the refresh has never
-      recorded, forever, while it runs perfectly every Sunday. A guard that is
-      permanently red is a guard nobody reads, which is how the drift reached 32
-      days in the first place.
-
-      THE SCHEDULE.  Move the cron to daily and the limit stays at 17.5 days:
-      six consecutive missed runs would pass. The check would still print a
-      confident basis line naming a cadence that is no longer real -- the worst
-      shape of wrong, because it reads as measured.
-    """
-    py = (ROOT / "ETL/lib/railway_service.py").read_text()
-    ts = (WEB / "scripts/check_corpus_census.ts").read_text()
-
-    def const(text: str, pattern: str) -> str | None:
-        # MULTILINE, because both constants are top-level assignments and the
-        # anchors are there to refuse a match inside a comment or a docstring.
-        m = re.search(pattern, text, re.MULTILINE)
-        return m.group(1) if m else None
-
-    pairs = [
-        ("the scheduled producer",
-         const(py, r'^SERVICE_NAME\s*=\s*"([^"]+)"'),
-         const(ts, r'^const SCHEDULED_PRODUCER\s*=\s*"([^"]+)"'),
-         "railway_service.SERVICE_NAME", "check_corpus_census.SCHEDULED_PRODUCER",
-         "→ no census would match, and SILENT would report a refresh that never\n"
-         "      records while it runs every week"),
-        ("the schedule",
-         const(py, r'^REAL_CRON_SCHEDULE\s*=\s*"([^"]+)"'),
-         const(ts, r'^const SCHEDULED_CRON\s*=\s*"([^"]+)"'),
-         "railway_service.REAL_CRON_SCHEDULE", "check_corpus_census.SCHEDULED_CRON",
-         "→ SILENT would measure staleness against a cadence the cron no longer\n"
-         "      runs at, and say so as though it had been measured"),
-    ]
-
-    problems = []
-    for label, py_val, ts_val, py_where, ts_where, note in pairs:
-        if py_val is None or ts_val is None:
-            missing = py_where if py_val is None else ts_where
-            problems.append(
-                f"  {label}: could not be read from {missing} — the constant was "
-                f"renamed or reformatted,\n    and this check silently stopped "
-                f"comparing anything. {note}")
-        elif py_val != ts_val:
-            problems.append(
-                f"  {label}: {py_where} is {py_val!r}, {ts_where} is {ts_val!r}\n"
-                f"    {note}")
-    return problems
-
-
 def loss_tolerance() -> list[str]:
     """How far a corpus measure may fall before that is a loss.
 
@@ -286,7 +218,6 @@ CHECKS = {
     "GBER article codes": gber_articles,
     "corpus KPI names": census_kpi_keys,
     "EUR formatting": eur_formatting,
-    "scheduled run identity": scheduled_run_identity,
     "corpus loss tolerance": loss_tolerance,
 }
 

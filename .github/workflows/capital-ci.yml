@@ -1,46 +1,30 @@
-# The gate that was missing. Every check here already existed and was run by
-# hand; during the audit a broken build reached main because a commit ran on a
-# separate line from a failing typecheck. Verification nobody is forced to run
-# is verification that eventually does not happen.
+# The capital brain's ETL (capital/): its unit tests and schema checks.
+#
+# Slimmed on 2026-11-10 (Phase 0). The web app it used to build has its own
+# gate (web-ci.yml), the retired one-pager brief's checks are archived (tag
+# archive/2026-11-pre-pivot), and the checks that judge the LIVE corpus rather
+# than the code in a push moved to the nightly (capital-nightly.yml): a push
+# cannot fix a corpus value, so a red there blocked every branch for a reason no
+# branch could address. This job holds no credential of ours: a throwaway
+# Postgres and the repository, nothing else.
 name: capital CI
 
 on:
-  # Scoped to this brain. In the monorepo a push to policy/ or mandate/ must not
-  # spend this matrix, and a push here must not wait on theirs.
   pull_request:
     paths:
       - 'capital/**'
       - '!capital/project-mgmt/**'
       - '!capital/**/*.md'
-      # the Mandate web app (was capital/website/frontend), which this CI builds
-      - 'web/**'
-      - '!web/**/*.md'
-      # the one file under a skipped path that checks DO read
-      - 'capital/data/guard_registry.json'
-      # the shared vocabulary and profile fixtures web/lib/mandate tests read
       - 'mandate/vocabulary/**'
-      - 'mandate/profile/**'
       - '.github/workflows/capital-ci.yml'
   push:
     branches: [main]
-    # ── WHY project-mgmt AND MARKDOWN DO NOT RUN CI ────────────────────────
-    # On 2026-08-19 fifteen merges landed on main and every one spent the full
-    # matrix, on an account with 2,000 Actions minutes a month. Scoped by what
-    # the checks READ: `project-mgmt/` is written BY the checks
-    # (check_status.json) and read only by check_red_debt, which runs inside
-    # vitest and is therefore covered by the next code push.
+    # project-mgmt/ and markdown do not run CI: no check here reads them.
     paths:
       - 'capital/**'
       - '!capital/project-mgmt/**'
       - '!capital/**/*.md'
-      # the Mandate web app (was capital/website/frontend), which this CI builds
-      - 'web/**'
-      - '!web/**/*.md'
-      # the one file under a skipped path that checks DO read
-      - 'capital/data/guard_registry.json'
-      # the shared vocabulary and profile fixtures web/lib/mandate tests read
       - 'mandate/vocabulary/**'
-      - 'mandate/profile/**'
       - '.github/workflows/capital-ci.yml'
 
 concurrency:
@@ -48,392 +32,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  frontend:
-    name: types, contracts, build
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-          cache: npm
-          cache-dependency-path: web/package-lock.json
-      # The code fingerprint a verdict is bound to has exactly one
-      # implementation, in ETL/lib/guard_verdicts.py, and the checks below shell
-      # out to it rather than carrying a second one. A second implementation of
-      # a fingerprint is a fingerprint of two different things the first time
-      # either changes.
-      - uses: actions/setup-python@v5
-        with: { python-version: '3.11' }
-      - run: npm ci
-
-      # ── ONE credential, and it cannot write ────────────────────────────
-      # No read-WRITE database URL in CI, by design and by check: handing this
-      # workflow one would widen the blast radius of one compromised job from
-      # "can read our code" to "can rewrite every award, company and fund we
-      # hold". Since 2026-11-05 the corpus lives only in Postgres and the
-      # site's data is generated from it rather than committed, so CI holds the
-      # capital_ro URL, and only in the two steps below that need it. The first
-      # asks the DATABASE what the role may do and fails if it can write,
-      # create or grant anything, so a read-write URL pasted under this name
-      # stops here. ETL/schema/check_guard_registry.py fails the build if the
-      # secret is bound under another name, at job level, or first reaches a
-      # step that is not that proof.
-      - name: The corpus credential is read-only
-        working-directory: capital
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: |
-          pip install --quiet 'psycopg[binary]==3.3.4'
-          python3 ETL/schema/check_readonly_credential.py
-      # The artefacts every check below reads (instrument_terms.json,
-      # companies_index.json, ...) generated from the corpus. Without the secret
-      # (a pull request from a fork) this uses what is on disk and says what is
-      # missing; the checks that need a missing file then fail by name.
-      - name: Site data from the corpus
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ../capital/website/build/build_site_data.py --prebuild
-      - name: Typecheck
-        run: npx tsc --noEmit
-
-      # Unit tests over the modules where production bugs actually lived:
-      # the eligibility evaluator, the request sanitiser, watch-only detection
-      # and cost accounting. Coverage has a floor so tests cannot be deleted
-      # to make a build pass.
-      # check_red_debt.test.ts is excluded HERE and only here: it judges
-      # project-mgmt/check_status.json, the record `npm run check` writes, so it
-      # is the report-tier "a red check is owned" and runs in the nightly
-      # report (capital-nightly.yml). It still runs in every local `npx vitest
-      # run`, which is where it was put to be read.
-      - name: Unit tests
-        run: npx vitest run --coverage --exclude scripts/check_red_debt.test.ts
-
-      # The output contracts must still describe the report we actually build.
-      # The job is already named "contracts" for the vocabulary one; this is
-      # the other half, and without it a contract can name a dead schema field
-      # or leave a hard rule unenforced with nothing to notice.
-      # A Next segment config must be a literal. `export const revalidate =
-      # SOME_CONSTANT` fails the whole production build with a message naming
-      # no file -- three pages carried it, so fixing two changed nothing, and
-      # every Vercel deploy failed until someone read the logs.
-      - name: Segment config is a literal
-        run: npx tsx scripts/check_revalidate_literal.ts
-
-      - name: Output contracts
-        run: npx tsx scripts/check_contracts.ts
-
-      # No number a visitor reads is a literal the corpus does not produce.
-      # Hermetic: TypeScript source plus two COMMITTED artifacts, no database
-      # and no credentials, so it cannot pass by finding nothing to read — and
-      # it self-tests its own detector on every run before it judges the site.
-      - name: Rendered numbers come from the corpus
-        run: npx tsx scripts/check_rendered_numbers.ts
-
-      - name: Vocabulary contract
-        run: npx tsx scripts/check_vocabularies.ts
-        env: { NO_PG: '1' }
-
-      # Directly under the vocabulary contract, because it reads the same two
-      # things. That one says the ANSWER SET a comparator refers to exists;
-      # this says the QUESTION the comparator decides on is the question the
-      # rule turns on. The class it stops: a 50%-Russian-ownership rule encoded
-      # as "does any shareholder own more than 25%", so an ordinary cap table
-      # deleted the fund. Hermetic — two committed JSON artifacts and source,
-      # no database — and it belongs here rather than only in `npm run check`,
-      # because a re-extraction that reintroduces the misencoding arrives by
-      # pull request.
-      - name: A comparator asks the rule's question
-        run: npx tsx scripts/check_field_matches_demand.ts
-
-      - name: Per-request payload budget
-        run: npx tsx scripts/check_payload_budget.ts
-
-      # ── Checks that were in `npm run check` and in no automatic path ───────
-      # Every one of these reads committed artifacts only. They were left out of
-      # CI on the assumption that "needs the corpus" and "cannot run in CI" were
-      # the same set; they are not, and these eight ran only when somebody typed
-      # the command. That is how the fallback corpus reached 205 instruments out
-      # of date on liveness, showing 26% of founders at least one dead call.
-      #
-      # `if: always()` so one failure does not hide the other seven. A run that
-      # stops at the first red tells you one thing about a build that may be
-      # wrong in four ways.
-      - name: Liveness has one definition
-        if: always()
-        run: npx tsx scripts/check_liveness.ts
-      - name: Offer routes are sourced
-        if: always()
-        run: npx tsx scripts/check_offer_route.ts
-      # The same class of question one step earlier: that one asks whether a row
-      # is an OFFER, this asks whether it is an OBJECT. Twelve rows named after
-      # the loader's own partition keys were in founders' pools and Poland's
-      # ENTIRE pool was eight of them.
-      - name: A row is named by something outside its id
-        if: always()
-        run: npx tsx scripts/check_name_evidence.ts
-      - name: Regions match the NUTS reference
-        if: always()
-        run: npx tsx scripts/check_regions.ts
-      - name: Theme index is not stale
-        if: always()
-        run: npx tsx scripts/check_theme_index.ts
-      - name: Leaf cap headroom
-        if: always()
-        run: npx tsx scripts/check_leaf_cap.ts
-      - name: Client modules reach no server-only import
-        if: always()
-        run: npx tsx scripts/check_client_boundary.ts
-      # Reads the committed snapshot and deletes DATABASE_URL on its way past,
-      # so it needs no credential and never has. It was in `npm run check` and
-      # nowhere else -- and at position 17 of a 27-link `&&` chain whose 14th
-      # link is red, so it had not run at all.
-      - name: Every intake value reaches some publishable fund
-        if: always()
-        run: npx tsx scripts/check_capital_reach.ts
-      - name: The recall set does not leak its answers
-        if: always()
-        run: npx tsx scripts/check_recall_leaks.ts
-      # The same ratchet shape one artifact over. That one counts requirements
-      # with no judgement; this counts CHANNELS with no probability.
-      # channelPrior.generated.json shipped holding 9 of the corpus's 11, and the
-      # reader is `prior[c] ?? 0`, so the two it omitted -- one of them the won
-      # channel of 471 of the funnel's 897 founders -- were being scored as
-      # impossible rather than as unmeasured. It DELETES DATABASE_URL and
-      # VOYAGE_KEY on its way past and reads the committed snapshot, so it runs
-      # here with no credentials and cannot pass by having nothing to read.
-      - name: A channel is never told it is impossible
-        if: always()
-        run: npx tsx scripts/check_channel_prior_complete.ts
-      # A SORT KEY THAT NEVER FIRES HAS NO PRICE. `usedInField` is tier 1 of the
-      # row comparator and carried a measured cost -- EXACT@5 51% -> 49% -- for a
-      # year. The run that produced it replayed every company as `TestCo`, which
-      # matches nothing, so the key was false on every row and never fired; the
-      # delta belonged to the tier below it. Two workstreams reasoned from that
-      # number before wsIP re-measured the tier as WORTH +0.0246 reciprocal rank.
-      # This fails when the tier stops separating, so the next comment like it
-      # cannot outlive the run behind it. Credentials destroyed, committed inputs.
-      - name: A ranking key is priced where it fires
-        if: always()
-        run: npx tsx scripts/check_field_tier_priced.ts
-      # Third of the same class, found by the same audit. It DELETES
-      # DATABASE_URL on its way past and reads the committed snapshot, so it is
-      # hermetic by construction rather than by luck. It holds the stand-in for
-      # missing sector history inside the band where "neutral" is true of THIS
-      # corpus -- the half a hand-built fixture cannot see, because the defect it
-      # replaced (a constant 0.5 sitting at the 79th percentile) was invisible in
-      # code and only visible against the data.
-      - name: The stand-in for missing data is still neutral
-        if: always()
-        run: npx tsx scripts/check_missing_data_neutral.ts
-      # The same defect class from the founder's own side: not a fund hidden
-      # from someone who qualifies, but a fund hidden BECAUSE they answered a
-      # question we asked them. The owner's binding decision is that a
-      # second-screen answer INFORMS the ranker and never REMOVES a fund, and
-      # the removal seam is `accessiblePool`. Hermetic -- committed snapshot,
-      # committed semantic cache, no model call -- but it builds ~700 pools, so
-      # it sits at the end of the hermetic block rather than among the
-      # sub-second ones. Two minutes.
-      - name: Answering a follow-up question never costs a founder a fund
-        if: always()
-        run: npx tsx scripts/check_asking_cannot_shrink.ts
-        env: { NO_PG: '1' }
-      # ── The published verdicts ─────────────────────────────────────────────
-      # The guards that cannot run here, asserted without a credential. Reads
-      # the site's /api/guards over HTTPS: has each corpus-side guard published,
-      # is it green, and was it judged on THIS code. Deliberately not --full;
-      # freshness belongs to the scheduled workflow, so the passage of a Sunday
-      # cannot red a branch that did nothing wrong.
-      - name: Guards that need the corpus have green verdicts
-        if: always()
-        run: npx tsx scripts/check_verdicts.ts
-
-      # The site's committed headline figures against what the ETL last
-      # recorded. This used to need DATABASE_URL and therefore ran only in a
-      # scheduled job holding a secret; the census now publishes itself onto the
-      # same feed, so it runs here on every pull request with no credential.
-      - name: Site serves the corpus the ETL produced
-        if: always()
-        run: npx tsx scripts/check_corpus_census.ts
-
-      # ── Thirteen checks that ran nowhere but a human's terminal ────────────
-      # `check_guard_reachability.py` was RED on main on 2026-08-18 naming
-      # seventeen check modules in NO automatic path. `npm run check` does not
-      # count and that check says so in its own words: it is a command somebody
-      # types, it takes twelve minutes, and it needs DATABASE_URL. Among the
-      # seventeen was `check_dead_doors`, built the same week to stop the
-      # product publishing a scheme that ended in 2020.
-      #
-      # These thirteen are hermetic — committed artifacts, no credentials, no
-      # network — so there was never a reason for them to be anywhere else. The
-      # four that need a live corpus are declared under `manual` in
-      # data/guard_registry.json with the reason and a review date.
-      #
-      # `if: always()` throughout, for the reason the block above it gives: one
-      # failure must not hide the other twelve.
-      - name: A rule's prose states no rate the code computes
-        if: always()
-        run: npx tsx scripts/check_prompt_rates.ts
-      - name: A euro figure says what it is a quantity of
-        if: always()
-        run: npx tsx scripts/check_money_basis.ts
-      - name: A measured ceiling was raised
-        if: always()
-        run: npx tsx scripts/check_maxtok_headroom.ts
-      - name: A technology sector is claimed only where recipients agree
-        if: always()
-        run: npx tsx scripts/check_sector_evidence.ts
-      - name: "A funds: line states a scope"
-        if: always()
-        run: npx tsx scripts/check_funds_line.ts
-      - name: A displayed name is not an id
-        if: always()
-        run: npx tsx scripts/check_row_name_not_id.ts
-      - name: A row is named by a body, not by its own key
-        if: always()
-        run: npx tsx scripts/check_body_named_rows.ts
-      - name: A winner is never gated out of the memo
-        if: always()
-        run: npx tsx scripts/check_winner_not_gated.ts
-      - name: The request path cannot reach the answer key
-        if: always()
-        run: npx tsx scripts/check_answer_not_reachable.ts
-      - name: Every answer reaches the model that writes the brief
-        if: always()
-        run: npx tsx scripts/check_answer_in_prompt.ts
-
-      # Founder-tier checks that were in `npm run check` and nowhere automatic
-      # (check_guard_reachability named them). Hermetic: committed snapshot and
-      # source, no credential.
-      - name: A cut title still tells two funds apart
-        if: always()
-        run: npx tsx scripts/check_row_titles_distinct.ts
-      - name: A route reads only what a founder can send
-        if: always()
-        run: npx tsx scripts/check_request_surface.ts
-
-      # What kind of capital an instrument is must agree with the register that
-      # published it, and no kind a register publishes may vanish from the
-      # corpus. G (Guarantee) and DG (Direct grant) were transposed on the day
-      # the map was written: the corpus held ZERO guarantees against a feed
-      # publishing 17,023 guarantee awards, and Italy's largest guarantee scheme
-      # was rendered to founders as a grant.
-      - name: Capital kinds match the register
-        if: always()
-        working-directory: capital
-        run: python3 ETL/schema/check_register_instrument_kinds.py
-      # A spec can be syntactically valid, pass the vocabulary check, and still
-      # mean the opposite of its source document. Reads the site data above.
-      - name: Encoded rule sanity
-        if: always()
-        working-directory: capital
-        run: python3 ETL/schema/check_spec_sanity.py
-
-      # ── Founder-tier checks that read the live corpus ─────────────────────
-      # Declared `manual` until 2026-11-06 because CI held no credential. It now
-      # holds one, proved read-only by the first step of this job, so these run
-      # here on every push instead of when somebody remembers. They read
-      # Postgres through DATABASE_URL, the one name the web code reads; it is
-      # set from the read-only credential INSIDE the step, so no writing script
-      # can be handed a connection that writes (the role refuses: a guard that
-      # tries to publish its verdict from here is told "read-only transaction"
-      # and says so). check_guard_registry rule 7 holds: the secret is bound
-      # only to CAPITAL_RO_DATABASE_URL, per step, after the proof.
-      #
-      # The six that also need VOYAGE_KEY follow the five below, in their own
-      # block: they grade the SHIPPED ranker, which embeds the founder's text.
-      - name: A published row's openness rests on a deadline we hold
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_window_evidence.ts
-      - name: No door is offered on an expired fact
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_dead_doors.ts
-      - name: Every encoded rule is keyed to a field an answer reaches
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_gate_field_reach.ts
-      - name: A positive country rule can be satisfied by some founder
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_country_gates.ts
-      - name: A gate that decides a verdict has been judged a condition
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_gate_pertinence.ts
-
-      # ── Founder-tier checks that grade the shipped (embedding) ranker ─────
-      # Each embeds query text with the Voyage key (owner-approved repository
-      # secret, 6 Nov 2026), so without it they would grade the lexical
-      # fallback, which is not what ships. Read-only: DATABASE_URL is the
-      # capital_ro credential proved read-only above, and GUARD_NO_PUBLISH
-      # stops a branch from stamping the shared verdict feed. Measured
-      # 2026-11-07: all six together ~10,600 billed Voyage tokens (~$0.001)
-      # and ~3.5 minutes, recall_floor ~2.5 of them. check_guard_registry
-      # conditions (d)-(f) hold the key to exactly these steps.
-      - name: A memo table is handed to every archetype
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
-          GUARD_NO_PUBLISH: '1'
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_memo_table.ts
-      - name: Every answer a founder gives reaches the rows or the screen
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
-          GUARD_NO_PUBLISH: '1'
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_answer_reach.ts
-      - name: The fallback corpus never offers a fund the register has closed
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
-          GUARD_NO_PUBLISH: '1'
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_degradation.ts
-      - name: Postgres and the snapshot produce the same brief
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
-          GUARD_NO_PUBLISH: '1'
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_hydration_parity.ts
-      - name: Retrieval still finds the fund a company won
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
-          GUARD_NO_PUBLISH: '1'
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_recall_floor.ts
-      - name: The base rate the selector is told is current
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-          VOYAGE_KEY: ${{ secrets.VOYAGE_KEY }}
-          GUARD_NO_PUBLISH: '1'
-        run: DATABASE_URL="$CAPITAL_RO_DATABASE_URL" npx tsx scripts/check_pool_recall_curve.ts
-
-      - name: Lint
-        if: always()
-        run: npx eslint .
-
-      - name: Build
-        if: always()
-        run: npx next build
-        env: { NEXT_TELEMETRY_DISABLED: '1' }
-
   etl:
-    name: python syntax + schema drift
+    name: ETL tests + schema drift
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -466,48 +67,23 @@ jobs:
       - name: Install the ETL's requirements
         run: pip install -q -r requirements.txt
 
-      # Four eligibility guards that read the live corpus and were in no
-      # automatic path (check_guard_reachability). The first step to hold the
-      # read-only credential proves it cannot write (rule 7 b).
-      - name: The corpus credential is read-only
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/schema/check_readonly_credential.py
-      - name: Every comparator is storable
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/terms/check_comparator_storable.py
-      - name: Every curated correction is in effect
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/terms/check_corrections_applied.py
-      - name: No ordered comparator claims two thresholds
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/terms/check_gate_branches.py
-      - name: A euro band is derived only from euro numerals
-        if: always()
-        env:
-          CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
-        run: python3 ETL/terms/check_gate_currency.py
-
       # Compile-checks every ETL module. Cheap, and it catches the class of
       # error that otherwise only surfaces mid-pipeline on a long run.
       - name: Byte-compile the ETL
+        if: always()
         run: python3 -m compileall -q ETL website/build
 
       # The SQL schema must match what the code expects. A drifted schema file
       # is worse than none: it reads as authoritative while being wrong.
       - name: Postgres schema is committed
+        if: always()
         run: test -f ETL/schema/postgres_schema.sql
 
       # Country name resolution lives in exactly one place. Copies drift in
       # coverage and an unresolvable name writes a NULL country rather than
       # raising, so the drift is silent.
       - name: One country map
+        if: always()
         run: python3 ETL/schema/check_single_country_map.py
 
       # Every family whose row name is a mechanical re-casing of its own id has
@@ -517,12 +93,14 @@ jobs:
         run: python3 ETL/events/load/test_name_evidence_declarations.py
 
       - name: Country resolution
+        if: always()
         run: python3 ETL/lib/test_europe_scope.py
 
       # Which fund an award is credited to decides what the answer key can
       # name, and a wrong credit reads as recall rather than as an error. Runs
       # on an in-memory corpus, so it needs no database.
       - name: Award attribution
+        if: always()
         run: python3 ETL/terms/test_attribution.py
 
       # A spec can be syntactically valid, pass the vocabulary check, and still
@@ -536,18 +114,21 @@ jobs:
       # that came with a shrinking corpus at all. Both are asserted from the
       # committed baselines, so neither can come back.
       - name: Coverage gate separates loss from dilution
+        if: always()
         run: python3 ETL/terms/test_coverage_gate.py
 
       # A failed ADEME fetch is a partial only when the row holds no window an
       # earlier run read; a catalogue that is down is a partial regardless.
       # Run 114 recorded a whole week partial over one refused connection.
       - name: A covered fetch failure does not make the week partial
+        if: always()
         run: python3 ETL/terms/test_ademe_windows_outcome.py
 
       # Spain's open calls are discovered from the register over a window as
       # long as a call stays open, not the cadence: run 116 lost a third of ES
       # offerable because a 60-day window could not see across a 93-day gap.
       - name: BDNS discovery covers the life of a call
+        if: always()
         run: python3 ETL/terms/test_bdns_discovery.py
 
       # A membership test between two disjoint vocabularies is dead code, and
@@ -558,6 +139,7 @@ jobs:
       # another module. Credential-free fixture, milliseconds, so it runs here
       # where the corpus cannot.
       - name: The split's target set is in the caller's value space
+        if: always()
         run: python3 ETL/events/load/test_split_value_space.py
 
       # `funding_instruments` has two provenances: rows aggregated from events,
@@ -567,6 +149,7 @@ jobs:
       # plus 629 gates encoded from their own published eligibility text. The
       # 20%-of-curated guard did not fire; 629 of 7,471 is 8%.
       - name: A rebuild deletes only the instrument rows it authored
+        if: always()
         run: python3 ETL/events/load/test_external_instrument_ownership.py
 
       # Four steps that guarded the laptop<->volume db.sqlite sync (the overwrite
@@ -580,6 +163,7 @@ jobs:
       # 41.9% and seven countries instead of 22, and it looked like decay rather
       # than a dead join for a week.
       - name: The split's key is not a name something else rewrites
+        if: always()
         run: python3 ETL/terms/test_split_key_is_not_a_name.py
 
       # An AI company was published a Bavarian film and television scheme at row
@@ -589,6 +173,7 @@ jobs:
       # software_data_ai. A grant is evidence about the PROGRAMME, never about
       # its recipient. Credential-free, instant, no corpus.
       - name: A technology sector is claimed only where evidence licenses it
+        if: always()
         run: python3 ETL/events/transform/test_sector_evidence.py
 
       # The corpus census runs inside the ETL image, which has requirements.txt
@@ -596,6 +181,7 @@ jobs:
       # down and recorded a ModuleNotFoundError instead of the corpus figures --
       # invisibly, because it records a failed block rather than crashing.
       - name: The census can run in the ETL image
+        if: always()
         run: python3 ETL/schema/check_census_imports.py
 
       # ...and so must every other step the weekly cron runs. wsCZ committed
@@ -606,6 +192,7 @@ jobs:
       # exited, skipping six steps and all four guards. Three days of no refresh,
       # and nothing said so. Hermetic: imports under an audit hook.
       - name: The cron can read, in the image, what it reads at import
+        if: always()
         run: python3 ETL/schema/check_cron_image_inputs.py
 
       # A verdict must be inseparable from the bar it was computed against.
@@ -619,6 +206,7 @@ jobs:
         run: python3 ETL/schema/test_verdict_bar_fingerprinted.py
 
       - name: Cross-language constants
+        if: always()
         run: python3 ETL/schema/check_cross_language_constants.py
 
       # Every table has ONE declared authoritative store, the count still owned
@@ -635,6 +223,7 @@ jobs:
       # fixes were being merged. `--ids` reads committed source only, so it
       # needs no corpus and no credentials, which is what CI has.
       - name: Every migration id is reachable
+        if: always()
         run: python3 ETL/events/load/migrations/apply.py --ids
 
       # The store must be rebuildable from committed DDL alone: corpus_schema.sql,
@@ -643,9 +232,11 @@ jobs:
       # postgres_schema.sql could not rebuild a single table (`ARRAY`, a vector
       # with no type, a column declared twice) after three months committed.
       - name: The schema can be rebuilt from its own migrations
+        if: always()
         run: python3 ETL/schema/check_schema_replay.py
 
       - name: One store of record per table
+        if: always()
         run: python3 ETL/schema/check_store_of_record.py
 
       # The corpus-marks guard itself cannot run here -- CI holds no credentials
@@ -657,6 +248,7 @@ jobs:
       # the only proof that the publishing guard can go red is that somebody
       # once typed the flag.
       - name: The unfinished-run guard can still fail
+        if: always()
         run: python3 ETL/schema/check_corpus_marks.py --self-test
         env:
           DATABASE_URL: ${{ env.CAPITAL_TEST_DATABASE_URL }}
@@ -665,14 +257,17 @@ jobs:
       # sector labels in the vault. This runs those steps twice on a seeded
       # store and fails if any curated label moves.
       - name: No re-run can displace a curated sector label
+        if: always()
         run: python3 ETL/events/transform/test_sector_label_precedence.py
 
       # The LLM jobs run as Message Batches (mandate/llm/batch.py): a batch
       # collected a week late writes exactly what the live loop wrote, through
       # the same precedence rule, and nothing in flight is paid for twice.
       - name: Batched sector labels write what the live loop wrote, late or not
+        if: always()
         run: python3 ETL/events/transform/test_taxonomy_batch.py
       - name: Batched pertinence keeps the cache's shape and never pays twice
+        if: always()
         run: python3 ETL/terms/test_pertinence_batch.py
 
       # Committed DDL must account for every column in every store. The
@@ -682,6 +277,7 @@ jobs:
       # git conflict marker sitting inside ETL/schema/postgres_schema.sql --
       # the file the step above asserts the EXISTENCE of.
       - name: Committed DDL accounts for every column
+        if: always()
         run: python3 ETL/schema/check_store_schema.py
 
       # What we TRACK and what we OFFER are two populations. That check has
@@ -696,30 +292,6 @@ jobs:
       # bound to its own implementation — and no workflow holds a credential of
       # ours, which is the reason the arrangement exists at all.
       - name: Every guard has a publisher, and no workflow has a secret
+        if: always()
         run: python3 ETL/schema/check_guard_registry.py
 
-      # The other direction, and the one nothing could see. The check above
-      # asserts that every REGISTERED guard has a publisher; it is blind to a
-      # check_* module that was never registered, never added to a workflow and
-      # never added to the cron -- which on 2026-08-08 was eight of them, two
-      # red at the moment they were found. Reads committed source only.
-      - name: Every guard runs somewhere, or says why it does not
-        run: python3 ETL/schema/check_guard_reachability.py
-
-  security:
-    name: dependency audit
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with: { node-version: '22', cache: npm, cache-dependency-path: web/package-lock.json }
-      - run: npm ci
-      # Wraps npm audit with a reviewed exceptions register: fails on anything
-      # high or critical that is NOT documented, and fails when an exception
-      # passes its review date. A check that cannot pass is a check people
-      # learn to skip.
-      - name: Dependency audit
-        run: npx tsx scripts/check_dependencies.ts

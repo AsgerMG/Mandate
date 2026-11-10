@@ -16,7 +16,6 @@ What it holds, and why each is a separate assertion rather than a comment:
        capital  classify_taxonomy.TAXONOMY            == CAPITAL_TAXONOMY
        capital  capital/data/vocabularies.json        sector, the three bands,
                 (generated from types.ts)             developmentStage
-       capital  panel.tsx COUNTRIES                   all named in `countries`
        policy   data/seeds.py SECTORS                 == POLICY_SECTORS
        policy   etl/intelligence/questions.py options == the policyValues
 
@@ -144,15 +143,8 @@ def check_capital() -> None:
             fail(f"capital vocabularies.json {field} = {got}, shared = {values}")
         if field in vj.get("bandOrders", {}) and vj["bandOrders"][field] != values:
             fail(f"capital vocabularies.json bandOrders.{field} differs from shared")
-    panel = (ROOT / "web/lib/intelligence/panel.tsx").read_text()
-    m = re.search(r"const COUNTRIES = \[(.*?)\];", panel, re.S)
-    if not m:
-        fail("could not find COUNTRIES in web/lib/intelligence/panel.tsx")
-    else:
-        names = {c["name"] for c in V["countries"]}
-        for n in re.findall(r'"([^"]+)"', m.group(1)):
-            if n not in names:
-                fail(f"capital's country picker offers {n!r}, which the shared vocabulary lacks")
+    # (The brief intake's country picker, panel.tsx COUNTRIES, was the third
+    # capital copy; it is archived with the brief at archive/2026-11-pre-pivot.)
 
 
 def check_policy() -> None:

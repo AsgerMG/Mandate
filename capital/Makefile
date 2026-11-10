@@ -1,7 +1,10 @@
 # Wincent — common entry points.
 # Run `make help` for the list. The data pipeline flows:
-#   ETL/extract/* -> data/db.sqlite -> ETL/transform/* -> ETL/load/* (+ QA + backup)
+#   ETL/events/extract/* -> Postgres (schema capital) -> ETL/events/transform/*
 #                 -> make data -> web/public/data -> web
+# The weekly refresh has ONE runner: mandate/refresh/run.py ->
+# ETL/events/extract/railway_cron.py. (ETL/refresh.py, a second runner, is
+# archived at the tag archive/2026-11-pre-pivot.)
 #
 # The ETL block (extract -> transform -> load) lives under ETL/. Extractors are
 # per-source and hit external APIs; run them individually (see ETL/README.md).
@@ -12,11 +15,10 @@ DATE    := $(shell date +%Y%m%d)
 BACKUP  := $(HOME)/Wincent-backups
 ICLOUD  := $(HOME)/Library/Mobile Documents/com~apple~CloudDocs/Wincent-backups
 
-.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility news republish verify-cron refresh refresh-check
+.PHONY: help analyze visuals data site-dev site-build backup classify sanity transform sources renew signals signals-digest eligibility news verify-cron
 
 help:
 	@echo "Wincent make targets:"
-	@echo "  make republish   Make the site serve the corpus the ETL produced (gate -> regenerate)"
 	@echo "  make verify-cron Is the weekly Railway ETL scheduled, deployed, and running this code?"
 	@echo "  make check-stores One store of record per table, and no schema drift between stores"
 	@echo "  make sources     List every source + how to renew it (ETL/events/extract/renew.py --list)"
@@ -26,7 +28,7 @@ help:
 	@echo "  make transform   classify + sanity (re-derive everything from loaded rows)"
 	@echo "  make backup      Back up every Postgres table to ~/Wincent-backups/postgres-DATE (ETL/lib/backup_postgres.py)"
 	@echo "  make analyze     Rebuild corpus KPIs (website/build/synthesis.py)"
-	@echo "  make visuals     Rebuild home-page visuals (taxonomy, map, coverage)"
+	@echo "  make visuals     Rebuild home-page visuals (map, coverage)"
 	@echo "  make views       Install the read-side views in Postgres (ETL/schema/install_views.py)"
 	@echo "  make data        Rebuild EVERY site JSON from Postgres (website/build/build_site_data.py)"
 	@echo "  make eligibility Sync YAML -> DB, export instrument_terms.json, publish to Railway Postgres"
@@ -41,51 +43,6 @@ sources:
 
 renew:
 	python3 ETL/events/extract/renew.py --auto
-
-# Keep the corpus current without being asked, and without paying to reproduce
-# numbers that were already right. Runs the downstream chain only for sources
-# whose raw files actually changed, and stops at the coverage gate rather than
-# publishing a corpus that got worse.
-#   make refresh-check   what changed, and what would run
-#   make refresh         run it
-refresh-check:
-	python3 ETL/refresh.py --check
-
-refresh:
-	python3 ETL/refresh.py
-
-# THE one command that makes the website serve the corpus the ETL produced.
-#
-# The ETL refreshes a Railway-resident db.sqlite every Sunday at 03:00 UTC. The
-# website serves committed build artifacts and does not follow: measured over
-# this repo's own history the median gap was 4.6 days and the worst was 32
-# (`python3 ETL/lib/drift_window.py`). Closing it by hand took a pull, a
-# regeneration, several builders and a commit, remembered in the right order.
-# This is that, in order, with the gate in the middle.
-#
-# It deliberately stops short of the commit. An automated job that pushes to
-# main redeploys the whole site on a cron, and the artifacts it would push are
-# exactly the ones a human should look at — the headline number a founder reads
-# is not a thing to change unattended. So this leaves the diff staged in your
-# working tree and tells you what moved.
-republish:
-	# 1. There is nothing to pull: since 2026-11-05 the corpus the ETL writes IS
-	#    the one the site reads (schema capital in the Mandate Postgres). The old
-	#    step woke the Railway volume and unioned its db.sqlite into the laptop's;
-	#    that sync is archived (ETL/archive/README.md).
-	# 2. Regenerate everything downstream, THROUGH the coverage gate, which
-	#    stops the chain rather than publishing a corpus that got worse.
-	#    --force because nothing in the raw source files refresh.py hashes need
-	#    have changed for the corpus to have moved.
-	python3 ETL/refresh.py --force
-	# 3. Say what actually moved, so the commit is a decision and not a reflex.
-	@echo ""
-	@echo "── what changed ────────────────────────────────────────────────"
-	@git --no-pager diff --stat -- ../web/public/data project-mgmt/coverage_baseline.json
-	@echo ""
-	@echo "Review, then commit and push — Vercel deploys on push:"
-	@echo "  git add ../web/public/data project-mgmt"
-	@echo "  git commit -m 'Republish the corpus the ETL produced'"
 
 # Is the weekly refresh going to happen, and will it run this code? Reads the
 # schedule back from Railway rather than trusting the last write -- see
@@ -129,7 +86,6 @@ views:
 	python3 ETL/schema/install_views.py
 
 visuals:
-	python3 website/build/home_visuals.py
 	python3 website/build/country_map.py
 	python3 website/build/coverage_indicator.py
 
@@ -272,7 +228,7 @@ eligibility:
 	# regenerated here rather than beside emit_vocabulary at the top: that one
 	# feeds the encoder and must run first, this one consumes the encoder's
 	# output. It is what lets relevance.ts stop loading the whole corpus's
-	# gates on every request; check_theme_index.ts fails the build if stale.
+	# gates on every request.
 	cd ../web && npx tsx scripts/emit_theme_index.ts
 	# (migrate_to_postgres.py, the SQLite -> Postgres truncate-and-reload, was
 	# here. Since 2026-11-05 every step above writes the served tables directly.)
@@ -281,15 +237,10 @@ eligibility:
 	python3 ETL/terms/embed_eligibility.py run
 	python3 ETL/terms/build_instrument_profiles.py classify-titles
 	python3 ETL/terms/build_instrument_profiles.py run --rebuild
-	# The base rate the selector is TOLD, re-measured against the corpus that
-	# was just published. It is P(the fund a company actually won is within the
-	# first K rows of its accessible pool), and every accessible pool moves when
-	# the corpus does -- so a curve left behind here does not degrade a ranking,
-	# it makes the prompt state a confident falsehood about the list in front of
-	# the model. That is exactly what shipped for four workstreams. Last, and
-	# after Postgres, because it reads the published corpus.
-	# check_pool_recall_curve.ts fails the build when this has not been re-run.
-	cd ../web && npx tsx scripts/emit_pool_recall_curve.ts
+	# (emit_pool_recall_curve.ts, which re-measured the base rate the brief's
+	# selector is told, is archived with the brief at archive/2026-11-pre-pivot;
+	# poolRecallCurve.generated.json stays as committed until the ranker is
+	# replaced in Phase 2.)
 
 # News/signals layer (the signals_* tables of schema capital): table check +
 # stage counts + QA. Read-only.

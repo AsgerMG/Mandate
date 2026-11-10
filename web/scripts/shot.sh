@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Screenshot any page of the running site, so visual work can be SEEN.
 #
-# FREE — no model calls. Companion to preview_pdf.sh: that one prints, this one
+# FREE — no model calls. Companion to the archived preview_pdf.sh: that one printed, this one
 # captures the screen rendering at a chosen width.
 #
 # Chrome is installed on this machine and its headless mode screenshots a URL
@@ -10,7 +10,7 @@
 # one look, including a print stylesheet that only worked from the Export
 # button and printed the whole marketing page from Cmd+P.
 #
-# Usage: bash scripts/shot.sh /brief/preview [out.png] [width]
+# Usage: bash scripts/shot.sh /wincent [out.png] [width]
 set -euo pipefail
 ROUTE="${1:-/}"
 OUT="${2:-/tmp/wincent-shot.png}"

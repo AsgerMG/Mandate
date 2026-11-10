@@ -1,8 +1,9 @@
 # Mandate health: is every brain on current intel?
 #
 # Daily, read-only: mandate/health/check.py compares reality (mandate.runs,
-# run_steps, artefact_releases, the capital corpus, grounding) with the targets
-# in mandate/health/targets.json, and keeps exactly ONE issue titled
+# run_steps, artefact_releases, the capital corpus, grounding, and the published
+# verdicts of the five corpus guards in capital/data/guard_registry.json) with
+# the targets in mandate/health/targets.json, and keeps exactly ONE issue titled
 # "Mandate health": opened or updated on a breach with what / where / since
 # when, closed when every target is met.
 #
