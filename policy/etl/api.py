@@ -482,63 +482,6 @@ def questions(req: BriefRequest, request: Request) -> dict:
     return result
 
 
-#: Measured on the 10-profile panel, 2026-07-29 (see brief-quality-plan.md Phase 6
-#: and exports/ab-baseline-sonnet.json). p10/p50/p90 of end-to-end brief wall clock,
-#: plus the output-token rate the ETA extrapolates from.
-#:
-#: These are the fallback for a deployment with no local run reports — NOT
-#: hand-invented numbers. `/api/brief/expected` prefers real reports when present,
-#: and says which source it used so a stale constant can never masquerade as a live
-#: measurement (the same rule design-ux-guidelines.md imposes on corpus counts).
-_MEASURED_LATENCY = {
-    "p10_seconds": 138,
-    "p50_seconds": 184,
-    "p90_seconds": 267,
-    "tokens_per_second": 93.7,
-    # Characters of report text the client will actually see streamed. Both the
-    # draft and its revision stream a full document, so ~2x the final text length
-    # (median final text 13,237 chars over the 10-profile panel).
-    "typical_streamed_chars": 26500,
-    "sample_size": 10,
-    "measured_at": "2026-07-29",
-}
-
-
-@app.get("/api/brief/expected")
-def brief_expected() -> dict:
-    """How long a brief takes, for the front-end to promise before it starts.
-
-    Served rather than hardcoded in the UI because it describes measured reality,
-    which drifts: a prompt change, a model change or a retrieval change moves it,
-    and a stale "2 to 4 minutes" in JSX would never be revisited.
-    """
-    from etl.brief_eval.history import run_rows
-
-    try:
-        billed = [
-            r for r in run_rows() if not r["dry_run"] and r["seconds_per_brief"] and r["model"]
-        ]
-    except Exception:  # a missing/unreadable exports dir must not break the page
-        billed = []
-
-    if len(billed) >= 3:
-        secs = sorted(r["seconds_per_brief"] for r in billed)
-
-        def pct(p: float) -> int:
-            return int(round(secs[min(len(secs) - 1, int(p * (len(secs) - 1)))]))
-
-        return {
-            **_MEASURED_LATENCY,
-            "p10_seconds": pct(0.1),
-            "p50_seconds": pct(0.5),
-            "p90_seconds": pct(0.9),
-            "sample_size": len(billed),
-            "measured_at": billed[-1]["when"],
-            "source": "run reports",
-        }
-    return {**_MEASURED_LATENCY, "source": "measured panel baseline"}
-
-
 @app.post("/api/brief")
 def brief(req: BriefRequest, request: Request) -> StreamingResponse:
     """Streams newline-delimited JSON: one `{"type": "status", ...}` line per
@@ -611,24 +554,6 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
                 # healthy. Found 2026-07-30 by running one real brief end to end.
                 **result.get("retrieval_stats", {}),
             )
-            # Optional, off by default (Settings.brief_eval_enabled) — logs
-            # which retrieved passages actually got cited, so it's possible
-            # to ask later "is content we embed actually being used". Never
-            # allowed to affect the response: a logging failure here must
-            # not turn a successful brief into an error.
-            if not dry and get_settings().brief_eval_enabled:
-                try:
-                    from etl.brief_eval.logging import log_retrieval_event
-
-                    with session_scope() as log_session:
-                        log_retrieval_event(
-                            log_session,
-                            result["query"],
-                            result["passages"],
-                            result.get("citations", []),
-                        )
-                except Exception:
-                    log.exception("retrieval_event_log_failed")
             events.put(
                 {
                     "type": "result",

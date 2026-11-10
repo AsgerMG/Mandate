@@ -22,13 +22,11 @@ type Agent = {
   links: NavLink[];
 };
 
-// Brief and report routes remain available for later product work, but are
-// deliberately absent from the public masthead for now.
 const AGENTS: Agent[] = [
   {
     name: "Wincent",
     home: "/wincent",
-    owns: ["/wincent", "/brief", "/about-public-capital"],
+    owns: ["/wincent", "/about-public-capital"],
     links: [{ href: "/about-public-capital", label: "How to raise" }],
   },
   {

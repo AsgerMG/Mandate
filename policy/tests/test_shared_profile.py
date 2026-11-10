@@ -21,7 +21,6 @@ from mandate.profile.adapters import from_policy_request
 from mandate.profile.fixtures import policy_requests
 
 from etl.api import BriefRequest, _profile
-from etl.brief_eval.panel import EVAL_PANEL
 from etl.intelligence.questions import core_questions
 from etl.intelligence.shared_profile import from_shared_profile, to_shared_profile
 
@@ -78,23 +77,3 @@ def test_a_capital_written_profile_reaches_policy():
                              "subsectors": ["fintech"], "incorporationCountry": "DE"})
     assert p.sectors == ["fintech"]
     assert [m.value for m in p.markets] == ["EU", "DE"]
-
-
-def test_panel_fixtures_are_not_the_intake_path_and_say_so():
-    """The eval panel predates the vocabulary and is written in free text
-    ("software", "iot", "medium", "b2b", "behavioural"). It is not what the
-    intake sends, so it is NOT held to byte identity. Recorded instead:
-    6 of 10 name a value the vocabulary refuses (unseeded sector words, an
-    unlisted data category), and the other 4 keep exactly the same retrieval
-    facets; only the spelling of their values changes ("medium" becomes the
-    question's option label). Either number moving is a signal to read."""
-    refused, same_facets = 0, 0
-    for prof in EVAL_PANEL:
-        try:
-            back = from_shared_profile(to_shared_profile(prof))
-        except ProfileError:
-            refused += 1
-            continue
-        keys = lambda p: [f for f, _ in p.retrieval_queries()]  # noqa: E731
-        same_facets += keys(back) == keys(prof)
-    assert (refused, same_facets) == (6, 4)

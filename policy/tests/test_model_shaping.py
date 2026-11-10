@@ -12,7 +12,6 @@ from __future__ import annotations
 import pytest
 
 from data.config import get_settings
-from etl.brief_eval.cost import BudgetGuard, call_cost_usd
 from etl.intelligence.llm import reasoning_params, supports_adaptive_thinking
 
 
@@ -28,13 +27,6 @@ def as_model(monkeypatch):
 
     yield _set
     get_settings.cache_clear()
-
-
-class _Usage:
-    input_tokens = 100_000
-    output_tokens = 10_000
-    cache_read_input_tokens = 0
-    cache_creation_input_tokens = 0
 
 
 # --- what gets sent -------------------------------------------------------
@@ -109,48 +101,6 @@ def test_an_unrecognised_model_is_treated_as_modern(as_model):
 def test_dated_model_ids_are_recognised():
     """`claude-haiku-4-5-20251001` is the ID the enrichment steps already use."""
     assert not supports_adaptive_thinking("claude-haiku-4-5-20251001")
-
-
-# --- what gets counted ----------------------------------------------------
-
-
-def test_haiku_is_billed_at_haiku_prices():
-    """Was the actual bug: one hardcoded Sonnet price pair meant a Haiku run
-    reported ~3x its real cost — corrupting exactly the comparison a model A/B is
-    run to make."""
-    sonnet = call_cost_usd(_Usage(), "claude-sonnet-5")
-    haiku = call_cost_usd(_Usage(), "claude-haiku-4-5")
-    assert haiku == pytest.approx(sonnet / 3, rel=0.01)
-
-
-def test_dated_model_ids_price_correctly():
-    assert call_cost_usd(_Usage(), "claude-haiku-4-5-20251001") == call_cost_usd(
-        _Usage(), "claude-haiku-4-5"
-    )
-
-
-def test_an_unpriced_model_falls_back_rather_than_crashing():
-    """A mispriced report is recoverable; a crash mid-way through a paid run
-    throws away work already billed for."""
-    assert call_cost_usd(_Usage(), "claude-unknown-9") == call_cost_usd(_Usage(), "claude-sonnet-5")
-
-
-def test_guard_records_the_model_and_the_wall_clock():
-    """Both are what a latency/cost A/B is read from; neither existed before."""
-    guard = BudgetGuard(max_usd=None)
-    guard.set_context("Acme")
-    guard.record(_Usage(), model="claude-haiku-4-5", seconds=12.5)
-    assert guard.models == {"claude-haiku-4-5"}
-    assert guard.seconds == 12.5
-    assert guard.breakdown["Acme"]["seconds"] == 12.5
-
-
-def test_guard_still_accepts_a_bare_usage():
-    """Callers that don't know the model (older paths, tests) must not break."""
-    guard = BudgetGuard(max_usd=None)
-    guard.record(_Usage())
-    assert guard.spent_usd > 0
-    assert guard.models == set()
 
 
 # --- the judge is an instrument, not a subject -----------------------------

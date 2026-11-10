@@ -34,7 +34,7 @@
           "value": "(www\\.)?regina-ai\\.eu"
         }
       ],
-      "destination": "https://wincent-ai.eu/regina/brief",
+      "destination": "https://wincent-ai.eu/regina",
       "permanent": true
     },
     {
@@ -80,6 +80,26 @@
       ],
       "destination": "https://wincent-ai.eu/images/regina/parliament.png",
       "permanent": true
+    },
+    {
+      "source": "/brief",
+      "destination": "/wincent",
+      "permanent": false
+    },
+    {
+      "source": "/brief/:path*",
+      "destination": "/wincent",
+      "permanent": false
+    },
+    {
+      "source": "/regina/brief",
+      "destination": "/regina",
+      "permanent": false
+    },
+    {
+      "source": "/regina/brief/:path*",
+      "destination": "/regina",
+      "permanent": false
     }
   ],
   "git": {
