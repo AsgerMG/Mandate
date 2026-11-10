@@ -187,62 +187,6 @@
       "why": "Did the run that built this corpus finish every step it started. The other guards ask what the corpus CONTAINS and whether its schema is right; a half-refreshed corpus answers both perfectly well, and the coverage gate passed three censuses in a row that describe runs which failed. The outcome of a run is a property of the corpus that run produced, and it was being kept in a different store from the corpus -- so it did not survive `make pull-db`, and a partial volume became a publishable-looking laptop corpus with nothing left to say otherwise. The mark lives in the store itself, beside the rows it describes."
     },
     {
-      "id": "corpus_currency",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL"
-      ],
-      "code": [
-        "../web/scripts/check_corpus_currency.ts",
-        "../web/lib/intelligence/liveness.ts",
-        "../web/lib/intelligence/semanticCache.generated.json"
-      ],
-      "refresh": "cd ../web && npx tsx scripts/check_corpus_currency.ts",
-      "why": "The committed fund snapshot against live Postgres: liveness agreement, profile coverage, and whether the semantic cache every NO_PG check ranks on is the real index."
-    },
-    {
-      "id": "hydration_parity",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL"
-      ],
-      "code": [
-        "../web/scripts/check_hydration_parity.ts",
-        "../web/lib/intelligence"
-      ],
-      "refresh": "cd ../web && npx tsx scripts/check_hydration_parity.ts",
-      "why": "The two stores must produce the same brief. Every other check runs NO_PG=1, so the whole suite is green regardless of what Postgres holds."
-    },
-    {
-      "id": "degradation",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL"
-      ],
-      "code": [
-        "../web/scripts/check_degradation.ts",
-        "../web/lib/intelligence"
-      ],
-      "refresh": "cd ../web && npx tsx scripts/check_degradation.ts",
-      "why": "No fund a founder is shown on the fallback corpus may be one the live register says has closed. Measured at 26% of founders before the policy landed."
-    },
-    {
-      "id": "recall_floor",
-      "cadence": "on_change",
-      "needs": [
-        "DATABASE_URL",
-        "VOYAGE_KEY"
-      ],
-      "code": [
-        "../web/scripts/check_recall_floor.ts",
-        "../web/scripts/recallSet.ts",
-        "../web/scripts/recallSample.ts",
-        "../web/lib/intelligence"
-      ],
-      "refresh": "cd ../web && npx tsx scripts/check_recall_floor.ts",
-      "why": "Does retrieval still find the fund a company actually won. Skips itself without credentials and exits 0, so a ranking change has always been able to merge with the floors never evaluated. The fingerprint above is what closes that."
-    },
-    {
       "id": "applicant_identity",
       "cadence": "on_change",
       "needs": [

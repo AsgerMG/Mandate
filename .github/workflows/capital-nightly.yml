@@ -54,51 +54,14 @@ jobs:
           CAPITAL_RO_DATABASE_URL: ${{ secrets.CAPITAL_RO_DATABASE_URL }}
         run: python3 ../capital/website/build/build_site_data.py --prebuild
 
-      # ── report tier ──────────────────────────────────────────────────────
-      - id: red_debt
-        name: a red check is owned
-        continue-on-error: true
-        run: npx tsx scripts/check_red_debt.ts && npx vitest run scripts/check_red_debt.test.ts
-      - id: check_reachability
-        name: a rule's check can actually run
-        continue-on-error: true
-        run: npx tsx scripts/check_check_reachability.ts
-      - id: published_figures
-        name: published figures
-        continue-on-error: true
-        run: npx tsx scripts/check_published_figures.ts
       - id: env_loader
         name: one env loader
         continue-on-error: true
         run: npx tsx scripts/check_env_loader.ts
-      - id: stage_declaration
-        name: a harness declares the stages it does not run
-        continue-on-error: true
-        run: npx tsx scripts/check_stage_declaration.ts
       - id: store_columns
         name: both stores select the same columns
         continue-on-error: true
         run: npx tsx scripts/check_store_columns.ts
-      - id: comparator_admits
-        name: a filter can admit someone
-        continue-on-error: true
-        run: npx tsx scripts/check_comparator_admits.ts
-      - id: open_question_class
-        name: open questions still cover the corpus
-        continue-on-error: true
-        run: npx tsx scripts/check_open_question_class.ts
-      - id: winner_not_blocked
-        name: a winner is never screened out
-        continue-on-error: true
-        run: npx tsx scripts/check_winner_not_blocked.ts
-      - id: harness_intake
-        name: harness answers as the founder
-        continue-on-error: true
-        run: npx tsx scripts/check_harness_intake.ts
-      - id: peer_prior_canary
-        name: peer prior canary
-        continue-on-error: true
-        run: npx tsx scripts/check_peer_prior_canary.ts
       - id: extracted_quotes
         name: quotations match documents
         continue-on-error: true

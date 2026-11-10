@@ -43,18 +43,12 @@ const eslintConfig = defineConfig([
 
   // ── ...but not for the guards ─────────────────────────────────────────────
   // `scripts/check_*` and `scripts/emit_*` live under `scripts/` and are not
-  // harnesses. The check_* files ARE the CI job — eighteen of them run in
-  // `.github/workflows/ci.yml` and twenty-seven in `npm run check` — and the
-  // emit_* files write artifacts that get committed and shipped. A guard that
-  // reads a row as `any` is a guard that cannot tell a renamed column from a
-  // null, which is precisely how a check passes while asserting nothing. That
-  // failure mode is the one this repo keeps finding, so these keep the rule at
-  // full strength. There are zero violations here today; this line is what
-  // stops the next one.
-  //
-  // `run_checks.mjs` is the runner and belongs to the same population.
+  // harnesses: the check_* files are CI steps (.github/workflows/web-ci.yml)
+  // and the emit_* files write artifacts that ship. A guard that reads a row as
+  // `any` cannot tell a renamed column from a null, which is how a check passes
+  // while asserting nothing, so these keep the rule at full strength.
   {
-    files: ["scripts/check_*.{ts,mts}", "scripts/emit_*.{ts,mts}", "scripts/run_checks.mjs"],
+    files: ["scripts/check_*.{ts,mts}", "scripts/emit_*.{ts,mts}"],
     rules: { "@typescript-eslint/no-explicit-any": "error" },
   },
 
@@ -70,8 +64,8 @@ const eslintConfig = defineConfig([
   // cheap and it catches the exact shape three of this month's defects had:
   // `prior` computed and dropped, `consortiumOk` destructured and dropped,
   // `ticketFit` computed one token from being used. It cannot catch the fourth
-  // shape — an answer that reaches a scorer nothing consults — which is what
-  // `check_answer_reach.ts` is for. The two together cover the class.
+  // shape — an answer that reaches a scorer nothing consults (that check,
+  // check_answer_reach.ts, is archived with the brief: tag archive/2026-11-pre-pivot).
   //
   // Not `scripts/`: a diagnostic harness that pulls six columns and prints two
   // is doing its job, and erroring on it would only teach people to disable

@@ -23,8 +23,6 @@ So the registry, the cron, and the scripts are checked against each other:
   4. nothing publishes under an id the registry does not know
   5. a guard's fingerprint covers its own implementation -- otherwise editing
      the guard leaves its old verdict looking current
-  6. `npm run check` still ends in check_verdicts, which is what closes the
-     loop on the machine that has the credentials
   7. no workflow holds a secret of ours -- except the read-only corpus
      credential, and only where its read-only-ness is proved first
 
@@ -93,7 +91,6 @@ from web_path import WEB  # noqa: E402  (the web app, <monorepo>/web)
 REGISTRY = ROOT / "data" / "guard_registry.json"
 CRON = ROOT / "ETL" / "events" / "extract" / "railway_cron.py"
 SCRIPTS = WEB / "scripts"
-PACKAGE = WEB / "package.json"
 CENSUS = ROOT / "ETL" / "events" / "load" / "publish_corpus_census.py"
 # The monorepo root, not this brain's: GitHub runs workflows only from the
 # repository's top-level .github/, and every workflow there is in scope, because
@@ -326,46 +323,6 @@ def main() -> int:
         if gid not in known:
             problems.append(f"{', '.join(owners)} publishes under '{gid}', which is not "
                             f"in the registry. Its verdict would be written and never read")
-
-    # 6. The loop has to close somewhere a person will see it.
-    #
-    # The list of checks used to be a 27-link `&&` chain in package.json's
-    # `check` script and now lives in scripts/run_checks.mjs, because `&&`
-    # stopped the whole suite at the first failure and thirteen checks —
-    # check_verdicts among them — had not been running at all. So this reads the
-    # runner, and asserts the stronger property the old prose already claimed:
-    # check_verdicts is not merely present, it is LAST. It refreshes the
-    # verdicts every credential-free path then depends on, so a check that ran
-    # before it read the previous run's answers.
-    check = json.loads(PACKAGE.read_text())["scripts"].get("check", "")
-    runner = WEB / "scripts" / "run_checks.mjs"
-    if "run_checks" not in check:
-        problems.append("`npm run check` no longer runs scripts/run_checks.mjs, which "
-                        "is where the list of checks lives. If the list moved again, "
-                        "move this assertion with it — the thing being protected is "
-                        "that SOME automatic-to-a-human command still ends in "
-                        "check_verdicts")
-    elif not runner.exists():
-        problems.append(f"`npm run check` runs {runner.name}, which does not exist")
-    else:
-        # The CHECKS array, not the whole file. The pattern used to run over
-        # every byte of run_checks.mjs, so a `check_*.ts` named in a COMMENT or
-        # in a printed sentence after the array counted as the last check --
-        # which it is not, and which made the header prose a load-bearing part
-        # of the ordering. web/scripts/lib/suiteStatus.ts reads
-        # the same array with the same narrowing, for the same reason.
-        src = runner.read_text()
-        start = src.index("const CHECKS = [")
-        ordered = re.findall(r'scripts/(check_\w+)\.ts',
-                             src[start:src.index("\n];", start)])
-        if "check_verdicts" not in ordered:
-            problems.append("run_checks.mjs no longer runs check_verdicts.ts. That is "
-                            "the step where a machine WITH credentials refreshes the "
-                            "verdicts the credential-free paths depend on")
-        elif ordered[-1] != "check_verdicts":
-            problems.append(f"run_checks.mjs ends in {ordered[-1]}, not check_verdicts. "
-                            f"check_verdicts refreshes the verdicts the checks before "
-                            f"it read, so it has to be last or they read stale ones")
 
     # 7. And the reason for all of it.
     for held in workflow_secrets():
