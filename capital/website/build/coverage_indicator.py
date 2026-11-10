@@ -395,14 +395,6 @@ def _main(con) -> None:
         site_path.write_text(json.dumps(ratings, indent=2, ensure_ascii=False), encoding="utf-8")
         print(f"Site coverage ratings → {site_path}")
 
-    # Emit the full per-country detail for the homepage transparency table:
-    # grade, layer event counts, source families and structural-gap notes.
-    site_full_path = SITE_DATA / "country_coverage.json"
-    if site_full_path.parent.exists():
-        site_full_path.write_text(
-            json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8"
-        )
-        print(f"Site country coverage detail → {site_full_path}")
     print()
     print("Coverage tiers:")
     from collections import Counter

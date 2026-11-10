@@ -165,7 +165,6 @@ STEPS = [
     [sys.executable, str(ROOT / "ETL/terms/emit_region_prior.py"), "--write"],
     [sys.executable, str(ROOT / "ETL/terms/emit_channel_prior.py")],
     [sys.executable, str(ROOT / "ETL/terms/emit_instrument_objectives.py"), "--write"],
-    [sys.executable, str(ROOT / "ETL/terms/emit_profile_leak_index.py")],
     # News, weekly (owner decision 2026-11-06). news_cron.py --wait collects this
     # run's batches before the digest is cut; ids outlive the container
     # (batch_state, migration 035). Then link news to funds, then the digest.
@@ -180,12 +179,11 @@ STEPS = [
 # stopping would only take the census and the guards down with it.
 SOFT = {"build_instrument_profiles.py", "embed_eligibility.py", "emit_peer_prior.py",
         "emit_region_prior.py", "emit_channel_prior.py", "emit_instrument_objectives.py",
-        "emit_profile_leak_index.py", "news_cron.py", "link_programme_mentions.py",
+        "news_cron.py", "link_programme_mentions.py",
         "signals_digest.py", "coverage_gate.py"}
 # Skipped when coverage_gate.py is red: they publish what the gate refused.
 GATED = {"build_instrument_profiles.py", "embed_eligibility.py", "emit_peer_prior.py",
-         "emit_region_prior.py", "emit_channel_prior.py", "emit_instrument_objectives.py",
-         "emit_profile_leak_index.py"}
+         "emit_region_prior.py", "emit_channel_prior.py", "emit_instrument_objectives.py"}
 
 # ── The guards that can only run here ──────────────────────────────────────
 # These read the store, which no CI job holds credentials for, and giving GitHub
