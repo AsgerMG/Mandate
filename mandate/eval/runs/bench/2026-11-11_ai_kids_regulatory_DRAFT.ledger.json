@@ -1,0 +1,1115 @@
+[
+ {
+  "id": "c1",
+  "citation": {
+   "sha256": "1d5a0add29da72ab4f7c63e3926b2e9bb9dc626bba828f7b754274f90b339100",
+   "version_id": 2550,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023AP0236",
+   "title": "Amendments adopted by the European Parliament on 14 June 2023 on the proposal for a regulation of the European Parliament and of the Council on laying down harmonised rules on artificial intelligence (Artificial Intelligence Act) and amending certain Union legislative acts (COM(2021)0206 — C9-0146/2021 — 2021/0106(COD))",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:21:09.184389+00:00",
+   "last_seen_at": "2026-07-13T12:21:09.184389+00:00",
+   "span": [
+    89545,
+    90174
+   ],
+   "quote": "AI systems used in education or vocational training, notably for determining access or assigning persons to educational and vocational training institutions or to evaluate persons on tests as part of or as a precondition for their education should be considered high-risk , since they may determine the educational and professional course of a person’s life and therefore affect their ability to secure their livelihood. When improperly designed and used, such systems may violate the right to education and training as well as the right not to be discriminated against and perpetuate historical patterns of discrimination.\n\n(35)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Amendments adopted by the European Parliament on 14 June 2023 on the proposal for a regulation of the European Parliament and of the Council on laying down harmonised rules on artificial intelligence (Artificial Intelligence Act) and amending certain Union legislative acts (COM(2021)0206 — C9-0146/2021 — 2021/0106(COD))"
+ },
+ {
+  "id": "c2",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    75644,
+    77098
+   ],
+   "quote": "The deployment of AI systems in education is important to promote high-quality digital education and training and to allow all learners and teachers to acquire and share the necessary digital skills and competences, including media literacy, and critical thinking, to take an active part in the economy, society, and in democratic processes. However, AI systems used in education or vocational training, in particular for determining access or admission, for assigning persons to educational and vocational training institutions or programmes at all levels, for evaluating learning outcomes of persons, for assessing the appropriate level of education for an individual and materially influencing the level of education and training that individuals will receive or will be able to access or for monitoring and detecting prohibited behaviour of students during tests should be classified as high-risk AI systems, since they may determine the educational and professional course of a person’s life and therefore may affect that person’s ability to secure a livelihood. When improperly designed and used, such systems may be particularly intrusive and may violate the right to education and training as well as the right not to be discriminated against and perpetuate historical patterns of discrimination, for example against women, certain age groups, persons with disabilities, or persons of certain racial or ethnic origins or sexual orientation.\n\n(57)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "AI Act"
+ },
+ {
+  "id": "c3",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    541256,
+    542638
+   ],
+   "quote": "Critical infrastructure: AI systems intended to be used as safety components in the management and operation of critical digital infrastructure, road traffic, or in the supply of water, gas, heating or electricity.\n\n3.\n\nEducation and vocational training:\n\n(a)\n\nAI systems intended to be used to determine access or admission or to assign natural persons to educational and vocational training institutions at all levels;\n\n(b)\n\nAI systems intended to be used to evaluate learning outcomes, including when those outcomes are used to steer the learning process of natural persons in educational and vocational training institutions at all levels;\n\n(c)\n\nAI systems intended to be used for the purpose of assessing the appropriate level of education that an individual will receive or will be able to access, in the context of or within educational and vocational training institutions at all levels;\n\n(d)\n\nAI systems intended to be used for monitoring and detecting prohibited behaviour of students during tests in the context of or within educational and vocational training institutions at all levels.\n\n4.\n\nEmployment, workers’ management and access to self-employment:\n\n(a)\n\nAI systems intended to be used for the recruitment or selection of natural persons, in particular to place targeted job advertisements, to analyse and filter job applications, and to evaluate candidates;\n\n(b)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "AI Act"
+ },
+ {
+  "id": "c4",
+  "citation": {
+   "sha256": "1d5a0add29da72ab4f7c63e3926b2e9bb9dc626bba828f7b754274f90b339100",
+   "version_id": 2550,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023AP0236",
+   "title": "Amendments adopted by the European Parliament on 14 June 2023 on the proposal for a regulation of the European Parliament and of the Council on laying down harmonised rules on artificial intelligence (Artificial Intelligence Act) and amending certain Union legislative acts (COM(2021)0206 — C9-0146/2021 — 2021/0106(COD))",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:21:09.184389+00:00",
+   "last_seen_at": "2026-07-13T12:21:09.184389+00:00",
+   "span": [
+    90176,
+    91644
+   ],
+   "quote": "Deployment of AI systems in education is important in order to help modernise entire education systems, to increase educational quality, both offline and online and to accelerate digital education, thus also making it available to a broader audience . AI systems used in education or vocational training, notably for determining access or materially influence decisions on admission or assigning persons to educational and vocational training institutions or to evaluate persons on tests as part of or as a precondition for their education or to assess the appropriate level of education for an individual and materially influence the level of education and training that individuals will receive or be able to access or to monitor and detect prohibited behaviour of students during tests should be classified as high-risk AI systems , since they may determine the educational and professional course of a person’s life and therefore affect their ability to secure their livelihood. When improperly designed and used, such systems can be particularly intrusive and may violate the right to education and training as well as the right not to be discriminated against and perpetuate historical patterns of discrimination , for example against women, certain age groups, persons with disabilities, or persons of certain racial or ethnic origins or sexual orientation .\n\nAmendment 66\n\nProposal for a regulation\n\nRecital 36\n\nText proposed by the Commission\n\nAmendment\n\n(36)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Amendments adopted by the European Parliament on 14 June 2023 on the proposal for a regulation of the European Parliament and of the Council on laying down harmonised rules on artificial intelligence (Artificial Intelligence Act) and amending certain Union legislative acts (COM(2021)0206 — C9-0146/2021 — 2021/0106(COD))"
+ },
+ {
+  "id": "c5",
+  "citation": {
+   "sha256": "369f2c22d872ae69600c9e0667c9dadf70b67dd775fd9d1995b703c5730ed060",
+   "version_id": 2716,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52021PC0206",
+   "title": "Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL LAYING DOWN HARMONISED RULES ON ARTIFICIAL INTELLIGENCE (ARTIFICIAL INTELLIGENCE ACT) AND AMENDING CERTAIN UNION LEGISLATIVE ACTS",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:26:15.991927+00:00",
+   "last_seen_at": "2026-07-13T12:26:15.991927+00:00",
+   "span": [
+    85600,
+    86698
+   ],
+   "quote": "(34) As regards the management and operation of critical infrastructure, it is appropriate to classify as high-risk the AI systems intended to be used as safety components in the management and operation of road traffic and the supply of water, gas, heating and electricity, since their failure or malfunctioning may put at risk the life and health of persons at large scale and lead to appreciable disruptions in the ordinary conduct of social and economic activities.\n\n(35) AI systems used in education or vocational training, notably for determining access or assigning persons to educational and vocational training institutions or to evaluate persons on tests as part of or as a precondition for their education should be considered high-risk, since they may determine the educational and professional course of a person’s life and therefore affect their ability to secure their livelihood. When improperly designed and used, such systems may violate the right to education and training as well as the right not to be discriminated against and perpetuate historical patterns of discrimination."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL LAYING DOWN HARMONISED RULES ON ARTIFICIAL INTELLIGENCE (ARTIFICIAL INTELLIGENCE ACT) AND AMENDING CERTAIN UNION LEGISLATIVE ACTS"
+ },
+ {
+  "id": "c6",
+  "citation": {
+   "sha256": "1d5a0add29da72ab4f7c63e3926b2e9bb9dc626bba828f7b754274f90b339100",
+   "version_id": 2550,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023AP0236",
+   "title": "Amendments adopted by the European Parliament on 14 June 2023 on the proposal for a regulation of the European Parliament and of the Council on laying down harmonised rules on artificial intelligence (Artificial Intelligence Act) and amending certain Union legislative acts (COM(2021)0206 — C9-0146/2021 — 2021/0106(COD))",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:21:09.184389+00:00",
+   "last_seen_at": "2026-07-13T12:21:09.184389+00:00",
+   "span": [
+    575262,
+    576733
+   ],
+   "quote": "AI systems intended to be used for the purpose of determining access or assigning natural persons to educational and vocational training institutions;\n\n(a)\n\nAI systems intended to be used for the purpose of determining access or materially influence decisions on admission or assigning natural persons to educational and vocational training institutions;\n\nAmendment 716\n\nProposal for a regulation\n\nAnnex III — paragraph 1 — point 3 — point b\n\nText proposed by the Commission\n\nAmendment\n\n(b)\n\nAI systems intended to be used for the purpose of assessing students in educational and vocational training institutions and for assessing participants in tests commonly required for admission to educational institutions.\n\n(b)\n\nAI systems intended to be used for the purpose of assessing students in educational and vocational training institutions and for assessing participants in tests commonly required for admission to those institutions;\n\nAmendment 717\n\nProposal for a regulation\n\nAnnex III — paragraph 1 — point 3 — point b a (new)\n\nText proposed by the Commission\n\nAmendment\n\n(b a)\n\nAI systems intended to be used for the purpose of assessing the appropriate level of education for an individual and materially influencing the level of education and vocational training that individual will receive or will be able to access;\n\nAmendment 718\n\nProposal for a regulation\n\nAnnex III — paragraph 1 — point 3 — point b b (new)\n\nText proposed by the Commission\n\nAmendment\n\n(b b)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Amendments adopted by the European Parliament on 14 June 2023 on the proposal for a regulation of the European Parliament and of the Council on laying down harmonised rules on artificial intelligence (Artificial Intelligence Act) and amending certain Union legislative acts (COM(2021)0206 — C9-0146/2021 — 2021/0106(COD))"
+ },
+ {
+  "id": "c7",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    59144,
+    60567
+   ],
+   "quote": "There are serious concerns about the scientific basis of AI systems aiming to identify or infer emotions, particularly as expression of emotions vary considerably across cultures and situations, and even within a single individual. Among the key shortcomings of such systems are the limited reliability, the lack of specificity and the limited generalisability. Therefore, AI systems identifying or inferring emotions or intentions of natural persons on the basis of their biometric data may lead to discriminatory outcomes and can be intrusive to the rights and freedoms of the concerned persons. Considering the imbalance of power in the context of work or education, combined with the intrusive nature of these systems, such systems could lead to detrimental or unfavourable treatment of certain natural persons or whole groups thereof. Therefore, the placing on the market, the putting into service, or the use of AI systems intended to be used to detect the emotional state of individuals in situations related to the workplace and education should be prohibited. That prohibition should not cover AI systems placed on the market strictly for medical or safety reasons, such as systems intended for therapeutical use.\n\n(45)\n\nPractices that are prohibited by Union law, including data protection law, non-discrimination law, consumer protection law, and competition law, should not be affected by this Regulation.\n\n(46)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c8",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    252306,
+    253731
+   ],
+   "quote": "the placing on the market, the putting into service or the use of an AI system that deploys subliminal techniques beyond a person’s consciousness or purposefully manipulative or deceptive techniques, with the objective, or the effect of materially distorting the behaviour of a person or a group of persons by appreciably impairing their ability to make an informed decision, thereby causing them to take a decision that they would not have otherwise taken in a manner that causes or is reasonably likely to cause that person, another person or group of persons significant harm;\n\n(b)\n\nthe placing on the market, the putting into service or the use of an AI system that exploits any of the vulnerabilities of a natural person or a specific group of persons due to their age, disability or a specific social or economic situation, with the objective, or the effect, of materially distorting the behaviour of that person or a person belonging to that group in a manner that causes or is reasonably likely to cause that person or another person significant harm;\n\n(c)\n\nthe placing on the market, the putting into service or the use of AI systems for the evaluation or classification of natural persons or groups of persons over a certain period of time based on their social behaviour or known, inferred or predicted personal or personality characteristics, with the social score leading to either or both of the following:\n\n(i)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c9",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    254953,
+    256431
+   ],
+   "quote": "the placing on the market, the putting into service for this specific purpose, or the use of AI systems to infer emotions of a natural person in the areas of workplace and education institutions, except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons;\n\n(g)\n\nthe placing on the market, the putting into service for this specific purpose, or the use of biometric categorisation systems that categorise individually natural persons based on their biometric data to deduce or infer their race, political opinions, trade union membership, religious or philosophical beliefs, sex life or sexual orientation; this prohibition does not cover any labelling or filtering of lawfully acquired biometric datasets, such as images, based on biometric data or categorizing of biometric data in the area of law enforcement;\n\n(h)\n\nthe use of ‘real-time’ remote biometric identification systems in publicly accessible spaces for the purposes of law enforcement, unless and in so far as such use is strictly necessary for one of the following objectives:\n\n(i)\n\nthe targeted search for specific victims of abduction, trafficking in human beings or sexual exploitation of human beings, as well as the search for missing persons;\n\n(ii)\n\nthe prevention of a specific, substantial and imminent threat to the life or physical safety of natural persons or a genuine and present or genuine and foreseeable threat of a terrorist attack;\n\n(iii)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c10",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    38481,
+    42192
+   ],
+   "quote": "AI-enabled manipulative techniques can be used to persuade persons to engage in unwanted behaviours, or to deceive them by nudging them into decisions in a way that subverts and impairs their autonomy, decision-making and free choices. The placing on the market, the putting into service or the use of certain AI systems with the objective to or the effect of materially distorting human behaviour, whereby significant harms, in particular having sufficiently important adverse impacts on physical, psychological health or financial interests are likely to occur, are particularly dangerous and should therefore be prohibited. Such AI systems deploy subliminal components such as audio, image, video stimuli that persons cannot perceive, as those stimuli are beyond human perception, or other manipulative or deceptive techniques that subvert or impair person’s autonomy, decision-making or free choice in ways that people are not consciously aware of those techniques or, where they are aware of them, can still be deceived or are not able to control or resist them. This could be facilitated, for example, by machine-brain interfaces or virtual reality as they allow for a higher degree of control of what stimuli are presented to persons, insofar as they may materially distort their behaviour in a significantly harmful manner. In addition, AI systems may also otherwise exploit the vulnerabilities of a person or a specific group of persons due to their age, disability within the meaning of Directive (EU) 2019/882 of the European Parliament and of the Council ( 16 ) , or a specific social or economic situation that is likely to make those persons more vulnerable to exploitation such as persons living in extreme poverty, ethnic or religious minorities. Such AI systems can be placed on the market, put into service or used with the objective to or the effect of materially distorting the behaviour of a person and in a manner that causes or is reasonably likely to cause significant harm to that or another person or groups of persons, including harms that may be accumulated over time and should therefore be prohibited. It may not be possible to assume that there is an intention to distort behaviour where the distortion results from factors external to the AI system which are outside the control of the provider or the deployer, namely factors that may not be reasonably foreseeable and therefore not possible for the provider or the deployer of the AI system to mitigate. In any case, it is not necessary for the provider or the deployer to have the intention to cause significant harm, provided that such harm results from the manipulative or exploitative AI-enabled practices. The prohibitions for such AI practices are complementary to the provisions contained in Directive 2005/29/EC of the European Parliament and of the Council ( 17 ) , in particular unfair commercial practices leading to economic or financial harms to consumers are prohibited under all circumstances, irrespective of whether they are put in place through AI systems or otherwise. The prohibitions of manipulative and exploitative practices in this Regulation should not affect lawful practices in the context of medical treatment such as psychological treatment of a mental disease or physical rehabilitation, when those practices are carried out in accordance with the applicable law and medical standards, for example explicit consent of the individuals or their legal representatives. In addition, common and legitimate commercial practices, for example in the field of advertising, that comply with the applicable law should not, in themselves, be regarded as constituting harmful manipulative AI-enabled practices."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c11",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    253733,
+    254951
+   ],
+   "quote": "detrimental or unfavourable treatment of certain natural persons or groups of persons in social contexts that are unrelated to the contexts in which the data was originally generated or collected;\n\n(ii)\n\ndetrimental or unfavourable treatment of certain natural persons or groups of persons that is unjustified or disproportionate to their social behaviour or its gravity;\n\n(d)\n\nthe placing on the market, the putting into service for this specific purpose, or the use of an AI system for making risk assessments of natural persons in order to assess or predict the risk of a natural person committing a criminal offence, based solely on the profiling of a natural person or on assessing their personality traits and characteristics; this prohibition shall not apply to AI systems used to support the human assessment of the involvement of a person in a criminal activity, which is already based on objective and verifiable facts directly linked to a criminal activity;\n\n(e)\n\nthe placing on the market, the putting into service for this specific purpose, or the use of AI systems that create or expand facial recognition databases through the untargeted scraping of facial images from the internet or CCTV footage;\n\n(f)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c12",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    21381,
+    22378
+   ],
+   "quote": "(18)\n\nThe notion of ‘emotion recognition system’ referred to in this Regulation should be defined as an AI system for the purpose of identifying or inferring emotions or intentions of natural persons on the basis of their biometric data. The notion refers to emotions or intentions such as happiness, sadness, anger, surprise, disgust, embarrassment, excitement, shame, contempt, satisfaction and amusement. It does not include physical states, such as pain or fatigue, including, for example, systems used in detecting the state of fatigue of professional pilots or drivers for the purpose of preventing accidents. This does also not include the mere detection of readily apparent expressions, gestures or movements, unless they are used for identifying or inferring emotions. Those expressions can be basic facial expressions, such as a frown or a smile, or gestures such as the movement of hands, arms or head, or characteristics of a person’s voice, such as a raised voice or whispering.\n\n(19)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c13",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    171383,
+    172894
+   ],
+   "quote": "Certain AI systems intended to interact with natural persons or to generate content may pose specific risks of impersonation or deception irrespective of whether they qualify as high-risk or not. In certain circumstances, the use of these systems should therefore be subject to specific transparency obligations without prejudice to the requirements and obligations for high-risk AI systems and subject to targeted exceptions to take into account the special need of law enforcement. In particular, natural persons should be notified that they are interacting with an AI system, unless this is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect taking into account the circumstances and the context of use. When implementing that obligation, the characteristics of natural persons belonging to vulnerable groups due to their age or disability should be taken into account to the extent the AI system is intended to interact with those groups as well. Moreover, natural persons should be notified when they are exposed to AI systems that, by processing their biometric data, can identify or infer the emotions or intentions of those persons or assign them to specific categories. Such specific categories can relate to aspects such as sex, age, hair colour, eye colour, tattoos, personal traits, ethnic origin, personal preferences and interests. Such information and notifications should be provided in accessible formats for persons with disabilities."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c14",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    15842,
+    16699
+   ],
+   "quote": "(13)\n\nThe notion of ‘deployer’ referred to in this Regulation should be interpreted as any natural or legal person, including a public authority, agency or other body, using an AI system under its authority, except where the AI system is used in the course of a personal non-professional activity. Depending on the type of AI system, the use of the system may affect persons other than the deployer.\n\n(14)\n\nThe notion of ‘biometric data’ used in this Regulation should be interpreted in light of the notion of biometric data as defined in Article 4, point (14) of Regulation (EU) 2016/679, Article 3, point (18) of Regulation (EU) 2018/1725 and Article 3, point (13) of Directive (EU) 2016/680. Biometric data can allow for the authentication, identification or categorisation of natural persons and for the recognition of emotions of natural persons.\n\n(15)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c15",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    374025,
+    375302
+   ],
+   "quote": "3.   Deployers of an emotion recognition system or a biometric categorisation system shall inform the natural persons exposed thereto of the operation of the system, and shall process the personal data in accordance with Regulations (EU) 2016/679 and (EU) 2018/1725 and Directive (EU) 2016/680, as applicable. This obligation shall not apply to AI systems used for biometric categorisation and emotion recognition, which are permitted by law to detect, prevent or investigate criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, and in accordance with Union law.\n\n4.   Deployers of an AI system that generates or manipulates image, audio or video content constituting a deep fake, shall disclose that the content has been artificially generated or manipulated. This obligation shall not apply where the use is authorised by law to detect, prevent, investigate or prosecute criminal offence. Where the content forms part of an evidently artistic, creative, satirical, fictional or analogous work or programme, the transparency obligations set out in this paragraph are limited to disclosure of the existence of such generated or manipulated content in an appropriate manner that does not hamper the display or enjoyment of the work."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c16",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    372321,
+    373101
+   ],
+   "quote": "Transparency obligations for providers and deployers of certain AI systems\n\n1.   Providers shall ensure that AI systems intended to interact directly with natural persons are designed and developed in such a way that the natural persons concerned are informed that they are interacting with an AI system, unless this is obvious from the point of view of a natural person who is reasonably well-informed, observant and circumspect, taking into account the circumstances and the context of use. This obligation shall not apply to AI systems authorised by law to detect, prevent, investigate or prosecute criminal offences, subject to appropriate safeguards for the rights and freedoms of third parties, unless those systems are available for the public to report a criminal offence."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c17",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    116505,
+    117352
+   ],
+   "quote": "To enable enforcement of this Regulation and create a level playing field for operators, and, taking into account the different forms of making available of digital products, it is important to ensure that, under all circumstances, a person established in the Union can provide authorities with all the necessary information on the compliance of an AI system. Therefore, prior to making their AI systems available in the Union, providers established in third countries should, by written mandate, appoint an authorised representative established in the Union. This authorised representative plays a pivotal role in ensuring the compliance of the high-risk AI systems placed on the market or put into service in the Union by those providers who are not established in the Union and in serving as their contact person established in the Union.\n\n(83)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c18",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    229690,
+    230968
+   ],
+   "quote": "providers placing on the market or putting into service AI systems or placing on the market general-purpose AI models in the Union, irrespective of whether those providers are established or located within the Union or in a third country;\n\n(b)\n\ndeployers of AI systems that have their place of establishment or are located within the Union;\n\n(c)\n\nproviders and deployers of AI systems that have their place of establishment or are located in a third country, where the output produced by the AI system is used in the Union;\n\n(d)\n\nimporters and distributors of AI systems;\n\n(e)\n\nproduct manufacturers placing on the market or putting into service an AI system together with their product and under their own name or trademark;\n\n(f)\n\nauthorised representatives of providers, which are not established in the Union;\n\n(g)\n\naffected persons that are located in the Union.\n\n2.   For AI systems classified as high-risk AI systems in accordance with Article 6(1) related to products covered by the Union harmonisation legislation listed in Section B of Annex I, only Article 6(1), Articles 102 to 109 and Article 112 apply. Article 57 applies only in so far as the requirements for high-risk AI systems under this Regulation have been integrated in that Union harmonisation legislation."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c19",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    301862,
+    303228
+   ],
+   "quote": "Cooperation with competent authorities\n\n1.   Providers of high-risk AI systems shall, upon a reasoned request by a competent authority, provide that authority all the information and documentation necessary to demonstrate the conformity of the high-risk AI system with the requirements set out in Section 2, in a language which can be easily understood by the authority in one of the official languages of the institutions of the Union as indicated by the Member State concerned.\n\n2.   Upon a reasoned request by a competent authority, providers shall also give the requesting competent authority, as applicable, access to the automatically generated logs of the high-risk AI system referred to in Article 12(1), to the extent such logs are under their control.\n\n3.   Any information obtained by a competent authority pursuant to this Article shall be treated in accordance with the confidentiality obligations set out in Article 78.\n\nArticle 22\n\nAuthorised representatives of providers of high-risk AI systems\n\n1.   Prior to making their high-risk AI systems available on the Union market, providers established in third countries shall, by written mandate, appoint an authorised representative which is established in the Union.\n\n2.   The provider shall enable its authorised representative to perform the tasks specified in the mandate received from the provider."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c20",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    226754,
+    228272
+   ],
+   "quote": "This Regulation should apply from 2 August 2026. However, taking into account the unacceptable risk associated with the use of AI in certain ways, the prohibitions as well as the general provisions of this Regulation should already apply from 2 February 2025. While the full effect of those prohibitions follows with the establishment of the governance and enforcement of this Regulation, anticipating the application of the prohibitions is important to take account of unacceptable risks and to have an effect on other procedures, such as in civil law. Moreover, the infrastructure related to the governance and the conformity assessment system should be operational before 2 August 2026, therefore the provisions on notified bodies and governance structure should apply from 2 August 2025. Given the rapid pace of technological advancements and adoption of general-purpose AI models, obligations for providers of general-purpose AI models should apply from 2 August 2025. Codes of practice should be ready by 2 May 2025 in view of enabling providers to demonstrate compliance on time. The AI Office should ensure that classification rules and procedures are up to date in light of technological developments. In addition, Member States should lay down and notify to the Commission the rules on penalties, including administrative fines, and ensure that they are properly and effectively implemented by the date of application of this Regulation. Therefore the provisions on penalties should apply from 2 August 2025."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c21",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    516852,
+    518239
+   ],
+   "quote": "AI systems already placed on the market or put into service and general-purpose AI models already placed on the marked\n\n1.   Without prejudice to the application of Article 5 as referred to in Article 113(3), point (a), AI systems which are components of the large-scale IT systems established by the legal acts listed in Annex X that have been placed on the market or put into service before 2 August 2027 shall be brought into compliance with this Regulation by 31 December 2030.\n\nThe requirements laid down in this Regulation shall be taken into account in the evaluation of each large-scale IT system established by the legal acts listed in Annex X to be undertaken as provided for in those legal acts and where those legal acts are replaced or amended.\n\n2.   Without prejudice to the application of Article 5 as referred to in Article 113(3), point (a), this Regulation shall apply to operators of high-risk AI systems, other than the systems referred to in paragraph 1 of this Article, that have been placed on the market or put into service before 2 August 2026, only if, as from that date, those systems are subject to significant changes in their designs. In any case, the providers and deployers of high-risk AI systems intended to be used by public authorities shall take the necessary steps to comply with the requirements and obligations of this Regulation by 2 August 2030."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c22",
+  "citation": {
+   "sha256": "edfbb698b5b6575ab7e337ee2de4d86a1168b4c3b2b3862adc93c19b0a47273d",
+   "version_id": 3052,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52014AP0212",
+   "title": "P7_TA(2014)0212 Protection of individuals with regard to the processing of personal data ***I European Parliament legislative resolution of 12 March 2014 on the proposal for a regulation of the European Parliament and of the Council on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation) (COM(2012)0011 — C7-0025/2012 — 2012/0011(COD)) P7_TC1-COD(2012)0011 Position of the European Parliament adopted at first reading on 12 March 2014 with a view to the adoption of Regulation (EU) No …/2014 of the European Parliament and of the Council on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation)Text with EEA relevance.",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:36:37.932471+00:00",
+   "last_seen_at": "2026-07-13T12:36:37.932471+00:00",
+   "span": [
+    124459,
+    125940
+   ],
+   "quote": "Processing of personal data of a child\n\n1.   For the purposes of this Regulation, in relation to the offering of information society goods or services directly to a child, the processing of personal data of a child below the age of 13 years shall only be lawful if and to the extent that consent is given or authorised by the child's parent or custodian legal guardian . The controller shall make reasonable efforts to obtain verifiable verify such consent, taking into consideration available technology without causing otherwise unnecessary processing of personal data .\n\n1a. Information provided to children, parents and legal guardians in order to express consent, including about the controller’s collection and use of personal data, should be given in a clear language appropriate to the intended audience.\n\n2.   Paragraph 1 shall not affect the general contract law of Member States such as the rules on the validity, formation or effect of a contract in relation to a child.\n\n3.   The Commission European Data Protection Board shall be empowered to adopt delegated acts in accordance with Article 86 for the purpose entrusted with the task of further specifying the criteria and requirements issuing guidelines, recommendations and best practices for the methods to obtain verifiable of verifying consent referred to in paragraph 1 , in accordance with Article 66 . In doing so, the Commission shall consider specific measures for micro, small and medium-sized enterprises."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "P7_TA(2014)0212 Protection of individuals with regard to the processing of personal data ***I European Parliament legislative resolution of 12 March 2014 on the proposal for a regulation of the European Parliament and of the Council on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation) (COM(2012)0011 — C7-0025/2012 — 2012/0011(COD)) P7_TC1-COD(2012)0011 Position of the European Parliament adopted at first reading on 12 March 2014 with a view to the adoption of Regulation (EU) No …/2014 of the European Parliament and of the Council on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation)Text with EEA relevance."
+ },
+ {
+  "id": "c23",
+  "citation": {
+   "sha256": "cf2b8b1949071c79463de694c63d1d4f8ecfb101953da518c5c09b6130492082",
+   "version_id": 2946,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52017PC0008",
+   "title": "Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on the protection of individuals with regard to the processing of personal data by the Union institutions, bodies, offices and agencies and on the free movement of such data, and repealing Regulation (EC) No 45/2001 and Decision No 1247/2002/EC",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:33:30.895868+00:00",
+   "last_seen_at": "2026-07-13T12:33:30.895868+00:00",
+   "span": [
+    120813,
+    122209
+   ],
+   "quote": "4. When assessing whether consent is freely given, utmost account shall be taken of w hether, inter alia , the performance of a contract, including the provision of a service, is conditional on consent to the processing of personal data that is not necessary for the performance of that contract.\n\nArticle 8\n\nConditions applicable to children's consent in relation to information society services\n\n1. Where point (d) of Article 5(1) applies, in relation to the offer of information society services directly to a child, the processing of the personal data of a child shall be lawful where the child is at least 13 years old. Where the child is below the age of 13 years, such processing shall be lawful only if and to the extent that consent is given or authorised by the holder of parental responsibility over the child.\n\n2. The controller shall make reasona ble efforts to verify in such cases that consent is given or authorised by the holder of parental responsibility over the child, taking into consideration available technology.\n\n3. Paragraph 1 shall not affect the general contract law of Member States such as the rules on the validity, formation or effect of a contract in relation to a child.\n\nArticle 9\n\nTransmissions of personal data to recipients, other than Union institutions and bodies, established in the Union and subject to Regulation (EU) 2016/679 or Directive (EU) 2016/680"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on the protection of individuals with regard to the processing of personal data by the Union institutions, bodies, offices and agencies and on the free movement of such data, and repealing Regulation (EC) No 45/2001 and Decision No 1247/2002/EC"
+ },
+ {
+  "id": "c24",
+  "citation": {
+   "sha256": "1a5cbd5540f8e3fd3c71291655da8e4ee04b45622a15b7f9ab773ff702a3acfb",
+   "version_id": 2855,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32018R1725",
+   "title": "Regulation (EU) 2018/1725 of the European Parliament and of the Council of 23 October 2018 on the protection of natural persons with regard to the processing of personal data by the Union institutions, bodies, offices and agencies and on the free movement of such data, and repealing Regulation (EC) No 45/2001 and Decision No 1247/2002/EC (Text with EEA relevance.)",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:30:45.859432+00:00",
+   "last_seen_at": "2026-07-13T12:30:45.859432+00:00",
+   "span": [
+    95647,
+    96978
+   ],
+   "quote": "4.   When assessing whether consent is freely given, utmost account shall be taken of whether, inter alia, the performance of a contract, including the provision of a service, is conditional on consent to the processing of personal data that is not necessary for the performance of that contract.\n\nArticle 8\n\nConditions applicable to a child’s consent in relation to information society services\n\n1.   Where point (d) of Article 5(1) applies, in relation to the offer of information society services directly to a child, the processing of the personal data of a child shall be lawful where the child is at least 13 years old. Where the child is below the age of 13 years, such processing shall be lawful only if and to the extent that consent is given or authorised by the holder of parental responsibility over the child.\n\n2.   The controller shall make reasonable efforts to verify in such cases that consent is given or authorised by the holder of parental responsibility over the child, taking into consideration available technology.\n\n3.   Paragraph 1 shall not affect the general contract law of Member States such as the rules on the validity, formation or effect of a contract in relation to a child.\n\nArticle 9\n\nTransmissions of personal data to recipients established in the Union other than Union institutions and bodies"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Regulation (EU) 2018/1725 of the European Parliament and of the Council of 23 October 2018 on the protection of natural persons with regard to the processing of personal data by the Union institutions, bodies, offices and agencies and on the free movement of such data, and repealing Regulation (EC) No 45/2001 and Decision No 1247/2002/EC (Text with EEA relevance.)"
+ },
+ {
+  "id": "c25",
+  "citation": {
+   "sha256": "c67b7de0c5dd11adf4aee434924097ce13af6b1891fe07ce0a1d7baff2e765ab",
+   "version_id": 3109,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52012PC0011",
+   "title": "Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation)",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:38:25.491139+00:00",
+   "last_seen_at": "2026-07-13T12:38:25.491139+00:00",
+   "span": [
+    133617,
+    134944
+   ],
+   "quote": "Article 8\nProcessing of personal data of a child\n\n1.           For the purposes of this\nRegulation, in relation to the offering of information society services\ndirectly to a child, the processing of personal data of a child below the age\nof 13 years shall only be lawful if and to the extent that consent is given or\nauthorised by the child's parent or custodian. The controller shall make\nreasonable efforts to obtain verifiable consent, taking into consideration\navailable technology.\n\n2.           Paragraph 1 shall not\naffect the general contract law of Member States such as the rules on the\nvalidity, formation or effect of a contract in relation to a child.\n\n3.           The Commission shall be\nempowered to adopt delegated acts in accordance with Article 86 for the purpose\nof further specifying the criteria and requirements for the methods to obtain\nverifiable consent referred to in paragraph 1. In doing so, the Commission\nshall consider specific measures for micro, small and medium-sized enterprises.\n\n4.           The Commission may lay\ndown standard forms for specific methods to obtain verifiable consent referred\nto in paragraph 1. Those implementing acts shall be adopted in accordance with\nthe examination procedure referred to in Article 87(2).\n\nArticle 9\nProcessing of special categories of personal data"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation)"
+ },
+ {
+  "id": "c26",
+  "citation": {
+   "sha256": "edfbb698b5b6575ab7e337ee2de4d86a1168b4c3b2b3862adc93c19b0a47273d",
+   "version_id": 3052,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52014AP0212",
+   "title": "P7_TA(2014)0212 Protection of individuals with regard to the processing of personal data ***I European Parliament legislative resolution of 12 March 2014 on the proposal for a regulation of the European Parliament and of the Council on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation) (COM(2012)0011 — C7-0025/2012 — 2012/0011(COD)) P7_TC1-COD(2012)0011 Position of the European Parliament adopted at first reading on 12 March 2014 with a view to the adoption of Regulation (EU) No …/2014 of the European Parliament and of the Council on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation)Text with EEA relevance.",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:36:37.932471+00:00",
+   "last_seen_at": "2026-07-13T12:36:37.932471+00:00",
+   "span": [
+    21307,
+    22198
+   ],
+   "quote": "Children deserve specific protection of their personal data, as they may be less aware of risks, consequences, safeguards and their rights in relation to the processing of personal data. To determine when an individual is a child, this Regulation should take over the definition laid down by the UN Convention on the Rights of the Child. Where data processing is based on the data subject’s consent in relation to the offering of goods or services directly to a child, consent should be given or authorised by the child’s parent or legal guardian in cases where the child is below the age of 13. Age-appropriate language should be used where the intended audience is children. Other grounds of lawful processing such as grounds of public interest should remain applicable, such as for processing in the context of preventive or counselling services offered directly to a child. [Am. 9]\n\n(30)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "P7_TA(2014)0212 Protection of individuals with regard to the processing of personal data ***I European Parliament legislative resolution of 12 March 2014 on the proposal for a regulation of the European Parliament and of the Council on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation) (COM(2012)0011 — C7-0025/2012 — 2012/0011(COD)) P7_TC1-COD(2012)0011 Position of the European Parliament adopted at first reading on 12 March 2014 with a view to the adoption of Regulation (EU) No …/2014 of the European Parliament and of the Council on the protection of individuals with regard to the processing of personal data and on the free movement of such data (General Data Protection Regulation)Text with EEA relevance."
+ },
+ {
+  "id": "c27",
+  "citation": {
+   "sha256": "0654da59d348484f305905f14bb10fea333ec82b9fde599db307977a1f5505b7",
+   "version_id": 2767,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52020SC0115",
+   "title": "COMMISSION STAFF WORKING DOCUMENT Accompanying the document COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL Data protection rules as a pillar of citizens empowerment and EUs approach to digital transition - two years of application of the General Data Protection Regulation",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:27:54.070046+00:00",
+   "last_seen_at": "2026-07-13T12:27:54.070046+00:00",
+   "span": [
+    38963,
+    39982
+   ],
+   "quote": "Fragmentation linked to the use of facultative specification clauses\n\n· Age limit for children consent for information society services\n\nA number of Member States have made use of the possibility to provide for a lower age than 16 years for consent in relation to information society services (Article 8(1) GDPR). Whereas nine Member States apply the 16 years’ age limit, eight Member States opted for 13 years, six for 14 years and three for 15 years. 60\n\nConsequently, a company providing information society services to minors across the EU has to distinguish between the ages of potential users, depending in which Member State they reside. This is contrary to the key objective of the GDPR to provide for an equal level of protection to individuals and of business opportunities in all Member States.\n\nSuch differences lead to situations where the Member State in which the controller is established provides for another age limit than the Member States where the data subjects are residing.\n\n· Health and research"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMISSION STAFF WORKING DOCUMENT Accompanying the document COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL Data protection rules as a pillar of citizens empowerment and EUs approach to digital transition - two years of application of the General Data Protection Regulation"
+ },
+ {
+  "id": "c28",
+  "citation": {
+   "sha256": "8cc110427995837e029d9c79b489475decc5d7f9ee522529531800918bf505e2",
+   "version_id": 1477,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2065",
+   "title": "Digital Services Act (DSA)",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:09.511691+00:00",
+   "last_seen_at": "2026-11-10T09:49:39.702320+00:00",
+   "span": [
+    87271,
+    89166
+   ],
+   "quote": "The protection of minors is an important policy objective of the Union. An online platform can be considered to be accessible to minors when its terms and conditions permit minors to use the service, when its service is directed at or predominantly used by minors, or where the provider is otherwise aware that some of the recipients of its service are minors, for example because it already processes personal data of the recipients of its service revealing their age for other purposes. Providers of online platforms used by minors should take appropriate and proportionate measures to protect minors, for example by designing their online interfaces or parts thereof with the highest level of privacy, safety and security for minors by default where appropriate or adopting standards for protection of minors, or participating in codes of conduct for protecting minors. They should consider best practices and available guidance, such as that provided by the communication of the Commission on A Digital Decade for children and youth: the new European strategy for a better internet for kids (BIK+). Providers of online platforms should not present advertisements based on profiling using personal data of the recipient of the service when they are aware with reasonable certainty that the recipient of the service is a minor. In accordance with Regulation (EU) 2016/679, notably the principle of data minimisation as provided for in Article 5(1), point (c), thereof, this prohibition should not lead the provider of the online platform to maintain, acquire or process more personal data than it already has in order to assess if the recipient of the service is a minor. Thus, this obligation should not incentivize providers of online platforms to collect the age of the recipient of the service prior to their use. It should be without prejudice to Union law on protection of personal data."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Digital Services Act (DSA)"
+ },
+ {
+  "id": "c29",
+  "citation": {
+   "sha256": "b886433f36e39327cb93fa7cec6bdca35c3cfc7a1eeaa51337c81d9aa197c378",
+   "version_id": 8437,
+   "store": "primary",
+   "canonical_url": "https://ec.europa.eu/info/law/better-regulation/have-your-say/initiatives/14352",
+   "title": "Protection of minors – guidelines",
+   "publisher": "Have Your Say (consultations)",
+   "fetched_at": "2026-08-23T05:12:58.110412+00:00",
+   "last_seen_at": "2026-11-10T10:00:41.509892+00:00",
+   "span": [
+    0,
+    529
+   ],
+   "quote": "Protection of minors – guidelines\n\nProtection of Minors Guidelines The Digital Services Act aims to make the online world safer for … high level of privacy, safety and security for minors, on their service. It also empowers the Commission to issue Guidelines to assist … first half of 2025. Protection of minors – guidelines The Digital Services Act aims to make the online world safer for children … high level of privacy, safety and security as part of their service. It also empowers the Commission to issue guidelines to help"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Protection of minors – guidelines"
+ },
+ {
+  "id": "c30",
+  "citation": {
+   "sha256": "8cc110427995837e029d9c79b489475decc5d7f9ee522529531800918bf505e2",
+   "version_id": 1477,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2065",
+   "title": "Digital Services Act (DSA)",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:09.511691+00:00",
+   "last_seen_at": "2026-11-10T09:49:39.702320+00:00",
+   "span": [
+    112395,
+    113386
+   ],
+   "quote": "Providers of very large online platforms and of very large online search engines should take into account the best interests of minors in taking measures such as adapting the design of their service and their online interface, especially when their services are aimed at minors or predominantly used by them. They should ensure that their services are organised in a way that allows minors to access easily mechanisms provided for in this Regulation, where applicable, including notice and action and complaint mechanisms. They should also take measures to protect minors from content that may impair their physical, mental or moral development and provide tools that enable conditional access to such information. In selecting the appropriate mitigation measures, providers can consider, where appropriate, industry best practices, including as established through self-regulatory cooperation, such as codes of conduct, and should take into account the guidelines from the Commission.\n\n(90)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Digital Services Act (DSA)"
+ },
+ {
+  "id": "c31",
+  "citation": {
+   "sha256": "8cc110427995837e029d9c79b489475decc5d7f9ee522529531800918bf505e2",
+   "version_id": 1477,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2065",
+   "title": "Digital Services Act (DSA)",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:09.511691+00:00",
+   "last_seen_at": "2026-11-10T09:49:39.702320+00:00",
+   "span": [
+    256885,
+    258305
+   ],
+   "quote": "1.   Providers of online platforms that use recommender systems shall set out in their terms and conditions, in plain and intelligible language, the main parameters used in their recommender systems, as well as any options for the recipients of the service to modify or influence those main parameters.\n\n2.   The main parameters referred to in paragraph 1 shall explain why certain information is suggested to the recipient of the service. They shall include, at least:\n\n(a)\n\nthe criteria which are most significant in determining the information suggested to the recipient of the service;\n\n(b)\n\nthe reasons for the relative importance of those parameters.\n\n3.   Where several options are available pursuant to paragraph 1 for recommender systems that determine the relative order of information presented to recipients of the service, providers of online platforms shall also make available a functionality that allows the recipient of the service to select and to modify at any time their preferred option. That functionality shall be directly and easily accessible from the specific section of the online platform’s online interface where the information is being prioritised.\n\nArticle 28\n\nOnline protection of minors\n\n1.   Providers of online platforms accessible to minors shall put in place appropriate and proportionate measures to ensure a high level of privacy, safety, and security of minors, on their service."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Digital Services Act (DSA)"
+ },
+ {
+  "id": "c32",
+  "citation": {
+   "sha256": "7c6fcaeea1afaa85a3c11568430a1bccc52e6cec5b15c7f38216c79e4adf48d3",
+   "version_id": 9820,
+   "store": "primary",
+   "canonical_url": "https://eulawlive.com/commission-proposes-eu-kids-act-to-set-minimum-ages-for-social-media-accounts-and-safety-by-design-duties-for-minors/",
+   "title": "Commission proposes EU KIDS Act to set minimum ages for social media accounts and safety-by-design duties for minors",
+   "publisher": "EU Law Live (EU legal analysis, incl. CJEU case law)",
+   "fetched_at": "2026-09-20T05:28:26.342173+00:00",
+   "last_seen_at": "2026-09-20T05:28:26.342173+00:00",
+   "span": [
+    0,
+    1026
+   ],
+   "quote": "Commission proposes EU KIDS Act to set minimum ages for social media accounts and safety-by-design duties for minors\n\nThis is a premium content To read it, please Log In or Subscribe to EU Law Live If you access throught an institutional IP range, you must accept technical and session cookies The European Commission has adopted a proposal for the EU KIDS Act, intended to strengthen the online safety of children across the Union. The proposal sets an EU-wide minimum age of 15 for minors to create an autonomous social media account. It bars children under 13 from social media and reverses the burden of proof, requiring providers to show that their services are safe by design. The Commission describes the approach as gradual. The proposal rests on four pillars. The first governs access by age. Children may open autonomous accounts only from the age of 15. Those aged 13 to under 15 may use \"mini accounts\" set up through a guardian's account, giving access to age-appropriate platforms subject to safeguards such as l"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Commission proposes EU KIDS Act to set minimum ages for social media accounts and safety-by-design duties for minors"
+ },
+ {
+  "id": "c33",
+  "citation": {
+   "sha256": "328a34f3b87f6a4a5927dd835086e26d8c722b6de36df3306496a0033b8d64c9",
+   "version_id": 9777,
+   "store": "primary",
+   "canonical_url": "https://digital-strategy.ec.europa.eu/en/news/eu-kids-act-restrict-social-media-platforms-access-children-eu",
+   "title": "EU KIDS Act to restrict social media platforms’ access to children in the EU",
+   "publisher": "EC Digital Strategy news (DG CONNECT)",
+   "fetched_at": "2026-09-20T05:27:01.514851+00:00",
+   "last_seen_at": "2026-09-20T05:27:01.514851+00:00",
+   "span": [
+    0,
+    1766
+   ],
+   "quote": "EU KIDS Act to restrict social media platforms’ access to children in the EU\n\nEU KIDS Act to restrict social media platforms’ access to children in the EU Anonymous (not verified) Thu, 09/17/2026 - 09:36 The European Commission has adopted the EU KIDS Act to enhance the online safety of children throughout the Union. The proposal prohibits social media platforms from accessing children under the age of 13 and sets an EU-wide minimum age for minors to open an account of their own at the age of 15, thereby ensuring a gradual approach. The KIDS Act also reverses the burden of proof. Now, service providers will have to show that their services are age-appropriate and safe by design. Commission President, Ursula von der Leyen , said: “Today, our children are engaging with the most sophisticated technologies ever created. Technology that was never created with their wellbeing in mind. Our KIDS Act is reversing the burden of proof - it is for platforms to show they are safe by design. And we put parents back in the driving seat, giving them the tools to help their children navigate a safer online world.” Read the full press release and factsheet . Find further information: Kids Act - Proposal and supporting documents KIDS Act - an overview KIDS Act - questions and answers Related topics Better Internet for Children Strengthening trust and security Online platforms and e-commerce Related content Policy and legislation 17 September 2026 Proposal for EU KIDS Act - 'EU Keeping Internet Digital Spaces Accountable and Trustworthy' This proposal seeks to protect minors from risky digital services and AI systems, uphold the digital single market and maintain a coherent regulatory framework and enforcement structure for the protection of minors online."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "EU KIDS Act to restrict social media platforms’ access to children in the EU"
+ },
+ {
+  "id": "c34",
+  "citation": {
+   "sha256": "328a34f3b87f6a4a5927dd835086e26d8c722b6de36df3306496a0033b8d64c9",
+   "version_id": 9777,
+   "store": "primary",
+   "canonical_url": "https://digital-strategy.ec.europa.eu/en/news/eu-kids-act-restrict-social-media-platforms-access-children-eu",
+   "title": "EU KIDS Act to restrict social media platforms’ access to children in the EU",
+   "publisher": "EC Digital Strategy news (DG CONNECT)",
+   "fetched_at": "2026-09-20T05:27:01.514851+00:00",
+   "last_seen_at": "2026-09-20T05:27:01.514851+00:00",
+   "span": [
+    0,
+    76
+   ],
+   "quote": "EU KIDS Act to restrict social media platforms’ access to children in the EU"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "EU KIDS Act to restrict social media platforms’ access to children in the EU"
+ },
+ {
+  "id": "c35",
+  "citation": {
+   "sha256": "6cae22d7432f835b02205bb97b3d7969f7d0303287961b3b3030c3e96779a48b",
+   "version_id": 1497,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52025PC0836",
+   "title": "Digital Omnibus on AI (AI Act simplification)",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-07T07:16:58.707828+00:00",
+   "last_seen_at": "2026-11-10T09:50:21.576088+00:00",
+   "span": [
+    24438,
+    25920
+   ],
+   "quote": "· Paragraph 30 contains amendments to Article 111 AI Act which result from amendments made in paragrap h 30 and introduces a transitional period of 6 months for providers who need to retroactively include technical solutions in their generative AI systems , to make them machine readable and detectable as artificially generated or manipulated.\n\n· Paragraph 31 introduces changes to the entry into application of certain provisions of the AI Act :\n\n· For the obligations for high-risk AI systems in Chapter III, a mechanism is introduced that links the entry into application to the availability of measures in support of compliance with the AI Act’s high-risk rules , such as harmonised standards, common specifications, and Commission guidelines. This availability will be confirmed by the Commission by decision, following which the rules for high-risk AI systems start to apply after an appropriate transition period. However, this flexibility should apply only for a limited time and a definite date by which the rules apply in any case should be set. Moreover, it is appropriate to distinguish between the two types of AI systems that classify as high-risk and extend a longer transition period to AI systems that classify as high-risk pursuant to Article 6(1) and Annex I to the AI Act .\n\n· It is clarified that the amendments necessary to integrate the high-risk requirements into sectoral law listed in Section B of Annex I apply with the Digital Omnibus’ entry into force."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Digital Omnibus on AI (AI Act simplification)"
+ },
+ {
+  "id": "c36",
+  "citation": {
+   "sha256": "c5f26a65c45647aa3e68cd7a98f0125e5a9e134e91d93cc4e3dea1692bf120f7",
+   "version_id": 406,
+   "store": "primary",
+   "canonical_url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxOQjN2MGNvT0NYNkJBOFpISUtITjlvTkl4MC1XWE1fVjA0b2txdzVlbXM4NG1vSTdfS0Q3Z2MyMVVVOGw2bHV2VkFIZ084RXFaSHAwQ1dDZ0pzOGdKZ3ZWSDlPWV9sX3BlbHplV3E3azZtYUNIQmdCd2hZUXd5TmlDd2M5OWVVTDlfc0oxWHBWRU9od21pWnNISFM2QkdNWGJGYmxYdVNydw?oc=5",
+   "title": "AI Act rules on high-risk AI delayed as AI Digital Omnibus agreed - Winston Taylor",
+   "publisher": "News monitor — EU tech regulation (Google News)",
+   "fetched_at": "2026-07-03T07:02:12.413495+00:00",
+   "last_seen_at": "2026-07-03T07:02:12.413495+00:00",
+   "span": [
+    0,
+    164
+   ],
+   "quote": "AI Act rules on high-risk AI delayed as AI Digital Omnibus agreed - Winston Taylor\n\nAI Act rules on high-risk AI delayed as AI Digital Omnibus agreed Winston Taylor"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "AI Act rules on high-risk AI delayed as AI Digital Omnibus agreed - Winston Taylor"
+ },
+ {
+  "id": "c37",
+  "citation": {
+   "sha256": "87406ae0f574df35c4c570db84c88a7f71be1160a283cf5b7ef161b39ff08074",
+   "version_id": 479,
+   "store": "primary",
+   "canonical_url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNeWN3VkZ5aERGM2lHNHpLWWFhc19EWEVXOHBYaXRyWm1LLXNqQVh1bFlOd2hwS05tbW1IUmFESUNaWFhlb2dzaGIzcmhpNXhxdDUxcFA1enZwLWl1SjFGbFBHVl9EV25DMnhZUEcxRnQ4RkFuVWxFLXVDWG1oUUk0UVJ6UW5tUmFXOUdodmZtSFN2QnN5bmc?oc=5",
+   "title": "Rules on ‘high-risk’ AI to be delayed under EU ‘omnibus’ deal - Pinsent Masons",
+   "publisher": "News monitor — EU tech regulation (Google News)",
+   "fetched_at": "2026-07-03T07:02:12.514950+00:00",
+   "last_seen_at": "2026-07-03T07:02:12.514950+00:00",
+   "span": [
+    0,
+    156
+   ],
+   "quote": "Rules on ‘high-risk’ AI to be delayed under EU ‘omnibus’ deal - Pinsent Masons\n\nRules on ‘high-risk’ AI to be delayed under EU ‘omnibus’ deal Pinsent Masons"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Rules on ‘high-risk’ AI to be delayed under EU ‘omnibus’ deal - Pinsent Masons"
+ },
+ {
+  "id": "c38",
+  "citation": {
+   "sha256": "4a235c95debd4029d8ae91342ed8d3ccf2b65e0d8d111e1b7b6f704529a68933",
+   "version_id": 3916,
+   "store": "primary",
+   "canonical_url": "https://techpolicy.press/global-digital-policy-roundup-march-2026",
+   "title": "Global Digital Policy Roundup: March 2026",
+   "publisher": "Tech Policy Press",
+   "fetched_at": "2026-07-22T10:14:23.767638+00:00",
+   "last_seen_at": "2026-07-22T10:14:23.767638+00:00",
+   "span": [
+    11104,
+    12412
+   ],
+   "quote": "Additionally, the provisions applicable to internet applications under the content classification ordinance entered into force. Regarding enforcement, the Ministry of Justice and Public Security formally requested information from TikTok on measures to address misogynistic content following the circulation of videos depicting simulated violence against women under the \"if she says no\" trend. The European Parliament adopted its position on the Digital Omnibus on AI Regulation , proposing to postpone the application of certain rules for high-risk AI systems due to delays in the development of relevant standards, while setting fixed implementation dates to provide legal certainty. Requirements for high-risk AI systems would apply from December 2027 for stand-alone systems and from August 2028 for systems covered by EU sectoral safety legislation. The position also extends deadlines for watermarking obligations on AI-generated content until November 2026 and introduces flexibility measures, including conditions for processing personal data to detect and correct bias and support for smaller market actors. The Council also adopted its g eneral approach , aligning on similar application dates for high-risk AI rules and requiring registration of high-risk systems even where exemptions may apply."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Global Digital Policy Roundup: March 2026"
+ },
+ {
+  "id": "c39",
+  "citation": {
+   "sha256": "b0976abf6be04ad68f7aeb58316c371b999ab295ff8555dd05939444380dd3f0",
+   "version_id": 481,
+   "store": "primary",
+   "canonical_url": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxNTV96MzVrME9DSllUVjdEVHNHQXVNS0VoQXRGZk96enkxb1dza01NcWdXMUJ5dWNtYU5nMHN3UDFObk9xSFVBcXFiNFlqSndRck40QlFIQ0RYaVhRUlo4cFE2MlhYWkJidWJFQXUzMnAzU1JkUEItNVRHZGRyYVBkeFlKTHNoUHpsX1NWVENBbllOR1hzbkwwRWZTcWMxNHNtbS1fX09kZnB0N2dTYmJqb3Y1eHdLeGdIbkE2a2FScTZQYm84cEF0VmFsUlRRQ091WFVoaUkzZzE3NGtoSTg3Yk5vYw?oc=5",
+   "title": "AI Omnibus: provisional agreement on changes to EU AI Act, including delayed deadlines - Addleshaw Goddard LLP",
+   "publisher": "News monitor — EU tech regulation (Google News)",
+   "fetched_at": "2026-07-03T07:02:12.516953+00:00",
+   "last_seen_at": "2026-07-03T07:02:12.516953+00:00",
+   "span": [
+    0,
+    220
+   ],
+   "quote": "AI Omnibus: provisional agreement on changes to EU AI Act, including delayed deadlines - Addleshaw Goddard LLP\n\nAI Omnibus: provisional agreement on changes to EU AI Act, including delayed deadlines Addleshaw Goddard LLP"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "AI Omnibus: provisional agreement on changes to EU AI Act, including delayed deadlines - Addleshaw Goddard LLP"
+ },
+ {
+  "id": "c40",
+  "citation": {
+   "sha256": "26fcffed16b6969d362e08b03922d4453627dff437646355a998f68607a571bf",
+   "version_id": 3722,
+   "store": "primary",
+   "canonical_url": "https://techpolicy.press/ireland-targets-ai-omnibus-child-safety-in-eu-presidency-agenda",
+   "title": "Ireland Targets AI Omnibus, Child Safety in EU Presidency Agenda",
+   "publisher": "Tech Policy Press",
+   "fetched_at": "2026-07-22T10:07:43.946478+00:00",
+   "last_seen_at": "2026-07-22T10:07:43.946478+00:00",
+   "span": [
+    1545,
+    2937
+   ],
+   "quote": "The Irish program adopts the EU’s framing of this, stating that \"simplification is about better regulation, not deregulation,” acknowledging concerns raised by civil society groups and some member states. For Ireland, the most immediate item is the Digital Omnibus on AI , a package of amendments to the EU AI Act. A provisional agreement between the European Parliament and the Council on the AI package was reached in May, but it has not yet been formally adopted. That makes finalization one of the most time-sensitive tasks the Irish Presidency will inherit on July 1. Without formal approval of the Omnibus, the AI Act's original high-risk compliance deadline of Aug. 2, 2026 remains in place, meaning organizations deploying high-risk AI systems could face obligations for which, in many cases, the supporting standards and guidance are not yet in place. The Omnibus would push that deadline back to December 2027 at the earliest, conditional on the availability of harmonized standards. It also loosens protections around personal data use in AI development and deployment. While looming deadlines mean the AI Omnibus is being prioritized, it is part of a broader Digital Omnibus package that seeks to roll back provisions across the broader scope of European digital regulation. Progress is expected during the presidency, though a final conclusion is unlikely by the end of the year."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Ireland Targets AI Omnibus, Child Safety in EU Presidency Agenda"
+ },
+ {
+  "id": "c41",
+  "citation": {
+   "sha256": "5016497290cac8129f49b4da9a8d4e0aee84f54172f0e58e4531253d1a6ca23b",
+   "version_id": 3793,
+   "store": "primary",
+   "canonical_url": "https://techpolicy.press/lawsuits-exposed-how-chatbots-endanger-children-can-the-senates-new-bills-fix-it",
+   "title": "Lawsuits Exposed How Chatbots Endanger Children. Can the Senate's New Bills Fix It?",
+   "publisher": "Tech Policy Press",
+   "fetched_at": "2026-07-22T10:10:08.452108+00:00",
+   "last_seen_at": "2026-07-22T10:10:08.452108+00:00",
+   "span": [
+    4074,
+    5573
+   ],
+   "quote": "The GUARD Act regulates access to a covered chatbot by mandating companies utilize “reasonable age-verification measures.” These measures may include government-issued identification, or “reliably and accurately” determining whether a user is an adult, while also preventing minor access; self-reported birth dates would not suffice. Verified minors would be barred from AI companion platforms altogether. The bill makes it a criminal offense to make publicly available a chatbot that engages minors in sexually explicit content or solicits them to commit self-harm or violence, with fines up to $250,000 per offense. Chatbots must disclose at the start of each conversation that the user is speaking with an AI, and must disclose at regular intervals that the chatbot does not provide professional services. The CHATBOT Act , in contrast, focuses on safeguards inside the platform rather than on restricting access. Children under the age of 13 would require a parent-managed account; existing accounts without one would need to be terminated. Teens 13 to 17 would need verifiable parental consent to create an account, while parents would retain the right to revoke consent and trigger an account suspension or deletion. The bill would also require family account controls over screen time, notifications, reward systems, and in-app transactions. Targeted advertising on minors' data would be prohibited. The law would be enforced by the Federal Trade Commission (FTC) and state attorneys general."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Lawsuits Exposed How Chatbots Endanger Children. Can the Senate's New Bills Fix It?"
+ },
+ {
+  "id": "c42",
+  "citation": {
+   "sha256": "9f8b6b0611ff10b0fac807210936ab41681ba1c088a1e4e4f860e36c4c2b2d25",
+   "version_id": 10473,
+   "store": "primary",
+   "canonical_url": "https://techpolicy.press/global-digital-policy-roundup-september-2026",
+   "title": "Global Digital Policy Roundup: September 2026",
+   "publisher": "Tech Policy Press",
+   "fetched_at": "2026-10-04T05:25:49.808607+00:00",
+   "last_seen_at": "2026-10-04T05:25:49.808607+00:00",
+   "span": [
+    1336,
+    2982
+   ],
+   "quote": "tal controls such as a daily time limit and contact approval. Children under 13 would not be allowed to hold an account. The proposal would also cover AI companions and chatbots accessible to minors. Providers would have to avoid designs that simulate human relationships in ways likely to foster emotional dependency, assess risks to children before launch, and monitor for harm after deployment. By default, these systems could not retain a child's previous conversations for use in later interactions, and children under 13 could access them only through parental control tools. App stores would be required to support certified EU age-verification solutions, and providers using age-assurance systems would have to meet requirements on accuracy, privacy, non-intrusiveness, and non-discrimination. Very large online platforms would also have to submit age-verification plans. Further, the Commission announced that signatories to the Code of Conduct on Disinformation , including Google, Meta, Microsoft, and TikTok, published their second set of reports under the Digital Services Act (DSA). At the member state level , Poland adopted the Act implementing the DSA , which designates the President of the Office of Electronic Communications as digital services coordinator. In Hungary, a bill was introduced to replace the criteria for classifying programs as harmful to minors, which currently refer to the depiction of identities and sexual orientations, with criteria based on whether content can harm minors' physical, mental, or moral development. A bill was introduced in Bulgaria to ban direct and indirect gambling advertising online."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Global Digital Policy Roundup: September 2026"
+ },
+ {
+  "id": "c43",
+  "citation": {
+   "sha256": "827740abf68f03967a18f5fb355214c118442f39ef453b13ba8f71aa4661f92f",
+   "version_id": 3885,
+   "store": "primary",
+   "canonical_url": "https://techpolicy.press/attorney-general-ral-torrez-on-whats-next-in-new-mexicos-case-against-meta",
+   "title": "Attorney General Raúl Torrez on What's Next in New Mexico's Case Against Meta",
+   "publisher": "Tech Policy Press",
+   "fetched_at": "2026-07-22T10:13:18.772649+00:00",
+   "last_seen_at": "2026-07-22T10:13:18.772649+00:00",
+   "span": [
+    15012,
+    16476
+   ],
+   "quote": "You obviously have to sync up age verification and then apply the results of that process to different levels and forms of the way that these products work. But I don't think saying, \"Let's addict a whole generation of kids, because it might have an adverse effect on somebody else if we try to step in and regulate that.\" That's a choice that we shouldn't be forced into. Right? We can have complicated conversations about complex problems without denying that the problem exists. And are you also seeking some intervention around AI chatbots? Attorney General Raúl Torrez: Yeah. I mean, we did have some very limited conversations and evidence and testimony about that that was a little bit tangential to what we are talking about. To be perfectly honest, we have active litigation against other companies, and we have active investigations involving a whole range of issues, and I can say definitively that that includes artificial intelligence companies, and a specific interest in these companion chatbots where they are specifically marketing to kids. I have very serious concerns about the types of, frankly, unhealthy relationships that are being developed between developing minds, developing young people, and a technology that presents itself as being, whether it's a psychiatrist, a psychologist, a counselor, a friend, a romantic attachment. That is a very dangerous and concerning thing, and then we're going to be looking at it very, very carefully."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Attorney General Raúl Torrez on What's Next in New Mexico's Case Against Meta"
+ },
+ {
+  "id": "c44",
+  "citation": {
+   "sha256": "5016497290cac8129f49b4da9a8d4e0aee84f54172f0e58e4531253d1a6ca23b",
+   "version_id": 3793,
+   "store": "primary",
+   "canonical_url": "https://techpolicy.press/lawsuits-exposed-how-chatbots-endanger-children-can-the-senates-new-bills-fix-it",
+   "title": "Lawsuits Exposed How Chatbots Endanger Children. Can the Senate's New Bills Fix It?",
+   "publisher": "Tech Policy Press",
+   "fetched_at": "2026-07-22T10:10:08.452108+00:00",
+   "last_seen_at": "2026-07-22T10:10:08.452108+00:00",
+   "span": [
+    1374,
+    2796
+   ],
+   "quote": "In April, Senators Ted Cruz, Brian Schatz, John Curtis, and Adam Schiff introduced the Children's Health, Advancement, Trust, Boundaries, and Oversight in Technology Act, or CHATBOT Act , which would establish age-tiered parental controls, consent requirements, and platform transparency obligations. Six months earlier, Senators Josh Hawley and Richard Blumenthal introduced the Guidelines for User Age-Verification and Responsible Dialogue Act, or GUARD Act , with a bipartisan group of seventeen senators joining as co-sponsors. On April 30, the US Senate Judiciary Committee unanimously advanced the GUARD Act and the bill now awaits consideration by the full Senate. The bill would mandate age verification for AI chatbots and ban minors from accessing companion platforms. Although both acts seek to address chatbot-related harms differently, they take different regulatory approaches. Whether either bill’s proposed protections match the scale of the risk to minors warrants closer analysis. This selection from a growing body of chatbot litigation helps explain the push for legislative action. Garcia’s suit came first, and subsequent cases reflect a recurring pattern. In Montoya v. Character Technologies , 13-year-old Juliana Peralta is alleged to have developed an intense emotional dependency on a chatbot called “Hero” and died by suicide in November 2023, less than three months after creating her account."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Lawsuits Exposed How Chatbots Endanger Children. Can the Senate's New Bills Fix It?"
+ },
+ {
+  "id": "c45",
+  "citation": {
+   "sha256": "24f2c3451227041e7a2339664574a8fd6beb2973795638ab5ac8f5a98ea28729",
+   "version_id": 3616,
+   "store": "primary",
+   "canonical_url": "https://techpolicy.press/intimate-functionality-a-phrase-defining-the-next-year-of-ai-regulation",
+   "title": "Intimate Functionality — A Phrase Defining the Next Year of AI Regulation",
+   "publisher": "Tech Policy Press",
+   "fetched_at": "2026-07-22T10:04:05.903684+00:00",
+   "last_seen_at": "2026-07-22T10:04:05.903684+00:00",
+   "span": [
+    0,
+    1396
+   ],
+   "quote": "Intimate Functionality — A Phrase Defining the Next Year of AI Regulation\n\nJenny Kidd & Synthetic Pasts / https://betterimagesofai.org / https://creativecommons.org/licenses/by/4.0/ The United Kingdom is preparing to regulate AI companions as though the danger to teenagers were romance. The evidence points elsewhere: most teenagers have used an AI companion, and the tool they overwhelmingly reach for is ChatGPT — treated as a confidant, not a romantic partner. When the UK government announced in June that it would bar under-16s from social media, there was a Trojan horse inside the announcement: an under-18s ban on “romantic companion” chatbots. Motivated by cases and policy developments in the United States and a lack of AI-companion provision in the UK’s Online Safety Act, AI companions had been added to the “something must be done” list. Alongside the age gate on chatbots designed to simulate sexual relationships or role-play, the government added that “similar intimate functionalities will be restricted for under-18s on AI chatbots more widely.” That second clause does more work than it may appear to. It not only points at the dedicated companion apps, such as the now infamous Character.ai , Replika (marketed as “the AI friend to fall in love with”) and Nomi (marketed as having “a soul”), but it points to the large general-purpose systems too: OpenAI, Google, Meta, xAI."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Intimate Functionality — A Phrase Defining the Next Year of AI Regulation"
+ },
+ {
+  "id": "c46",
+  "citation": {
+   "sha256": "9e321f0c5eb96ad112ab9fc39ad5cdc9154bb610975cd9c5bd78b23ec10e8c78",
+   "version_id": 9889,
+   "store": "primary",
+   "canonical_url": "https://next.ink/256899/reseaux-sociaux-jeux-ia-ce-que-leu-kids-act-va-changer-pour-les-mineurs/",
+   "title": "Réseaux sociaux, jeux, IA : ce que l’EU KIDS Act va changer pour les mineurs",
+   "publisher": "Next.ink (ex Next INpact — French tech/digital-law press)",
+   "fetched_at": "2026-09-20T05:32:26.025105+00:00",
+   "last_seen_at": "2026-09-20T05:32:26.025105+00:00",
+   "span": [
+    6977,
+    8633
+   ],
+   "quote": "ant du texte : sans autorisation préalable, personne ne peut envoyer de message à un enfant. Les plateformes ont la responsabilité d’empêcher que le mineur soit manipulé pour donner son autorisation. Il ne doit pas apparaitre dans les suggestions de contact et il ne peut pas être ajouté à des groupes sans leur consentement. Personne ne peut télécharger le contenu publié par les enfants ni en faire de captures d’écran. Enfin, la diffusion en direct est désactivée par défaut pour les mineurs. Des dispositifs sont également prévus pour les compagnons IA et les chatbots accessibles aux mineurs. Ils ne peuvent pas recouvrir à des mécanismes simulant des relations humaines quand ils risquent de créer une dépendance affective. Les bots ne pourront pas exploiter leur mémoire des discussions passées. Les moins de 13 ans sont privés de bots, à moins de passer par des contrôles parentaux ; et ces « compagnons » doivent être « facilement désactivables ». En ce qui concerne les boutiques de jeux et les jeux en ligne, ils doivent mettre en place une classification par âge pour chaque application (ce qui est déjà le cas sur l’App Store et le Play Store) et prendre en charge l’application européenne de vérification de l’âge pour s’assurer que l’utilisateur a bien l’âge requis. L’application des différentes mesures KIDS Act passe par les structures de contrôle existantes du règlement sur les services numériques (DSA). Pour les compagnons IA, c’est l’AI Act qui prend la main. Les très grandes plateformes (VLOP) régies par le DSA devront soumettre un plan de conformité au KIDS Act et démontrer qu’elles respecteront l’ensemble de leurs obligations."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Réseaux sociaux, jeux, IA : ce que l’EU KIDS Act va changer pour les mineurs"
+ },
+ {
+  "id": "c47",
+  "citation": {
+   "sha256": "8cc110427995837e029d9c79b489475decc5d7f9ee522529531800918bf505e2",
+   "version_id": 1477,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2065",
+   "title": "Digital Services Act (DSA)",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:09.511691+00:00",
+   "last_seen_at": "2026-11-10T09:49:39.702320+00:00",
+   "span": [
+    13382,
+    15461
+   ],
+   "quote": "Considering the particular characteristics of the services concerned and the corresponding need to make the providers thereof subject to certain specific obligations, it is necessary to distinguish, within the broader category of providers of hosting services as defined in this Regulation, the subcategory of online platforms. Online platforms, such as social networks or online platforms allowing consumers to conclude distance contracts with traders, should be defined as providers of hosting services that not only store information provided by the recipients of the service at their request, but that also disseminate that information to the public at the request of the recipients of the service. However, in order to avoid imposing overly broad obligations, providers of hosting services should not be considered as online platforms where the dissemination to the public is merely a minor and purely ancillary feature that is intrinsically linked to another service, or a minor functionality of the principal service, and that feature or functionality cannot, for objective technical reasons, be used without that other or principal service, and the integration of that feature or functionality is not a means to circumvent the applicability of the rules of this Regulation applicable to online platforms. For example, the comments section in an online newspaper could constitute such a feature, where it is clear that it is ancillary to the main service represented by the publication of news under the editorial responsibility of the publisher. In contrast, the storage of comments in a social network should be considered an online platform service where it is clear that it is not a minor feature of the service offered, even if it is ancillary to publishing the posts of recipients of the service. For the purposes of this Regulation, cloud computing or web-hosting services should not be considered to be an online platform where dissemination of specific information to the public constitutes a minor and ancillary feature or a minor functionality of such services."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "Digital Services Act (DSA)"
+ },
+ {
+  "id": "c48",
+  "citation": {
+   "sha256": "8cc110427995837e029d9c79b489475decc5d7f9ee522529531800918bf505e2",
+   "version_id": 1477,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2065",
+   "title": "Digital Services Act (DSA)",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:09.511691+00:00",
+   "last_seen_at": "2026-11-10T09:49:39.702320+00:00",
+   "span": [
+    197348,
+    198669
+   ],
+   "quote": "a ‘caching’ service, consisting of the transmission in a communication network of information provided by a recipient of the service, involving the automatic, intermediate and temporary storage of that information, performed for the sole purpose of making more efficient the information's onward transmission to other recipients upon their request;\n\n(iii)\n\na ‘hosting’ service, consisting of the storage of information provided by, and at the request of, a recipient of the service;\n\n(h)\n\n‘illegal content’ means any information that, in itself or in relation to an activity, including the sale of products or the provision of services, is not in compliance with Union law or the law of any Member State which is in compliance with Union law, irrespective of the precise subject matter or nature of that law;\n\n(i)\n\n‘online platform’ means a hosting service that, at the request of a recipient of the service, stores and disseminates information to the public, unless that activity is a minor and purely ancillary feature of another service or a minor functionality of the principal service and, for objective and technical reasons, cannot be used without that other service, and the integration of the feature or functionality into the other service is not a means to circumvent the applicability of this Regulation;\n\n(j)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "Digital Services Act (DSA)"
+ },
+ {
+  "id": "c49",
+  "citation": {
+   "sha256": "8cc110427995837e029d9c79b489475decc5d7f9ee522529531800918bf505e2",
+   "version_id": 1477,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2065",
+   "title": "Digital Services Act (DSA)",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:09.511691+00:00",
+   "last_seen_at": "2026-11-10T09:49:39.702320+00:00",
+   "span": [
+    258307,
+    259800
+   ],
+   "quote": "2.   Providers of online platform shall not present advertisements on their interface based on profiling as defined in Article 4, point (4), of Regulation (EU) 2016/679 using personal data of the recipient of the service when they are aware with reasonable certainty that the recipient of the service is a minor.\n\n3.   Compliance with the obligations set out in this Article shall not oblige providers of online platforms to process additional personal data in order to assess whether the recipient of the service is a minor.\n\n4.   The Commission, after consulting the Board, may issue guidelines to assist providers of online platforms in the application of paragraph 1.\n\nSECTION 4\n\nAdditional provisions applicable to providers of online platforms allowing consumers to conclude distance contracts with traders\n\nArticle 29\n\nExclusion for micro and small enterprises\n\n1.   This Section shall not apply to providers of online platforms allowing consumers to conclude distance contracts with traders that qualify as micro or small enterprises as defined in Recommendation 2003/361/EC.\n\nThis Section shall not apply to providers of online platforms allowing consumers to conclude distance contracts with traders that previously qualified for the status of a micro or small enterprise as defined in Recommendation 2003/361/EC during the 12 months following their loss of that status pursuant to Article 4(2) thereof, except when they are very large online platforms in accordance with Article 33."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "Digital Services Act (DSA)"
+ },
+ {
+  "id": "c50",
+  "citation": {
+   "sha256": "8cc110427995837e029d9c79b489475decc5d7f9ee522529531800918bf505e2",
+   "version_id": 1477,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2065",
+   "title": "Digital Services Act (DSA)",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:09.511691+00:00",
+   "last_seen_at": "2026-11-10T09:49:39.702320+00:00",
+   "span": [
+    15463,
+    15889
+   ],
+   "quote": "Moreover, cloud computing services and web-hosting services, when serving as infrastructure, such as the underlying infrastructural storage and computing services of an internet-based application, website or online platform, should not in themselves be considered as disseminating to the public information stored or processed at the request of a recipient of the application, website or online platform which they host.\n\n(14)"
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "Digital Services Act (DSA)"
+ },
+ {
+  "id": "c51",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    72688,
+    74302
+   ],
+   "quote": "As biometric data constitutes a special category of personal data, it is appropriate to classify as high-risk several critical-use cases of biometric systems, insofar as their use is permitted under relevant Union and national law. Technical inaccuracies of AI systems intended for the remote biometric identification of natural persons can lead to biased results and entail discriminatory effects. The risk of such biased results and discriminatory effects is particularly relevant with regard to age, ethnicity, race, sex or disabilities. Remote biometric identification systems should therefore be classified as high-risk in view of the risks that they pose. Such a classification excludes AI systems intended to be used for biometric verification, including authentication, the sole purpose of which is to confirm that a specific natural person is who that person claims to be and to confirm the identity of a natural person for the sole purpose of having access to a service, unlocking a device or having secure access to premises. In addition, AI systems intended to be used for biometric categorisation according to sensitive attributes or characteristics protected under Article 9(1) of Regulation (EU) 2016/679 on the basis of biometric data, in so far as these are not prohibited under this Regulation, and emotion recognition systems that are not prohibited under this Regulation, should be classified as high-risk. Biometric systems which are intended to be used solely for the purpose of enabling cybersecurity and personal data protection measures should not be considered to be high-risk AI systems."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c52",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    539952,
+    541254
+   ],
+   "quote": "illicit trafficking in weapons, munitions or explosives,\n\n—\n\nmurder, grievous bodily injury,\n\n—\n\nillicit trade in human organs or tissue,\n\n—\n\nillicit trafficking in nuclear or radioactive materials,\n\n—\n\nkidnapping, illegal restraint or hostage-taking,\n\n—\n\ncrimes within the jurisdiction of the International Criminal Court,\n\n—\n\nunlawful seizure of aircraft or ships,\n\n—\n\nrape,\n\n—\n\nenvironmental crime,\n\n—\n\norganised or armed robbery,\n\n—\n\nsabotage,\n\n—\n\nparticipation in a criminal organisation involved in one or more of the offences listed above.\n\nANNEX III\n\nHigh-risk AI systems referred to in Article 6(2)\n\nHigh-risk AI systems pursuant to Article 6(2) are the AI systems listed in any of the following areas:\n\n1.\n\nBiometrics, in so far as their use is permitted under relevant Union or national law:\n\n(a)\n\nremote biometric identification systems.\n\nThis shall not include AI systems intended to be used for biometric verification the sole purpose of which is to confirm that a specific natural person is the person he or she claims to be;\n\n(b)\n\nAI systems intended to be used for biometric categorisation, according to sensitive or protected attributes or characteristics based on the inference of those attributes or characteristics;\n\n(c)\n\nAI systems intended to be used for emotion recognition.\n\n2."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ },
+ {
+  "id": "c53",
+  "citation": {
+   "sha256": "88f67b16188003f70f9338deb27681200e2819b22f61e3a57983f08bd61bd2c0",
+   "version_id": 1478,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024R1689",
+   "title": "AI Act",
+   "publisher": "EUR-Lex — foundational tech acts (curated full texts)",
+   "fetched_at": "2026-07-06T12:39:11.094671+00:00",
+   "last_seen_at": "2026-11-10T09:49:41.867609+00:00",
+   "span": [
+    265010,
+    266304
+   ],
+   "quote": "the AI system is intended to detect decision-making patterns or deviations from prior decision-making patterns and is not meant to replace or influence the previously completed human assessment, without proper human review; or\n\n(d)\n\nthe AI system is intended to perform a preparatory task to an assessment relevant for the purposes of the use cases listed in Annex III.\n\nNotwithstanding the first subparagraph, an AI system referred to in Annex III shall always be considered to be high-risk where the AI system performs profiling of natural persons.\n\n4.   A provider who considers that an AI system referred to in Annex III is not high-risk shall document its assessment before that system is placed on the market or put into service. Such provider shall be subject to the registration obligation set out in Article 49(2). Upon request of national competent authorities, the provider shall provide the documentation of the assessment.\n\n5.   The Commission shall, after consulting the European Artificial Intelligence Board (the ‘Board’), and no later than 2 February 2026, provide guidelines specifying the practical implementation of this Article in line with Article 96 together with a comprehensive list of practical examples of use cases of AI systems that are high-risk and not high-risk."
+  },
+  "specialist": "regina",
+  "via": "document",
+  "label": "AI Act"
+ }
+]

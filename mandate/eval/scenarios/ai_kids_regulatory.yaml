@@ -1,0 +1,63 @@
+# Eval case 3 (Regina SME interview, module 3 case 2; written 2026-11-10).
+# Policy / regulatory: an AI-native learning product for young children enters the EU.
+#
+# STATUS: DRAFT. The must / must_not below are Claude's draft, written BEFORE the
+# subject-matter-expert interview (11 Nov 2026). They are NOT the expert's and must not be
+# scored as ground truth until the expert has corrected them (module 7). There is NO
+# model_answer yet: the expert's rewrite of the first paragraph becomes it.
+# Same format as fintech_guarantees.yaml / edtech_ai_kids.yaml.
+id: ai_kids_regulatory
+job: policy-regulatory   # job type pending the interview (module 1)
+status: draft_pending_expert
+founder_says: >
+  We are an AI-native startup building a learning product for young children. We plan to
+  launch in the EU next year. What do we have to get right on regulation, what could stop
+  us, and who should we be talking to?
+profile_hint:
+  name: Example Kids Learning (eval case 3)
+  sector: software_data_ai
+  subsectors: [edtech]
+  customerType: both
+  usesAi: true
+  aiUseCases: [education]
+  handlesPersonalData: true
+  dataCategories: [children]
+# Used ONLY if Regina asks first. These are the eval's ASSUMED answers, written by Claude
+# to make the case concrete; NOT the expert's or the owner's. Replace when the expert
+# supplies a real-shaped set.
+founder_followup: >
+  We are a UK limited company in London with no EU entity yet. The product is a voice-first
+  AI tutor app for children aged 4 to 8 (early reading and maths). Parents subscribe
+  directly, and we are piloting a school licence with a few primary schools in the
+  Netherlands and Germany, where teachers see a class dashboard. The tutor runs on a
+  third-party general-purpose model through an API, with our own prompts and a small
+  fine-tuned layer. It listens to the child read aloud, scores reading level, decides the
+  next lesson and sends progress reports to parents and teachers. We keep voice recordings
+  for 30 days to improve the model. There are no ads and no way for children to talk to
+  each other. We are building a feature that detects frustration in the child's voice and
+  adapts the lesson. We want to launch in Germany, France, the Netherlands and Italy in
+  2027. About 25 staff; seed round closed.
+
+# DRAFT checkpoints (Claude, pre-interview). The expert corrects, adds, deletes.
+must:
+  - "DRAFT. Asks first what decides the classification before advising: where the company is established, who the customer is (parents at home vs schools), what the AI decides about the child (scores, steers, grades), what data it takes (voice, any biometric or emotion inference), the age range, and which member states."
+  - "DRAFT. Classifies under the AI Act by intended USE, quoting the operative text: Annex III point 3 (education) and whether the school deployment versus home use falls within it, with Art. 6(3) considered; says who is provider and who is deployer, and what follows from a non-EU provider (authorised representative, Art. 22)."
+  - "DRAFT. Names the Art. 5 prohibitions that bite on this product (emotion recognition in education institutions; exploiting vulnerabilities due to age), already applicable, as the first deal-breaker; tells the founder plainly what not to ship."
+  - "DRAFT. States the AI Act application dates for high-risk obligations as they stand TODAY, researched and cited (including the state of any postponement), never from memory."
+  - "DRAFT. GDPR for children: Art. 8 and the member-state age of consent PER COUNTRY (cited, never one EU-wide age); DPIA; data protection by design; voice recordings and any biometric or emotion inference; retention for model training; who is controller in the school setting; Art. 27 representative; the one-stop-shop consequence of having no EU main establishment."
+  - "DRAFT. DSA: first tests whether the service is an intermediary or online platform at all, and says plainly if Art. 28 does not bind it, while using the Commission's Art. 28 guidelines as the regulators' benchmark for minors."
+  - "DRAFT. National overlays researched per country, not generalised (for example a national AI law on minors' access, national school procurement and data rules)."
+  - "DRAFT. Uses enforcement precedent (data protection authorities on children's data and on AI chatbots, with dates and amounts, cited) to show where enforcement actually lands."
+  - "DRAFT. Gives deal-breakers and a sequence: what must be decided or built before launch and before the school pilots scale, and what can wait."
+  - "DRAFT. Names the bodies and people to engage, P1/P2 by function where names are not verified: lead data protection authority, AI Act market surveillance authority, the AI Office, education ministries or school authorities as buyers, and the political side for the minors files."
+  - "DRAFT. Positions the company on a grounded, politically appropriate angle (child-safety by design, evidenced) and puts every live file on a watch."
+  - "DRAFT. Ends with prioritised next steps and one short, formal outreach draft."
+must_not:
+  - "DRAFT. Calls the product high-risk or not high-risk without tying it to the use and the Annex III wording."
+  - "DRAFT. Treats DSA Art. 28 as binding without establishing that the service is an online platform."
+  - "DRAFT. States one age of digital consent for the whole EU, or carries one member state's rule into another."
+  - "DRAFT. Asserts AI Act dates, GDPR ages or national rules without a citation."
+  - "DRAFT. Treats the general-purpose model provider's obligations as the startup's own without weighing whether its fine-tuning makes it a provider of a modified model."
+  - "DRAFT. Recommends claiming 'AI Act compliant' or 'certified' as positioning before standards and conformity assessment exist for it."
+  - "DRAFT. Lists the laws without saying what to do first."
+# model_answer: none yet. The expert's rewrite of the first paragraph (module 7) goes here.
