@@ -21,6 +21,17 @@
  * session's own WebSearch/WebFetch). fund_requirements embeds the focus with
  * Voyage (cents).
  *
+ * RESEARCH COMPOUNDS: --ground. The long tail is not bulk-loaded (owner, 2026-11-10): what
+ * Wincent researches is stored, so the next founder starts from it. With --ground, a page
+ * the bench reads is stored the way production's `research` stores it: through mandate-api's
+ * POST /grounding/fetch when MANDATE_API_URL + MANDATE_SERVICE_TOKEN are set, otherwise
+ * through the bridge's `fetch` (the same store.fetch, extractor and public-host check) on
+ * BENCH_GROUNDING_WRITE_URL. It enables the bench tool `ground_source {url, quote, label?}`:
+ * store the page, then cite the quote on it, so a [wN] web source becomes a [cN]. A quote
+ * that is not on the page as fetched is refused (UNVERIFIED), never cited. Grounding is
+ * append-only: a bench fetch adds a source and can change none. Without --ground the bench
+ * stays read-only, as before.
+ *
  * CITATION IDS. Each call starts a fresh ledger unless --run names a ledger
  * file: then ids continue across calls ([c1], [c2]...) exactly as in one
  * production mission, and every citation is kept in that file.
@@ -31,15 +42,20 @@ import path from "path";
 import { createInterface } from "readline";
 import { loadEnvLocal } from "./loadEnv";
 
-const WINCENT = ["find_instruments", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "profile_get"];
+const WINCENT = ["find_instruments", "match_status", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "profile_get"];
+/** Bench-only: production's `research` stores and cites in one model call; the bench's
+ *  model (Claude Code) reads the web itself and stores what it cites with this. */
+const BENCH_ONLY = ["ground_source"];
 const REGINA = ["search_law", "document", "consultations", "actors"];
 
 function usage(msg?: string): never {
   if (msg) console.error(msg);
-  console.error(`usage: npx tsx web/scripts/brain_tool.ts <tool> '<json args>' [--profile <file|json>] [--run <ledger.json>]
+  console.error(`usage: npx tsx web/scripts/brain_tool.ts <tool> '<json args>' [--profile <file|json>] [--run <ledger.json>] [--ground]
   wincent: ${WINCENT.join(", ")}
   regina:  ${REGINA.join(", ")}
-  --list   print each tool's description and input schema`);
+  bench:   ${BENCH_ONLY.join(", ")} (needs --ground)
+  --list   print each tool's description and input schema
+  --ground store what is read in grounding (mandate-api if MANDATE_API_URL is set, else BENCH_GROUNDING_WRITE_URL)`);
   process.exit(2);
 }
 
@@ -48,6 +64,7 @@ function parseArgs(argv: string[]) {
   const pos: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--list") flags.list = "1";
+    else if (argv[i] === "--ground") flags.ground = "1";
     else if (argv[i].startsWith("--")) flags[argv[i].slice(2)] = argv[++i] ?? "";
     else pos.push(argv[i]);
   }
@@ -99,7 +116,16 @@ async function main() {
   // Read-only, before any corpus module reads the env.
   process.env.DATABASE_URL = ro;
 
-  const [{ wincentTools, reginaTools }, { realCapital }, { CitationLedger }, { httpPolicyApi }] = await Promise.all([
+  // --ground: which path stores what the bench reads (see the header). Decided before the
+  // bridge starts, because the bridge needs its write URL at spawn.
+  const api = flags.ground && process.env.MANDATE_API_URL && process.env.MANDATE_SERVICE_TOKEN
+    ? { base: process.env.MANDATE_API_URL.replace(/\/+$/, ""), token: process.env.MANDATE_SERVICE_TOKEN } : null;
+  if (flags.ground && !api && !process.env.BENCH_GROUNDING_WRITE_URL) {
+    usage("--ground needs MANDATE_API_URL + MANDATE_SERVICE_TOKEN (production's /grounding/fetch) or BENCH_GROUNDING_WRITE_URL");
+  }
+  if (!flags.ground) delete process.env.BENCH_GROUNDING_WRITE_URL;
+
+  const [{ wincentTools, reginaTools }, { realCapital }, { CitationLedger }, { httpPolicyApi, httpMandateApi }] = await Promise.all([
     import("../lib/mandate/agent/mission"), import("../lib/mandate/agent/capital"),
     import("../lib/mandate/agent/ledger"), import("../lib/mandate/agent/services"),
   ]);
@@ -113,10 +139,16 @@ async function main() {
       if (r.error) throw new Error(r.error);
       return r.ok;
     },
-    // Production fetches the page into grounding (a write). The bench only
-    // reports a version grounding already holds; otherwise the row stays a
-    // register record, not grounded, which is what the tool then says.
-    fetch: async (url: string) => {
+    // Production fetches the page into grounding (a write). Without --ground the
+    // bench only reports a version grounding already holds; otherwise the row
+    // stays a register record, not grounded, which is what the tool then says.
+    fetch: async (url: string, opts: { title?: string } = {}) => {
+      if (api) return httpMandateApi(api.base, api.token).fetch(url, opts);
+      if (flags.ground) {
+        const w = await bridge.ask({ op: "fetch", url, title: opts.title });
+        if (w.error) throw new Error(w.error);
+        return w.ok;
+      }
       const r = await bridge.ask({ op: "latest", url });
       if (r.error) throw new Error(r.error);
       if (!r.ok) throw new Error(`${url} is not in grounding (the bench never fetches)`);
@@ -150,6 +182,23 @@ async function main() {
   for (const [set, names, who] of [[w, WINCENT, "wincent"], [r, REGINA, "regina"]] as const) {
     for (const n of names) offered.set(n, { tool: set.tools.find((t) => t.name === n), handler: set.handlers[n], who });
   }
+  offered.set("ground_source", {
+    who: "wincent",
+    tool: { name: "ground_source", description: "Bench only, with --ground: store a web page you read in grounding and cite a verbatim quote on it, so the source compounds for the next founder. Refuses a quote that is not on the page as fetched.",
+      input_schema: { type: "object", properties: { url: { type: "string" }, quote: { type: "string" }, label: { type: "string" } }, required: ["url", "quote"] } },
+    handler: { required: ["url", "quote"], run: async (i: Record<string, unknown>) => {
+      if (!flags.ground) throw new Error("ground_source needs --ground (it writes to grounding)");
+      const label = String(i.label ?? i.url);
+      const v = (await mandate.fetch(String(i.url), { title: label })) as { citable: boolean; sha256: string };
+      if (!v.citable) return { stored: v, citation: null, note: "stored, but no text could be extracted (scanned?): not citable" };
+      try {
+        const c = await mandate.cite({ sha256: v.sha256, quote: String(i.quote) });
+        return { stored: v, citation: ledger.add(c as never, "wincent", "ground_source", label) };
+      } catch (e) {
+        return { stored: v, citation: null, note: `UNVERIFIED: the quote is not on the page as fetched (${e instanceof Error ? e.message : String(e)})` };
+      }
+    } } as (typeof w.handlers)[string],
+  });
 
   if (flags.list) {
     console.log(JSON.stringify([...offered.entries()].map(([n, o]) => ({ who: o.who, ...(o.tool as object), name: n })), null, 1));
