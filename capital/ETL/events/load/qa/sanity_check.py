@@ -695,30 +695,10 @@ q("""
     FROM public_funding_events
 """, "DQ: coordinator-only coverage (events from coordinator-only sources undercount consortium partners 5-40x)")
 
-# Sector audit log — surface recent flips so retroactive taxonomy changes
-# are visible at every sanity_check run.
-q("""
-    SELECT field,
-           COUNT(*) AS changes,
-           COUNT(DISTINCT company_id) AS companies_affected,
-           MIN(changed_at) AS first_change,
-           MAX(changed_at) AS last_change
-    FROM classify_audit
-    WHERE field IN ('sector_inferred', 'entity_type')
-    GROUP BY field
-""", "DQ: classify_audit summary (sector/entity flips since baseline)")
-
-# Recent flips detail (last 50): visible per-row trail of what changed
-q("""
-    SELECT a.changed_at, c.canonical_name, c.country, a.field,
-           a.old_value, a.new_value, a.run_id
-    FROM classify_audit a
-    LEFT JOIN companies c ON c.id = a.company_id
-    WHERE a.field IN ('sector_inferred', 'entity_type')
-      AND a.old_value IS NOT NULL
-    ORDER BY a.changed_at COLLATE "C" DESC, a.id DESC
-    LIMIT 50
-""", "DQ: recent sector/entity flips (last 50 with prior value)")
+# (The classify_audit flip summaries were here. That table is archived to the
+# bucket, archive/2026-11/, by mandate/ops/archive_dead_weight.sh: its writer,
+# classify.py, is a laptop-only SQLite path no cron runs, so the summary had
+# read a frozen log since the Postgres move.)
 
 # Stale-classification check: companies whose sector_inferred_updated_at is
 # older than the most recent loader insert. After Sprint 6 the baseline is

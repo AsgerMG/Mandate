@@ -46,6 +46,17 @@ One trigger on capital.companies (40 countries, corpus_schema.sql:308) + capital
 4. Archive the irrelevant news texts; archive /brief's tables.
 5. Take news >90 days out of Regina's hot index (retrieval filter).
 
+Built 10 Nov on branch data-tiers: 1, 2 (minus satr_staging), 4 and 5. The owner's one command is
+`bash mandate/ops/archive_dead_weight.sh` (dry run; `--apply`). request_log and event_log are
+still written (mission quota; hydration telemetry) and stay.
+
+Column-reader audit still needed before slimming satr_staging and public_funding_events.project_summary:
+(a) every reader of each column, in code (all of capital/, web/, mandate/, policy/, including SQL
+inside .ts strings and views.sql) and in the cron's steps; (b) the four satr_staging feeders' exact
+column lists, and whether any re-reads raw columns on reload (load_satr.py --staging); (c) whether
+project_summary feeds embeddings, instrument profiles, the census or the site build; (d) the byte
+share per column (pg_column_size) to size the gain; (e) a restore test of the archived columns.
+
 ## Strengthening
 1. Wire what we hold: public_equity_stakes into find_precedents; a read_agenda tool over the relevant news.
 2. Make SATR current (monthly, from a host that can reach it).

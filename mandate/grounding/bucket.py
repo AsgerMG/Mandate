@@ -38,6 +38,16 @@ from urllib.parse import quote, urlsplit
 import httpx
 
 KEY_PREFIX = "sha256/"
+# Named archives (mandate/ops/archive_dead_weight.py): archive/<yyyy-mm>/<file>.
+# The only other key family. Its objects are not content-addressed, so they are
+# never cited; each has a "<key>.sha256" sidecar and is verified by read-back.
+ARCHIVE_PREFIX = "archive/"
+
+
+def _archive_key(key: str) -> str:
+    if not key.startswith(ARCHIVE_PREFIX) or ".." in key or key.endswith("/"):
+        raise ValueError(f"not an archive key: {key!r}")
+    return key
 
 
 def key_for(sha256: str) -> str:
@@ -88,6 +98,14 @@ class FilesystemBucket:
         data = self._path(key).read_bytes()
         _verify(key, data)
         return data
+
+    def put_archive(self, key: str, data: bytes, mime: str) -> None:
+        p = self.root / _archive_key(key)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        p.write_bytes(data)
+
+    def get_archive(self, key: str) -> bytes:
+        return (self.root / _archive_key(key)).read_bytes()
 
 
 def _verify(key: str, data: bytes) -> None:
@@ -203,6 +221,17 @@ class S3Bucket:
         if r.status_code != 200:
             raise IOError(f"bucket GET {key}: HTTP {r.status_code}")
         _verify(key, r.content)
+        return r.content
+
+    def put_archive(self, key: str, data: bytes, mime: str) -> None:
+        r = self._request("PUT", _archive_key(key), data, {"content-type": mime})
+        if r.status_code not in (200, 201):
+            raise IOError(f"bucket PUT {key}: HTTP {r.status_code} {r.text[:300]}")
+
+    def get_archive(self, key: str) -> bytes:
+        r = self._request("GET", _archive_key(key))
+        if r.status_code != 200:
+            raise IOError(f"bucket GET {key}: HTTP {r.status_code}")
         return r.content
 
 

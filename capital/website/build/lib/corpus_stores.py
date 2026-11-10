@@ -44,7 +44,8 @@ FAMILIES = {
     "events": [
         "companies", "public_funding_events", "public_equity_stakes",
         "private_funding_events", "satr_staging", "company_sector_labels",
-        "company_sector_llm", "classify_audit",
+        # company_sector_llm and classify_audit: archived (archive/2026-11/,
+        # mandate/ops/archive_dead_weight.sh)
     ],
     "instruments": [
         "funding_instruments", "funding_instrument_sources",
