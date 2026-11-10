@@ -88,6 +88,27 @@ recorded at collection. On it: `classify_taxonomy.py run` (weekly, waits 60 min)
 and `classify_eligibility_pertinence.py --classify` (`mandate/ops/pertinence.sh`).
 Interactive calls (a brief, a Regina answer) stay live.
 
+## Running without a model budget
+
+One switch: `LLM_BUDGET` (`on` by default, `off` to pause). Python reads it only
+through `mandate/llm/budget.py`; the mission route through
+`web/lib/mandate/llmBudget.ts`. Anthropic's 400 "credit balance is too low" is
+treated exactly like the switch being off. Flip it everywhere (Railway
+capital-etl, Regina, mandate-api, and Vercel production, each redeployed):
+`bash mandate/ops/set_llm_budget.sh off` (or `on`).
+
+With it off, every paid step skips and changes no data:
+`classify_taxonomy.py run`, news_cron's relevance/entity/signals stages, the
+naming pass in `refresh_open_calls.py`, and Regina's paid enrichment (`tags`).
+Each records `LLM budget off: <step> skipped, data unchanged`, exits 75, and is
+`skipped` in `mandate.run_steps` with its corpus mark ok, so the census and
+coverage gate stay green. Free work runs as normal: fetching, loading, populate,
+Voyage embeddings, priors, digest, guards, census. Regina answers retrieval-only;
+the mission route answers 503 "The advisor is paused: no model budget"
+(`?demo=1` still works). The health check treats this as expected and says
+"paid steps paused: budget off since <date>". Batches left recorded are
+collected by the first run after the budget returns.
+
 ## Credentials
 
 Each role's URL is stored on the Railway database service as two variables:
