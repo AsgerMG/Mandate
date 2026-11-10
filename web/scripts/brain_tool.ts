@@ -21,6 +21,11 @@
  * session's own WebSearch/WebFetch). fund_requirements embeds the focus with
  * Voyage (cents).
  *
+ * USAGE LOG. Every call is logged as one mandate.tool_calls row (caller
+ * 'bench'), by the same toolCallRow the agent loop uses: through mandate-api
+ * when MANDATE_API_URL and MANDATE_SERVICE_TOKEN are set, otherwise appended to
+ * web/.bench/tool_calls.jsonl (gitignored) for a later upload. --no-log skips it.
+ *
  * RESEARCH COMPOUNDS: --ground. The long tail is not bulk-loaded (owner, 2026-11-10): what
  * Wincent researches is stored, so the next founder starts from it. With --ground, a page
  * the bench reads is stored the way production's `research` stores it: through mandate-api's
@@ -37,12 +42,12 @@
  * production mission, and every citation is kept in that file.
  */
 import { spawn, spawnSync } from "child_process";
-import { existsSync, readFileSync, writeFileSync } from "fs";
+import { appendFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
 import path from "path";
 import { createInterface } from "readline";
 import { loadEnvLocal } from "./loadEnv";
 
-const WINCENT = ["find_instruments", "match_status", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "profile_get"];
+const WINCENT = ["find_instruments", "match_status", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "read_agenda", "profile_get"];
 /** Bench-only: production's `research` stores and cites in one model call; the bench's
  *  model (Claude Code) reads the web itself and stores what it cites with this. */
 const BENCH_ONLY = ["ground_source"];
@@ -55,7 +60,8 @@ function usage(msg?: string): never {
   regina:  ${REGINA.join(", ")}
   bench:   ${BENCH_ONLY.join(", ")} (needs --ground)
   --list   print each tool's description and input schema
-  --ground store what is read in grounding (mandate-api if MANDATE_API_URL is set, else BENCH_GROUNDING_WRITE_URL)`);
+  --ground store what is read in grounding (mandate-api if MANDATE_API_URL is set, else BENCH_GROUNDING_WRITE_URL)
+  --no-log do not record the call in the usage log`);
   process.exit(2);
 }
 
@@ -64,6 +70,7 @@ function parseArgs(argv: string[]) {
   const pos: string[] = [];
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--list") flags.list = "1";
+    else if (argv[i] === "--no-log") flags.nolog = "1";
     else if (argv[i] === "--ground") flags.ground = "1";
     else if (argv[i].startsWith("--")) flags[argv[i].slice(2)] = argv[++i] ?? "";
     else pos.push(argv[i]);
@@ -125,10 +132,21 @@ async function main() {
   }
   if (!flags.ground) delete process.env.BENCH_GROUNDING_WRITE_URL;
 
-  const [{ wincentTools, reginaTools }, { realCapital }, { CitationLedger }, { httpPolicyApi, httpMandateApi }] = await Promise.all([
+  const [{ wincentTools, reginaTools }, { realCapital }, { CitationLedger }, { httpPolicyApi, httpMandateApi, mandateApiFromEnv }, { toolCallRow, logRow }] = await Promise.all([
     import("../lib/mandate/agent/mission"), import("../lib/mandate/agent/capital"),
     import("../lib/mandate/agent/ledger"), import("../lib/mandate/agent/services"),
+    import("../lib/mandate/agent/usage"),
   ]);
+  type Row = Parameters<typeof logRow>[1];
+  // Every bench tool, ground_source included, is logged by the one logRow below.
+  const usageApi = mandateApiFromEnv();
+  const usageSink = flags.nolog ? undefined : usageApi?.logToolCalls
+    ? (rows: Row[]) => usageApi.logToolCalls!(rows)
+    : async (rows: Row[]) => {
+      const dir = path.resolve(__dirname, "..", ".bench");
+      mkdirSync(dir, { recursive: true });
+      appendFileSync(path.join(dir, "tool_calls.jsonl"), rows.map((r) => JSON.stringify({ ...r, at: new Date().toISOString() })).join("\n") + "\n");
+    };
   type Ctx = Parameters<typeof wincentTools>[0];
 
   const bridge = groundingBridge(ro);
@@ -215,11 +233,14 @@ async function main() {
 
   let result: unknown;
   let error: string | undefined;
+  const t0 = Date.now();
   try {
     result = await o.handler.run(input);
   } catch (e) {
     error = e instanceof Error ? e.message : String(e);
   }
+  await logRow(usageSink, toolCallRow({ brain: o.who as "wincent" | "regina", tool: name, input, result, error,
+    ms: Date.now() - t0, missionId: flags.run ? `bench:${path.basename(flags.run)}` : null, caller: "bench" }));
   bridge.close();
   const fresh = ledger.all().slice(before);
   if (flags.run) writeFileSync(flags.run, JSON.stringify(ledger.all(), null, 1));

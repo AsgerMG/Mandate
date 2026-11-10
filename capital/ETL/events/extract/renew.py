@@ -11,7 +11,7 @@ pull into `db.sqlite`. After any renewal, re-derive and snapshot:
 
 Usage:
   python3 ETL/events/extract/renew.py --list                 # registry, grouped by tier
-  python3 ETL/events/extract/renew.py --auto                  # run every AUTO source
+  python3 ETL/events/extract/renew.py --auto                  # every AUTO source not in an OUT market
   python3 ETL/events/extract/renew.py --auto --dry-run        # show the commands only
   python3 ETL/events/extract/renew.py --source ademe cdti     # run specific sources
   python3 ETL/events/extract/renew.py --source isif_direct -- annual.pdf 2024-12-31   # MANUAL: pass the file
@@ -32,7 +32,7 @@ import argparse
 import subprocess
 import sys
 
-from manifest import SOURCES, BY_KEY, TIERS
+from manifest import BY_KEY, SOURCES, TIERS, market_of, refreshed
 
 EXTRACT_DIR = ETL / "events" / "extract"
 ICON = {"AUTO": "🟢", "NETWORK": "🟡", "MANUAL": "📄", "REJECTED": "⛔"}
@@ -46,7 +46,7 @@ def print_list() -> None:
         print(f"\n{ICON[tier]} {tier}  ({len(rows)})")
         for s in rows:
             cmd = " ".join(s.renew) if s.renew else "(needs file / not auto)"
-            print(f"  {s.key:<22} {s.title:<42} {cmd}")
+            print(f"  {s.key:<22} {market_of(s):<5} {s.title:<42} {cmd}")
             if s.note:
                 print(f"  {'':<22} └ {s.note}")
     print("\nAfter a renewal: classify -> sanity_check -> backup (see module docstring).")
@@ -75,7 +75,8 @@ def main() -> None:
     ap = argparse.ArgumentParser(description="Trigger a data renewal from the source registry.")
     g = ap.add_mutually_exclusive_group()
     g.add_argument("--list", action="store_true", help="show the source registry and exit")
-    g.add_argument("--auto", action="store_true", help="run every AUTO-tier source")
+    g.add_argument("--auto", action="store_true",
+                   help="run every AUTO-tier source in a core or hub market (OUT markets are frozen)")
     g.add_argument("--network", action="store_true", help="run every NETWORK-tier source (host-dependent)")
     g.add_argument("--source", nargs="+", metavar="KEY", help="run specific source keys")
     ap.add_argument("--dry-run", action="store_true", help="print commands, run nothing")
@@ -87,7 +88,13 @@ def main() -> None:
         return
 
     if args.auto:
-        targets = [s for s in SOURCES if s.tier == "AUTO"]
+        # OUT markets are frozen context (manifest.SOURCE_COUNTRY, europe_scope
+        # tiers): their stored rows stay, nothing re-pulls them. --source still
+        # runs one by hand.
+        frozen = [s.key for s in SOURCES if s.tier == "AUTO" and not refreshed(s)]
+        if frozen:
+            print(f"frozen (OUT market, not refreshed): {', '.join(frozen)}")
+        targets = [s for s in SOURCES if refreshed(s)]
     elif args.network:
         targets = [s for s in SOURCES if s.tier == "NETWORK"]
     else:

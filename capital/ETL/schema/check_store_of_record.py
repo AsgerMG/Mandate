@@ -90,8 +90,10 @@ NOT_CORPUS = re.compile(r"^(sqlite_|schema_migrations$)|_new$")
 
 
 def declared_tables() -> set[str]:
-    """Every table name any committed DDL creates."""
+    """Every table name any committed DDL creates (and no forward Postgres
+    migration has since dropped)."""
     names = set()
+    dropped = set()
     for path in SQLITE_DDL + POSTGRES_DDL:
         if not path.exists():
             continue
@@ -103,7 +105,10 @@ def declared_tables() -> set[str]:
         names |= {m.group(1) for m in re.finditer(
             r"ALTER\s+TABLE\s+[\"`]?\w+[\"`]?\s+RENAME\s+TO\s+[\"`]?(\w+)[\"`]?",
             sql, re.I)}
-    return {n for n in names if not NOT_CORPUS.search(n)}
+        if path.parent.parent.name == "schema" and path.parent.name == "migrations":
+            dropped |= {m.group(1) for m in re.finditer(
+                r"DROP\s+TABLE\s+(?:IF\s+EXISTS\s+)?[\"`]?(\w+)[\"`]?", sql, re.I)}
+    return {n for n in names - dropped if not NOT_CORPUS.search(n)}
 
 
 def python_sources() -> list[Path]:

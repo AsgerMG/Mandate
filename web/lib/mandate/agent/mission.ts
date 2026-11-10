@@ -18,7 +18,7 @@ import type { CompanyProfile } from "../profile";
 import type {
   Claim, EvidenceRef, MissionEvent, Specialist, WorkspaceAction, WorkspaceDecision,
 } from "../workspace";
-import { assess, findInstruments, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
+import { agenda, assess, findInstruments, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
 import { CitationLedger, type Specialist as Sp } from "./ledger";
 import { runLoop, type ModelClient, type ToolHandler } from "./loop";
 import {
@@ -27,6 +27,7 @@ import {
 } from "./models";
 import { PLAYBOOKS } from "./playbooks.generated";
 import { research } from "./research";
+import { loggedLoop } from "./usage";
 import type { MandateApi, PolicyApi, PolicyHit } from "./services";
 
 export interface MissionDeps {
@@ -220,6 +221,11 @@ export function wincentTools(ctx: Ctx) {
         situation: { type: "object", description: "{stage, sector, subsector, country (ISO2), raise_size_eur}" },
         k: { type: "integer", description: "how many, default 5" },
       }, []),
+      tool("read_agenda", "What the press Wincent follows has reported about an institution, a region or a topic since a date: programme changes, awards, appointments, pipeline signals. News, not rules: use it for timing and context; cite [cN] where given.", {
+        institution: str("e.g. 'Bpifrance', 'CDP', 'KfW'"), region: str("ISO2 or EU"),
+        topic: str("e.g. 'guarantee', 'InvestEU', 'defence'"), since: str("ISO date, e.g. 2026-06-01"),
+        k: { type: "integer", description: "how many, default 8" },
+      }, []),
       tool("fund_requirements", "The instrument's requirement texts that bear most on a focus.",
         { instrument_id: str("id"), focus: str("e.g. 'financial intermediary', 'banking licence', 'SME'") }, ["instrument_id", "focus"]),
       tool("application_route", "How a founder actually applies: channel, window, link, and whose route it is.",
@@ -238,6 +244,8 @@ export function wincentTools(ctx: Ctx) {
             return ctx.ledger.add(await ctx.deps.mandate.cite({ sha256: v.sha256, quote }), "wincent", "find_precedents", label);
           } catch { return null; }
         }) },
+      read_agenda: { run: (i: Record<string, unknown>) => agenda(c, i as never,
+        (url, quote, label) => cite(ctx, "wincent", "read_agenda")(null, url, quote, label)) },
       match_status: { required: ["status"], run: (i: Record<string, unknown>) => matchStatus(c, i as never,
         (sha, quote, label, span) => cite(ctx, "wincent", "match_status")(sha, null, quote, label, span)) },
       fund_requirements: { required: ["instrument_id", "focus"], run: (i: Record<string, unknown>) => requirements(c, String(i.instrument_id), String(i.focus)) },
@@ -317,6 +325,7 @@ async function consult(ctx: Ctx, who: Sp, question: string): Promise<string> {
     tools: t.tools, handlers: t.handlers, maxTurns: 10, maxTokens: 16000,
     messages: [{ role: "user", content: `Question from Mandate:\n${question}` }],
     budget: { ...ctx.budget, note: "[runtime] The mission budget is nearly spent. Stop researching and write your report now with what you have." },
+    onToolResult: loggedLoop(ctx.deps.mandate.logToolCalls?.bind(ctx.deps.mandate), who, ctx.missionId),
     onToolCall: (name, input) => ctx.emit({ type: "tool_used", missionId: ctx.missionId, specialist: who, tool: name,
       summary: JSON.stringify(input).slice(0, 200) }),
   });
@@ -507,6 +516,7 @@ export async function runMission(input: MissionInput, deps: MissionDeps, emit: E
       client: deps.client, model: ORCHESTRATOR_MODEL, effort: ORCHESTRATOR_EFFORT, system: orchestratorSystem(ctx),
       tools: t.tools, handlers: t.handlers, maxTurns: 16, maxTokens: 32000, budget: ctx.budget,
       messages: [{ role: "user", content: opening }],
+      onToolResult: loggedLoop(deps.mandate.logToolCalls?.bind(deps.mandate), "mandate", missionId),
       onToolCall: (name, i) => { if (!name.startsWith("consult_")) emit({ type: "tool_used", missionId: ctx.missionId,
         specialist: "mandate", tool: name, summary: String(i.title ?? i.subject ?? i.job ?? "").slice(0, 160) }); },
       onText: (text) => emit({ type: "message", missionId: ctx.missionId, specialist: "mandate", text }),

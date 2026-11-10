@@ -127,6 +127,12 @@ def declared_schema(files: list[_Path]) -> dict[str, set[str]]:
                 r"ALTER\s+TABLE\s+[\"`]?(\w+)[\"`]?\s+RENAME\s+TO\s+[\"`]?(\w+)[\"`]?",
                 sql, re.I):
             renames.append((m.group(1), m.group(2)))
+        # A table a forward migration drops (archived first: mandate/ops/
+        # archive_dead_weight.sh) is no longer declared. Only forward
+        # migrations: the SQLite-era files drop-and-recreate.
+        if path.parent.name == "migrations":
+            for m in re.finditer(r"DROP\s+TABLE\s+(?:IF\s+EXISTS\s+)?[\"`]?(\w+)[\"`]?", sql, re.I):
+                cols.pop(m.group(1), None)
 
     for old, new in renames:
         if old in cols:

@@ -35,6 +35,7 @@ import psycopg
 from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from pydantic import BaseModel, Field
 
+from mandate import usage
 from mandate.grounding import store as gstore
 from mandate.profile import ProfileError
 from mandate.profile import store as pstore
@@ -229,6 +230,11 @@ class EraseIn(BaseModel):
     entity: Literal["person", "role", "contact_point"]
     entity_id: str
     reason: Literal["on_request", "no_longer_published"]
+
+
+class ToolCallsIn(BaseModel):
+    # one mission's batch, or one bench call; capped so a runaway loop cannot flood it
+    calls: list[dict[str, Any]] = Field(max_length=200)
 
 
 class Config:
@@ -500,6 +506,16 @@ def create_app(config: Config | None = None) -> FastAPI:
     def actors_erase(body: EraseIn) -> dict:
         with stores() as s:
             return guarded(reg.erase, s.primary, **body.model_dump())
+
+    # ── usage log (mandate/usage.py, mandate/db/tool_calls.sql) ────────────
+
+    @app.post("/usage/tool_calls", dependencies=[Depends(auth)])
+    def usage_tool_calls(body: ToolCallsIn) -> dict:
+        try:
+            with stores() as s:
+                return {"recorded": usage.record(s.primary, body.calls)}
+        except usage.UsageError as e:
+            raise HTTPException(422, str(e)) from e
 
     return app
 

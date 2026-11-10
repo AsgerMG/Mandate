@@ -22,7 +22,7 @@ from typing import Protocol
 
 import httpx
 import structlog
-from sqlalchemy import func, select, text
+from sqlalchemy import Date, cast, func, or_, select, text
 from sqlalchemy import true as sa_true
 from sqlalchemy.orm import Session
 from tenacity import retry, retry_if_exception, stop_after_attempt, wait_exponential
@@ -161,8 +161,28 @@ def _row_to_passage(row) -> dict:
     }
 
 
+# Regina's hot index (data_audit.md, slimming 5): news and press older than this
+# are left out of open retrieval. The store keeps them (grounding is
+# append-only); `document_passages` (one named document) and canon_passages
+# (law by CELEX) still read them, and a caller may pass hot_days=None.
+HOT_DAYS = 90
+NEWS_TYPES = (DocumentType.PRESS, DocumentType.NEWSLETTER)
+
+
+def hot_filter(hot_days: int | None, today: dt.date | None = None):
+    """The WHERE clause that keeps a passage in the hot index: anything that is
+    not news, or news dated within `hot_days` (by the document's own date, else
+    when its version was fetched). None: no filter."""
+    if hot_days is None:
+        return sa_true()
+    cutoff = (today or dt.date.today()) - dt.timedelta(days=hot_days)
+    dated = func.coalesce(Document.date_document, cast(DocumentVersion.fetched_at, Date))
+    return or_(Document.document_type.not_in(NEWS_TYPES), dated >= cutoff)
+
+
 def semantic_search(
-    session: Session, embedder: Embedder, query: str, *, k: int = 5, min_score: float | None = None
+    session: Session, embedder: Embedder, query: str, *, k: int = 5, min_score: float | None = None,
+    hot_days: int | None = None,
 ) -> list[dict]:
     """Return the k passages closest in meaning to the query, each with the
     citation context needed to quote it.
@@ -173,7 +193,11 @@ def semantic_search(
     passages, or none. Default None preserves the historical no-floor
     behavior; canon_passages() deliberately has no equivalent parameter,
     since every foundational act must get a guaranteed seat regardless of
-    score for the Compliance table to render an explicit verdict."""
+    score for the Compliance table to render an explicit verdict.
+
+    ``hot_days`` (see HOT_DAYS) leaves out news and press older than that many
+    days. None, the default here, reads everything (the brief's callers);
+    /api/search, the agents' entry point, passes HOT_DAYS unless asked not to."""
     qvec = embedder.embed([query])[0]
     stmt = (
         select(
@@ -194,7 +218,8 @@ def semantic_search(
         )
         .join(DocumentVersion, Passage.version_id == DocumentVersion.id)
         .join(Document, DocumentVersion.document_id == Document.id)
-        .where(Passage.embedding.is_not(None), DocumentVersion.is_current.is_(True))
+        .where(Passage.embedding.is_not(None), DocumentVersion.is_current.is_(True),
+               hot_filter(hot_days))
         .order_by("distance")
         .limit(k)
     )

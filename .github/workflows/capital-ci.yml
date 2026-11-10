@@ -96,6 +96,12 @@ jobs:
         if: always()
         run: python3 ETL/lib/test_europe_scope.py
 
+      # Market tiers: which countries and sources the weekly refresh pulls,
+      # and that a frozen OUT country does not turn the decay guard red.
+      - name: Market tiers
+        if: always()
+        run: python3 ETL/terms/test_market_tiers.py
+
       # Which fund an award is credited to decides what the answer key can
       # name, and a wrong credit reads as recall rather than as an error. Runs
       # on an in-memory corpus, so it needs no database.

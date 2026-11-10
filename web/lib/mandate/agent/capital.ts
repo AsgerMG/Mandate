@@ -22,12 +22,16 @@ import { computeVerdict } from "@/lib/intelligence/pipeline";
 import { isCited, isFilter } from "@/lib/intelligence/evidenceTier";
 import { assessInstrument } from "@/lib/intelligence/verdict";
 import { toCapitalRequest, validateProfile, type CompanyProfile } from "../profile";
+import { MARKET_TIER, type MarketTier } from "./marketTiers.generated";
 
 /** One award record that is a precedent. */
 export interface PrecedentRow {
   company: string; company_country: string | null; subsector: string | null; sector_top: string | null;
   amount_eur: number | null; kind: string; started: string | null; programme: string | null;
   granting_authority: string | null; source: string; raw_source_url: string | null;
+  /** award (public_funding_events) or equity_stake (public_equity_stakes). Absent = award. */
+  record?: "award" | "equity_stake";
+  holder_type?: string | null; stake?: string | null; exited?: boolean;
 }
 
 export interface PrecedentQuery {
@@ -74,6 +78,10 @@ export interface CapitalPort {
   /** The status layer (capital migration 039). Empty when the tables are not there yet. */
   statusLayer(countries: string[]): Promise<{ keys: StatusKeyRow[]; rules: StatusRuleRow[]; regions: RegionPriorityRow[] }>;
   regionGated(nuts: string[]): Promise<RegionGatedRow[]>;
+  /** Public equity stakes (capital.public_equity_stakes): who holds whom. Optional: a port without it has none. */
+  equityStakes?(q: EquityQuery): Promise<PrecedentRow[]>;
+  /** The relevant signals articles (capital.signals_articles, is_relevant = 1). Optional. */
+  agenda?(q: AgendaQuery): Promise<AgendaRow[]>;
 }
 
 // What each move looks like in the award records. SATR encodes the aid
@@ -102,6 +110,8 @@ async function pgQuery<T>(sql: string, params: unknown[]): Promise<T[]> {
 }
 
 export const realCapital: CapitalPort = {
+  equityStakes: (q) => equityStakesSql(q),
+  agenda: (q) => agendaSql(q),
   hydrate: () => hydrateDbInstruments(),
   instruments: () => loadDbInstruments(),
   hydrateGates: (ids) => hydrateGatesFor(ids),
@@ -247,6 +257,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
   await port.hydrate();
   const limit = Math.min(Math.max(input.limit ?? 8, 1), 15);
   const juris = (input.jurisdictions ?? []).map((j) => j.toUpperCase());
+  const market = offeredMarkets(profile, juris);
   const level = input.level?.toLowerCase();
   const nuts = input.region ? toNuts(input.region) : undefined;
   const byId = new Map(port.instruments().map((i) => [i.id, i]));
@@ -259,8 +270,10 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
     if (input.region && r && !(nuts && (r.startsWith(nuts) || nuts.startsWith(r)))) return false;
     return true;
   };
-  const inJuris = (c?: string, id?: string | null) =>
+  const namedJuris = (c?: string, id?: string | null) =>
     (!juris.length || (c ? juris.includes(c.toUpperCase()) : false)) && placeOk(id);
+  // a lookup by name is explicit, so it is not held to the market default
+  const inJuris = (c?: string, id?: string | null) => namedJuris(c, id) && market.offered(c);
   const out: Record<string, unknown>[] = [];
   const seen = new Set<string>();
   const asked = interpretTypes(input.objective, input.instrument_types ?? []);
@@ -282,7 +295,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
     const terms = norm(input.name_query).split(/\s+/).filter((t) => t.length > 2);
     for (const i of port.instruments()) {
       const hay = norm(`${i.name} ${i.administeringBody ?? ""} ${i.description ?? ""}`);
-      if (terms.every((t) => hay.includes(t)) && inJuris(i.country, i.id) && !seen.has(i.id)) {
+      if (terms.every((t) => hay.includes(t)) && namedJuris(i.country, i.id) && !seen.has(i.id)) {
         seen.add(i.id);
         out.push({ ...summarise(i), matched: "name" });
         if (out.length >= limit) break;
@@ -321,6 +334,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
       ? "guarantee (the objective asks for a guarantee; 'loan' alone was read as guarantee)" : "guarantee" } : {}),
     note: "Corpus rows, uncited. Use assess_instrument for cited gates before relying on any.",
     withheld: verdict?.withheld?.note,
+    ...market.note(),
     ...(screenError ? { screen_unavailable: "The eligibility screen did not run; only name matches are listed. Use name_query to look up instruments by name." } : {}),
   };
 }
@@ -443,8 +457,11 @@ export async function precedents(port: CapitalPort, input0: {
   }
   // Pull widely within scope, then rank by situation: a precedent need not be
   // a competitor, only the same situation (playbook 1c).
-  const rows = await port.precedents({ instrument: scope, institution: scope ? undefined : input.institution,
-    move: input.move, limit: 300 });
+  const rows = [
+    ...await port.precedents({ instrument: scope, institution: scope ? undefined : input.institution,
+      move: input.move, limit: 300 }),
+    ...await equityPrecedentRows(port, { scope, institution: scope ? undefined : input.institution, move: input.move }),
+  ];
   const score = (r: PrecedentRow) => {
     let s = 0;
     if (sit.subsector && r.subsector === sit.subsector) s += 3;
@@ -467,10 +484,147 @@ export async function precedents(port: CapitalPort, input0: {
   for (const [i, { r, s }] of ranked.entries()) {
     const citation = i < 3 && r.raw_source_url ? await cite(r.raw_source_url, r.company, `${r.company}: ${r.programme ?? r.source}`) : null;
     out.push({ ...r, similarity: Number(s.toFixed(1)), citation,
-      evidence: citation ? "cited (register page names the company)" : "register record (raw_source_url), not grounded" });
+      evidence: citation ? "cited (register page names the company)"
+        : r.record === "equity_stake" ? "equity-stake register record (raw_source_url), not grounded"
+          : "register record (raw_source_url), not grounded" });
   }
   return { scope: scopeLabel, precedents: out, none_found: false,
-    note: "Award records from Wincent's corpus. Cite [cN] where given; otherwise say 'register record' with the source URL, and do not present it as cited." };
+    note: "Award records, and equity stakes (record: equity_stake: who invested in whom), from Wincent's corpus. Cite [cN] where given; otherwise say 'register record' with the source URL, and do not present it as cited." };
+}
+
+
+// ── Data wiring (data_audit.md, 10 Nov): market tiers, equity stakes, the agenda ──
+
+/** core | hub | out for an instrument's country (EU is core). Unknown is out. */
+export function marketTier(code?: string | null): MarketTier {
+  if (!code) return "out";
+  const c = code.trim().toUpperCase();
+  return MARKET_TIER[c === "UK" ? "GB" : c === "EL" ? "GR" : c] ?? "out";
+}
+
+/** OUT-market instruments are frozen context: not offered unless the company is
+ *  established there (incorporation or an entity country) or the caller named
+ *  the country. Counts what it held back, so the agent can say so. */
+export function offeredMarkets(profile: CompanyProfile, jurisdictions: string[]) {
+  const here = new Set([profile.incorporationCountry, ...(profile.entityCountries ?? []), ...jurisdictions]
+    .filter((c): c is string => !!c).map((c) => c.toUpperCase()));
+  const held = new Map<string, number>();
+  return {
+    offered(c?: string | null): boolean {
+      if (marketTier(c) !== "out" || (c && here.has(c.toUpperCase()))) return true;
+      const k = (c ?? "unknown").toUpperCase();
+      held.set(k, (held.get(k) ?? 0) + 1);
+      return false;
+    },
+    note(): { not_offered?: string } {
+      if (!held.size) return {};
+      const list = [...held.entries()].sort((a, b) => b[1] - a[1]).map(([c, n]) => `${c} ${n}`).join(", ");
+      return { not_offered: `Instruments in markets outside Mandate's core and hubs were held back (${list}): frozen context, not refreshed. Name the country in jurisdictions to see them.` };
+    },
+  };
+}
+
+export interface EquityQuery { sources?: string[]; holder?: string; limit: number }
+
+const EQUITY_MOVES = new Set(["equity", "raise"]);
+
+/** Equity stakes as precedents: for an equity or raise move (or no move), the
+ *  companies the same holder (by its register source, or by name) holds. */
+export async function equityPrecedentRows(port: CapitalPort, q: {
+  scope?: PrecedentQuery["instrument"]; institution?: string; move?: string;
+}): Promise<PrecedentRow[]> {
+  if (!port.equityStakes || (q.move && !EQUITY_MOVES.has(q.move))) return [];
+  if (q.scope?.sources.length) return port.equityStakes({ sources: q.scope.sources, limit: 200 });
+  if (q.institution?.trim()) return port.equityStakes({ holder: q.institution.trim(), limit: 200 });
+  return [];
+}
+
+async function equityStakesSql(q: EquityQuery): Promise<PrecedentRow[]> {
+  const where = ["c.canonical_name IS NOT NULL"];
+  const params: unknown[] = [];
+  if (q.sources?.length) { params.push(q.sources); where.push(`s.source = ANY($${params.length})`); }
+  else if (q.holder) { params.push(`%${q.holder}%`); where.push(`(s.holder ILIKE $${params.length} OR s.via_fund ILIKE $${params.length})`); }
+  else return [];
+  return pgQuery<PrecedentRow>(
+    `SELECT c.canonical_name AS company, c.country AS company_country, c.subsector, c.sector_top,
+            s.ticket_eur AS amount_eur, 'equity stake' AS kind, coalesce(s.as_of, s.first_seen) AS started,
+            coalesce(s.via_fund, s.holder) AS programme, s.holder AS granting_authority, s.source, s.raw_source_url,
+            'equity_stake' AS record, s.holder_type,
+            CASE WHEN s.stake_pct_min IS NULL THEN NULL
+                 WHEN s.stake_pct_max IS NULL OR s.stake_pct_max = s.stake_pct_min THEN s.stake_pct_min || '%'
+                 ELSE s.stake_pct_min || '-' || s.stake_pct_max || '%' END AS stake,
+            s.exited = 1 AS exited
+       FROM public_equity_stakes s JOIN companies c ON c.id = s.company_id
+      WHERE ${where.join(" AND ")}
+      ORDER BY coalesce(s.as_of, s.first_seen) DESC NULLS LAST
+      LIMIT ${Math.min(Math.max(q.limit, 1), 400)}`, params);
+}
+
+export interface AgendaQuery {
+  institution?: string; region?: string; topic?: string; since?: string; limit: number;
+}
+
+export interface AgendaRow {
+  article_id: number; title: string; url: string; published_at: string | null;
+  source: string; source_tier: string; country: string | null; language: string | null;
+  signals: { type: string; summary: string }[] | null; excerpt: string | null;
+}
+
+async function agendaSql(q: AgendaQuery): Promise<AgendaRow[]> {
+  const where = ["a.is_relevant = 1"];
+  const params: unknown[] = [];
+  const p = (v: unknown) => { params.push(v); return `$${params.length}`; };
+  if (q.institution?.trim()) {
+    const pat = p(`%${q.institution.trim()}%`);
+    where.push(`(a.title ILIKE ${pat} OR a.raw_text ILIKE ${pat} OR EXISTS (SELECT 1 FROM signals_article_entities e
+      WHERE e.article_id = a.id AND e.entity_type IN ('investor', 'program') AND e.mention_text ILIKE ${pat}))`);
+  }
+  if (q.topic?.trim()) {
+    const pat = p(`%${q.topic.trim()}%`);
+    where.push(`(a.title ILIKE ${pat} OR a.raw_text ILIKE ${pat} OR EXISTS (SELECT 1 FROM signals_article_signals g
+      WHERE g.article_id = a.id AND g.summary ILIKE ${pat}))`);
+  }
+  if (q.region?.trim()) {
+    const r = q.region.trim().toUpperCase();
+    where.push(`(src.country = ${p(r === "UK" ? "GB" : r)} OR src.country IS NULL AND $${params.length} = 'EU')`);
+  }
+  if (q.since?.trim()) where.push(`coalesce(a.published_at, a.fetched_at) COLLATE "C" >= ${p(q.since.trim())}`);
+  return pgQuery<AgendaRow>(
+    `SELECT a.id AS article_id, a.title, coalesce(a.resolved_url, a.url) AS url, a.published_at,
+            src.name AS source, src.tier AS source_tier, src.country, a.language,
+            (SELECT json_agg(json_build_object('type', g.signal_type, 'summary', g.summary) ORDER BY g.confidence DESC)
+               FROM signals_article_signals g WHERE g.article_id = a.id) AS signals,
+            left(a.raw_text, 400) AS excerpt
+       FROM signals_articles a JOIN signals_sources src ON src.id = a.source_id
+      WHERE ${where.join(" AND ")}
+      ORDER BY coalesce(a.published_at, a.fetched_at) COLLATE "C" DESC NULLS LAST, a.id DESC
+      LIMIT ${Math.min(Math.max(q.limit, 1), 50)}`, params);
+}
+
+/** The agenda: what the press Wincent's corpus follows (the 3,984 articles its
+ *  classifier marked relevant) says about an institution, a region or a topic
+ *  since a date. The first few are cited through grounding when the article's
+ *  page is already stored (by URL); otherwise the article URL is the source. */
+export async function agenda(port: CapitalPort, input: {
+  institution?: string; region?: string; topic?: string; since?: string; k?: number;
+}, cite: (url: string, quote: string, label: string) => Promise<string | null>) {
+  if (!input.institution && !input.region && !input.topic) throw new Error("give institution, region or topic");
+  if (input.since && !/^\d{4}-\d{2}(-\d{2})?$/.test(input.since)) throw new Error("since is an ISO date, e.g. 2026-06-01");
+  if (!port.agenda) return { articles: [], note: "The agenda store is not available here." };
+  const k = Math.min(Math.max(input.k ?? 8, 1), 20);
+  const rows = await port.agenda({ ...input, limit: k });
+  const articles = [];
+  for (const [i, r] of rows.entries()) {
+    const citation = i < 3 ? await cite(r.url, r.title, `${r.source}: ${r.title}`.slice(0, 160)) : null;
+    articles.push({ ...r, excerpt: r.excerpt ? r.excerpt.slice(0, 400) : null, citation,
+      evidence: citation ? "cited (stored article page)" : "news article (url), not grounded" });
+  }
+  return {
+    articles, none_found: !articles.length,
+    note: articles.length
+      ? "News the corpus marked relevant, newest first. It says what was reported, not what the rules are: cite [cN] where given, otherwise name the outlet and URL as unverified."
+      : "Nothing in the relevant news matches. Use research for current coverage.",
+  };
 }
 
 // ── Status matching and economic geography (playbook §4d.2, §4e) ───────────

@@ -55,7 +55,9 @@ def _iso(t) -> str | None:
 def _capital_auto_sources() -> list[str]:
     sys.path.insert(0, str(ROOT / "capital" / "ETL" / "events" / "extract"))
     import manifest  # noqa: PLC0415
-    return [s.key for s in manifest.SOURCES if s.tier == "AUTO"]
+    # OUT-market sources are frozen by decision (manifest.refreshed): holding
+    # them to a weekly cadence would page on the decision itself.
+    return [s.key for s in manifest.SOURCES if manifest.refreshed(s)]
 
 
 def check(c, t: dict) -> list[Finding]:
