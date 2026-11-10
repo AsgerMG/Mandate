@@ -45,9 +45,22 @@ UNION ALL SELECT 'capital.schema_migrations has 039', count(*) FROM capital.sche
 """
 
 
+def uri(conninfo: str) -> str:
+    """A postgresql:// URI for a key=value conninfo: node-postgres (the bench) reads only URIs."""
+    from urllib.parse import quote  # noqa: PLC0415
+    from psycopg.conninfo import conninfo_to_dict  # noqa: PLC0415
+    d = conninfo_to_dict(conninfo)
+    if conninfo.startswith("postgres"):
+        return conninfo
+    auth = quote(d.get("user", "postgres")) + (f":{quote(d['password'])}" if d.get("password") else "")
+    return f"postgresql://{auth}@{d.get('host', '127.0.0.1')}:{d.get('port', 5432)}/{d['dbname']}"
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--embed", action="store_true")
+    ap.add_argument("--then", help="a shell command to run against the loaded rehearsal before it is "
+                                   "torn down; gets REHEARSAL_RO_URL, REHEARSAL_APP_URL, GROUNDING_BUCKET_DIR")
     a = ap.parse_args()
     stop = None
     if not os.environ.get("MANDATE_TEST_DATABASE_URL"):
@@ -104,6 +117,13 @@ def main() -> int:
                 except psycopg.errors.InsufficientPrivilege:
                     print("  UPDATE status_rules: refused (insert-only)")
             print(f"  bucket objects: {sum(1 for _ in Path(bucket).rglob('*') if _.is_file())}")
+            if a.then:
+                # e.g. the bench against the rehearsal: CAPITAL_RO_DATABASE_URL=$REHEARSAL_RO_URL
+                print(f"\n── then: {a.then} ──", flush=True)
+                r = subprocess.run(a.then, shell=True, env={
+                    **env, "REHEARSAL_RO_URL": uri(db.url("capital_ro")), "REHEARSAL_APP_URL": uri(app)})
+                if r.returncode:
+                    return r.returncode
     finally:
         if stop:
             stop()

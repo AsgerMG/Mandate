@@ -274,7 +274,8 @@ status_rules:
     level: national
     role: investee
     status_key: status.it.startup_innovativa
-    effect: required
+    effect: one_of
+    any_of: it.investor_relief.investee
     activity_tags: [equity_raise, startup]
     statement: >-
       Investors in a start-up innovativa get a 30% income-tax relief on the amount invested, for
@@ -289,7 +290,8 @@ status_rules:
     level: national
     role: investee
     status_key: status.it.pmi_innovativa
-    effect: required
+    effect: one_of
+    any_of: it.investor_relief.investee
     activity_tags: [equity_raise, scaleup]
     statement: The art. 29 investor relief also applies to PMI innovative, within the EU risk-finance guidelines.
     citations:

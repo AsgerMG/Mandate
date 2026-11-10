@@ -34,7 +34,7 @@ const REGIONS: RegionPriorityRow[] = [
 function port(extra: Partial<CapitalPort> = {}): CapitalPort {
   return {
     statusLayer: async () => ({ keys: ["lic.it.tub106", "status.it.startup_innovativa", "estab.it"].map(key), rules: RULES, regions: REGIONS }),
-    regionGated: async (nuts) => nuts.includes("ITC4") ? [{ instrument_id: "lomb_ri", name: "Ricerca&Innova", capital_type: "grant", allowed: ["ITC4"] }] : [],
+    regionGated: async (nuts: string[]) => nuts.includes("ITC4") ? [{ instrument_id: "lomb_ri", name: "Ricerca&Innova", capital_type: "grant", allowed: ["ITC4"] }] : [],
     ...extra,
   } as unknown as CapitalPort;
 }

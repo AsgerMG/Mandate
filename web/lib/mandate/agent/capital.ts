@@ -622,6 +622,8 @@ export async function matchStatus(port: CapitalPort, input: {
       instruments_held: [...new Set(rules.flatMap((r) => r.instrument_ids))],
       ...(missing.length ? { still_required: missing } : {}),
       ...(excluded.length ? { excluded_by: excluded } : {}),
+      // an uncited rule narrows, never decides (evidence tiers): say which this door rests on
+      evidence_tier: evidence.every((e) => e.citations.length) ? "cited" : evidence.some((e) => e.citations.length) ? "partly uncited" : "uncited: research and cite before relying on it",
       activity_relevance: tags.length ? sumTags(rules, tags) : 0, evidence,
     });
   }
