@@ -1,0 +1,16 @@
+{
+  "name": "Example Kids Learning (eval case 3)",
+  "description": "Voice-first AI tutor app for children aged 4 to 8 (early reading and maths). UK limited company in London, no EU entity yet. Parents subscribe (B2C); school-licence pilots with primary schools in NL and DE, teachers see a class dashboard. Runs on a third-party general-purpose model via API with own prompts and a small fine-tuned layer. Scores reading level from the child's voice, decides the next lesson, reports progress to parents and teachers. Voice recordings kept 30 days for model improvement. No ads, no child-to-child communication. Building a feature that detects frustration in the child's voice. Launch DE, FR, NL, IT in 2027. About 25 staff, seed closed.",
+  "sector": "software_data_ai",
+  "subsectors": ["edtech"],
+  "customerType": "both",
+  "incorporationCountry": "GB",
+  "entityCountries": ["GB"],
+  "markets": ["EU", "DE", "FR", "NL", "IT"],
+  "fteBand": "10-49",
+  "developmentStage": "pilot_customers",
+  "usesAi": true,
+  "aiUseCases": ["education"],
+  "handlesPersonalData": true,
+  "dataCategories": ["children"]
+}
