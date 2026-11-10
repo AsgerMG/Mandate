@@ -38,6 +38,7 @@ _sys.path.insert(0, str(ROOT / "ETL" / "lib"))
 import corpus_marks  # noqa: E402
 _sys.path.insert(0, str(ROOT.parent))
 from mandate.runs import from_env as _run_log  # noqa: E402
+from mandate.llm import budget  # noqa: E402
 
 # Every step is also a row in mandate.run_steps: on the orchestrator's run when
 # mandate/refresh/run.py started us (MANDATE_RUN_ID), else on a run of our own.
@@ -246,6 +247,21 @@ PARTIAL_OK = {"renew.py": 3, "refresh_open_calls.py": 3,
               # `run` only: no batch store, nothing submitted (RC_NO_STORE)
               "classify_taxonomy.py": 3}
 
+# ── Running without a model budget ─────────────────────────────────────────
+# A PAID step (classify_taxonomy run, news_cron's relevance/entity/signals
+# stages) exits budget.EXIT_SKIPPED when LLM_BUDGET=off or when Anthropic
+# answers "credit balance is too low" (mandate/llm/budget.py). That is not a
+# failure and not a partial: it wrote nothing and left the data as it was. So,
+# for ANY step, that exit code is recorded `skipped` in mandate.run_steps with
+# the step's own reason as the summary, the corpus mark is closed ok (the store
+# is whole), the census is not degraded, and the run goes on. This runner does
+# not know which steps are paid; each paid step knows, and says so.
+#
+# The run's own summary names the paused steps, and mandate/health/check.py
+# reports "paid steps paused" from those rows instead of alarming.
+paused: list[str] = []
+
+
 def census(outcome: str) -> None:
     """Record what this run left behind, and how the run itself went.
 
@@ -387,9 +403,17 @@ for step in STEPS:
         matched = next(((name, rc) for name, rc in PARTIAL_OK.items()
                         if any(name in part for part in step)), None)
         tolerated = bool(matched) and returncode == matched[1]
-        report(corpus_marks.OK if returncode == 0 else
+        budget_skip = returncode == budget.EXIT_SKIPPED
+        report(corpus_marks.OK if returncode == 0 or budget_skip else
                corpus_marks.PARTIAL if tolerated else corpus_marks.FAILED,
+               why if budget_skip else
                f"rc={returncode}" + (f": {why}" if why and returncode else ""))
+    if budget_skip:
+        reason = why if budget.is_skip_reason(why) else budget.skip_reason(label)
+        RUN.close_step(step_id, "skipped", summary=reason, exit_code=returncode)
+        print(f"=== SKIPPED: {reason} ===", flush=True)
+        paused.append(label)
+        continue
     detail = {}
     if script == "renew.py" and Path(RENEW_RESULTS).exists():
         import json  # noqa: PLC0415
@@ -440,9 +464,18 @@ failed_guards = guards()
 census(f"partial: {', '.join(Path(p).name for p in partial)}" if partial else "ok")
 
 partial += soft_failed
+# Paused paid steps do not make the run partial (they changed nothing), but the
+# summary says so, so a run with no budget never reads as a fully paid one.
+why_paused = budget.OFF if not budget.llm_enabled() else budget.EXHAUSTED
+pause_note = (f"; paid steps paused ({budget.SKIP_PREFIX}{why_paused}): "
+              f"{', '.join(paused)}") if paused else ""
 if OWN_RUN:
     RUN.finish("partial" if (partial or failed_guards) else "ok",
-               f"{len(partial)} partial/failed-soft, guards failed: {', '.join(failed_guards) or 'none'}")
+               f"{len(partial)} partial/failed-soft, guards failed: {', '.join(failed_guards) or 'none'}"
+               + pause_note)
+if paused:
+    print(f"=== PAID STEPS PAUSED ({budget.SKIP_PREFIX}{why_paused}): "
+          f"{', '.join(paused)} ===", flush=True)
 if partial or failed_guards:
     # Loud, and non-zero, so a scheduled run that half-worked or that ended with
     # a red guard is never read as a clean one -- but only AFTER every

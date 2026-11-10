@@ -60,6 +60,8 @@ import time
 from dataclasses import dataclass, field
 from typing import Any, Callable, Iterable
 
+from mandate.llm import budget
+
 #: $/MTok at STANDARD rates: (input, output, cache read). A cache write costs
 #: CACHE_WRITE x input. Batch pricing is BATCH_DISCOUNT x all of it. A model not
 #: listed here cannot be estimated, so it cannot be submitted (a cap that cannot
@@ -176,6 +178,9 @@ class Outcome:
     cost_usd: float = 0.0          # measured, over the batches collected this run
     skipped: str = ""              # why nothing was submitted, if so
     truncated: int = 0             # items cut by the cap
+    #: "" or budget.OFF / budget.EXHAUSTED: no paid call was (or could be) made,
+    #: and `skipped` carries budget.skip_reason. The caller exits EXIT_SKIPPED.
+    budget: str = ""
 
     def line(self) -> str:
         s = (f"submitted {self.submitted} request(s) in {len(self.batches)} batch(es) "
@@ -535,8 +540,29 @@ class Batcher:
         """Collect what has ended, submit what is new (capped), wait up to
         `wait_minutes` collecting as batches end, and return. Never blocks past
         the budget; what is still processing is recorded for the next run."""
+        # The budget switch, and the credit-exhausted 400, are ONE outcome
+        # (mandate/llm/budget.py): nothing submitted, nothing collected, every
+        # recorded batch left for the run after the budget returns.
+        if not budget.llm_enabled():
+            return Outcome(budget=budget.OFF, skipped=budget.skip_reason(self.kind))
+        out = Outcome()
+        try:
+            return self._run(items, handle, out, max_usd=max_usd, wait_minutes=wait_minutes,
+                             over_cap=over_cap, chunk=chunk, submit=submit)
+        except Exception as exc:  # noqa: BLE001 -- re-raised unless it is the credit error
+            if not budget.is_budget_exhausted(exc):
+                raise
+            _warn(f"{self.kind}: Anthropic credit exhausted ({exc}); stopping, "
+                  f"what was recorded stays recorded")
+            out.budget = budget.EXHAUSTED
+            out.skipped = budget.skip_reason(self.kind, budget.EXHAUSTED)
+            out.pending = len(self.store.pending(self.kind))
+            return out
+
+    def _run(self, items, handle, out: Outcome, *, max_usd, wait_minutes, over_cap,
+             chunk, submit) -> Outcome:
         deadline = self.clock() + 60.0 * max(0.0, wait_minutes)
-        out = self.collect(handle)
+        self.collect(handle, out)
         if submit:
             todo, _est, planned = self.plan(items, max_usd=max_usd, over_cap=over_cap)
             out.estimate_usd += planned.estimate_usd

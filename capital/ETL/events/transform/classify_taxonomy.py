@@ -1062,6 +1062,11 @@ def cmd_run(args, batcher=None) -> None:
     if args.dry_run:
         print("dry-run: not submitting.")
         return
+    # LLM_BUDGET=off (mandate/llm/budget.py): skipped, exit EXIT_SKIPPED, which
+    # railway_cron records `skipped`. Before the key check: no key is not the
+    # reason when the budget is off.
+    from mandate.llm import budget  # noqa: PLC0415
+    budget.exit_if_off("classify_taxonomy run")
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
     from mandate.llm.batch import StoreUnavailable  # noqa: PLC0415
@@ -1077,6 +1082,11 @@ def cmd_run(args, batcher=None) -> None:
     out = batcher.run(items, _handler(totals), max_usd=cap, over_cap="skip",
                       wait_minutes=getattr(args, "wait_minutes", WAIT_MINUTES_DEFAULT),
                       chunk=args.chunk, submit=not getattr(args, "collect_only", False))
+    if out.budget:
+        # The credit ran out mid-run: labels already written stay written, the
+        # batches recorded stay recorded, and the run says so.
+        print(f"\ndone: {totals['written']} labels written, {totals['errored']} errored.")
+        budget.exit_skipped(out.skipped)
     if out.skipped:
         print(f"SKIPPED: estimated ~${out.estimate_usd:.0f} exceeds --max-cost ${cap:.0f} "
               f"-- needs manual approval (run without --max-cost, or raise it, "
