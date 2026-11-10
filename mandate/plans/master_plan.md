@@ -20,8 +20,10 @@ proposes an action; **a human decides and sends**. We know it works when the tea
 send its output with light edits. That is the only test that counts, so every piece is
 tested as real PA work, graded by the owner.
 
-**Market scope (owner, 10 Nov):** Germany, Italy, France, the EU level and the UK.
-Other countries' data stays where it serves as precedent or context, but is not built out.
+**Market scope (owner, 10 Nov):** CORE: Germany, Italy, France, the EU level, the UK.
+HUBS (second tier): Sweden, Denmark, Norway, the Netherlands, Belgium. Everything else
+is out: not built out, refreshed only if it serves core/hub cases as precedent;
+what is stored for it is reviewed by the data audit (archive, never delete).
 
 ## 1. Where we are (10 Nov 2026)
 

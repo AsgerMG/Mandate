@@ -1,4 +1,4 @@
-> **Scope update (owner, 10 Nov):** DE, IT, FR, EU and the **UK** (to be added: British Business Bank, Innovate UK, UK R&D tax relief, the ENABLE guarantee programme, devolved and regional funds). Spain is out of scope. And per the master plan's rule 4b, this map is a list of DECIDING facts to ground as a small core; the long tail is live research, not bulk loads.
+> **Scope update (owner, 10 Nov):** CORE DE, IT, FR, EU, **UK**; HUBS SE, DK, NO, NL, BE (second tier); the rest out. Core first: DE, IT, FR, EU and the **UK** (to be added: British Business Bank, Innovate UK, UK R&D tax relief, the ENABLE guarantee programme, devolved and regional funds). Spain is out of scope. And per the master plan's rule 4b, this map is a list of DECIDING facts to ground as a small core; the long tail is live research, not bulk loads.
 
 # Wincent grounding map: DE, FR, IT, EU x every kind of public money
 
