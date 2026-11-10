@@ -39,12 +39,32 @@ fi
 if touched '^web/|^mandate/vocabulary/|^mandate/profile/|^\.github/workflows/web-ci'; then
   # web-ci.yml minus the build and the corpus prebuild (it uses the site data
   # already on disk). Needs web/node_modules.
-  run_web() {
-    (cd web && npx tsc --noEmit && npx vitest run && npx eslint . &&
-      npx tsx scripts/check_revalidate_literal.ts && npx tsx scripts/check_rendered_numbers.ts &&
-      NO_PG=1 npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_client_boundary.ts)
-  }
-  step "web CI (no build)" run_web
+  # A worktree has neither node_modules nor the generated site data
+  # (web/public/data, gitignored, built by the corpus prebuild): borrow both
+  # from the main checkout for the duration of the check, as CI has its own.
+  MAIN=$(git worktree list --porcelain | awk '/^worktree /{print $2; exit}')
+  BORROWED=""
+  if [ ! -e web/node_modules ] && [ -d "$MAIN/web/node_modules" ]; then
+    ln -s "$MAIN/web/node_modules" web/node_modules; BORROWED="web/node_modules"
+  fi
+  mkdir -p web/public/data
+  for f in "$MAIN"/web/public/data/*; do   # file by file: some may be tracked here
+    [ -e "$f" ] || continue
+    t="web/public/data/$(basename "$f")"
+    if [ ! -e "$t" ]; then ln -s "$f" "$t"; BORROWED="$BORROWED $t"; fi
+  done
+  if [ ! -f web/public/data/instrument_terms.json ]; then
+    echo "preflight: web CI needs the site data once: python3 capital/website/build/build_site_data.py (in the main checkout, ~5 min)"
+    FAIL=1
+  else
+    run_web() {
+      (cd web && npx tsc --noEmit && npx vitest run && npx eslint . &&
+        npx tsx scripts/check_revalidate_literal.ts && npx tsx scripts/check_rendered_numbers.ts &&
+        NO_PG=1 npx tsx scripts/check_vocabularies.ts && npx tsx scripts/check_client_boundary.ts)
+    }
+    step "web CI (no build)" run_web
+  fi
+  for d in $BORROWED; do rm -f "$d"; done
 fi
 if touched '^policy/|^mandate/'; then
   run_policy() { (cd policy && uv sync -q --frozen --extra dev --python 3.12 && uv run --frozen pytest -q -x); }
