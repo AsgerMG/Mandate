@@ -244,7 +244,7 @@ conversation the team will use.
 
 ## 9. Decisions for the owner
 
-Recommended defaults are marked; the ones asked now are the first four.
+**Decided 2026-11-10 by the owner: 1 retire, 2 internal chat page, 3 W6/W3/W11/W9, 4 Claude-only until the benchmark.** 5-10 stand at the recommended default until the owner says otherwise.
 1. **Retire the one-pager product** (Wincent's /brief, Regina's brief, their checks and
    test data), archived, with /brief redirecting to /wincent. *Recommended: yes.*
 2. **How the owner tests the pilot:** a plain internal chat page (recommended) vs the
