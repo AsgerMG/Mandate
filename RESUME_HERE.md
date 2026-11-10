@@ -31,9 +31,21 @@ Findings saved by the stopped agents (10 Nov):
   capital.event_log (agent tool logging) are STILL WRITTEN: do not archive them; only
   brief_records is safe. Next: item 3 first (usage log: a hook in
   web/lib/mandate/agent/loop.ts + mandate.tool_calls).
-- batch-italy: see its last WIP commit.
+- batch-italy (f15c0c15, real progress, NOT yet through preflight): 16 deciding texts
+  pinned by sha256 (TUB 106-107, Banca d'Italia albi, current Fondo di Garanzia
+  rules in force since 13 Oct 2023 + portfolio rules, DL 179/2012 arts 25/29, DL 3/2015
+  art 4, DL 69/2013 art 2 Nuova Sabatini, six regions' S3 pages); migration 039 (8
+  status keys, 16 status rules, 44 region priorities; the 2018 FdG text superseded, not
+  deleted); match_status tool + find_instruments level/region filters (tests pass);
+  bench --ground caches researched pages; local rehearsal loaded 16 docs / 365 passages,
+  idempotent. Dropped (owner re-scope): bulk regional instruments, full 106 register;
+  R&S&I credit + Transizione 5.0 texts (mimit.gov.it timed out). NEXT: write
+  mandate/ops/load_batch_italy.sh (wraps capital/ETL/terms/load_batch_italy.py, dry run
+  default, DB URL + bucket creds as in ground_pinned_input.sh, --apply passthrough), run
+  rehearse_batch_italy.py --embed (~1 cent), add eval case robotics_deployment_it.yaml +
+  a note in wincent.md, preflight, push. Merge it FIRST (it is the furthest along).
 Resume each: read its last WIP commit message (git log -1 origin/<branch>), finish, review,
-merge in this order: data-tiers, batch-italy, agent-on-railway (largest last).
+merge in this order: batch-italy, data-tiers, agent-on-railway (largest last).
 Then: owner runs the load/archive commands; Wincent bench re-runs the fintech + Italian
 robot cases (no API cost); interview round 4 (procurement, rule change mid-process,
 "don't do this yet"); case library + judge calibration from graded cases.
