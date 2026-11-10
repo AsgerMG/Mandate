@@ -34,8 +34,15 @@ no_live_run_or_stop() {
            summary = coalesce(summary || '; ', '') || 'no heartbeat for over 30 min: container replaced (marked by ops script)'
      WHERE status = 'running' AND heartbeat_at < now() - interval '30 minutes'
     RETURNING 'marked dead run ' || id || ' abandoned (last heartbeat ' || heartbeat_at || ')'"
+  # Only the runs a redeploy of THIS service would kill: the weekly job's
+  # (brain 'mandate'/'capital', in capital-etl). Regina's refreshes run in her
+  # own service, so they never block a capital-etl deploy (10 Nov: a slow
+  # Regina refresh held restore_weekly_cron.sh for an hour for no reason).
+  # Pass the brains to wait for, e.g. `no_live_run_or_stop policy`.
+  local brains="${1:-mandate capital}" in_list
+  in_list=$(printf "'%s'," $brains); in_list=${in_list%,}
   local live; live=$(psql "$url" -XAtc "SELECT string_agg(id || ' (heartbeat ' || to_char(heartbeat_at, 'HH24:MI') || ' UTC)', ', ')
-                                          FROM mandate.runs WHERE status = 'running'")
+                                          FROM mandate.runs WHERE status = 'running' AND brain IN ($in_list)")
   if [ -n "$live" ]; then
     # The one live state a deploy may end: the run's only open step is waiting
     # on Regina, and Regina says no refresh is running. That wait cannot end

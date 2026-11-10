@@ -22,7 +22,7 @@ REGINA_SID=9432356c-ecc3-41d8-a498-acdf13d318b5      # as deploy_regina.sh
 REGINA_URL=https://regina-production.up.railway.app
 
 echo "== 0. nothing live that a redeploy would kill"
-no_live_run_or_stop
+no_live_run_or_stop "mandate capital policy"   # it redeploys every service, Regina's too
 [ "$(curl -fsS $REGINA_URL/api/refresh | python3 -c 'import json,sys;print(json.load(sys.stdin)["running"])')" = False ] ||
   { echo "NOT YET: Regina is refreshing right now; a redeploy would kill it. Try again later."; exit 1; }
 
