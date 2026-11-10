@@ -18,5 +18,7 @@
   "_source_doc": "Every capital AUTO source (capital/ETL/events/extract/manifest.py) and every policy source the last policy run attempted must have succeeded within its cadence. `overrides` maps 'capital:<key>' or 'policy:<key>' to days, for a source that publishes less often than weekly.",
   "signals_digest_max_age_days": 8,
   "_signals_doc": "The digest is rebuilt weekly. The brief hides its news sections at 21 days (NEWS_MAX_AGE_DAYS, web/lib/intelligence/corpus.ts); this alarm fires two weeks before founders lose them.",
-  "artefact_release_max_age_days": 8
+  "artefact_release_max_age_days": 8,
+  "guard_verdict_max_age_days": 8,
+  "_guard_doc": "Every guard in capital/data/guard_registry.json must have an ok newest verdict in capital.guard_verdicts; a weekly one must also be newer than this. Replaces web/scripts/check_verdicts.ts and the corpus-currency workflow's drift issue (archived 2026-11-10)."
 }
