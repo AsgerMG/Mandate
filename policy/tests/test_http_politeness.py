@@ -80,3 +80,26 @@ def test_404_is_not_retried_and_503_is_transient(sleeps):
     with pytest.raises(httpx.HTTPStatusError) as e503:
         c.get("https://www.edpb.europa.eu/feed/news_en")
     assert len(calls) == H._RETRY_ATTEMPTS and H._is_retryable(e503.value)
+
+
+def test_a_host_that_keeps_refusing_is_left_alone_for_the_rest_of_the_run(sleeps):
+    """10 Nov: politico.eu answered 429 to everything; doubling the spacing to
+    60 s across nine paged newsletters kept the refresh crawling for hours.
+    After _THROTTLE_GIVE_UP refusals the host is not asked again this run, and
+    the source fails as TRANSIENT (retried next run, a week's grace)."""
+    calls = []
+
+    def handler(request):
+        calls.append(str(request.url))
+        return httpx.Response(429, request=request)
+
+    c = _client(handler)
+    with pytest.raises(Exception) as first:
+        c.get("https://www.politico.eu/newsletter/a/")
+    assert len(calls) <= H._THROTTLE_GIVE_UP
+    n = len(calls)
+    with pytest.raises(H.HostThrottled) as later:
+        c.get("https://www.politico.eu/newsletter/b/")
+    assert len(calls) == n, "a given-up host must not be asked again this run"
+    assert H.is_transient(later.value) and not H._is_retryable(later.value)
+    assert H.is_transient(first.value)

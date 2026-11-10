@@ -36,7 +36,7 @@ from mandate import grounding
 
 from .adapters.base import ParsedDocument, SourceAdapter
 from .chunking import chunk_text
-from .http import _is_retryable
+from .http import is_transient
 
 log = structlog.get_logger(__name__)
 
@@ -212,7 +212,7 @@ def run_all_sources(
             # 404 (a block, a moved feed) alarms at the normal cadence.
             totals[adapter.key] = {
                 "crashed": True,
-                "transient": _is_retryable(exc),
+                "transient": is_transient(exc),
                 "error": str(exc),
             }
         if on_source:

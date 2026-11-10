@@ -23,6 +23,22 @@ _backoff = wait_exponential(multiplier=1, min=1, max=20)
 # doubling on every further 429, up to the cap.
 _THROTTLED_MIN_DELAY = 5.0
 _THROTTLED_MAX_DELAY = 60.0
+# After this many 429s from one host in one run, stop asking it until the next
+# run: honouring a 60 s spacing across nine paged newsletters kept Regina's
+# refresh crawling for hours (10 Nov, politico.eu). The source fails as
+# TRANSIENT, so the health check gives it a week's grace and the next run tries.
+_THROTTLE_GIVE_UP = 3
+
+
+class HostThrottled(Exception):
+    """The host refused us `_THROTTLE_GIVE_UP` times this run; not retried now."""
+
+
+def is_transient(exc: BaseException) -> bool:
+    """Whether a source that failed with `exc` should be retried NEXT run
+    (the run record's `transient`): everything the HTTP layer retries, plus a
+    host we stopped asking for the rest of this run."""
+    return isinstance(exc, HostThrottled) or _is_retryable(exc)
 
 
 def _is_retryable(exc: BaseException) -> bool:
@@ -101,9 +117,13 @@ class HttpClient:
         # newsletters) shared no memory of having been throttled.
         self._next_ok: dict[str, float] = {}
         self._host_delay: dict[str, float] = {}
+        self._throttled: dict[str, int] = {}
 
     def _space(self, url: str) -> None:
         host = _host(url)
+        if self._throttled.get(host, 0) >= _THROTTLE_GIVE_UP:
+            raise HostThrottled(f"{host} answered 429 {self._throttled[host]} times this run; "
+                                "not asked again until the next run")
         wait = self._next_ok.get(host, 0.0) - time.monotonic()
         if wait > 0:
             time.sleep(wait)
@@ -114,6 +134,7 @@ class HttpClient:
         if resp is not None and resp.status_code == 429:
             delay = min(max(_THROTTLED_MIN_DELAY, delay * 2), _THROTTLED_MAX_DELAY)
             self._host_delay[host] = delay
+            self._throttled[host] = self._throttled.get(host, 0) + 1
             log.warning("http_throttled", host=host, spacing_seconds=delay,
                         retry_after=resp.headers.get("Retry-After"))
         self._next_ok[host] = time.monotonic() + delay
