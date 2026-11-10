@@ -4,6 +4,7 @@ State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
 ## NEXT SESSION (saved 10 Nov evening at 91% usage): pick up here
+**If the owner says "let's do the interview for Regina": run mandate/playbooks/interviews/regina_sme_interview.md (the 'How Claude runs it' section), live, one question at a time.**
 Read first: mandate/plans/master_plan.md ("Decided 10 Nov" block), data_audit.md,
 mandate/brains/wincent/grounding_map.md, mandate/playbooks/funding-routes.md (rounds 3, 3b, 4d, 4e).
 Owner decisions: narrow first (W6 funding route plan, Italy + EU, until >= 4/5 on 5
