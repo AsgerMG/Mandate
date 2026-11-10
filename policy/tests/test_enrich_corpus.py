@@ -111,6 +111,48 @@ def test_missing_embedder_skips_only_embeddings(monkeypatch):
     assert "embeddings" not in calls
 
 
+# --- no model budget (LLM_BUDGET, mandate/llm/budget.py) -------------------
+
+
+def test_budget_off_skips_the_paid_steps_with_its_reason_and_runs_the_rest(monkeypatch):
+    from etl.enrichment.corpus import budget_paused
+
+    calls: list[str] = []
+    _patch_steps(monkeypatch, calls)
+    monkeypatch.setenv("LLM_BUDGET", "off")
+    results = enrich_corpus(_fake_scope, http=object(), embedder=object(), client=object())
+    assert results["tags"]["skipped"].startswith("LLM budget off: enrichment tags skipped")
+    assert "tags" not in calls and "types" in calls and "embeddings" in calls
+    assert set(budget_paused(results)) == {"tags"}
+
+
+def test_a_credit_exhausted_400_ends_the_paid_steps_not_the_pass(monkeypatch):
+    import etl.enrichment.corpus as mod
+    from etl.enrichment.corpus import budget_paused
+
+    calls: list[str] = []
+
+    class CreditError(Exception):
+        status_code = 400
+
+    def run(session, _name, **kwargs):
+        calls.append(_name)
+        if _name == "tags":
+            raise CreditError("Your credit balance is too low to access the Anthropic API.")
+        return {"ok": True}
+
+    monkeypatch.setattr(mod, "STEPS", tuple(
+        mod.Step(s.name, lambda session, _n=s.name, **kw: run(session, _n, **kw), lambda r: "done",
+                 needs_http=s.needs_http, needs_llm=s.needs_llm, paid=s.paid) for s in mod.STEPS))
+    monkeypatch.delenv("LLM_BUDGET", raising=False)
+    results = enrich_corpus(_fake_scope, http=object(), embedder=object(), client=object(),
+                            only=("types", "tags", "summaries"))
+    assert "exhausted" in results["tags"]["skipped"]
+    assert "exhausted" in results["summaries"]["skipped"] and "summaries" not in calls
+    assert results["types"] == {"ok": True}
+    assert set(budget_paused(results)) == {"tags", "summaries"}
+
+
 # --- isolation ------------------------------------------------------------
 
 

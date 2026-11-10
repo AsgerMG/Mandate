@@ -36,7 +36,7 @@ from data.models import (
 
 from .enrichment import get_embedder, semantic_search
 from .intelligence import CompanyProfile, generate_briefing, generate_questions
-from .intelligence.llm import has_api_key
+from .intelligence.llm import llm_available
 from .intelligence.pdf import render_report_pdf
 
 log = structlog.get_logger(__name__)
@@ -179,7 +179,7 @@ def _doc_summary(d: Document) -> dict:
 
 @app.get("/health")
 def health() -> dict:
-    return {"ok": True, "llm_available": has_api_key()}
+    return {"ok": True, "llm_available": llm_available()}
 
 
 @app.get("/api/stats")
@@ -198,7 +198,7 @@ def stats() -> dict:
             or 0,
             "sources": s.scalar(select(func.count(Source.id)).where(Source.enabled)) or 0,
             "by_stage": {stage.value: n for stage, n in by_stage},
-            "llm_available": has_api_key(),
+            "llm_available": llm_available(),
         }
 
 
@@ -476,7 +476,7 @@ def actors_endpoint(
 def questions(req: BriefRequest, request: Request) -> dict:
     """The scoping step: which follow-up questions to ask before the report."""
     _check_rate_limit(request, max_per_hour=get_settings().questions_rate_limit_per_hour)
-    dry = not has_api_key()
+    dry = not llm_available()
     with session_scope() as s:
         result = generate_questions(s, _embedder(), _profile(req), k=req.k, dry_run=dry)
     return result
@@ -550,7 +550,7 @@ def brief(req: BriefRequest, request: Request) -> StreamingResponse:
     synchronous (sequential LLM calls), so it runs on a worker thread and
     reports progress through a queue the async generator below drains."""
     _check_rate_limit(request, max_per_hour=get_settings().brief_rate_limit_per_hour)
-    dry = not has_api_key()
+    dry = not llm_available()
     events: queue.Queue = queue.Queue()
 
     # Progress the front-end turns into a rail, an ETA and a streaming draft.
@@ -808,9 +808,18 @@ def _finish_refresh(*, ok: bool, result: dict, error: str | None) -> None:
             sources = _source_outcomes(result)
             crashed = [k for k, v in sources.items() if not v["ok"]]
             status = "failed" if not ok else "partial" if crashed else "ok"
-            _refresh_run.finish(status, error or (f"{len(crashed)} source(s) crashed: "
-                                                  f"{', '.join(crashed)}" if crashed else "ok"),
-                                {"sources": sources})
+            from etl.enrichment.corpus import budget_paused  # noqa: PLC0415
+
+            paused = budget_paused((result or {}).get("_enrichment") or {})
+            summary = error or (f"{len(crashed)} source(s) crashed: "
+                                f"{', '.join(crashed)}" if crashed else "ok")
+            if paused:
+                # Not a failure: the paid steps changed nothing. Said in the
+                # run's record so mandate/health/check.py reports the pause.
+                summary += f"; paid steps paused: {', '.join(paused)}"
+            _refresh_run.finish(status, summary,
+                                {"sources": sources,
+                                 **({"llm_budget_paused": paused} if paused else {})})
         except Exception:  # noqa: BLE001
             log.exception("refresh_record_finish_failed")
         _refresh_run = None
@@ -853,7 +862,7 @@ def _run_refresh() -> None:
                 session_scope,
                 http=http,
                 embedder=_embedder(),
-                client=get_client() if has_api_key() else None,
+                client=get_client() if llm_available() else None,
                 on_progress=lambda _line: _note_progress(),
             )
     except Exception as exc:

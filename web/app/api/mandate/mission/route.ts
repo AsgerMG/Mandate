@@ -5,6 +5,7 @@ import { realCapital } from "@/lib/mandate/agent/capital";
 import { sdkClient } from "@/lib/mandate/agent/loop";
 import { runMission } from "@/lib/mandate/agent/mission";
 import { httpPolicyApi, mandateApiFromEnv } from "@/lib/mandate/agent/services";
+import { ADVISOR_PAUSED, isBudgetExhausted, llmEnabled } from "@/lib/mandate/llmBudget";
 import {
   assertMissionRequest,
   demoMissionEvents,
@@ -75,6 +76,12 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: "Live missions are not open yet." }, { status: 404 });
     }
   }
+  // No model budget (LLM_BUDGET=off, lib/mandate/llmBudget.ts): a clear 503
+  // BEFORE the stream opens, never a 500 or a dead stream half-way through.
+  // The scripted preview above (?demo=1) calls no model and keeps working.
+  if (!llmEnabled()) {
+    return Response.json({ error: ADVISOR_PAUSED, reason: "llm_budget_off" }, { status: 503 });
+  }
   const mandate = mandateApiFromEnv();
   if (!mandate) {
     return Response.json({ error: "mandate-api is not configured (MANDATE_API_URL, MANDATE_SERVICE_TOKEN)." }, { status: 503 });
@@ -86,7 +93,11 @@ export async function POST(request: NextRequest) {
   const stream = new ReadableStream({
     async start(controller) {
       const emit = (e: MissionEvent) => {
-        try { controller.enqueue(line(encoder, e)); } catch { /* client went away; the mission still saves */ }
+        // The credit ran out mid-mission: the same outcome as the switch being
+        // off, said in the same words rather than as a raw 400.
+        const out: MissionEvent = e.type === "error" && isBudgetExhausted(e.message)
+          ? { ...e, recoverable: false, message: `${ADVISOR_PAUSED} What was saved stands.` } : e;
+        try { controller.enqueue(line(encoder, out)); } catch { /* client went away; the mission still saves */ }
       };
       const { result, eur, calls } = await withCostTracking(() =>
         runMission(input, { client: sdkClient(), mandate, policy: httpPolicyApi(), capital: realCapital }, emit));

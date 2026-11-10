@@ -94,7 +94,8 @@ def harness(monkeypatch):
     monkeypatch.setattr(api_mod, "_embedder", lambda: object())
     monkeypatch.setattr(llm_mod, "get_client", lambda: object())
     monkeypatch.setattr(llm_mod, "has_api_key", lambda: True)
-    monkeypatch.setattr(api_mod, "has_api_key", lambda: True)
+    monkeypatch.setattr(api_mod, "llm_available", lambda: True)
+    monkeypatch.delenv("LLM_BUDGET", raising=False)
     monkeypatch.setattr("etl.enrichment.get_embedder", lambda settings: object())
 
     api_mod._refresh_state.update(

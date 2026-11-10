@@ -1048,6 +1048,12 @@ def cmd_run(args, batcher=None) -> None:
     a week late cannot displace a label somebody else wrote in between. The work
     list is read in one short transaction and each batch is written in its own:
     no Postgres transaction is held open across a batch."""
+    # LLM_BUDGET=off (mandate/llm/budget.py): skipped before anything is read,
+    # exit EXIT_SKIPPED, which railway_cron records `skipped`. --dry-run is free
+    # and still runs. (A credit-exhausted 400 is caught by the Batcher below.)
+    from mandate.llm import budget  # noqa: PLC0415
+    if not args.dry_run:
+        budget.exit_if_off("classify_taxonomy run")
     with connect(readonly=True) as con:
         full, sub, entity_only = _load_work(con)
     if args.limit:
@@ -1062,11 +1068,6 @@ def cmd_run(args, batcher=None) -> None:
     if args.dry_run:
         print("dry-run: not submitting.")
         return
-    # LLM_BUDGET=off (mandate/llm/budget.py): skipped, exit EXIT_SKIPPED, which
-    # railway_cron records `skipped`. Before the key check: no key is not the
-    # reason when the budget is off.
-    from mandate.llm import budget  # noqa: PLC0415
-    budget.exit_if_off("classify_taxonomy run")
     if not os.environ.get("ANTHROPIC_API_KEY"):
         raise SystemExit("ANTHROPIC_API_KEY not set (checked env + .env.local)")
     from mandate.llm.batch import StoreUnavailable  # noqa: PLC0415

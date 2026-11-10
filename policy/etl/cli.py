@@ -114,7 +114,7 @@ def refresh(
     # `regina enrich` cannot drift apart on it.
     from etl.enrichment import get_embedder
     from etl.enrichment.corpus import enrich_corpus
-    from etl.intelligence.llm import get_client, has_api_key
+    from etl.intelligence.llm import get_client, llm_available
 
     if not embed:
         typer.echo("\n(--no-embed: skipping the enrichment pass entirely.)")
@@ -126,7 +126,7 @@ def refresh(
             session_scope,
             http=http,
             embedder=get_embedder(settings),
-            client=get_client() if has_api_key() else None,
+            client=get_client() if llm_available() else None,
             on_progress=typer.echo,
         )
 
@@ -212,7 +212,7 @@ def enrich(
     """
     from etl.enrichment import get_embedder
     from etl.enrichment.corpus import STEPS, enrich_corpus
-    from etl.intelligence.llm import get_client, has_api_key
+    from etl.intelligence.llm import get_client, llm_available
 
     steps = tuple(x.strip() for x in only.split(",")) if only else None
     base = get_settings()
@@ -226,7 +226,7 @@ def enrich(
             session_scope,
             http=http,
             embedder=get_embedder(settings),
-            client=get_client() if has_api_key() else None,
+            client=get_client() if llm_available() else None,
             only=steps,
             on_progress=typer.echo,
         )
@@ -280,7 +280,7 @@ def brief(
     """Generate a grounded, citation-backed regulatory intelligence report for a company."""
     from etl.enrichment import get_embedder
     from etl.intelligence import CompanyProfile, generate_briefing
-    from etl.intelligence.llm import has_api_key
+    from etl.intelligence.llm import llm_available
 
     settings = get_settings()
     profile = CompanyProfile(
@@ -296,7 +296,7 @@ def brief(
     )
     embedder = get_embedder(settings)
 
-    effective_dry = dry_run or not has_api_key()
+    effective_dry = dry_run or not llm_available()
     if effective_dry and not dry_run:
         typer.echo("(No ANTHROPIC_API_KEY — showing retrieved sources only.)\n")
 
@@ -469,9 +469,9 @@ def brief_check(
     )
     from etl.enrichment import get_embedder
     from etl.intelligence import generate_briefing
-    from etl.intelligence.llm import get_client, has_api_key
+    from etl.intelligence.llm import get_client, llm_available
 
-    effective_dry = dry_run or not has_api_key()
+    effective_dry = dry_run or not llm_available()
     if repeat > 1 and not effective_dry:
         # A paid --repeat would produce several briefs per profile, which the
         # report shape (one entry per profile) can't hold and brief-compare
@@ -685,9 +685,9 @@ def brief_compare(
     """
     from etl.brief_eval.compare import compare_runs, load_report, render
     from etl.brief_eval.rotation import report_path
-    from etl.intelligence.llm import get_client, has_api_key
+    from etl.intelligence.llm import get_client, llm_available
 
-    if not has_api_key():
+    if not llm_available():
         typer.echo("No ANTHROPIC_API_KEY set — the judge needs one.")
         raise typer.Exit(1)
 

@@ -219,6 +219,68 @@ def check(c, t: dict) -> list[Finding]:
     return out
 
 
+# ── paid steps paused for budget: expected, reported, never a breach ────────
+#: The weekly steps that call the model. A run counts for the pause streak only
+#: if it reached one of them, so a run that stopped earlier says nothing either way.
+PAID_STEP_PATTERNS = ("classify_taxonomy.py run%", "news_cron.py%")
+
+
+def _streak(rows) -> tuple[dt.datetime, str] | None:
+    """rows: (paused, first_skip_at, reason) per run, oldest first. The start of
+    the trailing run of paused runs, and the newest reason, or None if the latest
+    run was not paused."""
+    start, reason = None, ""
+    for paused, at, why in rows:
+        if paused:
+            start = start or at
+            reason = why or reason
+        else:
+            start, reason = None, ""
+    return (start, reason) if start else None
+
+
+def budget_pause(c) -> list[str]:
+    """One line per brain whose newest run skipped its paid steps for want of a
+    model budget (LLM_BUDGET=off, or the credit ran out: mandate/llm/budget.py).
+
+    NOT a finding. Paused paid steps change no data, and the owner paused them
+    on purpose, so an alarm would be noise. But a pause nobody can see is how a
+    weekly labelling pass goes missing for a quarter, so the report says it, with
+    the date it began, every day it lasts."""
+    out: list[str] = []
+    pat = "LLM budget %"
+
+    def note(brain: str, s) -> None:
+        if s:
+            kind = "exhausted" if "exhausted" in s[1] else "off"
+            out.append(f"{brain}: paid steps paused: budget {kind} since {_iso(s[0])}")
+
+    def capital():
+        rows = _q(c, """
+            SELECT bool_or(s.status = 'skipped' AND s.summary LIKE %s),
+                   min(s.finished_at) FILTER (WHERE s.status = 'skipped' AND s.summary LIKE %s),
+                   max(s.summary) FILTER (WHERE s.status = 'skipped' AND s.summary LIKE %s)
+              FROM mandate.runs r JOIN mandate.run_steps s ON s.run_id = r.id
+             WHERE r.finished_at IS NOT NULL AND s.name LIKE ANY (%s)
+             GROUP BY r.id, r.started_at ORDER BY r.started_at, r.id""",
+                  (pat, pat, pat, list(PAID_STEP_PATTERNS)))
+        note("capital", _streak(rows))
+
+    def policy():
+        rows = _q(c, """
+            SELECT detail ? 'llm_budget_paused', finished_at, detail->>'llm_budget_paused'
+              FROM mandate.runs WHERE brain = 'policy' AND finished_at IS NOT NULL
+             ORDER BY finished_at, id""")
+        note("policy", _streak(rows))
+
+    for fn in (capital, policy):
+        try:
+            fn()
+        except LookupError:
+            pass        # the brain checks above already report an unreadable run log
+    return out
+
+
 # ── the ONE issue ───────────────────────────────────────────────────────────
 MARK = "<!-- mandate-health:"
 
@@ -227,14 +289,15 @@ def _gh(*args: str, input: str | None = None) -> str:
     return subprocess.run(["gh", *args], check=True, capture_output=True, text=True, input=input).stdout
 
 
-def sync_issue(findings: list[Finding]) -> str:
+def sync_issue(findings: list[Finding], notes: list[str] | None = None) -> str:
     issues = json.loads(_gh("issue", "list", "--state", "open", "--search", f'in:title "{ISSUE_TITLE}"',
                             "--json", "number,title,body", "--limit", "20"))
     issue = next((i for i in issues if i["title"] == ISSUE_TITLE), None)
     if not findings:
         if issue:
             _gh("issue", "close", str(issue["number"]), "--comment",
-                f"All targets met at {_iso(NOW)}. Closing.")
+                f"All targets met at {_iso(NOW)}. Closing."
+                + "".join(f"\n\nNote: {n}" for n in notes or []))
             return f"closed #{issue['number']}"
         return "green; no issue open"
     # carry first-seen times for findings that have no derivable start
@@ -245,6 +308,8 @@ def sync_issue(findings: list[Finding]) -> str:
             seen = json.loads(m.group(1))
     lines = [f"Checked {_iso(NOW)} against `mandate/health/targets.json`. "
              f"{len(findings)} target(s) out of range. This issue closes itself when all are met.", "",
+             *[f"Note (expected, not a breach): {n}" for n in notes or []],
+             *([""] if notes else []),
              "| what | where | since |", "|---|---|---|"]
     state = {}
     for f in findings:
@@ -269,20 +334,24 @@ def main() -> int:
     if not url:
         raise SystemExit("CAPITAL_RO_DATABASE_URL is not set")
     t = json.loads(TARGETS.read_text())
+    notes: list[str] = []
     try:
         with psycopg.connect(url, connect_timeout=20) as c:
             c.execute("SET default_transaction_read_only = on")
             findings = check(c, t)
+            notes = budget_pause(c)
     except psycopg.OperationalError as exc:
         findings = [Finding("database", f"the database could not be reached: {str(exc).splitlines()[0]}",
                             "Mandate Postgres", None)]
     for f in findings:
         print(f"BREACH  {f.what}  [{f.where}]  since {f.since or '?'}")
+    for n in notes:
+        print(f"NOTE    {n}  (expected: LLM_BUDGET, not a breach)")
     print(f"{len(findings)} breach(es)" if findings else "all targets met")
     if a.json:
         Path(a.json).write_text(json.dumps([asdict(f) for f in findings], indent=1))
     if a.github:
-        print(sync_issue(findings))
+        print(sync_issue(findings, notes))
     return 1 if findings else 0
 
 

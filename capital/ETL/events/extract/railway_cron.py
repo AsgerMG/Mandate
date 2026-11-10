@@ -42,7 +42,7 @@ from mandate.llm import budget  # noqa: E402
 
 # Every step is also a row in mandate.run_steps: on the orchestrator's run when
 # mandate/refresh/run.py started us (MANDATE_RUN_ID), else on a run of our own.
-RUN, OWN_RUN = _run_log(brain="capital", kind="capital_etl")
+# (Opened in main(), so importing this file records nothing.)
 RENEW_RESULTS = "/tmp/mandate_renew_results.json"
 os.environ["RENEW_RESULTS"] = RENEW_RESULTS
 
@@ -259,7 +259,6 @@ PARTIAL_OK = {"renew.py": 3, "refresh_open_calls.py": 3,
 #
 # The run's own summary names the paused steps, and mandate/health/check.py
 # reports "paid steps paused" from those rows instead of alarming.
-paused: list[str] = []
 
 
 def census(outcome: str) -> None:
@@ -377,111 +376,120 @@ def run_step(step: list[str]) -> tuple[int, str, str]:
     return proc.returncode, why, "\n".join(both)[-TAIL_CHARS:]
 
 
-partial = []
-soft_failed: list[str] = []
-gate_red = False
-for step in STEPS:
-    script = Path(step[1]).name
-    if gate_red and script in GATED:
-        print(f"=== SKIPPED: {script} -- the coverage gate is red ===", flush=True)
-        RUN.skip_step(script, "coverage gate red")
-        continue
-    print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
-    step_id = RUN.open_step(" ".join([script] + [a for a in step[2:] if not a.startswith("-")][:1]))
-    # The step's own name plus its subcommand, because three of these steps are
-    # the same script with different arguments and one mark for all three would
-    # say nothing. `Path(step[1]).name` alone reported "python3" once already,
-    # for the same reason, three lines further down.
-    label = " ".join([Path(step[1]).name] + [a for a in step[2:]
-                                             if not a.startswith("-")][:1])
-    # Opened and committed BEFORE the step runs, into the corpus itself, so a
-    # container that dies here leaves the store saying a step began writing to
-    # it and never finished. That is the fact that used to exist only as an exit
-    # code in a log Railway deletes with the container.
-    with corpus_marks.mark(label, "railway_cron.py") as report:
-        returncode, why, tail = run_step(step)
-        matched = next(((name, rc) for name, rc in PARTIAL_OK.items()
-                        if any(name in part for part in step)), None)
-        tolerated = bool(matched) and returncode == matched[1]
-        budget_skip = returncode == budget.EXIT_SKIPPED
-        report(corpus_marks.OK if returncode == 0 or budget_skip else
-               corpus_marks.PARTIAL if tolerated else corpus_marks.FAILED,
-               why if budget_skip else
-               f"rc={returncode}" + (f": {why}" if why and returncode else ""))
-    if budget_skip:
-        reason = why if budget.is_skip_reason(why) else budget.skip_reason(label)
-        RUN.close_step(step_id, "skipped", summary=reason, exit_code=returncode)
-        print(f"=== SKIPPED: {reason} ===", flush=True)
-        paused.append(label)
-        continue
-    detail = {}
-    if script == "renew.py" and Path(RENEW_RESULTS).exists():
-        import json  # noqa: PLC0415
-        detail = {"sources": json.loads(Path(RENEW_RESULTS).read_text())}
-    RUN.close_step(step_id, "ok" if returncode == 0 else "partial" if tolerated else "failed",
-                   summary=(tail or why) if returncode else "", exit_code=returncode,
-                   detail=detail)
-    if returncode == 0:
-        continue
-    if script in SOFT:
-        print(f"=== FAILED (recorded, continuing): {script} (rc={returncode}) ===", flush=True)
-        soft_failed.append(script)
-        gate_red = gate_red or script == "coverage_gate.py"
-        continue
-    if tolerated:
-        print(f"=== PARTIAL: {' '.join(step)} (rc={returncode}) — "
-              f"continuing with what published ===", flush=True)
-        # Name the SCRIPT, not whatever happened to be second-from-last in the
-        # argv. A two-element step reported "python3" as the partial, which is
-        # a summary line that tells nobody which step half-worked.
-        partial.append(matched[0])
-        continue
-    print(f"=== FAILED: {' '.join(step)} (rc={returncode}) ===", flush=True)
-    # No guards on this path, deliberately. The pipeline stopped part-way, so
-    # the corpus is half-built and a guard's verdict on it would be a true
-    # statement about a state that never ships. The census still goes out
-    # carrying the failure, and check_verdicts.ts then reports every guard as
-    # STALE against it -- which is the accurate description of what happened.
-    # `label`, not the script name: three steps here are the same script with
-    # different subcommands, and "failed at classify_taxonomy.py" named all
-    # three at once. Plus what it said, for the reason run_step explains.
-    census(f"failed at {label} (rc={returncode})"
-           + (f": {why}" if why else ""))
+def main(steps: list[list[str]] = STEPS) -> None:
+    """The chain. A function (not module code) so a test can run it over fake
+    steps (ETL/events/extract/test_budget_skip.py); behaviour is unchanged."""
+    RUN, OWN_RUN = _run_log(brain="capital", kind="capital_etl")
+    paused: list[str] = []
+    partial = []
+    soft_failed: list[str] = []
+    gate_red = False
+    for step in steps:
+        script = Path(step[1]).name
+        if gate_red and script in GATED:
+            print(f"=== SKIPPED: {script} -- the coverage gate is red ===", flush=True)
+            RUN.skip_step(script, "coverage gate red")
+            continue
+        print(f"=== RUNNING: {' '.join(step)} ===", flush=True)
+        step_id = RUN.open_step(" ".join([script] + [a for a in step[2:] if not a.startswith("-")][:1]))
+        # The step's own name plus its subcommand, because three of these steps are
+        # the same script with different arguments and one mark for all three would
+        # say nothing. `Path(step[1]).name` alone reported "python3" once already,
+        # for the same reason, three lines further down.
+        label = " ".join([Path(step[1]).name] + [a for a in step[2:]
+                                                 if not a.startswith("-")][:1])
+        # Opened and committed BEFORE the step runs, into the corpus itself, so a
+        # container that dies here leaves the store saying a step began writing to
+        # it and never finished. That is the fact that used to exist only as an exit
+        # code in a log Railway deletes with the container.
+        with corpus_marks.mark(label, "railway_cron.py") as report:
+            returncode, why, tail = run_step(step)
+            matched = next(((name, rc) for name, rc in PARTIAL_OK.items()
+                            if any(name in part for part in step)), None)
+            tolerated = bool(matched) and returncode == matched[1]
+            budget_skip = returncode == budget.EXIT_SKIPPED
+            report(corpus_marks.OK if returncode == 0 or budget_skip else
+                   corpus_marks.PARTIAL if tolerated else corpus_marks.FAILED,
+                   why if budget_skip else
+                   f"rc={returncode}" + (f": {why}" if why and returncode else ""))
+        if budget_skip:
+            reason = why if budget.is_skip_reason(why) else budget.skip_reason(label)
+            RUN.close_step(step_id, "skipped", summary=reason, exit_code=returncode)
+            print(f"=== SKIPPED: {reason} ===", flush=True)
+            paused.append(label)
+            continue
+        detail = {}
+        if script == "renew.py" and Path(RENEW_RESULTS).exists():
+            import json  # noqa: PLC0415
+            detail = {"sources": json.loads(Path(RENEW_RESULTS).read_text())}
+        RUN.close_step(step_id, "ok" if returncode == 0 else "partial" if tolerated else "failed",
+                       summary=(tail or why) if returncode else "", exit_code=returncode,
+                       detail=detail)
+        if returncode == 0:
+            continue
+        if script in SOFT:
+            print(f"=== FAILED (recorded, continuing): {script} (rc={returncode}) ===", flush=True)
+            soft_failed.append(script)
+            gate_red = gate_red or script == "coverage_gate.py"
+            continue
+        if tolerated:
+            print(f"=== PARTIAL: {' '.join(step)} (rc={returncode}) — "
+                  f"continuing with what published ===", flush=True)
+            # Name the SCRIPT, not whatever happened to be second-from-last in the
+            # argv. A two-element step reported "python3" as the partial, which is
+            # a summary line that tells nobody which step half-worked.
+            partial.append(matched[0])
+            continue
+        print(f"=== FAILED: {' '.join(step)} (rc={returncode}) ===", flush=True)
+        # No guards on this path, deliberately. The pipeline stopped part-way, so
+        # the corpus is half-built and a guard's verdict on it would be a true
+        # statement about a state that never ships. The census still goes out
+        # carrying the failure, and check_verdicts.ts then reports every guard as
+        # STALE against it -- which is the accurate description of what happened.
+        # `label`, not the script name: three steps here are the same script with
+        # different subcommands, and "failed at classify_taxonomy.py" named all
+        # three at once. Plus what it said, for the reason run_step explains.
+        census(f"failed at {label} (rc={returncode})"
+               + (f": {why}" if why else ""))
+        if OWN_RUN:
+            RUN.finish("failed", f"failed at {label} (rc={returncode})")
+        sys.exit(returncode)
+
+    # Guards BEFORE the census, so the census stays the last thing written and keeps
+    # dating the run. A guard failure does not stop this: see GUARDS above.
+    failed_guards = guards()
+
+    # The census describes THE PIPELINE's outcome, and a failing guard is not a
+    # pipeline outcome. Folding one into the other would make check_corpus_census.ts
+    # report "some part of the corpus is not refreshed" about a run in which every
+    # source refreshed perfectly and a guard found something wrong with the result —
+    # a true alarm with a false description, which is how alarms get muted. The
+    # guard's own verdict already carries that claim, on its own channel.
+    census(f"partial: {', '.join(Path(p).name for p in partial)}" if partial else "ok")
+
+    partial += soft_failed
+    # Paused paid steps do not make the run partial (they changed nothing), but the
+    # summary says so, so a run with no budget never reads as a fully paid one.
+    why_paused = budget.OFF if not budget.llm_enabled() else budget.EXHAUSTED
+    pause_note = (f"; paid steps paused ({budget.SKIP_PREFIX}{why_paused}): "
+                  f"{', '.join(paused)}") if paused else ""
     if OWN_RUN:
-        RUN.finish("failed", f"failed at {label} (rc={returncode})")
-    sys.exit(returncode)
+        RUN.finish("partial" if (partial or failed_guards) else "ok",
+                   f"{len(partial)} partial/failed-soft, guards failed: {', '.join(failed_guards) or 'none'}"
+                   + pause_note)
+    if paused:
+        print(f"=== PAID STEPS PAUSED ({budget.SKIP_PREFIX}{why_paused}): "
+              f"{', '.join(paused)} ===", flush=True)
+    if partial or failed_guards:
+        # Loud, and non-zero, so a scheduled run that half-worked or that ended with
+        # a red guard is never read as a clean one -- but only AFTER every
+        # downstream step, every guard and the census have had their turn.
+        print(f"=== ALL STEPS RAN — {len(partial)} partial, "
+              f"{len(failed_guards)} guard(s) failed: "
+              f"{', '.join(failed_guards) or 'none'} ===", flush=True)
+        sys.exit(3)
+    print("=== ALL STEPS COMPLETE ===", flush=True)
 
-# Guards BEFORE the census, so the census stays the last thing written and keeps
-# dating the run. A guard failure does not stop this: see GUARDS above.
-failed_guards = guards()
 
-# The census describes THE PIPELINE's outcome, and a failing guard is not a
-# pipeline outcome. Folding one into the other would make check_corpus_census.ts
-# report "some part of the corpus is not refreshed" about a run in which every
-# source refreshed perfectly and a guard found something wrong with the result —
-# a true alarm with a false description, which is how alarms get muted. The
-# guard's own verdict already carries that claim, on its own channel.
-census(f"partial: {', '.join(Path(p).name for p in partial)}" if partial else "ok")
-
-partial += soft_failed
-# Paused paid steps do not make the run partial (they changed nothing), but the
-# summary says so, so a run with no budget never reads as a fully paid one.
-why_paused = budget.OFF if not budget.llm_enabled() else budget.EXHAUSTED
-pause_note = (f"; paid steps paused ({budget.SKIP_PREFIX}{why_paused}): "
-              f"{', '.join(paused)}") if paused else ""
-if OWN_RUN:
-    RUN.finish("partial" if (partial or failed_guards) else "ok",
-               f"{len(partial)} partial/failed-soft, guards failed: {', '.join(failed_guards) or 'none'}"
-               + pause_note)
-if paused:
-    print(f"=== PAID STEPS PAUSED ({budget.SKIP_PREFIX}{why_paused}): "
-          f"{', '.join(paused)} ===", flush=True)
-if partial or failed_guards:
-    # Loud, and non-zero, so a scheduled run that half-worked or that ended with
-    # a red guard is never read as a clean one -- but only AFTER every
-    # downstream step, every guard and the census have had their turn.
-    print(f"=== ALL STEPS RAN — {len(partial)} partial, "
-          f"{len(failed_guards)} guard(s) failed: "
-          f"{', '.join(failed_guards) or 'none'} ===", flush=True)
-    sys.exit(3)
-print("=== ALL STEPS COMPLETE ===", flush=True)
+if __name__ == "__main__":
+    main()

@@ -23,8 +23,22 @@ def has_api_key() -> bool:
     return bool(os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("ANTHROPIC_AUTH_TOKEN"))
 
 
+def llm_available() -> bool:
+    """May this process make a paid model call: a key AND the model budget on
+    (LLM_BUDGET, mandate/llm/budget.py). Every "dry or live?" decision in the
+    API and the CLI asks this, so the budget switch degrades Regina to
+    retrieval-only exactly as a missing key does."""
+    from mandate.llm import budget  # noqa: PLC0415
+
+    return has_api_key() and budget.llm_enabled()
+
+
 def get_client():
-    """Return an Anthropic client, or raise a clear error if no key is set."""
+    """Return an Anthropic client, or raise a clear error if no key is set
+    (or mandate.llm.budget.BudgetUnavailable when LLM_BUDGET=off)."""
+    from mandate.llm import budget  # noqa: PLC0415
+
+    budget.require("Regina model call")
     if not has_api_key():
         raise RuntimeError(
             "No ANTHROPIC_API_KEY set. Add it to your environment/.env to generate "
