@@ -1,0 +1,485 @@
+[
+ {
+  "id": "c1",
+  "citation": {
+   "sha256": "d3142570c7e704c17303ff2796812744dd1b7feb38bee83335a8cf2fa8d33d0e",
+   "version_id": 12331,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/eif_investeu_guarantee_products.html",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:42:55.543418+00:00",
+   "last_seen_at": "2026-07-10T09:42:55.543418+00:00",
+   "span": [
+    3909,
+    3948
+   ],
+   "quote": "Deadline for applications: 30 June 2027"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: Applications for becoming a financial intermediary must be submitted before the stated deadline of 30 June 2027, w"
+ },
+ {
+  "id": "c2",
+  "citation": {
+   "sha256": "d3142570c7e704c17303ff2796812744dd1b7feb38bee83335a8cf2fa8d33d0e",
+   "version_id": 12331,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/eif_investeu_guarantee_products.html",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:42:55.543418+00:00",
+   "last_seen_at": "2026-07-10T09:42:55.543418+00:00",
+   "span": [
+    2260,
+    2502
+   ],
+   "quote": "Eligible financial intermediaries can be public or private entities, that are established or operating in EU Member States, Overseas Countries and Territories (OCTs) or other participating countries as further specified in the Call documents."
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: Eligible financial intermediaries must be public or private entities established or operating in EU Member States,"
+ },
+ {
+  "id": "c3",
+  "citation": {
+   "sha256": "d3142570c7e704c17303ff2796812744dd1b7feb38bee83335a8cf2fa8d33d0e",
+   "version_id": 12331,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/eif_investeu_guarantee_products.html",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:42:55.543418+00:00",
+   "last_seen_at": "2026-07-10T09:42:55.543418+00:00",
+   "span": [
+    2541,
+    2630
+   ],
+   "quote": "For guarantees: credit or financial institutions, alternative lenders, leasing companies."
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: Applicants must be a type of eligible intermediary entity such as credit or financial institutions, alternative le"
+ },
+ {
+  "id": "c4",
+  "citation": {
+   "sha256": "d3142570c7e704c17303ff2796812744dd1b7feb38bee83335a8cf2fa8d33d0e",
+   "version_id": 12331,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/eif_investeu_guarantee_products.html",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:42:55.543418+00:00",
+   "last_seen_at": "2026-07-10T09:42:55.543418+00:00",
+   "span": [
+    2912,
+    3467
+   ],
+   "quote": "An applicant may become a financial intermediary under InvestEU provided that:\nit complies with formal criteria as described in the Call;\nit completes and submits its application, as per the Annex I below within the deadline and in accordance with all provisions outlined in the Call;\nit is selected by the EIF as a potential financial intermediary under InvestEU to implement one or more InvestEU Portfolio Guarantee Products pursuant to the selection process outlined in the Call;\nit enters into the relevant (counter-) guarantee agreement with the EIF."
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: An applicant becomes a financial intermediary only after complying with the Call's formal criteria, submitting the"
+ },
+ {
+  "id": "c5",
+  "citation": {
+   "sha256": "dda41615e4a61309db61269c10d1725fd38a15b3fdcb45449b1d7118c1704049",
+   "version_id": 12299,
+   "store": "primary",
+   "canonical_url": "https://www.mimit.gov.it/it/incentivi/fondo-di-garanzia-per-le-pmi",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-08-12T07:59:18+00:00",
+   "last_seen_at": "2026-08-12T07:59:18+00:00",
+   "span": [
+    381,
+    413
+   ],
+   "quote": "su tutto il territorio nazionale"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "Fondo di garanzia per le PMI: Applicant/project must be located anywhere in Italy"
+ },
+ {
+  "id": "c6",
+  "citation": {
+   "sha256": "dda41615e4a61309db61269c10d1725fd38a15b3fdcb45449b1d7118c1704049",
+   "version_id": 12299,
+   "store": "primary",
+   "canonical_url": "https://www.mimit.gov.it/it/incentivi/fondo-di-garanzia-per-le-pmi",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-08-12T07:59:18+00:00",
+   "last_seen_at": "2026-08-12T07:59:18+00:00",
+   "span": [
+    445,
+    509
+   ],
+   "quote": "con la sola esclusione delle attività finanziarie e assicurative"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "Fondo di garanzia per le PMI: Applicant must not be active in the financial or insurance sectors"
+ },
+ {
+  "id": "c7",
+  "citation": {
+   "sha256": "a9adcbf8cdcf032e0293f29eea03c4229707678a2a7ccde7673508d8cf051211",
+   "version_id": 12781,
+   "store": "primary",
+   "canonical_url": "https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-08-05T18:30:22+00:00",
+   "last_seen_at": "2026-08-05T18:30:22+00:00",
+   "span": [
+    17,
+    115
+   ],
+   "quote": "Unternehmen der gewerblichen Wirtschaft, die sich ganz oder mehrheitlich in privater Hand befinden"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "Rückbürgschaften und Rückgarantien des Bundes und der Länder gegenüber den Bürgschaftsbanken und Kreditgarantiegemeinschaften [BMWK, VIIC4]: Applicant must be a"
+ },
+ {
+  "id": "c8",
+  "citation": {
+   "sha256": "a9adcbf8cdcf032e0293f29eea03c4229707678a2a7ccde7673508d8cf051211",
+   "version_id": 12781,
+   "store": "primary",
+   "canonical_url": "https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-08-05T18:30:22+00:00",
+   "last_seen_at": "2026-08-05T18:30:22+00:00",
+   "span": [
+    117,
+    173
+   ],
+   "quote": "mit einem wirtschaftlich tragfähigen Unternehmenskonzept"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "Rückbürgschaften und Rückgarantien des Bundes und der Länder gegenüber den Bürgschaftsbanken und Kreditgarantiegemeinschaften [BMWK, VIIC4]: Applicant must have"
+ },
+ {
+  "id": "c9",
+  "citation": {
+   "sha256": "a9adcbf8cdcf032e0293f29eea03c4229707678a2a7ccde7673508d8cf051211",
+   "version_id": 12781,
+   "store": "primary",
+   "canonical_url": "https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-08-05T18:30:22+00:00",
+   "last_seen_at": "2026-08-05T18:30:22+00:00",
+   "span": [
+    175,
+    225
+   ],
+   "quote": "denen ausreichende bankübliche Sicherheiten fehlen"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "Rückbürgschaften und Rückgarantien des Bundes und der Länder gegenüber den Bürgschaftsbanken und Kreditgarantiegemeinschaften [BMWK, VIIC4]: Applicant must lack"
+ },
+ {
+  "id": "c10",
+  "citation": {
+   "sha256": "a9adcbf8cdcf032e0293f29eea03c4229707678a2a7ccde7673508d8cf051211",
+   "version_id": 12781,
+   "store": "primary",
+   "canonical_url": "https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-08-05T18:30:22+00:00",
+   "last_seen_at": "2026-08-05T18:30:22+00:00",
+   "span": [
+    227,
+    286
+   ],
+   "quote": "Das Vorhaben muss volkswirtschaftlich förderungswürdig sein"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "Rückbürgschaften und Rückgarantien des Bundes und der Länder gegenüber den Bürgschaftsbanken und Kreditgarantiegemeinschaften [BMWK, VIIC4]: The project must be"
+ },
+ {
+  "id": "c11",
+  "citation": {
+   "sha256": "a9adcbf8cdcf032e0293f29eea03c4229707678a2a7ccde7673508d8cf051211",
+   "version_id": 12781,
+   "store": "primary",
+   "canonical_url": "https://vdb.ermoeglicher.de/de/ueber-uns/service-downloads/staatliche-rueckbuergschaften/",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-08-05T18:30:22+00:00",
+   "last_seen_at": "2026-08-05T18:30:22+00:00",
+   "span": [
+    288,
+    372
+   ],
+   "quote": "eine anderweitige Finanzierung darf nicht zu vertretbaren Bedingungen erlangbar sein"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "Rückbürgschaften und Rückgarantien des Bundes und der Länder gegenüber den Bürgschaftsbanken und Kreditgarantiegemeinschaften [BMWK, VIIC4]: Alternative financi"
+ },
+ {
+  "id": "c12",
+  "citation": {
+   "sha256": "62ee43d5e4349a8f273c8765f3dbbe96c13ea8b4bfec40a858090ecf3b01cd78",
+   "version_id": 2543,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023PC0366",
+   "title": "Proposal for a DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:20:50.294662+00:00",
+   "last_seen_at": "2026-07-13T12:20:50.294662+00:00",
+   "span": [
+    51046,
+    52238
+   ],
+   "quote": "(35) Payment institutions should be allowed to grant credit, but this activity should be subjected to some strict conditions. It is therefore appropriate to regulate the granting of credit by payment institutions in the form of credit lines and the issuance of credit cards, insofar as those services facilitate payment services and if credit is granted for a period not exceeding 12 months, including on a revolving basis. It is appropriate to allow p ayment i nstitutions to grant short-term credit with regard to their cross-border activities, on the condition that it is refinanced using mainly the p ayment i nstitution’s own funds, as well as other funds from the capital markets, and not the funds held on behalf of clients for payment services. That possibility should however be without prejudice to Directive 2008/48/EC of the European Parliament and of the Council 39 or other relevant Union law or national measures regarding conditions for granting credit to consumers. Given their principally lending nature, ‘Buy Now Pay Later’ services should not constitute a payment service. Those services are covered by the new Directive on consumer credits replacing Directive 2008/48/EC."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Proposal for a DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC"
+ },
+ {
+  "id": "c13",
+  "citation": {
+   "sha256": "7b15220101157a0f0430ddca716a5050a7c0d912d3f4f970d74ac54781b3f9e9",
+   "version_id": 2472,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52024AP0297",
+   "title": "P9_TA(2024)0297 – Payment services and electronic money services in the internal market – European Parliament legislative resolution of 23 April 2024 on the proposal for a directive of the European Parliament and of the Council on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC (COM(2023)0366 – C9-0218/2023 – 2023/0209(COD)) (Ordinary legislative procedure: first reading)",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:18:26.128370+00:00",
+   "last_seen_at": "2026-07-13T12:18:26.128370+00:00",
+   "span": [
+    27455,
+    28718
+   ],
+   "quote": "Payment institutions should be allowed to grant credit, but this activity should be subjected to some strict conditions. It is therefore appropriate to regulate the granting of credit by payment institutions in the form of credit lines and the issuance of credit cards, insofar as those services facilitate payment services▌. It is appropriate to allow payment institutions to grant short-term credit with regard to their cross-border activities, on the condition that it is refinanced using mainly the payment institution’s own funds, as well as other funds from the capital markets, and not the funds held on behalf of clients for payment services. That possibility should however be without prejudice to Directive 2008/48/EC of the European Parliament and of the Council ( 13 ) or other relevant Union law or national measures regarding conditions for granting credit to consumers. Given their principally lending nature, ‘Buy Now Pay Later’ services should not constitute a payment service. Those services are covered by the new Directive on consumer credits replacing Directive 2008/48/EC. Nonetheless, undertakings providing ‘Buy Now Pay Later’ services are subject to this Directive if they provide any of the payment services referred to in Annex I.\n\n(36)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "P9_TA(2024)0297 – Payment services and electronic money services in the internal market – European Parliament legislative resolution of 23 April 2024 on the proposal for a directive of the European Parliament and of the Council on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC (COM(2023)0366 – C9-0218/2023 – 2023/0209(COD)) (Ordinary legislative procedure: first reading)"
+ },
+ {
+  "id": "c14",
+  "citation": {
+   "sha256": "9bffc27e7a87b12b1b1364758ee4e64877a150e538ea86e68f77d0388f627f8f",
+   "version_id": 2546,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023SC0231",
+   "title": "COMMISSION STAFF WORKING DOCUMENT IMPACT ASSESSMENT REPORT Accompanying the documents Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services in the internal market and amending Regulation (EU) No 1093/2010 and Proposal for a DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:20:57.066473+00:00",
+   "last_seen_at": "2026-07-13T12:20:57.066473+00:00",
+   "span": [
+    148176,
+    149502
+   ],
+   "quote": "Option 4a) (reinforcement of the right of PIs and EMIs to access to payment systems via an account with a credit institution) would aim to remedy difficulties currently encountered by non-bank PSPs to obtain an account with a credit institution. It would come close to establishing a right to a payment account with a credit institution for PIs and EMIs, placing a burden on banks to explain rejection or withdrawal of service to a PI or EMI, with substantiated reasons. The establishment of an appeal procedure for rejected PIs and EMIs would constitute another deterrent to refusal or withdrawal of account service by banks. This option would aim to ensure that non-bank PSPs would always be able to find a bank to provide account services and not experience frequent disruption of service. Certain non-bank PSPs may prefer to have only indirect access to payment systems via a bank, because of specific costs, or liquidity or collateral requirements of payment systems for direct participation; non-bank PSPs need a bank account for the purpose of safeguarding customer funds. Non-bank PSPs strongly support this option, and many Member States also; most banks oppose it, but the cost for banks should be limited. Therefore, this option can be useful to PIs and EMIs in ensuring a means of access and is therefore retained."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMISSION STAFF WORKING DOCUMENT IMPACT ASSESSMENT REPORT Accompanying the documents Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services in the internal market and amending Regulation (EU) No 1093/2010 and Proposal for a DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC"
+ },
+ {
+  "id": "c15",
+  "citation": {
+   "sha256": "9bffc27e7a87b12b1b1364758ee4e64877a150e538ea86e68f77d0388f627f8f",
+   "version_id": 2546,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023SC0231",
+   "title": "COMMISSION STAFF WORKING DOCUMENT IMPACT ASSESSMENT REPORT Accompanying the documents Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services in the internal market and amending Regulation (EU) No 1093/2010 and Proposal for a DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:20:57.066473+00:00",
+   "last_seen_at": "2026-07-13T12:20:57.066473+00:00",
+   "span": [
+    68228,
+    69543
+   ],
+   "quote": "17\n\n12\n\n113\n\n28\n\n27\n\n48\n\n15\n\n111\n\nThe impediments to access to payment systems for non-bank PSPs harm competition and innovation, by preventing non-bank PSPs from developing and offering payment services in competition with banks, for example instant payments , resulting in higher prices for consumers and less innovative payment services . The fact that, in order to connect to SFD-designated payment systems in the EU, non-bank PSPs must use an indirect connection offered by a bank or another SFD eligible participant as a commercial service , creates a dependency on banks. In addition, as non-bank PSPs are competitors to banks, and due to the access dependency, the banks might gain insight to the non-bank PSP’s confidential business information, which might raise concerns from a competition point of view. Furthermore, the service is charged by the bank to the PI or EMI, thus involving an additional cost and impacting their competitiveness on the payments market 81 . There is thus a level playing field issue, in so far as certain categories of participants in the payments market are dependent on their competitors in order to offer a basic payment service.\n\nOpen Banking TPPs may experience difficulties in providing their basic services due to inadequate OB interfaces and lose business as a result."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMISSION STAFF WORKING DOCUMENT IMPACT ASSESSMENT REPORT Accompanying the documents Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services in the internal market and amending Regulation (EU) No 1093/2010 and Proposal for a DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC"
+ },
+ {
+  "id": "c16",
+  "citation": {
+   "sha256": "94a849a64a13ee4864fa771b73bf524a82a7fb0897d497a4e14c4c14c8a6116d",
+   "version_id": 2621,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32022R2115",
+   "title": "Commission Delegated Regulation (EU) 2022/2115 of 13 July 2022 supplementing Regulation (EU) 2020/1503 of the European Parliament and of the Council with regard to regulatory technical standards specifying the methodology for calculating default rates of loans offered on a crowdfunding platform (Text with EEA relevance)",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:23:24.504734+00:00",
+   "last_seen_at": "2026-07-13T12:23:24.504734+00:00",
+   "span": [
+    2183,
+    2962
+   ],
+   "quote": "It is necessary to avoid regulatory arbitrage and to enable investors to compare the performance of crowdfunding service providers who provide crowdfunding services consisting of the facilitation of granting of loans, and, in particular, the quality of projects offered on crowdfunding platforms. It is therefore appropriate to specify the elements on the basis of which such crowdfunding service providers should consider a default to have occurred with regard to a loan offered on their crowdfunding platform. Those crowdfunding service providers should therefore have in place effective processes that enable them to obtain the necessary information in order to identify, without undue delay, the occurrence of the default of loans offered on their crowdfunding platform.\n\n(3)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Commission Delegated Regulation (EU) 2022/2115 of 13 July 2022 supplementing Regulation (EU) 2020/1503 of the European Parliament and of the Council with regard to regulatory technical standards specifying the methodology for calculating default rates of loans offered on a crowdfunding platform (Text with EEA relevance)"
+ },
+ {
+  "id": "c17",
+  "citation": {
+   "sha256": "9bffc27e7a87b12b1b1364758ee4e64877a150e538ea86e68f77d0388f627f8f",
+   "version_id": 2546,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023SC0231",
+   "title": "COMMISSION STAFF WORKING DOCUMENT IMPACT ASSESSMENT REPORT Accompanying the documents Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services in the internal market and amending Regulation (EU) No 1093/2010 and Proposal for a DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:20:57.066473+00:00",
+   "last_seen_at": "2026-07-13T12:20:57.066473+00:00",
+   "span": [
+    239859,
+    241052
+   ],
+   "quote": "o No opposition was expressed to direct access for PIs and EMIs, as long as risk-based access criteria are in place. A number of members considered that the existing risk assessment of credit institutions should form the basis for assessment of PIs and EMIs, mutatis mutandis. Non-bank PSPs tended to consider their credit and liquidity risk lower than that of banks (operational risk being the same) but were content to be assessed on the same terms.\n\nIn the meeting of 30 March 2023, in addition to a presentation by VVA/CEPS of its study, and updates from the different subgroups, the Commission presented the options under consideration, but without indication which options were preferred. Stakeholders expressed the following positions:\n\n· On access to bank accounts for non-bank PSPs, those stakeholders who spoke were in favour of a combination of all the options. One stakeholder mentioned the need to introduce the possibility of safeguarding of funds with central banks. Another asked if there is any data available on bank refusals of accounts to PIs or EMIs. Another pointed out that PIs and EMIs tend to rely on the same bank, which involves risk in case of failure of that bank."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMISSION STAFF WORKING DOCUMENT IMPACT ASSESSMENT REPORT Accompanying the documents Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services in the internal market and amending Regulation (EU) No 1093/2010 and Proposal for a DIRECTIVE OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL on payment services and electronic money services in the Internal Market amending Directive 98/26/EC and repealing Directives 2015/2366/EU and 2009/110/EC"
+ },
+ {
+  "id": "c18",
+  "citation": {
+   "sha256": "6953eeb3e56434c3d96948cba4e05e9545d1efe64707c31a501a52f93db5d209",
+   "version_id": 3117,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52011DC0662",
+   "title": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:38:39.311662+00:00",
+   "last_seen_at": "2026-07-13T12:38:39.311662+00:00",
+   "span": [
+    31222,
+    32665
+   ],
+   "quote": "1.  An equity facility for growth-phase investment, which will provide commercially oriented reimbursable equity financing primarily in the form of venture capital (VC) through financial intermediaries to SMEs. Two measures are envisaged:\n\n2.  Direct investments in VC funds which operate across borders within the EU and are focused on investing in growth-oriented enterprises not primarily based on innovation or research.\n\n3.  “Funds-of-funds” investing across borders in VC funds which subsequently invest in enterprises, in particular in their international expansion phase.\n\n4.  A loan facility, providing direct or other risk sharing arrangements with financial intermediaries to cover loans for SMEs and provide cross-border lending or multi-country lending with a high leverage effect.\n\nFurthermore, to promote self-employment, micro-enterprises and social enterprises, the European Union Programme for Social Change and Innovation proposed by the Commission[11] includes a Microfinance and Social Entrepreneurship axis which builds upon and continues the existing Progress Microfinance Facility[12]. It extends its coverage through supporting the building-up of the institutional capacity of microcredit providers, and complements it by a financial instrument with an EU contribution to provide equity, debt, and risk sharing instruments to social investment funds and other financial intermediaries for financing social enterprises."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms"
+ },
+ {
+  "id": "c19",
+  "citation": {
+   "sha256": "6953eeb3e56434c3d96948cba4e05e9545d1efe64707c31a501a52f93db5d209",
+   "version_id": 3117,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52011DC0662",
+   "title": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:38:39.311662+00:00",
+   "last_seen_at": "2026-07-13T12:38:39.311662+00:00",
+   "span": [
+    16067,
+    16860
+   ],
+   "quote": "National and local institutions can benefit from the EU institutions’ knowledge in the design of financial products which otherwise would not have been available to them. An example is the European guarantee schemes implemented under the Competitiveness and Innovation Framework Programme (CIP): In many Member States, guarantee societies do not exist and a European counter-guarantee scheme is important also for newer guarantee institutions still building up their portfolios. The presence of a European guarantee and/or counter-guarantee either provides the possibility for new guarantee institutions to boost their volumes in the early stage, or facilitate the creation of such schemes, thus making a considerable contribution to \"institution building\".\n\nMultiplier effect of the EU budget"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms"
+ },
+ {
+  "id": "c20",
+  "citation": {
+   "sha256": "6953eeb3e56434c3d96948cba4e05e9545d1efe64707c31a501a52f93db5d209",
+   "version_id": 3117,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52011DC0662",
+   "title": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:38:39.311662+00:00",
+   "last_seen_at": "2026-07-13T12:38:39.311662+00:00",
+   "span": [
+    48966,
+    50238
+   ],
+   "quote": "The pooling of the EU contribution of EUR 1 billion from the FP7 budget and the EIB contribution of EUR 1 billion from its own resources provides a capital cushion to cover potential losses incurred for the financing of estimated EUR 10 billion of loans over the period 2007-2013. Based on its own financial evaluation and in accordance with its credit risk policy guidelines, the EIB assesses – on a project-by-project basis – the level of financial risks for which it is required to set aside provisioning and capital allocation (for expected and unexpected loss), in accordance with normal banking rules, and requests a contribution from the EU to cover the provisioning and capital allocation. The Commission is represented in the RSFF Steering Committee which oversees the implementation of the instrument in accordance with the policy objectives of the instrument.\n\n13.  CIP – SME Guarantee Facility (SMEG)\n\nThe SME Guarantee Facility (SMEG), with a budget of EUR 500 million, provides counter-guarantees to national guarantee schemes as well as direct guarantees to financial intermediaries in order to increase and enhance the supply of debt finance to SMEs. SMEG is operated by the European Investment Fund (EIF) on behalf of the Commission (representing the EU)."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms"
+ },
+ {
+  "id": "c21",
+  "citation": {
+   "sha256": "6953eeb3e56434c3d96948cba4e05e9545d1efe64707c31a501a52f93db5d209",
+   "version_id": 3117,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52011DC0662",
+   "title": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:38:39.311662+00:00",
+   "last_seen_at": "2026-07-13T12:38:39.311662+00:00",
+   "span": [
+    50240,
+    51375
+   ],
+   "quote": "The financial intermediaries supported by the EU guarantee in turn provide debt finance to SMEs while passing on the advantage of the guarantee to the final beneficiaries, e.g. by accepting a higher risk profile or less collateral, or by charging lower interest rates or providing similar advantages compared to their ordinary financing activities. Under SMEG a portion of each individual transaction is guaranteed, typically 50% (guarantee rate). The overall exposure for the EU budget is however limited by a contractually agreed maximum cap on portfolio losses (cap rate).\n\n14.  Loan Guarantee Instrument for TEN-T projects (LGTT)\n\nThe Loan Guarantee Instrument for TEN-T projects (LGTT) aims at facilitating larger participation of the private sector in the financing of Trans-European Transport Network infrastructure (TEN-T). Attracting private sector funding in core European transport projects can be challenging due to the relatively high levels of revenue volatility in the projects' early operating stages. The LGTT partially covers this revenue risk and consequently improves the financial viability of such TEN-T projects."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms"
+ },
+ {
+  "id": "c22",
+  "citation": {
+   "sha256": "e0500f7aa3e2e056965843f74e00337aed6eae95bf1c2471d78d499760c5e469",
+   "version_id": 2549,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52023PC0335",
+   "title": "Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL establishing the Strategic Technologies for Europe Platform (‘STEP’) and amending Directive 2003/87/EC, Regulations (EU) 2021/1058, (EU) 2021/1056, (EU) 2021/1057, (EU) No 1303/2013, (EU) No 223/2014, (EU) 2021/1060, (EU) 2021/523, (EU) 2021/695, (EU) 2021/697 and (EU) 2021/241",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:21:04.433756+00:00",
+   "last_seen_at": "2026-07-13T12:21:04.433756+00:00",
+   "span": [
+    23051,
+    24540
+   ],
+   "quote": "A new STEP policy window will be set under InvestEU to provide an additional volume of budgetary guarantee to the implementing partners, which will deploy debt (including guarantees) and equity financial products for companies, including SMEs, and projects in the sectors supported by the STEP, including investment in manufacturing and supply chains. InvestEU will leverage additional investment, particularly from the private sector, by addressing market failures and sub-optimal investment situations experienced in the sectors targeted by the STEP. InvestEU is already able to support projects falling within Important Projects of Common European Interest (IPCEIs) within the meaning of Article 107(3)(b) TFEU and its reinforcement through the fifth window will therefore enhance its possibility to do so for critical projects within the scope of application of STEP.\n\nThe European Innovation Council\n\nThe EIC is the leading mean for providing seed capital to fast growing start-ups. Given its expertise, the EIC is well suited to reinforce the funding in companies seeking scale-up capital beyond the first innovation phase. A EUR 0.5 billion budgetary reinforcements combined with EUR 2.13 billion from redeployment and de-commitments will enable the EIC to provide unprecedented equity investments for tickets between EUR 15 million and EUR 50 million. With an average multiplier of 5, this can lead to EUR 13 billion of fresh equity support to non-bankable SMEs and small mid-caps."
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "Proposal for a REGULATION OF THE EUROPEAN PARLIAMENT AND OF THE COUNCIL establishing the Strategic Technologies for Europe Platform (‘STEP’) and amending Directive 2003/87/EC, Regulations (EU) 2021/1058, (EU) 2021/1056, (EU) 2021/1057, (EU) No 1303/2013, (EU) No 223/2014, (EU) 2021/1060, (EU) 2021/523, (EU) 2021/695, (EU) 2021/697 and (EU) 2021/241"
+ },
+ {
+  "id": "c23",
+  "citation": {
+   "sha256": "6953eeb3e56434c3d96948cba4e05e9545d1efe64707c31a501a52f93db5d209",
+   "version_id": 3117,
+   "store": "primary",
+   "canonical_url": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:52011DC0662",
+   "title": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms",
+   "publisher": "EUR-Lex (EU legal acts)",
+   "fetched_at": "2026-07-13T12:38:39.311662+00:00",
+   "last_seen_at": "2026-07-13T12:38:39.311662+00:00",
+   "span": [
+    51377,
+    52201
+   ],
+   "quote": "LGTT is financed with a capital contribution of up to EUR 500 million from the EU budget. Technically, the LGTT Guarantee is issued in favour of commercial banks which provide a stand-by liquidity facility (SBF) to the project. Such SBF can be drawn upon by the project company in case of unexpected reduction of traffic/usage related income of the project during the initial operating period in order to insure the service of the senior debt facilities.\n\nIn terms of governance, the Commission is represented in the Steering Committee of the instrument. The role of the Steering Committee is to review the progress and achievement of the strategic objectives of LGTT and make recommendations in order to achieve these.\n\n15.  Instruments combining equity and debt support\n\n16.  European Progress Microfinance Facility (EPMF)"
+  },
+  "specialist": "regina",
+  "via": "search_law",
+  "label": "COMMUNICATION FROM THE COMMISSION TO THE EUROPEAN PARLIAMENT AND THE COUNCIL A framework for the next generation of innovative financial instruments - the EU equity and debt platforms"
+ }
+]
