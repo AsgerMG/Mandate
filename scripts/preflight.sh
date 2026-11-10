@@ -8,7 +8,8 @@
 #
 # Covered: Vercel config (what failed every deploy on 9 Nov), mandate-ci (clean
 # env from mandate/pyproject.toml [test]: what failed on anthropic), policy CI
-# (uv sync --frozen, exactly as CI), web CI without the build. NOT covered:
+# (uv sync --frozen, exactly as CI), web CI without the build, capital CI from
+# its own workflow file. NOT covered:
 # capital CI (its ETL tests need a throwaway Postgres; they run there). Skip
 # once, deliberately: SKIP_PREFLIGHT=1 git push
 set -uo pipefail
@@ -65,6 +66,20 @@ if touched '^web/|^mandate/vocabulary/|^mandate/profile/|^\.github/workflows/web
     step "web CI (no build)" run_web
   fi
   for d in $BORROWED; do rm -f "$d"; done
+fi
+if touched '^capital/|^mandate/vocabulary/|^\.github/workflows/capital-ci|^scripts/run_ci_job'; then
+  # capital CI's own run steps, read from the workflow (scripts/run_ci_job.py),
+  # in a clean copy of HEAD: no .env.local, so nothing can reach production,
+  # exactly like CI. Needs Homebrew postgresql@18 + pgvector for its database.
+  run_capital() {
+    local tmp; tmp=$(mktemp -d)/c
+    git worktree add -q --detach "$tmp" HEAD || return 1
+    (cd "$tmp" && uv run -q --isolated --no-project --python 3.11 \
+        --with-requirements capital/requirements.txt --with pyyaml \
+        python scripts/run_ci_job.py .github/workflows/capital-ci.yml etl)
+    local rc=$?; git worktree remove --force "$tmp"; return $rc
+  }
+  step "capital CI (clean copy)" run_capital
 fi
 if touched '^policy/|^mandate/'; then
   run_policy() { (cd policy && uv sync -q --frozen --extra dev --python 3.12 && uv run --frozen pytest -q -x); }
