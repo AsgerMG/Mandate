@@ -1,3 +1,5 @@
+> **Scope update (owner, 10 Nov):** DE, IT, FR, EU and the **UK** (to be added: British Business Bank, Innovate UK, UK R&D tax relief, the ENABLE guarantee programme, devolved and regional funds). Spain is out of scope. And per the master plan's rule 4b, this map is a list of DECIDING facts to ground as a small core; the long tail is live research, not bulk loads.
+
 # Wincent grounding map: DE, FR, IT, EU x every kind of public money
 
 2026-11-10. Built for playbook `mandate/playbooks/funding-routes.md` (§1b diagnose, §1c precedent,

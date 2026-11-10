@@ -20,6 +20,9 @@ proposes an action; **a human decides and sends**. We know it works when the tea
 send its output with light edits. That is the only test that counts, so every piece is
 tested as real PA work, graded by the owner.
 
+**Market scope (owner, 10 Nov):** Germany, Italy, France, the EU level and the UK.
+Other countries' data stays where it serves as precedent or context, but is not built out.
+
 ## 1. Where we are (10 Nov 2026)
 
 | Layer | State | Evidence |
@@ -123,8 +126,8 @@ Streams, in the order the alignment ranked them, each through the factory's step
    financier monopoly articles, TUB 106-107, MCC operating rules, Bpifrance guarantee
    conditions, EIF InvestEU calls, the European Competitiveness Fund proposal; monthly.
 3. **Lender precedents**: EIF/EIB signature lists; weekly.
-4. Startup finance (matchmaking loans, venture debt, start-up loans: ENISA, Bpifrance,
-   KfW/ERP, Invitalia, Innovate UK), country by country; quarterly.
+4. Startup finance (matchmaking loans, venture debt, start-up loans: Bpifrance,
+   KfW/ERP, Invitalia, British Business Bank / Innovate UK), country by country; quarterly.
 5. R&D tax-credit statutes (CIR, FZulG, Spain, Italy, NL); yearly.
 6. Export-credit agencies and market entry; quarterly.
 7. **A `read_agenda` tool** over the 19,963 news/signal articles we already hold.
