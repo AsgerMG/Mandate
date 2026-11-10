@@ -3,13 +3,58 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
-## NEXT SESSION: follow mandate/plans/master_plan.md
-The end-to-end plan (10 Nov): the brain factory loop, phases 0-6, JEV, pass bars,
-decisions. Phase 0 first: owner tops up Anthropic credit; archive the retired one-pager
-product (simplification_review.md 3a); split web CI from capital CI; one health
-monitor; Railway config migration before 1 Dec; per-workspace spend ledger.
-Weekly cron restored 10 Nov (full run, Sundays 03:00 UTC). Politico (5) still 429 and
-EDPB 503 in Regina's run 117: Phase 0 follow-up.
+## NEXT SESSION (saved 10 Nov evening at 91% usage): pick up here
+**If the owner says "let's do the interview for Regina": run mandate/playbooks/interviews/regina_sme_interview.md (the 'How Claude runs it' section), live, one question at a time.**
+Read first: mandate/plans/master_plan.md ("Decided 10 Nov" block), data_audit.md,
+mandate/brains/wincent/grounding_map.md, mandate/playbooks/funding-routes.md (rounds 3, 3b, 4d, 4e).
+Owner decisions: narrow first (W6 funding route plan, Italy + EU, until >= 4/5 on 5
+cases); agent loop -> mandate-api on Railway; OWN management app with workflow/process
+graphs (screens follow proven workflows); scope CORE DE/IT/FR/EU/UK, HUBS SE/DK/NO/NL/BE/ES.
+Owner wants me to SPAR (positions, push-back), not just execute.
+
+Three agents were stopped mid-work with WIP commits on their branches (not merged):
+1. `batch-italy`: Italy deciding core (status_rules + match_status tool, TUB 106-107,
+   current Fondo rules, DL 179/2012, Nuova Sabatini, S3 regional fit), live research +
+   caching as the long tail, eval case robotics_deployment_it.yaml, load_batch_italy.sh.
+2. `agent-on-railway`: Wincent's loop into mandate-api (background missions, NDJSON
+   events), tools likely ported to Python SQL (plain search replacing the old ranker),
+   website as thin proxy, bench kept on the same tools.
+3. `data-tiers`: tiers in europe_scope.json + manifest (OUT refresh stops; Spain stays),
+   equity stakes into find_precedents, read_agenda tool, usage log (mandate.tool_calls),
+   archive_dead_weight.sh (~170 MB to bucket archive/2026-11/), old news down-ranked.
+Findings saved by the stopped agents (10 Nov):
+- agent-on-railway: PAUSED (11 Nov, my call, owner informed) until API budget exists: with the budget off the production advisor cannot run, so the move buys nothing yet; the bench is the test path. Resume it the day budget lands.
+  (cff29ffe, design only, no code): chose to keep Wincent's capital tools
+  in TypeScript behind an internal site endpoint, called by the new Python loop (porting
+  would duplicate ~5k lines of eligibility logic). SPAR on this first: with "narrow
+  first" (Italy + EU), a plain Python SQL search may now be small enough, and it retires
+  the old ranker. Next: Python loop + mission-events table (POST /missions is taken).
+- data-tiers (cdfe829e, findings only, no code): capital.request_log (mission quota) and
+  capital.event_log (agent tool logging) are STILL WRITTEN: do not archive them; only
+  brief_records is safe. Next: item 3 first (usage log: a hook in
+  web/lib/mandate/agent/loop.ts + mandate.tool_calls).
+- batch-italy (f15c0c15, real progress, NOT yet through preflight): 16 deciding texts
+  pinned by sha256 (TUB 106-107, Banca d'Italia albi, current Fondo di Garanzia
+  rules in force since 13 Oct 2023 + portfolio rules, DL 179/2012 arts 25/29, DL 3/2015
+  art 4, DL 69/2013 art 2 Nuova Sabatini, six regions' S3 pages); migration 039 (8
+  status keys, 16 status rules, 44 region priorities; the 2018 FdG text superseded, not
+  deleted); match_status tool + find_instruments level/region filters (tests pass);
+  bench --ground caches researched pages; local rehearsal loaded 16 docs / 365 passages,
+  idempotent. Dropped (owner re-scope): bulk regional instruments, full 106 register;
+  R&S&I credit + Transizione 5.0 texts (mimit.gov.it timed out). NEXT: write
+  mandate/ops/load_batch_italy.sh (wraps capital/ETL/terms/load_batch_italy.py, dry run
+  default, DB URL + bucket creds as in ground_pinned_input.sh, --apply passthrough), run
+  rehearse_batch_italy.py --embed (~1 cent), add eval case robotics_deployment_it.yaml +
+  a note in wincent.md, preflight, push. Merge it FIRST (it is the furthest along).
+Resume each: read its last WIP commit message (git log -1 origin/<branch>), finish, review,
+merge in this order: batch-italy, data-tiers, agent-on-railway (largest last).
+Then: owner runs the load/archive commands; Wincent bench re-runs the fintech + Italian
+robot cases (no API cost); interview round 4 (procurement, rule change mid-process,
+"don't do this yet"); case library + judge calibration from graded cases.
+Production state: budget OFF (LLM_BUDGET=off on all services; API account empty);
+weekly cron Sundays 03:00 UTC on 604591e3+; Regina on 604591e3 (host give-up live);
+all four CI workflows green; preflight covers all four. Capina deletes 11 Nov (grace).
+Blocked on owner: API budget ($100 + $150/month cap), see mandate/plans/budget_brief.md.
 
 ## OPEN LOOPS (read first; close before starting anything new)
 Principle (owner, 9 Nov): finish before moving on. A change is done when it is

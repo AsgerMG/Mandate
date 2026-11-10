@@ -32,6 +32,9 @@ what is stored for it is reviewed by the data audit (archive, never delete).
 - **Our own app, as a management tool**: graphs of workflows and processes across
   mandates, not delivery into email/Slack first. Screens still arrive as each
   workflow proves out (phase 4 order).
+- **No production budget until a dry run is excellent** (11 Nov): iterate on the bench
+  (Claude Code, no API cost) until the owner would send the answer as is; only then
+  spend $100-200 proving it live. The agent-loop move to Railway waits for that.
 - **Data:** wire what we hold (equity stakes, news), log every tool call and
   retrieval, stop refreshing OUT sources, archive the dead weight (data_audit.md).
 

@@ -47,6 +47,23 @@ export interface PrecedentQuery {
 
 export interface GateGrounding { gateKey: string; instrumentId: string; sha256: string }
 
+/** One located quote in a status-layer row (capital migration 039). */
+export interface LayerCitation {
+  sha256: string; url: string; quote: string; char_start?: number; char_end?: number; located: boolean;
+}
+export interface StatusKeyRow { key: string; label: string; kind: string; country: string | null; how_obtained: string; citations: LayerCitation[] }
+export interface StatusRuleRow {
+  rule_key: string; country: string; level: string; nuts: string | null; product_family: string;
+  instrument_ids: string[]; role: string; status_key: string; effect: string; any_of: string | null;
+  activity_tags: string[]; statement: string; verify_note: string | null; citations: LayerCitation[];
+}
+export interface RegionPriorityRow {
+  nuts: string; country: string; region: string; strategy: string; priority: string;
+  activity_tags: string[]; citations: LayerCitation[];
+}
+/** An instrument whose own region gate names a NUTS region (eligibility_gates, op region_within). */
+export interface RegionGatedRow { instrument_id: string; name: string; capital_type: string | null; allowed: string[] }
+
 /** Everything the capital tools read, behind one seam so tests can fake it. */
 export interface CapitalPort {
   hydrate(): Promise<void>;
@@ -58,6 +75,9 @@ export interface CapitalPort {
   /** The source families an instrument's awards are loaded under. */
   instrumentSources(id: string): Promise<string[]>;
   precedents(q: PrecedentQuery): Promise<PrecedentRow[]>;
+  /** The status layer (capital migration 039). Empty when the tables are not there yet. */
+  statusLayer(countries: string[]): Promise<{ keys: StatusKeyRow[]; rules: StatusRuleRow[]; regions: RegionPriorityRow[] }>;
+  regionGated(nuts: string[]): Promise<RegionGatedRow[]>;
   /** Public equity stakes (capital.public_equity_stakes): who holds whom. Optional: a port without it has none. */
   equityStakes?(q: EquityQuery): Promise<PrecedentRow[]>;
   /** The relevant signals articles (capital.signals_articles, is_relevant = 1). Optional. */
@@ -132,6 +152,48 @@ export const realCapital: CapitalPort = {
         ORDER BY e.project_started DESC NULLS LAST
         LIMIT ${Math.min(Math.max(q.limit, 1), 400)}`, params);
   },
+  statusLayer: async (countries) => {
+    const cc = countries.map((c) => c.toUpperCase());
+    try {
+      const [keys, rules, regions] = await Promise.all([
+        pgQuery<StatusKeyRow>(`SELECT key, label, kind, country, how_obtained, citations FROM status_keys ORDER BY key`, []),
+        pgQuery<StatusRuleRow>(
+          `SELECT rule_key, country, level, nuts, product_family, instrument_ids, role, status_key, effect,
+                  any_of, activity_tags, statement, verify_note, citations
+             FROM status_rules r
+            WHERE (cardinality($1::text[]) = 0 OR country = ANY($1))
+              AND NOT EXISTS (SELECT 1 FROM status_rules s WHERE s.supersedes = r.rule_key)
+            ORDER BY product_family, role, rule_key`, [cc]),
+        pgQuery<RegionPriorityRow>(
+          `SELECT nuts, country, region, strategy, priority, activity_tags, citations FROM region_priorities
+            WHERE cardinality($1::text[]) = 0 OR country = ANY($1) ORDER BY nuts, id`, [cc]),
+      ]);
+      return { keys, rules, regions };
+    } catch (e) {
+      // migration 039 not applied here yet: say so through empty results, never crash the tool
+      console.error("[mandate/capital] status layer unavailable:", String(e));
+      return { keys: [], rules: [], regions: [] };
+    }
+  },
+  regionGated: async (nuts) => {
+    if (!nuts.length) return [];
+    try {
+      const rows = await pgQuery<{ instrument_id: string; name: string; capital_type: string | null; value_spec: string }>(
+        `SELECT g.instrument_id, i.name, i.capital_type, g.value_spec
+           FROM eligibility_gates g JOIN funding_instruments i ON i.id = g.instrument_id
+          WHERE g.value_spec LIKE '%region_within%' AND g.gate_role = 'filter'
+            AND EXISTS (SELECT 1 FROM unnest($1::text[]) n WHERE g.value_spec LIKE '%"' || n || '%')
+          ORDER BY i.event_count DESC NULLS LAST LIMIT 60`, [nuts]);
+      return rows.map((r) => {
+        let allowed: string[] = [];
+        try { allowed = (JSON.parse(r.value_spec).allowed ?? []).map(String); } catch { /* keep empty */ }
+        return { instrument_id: r.instrument_id, name: r.name, capital_type: r.capital_type, allowed };
+      });
+    } catch (e) {
+      console.error("[mandate/capital] region-gated lookup failed:", String(e));
+      return [];
+    }
+  },
   gateGrounding: async (ids) => {
     const url = process.env.DATABASE_URL;
     if (!url || !ids.length) return [];
@@ -186,14 +248,32 @@ export function interpretTypes(objective: string, types: string[]): { types: str
 
 export async function findInstruments(port: CapitalPort, profile: CompanyProfile, input: {
   objective: string; instrument_types?: string[]; jurisdictions?: string[]; name_query?: string; limit?: number;
+  /** "national" keeps instruments with no delivery region; "regional" keeps those with one. */
+  level?: string;
+  /** A NUTS code or an Italian region name: keeps that region's instruments (and, unless
+   *  level is "regional", the national ones a company there can also use). */
+  region?: string;
 }) {
   await port.hydrate();
   const limit = Math.min(Math.max(input.limit ?? 8, 1), 15);
   const juris = (input.jurisdictions ?? []).map((j) => j.toUpperCase());
   const market = offeredMarkets(profile, juris);
-  const namedJuris = (c?: string) => !juris.length || (c ? juris.includes(c.toUpperCase()) : false);
+  const level = input.level?.toLowerCase();
+  const nuts = input.region ? toNuts(input.region) : undefined;
+  const byId = new Map(port.instruments().map((i) => [i.id, i]));
+  // Where the money is delivered: national (no delivery region) or a region's own.
+  const placeOk = (id?: string | null) => {
+    if (!level && !input.region) return true;
+    const r = (id ? byId.get(id)?.deliveryRegion : null) ?? null;
+    if (level === "national" && r) return false;
+    if (level === "regional" && !r) return false;
+    if (input.region && r && !(nuts && (r.startsWith(nuts) || nuts.startsWith(r)))) return false;
+    return true;
+  };
+  const namedJuris = (c?: string, id?: string | null) =>
+    (!juris.length || (c ? juris.includes(c.toUpperCase()) : false)) && placeOk(id);
   // a lookup by name is explicit, so it is not held to the market default
-  const inJuris = (c?: string) => namedJuris(c) && market.offered(c);
+  const inJuris = (c?: string, id?: string | null) => namedJuris(c, id) && market.offered(c);
   const out: Record<string, unknown>[] = [];
   const seen = new Set<string>();
   const asked = interpretTypes(input.objective, input.instrument_types ?? []);
@@ -203,7 +283,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
   const loansToo = asked.types.includes("loan");
   if (asked.guarantee) {
     const g = port.instruments()
-      .filter((i) => GUARANTEE_TYPES.has(String(i.capitalType)) && inJuris(i.country))
+      .filter((i) => GUARANTEE_TYPES.has(String(i.capitalType)) && inJuris(i.country, i.id))
       .sort((a, b) => (b.eventCount ?? 0) - (a.eventCount ?? 0));
     for (const i of g) {
       if (out.length >= limit) break;
@@ -215,7 +295,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
     const terms = norm(input.name_query).split(/\s+/).filter((t) => t.length > 2);
     for (const i of port.instruments()) {
       const hay = norm(`${i.name} ${i.administeringBody ?? ""} ${i.description ?? ""}`);
-      if (terms.every((t) => hay.includes(t)) && namedJuris(i.country) && !seen.has(i.id)) {
+      if (terms.every((t) => hay.includes(t)) && namedJuris(i.country, i.id) && !seen.has(i.id)) {
         seen.add(i.id);
         out.push({ ...summarise(i), matched: "name" });
         if (out.length >= limit) break;
@@ -234,7 +314,7 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
   }
   for (const row of verdict?.instrumentTable ?? []) {
     if (out.length >= limit * 2) break;
-    if (!row.instrumentId || seen.has(row.instrumentId) || !inJuris(row.country)) continue;
+    if (!row.instrumentId || seen.has(row.instrumentId) || !inJuris(row.country, row.instrumentId)) continue;
     if (asked.guarantee && !loansToo && !GUARANTEE_TYPES.has(String(row.capitalType))) continue;
     seen.add(row.instrumentId);
     out.push({
@@ -245,7 +325,11 @@ export async function findInstruments(port: CapitalPort, profile: CompanyProfile
     });
   }
   return {
-    instruments: out,
+    instruments: out.map((o): Record<string, unknown> => {
+      const r = byId.get(String(o.instrument_id))?.deliveryRegion;
+      return { ...o, level: r ? "regional" : "national", ...(r ? { region: r } : {}) };
+    }),
+    ...(input.region && !nuts ? { region_unrecognised: `${input.region}: give a NUTS code (e.g. ITC4) or an Italian region name` } : {}),
     ...(asked.guarantee ? { interpreted_as: asked.inferred
       ? "guarantee (the objective asks for a guarantee; 'loan' alone was read as guarantee)" : "guarantee" } : {}),
     note: "Corpus rows, uncited. Use assess_instrument for cited gates before relying on any.",
@@ -540,5 +624,199 @@ export async function agenda(port: CapitalPort, input: {
     note: articles.length
       ? "News the corpus marked relevant, newest first. It says what was reported, not what the rules are: cite [cN] where given, otherwise name the outlet and URL as unverified."
       : "Nothing in the relevant news matches. Use research for current coverage.",
+  };
+}
+
+// ── Status matching and economic geography (playbook §4d.2, §4e) ───────────
+
+/** Italy's NUTS-2 regions by name, for a caller who says "Lombardia" rather than ITC4. */
+export const IT_NUTS2: Record<string, string> = {
+  piemonte: "ITC1", "valle d'aosta": "ITC2", liguria: "ITC3", lombardia: "ITC4", bolzano: "ITH1",
+  trento: "ITH2", veneto: "ITH3", "friuli-venezia giulia": "ITH4", "emilia-romagna": "ITH5",
+  toscana: "ITI1", umbria: "ITI2", marche: "ITI3", lazio: "ITI4", abruzzo: "ITF1", molise: "ITF2",
+  campania: "ITF3", puglia: "ITF4", basilicata: "ITF5", calabria: "ITF6", sicilia: "ITG1", sardegna: "ITG2",
+};
+
+/** A region as a NUTS code: a code passes through, an Italian region name is looked up. */
+export function toNuts(region: string): string | undefined {
+  const r = region.trim();
+  if (/^[A-Za-z]{2}[A-Za-z0-9]{1,3}$/.test(r) && /\d/.test(r)) return r.toUpperCase();
+  const flat = (s: string) => norm(s).replace(/[-\s]+/g, " ").trim();
+  return Object.entries(IT_NUTS2).find(([k]) => flat(k) === flat(r))?.[1];
+}
+
+/** Common names for the status vocabulary, so a caller need not know the keys. The keys
+ *  themselves always pass; anything unrecognised is returned as unknown, never guessed. */
+const STATUS_ALIASES: [RegExp, string][] = [
+  [/^(lic\.it\.)?tub_?106$|^art\.? ?106|^106$|106 tub|^art106/i, "lic.it.tub106"],
+  [/^(lic\.it\.)?bank(_tub13)?$|^banca$|banking licen[cs]e/i, "lic.it.bank_tub13"],
+  [/confidi/i, "lic.it.confidi"],
+  [/leasing/i, "lic.it.leasing_intermediary"],
+  [/start-?up[ _]innovativ|innovative start-?up/i, "status.it.startup_innovativa"],
+  [/pmi[ _]innovativ|innovative sme/i, "status.it.pmi_innovativa"],
+  [/^(status\.eu\.)?sme(_annex_i)?$|^pmi$/i, "status.eu.sme_annex_i"],
+  [/^estab(lished)?[._ ]it$|^italian (entity|establishment|company)$/i, "estab.it"],
+];
+
+export function normaliseStatus(s: string): { key?: string; nuts?: string } {
+  const t = s.trim();
+  const estab = t.match(/^estab\.it\.([A-Za-z0-9]{3,5})$/);
+  if (estab) return { key: "estab.it", nuts: estab[1].toUpperCase() };
+  for (const [re, key] of STATUS_ALIASES) if (re.test(t)) return { key };
+  if (/^(lic|status|estab|age|reg|raise)\.[a-z0-9_.]+$/.test(t)) return { key: t };
+  return {};
+}
+
+/** Words an activity is described in -> the activity tags region_priorities and
+ *  status_rules carry. A caller may also pass the tags themselves. */
+const ACTIVITY_TAGS: [RegExp, string[]][] = [
+  [/robot|cobot|automat|mechatron|meccatron/i, ["robotics", "automation", "advanced_manufacturing"]],
+  [/manufactur|manifattur|industr(y|ia) ?4|factory|fabbrica|machin|macchin/i, ["advanced_manufacturing", "industry_4_0", "machinery"]],
+  [/defen[cs]e|difesa|security|sicurezza|dual.?use/i, ["defence", "security"]],
+  [/aero|space|spazi/i, ["aerospace", "space"]],
+  [/automotive|vehicle|mobility|mobilit/i, ["automotive", "mobility"]],
+  [/\bai\b|artificial intelligence|software|digital|data|cloud/i, ["digital", "ai"]],
+  [/logistic|warehouse|magazzin/i, ["logistics"]],
+  [/health|medic|life ?science|salute|biotech/i, ["health", "life_sciences", "medtech"]],
+  [/agri|food|alimentar/i, ["agrifood"]],
+  [/energy|energia|clean|climate|green|circular/i, ["energy", "cleantech"]],
+  [/construct|edilizi|building/i, ["construction"]],
+  [/lend|loan|credit|guarant|fintech/i, ["lending", "guarantee", "sme_finance"]],
+  [/equity|raise|round|invest/i, ["equity_raise"]],
+  [/lease|leasing|as.a.service|raas/i, ["leasing", "robots_as_a_service"]],
+];
+
+export function activityTags(activity?: string): string[] {
+  if (!activity?.trim()) return [];
+  const out = new Set<string>();
+  for (const [re, tags] of ACTIVITY_TAGS) if (re.test(activity)) tags.forEach((t) => out.add(t));
+  for (const w of activity.toLowerCase().split(/[\s,;]+/)) if (/^[a-z0-9]+_[a-z0-9_]+$/.test(w)) out.add(w);
+  return [...out];
+}
+
+type LayerCite = (sha256: string, quote: string, label: string, span?: [number, number]) => Promise<string | null>;
+
+async function citeAll(cs: LayerCitation[], label: string, cite: LayerCite) {
+  const ids: string[] = [];
+  const uncited: string[] = [];
+  for (const c of cs) {
+    const span: [number, number] | undefined = c.char_start != null && c.char_end != null ? [c.char_start, c.char_end] : undefined;
+    const id = c.located ? await cite(c.sha256, c.quote, label, span) : null;
+    if (id) ids.push(id);
+    else uncited.push(c.quote.slice(0, 200));
+  }
+  return { citations: ids, ...(uncited.length ? { uncited_quotes: uncited } : {}) };
+}
+
+const sumTags = (rows: { activity_tags: string[] }[], tags: string[]) =>
+  rows.reduce((n, r) => n + r.activity_tags.filter((t) => tags.includes(t)).length, 0);
+
+/**
+ * match_status: the products a set of statuses opens, at each level, in each role, cited.
+ *
+ * The statuses are what the company HOLDS OR PLANS: a planned status is matched like a held
+ * one, and its how-to-obtain comes back cited, because getting it is a plan step (§4d.2).
+ * Per product family and role it says whether the door is open, which status opens it and
+ * what is still required. A rule whose quote does not resolve in grounding comes back with
+ * `uncited_quotes`, never as cited.
+ */
+export async function matchStatus(port: CapitalPort, input: {
+  status: string[]; level?: string; activity?: string; country?: string; region?: string;
+}, cite: LayerCite) {
+  const country = (input.country ?? "IT").toUpperCase();
+  const parsed = (input.status ?? []).map((s) => ({ asked: s, ...normaliseStatus(String(s)) }));
+  const unknown = parsed.filter((p) => !p.key).map((p) => p.asked);
+  const held = new Set(parsed.flatMap((p) => (p.key ? [p.key] : [])));
+  const nutsHeld = new Set(parsed.flatMap((p) => (p.nuts ? [p.nuts] : [])));
+  const regionNuts = input.region ? toNuts(input.region) : undefined;
+  if (regionNuts) nutsHeld.add(regionNuts);
+  if (nutsHeld.size) held.add("estab.it");
+  const level = input.level?.toLowerCase();
+  const tags = activityTags(input.activity);
+
+  const layer = await port.statusLayer([country]);
+  if (!layer.rules.length && !layer.keys.length) {
+    return { error: `no status rules are loaded for ${country} (capital migration 039 and its batch load). Research the statute and cite it.` };
+  }
+  const keyInfo = new Map(layer.keys.map((k) => [k.key, k]));
+
+  const byFamily = new Map<string, StatusRuleRow[]>();
+  for (const r of layer.rules) {
+    if (level && r.level !== level) continue;
+    const k = `${r.product_family}|${r.role}`;
+    byFamily.set(k, [...(byFamily.get(k) ?? []), r]);
+  }
+  const doors = [];
+  for (const [k, rules] of byFamily) {
+    const [family, role] = k.split("|");
+    const bearing = rules.filter((r) => held.has(r.status_key));
+    if (!bearing.length) continue;                       // nothing the company holds bears on it
+    const required = rules.filter((r) => r.effect === "required");
+    const groups = new Map<string, StatusRuleRow[]>();
+    for (const r of rules) if (r.effect === "one_of" && r.any_of) groups.set(r.any_of, [...(groups.get(r.any_of) ?? []), r]);
+    const missing = [
+      ...required.filter((r) => !held.has(r.status_key)).map((r) => r.status_key),
+      ...[...groups.values()].filter((g) => !g.some((r) => held.has(r.status_key))).map((g) => g.map((r) => r.status_key).join(" | ")),
+    ];
+    const excluded = rules.filter((r) => r.effect === "excludes" && held.has(r.status_key)).map((r) => r.status_key);
+    const gated = required.length > 0 || groups.size > 0;
+    const door = excluded.length ? "shut by a held status"
+      : !gated ? "status helps (priority), does not open a door"
+      : missing.length ? "not yet: still required" : "open for this role";
+    const evidence = [];
+    for (const r of bearing) {
+      evidence.push({
+        rule: r.rule_key, status: r.status_key, effect: r.effect, statement: r.statement,
+        ...(r.verify_note ? { verify: r.verify_note } : {}),
+        ...(await citeAll(r.citations, `${family} (${role}): ${r.status_key}`, cite)),
+      });
+    }
+    doors.push({
+      product_family: family, level: rules[0].level, ...(rules[0].nuts ? { nuts: rules[0].nuts } : {}), role, door,
+      instruments_held: [...new Set(rules.flatMap((r) => r.instrument_ids))],
+      ...(missing.length ? { still_required: missing } : {}),
+      ...(excluded.length ? { excluded_by: excluded } : {}),
+      // an uncited rule narrows, never decides (evidence tiers): say which this door rests on
+      evidence_tier: evidence.every((e) => e.citations.length) ? "cited" : evidence.some((e) => e.citations.length) ? "partly uncited" : "uncited: research and cite before relying on it",
+      activity_relevance: tags.length ? sumTags(rules, tags) : 0, evidence,
+    });
+  }
+  doors.sort((a, b) => (Number(b.door === "open for this role") - Number(a.door === "open for this role"))
+    || b.activity_relevance - a.activity_relevance);
+
+  const statuses = [];
+  for (const key of held) {
+    const info = keyInfo.get(key);
+    if (!info) continue;
+    statuses.push({ status: key, label: info.label, how_obtained: info.how_obtained,
+      ...(await citeAll(info.citations, `status ${key}`, cite)) });
+  }
+
+  const regional = nutsHeld.size && (!level || level === "regional")
+    ? (await port.regionGated([...nutsHeld])).map((r) => ({ ...r, note: "the instrument's own region gate; assess_instrument cites it" }))
+    : [];
+
+  const region_fit = [];
+  if (tags.length) {
+    const fit = new Map<string, RegionPriorityRow[]>();
+    for (const p of layer.regions) if (p.activity_tags.some((t) => tags.includes(t))) fit.set(p.nuts, [...(fit.get(p.nuts) ?? []), p]);
+    const ranked = [...fit.values()].sort((a, b) => sumTags(b, tags) - sumTags(a, tags));
+    for (const ps of ranked) {
+      const priorities = [];
+      for (const p of ps) {
+        priorities.push({ priority: p.priority, matched_tags: p.activity_tags.filter((t) => tags.includes(t)),
+          ...(await citeAll(p.citations, `${p.region} S3: ${p.priority}`, cite)) });
+      }
+      region_fit.push({ region: ps[0].region, nuts: ps[0].nuts, strategy: ps[0].strategy, fit_score: sumTags(ps, tags), priorities });
+    }
+  }
+
+  return {
+    country, statuses_matched: [...held],
+    ...(unknown.length ? { unknown_statuses: unknown, known_statuses: [...keyInfo.keys()] } : {}),
+    activity_tags: tags, doors, statuses,
+    ...(regional.length ? { regional_instruments: regional } : {}),
+    ...(tags.length ? { region_fit } : {}),
+    note: "Rules from the status layer, each cited [cN] to the statute or operating rules. 'open for this role' means the status requirement is met, not that a deal is approved. A product family missing here is a gap in the layer, not proof the door is shut: research the institution's own rules and cite them.",
   };
 }

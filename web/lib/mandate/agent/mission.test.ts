@@ -213,6 +213,7 @@ function fakeServices() {
         kind: "debt/guarantee", started: "2019-01-01", programme: "x", granting_authority: "Buergschaftsbank",
         source: "kfw_src", raw_source_url: null }] : [],
     gateGrounding: async () => [{ instrumentId: "kfw_buergschaft", gateKey: "g1", sha256: SHA }],
+    statusLayer: async () => ({ keys: [], rules: [], regions: [] }), regionGated: async () => [],
   };
   return { mandate, policy, capital, saved, messages };
 }

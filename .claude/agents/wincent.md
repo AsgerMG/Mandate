@@ -36,7 +36,13 @@ npx tsx web/scripts/brain_tool.ts <tool> '<json args>' --profile <profile.json> 
 npx tsx web/scripts/brain_tool.ts --list        # every tool's schema
 ```
 
-- Wincent: `find_instruments` {objective, instrument_types?, jurisdictions?, name_query?},
+- Wincent: `find_instruments` {objective, instrument_types?, jurisdictions?, name_query?,
+  level? (national | regional), region? (NUTS or Italian region name)},
+  `match_status` {status[], level?, activity?, region?, country?}: what a status the company
+  holds OR PLANS (art106, startup_innovativa, pmi_innovativa, sme, estab.it.ITC4, ...) opens,
+  per level and role, what is still required, how the status is obtained, and (with an
+  activity) which regions' own S3 strategies fit it; every rule cited. Italy is seeded
+  (batch 1); a family it does not list is a gap to research, not a shut door.
   `assess_instrument` {instrument_id}, `fund_requirements` {instrument_id, focus},
   `application_route` {instrument_id}, `find_precedents` {instrument_id | institution,
   move?, situation?, k?}, `profile_get`.
@@ -56,6 +62,12 @@ npx tsx web/scripts/brain_tool.ts --list        # every tool's schema
   suggest_email. `research` is replaced by your own WebSearch / WebFetch: prefer the
   official source (the institution's own page, the statute, EUR-Lex, Legifrance,
   gesetze-im-internet.de, normattiva), and record every URL you use.
+- Research compounds: run with `--ground` (needs MANDATE_API_URL + MANDATE_SERVICE_TOKEN,
+  or BENCH_GROUNDING_WRITE_URL) and store each official page you rely on with
+  `ground_source` {url, quote, label?}: it stores the page in grounding (append-only) and
+  cites the verbatim quote, so a [wN] becomes a [cN] and the next founder starts from it.
+  A quote not on the page as fetched comes back UNVERIFIED. Without `--ground` the bench
+  stays read-only.
 
 Work corpus first (find, then assess the few that matter, precedents for every main
 route), then the web for what the corpus lacks. Keep it lean: a case should take about

@@ -1,0 +1,75 @@
+# Batch 1, Italy: the six regions' Smart Specialisation Strategy (S3) 2021-2027 priority domains.
+#
+# Why: a senior narrows by economic geography (playbook §4e.2). Robot deployment points to the
+# industrial north and Lazio; the regions' OWN strategies make the case, cited. Loaded into
+# capital.region_priorities. `priority` is the region's own words (each is located verbatim in
+# `quote`); `activity_tags` is OUR mapping from that name to the activity vocabulary
+# match_status / region_fit read (tag_basis says so). Insert-only.
+
+regions:
+  - {nuts: ITC4, region: Lombardia, doc: s3_lombardia, strategy: "S3 2021-2027 (DGR XI/4155/2020, updated DGR 5466/2025)",
+     quote: "ECOSISTEMI DELL'INNOVAZIONE IN REGIONE LOMBARDIA"}
+  - {nuts: ITH3, region: Veneto, doc: s3_veneto, strategy: "S3 2021-2027 (DGR 474 of 29 April 2022)",
+     quote: "il passaggio da 4 a 6 ambiti di specializzazione ovvero"}
+  - {nuts: ITC1, region: Piemonte, doc: s3_piemonte, strategy: "S3 2021-2027 (DGR 43-4315 of 10 December 2021)",
+     quote: "i Sistemi Prioritari dell’innovazione (SPI), evoluzione delle aree di specializzazione della precedente S3: Aerospazio; Mobilità Sostenibile; Manifattura avanzata; Tecnologie, risorse e materiali verdi; Food; Salute."}
+  - {nuts: ITH5, region: Emilia-Romagna, doc: s3_emilia_romagna, strategy: "S3 2021-2027 (Assemblea legislativa delibera 45 of 30 June 2021)",
+     quote: "La nuova Strategia S3 ha individuato 15 ambiti tematici prioritari e 8 aree di specializzazione strategica: agroalimentare, edilizia e costruzioni, meccatronica e motoristica, industrie della salute e del benessere, industrie culturali e creative, innovazione nei servizi, digitale e logistica, energia e sviluppo sostenibile, turismo. A queste si aggiungono due nuove aree ad alto potenziale di sviluppo: la space economy e il settore delle grandi infrastrutture critiche o complesse."}
+  - {nuts: ITI1, region: Toscana, doc: s3_toscana, strategy: "S3 2021-2027 (DGR 1321 of 28 November 2022)",
+     quote: "Ambiente, territorio ed energia Cultura e beni culturali Salute Smart agrifood Impresa intelligente e sostenibile."}
+  - {nuts: ITI4, region: Lazio, doc: s3_lazio, strategy: "RIS3 2021-2027 update (DGR 997 of 30 December 2021)",
+     quote: "Il principale elemento di novità rispetto alla Strategia 2014-2020 riguarda l’introduzione di due nuove Aree di Specializzazione (AdS): “Automotive” ed “Economia del Mare”."}
+
+# One row per (region, priority). `priority` must occur in the region's quote above OR in its
+# own `quote` here (Lombardia and Veneto list their domains one per line, so each has its own).
+priorities:
+  ITC4:
+    - {priority: Manifattura avanzata, quote: "Manifattura avanzata", tags: [advanced_manufacturing, robotics, automation, industry_4_0]}
+    - {priority: Connettività e informazione, quote: "Connettività e informazione", tags: [digital, ai, telecom, data]}
+    - {priority: Smart Mobility e Architecture, quote: "Smart Mobility e Architecture", tags: [mobility, automotive, construction]}
+    - {priority: Salute e life science, quote: "Salute e life science", tags: [health, life_sciences, medtech]}
+    - {priority: Nutrizione, quote: "Nutrizione", tags: [agrifood]}
+    - {priority: Sostenibilità, quote: "Sostenibilità", tags: [cleantech, energy, circular_economy]}
+    - {priority: Cultura e conoscenza, quote: "Cultura e conoscenza", tags: [creative, education]}
+    - {priority: Sviluppo sociale, quote: "Sviluppo sociale", tags: [social_innovation]}
+  ITH3:
+    - {priority: SMART MANUFACTURING, quote: "SMART MANUFACTURING", tags: [advanced_manufacturing, robotics, automation, industry_4_0]}
+    - {priority: SMART AGRIFOOD, quote: "SMART AGRIFOOD", tags: [agrifood]}
+    - {priority: SMART LIVING & ENERGY, quote: "SMART LIVING & ENERGY", tags: [construction, energy, cleantech]}
+    - {priority: SMART HEALTH, quote: "SMART HEALTH", tags: [health, life_sciences, medtech]}
+    - {priority: CULTURA E CREATIVITA’, quote: "CULTURA E CREATIVITA’", tags: [creative]}
+    - {priority: DESTINAZIONE INTELLIGENTE, quote: "DESTINAZIONE INTELLIGENTE", tags: [tourism]}
+    - {priority: "Space economy (Intelligenza artificiale; Tecnologie quantistiche; Tecnologie spaziali)", quote: "2. Space economy (Intelligenza artificiale; Tecnologie quantistiche; Tecnologie spaziali).", tags: [space, ai, quantum]}
+  ITC1:
+    - {priority: Manifattura avanzata, tags: [advanced_manufacturing, robotics, automation, industry_4_0]}
+    - {priority: Aerospazio, tags: [aerospace, space, defence]}
+    - {priority: Mobilità Sostenibile, tags: [mobility, automotive]}
+    - {priority: "Tecnologie, risorse e materiali verdi", tags: [cleantech, materials, circular_economy]}
+    - {priority: Food, tags: [agrifood]}
+    - {priority: Salute, tags: [health, life_sciences, medtech]}
+  ITH5:
+    - {priority: meccatronica e motoristica, tags: [advanced_manufacturing, robotics, automation, automotive, industry_4_0]}
+    - {priority: digitale e logistica, tags: [digital, logistics, ai, data]}
+    - {priority: agroalimentare, tags: [agrifood]}
+    - {priority: edilizia e costruzioni, tags: [construction]}
+    - {priority: industrie della salute e del benessere, tags: [health, life_sciences, medtech]}
+    - {priority: industrie culturali e creative, tags: [creative]}
+    - {priority: innovazione nei servizi, tags: [services]}
+    - {priority: energia e sviluppo sostenibile, tags: [energy, cleantech]}
+    - {priority: turismo, tags: [tourism]}
+    - {priority: space economy, tags: [space]}
+    - {priority: grandi infrastrutture critiche o complesse, tags: [infrastructure, defence]}
+  ITI1:
+    - {priority: Impresa intelligente e sostenibile, tags: [advanced_manufacturing, robotics, automation, digital, industry_4_0]}
+    - {priority: "Ambiente, territorio ed energia", tags: [energy, cleantech]}
+    - {priority: Salute, tags: [health, life_sciences, medtech]}
+    - {priority: Smart agrifood, tags: [agrifood]}
+    - {priority: Cultura e beni culturali, tags: [creative]}
+  ITI4:
+    - {priority: Aerospazio, quote: "Aerospazio, Scienze della vita, Beni culturali e tecnologie della cultura, Agrifood, Industrie creative digitali, Green Economy e Sicurezza", tags: [aerospace, space, defence]}
+    - {priority: Sicurezza, quote: "Aerospazio, Scienze della vita, Beni culturali e tecnologie della cultura, Agrifood, Industrie creative digitali, Green Economy e Sicurezza", tags: [security, defence, cybersecurity, robotics]}
+    - {priority: Automotive, tags: [automotive, mobility]}
+    - {priority: Economia del Mare, tags: [blue_economy]}
+    - {priority: Scienze della vita, quote: "Aerospazio, Scienze della vita, Beni culturali e tecnologie della cultura, Agrifood, Industrie creative digitali, Green Economy e Sicurezza", tags: [health, life_sciences]}
+    - {priority: Industrie creative digitali, quote: "Aerospazio, Scienze della vita, Beni culturali e tecnologie della cultura, Agrifood, Industrie creative digitali, Green Economy e Sicurezza", tags: [creative, digital]}
+    - {priority: Green Economy, quote: "Aerospazio, Scienze della vita, Beni culturali e tecnologie della cultura, Agrifood, Industrie creative digitali, Green Economy e Sicurezza", tags: [cleantech, energy]}

@@ -18,7 +18,7 @@ import type { CompanyProfile } from "../profile";
 import type {
   Claim, EvidenceRef, MissionEvent, Specialist, WorkspaceAction, WorkspaceDecision,
 } from "../workspace";
-import { agenda, assess, findInstruments, precedents, requirements, route, type CapitalPort } from "./capital";
+import { agenda, assess, findInstruments, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
 import { CitationLedger, type Specialist as Sp } from "./ledger";
 import { runLoop, type ModelClient, type ToolHandler } from "./loop";
 import {
@@ -203,7 +203,16 @@ export function wincentTools(ctx: Ctx) {
         instrument_types: strs("any of grant, loan, guarantee, recoverable_advance, equity, tax_credit. A guarantee question is guarantee, not loan."),
         jurisdictions: strs("ISO2 codes or EU"),
         name_query: str("optional: words in the instrument's name or administering body, e.g. 'Fondo di Garanzia', 'InvestEU'"),
+        level: { type: "string", enum: ["national", "regional"], description: "optional: national instruments only, or regional ones only" },
+        region: str("optional: a NUTS code (ITC4) or Italian region name (Lombardia): that region's instruments plus the national ones"),
       }, ["objective"]),
+      tool("match_status", "Status matching (playbook 4d.2, 4e): which products a status the company HOLDS OR PLANS opens, per level and role (applicant, intermediary, investee), what is still required, and how each status is obtained; with an activity, which regions' own strategies (S3) fit it. Every rule cited [cN].", {
+        status: strs("statuses held or planned, e.g. 'art106', 'startup_innovativa', 'pmi_innovativa', 'sme', 'estab.it', 'estab.it.ITC4', 'bank', 'leasing', 'confidi'"),
+        level: { type: "string", enum: ["national", "regional", "local", "eu"], description: "optional: one level only" },
+        activity: str("optional: what the money is for, e.g. 'robot deployment in factories'; adds the regions whose S3 names it"),
+        region: str("optional: NUTS code or Italian region name the company is (or will be) established in"),
+        country: str("ISO2, default IT"),
+      }, ["status"]),
       tool("assess_instrument", "One instrument against the company profile: status, blockers, gates with cited quotes, the deciding question.",
         { instrument_id: str("from find_instruments") }, ["instrument_id"]),
       tool("find_precedents", "Precedents (playbook 1c): companies this instrument, or this institution for this kind of move, already backed in a similar situation. Use them for every main route and in outreach drafts. Says explicitly when none is found.", {
@@ -237,6 +246,8 @@ export function wincentTools(ctx: Ctx) {
         }) },
       read_agenda: { run: (i: Record<string, unknown>) => agenda(c, i as never,
         (url, quote, label) => cite(ctx, "wincent", "read_agenda")(null, url, quote, label)) },
+      match_status: { required: ["status"], run: (i: Record<string, unknown>) => matchStatus(c, i as never,
+        (sha, quote, label, span) => cite(ctx, "wincent", "match_status")(sha, null, quote, label, span)) },
       fund_requirements: { required: ["instrument_id", "focus"], run: (i: Record<string, unknown>) => requirements(c, String(i.instrument_id), String(i.focus)) },
       application_route: { required: ["instrument_id"], run: (i: Record<string, unknown>) => route(c, String(i.instrument_id)) },
       ...s.handlers,

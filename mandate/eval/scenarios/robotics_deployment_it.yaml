@@ -1,0 +1,50 @@
+# Eval case: a robot-deployment scale-up entering Italy. Encodes the owner's habits in
+# mandate/playbooks/funding-routes.md §4d (open door, status as a plan step, reform as the
+# route) and §4e (below the national level, narrowed by status and by economic geography,
+# with a current political read). Same format as fintech_guarantees.yaml: must / must_not.
+# Grounded by batch 1 (capital/reference/batch_italy): match_status, the S3 region table,
+# the Fondo di Garanzia DO, DL 69/2013 art. 2 (Nuova Sabatini), DL 179/2012 art. 25.
+id: robotics_deployment_it
+job: funding-routes
+founder_says: >
+  We deploy industrial robots in SME factories on a robots-as-a-service model: we
+  buy the robots, place them with the customer and finance them over 3-5 years. We
+  are expanding into Italy. We are thinking of setting up an Italian company and
+  either registering it as a startup innovativa or getting Art. 106 status so we can
+  finance our customers ourselves. Which public money fits, and where in Italy?
+profile_hint:
+  name: Example Robotics (eval case robotics_deployment_it)
+  description: >
+    Robot-deployment scale-up (robots-as-a-service and leasing to manufacturing SMEs).
+    Raised EUR 25M. Entering Italy; plans an Italian subsidiary and is weighing start-up
+    innovativa registration and/or Art. 106 TUB authorisation for a financing arm.
+  sector: industrials_manufacturing
+  subsectors: [robotics, automation]
+  customerType: b2b
+  markets: [IT]
+  developmentStage: scaling_revenue
+# Used by the runner ONLY if Mandate asks the founder first (ask_founder). Assumed answers,
+# NOT the owner's.
+founder_followup: >
+  We are a German GmbH, 6 years old, about 120 staff, EUR 18M revenue. No Italian entity
+  yet; first customers are in Lombardia and Emilia-Romagna. We would want to finance
+  about EUR 30M of robots for Italian customers over three years.
+must:
+  - Establishes structure first (entity, establishment in Italy, which statuses are held versus planned) and asks only what the profile lacks.
+  - "Matches STATUS to doors, per role: Art. 106 status (an Italian intermediary) is what lets the company's financing arm bring its customer loans or leases to the Fondo di Garanzia for PMI (direct and portfolio guarantee) and to Nuova Sabatini as a lender or leasing intermediary; cited to the Disposizioni operative and DL 69/2013 art. 2."
+  - "Treats getting Art. 106 as a plan step with a sequence and a timeline (Banca d'Italia authorisation; Italian registered office; capital; object limited to Art. 106 activities, Art. 107 TUB, cited), not as a reason to park the financing route."
+  - "Checks startup innovativa against its own criteria (SME, at most 60 months since incorporation, Italian residence or an Italian production site or branch, DL 179/2012 art. 25, cited) and says whether a new Italian subsidiary of a 6-year-old group could qualify, flagging it as a fact to verify, never assuming it."
+  - "Names Nuova Sabatini as the instrument the CUSTOMERS use to buy or lease the robots (SME machinery, hardware and digital technologies), cited, and uses it as a sales argument."
+  - "Works national, regional and local separately: national (Fondo di Garanzia, Sabatini, start-up regime), regional (the regions' own programmes, regional guarantee sections, ERDF calls), local (Camere di commercio vouchers), and leads with the level whose door is open for this applicant."
+  - "Narrows by economic geography: the industrial north (Lombardia, Veneto, Piemonte, Emilia-Romagna, Toscana) and Lazio for defence/security and the capital, each grounded in the region's own S3 priority (e.g. Manifattura avanzata, Smart Manufacturing, meccatronica e motoristica), cited."
+  - "Gives a current political read: what is moving (the Fondo di Garanzia transition rules to 31 Dec 2026 and the 2027 reform; Sabatini refinancing in the budget law; regional giunte calls) and puts the routes it relies on on the watchlist."
+  - Uses precedents (the Fondo di Garanzia's or the regions' past awards to comparable companies, or 106 intermediaries already using the Fund) or says explicitly there is none.
+  - Every factual claim about an Italian rule is cited [cN] or marked unverified; a regional programme not in the corpus is researched live and its source stored (grounding), not asserted.
+must_not:
+  - Asserts that the company qualifies as a startup innovativa without checking age, size and the Italian-site condition.
+  - Parks Italy, or the financing arm, for want of Art. 106 status instead of recommending it as a sequenced step.
+  - Lists every Italian region or programme instead of narrowing by status and by economic geography.
+  - Treats Italy as one level (national only) or skips the local level entirely.
+  - Presents an uncited rule as cited, or a register record as a citation.
+  - Generalises the German Hausbank rule or any other country's rule to Italy.
+  - Recommends starting the investment before applying where the instrument's incentive effect requires applying first.
