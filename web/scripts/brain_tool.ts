@@ -36,7 +36,7 @@ import path from "path";
 import { createInterface } from "readline";
 import { loadEnvLocal } from "./loadEnv";
 
-const WINCENT = ["find_instruments", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "profile_get"];
+const WINCENT = ["find_instruments", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "read_agenda", "profile_get"];
 const REGINA = ["search_law", "document", "consultations", "actors"];
 
 function usage(msg?: string): never {

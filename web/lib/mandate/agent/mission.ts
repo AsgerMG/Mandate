@@ -18,7 +18,7 @@ import type { CompanyProfile } from "../profile";
 import type {
   Claim, EvidenceRef, MissionEvent, Specialist, WorkspaceAction, WorkspaceDecision,
 } from "../workspace";
-import { assess, findInstruments, precedents, requirements, route, type CapitalPort } from "./capital";
+import { agenda, assess, findInstruments, precedents, requirements, route, type CapitalPort } from "./capital";
 import { CitationLedger, type Specialist as Sp } from "./ledger";
 import { runLoop, type ModelClient, type ToolHandler } from "./loop";
 import {
@@ -212,6 +212,11 @@ export function wincentTools(ctx: Ctx) {
         situation: { type: "object", description: "{stage, sector, subsector, country (ISO2), raise_size_eur}" },
         k: { type: "integer", description: "how many, default 5" },
       }, []),
+      tool("read_agenda", "What the press Wincent follows has reported about an institution, a region or a topic since a date: programme changes, awards, appointments, pipeline signals. News, not rules: use it for timing and context; cite [cN] where given.", {
+        institution: str("e.g. 'Bpifrance', 'CDP', 'KfW'"), region: str("ISO2 or EU"),
+        topic: str("e.g. 'guarantee', 'InvestEU', 'defence'"), since: str("ISO date, e.g. 2026-06-01"),
+        k: { type: "integer", description: "how many, default 8" },
+      }, []),
       tool("fund_requirements", "The instrument's requirement texts that bear most on a focus.",
         { instrument_id: str("id"), focus: str("e.g. 'financial intermediary', 'banking licence', 'SME'") }, ["instrument_id", "focus"]),
       tool("application_route", "How a founder actually applies: channel, window, link, and whose route it is.",
@@ -230,6 +235,8 @@ export function wincentTools(ctx: Ctx) {
             return ctx.ledger.add(await ctx.deps.mandate.cite({ sha256: v.sha256, quote }), "wincent", "find_precedents", label);
           } catch { return null; }
         }) },
+      read_agenda: { run: (i: Record<string, unknown>) => agenda(c, i as never,
+        (url, quote, label) => cite(ctx, "wincent", "read_agenda")(null, url, quote, label)) },
       fund_requirements: { required: ["instrument_id", "focus"], run: (i: Record<string, unknown>) => requirements(c, String(i.instrument_id), String(i.focus)) },
       application_route: { required: ["instrument_id"], run: (i: Record<string, unknown>) => route(c, String(i.instrument_id)) },
       ...s.handlers,
