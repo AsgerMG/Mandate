@@ -64,13 +64,11 @@ for _anc in _Path(__file__).resolve().parents:
     if (_anc / "lib" / "etl_env.py").exists():
         _sys.path.insert(0, str(_anc / "lib"))
         break
-from etl_env import DB  # noqa: E402
 # --- end ETL path bootstrap ---
 
 import argparse  # noqa: E402
 import json  # noqa: E402
 import os  # noqa: E402
-import sqlite3  # noqa: E402
 
 ROOT = _Path(__file__).resolve().parents[2]
 DEFAULT_CORRECTIONS = (ROOT / "project-mgmt" / "evidence"
@@ -197,16 +195,27 @@ def main() -> int:
         print("\n  Remove the flag from the evidence line once the write is "
               "approved.\n  Nothing was written to either store.")
         return 1
-    conn = sqlite3.connect(DB, timeout=60)
-    conn.row_factory = sqlite3.Row
+    # Postgres is the one store (PLATFORM.md; the SQLite file is retired), so
+    # the plan is built, checked for drift and written there only. --postgres
+    # is still accepted, and now changes nothing.
+    dsn = os.environ.get("DATABASE_URL")
+    if not dsn:
+        for line in (ROOT / ".env.local").read_text().splitlines():
+            if line.startswith("DATABASE_URL="):
+                dsn = line.split("=", 1)[1].strip().strip('"')
+    if not dsn:
+        return _sys.exit("DATABASE_URL not set (expected in capital/.env.local). "
+                         "Nothing was written.")
+    import psycopg2
+    pg = psycopg2.connect(dsn)
+    cur = pg.cursor()
 
-    def sq_fetch(iid, key):
-        return [r["value_spec"] for r in conn.execute(
-            "SELECT value_spec FROM eligibility_gates "
-            "WHERE instrument_id = ? AND gate_key = ?", (iid, key))]
+    def pg_fetch(iid, key):
+        cur.execute("SELECT value_spec FROM eligibility_gates "
+                    "WHERE instrument_id = %s AND gate_key = %s", (iid, key))
+        return [r[0] for r in cur.fetchall()]
 
-    plan, drift, already = build_plan(sq_fetch, rows)
-
+    plan, drift, already = build_plan(pg_fetch, rows)
     by_action: dict[str, int] = {}
     for c in plan:
         by_action[c["action"]] = by_action.get(c["action"], 0) + 1
@@ -215,63 +224,23 @@ def main() -> int:
         to = json.dumps(c["proposed_value_spec"]) if c["proposed_value_spec"] else "NULL"
         print(f"  {c['instrument_id']} [{c['gate_key']}] {c['clause']}\n"
               f"      {json.dumps(c['current_value_spec'])}\n   -> {to}")
-    if not report("sqlite", plan, drift, already, len(rows)):
+    if not report("postgres", plan, drift, already, len(rows)):
+        pg.close()
         return 1
-
-    pg = pg_plan = pg_drift = pg_already = None
-    if args.postgres:
-        dsn = os.environ.get("DATABASE_URL")
-        if not dsn:
-            for line in (ROOT / ".env.local").read_text().splitlines():
-                if line.startswith("DATABASE_URL="):
-                    dsn = line.split("=", 1)[1].strip().strip('"')
-        if not dsn:
-            return _sys.exit("DATABASE_URL not set (expected in the repo-root "
-                             ".env.local). Nothing was written to either store.")
-        import psycopg2
-        pg = psycopg2.connect(dsn)
-        cur = pg.cursor()
-
-        def pg_fetch(iid, key):
-            cur.execute("SELECT value_spec FROM eligibility_gates "
-                        "WHERE instrument_id = %s AND gate_key = %s", (iid, key))
-            return [r[0] for r in cur.fetchall()]
-
-        pg_plan, pg_drift, pg_already = build_plan(pg_fetch, rows)
-        # Postgres is checked BEFORE SQLite is written, so a store that has
-        # moved stops the whole pass rather than leaving the two half-applied
-        # in opposite directions.
-        if not report("postgres", pg_plan, pg_drift, pg_already, len(rows)):
-            pg.close()
-            return 1
 
     if not args.apply:
         print("\nDRY RUN — nothing written. Re-run with --apply.")
-        if pg:
-            pg.close()
+        pg.close()
         return 0
 
-    for c in plan:
-        spec, method = proposed(c)
-        conn.execute(
-            "UPDATE eligibility_gates SET value_spec = ?, encoding_method = ? "
-            "WHERE instrument_id = ? AND gate_key = ?",
-            (spec, method, c["instrument_id"], c["gate_key"]))
-    conn.commit()
-    print(f"\nSQLITE: applied {len(plan)} corrections")
-
-    if pg:
-        with pg, pg.cursor() as cur:
-            cur.executemany(
-                "UPDATE eligibility_gates SET value_spec = %s, encoding_method = %s "
-                "WHERE instrument_id = %s AND gate_key = %s",
-                [proposed(c) + (c["instrument_id"], c["gate_key"]) for c in pg_plan])
-        pg.close()
-        print(f"POSTGRES: applied {len(pg_plan)} corrections")
-
-    print("\nre-run:")
-    print("  cd ../web && npx tsx scripts/check_winner_not_gated.ts")
-    print("  python3 ETL/terms/check_gate_subject.py")
+    with pg, pg.cursor() as wcur:
+        wcur.executemany(
+            "UPDATE eligibility_gates SET value_spec = %s, encoding_method = %s "
+            "WHERE instrument_id = %s AND gate_key = %s",
+            [proposed(c) + (c["instrument_id"], c["gate_key"]) for c in plan])
+    pg.close()
+    print(f"POSTGRES: applied {len(plan)} corrections")
+    print("\nre-run:  python3 ETL/terms/check_corrections_applied.py")
     return 0
 
 
