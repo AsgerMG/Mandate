@@ -61,7 +61,7 @@ ALLOWED = [
     (r"capital/website/build/lib/corpus_stores\.py$", "a comment in the census families"),
     (r"web/lib/intelligence/(record|pipeline)\.ts$", "recordBrief, called only from runIntelligence, which no route calls (/brief retired)"),
     (r"web/lib/intelligence/(caps|memoCandidates|rules|briefRows\.test)\.ts$", "comments citing past brief_records counts"),
-    (r"mandate/ops/archive_dead_weight\.py$", "this script"),
+    (r"^mandate/(archive\.py|ops/archive_dead_weight\.(py|sh)|tests/test_archive\.py)$", "this archive tool and its test"),
 ]
 # a table the product still writes would show recent rows: refuse if any are newer than this
 QUIET_DAYS = 30
