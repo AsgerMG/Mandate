@@ -108,7 +108,13 @@ Goal: the owner talks to Wincent about real-shaped cases and grades what comes b
   median grade measured (the baseline, whatever it is).
 
 ### Phase 2. Wire Wincent to the data its method needs (weeks 2-5)
-Goal: the 9 missing moves become served from our own grounded data, not live web research.
+**Principle (owner, 10 Nov): the brain, not an encyclopedia.** Everything factual
+is public, and Wincent researches it live, cited; every source it fetches is
+stored through grounding, so research compounds. We ground only a small DECIDING
+CORE: the few rules that decide eligibility and status (the status -> product
+reasoning), precedents, and people. The long tail stays live research. A data
+batch must earn its place by moving a graded case.
+Goal: the moves research cannot do well alone become served from that core.
 Streams, in the order the alignment ranked them, each through the factory's step 6:
 1. **People and institutions**: EU Whoiswho + EU Transparency Register (+ German
    Lobbyregister, French HATVP) into the actors register; weekly. Unlocks P1/P2,

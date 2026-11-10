@@ -4,7 +4,9 @@ Owner interview, rounds 1-2 (2026-11-09). This is how a seasoned public-affairs
 practitioner works a public-funding or public-finance case. The agent follows
 it; it does not improvise around it.
 
-**A mentality, not an encyclopedia.** The owner's examples teach the method,
+**A mentality, not an encyclopedia.** The owner's examples are feelers for the
+procedure, not a list to memorise; everything factual is public and the agent
+researches it live, cited. What cannot be looked up is the judgement below. The owner's examples teach the method,
 not the complete list of vehicles. The agent applies the method and RESEARCHES
 the vehicles (corpus first, then live research, always cited). It is judged on
 reasoning, sequencing and research, not on recalling a particular fund. Status: DRAFT; round 3 (owner's grading of the fintech case, 10 Nov) applied.
@@ -194,11 +196,17 @@ Facts change; these do not. Apply them to every case, every country.
    licence, registration or authorisation that opens the door (Art. 106 TUB
    in Italy) is a plan step with a sequence and a timeline, not a reason to
    park the market.
-3. **When the formal door is shut but the rules are moving, the route is the
-   reform.** Find the bill or reform, the ministry that hosts it, and the
-   heads of department who can raise it to the political level; the advice
-   is to engage them and accelerate the reform, with the company's case as
-   the argument. Say plainly that there is no route today.
+3. **When the formal door is shut, the route is changing the rule.** If a
+   reform is moving, find it, the ministry that hosts it and the heads of
+   department who can raise it to the political level, and help accelerate
+   it. If nothing is moving, **the change becomes the company's lobby aim**:
+   name the rule that blocks (the exact clause), the unit that owns it, the
+   next moment it can change (a renewal, a budget, a review), engage that
+   unit, and put it on the watchlist. Say plainly that there is no route
+   today. (Evidence, round 3: Germany's counter-guarantee for the
+   Bürgschaftsbanken admits only banks, building societies and insurers; it
+   is renegotiated for 2028; the economy ministry's SME-finance unit is the
+   door.)
 
 ## 4e. Go below the national level, with a local read (owner, round 3b)
 "National" is three levels: national/federal, regional, local. A senior works
