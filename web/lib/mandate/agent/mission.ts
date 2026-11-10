@@ -50,7 +50,8 @@ export interface MissionInput {
 
 type Emit = (e: MissionEvent) => void;
 
-interface Ctx {
+/** Exported for the bench (web/scripts/brain_tool.ts), which runs these same handlers without a model. */
+export interface Ctx {
   deps: MissionDeps;
   ledger: CitationLedger;
   missionId: string;
@@ -190,7 +191,7 @@ function shared(ctx: Ctx, me: Sp): { tools: Anthropic.Tool[]; handlers: Record<s
   return { tools, handlers };
 }
 
-function wincentTools(ctx: Ctx) {
+export function wincentTools(ctx: Ctx) {
   const p = () => ctx.profile.payload;
   const c = ctx.deps.capital;
   const s = shared(ctx, "wincent");
@@ -198,7 +199,7 @@ function wincentTools(ctx: Ctx) {
     tools: [
       tool("find_instruments", "Candidate public-capital instruments from the corpus. Uncited starting list.", {
         objective: str("what the money is for, in the company's terms"),
-        instrument_types: strs("any of grant, loan, recoverable_advance, equity, tax_credit (loan covers guarantees)"),
+        instrument_types: strs("any of grant, loan, guarantee, recoverable_advance, equity, tax_credit. A guarantee question is guarantee, not loan."),
         jurisdictions: strs("ISO2 codes or EU"),
         name_query: str("optional: words in the instrument's name or administering body, e.g. 'Fondo di Garanzia', 'InvestEU'"),
       }, ["objective"]),
@@ -235,7 +236,7 @@ function wincentTools(ctx: Ctx) {
   };
 }
 
-function reginaTools(ctx: Ctx) {
+export function reginaTools(ctx: Ctx) {
   const pol = ctx.deps.policy;
   const s = shared(ctx, "regina");
   return {
