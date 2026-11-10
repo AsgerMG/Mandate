@@ -3,13 +3,33 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
-## NEXT SESSION: follow mandate/plans/master_plan.md
-The end-to-end plan (10 Nov): the brain factory loop, phases 0-6, JEV, pass bars,
-decisions. Phase 0 first: owner tops up Anthropic credit; archive the retired one-pager
-product (simplification_review.md 3a); split web CI from capital CI; one health
-monitor; Railway config migration before 1 Dec; per-workspace spend ledger.
-Weekly cron restored 10 Nov (full run, Sundays 03:00 UTC). Politico (5) still 429 and
-EDPB 503 in Regina's run 117: Phase 0 follow-up.
+## NEXT SESSION (saved 10 Nov evening at 91% usage): pick up here
+Read first: mandate/plans/master_plan.md ("Decided 10 Nov" block), data_audit.md,
+mandate/brains/wincent/grounding_map.md, mandate/playbooks/funding-routes.md (rounds 3, 3b, 4d, 4e).
+Owner decisions: narrow first (W6 funding route plan, Italy + EU, until >= 4/5 on 5
+cases); agent loop -> mandate-api on Railway; OWN management app with workflow/process
+graphs (screens follow proven workflows); scope CORE DE/IT/FR/EU/UK, HUBS SE/DK/NO/NL/BE/ES.
+Owner wants me to SPAR (positions, push-back), not just execute.
+
+Three agents were stopped mid-work with WIP commits on their branches (not merged):
+1. `batch-italy`: Italy deciding core (status_rules + match_status tool, TUB 106-107,
+   current Fondo rules, DL 179/2012, Nuova Sabatini, S3 regional fit), live research +
+   caching as the long tail, eval case robotics_deployment_it.yaml, load_batch_italy.sh.
+2. `agent-on-railway`: Wincent's loop into mandate-api (background missions, NDJSON
+   events), tools likely ported to Python SQL (plain search replacing the old ranker),
+   website as thin proxy, bench kept on the same tools.
+3. `data-tiers`: tiers in europe_scope.json + manifest (OUT refresh stops; Spain stays),
+   equity stakes into find_precedents, read_agenda tool, usage log (mandate.tool_calls),
+   archive_dead_weight.sh (~170 MB to bucket archive/2026-11/), old news down-ranked.
+Resume each: read its last WIP commit message (git log -1 origin/<branch>), finish, review,
+merge in this order: data-tiers, batch-italy, agent-on-railway (largest last).
+Then: owner runs the load/archive commands; Wincent bench re-runs the fintech + Italian
+robot cases (no API cost); interview round 4 (procurement, rule change mid-process,
+"don't do this yet"); case library + judge calibration from graded cases.
+Production state: budget OFF (LLM_BUDGET=off on all services; API account empty);
+weekly cron Sundays 03:00 UTC on 604591e3+; Regina on 604591e3 (host give-up live);
+all four CI workflows green; preflight covers all four. Capina deletes 11 Nov (grace).
+Blocked on owner: API budget ($100 + $150/month cap), see mandate/plans/budget_brief.md.
 
 ## OPEN LOOPS (read first; close before starting anything new)
 Principle (owner, 9 Nov): finish before moving on. A change is done when it is
