@@ -1,0 +1,49 @@
+{
+ "archives": [
+  {
+   "key": "archive/2026-11/classify_audit.csv.gz",
+   "sha256": "2b4615736ff7e7ef7330183c355a6ce0dc0e119689d21f7efc90eaf9a74c19d9",
+   "rows": 420416,
+   "bytes": 2313746,
+   "query": "SELECT * FROM capital.\"classify_audit\" ORDER BY \"id\"",
+   "archived_at": "2026-11-11T15:29:07+00:00",
+   "by": "archive_dead_weight.sh"
+  },
+  {
+   "key": "archive/2026-11/company_sector_llm.csv.gz",
+   "sha256": "1d18691164aa5e47315c1c59d58d46000cb9a3cce28dfc124ccb9015197a6e8b",
+   "rows": 156100,
+   "bytes": 985514,
+   "query": "SELECT * FROM capital.\"company_sector_llm\" ORDER BY \"company_id\"",
+   "archived_at": "2026-11-11T15:29:07+00:00",
+   "by": "archive_dead_weight.sh"
+  },
+  {
+   "key": "archive/2026-11/_reconcile_20261105_sqlite_gates.csv.gz",
+   "sha256": "e0b37150b0fc9e9bb58bf461c72cb741ecd547039266292bac970c7b0b441ceb",
+   "rows": 342,
+   "bytes": 42493,
+   "query": "SELECT * FROM capital.\"_reconcile_20261105_sqlite_gates\"",
+   "archived_at": "2026-11-11T15:29:07+00:00",
+   "by": "archive_dead_weight.sh"
+  },
+  {
+   "key": "archive/2026-11/brief_records.csv.gz",
+   "sha256": "330865d88e5cbc8470dc451b2560fa066e9da0a158a8a08f6a518c420bc16b97",
+   "rows": 38,
+   "bytes": 8572,
+   "query": "SELECT * FROM capital.\"brief_records\" ORDER BY \"created_at\"",
+   "archived_at": "2026-11-11T15:29:07+00:00",
+   "by": "archive_dead_weight.sh"
+  },
+  {
+   "key": "archive/2026-11/signals_articles_irrelevant_text.csv.gz",
+   "sha256": "d2e8bb8d1f1a30cb01f63f20b8e3fe68eeb6d7fce9b3593a3fe0193217dec237",
+   "rows": 2633,
+   "bytes": 839484,
+   "query": "SELECT id, url, title, raw_text FROM capital.signals_articles WHERE is_relevant = 0 AND full_text_fetched = 1 AND raw_text <> '' ORDER BY id",
+   "archived_at": "2026-11-11T15:29:07+00:00",
+   "by": "archive_dead_weight.sh"
+  }
+ ]
+}

@@ -15,9 +15,8 @@
     "published through the measured pipeline. It is data in transit, not schema, and",
     "giving it DDL would make it permanent. Clear it by publishing or archiving it."
   ],
-  "budget": 1,
+  "budget": 0,
   "tables_without_ddl": [
-    "_reconcile_20261105_sqlite_gates"
   ],
   "columns_without_ddl": {}
 }
