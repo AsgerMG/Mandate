@@ -1,0 +1,11 @@
+{
+  "name": "Example Robotics (eval case robotics_deployment_it)",
+  "description": "Robot-deployment scale-up: robots-as-a-service and leasing to manufacturing SMEs (buys the robots, places them with the customer, finances them over 3-5 years). German GmbH, 6 years old, about 120 staff, EUR 18M revenue, EUR 25M raised. Entering Italy: no Italian entity yet; first customers in Lombardia and Emilia-Romagna. Plans an Italian subsidiary and is weighing start-up innovativa registration and/or Art. 106 TUB authorisation for a financing arm. Wants to finance about EUR 30M of robots for Italian customers over three years.",
+  "sector": "industrial_manufacturing",
+  "subsectors": ["robotics_automation"],
+  "customerType": "b2b",
+  "incorporationCountry": "DE",
+  "entityCountries": ["DE"],
+  "markets": ["IT"],
+  "developmentStage": "scaling_revenue"
+}
