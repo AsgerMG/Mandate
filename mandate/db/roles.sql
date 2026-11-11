@@ -128,5 +128,12 @@ ALTER DEFAULT PRIVILEGES FOR ROLE grounding_owner IN SCHEMA grounding
   GRANT USAGE ON SEQUENCES TO capital_app, policy_app, mandate_app;
 -- and explicitly NOT: UPDATE, DELETE, TRUNCATE, to anyone.
 REVOKE UPDATE, DELETE, TRUNCATE ON ALL TABLES IN SCHEMA grounding FROM capital_app, policy_app, mandate_app, capital_ro;
+-- except one column pair: filling a version's never-extracted text. The trigger in
+-- grounding.sql (refuse_rewrite) refuses every UPDATE but that fill.
+DO $$ BEGIN
+  IF to_regclass('grounding.document_versions') IS NOT NULL THEN
+    GRANT UPDATE (text, extractor) ON grounding.document_versions TO capital_app, policy_app, mandate_app;
+  END IF;
+END $$;
 
 COMMIT;

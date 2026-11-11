@@ -158,11 +158,30 @@ CREATE INDEX IF NOT EXISTS ix_gpe_hnsw_voyage_4_large
     WHERE model = 'voyage-4-large';
 
 -- ── append-only, for every role ────────────────────────────────────────────
+-- THE ONE UPDATE THAT IS NOT A REWRITE: filling a version's text that was never extracted.
+-- 598 PDF versions were registered on 2026-11-05 from the laptop archive with text NULL
+-- ('none (pdfplumber not installed)'); the bytes are in the bucket, so their text is a fact
+-- nobody has computed yet, not one anybody would be overwriting. Allowed exactly when
+-- OLD.text IS NULL, NEW.text IS NOT NULL, NEW.extractor IS NOT NULL and every other column
+-- is identical. A second fill (OLD.text is no longer NULL), a text change, or any other
+-- column change is refused like any rewrite. The brain roles hold UPDATE on (text,
+-- extractor) only (below and roles.sql); this trigger is what limits it to the fill.
+-- mandate.grounding.store.fill_text is the one caller.
 CREATE OR REPLACE FUNCTION grounding.refuse_rewrite() RETURNS trigger
 LANGUAGE plpgsql AS $$
 BEGIN
   IF coalesce(current_setting('grounding.allow_rewrite', true), '') = 'on' THEN
     RETURN CASE WHEN TG_OP = 'DELETE' THEN OLD ELSE NEW END;
+  END IF;
+  IF TG_OP = 'UPDATE' AND TG_TABLE_NAME = 'document_versions' THEN
+    IF OLD.text IS NULL AND NEW.text IS NOT NULL AND NEW.extractor IS NOT NULL
+       AND (NEW.id, NEW.document_id, NEW.fetched_at, NEW.sha256, NEW.mime, NEW.byte_size,
+            NEW.bucket_key, NEW.created_at, NEW.created_by)
+           IS NOT DISTINCT FROM
+           (OLD.id, OLD.document_id, OLD.fetched_at, OLD.sha256, OLD.mime, OLD.byte_size,
+            OLD.bucket_key, OLD.created_at, OLD.created_by) THEN
+      RETURN NEW;
+    END IF;
   END IF;
   RAISE EXCEPTION 'grounding.% is append-only: % refused. A correction is a new row; '
                   'a reviewed migration sets grounding.allow_rewrite.', TG_TABLE_NAME, TG_OP
@@ -181,6 +200,9 @@ BEGIN
                    'FOR EACH STATEMENT EXECUTE FUNCTION grounding.refuse_rewrite()', t);
   END LOOP;
 END $$;
+
+-- The fill above needs the column privilege; the trigger confines it to the fill.
+GRANT UPDATE (text, extractor) ON grounding.document_versions TO capital_app, policy_app, mandate_app;
 
 -- ── the views a brain reads ────────────────────────────────────────────────
 -- The latest fetch of each document, and what it served. "Current" is derived,

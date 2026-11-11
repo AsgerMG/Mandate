@@ -232,6 +232,27 @@ def latest(con, url: str) -> Version | None:
     return _version(row) if row else None
 
 
+def fill_text(con, version_id: int, text: str, extractor: str) -> Version:
+    """Fill the text of a version whose text was never extracted (text IS NULL).
+
+    The one UPDATE grounding allows (mandate/db/grounding.sql, refuse_rewrite): NULL text
+    becomes text, with the extractor that produced it, every other column unchanged. A
+    version that already has text is returned untouched when the text is identical, and
+    refused otherwise -- a different extraction of the same bytes is not a correction this
+    store makes (cite the new text from a new chunker or a new version instead)."""
+    if not text or not extractor:
+        raise ValueError("fill_text needs non-empty text and the extractor that produced it")
+    v = version(con, version_id)
+    if v.text is not None:
+        if v.text == text:
+            return v
+        raise ValueError(f"version {version_id} already has text ({len(v.text)} chars) that differs "
+                         f"from this extraction ({len(text)} chars); a fill never overwrites")
+    con.execute("UPDATE grounding.document_versions SET text = %s, extractor = %s "
+                "WHERE id = %s AND text IS NULL", (text, extractor, version_id))
+    return version(con, version_id)
+
+
 def read_original(v: Version, *, bucket: Bucket | None = None) -> bytes:
     """The original bytes, verified against the version's sha256."""
     return (bucket or default_bucket()).get(v.bucket_key)

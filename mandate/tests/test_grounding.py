@@ -84,6 +84,46 @@ def test_owner_is_stopped_by_the_trigger_unless_a_migration_says_so(mdb, bucket)
         c.rollback()
 
 
+def test_never_extracted_text_is_filled_once_and_nothing_else_moves(mdb, bucket):
+    """The one UPDATE grounding allows: NULL text -> text, with its extractor."""
+    from mandate.grounding import fill_text
+    with psycopg.connect(mdb.url("capital_app")) as c:
+        v = store_original(c, PDF + b" fill", "https://ec.europa.eu/fill.pdf", "application/pdf", T0,
+                           extractor="none (pdfplumber not installed)")
+        assert v.text is None
+        f = fill_text(c, v.id, TEXT, "pypdf-test")
+        assert f.text == TEXT and f.sha256 == v.sha256 and f.fetched_at == v.fetched_at
+        assert fill_text(c, v.id, TEXT, "pypdf-test").text == TEXT        # same text: a no-op
+        with pytest.raises(ValueError, match="never overwrites"):
+            fill_text(c, v.id, TEXT + " changed", "pypdf-test")
+        # the trigger itself, below the helper: a second fill, a text change, other columns
+        for stmt in ("UPDATE grounding.document_versions SET text = 'other', extractor = 'x' WHERE id = %s",
+                     "UPDATE grounding.document_versions SET extractor = 'x' WHERE id = %s",
+                     "UPDATE grounding.document_versions SET mime = 'text/plain' WHERE id = %s"):
+            with pytest.raises(psycopg.errors.InsufficientPrivilege):
+                with c.transaction():
+                    c.execute(stmt, (v.id,))
+        w = store_original(c, PDF + b" other", "https://ec.europa.eu/other.pdf", "application/pdf", T0)
+        for stmt in ("UPDATE grounding.document_versions SET text = 't' WHERE id = %s",      # no extractor
+                     "UPDATE grounding.document_versions SET text = 't', extractor = 'x', mime = 'a/b' WHERE id = %s"):
+            with pytest.raises(psycopg.errors.InsufficientPrivilege):
+                with c.transaction():
+                    c.execute(stmt, (w.id,))
+        c.rollback()
+    # the owner holds every privilege, so this is the trigger alone: a fill that also moves
+    # another column is refused
+    with psycopg.connect(mdb.admin_url) as c:
+        c.execute("SET ROLE grounding_owner")
+        u = store_original(c, PDF + b" owner", "https://ec.europa.eu/owner.pdf", "application/pdf", T0)
+        with pytest.raises(psycopg.errors.InsufficientPrivilege, match="append-only"):
+            with c.transaction():
+                c.execute("UPDATE grounding.document_versions SET text = 't', extractor = 'x', "
+                          "mime = 'text/plain' WHERE id = %s", (u.id,))
+        with c.transaction():
+            c.execute("UPDATE grounding.document_versions SET text = 't', extractor = 'x' WHERE id = %s", (u.id,))
+        c.rollback()
+
+
 def test_capital_ro_reads_and_cannot_insert(mdb, bucket):
     with psycopg.connect(mdb.url("capital_ro")) as c:
         c.execute("SELECT count(*) FROM grounding.document_versions")
@@ -113,6 +153,38 @@ def test_passages_are_cut_from_the_version_text(con):
     rows = con.execute("SELECT text FROM grounding.passages WHERE version_id = %s ORDER BY ordinal",
                        (v.id,)).fetchall()
     assert [r[0] for r in rows] == [TEXT[0:13], TEXT[15:30]]
+
+
+def test_backfill_fills_textless_html_and_lists_what_it_cannot(bucket, monkeypatch, capsys):
+    """fill_missing_text.py: a textless HTML version is filled from its bucket original;
+    a PDF with no extractable text is skipped and listed; a re-run finds nothing to do.
+    Its own database: the backfill commits, and the session database must stay clean."""
+    pypdf = pytest.importorskip("pypdf")
+    from mandate.grounding.migrations import fill_missing_text as fm
+    from mandate.grounding.testing import EphemeralMandate
+    monkeypatch.setattr(fm, "PYPDF", pypdf.__version__)
+    monkeypatch.setattr(fm, "bucket_from_env", lambda: bucket)
+    html = b"<html><body><p>Possono richiedere la garanzia gli intermediari.</p></body></html>"
+    with EphemeralMandate() as mdb:
+        _backfill_case(mdb, fm, html, monkeypatch, capsys)
+
+
+def _backfill_case(mdb, fm, html, monkeypatch, capsys):
+    with psycopg.connect(mdb.url("capital_app")) as c:
+        h = store_original(c, html, "https://ex.it/fill.html", "text/html", T0)
+        p = store_original(c, b"%PDF-1.4 not really a pdf", "https://ex.it/scan.pdf", "application/pdf", T0)
+        c.commit()
+    url = mdb.url("capital_app")
+    monkeypatch.setattr("sys.argv", ["fill", "--database-url", url, "--apply"])
+    assert fm.main() == 0
+    out = capsys.readouterr().out
+    assert "filled 1" in out and f"{p.id}" in out
+    with psycopg.connect(url) as c:
+        assert c.execute("SELECT text FROM grounding.document_versions WHERE id = %s", (h.id,)).fetchone()[0] \
+            == "Possono richiedere la garanzia gli intermediari."
+    monkeypatch.setattr("sys.argv", ["fill", "--database-url", url])
+    assert fm.main() == 0
+    assert "would_fill" not in capsys.readouterr().out
 
 
 def test_canonical_url_is_conservative():
