@@ -67,27 +67,21 @@ def test_no_live_reader_names_a_table_to_drop():
 
 
 def test_the_schema_change_drops_the_tables_and_lowers_the_registers(tmp_path, monkeypatch):
-    """The migration and the two register edits it writes at --apply (rehearsed
-    on copies; the full static checks were run on the real files on 10 Nov)."""
+    """The archive ran on 2026-11-11 (mandate/ops/archives.json). The committed
+    state it left must hold: migration 040 drops every archived table, and the
+    registers no longer declare them. (Until it ran, this test rehearsed
+    write_schema_change on copies; that rehearsal is in git history.)"""
     import json
-    import shutil
 
     spec = importlib.util.spec_from_file_location("adw2", ROOT / "mandate/ops/archive_dead_weight.py")
     adw = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(adw)
-    mig = tmp_path / "migrations"
-    shutil.copytree(ROOT / "capital/ETL/schema/migrations", mig)
-    for name in ("store_of_record.json", "schema_debt.json"):
-        shutil.copy(ROOT / "capital/ETL/schema" / name, tmp_path / name)
-    monkeypatch.setattr(adw, "MIGDIR", mig)
-    monkeypatch.setattr(adw, "STORE_OF_RECORD", tmp_path / "store_of_record.json")
-    monkeypatch.setattr(adw, "SCHEMA_DEBT", tmp_path / "schema_debt.json")
-    before = json.loads((tmp_path / "store_of_record.json").read_text())
-    out = adw.write_schema_change(adw.DROP)
-    assert out.name.endswith("_archive_dead_weight.sql")
-    assert all(f'DROP TABLE IF EXISTS "{t}";' in out.read_text() for t in adw.DROP)
-    sor = json.loads((tmp_path / "store_of_record.json").read_text())
-    assert "brief_records" not in sor["tables"] and "classify_audit" not in sor["tables"]
-    assert sor["not_postgres_budget"] == before["not_postgres_budget"] - 1
-    debt = json.loads((tmp_path / "schema_debt.json").read_text())
+    mig = ROOT / "capital/ETL/schema/migrations/040_archive_dead_weight.sql"
+    assert mig.exists()
+    assert all(f'DROP TABLE IF EXISTS "{t}";' in mig.read_text() for t in adw.DROP)
+    sor = json.loads((ROOT / "capital/ETL/schema/store_of_record.json").read_text())
+    assert not any(t in sor["tables"] for t in adw.DROP)
+    debt = json.loads((ROOT / "capital/ETL/schema/schema_debt.json").read_text())
     assert debt["tables_without_ddl"] == [] and debt["budget"] == 0
+    rec = json.loads((ROOT / "mandate/ops/archives.json").read_text())
+    assert any("archive/2026-11/" in json.dumps(v) for v in (rec.values() if isinstance(rec, dict) else rec))
