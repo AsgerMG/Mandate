@@ -45,7 +45,7 @@ import psycopg  # noqa: E402
 import yaml  # noqa: E402
 
 from mandate.api.extract import extractor  # noqa: E402
-from mandate.grounding.store import add_passages, ensure_source, locate, store_original  # noqa: E402
+from mandate.grounding.store import add_passages, ensure_source, fill_text, locate, store_original  # noqa: E402
 
 DATA = REPO / "capital" / "reference" / "batch_italy"
 MIGRATION = REPO / "capital" / "ETL" / "schema" / "migrations" / "039_status_rules.sql"
@@ -236,7 +236,7 @@ def load(db_url: str, prep: Prepared, *, apply: bool, embed: bool) -> dict:
         counts["migration"] = migrate(con, apply)
         src = ensure_source(con, SOURCE_KEY, "Wincent batch 1: Italy deciding texts",
                             publisher="various (pinned in capital/reference/batch_italy/sources.json)")
-        new_versions = new_passages = 0
+        new_versions = new_passages = filled = 0
         passage_ids: list[int] = []
         for d in prep.docs.values():
             v = store_original(con, d["data"], d["url"], d["mime"],
@@ -245,6 +245,17 @@ def load(db_url: str, prep: Prepared, *, apply: bool, embed: bool) -> dict:
                                kind=d["kind"], source_id=src, http_status=d["http_status"], bucket=bucket)
             if v.sha256 != d["sha256"]:
                 raise Drift(f"{d['key']}: stored sha256 differs")
+            # The same bytes may already be in grounding from another path. Registered
+            # without text (the 5 Nov archive load: 'none (pdfplumber not installed)'), the
+            # text is filled with the pinned extraction, the one the quotes were located in.
+            # Registered WITH text, that text must be the pinned one, or no span here holds.
+            if v.text is None:
+                v = fill_text(con, v.id, d["text"], d["extractor"])
+                filled += 1
+            elif v.text != d["text"]:
+                raise Drift(f"{d['key']}: grounding already holds these bytes (version {v.id}) with a "
+                            f"different text ({len(v.text)} chars, pinned {len(d['text'])}); the quotes' "
+                            f"spans would not resolve. Re-locate the quotes in the stored text.")
             new_versions += v.created
             before = con.execute("SELECT count(*) FROM grounding.passages WHERE version_id = %s "
                                  "AND chunker = %s", (v.id, CHUNKER)).fetchone()[0]
@@ -253,6 +264,7 @@ def load(db_url: str, prep: Prepared, *, apply: bool, embed: bool) -> dict:
             passage_ids += ids
         counts["documents"] = len(prep.docs)
         counts["versions_new"] = new_versions
+        counts["versions_text_filled"] = filled
         counts["passages"] = len(passage_ids)
         counts["passages_new"] = new_passages
 

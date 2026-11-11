@@ -94,6 +94,23 @@ def main() -> int:
                     c.execute("INSERT INTO funding_instruments (id, name, country, capital_type) "
                               "VALUES (%s, %s, 'IT', %s) ON CONFLICT DO NOTHING", (iid, name, ctype))
             bucket = tempfile.mkdtemp(prefix="batch_italy_bucket_")
+            # Production already holds the 2023 Disposizioni operative WITHOUT text (registered
+            # from the laptop archive on 5 Nov, 'none (pdfplumber not installed)'): reproduce it,
+            # so the loader's fill path is rehearsed, not only its fresh-insert path.
+            import datetime as dt  # noqa: PLC0415
+            import json  # noqa: PLC0415
+            from mandate.grounding.bucket import FilesystemBucket  # noqa: PLC0415
+            from mandate.grounding.store import store_original  # noqa: PLC0415
+            sys.path.insert(0, str(LOADER.parent))
+            from load_batch_italy import ORIGINALS  # noqa: PLC0415
+            do = next(d for d in json.loads((REPO / "capital/reference/batch_italy/sources.json").read_text())["documents"]
+                      if d["key"] == "fdg_do_2023")
+            with psycopg.connect(app) as c:
+                store_original(c, (ORIGINALS / do["sha256"]).read_bytes(),
+                               "urn:mandate:capital:raw/instrument_docs/fdg_disposizioni_operative_2023.pdf",
+                               "application/pdf", dt.datetime(2026, 11, 5, tzinfo=dt.timezone.utc),
+                               extractor="none (pdfplumber not installed)", bucket=FilesystemBucket(Path(bucket)))
+            print("pre-registered the 2023 DO without text, as production holds it")
             env = {**os.environ, "GROUNDING_BUCKET_DIR": bucket, "PYTHONPATH": str(REPO)}
             for k in ("BUCKET_ENDPOINT", "BUCKET_ACCESS_KEY_ID", "BUCKET_SECRET_ACCESS_KEY", "BUCKET_NAME"):
                 env.pop(k, None)
