@@ -1,0 +1,884 @@
+[
+ {
+  "id": "c1",
+  "citation": {
+   "sha256": "10198c227b8ca62534a6b8dd37112854fb718688146a6b7b6f20bb61683ff928",
+   "version_id": 12514,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/fondo_di_garanzia_disposizioni_operative_2023.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-21T20:43:33.110070+00:00",
+   "last_seen_at": "2026-11-10T17:22:33.674496+00:00",
+   "span": [
+    38346,
+    38479
+   ],
+   "quote": "“Soggetti beneficiari finali”: le PMI e i Professionisti ubicati (aventi sede legale ovvero \nsede operativa) sul territorio italiano;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.direct_guarantee (applicant): estab.it"
+ },
+ {
+  "id": "c2",
+  "citation": {
+   "sha256": "e4993c050802f7e41b85b221942a8d29d832ff7757b07623fe30ece7f52cf100",
+   "version_id": 14186,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-06-21;69~art2",
+   "title": "DL 69/2013 art. 2 - Nuova Sabatini (finanziamenti per beni strumentali)",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:24:46.758430+00:00",
+   "last_seen_at": "2026-11-10T17:24:46.758430+00:00",
+   "span": [
+    3820,
+    4266
+   ],
+   "quote": "le micro, piccole e medie imprese, come individuate dalla Raccomandazione 2003/361/CE della Commissione del 6 maggio 2003, possono accedere a finanziamenti e ai contributi a tasso agevolato per gli investimenti, anche mediante operazioni di leasing finanziario, in macchinari, impianti, beni strumentali di impresa e attrezzature nuovi di fabbrica ad uso produttivo, nonché per gli investimenti in hardware, in software ed in tecnologie digitali."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.nuova_sabatini (applicant): status.eu.sme_annex_i"
+ },
+ {
+  "id": "c3",
+  "citation": {
+   "sha256": "e4993c050802f7e41b85b221942a8d29d832ff7757b07623fe30ece7f52cf100",
+   "version_id": 14186,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-06-21;69~art2",
+   "title": "DL 69/2013 art. 2 - Nuova Sabatini (finanziamenti per beni strumentali)",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:24:46.758430+00:00",
+   "last_seen_at": "2026-11-10T17:24:46.758430+00:00",
+   "span": [
+    3820,
+    3941
+   ],
+   "quote": "le micro, piccole e medie imprese, come individuate dalla Raccomandazione 2003/361/CE della Commissione del 6 maggio 2003"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status status.eu.sme_annex_i"
+ },
+ {
+  "id": "c4",
+  "citation": {
+   "sha256": "deef31219ada4906065303ee860f111db8f3d3106bd0b03b42a71f02eadd086d",
+   "version_id": 14189,
+   "store": "primary",
+   "canonical_url": "https://www.regione.piemonte.it/web/node/13709",
+   "title": "Regione Piemonte - Approvata la S3 2021-2027 (DGR 43-4315 del 10/12/2021)",
+   "publisher": "Regione Piemonte",
+   "fetched_at": "2026-11-10T17:24:49.753521+00:00",
+   "last_seen_at": "2026-11-10T17:24:49.753521+00:00",
+   "span": [
+    1380,
+    1596
+   ],
+   "quote": "i Sistemi Prioritari dell’innovazione (SPI), evoluzione delle aree di specializzazione della precedente S3: Aerospazio; Mobilità Sostenibile; Manifattura avanzata; Tecnologie, risorse e materiali verdi; Food; Salute."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "Piemonte S3: Manifattura avanzata"
+ },
+ {
+  "id": "c5",
+  "citation": {
+   "sha256": "4cc011a6c9e64d8a5443b8ff8714611996eaab0eb03b2e6eae033a2a31df9b13",
+   "version_id": 14187,
+   "store": "primary",
+   "canonical_url": "https://www.regione.lombardia.it/ricerca-e-innovazione/governance-e-politiche-per-l-ecosistema-di-rei/strategia-di-specializzazione-intelligente",
+   "title": "Regione Lombardia - Strategia di Specializzazione Intelligente S3 2021-2027",
+   "publisher": "Regione Lombardia",
+   "fetched_at": "2026-11-10T17:25:23.792796+00:00",
+   "last_seen_at": "2026-11-10T17:25:23.792796+00:00",
+   "span": [
+    3615,
+    3635
+   ],
+   "quote": "Manifattura avanzata"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "Lombardia S3: Manifattura avanzata"
+ },
+ {
+  "id": "c6",
+  "citation": {
+   "sha256": "cafa394bcbcd0b376dc051ad21e08194eca2c7cd1ebbedf0234eb31b7d556305",
+   "version_id": 14188,
+   "store": "primary",
+   "canonical_url": "https://www.regione.veneto.it/web/attivita-produttive/smart-specialisation-strategy",
+   "title": "Regione del Veneto - Smart Specialisation Strategy 2021-2027",
+   "publisher": "Regione del Veneto",
+   "fetched_at": "2026-11-10T17:25:24.333107+00:00",
+   "last_seen_at": "2026-11-10T17:25:24.333107+00:00",
+   "span": [
+    7607,
+    7626
+   ],
+   "quote": "SMART MANUFACTURING"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "Veneto S3: SMART MANUFACTURING"
+ },
+ {
+  "id": "c7",
+  "citation": {
+   "sha256": "19a5ef72941b242ced25c365cbe8530eed5dd616b7380373a9bcaa21909528d0",
+   "version_id": 14190,
+   "store": "primary",
+   "canonical_url": "https://fesr.regione.emilia-romagna.it/s3",
+   "title": "Regione Emilia-Romagna - Strategia di specializzazione intelligente S3",
+   "publisher": "Regione Emilia-Romagna",
+   "fetched_at": "2026-11-10T17:24:51.774264+00:00",
+   "last_seen_at": "2026-11-10T17:24:51.774264+00:00",
+   "span": [
+    1112,
+    1597
+   ],
+   "quote": "La nuova Strategia S3 ha individuato 15 ambiti tematici prioritari e 8 aree di specializzazione strategica: agroalimentare, edilizia e costruzioni, meccatronica e motoristica, industrie della salute e del benessere, industrie culturali e creative, innovazione nei servizi, digitale e logistica, energia e sviluppo sostenibile, turismo. A queste si aggiungono due nuove aree ad alto potenziale di sviluppo: la space economy e il settore delle grandi infrastrutture critiche o complesse."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "Emilia-Romagna S3: meccatronica e motoristica"
+ },
+ {
+  "id": "c8",
+  "citation": {
+   "sha256": "949291ad3b9005c6ba9515ad19bf8360accc93e10f54205d391eb6a1098caed5",
+   "version_id": 14191,
+   "store": "primary",
+   "canonical_url": "https://www.regione.toscana.it/cos-%C3%A8-la-strategia-di-ricerca-e-innovazione-s3",
+   "title": "Regione Toscana - Strategia di ricerca e innovazione S3: cos'e",
+   "publisher": "Regione Toscana",
+   "fetched_at": "2026-11-10T17:24:50.819382+00:00",
+   "last_seen_at": "2026-11-10T17:24:50.819382+00:00",
+   "span": [
+    2973,
+    3087
+   ],
+   "quote": "Ambiente, territorio ed energia\nCultura e beni culturali\nSalute\nSmart agrifood\nImpresa intelligente e sostenibile."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "Toscana S3: Impresa intelligente e sostenibile"
+ },
+ {
+  "id": "c9",
+  "citation": {
+   "sha256": "4f73508078043719b0c47e6a9f756224ddd4ff892642762760d30f680644be0c",
+   "version_id": 14192,
+   "store": "primary",
+   "canonical_url": "https://www.lazioeuropa.it/s3/",
+   "title": "Regione Lazio - LazioEuropa S3 (RIS3 2021-2027)",
+   "publisher": "Regione Lazio",
+   "fetched_at": "2026-11-10T17:24:52.204661+00:00",
+   "last_seen_at": "2026-11-10T17:24:52.204661+00:00",
+   "span": [
+    1592,
+    1731
+   ],
+   "quote": "Aerospazio, Scienze della vita, Beni culturali e tecnologie della cultura, Agrifood, Industrie creative digitali, Green Economy e Sicurezza"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "Lazio S3: Sicurezza"
+ },
+ {
+  "id": "c10",
+  "citation": {
+   "sha256": "10198c227b8ca62534a6b8dd37112854fb718688146a6b7b6f20bb61683ff928",
+   "version_id": 12514,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/fondo_di_garanzia_disposizioni_operative_2023.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-21T20:43:33.110070+00:00",
+   "last_seen_at": "2026-11-10T17:22:33.674496+00:00",
+   "span": [
+    38628,
+    38892
+   ],
+   "quote": "“Soggetti garanti”: i confidi e gli intermediari che effettuano attività di rilascio di garanzie \nalle PMI sia a valere su risorse proprie sia a valere su fondi di garanzia per i soggetti \nbeneficiari finali gestiti per conto di soggetti terzi, pubblici o privati;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.counter_guarantee (intermediary): lic.it.tub106"
+ },
+ {
+  "id": "c11",
+  "citation": {
+   "sha256": "10198c227b8ca62534a6b8dd37112854fb718688146a6b7b6f20bb61683ff928",
+   "version_id": 12514,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/fondo_di_garanzia_disposizioni_operative_2023.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-21T20:43:33.110070+00:00",
+   "last_seen_at": "2026-11-10T17:22:33.674496+00:00",
+   "span": [
+    39353,
+    39618
+   ],
+   "quote": "“Start-up innovative”: le imprese, di piccola e media dimensione, di cui all’art icolo 25, \ncomma 2, del decreto -legge n. 179/2012, iscritte nella sezione speciale del Registro \ndelle imprese di cui all’articolo 25, comma 8, del medesimo decreto-legge n. 179/2012;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.direct_guarantee (applicant): status.it.startup_innovativa"
+ },
+ {
+  "id": "c12",
+  "citation": {
+   "sha256": "10198c227b8ca62534a6b8dd37112854fb718688146a6b7b6f20bb61683ff928",
+   "version_id": 12514,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/fondo_di_garanzia_disposizioni_operative_2023.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-21T20:43:33.110070+00:00",
+   "last_seen_at": "2026-11-10T17:22:33.674496+00:00",
+   "span": [
+    77052,
+    77521
+   ],
+   "quote": "Alle richieste relative ad operazioni Nuova Sabatini e ad operazioni finanziarie concesse \na favore delle imprese femminili e delle start-up innovative e incubatori certificati aventi i \nrequisiti di cui alla Parte II, paragrafo B.2.2, lettera b), e negli altri casi di cui all’Appendice \nalle presenti Disposizioni Operative in deroga al criterio di cui al precedente paragrafo \nB.9, è riconosciuta priorità nell’istruttoria e nella delibera del Consiglio di gestione."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.direct_guarantee (applicant): status.it.startup_innovativa"
+ },
+ {
+  "id": "c13",
+  "citation": {
+   "sha256": "10198c227b8ca62534a6b8dd37112854fb718688146a6b7b6f20bb61683ff928",
+   "version_id": 12514,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/fondo_di_garanzia_disposizioni_operative_2023.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-21T20:43:33.110070+00:00",
+   "last_seen_at": "2026-11-10T17:22:33.674496+00:00",
+   "span": [
+    38485,
+    38622
+   ],
+   "quote": "“Soggetti finanziatori” : le banche, gli intermediari, le imprese di assicurazione , gli \noperatori di microcredito, i gestori e le SFIS;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.direct_guarantee (intermediary): lic.it.tub106"
+ },
+ {
+  "id": "c14",
+  "citation": {
+   "sha256": "10198c227b8ca62534a6b8dd37112854fb718688146a6b7b6f20bb61683ff928",
+   "version_id": 12514,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/fondo_di_garanzia_disposizioni_operative_2023.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-21T20:43:33.110070+00:00",
+   "last_seen_at": "2026-11-10T17:22:33.674496+00:00",
+   "span": [
+    22456,
+    22551
+   ],
+   "quote": "“Intermediari”: gli intermediari finanziari iscritti nell’albo di cui all’articolo 106 del TUB;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.direct_guarantee (intermediary): lic.it.tub106"
+ },
+ {
+  "id": "c15",
+  "citation": {
+   "sha256": "10198c227b8ca62534a6b8dd37112854fb718688146a6b7b6f20bb61683ff928",
+   "version_id": 12514,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/fondo_di_garanzia_disposizioni_operative_2023.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-21T20:43:33.110070+00:00",
+   "last_seen_at": "2026-11-10T17:22:33.674496+00:00",
+   "span": [
+    19699,
+    19788
+   ],
+   "quote": "“Garanzia diretta”: la garanzia concessa dal Fondo direttamente ai soggetti finanziatori."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.direct_guarantee (intermediary): lic.it.tub106"
+ },
+ {
+  "id": "c16",
+  "citation": {
+   "sha256": "68016c68454edcdbe5be3e45b37a8cd52bbb1dafa3ed9cac7ef053baec2f0eaf",
+   "version_id": 14182,
+   "store": "primary",
+   "canonical_url": "https://www.fondidigaranzia.it/wp-content/uploads/2018/06/1_Modalita-operative-portafogli-fin_circ_6-2018.pdf",
+   "title": "Fondo di Garanzia PMI - Modalita operative garanzia su portafogli di finanziamenti (circ. 6/2018)",
+   "publisher": "Mediocredito Centrale - Fondo di Garanzia",
+   "fetched_at": "2026-11-10T17:24:47.469250+00:00",
+   "last_seen_at": "2026-11-10T17:24:47.469250+00:00",
+   "span": [
+    12226,
+    12342
+   ],
+   "quote": "i. gli intermediari finanziari, iscritti nell'albo di cui all'articolo 106 del decreto legislativo n. \n385 del 1993;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.portfolio_guarantee (intermediary): lic.it.tub106"
+ },
+ {
+  "id": "c17",
+  "citation": {
+   "sha256": "68016c68454edcdbe5be3e45b37a8cd52bbb1dafa3ed9cac7ef053baec2f0eaf",
+   "version_id": 14182,
+   "store": "primary",
+   "canonical_url": "https://www.fondidigaranzia.it/wp-content/uploads/2018/06/1_Modalita-operative-portafogli-fin_circ_6-2018.pdf",
+   "title": "Fondo di Garanzia PMI - Modalita operative garanzia su portafogli di finanziamenti (circ. 6/2018)",
+   "publisher": "Mediocredito Centrale - Fondo di Garanzia",
+   "fetched_at": "2026-11-10T17:24:47.469250+00:00",
+   "last_seen_at": "2026-11-10T17:24:47.469250+00:00",
+   "span": [
+    16623,
+    16790
+   ],
+   "quote": "1. Possono richiedere la garanzia del Fondo, previo accreditamento: \na) i soggetti finanziatori, in caso di garanzia diretta; \nb) i confidi, in caso di controgaranzia."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.fdg.portfolio_guarantee (intermediary): lic.it.tub106"
+ },
+ {
+  "id": "c18",
+  "citation": {
+   "sha256": "e4993c050802f7e41b85b221942a8d29d832ff7757b07623fe30ece7f52cf100",
+   "version_id": 14186,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-06-21;69~art2",
+   "title": "DL 69/2013 art. 2 - Nuova Sabatini (finanziamenti per beni strumentali)",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:24:46.758430+00:00",
+   "last_seen_at": "2026-11-10T17:24:46.758430+00:00",
+   "span": [
+    4267,
+    4453
+   ],
+   "quote": "2. I finanziamenti di cui al comma 1 sono concessi, entro il 31 dicembre 2016, dalle banche e dagli intermediari finanziari autorizzati all'esercizio dell'attività di leasing finanziario"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.nuova_sabatini (intermediary): lic.it.leasing_intermediary"
+ },
+ {
+  "id": "c19",
+  "citation": {
+   "sha256": "e4993c050802f7e41b85b221942a8d29d832ff7757b07623fe30ece7f52cf100",
+   "version_id": 14186,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-06-21;69~art2",
+   "title": "DL 69/2013 art. 2 - Nuova Sabatini (finanziamenti per beni strumentali)",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:24:46.758430+00:00",
+   "last_seen_at": "2026-11-10T17:24:46.758430+00:00",
+   "span": [
+    4455,
+    4815
+   ],
+   "quote": "nonché dagli altri intermediari finanziari iscritti all'albo previsto dall'articolo 106, comma 1, del testo unico delle leggi in materia bancaria e creditizia, di cui al decreto legislativo 1° settembre 1993, n. 385, che statutariamente operano nei confronti delle piccole e medie imprese, purché garantiti da banche aderenti alla convenzione di cui al comma 7"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.nuova_sabatini (intermediary): lic.it.tub106"
+ },
+ {
+  "id": "c20",
+  "citation": {
+   "sha256": "7d3024a3f8bf276b592174f6b1e04a24b14bcb0fe493fac1ca1ccd586db400d3",
+   "version_id": 14183,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2012-10-18;179~art25",
+   "title": "DL 179/2012 art. 25 - Start-up innovativa",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:06.372053+00:00",
+   "last_seen_at": "2026-11-10T17:14:06.372053+00:00",
+   "span": [
+    14954,
+    15102
+   ],
+   "quote": "a cui la start-up innovativa e l'incubatore certificato devono essere iscritti al fine di poter beneficiare della disciplina della presente sezione."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.startup_innovativa_regime (applicant): status.it.startup_innovativa"
+ },
+ {
+  "id": "c21",
+  "citation": {
+   "sha256": "fc930c03915d1c209ea23c8529a85b4221358f699e4ba6a4f419ee6ffca9d339",
+   "version_id": 14185,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2015-01-24;3~art4",
+   "title": "DL 3/2015 art. 4 - PMI innovative",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:16.402739+00:00",
+   "last_seen_at": "2026-11-10T17:14:16.402739+00:00",
+   "span": [
+    9376,
+    9627
+   ],
+   "quote": "l'articolo 29 del citato decreto-legge n. 179 del 2012, si applica alle PMI innovative nel rispetto delle condizioni e dei limiti previsti dagli Orientamenti sugli aiuti di Stato destinati a promuovere gli investimenti per il finanziamento del rischio"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.startup_investor_tax_relief (investee): status.it.pmi_innovativa"
+ },
+ {
+  "id": "c22",
+  "citation": {
+   "sha256": "37240793f8e8b314dbfc00224e3789c99fe87148d977d667ab68d6984f153d8f",
+   "version_id": 14184,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2012-10-18;179~art29",
+   "title": "DL 179/2012 art. 29 - Incentivi all'investimento in start-up innovative",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:21:28.867009+00:00",
+   "last_seen_at": "2026-11-10T17:21:28.867009+00:00",
+   "span": [
+    5731,
+    5834
+   ],
+   "quote": "7-bis. A decorrere dall'anno 2017, le aliquote di cui ai commi 1, 4 e 7 sono aumentate al 30 per cento."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.startup_investor_tax_relief (investee): status.it.startup_innovativa"
+ },
+ {
+  "id": "c23",
+  "citation": {
+   "sha256": "37240793f8e8b314dbfc00224e3789c99fe87148d977d667ab68d6984f153d8f",
+   "version_id": 14184,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2012-10-18;179~art29",
+   "title": "DL 179/2012 art. 29 - Incentivi all'investimento in start-up innovative",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:21:28.867009+00:00",
+   "last_seen_at": "2026-11-10T17:21:28.867009+00:00",
+   "span": [
+    5837,
+    6011
+   ],
+   "quote": "Le agevolazioni sono concesse per la durata massima di cinque anni dalla data di iscrizione nella sezione speciale del registro delle imprese di cui all'articolo 25, comma 8."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "it.startup_investor_tax_relief (investee): status.it.startup_innovativa"
+ },
+ {
+  "id": "c24",
+  "citation": {
+   "sha256": "f7dfd42ca0f57f28c56590e5f9358fe8506c66677882e8336334e7d81b88beec",
+   "version_id": 14177,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1993-09-01;385~art106",
+   "title": "TUB (D.Lgs. 385/1993) art. 106 - Albo degli intermediari finanziari",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:13:58.684175+00:00",
+   "last_seen_at": "2026-11-10T17:13:58.684175+00:00",
+   "span": [
+    11712,
+    11933
+   ],
+   "quote": "1. L'esercizio nei confronti del pubblico dell'attività di concessione di finanziamenti sotto qualsiasi forma è riservato agli intermediari finanziari autorizzati, iscritti in un apposito albo tenuto dalla Banca d'Italia."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status lic.it.tub106"
+ },
+ {
+  "id": "c25",
+  "citation": {
+   "sha256": "c144a0b23168c51fd28822f850c25cc835297d03f56d2b417b353c260cb63d45",
+   "version_id": 14178,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1993-09-01;385~art107",
+   "title": "TUB (D.Lgs. 385/1993) art. 107 - Autorizzazione",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:02.655258+00:00",
+   "last_seen_at": "2026-11-10T17:14:02.655258+00:00",
+   "span": [
+    11940,
+    12028
+   ],
+   "quote": "b) la sede legale e la direzione generale siano situate nel territorio della Repubblica;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status lic.it.tub106"
+ },
+ {
+  "id": "c26",
+  "citation": {
+   "sha256": "c144a0b23168c51fd28822f850c25cc835297d03f56d2b417b353c260cb63d45",
+   "version_id": 14178,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1993-09-01;385~art107",
+   "title": "TUB (D.Lgs. 385/1993) art. 107 - Autorizzazione",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:02.655258+00:00",
+   "last_seen_at": "2026-11-10T17:14:02.655258+00:00",
+   "span": [
+    12029,
+    12167
+   ],
+   "quote": "c) il capitale versato sia di ammontare non inferiore a quello determinato dalla Banca d'Italia anche in relazione al tipo di operatività;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status lic.it.tub106"
+ },
+ {
+  "id": "c27",
+  "citation": {
+   "sha256": "c144a0b23168c51fd28822f850c25cc835297d03f56d2b417b353c260cb63d45",
+   "version_id": 14178,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legislativo:1993-09-01;385~art107",
+   "title": "TUB (D.Lgs. 385/1993) art. 107 - Autorizzazione",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:02.655258+00:00",
+   "last_seen_at": "2026-11-10T17:14:02.655258+00:00",
+   "span": [
+    12801,
+    12894
+   ],
+   "quote": "g) l'oggetto sociale sia limitato alle sole attività di cui ai commi 1 e 2 dell'articolo 106."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status lic.it.tub106"
+ },
+ {
+  "id": "c28",
+  "citation": {
+   "sha256": "7d3024a3f8bf276b592174f6b1e04a24b14bcb0fe493fac1ca1ccd586db400d3",
+   "version_id": 14183,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2012-10-18;179~art25",
+   "title": "DL 179/2012 art. 25 - Start-up innovativa",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:06.372053+00:00",
+   "last_seen_at": "2026-11-10T17:14:06.372053+00:00",
+   "span": [
+    3930,
+    4278
+   ],
+   "quote": "2. Ai fini del presente decreto, l'impresa start-up innovativa, di seguito «start-up innovativa», è la società di capitali, costituita anche in forma cooperativa, le cui azioni o quote rappresentative del capitale sociale non sono quotate su un mercato regolamentato o su un sistema multilaterale di negoziazione, che possiede i seguenti requisiti:"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status status.it.startup_innovativa"
+ },
+ {
+  "id": "c29",
+  "citation": {
+   "sha256": "7d3024a3f8bf276b592174f6b1e04a24b14bcb0fe493fac1ca1ccd586db400d3",
+   "version_id": 14183,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2012-10-18;179~art25",
+   "title": "DL 179/2012 art. 25 - Start-up innovativa",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:06.372053+00:00",
+   "last_seen_at": "2026-11-10T17:14:06.372053+00:00",
+   "span": [
+    4538,
+    4582
+   ],
+   "quote": "b) è costituita da non più di sessanta mesi;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status status.it.startup_innovativa"
+ },
+ {
+  "id": "c30",
+  "citation": {
+   "sha256": "7d3024a3f8bf276b592174f6b1e04a24b14bcb0fe493fac1ca1ccd586db400d3",
+   "version_id": 14183,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2012-10-18;179~art25",
+   "title": "DL 179/2012 art. 25 - Start-up innovativa",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:06.372053+00:00",
+   "last_seen_at": "2026-11-10T17:14:06.372053+00:00",
+   "span": [
+    4583,
+    4873
+   ],
+   "quote": "c) è residente in Italia ai sensi dell'articolo 73 del decreto del Presidente della Repubblica 22 dicembre 1986, n. 917, o in uno degli Stati membri dell'Unione europea o in Stati aderenti all'Accordo sullo spazio economico europeo, purché abbia una sede produttiva o una filiale in Italia;"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status status.it.startup_innovativa"
+ },
+ {
+  "id": "c31",
+  "citation": {
+   "sha256": "7d3024a3f8bf276b592174f6b1e04a24b14bcb0fe493fac1ca1ccd586db400d3",
+   "version_id": 14183,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2012-10-18;179~art25",
+   "title": "DL 179/2012 art. 25 - Start-up innovativa",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:06.372053+00:00",
+   "last_seen_at": "2026-11-10T17:14:06.372053+00:00",
+   "span": [
+    7935,
+    8212
+   ],
+   "quote": "2-bis. La permanenza nella sezione speciale del registro delle imprese di cui al comma 8, dopo la conclusione del terzo anno, è consentita fino a complessivi cinque anni dalla data di iscrizione nella medesima sezione speciale, in presenza di almeno uno dei seguenti requisiti:"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status status.it.startup_innovativa"
+ },
+ {
+  "id": "c32",
+  "citation": {
+   "sha256": "7d3024a3f8bf276b592174f6b1e04a24b14bcb0fe493fac1ca1ccd586db400d3",
+   "version_id": 14183,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2012-10-18;179~art25",
+   "title": "DL 179/2012 art. 25 - Start-up innovativa",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:06.372053+00:00",
+   "last_seen_at": "2026-11-10T17:14:06.372053+00:00",
+   "span": [
+    14675,
+    15102
+   ],
+   "quote": "8. Per le start-up innovative di cui ai commi 2 e 3 e per gli incubatori certificati di cui al comma 5, le Camere di commercio, industria, artigianato e agricoltura istituiscono una apposita sezione speciale del registro delle imprese di cui all'articolo 2188 del codice civile, a cui la start-up innovativa e l'incubatore certificato devono essere iscritti al fine di poter beneficiare della disciplina della presente sezione."
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status status.it.startup_innovativa"
+ },
+ {
+  "id": "c33",
+  "citation": {
+   "sha256": "fc930c03915d1c209ea23c8529a85b4221358f699e4ba6a4f419ee6ffca9d339",
+   "version_id": 14185,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2015-01-24;3~art4",
+   "title": "DL 3/2015 art. 4 - PMI innovative",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:16.402739+00:00",
+   "last_seen_at": "2026-11-10T17:14:16.402739+00:00",
+   "span": [
+    991,
+    1231
+   ],
+   "quote": "1. Per \"piccole e medie imprese innovative\", di seguito \"PMI innovative\", si intendono le PMI, come definite dalla raccomandazione 2003/361/CE, società di capitali, costituite anche in forma cooperativa, che possiedono i seguenti requisiti:"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status status.it.pmi_innovativa"
+ },
+ {
+  "id": "c34",
+  "citation": {
+   "sha256": "fc930c03915d1c209ea23c8529a85b4221358f699e4ba6a4f419ee6ffca9d339",
+   "version_id": 14185,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2015-01-24;3~art4",
+   "title": "DL 3/2015 art. 4 - PMI innovative",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:14:16.402739+00:00",
+   "last_seen_at": "2026-11-10T17:14:16.402739+00:00",
+   "span": [
+    4748,
+    4794
+   ],
+   "quote": "a cui le PMI innovative devono essere iscritte"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status status.it.pmi_innovativa"
+ },
+ {
+  "id": "c35",
+  "citation": {
+   "sha256": "e4993c050802f7e41b85b221942a8d29d832ff7757b07623fe30ece7f52cf100",
+   "version_id": 14186,
+   "store": "primary",
+   "canonical_url": "https://www.normattiva.it/uri-res/N2Ls?urn:nir:stato:decreto.legge:2013-06-21;69~art2",
+   "title": "DL 69/2013 art. 2 - Nuova Sabatini (finanziamenti per beni strumentali)",
+   "publisher": "Normattiva (IPZS)",
+   "fetched_at": "2026-11-10T17:24:46.758430+00:00",
+   "last_seen_at": "2026-11-10T17:24:46.758430+00:00",
+   "span": [
+    4346,
+    4453
+   ],
+   "quote": "dalle banche e dagli intermediari finanziari autorizzati all'esercizio dell'attività di leasing finanziario"
+  },
+  "specialist": "wincent",
+  "via": "match_status",
+  "label": "status lic.it.leasing_intermediary"
+ },
+ {
+  "id": "c36",
+  "citation": {
+   "sha256": "d3142570c7e704c17303ff2796812744dd1b7feb38bee83335a8cf2fa8d33d0e",
+   "version_id": 12331,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/eif_investeu_guarantee_products.html",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:42:55.543418+00:00",
+   "last_seen_at": "2026-07-10T09:42:55.543418+00:00",
+   "span": [
+    3909,
+    3948
+   ],
+   "quote": "Deadline for applications: 30 June 2027"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: Applications for becoming a financial intermediary must be submitted before the stated deadline of 30 June 2027, w"
+ },
+ {
+  "id": "c37",
+  "citation": {
+   "sha256": "d3142570c7e704c17303ff2796812744dd1b7feb38bee83335a8cf2fa8d33d0e",
+   "version_id": 12331,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/eif_investeu_guarantee_products.html",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:42:55.543418+00:00",
+   "last_seen_at": "2026-07-10T09:42:55.543418+00:00",
+   "span": [
+    2260,
+    2502
+   ],
+   "quote": "Eligible financial intermediaries can be public or private entities, that are established or operating in EU Member States, Overseas Countries and Territories (OCTs) or other participating countries as further specified in the Call documents."
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: Eligible financial intermediaries must be public or private entities established or operating in EU Member States,"
+ },
+ {
+  "id": "c38",
+  "citation": {
+   "sha256": "d3142570c7e704c17303ff2796812744dd1b7feb38bee83335a8cf2fa8d33d0e",
+   "version_id": 12331,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/eif_investeu_guarantee_products.html",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:42:55.543418+00:00",
+   "last_seen_at": "2026-07-10T09:42:55.543418+00:00",
+   "span": [
+    2541,
+    2630
+   ],
+   "quote": "For guarantees: credit or financial institutions, alternative lenders, leasing companies."
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: Applicants must be a type of eligible intermediary entity such as credit or financial institutions, alternative le"
+ },
+ {
+  "id": "c39",
+  "citation": {
+   "sha256": "d3142570c7e704c17303ff2796812744dd1b7feb38bee83335a8cf2fa8d33d0e",
+   "version_id": 12331,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/eif_investeu_guarantee_products.html",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:42:55.543418+00:00",
+   "last_seen_at": "2026-07-10T09:42:55.543418+00:00",
+   "span": [
+    2912,
+    3467
+   ],
+   "quote": "An applicant may become a financial intermediary under InvestEU provided that:\nit complies with formal criteria as described in the Call;\nit completes and submits its application, as per the Annex I below within the deadline and in accordance with all provisions outlined in the Call;\nit is selected by the EIF as a potential financial intermediary under InvestEU to implement one or more InvestEU Portfolio Guarantee Products pursuant to the selection process outlined in the Call;\nit enters into the relevant (counter-) guarantee agreement with the EIF."
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: An applicant becomes a financial intermediary only after complying with the Call's formal criteria, submitting the"
+ },
+ {
+  "id": "c40",
+  "citation": {
+   "sha256": "c16cf34dfb6312a211c851bb76ab9569f2cd50e8e976257159b8a592eea2c7e8",
+   "version_id": 12239,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/investeu_regulation_2021_523.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:30:12.581605+00:00",
+   "last_seen_at": "2026-07-10T09:30:12.581605+00:00",
+   "span": [
+    131881,
+    132215
+   ],
+   "quote": "loans, guarantees, counter-guarantees, capital market instruments, any other form of funding or credit enhancement, \nincluding subordinated debt, or equity or quasi-equity investments, provided directly or indirectly through financial \nintermediaries, funds, investment platforms or other vehicles to be channelled to final recipients"
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: The EU guarantee may be used for loans, guarantees, equity or similar financing provided directly or indirectly th"
+ },
+ {
+  "id": "c41",
+  "citation": {
+   "sha256": "c16cf34dfb6312a211c851bb76ab9569f2cd50e8e976257159b8a592eea2c7e8",
+   "version_id": 12239,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/investeu_regulation_2021_523.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:30:12.581605+00:00",
+   "last_seen_at": "2026-07-10T09:30:12.581605+00:00",
+   "span": [
+    132222,
+    132373
+   ],
+   "quote": "funding or guarantees by an implementing partner to another financial institution enabling the latter to undertake \nfinancing referred to in point (a)."
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: The EU guarantee may also cover funding or guarantees extended by an implementing partner to another financial ins"
+ },
+ {
+  "id": "c42",
+  "citation": {
+   "sha256": "c16cf34dfb6312a211c851bb76ab9569f2cd50e8e976257159b8a592eea2c7e8",
+   "version_id": 12239,
+   "store": "primary",
+   "canonical_url": "urn:mandate:capital:raw/instrument_docs/investeu_regulation_2021_523.pdf",
+   "title": null,
+   "publisher": null,
+   "fetched_at": "2026-07-10T09:30:12.581605+00:00",
+   "last_seen_at": "2026-07-10T09:30:12.581605+00:00",
+   "span": [
+    218540,
+    218740
+   ],
+   "quote": "For intermediated financing and investment operations, in particular for SME support, additionality shall be verified at \nthe level of the intermediary rather than at the level of the final recipient."
+  },
+  "specialist": "wincent",
+  "via": "assess_instrument",
+  "label": "InvestEU financial-intermediary architecture: For intermediated financing operations, including SME support, the additionality (eligibility) test is applied at "
+ }
+]
