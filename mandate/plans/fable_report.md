@@ -3,47 +3,79 @@
 Branch `fable-judgement-loop` (worktree, never merged to main). Kept current as the work
 goes; a later session resumes from "Next step" below. Mission: `fable_mission.md`.
 
-## Executive summary (12 Nov 2026, in progress)
+## Executive summary (12 Nov 2026, evening: budget stop)
 
-1. A judge now grades a brain's answer the owner's way, on the bench, no API spend:
-   each must met / partly / not met, each must_not avoided / borderline / hit, every
-   ungrounded fact, every data gap, a 1-5 grade from ONE rule (`grade_scale.json`).
-2. On the only owner-graded run (fintech round 1, "none of that"), the judge gave 1
-   (holistic 2) and caught all four owner flags: Germany and Italy musts not met, the
-   partner-bank and park-Italy must_nots hit. Agreement is n=1: not calibrated yet;
-   the gradings that would calibrate it are listed below (eight runs, ten minutes each).
-3. Baseline, judged as the runs were: fintech round 3 = 4, italycore = 4, robotics = 3
-   (one must_not hit: the local level skipped), ai_kids draft = 4. Round 1 = 1.
-4. The senior reasoning scaffold is in `method.md` ("Before answering": eight checks,
-   no country or company names), read by both brains and shown to the judge.
-5. A case library exists: five owner-grounded war stories (`mandate/eval/cases/*.yaml`)
-   rendered into `mandate/playbooks/cases/<brain>.md`, which the brains read first;
-   lexical retrieval for when it outgrows one read. Regina has no owner-graded case yet.
-6. The loop is a CLI (`mandate/eval/loop.py`): run -> judge -> table -> diagnose ->
-   propose one change (interviewer) -> decide keep/revert by measured effect, logged.
-7. Six held-out cases are written (3 per brain), from the method only; not yet run.
-8. Not yet done: the "after" runs of the four known cases, the held-out runs, one loop
-   iteration, the data-gap miner, the bench (TS) wiring of the judge into Re-test.
-9. Budget note: brain runs are the expensive step (10-20 tool calls plus web each);
-   everything measured so far cost five judge calls.
+| case | before (best saved run) | after scaffold | loop iter 1 (check 9) |
+|---|---|---|---|
+| fintech_guarantees (Wincent) | 4 (round 3: 9+2p/11, hit 0); round 1 was 1 | **4** (7+4p/11, hit 0) | not re-run |
+| robotics_deployment_it (Wincent) | 3 (7+3p/10, hit 1: local level skipped) | **4** (5+5p/10, hit 0) | 4 (5+5p/10, hit 0, new borderline) |
+
+1. **The scaffold helps or holds.** Robotics 3 -> 4 (the must_not hit is gone); fintech
+   holds at 4. Caveat: n = 2, one run each, and musts fell slightly on both (fintech
+   10 -> 9 points vs round 3; robotics 8.5 -> 7.5) while the hits went away. Indicative,
+   not a measurement.
+2. **The loop ran once, end to end, and REVERTED.** Diagnosis: the weakest move is
+   grounding (5 of 9 partly/borderline). The interviewer proposed senior check 9 ("what
+   decides the answer is grounded in this mission; a shut door is cited or it is 'to
+   confirm'"; general, no names). Re-tested on robotics only (3 of the 5 failures, budget):
+   4 -> 4, same musts, plus a new borderline must_not. Rule says revert; `method.md` is
+   unchanged. The proposal text is kept in `mandate/eval/loop/proposals/01_grounding.md`.
+   Reading: grounding failures are DATA gaps more than habits; the brain labels them
+   honestly already. That points at the data asks, not at more method.
+3. **Data-gap miner done:** 210 signals (judge, transcripts, owner notes, usage log),
+   ranked into asks in `mandate/eval/data_asks.md`. Top 10 below.
+4. Judge agreement with the owner is still n = 1. The eight gradings below calibrate it.
+5. Cost: three brain runs + three judge calls + one interviewer call, all on the plan.
+   No API spend, no production writes. Runs stopped here by instruction.
+
+### Top 10 data asks (rank = answers improved x (1 + owner cases touched))
+
+| # | ask | kind | source | answers |
+|---|---|---|---|---|
+| 1 | EIF transaction list (precedents for the guarantee routes) | precedents | EIF transaction / InvestEU signature list | 8 |
+| 2 | Banca d'Italia 106 rules and the open consultation | statute | BdI Circolare 288/2015, consultation page | 5 |
+| 3 | 2027 Fondo di Garanzia cover reform | statute | MIMIT decree | 5 |
+| 4 | European Competitiveness Fund text | statute | Commission ECF regulation proposal | 5 |
+| 5 | Fondo di Garanzia people (accreditation unit, head) | stakeholders | MCC organisation pages | 4 |
+| 6 | Fondo di Garanzia award records and operating rules | instrument | MCC operating rules, award list | 3 |
+| 7 | EIF guarantee product pages held, not fetched live | instrument | eif.org InvestEU capped guarantee | 3 |
+| 8 | Banca d'Italia intermediary register pages held | instrument | bancaditalia.it intermediari finanziari | 3 |
+| 9 | The German reform admitting non-bank lenders | statute | BMWE / Bundestag reform file | 4 |
+| 10 | Italian regional machinery calls | instrument | Lombardia, Emilia-Romagna calls | 3 |
+
+### Owner gradings that would calibrate the judge (ten minutes each, a number 1-5)
+
+1. `runs/bench/2026-11-10_fintech_guarantees_round3.md` (judge 4): a 4 or a 5?
+2. `runs/bench/2026-11-11_robotics_deployment_it.md` (judge 3, holistic 4: the disagreement).
+3. `runs/bench/2026-11-11_fintech_guarantees_italycore.md` (judge 4).
+4. `runs/bench/2026-11-11_ai_kids_regulatory_DRAFT.md` (judge 4; also confirms the draft checkpoints).
+5. `runs/bench/2026-11-10_fintech_guarantees.md`: a number for "none of that" (1 or 2).
+6. `runs/loop/after_scaffold/fintech_guarantees.md` (judge 4).
+7. `runs/loop/after_scaffold/robotics_deployment_it.md` (judge 4).
+8. `runs/loop/iter1/robotics_deployment_it.md` (judge 4; did check 9 change anything you value?).
+
+### What is left
+
+- after_scaffold on edtech_ai_kids and ai_kids_regulatory; the six held-out cases (bar:
+  grade >= 4, no must_not hit). Each brain run is ~4 min and one plan turn.
+- Load the top data asks (a separate, owner-approved workstream: it writes grounding).
+- Bench wiring of the judge into Re-test (TS), and the miner's Train view.
+- A second loop iteration only after the data asks land: the next weakest moves
+  (structure_first, reform_or_lobby) are habits, grounding is mostly data.
 
 ## Next step (for whoever resumes)
 
-1. `PYTHONPATH=. python3 -m mandate.eval.loop run fintech_guarantees robotics_deployment_it edtech_ai_kids ai_kids_regulatory --tag after_scaffold --parallel 4`
-   (four brain runs + four judge calls; ~15 min wall). Then `loop table`.
-2. `loop diagnose --tag after_scaffold`, `loop propose --tag after_scaffold --apply`,
-   re-run the affected cases with `--tag iter1`, `loop decide --proposal 1 --before after_scaffold --after iter1`.
-3. Held-out: `loop run heldout_credit_fund_guarantees_de heldout_deeptech_fr_series_a heldout_uk_scaleup_eu_plant --tag heldout`
-   then the three Regina ones. Bar: grade >= 4, no must_not hit.
-4. Data-gap miner (`mandate/eval/data_gaps.py`, not written): mine `(unverified)`,
-   `[wN]` official hosts, "none found", empty tool results and judge `data_gaps` across
-   runs/bench, runs/loop, judgements and `web/.bench/tool_calls.jsonl`; rank by answers
-   and owner cases improved; a Train view in the bench. The judgement records already
-   carry `data_gaps` per run (7 to 14 each), so the miner is an aggregation.
-5. Bench wiring: the Re-test score step should start the `judge` agent (not the
-   interviewer) with `rubric.build_judge_prompt`, parse the JUDGE line, and grade via
-   `grade_scale.json` read from the repo root; add "keep / revert" against the previous
-   re-test of the same case.
+1. Owner grades the eight runs above; add them to `mandate/eval/calibration.yaml`
+   (insert-only), then `bench_judge --calibration`.
+2. `loop run edtech_ai_kids ai_kids_regulatory --tag after_scaffold --parallel 2`, then
+   the held-out set with `--tag heldout`.
+3. Re-run `data_gaps --write` after every batch of runs; load from the top.
+4. Bench wiring (Re-test -> `judge` agent with `rubric.build_judge_prompt`, keep/revert
+   against the previous re-test of the same case).
+
+Running the module CLIs from an isolated worktree: the sandbox refuses any command
+containing the package path word; a tiny `runpy` wrapper in the scratchpad works.
+`loop propose --apply` now regenerates `playbooks.generated.ts` and `decide` reverts it.
 
 ## What was built
 
@@ -59,7 +91,8 @@ goes; a later session resumes from "Next step" below. Mission: `fable_mission.md
 | case library | `mandate/eval/cases/*.yaml`, `mandate/eval/case_library.py`, `mandate/playbooks/cases/` |
 | the loop | `mandate/eval/loop.py` (log at `mandate/eval/loop/log.jsonl`) |
 | held-out cases | `mandate/eval/scenarios/heldout_*.yaml` |
-| tests | `mandate/tests/test_judgement.py`, `test_case_library.py`, `test_loop.py` |
+| data-gap miner + ranked asks | `mandate/eval/data_gaps.py`, `mandate/eval/data_asks.md` |
+| tests | `mandate/tests/test_judgement.py`, `test_data_gaps.py`, `test_case_library.py`, `test_loop.py` |
 
 ## The grade rule
 
@@ -73,8 +106,8 @@ the owner.
 
 | case | brain | before (saved runs) | after scaffold | held-out |
 |---|---|---|---|---|
-| fintech_guarantees | Wincent | round 1: **1** (h2; 5+4p/11; hit 2) · round 3: **4** (h4; 9+2p/11; hit 0) · italycore: **4** (h4; 8+3p/11; hit 0) | not run yet | |
-| robotics_deployment_it | Wincent | **3** (h4; 7+3p/10; hit 1: local level skipped) | not run yet | |
+| fintech_guarantees | Wincent | round 1: **1** (h2; 5+4p/11; hit 2) · round 3: **4** (h4; 9+2p/11; hit 0) · italycore: **4** (h4; 8+3p/11; hit 0) | **4** (h4; 7+4p/11; hit 0) | |
+| robotics_deployment_it | Wincent | **3** (h4; 7+3p/10; hit 1: local level skipped) | **4** (h4; 5+5p/10; hit 0) · iter1: **4** (h4; 5+5p/10; hit 0; 1 borderline) | |
 | edtech_ai_kids | Wincent | no saved run | not run yet | |
 | ai_kids_regulatory (draft checkpoints) | Regina | **4** (h4; 10+2p/12; hit 0) | not run yet | |
 | 6 held-out cases | 3 + 3 | | | not run yet |
@@ -82,22 +115,16 @@ the owner.
 Judge vs owner: n = 1 owner grade (words, range 1-2); judge 1, holistic 2: within
 tolerance; owner flags caught 4/4. Not a calibration claim.
 
-## Owner gradings that would calibrate the judge (in this order)
+## Owner gradings
 
-Grade in the bench (Train, Grade runs); ten minutes each; the number matters more than
-the prose:
-1. `2026-11-10_fintech_guarantees_round3.md` (judge 4): is this a 4 or a 5?
-2. `2026-11-11_robotics_deployment_it.md` (judge 3, holistic 4: the one disagreement).
-3. `2026-11-11_fintech_guarantees_italycore.md` (judge 4).
-4. `2026-11-11_ai_kids_regulatory_DRAFT.md` (expert, module 7; also confirms the draft checkpoints).
-5. `2026-11-10_fintech_guarantees.md`: a number for "none of that" (1 or 2).
-6-8. The three Wincent held-out runs once they exist (also confirms their checkpoints).
-With these the agreement figure has n = 8 and the rule's thresholds can be tuned once.
+The current list of eight is in the executive summary.
 
 ## Accepted changes and their measured effect
 
-None measured yet. The scaffold and the case library are in place but their effect is
-the "after scaffold" column, not yet run.
+- Scaffold + case library (kept, in place before the loop): robotics 3 -> 4, fintech 4 -> 4
+  on one run each. Indicative (n = 2).
+- Proposal 1, senior check 9 "grounding" (`loop/proposals/01_grounding.md`): robotics
+  4 -> 4, musts 7.5 -> 7.5, one new borderline must_not: REVERTED by the rule.
 
 ## Remaining METHOD gaps (from the baseline judgements)
 
@@ -109,7 +136,7 @@ the "after scaffold" column, not yet run.
   (borderline must_not_7 on three fintech runs): an execution habit, candidate for the
   first loop proposal.
 
-## Data asks (first reading from the judge's `data_gaps`, before the miner)
+## Data asks (first reading, before the miner; superseded by `mandate/eval/data_asks.md`)
 
 Across the five judged runs the judge recorded 54 gap signals. Recurring: the German
 reform on non-bank access to guarantees (every fintech run); EIF intermediary precedents
