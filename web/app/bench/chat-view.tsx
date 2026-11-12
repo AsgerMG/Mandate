@@ -7,8 +7,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { parseWebSources, type BenchEvent, type Citation } from "@/lib/bench/events";
 import {
-  BRAIN_DOMAIN, BRAIN_LABEL, groupSources, lineDiff, parseProposals, rollup, withoutProposals,
-  type Agent, type BenchConversation, type BenchMandate, type Brain, type ConversationKind, type Proposal,
+  BRAIN_DOMAIN, BRAIN_LABEL, groupSources, lineDiff, parseProposals, rollup, THEME_LABEL, THEMES, withoutProposals,
+  type Agent, type BenchConversation, type BenchMandate, type BenchMessage, type Brain, type ConversationKind, type Proposal, type Theme,
 } from "@/lib/bench/model";
 import { api, BenchError, readTurn } from "./api";
 import { Markdown } from "./markdown";
@@ -34,13 +34,14 @@ const STARTERS: Record<Brain, { title: string; tag: string; text: string }[]> = 
   ],
 };
 
-const plainLabel = (s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}…`;
+const KIND_LABEL: Record<ConversationKind, string> = { chat: "Case", interview: "Interview", lesson: "Lesson", distil: "Distil", retest: "Re-test", score: "Scoring" };
+const plainLabel =(s: string) => `${s.charAt(0).toUpperCase()}${s.slice(1)}…`;
 const newDraftConv = (d: Draft): BenchConversation => ({
   id: "", mandate_id: d.mandateId, agent: d.agent, brain: d.brain, kind: d.kind, title: d.title ?? "", guide: d.guide,
   session_id: null, messages: [], cites: {}, sources: [], saved: [], created_at: "", updated_at: "",
 });
 
-export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onActivity, onOpenMandate }: {
+export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onActivity, onOpenMandate, onOpenConversation }: {
   convId: string | null;
   draft: Draft;
   mandate: BenchMandate | null;
@@ -48,6 +49,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
   onListChanged: () => void;
   onActivity: (a: Activity) => void;
   onOpenMandate: (id: string) => void;
+  onOpenConversation: (id: string) => void;
 }) {
   const [conv, setConv] = useState<BenchConversation>(() => newDraftConv(draft));
   const [loading, setLoading] = useState(!!convId);
@@ -244,7 +246,8 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
         <header className="bench-thread-head">
           <div className="min-w-0">
             <p className="bench-eyebrow">
-              {isInterviewer ? `${conv.kind === "lesson" ? "Lesson" : "Interview"} · training ${BRAIN_LABEL[conv.brain]}` : BRAIN_DOMAIN[conv.brain]}
+              {isInterviewer ? `${KIND_LABEL[conv.kind]} · training ${BRAIN_LABEL[conv.brain]}`
+                : conv.kind === "retest" ? `Re-test · ${conv.case ?? ""} · ${BRAIN_LABEL[conv.brain]}` : BRAIN_DOMAIN[conv.brain]}
               {mandate && <> · <button className="bench-link" onClick={() => onOpenMandate(mandate.id)}>{mandate.client}</button></>}
             </p>
             <h1 className="bench-thread-title">{conv.title || (isInterviewer ? "New interview" : `New case for ${who}`)}</h1>
@@ -276,6 +279,10 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
                       )}
                       {!busy && !m.error && m.interrupted && (
                         <p className="bench-note">Stopped.{i === conv.messages.length - 1 && lastClient && <> <button className="bench-link" onClick={() => void send(lastClient.text, { retry: true })}>Send it again</button></>}</p>
+                      )}
+                      {!isInterviewer && conv.id && m.text && !(busy && i === conv.messages.length - 1) && (
+                        <ReplyFeedback convId={conv.id} index={i} given={m.feedback}
+                          onGiven={(fb) => setConv((c) => ({ ...c, messages: c.messages.map((x, j) => (j === i ? { ...x, feedback: fb } : x)) }))} />
                       )}
                     </div>
                   </div>
@@ -323,7 +330,12 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
 
       <aside className="bench-landed">
         {isInterviewer ? (
-          <InterviewPanel conv={conv} proposals={proposals} busy={!!busy} onDistil={() => void send(DISTIL_PROMPT)} />
+          <InterviewPanel conv={conv} proposals={proposals} busy={!!busy} onOpenConversation={onOpenConversation}
+            onDistil={() => {
+              // an interview joins the feedback queue as a lesson; accepting its proposals resolves it
+              if (conv.kind === "interview") void api("/api/bench/feedback", { json: { kind: "interview", conversationId: conv.id } }).catch(() => {});
+              void send(DISTIL_PROMPT);
+            }} />
         ) : (
           <>
             <div className="flex items-center justify-between gap-2">
@@ -342,6 +354,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
               <p className="bench-panel-empty">Nothing settled yet. Decisions, flags, next steps and watches appear here as {who} names them.</p>
             )}
             <Sources groups={sources} cites={allCites} who={who} />
+            {conv.id && !empty && <ConversationGrade conv={conv} onGraded={(g) => setConv((c) => ({ ...c, grade: g }))} />}
           </>
         )}
         <p className="bench-panel-foot">Local bench. Claude Code on your own plan; production is read only. Conversations are saved on this laptop, outside the repo.</p>
@@ -426,30 +439,148 @@ export function Sources({ groups, cites, who }: { groups: ReturnType<typeof grou
   );
 }
 
-function InterviewPanel({ conv, proposals, busy, onDistil }: { conv: BenchConversation; proposals: Proposal[]; busy: boolean; onDistil: () => void }) {
+function ReplyFeedback({ convId, index, given, onGiven }: {
+  convId: string; index: number; given?: BenchMessage["feedback"]; onGiven: (fb: NonNullable<BenchMessage["feedback"]>) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [theme, setTheme] = useState<Theme>("other");
+  const [note, setNote] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  async function rate(rating: "good" | "off", withNote = "") {
+    setSaving(true); setErr(null);
+    try {
+      const r = await api<{ item: { id: string } }>("/api/bench/feedback", { json: { kind: "reply", conversationId: convId, messageIndex: index, rating, theme, note: withNote } });
+      onGiven({ rating, item_id: r.item.id, ...(withNote ? { note: withNote } : {}) });
+      setOpen(false);
+    } catch (e) { setErr((e as Error).message); } finally { setSaving(false); }
+  }
+  if (given) {
+    return <p className="bench-fb bench-fb--given" data-rating={given.rating}>{given.rating === "good" ? "Rated good" : "Marked off"}{given.note ? <>: <i>{given.note}</i></> : null} <span className="bench-muted">· in the feedback inbox</span></p>;
+  }
+  return (
+    <div className="bench-fb">
+      {!open ? (
+        <>
+          <button className="bench-fb__btn" disabled={saving} onClick={() => void rate("good")} title="Good reply (signal for the playbooks)">Good</button>
+          <button className="bench-fb__btn" disabled={saving} onClick={() => setOpen(true)} title="Something is off: say what, in one line">Off…</button>
+        </>
+      ) : (
+        <form className="bench-fb__form" onSubmit={(e) => { e.preventDefault(); void rate("off", note.trim()); }}>
+          <div className="flex flex-wrap gap-1">
+            {THEMES.map((t) => <button type="button" key={t} className="bench-fb__chip" data-on={theme === t || undefined} onClick={() => setTheme(t)}>{THEME_LABEL[t]}</button>)}
+          </div>
+          <div className="mt-2 flex items-center gap-2">
+            <input autoFocus value={note} maxLength={600} onChange={(e) => setNote(e.target.value)} placeholder="What's off, in one line (optional)" className="bench-fb__input"
+              onKeyDown={(e) => { if (e.key === "Escape") setOpen(false); e.stopPropagation(); }} />
+            <Recorder value={note} onChange={setNote} compact />
+            <button className="bench-btn bench-btn--small" disabled={saving}>Save</button>
+            <button type="button" className="bench-link" onClick={() => setOpen(false)}>Cancel</button>
+          </div>
+        </form>
+      )}
+      {err && <span className="bench-fb__err">{err}</span>}
+    </div>
+  );
+}
+
+function ConversationGrade({ conv, onGraded }: { conv: BenchConversation; onGraded: (g: NonNullable<BenchConversation["grade"]>) => void }) {
+  const [pick, setPick] = useState<number | null>(null);
+  const [note, setNote] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  async function save() {
+    if (!pick) return;
+    try {
+      const r = await api<{ item: { id: string } }>("/api/bench/feedback", { json: { kind: "conversation", conversationId: conv.id, grade: pick, note: note.trim() } });
+      onGraded({ grade: pick, item_id: r.item.id });
+    } catch (e) { setErr((e as Error).message); }
+  }
+  return (
+    <section className="mt-7 border-t border-[#e6dfd1] pt-5">
+      <h3 className="bench-eyebrow">Grade this conversation</h3>
+      {conv.grade ? <p className="mt-2 text-[12px] text-[#2b3c5e]"><span className="bench-grade" data-grade={conv.grade.grade}>{conv.grade.grade}</span> <span className="bench-muted">saved to the feedback inbox</span></p> : (
+        <>
+          <div className="bench-grade-pick bench-grade-pick--small">
+            {[1, 2, 3, 4, 5].map((g) => <button key={g} data-on={pick === g || undefined} onClick={() => setPick(g)}>{g}</button>)}
+          </div>
+          {pick !== null && (
+            <div className="mt-2 flex gap-2">
+              <input className="bench-fb__input" value={note} maxLength={600} onChange={(e) => setNote(e.target.value)} placeholder={pick <= 3 ? "What would make it a 5?" : "Optional note"} />
+              <button className="bench-btn bench-btn--small" onClick={() => void save()}>Save</button>
+            </div>
+          )}
+          {err && <p className="bench-fb__err">{err}</p>}
+        </>
+      )}
+    </section>
+  );
+}
+
+function InterviewPanel({ conv, proposals, busy, onDistil, onOpenConversation }: {
+  conv: BenchConversation; proposals: Proposal[]; busy: boolean; onDistil: () => void; onOpenConversation: (id: string) => void;
+}) {
   const answers = conv.messages.filter((m) => m.role === "client").length;
+  const [accepted, setAccepted] = useState<string[]>([]);
+  const title = conv.kind === "lesson" ? "The lesson" : conv.kind === "distil" ? "The distil" : conv.kind === "score" ? "The score" : "The interview";
   return (
     <>
       <div className="flex items-center justify-between gap-2">
-        <h2 className="bench-panel-title">{conv.kind === "lesson" ? "The lesson" : "The interview"}</h2>
-        <button disabled={!conv.id || busy || answers < 1} onClick={onDistil} className="bench-btn bench-btn--outline bench-btn--small">Finish &amp; distil</button>
+        <h2 className="bench-panel-title">{title}</h2>
+        {conv.kind === "interview" && <button disabled={!conv.id || busy || answers < 1} onClick={onDistil} className="bench-btn bench-btn--outline bench-btn--small">Finish &amp; distil</button>}
       </div>
       <p className="bench-panel-sub">
-        {conv.guide ? <>Guide: <code>{conv.guide}</code> · </> : null}{answers} {answers === 1 ? "turn" : "turns"} · saved on this laptop
+        {conv.guide ? <>Guide: <code>{conv.guide}</code> · </> : null}
+        {conv.feedback_ids ? <>{conv.feedback_ids.length} feedback items · </> : null}
+        {answers} {answers === 1 ? "turn" : "turns"} · saved on this laptop
       </p>
-      <section className="mt-6">
-        <h3 className="bench-eyebrow">Proposed changes {proposals.length > 0 && <span className="bench-count">{proposals.length}</span>}</h3>
-        {proposals.length === 0 ? (
-          <p className="bench-panel-empty">When you finish and distil, the interviewer proposes playbook edits and eval cases here. You read each diff and accept it; accepted files are written to the repo, not committed.</p>
-        ) : (
-          <div className="mt-2 space-y-3">{proposals.map((p) => <ProposalCard key={p.path + p.content.length} p={p} />)}</div>
-        )}
-      </section>
+      {conv.kind !== "score" && (
+        <section className="mt-6">
+          <h3 className="bench-eyebrow">Proposed changes {proposals.length > 0 && <span className="bench-count">{proposals.length}</span>}</h3>
+          {proposals.length === 0 ? (
+            <p className="bench-panel-empty">{busy ? "The interviewer is working…" : "When the interviewer proposes playbook edits or eval cases, they appear here as diffs. Accepting writes the file (not committed) and resolves the feedback it addresses."}</p>
+          ) : (
+            <div className="mt-2 space-y-3">{proposals.map((p) => <ProposalCard key={p.path + p.content.length} p={p} conversationId={conv.id} onAccepted={(path) => setAccepted((a) => [...a, path])} />)}</div>
+          )}
+        </section>
+      )}
+      {accepted.length > 0 && <RetestLauncher afterChange={conv.id} suggest={accepted} onOpenConversation={onOpenConversation} />}
     </>
   );
 }
 
-export function ProposalCard({ p }: { p: Proposal }) {
+/** After a change is accepted: run an eval case again with the new playbooks. */
+export function RetestLauncher({ afterChange, suggest = [], onOpenConversation }: { afterChange: string | null; suggest?: string[]; onOpenConversation: (id: string) => void }) {
+  const [cases, setCases] = useState<string[]>([]);
+  const [pick, setPick] = useState("");
+  const [err, setErr] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
+  useEffect(() => {
+    api<{ cases: string[] }>("/api/bench/retest").then((r) => {
+      setCases(r.cases);
+      const fromChange = suggest.map((p) => p.match(/scenarios\/([a-z0-9_-]+)\.yaml$/)?.[1]).find((c) => c && r.cases.includes(c));
+      setPick(fromChange ?? r.cases[0] ?? "");
+    }).catch((e) => setErr((e as Error).message));
+  }, [suggest]);
+  async function run() {
+    setStarting(true); setErr(null);
+    try { const r = await api<{ conversationId: string }>("/api/bench/retest", { json: { case: pick, afterChange } }); onOpenConversation(r.conversationId); }
+    catch (e) { setErr((e as Error).message); setStarting(false); }
+  }
+  return (
+    <section className="bench-retest-box">
+      <h3 className="bench-eyebrow">Re-test</h3>
+      <p className="bench-panel-empty">Run an eval case with the playbooks as they are now, then score it; Train, Feedback shows before and after. Uses your plan: one researched turn.</p>
+      <div className="mt-2 flex gap-2">
+        <select className="bench-select" value={pick} onChange={(e) => setPick(e.target.value)}>{cases.map((c) => <option key={c} value={c}>{c.replace(/_/g, " ")}</option>)}</select>
+        <button className="bench-btn bench-btn--small" disabled={!pick || starting} onClick={() => void run()}>{starting ? "Starting…" : "Re-test"}</button>
+      </div>
+      {err && <p className="bench-fb__err">{err}</p>}
+    </section>
+  );
+}
+
+export function ProposalCard({ p, conversationId, onAccepted }: { p: Proposal; conversationId?: string; onAccepted?: (path: string) => void }) {
+  const [resolved, setResolved] = useState<string[]>([]);
   const [current, setCurrent] = useState<string | null | undefined>(undefined);
   const [state, setState] = useState<"review" | "writing" | "written" | "rejected">("review");
   const [err, setErr] = useState<string | null>(null);
@@ -471,8 +602,10 @@ export function ProposalCard({ p }: { p: Proposal }) {
 
   async function accept() {
     setState("writing"); setErr(null);
-    try { await api("/api/bench/proposals", { json: p }); setState("written"); }
-    catch (e) { setErr((e as Error).message); setState("review"); }
+    try {
+      const r = await api<{ resolved: string[] }>("/api/bench/proposals", { json: { ...p, conversationId } });
+      setResolved(r.resolved); setState("written"); onAccepted?.(p.path);
+    } catch (e) { setErr((e as Error).message); setState("review"); }
   }
   return (
     <div className="bench-proposal" data-state={state}>
@@ -480,7 +613,8 @@ export function ProposalCard({ p }: { p: Proposal }) {
         <code>{p.path}</code>
         <span className="bench-proposal__stat">{current === null ? "new file" : current === undefined ? "…" : <><b className="text-[#2f6a3c]">+{added}</b> <b className="text-[#9a3b2f]">−{removed}</b></>}</span>
       </div>
-      {state === "written" ? <p className="bench-ok mt-2">Written to <code>{p.path}</code>. Not committed: review and commit it when you are ready.</p>
+      {p.addresses.length > 0 && <p className="bench-proposal__addr">Addresses {p.addresses.map((a) => <code key={a}>{a.slice(-6)}</code>)}</p>}
+      {state === "written" ? <p className="bench-ok mt-2">Written to <code>{p.path}</code>{resolved.length ? `; ${resolved.length} feedback item${resolved.length === 1 ? "" : "s"} resolved` : ""}. Not committed: review and commit it when you are ready.</p>
         : state === "rejected" ? <p className="bench-note mt-2">Rejected. Nothing written. <button className="bench-link" onClick={() => setState("review")}>Undo</button></p>
         : (
           <>

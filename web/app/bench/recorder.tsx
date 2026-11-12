@@ -31,7 +31,9 @@ const clock = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor(ms 
 
 export const Recorder = forwardRef<RecorderHandle, {
   value: string; onChange: (v: string) => void; disabled?: boolean; onState?: (s: RecState) => void;
-}>(function Recorder({ value, onChange, disabled, onState }, ref) {
+  /** a small mic for a one-line note: no language picker or engine label */
+  compact?: boolean;
+}>(function Recorder({ value, onChange, disabled, onState, compact }, ref) {
   const [engine, setEngine] = useState<"checking" | "whisper" | "browser" | "none">("checking");
   const [state, setStateRaw] = useState<RecState>("idle");
   const [note, setNote] = useState<string | null>(null);
@@ -180,7 +182,7 @@ export const Recorder = forwardRef<RecorderHandle, {
   }
   const busy = state === "transcribing";
   return (
-    <div className="bench-rec" data-state={state}>
+    <div className="bench-rec" data-state={state} data-compact={compact || undefined}>
       <button
         type="button"
         className="bench-rec__btn"
@@ -197,7 +199,7 @@ export const Recorder = forwardRef<RecorderHandle, {
         {busy ? <span className="bench-rec__spin" aria-label="Transcribing" /> : <MicIcon />}
         <span className="bench-rec__meter" style={{ transform: `scaleY(${state === "recording" ? 0.15 + level * 0.85 : 0})` }} aria-hidden />
       </button>
-      <div className="bench-rec__meta">
+      <div className="bench-rec__meta" hidden={compact && state === "idle"}>
         {state === "recording" ? <span className="bench-rec__time"><i />{engine === "whisper" ? clock(elapsed) : "listening"}</span>
           : busy ? <span className="bench-rec__time">transcribing</span>
           : (

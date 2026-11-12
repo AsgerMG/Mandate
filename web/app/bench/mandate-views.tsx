@@ -5,7 +5,7 @@
 // across them), and the create / edit form.
 import { useCallback, useEffect, useState } from "react";
 import {
-  BRAIN_LABEL, BRAINS, MANDATE_STATUS,
+  BRAIN_DOMAIN, BRAIN_LABEL, BRAINS, MANDATE_STATUS,
   type BenchMandate, type Brain, type ConversationSummary, type LandedItem, type MandateStatus, type Rollup,
 } from "@/lib/bench/model";
 import { api, when } from "./api";
@@ -30,7 +30,7 @@ export function MandatesHome({ onOpen, onNew, refreshKey }: { onOpen: (id: strin
         <div>
           <p className="bench-eyebrow">Portfolio</p>
           <h1 className="bench-page__title">Mandates</h1>
-          <p className="bench-page__lede">Each client you work for. A mandate holds its conversations with any brain, the client profile the brains read first, and what has landed across them.</p>
+          <p className="bench-page__lede">The team&apos;s portfolio: one mandate per client project. Deploy the brains it needs; they share its client profile and what has landed across every conversation.</p>
         </div>
         <button className="bench-btn" onClick={onNew}>New mandate</button>
       </header>
@@ -51,7 +51,10 @@ export function MandatesHome({ onOpen, onNew, refreshKey }: { onOpen: (id: strin
                 <span className="bench-card__title">{m.client}</span>
                 <StatusPill status={m.status} />
               </div>
-              {m.markets.length > 0 && <span className="bench-card__markets">{m.markets.join(" · ")}</span>}
+              <span className="bench-card__markets">
+                {m.brains.map((b) => <span key={b} className="mr-2 inline-flex items-center gap-1"><span className="bench-brain-dot" data-brain={b} />{BRAIN_LABEL[b]}</span>)}
+                {m.markets.length > 0 && <>· {m.markets.join(" · ")}</>}
+              </span>
               <span className="bench-card__brief">{m.brief || "No brief yet."}</span>
               <span className="bench-card__stats">
                 <span><b>{c.counts.decisions}</b> decisions</span>
@@ -72,13 +75,14 @@ export function MandatesHome({ onOpen, onNew, refreshKey }: { onOpen: (id: strin
 export function MandateForm({ initial, onSaved, onCancel }: { initial?: BenchMandate; onSaved: (m: BenchMandate) => void; onCancel: () => void }) {
   const [f, setF] = useState({
     client: initial?.client ?? "", brief: initial?.brief ?? "", markets: initial?.markets.join(", ") ?? "",
-    status: initial?.status ?? "active" as MandateStatus, profile: initial?.profile ?? "",
+    status: initial?.status ?? "active" as MandateStatus, profile: initial?.profile ?? "", brains: initial?.brains ?? [...BRAINS] as Brain[],
   });
   const [err, setErr] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   async function save(e: React.FormEvent) {
     e.preventDefault();
     if (!f.client.trim()) { setErr("Give the client a name."); return; }
+    if (!f.brains.length) { setErr("Deploy at least one brain."); return; }
     setSaving(true); setErr(null);
     try {
       const r = await api<{ mandate: BenchMandate }>("/api/bench/mandates", { method: initial ? "PATCH" : "POST", json: { ...(initial ? { id: initial.id } : {}), ...f } });
@@ -102,6 +106,20 @@ export function MandateForm({ initial, onSaved, onCancel }: { initial?: BenchMan
             <select value={f.status} onChange={(e) => setF({ ...f, status: e.target.value as MandateStatus })}>{MANDATE_STATUS.map((s) => <option key={s} value={s}>{s}</option>)}</select>
           </label>
         </div>
+        <fieldset className="bench-deploy">
+          <legend>Brains deployed <em>they share this mandate&apos;s profile and what landed</em></legend>
+          <div className="flex gap-2">
+            {BRAINS.map((b) => {
+              const on = f.brains.includes(b);
+              return (
+                <button type="button" key={b} className="bench-deploy__chip" data-on={on || undefined} aria-pressed={on}
+                  onClick={() => setF({ ...f, brains: on ? f.brains.filter((x) => x !== b) : BRAINS.filter((x) => x === b || f.brains.includes(x)) })}>
+                  <span className="bench-brain-dot" data-brain={b} /> {BRAIN_LABEL[b]} <span className="bench-muted">{BRAIN_DOMAIN[b]}</span>
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
         <label><span>Client profile <em>the brains read this before the first message of every conversation</em></span>
           <textarea rows={7} maxLength={8000} value={f.profile} onChange={(e) => setF({ ...f, profile: e.target.value })} placeholder={"Legal form and seat, group size (staff, turnover), what the product does and for whom, licences held, funding raised, where the customers are."} />
         </label>
@@ -133,13 +151,13 @@ export function MandateOverview({ id, onOpenConversation, onNewConversation, onE
     <section className="bench-page">
       <header className="bench-page__head">
         <div className="min-w-0">
-          <p className="bench-eyebrow">Mandate {m.markets.length > 0 && <>· {m.markets.join(" · ")}</>}</p>
+          <p className="bench-eyebrow">Mandate {m.markets.length > 0 && <>· {m.markets.join(" · ")}</>} · deployed: {m.brains.map((b) => BRAIN_LABEL[b]).join(", ")}</p>
           <h1 className="bench-page__title flex items-center gap-3">{m.client} <StatusPill status={m.status} /></h1>
           <p className="bench-page__lede">{m.brief || "No brief yet."}</p>
         </div>
         <div className="flex flex-none gap-2">
           <button className="bench-btn bench-btn--ghost" onClick={() => onEdit(m)}>Edit</button>
-          {BRAINS.map((b) => <button key={b} className="bench-btn" onClick={() => onNewConversation(b)}>Ask {BRAIN_LABEL[b]}</button>)}
+          {m.brains.map((b) => <button key={b} className="bench-btn" onClick={() => onNewConversation(b)}>Ask {BRAIN_LABEL[b]}</button>)}
         </div>
       </header>
 

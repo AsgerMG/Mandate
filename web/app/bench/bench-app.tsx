@@ -9,12 +9,13 @@ import { BRAIN_DOMAIN, BRAIN_LABEL, BRAINS, type BenchMandate, type Brain, type 
 import { api, when } from "./api";
 import { ChatView, type Activity, type Draft } from "./chat-view";
 import { MandateForm, MandateOverview, MandatesHome } from "./mandate-views";
+import { FeedbackView } from "./feedback-view";
 import { InterviewsView, PlaybooksView, ProgressView, RunsView } from "./train-views";
 
 type Route =
   | { v: "chat"; id: string | null; brain?: Brain; mandateId?: string | null }
   | { v: "mandates" } | { v: "mandate-new" } | { v: "mandate"; id: string } | { v: "mandate-edit"; id: string }
-  | { v: "interviews" } | { v: "runs"; file: string | null } | { v: "playbooks"; file: string | null } | { v: "progress" };
+  | { v: "interviews" } | { v: "feedback" } | { v: "runs"; file: string | null } | { v: "playbooks"; file: string | null } | { v: "progress" };
 
 function parseRoute(hash: string): Route {
   const [p, q = ""] = hash.replace(/^#\/?/, "").split("?");
@@ -29,6 +30,7 @@ function parseRoute(hash: string): Route {
       if (parts[1] === "runs") return { v: "runs", file: parts[2] ?? null };
       if (parts[1] === "playbooks") return { v: "playbooks", file: parts.slice(2).join("/") || null };
       if (parts[1] === "progress") return { v: "progress" };
+      if (parts[1] === "feedback") return { v: "feedback" };
       return { v: "interviews" };
     default: return { v: "chat", id: null };
   }
@@ -56,6 +58,7 @@ export function BenchApp() {
   const [activity, setActivity] = useState<Activity>({ busy: null, recording: "idle" });
   const [refreshKey, setRefreshKey] = useState(0);
   const [offline, setOffline] = useState<string | null>(null);
+  const [openFeedback, setOpenFeedback] = useState(0);
 
   const go = useCallback((to: string, replace = false) => {
     if (replace) history.replaceState(null, "", to); else history.pushState(null, "", to);
@@ -66,6 +69,7 @@ export function BenchApp() {
   const loadLists = useCallback(() => {
     api<{ conversations: ConversationSummary[] }>("/api/bench/conversations").then((r) => { setRecent(r.conversations); setOffline(null); }).catch((e) => setOffline((e as Error).message));
     api<{ mandates: { mandate: BenchMandate }[] }>("/api/bench/mandates").then((r) => setMandates(r.mandates.map((m) => m.mandate))).catch(() => {});
+    api<{ items: { status: string }[] }>("/api/bench/feedback").then((r) => setOpenFeedback(r.items.filter((i) => i.status === "open").length)).catch(() => {});
   }, []);
   const refresh = useCallback(() => { loadLists(); setRefreshKey((k) => k + 1); }, [loadLists]);
   useEffect(() => { loadLists(); }, [loadLists]);
@@ -95,6 +99,7 @@ export function BenchApp() {
   const chatKey = route.v === "chat" && route.id ? aliases[route.id] ?? route.id : draftKey;
   const chatMandateId = route.v === "chat" ? (route.id ? openSummary?.mandate_id ?? null : draft.mandateId) : null;
   const chatMandate = mandates.find((m) => m.id === chatMandateId) ?? null;
+  const deployed = chatMandate?.brains ?? BRAINS;
   const figureBrain: Brain = openSummary?.brain ?? (route.v === "chat" ? draft.brain : brain);
   const inChat = route.v === "chat";
   const figureState = !inChat ? "idle"
@@ -123,7 +128,7 @@ export function BenchApp() {
           </div>
           <div className="bench-switch" role="tablist" aria-label="Brain">
             {BRAINS.map((b) => (
-              <button key={b} role="tab" aria-selected={activeBrain === b} data-on={activeBrain === b || undefined} onClick={() => setBrain(b)}>
+              <button key={b} role="tab" disabled={inChat && !(route.v === "chat" && route.id) && !deployed.includes(b)} title={!deployed.includes(b) ? "Not deployed on this mandate" : undefined} aria-selected={activeBrain === b} data-on={activeBrain === b || undefined} onClick={() => setBrain(b)}>
                 <span className="bench-brain-dot" data-brain={b} />
                 <span className="bench-switch__name">{BRAIN_LABEL[b]}</span>
                 <span className="bench-switch__domain">{BRAIN_DOMAIN[b]}</span>
@@ -150,6 +155,9 @@ export function BenchApp() {
           </RailSection>
 
           <RailSection title="Train">
+            <button className="bench-rail__item" aria-current={navTo("feedback")} onClick={() => go("#/train/feedback")}>
+              <span className="flex-1">Feedback inbox</span>{openFeedback > 0 && <span className="bench-count">{openFeedback}</span>}
+            </button>
             <button className="bench-rail__item" aria-current={navTo("interviews")} onClick={() => go("#/train/interviews")}>Interviews</button>
             <button className="bench-rail__item" aria-current={navTo("runs")} onClick={() => go("#/train/runs")}>Grade runs</button>
             <button className="bench-rail__item" aria-current={navTo("playbooks")} onClick={() => go("#/train/playbooks")}>Playbooks</button>
@@ -191,6 +199,7 @@ export function BenchApp() {
           onListChanged={refresh}
           onActivity={setActivity}
           onOpenMandate={(id) => go(`#/m/${id}`)}
+          onOpenConversation={(id) => { loadLists(); go(`#/c/${id}`); }}
         />
       )}
       {route.v !== "chat" && (
@@ -206,6 +215,7 @@ export function BenchApp() {
               onNewConversation={(b) => go(`#/new/${b}?m=${route.id}`)}
               onEdit={(m) => go(`#/m/${m.id}/edit`)} />
           )}
+          {route.v === "feedback" && <FeedbackView refreshKey={refreshKey} onChanged={refresh} onOpenConversation={(id) => { loadLists(); go(`#/c/${id}`); }} onOpenRun={(f) => go(`#/train/runs/${encodeURIComponent(f)}`)} />}
           {route.v === "interviews" && <InterviewsView refreshKey={refreshKey} onOpen={(id) => { refresh(); go(`#/c/${id}`); }} />}
           {route.v === "runs" && <RunsView file={route.file} onOpenRun={(f) => go(f ? `#/train/runs/${encodeURIComponent(f)}` : "#/train/runs")} onOpenConversation={(id) => { refresh(); go(`#/c/${id}`); }} />}
           {route.v === "playbooks" && <PlaybooksView file={route.file} onOpen={(f) => go(f ? `#/train/playbooks/${f}` : "#/train/playbooks")} />}
