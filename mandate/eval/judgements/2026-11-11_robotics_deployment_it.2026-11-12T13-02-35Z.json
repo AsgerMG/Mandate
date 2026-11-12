@@ -1,0 +1,213 @@
+{
+ "label": "2026-11-11_robotics_deployment_it",
+ "case": "robotics_deployment_it",
+ "case_sha256": "9b9339fd0a9a130bd0aa88efc5bb81e58d02fd40d4503ab18c84a594c9be8dd7",
+ "prompt_sha256": "93a4aecc47210d972552336b7ffbcb8106a493ba83b871e916938847bd492598",
+ "git_commit": "625ea9490e",
+ "judged_at": "2026-11-12T13:02:35+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 50.9,
+  "session_id": "33f89e01-e4a5-4bb3-9c35-c931873c67b6"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Asks six structure questions first; then separates held versus planned statuses."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "106 tied to FdG direct and portfolio guarantee and Sabatini leasing intermediary, cited c13-c18."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Sequenced 106 step: BdI authorisation c24, seat c25, capital c26/w3, object c27, 180 days w3."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Age c29, residence c30, SME judgement with group; innovation tests flagged unverified."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Sabatini as customer instrument c2 w1; used for dual contract offer and 106 sales case."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "National, regional, EU worked separately; local level (Camere di commercio vouchers) absent."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Lombardia, ER, Piemonte, Veneto, Toscana by S3 c4-c8; Lazio security only c9."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Sabatini refinancing and regional windows watched; FdG reform vague, no 31 Dec 2026 transition or 2027 reform."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Explicit none found for FdG and regional; EIF leasing precedents cited w5 w6."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mostly cited or labelled; regional researched live but grounding not stored; few unlabelled rule claims."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Checks age, residence, SME; recommends against relying on it."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "106 is a sequenced step this quarter with partner-leasing bridge."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Narrows to Lombardia and ER; others parked."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Local level skipped entirely; no chamber-of-commerce route."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Rule statements and register records labelled honestly, not passed off as citations."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No foreign rule transferred to Italy."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Never recommends starting before applying; silent on incentive-effect timing."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "SME test that counts the whole group (start-up innovativa)",
+  "Almost every Italian door needs an Italian registered office or operating site",
+  "Mediocredito Centrale, head of the Fondo di Garanzia",
+  "Banca d'Italia, Vigilanza intermediari finanziari as competent unit",
+  "Regione Lombardia, DG Sviluppo Economico, access-to-credit unit",
+  "ongoing Banca d'Italia supervision of the 106 company"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Smart&Start rule returned uncited",
+   "kind": "statute",
+   "source": "DM Smart&Start / Invitalia"
+  },
+  {
+   "signal": "art. 25 innovation tests not returned",
+   "kind": "statute",
+   "source": "DL 179/2012 art. 25 c.2"
+  },
+  {
+   "signal": "No passage on operating rental vs financial lease under 106",
+   "kind": "statute",
+   "source": "DM 53/2015; Banca d'Italia guidance"
+  },
+  {
+   "signal": "Circolare 288/2015 read from 2015 copy",
+   "kind": "statute",
+   "source": "bancaditalia.it consolidated Circolare 288"
+  },
+  {
+   "signal": "FdG caps, sector exclusions, cover reform unchecked",
+   "kind": "statute",
+   "source": "FdG Disposizioni operative; MIMIT reform decree"
+  },
+  {
+   "signal": "BdI 106 consultation unverified",
+   "kind": "statute",
+   "source": "bancaditalia.it consultations"
+  },
+  {
+   "signal": "Iperammortamento on operating rental unverified",
+   "kind": "statute",
+   "source": "L. 199/2025 c.427-436 and decree"
+  },
+  {
+   "signal": "No Sabatini row in corpus",
+   "kind": "instrument",
+   "source": "MIMIT Nuova Sabatini page"
+  },
+  {
+   "signal": "No regional Italian investment measure in corpus",
+   "kind": "instrument",
+   "source": "Lombardia and Emilia-Romagna regional calls"
+  },
+  {
+   "signal": "ER SME machinery measure aggregator only",
+   "kind": "instrument",
+   "source": "fesr.regione.emilia-romagna.it"
+  },
+  {
+   "signal": "No FdG award records; MCC register unrelated",
+   "kind": "precedents",
+   "source": "Fondo di Garanzia operations data"
+  },
+  {
+   "signal": "read_agenda empty",
+   "kind": "media",
+   "source": ""
+  },
+  {
+   "signal": "ER attraction desk and contacts unverified",
+   "kind": "stakeholders",
+   "source": ""
+  },
+  {
+   "signal": "Grounding not written; web sources unstored",
+   "kind": "other",
+   "source": ""
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Splits operating srl from a 106 financing company, making FdG and Sabatini own sales tools, with partner leasing as bridge.",
+ "weakest_move": "Drops the local level and leaves the FdG transition and 2027 reform undated.",
+ "overall": "Senior-quality, well-sequenced, honestly labelled plan; needs local level, dated FdG reform and stored grounding before sending.",
+ "must_total": 10,
+ "must_met": 7,
+ "must_partly": 3,
+ "must_not_total": 7,
+ "must_not_hit": 1,
+ "must_not_borderline": 0,
+ "grade": 3,
+ "rule_and_holistic_agree": true,
+ "scale": "right idea, rework",
+ "reply": "# Judgement: robotics_deployment_it\n\n**Checkpoints**\n\n- **must_1 (met):** Wincent asks six structure questions before advising: entity, group size, Italian site, regions, volume and contract form. It then sets out what the company holds and what it plans.\n- **must_2 (met):** It ties Art. 106 status to the Fondo di Garanzia direct guarantee [c13–c15], the portfolio guarantee [c16–c17] and Nuova Sabatini as a leasing intermediary [c18]. The sources are the Disposizioni operative and DL 69/2013 art. 2.\n- **must_3 (met):** Art. 106 is a step for this quarter. It sets out Banca d'Italia authorisation [c24], an Italian seat [c25], capital [c26]/[w3], a limited object [c27] and 180 days [w3], with a pre-filing meeting.\n- **must_4 (met):** It checks age [c29] and residence [c30], treats the SME test as a judgement that includes the group, and marks the innovation tests unverified. The new subsidiary's eligibility is tested, not assumed.\n- **must_5 (met):** Sabatini is the customers' instrument [c2] [w1]. It becomes the sales argument through the second, Sabatini-eligible lease contract and the case for having Art. 106.\n- **must_6 (partly):** National, regional and EU levels are worked separately and led sensibly. The local level is missing: no Camere di commercio vouchers.\n- **must_7 (met):** It narrows to Lombardia and Emilia-Romagna, then Piemonte, Veneto and Toscana, each tied to its own S3 [c4–c8]. Lazio is kept only for defence [c9].\n- **must_8 (partly):** The Sabatini refinancing in the budget law, the regional windows and a watchlist are there. The Fondo di Garanzia reform is only \"being reformed\", with no 31 Dec 2026 transition or 2027 reform named.\n- **must_9 (met):** It says plainly there is no Fondo or regional precedent, and cites EIF leasing precedents [w5] [w6].\n- **must_10 (partly):** Rules are cited or labelled and regional measures were researched live. Nothing was written to grounding (the answer admits this), and a few rule statements are unlabelled.\n- **must_not_1 (avoided):** Age, residence and SME are each checked. It recommends against start-up innovativa.\n- **must_not_2 (avoided):** Art. 106 is a sequenced step, with partner leasing companies as the bridge until then.\n- **must_not_3 (avoided):** It narrows to two regions and parks the rest.\n- **must_not_4 (hit):** The local level is skipped entirely. No chamber-of-commerce level appears anywhere.\n- **must_not_5 (avoided):** The match_status rule statements and the reform note are labelled for what they are. Register records are not presented as citations.\n- **must_not_6 (avoided):** No German Hausbank rule or other foreign rule is carried over to Italy.\n- **must_not_7 (avoided):** It never recommends starting before applying. It is silent on the incentive-effect timing for Sabatini and the Lombardia measure.\n\n**Ungrounded facts**\n- \"SME test that counts the whole group\" (start-up innovativa, Turn 1)\n- \"Almost every Italian door needs an Italian registered office or operating site\"\n- \"Mediocredito Centrale, head of the Fondo di Garanzia\" (the body's remit, unlabelled)\n- \"Banca d'Italia, Vigilanza intermediari finanziari\" as the competent unit\n- \"Regione Lombardia, DG Sviluppo Economico, head of the access-to-credit unit\"\n- \"ongoing Banca d'Italia supervision\" of the 106 company\n\n**Data gaps**\n- **statute:** Smart&Start rule returned uncited. Source: DM Smart&Start / Invitalia.\n- **statute:** art. 25 innovation tests not returned. Source: DL 179/2012 art. 25 c.2 lett. h.\n- **statute:** no passage on operating rental vs financial lease under Art. 106. Source: DM 53/2015, Banca d'Italia guidance.\n- **statute:** Circolare 288/2015 read as a 2015 copy. Source: consolidated version on bancaditalia.it.\n- **statute:** Fondo per-company caps, sector exclusions and the cover reform unchecked. Source: Disposizioni operative, MIMIT reform decree.\n- **statute:** Banca d'Italia 106 consultation of 30 Sep 2026 unverified. Source: bancaditalia.it consultations.\n- **statute:** iperammortamento on operating rental unverified. Source: L. 199/2025 c.427-436 and its implementing decree.\n- **instrument:** no Sabatini row in the corpus. Source: MIMIT Nuova Sabatini page.\n- **instrument:** no regional Italian investment measure in the corpus. Source: Lombardia and Emilia-Romagna regional calls.\n- **instrument:** Emilia-Romagna SME machinery measure, aggregator search only. Source: fesr.regione.emilia-romagna.it.\n- **precedents:** no Fondo award records; Mediocredito Centrale register records unrelated. Source: Fondo di Garanzia operations data.\n- **media:** read_agenda empty for Lombardia and for Italy incentives.\n- **stakeholders:** the Emilia-Romagna attraction desk lead and all named contacts unverified.\n- **other:** grounding not written; web sources not stored.\n\n**Strongest move:** It separates the operating company from the Art. 106 financing company and turns the Fondo guarantee and Sabatini into the company's own sales tools, with partner leasing companies as the bridge.\n\n**Weakest move:** It drops the local level (chamber-of-commerce vouchers) and leaves the Fondo di Garanzia transition and 2027 reform vague.\n\n**Overall:** A senior-quality plan with sound structure, status matching and sequencing, and honest labelling. The owner would make light edits: add the local level, put dates on the Fondo reform, and ground the web sources.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Asks six structure questions first; then separates held versus planned statuses.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"106 tied to FdG direct and portfolio guarantee and Sabatini leasing intermediary, cited c13-c18.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Sequenced 106 step: BdI authorisation c24, seat c25, capital c26/w3, object c27, 180 days w3.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Age c29, residence c30, SME judgement with group; innovation tests flagged unverified.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Sabatini as customer instrument c2 w1; used for dual contract offer and 106 sales case.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"National, regional, EU worked separately; local level (Camere di commercio vouchers) absent.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Lombardia, ER, Piemonte, Veneto, Toscana by S3 c4-c8; Lazio security only c9.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Sabatini refinancing and regional windows watched; FdG reform vague, no 31 Dec 2026 transition or 2027 reform.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"Explicit none found for FdG and regional; EIF leasing precedents cited w5 w6.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Mostly cited or labelled; regional researched live but grounding not stored; few unlabelled rule claims.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Checks age, residence, SME; recommends against relying on it.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"106 is a sequenced step this quarter with partner-leasing bridge.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Narrows to Lombardia and ER; others parked.\"},{\"id\":\"must_not_4\",\"verdict\":\"hit\",\"reason\":\"Local level skipped entirely; no chamber-of-commerce route.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Rule statements and register records labelled honestly, not passed off as citations.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"No foreign rule transferred to Italy.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Never recommends starting before applying; silent on incentive-effect timing.\"}],\"ungrounded_facts\":[\"SME test that counts the whole group (start-up innovativa)\",\"Almost every Italian door needs an Italian registered office or operating site\",\"Mediocredito Centrale, head of the Fondo di Garanzia\",\"Banca d'Italia, Vigilanza intermediari finanziari as competent unit\",\"Regione Lombardia, DG Sviluppo Economico, access-to-credit unit\",\"ongoing Banca d'Italia supervision of the 106 company\"],\"data_gaps\":[{\"signal\":\"Smart&Start rule returned uncited\",\"kind\":\"statute\",\"source\":\"DM Smart&Start / Invitalia\"},{\"signal\":\"art. 25 innovation tests not returned\",\"kind\":\"statute\",\"source\":\"DL 179/2012 art. 25 c.2\"},{\"signal\":\"No passage on operating rental vs financial lease under 106\",\"kind\":\"statute\",\"source\":\"DM 53/2015; Banca d'Italia guidance\"},{\"signal\":\"Circolare 288/2015 read from 2015 copy\",\"kind\":\"statute\",\"source\":\"bancaditalia.it consolidated Circolare 288\"},{\"signal\":\"FdG caps, sector exclusions, cover reform unchecked\",\"kind\":\"statute\",\"source\":\"FdG Disposizioni operative; MIMIT reform decree\"},{\"signal\":\"BdI 106 consultation unverified\",\"kind\":\"statute\",\"source\":\"bancaditalia.it consultations\"},{\"signal\":\"Iperammortamento on operating rental unverified\",\"kind\":\"statute\",\"source\":\"L. 199/2025 c.427-436 and decree\"},{\"signal\":\"No Sabatini row in corpus\",\"kind\":\"instrument\",\"source\":\"MIMIT Nuova Sabatini page\"},{\"signal\":\"No regional Italian investment measure in corpus\",\"kind\":\"instrument\",\"source\":\"Lombardia and Emilia-Romagna regional calls\"},{\"signal\":\"ER SME machinery measure aggregator only\",\"kind\":\"instrument\",\"source\":\"fesr.regione.emilia-romagna.it\"},{\"signal\":\"No FdG award records; MCC register unrelated\",\"kind\":\"precedents\",\"source\":\"Fondo di Garanzia operations data\"},{\"signal\":\"read_agenda empty\",\"kind\":\"media\",\"source\":\"\"},{\"signal\":\"ER attraction desk and contacts unverified\",\"kind\":\"stakeholders\",\"source\":\"\"},{\"signal\":\"Grounding not written; web sources unstored\",\"kind\":\"other\",\"source\":\"\"}],\"holistic_grade\":4,\"strongest_move\":\"Splits operating srl from a 106 financing company, making FdG and Sabatini own sales tools, with partner leasing as bridge.\",\"weakest_move\":\"Drops the local level and leaves the FdG transition and 2027 reform undated.\",\"overall\":\"Senior-quality, well-sequenced, honestly labelled plan; needs local level, dated FdG reform and stored grounding before sending.\"}"
+}

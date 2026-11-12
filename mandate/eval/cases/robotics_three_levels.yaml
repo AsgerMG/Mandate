@@ -1,0 +1,31 @@
+id: robotics_three_levels
+brains: [wincent]
+status: owner_habit                # from the owner's round 3b interview; the run itself is not owner-graded
+checks: [open_door, status_unlocks, who_decides, sequencing]
+tags: [deployment, equipment, leasing, financing_arm, customers, status, startup_regime, intermediary, national, regional, local, chamber_of_commerce, smart_specialisation, economic_geography, political_read, incentive_effect]
+title: Entering a market with a financing arm and customers to equip. Work three levels, narrowed twice.
+situation: >
+  A scale-up that places equipment with SME customers and finances it over several years
+  enters a new country, plans a local entity, and weighs a start-up regime against a
+  supervised lender status so it can finance customers itself. It asks which public money
+  fits and where in the country.
+junior_move: >
+  Treats the country as one level, lists every region and programme it can find, assumes
+  the start-up regime applies without checking age, size and the local-site condition, and
+  stops at the regional level without the local one.
+senior_move: >
+  Matches each status to the doors it opens, per role: the lender status opens the
+  guarantee fund and the equipment scheme to the company as a lender; the customers use the
+  equipment scheme themselves, which becomes a sales argument. Checks the start-up regime
+  against its own criteria and flags what must be verified for a subsidiary of an older
+  group. Works national, regional and local separately and leads with the level open for
+  this applicant. Narrows the regions by economic geography, each grounded in the region's
+  own strategy, and keeps the political read current (transition rules, budget laws,
+  regional decisions) on the watchlist. Warns where the incentive effect requires applying
+  before ordering.
+owner_verdict: >
+  Habits from round 3b (funding-routes.md §4e): "National is three levels: national, regional,
+  local. A senior works all three, and narrows them twice: by status, then by economic
+  geography; keep the political read current." The 11 Nov bench run missed the local level
+  and the start-up regime nuance: the two moves to watch on any entry case.
+source: mandate/playbooks/funding-routes.md §4e; mandate/eval/scenarios/robotics_deployment_it.yaml; mandate/eval/runs/bench/2026-11-11_robotics_deployment_it.md (self-score, not owner-graded)

@@ -1,0 +1,181 @@
+{
+ "label": "loop/iter1/robotics_deployment_it",
+ "case": "robotics_deployment_it",
+ "case_sha256": "9b9339fd0a9a130bd0aa88efc5bb81e58d02fd40d4503ab18c84a594c9be8dd7",
+ "prompt_sha256": "85cc792a9a7a9a5ac42f231ca28f56df66bee95947511cd656121c97e76e438f",
+ "git_commit": "2d06988746",
+ "judged_at": "2026-11-12T22:19:20+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 54.4,
+  "session_id": "26f613e0-56fd-4bad-8d31-e54930b15601"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Establishes no Italian entity, planned statuses and sequence; questions limited to contract form, ownership, funding, patents."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Art. 106 opens Fondo di Garanzia direct and portfolio guarantees [c3][c5][c6]; Sabatini lender role with condition [c7]; customer role separate."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Planned step: Italian office [c9], capital [w3], object limited [c11], Banca d'Italia pre-filing, then accreditation; timeline coarse but present."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Checks €5M cap, no business transfer, innovation test [w2]; skips 60-month and Italian-site criteria and the new-subsidiary question."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Sabatini for customers buying or finance-leasing robots [c15], used as the sales case for a finance-lease option."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Levels worked separately and local SI4.0 present; regional guarantee sections and ERDF calls not examined; leads with EU."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Four northern regions grounded in S3 [c25-c28]; Toscana and Lazio omitted without reason."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "2027 reform and iperammortamento on watch; Fondo di Garanzia transition to 31 Dec 2026 missing; Sabatini refinancing unverified; regional calls not covered."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "States 'none found' for both main routes and calls them first-of-a-kind."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mostly cited, but regional programmes only scanned by name, not researched live; some claims unlabelled."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Rejects startup innovativa rather than assuming qualification."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly 'do not park it'; Art. 106 sequenced."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Narrows to two regions, then two more."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EU, national, regional and local all treated."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "EU SME 25% ownership test cited to [c24], DL 69/2013, not its source."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No foreign rule transferred."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Says apply before ordering to keep the incentive."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "It fails on size and age early (age part)",
+  "Then ongoing Banca d'Italia supervision",
+  "InvestEU moving into the European Competitiveness Fund",
+  "Ricerca&Innova, Collabora&Innova in Lombardia (named, unsourced)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Regional scan by name only; no regional fleet or guarantee instrument found",
+   "kind": "instrument",
+   "source": "Lombardia and Emilia-Romagna regional portals, regional Fondo di Garanzia sections"
+  },
+  {
+   "signal": "Sabatini apply-before-order rule unverified",
+   "kind": "statute",
+   "source": "MIMIT Sabatini circular"
+  },
+  {
+   "signal": "iperammortamento GSE booking and rented-asset eligibility unverified",
+   "kind": "statute",
+   "source": "MIMIT decree 7 May 2026"
+  },
+  {
+   "signal": "Sabatini refinancing unverified",
+   "kind": "media",
+   "source": "2027 budget law"
+  },
+  {
+   "signal": "Collabora&Innova II unverified",
+   "kind": "media",
+   "source": "Regione Lombardia calls"
+  },
+  {
+   "signal": "No Fondo di Garanzia precedent for non-bank lessor",
+   "kind": "precedents",
+   "source": "Fondo di Garanzia award data"
+  },
+  {
+   "signal": "EIF transaction list not checked",
+   "kind": "precedents",
+   "source": "EIF transaction list"
+  },
+  {
+   "signal": "EU machinery and AI rules not researched",
+   "kind": "statute",
+   "source": ""
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Recasts the choice as rental versus finance lease, tying Art. 106 and customer incentives to it, with startup innovativa refused on cited criteria.",
+ "weakest_move": "Startup check skips 60-month and Italian-site criteria and the subsidiary question; regional level thin, Toscana and Lazio dropped silently.",
+ "overall": "Sharp, well-cited status and contract reasoning; a senior would send it after light edits. Complete startup criteria, ground the regional level, add Fondo di Garanzia transition rules.",
+ "must_total": 10,
+ "must_met": 5,
+ "must_partly": 5,
+ "must_not_total": 7,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: robotics_deployment_it (iter1), Wincent\n\n**Checkpoints**\n- **must_1: met.** Wincent sets out the structure first: no Italian entity, an operating company now, Art. 106 as a planned step. The closing questions cover only what the profile lacks: contract form, 25% ownership, how the €30M is funded, patents.\n- **must_2: met.** Art. 106 opens the Fondo di Garanzia direct and portfolio guarantees [c3][c5][c6]. The Sabatini lender role is set out with its condition [c7], separate from the customers' role.\n- **must_3: met.** Art. 106 is a planned step with a sequence: Italian registered office [c9], €2M/€3M capital [w3], object limited [c11], a Banca d'Italia pre-filing meeting, then Fondo di Garanzia accreditation. The timeline is coarse (\"this quarter\", \"later\").\n- **must_4: partly.** Wincent checks the €5M output cap, the no-business-transfer rule and the innovation test [w2]. The 60-month and Italian-site criteria are never checked. Nor is whether a new subsidiary of a group qualifies. \"Fails on age\" is asserted without a citation.\n- **must_5: met.** Customers use Sabatini to buy or finance-lease the robots [c15], and Wincent turns this into a sales argument for offering a finance lease.\n- **must_6: partly.** National, regional and local are worked separately, with SI4.0 at the local level. The regional level is thin: regional guarantee sections and ERDF calls are not examined. Wincent leads with the EU rather than with the open Italian level.\n- **must_7: partly.** Lombardia, Emilia-Romagna, Veneto and Piemonte are each grounded in their S3 [c25–c28]. Toscana and Lazio are dropped with no reason given.\n- **must_8: partly.** The 2027 Fondo di Garanzia reform [c5], the InvestEU move into the European Competitiveness Fund and the iperammortamento end date are on the watchlist. The transition rules to 31 Dec 2026 are missing. Sabatini refinancing is marked unverified, and the regional giunte calls are not covered.\n- **must_9: met.** Wincent says plainly \"none found\" for both main routes and calls them first-of-a-kind.\n- **must_10: partly.** Most claims are cited. The regional programmes were scanned by name only, not researched live, and a few claims are unlabelled.\n- **must_not_1: avoided.** Wincent rejects startup innovativa rather than assuming the company qualifies.\n- **must_not_2: avoided.** \"Do not park it\": Art. 106 is sequenced.\n- **must_not_3: avoided.** Wincent narrows to two regions first, then two more.\n- **must_not_4: avoided.** All levels are present, including the local one.\n- **must_not_5: borderline.** The EU SME 25% ownership test is cited to [c24] (DL 69/2013), which is not where that rule comes from.\n- **must_not_6: avoided.** No German Hausbank rule or other foreign rule is transferred to Italy.\n- **must_not_7: avoided.** Wincent says \"apply before ordering, so the incentive is not lost.\"\n\n**Ungrounded facts**\n- \"It fails on size and age early\" (the age part)\n- \"Then ongoing Banca d'Italia supervision\"\n- \"InvestEU moving into the European Competitiveness Fund\"\n- \"Ricerca&Innova, Collabora&Innova in Lombardia\" (named but not sourced)\n\n**Data gaps**\n- The regional scan ran by name only, with no regional fleet or guarantee instrument found (instrument; Lombardia and Emilia-Romagna regional portals, regional Fondo di Garanzia sections).\n- Sabatini apply-before-order rule unverified (statute; MIMIT Sabatini circular).\n- iperammortamento GSE booking, and whether rented robots qualify, unverified (statute; MIMIT decree of 7 May 2026).\n- Sabatini refinancing unverified (media; the 2027 budget law).\n- Collabora&Innova II unverified (media; Regione Lombardia calls).\n- No Fondo di Garanzia precedents for non-bank lessors (precedents; Fondo di Garanzia award data).\n- EIF transaction list not checked (precedents; EIF transaction list).\n- EU machinery and AI rules not researched (statute).\n\n**Strongest move:** Wincent recasts the founder's choice as rental versus finance lease, ties Art. 106 and the customer incentives to it, and refuses startup innovativa with criteria cited.\n\n**Weakest move:** The startup innovativa check skips the 60-month and Italian-site criteria and the group-subsidiary question. The regional level stays thin, with Toscana and Lazio dropped silently.\n\n**Overall:** A senior would send this after light edits. The reasoning about status and contract form is sharp and well cited.\n\nTo fix: complete the startup innovativa criteria, ground the regional programmes and say why regions were left out, and add the Fondo di Garanzia transition rules.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Establishes no Italian entity, planned statuses and sequence; questions limited to contract form, ownership, funding, patents.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"Art. 106 opens Fondo di Garanzia direct and portfolio guarantees [c3][c5][c6]; Sabatini lender role with condition [c7]; customer role separate.\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Planned step: Italian office [c9], capital [w3], object limited [c11], Banca d'Italia pre-filing, then accreditation; timeline coarse but present.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Checks €5M cap, no business transfer, innovation test [w2]; skips 60-month and Italian-site criteria and the new-subsidiary question.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Sabatini for customers buying or finance-leasing robots [c15], used as the sales case for a finance-lease option.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Levels worked separately and local SI4.0 present; regional guarantee sections and ERDF calls not examined; leads with EU.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Four northern regions grounded in S3 [c25-c28]; Toscana and Lazio omitted without reason.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"2027 reform and iperammortamento on watch; Fondo di Garanzia transition to 31 Dec 2026 missing; Sabatini refinancing unverified; regional calls not covered.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"States 'none found' for both main routes and calls them first-of-a-kind.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Mostly cited, but regional programmes only scanned by name, not researched live; some claims unlabelled.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Rejects startup innovativa rather than assuming qualification.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Explicitly 'do not park it'; Art. 106 sequenced.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Narrows to two regions, then two more.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"EU, national, regional and local all treated.\"},{\"id\":\"must_not_5\",\"verdict\":\"borderline\",\"reason\":\"EU SME 25% ownership test cited to [c24], DL 69/2013, not its source.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"No foreign rule transferred.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Says apply before ordering to keep the incentive.\"}],\"ungrounded_facts\":[\"It fails on size and age early (age part)\",\"Then ongoing Banca d'Italia supervision\",\"InvestEU moving into the European Competitiveness Fund\",\"Ricerca&Innova, Collabora&Innova in Lombardia (named, unsourced)\"],\"data_gaps\":[{\"signal\":\"Regional scan by name only; no regional fleet or guarantee instrument found\",\"kind\":\"instrument\",\"source\":\"Lombardia and Emilia-Romagna regional portals, regional Fondo di Garanzia sections\"},{\"signal\":\"Sabatini apply-before-order rule unverified\",\"kind\":\"statute\",\"source\":\"MIMIT Sabatini circular\"},{\"signal\":\"iperammortamento GSE booking and rented-asset eligibility unverified\",\"kind\":\"statute\",\"source\":\"MIMIT decree 7 May 2026\"},{\"signal\":\"Sabatini refinancing unverified\",\"kind\":\"media\",\"source\":\"2027 budget law\"},{\"signal\":\"Collabora&Innova II unverified\",\"kind\":\"media\",\"source\":\"Regione Lombardia calls\"},{\"signal\":\"No Fondo di Garanzia precedent for non-bank lessor\",\"kind\":\"precedents\",\"source\":\"Fondo di Garanzia award data\"},{\"signal\":\"EIF transaction list not checked\",\"kind\":\"precedents\",\"source\":\"EIF transaction list\"},{\"signal\":\"EU machinery and AI rules not researched\",\"kind\":\"statute\",\"source\":\"\"}],\"holistic_grade\":4,\"strongest_move\":\"Recasts the choice as rental versus finance lease, tying Art. 106 and customer incentives to it, with startup innovativa refused on cited criteria.\",\"weakest_move\":\"Startup check skips 60-month and Italian-site criteria and the subsidiary question; regional level thin, Toscana and Lazio dropped silently.\",\"overall\":\"Sharp, well-cited status and contract reasoning; a senior would send it after light edits. Complete startup criteria, ground the regional level, add Fondo di Garanzia transition rules.\"}"
+}

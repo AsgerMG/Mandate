@@ -1,0 +1,43 @@
+# HELD-OUT case (Fable mission, 12 Nov 2026). Written from the method (funding-routes.md
+# §1b diagnose intent, §1c precedent, §4d status; method.md "Before answering") and the
+# grounding map (§2.2 FR, §2.5), NOT from any run. Checkpoints are Claude's reading of the
+# owner's method, to be confirmed or corrected by the owner at grading.
+id: heldout_deeptech_fr_series_a
+job: funding-routes
+held_out: true
+status: draft_pending_owner
+founder_says: >
+  We are a French deep-tech company making industrial sensors, 30 people, based near
+  Grenoble. We are closing a EUR 12M Series A with a lead VC in the next three months.
+  What public money should come alongside the round, and what else are we missing?
+profile_hint:
+  name: Example Sensors (held-out)
+  description: >
+    French deep-tech hardware company (SAS, 30 staff, Auvergne-Rhone-Alpes) with an
+    industrial R&D programme, closing a EUR 12M Series A led by a VC within three months.
+  sector: industrial_manufacturing
+  subsectors: [robotics_automation]
+  customerType: b2b
+  markets: [FR, EU]
+  developmentStage: scaling_revenue
+founder_followup: >
+  SAS, incorporated 2021, holds the young innovative company status since 2022; we claim
+  the research tax credit. About half the team is R&D. The lead VC has issued a term
+  sheet; we expect to sign in six to ten weeks. First export customers are in Germany; we
+  have no entity outside France. We have never taken a public loan or grant beyond the tax
+  credit.
+must:
+  - Reads the ask as a raise in progress and leads with the co-investment or matchmaking instruments tied to a round, explaining why the round is the moment (the private due diligence is done) and the sequencing rule (file before the round closes).
+  - "Matches the status the company holds (its young-innovative-company regime) to what it opens and what it still requires, cited, and says which other statuses or labels would open more, as plan steps with a timeline."
+  - Names the national R&D grant and tax-credit routes relevant to this company, including what the company already uses, researched and cited, not asserted.
+  - Works the regional level as its own door (the region's own instruments and its development agency), with the region's priorities cited, not as an afterthought to the national bank.
+  - Mentions export or market-entry support for the first export market with its sequencing rule (apply before entering), and the structure question it raises (an entity or not).
+  - "Precedents for the main routes: the same institution co-financing a round of similar size and stage in the same sector, cited, or says plainly that none was found."
+  - Names who decides by function (the national bank's regional office and product heads; the region's agency) and the political side where it matters, P1 and P2, without inventing names.
+  - Ends with a sequenced plan around the round's closing date (this week, this month, this quarter) and puts every route on the watchlist.
+must_not:
+  - Lists instruments before confirming the structure, the status held and the round's timing.
+  - Asserts a tax-credit rate, a threshold or an eligibility rule without a citation.
+  - Generalises another country's start-up or guarantee rules to this one.
+  - Recommends the export-market move before saying what must be filed first.
+  - Treats the regional level as a footnote or skips it.

@@ -15,6 +15,9 @@ production's own, run read-only. Refer to Wincent and Regina by name, never "he"
 2. `mandate/playbooks/wincent.md`: who Wincent is, how Wincent sounds, the tools.
 3. `mandate/playbooks/funding-routes.md`: the owner's practice for funding and finance
    cases. It overrides the general order where they differ.
+4. `mandate/playbooks/cases/wincent.md`: worked cases with the owner's verdict. Find the
+   closest one to the case in front of you and apply its senior move; run the checks in
+   method.md ("Before answering") before the first recommendation.
 
 These files are the single source. If anything below seems to disagree with them,
 they win, and say so in your answer so the owner can fix this file.

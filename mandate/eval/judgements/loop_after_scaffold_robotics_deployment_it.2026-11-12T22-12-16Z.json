@@ -1,0 +1,182 @@
+{
+ "label": "loop/after_scaffold/robotics_deployment_it",
+ "case": "robotics_deployment_it",
+ "case_sha256": "9b9339fd0a9a130bd0aa88efc5bb81e58d02fd40d4503ab18c84a594c9be8dd7",
+ "prompt_sha256": "75147bed3091bb113e8589fd69b545407d8c60801271869479fdf2251e45b532",
+ "git_commit": "e3aea05487",
+ "judged_at": "2026-11-12T22:12:16+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 55.1,
+  "session_id": "9230f85f-04e1-40de-b9e3-806c773da99a"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "States GmbH, no Italian entity, S.r.l. planned, 106 planned; asks only contract model and robot ownership."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "106 to FdG direct [c2-c4] and portfolio [c5][c6]; Sabatini lender role via DL 69/2013 art.2 [c7]."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Sequenced 106 step with office [c9], object [c11], capital and BdI [w2], 6-12 months; conditional on contract type, not parked."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Age, residence, €5M cap, no-transfer checked and cited, but asserts subsidiary 'would pass'; group SME question not flagged to verify."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Sabatini named as customer instrument [c15] and used as sales argument for a financial-lease option."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Levels separated, leads with open EIF door; regional level is only S3, no regional guarantee sections or ERDF calls."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Lombardia and Emilia-Romagna S3 priorities cited; Piemonte, Veneto, Toscana cited without priorities; Lazio absent."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Watchlist has BdI consultation and InvestEU; misses FdG 31 Dec 2026 transition, 2027 reform, Sabatini refinancing, regional calls."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "EIF-BNP precedent (unverified), customer-side record, and says plainly no 106 robot lessor found: first-of-a-kind."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Mostly cited; D.M. 53/2015, cover-level reform, leasing-is-lending uncited; SI4.0 and consultation not fetched or stored."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Concludes start-up innovativa is a poor fit; does not claim qualification."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "106 kept as a planned sequenced step; financing arm stays live via EIF."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Narrows to Lombardia and Emilia-Romagna."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EU, national, regional and local all worked."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Register records labelled as such, not presented as citations."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No German Hausbank or foreign rule transferred."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Flags that customer incentives require applying before ordering."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "Counsel should confirm against the 2015 implementing decree (D.M. 53/2015)",
+  "Financial leasing or instalment sales are lending.",
+  "Guarantee fund reform of cover levels",
+  "InvestEU moving under the European Competitiveness Fund",
+  "Mediocredito Centrale, accreditation unit"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Operating rental vs reserved lending: no official text found",
+   "kind": "statute",
+   "source": "D.M. 53/2015; Banca d'Italia guidance"
+  },
+  {
+   "signal": "BdI 30 Sep 2026 consultation not fetched",
+   "kind": "statute",
+   "source": "dirittobancario.it consultation PDF"
+  },
+  {
+   "signal": "Iperammortamento claimant under rental unverified",
+   "kind": "statute",
+   "source": "11 June 2026 implementing decree"
+  },
+  {
+   "signal": "FdG transition and 2027 reform not identified",
+   "kind": "statute",
+   "source": "MCC/MIMIT decrees"
+  },
+  {
+   "signal": "EIF-BNP Paribas Leasing precedent seen in search only",
+   "kind": "precedents",
+   "source": "EIF press release 2025"
+  },
+  {
+   "signal": "No 106 robot lessor using the Fund found",
+   "kind": "precedents",
+   "source": "MCC accredited intermediary lists"
+  },
+  {
+   "signal": "SI4.0 2026 call unverified",
+   "kind": "instrument",
+   "source": "Unioncamere Lombardia determinazione 217-2026"
+  },
+  {
+   "signal": "Regional search matched names only; regional guarantee and ERDF calls missing",
+   "kind": "instrument",
+   "source": "Lombardia and Emilia-Romagna call portals"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Asking first whether the robots-as-a-service contract is lending, which decides whether 106 is needed at all.",
+ "weakest_move": "Thin political read and regional level: no FdG transition dates, Sabatini refinancing or regional programmes.",
+ "overall": "Senior-quality structure, cited status work and a sensible EIF lead with first-of-a-kind flagged; needs light edits on start-up SME check, regional programmes and watchlist dates.",
+ "must_total": 10,
+ "must_met": 5,
+ "must_partly": 5,
+ "must_not_total": 7,
+ "must_not_hit": 0,
+ "must_not_borderline": 0,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: robotics_deployment_it (Wincent, after_scaffold)\n\n## Checkpoints\n\n- **must_1: met.** The answer sets out the structure: a German GmbH with no Italian entity, a plain S.r.l. to be set up, 106 planned. Its open questions ask only what the profile lacks: the contract model and who owns the robots.\n- **must_2: met.** The answer ties Art. 106 to the Fondo di Garanzia direct guarantee [c2–c4] and portfolio guarantee [c5][c6]. It also covers the Sabatini lender role via DL 69/2013 art. 2 [c7] and offers a partner leasing company for Sabatini deals.\n- **must_3: met.** 106 is a sequenced step: counsel opinion, then the S.r.l., then the 106 file in the quarter. The requirements are cited: Italian office [c9], business purpose limited to 106 activities [c11], capital [w2], Banca d'Italia refusal [w2]. The 6–12 month timeline is labelled judgement. The step is conditional on the contract being lending, but the financing route is not parked.\n- **must_4: partly.** Age [c20], residence [c21], the €5M production cap and the no-transfer rule [w1] are checked. But the answer states that a new subsidiary \"would pass\" these tests. It does not flag the subsidiary-of-a-120-staff-group SME question as a fact to verify.\n- **must_5: met.** Nuova Sabatini is named as the customers' instrument [c15] and used as a sales argument, limited to a financial-lease option.\n- **must_6: partly.** The EU, national, regional and local levels are worked separately, and the answer leads with the open door (EIF). The regional level is only S3 priorities and one register record. It has no regional guarantee sections and no ERDF calls.\n- **must_7: partly.** Lombardia and Emilia-Romagna are narrowed with their S3 priorities cited [c26][c28]. Piemonte, Veneto and Toscana are cited without naming their priorities. Lazio is absent.\n- **must_8: partly.** The watchlist has the Banca d'Italia consultation, the move of InvestEU under the European Competitiveness Fund, and \"cover levels\" reform. It lacks the Fondo di Garanzia transition rules to 31 Dec 2026, the 2027 reform, Sabatini budget refinancing and the regional giunte calls.\n- **must_9: met.** It gives the EIF–BNP Paribas Leasing precedent (unverified) and the customer-side guarantee record. It says plainly that no 106 robot lessor was found, so the case is first-of-a-kind.\n- **must_10: partly.** Most Italian rules are cited. D.M. 53/2015, the cover-level reform and \"financial leasing is lending\" are not. The SI4.0 call and the BdI consultation were seen in search results only, not fetched and stored.\n- **must_not_1: avoided.** The answer concludes start-up innovativa is a poor fit and does not claim the company qualifies.\n- **must_not_2: avoided.** Both Italy and the financing arm stay on the plan.\n- **must_not_3: avoided.** The answer narrows to two lead regions.\n- **must_not_4: avoided.** All levels are worked, including local.\n- **must_not_5: avoided.** Register records are labelled as register records, not passed off as citations.\n- **must_not_6: avoided.** No Hausbank rule or other foreign-country rule is transferred to Italy.\n- **must_not_7: avoided.** The answer explicitly flags applying before ordering.\n\n## Ungrounded facts\n\n- \"Counsel should confirm against the 2015 implementing decree (D.M. 53/2015)\"\n- \"Financial leasing or instalment sales are lending.\"\n- \"Guarantee fund reform of cover levels\"\n- \"InvestEU moving under the European Competitiveness Fund\"\n- \"Mediocredito Centrale, accreditation unit\"\n\n## Data gaps\n\n- **Operating rental vs reserved lending:** no official text found (statute; D.M. 53/2015, Banca d'Italia guidance).\n- **Banca d'Italia 30 Sep 2026 consultation:** not fetched (statute; dirittobancario.it PDF).\n- **Iperammortamento implementing decree:** who claims it under rental is unverified (statute; 11 June 2026 decree).\n- **Fondo di Garanzia transition and 2027 reform:** not identified (statute; MCC/MIMIT decrees).\n- **EIF–BNP Paribas Leasing precedent:** seen in search only (precedents; EIF press release).\n- **No 106 robot lessor using the Fund:** none found (precedents; MCC accredited-intermediary lists).\n- **SI4.0 2026 call:** unverified (instrument; Unioncamere Lombardia determinazione 217-2026).\n- **Regional search matched on names only:** regional guarantee sections and ERDF calls missing (instrument; Lombardia and Emilia-Romagna call portals).\n\n## Summary\n\n**Strongest move:** asking first whether the robots-as-a-service contract is lending at all, because that decides whether Wincent's client needs 106.\n\n**Weakest move:** the political read and the regional level are thin. They miss the Fund's transition dates, Sabatini refinancing and the regional programmes.\n\n**Overall:** Senior-quality structure: the status work is cited, the EIF lead is sensible, and the answer flags the case as first-of-a-kind. It needs light edits on the start-up subsidiary SME check, the regional programmes and the watchlist dates before it goes to a client.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"States GmbH, no Italian entity, S.r.l. planned, 106 planned; asks only contract model and robot ownership.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"106 to FdG direct [c2-c4] and portfolio [c5][c6]; Sabatini lender role via DL 69/2013 art.2 [c7].\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Sequenced 106 step with office [c9], object [c11], capital and BdI [w2], 6-12 months; conditional on contract type, not parked.\"},{\"id\":\"must_4\",\"verdict\":\"partly\",\"reason\":\"Age, residence, €5M cap, no-transfer checked and cited, but asserts subsidiary 'would pass'; group SME question not flagged to verify.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Sabatini named as customer instrument [c15] and used as sales argument for a financial-lease option.\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Levels separated, leads with open EIF door; regional level is only S3, no regional guarantee sections or ERDF calls.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Lombardia and Emilia-Romagna S3 priorities cited; Piemonte, Veneto, Toscana cited without priorities; Lazio absent.\"},{\"id\":\"must_8\",\"verdict\":\"partly\",\"reason\":\"Watchlist has BdI consultation and InvestEU; misses FdG 31 Dec 2026 transition, 2027 reform, Sabatini refinancing, regional calls.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"EIF-BNP precedent (unverified), customer-side record, and says plainly no 106 robot lessor found: first-of-a-kind.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Mostly cited; D.M. 53/2015, cover-level reform, leasing-is-lending uncited; SI4.0 and consultation not fetched or stored.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Concludes start-up innovativa is a poor fit; does not claim qualification.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"106 kept as a planned sequenced step; financing arm stays live via EIF.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Narrows to Lombardia and Emilia-Romagna.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"EU, national, regional and local all worked.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Register records labelled as such, not presented as citations.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"No German Hausbank or foreign rule transferred.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Flags that customer incentives require applying before ordering.\"}],\"ungrounded_facts\":[\"Counsel should confirm against the 2015 implementing decree (D.M. 53/2015)\",\"Financial leasing or instalment sales are lending.\",\"Guarantee fund reform of cover levels\",\"InvestEU moving under the European Competitiveness Fund\",\"Mediocredito Centrale, accreditation unit\"],\"data_gaps\":[{\"signal\":\"Operating rental vs reserved lending: no official text found\",\"kind\":\"statute\",\"source\":\"D.M. 53/2015; Banca d'Italia guidance\"},{\"signal\":\"BdI 30 Sep 2026 consultation not fetched\",\"kind\":\"statute\",\"source\":\"dirittobancario.it consultation PDF\"},{\"signal\":\"Iperammortamento claimant under rental unverified\",\"kind\":\"statute\",\"source\":\"11 June 2026 implementing decree\"},{\"signal\":\"FdG transition and 2027 reform not identified\",\"kind\":\"statute\",\"source\":\"MCC/MIMIT decrees\"},{\"signal\":\"EIF-BNP Paribas Leasing precedent seen in search only\",\"kind\":\"precedents\",\"source\":\"EIF press release 2025\"},{\"signal\":\"No 106 robot lessor using the Fund found\",\"kind\":\"precedents\",\"source\":\"MCC accredited intermediary lists\"},{\"signal\":\"SI4.0 2026 call unverified\",\"kind\":\"instrument\",\"source\":\"Unioncamere Lombardia determinazione 217-2026\"},{\"signal\":\"Regional search matched names only; regional guarantee and ERDF calls missing\",\"kind\":\"instrument\",\"source\":\"Lombardia and Emilia-Romagna call portals\"}],\"holistic_grade\":4,\"strongest_move\":\"Asking first whether the robots-as-a-service contract is lending, which decides whether 106 is needed at all.\",\"weakest_move\":\"Thin political read and regional level: no FdG transition dates, Sabatini refinancing or regional programmes.\",\"overall\":\"Senior-quality structure, cited status work and a sensible EIF lead with first-of-a-kind flagged; needs light edits on start-up SME check, regional programmes and watchlist dates.\"}"
+}

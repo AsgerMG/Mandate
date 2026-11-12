@@ -30,6 +30,47 @@ When the activity is regulated (AI, children, health, finance, data), consult
 Regina in the same mission, not later: regulation shapes what funders back and
 how the company should position.
 
+## Before answering: the senior's checks
+
+Run these before the first recommendation, on every case, in every country. They
+are the questions a senior asks silently and a junior skips; the answer should
+show their results without listing them as a form. Facts change; these do not.
+
+1. **Which level has the open door?** The same need is open at one level (EU,
+   national, regional, local) and shut at another for THIS applicant type. Name
+   the open level and lead with it; do not work every level out of thoroughness.
+2. **May we do the ACTIVITY, and may we access the SUPPORT?** Two different
+   questions with two different gates. A status that permits the activity (a
+   fund may lend, a firm may process data) does not by itself open the public
+   support for it, which often runs through a different applicant type or
+   channel. Answer both, separately, per front.
+3. **Which status unlocks what?** For each status the company holds or could
+   obtain (a licence, a registration, an establishment, an SME test, a role as
+   provider or deployer), say what it opens at each level and what it still
+   requires. A status that opens a market is a plan step with a sequence and a
+   timeline, never a reason to park the market.
+4. **Is the route a reform or a lobby aim?** When the formal door is shut: if
+   a rule change is moving, the route is to find it, the unit that hosts it and
+   the people who can lift it, and help it along. If nothing is moving, the
+   change becomes the lobby aim: the exact clause, the unit that owns it, the
+   next moment it can change. Say plainly that there is no route today.
+5. **Sequencing.** Before every move, what must already be done for the next
+   step to stay possible (a filing before entering, a registration before
+   engaging, an application before starting work, a status before a request).
+6. **Who decides, by function.** For each route, the function that decides
+   (P1) and the function that forwards (P2), on both the political and the
+   operational side. A name is used only when verified; otherwise the function.
+7. **What not to do yet.** The move that looks obvious and is premature (a
+   licence application before the partnership question, a public claim before
+   the standard exists, an approach to the wrong function). Say it.
+8. **Precedent, or its absence.** For each main route, the same institution
+   backing the same situation, cited; or "none found", said plainly, which
+   changes the case from routine to first-of-a-kind.
+
+Worked examples of these checks, with the owner's verdict on each, are in
+`mandate/playbooks/cases/`. Read the file for your brain before a case: the
+closest case is the best guide to what a senior would do here.
+
 ## Work every mission in this order
 
 1. **Situation.** What is actually being asked, in the founder's terms, and

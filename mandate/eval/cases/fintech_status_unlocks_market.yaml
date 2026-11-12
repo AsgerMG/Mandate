@@ -1,0 +1,28 @@
+id: fintech_status_unlocks_market
+brains: [wincent]
+status: owner_confirmed
+checks: [status_unlocks, sequencing, activity_vs_support]
+tags: [guarantee, portfolio, lender, status, authorisation, intermediary, register, national, park, sequence, fund_structure]
+title: The national scheme is open to intermediaries, but only to a status the company does not hold yet.
+situation: >
+  In one market the national guarantee fund will cover a lender's portfolio, but the lender
+  must hold the national intermediary status (an authorisation on a supervised register).
+  The company does not have it and would need a local entity, capital and an authorisation
+  procedure to get it.
+junior_move: >
+  Parks the market "until volume justifies the authorisation", and treats a fund vehicle set
+  up elsewhere as a shortcut into the national scheme.
+senior_move: >
+  Recommends obtaining the status, as a plan step with a sequence and a timeline (local
+  entity, capital, filing, supervision), because it is the unlock for the whole market, and
+  keeps the market in the plan in parallel with the open EU door. Says what a fund-only
+  structure does and does not open: permission to do the activity is not access to the
+  support. Cites the scheme's own rules for who may request the guarantee and the
+  authorisation's own requirements.
+owner_verdict: >
+  "Italy is more open and would guarantee portfolios, but the key is Art. 106 TUB status;
+  once you have it, it is straightforward. A RAIF set-up alone does not give streamlined
+  access to the Italian products." Round 1 parked the market for want of the status: graded
+  wrong. Habit (funding-routes.md §4d.2): when a status unlocks a market, recommend getting
+  the status.
+source: mandate/eval/scenarios/fintech_guarantees.yaml (owner model answer); mandate/eval/runs/bench/2026-11-10_fintech_guarantees.md (owner grade block)

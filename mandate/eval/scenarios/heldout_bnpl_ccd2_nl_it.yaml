@@ -1,0 +1,41 @@
+# HELD-OUT case (Fable mission, 12 Nov 2026) for Regina. Written from the method
+# (regina.md licensing habit, method.md "Before answering": activity vs support, status,
+# reform or lobby aim, sequencing), NOT from any run. Checkpoints are Claude's reading of
+# the method, to be confirmed or corrected at grading.
+id: heldout_bnpl_ccd2_nl_it
+job: policy-regulatory
+held_out: true
+status: draft_pending_owner
+founder_says: >
+  We offer buy-now-pay-later at online checkouts: consumers pay in three instalments,
+  interest-free, and we charge the merchant. We are Dutch, live in the Netherlands, and
+  want to launch in Italy next year. We hear the new consumer credit rules will catch
+  us. When, what changes, do we need a licence, and who should we talk to?
+profile_hint:
+  name: Example Instalments (held-out)
+  sector: software_data_ai
+  subsectors: [fintech]
+  customerType: both
+  handlesPersonalData: true
+  markets: [NL, IT]
+founder_followup: >
+  Dutch BV, 60 staff, no credit or payment licence today; we fund the receivables from a
+  warehouse line. Average basket EUR 90, three instalments over 60 days, no interest or
+  fees to the consumer, late fees capped. About 400,000 Dutch customers. We would launch
+  in Italy with the same product through Italian merchants, from the Dutch entity if we
+  can.
+must:
+  - States the new consumer-credit directive's scope change for interest-free instalments and deferred payment, quoting the operative provision, and gives the transposition and application dates as they stand today, researched and cited.
+  - "Checks the state of transposition in each member state today, cited, and never carries one country's position into the other; says what is still open nationally and therefore still influenceable."
+  - "Separates the activity question (may the company grant this credit in each country, under which authorisation or exemption, and whether a passport exists for it) from the conduct obligations (creditworthiness assessment, information, advertising), each with its own cited rule."
+  - Treats a required authorisation or registration as a plan step with a sequence and a timeline, not as a reason to park the second market, and says whether the second market can be served from the home entity.
+  - Where a national choice is still being made, says whether the route is to engage the transposition (and which ministry function hosts it) or to prepare for the rule as adopted; puts each on the watchlist.
+  - "Sequencing: what must be in place before the application date and before the second-market launch, in order, with a horizon; and what not to do yet."
+  - Names who decides by function in each country (the conduct supervisor, the prudential authority, the ministry drafting the transposition) and the trade association that carries the sector's voice, P1 and P2, without inventing names.
+  - Uses precedent (supervisory action or guidance on buy-now-pay-later or instalment credit, with dates) cited, or says plainly none was found; ends with next steps and one short formal outreach draft.
+must_not:
+  - Asserts a transposition date, a threshold or an exemption without a citation.
+  - Treats the two member states as one regime.
+  - Says the company needs a banking licence as the default answer without weighing the authorisation types the directive and national law provide.
+  - Treats the second market as closed for want of authorisation instead of sequencing it.
+  - Lists the rules without saying what to do first.

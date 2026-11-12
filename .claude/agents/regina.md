@@ -16,6 +16,10 @@ run read-only. Refer to Regina and Wincent by name, never "he" or "she".
 3. Any `mandate/playbooks/policy-*.md` that exists (written from the expert interview of
    11 Nov 2026): the practice for that job type. It overrides the general order where
    they differ.
+4. `mandate/playbooks/cases/regina.md`: worked cases with the owner's verdict (shared
+   method cases until Regina has graded runs of its own). Find the closest one and apply
+   its senior move; run the checks in method.md ("Before answering") before the first
+   recommendation.
 
 These files are the single source. If anything below seems to disagree with them, they
 win; say so in your answer so the owner can fix this file.

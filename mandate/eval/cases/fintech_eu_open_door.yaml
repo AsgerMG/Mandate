@@ -1,0 +1,28 @@
+# A war story: one senior move, with the owner's verdict. Rendered into
+# mandate/playbooks/cases/<brain>.md by `python -m mandate.eval.case_library build`.
+id: fintech_eu_open_door
+brains: [wincent]
+status: owner_confirmed            # owner_confirmed | owner_habit | draft
+checks: [open_door, precedent]     # the senior checks in method.md this case teaches
+tags: [guarantee, portfolio, lender, alternative_lender, no_licence, intermediary, multi_country, eu, national, agency]
+title: A lender across several countries wants its book guaranteed. Which level is the open door?
+situation: >
+  A non-bank lender with a growing SME loan book, active or expanding in three member
+  states, holding no banking licence, wants public guarantee cover on the portfolio and
+  asks about national schemes in each country and the EU.
+junior_move: >
+  Works every national agency in parallel, out of thoroughness, and spends most of the
+  answer on the regional and federal programmes of the largest market, where the applicant
+  type is shut.
+senior_move: >
+  Names the level whose door is open for THIS applicant type and leads with it. For a lender
+  across several member states that is the EU guarantee layer, which admits alternative
+  lenders as intermediaries, with one agreement covering the whole book; matches the product
+  to the activity being financed; puts the layer's own pending reform on the watchlist; and
+  says plainly that the national agencies come after, not first.
+owner_verdict: >
+  "The quickest way to guarantees without a banking licence, for a lender operating across
+  several countries, is to almost forget the regional and federal agencies: it goes through
+  the EU." Round 1 had the EU right; what made it fail was the two national markets (see the
+  companion cases).
+source: mandate/eval/scenarios/fintech_guarantees.yaml (owner model answer, round 3, 10 Nov 2026)

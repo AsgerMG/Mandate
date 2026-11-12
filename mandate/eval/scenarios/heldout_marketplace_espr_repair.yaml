@@ -1,0 +1,38 @@
+# HELD-OUT case (Fable mission, 12 Nov 2026) for Regina. Written from the method
+# (method.md "Before answering": reform or lobby aim, who decides, sequencing; the Regina
+# interview guide module 2 on delegated acts as the real battlefield), NOT from any run.
+# Checkpoints are Claude's reading of the method, to be confirmed or corrected at grading.
+id: heldout_marketplace_espr_repair
+job: policy-regulatory
+held_out: true
+status: draft_pending_owner
+founder_says: >
+  We run an online marketplace for refurbished and second-hand electronics in Germany
+  and France, selling for professional refurbishers to consumers. The new ecodesign and
+  product-passport rules and the right-to-repair law are coming. What will apply to a
+  marketplace like us, can we still shape it, and who decides?
+profile_hint:
+  name: Example Refurb Market (held-out)
+  sector: software_data_ai
+  customerType: both
+  markets: [DE, FR, EU]
+founder_followup: >
+  German GmbH, 90 staff, Berlin. We do not refurbish ourselves; about 600 professional
+  sellers list on the platform, we handle payment, warranty claims and returns. About
+  1.2 million orders a year, smartphones and laptops mostly. No EU-level trade body
+  membership yet; we are in a German e-commerce association.
+must:
+  - Tests scope first, which obligations in the ecodesign framework fall on an online marketplace as such versus on the dealer or seller, quoting the operative provisions, and says plainly what does NOT bind the platform.
+  - "Identifies where the real decisions are now being made (the delegated and implementing acts per product group, their consultation windows and the expert forum that prepares them) rather than the framework regulation, researched and cited as of today."
+  - "Reform or lobby aim: says whether a change the company wants is moving (and where) or must become its own lobby aim, naming the exact provision, the Commission unit function that owns it and the next moment it can change."
+  - "National transposition of the right-to-repair directive in each of the two countries, state as of today, cited, never generalised from one to the other."
+  - "Sequencing: what to do before engaging (transparency registration, a position with evidence, a coalition or association route), in order, with a horizon; and what not to do yet."
+  - Names who decides by function at EU level (the Commission unit, the member-state experts, the Parliament committee where relevant) and nationally, P1 and P2, and the associations that carry the sector's voice, without inventing names.
+  - Uses precedent (a prior delegated act, an enforcement case or a comparable platform's position) cited, or says plainly none was found.
+  - Ends with grounded, politically appropriate positioning (what a refurbishment marketplace can credibly claim), every live file on a watch, and one short formal outreach draft.
+must_not:
+  - Treats the marketplace as the manufacturer or the dealer without establishing which obligations attach to which role.
+  - Asserts a date, a consultation window or a transposition state without a citation.
+  - Carries one country's transposition into the other.
+  - Advises engaging officials before the sequencing steps that must come first.
+  - Lists the laws without saying what to do first and who decides.

@@ -1,0 +1,27 @@
+id: edtech_intent_first
+brains: [wincent]
+status: owner_confirmed
+checks: [sequencing, precedent, what_not_yet]
+tags: [vague_ask, intent, raising, round, matchmaking, co_investment, venture_debt, rd_grant, tax_credit, export, market_entry, regulated_activity, minors, converge]
+title: '"How can public money help us?" Diagnose intent before naming an instrument.'
+situation: >
+  An early-stage company with private investors, in a regulated activity, asks in general
+  terms how public money can help.
+junior_move: >
+  Lists instruments. Treats the regulatory side as out of scope. Gives routes without
+  precedents or sequencing.
+senior_move: >
+  Asks first: raising now or soon? real R&D? R&D tax credits used? entering a new market?
+  ambitions and constraints? If raising, leads with matchmaking / co-investment loans and
+  explains why the round is the moment (the private due diligence is already done). Names
+  the country's R&D grants and tax credits, researched and cited. Mentions export or
+  market-entry support with its sequencing rule (apply before entering). States what must
+  happen first for the other routes to stay open. Converges with Regina on the regulatory
+  files that shape fundability and positioning. Gives precedents per main route, or says
+  none was found. Ends with prioritised next steps, not an undifferentiated list.
+owner_verdict: >
+  The owner's own case (9 Nov): "Diagnoses intent BEFORE listing instruments"; "If raising,
+  leads with matchmaking / co-investment loans and explains WHY a round is the moment";
+  must not "list instruments without first asking about intent and situation" or "treat
+  the regulatory side as out of scope".
+source: mandate/eval/scenarios/edtech_ai_kids.yaml (owner, 9 Nov 2026); mandate/playbooks/funding-routes.md §1b

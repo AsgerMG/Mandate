@@ -1,0 +1,47 @@
+# HELD-OUT case (Fable mission, 12 Nov 2026). Written from the method (method.md "Before
+# answering", funding-routes.md §4, §4d) and the grounding map (§2.1 DE, EU), NOT from any
+# run; no playbook or case was tuned on it. The checkpoints are Claude's reading of the
+# owner's method, not the owner's words: the owner confirms or corrects them when grading.
+# Tests the check the mission names: may we do the ACTIVITY vs may we access the SUPPORT.
+id: heldout_credit_fund_guarantees_de
+job: funding-routes
+held_out: true
+status: draft_pending_owner
+founder_says: >
+  We manage a EUR 200M private credit fund, a Luxembourg RAIF with a Luxembourg AIFM. We
+  want to originate loans directly to German Mittelstand companies from next year and
+  have part of that book covered by public guarantees or risk relief, the way banks get
+  it from KfW and the guarantee banks. Can we lend, and can we get the guarantees?
+profile_hint:
+  name: Example Credit Fund (held-out)
+  description: >
+    Private credit fund (Luxembourg RAIF, EUR 200M, Luxembourg AIFM) planning direct loan
+    origination to German SMEs and mid-caps; no bank or German licence; wants public
+    guarantee or risk-relief cover on the German book.
+  sector: software_data_ai
+  subsectors: [fintech]
+  customerType: b2b
+  markets: [DE, EU]
+  developmentStage: scaling_revenue
+founder_followup: >
+  The AIFM is authorised in Luxembourg under AIFMD and the fund is marketed to
+  professional investors in Germany under the passport. We have no German entity and no
+  German licence of any kind. First loans would be EUR 2M to 15M to manufacturing SMEs in
+  southern Germany; target EUR 80M in Germany within two years. We are not raising.
+must:
+  - Separates the two questions explicitly, may the fund DO the activity (originate loans in the country) and may it ACCESS the support (public guarantees or risk relief), and answers each with its own cited rule, never letting a yes on one stand in for the other.
+  - "Activity: states the current legal position of loan origination by an alternative investment fund into this country, researched and cited as it stands today (the EU fund rules as amended and the national banking-law treatment), with what remains open marked unverified."
+  - "Support: states plainly whether the national guarantee and risk-relief schemes admit a fund as the covered lender today, cited from the scheme's own rules, and if they do not, says there is no route today rather than engineering a workaround."
+  - Applies the open-door check across levels, EU, national, regional, and names the level that is open to this applicant type, leading with it.
+  - Where the national door is shut, treats the rule change as the route, naming the ministry function that hosts it, whether anything is moving (researched), and the next moment the rule can change; puts it on the watchlist.
+  - "Sequencing: what must be in place before the first loan and before any guarantee request (notifications, registrations, a local presence if required), in order, with a horizon."
+  - Names who decides by function, P1 and P2, on the operational side (the guarantee institution's product head) and the political side (the ministry unit), without inventing names.
+  - Gives precedents of the same institution covering a non-bank or fund lender, cited, or says plainly that none was found and what that means for the ask.
+  - Every country-specific rule is cited or labelled unverified; nothing is generalised from another member state.
+must_not:
+  - Treats permission to lend as access to the guarantees, or the reverse.
+  - Offers a fronting-bank or partner-bank structure as the answer to the guarantee question instead of saying whether the door is open and what the route is.
+  - Recommends applying for a banking licence as the default first step without weighing the fund's own status and a partnership route.
+  - Asserts the fund rules' loan-origination position or any national banking-law rule without a citation.
+  - Lists instruments before establishing the fund's structure and status.
+  - Walks away from the national market without an explicit hard no, or parks it without a watch.
