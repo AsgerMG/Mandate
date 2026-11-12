@@ -73,7 +73,9 @@ function hintFor(name: string, input: Record<string, unknown>): BenchEvent[] {
   if (name === "Bash") {
     const cmd = String(input.command ?? "");
     const m = cmd.match(/brain_tool\.ts\s+([a-z_]+)\s+'([^']*)'/);
-    if (!m) return [{ t: "activity", label: "working through the case", kind: "thinking" }];
+    if (!m) return [/playbooks\//.test(cmd)
+      ? { t: "activity", label: "reading the method", kind: "reading" }
+      : { t: "activity", label: "working through the case", kind: "thinking" }];
     let args: Record<string, unknown> = {};
     try { args = JSON.parse(m[2]); } catch { /* keep the bare hint */ }
     return [brainToolHint(m[1], args)];
@@ -107,7 +109,9 @@ export async function POST(req: Request): Promise<Response> {
     "-p", "--agent", "wincent", "--output-format", "stream-json", "--verbose", "--include-partial-messages",
     ...(resume ? ["--resume", sid] : ["--session-id", sid]),
     "--permission-mode", "dontAsk", "--strict-mcp-config",
-    "--allowedTools", "Bash(npx tsx web/scripts/brain_tool.ts *)", "Read", "WebSearch", "WebFetch", `Write(${BENCH_DIR}**)`,
+    "--allowedTools", "Bash(npx tsx web/scripts/brain_tool.ts *)", "Read", "WebSearch", "WebFetch",
+    // Saving the run: Write is governed by Edit rules; "//" makes the path absolute.
+    `Edit(${BENCH_DIR}**)`, `Edit(/${path.join(ROOT, BENCH_DIR)}**)`,
     "--append-system-prompt", sessionNote(sid),
   ];
   const child = spawn(process.env.CLAUDE_BIN ?? "claude", args, { cwd: ROOT, env: childEnv(), stdio: ["pipe", "pipe", "pipe"] });

@@ -249,11 +249,11 @@ export function BenchApp() {
                     <button
                       key={s.title}
                       onClick={() => void send(s.text)}
-                      className="group rounded-xl border border-[#d8cfbc] bg-[#fffdfa] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#b9a77d] hover:shadow-[0_14px_30px_rgba(30,30,20,.06)]"
+                      className="group flex flex-col items-start justify-start self-start rounded-xl border border-[#d8cfbc] bg-[#fffdfa] p-4 text-left transition hover:-translate-y-0.5 hover:border-[#b9a77d] hover:shadow-[0_14px_30px_rgba(30,30,20,.06)]"
                     >
                       <span className="font-mono text-[8px] uppercase tracking-[.12em] text-[#7c715e]">{s.tag}</span>
                       <span className="mt-2 block font-serif text-lg font-semibold leading-tight text-[#162544]">{s.title}</span>
-                      <span className="mt-2 block text-[11px] leading-relaxed text-[#5e6574] line-clamp-3">{s.text}</span>
+                      <span className="mt-2 line-clamp-3 text-[11px] leading-relaxed text-[#5e6574]">{s.text}</span>
                     </button>
                   ))}
                 </div>
@@ -272,7 +272,7 @@ export function BenchApp() {
                       <div className="mt-1 grid h-7 w-7 flex-none place-items-center rounded-full border border-[#c9bf9c] bg-[#fffdfa] font-serif text-xs font-semibold text-[#7f5820]">W</div>
                       <div className="min-w-0 flex-1 rounded-2xl rounded-tl-sm border border-[#e2dbc4] bg-[#fffdfa] px-5 py-4">
                         <p className="mb-1 font-mono text-[8px] uppercase tracking-[.14em] text-[#8d7240]">Wincent</p>
-                        {m.text ? <Reply text={m.text} cites={allCites} /> : <Typing />}
+                        {m.text ? <Reply text={m.text} cites={allCites} /> : <p className="flex items-center gap-3 text-[11px] italic text-[#8d8574]"><Typing />{busy?.label ? `${busy.label}…` : ""}</p>}
                         {busy && i === messages.length - 1 && m.text && <p className="mt-3 text-[11px] italic text-[#8d8574]">{busy.label}…</p>}
                       </div>
                     </div>
@@ -340,9 +340,9 @@ export function BenchApp() {
           ) : (
             <ul className="mt-2 space-y-2">
               {grounded.map(([id, c]) => (
-                <li key={id} className="text-[11px] leading-snug">
-                  <span className="bench-chip bench-chip--static" data-kind="grounded">{id}</span>{" "}
-                  {c.url ? <a href={c.url} target="_blank" rel="noreferrer" className="text-[#2b3c5e] hover:text-[#7f5820]">{c.label || c.url}</a> : <span className="text-[#2b3c5e]">{c.label}</span>}
+                <li key={id} className="flex gap-1.5 text-[11px] leading-snug" title={c.quote}>
+                  <span className="bench-chip bench-chip--static self-start" data-kind="grounded">{id}</span>
+                  {c.url ? <a href={c.url} target="_blank" rel="noreferrer" className="line-clamp-2 text-[#2b3c5e] hover:text-[#7f5820]">{c.label || c.url}</a> : <span className="line-clamp-2 text-[#2b3c5e]">{c.label}</span>}
                 </li>
               ))}
               {sources.map((s) => (

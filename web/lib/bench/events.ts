@@ -55,10 +55,19 @@ export function brainToolHint(tool: string, args: Record<string, unknown>): Benc
 
 export type Landed = { decisions: string[]; flags: string[]; steps: string[]; question: string | null };
 
+// A heading may name its section anywhere ("Your decisions", "Flags and gaps");
+// a bold lead-in inside prose only counts when it STARTS with the word
+// ("**Flag:** ...", "**Next step:** ..."), so "**Germany: no route today.**" is
+// prose, not a decision.
 const SECTIONS: [keyof Omit<Landed, "question">, RegExp][] = [
-  ["decisions", /\b(decision|decide|recommend|recommendation|options?|routes?)\b/i],
+  ["decisions", /\b(decisions?|decide|recommend(ation)?s?|options?|routes?)\b/i],
   ["flags", /\b(flags?|risks?|deal.?breakers?|blockers?|gaps?|watch(es)?)\b/i],
   ["steps", /\b(next steps?|actions?|plan|to do)\b/i],
+];
+const LEAD_INS: [keyof Omit<Landed, "question">, RegExp][] = [
+  ["decisions", /^(decisions?|decide|(my )?recommendation)\b/i],
+  ["flags", /^(flags?|risks?|deal.?breakers?|blockers?)\b/i],
+  ["steps", /^(next steps?|actions?)\b/i],
 ];
 const clean = (s: string) =>
   s.replace(/\*\*|__|`/g, "").replace(/\s+/g, " ").trim();
@@ -82,7 +91,7 @@ export function parseLanded(text: string): Landed {
     }
     const labelled = line.match(/^(?:[-*]\s+)?\*\*([^*]{2,40}?):?\*\*:?\s*(.+)$/);
     if (labelled) {
-      const hit = SECTIONS.find(([, re]) => re.test(labelled[1]));
+      const hit = LEAD_INS.find(([, re]) => re.test(labelled[1].trim()));
       if (hit) { out[hit[0]].push(clean(labelled[2])); continue; }
     }
     const bullet = line.match(/^(?:[-*]|\d+[.)])\s+(.+)$/);
@@ -104,10 +113,12 @@ export function parseWebSources(text: string): Record<string, Citation> {
   for (const line of text.split("\n")) {
     const m = line.match(/\[(w\d+)\][:\s]*(.*)$/);
     if (!m || out[m[1]]) continue;
-    const url = m[2].match(/https?:\/\/[^\s)>\]]+/)?.[0];
+    const link = m[2].match(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/);
+    const url = link?.[2] ?? m[2].match(/https?:\/\/[^\s)>\]]+/)?.[0];
     if (!url) continue;
     const quote = m[2].match(/["“]([^"”]{8,})["”]/)?.[1];
-    const label = clean(m[2].replace(url, "").replace(/["“][^"”]*["”]/, "").replace(/[\s,;:()<>-]+$/, "")) || url;
+    const label = link?.[1]
+      ?? (clean(m[2].replace(url, "").replace(/["“][^"”]*["”]/, "").replace(/[\s,;:()<>-]+$/, "")) || url);
     out[m[1]] = { url, label, quote };
   }
   return out;
