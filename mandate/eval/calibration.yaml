@@ -1,0 +1,36 @@
+# Owner grades the judge is calibrated against. Insert-only: a grade is never
+# edited here, a later grade of the same run is a new entry. `grade` is the
+# owner's number (1-5) when given; when the owner graded in words, `words`
+# holds them verbatim and `grade_range` the honest reading of them, and the
+# entry counts for must/must_not checks but NOT for the +-1 agreement figure.
+#
+# Read by mandate/eval/bench_judge.py --calibration and by the report.
+anchors:
+  - run: mandate/eval/runs/bench/2026-11-10_fintech_guarantees.md
+    case: fintech_guarantees
+    graded_by: owner
+    graded_on: 2026-11-10
+    grade: null
+    words: 'Right now, we have none of that.'
+    grade_range: [1, 2]
+    owner_must_failed: [must_3, must_4]      # Germany wrong, Italy wrong (EU right)
+    owner_must_not_hit: [must_not_1, must_not_2]
+    source: the run's grading block, written from the owner's round-3 interview
+  # Not an owner grade, kept out of the agreement figure: the main session's
+  # reading on 12 Nov that round 3 "matches the owner's answer in all four
+  # markets" and that the robotics run "misses no must". Listed so the next
+  # session does not mistake it for calibration data.
+  - run: mandate/eval/runs/bench/2026-11-10_fintech_guarantees_round3.md
+    case: fintech_guarantees
+    graded_by: main-session (not the owner)
+    graded_on: 2026-11-12
+    grade: null
+    words: matches the owner's answer in all four markets
+    grade_range: null
+  - run: mandate/eval/runs/bench/2026-11-11_robotics_deployment_it.md
+    case: robotics_deployment_it
+    graded_by: main-session (not the owner)
+    graded_on: 2026-11-12
+    grade: null
+    words: misses no must
+    grade_range: null

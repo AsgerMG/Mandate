@@ -1,0 +1,19 @@
+{
+  "_about": "The owner's 1-5 scale and the ONE rule that turns a judge's checkpoint verdicts into a grade. Read by mandate/eval/rubric.py and web/lib/bench (the bench app). Change it here only; both sides read this file at runtime.",
+  "scale": {
+    "5": "send to a client as is",
+    "4": "light edits",
+    "3": "right idea, rework",
+    "2": "misses the point",
+    "1": "wrong"
+  },
+  "must_verdicts": ["met", "partly", "not_met", "cannot_tell"],
+  "must_not_verdicts": ["avoided", "borderline", "hit", "cannot_tell"],
+  "partly_weight": 0.5,
+  "base_by_must_share": [[0.9, 5], [0.75, 4], [0.5, 3], [0.25, 2], [0.0, 1]],
+  "must_not_hit_penalty": 1,
+  "cap_if_any_must_not_hit": 3,
+  "cap_if_borderline_must_not": 4,
+  "ungrounded_facts_cap": { "from": 3, "cap": 4 },
+  "agreement_tolerance": 1
+}
