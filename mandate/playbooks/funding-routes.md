@@ -223,26 +223,36 @@ all three, and narrows them twice:
    decrees, budget laws and reforms change what is open; the watchlist follows
    the regions and ministries the plan relies on.
 
-## 4f. Follow the money through its channels, on both sides (PROVISIONAL, round 5)
-Proposed by the main session from the forklift case (12 Nov); awaiting the owner's
-confirmation. Remove this note when confirmed, or delete the section if rejected.
-1. **Public money often reaches a company through an intermediary.** A guarantee
-   fund backs banks and leasing companies; a fund-of-funds backs VC funds; an export
-   agency covers the customer's bank. When no direct route opens, ask which of the
+## 4f. Follow the money: the public side's mission, its channels, the deal (rounds 5-6)
+Round 5 proposed by the main session (12 Nov); round 6 corrections by the owner (13 Nov).
+1. **Read the financing gap as a market failure, and pitch it as one.** When private
+   lenders price a company's risk badly (an integrator pre-financing deployments pays
+   a high rate because lenders cannot price the projects), that mispricing is exactly
+   what public guarantees, co-lending and de-risking exist to fix, and the company's
+   activity usually serves a public mission (Europe's industrial renewal, deployment
+   of automation, energy transition). Lead with that: the case to the institution is
+   "your mission, a mispriced market, our pipeline". The aim is the company's OWN
+   project and working-capital financing, de-risked by the public side, so capital
+   recycles from project to project faster and the pipeline scales. Quantify the
+   velocity where you can (projects per year, cash cycle).
+2. **Do not push the cost onto the customer as the answer.** Moving the upfront cost
+   to buyers (buyer credit, leasing) makes the company's offer less competitive; the
+   best outcome is that the public side carries the risk, not the customer. Customer-
+   side levers (their grants, tax depreciation, premiums) are a complement that speeds
+   sales; mention them after the company's own de-risked financing, never instead of it.
+3. **Public money often reaches a company through an intermediary.** A guarantee fund
+   backs banks and lessors; a fund-of-funds backs VC and venture-debt funds; an
+   export agency covers a buyer's bank. When no direct route opens, ask which of the
    client's own banks, lessors and investors already carry public backing, and route
    through them. "None found" for a fund-of-funds means: find the funds it backs.
-2. **Look at both sides of the deal.** What lowers the CUSTOMER's cost (their
-   investment grants, tax depreciation, buyer financing, prevention premiums) can
-   speed sales and payment more than anything that lowers the company's own cost of
-   capital. Name the customer-side levers in every deployment or sales-cycle case.
-3. **Check the channel's own rules fit the client.** A backed fund or lessor has its
+4. **Check the channel's own rules fit the client.** A backed fund or lessor has its
    own conditions (where the investee must be based, size, stage); test them against
    the client's structure before naming the channel, and say what would make it fit.
-   Ask which banks, lessors and investors the client already works with: that is
-   where an intermediary route starts.
-4. **Bring in the regulatory side when it moves demand.** A safety or compliance
-   rule that the product helps customers meet is a sales argument and often a grant
-   hook: ask Regina (converge, §1b).
+   Ask which banks, lessors and investors the client already works with.
+5. **Regulatory risk is Regina's call.** When a regulatory issue appears (product
+   safety, machinery, AI Act, licensing), Wincent flags it in one line and pulls Regina
+   in; Regina assesses the risk and decides whether and how to raise it with the
+   founder. Wincent does not do the regulatory analysis, and stays on the money.
 
 ## 4g. Quality bar for every answer (main session, 13 Nov; general, no PA judgement needed)
 - **Never offer what the client is excluded from.** Check each instrument's caps and
