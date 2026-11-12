@@ -11,6 +11,8 @@ import { ChatView, type Activity, type Draft } from "./chat-view";
 import { MandateForm, MandateOverview, MandatesHome } from "./mandate-views";
 import { FeedbackView } from "./feedback-view";
 import { InterviewsView, PlaybooksView, ProgressView, RunsView } from "./train-views";
+import { MANDATES_ENABLED } from "@/lib/bench/flags";
+import { Onboarding, ONBOARDED_KEY } from "./onboarding";
 
 type Route =
   | { v: "chat"; id: string | null; brain?: Brain; mandateId?: string | null }
@@ -21,6 +23,9 @@ function parseRoute(hash: string): Route {
   const [p, q = ""] = hash.replace(/^#\/?/, "").split("?");
   const parts = p.split("/").filter(Boolean).map(decodeURIComponent);
   const qs = new URLSearchParams(q);
+  // mandates switched off: their routes fall through to a new case
+  if (!MANDATES_ENABLED && (parts[0] === "mandates" || parts[0] === "m")) return { v: "chat", id: null };
+  if (!MANDATES_ENABLED) qs.delete("m");
   switch (parts[0]) {
     case "c": return { v: "chat", id: parts[1] ?? null };
     case "new": return { v: "chat", id: null, brain: BRAINS.includes(parts[1] as Brain) ? (parts[1] as Brain) : undefined, mandateId: qs.get("m") };
@@ -46,6 +51,7 @@ const subscribe = (cb: () => void) => {
 };
 const readHash = () => window.location.hash;
 const readBrain = (): Brain => { const b = localStorage.getItem("bench.brain"); return b === "regina" ? "regina" : "wincent"; };
+const readOnboarded = () => localStorage.getItem(ONBOARDED_KEY) === "1";
 
 export function BenchApp() {
   const hash = useSyncExternalStore(subscribe, readHash, () => "");
@@ -59,6 +65,10 @@ export function BenchApp() {
   const [refreshKey, setRefreshKey] = useState(0);
   const [offline, setOffline] = useState<string | null>(null);
   const [openFeedback, setOpenFeedback] = useState(0);
+  // first run: the onboarding shows until dismissed (remembered); "How this works" reopens it
+  const onboarded = useSyncExternalStore(subscribe, readOnboarded, () => true);
+  const [howOpen, setHowOpen] = useState(false);
+  const closeOnboarding = () => { localStorage.setItem(ONBOARDED_KEY, "1"); setHowOpen(false); window.dispatchEvent(new Event(NAV)); };
 
   const go = useCallback((to: string, replace = false) => {
     if (replace) history.replaceState(null, "", to); else history.pushState(null, "", to);
@@ -68,7 +78,7 @@ export function BenchApp() {
 
   const loadLists = useCallback(() => {
     api<{ conversations: ConversationSummary[] }>("/api/bench/conversations").then((r) => { setRecent(r.conversations); setOffline(null); }).catch((e) => setOffline((e as Error).message));
-    api<{ mandates: { mandate: BenchMandate }[] }>("/api/bench/mandates").then((r) => setMandates(r.mandates.map((m) => m.mandate))).catch(() => {});
+    if (MANDATES_ENABLED) api<{ mandates: { mandate: BenchMandate }[] }>("/api/bench/mandates").then((r) => setMandates(r.mandates.map((m) => m.mandate))).catch(() => {});
     api<{ items: { status: string }[] }>("/api/bench/feedback").then((r) => setOpenFeedback(r.items.filter((i) => i.status === "open").length)).catch(() => {});
   }, []);
   const refresh = useCallback(() => { loadLists(); setRefreshKey((k) => k + 1); }, [loadLists]);
@@ -126,6 +136,7 @@ export function BenchApp() {
             <span><b>Mandate</b> bench</span>
             <span className="bench-brand__local">local</span>
           </div>
+          <button className="bench-brand__how" onClick={() => setHowOpen(true)}>How this works</button>
           <div className="bench-switch" role="tablist" aria-label="Brain">
             {BRAINS.map((b) => (
               <button key={b} role="tab" disabled={inChat && !(route.v === "chat" && route.id) && !deployed.includes(b)} title={!deployed.includes(b) ? "Not deployed on this mandate" : undefined} aria-selected={activeBrain === b} data-on={activeBrain === b || undefined} onClick={() => setBrain(b)}>
@@ -142,7 +153,7 @@ export function BenchApp() {
 
         <nav className="bench-rail__nav">
           {offline && <p className="bench-alert bench-alert--rail"><span>{offline}</span></p>}
-          <RailSection title="Mandates" action={<button className="bench-rail__add" onClick={() => go("#/mandates/new")} title="New mandate">+ New</button>}>
+          {MANDATES_ENABLED && <RailSection title="Mandates" action={<button className="bench-rail__add" onClick={() => go("#/mandates/new")} title="New mandate">+ New</button>}>
             {mandates.slice(0, 6).map((m) => (
               <button key={m.id} className="bench-rail__item" aria-current={(route.v === "mandate" && route.id === m.id) || undefined} onClick={() => go(`#/m/${m.id}`)}>
                 <span className="bench-status-dot" data-status={m.status} />
@@ -152,7 +163,7 @@ export function BenchApp() {
             <button className="bench-rail__item bench-rail__item--muted" aria-current={navTo("mandates")} onClick={() => go("#/mandates")}>
               {mandates.length ? `All mandates (${mandates.length})` : "Create your first mandate"}
             </button>
-          </RailSection>
+          </RailSection>}
 
           <RailSection title="Train">
             <button className="bench-rail__item" aria-current={navTo("feedback")} onClick={() => go("#/train/feedback")}>
@@ -222,6 +233,7 @@ export function BenchApp() {
           {route.v === "progress" && <ProgressView onOpenRun={(f) => go(`#/train/runs/${encodeURIComponent(f)}`)} />}
         </main>
       )}
+      {(!onboarded || howOpen) && <Onboarding onClose={closeOnboarding} />}
     </div>
   );
 }

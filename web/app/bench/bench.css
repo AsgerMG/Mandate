@@ -71,6 +71,21 @@ kbd { font-family: var(--font-mono); font-size: 9px; padding: 0 .3rem; border: 1
 .bench-brand { display: flex; align-items: center; gap: .55rem; font-size: 12.5px; color: var(--b-ink-2); }
 .bench-brand__mark { display: grid; place-items: center; width: 1.6rem; height: 1.6rem; border-radius: 5px; background: var(--b-navy); color: #fff; font-family: var(--font-serif); font-weight: 600; font-size: 13px; }
 .bench-brand__local { margin-left: auto; font-family: var(--font-mono); font-size: 8px; letter-spacing: .14em; text-transform: uppercase; color: #6f8d72; border: 1px solid #c4d3c0; border-radius: 99px; padding: .05rem .4rem; }
+.bench-brand__how { align-self: flex-start; margin-top: -.4rem; font-size: 11px; color: var(--b-ochre); text-decoration: underline; text-decoration-color: #cdbb94; text-underline-offset: 2px; }
+.bench-brand__how:hover { color: #5c3f14; text-decoration-color: currentColor; }
+
+/* ── first-run onboarding ────────────────────────────────────────────── */
+.bench-onboard { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 1.5rem; background: rgb(19 35 66 / 28%); backdrop-filter: blur(2px); }
+.bench-onboard__card { position: relative; width: min(30rem, 100%); border-top: 2px solid var(--b-navy); border-radius: 4px; background: var(--b-paper); padding: 1.75rem 1.75rem 1.4rem; box-shadow: 0 24px 60px rgb(19 35 66 / 22%); }
+.bench-onboard__skip { position: absolute; top: 1rem; right: 1.1rem; font-size: 11px; color: var(--b-faint); }
+.bench-onboard__skip:hover { color: var(--b-ink); }
+.bench-onboard__title { margin-top: .6rem; font-family: var(--font-serif); font-size: 1.6rem; font-weight: 600; line-height: 1.15; color: var(--b-navy); }
+.bench-onboard__body { margin-top: .75rem; min-height: 6.5rem; font-size: 14px; line-height: 1.6; color: var(--b-ink-2); }
+.bench-onboard__foot { margin-top: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.bench-onboard__dots { display: flex; gap: .35rem; }
+.bench-onboard__dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--b-line); }
+.bench-onboard__dots i[data-on] { background: var(--b-ochre); }
+
 .bench-switch { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; border: 1px solid #d1c5ae; border-radius: 8px; background: #e4dccb; }
 .bench-switch button { display: grid; grid-template-columns: auto 1fr; column-gap: .4rem; align-items: center; padding: .4rem .5rem; border-radius: 6px; text-align: left; transition: background .15s; }
 .bench-switch button:hover { background: #ede6d6; }

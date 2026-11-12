@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Poppins, Newsreader, Fragment_Mono } from "next/font/google";
 import { NavBar } from "@/components/nav-bar";
+import { benchEnabled } from "@/lib/bench/events";
 import "./globals.css";
 import { corpusStats, corpusAsOf } from "@/lib/data";
 
@@ -50,7 +51,7 @@ export default async function RootLayout({
       className={`h-full scroll-smooth ${poppins.variable} ${newsreader.variable} ${fragmentMono.variable}`}
     >
       <body className="min-h-full flex flex-col">
-        <NavBar />
+        <NavBar bench={benchEnabled(process.env)} />
         <main className="flex-1">{children}</main>
         <footer className="border-t border-[var(--border)] bg-[var(--background)] py-10">
           <div className="wrap">
