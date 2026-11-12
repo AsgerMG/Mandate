@@ -1,0 +1,116 @@
+{
+ "tag": "after_scaffold",
+ "cases": [
+  "fintech_guarantees",
+  "robotics_deployment_it"
+ ],
+ "weakest": [
+  {
+   "check": "grounding",
+   "weight": 2.5,
+   "failures": [
+    {
+     "case": "fintech_guarantees",
+     "id": "must_5",
+     "verdict": "partly",
+     "checkpoint": "France: researches and cites the Bpifrance guarantee mechanics (guarantees to banks / credit institutions; Code monetaire et financier), never asserts them from instinct.",
+     "reason": "Bpifrance bank-loan cover cited [w3]; CMF L511-5 and société de financement eligibility left unverified."
+    },
+    {
+     "case": "fintech_guarantees",
+     "id": "must_not_5",
+     "verdict": "borderline",
+     "checkpoint": "Asserts France guarantee mechanics, or any country-specific programme fact, without a citation.",
+     "reason": "'France is shut until a French lending status' uncited in section 1; CMF labelled unverified, not cited."
+    },
+    {
+     "case": "robotics_deployment_it",
+     "id": "must_4",
+     "verdict": "partly",
+     "checkpoint": "Checks startup innovativa against its own criteria (SME, at most 60 months since incorporation, Italian residence or an Italian production site or branch, DL 179/2012 art. 25, cited) and says whether ",
+     "reason": "Age, residence, €5M cap, no-transfer checked and cited, but asserts subsidiary 'would pass'; group SME question not flagged to verify."
+    },
+    {
+     "case": "robotics_deployment_it",
+     "id": "must_7",
+     "verdict": "partly",
+     "checkpoint": "Narrows by economic geography: the industrial north (Lombardia, Veneto, Piemonte, Emilia-Romagna, Toscana) and Lazio for defence/security and the capital, each grounded in the region's own S3 priority",
+     "reason": "Lombardia and Emilia-Romagna S3 priorities cited; Piemonte, Veneto, Toscana cited without priorities; Lazio absent."
+    },
+    {
+     "case": "robotics_deployment_it",
+     "id": "must_10",
+     "verdict": "partly",
+     "checkpoint": "Every factual claim about an Italian rule is cited [cN] or marked unverified; a regional programme not in the corpus is researched live and its source stored (grounding), not asserted.",
+     "reason": "Mostly cited; D.M. 53/2015, cover-level reform, leasing-is-lending uncited; SI4.0 and consultation not fetched or stored."
+    }
+   ]
+  },
+  {
+   "check": "structure_first",
+   "weight": 1.0,
+   "failures": [
+    {
+     "case": "fintech_guarantees",
+     "id": "must_1",
+     "verdict": "partly",
+     "checkpoint": "Establishes structure before instruments - legal form, establishment per country, licences held - and asks only what the profile lacks.",
+     "reason": "Status-to-unlock reasoning present and asks only lender-of-record gaps, but instruments lead section 1 before structure is settled."
+    },
+    {
+     "case": "fintech_guarantees",
+     "id": "must_not_4",
+     "verdict": "borderline",
+     "checkpoint": "Lists instruments before establishing the structure.",
+     "reason": "Section 1 lists instruments before the structure question is raised."
+    }
+   ]
+  },
+  {
+   "check": "reform_or_lobby",
+   "weight": 1.0,
+   "failures": [
+    {
+     "case": "fintech_guarantees",
+     "id": "must_3",
+     "verdict": "partly",
+     "checkpoint": "Germany: explains the Hausbank principle, cited, and says plainly that WITHOUT a banking licence there is no guarantee route today; recommends the political route instead: engage the BMWE heads of dep",
+     "reason": "Plain no-route-today stated; Hausbank claim not supported by cited quote; lobbies post-2027 RBE renewal, no parliamentary reform found."
+    },
+    {
+     "case": "robotics_deployment_it",
+     "id": "must_8",
+     "verdict": "partly",
+     "checkpoint": "Gives a current political read: what is moving (the Fondo di Garanzia transition rules to 31 Dec 2026 and the 2027 reform; Sabatini refinancing in the budget law; regional giunte calls) and puts the r",
+     "reason": "Watchlist has BdI consultation and InvestEU; misses FdG 31 Dec 2026 transition, 2027 reform, Sabatini refinancing, regional calls."
+    }
+   ]
+  },
+  {
+   "check": "who_decides",
+   "weight": 0.5,
+   "failures": [
+    {
+     "case": "fintech_guarantees",
+     "id": "must_9",
+     "verdict": "partly",
+     "checkpoint": "Maps the institutions (regional, national, EU) and names P1/P2 stakeholders per route (head of guarantees / alternative lending), political and public-capital sides.",
+     "reason": "P1/P2 clear for EIF and Germany; France thin; no EU political-side contact."
+    }
+   ]
+  },
+  {
+   "check": "open_door",
+   "weight": 0.5,
+   "failures": [
+    {
+     "case": "robotics_deployment_it",
+     "id": "must_6",
+     "verdict": "partly",
+     "checkpoint": "Works national, regional and local separately: national (Fondo di Garanzia, Sabatini, start-up regime), regional (the regions' own programmes, regional guarantee sections, ERDF calls), local (Camere d",
+     "reason": "Levels separated, leads with open EIF door; regional level is only S3, no regional guarantee sections or ERDF calls."
+    }
+   ]
+  }
+ ]
+}

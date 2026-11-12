@@ -1,0 +1,206 @@
+{
+ "label": "loop/after_scaffold/fintech_guarantees",
+ "case": "fintech_guarantees",
+ "case_sha256": "d3a2896faa49fbd770a597d225e9a249a6d5aa9f2ca500f99f44b003c929e992",
+ "prompt_sha256": "4016afecc2d24540f4a8beec9bfca32c6d05d3544fc432da39430b275954bd68",
+ "git_commit": "e3aea05487",
+ "judged_at": "2026-11-12T22:12:24+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 59.1,
+  "session_id": "73a3067a-47da-4d09-b14b-e42e0489af9a"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Status-to-unlock reasoning present and asks only lender-of-record gaps, but instruments lead section 1 before structure is settled."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Licence treated as deciding fact per front: EU open, Italy via 106, Germany and France shut; KWG lending rule cited."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Plain no-route-today stated; Hausbank claim not supported by cited quote; lobbies post-2027 RBE renewal, no parliamentary reform found."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Recommends Art. 106 via Italian company, sequenced after flag 1, cited to Fondo rules and TUB 107; not parked."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Bpifrance bank-loan cover cited [w3]; CMF L511-5 and société de financement eligibility left unverified."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Leads with EIF InvestEU, alternative lenders cited, competitiveness product matched, ECF move on watchlist; digitalisation window not weighed."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Per-front table of where it stands plus three flags with fixes."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Froda EIF guarantee cited; none found stated for Italy, Germany, France."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "P1/P2 clear for EIF and Germany; France thin; no EU political-side contact."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "EU and Italy in parallel, Germany lobbying aim, France parked; all routes on watchlist, sequenced plan."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Next steps and a short formal EIF draft; saving disabled on bench."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Fronting bank appears only as a lender-of-record question, not Germany's answer."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Recommends obtaining 106 status."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Germany kept brief; EU leads."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Section 1 lists instruments before the structure question is raised."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "'France is shut until a French lending status' uncited in section 1; CMF labelled unverified, not cited."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly advises against German licence and defers French one."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Each country's rule worked separately."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Germany explicit no; France parked with probe and watch."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "Bürgschaftsbanken share risk with the Hausbanken (the borrower's own bank)",
+  "the next period is being negotiated now",
+  "France is shut too until you hold a French lending status",
+  "Mediocredito Centrale, head of the Fondo di Garanzia",
+  "MIMIT, the industry ministry's incentives directorate",
+  "the Bank of Italy's supervision of financial intermediaries",
+  "the federal economy ministry's SME-finance unit"
+ ],
+ "data_gaps": [
+  {
+   "signal": "German reform moving in parliament not found",
+   "kind": "statute",
+   "source": "Bundestag DIP / BMWE legislative pages"
+  },
+  {
+   "signal": "CMF Art. L511-5 unverified",
+   "kind": "statute",
+   "source": "Légifrance"
+  },
+  {
+   "signal": "Bpifrance admitting sociétés de financement unverified",
+   "kind": "instrument",
+   "source": "Bpifrance guarantee conditions"
+  },
+  {
+   "signal": "Art. 106 authorisation time unverified",
+   "kind": "other",
+   "source": "Bank of Italy guidance"
+  },
+  {
+   "signal": "ECF Council position June 2026 unverified",
+   "kind": "media",
+   "source": "Council/Commission ECF regulation documents"
+  },
+  {
+   "signal": "Fondo di Garanzia 2027 reform decree unverified",
+   "kind": "statute",
+   "source": "MIMIT decrees"
+  },
+  {
+   "signal": "No EIF deal with non-bank lender in award records; Froda licence unknown",
+   "kind": "precedents",
+   "source": "EIF transaction list"
+  },
+  {
+   "signal": "No Italian precedent for non-bank lender",
+   "kind": "precedents",
+   "source": "Fondo accredited 106 portfolio list"
+  },
+  {
+   "signal": "KWG §1/§32 fetched live",
+   "kind": "statute",
+   "source": "gesetze-im-internet.de"
+  },
+  {
+   "signal": "Stakeholders by function only, no verified names",
+   "kind": "stakeholders",
+   "source": "EIF/MCC/BMWE/Bpifrance org charts"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Leading with EIF InvestEU as the one open door, cited to alternative-lender eligibility, with Art. 106 planned in parallel.",
+ "weakest_move": "Germany: Hausbank claim not backed by its citation; lobbying aims at 2027 RBE renewal instead of BMWE-hosted parliamentary reform.",
+ "overall": "Right routes in the right order; light edits on the Germany front, French verification, and putting structure before instruments.",
+ "must_total": 11,
+ "must_met": 7,
+ "must_partly": 4,
+ "must_not_total": 8,
+ "must_not_hit": 0,
+ "must_not_borderline": 2,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: fintech_guarantees (Wincent, after_scaffold)\n\n**Overall grade: 4 out of 5, light edits.**\n\n## Checkpoints\n\n- **must_1: partly.** Wincent does work out what each status opens: the Italian subsidiary and Art. 106, the KWG licence, establishment. It asks only what the profile lacks, which is who the lender of record is. But the answer opens with instruments, and the structure question only arrives at the end of section 1.\n- **must_2: met.** The missing licence is treated as the deciding fact on each front: the EU is open, Italy needs Art. 106, and Germany and France are shut. The KWG rule on lending as a banking activity is cited.\n- **must_3: partly.** Wincent says plainly that Germany has no route today, and the ministry unit is the target. But the Hausbank principle is described without a citation that supports it: the VDB quote [w2] never mentions Hausbanken. And the lobbying aims at the post-2027 counter-guarantee renewal, not at a reform in parliament. Wincent honestly flagged that no such reform could be found.\n- **must_4: met.** Wincent recommends Art. 106 status through an Italian company, cites the Fondo direct and portfolio access [c3][c5][c6] and the Art. 107 requirements [c9–c11], and sequences it after the lender-of-record question. Italy is not parked.\n- **must_5: partly.** \"Bpifrance guarantees bank loans, 40–70%\" is cited to a Senate report [w3]. The Code monétaire et financier anchor (Art. L511-5) and whether Bpifrance accepts a *société de financement* are left unverified.\n- **must_6: met.** The answer leads with the EIF's InvestEU guarantee, with alternative lenders eligible [c46][w1], and matches it to the competitiveness capped guarantee. The European Competitiveness Fund move is on the watchlist. The digitalisation window is not weighed.\n- **must_7: met.** A table shows where the company stands on each front, plus three flags with fixes: lender of record, Italian timeline, EIF deadline.\n- **must_8: met.** Froda [w5] is cited for the EU route. \"None found\" is stated for Italy, Germany and France, and the German and French asks are called first-of-a-kind.\n- **must_9: partly.** Who decides and who forwards is clear for the EIF and Germany. Italy names MCC, the Bank of Italy and MIMIT. France is thin, and there is no political-side contact at EU level (Commission).\n- **must_10: met.** The EU and Italy routes run in parallel, Germany is a lobbying aim, France is parked, every route is on the watchlist, and the plan is sequenced.\n- **must_11: met.** Next steps are listed and there is a short, formal EIF draft. Saving was disabled on the bench, so that part cannot be checked.\n- **must_not_1: avoided.** A fronting bank appears only as a question about who the lender of record is, not as Germany's answer.\n- **must_not_2: avoided.** Italy's status is recommended, not used as a reason to park Italy.\n- **must_not_3: avoided.** Germany is handled briefly and the EU route leads.\n- **must_not_4: borderline.** Section 1 lists the EIF, Italy, Germany and France before raising the structure question.\n- **must_not_5: borderline.** \"France is shut too until you hold a French lending status\" appears in section 1 without a citation. The CMF point is labelled unverified, not cited.\n- **must_not_6: avoided.** Wincent explicitly advises against a German licence and defers a French one.\n- **must_not_7: avoided.** Each country's rule is worked separately.\n- **must_not_8: avoided.** Germany gets an explicit no, and France is parked with a probe and a watch.\n\n## Ungrounded facts\n\n- \"The Bürgschaftsbanken share risk with the Hausbanken (the borrower's own bank)\": the [w2] quote does not support it.\n- \"the next period is being negotiated now\" (German counter-guarantee declarations).\n- \"France is shut too until you hold a French lending status\" (section 1, no citation).\n- \"Mediocredito Centrale, head of the Fondo di Garanzia\" (who manages the fund).\n- \"MIMIT, the industry ministry's incentives directorate\" (presented as the political decider).\n- \"the Bank of Italy's supervision of financial intermediaries\" (presented as the authorising body).\n- \"the federal economy ministry's SME-finance unit\" (presented as the decider for Germany).\n\n## Data gaps\n\n- **Statute:** a German reform moving in parliament was not found. Bundestag DIP or the BMWE legislative pages would show it.\n- **Statute:** CMF Art. L511-5 is unverified. Légifrance holds it.\n- **Instrument:** whether Bpifrance accepts a *société de financement* is unverified. Bpifrance's guarantee conditions would say.\n- **Other:** the 6 to 12 month Art. 106 authorisation time is unverified. Bank of Italy guidance or Italian counsel would confirm it.\n- **Media:** the Council's partial position on the European Competitiveness Fund (June 2026) is unverified. Council and Commission documents on the ECF regulation would confirm it.\n- **Statute:** a Fondo di Garanzia reform decree for 2027 is unverified. MIMIT decrees would show it.\n- **Precedents:** the award records hold no EIF deal with a non-bank lender, and Froda's licence status is unknown. The EIF transaction list would close this.\n- **Precedents:** none found for Italy. The Fondo's list of accredited Art. 106 portfolio deals would hold them.\n- **Statute:** KWG §1 and §32 were fetched live when the brain should hold them. gesetze-im-internet.de.\n- **Stakeholders:** contacts are functions only, with no verified names (EIF, MCC, the German ministry, Bpifrance). Organisation charts would supply them.\n\n## Strongest and weakest move\n\n- **Strongest move:** leading with the EIF InvestEU guarantee as the one open door, cited to alternative-lender eligibility, with Art. 106 status planned in parallel.\n- **Weakest move:** Germany. The Hausbank claim is not backed by its citation, and the lobbying targets the 2027 counter-guarantee renewal instead of the BMWE-hosted reform in parliament.\n\n## Overall\n\nThe routes are right and so is the order: EU first, Italy through Art. 106, Germany a no, France parked. A senior would make light edits: fix the Germany front, verify the French mechanics, and move the structure question before the instruments.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"partly\",\"reason\":\"Status-to-unlock reasoning present and asks only lender-of-record gaps, but instruments lead section 1 before structure is settled.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"Licence treated as deciding fact per front: EU open, Italy via 106, Germany and France shut; KWG lending rule cited.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Plain no-route-today stated; Hausbank claim not supported by cited quote; lobbies post-2027 RBE renewal, no parliamentary reform found.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Recommends Art. 106 via Italian company, sequenced after flag 1, cited to Fondo rules and TUB 107; not parked.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"Bpifrance bank-loan cover cited [w3]; CMF L511-5 and société de financement eligibility left unverified.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Leads with EIF InvestEU, alternative lenders cited, competitiveness product matched, ECF move on watchlist; digitalisation window not weighed.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Per-front table of where it stands plus three flags with fixes.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Froda EIF guarantee cited; none found stated for Italy, Germany, France.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"P1/P2 clear for EIF and Germany; France thin; no EU political-side contact.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"EU and Italy in parallel, Germany lobbying aim, France parked; all routes on watchlist, sequenced plan.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Next steps and a short formal EIF draft; saving disabled on bench.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Fronting bank appears only as a lender-of-record question, not Germany's answer.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Recommends obtaining 106 status.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Germany kept brief; EU leads.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"Section 1 lists instruments before the structure question is raised.\"},{\"id\":\"must_not_5\",\"verdict\":\"borderline\",\"reason\":\"'France is shut until a French lending status' uncited in section 1; CMF labelled unverified, not cited.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Explicitly advises against German licence and defers French one.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Each country's rule worked separately.\"},{\"id\":\"must_not_8\",\"verdict\":\"avoided\",\"reason\":\"Germany explicit no; France parked with probe and watch.\"}],\"ungrounded_facts\":[\"Bürgschaftsbanken share risk with the Hausbanken (the borrower's own bank)\",\"the next period is being negotiated now\",\"France is shut too until you hold a French lending status\",\"Mediocredito Centrale, head of the Fondo di Garanzia\",\"MIMIT, the industry ministry's incentives directorate\",\"the Bank of Italy's supervision of financial intermediaries\",\"the federal economy ministry's SME-finance unit\"],\"data_gaps\":[{\"signal\":\"German reform moving in parliament not found\",\"kind\":\"statute\",\"source\":\"Bundestag DIP / BMWE legislative pages\"},{\"signal\":\"CMF Art. L511-5 unverified\",\"kind\":\"statute\",\"source\":\"Légifrance\"},{\"signal\":\"Bpifrance admitting sociétés de financement unverified\",\"kind\":\"instrument\",\"source\":\"Bpifrance guarantee conditions\"},{\"signal\":\"Art. 106 authorisation time unverified\",\"kind\":\"other\",\"source\":\"Bank of Italy guidance\"},{\"signal\":\"ECF Council position June 2026 unverified\",\"kind\":\"media\",\"source\":\"Council/Commission ECF regulation documents\"},{\"signal\":\"Fondo di Garanzia 2027 reform decree unverified\",\"kind\":\"statute\",\"source\":\"MIMIT decrees\"},{\"signal\":\"No EIF deal with non-bank lender in award records; Froda licence unknown\",\"kind\":\"precedents\",\"source\":\"EIF transaction list\"},{\"signal\":\"No Italian precedent for non-bank lender\",\"kind\":\"precedents\",\"source\":\"Fondo accredited 106 portfolio list\"},{\"signal\":\"KWG §1/§32 fetched live\",\"kind\":\"statute\",\"source\":\"gesetze-im-internet.de\"},{\"signal\":\"Stakeholders by function only, no verified names\",\"kind\":\"stakeholders\",\"source\":\"EIF/MCC/BMWE/Bpifrance org charts\"}],\"holistic_grade\":4,\"strongest_move\":\"Leading with EIF InvestEU as the one open door, cited to alternative-lender eligibility, with Art. 106 planned in parallel.\",\"weakest_move\":\"Germany: Hausbank claim not backed by its citation; lobbying aims at 2027 RBE renewal instead of BMWE-hosted parliamentary reform.\",\"overall\":\"Right routes in the right order; light edits on the Germany front, French verification, and putting structure before instruments.\"}"
+}
