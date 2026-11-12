@@ -3,6 +3,30 @@
 Branch `fable-judgement-loop` (worktree, never merged to main). Kept current as the work
 goes; a later session resumes from "Next step" below. Mission: `fable_mission.md`.
 
+## CRITICAL REVIEW (main session, 12 Nov): read before trusting any number below
+
+1. **Answer-key leakage.** 4 of 5 entries in the case library (mandate/eval/cases ->
+   mandate/playbooks/cases/wincent.md) are derived from the SAME scenarios they are
+   then graded on (fintech_guarantees x3, robotics_deployment_it x1); the fintech
+   entry quotes the owner's verdict verbatim, and the brain reads the library before
+   answering. The "after_scaffold" and "iter1" scores for those two cases are
+   therefore contaminated: they measure recall, not judgement. FIX: leave-one-out:
+   when the loop runs case X, render the library WITHOUT entries whose `source`
+   names X (and without entries derived from X's runs); re-measure. The library is
+   for unseen cases; evaluation never sees its own answer key.
+2. **The judge is not calibrated and grades its own kind.** `mandate/eval/calibration.yaml`
+   holds 0 owner grades (the "n=1" came from a grading note, not stored calibration);
+   the judge agent runs on the same model as the brain (`model: inherit`), with a
+   known risk of favouring its own style. FIX: the owner's 8 grades go into
+   calibration.yaml first; the judge's scores count only once it agrees within +-1 on
+   >= 80% of them; consider running the judge on a different model than the brain.
+3. **One held-out case is not held out.** heldout_credit_fund_guarantees_de is close
+   to the fintech case's German leg, which the library teaches. FIX: replace it with
+   a case from a different situation (different money type, market and deciding fact).
+4. **Robotics library entry rests on a self-score**, not an owner grade: the library
+   must contain only owner-validated lessons (owner model answers, owner grades/edits).
+Until 1-3 are fixed, report results as INDICATIVE and never as improvement.
+
 ## Executive summary (12 Nov 2026, evening: budget stop)
 
 | case | before (best saved run) | after scaffold | loop iter 1 (check 9) |
