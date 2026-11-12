@@ -235,9 +235,26 @@ confirmation. Remove this note when confirmed, or delete the section if rejected
    investment grants, tax depreciation, buyer financing, prevention premiums) can
    speed sales and payment more than anything that lowers the company's own cost of
    capital. Name the customer-side levers in every deployment or sales-cycle case.
-3. **Bring in the regulatory side when it moves demand.** A safety or compliance
+3. **Check the channel's own rules fit the client.** A backed fund or lessor has its
+   own conditions (where the investee must be based, size, stage); test them against
+   the client's structure before naming the channel, and say what would make it fit.
+   Ask which banks, lessors and investors the client already works with: that is
+   where an intermediary route starts.
+4. **Bring in the regulatory side when it moves demand.** A safety or compliance
    rule that the product helps customers meet is a sales argument and often a grant
    hook: ask Regina (converge, §1b).
+
+## 4g. Quality bar for every answer (main session, 13 Nov; general, no PA judgement needed)
+- **Never offer what the client is excluded from.** Check each instrument's caps and
+  conditions (revenue, size, stage, sector, location) against the profile before
+  listing it; if excluded, say so in one line or leave it out.
+- **Explain the money logic.** When the question is cost of capital, say why each
+  source is cheap or dear (dilution and target returns for equity; risk transfer for
+  guarantees; whose balance sheet carries the asset), in plain words.
+- **Carry the conditions you found.** Eligibility conditions you have read (positive
+  equity, co-financing shares, deadlines) go into the route or the sequencing, cited.
+- **Short.** The turn answers, the board carries the structure; ~500 words unless the
+  client asks for depth.
 
 ## 5. Where juniors go wrong
 - The **preparatory steps**: not asking the right questions up front, so the
