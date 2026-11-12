@@ -1,0 +1,188 @@
+{
+ "label": "2026-11-10_fintech_guarantees",
+ "case": "fintech_guarantees",
+ "case_sha256": "d3a2896faa49fbd770a597d225e9a249a6d5aa9f2ca500f99f44b003c929e992",
+ "prompt_sha256": "2395f2a073c2d6f0fefcb89446614beaaa2aee9fc58644ad40c1c1392e574d4e",
+ "git_commit": "4fcaea49ce",
+ "judged_at": "2026-11-12T13:01:08+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 41.4,
+  "session_id": "77c53c48-aabd-4515-ac57-8685f901242d"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Five structure questions before any instrument, each targeting a profile gap."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Flags the licence per country but treats it as solvable by partner bank, not a formal applicant-type bar."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Hausbank unverified; no plain 'no route'; no reform research; no BMWE heads of department."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "not_met",
+   "reason": "Names 106 TUB, unverified, then recommends parking it until volume justifies."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Bpifrance bank-mobilised guarantee cited [w2]; CMF L511-5 cited [w3]."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Leads with EIF/InvestEU, alternative lenders cited, ECF watch flagged; no reasoning on digitalisation vs competitiveness window."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Where-you-stand per front plus licence, establishment and lender-of-record flags."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Borrower precedents listed; states plainly no intermediary precedent, EIF/Bpifrance none found."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "P1 functions for EIF and German banks only; no political side, no BMWE, MCC or Bpifrance roles."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Parallel routes and parked-on-watchlist present, but German route wrong and reform not watched."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Owned, timed next steps and a short formal EIF draft without AI voice."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Germany's answer is 'your route is a partner bank'."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "hit",
+   "reason": "Recommends parking 106 TUB until Italian origination is material."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "EU leads; German programmes get one short paragraph."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Structure established before instruments."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "France mechanics cited; uncited Italian claims flagged."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Partnership weighed before any licence application."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Groups Germany with France under a French citation [w2] for bank-mobilised guarantees."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Germany redirected to partner bank without an explicit hard no; reform route never opened."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "FdG requested 'by the requesting entity (bank/financial intermediary)' (curated, uncited)",
+  "Non-resident beneficiaries need 'una sede o una filiale in Italia' (corpus gate, uncited)",
+  "Fondo di Garanzia EUR 2.5M cap",
+  "Fondo guarantees to three SMEs in May 2026 under SA.109544 (register record)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "Hausbank principle labelled unverified, Bürgschaftsbank pages not fetched",
+   "kind": "statute",
+   "source": "Bürgschaftsbank / VDB application rules"
+  },
+  {
+   "signal": "FdG gates citation null; 106 TUB requesting-entity rule unverified",
+   "kind": "statute",
+   "source": "FdG Disposizioni operative; TUB Art. 106"
+  },
+  {
+   "signal": "No ECF text in corpus",
+   "kind": "statute",
+   "source": "European Competitiveness Fund regulation proposal"
+  },
+  {
+   "signal": "German reform on non-bank access not identified",
+   "kind": "statute",
+   "source": "BMWE / Bundestag reform file"
+  },
+  {
+   "signal": "find_instruments returned no FR or EU guarantee instruments",
+   "kind": "instrument",
+   "source": "Bpifrance and EIF product pages"
+  },
+  {
+   "signal": "EIF and Bpifrance precedents none found",
+   "kind": "precedents",
+   "source": "EIF InvestEU signature list"
+  },
+  {
+   "signal": "P1 names unknown; no political stakeholders",
+   "kind": "stakeholders",
+   "source": "EIF call contact; BMWE organisation chart"
+  }
+ ],
+ "holistic_grade": 2,
+ "strongest_move": "Leads with EIF/InvestEU, cited alternative-lender eligibility, and a clean formal probe draft.",
+ "weakest_move": "Germany gets a partner-bank workaround instead of no-route-plus-reform; Italy's 106 TUB parked instead of recommended.",
+ "overall": "Structure, France citations and EU lead are sound. It inverts the two judgement calls the model answer turns on; Germany and Italy need a rework before a senior sends it.",
+ "must_total": 11,
+ "must_met": 5,
+ "must_partly": 4,
+ "must_not_total": 8,
+ "must_not_hit": 2,
+ "must_not_borderline": 2,
+ "grade": 1,
+ "rule_and_holistic_agree": true,
+ "scale": "wrong",
+ "reply": "# Judgement: fintech_guarantees, bench run 2026-11-10\n\n**Checkpoints**\n\n- **must_1: met.** Five structure questions come before any instrument: form, establishment, licences, funding and raise. Each asks for something the profile lacked.\n- **must_2: partly.** The answer flags the missing licence per country. But it treats it as a problem a partner bank can solve, not the formal applicant-type bar it is.\n- **must_3: not_met.** The Hausbank rule is labelled (unverified). The answer never says there is no German route without a licence. It does not research the reform or mention the BMWE heads of department.\n- **must_4: not_met.** The answer names Art. 106 TUB as the unlock, unverified, then recommends parking it until volume justifies it. This is the reverse of the standard.\n- **must_5: met.** The Bpifrance guarantee being mobilised by the bank is cited [w2], and CMF L511-5 is cited [w3]. Neither is asserted from instinct.\n- **must_6: partly.** The answer leads with EIF/InvestEU, cites alternative lenders as eligible [w1] and flags the move under the ECF. It never reasons which window fits (digitalisation vs SME competitiveness); it just picks one.\n- **must_7: met.** \"Where you stand\" and the flags cover all four fronts, including licence, establishment and lender of record.\n- **must_8: met.** It lists Italian borrower precedents and says plainly \"no intermediary precedent found\". It calls EIF and Bpifrance first-of-a-kind.\n- **must_9: partly.** It gives P1 functions for the EIF and German partner banks. It has no political side, no BMWE, and no Mediocredito Centrale or Bpifrance roles. The regional, national and EU institutions are not mapped.\n- **must_10: partly.** It runs the EU and Germany in parallel and parks Italy and France on the watchlist. But the German route is the wrong one and the German reform is not watched.\n- **must_11: met.** The next steps have owners and timing. The EIF draft is short, formal and specific, with no AI voice.\n- **must_not_1: hit.** \"In Germany… your route is a partner bank\" is the answer's position for Germany.\n- **must_not_2: hit.** \"A 106 TUB authorisation in Italy? Recommend park until Italian origination is material.\"\n- **must_not_3: avoided.** The EU leads, and the German programmes get a short paragraph.\n- **must_not_4: avoided.** Structure is established before any instrument appears.\n- **must_not_5: avoided.** The France mechanics are cited, and the uncited Italian claims are flagged as such.\n- **must_not_6: avoided.** It weighs partnership before any licence application.\n- **must_not_7: borderline.** \"In Germany and France, a public guarantee is mobilised by the lending bank\" rests the German claim on a French citation [w2].\n- **must_not_8: borderline.** Germany is redirected to a partner bank without an explicit hard no. The real route, the reform, is never opened.\n\n**Ungrounded facts**\n\n- \"requested by the requesting entity (bank/financial intermediary)\" through the Portale FdG. Labelled \"curated, uncited\", which is not a recognised label.\n- Non-resident beneficiaries need \"una sede o una filiale in Italia\". Labelled \"corpus gate, uncited\".\n- The Fondo di Garanzia \"EUR 2.5M cap\" (tool table).\n- Fondo guarantees to three SMEs in May 2026 under SA.109544. This is a register record, not a citation.\n\n**Data gaps**\n\n| Signal | Kind | Source that would hold it |\n|---|---|---|\n| Hausbank principle labelled (unverified), Bürgschaftsbank pages not fetched | statute | Bürgschaftsbank / VDB application rules |\n| FdG gates `citation: null`; who may request a guarantee (106 TUB) unverified | statute | FdG Disposizioni operative; TUB Art. 106 |\n| No European Competitiveness Fund text in the corpus | statute | ECF regulation proposal |\n| German reform on non-bank access not identified | statute | BMWE / Bundestag reform file |\n| find_instruments returned no FR and no EU guarantee instruments | instrument | Bpifrance and EIF product pages |\n| EIF and Bpifrance precedents \"none found\" | precedents | EIF InvestEU signature list |\n| P1 names unknown, no political-side stakeholders | stakeholders | EIF call contact; BMWE organisation chart |\n\n**Strongest move:** Leading with EIF/InvestEU, with a cited alternative-lender eligibility [w1] and a clean, formal probe draft.\n\n**Weakest move:** Germany and Italy are both called the wrong way: a German partner-bank workaround instead of a plain no plus the reform route, and Italy's 106 TUB parked instead of recommended.\n\n**Overall:** The structure, the citations for France and the EU lead are sound. It misses the two judgement calls the model answer turns on. A senior would not send it: the Germany and Italy recommendations need a rework, not light edits.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Five structure questions before any instrument, each targeting a profile gap.\"},{\"id\":\"must_2\",\"verdict\":\"partly\",\"reason\":\"Flags the licence per country but treats it as solvable by partner bank, not a formal applicant-type bar.\"},{\"id\":\"must_3\",\"verdict\":\"not_met\",\"reason\":\"Hausbank unverified; no plain 'no route'; no reform research; no BMWE heads of department.\"},{\"id\":\"must_4\",\"verdict\":\"not_met\",\"reason\":\"Names 106 TUB, unverified, then recommends parking it until volume justifies.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Bpifrance bank-mobilised guarantee cited [w2]; CMF L511-5 cited [w3].\"},{\"id\":\"must_6\",\"verdict\":\"partly\",\"reason\":\"Leads with EIF/InvestEU, alternative lenders cited, ECF watch flagged; no reasoning on digitalisation vs competitiveness window.\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Where-you-stand per front plus licence, establishment and lender-of-record flags.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Borrower precedents listed; states plainly no intermediary precedent, EIF/Bpifrance none found.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"P1 functions for EIF and German banks only; no political side, no BMWE, MCC or Bpifrance roles.\"},{\"id\":\"must_10\",\"verdict\":\"partly\",\"reason\":\"Parallel routes and parked-on-watchlist present, but German route wrong and reform not watched.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Owned, timed next steps and a short formal EIF draft without AI voice.\"},{\"id\":\"must_not_1\",\"verdict\":\"hit\",\"reason\":\"Germany's answer is 'your route is a partner bank'.\"},{\"id\":\"must_not_2\",\"verdict\":\"hit\",\"reason\":\"Recommends parking 106 TUB until Italian origination is material.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"EU leads; German programmes get one short paragraph.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Structure established before instruments.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"France mechanics cited; uncited Italian claims flagged.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Partnership weighed before any licence application.\"},{\"id\":\"must_not_7\",\"verdict\":\"borderline\",\"reason\":\"Groups Germany with France under a French citation [w2] for bank-mobilised guarantees.\"},{\"id\":\"must_not_8\",\"verdict\":\"borderline\",\"reason\":\"Germany redirected to partner bank without an explicit hard no; reform route never opened.\"}],\"ungrounded_facts\":[\"FdG requested 'by the requesting entity (bank/financial intermediary)' (curated, uncited)\",\"Non-resident beneficiaries need 'una sede o una filiale in Italia' (corpus gate, uncited)\",\"Fondo di Garanzia EUR 2.5M cap\",\"Fondo guarantees to three SMEs in May 2026 under SA.109544 (register record)\"],\"data_gaps\":[{\"signal\":\"Hausbank principle labelled unverified, Bürgschaftsbank pages not fetched\",\"kind\":\"statute\",\"source\":\"Bürgschaftsbank / VDB application rules\"},{\"signal\":\"FdG gates citation null; 106 TUB requesting-entity rule unverified\",\"kind\":\"statute\",\"source\":\"FdG Disposizioni operative; TUB Art. 106\"},{\"signal\":\"No ECF text in corpus\",\"kind\":\"statute\",\"source\":\"European Competitiveness Fund regulation proposal\"},{\"signal\":\"German reform on non-bank access not identified\",\"kind\":\"statute\",\"source\":\"BMWE / Bundestag reform file\"},{\"signal\":\"find_instruments returned no FR or EU guarantee instruments\",\"kind\":\"instrument\",\"source\":\"Bpifrance and EIF product pages\"},{\"signal\":\"EIF and Bpifrance precedents none found\",\"kind\":\"precedents\",\"source\":\"EIF InvestEU signature list\"},{\"signal\":\"P1 names unknown; no political stakeholders\",\"kind\":\"stakeholders\",\"source\":\"EIF call contact; BMWE organisation chart\"}],\"holistic_grade\":2,\"strongest_move\":\"Leads with EIF/InvestEU, cited alternative-lender eligibility, and a clean formal probe draft.\",\"weakest_move\":\"Germany gets a partner-bank workaround instead of no-route-plus-reform; Italy's 106 TUB parked instead of recommended.\",\"overall\":\"Structure, France citations and EU lead are sound. It inverts the two judgement calls the model answer turns on; Germany and Italy need a rework before a senior sends it.\"}"
+}

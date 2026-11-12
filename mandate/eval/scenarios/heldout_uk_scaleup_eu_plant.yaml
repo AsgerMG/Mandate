@@ -1,0 +1,41 @@
+# HELD-OUT case (Fable mission, 12 Nov 2026). Written from the method (funding-routes.md
+# §1 structure first, §4 sequencing and incentive effect, §4e levels; method.md "Before
+# answering") and the grounding map's scope note (UK core, third country for EU
+# instruments), NOT from any run. Checkpoints are Claude's reading of the owner's method.
+id: heldout_uk_scaleup_eu_plant
+job: funding-routes
+held_out: true
+status: draft_pending_owner
+founder_says: >
+  We are a UK climate-tech scale-up, 80 people, making heat-pump components in
+  Sheffield. We want to open a second plant in the EU in 2027, probably Germany or
+  northern Italy, and sell across the EU. Which public money supports the plant and the
+  entry, and should the location decide it?
+profile_hint:
+  name: Example Heat Components (held-out)
+  description: >
+    UK Ltd (80 staff) manufacturing heat-pump components; planning a first EU production
+    site in 2027 in Germany or northern Italy and EU-wide sales; no EU entity today.
+  sector: industrial_manufacturing
+  customerType: b2b
+  markets: [GB, DE, IT, EU]
+  developmentStage: scaling_revenue
+founder_followup: >
+  UK Ltd, EUR 14M revenue, loss-making, backed by two VCs; no EU subsidiary yet. The
+  plant would cost about EUR 25M, with 60 jobs in year one; we have not chosen the site
+  and have not signed anything. We also want UK support for the export side.
+must:
+  - Establishes structure first and says plainly that the EU entity's existence and location decide which doors open (a third-country parent with no EU establishment is outside most EU and national schemes until the entity exists), as the first flag.
+  - Works the two candidate countries separately and at the right level, the regional investment-aid and regional-fund layer where the plant's door is, national where it is, citing each rule to its own source and never carrying one country's rule to the other.
+  - "Sequencing with the incentive effect: states that for investment aid the application must precede the start of works, cited to the rule, and builds the plan so nothing is signed or started before the filing."
+  - "Treats the UK side as its own front: export or market-entry support from the UK agencies, with the apply-before-entering rule, cited."
+  - "States what the company's third-country status does and does not open at EU level today (research programmes with UK association versus EU financing instruments), cited, not assumed."
+  - Names who decides by function in each candidate region (the regional economy ministry or development agency, the national investment agency) and the political side, P1 and P2, without inventing names.
+  - Gives precedents of a comparable foreign manufacturer receiving regional investment aid in each candidate region, cited, or says plainly that none was found.
+  - Answers the founder's question (should the location decide it) with a recommendation and the reason, not a list.
+must_not:
+  - Treats the UK company as an EU applicant for EU or national instruments it cannot access without an EU establishment.
+  - Lets any step start works, sign a lease or an order before the aid application where the incentive effect requires it.
+  - Generalises one candidate country's aid rules to the other.
+  - Asserts an aid intensity, a ceiling or an eligibility rule without a citation.
+  - Lists instruments before establishing the structure and the site decision.

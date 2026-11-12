@@ -1,0 +1,214 @@
+{
+ "label": "2026-11-10_fintech_guarantees_round3",
+ "case": "fintech_guarantees",
+ "case_sha256": "d3a2896faa49fbd770a597d225e9a249a6d5aa9f2ca500f99f44b003c929e992",
+ "prompt_sha256": "438ded726936f8b86f9760e9319e06ac3d9703e0e871a7c5be99cb37e565feb9",
+ "git_commit": "625ea9490e",
+ "judged_at": "2026-11-12T13:02:30+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 46.4,
+  "session_id": "b1e572ee-c5f1-4c42-b871-0a502c36ee32"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Six structure questions asked before any instrument; stopped for answers."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Licence gap worked per jurisdiction: DE shut, IT 106 via subsidiary, FR status needed, EU eligible type."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Hausbank in substance cited [w3], no route stated, BMWE recommended; reform not identified or cited, owner-brief leak in text."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Recommends 106 TUB via Italian entity, sequenced, cited [w1][w2], explicitly not parked."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Bpifrance mechanics cited [w4], CMF L511-5 cited [w5]."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Leads with EIF InvestEU, alternative lenders cited, SME Competitiveness and Digitalisation matched, ECF move watched [w10]."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Status per front and flags for lender of record, establishment, French status, sequencing."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Froda, abcfinance, Credimi cited; Germany and France explicitly none found."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "P1/P2 for EIF and BMWE/Bundestag; Italy lacks MCC and political side; no EU political or France stakeholders."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "EIF and Italy in parallel, France parked, Germany political; all routes on watchlist with sequencing."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Dated plan plus two formal, short drafts to EIF and BMWE."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly rejects partner-bank workaround as the German route."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Recommends the 106 status rather than parking Italy."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "German section brief and political; EU leads."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Structure established before instruments."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "France mechanics cited; ACPR authorisation and EIF inbox stated without citation."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "No banking licence recommended; intermediary and subsidiary routes weighed."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Cross-country parallel on lender of record is passing judgement, not a transferred rule."
+  },
+  {
+   "id": "must_not_8",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "France parked not closed; Germany hard no with political route."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "a French société de financement (ACPR authorisation…)",
+  "the call inbox is investeu_guarantees@eif.org per the EIF call pages",
+  "The EIF signs with the entity that bears the credit risk on the loans",
+  "Italy and France ask the same question",
+  "EUR 2M+ capital, a local team, Bank of Italy supervision"
+ ],
+ "data_gaps": [
+  {
+   "signal": "German reform admitting non-banks not identified after four searches",
+   "kind": "statute",
+   "source": "dip.bundestag.de / BMWE"
+  },
+  {
+   "signal": "No BMWE or German SME-finance actors in corpus; unit name unverified",
+   "kind": "stakeholders",
+   "source": "BMWE organisation chart"
+  },
+  {
+   "signal": "No InvestEU/EIF award records loaded; precedents from web only",
+   "kind": "precedents",
+   "source": "EIF press releases / InvestEU portfolio list"
+  },
+  {
+   "signal": "No French guarantee product in corpus",
+   "kind": "instrument",
+   "source": "Bpifrance garantie conditions"
+  },
+  {
+   "signal": "Fondo lender-side rules fetched live; version may not be current",
+   "kind": "instrument",
+   "source": "MCC Fondo di Garanzia operating rules"
+  },
+  {
+   "signal": "European Competitiveness Fund not in law corpus",
+   "kind": "statute",
+   "source": "Commission ECF regulation proposal"
+  },
+  {
+   "signal": "Bürgschaftsbank lender-side rules unverified",
+   "kind": "instrument",
+   "source": "VDB / Bürgschaftsbank rules"
+  },
+  {
+   "signal": "Société de financement capital and timeline unverified",
+   "kind": "statute",
+   "source": "ACPR authorisation guidance"
+  },
+  {
+   "signal": "106 authorisation timeline unverified",
+   "kind": "statute",
+   "source": "Banca d'Italia Circolare 288/2015"
+  },
+  {
+   "signal": "Credimi 106 status and abcfinance regulatory status unverified",
+   "kind": "precedents",
+   "source": "Banca d'Italia 106 register"
+  },
+  {
+   "signal": "EIF contact person unverified",
+   "kind": "stakeholders",
+   "source": "EIF InvestEU guarantees team"
+  },
+  {
+   "signal": "German lobby register applicability unverified",
+   "kind": "statute",
+   "source": "lobbyregister.bundestag.de"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Leads with cited EIF InvestEU alternative-lender eligibility and Froda precedent, paired with a sequenced Italian 106 subsidiary.",
+ "weakest_move": "German reform never identified; 'the owner's brief says one is moving' would reach the client verbatim.",
+ "overall": "Matches the owner's model on every front with strong citation and sequencing. Identify the German reform, strip bench and owner-brief text, add Italy and EU political stakeholders.",
+ "must_total": 11,
+ "must_met": 9,
+ "must_partly": 2,
+ "must_not_total": 8,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: fintech_guarantees, round 3\n\n**Checkpoints**\n\n- **must_1: met.** Wincent asked six structure questions (form, establishment, licences, lender of record, size, raise) before naming any instrument, then stopped.\n- **must_2: met.** The missing licence is worked country by country: shut in Germany, needs 106 status through a subsidiary in Italy, needs a French status in France, an eligible type at EU level.\n- **must_3: partly.** The Hausbank principle is met in substance with a citation (KfW lends \"über Finanzierungspartner (Banken und Sparkassen)\" [w3]). \"No route today\" is said plainly and the BMWE route is recommended. But the reform is not identified or cited, and \"the owner's brief says one is moving\" leaks internal process into client text.\n- **must_4: met.** Wincent recommends 106 TUB status through an Italian entity, sequenced after the EIF filing, cited [w1][w2], and calls it explicitly \"not a reason to park Italy\".\n- **must_5: met.** The Bpifrance mechanics are cited [w4] and the Code monétaire et financier L511-5 is cited [w5]. Nothing is asserted from instinct.\n- **must_6: met.** The answer leads with the EIF's InvestEU guarantees, names alternative lenders as eligible [c3][w8], matches SME Competitiveness and Innovation and Digitalisation [w9], and puts the move into the European Competitiveness Fund on the watchlist [w10].\n- **must_7: met.** Each front gets a status line, and the flags cover lender of record, establishment, French status and sequencing.\n- **must_8: met.** Froda, abcfinance and Credimi are cited. Germany and France are stated plainly as \"none found\".\n- **must_9: partly.** P1/P2 are given for the EIF and the BMWE/Bundestag. Italy has only counsel and the Banca d'Italia, with no MCC head of guarantees and no political side. There is no EU political side and no France stakeholders.\n- **must_10: met.** EIF and Italy run in parallel, France is parked, Germany is political only. Every route is on the watchlist, with sequencing by week, month and quarter.\n- **must_11: met.** There is a dated plan and two drafts, to the EIF and the BMWE. Both are formal and short, with no AI voice.\n- **must_not_1: avoided.** The answer says outright that there is no partner-bank workaround as \"the German route\".\n- **must_not_2: avoided.** Wincent recommends the 106 status rather than parking Italy.\n- **must_not_3: avoided.** The Germany section stays brief and points to politics.\n- **must_not_4: avoided.** Structure is settled before any instrument appears.\n- **must_not_5: borderline.** The French mechanics are cited. \"ACPR authorisation\" for a société de financement and the EIF call inbox carry no citation.\n- **must_not_6: avoided.** No banking licence is recommended. The intermediary and subsidiary routes are weighed instead.\n- **must_not_7: avoided.** \"Italy and France ask the same question\" is a passing judgement, not a transferred rule.\n- **must_not_8: avoided.** France is parked, not closed. Germany is a hard no today with a political route.\n\n**Ungrounded facts**\n\n- \"a French société de financement (ACPR authorisation…)\"\n- \"the call inbox is investeu_guarantees@eif.org per the EIF call pages\"\n- \"The EIF signs with the entity that bears the credit risk on the loans\"\n- \"Italy and France ask the same question\"\n- \"Cost: EUR 2M+ capital, a local team, Bank of Italy supervision\" (the supervision part)\n\n**Data gaps**\n\n| Signal | Kind | Source that would have held it |\n|---|---|---|\n| German reform admitting non-banks not identified after four searches | statute | dip.bundestag.de / BMWE |\n| No BMWE or German SME-finance actors in the corpus; unit name unverified | stakeholders | BMWE organisation chart |\n| No InvestEU/EIF award records loaded; precedents came from the web only | precedents | EIF press releases / InvestEU portfolio list |\n| No French guarantee product in the corpus | instrument | Bpifrance garantie conditions |\n| Fondo lender-side rules fetched live; the version (2019 upload) may not be current | instrument | MCC Fondo di Garanzia operating rules |\n| European Competitiveness Fund not in the law corpus | statute | Commission ECF regulation proposal |\n| Bürgschaftsbank lender-side rules unverified | instrument | VDB / Bürgschaftsbank rules |\n| Société de financement capital and timeline unverified | statute | ACPR authorisation guidance |\n| 106 authorisation timeline unverified | statute | Banca d'Italia Circolare 288/2015 |\n| Credimi's 106 status and abcfinance's regulatory status unverified | precedents | Banca d'Italia 106 register |\n| EIF contact person unverified | stakeholders | EIF InvestEU guarantees team |\n| German lobby register applicability unverified | statute | lobbyregister.bundestag.de |\n\n**Strongest move:** Leading with the EIF's InvestEU guarantees, with alternative-lender eligibility and the Froda precedent cited, and pairing it with a sequenced 106 subsidiary for Italy.\n\n**Weakest move:** The German reform is never identified, and \"the owner's brief says one is moving\" would go out to the client as written.\n\n**Overall:** This matches the owner's model answer on every front, with discipline on citations, sequencing and parking. To send it to a client, identify the German reform, strip the bench and owner-brief language, and add the missing MCC/Italy and EU political stakeholders.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Six structure questions asked before any instrument; stopped for answers.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"Licence gap worked per jurisdiction: DE shut, IT 106 via subsidiary, FR status needed, EU eligible type.\"},{\"id\":\"must_3\",\"verdict\":\"partly\",\"reason\":\"Hausbank in substance cited [w3], no route stated, BMWE recommended; reform not identified or cited, owner-brief leak in text.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"Recommends 106 TUB via Italian entity, sequenced, cited [w1][w2], explicitly not parked.\"},{\"id\":\"must_5\",\"verdict\":\"met\",\"reason\":\"Bpifrance mechanics cited [w4], CMF L511-5 cited [w5].\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Leads with EIF InvestEU, alternative lenders cited, SME Competitiveness and Digitalisation matched, ECF move watched [w10].\"},{\"id\":\"must_7\",\"verdict\":\"met\",\"reason\":\"Status per front and flags for lender of record, establishment, French status, sequencing.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Froda, abcfinance, Credimi cited; Germany and France explicitly none found.\"},{\"id\":\"must_9\",\"verdict\":\"partly\",\"reason\":\"P1/P2 for EIF and BMWE/Bundestag; Italy lacks MCC and political side; no EU political or France stakeholders.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"EIF and Italy in parallel, France parked, Germany political; all routes on watchlist with sequencing.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Dated plan plus two formal, short drafts to EIF and BMWE.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Explicitly rejects partner-bank workaround as the German route.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Recommends the 106 status rather than parking Italy.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"German section brief and political; EU leads.\"},{\"id\":\"must_not_4\",\"verdict\":\"avoided\",\"reason\":\"Structure established before instruments.\"},{\"id\":\"must_not_5\",\"verdict\":\"borderline\",\"reason\":\"France mechanics cited; ACPR authorisation and EIF inbox stated without citation.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"No banking licence recommended; intermediary and subsidiary routes weighed.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Cross-country parallel on lender of record is passing judgement, not a transferred rule.\"},{\"id\":\"must_not_8\",\"verdict\":\"avoided\",\"reason\":\"France parked not closed; Germany hard no with political route.\"}],\"ungrounded_facts\":[\"a French société de financement (ACPR authorisation…)\",\"the call inbox is investeu_guarantees@eif.org per the EIF call pages\",\"The EIF signs with the entity that bears the credit risk on the loans\",\"Italy and France ask the same question\",\"EUR 2M+ capital, a local team, Bank of Italy supervision\"],\"data_gaps\":[{\"signal\":\"German reform admitting non-banks not identified after four searches\",\"kind\":\"statute\",\"source\":\"dip.bundestag.de / BMWE\"},{\"signal\":\"No BMWE or German SME-finance actors in corpus; unit name unverified\",\"kind\":\"stakeholders\",\"source\":\"BMWE organisation chart\"},{\"signal\":\"No InvestEU/EIF award records loaded; precedents from web only\",\"kind\":\"precedents\",\"source\":\"EIF press releases / InvestEU portfolio list\"},{\"signal\":\"No French guarantee product in corpus\",\"kind\":\"instrument\",\"source\":\"Bpifrance garantie conditions\"},{\"signal\":\"Fondo lender-side rules fetched live; version may not be current\",\"kind\":\"instrument\",\"source\":\"MCC Fondo di Garanzia operating rules\"},{\"signal\":\"European Competitiveness Fund not in law corpus\",\"kind\":\"statute\",\"source\":\"Commission ECF regulation proposal\"},{\"signal\":\"Bürgschaftsbank lender-side rules unverified\",\"kind\":\"instrument\",\"source\":\"VDB / Bürgschaftsbank rules\"},{\"signal\":\"Société de financement capital and timeline unverified\",\"kind\":\"statute\",\"source\":\"ACPR authorisation guidance\"},{\"signal\":\"106 authorisation timeline unverified\",\"kind\":\"statute\",\"source\":\"Banca d'Italia Circolare 288/2015\"},{\"signal\":\"Credimi 106 status and abcfinance regulatory status unverified\",\"kind\":\"precedents\",\"source\":\"Banca d'Italia 106 register\"},{\"signal\":\"EIF contact person unverified\",\"kind\":\"stakeholders\",\"source\":\"EIF InvestEU guarantees team\"},{\"signal\":\"German lobby register applicability unverified\",\"kind\":\"statute\",\"source\":\"lobbyregister.bundestag.de\"}],\"holistic_grade\":4,\"strongest_move\":\"Leads with cited EIF InvestEU alternative-lender eligibility and Froda precedent, paired with a sequenced Italian 106 subsidiary.\",\"weakest_move\":\"German reform never identified; 'the owner's brief says one is moving' would reach the client verbatim.\",\"overall\":\"Matches the owner's model on every front with strong citation and sequencing. Identify the German reform, strip bench and owner-brief text, add Italy and EU political stakeholders.\"}"
+}

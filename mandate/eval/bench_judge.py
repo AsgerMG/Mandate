@@ -75,7 +75,7 @@ def judge_answer(s: Scenario, answer: str, *, label: str, model: str | None = No
 
 def save(rec: dict) -> Path:
     JUDGEMENTS.mkdir(exist_ok=True)
-    stamp = rec["judged_at"].replace(":", "-").replace("+00:00", "Z")
+    stamp = rec["judged_at"].replace("+00:00", "Z").replace(":", "-")
     stem = re.sub(r"[^A-Za-z0-9_.-]", "_", rec["label"])
     p = JUDGEMENTS / f"{stem}.{stamp}.json"
     p.write_text(json.dumps(rec, indent=1, ensure_ascii=False) + "\n")

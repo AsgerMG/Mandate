@@ -1,0 +1,205 @@
+{
+ "label": "2026-11-11_ai_kids_regulatory_DRAFT",
+ "case": "ai_kids_regulatory",
+ "case_sha256": "9fee6dbbeb56fe749372c8a0e40a9a728a634156d8924c9b362b446db056f3f8",
+ "prompt_sha256": "53295561711ac08a5f5a56b2441cf82d1ec484ae3b8e572a42a887e68f52a8b1",
+ "git_commit": "625ea9490e",
+ "judged_at": "2026-11-12T13:02:46+00:00",
+ "judge": {
+  "agent": "judge",
+  "model": null,
+  "duration_s": 62.4,
+  "session_id": "b6296f05-e33c-4de1-991e-ad315a6c972a"
+ },
+ "checkpoints": [
+  {
+   "id": "must_1",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Seven scoped questions on establishment, buyer, AI decisions, data and emotion, ages and countries, model, social features; stops before advising."
+  },
+  {
+   "id": "must_2",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Annex III 3(b) quoted, school vs home split, Art. 6(3) profiling cited, provider and deployer assigned, authorised representative cited [c17]."
+  },
+  {
+   "id": "must_3",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Art. 5(1)(f) and 5(1)(b) quoted, applicable since Feb 2025; plainly says freeze frustration detection for schools and drop it."
+  },
+  {
+   "id": "must_4",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "2 Dec 2027 cited to Regulation 2026/1744 on EUR-Lex, researched live because the corpus lacked the Omnibus."
+  },
+  {
+   "id": "must_5",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "FR and IT ages cited; DE and NL unverified; no data protection by design or Art. 9 voice test; controller and one-stop-shop only judgement or unverified."
+  },
+  {
+   "id": "must_6",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Tests the online-platform definition, says Art. 28 likely does not bind, uses the guidelines as benchmark."
+  },
+  {
+   "id": "must_7",
+   "kind": "must",
+   "verdict": "partly",
+   "reason": "Italy, Germany KI-MIG and the Dutch DPA reading researched; German and Dutch school procurement and data rules, French authority unverified."
+  },
+  {
+   "id": "must_8",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Garante EUR 15M OpenAI (Dec 2024) and Replika EUR 5M (May 2025) cited with dates and amounts; Replika secondary."
+  },
+  {
+   "id": "must_9",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Four deal-breakers and a dated sequence from this month to H2 2027, Italy last."
+  },
+  {
+   "id": "must_10",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "DPAs, BNetzA and ACN, AI Office, ministries and Länder, DG CNECT and EP rapporteur, all split P1/P2 by function."
+  },
+  {
+   "id": "must_11",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Child-safety-by-design positioning with 'teacher not friend' advice; full watch list of live files."
+  },
+  {
+   "id": "must_12",
+   "kind": "must",
+   "verdict": "met",
+   "reason": "Prioritised steps and a formal DG CNECT draft; minor flaw: the draft claims feedback already filed."
+  },
+  {
+   "id": "must_not_1",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Every high-risk call tied to Annex III 3(b) or 1(c) wording and the use."
+  },
+  {
+   "id": "must_not_2",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly says Art. 28 likely does not bind the app."
+  },
+  {
+   "id": "must_not_3",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Ages given per country; DE and NL default labelled unverified, FR and IT cited."
+  },
+  {
+   "id": "must_not_4",
+   "kind": "must_not",
+   "verdict": "borderline",
+   "reason": "Art. 50 already applying and Parliament inaction stated as facts under a judgement label; DE and NL ages uncited."
+  },
+  {
+   "id": "must_not_5",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Weighs the one-third compute modifier threshold before keeping GPAI duties with the base-model provider."
+  },
+  {
+   "id": "must_not_6",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Explicitly warns against claiming 'AI Act compliant' or 'certified'."
+  },
+  {
+   "id": "must_not_7",
+   "kind": "must_not",
+   "verdict": "avoided",
+   "reason": "Opens with what to do first and sequences the rest."
+  }
+ ],
+ "missing_ids": [],
+ "ungrounded_facts": [
+  "Christel Schaldemose was rapporteur on the EP's minors-online file (register record, uncited)"
+ ],
+ "data_gaps": [
+  {
+   "signal": "GDPR not returned by search_law; articles fetched live",
+   "kind": "statute",
+   "source": "EUR-Lex 32016R0679"
+  },
+  {
+   "signal": "Corpus holds only 2024 AI Act, not the Omnibus amendment",
+   "kind": "statute",
+   "source": "Regulation (EU) 2026/1744, consolidated AI Act"
+  },
+  {
+   "signal": "Italy L. 132/2025 not in corpus",
+   "kind": "statute",
+   "source": "Gazzetta Ufficiale / Normattiva"
+  },
+  {
+   "signal": "DE and NL digital consent ages unverified",
+   "kind": "statute",
+   "source": "BDSG; Dutch UAVG"
+  },
+  {
+   "signal": "FR and NL AI Act market surveillance authority unverified",
+   "kind": "statute",
+   "source": "French and Dutch AI Act implementing acts"
+  },
+  {
+   "signal": "Art. 5 and GPAI Commission guidelines read only via secondary sources",
+   "kind": "instrument",
+   "source": "Commission guidelines on prohibited practices and GPAI"
+  },
+  {
+   "signal": "KIDS Act feedback window missing; deadlines conflict",
+   "kind": "media",
+   "source": "Have Your Say KIDS Act initiative page"
+  },
+  {
+   "signal": "No actors for KIDS Act; DG CNECT unit head and rapporteur unknown",
+   "kind": "stakeholders",
+   "source": "EP Legislative Observatory 2026/0286(COD)"
+  },
+  {
+   "signal": "Garante Replika decision not fetched",
+   "kind": "precedents",
+   "source": "Garante decision register"
+  },
+  {
+   "signal": "Land and school-board software approval unit unverified",
+   "kind": "stakeholders",
+   "source": "German Land education ministries; Dutch school boards"
+  },
+  {
+   "signal": "Harmonised standards and BNetzA sandbox status unverified",
+   "kind": "other",
+   "source": "CEN-CENELEC JTC 21; Bundesnetzagentur"
+  }
+ ],
+ "holistic_grade": 4,
+ "strongest_move": "Found from the proposal text that 'AI companion' lacks the educational exclusion and turned it into a timed outreach ask.",
+ "weakest_move": "Calls GDPR ordinary good practice for young children's voice data; no Art. 9 test, no data protection by design, two ages unverified.",
+ "overall": "Senior-grade classification, prohibition call and political angle with cited dates. Light edits: GDPR depth, DE and NL verification, and the draft's premature 'we have filed' claim.",
+ "must_total": 12,
+ "must_met": 10,
+ "must_partly": 2,
+ "must_not_total": 7,
+ "must_not_hit": 0,
+ "must_not_borderline": 1,
+ "grade": 4,
+ "rule_and_holistic_agree": true,
+ "scale": "light edits",
+ "reply": "# Judgement: ai_kids_regulatory (Regina, DRAFT rubric, no model answer)\n\n## Checkpoints\n\n- **must_1: met.** Regina asks seven questions and then stops. They cover establishment, buyer (home or school), what the AI decides, data and emotion inference, ages and countries, model ownership and social features. Each one says why it changes the rules.\n- **must_2: met.** Annex III 3(b) is quoted [c3] and the school and home uses are separated. Art. 6(3) profiling is cited [c53], which closes the exit. Provider and deployer roles are assigned, and the authorised representative is cited [c17].\n- **must_3: met.** Art. 5(1)(f) [c9] and 5(1)(b) [c8] are quoted and dated to 2 Feb 2025. The advice is plain: freeze frustration detection for schools, and drop it on cost-benefit.\n- **must_4: met.** The 2 Dec 2027 Annex III date is cited to Regulation 2026/1744 on EUR-Lex [w1]. It was researched live because the corpus holds only the 2024 text.\n- **must_5: partly.** Art. 8 [w5], France at 15 [w6] and Italy at 14 [w7][w4] are cited. DPIA, Art. 27 and the consequences of having no lead authority are covered.\n  - Germany and the Netherlands are left at 16 \"(unverified)\".\n  - Data protection by design (Art. 25) is never named.\n  - There is no Art. 9 test of whether voice is biometric data.\n  - Controller and one-stop-shop points are judgement or unverified.\n- **must_6: met.** Regina tests the online-platform definition [c48] and says Art. 28 likely does not bind the app. The Art. 28 guidelines [c29] are used as the benchmark.\n- **must_7: partly.** Italy is researched in depth [w4][w7], plus Germany's KI-MIG [w12], France's consent rule [w6] and the Dutch DPA's reading [w10]. Missing: school procurement and data rules in Germany and the Netherlands, and France's market surveillance authority.\n- **must_8: met.** Two cited precedents with dates and amounts: the Garante's EUR 15M OpenAI fine (Dec 2024) [w8] and the EUR 5M Replika fine (May 2025) [w9]. The Replika source is secondary.\n- **must_9: met.** Four deal-breakers and a dated sequence: this month, this quarter, before school pilots scale, H2 2027, Italy last.\n- **must_10: met.** Lead DPA, Bundesnetzagentur and ACN as market surveillance, the AI Office, education ministries and Länder as buyers, and DG CNECT plus the EP rapporteur as the political side. Each is split P1/P2 by function. The AI Office appears only as P2.\n- **must_11: met.** Positioning is child safety by design, with \"teacher, not friend\" design advice. The watch list covers the KIDS Act, the Omnibus date, the Art. 6 and Art. 5 guidelines, Italy's decrees and KI-MIG.\n- **must_12: met.** Prioritised steps sit in section 4, and the outreach draft to DG CNECT is short and formal. Two caveats: the answer ends on questions rather than the draft, and the draft says \"We have filed this\" before any filing exists.\n- **must_not_1: avoided.** Every high-risk call is tied to Annex III 3(b) or 1(c) wording and to the use.\n- **must_not_2: avoided.** Regina says explicitly that Art. 28 likely does not bind the app.\n- **must_not_3: avoided.** Ages are given per country, and France and Italy are cited separately. The German and Dutch default of 16 is labelled unverified.\n- **must_not_4: borderline.** \"Art. 50 already applies\" and \"Parliament and Council have not yet acted\" are facts carried under a \"(judgement)\" label. The German and Dutch ages are asserted as unverified rather than cited.\n- **must_not_5: avoided.** Regina weighs the one-third compute line for modifiers [w11] before keeping the GPAI duties with the base-model provider.\n- **must_not_6: avoided.** The answer explicitly warns against claiming \"AI Act compliant\" or \"certified\".\n- **must_not_7: avoided.** The answer opens with what to do first and sequences everything after it.\n\n## Ungrounded facts\n\n- \"Christel Schaldemose was rapporteur on the EP's minors-online file (register record, uncited)\". A register record is not a citation.\n\n## Data gaps\n\n| Signal | Kind | Source that would have held it |\n|---|---|---|\n| GDPR (32016R0679) not returned by `search_law`; Art. 8, 27 and 35 fetched live | statute | EUR-Lex 32016R0679 in the corpus |\n| Corpus holds only the 2024 AI Act text, not the Omnibus amendment | statute | Regulation (EU) 2026/1744 and the consolidated AI Act |\n| Italy's L. 132/2025 not in the corpus | statute | Gazzetta Ufficiale / Normattiva |\n| German and Dutch digital consent ages unverified | statute | BDSG; Dutch GDPR implementation act (UAVG) |\n| French and Dutch AI Act market surveillance authorities unverified | statute | French and Dutch AI Act implementing acts |\n| Commission Art. 5 guidelines read only through FPF; GPAI guidelines only through law-firm summaries | instrument | Commission guidelines on prohibited practices; GPAI guidelines |\n| KIDS Act feedback window missing from consultations; two deadlines conflict | media | Have Your Say, KIDS Act initiative page |\n| No actors for the KIDS Act; DG CNECT unit head and EP rapporteur unknown | stakeholders | EP Legislative Observatory 2026/0286(COD); Commission organisation chart |\n| Garante Replika decision not fetched | precedents | Garante decision register |\n| Which Land or school board unit approves school software, unverified | stakeholders | German Land ministries of education; Dutch school boards |\n| Status of harmonised standards and Bundesnetzagentur sandbox unverified | other | CEN-CENELEC JTC 21; Bundesnetzagentur |\n\n## Assessment\n\n- **Strongest move:** Regina found the KIDS Act gap from the proposal text itself: \"AI companion\" has no educational exclusion, and the default bar on using prior interactions would hit adaptive learning. That became a concrete, timed outreach ask.\n- **Weakest move:** Regina called GDPR \"ordinary good practice\" for 4-to-8-year-olds' voice data. There is no Art. 9 biometric test and no data protection by design, and two of the four consent ages are left unverified.\n\n**Overall:** A senior-grade answer with sound classification, a clear prohibition call, cited dates and a sharp political angle. It needs light edits: firm up the GDPR section, verify the German and Dutch ages and authorities, and fix the outreach draft's claim that feedback was already filed.\n\nJUDGE {\"checkpoints\":[{\"id\":\"must_1\",\"verdict\":\"met\",\"reason\":\"Seven scoped questions on establishment, buyer, AI decisions, data and emotion, ages and countries, model, social features; stops before advising.\"},{\"id\":\"must_2\",\"verdict\":\"met\",\"reason\":\"Annex III 3(b) quoted, school vs home split, Art. 6(3) profiling cited, provider and deployer assigned, authorised representative cited [c17].\"},{\"id\":\"must_3\",\"verdict\":\"met\",\"reason\":\"Art. 5(1)(f) and 5(1)(b) quoted, applicable since Feb 2025; plainly says freeze frustration detection for schools and drop it.\"},{\"id\":\"must_4\",\"verdict\":\"met\",\"reason\":\"2 Dec 2027 cited to Regulation 2026/1744 on EUR-Lex, researched live because the corpus lacked the Omnibus.\"},{\"id\":\"must_5\",\"verdict\":\"partly\",\"reason\":\"FR and IT ages cited; DE and NL unverified; no data protection by design or Art. 9 voice test; controller and one-stop-shop only judgement or unverified.\"},{\"id\":\"must_6\",\"verdict\":\"met\",\"reason\":\"Tests the online-platform definition, says Art. 28 likely does not bind, uses the guidelines as benchmark.\"},{\"id\":\"must_7\",\"verdict\":\"partly\",\"reason\":\"Italy, Germany KI-MIG and the Dutch DPA reading researched; German and Dutch school procurement and data rules, French authority unverified.\"},{\"id\":\"must_8\",\"verdict\":\"met\",\"reason\":\"Garante EUR 15M OpenAI (Dec 2024) and Replika EUR 5M (May 2025) cited with dates and amounts; Replika secondary.\"},{\"id\":\"must_9\",\"verdict\":\"met\",\"reason\":\"Four deal-breakers and a dated sequence from this month to H2 2027, Italy last.\"},{\"id\":\"must_10\",\"verdict\":\"met\",\"reason\":\"DPAs, BNetzA and ACN, AI Office, ministries and Länder, DG CNECT and EP rapporteur, all split P1/P2 by function.\"},{\"id\":\"must_11\",\"verdict\":\"met\",\"reason\":\"Child-safety-by-design positioning with 'teacher not friend' advice; full watch list of live files.\"},{\"id\":\"must_12\",\"verdict\":\"met\",\"reason\":\"Prioritised steps and a formal DG CNECT draft; minor flaw: the draft claims feedback already filed.\"},{\"id\":\"must_not_1\",\"verdict\":\"avoided\",\"reason\":\"Every high-risk call tied to Annex III 3(b) or 1(c) wording and the use.\"},{\"id\":\"must_not_2\",\"verdict\":\"avoided\",\"reason\":\"Explicitly says Art. 28 likely does not bind the app.\"},{\"id\":\"must_not_3\",\"verdict\":\"avoided\",\"reason\":\"Ages given per country; DE and NL default labelled unverified, FR and IT cited.\"},{\"id\":\"must_not_4\",\"verdict\":\"borderline\",\"reason\":\"Art. 50 already applying and Parliament inaction stated as facts under a judgement label; DE and NL ages uncited.\"},{\"id\":\"must_not_5\",\"verdict\":\"avoided\",\"reason\":\"Weighs the one-third compute modifier threshold before keeping GPAI duties with the base-model provider.\"},{\"id\":\"must_not_6\",\"verdict\":\"avoided\",\"reason\":\"Explicitly warns against claiming 'AI Act compliant' or 'certified'.\"},{\"id\":\"must_not_7\",\"verdict\":\"avoided\",\"reason\":\"Opens with what to do first and sequences the rest.\"}],\"ungrounded_facts\":[\"Christel Schaldemose was rapporteur on the EP's minors-online file (register record, uncited)\"],\"data_gaps\":[{\"signal\":\"GDPR not returned by search_law; articles fetched live\",\"kind\":\"statute\",\"source\":\"EUR-Lex 32016R0679\"},{\"signal\":\"Corpus holds only 2024 AI Act, not the Omnibus amendment\",\"kind\":\"statute\",\"source\":\"Regulation (EU) 2026/1744, consolidated AI Act\"},{\"signal\":\"Italy L. 132/2025 not in corpus\",\"kind\":\"statute\",\"source\":\"Gazzetta Ufficiale / Normattiva\"},{\"signal\":\"DE and NL digital consent ages unverified\",\"kind\":\"statute\",\"source\":\"BDSG; Dutch UAVG\"},{\"signal\":\"FR and NL AI Act market surveillance authority unverified\",\"kind\":\"statute\",\"source\":\"French and Dutch AI Act implementing acts\"},{\"signal\":\"Art. 5 and GPAI Commission guidelines read only via secondary sources\",\"kind\":\"instrument\",\"source\":\"Commission guidelines on prohibited practices and GPAI\"},{\"signal\":\"KIDS Act feedback window missing; deadlines conflict\",\"kind\":\"media\",\"source\":\"Have Your Say KIDS Act initiative page\"},{\"signal\":\"No actors for KIDS Act; DG CNECT unit head and rapporteur unknown\",\"kind\":\"stakeholders\",\"source\":\"EP Legislative Observatory 2026/0286(COD)\"},{\"signal\":\"Garante Replika decision not fetched\",\"kind\":\"precedents\",\"source\":\"Garante decision register\"},{\"signal\":\"Land and school-board software approval unit unverified\",\"kind\":\"stakeholders\",\"source\":\"German Land education ministries; Dutch school boards\"},{\"signal\":\"Harmonised standards and BNetzA sandbox status unverified\",\"kind\":\"other\",\"source\":\"CEN-CENELEC JTC 21; Bundesnetzagentur\"}],\"holistic_grade\":4,\"strongest_move\":\"Found from the proposal text that 'AI companion' lacks the educational exclusion and turned it into a timed outreach ask.\",\"weakest_move\":\"Calls GDPR ordinary good practice for young children's voice data; no Art. 9 test, no data protection by design, two ages unverified.\",\"overall\":\"Senior-grade classification, prohibition call and political angle with cited dates. Light edits: GDPR depth, DE and NL verification, and the draft's premature 'we have filed' claim.\"}"
+}
