@@ -10,7 +10,11 @@ export type BenchEvent =
   | { t: "cites"; items: Record<string, Citation> }
   | { t: "source"; url: string; label: string }
   | { t: "saved"; path: string; ledger: string | null }
-  | { t: "done"; error?: string };
+  /** the turn was accepted: which conversation it belongs to (new or existing) */
+  | { t: "conversation"; id: string }
+  /** keep-alive while a long researched turn runs without output */
+  | { t: "ping" }
+  | { t: "done"; error?: string; stopped?: boolean };
 
 export type Citation = { quote?: string; label?: string; url?: string };
 
@@ -53,7 +57,7 @@ export function brainToolHint(tool: string, args: Record<string, unknown>): Benc
   return { t: "activity", label, kind };
 }
 
-export type Landed = { decisions: string[]; flags: string[]; steps: string[]; question: string | null };
+export type Landed = { decisions: string[]; flags: string[]; steps: string[]; watches: string[]; question: string | null };
 
 // A heading may name its section anywhere ("Your decisions", "Flags and gaps");
 // a bold lead-in inside prose only counts when it STARTS with the word
@@ -61,13 +65,15 @@ export type Landed = { decisions: string[]; flags: string[]; steps: string[]; qu
 // prose, not a decision.
 const SECTIONS: [keyof Omit<Landed, "question">, RegExp][] = [
   ["decisions", /\b(decisions?|decide|recommend(ation)?s?|options?|routes?)\b/i],
-  ["flags", /\b(flags?|risks?|deal.?breakers?|blockers?|gaps?|watch(es)?)\b/i],
+  ["watches", /\b(watch(es|list)?|monitor(ing)?|to follow)\b/i],
+  ["flags", /\b(flags?|risks?|deal.?breakers?|blockers?|gaps?)\b/i],
   ["steps", /\b(next steps?|actions?|plan|to do)\b/i],
 ];
 const LEAD_INS: [keyof Omit<Landed, "question">, RegExp][] = [
   ["decisions", /^(decisions?|decide|(my )?recommendation)\b/i],
   ["flags", /^(flags?|risks?|deal.?breakers?|blockers?)\b/i],
   ["steps", /^(next steps?|actions?)\b/i],
+  ["watches", /^(watch(es)?)\b/i],
 ];
 const clean = (s: string) =>
   s.replace(/\*\*|__|`/g, "").replace(/\s+/g, " ").trim();
@@ -78,7 +84,7 @@ const clean = (s: string) =>
  *  that ends in "?". Anything it cannot place it leaves out: the panel shows
  *  only what the text actually says. */
 export function parseLanded(text: string): Landed {
-  const out: Landed = { decisions: [], flags: [], steps: [], question: null };
+  const out: Landed = { decisions: [], flags: [], steps: [], watches: [], question: null };
   let current: keyof Omit<Landed, "question"> | null = null;
   for (const raw of text.split("\n")) {
     const line = raw.trim();

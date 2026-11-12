@@ -13,7 +13,7 @@ describe("benchEnabled", () => {
 describe("parseLanded", () => {
   it("reads sections and bold lead-ins that name what they are", () => {
     const l = parseLanded("## Decisions\n- Pick EU first [c1]\n- Hold Germany\n\n**Flags:**\n- No licence\n\n**Next step:** call the EIF\n\nWhich way?");
-    expect(l).toEqual({ decisions: ["Pick EU first [c1]", "Hold Germany"], flags: ["No licence"], steps: ["call the EIF"], question: "Which way?" });
+    expect(l).toEqual({ decisions: ["Pick EU first [c1]", "Hold Germany"], flags: ["No licence"], steps: ["call the EIF"], watches: [], question: "Which way?" });
   });
   it("leaves prose with a bold opening alone", () => {
     const l = parseLanded("**Germany: no route today.** The counter-guarantee needs a bank [w3].\n\nHow do you lend today?");
