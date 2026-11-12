@@ -202,6 +202,24 @@ h1, h2, h3, h4, h5, h6 {
   padding: 1rem;
 }
 
+/* The home-page preview: a small figure beside a name and one line. */
+.expert-presence--thumb,
+.expert-presence--thumb .expert-presence__image {
+  min-height: 7.5rem;
+}
+.expert-presence--thumb {
+  height: 100%;
+  border-left: 0;
+  border-right: 1px solid var(--border);
+}
+.expert-presence--thumb .expert-presence__image {
+  padding: .5rem .25rem .2rem;
+}
+.expert-presence--thumb .expert-presence__index,
+.expert-presence--thumb .expert-presence__network {
+  display: none;
+}
+
 .regina .hero-character .expert-presence__image {
   border: 0;
   border-radius: 0;

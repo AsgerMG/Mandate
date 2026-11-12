@@ -47,7 +47,11 @@ function agentFor(pathname: string): Agent | null {
   return AGENTS.find((a) => a.owns.some((p) => under(pathname, p))) ?? null;
 }
 
-export function NavBar() {
+/** The training ground (/bench) is local-only. The layout passes `bench` from
+ *  the server-side check (benchEnabled), so the live site never renders it. */
+const BENCH: NavLink = { href: "/bench", label: "Training ground" };
+
+export function NavBar({ bench = false }: { bench?: boolean }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const current = agentFor(pathname);
@@ -61,6 +65,7 @@ export function NavBar() {
   const mobileLinks: (NavLink & { current?: boolean })[] = [
     ...AGENTS.map((a) => ({ href: a.home, label: a.name, current: a === current })),
     ...(current ? current.links : []),
+    ...(bench ? [BENCH] : []),
   ];
 
   return (
@@ -103,10 +108,10 @@ export function NavBar() {
           </div>
         </div>
 
-        {/* The current agent's informational links. */}
-        {current && (
+        {/* The current agent's informational links, then the local training ground. */}
+        {(current || bench) && (
           <div className="hidden md:flex items-center gap-7 text-base">
-            {current.links.map((link) => (
+            {(current?.links ?? []).map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -120,6 +125,15 @@ export function NavBar() {
                 {link.label}
               </Link>
             ))}
+            {bench && (
+              <Link
+                href={BENCH.href}
+                aria-current={isActive(BENCH.href) ? "page" : undefined}
+                className="rounded-sm border border-[var(--primary)] px-3 py-1 text-sm font-medium text-[var(--primary)] transition-colors hover:bg-[var(--primary)] hover:text-[var(--paper)]"
+              >
+                {BENCH.label}
+              </Link>
+            )}
           </div>
         )}
 
