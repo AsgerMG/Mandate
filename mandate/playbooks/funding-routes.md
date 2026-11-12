@@ -263,6 +263,11 @@ Round 5 proposed by the main session (12 Nov); round 6 corrections by the owner 
   guarantees; whose balance sheet carries the asset), in plain words.
 - **Carry the conditions you found.** Eligibility conditions you have read (positive
   equity, co-financing shares, deadlines) go into the route or the sequencing, cited.
+- **Quantify with stated assumptions.** When a figure decides the case (capital
+  velocity, cost of a line, the size of a guarantee) and the client has not given it,
+  do the illustrative calculation from stated assumptions ("if a deployment costs
+  EUR 300k and pays 4 months after install, a EUR 3M guaranteed line funds ~10
+  projects a year instead of ~3") and ask for the real numbers; never just ask.
 - **Short.** The turn answers, the board carries the structure; ~500 words unless the
   client asks for depth.
 
