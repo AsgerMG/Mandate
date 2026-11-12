@@ -25,7 +25,9 @@ describe("board blocks", () => {
     expect(equity.steps.find((s) => s.id === "lead-brief")!.status).toBe("done");
     expect(equity.steps.find((s) => s.id === "close")).toBeTruthy(); // kept from turn 3
     expect(f.board.roadmap!.origin).toBe("2026-12"); // a partial roadmap keeps the origin
-    expect(f.board.answer!.lines).toHaveLength(3); // turn 4 had no answer: turn 3's stands
+    expect(f.board.answer!.open_question).toMatch(/Danish or EU content/); // turn 4's answer replaces turn 3's
+    expect(f.fresh.has("answer")).toBe(true);
+    expect(f.board.funding_stack!.instruments).toHaveLength(9); // turn 4 had no funding stack: turn 3's stands
     expect(f.board.stage).toBe("next_steps");
     expect(f.fresh.has("routes:dk:eifo-coinvest")).toBe(true);
     expect(f.fresh.has("routes:dk:eifo-buyer")).toBe(false);
@@ -99,7 +101,7 @@ describe("helpers", () => {
     expect(splitCite(["c3", "[w8]", "judgement", "(unverified)"])).toEqual({ ids: ["c3", "w8"], labels: ["judgement", "unverified"] });
   });
   it("lays out a flow with a cycle as layers plus a return arc", () => {
-    const p = FORKLIFT.messages.length && foldBoard(FORKLIFT.messages).board.process![0];
+    const p = foldBoard(FORKLIFT.messages).board.process![0];
     const l = flowLayers(p.nodes, p.edges);
     expect(l.back.size).toBe(1);
     expect(l.col.aps).toBe(0);

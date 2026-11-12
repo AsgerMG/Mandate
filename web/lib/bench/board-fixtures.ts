@@ -100,7 +100,7 @@ const fkTurn3 = {
   },
   roadmap: {
     origin: "2026-12",
-    horizon: 9,
+    horizon: 6,
     tracks: [
       { id: "debt", label: "Debt", steps: [
         { id: "eifo-call", label: "First call with EIFO", start: 0, end: 0.5, owner: "us", status: "active" },
@@ -126,7 +126,7 @@ const fkTurn3 = {
       { id: "regulatory", label: "Regulatory and customer", steps: [
         { id: "premium", label: "Probe BG prevention premium", start: 1, end: 2.5, owner: "us", status: "planned", cite: ["w10"] },
         { id: "mr-applies", label: "Machinery Regulation applies", start: "2027-01-20", milestone: true, owner: "institution", status: "planned", cite: ["w9"] },
-        { id: "roi", label: "Customer ROI sheet with every lever", start: 2, end: 3, owner: "us", status: "planned", depends_on: ["premium"] },
+        { id: "roi", label: "Customer ROI sheet with every lever", start: 2.5, end: 3.5, owner: "us", status: "planned", depends_on: ["premium"] },
       ] },
     ],
   },
@@ -185,11 +185,11 @@ const fkTurn3 = {
       { from: "cust", to: "bank", label: "repays over 3 to 5 years", kind: "money" },
     ], cite: ["w2", "unverified"] },
     { id: "equity-channels", title: "How public equity reaches the round", caption: "Directly through EIFO co-investment; indirectly through the VC funds that KfW Capital and the EIF back.", nodes: [
-      { id: "kfwc", label: "KfW Capital", sub: "fund-of-funds", kind: "institution" },
-      { id: "eif", label: "EIF", sub: "fund-of-funds", kind: "institution" },
-      { id: "vc", label: "VC funds", sub: "lead and syndicate", kind: "fund" },
-      { id: "eifo", label: "EIFO", sub: "co-investor", kind: "institution" },
-      { id: "co", label: "Your company", sub: "Series A", kind: "client" },
+      { id: "kfwc", label: "KfW Capital", sub: "fund-of-funds", kind: "institution", col: 0, row: 0 },
+      { id: "eif", label: "EIF", sub: "fund-of-funds", kind: "institution", col: 0, row: 1 },
+      { id: "vc", label: "VC funds", sub: "lead and syndicate", kind: "fund", col: 1, row: 0 },
+      { id: "eifo", label: "EIFO", sub: "co-investor", kind: "institution", col: 1, row: 1 },
+      { id: "co", label: "Your company", sub: "Series A", kind: "client", col: 2, row: 0 },
     ], edges: [
       { from: "kfwc", to: "vc", label: "LP commitment", kind: "money" },
       { from: "eif", to: "vc", label: "LP commitment", kind: "money" },
@@ -208,6 +208,17 @@ const fkTurn3 = {
 
 const fkTurn4 = {
   stage: "next_steps",
+  answer: {
+    lines: [
+      "Split the problem: debt for installed hardware, equity for growth. Equity is the dearest way to pre-finance kit.",
+      "Lead with EIFO through the ApS: a guaranteed working-capital line now, Buyer Financing to move the upfront cost to the customer's bank.",
+      "EIFO co-investment goes into the term sheet: the lead has agreed. Use the Bavarian GmbH for KfW and the Bürgschaftsbank.",
+    ],
+    confidence: "medium",
+    confidence_why: "The equity side is now live; the Danish content share still decides Buyer Financing.",
+    open_question: "What share of each system's value is Danish or EU content? It decides whether Buyer Financing opens.",
+    cite: ["w2", "w3", "judgement"],
+  },
   routes: { levels: [
     { id: "dk", level: "national", label: "Denmark", country: "DK", doors: [
       { id: "eifo-coinvest", name: "EIFO co-investment in the Series A", institution: "EIFO", status: "open", why: "The lead has agreed to bring EIFO in at term sheet stage.", conditions: ["Private lead in place: yes", "In the term sheet before close"], cite: ["w3"] },
