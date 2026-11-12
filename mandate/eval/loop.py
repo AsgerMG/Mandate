@@ -46,6 +46,13 @@ LOG = LOOP_DIR / "log.jsonl"
 PLAYBOOKS = REPO / "mandate" / "playbooks"
 BENCH_RUNS = HERE / "runs" / "bench"
 BRAIN_LABEL = {"wincent": "Wincent", "regina": "Regina"}
+# The app reads the playbooks through a generated TS mirror (a vitest fails when it drifts):
+# every write to, or revert of, a playbook regenerates or reverts it too.
+PLAYBOOKS_TS = "web/lib/mandate/agent/playbooks.generated.ts"
+
+
+def emit_playbooks_ts() -> None:
+    subprocess.run(["npx", "tsx", "scripts/emit_playbooks.ts"], cwd=REPO / "web", check=False, capture_output=True)
 
 CHECKS = {
     "open_door": r"level|open door|lead with|regional|national|local",
@@ -295,6 +302,7 @@ def cmd_propose(a) -> int:
     if a.apply:
         for p, content in blocks:
             (REPO / p).write_text(content if content.endswith("\n") else content + "\n")
+        emit_playbooks_ts()
         rec["applied"] = True
     _append_log({"step": "propose", **rec})
     print(json.dumps(rec, indent=1))
@@ -340,7 +348,7 @@ def cmd_decide(a) -> int:
     c = compare(a.before, a.after, cases)
     verdict = "KEEP" if c["keep"] else "REVERT"
     if not c["keep"] and prop.get("applied") and not a.dry_run:
-        subprocess.run(["git", "checkout", "--", *prop["files"]], cwd=REPO, check=False)
+        subprocess.run(["git", "checkout", "--", *prop["files"], PLAYBOOKS_TS], cwd=REPO, check=False)
     rec = {"step": "decide", "proposal": a.proposal, "before": a.before, "after": a.after, "verdict": verdict, **c, "at": _now(), "files": prop["files"]}
     _append_log(rec)
     print(json.dumps(rec, indent=1))
