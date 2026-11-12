@@ -183,13 +183,12 @@ function RunDetail({ file, onBack, onOpenConversation }: { file: string; onBack:
   );
 }
 
-type Playbook = { file: string; brains: Brain[]; title: string; lines: number; modified: string | null; last_commit: string | null; commits: number };
+type Playbook = { file: string; brains: Brain[]; title: string; lines: number; modified: string | null; last_commit: string | null; commits: number; dirty: boolean };
 
 export function PlaybooksView({ file, onOpen }: { file: string | null; onOpen: (f: string | null) => void }) {
   const [list, setList] = useState<Playbook[] | null>(null);
   const [err, setErr] = useState<string | null>(null);
   useEffect(() => { api<{ playbooks: Playbook[] }>("/api/bench/playbooks").then((r) => setList(r.playbooks)).catch((e) => setErr((e as Error).message)); }, []);
-  const uncommitted = (p: Playbook) => p.modified && (!p.last_commit || new Date(p.modified).getTime() - new Date(p.last_commit).getTime() > 60_000);
   return (
     <section className="bench-run">
       <div className="bench-run__doc">
@@ -211,8 +210,8 @@ export function PlaybooksView({ file, onOpen }: { file: string | null; onOpen: (
                   {list?.filter((p) => p.brains.includes(b)).map((p) => (
                     <li key={p.file}><button className="bench-conv-row" onClick={() => onOpen(p.file)}>
                       <span className="min-w-0 flex-1"><span className="block truncate font-medium">{p.title}</span><code className="bench-muted text-[10.5px]">mandate/playbooks/{p.file}</code></span>
-                      {uncommitted(p) && <span className="bench-live">changed, not committed</span>}
-                      <span className="bench-muted text-right">{p.lines} lines · {p.commits} {p.commits === 1 ? "revision" : "revisions"}<br />last changed {when(p.modified)}</span>
+                      {p.dirty && <span className="bench-live">changed, not committed</span>}
+                      <span className="bench-muted text-right">{p.lines} lines · {p.commits} {p.commits === 1 ? "revision" : "revisions"}<br />{p.dirty || !p.last_commit ? <>edited {when(p.modified)}</> : <>last revised {when(p.last_commit)}</>}</span>
                     </button></li>
                   ))}
                 </ul>

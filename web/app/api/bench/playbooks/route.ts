@@ -19,12 +19,16 @@ function brainsOf(file: string): Brain[] {
   return ["wincent", "regina"];
 }
 
-function history(rel: string): { last_commit: string | null; commits: number } {
+const git = (args: string[]) => execFileSync("git", args, { cwd: repoRoot(), encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] });
+
+/** Commit dates of a playbook, and whether it has changes not yet committed
+ *  (an accepted proposal, say). */
+function history(rel: string): { last_commit: string | null; commits: number; dirty: boolean } {
   try {
-    const out = execFileSync("git", ["log", "--format=%cI", "--", rel], { cwd: repoRoot(), encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] });
-    const dates = out.split("\n").filter(Boolean);
-    return { last_commit: dates[0] ?? null, commits: dates.length };
-  } catch { return { last_commit: null, commits: 0 }; }
+    const dates = git(["log", "--format=%cI", "--", rel]).split("\n").filter(Boolean);
+    const dirty = git(["status", "--porcelain", "--", rel]).trim() !== "";
+    return { last_commit: dates[0] ?? null, commits: dates.length, dirty };
+  } catch { return { last_commit: null, commits: 0, dirty: false }; }
 }
 
 export async function GET(req: Request): Promise<Response> {
@@ -49,6 +53,8 @@ export async function GET(req: Request): Promise<Response> {
       file: f, brains: brainsOf(f), title: md.match(/^#\s+(.+)$/m)?.[1]?.trim() ?? f,
       lines: md.split("\n").length, modified: mtimeOf(abs), ...history(`mandate/playbooks/${f}`),
     };
-  }).sort((a, b) => (b.modified ?? "").localeCompare(a.modified ?? ""));
+  });
+  const changed = (p: (typeof playbooks)[number]) => (p.dirty ? p.modified : p.last_commit) ?? "";
+  playbooks.sort((a, b) => changed(b).localeCompare(changed(a)));
   return json({ playbooks });
 }

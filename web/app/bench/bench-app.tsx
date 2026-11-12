@@ -79,7 +79,8 @@ export function BenchApp() {
   const setBrain = (b: Brain) => {
     localStorage.setItem("bench.brain", b);
     window.dispatchEvent(new Event(NAV));
-    if (route.v === "chat" && !route.id) go(`#/new/${b}${route.mandateId ? `?m=${route.mandateId}` : ""}`, true);
+    // in a chat, switching brain opens a new case with that brain (same mandate for a draft)
+    if (route.v === "chat") go(`#/new/${b}${!route.id && route.mandateId ? `?m=${route.mandateId}` : ""}`, !route.id);
   };
 
   const openSummary = route.v === "chat" && route.id ? recent.find((c) => c.id === route.id) : undefined;
@@ -105,6 +106,7 @@ export function BenchApp() {
     : activity.recording === "transcribing" ? "Transcribing on this Mac"
     : activity.busy ? `${activity.busy.label.charAt(0).toUpperCase()}${activity.busy.label.slice(1)}…`
     : "Your turn";
+  const activeBrain: Brain = inChat ? figureBrain : brain; // the switcher shows the brain on screen
   const figureName = openSummary?.agent === "interviewer" ? "Interviewer" : BRAIN_LABEL[figureBrain];
 
   const chats = recent.filter((c) => c.agent !== "interviewer");
@@ -121,15 +123,15 @@ export function BenchApp() {
           </div>
           <div className="bench-switch" role="tablist" aria-label="Brain">
             {BRAINS.map((b) => (
-              <button key={b} role="tab" aria-selected={brain === b} data-on={brain === b || undefined} onClick={() => setBrain(b)}>
+              <button key={b} role="tab" aria-selected={activeBrain === b} data-on={activeBrain === b || undefined} onClick={() => setBrain(b)}>
                 <span className="bench-brain-dot" data-brain={b} />
                 <span className="bench-switch__name">{BRAIN_LABEL[b]}</span>
                 <span className="bench-switch__domain">{BRAIN_DOMAIN[b]}</span>
               </button>
             ))}
           </div>
-          <button className="bench-btn bench-btn--block" onClick={() => go(`#/new/${brain}`)}>
-            <span className="text-[#e4bd69]">✦</span> New case with {BRAIN_LABEL[brain]}
+          <button className="bench-btn bench-btn--block" onClick={() => go(`#/new/${activeBrain}`)}>
+            <span className="text-[#e4bd69]">✦</span> New case with {BRAIN_LABEL[activeBrain]}
           </button>
         </div>
 
@@ -147,6 +149,13 @@ export function BenchApp() {
             </button>
           </RailSection>
 
+          <RailSection title="Train">
+            <button className="bench-rail__item" aria-current={navTo("interviews")} onClick={() => go("#/train/interviews")}>Interviews</button>
+            <button className="bench-rail__item" aria-current={navTo("runs")} onClick={() => go("#/train/runs")}>Grade runs</button>
+            <button className="bench-rail__item" aria-current={navTo("playbooks")} onClick={() => go("#/train/playbooks")}>Playbooks</button>
+            <button className="bench-rail__item" aria-current={navTo("progress")} onClick={() => go("#/train/progress")}>Brain progress</button>
+          </RailSection>
+
           <RailSection title="Recent cases">
             {chats.length === 0 && <p className="bench-rail__empty">Your conversations are saved here automatically.</p>}
             {chats.slice(0, 14).map((c) => (
@@ -161,12 +170,6 @@ export function BenchApp() {
             ))}
           </RailSection>
 
-          <RailSection title="Train">
-            <button className="bench-rail__item" aria-current={navTo("interviews")} onClick={() => go("#/train/interviews")}>Interviews</button>
-            <button className="bench-rail__item" aria-current={navTo("runs")} onClick={() => go("#/train/runs")}>Grade runs</button>
-            <button className="bench-rail__item" aria-current={navTo("playbooks")} onClick={() => go("#/train/playbooks")}>Playbooks</button>
-            <button className="bench-rail__item" aria-current={navTo("progress")} onClick={() => go("#/train/progress")}>Brain progress</button>
-          </RailSection>
         </nav>
 
         <div className="bench-figure" data-state={figureState} data-brain={figureBrain}>

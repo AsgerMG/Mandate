@@ -195,7 +195,7 @@ export const Recorder = forwardRef<RecorderHandle, {
           : "Dictate with the browser's recognizer (local whisper is not installed)"}
       >
         {busy ? <span className="bench-rec__spin" aria-label="Transcribing" /> : <MicIcon />}
-        <span className="bench-rec__meter" style={{ transform: `scaleY(${0.15 + level * 0.85})` }} aria-hidden />
+        <span className="bench-rec__meter" style={{ transform: `scaleY(${state === "recording" ? 0.15 + level * 0.85 : 0})` }} aria-hidden />
       </button>
       <div className="bench-rec__meta">
         {state === "recording" ? <span className="bench-rec__time"><i />{engine === "whisper" ? clock(elapsed) : "listening"}</span>

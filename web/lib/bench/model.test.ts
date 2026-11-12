@@ -66,7 +66,7 @@ describe("proposals", () => {
       { path: "mandate/playbooks/policy-watch.md", content: "# Watch\n\n```\ncode\n```\n" },
       { path: "mandate/eval/scenarios/travel_dma.yaml", content: "id: travel_dma\n" },
     ]);
-    expect(withoutProposals(reply)).toContain("*Proposed file: `mandate/playbooks/policy-watch.md` (below)*");
+    expect(withoutProposals(reply)).toContain("*Proposed file: `mandate/playbooks/policy-watch.md` (see Proposed changes)*");
   });
   it("refuses paths outside playbooks and scenarios", () => {
     for (const p of ["mandate/playbooks/../../.env", "mandate/playbooks/a/b.md", "/etc/passwd", "mandate/eval/scenarios/x.md", ".claude/agents/wincent.md"])

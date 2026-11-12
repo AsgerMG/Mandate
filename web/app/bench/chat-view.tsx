@@ -223,7 +223,7 @@ export function ChatView({ convId, draft, mandate, onOpened, onListChanged, onAc
     return { ...web, ...conv.cites };
   }, [conv.messages, conv.cites]);
   const landed = useMemo(() => rollup([{ ...conv, created_at: conv.created_at || "0", updated_at: conv.updated_at || "0" }]), [conv]);
-  const sources = useMemo(() => groupSources(conv.cites, conv.sources), [conv.cites, conv.sources]);
+  const sources = useMemo(() => groupSources(allCites, conv.sources), [allCites, conv.sources]);
   const proposals = useMemo(() => {
     for (let i = conv.messages.length - 1; i >= 0; i--) {
       const m = conv.messages[i];

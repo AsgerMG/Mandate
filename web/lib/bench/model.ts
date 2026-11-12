@@ -192,7 +192,7 @@ export function parseProposals(text: string): Proposal[] {
 
 /** The reply with the proposal blocks folded out (they show as cards). */
 export const withoutProposals = (text: string) =>
-  text.replace(/^(`{3,}|~{3,})file\s+path=["']?([^\s"'`]+)["']?[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, (_, __, p: string) => `*Proposed file: \`${p}\` (below)*`);
+  text.replace(/^(`{3,}|~{3,})file\s+path=["']?([^\s"'`]+)["']?[^\n]*\n[\s\S]*?^\1[ \t]*$/gm, (_, __, p: string) => `*Proposed file: \`${p}\` (see Proposed changes)*`);
 
 export type DiffLine = { op: " " | "+" | "-"; text: string };
 
