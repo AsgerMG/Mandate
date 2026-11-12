@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import { ExpertPresence } from "@/components/mandate/expert-presence";
+import { DictationButton } from "./dictation";
 import { CITE_RE, parseLanded, parseWebSources, type BenchEvent, type Citation } from "@/lib/bench/events";
 
 type Msg = { role: "client" | "wincent"; text: string };
@@ -302,6 +303,7 @@ export function BenchApp() {
               placeholder={messages.length ? "Answer Wincent, or ask the next question" : "Describe the company and what it needs"}
               className="min-h-[3.25rem] flex-1 resize-none rounded-lg border border-[#d1c5ae] bg-[#fffdfa] px-4 py-3 text-[13.5px] leading-relaxed outline-none placeholder:text-[#a39a88] focus:border-[#a77c36]"
             />
+            <DictationButton value={input} onChange={setInput} disabled={!!busy} />
             {busy ? (
               <button type="button" onClick={() => abort.current?.abort()} className="rounded-sm border border-[#c9bf9c] px-4 py-3 text-[11px] font-semibold uppercase tracking-[.08em] text-[#5e6574]">Stop</button>
             ) : (
