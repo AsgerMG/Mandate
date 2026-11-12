@@ -3,6 +3,21 @@
 State of the Mandate consolidation, for whoever picks it up next. The full plan,
 including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.md`.
 
+## NEXT SESSION (13 Nov): start here
+- **Judgement loop is on main** (b0ab6cce): judge, method.md's eight senior checks, case
+  library (mandate/eval/cases -> mandate/playbooks/cases), `python3 -m mandate.eval.loop`,
+  six held-out cases, data-gap miner (`mandate/eval/data_gaps.py`, list in
+  mandate/eval/data_asks.md). State + next steps: mandate/plans/fable_report.md.
+- **Owner to grade the 8 runs** listed in fable_report.md ("Owner gradings that would
+  calibrate the judge"), in the bench (Train -> Grade runs) or here; then add them to
+  mandate/eval/calibration.yaml and run the judge with --calibration.
+- Then (budget-careful, plan usage is tight): after_scaffold on edtech_ai_kids +
+  ai_kids_regulatory; the six held-out cases; wire the judge into the bench Re-test.
+- **Regina SME interview**: bench Train -> Interviews, or "let's do the interview for Regina".
+- Local app: `cd ~/Mandate/web && MANDATE_BENCH_LOCAL=1 npm run dev` -> localhost:3000/bench.
+- Open question for the owner: home copy says the experts "do not draft"; the 9 Nov decision is advise AND draft.
+- Paused: agent-on-railway (until API budget). API budget OFF (LLM_BUDGET=off).
+
 ## NEXT SESSION (saved 10 Nov evening at 91% usage): pick up here
 **If the owner says "let's do the interview for Regina": run mandate/playbooks/interviews/regina_sme_interview.md (the 'How Claude runs it' section), live, one question at a time.**
 Read first: mandate/plans/master_plan.md ("Decided 10 Nov" block), data_audit.md,
