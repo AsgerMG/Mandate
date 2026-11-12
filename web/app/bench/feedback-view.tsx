@@ -168,7 +168,7 @@ function RetestTable({ rows, onOpenConversation, onScored }: { rows: RetestRow[]
                 <td><span className="bench-brain-dot" data-brain={r.brain} /> {r.case.replace(/_/g, " ")}</td>
                 <td className="bench-muted">{when(r.created_at)}</td>
                 <td><code className="text-[10.5px]">{r.playbooks_sha?.slice(0, 7) ?? "?"}{r.playbooks_dirty ? "+" : ""}</code></td>
-                <td>{r.score ? <>{r.score.must_met}/{r.score.must_total} {dm !== null && dm !== 0 && <Delta v={dm > 0 ? 1 : -1} />}</> : "—"}</td>
+                <td>{r.score ? <>{r.score.must_met}/{r.score.must_total} {dm !== null && dm !== 0 && p && <Delta v={p.must_total === r.score.must_total ? r.score.must_met - p.must_met : Math.sign(dm)} />}</> : "—"}</td>
                 <td>{r.score ? `${r.score.must_not_hit}/${r.score.must_not_total}` : "—"}</td>
                 <td>{r.score?.grade ? <><span className="bench-grade" data-grade={r.score.grade}>{r.score.grade}</span> {dg !== null && dg !== 0 && <Delta v={dg} />}</> : "—"}</td>
                 <td className="whitespace-nowrap text-right">

@@ -46,6 +46,15 @@ exist only in development with `MANDATE_BENCH_LOCAL=1`, and only answer localhos
   `mandate/playbooks/interviews/`; Finish & distil proposes playbook edits and eval cases
   as diffs you accept), Grade runs (writes the grading block below), Playbooks, Progress.
   Accepted files are written, never committed.
+- **The improvement loop.** Rate any reply good / off (theme + a one-line note, typed or
+  spoken) and grade any conversation 1-5. Everything lands in one append-only queue,
+  `~/Mandate-backups/bench/feedback.jsonl`, stamped with brain, mandate, conversation,
+  message and the playbooks commit in force. Train, Feedback inbox: Distil a batch (the
+  interviewer proposes edits that name the items they answer; accepting resolves them),
+  then Re-test an eval case (one turn on the brain, then scored against its must /
+  must_not) to see before and after.
+- **Portfolio.** Each mandate chooses its deployed brains; they share its profile and
+  what landed. Fields follow `mandate/plans/pa_os.md` §2 (portfolio_id, charter fields).
 
 "Save the run" asks the brain to save as below; the app copies the scratch ledger next
 to the transcript.
