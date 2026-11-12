@@ -47,6 +47,19 @@ Your job is to build the loop that makes it do both.
    method and the grounding map; do not tune on them) scoring >= 4 by the calibrated
    judge, with no must_not violated.
 
+6. **A data-gap miner** (owner, 12 Nov: "a mechanism to identify the data that would make
+   every answer better"). Every run leaves signals of missing data: claims labelled
+   "unverified", live research that fetched what should be held, tools returning empty
+   (no named people, no precedent, no instrument), owner "off" notes about a missing
+   fact, judge deductions for missing evidence. Mine them across all runs and the
+   usage log (`mandate.tool_calls`) into ONE ranked list of data asks: per ask, the kind
+   (free media/news source, stakeholders/people, financial instrument intel,
+   precedents, statute/rule text), the concrete official or free source, how many
+   answers and owner cases it would have improved, and whether it is a one-off load,
+   a feed, or better left to live research. Make it re-runnable (a command or a Train
+   view in the bench) so the list refreshes as runs accumulate. It does not load data;
+   it tells the owner which data earns its place (master plan rule 4b).
+
 ## What exists (read before you change anything)
 
 - The plan and the rules: `mandate/plans/master_plan.md` (esp. section 2, the brain
@@ -102,6 +115,7 @@ Your job is to build the loop that makes it do both.
 
 - Branch(es) with the judge, scaffold, case library, working loop, held-out cases,
   tests, preflight green.
+- The data-gap miner and its first ranked list of data asks.
 - `mandate/plans/fable_report.md`: the score table before/after (per case, per brain,
   judge vs owner agreement), every accepted change with its measured effect, the
   remaining METHOD gaps, the DATA asks ranked, and the 5-10 owner gradings that would
