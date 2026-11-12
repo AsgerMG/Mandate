@@ -20,6 +20,18 @@ actions and drafts, plan, watches, precedents, sources, open questions). Every c
 unverified. A case from `mandate/eval/scenarios/` works too: "ask the wincent agent to
 run the fintech_guarantees case".
 
+## Or in the bench app (local)
+
+```
+cd ~/Mandate/web && MANDATE_BENCH_LOCAL=1 npm run dev     # then open http://localhost:3000/bench
+```
+
+The same agent, in a chat window: `web/app/api/bench/chat/route.ts` runs
+`claude -p --agent wincent` (resumed per turn) on your plan, with the API key stripped
+from its environment, so it costs no API credit. The page and route exist only in
+development with `MANDATE_BENCH_LOCAL=1`, and only answer localhost. "Save the run" asks
+Wincent to save as below; the app copies the scratch ledger next to the transcript.
+
 ## Save the run
 
 Say "save the run". Wincent writes, under `mandate/eval/runs/bench/`:
