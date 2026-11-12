@@ -12,6 +12,10 @@ import { GET as runsGET, POST as runsPOST } from "@/app/api/bench/runs/route";
 import { POST as stopPOST } from "@/app/api/bench/stop/route";
 import { POST as trPOST } from "@/app/api/bench/transcribe/route";
 import { GET as pbGET } from "@/app/api/bench/playbooks/route";
+import { GET as fbGET, PATCH as fbPATCH, POST as fbPOST } from "@/app/api/bench/feedback/route";
+import { POST as distilPOST } from "@/app/api/bench/distil/route";
+import { GET as rtGET, POST as rtPOST } from "@/app/api/bench/retest/route";
+import { parseProposals } from "./model";
 import { isLocalRequest } from "./guard";
 import { atomicWrite } from "./store";
 
@@ -37,7 +41,11 @@ let input = ""; process.stdin.on("data", (d) => input += d); process.stdin.on("e
   if (input.includes("FAIL")) { process.stderr.write("boom: something broke\\n"); process.exit(1); }
   out({ type: "stream_event", event: { type: "message_start" } });
   out({ type: "stream_event", event: { type: "content_block_start", content_block: { type: "text" } } });
-  for (const d of ["## Decisions\\n", "- Go EU first\\n\\n", "Which way?"]) out({ type: "stream_event", event: { type: "content_block_delta", delta: { type: "text_delta", text: d } } });
+  const fid = (input.match(/\\[(f-[a-z0-9-]+)\\]/) || [])[1];
+  const say = input.includes("Score this answer") ? ["Must 1 met.\\n", 'SCORE {"must_met": 3, "must_total": 4, "must_not_hit": 0, "must_not_total": 2, "grade": 4}']
+    : input.includes("Distil this feedback") ? ["Habits.\\n\\n", "~~~~file path=mandate/playbooks/regina.md addresses=" + fid + "\\n# Regina\\n\\nnew rule\\n~~~~\\n"]
+    : ["## Decisions\\n", "- Go EU first\\n\\n", "Which way?"];
+  for (const d of say) out({ type: "stream_event", event: { type: "content_block_delta", delta: { type: "text_delta", text: d } } });
   out({ type: "result", is_error: false });
 });
 `;
@@ -50,6 +58,7 @@ beforeAll(() => {
   mkdirSync(path.join(repo, "mandate/eval/scenarios"), { recursive: true });
   writeFileSync(path.join(repo, "mandate/playbooks/interviews/regina_sme_interview.md"), "# Guide\n");
   writeFileSync(path.join(repo, "mandate/playbooks/regina.md"), "# Regina\n\nold rule\n");
+  writeFileSync(path.join(repo, "mandate/eval/scenarios/kids_policy.yaml"), "id: kids_policy\njob: policy-regulatory\nfounder_says: >\n  We build an AI tutor.\nfounder_followup: >\n  UK company.\nmust:\n  - asks first\nmust_not:\n  - invents law\n");
   writeFileSync(path.join(repo, "mandate/eval/runs/bench/2026-11-11_case_a.md"), "# Bench run: case_a\n\n## Grade (owner)\n\n```\ngrade:\nplaybook: |\n```\n");
   const bin = path.join(tmp, "fake-claude.js");
   writeFileSync(bin, FAKE);
@@ -217,7 +226,7 @@ describe("runs, playbooks and proposals", () => {
     const cur = await body(await propGET(req("/api/bench/proposals?path=mandate/playbooks/regina.md")));
     expect(cur.current).toContain("old rule");
     const w = await body(await propPOST(req("/api/bench/proposals", { method: "POST", json: { path: "mandate/eval/scenarios/new_case.yaml", content: "id: new_case" } })));
-    expect(w).toEqual({ path: "mandate/eval/scenarios/new_case.yaml", created: true });
+    expect(w).toEqual({ path: "mandate/eval/scenarios/new_case.yaml", created: true, resolved: [] });
     expect(readFileSync(path.join(tmp, "repo/mandate/eval/scenarios/new_case.yaml"), "utf8")).toBe("id: new_case\n");
     for (const p of ["web/app/page.tsx", "mandate/playbooks/../../../x.md", ".claude/agents/wincent.md"])
       expect((await propPOST(req("/api/bench/proposals", { method: "POST", json: { path: p, content: "x" } }))).status).toBe(400);
@@ -242,5 +251,75 @@ describe("atomic writes", () => {
     atomicWrite(f, "two");
     expect(readFileSync(f, "utf8")).toBe("two");
     expect(readdirSync(path.dirname(f))).toEqual(["x.json"]);
+  });
+});
+
+// wait for a server-side turn (started by distil / retest) to finish
+const settle = async (convId: string) => {
+  for (let i = 0; i < 150; i++) {
+    const { running } = await body(await convGET(req(`/api/bench/conversations?id=${convId}`)));
+    if (!running) return;
+    await new Promise((r) => setTimeout(r, 30));
+  }
+  throw new Error("turn did not settle");
+};
+
+describe("the improvement loop", () => {
+  it("rates a reply, distils the open feedback, and resolves it when the change is accepted", async () => {
+    const evs = await events(await chatPOST(req("/api/bench/chat", { method: "POST", json: { message: "kids case", agent: "regina" } })));
+    const cid = evs.find((e) => e.t === "conversation").id;
+    const bad = await fbPOST(req("/api/bench/feedback", { method: "POST", json: { kind: "reply", conversationId: cid, messageIndex: 0, rating: "off" } }));
+    expect(bad.status).toBe(400); // index 0 is the client's message
+    const r = await body(await fbPOST(req("/api/bench/feedback", { method: "POST", json: { kind: "reply", conversationId: cid, messageIndex: 1, rating: "off", theme: "missing", note: "Never asked where they are established." } })));
+    expect(r.item).toMatchObject({ kind: "reply", brain: "regina", rating: "off", theme: "missing", status: "open", conversation_id: cid, message_index: 1 });
+    expect(r.item.playbooks.files).toEqual(["mandate/playbooks/regina.md"]);
+    const good = await body(await fbPOST(req("/api/bench/feedback", { method: "POST", json: { kind: "conversation", conversationId: cid, grade: 5 } })));
+    expect(good.item.status).toBe("noted"); // a 5 without a note is signal, not work
+    const { conversation } = await body(await convGET(req(`/api/bench/conversations?id=${cid}`)));
+    expect(conversation.messages[1].feedback).toMatchObject({ rating: "off", item_id: r.item.id });
+    expect(conversation.grade).toMatchObject({ grade: 5 });
+
+    const d = await body(await distilPOST(req("/api/bench/distil", { method: "POST", json: { brain: "regina", ids: [r.item.id] } })));
+    await settle(d.conversationId);
+    const call = calls().at(-1);
+    expect(call.args[call.args.indexOf("--agent") + 1]).toBe("interviewer");
+    expect(call.input).toContain(`[${r.item.id}]`);
+    expect(call.input).toContain("Never asked where they are established.");
+    const distil = (await body(await convGET(req(`/api/bench/conversations?id=${d.conversationId}`)))).conversation;
+    expect(distil.feedback_ids).toEqual([r.item.id]);
+    const [proposal] = parseProposals(distil.messages.at(-1).text);
+    expect(proposal.addresses).toEqual([r.item.id]);
+
+    const acc = await body(await propPOST(req("/api/bench/proposals", { method: "POST", json: { ...proposal, conversationId: d.conversationId } })));
+    expect(acc.resolved).toEqual([r.item.id]);
+    const { items } = await body(await fbGET(req("/api/bench/feedback")));
+    expect(items.find((i: { id: string }) => i.id === r.item.id)).toMatchObject({ status: "resolved", resolution: { by: "accepted", paths: ["mandate/playbooks/regina.md"], conversation_id: d.conversationId } });
+    // dismiss and reopen are later events, never rewrites
+    expect((await fbPATCH(req("/api/bench/feedback", { method: "PATCH", json: { id: good.item.id, status: "dismissed" } }))).status).toBe(200);
+    expect((await fbPATCH(req("/api/bench/feedback", { method: "PATCH", json: { id: good.item.id, status: "resolved" } }))).status).toBe(400);
+    const types = readFileSync(path.join(tmp, "data/feedback.jsonl"), "utf8").trim().split("\n").map((l) => JSON.parse(l).type);
+    expect(types.slice(-4)).toEqual(["item", "item", "status", "status"]);
+  });
+
+  it("refuses to distil nothing, or feedback that is not open on that brain", async () => {
+    expect((await distilPOST(req("/api/bench/distil", { method: "POST", json: { brain: "regina", ids: [] } }))).status).toBe(400);
+    expect((await distilPOST(req("/api/bench/distil", { method: "POST", json: { brain: "wincent", ids: ["f-doesnotexist"] } }))).status).toBe(400);
+  });
+
+  it("re-tests a case on its brain in one turn, then scores it", async () => {
+    expect((await rtPOST(req("/api/bench/retest", { method: "POST", json: { case: "../x" } }))).status).toBe(400);
+    const r = await body(await rtPOST(req("/api/bench/retest", { method: "POST", json: { case: "kids_policy" } })));
+    expect(r.retest).toMatchObject({ case: "kids_policy", brain: "regina", score: null });
+    await settle(r.conversationId);
+    const run = calls().at(-1);
+    expect(run.args[run.args.indexOf("--agent") + 1]).toBe("regina");
+    expect(run.input).toContain("We build an AI tutor.");
+    expect(run.input).toContain("UK company.");
+    const s = await body(await rtPOST(req("/api/bench/retest", { method: "POST", json: { action: "score", id: r.retest.id } })));
+    await settle(s.conversationId);
+    expect(calls().at(-1).input).toContain("mandate/eval/scenarios/kids_policy.yaml");
+    const { retests, cases } = await body(await rtGET(req("/api/bench/retest")));
+    expect(cases).toContain("kids_policy");
+    expect(retests[0].score).toEqual({ must_met: 3, must_total: 4, must_not_hit: 0, must_not_total: 2, grade: 4 });
   });
 });

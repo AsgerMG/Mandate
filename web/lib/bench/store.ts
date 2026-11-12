@@ -9,11 +9,15 @@
 //
 // Repo writes (a run's grade, an accepted playbook proposal) go through
 // writeRepoFile, which only writes the paths the model allows.
+import { execFileSync } from "node:child_process";
 import { randomBytes } from "node:crypto";
-import { existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync, unlinkSync } from "node:fs";
+import { appendFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync, unlinkSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { isId, proposalPathOk, RUN_FILE_RE, type BenchConversation, type BenchMandate, type ConversationSummary } from "./model";
+import {
+  brainsOfPlaybook, BRAINS, foldFeedback, isId, proposalPathOk, RUN_FILE_RE,
+  type BenchConversation, type BenchMandate, type Brain, type ConversationSummary, type FeedbackEvent, type FeedbackItem, type Retest,
+} from "./model";
 
 export const dataRoot = () => process.env.MANDATE_BENCH_DATA ?? path.join(os.homedir(), "Mandate-backups", "bench");
 export const repoRoot = () => process.env.MANDATE_BENCH_ROOT ?? path.resolve(process.cwd(), "..");
@@ -49,10 +53,14 @@ function listJson<T>(d: string): T[] {
 
 // ── mandates ───────────────────────────────────────────────────────────────
 
+/** Mandates written before the portfolio fields default to all brains, one portfolio. */
+const withDefaults = (m: BenchMandate): BenchMandate => ({ ...m, portfolio_id: m.portfolio_id ?? "default", brains: m.brains?.length ? m.brains : [...BRAINS] });
 export const listMandates = (): BenchMandate[] =>
-  listJson<BenchMandate>(dir("mandates")).sort((a, b) => b.updated_at.localeCompare(a.updated_at));
-export const getMandate = (id: string): BenchMandate | null =>
-  isId(id) ? readJsonFile<BenchMandate>(path.join(dir("mandates"), `${id}.json`)) : null;
+  listJson<BenchMandate>(dir("mandates")).map(withDefaults).sort((a, b) => b.updated_at.localeCompare(a.updated_at));
+export const getMandate = (id: string): BenchMandate | null => {
+  const m = isId(id) ? readJsonFile<BenchMandate>(path.join(dir("mandates"), `${id}.json`)) : null;
+  return m ? withDefaults(m) : null;
+};
 export function saveMandate(m: BenchMandate): void {
   if (!isId(m.id)) throw new Error("bad mandate id");
   atomicWrite(path.join(dir("mandates"), `${m.id}.json`), JSON.stringify(m, null, 2));
@@ -104,6 +112,56 @@ export function readRepoFile(abs: string): string | null {
 
 export function writeRepoFile(abs: string, content: string): void {
   atomicWrite(abs, content, 0o644);
+}
+
+// ── the feedback queue ─────────────────────────────────────────────────────
+
+const feedbackFile = () => { mkdirSync(dataRoot(), { recursive: true, mode: 0o700 }); return path.join(dataRoot(), "feedback.jsonl"); };
+
+/** Append one event (one line; O_APPEND keeps concurrent small writes whole). */
+export function appendFeedback(e: FeedbackEvent): void {
+  appendFileSync(feedbackFile(), `${JSON.stringify(e)}\n`, { mode: 0o600 });
+}
+export function readFeedback(): FeedbackItem[] {
+  let raw = "";
+  try { raw = readFileSync(feedbackFile(), "utf8"); } catch { return []; }
+  const events: FeedbackEvent[] = [];
+  for (const line of raw.split("\n")) { if (!line.trim()) continue; try { events.push(JSON.parse(line)); } catch { /* a torn last line */ } }
+  return foldFeedback(events);
+}
+
+const git = (args: string[]): string | null => {
+  try { return execFileSync("git", args, { cwd: repoRoot(), encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] }).trim(); } catch { return null; }
+};
+
+/** The playbooks a brain reads right now, and the commit they are at. */
+export function playbooksInForce(brain: Brain): FeedbackItem["playbooks"] {
+  let files: string[] = [];
+  try { files = readdirSync(path.join(repoRoot(), "mandate/playbooks")).filter((f) => f.endsWith(".md") && f !== "README.md"); } catch { /* none */ }
+  files = files.filter((f) => brainsOfPlaybook(f).includes(brain)).map((f) => `mandate/playbooks/${f}`).sort();
+  const sha = git(["rev-parse", "--short=10", "HEAD"]);
+  const dirty = files.length ? (git(["status", "--porcelain", "--", ...files]) ?? "") !== "" : false;
+  return { sha, dirty, files };
+}
+
+// ── re-tests ───────────────────────────────────────────────────────────────
+
+const retestDir = () => { const d = path.join(dataRoot(), "retests"); mkdirSync(d, { recursive: true, mode: 0o700 }); return d; };
+export const listRetests = (): Retest[] => listJson<Retest>(retestDir()).sort((a, b) => b.created_at.localeCompare(a.created_at));
+export const getRetest = (id: string): Retest | null => (isId(id) ? readJsonFile<Retest>(path.join(retestDir(), `${id}.json`)) : null);
+export function saveRetest(r: Retest): void {
+  if (!isId(r.id)) throw new Error("bad retest id");
+  atomicWrite(path.join(retestDir(), `${r.id}.json`), JSON.stringify(r, null, 2));
+}
+
+export const SCENARIO_RE = /^[a-z0-9][a-z0-9_-]*$/;
+export function readScenario(id: string): string | null {
+  if (!SCENARIO_RE.test(id)) return null;
+  return readRepoFile(path.join(repoRoot(), "mandate/eval/scenarios", `${id}.yaml`));
+}
+export function listScenarios(): string[] {
+  try { return readdirSync(path.join(repoRoot(), "mandate/eval/scenarios")).filter((f) => /^[a-z0-9][a-z0-9_-]*\.yaml$/.test(f)).map((f) => f.slice(0, -5)).sort(); }
+  catch { return []; }
 }
 
 /** The interview guides an interview may run (mandate/playbooks/interviews/*.md). */

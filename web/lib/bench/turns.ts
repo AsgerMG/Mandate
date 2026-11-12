@@ -50,11 +50,17 @@ const PROPOSAL_FORMAT = `When asked to finish and distil (or to turn a critique 
 Use four backticks for the fence, so the file may contain code blocks. Paths you may propose: mandate/playbooks/*.md (edit an existing file, or a new one such as policy-watch.md) and mandate/eval/scenarios/*.yaml (new eval cases, same format as the existing ones). Read the current file first and keep everything that is still true: change only what the expert said, and never drop a rule they did not retract. Outside the blocks, give a short "Habits" list (the 5-8 strongest, in the expert's words) and one line per file on what changed and why. The owner reviews every file before anything is written.`;
 
 function sessionNote(c: BenchConversation, sid: string): string {
+  if (c.agent === "interviewer" && c.kind === "score") {
+    return `You are the Mandate interviewer, inside the bench app, SCORING a re-test of ${BRAIN_LABEL[c.brain]} against an eval case. Be strict and brief.
+Reply in plain markdown, and end with the one SCORE line the message asks for, exactly as specified.`;
+  }
   if (c.agent === "interviewer") {
-    const guide = c.guide ? `mandate/playbooks/interviews/${c.guide}` : "(no guide: a lesson from a graded run)";
+    const guide = c.guide ? `mandate/playbooks/interviews/${c.guide}` : c.kind === "distil" ? "(none: a batch of the owner's feedback)" : "(no guide: a lesson from a graded run)";
+    const who = c.kind === "lesson" ? "the owner, critiquing a run" : c.kind === "distil" ? "the owner, sending a batch of feedback items (each has an id in brackets)" : "the subject-matter expert";
     return `You are the Mandate interviewer, inside the bench app (a chat window). You are training ${BRAIN_LABEL[c.brain]}: the playbooks you improve are ${BRAIN_LABEL[c.brain]}'s.
 Interview guide: ${guide}.
-The person typing (or speaking, transcribed) is ${c.kind === "lesson" ? "the owner, critiquing a run" : "the subject-matter expert"}.
+The person typing (or speaking, transcribed) is ${who}.
+When your proposal answers feedback items, name them in the block's info string: addresses=<id>,<id>.
 Reply in plain markdown. Never show tool names, commands or JSON.
 ${PROPOSAL_FORMAT}`;
   }

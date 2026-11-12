@@ -5,8 +5,8 @@
 import { readdirSync } from "node:fs";
 import path from "node:path";
 import { fail, guard, json, readJson } from "@/lib/bench/guard";
-import { parseGrade, RUN_FILE_RE, runBrain, writeGrade, type RunSummary } from "@/lib/bench/model";
-import { BENCH_RUNS_DIR, nowIso, readRepoFile, repoPath, repoRoot, writeRepoFile } from "@/lib/bench/store";
+import { initialStatus, parseGrade, RUN_FILE_RE, runBrain, writeGrade, type FeedbackItem, type RunSummary } from "@/lib/bench/model";
+import { appendFeedback, BENCH_RUNS_DIR, newId, nowIso, playbooksInForce, readRepoFile, repoPath, repoRoot, writeRepoFile } from "@/lib/bench/store";
 
 export const dynamic = "force-dynamic";
 
@@ -49,5 +49,14 @@ export async function POST(req: Request): Promise<Response> {
   if (off.length > 20_000 || rewrite.length > 20_000) return fail("text too long");
   const next = writeGrade(md, { grade, off, rewrite }, nowIso());
   writeRepoFile(abs, next);
+  // the grade also joins the feedback queue, so a weak run can be distilled
+  const brain = runBrain(next, body.file);
+  const item: FeedbackItem = {
+    id: newId("f"), kind: "run", brain, rating: null, grade, theme: "other", note: [off, rewrite && `Rewrite: ${rewrite}`].filter(Boolean).join("\n"),
+    mandate_id: null, conversation_id: null, message_index: null, run_file: body.file, excerpt: next.match(/^#\s+(.+)$/m)?.[1] ?? body.file,
+    playbooks: playbooksInForce(brain), created_at: nowIso(), status: "open",
+  };
+  item.status = initialStatus(item);
+  appendFeedback({ type: "item", item });
   return json({ run: summary(body.file, next), grade: parseGrade(next), path: path.join(BENCH_RUNS_DIR, body.file) });
 }

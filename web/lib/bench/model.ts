@@ -23,6 +23,10 @@ export type MandateStatus = (typeof MANDATE_STATUS)[number];
 
 export type BenchMandate = {
   id: string;
+  /** pa_os.md §2: the team's portfolio this mandate sits in (one today) */
+  portfolio_id: string;
+  /** the brains deployed on this mandate; they share its profile and what landed */
+  brains: Brain[];
   client: string;          // workspaces.name
   brief: string;           // mandate_charters.objectives (one paragraph)
   markets: string[];       // mandate_charters.jurisdictions
@@ -32,12 +36,14 @@ export type BenchMandate = {
   updated_at: string;
 };
 
-export type ConversationKind = "chat" | "interview" | "lesson";
+export type ConversationKind = "chat" | "interview" | "lesson" | "distil" | "retest" | "score";
 
 export type BenchMessage = {
   role: "client" | "agent";
   text: string;
   at: string;
+  /** the owner's quick rating of this reply (the item is in the feedback queue) */
+  feedback?: { rating: "good" | "off"; item_id: string; note?: string };
   /** set on an agent message whose turn did not finish */
   error?: string;
   interrupted?: boolean;
@@ -59,6 +65,12 @@ export type BenchConversation = {
   cites: Record<string, Citation>;
   sources: { url: string; label: string }[];
   saved: { path: string; ledger: string | null }[];
+  /** the owner's 1-5 grade of the whole conversation */
+  grade?: { grade: number; item_id: string };
+  /** a distil: the feedback items it was given */
+  feedback_ids?: string[];
+  /** a re-test or its scoring: the eval case */
+  case?: string;
   created_at: string;
   updated_at: string;
 };
@@ -82,10 +94,16 @@ export function titleFrom(text: string): string {
 export type Result<T> = { ok: true; value: T } | { ok: false; error: string };
 const str = (v: unknown, max: number): string | null => (typeof v === "string" && v.length <= max ? v : null);
 
-export function validateMandateInput(body: unknown, partial = false): Result<Partial<Pick<BenchMandate, "client" | "brief" | "markets" | "status" | "profile">>> {
+type MandateFields = Pick<BenchMandate, "client" | "brief" | "markets" | "status" | "profile" | "brains">;
+export function validateMandateInput(body: unknown, partial = false): Result<Partial<MandateFields>> {
   if (!body || typeof body !== "object") return { ok: false, error: "expected an object" };
   const b = body as Record<string, unknown>;
-  const out: Partial<Pick<BenchMandate, "client" | "brief" | "markets" | "status" | "profile">> = {};
+  const out: Partial<MandateFields> = {};
+  if (b.brains !== undefined || !partial) {
+    const raw = b.brains ?? [...BRAINS];
+    if (!Array.isArray(raw) || !raw.length || !raw.every((x) => BRAINS.includes(x as Brain))) return { ok: false, error: "deploy at least one brain (wincent, regina)" };
+    out.brains = BRAINS.filter((x) => raw.includes(x));
+  }
   if (b.client !== undefined || !partial) {
     const c = str(b.client, 200)?.trim();
     if (!c) return { ok: false, error: "the client name is required (up to 200 characters)" };
@@ -169,7 +187,7 @@ export function groupSources(cites: Record<string, Citation>, web: { url: string
 
 // ── proposals: files the interviewer suggests writing ──────────────────────
 
-export type Proposal = { path: string; content: string };
+export type Proposal = { path: string; content: string; addresses: string[] };
 
 /** Paths the app may write on the owner's accept: the brains' playbooks and
  *  the eval scenarios. Nothing else, and never outside the repo. */
@@ -182,10 +200,11 @@ export const proposalPathOk = (p: string) => PROPOSAL_PATH_RE.test(p) && !p.incl
  *  dropped here, so the page never offers them. */
 export function parseProposals(text: string): Proposal[] {
   const out: Proposal[] = [];
-  const re = /^(`{3,}|~{3,})file\s+path=["']?([^\s"'`]+)["']?[^\n]*\n([\s\S]*?)^\1[ \t]*$/gm;
+  const re = /^(`{3,}|~{3,})file\s+path=["']?([^\s"'`]+)["']?([^\n]*)\n([\s\S]*?)^\1[ \t]*$/gm;
   for (const m of text.matchAll(re)) {
     const path = m[2].replace(/^\.?\//, "");
-    if (proposalPathOk(path)) out.push({ path, content: m[3].replace(/\n?$/, "\n") });
+    const addresses = (m[3].match(/addresses=["']?([^\s"'`]+)/)?.[1] ?? "").split(",").map((s) => s.trim()).filter((s) => ID_RE.test(s));
+    if (proposalPathOk(path)) out.push({ path, content: m[4].replace(/\n?$/, "\n"), addresses });
   }
   return out;
 }
@@ -293,3 +312,152 @@ export function writeGrade(md: string, g: { grade: number; off: string; rewrite:
   if (!m) return `${md.replace(/\s*$/, "\n\n")}${section}`;
   return md.slice(0, m.index) + section + md.slice((m.index ?? 0) + m[0].length).replace(/^\n*/, "\n");
 }
+
+// ── the feedback queue (the improvement loop) ──────────────────────────────
+//
+// One append-only JSON-lines file: an item is created once and its status
+// changes are later lines (never rewritten, never deleted). Each item carries
+// what it is about (brain, mandate, conversation, message) and the playbooks
+// in force when it was given (git sha + files), so a later fix can be traced
+// back to the feedback it answers and the method it corrected.
+
+export const THEMES = ["facts", "missing", "method", "sources", "tone", "other"] as const;
+export type Theme = (typeof THEMES)[number];
+export const THEME_LABEL: Record<Theme, string> = {
+  facts: "Wrong fact", missing: "Missing something", method: "Wrong approach", sources: "Sources / citations", tone: "Tone or length", other: "Other",
+};
+
+export type FeedbackKind = "reply" | "conversation" | "run" | "interview";
+export type FeedbackStatus = "open" | "noted" | "resolved" | "dismissed";
+
+export type FeedbackItem = {
+  id: string;
+  kind: FeedbackKind;
+  brain: Brain;
+  rating: "good" | "off" | null;
+  grade: number | null;
+  theme: Theme;
+  note: string;
+  mandate_id: string | null;
+  conversation_id: string | null;
+  message_index: number | null;
+  run_file: string | null;
+  /** what was rated: the reply's opening, the conversation's title */
+  excerpt: string;
+  playbooks: { sha: string | null; dirty: boolean; files: string[] };
+  created_at: string;
+  status: FeedbackStatus;
+  resolution?: { at: string; by: "accepted" | "dismissed" | "reopened"; paths?: string[]; conversation_id?: string };
+};
+
+export type FeedbackEvent =
+  | { type: "item"; item: FeedbackItem }
+  | { type: "status"; id: string; status: FeedbackStatus; at: string; by: "accepted" | "dismissed" | "reopened"; paths?: string[]; conversation_id?: string };
+
+/** Is this feedback something to act on? Good ratings and high grades without
+ *  a note are signal (kept, counted), not work. */
+export function initialStatus(i: Pick<FeedbackItem, "kind" | "rating" | "grade" | "note">): FeedbackStatus {
+  if (i.kind === "interview" || i.rating === "off") return "open";
+  if (i.grade !== null && i.grade <= 3) return "open";
+  return i.note.trim() ? "open" : "noted";
+}
+
+/** The queue as it stands: every item with its latest status, newest first. */
+export function foldFeedback(events: FeedbackEvent[]): FeedbackItem[] {
+  const items = new Map<string, FeedbackItem>();
+  for (const e of events) {
+    if (e.type === "item") items.set(e.item.id, { ...e.item });
+    else {
+      const it = items.get(e.id);
+      if (!it) continue;
+      it.status = e.status;
+      it.resolution = { at: e.at, by: e.by, ...(e.paths ? { paths: e.paths } : {}), ...(e.conversation_id ? { conversation_id: e.conversation_id } : {}) };
+    }
+  }
+  return [...items.values()].sort((a, b) => b.created_at.localeCompare(a.created_at));
+}
+
+/** Which brain reads a playbook: by name (policy-*, regina* for Regina;
+ *  funding-*, wincent* for Wincent); the rest is shared method. */
+export function brainsOfPlaybook(file: string): Brain[] {
+  const f = file.replace(/^mandate\/playbooks\//, "");
+  if (/^(policy-|regina)|interviews\/regina/.test(f)) return ["regina"];
+  if (/^(funding-|wincent)|interviews\/wincent/.test(f)) return ["wincent"];
+  return ["wincent", "regina"];
+}
+
+/** The message that sends a batch of feedback to the interviewer to distil. */
+export function distilMessage(brain: Brain, items: FeedbackItem[], titles: Record<string, string>): string {
+  const lines = items.map((i) => {
+    const where = i.run_file ? `run ${i.run_file}` : i.conversation_id ? `conversation "${titles[i.conversation_id] ?? i.conversation_id}"${i.message_index !== null ? `, reply ${i.message_index}` : ""}` : "";
+    const what = i.kind === "interview" ? "Interview (its distilled habits are in the excerpt)" : i.rating ? `Rated ${i.rating}` : i.grade ? `Graded ${i.grade}/5` : "Note";
+    return [`[${i.id}] ${what} · ${THEME_LABEL[i.theme]} · ${where} · playbooks at ${i.playbooks.sha ?? "unknown"}${i.playbooks.dirty ? " (+uncommitted edits)" : ""}`,
+      i.note ? `  The owner: "${i.note.replace(/\s+/g, " ")}"` : "",
+      i.excerpt ? `  What was said: "${i.excerpt.replace(/\s+/g, " ").slice(0, 600)}"` : ""].filter(Boolean).join("\n");
+  });
+  return `Distil this feedback on ${BRAIN_LABEL[brain]} into playbook edits.
+
+${lines.join("\n\n")}
+
+Find the habits behind it (general, not about one case). Propose the playbook edits and any new or updated eval cases in the file-block format, and name the feedback each block addresses in its info string, e.g. \`\`\`\`file path=mandate/playbooks/<name>.md addresses=${items.slice(0, 2).map((i) => i.id).join(",")}
+Feedback you cannot act on (a one-off fact, or unclear): say so in one line each, by id.`;
+}
+
+// ── eval scenarios and re-tests ────────────────────────────────────────────
+
+export type Scenario = { id: string; job: string; founder_says: string; founder_followup: string; must: string[]; must_not: string[] };
+
+/** The few fields a re-test needs, read from a scenario YAML (folded `>`
+ *  blocks and `- ` lists at the top level). Not a YAML parser. */
+export function parseScenario(yaml: string): Scenario {
+  const lines = yaml.split("\n");
+  const block = (key: string): string => {
+    const at = lines.findIndex((l) => l.startsWith(`${key}:`));
+    if (at < 0) return "";
+    const inline = lines[at].slice(key.length + 1).trim().replace(/^[>|][-+]?$/, "").replace(/\s+#.*$/, "");
+    const out = inline ? [inline.replace(/^["']|["']$/g, "")] : [];
+    if (!inline) for (let i = at + 1; i < lines.length && (/^\s+\S/.test(lines[i]) || lines[i].trim() === ""); i++) out.push(lines[i].trim());
+    return out.join(" ").replace(/\s+/g, " ").trim();
+  };
+  const list = (key: string): string[] => {
+    const at = lines.findIndex((l) => new RegExp(`^${key}:\\s*(#.*)?$`).test(l));
+    if (at < 0) return [];
+    const out: string[] = [];
+    for (let i = at + 1; i < lines.length && (/^\s/.test(lines[i]) || lines[i].trim() === ""); i++) {
+      const m = lines[i].match(/^\s+-\s+(.*)$/);
+      if (m) out.push(m[1].replace(/^["']|["']$/g, ""));
+      else if (out.length && lines[i].trim() && !lines[i].trim().startsWith("#")) out[out.length - 1] += ` ${lines[i].trim()}`;
+    }
+    return out;
+  };
+  return { id: block("id"), job: block("job"), founder_says: block("founder_says"), founder_followup: block("founder_followup"), must: list("must"), must_not: list("must_not") };
+}
+
+export type Score = { must_met: number; must_total: number; must_not_hit: number; must_not_total: number; grade: number | null };
+
+/** The grader ends its reply with one line: SCORE {"must_met":..,...}. */
+export function parseScore(text: string): Score | null {
+  const m = [...text.matchAll(/SCORE\s*(\{[^\n]*\})/g)].pop();
+  if (!m) return null;
+  try {
+    const j = JSON.parse(m[1]) as Partial<Score>;
+    const n = (v: unknown) => (typeof v === "number" && Number.isFinite(v) && v >= 0 ? Math.round(v) : null);
+    if (n(j.must_met) === null || n(j.must_total) === null) return null;
+    const g = n(j.grade);
+    return { must_met: n(j.must_met)!, must_total: n(j.must_total)!, must_not_hit: n(j.must_not_hit) ?? 0, must_not_total: n(j.must_not_total) ?? 0, grade: g !== null && g >= 1 && g <= 5 ? g : null };
+  } catch { return null; }
+}
+
+export type Retest = {
+  id: string;
+  case: string;
+  brain: Brain;
+  /** the distil conversation whose accepted change this re-test checks, if any */
+  after_change: string | null;
+  playbooks_sha: string | null;
+  playbooks_dirty: boolean;
+  run_conversation: string;
+  score_conversation: string | null;
+  score: Score | null;
+  created_at: string;
+};

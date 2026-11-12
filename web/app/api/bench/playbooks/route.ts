@@ -5,19 +5,11 @@ import { execFileSync } from "node:child_process";
 import { readdirSync } from "node:fs";
 import path from "node:path";
 import { fail, guard, json } from "@/lib/bench/guard";
-import type { Brain } from "@/lib/bench/model";
+import { brainsOfPlaybook as brainsOf } from "@/lib/bench/model";
 import { mtimeOf, readRepoFile, repoRoot } from "@/lib/bench/store";
 
 export const dynamic = "force-dynamic";
 const FILE_RE = /^(interviews\/)?[a-z0-9][a-z0-9_.-]*\.md$/;
-
-/** Which brain reads a playbook: by name (policy-*, regina* for Regina;
- *  funding-*, wincent* for Wincent); the rest is shared method. */
-function brainsOf(file: string): Brain[] {
-  if (/^(policy-|regina)|interviews\/regina/.test(file)) return ["regina"];
-  if (/^(funding-|wincent)|interviews\/wincent/.test(file)) return ["wincent"];
-  return ["wincent", "regina"];
-}
 
 const git = (args: string[]) => execFileSync("git", args, { cwd: repoRoot(), encoding: "utf8", timeout: 5000, stdio: ["ignore", "pipe", "ignore"] });
 

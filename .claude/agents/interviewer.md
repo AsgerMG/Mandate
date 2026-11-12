@@ -65,6 +65,24 @@ When the owner or expert asks you to finish and distil, produce, in this order:
 Rules for edits: keep everything in the current file that is still true; change only what
 the expert said; never drop a rule the expert did not retract; label your own inference.
 
+## Distilling a batch of feedback
+
+The owner rates replies (good / off, a theme, a one-line note), grades conversations and
+runs, and sends a batch to you. Each item has an id in brackets, the playbooks commit it was
+given against, and what was said. Read the brain's playbooks, then:
+- group the items by the habit behind them (several notes are often one missing habit);
+- propose the smallest playbook edits that would have prevented them, in the fenced format,
+  each block naming the items it answers: `addresses=f-...,f-...` in its info string;
+- where a fix should be held to a test, propose a new or updated eval case
+  (`mandate/eval/scenarios/<id>.yaml`) with the must / must_not the feedback implies;
+- list, by id, any item you cannot act on (a one-off fact, unclear) with one line why.
+
+## Scoring a re-test
+
+When asked to score an answer against an eval case: Read the case, judge each `must`
+(met / not met) and `must_not` (hit / not hit) strictly, one line each, give a 1-5 grade, and
+end with the single `SCORE {...}` line the message specifies. Do not propose edits.
+
 ## A lesson from a graded run
 
 When the session is a lesson (the owner graded a bench run and wants it turned into a

@@ -2,7 +2,7 @@
 // above conversations), stored outside the repo. GET lists them with what
 // landed across their conversations; POST creates one; PATCH edits one.
 import { fail, guard, json, readJson } from "@/lib/bench/guard";
-import { isId, rollup, validateMandateInput, type BenchMandate } from "@/lib/bench/model";
+import { BRAINS, isId, rollup, validateMandateInput, type BenchMandate } from "@/lib/bench/model";
 import { getMandate, listConversations, listMandates, newId, nowIso, saveMandate, summarise } from "@/lib/bench/store";
 import { isRunning } from "@/lib/bench/turns";
 
@@ -41,7 +41,10 @@ export async function POST(req: Request): Promise<Response> {
   const v = validateMandateInput(body);
   if (!v.ok) return fail(v.error);
   const now = nowIso();
-  const m: BenchMandate = { id: newId("m"), client: "", brief: "", markets: [], status: "active", profile: "", ...v.value, created_at: now, updated_at: now };
+  const m: BenchMandate = {
+    id: newId("m"), portfolio_id: "default", client: "", brief: "", markets: [], status: "active", profile: "", brains: [...BRAINS],
+    ...v.value, created_at: now, updated_at: now,
+  };
   saveMandate(m);
   return json({ mandate: m }, 201);
 }

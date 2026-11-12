@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
-  groupSources, lineDiff, parseGrade, parseProposals, proposalPathOk, rollup, runBrain, titleFrom,
+  foldFeedback, groupSources, initialStatus, lineDiff, parseGrade, parseProposals, parseScenario, parseScore, proposalPathOk, rollup, runBrain, titleFrom,
   validateMandateInput, withoutProposals, writeGrade, type BenchConversation,
 } from "./model";
 
@@ -23,7 +23,7 @@ describe("validateMandateInput", () => {
   it("requires a client name and normalises markets", () => {
     expect(validateMandateInput({}).ok).toBe(false);
     const v = validateMandateInput({ client: " Acme ", markets: "DE, FR,,DE", status: "active" });
-    expect(v).toEqual({ ok: true, value: { client: "Acme", brief: "", profile: "", markets: ["DE", "FR"], status: "active" } });
+    expect(v).toEqual({ ok: true, value: { brains: ["wincent", "regina"], client: "Acme", brief: "", profile: "", markets: ["DE", "FR"], status: "active" } });
   });
   it("rejects a bad status and over-long text; a partial update touches only what is sent", () => {
     expect(validateMandateInput({ client: "A", status: "won" }).ok).toBe(false);
@@ -63,8 +63,8 @@ describe("proposals", () => {
   const reply = "Habits:\n- check the stage first\n\n````file path=mandate/playbooks/policy-watch.md\n# Watch\n\n```\ncode\n```\n````\n\n````file path=web/app/evil.ts\nx\n````\n\n````file path=mandate/eval/scenarios/travel_dma.yaml\nid: travel_dma\n````";
   it("reads the file blocks the app may write, and only those", () => {
     expect(parseProposals(reply)).toEqual([
-      { path: "mandate/playbooks/policy-watch.md", content: "# Watch\n\n```\ncode\n```\n" },
-      { path: "mandate/eval/scenarios/travel_dma.yaml", content: "id: travel_dma\n" },
+      { path: "mandate/playbooks/policy-watch.md", content: "# Watch\n\n```\ncode\n```\n", addresses: [] },
+      { path: "mandate/eval/scenarios/travel_dma.yaml", content: "id: travel_dma\n", addresses: [] },
     ]);
     expect(withoutProposals(reply)).toContain("*Proposed file: `mandate/playbooks/policy-watch.md` (see Proposed changes)*");
   });
@@ -114,5 +114,32 @@ describe("runBrain", () => {
     expect(runBrain("# Bench run\nRegina asked first", "2026-11-11_x.md")).toBe("regina");
     expect(runBrain("# Bench run", "2026-11-11_ai_kids_regulatory_DRAFT.md")).toBe("regina");
     expect(runBrain("# Bench run: robotics", "2026-11-11_robotics.md")).toBe("wincent");
+  });
+});
+
+describe("the feedback loop pieces", () => {
+  it("folds item and status events, newest first, keeping the last status", () => {
+    const base = { kind: "reply", brain: "wincent", rating: "off", grade: null, theme: "facts", note: "", mandate_id: null, conversation_id: "c-1", message_index: 1, run_file: null, excerpt: "", playbooks: { sha: null, dirty: false, files: [] as string[] }, status: "open" } as const;
+    const items = foldFeedback([
+      { type: "item", item: { ...base, id: "f-aaaaaa", created_at: "2026-11-01" } },
+      { type: "item", item: { ...base, id: "f-bbbbbb", created_at: "2026-11-02" } },
+      { type: "status", id: "f-aaaaaa", status: "dismissed", at: "t1", by: "dismissed" },
+      { type: "status", id: "f-aaaaaa", status: "open", at: "t2", by: "reopened" },
+      { type: "status", id: "f-unknown", status: "resolved", at: "t3", by: "accepted" },
+    ]);
+    expect(items.map((i) => [i.id, i.status])).toEqual([["f-bbbbbb", "open"], ["f-aaaaaa", "open"]]);
+    expect(initialStatus({ kind: "reply", rating: "good", grade: null, note: "" })).toBe("noted");
+    expect(initialStatus({ kind: "reply", rating: "good", grade: null, note: "but shorter" })).toBe("open");
+    expect(initialStatus({ kind: "conversation", rating: null, grade: 3, note: "" })).toBe("open");
+  });
+  it("reads a scenario's fields and a grader's SCORE line", () => {
+    const s = parseScenario("# c\nid: x_case\njob: funding-routes\nfounder_says: >\n  We lend.\n  To SMEs.\nfounder_followup: >\n  German GmbH.\nmust:\n  - one\n  - \"two: quoted\"\n    continued\nmust_not:\n  - three\nmodel_answer: >\n  no\n");
+    expect(s).toEqual({ id: "x_case", job: "funding-routes", founder_says: "We lend. To SMEs.", founder_followup: "German GmbH.", must: ["one", "two: quoted continued"], must_not: ["three"] });
+    expect(parseScore('x\nSCORE {"must_met": 2, "must_total": 5, "must_not_hit": 1, "must_not_total": 3, "grade": 3}')).toEqual({ must_met: 2, must_total: 5, must_not_hit: 1, must_not_total: 3, grade: 3 });
+    expect(parseScore("no score")).toBeNull();
+    expect(parseScore('SCORE {"grade": 9}')).toBeNull();
+  });
+  it("reads the feedback a proposal addresses", () => {
+    expect(parseProposals("````file path=mandate/playbooks/regina.md addresses=f-abc123,f-def456,../x\nbody\n````")[0].addresses).toEqual(["f-abc123", "f-def456"]);
   });
 });
