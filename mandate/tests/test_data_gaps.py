@@ -35,3 +35,12 @@ def test_miner_runs_on_the_repo_and_finds_the_known_gaps():
     assert "reform" in text or "precedent" in text
     md = dg.markdown(m)
     assert md.startswith("# Data asks") and "| 1 |" in md
+
+
+def test_an_empty_grade_template_carries_no_owner_note():
+    empty = dg.grade_notes("grade:\nmust/must_not:\nedits: |\nplaybook: |")
+    assert all(v == "" for v in empty.values())
+    hinted = dg.grade_notes("grade: 1-5          # 5 send as is\nmissing: |          # what a senior would have said")
+    assert hinted["missing"] == ""
+    filled = dg.grade_notes("must/must_not: Italy WRONG (parked).\n  Germany WRONG.\nedits: |\n  see the yaml")
+    assert filled["must/must_not"] == "Italy WRONG (parked). Germany WRONG." and filled["edits"] == "see the yaml"

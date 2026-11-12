@@ -2,7 +2,7 @@
 
     PYTHONPATH=. python3 -m mandate.eval.data_gaps             # the ranked list, markdown
     PYTHONPATH=. python3 -m mandate.eval.data_gaps --json      # the same for the bench's Train view
-    PYTHONPATH=. python3 -m mandate.eval.data_gaps --write     # also writes mandate/eval/data_gaps.md
+    PYTHONPATH=. python3 -m mandate.eval.data_gaps --write     # also writes mandate/eval/data_asks.md
 
 Every run leaves signals of missing data. This mines them, loads nothing, and
 tells the owner which data earns its place (master plan rule 4b):
@@ -38,7 +38,7 @@ REPO = HERE.parent.parent
 JUDGEMENTS = HERE / "judgements"
 RUN_DIRS = (HERE / "runs" / "bench", HERE / "runs" / "loop")
 USAGE_LOCAL = REPO / "web" / ".bench" / "tool_calls.jsonl"
-OUT_MD = HERE / "data_gaps.md"
+OUT_MD = HERE / "data_asks.md"
 
 KINDS = ("statute", "instrument", "precedents", "stakeholders", "media", "other")
 KIND_LABEL = {"statute": "statute / rule text", "instrument": "financial instrument intel", "precedents": "precedents",
@@ -61,8 +61,12 @@ LOAD_MODE = {
 }
 
 _WORD = re.compile(r"[a-zà-ü0-9]{3,}")
+# Words that say a signal is a gap, not WHICH gap: they must never be what joins two signals.
 STOP = {"the", "and", "for", "with", "not", "from", "that", "this", "none", "found", "corpus", "unverified", "returned",
-        "nothing", "page", "pages", "text", "rule", "rules", "data", "source", "sources", "named", "names", "name", "any", "its"}
+        "nothing", "page", "pages", "text", "rule", "rules", "data", "source", "sources", "named", "names", "name", "any", "its",
+        "live", "fetched", "fetch", "identified", "labelled", "loaded", "load", "web", "only", "held", "should", "uncited",
+        "cited", "served", "missing", "empty", "after", "under", "into", "are", "was", "has", "have", "but", "via", "per",
+        "ungrounded", "owner", "note", "record", "records", "version", "current", "may", "one", "two", "three", "four"}
 
 
 def _stem(w: str) -> str:
@@ -83,9 +87,9 @@ def kind_of_host(host: str) -> str:
 
 def kind_of_text(text: str) -> str:
     t = text.lower()
-    if re.search(r"precedent|signature|transaction list|award", t):
+    if re.search(r"precedent|signature|transaction list|award|\bsa\.\d", t):
         return "precedents"
-    if re.search(r"actor|people|person|official|head of|unit|register record|whoiswho|organisation chart|contact", t):
+    if re.search(r"actor|people|person|official|head of|\bunit\b|whoiswho|organisation chart|contact|rapporteur|stakeholder", t):
         return "stakeholders"
     if re.search(r"\bart\.|article|statute|law|act\b|regulation|directive|decree|bill|reform|code|tub|kwg|cmf|gdpr|omnibus", t):
         return "statute"
@@ -125,6 +129,25 @@ _UNVERIFIED = re.compile(r"([^.\n]{10,160})\(unverified[^)]*\)", re.I)
 _GRADE_BLOCK = re.compile(r"^## Grade\b[^\n]*\n+```\n([\s\S]*?)\n```", re.M)
 
 
+def grade_notes(block: str) -> dict[str, str]:
+    """The owner's grade block as key -> text. A key with only `|` or a `# hint` is empty."""
+    notes: dict[str, list[str]] = {}
+    key = None
+    for line in block.splitlines():
+        m = re.match(r"^([a-z_/]+):\s*(.*)$", line)
+        if m:
+            key, rest = m.group(1), m.group(2)
+            notes[key] = []
+        elif key is None:
+            continue
+        else:
+            rest = line
+        rest = re.sub(r"\s+#.*$|^\s*#.*$", "", rest).strip()
+        if rest and rest != "|":
+            notes[key].append(rest)
+    return {k: " ".join(v) for k, v in notes.items()}
+
+
 def from_runs() -> list[dict]:
     out = []
     for d in RUN_DIRS:
@@ -137,10 +160,11 @@ def from_runs() -> list[dict]:
                 kind = kind_of_host(host)
                 if kind in ("statute", "instrument"):
                     out.append({"run": run, "case": case, "kind": kind, "signal": f"fetched live, should be held: {host}", "source": url.rstrip(".,;:)"), "via": "web source"})
-            for line in _NONE.findall(text):
-                pass
             for m in _NONE.finditer(text):
                 line = m.group(0).strip()
+                if line.startswith("|"):  # a table row (a rubric or a score table), not a finding
+                    continue
+                line = re.sub(r"^(?:[-*]\s+|\d+\.\s+)", "", line).replace("**", "").replace("`", "")
                 if len(line) > 12:
                     out.append({"run": run, "case": case, "kind": kind_of_text(line), "signal": line[:200], "source": "", "via": "transcript"})
             for m in _UNVERIFIED.finditer(text):
@@ -148,12 +172,11 @@ def from_runs() -> list[dict]:
                 out.append({"run": run, "case": case, "kind": kind_of_text(claim), "signal": f"unverified: {claim[:160]}", "source": "", "via": "transcript"})
             g = _GRADE_BLOCK.search(text)
             if g:
-                for key in ("whats_off", "edits", "must/must_not", "wrong", "missing"):
-                    mm = re.search(rf"^{re.escape(key)}:\s*\|?\s*\n?((?:.+\n?)+?)(?=^[a-z_/]+:|\Z)", g.group(1), re.M)
-                    if mm and mm.group(1).strip() and not re.match(r"^\s*#", mm.group(1)):
-                        note = " ".join(mm.group(1).split())[:240]
-                        if note and len(note) > 8:
-                            out.append({"run": run, "case": case, "kind": kind_of_text(note), "signal": f"owner note: {note}", "source": "", "via": "owner"})
+                notes = grade_notes(g.group(1))
+                for key in ("whats_off", "must/must_not", "wrong", "missing"):  # what is off, not how to write
+                    note = notes.get(key, "")
+                    if len(note) > 8:
+                        out.append({"run": run, "case": case, "kind": kind_of_text(note), "signal": f"owner note: {note[:240]}", "source": "", "via": "owner"})
     return out
 
 
@@ -198,16 +221,19 @@ def group(signals: list[dict]) -> list[dict]:
         key = words(f"{s['signal']} {s['source']}")
         best, best_j = None, 0.0
         for a in asks:
-            if a["kind"] != s["kind"]:
-                continue
             inter = len(key & a["_words"])
             j = inter / max(1, min(len(key), len(a["_words"])))
-            if inter >= 2 and j > best_j:
+            same = a["kind"] == s["kind"]
+            if (same and inter >= 2 and j >= 0.4 or inter >= 3 and j >= 0.5) and j > best_j:
                 best, best_j = a, j
         if best is None:
-            best = {"kind": s["kind"], "_words": set(key), "signals": [], "runs": set(), "cases": set(), "sources": Counter(), "via": Counter()}
+            best = {"kind": s["kind"], "_words": set(key), "signals": [], "runs": set(), "cases": set(), "sources": Counter(),
+                    "via": Counter(), "kinds": Counter()}
             asks.append(best)
         best["_words"] |= key
+        best["kinds"][s["kind"]] += 1
+        named = [k for k, _ in best["kinds"].most_common() if k != "other"]
+        best["kind"] = named[0] if named else "other"
         best["signals"].append(s["signal"])
         best["runs"].add(s["run"])
         if s["case"]:
@@ -223,10 +249,14 @@ def group(signals: list[dict]) -> list[dict]:
         mode = LOAD_MODE[a["kind"]]
         if runs <= 1 and not owner:
             mode = "live research (seen once); load only if it recurs"
+        # The ask is worded by the clearest signal: the judge's (it names the gap), else the shortest.
+        label = min(a["signals"], key=lambda t: (t.startswith(("ungrounded:", "unverified:", "owner note:", "- ")), len(t)))
+        # A loadable kind with a named source is an ask; "other" is a symptom with no data named yet.
+        weight = 0.5 if a["kind"] == "other" else 1.0
         out.append({
-            "ask": a["signals"][0][:160], "kind": a["kind"], "kind_label": KIND_LABEL[a["kind"]], "source": src,
+            "ask": label[:160], "kind": a["kind"], "kind_label": KIND_LABEL[a["kind"]], "source": src,
             "answers_improved": runs, "owner_cases": owner, "cases": sorted(a["cases"]), "signals": len(a["signals"]),
-            "via": dict(a["via"]), "load": mode, "score": runs * (1 + len(owner)) + 0.1 * len(a["signals"]),
+            "via": dict(a["via"]), "load": mode, "score": weight * runs * (1 + len(owner)) + 0.1 * len(a["signals"]),
             "examples": a["signals"][:4],
         })
     out.sort(key=lambda x: (-x["score"], x["kind"], x["ask"]))
@@ -250,7 +280,7 @@ def markdown(m: dict, top: int = 25) -> str:
              "Rank = answers it would have improved x (1 + owner cases it touched). The miner loads nothing.", "",
              "| # | ask | kind | concrete source | answers | owner cases | load |", "|---|---|---|---|---|---|---|"]
     for a in m["asks"][:top]:
-        lines.append(f"| {a['rank']} | {a['ask']} | {a['kind_label']} | {a['source'] or '(none named)'} | {a['answers_improved']} | "
+        lines.append(f"| {a['rank']} | {a['ask'].replace('|', '/')} | {a['kind_label']} | {a['source'] or '(none named)'} | {a['answers_improved']} | "
                      f"{', '.join(a['owner_cases']) or ''} | {a['load']} |")
     lines += ["", f"{len(m['asks'])} asks in all; by kind: " + ", ".join(f"{KIND_LABEL[k]} {v}" for k, v in sorted(m["by_kind"].items())) + "."]
     return "\n".join(lines) + "\n"
