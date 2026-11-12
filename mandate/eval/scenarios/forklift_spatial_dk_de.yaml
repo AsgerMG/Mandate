@@ -1,0 +1,30 @@
+# Eval case from the owner (12 Nov 2026). must/must_not are PROVISIONAL: written by the
+# main session from its critique of Wincent's first answer; to be confirmed by the owner.
+id: forklift_spatial_dk_de
+job: funding-routes
+founder_says: >
+  We build spatial-awareness hardware fitted to forklifts and other intralogistics
+  vehicles, with monitoring software. HQ in Denmark (ApS) with a German subsidiary
+  (GmbH). We deploy like a system integrator: we carry all upfront costs (hardware,
+  installation, integration) and the customer pays only once everything runs. That
+  working-capital burden holds back our scaling. What can we do at state level to get
+  cheaper capital for this model? And we are about to raise an equity round: can we
+  get public equity into the round?
+founder_followup: >
+  The Danish ApS signs most contracts, including German ones; hardware is assembled in
+  Denmark from EU components. Hardware stays on our balance sheet until go-live, then
+  passes to the customer. Revenue about EUR 6M, 45 staff. Raising EUR 12M Series A,
+  lead in talks, close in about four months. The GmbH sits in Bavaria.
+must:
+  - Separates the working-capital problem (debt) from the equity round, and says why equity is the most expensive money for pre-financing installed hardware.
+  - Leads with the open door for the deployment debt (the Danish export/finance agency via the parent), cited.
+  - Names the structural fix of moving the upfront cost off the company (buyer financing / leasing structures), with the conditions that decide it (which entity contracts, origin of the hardware), cited.
+  - Routes through intermediaries where public money flows that way, and says so: the company's own banks and lessors carrying EU (InvestEU/EIF) backing, and the VC funds that public fund-of-funds back, rather than reporting "none found".
+  - Names customer-side levers that lower the buyer's cost (investment grants, tax depreciation, buyer financing, safety/prevention premiums), each cited or labelled.
+  - Brings in the regulatory side that moves demand (machinery and workplace-safety rules the product helps meet), converging with Regina.
+  - Gives sequencing for the round (public co-investment in the term sheet before closing; conditions like positive equity and co-financing).
+  - Asks only the decisive open questions.
+must_not:
+  - Says the EU level matters for equity only.
+  - Leads with equity as the answer to the working-capital burden.
+  - Reports "none found" for a fund-of-funds without pointing to the funds it backs.

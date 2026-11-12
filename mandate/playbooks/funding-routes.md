@@ -223,6 +223,22 @@ all three, and narrows them twice:
    decrees, budget laws and reforms change what is open; the watchlist follows
    the regions and ministries the plan relies on.
 
+## 4f. Follow the money through its channels, on both sides (PROVISIONAL, round 5)
+Proposed by the main session from the forklift case (12 Nov); awaiting the owner's
+confirmation. Remove this note when confirmed, or delete the section if rejected.
+1. **Public money often reaches a company through an intermediary.** A guarantee
+   fund backs banks and leasing companies; a fund-of-funds backs VC funds; an export
+   agency covers the customer's bank. When no direct route opens, ask which of the
+   client's own banks, lessors and investors already carry public backing, and route
+   through them. "None found" for a fund-of-funds means: find the funds it backs.
+2. **Look at both sides of the deal.** What lowers the CUSTOMER's cost (their
+   investment grants, tax depreciation, buyer financing, prevention premiums) can
+   speed sales and payment more than anything that lowers the company's own cost of
+   capital. Name the customer-side levers in every deployment or sales-cycle case.
+3. **Bring in the regulatory side when it moves demand.** A safety or compliance
+   rule that the product helps customers meet is a sales argument and often a grant
+   hook: ask Regina (converge, §1b).
+
 ## 5. Where juniors go wrong
 - The **preparatory steps**: not asking the right questions up front, so the
   real blockers surface late.
