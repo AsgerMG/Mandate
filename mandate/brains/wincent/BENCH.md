@@ -26,11 +26,29 @@ run the fintech_guarantees case".
 cd ~/Mandate/web && MANDATE_BENCH_LOCAL=1 npm run dev     # then open http://localhost:3000/bench
 ```
 
-The same agent, in a chat window: `web/app/api/bench/chat/route.ts` runs
-`claude -p --agent wincent` (resumed per turn) on your plan, with the API key stripped
-from its environment, so it costs no API credit. The page and route exist only in
-development with `MANDATE_BENCH_LOCAL=1`, and only answer localhost. "Save the run" asks
-Wincent to save as below; the app copies the scratch ledger next to the transcript.
+Wincent, Regina and the interviewer, in an app: every turn runs `claude -p --agent <name>`
+(resumed per turn) on your plan, with the API key stripped from its environment, so it
+costs no API credit (`web/lib/bench/turns.ts`). The page and every `/api/bench/*` route
+exist only in development with `MANDATE_BENCH_LOCAL=1`, and only answer localhost
+(`web/lib/bench/guard.ts`).
+
+- **Mandates and recent cases.** Conversations and mandates (client, brief, markets,
+  status, a short profile the brains read before the first message) are saved
+  automatically as JSON in `~/Mandate-backups/bench/` (outside the repo: client details).
+  A turn belongs to the server: reload the page and it re-attaches; Stop kills the claude
+  process group; a failed turn has Retry.
+- **Speech.** Hold the mic (or Space in an empty box), or click to start and click to
+  stop. Transcribed on this Mac by whisper.cpp; the clip is deleted afterwards. One-time
+  setup: `brew install whisper-cpp ffmpeg`, and the model (574 MB) at
+  `~/Mandate-backups/whisper/ggml-large-v3-turbo-q5_0.bin` from
+  huggingface.co/ggerganov/whisper.cpp. Without it the browser's recognizer is used.
+- **Train.** Interviews (`.claude/agents/interviewer.md` runs a guide from
+  `mandate/playbooks/interviews/`; Finish & distil proposes playbook edits and eval cases
+  as diffs you accept), Grade runs (writes the grading block below), Playbooks, Progress.
+  Accepted files are written, never committed.
+
+"Save the run" asks the brain to save as below; the app copies the scratch ledger next
+to the transcript.
 
 ## Save the run
 
