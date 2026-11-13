@@ -208,6 +208,62 @@ const fkTurn3 = {
 
 const fkTurn4 = {
   stage: "next_steps",
+  process_maps: [
+    {
+      id: "eifo-guarantee-decision", kind: "funding_decision", illustrative: true,
+      title: "How an EIFO guarantee on your bank line gets decided",
+      explains: "Your bank applies, not you: EIFO guarantees the bank's facility. The decision runs through the bank's credit process and EIFO's guarantee desk; your job is to make the bank want to apply.",
+      actors: [
+        { id: "you", name: "You (the ApS)", side: "market" },
+        { id: "bank", name: "Your Danish bank: SME credit", side: "market" },
+        { id: "eifo", name: "EIFO: guarantees", side: "public-capital" },
+      ],
+      steps: [
+        { id: "case", label: "Deployment pipeline and cash-cycle case", kind: "document", actor: "you", timing: "1-2 weeks", cite: ["w1"] },
+        { id: "bank-credit", label: "Bank credit review of the facility", kind: "decision", actor: "bank", timing: "2-4 weeks", cite: ["w1"] },
+        { id: "apply", label: "Bank applies for the EIFO guarantee", kind: "step", actor: "bank", cite: ["w1"] },
+        { id: "eifo-review", label: "EIFO reviews: positive equity, facility expands the bank's exposure", kind: "decision", actor: "eifo", timing: "2-6 weeks", cite: ["w1"] },
+        { id: "issued", label: "Guarantee issued; line opens", kind: "step", actor: "bank", cite: ["w1"] },
+      ],
+      flow: [
+        { from: "case", to: "bank-credit" }, { from: "bank-credit", to: "apply", label: "wants cover" },
+        { from: "apply", to: "eifo-review" }, { from: "eifo-review", to: "issued", label: "approved" },
+      ],
+      leverage: [
+        { id: "l1", at: "bank-credit", kind: "door_opener", label: "Ask the bank for the EIFO-backed version by name", why: "Banks offer the guarantee when the client asks and the case fits; an unprompted relationship manager often will not.", how: "Your relationship manager; bring the pipeline and the cash cycle on one page", side: "market", cite: ["w1"] },
+        { id: "l2", at: "eifo-review", kind: "pressure_point", label: "Pre-brief EIFO's guarantee desk", why: "A head of guarantees who already knows the case reads the bank's application as a yes waiting to happen.", how: "A short formal note to EIFO's guarantees function, framed on Danish export growth (judgement)", side: "public-capital", cite: ["w1"] },
+        { id: "l3", at: "eifo-review", kind: "blocker", label: "Negative equity closes it", why: "EIFO requires positive equity; a loss-making year before the round can block the line.", how: "Sequence the round before the application if equity is thin", side: "public-capital", cite: ["w1"] },
+      ],
+      cite: ["w1"],
+    },
+    {
+      id: "eif-intermediary-selection", kind: "funding_decision", illustrative: true,
+      title: "How the EIF selects an intermediary bank under InvestEU",
+      explains: "You cannot apply to the EIF yourself. A bank or lessor applies to become an InvestEU intermediary; once selected, its SME loans carry EU cover. Your lever is which of your banks is already in, or is applying.",
+      actors: [
+        { id: "eif", name: "European Investment Fund", side: "public-capital" },
+        { id: "bank", name: "Bank or lessor", side: "market" },
+        { id: "you", name: "You", side: "market" },
+      ],
+      steps: [
+        { id: "call", label: "EIF open call for intermediaries", kind: "deadline", actor: "eif", timing: "open until 30 June 2027", cite: ["w4"] },
+        { id: "eoi", label: "Bank files an expression of interest", kind: "document", actor: "bank", cite: ["w4"] },
+        { id: "dd", label: "EIF due diligence on the bank's portfolio", kind: "decision", actor: "eif", timing: "months", cite: ["w4"] },
+        { id: "agreement", label: "Guarantee agreement signed", kind: "step", actor: "eif", cite: ["w4"] },
+        { id: "loans", label: "The bank's SME loans carry EU cover; cheaper terms to you", kind: "step", actor: "bank", cite: ["w4"] },
+      ],
+      flow: [
+        { from: "call", to: "eoi" }, { from: "eoi", to: "dd" }, { from: "dd", to: "agreement", label: "selected" }, { from: "agreement", to: "loans" },
+      ],
+      leverage: [
+        { id: "m1", at: "loans", kind: "door_opener", label: "Your bank may already hold the cover", why: "Several Nordic and German banks and lessors already carry InvestEU guarantees; the cheapest route is the one already signed.", how: "Ask each of your banks and lessors whether their SME or innovation lines are EIF-backed", side: "market", cite: ["w4"] },
+        { id: "m2", at: "eoi", kind: "pressure_point", label: "Put your pipeline into a bank's application", why: "A bank applying for the innovation window needs a credible pipeline of eligible borrowers; yours strengthens its case.", how: "Offer the SME desk your deployment pipeline as part of its application (judgement)", side: "market", cite: ["w4"] },
+        { id: "m3", at: "call", kind: "timing_window", label: "The call closes 30 June 2027, possibly earlier on budget", why: "Selection takes months; a bank that has not filed by spring 2027 will not carry cover for your 2027 deployments.", how: "Raise it with your banks this quarter", side: "public-capital", cite: ["w4"] },
+        { id: "m4", at: "you", kind: "blocker", label: "No direct application", why: "The EIF works through intermediaries; a company cannot apply for the guarantee itself.", how: "Route through a bank or lessor", side: "public-capital", cite: ["w4"] },
+      ],
+      cite: ["w4"],
+    },
+  ],
   answer: {
     lines: [
       "Split the problem: debt for installed hardware, equity for growth. Equity is the dearest way to pre-finance kit.",
@@ -268,6 +324,9 @@ const FT_CITES: Record<string, Citation> = {
   w10: { label: "ERA Austria: Council position on the European Competitiveness Fund", url: "https://era.gv.at/news-items/council-agrees-its-position-on-european-competitiveness-fund/", quote: "aligns key features of the ECF's InvestEU instrument with the current InvestEU programme." },
   w11: { label: "FinTech Global: Froda secures EUR 150M EIF-backed guarantee", url: "https://fintech.global/2025/02/07/froda-secures-e150m-eif-backed-guarantee-to-expand-sme-financing-across-europe/", quote: "across all 27 EU member states" },
   w12: { label: "KfW, Der Deutschlandfonds, Faktenblatt", url: "https://www.kfw.de/Presse-Newsroom/Aktuelles/Deutschlandfonds/Der-Deutschlandfonds_Faktenblatt_171225_final.pdf", quote: "Industrie und Mittelstand bis zu 8 Milliarden Euro Garantien" },
+  w13: { label: "Rückbürgschaftserklärung Bund 2023-2027 (VDB)", url: "https://vdb.ermoeglicher.de/documents/1582/BB-HE_RBE_Bund_2023.pdf", quote: "muss ein Kreditinstitut, eine Bausparkasse oder ein Versicherungsunternehmen sein" },
+  w14: { label: "BMWE organisation plan (29.07.2026)", url: "https://www.bundeswirtschaftsministerium.de/Redaktion/DE/Downloads/M-O/organisationsplan-bundeswirtschaftsministerium.pdf" },
+  w15: { label: "Bundestag Drucksache 21/3928 (BMF answer, January 2026)", url: "https://dserver.bundestag.de/btd/21/039/2103928.pdf" },
 };
 
 const ftBoard = {
@@ -386,6 +445,36 @@ const ftBoard = {
       { from: "lender", to: "smes", label: "SME loans", kind: "money" },
       { from: "smes", to: "lender", label: "repayments", kind: "money" },
     ], cite: ["w8"] },
+  ],
+  process_maps: [
+    {
+      id: "de-counter-guarantee", kind: "legislative", illustrative: true,
+      title: "Germany: renewing the federal counter-guarantee (the lobby aim)",
+      explains: "Today the counter-guarantee behind the Bürgschaftsbanken admits only banks, building societies and insurers as lenders. It expires at the end of 2027, so its successor is being negotiated now: that renewal, not a bill in parliament, is where non-bank lenders can be let in.",
+      actors: [
+        { id: "bmwe", name: "Economy ministry (BMWE): SME and start-up finance", side: "political" },
+        { id: "bmf", name: "Finance ministry (BMF)", side: "political" },
+        { id: "vdb", name: "Bürgschaftsbanken and their association", side: "public-capital" },
+        { id: "bt", name: "Bundestag budget committee", side: "political" },
+      ],
+      steps: [
+        { id: "today", label: "Current declaration: lenders must be banks, building societies or insurers (clause 3.1)", kind: "document", actor: "vdb", timing: "valid to 31 Dec 2027", cite: ["w13"] },
+        { id: "draft", label: "Successor terms drafted with the Bürgschaftsbanken", kind: "step", actor: "bmwe", timing: "2026-2027 (judgement)", cite: ["w14"] },
+        { id: "budget", label: "Finance ministry agrees the budget cover", kind: "decision", actor: "bmf", cite: ["w15"] },
+        { id: "law", label: "Guarantee authorisation in the budget law", kind: "decision", actor: "bt", timing: "annual budget", cite: ["w15"] },
+        { id: "new", label: "New declaration from 1 Jan 2028", kind: "deadline", actor: "vdb", cite: ["w13"] },
+      ],
+      flow: [
+        { from: "today", to: "draft" }, { from: "draft", to: "budget" }, { from: "budget", to: "law" }, { from: "law", to: "new" },
+      ],
+      leverage: [
+        { id: "p1", at: "draft", kind: "pressure_point", label: "Put non-bank lenders on the drafting table", why: "The clause that shuts you out is being rewritten now; leasing companies were admitted before, which is the precedent to cite.", how: "A formal, short note to the ministry's SME-finance sub-department, with the leasing precedent and your SME lending book", side: "political", cite: ["w13", "w14"] },
+        { id: "p2", at: "today", kind: "precedent", label: "Leasing companies were let in", why: "Admitting another lender type has been done; the ask is an extension, not a new principle.", how: "Cite it in every conversation", side: "public-capital", cite: ["w13"] },
+        { id: "p3", at: "budget", kind: "blocker", label: "The finance ministry's veto", why: "In January 2026 it called even a small Bürgschaftsbank change not possible under budget law.", how: "Bring a cost-neutral design (risk-sharing, fees) before the budget round", side: "political", cite: ["w15"] },
+        { id: "p4", at: "vdb", kind: "door_opener", label: "Win the Bürgschaftsbanken first", why: "If the banks that issue the guarantees want the volume, they carry the ask into the ministry for you.", how: "The association and one regional Bürgschaftsbank's management", side: "public-capital", cite: ["w13"] },
+      ],
+      cite: ["w13"],
+    },
   ],
   risks_flags: [
     { id: "lor", kind: "deal_breaker", severity: "high", title: "Who is the lender of record?", detail: "Granting loans is a banking business in Germany; a GmbH without a licence is almost certainly using a fronting bank, a fund or a loan purchase.", fix: "Send the origination chain; Regina to confirm the KWG position.", cite: ["w6", "judgement"] },

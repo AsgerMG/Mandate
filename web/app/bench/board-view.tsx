@@ -13,9 +13,11 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Citation } from "@/lib/bench/events";
 import {
-  barAmount, DOOR_LABEL, DOOR_STATUS, FUNDING_LABEL, FUNDING_STATUS_LABEL, FUNDING_TYPES, flowLayers, LEVEL_LABEL, LEVELS, money, moneyRange,
+  barAmount, DOOR_LABEL, DOOR_STATUS, FUNDING_LABEL, FUNDING_STATUS_LABEL, FUNDING_TYPES, flowLayers, LEVEL_LABEL, LEVELS, LEVER_KINDS, LEVER_LABEL,
+  MAP_KIND_LABEL, MAP_STEP_KINDS, MAP_STEP_LABEL, mapLayout, money, moneyRange,
   monthsOf, OWNER_LABEL, OWNERS, roadmapOrigin, SIDE_LABEL, SIDES, splitCite, STAGE_LABEL, STAGES, STEP_LABEL,
-  type Answer, type Board, type Door, type Folded, type Funding, type Institution, type Level, type Process, type Risk, type Roadmap, type Step,
+  type Answer, type Board, type Door, type Folded, type Funding, type Institution, type Lever, type Level, type MapStep, type Process, type ProcessMap,
+  type Risk, type Roadmap, type Step,
 } from "@/lib/bench/board";
 import { Chip } from "./markdown";
 
@@ -595,6 +597,330 @@ export function Processes({ list, ctx }: { list: Process[]; ctx: Ctx }) {
   );
 }
 
+// ── process and leverage maps ──────────────────────────────────────────────
+//
+// The junior's map of how a decision is made (steps in lanes by actor, left to
+// right by the flow) with the senior's overlay drawn on it: where to push,
+// what opens the door, what blocks, when, and the precedent to cite. Each
+// lever kind has a fixed hue AND a glyph AND a word (validated with the
+// dataviz validator, all pairs: worst CVD ΔE 11.6, normal ΔE 19.8; the ochre
+// is below 3:1 on white, so every marker carries a glyph and the list below
+// names it in words).
+
+const LEVER_COLOR: Record<(typeof LEVER_KINDS)[number], string> = {
+  pressure_point: "#24508f", door_opener: "#2a9a84", blocker: "#c0392b", timing_window: "#c99a1c", precedent: "#9b6bcc",
+};
+const LEVER_INK: Record<string, string> = { timing_window: "#1b1a17" };
+const SIDE_COLOR: Record<(typeof SIDES)[number], string> = { political: "#8a63b8", "public-capital": "#2f5d9e", market: "#6f9a35" };
+
+/** A lever's glyph, drawn about (0, 0) inside a 9.5px disc. */
+function LeverGlyph({ kind }: { kind: Lever["kind"] }) {
+  const ink = LEVER_INK[kind] ?? "#fff";
+  const s = { stroke: ink, strokeWidth: 1.5, fill: "none", strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  switch (kind) {
+    case "pressure_point": return <g><path d="M-3 5V-5" {...s} /><path d="M-3 -4.8h6l-1.6 2.4 1.6 2.4h-6z" fill={ink} stroke={ink} strokeWidth={1} strokeLinejoin="round" /></g>;
+    case "door_opener": return <g><path d="M-4 5V-5h6.5V5" {...s} /><path d="M-4 -5 0.5 -3V6.2L-4 5z" fill={ink} /></g>;
+    case "blocker": return <path d="M-3.5 -3.5 3.5 3.5M3.5 -3.5-3.5 3.5" {...s} strokeWidth={2} />;
+    case "timing_window": return <g><circle r={4.6} {...s} /><path d="M0 -2.6V0h2.3" {...s} strokeWidth={1.3} /></g>;
+    case "precedent": return <g><path d="M3.9 -0.8A4 4 0 1 1 1.8 -3.6" {...s} /><path d="M1 -6.2 2.6 -3.4-.4 -2.6" {...s} strokeWidth={1.3} /></g>;
+  }
+}
+export function LeverMarker({ kind, size = 19 }: { kind: Lever["kind"]; size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="-10 -10 20 20" aria-hidden className="mb-lever__icon">
+      <circle r={9.5} fill={LEVER_COLOR[kind]} /><LeverGlyph kind={kind} />
+    </svg>
+  );
+}
+
+function StepKindGlyph({ kind }: { kind: MapStep["kind"] }) {
+  const s = { stroke: "currentColor", strokeWidth: 1.2, fill: "none" };
+  switch (kind) {
+    case "decision": return <path d="M4 0.5 7.5 4 4 7.5 0.5 4z" {...s} fill="currentColor" />;
+    case "document": return <path d="M1 .5h4l2 2v5H1z" {...s} />;
+    case "deadline": return <g><circle cx={4} cy={4} r={3.4} {...s} /><path d="M4 2.2V4h1.6" {...s} /></g>;
+    default: return <rect x={1} y={1.5} width={6} height={5} rx={1.5} {...s} />;
+  }
+}
+
+/** Words into lines of at most `max` characters; the last line ends in … when cut. */
+function wrap(t: string, max: number, lines: number): string[] {
+  const out: string[] = [];
+  let cur = "";
+  for (const w of t.split(/\s+/)) {
+    if (!cur) cur = w;
+    else if ((cur + " " + w).length <= max) cur += " " + w;
+    else { out.push(cur); cur = w; }
+  }
+  if (cur) out.push(cur);
+  if (out.length > lines) {
+    const kept = out.slice(0, lines);
+    kept[lines - 1] = `${kept[lines - 1].slice(0, max - 1).trimEnd()}…`;
+    return kept;
+  }
+  return out.map((l) => (l.length > max ? `${l.slice(0, max - 1)}…` : l));
+}
+
+const LANE_W = 176, MAP_GAP = 44, MARK_R = 9.5, MARK_STEP = 22;
+type Picked = { type: "lever"; id: string } | { type: "step"; id: string } | null;
+
+function ProcessMapView({ m, ctx, overlay }: { m: ProcessMap; ctx: Ctx; overlay: boolean }) {
+  const [ref, width] = useWidth<HTMLDivElement>();
+  const [picked, setPicked] = useState<Picked>(null);
+  const [hover, setHover] = useState<string | null>(null);
+  const L = useMemo(() => mapLayout(m), [m]);
+  const steps = new Map(m.steps.map((s) => [s.id, s]));
+  const avail = Math.max(width, 900) - LANE_W - 28;
+  const nodeW = Math.round(Math.max(132, Math.min(206, (avail - (L.cols - 1) * MAP_GAP) / L.cols)));
+  const chars = Math.floor((nodeW - 22) / 6.6);
+  const text = Object.fromEntries(m.steps.map((s) => [s.id, wrap(s.label, chars, 3)]));
+  const nodeH = (s: MapStep) => 30 + text[s.id].length * 15 + (s.timing ? 16 : 0);
+  const rowH = Math.max(...m.steps.map(nodeH)) + 40;
+  const laneTop: number[] = [];
+  let y = 0;
+  L.lanes.forEach((_, i) => { laneTop.push(y); y += L.subs[i] * rowH; });
+  const H = y;
+  const W = LANE_W + 14 + L.cols * nodeW + (L.cols - 1) * MAP_GAP + 14;
+  const pos = Object.fromEntries(m.steps.map((s) => {
+    const x = LANE_W + 14 + L.col[s.id] * (nodeW + MAP_GAP);
+    const top = laneTop[L.lane[s.id]] + L.sub[s.id] * rowH + 22;
+    return [s.id, { x, y: top, h: nodeH(s) }];
+  }));
+  const laneIdx = new Map(L.lanes.map((l, i) => [l.id, i]));
+  const onStep = (id: string) => m.leverage.filter((l) => l.at === id);
+  const onLane = (id: string) => m.leverage.filter((l) => l.at === id && !steps.has(id));
+  const laneName = L.lanes.map((l) => wrap(l.name, 22, 3));
+  // a lever's anchor point (for the card)
+  const anchor = (l: Lever): [number, number] => {
+    if (steps.has(l.at)) { const p = pos[l.at]; const i = onStep(l.at).indexOf(l); return [p.x + nodeW - 14 - i * MARK_STEP, p.y]; }
+    const li = laneIdx.get(l.at)!; const i = onLane(l.at).indexOf(l);
+    return [24 + i * MARK_STEP, laneTop[li] + 34 + laneName[li].length * 15];
+  };
+  const pickedLever = picked?.type === "lever" ? m.leverage.find((l) => l.id === picked.id) : undefined;
+  const pickedStep = picked?.type === "step" ? steps.get(picked.id) : undefined;
+  const focusStep = pickedLever && steps.has(pickedLever.at) ? pickedLever.at : pickedStep?.id;
+  const laneOfStep = (s: MapStep) => L.lanes[L.lane[s.id]];
+  const ordered = [...m.leverage].sort((a, b) => {
+    const k = (l: Lever) => (steps.has(l.at) ? L.col[l.at] * 100 + L.lane[l.at] : -1);
+    return k(a) - k(b);
+  });
+  const toggle = (p: Picked) => setPicked((cur) => (cur && p && cur.type === p.type && cur.id === p.id ? null : p));
+  const kinds = LEVER_KINDS.filter((k) => m.leverage.some((l) => l.kind === k));
+
+  let card: React.ReactNode = null;
+  if (pickedLever && overlay) {
+    const [ax, ay] = anchor(pickedLever);
+    const at = steps.get(pickedLever.at)?.label ?? L.lanes.find((l) => l.id === pickedLever.at)?.name;
+    card = (
+      <div className="mb-pm__card" role="dialog" aria-label={pickedLever.label} style={{ left: Math.max(8, Math.min(ax - 20, W - 340)), top: ay + 16 }}>
+        <div className="mb-pm__cardhead">
+          <span className="mb-lever__kind"><LeverMarker kind={pickedLever.kind} size={16} />{LEVER_LABEL[pickedLever.kind]}</span>
+          <span className="mb-pm__side" style={{ "--side": SIDE_COLOR[pickedLever.side] } as React.CSSProperties}>{SIDE_LABEL[pickedLever.side]}</span>
+          <button className="mb-pm__close" onClick={() => setPicked(null)} aria-label="Close">×</button>
+        </div>
+        <p className="mb-pm__cardtitle">{pickedLever.label}</p>
+        <p className="mb-pm__at">At: {at}</p>
+        <p className="mb-pm__row"><b>Why</b>{pickedLever.why}</p>
+        <p className="mb-pm__row"><b>How</b>{pickedLever.how}</p>
+        <Cites cite={pickedLever.cite} cites={ctx.cites} />
+      </div>
+    );
+  } else if (pickedStep) {
+    const p = pos[pickedStep.id];
+    card = (
+      <div className="mb-pm__card" role="dialog" aria-label={pickedStep.label} style={{ left: Math.max(8, Math.min(p.x, W - 340)), top: p.y + p.h + 8 }}>
+        <div className="mb-pm__cardhead">
+          <span className="mb-pm__kindtag" data-kind={pickedStep.kind}><svg width="9" height="9" viewBox="0 0 8 8" aria-hidden><StepKindGlyph kind={pickedStep.kind} /></svg>{MAP_STEP_LABEL[pickedStep.kind]}</span>
+          <button className="mb-pm__close" onClick={() => setPicked(null)} aria-label="Close">×</button>
+        </div>
+        <p className="mb-pm__cardtitle">{pickedStep.label}</p>
+        <p className="mb-pm__at">{laneOfStep(pickedStep).name}{pickedStep.timing ? ` · ${pickedStep.timing}` : ""}</p>
+        {pickedStep.detail && <p className="mb-pm__row">{pickedStep.detail}</p>}
+        <Cites cite={pickedStep.cite} cites={ctx.cites} />
+      </div>
+    );
+  }
+
+  return (
+    <figure className="mb-pm" data-overlay={overlay || undefined}>
+      <figcaption className="mb-pm__cap">
+        <div>
+          <p className="mb-eyebrow">{MAP_KIND_LABEL[m.kind ?? "other"]}{m.illustrative && <span className="mb-pm__illus">Illustrative</span>}<Fresh on={ctx.fresh.has(`pmap:${m.id}`)} /></p>
+          <h3 className="mb-flow__title">{m.title}</h3>
+          <p className="mb-flow__cap">{m.explains}</p>
+        </div>
+        <div className="mb-pm__count">
+          <span><b>{m.steps.length}</b> steps</span><span><b>{L.lanes.length}</b> actors</span>
+          {overlay && <span><b>{m.leverage.length}</b> levers</span>}
+          <Cites cite={m.cite} cites={ctx.cites} />
+        </div>
+      </figcaption>
+      <div ref={ref} className="mb-pm__canvas" onKeyDown={(e) => { if (e.key === "Escape") setPicked(null); }}>
+        <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} role="img"
+          aria-label={`${m.title}: ${m.steps.map((s) => `${s.label} (${laneOfStep(s).name})`).join(", then ")}`}>
+          <defs>
+            <marker id={`mb-pm-arrow-${m.id}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#8f8670" /></marker>
+            <marker id={`mb-pm-arrow-on-${m.id}`} viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 10 5 0 10z" fill="#132342" /></marker>
+          </defs>
+          {/* swimlanes */}
+          {L.lanes.map((l, i) => {
+            const top = laneTop[i], h = L.subs[i] * rowH;
+            return (
+              <g key={l.id}>
+                <rect x={0} y={top} width={W} height={h} fill={i % 2 ? "#fbf8f1" : "#fffdfa"} />
+                <line x1={0} x2={W} y1={top} y2={top} stroke="#e6dfd1" />
+                <rect x={0} y={top + 10} width={3} height={h - 20} rx={1.5} fill={l.side ? SIDE_COLOR[l.side] : "#cdbf9f"} />
+                {l.side && <text x={14} y={top + 22} className="mb-pm__laneside">{SIDE_LABEL[l.side]}</text>}
+                {laneName[i].map((t, k) => <text key={k} x={14} y={top + 40 + k * 15} className="mb-pm__lanename">{t}</text>)}
+              </g>
+            );
+          })}
+          <line x1={LANE_W} x2={LANE_W} y1={0} y2={H} stroke="#e6dfd1" />
+          {/* flow */}
+          {m.flow.map((e, i) => {
+            const a = pos[e.from], b = pos[e.to];
+            const on = !!focusStep && (e.from === focusStep || e.to === focusStep);
+            const ay = a.y + a.h / 2, by = b.y + b.h / 2;
+            let d: string, lx: number, ly: number;
+            if (L.back.has(i)) {
+              // a loop back: over the top of both steps
+              const ax = a.x + nodeW / 2, bx = b.x + nodeW / 2, top = Math.min(a.y, b.y) - 16;
+              d = `M${ax} ${a.y}C${ax} ${top - 10} ${bx} ${top - 10} ${bx} ${b.y - 2}`;
+              lx = (ax + bx) / 2; ly = top - 6;
+            } else if (L.col[e.to] === L.col[e.from]) {
+              const x = a.x + nodeW / 2, down = b.y > a.y;
+              const y0 = down ? a.y + a.h : a.y, y1 = down ? b.y - 2 : b.y + b.h + 2;
+              d = `M${x} ${y0}V${y1}`; lx = x; ly = (y0 + y1) / 2;
+            } else {
+              const ax = a.x + nodeW, bx = b.x - 2, mid = (ax + bx) / 2;
+              d = `M${ax} ${ay}C${mid} ${ay} ${mid} ${by} ${bx} ${by}`;
+              lx = mid; ly = (ay + by) / 2;
+            }
+            const lw = e.label ? Math.min(e.label.length * 5.9 + 14, MAP_GAP + nodeW - 20) : 0;
+            return (
+              <g key={i} opacity={focusStep && !on ? 0.4 : 1}>
+                <path d={d} fill="none" stroke={on ? "#132342" : "#8f8670"} strokeWidth={on ? 1.75 : 1.3} strokeDasharray={L.back.has(i) ? "4 3" : undefined} markerEnd={`url(#mb-pm-arrow${on ? "-on" : ""}-${m.id})`} />
+                {e.label && (
+                  <g>
+                    <rect x={lx - lw / 2} y={ly - 9} width={lw} height={18} rx={9} fill="#fffdfa" stroke="#e6dfd1" />
+                    <text x={lx} y={ly + 3.5} textAnchor="middle" className="mb-pm__elabel">{e.label.length > 34 ? `${e.label.slice(0, 33)}…` : e.label}</text>
+                  </g>
+                )}
+              </g>
+            );
+          })}
+          {/* steps */}
+          {m.steps.map((s) => {
+            const { x, y: ty, h } = pos[s.id];
+            const sel = focusStep === s.id;
+            const lever = pickedLever && pickedLever.at === s.id ? LEVER_COLOR[pickedLever.kind] : null;
+            const fold = 11;
+            return (
+              <g key={s.id} className="mb-pm__step" data-kind={s.kind} data-sel={sel || undefined} tabIndex={0} role="button"
+                aria-label={`${MAP_STEP_LABEL[s.kind]}: ${s.label}, ${laneOfStep(s).name}${s.timing ? `, ${s.timing}` : ""}`}
+                onClick={() => toggle({ type: "step", id: s.id })} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle({ type: "step", id: s.id }); } }}>
+                {s.kind === "document"
+                  ? <path d={`M${x + 8} ${ty}H${x + nodeW - fold}L${x + nodeW} ${ty + fold}V${ty + h - 8}q0 8-8 8H${x + 8}q-8 0-8-8V${ty + 8}q0-8 8-8z`} className="mb-pm__box" />
+                  : <rect x={x} y={ty} width={nodeW} height={h} rx={s.kind === "deadline" ? 4 : 9} className="mb-pm__box" />}
+                {s.kind === "document" && <path d={`M${x + nodeW - fold} ${ty}V${ty + fold}H${x + nodeW}`} fill="none" className="mb-pm__fold" />}
+                {(sel || lever) && <rect x={x - 3.5} y={ty - 3.5} width={nodeW + 7} height={h + 7} rx={12} fill="none" stroke={lever ?? "#132342"} strokeWidth={2} />}
+                <g transform={`translate(${x + 11} ${ty + 10})`} className="mb-pm__glyph"><StepKindGlyph kind={s.kind} /></g>
+                <text x={x + 24} y={ty + 17.5} className="mb-pm__kind">{MAP_STEP_LABEL[s.kind]}</text>
+                {text[s.id].map((t, k) => <text key={k} x={x + 11} y={ty + 36 + k * 15} className="mb-pm__label">{t}</text>)}
+                {s.timing && <text x={x + 11} y={ty + 36 + text[s.id].length * 15 + 2} className="mb-pm__timing">{s.timing}</text>}
+              </g>
+            );
+          })}
+          {/* the overlay */}
+          {overlay && m.leverage.map((l) => {
+            const [cx, cy] = anchor(l);
+            const sel = pickedLever?.id === l.id;
+            const dim = (pickedLever && !sel) || (hover && hover !== l.id && !pickedLever);
+            return (
+              <g key={l.id} className="mb-pm__mark" transform={`translate(${cx} ${cy})`} tabIndex={0} role="button" opacity={dim ? 0.55 : 1}
+                aria-label={`${LEVER_LABEL[l.kind]}: ${l.label}`} aria-pressed={sel}
+                onClick={() => toggle({ type: "lever", id: l.id })} onMouseEnter={() => setHover(l.id)} onMouseLeave={() => setHover(null)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle({ type: "lever", id: l.id }); } }}>
+                <circle r={16} fill="transparent" />
+                <circle r={MARK_R + 2.5} fill="#fffdfa" />
+                {sel && <circle r={MARK_R + 4} fill="none" stroke="#132342" strokeWidth={1.75} />}
+                <circle r={MARK_R} fill={LEVER_COLOR[l.kind]} />
+                <LeverGlyph kind={l.kind} />
+                <title>{`${LEVER_LABEL[l.kind]}: ${l.label}`}</title>
+              </g>
+            );
+          })}
+        </svg>
+        {card}
+      </div>
+      <div className="mb-pm__foot">
+        <ul className="mb-legend mb-legend--inline" aria-label="Step kinds">
+          {MAP_STEP_KINDS.filter((k) => m.steps.some((s) => s.kind === k)).map((k) => (
+            <li key={k}><span className="mb-pm__kindtag" data-kind={k}><svg width="9" height="9" viewBox="0 0 8 8" aria-hidden><StepKindGlyph kind={k} /></svg>{MAP_STEP_LABEL[k]}</span></li>
+          ))}
+        </ul>
+        {overlay && kinds.length > 0 && (
+          <ul className="mb-legend mb-legend--inline" aria-label="Leverage">
+            {kinds.map((k) => <li key={k}><LeverMarker kind={k} size={15} />{LEVER_LABEL[k]}</li>)}
+          </ul>
+        )}
+        <p className="mb-pm__hint">{overlay ? "Click a marker for why, how and the source; click a step for its detail." : "Click a step for its detail and source."}</p>
+      </div>
+      {overlay && ordered.length > 0 && (
+        <ol className="mb-levers" aria-label="Where to push">
+          {ordered.map((l) => {
+            const at = steps.get(l.at);
+            return (
+              <li key={l.id} className="mb-lever" data-kind={l.kind} data-sel={pickedLever?.id === l.id || undefined}>
+                <button className="mb-lever__head" onClick={() => toggle({ type: "lever", id: l.id })} aria-pressed={pickedLever?.id === l.id}>
+                  <LeverMarker kind={l.kind} size={17} />
+                  <span className="mb-lever__kindword">{LEVER_LABEL[l.kind]}</span>
+                  <span className="mb-pm__side" style={{ "--side": SIDE_COLOR[l.side] } as React.CSSProperties}>{SIDE_LABEL[l.side]}</span>
+                </button>
+                <p className="mb-lever__label">{l.label}</p>
+                <p className="mb-pm__at">At: {at ? at.label : L.lanes.find((x) => x.id === l.at)?.name}{at ? ` · ${laneOfStep(at).name}` : ""}</p>
+                <p className="mb-pm__row"><b>Why</b>{l.why}</p>
+                <p className="mb-pm__row"><b>How</b>{l.how}</p>
+                <Cites cite={l.cite} cites={ctx.cites} />
+              </li>
+            );
+          })}
+        </ol>
+      )}
+      <details className="mb-tableview" data-print-open>
+        <summary>The process as a table</summary>
+        <table className="mb-table">
+          <thead><tr><th>#</th><th>Step</th><th>Kind</th><th>Actor</th><th>Timing</th><th>Next</th><th>Source</th></tr></thead>
+          <tbody>{[...m.steps].sort((a, b) => L.col[a.id] - L.col[b.id] || L.lane[a.id] - L.lane[b.id]).map((s, i) => (
+            <tr key={s.id}>
+              <td className="mb-num">{i + 1}</td>
+              <td><b>{s.label}</b>{s.detail && <span className="mb-sub">{s.detail}</span>}</td>
+              <td>{MAP_STEP_LABEL[s.kind]}</td><td>{laneOfStep(s).name}</td><td>{s.timing}</td>
+              <td>{m.flow.filter((e) => e.from === s.id).map((e) => `${steps.get(e.to)?.label}${e.label ? ` (${e.label})` : ""}`).join("; ")}</td>
+              <td><Cites cite={s.cite} cites={ctx.cites} /></td>
+            </tr>
+          ))}</tbody>
+        </table>
+      </details>
+    </figure>
+  );
+}
+
+export function ProcessMaps({ list, ctx }: { list: ProcessMap[]; ctx: Ctx }) {
+  const [overlay, setOverlay] = useState(true);
+  return (
+    <Section id="maps" eyebrow="Process and leverage" title={overlay ? "How it is decided, and where to push" : "How it is decided"}
+      aside={
+        <div className="mb-filter" role="group" aria-label="Show the leverage overlay">
+          <button data-on={!overlay || undefined} aria-pressed={!overlay} onClick={() => setOverlay(false)}>How it works</button>
+          <button data-on={overlay || undefined} aria-pressed={overlay} onClick={() => setOverlay(true)}><LeverMarker kind="pressure_point" size={13} />Where to push</button>
+        </div>
+      }>
+      <div className="mb-flows">{list.map((m) => <ProcessMapView key={m.id} m={m} ctx={ctx} overlay={overlay} />)}</div>
+    </Section>
+  );
+}
+
 // ── stakeholders ───────────────────────────────────────────────────────────
 
 export function Stakeholders({ list, ctx }: { list: Institution[]; ctx: Ctx }) {
@@ -689,6 +1015,7 @@ const NAV: { id: string; label: string; has: (b: Board) => boolean }[] = [
   { id: "funding", label: "Funding", has: (b) => !!b.funding_stack?.instruments.length },
   { id: "roadmap", label: "Roadmap", has: (b) => !!b.roadmap?.tracks.length },
   { id: "process", label: "Mechanisms", has: (b) => !!b.process?.length },
+  { id: "maps", label: "Where to push", has: (b) => !!b.process_maps?.length },
   { id: "stakeholders", label: "Stakeholders", has: (b) => !!b.stakeholders?.institutions.length },
   { id: "risks", label: "Risks", has: (b) => !!b.risks_flags?.length },
 ];
@@ -710,6 +1037,7 @@ export function BoardSections({ folded, cites, brain, compact = false }: { folde
       {board.funding_stack?.instruments.length ? <FundingStack f={board.funding_stack} ctx={ctx} /> : null}
       {board.roadmap?.tracks.length ? <RoadmapView r={board.roadmap} ctx={ctx} /> : null}
       {board.process?.length ? <Processes list={board.process} ctx={ctx} /> : null}
+      {board.process_maps?.length ? <ProcessMaps list={board.process_maps} ctx={ctx} /> : null}
       {board.stakeholders?.institutions.length ? <Stakeholders list={board.stakeholders.institutions} ctx={ctx} /> : null}
       {board.risks_flags?.length ? <Risks list={board.risks_flags} ctx={ctx} /> : null}
       {folded.warnings.length > 0 && (
