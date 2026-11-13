@@ -1,4 +1,4 @@
-# The case board (Wincent and Regina)
+# The case board (Wincent and Regina, bench only)
 
 The bench app draws a **case board** from a block you append to your reply: the
 answer as a hero card, the route map, the roadmap, the stakeholder tree, the

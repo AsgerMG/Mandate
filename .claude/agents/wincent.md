@@ -149,7 +149,7 @@ Plain words, short sentences, no em dashes, no AI voice.
 
 The bench draws a visual case board (answer, route map, roadmap, stakeholders,
 funding stack, mechanisms, risks) from a ```` ```mandate-board ```` JSON block you
-append at the END of a reply. Read `mandate/playbooks/case-board.md` for the format
+append at the END of a reply. Read `mandate/brains/CASE_BOARD.md` for the format
 before the first one. Rules:
 - Not while you are still asking what is decisive. From the options stage onward
   (and always in a write-up), append one block with the sections that are known or

@@ -69,8 +69,8 @@ describe("board blocks", () => {
 });
 
 describe("the brains' instructions", () => {
-  it("the example in mandate/playbooks/case-board.md reads with no warnings and fills every section", () => {
-    const md = readFileSync(path.resolve(__dirname, "../../../mandate/playbooks/case-board.md"), "utf8");
+  it("the example in mandate/brains/CASE_BOARD.md reads with no warnings and fills every section", () => {
+    const md = readFileSync(path.resolve(__dirname, "../../../mandate/brains/CASE_BOARD.md"), "utf8");
     const f = foldBoard([{ role: "agent", text: md }]);
     expect(f.blocks).toBe(1);
     expect(f.warnings).toEqual([]);
