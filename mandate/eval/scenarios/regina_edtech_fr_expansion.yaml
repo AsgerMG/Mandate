@@ -1,0 +1,41 @@
+# Regina case for the subject-matter expert (owner, 13 Nov 2026).
+# STATUS: DRAFT. must / must_not are Claude's draft BEFORE the expert interview; the
+# expert corrects them (interview module 3 + 7); no model_answer until the expert gives one.
+id: regina_edtech_fr_expansion
+job: policy-regulatory
+status: draft_pending_expert
+founder_says: >
+  We are a French edtech startup (SAS, Paris, 60 people) with an AI-assisted learning
+  platform used by schools and by families at home in France. We want to expand to
+  Germany, the UK, Spain and Italy over the next 18 months. What rules do we have to get
+  right in each market, what could stop or slow us, what should we do first, and who
+  should we be talking to?
+profile_hint:
+  name: Example EdTech FR (Regina case)
+  sector: software_data_ai
+  subsectors: [edtech]
+  customerType: both
+  usesAi: true
+  aiUseCases: [education]
+  handlesPersonalData: true
+  dataCategories: [children]
+  incorporationCountry: FR
+  markets: [FR, DE, GB, ES, IT]
+founder_followup: >
+  (Assumed by Claude, not the expert.) Users are pupils aged 8-16 and their teachers;
+  the AI adapts exercises and flags pupils who struggle; teachers see dashboards. In
+  France we sell to schools via regional procurement and to parents by subscription.
+  Data is hosted in France. We have no German, British, Spanish or Italian entity yet.
+must:
+  - Separates the EU-wide layer (AI Act for education uses, GDPR for children's data, DSA if a platform, accessibility) from the national layer per market, and from the UK as a separate regime (UK GDPR / Children's Code, Online Safety Act).
+  - Classifies the AI use honestly against the AI Act's education high-risk uses (e.g. evaluating learning outcomes, steering learning, monitoring pupils) and says what follows (obligations, timing), cited to the operative provisions.
+  - Treats children's data per market: digital age of consent and school vs parent consent differ by country; data protection impact assessment; the UK Age Appropriate Design Code.
+  - Names the market-entry gatekeepers per country (e.g. German Länder competence over schools and their data-protection rules for school software; school procurement and approval routes in each market), cited or labelled.
+  - Sequences the expansion (which market first and why, what must be done before the first school contract), and says what not to do yet.
+  - Names who to engage per market by function (ministries/Länder education authorities, data-protection authorities, the national AI-Act authority where designated, trade associations), P1/P2.
+  - Flags funding questions to Wincent in one line (e.g. grants for edtech/AI in education).
+must_not:
+  - Treats Germany as one education market (ignores the Länder).
+  - Applies EU law to the UK as if it were a member state.
+  - States national consent ages or procurement rules without a citation or an "unverified" label.
+  - Delivers a full report before understanding the product and its users.

@@ -1,0 +1,32 @@
+# Regina case for the subject-matter expert (owner, 13 Nov 2026).
+# STATUS: DRAFT pending the expert; no model_answer until the expert gives one.
+id: regina_search_engine_dma
+job: policy-regulatory
+status: draft_pending_expert
+founder_says: >
+  We are building a European search engine, an alternative to Google, with our own index.
+  We want a contestable and fair market: today Google's defaults, data and distribution
+  deals make it almost impossible to compete. What can we do at EU and national level to
+  make the market contestable for us, and how should we position ourselves?
+profile_hint:
+  name: Example Search EU (Regina case)
+  sector: software_data_ai
+  subsectors: [search]
+  customerType: b2c
+  markets: [EU]
+founder_followup: >
+  (Assumed by Claude, not the expert.) Seed-stage, 25 people, based in Germany with a team
+  in France; privacy-first positioning; we want choice-screen inclusion, access to search
+  data (clicks, queries) under fair terms, and an end to exclusive default deals on
+  browsers and phones.
+must:
+  - Grounds the case in the Digital Markets Act obligations that bear on search (choice screens, data sharing of ranking, query, click and view data on FRAND terms, self-preferencing, anti-circumvention), cited to the operative articles, and in the Commission's designation and compliance/non-compliance proceedings against the relevant gatekeeper.
+  - Distinguishes what the company can USE now (rights it can invoke as a business user or competitor, e.g. requesting search data) from what it can SHAPE (compliance workshops, specification proceedings, complaints, the DMA review) and from competition law outside the DMA (Art. 102 cases, national authorities).
+  - Identifies the live proceedings and their timing (Commission decisions, specification decisions, court appeals) and how to follow and feed them (DG COMP / DG CNECT case teams, public compliance workshops, high-level group).
+  - Gives a positioning angle that is grounded and politically appropriate (European digital sovereignty, contestability, privacy) without overclaiming, and names coalitions to join or build (other search/browser challengers, consumer organisations, trade bodies).
+  - Names who to engage by function (Commission DMA enforcement teams, cabinets, EP IMCO members following the DMA, national competition authorities, the Bundeskartellamt's role), P1/P2, and sequences (evidence first, then complaint/submission, then political track).
+  - Flags funding questions (e.g. European funding for search/sovereign infrastructure) to Wincent in one line.
+must_not:
+  - Treats the DMA as a competition-law complaint route only, or confuses it with Art. 102.
+  - Promises an outcome or timeline the proceedings do not support.
+  - Positions the company as "anti-Google" in a way that undercuts credibility with the Commission.

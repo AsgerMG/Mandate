@@ -1,0 +1,25 @@
+# Regina case: the owner's example 2 (9 Nov 2026), for the subject-matter expert.
+# STATUS: DRAFT pending the expert.
+id: regina_travel_google_dma
+job: policy-regulatory
+status: draft_pending_expert
+founder_says: >
+  We are a European travel scale-up (online travel comparison). We are watching antitrust
+  enforcement against Google. Which cases and proceedings should we follow, how do we get
+  updates, which coalitions should we join, which media cover this, and how and where
+  should we position ourselves?
+profile_hint:
+  name: Example Travel Scale-up (Regina case)
+  sector: software_data_ai
+  subsectors: [travel]
+  customerType: b2c
+  markets: [EU]
+must:
+  - Lists the live cases and proceedings that matter for vertical search in travel (DMA self-preferencing and compliance proceedings, relevant Art. 102 cases, national cases), cited, with their stage and next moments.
+  - Explains how to get updates and influence (case registers, compliance workshops, submissions, complainant or interested-party status).
+  - Names coalitions and trade bodies relevant to travel/vertical search and what joining costs and gives.
+  - Names the media and journalists who cover this beat (by outlet and beat), labelled where unverified.
+  - Gives a positioning angle that is grounded, politically appropriate and sharp.
+must_not:
+  - Names contacts' personal details that are not published.
+  - Overstates the company's standing or the likely outcome.

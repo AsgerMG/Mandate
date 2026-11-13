@@ -76,6 +76,21 @@ Follow-ups:
 - **"Don't do this yet":** when do you advise a client NOT to act? How do you know?
 
 ## Module 3. Walk through real-shaped cases (20 min)
+**Lead with the owner's two cases (13 Nov):**
+- **A. French edtech expanding to Germany, the UK, Spain and Italy**
+  (`mandate/eval/scenarios/regina_edtech_fr_expansion.yaml`): "A Paris edtech with an
+  AI-assisted learning platform for schools and families wants to enter DE, UK, ES and IT
+  in 18 months. Walk me through how you would advise them." Probe: which market first and
+  why; the Länder; the UK as a separate regime; AI Act classification for education;
+  children's data and consent by country; school procurement; who you call first.
+- **B. A European search engine that wants a contestable, fair market**
+  (`mandate/eval/scenarios/regina_search_engine_dma.yaml`): "A European alternative to
+  Google with its own index says the market is closed. What do you do at EU and national
+  level, and how do they position?" Probe: DMA rights they can use now vs what they can
+  shape; the live proceedings; complaint vs workshop vs political track; coalitions;
+  the positioning line you would and would not use.
+Then, if time allows, the cases below.
+
 Ask the expert to work each aloud, as they would for a client. Probe every step:
 "why that first", "who exactly", "what would you send".
 1. **Travel scale-up following antitrust/DMA enforcement against Google.** What does the
@@ -125,8 +140,9 @@ Ask the expert to work each aloud, as they would for a client. Probe every step:
 - Where do juniors go wrong? (the three most common mistakes)
 
 ## Module 7. Grading exercise (10 min)
-Show the expert one Regina answer produced on the bench before the interview (case 1 or
-2 above). Ask:
+Show the expert Regina's bench answers to cases A and B (and the AI-kids and travel
+cases if time allows), as conversations in the bench (Train -> Grade runs), and let the
+expert comment on each reply. Ask:
 - Grade 1-5: would you send it to a client?
 - What is wrong, missing, naive, or politically off?
 - Rewrite the first paragraph the way you would say it.
