@@ -73,15 +73,16 @@ def load_inputs() -> tuple[dict, dict, dict]:
     return sources, rules, regions
 
 
-def original_bytes(doc: dict) -> tuple[bytes, str]:
+def original_bytes(doc: dict, originals: Path | None = None,
+                   language: str = "it-IT,it;q=0.9") -> tuple[bytes, str]:
     """The pinned bytes, verified. Local copy first; else the URL, refused on any change."""
-    p = ORIGINALS / doc["sha256"]
+    p = (originals or ORIGINALS) / doc["sha256"]
     if p.exists():
         data = p.read_bytes()
         if hashlib.sha256(data).hexdigest() != doc["sha256"]:
             raise Drift(f"{doc['key']}: {p} is not its pinned sha256 (corrupt local copy)")
         return data, "local"
-    r = httpx.get(doc["url"], headers={"user-agent": UA, "accept-language": "it-IT,it;q=0.9"},
+    r = httpx.get(doc["url"], headers={"user-agent": UA, "accept-language": language},
                   timeout=60, follow_redirects=True)
     r.raise_for_status()
     sha = hashlib.sha256(r.content).hexdigest()
@@ -205,11 +206,13 @@ def migrate(con, apply: bool) -> str:
     return "039 applied" if apply else "039 would be applied"
 
 
-def insert_checked(con, table: str, key_cols: tuple[str, ...], row: dict) -> str:
-    """INSERT ... ON CONFLICT DO NOTHING; if the row exists, its content must match."""
+def insert_checked(con, table: str, key_cols: tuple[str, ...], row: dict,
+                   jsonb: tuple[str, ...] = ("citations",)) -> str:
+    """INSERT ... ON CONFLICT DO NOTHING; if the row exists, its content must match.
+    `jsonb` names the columns sent and compared as JSON (batch eifo_investeu adds its own)."""
     cols = list(row)
-    vals = [json.dumps(v, ensure_ascii=False) if c == "citations" else v for c, v in row.items()]
-    ph = ", ".join("%s::jsonb" if c == "citations" else "%s" for c in cols)
+    vals = [json.dumps(v, ensure_ascii=False) if c in jsonb else v for c, v in row.items()]
+    ph = ", ".join("%s::jsonb" if c in jsonb else "%s" for c in cols)
     cur = con.execute(f"INSERT INTO {table} ({', '.join(cols)}) VALUES ({ph}) "
                       f"ON CONFLICT ({', '.join(key_cols)}) DO NOTHING RETURNING 1", vals)
     if cur.fetchone():
@@ -219,12 +222,73 @@ def insert_checked(con, table: str, key_cols: tuple[str, ...], row: dict) -> str
                        [row[k] for k in key_cols]).fetchone()
     for c, h in zip(cols, have):
         want = row[c]
-        if c == "citations":
+        if c in jsonb:
             h = json.loads(json.dumps(h))
         if (list(h) if isinstance(h, (list, tuple)) else h) != want:
             raise Drift(f"{table} {[row[k] for k in key_cols]}: column {c} differs from the "
                         f"committed file. Insert-only: give the change a new key.")
     return "same"
+
+
+def ground_documents(con, docs: dict, src: int, chunker: str, bucket, counts: dict) -> list[int]:
+    """Store each pinned document in grounding (bucket object, version with the pinned text,
+    fetch), fill a text-less version already held, cut its passages. Returns the passage ids.
+    Shared by every batch loader (batch eifo_investeu imports it)."""
+    new_versions = new_passages = filled = 0
+    passage_ids: list[int] = []
+    for d in docs.values():
+        v = store_original(con, d["data"], d["url"], d["mime"],
+                           dt.datetime.fromisoformat(d["fetched_at"]), text=d["text"],
+                           extractor=d["extractor"], title=d["title"], publisher=d["publisher"],
+                           kind=d["kind"], source_id=src, http_status=d["http_status"], bucket=bucket)
+        if v.sha256 != d["sha256"]:
+            raise Drift(f"{d['key']}: stored sha256 differs")
+        # The same bytes may already be in grounding from another path. Registered
+        # without text (the 5 Nov archive load: 'none (pdfplumber not installed)'), the
+        # text is filled with the pinned extraction, the one the quotes were located in.
+        # Registered WITH text, that text must be the pinned one, or no span here holds.
+        if v.text is None:
+            v = fill_text(con, v.id, d["text"], d["extractor"])
+            filled += 1
+        elif v.text != d["text"]:
+            raise Drift(f"{d['key']}: grounding already holds these bytes (version {v.id}) with a "
+                        f"different text ({len(v.text)} chars, pinned {len(d['text'])}); the quotes' "
+                        f"spans would not resolve. Re-locate the quotes in the stored text.")
+        new_versions += v.created
+        before = con.execute("SELECT count(*) FROM grounding.passages WHERE version_id = %s "
+                             "AND chunker = %s", (v.id, chunker)).fetchone()[0]
+        ids = add_passages(con, v.id, chunker, chunks(d["text"]))
+        new_passages += len(ids) - before
+        passage_ids += ids
+    counts["documents"] = len(docs)
+    counts["versions_new"] = new_versions
+    counts["versions_text_filled"] = filled
+    counts["passages"] = len(passage_ids)
+    counts["passages_new"] = new_passages
+    return passage_ids
+
+
+def embed_passages(con, passage_ids: list[int], counts: dict, *, apply: bool, embed: bool) -> None:
+    """voyage-4-large vectors for the passages that have none in the one model (apply only)."""
+    # vectors for passages that have none in the one model
+    from mandate.embedding import MODEL, Embedder, vector_literal  # noqa: PLC0415
+    todo = con.execute(
+        "SELECT p.id, p.text FROM grounding.passages p WHERE p.id = ANY(%s) AND NOT EXISTS "
+        "(SELECT 1 FROM grounding.passage_embeddings e WHERE e.passage_id = p.id AND e.model = %s) "
+        "ORDER BY p.id", (passage_ids, MODEL)).fetchall()
+    counts["passages_to_embed"] = len(todo)
+    if todo and apply and embed:
+        e = Embedder()
+        for i in range(0, len(todo), 64):
+            batch = todo[i:i + 64]
+            vecs = e.embed_documents([t for _, t in batch])
+            with con.cursor() as cur:
+                cur.executemany(
+                    "INSERT INTO grounding.passage_embeddings (passage_id, model, embedding) "
+                    "VALUES (%s, %s, %s::halfvec) ON CONFLICT DO NOTHING",
+                    [(pid, MODEL, vector_literal(v)) for (pid, _), v in zip(batch, vecs)])
+        counts["embedded"] = len(todo)
+        counts["embedding"] = e.usage.line()
 
 
 def load(db_url: str, prep: Prepared, *, apply: bool, embed: bool) -> dict:
@@ -236,37 +300,7 @@ def load(db_url: str, prep: Prepared, *, apply: bool, embed: bool) -> dict:
         counts["migration"] = migrate(con, apply)
         src = ensure_source(con, SOURCE_KEY, "Wincent batch 1: Italy deciding texts",
                             publisher="various (pinned in capital/reference/batch_italy/sources.json)")
-        new_versions = new_passages = filled = 0
-        passage_ids: list[int] = []
-        for d in prep.docs.values():
-            v = store_original(con, d["data"], d["url"], d["mime"],
-                               dt.datetime.fromisoformat(d["fetched_at"]), text=d["text"],
-                               extractor=d["extractor"], title=d["title"], publisher=d["publisher"],
-                               kind=d["kind"], source_id=src, http_status=d["http_status"], bucket=bucket)
-            if v.sha256 != d["sha256"]:
-                raise Drift(f"{d['key']}: stored sha256 differs")
-            # The same bytes may already be in grounding from another path. Registered
-            # without text (the 5 Nov archive load: 'none (pdfplumber not installed)'), the
-            # text is filled with the pinned extraction, the one the quotes were located in.
-            # Registered WITH text, that text must be the pinned one, or no span here holds.
-            if v.text is None:
-                v = fill_text(con, v.id, d["text"], d["extractor"])
-                filled += 1
-            elif v.text != d["text"]:
-                raise Drift(f"{d['key']}: grounding already holds these bytes (version {v.id}) with a "
-                            f"different text ({len(v.text)} chars, pinned {len(d['text'])}); the quotes' "
-                            f"spans would not resolve. Re-locate the quotes in the stored text.")
-            new_versions += v.created
-            before = con.execute("SELECT count(*) FROM grounding.passages WHERE version_id = %s "
-                                 "AND chunker = %s", (v.id, CHUNKER)).fetchone()[0]
-            ids = add_passages(con, v.id, CHUNKER, chunks(d["text"]))
-            new_passages += len(ids) - before
-            passage_ids += ids
-        counts["documents"] = len(prep.docs)
-        counts["versions_new"] = new_versions
-        counts["versions_text_filled"] = filled
-        counts["passages"] = len(passage_ids)
-        counts["passages_new"] = new_passages
+        passage_ids = ground_documents(con, prep.docs, src, CHUNKER, bucket, counts)
 
         # instrument ids a rule names must exist (drift otherwise)
         named = sorted({i for r in prep.rules for i in r["instrument_ids"]})
@@ -306,25 +340,7 @@ def load(db_url: str, prep: Prepared, *, apply: bool, embed: bool) -> dict:
         for t, (n, same) in tally.items():
             counts[t] = f"{n} new, {same} already loaded"
 
-        # vectors for passages that have none in the one model
-        from mandate.embedding import MODEL, Embedder, vector_literal  # noqa: PLC0415
-        todo = con.execute(
-            "SELECT p.id, p.text FROM grounding.passages p WHERE p.id = ANY(%s) AND NOT EXISTS "
-            "(SELECT 1 FROM grounding.passage_embeddings e WHERE e.passage_id = p.id AND e.model = %s) "
-            "ORDER BY p.id", (passage_ids, MODEL)).fetchall()
-        counts["passages_to_embed"] = len(todo)
-        if todo and apply and embed:
-            e = Embedder()
-            for i in range(0, len(todo), 64):
-                batch = todo[i:i + 64]
-                vecs = e.embed_documents([t for _, t in batch])
-                with con.cursor() as cur:
-                    cur.executemany(
-                        "INSERT INTO grounding.passage_embeddings (passage_id, model, embedding) "
-                        "VALUES (%s, %s, %s::halfvec) ON CONFLICT DO NOTHING",
-                        [(pid, MODEL, vector_literal(v)) for (pid, _), v in zip(batch, vecs)])
-            counts["embedded"] = len(todo)
-            counts["embedding"] = e.usage.line()
+        embed_passages(con, passage_ids, counts, apply=apply, embed=embed)
         if not apply:
             con.rollback()
             counts["bucket_puts_skipped"] = bucket.puts

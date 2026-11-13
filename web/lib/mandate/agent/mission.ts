@@ -18,7 +18,7 @@ import type { CompanyProfile } from "../profile";
 import type {
   Claim, EvidenceRef, MissionEvent, Specialist, WorkspaceAction, WorkspaceDecision,
 } from "../workspace";
-import { agenda, assess, findInstruments, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
+import { agenda, assess, findInstruments, findIntermediaries, matchStatus, precedents, requirements, route, type CapitalPort } from "./capital";
 import { CitationLedger, type Specialist as Sp } from "./ledger";
 import { runLoop, type ModelClient, type ToolHandler } from "./loop";
 import {
@@ -213,6 +213,11 @@ export function wincentTools(ctx: Ctx) {
         region: str("optional: NUTS code or Italian region name the company is (or will be) established in"),
         country: str("ISO2, default IT"),
       }, ["status"]),
+      tool("find_intermediaries", "Who already carries the public backing (playbook: follow public money through its channels): the banks, lessors, guarantee institutions and funds in a market signed with the EIF under InvestEU, or in KfW Capital's fund portfolio, for a product type. With client_banks, which of the company's OWN banks are already backed: ask those first. Every row cited [cN] to the EIF/KfW Capital list.", {
+        market: str("ISO2 or country name: DK, DE, IT, FR, NL, SE, BE, ES, UK"),
+        product_type: { type: "string", enum: ["loan", "lease", "guarantee", "equity"], description: "what the company needs from the intermediary" },
+        client_banks: strs("optional: the company's existing banks or lessors, by name"),
+      }, ["market", "product_type"]),
       tool("assess_instrument", "One instrument against the company profile: status, blockers, gates with cited quotes, the deciding question.",
         { instrument_id: str("from find_instruments") }, ["instrument_id"]),
       tool("find_precedents", "Precedents (playbook 1c): companies this instrument, or this institution for this kind of move, already backed in a similar situation. Use them for every main route and in outreach drafts. Says explicitly when none is found.", {
@@ -248,6 +253,8 @@ export function wincentTools(ctx: Ctx) {
         (url, quote, label) => cite(ctx, "wincent", "read_agenda")(null, url, quote, label)) },
       match_status: { required: ["status"], run: (i: Record<string, unknown>) => matchStatus(c, i as never,
         (sha, quote, label, span) => cite(ctx, "wincent", "match_status")(sha, null, quote, label, span)) },
+      find_intermediaries: { required: ["market", "product_type"], run: (i: Record<string, unknown>) => findIntermediaries(c, i as never,
+        (sha, quote, label, span) => cite(ctx, "wincent", "find_intermediaries")(sha, null, quote, label, span)) },
       fund_requirements: { required: ["instrument_id", "focus"], run: (i: Record<string, unknown>) => requirements(c, String(i.instrument_id), String(i.focus)) },
       application_route: { required: ["instrument_id"], run: (i: Record<string, unknown>) => route(c, String(i.instrument_id)) },
       ...s.handlers,

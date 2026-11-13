@@ -61,6 +61,12 @@ export interface RegionPriorityRow {
   nuts: string; country: string; region: string; strategy: string; priority: string;
   activity_tags: string[]; citations: LayerCitation[];
 }
+/** One intermediary carrying EIF/InvestEU or national fund-of-funds backing (capital migration 041). */
+export interface IntermediaryRow {
+  key: string; market: string; name: string; kind: string; product_types: string[]; backing: string;
+  backing_detail: { programme: string; support: string; currency?: string; amount?: number }[];
+  as_of: string | null; website: string | null; note: string | null; citations: LayerCitation[];
+}
 /** An instrument whose own region gate names a NUTS region (eligibility_gates, op region_within). */
 export interface RegionGatedRow { instrument_id: string; name: string; capital_type: string | null; allowed: string[] }
 
@@ -78,6 +84,9 @@ export interface CapitalPort {
   /** The status layer (capital migration 039). Empty when the tables are not there yet. */
   statusLayer(countries: string[]): Promise<{ keys: StatusKeyRow[]; rules: StatusRuleRow[]; regions: RegionPriorityRow[] }>;
   regionGated(nuts: string[]): Promise<RegionGatedRow[]>;
+  /** The intermediaries layer (capital migration 041) for these markets. Optional: a port
+   *  without it has none, and the tool says the layer is not loaded. */
+  intermediaries?(markets: string[]): Promise<IntermediaryRow[]>;
   /** Public equity stakes (capital.public_equity_stakes): who holds whom. Optional: a port without it has none. */
   equityStakes?(q: EquityQuery): Promise<PrecedentRow[]>;
   /** The relevant signals articles (capital.signals_articles, is_relevant = 1). Optional. */
@@ -173,6 +182,18 @@ export const realCapital: CapitalPort = {
       // migration 039 not applied here yet: say so through empty results, never crash the tool
       console.error("[mandate/capital] status layer unavailable:", String(e));
       return { keys: [], rules: [], regions: [] };
+    }
+  },
+  intermediaries: async (markets) => {
+    try {
+      return await pgQuery<IntermediaryRow>(
+        `SELECT key, market, name, kind, product_types, backing, backing_detail, as_of::text AS as_of,
+                website, note, citations
+           FROM intermediaries WHERE market = ANY($1) ORDER BY market, key`, [markets]);
+    } catch (e) {
+      // migration 041 not applied here yet: empty, and the tool says so
+      console.error("[mandate/capital] intermediaries layer unavailable:", String(e));
+      return [];
     }
   },
   regionGated: async (nuts) => {
@@ -818,5 +839,101 @@ export async function matchStatus(port: CapitalPort, input: {
     ...(regional.length ? { regional_instruments: regional } : {}),
     ...(tags.length ? { region_fit } : {}),
     note: "Rules from the status layer, each cited [cN] to the statute or operating rules. 'open for this role' means the status requirement is met, not that a deal is approved. A product family missing here is a gap in the layer, not proof the door is shut: research the institution's own rules and cite them.",
+  };
+}
+
+// ── find_intermediaries ────────────────────────────────────────────────────
+
+const MARKETS: [RegExp, string][] = [
+  [/^(dk|denmark|danmark)$/i, "DK"], [/^(de|germany|deutschland)$/i, "DE"], [/^(it|italy|italia)$/i, "IT"],
+  [/^(fr|france)$/i, "FR"], [/^(nl|netherlands|the netherlands|nederland|holland)$/i, "NL"],
+  [/^(se|sweden|sverige)$/i, "SE"], [/^(be|belgium|belgi[eë]|belgique)$/i, "BE"], [/^(es|spain|espa[nñ]a)$/i, "ES"],
+  [/^(uk|gb|united kingdom|great britain|britain)$/i, "UK"], [/^(eu|europe|european union)$/i, "EU"],
+];
+/** A market as the layer's code: ISO2 (UK for the United Kingdom, EU for the Union). */
+export function toMarket(m: string): string | undefined {
+  const t = m.trim();
+  return MARKETS.find(([re]) => re.test(t))?.[1] ?? (/^[A-Za-z]{2}$/.test(t) ? t.toUpperCase() : undefined);
+}
+
+/** What the company needs from the intermediary, in the layer's vocabulary. */
+export function toProductType(p: string): string | undefined {
+  const t = p.trim().toLowerCase();
+  if (/leas|as.a.service|raas|rental/.test(t)) return "lease";
+  if (/guarant|b[uü]rgschaft|garanti|counter/.test(t)) return "guarantee";
+  if (/equity|venture|\bvc\b|fund|invest|round/.test(t)) return "equity";
+  if (/loan|lend|credit|debt|kredit|pr[eê]t|prestito/.test(t)) return "loan";
+  return undefined;
+}
+
+const LEGAL = new Set(["a/s", "as", "aps", "ag", "sa", "s.a.", "s.a", "spa", "s.p.a.", "s.p.a", "nv", "n.v.", "nv/sa",
+  "bv", "b.v.", "ab", "gmbh", "plc", "ltd", "u.a.", "kg", "co.", "&", "scpa", "sas"]);
+const GENERIC = new Set(["bank", "banken", "banca", "banco", "banque", "capital", "finance", "finans", "leasing",
+  "group", "groupe", "gruppo", "investment", "invest", "fund", "partners", "management", "the", "of", "de", "di", "del"]);
+const nameTokens = (s: string) => s.toLowerCase().replace(/[(),]/g, " ").split(/\s+/).filter((w) => w && !LEGAL.has(w));
+
+/** Whether a bank the client names is this intermediary: every word of the client's name in the
+ *  listed name ('Danske Bank' = 'Danske Bank A/S'), or its acronym ('SEB', 'BBVA'). */
+export function sameInstitution(client: string, listed: string): boolean {
+  const c = nameTokens(client), l = nameTokens(listed);
+  if (!c.length || !l.length) return false;
+  // a name made only of common words ('Bank', 'Leasing') identifies no one
+  if (c.every((w) => l.includes(w))) return c.some((w) => !GENERIC.has(w));
+  if (c.length === 1 && c[0].length >= 3 && c[0].length <= 6) return l.map((w) => w[0]).join("") === c[0];
+  return false;
+}
+
+const KIND_ORDER = ["bank", "lessor", "specialised_lender", "guarantee_institution", "promotional_bank", "fund", "fund_manager"];
+
+/**
+ * find_intermediaries: the banks, lessors, guarantee institutions and funds in a market that
+ * already carry EIF/InvestEU (or KfW Capital fund-of-funds) backing for a product type, each
+ * cited to the publishing list's own line. With client_banks, says which of the company's OWN
+ * banks are already backed (the first call to make) and which are not on the list.
+ */
+export async function findIntermediaries(port: CapitalPort, input: {
+  market: string; product_type: string; client_banks?: string[];
+}, cite: LayerCite) {
+  const market = toMarket(String(input.market ?? ""));
+  const product = toProductType(String(input.product_type ?? ""));
+  if (!market) return { error: `market '${input.market}' is not an ISO2 code or a known country name` };
+  if (!product) return { error: `product_type '${input.product_type}' is not one of loan, lease, guarantee, equity` };
+  const rows = port.intermediaries ? await port.intermediaries([market, "EU"]) : [];
+  if (!rows.length) {
+    return { error: "no intermediaries are loaded (capital migration 041 and its batch load). Read the EIF's InvestEU intermediary lists and cite them." };
+  }
+  const partner = rows.filter((r) => r.market === "EU" && r.kind === "implementing_partner");
+  const inMarket = rows.filter((r) => r.market === market && r.kind !== "implementing_partner");
+  const fit = inMarket.filter((r) => r.product_types.includes(product));
+  const clients = (input.client_banks ?? []).map(String).filter((b) => b.trim());
+  const isClient = (r: IntermediaryRow) => clients.some((c) => sameInstitution(c, r.name));
+  const total = (r: IntermediaryRow) => r.backing_detail.reduce((n, d) => n + (d.amount ?? 0), 0);
+  fit.sort((a, b) => Number(isClient(b)) - Number(isClient(a))
+    || KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind) || total(b) - total(a));
+  const LIMIT = 20;
+  const intermediaries = [];
+  for (const r of fit.slice(0, LIMIT)) {
+    intermediaries.push({
+      name: r.name, kind: r.kind, product_types: r.product_types, backing: r.backing,
+      programmes: r.backing_detail, ...(r.as_of ? { as_of: r.as_of } : {}), ...(r.website ? { website: r.website } : {}),
+      ...(r.note ? { note: r.note } : {}), ...(clients.length ? { is_client_bank: isClient(r) } : {}),
+      ...(await citeAll(r.citations, `${r.name}: ${r.backing}`, cite)),
+    });
+  }
+  const backed = clients.filter((c) => inMarket.some((r) => sameInstitution(c, r.name)));
+  const otherProducts = [...new Set(inMarket.filter((r) => !r.product_types.includes(product)).flatMap((r) => r.product_types))]
+    .filter((p) => p !== product);
+  const implementing_partner = [];
+  for (const p of partner) {
+    implementing_partner.push({ name: p.name, ...(p.note ? { note: p.note } : {}),
+      ...(await citeAll(p.citations, `${p.name}: implementing partner`, cite)) });
+  }
+  return {
+    market, product_type: product, intermediaries,
+    ...(fit.length > LIMIT ? { more_not_shown: fit.length - LIMIT } : {}),
+    ...(clients.length ? { client_banks_backed: backed, client_banks_not_listed: clients.filter((c) => !backed.includes(c)) } : {}),
+    ...(otherProducts.length ? { other_products_in_market: otherProducts } : {}),
+    implementing_partner,
+    note: "Each row is an intermediary already signed with the EIF under InvestEU (or in KfW Capital's fund portfolio), cited [cN] to the publishing list as of its date. A bank NOT listed may still apply to the EIF's open call; absence here is a gap in a curated core (about 60 rows), not proof it has no backing. The backing is the intermediary's: the company still passes the intermediary's own credit process.",
   };
 }

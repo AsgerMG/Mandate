@@ -1,0 +1,118 @@
+# Batch eifo_investeu: EIFO's products as instruments, with HAND-ENCODED, CITED gates.
+#
+# Loaded into capital.funding_instruments (new rows only; an id already held must be the one
+# named under `existing`) and capital.eligibility_gates, each gate linked to its grounding span
+# in capital.eligibility_grounding (method quote_located), so assess_instrument cites it.
+# verification_level human_verified, encoding_method hand_cited. Every quote must be found
+# verbatim (whitespace-insensitive) in its document, or the loader refuses.
+#
+# gate_role (evidence tiers, contracts/): filter = a gate a company passes or fails;
+# programme_fact = what the instrument is or does; obligation = what the applicant must do.
+# value_spec only where the intake has the field exactly (entityCountries); a threshold the
+# intake cannot test (749 employees, DKK 3 m revenue) stays prose with intake_field none.
+#
+# Insert-only: a changed gate is a NEW gate_key, never an edit.
+
+administering_body: EIFO (Danmarks Eksport- og Investeringsfond)
+
+instruments:
+  - id: eifo_guarantee
+    name: EIFO-Guarantee (loss guarantee to the company's bank)
+    capital_type: guarantee
+    doc: eifo_guarantee_sheet
+    description: >-
+      EIFO guarantees up to 80% of the final loss on a bank's facility to a Danish SME or mid-cap
+      (capped at 50% of the bank's total loss on the customer). From DKK 2 million, no maximum.
+    gates:
+      - {key: eifo_b1_purpose, family: G3_financial, role: programme_fact, requirement: "Loss guarantee to the bank on an individual financing", quote: "EIFO-Guarantee is a loss guarantee that covers a share of the final loss on each individual guarantee- backed financing."}
+      - {key: eifo_b1_equity, family: G3_financial, role: filter, requirement: "Positive equity and creditworthy", quote: "The company must have positive equity and be creditworthy."}
+      - {key: eifo_b1_size, family: G2_size_ownership, role: filter, requirement: "At most 749 employees in the group, or at most 1,499 with a GBER innovation criterion", value: "749 / 1,499 employees", quote: "The company and affiliated group companies must have a maximum of 749 employees (1)."}
+      - {key: eifo_b1_size_innov, family: G2_size_ownership, role: filter, requirement: "Up to 1,499 employees only with an innovation criterion under GBER", quote: "(1) or a maximum of 1,499 employees and meet an innovation criterion according to the EU’s General Block Exemption Regulation"}
+      - {key: eifo_b1_unlisted, family: G2_size_ownership, role: filter, requirement: "Not listed on a main stock exchange; the financing must expand the bank's commitment", quote: "Must not be listed on a main stock exchange, and the financing must expand the bank’s commitment."}
+      - {key: eifo_b1_ticket, family: G3_financial, role: programme_fact, requirement: "Bank facility from DKK 2 million, no maximum", value: "DKK 2,000,000 minimum", quote: "Bank’s facility size DKK 2,000,000 – No maximum limit."}
+      - {key: eifo_b1_cover, family: G3_financial, role: programme_fact, requirement: "Cover up to 80% of the final loss, max 50% of the bank's total loss on the customer", value: "80% / 50%", quote: "Up to 80% of the final loss on the specific facility, but a maximum of 50% of the bank’s total loss on the customer (see loss limitation)."}
+      - {key: eifo_b1_premium, family: G3_financial, role: programme_fact, requirement: "Premium set by rating, typically 0.8% to 6.3% p.a.", quote: "Determined based on individual rating and typically ranges from 0.8% to 6.3% p.a. of the guarantee amount."}
+      - {key: eifo_b1_leasing, family: G5_use_of_funds, role: programme_fact, requirement: "Covers credits and guarantees up to three years and follows the bank's term for leasing and investment loans", quote: "Up to three years for credits and guarantees (possibility of extension) and follows the bank’s term for leasing and investment loans."}
+  - id: eifo_growth_loan
+    name: EIFO Growth Loan
+    capital_type: loan
+    doc: eifo_growth_loan_sheet
+    description: >-
+      EIFO loan alongside the bank (co-financing 50% of the need) for companies that cannot raise
+      enough from their bank, including not-yet-profitable venture cases with documented scaling
+      potential. From DKK 200,000, up to 10 years, CIBOR + 4-10%.
+    gates:
+      - {key: eifo_b1_purpose, family: G3_financial, role: programme_fact, requirement: "For companies unable to raise enough from their bank, including unprofitable venture cases with scaling potential", quote: "Growth loans are for companies that need to invest but are unable to raise sufficient capital from their financial institution – the loan includes venture cases that are not yet profitable but have a documented scaling potential."}
+      - {key: eifo_b1_equity, family: G3_financial, role: filter, requirement: "Positive equity and creditworthy", quote: "The company must have positive equity and be creditworthy."}
+      - {key: eifo_b1_size, family: G2_size_ownership, role: filter, requirement: "At most 749 employees in the group, or at most 1,499 with a GBER innovation criterion", value: "749 / 1,499 employees", quote: "The company and affiliated group companies must have a maximum of 749 employees (1)."}
+      - {key: eifo_b1_unlisted, family: G2_size_ownership, role: filter, requirement: "Not listed on a main stock exchange; the financing must expand existing commitments", quote: "Must not be listed on a main stock exchange, and the financing must expand existing commitments."}
+      - {key: eifo_b1_cofin, family: G6_conditionality, role: obligation, requirement: "EIFO co-finances 50% of the total need; no guarantee cover on a 1:1 co-financing", quote: "50% of the total financing requirement. Please note that it is not possible to apply for guarantee coverage on a 1:1 co-financing basis."}
+      - {key: eifo_b1_terms, family: G3_financial, role: programme_fact, requirement: "3-month CIBOR plus a 4-10% margin; up to 10 years, optional 2-year grace", quote: "3-month CIBOR plus a margin (4–10%) determined on the basis of the rating individually assigned by the bank."}
+      - {key: eifo_b1_ticket, family: G3_financial, role: programme_fact, requirement: "From DKK 200,000, no maximum", value: "DKK 200,000 minimum", quote: "DKK 200,000 – no maximum limit."}
+  - id: eifo_contract_guarantee
+    name: EIFO Contract Guarantee (export contract insurance)
+    capital_type: guarantee
+    doc: eifo_contract_guarantee_sheet
+    description: >-
+      Insurance of a Danish exporter against loss if an export order cannot be completed or paid
+      (political or commercial risk), up to 90% of the loss, risk period over 180 days.
+    gates:
+      - {key: eifo_b1_purpose, family: G3_financial, role: programme_fact, requirement: "Insurance against loss if the contractor cannot complete an order and be paid", quote: "EIFO’s Contract Guarantee is an insurance solution that protects against financial loss if the contractor is unable to complete an order and receive payment."}
+      - {key: eifo_b1_danish, family: G1_nexus, role: filter, requirement: "Danish exporter creating economic growth in Denmark", value: "Denmark", value_spec: {op: in, field: entityCountries, allowed: [Denmark]}, intake_field: entityCountries, quote: "You must be a Danish exporter, and create economic growth in Denmark."}
+      - {key: eifo_b1_buyer_risk, family: G6_conditionality, role: filter, requirement: "EIFO must accept the risk on the buyer", quote: "EIFO must accept the risk on your buyer."}
+      - {key: eifo_b1_esg, family: G6_conditionality, role: obligation, requirement: "Order work carried out in an environmentally and socially responsible manner", quote: "The work related to the order must be carried out in an environmentally and socially responsible manner."}
+      - {key: eifo_b1_cover, family: G3_financial, role: programme_fact, requirement: "Up to 90% of the exporter's loss", value: "90%", quote: "Guarantee percentage (of your loss) Up to 90%."}
+  - id: eifo_buyer_financing
+    name: EIFO Buyer Financing (export credit guarantee to the buyer's bank)
+    capital_type: guarantee
+    doc: eifo_buyer_financing_sheet
+    description: >-
+      EIFO covers a bank's loss on credit to a foreign buyer of Danish goods or services, so the
+      exporter can offer credit without carrying the risk. Includes the Project Financing, Financing,
+      Buyer-Credit, Supplier-Credit and Operational Leasing Guarantees.
+    gates:
+      - {key: eifo_b1_purpose, family: G3_financial, role: programme_fact, requirement: "Covers the bank's loss if the foreign buyer fails to pay", quote: "With buyer financing, Danish exporters can offer foreign buyers credit without taking on the risk themselves. EIFO covers the bank’s loss if the foreign buyer fails to pay."}
+      - {key: eifo_b1_danish_interest, family: G1_nexus, role: filter, requirement: "The transaction meets the general requirements for Danish economic interest", quote: "A transaction covered by an export credit must meet the general requirements for Danish economic interest."}
+      - {key: eifo_b1_buyer_credit, family: G6_conditionality, role: filter, requirement: "Buyer approved as creditworthy by EIFO", quote: "The buyer must be approved as creditworthy by EIFO."}
+      - {key: eifo_b1_buyer_country, family: G1_nexus, role: filter, requirement: "Buyer's home country covered by EIFO's guarantee scheme", quote: "The buyer’s home country must be covered by EIFO’s guarantee scheme."}
+      - {key: eifo_b1_ticket, family: G3_financial, role: programme_fact, requirement: "Up to DKK 25 million in the SME-Guarantee example", value: "DKK 25,000,000", quote: "Up to DKK 25,000,000."}
+      - {key: eifo_b1_tenor, family: G3_financial, role: programme_fact, requirement: "Credit between 181 days and 5 years", quote: "The credit is between 181 days and 5 years."}
+  - id: eifo_operational_leasing_guarantee
+    parent: eifo_buyer_financing
+    name: EIFO Operational Leasing Guarantee (part of Buyer Financing)
+    capital_type: guarantee
+    doc: eifo_buyer_financing_sheet
+    description: >-
+      Named in EIFO's Buyer Financing sheet as one of its products; its own terms are not in the
+      sheet (the sheet's terms are the SME-Guarantee example). Read EIFO's terms before quoting cover.
+    gates:
+      - {key: eifo_b1_named, family: G3_financial, role: programme_fact, requirement: "A Buyer Financing product of EIFO", quote: "Buyer financing also includes EIFO’s Project Financing Guarantee, Financing Guarantee, Buyer-Credit Guarantee, Supplier-Credit Guarantee, Operational Leasing Guarantee"}
+      - {key: eifo_b1_danish_interest, family: G1_nexus, role: filter, requirement: "The transaction meets the general requirements for Danish economic interest", quote: "A transaction covered by an export credit must meet the general requirements for Danish economic interest."}
+  - id: eifo_match_loan
+    name: EIFO Match Loan (1:1 with a private investor)
+    capital_type: loan
+    doc: eifo_match_loan_sheet
+    description: >-
+      Publicly subsidised loan to an early-stage Danish startup (under DKK 3 million revenue) that
+      matches a private investor's investment 1:1. DKK 500,000-3,000,000 (5,000,000 in special
+      cases), 6-10 years, 3-year interest roll-up and grace.
+    gates:
+      - {key: eifo_b1_purpose, family: G3_financial, role: programme_fact, requirement: "Matches a private investor's investment 1:1; publicly subsidised", quote: "Match Loans are for early-stage startups that have received an investment. With a Match Loan, EIFO can match the investor’s investment 1:1. The Match Loan is a publicly subsidized product."}
+      - {key: eifo_b1_revenue, family: G2_size_ownership, role: filter, requirement: "Less than DKK 3 million total revenue to date", value: "< DKK 3,000,000 cumulative revenue", quote: "Is in an early stage, i.e., has generated less than DKK 3 million in total revenue."}
+      - {key: eifo_b1_equity, family: G3_financial, role: filter, requirement: "12 months runway at disbursement and positive equity", quote: "Has a runway of at least 12 months at the time of loan disbursement and has positive equity."}
+      - {key: eifo_b1_danish, family: G1_nexus, role: filter, requirement: "Registered in Denmark, business model with a Danish foundation", value: "Denmark", value_spec: {op: in, field: entityCountries, allowed: [Denmark]}, intake_field: entityCountries, quote: "Is registered in Denmark and has a business model with a Danish foundation."}
+      - {key: eifo_b1_innovation, family: G4_borrower_model, role: filter, requirement: "Highly innovative and scalable business model or product", quote: "Has a business model or product with a high degree of innovation and scalability."}
+      - {key: eifo_b1_investor, family: G6_conditionality, role: filter, requirement: "50% from a non-controlling, experienced private investor", quote: "50% must come from a private investor (1). The investor must not have controlling influence in the company, must have investment experience, and knowledge of innovative business models."}
+      - {key: eifo_b1_ticket, family: G3_financial, role: programme_fact, requirement: "DKK 500,000-3,000,000; up to DKK 5,000,000 in special cases", value: "DKK 500,000-3,000,000", quote: "DKK 500,000–3,000,000 (In special cases, a Match Loan can be increased to DKK 5,000,000)."}
+      - {key: eifo_b1_exit_bonus, family: G3_financial, role: programme_fact, requirement: "Exit bonus 5% of the value increase, capped at 1x principal", quote: "5% of the value increase, capped at 1x the loan’s principal amount."}
+
+# Gates added to an instrument production already holds (no new funding_instruments row).
+existing:
+  - id: eifo_coinvest
+    doc: eifo_equity_page
+    gates:
+      - {key: eifo_b1_minority, family: G4_borrower_model, role: programme_fact, requirement: "EIFO invests as an active minority investor, with Denmark as the company's base", quote: "As an active minority investor, we provide capital, expertise, and networks to companies with the potential to become future market leaders – and Denmark as their base."}
+      - {key: eifo_b1_market, family: G4_borrower_model, role: filter, requirement: "An international market or a global niche", quote: "Market: An international market or a global niche in which the company can establish a strong position."}
+      - {key: eifo_b1_innovation, family: G4_borrower_model, role: filter, requirement: "A high level of innovation", quote: "Innovation: A high level of innovation in products, services, business models, distribution, and more."}
+      - {key: eifo_b1_scalable, family: G4_borrower_model, role: filter, requirement: "Economically scalable in sales and production", quote: "Business Model: Economically scalable in both sales and production."}
+      - {key: eifo_b1_exit, family: G6_conditionality, role: obligation, requirement: "Returns commensurate with risk and a realistic exit plan for EIFO", quote: "Returns and Exit: Returns must be commensurate with the investment risk and supported by a realistic exit plan for EIFO."}

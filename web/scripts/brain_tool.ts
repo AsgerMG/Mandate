@@ -48,7 +48,7 @@ import { createInterface } from "readline";
 import { normaliseProfile, parsePriorLedger } from "./brainToolInputs";
 import { loadEnvLocal } from "./loadEnv";
 
-const WINCENT = ["find_instruments", "match_status", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "read_agenda", "profile_get"];
+const WINCENT = ["find_instruments", "match_status", "find_intermediaries", "assess_instrument", "fund_requirements", "application_route", "find_precedents", "read_agenda", "profile_get"];
 /** Bench-only: production's `research` stores and cites in one model call; the bench's
  *  model (Claude Code) reads the web itself and stores what it cites with this. */
 const BENCH_ONLY = ["ground_source"];
