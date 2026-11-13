@@ -21,7 +21,7 @@ describe("board blocks", () => {
     expect(f.blocks).toBe(3);
     const dk = f.board.routes!.levels.find((l) => l.id === "dk")!;
     // turn 2 set Buyer Financing to probe; turn 3 opened it; turn 4 did not mention it
-    expect(dk.doors.find((d) => d.id === "eifo-buyer")!.status).toBe("open");
+    expect(dk.doors.find((d) => d.id === "eifo-buyer")!.status).toBe("park");
     expect(dk.doors.find((d) => d.id === "eifo-coinvest")!.why).toMatch(/lead has agreed/);
     const equity = f.board.roadmap!.tracks.find((t) => t.id === "equity")!;
     expect(equity.steps.find((s) => s.id === "lead-brief")!.status).toBe("done");

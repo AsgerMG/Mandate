@@ -50,7 +50,7 @@ const fkTurn2 = {
     levels: [
       { id: "dk", level: "national", label: "Denmark", country: "DK", doors: [
         { id: "eifo-guarantee", name: "EIFO guarantee on the bank working-capital line", institution: "EIFO", status: "open", why: "Lets the ApS's bank lend more against deployments at a lower margin.", cite: ["w1"] },
-        { id: "eifo-buyer", name: "EIFO Buyer Financing", institution: "EIFO", status: "probe", why: "Moves the upfront cost to the customer's bank; conditions decide it.", conditions: ["ApS is the exporter of record", "Danish content share (unverified threshold)"], cite: ["w2", "unverified"] },
+        { id: "eifo-buyer", name: "EIFO Buyer Financing", institution: "EIFO", status: "probe", why: "Shifts the cost to the customer: hurts competitiveness. Park; a complement only if a customer asks for it.", conditions: ["ApS is the exporter of record", "Danish content share (unverified threshold)"], cite: ["w2", "unverified"] },
       ] },
     ],
   },
@@ -61,7 +61,7 @@ const fkTurn3 = {
   answer: {
     lines: [
       "Split the problem: debt for installed hardware, equity for growth. Equity is the dearest way to pre-finance kit.",
-      "Lead with EIFO through the ApS: a guaranteed working-capital line now, Buyer Financing to move the upfront cost to the customer's bank.",
+      "Lead with EIFO through the ApS: a guaranteed project and working-capital line plus the Contract Guarantee, so the public side carries the deployment risk, not your customer.",
       "Put EIFO co-investment in the Series A term sheet before close; use the Bavarian GmbH for KfW and the Bürgschaftsbank.",
     ],
     confidence: "medium",
@@ -79,7 +79,7 @@ const fkTurn3 = {
       { id: "dk", level: "national", label: "Denmark", country: "DK", doors: [
         { id: "eifo-guarantee", name: "EIFO guarantee on the bank working-capital line", institution: "EIFO", status: "open", why: "Lets the ApS's bank lend more against deployments at a lower margin.", conditions: ["Applied for by the bank, with the ApS"], cite: ["w1"] },
         { id: "eifo-growth", name: "EIFO Growth Loan", institution: "EIFO", status: "open", why: "Direct, subordinated debt for scaling companies with revenue; fits EUR 6M turnover.", conditions: ["Co-financing by bank or investors (unverified ratio)"], cite: ["w1", "unverified"] },
-        { id: "eifo-buyer", name: "EIFO Buyer Financing", institution: "EIFO", status: "open", why: "The customer's bank lends to the customer under EIFO cover; you are paid at go-live.", conditions: ["ApS is the exporter of record", "Danish content share (threshold unverified)", "Ticket size worth the paperwork per customer"], cite: ["w2", "unverified"] },
+        { id: "eifo-buyer", name: "EIFO Buyer Financing", institution: "EIFO", status: "park", why: "The customer's bank lends to the customer under EIFO cover; moves the cost to the customer, so a complement only.", conditions: ["ApS is the exporter of record", "Danish content share (threshold unverified)", "Ticket size worth the paperwork per customer"], cite: ["w2", "unverified"] },
         { id: "eifo-coinvest", name: "EIFO co-investment in the Series A", institution: "EIFO", status: "open", why: "Public equity alongside a private lead, on the lead's terms.", conditions: ["Private lead in place", "In the term sheet before close"], cite: ["w3"] },
       ] },
       { id: "de", level: "national", label: "Germany", country: "DE", doors: [
@@ -211,12 +211,12 @@ const fkTurn4 = {
   answer: {
     lines: [
       "Split the problem: debt for installed hardware, equity for growth. Equity is the dearest way to pre-finance kit.",
-      "Lead with EIFO through the ApS: a guaranteed working-capital line now, Buyer Financing to move the upfront cost to the customer's bank.",
+      "Lead with EIFO through the ApS: a guaranteed project and working-capital line plus the Contract Guarantee, so the public side carries the deployment risk, not your customer.",
       "EIFO co-investment goes into the term sheet: the lead has agreed. Use the Bavarian GmbH for KfW and the Bürgschaftsbank.",
     ],
     confidence: "medium",
-    confidence_why: "The equity side is now live; the Danish content share still decides Buyer Financing.",
-    open_question: "What share of each system's value is Danish or EU content? It decides whether Buyer Financing opens.",
+    confidence_why: "The equity side is now live; the size of the guaranteed line depends on the cash cycle.",
+    open_question: "What is your cash cycle per deployment (cost, install to payment, projects a year)? It sizes the guaranteed line and the velocity case.",
     cite: ["w2", "w3", "judgement"],
   },
   routes: { levels: [
