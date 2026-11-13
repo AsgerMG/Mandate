@@ -8,7 +8,9 @@
 
 run      the brain works each case in one reply (the bench's re-test mode), the
          answer is saved under mandate/eval/runs/loop/<tag>/<case>.md, and the
-         judge grades it (a judgement record under mandate/eval/judgements/).
+         judge grades it (a judgement record under mandate/eval/judgements/);
+         the run is also written as a bench conversation (run_conversation.py),
+         to read and comment as a chat in the bench app's Train, Review runs.
 table    the score table from the newest judgement per (case, tag); baseline =
          the saved bench runs (runs/bench) judged as they were.
 diagnose the weakest moves across a tag's judgements: every must not met or
@@ -35,7 +37,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
-from . import bench, bench_judge, case_library, rubric
+from . import bench, bench_judge, case_library, rubric, run_conversation
 from .scenarios import Scenario, all_scenarios, load
 
 HERE = Path(__file__).resolve().parent
@@ -158,7 +160,24 @@ def run_case(s: Scenario, tag: str, *, judge: bool = True, model: str | None = N
         p = bench_judge.save(j)
         rec.update({"grade": j["grade"], "holistic": j["holistic_grade"], "must_met": j["must_met"], "must_partly": j["must_partly"],
                     "must_total": j["must_total"], "must_not_hit": j["must_not_hit"], "judgement": str(p.relative_to(REPO))})
+    rec["conversation"] = save_as_conversation(s, brain=brain, tag=tag, md_path=md_path, answer=t["text"], sid=sid,
+                                               judgement=j if judge else None, judgement_file=str(p) if judge else None)
     return rec
+
+
+def save_as_conversation(s: Scenario, *, brain: str, tag: str, md_path: Path, answer: str, sid: str,
+                         judgement: dict | None, judgement_file: str | None) -> str | None:
+    """The run as a bench conversation (Train, Review runs), next to the transcript.
+    A failure here never fails the run: the transcript is the record."""
+    try:
+        conv = run_conversation.from_loop_run(
+            s=s, brain=brain, tag=tag, run_rel=os.path.relpath(md_path, REPO), answer=answer, ran_at=_now(),
+            ledger=bench.ledger_path(brain, sid), judgement=judgement, judgement_file=judgement_file)
+        run_conversation.write(conv)
+        return conv["id"]
+    except Exception as e:  # noqa: BLE001
+        print(f"warning: the run was not written as a conversation: {e}", file=sys.stderr)
+        return None
 
 
 def cmd_run(a) -> int:
