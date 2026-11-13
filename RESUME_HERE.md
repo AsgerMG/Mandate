@@ -15,8 +15,12 @@ including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.
   fresh agent reading its last commit:
   - `generalise-method`: MERGED 13 Nov (7f79acd1). Left: the held-out measurement
     (heldout_hardware_nl_rd_relief + 2 others + fintech, leave-one-out, max 4 runs).
-  - `process-maps` (d4e155be): process + leverage maps on the case board; step 1
-    (schema) done; rendering, CASE_BOARD.md, fixtures, screenshots left.
+  - `process-maps`: MERGED 13 Nov (b1a0206b): process + leverage maps; the brains emit
+    them on the fly per mandate/brains/CASE_BOARD.md. NOT yet seen in a live brain turn.
+- NEXT when budget allows (owner, 13 Nov: "rerun cases to ensure all live up to the
+  highest standard"): one FULL re-run of every eval case (leave-one-out, judged), with
+  the generalised method + checklist + required board + process maps; check each brain
+  emits a valid board with process maps live; then fix what falls short.
 - Owner's calls: spend limit vs pacing to 5-hour windows; grade fintech (3?), forklift
   (4?), NL held-out (2-3?); home copy "advise and draft".
 
