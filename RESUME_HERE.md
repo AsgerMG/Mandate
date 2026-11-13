@@ -13,9 +13,8 @@ including the owner's decisions, is at `~/.claude/plans/mutable-waddling-teacup.
   EIFO core.
 - Two agents stopped mid-work, WIP pushed, NOT merged; resume each with SendMessage or a
   fresh agent reading its last commit:
-  - `generalise-method` (94cda752): playbook rewritten as general habits with named
-    examples moved to case entries; was at "rebuild the case library, regenerate the TS
-    mirror, run tests", then the held-out measurement (max 4 runs).
+  - `generalise-method`: MERGED 13 Nov (7f79acd1). Left: the held-out measurement
+    (heldout_hardware_nl_rd_relief + 2 others + fintech, leave-one-out, max 4 runs).
   - `process-maps` (d4e155be): process + leverage maps on the case board; step 1
     (schema) done; rendering, CASE_BOARD.md, fixtures, screenshots left.
 - Owner's calls: spend limit vs pacing to 5-hour windows; grade fintech (3?), forklift
