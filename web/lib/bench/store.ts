@@ -19,7 +19,17 @@ import {
   type BenchConversation, type BenchMandate, type Brain, type ConversationSummary, type FeedbackEvent, type FeedbackItem, type Retest, type ReviewSet,
 } from "./model";
 
-export const dataRoot = () => process.env.MANDATE_BENCH_DATA ?? path.join(os.homedir(), "Mandate-backups", "bench");
+/** The owner's real bench folder (what the app shows). */
+export const realDataRoot = () => path.join(os.homedir(), "Mandate-backups", "bench");
+/** Where the bench reads and writes. Under a test runner it is never the real
+ *  folder: test runs once filled the owner's Review runs with junk. */
+export const dataRoot = () => {
+  const root = process.env.MANDATE_BENCH_DATA ?? realDataRoot();
+  if (process.env.VITEST && path.resolve(root) === path.resolve(realDataRoot())) {
+    throw new Error("refusing to use the real bench folder under a test: set MANDATE_BENCH_DATA to a temp directory");
+  }
+  return root;
+};
 export const repoRoot = () => process.env.MANDATE_BENCH_ROOT ?? path.resolve(process.cwd(), "..");
 export const BENCH_RUNS_DIR = "mandate/eval/runs/bench";
 

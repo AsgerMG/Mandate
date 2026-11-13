@@ -47,6 +47,23 @@ beforeAll(() => {
   saveConversation(run("run-loop-loo-kids-policy-aaaa1111"));
   saveConversation(run("run-loop-iter1-kids-policy-bbbb2222", { tag: "iter1", grade: 4 }, "2026-11-14T08:00:00+00:00"));
   saveConversation({ ...run("c-plain-chat-0001"), kind: "chat", eval_run: undefined, agent: "wincent", brain: "wincent" });
+  // the junk a pytest once wrote into the real folder: a run file in a tmp_path, tag "t"
+  saveConversation(run("run-private-var-folders-junk-0285cb75", { tag: "t", run_file: "../../../../private/var/folders/85/T/pytest-of-x/pytest-364/runs/t/fintech_guarantees.md" }));
+  saveConversation(run("run-flagged-test-run-0001", { tag: "x", test: true }));
+});
+
+describe("test data never reaches the real folder or the list", () => {
+  it("the store refuses the owner's real folder under a test runner", async () => {
+    const { dataRoot, realDataRoot } = await import("./store");
+    vi.stubEnv("MANDATE_BENCH_DATA", realDataRoot());
+    try { expect(() => dataRoot()).toThrow(/real bench folder/); }
+    finally { vi.stubEnv("MANDATE_BENCH_DATA", path.join(tmp, "data")); }
+  });
+  it("a run a test wrote is never listed", async () => {
+    const ids = (await body(await runsGET(req("/api/bench/eval-runs")))).runs.map((r: { id: string }) => r.id);
+    expect(ids).not.toContain("run-private-var-folders-junk-0285cb75");
+    expect(ids).not.toContain("run-flagged-test-run-0001");
+  });
 });
 afterAll(() => { vi.unstubAllEnvs(); rmSync(tmp, { recursive: true, force: true }); });
 

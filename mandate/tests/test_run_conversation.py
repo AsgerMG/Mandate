@@ -182,3 +182,28 @@ def test_every_saved_run_in_the_repo_imports_with_a_reply(tmp_path):
         assert c["messages"][0]["role"] == "client", p.name
         assert c["messages"][-1]["role"] == "agent" and len(c["messages"][-1]["text"]) > 200, p.name
         assert c["eval_run"]["brain"] in ("wincent", "regina")
+
+
+# ── the real folder is never written by a test ───────────────────────────────
+
+def test_the_test_harness_points_the_store_away_from_the_real_folder():
+    assert os.environ.get("MANDATE_BENCH_DATA"), "conftest.py must set the store root"
+    assert not rc._same_dir(rc.data_root(), rc.real_data_root())
+
+
+def test_a_test_write_into_the_real_folder_is_refused(monkeypatch, tmp_path):
+    import pytest
+    conv = rc.build(case_id="fintech_guarantees", brain="wincent", tag="t", run_file="mandate/eval/runs/loop/t/x.md",
+                    messages=[("client", "Q"), ("agent", "A")], ran_at="2026-11-13T09:00:00+00:00", source="loop")
+    monkeypatch.setattr(rc, "real_data_root", lambda: tmp_path)  # stand-in for ~/Mandate-backups/bench
+    with pytest.raises(rc.TestDataInRealFolder):
+        rc.write(conv, tmp_path)
+    assert not (tmp_path / "conversations").exists()
+
+
+def test_test_tagged_data_is_recognised_outside_pytest(monkeypatch):
+    monkeypatch.delenv("PYTEST_CURRENT_TEST", raising=False)
+    junk = {"eval_run": {"run_file": "../../../../private/var/folders/85/T/pytest-of-x/pytest-364/runs/t/fintech_guarantees.md"}}
+    assert rc.is_test_data(junk)
+    assert rc.is_test_data({"eval_run": {"test": True, "run_file": "mandate/eval/runs/loop/a/b.md"}})
+    assert not rc.is_test_data({"eval_run": {"run_file": "mandate/eval/runs/loop/loo/fintech_guarantees.md"}})

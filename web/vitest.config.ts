@@ -5,6 +5,8 @@ export default defineConfig({
   resolve: { alias: { "@": resolve(__dirname, ".") } },
   test: {
     environment: "node",
+    // the bench store root goes to a temp dir for every test (never the real folder)
+    setupFiles: ["./vitest.setup.ts"],
     // `scripts/` joins `lib/` so a test beside a script it covers runs in the
     // command everybody types.
     include: ["lib/**/*.test.ts", "scripts/**/*.test.ts"],

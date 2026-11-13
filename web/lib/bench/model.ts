@@ -72,6 +72,8 @@ export type EvalRun = {
   /** the owner's grade written in the transcript's grading block, if any */
   owner_grade: number | null;
   instruction?: string;
+  /** written by a test: never shown (isTestRun) */
+  test?: boolean;
 };
 
 export type BenchMessage = {
@@ -557,9 +559,20 @@ export type EvalRunSummary = {
   replies: number; comments: number; reviewers: string[];
 };
 
+/** A run a test wrote (flagged `test`, or its run file outside the repo, e.g.
+ *  a pytest tmp_path): never shown in Review runs. Mirrors
+ *  mandate/eval/run_conversation.py is_test_data. */
+export function isTestRun(c: Pick<BenchConversation, "eval_run">): boolean {
+  const r = c.eval_run;
+  if (!r) return false;
+  if (r.test) return true;
+  const f = r.run_file ?? "";
+  return f.startsWith("..") || f.startsWith("/") || f.includes("pytest-of-");
+}
+
 export function evalRunSummary(c: BenchConversation): EvalRunSummary | null {
   const r = c.eval_run;
-  if (!r) return null;
+  if (!r || isTestRun(c)) return null;
   const reviews = c.messages.flatMap((m) => m.reviews ?? []);
   const last = c.review_grades?.[c.review_grades.length - 1];
   return {

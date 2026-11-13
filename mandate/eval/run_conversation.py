@@ -44,8 +44,43 @@ FOLLOWUP_LEAD = "More about us, so you can answer in one go: "
 AFTER_ANSWER = re.compile(r"^##\s+(Self-|Claim|Bench (findings|notes)|Grade\b|Owner|Judge)", re.I)
 
 
+def real_data_root() -> Path:
+    """The owner's real bench folder: what the app shows. Never written by a test."""
+    return Path.home() / "Mandate-backups" / "bench"
+
+
 def data_root() -> Path:
-    return Path(os.environ.get("MANDATE_BENCH_DATA") or Path.home() / "Mandate-backups" / "bench")
+    return Path(os.environ.get("MANDATE_BENCH_DATA") or real_data_root())
+
+
+class TestDataInRealFolder(RuntimeError):
+    """A test (or test-tagged data) tried to write into the owner's real bench folder."""
+
+
+def is_test_data(conv: dict) -> bool:
+    """Test-tagged: written under pytest, flagged `test`, or a run file outside the
+    repo (a pytest tmp_path: the junk 'fintech guarantees (t)' runs had one)."""
+    if os.environ.get("PYTEST_CURRENT_TEST"):
+        return True
+    run = conv.get("eval_run") or {}
+    if run.get("test") or conv.get("test"):
+        return True
+    rf = str(run.get("run_file") or "")
+    return rf.startswith("..") or rf.startswith("/") or "pytest-of-" in rf
+
+
+def _same_dir(a: Path, b: Path) -> bool:
+    try:
+        return a.resolve() == b.resolve()
+    except OSError:
+        return False
+
+
+def guard_real_folder(conv: dict, root: Path) -> None:
+    if is_test_data(conv) and _same_dir(root, real_data_root()):
+        raise TestDataInRealFolder(
+            f"refusing to write test data ({conv.get('id')}) into the real bench folder {root}: "
+            "set MANDATE_BENCH_DATA to a temp directory (mandate/tests/conftest.py does)")
 
 
 def conversation_id(run_rel: str) -> str:
@@ -142,7 +177,9 @@ def merge_reviews(new: dict, old: dict | None) -> dict:
 
 def write(conv: dict, root: Path | None = None) -> Path:
     """Write (or update in place) the conversation file, atomically, owner-only."""
-    d = (root or data_root()) / "conversations"
+    root = root or data_root()
+    guard_real_folder(conv, root)
+    d = root / "conversations"
     d.mkdir(parents=True, exist_ok=True, mode=0o700)
     p = d / f"{conv['id']}.json"
     old = None
