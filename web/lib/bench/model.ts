@@ -37,7 +37,42 @@ export type BenchMandate = {
   updated_at: string;
 };
 
-export type ConversationKind = "chat" | "interview" | "lesson" | "distil" | "retest" | "score";
+export type ConversationKind = "chat" | "interview" | "lesson" | "distil" | "retest" | "score" | "eval_run";
+
+/** A reviewer's comment on one reply: good / off and a free-text note, any
+ *  number of them per reply (the owner, then the expert). Each is an item in
+ *  the feedback queue (item_id). */
+export type Review = { item_id: string; reviewer: string; rating: "good" | "off" | null; note: string; at: string };
+/** A reviewer's 1-5 grade of a whole run. */
+export type ReviewGrade = { item_id: string; reviewer: string; grade: number; note: string; at: string };
+
+/** The judge's verdict on an eval run, as mandate/eval/run_conversation.py judge_summary writes it. */
+export type JudgeSummary = {
+  grade: number | null; holistic: number | null; scale?: string | null;
+  must_met: number | null; must_partly: number | null; must_total: number | null; must_not_hit: number | null; must_not_total?: number | null;
+  overall?: string | null; strongest?: string | null; weakest?: string | null; judged_at?: string | null; judgement: string | null;
+};
+
+/** An eval run, read as a conversation: which case, which brain, which run
+ *  (the loop's tag, "bench" for a saved bench run, "retest" for the app's
+ *  re-test), the transcript in the repo and the judge's grade. Written by
+ *  mandate/eval/run_conversation.py (loop.run_case and the importer) and by
+ *  the re-test route; the same JSON format as every other conversation. */
+export type EvalRun = {
+  kind: "eval_run";
+  case_id: string;
+  brain: Brain;
+  tag: string;
+  run_file: string | null;
+  source: "loop" | "bench" | "retest";
+  ran_at: string;
+  /** the judge's grade (null until judged) */
+  grade: number | null;
+  judge: JudgeSummary | null;
+  /** the owner's grade written in the transcript's grading block, if any */
+  owner_grade: number | null;
+  instruction?: string;
+};
 
 export type BenchMessage = {
   role: "client" | "agent";
@@ -45,6 +80,8 @@ export type BenchMessage = {
   at: string;
   /** the owner's quick rating of this reply (the item is in the feedback queue) */
   feedback?: { rating: "good" | "off"; item_id: string; note?: string };
+  /** reviewers' comments on this reply (an eval run under review) */
+  reviews?: Review[];
   /** set on an agent message whose turn did not finish */
   error?: string;
   interrupted?: boolean;
@@ -72,6 +109,10 @@ export type BenchConversation = {
   feedback_ids?: string[];
   /** a re-test or its scoring: the eval case */
   case?: string;
+  /** an eval run (kind eval_run, or a re-test): the run it shows */
+  eval_run?: EvalRun;
+  /** reviewers' 1-5 grades of the run, oldest first */
+  review_grades?: ReviewGrade[];
   created_at: string;
   updated_at: string;
 };
@@ -349,6 +390,10 @@ export type FeedbackItem = {
   created_at: string;
   status: FeedbackStatus;
   resolution?: { at: string; by: "accepted" | "dismissed" | "reopened"; paths?: string[]; conversation_id?: string };
+  /** who gave it (a review: the owner or the expert by name); absent = the owner */
+  reviewer?: string;
+  /** the eval case, when the item is about an eval run */
+  case?: string | null;
 };
 
 export type FeedbackEvent =
@@ -390,10 +435,13 @@ export function brainsOfPlaybook(file: string): Brain[] {
 /** The message that sends a batch of feedback to the interviewer to distil. */
 export function distilMessage(brain: Brain, items: FeedbackItem[], titles: Record<string, string>): string {
   const lines = items.map((i) => {
-    const where = i.run_file ? `run ${i.run_file}` : i.conversation_id ? `conversation "${titles[i.conversation_id] ?? i.conversation_id}"${i.message_index !== null ? `, reply ${i.message_index}` : ""}` : "";
+    const reply = i.message_index !== null ? `, reply ${i.message_index}` : "";
+    const where = i.run_file ? `run ${i.run_file}${i.case ? ` (eval case ${i.case})` : ""}${reply}`
+      : i.conversation_id ? `conversation "${titles[i.conversation_id] ?? i.conversation_id}"${reply}` : "";
     const what = i.kind === "interview" ? "Interview (its distilled habits are in the excerpt)" : i.rating ? `Rated ${i.rating}` : i.grade ? `Graded ${i.grade}/5` : "Note";
+    const by = i.reviewer && i.reviewer.toLowerCase() !== "owner" ? `The reviewer (${i.reviewer})` : "The owner";
     return [`[${i.id}] ${what} · ${THEME_LABEL[i.theme]} · ${where} · playbooks at ${i.playbooks.sha ?? "unknown"}${i.playbooks.dirty ? " (+uncommitted edits)" : ""}`,
-      i.note ? `  The owner: "${i.note.replace(/\s+/g, " ")}"` : "",
+      i.note ? `  ${by}: "${i.note.replace(/\s+/g, " ")}"` : "",
       i.excerpt ? `  What was said: "${i.excerpt.replace(/\s+/g, " ").slice(0, 600)}"` : ""].filter(Boolean).join("\n");
   });
   return `Distil this feedback on ${BRAIN_LABEL[brain]} into playbook edits.
@@ -462,3 +510,93 @@ export type Retest = {
   score: Score | null;
   created_at: string;
 };
+
+// ── eval runs under review ─────────────────────────────────────────────────
+//
+// Train, Review runs: every eval run as a chat, a comment on each reply and a
+// 1-5 grade of the whole, by a named reviewer (the owner, or the expert). Each
+// comment is a feedback item (so Distil reads it) linked to the conversation,
+// the reply, the run file and the case; the conversation keeps a copy per
+// reply so the thread shows what was said. Append-only, like the queue.
+
+export const DEFAULT_REVIEWER = "Owner";
+export const REVIEWER_RE = /^[\p{L}\p{N} .,'()-]{1,60}$/u;
+/** The reviewer's name as typed, or the owner's when it is empty or not a name. */
+export const reviewerName = (v: unknown): string => {
+  const s = typeof v === "string" ? v.replace(/\s+/g, " ").trim() : "";
+  return s && REVIEWER_RE.test(s) ? s : DEFAULT_REVIEWER;
+};
+
+/** An eval case's id as words: "fintech_guarantees" -> "Fintech guarantees". */
+export const caseLabel = (id: string) => { const s = id.replace(/_/g, " "); return s.charAt(0).toUpperCase() + s.slice(1); };
+
+export const isEvalRunConversation =(c: Pick<BenchConversation, "kind" | "eval_run">) => c.kind === "eval_run" || !!c.eval_run;
+
+/** Write a reviewer's comment (or grade) into the conversation, next to the
+ *  feedback item that carries it. A reply may carry any number of reviews; a
+ *  plain chat keeps its one quick rating (`feedback`), as before. */
+export function recordReview(c: BenchConversation, item: FeedbackItem): void {
+  const reviewed = isEvalRunConversation(c) || item.reviewer !== undefined;
+  const reviewer = item.reviewer ?? DEFAULT_REVIEWER;
+  if (item.kind === "reply" && item.message_index !== null) {
+    const m = c.messages[item.message_index];
+    if (!m) return;
+    if (reviewed) (m.reviews ??= []).push({ item_id: item.id, reviewer, rating: item.rating, note: item.note, at: item.created_at });
+    else if (item.rating) m.feedback = { rating: item.rating, item_id: item.id, ...(item.note ? { note: item.note } : {}) };
+  } else if (item.kind === "conversation" && item.grade !== null) {
+    if (reviewed) (c.review_grades ??= []).push({ item_id: item.id, reviewer, grade: item.grade, note: item.note, at: item.created_at });
+    c.grade = { grade: item.grade, item_id: item.id };
+  }
+}
+
+export type EvalRunSummary = {
+  id: string; title: string; case_id: string; brain: Brain; tag: string; source: EvalRun["source"]; ran_at: string;
+  run_file: string | null; judge_grade: number | null; owner_grade: number | null;
+  /** the latest reviewer grade, and who gave it */
+  review_grade: { grade: number; reviewer: string } | null;
+  replies: number; comments: number; reviewers: string[];
+};
+
+export function evalRunSummary(c: BenchConversation): EvalRunSummary | null {
+  const r = c.eval_run;
+  if (!r) return null;
+  const reviews = c.messages.flatMap((m) => m.reviews ?? []);
+  const last = c.review_grades?.[c.review_grades.length - 1];
+  return {
+    id: c.id, title: c.title, case_id: r.case_id, brain: r.brain, tag: r.tag, source: r.source, ran_at: r.ran_at || c.created_at,
+    run_file: r.run_file, judge_grade: r.grade ?? r.judge?.grade ?? null, owner_grade: r.owner_grade ?? null,
+    review_grade: last ? { grade: last.grade, reviewer: last.reviewer } : null,
+    replies: c.messages.filter((m) => m.role === "agent").length, comments: reviews.length,
+    reviewers: [...new Set([...reviews.map((x) => x.reviewer), ...(c.review_grades ?? []).map((g) => g.reviewer)])],
+  };
+}
+
+/** Runs grouped by case and brain, the case with the latest run first, each
+ *  case's runs latest first. */
+export function groupEvalRuns(runs: EvalRunSummary[]): { case_id: string; brain: Brain; runs: EvalRunSummary[] }[] {
+  const groups = new Map<string, { case_id: string; brain: Brain; runs: EvalRunSummary[] }>();
+  for (const r of runs) {
+    const k = `${r.case_id}\u0000${r.brain}`;
+    if (!groups.has(k)) groups.set(k, { case_id: r.case_id, brain: r.brain, runs: [] });
+    groups.get(k)!.runs.push(r);
+  }
+  const out = [...groups.values()];
+  for (const g of out) g.runs.sort((a, b) => b.ran_at.localeCompare(a.ran_at) || b.id.localeCompare(a.id));
+  return out.sort((a, b) => b.runs[0].ran_at.localeCompare(a.runs[0].ran_at) || a.case_id.localeCompare(b.case_id));
+}
+
+/** A review set: runs handed to a reviewer (the expert) in order, opened at
+ *  /bench/review/<id> with nothing but the runs and the comment controls. */
+export type ReviewSet = { id: string; title: string; note: string; conversation_ids: string[]; created_at: string };
+
+export function validateReviewSet(b: unknown): Result<Pick<ReviewSet, "title" | "note" | "conversation_ids">> {
+  if (!b || typeof b !== "object") return { ok: false, error: "expected an object" };
+  const o = b as Record<string, unknown>;
+  const title = typeof o.title === "string" ? o.title.replace(/\s+/g, " ").trim() : "";
+  if (!title || title.length > 120) return { ok: false, error: "give the review set a title (up to 120 characters)" };
+  const note = typeof o.note === "string" ? o.note.trim() : "";
+  if (note.length > 2000) return { ok: false, error: "the note is too long" };
+  const ids = o.conversation_ids;
+  if (!Array.isArray(ids) || !ids.length || ids.length > 20 || !ids.every(isId)) return { ok: false, error: "pick 1 to 20 runs" };
+  return { ok: true, value: { title, note, conversation_ids: [...new Set(ids as string[])] } };
+}

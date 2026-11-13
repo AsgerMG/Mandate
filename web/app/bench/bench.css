@@ -366,3 +366,71 @@ li .bench-md { font-size: inherit; line-height: inherit; color: inherit; }
 .bench-deploy__chip { display: inline-flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border: 1px solid #d1c5ae; border-radius: 8px; background: var(--b-paper); font-size: 12.5px; color: #5e6574; opacity: .65; transition: all .12s; }
 .bench-deploy__chip[data-on] { opacity: 1; border-color: var(--b-navy); color: var(--b-ink); box-shadow: inset 0 0 0 1px var(--b-navy); }
 .bench-switch button:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ── reviewing eval runs as chats (Train, Review runs; /bench/review/<set>) ── */
+.bench-bubble__who { margin: 0 .35rem .3rem 0; }
+.bench-rv { margin-top: .8rem; padding-top: .6rem; border-top: 1px dashed var(--b-line-soft); font-size: 11px; }
+.bench-rv__bar { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; }
+.bench-rv__label { margin-right: .3rem; font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--b-faint); }
+.bench-fb__btn[data-tone="good"]:hover:not(:disabled) { border-color: #7fa47f; color: #2f6a3c; background: #f0f5ee; }
+.bench-fb__btn[data-tone="off"]:hover:not(:disabled) { border-color: #c98a7c; color: #9a3b2f; background: #fbefec; }
+.bench-rv__list { margin-bottom: .6rem; display: flex; flex-direction: column; gap: .35rem; }
+.bench-rv__item { display: flex; gap: .5rem; align-items: flex-start; border-radius: 8px; background: #f8f3e8; padding: .45rem .6rem; line-height: 1.45; }
+.bench-rv__item[data-rating="good"] { background: #f0f5ee; }
+.bench-rv__item[data-rating="off"] { background: #fbefec; }
+.bench-rv__mark { flex: none; width: 1rem; text-align: center; color: var(--b-ochre); }
+.bench-rv__item[data-rating="good"] .bench-rv__mark { color: #2f6a3c; }
+.bench-rv__item[data-rating="off"] .bench-rv__mark { color: #b5523f; }
+.bench-rv__who { display: block; font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .1em; text-transform: uppercase; color: var(--b-muted); }
+.bench-rv__note { display: block; margin-top: .15rem; font-size: 12.5px; color: var(--b-ink-2); white-space: pre-wrap; }
+.bench-rv__form { width: 100%; }
+.bench-rv__sep { width: 1px; height: 1rem; margin: 0 .25rem; background: var(--b-line); }
+.bench-rv__text { resize: vertical; min-height: 4.2rem; line-height: 1.5; font-family: inherit; }
+.bench-rv kbd { font-family: var(--font-mono); font-size: 9.5px; }
+.bench-rv-grade { margin-top: 1.1rem; }
+.bench-rv-grade .bench-rv__text { min-height: 3rem; }
+.bench-reviewer { margin-top: 1rem; display: flex; flex-direction: column; gap: .3rem; }
+.bench-reviewer > span { font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--b-ochre); }
+.bench-reviewer input { border: 1px solid #d1c5ae; border-radius: 6px; background: var(--b-paper); padding: .4rem .6rem; font-size: 12.5px; outline: none; color: var(--b-ink); }
+.bench-reviewer input:focus { border-color: #a77c36; }
+.bench-reviewer[data-compact] { margin: 0; flex-direction: row; align-items: center; gap: .5rem; }
+.bench-reviewer[data-compact] input { width: 11rem; }
+.bench-judge { margin-top: 1.4rem; border-top: 1px solid var(--b-line-soft); padding-top: 1rem; }
+.bench-judge__text { margin-top: .45rem; font-size: 11.5px; line-height: 1.5; color: #4a5468; }
+.bench-judge__file code { display: block; margin-top: .6rem; font-family: var(--font-mono); font-size: 9.5px; color: var(--b-faint); word-break: break-all; }
+
+/* the list of runs */
+.bench-rgroups { display: grid; grid-template-columns: minmax(0, 1fr); gap: .9rem; max-width: 60rem; }
+.bench-rgroup { border: 1px solid var(--b-line); border-radius: 14px; background: var(--b-paper); padding: .9rem 1rem .5rem; }
+.bench-rgroup__head { display: flex; align-items: center; gap: .5rem; padding-bottom: .5rem; border-bottom: 1px solid var(--b-line-soft); }
+.bench-rgroup__head h2 { flex: 1; font-family: var(--font-serif); font-size: 1.1rem; font-weight: 600; color: var(--b-ink); }
+.bench-rrow { display: flex; align-items: center; gap: .55rem; border-bottom: 1px solid var(--b-line-soft); }
+.bench-rrow:last-child { border-bottom: 0; }
+.bench-rrow input { accent-color: #132342; }
+.bench-rrow[data-picked] { background: #faf5ea; }
+.bench-rrow__main { flex: 1; min-width: 0; display: flex; align-items: center; gap: .75rem; padding: .6rem .3rem; text-align: left; font-size: 12.5px; color: var(--b-ink-2); }
+.bench-rrow__main:hover .bench-rrow__tag { text-decoration: underline; text-underline-offset: 2px; }
+.bench-rrow__tag { min-width: 10rem; font-weight: 600; }
+.bench-rrow__grades { display: flex; gap: .7rem; font-family: var(--font-mono); font-size: 8.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--b-faint); }
+.bench-rrow__grades > span { display: inline-flex; align-items: center; gap: .3rem; }
+.bench-rrow__grades .bench-grade { width: 1.35rem; height: 1.35rem; font-size: 11px; font-family: var(--font-sans); letter-spacing: 0; }
+.bench-rrow__count { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-align: right; }
+.bench-setbar { position: sticky; top: 0; z-index: 5; margin-bottom: 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; border: 1px solid #c9bf9c; border-radius: 12px; background: #fbf3df; padding: .6rem .8rem; box-shadow: 0 8px 20px rgba(30, 30, 20, .06); }
+.bench-setbar__count { font-weight: 600; font-size: 12.5px; }
+.bench-setbar__order { display: flex; flex-wrap: wrap; gap: .5rem; font-size: 11px; color: #5e6574; }
+.bench-setbar .bench-fb__input { flex: 1 1 16rem; }
+
+/* the expert's review set: header across, then thread | panel */
+.bench-shell[data-view="review-set"] { grid-template-columns: minmax(0, 1fr) 23rem; grid-template-rows: auto minmax(0, 1fr); height: calc(100svh - var(--nav-h, 0px)); }
+.bench-set-head { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; padding: .75rem 1.5rem; border-bottom: 1px solid var(--b-line); background: var(--b-rail); }
+.bench-set-head__id { display: flex; align-items: center; gap: .75rem; min-width: 0; flex: 1 1 22rem; }
+.bench-set-head__step { display: block; margin-top: .1rem; font-family: var(--font-serif); font-size: 1.35rem; font-weight: 600; color: var(--b-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bench-set-head__case { font-size: 1rem; font-weight: 500; color: #5e6574; }
+.bench-set-head__tools { display: flex; align-items: center; gap: .6rem; }
+.bench-set-head__note { flex-basis: 100%; font-size: 12px; color: #5e6574; }
+.bench-set-steps { display: flex; gap: .3rem; }
+.bench-set-steps button { width: 1.9rem; height: 1.9rem; border-radius: 50%; border: 1px solid var(--b-line); background: var(--b-paper); font-size: 11.5px; font-weight: 600; color: #5e6574; }
+.bench-set-steps button[aria-current="step"] { background: var(--b-navy); border-color: var(--b-navy); color: #fff; }
+.bench-set-steps button[data-done]:not([aria-current]) { border-color: #9fc09b; color: #2f6a3c; background: #f0f5ee; }
+@media (max-width: 1100px) { .bench-shell[data-view="review-set"] { grid-template-columns: minmax(0, 1fr); } }
+.bench-back { margin-bottom: .2rem; font-size: 11px; }
