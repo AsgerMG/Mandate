@@ -52,6 +52,33 @@ against it by `web/lib/bench/board.test.ts` (it must parse with no warnings).
 | flow edge `kind` | `money`, `risk`, `asset`, `info` |
 | risk `kind` / `severity` | `deal_breaker`, `flag` / `high`, `medium`, `low` |
 
+## Process maps: how it works, and where to push
+
+Emit a `process_maps` entry whenever a route depends on an institutional process or a
+decision chain: a guarantee or loan decision, an intermediary selection, a legislative
+or regulatory file, a renewal of a scheme, a procurement.
+
+- **The steps are junior work: map them fully, from sources.** Every step names its
+  actor (institution, unit or role), its kind (step, decision, document, deadline),
+  its timing where known, and carries a citation. A step you cannot source is labelled
+  in its detail as judgement; if most steps are pattern rather than sourced, set
+  `illustrative: true`.
+- **The overlay is the senior's read: where to push.** Add `leverage` items on steps or
+  actors:
+  - `pressure_point`: where attention from the right person moves the decision.
+  - `door_opener`: who or what gets the client into the queue (the P1, a top-down
+    introduction, the bank that already holds the cover).
+  - `blocker`: what closes it (a condition, a veto), with the fix in `how`.
+  - `timing_window`: a deadline or a moment the decision can change.
+  - `precedent`: a case that proves the ask is possible.
+
+  Each item says why, how (who and through which channel, by function), which side
+  (political, public-capital, market), and cites or labels its claim. Apply the
+  playbook's stakeholder habits: political versus public-capital stakeholders, P1/P2,
+  the top-down hand-off, precedent as the strongest argument, sequencing.
+- Keep maps small (3-8 steps), one map per decision chain; two or three maps per case
+  at most.
+
 ## Example (every section; send only what you have)
 
 ```mandate-board
