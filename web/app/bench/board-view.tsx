@@ -285,7 +285,7 @@ export function FundingStack({ f, ctx }: { f: Funding; ctx: Ctx }) {
       <div className="mb-stack">
         <div className="mb-stack__scale">
           <span>{money(0, cur).replace(/0$/, "0")}</span>
-          {need > 0 && <span className="mb-stack__need" style={{ left: `${(need / scale) * 100}%` }}>Need {money(need, cur)}</span>}
+          {need > 0 && <span className="mb-stack__need" style={{ left: `${(need / scale) * 100}%`, translate: need / scale > 0.9 ? "-100% 0" : undefined }}>Need {money(need, cur)}</span>}
           <span className="mb-stack__total" style={need > 0 && Math.abs(need - scale) / scale < 0.18 ? { visibility: "hidden" } : undefined}>{money(scale, cur)}</span>
         </div>
         <div ref={barRef} className="mb-stack__bar" role="img"
@@ -417,7 +417,8 @@ export function RoadmapView({ r, ctx }: { r: Roadmap; ctx: Ctx }) {
           {today !== null && today >= 0 && today <= horizon && (
             <g>
               <line x1={X(today)} x2={X(today)} y1={HEAD_H - 4} y2={H} stroke="#a6752e" strokeWidth={1.5} />
-              <text x={X(today) + 4} y={HEAD_H - 11} className="mb-rm__today">Today</text>
+              <rect x={X(today) - 22} y={H - 17} width={44} height={14} rx={7} fill="#a6752e" />
+              <text x={X(today)} y={H - 7} textAnchor="middle" className="mb-rm__today">Today</text>
             </g>
           )}
           {/* dependencies: from the end of what it waits on to its start */}
